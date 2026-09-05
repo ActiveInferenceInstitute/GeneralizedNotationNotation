@@ -167,11 +167,11 @@ def _generate_matrix_correlations(
             attempt.error_message = "matplotlib/numpy not available"
             return attempt
 
-        if _MatrixVisualizer is None:
+        mv = _MatrixVisualizer()
+        if mv is None:
             attempt.status = "failed"
             attempt.error_message = "MatrixVisualizer not available"
             return attempt
-        mv = _MatrixVisualizer()
 
         # Extract matrices
         parameters = model_data.get("parameters", [])

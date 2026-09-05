@@ -7,6 +7,13 @@ Implementation: visualization.core.process, visualization.plotting, visualizatio
 
 from typing import Any
 
+# Imported after ``.core.process``: core.process itself pulls in
+# analysis.combined_analysis during package init, so by this line the
+# analysis package is fully loaded (import-order-sensitive cycle).
+from .analysis import (
+    generate_combined_analysis,
+    generate_combined_visualizations,
+)
 from .core.process import (
     discover_visualization_files,
     process_single_gnn_file,

@@ -150,18 +150,22 @@ def per_file_markdown_report(filename: str, result: Dict[str, Any]) -> str:
             )
         lines.append("")
 
-    # Complexity analysis
+    # Complexity analysis (granular metrics from estimation.strategies)
     if "model_complexity" in result:
         lines.append("## Complexity Analysis")
         complexity = result["model_complexity"]
         lines.append(
-            f"- **Variable Complexity**: {complexity.get('variable_complexity', 0)}"
+            f"- **State-Space Complexity**: {complexity.get('state_space_complexity', 0):.3f}"
+        )
+        lines.append(f"- **Graph Density**: {complexity.get('graph_density', 0):.3f}")
+        lines.append(
+            f"- **Cyclic Complexity**: {complexity.get('cyclic_complexity', 0):.3f}"
         )
         lines.append(
-            f"- **Connection Complexity**: {complexity.get('connection_complexity', 0)}"
+            f"- **Temporal Complexity**: {complexity.get('temporal_complexity', 0):.3f}"
         )
         lines.append(
-            f"- **Equation Complexity**: {complexity.get('equation_complexity', 0)}"
+            f"- **Equation Complexity**: {complexity.get('equation_complexity', 0):.3f}"
         )
         lines.append(
             f"- **Overall Complexity Score**: {complexity.get('overall_complexity', 0):.2f}"

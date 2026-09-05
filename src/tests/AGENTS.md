@@ -482,7 +482,7 @@ the package (`from tests.helpers import ...`) so implementations can move:
 |---|---|---|
 | `load_module_from_path(name, path, sys_path=None)` | `script_loader.py` | Load a standalone script (e.g. `scripts/*.py`) as a module; optional sibling-directory `sys.path` injection. Used by the root doc/scripts contract tests. |
 | `SAMPLE_GNN_CONTENT`, `write_sample_gnn_markdown(target)` | `gnn_samples.py` | Canonical sample GNN markdown; single source behind the `sample_gnn_files` / `test_data_dir` / `sample_gnn_file` fixtures. |
-| `MCPTools` | `mcp_stubs.py` | In-memory MCP registry stub (`register_tool` / `register_resource` / `execute_tool`). The `test_mcp_tools` fixture returns an instance; module wiring tests should adopt it instead of redeclaring local stubs. |
+| `MCPTools` | `mcp_stubs.py` | In-memory MCP registry test double (`register_tool` / `register_resource` / `execute_tool`). The `test_mcp_tools` fixture returns an instance; module wiring tests should adopt it instead of redeclaring local test doubles. |
 | `render_gnn_files(target_dir, output_dir)` | `render_recovery.py` | Recovery-friendly bulk render for resilience tests. |
 | `get_test_data_dir()`, `get_sample_gnn_model()`, `load_sample_gnn_spec()` | `__init__.py` | Path helpers for `test_data/` and the sample-model loader. |
 

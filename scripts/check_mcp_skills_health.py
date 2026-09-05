@@ -268,7 +268,14 @@ def _resolvability_findings(skill: Path, rel: Path) -> tuple[list[str], int]:
             )
             findings.append(f"{rel}: unresolved {target}")
 
-    for symbol in re.findall(r"`([A-Za-z_]\w*)`", _section(text, "Key Exports")):
+    # Only the bullet's name slot (before the ``—`` description separator)
+    # carries resolvability claims; backticked words in prose do not.
+    export_symbols = [
+        symbol
+        for line in _section(text, "Key Exports").splitlines()
+        for symbol in re.findall(r"`([A-Za-z_]\w*)`", line.split("\u2014")[0])
+    ]
+    for symbol in export_symbols:
         checks += 1
         if symbol in _MCP_KNOBS:
             continue  # documented initialize() configuration knobs

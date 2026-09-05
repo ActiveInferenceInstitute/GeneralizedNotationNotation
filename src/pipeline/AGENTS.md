@@ -19,7 +19,7 @@ executed. Acceptance: `scripts/run_v3_orchestration_acceptance.py --strict`. Ref
 
 **Version**: 3.2.0
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-04
 
 ---
 
@@ -104,35 +104,42 @@ output_dir = get_output_dir_for_script("3_gnn.py", Path("output"))
 
 #### `validate_pipeline_step(step_name: str) -> bool`
 
-**Description**: Validate that a step name is known to the pipeline.
-
-**Parameters**:
-
-- `step_name` (str): Name of the step to validate (e.g., `"gnn"`, `"render"`)
-
-**Returns**: `bool` — `True` if the step is recognized.
+Validate that a step name is known to the pipeline (present in
+`STEP_METADATA`).
 
 **Location**: `src/pipeline/__init__.py`
 
 #### `discover_pipeline_steps() -> list[str]`
 
-**Description**: Discover all available pipeline step names by scanning `src/` for `N_module.py` scripts.
-
-**Returns**: `list[str]` — Ordered list of step names.
+Return the ordered list of registered step script stems (derived from
+`step_registry.STEP_METADATA_DICT`, the single source of truth).
 
 **Location**: `src/pipeline/__init__.py`
 
-#### `resolve_execution_order(step_names: List[str], ...) -> List[str]`
-
-**Description**: Topological sort of step names using the pipeline's dependency DAG.
+#### `resolve_execution_order(step_dependencies, total_steps=None, skip_steps=None, raise_on_circular=False) -> List[List[int]]`
 
 **Location**: `src/pipeline/dag.py`
 
-#### `visualize_dag(step_names: List[str], output_path: Path) -> bool`
+Topologically sort **step numbers** into parallel execution tiers (Kahn's
+algorithm with tier grouping). `step_dependencies` maps each step number to
+the step numbers it depends on (`utils.pipeline_step_dependencies.PIPELINE_STEP_DEPENDENCIES`
+is the canonical dependency table). `total_steps` defaults to the registry
+step count. Circular dependencies are appended as a final tier unless
+`raise_on_circular=True`, which raises `ValueError`.
 
-**Description**: Generate a Mermaid or DOT visualization of the step dependency DAG.
+#### `find_circular_dependencies(step_dependencies, nodes=None) -> Set[int]`
 
-**Location**: `src/pipeline/dag.py`
+**Location**: `src/pipeline/dag.py` (added 2026-09-04)
+
+Return the set of step numbers bound up in dependency cycles (cycle members
+plus any step that transitively depends on one). Powers the
+`circular_dependencies` field of the `validate_pipeline_dependencies` MCP
+tool.
+
+#### `visualize_dag(tiers, step_names=None) -> str`
+
+Render DAG tiers (output of `resolve_execution_order`) as a human-readable
+multi-line string for logging.
 
 > **Note**: The functions `validate_step_prerequisites`, `validate_pipeline_step_sequence`, and `generate_execution_plan` referenced in earlier documentation versions do not exist as standalone functions. Prerequisite checking is handled by `pipeline/pipeline_validator.py` (an E2E runtime tester) and dependency ordering is in `pipeline/dag.py`.
 
@@ -151,47 +158,33 @@ output_dir = get_output_dir_for_script("3_gnn.py", Path("output"))
 
 ### Execution Functions
 
-#### `run_pipeline(target_dir: Path, output_dir: Path, steps: Optional[List[str]] = None, **kwargs) -> bool`
+#### `run_pipeline(pipeline_data=None, *, target_dir=None, output_dir=None, steps="all", verbose=False) -> dict`
 
-**Description**: Execute the complete GNN processing pipeline
+Execute the pipeline through ``main.py`` and return a compact summary dict
+with `success`, `steps_executed`, `errors`, `warnings`, `target_dir`,
+`output_dir`, `exit_code`, `duration`, and (when the run wrote a summary)
+`summary_file` / `overall_status`. `steps` accepts `"all"`, a single step
+name/number, a comma-separated list, or an iterable of those — normalized by
+`resolve_step_numbers`.
 
-**Parameters**:
+#### `resolve_step_numbers(steps, pipeline_data=None) -> list[int]`
 
-- `target_dir` (Path): Directory containing input files
-- `output_dir` (Path): Output directory for results
-- `steps` (Optional[List[str]]): Steps to execute (None = all steps)
-- `**kwargs`: Additional pipeline options (verbose, skip_steps, etc.)
+**Added 2026-09-04.** Normalize step identifiers ("11", "11_render",
+"11_render.py", "3,5", iterables of those, or `"all"`/`None`) to a sorted,
+de-duplicated list of registered step numbers. Unknown tokens are dropped.
 
-**Returns**: `bool` - True if pipeline executed successfully, False otherwise
+#### `execute_pipeline_step(step_name: str, step_config: dict, pipeline_data: dict) -> StepExecutionResult`
 
-#### `execute_pipeline_step(step_name: str, target_dir: Path, output_dir: Path, **kwargs) -> StepExecutionResult`
+Execute a single numbered pipeline step via ``main.execute_pipeline_step``.
 
-**Description**: Execute a single pipeline step
+**Returns**: `StepExecutionResult` — dataclass with `step_name`, `success`,
+`duration`, `output`, `error`, `warnings`, `remediation`.
 
-**Parameters**:
+#### `get_pipeline_status() -> dict`
 
-- `step_name` (str): Name of the step to execute
-- `target_dir` (Path): Input directory
-- `output_dir` (Path): Output directory
-- `**kwargs`: Step-specific options
-
-**Returns**: `StepExecutionResult` - Result object with:
-
-- `success` (bool): Whether step succeeded
-- `duration` (float): Execution time in seconds
-- `output_files` (List[Path]): Generated output files
-- `errors` (List[str]): Errors encountered
-
-#### `get_pipeline_status() -> Dict[str, Any]`
-
-**Description**: Get current pipeline execution status
-
-**Returns**: `Dict[str, Any]` - Status information with:
-
-- `current_step` (str): Currently executing step
-- `completed_steps` (List[str]): Completed steps
-- `failed_steps` (List[str]): Failed steps
-- `progress` (float): Completion percentage (0.0-1.0)
+Static readiness probe: `{"status": "ready", "timestamp", "steps_available",
+"steps_completed"}`. Step availability is derived from the registry; live
+progress is reported by the per-run `pipeline_execution_summary.json` instead.
 
 ### Health Check Functions
 
@@ -267,8 +260,8 @@ print(f"GNN output directory: {output_dir}")
 ```python
 from pipeline import validate_pipeline_step, discover_pipeline_steps
 
-# Verify a step is known
-assert validate_pipeline_step("gnn")
+# Verify a step is known (keys are script stems)
+assert validate_pipeline_step("3_gnn")
 
 # List all steps
 for step in discover_pipeline_steps():
@@ -278,10 +271,15 @@ for step in discover_pipeline_steps():
 ### DAG-Based Ordering
 
 ```python
-from pipeline.dag import resolve_execution_order
+from pipeline.dag import resolve_execution_order, find_circular_dependencies
+from utils.pipeline_step_dependencies import PIPELINE_STEP_DEPENDENCIES
 
-order = resolve_execution_order(["render", "gnn", "execute"])
-print(f"Resolved order: {order}")
+# Resolve tiers over the canonical dependency table
+tiers = resolve_execution_order(dict(PIPELINE_STEP_DEPENDENCIES))
+print(f"Resolved tiers: {tiers}")
+
+# Detect cycle-bound steps in an arbitrary graph
+assert find_circular_dependencies({0: [1], 1: []}) == set()
 ```
 
 ---
@@ -375,8 +373,15 @@ Configuration → Step Discovery → Dependency Validation → Execution Plannin
 
 ### Test Files
 
+The pipeline test suite lives in `src/tests/pipeline/` (45+ files). Key
+examples:
+
+- `src/tests/pipeline/test_pipeline_orchestration.py` - Orchestration, config, DAG tiers
 - `src/tests/pipeline/test_pipeline_integration.py` - Integration tests
-- `src/tests/pipeline/test_pipeline_functionality.py` - Functionality tests
+- `src/tests/pipeline/test_pipeline_refactor_contracts.py` - Shared-building-block
+  contracts (`pipeline._io`, `dag.find_circular_dependencies`,
+  `execution.resolve_step_numbers`, `select_model_families`, preflight
+  `skip_steps` gate) added 2026-09-04
 - `src/tests/pipeline/test_pipeline_performance.py` - Performance tests
 
 ### Test Coverage
@@ -384,7 +389,7 @@ Configuration → Step Discovery → Dependency Validation → Execution Plannin
 Measure on demand — no static number is kept in this file:
 
 ```bash
-uv run --extra dev python -m pytest src/tests/test_pipeline_*.py --cov=src/pipeline --cov-report=term-missing
+uv run --extra dev python -m pytest src/tests/pipeline/ --cov=src/pipeline --cov-report=term-missing
 ```
 
 ### Key Test Scenarios
@@ -433,12 +438,46 @@ Registered by `register_tools()` in `pipeline/mcp.py`:
 
 - Verify configuration file format is valid
 - Check all required configuration keys are present
-- Review configuration validation logs
 - Use default configuration if issues persist
 
 ---
 
+
 ## Version History
+
+### 2026-09-04 — Composability refactor (fleet worker)
+
+Internal quality pass; every external entry point's behavior is preserved:
+
+- **Shared atomic writes**: `pipeline/_io.py` now owns the mkstemp +
+  `os.replace` recipe. `durable_streams`, `run_session.checkpoint`,
+  `run_manifest._write_index`, and `hasher.index_run` all delegate (the
+  history index write is now atomic too).
+- **Shared family selection**: `model_family_acceptance.select_model_families()`
+  is the single filter rule; `semantic_fidelity` and `session_acceptance`
+  delegate instead of re-implementing it.
+- **Cycle detection**: new `dag.find_circular_dependencies()`; the
+  `validate_pipeline_dependencies` MCP tool now reports real
+  `circular_dependencies` instead of a stubbed empty list.
+- **Single version source**: `pipeline/_version.py`; `execution.get_pipeline_info()`
+  now reports the package version instead of a stale "1.0.0".
+- **Registry-derived counts**: `dag.resolve_execution_order`'s default
+  `total_steps` and `execution.get_pipeline_status/get_pipeline_info` derive
+  step counts from `step_registry` instead of hardcoding 25.
+- **Path constants**: `config.DEFAULT_TARGET_DIR` / `config.DEFAULT_OUTPUT_DIR`
+  replace the repeated `"input/gnn_files"` / `"output"` literals
+  (`execution`, `context`, package defaults).
+- **Status-set dedup**: `execution._SUCCESS_STATUSES` replaces the two inline
+  copies of `{"SUCCESS", "SUCCESS_WITH_WARNINGS", "SKIPPED"}`.
+- **Comma-separated step lists**: `resolve_step_numbers("3,5")` now works
+  (mirrors the `--only-steps` CLI form; previously silently resolved to `[]`).
+- **Preflight**: `validate_config` now validates `pipeline.skip_steps` with
+  the canonical `read_skip_steps` parser (bad values are a preflight error
+  instead of a mid-run failure).
+- **Package surface**: `__all__` is fully typed and complete (adds
+  `PipelineContext`, `StepRecord`, `StepStatus`, `resolve_step_numbers`,
+  `get_module_info`, `validate_pipeline_step`, `discover_pipeline_steps`,
+  `DEFAULT_TARGET_DIR`, `DEFAULT_OUTPUT_DIR`).
 
 ### Current Version: 3.2.0
 
@@ -475,7 +514,7 @@ Registered by `register_tools()` in `pipeline/mcp.py`:
 
 ---
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-04
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
 **Version**: 3.2.0

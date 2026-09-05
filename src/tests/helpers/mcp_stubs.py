@@ -1,4 +1,4 @@
-"""In-memory MCP registry stub shared by module MCP-wiring tests.
+"""In-memory MCP registry test double shared by module MCP-wiring tests.
 
 Many module test directories previously re-declared near-identical
 ``_CapturingMCP`` / ``StubMCP`` / ``_FakeMCP`` classes. This is the canonical

@@ -115,8 +115,28 @@ if not result["success"]:
     print(f"{result['error_type']}: {result.get('error') or result['stderr']}")
 ```
 
+
 #### `execute_rendered_simulators(target_dir: Path, output_dir: Path, logger: logging.Logger, recursive: bool = False, verbose: bool = False, **kwargs) -> bool`
 **Description**: Iterate over the `ExecutorFrameworkSpec` registry for every supported framework runner (PyMDP, RxInfer.jl, DisCoPy, ActiveInference.jl, JAX, NumPyro, PyTorch) and write a summary JSON + markdown report under ``output_dir / "12_execute_output" / "summaries" /``. Missing optional dependencies are recorded as ``"SKIPPED"`` instead of failures.
+
+#### `plan_execute(target_dir: Path, output_dir: Path, frameworks: str = "all", **config) -> ExecutionPlan`
+**Description**: Dry-run Step 12 planner (``execute.planning``). Composes the same discovery / render-contract / dependency primitives as `process_execute` but runs **no scripts and no Julia package probing** — it answers "what would Step 12 do?" for preflight checks, CI gates, and interactive debugging. Returns a typed `ExecutionPlan` (``execute.types``) with `requested_frameworks`, `render_output_dir`, `render_contract_found`, `status` (`"ready"` | `"no_render_output"` | `"no_executable_scripts"` | `"invalid_frameworks"`), `total_scripts`, and per-script disposition lists (`would_execute`, `would_skip_dependency`, `unknown_framework_scripts`), plus `missing_render_scripts` and `render_failures`. Raises `ValueError` on an invalid `frameworks` argument (the same exception `process_execute` catches and converts to `return False`).
+
+**Example**:
+```python
+from execute import plan_execute
+
+plan = plan_execute(
+    target_dir=Path("input/gnn_files"),
+    output_dir=Path("output/12_execute_output"),
+    frameworks="pymdp,jax",
+    render_output_dir=Path("output/11_render_output"),
+)
+print(plan["status"], plan["total_scripts"], len(plan["would_execute"]))
+```
+
+#### `list_frameworks() -> list[dict]`
+**Description**: Introspect the executor framework registry (`execute.executor`). Returns one record per registered backend with `framework`, `result_key` (the `*_executions` summary key), `available` (whether the runner is currently importable), and `operation` (the dispatch operation name). Useful for CLI/MCP diagnostics and tests that want to assert the registry shape without importing the private `_framework_specs` helper.
 
 #### Framework Health Checking
 

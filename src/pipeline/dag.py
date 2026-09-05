@@ -9,15 +9,15 @@ Provides:
 
 import logging
 from collections import defaultdict
-from typing import Any, Dict, List, Set
+from typing import Dict, Iterable, List, Mapping, Set
 
 logger = logging.getLogger(__name__)
 
 
 def resolve_execution_order(
     step_dependencies: Dict[int, List[int]],
-    total_steps: int = 25,
-    skip_steps: (Set[int]) | None = None,
+    total_steps: int | None = None,
+    skip_steps: Set[int] | None = None,
     raise_on_circular: bool = False,
 ) -> List[List[int]]:
     """
@@ -40,6 +40,11 @@ def resolve_execution_order(
     Raises:
         ValueError: if raise_on_circular=True and circular deps detected
     """
+    if total_steps is None:
+        # Single source of truth: the canonical step registry (25 steps).
+        from pipeline.step_registry import STEPS
+
+        total_steps = len(STEPS)
     skip_steps = skip_steps or set()
 
     # Build adjacency lists
@@ -62,7 +67,7 @@ def resolve_execution_order(
 
     while ready:
         tiers.append(ready)
-        next_ready: list[Any] = []
+        next_ready: list[int] = []
         for step in ready:
             for dep_step in dependents[step]:
                 in_degree[dep_step] -= 1
@@ -84,7 +89,7 @@ def resolve_execution_order(
 
 def visualize_dag(
     tiers: List[List[int]],
-    step_names: (Dict[int, str]) | None = None,
+    step_names: Dict[int, str] | None = None,
 ) -> str:
     """
     Render DAG tiers as a human-readable string for logging.
@@ -97,9 +102,55 @@ def visualize_dag(
         Multi-line string showing execution plan.
     """
     step_names = step_names or {}
-    lines: list[Any] = ["📊 Execution Plan:"]
+    lines: list[str] = ["📊 Execution Plan:"]
     for i, tier in enumerate(tiers):
         names = [step_names.get(s, f"step_{s}") for s in tier]
         parallel = " | ".join(names)
         lines.append(f"  Tier {i}: [{parallel}]")
     return "\n".join(lines)
+
+
+def find_circular_dependencies(
+    step_dependencies: Mapping[int, Iterable[int]],
+    nodes: Iterable[int] | None = None,
+) -> Set[int]:
+    """Return the step numbers that are bound up in dependency cycles.
+
+    Uses the same Kahn peel as :func:`resolve_execution_order`: any node that
+    never reaches in-degree zero is either part of a cycle or depends (directly
+    or transitively) on one. Dependencies pointing outside ``nodes`` are
+    ignored, matching :func:`resolve_execution_order` semantics.
+
+    Args:
+        step_dependencies: node → [dependency nodes] (deps may be any iterable;
+            only nodes present in ``nodes`` are counted).
+        nodes: The node universe. Defaults to the keys of
+            ``step_dependencies``.
+
+    Returns:
+        Set of unresolved (cycle-bound) node numbers. Empty when the
+        graph is acyclic.
+    """
+    universe = set(nodes) if nodes is not None else set(step_dependencies)
+    in_degree: Dict[int, int] = defaultdict(int)
+    dependents: Dict[int, List[int]] = defaultdict(list)
+    for step, deps in step_dependencies.items():
+        if step not in universe:
+            continue
+        for dep in deps:
+            if dep in universe:
+                in_degree[step] += 1
+                dependents[dep].append(step)
+    for step in universe:
+        in_degree.setdefault(step, 0)
+
+    ready: List[int] = sorted(s for s in universe if in_degree[s] == 0)
+    while ready:
+        nxt: list[int] = []
+        for step in ready:
+            for dep_step in dependents[step]:
+                in_degree[dep_step] -= 1
+                if in_degree[dep_step] == 0:
+                    nxt.append(dep_step)
+        ready = sorted(nxt)
+    return {s for s, degree in in_degree.items() if degree > 0}

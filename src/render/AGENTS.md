@@ -143,6 +143,20 @@ success = process_render(
 
 **Location**: `src/render/processor.py`
 
+#### `parse_frameworks_selection(frameworks: Union[str, List[str], None]) -> Tuple[Optional[List[str]], bool]`
+**Description**: Normalize the `frameworks` selection used by `process_render` and the Step 11 CLI. Pure function; resolves `None`/`"all"` to `None` (all registered frameworks), `"lite"` to the registry preset (`get_lite_frameworks()`), and comma-separated strings to a stripped name list.
+
+**Returns**: `(frameworks, explicit_request)` — `explicit_request` is `True` when the caller pinned a specific framework set, which Step 11 treats as a strict-success policy.
+
+**Location**: `src/render/processor.py`
+
+### Shared helpers
+
+- `render.naming.safe_output_stem(value, fallback="model")` — filesystem-safe output stem (single source of truth for `processor.py` and `pomdp_processor.py`).
+- `render.naming.atomic_write_text(path, content)` — temp-file + `os.replace` atomic artifact write.
+- `render.spec_matrices.extract_abcd_matrices(gnn_spec)` — shared discrete A/B/C/D extraction with the `stateSpace.parameters` → `initialparameterization` → `parameters` fallback chain, neutral defaults, and column normalization (used by the PyTorch and NumPyro renderers).
+- `render.spec_matrices.format_array_literal(arr, *, prefix, suffix="", indent=4)` — language-neutral array-literal formatter behind `_format_tensor` / `_format_jnp_array`.
+
 ### Canonical POMDP render helpers
 
 For POMDP targets, `render_gnn_spec(...)` and Step 11 both route through the same validated renderers:
@@ -165,7 +179,6 @@ The shared contract is `canonical_pomdp_v1`; B is stored as `(next_state, previo
 - `features` (List[str]): List of available features
 - `supported_formats` (List[str]): List of supported output formats
 - `processing_modes` (List[str]): List of available processing modes
-
 **Location**: `src/render/processor.py`
 
 #### `get_available_renderers() -> Dict[str, Dict[str, Any]]`
@@ -396,9 +409,11 @@ GNN Parsing → Model Validation → Framework Selection → Code Generation →
 ## Testing
 
 ### Test Files
-- `src/tests/render/test_render_integration.py` - Integration tests
-- `src/tests/render/test_render_overall.py` - Overall functionality tests
-- `src/tests/render/test_render_performance.py` - Performance tests
+- `src/tests/render/test_render_contracts.py` - Shared-helper + policy contract tests (naming, spec_matrices, lite preset, `parse_frameworks_selection`, `_render_succeeded`, `validate_render`, MCP single-spec tool)
+- `src/tests/render/test_render_cli_targets.py` - CLI target dispatch guard
+- `src/tests/render/test_framework_availability.py` - Registry availability contract
+- `src/tests/render/test_render_integration.py` / `test_render_overall.py` / `test_render_performance.py` - Broad module behavior
+- `src/tests/render/test_jax_renderer.py` / `test_render_stan.py` / `test_continuous_renderers.py` - Framework-specific behavior
 
 ### Test Coverage
 Measure on demand:
@@ -407,6 +422,7 @@ Measure on demand:
 uv run --extra dev python -m pytest src/tests/test_render*.py \
     --cov=src/render --cov-report=term-missing
 ```
+
 ### Key Test Scenarios
 1. Multi-framework code generation
 2. Framework-specific optimizations
@@ -419,23 +435,14 @@ uv run --extra dev python -m pytest src/tests/test_render*.py \
 ## MCP Integration
 
 ### Tools Registered
-- `render.generate_pymdp` - Generate PyMDP code
-- `render.generate_rxinfer` - Generate RxInfer.jl code
-- `render.generate_activeinference` - Generate ActiveInference.jl code
-- `render.generate_discopy` - Generate DisCoPy code
-- `render.generate_jax` - Generate JAX code
-- `render.validate_framework` - Validate framework compatibility
+- `render.process_render` - Render every GNN file in a directory to all supported frameworks
+- `render.list_render_frameworks` - List supported framework names and availability
+- `render.render_gnn_to_format` - Render one GNN file (runs the Step 11 directory flow; `framework` is a hint, not a filter)
+- `render.render_spec_to_format` - Render one GNN file to exactly one framework via `render_gnn_spec`
+- `render.get_render_module_info` - Module metadata: supported frameworks and input/output formats
 
 ### Tool Endpoints
-```python
-@mcp_tool("render.generate_pymdp")
-def generate_pymdp_tool(model_data, options=None):
-    """Generate PyMDP simulation code"""
-    # Implementation
-```
-
-### MCP File Location
-- `src/render/mcp.py` - MCP tool registrations
+Tool functions live in `src/render/mcp.py` and are registered in `register_tools(mcp_instance)`; see that file for the exact JSON schemas.
 
 ---
 

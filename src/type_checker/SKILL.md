@@ -19,6 +19,15 @@ success = checker.validate_gnn_files(Path("models/"), Path("output/5_type_checke
 
 # This cleanly generates Type Validity Mosaics and Baseball Cards intrinsically evaluated
 print("Completed successfully:", success)
+
+# Pure content validation (no file on disk) with strict-mode B-orientation checking
+from type_checker import GNNTypeChecker as _TC
+result = _TC(strict_mode=True).validate_content(spec_text, source_name="model.gnn")
+print("valid:", result["valid"], "errors:", len(result["errors"]))
+
+# Typed summary of a directory run
+from type_checker import summarize_type_check_results
+print(summarize_type_check_results({"validation_results": [result]}))
 ```
 
 ## Features

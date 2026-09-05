@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/9_advanced_viz.py` (65 lines)
+**Orchestrator**: `src/9_advanced_viz.py` (54 lines)
 **Implementation Layer**: `src/advanced_visualization/`
 
 ## Module Description

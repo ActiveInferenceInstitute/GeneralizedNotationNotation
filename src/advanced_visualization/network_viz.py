@@ -12,17 +12,16 @@ import time
 from pathlib import Path
 from typing import Any, Dict, List, cast
 
-_module_logger = logging.getLogger(__name__)
-
-from visualization.matrix_visualizer import MatrixVisualizer as _MatrixVisualizer
-
 from ._shared import (
     MATPLOTLIB_AVAILABLE,
     SEABORN_AVAILABLE,
+    VAR_TYPE_COLORS,
+    VAR_TYPE_UNKNOWN_COLOR,
     AdvancedVisualizationAttempt,
     _calculate_semantic_positions,
+    _conn_endpoints,
     _generate_fallback_report,
-    normalize_connection_format,
+    _MatrixVisualizer,
     np,
     plt,
     sns,
@@ -68,26 +67,14 @@ def _generate_3d_visualization(
                 return attempt
 
             if variables:
-                len(variables)
                 positions = _calculate_semantic_positions(variables, connections)
 
-                type_color_map: dict[str, Any] = {
-                    "likelihood_matrix": "#FF6B6B",
-                    "transition_matrix": "#4ECDC4",
-                    "preference_vector": "#45B7D1",
-                    "prior_vector": "#96CEB4",
-                    "hidden_state": "#FECA57",
-                    "observation": "#FF9FF3",
-                    "policy": "#A8E6CF",
-                    "action": "#DCE9BE",
-                    "unknown": "#CCCCCC",
-                }
+                name_to_idx = {var.get("name"): i for i, var in enumerate(variables)}
 
                 node_sizes: list[Any] = []
                 node_colors: list[Any] = []
 
                 for var in variables:
-                    var.get("name", "unknown")
                     var_type = var.get("var_type", "unknown")
                     dimensions = var.get("dimensions", [])
 
@@ -101,7 +88,9 @@ def _generate_3d_visualization(
                         base_size *= size_multiplier
 
                     node_sizes.append(base_size)
-                    node_colors.append(type_color_map.get(var_type, "#CCCCCC"))
+                    node_colors.append(
+                        VAR_TYPE_COLORS.get(var_type, VAR_TYPE_UNKNOWN_COLOR)
+                    )
 
                 for i, (pos, color, size) in enumerate(
                     zip(positions, node_colors, node_sizes)
@@ -128,21 +117,13 @@ def _generate_3d_visualization(
 
                 if connections:
                     for conn_info in connections:
-                        normalized_conn = normalize_connection_format(conn_info)
-                        source_vars = normalized_conn.get("source_variables", [])
-                        target_vars = normalized_conn.get("target_variables", [])
+                        source_vars, target_vars = _conn_endpoints(conn_info)
 
                         for source_var in source_vars:
                             for target_var in target_vars:
                                 if source_var != target_var:
-                                    source_idx = None
-                                    target_idx = None
-
-                                    for idx, var in enumerate(variables):
-                                        if var.get("name") == source_var:
-                                            source_idx = idx
-                                        if var.get("name") == target_var:
-                                            target_idx = idx
+                                    source_idx = name_to_idx.get(source_var)
+                                    target_idx = name_to_idx.get(target_var)
 
                                     if (
                                         source_idx is not None
@@ -169,6 +150,29 @@ def _generate_3d_visualization(
                                             marker=">",
                                             alpha=0.7,
                                         )
+
+                for i, (pos, color, size) in enumerate(
+                    zip(positions, node_colors, node_sizes)
+                ):
+                    ax.scatter(
+                        pos[0],
+                        pos[1],
+                        pos[2],
+                        c=color,
+                        s=size,
+                        alpha=0.8,
+                        edgecolors="black",
+                    )
+                    ax.text(
+                        pos[0],
+                        pos[1],
+                        pos[2],
+                        variables[i].get("name", f"Var{i}"),
+                        fontsize=8,
+                        ha="center",
+                        va="center",
+                        fontweight="bold",
+                    )
 
                 ax.set_xlabel("X Dimension")
                 ax.set_ylabel("Y Dimension")
@@ -255,7 +259,6 @@ def _generate_interactive_dashboard(
             connections = model_data.get("connections", [])
 
             num_vars = len(variables)
-            len(connections)
             var_types: dict[Any, Any] = {}
             for v in variables:
                 v_type = v.get("var_type", "unknown")
@@ -269,18 +272,16 @@ def _generate_interactive_dashboard(
 
             adj_matrix: Any = np.zeros((num_vars, num_vars)) if np is not None else []
             var_names = [v.get("name", f"v{i}") for i, v in enumerate(variables)]
+            name_to_idx = {name: i for i, name in enumerate(var_names)}
 
             if np is not None:
                 for conn in connections:
-                    normalized_conn = normalize_connection_format(conn)
-                    source_vars = normalized_conn.get("source_variables", [])
-                    target_vars = normalized_conn.get("target_variables", [])
-
+                    source_vars, target_vars = _conn_endpoints(conn)
                     for s in source_vars:
                         for t in target_vars:
-                            if s in var_names and t in var_names:
-                                s_idx = var_names.index(s)
-                                t_idx = var_names.index(t)
+                            s_idx = name_to_idx.get(s)
+                            t_idx = name_to_idx.get(t)
+                            if s_idx is not None and t_idx is not None:
                                 adj_matrix[s_idx, t_idx] = 1
 
                 fig_adj = px.imshow(
@@ -332,16 +333,12 @@ def _generate_interactive_dashboard(
                 )
 
                 for conn in connections:
-                    normalized_conn = normalize_connection_format(conn)
-                    source_vars = normalized_conn.get("source_variables", [])
-                    target_vars = normalized_conn.get("target_variables", [])
-
+                    source_vars, target_vars = _conn_endpoints(conn)
                     for s in source_vars:
                         for t in target_vars:
-                            if s in var_names and t in var_names:
-                                s_idx = var_names.index(s)
-                                t_idx = var_names.index(t)
-
+                            s_idx = name_to_idx.get(s)
+                            t_idx = name_to_idx.get(t)
+                            if s_idx is not None and t_idx is not None:
                                 fig_3d.add_trace(
                                     go.Scatter3d(
                                         x=[positions[s_idx, 0], positions[t_idx, 0]],
@@ -407,11 +404,11 @@ def _generate_pomdp_transition_analysis(
             attempt.error_message = "matplotlib/numpy not available"
             return attempt
 
-        if _MatrixVisualizer is None:
+        mv = _MatrixVisualizer()
+        if mv is None:
             attempt.status = "failed"
             attempt.error_message = "MatrixVisualizer not available"
             return attempt
-        mv = _MatrixVisualizer()
 
         parameters = model_data.get("parameters", [])
         matrices = mv.extract_matrix_data_from_parameters(parameters)
@@ -531,11 +528,11 @@ def _generate_policy_visualization(
                 if "policy" in var_type.lower() or name == "\u03c0" or name == "pi":
                     policy_data[name] = var
 
-        if _MatrixVisualizer is None:
+        mv = _MatrixVisualizer()
+        if mv is None:
             attempt.status = "failed"
             attempt.error_message = "MatrixVisualizer not available"
             return attempt
-        mv = _MatrixVisualizer()
         matrices = mv.extract_matrix_data_from_parameters(parameters)
 
         if "E" in matrices:
@@ -635,9 +632,7 @@ def _generate_network_metrics(
 
             for conn in connections:
                 if isinstance(conn, dict):
-                    normalized = normalize_connection_format(conn)
-                    sources = normalized.get("source_variables", [])
-                    targets = normalized.get("target_variables", [])
+                    sources, targets = _conn_endpoints(conn)
                     for source in sources:
                         for target in targets:
                             if source and target:

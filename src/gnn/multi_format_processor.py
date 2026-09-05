@@ -191,8 +191,8 @@ def process_gnn_multi_format(
                 formats_generated = 0
 
                 for format_enum in formats_to_emit:
+                    ext = get_extension_for_format(format_enum)
                     try:
-                        ext = get_extension_for_format(format_enum)
                         out_file = (
                             file_output_dir
                             / f"{file_path.stem}_{format_enum.value}{ext}"

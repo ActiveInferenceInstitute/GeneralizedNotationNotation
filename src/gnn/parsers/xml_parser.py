@@ -54,7 +54,7 @@ class XMLGNNParser(BaseGNNParser):
             embedded_data = self._extract_embedded_json_data(content)
             if embedded_data:
                 # Use embedded data for perfect round-trip fidelity
-                model = self._parse_from_embedded_data(embedded_data)
+                model = self._build_model_from_embedded_data(embedded_data)
                 return ParseResult(model=model, success=True)
 
             # Only parse XML structure if no embedded data is available
@@ -98,7 +98,7 @@ class XMLGNNParser(BaseGNNParser):
             embedded_data = self._extract_embedded_json_data(content)
             if embedded_data:
                 # Use embedded data for perfect round-trip fidelity
-                model = self._parse_from_embedded_data(embedded_data)
+                model = self._build_model_from_embedded_data(embedded_data)
                 return ParseResult(model=model, success=True)
 
             # Only parse XML structure if no embedded data is available
@@ -502,7 +502,7 @@ class XMLGNNParser(BaseGNNParser):
                 )
         return None
 
-    def _parse_from_embedded_data(
+    def _build_model_from_embedded_data(
         self, embedded_data: Dict[str, Any]
     ) -> GNNInternalRepresentation:
         """Parse model from embedded JSON data for perfect round-trip fidelity."""
@@ -664,4 +664,4 @@ class PNMLParser(XMLGNNParser):
         """Get supported file extensions."""
         return [".pnml"]
 
-    # _extract_embedded_json_data and _parse_from_embedded_data inherited from XMLGNNParser.
+    # _extract_embedded_json_data and _build_model_from_embedded_data defined on XMLGNNParser.

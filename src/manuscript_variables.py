@@ -21,13 +21,20 @@ Design contract
 
 The thin orchestrator ``scripts/z_generate_manuscript_variables.py`` wires
 :func:`generate_variables` to the template's manuscript hydration.
+
+Round-trip helpers: :func:`save_variables` persists a token map,
+:func:`load_variables` reads and validates one back, and
+:func:`token_checksum` fingerprints a map's canonical JSON so manuscript
+tooling can detect token drift without diffing whole documents.
 """
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import subprocess
+from collections.abc import Mapping
 from pathlib import Path
 
 try:  # Python 3.11+
@@ -40,7 +47,12 @@ try:
 except ModuleNotFoundError:  # pragma: no cover - yaml is a GNN dependency
     _yaml = None
 
-__all__ = ["generate_variables", "save_variables"]
+__all__ = [
+    "generate_variables",
+    "load_variables",
+    "save_variables",
+    "token_checksum",
+]
 
 # Directories that are NOT counted as authored source when walking ``src/``.
 _EXCLUDED_DIR_PARTS = {
@@ -212,6 +224,54 @@ def _count_files(root: Path, pattern: str) -> int:
     return sum(1 for p in root.rglob(pattern) if not _is_excluded(p))
 
 
+def _render_step_table(steps: list[tuple[int, str]], purposes: dict[int, str]) -> str:
+    """Render the per-step markdown table consumed by the manuscript."""
+    rows = ["| Step | Module | Purpose |", "|---:|---|---|"]
+    for number, script in steps:
+        purpose = purposes.get(number) or _humanize_step(script)
+        rows.append(f"| {number} | `{script}` | {purpose} |")
+    return "\n".join(rows)
+
+
+def _render_family_table(families: list[dict]) -> str:
+    """Render the model-family markdown table."""
+    rows = ["| Family | Frameworks | Description |", "|---|---|---|"]
+    for fam in families:
+        name = fam.get("name", "?")
+        frameworks = str(fam.get("frameworks", "")).replace(",", ", ")
+        desc = fam.get("description", "")
+        rows.append(f"| `{name}` | {frameworks} | {desc} |")
+    return "\n".join(rows)
+
+
+def _render_backend_table(backends: list[tuple[str, str]]) -> str:
+    """Render the backend registry markdown table."""
+    rows = ["| Registry key | Backend |", "|---|---|"]
+    for key, name in backends:
+        rows.append(f"| `{key}` | {name} |")
+    return "\n".join(rows)
+
+
+def _cross_framework_selection(
+    families: list[dict], backends: list[tuple[str, str]]
+) -> tuple[str, str]:
+    """Resolve the cross-framework family name and its backend display names.
+
+    The cross-framework family is the first manifest family listing more than
+    one framework. Returns ``("", "")`` when no such family exists.
+    """
+    cross_family = next(
+        (f for f in families if "," in str(f.get("frameworks", ""))), None
+    )
+    if not cross_family:
+        return "", ""
+    cross_family_name = cross_family.get("name", "")
+    keys = [k.strip() for k in str(cross_family.get("frameworks", "")).split(",")]
+    name_by_key = dict(backends)
+    cross_backends = ", ".join(name_by_key.get(k, k) for k in keys)
+    return cross_family_name, cross_backends
+
+
 def generate_variables(project_root: Path) -> dict[str, str]:
     """Compute the manuscript token map by introspecting the live repository.
 
@@ -244,36 +304,10 @@ def generate_variables(project_root: Path) -> dict[str, str]:
     test_file_count, test_func_count = _count_test_functions(src_dir / "tests")
 
     # --- Derived tables (multi-line tokens) ------------------------------------
-    step_rows = ["| Step | Module | Purpose |", "|---:|---|---|"]
-    for number, script in steps:
-        purpose = purposes.get(number) or _humanize_step(script)
-        step_rows.append(f"| {number} | `{script}` | {purpose} |")
-    step_table = "\n".join(step_rows)
-
-    family_rows = ["| Family | Frameworks | Description |", "|---|---|---|"]
-    for fam in families:
-        name = fam.get("name", "?")
-        frameworks = str(fam.get("frameworks", "")).replace(",", ", ")
-        desc = fam.get("description", "")
-        family_rows.append(f"| `{name}` | {frameworks} | {desc} |")
-    family_table = "\n".join(family_rows)
-
-    backend_rows = ["| Registry key | Backend |", "|---|---|"]
-    for key, name in backends:
-        backend_rows.append(f"| `{key}` | {name} |")
-    backend_table = "\n".join(backend_rows)
-
-    # Cross-framework family = family whose manifest lists >1 framework.
-    cross_family = next(
-        (f for f in families if "," in str(f.get("frameworks", ""))), None
-    )
-    cross_backends = ""
-    cross_family_name = ""
-    if cross_family:
-        cross_family_name = cross_family.get("name", "")
-        keys = [k.strip() for k in str(cross_family.get("frameworks", "")).split(",")]
-        name_by_key = dict(backends)
-        cross_backends = ", ".join(name_by_key.get(k, k) for k in keys)
+    step_table = _render_step_table(steps, purposes)
+    family_table = _render_family_table(families)
+    backend_table = _render_backend_table(backends)
+    cross_family_name, cross_backends = _cross_framework_selection(families, backends)
 
     family_names = [f.get("name", "?") for f in families]
     backend_names = [name for _, name in backends]
@@ -351,3 +385,38 @@ def save_variables(variables: dict[str, str], out_path: Path) -> Path:
         encoding="utf-8",
     )
     return out_path
+
+
+def load_variables(in_path: Path) -> dict[str, str]:
+    """Read back a token map written by :func:`save_variables`.
+
+    Args:
+        in_path: Path to a ``manuscript_variables.json`` file.
+
+    Returns:
+        The validated flat ``{TOKEN: value}`` mapping.
+
+    Raises:
+        ValueError: If the file is not a flat JSON object of string values.
+    """
+    in_path = Path(in_path)
+    data = json.loads(in_path.read_text(encoding="utf-8"))
+    if not isinstance(data, dict) or not all(
+        isinstance(k, str) and isinstance(v, str) for k, v in data.items()
+    ):
+        raise ValueError(
+            f"{in_path} is not a flat {{TOKEN: value}} JSON map written by save_variables"
+        )
+    return data
+
+
+def token_checksum(variables: Mapping[str, str]) -> str:
+    """Return the sha256 checksum of a token map's canonical JSON form.
+
+    The canonical form matches :func:`save_variables` output (sorted keys,
+    2-space indent, UTF-8) without the trailing newline, so a checksum over
+    :func:`load_variables` output equals one over freshly generated variables
+    for an unchanged tree.
+    """
+    canonical = json.dumps(variables, indent=2, sort_keys=True, ensure_ascii=False)
+    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()

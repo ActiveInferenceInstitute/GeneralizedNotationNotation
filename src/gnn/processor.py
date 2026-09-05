@@ -481,6 +481,11 @@ def generate_gnn_report(
             else:
                 report += f"- {error}\n"
 
+    if output_path is not None:
+        out_path = Path(output_path)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        out_path.write_text(report, encoding="utf-8")
+
     return report
 
 

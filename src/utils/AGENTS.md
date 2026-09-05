@@ -12,7 +12,7 @@
 
 **Version**: 3.2.0
 
-**Last Updated**: 2026-09-02
+**Last Updated**: 2026-09-04
 
 ---
 
@@ -138,7 +138,6 @@ logger = setup_step_logging("3_gnn", verbose=True)
 
 **Returns**: `Path` - Output directory path (e.g., "output/3_gnn_output/")
 
-#### `validate_output_directory(output_dir: Path, create: bool = True) -> bool`
 #### `validate_output_directory(output_dir: Path, step_name: str) -> bool`
 **Description**: Validate the output directory for a pipeline step
 
@@ -147,12 +146,17 @@ logger = setup_step_logging("3_gnn", verbose=True)
 - `step_name` (str): Name of the pipeline step
 
 **Returns**: `bool` - True if directory is valid/created, False otherwise
+
 ### Resource Management Functions
 
 #### `get_current_memory_usage() -> float`
 **Description**: Get current process memory usage
 
 **Returns**: `float` - Memory usage in megabytes (MB)
+
+
+#### `get_memory_usage() -> float`
+**Description**: Canonical MB-scale process-memory probe (alias of `get_current_memory_usage`). `utils.test_utils.get_memory_usage` and `utils.visualization_optimizer.get_memory_usage` re-export it.
 
 ### Error Recovery Functions
 
@@ -189,6 +193,21 @@ logger = setup_step_logging("3_gnn", verbose=True)
 #### `track_operation_standalone(operation: str, metadata: Optional[Dict[str, Any]] = None) -> Any`
 **Description**: Record a single standalone timing measurement
 
+
+## Composability Notes
+
+### Shared single-source helpers (2026-09-04 consolidation)
+
+Duplicated logic was collapsed onto one implementation each; every
+historical entry point remains valid:
+
+- **Writable-directory probe**: `utils.io_utils.verify_directory_writable(directory, probe_name=".write_probe") -> None` is the single create-rename-cleanup probe. `utils.pipeline.validate_output_directory` and `utils.pipeline_validator.check_pipeline_readiness` call it; both keep their own error messaging.
+- **Canonical memory probe**: `utils.resource_manager.get_memory_usage` (alias of `get_current_memory_usage`); `utils.test_utils.get_memory_usage` and `utils.visualization_optimizer.get_memory_usage` delegate to it instead of carrying their own psutil copies.
+- **Step-argument fallback defaults**: `utils.arg_parsing.fallback_default_for(arg_name)` backed by the `_FALLBACK_DEFAULTS` mapping replaced two ~70-line if/elif ladders in `ArgumentParser.parse_step_arguments` and `ArgumentParser.create_default_namespace`. `create_default_namespace` now matches the registered contract for `advanced_stats` (`False`) and `simulation_params` (`"{}"`) where it previously fell through to `None`.
+- **Injectable project root**: `StepConfiguration.validate_step_args(step_name, args, project_root=None)` accepts an explicit project root for missing-input-path repair; when omitted, the existing caller-frame heuristic applies (unchanged behavior for existing callers).
+- **`with_resource_limits`**: exceptions raised by the wrapped body always propagate; limit violations are only raised when the body completed normally (previously a `RuntimeError` raised from `finally` could mask a body failure).
+- **Environment redaction**: `utils.mcp.SENSITIVE_ENV_KEY_MARKERS`, `is_sensitive_env_key(key) -> bool`, and `redact_environment() -> dict[str, str]` centralize secret filtering used by `get_environment_info` (markers widened with `credential`, `passwd`, `auth`).
+- **Monitor alert bands**: `PipelineMonitor.health_thresholds["duration_variance"]` now defines `"critical": 3.0` (previously a `KeyError` on the >3x-baseline alert path); the degraded-band warning fires between 2x and 3x baseline.
 
 ---
 
@@ -317,6 +336,7 @@ Configuration → Logging Setup → Resource Monitoring → Error Handling → P
 ### Test Files
 - `src/tests/utils/test_utils_core.py` - Core utils tests
 - `src/tests/utils/test_new_utils.py` - Additional utils tests
+- `src/tests/utils/test_shared_helpers.py` - Shared-helper behavior tests (probe, memory aliases, fallback defaults, redaction, alert bands)
 
 ### Test Coverage
 Measure on demand:
@@ -402,7 +422,7 @@ There is no `utils.get_performance_metrics` tool.
 
 ---
 
-**Last Updated**: 2026-09-02
+**Last Updated**: 2026-09-04
 **Maintainer**: GNN Pipeline Team
 **Status**: Production Ready
 **Version**: 3.2.0
@@ -413,3 +433,6 @@ There is no `utils.get_performance_metrics` tool.
 - **[AGENTS](AGENTS.md)**: Agentic Workflows
 - **[SPEC](SPEC.md)**: Architectural Specification
 - **[SKILL](SKILL.md)**: Capability API
+
+Step 7 accepts `--formats` and `--geo-infer-options-file`; argument definitions,
+step configuration and `PipelineArguments` preserve these through orchestration.

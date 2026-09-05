@@ -229,6 +229,12 @@ uv run python src/1_setup.py --install-optional --optional-groups "llm,visualiza
 uv run python src/main.py --only-steps "3,5,6,11" --verbose
 ```
 
+Step selection is validated up front: non-numeric or fully unknown
+`--only-steps` / `--skip-steps` values fail fast at startup with exit code 1
+and a clear error instead of silently running zero steps, and out-of-range
+step numbers are logged and dropped (see `src/main.py::select_pipeline_steps`
+for the programmatic API).
+
 ### Inspecting outputs
 
 ```bash

@@ -47,21 +47,14 @@ def _sha256_hex(data: bytes) -> str:
 
 
 def _atomic_write_text(path: Path, text: str) -> None:
-    """Atomically write ``text`` to ``path`` (tmp file in same dir + os.replace)."""
-    path = Path(path)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    fd, tmp_name = tempfile.mkstemp(
-        dir=str(path.parent), prefix=path.name, suffix=".tmp"
-    )
-    try:
-        with os.fdopen(fd, "w", encoding="utf-8") as fh:
-            fh.write(text)
-        os.replace(tmp_name, str(path))
-    except BaseException:
-        # Clean up the temp file if anything went wrong before the replace.
-        if os.path.exists(tmp_name):
-            os.unlink(tmp_name)
-        raise
+    """Atomically write ``text`` to ``path`` (tmp file in same dir + os.replace).
+
+    Delegates to the shared :mod:`pipeline._io` implementation so every
+    durable-artifact writer in the package shares one tested recipe.
+    """
+    from pipeline._io import atomic_write_text
+
+    atomic_write_text(path, text)
 
 
 class StreamManifest(BaseModel):

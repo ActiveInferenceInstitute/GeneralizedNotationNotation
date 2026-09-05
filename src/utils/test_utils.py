@@ -14,6 +14,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Tuple, cast
 
+from utils.resource_manager import get_memory_usage
+
 # Ensure src is in Python path for imports
 SRC_DIR = Path(__file__).parent.parent
 PROJECT_ROOT = SRC_DIR.parent
@@ -1195,17 +1197,6 @@ def performance_tracker() -> Any:
         yield tracker
     finally:
         tracker.finalize()
-
-
-def get_memory_usage() -> float:
-    """Get current memory usage in MB."""
-    try:
-        import psutil
-
-        process = psutil.Process()
-        return cast("float", process.memory_info().rss / 1024 / 1024)  # Convert to MB
-    except ImportError:
-        return 0.0  # Return 0 if psutil not available
 
 
 def track_peak_memory(func: Any) -> Any:

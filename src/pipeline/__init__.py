@@ -9,13 +9,18 @@ from typing import Any
 
 from pipeline.step_registry import STEP_METADATA_DICT as STEP_METADATA  # noqa: F401
 
+# Module metadata (single version source)
+from ._version import __version__
 from .config import (
+    DEFAULT_OUTPUT_DIR,
+    DEFAULT_TARGET_DIR,
     PipelineConfig,
     StepConfig,
     get_output_dir_for_script,
     get_pipeline_config,
     set_pipeline_config,
 )
+from .context import PipelineContext, StepRecord, StepStatus  # noqa: F401
 from .execution import (
     StepExecutionResult,
     create_pipeline_config,
@@ -28,8 +33,6 @@ from .execution import (
 )
 from .health_check import EnhancedHealthChecker, run_enhanced_health_check
 
-# Module metadata
-__version__ = "1.6.0"
 __author__ = "Active Inference Institute"
 __description__ = "GNN pipeline orchestration and execution"
 
@@ -49,8 +52,8 @@ class PipelineOrchestrator:
 
     def __init__(
         self,
-        target_dir: str = "input/gnn_files",
-        output_dir: str = "output",
+        target_dir: str = DEFAULT_TARGET_DIR,
+        output_dir: str = DEFAULT_OUTPUT_DIR,
         steps: list[str] | str | None = "all",
         verbose: bool = False,
     ) -> None:
@@ -102,8 +105,8 @@ class PipelineStep:
     def __init__(
         self,
         name: str,
-        target_dir: str = "input/gnn_files",
-        output_dir: str = "output",
+        target_dir: str = DEFAULT_TARGET_DIR,
+        output_dir: str = DEFAULT_OUTPUT_DIR,
         verbose: bool = False,
     ) -> None:
         """Initialize the instance."""
@@ -150,7 +153,7 @@ def discover_pipeline_steps() -> list[str]:
 
 
 # Main API functions
-__all__: list[Any] = [
+__all__: list[str] = [
     # Configuration
     "get_pipeline_config",
     "set_pipeline_config",
@@ -158,6 +161,8 @@ __all__: list[Any] = [
     "StepConfig",
     "STEP_METADATA",
     "get_output_dir_for_script",
+    "DEFAULT_TARGET_DIR",
+    "DEFAULT_OUTPUT_DIR",
     # Health Check
     "run_enhanced_health_check",
     "EnhancedHealthChecker",
@@ -170,9 +175,17 @@ __all__: list[Any] = [
     "execute_pipeline_step",
     "execute_pipeline_steps",
     "StepExecutionResult",
+    "resolve_step_numbers",
     "PipelineOrchestrator",
     "PipelineStep",
+    # Context
+    "PipelineContext",
+    "StepRecord",
+    "StepStatus",
     # Metadata
     "FEATURES",
     "__version__",
+    "get_module_info",
+    "validate_pipeline_step",
+    "discover_pipeline_steps",
 ]

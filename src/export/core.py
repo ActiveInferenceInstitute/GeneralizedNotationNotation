@@ -5,7 +5,7 @@ Public functions: export_gnn_files
 
 import logging
 from pathlib import Path
-from typing import Any
+from typing import Any, Tuple, cast
 
 from pipeline import get_output_dir_for_script
 from utils import log_step_error, log_step_start, log_step_success, log_step_warning
@@ -28,7 +28,28 @@ try:
     FORMAT_EXPORTERS_LOADED = True
 except ImportError:
     FORMAT_EXPORTERS_LOADED = False
-    HAS_NETWORKX = False
+
+
+def _writer_success(result: Any) -> bool:
+    """Normalize a format_exporters writer result to a plain success flag.
+
+    Writers in :mod:`export.format_exporters` return ``Tuple[bool, str]``;
+    the existing ``formatters`` writers return a bare ``bool``. Treat anything
+    truthy-but-not-a-tuple as success, and any tuple whose first element is
+    truthy as success. This closes a silent-failure path where the tuple
+    ``(False, "NetworkX not available…")`` was being logged as a successful
+    export by ``export_gnn_files``.
+    """
+    if isinstance(result, tuple):
+        return bool(result[0]) if result else False
+    return bool(result)
+
+
+def _writer_error(result: Any) -> str:
+    """Extract the error message from a tuple-returning writer, else ``""``."""
+    if isinstance(result, tuple) and len(result) > 1:
+        return str(result[1])
+    return ""
 
 
 def export_gnn_files(
@@ -76,6 +97,21 @@ def export_gnn_files(
     success_count = 0
     total_files = len(gnn_files)
 
+    # Per-format writer dispatch table. Each entry is (label, writer, path_template, needs_networkx).
+    # Writers come from format_exporters and return Tuple[bool, str]; we normalize via
+    # _writer_success and capture the error message on failure. Graph formats are only
+    # dispatched when NetworkX is available; the others are pure-stdlib and always run.
+    writer_table: list[tuple[str, Any, str, bool]] = [
+        ("JSON", export_to_json_gnn, "{stem}.json", False),
+        ("XML", export_to_xml_gnn, "{stem}.xml", False),
+        ("Summary", export_to_plaintext_summary, "{stem}_summary.txt", False),
+        ("DSL", export_to_plaintext_dsl, "{stem}_dsl.txt", False),
+        ("GEXF", export_to_gexf, "{stem}.gexf", True),
+        ("GraphML", export_to_graphml, "{stem}.graphml", True),
+        ("Adjacency", export_to_json_adjacency_list, "{stem}_adjacency.json", True),
+        ("Pickle", export_to_python_pickle, "{stem}.pkl", False),
+    ]
+
     for gnn_file in gnn_files:
         try:
             logger.debug(f"Processing file: {gnn_file}")
@@ -87,76 +123,25 @@ def export_gnn_files(
             file_output_dir = export_output_dir / gnn_file.stem
             file_output_dir.mkdir(parents=True, exist_ok=True)
 
-            # Export to various formats (functions raise exceptions on failure)
             export_success = True
-            export_errors: list[Any] = []
-
-            # JSON export
-            try:
-                export_to_json_gnn(gnn_dict, file_output_dir / f"{gnn_file.stem}.json")
-            except Exception as e:
-                export_success = False
-                export_errors.append(f"JSON: {e}")
-
-            # XML export
-            try:
-                export_to_xml_gnn(gnn_dict, file_output_dir / f"{gnn_file.stem}.xml")
-            except Exception as e:
-                export_success = False
-                export_errors.append(f"XML: {e}")
-
-            # Plaintext exports
-            try:
-                export_to_plaintext_summary(
-                    gnn_dict, str(file_output_dir / f"{gnn_file.stem}_summary.txt")
-                )
-            except Exception as e:
-                export_success = False
-                export_errors.append(f"Summary: {e}")
-
-            try:
-                export_to_plaintext_dsl(
-                    gnn_dict, str(file_output_dir / f"{gnn_file.stem}_dsl.txt")
-                )
-            except Exception as e:
-                export_success = False
-                export_errors.append(f"DSL: {e}")
-
-            # Graph exports (if NetworkX available)
-            if HAS_NETWORKX:
+            export_errors: list[str] = []
+            for label, writer, template, needs_nx in writer_table:
+                if needs_nx and not HAS_NETWORKX:
+                    continue
+                out_path = template.format(stem=gnn_file.stem)
+                out_target = file_output_dir / out_path
                 try:
-                    export_to_gexf(
-                        gnn_dict, str(file_output_dir / f"{gnn_file.stem}.gexf")
-                    )
-                except Exception as e:
+                    result = writer(gnn_dict, str(out_target))
+                except Exception as e:  # defensive: writers shouldn't raise
                     export_success = False
-                    export_errors.append(f"GEXF: {e}")
-
-                try:
-                    export_to_graphml(
-                        gnn_dict, str(file_output_dir / f"{gnn_file.stem}.graphml")
-                    )
-                except Exception as e:
+                    export_errors.append(f"{label}: {e}")
+                    continue
+                if not _writer_success(result):
                     export_success = False
-                    export_errors.append(f"GraphML: {e}")
-
-                try:
-                    export_to_json_adjacency_list(
-                        gnn_dict,
-                        str(file_output_dir / f"{gnn_file.stem}_adjacency.json"),
+                    msg = _writer_error(result)
+                    export_errors.append(
+                        f"{label}: {msg}" if msg else f"{label}: writer returned False"
                     )
-                except Exception as e:
-                    export_success = False
-                    export_errors.append(f"Adjacency: {e}")
-
-            # Pickle export
-            try:
-                export_to_python_pickle(
-                    gnn_dict, file_output_dir / f"{gnn_file.stem}.pkl"
-                )
-            except Exception as e:
-                export_success = False
-                export_errors.append(f"Pickle: {e}")
 
             if export_success:
                 success_count += 1

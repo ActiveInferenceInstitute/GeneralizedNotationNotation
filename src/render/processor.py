@@ -21,8 +21,12 @@ from .framework_registry import (
     get_available_renderers as _registry_get_available_renderers,
 )
 from .framework_registry import (
+    get_lite_frameworks,
+)
+from .framework_registry import (
     get_supported_frameworks as _registry_get_supported_frameworks,
 )
+from .naming import safe_output_stem
 
 if TYPE_CHECKING:
     from gnn.types import GNNInternalRepresentation
@@ -47,10 +51,8 @@ logger = logging.getLogger(__name__)
 
 
 def _safe_output_stem(value: Any, fallback: str = "model") -> str:
-    stem = re.sub(r"[^A-Za-z0-9_.-]+", "_", str(value)).strip("._")
-    if not stem:
-        return fallback
-    return stem[:120]
+    """Sanitize a value into a filesystem-safe output stem (see render.naming)."""
+    return safe_output_stem(value, fallback)
 
 
 def _node_to_mapping(node: Any) -> Dict[str, Any]:
@@ -311,6 +313,31 @@ def _load_prior_render_summary(summary_file: Path) -> Dict[str, Any]:
         return {}
 
 
+def parse_frameworks_selection(
+    frameworks: Union[str, List[str], None],
+) -> Tuple[Optional[List[str]], bool]:
+    """Normalize the ``frameworks`` selection into a framework list.
+
+    Accepts ``None`` (all frameworks), ``"all"``, the ``"lite"`` preset
+    (resolved through the canonical registry), or a comma-separated string /
+    list of framework names.
+
+    Returns:
+        Tuple of ``(frameworks, explicit_request)`` where *frameworks* is
+        ``None`` for "every registered framework" and *explicit_request* is
+        ``True`` when the caller pinned a specific framework set (which the
+        caller treats as a strict-success policy).
+    """
+    if isinstance(frameworks, str):
+        normalized = frameworks.strip().lower()
+        if normalized == "all":
+            return None, False
+        if normalized == "lite":
+            return get_lite_frameworks(), False
+        return [f.strip() for f in frameworks.split(",")], True
+    return frameworks, frameworks is not None
+
+
 def process_render(
     target_dir: Path,
     output_dir: Path,
@@ -343,14 +370,7 @@ def process_render(
         logger.info(f"Processing GNN files in: {target_dir}")
         logger.info(f"Output directory: {output_dir}")
 
-        if isinstance(frameworks, str):
-            explicit_framework_request = frameworks.strip().lower() not in {
-                "",
-                "all",
-                "lite",
-            }
-        else:
-            explicit_framework_request = frameworks is not None
+        frameworks, explicit_framework_request = parse_frameworks_selection(frameworks)
         strict_framework_success = (
             strict_framework_success or explicit_framework_request
         )
@@ -360,14 +380,8 @@ def process_render(
 
         # Import POMDP processing capabilities
         try:
-            # Try multiple import strategies
-            try:
-                from gnn.pomdp_extractor import extract_pomdp_from_file
-                from render.pomdp_processor import POMDPRenderProcessor
-            except ImportError:
-                # Recovery to src-prefixed imports
-                from gnn.pomdp_extractor import extract_pomdp_from_file
-                from render.pomdp_processor import POMDPRenderProcessor
+            from gnn.pomdp_extractor import extract_pomdp_from_file
+            from render.pomdp_processor import POMDPRenderProcessor
 
             pomdp_available = True
         except ImportError as e:
@@ -399,15 +413,8 @@ def process_render(
 
         logger.info(f"Found {len(gnn_files)} GNN files to process")
 
-        # Processing configuration — frameworks=None means all frameworks
-
-        if frameworks is not None and isinstance(frameworks, str):
-            if frameworks.lower() == "all":
-                frameworks = None
-            elif frameworks.lower() == "lite":
-                frameworks = ["pymdp", "jax", "discopy", "bnlearn"]
-            else:
-                frameworks = [f.strip() for f in frameworks.split(",")]
+        # Framework selection already normalized by parse_frameworks_selection.
+        # frameworks=None means all registered frameworks.
 
         if frameworks:
             logger.info(f"Target frameworks: {frameworks}")
@@ -1047,9 +1054,6 @@ def get_module_info() -> Dict[str, Any]:
     }
 
 
-AVAILABLE_RENDERERS: Dict[str, Dict[str, Any]] = _registry_get_available_renderers()
-
-
 def get_available_renderers() -> Dict[str, Dict[str, Any]]:
-    """Get information about available renderers."""
-    return AVAILABLE_RENDERERS
+    """Get information about available renderers (delegates to the registry)."""
+    return _registry_get_available_renderers()

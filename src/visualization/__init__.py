@@ -3,6 +3,13 @@ Visualization module for GNN Processing Pipeline.
 
 This module provides comprehensive visualization capabilities for GNN files,
 including matrix visualizations, network graphs, and combined analysis plots.
+
+The package-root surface re-exports the full documented public API so callers
+can import every entry point from ``visualization`` directly:
+
+>>> from visualization import process_visualization, MatrixVisualizer
+>>> from visualization import generate_network_visualizations
+>>> from visualization import load_visualization_model, GNNParser
 """
 
 from typing import Any
@@ -15,22 +22,25 @@ FEATURES: dict[str, Any] = {
     "mcp_integration": True,
 }
 
-# Typing
-from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
-
 # Phase 6: numpy and visualization submodules are required core deps per
 # pyproject.toml. Unconditional imports — any failure is a real bug.
-import numpy as np
-
+from .backends import backend_status
+from .core.parsed_model import load_visualization_model
+from .core.sampling import sample_parsed_data
+from .graph import (
+    generate_network_visualizations,
+    generate_variable_parameter_bipartite,
+)
+from .graph.stats import compute_connection_statistics
+from .matrix.extract import collect_visualization_matrices
 from .matrix_visualizer import MatrixVisualizer, process_matrix_visualization
 from .ontology_visualizer import OntologyVisualizer
-
-# Import processor functions
+from .parse import GNNParser, parse_gnn_content
 from .processor import (
     discover_visualization_files,
+    generate_combined_analysis,
+    generate_combined_visualizations,
     generate_matrix_visualizations,
-    parse_gnn_content,
     parse_matrix_data,
     process_single_gnn_file,
     process_visualization,
@@ -42,6 +52,9 @@ from .visualizer import (
     generate_visualizations,
 )
 
+# Public alias for the pinned package-root statistics helper.
+_generate_network_statistics = compute_connection_statistics
+
 __version__ = "1.6.0"
 
 
@@ -52,6 +65,7 @@ def get_module_info() -> dict:
         "description": "Visualization utilities for matrices, graphs, and ontology.",
         "features": FEATURES,
         "visualization_types": ["matrix", "graph", "ontology"],
+        "backends": backend_status(),
     }
 
 
@@ -64,55 +78,33 @@ def get_visualization_options() -> dict:
     }
 
 
-def _generate_network_statistics(
-    variables: Dict[str, Any], connections: List[Dict]
-) -> Dict[str, Any]:
-    """Generate network statistics from variables and connections."""
-    node_degrees: dict[Any, Any] = {}
-    for conn in connections:
-        source = conn.get("source", "unknown")
-        target = conn.get("target", "unknown")
-        node_degrees[source] = node_degrees.get(source, 0) + 1
-        node_degrees[target] = node_degrees.get(target, 0) + 1
-
-    if node_degrees:
-        degrees = list(node_degrees.values())
-        stats: dict[str, Any] = {
-            "total_nodes": len(variables),
-            "total_connections": len(connections),
-            "average_degree": sum(degrees) / len(degrees),
-            "max_degree": max(degrees),
-            "min_degree": min(degrees),
-            "node_degree_distribution": node_degrees,
-            "isolated_nodes": len(
-                [v for v in variables.keys() if v not in node_degrees]
-            ),
-            "hub_nodes": [node for node, degree in node_degrees.items() if degree > 2],
-        }
-    else:
-        stats = {
-            "total_nodes": len(variables),
-            "total_connections": len(connections),
-            "average_degree": 0,
-            "max_degree": 0,
-            "min_degree": 0,
-            "node_degree_distribution": {},
-            "isolated_nodes": len(variables),
-            "hub_nodes": [],
-        }
-
-    return stats
-
-
 __all__: list[Any] = [
     "MatrixVisualizer",
     "GNNVisualizer",
     "OntologyVisualizer",
+    "GNNParser",
     "process_matrix_visualization",
     "process_visualization",
     "discover_visualization_files",
+    "process_single_gnn_file",
     "generate_graph_visualization",
     "generate_matrix_visualization",
+    "generate_matrix_visualizations",
+    "generate_network_visualizations",
+    "generate_variable_parameter_bipartite",
+    "generate_combined_analysis",
+    "generate_combined_visualizations",
     "generate_visualizations",
+    "parse_gnn_content",
+    "parse_matrix_data",
+    "load_visualization_model",
+    "sample_parsed_data",
+    "collect_visualization_matrices",
+    "compute_connection_statistics",
+    "backend_status",
     "__version__",
 ]
+
+
+# Re-exported for the test that pins the package-root statistics helper.
+__all__.append("_generate_network_statistics")

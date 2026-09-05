@@ -10,9 +10,9 @@
 
 **Status**: Production Ready
 
-**Version**: 3.2.0
+**Version**: 3.3.0
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-04
 
 ---
 
@@ -220,6 +220,8 @@ GNN Files → Analysis → Statistical Reports → Model Comparisons → Optimiz
 - `src/tests/analysis/test_analysis_overall.py` - Module-level tests
 - `src/tests/analysis/test_analysis_post_simulation.py` - Post-simulation analysis tests
 - `src/tests/analysis/test_analysis_extraction.py` - Result extraction tests
+- `src/tests/analysis/test_framework_common.py` - Shared framework-common helper tests
+- `src/tests/analysis/test_flat_payload_analyzer.py` - Shared flat-payload analyzer engine tests
 
 ### Test Coverage
 Measure on demand:
@@ -246,10 +248,49 @@ uv run --extra dev python -m pytest src/tests/analysis/ \
 - `process_analysis` - Run statistical and complexity analysis on GNN files in a directory
 - `get_analysis_results` - Read saved analysis JSON results from a previous run
 - `compute_complexity_metrics` - Compute complexity metrics for GNN content supplied as a string
-- `list_analysis_tools` - Report available analysis tools and capabilities
+- `list_analysis_tools` - Report available analysis tools and capabilities (reports measured availability)
 
 ### MCP File Location
 - `src/analysis/mcp.py` - MCP tool registrations
+
+---
+
+
+## Shared Composability Helpers
+
+### `framework_common.py`
+
+Single source of truth for framework-name normalization, path inference, and
+current-schema simulation-results discovery. Consumed by `processor.py` (and
+available to all framework analyzers):
+
+- `FRAMEWORK_DIR_NAMES` — frozenset of all 8 pipeline framework dir names
+  (incl. `bnlearn`, which is rendered+executed but has no analyzer).
+- `SCHEMA_GATED_FRAMEWORKS` — frozenset `{pymdp, rxinfer, activeinference_jl}`.
+- `CURRENT_SIMULATION_SCHEMAS` — frozenset of `*_simulation_v1` schema strings.
+- `normalize_framework_name(framework) -> str` — `"ActiveInference.jl"` → `"activeinference_jl"`.
+- `model_name_from_path(path) -> str` — infers the model name from the path
+  segment preceding a framework segment.
+- `framework_from_path(path) -> str | None` — returns the framework dir name
+  found in a path, or `None`.
+- `iter_current_schema_results(execution_dir, pattern) -> list[tuple[Path, dict]]` —
+  discovers current-schema `simulation_results.json` payloads; schema-gated
+  frameworks must match `CURRENT_SIMULATION_SCHEMAS`, others accepted as-is.
+- `resolve_execution_dir(output_dir) -> Path` — resolves the Step 12 execution
+  output directory (prefers `pipeline.config`, falls back to `12_execute_output`).
+- `load_execution_summary(execution_dir) -> tuple[Path, dict | None]` — prefers
+  `summaries/execution_summary.json` then root; returns `None` on missing/unreadable.
+- `filter_paths_by_scope(path, framework, allowed_frameworks, allowed_model_names) -> bool`.
+
+### `flat_payload_analyzer.py`
+
+Shared analyzer engine for PyTorch/NumPyro flat-payload simulation results.
+Each framework's `analyzer.py` binds a `FlatPayloadSpec` (framework name, file
+patterns, analysis filename, plot labels, bar color) and re-exports
+`generate_analysis_from_logs` / `_generate_plots` — the public call sites
+(processor's importlib discovery, `test_numpyro_pytorch_analyzers.py`) are
+unchanged. Exports: `FlatPayloadSpec`, `compute_flat_payload_metrics` (pure),
+`discover_result_files`, `generate_analysis_from_logs`.
 
 ---
 
@@ -276,7 +317,7 @@ uv run --extra dev python -m pytest src/tests/analysis/ \
 
 ## Version History
 
-### Current Version: 3.0.0
+### Current Version: 3.3.0 (2026-09-04)
 
 **Features**:
 - Statistical analysis
@@ -284,6 +325,10 @@ uv run --extra dev python -m pytest src/tests/analysis/ \
 - Performance benchmarking
 - Model comparison
 - Framework output analysis
+- `framework_common.py` — shared framework-name normalization, path inference, and current-schema simulation-results discovery (dedupes processor.py / visualizations.py copies; now includes bnlearn in the framework dir set so bnlearn results are discoverable by the analysis scope)
+- `flat_payload_analyzer.py` — shared analyzer engine for PyTorch/NumPyro flat-payload simulation results (frozen `FlatPayloadSpec` + pure `compute_flat_payload_metrics` + shared discovery/plots); each framework's `analyzer.py` is now a thin spec binding
+- `mcp.list_analysis_tools_mcp` honest-availability probe (reports measured availability)
+- `visualizations.py` matplotlib routed through `viz_base.safe_savefig` (single save/close/error path; 13 duplicated boilerplate sites consolidated)
 
 **Known Issues**:
 - None currently
@@ -309,10 +354,10 @@ uv run --extra dev python -m pytest src/tests/analysis/ \
 
 ---
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-04
 **Maintainer**: GNN Pipeline Team
 **Status**: Production Ready
-**Version**: 3.2.0
+**Version**: 3.3.0
 **Architecture Compliance**: 100% Thin Orchestrator Pattern
 
 

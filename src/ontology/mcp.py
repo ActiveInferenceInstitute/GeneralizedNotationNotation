@@ -11,7 +11,7 @@ from typing import Any, Dict, List, Union
 
 logger = logging.getLogger(__name__)
 
-from . import process_ontology, validate_ontology_terms
+from . import load_defined_ontology_terms, process_ontology, validate_ontology_terms
 
 
 def process_ontology_mcp(
@@ -77,17 +77,21 @@ def validate_ontology_terms_mcp(terms: Union[str, List[str]]) -> Dict[str, Any]:
 
 
 def extract_ontology_annotations_mcp(gnn_content: str) -> Dict[str, Any]:
-    """
-    Extract ActInfOntologyAnnotation entries from GNN model content.
+    """Extract ``ActInfOntologyAnnotation`` entries from GNN model content.
 
-    Parses the ## ActInfOntologyAnnotation section and returns all
-    variable-to-term mappings found.
+    Parses the ``## ActInfOntologyAnnotation`` section and returns all
+    variable-to-term mappings found, partitioned by whether the mapped
+    term exists in the Active Inference ontology. Validation uses the real
+    vocabulary (:func:`load_defined_ontology_terms`) matched
+    case-insensitively, so the MCP wrapper stays in sync with
+    ``validate_annotations`` instead of drifting against a hard-coded subset.
 
     Args:
-        gnn_content: GNN model content as a string
+        gnn_content: GNN model content as a string.
 
     Returns:
-        Dictionary with extracted annotations and variable-term pairs.
+        ``{"success", "annotations", "validated_mappings", "unknown_terms",
+        "total_annotations", "valid_count"}`` on success.
     """
     try:
         lines = gnn_content.splitlines()
@@ -109,20 +113,13 @@ def extract_ontology_annotations_mcp(gnn_content: str) -> Dict[str, Any]:
                     if var_name:
                         annotations[var_name] = term
 
-        standard_terms: set[Any] = {
-            "HiddenState",
-            "Observation",
-            "Action",
-            "PolicyVector",
-            "LikelihoodMatrix",
-            "TransitionMatrix",
-            "LogPreferenceVector",
-            "PriorOverHiddenStates",
-            "VariationalFreeEnergy",
-            "ExpectedFreeEnergy",
+        known = {name.casefold(): name for name in load_defined_ontology_terms()}
+        validated: Dict[str, str] = {
+            k: v for k, v in annotations.items() if v.casefold() in known
         }
-        validated = {k: v for k, v in annotations.items() if v in standard_terms}
-        unknown = {k: v for k, v in annotations.items() if v not in standard_terms}
+        unknown: Dict[str, str] = {
+            k: v for k, v in annotations.items() if v.casefold() not in known
+        }
 
         return {
             "success": True,
@@ -133,32 +130,28 @@ def extract_ontology_annotations_mcp(gnn_content: str) -> Dict[str, Any]:
             "valid_count": len(validated),
         }
     except Exception as e:
-        logger.error(f"extract_ontology_annotations_mcp error: {e}", exc_info=True)
+        logger.error("extract_ontology_annotations_mcp error: %s", e, exc_info=True)
         return {"success": False, "error": str(e)}
 
 
 def list_standard_ontology_terms_mcp() -> Dict[str, Any]:
-    """
-    Return the list of standard Active Inference Ontology (ActInfO) terms.
+    """Return the canonical Active Inference Ontology (ActInfO) term list.
+
+    Derived from the real vocabulary (:func:`load_defined_ontology_terms`)
+    rather than a hand-maintained subset, so this tool cannot drift from the
+    terms ``validate_annotations`` and ``extract_ontology_annotations_mcp``
+    actually accept. Each entry maps the canonical term name to its
+    vocabulary description.
 
     Returns:
-        Dictionary with term names and their descriptions.
+        ``{"success": True, "terms": {name: description}, "count": N}``.
     """
-    terms: dict[str, Any] = {
-        "HiddenState": "Latent state variable s",
-        "NextHiddenState": "Next latent state s'",
-        "Observation": "Observable variable o",
-        "Action": "Action variable u",
-        "PolicyVector": "Policy distribution π",
-        "LikelihoodMatrix": "Observation likelihood A",
-        "TransitionMatrix": "State transition B",
-        "LogPreferenceVector": "Log preference C",
-        "PriorOverHiddenStates": "Prior beliefs D",
-        "Habit": "Habitual policy E",
-        "VariationalFreeEnergy": "VFE F",
-        "ExpectedFreeEnergy": "EFE G",
-        "Time": "Discrete time t",
-        "Precision": "Precision parameter γ/β",
+    vocabulary = load_defined_ontology_terms()
+    terms: Dict[str, str] = {
+        name: str(entry.get("description", ""))
+        if isinstance(entry, dict)
+        else str(entry)
+        for name, entry in vocabulary.items()
     }
     return {"success": True, "terms": terms, "count": len(terms)}
 
@@ -239,4 +232,4 @@ def register_tools(mcp_instance: Any) -> None:
         category="ontology",
     )
 
-    logger.info("ontology module MCP tools registered (5 tools).")
+    logger.info("ontology module MCP tools registered (4 tools).")

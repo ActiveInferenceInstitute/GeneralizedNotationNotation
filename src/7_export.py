@@ -37,7 +37,7 @@ from typing import cast
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
-from export import process_export
+from export.options import process_export_cli as process_export
 from utils.pipeline_template import create_standardized_pipeline_script
 
 # Create the standardized pipeline script

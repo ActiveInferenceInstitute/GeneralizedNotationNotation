@@ -7,9 +7,7 @@ It generates comprehensive state-space visualizations of GNN files and models.
 
 from __future__ import annotations
 
-import ast
 import datetime
-import json
 import logging
 import os
 import re
@@ -25,22 +23,16 @@ from .ontology import OntologyVisualizer
 from .parse.gnn_file_parser import GNNParser
 
 # Optional dependency imports
-try:
-    import numpy as np
-
-    NUMPY_AVAILABLE = True
-except ImportError:
-    np = cast(Any, None)
-    NUMPY_AVAILABLE = False
+# numpy is a required core dependency (pyproject); ``np`` is not used in this
+# module, but the capability flag is reported in the capabilities summary.
+NUMPY_AVAILABLE = True
 
 try:
-    import matplotlib.cm as cm
     import matplotlib.pyplot as plt
 
     MATPLOTLIB_AVAILABLE = True
 except ImportError:
     plt = cast(Any, None)
-    cm = cast(Any, None)
     MATPLOTLIB_AVAILABLE = False
 
 try:
@@ -243,40 +235,6 @@ class GNNVisualizer:
 
             return str(error_dir)
 
-    def _process_state_space_and_visualize(
-        self, parsed_data: Dict[str, Any], output_dir: Path
-    ) -> None:
-        """Process state space and generate visualization."""
-        try:
-            # Process state space
-            self.parser._process_state_space(parsed_data)
-
-            # Visualize if we have variables
-            if "Variables" in parsed_data and parsed_data["Variables"]:
-                print(
-                    f"Successfully processed state space, found {len(parsed_data['Variables'])} variables"
-                )
-                self._visualize_state_space(parsed_data, output_dir)
-        except Exception as e:
-            print(f"Error processing state space: {e}")
-
-    def _process_connections_and_visualize(
-        self, parsed_data: Dict[str, Any], output_dir: Path
-    ) -> None:
-        """Process connections and generate visualization."""
-        try:
-            # Process connections
-            self.parser._process_connections(parsed_data)
-
-            # Visualize if we have edges
-            if "Edges" in parsed_data and parsed_data["Edges"]:
-                print(
-                    f"Successfully processed connections, found {len(parsed_data['Edges'])} edges"
-                )
-                self._visualize_connections(parsed_data, output_dir)
-        except Exception as e:
-            print(f"Error processing connections: {e}")
-
     def visualize_directory(self, dir_path: str) -> str:
         """
         Generate visualizations for all GNN files in a directory.
@@ -294,7 +252,7 @@ class GNNVisualizer:
             try:
                 self.visualize_file(str(file_path))
             except Exception as e:
-                print(f"Error processing {file_path}: {e}")
+                logger.warning("Error processing %s: %s", file_path, e)
 
         return str(self.output_dir)
 
@@ -355,134 +313,6 @@ class GNNVisualizer:
     ) -> Dict[str, Any]:
         """Create network diagram."""
         return self.generate_graph_visualization(graph_data)
-
-    def _create_basic_text_visualization(
-        self, parsed_data: Dict[str, Any], file_path: str, output_dir: Path
-    ) -> None:
-        """Create a simple text-based visualization of the file."""
-        # Read the raw file content
-        raw_file_content = Path(file_path).read_text()
-
-        # Determine display path for the report
-        display_file_path = Path(file_path).name  # Default to just name
-        if self.project_root:
-            try:
-                display_file_path = str(
-                    Path(file_path).resolve().relative_to(self.project_root)
-                )
-            except ValueError:
-                logger.debug(
-                    "File %s not under project_root, using basename for display",
-                    file_path,
-                )
-
-        # Create a simple text report
-        with open(output_dir / "file_content.md", "w") as f:
-            f.write(f"# GNN File: {display_file_path}\n\n")
-            f.write("## Raw File Content\n\n")
-            f.write("```\n")
-            f.write(raw_file_content)
-            f.write("\n```\n\n")
-
-            # Add parsed sections if available
-            if parsed_data:
-                f.write("## Parsed Sections\n\n")
-                for section, content in parsed_data.items():
-                    if section not in ["Variables", "Edges"]:  # Skip processed sections
-                        f.write(f"### {section}\n\n")
-                        f.write("```\n")
-                        f.write(str(content))
-                        f.write("\n```\n\n")
-
-    def _save_model_metadata(
-        self, parsed_data: Dict[str, Any], output_dir: Path
-    ) -> None:
-        """Save model metadata as JSON for reference."""
-        # Extract relevant metadata
-        metadata: dict[str, Any] = {
-            "ModelName": parsed_data.get("ModelName", ""),
-            "ModelAnnotation": parsed_data.get("ModelAnnotation", ""),
-            "GNNVersionAndFlags": parsed_data.get("GNNVersionAndFlags", ""),
-            "Time": parsed_data.get("Time", ""),
-            "ActInfOntologyAnnotation": parsed_data.get("ActInfOntologyAnnotation", ""),
-        }
-
-        # Save as JSON
-        with open(output_dir / "model_metadata.json", "w") as f:
-            json.dump(metadata, f, indent=2)
-
-        # Also save full parsed data for reference
-        with open(output_dir / "full_model_data.json", "w") as f:
-            # Convert to serializable format
-            try:
-                serializable_data: dict[Any, Any] = {}
-                for k, v in parsed_data.items():
-                    if k not in ["Variables", "Edges"]:  # Skip complex objects
-                        serializable_data[k] = str(v)
-                json.dump(serializable_data, f, indent=2)
-            except Exception as e:
-                # Recovery to simple format
-                json.dump({"error": f"Failed to serialize data: {str(e)}"}, f)
-
-    def _visualize_state_space(
-        self, parsed_data: Dict[str, Any], output_dir: Path
-    ) -> None:
-        """Generate visualization of the state space variables."""
-        if "Variables" not in parsed_data or not parsed_data["Variables"]:
-            return
-
-        variables = parsed_data["Variables"]
-
-        # Create figure and table
-        fig, ax = plt.subplots(figsize=(10, max(5, len(variables) * 0.5)))
-        ax.axis("tight")
-        ax.axis("off")
-
-        # Prepare table data
-        table_data: list[Any] = []
-        for var_name, var_info in variables.items():
-            dimensions = (
-                "x".join(str(d) for d in var_info.get("dimensions", []))
-                if var_info.get("dimensions")
-                else ""
-            )
-            var_type = var_info.get("type", "") or ""
-            comment = var_info.get("comment", "") or ""
-            table_data.append([var_name, dimensions, var_type, comment])
-
-        # Create the table
-        if table_data:
-            table = ax.table(
-                cellText=table_data,
-                colLabels=["Variable", "Dimensions", "Type", "Description"],
-                loc="center",
-                cellLoc="left",
-                colWidths=[0.15, 0.15, 0.15, 0.55],
-            )
-
-            # Style the table
-            table.auto_set_font_size(False)
-            table.set_fontsize(10)
-            table.scale(1, 1.5)
-        else:
-            ax.text(
-                0.5,
-                0.5,
-                "No state space variables found",
-                horizontalalignment="center",
-                verticalalignment="center",
-                fontsize=12,
-            )
-
-        # Add title
-        plt.title("State Space Variables", fontsize=14, fontweight="bold", pad=20)
-
-        # Save figure
-        plt.tight_layout()
-        plt.savefig(output_dir / "state_space.png", dpi=150, bbox_inches="tight")
-        plt.close()
-
-        print(f"State space visualization saved to {output_dir / 'state_space.png'}")
 
     def _visualize_connections(
         self, parsed_data: Dict[str, Any], output_dir: Path
@@ -569,8 +399,8 @@ class GNNVisualizer:
             plt.savefig(output_dir / "connections.png", dpi=150, bbox_inches="tight")
             plt.close()
 
-            print(
-                f"Connections visualization saved to {output_dir / 'connections.png'}"
+            logger.info(
+                "Connections visualization saved to %s", output_dir / "connections.png"
             )
         except Exception as e:
             # Create error text figure if visualization fails
@@ -587,178 +417,6 @@ class GNNVisualizer:
             plt.axis("off")
             plt.savefig(output_dir / "connections_error.png", dpi=150)
             plt.close()
-
-    def _visualize_combined(
-        self, parsed_data: Dict[str, Any], output_dir: Path
-    ) -> None:
-        """Generate a combined visualization of the model."""
-        try:
-            # Create a comprehensive visualization that combines state space and connections
-            if (
-                "Variables" not in parsed_data
-                or not parsed_data["Variables"]
-                or "Edges" not in parsed_data
-                or not parsed_data["Edges"]
-            ):
-                return
-
-            variables = parsed_data["Variables"]
-            edges = parsed_data["Edges"]
-
-            # Create figure with two subplots
-            fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(20, 10))
-
-            # Left subplot: Variable details
-            ax1.axis("tight")
-            ax1.axis("off")
-
-            # Prepare table data
-            table_data: list[Any] = []
-            for var_name, var_info in variables.items():
-                dimensions = (
-                    "x".join(str(d) for d in var_info.get("dimensions", []))
-                    if var_info.get("dimensions")
-                    else ""
-                )
-                var_type = var_info.get("type", "") or ""
-                table_data.append([var_name, dimensions, var_type])
-
-            # Create the table
-            if table_data:
-                table = ax1.table(
-                    cellText=table_data,
-                    colLabels=["Variable", "Dimensions", "Type"],
-                    loc="center",
-                    cellLoc="left",
-                )
-
-                # Style the table
-                table.auto_set_font_size(False)
-                table.set_fontsize(10)
-                table.scale(1, 1.5)
-            else:
-                ax1.text(
-                    0.5,
-                    0.5,
-                    "No state space variables found",
-                    horizontalalignment="center",
-                    verticalalignment="center",
-                    fontsize=12,
-                )
-
-            ax1.set_title("State Space Variables", fontsize=14, fontweight="bold")
-
-            # Right subplot: Connections graph
-            ax2.axis("off")
-
-            # Create directed graph
-            G = nx.DiGraph()
-
-            # Add nodes and edges
-            valid_edges: list[Any] = []
-            for edge in edges:
-                source = edge.get("source", "")
-                target = edge.get("target", "")
-                if not source or not target:
-                    continue
-
-                G.add_node(source)
-                G.add_node(target)
-                G.add_edge(source, target, directed=edge.get("directed", True))
-                valid_edges.append(edge)
-
-            if G.number_of_nodes() > 0:
-                # Set node positions using spring layout
-                pos = nx.spring_layout(G, seed=42)
-
-                # Draw nodes
-                nx.draw_networkx_nodes(
-                    G, pos, ax=ax2, node_size=700, node_color="lightblue", alpha=0.8
-                )
-
-                # Draw edges with different styles for directed and undirected
-                directed_edges = [
-                    (u, v) for u, v, d in G.edges(data=True) if d.get("directed", True)
-                ]
-                undirected_edges = [
-                    (u, v)
-                    for u, v, d in G.edges(data=True)
-                    if not d.get("directed", True)
-                ]
-
-                if directed_edges:
-                    nx.draw_networkx_edges(
-                        G,
-                        pos,
-                        ax=ax2,
-                        edgelist=directed_edges,
-                        width=1.5,
-                        alpha=0.7,
-                        arrowsize=20,
-                    )
-                if undirected_edges:
-                    nx.draw_networkx_edges(
-                        G,
-                        pos,
-                        ax=ax2,
-                        edgelist=undirected_edges,
-                        width=1.5,
-                        alpha=0.7,
-                        arrowstyle="-",
-                    )
-
-                # Draw labels
-                nx.draw_networkx_labels(
-                    G, pos, ax=ax2, font_size=12, font_family="sans-serif"
-                )
-            else:
-                ax2.text(
-                    0.5,
-                    0.5,
-                    "No connections found",
-                    horizontalalignment="center",
-                    verticalalignment="center",
-                    fontsize=14,
-                )
-
-            ax2.set_title("Model Connections", fontsize=14, fontweight="bold")
-
-            # Set overall title
-            model_name = self._extract_model_name(parsed_data)
-            fig.suptitle(model_name, fontsize=16, fontweight="bold")
-
-            # Save figure
-            plt.tight_layout(rect=(0, 0, 1, 0.95))  # Make room for suptitle
-            plt.savefig(
-                output_dir / "combined_visualization.png", dpi=150, bbox_inches="tight"
-            )
-            plt.close()
-
-            print(
-                f"Combined visualization saved to {output_dir / 'combined_visualization.png'}"
-            )
-        except Exception as e:
-            # Create error text figure if visualization fails
-            plt.figure(figsize=(10, 5))
-            plt.text(
-                0.5,
-                0.5,
-                f"Error generating combined visualization: {str(e)}",
-                horizontalalignment="center",
-                verticalalignment="center",
-                fontsize=12,
-                wrap=True,
-            )
-            plt.axis("off")
-            plt.savefig(output_dir / "combined_visualization_error.png", dpi=150)
-            plt.close()
-
-    def _extract_model_name(self, parsed_data: Dict[str, Any]) -> str:
-        """Extract a clean model name from the parsed data."""
-        if "ModelName" in parsed_data and parsed_data["ModelName"]:
-            # Remove Markdown formatting and clean up
-            return cast("str", parsed_data["ModelName"].replace("#", "").strip())
-        return "GNN Model"
 
     def _extract_parameters_from_parsed_data(
         self, parsed_data: Dict[str, Any]
@@ -839,7 +497,7 @@ def generate_graph_visualization(gnn_data: Dict[str, Any], output_path: str) -> 
         visualizer._visualize_connections(gnn_data, Path(output_path).parent)
         return True
     except Exception as e:
-        print(f"Error generating graph visualization: {e}")
+        logger.warning("Error generating graph visualization: %s", e)
         return False
 
 
@@ -868,7 +526,7 @@ def generate_matrix_visualization(gnn_data: Dict[str, Any], output_path: str) ->
             )
         return True
     except Exception as e:
-        print(f"Error generating matrix visualization: {e}")
+        logger.warning("Error generating matrix visualization: %s", e)
         return False
 
 
@@ -888,7 +546,7 @@ def create_visualization_report(gnn_file_path: str, output_dir: str) -> str:
         result_path = visualizer.visualize_file(gnn_file_path)
         return result_path
     except Exception as e:
-        print(f"Error creating visualization report: {e}")
+        logger.warning("Error creating visualization report: %s", e)
         return ""
 
 

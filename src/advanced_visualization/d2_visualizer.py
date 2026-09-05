@@ -17,6 +17,7 @@ Features:
 import json
 import logging
 import os
+import re
 import shutil
 import subprocess  # nosec B404
 import tempfile
@@ -26,14 +27,9 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, cast
 
-# Try to import numpy for matrix operations
-try:
-    import numpy as np
-
-    NUMPY_AVAILABLE = True
-except ImportError:
-    NUMPY_AVAILABLE = False
-    np = cast(Any, None)
+D2_COMPILE_TIMEOUT_S = 30
+D2_MISSING_MESSAGE = "D2 CLI not available. Install from https://d2lang.com"
+VALID_D2_FORMATS = ("svg", "png", "pdf")
 
 
 @dataclass
@@ -84,7 +80,7 @@ class D2Visualizer:
         self.d2_available = self._check_d2_availability()
 
         if not self.d2_available:
-            self.logger.warning("D2 CLI not available. Install from https://d2lang.com")
+            self.logger.warning(D2_MISSING_MESSAGE)
 
     def _check_d2_availability(self) -> bool:
         """Check if D2 CLI is available in system PATH"""
@@ -608,22 +604,33 @@ Active Inference Free Energy Principle: {
             return D2GenerationResult(
                 success=False,
                 diagram_name=spec.name,
-                error_message="D2 CLI not available. Install from https://d2lang.com",
+                error_message=D2_MISSING_MESSAGE,
             )
 
         formats = formats or spec.output_formats
+        # Drop unsupported formats early rather than passing arbitrary suffixes to the CLI.
+        formats = [fmt for fmt in formats if fmt in VALID_D2_FORMATS]
+        if not formats:
+            formats = list(VALID_D2_FORMATS[:2])
         output_dir = Path(output_dir)
         output_dir.mkdir(parents=True, exist_ok=True)
 
-        # Write D2 source file
+        # Write D2 source file (atomic-ish: temp file then os.replace; clean up on failure)
         d2_file = output_dir / f"{spec.name}.d2"
+        tmp_path: Optional[Path] = None
         try:
             with tempfile.NamedTemporaryFile(
                 mode="w", encoding="utf-8", dir=d2_file.parent, delete=False
             ) as tmp_f:
                 tmp_f.write(spec.d2_content)
-            os.replace(tmp_f.name, str(d2_file))
+                tmp_path = Path(tmp_f.name)
+            os.replace(tmp_path, str(d2_file))
         except Exception as e:
+            if tmp_path is not None and tmp_path.exists():
+                try:
+                    tmp_path.unlink()
+                except OSError:
+                    pass
             return D2GenerationResult(
                 success=False,
                 diagram_name=spec.name,
@@ -654,7 +661,7 @@ Active Inference Free Energy Principle: {
 
             try:
                 result = subprocess.run(  # nosec B603
-                    cmd, capture_output=True, text=True, timeout=30
+                    cmd, capture_output=True, text=True, timeout=D2_COMPILE_TIMEOUT_S
                 )
 
                 if result.returncode == 0:
@@ -755,7 +762,6 @@ Active Inference Free Energy Principle: {
 
     def _sanitize_name(self, name: str) -> str:
         """Sanitize name for use in D2 identifiers"""
-        import re
 
         # Replace spaces and special chars with underscores
         sanitized = re.sub(r"[^\w\s-]", "", name)
@@ -828,6 +834,7 @@ def process_gnn_file_with_d2(
     output_dir: Path,
     logger: Optional[logging.Logger] = None,
     formats: Optional[List[str]] = None,
+    parsed_json_dir: Optional[Path] = None,
 ) -> List[D2GenerationResult]:
     """
     Process a GNN file and generate D2 diagrams.
@@ -837,6 +844,9 @@ def process_gnn_file_with_d2(
         output_dir: Output directory for diagrams
         logger: Optional logger instance
         formats: List of output formats (svg, png, pdf)
+        parsed_json_dir: Directory containing Step 3 parsed-model JSON
+            (``<model>/<model>_parsed.json``). When omitted, falls back to the
+            historical cwd-relative ``output/3_gnn_output`` lookup.
 
     Returns:
         List of D2GenerationResult for generated diagrams
@@ -847,7 +857,12 @@ def process_gnn_file_with_d2(
     model_data = None
 
     # Look for parsed JSON from GNN processing step
-    gnn_output_dir = Path("output/3_gnn_output")
+    gnn_output_dir = (
+        Path(parsed_json_dir)
+        if parsed_json_dir is not None
+        else Path("output/3_gnn_output")
+    )
+
     if gnn_output_dir.exists():
         model_name = gnn_file.stem
         parsed_json = gnn_output_dir / model_name / f"{model_name}_parsed.json"

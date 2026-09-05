@@ -7,11 +7,13 @@ that combine multiple visualization types and interactive features.
 
 import json
 import logging
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, Optional
 
 logger = logging.getLogger(__name__)
 
+from . import _theme
 from .data_extractor import VisualizationDataExtractor
 from .html_generator import HTMLVisualizationGenerator
 
@@ -104,15 +106,10 @@ class DashboardGenerator:
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GNN Dashboard - {model_name}</title>
     <style>
-        * {{
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }}
-        
+{_theme.BASE_CSS}
         body {{
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: {_theme.FONT_STACK};
+            background: {_theme.BODY_GRADIENT};
             min-height: 100vh;
         }}
         
@@ -137,12 +134,7 @@ class DashboardGenerator:
             margin-bottom: 10px;
         }}
         
-        .header h2 {{
-            color: #7f8c8d;
-            font-size: 1.3em;
-            font-weight: 300;
-        }}
-        
+{_theme.HEADER_H2_CSS}
         .dashboard-grid {{
             display: grid;
             grid-template-columns: 2fr 1fr;
@@ -198,11 +190,7 @@ class DashboardGenerator:
             margin-bottom: 5px;
         }}
         
-        .stat-label {{
-            font-size: 0.9em;
-            opacity: 0.9;
-        }}
-        
+{_theme.STAT_LABEL_CSS}
         .model-variables {{
             max-height: 400px;
             overflow-y: auto;
@@ -244,11 +232,7 @@ class DashboardGenerator:
             border-radius: 8px;
         }}
         
-        .parameter-name {{
-            font-weight: bold;
-            margin-bottom: 5px;
-        }}
-        
+{_theme.PARAMETER_NAME_CSS}
         .parameter-value {{
             font-family: 'Courier New', monospace;
             font-size: 0.8em;
@@ -517,14 +501,14 @@ class DashboardGenerator:
                         </div>
 """
 
-        html += """
+        html += f"""
                     </div>
                 </div>
             </div>
         </div>
         
         <div class="footer">
-            <p>Generated on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} | GNN Dashboard System</p>
+            <p>Generated on {datetime.now().strftime("%Y-%m-%d %H:%M:%S")} | GNN Dashboard System</p>
         </div>
     </div>
     

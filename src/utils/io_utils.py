@@ -5,6 +5,7 @@ This module provides file I/O utilities for batch operations,
 performance monitoring, and file system operations.
 """
 
+import contextlib
 import json
 import logging
 import os
@@ -272,3 +273,38 @@ def cleanup_temp_files(temp_files: List[Path]) -> Dict[str, Any]:
         "cleanup_time_seconds": end_time - start_time,
         "results": results,
     }
+
+
+def verify_directory_writable(
+    directory: Path, probe_name: str = ".write_probe"
+) -> None:
+    """Prove that *directory* accepts writes via a create-rename-cleanup probe.
+
+    Single source of truth for the "is this output directory writable?" check
+    used by ``utils.pipeline.validate_output_directory`` and
+    ``utils.pipeline_validator.check_pipeline_readiness``.
+
+    The probe writes ``"test"`` into a ``NamedTemporaryFile`` inside
+    *directory*, atomically renames it to ``directory / probe_name``, then
+    removes the probe file. Any failure (missing directory, permission error,
+    full disk) propagates as the underlying ``OSError`` so callers can attach
+    their own message; on success the directory is left exactly as found.
+
+    Args:
+        directory: Directory to probe. Must already exist.
+        probe_name: Name of the transient probe file created and removed.
+
+    Raises:
+        OSError: If the probe file cannot be created, renamed, or removed.
+    """
+    probe_file = directory / probe_name
+    with tempfile.NamedTemporaryFile(mode="w", dir=directory, delete=False) as tmp:
+        tmp.write("test")
+        tmp_name: str = tmp.name
+    try:
+        os.replace(tmp_name, str(probe_file))
+    except BaseException:
+        with contextlib.suppress(OSError):
+            os.unlink(tmp_name)
+        raise
+    probe_file.unlink()

@@ -80,9 +80,13 @@ declared shape). The remaining codes come from the schema validator in
 | `GNN-W002` | `gnn/schema.py` | Connection references undeclared variable | warning |
 | `GNN-W003` | `gnn/schema.py` | Parameterization provided for undeclared variable | warning |
 
-In `--strict` mode, all warnings are promoted to errors and the step exits
-with code 1. Without `--strict`, the step exits 0 on success, 1 only on hard
-errors, 2 when no GNN files are found (per Phase 1.1 contract).
+In `--strict` mode, B-orientation contradictions (`GNN-E002`) are promoted
+from warnings to errors and the step exits with code 1. Without `--strict`,
+the step exits 0 when every file validates, 1 only on hard errors
+(exceptions while processing), and 2 when the run completed but is only a
+warning-level outcome — some files are invalid, or no GNN files were found
+(per the Phase 1.1 widened contract: "nothing to do" is
+`SUCCESS_WITH_WARNINGS`, matching Steps 12/16 and the render step).
 
 ## Resource Estimation Outputs
 
@@ -124,8 +128,13 @@ Key coverage areas:
 - `test_check_directory` — directory-level checking over a corpus.
 - `test_check_nonexistent_file_returns_error` / `test_check_unreadable_file_returns_error`
   — missing or unreadable inputs surface as errors, not crashes.
-- `test_type_checker_strict_mode_promotes_warnings` — same corpus with
-  `--strict` exits non-zero when any warning is present.
+- Strict promotion of B-orientation contradictions (`GNN-E002`) is pinned by
+  `test_strict_mode_constructor_promotes_b_contradiction_to_error` and
+  `test_validate_content_strict_override_beats_instance_default` in
+  `src/tests/type_checker/test_type_checker_content_validation.py`; the
+  Phase 1.1 warning-continuation exits (invalid files → 2, no files → 2)
+  are pinned by `test_validate_single_gnn_file_never_raises_on_content_error`
+  and `test_validate_gnn_files_no_files_is_warning_exit_2` in the same file.
 
 Per CLAUDE.md real-implementation policy, tests use real parsed GNN models from the
 sample corpus rather than MagicMock fixtures.

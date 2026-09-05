@@ -112,6 +112,7 @@ This module registers tools with the GNN MCP server (see `mcp.py`):
 - `list_render_frameworks`
 - `process_render`
 - `render_gnn_to_format`
+- `render_spec_to_format`
 
 ## References
 

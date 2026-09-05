@@ -11,7 +11,7 @@ License: MIT
 
 import logging
 import re
-from typing import Any, Dict, List, Optional
+from typing import Any, ClassVar, List
 
 logger = logging.getLogger(__name__)
 
@@ -26,12 +26,15 @@ from .common import (
     ParseResult,
     Variable,
     VariableType,
-    extract_embedded_json_data,
 )
 
 
 class IsabelleParser(BaseGNNParser):
     """Parser for Isabelle/HOL theorem proving specifications."""
+
+    EMBEDDED_JSON_PATTERNS: ClassVar[list[str]] = [
+        r"\(\*\s*MODEL_DATA:\s*(\{.+?\})\s*\*\)",  # (* MODEL_DATA: {...} *)
+    ]
 
     def __init__(self) -> None:
         """Initialize the instance."""
@@ -148,95 +151,6 @@ class IsabelleParser(BaseGNNParser):
             result.add_error(f"Parsing error: {e}")
 
         return result
-
-    def _extract_embedded_json_data(self, content: str) -> Optional[Dict[str, Any]]:
-        """Extract embedded JSON model data from Isabelle comments."""
-        return extract_embedded_json_data(
-            content,
-            [
-                r"\(\*\s*MODEL_DATA:\s*(\{.+?\})\s*\*\)",  # (* MODEL_DATA: {...} *)
-            ],
-        )
-
-    def _parse_from_embedded_data(
-        self, embedded_data: Dict[str, Any], result: ParseResult
-    ) -> ParseResult:
-        """Parse model from embedded JSON data."""
-        try:
-            from .common import (
-                Connection,
-                ConnectionType,
-                DataType,
-                Parameter,
-                Variable,
-                VariableType,
-            )
-
-            # Create model from embedded data
-            model = GNNInternalRepresentation(
-                model_name=embedded_data.get("model_name", "Unknown Model"),
-                annotation=embedded_data.get("annotation", ""),
-            )
-
-            # Parse variables
-            for var_data in embedded_data.get("variables", []):
-                var = Variable(
-                    name=var_data["name"],
-                    var_type=VariableType(var_data["var_type"]),
-                    data_type=DataType(var_data["data_type"]),
-                    dimensions=var_data.get("dimensions", []),
-                )
-                model.variables.append(var)
-
-            # Parse connections
-            for conn_data in embedded_data.get("connections", []):
-                conn = Connection(
-                    source_variables=conn_data["source_variables"],
-                    target_variables=conn_data["target_variables"],
-                    connection_type=ConnectionType(conn_data["connection_type"]),
-                )
-                model.connections.append(conn)
-
-            # Parse parameters
-            for param_data in embedded_data.get("parameters", []):
-                param = Parameter(
-                    name=param_data["name"],
-                    value=param_data["value"],
-                    type_hint=param_data.get("param_type", "constant"),
-                )
-                model.parameters.append(param)
-
-            # Set time specification if present
-            if embedded_data.get("time_specification"):
-                time_data = embedded_data["time_specification"]
-                from .common import TimeSpecification
-
-                model.time_specification = TimeSpecification(
-                    time_type=time_data.get("time_type", "dynamic"),
-                    discretization=time_data.get("discretization"),
-                    horizon=time_data.get("horizon"),
-                    step_size=time_data.get("step_size"),
-                )
-
-            # Set ontology mappings if present
-            if embedded_data.get("ontology_mappings"):
-                from .common import OntologyMapping
-
-                for mapping_data in embedded_data["ontology_mappings"]:
-                    mapping = OntologyMapping(
-                        variable_name=mapping_data["variable_name"],
-                        ontology_term=mapping_data["ontology_term"],
-                        description=mapping_data.get("description"),
-                    )
-                    model.ontology_mappings.append(mapping)
-
-            result.model = model
-            result.success = True
-            return result
-
-        except Exception as e:
-            result.add_error(f"Failed to parse embedded data: {e}")
-            return result
 
     def _infer_variable_type(self, name: str) -> VariableType:
         """Infer variable type from name."""

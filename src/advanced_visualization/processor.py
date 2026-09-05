@@ -23,28 +23,18 @@ import logging
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union, cast
+from typing import Any, Dict, List, Optional, Union
 
-# Import matplotlib for plotting (with recovery for headless environments)
-try:
-    import matplotlib
-
-    matplotlib.use("Agg")  # Use non-interactive backend
-    import matplotlib.pyplot as plt
-    import numpy as np
-
-    MATPLOTLIB_AVAILABLE = True
-except ImportError:
-    MATPLOTLIB_AVAILABLE = False
-    plt = cast(Any, None)
-    np = cast(Any, None)
-
-# Import performance tracker.
 from utils.performance_tracking import PerformanceTracker
 
-# Public shared result type.
+# Availability flags, guarded imports, and the shared attempt/result types
+# all live in ._shared; this module only adds the Step 9 orchestration logic.
 from ._shared import (
+    MATPLOTLIB_AVAILABLE,
+    SEABORN_AVAILABLE,
     AdvancedVisualizationResults,
+    np,
+    record_attempt,
 )
 
 
@@ -85,52 +75,28 @@ from .statistical_viz import (
     _generate_statistical_plots,
 )
 
-# Global seaborn availability flag
-SEABORN_AVAILABLE = False
-try:
-    import seaborn as sns
-
-    SEABORN_AVAILABLE = True
-except ImportError:
-    sns = cast(Any, None)
+SEABORN_AVAILABLE = (
+    SEABORN_AVAILABLE  # re-exported for back-compat (module-level symbol)
+)
 
 
 def _check_dependencies(logger: logging.Logger) -> Dict[str, bool]:
     """Check availability of visualization dependencies"""
-    global MATPLOTLIB_AVAILABLE, SEABORN_AVAILABLE
     dependencies: dict[str, Any] = {
         "matplotlib": MATPLOTLIB_AVAILABLE,
         "plotly": False,
         "seaborn": SEABORN_AVAILABLE,
         "bokeh": False,
-        "numpy": False,
+        "numpy": np is not None,
     }
-
-    if not MATPLOTLIB_AVAILABLE:
-        logger.info("matplotlib not available - some visualizations will be skipped")
-
-    # Check plotly
     if importlib.util.find_spec("plotly") is not None:
         dependencies["plotly"] = True
     else:
         logger.info("plotly not available - interactive visualizations will be limited")
-
-    # Check seaborn (already checked globally)
-    if not SEABORN_AVAILABLE:
-        logger.debug("seaborn not available - will use matplotlib recovery")
-
-    # Check bokeh
     if importlib.util.find_spec("bokeh") is not None:
         dependencies["bokeh"] = True
     else:
         logger.debug("bokeh not available - will use plotly recovery")
-
-    # Check numpy
-    if np is not None:
-        dependencies["numpy"] = True
-    else:
-        logger.info("numpy not available - numeric visualizations will be limited")
-
     return dependencies
 
 
@@ -398,23 +364,10 @@ def process_advanced_viz(
             for model_name, model_data in sorted(gnn_models.items()):
                 logger.info(f"Processing advanced visualizations for: {model_name}")
 
-                # Helper to track attempt results
-                def _track(attempt: Any) -> Any:
-                    """Handle track for internal callers."""
-                    results.attempts.append(attempt)
-                    results.total_attempts += 1
-                    if attempt.status == "success":
-                        results.successful += 1
-                        results.output_files.extend(attempt.output_files)
-                    elif attempt.status == "failed":
-                        results.failed += 1
-                        results.errors.append(attempt.error_message or "Unknown error")
-                    else:
-                        results.skipped += 1
-
                 # Generate visualizations based on type
                 if viz_type in ["all", "3d"]:
-                    _track(
+                    record_attempt(
+                        results,
                         _generate_3d_visualization(
                             model_name,
                             model_data,
@@ -422,55 +375,60 @@ def process_advanced_viz(
                             export_formats,
                             dependencies_available,
                             logger,
-                        )
+                        ),
                     )
 
                 if viz_type in ["all", "statistical"]:
-                    _track(
+                    record_attempt(
+                        results,
                         _generate_statistical_plots(
                             model_name,
                             model_data,
                             output_dir,
                             dependencies_available,
                             logger,
-                        )
+                        ),
                     )
 
                 if viz_type in ["all", "statistical"]:
-                    _track(
+                    record_attempt(
+                        results,
                         _generate_matrix_correlations(
                             model_name,
                             model_data,
                             output_dir,
                             dependencies_available,
                             logger,
-                        )
+                        ),
                     )
 
                 if viz_type in ["all", "pomdp"]:
-                    _track(
+                    record_attempt(
+                        results,
                         _generate_pomdp_transition_analysis(
                             model_name,
                             model_data,
                             output_dir,
                             dependencies_available,
                             logger,
-                        )
+                        ),
                     )
 
                 if viz_type in ["all", "pomdp"]:
-                    _track(
+                    record_attempt(
+                        results,
                         _generate_policy_visualization(
                             model_name,
                             model_data,
                             output_dir,
                             dependencies_available,
                             logger,
-                        )
+                        ),
                     )
 
                 if viz_type in ["all", "interactive"] and interactive:
-                    _track(
+                    record_attempt(
+                        results,
                         _generate_interactive_plotly_dashboard(
                             model_name,
                             model_data,
@@ -478,11 +436,12 @@ def process_advanced_viz(
                             export_formats,
                             dependencies_available,
                             logger,
-                        )
+                        ),
                     )
 
                 if viz_type in ["all", "dashboard"] and interactive:
-                    _track(
+                    record_attempt(
+                        results,
                         _generate_interactive_dashboard(
                             model_name,
                             model_data,
@@ -490,60 +449,38 @@ def process_advanced_viz(
                             export_formats,
                             dependencies_available,
                             logger,
-                        )
+                        ),
                     )
 
                 if viz_type in ["all", "network"]:
-                    _track(
+                    record_attempt(
+                        results,
                         _generate_network_metrics(
                             model_name,
                             model_data,
                             output_dir,
                             dependencies_available,
                             logger,
-                        )
+                        ),
                     )
 
                 # Generate D2 diagrams for each model
                 if viz_type in ["all", "d2", "diagrams"]:
-                    attempt = _generate_d2_visualizations_safe(
-                        model_data, output_dir, logger
+                    record_attempt(
+                        results,
+                        _generate_d2_visualizations_safe(
+                            model_data, output_dir, logger
+                        ),
+                        optional_message_filter="D2 CLI",
                     )
-                    results.attempts.append(attempt)
-                    results.total_attempts += 1
-                    if attempt.status == "success":
-                        results.successful += 1
-                        results.output_files.extend(attempt.output_files)
-                    elif attempt.status == "failed":
-                        results.failed += 1
-                        if attempt.error_message:
-                            results.errors.append(attempt.error_message)
-                    else:
-                        results.skipped += 1
-                        # D2 CLI is optional - don't add warnings for missing CLI
-                        if (
-                            attempt.error_message
-                            and "D2 CLI" not in attempt.error_message
-                        ):
-                            results.warnings.append(attempt.error_message)
 
             # Generate pipeline-level D2 diagrams (once for all models)
             if viz_type in ["all", "d2", "diagrams", "pipeline"]:
-                attempt = _generate_pipeline_d2_diagrams_safe(output_dir, logger)
-                results.attempts.append(attempt)
-                results.total_attempts += 1
-                if attempt.status == "success":
-                    results.successful += 1
-                    results.output_files.extend(attempt.output_files)
-                elif attempt.status == "failed":
-                    results.failed += 1
-                    if attempt.error_message:
-                        results.errors.append(attempt.error_message)
-                else:
-                    results.skipped += 1
-                    # D2 CLI is optional - don't add warnings for missing CLI
-                    if attempt.error_message and "D2 CLI" not in attempt.error_message:
-                        results.warnings.append(attempt.error_message)
+                record_attempt(
+                    results,
+                    _generate_pipeline_d2_diagrams_safe(output_dir, logger),
+                    optional_message_filter="D2 CLI",
+                )
 
         # Save results
         _save_results(output_dir, results, logger)

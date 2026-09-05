@@ -12,7 +12,7 @@
 
 **Version**: 3.2.0
 
-**Last Updated**: 2026-09-02
+**Last Updated**: 2026-09-04
 
 ---
 
@@ -47,6 +47,10 @@
 - `verbose` (bool): Enable verbose logging (default: False)
 - `recursive` (bool): When `True`, discover `*.md` / `*.gnn` inputs below
   nested directories; when `False`, inspect only the target directory itself.
+- `logger` (logging.Logger, keyword-only): Optional dependency-injected
+  logger. The pipeline passes its configured step logger; when omitted, the
+  module-level `"visualization"` logger is used (direct-call behavior
+  unchanged).
 - `**kwargs`: Additional visualization options
 
 **Returns**: `True` if at least one artifact was generated, `2` for warning-only
@@ -93,12 +97,38 @@ success = process_visualization(
 
 **Returns**: Dictionary with visualization metadata / paths
 
+#### `backend_status() -> Dict[str, bool]`
+**Description**: Reports availability of every visualization backend
+(`matplotlib`, `numpy`, `seaborn`, `networkx`, `plotly`) in one call — the
+first diagnostic for "no visualizations generated" ([backends.py](backends.py)).
+
+#### `sample_parsed_data(parsed_data, variable_limit=100, matrix_limit=5) -> bool`
+**Description**: Pure downsampling for very large models ([core/sampling.py](core/sampling.py)).
+Truncates variables, filters connections to surviving endpoints, caps
+matrices, and records `_sampling_applied` counts. Returns `True` when applied.
+
+#### `collect_visualization_matrices(parsed_data) -> Dict[str, Any]`
+**Description**: Pure matrix collection in Step-8 resolution order:
+parameters → variables → raw `matrices` entries ([matrix/extract.py](matrix/extract.py)).
+
+#### `compute_connection_statistics(variables, connections) -> Dict[str, Any]`
+**Description**: Pure degree-based statistics (totals, degree distribution,
+hubs, isolated nodes) ([graph/stats.py](graph/stats.py)). Also pinned at
+package root as `visualization._generate_network_statistics`.
+
+#### `load_visualization_model(gnn_file, content, results_dir, verbose=False) -> Dict[str, Any]`
+**Description**: JSON-first model loader; re-exported at package root
+([core/parsed_model.py](core/parsed_model.py)).
+
 ---
 
 ## Dependencies
 
 ### Shared Modules
-- `theme.py` — Centralised color palette, figure defaults, edge styles (new: 2026-05-12)
+- `theme.py` — **Single source of truth** for the color palette (node +
+  generative-model), edge styles, and figure defaults; `graph` and `analysis`
+  render from `theme.get_edge_style` / `theme.get_var_type_color` / theme
+  constants rather than private copies
 - `compat/viz_compat.py` — Safe matplotlib/numpy/seaborn imports + `viz_var_type()` helper
 
 ### Required Dependencies
@@ -230,6 +260,11 @@ GNN Files → Graph Extraction → Layout Calculation → Visualization Generati
 - `src/tests/visualization/test_visualization_overall.py` - Module-level tests
 - `src/tests/visualization/test_visualization_ontology.py` - Ontology visualization tests
 - `src/tests/visualization/test_visualization_artifacts.py` - Artifact / manifest tests
+- `src/tests/visualization/test_visualization_sampling.py` - Downsampling (pure) tests
+- `src/tests/visualization/test_visualization_matrix_collect.py` - Matrix collection tests
+- `src/tests/visualization/test_visualization_stats.py` - Connection-statistics tests
+- `src/tests/visualization/test_visualization_backends.py` - Backend-status + theme-SSOT regression tests
+- `src/tests/visualization/test_visualization_pkg_api.py` - Package-root API surface + logger-DI tests
 
 ### Test Coverage
 - **Measurement**: `uv run --extra dev python -m pytest src/tests/visualization/ --cov=src.visualization --cov-report=term-missing` (do not treat a fixed percentage in this file as canonical).
@@ -390,6 +425,34 @@ python src/8_visualization.py --verbose --target-dir input/gnn_files
 
 ## Version History
 
+### Documentation update (2026-09-04)
+
+**Refactoring / composability**:
+- Decomposed `core/process.py` into pure, reusable helpers: `load_cached_artifacts`,
+  `render_matrix_artifacts`, `write_viz_manifest`, `write_sampling_note`; sampling moved
+  to pure `core/sampling.py::sample_parsed_data`; matrix collection to pure
+  `matrix/extract.py::collect_visualization_matrices`.
+- `theme.py` is now the single source of truth for node colors and edge styles —
+  removed the private copies in `graph/network_visualizations.py` and
+  `analysis/combined_analysis.py`. This also fixes a latent rendering gap:
+  `state_observation`, `state_transition_matrix` and `policy_action` edges now use
+  their themed styles instead of the gray `generic_causal` fallback.
+- Removed ~230 lines of dead private methods from `visualizer.py`; removed dead
+  `edge_attrs` construction and an O(variables × edges) type rescan in
+  `graph/network_visualizations.py`.
+- `process_visualization` now accepts an injected `logger` (keyword-only) instead of
+  silently discarding the pipeline-provided one.
+- `mcp.get_visualization_options_mcp` no longer fabricates options with
+  `success: True` on error — it fails with `success: False` and logs.
+
+**New functionality**:
+- `visualization.backends.backend_status()` — one-call backend availability report.
+- `visualization.graph.stats.compute_connection_statistics()` — pure degree statistics.
+- Package root now re-exports the full documented public API (previously only
+  reachable via subpackage paths), including `load_visualization_model`, `GNNParser`,
+  `generate_network_visualizations`, `generate_combined_analysis`, and the new pure
+  helpers.
+
 ### Current Version: 3.2.0
 
 **Features**:
@@ -423,7 +486,7 @@ python src/8_visualization.py --verbose --target-dir input/gnn_files
 
 ---
 
-**Last Updated**: 2026-09-02
+**Last Updated**: 2026-09-04
 **Maintainer**: GNN Pipeline Team
 **Status**: Production Ready
 **Version**: 3.2.0

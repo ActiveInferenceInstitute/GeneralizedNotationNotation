@@ -9,19 +9,21 @@ Numeric/matrix helpers live in ``pomdp_math``; generic code-metrics counting
 lives in ``utils.code_metrics``.
 """
 
+import importlib
 import itertools
 import json
 import logging
-import re
+from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union, cast
+from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Union, cast
 
 import numpy as np
 
 from utils.code_metrics import count_code_metrics
 
 from .framework_registry import get_pomdp_framework_configs
+from .naming import safe_output_stem
 from .pomdp_contract import build_canonical_pomdp_spec
 from .pomdp_math import (
     _factor_action_counts,
@@ -50,10 +52,105 @@ def _continuous_shape(value: Any) -> List[int]:
 
 
 def _safe_output_stem(value: Any, fallback: str = "pomdp_model") -> str:
-    stem = re.sub(r"[^A-Za-z0-9_.-]+", "_", str(value)).strip("._")
-    if not stem:
-        return fallback
-    return stem[:120]
+    return safe_output_stem(value, fallback)
+
+
+@dataclass(frozen=True)
+class RendererRoute:
+    """Declarative dispatch entry for a framework renderer."""
+
+    module: str
+    function: str
+    suffix: str
+    label: str
+    validate: bool
+    options_mode: Literal["kwargs", "timesteps", "kwargs_or_none"]
+    result_mode: Literal["warnings", "artifacts"]
+    artifacts_mode: Literal["primary_plus_metadata", "primary", "returned"]
+
+
+RENDERER_ROUTES: Dict[str, RendererRoute] = {
+    "pymdp": RendererRoute(
+        module=".pymdp.pymdp_renderer",
+        function="render_gnn_to_pymdp",
+        suffix="_pymdp.py",
+        label="PyMDP",
+        validate=True,
+        options_mode="kwargs",
+        result_mode="warnings",
+        artifacts_mode="primary_plus_metadata",
+    ),
+    "rxinfer": RendererRoute(
+        module=".rxinfer.rxinfer_renderer",
+        function="render_gnn_to_rxinfer",
+        suffix="_rxinfer.jl",
+        label="RxInfer",
+        validate=True,
+        options_mode="kwargs",
+        result_mode="warnings",
+        artifacts_mode="primary",
+    ),
+    "activeinference_jl": RendererRoute(
+        module=".activeinference_jl.activeinference_renderer",
+        function="render_gnn_to_activeinference_jl",
+        suffix="_activeinference.jl",
+        label="ActiveInference.jl",
+        validate=True,
+        options_mode="kwargs",
+        result_mode="artifacts",
+        artifacts_mode="returned",
+    ),
+    "jax": RendererRoute(
+        module=".jax.jax_renderer",
+        function="render_gnn_to_jax",
+        suffix="_jax.py",
+        label="JAX",
+        validate=True,
+        options_mode="kwargs",
+        result_mode="artifacts",
+        artifacts_mode="returned",
+    ),
+    "discopy": RendererRoute(
+        module=".discopy.discopy_renderer",
+        function="render_gnn_to_discopy",
+        suffix="_discopy.py",
+        label="DisCoPy",
+        validate=False,
+        options_mode="kwargs",
+        result_mode="warnings",
+        artifacts_mode="primary",
+    ),
+    "pytorch": RendererRoute(
+        module=".pytorch.pytorch_renderer",
+        function="render_gnn_to_pytorch",
+        suffix="_pytorch.py",
+        label="PyTorch",
+        validate=False,
+        options_mode="timesteps",
+        result_mode="artifacts",
+        artifacts_mode="returned",
+    ),
+    "numpyro": RendererRoute(
+        module=".numpyro.numpyro_renderer",
+        function="render_gnn_to_numpyro",
+        suffix="_numpyro.py",
+        label="NumPyro",
+        validate=False,
+        options_mode="timesteps",
+        result_mode="artifacts",
+        artifacts_mode="returned",
+    ),
+    "stan": RendererRoute(
+        module=".stan.stan_renderer",
+        function="render_gnn_to_stan",
+        suffix="_stan.py",
+        label="Stan",
+        validate=False,
+        options_mode="kwargs_or_none",
+        result_mode="artifacts",
+        artifacts_mode="returned",
+    ),
+}
 
 
 class POMDPRenderProcessor:
@@ -982,30 +1079,97 @@ class POMDPRenderProcessor:
         Returns:
             Renderer result dictionary
         """
-        if framework == "pymdp":
-            return self._call_pymdp_renderer(gnn_spec, output_dir, **kwargs)
-        elif framework == "rxinfer":
-            return self._call_rxinfer_renderer(gnn_spec, output_dir, **kwargs)
-        elif framework == "activeinference_jl":
-            return self._call_activeinference_jl_renderer(
-                gnn_spec, output_dir, **kwargs
-            )
-        elif framework == "jax":
-            return self._call_jax_renderer(gnn_spec, output_dir, **kwargs)
-        elif framework == "discopy":
-            return self._call_discopy_renderer(gnn_spec, output_dir, **kwargs)
-        elif framework == "pytorch":
-            return self._call_pytorch_renderer(gnn_spec, output_dir, **kwargs)
-        elif framework == "numpyro":
-            return self._call_numpyro_renderer(gnn_spec, output_dir, **kwargs)
-        elif framework == "stan":
-            return self._call_stan_renderer(gnn_spec, output_dir, **kwargs)
-        elif framework == "bnlearn":
+        if framework == "bnlearn":
             return self._call_bnlearn_renderer(gnn_spec, output_dir, **kwargs)
-        else:
+        route = RENDERER_ROUTES.get(framework)
+        if route is None:
             return {
                 "success": False,
                 "message": f"No renderer implemented for {framework}",
+                "artifacts": [],
+            }
+        return self._invoke_renderer(route, framework, gnn_spec, output_dir, **kwargs)
+
+    def _invoke_renderer(
+        self,
+        route: RendererRoute,
+        framework: str,
+        gnn_spec: Dict[str, Any],
+        output_dir: Path,
+        **kwargs: Any,
+    ) -> Dict[str, Any]:
+        """Shared renderer invocation skeleton driven by ``route``."""
+        try:
+            module = importlib.import_module(route.module, __package__)
+            render_fn = getattr(module, route.function)
+
+            model_name = gnn_spec.get("name", "pomdp_model")
+            output_file = output_dir / f"{_safe_output_stem(model_name)}{route.suffix}"
+
+            warnings: list[Any] = []
+            if route.validate:
+                # Validate state spaces are present before rendering
+                validation_result = self._validate_state_spaces_in_spec(
+                    gnn_spec, framework
+                )
+                if not validation_result["valid"]:
+                    warnings = validation_result.get("warnings", [])
+                    if validation_result.get("critical", False):
+                        return {
+                            "success": False,
+                            "message": f"State space validation failed: {validation_result.get('reason', 'Unknown')}",
+                            "artifacts": [],
+                            "warnings": warnings,
+                        }
+
+            if route.options_mode == "timesteps":
+                # Build options dict with timesteps if available
+                options: dict[Any, Any] = {}
+                model_params = gnn_spec.get("model_parameters", {})
+                if "num_timesteps" in model_params:
+                    options["num_timesteps"] = model_params["num_timesteps"]
+                renderer_options: Any = options or None
+            elif route.options_mode == "kwargs_or_none":
+                renderer_options = kwargs or None
+            else:
+                renderer_options = kwargs
+
+            result = render_fn(gnn_spec, output_file, renderer_options)
+
+            success, message, payload = cast("tuple[bool, str, Any]", result)
+            warnings = list(payload) if route.result_mode == "warnings" else []
+            artifacts: list[str] = (
+                list(payload) if route.result_mode == "artifacts" else []
+            )
+
+            # Post-render validation: verify state spaces are in generated script
+            if route.validate and success and output_file.exists():
+                post_validation = self._validate_state_spaces_in_script(
+                    output_file, gnn_spec
+                )
+                if not post_validation["valid"]:
+                    warnings.extend(post_validation.get("warnings", []))
+
+            if route.result_mode == "warnings":
+                if route.artifacts_mode == "primary_plus_metadata":
+                    artifacts = [str(output_file)] if success else []
+                    metadata_file = output_file.with_suffix(".metadata.json")
+                    if success and metadata_file.exists():
+                        artifacts.append(str(metadata_file))
+                else:  # primary
+                    artifacts = [str(output_file)] if success else []
+
+            return {
+                "success": success,
+                "message": message,
+                "artifacts": artifacts,
+                "warnings": warnings,
+            }
+
+        except ImportError:
+            return {
+                "success": False,
+                "message": f"{route.label} renderer not available",
                 "artifacts": [],
             }
 
@@ -1013,234 +1177,45 @@ class POMDPRenderProcessor:
         self, gnn_spec: Dict[str, Any], output_dir: Path, **kwargs: Any
     ) -> Dict[str, Any]:
         """Call PyMDP renderer."""
-        try:
-            from .pymdp.pymdp_renderer import render_gnn_to_pymdp
-
-            model_name = gnn_spec.get("name", "pomdp_model")
-            output_file = output_dir / f"{_safe_output_stem(model_name)}_pymdp.py"
-
-            # Validate state spaces are present before rendering
-            validation_result = self._validate_state_spaces_in_spec(gnn_spec, "pymdp")
-            if not validation_result["valid"]:
-                warnings = validation_result.get("warnings", [])
-                if validation_result.get("critical", False):
-                    return {
-                        "success": False,
-                        "message": f"State space validation failed: {validation_result.get('reason', 'Unknown')}",
-                        "artifacts": [],
-                        "warnings": warnings,
-                    }
-
-            success, message, warnings = render_gnn_to_pymdp(
-                gnn_spec, output_file, kwargs
-            )
-
-            # Post-render validation: verify state spaces are in generated script
-            if success and output_file.exists():
-                post_validation = self._validate_state_spaces_in_script(
-                    output_file, gnn_spec
-                )
-                if not post_validation["valid"]:
-                    warnings.extend(post_validation.get("warnings", []))
-
-            artifacts = [str(output_file)] if success else []
-            metadata_file = output_file.with_suffix(".metadata.json")
-            if success and metadata_file.exists():
-                artifacts.append(str(metadata_file))
-
-            return {
-                "success": success,
-                "message": message,
-                "artifacts": artifacts,
-                "warnings": warnings,
-            }
-
-        except ImportError:
-            return {
-                "success": False,
-                "message": "PyMDP renderer not available",
-                "artifacts": [],
-            }
+        return self._invoke_renderer(
+            RENDERER_ROUTES["pymdp"], "pymdp", gnn_spec, output_dir, **kwargs
+        )
 
     def _call_rxinfer_renderer(
         self, gnn_spec: Dict[str, Any], output_dir: Path, **kwargs: Any
     ) -> Dict[str, Any]:
         """Call RxInfer renderer."""
-        try:
-            from .rxinfer.rxinfer_renderer import render_gnn_to_rxinfer
-
-            model_name = gnn_spec.get("name", "pomdp_model")
-            output_file = output_dir / f"{_safe_output_stem(model_name)}_rxinfer.jl"
-
-            # Validate state spaces are present before rendering
-            validation_result = self._validate_state_spaces_in_spec(gnn_spec, "rxinfer")
-            if not validation_result["valid"]:
-                warnings = validation_result.get("warnings", [])
-                if validation_result.get("critical", False):
-                    return {
-                        "success": False,
-                        "message": f"State space validation failed: {validation_result.get('reason', 'Unknown')}",
-                        "artifacts": [],
-                        "warnings": warnings,
-                    }
-
-            success, message, warnings = render_gnn_to_rxinfer(
-                gnn_spec, output_file, kwargs
-            )
-
-            # Post-render validation
-            if success and output_file.exists():
-                post_validation = self._validate_state_spaces_in_script(
-                    output_file, gnn_spec
-                )
-                if not post_validation["valid"]:
-                    warnings.extend(post_validation.get("warnings", []))
-
-            return {
-                "success": success,
-                "message": message,
-                "artifacts": [str(output_file)] if success else [],
-                "warnings": warnings,
-            }
-
-        except ImportError:
-            return {
-                "success": False,
-                "message": "RxInfer renderer not available",
-                "artifacts": [],
-            }
+        return self._invoke_renderer(
+            RENDERER_ROUTES["rxinfer"], "rxinfer", gnn_spec, output_dir, **kwargs
+        )
 
     def _call_activeinference_jl_renderer(
         self, gnn_spec: Dict[str, Any], output_dir: Path, **kwargs: Any
     ) -> Dict[str, Any]:
         """Call ActiveInference.jl renderer."""
-        try:
-            from .activeinference_jl.activeinference_renderer import (
-                render_gnn_to_activeinference_jl,
-            )
-
-            model_name = gnn_spec.get("name", "pomdp_model")
-            output_file = output_dir / (
-                f"{_safe_output_stem(model_name)}_activeinference.jl"
-            )
-
-            # Validate state spaces are present before rendering
-            validation_result = self._validate_state_spaces_in_spec(
-                gnn_spec, "activeinference_jl"
-            )
-            warnings: list[Any] = []
-            if not validation_result["valid"]:
-                warnings = validation_result.get("warnings", [])
-                if validation_result.get("critical", False):
-                    return {
-                        "success": False,
-                        "message": f"State space validation failed: {validation_result.get('reason', 'Unknown')}",
-                        "artifacts": [],
-                        "warnings": warnings,
-                    }
-
-            success, message, artifacts = render_gnn_to_activeinference_jl(
-                gnn_spec, output_file, kwargs
-            )
-
-            # Post-render validation
-            if success and output_file.exists():
-                post_validation = self._validate_state_spaces_in_script(
-                    output_file, gnn_spec
-                )
-                if not post_validation["valid"]:
-                    warnings.extend(post_validation.get("warnings", []))
-
-            return {
-                "success": success,
-                "message": message,
-                "artifacts": artifacts,
-                "warnings": warnings,
-            }
-
-        except ImportError:
-            return {
-                "success": False,
-                "message": "ActiveInference.jl renderer not available",
-                "artifacts": [],
-            }
+        return self._invoke_renderer(
+            RENDERER_ROUTES["activeinference_jl"],
+            "activeinference_jl",
+            gnn_spec,
+            output_dir,
+            **kwargs,
+        )
 
     def _call_jax_renderer(
         self, gnn_spec: Dict[str, Any], output_dir: Path, **kwargs: Any
     ) -> Dict[str, Any]:
         """Call JAX renderer."""
-        try:
-            from .jax.jax_renderer import render_gnn_to_jax
-
-            model_name = gnn_spec.get("name", "pomdp_model")
-            output_file = output_dir / f"{_safe_output_stem(model_name)}_jax.py"
-
-            # Pre-render validation: verify state spaces are present before rendering
-            validation_result = self._validate_state_spaces_in_spec(gnn_spec, "jax")
-            warnings: list[Any] = []
-            if not validation_result["valid"]:
-                warnings = validation_result.get("warnings", [])
-                if validation_result.get("critical", False):
-                    return {
-                        "success": False,
-                        "message": f"State space validation failed: {validation_result.get('reason', 'Unknown')}",
-                        "artifacts": [],
-                        "warnings": warnings,
-                    }
-
-            success, message, artifacts = render_gnn_to_jax(
-                gnn_spec, output_file, kwargs
-            )
-
-            # Post-render validation: verify state spaces are in generated script
-            if success and output_file.exists():
-                post_validation = self._validate_state_spaces_in_script(
-                    output_file, gnn_spec
-                )
-                if not post_validation["valid"]:
-                    warnings.extend(post_validation.get("warnings", []))
-
-            return {
-                "success": success,
-                "message": message,
-                "artifacts": artifacts,
-                "warnings": warnings,
-            }
-
-        except ImportError:
-            return {
-                "success": False,
-                "message": "JAX renderer not available",
-                "artifacts": [],
-            }
+        return self._invoke_renderer(
+            RENDERER_ROUTES["jax"], "jax", gnn_spec, output_dir, **kwargs
+        )
 
     def _call_discopy_renderer(
         self, gnn_spec: Dict[str, Any], output_dir: Path, **kwargs: Any
     ) -> Dict[str, Any]:
         """Call DisCoPy renderer."""
-        try:
-            from .discopy.discopy_renderer import render_gnn_to_discopy
-
-            model_name = gnn_spec.get("name", "pomdp_model")
-            output_file = output_dir / f"{_safe_output_stem(model_name)}_discopy.py"
-
-            success, message, warnings = render_gnn_to_discopy(
-                gnn_spec, output_file, kwargs
-            )
-
-            return {
-                "success": success,
-                "message": message,
-                "artifacts": [str(output_file)] if success else [],
-                "warnings": warnings,
-            }
-
-        except ImportError:
-            return {
-                "success": False,
-                "message": "DisCoPy renderer not available",
-                "artifacts": [],
-            }
+        return self._invoke_renderer(
+            RENDERER_ROUTES["discopy"], "discopy", gnn_spec, output_dir, **kwargs
+        )
 
     def _call_bnlearn_renderer(
         self, gnn_spec: Dict[str, Any], output_dir: Path, **kwargs: Any
@@ -1274,96 +1249,25 @@ class POMDPRenderProcessor:
         self, gnn_spec: Dict[str, Any], output_dir: Path, **kwargs: Any
     ) -> Dict[str, Any]:
         """Call PyTorch renderer."""
-        try:
-            from .pytorch.pytorch_renderer import render_gnn_to_pytorch
-
-            model_name = gnn_spec.get("name", "pomdp_model")
-            output_file = output_dir / f"{_safe_output_stem(model_name)}_pytorch.py"
-
-            # Build options dict with timesteps if available
-            options: dict[Any, Any] = {}
-            model_params = gnn_spec.get("model_parameters", {})
-            if "num_timesteps" in model_params:
-                options["num_timesteps"] = model_params["num_timesteps"]
-
-            success, message, artifacts = render_gnn_to_pytorch(
-                gnn_spec, output_file, options or None
-            )
-
-            return {
-                "success": success,
-                "message": message,
-                "artifacts": artifacts,
-                "warnings": [],
-            }
-
-        except ImportError:
-            return {
-                "success": False,
-                "message": "PyTorch renderer not available",
-                "artifacts": [],
-            }
+        return self._invoke_renderer(
+            RENDERER_ROUTES["pytorch"], "pytorch", gnn_spec, output_dir, **kwargs
+        )
 
     def _call_numpyro_renderer(
         self, gnn_spec: Dict[str, Any], output_dir: Path, **kwargs: Any
     ) -> Dict[str, Any]:
         """Call NumPyro renderer."""
-        try:
-            from .numpyro.numpyro_renderer import render_gnn_to_numpyro
-
-            model_name = gnn_spec.get("name", "pomdp_model")
-            output_file = output_dir / f"{_safe_output_stem(model_name)}_numpyro.py"
-
-            # Build options dict with timesteps if available
-            options: dict[Any, Any] = {}
-            model_params = gnn_spec.get("model_parameters", {})
-            if "num_timesteps" in model_params:
-                options["num_timesteps"] = model_params["num_timesteps"]
-
-            success, message, artifacts = render_gnn_to_numpyro(
-                gnn_spec, output_file, options or None
-            )
-
-            return {
-                "success": success,
-                "message": message,
-                "artifacts": artifacts,
-                "warnings": [],
-            }
-
-        except ImportError:
-            return {
-                "success": False,
-                "message": "NumPyro renderer not available",
-                "artifacts": [],
-            }
+        return self._invoke_renderer(
+            RENDERER_ROUTES["numpyro"], "numpyro", gnn_spec, output_dir, **kwargs
+        )
 
     def _call_stan_renderer(
         self, gnn_spec: Dict[str, Any], output_dir: Path, **kwargs: Any
     ) -> Dict[str, Any]:
         """Call Stan renderer."""
-        try:
-            from .stan.stan_renderer import render_gnn_to_stan
-
-            model_name = gnn_spec.get("name", "pomdp_model")
-            # The Python driver is the executable artifact Step 12 discovers;
-            # the .stan program sits beside it with the same stem.
-            output_file = output_dir / f"{_safe_output_stem(model_name)}_stan.py"
-            success, message, artifacts = render_gnn_to_stan(
-                gnn_spec, output_file, kwargs or None
-            )
-            return {
-                "success": success,
-                "message": message,
-                "artifacts": artifacts,
-                "warnings": [],
-            }
-        except ImportError:
-            return {
-                "success": False,
-                "message": "Stan renderer not available",
-                "artifacts": [],
-            }
+        return self._invoke_renderer(
+            RENDERER_ROUTES["stan"], "stan", gnn_spec, output_dir, **kwargs
+        )
 
     def _validate_state_spaces_in_spec(
         self, gnn_spec: Dict[str, Any], framework: str

@@ -3,7 +3,7 @@
 > **Document Metadata**
 > **Type**: Research program | **Audience**: Researchers, Developers, Agents | **Complexity**: Advanced
 > **Cross-References**: [README.md](README.md) | [fep_lean overview](fep_lean.md) | [Bridge contract mirror](bridge-contract.md)
-> **Last Updated**: 2026-09-03
+> **Last Updated**: 2026-09-04
 
 ## Overview
 
@@ -131,3 +131,37 @@ and `.../direction-2-gnn-to-lean.md`).
 - **Artifact custody.** Render and execution summaries for bridge documents
   must remain bound to the provenance digest of the Lean source that
   generated them.
+
+## Findings filed by fep_lean Direction 2 (Q2–Q4, 2026-09-04)
+
+Conventions the Lean formalization needs frozen on this side before
+corresponding fragments can be stated or parsed. Inline code paths only
+per the bridge contract's cross-reference rule.
+
+1. **Brace-block payload shape (Q2 + Q3).** The matrix payload shape
+   `((…), (…))` (one parenthesized row per matrix row, comma-separated)
+   and vector shape `(…)` are the frozen transcription target the bridge
+   relies on when reading `InitialParameterization` entries — see the
+   exemplar transcriptions in `src/fep_lean/formal/gnn_denotation.lean`
+   and `src/fep_lean/formal/gnn_denotation_continuous.lean`
+   (fep_lean). A future payload-string parser on the GNN side must
+   accept this shape for both families before transcription can be
+   mechanized.
+2. **Exemplar `F` bakes in Euler discretization (Q3).** In
+   `input/gnn_files/continuous/stochastic_dynamics.md` the
+   `ModelParameters` record `dt = 0.1` and the declared `F` is the
+   Euler-discretized one-step map, not the drift matrix. Identifying
+   one-step `F` with a continuous-time law (`exp(-t·precision)`) is a
+   recorded no-go (fep_lean `specs/gnn-bridge-p4-continuous-spike/README.md`,
+   family-wide argument). A future dynamics-gauge slice needs a
+   declared `StepTime`-style semantic field or a drift-matrix section
+   on the GNN side before any such identification can be stated.
+3. **pgmpy `TabularCPD` parent-instantiation enumeration order (Q4).**
+   The bnlearn render target emits `pgmpy`/`bnlearn` network scripts
+   whose CPT tables depend on pgmpy's parent-instantiation (column)
+   enumeration order. That order is a GNN-side convention that has not
+   been frozen; until it is, the bnlearn CPT-layout fragment keeps its
+   no-go row in fep_lean's Q4 statement inventory
+   (`src/fep_lean/formal/gnn_render_statements.lean` proof-schedule
+   table) and no preservation statement is minted for it. Freezing the
+   enumeration convention here reopens the fragment.

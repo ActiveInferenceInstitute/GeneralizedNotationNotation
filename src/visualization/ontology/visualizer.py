@@ -51,7 +51,7 @@ class OntologyVisualizer:
         Returns:
             List of paths to saved visualization files
         """
-        saved_files: list[Any] = []
+        saved_files: List[str] = []
 
         try:
             # Create output directory if it doesn't exist
@@ -65,7 +65,7 @@ class OntologyVisualizer:
                     file_output_dir.mkdir(parents=True, exist_ok=True)
 
                     # Read and parse file content
-                    with open(gnn_file, "r") as f:
+                    with open(gnn_file, "r", encoding="utf-8") as f:
                         content = f.read()
 
                     # Extract ontology section
@@ -141,7 +141,7 @@ class OntologyVisualizer:
         Returns:
             List of (variable, concept) tuples
         """
-        mappings: list[Any] = []
+        mappings: List[Tuple[str, str]] = []
 
         # Split content into lines and process each line
         for line in str(ontology_content).split("\n"):

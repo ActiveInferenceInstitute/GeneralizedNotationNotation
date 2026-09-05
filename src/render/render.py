@@ -11,53 +11,6 @@ import sys
 from pathlib import Path
 from typing import Any, cast
 
-# Import renderers with proper error handling
-try:
-    from .pymdp import render_gnn_to_pymdp
-
-    PYMDP_AVAILABLE = True
-except ImportError as e:
-    logging.warning(f"PyMDP renderer not available: {e}")
-    render_gnn_to_pymdp = cast(Any, None)
-    PYMDP_AVAILABLE = False
-
-try:
-    from .rxinfer import render_gnn_to_rxinfer
-
-    RXINFER_AVAILABLE = True
-except ImportError as e:
-    logging.warning(f"RxInfer renderer not available: {e}")
-    render_gnn_to_rxinfer = cast(Any, None)
-    RXINFER_AVAILABLE = False
-
-try:
-    from .discopy import render_gnn_to_discopy
-
-    DISCOPY_AVAILABLE = True
-except ImportError as e:
-    logging.warning(f"DisCoPy renderer not available: {e}")
-    render_gnn_to_discopy = cast(Any, None)
-    DISCOPY_AVAILABLE = False
-
-try:
-    from .activeinference_jl import render_gnn_to_activeinference_jl
-
-    ACTIVEINFERENCE_JL_AVAILABLE = True
-except ImportError as e:
-    logging.warning(f"ActiveInference.jl renderer not available: {e}")
-    render_gnn_to_activeinference_jl = cast(Any, None)
-    ACTIVEINFERENCE_JL_AVAILABLE = False
-
-try:
-    from .jax import render_gnn_to_jax, render_gnn_to_jax_pomdp
-
-    JAX_AVAILABLE = True
-except ImportError as e:
-    logging.warning(f"JAX renderer not available: {e}")
-    render_gnn_to_jax = cast(Any, None)
-    render_gnn_to_jax_pomdp = cast(Any, None)
-    JAX_AVAILABLE = False
-
 logger = logging.getLogger(__name__)
 
 from .processor import render_gnn_spec

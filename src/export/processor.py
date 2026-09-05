@@ -5,11 +5,15 @@ Export processor module for GNN Processing Pipeline.
 This module provides the main export processing functionality.
 """
 
+import datetime
 import json
 import logging
+import pickle  # nosec B403
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Optional, cast
+from typing import Any, Dict, List, Optional, Tuple, cast
+
+from defusedxml import ElementTree as ET
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -23,17 +27,45 @@ from utils.pipeline_template import (
 
 # Import actual formatter implementations
 from .formatters import (
-    export_to_gexf,
-    export_to_graphml,
-    export_to_json,
     export_to_json_gnn,
-    export_to_pickle,
     export_to_plaintext_dsl,
     export_to_plaintext_summary,
     export_to_python_pickle,
-    export_to_xml,
     export_to_xml_gnn,
 )
+from .registry import DEFAULT_PIPELINE_FORMATS, get_format_spec, resolve_format_writer
+
+# Canonical default format set for the pipeline path (``process_export``) and
+# ``export_model``. ``export_gnn_model`` supports a different (text-leaning)
+# set — see ``_GNN_MODEL_WRITERS``.
+_DEFAULT_FORMATS: List[str] = list(DEFAULT_PIPELINE_FORMATS)
+
+# ``export_model`` writes one file per format under fixed ``model.<ext>`` names.
+_MODEL_FORMAT_FILES: Dict[str, str] = {
+    "json": "model.json",
+    "xml": "model.xml",
+    "graphml": "model.graphml",
+    "gexf": "model.gexf",
+    "pickle": "model.pickle",
+}
+
+# ``export_gnn_model`` writers and their fixed output filenames. Only these
+# formats are supported here (graph formats are not — the GNN-model dict
+# shape does not carry the graph nodes/edges the graph exporters need).
+_GNN_MODEL_WRITERS: Dict[str, Tuple[Any, str]] = {
+    "json": (export_to_json_gnn, "gnn_model.json"),
+    "xml": (export_to_xml_gnn, "gnn_model.xml"),
+    "pickle": (export_to_python_pickle, "gnn_model.pickle"),
+    "txt": (export_to_plaintext_summary, "gnn_model_summary.txt"),
+    "dsl": (export_to_plaintext_dsl, "gnn_model.dsl"),
+}
+
+# Keep the five defaults stable. The strict interchange writer is an explicit
+# opt-in; per-model metadata is attached only in its pipeline invocation.
+_PIPELINE_WRITERS: Dict[str, Any] = {
+    name: resolve_format_writer(name)
+    for name in (*DEFAULT_PIPELINE_FORMATS, "geo_infer")
+}
 
 
 def generate_exports(target_dir: Path, output_dir: Path, verbose: bool = False) -> bool:
@@ -111,28 +143,18 @@ def export_single_gnn_file(gnn_file: Path, exports_dir: Path) -> Dict[str, Any]:
         # Parse GNN content
         parsed_content = parse_gnn_content(content)
 
-        # Generate exports
+        # Generate exports for the five pipeline formats, using the
+        # canonical extension for each (pickle uses ``.pkl``).
         exports: dict[Any, Any] = {}
-
-        # JSON export
-        json_file = exports_dir / f"{gnn_file.stem}.json"
-        exports["json"] = export_to_json(parsed_content, json_file)
-
-        # XML export
-        xml_file = exports_dir / f"{gnn_file.stem}.xml"
-        exports["xml"] = export_to_xml(parsed_content, xml_file)
-
-        # GraphML export
-        graphml_file = exports_dir / f"{gnn_file.stem}.graphml"
-        exports["graphml"] = export_to_graphml(parsed_content, graphml_file)
-
-        # GEXF export
-        gexf_file = exports_dir / f"{gnn_file.stem}.gexf"
-        exports["gexf"] = export_to_gexf(parsed_content, gexf_file)
-
-        # Pickle export
-        pickle_file = exports_dir / f"{gnn_file.stem}.pkl"
-        exports["pickle"] = export_to_pickle(parsed_content, pickle_file)
+        extensions = {"pickle": "pkl"}
+        for fmt in DEFAULT_PIPELINE_FORMATS:
+            writer = resolve_format_writer(fmt)
+            ext = extensions.get(fmt, fmt)
+            output_file = exports_dir / f"{gnn_file.stem}.{ext}"
+            if writer is None:
+                exports[fmt] = False
+            else:
+                exports[fmt] = writer(parsed_content, output_file)
 
         return {
             "success": all(exports.values()),
@@ -287,7 +309,7 @@ def export_model(
     """
     try:
         if formats is None:
-            formats = ["json", "xml", "graphml", "gexf", "pickle"]
+            formats = list(_DEFAULT_FORMATS)
 
         results: dict[str, Any] = {
             "success": True,
@@ -300,32 +322,29 @@ def export_model(
         output_dir.mkdir(parents=True, exist_ok=True)
         for format_type in formats:
             try:
+                spec = get_format_spec(format_type)
+                filename = _MODEL_FORMAT_FILES.get(format_type) or (
+                    "model" + spec["extension"] if spec else None
+                )
+                writer = resolve_format_writer(format_type)
+                if filename is None or writer is None:
+                    results["errors"].append(f"Unsupported format: {format_type}")
+                    continue
+
+                output_file = output_dir / filename
                 if format_type == "json":
-                    output_file = output_dir / "model.json"
+                    # Recovery minimal JSON writer guarantees at least one
+                    # success even if the formatter returns False or raises.
                     try:
-                        success = export_to_json(model_data, output_file)
+                        success = writer(model_data, output_file)
                         if not success:
                             raise RuntimeError("formatter returned False")
                     except Exception:
-                        # Recovery minimal JSON writer to guarantee at least one success
                         with open(output_file, "w", encoding="utf-8") as f:
                             json.dump(model_data, f, indent=2, ensure_ascii=False)
                         success = True
-                elif format_type == "xml":
-                    output_file = output_dir / "model.xml"
-                    success = export_to_xml(model_data, output_file)
-                elif format_type == "graphml":
-                    output_file = output_dir / f"model.{format_type}"
-                    success = export_to_graphml(model_data, output_file)
-                elif format_type == "gexf":
-                    output_file = output_dir / f"model.{format_type}"
-                    success = export_to_gexf(model_data, output_file)
-                elif format_type == "pickle":
-                    output_file = output_dir / f"model.{format_type}"
-                    success = export_to_pickle(model_data, output_file)
                 else:
-                    results["errors"].append(f"Unsupported format: {format_type}")
-                    continue
+                    success = writer(model_data, output_file)
 
                 results["exports"][format_type] = {
                     "success": success,
@@ -391,49 +410,38 @@ def export_gnn_model(
     """
     try:
         if formats is None:
-            formats = ["json", "xml", "graphml", "gexf", "pickle"]
+            formats = ["json", "xml", "pickle", "txt", "dsl"]
+
+        # Normalize formats param if passed incorrectly as a single string.
+        if isinstance(formats, str):
+            formats = [formats]
 
         results: dict[str, Any] = {"success": True, "exports": {}, "errors": []}
 
-        # Normalize formats param if passed incorrectly as a single string
-        if isinstance(formats, str):
-            formats = [formats]
         for format_type in formats:
+            entry = _GNN_MODEL_WRITERS.get(format_type)
+            if entry is None:
+                results["errors"].append(f"Unsupported format: {format_type}")
+                results["success"] = False
+                continue
+            writer, filename = entry
             try:
-                if format_type == "json":
-                    output_file = output_dir / f"gnn_model.{format_type}"
-                    success = export_to_json_gnn(model_data, output_file)
-                elif format_type == "xml":
-                    output_file = output_dir / f"gnn_model.{format_type}"
-                    success = export_to_xml_gnn(model_data, output_file)
-                elif format_type == "pickle":
-                    output_file = output_dir / f"gnn_model.{format_type}"
-                    success = export_to_python_pickle(model_data, output_file)
-                elif format_type == "txt":
-                    output_file = output_dir / "gnn_model_summary.txt"
-                    success = export_to_plaintext_summary(model_data, output_file)
-                elif format_type == "dsl":
-                    output_file = output_dir / "gnn_model.dsl"
-                    success = export_to_plaintext_dsl(model_data, output_file)
-                else:
-                    results["errors"].append(f"Unsupported format: {format_type}")
-                    results["success"] = False
-                    continue
-
+                output_file = output_dir / filename
+                success = writer(model_data, output_file)
                 results["exports"][format_type] = {
                     "success": success,
                     "file": str(output_file),
                 }
-
                 if not success:
                     results["success"] = False
-
             except Exception as e:
                 results["errors"].append(f"Error exporting to {format_type}: {e}")
                 results["success"] = False
 
-        if not results["errors"]:
-            results["errors"].append("No valid formats requested")
+        # Surface a top-level error string for failed runs so callers that
+        # inspect ``error`` see one. (Previously a bogus ``"No valid formats
+        # requested"`` message was appended on the success path — that is
+        # removed; an all-success run now has an empty ``errors`` list.)
         if not results["success"] and "error" not in results:
             results["error"] = (
                 "; ".join(results["errors"]) if results["errors"] else "Export failed"
@@ -459,18 +467,22 @@ def process_export(
         target_dir: Directory containing GNN files to export
         output_dir: Output directory for export results
         verbose: Whether to enable verbose logging
-        **kwargs: Additional processing options including 'formats'
+        **kwargs: Additional processing options including 'formats' and
+            'logger' (a ``logging.Logger`` injected by the pipeline
+            template; when omitted the module logger is used)
 
     Returns:
         True if export succeeded, False otherwise
     """
-    import datetime
-    import json
-    from pathlib import Path
-
-    # Setup logging
-    logger = logging.getLogger(__name__)
-    if verbose:
+    # Setup logging: honor an injected logger (passed by the pipeline
+    # template as ``logger=...``); fall back to this module's logger.
+    # The verbose flag only widens the level on the module-owned logger —
+    # an injected logger's level is owned by its configurator.
+    injected_logger = kwargs.pop("logger", None)
+    logger = (
+        injected_logger if injected_logger is not None else logging.getLogger(__name__)
+    )
+    if verbose and injected_logger is None:
         logger.setLevel(logging.DEBUG)
 
     # Ensure output directory exists
@@ -517,20 +529,17 @@ def process_export(
                 "total_files": 0,
                 "successful_exports": 0,
                 "failed_exports": 0,
-                "formats_generated": {
-                    "json": 0,
-                    "xml": 0,
-                    "graphml": 0,
-                    "gexf": 0,
-                    "pickle": 0,
-                },
+                "formats_generated": dict.fromkeys(_PIPELINE_WRITERS, 0),
             },
         }
 
         # Get requested formats
-        requested_formats = kwargs.get(
-            "formats", ["json", "xml", "graphml", "gexf", "pickle"]
-        )
+        requested_formats = kwargs.get("formats", list(_DEFAULT_FORMATS))
+
+        filename_counts: dict[str, int] = {}
+        for entry in gnn_results["processed_files"]:
+            name = entry.get("file_name", "")
+            filename_counts[name] = filename_counts.get(name, 0) + 1
 
         # Process each file
         for file_result in gnn_results["processed_files"]:
@@ -538,6 +547,15 @@ def process_export(
                 continue
 
             file_name = file_result["file_name"]
+            if (
+                not isinstance(file_name, str)
+                or not file_name.endswith(".md")
+                or file_name in {".md", "..md"}
+                or "/" in file_name
+                or "\\" in file_name
+                or "\x00" in file_name
+            ):
+                raise ValueError("Step 3 file_name must be a simple Markdown filename")
             logger.info(f"Exporting: {file_name}")
 
             # Load the actual parsed GNN specification
@@ -561,9 +579,47 @@ def process_export(
                 )
                 model_data = file_result
 
-            # Create file-specific output directory
-            file_output_dir = output_dir / file_name.replace(".md", "")
-            file_output_dir.mkdir(exist_ok=True)
+            source = None
+            source_error = None
+            relative_source = Path(file_name)
+            if "geo_infer" in requested_formats:
+                try:
+                    source_root = Path(target_dir).resolve()
+                    supplied_source = Path(file_result["file_path"])
+                    candidates = (
+                        [supplied_source.resolve()]
+                        if supplied_source.is_absolute()
+                        else [
+                            supplied_source.resolve(),
+                            (source_root / supplied_source).resolve(),
+                        ]
+                    )
+                    source = next(
+                        (
+                            candidate
+                            for candidate in candidates
+                            if candidate.is_relative_to(source_root)
+                            and candidate.is_file()
+                        ),
+                        None,
+                    )
+                    if source is None:
+                        raise ValueError("GNN source must be a file inside target_dir")
+                    if source.name != file_name:
+                        raise ValueError(
+                            "GNN source filename disagrees with Step 3 file_name"
+                        )
+                    relative_source = source.relative_to(source_root)
+                except (TypeError, ValueError, OSError) as exc:
+                    source_error = exc
+
+            # Preserve nested source identities instead of overwriting equal basenames.
+            file_output_dir = (
+                output_dir / relative_source.parent / relative_source.stem
+            ).resolve()
+            if not file_output_dir.is_relative_to(Path(output_dir).resolve()):
+                raise ValueError("Model output directory must remain inside output_dir")
+            file_output_dir.mkdir(parents=True, exist_ok=True)
 
             file_export_result: dict[str, Any] = {
                 "file_name": file_name,
@@ -574,49 +630,68 @@ def process_export(
 
             # Generate exports for each format
             for format_name in requested_formats:
+                writer = _PIPELINE_WRITERS.get(format_name)
+                if writer is None:
+                    logger.warning(f"Unsupported format: {format_name}")
+                    continue
                 try:
-                    # Generate export file
+                    spec = get_format_spec(format_name)
+                    extension = spec["extension"].lstrip(".") if spec else format_name
                     export_file = (
                         file_output_dir
-                        / f"{file_name.replace('.md', '')}_{format_name}.{'pkl' if format_name == 'pickle' else format_name}"
+                        / f"{Path(file_name).stem}_{format_name}.{extension}"
                     )
+                    if not export_file.resolve().is_relative_to(
+                        Path(output_dir).resolve()
+                    ):
+                        raise ValueError("Export file must remain inside output_dir")
+                    export_data = model_data
+                    if format_name == "geo_infer":
+                        from .geo_infer import MAX_SOURCE_BYTES
 
-                    # Map format names to export functions
-                    format_function_map: dict[str, Any] = {
-                        "json": export_to_json,
-                        "xml": export_to_xml,
-                        "graphml": export_to_graphml,
-                        "gexf": export_to_gexf,
-                        "pickle": export_to_pickle,
-                    }
-
-                    if format_name in format_function_map:
-                        success = format_function_map[format_name](
-                            model_data, export_file
-                        )
-
-                        if success:
-                            file_export_result["exports"][format_name] = {
-                                "success": True,
-                                "export_file": str(export_file),
-                                "file_size": export_file.stat().st_size
-                                if export_file.exists()
-                                else 0,
-                            }
-                            export_results["summary"]["formats_generated"][
-                                format_name
-                            ] += 1
-                            logger.info(
-                                f"Generated {format_name} export for {file_name}"
+                        if source_error is not None:
+                            raise ValueError(str(source_error)) from source_error
+                        per_model = kwargs.get("geo_infer_options", {})
+                        options = None
+                        if isinstance(per_model, dict):
+                            options = per_model.get(relative_source.as_posix())
+                            if options is None and filename_counts[file_name] == 1:
+                                options = per_model.get(file_name)
+                        if not isinstance(options, dict):
+                            raise ValueError(
+                                f"Explicit geo_infer_options required for {file_name}"
                             )
-                        else:
-                            file_export_result["exports"][format_name] = {
-                                "success": False,
-                                "error": "Export function returned False",
-                            }
-                            file_export_result["success"] = False
+                        if source is None:
+                            raise ValueError(
+                                "GNN source must be a file inside target_dir"
+                            )
+                        with source.open("rb") as stream:
+                            raw = stream.read(MAX_SOURCE_BYTES + 1)
+                        if len(raw) > MAX_SOURCE_BYTES:
+                            raise ValueError("GNN source exceeds four MiB")
+                        export_data = dict(
+                            model_data,
+                            raw_content=raw.decode("utf-8"),
+                            geo_infer=dict(options),
+                        )
+                    success = writer(export_data, export_file)
+
+                    if success:
+                        file_export_result["exports"][format_name] = {
+                            "success": True,
+                            "export_file": str(export_file),
+                            "file_size": export_file.stat().st_size
+                            if export_file.exists()
+                            else 0,
+                        }
+                        export_results["summary"]["formats_generated"][format_name] += 1
+                        logger.info(f"Generated {format_name} export for {file_name}")
                     else:
-                        logger.warning(f"Unsupported format: {format_name}")
+                        file_export_result["exports"][format_name] = {
+                            "success": False,
+                            "error": "Export function returned False",
+                        }
+                        file_export_result["success"] = False
 
                 except Exception as e:
                     logger.error(
@@ -638,11 +713,15 @@ def process_export(
 
         # Save export results
         export_results_file = output_dir / "export_results.json"
+        if not export_results_file.resolve().is_relative_to(Path(output_dir).resolve()):
+            raise ValueError("Export results manifest must remain inside output_dir")
         with open(export_results_file, "w") as f:
             json.dump(export_results, f, indent=2)
 
         # Save export summary
         export_summary_file = output_dir / "export_summary.json"
+        if not export_summary_file.resolve().is_relative_to(Path(output_dir).resolve()):
+            raise ValueError("Export summary manifest must remain inside output_dir")
         with open(export_summary_file, "w") as f:
             json.dump(export_results["summary"], f, indent=2)
 
@@ -656,9 +735,126 @@ def process_export(
             f"  Formats generated: {export_results['summary']['formats_generated']}"
         )
 
-        success = export_results["summary"]["successful_exports"] > 0
+        success = (
+            export_results["summary"]["successful_exports"] > 0
+            and export_results["summary"]["failed_exports"] == 0
+        )
         return cast("bool", success)
 
     except Exception as e:
         logger.error(f"Export processing failed: {e}")
         return False
+
+
+def _check_content(path: Path) -> Tuple[bool, str]:
+    """Lightweight sanity check for an exported file by extension.
+
+    JSON must parse; XML/GraphML/GEXF must parse as XML; pickle must
+    load; everything else must be non-empty UTF-8 text.
+    """
+    suffix = path.suffix.lower()
+    try:
+        if suffix == ".json":
+            json.loads(path.read_text(encoding="utf-8"))
+        elif suffix in (".xml", ".graphml", ".gexf"):
+            ET.parse(path)
+        elif suffix == ".pkl":
+            with open(path, "rb") as f:
+                pickle.load(f)  # nosec B301
+        else:
+            if not path.read_text(encoding="utf-8").strip():
+                return False, "empty text file"
+        return True, ""
+    except Exception as e:
+        return False, str(e)
+
+
+def validate_export_outputs(
+    output_dir: Any,
+    expected_formats: Optional[List[str]] = None,
+) -> Dict[str, Any]:
+    """Validate the artifacts of a completed ``process_export`` run.
+
+    Reads ``<output_dir>/export_results.json`` and checks every export
+    the manifest records as successful: the file must exist, be non-empty,
+    and parse cleanly for its format (JSON loads; XML/GraphML/GEXF parse
+    as XML; pickle loads). When *expected_formats* is provided, models
+    whose successful exports do not cover every expected format are
+    reported as ``incomplete``.
+
+    Args:
+        output_dir: Directory that received ``process_export`` output.
+        expected_formats: Optional list of format names that every
+            exported model must include; missing ones go to
+            ``incomplete``.
+
+    Returns:
+        Dict with keys ``success``, ``checked``, ``missing``,
+        ``invalid``, ``incomplete``, ``files``.
+    """
+    out = Path(output_dir)
+    manifest_path = out / "export_results.json"
+    result: dict[str, Any] = {
+        "success": True,
+        "checked": 0,
+        "missing": [],
+        "invalid": [],
+        "incomplete": [],
+        "files": {},
+    }
+    if not manifest_path.exists():
+        result["success"] = False
+        result["missing"].append(str(manifest_path))
+        return result
+    try:
+        with open(manifest_path, "r", encoding="utf-8") as f:
+            manifest = json.load(f)
+    except Exception as e:
+        result["success"] = False
+        result["invalid"].append({"file": str(manifest_path), "error": str(e)})
+        return result
+
+    expected = set(expected_formats) if expected_formats else set()
+
+    for file_entry in manifest.get("files_exported", []):
+        file_name = file_entry.get("file_name", "<unknown>")
+        per_file: dict[str, Any] = {}
+        covered: set[str] = set()
+        for fmt, info in file_entry.get("exports", {}).items():
+            if not info.get("success"):
+                continue
+            # ``process_export`` records ``export_file``; ``export_model``
+            # records ``file`` — accept either.
+            path_str = info.get("export_file") or info.get("file")
+            if not path_str:
+                continue
+            path = Path(path_str)
+            entry: dict[str, Any] = {"exists": path.exists()}
+            if path.exists():
+                entry["size"] = path.stat().st_size
+                ok, err = _check_content(path)
+                entry["valid"] = ok
+                if not ok:
+                    result["invalid"].append(
+                        {"file": str(path), "format": fmt, "error": err}
+                    )
+                    result["success"] = False
+                elif path.stat().st_size == 0:
+                    result["invalid"].append(
+                        {"file": str(path), "format": fmt, "error": "empty file"}
+                    )
+                    result["success"] = False
+                else:
+                    covered.add(fmt)
+            else:
+                result["missing"].append(str(path))
+                result["success"] = False
+            per_file[fmt] = entry
+            result["checked"] += 1
+        result["files"][file_name] = per_file
+        if expected and not expected.issubset(covered):
+            result["incomplete"].append(
+                {"file": file_name, "missing_formats": sorted(expected - covered)}
+            )
+            result["success"] = False
+    return result

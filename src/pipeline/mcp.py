@@ -148,6 +148,22 @@ def validate_pipeline_dependencies(mcp_instance_ref: Any) -> Dict[str, Any]:
                 if dep not in STEP_METADATA:
                     missing_deps.append({"step": step_name, "missing_dependency": dep})
 
+        # Real cycle detection: map step names to integer nodes, run the
+        # shared Kahn-peel detector from pipeline.dag, and map survivors back.
+        from pipeline.dag import find_circular_dependencies
+
+        step_names_sorted = sorted(STEP_METADATA)
+        node_by_name = {name: node for node, name in enumerate(step_names_sorted)}
+        name_graph: dict[int, list[int]] = {}
+        for name in step_names_sorted:
+            deps_raw = STEP_METADATA[name].get("dependencies", [])
+            deps = deps_raw if isinstance(deps_raw, list) else []
+            name_graph[node_by_name[name]] = [
+                node_by_name[str(dep)] for dep in deps if str(dep) in node_by_name
+            ]
+        for node in sorted(find_circular_dependencies(name_graph)):
+            circular_deps.append({"step": step_names_sorted[node]})
+
         return {
             "success": True,
             "validation_result": validation_result,

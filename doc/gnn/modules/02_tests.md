@@ -444,7 +444,7 @@ flowchart TD
 **helpers/** (Shared Test Helpers, importable as `tests.helpers`):
 - `script_loader.load_module_from_path()` — importlib loader for standalone scripts with optional `sys_path` injection
 - `gnn_samples` — canonical sample GNN markdown (`SAMPLE_GNN_CONTENT`, `write_sample_gnn_markdown()`)
-- `mcp_stubs.MCPTools` — in-memory MCP registry stub for wiring tests
+- `mcp_stubs.MCPTools` — in-memory MCP registry test double for wiring tests
 - `render_recovery.render_gnn_files()` — recovery-friendly bulk render for resilience tests
 
 **tests/** (Plumbing-Contract Tests):

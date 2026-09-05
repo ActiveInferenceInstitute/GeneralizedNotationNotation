@@ -17,6 +17,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Tuple, cast
 
+from utils.resource_manager import get_memory_usage
+
 logger = logging.getLogger(__name__)
 
 
@@ -452,10 +454,9 @@ def monitor_visualization_performance(func: Callable) -> Callable:
         try:
             result = func(*args, **kwargs)
             success = True
-        except Exception as e:
+        except Exception:
             result = cast(Any, None)
             success = False
-            str(e)
             raise
         finally:
             end_time = time.time()
@@ -473,17 +474,6 @@ def monitor_visualization_performance(func: Callable) -> Callable:
         return result
 
     return wrapper
-
-
-def get_memory_usage() -> float:
-    """Get current memory usage in MB."""
-    try:
-        import psutil
-
-        process = psutil.Process()
-        return cast("float", process.memory_info().rss / 1024 / 1024)
-    except ImportError:
-        return 0.0
 
 
 if __name__ == "__main__":

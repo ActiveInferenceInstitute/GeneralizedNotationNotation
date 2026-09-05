@@ -60,7 +60,7 @@ class PreflightReport:
 
     def add_issue(
         self, category: str, severity: str, msg: str, fix: Optional[str] = None
-    ) -> Any:
+    ) -> None:
         """Provide add issue behavior."""
         self.issues.append(
             PreflightIssue(category=category, severity=severity, message=msg, fix=fix)
@@ -71,7 +71,7 @@ class PreflightReport:
 
     def to_markdown(self) -> str:
         """Provide to markdown behavior."""
-        lines: list[Any] = ["# Preflight Check Report", ""]
+        lines: list[str] = ["# Preflight Check Report", ""]
         emoji = "🟢" if self.is_ok else "🔴"
         lines.append(
             f"{emoji} **{self.checks_passed} passed**, **{self.checks_failed} failed**"
@@ -160,6 +160,25 @@ def validate_config(config_path: Optional[Path] = None) -> PreflightReport:
                 )
             else:
                 report.add_pass(f"LLM timeout: {timeout}s")
+
+    # Validate pipeline.skip_steps with the canonical parser (values must be
+    # exact integers in 0..24). Catching a bad list here — before a container
+    # plan or a pipeline run consumes it — is the whole point of preflight.
+    pipeline_section = config.get("pipeline")
+    if isinstance(pipeline_section, dict) and "skip_steps" in pipeline_section:
+        from pipeline.pipeline_container_plan import read_skip_steps
+
+        try:
+            skipped = read_skip_steps(config_path)
+        except ValueError as e:
+            report.add_issue(
+                "config",
+                "error",
+                f"Invalid pipeline.skip_steps: {e}",
+                fix="Use exact integers 0-24, e.g. skip_steps: [15, 16]",
+            )
+        else:
+            report.add_pass(f"pipeline.skip_steps: {skipped if skipped else 'none'}")
 
     return report
 

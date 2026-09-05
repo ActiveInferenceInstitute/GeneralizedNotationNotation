@@ -19,6 +19,7 @@ from gnn.schema import (
 from pipeline.model_family_acceptance import (
     ModelFamily,
     load_model_family_manifest,
+    select_model_families,
 )
 from report.semantic_fidelity import render_semantic_fidelity_markdown
 
@@ -159,15 +160,10 @@ def compare_semantic_contracts(
 def _select_families(
     manifest_path: Path, family_names: Iterable[str] | None
 ) -> list[ModelFamily]:
-    requested = {name.strip() for name in family_names or [] if name.strip()}
-    families = load_model_family_manifest(manifest_path)
-    selected = [
-        family for family in families if not requested or family.name in requested
-    ]
-    missing = sorted(requested - {family.name for family in families})
-    if missing:
-        raise KeyError(f"Unknown model families: {', '.join(missing)}")
-    return selected
+    """Load the manifest and apply the shared family-selection rule."""
+    return select_model_families(
+        load_model_family_manifest(manifest_path), family_names
+    )
 
 
 def _run_family_fidelity(

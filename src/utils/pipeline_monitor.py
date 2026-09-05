@@ -140,7 +140,7 @@ class PipelineMonitor:
                 "healthy": 1.5,  # <= 1.5x baseline
                 "degraded": 2.0,  # 1.5-2x baseline
                 "failing": 3.0,  # 2-3x baseline
-                # > 3x baseline is critical
+                "critical": 3.0,  # > 3x baseline is critical
             },
             "failure_rate": {
                 "healthy": 5.0,  # <= 5% failure rate
@@ -322,7 +322,6 @@ class PipelineMonitor:
 
     def _check_performance_alerts(self, step_name: str, duration: float) -> Any:
         """Check for performance-related alerts."""
-        self.step_metrics[step_name]
 
         # Check against baseline if available
         if step_name in self.performance_baselines:
@@ -345,7 +344,7 @@ class PipelineMonitor:
                 )
             elif (
                 performance_ratio
-                > self.health_thresholds["duration_variance"]["failing"]
+                > self.health_thresholds["duration_variance"]["degraded"]
             ):
                 self._generate_alert(
                     level=AlertLevel.WARNING,

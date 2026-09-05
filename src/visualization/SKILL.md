@@ -41,10 +41,14 @@ paths = viz.generate_matrix_visualization(matrix_data)
 generate_graph_visualization(graph_data, "output/viz/model_graph.png")
 generate_matrix_visualization(matrix_data, "output/viz/model_matrix.png")
 
-# Run full visualization step (used by pipeline)
+# Run full visualization step (used by the pipeline; accepts injected logger)
 process_visualization(
     Path("input/gnn_files"), Path("output/8_visualization_output"), verbose=True
 )
+
+# Diagnose missing backends (first check for "no visualizations generated")
+from visualization import backend_status
+print(backend_status())
 ```
 
 ## Key Exports
@@ -54,6 +58,7 @@ process_visualization(
 - `generate_graph_visualization` — network graph plots
 - `generate_matrix_visualization` — matrix heatmaps
 - `process_visualization` — pipeline processing (JSON-first when step-3 `*_parsed.json` exists)
+- `backend_status` — availability report for matplotlib/numpy/seaborn/networkx/plotly
 
 ## Safe-to-Fail Pattern
 

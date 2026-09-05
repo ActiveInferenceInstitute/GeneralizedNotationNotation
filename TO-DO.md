@@ -58,3 +58,14 @@ git diff --check
   land; the audit trail lives in `CHANGELOG.md` and git history.
 - Scope open items with concrete tasks, file paths, verification commands, and
   acceptance criteria so the next session can execute without re-deriving them.
+
+
+## GEO-INFER contract expansion
+
+The delivered opt-in v1 format is specified in `src/export/geo_infer_contract.md`.
+Further work must preserve independently installable runtimes and explicit matrix,
+space and time semantics.
+
+| ID | Scope | Acceptance evidence |
+| --- | --- | --- |
+| GNN-04 | Pin paired repository revisions in cross-repository CI. | Independent locked environments complete both categorical and H3 round trips; receipts include source/artifact digests and both revisions. |

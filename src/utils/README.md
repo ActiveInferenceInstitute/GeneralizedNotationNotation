@@ -146,6 +146,24 @@ Loads pipeline configuration (defaults when no path given).
 #### `get_config_value(config, key) -> Any` / `set_config_value(config, key, value) -> Any`
 Get/set configuration values with dot-notation keys.
 
+### Shared Helpers
+
+Single-source implementations shared across modules (see AGENTS.md →
+Composability Notes for the full consolidation map):
+
+#### `verify_directory_writable(directory: Path, probe_name: str = ".write_probe") -> None`
+The one writable-directory probe (create temp file → atomic rename → cleanup), used by
+`utils.pipeline.validate_output_directory` and `utils.pipeline_validator.check_pipeline_readiness`.
+Raises `OSError` when the directory does not accept writes.
+
+#### `get_memory_usage() -> float`
+Canonical process-memory probe in MB (`utils.resource_manager`); `utils.test_utils`
+and `utils.visualization_optimizer` re-export it.
+
+#### `redact_environment() -> dict[str, str]` (`utils.mcp`)
+Copy of `os.environ` with secret-carrying variable names removed
+(matched case-insensitively against `SENSITIVE_ENV_KEY_MARKERS`).
+
 ## Usage Examples
 
 ### Basic Logging Setup
@@ -226,7 +244,8 @@ def process_my_module(target_dir: Path, output_dir: Path, verbose: bool = False,
 
 ## Testing and Validation
 
-Tests live in `src/tests/utils/` (including `test_utils_core.py` and `test_new_utils.py`).
+Tests live in `src/tests/utils/` (including `test_utils_core.py`, `test_new_utils.py`, and
+`test_shared_helpers.py`, which pins the shared-helper behavior above).
 
 Run: `uv run --extra dev python -m pytest src/tests/utils/ -v`
 
@@ -261,3 +280,6 @@ This module is part of the GeneralizedNotationNotation project. See the main rep
 - **[AGENTS](AGENTS.md)**: Agentic Workflows
 - **[SPEC](SPEC.md)**: Architectural Specification
 - **[SKILL](SKILL.md)**: Capability API
+
+Step 7 accepts `--formats` and `--geo-infer-options-file`; argument definitions,
+step configuration and `PipelineArguments` preserve these through orchestration.

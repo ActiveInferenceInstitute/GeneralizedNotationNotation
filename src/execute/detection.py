@@ -18,6 +18,10 @@ from .types import ScriptExecutionContext
 
 logger = logging.getLogger(__name__)
 
+# Canonical name of the Step 11 render-output directory. Referenced by the
+# resolution heuristic and by callers that build sibling paths off it.
+RENDER_OUTPUT_DIR_NAME: str = "11_render_output"
+
 
 def determine_script_framework(
     script_path: Path, render_output_dir: Path, framework_dirs: Dict[str, str]
@@ -146,25 +150,29 @@ def _resolve_render_output_dir(
     if output_dir is not None:
         base = output_dir.parent
         for rel in (
-            "11_render_output/11_render_output",
-            "11_render_output",
+            f"{RENDER_OUTPUT_DIR_NAME}/{RENDER_OUTPUT_DIR_NAME}",
+            RENDER_OUTPUT_DIR_NAME,
         ):
             found = _if_nonempty(base / rel)
             if found is not None:
                 return found
 
     # Priority 3: target_dir is already the render output
-    if "11_render_output" in str(target_dir) or target_dir.name == "11_render_output":
+    if (
+        RENDER_OUTPUT_DIR_NAME in str(target_dir)
+        or target_dir.name == RENDER_OUTPUT_DIR_NAME
+    ):
         return _if_nonempty(target_dir) or target_dir
 
     # Priority 4: search common cwd-relative locations.
+    nested = f"{RENDER_OUTPUT_DIR_NAME}/{RENDER_OUTPUT_DIR_NAME}"
     candidates: List[Path] = [
-        target_dir.parent / "output" / "11_render_output",
-        target_dir / "11_render_output",
-        Path("output/test_render/11_render_output/11_render_output"),
-        Path("output/test_render_improved/11_render_output/11_render_output"),
-        *list(Path("output").glob("*/11_render_output/11_render_output")),
-        *list(Path("output").glob("**/11_render_output")),
+        target_dir.parent / "output" / RENDER_OUTPUT_DIR_NAME,
+        target_dir / RENDER_OUTPUT_DIR_NAME,
+        Path(f"output/test_render/{nested}"),
+        Path(f"output/test_render_improved/{nested}"),
+        *list(Path("output").glob(f"*/{nested}")),
+        *list(Path("output").glob(f"**/{RENDER_OUTPUT_DIR_NAME}")),
     ]
     for candidate in candidates:
         found = _if_nonempty(candidate)

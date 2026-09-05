@@ -33,16 +33,18 @@ from advanced_visualization import (
     VisualizationDataExtractor,
     extract_visualization_data,
     process_advanced_viz,
+    VIZ_TYPE_CHOICES,
+    probe_capabilities,
 )
 
 # Create visualizations
 viz = AdvancedVisualizer()
-create_network_visualization(data, output_path="net.html")
-create_heatmap_visualization(data, output_path="heat.html")
+create_network_visualization(data)   # dict-returning helper
+create_heatmap_visualization(data)   # dict-returning helper
 
 # Generate dashboards
 gen = DashboardGenerator()
-generate_dashboard(model_data, output_dir="output/")
+generate_dashboard(gnn_content, "model_name", Path("output/"))
 
 # Extract visualization data
 extractor = VisualizationDataExtractor()
@@ -62,6 +64,8 @@ if D2_AVAILABLE:
 - `VisualizationDataExtractor` / `extract_visualization_data` — data preparation
 - `D2Visualizer` / `D2DiagramSpec` / `D2GenerationResult` — D2 diagram support
 - `create_network_visualization`, `create_timeline_visualization`, `create_heatmap_visualization`
+- `VIZ_TYPE_CHOICES` — canonical viz_type values accepted by process_advanced_viz (also drives the CLI --viz-type fallback choices)
+- `probe_capabilities()` — live runtime probe (D2 CLI on PATH; plotly, seaborn, matplotlib, numpy, networkx importability); backs the check_visualization_capabilities MCP tool (see MCP Tools below)
 
 ## Dependencies
 

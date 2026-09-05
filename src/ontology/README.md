@@ -61,19 +61,31 @@ Consumed `**kwargs`: `strict_validation` (default `False`), `recursive` (default
 #### `parse_gnn_ontology_section(content: str) -> Dict[str, Any]`
 Extracts the ontology annotation section from GNN Markdown content.
 
-#### `load_defined_ontology_terms(ontology_terms_file: Path | None = None) -> Dict[str, Any]`
-Loads the ontology term dictionary (default: bundled `act_inf_ontology_terms.json`).
+#### `load_defined_ontology_terms(ontology_terms_file: Path | None = None, *, search_paths: Sequence[Path] | None = None) -> Dict[str, Any]`
+Loads the ontology term dictionary (default: bundled `act_inf_ontology_terms.json`). An explicit file is authoritative and fails closed; the optional `search_paths` keyword is a dependency-injection hook for tests and alternate installs (warn-and-continue on misses, then built-in defaults).
 
-#### `parse_annotation(annotation: str) -> tuple`
-Parses a single annotation string such as `A=LikelihoodMatrix`.
+#### `parse_annotation(annotation: str) -> ParsedAnnotation`
+Parses a single annotation string such as `A=LikelihoodMatrix` into a `ParsedAnnotation` NamedTuple (`key`, `value`, `comment`) — still a 3-tuple, so positional unpacking keeps working.
 
 #### `validate_annotations(annotations, ontology_terms: Dict[str, Any] | None = None) -> Dict[str, Any]`
-Validates annotation strings against the known term set. Returns valid/invalid annotations plus correction suggestions via Levenshtein-distance matching.
+Validates annotation strings against the known term set (case-insensitive match). Returns valid/invalid annotations plus correction suggestions via Levenshtein-distance matching. Internally delegates to the pure helpers `_build_term_lookup`, `_term_matches`, and `suggest_terms`.
 
 #### `process_gnn_ontology(gnn_file: str, ontology_terms: Dict[str, Any] | None = None) -> Dict[str, Any]`
-Reads a single GNN file, parses its ontology section, and validates the annotations.
+Reads a single GNN file, parses its ontology section, and validates the annotations. Delegates to `analyze_ontology_content`.
 
-#### `generate_ontology_report_for_file(gnn_file: Path, output_dir: Path) -> Dict[str, Any]`
+#### `analyze_ontology_content(content: str, ontology_terms: Dict[str, Any] | None = None) -> Dict[str, Any]`
+Single pure entry point: parse GNN content + load terms + validate annotations, returning `{"ontology_data", "validation_result", "ontology_terms"}`. Shared by `process_gnn_ontology` and `OntologyProcessor.process_ontology`.
+
+#### `suggest_terms(annotations, ontology_terms=None, *, max_distance=3) -> List[Dict[str, Any]]`
+Returns nearest-ontology-term suggestions for unknown annotations, each `{"annotation", "suggested_term", "description", "distance"}` ranked closest-first. Reuses the same heuristic as `validate_annotations`, exposed for LLM/report consumers.
+
+#### `summarise_coverage(validation_result: Dict[str, Any]) -> str`
+Renders a `validate_annotations` result as a compact coverage line (e.g. `"3/4 annotations valid (coverage 75.0%); 1 suggestion"`).
+
+#### `build_ontology_terms(terms, *, descriptions=None, uris=None) -> Dict[str, Any]`
+Builds a normalized ontology-terms dictionary in memory (the shape `load_defined_ontology_terms` returns) without writing a JSON file. Rejects empty names, exact duplicates, and case-folded duplicates (e.g. `["A", "a"]`) to uphold the case-insensitive lookup invariant.
+
+#### `generate_ontology_report_for_file(gnn_file: Path, output_dir: Path, *, ontology_terms: Dict[str, Any] | None = None) -> Dict[str, Any]`
 Writes `<file_stem>_ontology_report.json` for a single GNN file.
 
 #### `validate_ontology_terms(terms: List[str] | str | None = None) -> bool`
@@ -86,6 +98,9 @@ Wraps `process_ontology()` (content-based) and `validate_terms()`.
 
 #### `OntologyValidator`
 Exposes `validate(annotations)`, `validate_ontology(content)`, and `check_consistency(annotations)` for quick boolean checks.
+
+#### `OntologyTermIndex`
+Prebuilt case-insensitive index over a vocabulary for batch callers: `OntologyTermIndex(terms)`, `.from_file(path)`, or `.from_names(...)`; then `lookup(value)`, `known_terms()`, `validate(annotations)`, `suggest(annotations)`, `len()`, and `in` checks.
 
 ### Active Inference Ontology
 
@@ -154,6 +169,7 @@ Tests live in `src/tests/ontology/`:
 - `test_ontology_overall.py` — module-level behavior
 - `test_ontology_annotations.py` — annotation parsing/validation
 - `test_ontology_public_api.py` — public export surface
+- `test_ontology_composability.py` — composability helpers, vocabulary dedup invariant, MCP real-vocabulary behavior
 
 Run: `uv run --extra dev python -m pytest src/tests/ontology/ -v`
 
@@ -162,8 +178,7 @@ Run: `uv run --extra dev python -m pytest src/tests/ontology/ -v`
 Standard library only (`json`, `pathlib`, `re`, `collections`). No external NLP dependencies.
 
 ## Troubleshooting
-
-- **Validation fails for valid terms**: check that `src/ontology/act_inf_ontology_terms.json` exists, is valid JSON, and includes the terms; term matching is case-sensitive.
+- **Validation fails for valid terms**: check that `src/ontology/act_inf_ontology_terms.json` exists, is valid JSON, and includes the terms; term matching is case-insensitive (case-folded), so `hiddenstate` and `HiddenState` are equivalent.
 - **No reports produced**: run step 3 first so GNN files are parsed, and pass `verbose=True` for per-file logs.
 
 ## Summary

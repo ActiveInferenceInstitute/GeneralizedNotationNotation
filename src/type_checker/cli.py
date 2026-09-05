@@ -139,21 +139,21 @@ def main(cmd_args: Any = None) -> Any:
                     "warnings": warnings,
                 }
             }
-            details_dict = {str(input_path_obj): details}
+            details_dict = {str(input_path_obj): {**details, "is_valid": is_valid}}
         elif input_path_obj.is_dir():
-            # For each file, collect details
+            # For each file, collect details. Discovery walks every
+            # registered spec extension (not just *.md) so a directory
+            # holding only a .gnn spec is still checked.
             results = {}
             details_dict = {}
-            for file_path in input_path_obj.glob(
-                "**/*.md" if parsed_args.recursive else "*.md"
-            ):
+            for file_path in checker._discover_gnn_files(input_path_obj):
                 is_valid, errors, warnings, details = checker.check_file(str(file_path))
                 results[str(file_path)] = {
                     "is_valid": is_valid,
                     "errors": errors,
                     "warnings": warnings,
                 }
-                details_dict[str(file_path)] = details
+                details_dict[str(file_path)] = {**details, "is_valid": is_valid}
         else:
             logger.error(
                 f"Input path {parsed_args.input_path} is not a valid file or directory."

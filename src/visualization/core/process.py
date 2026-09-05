@@ -1,13 +1,26 @@
-"""Step-8 visualization orchestration (JSON-first model loading)."""
+"""Step-8 visualization orchestration (JSON-first model loading).
+
+The orchestration lives here; the heavy rendering lives in the
+``matrix``, ``graph`` and ``analysis`` subpackages. Per-file work is
+broken into small cohesive helpers so they can be exercised in isolation:
+
+* :func:`discover_visualization_files` — deterministic input discovery.
+* :func:`load_cached_artifacts` — mtime-gated PNG cache reuse.
+* :func:`sample_parsed_data` (in :mod:`visualization.core.sampling`) — pure
+  downsampling of large models.
+* :func:`collect_visualization_matrices` (in :mod:`visualization.matrix.extract`)
+  — pure matrix collection from a parsed model dict.
+* :func:`render_matrix_artifacts` — 2D/3D matrix render dispatch.
+* :func:`write_viz_manifest` — per-model artifact manifest.
+"""
 
 from __future__ import annotations
 
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Set, Union
+from typing import Any, Dict, List, Optional, Union
 
-from advanced_visualization._shared import normalize_connection_format
 from gnn.discovery import is_model_source_path
 from utils.logging.logging_utils import (
     log_step_error,
@@ -24,30 +37,16 @@ from ..core.parsed_model import (
     load_visualization_model,
     write_stale_json_note_if_needed,
 )
+from ..core.sampling import sample_parsed_data
 from ..graph import (
     generate_network_visualizations,
     generate_variable_parameter_bipartite,
 )
+from ..matrix.extract import collect_visualization_matrices
 
 logger = logging.getLogger(__name__)
 
-
-def _filter_connections(
-    connections: List[Dict[str, Any]], var_names: Set[str]
-) -> List[Dict[str, Any]]:
-    """Handle filter connections for internal callers."""
-    out: List[Dict[str, Any]] = []
-    for conn in connections:
-        if not isinstance(conn, dict):
-            continue
-        n = normalize_connection_format(conn)
-        sources = n.get("source_variables") or []
-        targets = n.get("target_variables") or []
-        if any(s in var_names for s in sources) and any(
-            t in var_names for t in targets
-        ):
-            out.append(conn)
-    return out
+_MATRIX_NETWORK_LIMIT = 200
 
 
 def discover_visualization_files(
@@ -75,7 +74,7 @@ def _write_visualization_summary(
     errors: List[str],
 ) -> None:
     """Write the Step 8 run summary even for warning-only outcomes."""
-    summary: dict[str, Any] = {
+    summary: Dict[str, Any] = {
         "processed_files": len(gnn_files),
         "total_visualizations": len(visualizations),
         "visualization_files": visualizations,
@@ -92,17 +91,27 @@ def process_visualization(
     target_dir: Path,
     output_dir: Path,
     verbose: bool = False,
+    *,
+    logger: Optional[logging.Logger] = None,
     **kwargs: Any,
 ) -> Union[bool, int]:
-    """Process visualization."""
-    logger_v = logging.getLogger("visualization")
+    """Process visualization for every GNN file in ``target_dir``.
+
+    Returns ``True`` when at least one artifact was generated, the warning
+    code ``2`` for no-input / no-artifact outcomes, and ``False`` for hard
+    processing failures. Accepts an optional ``logger`` for dependency
+    injection (the pipeline passes its configured step logger); when omitted
+    the module-level ``"visualization"`` logger is used, preserving the
+    direct-call behavior.
+    """
+    log = logger or logging.getLogger("visualization")
     try:
-        log_step_start(logger_v, "Processing visualizations")
+        log_step_start(log, "Processing visualizations")
 
         results_dir = output_dir
         results_dir.mkdir(parents=True, exist_ok=True)
         recursive = bool(kwargs.get("recursive", True))
-        logger_v.info("Visualization discovery recursive=%s", recursive)
+        log.info("Visualization discovery recursive=%s", recursive)
 
         gnn_files = discover_visualization_files(target_dir, recursive=recursive)
         if not gnn_files:
@@ -110,7 +119,7 @@ def process_visualization(
                 f"No GNN files found for visualization in {target_dir} "
                 f"(recursive={recursive})"
             )
-            log_step_warning(logger_v, warning)
+            log_step_warning(log, warning)
             _write_visualization_summary(results_dir, [], [], [warning], [])
             return 2
 
@@ -124,7 +133,7 @@ def process_visualization(
             except Exception as e:
                 message = f"Error processing {gnn_file}: {e}"
                 processing_errors.append(message)
-                logger_v.warning(message)
+                log.warning(message)
 
         if len(gnn_files) > 1:
             try:
@@ -134,7 +143,7 @@ def process_visualization(
             except Exception as e:
                 message = f"Error generating combined visualizations: {e}"
                 processing_errors.append(message)
-                logger_v.warning(message)
+                log.warning(message)
 
         all_visualizations = sorted(set(all_visualizations))
         _write_visualization_summary(
@@ -142,29 +151,124 @@ def process_visualization(
         )
 
         if all_visualizations:
-            log_step_success(
-                logger_v, f"Generated {len(all_visualizations)} visualizations"
-            )
+            log_step_success(log, f"Generated {len(all_visualizations)} visualizations")
             if processing_errors:
                 log_step_warning(
-                    logger_v,
+                    log,
                     f"Visualization completed with {len(processing_errors)} warning(s)",
                 )
                 return 2
             return True
-        else:
-            log_step_warning(logger_v, "No visualizations generated")
-            return 2
+        log_step_warning(log, "No visualizations generated")
+        return 2
 
     except Exception as e:
-        log_step_error(logger_v, f"Visualization processing failed: {e}")
+        log_step_error(log, f"Visualization processing failed: {e}")
         return False
+
+
+def load_cached_artifacts(model_dir: Path, source_mtime: float) -> List[str]:
+    """Return cached PNG paths when fresher than ``source_mtime``, else ``[]``.
+
+    Also removes stale cache PNGs (older than the source) so the caller can
+    re-render cleanly. Non-PNG artifacts and missing directories return ``[]``.
+    """
+    existing = sorted(str(p) for p in model_dir.glob("*.png"))
+    if not existing:
+        return []
+    cache_mtime = min(Path(png).stat().st_mtime for png in existing)
+    if cache_mtime >= source_mtime:
+        return existing
+    for png_file in existing:
+        try:
+            Path(png_file).unlink()
+        except OSError as e:
+            logger.debug("Could not remove stale cache file %s: %s", png_file, e)
+    return []
+
+
+def render_matrix_artifacts(
+    matrices: Dict[str, Any],
+    model_dir: Path,
+    model_name: str,
+    visualizer: Any,
+    verbose: bool = False,
+) -> List[str]:
+    """Render 2D heatmaps and 3D tensor panels for each collected matrix."""
+    artifacts: List[str] = []
+    for m_name, m_data in matrices.items():
+        if m_data.ndim == 3:
+            tensor_path = model_dir / f"{model_name}_{m_name}_tensor.png"
+            if visualizer.generate_3d_tensor_visualization(
+                m_name, m_data, tensor_path, tensor_type="transition"
+            ):
+                artifacts.append(str(tensor_path))
+            html_path = model_dir / f"{model_name}_{m_name}_threejs.html"
+            if visualizer.generate_threejs_tensor_explorer(m_name, m_data, html_path):
+                artifacts.append(str(html_path))
+            analysis_path = model_dir / f"{model_name}_{m_name}_analysis.png"
+            visualizer.generate_pomdp_transition_analysis(m_data, analysis_path)
+            artifacts.append(str(analysis_path))
+        else:
+            heatmap_path = model_dir / f"{model_name}_{m_name}_heatmap.png"
+            if visualizer.generate_matrix_heatmap(m_name, m_data, heatmap_path):
+                artifacts.append(str(heatmap_path))
+    if verbose and artifacts:
+        logger.info(
+            "Generated %s matrix visualizations for %s", len(artifacts), model_name
+        )
+    return artifacts
+
+
+def write_viz_manifest(
+    model_name: str,
+    parsed_data: Dict[str, Any],
+    artifacts: List[str],
+    model_dir: Path,
+) -> Optional[Path]:
+    """Write ``{model}_viz_manifest.json``; return the path or ``None`` on failure."""
+    manifest_path = model_dir / f"{model_name}_viz_manifest.json"
+    try:
+        manifest: Dict[str, Any] = {
+            "model_name": model_name,
+            "viz_meta": parsed_data.get("_viz_meta") or {},
+            "artifact_count": len(artifacts),
+            "artifacts": list(artifacts),
+            "variable_count": len(parsed_data.get("variables") or []),
+            "connection_count": len(parsed_data.get("connections") or []),
+            "parameter_count": len(parsed_data.get("parameters") or []),
+            "ontology_label_count": len(parsed_data.get("ontology_labels") or []),
+        }
+        with open(manifest_path, "w", encoding="utf-8") as f:
+            json.dump(manifest, f, indent=2)
+        return manifest_path
+    except (OSError, TypeError, ValueError) as e:
+        logger.debug("Could not write viz manifest for %s: %s", model_name, e)
+        return None
+
+
+def write_sampling_note(
+    model_dir: Path, model_name: str, summary: Dict[str, Any]
+) -> None:
+    """Write the ``{model}_sampling_note.txt`` sidecar when sampling was applied."""
+    note_path = model_dir / f"{model_name}_sampling_note.txt"
+    try:
+        note_path.write_text(
+            f"Sampling applied to {model_name}:\n"
+            f"Original variables: {summary.get('original_variables', 0)}\n"
+            f"Sampled variables: {summary.get('sampled_variables', 0)}\n"
+            f"Original connections: {summary.get('original_connections', 0)}\n"
+            f"Sampled connections: {summary.get('sampled_connections', 0)}\n",
+            encoding="utf-8",
+        )
+    except OSError as e:
+        logger.debug("Could not write sampling note for %s: %s", model_name, e)
 
 
 def process_single_gnn_file(
     gnn_file: Path, results_dir: Path, verbose: bool = False
 ) -> List[str]:
-    """Process single gnn file."""
+    """Process a single GNN file into per-model PNG/JSON/HTML artifacts."""
     from ..matrix.visualizer import MatrixVisualizer
 
     with open(gnn_file, encoding="utf-8") as f:
@@ -174,51 +278,22 @@ def process_single_gnn_file(
     model_dir = results_dir / model_name
     model_dir.mkdir(exist_ok=True)
 
-    existing_pngs = sorted(str(p) for p in model_dir.glob("*.png"))
-    if existing_pngs:
-        source_mtime = gnn_file.stat().st_mtime
-        cache_mtime = min(Path(png).stat().st_mtime for png in existing_pngs)
-        if cache_mtime >= source_mtime:
-            if verbose:
-                print(f"Using cached visualizations for {model_name}")
-            return existing_pngs
-        for png_file in existing_pngs:
-            try:
-                Path(png_file).unlink()
-            except OSError as e:
-                logger.debug("Could not remove stale cache file %s: %s", png_file, e)
+    cached = load_cached_artifacts(model_dir, gnn_file.stat().st_mtime)
+    if cached:
+        if verbose:
+            print(f"Using cached visualizations for {model_name}")
+        return cached
 
     parsed_data = load_visualization_model(gnn_file, content, results_dir, verbose)
     write_stale_json_note_if_needed(parsed_data, model_dir, model_name, gnn_file)
 
-    should_sample = False
-    if parsed_data.get("variables") and len(parsed_data["variables"]) > 100:
-        should_sample = True
-        if verbose:
-            print(f"Large dataset detected for {model_name}, applying sampling")
-
-    if should_sample:
-        original_vars = len(parsed_data.get("variables", []))
-        original_conns = len(parsed_data.get("connections", []))
-        parsed_data["variables"] = parsed_data["variables"][:100]
-        var_names = {
-            var["name"] for var in parsed_data["variables"] if isinstance(var, dict)
-        }
-        parsed_data["connections"] = _filter_connections(
-            parsed_data.get("connections", []), var_names
-        )
-        if parsed_data.get("matrices") and len(parsed_data["matrices"]) > 5:
-            parsed_data["matrices"] = parsed_data["matrices"][:5]
-        parsed_data["_sampling_applied"] = {
-            "original_variables": original_vars,
-            "original_connections": original_conns,
-            "sampled_variables": len(parsed_data["variables"]),
-            "sampled_connections": len(parsed_data["connections"]),
-        }
+    sampled = sample_parsed_data(parsed_data)
+    if sampled and verbose:
+        print(f"Large dataset detected for {model_name}, applying sampling")
 
     visualizations: List[str] = []
 
-    if len(parsed_data.get("variables", [])) <= 200:
+    if len(parsed_data.get("variables") or []) <= _MATRIX_NETWORK_LIMIT:
         try:
             visualizations.extend(
                 generate_network_visualizations(parsed_data, model_dir, model_name)
@@ -239,54 +314,11 @@ def process_single_gnn_file(
 
     try:
         mv = MatrixVisualizer()
-        matrices: Dict[str, Any] = {}
-        parameters = parsed_data.get("parameters", [])
-        if parameters:
-            matrices = mv.extract_matrix_data_from_parameters(parameters)
-        if not matrices:
-            matrices = mv.extract_matrix_data_from_parameters(
-                parsed_data.get("variables", [])
-            )
-        if not matrices:
-            for m_info in parsed_data.get("matrices", []):
-                if isinstance(m_info, dict) and "data" in m_info:
-                    m_name = m_info.get("name", f"matrix_{len(matrices)}")
-                    try:
-                        import numpy as np
-
-                        m_data = np.array(m_info["data"], dtype=float)
-                        matrices[m_name] = m_data
-                    except (ValueError, TypeError) as e:
-                        logger.debug(
-                            "Skipping non-numeric matrix data for %s: %s",
-                            m_info.get("name", "?"),
-                            e,
-                        )
-
+        matrices = collect_visualization_matrices(parsed_data)
         if matrices:
-            for m_name, m_data in matrices.items():
-                if m_data.ndim == 3:
-                    m_path = model_dir / f"{model_name}_{m_name}_tensor.png"
-                    if mv.generate_3d_tensor_visualization(
-                        m_name, m_data, m_path, tensor_type="transition"
-                    ):
-                        visualizations.append(str(m_path))
-                    html_path = model_dir / f"{model_name}_{m_name}_threejs.html"
-                    if mv.generate_threejs_tensor_explorer(m_name, m_data, html_path):
-                        visualizations.append(str(html_path))
-                    analysis_path = model_dir / f"{model_name}_{m_name}_analysis.png"
-                    mv.generate_pomdp_transition_analysis(m_data, analysis_path)
-                    visualizations.append(str(analysis_path))
-                else:
-                    m_path = model_dir / f"{model_name}_{m_name}_heatmap.png"
-                    if mv.generate_matrix_heatmap(m_name, m_data, m_path):
-                        visualizations.append(str(m_path))
-            if verbose:
-                logger.info(
-                    "Generated %s matrix visualizations for %s",
-                    len(matrices),
-                    model_name,
-                )
+            visualizations.extend(
+                render_matrix_artifacts(matrices, model_dir, model_name, mv, verbose)
+            )
         elif verbose:
             logger.warning(
                 "No matrix data found for %s - checked parameters, variables, matrices",
@@ -304,43 +336,15 @@ def process_single_gnn_file(
         if verbose:
             print(f"Combined analysis failed for {model_name}: {e}")
 
-    if should_sample and visualizations:
-        try:
-            sampling_note = model_dir / f"{model_name}_sampling_note.txt"
-            with open(sampling_note, "w") as f:
-                f.write(f"Sampling applied to {model_name}:\n")
-                f.write(
-                    f"Original variables: {parsed_data['_sampling_applied']['original_variables']}\n"
-                )
-                f.write(
-                    f"Sampled variables: {parsed_data['_sampling_applied']['sampled_variables']}\n"
-                )
-                f.write(
-                    f"Original connections: {parsed_data['_sampling_applied']['original_connections']}\n"
-                )
-                f.write(
-                    f"Sampled connections: {parsed_data['_sampling_applied']['sampled_connections']}\n"
-                )
-        except OSError as e:
-            logger.debug("Could not write sampling note for %s: %s", model_name, e)
+    if sampled and visualizations:
+        write_sampling_note(
+            model_dir, model_name, parsed_data.get("_sampling_applied") or {}
+        )
 
-    manifest_path = model_dir / f"{model_name}_viz_manifest.json"
-    try:
-        meta = parsed_data.get("_viz_meta") or {}
-        manifest: Dict[str, Any] = {
-            "model_name": model_name,
-            "viz_meta": meta,
-            "artifact_count": len(visualizations),
-            "artifacts": list(visualizations),
-            "variable_count": len(parsed_data.get("variables") or []),
-            "connection_count": len(parsed_data.get("connections") or []),
-            "parameter_count": len(parsed_data.get("parameters") or []),
-            "ontology_label_count": len(parsed_data.get("ontology_labels") or {}),
-        }
-        with open(manifest_path, "w", encoding="utf-8") as f:
-            json.dump(manifest, f, indent=2)
+    manifest_path = write_viz_manifest(
+        model_name, parsed_data, visualizations, model_dir
+    )
+    if manifest_path is not None:
         visualizations.append(str(manifest_path))
-    except (OSError, TypeError, ValueError) as e:
-        logger.debug("Could not write viz manifest for %s: %s", model_name, e)
 
     return visualizations

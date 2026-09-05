@@ -14,15 +14,9 @@ import logging
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-import matplotlib
-import numpy as np
+from matplotlib.animation import FuncAnimation, PillowWriter  # noqa: E402
 
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation, PillowWriter
-
-MATPLOTLIB_AVAILABLE = True
-
+from .viz_base import MATPLOTLIB_AVAILABLE, np, plt, safe_savefig  # noqa: F401
 
 logger = logging.getLogger(__name__)
 
@@ -95,9 +89,8 @@ def plot_belief_evolution(
     plt.legend()
     plt.grid(True, alpha=0.3)
 
-    plt.savefig(output_path, bbox_inches="tight", dpi=300)
-    plt.close()
-    return str(output_path)
+    saved = safe_savefig(output_path, log=logger)
+    return saved or str(output_path)
 
 
 def animate_belief_evolution(
@@ -1220,10 +1213,8 @@ def generate_belief_heatmaps(
     ax2.set_ylim(0, 1.05)
 
     plt.tight_layout()
-    plt.savefig(output_path, dpi=300, bbox_inches="tight")
-    plt.close()
-
-    return str(output_path)
+    saved = safe_savefig(output_path, log=logger)
+    return saved or str(output_path)
 
 
 def generate_action_analysis(
@@ -1335,10 +1326,8 @@ def generate_action_analysis(
 
     plt.suptitle(title, fontsize=14, fontweight="bold")
     plt.tight_layout()
-    plt.savefig(output_path, dpi=300, bbox_inches="tight")
-    plt.close()
-
-    return str(output_path)
+    saved = safe_savefig(output_path, log=logger)
+    return saved or str(output_path)
 
 
 def generate_free_energy_plots(
@@ -1529,10 +1518,8 @@ def generate_free_energy_plots(
 
     plt.suptitle(title, fontsize=14, fontweight="bold")
     plt.tight_layout()
-    plt.savefig(output_path, dpi=300, bbox_inches="tight")
-    plt.close()
-
-    return str(output_path)
+    saved = safe_savefig(output_path, log=logger)
+    return saved or str(output_path)
 
 
 def generate_vfe_vs_efe_plot(
@@ -1596,10 +1583,8 @@ def generate_vfe_vs_efe_plot(
     )
     plt.subplots_adjust(bottom=0.2)
 
-    plt.savefig(output_path, dpi=300, bbox_inches="tight")
-    plt.close()
-
-    return str(output_path)
+    saved = safe_savefig(output_path, log=logger)
+    return saved or str(output_path)
 
 
 def generate_observation_analysis(
@@ -1656,10 +1641,8 @@ def generate_observation_analysis(
 
     plt.suptitle(title, fontsize=14, fontweight="bold")
     plt.tight_layout()
-    plt.savefig(output_path, dpi=300, bbox_inches="tight")
-    plt.close()
-
-    return str(output_path)
+    saved = safe_savefig(output_path, log=logger)
+    return saved or str(output_path)
 
 
 def generate_unified_framework_dashboard(
@@ -1806,9 +1789,9 @@ def generate_unified_framework_dashboard(
         plt.tight_layout()
 
         belief_file = output_dir / "unified_belief_comparison.png"
-        plt.savefig(belief_file, dpi=300, bbox_inches="tight")
-        plt.close()
-        generated_files.append(str(belief_file))
+        saved = safe_savefig(belief_file, log=logger)
+        if saved:
+            generated_files.append(saved)
 
     # === Dashboard 2: Action & EFE Comparison ===
     n_panels = max(len(framework_actions), len(framework_efe), 1)
@@ -1896,9 +1879,9 @@ def generate_unified_framework_dashboard(
         plt.tight_layout()
 
         action_efe_file = output_dir / "unified_action_efe_comparison.png"
-        plt.savefig(action_efe_file, dpi=300, bbox_inches="tight")
-        plt.close()
-        generated_files.append(str(action_efe_file))
+        saved = safe_savefig(action_efe_file, log=logger)
+        if saved:
+            generated_files.append(saved)
 
     # === Dashboard 3: Belief Entropy Comparison ===
     if len(framework_beliefs) >= 2:
@@ -1947,9 +1930,9 @@ def generate_unified_framework_dashboard(
         plt.tight_layout()
 
         entropy_file = output_dir / "unified_entropy_comparison.png"
-        plt.savefig(entropy_file, dpi=300, bbox_inches="tight")
-        plt.close()
-        generated_files.append(str(entropy_file))
+        saved = safe_savefig(entropy_file, log=logger)
+        if saved:
+            generated_files.append(saved)
 
     return generated_files
 
@@ -2079,10 +2062,8 @@ def generate_cross_framework_comparison(
 
     plt.suptitle("Cross-Framework Comparison", fontsize=14, fontweight="bold")
     plt.tight_layout()
-    plt.savefig(output_path, dpi=300, bbox_inches="tight")
-    plt.close()
-
-    return str(output_path)
+    saved = safe_savefig(output_path, log=logger)
+    return saved or str(output_path)
 
 
 def generate_efe_convergence_comparison(
@@ -2180,10 +2161,11 @@ def generate_efe_convergence_comparison(
 
     plt.suptitle("Cross-Framework EFE Analysis", fontsize=15, fontweight="bold", y=1.02)
     plt.tight_layout()
-    plt.savefig(str(output_path), dpi=300, bbox_inches="tight")
-    plt.close()
-    logger.info(f"Generated EFE convergence comparison: {output_path.name}")
-    return [str(output_path)]
+    saved = safe_savefig(output_path, log=logger)
+    if saved:
+        logger.info(f"Generated EFE convergence comparison: {output_path.name}")
+        return [str(output_path)]
+    return []
 
 
 def generate_confidence_comparison(
@@ -2271,10 +2253,11 @@ def generate_confidence_comparison(
         "Cross-Framework Confidence Analysis", fontsize=15, fontweight="bold", y=1.02
     )
     plt.tight_layout()
-    plt.savefig(str(output_path), dpi=300, bbox_inches="tight")
-    plt.close()
-    logger.info(f"Generated confidence comparison: {output_path.name}")
-    return [str(output_path)]
+    saved = safe_savefig(output_path, log=logger)
+    if saved:
+        logger.info(f"Generated confidence comparison: {output_path.name}")
+        return [str(output_path)]
+    return []
 
 
 def generate_framework_radar(
@@ -2422,7 +2405,8 @@ def generate_framework_radar(
     ax.grid(True, alpha=0.3)
 
     plt.tight_layout()
-    plt.savefig(str(output_path), dpi=300, bbox_inches="tight")
-    plt.close()
-    logger.info(f"Generated framework radar: {output_path.name}")
-    return [str(output_path)]
+    saved = safe_savefig(output_path, log=logger)
+    if saved:
+        logger.info(f"Generated framework radar: {output_path.name}")
+        return [str(output_path)]
+    return []

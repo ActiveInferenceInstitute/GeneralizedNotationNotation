@@ -18,7 +18,7 @@ def get_module_info() -> Dict[str, Any]:
     return {
         "module_name": "ontology",
         "description": "Ontology processing for GNN files",
-        "version": "1.0.0",
+        "version": "1.7.0",
         "author": "GNN Team",
         "capabilities": [
             "ontology_parsing",

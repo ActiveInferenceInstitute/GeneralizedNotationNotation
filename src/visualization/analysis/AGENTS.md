@@ -19,18 +19,21 @@ analysis/
 
 ### Internal Helpers
 
+- `_count_var_types(variables) -> Dict[str, int]` — Shared variable-type tally used by both pie charts (combined grid + standalone panel).
+- `_recursive_element_count(obj) -> int` — Scalar leaf counter for non-numeric matrix fallback sizing (module-level; replaces the old per-exception nested def).
 - `_generate_standalone_panels(parsed_data, output_dir, model_name)` — Individual full-page charts for matrix size, section length, and variable type.
-- `_generate_generative_model_diagram(parsed_data, output_dir, model_name)` — POMDP circuit diagram (D, s, A, o, B, C, E, π, G, u) with annotated edges and legend.
+- `_generate_generative_model_diagram(parsed_data, output_dir, model_name)` — POMDP circuit diagram (D, s, A, o, B, C, E, π, G, u) with annotated edges and legend; node colors come from `visualization.theme.GENERATIVE_MODEL_COLORS` (single source of truth).
 
 ## Dependencies
 
 - Uses `visualization.core.parsed_model.load_visualization_model` for JSON-first model loading.
 - Uses `visualization.plotting.utils.save_plot_safely` / `safe_tight_layout` for robust file saving.
-- Uses `visualization.compat.viz_compat.viz_var_type` for variable type extraction (canonicalized in compat).
+- Uses `visualization.compat.viz_compat` for matplotlib (`plt`, `MATPLOTLIB_AVAILABLE`) and `viz_var_type` (canonical variable-type extraction).
+- Uses `visualization.theme.GENERATIVE_MODEL_COLORS` for the POMDP diagram palette.
 
 ## Parent Module
 
 See [visualization/AGENTS.md](../AGENTS.md) for the overall visualization architecture.
 
 **Version**: 3.2.0
-**Last Updated**: 2026-05-12
+**Last Updated**: 2026-09-04

@@ -19,9 +19,6 @@ from utils.pipeline_template import (
     log_step_warning,
 )
 
-# We need to import the estimator lazily or through the standard pipeline
-# to avoid circular dependencies if we refactor heavily, but for now we'll
-# import it directly from the estimation package.
 from ..estimation.strategies import VariableMap, calculate_complexity
 from .dimensions import (
     extract_b_matrix_evidence,
@@ -34,6 +31,13 @@ from .rules import (
     get_validation_rules,
     validate_type,
 )
+from .sections import (
+    classify_time_spec,
+    extract_markdown_section,
+    parse_resource_connections,
+    section_presence,
+)
+from .summary import summarize_type_check_results
 
 _module_logger = logging.getLogger(__name__)
 
@@ -49,81 +53,6 @@ class ResourceEstimate(TypedDict):
     flops_estimate: float
     complexity_score: float
     diagnostics: list[str]
-
-
-def _extract_markdown_section(content: str, section_name: str) -> str:
-    """Return one canonical Markdown GNN section without adjacent prose."""
-    lines: list[str] = []
-    in_section = False
-    for raw_line in content.splitlines():
-        stripped = raw_line.strip()
-        if stripped.startswith("## "):
-            in_section = stripped[3:].strip() == section_name
-            continue
-        if in_section:
-            lines.append(raw_line)
-    return "\n".join(lines).strip()
-
-
-def _connection_group(value: str) -> list[str]:
-    group = value.strip()
-    if group.startswith("(") and group.endswith(")"):
-        group = group[1:-1]
-    return [
-        "π" if name.strip().lower() == "pi" else name.strip()
-        for name in group.split(",")
-        if name.strip()
-    ]
-
-
-def _parse_resource_connections(
-    content: str, known_variables: set[str]
-) -> tuple[list[dict[str, Any]], list[str]]:
-    """Parse GNN connection groups without matching prose outside the section."""
-    edges: list[dict[str, Any]] = []
-    diagnostics: list[str] = []
-    for line_number, raw_line in enumerate(
-        _extract_markdown_section(content, "Connections").splitlines(), start=1
-    ):
-        line = raw_line.split("#", 1)[0].strip()
-        if not line:
-            continue
-        operator = next(
-            (
-                candidate
-                for candidate in ("<->", "->", ">", "|", "-")
-                if candidate in line
-            ),
-            None,
-        )
-        if operator is None:
-            diagnostics.append(
-                f"Unparseable connection at section line {line_number}: '{line}'"
-            )
-            continue
-        source_text, target_text = line.split(operator, 1)
-        target_text = target_text.split(":", 1)[0]
-        sources = _connection_group(source_text)
-        targets = _connection_group(target_text)
-        if not sources or not targets:
-            diagnostics.append(
-                f"Connection at section line {line_number} has an empty endpoint: '{line}'"
-            )
-            continue
-
-        edge_type = "undirected" if operator in {"-", "<->"} else "directed"
-        for source in sources:
-            for target in targets:
-                edges.append({"source": source, "target": target, "type": edge_type})
-                if source not in known_variables:
-                    diagnostics.append(
-                        f"Connection at section line {line_number} references undeclared variable '{source}'"
-                    )
-                if target not in known_variables:
-                    diagnostics.append(
-                        f"Connection at section line {line_number} references undeclared variable '{target}'"
-                    )
-    return edges, diagnostics
 
 
 def estimate_file_resources(content: str) -> ResourceEstimate:
@@ -148,9 +77,9 @@ def estimate_file_resources(content: str) -> ResourceEstimate:
         for name, dimensions in variables_with_dims.items()
     }
 
-    edges, connection_diagnostics = _parse_resource_connections(content, set(variables))
+    edges, connection_diagnostics = parse_resource_connections(content, set(variables))
     diagnostics.extend(connection_diagnostics)
-    equations = _extract_markdown_section(content, "Equations")
+    equations = extract_markdown_section(content, "Equations")
 
     total_parameters = 0
     memory_bytes = 0
@@ -190,8 +119,17 @@ def estimate_file_resources(content: str) -> ResourceEstimate:
 class GNNTypeChecker:
     """Type checker for GNN files."""
 
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
-        """Initialize the GNN type checker."""
+    def __init__(self, strict_mode: bool = False) -> None:
+        """Initialize the GNN type checker.
+
+        Args:
+            strict_mode: When True, promote recoverable warnings (notably
+                B-orientation contradictions ``[GNN-E002]``) to errors. This
+                is the default applied by :meth:`validate_single_gnn_file`
+                and :meth:`validate_gnn_files` unless the caller overrides
+                their ``strict`` argument explicitly.
+        """
+        self.strict_mode = strict_mode
         self.validation_rules = get_validation_rules()
 
     def check_file(
@@ -237,8 +175,6 @@ class GNNTypeChecker:
 
     def generate_json_data(self, results: Dict[str, Any], output_path: Path) -> None:
         """Write type-check results as JSON for downstream analysis."""
-        import json
-
         output_path.parent.mkdir(parents=True, exist_ok=True)
         output_path.write_text(json.dumps(results, indent=2), encoding="utf-8")
 
@@ -263,21 +199,24 @@ class GNNTypeChecker:
     def validate_gnn_files(
         self, target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs: Any
     ) -> bool | int:
-        """
-        Validate GNN files for type consistency.
+        """Validate every GNN file in a directory.
 
         Args:
-            target_dir: Directory containing GNN files to validate
-            output_dir: Directory to save validation results
-            verbose: Enable verbose output
-            **kwargs: Additional arguments
+            target_dir: Directory containing GNN files to validate.
+            output_dir: Directory to save validation results.
+            verbose: Enable verbose output.
+            **kwargs: ``strict`` overrides the instance default;
+                ``estimate_resources`` triggers a resource-estimation pass.
 
         Returns:
-            ``True`` (coerces to pipeline exit 0) when every file validates;
-            ``2`` (coerces to pipeline exit ``SUCCESS_WITH_WARNINGS``) when the
-            run completed but one or more files had type/consistency problems
-            (recoverable); ``False`` (coerces to exit 1) when a hard failure
-            occurred (exception / nothing to process).
+            ``True`` (pipeline exit 0) when every file validates;
+            ``2`` (``SUCCESS_WITH_WARNINGS``) when the run completed but one
+            or more files had type/consistency problems, **or when no GNN
+            files were found** — per the Phase 1.1 widened contract,
+            "nothing to do" is a warning, not a hard error (matching
+            Steps 12/16 and the render step);
+            ``False`` (exit 1) on a hard failure (exception while
+            processing, or strict-mode B-orientation contradictions).
         """
         logger = logging.getLogger("type_checker")
 
@@ -286,7 +225,6 @@ class GNNTypeChecker:
 
             output_dir.mkdir(parents=True, exist_ok=True)
 
-            # Initialize results
             results: dict[str, Any] = {
                 "timestamp": datetime.now().isoformat(),
                 "processed_files": 0,
@@ -295,30 +233,32 @@ class GNNTypeChecker:
                 "validation_results": [],
                 "type_analysis": [],
             }
-            hard_failure = False  # any exception / nothing-to-process (vs recoverable invalid files)
-            b_orientation_failed = False  # any [GNN-E002] B orientation/contradiction error
-            strict = bool(kwargs.get("strict", False))
+            hard_failure = False
+            b_orientation_failed = False
+            strict = bool(kwargs.get("strict", self.strict_mode))
+            estimate_resources = bool(kwargs.get("estimate_resources", False))
 
-            # Find GNN files across every registered spec extension (the
-            # parser stack supports more than markdown — discovering only
-            # *.md silently ignored e.g. *.gnn files and reported
-            # "No GNN files found" for a directory that held a valid spec).
             gnn_files = self._discover_gnn_files(target_dir)
             if not gnn_files:
                 logger.warning("No GNN files found for type checking")
                 results["success"] = False
-                hard_failure = True
                 results["errors"].append("No GNN files found")
             else:
                 results["processed_files"] = len(gnn_files)
 
-                # Process each GNN file
                 for gnn_file in gnn_files:
                     try:
-                        # Validate single file
-                        validation_result = self.validate_single_gnn_file(
-                            gnn_file, verbose, strict=strict
-                        )
+                        try:
+                            content = gnn_file.read_text(encoding="utf-8")
+                        except Exception as read_error:
+                            content = None
+                            validation_result = self._invalid_file_result(
+                                gnn_file, str(read_error)
+                            )
+                        else:
+                            validation_result = self.validate_single_gnn_file(
+                                gnn_file, verbose, strict=strict, content=content
+                            )
                         results["validation_results"].append(validation_result)
                         if not validation_result.get("valid", False):
                             results["success"] = False
@@ -328,8 +268,9 @@ class GNNTypeChecker:
                         ):
                             b_orientation_failed = True
 
-                        # Analyze types
-                        type_analysis = self._analyze_types(gnn_file, verbose)
+                        type_analysis = self._analyze_types(
+                            gnn_file, verbose, content=content
+                        )
                         results["type_analysis"].append(type_analysis)
 
                     except Exception as e:
@@ -343,23 +284,28 @@ class GNNTypeChecker:
                         results["errors"].append(error_info)
                         logger.error(f"Error processing {gnn_file}: {e}")
 
-            # Save detailed results directly in output directory
             results_file = output_dir / "type_check_results.json"
             with open(results_file, "w") as f:
                 json.dump(results, f, indent=2)
 
-            # Generate visualizations natively from results matrix
             from ..visualizer import generate_all_visualizations
 
             visual_embeddings = generate_all_visualizations(results, output_dir)
             if visual_embeddings:
                 results["visual_embeddings"] = visual_embeddings
 
-            # Generate type check summary
             summary = self._generate_type_check_summary(results)
             summary_file = output_dir / "type_check_summary.md"
             with open(summary_file, "w") as f:
                 f.write(summary)
+
+            summary_json = summarize_type_check_results(results)
+            summary_json_file = output_dir / "type_check_summary.json"
+            with open(summary_json_file, "w") as f:
+                json.dump(summary_json, f, indent=2)
+
+            if estimate_resources:
+                self._write_resource_estimates(target_dir, output_dir, logger)
 
             if results["success"]:
                 log_step_success(logger, "Type checking completed successfully")
@@ -375,7 +321,9 @@ class GNNTypeChecker:
                 )
                 return False
             log_step_warning(
-                logger, "Type checking completed with warnings (some files invalid)"
+                logger,
+                "Type checking completed with warnings (no GNN files found,"
+                " or some files invalid)",
             )
             return 2
 
@@ -383,90 +331,202 @@ class GNNTypeChecker:
             log_step_error(logger, "Type checking failed", error=str(e))
             return False
 
-    def validate_single_gnn_file(
-        self, file_path: Path, verbose: bool = False, strict: bool = False
-    ) -> Dict[str, Any]:
+    def _write_resource_estimates(
+        self, target_dir: Path, output_dir: Path, logger: logging.Logger
+    ) -> None:
+        """Run the resource estimator over ``target_dir`` and persist reports.
+
+        Activated by the ``estimate_resources`` flag (the documented
+        ``--estimate-resources`` Step 5 option). Estimation never turns a
+        successful type-check run into a hard failure: its own exceptions
+        are logged and swallowed so type checking results stay authoritative.
+        """
+        from ..estimation.estimator import GNNResourceEstimator
+
+        resource_dir = output_dir / "resource_estimates"
         try:
-            with open(file_path, "r", encoding="utf-8") as f:
-                content = f.read()
-
-            validation_result: dict[str, Any] = {
-                "file_path": str(file_path),
-                "file_name": file_path.name,
-                "valid": True,
-                "errors": [],
-                "warnings": [],
-                "type_issues": [],
-                "validation_timestamp": datetime.now().isoformat(),
-            }
-
-            # Check for type definitions
-            found_types = extract_types_from_content(content)
-
-            # Validate types
-            for type_info in found_types:
-                type_validation = validate_type(type_info)
-                if not type_validation["valid"]:
-                    validation_result["type_issues"].append(type_validation)
-                    validation_result["errors"].append(
-                        f"Type issue: {type_validation['message']}"
-                    )
-                    validation_result["valid"] = False
-
-            # Check for consistency
-            consistency_check = check_type_consistency(found_types)
-            if not consistency_check["consistent"]:
-                validation_result["errors"].append(consistency_check["message"])
-                validation_result["valid"] = False
-
-            # Validate dimension compatibility
-            gnn_dims, dimension_diagnostics = extract_gnn_dimensions_with_diagnostics(
-                content
-            )
-            if dimension_diagnostics:
-                validation_result["errors"].extend(dimension_diagnostics)
-                validation_result["valid"] = False
-            if gnn_dims:
-                b_evidence = extract_b_matrix_evidence(content)
-                dim_check = validate_dimension_compatibility(
-                    gnn_dims, b_evidence=b_evidence, strict=strict
-                )
-                validation_result["dimension_compatibility"] = dim_check
-                if not dim_check["compatible"]:
-                    for issue in dim_check["issues"]:
-                        validation_result["errors"].append(issue)
-                    validation_result["valid"] = False
-                for warning in dim_check["warnings"]:
-                    validation_result["warnings"].append(warning)
-
-            # Assign resource estimation metadata for baseball cards
-            resources = estimate_file_resources(content)
-            validation_result["resource_estimation"] = resources
-
-            return validation_result
-
+            resource_dir.mkdir(parents=True, exist_ok=True)
+            estimator = GNNResourceEstimator()
+            estimator.estimate_from_directory(str(target_dir), recursive=True)
+            estimator.generate_report(str(resource_dir))
         except Exception as e:
-            return {
-                "file_path": str(file_path),
-                "file_name": file_path.name,
-                "valid": False,
-                "errors": [str(e)],
-                "warnings": [],
-                "type_issues": [],
-                "validation_timestamp": datetime.now().isoformat(),
-            }
+            logger.warning(f"Resource estimation failed: {e}")
 
-    def _analyze_types(self, file_path: Path, verbose: bool = False) -> Dict[str, Any]:
-        """Analyze types in a GNN file."""
+    @staticmethod
+    def _invalid_file_result(file_path: Path, error: str) -> Dict[str, Any]:
+        """Canonical invalid-file dict for unreadable/unvalidatable specs."""
+        return {
+            "file_path": str(file_path),
+            "file_name": file_path.name,
+            "valid": False,
+            "errors": [error],
+            "warnings": [],
+            "type_issues": [],
+            "validation_timestamp": datetime.now().isoformat(),
+        }
+
+    def validate_single_gnn_file(
+        self,
+        file_path: Path,
+        verbose: bool = False,
+        strict: bool | None = None,
+        content: str | None = None,
+    ) -> Dict[str, Any]:
+        """Validate one GNN file on disk.
+
+        Args:
+            file_path: Path to the GNN spec.
+            verbose: Enable verbose per-file logging.
+            strict: Override :attr:`strict_mode` for this call (``None``
+                means "use the instance default").
+            content: Pre-read spec content; supplying it skips the file
+                re-read (callers that already hold the content, e.g. the
+                directory loop, pass it through to avoid a second read).
+        """
+        if content is None:
+            try:
+                with open(file_path, "r", encoding="utf-8") as f:
+                    content = f.read()
+            except Exception as e:
+                return self._invalid_file_result(file_path, str(e))
         try:
-            with open(file_path, "r", encoding="utf-8") as f:
-                content = f.read()
+            return self.validate_content(
+                content, source_name=str(file_path), strict=strict
+            )
+        except Exception as e:
+            return self._invalid_file_result(file_path, str(e))
 
-            # Extract type information
+    def validate_content(
+        self,
+        content: str,
+        *,
+        source_name: str = "<content>",
+        strict: bool | None = None,
+    ) -> Dict[str, Any]:
+        """Validate GNN spec content without touching the filesystem.
+
+        Pure entry point over a spec string — useful for MCP callers, in
+        memory pipelines, and tests that do not want to materialise a file.
+        ``validate_single_gnn_file`` delegates here after reading the file.
+        The returned dict carries the canonical validation keys plus
+        additive ``variables``/``connections``/``sections`` metadata so
+        downstream report renderers have structured data to work with.
+        """
+        effective_strict = self.strict_mode if strict is None else strict
+        validation_result: dict[str, Any] = {
+            "file_path": source_name,
+            "file_name": Path(source_name).name,
+            "valid": True,
+            "errors": [],
+            "warnings": [],
+            "type_issues": [],
+            "validation_timestamp": datetime.now().isoformat(),
+        }
+
+        found_types = extract_types_from_content(content)
+
+        for type_info in found_types:
+            type_validation = validate_type(type_info)
+            if not type_validation["valid"]:
+                validation_result["type_issues"].append(type_validation)
+                validation_result["errors"].append(
+                    f"Type issue: {type_validation['message']}"
+                )
+                validation_result["valid"] = False
+
+        consistency_check = check_type_consistency(found_types)
+        if not consistency_check["consistent"]:
+            validation_result["errors"].append(consistency_check["message"])
+            validation_result["valid"] = False
+
+        gnn_dims, dimension_diagnostics = extract_gnn_dimensions_with_diagnostics(
+            content
+        )
+        if dimension_diagnostics:
+            validation_result["errors"].extend(dimension_diagnostics)
+            validation_result["valid"] = False
+        if gnn_dims:
+            b_evidence = extract_b_matrix_evidence(content)
+            dim_check = validate_dimension_compatibility(
+                gnn_dims, b_evidence=b_evidence, strict=effective_strict
+            )
+            validation_result["dimension_compatibility"] = dim_check
+            if not dim_check["compatible"]:
+                for issue in dim_check["issues"]:
+                    validation_result["errors"].append(issue)
+                validation_result["valid"] = False
+            for warning in dim_check["warnings"]:
+                validation_result["warnings"].append(warning)
+
+        resources = estimate_file_resources(content)
+        validation_result["resource_estimation"] = resources
+
+        # Additive structured metadata for report renderers and tooling.
+        validation_result["variables"] = [
+            {
+                "name": type_info["name"],
+                "type": type_info["type"],
+                "dimensions": gnn_dims.get(type_info["name"], []),
+                "total_elements": int(math.prod(gnn_dims.get(type_info["name"], [1]))),
+            }
+            for type_info in found_types
+        ]
+        validation_result["variable_count"] = len(found_types)
+        edges, _connection_diagnostics = parse_resource_connections(
+            content, set(gnn_dims)
+        )
+        annotated_edges = [
+            {
+                **edge,
+                "is_temporal": "+" in edge["source"] or "+" in edge["target"],
+            }
+            for edge in edges
+        ]
+        validation_result["connections"] = annotated_edges
+        validation_result["connection_count"] = len(annotated_edges)
+        validation_result["connection_types"] = {
+            "directed": sum(1 for e in annotated_edges if e["type"] == "directed"),
+            "undirected": sum(1 for e in annotated_edges if e["type"] == "undirected"),
+            "temporal": sum(1 for e in annotated_edges if e["is_temporal"]),
+        }
+        validation_result["sections"] = section_presence(content)
+        vars_map: VariableMap = {
+            type_info["name"]: {"dimensions": gnn_dims.get(type_info["name"], [])}
+            for type_info in found_types
+        }
+        equations_text = extract_markdown_section(content, "Equations")
+        validation_result["model_complexity"] = calculate_complexity(
+            vars_map, edges, equations_text
+        )
+        validation_result["model_type"] = classify_time_spec(content)
+        validation_result["type_distribution"] = {
+            type_info["type"]: sum(
+                1 for other in found_types if other["type"] == type_info["type"]
+            )
+            for type_info in found_types
+        }
+        validation_result["time_dynamics"] = {"is_dynamic": _time_is_dynamic(content)}
+        return validation_result
+
+    def _analyze_types(
+        self,
+        file_path: Path,
+        verbose: bool = False,
+        content: str | None = None,
+    ) -> Dict[str, Any]:
+        """Analyze types in a GNN file.
+
+        ``content`` (pre-read spec text) skips the file re-read; ``None``
+        reads the file (a read failure yields the error dict).
+        """
+        try:
+            if content is None:
+                with open(file_path, "r", encoding="utf-8") as f:
+                    content = f.read()
+
             types_found = extract_types_from_content(content)
 
-            # Analyze type distribution
-            type_counts: dict[Any, Any] = {}
+            type_counts: dict[str, int] = {}
             for type_info in types_found:
                 var_type = type_info["type"]
                 type_counts[var_type] = type_counts.get(var_type, 0) + 1
@@ -489,7 +549,7 @@ class GNNTypeChecker:
             }
 
     def _generate_type_check_summary(self, results: Dict[str, Any]) -> str:
-        """Generate a summary of type checking results."""
+        """Generate a Markdown summary of type checking results."""
         summary = f"""# Type Check Summary
 
 **Generated**: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
@@ -513,22 +573,26 @@ class GNNTypeChecker:
         visual_embeddings = results.get("visual_embeddings", [])
         if visual_embeddings:
             for embedding in visual_embeddings:
-                summary += f"\\n{embedding}\\n"
+                summary += f"\n{embedding}\n"
         else:
-            summary += "\\n*No visual summaries could be generated.*\\n"
+            summary += "\n*No visual summaries could be generated.*\n"
 
         summary += """
 ## Error Summary
 """
-
         errors = results.get("errors", [])
         if errors:
             for error in errors:
                 if isinstance(error, dict):
-                    summary += f"- **{error.get('file', 'Unknown')}**: {error.get('error', 'Unknown error')}\\n"
+                    summary += f"- **{error.get('file', 'Unknown')}**: {error.get('error', 'Unknown error')}\n"
                 else:
-                    summary += f"- {error}\\n"
+                    summary += f"- {error}\n"
         else:
-            summary += "- No errors encountered\\n"
+            summary += "- No errors encountered\n"
 
         return summary
+
+
+def _time_is_dynamic(content: str) -> bool:
+    """Return True when the spec's ``## Time`` section declares a dynamic model."""
+    return extract_markdown_section(content, "Time").lower().find("dynamic") != -1

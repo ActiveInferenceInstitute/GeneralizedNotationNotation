@@ -137,6 +137,11 @@ class GNNResourceEstimator:
             Dictionary with resource estimates
         """
         from ..checking import extract_gnn_dimensions
+        from ..checking.sections import (
+            classify_time_spec,
+            extract_markdown_section,
+            parse_resource_connections,
+        )
 
         try:
             with open(file_path, "r") as f:
@@ -144,28 +149,18 @@ class GNNResourceEstimator:
 
             # Build the parser-style dictionary consumed by estimation strategies.
             variables_with_dims = extract_gnn_dimensions(content_str)
-            vars_map: dict[Any, Any] = {}
+            vars_map: dict[str, Any] = {}
             for k, v in variables_with_dims.items():
                 vars_map[k] = {"dimensions": v, "type": "float"}
 
-            import re
-
-            directed = re.findall(r"(\w+)\s*>\s*(\w+)", content_str)
-            undirected = re.findall(r"(\w+)\s*-\s*(\w+)", content_str)
-            edges = [
-                {"source": u, "target": v, "type": "directed"} for u, v in directed
-            ]
-            edges.extend(
-                [
-                    {"source": u, "target": v, "type": "undirected"}
-                    for u, v in undirected
-                ]
+            # Section-scoped connection + equation parsing (the previous
+            # whole-content regex matched operators inside prose and treated
+            # any file containing the letter "t" as Dynamic).
+            edges, _diagnostics = parse_resource_connections(
+                content_str, set(variables_with_dims)
             )
-
-            equations = "\n".join(
-                [f"{u}={v}" for u, v in re.findall(r"(\w+)\s*=\s*(.+)", content_str)]
-            )
-            time_spec = "Dynamic" if "t" in content_str else "Static"
+            equations = extract_markdown_section(content_str, "Equations")
+            time_spec = classify_time_spec(content_str)
 
             content_dict: dict[str, Any] = {
                 "Variables": vars_map,
@@ -189,8 +184,12 @@ class GNNResourceEstimator:
     def estimate_from_directory(
         self, dir_path: str, recursive: bool = False
     ) -> Dict[str, Dict[str, Any]]:
-        """
-        Estimate resources for all GNN files in a directory.
+        """Estimate resources for all GNN files in a directory.
+
+        Discovery walks every registered non-binary spec extension (not
+        just ``*.md``), mirroring the type checker's own discovery so a
+        directory holding only a ``.gnn`` spec is estimated rather than
+        silently skipped. Binary pickle specs are excluded.
 
         Args:
             dir_path: Path to directory with GNN files
@@ -199,12 +198,22 @@ class GNNResourceEstimator:
         Returns:
             Dictionary mapping file paths to resource estimates
         """
+        from gnn.discovery import is_model_source_path
+        from gnn.parsers.common import get_supported_gnn_extensions
+
         path = Path(dir_path)
-        results: dict[Any, Any] = {}
+        results: dict[str, Dict[str, Any]] = {}
 
-        pattern = "**/*.md" if recursive else "*.md"
-
-        for file_path in path.glob(pattern):
+        extensions = get_supported_gnn_extensions(include_binary_pickle=False)
+        pattern = "**/*" if recursive else "*"
+        candidates = sorted(path.glob(pattern))
+        for file_path in candidates:
+            if not file_path.is_file():
+                continue
+            if not any(file_path.name.endswith(ext) for ext in extensions):
+                continue
+            if not is_model_source_path(file_path):
+                continue
             file_str = str(file_path)
             results[file_str] = self.estimate_from_file(file_str)
 
@@ -228,12 +237,12 @@ class GNNResourceEstimator:
         equations = content.get("Equations", "")
 
         model_name = content.get("ModelName", os.path.basename(file_path))
-
-        is_hierarchical = any("hierarchical" in key.lower() for key in content)
-        if is_hierarchical:
-            model_type = "Hierarchical"
-        else:
-            model_type = time_spec
+        # ``time_spec`` already encodes Static / Dynamic / Hierarchical via
+        # the shared ``checking.sections.classify_time_spec`` (the previous
+        # heuristic inspected the content-dict *keys* — "Variables"/"Edges"/
+        # ... — which never contained "hierarchical", so Hierarchical models
+        # were never detected).
+        model_type = time_spec or "Static"
 
         memory_estimate = _est_memory(variables, self.MEMORY_FACTORS)
         inference_estimate = _est_inference(

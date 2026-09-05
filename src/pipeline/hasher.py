@@ -105,7 +105,7 @@ def index_run(
     index_path = history_dir / "index.json"
 
     # Load existing index
-    index: dict[Any, Any] = {}
+    index: dict[str, dict[str, Any]] = {}
     if index_path.exists():
         try:
             with open(index_path) as f:
@@ -123,8 +123,11 @@ def index_run(
 
     index[run_hash] = entry
 
-    with open(index_path, "w") as f:
-        json.dump(index, f, indent=2)
+    # Atomic replace so a concurrent reader never observes a torn index and a
+    # crashed write cannot destroy the previously indexed runs.
+    from pipeline._io import atomic_write_text
+
+    atomic_write_text(index_path, json.dumps(index, indent=2))
 
     logger.info(f"📇 Indexed run {run_hash} in {index_path}")
     return index_path

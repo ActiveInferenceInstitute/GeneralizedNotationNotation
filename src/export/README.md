@@ -14,6 +14,7 @@ src/export/
 ├── processor.py                   # Export orchestration and GNN parsing
 ├── formatters.py                  # Format-specific serializers
 ├── format_exporters.py            # Advanced GNN-aware exporters
+├── registry.py                    # Canonical format registry (single source of truth)
 ├── utils.py                       # Module introspection utilities
 └── mcp.py                         # Model Context Protocol integration
 ```
@@ -504,7 +505,7 @@ There are no `ExportError`/`FormatExportError` exception types.
 
 ## Testing
 
-Tests live in `src/tests/export/` (`test_export_overall.py`, `test_export_format_writers.py`, `test_export_public_api.py`, `test_export_roundtrip.py`).
+Tests live in `src/tests/export/` (`test_export_overall.py`, `test_export_format_writers.py`, `test_export_public_api.py`, `test_export_roundtrip.py`, `test_export_registry_and_validate.py`).
 
 ## Dependencies
 
@@ -541,3 +542,27 @@ This module is part of the GeneralizedNotationNotation project. See the main rep
 - **[AGENTS](AGENTS.md)**: Agentic Workflows
 - **[SPEC](SPEC.md)**: Architectural Specification
 - **[SKILL](SKILL.md)**: Capability API
+
+
+## GEO-INFER interchange
+
+The opt-in `geo_infer` format exports explicit single-factor categorical A–E
+models with state ordering, a caller-declared timestep and source SHA-256.
+Use `export_model(..., formats=['geo_infer'])` with `raw_content` and
+`geo_infer.step_seconds`, or `python -m export.geo_infer --help`.
+[The versioned contract](geo_infer_contract.md) defines supported semantics,
+separate environment setup and cross-repository conformance checks.
+
+### GEO-INFER interchange
+
+The opt-in `geo_infer` writer supports strict categorical v1 and discrete-time
+linear Gaussian v2 artifacts. Step 7 requires explicit per-file
+`geo_infer_options`; original source bytes establish provenance. See the
+[interchange contract](geo_infer_contract.md) for axes, units, examples, and
+failure behavior. Default pipeline formats remain unchanged.
+
+`options.py` loads bounded, duplicate-free physical metadata for the numbered
+Step 7 CLI; `geo_infer_factored.py` exports explicitly structured factored JSON.
+
+XML, GraphML and GEXF output checks reject entity declarations using
+`defusedxml`; rejected files appear in the validation result’s `invalid` list.

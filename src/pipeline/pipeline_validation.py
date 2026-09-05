@@ -125,10 +125,11 @@ def validate_output_structure(output_dir: Path) -> Dict[str, List[str]]:
 
 
 def get_pipeline_modules(src_dir: Path) -> List[Path]:
-    """Get all numbered pipeline modules."""
-    modules: list[Any] = []
-    for i in range(1, 15):  # Steps 1-14
-        src_dir / f"{i}_*.py"
+    """Get all numbered pipeline modules (steps 0-24, derived from the registry)."""
+    from pipeline.step_registry import STEPS
+
+    modules: List[Path] = []
+    for i in range(len(STEPS)):
         matching = list(src_dir.glob(f"{i}_*.py"))
         if matching:
             modules.extend(matching)

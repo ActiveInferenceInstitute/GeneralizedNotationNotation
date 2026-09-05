@@ -7,9 +7,13 @@ This module provides export utility functions.
 
 from typing import Any, Dict, List
 
+from .registry import get_export_registry, get_format_categories
+
 
 def get_module_info() -> Dict[str, Any]:
     """Get comprehensive information about the export module and its capabilities."""
+    formats = list(get_export_registry().keys())
+    categories = get_format_categories()
     return {
         "version": "1.0.0",
         "description": "Multi-format export capabilities for GNN Processing Pipeline",
@@ -31,25 +35,31 @@ def get_module_info() -> Dict[str, Any]:
             "Plaintext summary",
             "DSL export",
         ],
-        "supported_formats": ["json", "xml", "graphml", "gexf", "pickle", "txt", "dsl"],
+        "supported_formats": formats,
         "export_methods": [
             "Single file export",
             "Batch export",
             "Format-specific export",
             "Model data export",
         ],
-        "available_formats": ["json", "xml", "graphml", "gexf", "pickle", "txt", "dsl"],
-        "graph_formats": ["graphml", "gexf"],
-        "text_formats": ["txt", "dsl"],
-        "data_formats": ["json", "xml", "pickle"],
+        "available_formats": formats,
+        "graph_formats": categories["graph"],
+        "text_formats": categories["text"],
+        "data_formats": categories["data"],
     }
 
 
 def get_supported_formats() -> Dict[str, List[str]]:
-    """Get information about supported export formats."""
+    """Get information about supported export formats, grouped by category.
+
+    Keys: ``data_formats``, ``graph_formats``, ``text_formats``,
+    ``all_formats``. Derived from :mod:`export.registry` so it cannot drift
+    from the dispatch tables.
+    """
+    categories = get_format_categories()
     return {
-        "data_formats": ["json", "xml", "pickle"],
-        "graph_formats": ["graphml", "gexf"],
-        "text_formats": ["txt", "dsl"],
-        "all_formats": ["json", "xml", "graphml", "gexf", "pickle", "txt", "dsl"],
+        "data_formats": categories["data"],
+        "graph_formats": categories["graph"],
+        "text_formats": categories["text"],
+        "all_formats": list(get_export_registry().keys()),
     }

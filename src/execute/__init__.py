@@ -43,8 +43,10 @@ from .executor import (
     GNNExecutor,
     execute_gnn_model,
     execute_script_safely,
+    list_frameworks,
     run_simulation,
 )
+from .planning import plan_execute
 from .processor import execute_simulation_from_gnn, process_execute
 from .pymdp import (
     PyMDPSimulation,
@@ -76,7 +78,9 @@ __all__: list[Any] = [
     "execute_gnn_model",
     "run_simulation",
     "execute_script_safely",
-    # PyMDP
+    # Introspection / planning
+    "list_frameworks",
+    "plan_execute",
     "execute_pymdp_simulation_from_gnn",
     "execute_pymdp_simulation",
     "validate_pymdp_environment",

@@ -14,8 +14,6 @@ manifest. No wall-clock values participate in the run hash.
 """
 
 import hashlib
-import os
-import tempfile
 from enum import Enum
 from pathlib import Path
 from typing import List, Optional, Sequence, Union
@@ -146,8 +144,9 @@ def mark(
 def checkpoint(session: RunSession, path: Union[str, Path]) -> Path:
     """Atomically write the session JSON to ``path``.
 
-    Writes to a temporary file in the same directory and then ``os.replace``-s
-    it into place, so an interrupted write never corrupts an existing manifest.
+    Writes through the shared :mod:`pipeline._io` atomic-write helper (unique
+    temp file in the same directory, then ``os.replace``), so an interrupted
+    write never corrupts an existing manifest.
 
     Args:
         session: The session to persist.
@@ -156,23 +155,10 @@ def checkpoint(session: RunSession, path: Union[str, Path]) -> Path:
     Returns:
         The resolved destination Path.
     """
-    dest = Path(path)
-    dest.parent.mkdir(parents=True, exist_ok=True)
-    payload = session.model_dump_json(indent=2)
+    from pipeline._io import atomic_write_text
 
-    # Unique temp file in the same directory (mkstemp avoids PID-reuse clobber);
-    # os.replace is atomic on POSIX so a crash leaves the prior manifest intact.
-    fd, tmp_name = tempfile.mkstemp(
-        dir=str(dest.parent), prefix=f"{dest.name}.", suffix=".tmp"
-    )
-    tmp = Path(tmp_name)
-    try:
-        with os.fdopen(fd, "w", encoding="utf-8") as fh:
-            fh.write(payload)
-        os.replace(tmp, dest)
-    finally:
-        if tmp.exists():
-            tmp.unlink()
+    dest = Path(path)
+    atomic_write_text(dest, session.model_dump_json(indent=2))
     return dest
 
 

@@ -19,6 +19,11 @@ except ImportError:
     yaml = cast(Any, None)
     _YAML_AVAILABLE = False
 
+# Canonical default paths used across the pipeline package (single source).
+DEFAULT_TARGET_DIR = "input/gnn_files"
+DEFAULT_OUTPUT_DIR = "output"
+
+
 # Pipeline configuration derived from canonical step registry
 from pipeline.step_registry import (
     STEP_METADATA_DICT as STEP_METADATA,  # noqa: E402,F401

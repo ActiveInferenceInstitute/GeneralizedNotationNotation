@@ -7,7 +7,7 @@ per-framework status, and batch processing through MCP.
 
 import logging
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -151,6 +151,61 @@ def render_gnn_to_format_mcp(
         return {"success": False, "error": str(e)}
 
 
+def render_spec_to_format_mcp(
+    gnn_file_path: str,
+    output_directory: str,
+    framework: str = "pymdp",
+    output_filename: Optional[str] = None,
+) -> Dict[str, Any]:
+    """
+    Render one GNN file to one framework through the canonical dispatch.
+
+    Unlike :func:`render_gnn_to_format_mcp` (which runs the full Step 11
+    directory flow and treats ``framework`` as a hint), this tool targets the
+    exact framework via ``render.processor.render_gnn_spec``, so artifact
+    lists contain only that framework's outputs.
+
+    Args:
+        gnn_file_path:    Path to the GNN source file (.md).
+        output_directory: Directory to write the rendered output.
+        framework:        Target framework accepted by ``render_gnn_spec``
+                          (e.g. ``pymdp``, ``rxinfer``, ``jax``, ``stan``).
+        output_filename:  Optional base filename for the output artifact
+                          (without extension); defaults to the model name.
+
+    Returns:
+        Dictionary with success status, the render message, and artifact paths.
+    """
+    try:
+        from gnn import parse_gnn_file
+
+        from .processor import render_gnn_spec
+
+        gnn_path = Path(gnn_file_path)
+        if not gnn_path.exists():
+            return {"success": False, "error": f"GNN file not found: {gnn_file_path}"}
+
+        out_dir = Path(output_directory)
+        parsed = parse_gnn_file(gnn_path)
+        options: Optional[Dict[str, Any]] = (
+            {"output_filename": output_filename} if output_filename else None
+        )
+        success, message, artifacts = render_gnn_spec(
+            parsed, framework, out_dir, options
+        )
+        return {
+            "success": success,
+            "gnn_file": str(gnn_path),
+            "framework": framework,
+            "output_directory": str(out_dir),
+            "output_files": artifacts,
+            "message": message,
+        }
+    except Exception as e:
+        logger.error(f"render_spec_to_format_mcp error: {e}", exc_info=True)
+        return {"success": False, "error": str(e)}
+
+
 def get_render_module_info_mcp() -> Dict[str, Any]:
     """
     Return metadata about the render module capabilities.
@@ -202,6 +257,38 @@ def register_tools(mcp_instance: Any) -> None:
             "required": ["target_directory", "output_directory"],
         },
         "Render GNN models in a directory to all supported code frameworks.",
+        module=__package__,
+        category="render",
+    )
+
+    mcp_instance.register_tool(
+        "render_spec_to_format",
+        render_spec_to_format_mcp,
+        {
+            "type": "object",
+            "properties": {
+                "gnn_file_path": {
+                    "type": "string",
+                    "description": "Path to the GNN source file (.md)",
+                },
+                "output_directory": {
+                    "type": "string",
+                    "description": "Directory for rendered output",
+                },
+                "framework": {
+                    "type": "string",
+                    "description": "Target framework for render_gnn_spec dispatch",
+                    "enum": get_supported_frameworks(),
+                    "default": "pymdp",
+                },
+                "output_filename": {
+                    "type": "string",
+                    "description": "Optional base filename for the output artifact (without extension)",
+                },
+            },
+            "required": ["gnn_file_path", "output_directory"],
+        },
+        "Render a single GNN file to exactly one framework via render_gnn_spec.",
         module=__package__,
         category="render",
     )

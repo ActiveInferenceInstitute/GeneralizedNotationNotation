@@ -10,3 +10,11 @@ This directory owns pytest coverage for `src/export/`.
 
 ## Verification
 Run `uv run --extra dev python -m pytest src/tests/export/ -q`.
+
+Gaussian interchange coverage lives in `test_geo_infer_gaussian.py` with the
+three-state, two-observation, one-control `gaussian_rectangular.md` source.
+Tests exercise strict extraction, explicit units/time, Step 7 metadata and source
+containment, partial failures, default-format compatibility and CLI output.
+
+`test_step7_geo_cli.py` runs the numbered Step 3/7 commands, verifies source
+provenance, and rejects missing or duplicate physical metadata.

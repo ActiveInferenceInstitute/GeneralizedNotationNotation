@@ -2,19 +2,347 @@
 """
 Ontology processor module for GNN Processing Pipeline.
 
-This module provides the main ontology processing functionality.
+Provides pure, composable primitives for parsing GNN ``ActInfOntologyAnnotation``
+sections and validating them against an Active Inference ontology term set.
+The thin orchestrator ``10_ontology.py`` calls ``process_ontology``; downstream
+steps (render, LLM, analysis) consume the JSON reports written here.
 """
 
 import json
 import logging
 import re
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Any, Dict, List, cast
+from typing import Any, Dict, List, NamedTuple, Optional, cast
 
 from utils.pipeline_template import log_step_error, log_step_start, log_step_success
 
-# Import core processing functions from processor module
-# Note: Core functions are defined in this module; avoid self-import
+logger = logging.getLogger("ontology")
+
+# Maximum Levenshtein distance at which a candidate term is offered as a
+# suggestion for an unknown annotation value.
+SUGGESTION_MAX_DISTANCE = 3
+
+
+class ParsedAnnotation(NamedTuple):
+    """A parsed ``KEY=VALUE`` (or bare ``VALUE``) annotation.
+
+    ``parse_annotation`` returns this 3-tuple so callers can unpack it
+    positionally (``key, value, comment = parse_annotation(line)``) while
+    typed callers can use attribute access. ``key`` and ``comment`` are
+    ``None`` when absent.
+    """
+
+    key: Optional[str]
+    value: str
+    comment: Optional[str]
+
+
+TermLookup = Dict[str, Dict[str, Any]]
+"""Case-folded name -> ``{"name": canonical, "data": term_metadata}`` mapping."""
+
+
+def _build_term_lookup(ontology_terms: Dict[str, Any]) -> TermLookup:
+    """Build a case-insensitive lookup of ontology term names.
+
+    Pure function: no I/O, no logging. Terms are sorted by case-folded name
+    so the suggestion scan and the resulting lookup are deterministic.
+
+    Raises ``ValueError`` when a term name is empty or non-string — callers
+    catch this and surface it as a validation error.
+    """
+    lookup: TermLookup = {}
+    for term_name in sorted(
+        ontology_terms, key=lambda candidate: str(candidate).casefold()
+    ):
+        if not isinstance(term_name, str) or not term_name.strip():
+            raise ValueError("ontology term names must be non-empty strings")
+        term_data = ontology_terms[term_name]
+        lookup[term_name.casefold()] = {
+            "name": term_name,
+            "data": (
+                term_data
+                if isinstance(term_data, dict)
+                else {"description": str(term_data)}
+            ),
+        }
+    return lookup
+
+
+class TermClassification(NamedTuple):
+    """Result of classifying one annotation against the term lookup.
+
+    ``match_info`` is the matched ``{"name","data"}`` dict (or ``None`` when
+    no term matched); ``reason`` is empty on success or a short failure
+    reason string on rejection.
+    """
+
+    matched: bool
+    match_info: Optional[Dict[str, Any]]
+    key: Optional[str]
+    value: str
+    comment: Optional[str]
+    reason: str
+
+
+def _term_matches(annotation: str, term_lookup: TermLookup) -> TermClassification:
+    """Classify one annotation against the term lookup.
+
+    Pure: no side effects. Returns a :class:`TermClassification` so the
+    caller can unpack typed fields instead of a positional 6-tuple.
+    """
+    key, value, comment = parse_annotation(annotation)
+
+    if "=" in annotation and (not key or not value):
+        return TermClassification(
+            False,
+            None,
+            key,
+            value,
+            comment,
+            "mapping annotations require a key and a value",
+        )
+
+    value_lower = value.casefold() if value else ""
+    match = term_lookup.get(value_lower)
+    if match is None:
+        return TermClassification(
+            False, None, key, value, comment, "ontology term is not defined"
+        )
+    return TermClassification(True, match, key, value, comment, "")
+
+
+def suggest_terms(
+    annotations: List[str],
+    ontology_terms: Optional[Dict[str, Any]] = None,
+    *,
+    max_distance: int = SUGGESTION_MAX_DISTANCE,
+) -> List[Dict[str, Any]]:
+    """Return nearest-ontology-term suggestions for unknown annotations.
+
+    For each annotation whose value is not a known ontology term, candidate
+    terms are scored by case-folded substring overlap and Levenshtein
+    distance. Each result is a dict with keys ``annotation``,
+    ``suggested_term``, ``description``, and ``distance`` (the edit distance;
+    ``0`` indicates a substring match). Pure aside from the lazy load of
+    ``ontology_terms`` when the caller omits it.
+    """
+    if ontology_terms is None:
+        ontology_terms = load_defined_ontology_terms()
+    lookup = _build_term_lookup(ontology_terms)
+
+    suggestions: List[Dict[str, Any]] = []
+    for annotation in annotations:
+        _key, value, _comment = parse_annotation(annotation)
+        value_lower = value.casefold() if value else ""
+        if not value_lower:
+            continue
+        for term_name_lower, term_info in lookup.items():
+            distance: Optional[int] = None
+            if value_lower in term_name_lower or term_name_lower in value_lower:
+                distance = 0
+            else:
+                edit = _levenshtein_distance(value_lower, term_name_lower)
+                if edit <= max_distance:
+                    distance = edit
+            if distance is not None:
+                suggestions.append(
+                    {
+                        "annotation": annotation,
+                        "suggested_term": term_info["name"],
+                        "description": term_info["data"].get("description", ""),
+                        "distance": distance,
+                    }
+                )
+    return suggestions
+
+
+def analyze_ontology_content(
+    content: str,
+    ontology_terms: Optional[Dict[str, Any]] = None,
+) -> Dict[str, Any]:
+    """Parse GNN content and validate its ontology annotations in one call.
+
+    Convenience wrapper used by both ``process_gnn_ontology`` (file path
+    input) and ``OntologyProcessor.process_ontology`` (dict/str input) so
+    the parse → load → validate pipeline exists in exactly one place.
+    Returns the ``{"ontology_data", "validation_result", "ontology_terms"}``
+    triple callers historically assembled by hand.
+    """
+    ontology_data = parse_gnn_ontology_section(content)
+    resolved_terms = (
+        load_defined_ontology_terms() if ontology_terms is None else ontology_terms
+    )
+    validation_result = validate_annotations(
+        ontology_data.get("annotations", []), resolved_terms
+    )
+    return {
+        "ontology_data": ontology_data,
+        "validation_result": validation_result,
+        "ontology_terms": resolved_terms,
+    }
+
+
+def summarise_coverage(validation_result: Dict[str, Any]) -> str:
+    """Render a :func:`validate_annotations` result as a compact summary line.
+
+    Pure: no I/O, no logging. Intended for report/LLM consumers that want a
+    one-line human-readable coverage statement (e.g. ``"3/4 annotations valid
+    (coverage 75.0%); 1 suggestion"``) without re-deriving counts from the
+    result dict.
+
+    Args:
+        validation_result: The dict returned by :func:`validate_annotations`.
+    """
+    total = len(validation_result.get("valid_annotations", [])) + len(
+        validation_result.get("invalid_annotations", [])
+    )
+    valid = len(validation_result.get("valid_annotations", []))
+    coverage = validation_result.get("coverage_score", 0.0)
+    suggestions = len(validation_result.get("suggestions", []))
+    note = (
+        f"; {suggestions} suggestion{'s' if suggestions != 1 else ''}"
+        if suggestions
+        else ""
+    )
+    return f"{valid}/{total} annotations valid (coverage {coverage * 100:.1f}%){note}"
+
+
+def build_ontology_terms(
+    terms: List[str],
+    *,
+    descriptions: Optional[Dict[str, str]] = None,
+    uris: Optional[Dict[str, str]] = None,
+) -> Dict[str, Any]:
+    """Build a normalized ontology-terms dictionary from name lists.
+
+    The complement of :func:`_normalise_ontology_terms` (which reads JSON):
+    this lets callers assemble a custom vocabulary in memory — for tests,
+    narrow validation scopes, or programmatic term sets — without writing a
+    JSON file. Each term maps to ``{"description": ..., "uri": ...}``, the
+    shape :func:`validate_annotations` and :func:`load_defined_ontology_terms`
+    consume. Rejects empty names, exact duplicates, and case-folded
+    duplicates (e.g. ``["A", "a"]``) so the built vocabulary upholds the same
+    case-insensitive lookup invariant :func:`_build_term_lookup` enforces.
+
+    Args:
+        terms: Ordered list of term names.
+        descriptions: Optional name -> description mapping.
+        uris: Optional name -> URI mapping.
+
+    Raises:
+        ValueError: On a non-string/empty name, an exact duplicate, or two
+            names that collide when case-folded.
+    """
+    descriptions = descriptions or {}
+    uris = uris or {}
+    built: Dict[str, Any] = {}
+    folded_names: Dict[str, str] = {}
+    for name in terms:
+        if not isinstance(name, str) or not name.strip():
+            raise ValueError("ontology term names must be non-empty strings")
+        canonical = name.strip()
+        if canonical in built:
+            raise ValueError(f"duplicate ontology term: {canonical!r}")
+        folded = canonical.casefold()
+        previous = folded_names.get(folded)
+        if previous is not None:
+            raise ValueError(
+                f"ontology terms are ambiguous when case-folded: {previous!r} "
+                f"and {canonical!r}"
+            )
+        folded_names[folded] = canonical
+        entry: Dict[str, Any] = {"description": descriptions.get(canonical, "")}
+        uri = uris.get(canonical)
+        if uri is not None:
+            entry["uri"] = uri
+        built[canonical] = entry
+    return built
+
+
+class OntologyTermIndex:
+    """Prebuilt case-insensitive index over an ontology vocabulary.
+
+    Composability/performance convenience for batch callers: constructing the
+    index once and reusing it across many annotations or files avoids
+    rebuilding the case-folded lookup on every :func:`validate_annotations`
+    call. The index is immutable after construction; all methods delegate to
+    the module-level pure functions so behaviour stays in lock-step with the
+    functional API.
+
+    Example:
+        >>> index = OntologyTermIndex.from_names(["HiddenState", "Observation"])
+        >>> index.lookup("hiddenstate")["name"]
+        'HiddenState'
+        >>> result = index.validate(["s=HiddenState", "x=Nope"])
+        >>> result["valid_annotations"]
+        ['s=HiddenState']
+    """
+
+    def __init__(self, ontology_terms: Dict[str, Any]) -> None:
+        """Build the index from a term-name -> metadata dictionary."""
+        self.terms: Dict[str, Any] = dict(ontology_terms)
+        self._lookup: TermLookup = _build_term_lookup(ontology_terms)
+
+    @classmethod
+    def from_file(cls, ontology_terms_file: Path | None = None) -> "OntologyTermIndex":
+        """Build the index from a vocabulary file (default: bundled JSON)."""
+        return cls(load_defined_ontology_terms(ontology_terms_file))
+
+    @classmethod
+    def from_names(
+        cls,
+        names: List[str],
+        *,
+        descriptions: Optional[Dict[str, str]] = None,
+        uris: Optional[Dict[str, str]] = None,
+    ) -> "OntologyTermIndex":
+        """Build the index from an in-memory name list (see
+        :func:`build_ontology_terms` for the rejection rules)."""
+        return cls(build_ontology_terms(names, descriptions=descriptions, uris=uris))
+
+    def lookup(self, value: str) -> Optional[Dict[str, Any]]:
+        """Return the canonical entry for ``value`` (case-insensitive).
+
+        Returns ``{"name": canonical_name, **term_metadata}`` or ``None``
+        when the value is not a known term.
+        """
+        match = self._lookup.get(value.casefold())
+        if match is None:
+            return None
+        return {"name": match["name"], **dict(match["data"])}
+
+    def known_terms(self) -> List[str]:
+        """Canonical term names, sorted case-insensitively."""
+        return [info["name"] for info in self._lookup.values()]
+
+    def validate(self, annotations: List[str]) -> Dict[str, Any]:
+        """Validate annotations against this vocabulary.
+
+        Convenience equivalent of
+        ``validate_annotations(annotations, self.terms)`` — the output
+        contract is identical. The prebuilt lookup genuinely pays off in
+        :meth:`lookup` / :meth:`known_terms` / ``in`` checks (O(1)
+        case-insensitive membership); ``validate``/``suggest`` delegate to
+        the module functions, which rebuild their own lookup per call.
+        """
+        return validate_annotations(annotations, self.terms)
+
+    def suggest(
+        self,
+        annotations: List[str],
+        *,
+        max_distance: int = SUGGESTION_MAX_DISTANCE,
+    ) -> List[Dict[str, Any]]:
+        """Suggest nearest terms for unknown annotations (see
+        :func:`suggest_terms`)."""
+        return suggest_terms(annotations, self.terms, max_distance=max_distance)
+
+    def __len__(self) -> int:
+        return len(self.terms)
+
+    def __contains__(self, value: object) -> bool:
+        return isinstance(value, str) and value.casefold() in self._lookup
 
 
 def process_ontology(
@@ -32,13 +360,13 @@ def process_ontology(
     Returns:
         True if processing successful, False otherwise
     """
-    logger = logging.getLogger("ontology")
+    local_logger = logging.getLogger("ontology")
     strict_validation = kwargs.get("strict_validation", False)
     recursive = kwargs.get("recursive", True)
     ontology_terms_file = kwargs.get("ontology_terms_file")
 
     try:
-        log_step_start(logger, "Processing ontology")
+        log_step_start(local_logger, "Processing ontology")
 
         results_dir = output_dir
         results_dir.mkdir(parents=True, exist_ok=True)
@@ -129,14 +457,14 @@ def process_ontology(
             json.dump(results, f, indent=2)
 
         if results["success"]:
-            log_step_success(logger, "Ontology processing completed successfully")
+            log_step_success(local_logger, "Ontology processing completed successfully")
         else:
-            log_step_error(logger, "Ontology processing failed")
+            log_step_error(local_logger, "Ontology processing failed")
 
         return cast("bool", results["success"])
 
     except Exception as e:
-        log_step_error(logger, f"Ontology processing failed: {e}")
+        log_step_error(local_logger, f"Ontology processing failed: {e}")
         return False
 
 
@@ -221,14 +549,22 @@ def parse_gnn_ontology_section(content: str) -> Dict[str, Any]:
 def process_gnn_ontology(
     gnn_file: str, ontology_terms: Dict[str, Any] | None = None
 ) -> Dict[str, Any]:
-    """
-    Process ontology for a single GNN file.
+    """Process ontology annotations for a single GNN file path.
+
+    Reads the file, parses its ``## ActInfOntologyAnnotation`` section, and
+    validates the annotations against the supplied (or default) ontology
+    term set. Delegates the parse→load→validate pipeline to
+    ``analyze_ontology_content`` so that path exists in exactly one place.
 
     Args:
-        gnn_file: Path to the GNN file
+        gnn_file: Path to the GNN file.
+        ontology_terms: Optional pre-resolved term dictionary (loaded by
+            default).
 
     Returns:
-        Dictionary with ontology processing results
+        ``{"success", "file_path", "ontology_data", "validation_result",
+        "ontology_terms"}`` on success, or ``{"success": False, "error"}``
+        on a read/parse failure.
     """
     try:
         file_path = Path(gnn_file)
@@ -236,32 +572,17 @@ def process_gnn_ontology(
         if not file_path.exists():
             return {"success": False, "error": f"File not found: {gnn_file}"}
 
-        # Read file content
         with open(file_path, "r", encoding="utf-8") as f:
             content = f.read()
 
-        # Parse ontology section
-        ontology_data = parse_gnn_ontology_section(content)
-
-        # Load defined ontology terms when the caller did not already resolve a
-        # run-specific vocabulary.
-        resolved_terms = (
-            load_defined_ontology_terms() if ontology_terms is None else ontology_terms
-        )
-
-        # Validate annotations
-        validation_result = validate_annotations(
-            ontology_data.get("annotations", []), resolved_terms
-        )
-
+        analysis = analyze_ontology_content(content, ontology_terms)
         return {
             "success": True,
             "file_path": str(file_path),
-            "ontology_data": ontology_data,
-            "validation_result": validation_result,
-            "ontology_terms": resolved_terms,
+            "ontology_data": analysis["ontology_data"],
+            "validation_result": analysis["validation_result"],
+            "ontology_terms": analysis["ontology_terms"],
         }
-
     except Exception as e:
         return {"success": False, "error": str(e)}
 
@@ -354,30 +675,50 @@ def _normalise_ontology_terms(data: Any) -> Dict[str, Any]:
 
 def load_defined_ontology_terms(
     ontology_terms_file: Path | None = None,
+    *,
+    search_paths: Sequence[Path] | None = None,
 ) -> Dict[str, Any]:
     """
     Load defined ontology terms from the Active Inference ontology terms file.
 
+    Dependency-injection hook for the file lookup: pass ``search_paths`` to
+    control where the vocabulary is resolved from (tests, alternate installs)
+    instead of relying on the hard-coded module-relative paths. Precedence:
+    an explicit ``ontology_terms_file`` is authoritative and fails closed
+    (``FileNotFoundError``) when missing; ``search_paths`` (when given) are
+    tried next, warning-and-continuing on each miss; without either, the
+    built-in module-relative paths are used and a total miss falls back to
+    the default built-in term set.
+
+    Args:
+        ontology_terms_file: Explicit vocabulary file; authoritative.
+        search_paths: Optional caller-supplied candidate paths, tried in
+            order after ``ontology_terms_file``.
+
     Returns:
         Dictionary mapping term names to their definitions (including description and URI)
     """
-    logger = logging.getLogger("ontology")
-
     explicit_file = (
         Path(ontology_terms_file) if ontology_terms_file is not None else None
     )
-    # Priority order for ontology files. An explicit file is authoritative and
-    # fails closed instead of silently falling back to the built-in vocabulary.
-    search_paths: list[Path] = (
-        [explicit_file]
-        if explicit_file is not None
-        else [
-            Path(__file__).parent / "act_inf_ontology_terms.json",
-            Path("src/ontology/act_inf_ontology_terms.json"),
-        ]
-    )
+    if search_paths is not None:
+        candidates: list[Path] = list(search_paths)
+        if explicit_file is not None:
+            candidates.insert(0, explicit_file)
+    else:
+        # Priority order for ontology files. An explicit file is authoritative
+        # and fails closed instead of silently falling back to the built-in
+        # vocabulary.
+        candidates = (
+            [explicit_file]
+            if explicit_file is not None
+            else [
+                Path(__file__).parent / "act_inf_ontology_terms.json",
+                Path("src/ontology/act_inf_ontology_terms.json"),
+            ]
+        )
 
-    for ontology_file in search_paths:
+    for ontology_file in candidates:
         if not ontology_file.exists():
             if explicit_file is not None:
                 raise FileNotFoundError(
@@ -436,17 +777,19 @@ def load_defined_ontology_terms(
     }
 
 
-def parse_annotation(annotation: str) -> tuple:
-    """
-    Parse a KEY=VALUE annotation into its components.
+def parse_annotation(annotation: str) -> ParsedAnnotation:
+    """Parse a ``KEY=VALUE`` annotation into its components.
+
+    Returns a :class:`ParsedAnnotation` (a 3-tuple, so existing positional
+    unpacking ``key, value, comment = parse_annotation(line)`` keeps working)
+    where ``key`` and ``comment`` are ``None`` when absent. A leading ``#``
+    introduces a trailing comment that is stripped and returned separately.
 
     Args:
-        annotation: Raw annotation string (e.g., "A=LikelihoodMatrix")
-
-    Returns:
-        Tuple of (key, value, comment) where any can be None
+        annotation: Raw annotation string (e.g., ``"A=LikelihoodMatrix"``
+            or ``"o=Observation # sensory value"``).
     """
-    comment = None
+    comment: Optional[str] = None
     if "#" in annotation:
         annotation, comment = annotation.split("#", 1)
         comment = comment.strip()
@@ -454,46 +797,38 @@ def parse_annotation(annotation: str) -> tuple:
 
     if "=" in annotation:
         key, value = annotation.split("=", 1)
-        return key.strip(), value.strip(), comment
+        return ParsedAnnotation(key.strip(), value.strip(), comment)
 
-    return None, annotation.strip(), comment
+    return ParsedAnnotation(None, annotation.strip(), comment)
 
 
 def validate_annotations(
-    annotations: List[str], ontology_terms: (Dict[str, Any]) | None = None
+    annotations: List[str], ontology_terms: Optional[Dict[str, Any]] = None
 ) -> Dict[str, Any]:
-    """
-    Validate annotations against ontology terms.
+    """Validate annotations against ontology terms.
 
-    Supports KEY=VALUE format where VALUE is matched against ontology term names.
+    Supports ``KEY=VALUE`` format where ``VALUE`` is matched (case-insensitively)
+    against ontology term names. The returned dict preserves the established
+    contract consumed by ``src/llm/processor.py`` (verbatim JSON injection into
+    LLM prompts): ``valid_annotations``, ``invalid_annotations``,
+    ``matched_terms`` (``key -> {annotation, term_name, description, uri, key,
+    value, comment}``), ``suggestions`` (each
+    ``{annotation, suggested_term, description}``), ``coverage_score``, and
+    ``invalid_details``.
+
+    The suggestion scan and term-lookup construction are delegated to the pure
+    helpers :func:`_build_term_lookup`, :func:`_term_matches`, and
+    :func:`suggest_terms` so callers can reuse them independently.
 
     Args:
-        annotations: List of annotations to validate (e.g., ["A=LikelihoodMatrix"])
-        ontology_terms: Dictionary of ontology terms (loaded if not provided)
-
-    Returns:
-        Dictionary with validation results including matched term details
+        annotations: Annotation strings (e.g., ``["A=LikelihoodMatrix"]``).
+        ontology_terms: Term dictionary; loaded by default.
     """
-    logger = logging.getLogger("ontology")
-
     try:
         if ontology_terms is None:
             ontology_terms = load_defined_ontology_terms()
 
-        # Build lookup set of all term names (case-insensitive)
-        term_lookup: dict[Any, Any] = {}
-        for term_name in sorted(
-            ontology_terms, key=lambda candidate: str(candidate).casefold()
-        ):
-            term_data = ontology_terms[term_name]
-            if not isinstance(term_name, str) or not term_name.strip():
-                raise ValueError("ontology term names must be non-empty strings")
-            term_lookup[term_name.casefold()] = {
-                "name": term_name,
-                "data": term_data
-                if isinstance(term_data, dict)
-                else {"description": str(term_data)},
-            }
+        term_lookup = _build_term_lookup(ontology_terms)
 
         validation_result: dict[str, Any] = {
             "valid_annotations": [],
@@ -505,75 +840,61 @@ def validate_annotations(
         }
 
         for annotation in annotations:
-            key, value, comment = parse_annotation(annotation)
+            classification = _term_matches(annotation, term_lookup)
 
-            # Mapping annotations are only meaningful when both sides are
-            # present.  Previously ``=HiddenState`` was accepted because only
-            # the ontology value was checked, losing the variable being
-            # annotated.
-            if "=" in annotation and (not key or not value):
+            if not classification.matched:
+                validation_result["invalid_annotations"].append(annotation)
+                validation_result["invalid_details"].append(
+                    {"annotation": annotation, "reason": classification.reason}
+                )
+                if classification.reason == "ontology term is not defined":
+                    # Preserve the documented suggestion shape
+                    # {annotation, suggested_term, description}.
+                    nearby = suggest_terms(
+                        [annotation],
+                        ontology_terms,
+                        max_distance=SUGGESTION_MAX_DISTANCE,
+                    )
+                    for suggestion in nearby:
+                        validation_result["suggestions"].append(
+                            {
+                                "annotation": suggestion["annotation"],
+                                "suggested_term": suggestion["suggested_term"],
+                                "description": suggestion["description"],
+                            }
+                        )
+                continue
+
+            # Cross-annotation consistency: the same key must not map to two
+            # different ontology terms (per-annotation _term_matches cannot see
+            # previously matched keys, so this check lives here).
+            match_info = classification.match_info
+            assert match_info is not None  # matched implies match_info present
+            mapping_key = classification.key or classification.value
+            existing = validation_result["matched_terms"].get(mapping_key)
+            if existing is not None and (
+                str(existing.get("term_name", "")).casefold()
+                != str(match_info["name"]).casefold()
+            ):
                 validation_result["invalid_annotations"].append(annotation)
                 validation_result["invalid_details"].append(
                     {
                         "annotation": annotation,
-                        "reason": "mapping annotations require a key and a value",
+                        "reason": "annotation key maps to multiple ontology terms",
+                        "previous_term": existing.get("term_name"),
                     }
                 )
                 continue
-
-            # Check if value matches any ontology term
-            value_lower = value.casefold() if value else ""
-
-            if value_lower in term_lookup:
-                matched = term_lookup[value_lower]
-                mapping_key = key or value
-                existing = validation_result["matched_terms"].get(mapping_key)
-                if existing is not None and (
-                    str(existing.get("term_name", "")).casefold()
-                    != str(matched["name"]).casefold()
-                ):
-                    validation_result["invalid_annotations"].append(annotation)
-                    validation_result["invalid_details"].append(
-                        {
-                            "annotation": annotation,
-                            "reason": "annotation key maps to multiple ontology terms",
-                            "previous_term": existing.get("term_name"),
-                        }
-                    )
-                    continue
-                validation_result["valid_annotations"].append(annotation)
-                validation_result["matched_terms"][mapping_key] = {
-                    "annotation": annotation,
-                    "term_name": matched["name"],
-                    "description": matched["data"].get("description", ""),
-                    "uri": matched["data"].get("uri", ""),
-                    "key": key,
-                    "value": value,
-                    "comment": comment,
-                }
-            else:
-                validation_result["invalid_annotations"].append(annotation)
-                validation_result["invalid_details"].append(
-                    {
-                        "annotation": annotation,
-                        "reason": "ontology term is not defined",
-                    }
-                )
-
-                # Find similar terms for suggestions
-                for term_name_lower, term_info in term_lookup.items():
-                    if (
-                        value_lower in term_name_lower
-                        or term_name_lower in value_lower
-                        or _levenshtein_distance(value_lower, term_name_lower) <= 3
-                    ):
-                        validation_result["suggestions"].append(
-                            {
-                                "annotation": annotation,
-                                "suggested_term": term_info["name"],
-                                "description": term_info["data"].get("description", ""),
-                            }
-                        )
+            validation_result["valid_annotations"].append(annotation)
+            validation_result["matched_terms"][mapping_key] = {
+                "annotation": annotation,
+                "term_name": match_info["name"],
+                "description": match_info["data"].get("description", ""),
+                "uri": match_info["data"].get("uri", ""),
+                "key": classification.key,
+                "value": classification.value,
+                "comment": classification.comment,
+            }
 
         # Calculate coverage score
         total_annotations = len(annotations)
@@ -583,17 +904,20 @@ def validate_annotations(
             )
 
         logger.info(
-            f"Validated {len(annotations)} annotations: {len(validation_result['valid_annotations'])} valid, {len(validation_result['invalid_annotations'])} invalid"
+            "Validated %d annotations: %d valid, %d invalid",
+            len(annotations),
+            len(validation_result["valid_annotations"]),
+            len(validation_result["invalid_annotations"]),
         )
 
         return validation_result
 
     except Exception as e:
-        logger.error(f"Validation failed: {e}")
+        logger.error("Validation failed: %s", e)
         return {
             "error": str(e),
             "valid_annotations": [],
-            "invalid_annotations": annotations,
+            "invalid_annotations": list(annotations),
             "matched_terms": {},
             "suggestions": [],
             "coverage_score": 0.0,

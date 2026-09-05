@@ -10,9 +10,9 @@
 
 **Status**: Production Ready
 
-**Version**: 3.2.0
+**Version**: 3.2.0 (module `__version__` 1.7.0)
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-04
 
 ---
 
@@ -71,10 +71,15 @@ success = process_ontology(
 
 **Returns**: `Dict[str, Any]` - Parsed ontology content (annotations + any extracted fields)
 
-#### `load_defined_ontology_terms() -> Dict[str, Any]`
-**Description**: Load the Active Inference ontology term dictionary used for validation (default: `src/ontology/act_inf_ontology_terms.json`).
+#### `load_defined_ontology_terms(ontology_terms_file: Path | None = None, *, search_paths: Sequence[Path] | None = None) -> Dict[str, Any]`
+**Description**: Load the ontology term dictionary. Precedence: explicit `ontology_terms_file` (authoritative, fails closed) → caller-supplied `search_paths` (warn-and-continue on each miss) → built-in module-relative paths → built-in default term set. The `search_paths` keyword is the dependency-injection hook for tests and alternate installs.
 
-**Returns**: `Dict[str, Any]` - Term definitions (format depends on the JSON file)
+**Returns**: `Dict[str, Any]` - Term definitions (including description and URI).
+
+#### `build_ontology_terms(terms: List[str], *, descriptions: Dict[str, str] | None = None, uris: Dict[str, str] | None = None) -> Dict[str, Any]`
+**Description**: Build a normalized ontology-terms dictionary in memory (the shape `load_defined_ontology_terms` returns and `validate_annotations` consumes), without writing a JSON file. Rejects empty names, exact duplicates, and case-folded duplicates (e.g. `["A", "a"]`) so the built vocabulary upholds the case-insensitive lookup invariant. Complement of `_normalise_ontology_terms`.
+
+**Returns**: `Dict[str, Any]` - Term-name -> `{"description", "uri"?}` mapping.
 
 #### `validate_annotations(annotations: List[str], ontology_terms: Dict[str, Any] | None = None) -> Dict[str, Any]`
 **Description**: Validate ontology annotations (e.g. `A=LikelihoodMatrix`) against the known ontology term set.
@@ -85,13 +90,26 @@ success = process_ontology(
 
 **Returns**: `Dict[str, Any]` - Validation details (valid/invalid annotations, suggestions when available)
 
-#### `process_gnn_ontology(gnn_file: str) -> Dict[str, Any]`
-**Description**: Process ontology annotations for a single GNN file path (reads file, parses ontology section, validates annotations).
+#### `process_gnn_ontology(gnn_file: str, ontology_terms: Dict[str, Any] | None = None) -> Dict[str, Any]`
+**Description**: Process ontology annotations for a single GNN file path (reads file, parses ontology section, validates annotations). Delegates the parse→load→validate pipeline to `analyze_ontology_content`.
 
-#### `generate_ontology_report_for_file(gnn_file: Path, output_dir: Path) -> Dict[str, Any]`
+#### `analyze_ontology_content(content: str, ontology_terms: Dict[str, Any] | None = None) -> Dict[str, Any]`
+**Description**: Single pure entry point that parses GNN content and validates its annotations, returning `{"ontology_data", "validation_result", "ontology_terms"}`. Shared by `process_gnn_ontology` (file input) and `OntologyProcessor.process_ontology` (content input) so the pipeline exists in exactly one place.
+
+#### `suggest_terms(annotations: List[str], ontology_terms: Dict[str, Any] | None = None, *, max_distance: int = 3) -> List[Dict[str, Any]]`
+**Description**: Return nearest-ontology-term suggestions for unknown annotations. Each result is `{"annotation", "suggested_term", "description", "distance"}` ranked closest-first (distance `0` = substring match). Reuses the same case-folded substring + Levenshtein heuristic as `validate_annotations`, exposed for LLM/report consumers.
+
+#### `summarise_coverage(validation_result: Dict[str, Any]) -> str`
+**Description**: Render a `validate_annotations` result as a compact human-readable coverage line (e.g. `"3/4 annotations valid (coverage 75.0%); 1 suggestion"`). Pure helper for report/LLM consumers.
+
+
+#### `parse_annotation(annotation: str) -> ParsedAnnotation`
+**Description**: Parse a `KEY=VALUE` annotation into a `ParsedAnnotation` NamedTuple (`key`, `value`, `comment`), still a 3-tuple so positional unpacking keeps working. `key`/`comment` are `None` when absent.
+
+#### `generate_ontology_report_for_file(gnn_file: Path, output_dir: Path, *, ontology_terms: Dict[str, Any] | None = None) -> Dict[str, Any]`
 **Description**: Generate and write a per-file ontology report JSON for a single GNN file.
 
-#### `validate_ontology_terms(terms: List[str] | str = None) -> bool`
+#### `validate_ontology_terms(terms: List[str] | str | None = None) -> bool`
 **Description**: Convenience validator for terms/annotations (returns boolean validity; used by integrations/tests).
 
 ### Public Classes
@@ -101,6 +119,9 @@ success = process_ontology(
 
 #### `OntologyValidator`
 **Description**: Validator exposing `validate_ontology()` and `check_consistency()` for quick boolean checks.
+
+#### `OntologyTermIndex`
+**Description**: Prebuilt case-insensitive index over an ontology vocabulary for batch callers. Construct once via `OntologyTermIndex(terms)`, `.from_file(path)`, or `.from_names(...)`; then use `lookup(value)` (O(1) case-insensitive membership), `known_terms()`, `validate(annotations)`, `suggest(annotations)`, `len()`, and `in` checks. Immutable after construction; delegates to the module-level pure functions so behaviour stays in lock-step with the functional API.
 
 ---
 
@@ -257,7 +278,10 @@ Lightweight JSON-based validation; runtime is dominated by file I/O.
 ## Testing
 
 ### Test Files
-- `src/tests/ontology/test_ontology_overall.py`
+- `src/tests/ontology/test_ontology_overall.py` — module-level behaviour
+- `src/tests/ontology/test_ontology_annotations.py` — annotation parsing/validation
+- `src/tests/ontology/test_ontology_public_api.py` — public export surface
+- `src/tests/ontology/test_ontology_composability.py` — composability helpers, vocabulary dedup invariant, MCP real-vocabulary behaviour
 
 ### Test Coverage
 Measure on demand:
@@ -281,8 +305,7 @@ uv run --extra dev python -m pytest src/tests/ontology/ \
 Registered by `src/ontology/mcp.py` `register_tools(mcp_instance)` (4 tools):
 - `process_ontology` - Run ontology processing on a directory
 - `validate_ontology_terms` - Validate a term or list of terms against the ontology
-- `extract_ontology_annotations` - Extract `ActInfOntologyAnnotation` entries from GNN content
-- `list_standard_ontology_terms` - List the standard ontology terms
+- `list_standard_ontology_terms` - List the standard ontology terms (derived from the real vocabulary via `load_defined_ontology_terms()`, so it cannot drift from what `validate_annotations` accepts)
 
 ### MCP File Location
 - `src/ontology/mcp.py` - MCP tool registrations

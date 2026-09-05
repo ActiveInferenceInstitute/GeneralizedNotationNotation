@@ -12,7 +12,7 @@
 
 **Version**: 3.2.0
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-04
 
 ---
 
@@ -43,6 +43,10 @@
 #### `process_export(target_dir, output_dir, verbose=False, **kwargs) -> bool`
 
 **Description**: Pipeline entry point (called by `7_export.py`). Loads parsed GNN specs from Step 3 output (`gnn_processing_results.json`) and exports each file to the requested formats. Accepts a `formats` keyword (list of format names).
+
+#### `validate_export_outputs(output_dir, expected_formats=None) -> Dict[str, Any]`
+
+**Description**: Post-run validation of export artifacts. Reads the `export_results.json` manifest and checks that every recorded export file exists, is non-empty, and parses cleanly for its format. When `expected_formats` is provided, models missing those formats are reported as `incomplete`. Returns a dict with keys `success`, `checked`, `missing`, `invalid`, `incomplete`, `files`.
 
 #### `generate_exports(target_dir, output_dir, verbose=False) -> bool`
 
@@ -93,13 +97,12 @@ success = generate_exports(
 
 ### Configuration Options
 
-`process_export` accepts a single keyword:
+`process_export` accepts these keywords:
 
 - `formats` (List[str]): Formats to export (default: `["json", "xml", "graphml", "gexf", "pickle"]`)
-  - `"json"`, `"xml"`, `"graphml"`, `"gexf"`, `"pickle"` map to the corresponding exporter
-  - `export_model` also supports only these five; anything else is recorded as "Unsupported format". The plaintext formatters (`export_to_plaintext_summary`, `export_to_plaintext_dsl`) exist but are not wired into `export_model` or the pipeline default.
+- `logger` (logging.Logger): Override the default module logger (injected by the pipeline template)
 
-There are no other configuration options.
+The default format set and the writer dispatch tables are derived from the canonical **format registry** (`export.registry`). The registry is the single source of truth for format names, extensions, writer callables, and categories. Do not add format-dispatch `if/elif` chains — extend the registry instead.
 
 
 ---
@@ -207,6 +210,10 @@ output/7_export_output/
 ### Test Files
 
 - `src/tests/export/test_export_overall.py`
+- `src/tests/export/test_export_format_writers.py`
+- `src/tests/export/test_export_public_api.py`
+- `src/tests/export/test_export_roundtrip.py`
+- `src/tests/export/test_export_registry_and_validate.py`
 
 ### Test Coverage
 
@@ -353,3 +360,29 @@ python src/7_export.py --target-dir input/ --verbose
 - **[AGENTS](AGENTS.md)**: Agentic Workflows
 - **[SPEC](SPEC.md)**: Architectural Specification
 - **[SKILL](SKILL.md)**: Capability API
+
+
+## GNN / GEO-INFER boundary
+
+`geo_infer.py` owns the opt-in `geo_infer` registry writer. Its normative
+[contract](geo_infer_contract.md) accepts only explicit single-factor A–E models
+and requires physical step seconds. Keep the default five Step 7 formats stable.
+Do not import GEO-INFER into this package, infer geographic state meaning, repair
+matrix probabilities, or silently coerce a continuous model into categorical form.
+Run export tests and the POMDP extractor orientation tests when changing this
+boundary; run GEO's separate-environment conformance command when both repos are
+available. General canonicalization must preserve non-square axes and be idempotent.
+
+`geo_infer_gaussian.py` adds the explicit discrete-time linear Gaussian v2
+producer. It requires source F/G/H/Q/R and initial belief plus caller units;
+never add default control maps or interpret F as a generator. `process_export`
+accepts `geo_infer_options` keyed by source filename and reads contained original
+source for provenance. Missing metadata fails the requested format and run.
+`test_geo_infer_gaussian.py` covers unequal axes, covariance rejection, CLI,
+source containment, partial failure and unchanged default formats.
+
+`options.py` loads bounded, duplicate-free physical metadata for the numbered
+Step 7 CLI; `geo_infer_factored.py` exports explicitly structured factored JSON.
+
+Export validation parses XML, GraphML and GEXF with `defusedxml` and rejects
+entity declarations; the manifest records these files as invalid.
