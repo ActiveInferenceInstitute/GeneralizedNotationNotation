@@ -296,8 +296,10 @@ def test_counts_describe_the_stamped_commit_not_the_working_tree(
     LOC while the repository's own committed token file said 190943 and neither
     reproduced from the commit the token file stamped.
     """
-    if not snapshot.from_git:  # pragma: no cover - tarball checkout
-        pytest.skip("no git metadata available")
+    # No skip guard: the repo's zero-skip contract (test_zero_skip_contracts.py)
+    # forbids one, and a checkout without git metadata cannot honour the
+    # producer's reproducibility contract at all — that is a failure, not a skip.
+    assert snapshot.from_git, "snapshot is not reading committed blobs"
     assert variables["GNN_GIT_COMMIT"] == snapshot.commit
     assert variables["GNN_GIT_COMMIT"] != "unknown"
     sources = [
