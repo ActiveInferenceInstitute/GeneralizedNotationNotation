@@ -40,11 +40,14 @@ Evidence boundary: Do not treat root output churn as manuscript evidence until t
 
 ## Known benign LaTeX diagnostics
 
-`output/pdf/_combined_manuscript.log` carries four
-`Infinite glue shrinkage found in box being split` warnings, one at each longtable
-page break. They are TeX *informational* messages ("ignored: ..."); no content is
-lost — every row of `tbl:gnn_constructs` (15) and `tbl:actinf_symbols` (12) is
-present in the rendered PDF, and there are zero Overfull boxes.
+`output/pdf/_combined_manuscript.log` carries one
+`Infinite glue shrinkage found in box being split` warning at each longtable page
+break — count them with
+`grep -c 'Infinite glue' output/pdf/_combined_manuscript.log`, and expect the
+number to move when pagination does. They are TeX *informational* messages
+("ignored: ..."); no content is lost — every data row of `tbl:gnn_constructs` and
+`tbl:actinf_symbols` is present in the rendered PDF, and
+`grep -c Overfull output/pdf/_combined_manuscript.log` is 0.
 
 Two candidate remediations were tested against a full render on 2026-09-05 and
 both are recorded here as **not** working, so they are not retried:
