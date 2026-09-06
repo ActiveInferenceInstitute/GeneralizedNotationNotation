@@ -56,9 +56,15 @@ from src.manuscript_variables import (  # noqa: E402
 # EXCLUDED_DOC_FILENAMES for standalone runs (no template checkout on sys.path).
 #
 # Deriving it replaced a hand-maintained list that exempted 99_references.md —
-# a file that IS rendered, as "10 References" in the PDF — while checking
-# preamble.md, whose tokens land in the LaTeX header rather than a section.
-# Both are substituted, so both are checked.
+# a file that IS rendered, as "10 References" in the PDF.
+#
+# preamble.md stays in the checked set, but for the opposite reason: the injector
+# substitutes it into output/manuscript/ and then _manuscript_source.py copies the
+# RAW file back over that copy, so a token written there NEVER resolves and reaches
+# hyperref verbatim (verified 2026-09-05: `Subject: GNNSUBTITLE` in the shipped
+# PDF). Scanning it makes that dead end loud instead of silent. The producer owns
+# preamble.md's two PDF-metadata values directly — see
+# manuscript_variables.sync_preamble_metadata.
 try:  # pragma: no cover - exercised only with a template checkout present
     from infrastructure.rendering.manuscript_injection import (  # type: ignore
         EXCLUDED_DOC_FILENAMES as _EXCLUDED_FROZEN,
