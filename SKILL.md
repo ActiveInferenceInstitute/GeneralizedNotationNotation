@@ -112,10 +112,9 @@ Each `src/module/` directory contains its own `SKILL.md` with module-specific in
 ## Testing
 
 ```bash
-# Full test suite — CI-equivalent marker filter. The command of record (with the
-# Ollama ignore list) is maintained once in README.md "Test Suite"; refresh
-# pass/skip counts there before publishing them.
-uv run --extra dev python -m pytest src/tests/ -q --tb=no -m "not pipeline and not mcp"
+# Full test suite: the command of record (with the Ollama ignore list) is
+# maintained once in README.md "Test Suite"; run it there and refresh
+# pass/skip counts before publishing them.
 
 # Test a specific module
 pytest src/tests/gnn/test_gnn_overall.py -v
