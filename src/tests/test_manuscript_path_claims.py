@@ -327,5 +327,30 @@ def test_producer_model_census_matches_pipeline_discovery() -> None:
     assert outside == int(variables["GNN_OUTSIDE_CORPUS_MODEL_COUNT"])
 
 
+def test_a_doc_that_only_names_the_header_is_not_counted_as_a_model(
+    tmp_path: Path,
+) -> None:
+    """Prose about ``## GNNSection`` must not make a README a model file.
+
+    Caught live: rewriting ``input/multi_agent_models/README.md`` to explain
+    which headers the fixture carries took the directory's model count from 1
+    to 2 on the very next run.
+    """
+    corpus = tmp_path / "input" / "gnn_files" / "basics"
+    corpus.mkdir(parents=True)
+    (corpus / "model.md").write_text("# M\n\n## GNNSection\nM\n", encoding="utf-8")
+    fixtures = tmp_path / "input" / "fixtures"
+    fixtures.mkdir(parents=True)
+    (fixtures / "README.md").write_text(
+        "It carries the `## GNNSection` header the reference marks Required.\n",
+        encoding="utf-8",
+    )
+    (fixtures / "real_model.md").write_text(
+        "## GNNSection\nReal\n", encoding="utf-8"
+    )
+    snapshot = RepositorySnapshot(tmp_path)
+    assert dict(_outside_corpus_dirs(snapshot)) == {"input/fixtures": 1}
+
+
 if __name__ == "__main__":  # pragma: no cover - convenience
     raise SystemExit(pytest.main([__file__, "-q"]))

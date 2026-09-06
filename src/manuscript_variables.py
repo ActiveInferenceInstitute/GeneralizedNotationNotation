@@ -469,17 +469,45 @@ def _count_files(snapshot: RepositorySnapshot, prefix: str, pattern: str) -> int
     return len(snapshot.glob(prefix, pattern))
 
 
+# Markdown filenames the pipeline never treats as a model source. Mirrors
+# ``gnn.discovery.NON_MODEL_MARKDOWN_FILENAMES`` / ``NON_MODEL_MARKDOWN_SUFFIXES``
+# rather than importing them, so the producer stays free of pipeline imports.
+# ``test_producer_model_census_matches_pipeline_discovery`` pins the two equal.
+_NON_MODEL_MARKDOWN_FILENAMES = frozenset(
+    {"agents.md", "changelog.md", "contributing.md", "index.md", "license.md", "readme.md"}
+)
+_NON_MODEL_MARKDOWN_SUFFIXES = (".example.md", ".template.md")
+# ``## GNNSection`` must open a line to be the model's header. A doc that merely
+# *names* the header inline (`` `## GNNSection` ``) is prose, not a model — which
+# is how a fixture README came within one commit of being counted as a model.
+_GNN_SECTION_HEADER = re.compile(r"^## GNNSection\b", re.MULTILINE)
+
+
+def _is_model_markdown(rel: Path) -> bool:
+    """Filename half of the model test, mirroring ``gnn.discovery``."""
+    name = rel.name.lower()
+    if name in _NON_MODEL_MARKDOWN_FILENAMES:
+        return False
+    return not any(name.endswith(suffix) for suffix in _NON_MODEL_MARKDOWN_SUFFIXES)
+
+
+def _models_under(snapshot: RepositorySnapshot, prefix: str) -> list[Path]:
+    """Markdown files under *prefix* that are GNN model sources."""
+    candidates = [md for md in snapshot.glob(prefix, "*.md") if _is_model_markdown(md)]
+    snapshot.prefetch(candidates)
+    return [md for md in candidates if _GNN_SECTION_HEADER.search(snapshot.read_text(md))]
+
+
 def _example_models(snapshot: RepositorySnapshot) -> list[Path]:
     """Return the GNN example *models* under ``input/gnn_files``.
 
-    A GNN model file is identified by its mandatory ``## GNNSection`` header, so
-    the corpus README/AGENTS/INDEX documents that live alongside the models are
-    not counted as models. Model corpora that live outside ``input/gnn_files``
-    (see ``GNN_UNSCANNED_CORPUS_DIRS``) are deliberately not in this set.
+    A GNN model file is identified by its mandatory ``## GNNSection`` header at
+    the start of a line, and by not being one of the README/AGENTS/INDEX
+    scaffolds the pipeline itself excludes. Model corpora that live outside
+    ``input/gnn_files`` are not in this set; ``GNN_OUTSIDE_CORPUS_NOTE`` reports
+    those.
     """
-    candidates = snapshot.glob("input/gnn_files", "*.md")
-    snapshot.prefetch(candidates)
-    return [md for md in candidates if "## GNNSection" in snapshot.read_text(md)]
+    return _models_under(snapshot, "input/gnn_files")
 
 
 def _outside_corpus_dirs(snapshot: RepositorySnapshot) -> list[tuple[str, int]]:
@@ -500,13 +528,10 @@ def _outside_corpus_dirs(snapshot: RepositorySnapshot) -> list[tuple[str, int]]:
             if len(rel.parts) > 2 and rel.parts[1] != "gnn_files"
         }
     )
-    pairs: list[tuple[str, int]] = []
-    for name in names:
-        candidates = snapshot.glob(f"input/{name}", "*.md")
-        snapshot.prefetch(candidates)
-        models = [md for md in candidates if "## GNNSection" in snapshot.read_text(md)]
-        pairs.append((f"input/{name}", len(models)))
-    return pairs
+    return [
+        (f"input/{name}", len(_models_under(snapshot, f"input/{name}")))
+        for name in names
+    ]
 
 
 def outside_corpus_note(
