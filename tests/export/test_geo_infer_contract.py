@@ -75,7 +75,11 @@ def test_state_order_is_not_sorted_or_invented() -> None:
 def test_rectangular_action_axis_canonicalization_and_diagnostics() -> None:
     import numpy as np
 
-    from gnn.pomdp_extractor import POMDPExtractor, POMDPStateSpace, canonicalize_pomdp
+    from gnn.extract.pomdp_extractor import (
+        POMDPExtractor,
+        POMDPStateSpace,
+        canonicalize_pomdp,
+    )
 
     stored = np.array(
         [[[1.0, 0.0], [0.0, 1.0]], [[0.0, 1.0], [1.0, 0.0]], [[0.5, 0.5], [0.5, 0.5]]]

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Tests for src/utils/validation_schemas.py using real tempdirs."""
+"""Tests for src/gnn/utils/validation_schemas.py using real tempdirs."""
 
 import sys
 from pathlib import Path

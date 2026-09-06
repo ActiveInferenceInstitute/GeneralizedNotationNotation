@@ -7,7 +7,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from gnn.pomdp_extractor import extract_pomdp_from_file
+from gnn.extract.pomdp_extractor import extract_pomdp_from_file
 from gnn.render.pomdp_processor import POMDPRenderProcessor
 from gnn.render.processor import render_gnn_spec
 

@@ -140,8 +140,8 @@ The oxdraw integration module is **fully complete** with comprehensive implement
 - ✅ **Pipeline Integration**: Works as Step 22 (GUI step with oxdraw option)
 
 ### Integration with Real GNN Pipeline
-- ✅ Uses real `gnn.processor.parse_gnn_file()`
-- ✅ Uses real `gnn.processor.discover_gnn_files()`
+- ✅ Uses real `gnn.processing.processor.parse_gnn_file()`
+- ✅ Uses real `gnn.processing.processor.discover_gnn_files()`
 - ✅ Uses real `ontology.processor.load_defined_ontology_terms()`
 - ✅ Uses real `ontology.processor.validate_annotations()`
 - ✅ Follows thin orchestrator pattern
@@ -249,7 +249,7 @@ The oxdraw integration module is **fully complete** with comprehensive implement
 ### Works with Real GNN Methods
 ```python
 # ✅ Confirmed working with:
-from gnn.processor import parse_gnn_file, discover_gnn_files
+from gnn.processing.processor import parse_gnn_file, discover_gnn_files
 from ontology.processor import load_defined_ontology_terms, validate_annotations
 from utils.pipeline_template import create_standardized_pipeline_script
 from pipeline.config import get_output_dir_for_script
@@ -329,7 +329,7 @@ from pipeline.config import get_output_dir_for_script
 - [x] Security considerations
 
 ### Integration
-- [x] Works with gnn.processor
+- [x] Works with gnn.processing.processor
 - [x] Works with ontology.processor
 - [x] Works with utils.pipeline_template
 - [x] Works with pipeline.config

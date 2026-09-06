@@ -1,25 +1,25 @@
 # Test Infrastructure
 
-Test suite for the GNN Processing Pipeline. As of Phase 7, tests mirror the
-`src/` module layout: `src/tests/<module>/test_*.py` contains tests for
-`src/<module>/`. Cross-module and infrastructure tests live at the top level
-under `src/tests/`.
+Test suite for the GNN Processing Pipeline. Tests mirror the
+`src/gnn/` package layout: `tests/<module>/test_*.py` contains tests for
+`src/gnn/<module>/`. Cross-module and infrastructure tests live at the top
+level of `tests/`.
 
 ## Quick Start
 
 ### Run full test suite via the pipeline orchestrator
 
 ```bash
-python src/2_tests.py --fast-only --verbose       # quick validation
-python src/2_tests.py --comprehensive --verbose   # full suite
+python src/gnn/2_tests.py --fast-only --verbose       # quick validation
+python src/gnn/2_tests.py --comprehensive --verbose   # full suite
 ```
 
 ### Run tests for a single module
 
 ```bash
-uv run --extra dev python -m pytest src/tests/gnn/ -v
-uv run --extra dev python -m pytest src/tests/render/ -v
-uv run --extra dev python -m pytest src/tests/execute/ -v
+uv run --extra dev python -m pytest tests/gnn/ -v
+uv run --extra dev python -m pytest tests/render/ -v
+uv run --extra dev python -m pytest tests/execute/ -v
 ```
 
 ### Run by marker
@@ -37,7 +37,7 @@ working on those surfaces (see also `just bench` for pipeline performance).
 
 ## Test Statistics
 
-- **Live file inventory**: `rg --files src/tests -g 'test_*.py'`
+- **Live file inventory**: `rg --files tests -g 'test_*.py'`
 - **Live collection**: run the command-of-record collect pass with the two
   local Ollama integration files ignored
 - **Pass/skip receipt**: the root [`README.md`](../../README.md) owns the latest
@@ -46,10 +46,10 @@ working on those surfaces (see also `just bench` for pipeline performance).
 - **Full-suite duration**: varies by optional backend availability; latest
   command-of-record run completed in 12:09
 
-## Directory Layout (Phase 7)
+## Directory Layout
 
 ```
-src/tests/
+tests/
 ├── conftest.py            # pytest fixtures + marker registration
 ├── categories.py          # category definitions for the modular runner
 ├── runner.py              # Step-2 orchestrator (TestRunner class)
@@ -58,8 +58,9 @@ src/tests/
 ├── helpers/               # shared test helpers (render_recovery)
 ├── infrastructure/        # TestRunner backend (ResourceMonitor, TestConfig)
 ├── test_data/             # on-disk fixtures consumed by tests
+├── tests/                 # shared-plumbing regression tests (intentional)
 │
-├── <module>/test_*.py     # per-module tests mirroring src/<module>/
+├── <module>/test_*.py     # per-module tests mirroring src/gnn/<module>/
 │   (36 maintained first-level subdirectories; 34 contain direct test files)
 │
 └── test_*.py              # cross-cutting / meta-tests at root
@@ -69,12 +70,12 @@ src/tests/
 
 ### What lives where
 
-| Location                         | Contains                                         |
-|----------------------------------|--------------------------------------------------|
-| `src/tests/<module>/`            | Tests for a single `src/<module>/` package       |
-| `src/tests/pipeline/`            | Cross-module integration tests (main orchestrator, render→execute→analyze chains, step11↔step12 handshakes) |
-| `src/tests/utils/`               | Tests for `src/utils/` helpers + shared contracts (exit codes, validation schemas, framework availability) |
-| `src/tests/` (root)              | Environment probes, coverage audits, test-runner self-tests, cross-module smoke tests |
+| Location              | Contains                                         |
+|-----------------------|--------------------------------------------------|
+| `tests/<module>/`     | Tests for a single `src/gnn/<module>/` package   |
+| `tests/pipeline/`     | Cross-module integration tests (main orchestrator, render→execute→analyze chains, step11↔step12 handshakes) |
+| `tests/utils/`        | Tests for `src/gnn/utils/` helpers + shared contracts (exit codes, validation schemas, framework availability) |
+| `tests/` (root)       | Environment probes, coverage audits, test-runner self-tests, cross-module smoke tests |
 
 ## Architecture
 
@@ -154,81 +155,81 @@ All test files follow the pattern:
 
 #### Core Module Tests
 
-- `test_gnn_overall.py` - Comprehensive GNN module testing
-- `test_gnn_parsing.py` - GNN parsing and discovery tests
-- `test_gnn_validation.py` - GNN validation and consistency tests
-- `test_gnn_processing.py` - GNN processing and serialization tests
+- `gnn/test_gnn_overall.py` - Comprehensive GNN module testing
+- `gnn/test_gnn_parsing.py` - GNN parsing and discovery tests
+- `gnn/test_gnn_validation.py` - GNN validation and consistency tests
+- `gnn/test_gnn_processing.py` - GNN processing and serialization tests
 
 #### Render Module Tests
 
-- `test_render_overall.py` - Comprehensive render module testing
-- `test_render_integration.py` - Render integration tests
-- `test_render_performance.py` - Render performance tests
+- `render/test_render_overall.py` - Comprehensive render module testing
+- `render/test_render_integration.py` - Render integration tests
+- `render/test_render_performance.py` - Render performance tests
 
 #### MCP Module Tests
 
-- `test_mcp_overall.py` - Comprehensive MCP module testing
-- `test_mcp_tools.py` - MCP tool execution tests
-- `test_mcp_performance.py` - MCP performance tests
+- `mcp/test_mcp_overall.py` - Comprehensive MCP module testing
+- `mcp/test_mcp_tools.py` - MCP tool execution tests
+- `mcp/test_mcp_performance.py` - MCP performance tests
 
 #### Audio Module Tests
 
-- `test_audio_overall.py` - Comprehensive audio module testing
-- `test_audio_sapf.py` - SAPF audio generation tests
-- `test_audio_generation.py` - Audio generation tests
-- `test_audio_integration.py` - Audio integration tests
+- `audio/test_audio_overall.py` - Comprehensive audio module testing
+- `audio/test_audio_sapf.py` - SAPF audio generation tests
+- `audio/test_audio_generation.py` - Audio generation tests
+- `audio/test_audio_integration.py` - Audio integration tests
 
 #### Visualization Module Tests
 
-- `test_visualization_overall.py` - Comprehensive visualization module testing
-- `test_visualization_matrices.py` - Matrix visualization tests
-- `test_visualization_ontology.py` - Ontology visualization tests
+- `visualization/test_visualization_overall.py` - Comprehensive visualization module testing
+- `visualization/test_visualization_matrices.py` - Matrix visualization tests
+- `visualization/test_visualization_ontology.py` - Ontology visualization tests
 
 #### Pipeline Module Tests
 
-- `test_pipeline_overall.py` - Comprehensive pipeline module testing
-- `test_pipeline_integration.py` - Pipeline integration tests
-- `test_pipeline_orchestration.py` - Pipeline orchestration tests
-- `test_pipeline_performance.py` - Pipeline performance tests
-- `test_pipeline_recovery.py` - Pipeline recovery tests
-- `test_pipeline_scripts.py` - Pipeline script tests
-- `test_pipeline_infrastructure.py` - Pipeline infrastructure tests
-- `test_pipeline_functionality.py` - Pipeline functionality tests
+- `pipeline/test_pipeline_overall.py` - Comprehensive pipeline module testing
+- `pipeline/test_pipeline_integration.py` - Pipeline integration tests
+- `pipeline/test_pipeline_orchestration.py` - Pipeline orchestration tests
+- `pipeline/test_pipeline_performance.py` - Pipeline performance tests
+- `pipeline/test_pipeline_recovery.py` - Pipeline recovery tests
+- `pipeline/test_pipeline_scripts.py` - Pipeline script tests
+- `pipeline/test_pipeline_infrastructure.py` - Pipeline infrastructure tests
+- `pipeline/test_pipeline_functionality.py` - Pipeline functionality tests
 
 #### Export Module Tests
 
-- `test_export_overall.py` - Comprehensive export module testing
+- `export/test_export_overall.py` - Comprehensive export module testing
 
 #### Execute Module Tests
 
-- `test_execute_overall.py` - Comprehensive execute module testing
+- `execute/test_execute_overall.py` - Comprehensive execute module testing
 
 #### LLM Module Tests
 
-- `test_llm_overall.py` - Comprehensive LLM module testing
+- `llm/test_llm_overall.py` - Comprehensive LLM module testing
 
 #### Ontology Module Tests
 
-- `test_ontology_overall.py` - Comprehensive ontology module testing
+- `ontology/test_ontology_overall.py` - Comprehensive ontology module testing
 
 #### Website Module Tests
 
-- `test_website_overall.py` - Comprehensive website module testing
+- `website/test_website_overall.py` - Comprehensive website module testing
 
 #### Report Module Tests
 
-- `test_report_overall.py` - Comprehensive report module testing
-- `test_report_generation.py` - Report generation tests
-- `test_report_integration.py` - Report integration tests
-- `test_report_formats.py` - Report format tests
+- `report/test_report_overall.py` - Comprehensive report module testing
+- `report/test_report_generation.py` - Report generation tests
+- `report/test_report_integration.py` - Report integration tests
+- `report/test_report_formats.py` - Report format tests
 
 #### Environment Module Tests
 
-- `test_environment_overall.py` - Comprehensive environment module testing
-- `test_environment_dependencies.py` - Environment dependency tests
-- `test_environment_integration.py` - Environment integration tests
-- `test_environment_python.py` - Python environment tests
-- `test_environment_system.py` - System environment tests
+- `infrastructure/test_environment_overall.py` - Comprehensive environment module testing
+- `infrastructure/test_environment_dependencies.py` - Environment dependency tests
+- `infrastructure/test_environment_integration.py` - Environment integration tests
+- `infrastructure/test_environment_python.py` - Python environment tests
+- `infrastructure/test_environment_system.py` - System environment tests
 
 #### Comprehensive Tests
 
@@ -236,19 +237,19 @@ Mirrors the `comprehensive` entry in `categories.py`:
 
 - `api/test_comprehensive_api.py` - Comprehensive API testing
 - `pipeline/test_main_orchestrator.py` - Main orchestrator tests
-- `test_core_modules.py` - Core module integration tests
-- `test_coverage_assessment.py` - Coverage assessment tests
-- `test_coverage_overall.py` - Coverage tests
-- `test_fast_suite.py` - Fast test suite
-- `test_performance_overall.py` - Performance tests
-- `test_runner_helper.py` - Runner helper CLI tests
-- `test_unit_overall.py` - Unit tests
+- `test_core_modules.py` - Core module integration tests (root)
+- `infrastructure/test_coverage_assessment.py` - Coverage assessment tests
+- `infrastructure/test_coverage_overall.py` - Coverage tests
+- `test_fast_suite.py` - Fast test suite (root)
+- `test_performance_overall.py` - Performance tests (root)
+- `test_runner_helper.py` - Runner helper CLI tests (root)
+- `test_unit_overall.py` - Unit tests (root)
 - `utils/test_new_utils.py` - Utils module tests
 
 ## Test Runner Configuration
 
 The test runner (`test_runner_modular.py`) executes the categories defined in
-`categories.py`. Category `files` entries are paths relative to `src/tests/`
+`categories.py`. Category `files` entries are paths relative to `tests/`
 (module subdirectories); entries matching nothing are skipped with a warning,
 and `missing_category_files()` reports any stale entry contract-wide:
 
@@ -262,14 +263,13 @@ MODULAR_TEST_CATEGORIES = {
             "gnn/test_gnn_parsing.py",
             "gnn/test_gnn_processing.py",
             "gnn/test_gnn_validation.py",
-        ],
         "markers": [],
         "timeout_seconds": 120,
         "max_failures": 8,
         "parallel": True,
     },
     # ... 24 categories total; the table is pinned by
-    # tests/test_categories_contract.py (missing_category_files() == {})
+    # tests/tests/test_categories_contract.py (missing_category_files() == {})
 }
 ```
 
@@ -300,24 +300,24 @@ graph TD
 
 ```bash
 # Run fast tests only (default for pipeline)
-python src/2_tests.py --fast-only --verbose
+python src/gnn/2_tests.py --fast-only --verbose
 
 # Or simply (fast-only is default)
-python src/2_tests.py --verbose
+python src/gnn/2_tests.py --verbose
 ```
 
 #### Comprehensive Tests
 
 ```bash
 # Run all tests including slow and performance tests
-python src/2_tests.py --comprehensive --verbose
+python src/gnn/2_tests.py --comprehensive --verbose
 ```
 
 #### Direct Test Runner
 
 ```bash
 # Run fast test suite directly
-python src/tests/run_fast_tests.py
+python tests/run_fast_tests.py
 ```
 
 ### Environment Variables
@@ -330,7 +330,7 @@ Skip all tests during pipeline execution (for faster pipeline runs).
 
 ```bash
 export SKIP_TESTS_IN_PIPELINE=1
-python src/main.py  # Tests will be skipped
+python src/gnn/main.py  # Tests will be skipped
 ```
 
 #### `FAST_TESTS_TIMEOUT`
@@ -339,25 +339,25 @@ Override the default timeout for fast tests (default: 600 seconds = 10 minutes).
 
 ```bash
 export FAST_TESTS_TIMEOUT=300  # 5 minutes
-python src/2_tests.py --fast-only
+python src/gnn/2_tests.py --fast-only
 ```
 
 #### Usage Examples
 
 ```bash
 # Skip tests in pipeline for faster execution
-SKIP_TESTS_IN_PIPELINE=1 python src/main.py
+SKIP_TESTS_IN_PIPELINE=1 python src/gnn/main.py
 
 # Run fast tests with custom timeout
-FAST_TESTS_TIMEOUT=180 python src/2_tests.py --fast-only
+FAST_TESTS_TIMEOUT=180 python src/gnn/2_tests.py --fast-only
 
 # Run comprehensive tests with verbose output
-python src/2_tests.py --comprehensive --verbose
+python src/gnn/2_tests.py --comprehensive --verbose
 ```
 
 ## Test Utilities
 
-### Shared Test Utilities (`src/utils/test_utils.py`)
+### Shared Test Utilities (`src/gnn/utils/test_utils.py`)
 
 - `TEST_CATEGORIES` - Test category definitions
 - `TEST_STAGES` - Test execution stages
@@ -537,12 +537,12 @@ MODULAR_TEST_CATEGORIES["new_module"] = {
 Example test file structure:
 
 ```python
-# src/tests/new_module/test_new_module_overall.py
+# tests/new_module/test_new_module_overall.py
 """Comprehensive tests for the new module."""
 
 import pytest
 from pathlib import Path
-from utils.test_utils import create_sample_gnn_content, assert_file_exists
+from gnn.utils.test_utils import create_sample_gnn_content, assert_file_exists
 
 
 @pytest.mark.fast
@@ -600,7 +600,7 @@ def test_new_module_integration():
 **Solutions**:
 
 - Increase timeout: `export FAST_TESTS_TIMEOUT=900` (15 minutes)
-- Run fast tests only: `python src/2_tests.py --fast-only`
+- Run fast tests only: `python src/gnn/2_tests.py --fast-only`
 - Skip tests in pipeline: `export SKIP_TESTS_IN_PIPELINE=1`
 
 #### Issue: Collection Errors
@@ -620,7 +620,7 @@ def test_new_module_integration():
 
 - Verify test files follow naming convention: `test_*.py`
 - Check that test functions are named with `test_` prefix
-- Ensure test files are in `src/tests/` directory
+- Ensure test files are in the `tests/` directory
 - Check pytest through the dev extra: `uv run --extra dev python -m pytest --version`
 
 #### Issue: Memory Errors
@@ -681,7 +681,7 @@ If issues persist:
 
 - **Fast Tests**: ~1-3 minutes (default for pipeline)
 - **Comprehensive Tests**: runtime depends on optional backends and selected markers
-- **Test Categories**: managed by `src/tests/categories.py`
+- **Test Categories**: managed by `tests/categories.py`
 - **Test Markers**: registered in `pytest.ini` and `pyproject.toml`
 - **Latest Execution**: use current full-suite output for pass, skip, and duration counts
 
@@ -701,7 +701,7 @@ If issues persist:
 
 ### Module Coverage
 
-Module coverage mirrors the maintained source tree. Use `rg --files src/tests -g 'test_*.py'` for the current file inventory and `uv run --extra dev python -m pytest src/tests/ --collect-only -q` for the current collected-test count.
+Module coverage mirrors the maintained source tree. Use `rg --files tests -g 'test_*.py'` for the current file inventory and `uv run --extra dev python -m pytest tests/ --collect-only -q` for the current collected-test count.
 
 ## Test Execution Results
 
@@ -709,7 +709,7 @@ Run the command below for the current result. The root
 [`README.md`](../../README.md) is the authority for the latest dated receipt.
 
 ```bash
-uv run --extra dev python -m pytest src/tests/ -q --tb=no -rsx --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py
+uv run --extra dev python -m pytest tests/ -q --tb=no -rsx --ignore=tests/llm/test_llm_ollama.py --ignore=tests/llm/test_llm_ollama_integration.py
 ```
 
 ## Future Enhancements

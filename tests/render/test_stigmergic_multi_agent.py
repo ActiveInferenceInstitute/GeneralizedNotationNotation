@@ -31,7 +31,7 @@ from pathlib import Path
 
 import pytest
 
-from gnn.pomdp_extractor import extract_pomdp_from_file
+from gnn.extract.pomdp_extractor import extract_pomdp_from_file
 from gnn.render.activeinference_jl.activeinference_renderer import (
     render_gnn_to_activeinference_jl,
 )

@@ -14,8 +14,8 @@ import re
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union, cast
 
-from gnn.discovery import is_model_source_path
 from gnn.pipeline.config import get_output_dir_for_script
+from gnn.processing.discovery import is_model_source_path
 from gnn.utils import performance_tracker
 
 from .matrix import MatrixVisualizer

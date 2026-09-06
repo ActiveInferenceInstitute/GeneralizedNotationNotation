@@ -34,7 +34,7 @@ from .pomdp_math import (
 )
 
 if TYPE_CHECKING:
-    from gnn.pomdp_extractor import POMDPStateSpace
+    from gnn.extract.pomdp_extractor import POMDPStateSpace
 
 logger = logging.getLogger(__name__)
 

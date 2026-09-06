@@ -17,12 +17,12 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 # Migrated from test_gnn_core_modules.py
 class TestGNNCoreProcessor:
-    """Test gnn.core_processor module."""
+    """Test gnn.processing.core_processor module."""
 
     @pytest.mark.unit
     def test_core_processor_imports(self) -> Any:
         """Test that core processor can be imported."""
-        from gnn import core_processor
+        from gnn.processing import core_processor
 
         assert hasattr(core_processor, "GNNProcessor")
 
@@ -31,7 +31,7 @@ class TestGNNCoreProcessor:
         self, sample_gnn_files: Any, comprehensive_test_data: Any
     ) -> Any:
         """Test basic GNN processor imports without heavy instantiation."""
-        from gnn.core_processor import GNNProcessor
+        from gnn.processing.core_processor import GNNProcessor
 
         # Test that GNNProcessor can be imported
         assert hasattr(GNNProcessor, "__init__")

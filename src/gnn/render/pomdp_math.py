@@ -14,7 +14,7 @@ from typing import TYPE_CHECKING, Any, Dict, List
 import numpy as np
 
 if TYPE_CHECKING:
-    from gnn.pomdp_extractor import POMDPStateSpace
+    from gnn.extract.pomdp_extractor import POMDPStateSpace
 
 
 def _is_kronecker_factorized_spec(pomdp_space: "POMDPStateSpace") -> bool:

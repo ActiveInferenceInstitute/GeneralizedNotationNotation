@@ -77,7 +77,7 @@ def test_extract_pomdp_from_file_imports_and_extracts_with_heavy_deps_blocked() 
     previously_loaded = _purge_packages(BLOCKED_ROOTS)
     sys.meta_path.insert(0, blocker)
     try:
-        from gnn.pomdp_extractor import extract_pomdp_from_file
+        from gnn.extract.pomdp_extractor import extract_pomdp_from_file
         from gnn.utils.safe_eval import MATRIX_MAX_LEN, safe_literal_eval
 
         assert MATRIX_MAX_LEN > 0

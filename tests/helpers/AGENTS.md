@@ -24,7 +24,7 @@ helpers/
 - `SAMPLE_GNN_CONTENT` — canonical minimal POMDP GNN markdown (single source for the conftest `sample_gnn_*` fixtures)
 - `write_sample_gnn_markdown(target)` — write the ontology-annotated sample markdown (creates parents)
 - `MCPTools` — in-memory MCP registry test double (`register_tool` / `register_resource` / `execute_tool`); the conftest `test_mcp_tools` fixture returns an instance
-- `get_test_data_dir()` / `get_sample_gnn_model()` / `load_sample_gnn_spec()` — path helpers for `src/tests/test_data/`
+- `get_test_data_dir()` / `get_sample_gnn_model()` / `load_sample_gnn_spec()` — path helpers for `tests/test_data/`
 - `render_gnn_files()` — render every GNN file in a directory, capturing per-file results for recovery tests
 
 ## Usage

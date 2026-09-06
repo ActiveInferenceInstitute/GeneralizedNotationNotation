@@ -69,7 +69,7 @@ flowchart TD
 
 The core function `process_render()` in `src/gnn/render/processor.py` implements:
 
-1. **POMDP Extraction** — Extracts state factors, observation modalities, control factors, matrices (A, B, C, D/E), and matrix provenance from GNN files via `gnn.pomdp_extractor.extract_pomdp_from_file()`
+1. **POMDP Extraction** — Extracts state factors, observation modalities, control factors, matrices (A, B, C, D/E), and matrix provenance from GNN files via `gnn.extract.pomdp_extractor.extract_pomdp_from_file()`
 2. **Validation** — `validate_pomdp_for_rendering()` checks that required dimensions and matrices are present for the requested framework
 3. **Matrix Normalization** — `normalize_matrices()` ensures:
    - **A matrix** (observation model): columns sum to 1 over the observation dimension

@@ -30,7 +30,7 @@ Validation includes ``inference_converged``, ``vfe_present``, and
 
 Exemplar discovery is **recursive**: all GNN spec files under `input/gnn_files/**`
 (nested folders such as `discrete/`, `continuous/`, `basics`) are discovered and rendered.
-Model-source files are filtered by `gnn.discovery.is_model_source_path`; current per-model
+Model-source files are filtered by `gnn.processing.discovery.is_model_source_path`; current per-model
 render/execute outcomes live in each run's `render_processing_summary.json` and
 `execution_summary.json`, not in this file.
 

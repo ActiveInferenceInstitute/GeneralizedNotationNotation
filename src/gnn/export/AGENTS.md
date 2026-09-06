@@ -349,7 +349,7 @@ python src/gnn/7_export.py --target-dir input/ --verbose
 
 ### Related Documentation
 
-- [Pipeline Overview](../../README.md)
+- [Pipeline Overview](../../../README.md)
 - [Architecture Guide](../../../ARCHITECTURE.md)
 - [GNN Export Guide](../../../doc/gnn/integration/gnn_export.md)
 

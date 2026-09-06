@@ -7,8 +7,8 @@ import re
 from pathlib import Path
 from typing import Any, Dict, Iterable, List
 
-from gnn.discovery import is_model_source_path
-from gnn.pomdp_extractor import POMDPExtractor
+from gnn.extract.pomdp_extractor import POMDPExtractor
+from gnn.processing.discovery import is_model_source_path
 from gnn.schema import parse_connections, parse_state_space, validate_matrix_dimensions
 
 TRACE_KEYS = (

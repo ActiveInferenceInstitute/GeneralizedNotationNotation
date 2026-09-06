@@ -11,7 +11,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
-from gnn.discovery import is_model_source_path
+from gnn.processing.discovery import is_model_source_path
 
 
 def _process_single_gnn_file(file_path: Path) -> Dict[str, Any]:

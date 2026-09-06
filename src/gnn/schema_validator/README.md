@@ -51,6 +51,6 @@ Notes:
 
 ## See Also
 
-- [Package root](../../README.md)
+- [Package root](../../../README.md)
 - [Validation module](../validation/README.md) — semantic/quality validation layered on top
 - [Parsers module](../parsers/README.md) — formal parsing system used for round-trip testing

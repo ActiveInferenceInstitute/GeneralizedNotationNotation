@@ -17,7 +17,7 @@ SRC = Path(__file__).resolve().parents[2]
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
-from gnn.processor import process_gnn_directory  # noqa: E402
+from gnn.processing.processor import process_gnn_directory  # noqa: E402
 
 
 def test_process_gnn_directory_fails_for_missing_path(tmp_path: Any) -> Any:

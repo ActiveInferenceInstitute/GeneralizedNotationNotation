@@ -27,7 +27,7 @@ import pytest
 pytestmark: list[Any] = [pytest.mark.integration, pytest.mark.uv]
 
 # Get project root
-PROJECT_ROOT = Path(__file__).parent.parent.absolute()
+PROJECT_ROOT = Path(__file__).parents[2].absolute()
 VENV_PATH = PROJECT_ROOT / ".venv"
 VENV_PYTHON = (
     VENV_PATH / "bin" / "python"

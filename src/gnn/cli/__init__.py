@@ -683,7 +683,7 @@ def _cmd_parse(args: argparse.Namespace) -> int:
         pomdp_note = "File declares no StateSpaceBlock variables; 'pomdp' key omitted"
     else:
         try:
-            from gnn.pomdp_extractor import extract_pomdp_from_file
+            from gnn.extract.pomdp_extractor import extract_pomdp_from_file
 
             pomdp_result = extract_pomdp_from_file(args.file, strict_validation=False)
             # on_error="lenient" (default) returns Optional[POMDPStateSpace];
@@ -1249,7 +1249,7 @@ def _cmd_lsp(args: argparse.Namespace) -> int:
 def _cmd_watch(args: argparse.Namespace) -> int:
     """Monitor directory and live-reparse on change."""
     try:
-        from gnn.watcher import GNNWatcher
+        from gnn.cli.watcher import GNNWatcher
 
         watcher = GNNWatcher(watch_dir=args.dir)
         watcher.start()

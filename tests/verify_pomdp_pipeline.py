@@ -439,7 +439,7 @@ def test_analyze_metrics() -> Any:
 
 
 def test_normalize_matrices() -> Any:
-    from gnn.pomdp_extractor import POMDPStateSpace
+    from gnn.extract.pomdp_extractor import POMDPStateSpace
     from gnn.render.processor import normalize_matrices
 
     A = np.array([[3.0, 1.0], [1.0, 3.0]])

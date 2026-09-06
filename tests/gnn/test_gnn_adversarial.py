@@ -10,7 +10,7 @@ from typing import Any
 
 import pytest
 
-from gnn.processor import (
+from gnn.processing.processor import (
     _extract_sections_lightweight,
     _extract_variables_lightweight,
     parse_gnn_file,

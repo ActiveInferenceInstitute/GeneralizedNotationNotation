@@ -15,7 +15,7 @@ import pytest
 
 from tests.helpers import load_module_from_path
 
-SCRIPT = Path(__file__).resolve().parents[1] / "scripts" / "check_external_links.py"
+SCRIPT = Path(__file__).resolve().parents[2] / "scripts" / "check_external_links.py"
 
 
 def _load() -> Any:

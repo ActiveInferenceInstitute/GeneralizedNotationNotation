@@ -267,7 +267,7 @@ JSON input schema, module/category metadata, and explicit success/error results.
 ## References
 
 ### Related Documentation
-- [Pipeline Overview](../../README.md)
+- [Pipeline Overview](../../../README.md)
 - [Pipeline Configuration](../pipeline/AGENTS.md)
 
 ### External Resources

@@ -144,7 +144,7 @@ def test_every_renderer_accepts_the_shared_spec(tmp_path: Path) -> None:
     Guards the defect where PyMDP and ActiveInference.jl were handed a Path and
     therefore always failed. No Julia and no subprocess: rendering only.
     """
-    from gnn.pomdp_extractor import extract_pomdp_from_file
+    from gnn.extract.pomdp_extractor import extract_pomdp_from_file
     from gnn.render.activeinference_jl.activeinference_renderer import (
         render_gnn_to_activeinference_jl,
     )

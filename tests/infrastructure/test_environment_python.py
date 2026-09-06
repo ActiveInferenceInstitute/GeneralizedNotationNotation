@@ -12,7 +12,6 @@ from typing import Any
 import pytest
 
 # Add src to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent))
 
 
 class TestPythonVersion:
@@ -49,7 +48,7 @@ class TestPythonPath:
     @pytest.mark.fast
     def test_src_in_path(self) -> Any:
         """Test src directory is in Python path."""
-        src_dir = Path(__file__).parent.parent
+        src_dir = Path(__file__).parents[2] / "src"
 
         # src should be importable
         assert str(src_dir) in sys.path or any(
@@ -59,7 +58,7 @@ class TestPythonPath:
     @pytest.mark.fast
     def test_project_root_accessible(self) -> Any:
         """Test project root is accessible."""
-        project_root = Path(__file__).parent.parent
+        project_root = Path(__file__).parents[2]
 
         assert project_root.exists()
         assert (

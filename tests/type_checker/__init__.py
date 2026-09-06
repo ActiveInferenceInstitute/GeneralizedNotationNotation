@@ -1,1 +1,1 @@
-"""Test package mirroring src/type_checker/ layout."""
+"""Test package mirroring src/gnn/type_checker/ layout."""

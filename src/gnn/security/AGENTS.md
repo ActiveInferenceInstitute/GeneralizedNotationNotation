@@ -377,7 +377,7 @@ uv run --extra dev python -m pytest tests/security/ \
 ## References
 
 ### Related Documentation
-- [Pipeline Overview](../../README.md)
+- [Pipeline Overview](../../../README.md)
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/)
 
 ### External Resources

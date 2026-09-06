@@ -314,7 +314,7 @@ def register_tools(mcp_instance):
 ## References
 
 ### Related Documentation
-- [Pipeline Overview](../../README.md)
+- [Pipeline Overview](../../../README.md)
 - [Architecture Guide](../../../ARCHITECTURE.md)
 - [SAPF Documentation](../../../doc/sapf/)
 - [Pedalboard Documentation](../../../doc/pedalboard/)

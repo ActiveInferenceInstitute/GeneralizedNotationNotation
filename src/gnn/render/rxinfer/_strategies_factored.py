@@ -204,7 +204,7 @@ end
 
 # --- Per-factor matrix loading -------------------------------------------
 # Nestings below are the EXACT parsed layouts produced by
-# gnn.pomdp_extractor -> render.pomdp_processor.pomdp_to_gnn_spec for
+# gnn.extract.pomdp_extractor -> render.pomdp_processor.pomdp_to_gnn_spec for
 # per-factor matrices; the B_f0 transpose follows
 # render/pomdp_contract.py::canonicalise_b_matrix (raw is action-first
 # [action][prev][next]; canonical is [next, prev, action]).

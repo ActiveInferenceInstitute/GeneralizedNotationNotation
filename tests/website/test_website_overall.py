@@ -182,7 +182,7 @@ def test_website_module_performance(tmp_path: Path) -> Any:
 
 
 class TestWebsiteMCP:
-    """Smoke tests for website.mcp sub-module."""
+    """Smoke tests for gnn.website.mcp sub-module."""
 
     def test_module_importable(self) -> Any:
         from gnn.website import mcp

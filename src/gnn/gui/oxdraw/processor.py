@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 
 from gnn.gui.websocket_bridge import build_initial_messages
-from gnn.processor import discover_gnn_files
+from gnn.processing.processor import discover_gnn_files
 
 from ..backend import write_json_atomically
 from .mermaid_converter import convert_gnn_file_to_mermaid

@@ -27,7 +27,7 @@ from gnn.manuscript_variables import (
     select_cross_framework_family,
 )
 
-_PROJECT_ROOT = Path(__file__).resolve().parents[1]
+_PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 
 @pytest.fixture(scope="module")

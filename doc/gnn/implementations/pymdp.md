@@ -76,7 +76,7 @@ diagnostics instead of trying to recover flat traces.
 
 | Pipeline Stage | Module | Public Surface |
 |---|---|---|
-| Extraction | [pomdp_extractor.py](../../../src/gnn/pomdp_extractor.py) | `extract_pomdp_from_file(...)` |
+| Extraction | [extract/pomdp_extractor.py](../../../src/gnn/extract/pomdp_extractor.py) | `extract_pomdp_from_file(...)` |
 | Rendering | [pymdp_renderer.py](../../../src/gnn/render/pymdp/pymdp_renderer.py) | `render_gnn_to_pymdp(...)` |
 | Execution | [simulation.py](../../../src/gnn/execute/pymdp/simulation.py) | `run_pymdp_simulation(...)` |
 | Analysis | [analyzer.py](../../../src/gnn/analysis/pymdp/analyzer.py) | `generate_analysis_from_logs(...)` |

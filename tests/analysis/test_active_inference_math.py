@@ -20,7 +20,7 @@ from gnn.analysis.post_simulation import (
     compute_shannon_entropy,
     compute_variational_free_energy,
 )
-from gnn.pomdp_extractor import POMDPStateSpace
+from gnn.extract.pomdp_extractor import POMDPStateSpace
 from gnn.render.processor import normalize_matrices
 
 # =============================================================================

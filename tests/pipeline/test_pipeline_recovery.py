@@ -161,7 +161,7 @@ class TestLightweightProcessingRecovery:
         self, test_environment: Any, sample_gnn_file: Any
     ) -> Any:
         """Test recovery to lightweight GNN processing."""
-        from gnn.core_processor import process_gnn_directory
+        from gnn.processing.core_processor import process_gnn_directory
 
         # Call real method; it should choose a mode based on availability
         result = process_gnn_directory(
@@ -176,7 +176,7 @@ class TestLightweightProcessingRecovery:
         self, test_environment: Any, sample_gnn_file: Any
     ) -> Any:
         """Test output quality of lightweight processing."""
-        from gnn.core_processor import process_gnn_directory_lightweight
+        from gnn.processing.core_processor import process_gnn_directory_lightweight
 
         result = process_gnn_directory_lightweight(test_environment / "input")
 

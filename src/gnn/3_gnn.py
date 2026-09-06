@@ -13,7 +13,7 @@ from typing import cast
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from gnn.multi_format_processor import process_gnn_multi_format
+from gnn.processing.multi_format_processor import process_gnn_multi_format
 from gnn.utils.pipeline_template import create_standardized_pipeline_script
 
 run_script = create_standardized_pipeline_script(

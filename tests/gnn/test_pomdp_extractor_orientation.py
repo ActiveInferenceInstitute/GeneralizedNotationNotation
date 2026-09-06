@@ -20,7 +20,7 @@ import copy
 from pathlib import Path
 from typing import Any, cast
 
-from gnn.pomdp_extractor import canonicalize_pomdp, extract_pomdp_from_file
+from gnn.extract.pomdp_extractor import canonicalize_pomdp, extract_pomdp_from_file
 
 REPO = Path(__file__).resolve().parents[2]
 

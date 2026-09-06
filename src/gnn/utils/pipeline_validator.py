@@ -283,8 +283,8 @@ def check_pipeline_readiness(
     script_names = [step[0] for step in steps_to_execute]
 
     if any(step in script_names for step in gnn_dependent_steps):
-        from gnn.discovery import is_model_source_path
         from gnn.parsers.common import get_supported_gnn_extensions
+        from gnn.processing.discovery import is_model_source_path
 
         gnn_files: list[Path] = []
         for ext in get_supported_gnn_extensions():

@@ -136,7 +136,7 @@ def _rehydrate_file_backed_parse_summary(
     if not source_path.is_file():
         raise ValueError(f"Parsed GNN source file does not exist: {source_path}")
 
-    from gnn.pomdp_extractor import extract_pomdp_from_file
+    from gnn.extract.pomdp_extractor import extract_pomdp_from_file
 
     from .pomdp_processor import pomdp_to_gnn_spec
 
@@ -547,7 +547,7 @@ def process_render(
 
         # Import POMDP processing capabilities
         try:
-            from gnn.pomdp_extractor import extract_pomdp_from_file
+            from gnn.extract.pomdp_extractor import extract_pomdp_from_file
             from gnn.render.pomdp_processor import POMDPRenderProcessor
 
             pomdp_available = True
@@ -557,7 +557,7 @@ def process_render(
             pomdp_available = False
 
         # Find GNN files
-        from gnn.discovery import is_model_source_path
+        from gnn.processing.discovery import is_model_source_path
 
         # Reuse discovery (apply default target dir like the named args), honoring
         # recursion so nested exemplar folders (discrete/, basics/, pomdp_gridworld/,

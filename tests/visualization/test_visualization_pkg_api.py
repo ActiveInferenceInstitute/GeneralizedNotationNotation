@@ -1,7 +1,7 @@
 """Package-root public API surface tests for visualization.
 
 Pins that every documented entry point (module README "Public API" table)
-is importable from the ``visualization`` package root, and that the
+is importable from the ``gnn.visualization`` package root, and that the
 pipeline's injected-logger contract is honored.
 """
 

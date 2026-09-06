@@ -588,7 +588,7 @@ class TestEndToEndIntegration:
         """Dependency tiers produced by the real DAG resolver are topologically valid."""
         from gnn.pipeline.dag import resolve_execution_order
 
-        # Documented data-flow dependencies (src/AGENTS.md § Data Dependencies):
+        # Documented data-flow dependencies (src/gnn/AGENTS.md § Data Dependencies):
         # step N -> [dependency step numbers that must run before N]
         dependencies: dict[int, list[int]] = {
             4: [3],  # registry needs parsed models

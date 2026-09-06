@@ -17,7 +17,7 @@ import json
 import re
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+REPO_ROOT = Path(__file__).resolve().parents[2]
 SCRIPT = REPO_ROOT / "scripts" / "manuscript_build_figures.py"
 REGISTRY = REPO_ROOT / "output" / "figures" / "figure_registry.json"
 MANUSCRIPT = REPO_ROOT / "manuscript"

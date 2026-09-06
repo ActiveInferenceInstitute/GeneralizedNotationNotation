@@ -266,7 +266,7 @@ uv run --extra dev python -m pytest tests/research/ \
 ## References
 
 ### Related Documentation
-- [Pipeline Overview](../../README.md)
+- [Pipeline Overview](../../../README.md)
 - [Architecture Guide](../../../ARCHITECTURE.md)
 - [Research Module](README.md)
 

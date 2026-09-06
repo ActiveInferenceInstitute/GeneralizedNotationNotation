@@ -1,4 +1,4 @@
-"""Tests for visualization.matrix.extract.collect_visualization_matrices."""
+"""Tests for gnn.visualization.matrix.extract.collect_visualization_matrices."""
 
 from __future__ import annotations
 

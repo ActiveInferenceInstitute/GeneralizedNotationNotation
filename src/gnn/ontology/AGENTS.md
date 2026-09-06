@@ -367,7 +367,7 @@ Registered by `src/gnn/ontology/mcp.py` `register_tools(mcp_instance)` (4 tools)
 ## References
 
 ### Related Documentation
-- [Pipeline Overview](../../README.md)
+- [Pipeline Overview](../../../README.md)
 - [Architecture Guide](../../../ARCHITECTURE.md)
 - [Active Inference Ontology](https://activeinference.org)
 - [GNN Ontology Guide](../../../doc/gnn/advanced/gnn_ontology.md)

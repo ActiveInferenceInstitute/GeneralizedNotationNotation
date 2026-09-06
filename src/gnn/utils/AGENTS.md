@@ -417,7 +417,7 @@ There is no `utils.get_performance_metrics` tool.
 ## References
 
 ### Related Documentation
-- [Pipeline Overview](../../README.md)
+- [Pipeline Overview](../../../README.md)
 - [Architecture Guide](../../../ARCHITECTURE.md)
 - [Pipeline Module](../pipeline/AGENTS.md)
 

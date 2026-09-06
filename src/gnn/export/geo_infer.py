@@ -41,7 +41,7 @@ def build_geo_infer_artifact(
     Example:
         artifact = build_geo_infer_artifact(source_text, step_seconds=60)
     """
-    from gnn.pomdp_extractor import extract_pomdp_from_content
+    from gnn.extract.pomdp_extractor import extract_pomdp_from_content
 
     if not isinstance(content, str) or len(content.encode("utf-8")) > MAX_SOURCE_BYTES:
         raise ValueError("GNN source must be text within four MiB")

@@ -22,7 +22,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 _ORCHESTRATOR_RE = re.compile(
     r"\*\*Orchestrator\*\*:\s*`(?P<script>src/[^`]+\.py)`\s*\((?P<count>\d+)\s+lines?\)"

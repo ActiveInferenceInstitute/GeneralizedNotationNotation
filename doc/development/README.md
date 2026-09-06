@@ -299,7 +299,7 @@ tests/
 ```python
 import pytest
 from pathlib import Path
-from gnn.processor import parse_gnn_file
+from gnn.processing.processor import parse_gnn_file
 
 
 class TestGNNParser:

@@ -35,7 +35,7 @@ def _actinf_gnn_spec(timesteps: int = 12) -> dict:
     """Same POMDP → spec path as Step 11 (POMDPRenderProcessor)."""
     import logging
 
-    from gnn.pomdp_extractor import extract_pomdp_from_file
+    from gnn.extract.pomdp_extractor import extract_pomdp_from_file
     from gnn.render.pomdp_processor import POMDPRenderProcessor
     from gnn.render.processor import normalize_matrices
 

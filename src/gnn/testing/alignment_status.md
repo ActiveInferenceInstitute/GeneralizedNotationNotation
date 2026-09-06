@@ -12,11 +12,11 @@ Canonical **format counts** (23 enum, 22 serializers, round-trip scope): see **[
 
 ## Round-trip testing (default suite)
 
-The suite in [`testing/test_round_trip.py`](testing/test_round_trip.py) uses **21** format strings in `FORMAT_TEST_CONFIG['test_formats']`: **`markdown`** plus **20** conversion targets. For the reference model, that suite reports **100%** success.
+The suite in [`test_round_trip.py`](test_round_trip.py) uses **21** format strings in `FORMAT_TEST_CONFIG['test_formats']`: **`markdown`** plus **20** conversion targets. For the reference model, that suite reports **100%** success.
 
 **Not in the default round-trip list:** **`ebnf`** (same `GrammarSerializer` path as **BNF**; not separately exercised), **`pnml`** (disabled in config; PNML remains **parse**-focused in `parsers/system.py`).
 
-**Serializers:** `SERIALIZER_REGISTRY` in [`parsers/system.py`](parsers/system.py) has **22** entries (no PNML serializer). **`GNNFormat`** has **23** values.
+**Serializers:** `SERIALIZER_REGISTRY` in [`../parsers/system.py`](../parsers/system.py) has **22** entries (no PNML serializer). **`GNNFormat`** has **23** values.
 
 ### Schema formats (7/7 in suite)
 
@@ -40,7 +40,7 @@ Markdown (source format for the reference file).
 
 ## Embedded model data
 
-Serializers embed a JSON snapshot of the model in comments or equivalent so parsers can restore semantics after `serialize → parse`. Patterns vary by format (e.g. `MODEL_DATA` in comments). Implementation is spread across [`parsers/*_serializer.py`](parsers/) modules, coordinated by [`parsers/system.py`](parsers/system.py).
+Serializers embed a JSON snapshot of the model in comments or equivalent so parsers can restore semantics after `serialize → parse`. Patterns vary by format (e.g. `MODEL_DATA` in comments). Implementation is spread across [`../parsers/`](../parsers/) modules, coordinated by [`../parsers/system.py`](../parsers/system.py).
 
 ## Folder structure (high level)
 

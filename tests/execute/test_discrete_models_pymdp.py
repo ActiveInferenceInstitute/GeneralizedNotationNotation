@@ -54,7 +54,7 @@ def _pymdp_importable() -> bool:
 
 def _extract_and_build_spec(model_file: str, timesteps: int = 12) -> dict:
     """Extract POMDP from GNN file and build a gnn_spec dict for execution."""
-    from gnn.pomdp_extractor import extract_pomdp_from_file
+    from gnn.extract.pomdp_extractor import extract_pomdp_from_file
     from gnn.render.pomdp_processor import POMDPRenderProcessor
 
     path = DISCRETE_DIR / model_file
@@ -76,7 +76,7 @@ def _extract_and_build_spec(model_file: str, timesteps: int = 12) -> dict:
 @pytest.mark.parametrize("model_file", DISCRETE_MODELS)
 def test_pomdp_extraction(model_file: str) -> None:
     """Every discrete model file should successfully extract a POMDPStateSpace."""
-    from gnn.pomdp_extractor import extract_pomdp_from_file
+    from gnn.extract.pomdp_extractor import extract_pomdp_from_file
 
     path = DISCRETE_DIR / model_file
     if not path.is_file():
@@ -94,7 +94,7 @@ def test_pomdp_extraction(model_file: str) -> None:
 
 def test_hmm_baseline_2d_b_is_passive_single_action() -> None:
     """A 2-D HMM transition matrix represents passive dynamics, not four actions."""
-    from gnn.pomdp_extractor import extract_pomdp_from_file
+    from gnn.extract.pomdp_extractor import extract_pomdp_from_file
 
     pomdp = extract_pomdp_from_file(
         DISCRETE_DIR / "hmm_baseline.md", strict_validation=False
@@ -108,7 +108,7 @@ def test_hmm_baseline_2d_b_is_passive_single_action() -> None:
 
 def test_tmaze_factored_matrices_are_preserved_and_composed() -> None:
     """T-maze must retain factors and compose a joint PyMDP contract without collapsing."""
-    from gnn.pomdp_extractor import extract_pomdp_from_file
+    from gnn.extract.pomdp_extractor import extract_pomdp_from_file
     from gnn.render.pomdp_processor import POMDPRenderProcessor
 
     pomdp = extract_pomdp_from_file(
@@ -133,7 +133,7 @@ def test_tmaze_factored_matrices_are_preserved_and_composed() -> None:
 
 def test_time_varying_b_tensor_projects_to_pymdp_b_with_provenance() -> None:
     """A declared B_t tensor is the transition model for PyMDP's static B contract."""
-    from gnn.pomdp_extractor import extract_pomdp_from_file
+    from gnn.extract.pomdp_extractor import extract_pomdp_from_file
     from gnn.render.pomdp_processor import POMDPRenderProcessor
 
     pomdp = extract_pomdp_from_file(
@@ -161,7 +161,7 @@ def test_time_varying_b_tensor_projects_to_pymdp_b_with_provenance() -> None:
 @pytest.mark.parametrize("model_file", DISCRETE_MODELS)
 def test_pymdp_render(model_file: str, tmp_path: Path) -> None:
     """Every discrete model should successfully render a PyMDP script."""
-    from gnn.pomdp_extractor import extract_pomdp_from_file
+    from gnn.extract.pomdp_extractor import extract_pomdp_from_file
     from gnn.render.pomdp_processor import POMDPRenderProcessor
 
     path = DISCRETE_DIR / model_file

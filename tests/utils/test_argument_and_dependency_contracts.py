@@ -158,7 +158,7 @@ def test_step_specific_defaults_are_preserved() -> None:
 
 
 def test_registered_step_contract_audit_is_clean() -> None:
-    assert audit_step_contracts(sys.executable, Path("src")) == []
+    assert audit_step_contracts(sys.executable, Path("src/gnn")) == []
 
 
 def test_exit_code_contract_docs_use_canonical_wording() -> None:
@@ -166,7 +166,6 @@ def test_exit_code_contract_docs_use_canonical_wording() -> None:
     checked_paths = [
         Path("ARCHITECTURE.md"),
         Path("doc/PIPELINE_SCRIPTS.md"),
-        Path("src/SPEC.md"),
         Path("src/gnn/STEP_INDEX.md"),
         Path("src/gnn/template/README.md"),
         Path("tests/README.md"),

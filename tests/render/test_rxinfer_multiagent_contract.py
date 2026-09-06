@@ -19,7 +19,7 @@ from gnn.execute.processor import (
     _load_rxinfer_execution_metadata_from_script,
     execute_single_script,
 )
-from gnn.pomdp_extractor import POMDPExtractor
+from gnn.extract.pomdp_extractor import POMDPExtractor
 from gnn.render.pomdp_processor import POMDPRenderProcessor
 from gnn.render.rxinfer.rxinfer_renderer import (
     build_rxinfer_execution_metadata,

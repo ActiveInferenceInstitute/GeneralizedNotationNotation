@@ -2,7 +2,7 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 0.5 |
+| Version | 0.6 |
 | Date | 2026-09-06 |
 | Canonical copy | `../fep_lean/docs/design/gnn-bridge/bridge-contract.md` — edit there first |
 | Mirror copy | this file, `doc/other/fep_lean/bridge-contract.md` |
@@ -171,7 +171,10 @@ The historical P3 comparison default is read-only; report writing requires
 `--output`. Supported source-bound operations use `fep-lean bridge` with an
 explicit `--gnn-root`. Legacy script locations remain compatibility entry points.
 
-v0.5 rename migration: the canonical GNN Python package is `gnn`
+v0.6 extraction-package migration: the pinned render route is
+`gnn.extract.pomdp_extractor` (the extraction concern is packaged at
+`src/gnn/extract/`; `python -m gnn.extract` is preserved via the package
+`__main__`). v0.5 rename migration: the canonical GNN Python package is `gnn`
 (src-layout `src/gnn/`); the GNN owner roster is re-pinned to the single glob
 `src/gnn/**/*.py` plus fixed owners `pyproject.toml`, `uv.lock`,
 `src/gnn/main.py`, the mirror, and the pinned syntax files
@@ -241,7 +244,7 @@ The `verify-document` operation (Direction 2 S7) checks one emitted GNN
 document: `fep-lean bridge verify-document --gnn-root PATH --document PATH`
 `[--model finite|continuous] [--receipt PATH] [--fail-on-warnings]`. It
 extracts the typed payload through the pinned render route
-(`gnn.pomdp_extractor.extract_pomdp_from_file`, strict validation; full
+(`gnn.extract.pomdp_extractor.extract_pomdp_from_file`, strict validation; full
 StateSpaceBlock inventory via `gnn.schema.parse_state_space`), constructs a
 `FEP.GnnDocument.GnnDocument` value in a compile-once Lean probe, and decides
 `documentWellFormed doc = true` in the committed `lean/FepSketches/`

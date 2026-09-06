@@ -59,7 +59,7 @@
 **Example**:
 
 ```python
-from gnn.multi_format_processor import process_gnn_multi_format
+from gnn.processing.multi_format_processor import process_gnn_multi_format
 from pathlib import Path
 import logging
 
@@ -232,7 +232,7 @@ existing path and `is_content` is `False`, the file is read first; otherwise
 #### `extract_to_json(path: Union[str, Path], *, strict_validation: bool = True, on_error: str = "lenient", compact: bool = False) -> str`
 
 **Description**: Machine-readable headless extraction entry point. Calls
-`gnn.pomdp_extractor.extract_pomdp_from_file` and returns a JSON string — it
+`gnn.extract.pomdp_extractor.extract_pomdp_from_file` and returns a JSON string — it
 never raises. Success: the `POMDPStateSpace.to_dict()` payload (no `status`
 key). Failure: the envelope
 `{"status": "error", "error": {"code", "message", "line", "section"}}`
@@ -388,7 +388,7 @@ constants in this module; do not rely on the ones some older docs listed.
 ### Basic Usage
 
 ```python
-from gnn.multi_format_processor import process_gnn_multi_format
+from gnn.processing.multi_format_processor import process_gnn_multi_format
 from pathlib import Path
 
 success = process_gnn_multi_format(
@@ -414,7 +414,7 @@ success = process_gnn_multi_format(
 
 ```python
 # Called from 3_gnn.py
-from gnn.multi_format_processor import process_gnn_multi_format
+from gnn.processing.multi_format_processor import process_gnn_multi_format
 
 run_script = create_standardized_pipeline_script(
     "3_gnn.py",

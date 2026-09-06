@@ -276,7 +276,7 @@ class TestFactorizedSpecGenerator:
     """The MAJ-02 GNN spec generator produces parseable factor-separable specs."""
 
     def test_spec_parses_with_per_factor_matrices(self) -> None:
-        from gnn.pomdp_extractor import extract_pomdp_from_content
+        from gnn.extract.pomdp_extractor import extract_pomdp_from_content
 
         generator = _load_module(
             "pymdp_spec_generator",

@@ -11,7 +11,7 @@ import pytest
 from tests.helpers import load_module_from_path
 
 _SCRIPT = (
-    Path(__file__).resolve().parents[1]
+    Path(__file__).resolve().parents[2]
     / "scripts"
     / "run_pymdp_gnn_scaling_analysis.py"
 )

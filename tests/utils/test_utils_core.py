@@ -73,7 +73,7 @@ def test_config_validation_success() -> Any:
     # Should not raise
     errors = config.validate()
     # Depending on environment, target_dir might not exist,
-    # but GNNPipelineConfig expects it relative to src/
+    # but GNNPipelineConfig resolves it relative to the project root
     assert isinstance(errors, list)
 
 

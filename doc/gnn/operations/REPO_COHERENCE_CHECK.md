@@ -98,7 +98,7 @@ For each script `N_[module_name].py`, verify:
 
 - Verify: GNN file discovery and parsing delegation
 - Verify: Multi-format support delegation
-- Verify: Delegates to `process_gnn_multi_format()` from `gnn.multi_format_processor`
+- Verify: Delegates to `process_gnn_multi_format()` from `gnn.processing.multi_format_processor`
 
 **Step 4**: `src/gnn/4_model_registry.py` → `src/gnn/model_registry/`
 

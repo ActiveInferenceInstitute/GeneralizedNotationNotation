@@ -5,7 +5,7 @@ This module provides GNN file discovery, parsing, and validation capabilities.
 
 Importing ``gnn`` is intentionally LIGHT (lazy PEP 562 re-exports): no
 submodule executes at import time, so the package can be imported — and the
-headless POMDP extractor (``gnn.pomdp_extractor``) used — without pulling in
+headless POMDP extractor (``gnn.extract.pomdp_extractor``) used — without pulling in
 the full pipeline stack or heavy module-scope dependencies (psutil,
 matplotlib). Names resolve through ``__getattr__`` on first access.
 """
@@ -18,7 +18,6 @@ if TYPE_CHECKING:
     from .execute.executor import GNNExecutor, execute_gnn_model
     from .export.processor import generate_exports
     from .model_registry.registry import ModelRegistry
-    from .multi_format_processor import process_gnn_multi_format
     from .parsers.basic import (
         GNNFormalParser,
         ParsedGNNFormal,
@@ -30,7 +29,8 @@ if TYPE_CHECKING:
     from .parsers.common import GNNFormat
     from .parsers.system import GNNParsingSystem
     from .pipeline import run_pipeline
-    from .processor import (
+    from .processing.multi_format_processor import process_gnn_multi_format
+    from .processing.processor import (
         discover_gnn_files,
         generate_gnn_report,
         get_module_info,
@@ -60,7 +60,7 @@ FEATURES: dict[str, Any] = {
 # imports only that one submodule.
 _EXPORT_MAP: dict[str, str] = {
     # multi_format_processor
-    "process_gnn_multi_format": "multi_format_processor",
+    "process_gnn_multi_format": "processing.multi_format_processor",
     # parsers.basic
     "GNNFormalParser": "parsers.basic",
     "ParsedGNNFormal": "parsers.basic",
@@ -74,13 +74,13 @@ _EXPORT_MAP: dict[str, str] = {
     # PNML is parse-only)
     "GNNParsingSystem": "parsers.system",
     # processor
-    "discover_gnn_files": "processor",
-    "generate_gnn_report": "processor",
-    "get_module_info": "processor",
-    "parse_gnn_file": "processor",
-    "process_gnn_directory": "processor",
-    "process_gnn_directory_lightweight": "processor",
-    "validate_gnn_structure": "processor",
+    "discover_gnn_files": "processing.processor",
+    "generate_gnn_report": "processing.processor",
+    "get_module_info": "processing.processor",
+    "parse_gnn_file": "processing.processor",
+    "process_gnn_directory": "processing.processor",
+    "process_gnn_directory_lightweight": "processing.processor",
+    "validate_gnn_structure": "processing.processor",
     # types — canonical domain types
     "ParsedGNN": "types",
     "ValidationLevel": "types",

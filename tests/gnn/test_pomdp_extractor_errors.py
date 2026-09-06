@@ -16,7 +16,7 @@ from typing import Any, cast
 
 import pytest
 
-from gnn.pomdp_extractor import GNNExtractionError, extract_pomdp_from_file
+from gnn.extract.pomdp_extractor import GNNExtractionError, extract_pomdp_from_file
 
 REPO = Path(__file__).resolve().parents[2]
 

@@ -377,7 +377,7 @@ class TestHandlerSignatures:
         elif command == "lsp":
             monkeypatch.setattr(cli_lsp, "start_lsp", completed)
         elif command == "watch":
-            from gnn.watcher import GNNWatcher
+            from gnn.cli.watcher import GNNWatcher
 
             monkeypatch.setattr(GNNWatcher, "start", completed)
         elif command in {"health", "preflight"}:

@@ -15,7 +15,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-from gnn.pomdp_extractor import extract_pomdp_from_file
+from gnn.extract.pomdp_extractor import extract_pomdp_from_file
 
 REPO = Path(__file__).resolve().parents[2]
 ACTINF_EXEMPLAR = REPO / "input" / "gnn_files" / "discrete" / "actinf_pomdp_agent.md"

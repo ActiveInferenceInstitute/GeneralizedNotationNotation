@@ -186,8 +186,8 @@ class GNNTypeChecker:
         Binary pickle specs are excluded — they are not type-checked. Sorted
         for deterministic, reproducible discovery.
         """
-        from gnn.discovery import is_model_source_path
         from gnn.parsers.common import get_supported_gnn_extensions
+        from gnn.processing.discovery import is_model_source_path
 
         return sorted(
             path

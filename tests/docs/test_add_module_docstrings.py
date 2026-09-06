@@ -15,7 +15,7 @@ from typing import Any
 
 from tests.helpers import load_module_from_path
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+REPO_ROOT = Path(__file__).resolve().parents[2]
 SCRIPT = REPO_ROOT / "scripts" / "add_module_docstrings.py"
 
 

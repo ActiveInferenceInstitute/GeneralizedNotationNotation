@@ -428,7 +428,7 @@ All five are registered by `register_tools()` in `src/gnn/execute/mcp.py`.
 ## References
 
 ### Related Documentation
-- [Pipeline Overview](../../README.md)
+- [Pipeline Overview](../../../README.md)
 - [Architecture Guide](../../../ARCHITECTURE.md)
 - [Render Module](../render/AGENTS.md)
 - [Execution Guide](../../../doc/execution/)

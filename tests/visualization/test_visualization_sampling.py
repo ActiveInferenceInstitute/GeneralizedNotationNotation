@@ -1,4 +1,4 @@
-"""Tests for visualization.core.sampling (pure downsampling helpers)."""
+"""Tests for gnn.visualization.core.sampling (pure downsampling helpers)."""
 
 from __future__ import annotations
 

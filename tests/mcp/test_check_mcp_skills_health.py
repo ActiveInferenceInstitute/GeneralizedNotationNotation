@@ -15,7 +15,7 @@ import pytest
 
 from tests.helpers import load_module_from_path
 
-SCRIPT = Path(__file__).resolve().parents[1] / "scripts" / "check_mcp_skills_health.py"
+SCRIPT = Path(__file__).resolve().parents[2] / "scripts" / "check_mcp_skills_health.py"
 
 
 def _load() -> Any:
@@ -28,7 +28,7 @@ def checker() -> Any:
 
 
 def _skill_files() -> list[Path]:
-    root = Path(__file__).resolve().parents[1] / "src" / "gnn"
+    root = Path(__file__).resolve().parents[2] / "src" / "gnn"
     return sorted(root.glob("*/SKILL.md")) + sorted((root / "gui").glob("*/SKILL.md"))
 
 

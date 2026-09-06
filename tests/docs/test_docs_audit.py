@@ -9,7 +9,7 @@ import pytest
 
 from tests.helpers import load_module_from_path
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
+REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
 def _load_docs_audit() -> Any:

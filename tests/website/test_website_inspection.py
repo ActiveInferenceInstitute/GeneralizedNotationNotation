@@ -1,4 +1,4 @@
-"""Tests for website.inspection — pure queries over a generated site.
+"""Tests for gnn.website.inspection — pure queries over a generated site.
 
 Pins the ``inspect_website`` / ``list_website_pages`` contracts shared by
 the Python API and the MCP tools, including their behavior on complete,

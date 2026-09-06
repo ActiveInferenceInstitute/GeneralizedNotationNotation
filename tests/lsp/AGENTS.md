@@ -1,12 +1,12 @@
 # LSP Tests Agent
 
 ## Overview
-This directory owns pytest coverage for `src/lsp/`.
+This directory owns pytest coverage for `src/gnn/lsp/`.
 
 ## Purpose
 - Validate real language-server startup, completions, diagnostics, and protocol-facing behavior.
-- Keep tests aligned with `src/lsp/AGENTS.md` and `README.md`.
+- Keep tests aligned with `src/gnn/lsp/AGENTS.md` and `README.md`.
 - Do not place production implementation logic here.
 
 ## Verification
-Run `uv run --extra dev python -m pytest src/tests/lsp/ -q`.
+Run `uv run --extra dev python -m pytest tests/lsp/ -q`.

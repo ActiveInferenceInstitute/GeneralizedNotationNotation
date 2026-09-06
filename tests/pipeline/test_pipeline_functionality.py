@@ -60,7 +60,7 @@ A = [0.5, 0.5; 0.3, 0.7]
     def test_gnn_processing_generates_results(
         self, sample_gnn_files: Any, isolated_temp_dir: Any
     ) -> Any:
-        from gnn.core_processor import process_gnn_directory
+        from gnn.processing.core_processor import process_gnn_directory
 
         gnn_dir = list(sample_gnn_files.values())[0].parent
         out_root = isolated_temp_dir / "gnn_proc"

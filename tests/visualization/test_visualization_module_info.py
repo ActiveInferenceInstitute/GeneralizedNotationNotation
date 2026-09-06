@@ -1,4 +1,4 @@
-"""Tests for visualization/__init__.py public helpers.
+"""Tests for gnn/visualization/__init__.py public helpers.
 
 Covers get_module_info, get_visualization_options, and the network-statistics
 helper, and verifies the exported public surface resolves.

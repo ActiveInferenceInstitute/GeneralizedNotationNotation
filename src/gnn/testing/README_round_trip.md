@@ -41,4 +41,4 @@ Round-trip pass rates for the reference model were improved in stages (early 202
 ---
 
 **Maintained with:** `src/gnn/testing/test_round_trip.py`  
-**See also:** [`../alignment_status.md`](../alignment_status.md), [`../SPEC.md`](../SPEC.md)
+**See also:** [`alignment_status.md`](alignment_status.md), [`../SPEC.md`](../SPEC.md)

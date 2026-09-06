@@ -146,7 +146,7 @@ uv run --extra dev python -m pytest tests/security/ --cov=src/gnn/security
 
 ## References
 
-- Project overview: ../../README.md
+- Project overview: ../../../README.md
 - Pipeline details: ../../../doc/pipeline/README.md
 
 ---

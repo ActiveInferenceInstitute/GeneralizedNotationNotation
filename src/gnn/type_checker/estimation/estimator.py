@@ -198,8 +198,8 @@ class GNNResourceEstimator:
         Returns:
             Dictionary mapping file paths to resource estimates
         """
-        from gnn.discovery import is_model_source_path
         from gnn.parsers.common import get_supported_gnn_extensions
+        from gnn.processing.discovery import is_model_source_path
 
         path = Path(dir_path)
         results: dict[str, Dict[str, Any]] = {}

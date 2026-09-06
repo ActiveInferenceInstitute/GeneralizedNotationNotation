@@ -43,7 +43,7 @@ class TestCoverageOverall:
         import gnn
 
         assert hasattr(gnn, "__all__")
-        from gnn.core_processor import process_gnn_directory_lightweight
+        from gnn.processing.core_processor import process_gnn_directory_lightweight
 
         assert callable(process_gnn_directory_lightweight)
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Edge-case tests for utils.path_conversion.
+"""Edge-case tests for gnn.utils.path_conversion.
 
-Covers the honest utils path-conversion helpers: string->Path coercion,
+Covers the honest gnn.utils path-conversion helpers: string->Path coercion,
 None handling for critical path arguments, and the config validation entry
 point. This file pins real edge behaviour that had thin dedicated coverage.
 """

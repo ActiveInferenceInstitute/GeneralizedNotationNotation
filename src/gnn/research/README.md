@@ -145,7 +145,7 @@ uv run --extra dev python -m pytest tests/research/ --cov=src/gnn/research
 
 ## References
 
-- Project overview: ../../README.md
+- Project overview: ../../../README.md
 - Pipeline details: ../../../doc/pipeline/README.md
 
 ---

@@ -254,7 +254,7 @@ def test_fast_suite_completeness() -> Any:
 
     test_dir = Path(__file__).parent
     fast_test_count = 0
-    test_files = list(test_dir.glob("test_*.py"))
+    test_files = list(test_dir.rglob("test_*.py"))
     assert len(test_files) > 10, f"Expected >10 test files, found {len(test_files)}"
     for test_file in test_files:
         try:

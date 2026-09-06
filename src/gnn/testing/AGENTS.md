@@ -12,7 +12,7 @@ Round-trip **scope** vs **enum size** is documented in **[../SPEC.md](../SPEC.md
 
 - **`test_round_trip.py`** — primary round-trip harness; tune `FORMAT_TEST_CONFIG` at top of file.
 - **`README_round_trip.md`** — methodology.
-- **`../alignment_status.md`** — alignment snapshot (also references SPEC).
+- **`alignment_status.md`** — alignment snapshot (also references SPEC).
 
 ## Commands
 

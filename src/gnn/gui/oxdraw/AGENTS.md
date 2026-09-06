@@ -83,7 +83,7 @@ success = process_oxdraw(
 **Example**:
 
 ```python
-from gnn.processor import parse_gnn_file
+from gnn.processing.processor import parse_gnn_file
 from gnn.gui.oxdraw.mermaid_converter import gnn_to_mermaid
 
 gnn_model = parse_gnn_file("model.md")
@@ -155,7 +155,7 @@ gnn_model = convert_mermaid_file_to_gnn(
 
 ### Internal Dependencies
 
-- `gnn.processor` - GNN file parsing and discovery
+- `gnn.processing.processor` - GNN file parsing and discovery
 - `utils.pipeline_template` - Standardized pipeline processing
 - `pipeline.config` - Configuration management
 
@@ -368,7 +368,7 @@ print(f"   Connections: {len(gnn_model['connections'])}")
 
 ### Imports From
 
-- `gnn.processor` - GNN file parsing
+- `gnn.processing.processor` - GNN file parsing
 - `ontology.processor` - Ontology validation
 - `utils.pipeline_template` - Standardized processing
 

@@ -920,7 +920,7 @@ The `_run_llm_analysis()` function is async because it uses the shared `llm.llm_
 
 ### Related Documentation
 
-- [Pipeline Overview](../../README.md)
+- [Pipeline Overview](../../../README.md)
 - [Analysis Module](../analysis/AGENTS.md)
 - [LLM Module](../llm/AGENTS.md)
 - [Execute Module](../execute/AGENTS.md)

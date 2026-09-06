@@ -12,7 +12,7 @@ This module is stdlib-only at import time. The only non-stdlib-adjacent import
 (``utils.safe_eval`` for literal matrix evaluation) is performed lazily inside
 _parse_parameter_value; the heavy pipeline (numpy, jax, pymdp, renderers, ...)
 is NOT required. Headless consumers can use ``gnn.extract`` (CLI) or import
-``gnn.pomdp_extractor`` directly under a blocked-import environment.
+``gnn.extract.pomdp_extractor`` directly under a blocked-import environment.
 
 Stability promise: the mapping produced by :meth:`POMDPStateSpace.to_dict` is
 versioned via its ``extraction_schema_version`` key (currently "1.0.0"). The 26

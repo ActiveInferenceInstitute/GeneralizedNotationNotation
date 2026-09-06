@@ -678,7 +678,7 @@ any signature change.
 ## References
 
 ### Related Documentation
-- [Pipeline Overview](../../README.md)
+- [Pipeline Overview](../../../README.md)
 - [Architecture Guide](../../../ARCHITECTURE.md)
 - [Ollama Integration Guide](../../../doc/llm/)
 - [LLM Configuration](../../../AGENTS.md)

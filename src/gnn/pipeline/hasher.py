@@ -105,8 +105,8 @@ def _compute_run_hash_impl(
     hash_length: int = 12,
 ) -> Tuple[str, Dict[str, str]]:
     """Core implementation — returns (run_hash, file_hashes_dict)."""
-    from gnn.discovery import is_model_source_path
     from gnn.parsers.common import get_supported_gnn_extensions
+    from gnn.processing.discovery import is_model_source_path
 
     target_dir = Path(target_dir)
     file_hashes: Dict[str, str] = {}

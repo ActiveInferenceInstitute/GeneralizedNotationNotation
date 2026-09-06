@@ -248,7 +248,7 @@ Module `__version__` is `1.7.0` (`__init__.py`); the pipeline/repo release is `3
 ## References
 
 ### Related Documentation
-- [Pipeline Overview](../../README.md)
+- [Pipeline Overview](../../../README.md)
 - [Architecture Guide](../../../ARCHITECTURE.md)
 - [Website Module](../website/README.md)
 

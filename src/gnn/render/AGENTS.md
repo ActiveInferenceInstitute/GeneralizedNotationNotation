@@ -30,7 +30,7 @@
 - POMDP-aware rendering via `POMDPRenderProcessor` (per-model/per-framework output folders)
 - Framework compatibility checks and matrix normalization before rendering
 - Structured summaries written to `render_processing_summary.json`
-- **Recursive exemplar discovery**: GNN spec files are discovered recursively with `rglob`, so nested exemplar folders under `input/gnn_files/**` (e.g. `discrete/`, `continuous/`, `basics/`, `hierarchical/`) are all rendered. Model-source files are filtered by `gnn.discovery.is_model_source_path`; the maintained corpus index is `input/gnn_files/INDEX.md`. Current per-framework render/execute outcomes live in the run's `render_processing_summary.json` and `execution_summary.json`, not in this file.
+- **Recursive exemplar discovery**: GNN spec files are discovered recursively with `rglob`, so nested exemplar folders under `input/gnn_files/**` (e.g. `discrete/`, `continuous/`, `basics/`, `hierarchical/`) are all rendered. Model-source files are filtered by `gnn.processing.discovery.is_model_source_path`; the maintained corpus index is `input/gnn_files/INDEX.md`. Current per-framework render/execute outcomes live in the run's `render_processing_summary.json` and `execution_summary.json`, not in this file.
 
 ### Supported Frameworks
 
@@ -482,7 +482,7 @@ Tool functions live in `src/gnn/render/mcp.py` and are registered in `register_t
 ## References
 
 ### Related Documentation
-- [Pipeline Overview](../../README.md)
+- [Pipeline Overview](../../../README.md)
 - [Architecture Guide](../../../ARCHITECTURE.md)
 - [PyMDP Integration](../../../doc/pymdp/)
 - [RxInfer Integration](../../../doc/rxinfer/)

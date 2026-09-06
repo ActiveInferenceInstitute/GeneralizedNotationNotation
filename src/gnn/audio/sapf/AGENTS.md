@@ -229,7 +229,7 @@ from gnn.audio.sapf.module_info import register_tools
 ### Related Documentation
 - [Audio Module](../AGENTS.md) - Parent audio module
 - [SAPF Specification](../../../../doc/sapf/sapf.md) - SAPF framework details
-- [Pipeline Overview](../../../README.md) - Main pipeline documentation
+- [Pipeline Overview](../../../../README.md) - Main pipeline documentation
 
 ---
 

@@ -14,8 +14,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Sequence, Tuple, cast
 
-from gnn.discovery import is_model_source_path
 from gnn.parsers.common import get_extension_for_format, get_supported_gnn_extensions
+from gnn.processing.discovery import is_model_source_path
 from gnn.utils import log_step_error, log_step_start, log_step_success
 
 

@@ -3,7 +3,7 @@
 This module is the machine-readable, headless entry point for extracting a
 POMDP state space from a GNN specification file. It deliberately imports only
 the standard library at module scope; the extractor module
-(``gnn.pomdp_extractor`` — itself stdlib-only at module scope) is imported
+(``gnn.extract.pomdp_extractor`` — itself stdlib-only at module scope) is imported
 lazily inside the call path, so ``python -m gnn.extract`` works without the
 full pipeline stack and without heavy module-scope dependencies.
 
@@ -109,7 +109,7 @@ def extract_to_json(
         strict_validation: Enable strict validation in the extractor.
         on_error: Extractor error mode — ``"lenient"`` (default), ``"raise"``,
             or ``"collect"``. Passed through to
-            ``gnn.pomdp_extractor.extract_pomdp_from_file``.
+            ``gnn.extract.pomdp_extractor.extract_pomdp_from_file``.
         compact: Emit compact JSON (no indentation, ``(",", ":")``
             separators) instead of the default ``indent=2``.
 
@@ -119,8 +119,8 @@ def extract_to_json(
         raises.
     """
     # Lazy import keeps `import gnn.extract` free of any pipeline transitive
-    # dependencies; gnn.pomdp_extractor is stdlib-only at module scope.
-    from gnn.pomdp_extractor import OnErrorMode, extract_pomdp_from_file
+    # dependencies; gnn.extract.pomdp_extractor is stdlib-only at module scope.
+    from gnn.extract.pomdp_extractor import OnErrorMode, extract_pomdp_from_file
 
     try:
         result: Any = extract_pomdp_from_file(

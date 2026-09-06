@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Tests for the widened exit-code contract in utils.pipeline_template.
+"""Tests for the widened exit-code contract in gnn.utils.pipeline_template.
 
 Contract under test:
   canonical wording: 0=success, 1=error, 2=success with warnings/skipped
-  src/utils/pipeline_template.py::_coerce_exit_code delegates to shared helpers.
+  src/gnn/utils/pipeline_template.py::_coerce_exit_code delegates to shared helpers.
   bool  -> True→0, False→1
   int   -> passthrough (0, 1, 2, ...); 2 emits a warning log line
   other -> coerced via bool()
@@ -16,7 +16,7 @@ from typing import Any
 
 import pytest
 
-# Ensure src/ is importable (mirrors conftest.py pattern)
+# Ensure the repository root is on sys.path (mirrors sibling test modules)
 SRC = Path(__file__).resolve().parents[2]
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))

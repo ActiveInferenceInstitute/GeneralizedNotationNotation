@@ -1,11 +1,11 @@
 # Ontology Tests
 
-Pytest coverage for `src/ontology/`.
+Pytest coverage for `src/gnn/ontology/`.
 
 This folder contains module-focused tests for ontology processing and annotation behavior.
 
 Run:
 
 ```bash
-uv run --extra dev python -m pytest src/tests/ontology/ -q
+uv run --extra dev python -m pytest tests/ontology/ -q
 ```

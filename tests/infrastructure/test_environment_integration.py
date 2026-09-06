@@ -12,7 +12,6 @@ from typing import Any
 import pytest
 
 # Add src to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent))
 
 
 class TestEnvironmentSetupIntegration:
@@ -98,7 +97,7 @@ class TestEnvironmentPipelineIntegration:
         """Test pipeline can find step scripts."""
         from pathlib import Path
 
-        src_dir = Path(__file__).parent.parent
+        src_dir = Path(__file__).parents[2] / "src"
 
         # Check for numbered script files
         scripts = list(src_dir.glob("[0-9]*.py")) + list(

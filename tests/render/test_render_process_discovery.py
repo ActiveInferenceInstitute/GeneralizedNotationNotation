@@ -28,7 +28,7 @@ EXPECTED_EXEMPLAR_COUNT = 29
 
 def _count_exemplar_md_files() -> int:
     """Count GNN exemplar model files, matching the processor's discovery policy."""
-    from gnn.discovery import is_model_source_path
+    from gnn.processing.discovery import is_model_source_path
 
     return sum(1 for path in EXEMPLAR_DIR.rglob("*.md") if is_model_source_path(path))
 

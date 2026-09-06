@@ -92,7 +92,7 @@ from typing import Dict, Any, List, Optional
 import json
 import re
 
-from gnn.processor import parse_gnn_file
+from gnn.processing.processor import parse_gnn_file
 from ontology.processor import load_defined_ontology_terms
 
 
@@ -333,7 +333,7 @@ def convert_gnn_file_to_mermaid(
     Returns:
         Mermaid diagram string
     """
-    from gnn.processor import parse_gnn_file
+    from gnn.processing.processor import parse_gnn_file
 
     # Parse GNN file using existing pipeline module
     parsed_model = parse_gnn_file(gnn_file_path)
@@ -368,7 +368,7 @@ from typing import Dict, Any, List, Optional, Tuple
 import json
 import re
 
-from gnn.processor import parse_gnn_file
+from gnn.processing.processor import parse_gnn_file
 from ontology.processor import load_defined_ontology_terms, validate_annotations
 
 
@@ -901,7 +901,7 @@ import json
 import shutil
 import logging
 
-from gnn.processor import discover_gnn_files, parse_gnn_file
+from gnn.processing.processor import discover_gnn_files, parse_gnn_file
 from .mermaid_converter import convert_gnn_file_to_mermaid
 from .mermaid_parser import convert_mermaid_file_to_gnn
 

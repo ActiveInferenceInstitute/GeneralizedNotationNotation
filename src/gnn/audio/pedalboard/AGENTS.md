@@ -58,7 +58,7 @@ When implementing this module:
 
 - [Audio Module](../AGENTS.md) - Parent audio module
 - [Pedalboard Documentation](https://spotify.github.io/pedalboard/) - Official Pedalboard docs
-- [Pipeline Overview](../../../README.md) - Main pipeline documentation
+- [Pipeline Overview](../../../../README.md) - Main pipeline documentation
 
 ---
 

@@ -508,7 +508,7 @@ Internal quality pass; every external entry point's behavior is preserved:
 
 ### Related Documentation
 
-- [Pipeline Overview](../../README.md)
+- [Pipeline Overview](../../../README.md)
 - [Utils Module](../utils/AGENTS.md)
 
 ### External Resources

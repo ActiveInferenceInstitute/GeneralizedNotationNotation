@@ -1,4 +1,4 @@
-"""Tests for visualization.backends.backend_status and the theme SSOT invariant."""
+"""Tests for gnn.visualization.backends.backend_status and the theme SSOT invariant."""
 
 from __future__ import annotations
 

@@ -19,7 +19,7 @@ from pathlib import Path
 
 import pytest
 
-from gnn.pomdp_extractor import extract_pomdp_from_file
+from gnn.extract.pomdp_extractor import extract_pomdp_from_file
 from gnn.render.pomdp_contract import (
     ModelKind,
     build_canonical_pomdp_spec,
@@ -57,7 +57,7 @@ EXPECTED_NON_FLAT = {
 
 
 def _exemplar_files() -> list:
-    from gnn.discovery import is_model_source_path
+    from gnn.processing.discovery import is_model_source_path
 
     files = [f for f in sorted(GNN_FILES.rglob("*.md")) if is_model_source_path(f)]
     assert len(files) == EXEMPLAR_COUNT, (

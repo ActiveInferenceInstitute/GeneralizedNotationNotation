@@ -5,6 +5,9 @@ Shared test utilities and fixtures used across the GNN test suite.
 ## Contents
 
 - `__init__.py` — `get_test_data_dir()`, `get_sample_gnn_model()`, `load_sample_gnn_spec()`
+- `script_loader.py` — `load_module_from_path()` importlib loader for standalone scripts
+- `gnn_samples.py` — `SAMPLE_GNN_CONTENT` + `write_sample_gnn_markdown()`
+- `mcp_stubs.py` — `MCPTools` in-memory MCP registry test double
 - `render_recovery.py` — `render_gnn_files()` for render-resilience tests
 
 ## Usage

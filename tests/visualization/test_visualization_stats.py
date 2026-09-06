@@ -1,4 +1,4 @@
-"""Tests for visualization.graph.stats.compute_connection_statistics."""
+"""Tests for gnn.visualization.graph.stats.compute_connection_statistics."""
 
 from __future__ import annotations
 

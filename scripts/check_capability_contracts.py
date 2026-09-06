@@ -76,7 +76,7 @@ def run_audit() -> List[str]:
         ".agent_rules/README.md",
         "doc/gnn/README.md",
         "doc/gnn/modules/02_tests.md",
-        "src/AGENTS.md",
+        "src/gnn/AGENTS.md",
         "tests/TEST_SUITE_SUMMARY.md",
     ):
         text = _read(doc)

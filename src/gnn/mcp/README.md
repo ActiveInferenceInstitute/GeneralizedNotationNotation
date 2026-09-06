@@ -418,7 +418,7 @@ When contributing to the MCP implementation:
 - **[Comprehensive MCP Documentation](MCP_DOCUMENTATION.md)** — Full implementation guide and live audit commands for the registered tool surface
 - [GNN Project Documentation](../../../doc/)
 - [MCP Integration Guide](../../../doc/mcp/gnn_mcp_model_context_protocol.md)
-- Project overview: ../../README.md
+- Project overview: ../../../README.md
 - Comprehensive docs: ../../../DOCS.md
 - Pipeline details (Step 22): ../../../doc/pipeline/README.md
 

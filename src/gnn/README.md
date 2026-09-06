@@ -212,41 +212,52 @@ flowchart LR
 
 ```
 src/gnn/
-├── __init__.py                    # Lazy package init (PEP 562 re-exports; format ecosystem)
-├── extract.py                     # Headless extraction entry: python -m gnn.extract FILE [--strict|--no-strict] [--compact]
-├── README.md                      # This documentation
-├── SPEC.md                        # Canonical format counts and architecture
-├── mcp/                           # Model Context Protocol integration (see mcp/README.md)
-├── schema_validator/              # Syntax-level validation: syntax.py (GNNParser), validator.py (GNNValidator), cross_format.py
-├── multimodel/                    # Multi-model files: splitting, per-model parsing, dependency graphs (dep_graph.py)
+├── __init__.py                    # Lazy package init (PEP 562 facade: _EXPORT_MAP + __all__)
+├── main.py                        # Pipeline driver: python src/gnn/main.py (run/reproduce)
+├── processing/                    # Discovery/parse/orchestration engine (processor, core_processor, multi_format_processor, discovery)
+├── extract/                       # Headless extraction + bridge-pinned pomdp_extractor; python -m gnn.extract FILE [--strict|--no-strict] [--compact]
+├── schema.py                      # Import-light section/state-space/connection parsing (bridge-pinned)
+├── types.py                       # Canonical domain dataclasses (ParsedGNN, GNNVariable, ValidationResult, ...)
+├── manuscript_variables.py        # Deterministic manuscript {{TOKEN}} map producer
+├── 0_template.py ... 24_intelligent_analysis.py   # 25 thin step drivers (see STEP_INDEX.md)
+├── README.md / SPEC.md / AGENTS.md / SKILL.md / STEP_INDEX.md
 │
 ├── parsers/                       # Parser ecosystem (see SPEC.md for 23/22 counts)
-│   ├── __init__.py               # Package exports
-│   ├── system.py                 # PARSER_REGISTRY / SERIALIZER_REGISTRY, GNNParsingSystem
-│   ├── unified_parser.py         # Unified parsing entry
-│   ├── *_parser.py / *_serializer.py  # Per-format parsers and serializers
-│   ├── grammar_parser.py         # BNF/EBNF parsers
-│   ├── schema_parser.py          # Schema parsers (XSD, ASN.1, PKL, etc.)
-│   ├── xml_parser.py             # XML / PNML
-│   ├── binary_parser.py          # Pickle and binary paths
-│   └── common.py                 # GNNFormat enum, protocols, shared types
+│   ├── system.py                  # PARSER_REGISTRY / SERIALIZER_REGISTRY, GNNParsingSystem
+│   ├── basic.py                   # Structural/formal parse surface (GNNFormalParser, validate_gnn)
+│   ├── frontmatter.py             # YAML front-matter extraction
+│   ├── cache.py                   # ParseCache: section-level incremental parse cache
+│   ├── unified_parser.py / common.py  # Unified entry; GNNFormat enum, protocols, shared types
+│   └── *_parser.py / *_serializer.py  # Per-format parsers and serializers (23 / 22)
 │
-├── testing/                       # Testing infrastructure
-│   ├── test_round_trip.py        # Round-trip suite (see SPEC.md)
-│   ├── README_round_trip.md      # Testing methodology and results
-│   └── round_trip_reports/       # Test reports and analysis
+├── schema_validator/              # Syntax-level validation package
+│   ├── syntax.py                  # GNNParser (regex section parser)
+│   ├── validator.py               # GNNValidator (multi-level validation)
+│   └── cross_format.py            # Cross-format consistency validation
 │
-├── schemas/                       # Schema definitions
-│   ├── json.json                 # JSON Schema with Unicode support
-│   ├── yaml.yaml                 # YAML Schema with validation guidance
-│   ├── xsd.xsd                   # XML Schema
-│   ├── asn1.asn1                 # ASN.1 schema
-│   ├── pkl.pkl                   # PKL schema
-│   └── [additional schemas...]   # Additional schema files
+├── multimodel/                    # Multi-model file handling
+│   ├── multimodel.py              # split_models / parse_multimodel
+│   └── dep_graph.py               # Inter-model dependency graphs (gnn graph)
 │
-├── gnn_examples/                  # Reference Markdown models (e.g. actinf_pomdp_agent.md)
-└── (repo root) input/gnn_files/   # Pipeline input examples; tests often use input/gnn_files/discrete/actinf_pomdp_agent.md
-```
+├── mcp/                           # Model Context Protocol integration (see mcp/README.md)
+│   ├── gnn_root.py                # GNN-module domain tools
+│   ├── processors.py              # Folder/round-trip/cross-format operations
+│   └── server_stdio.py / server_http.py / cli.py  # Transports and CLI
+│
+├── execute/                       # Step-12 executor framework: 9 families incl lean (execute/README.md)
+├── render/                        # Step-11 renderers: 9 targets, bnlearn render-only (render/README.md)
+├── validation/                    # Step-6 model validation; simple.py recovery validator
+├── report/                        # Report generation; processing_report.py
+├── pipeline/                      # Step orchestration, config, hashing, preflight
+├── api/                           # FastAPI service (gnn serve)
+├── cli/                           # CLI surface (gnn = gnn.cli:main)
+├── analysis/ audio/ doc/ documentation/ export/ formal_specs/ gnn_examples/ grammars/
+│   gui/ integration/ intelligent_analysis/ llm/ lsp/ ml_integration/ model_registry/
+│   ontology/ research/ sapf/ schemas/ security/ setup/ template/ testing/
+│   type_checker/ type_systems/ utils/ visualization/ website/   # Remaining step/support packages
+│
+└── (repo root) input/gnn_files/   # Pipeline input examples; tests often use
+                                   # input/gnn_files/discrete/actinf_pomdp_agent.md
 
 ## Headless Extraction
 
@@ -268,7 +279,7 @@ python -m gnn.extract input/gnn_files/discrete/actinf_pomdp_agent.md --strict
 Both `gnn/__init__.py` and `utils/__init__.py` re-export their names lazily
 (PEP 562 `__getattr__`), so `import gnn` stays light: no submodule — and no
 heavy module-scope dependency (psutil, matplotlib) — executes until a name is
-resolved. The POMDP extractor (`gnn.pomdp_extractor`) is usable headless with
+resolved. The POMDP extractor (`gnn.extract.pomdp_extractor`) is usable headless with
 heavy deps absent.
 
 ## Validation System
@@ -563,7 +574,7 @@ parsing_system.register_parser(GNNFormat.NEW_FORMAT, NewFormatParser)
 ### Available Resources
 
 - **`testing/README_round_trip.md`**: Testing methodology and results
-- **`alignment_status.md`**: Format compatibility status
+- **`testing/alignment_status.md`**: Format compatibility status
 - **Format-specific guides**: Documentation for each supported format
 - **Performance guides**: Optimization best practices
 - **[SPEC.md](SPEC.md)**: Canonical format counts and architecture

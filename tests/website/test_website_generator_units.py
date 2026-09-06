@@ -1,4 +1,4 @@
-"""Unit tests for website.generator internals.
+"""Unit tests for gnn.website.generator internals.
 
 Pins: the typed step catalogue, pure ``collect_website_data`` with an
 injected MCP-tools provider, HTML escaping on every page, resilient

@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from gnn.multi_format_processor import _formats_for_serialize_preset
 from gnn.parsers.common import GNNFormat
+from gnn.processing.multi_format_processor import _formats_for_serialize_preset
 
 
 def test_minimal_preset_keeps_only_tooling_formats() -> None:

@@ -135,7 +135,10 @@ def build_geo_infer_gaussian_artifact(
     GNN Time must explicitly contain Discrete and must not contain Continuous.
     Continuous state does not imply continuous time: F and Q are per interval.
     """
-    from gnn.pomdp_extractor import GNNExtractionError, extract_pomdp_from_content
+    from gnn.extract.pomdp_extractor import (
+        GNNExtractionError,
+        extract_pomdp_from_content,
+    )
 
     if not isinstance(content, str) or len(content.encode("utf-8")) > MAX_SOURCE_BYTES:
         raise ValueError("GNN source must be text within four MiB")
@@ -211,7 +214,7 @@ def _validate_source_declarations(
     content: str, data: dict[str, Any], parameters: dict[str, Any]
 ) -> None:
     """Check explicit GNN coordinate and parameter declarations against values."""
-    from gnn.pomdp_extractor import POMDPExtractor
+    from gnn.extract.pomdp_extractor import POMDPExtractor
 
     sections = re.findall(
         r"^##[ \t]+StateSpaceBlock[ \t]*$\n(.*?)(?=^##[ \t]|\Z)",

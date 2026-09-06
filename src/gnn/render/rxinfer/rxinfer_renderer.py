@@ -57,7 +57,7 @@ class RxInferRenderer:
             Tuple of (success, message)
         """
         try:
-            from gnn.pomdp_extractor import extract_pomdp_from_file
+            from gnn.extract.pomdp_extractor import extract_pomdp_from_file
             from gnn.render.pomdp_processor import POMDPRenderProcessor
 
             pomdp_space = extract_pomdp_from_file(gnn_file_path, strict_validation=True)

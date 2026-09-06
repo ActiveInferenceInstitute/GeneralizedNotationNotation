@@ -1,6 +1,6 @@
-"""Tests for visualization/matrix_compat.py facade.
+"""Tests for gnn/visualization/matrix_compat.py facade.
 
-The facade is a thin re-export forwarding to visualization.matrix.compat.
+The facade is a thin re-export forwarding to gnn.visualization.matrix.compat.
 These tests verify the forwarding surface resolves and behaves correctly
 without duplicating the matrix module's own coverage.
 """

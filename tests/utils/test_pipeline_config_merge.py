@@ -48,7 +48,7 @@ def test_build_step_command_includes_fast_only_by_default() -> None:
         "2_tests.py",
         PipelineArguments(),
         "python",
-        Path("src/2_tests.py"),
+        Path("src/gnn/2_tests.py"),
     )
     assert "--fast-only" in cmd
 
@@ -62,7 +62,7 @@ def test_build_step_command_includes_dev_when_set() -> None:
         "1_setup.py",
         args,
         "python",
-        Path("src/1_setup.py"),
+        Path("src/gnn/1_setup.py"),
     )
     assert "--dev" in cmd
 
@@ -76,7 +76,7 @@ def test_build_step_command_includes_install_all_extras() -> None:
         "1_setup.py",
         args,
         "python",
-        Path("src/1_setup.py"),
+        Path("src/gnn/1_setup.py"),
     )
     assert "--install-all-extras" in cmd
 
@@ -90,7 +90,7 @@ def test_build_step_command_forwards_serialize_preset() -> None:
         "3_gnn.py",
         args,
         "python",
-        Path("src/3_gnn.py"),
+        Path("src/gnn/3_gnn.py"),
     )
     assert "--serialize-preset" in cmd
     assert cmd[cmd.index("--serialize-preset") + 1] == "minimal"
@@ -105,7 +105,7 @@ def test_build_step_command_forwards_execution_benchmark_repeats() -> None:
         "12_execute.py",
         args,
         "python",
-        Path("src/12_execute.py"),
+        Path("src/gnn/12_execute.py"),
     )
     assert "--execution-benchmark-repeats" in cmd
     assert cmd[cmd.index("--execution-benchmark-repeats") + 1] == "4"
@@ -120,7 +120,7 @@ def test_build_step_command_step12_omits_benchmark_repeats_when_one() -> None:
         "12_execute.py",
         args,
         "python",
-        Path("src/12_execute.py"),
+        Path("src/gnn/12_execute.py"),
     )
     assert "--execution-benchmark-repeats" not in cmd
 
@@ -135,7 +135,7 @@ def test_build_step_command_step12_backend_only_when_distributed() -> None:
         "12_execute.py",
         args,
         "python",
-        Path("src/12_execute.py"),
+        Path("src/gnn/12_execute.py"),
     )
     assert "--backend" not in cmd
 
@@ -144,7 +144,7 @@ def test_build_step_command_step12_backend_only_when_distributed() -> None:
         "12_execute.py",
         args,
         "python",
-        Path("src/12_execute.py"),
+        Path("src/gnn/12_execute.py"),
     )
     assert "--backend" in cmd2
     assert cmd2[cmd2.index("--backend") + 1] == "dask"
@@ -159,7 +159,7 @@ def test_build_step_command_step12_execution_summary_detail_only_when_true() -> 
         "12_execute.py",
         args,
         "python",
-        Path("src/12_execute.py"),
+        Path("src/gnn/12_execute.py"),
     )
     assert "--execution-summary-detail" not in cmd
 
@@ -168,7 +168,7 @@ def test_build_step_command_step12_execution_summary_detail_only_when_true() -> 
         "12_execute.py",
         args,
         "python",
-        Path("src/12_execute.py"),
+        Path("src/gnn/12_execute.py"),
     )
     assert "--execution-summary-detail" in cmd_on
 
@@ -181,7 +181,7 @@ def test_build_step_command_forwards_skip_llm_to_step24() -> None:
         "24_intelligent_analysis.py",
         args,
         "python",
-        Path("src/24_intelligent_analysis.py"),
+        Path("src/gnn/24_intelligent_analysis.py"),
     )
     assert "--skip-llm" in cmd
 

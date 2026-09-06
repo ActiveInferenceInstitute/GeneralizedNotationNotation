@@ -1,5 +1,5 @@
 """
-Tests for utils/step_logging.py and utils/base_processor.py
+Tests for gnn/utils/step_logging.py and gnn/utils/base_processor.py
 
 These tests verify the new utility modules work correctly.
 """

@@ -384,7 +384,7 @@ Module `__version__` is `3.2.0` (`__init__.py`), matching the unified pipeline v
 ## References
 
 ### Related Documentation
-- [Pipeline Overview](../../README.md)
+- [Pipeline Overview](../../../README.md)
 - [Architecture Guide](../../../ARCHITECTURE.md)
 - [MCP Implementation Spec](mcp_implementation_spec.md)
 - [MCP Integration Guide](../../../doc/mcp/)

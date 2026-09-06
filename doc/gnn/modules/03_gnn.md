@@ -84,7 +84,7 @@ For the reference model used in tests, those **21** formats achieve **100%** rou
 **Example**:
 
 ```python
-from gnn.multi_format_processor import process_gnn_multi_format
+from gnn.processing.multi_format_processor import process_gnn_multi_format
 from pathlib import Path
 import logging
 
@@ -367,7 +367,7 @@ DEFAULT_ENABLE_CROSS_FORMAT = False
 ### Basic Usage
 
 ```python
-from gnn.multi_format_processor import process_gnn_multi_format
+from gnn.processing.multi_format_processor import process_gnn_multi_format
 from pathlib import Path
 
 success = process_gnn_multi_format(
@@ -394,7 +394,7 @@ success = process_gnn_multi_format(
 
 ```python
 # Called from 3_gnn.py
-from gnn.multi_format_processor import process_gnn_multi_format
+from gnn.processing.multi_format_processor import process_gnn_multi_format
 
 run_script = create_standardized_pipeline_script(
     "3_gnn.py",

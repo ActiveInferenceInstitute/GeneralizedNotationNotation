@@ -12,8 +12,8 @@ The GNN Processing Pipeline test suite provides comprehensive coverage across al
 
 ### Key Metrics
 
-- **Live file inventory**: `rg --files src/tests -g 'test_*.py'`
-- **Live collected inventory**: `uv run --extra dev python -m pytest --collect-only src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py`
+- **Live file inventory**: `rg --files tests -g 'test_*.py'`
+- **Live collected inventory**: `uv run --extra dev python -m pytest --collect-only tests/ -q --tb=no --ignore=tests/llm/test_llm_ollama.py --ignore=tests/llm/test_llm_ollama_integration.py`
 - **Latest full-run receipt**: the dated command-of-record evidence in the
   root [`README.md`](../../README.md); do not copy that changing total here.
 
@@ -24,8 +24,8 @@ The GNN Processing Pipeline test suite provides comprehensive coverage across al
 ### Component Structure
 
 ```
-src/tests/
-├── ../2_tests.py           # Thin orchestrator (CLI entry point)
+src/gnn/2_tests.py        # Thin orchestrator (CLI entry point)
+tests/
 ├── runner.py               # run_tests() mode routing + re-exports
 ├── test_runner_modular.py  # _ModularTestRunner (category execution)
 ├── test_runner_modes.py    # fast / comprehensive / reliable mode implementations
@@ -35,7 +35,7 @@ src/tests/
 ├── conftest.py             # Pytest fixtures and marker registration
 ├── __init__.py             # Module exports and utilities
 ├── tests/                  # Shared-plumbing regression tests
-├── <module>/test_*.py      # Per-module test directories
+├── <module>/test_*.py      # Per-module test directories mirroring src/gnn/<module>/
 └── test_*.py               # Cross-cutting root test files
 ```
 
@@ -88,7 +88,7 @@ All tests follow strict real-implementation policy:
 
 ## Coverage Layout
 
-The suite mirrors the source tree: module-focused tests live in `src/tests/<module>/`, while root-level `src/tests/test_*.py` files cover cross-cutting environment, coverage, and runner behavior. Mechanical AGENTS/README coverage for maintained test subdirectories is enforced by `doc/development/docs_audit.py --strict`.
+The suite mirrors the source tree: module-focused tests live in `tests/<module>/`, while root-level `tests/test_*.py` files cover cross-cutting environment, coverage, and runner behavior. Mechanical AGENTS/README coverage for maintained test subdirectories is enforced by `doc/development/docs_audit.py --strict`.
 
 ---
 
@@ -130,18 +130,18 @@ unregistered markers fail collection under `--strict-markers`.
 
 ### Run Fast Tests (Default)
 ```bash
-python src/2_tests.py --fast-only --verbose
+python src/gnn/2_tests.py --fast-only --verbose
 ```
 
 ### Run Comprehensive Test Suite
 ```bash
-python src/2_tests.py --comprehensive --verbose
+python src/gnn/2_tests.py --comprehensive --verbose
 ```
 
 ### Run Specific Module Tests
 ```bash
-uv run --extra dev python -m pytest src/tests/gnn/test_gnn_overall.py -v
-uv run --extra dev python -m pytest src/tests/render/test_render_overall.py -v
+uv run --extra dev python -m pytest tests/gnn/test_gnn_overall.py -v
+uv run --extra dev python -m pytest tests/render/test_render_overall.py -v
 ```
 
 ### Run by Marker
@@ -153,7 +153,7 @@ pytest -m "not slow"  # Exclude slow tests
 
 ### Run with Coverage
 ```bash
-pytest --cov=src --cov-report=html
+pytest --cov=gnn --cov-report=html
 ```
 
 ---
@@ -274,8 +274,8 @@ output/2_tests_output/
 
 ## References
 
-- **Test Documentation**: `src/tests/README.md`
-- **API Documentation**: `src/tests/AGENTS.md`
+- **Test Documentation**: `tests/README.md`
+- **API Documentation**: `tests/AGENTS.md`
 - **Pipeline Documentation**: `README.md`
 - **Architecture Guide**: `ARCHITECTURE.md`
 - **Project Overview**: `DOCS.md`
@@ -287,7 +287,7 @@ output/2_tests_output/
 The GNN Processing Pipeline test suite provides comprehensive, production-ready testing infrastructure with:
 
 - Test files span root and module-specific directories; enumerate them with
-  `rg --files src/tests -g 'test_*.py'`
+  `rg --files tests -g 'test_*.py'`
 - Collect and execute the command of record above for current totals; the root
   [`README.md`](../../README.md) owns the latest dated receipt
 - Real data and real implementations throughout core paths

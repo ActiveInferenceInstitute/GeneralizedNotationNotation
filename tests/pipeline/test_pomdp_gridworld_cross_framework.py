@@ -16,7 +16,7 @@ import pytest
 from gnn.analysis.processor import process_analysis
 from gnn.analysis.rxinfer.cross_framework import RXINFER_JULIA_PROJECT
 from gnn.execute.processor import process_execute
-from gnn.pomdp_extractor import extract_pomdp_from_file
+from gnn.extract.pomdp_extractor import extract_pomdp_from_file
 from gnn.render.pomdp_processor import POMDPRenderProcessor
 from gnn.render.processor import process_render, render_gnn_spec
 

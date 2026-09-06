@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Tests for the bounded literal_eval wrapper (utils.safe_eval)."""
+"""Tests for the bounded literal_eval wrapper (gnn.utils.safe_eval)."""
 
 import sys
 from pathlib import Path

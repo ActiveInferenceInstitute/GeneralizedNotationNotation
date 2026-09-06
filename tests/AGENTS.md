@@ -83,7 +83,7 @@ success = run_tests(
 
 #### `TestRunner`
 **Description**: Single-source pytest runner class: resource monitoring, subprocess execution, output parsing, and execution reports.
-**Defined in**: [`infrastructure/test_runner.py`](infrastructure/test_runner.py) — the canonical copy. [`runner.py`](runner.py) re-exports it so `from tests.runner import TestRunner` (used by `src/utils/test_utils.py`) keeps resolving to the same class. Do not define a second copy.
+**Defined in**: [`infrastructure/test_runner.py`](infrastructure/test_runner.py) — the canonical copy. [`runner.py`](runner.py) re-exports it so `from tests.runner import TestRunner` (used by `src/gnn/utils/test_utils.py`) keeps resolving to the same class. Do not define a second copy.
 
 #### `run_fast_pipeline_tests(logger, output_dir, verbose=False) -> bool`
 **Description**: Run fast test suite for quick pipeline validation
@@ -171,7 +171,7 @@ errors = _extract_collection_errors(pytest_stdout, pytest_stderr)
 - `pytest-html` - HTML test reports
 
 ### Internal Dependencies
-- `utils.test_utils` - Shared test configuration and helpers (`utils.pipeline_template` backs the `2_tests.py` CLI wrapper)
+- `gnn.utils.test_utils` - Shared test configuration and helpers (`gnn.utils.pipeline_template` backs the `2_tests.py` CLI wrapper)
 
 ---
 
@@ -179,7 +179,7 @@ errors = _extract_collection_errors(pytest_stdout, pytest_stderr)
 
 ### Test Settings
 ```python
-TEST_CONFIG = {  # src/utils/test_utils.py (abridged)
+TEST_CONFIG = {  # src/gnn/utils/test_utils.py (abridged)
     "safe_mode": True,
     "verbose": False,
     "strict": False,
@@ -191,7 +191,7 @@ TEST_CONFIG = {  # src/utils/test_utils.py (abridged)
 
 ### Test Categories
 ```python
-TEST_CATEGORIES = {  # src/utils/test_utils.py - category -> description
+TEST_CATEGORIES = {  # src/gnn/utils/test_utils.py - category -> description
     "fast": "Quick validation tests for core functionality",
     "standard": "Integration tests and moderate complexity",
     "slow": "Complex scenarios and benchmarks",
@@ -344,7 +344,7 @@ output/2_tests_output/
 - **Function**: `run_tests()`
 
 ### Imports From
-- `utils.test_utils` - Shared test configuration and helpers
+- `gnn.utils.test_utils` - Shared test configuration and helpers
 
 ### Imported By
 - `2_tests.py` - Step 2 CLI wrapper (imports `run_tests` lazily)
@@ -429,7 +429,7 @@ To add a new test category to `MODULAR_TEST_CATEGORIES` in `categories.py`:
 MODULAR_TEST_CATEGORIES["new_module"] = {
     "name": "New Module Tests",
     "description": "Tests for the new module",
-    "files": ["template/test_template_overall.py", "new_module/test_new_module_integration.py"],  # paths relative to src/tests/
+    "files": ["template/test_template_overall.py", "new_module/test_new_module_integration.py"],  # paths relative to tests/
     "markers": ["new_module"],  # Optional pytest markers
     "timeout_seconds": 120,  # Category timeout
     "max_failures": 8,  # Max failures before stopping
@@ -437,7 +437,7 @@ MODULAR_TEST_CATEGORIES["new_module"] = {
 }
 ```
 
-Category `files` entries are resolved relative to `src/tests/` by
+Category `files` entries are resolved relative to `tests/` by
 `_ModularTestRunner.discover_test_files()`; entries that match nothing are
 skipped silently. Run `missing_category_files()` (same module) to detect
 such drift — the contract test in `tests/tests/test_categories_contract.py`
@@ -452,7 +452,7 @@ Follow the naming convention:
 
 Example:
 ```python
-# src/tests/template/test_template_overall.py
+# tests/template/test_template_overall.py
 import pytest
 from pathlib import Path
 
@@ -494,11 +494,11 @@ The plumbing's own regression tests live in `tests/tests/`
 ## Testing
 
 ### Test Files
-- Live file inventory: `rg --files src/tests -g 'test_*.py'`
+- Live file inventory: `rg --files tests -g 'test_*.py'`
 - Collected tests: 3,627 with the command-of-record (verified 2026-09-02):
 
 ```bash
-uv run --extra dev python -m pytest src/tests/ -q --tb=no -rsx --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py
+uv run --extra dev python -m pytest tests/ -q --tb=no -rsx --ignore=tests/llm/test_llm_ollama.py --ignore=tests/llm/test_llm_ollama_integration.py
 ```
 
 - 24 test categories defined in `categories.py`

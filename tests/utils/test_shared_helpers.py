@@ -2,12 +2,12 @@
 """Behavior tests for the shared utils helpers (consolidated 2026-09-04).
 
 Pins the single-source-of-truth implementations introduced when duplicated
-logic across src/utils/ was collapsed:
+logic across src/gnn/utils/ was collapsed:
 
 - ``io_utils.verify_directory_writable`` — the one writable-probe behind
-  ``utils.pipeline.validate_output_directory`` and
-  ``utils.pipeline_validator.check_pipeline_readiness``
-- the canonical memory probe ``utils.resource_manager.get_memory_usage``
+  ``gnn.utils.pipeline.validate_output_directory`` and
+  ``gnn.utils.pipeline_validator.check_pipeline_readiness``
+- the canonical memory probe ``gnn.utils.resource_manager.get_memory_usage``
   (with the ``test_utils`` / ``visualization_optimizer`` aliases)
 - ``resource_manager.with_resource_limits`` exception-propagation semantics
 - the shared fallback-default table behind ``ArgumentParser``

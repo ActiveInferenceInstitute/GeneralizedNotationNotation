@@ -58,7 +58,7 @@ TEXT_SUFFIXES = {
 
 AUDIT_TOOL_FILES = {
     ROOT / "scripts" / "check_maintained_doc_terms.py",
-    ROOT / "src" / "tests" / "test_docs_audit.py",
+    ROOT / "tests" / "docs" / "test_docs_audit.py",
 }
 
 PATTERNS: list[tuple[re.Pattern[str], str]] = [

@@ -173,7 +173,7 @@ graph TD
 
 The testing matrix in [`input/config.yaml`](../../input/config.yaml) controls which steps run on which folders:
 
-The shipped `input/config.yaml` has `folders: {}` and `default_steps: [3–12, 14–24]`, so every folder is routed through the same processing list. Step 13 (LLM) is omitted from `default_steps` and runs once on the whole target directory instead. Count the current exemplars with `rg --files input/gnn_files -g '*.md'` (filtered by `gnn.discovery.is_model_source_path`); the root [`input/gnn_files/INDEX.md`](../../input/gnn_files/INDEX.md) is the maintained corpus index.
+The shipped `input/config.yaml` has `folders: {}` and `default_steps: [3–12, 14–24]`, so every folder is routed through the same processing list. Step 13 (LLM) is omitted from `default_steps` and runs once on the whole target directory instead. Count the current exemplars with `rg --files input/gnn_files -g '*.md'` (filtered by `gnn.processing.discovery.is_model_source_path`); the root [`input/gnn_files/INDEX.md`](../../input/gnn_files/INDEX.md) is the maintained corpus index.
 
 | Folder | Steps 3–12, 14–24 | Step 13 | Notes |
 |--------|:-----------------:|:-------:|-------|

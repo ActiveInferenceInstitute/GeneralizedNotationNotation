@@ -30,7 +30,10 @@ from typing import Any
 import numpy as np
 import pytest
 
-from gnn.pomdp_extractor import extract_pomdp_from_content, extract_pomdp_from_file
+from gnn.extract.pomdp_extractor import (
+    extract_pomdp_from_content,
+    extract_pomdp_from_file,
+)
 from gnn.render.jax import render_gnn_to_jax
 from gnn.render.pomdp_processor import (
     _factor_action_counts,

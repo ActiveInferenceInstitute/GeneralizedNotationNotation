@@ -76,7 +76,7 @@ The CLI module is a thin dispatcher — each subcommand delegates to the corresp
 - `templates` / `pull` → `cli.templates` maintained template index, checksum, and copy helpers
 - `models` → `model_registry.registry.ModelRegistry`
 - `lsp` → `lsp.start_server()`
-- `watch` → `gnn.watcher.GNNWatcher()`
+- `watch` → `gnn.cli.watcher.GNNWatcher()`
 - `graph` → `gnn.dep_graph.render_graph_from_file()`
 
 ## References

@@ -651,7 +651,7 @@ def run_cross_framework_comparison(gnn_file: Path, output_dir: Path) -> str:
     if not gnn_file.is_file():
         raise FileNotFoundError(f"GNN file not found: {gnn_file}")
 
-    from gnn.pomdp_extractor import extract_pomdp_from_file
+    from gnn.extract.pomdp_extractor import extract_pomdp_from_file
     from gnn.render.pomdp_processor import pomdp_to_gnn_spec
 
     pomdp_space = extract_pomdp_from_file(gnn_file, strict_validation=True)

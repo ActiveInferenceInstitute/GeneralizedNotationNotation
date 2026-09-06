@@ -11,8 +11,6 @@ from typing import Any
 
 import pytest
 
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
 
 class TestCoreDependencies:
     """Tests for core Python dependencies."""
@@ -233,7 +231,7 @@ class TestDependencyDiscovery:
         """Test pyproject.toml dependency file exists (uv-managed)."""
         from pathlib import Path
 
-        pyproject = Path(__file__).parent.parent / "pyproject.toml"
+        pyproject = Path(__file__).parents[2] / "pyproject.toml"
         assert pyproject.exists(), (
             "pyproject.toml must exist for uv-managed dependencies"
         )

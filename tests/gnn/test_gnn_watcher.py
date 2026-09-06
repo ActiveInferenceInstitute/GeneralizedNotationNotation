@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Regression tests for gnn.watcher — GNNWatcher CLI watch mode.
+Regression tests for gnn.cli.watcher — GNNWatcher CLI watch mode.
 
 Pins the start/stop + polling discovery lifecycle, debounced firing, the
 default validation callback (valid vs. invalid GNN), extension filtering, and
@@ -18,7 +18,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from gnn.watcher import GNNWatcher  # noqa: E402
+from gnn.cli.watcher import GNNWatcher  # noqa: E402
 
 _VALID_GNN = (
     "## GNNSection\nGNN-2025-10\n"

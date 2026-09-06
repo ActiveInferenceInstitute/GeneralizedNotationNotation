@@ -342,7 +342,7 @@ unchanged. Exports: `FlatPayloadSpec`, `compute_flat_payload_metrics` (pure),
 ## References
 
 ### Related Documentation
-- [Pipeline Overview](../../README.md)
+- [Pipeline Overview](../../../README.md)
 - [Architecture Guide](../../../ARCHITECTURE.md)
 - [Execute Module](../execute/AGENTS.md)
 - [Analysis Module](../analysis/README.md)

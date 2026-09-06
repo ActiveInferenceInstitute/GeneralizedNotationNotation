@@ -293,7 +293,7 @@ process_render(
 
 Rendering is driven by:
 
-- extraction + normalization (`gnn.pomdp_extractor`, `render.processor.normalize_matrices`)
+- extraction + normalization (`gnn.extract.pomdp_extractor`, `render.processor.normalize_matrices`)
 - per-framework rendering (`render.pomdp_processor.POMDPRenderProcessor`)
 - structured summaries (`render_processing_summary.json` and per-framework README files)
 
@@ -337,7 +337,7 @@ output/11_render_output/
 
 ## POMDP Processing Features
 
-### POMDP State Space Extraction (`gnn.pomdp_extractor`)
+### POMDP State Space Extraction (`gnn.extract.pomdp_extractor`)
 
 The system automatically extracts Active Inference structures from GNN specifications:
 
@@ -358,7 +358,7 @@ The system automatically extracts Active Inference structures from GNN specifica
 **Example POMDP Extraction:**
 
 ```python
-from gnn.pomdp_extractor import extract_pomdp_from_file
+from gnn.extract.pomdp_extractor import extract_pomdp_from_file
 
 # Extract POMDP from GNN file
 pomdp_space = extract_pomdp_from_file("input/gnn_files/discrete/actinf_pomdp_agent.md")
@@ -651,7 +651,7 @@ This module is part of the GeneralizedNotationNotation project. See the main rep
 
 ## References
 
-- Project overview: ../../README.md
+- Project overview: ../../../README.md
 - Comprehensive docs: ../../../DOCS.md
 - Architecture guide: ../../../ARCHITECTURE.md
 - Pipeline details: ../../../doc/pipeline/README.md

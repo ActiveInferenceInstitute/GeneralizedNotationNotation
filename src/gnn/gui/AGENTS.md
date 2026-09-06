@@ -525,7 +525,7 @@ normal MCP keyword arguments.
 ## References
 
 ### Related Documentation
-- [Pipeline Overview](../../README.md)
+- [Pipeline Overview](../../../README.md)
 - [Architecture Guide](../../../../ARCHITECTURE.md)
 - [GUI Guide](../../../../doc/gui_oxdraw/)
 

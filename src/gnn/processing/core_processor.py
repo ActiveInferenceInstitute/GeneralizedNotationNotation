@@ -18,7 +18,7 @@ from typing import Any, Dict, List, Optional
 from gnn.report.processing_report import ReportGenerator
 
 # Import testing strategy lazily to avoid circular imports
-# from .testing import RoundTripTestStrategy
+# from gnn.testing import RoundTripTestStrategy
 from gnn.schema_validator import CrossFormatValidator
 
 from .discovery import FileDiscoveryStrategy
@@ -87,7 +87,7 @@ class GNNProcessor:
 
     def __init__(self, logger: Optional[logging.Logger] = None) -> None:
         """Initialize the instance."""
-        self.logger = logger or logging.getLogger("gnn.core_processor")
+        self.logger = logger or logging.getLogger("gnn.processing.core_processor")
 
         # Initialize processing strategies
         self.discovery_strategy = FileDiscoveryStrategy()
@@ -194,7 +194,7 @@ class GNNProcessor:
         try:
             if self.round_trip_strategy is None:
                 try:
-                    from .testing import RoundTripTestStrategy
+                    from gnn.testing import RoundTripTestStrategy
 
                     self.round_trip_strategy = RoundTripTestStrategy()
                 except ImportError:
@@ -259,7 +259,7 @@ def process_gnn_directory(
 
     Executes discovery and validation phases and writes minimal results when output_dir is provided.
     """
-    logger = logging.getLogger("gnn.core_processor.wrapper")
+    logger = logging.getLogger("gnn.processing.core_processor.wrapper")
     context = ProcessingContext(
         target_dir=Path(target_dir),
         output_dir=Path(output_dir) if output_dir else Path.cwd(),

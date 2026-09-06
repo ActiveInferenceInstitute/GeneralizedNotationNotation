@@ -141,7 +141,7 @@ The meta-analysis only runs when `output/12_execute_output/` (Step 12 execution 
 
 ## References
 
-- Project overview: ../../README.md
+- Project overview: ../../../README.md
 - Pipeline details: ../../../../doc/pipeline/README.md
 
 ---

@@ -11,7 +11,7 @@ import tempfile
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from gnn.processor import parse_gnn_file
+from gnn.processing.processor import parse_gnn_file
 
 
 def gnn_to_mermaid(
