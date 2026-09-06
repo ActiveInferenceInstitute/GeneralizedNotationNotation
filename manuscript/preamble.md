@@ -52,7 +52,7 @@ which emits plain `\ref`. Reinstating it means guarding it AND converting the
 % Keywords. This block runs after the template's, so it wins.
 %
 % The two values below are WRITTEN by scripts/z_generate_manuscript_variables.py
-% (sync_preamble_metadata), never typed. A {{TOKEN}} cannot be used here:
+% (sync_preamble_metadata), never typed. A double-brace token cannot be used here:
 % preamble.md is substituted into output/manuscript/ like any other section, but
 % the template's _manuscript_source.py then copies the raw file back over that
 % copy, so an unresolved token would reach hyperref and land in the PDF's

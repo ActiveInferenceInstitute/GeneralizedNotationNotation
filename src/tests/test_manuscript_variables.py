@@ -26,8 +26,10 @@ from manuscript_variables import (  # noqa: E402
     _registry_specs,
     _render_family_table,
     generate_variables,
+    preamble_metadata_drift,
     save_variables,
     select_cross_framework_family,
+    sync_preamble_metadata,
 )
 
 _PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -332,3 +334,42 @@ def test_save_variables_roundtrip(tmp_path: Path, variables: dict[str, str]) -> 
     out = save_variables(variables, tmp_path / "vars.json")
     reloaded = json.loads(out.read_text(encoding="utf-8"))
     assert reloaded == variables
+
+
+def test_preamble_pdf_metadata_is_written_not_typed(variables: dict[str, str]) -> None:
+    """preamble.md's PDF Subject/Keywords must equal the tokens that own them.
+
+    preamble.md cannot carry a double-brace token for these: the template
+    substitutes the file into ``output/manuscript/`` and then copies the raw
+    source back over it (``infrastructure/rendering/_manuscript_source.py``), so
+    an unresolved token reaches hyperref and is written into the PDF metadata
+    verbatim -- which is what a first attempt produced (``Subject: GNNSUBTITLE``).
+    """
+    assert preamble_metadata_drift(_PROJECT_ROOT, variables) == []
+
+    preamble = (_PROJECT_ROOT / "manuscript" / "preamble.md").read_text(
+        encoding="utf-8"
+    )
+    assert "{{" not in preamble, "preamble tokens are never substituted in the render"
+    assert f"pdfsubject={{{variables['GNN_SUBTITLE']}}}" in preamble
+    assert f"pdfkeywords={{{variables['GNN_KEYWORDS']}}}" in preamble
+
+
+def test_sync_preamble_metadata_repairs_drift(
+    tmp_path: Path, variables: dict[str, str]
+) -> None:
+    """A hand-edited value is rewritten from the token, and drift reports it."""
+    manuscript = tmp_path / "manuscript"
+    manuscript.mkdir()
+    source = (_PROJECT_ROOT / "manuscript" / "preamble.md").read_text(encoding="utf-8")
+    stale = source.replace(
+        f"pdfsubject={{{variables['GNN_SUBTITLE']}}}", "pdfsubject={stale subtitle}"
+    )
+    assert stale != source
+    (manuscript / "preamble.md").write_text(stale, encoding="utf-8")
+
+    assert preamble_metadata_drift(tmp_path, variables) != []
+    changes = sync_preamble_metadata(tmp_path, variables)
+    assert any(c.startswith("pdfsubject:") for c in changes)
+    assert preamble_metadata_drift(tmp_path, variables) == []
+    assert sync_preamble_metadata(tmp_path, variables) == []
