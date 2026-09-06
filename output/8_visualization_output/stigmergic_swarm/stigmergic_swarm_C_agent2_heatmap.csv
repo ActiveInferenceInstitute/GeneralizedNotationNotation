@@ -1,0 +1,6 @@
+Matrix: C_agent2
+"Shape: (1, 4)"
+Data type: float64
+
+Col 0,Col 1,Col 2,Col 3
+Row 0,-0.5,0.5,1.5,3.0

@@ -112,7 +112,7 @@ This documentation is integrated with the 25-step GNN processing pipeline:
 - DSPy results integrated into comprehensive outputs
 - [dspy_typed_predictors.md](dspy_typed_predictors.md): Structured output generation
 
-See [src/AGENTS.md](../../../src/AGENTS.md) for complete pipeline documentation.
+See [src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md) for complete pipeline documentation.
 
 ---
 
@@ -222,8 +222,8 @@ dspy.configure(lm=lm)
 ### Pipeline Architecture
 
 - **[Pipeline Documentation](../../gnn/operations/gnn_tools.md)**: Complete pipeline guide
-- **[Pipeline AGENTS](../../../src/AGENTS.md)**: Implementation details
-- **[Pipeline README](../../../src/README.md)**: Pipeline overview
+- **[Pipeline AGENTS](../../../src/gnn/AGENTS.md)**: Implementation details
+- **[Pipeline README](../../../src/gnn/README.md)**: Pipeline overview
 
 ### External Resources
 

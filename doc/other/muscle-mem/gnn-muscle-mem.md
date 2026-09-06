@@ -75,7 +75,7 @@ While full GNN file hashing is a straightforward approach, more nuanced `Check` 
 * **Handling GNN Dynamics and Time**:
   * If a GNN tool's output is sensitive to the `## Time` section (e.g., `ModelTimeHorizon`), this section must be included in the `Check`.
   * For agent simulations, if caching decisions at specific time steps, the current time `t` is a critical part of the `Check`'s capture.
-* **Configuration-Aware Caching**: For GNN processing tools (like those in the `src/main.py` pipeline), the `Check` must capture all command-line flags or configuration parameters that affect the tool's behavior and output (e.g., `--strict` mode for type checking, output formats for visualization).
+* **Configuration-Aware Caching**: For GNN processing tools (like those in the `src/gnn/main.py` pipeline), the `Check` must capture all command-line flags or configuration parameters that affect the tool's behavior and output (e.g., `--strict` mode for type checking, output formats for visualization).
 * **Ignoring "Volatile" GNN Sections**: Some GNN sections like `## Signature` or free-text comments might be intended to change without affecting the functional output of many tools. `Check`s could be designed to explicitly exclude these sections from the captured state.
 
 Developing these advanced `Check`s requires a deeper understanding of each GNN tool's specific dependencies and sensitivities.
@@ -304,7 +304,7 @@ Let's combine these ideas for a GNN tool. Imagine a function that renders a GNN 
 
 ### 1. Caching GNN Processing Pipeline Steps
 
-Many GNN workflows, like the one orchestrated by `src/main.py` in the GNN project, involve multiple processing steps (parsing, type checking, visualization, export, ontology mapping, rendering).
+Many GNN workflows, like the one orchestrated by `src/gnn/main.py` in the GNN project, involve multiple processing steps (parsing, type checking, visualization, export, ontology mapping, rendering).
 
 * **Target**: Individual scripts/tools within the GNN pipeline (e.g., `5_type_checker.py`, `8_visualization.py`, `11_render.py`). If a script takes a GNN file and some parameters, and produces deterministic output files or logs.
 * **Benefit**: Avoid re-running computationally expensive analyses if the input GNN file and relevant parameters haven't changed. This can drastically speed up development cycles and batch processing.
@@ -388,7 +388,7 @@ While the application of `muscle-mem` to the GNN ecosystem is promising, several
   * Changes to the GNN specification itself, or to the GNN processing tools being wrapped by `muscle-mem`, could invalidate large portions of the cache. Strategies for version-aware caching will be necessary.
 
 * **User Experience and Integration**:
-  * Seamlessly integrating `muscle-mem` into the existing GNN workflow (e.g., `src/main.py` and its constituent scripts) requires careful API design and consideration of how users will enable and configure caching for different GNN tasks.
+  * Seamlessly integrating `muscle-mem` into the existing GNN workflow (e.g., `src/gnn/main.py` and its constituent scripts) requires careful API design and consideration of how users will enable and configure caching for different GNN tasks.
 
 Addressing these challenges will likely involve a combination of advancing `muscle-mem`'s core capabilities and developing GNN-specific extensions or best practices for its use.
 

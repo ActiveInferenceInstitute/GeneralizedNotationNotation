@@ -31,12 +31,12 @@ Commits: none (changes left uncommitted, per HARD RULE).
   Output-directory-structure block updated to match.
 
 ### 2. doc/gnn/modules/08_visualization.md
-- **Fix 7 (test glob)**: Measurement command updated from `src/tests/test_visualization_*.py`
-  to `src/tests/visualization/`.
+- **Fix 7 (test glob)**: Measurement command updated from `tests/test_visualization_*.py`
+  to `tests/visualization/`.
 
-### 3. src/visualization/AGENTS.md
-- **Fix 7 (test glob)**: Same correction as above (`src/tests/test_visualization_*.py` ->
-  `src/tests/visualization/`), applied to the module AGENTS.md.
+### 3. src/gnn/visualization/AGENTS.md
+- **Fix 7 (test glob)**: Same correction as above (`tests/test_visualization_*.py` ->
+  `tests/visualization/`), applied to the module AGENTS.md.
 
 ### 4. doc/gnn/modules/09_advanced_viz.md
 - **Fix 8 (MCP tools)**: Documented registered tools replaced with the real ones:

@@ -165,7 +165,7 @@ flowchart LR
 **Implementation via GNN Pipeline:**
 ```bash
 # Export GNN model to CatColab-compatible format
-uv run python src/main.py --only-steps "3,7" --export-format catcolab --verbose
+uv run python src/gnn/main.py --only-steps "3,7" --export-format catcolab --verbose
 ```
 
 **Target CatColab Logic Selection:**
@@ -241,7 +241,7 @@ graph TD
 
 ### DisCoPy as Bridge Technology
 
-DisCoPy (implemented in `src/render/discopy/` and `src/execute/discopy/`) provides the categorical semantics shared by both systems:
+DisCoPy (implemented in `src/gnn/render/discopy/` and `src/gnn/execute/discopy/`) provides the categorical semantics shared by both systems:
 
 ```mermaid
 graph TB
@@ -255,7 +255,7 @@ graph TB
 
 ## GNN Ontology System ↔ CatColab Ologs
 
-GNN's ontology system (Step 10: `src/ontology/`) aligns with CatColab's **Olog** logic:
+GNN's ontology system (Step 10: `src/gnn/ontology/`) aligns with CatColab's **Olog** logic:
 
 | GNN Ontology Concept | CatColab Olog Element |
 |----------------------|----------------------|
@@ -331,7 +331,7 @@ Aspect: "via likelihood mapping A"
 - [Ontology System](../../gnn/advanced/ontology_system.md)
 - [Multi-Agent Systems](../../gnn/advanced/gnn_multiagent.md)
 - [Advanced Modeling Patterns](../../gnn/advanced/advanced_modeling_patterns.md)
-- [Pipeline Documentation](../../../src/AGENTS.md)
+- [Pipeline Documentation](../../../src/gnn/AGENTS.md)
 
 ### CatColab Resources
 - [CatColab Overview](catcolab.md)

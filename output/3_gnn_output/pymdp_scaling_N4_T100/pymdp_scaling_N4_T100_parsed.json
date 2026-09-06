@@ -1,0 +1,998 @@
+{
+  "model_name": "PyMDP Scaling N4 T100",
+  "version": "1.0",
+  "annotation": "PyMDP runtime scaling sweep with noisy observation and stochastic transitions.",
+  "variables": [
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "b8297d11-5a7b-421d-b88e-42b50a7cbf37",
+      "name": "s",
+      "var_type": "hidden_state",
+      "dimensions": [
+        4,
+        1
+      ],
+      "data_type": "float",
+      "description": null,
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "11b4ba0a-63e7-494c-9556-9b71e2f89b7f",
+      "name": "o",
+      "var_type": "observation",
+      "dimensions": [
+        4,
+        1
+      ],
+      "data_type": "integer",
+      "description": null,
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "78f5f53f-9730-4828-978a-6308f4a93912",
+      "name": "A",
+      "var_type": "likelihood_matrix",
+      "dimensions": [
+        4,
+        4
+      ],
+      "data_type": "float",
+      "description": null,
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "9f124ad5-7009-4759-9b09-2af1906a0ed1",
+      "name": "B",
+      "var_type": "transition_matrix",
+      "dimensions": [
+        4,
+        4,
+        4
+      ],
+      "data_type": "float",
+      "description": "Transition matrix: B[next_state, previous_state, actions]",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "cd2017d0-36f5-4e4a-a1b4-5cb6da920314",
+      "name": "C",
+      "var_type": "preference_vector",
+      "dimensions": [
+        4
+      ],
+      "data_type": "float",
+      "description": null,
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "e469e3df-bee4-4039-a0ae-c8c7f6e5d081",
+      "name": "D",
+      "var_type": "prior_vector",
+      "dimensions": [
+        4
+      ],
+      "data_type": "float",
+      "description": null,
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "10daa5d0-8478-4a30-9e62-fc2ff483a309",
+      "name": "\u03c0",
+      "var_type": "policy",
+      "dimensions": [
+        4
+      ],
+      "data_type": "float",
+      "description": null,
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "7cf6e223-71f1-4df4-a106-15289c475ad0",
+      "name": "u",
+      "var_type": "action",
+      "dimensions": [
+        1
+      ],
+      "data_type": "integer",
+      "description": null,
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "c22ede62-ed07-486f-a0a8-df0895160995",
+      "name": "G",
+      "var_type": "policy",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": null,
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "64bb1220-56e7-4f60-b625-33763e943c7d",
+      "name": "F",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": null,
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "5a3340b1-3c32-4c29-9cd7-acfe0f62e751",
+      "name": "t",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "integer",
+      "description": null,
+      "constraints": {}
+    }
+  ],
+  "connections": [
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "23ddc710-3b32-4a06-a070-0c3078f09a7c",
+      "source_variables": [
+        "D"
+      ],
+      "target_variables": [
+        "s"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "5841f657-0a43-457f-8c22-01e5a958cf8f",
+      "source_variables": [
+        "s"
+      ],
+      "target_variables": [
+        "A"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "3d077a9e-8fec-45dc-b98d-3128021bb583",
+      "source_variables": [
+        "A"
+      ],
+      "target_variables": [
+        "o"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "7f2c16ab-425d-4c18-a538-f17162f11561",
+      "source_variables": [
+        "s"
+      ],
+      "target_variables": [
+        "B"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "aa8869b1-45c2-48f7-9924-bae71bc32e31",
+      "source_variables": [
+        "C"
+      ],
+      "target_variables": [
+        "G"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "f6b4f88c-7fd4-4f84-8098-c2f93369ad65",
+      "source_variables": [
+        "G"
+      ],
+      "target_variables": [
+        "\u03c0"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "cd58fa84-23dc-43f7-9dae-d5d2c2c3d1e4",
+      "source_variables": [
+        "\u03c0"
+      ],
+      "target_variables": [
+        "u"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "27a3f92a-a796-40b1-ae4c-41f7b439d81a",
+      "source_variables": [
+        "B"
+      ],
+      "target_variables": [
+        "u"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "44c0c79a-a54f-46eb-bbc0-e93d3e59b6c6",
+      "source_variables": [
+        "s"
+      ],
+      "target_variables": [
+        "F"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "7b6d3bb2-584b-4645-8df0-c683462a0446",
+      "source_variables": [
+        "o"
+      ],
+      "target_variables": [
+        "F"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    }
+  ],
+  "parameters": [
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "06eb1c72-3463-442b-bf3a-c5393bd55f6b",
+      "name": "A",
+      "value": [
+        [
+          0.925,
+          0.025,
+          0.025,
+          0.025
+        ],
+        [
+          0.025,
+          0.925,
+          0.025,
+          0.025
+        ],
+        [
+          0.025,
+          0.025,
+          0.925,
+          0.025
+        ],
+        [
+          0.025,
+          0.025,
+          0.025,
+          0.925
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "45019ec4-0948-4dc6-9604-908ba770fe13",
+      "name": "B",
+      "value": [
+        [
+          [
+            0.85,
+            0.05,
+            0.05,
+            0.05
+          ],
+          [
+            0.85,
+            0.05,
+            0.05,
+            0.05
+          ],
+          [
+            0.85,
+            0.05,
+            0.05,
+            0.05
+          ],
+          [
+            0.85,
+            0.05,
+            0.05,
+            0.05
+          ]
+        ],
+        [
+          [
+            0.05,
+            0.85,
+            0.05,
+            0.05
+          ],
+          [
+            0.05,
+            0.85,
+            0.05,
+            0.05
+          ],
+          [
+            0.05,
+            0.85,
+            0.05,
+            0.05
+          ],
+          [
+            0.05,
+            0.85,
+            0.05,
+            0.05
+          ]
+        ],
+        [
+          [
+            0.05,
+            0.05,
+            0.85,
+            0.05
+          ],
+          [
+            0.05,
+            0.05,
+            0.85,
+            0.05
+          ],
+          [
+            0.05,
+            0.05,
+            0.85,
+            0.05
+          ],
+          [
+            0.05,
+            0.05,
+            0.85,
+            0.05
+          ]
+        ],
+        [
+          [
+            0.05,
+            0.05,
+            0.05,
+            0.85
+          ],
+          [
+            0.05,
+            0.05,
+            0.05,
+            0.85
+          ],
+          [
+            0.05,
+            0.05,
+            0.05,
+            0.85
+          ],
+          [
+            0.05,
+            0.05,
+            0.05,
+            0.85
+          ]
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "40fb5527-7785-4126-80bd-1acd35528f49",
+      "name": "C",
+      "value": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          3.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "0739f846-bc3d-491d-afa8-2b96071c8909",
+      "name": "D",
+      "value": [
+        [
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "01c26934-bbe6-4a28-858f-5b2f32ef44c8",
+      "name": "num_hidden_states",
+      "value": 4,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "5fce379c-1096-402f-9efb-647f096681d2",
+      "name": "num_obs",
+      "value": 4,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "aedce0c8-f912-4cca-8112-acf3eedc2bb8",
+      "name": "num_actions",
+      "value": 4,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "e6e2fd52-9bac-4533-8782-b0e0954ec009",
+      "name": "num_timesteps",
+      "value": 100,
+      "type_hint": null,
+      "description": null
+    }
+  ],
+  "equations": [],
+  "time_specification": {
+    "node_type": "TimeSpecification",
+    "source_location": null,
+    "metadata": {},
+    "id": "4b927e83-9010-49ac-a707-8a414451edd0",
+    "time_type": "Dynamic",
+    "discretization": null,
+    "horizon": 100,
+    "step_size": null
+  },
+  "ontology_mappings": [
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "4e9498b7-5adf-4b4d-8337-109da5125d7a",
+      "variable_name": "A",
+      "ontology_term": "LikelihoodMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "9fcd8b1c-4ee5-4485-8c38-e11a2497ec80",
+      "variable_name": "B",
+      "ontology_term": "TransitionMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "9588c1de-dd96-447e-bc03-1df1f56a29c4",
+      "variable_name": "C",
+      "ontology_term": "LogPreferenceVector",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "7d6325e5-b0bc-40c9-8631-a2cefa2afcb8",
+      "variable_name": "D",
+      "ontology_term": "PriorOverHiddenStates",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "7c9119bf-b153-4e52-993b-108822424e50",
+      "variable_name": "G",
+      "ontology_term": "ExpectedFreeEnergy",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "2ff60f7f-c95b-4c07-b573-176e7e30d67a",
+      "variable_name": "F",
+      "ontology_term": "VariationalFreeEnergy",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "042cad63-9e90-4a6f-9b8f-0407743950e2",
+      "variable_name": "s",
+      "ontology_term": "HiddenState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "9067877e-2581-4f95-8160-c7a2ef3e8e5c",
+      "variable_name": "o",
+      "ontology_term": "Observation",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "5078a87d-bbbc-402e-a844-2fa836032442",
+      "variable_name": "\u03c0",
+      "ontology_term": "PolicyVector",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "afbf6485-3726-424d-9bb9-d1b9c7bee527",
+      "variable_name": "u",
+      "ontology_term": "Action",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "9caa4387-64c1-463b-a3a0-804065a961bb",
+      "variable_name": "t",
+      "ontology_term": "Time",
+      "description": null
+    }
+  ],
+  "source_format": "markdown",
+  "created_at": "2026-09-05T20:30:53.403697",
+  "modified_at": "2026-09-05T20:30:53.403702",
+  "checksum": null,
+  "extensions": {
+    "gnn_section": "ActInfPOMDP",
+    "footer": "Generated by PyMDP Scaling Suite (noisy: A_signal=0.9, B_signal=0.8).",
+    "signature": "Cryptographic signature goes here"
+  },
+  "raw_sections": {
+    "GNNSection": "ActInfPOMDP",
+    "GNNVersionAndFlags": "GNN v1",
+    "ModelName": "PyMDP Scaling N4 T100",
+    "ModelAnnotation": "PyMDP runtime scaling sweep with noisy observation and stochastic transitions.",
+    "StateSpaceBlock": "s[4,1,type=float]\no[4,1,type=int]\nA[4,4,type=float]\nB[4,4,4,type=float]  # Transition matrix: B[next_state, previous_state, actions]\nC[4,type=float]\nD[4,type=float]\npi[4,type=float]\nu[1,type=int]\nG[pi,type=float]\nF[1,type=float]\nt[1,type=int]",
+    "Connections": "D>s\ns-A\nA-o\ns-B\nC>G\nG>pi\npi>u\nB>u\ns-F\no-F",
+    "InitialParameterization": "A={\n  (0.925000, 0.025000, 0.025000, 0.025000),\n  (0.025000, 0.925000, 0.025000, 0.025000),\n  (0.025000, 0.025000, 0.925000, 0.025000),\n  (0.025000, 0.025000, 0.025000, 0.925000)\n}\n\n# B: The transition tensor B is stored as (next_state, previous_state, action):\n# the outer axis is the next state; within each slice, rows are previous\n# states and columns are actions. The tensor is column-stochastic over the\n# next_state axis: for every (previous_state, action) pair, entries along\n# the outer axis sum to 1.\nB={\n  ((0.850000, 0.050000, 0.050000, 0.050000), (0.850000, 0.050000, 0.050000, 0.050000), (0.850000, 0.050000, 0.050000, 0.050000), (0.850000, 0.050000, 0.050000, 0.050000)),\n  ((0.050000, 0.850000, 0.050000, 0.050000), (0.050000, 0.850000, 0.050000, 0.050000), (0.050000, 0.850000, 0.050000, 0.050000), (0.050000, 0.850000, 0.050000, 0.050000)),\n  ((0.050000, 0.050000, 0.850000, 0.050000), (0.050000, 0.050000, 0.850000, 0.050000), (0.050000, 0.050000, 0.850000, 0.050000), (0.050000, 0.050000, 0.850000, 0.050000)),\n  ((0.050000, 0.050000, 0.050000, 0.850000), (0.050000, 0.050000, 0.050000, 0.850000), (0.050000, 0.050000, 0.050000, 0.850000), (0.050000, 0.050000, 0.050000, 0.850000))\n}\n\nC={(0.0, 0.0, 0.0, 3.0)}\n\nD={(0.250000, 0.250000, 0.250000, 0.250000)}",
+    "Equations": "# Standard Active Inference update equations",
+    "Time": "Time=t\nDynamic\nDiscrete\nModelTimeHorizon=100",
+    "ActInfOntologyAnnotation": "A=LikelihoodMatrix\nB=TransitionMatrix\nC=LogPreferenceVector\nD=PriorOverHiddenStates\nG=ExpectedFreeEnergy\nF=VariationalFreeEnergy\ns=HiddenState\no=Observation\npi=PolicyVector\nu=Action\nt=Time",
+    "ModelParameters": "num_hidden_states: 4\nnum_obs: 4\nnum_actions: 4\nnum_timesteps: 100",
+    "Footer": "Generated by PyMDP Scaling Suite (noisy: A_signal=0.9, B_signal=0.8).",
+    "Signature": "Cryptographic signature goes here"
+  },
+  "initialparameterization": {
+    "A": [
+      [
+        0.925,
+        0.025,
+        0.025,
+        0.025
+      ],
+      [
+        0.025,
+        0.925,
+        0.025,
+        0.025
+      ],
+      [
+        0.025,
+        0.025,
+        0.925,
+        0.025
+      ],
+      [
+        0.025,
+        0.025,
+        0.025,
+        0.925
+      ]
+    ],
+    "B": [
+      [
+        [
+          0.85,
+          0.05,
+          0.05,
+          0.05
+        ],
+        [
+          0.85,
+          0.05,
+          0.05,
+          0.05
+        ],
+        [
+          0.85,
+          0.05,
+          0.05,
+          0.05
+        ],
+        [
+          0.85,
+          0.05,
+          0.05,
+          0.05
+        ]
+      ],
+      [
+        [
+          0.05,
+          0.85,
+          0.05,
+          0.05
+        ],
+        [
+          0.05,
+          0.85,
+          0.05,
+          0.05
+        ],
+        [
+          0.05,
+          0.85,
+          0.05,
+          0.05
+        ],
+        [
+          0.05,
+          0.85,
+          0.05,
+          0.05
+        ]
+      ],
+      [
+        [
+          0.05,
+          0.05,
+          0.85,
+          0.05
+        ],
+        [
+          0.05,
+          0.05,
+          0.85,
+          0.05
+        ],
+        [
+          0.05,
+          0.05,
+          0.85,
+          0.05
+        ],
+        [
+          0.05,
+          0.05,
+          0.85,
+          0.05
+        ]
+      ],
+      [
+        [
+          0.05,
+          0.05,
+          0.05,
+          0.85
+        ],
+        [
+          0.05,
+          0.05,
+          0.05,
+          0.85
+        ],
+        [
+          0.05,
+          0.05,
+          0.05,
+          0.85
+        ],
+        [
+          0.05,
+          0.05,
+          0.05,
+          0.85
+        ]
+      ]
+    ],
+    "C": [
+      [
+        0.0,
+        0.0,
+        0.0,
+        3.0
+      ]
+    ],
+    "D": [
+      [
+        0.25,
+        0.25,
+        0.25,
+        0.25
+      ]
+    ],
+    "num_hidden_states": 4,
+    "num_obs": 4,
+    "num_actions": 4,
+    "num_timesteps": 100
+  },
+  "model_parameters": {
+    "A": [
+      [
+        0.925,
+        0.025,
+        0.025,
+        0.025
+      ],
+      [
+        0.025,
+        0.925,
+        0.025,
+        0.025
+      ],
+      [
+        0.025,
+        0.025,
+        0.925,
+        0.025
+      ],
+      [
+        0.025,
+        0.025,
+        0.025,
+        0.925
+      ]
+    ],
+    "B": [
+      [
+        [
+          0.85,
+          0.05,
+          0.05,
+          0.05
+        ],
+        [
+          0.85,
+          0.05,
+          0.05,
+          0.05
+        ],
+        [
+          0.85,
+          0.05,
+          0.05,
+          0.05
+        ],
+        [
+          0.85,
+          0.05,
+          0.05,
+          0.05
+        ]
+      ],
+      [
+        [
+          0.05,
+          0.85,
+          0.05,
+          0.05
+        ],
+        [
+          0.05,
+          0.85,
+          0.05,
+          0.05
+        ],
+        [
+          0.05,
+          0.85,
+          0.05,
+          0.05
+        ],
+        [
+          0.05,
+          0.85,
+          0.05,
+          0.05
+        ]
+      ],
+      [
+        [
+          0.05,
+          0.05,
+          0.85,
+          0.05
+        ],
+        [
+          0.05,
+          0.05,
+          0.85,
+          0.05
+        ],
+        [
+          0.05,
+          0.05,
+          0.85,
+          0.05
+        ],
+        [
+          0.05,
+          0.05,
+          0.85,
+          0.05
+        ]
+      ],
+      [
+        [
+          0.05,
+          0.05,
+          0.05,
+          0.85
+        ],
+        [
+          0.05,
+          0.05,
+          0.05,
+          0.85
+        ],
+        [
+          0.05,
+          0.05,
+          0.05,
+          0.85
+        ],
+        [
+          0.05,
+          0.05,
+          0.05,
+          0.85
+        ]
+      ]
+    ],
+    "C": [
+      [
+        0.0,
+        0.0,
+        0.0,
+        3.0
+      ]
+    ],
+    "D": [
+      [
+        0.25,
+        0.25,
+        0.25,
+        0.25
+      ]
+    ],
+    "num_hidden_states": 4,
+    "num_obs": 4,
+    "num_actions": 4,
+    "num_timesteps": 100
+  }
+}

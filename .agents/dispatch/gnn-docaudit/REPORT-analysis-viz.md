@@ -2,9 +2,9 @@
 
 Region: doc/visualization/, doc/advanced_visualization/, doc/performance/,
 doc/petri_nets/, doc/research/, doc/spm/ + Step 8/9/16 module pages and any
-pages referencing src/analysis|visualization|advanced_visualization.
+pages referencing src/gnn/analysis|visualization|advanced_visualization.
 Mode: REPORT-ONLY. No repository files were modified.
-Verified via `git ls-files`, source grep, and `src/utils/arg_parsing.py`
+Verified via `git ls-files`, source grep, and `src/gnn/utils/arg_parsing.py`
 ARGUMENT_DEFINITIONS (the canonical main/step CLI parser).
 
 ## 1. doc/gnn/modules/16_analysis.md
@@ -12,7 +12,7 @@ ARGUMENT_DEFINITIONS (the canonical main/step CLI parser).
 - doc/gnn/modules/16_analysis.md:117 | WARNING | Documented
   `process_analysis(target_dir, output_dir, logger=None, **kwargs)` — code
   signature is `process_analysis(target_dir, output_dir, verbose=False,
-  **kwargs)` (src/analysis/processor.py:278); the parameter is `verbose`, not
+  **kwargs)` (src/gnn/analysis/processor.py:278); the parameter is `verbose`, not
   `logger`. The example at :140 passes `logger=logger` (absorbed by **kwargs,
   so it still runs, but the documented signature is wrong).
   Fix: change declared param `logger` -> `verbose` (align with processor).
@@ -37,14 +37,14 @@ ARGUMENT_DEFINITIONS (the canonical main/step CLI parser).
 
 - doc/gnn/modules/16_analysis.md:216-220 | WARNING | Env vars
   `ANALYSIS_PERFORMANCE_MODE` and `ANALYSIS_TIMEOUT` are documented but not
-  consumed anywhere under src/ (grep of src/analysis + src/utils .py finds no
-  reads, only the doc + src/analysis/AGENTS.md text). `analysis_config.yaml`
+  consumed anywhere under src/ (grep of src/gnn/analysis + src/gnn/utils .py finds no
+  reads, only the doc + src/gnn/analysis/AGENTS.md text). `analysis_config.yaml`
   is also listed as a config file but is not tracked (git ls-files -> nothing).
   Fix: drop or implement the env vars and config file (or mark illustrative).
 
 - doc/gnn/modules/16_analysis.md:224-228 | INFO | `DEFAULT_COMPLEXITY_THRESHOLDS`
   block presented as a default setting but no such constant is defined in
-  src/analysis (grep finds it only in doc/AGENTS text; analyzer.py computes
+  src/gnn/analysis (grep finds it only in doc/AGENTS text; analyzer.py computes
   complexity inline at :331/:371+).
   Fix: mirror the actual computed thresholds or label as illustrative.
 
@@ -55,23 +55,23 @@ ARGUMENT_DEFINITIONS (the canonical main/step CLI parser).
   `{model}_post_simulation_analysis.json` (:459), `analysis_summary.md` (:776),
   `cross_model_comparison_report.md` (:726), and `comprehensive_visualizations`
   (:620) — there is no `pymdp_visualizations/` dir in code (only a doc/AGENTS
-  reference at src/analysis/AGENTS.md:215).
+  reference at src/gnn/analysis/AGENTS.md:215).
   Fix: replace output-product list with the real artifact names.
 
 ## 2. doc/gnn/modules/08_visualization.md
 
 - doc/gnn/modules/08_visualization.md:276 | WARNING | Test-coverage command
-  glob `src/tests/test_visualization_*.py` matches nothing — visualization
-  tests live under `src/tests/visualization/` (13 tracked .py; 0 top-level).
+  glob `tests/test_visualization_*.py` matches nothing — visualization
+  tests live under `tests/visualization/` (13 tracked .py; 0 top-level).
   Command would report an empty collection. Same stale glob in
-  src/visualization/AGENTS.md. Fix: `src/tests/visualization/`.
+  src/gnn/visualization/AGENTS.md. Fix: `tests/visualization/`.
 
 - Other claims verified clean: orchestrator "58 lines" (wc = 58); imports
   `process_visualization`, `generate_graph_visualization`,
   `generate_matrix_visualization`, `GNNVisualizer` all exported
-  (src/visualization/__init__.py); `load_visualization_model` and
+  (src/gnn/visualization/__init__.py); `load_visualization_model` and
   `parse_gnn_content` exist (core/parsed_model.py, parse/markdown.py); MCP tool
-  IDs match src/visualization/mcp.py; artifact names (network_graph.png,
+  IDs match src/gnn/visualization/mcp.py; artifact names (network_graph.png,
   network_stats.json, viz_manifest.json, visualization_summary.json) present
   in source.
 
@@ -80,7 +80,7 @@ ARGUMENT_DEFINITIONS (the canonical main/step CLI parser).
 - doc/gnn/modules/09_advanced_viz.md:470-481 | WARNING | MCP tools listed
   (`advanced_visualization.generate_3d`, `create_dashboard`, `generate_d2`,
   `analyze_statistics`) do not match the tools actually registered in
-  src/advanced_visualization/mcp.py (process_advanced_visualization,
+  src/gnn/advanced_visualization/mcp.py (process_advanced_visualization,
   check_visualization_capabilities, list_d2_visualization_types,
   get_advanced_visualization_module_info). The doc's fabricated tool names are
   not registered. Fix: list the real registered tool IDs.
@@ -111,7 +111,7 @@ scripts/run_pymdp_gnn_scaling_analysis.py exists; `11_render.py
 all defined. The "not main-pipeline options" list is accurate (none of
 `--workers`, `--parallel-strategy`, `--memory-limit`, etc. are registered).
 Output path `output/<run>/00_pipeline_summary/pipeline_execution_summary.json`
-matches src/pipeline/context.py:215. Clean.
+matches src/gnn/pipeline/context.py:215. Clean.
 
 ## 5. doc/visualization/README.md, doc/advanced_visualization/README.md,
    doc/research/README.md, doc/petri_nets/README.md — INFO counts only
@@ -124,7 +124,7 @@ matches src/pipeline/context.py:215. Clean.
   __init__.py, pnml.pnml, xml.xml). INFO.
 All cross-reference targets checked via git ls-files resolve correctly
 (glowstick, gnn_overview.md, gnn_tools.md, axiom, nock-gnn, gnn_multiagent,
-advanced_modeling_patterns, poe-world, src/research/README.md, etc.).
+advanced_modeling_patterns, poe-world, src/gnn/research/README.md, etc.).
 
 ## 6. doc/spm/ — clean (conceptual)
 

@@ -12,7 +12,7 @@ This directory contains documentation and resources for dependency management.
 
 - **Main Documentation**: [doc/README.md](../README.md)
 - **Setup Guide**: [doc/SETUP.md](../SETUP.md)
-- **Pipeline Reference**: [src/AGENTS.md](../../src/AGENTS.md)
+- **Pipeline Reference**: [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)
 
 ## Directory Structure
 

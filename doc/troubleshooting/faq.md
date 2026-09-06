@@ -52,7 +52,7 @@ uv sync
 uv sync --extra dev
 
 # Run the main pipeline on examples
-uv run python src/main.py --target-dir input/gnn_files/ --output-dir output/
+uv run python src/gnn/main.py --target-dir input/gnn_files/ --output-dir output/
 ```
 
 ### What's the easiest way to create my first model?
@@ -143,7 +143,7 @@ See [Common Errors Guide](common_errors.md) for detailed troubleshooting.
 1. **Probability constraints**: All rows/columns sum to 1
 2. **Dimension compatibility**: Matrix sizes match variable definitions
 3. **Type consistency**: Variables have compatible types
-4. **Run the type checker**: `uv run python src/5_type_checker.py --target-dir <model-dir>`
+4. **Run the type checker**: `uv run python src/gnn/5_type_checker.py --target-dir <model-dir>`
 
 ### Can I use custom mathematical functions?
 
@@ -320,7 +320,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 uv sync --extra dev
 
 # Run tests to verify setup
-uv run --extra dev python -m pytest src/tests/
+uv run --extra dev python -m pytest tests/
 ```
 
 ### Can I use GNN with Docker?
@@ -335,7 +335,7 @@ WORKDIR /app
 COPY . /app
 
 RUN uv sync --frozen
-CMD ["uv", "run", "python", "src/main.py", "--help"]
+CMD ["uv", "run", "python", "src/gnn/main.py", "--help"]
 ```
 
 **Docker Compose for development:**
@@ -519,7 +519,7 @@ goal_weight_01>goal_level_0
 uv pip install jupyter ipywidgets
 
 # Run from the repository root
-from src.gnn import parse_gnn_file, validate_gnn_file
+from gnn.gnn import parse_gnn_file, validate_gnn_file
 
 # Load and process GNN model
 model = parse_gnn_file('my_model.md')
@@ -584,11 +584,11 @@ jobs:
     
     - name: Validate GNN models
       run: |
-        uv run python src/5_type_checker.py --target-dir models/
+        uv run python src/gnn/5_type_checker.py --target-dir models/
     
     - name: Generate documentation
       run: |
-        uv run python src/20_website.py --target-dir models/ --output-dir output --verbose
+        uv run python src/gnn/20_website.py --target-dir models/ --output-dir output --verbose
 ```
 
 ### How do I deploy GNN models to production?

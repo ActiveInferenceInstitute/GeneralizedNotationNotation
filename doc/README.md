@@ -31,7 +31,7 @@ kept intentionally small and are validated by the repository documentation check
 
 ### Developing or integrating
 
-1. [Pipeline architecture](../src/README.md)
+1. [Pipeline architecture](../src/gnn/README.md)
 2. [Pipeline scripts](PIPELINE_SCRIPTS.md)
 3. [GNN implementation guide](gnn/integration/gnn_implementation.md)
 4. [Framework integration](gnn/integration/framework_integration_guide.md)
@@ -55,13 +55,15 @@ kept intentionally small and are validated by the repository documentation check
 ## Framework Integrations
 
 See the [framework integration guide](gnn/integration/framework_integration_guide.md)
-and [framework implementations](gnn/implementations/README.md).
+and [framework implementations](gnn/implementations/README.md). For the Lean 4 frontier, see the
+[fep_lean bridge program](other/fep_lean/README.md) (contract v0.5; canonical
+contract in the sibling checkout).
 
 ## Current implementation map
 
 The main pipeline has 25 numbered steps, 0–24. The canonical order and descriptions
-live in `src/pipeline/step_registry.py`; the generated/maintainer-facing tables are
-in [src/STEP_INDEX.md](../src/STEP_INDEX.md) and [PIPELINE_SCRIPTS.md](PIPELINE_SCRIPTS.md).
+live in `src/gnn/pipeline/step_registry.py`; the generated/maintainer-facing tables are
+in [src/gnn/STEP_INDEX.md](../src/gnn/STEP_INDEX.md) and [PIPELINE_SCRIPTS.md](PIPELINE_SCRIPTS.md).
 
 Framework boundaries are deliberately explicit:
 
@@ -69,7 +71,7 @@ Framework boundaries are deliberately explicit:
   DisCoPy, PyTorch, NumPyro, Stan, and bnlearn.
 - Step 12 executes 8 targets — all render targets except bnlearn, which is render-only.
   Stan runs through the cmdstanpy driver
-  `<stem>_stan.py` via `src/execute/stan/`; without cmdstanpy plus a CmdStan toolchain
+  `<stem>_stan.py` via `src/gnn/execute/stan/`; without cmdstanpy plus a CmdStan toolchain
   it is reported skipped. PyTorch and bnlearn are registry-gated and are not installed
   by the default lock.
 - Discrete exemplars render on all 9 targets and execute on the 8 executable
@@ -98,7 +100,7 @@ uv run gnn health
 uv run gnn validate input/gnn_files/discrete/actinf_pomdp_agent.md --strict
 
 # Run a focused pipeline path.
-uv run python src/main.py \
+uv run python src/gnn/main.py \
   --target-dir input/gnn_files \
   --output-dir output \
   --only-steps "3,5,11,12" \

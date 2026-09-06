@@ -17,7 +17,7 @@ Multi-agent GNN models are processed through the standard pipeline with addition
 ### Rendering (Step 11)
 
 - Multi-agent code generation for PyMDP and other frameworks
-- See: **[src/render/AGENTS.md](../../../src/render/AGENTS.md)**
+- See: **[src/gnn/render/AGENTS.md](../../../src/gnn/render/AGENTS.md)**
 - For RxInfer specifically, see [How multi-agent models render today](#how-multi-agent-models-render-today)
   below — the mechanism is joint composition plus downstream marginal recovery, not a
   native multi-agent model.
@@ -25,21 +25,21 @@ Multi-agent GNN models are processed through the standard pipeline with addition
 ### Execution (Step 12)
 
 - Multi-agent simulation execution with inter-agent communication
-- See: **[src/execute/AGENTS.md](../../../src/execute/AGENTS.md)**
+- See: **[src/gnn/execute/AGENTS.md](../../../src/gnn/execute/AGENTS.md)**
 
 ### Analysis (Steps 13, 16)
 
 - Multi-agent behavior analysis and emergent dynamics
-- See: **[src/llm/AGENTS.md](../../../src/llm/AGENTS.md)**, **[src/analysis/AGENTS.md](../../../src/analysis/AGENTS.md)**
+- See: **[src/gnn/llm/AGENTS.md](../../../src/gnn/llm/AGENTS.md)**, **[src/gnn/analysis/AGENTS.md](../../../src/gnn/analysis/AGENTS.md)**
 
 **Quick Start:**
 
 ```bash
 # Process multi-agent models
-uv run python src/main.py --only-steps "3,11,12,16" --target-dir input/gnn_files
+uv run python src/gnn/main.py --only-steps "3,11,12,16" --target-dir input/gnn_files
 ```
 
-For complete pipeline documentation, see **[src/AGENTS.md](../../../src/AGENTS.md)**.
+For complete pipeline documentation, see **[src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md)**.
 
 ---
 
@@ -48,7 +48,7 @@ For complete pipeline documentation, see **[src/AGENTS.md](../../../src/AGENTS.m
 Sections 2-8 of this document are a **forward-looking specification**. Read this section
 first for what the pipeline implements right now, because the two differ.
 
-**Detection is structural.** `detect_model_kind()` (`src/render/pomdp_contract.py`)
+**Detection is structural.** `detect_model_kind()` (`src/gnn/render/pomdp_contract.py`)
 classifies a spec as `MULTI_AGENT` when it finds either per-agent matrix keys matching
 `^[ABCDE]_agent\d+` (for example `A_agent1`, `B_agent2`) or an explicit `nr_agents`
 greater than 1. It never scans prose: text in a `ModelName` or annotation cannot change
@@ -68,9 +68,9 @@ results JSON carries per-agent beliefs/actions/EFE, the `env_signal_trace`, and
 `stigmergic_swarm.md` and the two-agent `multi_agent_coordination.md` — render through
 this native path; the ActiveInference.jl renderer implements the equivalent per-agent
 simulation with the same shared-environment coupling. Detection helpers live in
-`src/render/multi_agent_common.py`; the generators in
-`src/render/rxinfer/_strategies_multiagent.py` and
-`src/render/activeinference_jl/activeinference_renderer.py`.
+`src/gnn/render/multi_agent_common.py`; the generators in
+`src/gnn/render/rxinfer/_strategies_multiagent.py` and
+`src/gnn/render/activeinference_jl/activeinference_renderer.py`.
 
 **Fallback: joint composition.** Specs that are classified `MULTI_AGENT` by an explicit
 agent count but lack the per-agent matrix structure render as the **joint composition**
@@ -80,7 +80,7 @@ over the combined state space, stamping the true detected kind into
 **Per-agent marginals are recovered downstream.** Because the generated script echoes the
 spec's `state_factors` into `model_parameters`, Step 16 can un-flatten a joint posterior
 without re-parsing the GNN file. `compute_per_factor_beliefs()`
-(`src/analysis/rxinfer/analyzer.py`) does exactly that, turning joint beliefs into
+(`src/gnn/analysis/rxinfer/analyzer.py`) does exactly that, turning joint beliefs into
 per-factor — equivalently, per-agent — marginals for analysis and visualization.
 
 **Residual (next milestone).** Conditioning *action selection* on the environment —

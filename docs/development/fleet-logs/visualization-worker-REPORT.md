@@ -1,6 +1,6 @@
 # visualization-worker REPORT — fleet 3, 2026-09-04
 
-Scope: `src/visualization/` (entire module incl. AGENTS.md/README/SPEC/SKILL) + `src/8_visualization.py`.
+Scope: `src/gnn/visualization/` (entire module incl. AGENTS.md/README/SPEC/SKILL) + `src/gnn/8_visualization.py`.
 Verification: ruff clean · mypy clean (39 files) · pytest 179 passed / 2 pre-existing skips.
 
 ## Files changed + why
@@ -11,11 +11,11 @@ Verification: ruff clean · mypy clean (39 files) · pytest 179 passed / 2 pre-e
 | `core/sampling.py` | Pure `sample_parsed_data()` (+ `SamplingSummary` TypedDict, `VARIABLE/MATRIX_SAMPLE_LIMIT`) — extracted from the `process_single_gnn_file` monolith; testable with no plotting deps |
 | `graph/stats.py` | Pure `compute_connection_statistics()` — moved the degree-stats impl out of `__init__.py`; pinned at package root as `_generate_network_statistics` (test-visible name preserved) |
 | `backends.py` | `backend_status()` — one-call matplotlib/numpy/seaborn/networkx/plotly availability report (the AGENTS troubleshooting first step) |
-| `src/tests/visualization/test_visualization_sampling.py` | 7 tests: no-op below limit, truncation+connection filtering, matrix cap, custom limits |
-| `src/tests/visualization/test_visualization_matrix_collect.py` | 8 tests: parameters→variables→raw-matrices cascade, default names, non-numeric skips |
-| `src/tests/visualization/test_visualization_stats.py` | 4 tests incl. package-root alias identity |
-| `src/tests/visualization/test_visualization_backends.py` | 5 tests incl. theme-SSOT regression (every `_determine_connection_type` output has a themed style) |
-| `src/tests/visualization/test_visualization_pkg_api.py` | 4 tests: README-table exports resolve, new helpers exported, `__all__` resolves, injected-logger honored |
+| `tests/visualization/test_visualization_sampling.py` | 7 tests: no-op below limit, truncation+connection filtering, matrix cap, custom limits |
+| `tests/visualization/test_visualization_matrix_collect.py` | 8 tests: parameters→variables→raw-matrices cascade, default names, non-numeric skips |
+| `tests/visualization/test_visualization_stats.py` | 4 tests incl. package-root alias identity |
+| `tests/visualization/test_visualization_backends.py` | 5 tests incl. theme-SSOT regression (every `_determine_connection_type` output has a themed style) |
+| `tests/visualization/test_visualization_pkg_api.py` | 4 tests: README-table exports resolve, new helpers exported, `__all__` resolves, injected-logger honored |
 
 ### Modified files (19)
 | File | Change |
@@ -45,17 +45,17 @@ Verification: ruff clean · mypy clean (39 files) · pytest 179 passed / 2 pre-e
 
 ## Verification output tails (final run, after advisory-response fixes)
 ```
-ruff check src/visualization src/tests/visualization  → All checks passed! (1 I001 auto-fixed post-conversions)
-mypy src/visualization --config-file pyproject.toml   → Success: no issues found in 39 source files
-pytest src/tests/visualization/ -q                    → 179 passed, 2 skipped in 122.68s
+ruff check src/gnn/visualization tests/visualization  → All checks passed! (1 I001 auto-fixed post-conversions)
+mypy src/gnn/visualization --config-file pyproject.toml   → Success: no issues found in 39 source files
+pytest tests/visualization/ -q                    → 179 passed, 2 skipped in 122.68s
 git status --porcelain (scope)                        → 19 M + 8 ?? (all in scope)
 ```
 
 ## Follow-ups for other workers (not my scope)
-- `doc/development/docs_audit.py --strict` fails on pre-existing `src/tests/tests` (has `.py`, no AGENTS.md) — untouched by me, lives in the src/tests worker's scope.
+- `doc/development/docs_audit.py --strict` fails on pre-existing `tests/tests` (has `.py`, no AGENTS.md) — untouched by me, lives in the src/tests worker's scope.
 - `doc/gnn/integration/gnn_visualization.md` and `doc/gnn/modules/08_visualization.md` document `visualization.processor` imports that still work; if doc workers touch them, the new package-root exports (`backend_status` etc.) are worth adding.
 - `advanced_visualization/_shared.py` + `network_viz.py` still lazily import `MatrixVisualizer` via the `matrix_visualizer` facade — works unchanged; they could import from `visualization` root for consistency.
-- `src/tests/tests/` docs gap noted above; `analysis/combined_analysis.py` has two matrix-size loops with intentionally different fallback semantics (recursive count vs skip) — left unmerged deliberately.
+- `tests/tests/` docs gap noted above; `analysis/combined_analysis.py` has two matrix-size loops with intentionally different fallback semantics (recursive count vs skip) — left unmerged deliberately.
 
 ## Follow-up ideas (visualization module)
 - Unify the two `_parse_matrix_string` implementations (`visualizer.py` via `safe_literal_eval` vs `matrix/visualizer.py` regex floats) behind an explicit strategy parameter — different semantics, needs a behavioral decision first.

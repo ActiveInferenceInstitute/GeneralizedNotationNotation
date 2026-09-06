@@ -28,11 +28,11 @@ FIXES:
 4. doc/llm/README.md:264,265,268 — env vars ENABLE_FALLBACK / ENABLE_STREAMING / DEFAULT_TEMPERATURE are NOT consumed in src/ — annotate them as not-currently-consumed or remove (prefer a short note that these are reserved/not enforced).
 5. doc/llm/README.md:269 — DEFAULT_MAX_TOKENS is a module constant, not read from env — adjust wording (it is a default, not an env var).
 6. doc/security/README.md — illustrative code blocks with non-existent paths: correct or annotate each. Specifically:
-   - ~34 header `# src/gnn/security/validator.py` -> mark as illustrative OR correct to real security module (src/security/processor.py). Prefer annotating as illustrative if no exact match.
-   - ~88 `# src/llm/security/prompt_sanitizer.py` -> illustrative (src/llm has no security/ subdir) — annotate.
-   - ~128 `# src/mcp/security/secure_server.py` -> illustrative — annotate.
-   - ~268 `# src/security/audit.py` -> does not exist — annotate or remove.
-   - ~238 `# tests/security/test_security.py` -> real path is src/tests/security/test_security_functional.py — correct the path.
+   - ~34 header `# src/gnn/security/validator.py` -> mark as illustrative OR correct to real security module (src/gnn/security/processor.py). Prefer annotating as illustrative if no exact match.
+   - ~88 `# src/gnn/llm/security/prompt_sanitizer.py` -> illustrative (src/gnn/llm has no security/ subdir) — annotate.
+   - ~128 `# src/gnn/mcp/security/secure_server.py` -> illustrative — annotate.
+   - ~268 `# src/gnn/security/audit.py` -> does not exist — annotate or remove.
+   - ~238 `# tests/security/test_security.py` -> real path is tests/security/test_security_functional.py — correct the path.
 7. doc/security/security_framework.md — `from gnn.security import ...` and `from gnn.auth import ...` do not exist — annotate these example imports as illustrative/aspirational (do not claim they are importable).
 8. doc/security/security_framework.md ~604/~648 — `--secure-mode` flag and `src.main:app` gunicorn target don't exist — annotate as illustrative.
 9. File-count metadata:

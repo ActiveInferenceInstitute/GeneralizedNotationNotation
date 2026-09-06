@@ -2,8 +2,8 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/20_website.py` (64 lines)
-**Implementation Layer**: `src/website/`
+**Orchestrator**: `src/gnn/20_website.py` (64 lines)
+**Implementation Layer**: `src/gnn/website/`
 
 ## Module Description
 
@@ -11,7 +11,7 @@ This module provides comprehensive static HTML website generation capabilities f
 
 
 ```
-src/website/
+src/gnn/website/
 ├── __init__.py                     # Module initialization and exports
 ├── README.md                       # This documentation
 ├── generator.py                    # WebsiteGenerator / generate_website: core multi-page site generation
@@ -275,10 +275,10 @@ Pipeline Artifacts → Content Extraction → Template Processing → Asset Embe
 ## Testing
 
 ### Test Files
-- `src/tests/website/test_website_overall.py` - Module-level tests
+- `tests/website/test_website_overall.py` - Module-level tests
 
 ### Test Coverage
-- Measure: `uv run --extra dev python -m pytest src/tests/website/ --cov=website --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
+- Measure: `uv run --extra dev python -m pytest tests/website/ --cov=website --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
 
 ### Key Test Scenarios
 1. Website generation from pipeline artifacts
@@ -292,7 +292,7 @@ Pipeline Artifacts → Content Extraction → Template Processing → Asset Embe
 
 ### Tools Registered
 
-Registered in `register_tools` (`src/website/mcp.py`):
+Registered in `register_tools` (`src/gnn/website/mcp.py`):
 
 - `process_website` - Run Step 20 over pipeline artifacts
 - `build_website_from_pipeline_output` - Build the site from a pipeline output tree
@@ -301,7 +301,7 @@ Registered in `register_tools` (`src/website/mcp.py`):
 - `get_website_module_info` - Module metadata
 
 ### MCP File Location
-- `src/website/mcp.py` - MCP tool registrations
+- `src/gnn/website/mcp.py` - MCP tool registrations
 
 
 ---
@@ -352,9 +352,9 @@ Registered in `register_tools` (`src/website/mcp.py`):
 ## References
 
 ### Related Documentation
-- [Pipeline Overview](../../../src/website/../../README.md)
-- [Architecture Guide](../../../src/website/../../ARCHITECTURE.md)
-- [Website Module](../../../src/website/../website/README.md)
+- [Pipeline Overview](../../../README.md)
+- [Architecture Guide](../../../ARCHITECTURE.md)
+- [Website Module](../../../src/gnn/website/../website/README.md)
 
 ### External Resources
 - [HTML5 Specification](https://html.spec.whatwg.org/)
@@ -369,12 +369,12 @@ Registered in `register_tools` (`src/website/mcp.py`):
 
 ---
 ## Documentation
-- **[README](../../../src/website/README.md)**: Module Overview
-- **[AGENTS](../../../src/website/AGENTS.md)**: Agentic Workflows
-- **[SPEC](../../../src/website/SPEC.md)**: Architectural Specification
-- **[SKILL](../../../src/website/SKILL.md)**: Capability API
+- **[README](../../../src/gnn/website/README.md)**: Module Overview
+- **[AGENTS](../../../src/gnn/website/AGENTS.md)**: Agentic Workflows
+- **[SPEC](../../../src/gnn/website/SPEC.md)**: Architectural Specification
+- **[SKILL](../../../src/gnn/website/SKILL.md)**: Capability API
 
 
 ---
 
-**Source Reference**: [src/website](../../../src/website)
+**Source Reference**: [src/gnn/website](../../../src/gnn/website)

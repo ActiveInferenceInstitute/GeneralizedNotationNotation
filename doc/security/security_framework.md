@@ -646,9 +646,9 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
     CMD python -c "import requests; requests.get('http://localhost:8080/health')"
 
-# (illustrative) The `--secure-mode` flag does not exist on src/main.py.
+# (illustrative) The `--secure-mode` flag does not exist on src/gnn/main.py.
 # Run application
-CMD ["python", "src/main.py", "--secure-mode"]
+CMD ["python", "src/gnn/main.py", "--secure-mode"]
 ```
 
 ### **🔒 Process Isolation**

@@ -15,15 +15,15 @@ This unlocks uncertainty quantification beyond the classical Dirichlet-categoric
 
 | Stage | Module | Description |
 |---|---|---|
-| Rendering (Step 11) | `src/render/numpyro/numpyro_renderer.py` | GNN JSON → NumPyro probabilistic program |
-| Execution (Step 12) | `src/execute/numpyro/numpyro_runner.py` | MCMC/SVI inference, log persistence |
-| Analysis (Step 16) | `src/analysis/numpyro/analyzer.py` | Posterior summaries, uncertainty bands |
+| Rendering (Step 11) | `src/gnn/render/numpyro/numpyro_renderer.py` | GNN JSON → NumPyro probabilistic program |
+| Execution (Step 12) | `src/gnn/execute/numpyro/numpyro_runner.py` | MCMC/SVI inference, log persistence |
+| Analysis (Step 16) | `src/gnn/analysis/numpyro/analyzer.py` | Posterior summaries, uncertainty bands |
 
 ## Continuous (linear-Gaussian) models
 
 For continuous specifications (`F`/`H`/`Q`/`R`, `prior_mean`/`prior_cov`,
 optional `u`, `goal_mean`, `control_gain`) `numpyro_renderer.py` delegates to
-the shared generator `src/render/continuous_script.py`. The emitted script runs
+the shared generator `src/gnn/render/continuous_script.py`. The emitted script runs
 the online Kalman filter over the linear-Gaussian state-space model and then fits
 the same model with NUTS, reporting `mcmc_posterior_means` and `mcmc_r_hat_max`
 alongside the continuous result schema (`beliefs` as posterior means,
@@ -133,10 +133,10 @@ PYTHONPATH=src python -c "from execute.numpyro import is_numpyro_available; prin
 
 ```bash
 # Render GNN to NumPyro script
-python src/11_render.py --target-dir input/gnn_files/ --frameworks numpyro
+python src/gnn/11_render.py --target-dir input/gnn_files/ --frameworks numpyro
 
 # Execute with MCMC inference
-python src/12_execute.py --target-dir input/gnn_files/ --frameworks numpyro
+python src/gnn/12_execute.py --target-dir input/gnn_files/ --frameworks numpyro
 
 # The MCP tool takes no framework argument — it dispatches to PyMDP:
 # execute_gnn_model_mcp(gnn_file_path="...", output_directory="...")
@@ -162,9 +162,9 @@ During the **March 6, 2026** pipeline benchmarking audit, NumPyro was verified a
 
 | Stage | Module | Key Function |
 |---|---|---|
-| Rendering | [numpyro_renderer.py](../../../src/render/numpyro/numpyro_renderer.py) | `render_gnn_to_numpyro()` |
-| Execution | [numpyro_runner.py](../../../src/execute/numpyro/numpyro_runner.py) | `execute_numpyro_script()` |
-| Analysis | [analyzer.py](../../../src/analysis/numpyro/analyzer.py) | `generate_analysis_from_logs()` |
+| Rendering | [numpyro_renderer.py](../../../src/gnn/render/numpyro/numpyro_renderer.py) | `render_gnn_to_numpyro()` |
+| Execution | [numpyro_runner.py](../../../src/gnn/execute/numpyro/numpyro_runner.py) | `execute_numpyro_script()` |
+| Analysis | [analyzer.py](../../../src/gnn/analysis/numpyro/analyzer.py) | `generate_analysis_from_logs()` |
 
 ## Improvement Opportunities
 

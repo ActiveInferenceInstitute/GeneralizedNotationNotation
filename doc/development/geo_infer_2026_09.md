@@ -4,8 +4,8 @@ The paired change adds explicit Gaussian and factored interchange alongside the
 strict categorical v1 export. Gaussian models declare discrete F/G/H/Q/R, units
 and initial beliefs; factored JSON declares dependency axes and enumerated
 policies. The repositories remain independently installable. See the
-[Gaussian/categorical contract](../../src/export/geo_infer_contract.md) and
-[factored contract](../../src/export/geo_infer_factored_contract.md).
+[Gaussian/categorical contract](../../src/gnn/export/geo_infer_contract.md) and
+[factored contract](../../src/gnn/export/geo_infer_factored_contract.md).
 
 Step 7 now consumes original source bytes and per-model physical metadata from
 the API or CLI, retains nested identities, rejects output escapes and duplicate

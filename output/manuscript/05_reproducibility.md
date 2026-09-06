@@ -7,7 +7,7 @@ Reproducibility in GNN is not an aspiration layered on top of the system; it is 
 The fastest way to confirm a working installation is to drive the full pipeline over the discrete model family without invoking the optional LLM steps:
 
 ```bash
-uv run python src/main.py --target-dir input/gnn_files/discrete --output-dir /tmp/gnn-smoke --skip-llm
+uv run python src/gnn/main.py --target-dir input/gnn_files/discrete --output-dir /tmp/gnn-smoke --skip-llm
 ```
 
 This parses the discrete GNN files, runs visualization and rendering across the maintained backends, and writes all artifacts under the chosen output directory. The `--skip-llm` flag keeps the run hermetic and free of external API calls, which makes it suitable for continuous integration and for offline reproduction. To exercise the complete model corpus rather than a single family, point `--target-dir` at `input/gnn_files`, which contains 10 family directories.

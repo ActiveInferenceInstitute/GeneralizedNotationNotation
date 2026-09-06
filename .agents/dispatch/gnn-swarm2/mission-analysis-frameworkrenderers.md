@@ -2,15 +2,15 @@
 
 Repo: /home/trim/Documents/Git/HumOS/projects/outside_of_hum/GeneralizedNotationNotation
 YOU OWN these paths ONLY (disjoint scope — no other agent touches them):
-- src/analysis/numpyro/  (analyzer + init)
-- src/analysis/pytorch/  (analyzer + init)
-- src/analysis/generate_cross_model_report.py
-- mirror tests: src/tests/analysis/  (add/extend test files only)
+- src/gnn/analysis/numpyro/  (analyzer + init)
+- src/gnn/analysis/pytorch/  (analyzer + init)
+- src/gnn/analysis/generate_cross_model_report.py
+- mirror tests: tests/analysis/  (add/extend test files only)
 
 DO NOT TOUCH anything outside this scope. In particular NEVER edit:
 - pyproject.toml, justfile, uv.lock, pytest.ini, .gitignore, AGENTS.md,
-  CLAUDE.md, README.md, CHANGELOG.md, src/main.py
-- src/tests/conftest.py, src/tests/helpers/, src/tests/categories.py
+  CLAUDE.md, README.md, CHANGELOG.md, src/gnn/main.py
+- tests/conftest.py, tests/helpers/, tests/categories.py
 - files owned by other agents (disjoint paths).
 
 GOAL
@@ -30,8 +30,8 @@ regression tests for any behaviour you pin or bug you fix. Keep public API
 stable unless clearly justified.
 
 VERIFY (scoped only — do NOT run the full suite):
-- uv run ruff check src/analysis/numpyro src/analysis/pytorch src/analysis/generate_cross_model_report.py
-- uv run pytest src/tests/analysis -q --tb=no -x
+- uv run ruff check src/gnn/analysis/numpyro src/gnn/analysis/pytorch src/gnn/analysis/generate_cross_model_report.py
+- uv run pytest tests/analysis -q --tb=no -x
 - uv run mypy (same paths) --config-file pyproject.toml
 
 HARD RULE: DO NOT commit, DO NOT push, DO NOT stage. Leave ALL changes

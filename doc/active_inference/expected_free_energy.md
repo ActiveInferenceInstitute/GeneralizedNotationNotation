@@ -285,7 +285,7 @@ Where ambiguity measures uncertainty in the A matrix.
 ### PyMDP Implementation
 
 ```python
-# In src/execute/pymdp/
+# In src/gnn/execute/pymdp/
 from pymdp import control
 
 # Compute EFE for all policies
@@ -296,12 +296,12 @@ Q_pi = control.softmax(-G * gamma)
 action = control.sample_action(Q_pi, policies)
 ```
 
-**Source**: [`src/execute/pymdp/`](../../src/execute/pymdp/)
+**Source**: [`src/gnn/execute/pymdp/`](../../src/gnn/execute/pymdp/)
 
 ### RxInfer Implementation
 
 ```julia
-# In src/execute/rxinfer/
+# In src/gnn/execute/rxinfer/
 # EFE is computed via message passing on factor graph
 
 @model function active_inference_model(...)
@@ -310,11 +310,11 @@ action = control.sample_action(Q_pi, policies)
 end
 ```
 
-**Source**: [`src/execute/rxinfer/`](../../src/execute/rxinfer/)
+**Source**: [`src/gnn/execute/rxinfer/`](../../src/gnn/execute/rxinfer/)
 
 ### Analysis
 
-**Source**: [`src/analysis/`](../../src/analysis/)
+**Source**: [`src/gnn/analysis/`](../../src/gnn/analysis/)
 
 ---
 

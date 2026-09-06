@@ -17,7 +17,7 @@ GNN ships a curated corpus of model families that exercise the language across t
 | `structured` | pymdp | Structured factor graph and posterior fixtures. |
 | `gridworld` | pymdp, rxinfer, activeinference_jl | Gridworld POMDP fixture used for cross-framework acceptance checks. |
 | `scaling-study` | pymdp | PyMDP scaling-study fixtures, sampled conservatively for acceptance. |
-: Model families declared in `input/model_family_manifest.json` and the frameworks each family targets. Capability splits in the Description column are generated from `src/render/framework_registry.py`, not authored in the manifest. {#tbl:model_families}
+: Model families declared in `input/model_family_manifest.json` and the frameworks each family targets. Capability splits in the Description column are generated from `src/gnn/render/framework_registry.py`, not authored in the manifest. {#tbl:model_families}
 
 The family-by-framework structure is shown in @fig:family_matrix, which renders the coverage matrix directly from the family registry rather than from a hand-maintained table.
 

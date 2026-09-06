@@ -14,7 +14,7 @@ already pass; your job is the DEEPER docs-vs-code cross-check that automation
 cannot do. Verify — never guess:
 
 1. **Documented commands exist.** For every shell/fenced command in your docs
-   (e.g. `uv run python src/5_type_checker.py`, `python src/main.py`, `just test`,
+   (e.g. `uv run python src/gnn/5_type_checker.py`, `python src/gnn/main.py`, `just test`,
    `scripts/foo.py`, `uv run --extra dev pytest ...`), verify the referenced
    script/path/module actually exists at that path and the command is well-formed.
    Flag stale/moved/renamed script paths.

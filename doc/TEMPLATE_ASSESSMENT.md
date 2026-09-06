@@ -2,7 +2,7 @@
 
 **Hub**: [README.md](README.md).
 
-> **Historical note**: This file records an **early assessment** of template and infrastructure patterns. **Current behavior**: every numbered script **`src/N_*.py`** (steps **0–24**) is a thin orchestrator delegating to **`src/<module>/`**; see [CLAUDE.md](../CLAUDE.md), [src/STEP_INDEX.md](../src/STEP_INDEX.md), and [src/template/README.md](../src/template/README.md). Sections below retain the original wording for context; they are not an up-to-date status report on each module.
+> **Historical note**: This file records an **early assessment** of template and infrastructure patterns. **Current behavior**: every numbered script **`src/N_*.py`** (steps **0–24**) is a thin orchestrator delegating to **`src/<module>/`**; see [CLAUDE.md](../CLAUDE.md), [src/gnn/STEP_INDEX.md](../src/gnn/STEP_INDEX.md), and [src/gnn/template/README.md](../src/gnn/template/README.md). Sections below retain the original wording for context; they are not an up-to-date status report on each module.
 
 ## Overview
 
@@ -182,7 +182,7 @@ Each step should generate:
 ## Migration Strategy
 
 ### Phase 1: Deeper instrumentation (Priority 1, assessment list)
-Scripts the assessment singled out for follow-up (verify current need against [src/STEP_INDEX.md](../src/STEP_INDEX.md)):
+Scripts the assessment singled out for follow-up (verify current need against [src/gnn/STEP_INDEX.md](../src/gnn/STEP_INDEX.md)):
 - `10_ontology.py`
 - `13_llm.py`
 - `14_ml_integration.py`
@@ -257,7 +257,7 @@ Follow-ups from the assessment period:
 2. **Align error handling and logging** with utilities already used in thin orchestrators
 3. **Standardize optional-resource behavior** per module SPEC
 
-For **current** step responsibilities and scripts, use [doc/PIPELINE_SCRIPTS.md](PIPELINE_SCRIPTS.md) and [src/STEP_INDEX.md](../src/STEP_INDEX.md) rather than the migration phases above as a status dashboard.
+For **current** step responsibilities and scripts, use [doc/PIPELINE_SCRIPTS.md](PIPELINE_SCRIPTS.md) and [src/gnn/STEP_INDEX.md](../src/gnn/STEP_INDEX.md) rather than the migration phases above as a status dashboard.
 
 ## Conclusion
 

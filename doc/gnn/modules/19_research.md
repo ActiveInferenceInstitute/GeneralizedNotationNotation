@@ -2,8 +2,8 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/19_research.py` (55 lines)
-**Implementation Layer**: `src/research/`
+**Orchestrator**: `src/gnn/19_research.py` (55 lines)
+**Implementation Layer**: `src/gnn/research/`
 
 ## Module Description
 
@@ -11,7 +11,7 @@ This module provides comprehensive research tools and experimental features for 
 
 
 ```
-src/research/
+src/gnn/research/
 ├── __init__.py                    # Module initialization and exports
 ├── README.md                      # This documentation
 ├── processor.py                   # process_research + rule-based hypothesis-generation helpers
@@ -262,11 +262,11 @@ Research Data → Analysis → Visualization → Report Generation → Publicati
 ## Testing
 
 ### Test Files
-- `src/tests/research/test_research_overall.py` - Module-level tests
-- `src/tests/research/test_research_functional.py` - Functional tests
+- `tests/research/test_research_overall.py` - Module-level tests
+- `tests/research/test_research_functional.py` - Functional tests
 
 ### Test Coverage
-- Measure: `uv run --extra dev python -m pytest src/tests/research/ --cov=research --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
+- Measure: `uv run --extra dev python -m pytest tests/research/ --cov=research --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
 
 ### Key Test Scenarios
 1. Research analysis with various data types
@@ -280,7 +280,7 @@ Research Data → Analysis → Visualization → Report Generation → Publicati
 
 ### Tools Registered
 
-Registered in `register_tools` (`src/research/mcp.py`):
+Registered in `register_tools` (`src/gnn/research/mcp.py`):
 
 - `process_research` - Run Step 19 over a directory
 - `list_research_topics` - List research topics and domains
@@ -288,7 +288,7 @@ Registered in `register_tools` (`src/research/mcp.py`):
 - `get_research_module_info` - Module metadata
 
 ### MCP File Location
-- `src/research/mcp.py` - MCP tool registrations
+- `src/gnn/research/mcp.py` - MCP tool registrations
 
 
 ---
@@ -339,9 +339,9 @@ Registered in `register_tools` (`src/research/mcp.py`):
 ## References
 
 ### Related Documentation
-- [Pipeline Overview](../../../src/research/../../README.md)
-- [Architecture Guide](../../../src/research/../../ARCHITECTURE.md)
-- [Research Module](../../../src/research/../research/README.md)
+- [Pipeline Overview](../../../README.md)
+- [Architecture Guide](../../../ARCHITECTURE.md)
+- [Research Module](../../../src/gnn/research/../research/README.md)
 
 ### External Resources
 - [Active Inference Research](../../research/README.md)
@@ -356,12 +356,12 @@ Registered in `register_tools` (`src/research/mcp.py`):
 
 ---
 ## Documentation
-- **[README](../../../src/research/README.md)**: Module Overview
-- **[AGENTS](../../../src/research/AGENTS.md)**: Agentic Workflows
-- **[SPEC](../../../src/research/SPEC.md)**: Architectural Specification
-- **[SKILL](../../../src/research/SKILL.md)**: Capability API
+- **[README](../../../src/gnn/research/README.md)**: Module Overview
+- **[AGENTS](../../../src/gnn/research/AGENTS.md)**: Agentic Workflows
+- **[SPEC](../../../src/gnn/research/SPEC.md)**: Architectural Specification
+- **[SKILL](../../../src/gnn/research/SKILL.md)**: Capability API
 
 
 ---
 
-**Source Reference**: [src/research](../../../src/research)
+**Source Reference**: [src/gnn/research](../../../src/gnn/research)

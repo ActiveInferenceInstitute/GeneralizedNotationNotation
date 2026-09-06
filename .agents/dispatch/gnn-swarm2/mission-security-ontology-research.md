@@ -2,15 +2,15 @@
 
 Repo: /home/trim/Documents/Git/HumOS/projects/outside_of_hum/GeneralizedNotationNotation
 YOU OWN these paths ONLY (disjoint scope — no other agent touches them):
-- src/security/  (threat policies, sanitization, access control)
-- src/ontology/  (Active Inference term handling)
-- src/research/  (research tools)
-- mirror tests: src/tests/security/, src/tests/ontology/, src/tests/research/
+- src/gnn/security/  (threat policies, sanitization, access control)
+- src/gnn/ontology/  (Active Inference term handling)
+- src/gnn/research/  (research tools)
+- mirror tests: tests/security/, tests/ontology/, tests/research/
 
 DO NOT TOUCH anything outside this scope. In particular NEVER edit:
 - pyproject.toml, justfile, uv.lock, pytest.ini, .gitignore, AGENTS.md,
-  CLAUDE.md, README.md, CHANGELOG.md, src/main.py
-- src/tests/conftest.py, src/tests/helpers/, src/tests/categories.py
+  CLAUDE.md, README.md, CHANGELOG.md, src/gnn/main.py
+- tests/conftest.py, tests/helpers/, tests/categories.py
 - files owned by other agents (disjoint paths).
 
 GOAL
@@ -29,9 +29,9 @@ regression tests for any behaviour you pin or bug you fix. Keep public API
 stable unless clearly justified.
 
 VERIFY (scoped only — do NOT run the full suite):
-- uv run ruff check src/security src/ontology src/research
-- uv run pytest src/tests/security src/tests/ontology src/tests/research -q --tb=no -x
-- uv run mypy src/security src/ontology src/research --config-file pyproject.toml
+- uv run ruff check src/gnn/security src/gnn/ontology src/gnn/research
+- uv run pytest tests/security tests/ontology tests/research -q --tb=no -x
+- uv run mypy src/gnn/security src/gnn/ontology src/gnn/research --config-file pyproject.toml
 
 HARD RULE: DO NOT commit, DO NOT push, DO NOT stage. Leave ALL changes
 uncommitted. Do not touch git index/HEAD. Other agents work on disjoint paths;

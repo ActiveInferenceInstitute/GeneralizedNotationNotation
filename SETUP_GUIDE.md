@@ -19,7 +19,7 @@ git clone https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotatio
 cd GeneralizedNotationNotation
 
 # Run basic setup
-uv run python src/1_setup.py --verbose
+uv run python src/gnn/1_setup.py --verbose
 ```
 
 A normal `uv sync` / core install includes:
@@ -66,7 +66,7 @@ with `uv sync --extra <group>` or together with `uv sync --all-extras`):
 ### 2. **api** - REST API Server
 
 - **Packages**: `fastapi`, `uvicorn[standard]`
-- **Use case**: Running the GNN REST API server (`src/api/`)
+- **Use case**: Running the GNN REST API server (`src/gnn/api/`)
 - **Installation**: `uv sync --extra api`
 
 ### 3. **ml-ai** - Machine Learning
@@ -135,7 +135,7 @@ with `uv sync --extra <group>` or together with `uv sync --all-extras`):
 > plain `uv sync` — no extra is required for the Step 12 Python backends.
 > Julia backends (RxInfer.jl, ActiveInference.jl) additionally require a local
 > Julia installation (1.12 verified). Their project environments are committed
-> under `src/execute/rxinfer/` and `src/execute/activeinference_jl/`; run
+> under `src/gnn/execute/rxinfer/` and `src/gnn/execute/activeinference_jl/`; run
 > `julia --project=<dir> -e 'using Pkg; Pkg.instantiate()'` once per project.
 > `activeinference_jl/Project.toml` pins `Distributions < 0.25.126` because
 > DistributionsAD 0.6.58 does not precompile against newer releases.
@@ -164,7 +164,7 @@ uv sync --extra ml-ai --extra audio --extra gui
 
 ```bash
 # Install via the setup step
-uv run python src/1_setup.py --verbose
+uv run python src/gnn/1_setup.py --verbose
 ```
 
 ### Method 3: Using UV Directly
@@ -222,21 +222,21 @@ print("✅ Plotly working!")
 ### Full Pipeline
 
 ```bash
-uv run python src/main.py --target-dir input/gnn_files --verbose
+uv run python src/gnn/main.py --target-dir input/gnn_files --verbose
 ```
 
 ### Specific Steps
 
 ```bash
 # GNN parsing, rendering, and execution
-uv run python src/main.py --only-steps "3,11,12" --verbose
+uv run python src/gnn/main.py --only-steps "3,11,12" --verbose
 ```
 
 ### Individual Steps
 
 ```bash
 # Just GNN parsing
-uv run python src/3_gnn.py --target-dir input/gnn_files --verbose
+uv run python src/gnn/3_gnn.py --target-dir input/gnn_files --verbose
 ```
 
 ## Troubleshooting
@@ -246,7 +246,7 @@ uv run python src/3_gnn.py --target-dir input/gnn_files --verbose
 **Solution**: Run setup to install core dependencies
 
 ```bash
-uv run python src/1_setup.py --verbose
+uv run python src/gnn/1_setup.py --verbose
 ```
 
 ### Issue: "externally-managed-environment" error with pip
@@ -306,5 +306,5 @@ constraints. Notable floors as of 2026-09-02:
 **Status**: Maintained (Linux & macOS)
 **Validation authority**: use the command of record and latest dated receipt in
 [`README.md`](README.md). Julia RxInfer execution uses the committed
-`Project.toml` under `src/execute/rxinfer/`; local Ollama tests remain an
+`Project.toml` under `src/gnn/execute/rxinfer/`; local Ollama tests remain an
 explicit opt-in surface.

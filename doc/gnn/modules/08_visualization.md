@@ -2,8 +2,8 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/8_visualization.py` (58 lines)
-**Implementation Layer**: `src/visualization/`
+**Orchestrator**: `src/gnn/8_visualization.py` (58 lines)
+**Implementation Layer**: `src/gnn/visualization/`
 
 ## Module Description
 
@@ -11,16 +11,16 @@ This module provides comprehensive visualization capabilities for GNN models, in
 
 
 ```
-src/visualization/
+src/gnn/visualization/
 ├── __init__.py                 # Public exports (MatrixVisualizer, process_visualization, …)
 ├── processor.py                # Facade: core + parse + plotting re-exports
-├── core/                       # process.py, parsed_model.py (JSON-first loader); [README](../../../src/visualization/core/README.md)
-├── parse/                      # markdown.py, gnn_file_parser.py (GNNParser); [README](../../../src/visualization/parse/README.md)
-├── plotting/                   # utils.py (Agg, save_plot_safely); [README](../../../src/visualization/plotting/README.md)
-├── graph/                      # network_visualizations.py, bipartite.py; [README](../../../src/visualization/graph/README.md)
-├── matrix/                     # visualizer.py, extract.py, compat.py; [README](../../../src/visualization/matrix/README.md)
-├── analysis/                   # combined_analysis.py; [README](../../../src/visualization/analysis/README.md)
-├── ontology/                   # visualizer.py; [README](../../../src/visualization/ontology/README.md)
+├── core/                       # process.py, parsed_model.py (JSON-first loader); [README](../../../src/gnn/visualization/core/README.md)
+├── parse/                      # markdown.py, gnn_file_parser.py (GNNParser); [README](../../../src/gnn/visualization/parse/README.md)
+├── plotting/                   # utils.py (Agg, save_plot_safely); [README](../../../src/gnn/visualization/plotting/README.md)
+├── graph/                      # network_visualizations.py, bipartite.py; [README](../../../src/gnn/visualization/graph/README.md)
+├── matrix/                     # visualizer.py, extract.py, compat.py; [README](../../../src/gnn/visualization/matrix/README.md)
+├── analysis/                   # combined_analysis.py; [README](../../../src/gnn/visualization/analysis/README.md)
+├── ontology/                   # visualizer.py; [README](../../../src/gnn/visualization/ontology/README.md)
 
 ## Agent Identity & Capabilities
 
@@ -65,7 +65,7 @@ src/visualization/
 ### Public Functions
 
 #### `process_visualization(target_dir, output_dir, verbose=False, **kwargs) -> bool`
-**Description**: Main visualization processing function called by orchestrator ([8_visualization.py](../../../src/visualization/../8_visualization.py)). Implementation: [core/process.py](../../../src/visualization/core/process.py).
+**Description**: Main visualization processing function called by orchestrator ([8_visualization.py](../../../src/gnn/visualization/../8_visualization.py)). Implementation: [core/process.py](../../../src/gnn/visualization/core/process.py).
 
 **Parameters**:
 - `target_dir` (Path): Directory containing GNN files
@@ -75,7 +75,7 @@ src/visualization/
 
 **Returns**: `True` if at least one artifact was generated
 
-**Data loading**: [core/parsed_model.py](../../../src/visualization/core/parsed_model.py) `load_visualization_model` prefers `{model}_parsed.json` from step 3; when structured JSON is unavailable, [parse/markdown.py](../../../src/visualization/parse/markdown.py) `parse_gnn_content` provides the explicit raw-Markdown parser path.
+**Data loading**: [core/parsed_model.py](../../../src/gnn/visualization/core/parsed_model.py) `load_visualization_model` prefers `{model}_parsed.json` from step 3; when structured JSON is unavailable, [parse/markdown.py](../../../src/gnn/visualization/parse/markdown.py) `parse_gnn_content` provides the explicit raw-Markdown parser path.
 
 **Example**:
 ```python
@@ -89,7 +89,7 @@ success = process_visualization(
 ```
 
 #### `generate_graph_visualization(graph_data, output_dir=None) -> List[str]`
-**Description**: Module-level helper; delegates to [`GNNVisualizer`](../../../src/visualization/visualizer.py).
+**Description**: Module-level helper; delegates to [`GNNVisualizer`](../../../src/gnn/visualization/visualizer.py).
 
 **Parameters**:
 - `graph_data`: Graph data dictionary
@@ -98,7 +98,7 @@ success = process_visualization(
 **Returns**: List of generated visualization file paths
 
 #### `generate_matrix_visualization(matrix_data, output_dir=None) -> List[str]`
-**Description**: Module-level helper; delegates to [`GNNVisualizer`](../../../src/visualization/visualizer.py).
+**Description**: Module-level helper; delegates to [`GNNVisualizer`](../../../src/gnn/visualization/visualizer.py).
 
 **Parameters**:
 - `matrix_data`: Matrix data dictionary
@@ -107,7 +107,7 @@ success = process_visualization(
 **Returns**: List of generated visualization file paths
 
 #### `GNNVisualizer.create_network_diagram(graph_data) -> Dict[str, Any]`
-**Description**: Instance method on [`GNNVisualizer`](../../../src/visualization/visualizer.py), not a package-level function. Use `GNNVisualizer(...).create_network_diagram(graph_data)`.
+**Description**: Instance method on [`GNNVisualizer`](../../../src/gnn/visualization/visualizer.py), not a package-level function. Use `GNNVisualizer(...).create_network_diagram(graph_data)`.
 
 **Returns**: Dictionary with visualization metadata / paths
 
@@ -247,7 +247,7 @@ output/8_visualization_output/
 
 ### Orchestrated By
 - **Script**: `8_visualization.py` (Step 8)
-- **Function**: `process_visualization()` ([core/process.py](../../../src/visualization/core/process.py))
+- **Function**: `process_visualization()` ([core/process.py](../../../src/gnn/visualization/core/process.py))
 
 ### Imports From
 - `utils.pipeline_template` - Pipeline utilities
@@ -266,14 +266,14 @@ GNN Files → Graph Extraction → Layout Calculation → Visualization Generati
 ## Testing
 
 ### Test Files
-- `src/tests/visualization/test_visualization_matrices.py` - Matrix visualization tests
-- `src/tests/visualization/test_visualization_comprehensive.py` - Comprehensive real-data tests
-- `src/tests/visualization/test_visualization_overall.py` - Module-level tests
-- `src/tests/visualization/test_visualization_ontology.py` - Ontology visualization tests
-- `src/tests/visualization/test_visualization_artifacts.py` - Artifact / manifest tests
+- `tests/visualization/test_visualization_matrices.py` - Matrix visualization tests
+- `tests/visualization/test_visualization_comprehensive.py` - Comprehensive real-data tests
+- `tests/visualization/test_visualization_overall.py` - Module-level tests
+- `tests/visualization/test_visualization_ontology.py` - Ontology visualization tests
+- `tests/visualization/test_visualization_artifacts.py` - Artifact / manifest tests
 
 ### Test Coverage
-- **Measurement**: `uv run --extra dev python -m pytest src/tests/visualization/ --cov=src.visualization --cov-report=term-missing` (do not treat a fixed percentage in this file as canonical).
+- **Measurement**: `uv run --extra dev python -m pytest tests/visualization/ --cov=src.visualization --cov-report=term-missing` (do not treat a fixed percentage in this file as canonical).
 
 ### Key Test Scenarios
 1. Graph visualization with various layouts
@@ -288,7 +288,7 @@ GNN Files → Graph Extraction → Layout Calculation → Visualization Generati
 
 ## MCP Integration
 
-Registration lives in [`mcp.py`](../../../src/visualization/mcp.py) via `register_tools(mcp_instance)` (GNN MCP server `register_tool` API).
+Registration lives in [`mcp.py`](../../../src/gnn/visualization/mcp.py) via `register_tools(mcp_instance)` (GNN MCP server `register_tool` API).
 
 ### Tools registered (names match server tool IDs)
 
@@ -345,7 +345,7 @@ uv sync
 - Manual override: Set sampling parameters in config
 - Alternative: Visualize model subsets
 
-**Prevention**: No dedicated CLI flag exists for this; sampling for large models is automatic within `src/visualization/`, not user-configurable via `src/8_visualization.py` arguments
+**Prevention**: No dedicated CLI flag exists for this; sampling for large models is automatic within `src/gnn/visualization/`, not user-configurable via `src/gnn/8_visualization.py` arguments
 
 #### 4. Memory Issues During Visualization
 **Symptom**: Out of memory errors or system slowdown
@@ -366,7 +366,7 @@ uv sync
 ls output/3_gnn_output/
 
 # Run visualization with verbose logging
-python src/8_visualization.py --verbose --target-dir input/gnn_files --output-dir output
+python src/gnn/8_visualization.py --verbose --target-dir input/gnn_files --output-dir output
 ```
 
 **Common Causes**:
@@ -377,7 +377,7 @@ python src/8_visualization.py --verbose --target-dir input/gnn_files --output-di
 **Solution**:
 ```bash
 # Run complete pipeline in order
-python src/main.py --only-steps "3,8" --verbose
+python src/gnn/main.py --only-steps "3,8" --verbose
 ```
 
 #### 6. Visualization Quality Issues
@@ -403,7 +403,7 @@ VISUALIZATION_CONFIG = {
 **Solution**:
 ```bash
 # Enable verbose mode for detailed progress
-python src/8_visualization.py --verbose --target-dir input/gnn_files
+python src/gnn/8_visualization.py --verbose --target-dir input/gnn_files
 ```
 
 **Features**:
@@ -429,13 +429,13 @@ python src/8_visualization.py --verbose --target-dir input/gnn_files
 
 1. **Always run GNN processing (step 3) first**:
    ```bash
-   python src/3_gnn.py --target-dir input/gnn_files
-   python src/8_visualization.py --target-dir input/gnn_files
+   python src/gnn/3_gnn.py --target-dir input/gnn_files
+   python src/gnn/8_visualization.py --target-dir input/gnn_files
    ```
 
 2. **Use verbose mode for debugging**:
    ```bash
-   python src/8_visualization.py --verbose
+   python src/gnn/8_visualization.py --verbose
    ```
 
 3. **Check output directory structure**:
@@ -479,10 +479,10 @@ python src/8_visualization.py --verbose --target-dir input/gnn_files
 ## References
 
 ### Related Documentation
-- [Pipeline Overview](../../../src/visualization/../../README.md)
-- [Architecture Guide](../../../src/visualization/../../ARCHITECTURE.md)
-- [Advanced Visualization](../../../src/visualization/../advanced_visualization/AGENTS.md)
-- [GNN Visualization Guide](../../../src/visualization/../../doc/gnn/integration/gnn_visualization.md)
+- [Pipeline Overview](../../../README.md)
+- [Architecture Guide](../../../ARCHITECTURE.md)
+- [Advanced Visualization](../../../src/gnn/visualization/../advanced_visualization/AGENTS.md)
+- [GNN Visualization Guide](../../../doc/gnn/integration/gnn_visualization.md)
 
 ### External Resources
 - [Matplotlib Documentation](https://matplotlib.org/)
@@ -499,12 +499,12 @@ python src/8_visualization.py --verbose --target-dir input/gnn_files
 
 ---
 ## Documentation
-- **[README](../../../src/visualization/README.md)**: Module Overview
-- **[AGENTS](../../../src/visualization/AGENTS.md)**: Agentic Workflows
-- **[SPEC](../../../src/visualization/SPEC.md)**: Architectural Specification
-- **[SKILL](../../../src/visualization/SKILL.md)**: Capability API
+- **[README](../../../src/gnn/visualization/README.md)**: Module Overview
+- **[AGENTS](../../../src/gnn/visualization/AGENTS.md)**: Agentic Workflows
+- **[SPEC](../../../src/gnn/visualization/SPEC.md)**: Architectural Specification
+- **[SKILL](../../../src/gnn/visualization/SKILL.md)**: Capability API
 
 
 ---
 
-**Source Reference**: [src/visualization](../../../src/visualization)
+**Source Reference**: [src/gnn/visualization](../../../src/gnn/visualization)

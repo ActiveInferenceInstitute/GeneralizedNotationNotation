@@ -3,7 +3,7 @@
 ## Overview
 
 This document details how GNN specifies, renders, and executes genuine
-`RxInfer.jl` models. The canonical renderer (`src/render/rxinfer/rxinfer_renderer.py`)
+`RxInfer.jl` models. The canonical renderer (`src/gnn/render/rxinfer/rxinfer_renderer.py`)
 turns a GNN POMDP specification into an executable Julia script that defines a
 generative model with `@model` and solves it with `infer()`. Execution is fully
 reproducible via a committed Julia environment.
@@ -33,7 +33,7 @@ The pipeline has three main components:
     Hidden states evolve via `DiscreteTransition` (the `B` matrices) and are
     emitted through the likelihood matrix `A`. This is genuine RxInfer.jl
     variational message-passing — not a hand-rolled step simulator.
-3.  **The Runner / Environment**: `src/execute/rxinfer/` executes the script
+3.  **The Runner / Environment**: `src/gnn/execute/rxinfer/` executes the script
     under a committed `Project.toml` + `Manifest.toml` pinning RxInfer 5.5.0.
 
 ### Inference
@@ -55,9 +55,9 @@ domain.
 
 ### Environment & Reproducibility
 
-- `Project.toml` + `Manifest.toml` under `src/execute/rxinfer/` pin RxInfer 5.5.0
+- `Project.toml` + `Manifest.toml` under `src/gnn/execute/rxinfer/` pin RxInfer 5.5.0
   and all dependencies.
-- The runner invokes `julia --startup-file=no --project=src/execute/rxinfer <script>`.
+- The runner invokes `julia --startup-file=no --project=src/gnn/execute/rxinfer <script>`.
 - `setup_environment.jl` uses `Pkg.activate()` + `Pkg.instantiate()` — there is
   **no runtime `Pkg.add`**.
 - Each script calls `Random.seed!(seed)` before inference and records the seed and
@@ -76,7 +76,7 @@ Earlier versions of the pipeline rendered a `config.toml` and used the
 `multiagent_trajectory_planning/` example with a GNN-generated `config.toml` as a
 drop-in replacement for a hand-written one. That path is retired:
 
-- `src/render/rxinfer/toml_generator.py` (`render_gnn_to_rxinfer_toml`) emits a
+- `src/gnn/render/rxinfer/toml_generator.py` (`render_gnn_to_rxinfer_toml`) emits a
   `DeprecationWarning` and is absent from processor wiring and public exports.
   Its parsing helpers remain because topology contract tests use them.
 - The `Multiagent_GNN_RxInfer.jl` validation script and the TOML-based workflow it
@@ -89,7 +89,7 @@ execute path.
 
 ```bash
 # Render step
-uv run --extra dev python src/main.py --only-steps "3,5,8,11,12,16" \
+uv run --extra dev python src/gnn/main.py --only-steps "3,5,8,11,12,16" \
   --target-dir input/gnn_files --frameworks rxinfer --verbose
 ```
 

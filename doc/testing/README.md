@@ -1,7 +1,7 @@
 # GNN Testing Guide
 
 The repository uses `pytest` for unit and integration coverage. Tests live primarily
-under `src/tests/`, with module-focused subdirectories and root-level tests for
+under `tests/`, with module-focused subdirectories and root-level tests for
 cross-cutting behavior. The pytest configuration and markers are defined in
 `pyproject.toml`; this guide does not duplicate a fictional test-tree inventory or
 hard-code pass counts.
@@ -13,9 +13,9 @@ syntax:
 
 ```bash
 uv run --extra dev python -m pytest \
-  src/tests/test_doc_contracts.py \
-  src/tests/test_docs_audit.py \
-  src/tests/gnn/ \
+  tests/test_doc_contracts.py \
+  tests/test_docs_audit.py \
+  tests/gnn/ \
   -q
 ```
 
@@ -37,9 +37,9 @@ unless a local Ollama daemon and the configured test model are available:
 
 ```bash
 uv sync --extra dev
-uv run --extra dev python -m pytest src/tests/ -q --tb=short \
-  --ignore=src/tests/llm/test_llm_ollama.py \
-  --ignore=src/tests/llm/test_llm_ollama_integration.py
+uv run --extra dev python -m pytest tests/ -q --tb=short \
+  --ignore=tests/llm/test_llm_ollama.py \
+  --ignore=tests/llm/test_llm_ollama_integration.py
 ```
 
 The suite includes environment-sensitive Julia, GUI, renderer, and pipeline tests.
@@ -50,16 +50,16 @@ Useful focused commands:
 
 ```bash
 # Parser and schema behavior.
-uv run --extra dev python -m pytest src/tests/gnn/ -q
+uv run --extra dev python -m pytest tests/gnn/ -q
 
 # Renderer and executor contracts.
-uv run --extra dev python -m pytest src/tests/render/ src/tests/execute/ -q
+uv run --extra dev python -m pytest tests/render/ tests/execute/ -q
 
 # Pipeline integration.
-uv run --extra dev python -m pytest src/tests/pipeline/ -q
+uv run --extra dev python -m pytest tests/pipeline/ -q
 
 # Collect without running.
-uv run --extra dev python -m pytest src/tests/ --collect-only -q
+uv run --extra dev python -m pytest tests/ --collect-only -q
 ```
 
 ## Markers and optional tests
@@ -69,8 +69,8 @@ The project declares `slow`, `integration`, `unit`, `uv`, `xfail`, `pipeline`, a
 there, for example:
 
 ```bash
-uv run --extra dev python -m pytest src/tests/ -m "not slow" -q
-uv run --extra dev python -m pytest src/tests/ -m "not pipeline and not mcp" -q
+uv run --extra dev python -m pytest tests/ -m "not slow" -q
+uv run --extra dev python -m pytest tests/ -m "not pipeline and not mcp" -q
 ```
 
 When testing LLM behavior, set the provider environment variables in a local ignored
@@ -80,10 +80,10 @@ they require a running local service.
 ## Coverage and quality
 
 ```bash
-uv run --extra dev python -m pytest src/tests/ \
+uv run --extra dev python -m pytest tests/ \
   --cov=src --cov-report=term-missing \
-  --ignore=src/tests/llm/test_llm_ollama.py \
-  --ignore=src/tests/llm/test_llm_ollama_integration.py
+  --ignore=tests/llm/test_llm_ollama.py \
+  --ignore=tests/llm/test_llm_ollama_integration.py
 uv run ruff check src scripts
 uv run ruff format --check src scripts
 uv run mypy src --show-error-codes
@@ -104,4 +104,4 @@ any measured result.
 
 For the CI job split and required checks, see
 [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml). For test-module
-orientation, see [`src/tests/README.md`](../../src/tests/README.md).
+orientation, see [`tests/README.md`](../../tests/README.md).

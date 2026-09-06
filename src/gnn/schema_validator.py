@@ -658,7 +658,7 @@ class GNNParser:
 
     def _parse_array(self, value_str: str) -> List[Any]:
         """Parse array notation [1,2,3] or [[1,2],[3,4]]."""
-        from utils.safe_eval import safe_literal_eval
+        from gnn.utils.safe_eval import safe_literal_eval
 
         try:
             return cast("list[Any]", safe_literal_eval(value_str))

@@ -257,7 +257,7 @@ Repository = "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNot
 Issues = "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/issues"
 
 [project.scripts]
-gnn = "src.cli:main"
+gnn = "gnn.cli:main"
 
 [tool.uv]
 # Security floors for transitive packages resolved through optional extras.
@@ -279,12 +279,7 @@ constraint-dependencies = [
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["src"]
-
-[tool.hatch.build.targets.wheel.force-include]
-# Ship the curated gnn package at a top-level `gnn/` prefix alongside the
-# `src/` tree (compat: console script and mypy config reference src.*).
-"src/gnn" = "gnn"
+packages = ["src/gnn"]
 
 [tool.black]
 line-length = 88
@@ -308,13 +303,13 @@ extend-exclude = '''
 profile = "black"
 multi_line_output = 3
 line_length = 88
-known_first_party = ["src"]
+known_first_party = ["gnn"]
 
 [tool.mypy]
 python_version = "3.11"
 mypy_path = "src"
 explicit_package_bases = true
-exclude = "(^src/output/|^src/__init__\\.py$|^.venv/)"
+exclude = "(^src/gnn/output/|^.venv/)"
 warn_return_any = true
 warn_unused_configs = false
 disallow_untyped_defs = true
@@ -379,7 +374,7 @@ module = [
 ignore_missing_imports = true
 
 [tool.coverage.run]
-source = ["src"]
+source = ["src/gnn"]
 omit = [
     "*/tests/*",
     "*/test_*",
@@ -403,7 +398,7 @@ exclude_lines = [
 ]
 
 [tool.bandit]
-exclude_dirs = ["tests", "src/tests"]
+exclude_dirs = ["tests"]
 skips = ["B101", "B601"]
 
 [tool.ruff]
@@ -449,7 +444,7 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]
-"src/tests/**" = ["F401"]
+"tests/**" = ["F401"]
 
 # CVE-2026-4539 resolved: Pygments 2.20.0 (released 2026-03-29) includes the
 # official fix for the AdlLexer ReDoS (pygments/pygments#3064).  The git-fork

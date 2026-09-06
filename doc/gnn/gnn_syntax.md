@@ -60,7 +60,7 @@ declared here may be referenced by name from `StateSpaceBlock`
 
 `inference_mode` may also be supplied as a render option; the value declared
 in `ModelParameters` is what makes a file self-describing. See
-[`src/render/rxinfer/README.md`](../../src/render/rxinfer/README.md) for the
+[`src/gnn/render/rxinfer/README.md`](../../src/gnn/render/rxinfer/README.md) for the
 per-kind strategy table.
 
 ---
@@ -248,7 +248,7 @@ also have multiple factors, so the more specific kinds are tested first.
 `InitialParameterization` must parse to a mapping; a non-mapping value raises
 `ValueError` rather than falling back to a default kind. The authority is
 `detect_model_kind` in
-[`src/render/pomdp_contract.py`](../../src/render/pomdp_contract.py).
+[`src/gnn/render/pomdp_contract.py`](../../src/gnn/render/pomdp_contract.py).
 
 ---
 
@@ -280,7 +280,7 @@ B=TransitionMatrix
 ```
 
 Terms are validated against
-[`src/ontology/act_inf_ontology_terms.json`](../../src/ontology/act_inf_ontology_terms.json)
+[`src/gnn/ontology/act_inf_ontology_terms.json`](../../src/gnn/ontology/act_inf_ontology_terms.json)
 by Step 10. Note the conventional binding: `A` is the **likelihood**
 (observation) matrix and `B` is the **transition** matrix — not the reverse.
 

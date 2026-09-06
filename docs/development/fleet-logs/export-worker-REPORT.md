@@ -1,6 +1,6 @@
 # export-worker Fleet Report
 
-**Module**: `src/export/` + `src/7_export.py`
+**Module**: `src/gnn/export/` + `src/gnn/7_export.py`
 **Date**: 2026-09-04
 **Worker**: export-worker
 **Branch**: main (HEAD f64ac9085)
@@ -11,16 +11,16 @@
 
 | File | Change | Why |
 |---|---|---|
-| `src/export/registry.py` | **NEW** | Single source of truth for 7 export formats: names, extensions, writer callables, categories. Eliminates 3 duplicated format lists. |
-| `src/export/formatters.py` | Refactored | Added `_write_pretty_xml` and `_dump_pickle` helpers; 3 XML writers and 2 pickle writers now delegate to them. Removed ~40 lines of duplicated serialization code. |
-| `src/export/processor.py` | Refactored + extended | `export_model`/`export_gnn_model`/`export_single_gnn_file`/`process_export` dispatch via registry tables (`_MODEL_FORMAT_FILES`, `_GNN_MODEL_WRITERS`, `_PIPELINE_WRITERS`) instead of if/elif chains. **Bug fix**: `export_gnn_model` no longer appends bogus `"No valid formats requested"` to `errors` on the all-success path; default formats changed from `["json","xml","graphml","gexf","pickle"]` (3 always failed) to `["json","xml","pickle","txt","dsl"]` (the formats it actually supports). `process_export` format dispatch now uses `_PIPELINE_WRITERS` from registry. **New function**: `validate_export_outputs(output_dir, expected_formats=None)` — post-run artifact validation. |
-| `src/export/core.py` | Bug fix + refactor | **Silent-failure bug fixed**: `export_gnn_files` now unwraps `Tuple[bool, str]` returns from `format_exporters` via `_writer_success`/`_writer_error` helpers instead of treating truthy tuples as success. Dispatch is data-driven (`writer_table` list). |
-| `src/export/__init__.py` | Refactored | `HAS_NETWORKX` now truthfully imported from `format_exporters` (was hardcoded `True`). `get_supported_formats`/`get_supported_formats_dict`/`validate_export_format` rebased on registry. `validate_export_outputs` and `get_export_registry` added to `__all__`. |
-| `src/export/utils.py` | Refactored | `get_module_info`/`get_supported_formats` rebased on registry — format lists and categories are no longer duplicated. |
-| `src/export/mcp.py` | Unchanged | No new MCP tools added (adding tools would break the `test_mcp_audit` allowlist owned by another worker). |
-| `src/export/AGENTS.md` | Updated | Added `validate_export_outputs` to API reference, documented registry as single source of truth, added `logger` kwarg, listed new test file, updated date. |
-| `src/export/README.md` | Updated | Added `registry.py` to module tree. |
-| `src/tests/export/test_export_registry_and_validate.py` | **NEW** | 15 tests: 8 registry invariants + 6 `validate_export_outputs` scenarios + 1 core silent-failure propagation pin. |
+| `src/gnn/export/registry.py` | **NEW** | Single source of truth for 7 export formats: names, extensions, writer callables, categories. Eliminates 3 duplicated format lists. |
+| `src/gnn/export/formatters.py` | Refactored | Added `_write_pretty_xml` and `_dump_pickle` helpers; 3 XML writers and 2 pickle writers now delegate to them. Removed ~40 lines of duplicated serialization code. |
+| `src/gnn/export/processor.py` | Refactored + extended | `export_model`/`export_gnn_model`/`export_single_gnn_file`/`process_export` dispatch via registry tables (`_MODEL_FORMAT_FILES`, `_GNN_MODEL_WRITERS`, `_PIPELINE_WRITERS`) instead of if/elif chains. **Bug fix**: `export_gnn_model` no longer appends bogus `"No valid formats requested"` to `errors` on the all-success path; default formats changed from `["json","xml","graphml","gexf","pickle"]` (3 always failed) to `["json","xml","pickle","txt","dsl"]` (the formats it actually supports). `process_export` format dispatch now uses `_PIPELINE_WRITERS` from registry. **New function**: `validate_export_outputs(output_dir, expected_formats=None)` — post-run artifact validation. |
+| `src/gnn/export/core.py` | Bug fix + refactor | **Silent-failure bug fixed**: `export_gnn_files` now unwraps `Tuple[bool, str]` returns from `format_exporters` via `_writer_success`/`_writer_error` helpers instead of treating truthy tuples as success. Dispatch is data-driven (`writer_table` list). |
+| `src/gnn/export/__init__.py` | Refactored | `HAS_NETWORKX` now truthfully imported from `format_exporters` (was hardcoded `True`). `get_supported_formats`/`get_supported_formats_dict`/`validate_export_format` rebased on registry. `validate_export_outputs` and `get_export_registry` added to `__all__`. |
+| `src/gnn/export/utils.py` | Refactored | `get_module_info`/`get_supported_formats` rebased on registry — format lists and categories are no longer duplicated. |
+| `src/gnn/export/mcp.py` | Unchanged | No new MCP tools added (adding tools would break the `test_mcp_audit` allowlist owned by another worker). |
+| `src/gnn/export/AGENTS.md` | Updated | Added `validate_export_outputs` to API reference, documented registry as single source of truth, added `logger` kwarg, listed new test file, updated date. |
+| `src/gnn/export/README.md` | Updated | Added `registry.py` to module tree. |
+| `tests/export/test_export_registry_and_validate.py` | **NEW** | 15 tests: 8 registry invariants + 6 `validate_export_outputs` scenarios + 1 core silent-failure propagation pin. |
 
 ## API Deltas
 
@@ -44,13 +44,13 @@ All 24 previously-public names preserved with identical signatures and return sh
 ## Verification Output
 
 ```
-$ uv run ruff check src/export src/tests/export
+$ uv run ruff check src/gnn/export tests/export
 All checks passed!
 
-$ uv run --extra dev mypy src/export --config-file pyproject.toml
+$ uv run --extra dev mypy src/gnn/export --config-file pyproject.toml
 Success: no issues found in 8 source files
 
-$ uv run --extra dev python -m pytest src/tests/export/ -q
+$ uv run --extra dev python -m pytest tests/export/ -q
 64 passed in 0.27s
 ```
 
@@ -59,8 +59,8 @@ Cross-cutting tests: 63/64 pass. The 1 failure is a pre-existing `test_zero_skip
 ## Doc / Manuscript Follow-ups Needed (other workers own these)
 
 - **`doc/`** references to export API: The docs_audit and check_doc_links gates should be run by the doc worker to verify no stale references to the old format lists. The module-level docstrings are updated; `doc/` prose may reference old dispatch patterns.
-- **`src/mcp/audit_report.json`** or equivalent: If the repo has a generated MCP manifest that records per-module tool counts, the manifest worker should regenerate it (no tools were added or removed, but the `__all__` grew by 2).
-- **`src/export/SPEC.md`** and **`src/export/SKILL.md`**: Light updates to mention the registry could be done by a doc-focused worker. I updated AGENTS.md/README.md only.
+- **`src/gnn/mcp/audit_report.json`** or equivalent: If the repo has a generated MCP manifest that records per-module tool counts, the manifest worker should regenerate it (no tools were added or removed, but the `__all__` grew by 2).
+- **`src/gnn/export/SPEC.md`** and **`src/gnn/export/SKILL.md`**: Light updates to mention the registry could be done by a doc-focused worker. I updated AGENTS.md/README.md only.
 
 ## Follow-up Ideas
 
@@ -85,5 +85,5 @@ Cross-cutting tests: 63/64 pass. The 1 failure is a pre-existing `test_zero_skip
 
 ## Transient Cross-Worker Artifacts (not export scope, observed at turn end)
 
-- `src/tests/test_zero_skip_contracts.py::test_default_suite_does_not_reintroduce_skips_or_xfails` fails on `src/tests/advanced_visualization/test_advanced_visualization_public_api_refactor.py` containing `pytest.skip` — advanced_visualization is a fleet peer's file; both export-scoped zero-skip assertions pass.
-- `doc/development/docs_audit.py --strict --no-write` reports 1 issue: `src/tests/tests/` lacks an AGENTS.md — that directory is another worker's active workspace (modified files present); all `src/export/` doc invariants pass.
+- `tests/test_zero_skip_contracts.py::test_default_suite_does_not_reintroduce_skips_or_xfails` fails on `tests/advanced_visualization/test_advanced_visualization_public_api_refactor.py` containing `pytest.skip` — advanced_visualization is a fleet peer's file; both export-scoped zero-skip assertions pass.
+- `doc/development/docs_audit.py --strict --no-write` reports 1 issue: `tests/tests/` lacks an AGENTS.md — that directory is another worker's active workspace (modified files present); all `src/gnn/export/` doc invariants pass.

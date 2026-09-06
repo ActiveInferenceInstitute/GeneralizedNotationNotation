@@ -19,7 +19,7 @@ Create a `.env` file based on the provided template:
 
 ```bash
 # Copy the example environment file
-cp src/llm/.env.example .env
+cp src/gnn/llm/.env.example .env
 
 # Edit with your API keys
 nano .env
@@ -41,7 +41,7 @@ OPENROUTER_SITE_NAME="GNN Analysis Pipeline"
 
 ```python
 import asyncio
-from src.llm import initialize_global_processor, AnalysisType
+from gnn.llm import initialize_global_processor, AnalysisType
 
 
 async def analyze_gnn_model():
@@ -220,7 +220,7 @@ The LLM processor integrates seamlessly with the GNN pipeline:
 
 ```python
 # From pipeline step 13 (13_llm.py)
-from src.llm import get_global_processor
+from gnn.llm import get_global_processor
 
 
 async def analyze_discovered_models(gnn_files):
@@ -265,7 +265,7 @@ DEFAULT_PROVIDER=openai|openrouter|perplexity
 ENABLE_FALLBACK=true|false
 ENABLE_STREAMING=true|false
 
-# Default Parameters — module-level defaults in src/llm, not read from env:
+# Default Parameters — module-level defaults in src/gnn/llm, not read from env:
 # DEFAULT_TEMPERATURE is reserved (not currently consumed by src/);
 # DEFAULT_MAX_TOKENS is a module constant default, not an env var.
 DEFAULT_TEMPERATURE=0.3
@@ -366,7 +366,7 @@ async def analyze_with_backoff(processor, content, max_retries=3):
 
 To add a new provider:
 
-1. Create `src/llm/providers/new_provider.py`
+1. Create `src/gnn/llm/providers/new_provider.py`
 2. Inherit from `BaseLLMProvider`  
 3. Implement required abstract methods
 4. Add to `ProviderType` enum
@@ -377,8 +377,8 @@ To add a new provider:
 ## API Reference
 
 See the individual provider modules for detailed API documentation:
-- `src/llm/providers/base_provider.py` - Base interface
-- `src/llm/providers/openai_provider.py` - OpenAI implementation
-- `src/llm/providers/openrouter_provider.py` - OpenRouter implementation  
-- `src/llm/providers/perplexity_provider.py` - Perplexity implementation
-- `src/llm/llm_processor.py` - Main processor interface 
+- `src/gnn/llm/providers/base_provider.py` - Base interface
+- `src/gnn/llm/providers/openai_provider.py` - OpenAI implementation
+- `src/gnn/llm/providers/openrouter_provider.py` - OpenRouter implementation  
+- `src/gnn/llm/providers/perplexity_provider.py` - Perplexity implementation
+- `src/gnn/llm/llm_processor.py` - Main processor interface 

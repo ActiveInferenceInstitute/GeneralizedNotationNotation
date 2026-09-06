@@ -15,6 +15,9 @@ from typing import TYPE_CHECKING, Any
 if TYPE_CHECKING:
     # Static re-export surface for type checkers: mirrors the pre-lazy eager
     # imports so mypy resolves names without executing submodules at runtime.
+    from .execute.executor import GNNExecutor, execute_gnn_model
+    from .export.processor import generate_exports
+    from .model_registry.registry import ModelRegistry
     from .multi_format_processor import process_gnn_multi_format
     from .parser import (
         GNNFormalParser,
@@ -26,6 +29,7 @@ if TYPE_CHECKING:
     )
     from .parsers.common import GNNFormat
     from .parsers.system import GNNParsingSystem
+    from .pipeline import run_pipeline
     from .processor import (
         discover_gnn_files,
         generate_gnn_report,
@@ -35,9 +39,11 @@ if TYPE_CHECKING:
         process_gnn_directory_lightweight,
         validate_gnn_structure,
     )
+    from .render.processor import get_available_renderers, render_gnn_spec
     from .types import ParsedGNN, ValidationLevel
+    from .utils.config_loader import GNNPipelineConfig, load_config
 
-__version__ = "1.6.0"
+__version__ = "3.2.0"
 
 # Ensure tests see MCP feature presence consistently
 FEATURES: dict[str, Any] = {
@@ -47,6 +53,7 @@ FEATURES: dict[str, Any] = {
     "report_generation": True,
     "core_validation": True,
     "mcp_integration": True,
+    "pipeline_orchestration": True,
 }
 
 # Explicit name -> source submodule map for every re-export. Resolving a name
@@ -77,6 +84,18 @@ _EXPORT_MAP: dict[str, str] = {
     # types — canonical domain types
     "ParsedGNN": "types",
     "ValidationLevel": "types",
+    # Cross-package programmatic entry points — the root package is the
+    # one aggregate facade for the pipeline, execution, rendering, export,
+    # model-registry, and configuration surfaces.
+    "run_pipeline": "pipeline",
+    "GNNExecutor": "execute.executor",
+    "execute_gnn_model": "execute.executor",
+    "render_gnn_spec": "render.processor",
+    "get_available_renderers": "render.processor",
+    "generate_exports": "export.processor",
+    "ModelRegistry": "model_registry.registry",
+    "GNNPipelineConfig": "utils.config_loader",
+    "load_config": "utils.config_loader",
 }
 
 
@@ -150,4 +169,14 @@ __all__: list[Any] = [
     "__version__",
     "FEATURES",
     "validate_gnn_file",
+    # Cross-package programmatic entry points
+    "run_pipeline",
+    "GNNExecutor",
+    "execute_gnn_model",
+    "render_gnn_spec",
+    "get_available_renderers",
+    "generate_exports",
+    "ModelRegistry",
+    "GNNPipelineConfig",
+    "load_config",
 ]

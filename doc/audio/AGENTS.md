@@ -21,20 +21,20 @@ Audio synthesis and sonification of Active Inference models (SAPF - Synthetic Au
 
 - **GNN Documentation**: [gnn/AGENTS.md](../gnn/AGENTS.md)
 - **Main Documentation**: [doc/README.md](../README.md)
-- **Pipeline Reference**: [src/AGENTS.md](../../src/AGENTS.md)
+- **Pipeline Reference**: [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)
 - **SAPF Module**: [sapf/AGENTS.md](../sapf/AGENTS.md)
 
 ## Integration with Pipeline
 
 This documentation covers Step 15 (Audio/SAPF) of the 25-step GNN processing pipeline.
 
-See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
+See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documentation.
 
 ## Related Resources
 
 - [SAPF Documentation](../sapf/README.md)
 - [Pedalboard Integration](../pedalboard/README.md)
-- [Audio Module](../../src/audio/AGENTS.md)
+- [Audio Module](../../src/gnn/audio/AGENTS.md)
 
 ---
 

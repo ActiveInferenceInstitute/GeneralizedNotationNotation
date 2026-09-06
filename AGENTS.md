@@ -20,49 +20,49 @@ New to this repo as an agent? In order:
 
 ### Core Processing Modules (Steps 0-9)
 
-- **Step 0**: **[template/](src/template/AGENTS.md)** - Pipeline template and initialization
-- **Step 1**: **[setup/](src/setup/AGENTS.md)** - Environment setup and dependency management
-- **Step 2**: **[tests/](src/tests/AGENTS.md)** - Comprehensive test suite execution
+- **Step 0**: **[template/](src/gnn/template/AGENTS.md)** - Pipeline template and initialization
+- **Step 1**: **[setup/](src/gnn/setup/AGENTS.md)** - Environment setup and dependency management
+- **Step 2**: **[tests/](tests/AGENTS.md)** - Comprehensive test suite execution
 - **Step 3**: **[gnn/](src/gnn/AGENTS.md)** - GNN file discovery, parsing, and multi-format serialization
-- **Step 4**: **[model_registry/](src/model_registry/AGENTS.md)** - Model versioning and registry management
-- **Step 5**: **[type_checker/](src/type_checker/AGENTS.md)** - Type checking and validation
-- **Step 6**: **[validation/](src/validation/AGENTS.md)** - Advanced validation and consistency checking
-- **Step 7**: **[export/](src/export/AGENTS.md)** - Multi-format export generation
-- **Step 8**: **[visualization/](src/visualization/AGENTS.md)** - Graph and matrix visualization
-- **Step 9**: **[advanced_visualization/](src/advanced_visualization/AGENTS.md)** - Advanced visualization and interactive plots
+- **Step 4**: **[model_registry/](src/gnn/model_registry/AGENTS.md)** - Model versioning and registry management
+- **Step 5**: **[type_checker/](src/gnn/type_checker/AGENTS.md)** - Type checking and validation
+- **Step 6**: **[validation/](src/gnn/validation/AGENTS.md)** - Advanced validation and consistency checking
+- **Step 7**: **[export/](src/gnn/export/AGENTS.md)** - Multi-format export generation
+- **Step 8**: **[visualization/](src/gnn/visualization/AGENTS.md)** - Graph and matrix visualization
+- **Step 9**: **[advanced_visualization/](src/gnn/advanced_visualization/AGENTS.md)** - Advanced visualization and interactive plots
 
 ### Simulation & Analysis Modules (Steps 10-16)
 
-- **Step 10**: **[ontology/](src/ontology/AGENTS.md)** - Active Inference ontology processing
-- **Step 11**: **[render/](src/render/AGENTS.md)** - Code generation for simulation frameworks
-- **Step 12**: **[execute/](src/execute/AGENTS.md)** - Execute rendered simulation scripts
-- **Step 13**: **[llm/](src/llm/AGENTS.md)** - LLM-enhanced analysis and interpretation
-- **Step 14**: **[ml_integration/](src/ml_integration/AGENTS.md)** - Machine learning integration
-- **Step 15**: **[audio/](src/audio/AGENTS.md)** - Audio generation and sonification
-- **Step 16**: **[analysis/](src/analysis/AGENTS.md)** - Advanced statistical analysis
+- **Step 10**: **[ontology/](src/gnn/ontology/AGENTS.md)** - Active Inference ontology processing
+- **Step 11**: **[render/](src/gnn/render/AGENTS.md)** - Code generation for simulation frameworks
+- **Step 12**: **[execute/](src/gnn/execute/AGENTS.md)** - Execute rendered simulation scripts
+- **Step 13**: **[llm/](src/gnn/llm/AGENTS.md)** - LLM-enhanced analysis and interpretation
+- **Step 14**: **[ml_integration/](src/gnn/ml_integration/AGENTS.md)** - Machine learning integration
+- **Step 15**: **[audio/](src/gnn/audio/AGENTS.md)** - Audio generation and sonification
+- **Step 16**: **[analysis/](src/gnn/analysis/AGENTS.md)** - Advanced statistical analysis
 
 ### Integration & Output Modules (Steps 17-24)
 
-- **Step 17**: **[integration/](src/integration/AGENTS.md)** - System integration and coordination
-- **Step 18**: **[security/](src/security/AGENTS.md)** - Security validation and access control
-- **Step 19**: **[research/](src/research/AGENTS.md)** - Research tools and experimental features
-- **Step 20**: **[website/](src/website/AGENTS.md)** - Static HTML website generation
-- **Step 21**: **[mcp/](src/mcp/AGENTS.md)** - Model Context Protocol processing
-- **Step 22**: **[gui/](src/gui/AGENTS.md)** - Interactive GUI for model construction (includes gui_1, gui_2, gui_3, oxdraw)
-- **Step 23**: **[report/](src/report/AGENTS.md)** - Comprehensive analysis report generation
-- **Step 24**: **[intelligent_analysis/](src/intelligent_analysis/AGENTS.md)** - AI-powered pipeline analysis and executive reports
+- **Step 17**: **[integration/](src/gnn/integration/AGENTS.md)** - System integration and coordination
+- **Step 18**: **[security/](src/gnn/security/AGENTS.md)** - Security validation and access control
+- **Step 19**: **[research/](src/gnn/research/AGENTS.md)** - Research tools and experimental features
+- **Step 20**: **[website/](src/gnn/website/AGENTS.md)** - Static HTML website generation
+- **Step 21**: **[mcp/](src/gnn/mcp/AGENTS.md)** - Model Context Protocol processing
+- **Step 22**: **[gui/](src/gnn/gui/AGENTS.md)** - Interactive GUI for model construction (includes gui_1, gui_2, gui_3, oxdraw)
+- **Step 23**: **[report/](src/gnn/report/AGENTS.md)** - Comprehensive analysis report generation
+- **Step 24**: **[intelligent_analysis/](src/gnn/intelligent_analysis/AGENTS.md)** - AI-powered pipeline analysis and executive reports
 
 ### Infrastructure Modules
 
-- **[utils/](src/utils/AGENTS.md)** - Shared utilities and helper functions
-- **[pipeline/](src/pipeline/AGENTS.md)** - Pipeline orchestration and configuration
-- **[api/](src/api/AGENTS.md)** - REST API (FastAPI)
-- **[cli/](src/cli/AGENTS.md)** - `gnn` CLI entry point
-- **[lsp/](src/lsp/AGENTS.md)** - Language Server Protocol support
-- **[sapf/](src/sapf/AGENTS.md)** - SAPF public entry point (implementation in `src/audio/sapf/`)
-- **[doc/](src/doc/AGENTS.md)** - In-repo technical documentation subtree
+- **[utils/](src/gnn/utils/AGENTS.md)** - Shared utilities and helper functions
+- **[pipeline/](src/gnn/pipeline/AGENTS.md)** - Pipeline orchestration and configuration
+- **[api/](src/gnn/api/AGENTS.md)** - REST API (FastAPI)
+- **[cli/](src/gnn/cli/AGENTS.md)** - `gnn` CLI entry point
+- **[lsp/](src/gnn/lsp/AGENTS.md)** - Language Server Protocol support
+- **[sapf/](src/gnn/sapf/AGENTS.md)** - SAPF public entry point (implementation in `src/gnn/audio/sapf/`)
+- **[doc/](src/gnn/doc/AGENTS.md)** - In-repo technical documentation subtree
 
-### v3.0.0 Long-Running Orchestration Modules (`src/pipeline/`)
+### v3.0.0 Long-Running Orchestration Modules (`src/gnn/pipeline/`)
 
 Safe-by-design contracts and additive live wiring introduced in v3.0.0 ("Long-Running Orchestration"). The three core contracts are pure data layers that generate, validate, and serialize plans without mutating any live infrastructure.
 
@@ -164,7 +164,7 @@ def process_module(
 
 ```mermaid
 flowchart TD
-    Main[src/main.py] -->|Orchestrates| Steps[25 Pipeline Steps]
+    Main[src/gnn/main.py] -->|Orchestrates| Steps[25 Pipeline Steps]
     
     Steps --> Step0[Step 0: Template]
     Step0 --> Step1[Step 1: Setup]
@@ -245,7 +245,7 @@ graph TD
 - **GNN doc patterns**: `uv run --extra dev python scripts/check_gnn_doc_patterns.py --strict` reports no banned GNN documentation patterns.
 - **Repository terminology**: `uv run --extra dev python scripts/check_repo_terminology.py --strict` and `scripts/check_maintained_doc_terms.py --strict` report no violations.
 - **Mypy**: `uv run --extra dev mypy src --config-file pyproject.toml` passes (0 errors).
-- **Tests**: command of record is `uv run --extra dev python -m pytest src/tests/ -q --tb=no -rsx --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py`; the release receipt for the current version (collected/passed/skipped totals on the curated exemplar corpus) is recorded in `CHANGELOG.md` §3.2.0 (2026-09-02); re-run the command for live totals rather than trusting numbers in prose. Julia RxInfer execution uses the committed `Project.toml` under `src/execute/rxinfer/` (RxInfer 5.5.0 pinned); ActiveInference.jl uses the committed minimal env under `src/execute/activeinference_jl/`. With a local Ollama daemon and `smollm2:135m-instruct-q4_K_S` pulled, the two Ollama files are re-enabled.
+- **Tests**: command of record is `uv run --extra dev python -m pytest tests/ -q --tb=no -rsx --ignore=tests/llm/test_llm_ollama.py --ignore=tests/llm/test_llm_ollama_integration.py`; the release receipt for the current version (collected/passed/skipped totals on the curated exemplar corpus) is recorded in `CHANGELOG.md` §3.2.0 (2026-09-02); re-run the command for live totals rather than trusting numbers in prose. Julia RxInfer execution uses the committed `Project.toml` under `src/gnn/execute/rxinfer/` (RxInfer 5.5.0 pinned); ActiveInference.jl uses the committed minimal env under `src/gnn/execute/activeinference_jl/`. With a local Ollama daemon and `smollm2:135m-instruct-q4_K_S` pulled, the two Ollama files are re-enabled.
 - **LLM Default Model**: `smollm2:135m-instruct-q4_K_S` via Ollama (`llm.defaults.DEFAULT_OLLAMA_MODEL`; override with `OLLAMA_MODEL` / `input/config.yaml`).
 - **Renderer inventory**: PyMDP, RxInfer, JAX, NumPyro, Stan, PyTorch, ActiveInference.jl, DisCoPy, and bnlearn have maintained render paths. The public root `output/` contract is the POMDP GridWorld full run with strict execution proof for PyMDP, RxInfer.jl, and ActiveInference.jl.
 - **Default dev suite**: FastAPI, websocket bridge, and LSP tests run under the `dev` extra; browser, public-network, live GUI, audio-DSP, and Ollama integrations remain explicit opt-in surfaces rather than hidden default-suite skips.
@@ -256,7 +256,7 @@ graph TD
 - **Two model kinds**: `render.pomdp_contract.detect_model_kind` classifies each spec as discrete (categorical `A/B/C/D[/E]`) or continuous; the `input/gnn_files/continuous/` exemplars declare only the linear-Gaussian state-space block (`F/H/Q/R`, `prior_mean/prior_cov`, optional closed-loop `goal_mean/control_gain`) and are rendered verbatim, never canonicalised to A/B/C/D.
 - **`unsupported` render status**: frameworks whose `framework_registry.py` entry has `supports_continuous: False` (PyMDP, ActiveInference.jl, DisCoPy, bnlearn) return `status: unsupported` for continuous models; these are counted separately under `unsupported_framework_renderings` in `render_processing_summary.json`, excluded from success rates, and never executed by Step 12.
 - **Native continuous backends**: JAX, NumPyro (+NUTS), PyTorch and Stan share `render/continuous_script.py` (online Kalman filter, Joseph-form update, closed-loop control); RxInfer.jl uses its native LGSSM strategy.
-- **Stan is executable**: `render/stan/stan_renderer.py` emits an HMM (forward-algorithm marginalisation, Dirichlet priors centred on `A`) for discrete models and the Kalman marginal likelihood for continuous ones, as `<stem>_stan.stan` plus a `<stem>_stan.py` cmdstanpy driver; `src/execute/stan/` runs it and `utils.framework_availability` reports `skipped` when `cmdstanpy`/CmdStan is absent (`uv sync --extra stan`).
+- **Stan is executable**: `render/stan/stan_renderer.py` emits an HMM (forward-algorithm marginalisation, Dirichlet priors centred on `A`) for discrete models and the Kalman marginal likelihood for continuous ones, as `<stem>_stan.stan` plus a `<stem>_stan.py` cmdstanpy driver; `src/gnn/execute/stan/` runs it and `utils.framework_availability` reports `skipped` when `cmdstanpy`/CmdStan is absent (`uv sync --extra stan`).
 - **Step 12 summary merge**: `execute/processor.py` (`_merge_prior_execution_summary`) folds the previous `execution_summary.json` into the current run so the durable summary covers every input folder, mirroring Step 11.
 - **Julia pre-exec gate**: a `julia` launcher without a working toolchain no longer blocks scripts; the probe degrades to the advisory regex sweep unless the parser itself reports a failure.
 - Live counts come from `output/11_render_output/render_processing_summary.json` and `output/12_execute_output/summaries/execution_summary.json`; see `CHANGELOG.md` §3.2.0 for the release receipt.
@@ -265,7 +265,7 @@ graph TD
 
 ## Module Status Matrix
 
-Module-level status is maintained in each module's own `AGENTS.md` and test files. As of v3.0.0, the `src/pipeline/` orchestration contracts (`durable_streams`, `run_session`, `container_plan`) and their live wiring (`session_acceptance`, `run_manifest`, `pipeline_container_plan`) are validated by the strict `scripts/run_v3_orchestration_acceptance.py` gate.
+Module-level status is maintained in each module's own `AGENTS.md` and test files. As of v3.0.0, the `src/gnn/pipeline/` orchestration contracts (`durable_streams`, `run_session`, `container_plan`) and their live wiring (`session_acceptance`, `run_manifest`, `pipeline_container_plan`) are validated by the strict `scripts/run_v3_orchestration_acceptance.py` gate.
 
 ---
 
@@ -289,19 +289,19 @@ just test-mod render           # Test a specific module
 #### Run Full Pipeline
 
 ```bash
-python src/main.py --target-dir input/gnn_files --verbose
+python src/gnn/main.py --target-dir input/gnn_files --verbose
 ```
 
 #### Run Specific Steps
 
 ```bash
-python src/main.py --only-steps "3,5,7,8,11,12" --verbose
+python src/gnn/main.py --only-steps "3,5,7,8,11,12" --verbose
 ```
 
 #### Run Individual Step
 
 ```bash
-python src/3_gnn.py --target-dir input/gnn_files --output-dir output --verbose
+python src/gnn/3_gnn.py --target-dir input/gnn_files --output-dir output --verbose
 ```
 
 ---
@@ -314,7 +314,7 @@ python src/3_gnn.py --target-dir input/gnn_files --output-dir output --verbose
 2. Implement `__init__.py` with public API
 3. Create `AGENTS.md` documentation
 4. Add numbered script: `N_new_module.py`
-5. Implement tests in `src/tests/`
+5. Implement tests in `tests/`
 6. Add MCP tools in `mcp.py` (if applicable)
 
 ### Code Standards
@@ -332,13 +332,13 @@ python src/3_gnn.py --target-dir input/gnn_files --output-dir output --verbose
 ### Run All Tests
 
 ```bash
-python src/2_tests.py --comprehensive
+python src/gnn/2_tests.py --comprehensive
 ```
 
 ### Run Module-Specific Tests
 
 ```bash
-uv run --extra dev python -m pytest src/tests/test_[module]*.py -v
+uv run --extra dev python -m pytest tests/test_[module]*.py -v
 ```
 
 ### Check Coverage
@@ -524,7 +524,7 @@ Each module provides specialized agent capabilities for different aspects of Act
 
 ### ⏳ **Long-Running Orchestration (v3.0.0)** - Durable, Safe-by-Design Runs
 
-Released in v3.0.0 ("Long-Running Orchestration"), this capability adds three safe-by-design `src/pipeline/` contracts plus additive live wiring, with no live infrastructure mutation:
+Released in v3.0.0 ("Long-Running Orchestration"), this capability adds three safe-by-design `src/gnn/pipeline/` contracts plus additive live wiring, with no live infrastructure mutation:
 
 - **Durable observation streams** (`durable_streams.py`): replayable file/array stream manifests and traces for long observation runs
 - **Resumable run sessions** (`run_session.py`, wired live via `session_acceptance.py`): durable, resumable manifests for extended model-family acceptance runs

@@ -148,7 +148,7 @@ For **factor-separable** models (transition/likelihood/preferences are
 Kronecker products of per-factor matrices), the dense grid is not the right
 regime: the joint state space grows exponentially with the factor count. The
 orchestrator's `--factorized` mode runs the sparse JAX mean-field path in
-`src/execute/jax/kronecker_factorized.py` instead of the dense pipeline —
+`src/gnn/execute/jax/kronecker_factorized.py` instead of the dense pipeline —
 the joint state space is **never materialised** (`joint_materialized: False`
 in every result), so joint sizes of 64-256 states (e.g. six to eight binary
 factors) execute in time proportional to the *sum* of factor sizes.
@@ -174,7 +174,7 @@ standalone script that runs the sparse path and writes
 `GNN_OUTPUT_DIR`, which Step 12 collects and Step 16 (`extract_jax_data`)
 analyses per-factor (per-step total EFE, factorised policy, validation,
 `joint_materialized: False`). See
-`src/tests/render/test_jax_factorized_pipeline.py` for the pinned contract.
+`tests/render/test_jax_factorized_pipeline.py` for the pinned contract.
 
 ### Safety Guardrails
 - `max_n`: Skips state counts that would exceed reasonable storage limits.
@@ -196,7 +196,7 @@ The meta-analysis module (v1.7.0) generates **scientific-grade visualizations** 
 The repository ships a runnable smoke benchmark that you can adapt:
 
 ```bash
-uv run --extra dev python -m pytest src/tests/execute/test_pymdp_contracts.py::test_pymdp_seeded_reproducibility_contract \
+uv run --extra dev python -m pytest tests/execute/test_pymdp_contracts.py::test_pymdp_seeded_reproducibility_contract \
     --durations=5 -v
 ```
 
@@ -206,7 +206,7 @@ and prints per-test wall times in the slowest-durations report.
 For a larger workload, use the ActInf POMDP end-to-end test:
 
 ```bash
-uv run --extra dev python -m pytest src/tests/execute/test_pymdp_contracts.py::test_actinf_pomdp_render_execute_analyze_e2e \
+uv run --extra dev python -m pytest tests/execute/test_pymdp_contracts.py::test_actinf_pomdp_render_execute_analyze_e2e \
     --durations=5 -v -m "integration and slow"
 ```
 

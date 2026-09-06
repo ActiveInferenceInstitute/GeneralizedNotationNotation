@@ -11,7 +11,7 @@ Connect any MCP-compatible client to the GNN pipeline and access the registered 
 uv sync
 
 # Verify the MCP server entry point starts
-PYTHONPATH=src uv run python src/21_mcp.py --help
+PYTHONPATH=src uv run python src/gnn/21_mcp.py --help
 ```
 
 The examples below write `/path/to/generalizednotationnotation` for the absolute path to your clone — substitute your own. Relative-path examples assume the client's working directory is the repo root.
@@ -25,7 +25,7 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
   "mcpServers": {
     "gnn": {
       "command": "python",
-      "args": ["/path/to/generalizednotationnotation/src/21_mcp.py"],
+      "args": ["/path/to/generalizednotationnotation/src/gnn/21_mcp.py"],
       "env": {
         "PYTHONPATH": "/path/to/generalizednotationnotation/src"
       }
@@ -49,7 +49,7 @@ Recent VS Code builds support MCP servers natively; older ones need an MCP exten
   "name": "gnn",
   "transport": "stdio",
   "command": "python",
-  "args": ["${workspaceFolder}/src/21_mcp.py"],
+  "args": ["${workspaceFolder}/src/gnn/21_mcp.py"],
   "env": { "PYTHONPATH": "${workspaceFolder}/src" }
 }
 ```
@@ -65,7 +65,7 @@ Add to `.cursor/mcp.json` (repo root or home directory):
   "mcpServers": {
     "gnn": {
       "command": "python",
-      "args": ["src/21_mcp.py"],
+      "args": ["src/gnn/21_mcp.py"],
       "env": { "PYTHONPATH": "src" }
     }
   }
@@ -84,7 +84,7 @@ Restart Cursor. In the AI panel, `@gnn` references tools from the GNN server.
       "args": [
         "run",
         "--project", "/path/to/generalizednotationnotation",
-        "python", "src/21_mcp.py"
+        "python", "src/gnn/21_mcp.py"
       ]
     }
   }
@@ -101,7 +101,7 @@ from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
 server_params = StdioServerParameters(
-    command="python", args=["src/21_mcp.py"], env={"PYTHONPATH": "src"}
+    command="python", args=["src/gnn/21_mcp.py"], env={"PYTHONPATH": "src"}
 )
 
 async with stdio_client(server_params) as (read, write):
@@ -132,7 +132,7 @@ async with stdio_client(server_params) as (read, write):
 **Tools not appearing**: Run the audit to confirm tools register cleanly:
 
 ```bash
-uv run --extra dev python -m pytest src/tests/mcp/test_mcp_audit.py -v --tb=short
+uv run --extra dev python -m pytest tests/mcp/test_mcp_audit.py -v --tb=short
 ```
 
 **Timeout on heavy steps**: Steps 12 (execute) and 13 (LLM) can take minutes. Set client timeout to ≥300s.

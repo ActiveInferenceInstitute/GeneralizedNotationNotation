@@ -50,7 +50,7 @@ not require all of them. Use the [syntax reference](gnn/reference/gnn_syntax.md)
 To validate a directory with the numbered type-checker step:
 
 ```bash
-uv run python src/5_type_checker.py \
+uv run python src/gnn/5_type_checker.py \
   --target-dir input/gnn_files \
   --strict \
   --verbose
@@ -62,7 +62,7 @@ Start with parsing, type checking, rendering, and execution. Keep outputs isolat
 one run cannot be confused with an earlier run:
 
 ```bash
-uv run python src/main.py \
+uv run python src/gnn/main.py \
   --target-dir input/gnn_files \
   --output-dir output/quickstart \
   --only-steps "3,5,11,12" \

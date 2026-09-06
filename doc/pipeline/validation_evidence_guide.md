@@ -21,22 +21,22 @@ flowchart LR
 | Surface | Command | Certifies |
 | --- | --- | --- |
 | README POMDP example | `uv run --extra dev gnn validate input/gnn_files/discrete/actinf_pomdp_agent.md --strict` | Public CLI validation accepts the showcased Active Inference POMDP shape contract. |
-| Packaged templates | `for template in src/cli/template_assets/*.md; do uv run --extra dev gnn validate "$template" --strict; done` | All templates exposed by `gnn templates list`, `gnn templates show`, and `gnn pull` pass strict CLI validation. |
-| Schema and template regressions | `uv run --extra dev python -m pytest src/tests/gnn/test_gnn_schema.py src/tests/cli/test_templates_cli.py -q --tb=short` | Structural tensor validation, negative controls, and packaged template CLI validation. |
-| Focused PyMDP proof path | `uv run --extra dev python -m pytest src/tests/execute/test_pymdp_contracts.py src/tests/execute/test_discrete_models_pymdp.py src/tests/visualization/test_visualization_matrices.py -q --tb=short` | Render, execute, analysis, and visualization behavior for representative discrete models. |
+| Packaged templates | `for template in src/gnn/cli/template_assets/*.md; do uv run --extra dev gnn validate "$template" --strict; done` | All templates exposed by `gnn templates list`, `gnn templates show`, and `gnn pull` pass strict CLI validation. |
+| Schema and template regressions | `uv run --extra dev python -m pytest tests/gnn/test_gnn_schema.py tests/cli/test_templates_cli.py -q --tb=short` | Structural tensor validation, negative controls, and packaged template CLI validation. |
+| Focused PyMDP proof path | `uv run --extra dev python -m pytest tests/execute/test_pymdp_contracts.py tests/execute/test_discrete_models_pymdp.py tests/visualization/test_visualization_matrices.py -q --tb=short` | Render, execute, analysis, and visualization behavior for representative discrete models. |
 | Documentation integrity | `uv run --extra dev python doc/development/docs_audit.py --strict --check-anchors --no-write` | Relative links, anchors, and AGENTS/README coverage. |
 | GNN doc terminology | `uv run --extra dev python scripts/check_gnn_doc_patterns.py --strict` | Maintained GNN docs avoid known-stale syntax and path patterns. |
 | Capability claims | `uv run --extra dev python scripts/check_capability_contracts.py` | Roadmap-visible capability claims have source support. |
 | Renderer generator modules | `uv run --extra dev gnn health` | Renderer generator modules import and environment preflight issues are reported. |
 | Runtime-ready environment | `uv run --extra dev gnn health --strict` | Same health report, with nonzero exit when core runtime dependencies are missing. |
-| Test inventory | `uv run --extra dev python -m pytest --collect-only src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py` | Current collected test count with Ollama integration tests excluded. |
+| Test inventory | `uv run --extra dev python -m pytest --collect-only tests/ -q --tb=no --ignore=tests/llm/test_llm_ollama.py --ignore=tests/llm/test_llm_ollama_integration.py` | Current collected test count with Ollama integration tests excluded. |
 
 ## Generated Evidence
 
 ```mermaid
 flowchart TD
     CLI["Validation and pytest commands"] --> Terminal["Terminal pass/fail output"]
-    Pipeline["src/main.py pipeline runs"] --> Output["output/"]
+    Pipeline["src/gnn/main.py pipeline runs"] --> Output["output/"]
     Output --> Summary["00_pipeline_summary/"]
     Output --> Logs["00_pipeline_logs/"]
     Output --> Rendered["11_render_output/"]
@@ -57,7 +57,7 @@ Do not commit regenerated `output/` artifacts as maintained source. Re-run the c
 For the strict multi-framework GridWorld path, use the maintained review command:
 
 ```bash
-uv run python src/main.py --only-steps "3,5,8,11,12,16" --target-dir input/gnn_files/pomdp_gridworld --frameworks "pymdp,rxinfer,activeinference_jl" --verbose
+uv run python src/gnn/main.py --only-steps "3,5,8,11,12,16" --target-dir input/gnn_files/pomdp_gridworld --frameworks "pymdp,rxinfer,activeinference_jl" --verbose
 ```
 
 This path is documented in [pipeline_stage_hardening_review.md](pipeline_stage_hardening_review.md). Julia framework execution depends on local Julia packages; use the focused Python/PyMDP tests above when Julia is unavailable.

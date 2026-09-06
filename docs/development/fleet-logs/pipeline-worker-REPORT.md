@@ -1,17 +1,17 @@
-# pipeline-worker REPORT — src/pipeline/ (GNN fleet 3, 2026-09-04)
+# pipeline-worker REPORT — src/gnn/pipeline/ (GNN fleet 3, 2026-09-04)
 
-Scope: `src/pipeline/` entirely (18 files touched, 2 created) + `src/tests/pipeline/`.
+Scope: `src/gnn/pipeline/` entirely (18 files touched, 2 created) + `tests/pipeline/`.
 Head at start: f64ac9085 (main). No git operations performed; edits in place only.
 
 ## Files changed + why
 
-### New files (src/pipeline/)
+### New files (src/gnn/pipeline/)
 | File | Why |
 |---|---|
 | `pipeline/_io.py` | Shared atomic-write primitives (`atomic_write_text` / `atomic_write_bytes`: mkstemp in same dir + `os.replace`). Was implemented 3× independently (durable_streams, run_session, run_manifest). |
 | `pipeline/_version.py` | Single version source. Kills the `__init__.__version__="1.6.0"` vs `execution.get_pipeline_info()="1.0.0"` drift. |
 
-### Modified (src/pipeline/)
+### Modified (src/gnn/pipeline/)
 | File | Change |
 |---|---|
 | `durable_streams.py` | `_atomic_write_text` delegates to `pipeline._io` (private name kept for internal callers). |
@@ -33,8 +33,8 @@ Head at start: f64ac9085 (main). No git operations performed; edits in place onl
 | `README.md` | Same drift fixes + new API docs + corrected usage examples. |
 
 ## Tests
-- New: `src/tests/pipeline/test_pipeline_refactor_contracts.py` — 20 deterministic, network-free tests pinning: atomic-write round-trip + failure-preservation contract (no `.tmp` residue, original intact), dag cycle/self-loop/downstream/unknown-node semantics + registry-derived default tiering, `resolve_step_numbers` (aliases, `.py` forms, comma lists, `pipeline_data` fallback, dedup/sort), `select_model_families` (order/strip/empty/KeyError), version pin (`get_pipeline_info()["version"] == pipeline.__version__`), context defaults vs constants, `get_output_dir_for_script` contracts (known/unknown/nesting-guard), `index_run` return-path + update-in-place persistence, preflight `skip_steps` gate (valid pass / out-of-range error).
-- All 449 pre-existing tests in `src/tests/pipeline/` still pass.
+- New: `tests/pipeline/test_pipeline_refactor_contracts.py` — 20 deterministic, network-free tests pinning: atomic-write round-trip + failure-preservation contract (no `.tmp` residue, original intact), dag cycle/self-loop/downstream/unknown-node semantics + registry-derived default tiering, `resolve_step_numbers` (aliases, `.py` forms, comma lists, `pipeline_data` fallback, dedup/sort), `select_model_families` (order/strip/empty/KeyError), version pin (`get_pipeline_info()["version"] == pipeline.__version__`), context defaults vs constants, `get_output_dir_for_script` contracts (known/unknown/nesting-guard), `index_run` return-path + update-in-place persistence, preflight `skip_steps` gate (valid pass / out-of-range error).
+- All 449 pre-existing tests in `tests/pipeline/` still pass.
 
 ## API deltas
 **Additive (no callers broken):** `dag.find_circular_dependencies`, `execution.resolve_step_numbers`, `model_family_acceptance.select_model_families`, `config.DEFAULT_TARGET_DIR`/`DEFAULT_OUTPUT_DIR`, `pipeline._io.atomic_write_text/atomic_write_bytes`, `pipeline._version.__version__`, package-root re-exports + `__all__` completions.
@@ -43,20 +43,20 @@ Head at start: f64ac9085 (main). No git operations performed; edits in place onl
 
 ## Verification output tails
 ```
-uv run ruff check src/pipeline src/tests/pipeline
+uv run ruff check src/gnn/pipeline tests/pipeline
   → All checks passed!
-uv run ruff format --check src/pipeline src/tests/pipeline
+uv run ruff format --check src/gnn/pipeline tests/pipeline
   → 71 files already formatted
-uv run --extra dev mypy src/pipeline --config-file pyproject.toml
+uv run --extra dev mypy src/gnn/pipeline --config-file pyproject.toml
   → Success: no issues found in 31 source files
-uv run --extra dev python -m pytest src/tests/pipeline/ -q   (≡ just test-mod pipeline)
+uv run --extra dev python -m pytest tests/pipeline/ -q   (≡ just test-mod pipeline)
   → 469 passed, 2 warnings in 109.96s
 ```
-Note: three transient fleet churn windows hit `import pipeline`/mypy via peer files (`src/utils/pipeline.py`, `src/utils/arg_parsing.py`, `src/gnn/parsers/common.py` syntax errors mid-edit); all were fixed by their owners and final gates ran clean.
+Note: three transient fleet churn windows hit `import pipeline`/mypy via peer files (`src/gnn/utils/pipeline.py`, `src/gnn/utils/arg_parsing.py`, `src/gnn/parsers/common.py` syntax errors mid-edit); all were fixed by their owners and final gates ran clean.
 
 ## Follow-ups for other workers (not my scope)
-- `doc/api/comprehensive_api_reference.md` documents a non-existent `gnn.pipeline` module (`Pipeline`, `StepResult`) and `doc/troubleshooting/api_error_reference.md` shows an outdated `run_pipeline` signature — doc owners should sync with the corrected signatures now in `src/pipeline/{AGENTS,README}.md`.
-- `src/utils/pipeline_validator.py` class-name collision (`PipelineValidator` exists in both `utils/` and `pipeline/pipeline_validator.py`) — utils worker.
+- `doc/api/comprehensive_api_reference.md` documents a non-existent `gnn.pipeline` module (`Pipeline`, `StepResult`) and `doc/troubleshooting/api_error_reference.md` shows an outdated `run_pipeline` signature — doc owners should sync with the corrected signatures now in `src/gnn/pipeline/{AGENTS,README}.md`.
+- `src/gnn/utils/pipeline_validator.py` class-name collision (`PipelineValidator` exists in both `utils/` and `pipeline/pipeline_validator.py`) — utils worker.
 - Health-rating thresholds (excellent/good/fair/poor) still triplicated with three different formulas across `pipeline_validator`/`diagnostic_enhancer`/`health_check` (all in-scope files, but unifying changes scoring output; deferred as a deliberate behavior-preserving call — needs an owner decision on the canonical formula).
 - `mcp.get_pipeline_status` still reads summaries via hardcoded candidate paths; a shared "latest summary locator" helper could serve `mcp.py`, `diagnostic_enhancer.py`, and `verify_pipeline.py`.
 

@@ -52,13 +52,13 @@ The mirrored bridge contract is version 0.4.
   digest, Lean definition, and generator identity in their provenance section.
 - **`unsupported` vs `failed`.** Continuous models on categorical-only render
   backends report `unsupported` (excluded from execution) — a distinct status
-  from `failed`; see `src/README.md`.
+  from `failed`; see `src/gnn/README.md`.
 
 ## Integration with pipeline
 
 A fep_lean-emitted document flows through the standard pipeline: step 3
 (parse), step 5 (type check), step 10 (ontology validation against
-`src/ontology/act_inf_ontology_terms.json`), step 11 (render, nine targets),
+`src/gnn/ontology/act_inf_ontology_terms.json`), step 11 (render, nine targets),
 step 12 (execute, eight targets). Naming convention for emitted documents:
 `GNNSection` identifier prefixed `FepLean`, with the `continuous` keyword for
 the continuous family so kind detection stays mechanical. Details:

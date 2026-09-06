@@ -1,51 +1,115 @@
 {
-  "timestamp": "2026-06-18T09:04:37.223830",
-  "source_directory": "input/gnn_files/pomdp_gridworld",
+  "timestamp": "2026-09-05T20:31:14.779763",
+  "source_directory": "input/gnn_files/continuous",
   "output_directory": "output/7_export_output",
   "files_exported": [
     {
-      "file_name": "pomdp_gridworld_3x3.md",
-      "file_path": "input/gnn_files/pomdp_gridworld/pomdp_gridworld_3x3.md",
+      "file_name": "predictive_coding_agent.md",
+      "file_path": "input/gnn_files/continuous/predictive_coding_agent.md",
       "exports": {
         "json": {
           "success": true,
-          "export_file": "output/7_export_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_json.json",
-          "file_size": 53119
+          "export_file": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/7_export_output/predictive_coding_agent/predictive_coding_agent_json.json",
+          "file_size": 17240
         },
         "xml": {
           "success": true,
-          "export_file": "output/7_export_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_xml.xml",
-          "file_size": 945
+          "export_file": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/7_export_output/predictive_coding_agent/predictive_coding_agent_xml.xml",
+          "file_size": 666
         },
         "graphml": {
           "success": true,
-          "export_file": "output/7_export_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_graphml.graphml",
-          "file_size": 1454
+          "export_file": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/7_export_output/predictive_coding_agent/predictive_coding_agent_graphml.graphml",
+          "file_size": 1078
         },
         "gexf": {
           "success": true,
-          "export_file": "output/7_export_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_gexf.gexf",
-          "file_size": 1190
+          "export_file": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/7_export_output/predictive_coding_agent/predictive_coding_agent_gexf.gexf",
+          "file_size": 891
         },
         "pickle": {
           "success": true,
-          "export_file": "output/7_export_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_pickle.pkl",
-          "file_size": 27714
+          "export_file": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/7_export_output/predictive_coding_agent/predictive_coding_agent_pickle.pkl",
+          "file_size": 9535
+        }
+      },
+      "success": true
+    },
+    {
+      "file_name": "stochastic_dynamics.md",
+      "file_path": "input/gnn_files/continuous/stochastic_dynamics.md",
+      "exports": {
+        "json": {
+          "success": true,
+          "export_file": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/7_export_output/stochastic_dynamics/stochastic_dynamics_json.json",
+          "file_size": 17068
+        },
+        "xml": {
+          "success": true,
+          "export_file": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/7_export_output/stochastic_dynamics/stochastic_dynamics_xml.xml",
+          "file_size": 666
+        },
+        "graphml": {
+          "success": true,
+          "export_file": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/7_export_output/stochastic_dynamics/stochastic_dynamics_graphml.graphml",
+          "file_size": 1078
+        },
+        "gexf": {
+          "success": true,
+          "export_file": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/7_export_output/stochastic_dynamics/stochastic_dynamics_gexf.gexf",
+          "file_size": 891
+        },
+        "pickle": {
+          "success": true,
+          "export_file": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/7_export_output/stochastic_dynamics/stochastic_dynamics_pickle.pkl",
+          "file_size": 9373
+        }
+      },
+      "success": true
+    },
+    {
+      "file_name": "continuous_navigation.md",
+      "file_path": "input/gnn_files/continuous/continuous_navigation.md",
+      "exports": {
+        "json": {
+          "success": true,
+          "export_file": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/7_export_output/continuous_navigation/continuous_navigation_json.json",
+          "file_size": 21440
+        },
+        "xml": {
+          "success": true,
+          "export_file": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/7_export_output/continuous_navigation/continuous_navigation_xml.xml",
+          "file_size": 898
+        },
+        "graphml": {
+          "success": true,
+          "export_file": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/7_export_output/continuous_navigation/continuous_navigation_graphml.graphml",
+          "file_size": 1402
+        },
+        "gexf": {
+          "success": true,
+          "export_file": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/7_export_output/continuous_navigation/continuous_navigation_gexf.gexf",
+          "file_size": 1134
+        },
+        "pickle": {
+          "success": true,
+          "export_file": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/7_export_output/continuous_navigation/continuous_navigation_pickle.pkl",
+          "file_size": 11434
         }
       },
       "success": true
     }
   ],
   "summary": {
-    "total_files": 1,
-    "successful_exports": 1,
+    "total_files": 3,
+    "successful_exports": 3,
     "failed_exports": 0,
     "formats_generated": {
-      "json": 1,
-      "xml": 1,
-      "graphml": 1,
-      "gexf": 1,
-      "pickle": 1
+      "json": 3,
+      "xml": 3,
+      "graphml": 3,
+      "gexf": 3,
+      "pickle": 3
     }
   }
 }

@@ -6,12 +6,12 @@ YOU OWN these paths ONLY (disjoint scope — no other agent touches them):
 - src/gnn/dep_graph.py  (render_graph_from_file — CLI + website dashboard)
 - src/gnn/parse_cache.py
 - src/gnn/multimodel.py
-- mirror tests: src/tests/gnn/  (add new test files; do not overwrite existing)
+- mirror tests: tests/gnn/  (add new test files; do not overwrite existing)
 
 DO NOT TOUCH anything outside this scope. In particular NEVER edit:
 - pyproject.toml, justfile, uv.lock, pytest.ini, .gitignore, AGENTS.md,
-  CLAUDE.md, README.md, CHANGELOG.md, src/main.py
-- src/tests/conftest.py, src/tests/helpers/, src/tests/categories.py
+  CLAUDE.md, README.md, CHANGELOG.md, src/gnn/main.py
+- tests/conftest.py, tests/helpers/, tests/categories.py
 - files owned by other agents (disjoint paths).
 
 GOAL
@@ -36,7 +36,7 @@ stable unless clearly justified.
 VERIFY (scoped only — do NOT run the full suite):
 - uv run ruff check src/gnn/watcher.py src/gnn/dep_graph.py src/gnn/parse_cache.py src/gnn/multimodel.py
 - uv run ruff format --check (same)
-- uv run pytest src/tests/gnn -q --tb=no -x
+- uv run pytest tests/gnn -q --tb=no -x
 - uv run mypy (same files) --config-file pyproject.toml
 
 HARD RULE: DO NOT commit, DO NOT push, DO NOT stage. Leave ALL changes

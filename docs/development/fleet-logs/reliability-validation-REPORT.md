@@ -16,23 +16,23 @@
 Commands ran from the repository root. The environment prefix on all uv commands was `UV_CACHE_DIR=/tmp/gnn-reliability-uv`; `--offline --no-sync` used the existing environment without installing dependencies.
 
 ```bash
-uv run --offline --no-sync --extra dev python -m pytest src/tests/validation src/tests/gnn/test_connection_annotation_roundtrip.py src/tests/cli/test_validation_semantic_parity.py src/tests/gnn/test_gnn_parsers_common.py src/tests/gnn/test_gnn_parsers_base_serializer.py src/tests/gnn/test_gnn_parsers_json.py src/tests/gnn/test_gnn_xml_parser.py src/tests/gnn/test_gnn_parsing.py src/tests/gnn/test_gnn_schema.py src/tests/gnn/test_gnn_validation.py src/tests/cli/test_templates_cli.py::test_packaged_templates_pass_strict_cli_validation src/tests/cli/test_cli_public_api.py::TestCmdHandlers::test_cmd_validate_warning_uses_exit_code_two src/tests/cli/test_cli_composition.py::TestEnvelopeMeta::test_validate_json_envelope_includes_command -q --tb=short
+uv run --offline --no-sync --extra dev python -m pytest tests/validation tests/gnn/test_connection_annotation_roundtrip.py tests/cli/test_validation_semantic_parity.py tests/gnn/test_gnn_parsers_common.py tests/gnn/test_gnn_parsers_base_serializer.py tests/gnn/test_gnn_parsers_json.py tests/gnn/test_gnn_xml_parser.py tests/gnn/test_gnn_parsing.py tests/gnn/test_gnn_schema.py tests/gnn/test_gnn_validation.py tests/cli/test_templates_cli.py::test_packaged_templates_pass_strict_cli_validation tests/cli/test_cli_public_api.py::TestCmdHandlers::test_cmd_validate_warning_uses_exit_code_two tests/cli/test_cli_composition.py::TestEnvelopeMeta::test_validate_json_envelope_includes_command -q --tb=short
 # 335 passed in 16.21s; /tmp/gnn-validation-final-tests.log
 
-uv run --offline --no-sync --extra dev python -m pytest src/tests/cli/test_cli_composition.py src/tests/cli/test_cli.py::test_run_combines_and_serializes_skip_steps src/tests/cli/test_cli.py::test_run_serializes_only_steps_for_pipeline_parser src/tests/cli/test_cli.py::test_run_rejects_overlapping_only_and_skip_steps -q --tb=short
+uv run --offline --no-sync --extra dev python -m pytest tests/cli/test_cli_composition.py tests/cli/test_cli.py::test_run_combines_and_serializes_skip_steps tests/cli/test_cli.py::test_run_serializes_only_steps_for_pipeline_parser tests/cli/test_cli.py::test_run_rejects_overlapping_only_and_skip_steps -q --tb=short
 # 60 passed in 4.14s; /tmp/gnn-cli-isolation.log
 
-uv run --offline --no-sync --extra dev ruff check --no-cache src/validation src/gnn/parsers src/gnn/schema_validator.py src/cli/__init__.py src/tests/validation/test_reliability_validation.py src/tests/gnn/test_connection_annotation_roundtrip.py src/tests/cli/test_validation_semantic_parity.py src/tests/cli/test_cli_composition.py
+uv run --offline --no-sync --extra dev ruff check --no-cache src/gnn/validation src/gnn/parsers src/gnn/schema_validator.py src/gnn/cli/__init__.py tests/validation/test_reliability_validation.py tests/gnn/test_connection_annotation_roundtrip.py tests/cli/test_validation_semantic_parity.py tests/cli/test_cli_composition.py
 # All checks passed; /tmp/gnn-validation-ruff-final.log
 
-uv run --offline --no-sync --extra dev mypy --no-incremental src/validation src/gnn/parsers src/gnn/schema_validator.py src/cli/__init__.py --config-file pyproject.toml
+uv run --offline --no-sync --extra dev mypy --no-incremental src/gnn/validation src/gnn/parsers src/gnn/schema_validator.py src/gnn/cli/__init__.py --config-file pyproject.toml
 # Success: no issues found in 54 source files; /tmp/gnn-validation-mypy-final.log
 
 uv run --offline --no-sync --extra dev python doc/development/docs_audit.py --strict --check-anchors --no-write
-# Exit 1: zero broken links/anchors, one unrelated missing AGENTS.md under src/tests/tests.
+# Exit 1: zero broken links/anchors, one unrelated missing AGENTS.md under tests/tests.
 # /tmp/gnn-validation-docs.log
 
-git -c core.fsmonitor=false diff --check -- src/validation src/gnn/parsers src/cli/__init__.py src/tests/validation/test_reliability_validation.py src/tests/gnn/test_connection_annotation_roundtrip.py src/tests/cli/test_validation_semantic_parity.py src/tests/cli/test_cli_composition.py src/cli/README.md
+git -c core.fsmonitor=false diff --check -- src/gnn/validation src/gnn/parsers src/gnn/cli/__init__.py tests/validation/test_reliability_validation.py tests/gnn/test_connection_annotation_roundtrip.py tests/cli/test_validation_semantic_parity.py tests/cli/test_cli_composition.py src/gnn/cli/README.md
 # Passed.
 ```
 
@@ -44,12 +44,12 @@ A fresh independent read-only reviewer found grouped-endpoint, negative-dimensio
 
 Parent retained `/tmp/gnn-fep-implementation-20260904/GeneralizedNotationNotation-baseline.json` (HEAD `64d49355acf197a0570b06ab334d97570774be64`). Full baseline attempts were interrupted amid existing native test fleets. Parent focused baseline `/tmp/gnn-fep-gnn-focused-baseline.log` and this worker's nearby test selection both exposed `TestHandlerSignatures` entering `_cmd_run`, the real pipeline, and Step 2 recursively. Worker selection was interrupted after 134 passes/3 failures; that launch boundary is now fixed and the complete CLI composition file passes. An initial CLI verification invocation selected a misspelled node ID and collected no tests; the corrected command above passed. Neither interrupted nor zero-test runs are reported as passing baselines.
 
-Full repository validation remains parent-owned. No native build was intentionally launched. The documentation audit's `src/tests/tests/AGENTS.md` gap is outside this ownership. No shared receipt-schema files, API/MCP core/render/execute files, bridge files, or ISA were edited. Validation MCP changes are confined to `src/validation/mcp.py`.
+Full repository validation remains parent-owned. No native build was intentionally launched. The documentation audit's `tests/tests/AGENTS.md` gap is outside this ownership. No shared receipt-schema files, API/MCP core/render/execute files, bridge files, or ISA were edited. Validation MCP changes are confined to `src/gnn/validation/mcp.py`.
 
 ## Changed files
 
-- `src/cli/README.md`
-- `src/cli/__init__.py`
+- `src/gnn/cli/README.md`
+- `src/gnn/cli/__init__.py`
 - `src/gnn/parsers/README.md`
 - `src/gnn/parsers/base_serializer.py`
 - `src/gnn/parsers/binary_parser.py`
@@ -76,16 +76,16 @@ Full repository validation remains parent-owned. No native build was intentional
 - `src/gnn/parsers/yaml_parser.py`
 - `src/gnn/parsers/yaml_serializer.py`
 - `src/gnn/parsers/znotation_serializer.py`
-- `src/tests/cli/test_cli_composition.py`
-- `src/tests/cli/test_validation_semantic_parity.py`
-- `src/tests/gnn/test_connection_annotation_roundtrip.py`
-- `src/tests/validation/test_reliability_validation.py`
-- `src/validation/AGENTS.md`
-- `src/validation/README.md`
-- `src/validation/SPEC.md`
-- `src/validation/__init__.py`
-- `src/validation/mcp.py`
-- `src/validation/semantic_validator.py`
-- `src/validation/structure.py`
-- `src/validation/workflow.py`
+- `tests/cli/test_cli_composition.py`
+- `tests/cli/test_validation_semantic_parity.py`
+- `tests/gnn/test_connection_annotation_roundtrip.py`
+- `tests/validation/test_reliability_validation.py`
+- `src/gnn/validation/AGENTS.md`
+- `src/gnn/validation/README.md`
+- `src/gnn/validation/SPEC.md`
+- `src/gnn/validation/__init__.py`
+- `src/gnn/validation/mcp.py`
+- `src/gnn/validation/semantic_validator.py`
+- `src/gnn/validation/structure.py`
+- `src/gnn/validation/workflow.py`
 - `docs/development/fleet-logs/reliability-validation-REPORT.md`

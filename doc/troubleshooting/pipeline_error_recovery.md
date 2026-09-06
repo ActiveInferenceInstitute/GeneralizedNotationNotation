@@ -104,7 +104,7 @@ def process_gnn_directory_lightweight(directory: Path) -> Dict[str, Any]:
 
 #### Resolution
 ```python
-# In src/execute/jax_runner.py:
+# In src/gnn/execute/jax_runner.py:
 def initialize_jax_devices():
     """Initialize JAX with graceful fallback."""
     try:
@@ -179,7 +179,7 @@ def initialize_jax_devices():
 ```bash
 # Check environment health & dependencies
 uv run gnn health --strict
-uv run python src/1_setup.py --verbose
+uv run python src/gnn/1_setup.py --verbose
 ```
 
 ### 2. Preflight Health Checker

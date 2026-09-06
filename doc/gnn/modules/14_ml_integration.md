@@ -2,8 +2,8 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/14_ml_integration.py` (55 lines)
-**Implementation Layer**: `src/ml_integration/`
+**Orchestrator**: `src/gnn/14_ml_integration.py` (55 lines)
+**Implementation Layer**: `src/gnn/ml_integration/`
 
 ## Module Description
 
@@ -11,7 +11,7 @@ This module provides comprehensive machine learning integration capabilities for
 
 
 ```
-src/ml_integration/
+src/gnn/ml_integration/
 ├── __init__.py                    # Module initialization and exports
 ├── AGENTS.md                      # Agent scaffolding documentation
 ├── mcp.py                         # Model Context Protocol integration
@@ -97,7 +97,7 @@ success = process_ml_integration(
 ## ML Framework Support
 
 ### Scikit-learn Integration
-**Status**: ✅ Supported — this is the only ML framework actually implemented in `src/ml_integration/processor.py`
+**Status**: ✅ Supported — this is the only ML framework actually implemented in `src/gnn/ml_integration/processor.py`
 **Features**:
 - Extracts structural features per GNN file (`num_states`, `num_observations`, `num_actions`, `num_variables`, `connectivity_ratio`, `max_dimension`, `total_parameters`, `has_precision`, `has_learning`, `has_ontology`, `has_parameterization`)
 - Trains a `DecisionTreeClassifier` (`max_depth=4`) and a `RandomForestClassifier` (`n_estimators=10`, `max_depth=4`) side by side for comparison
@@ -107,7 +107,7 @@ success = process_ml_integration(
 - Serializes each trained classifier to a `.pkl` artifact (`gnn_decision_tree.pkl`, `gnn_random_forest.pkl`) in the output directory
 
 ### PyTorch / TensorFlow-Keras / JAX-Flax
-`src/ml_integration/processor.py` has no imports of or references to `torch`, `tensorflow`, or `jax` — this module trains only the scikit-learn classifiers described above. Neural-network training, custom loss functions, TensorBoard integration, and JIT-compiled models are outside this module's current scope.
+`src/gnn/ml_integration/processor.py` has no imports of or references to `torch`, `tensorflow`, or `jax` — this module trains only the scikit-learn classifiers described above. Neural-network training, custom loss functions, TensorBoard integration, and JIT-compiled models are outside this module's current scope.
 
 ---
 
@@ -207,7 +207,7 @@ output/14_ml_integration_output/
 - `pipeline.config` - Configuration management
 
 ### Imported By
-- `src/tests/ml_integration/test_ml_integration_overall.py` - ML integration tests
+- `tests/ml_integration/test_ml_integration_overall.py` - ML integration tests
 - `main.py` - Pipeline orchestration
 
 ### Data Flow
@@ -220,10 +220,10 @@ GNN Models → ML Framework Selection → Dataset Preparation → Model Training
 ## Testing
 
 ### Test Files
-- `src/tests/ml_integration/test_ml_integration_overall.py` - Module-level tests
+- `tests/ml_integration/test_ml_integration_overall.py` - Module-level tests
 
 ### Test Coverage
-- Measure: `uv run --extra dev python -m pytest src/tests/ml_integration/ --cov=ml_integration --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
+- Measure: `uv run --extra dev python -m pytest tests/ml_integration/ --cov=ml_integration --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
 
 ### Key Test Scenarios
 1. Framework detection and selection
@@ -238,7 +238,7 @@ GNN Models → ML Framework Selection → Dataset Preparation → Model Training
 
 ### Tools Registered
 
-Registered in `register_tools` (`src/ml_integration/mcp.py`):
+Registered in `register_tools` (`src/gnn/ml_integration/mcp.py`):
 
 - `process_ml_integration` - Run Step 14 over a directory
 - `check_ml_frameworks` - Report which ML dependencies are importable
@@ -248,12 +248,12 @@ Registered in `register_tools` (`src/ml_integration/mcp.py`):
 ---
 
 ## Documentation
-- **[README](../../../src/ml_integration/README.md)**: Module Overview
-- **[AGENTS](../../../src/ml_integration/AGENTS.md)**: Agentic Workflows
-- **[SPEC](../../../src/ml_integration/SPEC.md)**: Architectural Specification
-- **[SKILL](../../../src/ml_integration/SKILL.md)**: Capability API
+- **[README](../../../src/gnn/ml_integration/README.md)**: Module Overview
+- **[AGENTS](../../../src/gnn/ml_integration/AGENTS.md)**: Agentic Workflows
+- **[SPEC](../../../src/gnn/ml_integration/SPEC.md)**: Architectural Specification
+- **[SKILL](../../../src/gnn/ml_integration/SKILL.md)**: Capability API
 
 
 ---
 
-**Source Reference**: [src/ml_integration](../../../src/ml_integration)
+**Source Reference**: [src/gnn/ml_integration](../../../src/gnn/ml_integration)

@@ -1,0 +1,15 @@
+{
+  "files_processed": 3,
+  "success": true,
+  "valid_files": 3,
+  "invalid_files": 0,
+  "warning_files": 0,
+  "total_errors": 0,
+  "total_warnings": 0,
+  "complexity_tiers": {
+    "medium": 1,
+    "large": 2
+  },
+  "total_parameters": 86,
+  "total_estimated_memory_bytes": 344
+}

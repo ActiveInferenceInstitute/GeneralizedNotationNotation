@@ -2,14 +2,14 @@
 
 Repo: /home/trim/Documents/Git/HumOS/projects/outside_of_hum/GeneralizedNotationNotation
 YOU OWN these paths ONLY (disjoint scope — no other agent touches them):
-- src/type_checker/  (type checking + resource estimation)
-- src/validation/  (advanced validation + consistency checking)
-- mirror tests: src/tests/type_checker/, src/tests/validation/
+- src/gnn/type_checker/  (type checking + resource estimation)
+- src/gnn/validation/  (advanced validation + consistency checking)
+- mirror tests: tests/type_checker/, tests/validation/
 
 DO NOT TOUCH anything outside this scope. In particular NEVER edit:
 - pyproject.toml, justfile, uv.lock, pytest.ini, .gitignore, AGENTS.md,
-  CLAUDE.md, README.md, CHANGELOG.md, src/main.py
-- src/tests/conftest.py, src/tests/helpers/, src/tests/categories.py
+  CLAUDE.md, README.md, CHANGELOG.md, src/gnn/main.py
+- tests/conftest.py, tests/helpers/, tests/categories.py
 - files owned by other agents (disjoint paths).
 
 GOAL
@@ -28,9 +28,9 @@ regression tests for any behaviour you pin or bug you fix. Keep public API
 stable unless clearly justified.
 
 VERIFY (scoped only — do NOT run the full suite):
-- uv run ruff check src/type_checker src/validation
-- uv run pytest src/tests/type_checker src/tests/validation -q --tb=no -x
-- uv run mypy src/type_checker src/validation --config-file pyproject.toml
+- uv run ruff check src/gnn/type_checker src/gnn/validation
+- uv run pytest tests/type_checker tests/validation -q --tb=no -x
+- uv run mypy src/gnn/type_checker src/gnn/validation --config-file pyproject.toml
 
 HARD RULE: DO NOT commit, DO NOT push, DO NOT stage. Leave ALL changes
 uncommitted. Do not touch git index/HEAD. Other agents work on disjoint paths;

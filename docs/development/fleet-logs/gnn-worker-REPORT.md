@@ -1,6 +1,6 @@
 # gnn-worker REPORT — src/gnn module fleet3 (2026-09-04)
 
-Worker scope: `src/gnn/` (+ `src/3_gnn.py`, unchanged — already 32 lines, thin-orchestrator compliant).
+Worker scope: `src/gnn/` (+ `src/gnn/3_gnn.py`, unchanged — already 32 lines, thin-orchestrator compliant).
 
 ## Files changed + why
 
@@ -26,7 +26,7 @@ Worker scope: `src/gnn/` (+ `src/3_gnn.py`, unchanged — already 32 lines, thin
 - **PKL dispatch parity** — `UnifiedGNNParser` now resolves PKL instead of raising.
 
 ### Tests
-- **`src/tests/gnn/test_gnn_convert.py` (new, 17 tests)** — pins `detect_gnn_format_from_content` (7: xml/pnml/json/markdown/unknown-fallback/empty/coq), `convert_file` (8: success, reparse model-name equality, explicit target format override, unknown extension ValueError, missing input FileNotFoundError, failed-parse ParseError, parse-only target PNML ValueError, nested parent creation), `_PARSER_CLASS_PATHS` parity with `PARSER_REGISTRY` (2). Deterministic, tmp_path-based, no network.
+- **`tests/gnn/test_gnn_convert.py` (new, 17 tests)** — pins `detect_gnn_format_from_content` (7: xml/pnml/json/markdown/unknown-fallback/empty/coq), `convert_file` (8: success, reparse model-name equality, explicit target format override, unknown extension ValueError, missing input FileNotFoundError, failed-parse ParseError, parse-only target PNML ValueError, nested parent creation), `_PARSER_CLASS_PATHS` parity with `PARSER_REGISTRY` (2). Deterministic, tmp_path-based, no network.
 
 ### Docs of record
 - **`src/gnn/AGENTS.md`** — new "Format Detection and File Conversion" section (public detector + `convert_file` contract) and "Shared Embedded-Model-Data Mechanism" section (class attrs + strict/lenient variants + which parsers keep specialized implementations); Last Updated bumped.
@@ -47,15 +47,15 @@ Worker scope: `src/gnn/` (+ `src/3_gnn.py`, unchanged — already 32 lines, thin
 
 ## Verification output tails (canonical commands)
 ```
-uv run ruff check src/gnn src/tests/gnn     → All checks passed!
+uv run ruff check src/gnn tests/gnn     → All checks passed!
 uv run --extra dev mypy src/gnn --config-file pyproject.toml
                                             → Success: no issues found in 82 source files
-uv run pytest src/tests/gnn/ -q             → 404 passed in 1.47s
+uv run pytest tests/gnn/ -q             → 404 passed in 1.47s
                                               (baseline 387 + 17 new; `just` is not
                                               installed on this host — ran the
                                               Justfile's exact recipe command
-                                              `uv run pytest src/tests/gnn/ -q` instead)
-uv run ruff format --check src/gnn src/tests/gnn → 107 files already formatted
+                                              `uv run pytest tests/gnn/ -q` instead)
+uv run ruff format --check src/gnn tests/gnn → 107 files already formatted
 ```
 Baseline before work: ruff+mypy clean, 387 tests passing at HEAD f64ac9085.
 
@@ -77,5 +77,5 @@ Baseline before work: ruff+mypy clean, 387 tests passing at HEAD f64ac9085.
 ## Environment notes for the coordinator
 - `just` is not installed (`just test-mod gnn` unrunnable); the equivalent recipe command was run.
 - A stale non-editable `gnn` copy exists in `.venv/lib/python3.11/site-packages/gnn` — harmless under pytest (conftest prepends `src/`) but `python -c "import gnn"` resolves the stale copy. Worth re-running `uv sync` when the fleet drains (I did NOT touch uv.lock per fleet rules).
-- `src/utils/pipeline_validator.py` had a transient syntax error mid-session (peer in-flight edit); resolved by the time of final verification.
+- `src/gnn/utils/pipeline_validator.py` had a transient syntax error mid-session (peer in-flight edit); resolved by the time of final verification.
 - mcp.py lazy-capability refactor was attempted and **reverted to HEAD** per advisory: `validate-mcp-manifest`/`mcp-selftest` gates cannot be run concurrently, payoff unproven. Tracked as follow-up idea #0 for a solo session: mcp.py:26-46 import-time try/except + warning is the only remaining import-time side effect in the module.

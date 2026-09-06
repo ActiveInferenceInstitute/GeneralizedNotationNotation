@@ -2,7 +2,7 @@
 
 ## Scope
 Documentation for the GNN MCP server: tool catalog, wiring contracts, and
-development guide for adding new tools. Complements `src/mcp/` which is
+development guide for adding new tools. Complements `src/gnn/mcp/` which is
 the executable server implementation.
 
 ## Contents

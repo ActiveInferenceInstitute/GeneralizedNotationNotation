@@ -137,7 +137,7 @@ name: "dev_hotreload"
 # File watching for development
 development:
   hot_reload: true
-  watch_directories: ["./src/gnn/gnn_examples", "./src/templates"]
+  watch_directories: ["./src/gnn/gnn_examples", "./src/gnn/template"]
   watch_extensions: [".md", ".gnn", ".yaml"]
   reload_delay: 2.0
   
@@ -393,14 +393,14 @@ pipeline:
 targets:
   pymdp:
     enable: true
-    template_dir: "./src/render/pymdp/templates"
+    template_dir: "./src/gnn/render/pymdp/templates"
     output_subdir: "pymdp"
     matrix_validation: true
     default_matrices: false
     
   rxinfer:
     enable: true
-    template_dir: "./src/render/rxinfer/templates"
+    template_dir: "./src/gnn/render/rxinfer/templates"
     output_subdir: "rxinfer"
     factor_graph_validation: true
     message_passing_algorithm: "belief_propagation"

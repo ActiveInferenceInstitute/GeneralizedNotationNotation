@@ -29,16 +29,16 @@ GNN ontology processing is integrated into the 25-step processing pipeline:
 
 - Ontology term extraction and validation
 - Semantic mapping and analysis
-- See: [src/ontology/AGENTS.md](../../../src/ontology/AGENTS.md)
+- See: [src/gnn/ontology/AGENTS.md](../../../src/gnn/ontology/AGENTS.md)
 
 **Quick Start:**
 
 ```bash
 # Process ontology validation
-uv run python src/main.py --only-steps "3,10" --target-dir input/gnn_files --verbose
+uv run python src/gnn/main.py --only-steps "3,10" --target-dir input/gnn_files --verbose
 
 # Run ontology step directly
-uv run python src/10_ontology.py --target-dir input/gnn_files --output-dir output --verbose
+uv run python src/gnn/10_ontology.py --target-dir input/gnn_files --output-dir output --verbose
 ```
 
 ## Active Inference Ontology
@@ -207,7 +207,7 @@ Ontology processing integrates throughout the pipeline:
 
 ## Related Documentation
 
-- **[Ontology Module](../../../src/ontology/AGENTS.md)**: Implementation details
+- **[Ontology Module](../../../src/gnn/ontology/AGENTS.md)**: Implementation details
 - **[Active Inference Ontology](ontology_system.md)**: In-repo ontology documentation
 - **[GNN Tools](../operations/gnn_tools.md)**: Complete GNN tools reference
 - **[GNN Standards](../reference/gnn_standards.md)**: GNN domain knowledge and standards

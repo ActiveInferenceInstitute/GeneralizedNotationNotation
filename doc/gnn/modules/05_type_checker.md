@@ -2,8 +2,8 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/5_type_checker.py` (thin script, 70 lines)
-**Implementation Layer**: `src/type_checker/`
+**Orchestrator**: `src/gnn/5_type_checker.py` (thin script, 70 lines)
+**Implementation Layer**: `src/gnn/type_checker/`
 **Canonical Entry Point**: `type_checker.processor.GNNTypeChecker`
 
 ## Module Description
@@ -37,19 +37,19 @@ Step 5 is invoked through the standard pipeline orchestrator:
 
 ```bash
 # Run only step 5 against the sample corpus
-python src/main.py --only-steps 5 --verbose
+python src/gnn/main.py --only-steps 5 --verbose
 
 # Strict mode: treat every warning as an error
-python src/main.py --only-steps 5 --strict
+python src/gnn/main.py --only-steps 5 --strict
 
 # With resource estimation
-python src/main.py --only-steps 5 --estimate-resources
+python src/gnn/main.py --only-steps 5 --estimate-resources
 ```
 
 Direct invocation (bypass orchestrator, useful for CI):
 
 ```bash
-python src/5_type_checker.py --target-dir input/gnn_files \
+python src/gnn/5_type_checker.py --target-dir input/gnn_files \
                              --output-dir output \
                              --strict \
                              --estimate-resources
@@ -61,8 +61,8 @@ python src/5_type_checker.py --target-dir input/gnn_files \
 
 | Name | Kind | Purpose |
 |------|------|---------|
-| `GNNTypeChecker` | class | Orchestrator (`src/type_checker/checking/core.py`); `check_file(path)` validates a single file, `validate_gnn_files(target_dir, output_dir, ...)` validates a directory, `generate_report(...)` and `generate_json_data(...)` write the Markdown/JSON summaries. |
-| `estimate_file_resources(content: str) -> ResourceEstimate` | function | Estimates computational resources (state/observation/action space size, parameters, FLOPs, memory, complexity class) for one GNN file's content; defined in `src/type_checker/checking/core.py`, bridging to `estimation/estimator.py`. |
+| `GNNTypeChecker` | class | Orchestrator (`src/gnn/type_checker/checking/core.py`); `check_file(path)` validates a single file, `validate_gnn_files(target_dir, output_dir, ...)` validates a directory, `generate_report(...)` and `generate_json_data(...)` write the Markdown/JSON summaries. |
+| `estimate_file_resources(content: str) -> ResourceEstimate` | function | Estimates computational resources (state/observation/action space size, parameters, FLOPs, memory, complexity class) for one GNN file's content; defined in `src/gnn/type_checker/checking/core.py`, bridging to `estimation/estimator.py`. |
 
 ## Validation Rules
 
@@ -119,7 +119,7 @@ Per run, Step 5 produces in `output/5_type_checker_output/`:
 
 ## Testing
 
-Test file: `src/tests/type_checker/test_type_checker_overall.py`
+Test file: `tests/type_checker/test_type_checker_overall.py`
 
 Key coverage areas:
 
@@ -131,7 +131,7 @@ Key coverage areas:
 - Strict promotion of B-orientation contradictions (`GNN-E002`) is pinned by
   `test_strict_mode_constructor_promotes_b_contradiction_to_error` and
   `test_validate_content_strict_override_beats_instance_default` in
-  `src/tests/type_checker/test_type_checker_content_validation.py`; the
+  `tests/type_checker/test_type_checker_content_validation.py`; the
   Phase 1.1 warning-continuation exits (invalid files → 2, no files → 2)
   are pinned by `test_validate_single_gnn_file_never_raises_on_content_error`
   and `test_validate_gnn_files_no_files_is_warning_exit_2` in the same file.
@@ -149,8 +149,8 @@ sample corpus rather than MagicMock fixtures.
 
 ## Source References
 
-- Module root: [src/type_checker/](../../../src/type_checker)
-- Processor: [src/type_checker/processor.py](../../../src/type_checker/processor.py)
-- Estimation: [src/type_checker/estimation_strategies.py](../../../src/type_checker/estimation_strategies.py)
-- Visualizer: [src/type_checker/visualizer.py](../../../src/type_checker/visualizer.py)
-- Tests: [src/tests/type_checker/test_type_checker_overall.py](../../../src/tests/type_checker/test_type_checker_overall.py)
+- Module root: [src/gnn/type_checker/](../../../src/gnn/type_checker)
+- Processor: [src/gnn/type_checker/processor.py](../../../src/gnn/type_checker/processor.py)
+- Estimation: [src/gnn/type_checker/estimation_strategies.py](../../../src/gnn/type_checker/estimation_strategies.py)
+- Visualizer: [src/gnn/type_checker/visualizer.py](../../../src/gnn/type_checker/visualizer.py)
+- Tests: [tests/type_checker/test_type_checker_overall.py](../../../tests/type_checker/test_type_checker_overall.py)

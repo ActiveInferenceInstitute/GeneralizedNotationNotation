@@ -291,14 +291,14 @@ This synergy would streamline the workflow from theoretical model design to prac
 RxInfer.jl is a powerful Julia package for Bayesian inference on factor graphs using genuine `@model` + `infer()` variational message-passing. This guide explains how GNN models are translated to RxInfer.jl code and how to work with the generated implementations for Active Inference applications.
 
 > **Real pipeline (canonical today).** The working implementation lives in the
-> pipeline, not in the illustrative snippets below. `src/render/rxinfer/rxinfer_renderer.py`
+> pipeline, not in the illustrative snippets below. `src/gnn/render/rxinfer/rxinfer_renderer.py`
 > emits a genuine Julia script per exemplar model that defines
 > `@model function pomdp_model(y, A, B, D, u, T)` using `Categorical` and
 > `DiscreteTransition` nodes and runs `infer()` with `free_energy = true`,
 > returning real posteriors and a genuine variational free energy trace.
 > Execution uses a committed Julia environment (`Project.toml` +
-> `Manifest.toml` pinning RxInfer 5.5.0 under `src/execute/rxinfer/`), invoked via
-> `julia --startup-file=no --project=src/execute/rxinfer <script>`.
+> `Manifest.toml` pinning RxInfer 5.5.0 under `src/gnn/execute/rxinfer/`), invoked via
+> `julia --startup-file=no --project=src/gnn/execute/rxinfer <script>`.
 > `setup_environment.jl` uses `Pkg.activate()` + `Pkg.instantiate()` — there is no
 > runtime `Pkg.add`. All 29 exemplar GNN files render and execute successfully.
 

@@ -22,7 +22,7 @@ and Step 12 never executes those frameworks for that model. Skips at Step 12
 (`skipped`) mean a *toolchain* is missing on the machine (Julia, `torch`,
 `cmdstanpy`/CmdStan), not that the model is unrepresentable.
 
-Run everything with `uv run python src/main.py --target-dir input/gnn_files`
+Run everything with `uv run python src/gnn/main.py --target-dir input/gnn_files`
 and read `output/11_render_output/render_processing_summary.json` and
 `output/12_execute_output/summaries/execution_summary.json` for the live
 counts; do not trust hard-coded numbers in prose.

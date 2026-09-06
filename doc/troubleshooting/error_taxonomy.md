@@ -175,7 +175,7 @@ SOLUTION: Add third column or reduce state space to 2
 ### Error Context Collection
 ```bash
 # Collect comprehensive error context (use a directory containing the model)
-uv run python src/main.py --verbose \
+uv run python src/gnn/main.py --verbose \
   --target-dir ./problematic_models \
   > debug_output.log 2>&1
 ```
@@ -186,7 +186,7 @@ uv run python src/main.py --verbose \
 import pdb
 
 # Inspect model state with the real public API
-from src.gnn import parse_gnn_file, validate_gnn_file
+from gnn.gnn import parse_gnn_file, validate_gnn_file
 
 parsed = parse_gnn_file("problematic_model.md")
 result = validate_gnn_file("problematic_model.md")
@@ -199,10 +199,10 @@ if not result["is_valid"]:
 ### Performance Profiling
 ```bash
 # Profile memory usage
-uv run --extra dev python -m memory_profiler src/main.py --target-dir ./large_models
+uv run --extra dev python -m memory_profiler src/gnn/main.py --target-dir ./large_models
 
 # Profile CPU usage  
-uv run python -m cProfile -o profile_output.prof src/main.py
+uv run python -m cProfile -o profile_output.prof src/gnn/main.py
 uv run python -m pstats profile_output.prof
 ```
 
@@ -219,10 +219,10 @@ uv run python -m pstats profile_output.prof
 ```bash
 # Pre-commit validation
 git add model.md
-uv run python src/main.py --only-steps 5 --strict --target-dir ./models
+uv run python src/gnn/main.py --only-steps 5 --strict --target-dir ./models
 
 # Continuous integration
-uv run python src/2_tests.py --comprehensive
+uv run python src/gnn/2_tests.py --comprehensive
 ```
 
 ---

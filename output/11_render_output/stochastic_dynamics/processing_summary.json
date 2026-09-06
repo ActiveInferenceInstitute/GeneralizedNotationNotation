@@ -1,0 +1,36 @@
+{
+  "timestamp": "2026-09-05T20:25:31.289511",
+  "source_file": "input/gnn_files/continuous/stochastic_dynamics.md",
+  "model_name": "Stochastic Continuous Dynamics Agent",
+  "pomdp_dimensions": {
+    "num_states": 2,
+    "num_observations": 2,
+    "num_actions": 0
+  },
+  "frameworks_requested": [
+    "pymdp",
+    "rxinfer",
+    "activeinference_jl",
+    "jax",
+    "discopy",
+    "pytorch",
+    "numpyro",
+    "stan",
+    "bnlearn"
+  ],
+  "frameworks_processed": [
+    "rxinfer",
+    "jax",
+    "pytorch",
+    "numpyro",
+    "stan"
+  ],
+  "frameworks_failed": [],
+  "frameworks_unsupported": [
+    "pymdp",
+    "activeinference_jl",
+    "discopy",
+    "bnlearn"
+  ],
+  "model_kind": "continuous"
+}

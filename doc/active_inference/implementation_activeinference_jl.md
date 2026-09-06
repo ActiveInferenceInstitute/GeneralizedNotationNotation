@@ -19,15 +19,15 @@
 
 | Component | Path | Description |
 |-----------|------|-------------|
-| **Runner** | [`src/execute/activeinference_jl/activeinference_runner.jl`](../../src/execute/activeinference_jl/activeinference_runner.jl) | Main runner |
-| **Julia Interface** | [`src/execute/activeinference_jl/`](../../src/execute/activeinference_jl/) | Full interface |
+| **Runner** | [`src/gnn/execute/activeinference_jl/activeinference_runner.jl`](../../src/gnn/execute/activeinference_jl/activeinference_runner.jl) | Main runner |
+| **Julia Interface** | [`src/gnn/execute/activeinference_jl/`](../../src/gnn/execute/activeinference_jl/) | Full interface |
 
 ### Analysis Tools
 
 | Component | Path | Description |
 |-----------|------|-------------|
-| **Analyzer** | [`src/analysis/activeinference_jl/analyzer.py`](../../src/analysis/activeinference_jl/analyzer.py) | Python analysis |
-| **Julia Analysis** | [`src/analysis/activeinference_jl/`](../../src/analysis/activeinference_jl/) | Julia analysis scripts |
+| **Analyzer** | [`src/gnn/analysis/activeinference_jl/analyzer.py`](../../src/gnn/analysis/activeinference_jl/analyzer.py) | Python analysis |
+| **Julia Analysis** | [`src/gnn/analysis/activeinference_jl/`](../../src/gnn/analysis/activeinference_jl/) | Julia analysis scripts |
 
 ---
 

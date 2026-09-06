@@ -259,7 +259,7 @@ def _strip_parameter_comment(line: str) -> str:
 
 def _parse_parameter_value(raw_value: str) -> Any:
     """Parse GNN tuple/braced parameter syntax as a Python literal structure."""
-    from utils.safe_eval import safe_literal_eval
+    from gnn.utils.safe_eval import safe_literal_eval
 
     literal_text = raw_value.strip().replace("{", "[").replace("}", "]")
     return safe_literal_eval(literal_text)

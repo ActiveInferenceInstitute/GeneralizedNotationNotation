@@ -53,11 +53,11 @@
 
 **Toolchain**: The committed `uv.lock` is the dependency source of truth (`uv lock --check` and `uv sync --frozen` must pass); the Dockerfile constraint `uv>=0.7.8` is the minimum bootstrap floor. Ruff lint and MyPy gates are maintained clean on `src/`.
 
-**Test Suite**: The command of record is `uv run --extra dev python -m pytest src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py`. Run it in the current environment for pass/skip totals; Julia RxInfer execution uses the committed `Project.toml` under `src/execute/rxinfer/`, and ActiveInference.jl uses the committed environment under `src/execute/activeinference_jl/` (`julia --startup-file=no --project=<env> <script>`). Ollama tests are opt-in when a local daemon and configured test model are available.
+**Test Suite**: The command of record is `uv run --extra dev python -m pytest tests/ -q --tb=no --ignore=tests/llm/test_llm_ollama.py --ignore=tests/llm/test_llm_ollama_integration.py`. Run it in the current environment for pass/skip totals; Julia RxInfer execution uses the committed `Project.toml` under `src/gnn/execute/rxinfer/`, and ActiveInference.jl uses the committed environment under `src/gnn/execute/activeinference_jl/` (`julia --startup-file=no --project=<env> <script>`). Ollama tests are opt-in when a local daemon and configured test model are available.
 **Published Output Evidence (verified 2026-06-18)**: root `output/` is a POMDP GridWorld full-pipeline publication generated from `input/gnn_files/pomdp_gridworld` with `--frameworks all` and validated by `uv run --extra dev python scripts/check_pomdp_gridworld_outputs.py output`.
 **Features (v2.0.0)**: semantic fidelity ledgers across all maintained model families, strict JSON parse/serialize/parse preservation for variables, edges, dimensions, parameter shapes, equations, time, and ontology mappings; cross-framework reliability ledgers with explicit compatible/unsupported backend statuses; GridWorld comparison across PyMDP, RxInfer, and ActiveInference.jl; model-family acceptance and interpretability ledgers; maintained template CLI (`gnn templates list`, `gnn templates show`, `gnn pull`); authenticated local MCP HTTP orchestration; structured PyMDP 1.0 POMDP execution; static/headless GUI publication; PyMDP Scaling Study; and MCP Full Module Exposure.
-**New in v3.0.0 ("Long-Running Orchestration")**: three safe-by-design `src/pipeline/` contracts — durable observation streams, resumable run sessions, and auditable container plans — plus additive live wiring, a strict acceptance gate (`scripts/run_v3_orchestration_acceptance.py`), and 3 new MCP tools. No live infrastructure mutation; every module generates, validates, replays, or plans data only. See [doc/pipeline/v3_orchestration.md](./doc/pipeline/v3_orchestration.md); run identity, reproduction, and manifest-verification rules: [doc/development/durable-runs.md](./doc/development/durable-runs.md).
-**New in v3.2.0 ("Exemplar Gold Standard")**: the `input/gnn_files/continuous/` exemplars are pure linear-Gaussian state-space models (`F/H/Q/R`, `prior_mean/prior_cov`, optional `goal_mean/control_gain`) with native JAX, NumPyro, PyTorch, Stan and RxInfer.jl backends; `unsupported` is a first-class render status for categorical backends (PyMDP, ActiveInference.jl, DisCoPy, bnlearn) on continuous models and is never handed to Step 12; the Stan renderer emits runnable HMM (forward algorithm) and LGSSM (Kalman marginal likelihood) programs plus a `<stem>_stan.py` cmdstanpy driver executed by `src/execute/stan/`; Step 12 merges `execution_summary.json` across input folders; the Julia pre-exec gate degrades to an advisory sweep instead of blocking scripts on a toolchain-less launcher. See [CHANGELOG.md](./CHANGELOG.md) §3.2.0 and [Model Kinds and Framework Support](#-model-kinds-and-framework-support-v320).
+**New in v3.0.0 ("Long-Running Orchestration")**: three safe-by-design `src/gnn/pipeline/` contracts — durable observation streams, resumable run sessions, and auditable container plans — plus additive live wiring, a strict acceptance gate (`scripts/run_v3_orchestration_acceptance.py`), and 3 new MCP tools. No live infrastructure mutation; every module generates, validates, replays, or plans data only. See [doc/pipeline/v3_orchestration.md](./doc/pipeline/v3_orchestration.md); run identity, reproduction, and manifest-verification rules: [doc/development/durable-runs.md](./doc/development/durable-runs.md).
+**New in v3.2.0 ("Exemplar Gold Standard")**: the `input/gnn_files/continuous/` exemplars are pure linear-Gaussian state-space models (`F/H/Q/R`, `prior_mean/prior_cov`, optional `goal_mean/control_gain`) with native JAX, NumPyro, PyTorch, Stan and RxInfer.jl backends; `unsupported` is a first-class render status for categorical backends (PyMDP, ActiveInference.jl, DisCoPy, bnlearn) on continuous models and is never handed to Step 12; the Stan renderer emits runnable HMM (forward algorithm) and LGSSM (Kalman marginal likelihood) programs plus a `<stem>_stan.py` cmdstanpy driver executed by `src/gnn/execute/stan/`; Step 12 merges `execution_summary.json` across input folders; the Julia pre-exec gate degrades to an advisory sweep instead of blocking scripts on a toolchain-less launcher. See [CHANGELOG.md](./CHANGELOG.md) §3.2.0 and [Model Kinds and Framework Support](#-model-kinds-and-framework-support-v320).
 📖 **DOI:** [10.5281/zenodo.7803328](https://doi.org/10.5281/zenodo.7803328)  
 📁 **Archive:** [zenodo.org/records/7803328](https://zenodo.org/records/7803328)
 
@@ -115,7 +115,7 @@ GeneralizedNotationNotation/
 ```
 
 Generated run artifacts belong under `output/` or a step-specific output directory.
-Those files are intentionally not maintained source; regenerate them with `src/main.py`
+Those files are intentionally not maintained source; regenerate them with `src/gnn/main.py`
 or the individual numbered step commands when you need fresh evidence.
 
 ---
@@ -126,31 +126,31 @@ The GNN pipeline is composed of **25 specialized modules**, each acting as an ag
 
 | Step | Agent / Module | Description | Links |
 | :--- | :--- | :--- | :--- |
-| **0** | **[Template](src/template/)** | Initial project scaffolding and configuration. | [🤖 Agent](src/template/AGENTS.md) • [📝 Code](src/0_template.py) |
-| **1** | **[Setup](src/setup/)** | Environment, dependencies, and UV package management. | [🤖 Agent](src/setup/AGENTS.md) • [📝 Code](src/1_setup.py) |
-| **2** | **[Tests](src/tests/)** | Comprehensive suite orchestration and coverage analysis. | [🤖 Agent](src/tests/AGENTS.md) • [📝 Code](src/2_tests.py) |
-| **3** | **[GNN](src/gnn/)** | Core parsing, discovery, and semantic object model. | [🤖 Agent](src/gnn/AGENTS.md) • [📝 Code](src/3_gnn.py) |
-| **4** | **[Registry](src/model_registry/)** | Validation and versioning of model artifacts. | [🤖 Agent](src/model_registry/AGENTS.md) • [📝 Code](src/4_model_registry.py) |
-| **5** | **[TypeCheck](src/type_checker/)** | Static analysis, dimension validation, resource estimation. | [🤖 Agent](src/type_checker/AGENTS.md) • [📝 Code](src/5_type_checker.py) |
-| **6** | **[Validate](src/validation/)** | Logical consistency and ontology compliance. | [🤖 Agent](src/validation/AGENTS.md) • [📝 Code](src/6_validation.py) |
-| **7** | **[Export](src/export/)** | Serialization to JSON, XML, GraphML, etc. | [🤖 Agent](src/export/AGENTS.md) • [📝 Code](src/7_export.py) |
-| **8** | **[Viz](src/visualization/)** | Static visualization of matrices and network logic. | [🤖 Agent](src/visualization/AGENTS.md) • [📝 Code](src/8_visualization.py) |
-| **9** | **[Adv. Viz](src/advanced_visualization/)** | Interactive diagrams and complex visual analysis. | [🤖 Agent](src/advanced_visualization/AGENTS.md) • [📝 Code](src/9_advanced_viz.py) |
-| **10** | **[Ontology](src/ontology/)** | Semantic mapping to Active Inference definitions. | [🤖 Agent](src/ontology/AGENTS.md) • [📝 Code](src/10_ontology.py) |
-| **11** | **[Render](src/render/)** | Code generation for PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, bnlearn (`render/framework_registry.py`) | [🤖 Agent](src/render/AGENTS.md) • [📝 Code](src/11_render.py) |
-| **12** | **[Execute](src/execute/)** | Simulation runner and runtime management. | [🤖 Agent](src/execute/AGENTS.md) • [📝 Code](src/12_execute.py) |
-| **13** | **[LLM](src/llm/)** | Neurosymbolic analysis and text generation. | [🤖 Agent](src/llm/AGENTS.md) • [📝 Code](src/13_llm.py) |
-| **14** | **[ML](src/ml_integration/)** | Integration with external ML frameworks. | [🤖 Agent](src/ml_integration/AGENTS.md) • [📝 Code](src/14_ml_integration.py) |
-| **15** | **[Audio](src/audio/)** | Sonification of model dynamics. | [🤖 Agent](src/audio/AGENTS.md) • [📝 Code](src/15_audio.py) |
-| **16** | **[Analysis](src/analysis/)** | Statistical post-processing of simulation results. | [🤖 Agent](src/analysis/AGENTS.md) • [📝 Code](src/16_analysis.py) |
-| **17** | **[Integrate](src/integration/)** | Cross-module synthesis and coordination. | [🤖 Agent](src/integration/AGENTS.md) • [📝 Code](src/17_integration.py) |
-| **18** | **[Security](src/security/)** | Safety checks and sandboxing. | [🤖 Agent](src/security/AGENTS.md) • [📝 Code](src/18_security.py) |
-| **19** | **[Research](src/research/)** | Experimental features and benchmarking. | [🤖 Agent](src/research/AGENTS.md) • [📝 Code](src/19_research.py) |
-| **20** | **[Website](src/website/)** | Static site generation for reports/docs. | [🤖 Agent](src/website/AGENTS.md) • [📝 Code](src/20_website.py) |
-| **21** | **[MCP](src/mcp/)** | Model Context Protocol server and tools. | [🤖 Agent](src/mcp/AGENTS.md) • [📝 Code](src/21_mcp.py) |
-| **22** | **[GUI](src/gui/)** | Interactive visual editors (Web & Local). | [🤖 Agent](src/gui/AGENTS.md) • [📝 Code](src/22_gui.py) |
-| **23** | **[Report](src/report/)** | Final comprehensive report assembly. | [🤖 Agent](src/report/AGENTS.md) • [📝 Code](src/23_report.py) |
-| **24** | **[Intelligent Analysis](src/intelligent_analysis/)** | AI-powered pipeline analysis and executive reports. | [🤖 Agent](src/intelligent_analysis/AGENTS.md) • [📝 Code](src/24_intelligent_analysis.py) |
+| **0** | **[Template](src/gnn/template/)** | Initial project scaffolding and configuration. | [🤖 Agent](src/gnn/template/AGENTS.md) • [📝 Code](src/gnn/0_template.py) |
+| **1** | **[Setup](src/gnn/setup/)** | Environment, dependencies, and UV package management. | [🤖 Agent](src/gnn/setup/AGENTS.md) • [📝 Code](src/gnn/1_setup.py) |
+| **2** | **[Tests](tests/)** | Comprehensive suite orchestration and coverage analysis. | [🤖 Agent](tests/AGENTS.md) • [📝 Code](src/gnn/2_tests.py) |
+| **3** | **[GNN](src/gnn/)** | Core parsing, discovery, and semantic object model. | [🤖 Agent](src/gnn/AGENTS.md) • [📝 Code](src/gnn/3_gnn.py) |
+| **4** | **[Registry](src/gnn/model_registry/)** | Validation and versioning of model artifacts. | [🤖 Agent](src/gnn/model_registry/AGENTS.md) • [📝 Code](src/gnn/4_model_registry.py) |
+| **5** | **[TypeCheck](src/gnn/type_checker/)** | Static analysis, dimension validation, resource estimation. | [🤖 Agent](src/gnn/type_checker/AGENTS.md) • [📝 Code](src/gnn/5_type_checker.py) |
+| **6** | **[Validate](src/gnn/validation/)** | Logical consistency and ontology compliance. | [🤖 Agent](src/gnn/validation/AGENTS.md) • [📝 Code](src/gnn/6_validation.py) |
+| **7** | **[Export](src/gnn/export/)** | Serialization to JSON, XML, GraphML, etc. | [🤖 Agent](src/gnn/export/AGENTS.md) • [📝 Code](src/gnn/7_export.py) |
+| **8** | **[Viz](src/gnn/visualization/)** | Static visualization of matrices and network logic. | [🤖 Agent](src/gnn/visualization/AGENTS.md) • [📝 Code](src/gnn/8_visualization.py) |
+| **9** | **[Adv. Viz](src/gnn/advanced_visualization/)** | Interactive diagrams and complex visual analysis. | [🤖 Agent](src/gnn/advanced_visualization/AGENTS.md) • [📝 Code](src/gnn/9_advanced_viz.py) |
+| **10** | **[Ontology](src/gnn/ontology/)** | Semantic mapping to Active Inference definitions. | [🤖 Agent](src/gnn/ontology/AGENTS.md) • [📝 Code](src/gnn/10_ontology.py) |
+| **11** | **[Render](src/gnn/render/)** | Code generation for PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, bnlearn (`render/framework_registry.py`) | [🤖 Agent](src/gnn/render/AGENTS.md) • [📝 Code](src/gnn/11_render.py) |
+| **12** | **[Execute](src/gnn/execute/)** | Simulation runner and runtime management. | [🤖 Agent](src/gnn/execute/AGENTS.md) • [📝 Code](src/gnn/12_execute.py) |
+| **13** | **[LLM](src/gnn/llm/)** | Neurosymbolic analysis and text generation. | [🤖 Agent](src/gnn/llm/AGENTS.md) • [📝 Code](src/gnn/13_llm.py) |
+| **14** | **[ML](src/gnn/ml_integration/)** | Integration with external ML frameworks. | [🤖 Agent](src/gnn/ml_integration/AGENTS.md) • [📝 Code](src/gnn/14_ml_integration.py) |
+| **15** | **[Audio](src/gnn/audio/)** | Sonification of model dynamics. | [🤖 Agent](src/gnn/audio/AGENTS.md) • [📝 Code](src/gnn/15_audio.py) |
+| **16** | **[Analysis](src/gnn/analysis/)** | Statistical post-processing of simulation results. | [🤖 Agent](src/gnn/analysis/AGENTS.md) • [📝 Code](src/gnn/16_analysis.py) |
+| **17** | **[Integrate](src/gnn/integration/)** | Cross-module synthesis and coordination. | [🤖 Agent](src/gnn/integration/AGENTS.md) • [📝 Code](src/gnn/17_integration.py) |
+| **18** | **[Security](src/gnn/security/)** | Safety checks and sandboxing. | [🤖 Agent](src/gnn/security/AGENTS.md) • [📝 Code](src/gnn/18_security.py) |
+| **19** | **[Research](src/gnn/research/)** | Experimental features and benchmarking. | [🤖 Agent](src/gnn/research/AGENTS.md) • [📝 Code](src/gnn/19_research.py) |
+| **20** | **[Website](src/gnn/website/)** | Static site generation for reports/docs. | [🤖 Agent](src/gnn/website/AGENTS.md) • [📝 Code](src/gnn/20_website.py) |
+| **21** | **[MCP](src/gnn/mcp/)** | Model Context Protocol server and tools. | [🤖 Agent](src/gnn/mcp/AGENTS.md) • [📝 Code](src/gnn/21_mcp.py) |
+| **22** | **[GUI](src/gnn/gui/)** | Interactive visual editors (Web & Local). | [🤖 Agent](src/gnn/gui/AGENTS.md) • [📝 Code](src/gnn/22_gui.py) |
+| **23** | **[Report](src/gnn/report/)** | Final comprehensive report assembly. | [🤖 Agent](src/gnn/report/AGENTS.md) • [📝 Code](src/gnn/23_report.py) |
+| **24** | **[Intelligent Analysis](src/gnn/intelligent_analysis/)** | AI-powered pipeline analysis and executive reports. | [🤖 Agent](src/gnn/intelligent_analysis/AGENTS.md) • [📝 Code](src/gnn/24_intelligent_analysis.py) |
 
 ---
 
@@ -539,31 +539,31 @@ The GNN processing pipeline consists of **25 comprehensive steps (0-24)**, each 
 
 ```mermaid
 flowchart TD
-    A["🚀 Start Pipeline"] --> B["0️⃣ Template Init<br/>src/template/"]
-    B --> C["1️⃣ Setup & Dependencies<br/>src/setup/"]
-    C --> D["2️⃣ Tests<br/>src/tests/"]
+    A["🚀 Start Pipeline"] --> B["0️⃣ Template Init<br/>src/gnn/template/"]
+    B --> C["1️⃣ Setup & Dependencies<br/>src/gnn/setup/"]
+    C --> D["2️⃣ Tests<br/>tests/"]
     D --> E["3️⃣ GNN Discovery & Parsing<br/>src/gnn/"]
-    E --> F["4️⃣ Model Registry<br/>src/model_registry/"]
-    F --> G["5️⃣ Type Checking<br/>src/type_checker/"]
-    G --> H["6️⃣ Validation<br/>src/validation/"]
-    H --> I["7️⃣ Export<br/>src/export/"]
-    I --> J["8️⃣ Visualization<br/>src/visualization/"]
-    J --> K["9️⃣ Advanced Viz<br/>src/advanced_visualization/"]
-    K --> L["1️⃣0️⃣ Ontology<br/>src/ontology/"]
-    L --> M["1️⃣1️⃣ Rendering<br/>src/render/"]
-    M --> N["1️⃣2️⃣ Execution<br/>src/execute/"]
-    N --> O["1️⃣3️⃣ LLM Analysis<br/>src/llm/"]
-    O --> P["1️⃣4️⃣ ML Integration<br/>src/ml_integration/"]
-    P --> Q["1️⃣5️⃣ Audio<br/>src/audio/"]
-    Q --> R["1️⃣6️⃣ Analysis<br/>src/analysis/"]
-    R --> S["1️⃣7️⃣ Integration<br/>src/integration/"]
-    S --> T["1️⃣8️⃣ Security<br/>src/security/"]
-    T --> U["1️⃣9️⃣ Research<br/>src/research/"]
-    U --> V["2️⃣0️⃣ Website<br/>src/website/"]
-    V --> W["2️⃣1️⃣ MCP<br/>src/mcp/"]
-    W --> X["2️⃣2️⃣ GUI<br/>src/gui/"]
-    X --> Y["2️⃣3️⃣ Report<br/>src/report/"]
-    Y --> Y2["2️⃣4️⃣ Intelligent Analysis<br/>src/intelligent_analysis/"]
+    E --> F["4️⃣ Model Registry<br/>src/gnn/model_registry/"]
+    F --> G["5️⃣ Type Checking<br/>src/gnn/type_checker/"]
+    G --> H["6️⃣ Validation<br/>src/gnn/validation/"]
+    H --> I["7️⃣ Export<br/>src/gnn/export/"]
+    I --> J["8️⃣ Visualization<br/>src/gnn/visualization/"]
+    J --> K["9️⃣ Advanced Viz<br/>src/gnn/advanced_visualization/"]
+    K --> L["1️⃣0️⃣ Ontology<br/>src/gnn/ontology/"]
+    L --> M["1️⃣1️⃣ Rendering<br/>src/gnn/render/"]
+    M --> N["1️⃣2️⃣ Execution<br/>src/gnn/execute/"]
+    N --> O["1️⃣3️⃣ LLM Analysis<br/>src/gnn/llm/"]
+    O --> P["1️⃣4️⃣ ML Integration<br/>src/gnn/ml_integration/"]
+    P --> Q["1️⃣5️⃣ Audio<br/>src/gnn/audio/"]
+    Q --> R["1️⃣6️⃣ Analysis<br/>src/gnn/analysis/"]
+    R --> S["1️⃣7️⃣ Integration<br/>src/gnn/integration/"]
+    S --> T["1️⃣8️⃣ Security<br/>src/gnn/security/"]
+    T --> U["1️⃣9️⃣ Research<br/>src/gnn/research/"]
+    U --> V["2️⃣0️⃣ Website<br/>src/gnn/website/"]
+    V --> W["2️⃣1️⃣ MCP<br/>src/gnn/mcp/"]
+    W --> X["2️⃣2️⃣ GUI<br/>src/gnn/gui/"]
+    X --> Y["2️⃣3️⃣ Report<br/>src/gnn/report/"]
+    Y --> Y2["2️⃣4️⃣ Intelligent Analysis<br/>src/gnn/intelligent_analysis/"]
     Y2 --> Z["✅ Complete"]
 
     %% styling intentionally omitted (theme-controlled)
@@ -707,9 +707,9 @@ graph TB
 
 #### 🏛️ Architectural Components
 
-1. **Main Pipeline Orchestrator** (`src/main.py`): Central coordinator that executes numbered scripts in sequence.
-2. **Thin Orchestrators** (`src/0_template.py`, `src/1_setup.py`, etc.): Minimal scripts (<150 lines) that handle CLI args and logging, then delegate immediately.
-3. **Modular Scripts** (`src/template/`, `src/setup/`, etc.): The actual "brains" of the operation, containing `processor.py`, logic, and specialized tests.
+1. **Main Pipeline Orchestrator** (`src/gnn/main.py`): Central coordinator that executes numbered scripts in sequence.
+2. **Thin Orchestrators** (`src/gnn/0_template.py`, `src/gnn/1_setup.py`, etc.): Minimal scripts (<150 lines) that handle CLI args and logging, then delegate immediately.
+3. **Modular Scripts** (`src/gnn/template/`, `src/gnn/setup/`, etc.): The actual "brains" of the operation, containing `processor.py`, logic, and specialized tests.
 
 #### 📋 Current Status
 
@@ -735,7 +735,7 @@ src/
 
 For comprehensive architectural documentation, see:
 
-- `src/template/README.md`: Reference implementation and pattern documentation
+- `src/gnn/template/README.md`: Reference implementation and pattern documentation
 - `ARCHITECTURE.md`: Complete architectural guide
 
 ### 🚀 Running the Pipeline
@@ -743,7 +743,7 @@ For comprehensive architectural documentation, see:
 Navigate to the project's root directory and execute:
 
 ```bash
-python src/main.py [options]
+python src/gnn/main.py [options]
 ```
 
 #### 🛠️ Key Pipeline Options
@@ -763,7 +763,7 @@ python src/main.py [options]
 <summary><strong>📋 View All Pipeline Options</strong></summary>
 
 ```bash
-python src/main.py --help
+python src/gnn/main.py --help
 ```
 
 **Additional specialized options:**
@@ -784,7 +784,7 @@ python src/main.py --help
 
 ## 🛠️ Tools and Utilities
 
-The GNN ecosystem includes tools for model development, validation, rendering, and analysis. They are primarily invoked through the `src/main.py` pipeline script. The project also provides a **CLI** (`gnn`), **LSP** support, a local **REST API**, and MCP tools for model-context integration. Use the live registry and [AGENTS.md](./AGENTS.md) for current module and tool details; this page intentionally avoids embedding volatile counts.
+The GNN ecosystem includes tools for model development, validation, rendering, and analysis. They are primarily invoked through the `src/gnn/main.py` pipeline script. The project also provides a **CLI** (`gnn`), **LSP** support, a local **REST API**, and MCP tools for model-context integration. Use the live registry and [AGENTS.md](./AGENTS.md) for current module and tool details; this page intentionally avoids embedding volatile counts.
 
 ### ⚡ Headless extraction
 
@@ -813,13 +813,13 @@ The **GNN Type Checker** (pipeline step 5) helps validate GNN files and estimate
 
 ```bash
 # Run only type checker
-python src/main.py --only-steps 5 --target-dir path/to/gnn_files
+python src/gnn/main.py --only-steps 5 --target-dir path/to/gnn_files
 
 # Include resource estimation
-python src/main.py --only-steps 5 --estimate-resources --target-dir path/to/gnn_files
+python src/gnn/main.py --only-steps 5 --estimate-resources --target-dir path/to/gnn_files
 
 # Run full pipeline
-python src/main.py --target-dir path/to/gnn_files
+python src/gnn/main.py --target-dir path/to/gnn_files
 ```
 
 #### 📊 Features
@@ -854,7 +854,7 @@ GNN files can be visualized to create comprehensive graphical representations of
 
 ```bash
 # Generate visualizations (target-dir is a folder of GNN files)
-python src/main.py --only-steps 8 --target-dir path/to/gnn_models/
+python src/gnn/main.py --only-steps 8 --target-dir path/to/gnn_models/
 ```
 
 #### 🖼️ Visualization Types
@@ -881,14 +881,14 @@ GNN provides **three distinct interactive GUI interfaces** for visual model cons
 
 ```bash
 # Launch all GUIs (recommended)
-python src/22_gui.py --target-dir input/gnn_files --output-dir output --gui-types "gui_1,gui_2,gui_3,oxdraw" --interactive --verbose
+python src/gnn/22_gui.py --target-dir input/gnn_files --output-dir output --gui-types "gui_1,gui_2,gui_3,oxdraw" --interactive --verbose
 
 # Launch specific GUI
-python src/22_gui.py --gui-types "gui_3" --interactive --verbose  # Design Studio only
-python src/22_gui.py --gui-types "oxdraw" --interactive --verbose  # oxdraw only
+python src/gnn/22_gui.py --gui-types "gui_3" --interactive --verbose  # Design Studio only
+python src/gnn/22_gui.py --gui-types "oxdraw" --interactive --verbose  # oxdraw only
 
 # Launch via main pipeline (headless mode)
-python src/main.py --only-steps 22 --verbose
+python src/gnn/main.py --only-steps 22 --verbose
 ```
 
 Headless pipeline mode is a first-class success path: it writes static GUI
@@ -974,7 +974,7 @@ cd GeneralizedNotationNotation
 Run the setup pipeline step to configure dependencies:
 
 ```bash
-python src/main.py --only-steps 1 --dev
+python src/gnn/main.py --only-steps 1 --dev
 ```
 
 This will:
@@ -990,10 +990,10 @@ The pipeline includes enhanced visual logging for better accessibility:
 
 ```bash
 # Run with visual enhancements (recommended)
-python src/main.py --verbose
+python src/gnn/main.py --verbose
 
 # Emit structured JSON log lines instead of the human-readable format
-python src/main.py --verbose --log-format json
+python src/gnn/main.py --verbose --log-format json
 ```
 
 **Visual Features:**
@@ -1011,7 +1011,7 @@ Use `uv` to run the pipeline inside the managed project environment:
 
 ```bash
 uv sync                # ensure dependencies from pyproject.toml are installed
-uv run python src/main.py -- --target-dir input/gnn_files --verbose
+uv run python src/gnn/main.py -- --target-dir input/gnn_files --verbose
 ```
 
 You can also run individual commands under `uv` (recommended):
@@ -1048,16 +1048,16 @@ python --version
 
 ```bash
 # Force reinstall dependencies
-uv run python src/main.py --only-steps 1 --recreate-uv-env --dev
+uv run python src/gnn/main.py --only-steps 1 --recreate-uv-env --dev
 ```
 
 **🔧 Pipeline Failures**
 
 ```bash
 # Run with verbose logging
-python src/main.py --verbose
+python src/gnn/main.py --verbose
 # Check specific step
-python src/main.py --only-steps 5 --verbose
+python src/gnn/main.py --only-steps 5 --verbose
 ```
 
 **💾 Disk Space Issues**
@@ -1076,7 +1076,7 @@ rm -rf output/*
 - 📖 **Documentation**: See [Documentation](#-documentation) section below
 - 🐛 **Known Issues**: Check [troubleshooting guide](./doc/troubleshooting/)
 - 💬 **Community**: Open an issue on [GitHub](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/issues)
-- 🚀 **Quick Fix**: Try `python src/main.py --only-steps 2 --dev` first
+- 🚀 **Quick Fix**: Try `python src/gnn/main.py --only-steps 2 --dev` first
 
 ---
 
@@ -1170,16 +1170,16 @@ Explore practical GNN implementations and use cases:
 
 ```bash
 # Process the maintained exemplar corpus (--target-dir is always a directory)
-python src/main.py --target-dir input/gnn_files
+python src/gnn/main.py --target-dir input/gnn_files
 
 # Process one task folder, e.g. the continuous-state exemplars
-python src/main.py --target-dir input/gnn_files/continuous
+python src/gnn/main.py --target-dir input/gnn_files/continuous
 
 # Process the single packaged example shipped with the gnn package
-python src/main.py --target-dir src/gnn/gnn_examples
+python src/gnn/main.py --target-dir src/gnn/gnn_examples
 
 # Process with full analysis
-python src/main.py --target-dir src/gnn/gnn_examples --estimate-resources --verbose
+python src/gnn/main.py --target-dir src/gnn/gnn_examples --estimate-resources --verbose
 ```
 
 ### ⚡ Power User Tips
@@ -1191,39 +1191,39 @@ python src/main.py --target-dir src/gnn/gnn_examples --estimate-resources --verb
 
 ```bash
 # Full pipeline with all features
-python src/main.py --verbose --estimate-resources --dev
+python src/gnn/main.py --verbose --estimate-resources --dev
 
 # Type check only (fastest validation)  
-python src/main.py --only-steps 5 --strict
+python src/gnn/main.py --only-steps 5 --strict
 
 # Visualization only (quick preview)
-python src/main.py --only-steps 8
+python src/gnn/main.py --only-steps 8
 
 # Complete analysis for a directory of models
-python src/main.py --target-dir path/to/gnn_models/ --verbose
+python src/gnn/main.py --target-dir path/to/gnn_models/ --verbose
 ```
 
 **🎯 Pipeline Optimization**
 
 ```bash
 # Skip time-consuming steps for quick iteration
-python src/main.py --skip-steps "11,12,13"
+python src/gnn/main.py --skip-steps "11,12,13"
 
 # Focus on core processing
-python src/main.py --only-steps "1,4,5,6"
+python src/gnn/main.py --only-steps "1,4,5,6"
 
 # Development workflow
-python src/main.py --only-steps "2,3" --dev
+python src/gnn/main.py --only-steps "2,3" --dev
 ```
 
 **📊 Output Management**
 
 ```bash
 # Custom output directory
-python src/main.py --output-dir /path/to/custom/output
+python src/gnn/main.py --output-dir /path/to/custom/output
 
 # Timestamped outputs
-python src/main.py --output-dir "output/run_$(date +%Y%m%d_%H%M%S)"
+python src/gnn/main.py --output-dir "output/run_$(date +%Y%m%d_%H%M%S)"
 ```
 
 </details>
@@ -1238,23 +1238,23 @@ The GNN project maintains high standards for code quality, testing, and document
 
 - Pipeline orchestration, module docs, and tests are maintained together.
 - Use current test and pipeline runs as the source of truth for operational status.
-- See `src/tests/` and step-specific outputs in `output/` for current validation artifacts.
+- See `tests/` and step-specific outputs in `output/` for current validation artifacts.
 - See [Validation Evidence Guide](doc/pipeline/validation_evidence_guide.md) for the commands that certify examples, templates, docs, health checks, and cross-framework proof paths.
 
 ### 🧪 Testing Infrastructure
 
 ```bash
 # Run comprehensive test suite
-python src/2_tests.py --comprehensive
+python src/gnn/2_tests.py --comprehensive
 
 # Run fast pipeline tests (default)
-python src/2_tests.py
+python src/gnn/2_tests.py
 
 # Check test coverage
 pytest --cov=src --cov-report=term-missing
 
 # Run specific module tests
-uv run --extra dev python -m pytest src/tests/test_[module]*.py -v
+uv run --extra dev python -m pytest tests/test_[module]*.py -v
 ```
 
 **Test Configuration:** See [pytest.ini](./pytest.ini) for complete test settings.

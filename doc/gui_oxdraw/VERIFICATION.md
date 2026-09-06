@@ -22,7 +22,7 @@ The oxdraw integration module is **fully complete** with comprehensive implement
 
 ## Module Completeness ✅
 
-### Core Implementation (src/gui/oxdraw/)
+### Core Implementation (src/gnn/gui/oxdraw/)
 
 | File | Lines | Status | Purpose |
 |------|-------|--------|---------|
@@ -56,13 +56,13 @@ The oxdraw integration module is **fully complete** with comprehensive implement
 
 ## Test Coverage ✅
 
-### Test Files (src/tests/gui/ and src/tests/visualization/)
+### Test Files (tests/gui/ and tests/visualization/)
 
 | File | Lines | Tests | Pass Rate | Coverage |
 |------|-------|-------|-----------|----------|
-| `src/tests/gui/test_oxdraw_integration.py` | 465 | 15 | 100% (15/15) | End-to-end workflows |
-| `src/tests/visualization/test_mermaid_converter.py` | 399 | 26 | 97% (25/26) | Conversion logic |
-| `src/tests/visualization/test_mermaid_parser.py` | 402 | 27 | 88% (24/27) | Parser logic |
+| `tests/gui/test_oxdraw_integration.py` | 465 | 15 | 100% (15/15) | End-to-end workflows |
+| `tests/visualization/test_mermaid_converter.py` | 399 | 26 | 97% (25/26) | Conversion logic |
+| `tests/visualization/test_mermaid_parser.py` | 402 | 27 | 88% (24/27) | Parser logic |
 
 **Total Tests**: 1,266 lines, 68 test cases, **96% pass rate (65/68)**
 
@@ -158,7 +158,7 @@ The oxdraw integration module is **fully complete** with comprehensive implement
 
 ## Documentation Completeness ✅
 
-### Module Documentation (src/gui/oxdraw/)
+### Module Documentation (src/gnn/gui/oxdraw/)
 
 #### AGENTS.md (565 lines)
 - ✅ Module overview and core functionality
@@ -194,8 +194,8 @@ The oxdraw integration module is **fully complete** with comprehensive implement
 - ✅ Executive summary
 - ✅ Architecture overview with diagrams
 - ✅ Complete implementation code (2 modules)
-  - `src/gui/oxdraw/mermaid_converter.py` (full implementation)
-  - `src/gui/oxdraw/mermaid_parser.py` (full implementation)
+  - `src/gnn/gui/oxdraw/mermaid_converter.py` (full implementation)
+  - `src/gnn/gui/oxdraw/mermaid_parser.py` (full implementation)
 - ✅ Workflow example with `actinf_pomdp_agent.md`
 - ✅ Advanced pipeline integration (Step 22)
 - ✅ Use cases (rapid prototyping, collaboration, education)

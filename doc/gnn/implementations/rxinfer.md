@@ -17,11 +17,11 @@ RxInfer serves as the primary Bayesian message-passing reference implementation
 and is the only framework in the pipeline that performs inference through a
 declarative probabilistic programming model (via the `@model` macro).
 
-The canonical renderer (`src/render/rxinfer/rxinfer_renderer.py`) emits a genuine Julia
+The canonical renderer (`src/gnn/render/rxinfer/rxinfer_renderer.py`) emits a genuine Julia
 script per exemplar model that runs `infer()` with `free_energy = true` — no hand-rolled
 step simulator. It does not emit one flat model shape for every spec: it calls
-`detect_model_kind()` (`src/render/pomdp_contract.py`) and dispatches by the detected
-`ModelKind` to a per-kind strategy in `src/render/rxinfer/model_strategies.py`. Detection
+`detect_model_kind()` (`src/gnn/render/pomdp_contract.py`) and dispatches by the detected
+`ModelKind` to a per-kind strategy in `src/gnn/render/rxinfer/model_strategies.py`. Detection
 is *structural* — the `GNNSection` value, per-level and per-agent matrix key patterns,
 explicit `nr_agents`/`num_factors`, `F`/`H`/`Q`/`R` keys, and `dirichlet_[A-E]` keys —
 never free-text scanning of the source.
@@ -36,7 +36,7 @@ never free-text scanning of the source.
 | `MULTI_AGENT` | `MultiAgentStrategy` | joint composition stamping the true kind. There is no native multi-agent `@model`; per-agent marginals are recovered downstream by `compute_per_factor_beliefs()` from the `state_factors` echo |
 
 The table is maintained next to the code in
-[`src/render/rxinfer/README.md`](../../../src/render/rxinfer/README.md). The TOML-emitting
+[`src/gnn/render/rxinfer/README.md`](../../../src/gnn/render/rxinfer/README.md). The TOML-emitting
 `toml_generator.py` is retired and kept only as a warning surface —
 `render_gnn_to_rxinfer_toml()` raises a `DeprecationWarning`.
 
@@ -60,7 +60,7 @@ The RxInfer implementation consists of three interconnected layers:
 ### Where the `@model` blocks live
 
 The `@model` definitions are **not** inlined into each generated script. They live in the
-committed Julia package `src/execute/rxinfer/src/GnnRxInferModels.jl`, which defines
+committed Julia package `src/gnn/execute/rxinfer/src/GnnRxInferModels.jl`, which defines
 `pomdp_model`, `continuous_pomdp_model`, `hierarchical_pomdp_model`,
 `factored_pomdp_model`, and `learning_pomdp_model`. A rendered script imports the one it
 needs and calls it:
@@ -82,7 +82,7 @@ selection, and telemetry.
 
 ### Source File
 
-[rxinfer_renderer.py](../../../src/render/rxinfer/rxinfer_renderer.py)
+[rxinfer_renderer.py](../../../src/gnn/render/rxinfer/rxinfer_renderer.py)
 
 ---
 
@@ -349,7 +349,7 @@ A few conventions worth knowing before consuming this payload:
 
 ## The Julia environment
 
-`src/execute/rxinfer/` is a committed Julia environment, not something resolved at run
+`src/gnn/execute/rxinfer/` is a committed Julia environment, not something resolved at run
 time. Its `Project.toml` + `Manifest.toml` pin **RxInfer 5.5** (Julia 1.10+) and declare
 the `GnnRxInferModels` package that holds the `@model` blocks, which precompiles the
 pomdp, continuous, hierarchical, factored, and learning models loudly — a precompilation
@@ -357,7 +357,7 @@ failure surfaces instead of being swallowed. `setup_environment.jl` activates an
 instantiates it (`Pkg.activate()` + `Pkg.instantiate()`); there is no runtime `Pkg.add`.
 
 Step 12 defaults `JULIA_PROJECT` to this directory for RxInfer scripts (see
-`_build_execution_environment()` in `src/execute/processor.py`), so a script resolves its
+`_build_execution_environment()` in `src/gnn/execute/processor.py`), so a script resolves its
 packages without an ambient environment. An explicitly set `JULIA_PROJECT` still wins.
 
 | Package            | Purpose                                            |
@@ -376,7 +376,7 @@ packages without an ambient environment. An explicitly set `JULIA_PROJECT` still
 Verify the environment resolves:
 
 ```bash
-julia --startup-file=no --project=src/execute/rxinfer \
+julia --startup-file=no --project=src/gnn/execute/rxinfer \
   -e 'using RxInfer, JSON, Distributions, StatsBase'
 ```
 
@@ -386,18 +386,18 @@ julia --startup-file=no --project=src/execute/rxinfer \
 
 | Pipeline Stage | Module                                                                 | Key Function                      |
 | -------------- | ---------------------------------------------------------------------- | --------------------------------- |
-| Rendering      | [rxinfer_renderer.py](../../../src/render/rxinfer/rxinfer_renderer.py) | `render_gnn_to_rxinfer(...)`      |
-| Kind detection | [pomdp_contract.py](../../../src/render/pomdp_contract.py)             | `detect_model_kind(...)`          |
-| Strategies     | [model_strategies.py](../../../src/render/rxinfer/model_strategies.py) | per-`ModelKind` strategy classes  |
-| Model blocks   | [GnnRxInferModels.jl](../../../src/execute/rxinfer/src/GnnRxInferModels.jl) | the five `@model` functions  |
-| Entry Point    | [processor.py](../../../src/render/processor.py)                       | `render_gnn_spec(...)`            |
-| Execution      | [rxinfer_runner.py](../../../src/execute/rxinfer/rxinfer_runner.py)    | `execute_rxinfer_script()`        |
-| Julia Check    | [julia_setup.py](../../../src/execute/julia_setup.py)                  | `is_julia_available()`            |
-| Analysis       | [analyzer.py](../../../src/analysis/rxinfer/analyzer.py)               | `generate_analysis_from_logs()`   |
-| Per-factor     | [analyzer.py](../../../src/analysis/rxinfer/analyzer.py)               | `compute_per_factor_beliefs()`    |
-| Visual         | [analyzer.py](../../../src/analysis/rxinfer/analyzer.py)               | `create_rxinfer_visualizations()` |
-| Extraction     | [analyzer.py](../../../src/analysis/rxinfer/analyzer.py)               | `extract_simulation_data()`       |
-| Cross-framework| [cross_framework.py](../../../src/analysis/rxinfer/cross_framework.py) | `run_cross_framework_comparison()`|
+| Rendering      | [rxinfer_renderer.py](../../../src/gnn/render/rxinfer/rxinfer_renderer.py) | `render_gnn_to_rxinfer(...)`      |
+| Kind detection | [pomdp_contract.py](../../../src/gnn/render/pomdp_contract.py)             | `detect_model_kind(...)`          |
+| Strategies     | [model_strategies.py](../../../src/gnn/render/rxinfer/model_strategies.py) | per-`ModelKind` strategy classes  |
+| Model blocks   | [GnnRxInferModels.jl](../../../src/gnn/execute/rxinfer/src/GnnRxInferModels.jl) | the five `@model` functions  |
+| Entry Point    | [processor.py](../../../src/gnn/render/processor.py)                       | `render_gnn_spec(...)`            |
+| Execution      | [rxinfer_runner.py](../../../src/gnn/execute/rxinfer/rxinfer_runner.py)    | `execute_rxinfer_script()`        |
+| Julia Check    | [julia_setup.py](../../../src/gnn/execute/julia_setup.py)                  | `is_julia_available()`            |
+| Analysis       | [analyzer.py](../../../src/gnn/analysis/rxinfer/analyzer.py)               | `generate_analysis_from_logs()`   |
+| Per-factor     | [analyzer.py](../../../src/gnn/analysis/rxinfer/analyzer.py)               | `compute_per_factor_beliefs()`    |
+| Visual         | [analyzer.py](../../../src/gnn/analysis/rxinfer/analyzer.py)               | `create_rxinfer_visualizations()` |
+| Extraction     | [analyzer.py](../../../src/gnn/analysis/rxinfer/analyzer.py)               | `extract_simulation_data()`       |
+| Cross-framework| [cross_framework.py](../../../src/gnn/analysis/rxinfer/cross_framework.py) | `run_cross_framework_comparison()`|
 
 ## See Also / Next Steps
 

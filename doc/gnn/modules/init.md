@@ -2,7 +2,7 @@
 
 ## Overview
 
-The `src/__init__.py` file defines the GNN pipeline core package. It provides package-level metadata, version information, and automatic submodule discovery.
+The `src/gnn/__init__.py` file defines the GNN pipeline core package. It provides package-level metadata, version information, and automatic submodule discovery.
 
 ## Key Exports
 
@@ -18,5 +18,5 @@ The `_discover_top_level_modules()` function scans `src/` for subdirectories con
 
 ## Source
 
-- **Script**: [src/\_\_init\_\_.py](../../../src/__init__.py)
+- **Script**: [src/\_\_init\_\_.py](../../../src/gnn/__init__.py)
 - **Lines**: 64

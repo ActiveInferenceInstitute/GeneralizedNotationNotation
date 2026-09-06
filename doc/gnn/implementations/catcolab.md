@@ -11,7 +11,7 @@
 Read this before following anything below. CatColab is **not** one of the nine Step 11
 render backends, and no `catcolab` module exists anywhere in `src/`:
 
-- There is **no CatColab export format**. Step 7 (`src/export/`) emits JSON, XML, GraphML,
+- There is **no CatColab export format**. Step 7 (`src/gnn/export/`) emits JSON, XML, GraphML,
   GEXF, pickle, JSON adjacency list, and plaintext summary/DSL. None of them is a
   CatColab Schema, Stock-and-Flow, Olog, or Petri Net document.
 - There is **no CatColab importer**. `src/gnn/catcolab_importer.py` is absent from the
@@ -38,9 +38,9 @@ implemented today; the export row describes a proposed conversion that no code p
 
  | Stage | GNN Module | CatColab Role | Status |
 |---|---|---|---|
- | Export (Step 7) | `src/export/` | GNN JSON → CatColab JSON (Schema/Stock-and-Flow/Olog) | Proposed — convert the existing JSON export by hand |
- | Render (Step 11) | `src/render/discopy/` | DisCoPy string diagrams (shared categorical foundation) | Implemented |
- | Execute (Step 12) | `src/execute/discopy/` | Categorical evaluation of circuit structure | Implemented |
+ | Export (Step 7) | `src/gnn/export/` | GNN JSON → CatColab JSON (Schema/Stock-and-Flow/Olog) | Proposed — convert the existing JSON export by hand |
+ | Render (Step 11) | `src/gnn/render/discopy/` | DisCoPy string diagrams (shared categorical foundation) | Implemented |
+ | Execute (Step 12) | `src/gnn/execute/discopy/` | Categorical evaluation of circuit structure | Implemented |
 
 ## Conceptual Bridges
 
@@ -82,15 +82,15 @@ Pkg.add(["Catlab", "AlgebraicDynamics", "AlgebraicPetri"])
 
 ## Export GNN → CatColab
 
-> **Note**: `src/export/` does not currently emit a dedicated CatColab format — Step 7 has no `--format` flag and no `catcolab` exporter. It produces generic JSON/XML/GraphML/GEXF/Pickle exports (see `src/export/formatters.py`). A CatColab-compatible JSON export is a planned feature; today, use the generic JSON export as the starting point for a manual or scripted conversion.
+> **Note**: `src/gnn/export/` does not currently emit a dedicated CatColab format — Step 7 has no `--format` flag and no `catcolab` exporter. It produces generic JSON/XML/GraphML/GEXF/Pickle exports (see `src/gnn/export/formatters.py`). A CatColab-compatible JSON export is a planned feature; today, use the generic JSON export as the starting point for a manual or scripted conversion.
 
 ```bash
 # Generate the generic multi-format export via Step 7 (JSON, XML, GraphML, GEXF, Pickle)
-python src/7_export.py --target-dir input/gnn_files/ --verbose
+python src/gnn/7_export.py --target-dir input/gnn_files/ --verbose
 # Output: output/7_export_output/<model>/model.json (generic GNN JSON, not CatColab-specific)
 
 # Or run the full pipeline with export
-python src/main.py --only-steps "3,7" --verbose
+python src/gnn/main.py --only-steps "3,7" --verbose
 ```
 
 **Logic selection guide:**
@@ -110,7 +110,7 @@ python src/main.py --only-steps "3,7" --verbose
 
 ```bash
 # Render GNN model to DisCoPy string diagram (for CatColab import)
-python src/11_render.py --target-dir input/gnn_files/ --frameworks discopy
+python src/gnn/11_render.py --target-dir input/gnn_files/ --frameworks discopy
 ```
 
 ## Telemetry Output
@@ -140,9 +140,9 @@ CatColab/DisCoPy provides structural output only and is **excluded** from numeri
 
  | Stage | Module | Key Function |
 |---|---|---|
- | Export | [discopy_renderer.py](../../../src/render/discopy/discopy_renderer.py) | `render_gnn_to_discopy()` |
- | Execute | [discopy_executor.py](../../../src/execute/discopy/discopy_executor.py) | `execute_discopy_script()` |
- | Analysis | [analyzer.py](../../../src/analysis/discopy/analyzer.py) | `generate_analysis_from_logs()` |
+ | Export | [discopy_renderer.py](../../../src/gnn/render/discopy/discopy_renderer.py) | `render_gnn_to_discopy()` |
+ | Execute | [discopy_executor.py](../../../src/gnn/execute/discopy/discopy_executor.py) | `execute_discopy_script()` |
+ | Analysis | [analyzer.py](../../../src/gnn/analysis/discopy/analyzer.py) | `generate_analysis_from_logs()` |
 
 ## Deep Dive
 

@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Research Documentation | **Audience**: Researchers, Developers | **Complexity**: Advanced  
-> **Cross-References**: [Research Module](../../src/research/README.md) | [PoE-World Integration](../other/poe-world/poe-world_gnn.md) | [Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md) | [Main Documentation](../README.md)
+> **Cross-References**: [Research Module](../../src/gnn/research/README.md) | [PoE-World Integration](../other/poe-world/poe-world_gnn.md) | [Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md) | [Main Documentation](../README.md)
 
 ## Overview
 
@@ -22,14 +22,14 @@ This directory contains comprehensive documentation for research tools and exper
 - **[learning_paths.md](../learning_paths.md)**: Learning pathways
 
 ### Related Directories
-- **[Research Module](../../src/research/README.md)**: Research tools and experimental features implementation
+- **[Research Module](../../src/gnn/research/README.md)**: Research tools and experimental features implementation
 - **[PoE-World Integration](../other/poe-world/poe-world_gnn.md)**: Compositional world modeling
 - **[Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md)**: Advanced GNN modeling techniques
 - **[LLM Integration](../gnn/advanced/gnn_llm_neurosymbolic_active_inference.md)**: LLM-enhanced analysis
 
 ### Pipeline Integration
 - **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
-- **[src/AGENTS.md](../../src/AGENTS.md)**: Implementation details
+- **[src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)**: Implementation details
 
 ## Contents
 
@@ -83,7 +83,7 @@ This documentation is integrated with the 25-step GNN processing pipeline:
    - Research documentation generation
    - Research collaboration and sharing
 
-See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
+See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documentation.
 
 ## Related Resources
 
@@ -91,7 +91,7 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 - **[GNN Overview](../gnn/gnn_overview.md)**: Core GNN concepts
 - **[GNN Quickstart](../gnn/tutorials/quickstart_tutorial.md)**: Getting started guide
 - **[Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md)**: Advanced modeling techniques
-- **[Research Module](../../src/research/README.md)**: Research tools implementation
+- **[Research Module](../../src/gnn/research/README.md)**: Research tools implementation
 
 ### Research Resources
 - **[PoE-World Integration](../other/poe-world/poe-world_gnn.md)**: Compositional world modeling
@@ -100,8 +100,8 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 
 ### Pipeline Architecture
 - **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
-- **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
-- **[Pipeline README](../../src/README.md)**: Pipeline overview
+- **[Pipeline AGENTS](../../src/gnn/AGENTS.md)**: Implementation details
+- **[Pipeline README](../../src/gnn/README.md)**: Pipeline overview
 
 ## Standards and Guidelines
 

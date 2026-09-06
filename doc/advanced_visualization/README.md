@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Advanced Visualization Documentation | **Audience**: Developers, Researchers, Data Scientists | **Complexity**: Advanced  
-> **Cross-References**: [Advanced Visualization Module](../../src/advanced_visualization/README.md) | [Visualization Documentation](../visualization/README.md) | [GNN Visualization Guide](../gnn/integration/gnn_visualization.md) | [Main Documentation](../README.md)
+> **Cross-References**: [Advanced Visualization Module](../../src/gnn/advanced_visualization/README.md) | [Visualization Documentation](../visualization/README.md) | [GNN Visualization Guide](../gnn/integration/gnn_visualization.md) | [Main Documentation](../README.md)
 
 ## Overview
 
@@ -22,13 +22,13 @@ This directory documents Step 9 advanced visualization within the GNN (Generaliz
 - **[learning_paths.md](../learning_paths.md)**: Learning pathways
 
 ### Related Directories
-- **[Advanced Visualization Module](../../src/advanced_visualization/README.md)**: Interactive dashboard and 3D visualization implementation
+- **[Advanced Visualization Module](../../src/gnn/advanced_visualization/README.md)**: Interactive dashboard and 3D visualization implementation
 - **[Visualization Documentation](../visualization/README.md)**: Basic graph and matrix visualization
 - **[GNN Visualization Guide](../gnn/integration/gnn_visualization.md)**: Comprehensive GNN visualization guide
 
 ### Pipeline Integration
 - **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
-- **[src/AGENTS.md](../../src/AGENTS.md)**: Implementation details
+- **[src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)**: Implementation details
 
 ## Contents
 
@@ -85,7 +85,7 @@ This documentation is integrated with the 25-step GNN processing pipeline:
    - Website generation with advanced visualizations (Step 20: Website)
    - Report generation with advanced visualizations (Step 23: Report)
 
-See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
+See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documentation.
 
 ## Related Resources
 
@@ -93,7 +93,7 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 - **[GNN Overview](../gnn/gnn_overview.md)**: Core GNN concepts
 - **[GNN Quickstart](../gnn/tutorials/quickstart_tutorial.md)**: Getting started guide
 - **[GNN Visualization Guide](../gnn/integration/gnn_visualization.md)**: Comprehensive visualization guide
-- **[Advanced Visualization Module](../../src/advanced_visualization/README.md)**: Advanced visualization implementation
+- **[Advanced Visualization Module](../../src/gnn/advanced_visualization/README.md)**: Advanced visualization implementation
 
 ### Visualization Resources
 - **[Visualization Documentation](../visualization/README.md)**: Basic graph and matrix visualization
@@ -102,8 +102,8 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 
 ### Pipeline Architecture
 - **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
-- **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
-- **[Pipeline README](../../src/README.md)**: Pipeline overview
+- **[Pipeline AGENTS](../../src/gnn/AGENTS.md)**: Implementation details
+- **[Pipeline README](../../src/gnn/README.md)**: Pipeline overview
 
 ## Standards and Guidelines
 

@@ -27,16 +27,16 @@ GNN type checking is integrated into the 25-step processing pipeline:
 
 - Type checking and validation
 - Resource estimation
-- See: [src/type_checker/AGENTS.md](../../../src/type_checker/AGENTS.md)
+- See: [src/gnn/type_checker/AGENTS.md](../../../src/gnn/type_checker/AGENTS.md)
 
 **Quick Start:**
 
 ```bash
 # Run type checking
-python src/main.py --only-steps "3,5" --target-dir input/gnn_files --verbose
+python src/gnn/main.py --only-steps "3,5" --target-dir input/gnn_files --verbose
 
 # Strict type checking with resource estimation
-python src/5_type_checker.py --target-dir input/gnn_files --output-dir output --strict --estimate-resources
+python src/gnn/5_type_checker.py --target-dir input/gnn_files --output-dir output --strict --estimate-resources
 ```
 
 ## Type System Components
@@ -71,7 +71,7 @@ graph TD
 
 Type checking validates model structure and type consistency. The import
 below is the stable public path; `resource_estimator.py` re-exports the class,
-which is defined in `src/type_checker/estimation/estimator.py`:
+which is defined in `src/gnn/type_checker/estimation/estimator.py`:
 
 ```python
 from type_checker.resource_estimator import GNNResourceEstimator
@@ -189,7 +189,7 @@ Type checking integrates throughout the pipeline:
 
 ## Related Documentation
 
-- **[Type Checker Module](../../../src/type_checker/AGENTS.md)**: Implementation details
+- **[Type Checker Module](../../../src/gnn/type_checker/AGENTS.md)**: Implementation details
 - **[GNN Syntax](gnn_syntax.md)**: Complete syntax reference
 - **[GNN Tools](../operations/gnn_tools.md)**: Complete GNN tools reference
 - **[GNN Standards](gnn_standards.md)**: GNN domain knowledge and standards

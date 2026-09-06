@@ -19,7 +19,7 @@ Root cause: several `doc/troubleshooting/*.md` pages referenced a retired/nonexi
 are exported from `src/gnn/__init__.py` (return dicts); `GNSSyntaxError` lives in
 `src/gnn/types.py`; `gnn validate <file> --strict [--json]` is a real CLI subcommand;
 `run_pipeline(target_dir=…, output_dir=…, steps=…, verbose=…) -> dict` is exported from
-`src/pipeline`. Repaired every broken reference to a real, runnable surface:
+`src/gnn/pipeline`. Repaired every broken reference to a real, runnable surface:
 
 1. **doc/troubleshooting/common_errors.md** — "Step 4: Use Validation Tools" now uses
    `from src.gnn import validate_gnn_file` with the real dict return shape
@@ -27,7 +27,7 @@ are exported from `src/gnn/__init__.py` (return dicts); `GNSSyntaxError` lives i
 2. **doc/troubleshooting/debugging_workflows.md** —
    - "Step 1: Dimension Consistency Check" → real `parse_gnn_file` + `validate_gnn_file`.
    - "Step 3: Connection Consistency" → authoritative `uv run gnn validate … --strict [--json]`.
-   - Resource-estimation block → `uv run python src/5_type_checker.py --target-dir … --estimate-resources --verbose`.
+   - Resource-estimation block → `uv run python src/gnn/5_type_checker.py --target-dir … --estimate-resources --verbose`.
    - Two interactive-debugging snippets (GNNModel/TypeChecker) → real `parse_gnn_file`.
 3. **doc/troubleshooting/error_taxonomy.md** — GNNModel debug snippet → real `parse_gnn_file`/`validate_gnn_file`.
 4. **doc/troubleshooting/api_error_reference.md** —
@@ -47,7 +47,7 @@ scope. Adding a page would be padding, so none was added (per "do not pad").
 ## Verification (scoped)
 - `uv run --extra dev python doc/development/docs_audit.py --strict --check-anchors --no-write` → **green**: 0 broken links / 0 bad anchors / 0 gaps.
 - `uv run --extra dev python scripts/check_gnn_doc_patterns.py --strict` → **green**: no banned patterns.
-- `uv run --extra dev python scripts/check_repo_terminology.py --strict` → **NOT currently green**, but exclusively due to **out-of-scope sibling-agent work**: 11 "stale-version wording" violations in `src/validation/consistency_checker.py` (modified in the working tree) and the untracked `src/tests/analysis/test_generate_cross_model_report.py`. Both paths are owned by other agents (validation module / tests-analysis), not by this scope. None of my four edited files contains the flagged token, and my baseline run of this gate reported the tree clean minutes earlier — the violations appeared from sibling uncommitted edits after baseline. Per the disjoint-scope HARD RULE I did not touch those files.
+- `uv run --extra dev python scripts/check_repo_terminology.py --strict` → **NOT currently green**, but exclusively due to **out-of-scope sibling-agent work**: 11 "stale-version wording" violations in `src/gnn/validation/consistency_checker.py` (modified in the working tree) and the untracked `tests/analysis/test_generate_cross_model_report.py`. Both paths are owned by other agents (validation module / tests-analysis), not by this scope. None of my four edited files contains the flagged token, and my baseline run of this gate reported the tree clean minutes earlier — the violations appeared from sibling uncommitted edits after baseline. Per the disjoint-scope HARD RULE I did not touch those files.
 
 ## Tests
 No regression tests added: this was a documentation cross-reference repair with no

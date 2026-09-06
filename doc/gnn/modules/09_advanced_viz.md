@@ -2,8 +2,8 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/9_advanced_viz.py` (54 lines)
-**Implementation Layer**: `src/advanced_visualization/`
+**Orchestrator**: `src/gnn/9_advanced_viz.py` (54 lines)
+**Implementation Layer**: `src/gnn/advanced_visualization/`
 
 ## Module Description
 
@@ -11,7 +11,7 @@ This module provides comprehensive advanced visualization capabilities for GNN m
 
 
 ```
-src/advanced_visualization/
+src/gnn/advanced_visualization/
 ├── __init__.py                    # Module initialization and exports
 ├── README.md                      # This documentation
 ├── dashboard.py                   # Dashboard generation system
@@ -157,7 +157,7 @@ success = process_advanced_viz(
 - **Multiple Output Formats**: SVG, PNG, PDF with professional themes
 - **Layout Engines**: Dagre (fast), ELK (quality), TALA (advanced)
 
-See [D2_README.md](../../../src/advanced_visualization/D2_README.md) for comprehensive D2 integration documentation.
+See [D2_README.md](../../../src/gnn/advanced_visualization/D2_README.md) for comprehensive D2 integration documentation.
 
 ---
 
@@ -414,12 +414,12 @@ output/9_advanced_viz_output/
 
 ### Test Files
 
-- `src/tests/advanced_visualization/test_advanced_visualization_overall.py` ✅
-- `src/tests/api/test_comprehensive_api.py` (integration tests)
+- `tests/advanced_visualization/test_advanced_visualization_overall.py` ✅
+- `tests/api/test_comprehensive_api.py` (integration tests)
 
 ### Test Coverage
 
-- Measure: `uv run --extra dev python -m pytest src/tests/advanced_visualization/ --cov=advanced_visualization --cov-report=term-missing` (do not treat fixed percentages or per-run test tallies in this doc as canonical).
+- Measure: `uv run --extra dev python -m pytest tests/advanced_visualization/ --cov=advanced_visualization --cov-report=term-missing` (do not treat fixed percentages or per-run test tallies in this doc as canonical).
 
 ---
 
@@ -445,7 +445,7 @@ def process_advanced_visualization_mcp(
 
 ### MCP File Location
 
-- `src/advanced_visualization/mcp.py` - MCP tool registrations
+- `src/gnn/advanced_visualization/mcp.py` - MCP tool registrations
 
 ---
 
@@ -493,7 +493,7 @@ def process_advanced_visualization_mcp(
 
 ```bash
 # Enable verbose logging
-python src/9_advanced_viz.py --target-dir input/ --verbose
+python src/gnn/9_advanced_viz.py --target-dir input/ --verbose
 ```
 
 **Solutions**:
@@ -532,10 +532,10 @@ python src/9_advanced_viz.py --target-dir input/ --verbose
 
 ### Related Documentation
 
-- [Pipeline Overview](../../../src/advanced_visualization/../../README.md)
-- [Architecture Guide](../../../src/advanced_visualization/../../ARCHITECTURE.md)
-- [Visualization Module](../../../src/advanced_visualization/../visualization/AGENTS.md)
-- [D2 Documentation](../../../src/advanced_visualization/../../doc/d2/)
+- [Pipeline Overview](../../../README.md)
+- [Architecture Guide](../../../ARCHITECTURE.md)
+- [Visualization Module](../../../src/gnn/advanced_visualization/../visualization/AGENTS.md)
+- [D2 Documentation](../../../doc/d2/)
 
 ### External Resources
 
@@ -554,12 +554,12 @@ python src/9_advanced_viz.py --target-dir input/ --verbose
 
 ---
 ## Documentation
-- **[README](../../../src/advanced_visualization/README.md)**: Module Overview
-- **[AGENTS](../../../src/advanced_visualization/AGENTS.md)**: Agentic Workflows
-- **[SPEC](../../../src/advanced_visualization/SPEC.md)**: Architectural Specification
-- **[SKILL](../../../src/advanced_visualization/SKILL.md)**: Capability API
+- **[README](../../../src/gnn/advanced_visualization/README.md)**: Module Overview
+- **[AGENTS](../../../src/gnn/advanced_visualization/AGENTS.md)**: Agentic Workflows
+- **[SPEC](../../../src/gnn/advanced_visualization/SPEC.md)**: Architectural Specification
+- **[SKILL](../../../src/gnn/advanced_visualization/SKILL.md)**: Capability API
 
 
 ---
 
-**Source Reference**: [src/advanced_visualization](../../../src/advanced_visualization)
+**Source Reference**: [src/gnn/advanced_visualization](../../../src/gnn/advanced_visualization)

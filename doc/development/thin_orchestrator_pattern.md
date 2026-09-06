@@ -18,9 +18,9 @@ The GNN Processing Pipeline follows a **thin orchestrator pattern** to ensure ma
 
 2. **Module `__init__.py`**: Imports and exposes functions from modular files within the module folder
 
-3. **Modular Files** (e.g., `src/render/renderer.py`, `src/ontology/processor.py`): Contain the actual implementation of core methods
+3. **Modular Files** (e.g., `src/gnn/render/renderer.py`, `src/gnn/ontology/processor.py`): Contain the actual implementation of core methods
 
-4. **Tests**: All methods are tested in `src/tests/` with comprehensive test coverage
+4. **Tests**: All methods are tested in `tests/` with comprehensive test coverage
 
 ## 📁 File Organization
 
@@ -85,7 +85,7 @@ def main():
     # ...
 ```
 
-### Module `__init__.py` (`src/render/__init__.py`)
+### Module `__init__.py` (`src/gnn/render/__init__.py`)
 
 ```python
 """
@@ -108,7 +108,7 @@ __all__ = [
 ]
 ```
 
-### Modular File (`src/render/renderer.py`)
+### Modular File (`src/gnn/render/renderer.py`)
 
 ```python
 #!/usr/bin/env python3
@@ -137,7 +137,7 @@ def generate_rxinfer_code(model_data: Dict) -> str:
 # WRONG: 11_render.py should NOT contain this
 def generate_pymdp_code(model_data: Dict) -> str:
     """Generate PyMDP simulation code."""
-    # This should be in src/render/renderer.py
+    # This should be in src/gnn/render/renderer.py
     # ...
 ```
 
@@ -148,12 +148,12 @@ def generate_pymdp_code(model_data: Dict) -> str:
 def process_complex_rendering_logic():
     """This is too long for a numbered script."""
     # 50+ lines of implementation
-    # Should be moved to src/render/renderer.py
+    # Should be moved to src/gnn/render/renderer.py
 ```
 
 ## 🧪 Testing Pattern
 
-### Test File (`src/tests/render/test_render_integration.py`)
+### Test File (`tests/render/test_render_integration.py`)
 
 ```python
 #!/usr/bin/env python3
@@ -199,7 +199,7 @@ class TestRenderIntegration:
 2. **Create the module directory** (e.g., `src/new_step/`): Organize core functionality
 3. **Create modular files** (e.g., `src/new_step/processor.py`): Implement core logic
 4. **Update module `__init__.py`**: Import and expose functions
-5. **Create tests** (e.g., `src/tests/new_step/test_new_step_integration.py`): Comprehensive testing
+5. **Create tests** (e.g., `tests/new_step/test_new_step_integration.py`): Comprehensive testing
 
 ### For Existing Steps
 
@@ -214,7 +214,7 @@ class TestRenderIntegration:
 - [ ] Numbered scripts stay at or below 150 lines
 - [ ] Core methods are defined in modular files within module folders
 - [ ] Module `__init__.py` imports and exposes functions from modular files
-- [ ] All methods are tested in `src/tests/`
+- [ ] All methods are tested in `tests/`
 - [ ] Helper methods in numbered scripts remain small and focused
 - [ ] Clear separation between pipeline flow and domain logic
 - [ ] Comprehensive error handling and logging
@@ -224,7 +224,7 @@ class TestRenderIntegration:
 
 ```bash
 # Enforce the numbered-script line budget and basic script structure
-uv run --extra dev python -m pytest src/tests/pipeline/test_pipeline_scripts.py::TestPipelineScriptDiscovery -q
+uv run --extra dev python -m pytest tests/pipeline/test_pipeline_scripts.py::TestPipelineScriptDiscovery -q
 
 # Inspect current numbered-script sizes
 rg --files src -g '[0-9]*_*.py' | sort -V | xargs wc -l

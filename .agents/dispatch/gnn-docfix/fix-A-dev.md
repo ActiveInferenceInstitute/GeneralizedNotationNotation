@@ -24,11 +24,11 @@ are tracked); your job is to apply them to the .md files exactly.
 FIXES:
 1. doc/development/README.md:307 (and :307-354 examples) — `from src.gnn.parser import parse_gnn_file` -> `from src.gnn.processor import parse_gnn_file`
 2. doc/development/README.md:168 — `from utils.logging_utils import setup_standalone_logging` -> `from utils.logging.logging_utils import setup_standalone_logging`
-3. doc/development/README.md:362 — pytest path `src/tests/unit/` -> a real dir, e.g. `src/tests/gnn/`
-4. doc/development/README.md:369 — `src/tests/performance/` -> real path, e.g. `src/tests/pipeline/` (drop `--benchmark-only` or the command)
-5. doc/development/README.md:471 — `src/tests/unit/test_specific.py` -> a real file, e.g. `src/tests/gnn/test_gnn_overall.py`
-6. doc/development/README.md:120 — count "171 pytest files" -> current tracked value (src/tests/ has ~323 .py) or reword to "mirrored by module" without a hardcoded number
-7. doc/development/README.md:287-300 — test-organization tree shows tests/unit, tests/integration, tests/fixtures; rewrite to the real layout (src/tests/<module>/, src/tests/integration/, src/tests/helpers/, etc.)
+3. doc/development/README.md:362 — pytest path `tests/unit/` -> a real dir, e.g. `tests/gnn/`
+4. doc/development/README.md:369 — `tests/performance/` -> real path, e.g. `tests/pipeline/` (drop `--benchmark-only` or the command)
+5. doc/development/README.md:471 — `tests/unit/test_specific.py` -> a real file, e.g. `tests/gnn/test_gnn_overall.py`
+6. doc/development/README.md:120 — count "171 pytest files" -> current tracked value (tests/ has ~323 .py) or reword to "mirrored by module" without a hardcoded number
+7. doc/development/README.md:287-300 — test-organization tree shows tests/unit, tests/integration, tests/fixtures; rewrite to the real layout (tests/<module>/, tests/integration/, tests/helpers/, etc.)
 8. doc/configuration/examples.md — add a prominent note at top (or in each block) that this file is ILLUSTRATIVE/aspirational and the only auto-loaded config is `input/config.yaml` (schema described in doc/configuration/README.md). Do not claim it is loadable.
 9. doc/configuration/README.md:65 — add `uv` to the enumerated config sections (top-level keys are: pipeline, setup, uv, io, testing_matrix, llm, logging, validation, performance, security)
 10. SKILL.md:25 — "Check all 8 renderer backends" -> 9 renderer backends (framework_registry has 9 incl. bnlearn)

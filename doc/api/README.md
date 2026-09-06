@@ -35,7 +35,7 @@ API surfaces follow normal Python packaging and process boundaries: validate inp
 
 ### Pipeline Integration
 - **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
-- **[src/AGENTS.md](../../src/AGENTS.md)**: Implementation details
+- **[src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)**: Implementation details
 
 ## Contents
 
@@ -119,7 +119,7 @@ This documentation is integrated with the 25-step GNN processing pipeline:
    - Performance API for monitoring
    - Visualization API for output generation
 
-See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
+See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documentation.
 
 ## Usage Examples
 
@@ -145,7 +145,7 @@ logger = logging.getLogger(__name__)
 process_gnn_multi_format(Path("input/gnn_files"), Path("output"), logger)
 ```
 
-Full pipeline runs use `python src/main.py` (see [Pipeline docs](../gnn/operations/gnn_tools.md)).
+Full pipeline runs use `python src/gnn/main.py` (see [Pipeline docs](../gnn/operations/gnn_tools.md)).
 
 ### Framework Integration
 
@@ -175,8 +175,8 @@ rxinfer_code = render_gnn_to_rxinfer(model, output_path)
 
 ### Pipeline Architecture
 - **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
-- **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
-- **[Pipeline README](../../src/README.md)**: Pipeline overview
+- **[Pipeline AGENTS](../../src/gnn/AGENTS.md)**: Implementation details
+- **[Pipeline README](../../src/gnn/README.md)**: Pipeline overview
 
 ### Framework Integration
 - **[Framework Integration Guide](../gnn/integration/framework_integration_guide.md)**: Framework-specific documentation

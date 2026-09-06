@@ -418,8 +418,8 @@ class ComputationWarning(GNNPerformanceWarning):
 ### Basic Error Handling
 
 ```python
-from src.gnn import parse_gnn_file, validate_gnn_file
-from src.gnn.types import GNSSyntaxError
+from gnn.gnn import parse_gnn_file, validate_gnn_file
+from gnn.types import GNSSyntaxError
 
 
 def load_and_validate_model(file_path: str) -> dict:

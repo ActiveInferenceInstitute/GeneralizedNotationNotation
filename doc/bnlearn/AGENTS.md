@@ -20,7 +20,7 @@ The bnlearn Framework documentation system is part of the broader GNN (Generaliz
 ### Related Systems
 - **Main Documentation**: [doc/README.md](../README.md)
 - **GNN Documentation**: [gnn/AGENTS.md](../gnn/AGENTS.md)
-- **Pipeline Reference**: [src/AGENTS.md](../../src/AGENTS.md)
+- **Pipeline Reference**: [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)
 - **bnlearn Official Documentation**: [erdogant.github.io/bnlearn](https://erdogant.github.io/bnlearn/)
 
 ## Subsystems
@@ -32,7 +32,7 @@ The bnlearn Framework documentation system is part of the broader GNN (Generaliz
 ## Quick Navigation
 
 - **Get Started**: See [README.md](README.md)
-- **Pipeline Overview**: [src/AGENTS.md](../../src/AGENTS.md)
+- **Pipeline Overview**: [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)
 - **Full Documentation Index**: [doc/README.md](../README.md)
 
 ## Documentation Standards

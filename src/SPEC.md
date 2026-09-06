@@ -1,6 +1,6 @@
 # GNN Source Specification
 
-**Version**: 3.2.0 (Specification) — Release version: `pyproject.toml` `version = "3.2.0"`. The in-package strings `src/__init__.py::__version__` and `src/mcp/__init__.py::__version__` still read `1.6.0` and have not been bumped with the release; treat `pyproject.toml` as authoritative until they are.  
+**Version**: 3.2.0 (Specification) — Release version: `pyproject.toml` `version = "3.2.0"`. The in-package strings `src/gnn/__init__.py::__version__` and `src/gnn/mcp/__init__.py::__version__` still read `1.6.0` and have not been bumped with the release; treat `pyproject.toml` as authoritative until they are.  
 **Last Updated**: 2026-09-02  
 **Status**: Maintained
 
@@ -129,7 +129,7 @@ Accepted alternatives for core processing file organization:
 | `tests/` | Test suite |
 | `sapf/` | SAPF public entry point (`audio/sapf/`) |
 
-Pipeline artifacts are written to the repository-level `output/` directory by default (`io.output_dir` in `input/config.yaml`). That tree is ignored except for its marker file, so generated artifacts should be regenerated rather than hand-edited. The `src/output/` directory is not a Python package; see [`doc/pipeline/README.md`](../doc/pipeline/README.md) for generated-output coverage exclusions.
+Pipeline artifacts are written to the repository-level `output/` directory by default (`io.output_dir` in `input/config.yaml`). That tree is ignored except for its marker file, so generated artifacts should be regenerated rather than hand-edited. The `src/gnn/output/` directory is not a Python package; see [`doc/pipeline/README.md`](../doc/pipeline/README.md) for generated-output coverage exclusions.
 
 ---
 
@@ -137,7 +137,7 @@ Pipeline artifacts are written to the repository-level `output/` directory by de
 
 The pipeline supports **staged, folder-based execution** via a testing matrix defined in `input/config.yaml`. This allows different categories of GNN files to be processed by different subsets of pipeline steps.
 
-> **📋 For the complete 20-column step reference, see [`STEP_INDEX.md`](STEP_INDEX.md).**
+> **📋 For the complete 20-column step reference, see [`gnn/STEP_INDEX.md`](gnn/STEP_INDEX.md).**
 
 ### Configuration
 
@@ -176,9 +176,9 @@ folders:
 ### Behavior
 
 - **Global steps** (0, 1, 2): Run once before folder-specific steps. Each can be toggled to `true`/`false` independently. Disabled steps are `SKIPPED`.
-- **Processing steps** (3–24): When `enabled: true`, `main.py` iterates over subdirectories in `input/gnn_files/` and runs each step only on folders whose config includes that step number.
+- **Processing steps** (3–24): When `enabled: true`, `gnn/main.py` iterates over subdirectories in `input/gnn_files/` and runs each step only on folders whose config includes that step number.
 - Folders not explicitly listed use `default_steps`.
-- A step that no folder lists (Step 13 in the shipped config) is not skipped: `main.py` falls back to a single invocation over the whole target directory.
+- A step that no folder lists (Step 13 in the shipped config) is not skipped: `gnn/main.py` falls back to a single invocation over the whole target directory.
 - Continuous linear-Gaussian models (`input/gnn_files/continuous/`) render and execute only on frameworks with `supports_continuous` in `render/framework_registry.py` (JAX, NumPyro, PyTorch, Stan, RxInfer.jl); the others report status `unsupported`, which Step 12 skips.
 - Results are aggregated across all folder executions per step.
 - **Invalid step selections fail fast**: non-numeric tokens in
@@ -186,11 +186,11 @@ folders:
   `pipeline.skip_steps`) raise `ValueError` at startup, and an
   `only_steps` request that resolves to no executable step exits 1 with a
   startup error. Out-of-range step numbers are logged and dropped
-  (`main.py::select_pipeline_steps`).
+  (`gnn/main.py::select_pipeline_steps`).
 
 ### Orchestrator Implementation
 
-The matrix logic lives in `execute_pipeline_step()` in `main.py`. It loads the matrix from `input/config.yaml` via PyYAML, checks `global_steps` for steps 0–2, and dynamically sets `--target-dir` per subfolder for steps 3–24.
+The matrix logic lives in `execute_pipeline_step()` in `gnn/main.py`. It loads the matrix from `input/config.yaml` via PyYAML, checks `global_steps` for steps 0–2, and dynamically sets `--target-dir` per subfolder for steps 3–24.
 
 ---
 
@@ -281,7 +281,7 @@ def module_operation(input: str, output_path: str) -> dict:
 
 ### Testing Requirements
 
-- Unit tests in `src/tests/test_{module}_*.py`
+- Unit tests in `tests/test_{module}_*.py`
 - Integration tests for cross-module flows
 - No simulated implementations in production code
 
@@ -296,8 +296,8 @@ Performance and reliability targets should be validated by current benchmark/tes
 ## Versioning
 
 > **Dual Versioning Policy**: This repository uses two version numbers:
-> - **Pipeline version** (src/): Corresponds to `src/__init__.py::__version__` (currently the string `"1.6.0"`, behind the `3.2.0` release in `pyproject.toml`)
-> - **MCP version** (mcp/): Independent MCP subsystem versioning via `src/mcp/__init__.py::__version__` (currently `"1.6.0"`)
+> - **Pipeline version** (src/): Corresponds to `src/gnn/__init__.py::__version__` (currently the string `"1.6.0"`, behind the `3.2.0` release in `pyproject.toml`)
+> - **MCP version** (mcp/): Independent MCP subsystem versioning via `src/gnn/mcp/__init__.py::__version__` (currently `"1.6.0"`)
 >
 > MCP (Model Context Protocol) has its own version because it represents an extended protocol implementation that evolved beyond the main pipeline versioning.
 
@@ -307,6 +307,6 @@ Performance and reliability targets should be validated by current benchmark/tes
 
 - **[AGENTS.md](AGENTS.md)**: Master module registry
 - **[README.md](README.md)**: Pipeline safety documentation  
-- **[main.py](main.py)**: Pipeline orchestrator
+- **[gnn/main.py](gnn/main.py)**: Pipeline orchestrator
 - **[../doc/gnn/README.md](../doc/gnn/README.md)**: GNN documentation index
 - **[../ARCHITECTURE.md](../ARCHITECTURE.md)**: System architecture

@@ -24,7 +24,7 @@ This directory contains the maintained GridWorld POMDP fixture used to verify th
 ## Verification
 
 ```bash
-uv run --extra dev python src/main.py --only-steps "3,5,8,11,12,16" --target-dir input/gnn_files/pomdp_gridworld --frameworks "pymdp,rxinfer,activeinference_jl" --verbose
+uv run --extra dev python src/gnn/main.py --only-steps "3,5,8,11,12,16" --target-dir input/gnn_files/pomdp_gridworld --frameworks "pymdp,rxinfer,activeinference_jl" --verbose
 ```
 
 For public root-output refreshes, replace `output/` with a fresh full-pipeline

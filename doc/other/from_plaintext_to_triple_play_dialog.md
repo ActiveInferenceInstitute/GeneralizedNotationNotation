@@ -76,7 +76,7 @@
 
 **Pip:** So, one GNN file, and it's like getting three for the price of one? A description, a map, *and* the instructions to build the dang thing? That's the cat's pajamas, Professor! How does that magic happen? Is there a big machine in the back room that chugs and whirs and spits all this out?
 
-**Professor Cogswell:** (Winks) You're not far off, Pip! We have a whole pipeline, a series of steps, mostly orchestrated by a clever Python script called `src/main.py`. This `main.py` is like the conductor of an orchestra, calling on different specialized scripts, numbered for their turn in the performance.
+**Professor Cogswell:** (Winks) You're not far off, Pip! We have a whole pipeline, a series of steps, mostly orchestrated by a clever Python script called `src/gnn/main.py`. This `main.py` is like the conductor of an orchestra, calling on different specialized scripts, numbered for their turn in the performance.
 
 **Pip:** Numbered scripts? Like a dance card? What do these fellas do?
 
@@ -88,7 +88,7 @@
 *   `7_export.py` takes your GNN model and can save it in all sorts of formats – JSON, XML, GraphML for those graph-minded folks, even a simple text summary.
 *   `6_visualization.py` – this is the artist! It takes the GNN and generates those graphical model diagrams, those matrix heatmaps, the ontology tables. Makes it all look pretty as a picture!
 *   `21_mcp.py` deals with something called the Model Context Protocol. Fancy talk for making all these GNN tools available as services, so other programs, even AI assistants, can use them!
-*   `10_ontology.py` specifically handles the `ActInfOntologyAnnotation` section, checking your terms against a master list, like the one in `src/ontology/act_inf_ontology_terms.json`.
+*   `10_ontology.py` specifically handles the `ActInfOntologyAnnotation` section, checking your terms against a master list, like the one in `src/gnn/ontology/act_inf_ontology_terms.json`.
 *   And `11_render.py` – this is the one that helps turn your GNN spec into that executable code for simulators like PyMDP or RxInfer.jl we mentioned for the Triple Play!
 
 All these steps work together, taking your GNN file from that `target-dir` you point them to, and putting all their good work into an `output-dir`. You get a whole suite of reports, diagrams, and data!

@@ -85,28 +85,28 @@ Central documentation hub for all theoretical, computational, and implementation
 
 | Component | Source Path | Documentation |
 |-----------|-------------|---------------|
-| PyMDP Runner | [`src/execute/pymdp/`](../../src/execute/pymdp/) | [implementation_pymdp.md](implementation_pymdp.md) |
-| RxInfer Runner | [`src/execute/rxinfer/`](../../src/execute/rxinfer/) | [implementation_rxinfer.md](implementation_rxinfer.md) |
-| ActiveInference.jl | [`src/execute/activeinference_jl/`](../../src/execute/activeinference_jl/) | [implementation_activeinference_jl.md](implementation_activeinference_jl.md) |
+| PyMDP Runner | [`src/gnn/execute/pymdp/`](../../src/gnn/execute/pymdp/) | [implementation_pymdp.md](implementation_pymdp.md) |
+| RxInfer Runner | [`src/gnn/execute/rxinfer/`](../../src/gnn/execute/rxinfer/) | [implementation_rxinfer.md](implementation_rxinfer.md) |
+| ActiveInference.jl | [`src/gnn/execute/activeinference_jl/`](../../src/gnn/execute/activeinference_jl/) | [implementation_activeinference_jl.md](implementation_activeinference_jl.md) |
 
 ### Analysis Tools
 
 | Component | Source Path |
 |-----------|-------------|
-| Main Analyzer | [`src/analysis/analyzer.py`](../../src/analysis/analyzer.py) |
-| PyMDP Analyzer | [`src/analysis/pymdp/analyzer.py`](../../src/analysis/pymdp/analyzer.py) |
-| PyMDP Visualizer | [`src/analysis/pymdp/visualizer.py`](../../src/analysis/pymdp/visualizer.py) |
-| Post-Simulation | [`src/analysis/post_simulation.py`](../../src/analysis/post_simulation.py) |
-| ActiveInference.jl Analyzer | [`src/analysis/activeinference_jl/analyzer.py`](../../src/analysis/activeinference_jl/analyzer.py) |
+| Main Analyzer | [`src/gnn/analysis/analyzer.py`](../../src/gnn/analysis/analyzer.py) |
+| PyMDP Analyzer | [`src/gnn/analysis/pymdp/analyzer.py`](../../src/gnn/analysis/pymdp/analyzer.py) |
+| PyMDP Visualizer | [`src/gnn/analysis/pymdp/visualizer.py`](../../src/gnn/analysis/pymdp/visualizer.py) |
+| Post-Simulation | [`src/gnn/analysis/post_simulation.py`](../../src/gnn/analysis/post_simulation.py) |
+| ActiveInference.jl Analyzer | [`src/gnn/analysis/activeinference_jl/analyzer.py`](../../src/gnn/analysis/activeinference_jl/analyzer.py) |
 
 ### Core GNN
 
 | Component | Source Path |
 |-----------|-------------|
 | GNN Parser | [`src/gnn/`](../../src/gnn/) |
-| Type Checker | [`src/type_checker/`](../../src/type_checker/) |
-| Validation | [`src/validation/`](../../src/validation/) |
-| Export | [`src/export/`](../../src/export/) |
+| Type Checker | [`src/gnn/type_checker/`](../../src/gnn/type_checker/) |
+| Validation | [`src/gnn/validation/`](../../src/gnn/validation/) |
+| Export | [`src/gnn/export/`](../../src/gnn/export/) |
 
 ---
 
@@ -154,7 +154,7 @@ This documentation integrates with the 25-step GNN processing pipeline:
 | 13 | LLM | LLM-enhanced analysis |
 | 16 | Analysis | Post-simulation analysis |
 
-See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
+See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documentation.
 
 ---
 

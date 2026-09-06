@@ -21,8 +21,8 @@ Multi-format export capabilities for GNN models including JSON, XML, GraphML, an
 
 - **GNN Documentation**: [gnn/AGENTS.md](../gnn/AGENTS.md)
 - **Main Documentation**: [doc/README.md](../README.md)
-- **Pipeline Reference**: [src/AGENTS.md](../../src/AGENTS.md)
-- **Export Module**: [src/export/AGENTS.md](../../src/export/AGENTS.md)
+- **Pipeline Reference**: [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)
+- **Export Module**: [src/gnn/export/AGENTS.md](../../src/gnn/export/AGENTS.md)
 
 ## Supported Formats
 
@@ -36,11 +36,11 @@ Multi-format export capabilities for GNN models including JSON, XML, GraphML, an
 
 This documentation covers Step 7 (Export) of the 25-step GNN processing pipeline.
 
-See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
+See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documentation.
 
 ## Related Resources
 
-- [Export Module](../../src/export/AGENTS.md)
+- [Export Module](../../src/gnn/export/AGENTS.md)
 - [Framework Integration](../gnn/integration/framework_integration_guide.md)
 - [CatColab Export](../other/catcolab/catcolab_gnn.md)
 

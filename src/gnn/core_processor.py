@@ -19,8 +19,8 @@ from typing import Any, Dict, List, Optional
 # from .testing import RoundTripTestStrategy
 from .cross_format import CrossFormatValidator
 from .discovery import FileDiscoveryStrategy
+from .processor import validate_gnn_structure
 from .reporting import ReportGenerator
-from .validation import ValidationStrategy
 
 logger = logging.getLogger(__name__)
 
@@ -89,7 +89,6 @@ class GNNProcessor:
 
         # Initialize processing strategies
         self.discovery_strategy = FileDiscoveryStrategy()
-        self.validation_strategy = ValidationStrategy()
         # Initialize round trip strategy lazily to avoid circular imports
         self.round_trip_strategy: Optional[Any] = None
         self.cross_format_strategy = CrossFormatValidator()
@@ -169,16 +168,14 @@ class GNNProcessor:
         context.log_phase(ProcessingPhase.VALIDATION, "Validating discovered files")
         self.logger.info("Phase 2: File validation")
         try:
-            self.validation_strategy.configure(
-                validation_level=context.validation_level, enable_strict_checking=True
-            )
-            validation_results = self.validation_strategy.validate_files(
-                context.discovered_files
-            )
+            validation_results = {
+                str(file_path): validate_gnn_structure(file_path)
+                for file_path in context.discovered_files
+            }
             context.valid_files = [
                 file_path
-                for file_path, result in validation_results.items()
-                if result.is_valid
+                for file_path in context.discovered_files
+                if validation_results.get(str(file_path), {}).get("valid", False)
             ]
             self.logger.info(f"Found {len(context.valid_files)} valid GNN files")
             context.processing_results["valid_files"] = len(context.valid_files)

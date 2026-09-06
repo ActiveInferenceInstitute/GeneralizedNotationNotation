@@ -67,7 +67,7 @@ _FIGURES = [
         "gnn_backend_capability_matrix.png",
         "Table of the registered rendering backends, one row each, with columns "
         "for registry key, display name, implementation language, whether a "
-        "render-output subdirectory exists under src/render/, and the backend's "
+        "render-output subdirectory exists under src/gnn/render/, and the backend's "
         "role in the cross-framework reference comparison. Highlighted rows are "
         "the backends the reliability gate profiles; a backend the family declares "
         "but the gate never profiles is marked separately.",

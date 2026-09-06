@@ -13,7 +13,7 @@
 
 ### ✅ **New Pipeline Structure** (`src/` tree)
 
-**Execution Module**: `src/execute/pymdp/`
+**Execution Module**: `src/gnn/execute/pymdp/`
 - `__init__.py` - Module exports and pipeline integration
 - `pymdp_simulation.py` - Main simulation class with GNN configuration
 - `pymdp_utils.py` - Enhanced utilities with GNN parsing functions
@@ -22,12 +22,12 @@
 - `test_pymdp_utils.py` - Comprehensive utility tests
 - `test_pymdp_visualizer.py` - Visualization system tests
 
-**Rendering Module**: `src/render/pymdp/`
+**Rendering Module**: `src/gnn/render/pymdp/`
 - `pymdp_renderer.py` - GNN-to-PyMDP code generation
 
 **Pipeline Scripts**: 
-- `src/11_render.py` - Updated to use PyMDP renderer for GNN files
-- `src/12_execute.py` - Enhanced to execute rendered PyMDP simulations
+- `src/gnn/11_render.py` - Updated to use PyMDP renderer for GNN files
+- `src/gnn/12_execute.py` - Enhanced to execute rendered PyMDP simulations
 
 ### 📚 **Reference Files** (`doc/pymdp/pymdp_pomdp/`)
 - Original files maintained as reference implementations
@@ -37,7 +37,7 @@
 
 ## 🔄 **Pipeline Flow Integration**
 
-### **Step 11: Render** (`src/11_render.py`)
+### **Step 11: Render** (`src/gnn/11_render.py`)
 ```python
 # GNN → PyMDP code generation
 gnn_spec = parse_gnn_file("actinf_pomdp_agent.md")
@@ -49,10 +49,10 @@ rendered_code = render_gnn_to_pymdp(gnn_spec)
 3. **Code Generation**: Creates executable PyMDP simulation scripts
 4. **Pipeline Integration**: Uses render module instead of hardcoded generation
 
-### **Step 12: Execute** (`src/12_execute.py`)
+### **Step 12: Execute** (`src/gnn/12_execute.py`)
 ```python
 # Execute rendered PyMDP simulations
-from src.execute.pymdp import execute_pymdp_simulation
+from gnn.execute.pymdp import execute_pymdp_simulation
 
 success, results = execute_pymdp_simulation(gnn_spec, output_dir)
 ```
@@ -153,8 +153,8 @@ python3 -m src.execute.pymdp.test_pymdp_utils
 python3 -m src.execute.pymdp.test_pymdp_visualizer
 
 # Integration tests
-python3 src/11_render.py --target_dir input/gnn_files/
-python3 src/12_execute.py --target_dir input/gnn_files/
+python3 src/gnn/11_render.py --target_dir input/gnn_files/
+python3 src/gnn/12_execute.py --target_dir input/gnn_files/
 ```
 
 ### **Test Categories**
@@ -168,14 +168,14 @@ python3 src/12_execute.py --target_dir input/gnn_files/
 ### **Pipeline Execution**
 ```bash
 # Full pipeline (renders and executes PyMDP)
-python3 src/11_render.py --target_dir input/gnn_files/
-python3 src/12_execute.py --target_dir input/gnn_files/
+python3 src/gnn/11_render.py --target_dir input/gnn_files/
+python3 src/gnn/12_execute.py --target_dir input/gnn_files/
 ```
 
 ### **Direct PyMDP Execution** 
 ```python
-from src.execute.pymdp import execute_pymdp_simulation
-from src.gnn import parse_gnn_file
+from gnn.execute.pymdp import execute_pymdp_simulation
+from gnn.gnn import parse_gnn_file
 
 # Parse GNN file
 gnn_spec = parse_gnn_file("input/gnn_files/actinf_pomdp_agent.md")
@@ -191,7 +191,7 @@ print(f"Results: {results}")
 
 ### **Batch Processing**
 ```python
-from src.execute.pymdp.execute_pymdp import batch_execute_pymdp
+from gnn.execute.pymdp.execute_pymdp import batch_execute_pymdp
 
 # Multiple GNN specifications
 gnn_specs = [parse_gnn_file(f) for f in gnn_files]
@@ -231,10 +231,10 @@ The PyMDP-GNN pipeline integration is **complete and functional**. The system no
 - **Comprehensive scientific output** with proper data management
 - **Modular, testable architecture** following GNN pipeline patterns
 
-The reference implementations in `doc/pymdp/pymdp_pomdp/` are preserved for understanding, while the production pipeline uses the integrated modules in `src/execute/pymdp/` and `src/render/pymdp/`.
+The reference implementations in `doc/pymdp/pymdp_pomdp/` are preserved for understanding, while the production pipeline uses the integrated modules in `src/gnn/execute/pymdp/` and `src/gnn/render/pymdp/`.
 
 **Next Steps**: The system is ready for production use and can be extended with additional POMDP environments or more sophisticated GNN parameter extraction as needed.
 
 ---
 
-**Documentation**: See `doc/pymdp/pymdp_pomdp/README.md` for usage details and `src/render/README.md` for technical implementation details. 
+**Documentation**: See `doc/pymdp/pymdp_pomdp/README.md` for usage details and `src/gnn/render/README.md` for technical implementation details. 

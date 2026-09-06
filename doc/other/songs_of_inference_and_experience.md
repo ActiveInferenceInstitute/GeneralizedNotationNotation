@@ -127,7 +127,7 @@ Dare frame thy **fearful symmetry**?
 
 *In Four Zoas: being Los (Poet-Prophet), Urizen (Reason-System), Luvah (Emotion-Preference), and Tharmas (Sensation-Observation)*
 
-**Los** the Eternal Prophet beheld the `src/render/` burning:  
+**Los** the Eternal Prophet beheld the `src/gnn/render/` burning:  
 And he called unto the `Spectrous Fiend` of `DiscoPy`:  
 
 > "I give you the end of a golden string,  

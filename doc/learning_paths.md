@@ -47,7 +47,7 @@ Same content as [Intermediate Path: Building and Integrating Models](#intermedia
    - Explore simple examples in [GNN Examples](gnn/tutorials/gnn_examples_doc.md).
 
 4. **Run Your First Pipeline**:
-   - Execute via `src/main.py` (details in [Pipeline Architecture](gnn/reference/architecture_reference.md)).
+   - Execute via `src/gnn/main.py` (details in [Pipeline Architecture](gnn/reference/architecture_reference.md)).
    - Visualize results (see [Visualization Docs](visualization/README.md)).
 
 **Next Steps**: Move to Intermediate Path once comfortable with basic models.

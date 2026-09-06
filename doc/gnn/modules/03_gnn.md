@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/3_gnn.py` (32 lines)
+**Orchestrator**: `src/gnn/3_gnn.py` (32 lines)
 **Implementation Layer**: `src/gnn/`
 
 ## Module Description
@@ -500,21 +500,21 @@ input/gnn_files/ (mixed extensions per multi_format_processor) → GNNParsingSys
 
 ### Test Files
 
-- `src/tests/gnn/test_gnn_overall.py` - Module-level coverage and smoke tests
-- `src/tests/gnn/test_gnn_parsing.py` - Parsing-focused tests
-- `src/tests/gnn/test_gnn_parsing_system.py` - `GNNParsingSystem` / registry tests
-- `src/tests/gnn/test_gnn_processing.py` - Directory processing tests
-- `src/tests/gnn/test_gnn_parsers_common.py` - Parser utilities tests
-- `src/tests/gnn/test_gnn_parsers_json.py` - JSON parser tests
-- `src/tests/gnn/test_gnn_parsers_base_serializer.py` - Serializer base tests
-- `src/tests/gnn/test_gnn_xml_parser.py` - XML parser tests
-- `src/tests/gnn/test_gnn_schema.py` - Schema validator tests
-- `src/tests/gnn/test_gnn_cross_format_validator.py` - Cross-format validation tests
-- `src/tests/gnn/test_gnn_validation.py` - Validation tests
+- `tests/gnn/test_gnn_overall.py` - Module-level coverage and smoke tests
+- `tests/gnn/test_gnn_parsing.py` - Parsing-focused tests
+- `tests/gnn/test_gnn_parsing_system.py` - `GNNParsingSystem` / registry tests
+- `tests/gnn/test_gnn_processing.py` - Directory processing tests
+- `tests/gnn/test_gnn_parsers_common.py` - Parser utilities tests
+- `tests/gnn/test_gnn_parsers_json.py` - JSON parser tests
+- `tests/gnn/test_gnn_parsers_base_serializer.py` - Serializer base tests
+- `tests/gnn/test_gnn_xml_parser.py` - XML parser tests
+- `tests/gnn/test_gnn_schema.py` - Schema validator tests
+- `tests/gnn/test_gnn_cross_format_validator.py` - Cross-format validation tests
+- `tests/gnn/test_gnn_validation.py` - Validation tests
 
 ### Test Coverage
 
-Measure locally: `uv run --extra dev python -m pytest src/tests/test_gnn*.py --cov=src/gnn --cov-report=term-missing`. Targets are project-defined (see CI / maintainer notes); do not treat fixed percentages in docs as measured unless cited from a report.
+Measure locally: `uv run --extra dev python -m pytest tests/test_gnn*.py --cov=src/gnn --cov-report=term-missing`. Targets are project-defined (see CI / maintainer notes); do not treat fixed percentages in docs as measured unless cited from a report.
 
 ### Key Test Scenarios
 
@@ -528,13 +528,13 @@ Measure locally: `uv run --extra dev python -m pytest src/tests/test_gnn*.py --c
 
 ```bash
 # Run GNN-specific tests
-uv run --extra dev python -m pytest src/tests/test_gnn*.py -v
+uv run --extra dev python -m pytest tests/test_gnn*.py -v
 
 # Run with coverage
-uv run --extra dev python -m pytest src/tests/test_gnn*.py --cov=src/gnn --cov-report=term-missing
+uv run --extra dev python -m pytest tests/test_gnn*.py --cov=src/gnn --cov-report=term-missing
 
 # Run only parser tests
-uv run --extra dev python -m pytest src/tests/gnn/test_gnn_parsing.py -v
+uv run --extra dev python -m pytest tests/gnn/test_gnn_parsing.py -v
 ```
 
 ---
@@ -585,7 +585,7 @@ See **`mcp.py`** `register_tools` for the authoritative list. Examples include:
 1. Add a value to **`GNNFormat`** in `src/gnn/parsers/common.py` (if it is a new format id).
 2. Implement **`src/gnn/parsers/<name>_parser.py`** and, unless parse-only, **`src/gnn/parsers/<name>_serializer.py`**.
 3. Register classes in **`PARSER_REGISTRY`** and, when applicable, **`SERIALIZER_REGISTRY`** in **`src/gnn/parsers/system.py`**.
-4. Add tests under `src/tests/` and extend **`src/gnn/testing/test_round_trip.py`** if the format should join the default round-trip list.
+4. Add tests under `tests/` and extend **`src/gnn/testing/test_round_trip.py`** if the format should join the default round-trip list.
 5. Update **[SPEC.md](../../../src/gnn/SPEC.md)** if canonical counts change.
 
 ### Code Style
@@ -627,7 +627,7 @@ See **`mcp.py`** `register_tools` for the authoritative list. Examples include:
 
 ```bash
 # Run with verbose logging
-python src/3_gnn.py --verbose
+python src/gnn/3_gnn.py --verbose
 
 # Check output directory
 ls -la output/3_gnn_output/

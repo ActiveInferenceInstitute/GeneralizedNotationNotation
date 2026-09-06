@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Interface Integration Guide | **Audience**: Users, Developers | **Complexity**: Intermediate  
-> **Cross-References**: [AGENTS.md](AGENTS.md) | [Oxdraw GNN Guide](gnn_oxdraw.md) | [Oxdraw Overview](oxdraw.md) | [GUI Documentation](../../src/gui/README.md) | [Main Documentation](../README.md)
+> **Cross-References**: [AGENTS.md](AGENTS.md) | [Oxdraw GNN Guide](gnn_oxdraw.md) | [Oxdraw Overview](oxdraw.md) | [GUI Documentation](../../src/gnn/gui/README.md) | [Main Documentation](../README.md)
 
 ## Overview
 
@@ -26,14 +26,14 @@ This directory contains documentation, resources, and implementation guides for 
 - **[learning_paths.md](../learning_paths.md)**: Learning pathways
 
 ### Related Directories
-- **[GUI Documentation](../../src/gui/README.md)**: Interactive GUI interfaces
+- **[GUI Documentation](../../src/gnn/gui/README.md)**: Interactive GUI interfaces
 - **[Visualization](../visualization/README.md)**: Graph and matrix visualization
 - **[Advanced Visualization](../advanced_visualization/README.md)**: Advanced visualization tools
 - **[D2 Integration](../d2/gnn_d2.md)**: Scriptable diagramming
 
 ### Pipeline Integration
 - **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
-- **[src/AGENTS.md](../../src/AGENTS.md)**: Implementation details
+- **[src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)**: Implementation details
 
 ## Contents
 
@@ -95,14 +95,14 @@ This documentation is integrated with the 25-step GNN processing pipeline:
    - Oxdraw results integrated into comprehensive outputs
    - Visual documentation generation
 
-See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
+See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documentation.
 
 ## Related Resources
 
 ### Main GNN Documentation
 - **[GNN Overview](../gnn/gnn_overview.md)**: Core GNN concepts
 - **[GNN Quickstart](../gnn/tutorials/quickstart_tutorial.md)**: Getting started guide
-- **[GUI Documentation](../../src/gui/README.md)**: Interactive GUI interfaces
+- **[GUI Documentation](../../src/gnn/gui/README.md)**: Interactive GUI interfaces
 
 ### Visualization Resources
 - **[Visualization Guide](../visualization/README.md)**: Graph and matrix visualization
@@ -111,8 +111,8 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 
 ### Pipeline Architecture
 - **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
-- **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
-- **[Pipeline README](../../src/README.md)**: Pipeline overview
+- **[Pipeline AGENTS](../../src/gnn/AGENTS.md)**: Implementation details
+- **[Pipeline README](../../src/gnn/README.md)**: Pipeline overview
 
 ## Standards and Guidelines
 
@@ -126,7 +126,7 @@ All documentation in this module adheres to professional standards:
 ## See Also
 
 - **[GUI Oxdraw Cross-Reference](../CROSS_REFERENCE_INDEX.md#gui_oxdraw)**: Cross-reference index entry
-- **[GUI Documentation](../../src/gui/README.md)**: Interactive GUI interfaces
+- **[GUI Documentation](../../src/gnn/gui/README.md)**: Interactive GUI interfaces
 - **[Visualization Guide](../visualization/README.md)**: Visualization tools
 - **[Main Index](../README.md)**: Return to main documentation
 

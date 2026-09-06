@@ -30,7 +30,7 @@ Pkl integration enables:
 - **README.md**: [Directory overview](README.md)
 - **GNN Documentation**: [gnn/AGENTS.md](../gnn/AGENTS.md)
 - **Main Documentation**: [doc/README.md](../README.md)
-- **Pipeline Reference**: [src/AGENTS.md](../../src/AGENTS.md)
+- **Pipeline Reference**: [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)
 
 ## Documentation Structure
 
@@ -58,7 +58,7 @@ This documentation is integrated with the 25-step GNN processing pipeline:
 - **Step 17 (Integration)**: Pkl configuration coordination
 - **Step 23 (Report)**: Configuration validation results
 
-See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
+See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documentation.
 
 ## Function Signatures and API
 
@@ -107,13 +107,13 @@ All documentation in this module adheres to professional standards:
 
 ### Configuration Resources
 - **[Export Formats](../export/README.md)**: Multi-format export
-- **[Type Checking](../../src/type_checker/AGENTS.md)**: Type validation
+- **[Type Checking](../../src/gnn/type_checker/AGENTS.md)**: Type validation
 - **[Configuration Management](../configuration/README.md)**: Configuration systems
 
 ### Pipeline Architecture
 - **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
-- **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
-- **[Pipeline README](../../src/README.md)**: Pipeline overview
+- **[Pipeline AGENTS](../../src/gnn/AGENTS.md)**: Implementation details
+- **[Pipeline README](../../src/gnn/README.md)**: Pipeline overview
 
 ## See Also
 

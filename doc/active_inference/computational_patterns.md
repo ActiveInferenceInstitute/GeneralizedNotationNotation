@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Technical Reference | **Audience**: Developers | **Complexity**: Intermediate  
-> **Cross-References**: [Variational Inference](variational_inference.md) | [Expected Free Energy](expected_free_energy.md) | [Analysis Tools](../../src/analysis/)
+> **Cross-References**: [Variational Inference](variational_inference.md) | [Expected Free Energy](expected_free_energy.md) | [Analysis Tools](../../src/gnn/analysis/)
 
 ## Overview
 
@@ -42,8 +42,8 @@ def belief_update(prior, likelihood, observation, num_iters=16):
 
 | Implementation | Path |
 |----------------|------|
-| PyMDP | [`src/execute/pymdp/`](../../src/execute/pymdp/) |
-| Analysis | [`src/analysis/analyzer.py`](../../src/analysis/analyzer.py) |
+| PyMDP | [`src/gnn/execute/pymdp/`](../../src/gnn/execute/pymdp/) |
+| Analysis | [`src/gnn/analysis/analyzer.py`](../../src/gnn/analysis/analyzer.py) |
 
 ---
 
@@ -218,16 +218,16 @@ def safe_log(x, eps=1e-10):
 
 | Component | Path |
 |-----------|------|
-| Utils | [`src/utils/`](../../src/utils/) |
-| Analysis | [`src/analysis/`](../../src/analysis/) |
+| Utils | [`src/gnn/utils/`](../../src/gnn/utils/) |
+| Analysis | [`src/gnn/analysis/`](../../src/gnn/analysis/) |
 
 ### Implementation-Specific
 
 | Engine | Path |
 |--------|------|
-| PyMDP | [`src/execute/pymdp/`](../../src/execute/pymdp/) |
-| RxInfer | [`src/execute/rxinfer/`](../../src/execute/rxinfer/) |
-| ActiveInference.jl | [`src/execute/activeinference_jl/`](../../src/execute/activeinference_jl/) |
+| PyMDP | [`src/gnn/execute/pymdp/`](../../src/gnn/execute/pymdp/) |
+| RxInfer | [`src/gnn/execute/rxinfer/`](../../src/gnn/execute/rxinfer/) |
+| ActiveInference.jl | [`src/gnn/execute/activeinference_jl/`](../../src/gnn/execute/activeinference_jl/) |
 
 ---
 

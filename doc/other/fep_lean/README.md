@@ -3,7 +3,7 @@
 > **Document Metadata**
 > **Type**: External project documentation (research archive) | **Audience**: Researchers, Developers | **Complexity**: Advanced
 > **Cross-References**: [AGENTS.md](AGENTS.md) | [Main documentation](../../README.md)
-> **Last Updated**: 2026-09-04 | **Version**: 0.2
+> **Last Updated**: 2026-09-06 | **Version**: 0.5
 
 ## Overview
 
@@ -20,7 +20,7 @@ The two projects are complementary layers:
 - **GNN** specifies, renders, and executes generative-model instances: a
   sectioned document syntax (see [normative syntax](../../gnn/gnn_syntax.md))
   and a 25-step pipeline whose canonical registry is
-  `src/pipeline/step_registry.py`.
+  `src/gnn/pipeline/step_registry.py`.
 - **fep_lean** states and proves invariants about the same objects: finite
   laws and kernels, Markov blankets, variational free energy, expected free
   energy, policy selection, and Gaussian/OU dynamics.
@@ -29,12 +29,16 @@ This folder documents the formal collaboration program between the two, from
 the GNN side: how fep_lean-expressed models can be rendered and executed by
 this pipeline, and how GNN's own steps and methods can be formalized in Lean.
 
-Current status (2026-09-04): W2 source custody and the Q5 PyMDP, Q6 Julia
+Current status (2026-09-06): W2 source custody and the Q5 PyMDP, Q6 Julia
 embedded-input, and Q7 scalar-OU coefficient proofs have validated schema-2
 native receipts in `../fep_lean/specs/`. The
-[bridge contract mirror](bridge-contract.md) is version 0.4. H2.7 acceptance
-opens only read-only H3.G0 eligibility; actual study metadata is still required.
-Current records and exact test scopes live in
+[bridge contract mirror](bridge-contract.md) is version 0.5: the GNN-side
+Python package is canonically `gnn` (src-layout `src/gnn/`), the owner
+rosters are re-pinned to `src/gnn/**` paths, and the new `verify-document`
+bridge operation checks any emitted document against the `FEP.GnnDocument`
+typed surface (syntax + `WellFormed`; conformance proofs stay out of scope).
+H2.7 acceptance opens only read-only H3.G0 eligibility; actual study metadata
+is still required. Current records and exact test scopes live in
 `../fep_lean/specs/gnn-bridge-w2-source-custody/WAVE2-REPORT.md`.
 
 ## Documents

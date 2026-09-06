@@ -133,14 +133,14 @@ Every tool must be callable through `execute_tool` **with no arguments**, so kee
 ## Running the Audit
 
 ```bash
-# Full MCP audit (part of src/tests/; suite counts in repository README.md)
-uv run --extra dev python -m pytest src/tests/mcp/test_mcp_audit.py -v
+# Full MCP audit (part of tests/; suite counts in repository README.md)
+uv run --extra dev python -m pytest tests/mcp/test_mcp_audit.py -v
 
 # Focus on your new module
-uv run --extra dev python -m pytest src/tests/mcp/test_mcp_audit.py -v -k "<module>"
+uv run --extra dev python -m pytest tests/mcp/test_mcp_audit.py -v -k "<module>"
 
 # Generate the tool inventory JSON
-uv run python src/mcp/validate_tools.py
+uv run python src/gnn/mcp/validate_tools.py
 ```
 
 ## What the Audit Tests
@@ -154,7 +154,7 @@ uv run python src/mcp/validate_tools.py
 | `TestMCPLoggingCoverage` | Every `mcp.py` calls `logger.info` in `register_tools` |
 | `TestMCPAuditReport` | JSON report generated with correct schema |
 
-The expected-module list is `EXPECTED_MODULES` in `src/tests/mcp/test_mcp_audit.py`.
+The expected-module list is `EXPECTED_MODULES` in `tests/mcp/test_mcp_audit.py`.
 
 If your new tools follow the canonical pattern above, the audit will pass automatically.
 
@@ -164,10 +164,10 @@ If you are adding a **brand-new** pipeline module (e.g., step 25+):
 
 1. Create `src/<module>/mcp.py` following the pattern above
 2. No manual registration step is needed: `MCP.discover_modules()` in
-   `src/mcp/mcp.py` dynamically scans the `src/` directory at runtime for
+   `src/gnn/mcp/mcp.py` dynamically scans the `src/` directory at runtime for
    any subdirectory containing an `mcp.py` file and loads it automatically
    (there is no static module list or `mcp_instance.py` to edit)
-3. Add the module name to `EXPECTED_MODULES` in `src/tests/mcp/test_mcp_audit.py`
+3. Add the module name to `EXPECTED_MODULES` in `tests/mcp/test_mcp_audit.py`
 4. Update `doc/gnn/mcp/tool_reference.md` with the new tools
 5. Create `doc/gnn/modules/NN_<module>.md` with an MCP Tools section
 
@@ -176,4 +176,4 @@ If you are adding a **brand-new** pipeline module (e.g., step 25+):
 - [Tool Reference](tool_reference.md) — existing tools
 - [modules/21_mcp.md](../modules/21_mcp.md) — pipeline step documentation
 - [doc/mcp/fastmcp.md](../../../doc/mcp/fastmcp.md) — FastMCP library internals
-- [src/mcp/](../../../src/mcp/) — server implementation source
+- [src/gnn/mcp/](../../../src/gnn/mcp/) — server implementation source

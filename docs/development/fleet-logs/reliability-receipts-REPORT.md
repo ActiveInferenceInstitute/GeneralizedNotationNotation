@@ -9,7 +9,7 @@ All initially assigned API/MCP/render-processor/execute-metadata/CI files matche
 that snapshot at intake, including earlier dirty fleet changes. No commits or
 pushes were performed. Validation/parsers/CLI and bridge/ISA ownership remained
 with their assigned workers/parent; sibling FEP input was read only. Parent later
-transferred `src/main.py` and narrow orchestration docs/tests for run-ID integration;
+transferred `src/gnn/main.py` and narrow orchestration docs/tests for run-ID integration;
 that integration and the requested test-infrastructure README are complete.
 
 Parent attempted full baseline suites but interrupted stalled pre-existing native
@@ -126,7 +126,7 @@ overlap test address that finding. No external advisor verdict is claimed.
    actual HTTP byte streams and the registry. Parent subsequently reported all
    12 live HTTP socket tests passed. This is parent-provided evidence, not a
    socket run performed by this lane; CI also runs the live HTTP tests.
-3. **Docs audit complete:** the requested `src/tests/tests/README.md` pairs the
+3. **Docs audit complete:** the requested `tests/tests/README.md` pairs the
    parent-added AGENTS file. The final strict audit reports all zero failures.
 4. **Publication/concurrency:** JSON files are individually atomic. Same-run folder
    aggregation assumes sequential invocations, as the pipeline currently uses;
@@ -141,18 +141,18 @@ overlap test address that finding. No external advisor verdict is claimed.
 
 ## Changed surfaces
 
-Production: `src/api/{pipeline_runner,app,models,processor}.py`,
-`src/mcp/{jsonrpc,server_core,server_stdio,server_http}.py`,
-`src/render/{processor,framework_registry}.py`,
-`src/execute/{metadata,processor}.py`, `src/main.py`, `.github/workflows/ci.yml`.
+Production: `src/gnn/api/{pipeline_runner,app,models,processor}.py`,
+`src/gnn/mcp/{jsonrpc,server_core,server_stdio,server_http}.py`,
+`src/gnn/render/{processor,framework_registry}.py`,
+`src/gnn/execute/{metadata,processor}.py`, `src/gnn/main.py`, `.github/workflows/ci.yml`.
 
-Focused tests: `src/tests/api/{test_reliability_contract,test_api_endpoints}.py`,
-`src/tests/mcp/test_transport_reliability.py`,
-`src/tests/render/{test_render_receipt_reliability,test_render_process_discovery,test_fep_bridge_render}.py`,
-`src/tests/execute/test_receipt_reliability.py`,
-`src/tests/pipeline/test_run_identity.py`.
+Focused tests: `tests/api/{test_reliability_contract,test_api_endpoints}.py`,
+`tests/mcp/test_transport_reliability.py`,
+`tests/render/{test_render_receipt_reliability,test_render_process_discovery,test_fep_bridge_render}.py`,
+`tests/execute/test_receipt_reliability.py`,
+`tests/pipeline/test_run_identity.py`.
 
 Documentation: root `README.md`, API/MCP/render/execute READMEs,
-`src/pipeline/AGENTS.md`, `src/tests/tests/README.md`, and this report.
+`src/gnn/pipeline/AGENTS.md`, `tests/tests/README.md`, and this report.
 Existing unrelated dirty work was retained; git diff totals against HEAD include
 pre-existing fleet edits and must not be treated as this lane's isolated patch.

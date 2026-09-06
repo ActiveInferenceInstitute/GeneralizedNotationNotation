@@ -14,7 +14,7 @@ already pass; your job is the DEEPER docs-vs-code cross-check that automation
 cannot do. Verify — never guess:
 
 1. **Documented commands exist.** For every shell/fenced command in your docs
-   (e.g. `uv run python src/5_type_checker.py`, `python src/main.py`, `just test`,
+   (e.g. `uv run python src/gnn/5_type_checker.py`, `python src/gnn/main.py`, `just test`,
    `scripts/foo.py`, `uv run --extra dev pytest ...`), verify the referenced
    script/path/module actually exists at that path and the command is well-formed.
    Flag stale/moved/renamed script paths.
@@ -44,8 +44,8 @@ Use the repo's own interpreter for verification: `.venv/bin/python -c ...` or
 ## Your assigned region
 - doc/analysis/ (if present) else doc/advanced_visualization/, doc/visualization/
 - doc/performance/, doc/petri_nets/, doc/research/, doc/spm/
-- any doc pages referencing src/analysis/, src/visualization/,
-  src/advanced_visualization/, Step 16 analysis, or plotting/sonification
+- any doc pages referencing src/gnn/analysis/, src/gnn/visualization/,
+  src/gnn/advanced_visualization/, Step 16 analysis, or plotting/sonification
 Audit documented analysis/visualization functions, plot names, scripts, and
 Step-16 output paths against the current tree.
 

@@ -25,5 +25,5 @@ The maintained, runnable tutorial surface is:
 - [Templates](../templates/README.md) for common model families.
 
 Any implementation of the proposal would build on the pipeline entry points
-documented in [src/AGENTS.md](../../src/AGENTS.md) and be tracked through the
+documented in [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) and be tracked through the
 maintained roadmap, not this page.

@@ -268,9 +268,9 @@ Maximizing ELBO = Minimizing Free Energy.
 
 | Component | Path | Description |
 |-----------|------|-------------|
-| PyMDP Inference | [`src/execute/pymdp/`](../../src/execute/pymdp/) | Belief updating |
-| RxInfer | [`src/execute/rxinfer/`](../../src/execute/rxinfer/) | Message passing |
-| Analysis | [`src/analysis/`](../../src/analysis/) | Post-hoc analysis |
+| PyMDP Inference | [`src/gnn/execute/pymdp/`](../../src/gnn/execute/pymdp/) | Belief updating |
+| RxInfer | [`src/gnn/execute/rxinfer/`](../../src/gnn/execute/rxinfer/) | Message passing |
+| Analysis | [`src/gnn/analysis/`](../../src/gnn/analysis/) | Post-hoc analysis |
 
 ### Algorithm Reference
 

@@ -1,0 +1,325 @@
+{
+  "timestamp": "2026-06-18T09:04:52.080655",
+  "target_directory": "input/gnn_files/pomdp_gridworld",
+  "output_directory": "output/12_execute_output",
+  "total_scripts_found": 8,
+  "successful_executions": 6,
+  "failed_executions": 0,
+  "skipped_executions": 2,
+  "execution_details": [
+    {
+      "script_path": "output/11_render_output/pomdp_gridworld_3x3/numpyro/POMDP GridWorld 3x3_numpyro.py",
+      "script_name": "POMDP GridWorld 3x3_numpyro.py",
+      "framework": "numpyro",
+      "model_name": "pomdp_gridworld_3x3",
+      "executor": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "return_code": 0,
+      "execution_time": 1.077094,
+      "timestamp": "2026-06-18T09:04:52.501384",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 1.077094,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        1.077094
+      ],
+      "structured_result_file": "output/12_execute_output/pomdp_gridworld_3x3/numpyro/execution_logs/POMDP GridWorld 3x3_numpyro.py_results.json",
+      "output_file": "output/12_execute_output/pomdp_gridworld_3x3/numpyro/execution_logs/POMDP GridWorld 3x3_numpyro.py_execution.log",
+      "implementation_directory": "output/12_execute_output/pomdp_gridworld_3x3/numpyro",
+      "stdout_length": 281,
+      "stderr_length": 0,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "output/11_render_output/pomdp_gridworld_3x3/pymdp/POMDP GridWorld 3x3_pymdp.py",
+      "script_name": "POMDP GridWorld 3x3_pymdp.py",
+      "framework": "pymdp",
+      "model_name": "pomdp_gridworld_3x3",
+      "executor": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "return_code": 0,
+      "execution_time": 2.698324,
+      "timestamp": "2026-06-18T09:04:53.612721",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 2.698324,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        2.698324
+      ],
+      "structured_result_file": "output/12_execute_output/pomdp_gridworld_3x3/pymdp/execution_logs/POMDP GridWorld 3x3_pymdp.py_results.json",
+      "output_file": "output/12_execute_output/pomdp_gridworld_3x3/pymdp/execution_logs/POMDP GridWorld 3x3_pymdp.py_execution.log",
+      "implementation_directory": "output/12_execute_output/pomdp_gridworld_3x3/pymdp",
+      "stdout_length": 41,
+      "stderr_length": 3207,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "output/11_render_output/pomdp_gridworld_3x3/pytorch/POMDP GridWorld 3x3_pytorch.py",
+      "script_name": "POMDP GridWorld 3x3_pytorch.py",
+      "framework": "pytorch",
+      "model_name": "pomdp_gridworld_3x3",
+      "executor": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+      "success": false,
+      "skipped": true,
+      "return_code": null,
+      "error": "Dependency not installed: torch",
+      "error_type": "DependencyNotInstalled",
+      "execution_time": 0,
+      "timestamp": "2026-06-18T09:04:56.341825",
+      "execution_metadata": {},
+      "stdout_length": 0,
+      "stderr_length": 0
+    },
+    {
+      "script_path": "output/11_render_output/pomdp_gridworld_3x3/jax/POMDP GridWorld 3x3_jax.py",
+      "script_name": "POMDP GridWorld 3x3_jax.py",
+      "framework": "jax",
+      "model_name": "pomdp_gridworld_3x3",
+      "executor": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "return_code": 0,
+      "execution_time": 0.993259,
+      "timestamp": "2026-06-18T09:04:56.622360",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 0.993259,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        0.993259
+      ],
+      "structured_result_file": "output/12_execute_output/pomdp_gridworld_3x3/jax/execution_logs/POMDP GridWorld 3x3_jax.py_results.json",
+      "output_file": "output/12_execute_output/pomdp_gridworld_3x3/jax/execution_logs/POMDP GridWorld 3x3_jax.py_execution.log",
+      "implementation_directory": "output/12_execute_output/pomdp_gridworld_3x3/jax",
+      "stdout_length": 1382,
+      "stderr_length": 0,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "output/11_render_output/pomdp_gridworld_3x3/discopy/POMDP GridWorld 3x3_discopy.py",
+      "script_name": "POMDP GridWorld 3x3_discopy.py",
+      "framework": "discopy",
+      "model_name": "pomdp_gridworld_3x3",
+      "executor": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "return_code": 0,
+      "execution_time": 0.298156,
+      "timestamp": "2026-06-18T09:04:57.923511",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 0.298156,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        0.298156
+      ],
+      "structured_result_file": "output/12_execute_output/pomdp_gridworld_3x3/discopy/execution_logs/POMDP GridWorld 3x3_discopy.py_results.json",
+      "output_file": "output/12_execute_output/pomdp_gridworld_3x3/discopy/execution_logs/POMDP GridWorld 3x3_discopy.py_execution.log",
+      "implementation_directory": "output/12_execute_output/pomdp_gridworld_3x3/discopy",
+      "stdout_length": 1538,
+      "stderr_length": 0,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 2
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "output/11_render_output/pomdp_gridworld_3x3/bnlearn/POMDP GridWorld 3x3_bnlearn.py",
+      "script_name": "POMDP GridWorld 3x3_bnlearn.py",
+      "framework": "bnlearn",
+      "model_name": "pomdp_gridworld_3x3",
+      "executor": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+      "success": false,
+      "skipped": true,
+      "return_code": null,
+      "error": "Dependency not installed: bnlearn",
+      "error_type": "DependencyNotInstalled",
+      "execution_time": 0,
+      "timestamp": "2026-06-18T09:04:58.246946",
+      "execution_metadata": {},
+      "stdout_length": 0,
+      "stderr_length": 0
+    },
+    {
+      "script_path": "output/11_render_output/pomdp_gridworld_3x3/rxinfer/POMDP GridWorld 3x3_rxinfer.jl",
+      "script_name": "POMDP GridWorld 3x3_rxinfer.jl",
+      "framework": "rxinfer",
+      "model_name": "pomdp_gridworld_3x3",
+      "executor": "julia",
+      "success": true,
+      "skipped": false,
+      "return_code": 0,
+      "execution_time": 6.349163,
+      "timestamp": "2026-06-18T09:04:58.246990",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 6.349163,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        6.349163
+      ],
+      "structured_result_file": "output/12_execute_output/pomdp_gridworld_3x3/rxinfer/execution_logs/POMDP GridWorld 3x3_rxinfer.jl_results.json",
+      "output_file": "output/12_execute_output/pomdp_gridworld_3x3/rxinfer/execution_logs/POMDP GridWorld 3x3_rxinfer.jl_execution.log",
+      "implementation_directory": "output/12_execute_output/pomdp_gridworld_3x3/rxinfer",
+      "execution_metadata": {},
+      "stdout_length": 52,
+      "stderr_length": 0,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "output/11_render_output/pomdp_gridworld_3x3/activeinference_jl/POMDP GridWorld 3x3_activeinference.jl",
+      "script_name": "POMDP GridWorld 3x3_activeinference.jl",
+      "framework": "activeinference_jl",
+      "model_name": "pomdp_gridworld_3x3",
+      "executor": "julia",
+      "success": true,
+      "skipped": false,
+      "return_code": 0,
+      "execution_time": 9.351349,
+      "timestamp": "2026-06-18T09:05:09.391758",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 9.351349,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        9.351349
+      ],
+      "structured_result_file": "output/12_execute_output/pomdp_gridworld_3x3/activeinference_jl/execution_logs/POMDP GridWorld 3x3_activeinference.jl_results.json",
+      "output_file": "output/12_execute_output/pomdp_gridworld_3x3/activeinference_jl/execution_logs/POMDP GridWorld 3x3_activeinference.jl_execution.log",
+      "implementation_directory": "output/12_execute_output/pomdp_gridworld_3x3/activeinference_jl",
+      "stdout_length": 60,
+      "stderr_length": 0,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    }
+  ],
+  "framework_status": {
+    "numpyro": {
+      "status": "success",
+      "executions": 1
+    },
+    "pymdp": {
+      "status": "success",
+      "executions": 1
+    },
+    "pytorch": {
+      "status": "skipped",
+      "executions": 1,
+      "error": "Dependency not installed: torch"
+    },
+    "jax": {
+      "status": "success",
+      "executions": 1
+    },
+    "discopy": {
+      "status": "success",
+      "executions": 1
+    },
+    "bnlearn": {
+      "status": "skipped",
+      "executions": 1,
+      "error": "Dependency not installed: bnlearn"
+    },
+    "rxinfer": {
+      "status": "success",
+      "executions": 1
+    },
+    "activeinference_jl": {
+      "status": "success",
+      "executions": 1
+    }
+  },
+  "execution_mode": "local",
+  "execution_workers": 1,
+  "backend": null,
+  "execution_benchmark_repeats": 1,
+  "execution_summary_detail": true,
+  "success": true,
+  "render_failures": [],
+  "missing_render_scripts": [],
+  "requested_frameworks": [
+    "pymdp",
+    "jax",
+    "discopy",
+    "rxinfer",
+    "activeinference_jl",
+    "pytorch",
+    "numpyro",
+    "bnlearn"
+  ],
+  "total_scripts": 8,
+  "success_rate": 100.0,
+  "execution_summary_format": "slim_v1"
+}

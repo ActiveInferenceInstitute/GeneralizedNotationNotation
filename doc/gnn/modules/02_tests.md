@@ -2,8 +2,8 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/2_tests.py` (104 lines)
-**Implementation Layer**: `src/tests/`
+**Orchestrator**: `src/gnn/2_tests.py` (104 lines)
+**Implementation Layer**: `tests/`
 
 ## Module Description
 
@@ -12,12 +12,12 @@ This directory contains the comprehensive test suite for the GNN Processing Pipe
 
 
 ```bash
-python src/2_tests.py --fast-only --verbose
+python src/gnn/2_tests.py --fast-only --verbose
 ```
 
 
 ```bash
-python src/2_tests.py --comprehensive --verbose
+python src/gnn/2_tests.py --comprehensive --verbose
 ```
 
 ## Agent Identity & Capabilities
@@ -99,7 +99,7 @@ success = run_tests(
 #### `create_test_runner(args, logger) -> ModularTestRunner`
 **Description**: Factory that returns a `_ModularTestRunner` for category-based test execution.
 
-**Defined in**: [`test_runner_modular.py`](../../../src/tests/test_runner_modular.py). The package [`__init__.py`](../../../src/tests/__init__.py) imports it from there separately from `runner.run_tests` (which lives in [`runner.py`](../../../src/tests/runner.py)); a single combined import would fail because `create_test_runner` is not defined on `runner`.
+**Defined in**: [`test_runner_modular.py`](../../../tests/test_runner_modular.py). The package [`__init__.py`](../../../tests/__init__.py) imports it from there separately from `runner.run_tests` (which lives in [`runner.py`](../../../tests/runner.py)); a single combined import would fail because `create_test_runner` is not defined on `runner`.
 
 **Parameters**:
 - `args`: Parsed arguments (e.g. from the pipeline CLI)
@@ -132,7 +132,7 @@ success = run_tests(
 **Returns**: `True` if tests passed, `False` otherwise
 
 **Features**:
-- Executes all test categories from `MODULAR_TEST_CATEGORIES` (defined in [`categories.py`](../../../src/tests/categories.py))
+- Executes all test categories from `MODULAR_TEST_CATEGORIES` (defined in [`categories.py`](../../../tests/categories.py))
 - Includes slow and performance tests
 - Uses category-based execution with resource monitoring
 
@@ -162,7 +162,7 @@ success = run_tests(
 
 **Returns**: List of unique error messages (strings)
 
-**Defined in**: [`infrastructure/utils.py`](../../../src/tests/infrastructure/utils.py) as `extract_collection_errors` (re-exported as `_extract_collection_errors`).
+**Defined in**: [`infrastructure/utils.py`](../../../tests/infrastructure/utils.py) as `extract_collection_errors` (re-exported as `_extract_collection_errors`).
 
 **Error Types Detected**:
 - `ERROR collecting` - Test file collection failures
@@ -199,7 +199,7 @@ errors = _extract_collection_errors(pytest_stdout, pytest_stderr)
 
 ### Test Settings
 
-Shared constants live in [`src/utils/test_utils.py`](../../../src/utils/test_utils.py), re-exported by `tests` (`__init__.py`):
+Shared constants live in [`src/gnn/utils/test_utils.py`](../../../src/gnn/utils/test_utils.py), re-exported by `tests` (`__init__.py`):
 
 ```python
 TEST_CATEGORIES = {
@@ -218,7 +218,7 @@ TEST_CATEGORIES = {
 
 ### Test Category Routing
 
-The execution routing table is `MODULAR_TEST_CATEGORIES` in [`categories.py`](../../../src/tests/categories.py): a typed `Dict[str, TestCategory]` (`TypedDict` with `name`, `description`, `files`, and optional `markers`, `timeout_seconds`, `max_failures`, `parallel`). File paths are relative to `src/tests/`; `get_all_test_files()` returns a sorted, deduplicated list across all categories, and `missing_category_files()` reports entries whose files no longer exist (drift detection used by the plumbing-contract tests).
+The execution routing table is `MODULAR_TEST_CATEGORIES` in [`categories.py`](../../../tests/categories.py): a typed `Dict[str, TestCategory]` (`TypedDict` with `name`, `description`, `files`, and optional `markers`, `timeout_seconds`, `max_failures`, `parallel`). File paths are relative to `tests/`; `get_all_test_files()` returns a sorted, deduplicated list across all categories, and `missing_category_files()` reports entries whose files no longer exist (drift detection used by the plumbing-contract tests).
 
 ---
 
@@ -450,7 +450,7 @@ flowchart TD
 **tests/** (Plumbing-Contract Tests):
 - 26 tests across 5 files pinning runner modes, category routing, helpers, infrastructure exports, and the unified `TestRunner` — guard against accidental re-fragmentation of the runner architecture
 
-**src/utils/test_utils.py** (Shared Constants & Utilities):
+**src/gnn/utils/test_utils.py** (Shared Constants & Utilities):
 - Defines `TEST_CATEGORIES`, `TEST_STAGES`, `TEST_CONFIG`, and test data/report utilities
 - Re-exported by `tests/__init__.py`; used by both test files and the runner
 
@@ -467,7 +467,7 @@ Test Discovery → Environment Setup → Test Execution → Result Collection �
 
 ### Adding New Test Categories
 
-To add a new test category to `MODULAR_TEST_CATEGORIES` in `categories.py` (file paths are relative to `src/tests/`):
+To add a new test category to `MODULAR_TEST_CATEGORIES` in `categories.py` (file paths are relative to `tests/`):
 
 ```python
 MODULAR_TEST_CATEGORIES["new_module"] = {
@@ -490,7 +490,7 @@ Follow the naming convention:
 
 Example:
 ```python
-# src/tests/template/test_template_overall.py
+# tests/template/test_template_overall.py
 import pytest
 from pathlib import Path
 
@@ -514,8 +514,8 @@ def test_new_module_complex():
 ## Testing
 
 ### Test Files
-- **120+** `test_*.py` modules under `src/tests/` (exact count drifts; use `find src/tests -maxdepth 1 -name 'test_*.py' | wc -l`)
-- **26** plumbing-contract tests under `src/tests/tests/` (runner modes, category routing, helpers, infrastructure exports, unified `TestRunner`)
+- **120+** `test_*.py` modules under `tests/` (exact count drifts; use `find tests -maxdepth 1 -name 'test_*.py' | wc -l`)
+- **26** plumbing-contract tests under `tests/tests/` (runner modes, category routing, helpers, infrastructure exports, unified `TestRunner`)
 - **2,397** collected tests with standard Ollama integration ignores as measured by collect-only on 2026-06-12
 - **20+ test categories** for organized execution (typed table in `categories.py`)
 - **25+ test markers** for selective execution
@@ -571,12 +571,12 @@ def run_test_suite_tool(output_dir):
 
 ---
 ## Documentation
-- **[README](../../../src/tests/README.md)**: Module Overview
-- **[AGENTS](../../../src/tests/AGENTS.md)**: Agentic Workflows
-- **[SPEC](../../../src/tests/SPEC.md)**: Architectural Specification
-- **[SKILL](../../../src/tests/SKILL.md)**: Capability API
+- **[README](../../../tests/README.md)**: Module Overview
+- **[AGENTS](../../../tests/AGENTS.md)**: Agentic Workflows
+- **[SPEC](../../../tests/SPEC.md)**: Architectural Specification
+- **[SKILL](../../../tests/SKILL.md)**: Capability API
 
 
 ---
 
-**Source Reference**: [src/tests](../../../src/tests)
+**Source Reference**: [tests](../../../tests)

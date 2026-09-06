@@ -2,15 +2,15 @@
 
 Repo: /home/trim/Documents/Git/HumOS/projects/outside_of_hum/GeneralizedNotationNotation
 YOU OWN these paths ONLY (disjoint scope — no other agent touches them):
-- src/gui/gui_2/  (ui.py + helpers)
-- src/gui/gui_3/  (ui_designer.py)
-- src/audio/  (processor + sapf/)  [audio DSP edge cases]
-- mirror tests: src/tests/gui/, src/tests/audio/
+- src/gnn/gui/gui_2/  (ui.py + helpers)
+- src/gnn/gui/gui_3/  (ui_designer.py)
+- src/gnn/audio/  (processor + sapf/)  [audio DSP edge cases]
+- mirror tests: tests/gui/, tests/audio/
 
 DO NOT TOUCH anything outside this scope. In particular NEVER edit:
 - pyproject.toml, justfile, uv.lock, pytest.ini, .gitignore, AGENTS.md,
-  CLAUDE.md, README.md, CHANGELOG.md, src/main.py
-- src/tests/conftest.py, src/tests/helpers/, src/tests/categories.py
+  CLAUDE.md, README.md, CHANGELOG.md, src/gnn/main.py
+- tests/conftest.py, tests/helpers/, tests/categories.py
 - files owned by other agents (disjoint paths).
 
 GOAL
@@ -28,9 +28,9 @@ regression tests for any behaviour you pin or bug you fix. Keep public API
 stable unless clearly justified.
 
 VERIFY (scoped only — do NOT run the full suite):
-- uv run ruff check src/gui src/audio
-- uv run pytest src/tests/gui src/tests/audio -q --tb=no -x
-- uv run mypy src/gui src/audio --config-file pyproject.toml
+- uv run ruff check src/gnn/gui src/gnn/audio
+- uv run pytest tests/gui tests/audio -q --tb=no -x
+- uv run mypy src/gnn/gui src/gnn/audio --config-file pyproject.toml
 
 HARD RULE: DO NOT commit, DO NOT push, DO NOT stage. Leave ALL changes
 uncommitted. Do not touch git index/HEAD. Other agents work on disjoint paths;

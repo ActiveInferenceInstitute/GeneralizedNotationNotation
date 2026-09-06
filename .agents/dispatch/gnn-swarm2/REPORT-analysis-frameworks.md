@@ -15,7 +15,7 @@ was unavailable).
 
 ### Source (bug fix — root cause)
 
-- `src/analysis/numpyro/analyzer.py`
+- `src/gnn/analysis/numpyro/analyzer.py`
   - `_generate_plots` now returns `bool` (True iff at least one plot artifact was
     written) instead of `None`.
   - The caller sets `analysis["plots_generated"]` from that return value instead
@@ -23,12 +23,12 @@ was unavailable).
   - Root cause fixed: previously `_generate_plots` swallowed the matplotlib
     `ImportError` internally and returned normally, so `plots_generated` was
     always `True` even when no plots were produced — a misleading documented flag.
-- `src/analysis/pytorch/analyzer.py`
+- `src/gnn/analysis/pytorch/analyzer.py`
   - Identical fix (PyTorch action-bar color `#4285F4` preserved).
 
 ### Tests added (new files only, under mirror scope)
 
-- `src/tests/analysis/test_numpyro_pytorch_analyzers.py` (14 parametrized tests:
+- `tests/analysis/test_numpyro_pytorch_analyzers.py` (14 parametrized tests:
   8 scenarios x numpyro+pytorch)
   - end-to-end on realistic runner-shaped `simulation_results.json` (beliefs /
     actions / efe_history / validation): asserts documented analysis JSON
@@ -42,7 +42,7 @@ was unavailable).
   - malformed JSON result => skipped, returns `[]`.
   - disjoint-scope discovery: analyzer ignores the *other* framework's results.
   - root-level `simulation_results.json` recovery, and default output_dir.
-- `src/tests/analysis/test_generate_cross_model_report.py` (14 tests)
+- `tests/analysis/test_generate_cross_model_report.py` (14 tests)
   - end-to-end report generation from a realistic multi-model/multi-framework
     `12_execute_output`: asserts valid markdown structure (Summary Matrix, EFE,
     Entropy, Execution Time, Per-Model Details, Cross-Model Observations) and
@@ -60,10 +60,10 @@ only). No docs touched (AGENTS/docs out of scope).
 
 ## Scoped verification (all green)
 
-- `uv run --extra dev ruff check src/analysis/numpyro src/analysis/pytorch src/analysis/generate_cross_model_report.py` -> All checks passed
+- `uv run --extra dev ruff check src/gnn/analysis/numpyro src/gnn/analysis/pytorch src/gnn/analysis/generate_cross_model_report.py` -> All checks passed
 - `uv run --extra dev ruff check <both new test files>` -> All checks passed
-- `uv run --extra dev mypy src/analysis/numpyro src/analysis/pytorch src/analysis/generate_cross_model_report.py --config-file pyproject.toml` -> Success, no issues in 5 source files
-- `uv run --extra dev pytest src/tests/analysis -q --tb=short` -> 220 passed
+- `uv run --extra dev mypy src/gnn/analysis/numpyro src/gnn/analysis/pytorch src/gnn/analysis/generate_cross_model_report.py --config-file pyproject.toml` -> Success, no issues in 5 source files
+- `uv run --extra dev pytest tests/analysis -q --tb=short` -> 220 passed
   (192 baseline + 28 new), 0 failed. Baseline suite re-run to confirm the bug
   fix introduced no regressions.
 

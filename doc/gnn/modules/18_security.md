@@ -2,8 +2,8 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/18_security.py` (55 lines)
-**Implementation Layer**: `src/security/`
+**Orchestrator**: `src/gnn/18_security.py` (55 lines)
+**Implementation Layer**: `src/gnn/security/`
 
 ## Module Description
 
@@ -11,7 +11,7 @@ This module provides comprehensive security validation and access control capabi
 
 
 ```
-src/security/
+src/gnn/security/
 ├── __init__.py                    # Module initialization and exports
 ├── README.md                      # This documentation
 ├── processor.py                   # Scanners, process_security, pre-execution script gate
@@ -229,11 +229,11 @@ else:
 
 ## Pre-execution script gate
 
-Step 18 runs after Step 12, so on its own it is forensic. `scan_script_for_execution(script_path, *, block_on="high")` in `src/security/processor.py` closes that gap: Step 12 (`src/execute/processor.py`) calls it on every rendered script before launching it and refuses to run the script when the verdict is `ok=False` (error type `SecurityGateBlocked`).
+Step 18 runs after Step 12, so on its own it is forensic. `scan_script_for_execution(script_path, *, block_on="high")` in `src/gnn/security/processor.py` closes that gap: Step 12 (`src/gnn/execute/processor.py`) calls it on every rendered script before launching it and refuses to run the script when the verdict is `ok=False` (error type `SecurityGateBlocked`).
 
 - **Python scripts** are analysed with the AST scanner; findings at or above `block_on` block execution.
 - **Julia scripts** are validated with `Meta.parseall` through a `julia` subprocess (`_julia_meta_parseall`, 30 s timeout). Parsing builds the AST without executing the script. Only an explicit parse failure (`GNN_PARSE_FAIL`) blocks; when Julia is absent, times out, or the probe itself does not run (e.g. a launcher with no installed toolchain — the v3.2.0 fix), the gate degrades to the advisory regex sweep `_julia_regex_sweep` with `scanned=False`.
-- Setting `GNN_ALLOW_UNSAFE_EXEC` in the environment bypasses the gate (see `_gnn_allow_unsafe_exec` in `src/execute/processor.py`).
+- Setting `GNN_ALLOW_UNSAFE_EXEC` in the environment bypasses the gate (see `_gnn_allow_unsafe_exec` in `src/gnn/execute/processor.py`).
 
 ## Output Specification
 
@@ -326,11 +326,11 @@ File Input → Security Validation → Threat Detection → Access Control → S
 ## Testing
 
 ### Test Files
-- `src/tests/security/test_security_overall.py` - Module-level tests
-- `src/tests/security/test_security_functional.py` - Functional tests
+- `tests/security/test_security_overall.py` - Module-level tests
+- `tests/security/test_security_functional.py` - Functional tests
 
 ### Test Coverage
-- Measure: `uv run --extra dev python -m pytest src/tests/security/ --cov=security --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
+- Measure: `uv run --extra dev python -m pytest tests/security/ --cov=security --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
 
 ### Key Test Scenarios
 1. Security validation with various threat types
@@ -350,7 +350,7 @@ File Input → Security Validation → Threat Detection → Access Control → S
 - `list_security_checks` - List the checks the scanner applies
 
 ### MCP File Location
-- `src/security/mcp.py` - MCP tool registrations
+- `src/gnn/security/mcp.py` - MCP tool registrations
 
 ---
 
@@ -401,9 +401,9 @@ File Input → Security Validation → Threat Detection → Access Control → S
 ## References
 
 ### Related Documentation
-- [Pipeline Overview](../../../src/security/../../README.md)
-- [Architecture Guide](../../../src/security/../../ARCHITECTURE.md)
-- [Security Guide](../../../src/security/../../doc/security/)
+- [Pipeline Overview](../../../README.md)
+- [Architecture Guide](../../../ARCHITECTURE.md)
+- [Security Guide](../../../doc/security/)
 
 ### External Resources
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/)
@@ -419,12 +419,12 @@ File Input → Security Validation → Threat Detection → Access Control → S
 
 ---
 ## Documentation
-- **[README](../../../src/security/README.md)**: Module Overview
-- **[AGENTS](../../../src/security/AGENTS.md)**: Agentic Workflows
-- **[SPEC](../../../src/security/SPEC.md)**: Architectural Specification
-- **[SKILL](../../../src/security/SKILL.md)**: Capability API
+- **[README](../../../src/gnn/security/README.md)**: Module Overview
+- **[AGENTS](../../../src/gnn/security/AGENTS.md)**: Agentic Workflows
+- **[SPEC](../../../src/gnn/security/SPEC.md)**: Architectural Specification
+- **[SKILL](../../../src/gnn/security/SKILL.md)**: Capability API
 
 
 ---
 
-**Source Reference**: [src/security](../../../src/security)
+**Source Reference**: [src/gnn/security](../../../src/gnn/security)

@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Security Guidelines | **Audience**: Developers, Security Teams | **Complexity**: Intermediate-Advanced  
-> **Cross-References**: [LLM Module](../../src/llm/README.md) | [Security Framework](../security/security_framework.md) | [Main Documentation](../README.md)
+> **Cross-References**: [LLM Module](../../src/gnn/llm/README.md) | [Security Framework](../security/security_framework.md) | [Main Documentation](../README.md)
 
 ## Overview
 
@@ -289,7 +289,7 @@ Monitor LLM integration for security issues.
 
 ## Related Documentation
 
-- **[LLM Module](../../src/llm/README.md)**: LLM implementation details
+- **[LLM Module](../../src/gnn/llm/README.md)**: LLM implementation details
 - **[Security Framework](../security/security_framework.md)**: Comprehensive security guide
 - **[Security Monitoring](../security/monitoring.md)**: Security monitoring procedures
 

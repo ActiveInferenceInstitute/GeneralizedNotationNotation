@@ -8,7 +8,7 @@
 MAJ-02 (sparse Kronecker factorized execution + scaling sweep + numbered-pipeline
 integration) and MAJ-03 (native stigmergic multi-agent compilation with
 env-conditioned action selection; probe:
-`uv run pytest src/tests/render/test_stigmergic_multi_agent.py -q`). The 3.2.0
+`uv run pytest tests/render/test_stigmergic_multi_agent.py -q`). The 3.2.0
 release receipt (tests, mypy, ruff, documentation audits) is in `CHANGELOG.md`
 §3.2.0.
 
@@ -37,7 +37,7 @@ PYTHONPATH=src uv run python scripts/run_v3_orchestration_acceptance.py --strict
 PYTHONPATH=src uv run python scripts/emit_run_manifest.py output --out /tmp/gnn-v3-run-manifest
 PYTHONPATH=src uv run python scripts/generate_pipeline_container_plan.py --config input/config.yaml --out /tmp/gnn-v3-container-plan.json
 PYTHONPATH=src uv run python scripts/run_session_acceptance.py --manifest input/model_family_manifest.json --output-dir /tmp/gnn-v3-session-acceptance --session /tmp/gnn-v3-session.json --strict
-PYTHONPATH=src uv run python src/main.py --autonomous --target-dir input/gnn_files --output-dir /tmp/gnn-autonomous-smoke
+PYTHONPATH=src uv run python src/gnn/main.py --autonomous --target-dir input/gnn_files --output-dir /tmp/gnn-autonomous-smoke
 
 uv run python doc/development/docs_audit.py --strict --check-anchors --no-write
 uv run python scripts/check_gnn_doc_patterns.py --strict
@@ -61,7 +61,7 @@ git diff --check
 
 ## GEO-INFER contract expansion
 
-The delivered opt-in v1 format is specified in `src/export/geo_infer_contract.md`.
+The delivered opt-in v1 format is specified in `src/gnn/export/geo_infer_contract.md`.
 Further work must preserve independently installable runtimes and explicit matrix,
 space and time semantics.
 
@@ -70,4 +70,4 @@ space and time semantics.
 | GNN-02 | Specify linear Gaussian F/control/H/Q/R, units and initial beliefs jointly with GEO-INFER-ACT. | Unequal dimensions reproduce analytic filter results; continuous generators cannot be misread as per-step transitions. |
 | GNN-03 | Specify factor/modal dependency axes and multi-step policy enumeration. | Asymmetric, non-square fixtures preserve all axes and E cardinality; unsupported structures remain rejected until covered. |
 | GNN-04 | Pin paired repository revisions in cross-repository CI. | Independent locked environments complete both categorical and H3 round trips; receipts include source/artifact digests and both revisions. |
-| GNN-05 | Wire Step 7 to per-model explicit time/space options and original source provenance. | Step 7 CLI wiring (`--geo-step-seconds`/`--geo-state-ids`/`--geo-space-kind` registered in the shared step-argument registry, mapping via `process_export`'s `geo_infer`), visible failure on missing metadata, and unchanged five-format defaults have landed (`src/tests/export/test_export_geo_pipeline.py`). Row stays open for per-model notation-driven metadata discovery and original-source provenance plumbing. |
+| GNN-05 | Wire Step 7 to per-model explicit time/space options and original source provenance. | Step 7 CLI wiring (`--geo-step-seconds`/`--geo-state-ids`/`--geo-space-kind` registered in the shared step-argument registry, mapping via `process_export`'s `geo_infer`), visible failure on missing metadata, and unchanged five-format defaults have landed (`tests/export/test_export_geo_pipeline.py`). Row stays open for per-model notation-driven metadata discovery and original-source provenance plumbing. |

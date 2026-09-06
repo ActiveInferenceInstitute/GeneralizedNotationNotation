@@ -134,7 +134,7 @@ def execute_simulation(script_path: Path) -> bool: ...
 ## Performance Optimization Checklist
 
 - [ ] Measure baseline before optimizing
-- [ ] Profile bottlenecks (`python -m cProfile -o profile.prof src/11_render.py`)
+- [ ] Profile bottlenecks (`python -m cProfile -o profile.prof src/gnn/11_render.py`)
 - [ ] Cache repeated expensive calls (`@lru_cache`)
 - [ ] Stream large files instead of loading fully into memory
 - [ ] Use threads for I/O, processes for CPU-bound work
@@ -165,12 +165,12 @@ def cleanup_large_objects(*objects) -> None:
 
 ```bash
 # CPU profiling
-python -m cProfile -o profile.prof src/11_render.py --target-dir input/gnn_files
+python -m cProfile -o profile.prof src/gnn/11_render.py --target-dir input/gnn_files
 python -c "import pstats; p = pstats.Stats('profile.prof'); p.sort_stats('cumulative').print_stats(20)"
 
 # Memory profiling
 uv pip install memory_profiler
-python -m memory_profiler src/11_render.py --target-dir input/gnn_files
+python -m memory_profiler src/gnn/11_render.py --target-dir input/gnn_files
 
 # Snakeviz visualization
 uv pip install snakeviz && snakeviz profile.prof

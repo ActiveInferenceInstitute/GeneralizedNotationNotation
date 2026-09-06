@@ -371,9 +371,9 @@ output/[step]_[module]_output/
 
 ### Test Files
 
-- `src/tests/test_[module]_integration.py` - Integration tests
-- `src/tests/test_[module]_unit.py` - Unit tests
-- `src/tests/test_[module]_error_scenarios.py` - Error handling tests
+- `tests/test_[module]_integration.py` - Integration tests
+- `tests/test_[module]_unit.py` - Unit tests
+- `tests/test_[module]_error_scenarios.py` - Error handling tests
 
 ### Test Coverage
 
@@ -390,10 +390,10 @@ output/[step]_[module]_output/
 
 ```bash
 # Run module-specific tests
-pytest src/tests/test_[module]*.py -v
+pytest tests/test_[module]*.py -v
 
 # Run with coverage
-pytest src/tests/test_[module]*.py --cov=src/[module] --cov-report=term-missing
+pytest tests/test_[module]*.py --cov=src/[module] --cov-report=term-missing
 ```
 
 ---
@@ -528,7 +528,7 @@ tail -f output/[N]_[module]_output/*.log
 python src/[N]_[module].py --verbose
 
 # Check resource usage
-python src/main.py --only-steps [N] --verbose
+python src/gnn/main.py --only-steps [N] --verbose
 ```
 
 **Solutions**:
@@ -564,7 +564,7 @@ python src/[N]_[module].py --verbose
 python src/[N]_[module].py --target-dir test_input/
 
 # Test with pipeline
-python src/main.py --only-steps [N] --target-dir test_input/
+python src/gnn/main.py --only-steps [N] --target-dir test_input/
 ```
 
 ### Debug Mode Commands

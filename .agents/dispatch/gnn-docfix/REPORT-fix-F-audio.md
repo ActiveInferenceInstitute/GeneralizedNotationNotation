@@ -8,7 +8,7 @@ No source (.py), config, test, or dependency was touched. Nothing was staged or 
 ### doc/pedalboard/AGENTS.md
 - Fix 1 — Function Signatures & API: added a "Planned / Not Yet Implemented" note above the
   `generate_audio_from_gnn` / `apply_audio_effects` signatures, clarifying that
-  `src/audio/pedalboard/` is scaffold-only (no `.py` source) and the signatures are planned,
+  `src/gnn/audio/pedalboard/` is scaffold-only (no `.py` source) and the signatures are planned,
   not shipped.
 - Fix 1 — Footer Status: `**Status**: ✅ Production Ready` → `**Status**: 🛠️ Scaffold / Planned`.
 - Fix 2 — Contents: `**Files**: 3 | **Subdirectories**: 1` → `**Files**: 5 | **Subdirectories**: 0`
@@ -29,7 +29,7 @@ No source (.py), config, test, or dependency was touched. Nothing was staged or 
 
 ### doc/audio/AGENTS.md
 - Fix 5 — Purpose (line 14): SAPF acronym corrected from `Sonified Active Inference Parameter Framework`
-  to `Synthetic Audio Processing Framework`, matching the canonical expansion used in `src/audio/README.md`
+  to `Synthetic Audio Processing Framework`, matching the canonical expansion used in `src/gnn/audio/README.md`
   (the module's own README, the primary SAPF source).
 
 ### doc/audio/README.md

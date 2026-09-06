@@ -47,4 +47,4 @@ This directory is part of the `gnn/` module and provides documentation resources
 - [`doc/gnn/reference/gnn_syntax.md`](../../../doc/gnn/reference/gnn_syntax.md) is a **v2 quick reference** with examples; it complements but does not replace the normative doc.
 - File structure (doc tree): [`doc/gnn/reference/gnn_file_structure_doc.md`](../../../doc/gnn/reference/gnn_file_structure_doc.md)
 
-MCP exposes `file_structure.md` and `punctuation.md` via `get_gnn_documentation` in [`../mcp.py`](../mcp.py).
+MCP exposes `file_structure.md` and `punctuation.md` via `get_gnn_documentation` in [`../mcp/gnn_root.py`](../mcp/gnn_root.py).

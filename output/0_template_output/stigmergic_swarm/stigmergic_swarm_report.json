@@ -1,0 +1,12 @@
+{
+  "input_file": "input/gnn_files/multiagent/stigmergic_swarm.md",
+  "output_file": "output/0_template_output/stigmergic_swarm/stigmergic_swarm_processed.md",
+  "timestamp": "2026-09-05T20:30:45.663698",
+  "file_size_bytes": 13088,
+  "file_size_lines": 298,
+  "processing_options": {
+    "verbose": false,
+    "recursive": true,
+    "example_param": "default_value"
+  }
+}

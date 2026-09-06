@@ -7,9 +7,9 @@ This project demonstrates multi-agent trajectory planning using probabilistic in
 > GNN-generated `config.toml` was substituted for a hand-written one as a
 > drop-in replacement. That TOML-based approach is no longer supported. The canonical
 > pipeline now renders genuine `@model` + `infer()` Julia scripts via
-> `src/render/rxinfer/rxinfer_renderer.py` and executes them under the committed
-> `Project.toml` + `Manifest.toml` environment in `src/execute/rxinfer/`
->(`julia --startup-file=no --project=src/execute/rxinfer <script>`,
+> `src/gnn/render/rxinfer/rxinfer_renderer.py` and executes them under the committed
+> `Project.toml` + `Manifest.toml` environment in `src/gnn/execute/rxinfer/`
+>(`julia --startup-file=no --project=src/gnn/execute/rxinfer <script>`,
 > no runtime `Pkg.add`). This directory is retained as a standalone example.
 
 ## Project Structure

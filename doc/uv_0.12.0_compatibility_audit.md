@@ -40,13 +40,13 @@ mypy_path = "src"
 explicit_package_bases = true
 ```
 
-When `tests/__init__.py` imports `from src.utils.test_utils`, mypy discovers the same file (`src/utils/test_utils.py`) under two module names:
+When `tests/__init__.py` imports `from gnn.utils.test_utils`, mypy discovers the same file (`src/gnn/utils/test_utils.py`) under two module names:
 - `utils.test_utils` (resolved via `mypy_path = "src"`)
-- `src.utils.test_utils` (resolved via the `from src.utils.test_utils` import statement)
+- `src.utils.test_utils` (resolved via the `from gnn.utils.test_utils` import statement)
 
-**Fix:** Changed the import in `src/tests/__init__.py` from:
+**Fix:** Changed the import in `tests/__init__.py` from:
 ```python
-from src.utils.test_utils import ...
+from gnn.utils.test_utils import ...
 ```
 to:
 ```python
@@ -63,13 +63,13 @@ This aligns the import path with `mypy_path = "src"`, ensuring both mypy and run
 
 Three `type: ignore` comments were identified as no longer needed after the pygls/mypy type-declaration improvements:
 
-**File: `src/lsp/__init__.py`**
+**File: `src/gnn/lsp/__init__.py`**
 ```diff
 -from pygls.server import LanguageServer  # type: ignore[attr-defined]
 +from pygls.server import LanguageServer
 ```
 
-**File: `src/main.py`**
+**File: `src/gnn/main.py`**
 ```diff
 -PIPELINE_STEPS_TUPLE as PIPELINE_STEPS,  # type: ignore[assignment]
 +PIPELINE_STEPS_TUPLE as PIPELINE_STEPS,
@@ -81,11 +81,11 @@ Three `type: ignore` comments were identified as no longer needed after the pygl
 
 ### 1.3 API Step Attribute Access
 
-**File: `src/api/app.py`**
+**File: `src/gnn/api/app.py`**
 
 **Error:** `"StepInfo" has no attribute "name"`
 
-**Root Cause:** The `StepInfo` dataclass in `src/pipeline/step_registry.py` defines `script_stem` and `description`, but no `name` property.
+**Root Cause:** The `StepInfo` dataclass in `src/gnn/pipeline/step_registry.py` defines `script_stem` and `description`, but no `name` property.
 
 **Fix:**
 ```diff
@@ -101,7 +101,7 @@ Three `type: ignore` comments were identified as no longer needed after the pygl
 
 ### 1.4 Missing Export in MCP Module
 
-**File: `src/mcp/__init__.py`**
+**File: `src/gnn/mcp/__init__.py`**
 
 **Error:** `Module "mcp" has no attribute "list_available_resources"`
 
@@ -118,7 +118,7 @@ And updated `__all__` accordingly. This is safe because `list_available_resource
 
 ### 1.5 Type Annotation in Pipeline MCP
 
-**File: `src/pipeline/mcp.py`**
+**File: `src/gnn/pipeline/mcp.py`**
 
 **Error:** `Incompatible types in assignment` and need type annotation
 
@@ -150,8 +150,8 @@ This adds an isinstance guard to handle both `list` and `str` return values from
 
 **Fix:**
 ```diff
--exclude = "(^src/output/|^src/__init__\\.py$)"
-+exclude = "(^src/output/|^src/__init__\\.py$|^.venv/)"
+-exclude = "(^src/gnn/output/|^src/__init__\\.py$)"
++exclude = "(^src/gnn/output/|^src/__init__\\.py$|^.venv/)"
 ```
 
 Additionally added `sphinx.*` to the `tool.mypy.overrides` ignore list for `ignore_missing_imports`.
@@ -317,13 +317,13 @@ This ensures:
 
 | Category | File | Change | Impact |
 |----------|------|--------|--------|
-| **Mypy** | `src/tests/__init__.py` | `from src.utils.test_utils` → `from utils.test_utils` | Fixes "source file found twice" error |
-| **Mypy** | `src/lsp/__init__.py` | Remove stale `# type: ignore[attr-defined]` | Clean type checking for pygls |
-| **Mypy** | `src/main.py` | Remove stale `# type: ignore[assignment]` | Clean type checking for PIPELINE_STEPS_TUPLE |
-| **Mypy** | `src/pipeline/mcp.py` | Add `isinstance` guard on metadata.get() | Fixes type narrowing error |
+| **Mypy** | `tests/__init__.py` | `from gnn.utils.test_utils` → `from utils.test_utils` | Fixes "source file found twice" error |
+| **Mypy** | `src/gnn/lsp/__init__.py` | Remove stale `# type: ignore[attr-defined]` | Clean type checking for pygls |
+| **Mypy** | `src/gnn/main.py` | Remove stale `# type: ignore[assignment]` | Clean type checking for PIPELINE_STEPS_TUPLE |
+| **Mypy** | `src/gnn/pipeline/mcp.py` | Add `isinstance` guard on metadata.get() | Fixes type narrowing error |
 | **Mypy** | `pyproject.toml` | Add `.venv/` and `sphinx.*` to mypy excludes | Prevents Sphinx syntax errors |
-| **API** | `src/api/app.py` | `step.name` → `step.description` | Fixes AttributeError on StepInfo |
-| **MCP** | `src/mcp/__init__.py` | Alias `list_available_resources` | Fixes missing export |
+| **API** | `src/gnn/api/app.py` | `step.name` → `step.description` | Fixes AttributeError on StepInfo |
+| **MCP** | `src/gnn/mcp/__init__.py` | Alias `list_available_resources` | Fixes missing export |
 | **Docker** | `Dockerfile` | `UV_VERSION=0.7.8` → `0.12.0` | Toolchain compatibility |
 | **Config** | `.python-version` | Add file with `3.11` | Python version pinning |
 | **Tests** | `test_visualization_comprehensive.py` | Simplify backend assertion | Handles headless environments |
@@ -354,7 +354,7 @@ This ensures:
 
 Command used:
 ```bash
-uv run --extra dev python -m pytest src/tests/ -q --tb=no --timeout=300
+uv run --extra dev python -m pytest tests/ -q --tb=no --timeout=300
 ```
 
 Tests excluded:
@@ -385,7 +385,7 @@ Tests excluded:
 
 3. **Run tests:**
    ```bash
-   uv run --extra dev python -m pytest src/tests/ -q --tb=no --timeout=300
+   uv run --extra dev python -m pytest tests/ -q --tb=no --timeout=300
    ```
 
 4. **Push to main:**

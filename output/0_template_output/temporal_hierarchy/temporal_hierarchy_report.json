@@ -1,0 +1,12 @@
+{
+  "input_file": "input/gnn_files/hierarchical/temporal_hierarchy.md",
+  "output_file": "output/0_template_output/temporal_hierarchy/temporal_hierarchy_processed.md",
+  "timestamp": "2026-09-05T20:30:45.662878",
+  "file_size_bytes": 7165,
+  "file_size_lines": 270,
+  "processing_options": {
+    "verbose": false,
+    "recursive": true,
+    "example_param": "default_value"
+  }
+}

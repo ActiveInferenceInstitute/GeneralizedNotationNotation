@@ -25,7 +25,7 @@ Integration between GNN (Generalized Notation Notation) and CatColab, the Topos 
 
 - **GNN Documentation**: [gnn/AGENTS.md](../../gnn/AGENTS.md)
 - **Main Documentation**: [doc/README.md](../README.md)
-- **Pipeline Reference**: [src/AGENTS.md](../../../src/AGENTS.md)
+- **Pipeline Reference**: [src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md)
 - **DisCoPy Integration**: [discopy/AGENTS.md](../../discopy/AGENTS.md)
 
 ## Key Concepts
@@ -41,7 +41,7 @@ This documentation supports:
 - Step 10 (Ontology): Olog-based ontology mapping
 - Step 11 (Render): DisCoPy categorical semantics
 
-See [src/AGENTS.md](../../../src/AGENTS.md) for complete pipeline documentation.
+See [src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md) for complete pipeline documentation.
 
 ## Related Resources
 

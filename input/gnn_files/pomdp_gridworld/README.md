@@ -12,11 +12,11 @@ framework, statistical analysis, per-framework PNG plots, per-framework belief a
 `output/16_analysis_output/cross_framework/`.
 
 ```bash
-uv run --extra dev python -m pytest src/tests/pipeline/test_pomdp_gridworld_cross_framework.py -q --tb=short
+uv run --extra dev python -m pytest tests/pipeline/test_pomdp_gridworld_cross_framework.py -q --tb=short
 ```
 
 ```bash
-uv run --extra dev python src/main.py --only-steps "3,5,8,11,12,16" --target-dir input/gnn_files/pomdp_gridworld --frameworks "pymdp,rxinfer,activeinference_jl" --verbose
+uv run --extra dev python src/gnn/main.py --only-steps "3,5,8,11,12,16" --target-dir input/gnn_files/pomdp_gridworld --frameworks "pymdp,rxinfer,activeinference_jl" --verbose
 ```
 
 ## Public root-output publication
@@ -25,7 +25,7 @@ For a public `output/` refresh, run the full pipeline against this fixture and
 all registered render targets:
 
 ```bash
-uv run --extra dev python src/main.py \
+uv run --extra dev python src/gnn/main.py \
   --target-dir input/gnn_files/pomdp_gridworld \
   --output-dir output \
   --frameworks all \

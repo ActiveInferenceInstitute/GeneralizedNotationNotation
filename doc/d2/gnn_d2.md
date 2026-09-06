@@ -416,7 +416,7 @@ The GNN pipeline can automatically generate D2 diagrams as part of its visualiza
 
 ```bash
 # Generate D2 diagrams for GNN models
-uv run python src/8_visualization.py --target-dir input/gnn_files --verbose
+uv run python src/gnn/8_visualization.py --target-dir input/gnn_files --verbose
 
 # Output includes .d2 files alongside traditional visualizations
 output/8_visualization_output/
@@ -674,7 +674,7 @@ Framework Comparison: {
 Integrate D2 diagram generation into the existing visualization steps:
 
 ```python
-# In src/visualization/processor.py
+# In src/gnn/visualization/processor.py
 def generate_d2_diagrams(model_data, output_dir):
     """Generate D2 diagrams for GNN models"""
     
@@ -699,7 +699,7 @@ def generate_d2_diagrams(model_data, output_dir):
 Include D2-generated diagrams in the static website generation:
 
 ```python
-# In src/website/generator.py
+# In src/gnn/website/generator.py
 def include_d2_diagrams(site_config, output_dir):
     """Include D2-generated diagrams in website"""
     

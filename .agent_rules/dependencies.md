@@ -113,7 +113,7 @@ import optax  # optional
 
 If you encounter `ModuleNotFoundError: flax`, re-run Step 11:
 ```bash
-python src/11_render.py --target-dir input/gnn_files
+python src/gnn/11_render.py --target-dir input/gnn_files
 ```
 
 ---
@@ -130,7 +130,7 @@ uv pip install inferactively-pymdp jax jaxlib optax discopy ollama openai plotly
 # Julia packages (in Julia REPL)
 using Pkg
 # Instantiate committed RxInfer environment
-julia --startup-file=no --project=src/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'
+julia --startup-file=no --project=src/gnn/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'
 # ActiveInference.jl (separate, not in committed project):
 julia -e 'using Pkg; Pkg.add("ActiveInference")'
 

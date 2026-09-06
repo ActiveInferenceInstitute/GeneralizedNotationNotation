@@ -15,17 +15,17 @@ verification gates pass.
 
 ## Files changed
 
-- API implementation: `src/api/{app.py,auth.py,mcp.py,models.py,path_utils.py,processor.py,rate_limit.py,responses.py,server.py}`.
-- API documentation: `src/api/{AGENTS.md,README.md,SPEC.md}`.
-- CLI implementation and documentation: `src/cli/{__init__.py,mcp.py,AGENTS.md,README.md,SKILL.md,SPEC.md}`.
-- MCP and integration surfaces: `src/mcp/{mcp.py,server_core.py,AGENTS.md}` and `src/integration/AGENTS.md`.
-- GUI implementation and documentation: `src/gui/gui_3/ui_designer.py`, `src/gui/oxdraw/mcp.py`, `src/gui/{AGENTS.md,README.md,SKILL.md}`, and `src/gui/gui_3/AGENTS.md`.
-- Website implementation and documentation: `src/website/{mcp.py,AGENTS.md}`.
-- API tests: `src/tests/api/{test_api_endpoints.py,test_api_mcp_tools.py,test_api_response_contract.py,test_auth.py}`.
-- CLI tests: `src/tests/cli/{test_cli.py,test_cli_public_api.py}`.
-- MCP/integration tests: `src/tests/mcp/test_mcp_functional.py` and `src/tests/integration/test_integration_mcp.py`.
-- GUI tests: `src/tests/gui/{test_gui_functionality.py,test_oxdraw_integration.py}`.
-- Website tests: `src/tests/website/test_website_overall.py`.
+- API implementation: `src/gnn/api/{app.py,auth.py,mcp.py,models.py,path_utils.py,processor.py,rate_limit.py,responses.py,server.py}`.
+- API documentation: `src/gnn/api/{AGENTS.md,README.md,SPEC.md}`.
+- CLI implementation and documentation: `src/gnn/cli/{__init__.py,mcp.py,AGENTS.md,README.md,SKILL.md,SPEC.md}`.
+- MCP and integration surfaces: `src/gnn/mcp/{mcp.py,server_core.py,AGENTS.md}` and `src/gnn/integration/AGENTS.md`.
+- GUI implementation and documentation: `src/gnn/gui/gui_3/ui_designer.py`, `src/gnn/gui/oxdraw/mcp.py`, `src/gnn/gui/{AGENTS.md,README.md,SKILL.md}`, and `src/gnn/gui/gui_3/AGENTS.md`.
+- Website implementation and documentation: `src/gnn/website/{mcp.py,AGENTS.md}`.
+- API tests: `tests/api/{test_api_endpoints.py,test_api_mcp_tools.py,test_api_response_contract.py,test_auth.py}`.
+- CLI tests: `tests/cli/{test_cli.py,test_cli_public_api.py}`.
+- MCP/integration tests: `tests/mcp/test_mcp_functional.py` and `tests/integration/test_integration_mcp.py`.
+- GUI tests: `tests/gui/{test_gui_functionality.py,test_oxdraw_integration.py}`.
+- Website tests: `tests/website/test_website_overall.py`.
 - Report: `.agents/dispatch/gnn-improve/REPORT-integration.md`.
 
 ## Fixes
@@ -35,7 +35,7 @@ verification gates pass.
   unexpected failures. Tightened step, path, extra-field, pagination, and
   include/skip validation, including direct processor callers.
 - Replaced the alternate API app's simulated pipeline completion with the real
-  `src/main.py` subprocess path and canonical execution-summary events.
+  `src/gnn/main.py` subprocess path and canonical execution-summary events.
 - Consolidated API MCP metadata into one five-tool inventory used by static and
   live registration. Corrected schemas and preserved explicit domain errors.
 - Hardened the MCP dispatcher with parameter-object, required-field, and strict
@@ -71,11 +71,11 @@ verification gates pass.
 
 ## Scoped verification
 
-- `uv run python -m pytest src/tests/integration src/tests/mcp src/tests/api src/tests/cli src/tests/gui src/tests/website -q --tb=no -x` — **640 passed in 11.89s**.
-- `uv run ruff check src/integration src/mcp src/api src/cli src/gui src/website` — **All checks passed**.
-- `uv run ruff format --check src/integration src/mcp src/api src/cli src/gui src/website` — **74 files already formatted**.
-- `uv run mypy src/integration src/mcp src/api src/cli src/gui src/website --config-file pyproject.toml` — **Success: no issues found in 74 source files**.
-- Additional mirror-test lint: `uv run ruff check src/tests/integration src/tests/mcp src/tests/api src/tests/cli src/tests/gui src/tests/website` — **All checks passed**.
+- `uv run python -m pytest tests/integration tests/mcp tests/api tests/cli tests/gui tests/website -q --tb=no -x` — **640 passed in 11.89s**.
+- `uv run ruff check src/gnn/integration src/gnn/mcp src/gnn/api src/gnn/cli src/gnn/gui src/gnn/website` — **All checks passed**.
+- `uv run ruff format --check src/gnn/integration src/gnn/mcp src/gnn/api src/gnn/cli src/gnn/gui src/gnn/website` — **74 files already formatted**.
+- `uv run mypy src/gnn/integration src/gnn/mcp src/gnn/api src/gnn/cli src/gnn/gui src/gnn/website --config-file pyproject.toml` — **Success: no issues found in 74 source files**.
+- Additional mirror-test lint: `uv run ruff check tests/integration tests/mcp tests/api tests/cli tests/gui tests/website` — **All checks passed**.
 - Scoped `git diff --check` — **clean**. Tracked Website output artifacts are
   unchanged after verification.
 

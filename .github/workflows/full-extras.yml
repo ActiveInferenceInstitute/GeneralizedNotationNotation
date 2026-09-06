@@ -83,7 +83,7 @@ jobs:
 
       - name: Run full test suite (all-extras)
         run: |
-          uv run --all-extras python -m pytest src/tests/ -q --tb=short \
+          uv run --all-extras python -m pytest tests/ -q --tb=short \
             --junitxml=junit/full-extras-${{ matrix.python-version }}.xml \
             -x
 

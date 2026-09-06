@@ -1,0 +1,123 @@
+{
+  "model_name": "Dynamic Perception Model",
+  "framework": "stan",
+  "model_kind": "discrete",
+  "num_timesteps": 10,
+  "num_states": 2,
+  "num_observations": 2,
+  "num_actions": 1,
+  "beliefs": [
+    [
+      0.20903506194333332,
+      0.7909649381000001
+    ],
+    [
+      0.14717712698666668,
+      0.8528228729999999
+    ],
+    [
+      0.13462777087000002,
+      0.8653722291666666
+    ],
+    [
+      0.13189509732,
+      0.8681049027000001
+    ],
+    [
+      0.7693721472666666,
+      0.23062785280333334
+    ],
+    [
+      0.2879093856933333,
+      0.7120906143
+    ],
+    [
+      0.16448874464666666,
+      0.8355112554333334
+    ],
+    [
+      0.7783772856333333,
+      0.2216227144233333
+    ],
+    [
+      0.8960909758666666,
+      0.10390902401966666
+    ],
+    [
+      0.3321711343,
+      0.6678288657
+    ]
+  ],
+  "observations": [
+    1,
+    1,
+    1,
+    1,
+    0,
+    1,
+    1,
+    0,
+    0,
+    1
+  ],
+  "actions": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "true_states": [
+    1,
+    1,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1
+  ],
+  "A_posterior_mean": [
+    [
+      0.7639489528,
+      0.13244132848333334
+    ],
+    [
+      0.23605104718999997,
+      0.8675586714
+    ]
+  ],
+  "A_declared": [
+    [
+      0.8181818181818181,
+      0.11111111111111112
+    ],
+    [
+      0.18181818181818182,
+      0.888888888888889
+    ]
+  ],
+  "A_posterior_abs_error_mean": 0.03778154140368688,
+  "log_marginal_mean": -6.741573828666666,
+  "rhat_max_A_est": 1.00048,
+  "policy": "uniform_random_exploration",
+  "inference": "NUTS via CmdStan (1 chain, 300 warmup, 300 draws)",
+  "num_a_est_parameters": 4,
+  "validation": {
+    "beliefs_in_range": true,
+    "beliefs_sum_to_one": true,
+    "a_posterior_columns_sum_to_one": true,
+    "rhat_ok": true,
+    "observations_in_range": true,
+    "all_valid": true
+  },
+  "cmdstan_version": "(2, 39)",
+  "cmdstanpy_version": "1.3.0",
+  "execution_time_seconds": 9.4308
+}

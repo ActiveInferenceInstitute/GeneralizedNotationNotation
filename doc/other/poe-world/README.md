@@ -28,11 +28,11 @@ This directory contains documentation, resources, and implementation guides for 
 - **[Advanced Patterns](../../gnn/advanced/advanced_modeling_patterns.md)**: Advanced GNN modeling techniques
 - **[LLM Integration](../../gnn/advanced/gnn_llm_neurosymbolic_active_inference.md)**: LLM-enhanced analysis
 - **[DSPy Integration](../dspy/gnn_dspy.md)**: Program synthesis integration
-- **[Research Tools](../../../src/research/README.md)**: Research workflow tools
+- **[Research Tools](../../../src/gnn/research/README.md)**: Research workflow tools
 
 ### Pipeline Integration
 - **[Pipeline Documentation](../../gnn/operations/gnn_tools.md)**: Complete pipeline guide
-- **[src/AGENTS.md](../../../src/AGENTS.md)**: Implementation details
+- **[src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md)**: Implementation details
 
 ## Contents
 
@@ -92,7 +92,7 @@ This documentation is integrated with the 25-step GNN processing pipeline:
    - PoE-World results integrated into comprehensive outputs
    - Compositional model analysis and visualization
 
-See [src/AGENTS.md](../../../src/AGENTS.md) for complete pipeline documentation.
+See [src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md) for complete pipeline documentation.
 
 ## Related Resources
 
@@ -108,8 +108,8 @@ See [src/AGENTS.md](../../../src/AGENTS.md) for complete pipeline documentation.
 
 ### Pipeline Architecture
 - **[Pipeline Documentation](../../gnn/operations/gnn_tools.md)**: Complete pipeline guide
-- **[Pipeline AGENTS](../../../src/AGENTS.md)**: Implementation details
-- **[Pipeline README](../../../src/README.md)**: Pipeline overview
+- **[Pipeline AGENTS](../../../src/gnn/AGENTS.md)**: Implementation details
+- **[Pipeline README](../../../src/gnn/README.md)**: Pipeline overview
 
 ## Standards and Guidelines
 

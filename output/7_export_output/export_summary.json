@@ -1,12 +1,12 @@
 {
-  "total_files": 1,
-  "successful_exports": 1,
+  "total_files": 3,
+  "successful_exports": 3,
   "failed_exports": 0,
   "formats_generated": {
-    "json": 1,
-    "xml": 1,
-    "graphml": 1,
-    "gexf": 1,
-    "pickle": 1
+    "json": 3,
+    "xml": 3,
+    "graphml": 3,
+    "gexf": 3,
+    "pickle": 3
   }
 }

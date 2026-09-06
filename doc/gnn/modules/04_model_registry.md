@@ -2,8 +2,8 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/4_model_registry.py` (64 lines)
-**Implementation Layer**: `src/model_registry/`
+**Orchestrator**: `src/gnn/4_model_registry.py` (64 lines)
+**Implementation Layer**: `src/gnn/model_registry/`
 
 ## Module Description
 
@@ -11,7 +11,7 @@ This module provides comprehensive model registry capabilities for GNN models, i
 
 
 ```
-src/model_registry/
+src/gnn/model_registry/
 ├── __init__.py                    # Module initialization and exports
 ├── README.md                      # This documentation
 ├── AGENTS.md                      # Agent scaffolding documentation
@@ -298,23 +298,23 @@ output/4_model_registry_output/
 
 ### Test Files
 
-- `src/tests/model_registry/test_model_registry_overall.py`
+- `tests/model_registry/test_model_registry_overall.py`
 
 ### Test Coverage
 
-- Measure: `uv run --extra dev python -m pytest src/tests/model_registry/ --cov=model_registry --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
+- Measure: `uv run --extra dev python -m pytest tests/model_registry/ --cov=model_registry --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
 
 ---
 
 
 ---
 ## Documentation
-- **[README](../../../src/model_registry/README.md)**: Module Overview
-- **[AGENTS](../../../src/model_registry/AGENTS.md)**: Agentic Workflows
-- **[SPEC](../../../src/model_registry/SPEC.md)**: Architectural Specification
-- **[SKILL](../../../src/model_registry/SKILL.md)**: Capability API
+- **[README](../../../src/gnn/model_registry/README.md)**: Module Overview
+- **[AGENTS](../../../src/gnn/model_registry/AGENTS.md)**: Agentic Workflows
+- **[SPEC](../../../src/gnn/model_registry/SPEC.md)**: Architectural Specification
+- **[SKILL](../../../src/gnn/model_registry/SKILL.md)**: Capability API
 
 
 ---
 
-**Source Reference**: [src/model_registry](../../../src/model_registry)
+**Source Reference**: [src/gnn/model_registry](../../../src/gnn/model_registry)

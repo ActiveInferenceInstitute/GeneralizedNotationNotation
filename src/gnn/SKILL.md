@@ -13,10 +13,10 @@ Discovers, parses, and validates GNN model files. Extracts structured data from 
 
 ```bash
 # Parse all GNN files in a directory
-python src/3_gnn.py --target-dir input/gnn_files --output-dir output --verbose
+python src/gnn/3_gnn.py --target-dir input/gnn_files --output-dir output --verbose
 
 # As part of pipeline
-python src/main.py --only-steps 3 --verbose
+python src/gnn/main.py --only-steps 3 --verbose
 ```
 
 ## GNN File Sections

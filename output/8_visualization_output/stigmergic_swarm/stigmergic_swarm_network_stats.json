@@ -1,0 +1,53 @@
+{
+  "total_variables": 33,
+  "total_connections": 28,
+  "variable_types": {
+    "action": 6,
+    "hidden_state": 19,
+    "observation": 4,
+    "policy": 3,
+    "prior_vector": 1
+  },
+  "connection_types": {
+    "D_agent1->s_agent1": 1,
+    "s_agent1->A_agent1": 1,
+    "A_agent1->o_agent1": 1,
+    "C_agent1->G1": 1,
+    "G1->pi1": 1,
+    "pi1->u_agent1": 1,
+    "B_agent1->u_agent1": 1,
+    "D_agent2->s_agent2": 1,
+    "s_agent2->A_agent2": 1,
+    "A_agent2->o_agent2": 1,
+    "C_agent2->G2": 1,
+    "G2->pi2": 1,
+    "pi2->u_agent2": 1,
+    "B_agent2->u_agent2": 1,
+    "D_agent3->s_agent3": 1,
+    "s_agent3->A_agent3": 1,
+    "A_agent3->o_agent3": 1,
+    "C_agent3->G3": 1,
+    "G3->pi3": 1,
+    "pi3->u_agent3": 1,
+    "B_agent3->u_agent3": 1,
+    "u_agent1->env_signal": 1,
+    "u_agent2->env_signal": 1,
+    "u_agent3->env_signal": 1,
+    "env_signal->A_agent1": 1,
+    "env_signal->A_agent2": 1,
+    "env_signal->A_agent3": 1,
+    "signal_decay->env_signal": 1
+  },
+  "gnn_edge_orientation": {
+    "directed_variable_pairs": 19,
+    "undirected_variable_pairs": 9
+  },
+  "network_properties": {
+    "num_nodes": 29,
+    "num_edges": 28,
+    "density": 0.034482758620689655,
+    "is_strongly_connected": false,
+    "is_weakly_connected": true,
+    "average_clustering": 0.0
+  }
+}

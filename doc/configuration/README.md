@@ -3,9 +3,9 @@
 This guide describes the configuration surfaces that are implemented by the current
 GNN package. The repository has two related configuration paths:
 
-- `input/config.yaml` is the pipeline's project configuration file. `src/main.py`
+- `input/config.yaml` is the pipeline's project configuration file. `src/gnn/main.py`
   loads it automatically when it exists.
-- Command-line arguments are parsed by `src/utils/arg_parsing.py`. Explicit CLI
+- Command-line arguments are parsed by `src/gnn/utils/arg_parsing.py`. Explicit CLI
   values take precedence over setup and test defaults read from `input/config.yaml`.
 
 There is no supported project-root `config.yaml`, user-level `~/.gnn/config.yaml`,
@@ -15,17 +15,17 @@ profile loader, or generic `--config` override for the main pipeline.
 
 ```bash
 # Use the checked-in configuration and run a focused path.
-uv run python src/main.py \
+uv run python src/gnn/main.py \
   --target-dir input/gnn_files \
   --output-dir output \
   --only-steps "3,5,11,12" \
   --verbose
 
 # Skip selected steps.
-uv run python src/main.py --skip-steps "2,13" --verbose
+uv run python src/gnn/main.py --skip-steps "2,13" --verbose
 
 # Skip the LLM step without editing the YAML file.
-uv run python src/main.py --skip-llm --verbose
+uv run python src/gnn/main.py --skip-llm --verbose
 ```
 
 For a single-file validation envelope, use the unified CLI:
@@ -70,7 +70,7 @@ new key, update the consuming module and its documentation together.
 ### Testing matrix
 
 `testing_matrix` controls folder routing and global steps. The canonical step names
-and order remain in `src/pipeline/step_registry.py`.
+and order remain in `src/gnn/pipeline/step_registry.py`.
 
 ```yaml
 testing_matrix:
@@ -88,7 +88,7 @@ by `pipeline.skip_steps` or the `--skip-llm` flag.
 
 ## Supported main-pipeline options
 
-Run `uv run python src/main.py --help` for the complete list. The most common
+Run `uv run python src/gnn/main.py --help` for the complete list. The most common
 options are:
 
 | Option | Purpose |
@@ -116,25 +116,25 @@ example `"3,5,11,12"`.
 
 ```bash
 # Setup and optional dependencies.
-uv run python src/1_setup.py --dev --verbose
-uv run python src/1_setup.py --install-optional --optional-groups "audio,gui"
-uv run python src/1_setup.py --install-all-extras
-uv run python src/1_setup.py --recreate-uv-env --dev
+uv run python src/gnn/1_setup.py --dev --verbose
+uv run python src/gnn/1_setup.py --install-optional --optional-groups "audio,gui"
+uv run python src/gnn/1_setup.py --install-all-extras
+uv run python src/gnn/1_setup.py --recreate-uv-env --dev
 
 # Type checking.
-uv run python src/5_type_checker.py \
+uv run python src/gnn/5_type_checker.py \
   --target-dir input/gnn_files \
   --strict --estimate-resources --verbose
 
 # Render selected backends.
-uv run python src/11_render.py \
+uv run python src/gnn/11_render.py \
   --target-dir input/gnn_files \
   --output-dir output \
   --frameworks "pymdp,jax" \
   --strict-framework-success
 
 # Execute rendered scripts. Use --render-output-dir to avoid stale artifacts.
-uv run python src/12_execute.py \
+uv run python src/gnn/12_execute.py \
   --target-dir input/gnn_files \
   --output-dir output \
   --render-output-dir output/11_render_output \
@@ -196,6 +196,6 @@ When documentation or code changes the configuration contract, update this page,
 - [Setup guide](../SETUP.md)
 - [Pipeline guide](../pipeline/README.md)
 - [GNN syntax reference](../gnn/reference/gnn_syntax.md)
-- [Unified CLI](../../src/cli/README.md)
-- [Configuration loader](../../src/utils/config_loader.py)
-- [Main parser](../../src/utils/arg_parsing.py)
+- [Unified CLI](../../src/gnn/cli/README.md)
+- [Configuration loader](../../src/gnn/utils/config_loader.py)
+- [Main parser](../../src/gnn/utils/arg_parsing.py)

@@ -38,7 +38,7 @@ The doc-audit commands above (plus `format-check`, `lint`, `typecheck`, `securit
 ## PyMDP scaling preflight
 `run_pymdp_gnn_scaling_analysis.py` plans the sweep first, then applies a **preflight resource gate** (free volume space vs. policy, then estimated total spec bytes vs. free space with margin). This is critical because dense B tensors grow as **O(n³)** in file size.
 
-That gate is conceptually aligned with **Pipeline Step 5** (type checker) storage estimation (`resource_estimator` / `estimate_storage`); after `.md` files are generated, use `uv run python src/5_type_checker.py --target-dir <dir> --estimate-resources` for full per-file resource reports.
+That gate is conceptually aligned with **Pipeline Step 5** (type checker) storage estimation (`resource_estimator` / `estimate_storage`); after `.md` files are generated, use `uv run python src/gnn/5_type_checker.py --target-dir <dir> --estimate-resources` for full per-file resource reports.
 
 Relative paths are resolved from the repository root. By default the orchestrator writes generated specs to `input/gnn_files/pymdp_scaling_study` and uses an isolated pipeline output directory at `output/pymdp_scaling_pipeline`.
 

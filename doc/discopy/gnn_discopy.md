@@ -235,9 +235,9 @@ DisCoPy's implementation of the `Int`-construction (Geometry of Interaction) emb
 
 ## Integration with the GNN Toolkit and Workflow
 
-DisCoPy can be integrated into the existing GNN processing pipeline (`src/main.py` and its numbered steps) to provide enhanced capabilities:
+DisCoPy can be integrated into the existing GNN processing pipeline (`src/gnn/main.py` and its numbered steps) to provide enhanced capabilities:
 
-* **`src/15_audio.py` (New Step):** A dedicated pipeline step could be introduced. This script would:
+* **`src/gnn/15_audio.py` (New Step):** A dedicated pipeline step could be introduced. This script would:
   * Take GNN files (e.g., from `output/gnn_exports/` or directly from `src/gnn/gnn_examples/`) as input.
   * Utilize a GNN parser and a `gnn_to_discopy_diagram` translator.
   * Generate DisCoPy diagrams.
@@ -245,10 +245,10 @@ DisCoPy can be integrated into the existing GNN processing pipeline (`src/main.p
   * Optionally, apply predefined functors (e.g., for simplification or basic analysis).
 
 * **Enhancing Existing Steps:**
-  * **`src/export/`:** Exporters could gain a "DisCoPy diagram" target format.
-  * **`src/visualization/`:** DisCoPy's `diagram.draw()` could be an alternative or supplementary visualization method, potentially offering different aesthetic or informational advantages.
-  * **`src/render/`:** Instead of directly rendering GNN to PyMDP or RxInfer, the pipeline could first render GNN to a DisCoPy diagram. Then, DisCoPy-to-PyMDP or DisCoPy-to-RxInfer functors could perform the final translation. This makes the rendering process more modular and allows for intermediate categorical manipulations.
-  * **`src/type_checker/`:** DisCoPy's strict typing of diagrams (domains and codomains of boxes must match) can augment GNN type checking by verifying the consistency of composed GNN components at the categorical level.
+  * **`src/gnn/export/`:** Exporters could gain a "DisCoPy diagram" target format.
+  * **`src/gnn/visualization/`:** DisCoPy's `diagram.draw()` could be an alternative or supplementary visualization method, potentially offering different aesthetic or informational advantages.
+  * **`src/gnn/render/`:** Instead of directly rendering GNN to PyMDP or RxInfer, the pipeline could first render GNN to a DisCoPy diagram. Then, DisCoPy-to-PyMDP or DisCoPy-to-RxInfer functors could perform the final translation. This makes the rendering process more modular and allows for intermediate categorical manipulations.
+  * **`src/gnn/type_checker/`:** DisCoPy's strict typing of diagrams (domains and codomains of boxes must match) can augment GNN type checking by verifying the consistency of composed GNN components at the categorical level.
 
 ### Development and Testing (Synergies)
 
@@ -295,7 +295,7 @@ DisCoPy is a **Step 11 render target**, not a dedicated Step 15 audio step. Step
 owned by the audio module. Select DisCoPy through the shared renderer interface:
 
 ```bash
-uv run python src/11_render.py \
+uv run python src/gnn/11_render.py \
   --target-dir input/gnn_files \
   --output-dir output \
   --frameworks discopy \
@@ -308,7 +308,7 @@ The generated DisCoPy Python artifacts are placed under
 with the same render directory:
 
 ```bash
-uv run python src/12_execute.py \
+uv run python src/gnn/12_execute.py \
   --target-dir input/gnn_files \
   --output-dir output \
   --render-output-dir output/11_render_output \

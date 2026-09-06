@@ -1,12 +1,12 @@
 # GNN MCP Tool Quick Reference
 
-Audit-backed quick reference for the GNN MCP server tool surface. Use `src/tests/mcp/test_mcp_audit.py` and `src/mcp/validate_tools.py` for the current live count. For full per-domain documentation see **[../modules/21_mcp.md](../modules/21_mcp.md)**.
+Audit-backed quick reference for the GNN MCP server tool surface. Use `tests/mcp/test_mcp_audit.py` and `src/gnn/mcp/validate_tools.py` for the current live count. For full per-domain documentation see **[../modules/21_mcp.md](../modules/21_mcp.md)**.
 
 **Note:** The table below documents a representative subset of the tool
 surface, not the full live-registered set. The live MCP registry currently
 reports **140 tools across 32 modules** — see the generated
-[`src/mcp/audit_report.json`](../../../src/mcp/audit_report.json) for the
-authoritative current count (regenerate with `uv run python src/mcp/validate_tools.py`).
+[`src/gnn/mcp/audit_report.json`](../../../src/gnn/mcp/audit_report.json) for the
+authoritative current count (regenerate with `uv run python src/gnn/mcp/validate_tools.py`).
 
 ## Full Tool Table
 
@@ -91,4 +91,4 @@ authoritative current count (regenerate with `uv run python src/mcp/validate_too
 | website | `list_generated_website_pages` | List all generated website pages |
 | website | `process_website` | Generate static HTML website from pipeline output |
 
-Use `src/tests/mcp/test_mcp_audit.py` for the current registered tool/resource contract. The audit verifies module discovery, callable tools, non-empty module/category metadata, canonical JSON schemas, and the parent GUI exposure of nested `oxdraw.*` tools.
+Use `tests/mcp/test_mcp_audit.py` for the current registered tool/resource contract. The audit verifies module discovery, callable tools, non-empty module/category metadata, canonical JSON schemas, and the parent GUI exposure of nested `oxdraw.*` tools.

@@ -26,12 +26,12 @@ This directory contains documentation, resources, and implementation guides for 
 
 ### Related Directories
 - **[Configuration Management](../configuration/README.md)**: Configuration systems
-- **[Export Formats](../../src/export/README.md)**: Multi-format export
-- **[Type Checking](../../src/type_checker/AGENTS.md)**: Type validation
+- **[Export Formats](../../src/gnn/export/README.md)**: Multi-format export
+- **[Type Checking](../../src/gnn/type_checker/AGENTS.md)**: Type validation
 
 ### Pipeline Integration
 - **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
-- **[src/AGENTS.md](../../src/AGENTS.md)**: Implementation details
+- **[src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)**: Implementation details
 
 ## Contents
 
@@ -102,7 +102,7 @@ This documentation is integrated with the 25-step GNN processing pipeline:
    - Pkl results integrated into comprehensive outputs
    - Configuration management and validation
 
-See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
+See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documentation.
 
 ## Related Resources
 
@@ -113,13 +113,13 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 
 ### Configuration Resources
 - **[Export Formats](../export/README.md)**: Multi-format export
-- **[Type Checking](../../src/type_checker/AGENTS.md)**: Type validation
+- **[Type Checking](../../src/gnn/type_checker/AGENTS.md)**: Type validation
 - **[Configuration Management](../configuration/README.md)**: Configuration systems
 
 ### Pipeline Architecture
 - **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
-- **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
-- **[Pipeline README](../../src/README.md)**: Pipeline overview
+- **[Pipeline AGENTS](../../src/gnn/AGENTS.md)**: Implementation details
+- **[Pipeline README](../../src/gnn/README.md)**: Pipeline overview
 
 ## Standards and Guidelines
 

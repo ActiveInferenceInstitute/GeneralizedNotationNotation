@@ -17,7 +17,7 @@ uv sync --extra dev
 uv run gnn preflight
 uv run gnn health
 
-uv run python src/main.py \
+uv run python src/gnn/main.py \
   --target-dir input/gnn_files \
   --output-dir output/run-$(date +%Y%m%d-%H%M%S) \
   --only-steps "3,5,11,12,16,23" \
@@ -26,7 +26,7 @@ uv run python src/main.py \
 
 The pipeline loads `input/config.yaml` automatically. It does not load
 `config.production.yaml`, `config.security.yaml`, arbitrary `--config` overrides, or
-profile files through `src/main.py`. See [Configuration](../configuration/README.md).
+profile files through `src/gnn/main.py`. See [Configuration](../configuration/README.md).
 
 ## Container deployment
 
@@ -40,7 +40,7 @@ docker run --rm \
   --mount type=bind,src="$PWD/input/gnn_files",dst=/app/input/gnn_files,readonly \
   --mount type=bind,src="$PWD/output",dst=/app/output \
   gnn:local \
-  uv run python src/main.py --target-dir input/gnn_files --output-dir output --verbose
+  uv run python src/gnn/main.py --target-dir input/gnn_files --output-dir output --verbose
 ```
 
 Do not expose the MCP/API surface publicly without adding authentication, network
@@ -67,8 +67,8 @@ If a deployment executes Julia renderings, instantiate both committed environmen
 needed and pass the matching project through the executor:
 
 ```bash
-julia --startup-file=no --project=src/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'
-julia --startup-file=no --project=src/execute/activeinference_jl -e 'using Pkg; Pkg.instantiate()'
+julia --startup-file=no --project=src/gnn/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'
+julia --startup-file=no --project=src/gnn/execute/activeinference_jl -e 'using Pkg; Pkg.instantiate()'
 ```
 
 ## Secrets and filesystem policy
@@ -88,10 +88,10 @@ Before promoting a deployment configuration:
 ```bash
 uv run gnn preflight
 uv run gnn health
-uv run python src/main.py --help
-uv run --extra dev python -m pytest src/tests/ -q \
-  --ignore=src/tests/llm/test_llm_ollama.py \
-  --ignore=src/tests/llm/test_llm_ollama_integration.py
+uv run python src/gnn/main.py --help
+uv run --extra dev python -m pytest tests/ -q \
+  --ignore=tests/llm/test_llm_ollama.py \
+  --ignore=tests/llm/test_llm_ollama_integration.py
 ```
 
 Run a small representative model first and inspect the generated summary before

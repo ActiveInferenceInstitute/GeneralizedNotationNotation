@@ -1,0 +1,15 @@
+variable	ontology_term
+A_level1	LikelihoodMatrix
+A_level2	HigherLevelLikelihoodMatrix
+B_level1	TransitionMatrix
+B_level2	ContextTransitionMatrix
+C_level1	LogPreferenceVector
+D_level1	PriorOverHiddenStates
+G1	ExpectedFreeEnergy
+G2	HigherLevelExpectedFreeEnergy
+o_level1	Observation
+o_level2	HigherLevelObservation
+s_level1	HiddenState
+s_level2	ContextualHiddenState
+u_level1	Action
+π1	PolicyVector

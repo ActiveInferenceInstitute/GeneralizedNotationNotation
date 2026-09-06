@@ -43,7 +43,7 @@ git clone https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotatio
 cd GeneralizedNotationNotation
 
 # Run setup (Step 1: env + dependencies; use --dev for dev extras)
-uv run python src/main.py --only-steps 1 --dev
+uv run python src/gnn/main.py --only-steps 1 --dev
 
 # Or sync only: uv sync / uv sync --extra dev
 
@@ -52,7 +52,7 @@ source .venv/bin/activate  # Linux/Mac (repo-root `.venv` after `uv sync`)
 # .venv\Scripts\activate    # Windows
 
 # Run tests to verify setup (Step 2)
-uv run python src/main.py --only-steps 2 --verbose
+uv run python src/gnn/main.py --only-steps 2 --verbose
 ```
 
 ### Development Workflow
@@ -196,7 +196,7 @@ def tool_function(param1: str, param2: int = 10) -> dict:
 
 def register_tools():
     """Register all tools from this module."""
-    from src.mcp import mcp_instance
+    from gnn.mcp import mcp_instance
 
     tools = {
         "module_tool_name": tool_function,
@@ -284,7 +284,7 @@ def parse_gnn_file(file_path: Path) -> Dict[str, Any]:
 
 #### Test Organization
 ```
-src/tests/
+tests/
 ├── <module>/               # One directory per src/ module (e.g. gnn/, render/, pipeline/)
 │   ├── gnn/              # GNN parsing and validation tests
 │   ├── render/           # Render step tests
@@ -299,7 +299,7 @@ src/tests/
 ```python
 import pytest
 from pathlib import Path
-from src.gnn.processor import parse_gnn_file
+from gnn.processor import parse_gnn_file
 
 
 class TestGNNParser:
@@ -351,17 +351,17 @@ class TestGNNParser:
 #### Running Tests
 ```bash
 # Run all tests (pipeline test step)
-uv run python src/main.py --only-steps 2 --verbose
+uv run python src/gnn/main.py --only-steps 2 --verbose
 
 # Run specific test categories
-uv run --extra dev python -m pytest src/tests/gnn/ -v
-uv run --extra dev python -m pytest src/tests/integration/ -v
+uv run --extra dev python -m pytest tests/gnn/ -v
+uv run --extra dev python -m pytest tests/integration/ -v
 
 # Run with coverage
-uv run pytest src/tests/ --cov=src --cov-report=term-missing
+uv run pytest tests/ --cov=src --cov-report=term-missing
 
 # Run pipeline orchestration tests
-uv run --extra dev python -m pytest src/tests/pipeline/ -v
+uv run --extra dev python -m pytest tests/pipeline/ -v
 ```
 
 ### Adding New Features
@@ -369,14 +369,14 @@ uv run --extra dev python -m pytest src/tests/pipeline/ -v
 #### Adding a New Pipeline Step
 
 1. **Create the script**: `src/N_description.py`
-2. **Add configuration**: Update `src/pipeline/config.py`
-3. **Add tests**: Create tests in `src/tests/<module>/` and `src/tests/integration/`
+2. **Add configuration**: Update `src/gnn/pipeline/config.py`
+3. **Add tests**: Create tests in `tests/<module>/` and `tests/integration/`
 4. **Add documentation**: Update pipeline documentation
 5. **Add MCP tools**: Create `module/mcp.py` if exposing APIs
 
 #### Adding New Export Formats
 
-1. **Implement exporter**: Add to `src/export/format_exporters.py`
+1. **Implement exporter**: Add to `src/gnn/export/format_exporters.py`
 2. **Register format**: Update `AVAILABLE_EXPORT_FUNCTIONS`
 3. **Add tests**: Test export functionality and output validation
 4. **Update documentation**: Add format to documentation
@@ -437,7 +437,7 @@ uv run --extra dev python -m pytest src/tests/pipeline/ -v
 1. **Import Errors**
    - Check virtual environment activation
    - Verify `src/` is in Python path
-   - Run setup step: `uv run python src/main.py --only-steps 1 --dev --verbose`
+   - Run setup step: `uv run python src/gnn/main.py --only-steps 1 --dev --verbose`
 
 2. **Test Failures**
    - Check test data fixtures
@@ -445,7 +445,7 @@ uv run --extra dev python -m pytest src/tests/pipeline/ -v
    - Run individual test files for debugging
 
 3. **Pipeline Issues**
-   - Check step configuration in `src/pipeline/config.py`
+   - Check step configuration in `src/gnn/pipeline/config.py`
    - Verify argument passing between steps
    - Check timeout settings for slow operations
 
@@ -457,13 +457,13 @@ uv run --extra dev python -m pytest src/tests/pipeline/ -v
 ### Debug Tools
 ```bash
 # Verbose pipeline execution
-uv run python src/main.py --verbose --only-steps 1,4
+uv run python src/gnn/main.py --verbose --only-steps 1,4
 
 # MCP tool debugging
 uv run gnn --help  # inspect the current MCP/CLI entry points
 
 # Test debugging
-pytest -vvv --pdb src/tests/gnn/test_gnn_overall.py
+pytest -vvv --pdb tests/gnn/test_gnn_overall.py
 
 # Type checking
 uv run --extra dev mypy src --show-error-codes

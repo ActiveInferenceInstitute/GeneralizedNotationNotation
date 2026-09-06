@@ -20,7 +20,7 @@ Before seeking direct support, please check the extensive documentation provided
   - [`doc/gnn/tutorials/gnn_examples_doc.md`](./doc/gnn/tutorials/gnn_examples_doc.md): Examples and use cases.
   - And many other useful documents covering implementation, tools, and the GNN paper.
 - **Example GNN Files**: Explore the exemplar corpus in `input/gnn_files/` (start from [`input/gnn_files/INDEX.md`](./input/gnn_files/INDEX.md), which maps task folders to model kinds); `src/gnn/gnn_examples/` holds the single example packaged with the `gnn` module.
-- **Pipeline Documentation**: Check [`src/README.md`](./src/README.md) for detailed pipeline information.
+- **Pipeline Documentation**: Check [`src/gnn/README.md`](./src/gnn/README.md) for detailed pipeline information.
 
 ## Quick Troubleshooting
 
@@ -38,16 +38,16 @@ python --version
 
 ```bash
 # Force reinstall dependencies
-uv run python src/main.py --only-steps 1 --recreate-uv-env --dev
+uv run python src/gnn/main.py --only-steps 1 --recreate-uv-env --dev
 ```
 
 **🔧 Pipeline Failures**
 
 ```bash
 # Run with verbose logging
-python src/main.py --verbose
+python src/gnn/main.py --verbose
 # Check specific step (e.g., type checker)
-python src/main.py --only-steps 5 --verbose
+python src/gnn/main.py --only-steps 5 --verbose
 ```
 
 **💾 Disk Space Issues**
@@ -67,14 +67,14 @@ rm -rf output/*
 # Clone and setup
 git clone https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation.git
 cd GeneralizedNotationNotation
-python src/main.py --only-steps 2 --dev
+python src/gnn/main.py --only-steps 2 --dev
 ```
 
 **🎯 Quick Test**
 
 ```bash
 # Test with the discrete exemplar folder (--target-dir is always a directory)
-python src/main.py --target-dir input/gnn_files/discrete --verbose
+python src/gnn/main.py --target-dir input/gnn_files/discrete --verbose
 ```
 
 ## GitHub Issues

@@ -1,0 +1,188 @@
+{
+  "framework": "rxinfer",
+  "model_name": "static_perception",
+  "script_name": "Static_Perception_Model_rxinfer.jl",
+  "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/rxinfer/Static_Perception_Model_rxinfer.jl",
+  "success": true,
+  "return_code": 0,
+  "execution_time": 18.265583,
+  "timestamp": "2026-09-05T20:27:12.597637",
+  "simulation_data": {
+    "traces": [],
+    "free_energy": [
+      0.6183449223294357,
+      0.6280188610767446,
+      0.6297728650372478,
+      0.6351064417698437,
+      0.6226601339334615
+    ],
+    "states": [],
+    "observations": [
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    "actions": [
+      0,
+      0,
+      0,
+      1,
+      1
+    ],
+    "policy": [],
+    "raw_output": "RxInfer.jl simulation wrote simulation_results.json\nRxInfer.jl simulation wrote simulation.log and simulation_log.json\nRxInfer.jl simulation wrote PNG plots (belief_evolution.png, efe_over_time.png, policy_posterior.png)\n",
+    "raw_error": "",
+    "schema_version": "rxinfer_simulation_v1",
+    "beliefs": [
+      [
+        0.013544567129820136,
+        0.9864554328701799
+      ],
+      [
+        0.0036876349137911924,
+        0.9963123650862088
+      ],
+      [
+        0.0019333202932772025,
+        0.9980666797067228
+      ],
+      [
+        0.002820199184273578,
+        0.9971798008157264
+      ],
+      [
+        0.9908907517456116,
+        0.009109248254388419
+      ]
+    ],
+    "true_states": [
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    "expected_free_energy": [
+      0.6183449223294357,
+      0.6280188610767446,
+      0.6297728650372478,
+      0.6351064417698437,
+      0.6226601339334615
+    ],
+    "policy_posterior": [
+      [
+        0.5070079310906178,
+        0.49299206890938224
+      ],
+      [
+        0.5062883289134662,
+        0.49371167108653374
+      ],
+      [
+        0.5061519359800702,
+        0.4938480640199298
+      ],
+      [
+        0.5062212110689985,
+        0.4937787889310015
+      ],
+      [
+        0.4933062229787861,
+        0.5066937770212139
+      ]
+    ],
+    "validation": {
+      "actions_in_range": true,
+      "all_beliefs_valid": true,
+      "all_valid": true,
+      "belief_accuracy": 1.0,
+      "belief_accuracy_ok": true,
+      "belief_entropy_max": 0.07171803183260696,
+      "belief_entropy_mean": 0.036262448233775474,
+      "belief_entropy_min": 0.01401183377334754,
+      "belief_entropy_ok": true,
+      "beliefs_sum_to_one": true,
+      "inference_converged": true,
+      "vfe_present": true
+    },
+    "model_parameters": {
+      "A_shape": [
+        2,
+        2
+      ],
+      "B_shape": [
+        2,
+        2,
+        2
+      ],
+      "C_shape": [
+        2
+      ],
+      "D_shape": [
+        2
+      ],
+      "E": [
+        0.5,
+        0.5
+      ],
+      "E_shape": [
+        2
+      ],
+      "inference_iterations": 20,
+      "num_actions": 2,
+      "num_observations": 2,
+      "num_states": 2,
+      "observation_modalities": [
+        {
+          "comment": "Observation (one-hot encoded)",
+          "dimensions": [
+            2,
+            1
+          ],
+          "index": 0,
+          "name": "o",
+          "role": "factor",
+          "size": 2,
+          "type": "float"
+        }
+      ],
+      "state_factors": [
+        {
+          "comment": "Hidden state (posterior belief)",
+          "dimensions": [
+            2,
+            1
+          ],
+          "index": 0,
+          "name": "s",
+          "role": "factor",
+          "size": 2,
+          "type": "float"
+        }
+      ]
+    }
+  },
+  "execution_benchmark_repeats": 1,
+  "execution_metadata": {
+    "executor": "julia",
+    "accelerator_type": "mps",
+    "stdout_length": 221,
+    "stderr_length": 0,
+    "output_directory": "output/12_execute_output/static_perception/rxinfer"
+  },
+  "execution_time_mean": 18.265583,
+  "execution_time_std": 0.0,
+  "execution_time_samples": [
+    18.265583
+  ],
+  "collected_outputs": {
+    "visualizations": [],
+    "simulation_data": [
+      "output/12_execute_output/static_perception/rxinfer/simulation_data/simulation_results.json"
+    ],
+    "traces": [],
+    "other": []
+  }
+}

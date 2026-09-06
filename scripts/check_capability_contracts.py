@@ -26,7 +26,7 @@ def _contains(path: str, patterns: Iterable[str]) -> bool:
 
 
 def _maintained_test_directory_counts() -> tuple[int, int]:
-    tests_root = REPO_ROOT / "src" / "tests"
+    tests_root = REPO_ROOT / "tests"
     directories = [
         path
         for path in tests_root.iterdir()
@@ -77,7 +77,7 @@ def run_audit() -> List[str]:
         "doc/gnn/README.md",
         "doc/gnn/modules/02_tests.md",
         "src/AGENTS.md",
-        "src/tests/TEST_SUITE_SUMMARY.md",
+        "tests/TEST_SUITE_SUMMARY.md",
     ):
         text = _read(doc)
         for pattern in stale_patterns:
@@ -99,16 +99,16 @@ def run_audit() -> List[str]:
                 f"stale live-status wording remains: {pattern}"
             )
 
-    cli_text = _read("src/cli/__init__.py")
+    cli_text = _read("src/gnn/cli/__init__.py")
     for command in ('add_parser("templates"', 'add_parser("show"', 'add_parser("pull"'):
         if command not in cli_text:
             failures.append(
-                f"src/cli/__init__.py: missing CLI command contract {command}"
+                f"src/gnn/cli/__init__.py: missing CLI command contract {command}"
             )
-    if not _exists("src/cli/templates.py"):
-        failures.append("src/cli/templates.py: template library implementation missing")
+    if not _exists("src/gnn/cli/templates.py"):
+        failures.append("src/gnn/cli/templates.py: template library implementation missing")
     else:
-        templates_text = _read("src/cli/templates.py")
+        templates_text = _read("src/gnn/cli/templates.py")
         for required in (
             "importlib import resources",
             "_validate_template_record",
@@ -118,12 +118,12 @@ def run_audit() -> List[str]:
         ):
             if required not in templates_text:
                 failures.append(
-                    f"src/cli/templates.py: missing package-data/template safety guard {required}"
+                    f"src/gnn/cli/templates.py: missing package-data/template safety guard {required}"
                 )
-    if not _exists("src/cli/template_index.json"):
-        failures.append("src/cli/template_index.json: external template index missing")
-    elif "pomdp-gridworld-3x3" not in _read("src/cli/template_index.json"):
-        failures.append("src/cli/template_index.json: gridworld template missing")
+    if not _exists("src/gnn/cli/template_index.json"):
+        failures.append("src/gnn/cli/template_index.json: external template index missing")
+    elif "pomdp-gridworld-3x3" not in _read("src/gnn/cli/template_index.json"):
+        failures.append("src/gnn/cli/template_index.json: gridworld template missing")
 
     todo_text = _read("TO-DO.md")
     if (
@@ -144,7 +144,7 @@ def run_audit() -> List[str]:
     ):
         failures.append("TO-DO.md: v2.0.0 release must set v3.0.0 as next target")
 
-    readme_tests = _read("src/tests/README.md")
+    readme_tests = _read("tests/README.md")
     maintained_dirs, direct_test_dirs = _maintained_test_directory_counts()
     expected_count_text = (
         f"{maintained_dirs} maintained first-level subdirectories; "
@@ -152,7 +152,7 @@ def run_audit() -> List[str]:
     )
     if expected_count_text not in readme_tests:
         failures.append(
-            "src/tests/README.md: maintained test-directory count drift; "
+            "tests/README.md: maintained test-directory count drift; "
             f"expected '{expected_count_text}'"
         )
 
@@ -233,17 +233,17 @@ def run_audit() -> List[str]:
             "scripts/run_cross_framework_reliability.py",
         ),
         "Durable Observation Streams": (
-            "src/pipeline/durable_streams.py",
+            "src/gnn/pipeline/durable_streams.py",
             "scripts/run_v3_orchestration_acceptance.py",
             "model-family acceptance all passed for 9 families",
         ),
         "Long-Running Pipeline Sessions": (
-            "src/pipeline/run_session.py",
-            "src/pipeline/session_acceptance.py",
+            "src/gnn/pipeline/run_session.py",
+            "src/gnn/pipeline/session_acceptance.py",
             "model-family acceptance all passed for 9 families",
         ),
         "Auditable Container Plans": (
-            "src/pipeline/container_plan.py",
+            "src/gnn/pipeline/container_plan.py",
             "scripts/run_v3_orchestration_acceptance.py",
             "model-family acceptance all passed for 9 families",
         ),
@@ -257,15 +257,15 @@ def run_audit() -> List[str]:
                 failures.append(
                     f"TO-DO.md: {item} is marked complete before release-readiness evidence"
                 )
-    for path in ("input/multi_agent_models", "src/tests/audio", "src/tests/gui"):
+    for path in ("input/multi_agent_models", "tests/audio", "tests/gui"):
         if path in todo_text and not _exists(path):
             failures.append(f"TO-DO.md: acceptance path does not exist: {path}")
     for path in (
         "input/model_family_manifest.json",
         "scripts/run_model_family_acceptance.py",
-        "src/tests/pipeline/test_model_family_acceptance.py",
-        "src/tests/analysis/test_interpretability_summary.py",
-        "src/tests/report/test_model_family_report.py",
+        "tests/pipeline/test_model_family_acceptance.py",
+        "tests/analysis/test_interpretability_summary.py",
+        "tests/report/test_model_family_report.py",
     ):
         if path in todo_text and not _exists(path):
             failures.append(f"TO-DO.md: acceptance path does not exist: {path}")
@@ -295,9 +295,9 @@ def run_audit() -> List[str]:
     for required in (
         "input/model_family_manifest.json",
         "scripts/run_model_family_acceptance.py",
-        "src/pipeline/model_family_acceptance.py",
-        "src/analysis/interpretability.py",
-        "src/report/model_family.py",
+        "src/gnn/pipeline/model_family_acceptance.py",
+        "src/gnn/analysis/interpretability.py",
+        "src/gnn/report/model_family.py",
     ):
         if not _exists(required):
             failures.append(f"v1.9 model-family contract missing: {required}")
@@ -305,12 +305,12 @@ def run_audit() -> List[str]:
     for required in (
         "scripts/run_semantic_fidelity_gate.py",
         "scripts/run_cross_framework_reliability.py",
-        "src/pipeline/semantic_fidelity.py",
-        "src/pipeline/cross_framework_reliability.py",
-        "src/report/semantic_fidelity.py",
-        "src/report/cross_framework_reliability.py",
-        "src/tests/pipeline/test_semantic_fidelity_gate.py",
-        "src/tests/pipeline/test_cross_framework_reliability.py",
+        "src/gnn/pipeline/semantic_fidelity.py",
+        "src/gnn/pipeline/cross_framework_reliability.py",
+        "src/gnn/report/semantic_fidelity.py",
+        "src/gnn/report/cross_framework_reliability.py",
+        "tests/pipeline/test_semantic_fidelity_gate.py",
+        "tests/pipeline/test_cross_framework_reliability.py",
     ):
         if not _exists(required):
             failures.append(f"v2.0 reliability contract missing: {required}")
@@ -324,26 +324,26 @@ def run_audit() -> List[str]:
 
     if "WebSocket" in todo_text:
         if not _contains(
-            "src/gui/websocket_bridge.py",
+            "src/gnn/gui/websocket_bridge.py",
             (
                 "model.load",
                 "matrix.patch",
-                "validation.result",
+                "gnn.validation.result",
                 "model.export",
                 "error",
             ),
         ):
             failures.append(
-                "src/gui/websocket_bridge.py: missing required GUI message types"
+                "src/gnn/gui/websocket_bridge.py: missing required GUI message types"
             )
 
     docs_with_three = [
         path
-        for path in ("TO-DO.md", "src/advanced_visualization/README.md")
+        for path in ("TO-DO.md", "src/gnn/advanced_visualization/README.md")
         if re.search(r"Three\.js|three\.js", _read(path))
     ]
     if docs_with_three and not _contains(
-        "src/visualization/matrix/visualizer.py",
+        "src/gnn/visualization/matrix/visualizer.py",
         ("generate_threejs_tensor_explorer", "three@"),
     ):
         failures.append(
@@ -352,56 +352,56 @@ def run_audit() -> List[str]:
 
     if "GNN_MCP_TOKEN" in todo_text or "authenticated HTTP" in todo_text:
         if not _contains(
-            "src/mcp/server_http.py", ("GNN_MCP_TOKEN", "Authorization", "Bearer")
+            "src/gnn/mcp/server_http.py", ("GNN_MCP_TOKEN", "Authorization", "Bearer")
         ):
             failures.append(
                 "MCP HTTP auth is documented but bearer-token gate is missing"
             )
-        server_http_text = _read("src/mcp/server_http.py")
+        server_http_text = _read("src/gnn/mcp/server_http.py")
         if "GNN_MCP_ALLOW_INSECURE_LOCAL" not in server_http_text:
             failures.append(
-                "src/mcp/server_http.py: insecure local HTTP opt-in variable missing"
+                "src/gnn/mcp/server_http.py: insecure local HTTP opt-in variable missing"
             )
         if "is_loopback_client" not in server_http_text:
             failures.append(
-                "src/mcp/server_http.py: insecure local HTTP opt-in must be loopback-gated"
+                "src/gnn/mcp/server_http.py: insecure local HTTP opt-in must be loopback-gated"
             )
         if "get_environment_info" in _safe_allowlist_literal(server_http_text):
             failures.append(
-                "src/mcp/server_http.py: get_environment_info must not be safe by default"
+                "src/gnn/mcp/server_http.py: get_environment_info must not be safe by default"
             )
         if "get_system_info" in _safe_allowlist_literal(server_http_text):
             failures.append(
-                "src/mcp/server_http.py: get_system_info must not be safe by default"
+                "src/gnn/mcp/server_http.py: get_system_info must not be safe by default"
             )
         if "GNN_MCP_SAFE_RESOURCES" not in server_http_text:
             failures.append(
-                "src/mcp/server_http.py: missing explicit HTTP resource allowlist"
+                "src/gnn/mcp/server_http.py: missing explicit HTTP resource allowlist"
             )
         if "is_safe_http_resource" not in server_http_text:
             failures.append(
-                "src/mcp/server_http.py: mcp.resource.get must be default-denied"
+                "src/gnn/mcp/server_http.py: mcp.resource.get must be default-denied"
             )
         if "get_http_capabilities" not in server_http_text:
             failures.append(
-                "src/mcp/server_http.py: HTTP capabilities must be allowlist-filtered"
+                "src/gnn/mcp/server_http.py: HTTP capabilities must be allowlist-filtered"
             )
         do_post_index = server_http_text.find("def do_POST")
         auth_index = server_http_text.find("is_authorized(", do_post_index)
         rate_index = server_http_text.find("is_rate_limited(", do_post_index)
         if auth_index != -1 and rate_index != -1 and auth_index < rate_index:
             failures.append(
-                "src/mcp/server_http.py: rate limiting must run before bearer auth"
+                "src/gnn/mcp/server_http.py: rate limiting must run before bearer auth"
             )
 
-    acceptance_text = _read("src/pipeline/model_family_acceptance.py")
+    acceptance_text = _read("src/gnn/pipeline/model_family_acceptance.py")
     if "_load_pipeline_summary" not in acceptance_text:
         failures.append(
-            "src/pipeline/model_family_acceptance.py: missing pipeline summary parsing"
+            "src/gnn/pipeline/model_family_acceptance.py: missing pipeline summary parsing"
         )
     if "_selected_steps_passed" not in acceptance_text:
         failures.append(
-            "src/pipeline/model_family_acceptance.py: missing selected-step status gate"
+            "src/gnn/pipeline/model_family_acceptance.py: missing selected-step status gate"
         )
     if "acceptance_profile_defaults" not in _read("input/model_family_manifest.json"):
         failures.append(
@@ -409,11 +409,11 @@ def run_audit() -> List[str]:
         )
     if "pipeline_passed = False" not in acceptance_text:
         failures.append(
-            "src/pipeline/model_family_acceptance.py: missing pipeline-summary fail-closed path"
+            "src/gnn/pipeline/model_family_acceptance.py: missing pipeline-summary fail-closed path"
         )
     if "allow_unsupported_reason_patterns" in acceptance_text:
         failures.append(
-            "src/pipeline/model_family_acceptance.py: reason-pattern fallback must not certify unsupported steps"
+            "src/gnn/pipeline/model_family_acceptance.py: reason-pattern fallback must not certify unsupported steps"
         )
     if "allow_unsupported_reason_patterns" in _read("input/model_family_manifest.json"):
         failures.append(
@@ -421,14 +421,14 @@ def run_audit() -> List[str]:
         )
     if "profiled_unsupported_skip" not in acceptance_text:
         failures.append(
-            "src/pipeline/model_family_acceptance.py: missing explicit profiled unsupported skip evidence"
+            "src/gnn/pipeline/model_family_acceptance.py: missing explicit profiled unsupported skip evidence"
         )
     if (
         "return_code in {0, 2}" in acceptance_text
         and "pipeline_summary" not in acceptance_text
     ):
         failures.append(
-            "src/pipeline/model_family_acceptance.py: return code 2 is accepted without summary evidence"
+            "src/gnn/pipeline/model_family_acceptance.py: return code 2 is accepted without summary evidence"
         )
     for required in (
         "_reset_family_dir",
@@ -439,11 +439,11 @@ def run_audit() -> List[str]:
     ):
         if required not in acceptance_text:
             failures.append(
-                "src/pipeline/model_family_acceptance.py: "
+                "src/gnn/pipeline/model_family_acceptance.py: "
                 f"missing model-family oracle hardening marker {required}"
             )
 
-    rxinfer_toml_text = _read("src/render/rxinfer/toml_generator.py")
+    rxinfer_toml_text = _read("src/gnn/render/rxinfer/toml_generator.py")
     if not all(
         required in rxinfer_toml_text
         for required in (
@@ -460,12 +460,12 @@ def run_audit() -> List[str]:
     ):
         if required not in rxinfer_toml_text:
             failures.append(
-                "src/render/rxinfer/toml_generator.py: "
+                "src/gnn/render/rxinfer/toml_generator.py: "
                 f"missing topology fail-closed marker {required}"
             )
 
-    rxinfer_renderer_text = _read("src/render/rxinfer/rxinfer_renderer.py")
-    execute_text = _read("src/execute/metadata.py")
+    rxinfer_renderer_text = _read("src/gnn/render/rxinfer/rxinfer_renderer.py")
+    execute_text = _read("src/gnn/execute/metadata.py")
     for required in ("script_sha256", "metadata_provenance"):
         if required not in rxinfer_renderer_text or required not in execute_text:
             failures.append(
@@ -473,8 +473,8 @@ def run_audit() -> List[str]:
                 f"{required}"
             )
 
-    audio_processor_text = _read("src/audio/processor.py")
-    audio_streaming_text = _read("src/audio/streaming.py")
+    audio_processor_text = _read("src/gnn/audio/processor.py")
+    audio_streaming_text = _read("src/gnn/audio/streaming.py")
     for required in (
         "telemetry_provenance",
         "relative_to(execution_output_dir.resolve())",
@@ -482,21 +482,21 @@ def run_audit() -> List[str]:
     ):
         if required not in audio_processor_text:
             failures.append(
-                f"src/audio/processor.py: missing audio streaming guard {required}"
+                f"src/gnn/audio/processor.py: missing audio streaming guard {required}"
             )
     if '"streaming_safe": False' not in audio_streaming_text:
         failures.append(
-            "src/audio/streaming.py: empty telemetry chunks must not be streaming-safe"
+            "src/gnn/audio/streaming.py: empty telemetry chunks must not be streaming-safe"
         )
 
-    if "pip install" in _read("src/render/discopy/discopy_renderer.py"):
+    if "pip install" in _read("src/gnn/render/discopy/discopy_renderer.py"):
         failures.append("DisCoPy renderer still emits runtime dependency installation")
 
-    if not _exists("src/pipeline/autonomous.py"):
+    if not _exists("src/gnn/pipeline/autonomous.py"):
         failures.append("Autonomous proposal loop implementation missing")
     autonomous_text = (
-        _read("src/pipeline/autonomous.py")
-        if _exists("src/pipeline/autonomous.py")
+        _read("src/gnn/pipeline/autonomous.py")
+        if _exists("src/gnn/pipeline/autonomous.py")
         else ""
     )
     for required in ("source_mutation_performed", "cluster_mutation_performed"):
@@ -506,7 +506,7 @@ def run_audit() -> List[str]:
             )
     # The argparse surface (incl. ``--autonomous``) now lives in the focused
     # arg_parsing module; ``argument_utils.py`` re-exports it for callers.
-    if "--autonomous" not in _read("src/utils/arg_parsing.py"):
+    if "--autonomous" not in _read("src/gnn/utils/arg_parsing.py"):
         failures.append("Pipeline argument parser missing --autonomous")
 
     return failures

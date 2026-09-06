@@ -14,7 +14,7 @@ already pass; your job is the DEEPER docs-vs-code cross-check that automation
 cannot do. Verify — never guess:
 
 1. **Documented commands exist.** For every shell/fenced command in your docs
-   (e.g. `uv run python src/5_type_checker.py`, `python src/main.py`, `just test`,
+   (e.g. `uv run python src/gnn/5_type_checker.py`, `python src/gnn/main.py`, `just test`,
    `scripts/foo.py`, `uv run --extra dev pytest ...`), verify the referenced
    script/path/module actually exists at that path and the command is well-formed.
    Flag stale/moved/renamed script paths.
@@ -45,7 +45,7 @@ Use the repo's own interpreter for verification: `.venv/bin/python -c ...` or
 - doc/api/, doc/mcp/, doc/lsp/, doc/llm/, doc/security/
 Audit every documented FastAPI endpoint, MCP tool name, LSP capability, LLM/env
 var (OLLAMA_MODEL, etc.), and security policy reference against the current trees
-(src/api/, src/mcp/, src/lsp/, src/llm/, src/security/). Verify documented MCP
+(src/gnn/api/, src/gnn/mcp/, src/gnn/lsp/, src/gnn/llm/, src/gnn/security/). Verify documented MCP
 tool names exist in the MCP registries (grep the tool registrations).
 
 ## Report

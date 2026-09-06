@@ -7,21 +7,21 @@ manager is `uv`; use `uv run` for Python commands so the project environment is 
 
 ```bash
 uv sync --extra dev
-uv run python src/1_setup.py --target-dir input/gnn_files --output-dir output --dev --verbose
+uv run python src/gnn/1_setup.py --target-dir input/gnn_files --output-dir output --dev --verbose
 ```
 
 Then validate a model or run a focused pipeline path:
 
 ```bash
 uv run gnn validate input/gnn_files/discrete/actinf_pomdp_agent.md --strict
-uv run python src/main.py \
+uv run python src/gnn/main.py \
   --target-dir input/gnn_files \
   --output-dir output \
   --only-steps "3,5,11,12" \
   --verbose
 ```
 
-The checked-in `input/config.yaml` is loaded automatically by `src/main.py`; see the
+The checked-in `input/config.yaml` is loaded automatically by `src/gnn/main.py`; see the
 [configuration guide](configuration/README.md) for its supported sections.
 
 ## Requirements
@@ -69,9 +69,9 @@ root and is managed by `uv`.
 Step 1 wraps environment checks and optional-group installation:
 
 ```bash
-uv run python src/1_setup.py --dev --verbose
-uv run python src/1_setup.py --install-all-extras
-uv run python src/1_setup.py \
+uv run python src/gnn/1_setup.py --dev --verbose
+uv run python src/gnn/1_setup.py --install-all-extras
+uv run python src/gnn/1_setup.py \
   --install-optional \
   --optional-groups "audio,gui,graphs"
 ```
@@ -79,7 +79,7 @@ uv run python src/1_setup.py \
 To recreate the UV environment through the supported flag:
 
 ```bash
-uv run python src/1_setup.py --recreate-uv-env --dev
+uv run python src/gnn/1_setup.py --recreate-uv-env --dev
 ```
 
 The equivalent main-pipeline flag is `--recreate-uv-env`. The old
@@ -108,13 +108,13 @@ optional groups.
 ## Framework Selection Strategies
 
 Use the `--frameworks` option on Step 11 and Step 12 to select `all`, `lite`, or a
-comma-separated list. The same selection is available through `src/main.py`.
+comma-separated list. The same selection is available through `src/gnn/main.py`.
 
 ## Framework boundaries
 
 Step 11 has **9 render targets**. Step 12 executes **8 framework families** — every
 render target except bnlearn, which is render-only. Stan executes through the
-cmdstanpy driver (`src/execute/stan/`) since v3.2.0; it needs `uv sync --extra stan`
+cmdstanpy driver (`src/gnn/execute/stan/`) since v3.2.0; it needs `uv sync --extra stan`
 plus a CmdStan toolchain and is reported skipped when either is absent. PyTorch and
 bnlearn are intentionally unavailable in the default lock because of their transitive
 PyTorch security risk. The runtime reports skipped or unavailable frameworks rather
@@ -142,7 +142,7 @@ uv run python -c "from pymdp import Agent; print('PyMDP OK')"
 ```
 
 For PyTorch or bnlearn, consult the registry explanation in
-`src/render/framework_registry.py` and make the security decision explicitly before
+`src/gnn/render/framework_registry.py` and make the security decision explicitly before
 installing them. Do not document them as core dependencies.
 
 ### Julia targets
@@ -150,18 +150,18 @@ installing them. Do not document them as core dependencies.
 RxInfer.jl uses the committed environment:
 
 ```bash
-julia --startup-file=no --project=src/execute/rxinfer \
+julia --startup-file=no --project=src/gnn/execute/rxinfer \
   -e 'using Pkg; Pkg.instantiate()'
-julia --startup-file=no --project=src/execute/rxinfer \
+julia --startup-file=no --project=src/gnn/execute/rxinfer \
   -e 'using RxInfer; println(pkgversion(RxInfer))'
 ```
 
 ActiveInference.jl uses its committed environment:
 
 ```bash
-julia --startup-file=no --project=src/execute/activeinference_jl \
+julia --startup-file=no --project=src/gnn/execute/activeinference_jl \
   -e 'using Pkg; Pkg.instantiate()'
-julia --startup-file=no --project=src/execute/activeinference_jl \
+julia --startup-file=no --project=src/gnn/execute/activeinference_jl \
   -e 'using ActiveInference; println("ActiveInference.jl OK")'
 ```
 
@@ -176,13 +176,13 @@ uv run gnn health
 uv run gnn preflight
 
 # Inspect all CLI surfaces.
-uv run python src/main.py --help
+uv run python src/gnn/main.py --help
 uv run gnn --help
 
 # Run tests.
-uv run --extra dev python -m pytest src/tests/ -q \
-  --ignore=src/tests/llm/test_llm_ollama.py \
-  --ignore=src/tests/llm/test_llm_ollama_integration.py
+uv run --extra dev python -m pytest tests/ -q \
+  --ignore=tests/llm/test_llm_ollama.py \
+  --ignore=tests/llm/test_llm_ollama_integration.py
 ```
 
 There is no main-pipeline `--dry-run`, `--debug`, `--memory-efficient`,

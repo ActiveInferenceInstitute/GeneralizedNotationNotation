@@ -12,7 +12,7 @@ This style guide ensures consistency, quality, and accessibility across all GNN 
 
 ### Commands in examples
 
-Use **`uv run python`** from the **repository root** for `src/main.py` and `src/N_*.py` invocations (see [CLAUDE.md](../CLAUDE.md)). Avoid bare `python src/...` in new doc unless illustrating a non-uv environment.
+Use **`uv run python`** from the **repository root** for `src/gnn/main.py` and `src/N_*.py` invocations (see [CLAUDE.md](../CLAUDE.md)). Avoid bare `python src/...` in new doc unless illustrating a non-uv environment.
 
 ## 📝 **Writing Standards**
 
@@ -122,7 +122,7 @@ Detailed content...
 
 - Use backticks for file names: `config.yaml`
 - Use backticks for variable names: `s_f0`, `o_m1`
-- Use backticks for commands: `uv run python src/main.py`
+- Use backticks for commands: `uv run python src/gnn/main.py`
 - Use backticks for GNN syntax elements: `s_f0[3,1,type=int]`
 
 **Code Blocks**:
@@ -145,7 +145,7 @@ gnn_config:
 
 ```bash
 # Command line examples with clear context
-uv run python src/main.py --only-steps "3,5,11,12"
+uv run python src/gnn/main.py --only-steps "3,5,11,12"
 ```
 
 ```
@@ -352,7 +352,7 @@ git push origin docs/update-integration-guide
 
 ```python
 # This example can be run directly
-from src.gnn import GNNModel
+from gnn.gnn import GNNModel
 
 model = GNNModel.from_file("example.md")
 print(f"Model has {len(model.state_space)} state variables")
@@ -566,7 +566,7 @@ Step-by-step breakdown of the model...
 #### Running the Example
 
 ```bash
-uv run python src/main.py --target-dir input/gnn_files --verbose
+uv run python src/gnn/main.py --target-dir input/gnn_files --verbose
 ```
 
 #### Expected Output
@@ -672,7 +672,7 @@ class GNNTypeChecker:
 markdown-link-check doc/**/*.md
 
 # Validate cross-references
-uv run python src/19_research.py --verbose
+uv run python src/gnn/19_research.py --verbose
 ```
 
 **Spell Check**:

@@ -1,6 +1,6 @@
 # Pipeline Architecture
 
-> **Environment**: Always use `uv` — `uv run python src/main.py`, `uv pip install -e .`
+> **Environment**: Always use `uv` — `uv run python src/gnn/main.py`, `uv pip install -e .`
 
 ## 25-Step Pipeline (Steps 0–24)
 
@@ -104,7 +104,7 @@ Step 3 (GNN Parse)
 
 ---
 
-## Main Orchestrator (`src/main.py`)
+## Main Orchestrator (`src/gnn/main.py`)
 
 - Executes steps 0–24 as **subprocesses** with proper working directory
 - Tracks: timing, memory, exit codes, correlation IDs
@@ -112,7 +112,7 @@ Step 3 (GNN Parse)
 - Step timeouts: Tests=20min, LLM=10min, Execute=5min, others=5min
 - Status codes: `SUCCESS`, `SUCCESS_WITH_WARNINGS`, `PARTIAL_SUCCESS`, `FAILED`, `TIMEOUT`
 
-### Key Utilities (`src/utils/`, `src/pipeline/`)
+### Key Utilities (`src/gnn/utils/`, `src/gnn/pipeline/`)
 
 | Utility | Purpose |
 |---------|---------|

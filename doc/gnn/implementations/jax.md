@@ -99,10 +99,10 @@ JAX functional operations mathematically parallel standard active inference metr
 
 ## Continuous (linear-Gaussian) models
 
-When `is_continuous_spec` (`src/render/continuous_common.py`) recognises a
+When `is_continuous_spec` (`src/gnn/render/continuous_common.py`) recognises a
 continuous specification (`F`/`H`/`Q`/`R`, `prior_mean`/`prior_cov`, optional
 `u`, `goal_mean`, `control_gain`), `render_gnn_to_jax` delegates to the shared
-generator `src/render/continuous_script.py` instead of the POMDP template. The
+generator `src/gnn/render/continuous_script.py` instead of the POMDP template. The
 emitted script runs an online Kalman filter (Joseph-form covariance update) and,
 when `goal_mean`/`control_gain` are present, closes the control loop with
 `u_t = control_gain · (goal_mean − μ_t)`. Results follow the continuous schema:
@@ -142,15 +142,15 @@ The compiled JAX simulation traces achieve deterministic equivalence against nat
 
 | Pipeline Stage | Module | Key Function | Lines |
 |---|---|---|---|
-| Rendering | [jax_renderer.py](../../../src/render/jax/jax_renderer.py) | `render_gnn_to_jax()` | Entry point |
-| Simulation Code Gen | [jax_renderer.py](../../../src/render/jax/jax_renderer.py) | `run_simulation` (template) | — |
-| Results Serialization | [jax_renderer.py](../../../src/render/jax/jax_renderer.py) | `save_simulation_results` (template) | — |
-| Execution | [jax_runner.py](../../../src/execute/jax/jax_runner.py) | `execute_jax_script()` | — |
-| Device Selection | [jax_runner.py](../../../src/execute/jax/jax_runner.py) | `initialize_jax_devices()` | — |
-| Continuous Code Gen | [continuous_script.py](../../../src/render/continuous_script.py) | `generate_continuous_script()` | — |
-| Analysis | [analyzer.py](../../../src/analysis/jax/analyzer.py) | `generate_analysis_from_logs()` | — |
-| Raw Output Parsing | [analyzer.py](../../../src/analysis/jax/analyzer.py) | `parse_raw_output()` | — |
-| Cross-Framework | [visualizations.py](../../../src/analysis/visualizations.py) | `generate_efe_convergence_comparison()` | — |
+| Rendering | [jax_renderer.py](../../../src/gnn/render/jax/jax_renderer.py) | `render_gnn_to_jax()` | Entry point |
+| Simulation Code Gen | [jax_renderer.py](../../../src/gnn/render/jax/jax_renderer.py) | `run_simulation` (template) | — |
+| Results Serialization | [jax_renderer.py](../../../src/gnn/render/jax/jax_renderer.py) | `save_simulation_results` (template) | — |
+| Execution | [jax_runner.py](../../../src/gnn/execute/jax/jax_runner.py) | `execute_jax_script()` | — |
+| Device Selection | [jax_runner.py](../../../src/gnn/execute/jax/jax_runner.py) | `initialize_jax_devices()` | — |
+| Continuous Code Gen | [continuous_script.py](../../../src/gnn/render/continuous_script.py) | `generate_continuous_script()` | — |
+| Analysis | [analyzer.py](../../../src/gnn/analysis/jax/analyzer.py) | `generate_analysis_from_logs()` | — |
+| Raw Output Parsing | [analyzer.py](../../../src/gnn/analysis/jax/analyzer.py) | `parse_raw_output()` | — |
+| Cross-Framework | [visualizations.py](../../../src/gnn/analysis/visualizations.py) | `generate_efe_convergence_comparison()` | — |
 
 ---
 

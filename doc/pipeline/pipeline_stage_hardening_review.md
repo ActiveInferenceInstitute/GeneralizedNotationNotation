@@ -2,14 +2,14 @@
 
 **Last reviewed**: 2026-05-22
 
-This review is the maintained goal record for repo-wide GNN pipeline hardening. It complements the exhaustive [source step index](../../src/STEP_INDEX.md) by focusing on the operating contract each stage must keep: configurable inputs, documented outputs, structured logging, explicit validation and failure status, focused tests, and downstream handoff.
+This review is the maintained goal record for repo-wide GNN pipeline hardening. It complements the exhaustive [source step index](../../src/gnn/STEP_INDEX.md) by focusing on the operating contract each stage must keep: configurable inputs, documented outputs, structured logging, explicit validation and failure status, focused tests, and downstream handoff.
 
 ## End-to-End Proof Path
 
 The strict generative-model proof path is the maintained 3x3 GridWorld POMDP fixture:
 
 ```bash
-uv run python src/main.py --only-steps "3,5,8,11,12,16" --target-dir input/gnn_files/pomdp_gridworld --frameworks "pymdp,rxinfer,activeinference_jl" --verbose
+uv run python src/gnn/main.py --only-steps "3,5,8,11,12,16" --target-dir input/gnn_files/pomdp_gridworld --frameworks "pymdp,rxinfer,activeinference_jl" --verbose
 ```
 
 Acceptance for this command:
@@ -28,7 +28,7 @@ Generated outputs remain under ignored output trees and are regenerated as evide
 
 | Step | Contract | Config, Logging, Failure Semantics | Focused Verification |
 | ---: | --- | --- | --- |
-| 0 | Template initializes pipeline scaffolding and metadata. | Controlled by global step selection; logs setup context; returns standard success/error/warning status. | Step script and template module tests; `src/STEP_INDEX.md` coverage. |
+| 0 | Template initializes pipeline scaffolding and metadata. | Controlled by global step selection; logs setup context; returns standard success/error/warning status. | Step script and template module tests; `src/gnn/STEP_INDEX.md` coverage. |
 | 1 | Setup validates `uv`, Python, dependency groups, and environment readiness. | `--dev`, optional groups, and config defaults drive installs; dependency absence is explicit. | Setup tests, `uv lock --check`, environment tests. |
 | 2 | Tests step runs configured pytest suites and writes test summaries. | CLI flags choose fast/comprehensive behavior; failures are reported in structured output. | `just test`, `just test-full`, collect-only inventory. |
 | 3 | GNN discovers maintained model files, parses them, and emits canonical serialized model artifacts. | `--target-dir`, recursion, and serializer preset are configurable; per-file parse issues are logged. | GNN parser/processor tests and GridWorld extraction tests. |
@@ -69,11 +69,11 @@ uv run --extra dev python doc/development/docs_audit.py --strict --check-anchors
 uv run --extra dev python scripts/check_gnn_doc_patterns.py --strict
 uv lock --check
 julia --startup-file=no -e 'using RxInfer, ActiveInference, JSON, Distributions, StatsBase'
-uv run --extra dev python -m pytest src/tests/pipeline/test_pomdp_gridworld_cross_framework.py -q --tb=short
-uv run --extra dev python -m pytest src/tests/analysis/test_analysis_post_simulation.py src/tests/analysis/test_analysis_overall.py -q --tb=short
-uv run --extra dev python -m pytest src/tests/execute/test_pymdp_contracts.py src/tests/execute/test_discrete_models_pymdp.py src/tests/visualization/test_visualization_matrices.py -q --tb=short
-uv run --extra dev python -m pytest --collect-only src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py
-uv run --extra dev python -m pytest src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py
+uv run --extra dev python -m pytest tests/pipeline/test_pomdp_gridworld_cross_framework.py -q --tb=short
+uv run --extra dev python -m pytest tests/analysis/test_analysis_post_simulation.py tests/analysis/test_analysis_overall.py -q --tb=short
+uv run --extra dev python -m pytest tests/execute/test_pymdp_contracts.py tests/execute/test_discrete_models_pymdp.py tests/visualization/test_visualization_matrices.py -q --tb=short
+uv run --extra dev python -m pytest --collect-only tests/ -q --tb=no --ignore=tests/llm/test_llm_ollama.py --ignore=tests/llm/test_llm_ollama_integration.py
+uv run --extra dev python -m pytest tests/ -q --tb=no --ignore=tests/llm/test_llm_ollama.py --ignore=tests/llm/test_llm_ollama_integration.py
 ```
 
 Ollama integration tests are run separately when a local daemon and model are available.

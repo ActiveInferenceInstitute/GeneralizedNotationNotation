@@ -24,25 +24,25 @@ GNN visualization is integrated into the 25-step processing pipeline:
 
 - Basic graph and matrix visualization
 - Static visualization generation
-- See: [src/visualization/AGENTS.md](../../../src/visualization/AGENTS.md)
+- See: [src/gnn/visualization/AGENTS.md](../../../src/gnn/visualization/AGENTS.md)
 
 **Step 9: Advanced Visualization** (`9_advanced_viz.py`)
 
 - Interactive dashboards
 - 3D visualizations
 - Real-time visualization updates
-- See: [src/advanced_visualization/AGENTS.md](../../../src/advanced_visualization/AGENTS.md)
+- See: [src/gnn/advanced_visualization/AGENTS.md](../../../src/gnn/advanced_visualization/AGENTS.md)
 
 **Quick Start:**
 
 ```bash
 # Generate visualizations
-uv run python src/main.py --only-steps "3,8,9" --target-dir input/gnn_files --verbose
+uv run python src/gnn/main.py --only-steps "3,8,9" --target-dir input/gnn_files --verbose
 
 # Step 8 has no type-selection flag — it generates the full set.
 # Step 9 does: use --viz-type to pick one advanced visualization.
-uv run python src/8_visualization.py --target-dir input/gnn_files --output-dir output --verbose
-uv run python src/9_advanced_viz.py --target-dir input/gnn_files --output-dir output --viz-type network
+uv run python src/gnn/8_visualization.py --target-dir input/gnn_files --output-dir output --verbose
+uv run python src/gnn/9_advanced_viz.py --target-dir input/gnn_files --output-dir output --viz-type network
 ```
 
 ## Graph Visualization
@@ -212,7 +212,7 @@ The same selection is available from the pipeline as `--viz-type` on step 9.
 
 ## Analysis Visualization (Step 16)
 
-Post-simulation analysis (Step 16) provides a suite of visualization functions in the `src/analysis/` module (primarily `visualizations.py`, re-exported from `post_simulation.py`) that generate framework-specific and cross-framework visualizations from execution results.
+Post-simulation analysis (Step 16) provides a suite of visualization functions in the `src/gnn/analysis/` module (primarily `visualizations.py`, re-exported from `post_simulation.py`) that generate framework-specific and cross-framework visualizations from execution results.
 
 ### Per-Framework Visualization Functions
 

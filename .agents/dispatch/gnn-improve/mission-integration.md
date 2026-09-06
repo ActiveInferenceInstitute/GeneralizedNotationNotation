@@ -3,14 +3,14 @@
 You own these paths ONLY within the GNN repo at
 `/home/trim/Documents/Git/HumOS/projects/outside_of_hum/GeneralizedNotationNotation`:
 
-- src/integration/
-- src/mcp/  (Model Context Protocol tools)
-- src/api/  (FastAPI)
-- src/cli/
-- src/gui/  (gui_1/2/3, oxdraw)
-- src/website/
-- mirror tests: src/tests/integration/, src/tests/mcp/, src/tests/api/,
-  src/tests/cli/, src/tests/gui/, src/tests/website/
+- src/gnn/integration/
+- src/gnn/mcp/  (Model Context Protocol tools)
+- src/gnn/api/  (FastAPI)
+- src/gnn/cli/
+- src/gnn/gui/  (gui_1/2/3, oxdraw)
+- src/gnn/website/
+- mirror tests: tests/integration/, tests/mcp/, tests/api/,
+  tests/cli/, tests/gui/, tests/website/
 
 DO NOT touch anything outside (see the shared no-touch list).
 
@@ -27,10 +27,10 @@ GOAL (shallow→deep):
 5. Remove mypy strict smells where genuinely better.
 
 VERIFY (scoped only):
-- `uv run python -m pytest src/tests/integration src/tests/mcp src/tests/api src/tests/cli src/tests/gui src/tests/website -q --tb=no -x`
-- `uv run ruff check src/integration src/mcp src/api src/cli src/gui src/website`
+- `uv run python -m pytest tests/integration tests/mcp tests/api tests/cli tests/gui tests/website -q --tb=no -x`
+- `uv run ruff check src/gnn/integration src/gnn/mcp src/gnn/api src/gnn/cli src/gnn/gui src/gnn/website`
 - `uv run ruff format --check` (same tree)
-- `uv run mypy src/integration src/mcp src/api src/cli src/gui src/website --config-file pyproject.toml`
+- `uv run mypy src/gnn/integration src/gnn/mcp src/gnn/api src/gnn/cli src/gnn/gui src/gnn/website --config-file pyproject.toml`
 
 HARD RULE: leave ALL changes uncommitted; no commit/push/stage.
 

@@ -147,23 +147,23 @@ graph LR
 - **Active Inference Theory**: Provides the theoretical foundation for GNN models
 - **Active Inference Ontology**: Defines standardized terms that GNN variables map to
 - **Model Repositories**: Collections of GNN models for reference and reuse
-- **Software Tools**: Implementations that can parse, visualize, and execute GNN models. The main tools are accessed through the **`src/main.py`** orchestrator and individual numbered pipeline scripts (0-24). See **[src/AGENTS.md](../../src/AGENTS.md)** for complete module documentation.
+- **Software Tools**: Implementations that can parse, visualize, and execute GNN models. The main tools are accessed through the **`src/gnn/main.py`** orchestrator and individual numbered pipeline scripts (0-24). See **[src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)** for complete module documentation.
 
 ## GNN Processing Pipeline
 
-The GNN project includes a comprehensive 25-step processing pipeline that transforms GNN specifications into executable simulations, visualizations, and analysis outputs. The pipeline is orchestrated by **`src/main.py`**.
+The GNN project includes a comprehensive 25-step processing pipeline that transforms GNN specifications into executable simulations, visualizations, and analysis outputs. The pipeline is orchestrated by **`src/gnn/main.py`**.
 
 ### Quick Start
 
 ```bash
 # Run the full pipeline
-uv run python src/main.py --target-dir input/gnn_files --verbose
+uv run python src/gnn/main.py --target-dir input/gnn_files --verbose
 
 # Run specific processing steps
-uv run python src/main.py --only-steps "3,5,8,11,12" --verbose
+uv run python src/gnn/main.py --only-steps "3,5,8,11,12" --verbose
 
 # Skip certain steps
-uv run python src/main.py --skip-steps "15,16" --verbose
+uv run python src/gnn/main.py --skip-steps "15,16" --verbose
 ```
 
 ### Complete 25-Step Pipeline
@@ -208,8 +208,8 @@ The pipeline consists of the following steps (0-24):
 
 For complete information about the pipeline architecture and individual modules:
 
-- **[src/AGENTS.md](../../src/AGENTS.md)**: Master agent scaffolding and module registry
-- **[src/README.md](../../src/README.md)**: Pipeline safety and reliability documentation
+- **[src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)**: Master agent scaffolding and module registry
+- **[src/gnn/README.md](../../src/gnn/README.md)**: Pipeline safety and reliability documentation
 - **[GNN Tools and Resources](operations/gnn_tools.md)**: Detailed pipeline usage and examples
 - **[Quickstart Tutorial](tutorials/quickstart_tutorial.md)**: Step-by-step guide for beginners
 

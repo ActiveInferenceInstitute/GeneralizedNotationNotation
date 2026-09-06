@@ -31,7 +31,7 @@ This directory contains documentation, resources, and implementation guides for 
 
 ### Pipeline Integration
 - **[Pipeline Documentation](../../gnn/operations/gnn_tools.md)**: Complete pipeline guide
-- **[src/AGENTS.md](../../../src/AGENTS.md)**: Implementation details
+- **[src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md)**: Implementation details
 
 ## Contents
 
@@ -98,7 +98,7 @@ This documentation is integrated with the 25-step GNN processing pipeline:
    - Quadray results integrated into comprehensive outputs
    - Geometric analysis and visualization
 
-See [src/AGENTS.md](../../../src/AGENTS.md) for complete pipeline documentation.
+See [src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md) for complete pipeline documentation.
 
 ## Related Resources
 
@@ -114,8 +114,8 @@ See [src/AGENTS.md](../../../src/AGENTS.md) for complete pipeline documentation.
 
 ### Pipeline Architecture
 - **[Pipeline Documentation](../../gnn/operations/gnn_tools.md)**: Complete pipeline guide
-- **[Pipeline AGENTS](../../../src/AGENTS.md)**: Implementation details
-- **[Pipeline README](../../../src/README.md)**: Pipeline overview
+- **[Pipeline AGENTS](../../../src/gnn/AGENTS.md)**: Implementation details
+- **[Pipeline README](../../../src/gnn/README.md)**: Pipeline overview
 
 ## Standards and Guidelines
 

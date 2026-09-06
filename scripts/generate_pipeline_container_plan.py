@@ -20,8 +20,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
-from pipeline.container_plan import serialize_plan  # noqa: E402
-from pipeline.pipeline_container_plan import (  # noqa: E402
+from gnn.pipeline.container_plan import serialize_plan  # noqa: E402
+from gnn.pipeline.pipeline_container_plan import (  # noqa: E402
     plan_for_pipeline,
     review_pipeline_plan,
 )

@@ -10,8 +10,8 @@
 
 The pipeline's canonical integration uses a committed Julia environment
 (`Project.toml` + `Manifest.toml` pinning RxInfer 5.5.0 under
-`src/execute/rxinfer/`) and a genuine `@model` + `infer()` pipeline:
-`src/render/rxinfer/rxinfer_renderer.py` emits
+`src/gnn/execute/rxinfer/`) and a genuine `@model` + `infer()` pipeline:
+`src/gnn/render/rxinfer/rxinfer_renderer.py` emits
 `@model function pomdp_model(y, A, B, D, u, T)` (`Categorical` /
 `DiscreteTransition` nodes) solved with `infer()` (`free_energy = true`),
 populating `variational_free_energy` with real values (previously `Float64[]`).
@@ -27,15 +27,15 @@ populating `variational_free_energy` with real values (previously `Float64[]`).
 
 | Component | Path | Description |
 |-----------|------|-------------|
-| **RxInfer Runner** | [`src/execute/rxinfer/`](../../src/execute/rxinfer/) | Main execution scripts |
-| **Julia Setup** | [`src/execute/julia_setup.py`](../../src/execute/julia_setup.py) | Julia environment config |
+| **RxInfer Runner** | [`src/gnn/execute/rxinfer/`](../../src/gnn/execute/rxinfer/) | Main execution scripts |
+| **Julia Setup** | [`src/gnn/execute/julia_setup.py`](../../src/gnn/execute/julia_setup.py) | Julia environment config |
 
 ### Integration
 
 | Component | Path | Description |
 |-----------|------|-------------|
-| **Executor** | [`src/execute/executor.py`](../../src/execute/executor.py) | Multi-engine dispatcher |
-| **Processor** | [`src/execute/processor.py`](../../src/execute/processor.py) | Model processing |
+| **Executor** | [`src/gnn/execute/executor.py`](../../src/gnn/execute/executor.py) | Multi-engine dispatcher |
+| **Processor** | [`src/gnn/execute/processor.py`](../../src/gnn/execute/processor.py) | Model processing |
 
 ---
 
@@ -57,12 +57,12 @@ populating `variational_free_energy` with real values (previously `Float64[]`).
 ### Installation
 
 Within the GNN pipeline, RxInfer 5.5.0 and all Julia dependencies are pinned by the
-committed environment under `src/execute/rxinfer/` (`Project.toml` + `Manifest.toml`).
+committed environment under `src/gnn/execute/rxinfer/` (`Project.toml` + `Manifest.toml`).
 `setup_environment.jl` activates and instantiates it — there is **no runtime
 `Pkg.add`**. The runner invokes:
 
 ```bash
-julia --startup-file=no --project=src/execute/rxinfer <script>
+julia --startup-file=no --project=src/gnn/execute/rxinfer <script>
 ```
 
 For local experimentation outside the repo, install RxInfer directly:

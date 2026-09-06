@@ -21,18 +21,18 @@ Step 9 advanced visualization documentation for generated graph, matrix, POMDP, 
 
 - **GNN Documentation**: [gnn/AGENTS.md](../gnn/AGENTS.md)
 - **Main Documentation**: [doc/README.md](../README.md)
-- **Pipeline Reference**: [src/AGENTS.md](../../src/AGENTS.md)
+- **Pipeline Reference**: [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)
 - **Base Visualization**: [visualization/AGENTS.md](../visualization/AGENTS.md)
 
 ## Integration with Pipeline
 
 This documentation covers Step 9 (Advanced Visualization) of the 25-step GNN processing pipeline, focusing on generated artifacts beyond Step 8 graph and matrix rendering.
 
-See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
+See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documentation.
 
 ## Related Resources
 
-- [Visualization Module](../../src/visualization/AGENTS.md)
+- [Visualization Module](../../src/gnn/visualization/AGENTS.md)
 - [D2 Diagrams](../d2/README.md)
 - [oxdraw Integration](../gui_oxdraw/README.md)
 

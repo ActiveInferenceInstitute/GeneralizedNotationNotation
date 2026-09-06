@@ -14,7 +14,7 @@ GNN implements a comprehensive pipeline transforming textual model specification
 
 ```bash
 # Full pipeline execution
-uv run python src/main.py --target-dir input/gnn_files --verbose
+uv run python src/gnn/main.py --target-dir input/gnn_files --verbose
 
 # Steps 0-24 orchestration:
 # 0_template → 1_setup → 2_tests → 3_gnn → 4_model_registry → 5_type_checker
@@ -26,7 +26,7 @@ uv run python src/main.py --target-dir input/gnn_files --verbose
 
 ### Shell Command Execution Patterns
 
-GNN's execution layer (`src/execute/`) demonstrates extensive subprocess orchestration:
+GNN's execution layer (`src/gnn/execute/`) demonstrates extensive subprocess orchestration:
 
 **PyMDP Execution**:
 
@@ -66,7 +66,7 @@ These patterns create multi-level execution hierarchies ideal for `timep` analys
 ```bash
 # Profile complete 25-step pipeline
 . /path/to/timep.bash
-timep --flame python src/main.py --target-dir input/gnn_files --verbose
+timep --flame python src/gnn/main.py --target-dir input/gnn_files --verbose
 ```
 
 **Analysis Capabilities**:
@@ -88,16 +88,16 @@ timep --flame python src/main.py --target-dir input/gnn_files --verbose
 
 ```bash
 # Profile PyMDP script execution step
-timep --flame python src/12_execute.py --target-dir input/gnn_files --output-dir output
+timep --flame python src/gnn/12_execute.py --target-dir input/gnn_files --output-dir output
 ```
 
 **Multi-Environment Comparison**:
 
 ```bash
 # Profile different simulation environments
-timep --flame -o f python src/execute/pymdp/pymdp_runner.py
-timep --flame -o f python src/execute/rxinfer/rxinfer_runner.py
-timep --flame -o f python src/execute/jax/jax_runner.py
+timep --flame -o f python src/gnn/execute/pymdp/pymdp_runner.py
+timep --flame -o f python src/gnn/execute/rxinfer/rxinfer_runner.py
+timep --flame -o f python src/gnn/execute/jax/jax_runner.py
 ```
 
 **Execution Pattern Analysis**:
@@ -113,15 +113,15 @@ timep --flame -o f python src/execute/jax/jax_runner.py
 
 ```bash
 # Profile comprehensive test execution
-timep --flame python src/2_tests.py --verbose
+timep --flame python src/gnn/2_tests.py --verbose
 ```
 
 **Build and Validation Profiling**:
 
 ```bash
 # Profile setup and validation steps
-timep --flame python src/1_setup.py --verbose
-timep --flame python src/6_validation.py --target-dir input/gnn_files
+timep --flame python src/gnn/1_setup.py --verbose
+timep --flame python src/gnn/6_validation.py --target-dir input/gnn_files
 ```
 
 **Performance Regression Detection**:
@@ -137,8 +137,8 @@ timep --flame python src/6_validation.py --target-dir input/gnn_files
 
 ```bash
 # Profile specific GNN models
-timep --flame python src/3_gnn.py --target-dir input/gnn_files/complex_model.gnn
-timep --flame python src/11_render.py --target-dir input/gnn_files/simple_model.gnn
+timep --flame python src/gnn/3_gnn.py --target-dir input/gnn_files/complex_model.gnn
+timep --flame python src/gnn/11_render.py --target-dir input/gnn_files/simple_model.gnn
 ```
 
 **Cognitive Architecture Performance**:
@@ -159,7 +159,7 @@ timep --flame python src/11_render.py --target-dir input/gnn_files/simple_model.
 timep --flame -k bash -c "
     source ~/.bashrc
     cd /path/to/GeneralizedNotationNotation
-    uv run python src/main.py --only-steps '11,12' --verbose
+    uv run python src/gnn/main.py --only-steps '11,12' --verbose
 "
 ```
 
@@ -193,7 +193,7 @@ profile_gnn_step "15_audio" --target-dir input/gnn_files
 # Compare simulation environments
 for env in pymdp rxinfer activeinference_jl jax; do
     echo "Profiling $env environment..."
-    timep --flame -o f python "src/execute/$env/${env}_runner.py"
+    timep --flame -o f python "src/gnn/execute/$env/${env}_runner.py"
 done
 ```
 
@@ -202,7 +202,7 @@ done
 ```bash
 # Profile different model complexities
 for complexity in simple medium complex; do
-    timep --flame -o ff python src/main.py \
+    timep --flame -o ff python src/gnn/main.py \
         --target-dir "input/gnn_files/${complexity}_models" \
         --verbose
 done
@@ -277,7 +277,7 @@ jobs:
       - name: Profile GNN Pipeline
         run: |
           source timep.bash
-          timep --flame python src/main.py --only-steps "0,1,2,3" --verbose
+          timep --flame python src/gnn/main.py --only-steps "0,1,2,3" --verbose
       - name: Archive Performance Reports
         uses: actions/upload-artifact@v3
         with:
@@ -332,7 +332,7 @@ function install_timep() {
 # Profile experimental model variations
 for model in model_v1.gnn model_v2.gnn model_v3.gnn; do
     echo "Profiling $model..."
-    timep --flame python src/main.py --target-dir "input/gnn_files/$model"
+    timep --flame python src/gnn/main.py --target-dir "input/gnn_files/$model"
     cp ./timep.profiles/out.profile "./profiles/${model}_profile"
 done
 
@@ -370,7 +370,7 @@ function run_with_profiling() {
     cp -r ./timep.profiles "/var/log/gnn/profiles/${service_name}_$(date +%Y%m%d_%H%M%S)"
 }
 
-run_with_profiling "cognitive_inference" python src/main.py --production-config
+run_with_profiling "cognitive_inference" python src/gnn/main.py --production-config
 ```
 
 ### Educational and Training Applications
@@ -390,7 +390,7 @@ mkdir -p exercises/performance_analysis
 
 # Exercise 1: Basic pipeline profiling
 echo "Profile the GNN setup and validation steps" > exercises/exercise_1.md
-echo "timep --flame python src/1_setup.py && python src/6_validation.py" >> exercises/exercise_1.md
+echo "timep --flame python src/gnn/1_setup.py && python src/gnn/6_validation.py" >> exercises/exercise_1.md
 
 # Exercise 2: Simulation comparison
 echo "Compare PyMDP vs RxInfer performance" > exercises/exercise_2.md

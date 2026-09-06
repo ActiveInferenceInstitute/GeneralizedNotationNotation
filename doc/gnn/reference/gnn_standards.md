@@ -10,16 +10,16 @@
 The GNN pipeline follows strict architectural patterns and standards:
 
 - **Thin Orchestrator Pattern**: All 25 pipeline steps delegate to modular implementations
-  - See: **[src/README.md](../../../src/README.md)** for thin orchestrator pattern details
+  - See: **[src/gnn/README.md](../../../src/gnn/README.md)** for thin orchestrator pattern details
 - **Module Architecture**: Each module follows consistent structure with public APIs
-  - See: **[src/AGENTS.md](../../../src/AGENTS.md)** for complete module registry
+  - See: **[src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md)** for complete module registry
 - **Testing Standards**: No substitutions, real data validation, >90% test coverage
   - See: **[doc/gnn/operations/REPO_COHERENCE_CHECK.md](../operations/REPO_COHERENCE_CHECK.md)** for quality standards
 
 **Architecture Documentation:**
 
 - [architecture_reference.md](architecture_reference.md): Implementation patterns and data flow
-- [src/README.md](../../../src/README.md): Pipeline safety and reliability
+- [src/gnn/README.md](../../../src/gnn/README.md): Pipeline safety and reliability
 
 ---
 
@@ -44,14 +44,14 @@ src/<module_name>/
 └── AGENTS.md            # Module documentation
 ```
 
-Tests live centrally in `src/tests/`, not inside the module directory.
+Tests live centrally in `tests/`, not inside the module directory.
 `processor.py` is the convention rather than a hard rule — `setup/`, `tests/`,
 and `validation/` keep their logic in `__init__.py`, `model_registry/` uses
 `registry.py`, and `website/` uses `renderer.py` + `generator.py`.
 
 ### Naming Conventions
 
-- **Pipeline scripts**: `src/{step}_{name}.py` (e.g., `src/3_gnn.py`)
+- **Pipeline scripts**: `src/{step}_{name}.py` (e.g., `src/gnn/3_gnn.py`)
 - **Modules**: lowercase with underscores (e.g., `type_checker`, `advanced_visualization`)
 - **Test files**: `test_{module_name}.py` or `test_{feature}.py`
 - **Output directories**: `output/{step}_{name}_output/` (e.g., `output/3_gnn_output/`)
@@ -82,7 +82,7 @@ def test_with_real_data():
 - Minimum 90% code coverage per module
 - Tests must validate real pipeline outputs against known-good baselines
 - Integration tests run the full pipeline with sample GNN files from `input/gnn_files/`
-- Tests are run via: `uv run --extra dev python -m pytest src/tests/ -v` (from repository root)
+- Tests are run via: `uv run --extra dev python -m pytest tests/ -v` (from repository root)
 
 ---
 

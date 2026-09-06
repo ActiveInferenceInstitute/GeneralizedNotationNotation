@@ -28,7 +28,7 @@ FIXES:
 4. doc/gnn/modules/16_analysis.md:216-220 — env vars ANALYSIS_PERFORMANCE_MODE / ANALYSIS_TIMEOUT and analysis_config.yaml are not consumed/tracked — annotate as illustrative/reserved.
 5. doc/gnn/modules/16_analysis.md:224-228 — DEFAULT_COMPLEXITY_THRESHOLDS is not a defined constant — annotate the block as illustrative or describe the inline-computed thresholds.
 6. doc/gnn/modules/16_analysis.md:270-296 — output products: real artifacts are `analysis_results.json`, `{model}_post_simulation_analysis.json`, `analysis_summary.md`, `cross_model_comparison_report.md` — replace the fabricated names ({model}_statistical_analysis.json, {model}_complexity_metrics.json, {model}_performance_benchmarks.json).
-7. doc/gnn/modules/08_visualization.md:276 (+ src/visualization/AGENTS.md) — test glob `src/tests/test_visualization_*.py` -> `src/tests/visualization/`
+7. doc/gnn/modules/08_visualization.md:276 (+ src/gnn/visualization/AGENTS.md) — test glob `tests/test_visualization_*.py` -> `tests/visualization/`
 8. doc/gnn/modules/09_advanced_viz.md:470-481 — MCP tools: real registered tools are `process_advanced_visualization, check_visualization_capabilities, list_d2_visualization_types, get_advanced_visualization_module_info` (replace fabricated generate_3d/create_dashboard/generate_d2/analyze_statistics)
 9. doc/gnn/modules/09_advanced_viz.md:280 — `{model}_3d_visualization.html` -> `{model}_3d_visualization.png` (interactive is {model}_dashboard.html)
 10. doc/gnn/modules/09_advanced_viz.md:283 — `{model}_visualization_data.json` not written — correct/remove the product name.

@@ -166,7 +166,7 @@ def perform_advanced_analysis(gnn_model: GNNModel) -> AdvancedAnalysis:
 
 ### Phase 1: Core Integration Infrastructure
 
-1. **MCP Client Integration**: Extend the existing `src/mcp/` module to include SymPy MCP client
+1. **MCP Client Integration**: Extend the existing `src/gnn/mcp/` module to include SymPy MCP client
 2. **Expression Parser**: Create GNN-to-SymPy expression converter that handles GNN syntax
 3. **Validation Pipeline**: Integrate mathematical validation into the existing `5_type_checker.py`
 
@@ -242,7 +242,7 @@ class GNNSymPyMCP:
 ### Enhanced GNN Type Checker
 
 ```python
-# src/type_checker/mathematical_validator.py
+# src/gnn/type_checker/mathematical_validator.py
 
 
 class MathematicalValidator:

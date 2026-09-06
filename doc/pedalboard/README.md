@@ -24,13 +24,13 @@ This directory contains documentation, resources, and implementation guides for 
 - **[learning_paths.md](../learning_paths.md)**: Learning pathways
 
 ### Related Directories
-- **[Audio Processing](../../src/audio/README.md)**: Audio generation and sonification
+- **[Audio Processing](../../src/gnn/audio/README.md)**: Audio generation and sonification
 - **[SAPF Integration](../sapf/sapf_gnn.md)**: Sound As Pure Form framework
 - **[Sonification](../CROSS_REFERENCE_INDEX.md#audio-and-sonification)**: Audio sonification tools
 
 ### Pipeline Integration
 - **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
-- **[src/AGENTS.md](../../src/AGENTS.md)**: Implementation details
+- **[src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)**: Implementation details
 
 ## Contents
 
@@ -92,7 +92,7 @@ This documentation is integrated with the 25-step GNN processing pipeline:
    - Pedalboard results integrated into comprehensive outputs
    - Audio visualization and analysis
 
-See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
+See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documentation.
 
 ## Related Resources
 
@@ -108,8 +108,8 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 
 ### Pipeline Architecture
 - **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
-- **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
-- **[Pipeline README](../../src/README.md)**: Pipeline overview
+- **[Pipeline AGENTS](../../src/gnn/AGENTS.md)**: Implementation details
+- **[Pipeline README](../../src/gnn/README.md)**: Pipeline overview
 
 ## Standards and Guidelines
 

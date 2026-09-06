@@ -35,22 +35,22 @@ REQUIRED_QUICKSTART_SECTIONS = (
 # the current main/numbered-script parsers. Explanatory prose is allowed when the
 # same line explicitly marks a spelling as unsupported/obsolete.
 STALE_COMMAND_PATTERNS: tuple[tuple[re.Pattern[str], str], ...] = (
-    (re.compile(r"src/main\.py[^\n]*--config(?:-file)?\b"), "main.py config override"),
-    (re.compile(r"src/main\.py[^\n]*--skip\s+(?!steps)"), "main.py --skip"),
-    (re.compile(r"src/main\.py[^\n]*--debug\b"), "main.py --debug"),
-    (re.compile(r"src/main\.py[^\n]*--dry-run\b"), "main.py --dry-run"),
+    (re.compile(r"src/gnn/main\.py[^\n]*--config(?:-file)?\b"), "main.py config override"),
+    (re.compile(r"src/gnn/main\.py[^\n]*--skip\s+(?!steps)"), "main.py --skip"),
+    (re.compile(r"src/gnn/main\.py[^\n]*--debug\b"), "main.py --debug"),
+    (re.compile(r"src/gnn/main\.py[^\n]*--dry-run\b"), "main.py --dry-run"),
     (
-        re.compile(r"src/main\.py[^\n]*--memory-efficient\b"),
+        re.compile(r"src/gnn/main\.py[^\n]*--memory-efficient\b"),
         "main.py --memory-efficient",
     ),
-    (re.compile(r"src/12_execute\.py[^\n]*--dry-run\b"), "Step 12 --dry-run"),
+    (re.compile(r"src/gnn/12_execute\.py[^\n]*--dry-run\b"), "Step 12 --dry-run"),
     (
-        re.compile(r"src/11_render\.py[^\n]*--force-regenerate\b"),
+        re.compile(r"src/gnn/11_render\.py[^\n]*--force-regenerate\b"),
         "Step 11 --force-regenerate",
     ),
-    (re.compile(r"src/1_setup\.py[^\n]*--install_optional\b"), "underscore setup flag"),
-    (re.compile(r"src/1_setup\.py[^\n]*--optional_groups\b"), "underscore setup flag"),
-    (re.compile(r"src/1_setup\.py[^\n]*--recreate-venv\b"), "obsolete venv flag"),
+    (re.compile(r"src/gnn/1_setup\.py[^\n]*--install_optional\b"), "underscore setup flag"),
+    (re.compile(r"src/gnn/1_setup\.py[^\n]*--optional_groups\b"), "underscore setup flag"),
+    (re.compile(r"src/gnn/1_setup\.py[^\n]*--recreate-venv\b"), "obsolete venv flag"),
 )
 
 
@@ -98,9 +98,9 @@ def scan() -> list[str]:
             )
 
     pipeline = (ROOT / "doc" / "pipeline" / "README.md").read_text(encoding="utf-8")
-    if "9 render" not in pipeline.lower() or "8 executor" not in pipeline.lower():
+    if "9 render" not in pipeline.lower() or "9 executor" not in pipeline.lower():
         issues.append(
-            "pipeline guide does not distinguish nine render targets and eight executors"
+            "pipeline guide does not distinguish nine render targets and nine executors"
         )
     if "bnlearn is render-only" not in pipeline:
         issues.append("pipeline guide does not identify bnlearn as render-only")

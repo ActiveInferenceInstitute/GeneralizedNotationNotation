@@ -286,8 +286,8 @@ The generative model specification in GNN:
 | Component | Source |
 |-----------|--------|
 | GNN Parser | [`src/gnn/`](../../src/gnn/) |
-| Model Registry | [`src/model_registry/`](../../src/model_registry/) |
-| Validation | [`src/validation/`](../../src/validation/) |
+| Model Registry | [`src/gnn/model_registry/`](../../src/gnn/model_registry/) |
+| Validation | [`src/gnn/validation/`](../../src/gnn/validation/) |
 
 ### Execution Engines
 

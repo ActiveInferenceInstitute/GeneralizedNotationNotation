@@ -11,7 +11,7 @@ The Generalized Notation Notation (GNN) pipeline translates theoretical model sp
 
 Within the GNN cross-framework comparison, DisCoPy serves as the categorical semantics reference — validating that the model's compositional structure (morphisms, types, and their compositions) is well-formed.
 
-Continuous (linear-Gaussian) models return render status `unsupported` — the categorical string diagram has no linear-Gaussian semantics, so they are not drawn as a discrete stand-in — and are excluded from render success rates and from Step 12 (`supports_continuous: False` in `src/render/framework_registry.py`).
+Continuous (linear-Gaussian) models return render status `unsupported` — the categorical string diagram has no linear-Gaussian semantics, so they are not drawn as a discrete stand-in — and are excluded from render success rates and from Step 12 (`supports_continuous: False` in `src/gnn/render/framework_registry.py`).
 
 ## Architecture
 
@@ -23,7 +23,7 @@ The DisCoPy implementation consists of three interconnected layers:
 
 ### Source File
 
-[discopy_renderer.py](../../../src/render/discopy/discopy_renderer.py)
+[discopy_renderer.py](../../../src/gnn/render/discopy/discopy_renderer.py)
 
 ---
 
@@ -214,15 +214,15 @@ DisCoPy does **not** produce `beliefs`, `actions`, `observations`, or `efe_histo
 
  | Pipeline Stage | Module | Key Function | Lines |
 |---|---|---|---|
- | Rendering | [discopy_renderer.py](../../../src/render/discopy/discopy_renderer.py) | `_generate_discopy_diagram_code()` | — |
- | Entry Point | [discopy_renderer.py](../../../src/render/discopy/discopy_renderer.py) | `render_gnn_to_discopy()` | — |
- | GNN Parsing | [discopy_renderer.py](../../../src/render/discopy/discopy_renderer.py) | `_parse_gnn_content()` | — |
- | Execution | [discopy_executor.py](../../../src/execute/discopy/discopy_executor.py) | `execute_discopy_script()` | L37-137 |
- | Validation | [discopy_executor.py](../../../src/execute/discopy/discopy_executor.py) | `DisCoPyExecutor.validate_diagram()` | L156-182 |
- | Analysis | [analyzer.py](../../../src/analysis/discopy/analyzer.py) | `generate_analysis_from_logs()` | — |
- | Visualization | [analyzer.py](../../../src/analysis/discopy/analyzer.py) | `create_discopy_visualizations()` | — |
- | Data Extraction | [analyzer.py](../../../src/analysis/discopy/analyzer.py) | `extract_circuit_data()` | — |
- | Structure Analysis | [analyzer.py](../../../src/analysis/discopy/analyzer.py) | `analyze_diagram_structure()` | — |
+ | Rendering | [discopy_renderer.py](../../../src/gnn/render/discopy/discopy_renderer.py) | `_generate_discopy_diagram_code()` | — |
+ | Entry Point | [discopy_renderer.py](../../../src/gnn/render/discopy/discopy_renderer.py) | `render_gnn_to_discopy()` | — |
+ | GNN Parsing | [discopy_renderer.py](../../../src/gnn/render/discopy/discopy_renderer.py) | `_parse_gnn_content()` | — |
+ | Execution | [discopy_executor.py](../../../src/gnn/execute/discopy/discopy_executor.py) | `execute_discopy_script()` | L37-137 |
+ | Validation | [discopy_executor.py](../../../src/gnn/execute/discopy/discopy_executor.py) | `DisCoPyExecutor.validate_diagram()` | L156-182 |
+ | Analysis | [analyzer.py](../../../src/gnn/analysis/discopy/analyzer.py) | `generate_analysis_from_logs()` | — |
+ | Visualization | [analyzer.py](../../../src/gnn/analysis/discopy/analyzer.py) | `create_discopy_visualizations()` | — |
+ | Data Extraction | [analyzer.py](../../../src/gnn/analysis/discopy/analyzer.py) | `extract_circuit_data()` | — |
+ | Structure Analysis | [analyzer.py](../../../src/gnn/analysis/discopy/analyzer.py) | `analyze_diagram_structure()` | — |
 
 ---
 

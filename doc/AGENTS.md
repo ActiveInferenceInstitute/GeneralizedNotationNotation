@@ -14,7 +14,7 @@ Top-level documentation tree for GNN. **Human onboarding**: [README.md](README.m
 | [pipeline/](pipeline/) | Pipeline-oriented documentation |
 | [development/](development/) | Dev workflows, `docs_audit.py`, link rewrites |
 | [dev/](dev/) | `src/` doc inventory script and notes |
-| [testing/](testing/) | Testing strategy guide (see `src/tests/` for layout) |
+| [testing/](testing/) | Testing strategy guide (see `tests/` for layout) |
 | [troubleshooting/](troubleshooting/) | Errors, FAQ, pipeline recovery |
 | [api/](api/) | REST / API docs |
 | [configuration/](configuration/) | Config reference |
@@ -27,7 +27,7 @@ Top-level documentation tree for GNN. **Human onboarding**: [README.md](README.m
 
 ## Pipeline
 
-Processing steps and modules live under `src/`; see [../src/AGENTS.md](../src/AGENTS.md).
+Processing steps and modules live under `src/`; see [../src/gnn/AGENTS.md](../src/gnn/AGENTS.md).
 
 ## Related
 

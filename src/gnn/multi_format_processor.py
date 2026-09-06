@@ -16,7 +16,7 @@ from typing import Any, Dict, List, Sequence, Tuple, cast
 
 from gnn.discovery import is_model_source_path
 from gnn.parsers.common import get_extension_for_format, get_supported_gnn_extensions
-from utils import log_step_error, log_step_start, log_step_success
+from gnn.utils import log_step_error, log_step_start, log_step_success
 
 
 def _formats_for_serialize_preset(
@@ -58,7 +58,7 @@ def process_gnn_multi_format(
         True on success, False otherwise
     """
     # Resolve step-specific output directory (lazy import avoids gnn → pipeline coupling)
-    from pipeline.config import get_output_dir_for_script
+    from gnn.pipeline.config import get_output_dir_for_script
 
     step_output_dir = get_output_dir_for_script("3_gnn.py", output_dir)
     step_output_dir.mkdir(parents=True, exist_ok=True)

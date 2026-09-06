@@ -2,7 +2,7 @@
 """Deterministic thin-orchestrator generator for the v3.0.0 orchestration figure.
 
 Renders the v3.0.0 ("Long-Running Orchestration") architecture: three
-safe-by-design ``src/pipeline/`` contracts —
+safe-by-design ``src/gnn/pipeline/`` contracts —
 
 1. Durable Observation Streams (StreamManifest + ExecutionTrace + replay),
 2. Resumable Run Sessions (checkpoint / resume / status / safe cleanup),
@@ -125,19 +125,19 @@ def main() -> Path:
     contracts: list[tuple[float, str, str, list[str]]] = [
         (
             2.2,
-            "1. Durable\nObservation Streams\n(src/pipeline/\ndurable_streams.py)",
+            "1. Durable\nObservation Streams\n(src/gnn/pipeline/\ndurable_streams.py)",
             "#1e3a8a",
             ["StreamManifest", "ExecutionTrace", "replay"],
         ),
         (
             6.0,
-            "2. Resumable\nRun Sessions\n(src/pipeline/\nrun_session.py)",
+            "2. Resumable\nRun Sessions\n(src/gnn/pipeline/\nrun_session.py)",
             "#7c3aed",
             ["checkpoint", "resume", "status", "safe cleanup"],
         ),
         (
             9.8,
-            "3. Auditable\nContainer Plans\n(src/pipeline/\ncontainer_plan.py)",
+            "3. Auditable\nContainer Plans\n(src/gnn/pipeline/\ncontainer_plan.py)",
             "#b45309",
             ["generate", "static security review", "rollback"],
         ),

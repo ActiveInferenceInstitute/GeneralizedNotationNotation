@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Export Documentation | **Audience**: Developers, Data Engineers | **Complexity**: Intermediate  
-> **Cross-References**: [Export Module](../../src/export/README.md) | [GNN Export Guide](../gnn/integration/gnn_export.md) | [Pkl Integration](../pkl/pkl_gnn.md) | [Main Documentation](../README.md)
+> **Cross-References**: [Export Module](../../src/gnn/export/README.md) | [GNN Export Guide](../gnn/integration/gnn_export.md) | [Pkl Integration](../pkl/pkl_gnn.md) | [Main Documentation](../README.md)
 
 ## Overview
 
@@ -22,14 +22,14 @@ This directory contains comprehensive documentation for multi-format export capa
 - **[learning_paths.md](../learning_paths.md)**: Learning pathways
 
 ### Related Directories
-- **[Export Module](../../src/export/README.md)**: Multi-format export implementation
+- **[Export Module](../../src/gnn/export/README.md)**: Multi-format export implementation
 - **[GNN Export Guide](../gnn/integration/gnn_export.md)**: Comprehensive GNN export guide
 - **[Pkl Integration](../pkl/pkl_gnn.md)**: Configuration-as-code export
 - **[Configuration Management](../configuration/README.md)**: Configuration systems
 
 ### Pipeline Integration
 - **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
-- **[src/AGENTS.md](../../src/AGENTS.md)**: Implementation details
+- **[src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)**: Implementation details
 
 ## Contents
 
@@ -84,7 +84,7 @@ This documentation is integrated with the 25-step GNN processing pipeline:
    - Multi-format export for downstream processing
    - Export documentation and metadata
 
-See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
+See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documentation.
 
 ## Related Resources
 
@@ -92,17 +92,17 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 - **[GNN Overview](../gnn/gnn_overview.md)**: Core GNN concepts
 - **[GNN Quickstart](../gnn/tutorials/quickstart_tutorial.md)**: Getting started guide
 - **[GNN Export Guide](../gnn/integration/gnn_export.md)**: Comprehensive export guide
-- **[Export Module](../../src/export/README.md)**: Export implementation
+- **[Export Module](../../src/gnn/export/README.md)**: Export implementation
 
 ### Export Resources
 - **[Pkl Integration](../pkl/pkl_gnn.md)**: Configuration-as-code export
 - **[Configuration Management](../configuration/README.md)**: Configuration systems
-- **[Type Checking](../../src/type_checker/AGENTS.md)**: Type validation for exports
+- **[Type Checking](../../src/gnn/type_checker/AGENTS.md)**: Type validation for exports
 
 ### Pipeline Architecture
 - **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
-- **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
-- **[Pipeline README](../../src/README.md)**: Pipeline overview
+- **[Pipeline AGENTS](../../src/gnn/AGENTS.md)**: Implementation details
+- **[Pipeline README](../../src/gnn/README.md)**: Pipeline overview
 
 ## Standards and Guidelines
 

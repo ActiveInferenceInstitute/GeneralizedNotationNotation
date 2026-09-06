@@ -14,26 +14,26 @@ Advanced GNN models benefit from the full pipeline processing capabilities:
 ### Parsing & Validation (Steps 3, 5, 6)
 
 - Complex hierarchical and multi-agent models are validated for consistency
-- See: **[src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md)**, **[src/type_checker/AGENTS.md](../../../src/type_checker/AGENTS.md)**
+- See: **[src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md)**, **[src/gnn/type_checker/AGENTS.md](../../../src/gnn/type_checker/AGENTS.md)**
 
 ### Code Generation & Execution (Steps 11, 12)
 
 - Advanced patterns rendered to framework-specific implementations  
-- See: **[src/render/AGENTS.md](../../../src/render/AGENTS.md)**, **[src/execute/AGENTS.md](../../../src/execute/AGENTS.md)**
+- See: **[src/gnn/render/AGENTS.md](../../../src/gnn/render/AGENTS.md)**, **[src/gnn/execute/AGENTS.md](../../../src/gnn/execute/AGENTS.md)**
 
 ### Analysis & Reporting (Steps 13, 16, 23)
 
 - Advanced statistical analysis and LLM-enhanced interpretation
-- See: **[src/llm/AGENTS.md](../../../src/llm/AGENTS.md)**, **[src/analysis/AGENTS.md](../../../src/analysis/AGENTS.md)**
+- See: **[src/gnn/llm/AGENTS.md](../../../src/gnn/llm/AGENTS.md)**, **[src/gnn/analysis/AGENTS.md](../../../src/gnn/analysis/AGENTS.md)**
 
 **Quick Start:**
 
 ```bash
 # Process advanced models through full pipeline
-uv run python src/main.py --target-dir input/gnn_files --verbose
+uv run python src/gnn/main.py --target-dir input/gnn_files --verbose
 ```
 
-For complete pipeline documentation, see **[src/AGENTS.md](../../../src/AGENTS.md)**.
+For complete pipeline documentation, see **[src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md)**.
 
 ---
 
@@ -110,7 +110,7 @@ class TransitionModule:
 
 ### Policy Tree Optimization
 
-**Planned — not yet implemented.** There is no dedicated policy-tree-optimization pattern or module in `src/` today. The closest existing capability is the `policy_tree` output type in `src/advanced_visualization` (`src/advanced_visualization/mcp.py`), which visualizes the action-sequence tree of a planning agent but does not perform optimization over it.
+**Planned — not yet implemented.** There is no dedicated policy-tree-optimization pattern or module in `src/` today. The closest existing capability is the `policy_tree` output type in `src/gnn/advanced_visualization` (`src/gnn/advanced_visualization/mcp.py`), which visualizes the action-sequence tree of a planning agent but does not perform optimization over it.
 
 2. [Multi-Agent Systems](#multi-agent-systems)
 3. [Learning and Adaptation](#learning-and-adaptation)
@@ -879,7 +879,7 @@ by the pipeline, not encoded in your spec, and it works in two deliberately diff
 ways depending on what went wrong.
 
 **A missing optional dependency skips a backend.** Step 12 runs a pre-flight check before
-executing Python framework scripts (`src/execute/processor.py`). If the backend's package
+executing Python framework scripts (`src/gnn/execute/processor.py`). If the backend's package
 is absent — bnlearn being the standing case, with PyTorch absent on a plain
 `uv sync` (the package ships in the `torch` extra) — that backend is recorded as *skipped* with a
 dependency reason rather than failed. The run continues, downstream visualization and
@@ -897,7 +897,7 @@ inference, so the pipeline refuses to produce one. Step 12 likewise exits non-ze
 The rule underneath both: **absence is reported, wrongness is refused.** A backend you
 could not run is a known gap; a number you cannot trust is worse than no number.
 
-For the analysis side of this, Step 24 (`src/intelligent_analysis/`) scores pipeline
+For the analysis side of this, Step 24 (`src/gnn/intelligent_analysis/`) scores pipeline
 health, performs failure root-cause analysis, detects per-step warning flags and
 bottlenecks, and writes executive reports. It analyzes execution logs after the fact — it
 does not participate in solver selection or route between model paths.

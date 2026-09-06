@@ -32,7 +32,7 @@ grammar (doc/gnn/gnn_syntax.md, about_gnn.md) specifies single-char `source>targ
 or `source-target` with no spaces, and the parser correctly rejects `->`. Since
 this lives in out-of-scope `src/gnn/schema.py`, it was verified, not changed.
 
-## Tests added (new files under src/tests/gnn/, none overwritten)
+## Tests added (new files under tests/gnn/, none overwritten)
 - **test_gnn_watcher.py** (8) — default validation callback on valid/invalid GNN
   (real gnn.schema path), debounced firing, callback-receives-content,
   misbehaving-callback-does-not-raise (pins fix 1), and end-to-end polling
@@ -56,7 +56,7 @@ Total: **39 new tests**, all passing.
 ## Scoped verification results (exact charter commands)
 - `uv run ruff check` (4 owned files): ✅ All checks passed.
 - `uv run ruff format --check` (4 owned files): ✅ 4 files already formatted.
-- `uv run --extra dev python -m pytest src/tests/gnn -q --tb=no -x`: ✅ **358 passed** (319 pre-existing + 39 new), 0 failed.
+- `uv run --extra dev python -m pytest tests/gnn -q --tb=no -x`: ✅ **358 passed** (319 pre-existing + 39 new), 0 failed.
 - `uv run mypy` (4 owned files) `--config-file pyproject.toml`: ✅ Success, no issues.
 
 ## Notes

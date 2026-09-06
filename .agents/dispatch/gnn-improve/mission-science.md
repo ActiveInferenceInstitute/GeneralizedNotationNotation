@@ -3,15 +3,15 @@
 You own these paths ONLY within the GNN repo at
 `/home/trim/Documents/Git/HumOS/projects/outside_of_hum/GeneralizedNotationNotation`:
 
-- src/ontology/
-- src/llm/  (LLM-enhanced analysis; Ollama default `smollm2:135m-instruct-q4_K_S`)
-- src/audio/
-- src/ml_integration/
-- src/security/
-- src/report/
-- src/intelligent_analysis/
-- src/research/
-- mirror tests: src/tests/{ontology,llm,audio,ml_integration,security,report,intelligent_analysis,research}/
+- src/gnn/ontology/
+- src/gnn/llm/  (LLM-enhanced analysis; Ollama default `smollm2:135m-instruct-q4_K_S`)
+- src/gnn/audio/
+- src/gnn/ml_integration/
+- src/gnn/security/
+- src/gnn/report/
+- src/gnn/intelligent_analysis/
+- src/gnn/research/
+- mirror tests: tests/{ontology,llm,audio,ml_integration,security,report,intelligent_analysis,research}/
 
 DO NOT touch outside your scope (shared no-touch list in mission-parse.md).
 
@@ -29,9 +29,9 @@ GOAL (shallow→deep):
 6. Research tooling robustness.
 
 VERIFY (scoped):
-- `uv run ruff check src/ontology src/llm src/audio src/ml_integration src/security src/report src/intelligent_analysis src/research`
+- `uv run ruff check src/gnn/ontology src/gnn/llm src/gnn/audio src/gnn/ml_integration src/gnn/security src/gnn/report src/gnn/intelligent_analysis src/gnn/research`
 - `uv run ruff format --check ` (same tree)
-- `uv run pytest src/tests/ontology src/tests/llm src/tests/audio src/tests/ml_integration src/tests/security src/tests/report src/tests/intelligent_analysis src/tests/research -q --tb=no -x` (Ollama tests already allowlisted — do not run them)
+- `uv run pytest tests/ontology tests/llm tests/audio tests/ml_integration tests/security tests/report tests/intelligent_analysis tests/research -q --tb=no -x` (Ollama tests already allowlisted — do not run them)
 
 HARD RULE: leave ALL changes uncommitted; no commit/push/stage.
 

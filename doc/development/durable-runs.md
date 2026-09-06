@@ -32,7 +32,7 @@ Compose export preserves reviewed capabilities, network/PID/IPC settings and
 named volumes; output arguments match their writable mount. These are static
 plan checks. They do not validate an image or deployment.
 
-Implementation: [session acceptance](../../src/pipeline/session_acceptance.py),
-[run identity](../../src/pipeline/hasher.py),
-[manifest verification](../../src/pipeline/run_manifest.py), and
-[container plans](../../src/pipeline/container_plan.py).
+Implementation: [session acceptance](../../src/gnn/pipeline/session_acceptance.py),
+[run identity](../../src/gnn/pipeline/hasher.py),
+[manifest verification](../../src/gnn/pipeline/run_manifest.py), and
+[container plans](../../src/gnn/pipeline/container_plan.py).

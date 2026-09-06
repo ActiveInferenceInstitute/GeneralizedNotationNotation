@@ -6,9 +6,9 @@ usage.
 ## Status
 
 - Pipeline-authoritative implementations live in:
-  - `src/render/pymdp/`
-  - `src/execute/pymdp/`
-  - `src/analysis/pymdp/`
+  - `src/gnn/render/pymdp/`
+  - `src/gnn/execute/pymdp/`
+  - `src/gnn/analysis/pymdp/`
 - Files in this folder are reference/support content and should not be treated
   as canonical runtime contracts for Step 11/12/16.
 

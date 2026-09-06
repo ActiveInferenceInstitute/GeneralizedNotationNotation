@@ -26,11 +26,11 @@ This tree is part of the GNN documentation system; implementation lives in `src/
 
 ## Quick navigation
 
-- **Step index**: [src/STEP_INDEX.md](../../src/STEP_INDEX.md)
+- **Step index**: [src/gnn/STEP_INDEX.md](../../src/gnn/STEP_INDEX.md)
 - **Stage hardening review**: [pipeline_stage_hardening_review.md](pipeline_stage_hardening_review.md)
-- **Orchestrator**: [src/main.py](../../src/main.py)
+- **Orchestrator**: [src/gnn/main.py](../../src/gnn/main.py)
 - **Script catalog**: [PIPELINE_SCRIPTS.md](../PIPELINE_SCRIPTS.md)
-- **Pipeline module**: [src/pipeline/AGENTS.md](../../src/pipeline/AGENTS.md)
+- **Pipeline module**: [src/gnn/pipeline/AGENTS.md](../../src/gnn/pipeline/AGENTS.md)
 
 ## Integration
 

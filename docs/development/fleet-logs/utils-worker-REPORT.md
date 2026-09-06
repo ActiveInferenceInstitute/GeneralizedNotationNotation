@@ -1,6 +1,6 @@
 # utils-worker REPORT — fleet 3, 2026-09-04
 
-Scope: `src/utils/` (module considered separately and alone) + tests in `src/tests/utils/`.
+Scope: `src/gnn/utils/` (module considered separately and alone) + tests in `tests/utils/`.
 Branch `main` @ f64ac9085. No git state-changing operations performed. No pyproject/uv.lock/deps touched.
 
 ## Method
@@ -13,19 +13,19 @@ Branch `main` @ f64ac9085. No git state-changing operations performed. No pyproj
 
 | File | Change |
 |---|---|
-| `src/utils/io_utils.py` | **ADD** `verify_directory_writable(directory, probe_name=".write_probe") -> None` — single create-rename-cleanup write probe (raises `OSError` on failure, cleans tmp on rename failure). |
-| `src/utils/pipeline.py` | `validate_output_directory` now calls the shared probe (identical log messages/exit contract preserved). |
-| `src/utils/pipeline_validator.py` | `check_pipeline_readiness` now calls the shared probe (identical `blocking_issues` message preserved). |
-| `src/utils/resource_manager.py` | **ADD** canonical `get_memory_usage` (alias of `get_current_memory_usage`); `with_resource_limits` no longer masks body exceptions (body error propagates; limit `RuntimeError`s only when body succeeded); return type `Iterator[None]`. |
-| `src/utils/test_utils.py` | `get_memory_usage` deleted (was verbatim psutil copy) — re-imported from `resource_manager`. Name/behavior preserved. |
-| `src/utils/visualization_optimizer.py` | Same delegation; dead `str(e)` statement removed; `except Exception:` (unused `e`). |
-| `src/utils/arg_parsing.py` | Two ~70-line fallback-default if/elif ladders (`ArgumentParser.parse_step_arguments`, `create_default_namespace`) collapsed onto one module-level `_FALLBACK_DEFAULTS` mapping + pure `fallback_default_for(arg_name)` (tuple→list copy on access). |
-| `src/utils/step_config.py` | `validate_step_args(step_name, args, project_root=None)` — injectable project root for missing-input-path repair; legacy `sys._getframe(1)` heuristic preserved verbatim when omitted (extracted to `_resolve_missing_input_path`); `list[Any]`→`list[str]`. |
-| `src/utils/pipeline_monitor.py` | **BUGFIX**: `_initialize_health_thresholds["duration_variance"]` gains `"critical": 3.0` (previously `KeyError` on the >3x-baseline alert path); warning branch now compares the degraded band (2–3x) so the ladder is reachable; no-op `self.step_metrics[step_name]` expression removed. |
-| `src/utils/mcp.py` | **ADD** `SENSITIVE_ENV_KEY_MARKERS`, `is_sensitive_env_key(key) -> bool`, `redact_environment() -> dict[str, str]`; `get_environment_info` redaction widened (`credential`, `passwd`, `auth` added); `dict[str, str]` typing. |
-| `src/utils/performance_tracking.py` | Typing polish: `track_operation_standalone -> Iterator[None]`, `metadata: dict[str, Any] | None`, `get_performance_metrics/stop_performance_monitoring/generate_performance_report -> dict[str, Any]`, `__all__: list[str]`. |
-| `src/utils/AGENTS.md` / `README.md` / `SPEC.md` / `SKILL.md` | Documented all API deltas (AGENTS.md new "Composability Notes" section); fixed stale double-signature doc for `validate_output_directory`; SKILL.md stale `generate_pipeline_health_report()` no-arg example replaced with a valid call (signature verified `(pipeline_summary, logger)`). |
-| `src/tests/utils/test_shared_helpers.py` | **NEW** — 63 tests pinning: shared probe (roundtrip/missing-dir/file-target/read-only + both former callers' parity), memory-probe alias identity, `with_resource_limits` masking semantics (3 cases), fallback defaults (25-row parametrize + mutable-copy + `create_default_namespace` contract + `parse_step_arguments` attribute guarantee), `validate_step_args` project-root injection/repair/report, monitor alert bands (critical exists, CRITICAL >3x, WARNING 2–3x, nothing within baseline), env redaction (markers + `redact_environment`). All deterministic, tmp_path-based, network-free. |
+| `src/gnn/utils/io_utils.py` | **ADD** `verify_directory_writable(directory, probe_name=".write_probe") -> None` — single create-rename-cleanup write probe (raises `OSError` on failure, cleans tmp on rename failure). |
+| `src/gnn/utils/pipeline.py` | `validate_output_directory` now calls the shared probe (identical log messages/exit contract preserved). |
+| `src/gnn/utils/pipeline_validator.py` | `check_pipeline_readiness` now calls the shared probe (identical `blocking_issues` message preserved). |
+| `src/gnn/utils/resource_manager.py` | **ADD** canonical `get_memory_usage` (alias of `get_current_memory_usage`); `with_resource_limits` no longer masks body exceptions (body error propagates; limit `RuntimeError`s only when body succeeded); return type `Iterator[None]`. |
+| `src/gnn/utils/test_utils.py` | `get_memory_usage` deleted (was verbatim psutil copy) — re-imported from `resource_manager`. Name/behavior preserved. |
+| `src/gnn/utils/visualization_optimizer.py` | Same delegation; dead `str(e)` statement removed; `except Exception:` (unused `e`). |
+| `src/gnn/utils/arg_parsing.py` | Two ~70-line fallback-default if/elif ladders (`ArgumentParser.parse_step_arguments`, `create_default_namespace`) collapsed onto one module-level `_FALLBACK_DEFAULTS` mapping + pure `fallback_default_for(arg_name)` (tuple→list copy on access). |
+| `src/gnn/utils/step_config.py` | `validate_step_args(step_name, args, project_root=None)` — injectable project root for missing-input-path repair; legacy `sys._getframe(1)` heuristic preserved verbatim when omitted (extracted to `_resolve_missing_input_path`); `list[Any]`→`list[str]`. |
+| `src/gnn/utils/pipeline_monitor.py` | **BUGFIX**: `_initialize_health_thresholds["duration_variance"]` gains `"critical": 3.0` (previously `KeyError` on the >3x-baseline alert path); warning branch now compares the degraded band (2–3x) so the ladder is reachable; no-op `self.step_metrics[step_name]` expression removed. |
+| `src/gnn/utils/mcp.py` | **ADD** `SENSITIVE_ENV_KEY_MARKERS`, `is_sensitive_env_key(key) -> bool`, `redact_environment() -> dict[str, str]`; `get_environment_info` redaction widened (`credential`, `passwd`, `auth` added); `dict[str, str]` typing. |
+| `src/gnn/utils/performance_tracking.py` | Typing polish: `track_operation_standalone -> Iterator[None]`, `metadata: dict[str, Any] | None`, `get_performance_metrics/stop_performance_monitoring/generate_performance_report -> dict[str, Any]`, `__all__: list[str]`. |
+| `src/gnn/utils/AGENTS.md` / `README.md` / `SPEC.md` / `SKILL.md` | Documented all API deltas (AGENTS.md new "Composability Notes" section); fixed stale double-signature doc for `validate_output_directory`; SKILL.md stale `generate_pipeline_health_report()` no-arg example replaced with a valid call (signature verified `(pipeline_summary, logger)`). |
+| `tests/utils/test_shared_helpers.py` | **NEW** — 63 tests pinning: shared probe (roundtrip/missing-dir/file-target/read-only + both former callers' parity), memory-probe alias identity, `with_resource_limits` masking semantics (3 cases), fallback defaults (25-row parametrize + mutable-copy + `create_default_namespace` contract + `parse_step_arguments` attribute guarantee), `validate_step_args` project-root injection/repair/report, monitor alert bands (critical exists, CRITICAL >3x, WARNING 2–3x, nothing within baseline), env redaction (markers + `redact_environment`). All deterministic, tmp_path-based, network-free. |
 
 ## API deltas
 
@@ -36,14 +36,14 @@ Branch `main` @ f64ac9085. No git state-changing operations performed. No pyproj
 ## Verification output tails
 
 ```
-$ uv run ruff check src/utils src/tests/utils
+$ uv run ruff check src/gnn/utils tests/utils
 All checks passed!
 
-$ uv run --extra dev mypy src/utils --config-file pyproject.toml
+$ uv run --extra dev mypy src/gnn/utils --config-file pyproject.toml
 Success: no issues found in 51 source files
 
 $ just test-mod utils   # `just` binary not installed on host; ran the recipe's expansion:
-$ uv run pytest src/tests/utils/ -v
+$ uv run pytest tests/utils/ -v
 211 passed in 0.35s     # 148 pre-existing (all kept passing) + 63 new
 
 Baseline pre-change: 148 passed in 0.52s.

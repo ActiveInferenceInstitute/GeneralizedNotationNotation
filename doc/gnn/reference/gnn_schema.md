@@ -11,23 +11,23 @@ Complete specification for GNN syntax parsing and validation.
 
 GNN schema validation is handled by multiple pipeline steps:
 
-- **`src/3_gnn.py`** → GNN file parsing and schema validation
+- **`src/gnn/3_gnn.py`** → GNN file parsing and schema validation
   - Implementation: `src/gnn/schema_validator.py`
   - See: **[src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md)**
-- **`src/5_type_checker.py`** → Type and dimensional validation
-  - Implementation: `src/type_checker/checking/core.py` (`GNNTypeChecker`)
-  - See: **[src/type_checker/AGENTS.md](../../../src/type_checker/AGENTS.md)**
-- **`src/6_validation.py`** → Advanced consistency checking
-  - See: **[src/validation/AGENTS.md](../../../src/validation/AGENTS.md)**
+- **`src/gnn/5_type_checker.py`** → Type and dimensional validation
+  - Implementation: `src/gnn/type_checker/checking/core.py` (`GNNTypeChecker`)
+  - See: **[src/gnn/type_checker/AGENTS.md](../../../src/gnn/type_checker/AGENTS.md)**
+- **`src/gnn/6_validation.py`** → Advanced consistency checking
+  - See: **[src/gnn/validation/AGENTS.md](../../../src/gnn/validation/AGENTS.md)**
 
 **Quick Start:**
 
 ```bash
 # Validate GNN schema
-python src/main.py --only-steps "3,5,6" --target-dir input/gnn_files --verbose
+python src/gnn/main.py --only-steps "3,5,6" --target-dir input/gnn_files --verbose
 ```
 
-For complete pipeline documentation, see **[src/AGENTS.md](../../../src/AGENTS.md)**.
+For complete pipeline documentation, see **[src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md)**.
 
 ---
 
@@ -119,7 +119,7 @@ The full obligation table is in
 
 ### 1. Parse: GNN → JSON
 
-**Entry Point:** `src/3_gnn.py:process_gnn_multi_format()`
+**Entry Point:** `src/gnn/3_gnn.py:process_gnn_multi_format()`
 **Core Method:** `src/gnn/multi_format_processor.py`
 
 Input: `actinf_pomdp_agent.md`
@@ -146,8 +146,8 @@ Output: `output/3_gnn_output/parsed_actinf_pomdp_agent.json`
 
 ### 2. Validate: JSON → Typed JSON
 
-**Entry Point:** `src/5_type_checker.py:main()` → `src/type_checker/analysis_utils.py:analyze_variable_types()`
-**Core Method:** `src/type_checker/analysis_utils.py`
+**Entry Point:** `src/gnn/5_type_checker.py:main()` → `src/gnn/type_checker/analysis_utils.py:analyze_variable_types()`
+**Core Method:** `src/gnn/type_checker/analysis_utils.py`
 
 Applies type constraints and dimensional analysis:
 
@@ -164,8 +164,8 @@ Applies type constraints and dimensional analysis:
 
 ### 3. Export: JSON → Multiple Formats
 
-**Entry Point:** `src/7_export.py:process_export()`
-**Core Methods:** `src/export/`
+**Entry Point:** `src/gnn/7_export.py:process_export()`
+**Core Methods:** `src/gnn/export/`
 
 Produces:
 
@@ -176,22 +176,22 @@ Produces:
 
 ### 4. Render: JSON → Framework Code
 
-**Entry Point:** `src/11_render.py:process_render()`
-**Core Methods:** `src/render/`
+**Entry Point:** `src/gnn/11_render.py:process_render()`
+**Core Methods:** `src/gnn/render/`
 
 Framework targets:
 
-- **PyMDP**: `src/render/pymdp/` → `.py` files
-- **RxInfer.jl**: `src/render/rxinfer/` → `.jl` files
-- **ActiveInference.jl**: `src/render/activeinference_jl/` → `.jl` files
-- **DisCoPy**: `src/render/discopy/` → categorical diagrams
+- **PyMDP**: `src/gnn/render/pymdp/` → `.py` files
+- **RxInfer.jl**: `src/gnn/render/rxinfer/` → `.jl` files
+- **ActiveInference.jl**: `src/gnn/render/activeinference_jl/` → `.jl` files
+- **DisCoPy**: `src/gnn/render/discopy/` → categorical diagrams
 
 ## Core Method Locations (Actual Implementation)
 
 ### Parsing Pipeline (Step 3: GNN Processing)
 
 ```text
-src/3_gnn.py (thin orchestrator)
+src/gnn/3_gnn.py (thin orchestrator)
 ├── src/gnn/multi_format_processor.py (main processor)
 ├── src/gnn/schema_validator.py
 │   └── GNNParser (line 54-89)
@@ -214,8 +214,8 @@ src/3_gnn.py (thin orchestrator)
 ### Type Analysis (Step 5: Type Checking)
 
 ```text
-src/5_type_checker.py (thin orchestrator)
-└── src/type_checker/
+src/gnn/5_type_checker.py (thin orchestrator)
+└── src/gnn/type_checker/
     ├── analysis_utils.py                 # standalone helpers, no classes
     │   ├── analyze_variable_types() (line 13)
     │   ├── analyze_connections() (line 78)
@@ -235,8 +235,8 @@ src/5_type_checker.py (thin orchestrator)
 ### Visualization Pipeline (Steps 8 & 9)
 
 ```
-src/8_visualization.py (thin orchestrator)
-└── src/visualization/
+src/gnn/8_visualization.py (thin orchestrator)
+└── src/gnn/visualization/
     ├── visualizer.py
     │   └── GNNVisualizer (line 61)
     ├── matrix/
@@ -252,8 +252,8 @@ src/8_visualization.py (thin orchestrator)
     ├── processor.py                       # re-export facade (34 lines)
     └── __init__.py                        # safe imports with alternatives
 
-src/9_advanced_viz.py (thin orchestrator)
-└── src/advanced_visualization/
+src/gnn/9_advanced_viz.py (thin orchestrator)
+└── src/gnn/advanced_visualization/
     └── visualizer.py
         └── AdvancedVisualizer (line 38)
 ```
@@ -261,16 +261,16 @@ src/9_advanced_viz.py (thin orchestrator)
 ### Export Pipeline (Step 7: Multi-format Export)  
 
 ```
-src/7_export.py (thin orchestrator)
-└── src/export/
+src/gnn/7_export.py (thin orchestrator)
+└── src/gnn/export/
     └── [Export modules - locations to be documented]
 ```
 
 ### Render Pipeline (Step 11: Code Generation)
 
 ```
-src/11_render.py (thin orchestrator)  
-└── src/render/
+src/gnn/11_render.py (thin orchestrator)  
+└── src/gnn/render/
     └── [Render modules - locations to be documented]
 ```
 
@@ -290,8 +290,8 @@ src/11_render.py (thin orchestrator)
    connection parsing (there is no separate lexer module)
 2. **Structural**: `src/gnn/parser.py` and `src/gnn/parsers/` - multi-format
    parsing into the shared model dict
-3. **Semantic**: `src/type_checker/checking/core.py` - type and dimension validation
-4. **Ontological**: `src/ontology/processor.py` - domain validation
+3. **Semantic**: `src/gnn/type_checker/checking/core.py` - type and dimension validation
+4. **Ontological**: `src/gnn/ontology/processor.py` - domain validation
 
 ### Framework Integration Points
 
@@ -325,7 +325,7 @@ def validate_connection(conn, variables):
 ### Round-Trip Validation
 
 ```python
-# Implemented in src/6_validation.py
+# Implemented in src/gnn/6_validation.py
 # Illustrative pseudocode — not a real symbol
 def validate_round_trip(original_gnn, exported_formats):
     # Parse original

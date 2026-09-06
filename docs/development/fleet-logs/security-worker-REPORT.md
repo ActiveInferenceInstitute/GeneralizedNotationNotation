@@ -1,19 +1,19 @@
 # REPORT — security worker (fleet 3, 2026-09-04)
 
-Scope: `src/security/` (processor.py, mcp.py, `__init__.py`, AGENTS.md, README.md, SPEC.md, SKILL.md) + `src/18_security.py`. Branch main @ f64ac9085; no commits made (in-place edits only, per fleet rules).
+Scope: `src/gnn/security/` (processor.py, mcp.py, `__init__.py`, AGENTS.md, README.md, SPEC.md, SKILL.md) + `src/gnn/18_security.py`. Branch main @ f64ac9085; no commits made (in-place edits only, per fleet rules).
 
 ## Files changed + why
 
 | File | Change |
 |---|---|
-| `src/security/processor.py` | Refactor (see below) + new `scan_source` API |
-| `src/security/__init__.py` | Version 1.6.0 → 1.7.0; export the full policy/gate surface; fix `FEATURES` (`mcp_integration` was `False` with a stale "No mcp.py exists" comment — mcp.py exists and registers 4 tools) |
-| `src/security/AGENTS.md` | Layered API reference, new examples, version history, test list |
-| `src/security/README.md` | New components, exports, scan_source example, test list |
-| `src/security/SKILL.md` | API block + Key Exports updated |
-| `src/security/SPEC.md` | Interface mapping, functional requirements, component table |
-| `src/tests/security/test_security_policy_and_source.py` | **New**: 44 tests, 7 classes |
-| `src/18_security.py` | Unchanged (already thin, 55 ln) |
+| `src/gnn/security/processor.py` | Refactor (see below) + new `scan_source` API |
+| `src/gnn/security/__init__.py` | Version 1.6.0 → 1.7.0; export the full policy/gate surface; fix `FEATURES` (`mcp_integration` was `False` with a stale "No mcp.py exists" comment — mcp.py exists and registers 4 tools) |
+| `src/gnn/security/AGENTS.md` | Layered API reference, new examples, version history, test list |
+| `src/gnn/security/README.md` | New components, exports, scan_source example, test list |
+| `src/gnn/security/SKILL.md` | API block + Key Exports updated |
+| `src/gnn/security/SPEC.md` | Interface mapping, functional requirements, component table |
+| `tests/security/test_security_policy_and_source.py` | **New**: 44 tests, 7 classes |
+| `src/gnn/18_security.py` | Unchanged (already thin, 55 ln) |
 
 ## Refactor details (composability)
 
@@ -46,26 +46,26 @@ Scope: `src/security/` (processor.py, mcp.py, `__init__.py`, AGENTS.md, README.m
 ## Verification (output tails)
 
 ```
-uv run ruff check src/security src/tests/security
+uv run ruff check src/gnn/security tests/security
   → All checks passed!
-uv run --extra dev mypy src/security --config-file pyproject.toml
+uv run --extra dev mypy src/gnn/security --config-file pyproject.toml
   → Success: no issues found in 3 source files
-uv run pytest src/tests/security/ -q
+uv run pytest tests/security/ -q
   → 102 passed in 1.00s   (58 pre-existing + 44 new)
 just test-mod security: `just` NOT installed on host → ran its exact recipe
-  (uv run pytest src/tests/security/ -v): 102 passed, exit 0.
+  (uv run pytest tests/security/ -v): 102 passed, exit 0.
 Smoke: 18_security.py on a clean model → "✅ Security processing completed
 successfully", exit 0; empty/invalid-policy → deny receipts as before.
 Smoke: execute-gate call pattern (scan .py with subprocess.getoutput) →
   ok=False, decision="deny".
-Note: src/tests/api/test_comprehensive_api.py had 10 transient NameError
+Note: tests/api/test_comprehensive_api.py had 10 transient NameError
 failures ('website' not defined) on one run — a concurrent wave peer editing
 website/report modules mid-run; clean rerun: 47 passed. Not security-related.
-uv run ruff format --check src/security src/tests/security
+uv run ruff format --check src/gnn/security tests/security
   → 11 files already formatted (after `ruff format` reformatted
-    src/security/processor.py + src/tests/security/test_security_policy_and_source.py;
+    src/gnn/security/processor.py + tests/security/test_security_policy_and_source.py;
     ruff check / mypy / 102 tests re-verified green post-format)
-Version pins: doc/VERSION_MAP.md has no security entries; src/mcp's 1.6.0 is
+Version pins: doc/VERSION_MAP.md has no security entries; src/gnn/mcp's 1.6.0 is
   that subsystem's independent version — the security 1.7.0 bump pins nothing.
 ```
 
@@ -73,7 +73,7 @@ Version pins: doc/VERSION_MAP.md has no security entries; src/mcp's 1.6.0 is
 
 - `doc/gnn/mcp/tool_reference.md`: security tools unchanged; no action needed.
 - `doc/` pipeline docs referencing Step 18 outputs: unchanged contract (security_results.json + security_summary.md), no action.
-- If another worker wires `scan_source` into `render/` (recommended: validate rendered Python before writing), the doc cross-ref belongs in `src/render/AGENTS.md`, not mine.
+- If another worker wires `scan_source` into `render/` (recommended: validate rendered Python before writing), the doc cross-ref belongs in `src/gnn/render/AGENTS.md`, not mine.
 
 ## Follow-up ideas
 
@@ -85,17 +85,17 @@ Version pins: doc/VERSION_MAP.md has no security entries; src/mcp's 1.6.0 is
 ## Addendum (format + version-pin verification, post-report)
 
 ```
-uv run ruff format --check src/security src/tests/security
-  (initial) → 2 files would be reformatted: src/security/processor.py,
-              src/tests/security/test_security_policy_and_source.py
+uv run ruff format --check src/gnn/security tests/security
+  (initial) → 2 files would be reformatted: src/gnn/security/processor.py,
+              tests/security/test_security_policy_and_source.py
   (fixed via uv run ruff format) → 11 files already formatted
   re-verified after formatting: ruff check "All checks passed!",
   mypy "Success: no issues found in 3 source files",
-  pytest src/tests/security/ → 102 passed.
+  pytest tests/security/ → 102 passed.
 ```
 
 Version pins: `doc/VERSION_MAP.md` has no security-module entries; all 1.6.0
-hits in `src/mcp/` are the MCP subsystem's independent version; the security
+hits in `src/gnn/mcp/` are the MCP subsystem's independent version; the security
 1.7.0 bump pins nothing.
 
 ## Addendum 2 (final hardening pass)
@@ -103,4 +103,4 @@ hits in `src/mcp/` are the MCP subsystem's independent version; the security
 - **AGENTS.md claim-strength fix**: deleted the duplicated "## Security Features" section (aspirational RBAC/encryption/key-management/exfiltration claims with no code behind them); replaced the false "Path Traversal Checks" bullet with the real permission checks (world-writable `stat.S_IWOTH` detection + real octal mode reporting).
 - **Tests hardened**: deleted the stdlib-tautology `TestWorldWritablePosixOnly` test; added a deterministic `test_stat_failure_reports_unknown_permissions` (monkeypatched `Path.stat` → OSError → `file_permissions == "unknown"` branch covered identically on every platform); `test_perform_security_check_unreadable_file_raises_typed_error` now pins ONLY `SecurityScanError` (previously a `PermissionError` tolerance would pass even if the typed wrapping were silently removed).
 - **`scan_source` docstring**: documents the deliberate deny-receipt asymmetry vs the file gate (bare `deny_invalid_policy` without the `policy_validation` finding; `block_on` echo present in both branches — verified in code).
-- Re-verified after all edits: `ruff format --check` → 3 files already formatted; `ruff check` → All checks passed!; mypy → Success (3 files); pytest src/tests/security → **102 passed** (44 in the new file: -1 tautology, +1 monkeypatch test).
+- Re-verified after all edits: `ruff format --check` → 3 files already formatted; `ruff check` → All checks passed!; mypy → Success (3 files); pytest tests/security → **102 passed** (44 in the new file: -1 tautology, +1 monkeypatch test).

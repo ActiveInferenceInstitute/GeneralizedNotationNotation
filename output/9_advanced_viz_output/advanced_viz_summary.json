@@ -1,151 +1,400 @@
 {
-  "timestamp": "2026-06-18T09:04:51.066026",
-  "total_attempts": 10,
-  "successful": 10,
+  "timestamp": "2026-09-05T20:32:36.728336",
+  "total_attempts": 28,
+  "successful": 18,
   "failed": 0,
-  "skipped": 0,
+  "skipped": 10,
   "total_duration_ms": 0.0,
   "output_files": [
-    "output/9_advanced_viz_output/pomdp_gridworld_3x3_3d_visualization.png",
-    "output/9_advanced_viz_output/pomdp_gridworld_3x3_statistical_analysis.png",
-    "output/9_advanced_viz_output/pomdp_gridworld_3x3_matrix_correlations.png",
-    "output/9_advanced_viz_output/pomdp_gridworld_3x3_pomdp_transitions.png",
-    "output/9_advanced_viz_output/pomdp_gridworld_3x3_policy_visualization.png",
-    "output/9_advanced_viz_output/pomdp_gridworld_3x3_interactive_dashboard.html",
-    "output/9_advanced_viz_output/pomdp_gridworld_3x3_interactive_dashboard.html",
-    "output/9_advanced_viz_output/pomdp_gridworld_3x3_network_metrics.png",
-    "output/9_advanced_viz_output/d2_diagrams/POMDP GridWorld 3x3/pomdp_gridworld_3x3_structure.svg",
-    "output/9_advanced_viz_output/d2_diagrams/POMDP GridWorld 3x3/pomdp_gridworld_3x3_structure.png",
-    "output/9_advanced_viz_output/d2_diagrams/pipeline/gnn_pipeline_flow.svg",
-    "output/9_advanced_viz_output/d2_diagrams/pipeline/gnn_pipeline_flow.png",
-    "output/9_advanced_viz_output/d2_diagrams/pipeline/framework_integration.svg",
-    "output/9_advanced_viz_output/d2_diagrams/pipeline/framework_integration.png",
-    "output/9_advanced_viz_output/d2_diagrams/pipeline/active_inference_concepts.svg",
-    "output/9_advanced_viz_output/d2_diagrams/pipeline/active_inference_concepts.png"
+    "output/9_advanced_viz_output/continuous_navigation_3d_visualization.png",
+    "output/9_advanced_viz_output/continuous_navigation_statistical_analysis.png",
+    "output/9_advanced_viz_output/continuous_navigation_matrix_correlations.png",
+    "output/9_advanced_viz_output/continuous_navigation_interactive_dashboard.html",
+    "output/9_advanced_viz_output/continuous_navigation_interactive_dashboard.html",
+    "output/9_advanced_viz_output/continuous_navigation_network_metrics.png",
+    "output/9_advanced_viz_output/predictive_coding_agent_3d_visualization.png",
+    "output/9_advanced_viz_output/predictive_coding_agent_statistical_analysis.png",
+    "output/9_advanced_viz_output/predictive_coding_agent_matrix_correlations.png",
+    "output/9_advanced_viz_output/predictive_coding_agent_interactive_dashboard.html",
+    "output/9_advanced_viz_output/predictive_coding_agent_interactive_dashboard.html",
+    "output/9_advanced_viz_output/predictive_coding_agent_network_metrics.png",
+    "output/9_advanced_viz_output/stochastic_dynamics_3d_visualization.png",
+    "output/9_advanced_viz_output/stochastic_dynamics_statistical_analysis.png",
+    "output/9_advanced_viz_output/stochastic_dynamics_matrix_correlations.png",
+    "output/9_advanced_viz_output/stochastic_dynamics_interactive_dashboard.html",
+    "output/9_advanced_viz_output/stochastic_dynamics_interactive_dashboard.html",
+    "output/9_advanced_viz_output/stochastic_dynamics_network_metrics.png"
   ],
-  "warnings": [],
+  "warnings": [
+    "Not applicable to this model type (B matrix not found)",
+    "No policy data found",
+    "Not applicable to this model type (B matrix not found)",
+    "No policy data found",
+    "Not applicable to this model type (B matrix not found)",
+    "No policy data found"
+  ],
   "errors": [],
   "skipped_features": {
-    "count": 0,
-    "by_reason": {},
-    "details": []
+    "count": 10,
+    "by_reason": {
+      "Not applicable to this model type (B matrix not found)": [
+        "pomdp_transitions:continuous_navigation",
+        "pomdp_transitions:predictive_coding_agent",
+        "pomdp_transitions:stochastic_dynamics"
+      ],
+      "No policy data found": [
+        "policy:continuous_navigation",
+        "policy:predictive_coding_agent",
+        "policy:stochastic_dynamics"
+      ],
+      "D2 CLI not installed": [
+        "d2_diagrams:Continuous State Navigation Agent",
+        "d2_diagrams:Predictive Coding Active Inference Agent",
+        "d2_diagrams:Stochastic Continuous Dynamics Agent",
+        "d2_pipeline_diagrams:gnn_pipeline"
+      ]
+    },
+    "details": [
+      {
+        "feature": "pomdp_transitions:continuous_navigation",
+        "reason": "Not applicable to this model type (B matrix not found)",
+        "fallback_available": false
+      },
+      {
+        "feature": "policy:continuous_navigation",
+        "reason": "No policy data found",
+        "fallback_available": false
+      },
+      {
+        "feature": "d2_diagrams:Continuous State Navigation Agent",
+        "reason": "D2 CLI not installed",
+        "fallback_available": true
+      },
+      {
+        "feature": "pomdp_transitions:predictive_coding_agent",
+        "reason": "Not applicable to this model type (B matrix not found)",
+        "fallback_available": false
+      },
+      {
+        "feature": "policy:predictive_coding_agent",
+        "reason": "No policy data found",
+        "fallback_available": false
+      },
+      {
+        "feature": "d2_diagrams:Predictive Coding Active Inference Agent",
+        "reason": "D2 CLI not installed",
+        "fallback_available": true
+      },
+      {
+        "feature": "pomdp_transitions:stochastic_dynamics",
+        "reason": "Not applicable to this model type (B matrix not found)",
+        "fallback_available": false
+      },
+      {
+        "feature": "policy:stochastic_dynamics",
+        "reason": "No policy data found",
+        "fallback_available": false
+      },
+      {
+        "feature": "d2_diagrams:Stochastic Continuous Dynamics Agent",
+        "reason": "D2 CLI not installed",
+        "fallback_available": true
+      },
+      {
+        "feature": "d2_pipeline_diagrams:gnn_pipeline",
+        "reason": "D2 CLI not installed",
+        "fallback_available": true
+      }
+    ]
   },
   "attempts": [
     {
       "viz_type": "3d",
-      "model_name": "pomdp_gridworld_3x3",
+      "model_name": "continuous_navigation",
       "status": "success",
-      "duration_ms": 142.30895042419434,
+      "duration_ms": 313.1978511810303,
       "output_files": [
-        "output/9_advanced_viz_output/pomdp_gridworld_3x3_3d_visualization.png"
+        "output/9_advanced_viz_output/continuous_navigation_3d_visualization.png"
       ],
       "error_message": null,
       "fallback_used": false
     },
     {
       "viz_type": "statistical",
-      "model_name": "pomdp_gridworld_3x3",
+      "model_name": "continuous_navigation",
       "status": "success",
-      "duration_ms": 263.3318901062012,
+      "duration_ms": 342.07892417907715,
       "output_files": [
-        "output/9_advanced_viz_output/pomdp_gridworld_3x3_statistical_analysis.png"
+        "output/9_advanced_viz_output/continuous_navigation_statistical_analysis.png"
       ],
       "error_message": null,
       "fallback_used": false
     },
     {
       "viz_type": "matrix_correlations",
-      "model_name": "pomdp_gridworld_3x3",
+      "model_name": "continuous_navigation",
       "status": "success",
-      "duration_ms": 192.93594360351562,
+      "duration_ms": 431.31303787231445,
       "output_files": [
-        "output/9_advanced_viz_output/pomdp_gridworld_3x3_matrix_correlations.png"
+        "output/9_advanced_viz_output/continuous_navigation_matrix_correlations.png"
       ],
       "error_message": null,
       "fallback_used": false
     },
     {
       "viz_type": "pomdp_transitions",
-      "model_name": "pomdp_gridworld_3x3",
-      "status": "success",
-      "duration_ms": 1235.119104385376,
-      "output_files": [
-        "output/9_advanced_viz_output/pomdp_gridworld_3x3_pomdp_transitions.png"
-      ],
-      "error_message": null,
+      "model_name": "continuous_navigation",
+      "status": "skipped",
+      "duration_ms": 0.0209808349609375,
+      "output_files": [],
+      "error_message": "Not applicable to this model type (B matrix not found)",
       "fallback_used": false
     },
     {
       "viz_type": "policy",
-      "model_name": "pomdp_gridworld_3x3",
-      "status": "success",
-      "duration_ms": 146.38710021972656,
-      "output_files": [
-        "output/9_advanced_viz_output/pomdp_gridworld_3x3_policy_visualization.png"
-      ],
-      "error_message": null,
+      "model_name": "continuous_navigation",
+      "status": "skipped",
+      "duration_ms": 0.024080276489257812,
+      "output_files": [],
+      "error_message": "No policy data found",
       "fallback_used": false
     },
     {
       "viz_type": "interactive_dashboard",
-      "model_name": "pomdp_gridworld_3x3",
+      "model_name": "continuous_navigation",
       "status": "success",
-      "duration_ms": 52.633047103881836,
+      "duration_ms": 129.25195693969727,
       "output_files": [
-        "output/9_advanced_viz_output/pomdp_gridworld_3x3_interactive_dashboard.html"
+        "output/9_advanced_viz_output/continuous_navigation_interactive_dashboard.html"
       ],
       "error_message": null,
       "fallback_used": false
     },
     {
       "viz_type": "dashboard",
-      "model_name": "pomdp_gridworld_3x3",
+      "model_name": "continuous_navigation",
       "status": "success",
-      "duration_ms": 153.7628173828125,
+      "duration_ms": 136.322021484375,
       "output_files": [
-        "output/9_advanced_viz_output/pomdp_gridworld_3x3_interactive_dashboard.html"
+        "output/9_advanced_viz_output/continuous_navigation_interactive_dashboard.html"
       ],
       "error_message": null,
       "fallback_used": false
     },
     {
       "viz_type": "network_metrics",
-      "model_name": "pomdp_gridworld_3x3",
+      "model_name": "continuous_navigation",
       "status": "success",
-      "duration_ms": 157.74106979370117,
+      "duration_ms": 268.6941623687744,
       "output_files": [
-        "output/9_advanced_viz_output/pomdp_gridworld_3x3_network_metrics.png"
+        "output/9_advanced_viz_output/continuous_navigation_network_metrics.png"
       ],
       "error_message": null,
       "fallback_used": false
     },
     {
       "viz_type": "d2_diagrams",
-      "model_name": "POMDP GridWorld 3x3",
+      "model_name": "Continuous State Navigation Agent",
+      "status": "skipped",
+      "duration_ms": 0.5440711975097656,
+      "output_files": [],
+      "error_message": "D2 CLI not installed",
+      "fallback_used": true
+    },
+    {
+      "viz_type": "3d",
+      "model_name": "predictive_coding_agent",
       "status": "success",
-      "duration_ms": 1667.0429706573486,
+      "duration_ms": 257.7528953552246,
       "output_files": [
-        "output/9_advanced_viz_output/d2_diagrams/POMDP GridWorld 3x3/pomdp_gridworld_3x3_structure.svg",
-        "output/9_advanced_viz_output/d2_diagrams/POMDP GridWorld 3x3/pomdp_gridworld_3x3_structure.png"
+        "output/9_advanced_viz_output/predictive_coding_agent_3d_visualization.png"
       ],
       "error_message": null,
       "fallback_used": false
     },
     {
-      "viz_type": "d2_pipeline_diagrams",
-      "model_name": "gnn_pipeline",
+      "viz_type": "statistical",
+      "model_name": "predictive_coding_agent",
       "status": "success",
-      "duration_ms": 4205.612897872925,
+      "duration_ms": 393.8102722167969,
       "output_files": [
-        "output/9_advanced_viz_output/d2_diagrams/pipeline/gnn_pipeline_flow.svg",
-        "output/9_advanced_viz_output/d2_diagrams/pipeline/gnn_pipeline_flow.png",
-        "output/9_advanced_viz_output/d2_diagrams/pipeline/framework_integration.svg",
-        "output/9_advanced_viz_output/d2_diagrams/pipeline/framework_integration.png",
-        "output/9_advanced_viz_output/d2_diagrams/pipeline/active_inference_concepts.svg",
-        "output/9_advanced_viz_output/d2_diagrams/pipeline/active_inference_concepts.png"
+        "output/9_advanced_viz_output/predictive_coding_agent_statistical_analysis.png"
       ],
       "error_message": null,
       "fallback_used": false
+    },
+    {
+      "viz_type": "matrix_correlations",
+      "model_name": "predictive_coding_agent",
+      "status": "success",
+      "duration_ms": 310.6820583343506,
+      "output_files": [
+        "output/9_advanced_viz_output/predictive_coding_agent_matrix_correlations.png"
+      ],
+      "error_message": null,
+      "fallback_used": false
+    },
+    {
+      "viz_type": "pomdp_transitions",
+      "model_name": "predictive_coding_agent",
+      "status": "skipped",
+      "duration_ms": 0.018835067749023438,
+      "output_files": [],
+      "error_message": "Not applicable to this model type (B matrix not found)",
+      "fallback_used": false
+    },
+    {
+      "viz_type": "policy",
+      "model_name": "predictive_coding_agent",
+      "status": "skipped",
+      "duration_ms": 0.013828277587890625,
+      "output_files": [],
+      "error_message": "No policy data found",
+      "fallback_used": false
+    },
+    {
+      "viz_type": "interactive_dashboard",
+      "model_name": "predictive_coding_agent",
+      "status": "success",
+      "duration_ms": 19.258975982666016,
+      "output_files": [
+        "output/9_advanced_viz_output/predictive_coding_agent_interactive_dashboard.html"
+      ],
+      "error_message": null,
+      "fallback_used": false
+    },
+    {
+      "viz_type": "dashboard",
+      "model_name": "predictive_coding_agent",
+      "status": "success",
+      "duration_ms": 52.15287208557129,
+      "output_files": [
+        "output/9_advanced_viz_output/predictive_coding_agent_interactive_dashboard.html"
+      ],
+      "error_message": null,
+      "fallback_used": false
+    },
+    {
+      "viz_type": "network_metrics",
+      "model_name": "predictive_coding_agent",
+      "status": "success",
+      "duration_ms": 285.2327823638916,
+      "output_files": [
+        "output/9_advanced_viz_output/predictive_coding_agent_network_metrics.png"
+      ],
+      "error_message": null,
+      "fallback_used": false
+    },
+    {
+      "viz_type": "d2_diagrams",
+      "model_name": "Predictive Coding Active Inference Agent",
+      "status": "skipped",
+      "duration_ms": 0.3039836883544922,
+      "output_files": [],
+      "error_message": "D2 CLI not installed",
+      "fallback_used": true
+    },
+    {
+      "viz_type": "3d",
+      "model_name": "stochastic_dynamics",
+      "status": "success",
+      "duration_ms": 242.33698844909668,
+      "output_files": [
+        "output/9_advanced_viz_output/stochastic_dynamics_3d_visualization.png"
+      ],
+      "error_message": null,
+      "fallback_used": false
+    },
+    {
+      "viz_type": "statistical",
+      "model_name": "stochastic_dynamics",
+      "status": "success",
+      "duration_ms": 353.6190986633301,
+      "output_files": [
+        "output/9_advanced_viz_output/stochastic_dynamics_statistical_analysis.png"
+      ],
+      "error_message": null,
+      "fallback_used": false
+    },
+    {
+      "viz_type": "matrix_correlations",
+      "model_name": "stochastic_dynamics",
+      "status": "success",
+      "duration_ms": 266.18003845214844,
+      "output_files": [
+        "output/9_advanced_viz_output/stochastic_dynamics_matrix_correlations.png"
+      ],
+      "error_message": null,
+      "fallback_used": false
+    },
+    {
+      "viz_type": "pomdp_transitions",
+      "model_name": "stochastic_dynamics",
+      "status": "skipped",
+      "duration_ms": 0.016927719116210938,
+      "output_files": [],
+      "error_message": "Not applicable to this model type (B matrix not found)",
+      "fallback_used": false
+    },
+    {
+      "viz_type": "policy",
+      "model_name": "stochastic_dynamics",
+      "status": "skipped",
+      "duration_ms": 0.012159347534179688,
+      "output_files": [],
+      "error_message": "No policy data found",
+      "fallback_used": false
+    },
+    {
+      "viz_type": "interactive_dashboard",
+      "model_name": "stochastic_dynamics",
+      "status": "success",
+      "duration_ms": 82.04984664916992,
+      "output_files": [
+        "output/9_advanced_viz_output/stochastic_dynamics_interactive_dashboard.html"
+      ],
+      "error_message": null,
+      "fallback_used": false
+    },
+    {
+      "viz_type": "dashboard",
+      "model_name": "stochastic_dynamics",
+      "status": "success",
+      "duration_ms": 48.02393913269043,
+      "output_files": [
+        "output/9_advanced_viz_output/stochastic_dynamics_interactive_dashboard.html"
+      ],
+      "error_message": null,
+      "fallback_used": false
+    },
+    {
+      "viz_type": "network_metrics",
+      "model_name": "stochastic_dynamics",
+      "status": "success",
+      "duration_ms": 293.69187355041504,
+      "output_files": [
+        "output/9_advanced_viz_output/stochastic_dynamics_network_metrics.png"
+      ],
+      "error_message": null,
+      "fallback_used": false
+    },
+    {
+      "viz_type": "d2_diagrams",
+      "model_name": "Stochastic Continuous Dynamics Agent",
+      "status": "skipped",
+      "duration_ms": 0.3249645233154297,
+      "output_files": [],
+      "error_message": "D2 CLI not installed",
+      "fallback_used": true
+    },
+    {
+      "viz_type": "d2_pipeline_diagrams",
+      "model_name": "gnn_pipeline",
+      "status": "skipped",
+      "duration_ms": 0.164031982421875,
+      "output_files": [],
+      "error_message": "D2 CLI not installed",
+      "fallback_used": true
     }
   ]
 }

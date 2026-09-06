@@ -1,0 +1,35 @@
+{
+  "model_name": "pymdp_scaling_N16_T100",
+  "viz_meta": {
+    "source": "parsed_json",
+    "json_path": "output/3_gnn_output/pymdp_scaling_N16_T100/pymdp_scaling_N16_T100_parsed.json",
+    "json_stale": false
+  },
+  "artifact_count": 20,
+  "artifacts": [
+    "output/8_visualization_output/pymdp_scaling_N16_T100/pymdp_scaling_N16_T100_network_graph.png",
+    "output/8_visualization_output/pymdp_scaling_N16_T100/pymdp_scaling_N16_T100_network_stats.json",
+    "output/8_visualization_output/pymdp_scaling_N16_T100/pymdp_scaling_N16_T100_ontology_legend.txt",
+    "True",
+    "output/8_visualization_output/pymdp_scaling_N16_T100/pymdp_scaling_N16_T100_variable_parameter_bipartite.png",
+    "output/8_visualization_output/pymdp_scaling_N16_T100/pymdp_scaling_N16_T100_A_heatmap.png",
+    "output/8_visualization_output/pymdp_scaling_N16_T100/pymdp_scaling_N16_T100_B_tensor.png",
+    "output/8_visualization_output/pymdp_scaling_N16_T100/pymdp_scaling_N16_T100_B_threejs.html",
+    "output/8_visualization_output/pymdp_scaling_N16_T100/pymdp_scaling_N16_T100_B_analysis.png",
+    "output/8_visualization_output/pymdp_scaling_N16_T100/pymdp_scaling_N16_T100_C_heatmap.png",
+    "output/8_visualization_output/pymdp_scaling_N16_T100/pymdp_scaling_N16_T100_D_heatmap.png",
+    "output/8_visualization_output/pymdp_scaling_N16_T100/pymdp_scaling_N16_T100_num_hidden_states_heatmap.png",
+    "output/8_visualization_output/pymdp_scaling_N16_T100/pymdp_scaling_N16_T100_num_obs_heatmap.png",
+    "output/8_visualization_output/pymdp_scaling_N16_T100/pymdp_scaling_N16_T100_num_actions_heatmap.png",
+    "output/8_visualization_output/pymdp_scaling_N16_T100/pymdp_scaling_N16_T100_num_timesteps_heatmap.png",
+    "output/8_visualization_output/pymdp_scaling_N16_T100/pymdp_scaling_N16_T100_combined_analysis.png",
+    "output/8_visualization_output/pymdp_scaling_N16_T100/pymdp_scaling_N16_T100_matrix_size_distribution.png",
+    "output/8_visualization_output/pymdp_scaling_N16_T100/pymdp_scaling_N16_T100_section_content_length.png",
+    "output/8_visualization_output/pymdp_scaling_N16_T100/pymdp_scaling_N16_T100_variable_type_distribution.png",
+    "output/8_visualization_output/pymdp_scaling_N16_T100/pymdp_scaling_N16_T100_generative_model.png"
+  ],
+  "variable_count": 11,
+  "connection_count": 10,
+  "parameter_count": 8,
+  "ontology_label_count": 11
+}

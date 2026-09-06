@@ -1,36 +1,36 @@
 # tests-worker REPORT — fleet 3, 2026-09-04
 
-Scope: `src/tests/` shared plumbing (conftest, categories, runner + mode modules,
+Scope: `tests/` shared plumbing (conftest, categories, runner + mode modules,
 run_fast_tests, helpers/, infrastructure/, docs of record, top-level test_*.py)
-and `src/2_tests.py`. No files outside scope were edited. No git operations, no
+and `src/gnn/2_tests.py`. No files outside scope were edited. No git operations, no
 dependency changes.
 
 ## Files changed + why
 
 | File | Change | Why |
 |---|---|---|
-| `src/tests/infrastructure/test_runner.py` | Canonical `TestRunner`: added thread-safe history append (`_history_lock`) and `--log-cli-level=WARNING` (both present only in the runner.py copy); docstring declares it the single source | Dedup of the known TestRunner drift |
-| `src/tests/runner.py` | Deleted the duplicated `TestRunner` class (−295 lines) + dead `_psutil` block + `project_root`; now re-exports `TestRunner` from `.infrastructure` | Single source; `tests.runner.TestRunner` import path preserved |
-| `src/tests/categories.py` | `TestCategory` TypedDict; typed accessors; `get_all_test_files()` now sorted+deduped; new `missing_category_files()` drift detector; **remapped all 86 `files` entries from stale root-level names to actual subdirectory paths** (e.g. `gnn/test_gnn_overall.py`); zero entries dropped | Routing table pointed at pre-reorg root paths → comprehensive-mode discovery found almost nothing; now `missing_category_files() == {}` |
-| `src/tests/helpers/script_loader.py` (new) | `load_module_from_path(name, path, *, sys_path=None)` — typed importlib loader with sibling-dir injection/cleanup | 6 root test files duplicated the same loader boilerplate |
-| `src/tests/helpers/gnn_samples.py` (new) | `SAMPLE_GNN_CONTENT` + `write_sample_gnn_markdown()` (byte-identical to conftest originals; verified programmatically) | Canonical GNN sample content; single source for fixtures |
-| `src/tests/helpers/mcp_stubs.py` (new) | `MCPTools` registry stub (ex-conftest `_MCPTools`) | 7 module dirs re-declare near-identical stubs; conftest fixture now exposes the shared class |
-| `src/tests/helpers/__init__.py` | Re-exports the new symbols; docstring table | Package surface |
-| `src/tests/conftest.py` | Imports sample content + MCPTools from helpers; private duplicates removed; fixture names/behavior unchanged | Dedup into helpers |
-| `src/tests/run_fast_tests.py` | `--timeout` flag now added only when `pytest_timeout` is importable | Without dev extra the unconditional flag made pytest exit 4 |
-| `src/tests/test_runner_modes.py` | Recovery-mode file list: `test_main_orchestrator.py` → `pipeline/test_main_orchestrator.py` | The old root path never existed → recovery mode silently ran 2 of its 3 documented files |
-| `src/tests/test_doc_contracts.py`, `test_docs_audit.py`, `test_check_external_links.py`, `test_check_mcp_skills_health.py`, `test_add_module_docstrings.py`, `test_run_pymdp_gnn_scaling_estimate.py` | Migrated onto `tests.helpers.load_module_from_path` | Dedup of importlib boilerplate |
-| `src/tests/tests/` (new package) | `__init__.py`, `test_categories_contract.py`, `test_testrunner_unified.py`, `test_helpers_contract.py`, `test_infrastructure_exports.py`, `test_step2_wrapper_contract.py` — 26 fast, deterministic tests | Pin the refactored plumbing |
-| `src/tests/AGENTS.md` | TestRunner API entry; category-system docs (subdir paths + drift detector); new "Shared Test Helpers (helpers/)" section; recovery-mode file list; date | Docs of record |
-| `src/tests/infrastructure/AGENTS.md`, `src/tests/helpers/AGENTS.md` | Canonical-TestRunner note; new helper modules/exports | Docs of record |
-| `src/tests/SPEC.md` | Components (runner split + infrastructure/ + tests/), categories section (live table authority), Key Exports | Docs of record |
-| `src/tests/TEST_SUITE_SUMMARY.md` | Component tree (real layout incl. helpers/infrastructure/tests/), marker section now lists only markers that exist (removed e2e/safe_to_fail/requires_gpu/requires_network which were never registered) | Doc accuracy |
+| `tests/infrastructure/test_runner.py` | Canonical `TestRunner`: added thread-safe history append (`_history_lock`) and `--log-cli-level=WARNING` (both present only in the runner.py copy); docstring declares it the single source | Dedup of the known TestRunner drift |
+| `tests/runner.py` | Deleted the duplicated `TestRunner` class (−295 lines) + dead `_psutil` block + `project_root`; now re-exports `TestRunner` from `.infrastructure` | Single source; `tests.runner.TestRunner` import path preserved |
+| `tests/categories.py` | `TestCategory` TypedDict; typed accessors; `get_all_test_files()` now sorted+deduped; new `missing_category_files()` drift detector; **remapped all 86 `files` entries from stale root-level names to actual subdirectory paths** (e.g. `gnn/test_gnn_overall.py`); zero entries dropped | Routing table pointed at pre-reorg root paths → comprehensive-mode discovery found almost nothing; now `missing_category_files() == {}` |
+| `tests/helpers/script_loader.py` (new) | `load_module_from_path(name, path, *, sys_path=None)` — typed importlib loader with sibling-dir injection/cleanup | 6 root test files duplicated the same loader boilerplate |
+| `tests/helpers/gnn_samples.py` (new) | `SAMPLE_GNN_CONTENT` + `write_sample_gnn_markdown()` (byte-identical to conftest originals; verified programmatically) | Canonical GNN sample content; single source for fixtures |
+| `tests/helpers/mcp_stubs.py` (new) | `MCPTools` registry stub (ex-conftest `_MCPTools`) | 7 module dirs re-declare near-identical stubs; conftest fixture now exposes the shared class |
+| `tests/helpers/__init__.py` | Re-exports the new symbols; docstring table | Package surface |
+| `tests/conftest.py` | Imports sample content + MCPTools from helpers; private duplicates removed; fixture names/behavior unchanged | Dedup into helpers |
+| `tests/run_fast_tests.py` | `--timeout` flag now added only when `pytest_timeout` is importable | Without dev extra the unconditional flag made pytest exit 4 |
+| `tests/test_runner_modes.py` | Recovery-mode file list: `test_main_orchestrator.py` → `pipeline/test_main_orchestrator.py` | The old root path never existed → recovery mode silently ran 2 of its 3 documented files |
+| `tests/test_doc_contracts.py`, `test_docs_audit.py`, `test_check_external_links.py`, `test_check_mcp_skills_health.py`, `test_add_module_docstrings.py`, `test_run_pymdp_gnn_scaling_estimate.py` | Migrated onto `tests.helpers.load_module_from_path` | Dedup of importlib boilerplate |
+| `tests/tests/` (new package) | `__init__.py`, `test_categories_contract.py`, `test_testrunner_unified.py`, `test_helpers_contract.py`, `test_infrastructure_exports.py`, `test_step2_wrapper_contract.py` — 26 fast, deterministic tests | Pin the refactored plumbing |
+| `tests/AGENTS.md` | TestRunner API entry; category-system docs (subdir paths + drift detector); new "Shared Test Helpers (helpers/)" section; recovery-mode file list; date | Docs of record |
+| `tests/infrastructure/AGENTS.md`, `tests/helpers/AGENTS.md` | Canonical-TestRunner note; new helper modules/exports | Docs of record |
+| `tests/SPEC.md` | Components (runner split + infrastructure/ + tests/), categories section (live table authority), Key Exports | Docs of record |
+| `tests/TEST_SUITE_SUMMARY.md` | Component tree (real layout incl. helpers/infrastructure/tests/), marker section now lists only markers that exist (removed e2e/safe_to_fail/requires_gpu/requires_network which were never registered) | Doc accuracy |
 
 ## API deltas (all backward compatible)
 
 - `tests.runner.TestRunner` — now the re-exported canonical class; behavior of the
   live copy preserved (thread-safe history + `--log-cli-level=WARNING` were the
-  copy-A behaviors already in use via `src/utils/test_utils.py:116`).
+  copy-A behaviors already in use via `src/gnn/utils/test_utils.py:116`).
 - `tests.categories`: annotation-only typing (`TestCategory`), `get_all_test_files()`
   order now deterministic (sorted — previously `list(set(...))`), `files` entries are
   subdirectory paths (only consumer, `discover_test_files()`, resolves them correctly).
@@ -41,11 +41,11 @@ dependency changes.
 
 ## Verification (tails)
 
-- `uv run ruff check src/tests/conftest.py src/tests/categories.py src/tests/runner.py src/tests/helpers src/tests/infrastructure` → **All checks passed!**
-- `uv run --extra dev python -m pytest src/tests/test_runner_helper.py src/tests/test_fast_suite.py src/tests/test_tests_package_imports.py -q` → **23 passed**
-- Extended: `src/tests/tests/` + infra-stats + output-isolation + zero-skip + unit-overall + 6 migrated files → **81 passed** (26 new tests included)
+- `uv run ruff check tests/conftest.py tests/categories.py tests/runner.py tests/helpers tests/infrastructure` → **All checks passed!**
+- `uv run --extra dev python -m pytest tests/test_runner_helper.py tests/test_fast_suite.py tests/test_tests_package_imports.py -q` → **23 passed**
+- Extended: `tests/tests/` + infra-stats + output-isolation + zero-skip + unit-overall + 6 migrated files → **81 passed** (26 new tests included)
 - `missing_category_files() == {}`; `tests.runner.TestRunner is tests.infrastructure.TestRunner`
-- `python src/tests/test_runner_helper.py --help` → exit 0
+- `python tests/test_runner_helper.py --help` → exit 0
 - Transient failures seen mid-run (`src/gnn/parsers/common.py` IndentationError;
   `ClassVar` NameError via render/visualization imports) were concurrent peers'
   in-flight edits in their own dirs; both re-ran green moments later.
@@ -77,12 +77,12 @@ dependency changes.
 
 - Pushed `12556df51` (`12a565b2f..12556df51 main -> main`); staged set verified
   against the 30-path whitelist (`comm` exact match — no peer files committed).
-- `src/tests/README.md` (doc of record) had two stale spots the push missed:
+- `tests/README.md` (doc of record) had two stale spots the push missed:
   flat `test_main_orchestrator.py` / `test_comprehensive_api.py` entries and a
   pre-remap `MODULAR_TEST_CATEGORIES` excerpt with bare basenames. Fixed to
   subdir-relative paths + `missing_category_files()` note; committed as a
   follow-up.
-- `src/visualization/analysis/combined_analysis.py` circular-import failure in
+- `src/gnn/visualization/analysis/combined_analysis.py` circular-import failure in
   `test_fast_suite.py::TestFastVisualization::test_visualization_module_import`
   was peer-owned mid-edit churn; re-checked after the push and it now passes
   (peer fixed it). No out-of-scope breakage remains.
@@ -111,15 +111,15 @@ with per-dir ownership and the behavior-preservation contract.
   behavior-preservation bar): McpVizAdvanced (4 dirs), SetupOntologyTail (9 dirs),
   GuiPipelineFixtures (2 dirs). All "shadow" fixtures proved behavior-different;
   all inline GNN blobs are deliberately-varied parser fixtures.
-- **Drift fixed at integration**: src/tests/README.md maintained-dir count
+- **Drift fixed at integration**: tests/README.md maintained-dir count
   34/32 -> 36/34; `docs/test_capability_contracts.py` now green (2 passed).
 - **New plumbing**: `_ModularTestRunner` warns at startup when
   `missing_category_files()` is non-empty (`_warn_stale_category_files`); 2 new
   contract tests pin the discovery warning + startup warning (28 tests total in
-  src/tests/tests/).
+  tests/tests/).
 - Pre-existing reds left for owners (documented, not mine): untracked peer test
   files in execute/export/render/type_checker/ontology/utils; 3 order-dependent
-  pipeline failures tied to src/5_type_checker.py peer WIP; render
+  pipeline failures tied to src/gnn/5_type_checker.py peer WIP; render
   test_framework_availability.py format drift (tracked, untouched).
 
 ## Correction (2026-09-04T19:40Z)

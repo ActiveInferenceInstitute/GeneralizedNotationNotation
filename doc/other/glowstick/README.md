@@ -26,13 +26,13 @@ This directory contains documentation, resources, and implementation guides for 
 
 ### Related Directories
 - **[Performance Guide](../../performance/README.md)**: Performance optimization
-- **[Type Checker](../../../src/type_checker/AGENTS.md)**: Type checking implementation
+- **[Type Checker](../../../src/gnn/type_checker/AGENTS.md)**: Type checking implementation
 - **[JAX Integration](../../gnn/integration/framework_integration_guide.md)**: High-performance computing
-- **[Visualization](../../../src/visualization/README.md)**: Visualization tools
+- **[Visualization](../../../src/gnn/visualization/README.md)**: Visualization tools
 
 ### Pipeline Integration
 - **[Pipeline Documentation](../../gnn/operations/gnn_tools.md)**: Complete pipeline guide
-- **[src/AGENTS.md](../../../src/AGENTS.md)**: Implementation details
+- **[src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md)**: Implementation details
 
 ## Contents
 
@@ -99,7 +99,7 @@ This documentation is integrated with the 25-step GNN processing pipeline:
    - Glowstick results integrated into comprehensive outputs
    - Type safety validation
 
-See [src/AGENTS.md](../../../src/AGENTS.md) for complete pipeline documentation.
+See [src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md) for complete pipeline documentation.
 
 ## Related Resources
 
@@ -109,14 +109,14 @@ See [src/AGENTS.md](../../../src/AGENTS.md) for complete pipeline documentation.
 - **[Performance Guide](../../performance/README.md)**: Performance optimization
 
 ### Performance Resources
-- **[Type Checker](../../../src/type_checker/AGENTS.md)**: Type checking implementation
+- **[Type Checker](../../../src/gnn/type_checker/AGENTS.md)**: Type checking implementation
 - **[JAX Integration](../../gnn/integration/framework_integration_guide.md)**: High-performance computing
 - **[Framework Integration](../../gnn/integration/framework_integration_guide.md)**: Framework integration overview
 
 ### Pipeline Architecture
 - **[Pipeline Documentation](../../gnn/operations/gnn_tools.md)**: Complete pipeline guide
-- **[Pipeline AGENTS](../../../src/AGENTS.md)**: Implementation details
-- **[Pipeline README](../../../src/README.md)**: Pipeline overview
+- **[Pipeline AGENTS](../../../src/gnn/AGENTS.md)**: Implementation details
+- **[Pipeline README](../../../src/gnn/README.md)**: Pipeline overview
 
 ## Standards and Guidelines
 
@@ -131,7 +131,7 @@ All documentation in this module adheres to professional standards:
 
 - **[Glowstick Cross-Reference](../../CROSS_REFERENCE_INDEX.md#glowstick)**: Cross-reference index entry
 - **[Performance Guide](../../performance/README.md)**: Performance optimization
-- **[Type Checker](../../../src/type_checker/AGENTS.md)**: Type checking implementation
+- **[Type Checker](../../../src/gnn/type_checker/AGENTS.md)**: Type checking implementation
 - **[Main Index](../README.md)**: Return to main documentation
 
 ---

@@ -71,8 +71,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   analysis, gui, setup, advanced_visualization listed functions/kwargs/files
   that never existed); stale executor claims corrected everywhere to the
   verified contract — 9 render targets, 8 Step-12 executor families, bnlearn
-  render-only, Stan executable via cmdstanpy; `src/STEP_INDEX.md` verified 1:1
-  against `src/pipeline/step_registry.py`; all 4,246 relative links under
+  render-only, Stan executable via cmdstanpy; `src/gnn/STEP_INDEX.md` verified 1:1
+  against `src/gnn/pipeline/step_registry.py`; all 4,246 relative links under
   `doc/` mechanically checked (one repo-escaping link fixed); root README /
   AGENTS / ARCHITECTURE / SECURITY de-duplicated and re-dated; `doc/pipeline/README.md`
   and `scripts/check_doc_contracts.py` now state and enforce "bnlearn is
@@ -90,7 +90,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ### Refactored
 
-- **`src/execute/processor.py` split (2291 → 1351 lines).** Mechanical
+- **`src/gnn/execute/processor.py` split (2291 → 1351 lines).** Mechanical
   extraction into sibling modules `types.py`, `julia_env.py`, `metadata.py`,
   `detection.py`; `processor.py` remains the sole facade — every previously
   importable name stays importable from the same path.
@@ -104,7 +104,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   `render/pomdp_math.py`; generic `count_code_metrics` moved to
   `utils/code_metrics.py`; import paths preserved via re-exports.
 - `scripts/check_capability_contracts.py` follows the RxInfer sidecar loader
-  to its new home (`src/execute/metadata.py`); the provenance/hash guards the
+  to its new home (`src/gnn/execute/metadata.py`); the provenance/hash guards the
   contract pins are unchanged.
 
 ## [3.2.0] — 2026-09-02
@@ -216,7 +216,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   without RxInfer/ActiveInference.jl); the framework-availability test honours
   toolchain probes; repository-terminology audit clean.
 - **ActiveInference.jl precompile on Julia 1.12.** `Distributions` pinned to
-  `0.25.100 – 0.25.125` in `src/execute/activeinference_jl/Project.toml`
+  `0.25.100 – 0.25.125` in `src/gnn/execute/activeinference_jl/Project.toml`
   (DistributionsAD 0.6.58's ReverseDiff extension breaks against the
   `@check_args` change in 0.25.126); Manifest re-resolved.
 
@@ -228,16 +228,16 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ### Added (2026-08-30 — release hardening, slow-storage support, meta-analysis correctness)
 
-- **`GNN_STEP_TIMEOUT_SCALE` pipeline multiplier** (`src/pipeline/step_timeouts.py`).
+- **`GNN_STEP_TIMEOUT_SCALE` pipeline multiplier** (`src/gnn/pipeline/step_timeouts.py`).
   One environment variable scales every configured step timeout for
   slow-storage checkouts (external drives where each `uv run` re-reads the
   virtualenv). Per-step `GNN_STEP_TIMEOUT_{N}` overrides still win; invalid or
   non-positive values are ignored so a typo cannot zero out a step. Covered by
   three new real-behavior tests.
 - **Runtime coverage for pipeline identity and timeout contracts.** New
-  `src/tests/pipeline/test_hasher.py` (run-hash determinism and content
+  `tests/pipeline/test_hasher.py` (run-hash determinism and content
   sensitivity, index/lookup roundtrip, prefix ambiguity) and
-  `src/tests/pipeline/test_step_timeouts.py` (resolution order: per-step env →
+  `tests/pipeline/test_step_timeouts.py` (resolution order: per-step env →
   config → default; scale multiplier semantics). The run hash is input/revision
   identity and is covered as product behavior.
 - **Script regression tests**: `scripts/add_module_docstrings.py` dry-run/write
@@ -248,7 +248,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 ### Fixed (2026-08-30 — audit-driven correctness pass)
 
 - **Meta-analysis crash in the resource-efficiency table**
-  (`src/integration/meta_analysis/reporter.py`). LOC records sourced from the
+  (`src/gnn/integration/meta_analysis/reporter.py`). LOC records sourced from the
   render summary do not always carry sweep parameters, so `num_states` can be
   `None`; sorting the raw values raised `TypeError: '<' not supported between
   instances of 'NoneType' and 'int'` and aborted the whole meta-analysis
@@ -279,7 +279,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   recipes exposing the on-demand audit gates locally; `mcp-audit.yml` checkout
   action bumped to v6; `scripts/AGENTS.md` documents
   `add_module_docstrings.py` (8 scripts, was listed as 6).
-- Internal test hygiene: import sorting and wording clarifications in `src/tests/pipeline/test_hasher.py`.
+- Internal test hygiene: import sorting and wording clarifications in `tests/pipeline/test_hasher.py`.
 - Documentation accuracy pass: stale recipe/backend counts, unfalsifiable
   coverage claims, and over-climbing relative links fixed across README,
   ARCHITECTURE, SKILL.md, style_guide, and CROSS_REFERENCE_INDEX; docs-audit
@@ -298,15 +298,15 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   `has_env_conditioned_action_selection`, returning the declared likelihood's
   rows/prior/seek gain (or `None` for non-conditioned specs, preserving the
   prior post-hoc behaviour for e.g. the coordination exemplar).
-- **Both Julia backends condition action selection.** `src/render/rxinfer/
-  _strategies_multiagent.py` and `src/render/activeinference_jl/
+- **Both Julia backends condition action selection.** `src/gnn/render/rxinfer/
+  _strategies_multiagent.py` and `src/gnn/render/activeinference_jl/
   activeinference_renderer.py` emit `update_signal_belief` (Bayes) and
   `signal_seeking_preference` (C-preference modulation) when the spec declares
   the conditioning; results expose `env_signal_belief_by_agent` and set
   `mode=env_conditioned_signal_selection`, `latent_inference=true`,
   `action_selection_conditioned=true`. Non-conditioned specs keep the historical
   `post_hoc_deposit_decay_trace` with `latent_inference=false`.
-- Pinned by `src/tests/render/test_stigmergic_multi_agent.py` (structure,
+- Pinned by `tests/render/test_stigmergic_multi_agent.py` (structure,
   Julia parse, and live Julia execution in both backends).
 
 ### Added (2026-08-21 — Kronecker pipeline integration, roadmap MAJ-02 residual)
@@ -337,7 +337,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   sum over factors, factorised policy, validation, and model parameters with
   `joint_state_space_size` / `joint_materialized: False`); pymdp-compatible
   JAX payloads keep the historical path.
-- Pinned by `src/tests/render/test_jax_factorized_pipeline.py` (16 tests:
+- Pinned by `tests/render/test_jax_factorized_pipeline.py` (16 tests:
   detection, exact Kronecker composition, render routing, live script
   execution, and all analysis dispatch paths).
 
@@ -355,24 +355,24 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   `model_kind: multi_agent`. Both shipped exemplars
   (`multiagent/stigmergic_swarm.md`, `multiagent/multi_agent_coordination.md`)
   execute live under Julia (RxInfer 5.5 and ActiveInference.jl).
-  - New shared detection layer `src/render/multi_agent_common.py`
+  - New shared detection layer `src/gnn/render/multi_agent_common.py`
     (`detect_agent_groups`, `detect_env_coupling`, `canonicalise_b` — the
     last mirrors `POMDPRenderProcessor._canonicalise_factored_B` so
     per-agent B semantics match the composed-joint path).
-  - New RxInfer generator `src/render/rxinfer/_strategies_multiagent.py`;
+  - New RxInfer generator `src/gnn/render/rxinfer/_strategies_multiagent.py`;
     `MultiAgentStrategy` routes to it when >= 2 agent groups are declared
     and keeps the documented joint composition otherwise.
   - ActiveInference.jl renderer gains `_multi_agent_model_info` +
     `_generate_stigmergic_activeinference_script`; flat specs keep the
     canonical single-agent path unchanged.
-  - Regression-pinned by `src/tests/render/test_stigmergic_multi_agent.py`
+  - Regression-pinned by `tests/render/test_stigmergic_multi_agent.py`
     (19 tests: detection, script structure, Julia parse, live execution).
   - Docs: `doc/gnn/advanced/gnn_multiagent.md` updated (native path +
     joint fallback + residual), module README/SPEC updated.
 
 ### Added (2026-08-20 — sparse Kronecker-factorized execution, roadmap MAJ-02 milestone 1)
 
-- **`src/execute/jax/kronecker_factorized.py`** — sparse Kronecker-factorized
+- **`src/gnn/execute/jax/kronecker_factorized.py`** — sparse Kronecker-factorized
   discrete active inference in JAX for factor-separable POMDPs (transition
   ``B = ⊗ B_f``, likelihood ``A = ⊗ A_f``, ``ln C = Σ_f ln C_f``). The joint
   state space is never materialised: ``kron_matvec`` (factorised input),
@@ -382,7 +382,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   active inference per factor (belief update, EFE, product policy). Models
   with joint state spaces of 64-256 states (six binary factors through eight
   binary factors) execute in time proportional to the sum of factor sizes.
-- **Exactness pinned by tests.** `src/tests/execute/test_kronecker_factorized.py`
+- **Exactness pinned by tests.** `tests/execute/test_kronecker_factorized.py`
   (20 tests) verifies the Kronecker identities against the dense product,
   the exact per-factor EFE decomposition (dense EFE at a factorised
   posterior equals the sum of per-factor EFE), N >= 64 execution with
@@ -404,7 +404,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   `input/config.yaml` path, docs distinguish nine render targets from eight
   Step-12 executors, and the README avoids volatile count claims. Wired into
   `just quality`, `just doc-contracts`, and CI; regression-pinned by
-  `src/tests/test_doc_contracts.py`.
+  `tests/test_doc_contracts.py`.
 - **Maintained-docs sweep**: stale inline counts/claims replaced with
   runnable-command guidance across `README.md`, `doc/` hubs and
   `doc/gnn/`; `paths-ignore` for `**/*.md`/`doc/**` removed from CI so doc
@@ -414,7 +414,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 - **Full-suite evidence refreshed to 3,039 passed / 0 failed / 0 skipped** on a
   fully provisioned environment: D2 CLI (`~/.local/bin/d2`, v0.7.1), Julia
-  RxInfer/StatsBase backends (committed `src/execute/rxinfer` env + a
+  RxInfer/StatsBase backends (committed `src/gnn/execute/rxinfer` env + a
   `/tmp/julia_test_env` for the strict GridWorld gate), a local Ollama daemon
   with `smollm2:135m-instruct-q4_K_S` pulled, and `RANDOM_SIMULATION_ENABLED=1`.
   The two previously-ignored Ollama files now run, the D2 compilation test and
@@ -425,7 +425,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 ### Fixed (2026-08-18 — test isolation: shared `.venv` corruption under parallel runs)
 
 - **`test_single_step_execution` no longer runs the mutating Step 1.** The test
-  executed `step_name="setup"` (`src/1_setup.py`), which runs a mutating,
+  executed `step_name="setup"` (`src/gnn/1_setup.py`), which runs a mutating,
   non-frozen `uv sync` against the shared `.venv`. Under `-n auto` this pruned
   the `dev` toolchain (`pytest`/`execnet`/`xdist`) mid-run, corrupting the
   environment and cascading into worker crashes plus
@@ -474,7 +474,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   ``_assert_julia_packages``/``_assert_julia_parse`` previously gated on a
   throwaway ``--project=/tmp/julia_test_env`` that does not survive a reboot,
   while the execute step actually runs from the committed
-  ``src/execute/rxinfer`` environment. The gate now uses the canonical
+  ``src/gnn/execute/rxinfer`` environment. The gate now uses the canonical
   ``RXINFER_JULIA_PROJECT``, so the strict cross-framework test checks exactly
   the environment it executes against.
 
@@ -501,7 +501,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   machine — so every `rxinfer` and `activeinference_jl` script was silently
   skipped (`4 succeeded, 4 skipped (dependency not installed)`). The check now
   runs `using ...` against each framework's committed
-  `--project=src/execute/<framework>` environment. Verified end-to-end:
+  `--project=src/gnn/execute/<framework>` environment. Verified end-to-end:
   `Factorized_Posterior_Agent_{rxinfer,activeinference}.jl` both execute and
   write `simulation_results.json`.
 - **Render manifest now aggregates across per-folder pipeline invocations.**
@@ -552,7 +552,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   files under `doc/` (activeinference_jl, cognitive_phenomena, pymdp) are
   `unittest`/standalone scripts with doc-local imports; they remain pinned as
   documentation examples and are outside `testpaths` (`src/tests`, `tests`).
-  `src/llm/test_llm_system.py` was already removed (commit `40068ba4`).
+  `src/gnn/llm/test_llm_system.py` was already removed (commit `40068ba4`).
 - **Type-annotation completion is done.** `mypy` (`disallow_untyped_defs` +
   `disallow_incomplete_defs`) is clean across 812 files; the only untyped
   signatures are inside string-embedded generated-code templates, not callable
@@ -573,7 +573,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   pinned" sentinel). The stand-in is now a format-valid all-`a` digest, so
   `generate_pipeline_container_plan.py` (default) reviews clean (0 findings).
 - **Documented clean-start Julia setup** in
-  `src/execute/activeinference_jl/README.md` (instantiate + patch + verify).
+  `src/gnn/execute/activeinference_jl/README.md` (instantiate + patch + verify).
 
 ### Security (2026-08-14, wave 2 — residual closures)
 
@@ -624,7 +624,7 @@ Completes the remaining RED_TEAM_REVIEW.md items from the 2026-08-14 wave.
 
 ### Changed (2026-08-14)
 
-- **`src/utils/argument_utils.py` modularized**: the 2,263-line single module is
+- **`src/gnn/utils/argument_utils.py` modularized**: the 2,263-line single module is
   now a 59-line re-export module over single-responsibility modules
   (`arg_definitions`, `arg_parsing`, `path_conversion`, `pipeline_arguments`,
   `step_config`, plus `safe_eval`).
@@ -685,7 +685,7 @@ Completes the remaining RED_TEAM_REVIEW.md items from the 2026-08-14 wave.
 - Dead `NotImplementedError` interim handling removed from the analyzer/GIF-animator hook wiring (every strategy now implements the hooks).
 
 ### Added (RxInfer model-kind hardening + analysis, 2026-08-05/07)
-- **Structural `detect_model_kind`**: detection now reads ONLY typed fields — propagated `## GNNSection` (new `gnn_section` on `POMDPStateSpace` → spec), per-level/per-agent matrix key patterns in `structured_pomdp.matrices`, explicit `nr_agents`/`num_factors`, `dirichlet_[A-E]` keys, F/H/Q/R continuous parameterization. The `str(gnn_spec)` substring scan is gone (it misrouted `temporal_hierarchy.md` on the word "Hierarchy" in its ModelName and made every model one doc-comment away from a render failure). Non-mapping `initialparameterization` now raises `ValueError`. Regression-pinned per-exemplar in `src/tests/render/test_rxinfer_model_strategies.py` (28 tests).
+- **Structural `detect_model_kind`**: detection now reads ONLY typed fields — propagated `## GNNSection` (new `gnn_section` on `POMDPStateSpace` → spec), per-level/per-agent matrix key patterns in `structured_pomdp.matrices`, explicit `nr_agents`/`num_factors`, `dirichlet_[A-E]` keys, F/H/Q/R continuous parameterization. The `str(gnn_spec)` substring scan is gone (it misrouted `temporal_hierarchy.md` on the word "Hierarchy" in its ModelName and made every model one doc-comment away from a render failure). Non-mapping `initialparameterization` now raises `ValueError`. Regression-pinned per-exemplar in `tests/render/test_rxinfer_model_strategies.py` (28 tests).
 - **HierarchicalStrategy (A3)**: two-level exemplars render to a native `hierarchical_pomdp_model` — single Categorical context `z` coupled into the fast-state prior via column-normalized `A_level2`, action-driven fast chain, mean-field constraints + marginal initialization (empirically required on RxInfer 5.5: latent-indexed tensors are invalid at graph construction, per-timestep context chains create rejected half-edges, and Bethe FE scoring of the non-square coupling hits a square-matrix assertion without the mean-field cut). Context dynamics (`B_level2`) applied post-hoc as labeled deterministic prior propagation. 3+-level models render as the documented joint composition. Verified end-to-end: `hierarchical_pomdp` executes `all_valid=true` with real context posterior.
 - **Continuous LGSSM Julia model (A2, Julia side)**: `continuous_pomdp_model` with MvNormalMeanCovariance nodes and inline linear-Gaussian composition (plain-assignment arithmetic on model variables MethodErrors at graph construction — verified). Precompile-validated; Python strategy remains a loud stub pending authored F/H/Q/R exemplar data.
 - **Joint-composition strategies**: `MultiAgentStrategy`/`FactoredStrategy` deliberately render the extractor's composed joint POMDP while stamping their true `model_kind`; `multi_agent_coordination` (256 joint states) verified executing `all_valid=true`.
@@ -704,7 +704,7 @@ Completes the remaining RED_TEAM_REVIEW.md items from the 2026-08-14 wave.
 
 ### Added
 - **Per-iteration VFE trace**: `variational_free_energy` and `vfe_per_iteration` in `rxinfer_simulation_v1` now report the full per-iteration VFE vector from RxInfer's `result.free_energy` (length = INFERENCE_ITERATIONS), replacing the fabricated constant that replicated one scalar across all timesteps.
-- **TypedDict contracts**: Added `CanonicalPomdpSpec`, `InitialParameterization`, `RxInferSimulationV1` TypedDict definitions and `ModelKind` enum to `src/render/pomdp_contract.py` for typed renderer contracts.
+- **TypedDict contracts**: Added `CanonicalPomdpSpec`, `InitialParameterization`, `RxInferSimulationV1` TypedDict definitions and `ModelKind` enum to `src/gnn/render/pomdp_contract.py` for typed renderer contracts.
 - **ModelKind enum**: FLAT, FACTORED, HIERARCHICAL, MULTI_AGENT, CONTINUOUS, LEARNING — detected from the GNN spec and carried in `runtime_metadata.model_kind`.
 - **Belief entropy validation**: `belief_entropy_ok` field rejects degenerate beliefs (Shannon entropy < 0.1 nats) for non-identity A matrices. Fully observable models (identity A) are exempt.
 - **Expanded precompile coverage**: `GnnRxInferModels.jl` now precompiles 6 state-space configurations (2, 3, 4, 8, 9, 16 states) × 7 T values (3–30), covering common GNN exemplar dimensions. Precompile success/failure is logged per config.
@@ -724,12 +724,12 @@ Completes the remaining RED_TEAM_REVIEW.md items from the 2026-08-14 wave.
 
 ### Added (prior)
 - **Genuine RxInfer.jl integration**: Replaced the hand-rolled POMDP step simulator with real RxInfer.jl variational message-passing inference. The canonical renderer (`rxinfer_renderer.py`) now emits Julia scripts that define a generative model using `@model` with `Categorical` / `DiscreteTransition` nodes and run `infer()` with `free_energy=true` to obtain posteriors over hidden states and real variational free energy traces. The `variational_free_energy` field in `rxinfer_simulation_v1` is now populated with real VFE values (previously `Float64[]`).
-- **Committed Julia environment**: Added `Project.toml` + `Manifest.toml` under `src/execute/rxinfer/` pinning RxInfer 5.5.0 and all dependencies. The runner now passes `--project=<env>` instead of bare `julia`, ensuring reproducible, network-independent execution.
+- **Committed Julia environment**: Added `Project.toml` + `Manifest.toml` under `src/gnn/execute/rxinfer/` pinning RxInfer 5.5.0 and all dependencies. The runner now passes `--project=<env>` instead of bare `julia`, ensuring reproducible, network-independent execution.
 - **Reproducibility tracking**: Generated scripts now include `Random.seed!(seed)` before inference and record the script SHA256, seed, and `uses_real_rxinfer` flag in `runtime_metadata`. Results are byte-identical across runs with the same seed.
 - **Inference convergence check**: The `validation` dict now includes `inference_converged` (VFE stabilized) and `vfe_present` fields alongside the existing `all_valid` / `all_beliefs_valid` / `beliefs_sum_to_one` / `actions_in_range`.
 - **45/45 GNN exemplar files verified**: All 45 GNN spec files across `discrete/`, `continuous/`, `basics/`, `hierarchical/`, `multiagent/`, `precision/`, `pomdp_gridworld/`, `structured/`, and `pymdp_scaling_study/` render and execute successfully with the real `@model` + `infer()` pipeline.
 - **Guarded Julia-native visualization + structured logging in generated RxInfer scripts**: rendered `*_rxinfer.jl` scripts always write `simulation_results.json` (`rxinfer_simulation_v1`) and additionally emit best-effort, guarded artifacts that never cause execution failure — an optional structured runtime log (`simulation.log` / `simulation_log.json`) and optional `Plots.jl` figures (`belief_evolution.png`, `efe_over_time.png`, `policy_posterior.png`) when Plots rendering is available.
-- **Comprehensive Step-16 RxInfer analysis**: `src/analysis/rxinfer/` produces the full per-exemplar 10-type visualization set from `rxinfer_simulation_v1` results under `output/16_analysis_output/rxinfer/` — `belief_evolution`, `obs_vs_true`, `belief_heatmap`, `belief_entropy`, `accuracy`, `action_frequencies`, `belief_convergence`, `belief_trace`, `free_energy`, and `observations`. All figures are best-effort and backward-compatible with `rxinfer_simulation_v1`.
+- **Comprehensive Step-16 RxInfer analysis**: `src/gnn/analysis/rxinfer/` produces the full per-exemplar 10-type visualization set from `rxinfer_simulation_v1` results under `output/16_analysis_output/rxinfer/` — `belief_evolution`, `obs_vs_true`, `belief_heatmap`, `belief_entropy`, `accuracy`, `action_frequencies`, `belief_convergence`, `belief_trace`, `free_energy`, and `observations`. All figures are best-effort and backward-compatible with `rxinfer_simulation_v1`.
 
 ### Deprecated
 - **`toml_generator.py`**: The legacy TOML-based RxInfer renderer is deprecated. The canonical renderer (`rxinfer_renderer.py`) with genuine `@model` + `infer()` code is the only supported path. `render_gnn_to_rxinfer_toml` now emits a `DeprecationWarning` and is removed from the processor wiring and public exports. The file is retained for git history and reference.
@@ -766,7 +766,7 @@ Completes the remaining RED_TEAM_REVIEW.md items from the 2026-08-14 wave.
 
 ### Added
 - **v3.0.0 long-running orchestration (safe-by-design, no live mutation)**: three new
-  `src/pipeline/` modules — `durable_streams.py` (file/array `StreamManifest` with content checksums,
+  `src/gnn/pipeline/` modules — `durable_streams.py` (file/array `StreamManifest` with content checksums,
   `ExecutionTrace` integrity + deterministic replay), `run_session.py` (resumable `RunSession`
   manifests, atomic checkpoint/resume, status inspection, path-safe cancellation cleanup), and
   `container_plan.py` (hardened container plan generation, static security review with
@@ -779,7 +779,7 @@ Completes the remaining RED_TEAM_REVIEW.md items from the 2026-08-14 wave.
   replayable `ExecutionTrace` from a completed run's `output/`, with re-validation), and
   `pipeline_container_plan.py` (generate a `security_review`-clean container plan from `input/config.yaml`),
   each with a CLI under `scripts/` and real-objects-only tests. Verified on real run artifacts (105 manifests +
-  a 25-event trace) and the real config; full `src/tests/pipeline` suite 362 passed. The 25-step
+  a 25-event trace) and the real config; full `tests/pipeline` suite 362 passed. The 25-step
   critical path is unmodified.
 
 ### Changed
@@ -864,7 +864,7 @@ Completes the remaining RED_TEAM_REVIEW.md items from the 2026-08-14 wave.
 
 ### Changed
 - **Real-Implementation Policy Enforcement**: Removed dependency on patch-driven pytest plugins and tightened functional testing constraints.
-- **Type checker consolidation**: Deleted redundant `src/type_checker/checker.py`; all logic unified in `processor.py` (`GNNTypeChecker`)
+- **Type checker consolidation**: Deleted redundant `src/gnn/type_checker/checker.py`; all logic unified in `processor.py` (`GNNTypeChecker`)
 - **Test suite alignment**: `test_type_checker_overall.py` rewired to target production `processor.py` orchestrator
 - **Deprecated marker removed**: `safe_to_fail` marker replaced with standard `xfail` in `pyproject.toml` and `pytest.ini`
 - **Default local LLM**: Ollama default tag is `smollm2:135m-instruct-q4_K_S` (`llm.defaults.DEFAULT_OLLAMA_MODEL`); override with `OLLAMA_MODEL` or `input/config.yaml` `llm.model`.

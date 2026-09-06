@@ -22,7 +22,7 @@ The following SymPy MCP tools are now registered and available through the GNN M
 ### Usage Example
 
 ```python
-from src.mcp.mcp import mcp_instance
+from gnn.mcp.mcp import mcp_instance
 
 # Initialize SymPy integration (requires SymPy MCP server)
 result = mcp_instance.execute_tool("sympy_initialize", {})
@@ -53,17 +53,17 @@ matrix_result = mcp_instance.execute_tool(
 
 ### Key Components
 
-1. **SymPy MCP Client** (`src/mcp/sympy_mcp_client.py`)
+1. **SymPy MCP Client** (`src/gnn/mcp/sympy_mcp_client.py`)
    - HTTP client for SymPy MCP server communication
    - Async context manager support
    - Comprehensive error handling with graceful fallback
 
-2. **MCP Tool Registration** (`src/mcp/sympy_mcp.py`)
+2. **MCP Tool Registration** (`src/gnn/mcp/sympy_mcp.py`)
    - Integration with GNN MCP system
    - Synchronous/asynchronous compatibility wrappers
    - Tool schema definitions for validation
 
-3. **Core MCP Discovery** (`src/mcp/mcp.py`)
+3. **Core MCP Discovery** (`src/gnn/mcp/mcp.py`)
    - Automatic discovery of SymPy tools
    - Integration with existing pipeline workflow
 
@@ -77,7 +77,7 @@ matrix_result = mcp_instance.execute_tool(
 The integration has been successfully verified:
 
 ✅ **MCP Tool Registration**: All 8 SymPy tools registered successfully  
-✅ **Pipeline Integration**: Works with `python3 src/main.py --only-steps 7`  
+✅ **Pipeline Integration**: Works with `python3 src/gnn/main.py --only-steps 7`  
 ✅ **Error Handling**: Graceful fallback when SymPy server unavailable  
 ✅ **Type Safety**: Proper type annotations and validation  
 ✅ **Documentation**: Comprehensive inline documentation and examples  
@@ -86,7 +86,7 @@ The integration has been successfully verified:
 
 ```bash
 # Run MCP pipeline step to verify integration
-python3 src/main.py --only-steps 7 --verbose
+python3 src/gnn/main.py --only-steps 7 --verbose
 
 # Check MCP integration report
 cat output/mcp_processing_step/7_mcp_integration_report.md | grep sympy
@@ -116,7 +116,7 @@ To use the full SymPy capabilities, you'll need to set up the SymPy MCP server:
 
 4. **Test Integration**:
    ```python
-   from src.mcp.mcp import mcp_instance
+   from gnn.mcp.mcp import mcp_instance
 
    result = mcp_instance.execute_tool("sympy_initialize", {})
    print(result)  # Should show success when server is running

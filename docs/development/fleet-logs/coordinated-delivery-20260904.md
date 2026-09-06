@@ -56,11 +56,11 @@ Reproduction:
 
 ```bash
 uv run --offline --no-sync pytest \
-  src/tests/gnn src/tests/validation src/tests/api src/tests/cli src/tests/mcp \
-  src/tests/render src/tests/execute src/tests/tests src/tests/pipeline \
-  src/tests/audio src/tests/intelligent_analysis \
+  tests/gnn tests/validation tests/api tests/cli tests/mcp \
+  tests/render tests/execute tests/tests tests/pipeline \
+  tests/audio tests/intelligent_analysis \
   -m 'not slow and not pipeline' --timeout=120 -q
-uv run --offline --no-sync pytest src/tests/mcp/test_mcp_http_auth.py -q
+uv run --offline --no-sync pytest tests/mcp/test_mcp_http_auth.py -q
 uv run --offline --no-sync ruff check src
 uv run --offline --no-sync python doc/development/docs_audit.py --strict --no-write
 ```

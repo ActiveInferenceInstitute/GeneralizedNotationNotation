@@ -1,14 +1,28 @@
 {
-  "timestamp": "2026-06-18T09:04:37.127794",
-  "source_directory": "input/gnn_files/pomdp_gridworld",
+  "timestamp": "2026-09-05T20:31:12.284940",
+  "source_directory": "input/gnn_files/continuous",
   "source_directories": [
-    "input/gnn_files/pomdp_gridworld"
+    "input/gnn_files/basics",
+    "input/gnn_files/hierarchical",
+    "input/gnn_files/multiagent",
+    "input/gnn_files/pymdp_scaling_study",
+    "input/gnn_files/learning",
+    "input/gnn_files/discrete",
+    "input/gnn_files/structured",
+    "input/gnn_files/pomdp_gridworld",
+    "input/gnn_files/precision",
+    "input/gnn_files/continuous"
   ],
   "output_directory": "output/6_validation_output",
+  "context": {
+    "receipt_version": 1,
+    "run_id": "2026-09-05T20:30:54.974669",
+    "validation_level": "standard"
+  },
   "files_validated": [
     {
-      "file_name": "pomdp_gridworld_3x3.md",
-      "file_path": "input/gnn_files/pomdp_gridworld/pomdp_gridworld_3x3.md",
+      "file_name": "predictive_coding_agent.md",
+      "file_path": "input/gnn_files/continuous/predictive_coding_agent.md",
       "validations": {
         "semantic": {
           "file_path": "unknown",
@@ -48,37 +62,334 @@
           "warnings": [
             "Low parallelization potential: 0.00"
           ],
-          "performance_score": 0.7
+          "performance_score": 0.7,
+          "recovery": false
         },
         "consistency": {
           "file_path": "unknown",
           "file_name": "unknown",
-          "consistent": true,
-          "warnings": [],
-          "consistency_score": 1.0,
+          "consistent": false,
+          "warnings": [
+            "Isolated blocks with no connections: prior_cov, t"
+          ],
+          "checks": {
+            "naming_conventions": {
+              "is_consistent": true,
+              "warnings": [],
+              "dominant_style": null,
+              "mixed_styles": false,
+              "duplicate_names": [],
+              "non_descriptive_names": []
+            },
+            "style_consistency": {
+              "is_consistent": true,
+              "warnings": [],
+              "indentation_patterns": 0,
+              "block_format_styles": [],
+              "field_order_consistency": true
+            },
+            "structural_integrity": {
+              "is_consistent": true,
+              "warnings": [],
+              "balanced_braces": true,
+              "empty_blocks": 0,
+              "empty_connections": 0,
+              "missing_state_fields": [],
+              "missing_connection_fields": []
+            },
+            "reference_consistency": {
+              "is_consistent": false,
+              "warnings": [
+                "Isolated blocks with no connections: prior_cov, t"
+              ],
+              "invalid_references": [],
+              "isolated_blocks": [
+                "prior_cov",
+                "t"
+              ],
+              "circular_references": []
+            }
+          },
+          "consistency_score": 0.7,
           "recovery": false
         }
       },
-      "success": true
+      "success": true,
+      "errors": [],
+      "receipt_key": "f02099bc2a1a6cb74b0fe9e377e43130fde1576f6dff5ee891fac54109f8e846",
+      "input_identity": {
+        "source_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/continuous/predictive_coding_agent.md",
+        "parse_success": true,
+        "receipt_version": 1,
+        "run_id": "2026-09-05T20:30:54.974669",
+        "validation_level": "standard",
+        "file_path_sha256": "ea2fb8829b862837038139620d090a83bbfe1953943547bf487e3b69af510344",
+        "parsed_model_file_sha256": "1b57423d432cef6bc2524352d3f017ed1d5f0cb95e8eaaa0f6543280ab98e93d"
+      }
+    },
+    {
+      "file_name": "stochastic_dynamics.md",
+      "file_path": "input/gnn_files/continuous/stochastic_dynamics.md",
+      "validations": {
+        "semantic": {
+          "file_path": "unknown",
+          "file_name": "unknown",
+          "valid": true,
+          "errors": [],
+          "warnings": [],
+          "semantic_score": 1.0,
+          "recovery": false
+        },
+        "performance": {
+          "file_path": "unknown",
+          "file_name": "unknown",
+          "metrics": {
+            "state_block_count": 0,
+            "connection_count": 0,
+            "total_dimensions": 0,
+            "max_dimension": 0,
+            "avg_dimension": 0,
+            "estimated_memory_bytes": 0,
+            "estimated_memory_mb": 0.0,
+            "computational_complexity": {
+              "inference_operations": 0,
+              "learning_operations": 0,
+              "complexity_class": "O(1)",
+              "bottleneck_block": null,
+              "bottleneck_operations": 0
+            },
+            "parallelization_potential": {
+              "parallelizable_blocks": 0,
+              "sequential_dependencies": 0,
+              "parallel_efficiency": 0.0,
+              "gpu_amenable": false,
+              "distributed_amenable": false
+            }
+          },
+          "warnings": [
+            "Low parallelization potential: 0.00"
+          ],
+          "performance_score": 0.7,
+          "recovery": false
+        },
+        "consistency": {
+          "file_path": "unknown",
+          "file_name": "unknown",
+          "consistent": false,
+          "warnings": [
+            "Isolated blocks with no connections: prior_cov, t"
+          ],
+          "checks": {
+            "naming_conventions": {
+              "is_consistent": true,
+              "warnings": [],
+              "dominant_style": null,
+              "mixed_styles": false,
+              "duplicate_names": [],
+              "non_descriptive_names": []
+            },
+            "style_consistency": {
+              "is_consistent": true,
+              "warnings": [],
+              "indentation_patterns": 0,
+              "block_format_styles": [],
+              "field_order_consistency": true
+            },
+            "structural_integrity": {
+              "is_consistent": true,
+              "warnings": [],
+              "balanced_braces": true,
+              "empty_blocks": 0,
+              "empty_connections": 0,
+              "missing_state_fields": [],
+              "missing_connection_fields": []
+            },
+            "reference_consistency": {
+              "is_consistent": false,
+              "warnings": [
+                "Isolated blocks with no connections: prior_cov, t"
+              ],
+              "invalid_references": [],
+              "isolated_blocks": [
+                "prior_cov",
+                "t"
+              ],
+              "circular_references": []
+            }
+          },
+          "consistency_score": 0.7,
+          "recovery": false
+        }
+      },
+      "success": true,
+      "errors": [],
+      "receipt_key": "f3d0d9e367237a9712fdbba20a5b378028facd9b18fccd80f2bd4c5165593c0a",
+      "input_identity": {
+        "source_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/continuous/stochastic_dynamics.md",
+        "parse_success": true,
+        "receipt_version": 1,
+        "run_id": "2026-09-05T20:30:54.974669",
+        "validation_level": "standard",
+        "file_path_sha256": "459f23f79e521cd242d9b429d7444677d58a1c10728f0a53d467b3588f9bc049",
+        "parsed_model_file_sha256": "2c1f7eddb915162f66acdfcc1cc7aa5228f312eaeb371a10b094b139bc137bf7"
+      }
+    },
+    {
+      "file_name": "continuous_navigation.md",
+      "file_path": "input/gnn_files/continuous/continuous_navigation.md",
+      "validations": {
+        "semantic": {
+          "file_path": "unknown",
+          "file_name": "unknown",
+          "valid": true,
+          "errors": [],
+          "warnings": [],
+          "semantic_score": 1.0,
+          "recovery": false
+        },
+        "performance": {
+          "file_path": "unknown",
+          "file_name": "unknown",
+          "metrics": {
+            "state_block_count": 0,
+            "connection_count": 0,
+            "total_dimensions": 0,
+            "max_dimension": 0,
+            "avg_dimension": 0,
+            "estimated_memory_bytes": 0,
+            "estimated_memory_mb": 0.0,
+            "computational_complexity": {
+              "inference_operations": 0,
+              "learning_operations": 0,
+              "complexity_class": "O(1)",
+              "bottleneck_block": null,
+              "bottleneck_operations": 0
+            },
+            "parallelization_potential": {
+              "parallelizable_blocks": 0,
+              "sequential_dependencies": 0,
+              "parallel_efficiency": 0.0,
+              "gpu_amenable": false,
+              "distributed_amenable": false
+            }
+          },
+          "warnings": [
+            "Low parallelization potential: 0.00"
+          ],
+          "performance_score": 0.7,
+          "recovery": false
+        },
+        "consistency": {
+          "file_path": "unknown",
+          "file_name": "unknown",
+          "consistent": false,
+          "warnings": [
+            "Isolated blocks with no connections: prior_cov, t"
+          ],
+          "checks": {
+            "naming_conventions": {
+              "is_consistent": true,
+              "warnings": [],
+              "dominant_style": null,
+              "mixed_styles": false,
+              "duplicate_names": [],
+              "non_descriptive_names": []
+            },
+            "style_consistency": {
+              "is_consistent": true,
+              "warnings": [],
+              "indentation_patterns": 0,
+              "block_format_styles": [],
+              "field_order_consistency": true
+            },
+            "structural_integrity": {
+              "is_consistent": true,
+              "warnings": [],
+              "balanced_braces": true,
+              "empty_blocks": 0,
+              "empty_connections": 0,
+              "missing_state_fields": [],
+              "missing_connection_fields": []
+            },
+            "reference_consistency": {
+              "is_consistent": false,
+              "warnings": [
+                "Isolated blocks with no connections: prior_cov, t"
+              ],
+              "invalid_references": [],
+              "isolated_blocks": [
+                "prior_cov",
+                "t"
+              ],
+              "circular_references": []
+            }
+          },
+          "consistency_score": 0.7,
+          "recovery": false
+        }
+      },
+      "success": true,
+      "errors": [],
+      "receipt_key": "c1f8afdee1693239927b799ebf43a480ec7702bb0a65fb6448b348f0db3e3f29",
+      "input_identity": {
+        "source_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/continuous/continuous_navigation.md",
+        "parse_success": true,
+        "receipt_version": 1,
+        "run_id": "2026-09-05T20:30:54.974669",
+        "validation_level": "standard",
+        "file_path_sha256": "5e8f3c807c358ac198cf052cb0cd9aca3d5ae1871e1fd02884c9b001529b7ee7",
+        "parsed_model_file_sha256": "c7448eab400d5bc06c72c3fbe6dcc14adc19f110898879ccb415f03a9bf75819"
+      }
     }
   ],
   "summary": {
-    "total_files": 1,
-    "successful_validations": 1,
+    "total_files": 3,
+    "successful_validations": 3,
     "failed_validations": 0,
     "validation_scores": {
       "semantic": [
+        1.0,
+        1.0,
         1.0
       ],
       "performance": [
+        0.7,
+        0.7,
         0.7
       ],
       "consistency": [
-        1.0
+        0.7,
+        0.7,
+        0.7
       ],
       "avg_semantic_score": 1.0,
-      "avg_performance_score": 0.7,
-      "avg_consistency_score": 1.0
+      "avg_performance_score": 0.6999999999999998,
+      "avg_consistency_score": 0.6999999999999998
+    }
+  },
+  "current_summary": {
+    "total_files": 3,
+    "successful_validations": 3,
+    "failed_validations": 0,
+    "validation_scores": {
+      "semantic": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "performance": [
+        0.7,
+        0.7,
+        0.7
+      ],
+      "consistency": [
+        0.7,
+        0.7,
+        0.7
+      ],
+      "avg_semantic_score": 1.0,
+      "avg_performance_score": 0.6999999999999998,
+      "avg_consistency_score": 0.6999999999999998
     }
   }
 }

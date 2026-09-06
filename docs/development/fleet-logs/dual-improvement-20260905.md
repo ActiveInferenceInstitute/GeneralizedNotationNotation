@@ -11,11 +11,11 @@ touched; no Lean/Lake or native builds were run; uv toolchain only.
 Key discoveries, all file:line grounded:
 
 - **Custody rosters measured, not assumed.** `gnn.owners` = 271 paths:
-  src/gnn (82), src/render (53), src/utils (51), src/execute (45),
-  src/pipeline (31), src/ontology (4), plus uv.lock, pyproject.toml,
-  src/main.py, doc/gnn/gnn_syntax.md, doc/other/fep_lean/bridge-contract.md.
-  `fep_lean.owners` = 146 paths. Everything else — src/export/**,
-  src/tests/**, src/{analysis,llm,mcp,gui,integration,report,audio,
+  src/gnn (82), src/gnn/render (53), src/gnn/utils (51), src/gnn/execute (45),
+  src/gnn/pipeline (31), src/gnn/ontology (4), plus uv.lock, pyproject.toml,
+  src/gnn/main.py, doc/gnn/gnn_syntax.md, doc/other/fep_lean/bridge-contract.md.
+  `fep_lean.owners` = 146 paths. Everything else — src/gnn/export/**,
+  tests/**, src/{analysis,llm,mcp,gui,integration,report,audio,
   model_registry,setup,rxinfer}/**, scripts/**, README/CHANGELOG/TO-DO,
   all AGENTS.md files — is unrostered. Per-file `grep -F` against
   `source-pin.json` is the check of record (a jq `index(.)` membership
@@ -30,8 +30,8 @@ Key discoveries, all file:line grounded:
   cross-repo contract co-design.
 - **Hygiene sweep**: 25 findings; dominant pattern is broad `except Exception`
   with silent fallbacks; TODO/FIXME hygiene essentially clean.
-- **Docs drift**: 4 stale API claims (src/llm/AGENTS.md ×2,
-  src/utils/AGENTS.md ×2). Two scoping claims corrected during execution:
+- **Docs drift**: 4 stale API claims (src/gnn/llm/AGENTS.md ×2,
+  src/gnn/utils/AGENTS.md ×2). Two scoping claims corrected during execution:
   the arg_parsing "duplicate parse_step_arguments" is false (two different
   classes, both live), and gui/runner.py's second `return None` is live
   (test-covered).
@@ -49,12 +49,12 @@ Key discoveries, all file:line grounded:
 
 | Item | Files | Verification |
 | --- | --- | --- |
-| GNN-05 Step 7 opt-in GEO-INFER wiring | src/export/processor.py, src/7_export.py, + new src/tests/export/test_export_geo_pipeline.py (7 tests) | export dir 103 passed; orchestrator e2e 1 passed; scoped mypy+ruff clean |
+| GNN-05 Step 7 opt-in GEO-INFER wiring | src/gnn/export/processor.py, src/gnn/7_export.py, + new tests/export/test_export_geo_pipeline.py (7 tests) | export dir 103 passed; orchestrator e2e 1 passed; scoped mypy+ruff clean |
 | Export hygiene | formatters.py (dead insecure minidom fallback removed — defusedxml is a hard dep), processor.py (JSON recovery writer logs swallowed exception) | included above |
 | analysis / model_registry / report / audio hygiene | 4 files: metric excepts narrowed + logged; registry hash except narrowed; health-score and audio fail-safes log | 460 passed (78s) + 17 passed |
-| Misc hygiene + doc drift | src/analysis/rxinfer/gif_animator.py, src/integration/graph.py, src/gui/runner.py, src/mcp/processor.py, src/llm/mcp.py, src/llm/AGENTS.md (2 signatures fixed), scripts/run_v3_orchestration_acceptance.py (stale docstring) | 398 passed (51s); integration 64 passed |
-| utils docs | src/utils/AGENTS.md (2 signatures corrected) | utils 211 + 15 contracts passed |
-| Gate fix during integration | src/integration/graph.py log message reworded after my sweep caught `check_repo_terminology` flagging "legacy" | terminology gate clean |
+| Misc hygiene + doc drift | src/gnn/analysis/rxinfer/gif_animator.py, src/gnn/integration/graph.py, src/gnn/gui/runner.py, src/gnn/mcp/processor.py, src/gnn/llm/mcp.py, src/gnn/llm/AGENTS.md (2 signatures fixed), scripts/run_v3_orchestration_acceptance.py (stale docstring) | 398 passed (51s); integration 64 passed |
+| utils docs | src/gnn/utils/AGENTS.md (2 signatures corrected) | utils 211 + 15 contracts passed |
+| Gate fix during integration | src/gnn/integration/graph.py log message reworded after my sweep caught `check_repo_terminology` flagging "legacy" | terminology gate clean |
 
 `process_export` gained an opt-in `geo_infer` options mapping with the
 distinct visible-failure contract (missing `step_seconds` → named `ValueError`
@@ -75,7 +75,7 @@ cycle. Ready-to-apply designs, all requiring one coordinated
 pass afterwards (owner action, "pin only after reviewing the settled owner
 changes"):
 
-1. **Comparator fix** (src/pipeline/cross_framework_reliability.py):
+1. **Comparator fix** (src/gnn/pipeline/cross_framework_reliability.py):
    intersection-based metric comparison with additive `skipped` notes; ran
    the strict gate at 9/9 families, exit 0, ~307s against the now-reverted
    code (/tmp/gnn-cfr-fix-0905 — historical artifact of reverted code).
@@ -84,10 +84,10 @@ changes"):
    (120 gnn tests passed against the reverted-later code).
 3. **execute hygiene** ×4 files: detection, pymdp_simulation, executor,
    validator — logging on silent cpu fallbacks + version-check cause.
-4. **src/render/visualization_suite.py:87**: HDF5 failure logging.
+4. **src/gnn/render/visualization_suite.py:87**: HDF5 failure logging.
 5. **Step 7 CLI flags**: register `geo_step_seconds`/`geo_state_ids`/
    `geo_space_kind` in `ArgumentParser.ARGUMENT_DEFINITIONS`
-   (src/utils/arg_parsing.py, rostered), then switch 7_export.py from env
+   (src/gnn/utils/arg_parsing.py, rostered), then switch 7_export.py from env
    options to CLI flags and update docs.
 
 ## Deliberately deferred (blocked or owner-gated)
@@ -101,8 +101,8 @@ changes"):
   slice; FEP-H3-SCIENCE is post-H2 gated). The FEP-H2-SMOOTH row vs "H2.7
   accepted" status inconsistency is flagged for owner arbitration; closing it
   requires fep_lean's own closure probe + changelog rule.
-- Dead-test rewrites (src/tests/advanced_visualization/test_..._overall.py
-  ×3 sites, src/tests/gnn/test_gnn_parsing.py ×3 sites): intent review needed.
+- Dead-test rewrites (tests/advanced_visualization/test_..._overall.py
+  ×3 sites, tests/gnn/test_gnn_parsing.py ×3 sites): intent review needed.
 - fep_lean code edits: none this cycle — every actionable surface is
   custody-bound (82 Python sources bind H2.7 acceptance) or receipt-promised.
 
@@ -131,8 +131,8 @@ changes"):
 308 porcelain entries (217 M / 2 D / 89 untracked). Modified-today files =
 this cycle's ~20 landed files + the concurrent manuscript/audit lanes'
 surfaces (manuscript/, output/{manuscript,pdf,slides,web,reports,data,
-figures}, src/manuscript_variables.py, src/mcp/audit_report.json — avoided
-entirely by this cycle). The 2 deletions (src/llm demo removals) and the
+figures}, src/gnn/manuscript_variables.py, src/gnn/mcp/audit_report.json — avoided
+entirely by this cycle). The 2 deletions (src/gnn/llm demo removals) and the
 `out/` artifacts predate today. This report adds one untracked file.
 
 ## Cycle 2 — "push all" custody cycle and three-repo integration (same day)

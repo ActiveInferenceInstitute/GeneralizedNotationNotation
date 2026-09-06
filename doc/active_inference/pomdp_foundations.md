@@ -257,8 +257,8 @@ Even with full observability, Active Inference maintains:
 
 | Engine | Path |
 |--------|------|
-| PyMDP | [`src/execute/pymdp/`](../../src/execute/pymdp/) |
-| RxInfer | [`src/execute/rxinfer/`](../../src/execute/rxinfer/) |
+| PyMDP | [`src/gnn/execute/pymdp/`](../../src/gnn/execute/pymdp/) |
+| RxInfer | [`src/gnn/execute/rxinfer/`](../../src/gnn/execute/rxinfer/) |
 
 ### GNN
 

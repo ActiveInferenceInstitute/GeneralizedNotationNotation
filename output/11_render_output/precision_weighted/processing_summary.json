@@ -1,0 +1,35 @@
+{
+  "timestamp": "2026-09-05T20:25:30.700335",
+  "source_file": "input/gnn_files/precision/precision_weighted.md",
+  "model_name": "Precision-Weighted Active Inference Agent",
+  "pomdp_dimensions": {
+    "num_states": 3,
+    "num_observations": 3,
+    "num_actions": 3
+  },
+  "frameworks_requested": [
+    "pymdp",
+    "rxinfer",
+    "activeinference_jl",
+    "jax",
+    "discopy",
+    "pytorch",
+    "numpyro",
+    "stan",
+    "bnlearn"
+  ],
+  "frameworks_processed": [
+    "pymdp",
+    "rxinfer",
+    "activeinference_jl",
+    "jax",
+    "discopy",
+    "pytorch",
+    "numpyro",
+    "stan",
+    "bnlearn"
+  ],
+  "frameworks_failed": [],
+  "frameworks_unsupported": [],
+  "model_kind": "discrete"
+}

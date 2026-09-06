@@ -136,7 +136,7 @@ def register_tools(mcp=None) -> None:
 | 11 | render | `process_render`, `list_render_frameworks`, `render_gnn_to_format` |
 | 13 | llm | `process_llm`, `analyze_gnn_with_llm`, `generate_llm_documentation`, `get_llm_providers` |
 | 15 | audio | `process_audio`, `check_audio_backends`, `get_audio_generation_options` |
-| 21 | mcp | Central registry; verify live inventory with `src/tests/mcp/test_mcp_audit.py` |
+| 21 | mcp | Central registry; verify live inventory with `tests/mcp/test_mcp_audit.py` |
 
 ---
 
@@ -151,17 +151,17 @@ python -m src.mcp.cli execute parse_gnn_content \
   --params '{"content":"## GNNSection\nActInfPOMDP\n","format_hint":"markdown","enhanced_validation":true}'
 
 # Run MCP step to register all tools
-python src/21_mcp.py --target-dir input/gnn_files --output-dir output --verbose
+python src/gnn/21_mcp.py --target-dir input/gnn_files --output-dir output --verbose
 ```
 
 ---
 
-## Central Registry (`src/mcp/`)
+## Central Registry (`src/gnn/mcp/`)
 
 All module `mcp.py` files auto-register with the central registry at startup:
-- **Discovery**: Automatic via `src/mcp/processor.py::register_module_tools()`
+- **Discovery**: Automatic via `src/gnn/mcp/processor.py::register_module_tools()`
 - **No manual configuration** needed — modules found by directory scan
-- **Inventory**: Run `uv run --extra dev python -m pytest src/tests/mcp/test_mcp_audit.py -q` for the current registered tool/module contract
+- **Inventory**: Run `uv run --extra dev python -m pytest tests/mcp/test_mcp_audit.py -q` for the current registered tool/module contract
 
 ---
 

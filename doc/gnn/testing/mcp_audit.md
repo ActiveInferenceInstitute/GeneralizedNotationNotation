@@ -1,9 +1,9 @@
 # GNN MCP Audit Framework
 
-How `src/tests/mcp/test_mcp_audit.py` validates the MCP tool registry.
+How `tests/mcp/test_mcp_audit.py` validates the MCP tool registry.
 
 **Last Updated**: 2026-04-15  
-**Source**: [`src/tests/mcp/test_mcp_audit.py`](../../../src/tests/mcp/test_mcp_audit.py)
+**Source**: [`tests/mcp/test_mcp_audit.py`](../../../tests/mcp/test_mcp_audit.py)
 
 ## Fixture Design
 
@@ -122,15 +122,15 @@ DOMAIN_TOOLS = [
 
 ```bash
 # Full audit (all three classes)
-uv run --extra dev python -m pytest src/tests/mcp/test_mcp_audit.py -v
+uv run --extra dev python -m pytest tests/mcp/test_mcp_audit.py -v
 
 # Single class
-uv run --extra dev python -m pytest src/tests/mcp/test_mcp_audit.py::TestMCPModuleDiscovery -v
-uv run --extra dev python -m pytest src/tests/mcp/test_mcp_audit.py::TestMCPToolRealness -v
-uv run --extra dev python -m pytest src/tests/mcp/test_mcp_audit.py::TestMCPDomainTools -v
+uv run --extra dev python -m pytest tests/mcp/test_mcp_audit.py::TestMCPModuleDiscovery -v
+uv run --extra dev python -m pytest tests/mcp/test_mcp_audit.py::TestMCPToolRealness -v
+uv run --extra dev python -m pytest tests/mcp/test_mcp_audit.py::TestMCPDomainTools -v
 
 # JSON report only
-PYTHONPATH=src python src/mcp/validate_tools.py
+PYTHONPATH=src python src/gnn/mcp/validate_tools.py
 ```
 
 ## Adding a New Tool to the Audit

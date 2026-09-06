@@ -12,7 +12,7 @@ SRC_DIR = REPO_ROOT / "src"
 if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
 
-from pipeline.model_family_acceptance import run_model_family_acceptance
+from gnn.pipeline.model_family_acceptance import run_model_family_acceptance
 
 
 def main(argv: list[str] | None = None) -> int:

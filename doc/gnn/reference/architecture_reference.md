@@ -14,9 +14,9 @@ Implementation details of the thin orchestrator pattern and cross-module integra
 
 For complete pipeline documentation:
 
-- **[src/AGENTS.md](../../../src/AGENTS.md)**: Master agent scaffolding and module registry
-- **[src/README.md](../../../src/README.md)**: Pipeline architecture and safety patterns
-- **[src/main.py](../../../src/main.py)**: Pipeline orchestrator script
+- **[src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md)**: Master agent scaffolding and module registry
+- **[src/gnn/README.md](../../../src/gnn/README.md)**: Pipeline architecture and safety patterns
+- **[src/gnn/main.py](../../../src/gnn/main.py)**: Pipeline orchestrator script
 
 ## Complete 25-Step Pipeline Mapping
 
@@ -24,37 +24,37 @@ The GNN pipeline consists of exactly 25 steps (0-24), each following the thin or
 
 **Core Processing (Steps 0-9)**
 
-- `0_template.py` → `src/template/` - Pipeline initialization
-- `1_setup.py` → `src/setup/` - Environment and dependency setup
-- `2_tests.py` → `src/tests/` - Test suite execution
+- `0_template.py` → `src/gnn/template/` - Pipeline initialization
+- `1_setup.py` → `src/gnn/setup/` - Environment and dependency setup
+- `2_tests.py` → `tests/` - Test suite execution
 - `3_gnn.py` → `src/gnn/` - GNN parsing and multi-format processing
-- `4_model_registry.py` → `src/model_registry/` - Model versioning
-- `5_type_checker.py` → `src/type_checker/` - Type validation
-- `6_validation.py` → `src/validation/` - Consistency checking
-- `7_export.py` → `src/export/` - Multi-format export
-- `8_visualization.py` → `src/visualization/` - Graph visualization
-- `9_advanced_viz.py` → `src/advanced_visualization/` - Advanced plots
+- `4_model_registry.py` → `src/gnn/model_registry/` - Model versioning
+- `5_type_checker.py` → `src/gnn/type_checker/` - Type validation
+- `6_validation.py` → `src/gnn/validation/` - Consistency checking
+- `7_export.py` → `src/gnn/export/` - Multi-format export
+- `8_visualization.py` → `src/gnn/visualization/` - Graph visualization
+- `9_advanced_viz.py` → `src/gnn/advanced_visualization/` - Advanced plots
 
 **Simulation & Analysis (Steps 10-16)**
 
-- `10_ontology.py` → `src/ontology/` - Ontology processing
-- `11_render.py` → `src/render/` - Code generation
-- `12_execute.py` → `src/execute/` - Simulation execution
-- `13_llm.py` → `src/llm/` - LLM analysis
-- `14_ml_integration.py` → `src/ml_integration/` - ML integration
-- `15_audio.py` → `src/audio/` - Audio generation
-- `16_analysis.py` → `src/analysis/` - Statistical analysis
+- `10_ontology.py` → `src/gnn/ontology/` - Ontology processing
+- `11_render.py` → `src/gnn/render/` - Code generation
+- `12_execute.py` → `src/gnn/execute/` - Simulation execution
+- `13_llm.py` → `src/gnn/llm/` - LLM analysis
+- `14_ml_integration.py` → `src/gnn/ml_integration/` - ML integration
+- `15_audio.py` → `src/gnn/audio/` - Audio generation
+- `16_analysis.py` → `src/gnn/analysis/` - Statistical analysis
 
 **Integration & Output (Steps 17-24)**
 
-- `17_integration.py` → `src/integration/` - System integration
-- `18_security.py` → `src/security/` - Security validation
-- `19_research.py` → `src/research/` - Research tools
-- `20_website.py` → `src/website/` - Website generation
-- `21_mcp.py` → `src/mcp/` - MCP processing
-- `22_gui.py` → `src/gui/` - GUI interface
-- `23_report.py` → `src/report/` - Report generation
-- `24_intelligent_analysis.py` → `src/intelligent_analysis/` - AI-enhanced analysis
+- `17_integration.py` → `src/gnn/integration/` - System integration
+- `18_security.py` → `src/gnn/security/` - Security validation
+- `19_research.py` → `src/gnn/research/` - Research tools
+- `20_website.py` → `src/gnn/website/` - Website generation
+- `21_mcp.py` → `src/gnn/mcp/` - MCP processing
+- `22_gui.py` → `src/gnn/gui/` - GUI interface
+- `23_report.py` → `src/gnn/report/` - Report generation
+- `24_intelligent_analysis.py` → `src/gnn/intelligent_analysis/` - AI-enhanced analysis
 
 For module-specific documentation, see each `src/[module]/AGENTS.md` file.
 
@@ -70,7 +70,7 @@ Each numbered pipeline step (0-24) follows this structure:
 
 ### Pattern Implementation Example
 
-#### Step 8: Visualization (src/8_visualization.py)
+#### Step 8: Visualization (src/gnn/8_visualization.py)
 
 ```python
 #!/usr/bin/env python3
@@ -96,7 +96,7 @@ def main() -> int:
 
 #### Modular Implementation Layer
 
-Example: `src/visualization/__init__.py`
+Example: `src/gnn/visualization/__init__.py`
 
 ```python
 # Exposes core functionality with safe imports
@@ -125,7 +125,7 @@ except Exception:
 Input:  input/gnn_files/discrete/actinf_pomdp_agent.md
 Output: output/3_gnn_output/gnn_processing_results.json
 
-Cross-reference in src/5_type_checker.py:
+Cross-reference in src/gnn/5_type_checker.py:
 ├── gnn_output_dir = get_output_dir_for_script("3_gnn.py", Path(args.output_dir))
 ├── gnn_results_file = gnn_nested_dir / "gnn_processing_results.json"  
 └── with open(gnn_results_file, "r") as f: gnn_results = json.load(f)
@@ -136,7 +136,7 @@ Cross-reference in src/5_type_checker.py:
 ```
 Type data flows from Step 5 analysis to Step 8 visualization:
 
-src/8_visualization.py:
+src/gnn/8_visualization.py:
 └── visualizer.py:generate_matrix_visualization()
     ├── Reads: output/5_type_checker_output/type_check_results.json
     ├── Extracts: type_analysis["dimension_analysis"]
@@ -148,11 +148,11 @@ src/8_visualization.py:
 ```  
 Code generation to execution transfer:
 
-src/11_render.py → output/11_render_output/
+src/gnn/11_render.py → output/11_render_output/
 ├── actinf_pomdp_agent_rxinfer.jl    (Generated RxInfer code) 
 └── render_summary.json              (Generation metadata)
 
-src/12_execute.py:
+src/gnn/12_execute.py:
 ├── Discovers generated files in output/11_render_output/
 └── Captures: execution results, timing, memory usage
 ```
@@ -181,12 +181,12 @@ src/gnn/
     └── unified_parser.py              # UnifiedGNNParser
 ```
 
-### Type Analysis Modules (src/type_checker/)
+### Type Analysis Modules (src/gnn/type_checker/)
 
 ```
 Type analysis implementation:
 
-src/type_checker/
+src/gnn/type_checker/
 ├── analysis_utils.py                  # Standalone analysis helpers
 │   ├── analyze_variable_types() (line 13)
 │   ├── analyze_connections() (line 78)
@@ -202,12 +202,12 @@ src/type_checker/
 └── processor.py                       # Thin re-export facade (17 lines)
 ```
 
-### Visualization Modules (src/visualization/)
+### Visualization Modules (src/gnn/visualization/)
 
 ```
 Visualization implementation hierarchy:
 
-src/visualization/
+src/gnn/visualization/
 ├── __init__.py                        # Safe imports
 ├── visualizer.py                      # GNNVisualizer (line 61)
 ├── matrix_visualizer.py               # Thin re-export facade (15 lines)
@@ -228,7 +228,7 @@ subpackages.
 
 ### PyMDP Integration
 
-**Location:** `src/render/pymdp/`
+**Location:** `src/gnn/render/pymdp/`
 **Template Variables:**
 
 ```python
@@ -245,7 +245,7 @@ agent = pymdp.Agent(A=A, B=B, C=C, D=D, E=E)
 
 ### RxInfer.jl Integration  
 
-**Location:** `src/render/rxinfer/`
+**Location:** `src/gnn/render/rxinfer/`
 **Model Template:**
 
 ```julia
@@ -269,7 +269,7 @@ end
 
 ### DisCoPy Integration
 
-**Location:** `src/render/discopy/`  
+**Location:** `src/gnn/render/discopy/`  
 **Category Theory Mapping:**
 
 ```python
@@ -290,12 +290,12 @@ for conn in connections:
 
 ## Pipeline Orchestration Details
 
-### Argument Flow (src/main.py → steps)
+### Argument Flow (src/gnn/main.py → steps)
 
 ```python
-# src/main.py → src/pipeline/execution.py
+# src/gnn/main.py → src/gnn/pipeline/execution.py
 def execute_pipeline_step(script_name: str, args: PipelineArguments, logger):
-    cmd = build_step_command_args(  # src/utils/argument_utils.py:1657
+    cmd = build_step_command_args(  # src/gnn/utils/argument_utils.py:1657
         script_name.replace(".py", ""),
         args,  # target_dir, output_dir, verbose, ...
         python_executable,
@@ -309,7 +309,7 @@ Each step is invoked as a subprocess and receives the common flags
 ### Standardized I/O and State Management
 
 Step scripts do not wire up logging or output paths by hand. They are built by
-`create_standardized_pipeline_script` (`src/utils/pipeline_template.py`), which
+`create_standardized_pipeline_script` (`src/gnn/utils/pipeline_template.py`), which
 supplies the logger and the resolved output directory:
 
 ```python
@@ -323,7 +323,7 @@ run = create_standardized_pipeline_script(
 ```
 
 Output directories are resolved by
-`get_output_dir_for_script` (`src/pipeline/config.py:136`), which maps each
+`get_output_dir_for_script` (`src/gnn/pipeline/config.py:136`), which maps each
 script to a numbered sibling directory:
 
 ```text
@@ -351,7 +351,7 @@ return 0 if success else 1
 
 ## Dependency Resolution (Actual Implementation)
 
-### Safe Import Pattern (src/visualization/**init**.py:15-47)
+### Safe Import Pattern (src/gnn/visualization/**init**.py:15-47)
 
 ```python
 # Pattern used across modules for optional dependencies:
@@ -372,7 +372,7 @@ if MatrixVisualizer is None:
 Each module includes `mcp.py` with tool registration:
 
 ```python
-# Example: src/visualization/mcp.py
+# Example: src/gnn/visualization/mcp.py
 @server.tool()
 def visualize_gnn_model(content: str, output_path: str) -> dict:
     """Generate visualization for GNN model content."""

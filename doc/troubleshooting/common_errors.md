@@ -270,7 +270,7 @@ Error: Invalid LaTeX syntax in equations section
 
 ```bash
 # Run the GNN type checker
-uv run python src/5_type_checker.py --target-dir your_model_directory
+uv run python src/gnn/5_type_checker.py --target-dir your_model_directory
 ```
 
 ### Step 2: Check Individual Sections
@@ -291,7 +291,7 @@ uv run python src/5_type_checker.py --target-dir your_model_directory
 
 ```python
 # Python validation script using the real exported validator
-from src.gnn import validate_gnn_file
+from gnn.gnn import validate_gnn_file
 
 result = validate_gnn_file("your_model.md")
 if not result["is_valid"]:
@@ -384,7 +384,7 @@ ImportError: cannot import name 'parse_matrix_data' from 'visualization.processo
 ```
 
 **Cause:**
-Missing import or definition in `src/visualization/processor.py`. This function is now correctly imported from `analysis.analyzer`.
+Missing import or definition in `src/gnn/visualization/processor.py`. This function is now correctly imported from `analysis.analyzer`.
 
 **Solution:**
 Ensure you are using the latest version of the `visualization` module. The function should be imported as:
@@ -400,7 +400,7 @@ NameError: name 'Path' is not defined
 ```
 
 **Cause:**
-Missing `from pathlib import Path` in `src/gui/__init__.py`.
+Missing `from pathlib import Path` in `src/gnn/gui/__init__.py`.
 
 **Solution:**
 Add the missing import to the top of the file:

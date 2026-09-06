@@ -107,7 +107,7 @@ gnn pull actinf-pomdp-2state --output-dir input/gnn_files/
 ### Method 3: Direct Template Initializer
 ```bash
 # Run Step 0 template initialization
-uv run python src/0_template.py --target-dir input/gnn_files --output-dir output/0_template_output
+uv run python src/gnn/0_template.py --target-dir input/gnn_files --output-dir output/0_template_output
 ```
 
 **Cross-References**: [API Documentation](../api/README.md) | [Tool Development](../gnn/reference/gnn_dsl_manual.md)
@@ -197,12 +197,12 @@ GNN-1.0
 Validate the maintained package templates with:
 
 ```bash
-for template in src/cli/template_assets/*.md; do
+for template in src/gnn/cli/template_assets/*.md; do
   uv run --extra dev gnn validate "$template" --strict
 done
 ```
 
-The same contract is covered by `src/tests/cli/test_templates_cli.py`.
+The same contract is covered by `tests/cli/test_templates_cli.py`.
 
 **Cross-References**: 
 - *Type Checker*: [Validation Tools](../gnn/operations/gnn_tools.md#validation-tools)

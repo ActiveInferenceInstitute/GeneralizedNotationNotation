@@ -1,0 +1,5904 @@
+{
+  "model_name": "Stigmergic Swarm Active Inference",
+  "version": "1.0",
+  "annotation": "Three Active Inference agents coordinating via stigmergy (environmental traces):\n\n- No direct communication between agents \u2014 coordination emerges from environment\n- Agents deposit and sense environmental signals (pheromone analogy)\n- Shared 3x3 grid environment with signal intensity at each cell\n- Each agent navigates independently while responding to accumulated signals\n- Signal deposition: actions leave traces that other agents can observe\n- Signal decay: environmental signals decay over time (volatility)\n- Demonstrates emergent collective behavior from individual free energy minimization\n- Models ant colony foraging, distributed robotics, and decentralized coordination",
+  "variables": [
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "76ec3b48-f30d-4067-a03b-7df5d3546582",
+      "name": "A_agent1",
+      "var_type": "action",
+      "dimensions": [
+        4,
+        9
+      ],
+      "data_type": "float",
+      "description": "Agent 1 likelihood: P(obs | position on 3x3 grid)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "60db4101-aaaf-46b2-85f8-6cecb36aa6df",
+      "name": "B_agent1",
+      "var_type": "hidden_state",
+      "dimensions": [
+        9,
+        9,
+        4
+      ],
+      "data_type": "float",
+      "description": "Agent 1 transitions: (9 positions \u00d7 4 actions: N/S/E/W)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "b68dfe0f-970c-49c5-93f6-e44507d19eb3",
+      "name": "C_agent1",
+      "var_type": "hidden_state",
+      "dimensions": [
+        4
+      ],
+      "data_type": "float",
+      "description": "Agent 1 preferences over observations",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "8c81f6a6-51fc-498f-8f78-49e8db3bcf94",
+      "name": "D_agent1",
+      "var_type": "hidden_state",
+      "dimensions": [
+        9
+      ],
+      "data_type": "float",
+      "description": "Agent 1 position prior",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "dc2159ea-466d-411a-a195-d8827c3e1f85",
+      "name": "s_agent1",
+      "var_type": "hidden_state",
+      "dimensions": [
+        9,
+        1
+      ],
+      "data_type": "float",
+      "description": "Agent 1 position belief (9 grid cells)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "f27c34d4-de72-4bc8-9bd5-5f5f144432c3",
+      "name": "o_agent1",
+      "var_type": "observation",
+      "dimensions": [
+        4,
+        1
+      ],
+      "data_type": "integer",
+      "description": "Agent 1 observation: (empty, signal_low, signal_high, goal)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "5be8e27c-254f-4579-a9b2-05f05a30b29a",
+      "name": "pi1",
+      "var_type": "policy",
+      "dimensions": [
+        4
+      ],
+      "data_type": "float",
+      "description": "Agent 1 policy",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "41e2a9a3-42dd-40d2-919f-db6d0f97f1f0",
+      "name": "u_agent1",
+      "var_type": "action",
+      "dimensions": [
+        1
+      ],
+      "data_type": "integer",
+      "description": "Agent 1 action",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "7393ff51-58fc-4fd6-9312-77cbebfde51e",
+      "name": "G1",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Agent 1 EFE",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "71a800aa-3613-4b6f-a318-5a13c79c3f66",
+      "name": "A_agent2",
+      "var_type": "action",
+      "dimensions": [
+        4,
+        9
+      ],
+      "data_type": "float",
+      "description": "Agent 2 likelihood",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "a8b9282b-ea69-4af4-b9cb-ebdefa124692",
+      "name": "B_agent2",
+      "var_type": "hidden_state",
+      "dimensions": [
+        9,
+        9,
+        4
+      ],
+      "data_type": "float",
+      "description": "Agent 2 transitions",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "0f03a894-eeb4-40ad-899e-a81d0b0a55f4",
+      "name": "C_agent2",
+      "var_type": "hidden_state",
+      "dimensions": [
+        4
+      ],
+      "data_type": "float",
+      "description": "Agent 2 preferences",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "4be856ee-b4ca-4da6-bcb8-78d5a089d56b",
+      "name": "D_agent2",
+      "var_type": "hidden_state",
+      "dimensions": [
+        9
+      ],
+      "data_type": "float",
+      "description": "Agent 2 position prior",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "e7c9cbe2-54aa-40c1-9d16-d333d8870e9a",
+      "name": "s_agent2",
+      "var_type": "hidden_state",
+      "dimensions": [
+        9,
+        1
+      ],
+      "data_type": "float",
+      "description": "Agent 2 position belief",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "883ba79a-6e19-4ae8-8042-1c306ce868ec",
+      "name": "o_agent2",
+      "var_type": "observation",
+      "dimensions": [
+        4,
+        1
+      ],
+      "data_type": "integer",
+      "description": "Agent 2 observation",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "e6eafd04-ab17-4740-9465-dd892637b633",
+      "name": "pi2",
+      "var_type": "policy",
+      "dimensions": [
+        4
+      ],
+      "data_type": "float",
+      "description": "Agent 2 policy",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "68277851-88c7-462d-af11-6c8ef13025ab",
+      "name": "u_agent2",
+      "var_type": "action",
+      "dimensions": [
+        1
+      ],
+      "data_type": "integer",
+      "description": "Agent 2 action",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "fb94cbc8-fa9d-4851-add0-2ad29f892736",
+      "name": "G2",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Agent 2 EFE",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "63b82e78-1d11-4b7e-87cd-958d9a4555f9",
+      "name": "A_agent3",
+      "var_type": "action",
+      "dimensions": [
+        4,
+        9
+      ],
+      "data_type": "float",
+      "description": "Agent 3 likelihood",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "1ab9f75d-1cd6-4971-93e8-a60e4c2fe0e2",
+      "name": "B_agent3",
+      "var_type": "hidden_state",
+      "dimensions": [
+        9,
+        9,
+        4
+      ],
+      "data_type": "float",
+      "description": "Agent 3 transitions",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "c6ecd373-550d-4706-9e6e-dda27492f21d",
+      "name": "C_agent3",
+      "var_type": "hidden_state",
+      "dimensions": [
+        4
+      ],
+      "data_type": "float",
+      "description": "Agent 3 preferences",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "59fe601a-6e3c-4a52-8832-67a27a6c2d52",
+      "name": "D_agent3",
+      "var_type": "hidden_state",
+      "dimensions": [
+        9
+      ],
+      "data_type": "float",
+      "description": "Agent 3 position prior",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "aac8d8bf-6af3-4b9b-93db-9ec0670300b6",
+      "name": "s_agent3",
+      "var_type": "hidden_state",
+      "dimensions": [
+        9,
+        1
+      ],
+      "data_type": "float",
+      "description": "Agent 3 position belief",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "be2bb21e-e62c-4534-a014-85b6eb94a27c",
+      "name": "o_agent3",
+      "var_type": "observation",
+      "dimensions": [
+        4,
+        1
+      ],
+      "data_type": "integer",
+      "description": "Agent 3 observation",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "e514031b-8ba8-41bd-8ad8-ab69a51c31c5",
+      "name": "pi3",
+      "var_type": "policy",
+      "dimensions": [
+        4
+      ],
+      "data_type": "float",
+      "description": "Agent 3 policy",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "ff8c047c-4043-41b9-8ab6-4baa00b2cd08",
+      "name": "u_agent3",
+      "var_type": "action",
+      "dimensions": [
+        1
+      ],
+      "data_type": "integer",
+      "description": "Agent 3 action",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "f1ec9b40-3326-457a-939c-eb49745581bf",
+      "name": "G3",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Agent 3 EFE",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "d50e7cb0-aa10-4242-bc1f-cd3879b503d2",
+      "name": "env_signal",
+      "var_type": "hidden_state",
+      "dimensions": [
+        9,
+        1
+      ],
+      "data_type": "float",
+      "description": "Signal intensity at each grid cell (0.0 to 1.0)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "06df2fbd-d484-40e8-9e39-a402b1830dff",
+      "name": "signal_decay",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Signal decay rate per timestep",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "d6846fdd-9d71-4802-9ba1-69720977d8f4",
+      "name": "env_obs_likelihood",
+      "var_type": "observation",
+      "dimensions": [
+        4,
+        3
+      ],
+      "data_type": "float",
+      "description": "P(obs category | local signal level: none/low/high)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "6a987f70-8d04-43cd-be51-4bfa685f8ff1",
+      "name": "env_signal_prior",
+      "var_type": "prior_vector",
+      "dimensions": [
+        3
+      ],
+      "data_type": "float",
+      "description": "prior over local signal level (none/low/high)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "5d6df598-972a-489f-9be8-f854d10d3278",
+      "name": "signal_seek",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "signal-seeking gain applied to action selection",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "e6079783-81e0-4558-a0d2-6cd5ab8f08c0",
+      "name": "t",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "integer",
+      "description": "Discrete time step",
+      "constraints": {}
+    }
+  ],
+  "connections": [
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "0bc592bb-243f-4721-8a3b-67b93deeadab",
+      "source_variables": [
+        "D_agent1"
+      ],
+      "target_variables": [
+        "s_agent1"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "d31d1e77-9375-492a-80ae-c2b16ed08d05",
+      "source_variables": [
+        "s_agent1"
+      ],
+      "target_variables": [
+        "A_agent1"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "a37416b6-5541-43eb-993c-586a7104388c",
+      "source_variables": [
+        "A_agent1"
+      ],
+      "target_variables": [
+        "o_agent1"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "6a06ebd3-0854-4309-990d-786c86acdaf4",
+      "source_variables": [
+        "C_agent1"
+      ],
+      "target_variables": [
+        "G1"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "64d183c5-2ea2-413f-b7bb-b56377b0b1c8",
+      "source_variables": [
+        "G1"
+      ],
+      "target_variables": [
+        "pi1"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "61967548-2ea1-4a20-ad37-37685b48f043",
+      "source_variables": [
+        "pi1"
+      ],
+      "target_variables": [
+        "u_agent1"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "5d8a3c59-ee0f-45de-a330-6b8f4b66eeb1",
+      "source_variables": [
+        "B_agent1"
+      ],
+      "target_variables": [
+        "u_agent1"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "efdb1247-8bce-4aa1-80b1-ad14e27fdd0b",
+      "source_variables": [
+        "D_agent2"
+      ],
+      "target_variables": [
+        "s_agent2"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "112313c4-748f-4b75-bf99-2b10ddedfd70",
+      "source_variables": [
+        "s_agent2"
+      ],
+      "target_variables": [
+        "A_agent2"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "898abc36-e680-462c-88fe-9c449dfe273c",
+      "source_variables": [
+        "A_agent2"
+      ],
+      "target_variables": [
+        "o_agent2"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "6bfb67a7-a56c-4dbc-9955-cb9ba7de3362",
+      "source_variables": [
+        "C_agent2"
+      ],
+      "target_variables": [
+        "G2"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "49909f22-5c22-4701-b188-38ebfac9fe5a",
+      "source_variables": [
+        "G2"
+      ],
+      "target_variables": [
+        "pi2"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "c7be26b3-0375-4d65-a7e3-27403dbc29bf",
+      "source_variables": [
+        "pi2"
+      ],
+      "target_variables": [
+        "u_agent2"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "127d4c96-501d-4bb1-90d2-db41a9da8c5f",
+      "source_variables": [
+        "B_agent2"
+      ],
+      "target_variables": [
+        "u_agent2"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "50a33341-7727-40a0-b339-618e1ba90783",
+      "source_variables": [
+        "D_agent3"
+      ],
+      "target_variables": [
+        "s_agent3"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "4643485b-b991-486f-91a3-0d5fb79748b9",
+      "source_variables": [
+        "s_agent3"
+      ],
+      "target_variables": [
+        "A_agent3"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "9de4bd6c-283a-4feb-bb5e-993b6938cd9f",
+      "source_variables": [
+        "A_agent3"
+      ],
+      "target_variables": [
+        "o_agent3"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "4a97d9de-2c26-4ad6-8676-cd706ef355f6",
+      "source_variables": [
+        "C_agent3"
+      ],
+      "target_variables": [
+        "G3"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "a699b534-4de3-4578-acf2-869d201874ac",
+      "source_variables": [
+        "G3"
+      ],
+      "target_variables": [
+        "pi3"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "d01d54e9-0db0-48c0-b489-ad188f969cd7",
+      "source_variables": [
+        "pi3"
+      ],
+      "target_variables": [
+        "u_agent3"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "d44600ab-6490-42cd-96f6-41f2b239280d",
+      "source_variables": [
+        "B_agent3"
+      ],
+      "target_variables": [
+        "u_agent3"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "4a9d2499-c34f-41bd-8fbe-bc45c1c5b0e4",
+      "source_variables": [
+        "u_agent1"
+      ],
+      "target_variables": [
+        "env_signal"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "90fc716c-3527-41e4-a4a5-8d4909fa9ce7",
+      "source_variables": [
+        "u_agent2"
+      ],
+      "target_variables": [
+        "env_signal"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "9228477b-48c4-43da-b1d7-d6f699aa34e1",
+      "source_variables": [
+        "u_agent3"
+      ],
+      "target_variables": [
+        "env_signal"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "ddeaf74d-e484-4bcd-b148-41035fe84874",
+      "source_variables": [
+        "env_signal"
+      ],
+      "target_variables": [
+        "A_agent1"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "23e99e68-e4f9-4225-90e5-f540b52b2ca3",
+      "source_variables": [
+        "env_signal"
+      ],
+      "target_variables": [
+        "A_agent2"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "7519fb0f-cb9b-481f-b8d6-c0c61ed885c0",
+      "source_variables": [
+        "env_signal"
+      ],
+      "target_variables": [
+        "A_agent3"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "b0591f30-a621-4993-a090-2a7def07e09a",
+      "source_variables": [
+        "signal_decay"
+      ],
+      "target_variables": [
+        "env_signal"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    }
+  ],
+  "parameters": [
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "788fdf6a-932e-4fa2-b4f6-e82a3c5f8b31",
+      "name": "A_agent1",
+      "value": [
+        [
+          0.7,
+          0.7,
+          0.7,
+          0.7,
+          0.7,
+          0.7,
+          0.7,
+          0.7,
+          0.1
+        ],
+        [
+          0.15,
+          0.15,
+          0.15,
+          0.15,
+          0.15,
+          0.15,
+          0.15,
+          0.15,
+          0.1
+        ],
+        [
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1
+        ],
+        [
+          0.05,
+          0.05,
+          0.05,
+          0.05,
+          0.05,
+          0.05,
+          0.05,
+          0.05,
+          0.7
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "10008459-b291-4fef-9444-ef4bec1b7636",
+      "name": "A_agent2",
+      "value": [
+        [
+          0.7,
+          0.7,
+          0.7,
+          0.7,
+          0.7,
+          0.7,
+          0.7,
+          0.7,
+          0.1
+        ],
+        [
+          0.15,
+          0.15,
+          0.15,
+          0.15,
+          0.15,
+          0.15,
+          0.15,
+          0.15,
+          0.1
+        ],
+        [
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1
+        ],
+        [
+          0.05,
+          0.05,
+          0.05,
+          0.05,
+          0.05,
+          0.05,
+          0.05,
+          0.05,
+          0.7
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "b9c93c6c-4d49-4693-be0f-f16d8beaf739",
+      "name": "A_agent3",
+      "value": [
+        [
+          0.7,
+          0.7,
+          0.7,
+          0.7,
+          0.7,
+          0.7,
+          0.7,
+          0.7,
+          0.1
+        ],
+        [
+          0.15,
+          0.15,
+          0.15,
+          0.15,
+          0.15,
+          0.15,
+          0.15,
+          0.15,
+          0.1
+        ],
+        [
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1
+        ],
+        [
+          0.05,
+          0.05,
+          0.05,
+          0.05,
+          0.05,
+          0.05,
+          0.05,
+          0.05,
+          0.7
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "5f30fa2e-f2bf-4222-95b2-9a25ae98b0d7",
+      "name": "C_agent1",
+      "value": [
+        [
+          -0.5,
+          0.5,
+          1.5,
+          3.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "be5ffad1-3248-49aa-840f-8a63630853ab",
+      "name": "C_agent2",
+      "value": [
+        [
+          -0.5,
+          0.5,
+          1.5,
+          3.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "9161c7a6-ded3-433c-a6bc-f94ad7a61651",
+      "name": "C_agent3",
+      "value": [
+        [
+          -0.5,
+          0.5,
+          1.5,
+          3.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "dd54e6fc-69c8-4ec9-9ceb-6cc1e19b9d64",
+      "name": "D_agent1",
+      "value": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "97568083-9a68-4c70-b347-409ab06f8951",
+      "name": "D_agent2",
+      "value": [
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "fde6dcac-b90f-41f0-a390-643d2dfb2447",
+      "name": "D_agent3",
+      "value": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "ab3fd25c-4168-4477-b19c-96493753f4d8",
+      "name": "B_agent1",
+      "value": [
+        [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.9,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.9,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.9,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.1,
+            0.0,
+            0.0,
+            0.9,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.1,
+            0.0,
+            0.0,
+            0.9,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.1,
+            0.0,
+            0.0,
+            0.9
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.1,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.1,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.1
+          ]
+        ],
+        [
+          [
+            0.1,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.1,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.1,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.9,
+            0.0,
+            0.0,
+            0.1,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.9,
+            0.0,
+            0.0,
+            0.1,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.9,
+            0.0,
+            0.0,
+            0.1,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.9,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.9,
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.9,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        [
+          [
+            0.1,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.9,
+            0.1,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.9,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.1,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.9,
+            0.1,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.9,
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.1,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.9,
+            0.1,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.9,
+            1.0
+          ]
+        ],
+        [
+          [
+            1.0,
+            0.9,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.1,
+            0.9,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.1,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.9,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.1,
+            0.9,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.1,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.9,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.1,
+            0.9
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.1
+          ]
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "4380f438-670b-4178-bd25-ce01c896879c",
+      "name": "B_agent2",
+      "value": [
+        [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.9,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.9,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.9,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.1,
+            0.0,
+            0.0,
+            0.9,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.1,
+            0.0,
+            0.0,
+            0.9,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.1,
+            0.0,
+            0.0,
+            0.9
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.1,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.1,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.1
+          ]
+        ],
+        [
+          [
+            0.1,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.1,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.1,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.9,
+            0.0,
+            0.0,
+            0.1,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.9,
+            0.0,
+            0.0,
+            0.1,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.9,
+            0.0,
+            0.0,
+            0.1,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.9,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.9,
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.9,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        [
+          [
+            0.1,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.9,
+            0.1,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.9,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.1,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.9,
+            0.1,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.9,
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.1,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.9,
+            0.1,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.9,
+            1.0
+          ]
+        ],
+        [
+          [
+            1.0,
+            0.9,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.1,
+            0.9,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.1,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.9,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.1,
+            0.9,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.1,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.9,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.1,
+            0.9
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.1
+          ]
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "91c6a70d-82bd-4f66-acad-746b356910cf",
+      "name": "B_agent3",
+      "value": [
+        [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.9,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.9,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.9,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.1,
+            0.0,
+            0.0,
+            0.9,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.1,
+            0.0,
+            0.0,
+            0.9,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.1,
+            0.0,
+            0.0,
+            0.9
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.1,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.1,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.1
+          ]
+        ],
+        [
+          [
+            0.1,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.1,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.1,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.9,
+            0.0,
+            0.0,
+            0.1,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.9,
+            0.0,
+            0.0,
+            0.1,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.9,
+            0.0,
+            0.0,
+            0.1,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.9,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.9,
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.9,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        [
+          [
+            0.1,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.9,
+            0.1,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.9,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.1,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.9,
+            0.1,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.9,
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.1,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.9,
+            0.1,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.9,
+            1.0
+          ]
+        ],
+        [
+          [
+            1.0,
+            0.9,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.1,
+            0.9,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.1,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.9,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.1,
+            0.9,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.1,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.9,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.1,
+            0.9
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.1
+          ]
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "1ed1febb-4406-4710-b291-3c46e0c89d22",
+      "name": "env_signal",
+      "value": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "910a2948-533e-4475-8ac6-afa6f26aba7b",
+      "name": "signal_decay",
+      "value": [
+        [
+          0.9
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "a139a4ab-180f-471e-93c3-ff3347469258",
+      "name": "env_obs_likelihood",
+      "value": [
+        [
+          0.7,
+          0.1,
+          0.05
+        ],
+        [
+          0.15,
+          0.7,
+          0.15
+        ],
+        [
+          0.1,
+          0.15,
+          0.75
+        ],
+        [
+          0.05,
+          0.05,
+          0.05
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "38117306-43bf-4004-8777-373c5c69a20a",
+      "name": "env_signal_prior",
+      "value": [
+        [
+          0.7,
+          0.2,
+          0.1
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "b52027c0-f142-401c-a433-0bb0ff3172b5",
+      "name": "signal_seek",
+      "value": [
+        [
+          2.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "be8e69ea-b427-4777-b19b-85773ae72f5a",
+      "name": "num_hidden_states",
+      "value": 729,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "a94e8057-1b4a-43cb-be9b-b3c56ee8389c",
+      "name": "num_obs",
+      "value": 64,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "5f62dc84-9b7d-4fe5-bce0-43a4d97da624",
+      "name": "num_actions",
+      "value": 4,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "1c4004d4-15db-4527-8791-4bfc8ce45e6b",
+      "name": "num_agents",
+      "value": 3,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "834c7cad-8932-447b-8d9d-d214e7ec40ad",
+      "name": "grid_size",
+      "value": 9,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "e2aedda1-0e60-4266-b812-3275a6c493c6",
+      "name": "num_obs",
+      "value": 4,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "0fdce314-e018-40d3-9af0-a560fffa8f92",
+      "name": "num_actions",
+      "value": 4,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "ff6e13c9-a833-4998-a1a4-20485d13710d",
+      "name": "signal_decay_rate",
+      "value": 0.9,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "40487dbf-6174-4c82-aef6-34e5ad99dba4",
+      "name": "signal_deposit_rate",
+      "value": 0.3,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "9f171409-29f5-4234-97f6-3c6da5b72aef",
+      "name": "num_timesteps",
+      "value": 30,
+      "type_hint": null,
+      "description": null
+    }
+  ],
+  "equations": [],
+  "time_specification": {
+    "node_type": "TimeSpecification",
+    "source_location": null,
+    "metadata": {},
+    "id": "f1b82a39-be5d-4a0b-960d-0daf1aca6d5b",
+    "time_type": "Dynamic",
+    "discretization": null,
+    "horizon": 30,
+    "step_size": null
+  },
+  "ontology_mappings": [
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "3ef2c844-a023-4e8c-adc5-9271757d1d2b",
+      "variable_name": "A_agent1",
+      "ontology_term": "Agent1LikelihoodMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "9e08e377-48ea-4713-9a83-e54bc2eb6ae1",
+      "variable_name": "C_agent1",
+      "ontology_term": "Agent1PreferenceVector",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "e5ae8fce-039e-4e3a-90e9-6756094529b2",
+      "variable_name": "D_agent1",
+      "ontology_term": "Agent1PositionPrior",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "a428eedc-b6cc-41dc-a18c-fe213cbe57af",
+      "variable_name": "s_agent1",
+      "ontology_term": "Agent1PositionState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "89c49300-7ace-4317-87cb-b47a5ef81afc",
+      "variable_name": "o_agent1",
+      "ontology_term": "Agent1Observation",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "58ac4b2b-55a9-428d-98a8-359960665fd3",
+      "variable_name": "pi1",
+      "ontology_term": "Agent1PolicyVector",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "6a099841-2c7b-407b-8003-89af248e0663",
+      "variable_name": "u_agent1",
+      "ontology_term": "Agent1Action",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "abb2091b-8dad-4571-8a42-358003d07675",
+      "variable_name": "G1",
+      "ontology_term": "Agent1ExpectedFreeEnergy",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "6ff30b7d-0f1e-406b-bdb0-7c21af6336f1",
+      "variable_name": "A_agent2",
+      "ontology_term": "Agent2LikelihoodMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "61603a98-b254-4dfe-a550-5d6c21157107",
+      "variable_name": "C_agent2",
+      "ontology_term": "Agent2PreferenceVector",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "1592e96c-a0cb-448b-8715-fd2e49dc3dc6",
+      "variable_name": "D_agent2",
+      "ontology_term": "Agent2PositionPrior",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "77f61d19-39a3-471f-9311-5c3d8cbd1fec",
+      "variable_name": "s_agent2",
+      "ontology_term": "Agent2PositionState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "038c1b20-1c27-4ca8-9dd0-24434300fd19",
+      "variable_name": "o_agent2",
+      "ontology_term": "Agent2Observation",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "1ca51ebe-9151-439b-a4e5-134718aaacac",
+      "variable_name": "pi2",
+      "ontology_term": "Agent2PolicyVector",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "1e59db54-84e1-41b7-bdcc-e0cc8f2a9ae4",
+      "variable_name": "u_agent2",
+      "ontology_term": "Agent2Action",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "273dca2a-75e8-4083-8019-dbff4391576a",
+      "variable_name": "G2",
+      "ontology_term": "Agent2ExpectedFreeEnergy",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "c9b6165d-062c-44cd-94d0-09146be3f4b6",
+      "variable_name": "A_agent3",
+      "ontology_term": "Agent3LikelihoodMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "aaf0787c-4153-4ab2-9ae9-8a2ae0ae86ab",
+      "variable_name": "C_agent3",
+      "ontology_term": "Agent3PreferenceVector",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "e0ab6e7c-cf67-49cc-acbe-073d33d617dc",
+      "variable_name": "D_agent3",
+      "ontology_term": "Agent3PositionPrior",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "846030bc-2665-44a4-bf22-58e371ccff0b",
+      "variable_name": "s_agent3",
+      "ontology_term": "Agent3PositionState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "4d66fc5b-0024-4f4d-aaa6-8d563cf6d425",
+      "variable_name": "o_agent3",
+      "ontology_term": "Agent3Observation",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "1298e205-cb0b-4288-9833-1d033fdb1ebd",
+      "variable_name": "pi3",
+      "ontology_term": "Agent3PolicyVector",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "95d258e2-a4c2-428f-a1a1-54b00e12aba1",
+      "variable_name": "u_agent3",
+      "ontology_term": "Agent3Action",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "11da6d79-ec3e-4223-9c4d-98938a5950ef",
+      "variable_name": "G3",
+      "ontology_term": "Agent3ExpectedFreeEnergy",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "3b0ef1da-745d-4b74-b849-61b1e094861c",
+      "variable_name": "env_signal",
+      "ontology_term": "EnvironmentalSignal",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "fc08905e-7b61-4416-9d99-378f0a7a4f10",
+      "variable_name": "signal_decay",
+      "ontology_term": "SignalDecayRate",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "388a418c-3510-4d37-8fe8-e935ff891695",
+      "variable_name": "t",
+      "ontology_term": "Time",
+      "description": null
+    }
+  ],
+  "source_format": "markdown",
+  "created_at": "2026-09-05T20:30:46.252980",
+  "modified_at": "2026-09-05T20:30:46.252981",
+  "checksum": null,
+  "extensions": {
+    "gnn_section": "ActInfPOMDP_MultiAgent",
+    "footer": "Stigmergic Swarm Active Inference v1 - GNN Representation.\n3 agents coordinating via environmental traces only.\nNo direct communication \u2014 emergent coordination from shared signals.\nModels ant colony foraging and decentralized robotic coordination.",
+    "signature": "Cryptographic signature goes here"
+  },
+  "raw_sections": {
+    "GNNSection": "ActInfPOMDP_MultiAgent",
+    "GNNVersionAndFlags": "GNN v1",
+    "ModelName": "Stigmergic Swarm Active Inference",
+    "ModelAnnotation": "Three Active Inference agents coordinating via stigmergy (environmental traces):\n\n- No direct communication between agents \u2014 coordination emerges from environment\n- Agents deposit and sense environmental signals (pheromone analogy)\n- Shared 3x3 grid environment with signal intensity at each cell\n- Each agent navigates independently while responding to accumulated signals\n- Signal deposition: actions leave traces that other agents can observe\n- Signal decay: environmental signals decay over time (volatility)\n- Demonstrates emergent collective behavior from individual free energy minimization\n- Models ant colony foraging, distributed robotics, and decentralized coordination",
+    "StateSpaceBlock": "# Agent 1\n\nA_agent1[4,9,type=float]         # Agent 1 likelihood: P(obs | position on 3x3 grid)\nB_agent1[9,9,4,type=float]       # Agent 1 transitions: (9 positions \u00d7 4 actions: N/S/E/W)\nC_agent1[4,type=float]           # Agent 1 preferences over observations\nD_agent1[9,type=float]           # Agent 1 position prior\ns_agent1[9,1,type=float]         # Agent 1 position belief (9 grid cells)\no_agent1[4,1,type=int]           # Agent 1 observation: (empty, signal_low, signal_high, goal)\npi1[4,type=float]          # Agent 1 policy\nu_agent1[1,type=int]             # Agent 1 action\nG1[pi1,type=float]         # Agent 1 EFE\n\n# Agent 2\n\nA_agent2[4,9,type=float]         # Agent 2 likelihood\nB_agent2[9,9,4,type=float]       # Agent 2 transitions\nC_agent2[4,type=float]           # Agent 2 preferences\nD_agent2[9,type=float]           # Agent 2 position prior\ns_agent2[9,1,type=float]         # Agent 2 position belief\no_agent2[4,1,type=int]           # Agent 2 observation\npi2[4,type=float]          # Agent 2 policy\nu_agent2[1,type=int]             # Agent 2 action\nG2[pi2,type=float]         # Agent 2 EFE\n\n# Agent 3\n\nA_agent3[4,9,type=float]         # Agent 3 likelihood\nB_agent3[9,9,4,type=float]       # Agent 3 transitions\nC_agent3[4,type=float]           # Agent 3 preferences\nD_agent3[9,type=float]           # Agent 3 position prior\ns_agent3[9,1,type=float]         # Agent 3 position belief\no_agent3[4,1,type=int]           # Agent 3 observation\npi3[4,type=float]          # Agent 3 policy\nu_agent3[1,type=int]             # Agent 3 action\nG3[pi3,type=float]         # Agent 3 EFE\n\n# Shared environment (stigmergic signals)\n\nenv_signal[9,1,type=float]     # Signal intensity at each grid cell (0.0 to 1.0)\nsignal_decay[1,type=float]     # Signal decay rate per timestep\n\n# Env-conditioned observation likelihood + latent signal prior (MAJ-03)\n# Each agent infers the local environmental signal level as a latent from\n# its observations (empty / signal_low / signal_high / goal) via this likelihood,\n# and conditions its action selection (signal-seeking) on the inferred signal.\nenv_obs_likelihood[4,3,type=float]  # P(obs category | local signal level: none/low/high)\nenv_signal_prior[3,type=float]      # prior over local signal level (none/low/high)\nsignal_seek[1,type=float]           # signal-seeking gain applied to action selection\n\n# Time\n\nt[1,type=int]                  # Discrete time step",
+    "Connections": "# Agent 1\n\nD_agent1>s_agent1\ns_agent1-A_agent1\nA_agent1-o_agent1\nC_agent1>G1\nG1>pi1\npi1>u_agent1\nB_agent1>u_agent1\n\n# Agent 2\n\nD_agent2>s_agent2\ns_agent2-A_agent2\nA_agent2-o_agent2\nC_agent2>G2\nG2>pi2\npi2>u_agent2\nB_agent2>u_agent2\n\n# Agent 3\n\nD_agent3>s_agent3\ns_agent3-A_agent3\nA_agent3-o_agent3\nC_agent3>G3\nG3>pi3\npi3>u_agent3\nB_agent3>u_agent3\n\n# Stigmergic coupling via environment\n\nu_agent1>env_signal\nu_agent2>env_signal\nu_agent3>env_signal\nenv_signal-A_agent1\nenv_signal-A_agent2\nenv_signal-A_agent3\nsignal_decay>env_signal",
+    "InitialParameterization": "# All agents have identical generative models (homogeneous swarm)\n\n# Likelihood: observation depends on position and environmental signal\n\n# At each cell, agent observes: empty (no signal), signal_low, signal_high, or goal\n\nA_agent1={\n  (0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.1),\n  (0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.1),\n  (0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1),\n  (0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.7)\n}\n\nA_agent2={\n  (0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.1),\n  (0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.1),\n  (0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1),\n  (0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.7)\n}\n\nA_agent3={\n  (0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.1),\n  (0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.1),\n  (0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1),\n  (0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.7)\n}\n\n# Shared preferences: follow signals, seek goal\n\nC_agent1={(-0.5, 0.5, 1.5, 3.0)}\nC_agent2={(-0.5, 0.5, 1.5, 3.0)}\nC_agent3={(-0.5, 0.5, 1.5, 3.0)}\n\n# Starting positions: agents start at different corners\n\nD_agent1={(1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)}\nD_agent2={(0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)}\nD_agent3={(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0)}\n\n\n\n# B: per-agent transitions on the 3x3 grid (N/S/E/W)\n\nB_agent1={\n  ( (1.0, 0.0, 0.0, 0.9, 0.0, 0.0, 0.0, 0.0, 0.0), (0.0, 1.0, 0.0, 0.0, 0.9, 0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 1.0, 0.0, 0.0, 0.9, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.1, 0.0, 0.0, 0.9, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.1, 0.0, 0.0, 0.9, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.0, 0.0, 0.9), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1) ),\n  ( (0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.0, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.9, 0.0, 0.0, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0), (0.0, 0.9, 0.0, 0.0, 0.1, 0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.9, 0.0, 0.0, 0.1, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.9, 0.0, 0.0, 1.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.9, 0.0, 0.0, 1.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.9, 0.0, 0.0, 1.0) ),\n  ( (0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.9, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.0, 0.9, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.9, 0.1, 0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.9, 1.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.9, 0.1, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.9, 1.0) ),\n  ( (1.0, 0.9, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.0, 0.1, 0.9, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 1.0, 0.9, 0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.1, 0.9, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.9, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.9), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1) )\n}\n\nB_agent2={\n  ( (1.0, 0.0, 0.0, 0.9, 0.0, 0.0, 0.0, 0.0, 0.0), (0.0, 1.0, 0.0, 0.0, 0.9, 0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 1.0, 0.0, 0.0, 0.9, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.1, 0.0, 0.0, 0.9, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.1, 0.0, 0.0, 0.9, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.0, 0.0, 0.9), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1) ),\n  ( (0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.0, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.9, 0.0, 0.0, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0), (0.0, 0.9, 0.0, 0.0, 0.1, 0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.9, 0.0, 0.0, 0.1, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.9, 0.0, 0.0, 1.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.9, 0.0, 0.0, 1.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.9, 0.0, 0.0, 1.0) ),\n  ( (0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.9, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.0, 0.9, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.9, 0.1, 0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.9, 1.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.9, 0.1, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.9, 1.0) ),\n  ( (1.0, 0.9, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.0, 0.1, 0.9, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 1.0, 0.9, 0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.1, 0.9, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.9, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.9), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1) )\n}\n\nB_agent3={\n  ( (1.0, 0.0, 0.0, 0.9, 0.0, 0.0, 0.0, 0.0, 0.0), (0.0, 1.0, 0.0, 0.0, 0.9, 0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 1.0, 0.0, 0.0, 0.9, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.1, 0.0, 0.0, 0.9, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.1, 0.0, 0.0, 0.9, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.0, 0.0, 0.9), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1) ),\n  ( (0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.0, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.9, 0.0, 0.0, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0), (0.0, 0.9, 0.0, 0.0, 0.1, 0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.9, 0.0, 0.0, 0.1, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.9, 0.0, 0.0, 1.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.9, 0.0, 0.0, 1.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.9, 0.0, 0.0, 1.0) ),\n  ( (0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.9, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.0, 0.9, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.9, 0.1, 0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.9, 1.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.9, 0.1, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.9, 1.0) ),\n  ( (1.0, 0.9, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.0, 0.1, 0.9, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 1.0, 0.9, 0.0, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.1, 0.9, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.9, 0.0), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.9), (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.1) )\n}\n\n\n# Initial environment: no signals\n\nenv_signal={(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)}\n\n# Signal decay: 10% per timestep\n\nsignal_decay={(0.9)}\n\n# Env-conditioned observation likelihood (MAJ-03):\n# rows = observation categories (empty, signal_low, signal_high, goal);\n# columns = local signal level (none, low, high). Each column is normalized so\n# P(obs | signal level) is a valid likelihood, and the agent uses it to infer\n# the latent signal level from each observation.\nenv_obs_likelihood={\n  (0.70, 0.10, 0.05),\n  (0.15, 0.70, 0.15),\n  (0.10, 0.15, 0.75),\n  (0.05, 0.05, 0.05)\n}\n\n# Prior over local signal level (none, low, high): mostly signal-free initially.\nenv_signal_prior={(0.70, 0.20, 0.10)}\n\n# Signal-seeking gain: scales how strongly the inferred latent signal biases\n# action selection toward signal-rich observations (trophotaxis / stigmergy).\nsignal_seek={(2.0)}",
+    "Equations": "# Each agent independently minimizes VFE and selects actions via EFE\n\n# Stigmergic coupling mechanism\n\n# env_signal[cell] += deposit_rate when agent visits cell\n\n# env_signal[cell] *= signal_decay each timestep\n\n# Agent likelihood A is modulated by env_signal\n\n# P(signal_obs | cell) increases with env_signal[cell]\n\n# No direct communication \u2014 coordination emerges from shared environment",
+    "Time": "Time=t\nDynamic\nDiscrete\nModelTimeHorizon=30",
+    "ActInfOntologyAnnotation": "A_agent1=Agent1LikelihoodMatrix\nC_agent1=Agent1PreferenceVector\nD_agent1=Agent1PositionPrior\ns_agent1=Agent1PositionState\no_agent1=Agent1Observation\npi1=Agent1PolicyVector\nu_agent1=Agent1Action\nG1=Agent1ExpectedFreeEnergy\nA_agent2=Agent2LikelihoodMatrix\nC_agent2=Agent2PreferenceVector\nD_agent2=Agent2PositionPrior\ns_agent2=Agent2PositionState\no_agent2=Agent2Observation\npi2=Agent2PolicyVector\nu_agent2=Agent2Action\nG2=Agent2ExpectedFreeEnergy\nA_agent3=Agent3LikelihoodMatrix\nC_agent3=Agent3PreferenceVector\nD_agent3=Agent3PositionPrior\ns_agent3=Agent3PositionState\no_agent3=Agent3Observation\npi3=Agent3PolicyVector\nu_agent3=Agent3Action\nG3=Agent3ExpectedFreeEnergy\nenv_signal=EnvironmentalSignal\nsignal_decay=SignalDecayRate\nt=Time",
+    "ModelParameters": "num_hidden_states: 729\nnum_obs: 64\nnum_actions: 4\nnum_agents: 3\ngrid_size: 9\nnum_obs: 4\nnum_actions: 4\nsignal_decay_rate: 0.9\nsignal_deposit_rate: 0.3\nnum_timesteps: 30",
+    "Footer": "Stigmergic Swarm Active Inference v1 - GNN Representation.\n3 agents coordinating via environmental traces only.\nNo direct communication \u2014 emergent coordination from shared signals.\nModels ant colony foraging and decentralized robotic coordination.",
+    "Signature": "Cryptographic signature goes here"
+  },
+  "initialparameterization": {
+    "A_agent1": [
+      [
+        0.7,
+        0.7,
+        0.7,
+        0.7,
+        0.7,
+        0.7,
+        0.7,
+        0.7,
+        0.1
+      ],
+      [
+        0.15,
+        0.15,
+        0.15,
+        0.15,
+        0.15,
+        0.15,
+        0.15,
+        0.15,
+        0.1
+      ],
+      [
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1
+      ],
+      [
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.7
+      ]
+    ],
+    "A_agent2": [
+      [
+        0.7,
+        0.7,
+        0.7,
+        0.7,
+        0.7,
+        0.7,
+        0.7,
+        0.7,
+        0.1
+      ],
+      [
+        0.15,
+        0.15,
+        0.15,
+        0.15,
+        0.15,
+        0.15,
+        0.15,
+        0.15,
+        0.1
+      ],
+      [
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1
+      ],
+      [
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.7
+      ]
+    ],
+    "A_agent3": [
+      [
+        0.7,
+        0.7,
+        0.7,
+        0.7,
+        0.7,
+        0.7,
+        0.7,
+        0.7,
+        0.1
+      ],
+      [
+        0.15,
+        0.15,
+        0.15,
+        0.15,
+        0.15,
+        0.15,
+        0.15,
+        0.15,
+        0.1
+      ],
+      [
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1
+      ],
+      [
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.7
+      ]
+    ],
+    "C_agent1": [
+      [
+        -0.5,
+        0.5,
+        1.5,
+        3.0
+      ]
+    ],
+    "C_agent2": [
+      [
+        -0.5,
+        0.5,
+        1.5,
+        3.0
+      ]
+    ],
+    "C_agent3": [
+      [
+        -0.5,
+        0.5,
+        1.5,
+        3.0
+      ]
+    ],
+    "D_agent1": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "D_agent2": [
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "D_agent3": [
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "B_agent1": [
+      [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.9,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.9
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1
+        ]
+      ],
+      [
+        [
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.9,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      [
+        [
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.9,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.9,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.9,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.9,
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.9,
+          0.1,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.9,
+          1.0
+        ]
+      ],
+      [
+        [
+          1.0,
+          0.9,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.1,
+          0.9,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.9,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.9,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.9,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.9
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1
+        ]
+      ]
+    ],
+    "B_agent2": [
+      [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.9,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.9
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1
+        ]
+      ],
+      [
+        [
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.9,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      [
+        [
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.9,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.9,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.9,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.9,
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.9,
+          0.1,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.9,
+          1.0
+        ]
+      ],
+      [
+        [
+          1.0,
+          0.9,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.1,
+          0.9,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.9,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.9,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.9,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.9
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1
+        ]
+      ]
+    ],
+    "B_agent3": [
+      [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.9,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.9
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1
+        ]
+      ],
+      [
+        [
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.9,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      [
+        [
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.9,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.9,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.9,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.9,
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.9,
+          0.1,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.9,
+          1.0
+        ]
+      ],
+      [
+        [
+          1.0,
+          0.9,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.1,
+          0.9,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.9,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.9,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.9,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.9
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1
+        ]
+      ]
+    ],
+    "env_signal": [
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "signal_decay": [
+      [
+        0.9
+      ]
+    ],
+    "env_obs_likelihood": [
+      [
+        0.7,
+        0.1,
+        0.05
+      ],
+      [
+        0.15,
+        0.7,
+        0.15
+      ],
+      [
+        0.1,
+        0.15,
+        0.75
+      ],
+      [
+        0.05,
+        0.05,
+        0.05
+      ]
+    ],
+    "env_signal_prior": [
+      [
+        0.7,
+        0.2,
+        0.1
+      ]
+    ],
+    "signal_seek": [
+      [
+        2.0
+      ]
+    ],
+    "num_hidden_states": 729,
+    "num_obs": 4,
+    "num_actions": 4,
+    "num_agents": 3,
+    "grid_size": 9,
+    "signal_decay_rate": 0.9,
+    "signal_deposit_rate": 0.3,
+    "num_timesteps": 30
+  },
+  "model_parameters": {
+    "A_agent1": [
+      [
+        0.7,
+        0.7,
+        0.7,
+        0.7,
+        0.7,
+        0.7,
+        0.7,
+        0.7,
+        0.1
+      ],
+      [
+        0.15,
+        0.15,
+        0.15,
+        0.15,
+        0.15,
+        0.15,
+        0.15,
+        0.15,
+        0.1
+      ],
+      [
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1
+      ],
+      [
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.7
+      ]
+    ],
+    "A_agent2": [
+      [
+        0.7,
+        0.7,
+        0.7,
+        0.7,
+        0.7,
+        0.7,
+        0.7,
+        0.7,
+        0.1
+      ],
+      [
+        0.15,
+        0.15,
+        0.15,
+        0.15,
+        0.15,
+        0.15,
+        0.15,
+        0.15,
+        0.1
+      ],
+      [
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1
+      ],
+      [
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.7
+      ]
+    ],
+    "A_agent3": [
+      [
+        0.7,
+        0.7,
+        0.7,
+        0.7,
+        0.7,
+        0.7,
+        0.7,
+        0.7,
+        0.1
+      ],
+      [
+        0.15,
+        0.15,
+        0.15,
+        0.15,
+        0.15,
+        0.15,
+        0.15,
+        0.15,
+        0.1
+      ],
+      [
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1
+      ],
+      [
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.05,
+        0.7
+      ]
+    ],
+    "C_agent1": [
+      [
+        -0.5,
+        0.5,
+        1.5,
+        3.0
+      ]
+    ],
+    "C_agent2": [
+      [
+        -0.5,
+        0.5,
+        1.5,
+        3.0
+      ]
+    ],
+    "C_agent3": [
+      [
+        -0.5,
+        0.5,
+        1.5,
+        3.0
+      ]
+    ],
+    "D_agent1": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "D_agent2": [
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "D_agent3": [
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "B_agent1": [
+      [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.9,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.9
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1
+        ]
+      ],
+      [
+        [
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.9,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      [
+        [
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.9,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.9,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.9,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.9,
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.9,
+          0.1,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.9,
+          1.0
+        ]
+      ],
+      [
+        [
+          1.0,
+          0.9,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.1,
+          0.9,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.9,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.9,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.9,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.9
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1
+        ]
+      ]
+    ],
+    "B_agent2": [
+      [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.9,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.9
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1
+        ]
+      ],
+      [
+        [
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.9,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      [
+        [
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.9,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.9,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.9,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.9,
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.9,
+          0.1,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.9,
+          1.0
+        ]
+      ],
+      [
+        [
+          1.0,
+          0.9,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.1,
+          0.9,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.9,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.9,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.9,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.9
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1
+        ]
+      ]
+    ],
+    "B_agent3": [
+      [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.9,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.9
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1
+        ]
+      ],
+      [
+        [
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.9,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.9,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      [
+        [
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.9,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.9,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.9,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.9,
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.9,
+          0.1,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.9,
+          1.0
+        ]
+      ],
+      [
+        [
+          1.0,
+          0.9,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.1,
+          0.9,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.9,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.9,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.9,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.9
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1
+        ]
+      ]
+    ],
+    "env_signal": [
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "signal_decay": [
+      [
+        0.9
+      ]
+    ],
+    "env_obs_likelihood": [
+      [
+        0.7,
+        0.1,
+        0.05
+      ],
+      [
+        0.15,
+        0.7,
+        0.15
+      ],
+      [
+        0.1,
+        0.15,
+        0.75
+      ],
+      [
+        0.05,
+        0.05,
+        0.05
+      ]
+    ],
+    "env_signal_prior": [
+      [
+        0.7,
+        0.2,
+        0.1
+      ]
+    ],
+    "signal_seek": [
+      [
+        2.0
+      ]
+    ],
+    "num_hidden_states": 729,
+    "num_obs": 4,
+    "num_actions": 4,
+    "num_agents": 3,
+    "grid_size": 9,
+    "signal_decay_rate": 0.9,
+    "signal_deposit_rate": 0.3,
+    "num_timesteps": 30
+  }
+}

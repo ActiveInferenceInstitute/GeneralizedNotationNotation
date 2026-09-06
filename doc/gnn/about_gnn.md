@@ -103,11 +103,11 @@ The GNN file structure is designed to be machine-readable, with each section cle
 - Automatic conversion to computational implementations
 - Visualization of model structure
 
-For punctuation tables and symbol semantics, see `src/gnn/documentation/punctuation.md`. For cross-model comparison via shared ontology annotations, see **[Ontology System](advanced/ontology_system.md)** and Step 10 in **[src/AGENTS.md](../../src/AGENTS.md)**.
+For punctuation tables and symbol semantics, see `src/gnn/documentation/punctuation.md`. For cross-model comparison via shared ontology annotations, see **[Ontology System](advanced/ontology_system.md)** and Step 10 in **[src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)**.
 
 ### GNN Processing Pipeline
 
-GNN files are processed through a comprehensive 25-step pipeline orchestrated by **`src/main.py`**. The pipeline handles:
+GNN files are processed through a comprehensive 25-step pipeline orchestrated by **`src/gnn/main.py`**. The pipeline handles:
 
 ### Parsing and Validation (Steps 3, 5, 6)
 
@@ -129,30 +129,30 @@ GNN files are processed through a comprehensive 25-step pipeline orchestrated by
 
 For complete pipeline documentation, see:
 
-- **[src/AGENTS.md](../../src/AGENTS.md)**: Master agent scaffolding and module registry
-- **[src/README.md](../../src/README.md)**: Pipeline architecture and safety documentation
+- **[src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)**: Master agent scaffolding and module registry
+- **[src/gnn/README.md](../../src/gnn/README.md)**: Pipeline architecture and safety documentation
 - **[GNN Tools and Resources](operations/gnn_tools.md)**: Detailed pipeline usage examples
 
 **Quick Start:**
 
 ```bash
 # Process a GNN model through the full pipeline
-uv run python src/main.py --target-dir input/gnn_files --verbose
+uv run python src/gnn/main.py --target-dir input/gnn_files --verbose
 ```
 
 ```bash
 # Parse GNN files with the step-3 orchestrator
-uv run python src/3_gnn.py --target-dir input/gnn_files --output-dir output --verbose
+uv run python src/gnn/3_gnn.py --target-dir input/gnn_files --output-dir output --verbose
 ```
 
 ```bash
 # Run specific steps
-uv run python src/main.py --only-steps "3,5,11,12" --target-dir input/gnn_files
+uv run python src/gnn/main.py --only-steps "3,5,11,12" --target-dir input/gnn_files
 ```
 
 ```bash
 # Step 3: GNN Core Processing
-uv run python src/main.py --only-steps "3" --target-dir input/gnn_files --verbose
+uv run python src/gnn/main.py --only-steps "3" --target-dir input/gnn_files --verbose
 ```
 
 ```bash
@@ -239,7 +239,7 @@ B=TransitionMatrix
 `A` is the likelihood (observation) matrix and `B` is the transition matrix.
 Matrix literals use brace-and-tuple notation (`{(…),(…)}`), not Python-style
 nested lists; ontology terms must exist in
-[`src/ontology/act_inf_ontology_terms.json`](../../src/ontology/act_inf_ontology_terms.json).
+[`src/gnn/ontology/act_inf_ontology_terms.json`](../../src/gnn/ontology/act_inf_ontology_terms.json).
 
 ## The Triple Play: Modalities
 

@@ -39,9 +39,9 @@ The GNN system implements a comprehensive 25-step pipeline that transforms GNN m
 
 ```mermaid
 graph TB
-  A["User/Researcher"] --> B["src/main.py<br/>Pipeline Orchestrator"]
+  A["User/Researcher"] --> B["src/gnn/main.py<br/>Pipeline Orchestrator"]
   B --> C["25 Numbered Scripts<br/>(0_template.py → 24_intelligent_analysis.py)"]
-  C --> D["Module set<br/>(see src/AGENTS.md)"]
+  C --> D["Module set<br/>(see src/gnn/AGENTS.md)"]
   D --> E["Structured Outputs<br/>(output/step_N_output/)"]
 
   B --> F["Infrastructure Layer<br/>(utils/, pipeline/)"]
@@ -61,7 +61,7 @@ The GNN pipeline implements a sophisticated execution model with comprehensive m
 ```mermaid
 sequenceDiagram
   participant U as User/Researcher
-  participant M as src/main.py
+  participant M as src/gnn/main.py
   participant S as Step N Script
   participant Mod as Agent Module
   participant Out as output/*
@@ -133,13 +133,13 @@ graph TD
 
 ## Long-Running Orchestration (v3.0.0)
 
-Version 3.0.0 ("Long-Running Orchestration") adds a safe-by-design surface under `src/pipeline/` for durable, resumable, and auditable pipeline runs. The defining property is that no module mutates live infrastructure: every contract generates, validates, replays, or plans **data only**, so the entire surface is inspectable before anything is acted upon. See [doc/pipeline/v3_orchestration.md](doc/pipeline/v3_orchestration.md) for the full reference.
+Version 3.0.0 ("Long-Running Orchestration") adds a safe-by-design surface under `src/gnn/pipeline/` for durable, resumable, and auditable pipeline runs. The defining property is that no module mutates live infrastructure: every contract generates, validates, replays, or plans **data only**, so the entire surface is inspectable before anything is acted upon. See [doc/pipeline/v3_orchestration.md](doc/pipeline/v3_orchestration.md) for the full reference.
 
 ### Three Safe-by-Design Contracts
 
-- **Durable observation streams** (`src/pipeline/durable_streams.py`): append-only, replayable records of pipeline observations. Streams are written and read back as synthetic data, never as live side effects.
-- **Resumable run sessions** (`src/pipeline/run_session.py`): session state that captures progress so a run can be resumed deterministically. Sessions describe what would resume; they do not execute steps themselves.
-- **Auditable container plans** (`src/pipeline/container_plan.py`): declarative container execution plans emitted as inspectable data, allowing the intended environment to be reviewed without launching any container.
+- **Durable observation streams** (`src/gnn/pipeline/durable_streams.py`): append-only, replayable records of pipeline observations. Streams are written and read back as synthetic data, never as live side effects.
+- **Resumable run sessions** (`src/gnn/pipeline/run_session.py`): session state that captures progress so a run can be resumed deterministically. Sessions describe what would resume; they do not execute steps themselves.
+- **Auditable container plans** (`src/gnn/pipeline/container_plan.py`): declarative container execution plans emitted as inspectable data, allowing the intended environment to be reviewed without launching any container.
 
 ### Data-Only Inspectable Surface
 
@@ -149,9 +149,9 @@ The three contracts compose into a single inspectable surface. Each produces a s
 
 The contracts are wired into the pipeline additively, leaving existing behavior unchanged:
 
-- `src/pipeline/session_acceptance.py` — validates session state against acceptance criteria.
-- `src/pipeline/run_manifest.py` — assembles the run manifest from session and stream data.
-- `src/pipeline/pipeline_container_plan.py` — derives container plans from pipeline configuration.
+- `src/gnn/pipeline/session_acceptance.py` — validates session state against acceptance criteria.
+- `src/gnn/pipeline/run_manifest.py` — assembles the run manifest from session and stream data.
+- `src/gnn/pipeline/pipeline_container_plan.py` — derives container plans from pipeline configuration.
 
 A strict acceptance gate, `scripts/run_v3_orchestration_acceptance.py`, exercises these contracts end-to-end, and three new MCP tools expose the orchestration surface to agent clients.
 
@@ -159,11 +159,11 @@ A strict acceptance gate, `scripts/run_v3_orchestration_acceptance.py`, exercise
 
 Version 3.2.0 makes every exemplar under `input/gnn_files/` render *and* execute on every framework that can represent it, and flag the rest explicitly:
 
-- **Model kinds**: `src/render/pomdp_contract.py` (`detect_model_kind`) splits specs into discrete POMDP/HMM (categorical `A/B/C/D[/E]`) and continuous linear-Gaussian (`F/H/Q/R`, `prior_mean/prior_cov`, optional `goal_mean/control_gain`). Continuous blocks pass through the render processor verbatim.
-- **Framework capabilities**: `src/render/framework_registry.py` is the single declaration of the nine frameworks and carries `supports_continuous` per entry. Frameworks without continuous support (PyMDP, ActiveInference.jl, DisCoPy, bnlearn) return the `unsupported` render status for continuous models; it is counted separately in `render_processing_summary.json` and never reaches Step 12.
-- **Shared LGSSM generator**: `src/render/continuous_script.py` produces the online Kalman filter (Joseph-form update, closed-loop control) used by the JAX, NumPyro, PyTorch and Stan renderers; RxInfer.jl keeps its native continuous strategy.
-- **Stan execution**: `src/render/stan/stan_renderer.py` emits runnable HMM and LGSSM programs plus a cmdstanpy driver, and `src/execute/stan/` runs them (skipped, not failed, without `cmdstanpy`/CmdStan).
-- **Step 12 summary merge**: `src/execute/processor.py` merges the prior `execution_summary.json` so one durable summary covers every input folder, mirroring Step 11.
+- **Model kinds**: `src/gnn/render/pomdp_contract.py` (`detect_model_kind`) splits specs into discrete POMDP/HMM (categorical `A/B/C/D[/E]`) and continuous linear-Gaussian (`F/H/Q/R`, `prior_mean/prior_cov`, optional `goal_mean/control_gain`). Continuous blocks pass through the render processor verbatim.
+- **Framework capabilities**: `src/gnn/render/framework_registry.py` is the single declaration of the nine frameworks and carries `supports_continuous` per entry. Frameworks without continuous support (PyMDP, ActiveInference.jl, DisCoPy, bnlearn) return the `unsupported` render status for continuous models; it is counted separately in `render_processing_summary.json` and never reaches Step 12.
+- **Shared LGSSM generator**: `src/gnn/render/continuous_script.py` produces the online Kalman filter (Joseph-form update, closed-loop control) used by the JAX, NumPyro, PyTorch and Stan renderers; RxInfer.jl keeps its native continuous strategy.
+- **Stan execution**: `src/gnn/render/stan/stan_renderer.py` emits runnable HMM and LGSSM programs plus a cmdstanpy driver, and `src/gnn/execute/stan/` runs them (skipped, not failed, without `cmdstanpy`/CmdStan).
+- **Step 12 summary merge**: `src/gnn/execute/processor.py` merges the prior `execution_summary.json` so one durable summary covers every input folder, mirroring Step 11.
 
 See `CHANGELOG.md` §3.2.0 and the README section "Model Kinds and Framework Support".
 
@@ -173,15 +173,15 @@ See `CHANGELOG.md` §3.2.0 and the README section "Model Kinds and Framework Sup
 
 **Core Infrastructure:**
 
-- `src/main.py` - Main pipeline orchestrator with comprehensive monitoring
-- `src/utils/` - Complete utility library with logging, validation, and monitoring
-- `src/pipeline/` - Full pipeline configuration and management system
-- `src/tests/` - Comprehensive test suite with real data validation
+- `src/gnn/main.py` - Main pipeline orchestrator with comprehensive monitoring
+- `src/gnn/utils/` - Complete utility library with logging, validation, and monitoring
+- `src/gnn/pipeline/` - Full pipeline configuration and management system
+- `tests/` - Comprehensive test suite with real data validation
 
 **Agent Modules:**
 
 - All 25 pipeline steps (0-24) implemented with thin orchestrator pattern
-- Agent/module coverage is tracked in `src/AGENTS.md`
+- Agent/module coverage is tracked in `src/gnn/AGENTS.md`
 - Complete MCP integration across all applicable modules
 - Repository coverage is enforced by the live `pyproject.toml` policy
   (`fail_under = 50`); use the generated coverage report for per-module detail
@@ -274,7 +274,7 @@ Adding new pipeline steps and modules follows a well-established pattern that en
 
 ### 4. **Add Comprehensive Testing**
 
-- Create integration tests in `src/tests/newstep/test_newstep_integration.py`
+- Create integration tests in `tests/newstep/test_newstep_integration.py`
 - Implement unit tests for all public functions
 - Add performance tests with timing and memory validation
 - Include error scenario testing with real failure modes

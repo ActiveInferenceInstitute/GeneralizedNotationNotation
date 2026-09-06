@@ -2,8 +2,8 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/1_setup.py` (118 lines)
-**Implementation Layer**: `src/setup/`
+**Orchestrator**: `src/gnn/1_setup.py` (118 lines)
+**Implementation Layer**: `src/gnn/setup/`
 
 ## Module Description
 
@@ -11,7 +11,7 @@ This module provides comprehensive environment setup and dependency management c
 
 
 ```
-src/setup/
+src/gnn/setup/
 ├── __init__.py                    # Module initialization and exports
 ├── README.md                      # This documentation
 ├── constants.py                   # Shared constants
@@ -364,12 +364,12 @@ System Check → UV Environment Creation → UV Sync (pyproject.toml → uv.lock
 ## Testing
 
 ### Test Files
-- `src/tests/setup/test_setup_overall.py` - Module-level setup tests
-- `src/tests/test_uv_environment.py` - UV environment behavior tests
-- `src/tests/test_environment_overall.py` - Environment-related integration checks
+- `tests/setup/test_setup_overall.py` - Module-level setup tests
+- `tests/test_uv_environment.py` - UV environment behavior tests
+- `tests/test_environment_overall.py` - Environment-related integration checks
 
 ### Test Coverage
-- Measure: `uv run --extra dev python -m pytest src/tests/setup/ --cov=setup --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
+- Measure: `uv run --extra dev python -m pytest tests/setup/ --cov=setup --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
 
 ### Key Test Scenarios
 1. Environment creation and setup
@@ -410,12 +410,12 @@ def add_dependency_tool(package: str, dev: bool = False):
 
 ---
 ## Documentation
-- **[README](../../../src/setup/README.md)**: Module Overview
-- **[AGENTS](../../../src/setup/AGENTS.md)**: Agentic Workflows
-- **[SPEC](../../../src/setup/SPEC.md)**: Architectural Specification
-- **[SKILL](../../../src/setup/SKILL.md)**: Capability API
+- **[README](../../../src/gnn/setup/README.md)**: Module Overview
+- **[AGENTS](../../../src/gnn/setup/AGENTS.md)**: Agentic Workflows
+- **[SPEC](../../../src/gnn/setup/SPEC.md)**: Architectural Specification
+- **[SKILL](../../../src/gnn/setup/SKILL.md)**: Capability API
 
 
 ---
 
-**Source Reference**: [src/setup](../../../src/setup)
+**Source Reference**: [src/gnn/setup](../../../src/gnn/setup)

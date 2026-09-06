@@ -5,9 +5,9 @@ v3.0.0 milestone. They are the foundation the TODO requires *before any live inf
 mutation*: each module generates, validates, replays, or plans **data only** — none executes a
 container, contacts a cluster, or opens a device/sensor stream.
 
-All three live in `src/pipeline/` and follow the repository conventions (Pydantic v2 models,
+All three live in `src/gnn/pipeline/` and follow the repository conventions (Pydantic v2 models,
 `from pipeline.X import Y` imports, atomic file writes, deterministic hashing). They are exercised by
-real-implementation unit tests in `src/tests/pipeline/` and an end-to-end gate
+real-implementation unit tests in `tests/pipeline/` and an end-to-end gate
 (`scripts/run_v3_orchestration_acceptance.py`).
 
 ## 1. Durable Observation Streams — `pipeline.durable_streams`
@@ -54,7 +54,7 @@ cluster is mutated and no container is executed** — the module imports no `sub
 
 ## MCP tools
 
-`src/pipeline/mcp.py` exposes three read-only tools (no live mutation):
+`src/gnn/pipeline/mcp.py` exposes three read-only tools (no live mutation):
 `get_v3_orchestration_capabilities`, `run_v3_container_security_review` (demonstrates the review has
 teeth against an insecure example), and `run_v3_orchestration_self_check` (in-process checks of all
 three contracts).
@@ -64,9 +64,9 @@ three contracts).
 ```bash
 # Unit contracts (real objects only; includes negative controls):
 PYTHONPATH=src uv run python -m pytest \
-  src/tests/pipeline/test_durable_streams.py \
-  src/tests/pipeline/test_run_session.py \
-  src/tests/pipeline/test_container_plan.py -q
+  tests/pipeline/test_durable_streams.py \
+  tests/pipeline/test_run_session.py \
+  tests/pipeline/test_container_plan.py -q
 
 # End-to-end acceptance gate (fails closed):
 PYTHONPATH=src uv run python scripts/run_v3_orchestration_acceptance.py --strict

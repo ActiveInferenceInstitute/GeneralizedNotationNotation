@@ -2,8 +2,8 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/6_validation.py` (51 lines)
-**Implementation Layer**: `src/validation/`
+**Orchestrator**: `src/gnn/6_validation.py` (51 lines)
+**Implementation Layer**: `src/gnn/validation/`
 
 ## Module Description
 
@@ -11,7 +11,7 @@ This module provides comprehensive validation capabilities for GNN models, inclu
 
 
 ```
-src/validation/
+src/gnn/validation/
 ├── __init__.py                    # Module initialization, exports, and process_validation orchestrator
 ├── README.md                      # This documentation
 ├── AGENTS.md                      # Agent scaffolding documentation
@@ -167,7 +167,7 @@ from validation import profile_performance
 profile = profile_performance("model.gnn")
 ```
 
-The exported surface is listed in `src/validation/__init__.py` (`__all__`):
+The exported surface is listed in `src/gnn/validation/__init__.py` (`__all__`):
 `process_validation`, `process_semantic_validation`, `profile_performance`,
 `check_consistency` plus the `SemanticValidator`, `PerformanceProfiler` and
 `ConsistencyChecker` classes.
@@ -250,11 +250,11 @@ Model Content → Structure Validation → Semantic Validation → Performance P
 ## Testing
 
 ### Test Files
-- `src/tests/validation/test_validation_overall.py` - Module-level validation tests
-- `src/tests/gnn/test_gnn_validation.py` - GNN validation-focused tests (shared)
+- `tests/validation/test_validation_overall.py` - Module-level validation tests
+- `tests/gnn/test_gnn_validation.py` - GNN validation-focused tests (shared)
 
 ### Test Coverage
-- Measure: `uv run --extra dev python -m pytest src/tests/validation/ --cov=validation --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
+- Measure: `uv run --extra dev python -m pytest tests/validation/ --cov=validation --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
 
 ### Key Test Scenarios
 1. Model structure validation
@@ -284,12 +284,12 @@ def validate_structure_tool(content):
 
 ---
 ## Documentation
-- **[README](../../../src/validation/README.md)**: Module Overview
-- **[AGENTS](../../../src/validation/AGENTS.md)**: Agentic Workflows
-- **[SPEC](../../../src/validation/SPEC.md)**: Architectural Specification
-- **[SKILL](../../../src/validation/SKILL.md)**: Capability API
+- **[README](../../../src/gnn/validation/README.md)**: Module Overview
+- **[AGENTS](../../../src/gnn/validation/AGENTS.md)**: Agentic Workflows
+- **[SPEC](../../../src/gnn/validation/SPEC.md)**: Architectural Specification
+- **[SKILL](../../../src/gnn/validation/SKILL.md)**: Capability API
 
 
 ---
 
-**Source Reference**: [src/validation](../../../src/validation)
+**Source Reference**: [src/gnn/validation](../../../src/gnn/validation)

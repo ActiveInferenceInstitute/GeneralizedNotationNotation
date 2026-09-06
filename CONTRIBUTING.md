@@ -24,7 +24,7 @@ uv sync --extra dev
 uv run pre-commit install
 
 # Run the test suite to verify your setup
-uv run pytest src/tests/ -v
+uv run pytest tests/ -v
 ```
 
 See [SETUP_GUIDE.md](SETUP_GUIDE.md) for detailed installation instructions including optional dependency groups.
@@ -59,7 +59,7 @@ Open a [GitHub Discussion](https://github.com/ActiveInferenceInstitute/Generaliz
 3. **Run the tests** to ensure nothing is broken:
 
    ```bash
-   uv run pytest src/tests/ -v
+   uv run pytest tests/ -v
    ```
 
 4. **Commit** with clear, descriptive messages:
@@ -99,8 +99,8 @@ src/module_name/
 
 ### Testing
 
-- Tests go in `src/tests/<module>/test_*.py` (one subdirectory per module, e.g. `src/tests/gnn/`, `src/tests/render/`)
-- Run module-specific tests: `uv run pytest src/tests/gnn/ -v`
+- Tests go in `tests/<module>/test_*.py` (one subdirectory per module, e.g. `tests/gnn/`, `tests/render/`)
+- Run module-specific tests: `uv run pytest tests/gnn/ -v`
 - Check coverage: `uv run pytest --cov=src --cov-report=term-missing`
 - Aim for >80% test coverage on new code
 
@@ -129,7 +129,7 @@ uv run ruff check src/
 uv run python doc/development/docs_audit.py --strict
 ```
 
-For workflow YAML edits, run `actionlint .github/workflows/*.yml` (see the hub doc for install options). Full suite (including pipeline/MCP-marked tests) is heavier than CI; use `uv run pytest src/tests/ -v` when your change touches those areas.
+For workflow YAML edits, run `actionlint .github/workflows/*.yml` (see the hub doc for install options). Full suite (including pipeline/MCP-marked tests) is heavier than CI; use `uv run pytest tests/ -v` when your change touches those areas.
 
 ## Pull Request Guidelines
 

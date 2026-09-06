@@ -1,1 +1,1 @@
- audio-worker: AUDIT DONE 2026-09-04T20:10Z — full scope read; consumers mapped (15_audio.py, src/sapf facade, MCP, tests, capability-contract gate); pins identified; dead code found (sapf/generator.py, sapf/utils.py); NEXT: shared validation module + dedup refactor.
+ audio-worker: AUDIT DONE 2026-09-04T20:10Z — full scope read; consumers mapped (15_audio.py, src/gnn/sapf facade, MCP, tests, capability-contract gate); pins identified; dead code found (sapf/generator.py, sapf/utils.py); NEXT: shared validation module + dedup refactor.

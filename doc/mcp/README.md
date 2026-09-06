@@ -14,7 +14,7 @@ MCP servers expose tools over STDIO or HTTP: bind listeners to localhost in untr
 ## Architecture
 
 ### Core MCP System
-- **Location**: `src/mcp/`
+- **Location**: `src/gnn/mcp/`
 - **Main Module**: `mcp.py` - Central MCP instance and tool registration
 - **Server Components**: HTTP and STDIO server implementations
 - **Tool Discovery**: Automatic registration from functional modules
@@ -75,7 +75,7 @@ src/
 
 ### Direct Python Access
 ```python
-from src.mcp import initialize, mcp_instance
+from gnn.mcp import initialize, mcp_instance
 
 initialize(halt_on_missing_sdk=False, force_proceed_flag=True, force_refresh=True)
 print(sorted(mcp_instance.tools))
@@ -182,10 +182,10 @@ The pipeline includes dedicated MCP analysis:
 
 ```bash
 # Run MCP integration check
-uv run python src/main.py --only-steps 21 --target-dir input/gnn_files --verbose
+uv run python src/gnn/main.py --only-steps 21 --target-dir input/gnn_files --verbose
 
 # Generate MCP integration report
-uv run python src/21_mcp.py --target-dir input/gnn_files --output-dir output --verbose
+uv run python src/gnn/21_mcp.py --target-dir input/gnn_files --output-dir output --verbose
 ```
 
 The MCP step generates comprehensive reports including:
@@ -287,7 +287,7 @@ python -m src.mcp.cli --verbose execute tool_name --params '{}'
 
 ### Core MCP Instance
 ```python
-from src.mcp import mcp_instance
+from gnn.mcp import mcp_instance
 
 # Tool management
 mcp_instance.register_tool(name, function)
@@ -316,7 +316,7 @@ mcp_instance.get_tool_info(name)
 # Example of AI assistant using MCP tools
 from pathlib import Path
 
-from src.mcp import initialize, mcp_instance
+from gnn.mcp import initialize, mcp_instance
 
 
 def analyze_user_model(file_path: str) -> str:

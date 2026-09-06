@@ -1,0 +1,35 @@
+{
+  "timestamp": "2026-09-05T20:25:21.801185",
+  "source_file": "input/gnn_files/pymdp_scaling_study/pymdp_scaling_N16_T100.md",
+  "model_name": "PyMDP Scaling N16 T100",
+  "pomdp_dimensions": {
+    "num_states": 16,
+    "num_observations": 16,
+    "num_actions": 16
+  },
+  "frameworks_requested": [
+    "pymdp",
+    "rxinfer",
+    "activeinference_jl",
+    "jax",
+    "discopy",
+    "pytorch",
+    "numpyro",
+    "stan",
+    "bnlearn"
+  ],
+  "frameworks_processed": [
+    "pymdp",
+    "rxinfer",
+    "activeinference_jl",
+    "jax",
+    "discopy",
+    "pytorch",
+    "numpyro",
+    "stan",
+    "bnlearn"
+  ],
+  "frameworks_failed": [],
+  "frameworks_unsupported": [],
+  "model_kind": "discrete"
+}

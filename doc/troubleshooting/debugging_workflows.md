@@ -46,7 +46,7 @@ cat /etc/os-release  # Linux
 sw_vers  # macOS
 
 # 2. Error Context
-uv run python src/main.py --verbose --target-dir ./problem_models > debug.log 2>&1
+uv run python src/gnn/main.py --verbose --target-dir ./problem_models > debug.log 2>&1
 
 # 3. System Resources
 free -h  # Memory
@@ -69,7 +69,7 @@ wc -l problem_file.md
 
 ```bash
 # Quick syntax check
-uv run python src/main.py --only-steps 5 --strict --target-dir ./your_models
+uv run python src/gnn/main.py --only-steps 5 --strict --target-dir ./your_models
 
 # Manual structure check
 grep -n "^##" your_file.md | head -10
@@ -162,7 +162,7 @@ sed -i '1s/^\xEF\xBB\xBF//' your_file.md
 
 ```python
 # Interactive dimension debugging using the real public API
-from src.gnn import parse_gnn_file, validate_gnn_file
+from gnn.gnn import parse_gnn_file, validate_gnn_file
 
 parsed = parse_gnn_file("your_file.md")
 print("Defined variables:")
@@ -257,7 +257,7 @@ python -c "import jax; print('Devices:', jax.devices())"
 
 ```bash
 # Monitor pipeline execution
-uv run python src/main.py --verbose --target-dir ./your_models &
+uv run python src/gnn/main.py --verbose --target-dir ./your_models &
 PIPELINE_PID=$!
 
 # Monitor resources in another terminal
@@ -274,7 +274,7 @@ done
 # Test individual pipeline steps
 for step in {1..13}; do
     echo "Testing step $step..."
-    timeout 300 uv run python src/main.py --only-steps $step --target-dir ./your_models
+    timeout 300 uv run python src/gnn/main.py --only-steps $step --target-dir ./your_models
     if [ $? -eq 0 ]; then
         echo "✅ Step $step passed"
     else
@@ -310,7 +310,7 @@ except Exception as e:
 # 2. Test GNN to PyMDP conversion
 from pathlib import Path
 
-from src.render.pymdp.pymdp_renderer import PyMDPRenderer
+from gnn.render.pymdp.pymdp_renderer import PyMDPRenderer
 
 renderer = PyMDPRenderer()
 
@@ -339,7 +339,7 @@ julia -e "using RxInfer; println(\"RxInfer loaded successfully\")"
 # 3. Test RxInfer rendering
 uv run python -c "
 from pathlib import Path
-from src.render.rxinfer.rxinfer_renderer import RxInferRenderer
+from gnn.render.rxinfer.rxinfer_renderer import RxInferRenderer
 renderer = RxInferRenderer()
 try:
     ok, code = renderer.render_file(Path('your_model.md'), Path('output/rendered_rxinfer.jl'))
@@ -389,7 +389,7 @@ except Exception as e:
 
 ```bash
 # CPU profiling
-uv run python -m cProfile -o profile.stats src/main.py --target-dir ./your_models
+uv run python -m cProfile -o profile.stats src/gnn/main.py --target-dir ./your_models
 uv run python -c "
 import pstats
 stats = pstats.Stats('profile.stats')
@@ -397,10 +397,10 @@ stats.sort_stats('cumulative').print_stats(20)
 "
 
 # Memory profiling
-uv run --extra dev python -m memory_profiler src/main.py --target-dir ./your_models
+uv run --extra dev python -m memory_profiler src/gnn/main.py --target-dir ./your_models
 
 # Line-by-line profiling (if available)
-uv run --extra dev kernprof -l -v src/main.py --target-dir ./your_models
+uv run --extra dev kernprof -l -v src/gnn/main.py --target-dir ./your_models
 ```
 
 ### **Step 2: Bottleneck Identification**
@@ -488,7 +488,7 @@ import ipdb  # Enhanced debugger
 
 # Insert breakpoint in code
 def debug_model_parsing(filepath):
-    from src.gnn import parse_gnn_file
+    from gnn.gnn import parse_gnn_file
 
     # Break here to inspect
     pdb.set_trace()  # or ipdb.set_trace()
@@ -578,7 +578,7 @@ uv run python -c "import sys; print(f'Python path: {sys.executable}')"
 
 # 3. Syntax check
 echo "📝 Syntax check..."
-uv run python src/main.py --only-steps 5 --strict --target-dir "$(dirname "$MODEL_FILE")" > debug_syntax.log 2>&1
+uv run python src/gnn/main.py --only-steps 5 --strict --target-dir "$(dirname "$MODEL_FILE")" > debug_syntax.log 2>&1
 if [ $? -eq 0 ]; then
     echo "✅ Syntax check passed"
 else
@@ -587,7 +587,7 @@ fi
 
 # 4. Resource estimation
 echo "📊 Resource estimation... (type-checker on the model's directory)"
-uv run python src/5_type_checker.py \
+uv run python src/gnn/5_type_checker.py \
   --target-dir "$(dirname "$MODEL_FILE")" \
   --estimate-resources \
   --verbose
@@ -624,22 +624,22 @@ echo "🏁 Automated debugging complete"
 
 ```bash
 # Quick syntax validation
-uv run python src/main.py --only-steps 5 --strict --target-dir ./models
+uv run python src/gnn/main.py --only-steps 5 --strict --target-dir ./models
 
 # Verbose debugging  
-uv run python src/main.py --verbose --target-dir ./models > debug.log 2>&1
+uv run python src/gnn/main.py --verbose --target-dir ./models > debug.log 2>&1
 
 # Resource monitoring
-uv run --extra dev python -m memory_profiler src/main.py --target-dir ./models
+uv run --extra dev python -m memory_profiler src/gnn/main.py --target-dir ./models
 
 # Step isolation
-uv run python src/main.py --only-steps 1,2,3 --target-dir ./models
+uv run python src/gnn/main.py --only-steps 1,2,3 --target-dir ./models
 
 # Environment check
-uv run python src/1_setup.py --verbose
+uv run python src/gnn/1_setup.py --verbose
 
 # Interactive debugging
-uv run python -c "from src.gnn import parse_gnn_file; import pdb; pdb.set_trace(); print(parse_gnn_file('file.md'))"
+uv run python -c "from gnn.gnn import parse_gnn_file; import pdb; pdb.set_trace(); print(parse_gnn_file('file.md'))"
 ```
 
 ---

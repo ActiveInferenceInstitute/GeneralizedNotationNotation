@@ -2,8 +2,8 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/17_integration.py` (55 lines)
-**Implementation Layer**: `src/integration/`
+**Orchestrator**: `src/gnn/17_integration.py` (55 lines)
+**Implementation Layer**: `src/gnn/integration/`
 
 ## Module Description
 
@@ -11,7 +11,7 @@ This module provides comprehensive system integration capabilities for the GNN p
 
 
 ```
-src/integration/
+src/gnn/integration/
 ├── __init__.py                    # Module initialization and exports
 ├── README.md                      # This documentation
 ├── processor.py                   # process_integration: dependency-graph coordination and consistency checks
@@ -116,7 +116,7 @@ success = process_integration(
 
 ## Configuration
 
-No environment variables or config files are read by `src/integration/`; behavior is controlled by the `process_integration(...)` parameters documented above.
+No environment variables or config files are read by `src/gnn/integration/`; behavior is controlled by the `process_integration(...)` parameters documented above.
 
 ## Usage Examples
 
@@ -185,7 +185,7 @@ output/17_integration_output/
 - `pipeline.config` - Configuration management
 
 ### Imported By
-- `src/tests/integration/test_integration_overall.py` - Module-level integration tests
+- `tests/integration/test_integration_overall.py` - Module-level integration tests
 - `main.py` - Pipeline orchestration
 
 ### Data Flow
@@ -198,11 +198,11 @@ Pipeline Steps → Integration Coordination → System State → Cross-Module Co
 ## Testing
 
 ### Test Files
-- `src/tests/integration/test_integration_functional.py` - Functional integration tests
-- `src/tests/integration/test_integration_processor.py` - Processor-level integration tests
+- `tests/integration/test_integration_functional.py` - Functional integration tests
+- `tests/integration/test_integration_processor.py` - Processor-level integration tests
 
 ### Test Coverage
-- Measure: `uv run --extra dev python -m pytest src/tests/integration/ --cov=integration --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
+- Measure: `uv run --extra dev python -m pytest tests/integration/ --cov=integration --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
 
 ### Key Test Scenarios
 1. Cross-module coordination with various step combinations
@@ -216,7 +216,7 @@ Pipeline Steps → Integration Coordination → System State → Cross-Module Co
 
 ### Tools Registered
 
-Registered in `register_tools` (`src/integration/mcp.py`):
+Registered in `register_tools` (`src/gnn/integration/mcp.py`):
 
 - `process_integration` - Run Step 17 over pipeline outputs
 - `list_supported_integrations` - List supported integration checks
@@ -224,7 +224,7 @@ Registered in `register_tools` (`src/integration/mcp.py`):
 - `check_integration_dependencies` - Report integration dependencies
 
 ### MCP File Location
-- `src/integration/mcp.py` - MCP tool registrations
+- `src/gnn/integration/mcp.py` - MCP tool registrations
 
 ---
 
@@ -275,9 +275,9 @@ Registered in `register_tools` (`src/integration/mcp.py`):
 ## References
 
 ### Related Documentation
-- [Pipeline Overview](../../../src/integration/../../README.md)
-- [Architecture Guide](../../../src/integration/../../ARCHITECTURE.md)
-- [Pipeline Configuration](../../../src/integration/../pipeline/AGENTS.md)
+- [Pipeline Overview](../../../README.md)
+- [Architecture Guide](../../../ARCHITECTURE.md)
+- [Pipeline Configuration](../../../src/gnn/integration/../pipeline/AGENTS.md)
 
 ### External Resources
 - [NetworkX Documentation](https://networkx.org/)
@@ -293,12 +293,12 @@ Registered in `register_tools` (`src/integration/mcp.py`):
 
 ---
 ## Documentation
-- **[README](../../../src/integration/README.md)**: Module Overview
-- **[AGENTS](../../../src/integration/AGENTS.md)**: Agentic Workflows
-- **[SPEC](../../../src/integration/SPEC.md)**: Architectural Specification
-- **[SKILL](../../../src/integration/SKILL.md)**: Capability API
+- **[README](../../../src/gnn/integration/README.md)**: Module Overview
+- **[AGENTS](../../../src/gnn/integration/AGENTS.md)**: Agentic Workflows
+- **[SPEC](../../../src/gnn/integration/SPEC.md)**: Architectural Specification
+- **[SKILL](../../../src/gnn/integration/SKILL.md)**: Capability API
 
 
 ---
 
-**Source Reference**: [src/integration](../../../src/integration)
+**Source Reference**: [src/gnn/integration](../../../src/gnn/integration)

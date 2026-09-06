@@ -2,8 +2,8 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/15_audio.py` (81 lines)
-**Implementation Layer**: `src/audio/`
+**Orchestrator**: `src/gnn/15_audio.py` (81 lines)
+**Implementation Layer**: `src/gnn/audio/`
 
 ## Module Description
 
@@ -11,7 +11,7 @@ This module provides comprehensive audio generation capabilities for GNN models,
 
 
 ```
-src/audio/
+src/gnn/audio/
 ├── __init__.py                    # Module initialization and exports
 ├── README.md                      # This documentation
 ├── generator.py                    # Main audio generation system
@@ -251,12 +251,12 @@ output/15_audio_output/
 ## Testing
 
 ### Test Files
-- `src/tests/audio/test_audio_integration.py`
-- `src/tests/audio/test_audio_sapf.py`
+- `tests/audio/test_audio_integration.py`
+- `tests/audio/test_audio_sapf.py`
 
 ### Test Coverage
 
-- Measure: `uv run --extra dev python -m pytest src/tests/audio/ --cov=audio --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
+- Measure: `uv run --extra dev python -m pytest tests/audio/ --cov=audio --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
 
 ### Key Test Scenarios
 1. Audio generation from GNN models
@@ -270,7 +270,7 @@ output/15_audio_output/
 
 ### Tools Registered
 
-Registered in `register_tools` (`src/audio/mcp.py`):
+Registered in `register_tools` (`src/gnn/audio/mcp.py`):
 
 - `process_audio` - Run Step 15 over a directory
 - `check_audio_backends` - Report available audio backends
@@ -280,7 +280,7 @@ Registered in `register_tools` (`src/audio/mcp.py`):
 - `get_audio_module_info` - Module metadata
 
 ### MCP File Location
-- `src/audio/mcp.py` - MCP tool registrations
+- `src/gnn/audio/mcp.py` - MCP tool registrations
 
 ---
 
@@ -336,10 +336,10 @@ Registered in `register_tools` (`src/audio/mcp.py`):
 ## References
 
 ### Related Documentation
-- [Pipeline Overview](../../../src/audio/../../README.md)
-- [Architecture Guide](../../../src/audio/../../ARCHITECTURE.md)
-- [SAPF Documentation](../../../src/audio/../../doc/sapf/)
-- [Pedalboard Documentation](../../../src/audio/../../doc/pedalboard/)
+- [Pipeline Overview](../../../README.md)
+- [Architecture Guide](../../../ARCHITECTURE.md)
+- [SAPF Documentation](../../../doc/sapf/)
+- [Pedalboard Documentation](../../../doc/pedalboard/)
 
 ### External Resources
 - [SAPF Specification](../../sapf/README.md)
@@ -357,12 +357,12 @@ Registered in `register_tools` (`src/audio/mcp.py`):
 
 ---
 ## Documentation
-- **[README](../../../src/audio/README.md)**: Module Overview
-- **[AGENTS](../../../src/audio/AGENTS.md)**: Agentic Workflows
-- **[SPEC](../../../src/audio/SPEC.md)**: Architectural Specification
-- **[SKILL](../../../src/audio/SKILL.md)**: Capability API
+- **[README](../../../src/gnn/audio/README.md)**: Module Overview
+- **[AGENTS](../../../src/gnn/audio/AGENTS.md)**: Agentic Workflows
+- **[SPEC](../../../src/gnn/audio/SPEC.md)**: Architectural Specification
+- **[SKILL](../../../src/gnn/audio/SKILL.md)**: Capability API
 
 
 ---
 
-**Source Reference**: [src/audio](../../../src/audio)
+**Source Reference**: [src/gnn/audio](../../../src/gnn/audio)

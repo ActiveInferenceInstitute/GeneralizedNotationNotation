@@ -1,10 +1,10 @@
 {
-  "timestamp": "2026-06-18T09:04:36.160044",
-  "source_directory": "input/gnn_files/pomdp_gridworld",
+  "timestamp": "2026-09-05T20:30:54.974669",
+  "source_directory": "input/gnn_files/continuous",
   "output_directory": "output/3_gnn_output",
   "processing_config": {
     "recursive": true,
-    "verbose": true,
+    "verbose": false,
     "serialize_preset": "full",
     "supported_formats": [
       "markdown",
@@ -81,128 +81,386 @@
   },
   "processed_files": [
     {
-      "file_name": "pomdp_gridworld_3x3.md",
-      "file_path": "input/gnn_files/pomdp_gridworld/pomdp_gridworld_3x3.md",
+      "file_name": "predictive_coding_agent.md",
+      "file_path": "input/gnn_files/continuous/predictive_coding_agent.md",
       "parse_success": true,
-      "parsed_model_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_parsed.json",
+      "parsed_model_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_parsed.json",
       "source_format": "markdown",
       "model_info": {
-        "name": "POMDP GridWorld 3x3",
+        "name": "Predictive Coding Active Inference Agent",
         "version": "1.0",
-        "variables_count": 12,
-        "connections_count": 11,
-        "parameters_count": 15,
-        "equations_count": 1
+        "variables_count": 9,
+        "connections_count": 6,
+        "parameters_count": 11,
+        "equations_count": 0
       },
       "generated_formats": {
         "markdown": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_markdown.md",
-          "file_size": 4462,
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_markdown.md",
+          "file_size": 1503,
           "success": true
         },
         "scala": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_scala.scala",
-          "file_size": 7698,
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_scala.scala",
+          "file_size": 4090,
           "success": true
         },
         "lean": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_lean.lean",
-          "file_size": 7849,
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_lean.lean",
+          "file_size": 9967,
           "success": true
         },
         "coq": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_coq.v",
-          "file_size": 7629,
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_coq.v",
+          "file_size": 4501,
           "success": true
         },
         "python": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_python.py",
-          "file_size": 14055,
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_python.py",
+          "file_size": 7541,
           "success": true
         },
         "bnf": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_bnf.bnf",
-          "file_size": 8028,
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_bnf.bnf",
+          "file_size": 4831,
           "success": true
         },
         "ebnf": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_ebnf.ebnf",
-          "file_size": 8028,
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_ebnf.ebnf",
+          "file_size": 4831,
           "success": true
         },
         "isabelle": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_isabelle.thy",
-          "file_size": 7666,
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_isabelle.thy",
+          "file_size": 4500,
           "success": true
         },
         "maxima": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_maxima.max",
-          "file_size": 11271,
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_maxima.max",
+          "file_size": 4790,
           "success": true
         },
         "xml": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_xml.xml",
-          "file_size": 14982,
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_xml.xml",
+          "file_size": 7444,
           "success": true
         },
         "json": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_json.json",
-          "file_size": 19739,
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_json.json",
+          "file_size": 7196,
           "success": true
         },
         "protobuf": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_protobuf.proto",
-          "file_size": 12652,
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_protobuf.proto",
+          "file_size": 6217,
           "success": true
         },
         "yaml": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_yaml.yaml",
-          "file_size": 11616,
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_yaml.yaml",
+          "file_size": 4414,
           "success": true
         },
         "xsd": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_xsd.xsd",
-          "file_size": 8575,
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_xsd.xsd",
+          "file_size": 5325,
           "success": true
         },
         "asn1": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_asn1.asn1",
-          "file_size": 10190,
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_asn1.asn1",
+          "file_size": 7128,
           "success": true
         },
         "pkl": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_pkl.pkl",
-          "file_size": 21234,
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_pkl.pkl",
+          "file_size": 10138,
           "success": true
         },
         "alloy": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_alloy.als",
-          "file_size": 13463,
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_alloy.als",
+          "file_size": 6610,
           "success": true
         },
         "z_notation": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_z_notation.z",
-          "file_size": 8159,
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_z_notation.z",
+          "file_size": 5032,
           "success": true
         },
         "tla_plus": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_tla_plus.tla",
-          "file_size": 7317,
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_tla_plus.tla",
+          "file_size": 3871,
           "success": true
         },
         "agda": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_agda.agda",
-          "file_size": 7325,
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_agda.agda",
+          "file_size": 3870,
           "success": true
         },
         "haskell": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_haskell.hs",
-          "file_size": 7768,
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_haskell.hs",
+          "file_size": 4141,
           "success": true
         },
         "pickle": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_pickle.pickle",
-          "file_size": 10192,
+          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_pickle.pickle",
+          "file_size": 3192,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "stochastic_dynamics.md",
+      "file_path": "input/gnn_files/continuous/stochastic_dynamics.md",
+      "parse_success": true,
+      "parsed_model_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_parsed.json",
+      "source_format": "markdown",
+      "model_info": {
+        "name": "Stochastic Continuous Dynamics Agent",
+        "version": "1.0",
+        "variables_count": 9,
+        "connections_count": 6,
+        "parameters_count": 11,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_markdown.md",
+          "file_size": 1446,
+          "success": true
+        },
+        "scala": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_scala.scala",
+          "file_size": 4028,
+          "success": true
+        },
+        "lean": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_lean.lean",
+          "file_size": 9787,
+          "success": true
+        },
+        "coq": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_coq.v",
+          "file_size": 4381,
+          "success": true
+        },
+        "python": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_python.py",
+          "file_size": 7361,
+          "success": true
+        },
+        "bnf": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_bnf.bnf",
+          "file_size": 4717,
+          "success": true
+        },
+        "ebnf": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_ebnf.ebnf",
+          "file_size": 4717,
+          "success": true
+        },
+        "isabelle": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_isabelle.thy",
+          "file_size": 4383,
+          "success": true
+        },
+        "maxima": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_maxima.max",
+          "file_size": 4674,
+          "success": true
+        },
+        "xml": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_xml.xml",
+          "file_size": 7328,
+          "success": true
+        },
+        "json": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_json.json",
+          "file_size": 7145,
+          "success": true
+        },
+        "protobuf": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_protobuf.proto",
+          "file_size": 6097,
+          "success": true
+        },
+        "yaml": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_yaml.yaml",
+          "file_size": 4358,
+          "success": true
+        },
+        "xsd": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_xsd.xsd",
+          "file_size": 5207,
+          "success": true
+        },
+        "asn1": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_asn1.asn1",
+          "file_size": 6947,
+          "success": true
+        },
+        "pkl": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_pkl.pkl",
+          "file_size": 9965,
+          "success": true
+        },
+        "alloy": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_alloy.als",
+          "file_size": 6480,
+          "success": true
+        },
+        "z_notation": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_z_notation.z",
+          "file_size": 4906,
+          "success": true
+        },
+        "tla_plus": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_tla_plus.tla",
+          "file_size": 3809,
+          "success": true
+        },
+        "agda": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_agda.agda",
+          "file_size": 3808,
+          "success": true
+        },
+        "haskell": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_haskell.hs",
+          "file_size": 4079,
+          "success": true
+        },
+        "pickle": {
+          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_pickle.pickle",
+          "file_size": 3120,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "continuous_navigation.md",
+      "file_path": "input/gnn_files/continuous/continuous_navigation.md",
+      "parse_success": true,
+      "parsed_model_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_parsed.json",
+      "source_format": "markdown",
+      "model_info": {
+        "name": "Continuous State Navigation Agent",
+        "version": "1.0",
+        "variables_count": 12,
+        "connections_count": 9,
+        "parameters_count": 13,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_markdown.md",
+          "file_size": 1711,
+          "success": true
+        },
+        "scala": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_scala.scala",
+          "file_size": 5197,
+          "success": true
+        },
+        "lean": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_lean.lean",
+          "file_size": 11976,
+          "success": true
+        },
+        "coq": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_coq.v",
+          "file_size": 5484,
+          "success": true
+        },
+        "python": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_python.py",
+          "file_size": 9147,
+          "success": true
+        },
+        "bnf": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_bnf.bnf",
+          "file_size": 5824,
+          "success": true
+        },
+        "ebnf": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_ebnf.ebnf",
+          "file_size": 5824,
+          "success": true
+        },
+        "isabelle": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_isabelle.thy",
+          "file_size": 5510,
+          "success": true
+        },
+        "maxima": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_maxima.max",
+          "file_size": 5908,
+          "success": true
+        },
+        "xml": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_xml.xml",
+          "file_size": 9326,
+          "success": true
+        },
+        "json": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_json.json",
+          "file_size": 9105,
+          "success": true
+        },
+        "protobuf": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_protobuf.proto",
+          "file_size": 7426,
+          "success": true
+        },
+        "yaml": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_yaml.yaml",
+          "file_size": 5560,
+          "success": true
+        },
+        "xsd": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_xsd.xsd",
+          "file_size": 6424,
+          "success": true
+        },
+        "asn1": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_asn1.asn1",
+          "file_size": 8269,
+          "success": true
+        },
+        "pkl": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_pkl.pkl",
+          "file_size": 12512,
+          "success": true
+        },
+        "alloy": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_alloy.als",
+          "file_size": 8240,
+          "success": true
+        },
+        "z_notation": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_z_notation.z",
+          "file_size": 6098,
+          "success": true
+        },
+        "tla_plus": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_tla_plus.tla",
+          "file_size": 4881,
+          "success": true
+        },
+        "agda": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_agda.agda",
+          "file_size": 4858,
+          "success": true
+        },
+        "haskell": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_haskell.hs",
+          "file_size": 5307,
+          "success": true
+        },
+        "pickle": {
+          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_pickle.pickle",
+          "file_size": 3732,
           "success": true
         }
       },
@@ -211,12 +469,14 @@
     }
   ],
   "summary": {
-    "total_files": 1,
-    "successful_parses": 1,
+    "total_files": 3,
+    "successful_parses": 3,
     "failed_parses": 0,
-    "total_formats_generated": 22,
+    "total_formats_generated": 66,
     "formats_per_file": {
-      "pomdp_gridworld_3x3.md": 22
+      "predictive_coding_agent.md": 22,
+      "stochastic_dynamics.md": 22,
+      "continuous_navigation.md": 22
     }
   }
 }

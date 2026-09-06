@@ -11,19 +11,19 @@ This document provides a comprehensive guide to the GNN Domain Specific Language
 
 GNN DSL files are processed and validated through the pipeline:
 
-- **`src/3_gnn.py`** → GNN file parsing and multi-format processing
+- **`src/gnn/3_gnn.py`** → GNN file parsing and multi-format processing
   - See: **[src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md)** for parser implementation details
-- **`src/5_type_checker.py`** → DSL syntax and type validation
-  - See: **[src/type_checker/AGENTS.md](../../../src/type_checker/AGENTS.md)** for validation details
+- **`src/gnn/5_type_checker.py`** → DSL syntax and type validation
+  - See: **[src/gnn/type_checker/AGENTS.md](../../../src/gnn/type_checker/AGENTS.md)** for validation details
 
-For complete pipeline documentation, see **[src/AGENTS.md](../../../src/AGENTS.md)**.
+For complete pipeline documentation, see **[src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md)**.
 
 **Quick Start:**
 
 ```bash
 # Parse and validate GNN DSL files
-python src/3_gnn.py --target-dir input/gnn_files --verbose
-python src/5_type_checker.py --target-dir input/gnn_files --strict
+python src/gnn/3_gnn.py --target-dir input/gnn_files --verbose
+python src/gnn/5_type_checker.py --target-dir input/gnn_files --strict
 ```
 
 | Symbol | Meaning                                                                          | ExampleUse    | MeaningOfExample                                   |
@@ -123,7 +123,7 @@ G=ExpectedFreeEnergy
 t=Time
 ```
 
-*(Note: The example shows grouped variables like `(D_f0,D_f1)`. The current parser logic described focuses on single source/target per line. Grouped variables might be handled by pre-processing or a more complex parsing step not detailed in the `_process_connections` regex (`src/visualization/parse/gnn_file_parser.py:241`). The documentation here reflects the identified regex capability.)*
+*(Note: The example shows grouped variables like `(D_f0,D_f1)`. The current parser logic described focuses on single source/target per line. Grouped variables might be handled by pre-processing or a more complex parsing step not detailed in the `_process_connections` regex (`src/gnn/visualization/parse/gnn_file_parser.py:241`). The documentation here reflects the identified regex capability.)*
 
 ### 3.3. `InitialParameterization`
 
@@ -226,7 +226,7 @@ The section begins with `## ActInfOntologyAnnotation` on its own line. Each subs
 - `OntologyTerm`: The corresponding term from the ontology (e.g., `HiddenState`, `LikelihoodMatrix`).
 - `# Optional comment`: Text after a `#` on the line is an ignored comment.
 
-**Parser Behavior (`src/ontology/processor.py:79` - `parse_gnn_ontology_section`):**
+**Parser Behavior (`src/gnn/ontology/processor.py:79` - `parse_gnn_ontology_section`):**
 
 - The parser specifically looks for the `## ActInfOntologyAnnotation` header.
 - It reads each line, splitting it at the `=` to get the model variable and the ontology term.

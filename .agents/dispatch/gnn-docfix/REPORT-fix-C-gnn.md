@@ -15,7 +15,7 @@ Scope: DOC-ONLY markdown edits (no .py, no config, no tests). Nothing was commit
    - Line 250: `from setup.setup import update_uv_dependencies` → `from setup import update_uv_dependencies`
    - Line 261: `from setup.setup import lock_uv_dependencies` → `from setup import lock_uv_dependencies`
    - Line 269 (sibling class fix): `from setup.setup import check_system_requirements` → `from setup import check_system_requirements`.
-     The charter listed lines 225/232/243/250/261; line 269 carries the identical broken `from setup.setup import` pattern. `src/setup/__init__.py` exports `check_system_requirements` from the package root (and `src/setup/AGENTS.md` states "All setup helpers are exported from the package root. Prefer `from setup import …`"), so I fixed it as the same class of error.
+     The charter listed lines 225/232/243/250/261; line 269 carries the identical broken `from setup.setup import` pattern. `src/gnn/setup/__init__.py` exports `check_system_requirements` from the package root (and `src/gnn/setup/AGENTS.md` states "All setup helpers are exported from the package root. Prefer `from setup import …`"), so I fixed it as the same class of error.
 
 3. **doc/gnn/operations/REPO_COHERENCE_CHECK.md** (fix 3)
    - Line 127: ``Delegates to `process_visualization_main()` from `visualization` module`` → ``Delegates to `process_visualization()` from `visualization` module``
@@ -27,7 +27,7 @@ Scope: DOC-ONLY markdown edits (no .py, no config, no tests). Nothing was commit
 
 5. **doc/gnn/testing/test_patterns.md** (fix 5)
    - Line 44: `from audio import backends` → `from audio import check_audio_backends`
-   - Line 46: `result = backends.check_backends()` → `result = check_audio_backends()` — `check_audio_backends` returns the backends dict directly (src/audio/__init__.py:63-99), so the CORRECT example was updated to call the real surface instead of the now-removed `backends` attribute.
+   - Line 46: `result = backends.check_backends()` → `result = check_audio_backends()` — `check_audio_backends` returns the backends dict directly (src/gnn/audio/__init__.py:63-99), so the CORRECT example was updated to call the real surface instead of the now-removed `backends` attribute.
 
 6. **doc/pymdp/pymdp_pomdp/INTEGRATION_SUMMARY.md** (fix 6)
    - Line 194: `from src.execute.pymdp import batch_execute_pymdp` → `from src.execute.pymdp.execute_pymdp import batch_execute_pymdp`

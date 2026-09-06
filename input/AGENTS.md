@@ -18,7 +18,7 @@
 
 ## Model kinds and framework support
 
-`render.pomdp_contract.detect_model_kind` classifies each spec; `src/render/framework_registry.py` declares the nine frameworks and their `supports_continuous` flag.
+`render.pomdp_contract.detect_model_kind` classifies each spec; `src/gnn/render/framework_registry.py` declares the nine frameworks and their `supports_continuous` flag.
 
 | Model kind | Folders | Renders + executes on | Render status `unsupported` on |
 |---|---|---|---|
@@ -39,4 +39,4 @@
 - [`README.md`](README.md) — purpose and the same model-kind table
 - [`SPEC.md`](SPEC.md) — data contract for this directory
 - [`../src/gnn/AGENTS.md`](../src/gnn/AGENTS.md) — parser and discovery module that consumes these files
-- [`../src/render/AGENTS.md`](../src/render/AGENTS.md) — renderer inventory and framework registry
+- [`../src/gnn/render/AGENTS.md`](../src/gnn/render/AGENTS.md) — renderer inventory and framework registry

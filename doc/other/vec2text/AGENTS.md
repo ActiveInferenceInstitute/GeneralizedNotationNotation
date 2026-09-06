@@ -30,7 +30,7 @@ Vec2Text integration enables:
 - **README.md**: [Directory overview](README.md)
 - **GNN Documentation**: [gnn/AGENTS.md](../../gnn/AGENTS.md)
 - **Main Documentation**: [doc/README.md](../README.md)
-- **Pipeline Reference**: [src/AGENTS.md](../../../src/AGENTS.md)
+- **Pipeline Reference**: [src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md)
 
 ## Documentation Structure
 
@@ -57,7 +57,7 @@ This documentation is integrated with the 25-step GNN processing pipeline:
 - **Step 20 (Website)**: Privacy and interpretability analysis
 - **Step 23 (Report)**: Embedding inversion results in reports
 
-See [src/AGENTS.md](../../../src/AGENTS.md) for complete pipeline documentation.
+See [src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md) for complete pipeline documentation.
 
 ## Function Signatures and API
 
@@ -112,8 +112,8 @@ All documentation in this module adheres to professional standards:
 
 ### Pipeline Architecture
 - **[Pipeline Documentation](../../gnn/operations/gnn_tools.md)**: Complete pipeline guide
-- **[Pipeline AGENTS](../../../src/AGENTS.md)**: Implementation details
-- **[Pipeline README](../../../src/README.md)**: Pipeline overview
+- **[Pipeline AGENTS](../../../src/gnn/AGENTS.md)**: Implementation details
+- **[Pipeline README](../../../src/gnn/README.md)**: Pipeline overview
 
 ## See Also
 

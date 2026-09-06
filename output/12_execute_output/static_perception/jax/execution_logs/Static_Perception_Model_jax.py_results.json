@@ -1,0 +1,79 @@
+{
+  "framework": "jax",
+  "model_name": "static_perception",
+  "script_name": "Static_Perception_Model_jax.py",
+  "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/jax/Static_Perception_Model_jax.py",
+  "success": true,
+  "return_code": 0,
+  "execution_time": 1.289918,
+  "timestamp": "2026-09-05T20:27:06.429020",
+  "simulation_data": {
+    "traces": [],
+    "free_energy": [
+      0.5559,
+      0.6018
+    ],
+    "states": [],
+    "observations": [
+      1,
+      1,
+      0,
+      1,
+      1
+    ],
+    "actions": [
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "policy": [],
+    "raw_output": "============================================================\nJAX Active Inference Model: Static_Perception_Model\n============================================================\n\n\u2705 Model parameters created\n   A matrix shape: (2, 2)\n   B matrix shape: (2, 2, 2)\n   C vector shape: (2,)\n   D vector shape: (2,)\n\nStatic_Perception_Model Model Summary (Pure JAX Implementation):\n- Number of states: 2\n- Number of observations: 2\n- Number of actions: 2\n- Parameters: A matrix, B matrix, C vector, D vector\n\nKey Functions:\n- create_params(): Create model parameters\n- belief_update(): Bayesian belief update\n- compute_expected_free_energy(): Compute EFE for action\n- choose_action(): Choose action with minimum EFE\n- simulate_step(): One step of Active Inference\n- run_simulation(): Full simulation over observations\n\n\n\ud83e\uddea Running test simulation...\n\n\ud83d\udcca Simulation Results:\n   Initial belief: [0.5 0.5]\n   Updated belief: [0.8804348  0.11956522]\n   Selected action: 1\n   Expected free energy: 0.5559\n   EFE for all actions: [0.6307901  0.55586493]\n\n\ud83d\udd04 Running 5-step simulation...\n   Actions taken: [0 0 0 0 0]\n   Final belief: [0.08745467 0.9125454 ]\n   Average EFE: 0.6018\n\n\ud83d\udcbe Saved simulation results to: output/12_execute_output/static_perception/jax/simulation_data/simulation_results.json\n\n\u2705 JAX Active Inference model test successful!\n",
+    "raw_error": "",
+    "beliefs": [
+      [
+        0.16981132328510284,
+        0.8301886916160583
+      ],
+      [
+        0.049469511955976486,
+        0.950530469417572
+      ],
+      [
+        0.43460917472839355,
+        0.5653907656669617
+      ],
+      [
+        0.139018252491951,
+        0.8609817624092102
+      ],
+      [
+        0.041616298258304596,
+        0.9583837389945984
+      ]
+    ],
+    "num_timesteps": 5
+  },
+  "execution_benchmark_repeats": 1,
+  "execution_metadata": {
+    "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+    "accelerator_type": "mps",
+    "stdout_length": 1327,
+    "stderr_length": 0,
+    "output_directory": "output/12_execute_output/static_perception/jax"
+  },
+  "execution_time_mean": 1.289918,
+  "execution_time_std": 0.0,
+  "execution_time_samples": [
+    1.289918
+  ],
+  "collected_outputs": {
+    "visualizations": [],
+    "simulation_data": [
+      "output/12_execute_output/static_perception/jax/simulation_data/simulation_results.json"
+    ],
+    "traces": [],
+    "other": []
+  }
+}

@@ -13,8 +13,8 @@ This comprehensive reference documents programmatic integration with the General
 ## API map
 
 1. **Package `gnn` (Step 3)** — file discovery, parsing, validation, multi-format serialization under [`src/gnn/`](../../src/gnn/).
-2. **Pipeline CLI** — `python src/main.py`, numbered `src/N_*.py` scripts.
-3. **Render / execute / viz / LLM / MCP** — see [`src/AGENTS.md`](../../src/AGENTS.md) and module-level `AGENTS.md` files under `src/`.
+2. **Pipeline CLI** — `python src/gnn/main.py`, numbered `src/N_*.py` scripts.
+3. **Render / execute / viz / LLM / MCP** — see [`src/gnn/AGENTS.md`](../../src/gnn/AGENTS.md) and module-level `AGENTS.md` files under `src/`.
 
 ### Quick start (current `gnn` exports)
 

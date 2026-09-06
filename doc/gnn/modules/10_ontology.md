@@ -2,8 +2,8 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/10_ontology.py` (57 lines)
-**Implementation Layer**: `src/ontology/`
+**Orchestrator**: `src/gnn/10_ontology.py` (57 lines)
+**Implementation Layer**: `src/gnn/ontology/`
 
 ## Module Description
 
@@ -11,7 +11,7 @@ This module provides comprehensive ontology processing capabilities for Active I
 
 
 ```
-src/ontology/
+src/gnn/ontology/
 ├── __init__.py                    # Module initialization and exports
 ├── README.md                      # This documentation
 ├── mcp.py                         # Model Context Protocol integration
@@ -69,7 +69,7 @@ src/ontology/
 - `target_dir` (Path): Directory containing GNN files to process
 - `output_dir` (Path): Output directory for ontology results
 - `logger` (Optional[logging.Logger]): Logger instance (default: None)
-- `ontology_terms_file` (Path, optional): Path to ontology terms JSON file (default: `src/ontology/act_inf_ontology_terms.json`)
+- `ontology_terms_file` (Path, optional): Path to ontology terms JSON file (default: `src/gnn/ontology/act_inf_ontology_terms.json`)
 - `recursive` (bool, optional): Process directories recursively (default: True)
 - `strict_validation` (bool, optional): Require all terms to be in ontology (default: False)
 - `generate_mapping` (bool, optional): Generate ontology mapping (default: True)
@@ -88,7 +88,7 @@ logger = logging.getLogger(__name__)
 success = process_ontology(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/10_ontology_output"),
-    ontology_terms_file=Path("src/ontology/act_inf_ontology_terms.json"),
+    ontology_terms_file=Path("src/gnn/ontology/act_inf_ontology_terms.json"),
     strict_validation=True,
 )
 ```
@@ -102,7 +102,7 @@ success = process_ontology(
 **Returns**: `Dict[str, Any]` - Parsed ontology content (annotations + any extracted fields)
 
 #### `load_defined_ontology_terms() -> Dict[str, Any]`
-**Description**: Load the Active Inference ontology term dictionary used for validation (default: `src/ontology/act_inf_ontology_terms.json`).
+**Description**: Load the Active Inference ontology term dictionary used for validation (default: `src/gnn/ontology/act_inf_ontology_terms.json`).
 
 **Returns**: `Dict[str, Any]` - Term definitions (format depends on the JSON file)
 
@@ -149,7 +149,7 @@ success = process_ontology(
 ### Configuration Options
 
 #### Ontology File
-- `ontology_terms_file` (Path): Path to ontology terms JSON file (default: `src/ontology/act_inf_ontology_terms.json`)
+- `ontology_terms_file` (Path): Path to ontology terms JSON file (default: `src/gnn/ontology/act_inf_ontology_terms.json`)
 - `ontology_format` (str): Ontology file format (default: `"json"`)
 
 #### Validation Options
@@ -186,7 +186,7 @@ from ontology import process_ontology
 success = process_ontology(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/10_ontology_output"),
-    ontology_terms_file=Path("src/ontology/act_inf_ontology_terms.json"),
+    ontology_terms_file=Path("src/gnn/ontology/act_inf_ontology_terms.json"),
 )
 ```
 
@@ -297,10 +297,10 @@ output/10_ontology_output/
 ## Testing
 
 ### Test Files
-- `src/tests/ontology/test_ontology_overall.py`
+- `tests/ontology/test_ontology_overall.py`
 
 ### Test Coverage
-- Measure: `uv run --extra dev python -m pytest src/tests/ontology/ --cov=ontology --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
+- Measure: `uv run --extra dev python -m pytest tests/ontology/ --cov=ontology --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
 
 ### Key Test Scenarios
 1. Ontology term extraction
@@ -314,7 +314,7 @@ output/10_ontology_output/
 
 ### Tools Registered
 
-Registered in `register_tools` (`src/ontology/mcp.py`):
+Registered in `register_tools` (`src/gnn/ontology/mcp.py`):
 
 - `process_ontology` - Run Step 10 over a directory
 - `validate_ontology_terms` - Validate term names against the ontology
@@ -331,7 +331,7 @@ Registered in `register_tools` (`src/ontology/mcp.py`):
 **Symptom**: Validation reports errors even for valid terms  
 **Cause**: Ontology terms file missing or outdated  
 **Solution**: 
-- Check that `src/ontology/act_inf_ontology_terms.json` exists
+- Check that `src/gnn/ontology/act_inf_ontology_terms.json` exists
 - Verify ontology terms file format is valid JSON
 - Update ontology terms file if needed
 - Use `--verbose` flag for detailed validation messages
@@ -342,7 +342,7 @@ Registered in `register_tools` (`src/ontology/mcp.py`):
 **Solution**:
 - Check term spelling and case sensitivity
 - Verify ontology terms file includes all required terms
-- Note: `strict_validation` is a Python-level options key (`ontology.utils.get_ontology_processing_options()`); there is no `--strict-validation` CLI flag on `src/10_ontology.py`, and `process_ontology()` does not currently read this key, so it has no effect on validation strictness either way
+- Note: `strict_validation` is a Python-level options key (`ontology.utils.get_ontology_processing_options()`); there is no `--strict-validation` CLI flag on `src/gnn/10_ontology.py`, and `process_ontology()` does not currently read this key, so it has no effect on validation strictness either way
 - Review ontology terms file structure
 
 #### Issue 3: Semantic mapping incomplete
@@ -378,10 +378,10 @@ Registered in `register_tools` (`src/ontology/mcp.py`):
 ## References
 
 ### Related Documentation
-- [Pipeline Overview](../../../src/ontology/../../README.md)
-- [Architecture Guide](../../../src/ontology/../../ARCHITECTURE.md)
+- [Pipeline Overview](../../../README.md)
+- [Architecture Guide](../../../ARCHITECTURE.md)
 - [Active Inference Ontology](https://activeinference.org)
-- [GNN Ontology Guide](../../../src/ontology/../../doc/gnn/advanced/gnn_ontology.md)
+- [GNN Ontology Guide](../../../doc/gnn/advanced/gnn_ontology.md)
 
 ### External Resources
 - [Active Inference Institute](https://activeinference.institute/)
@@ -399,12 +399,12 @@ Registered in `register_tools` (`src/ontology/mcp.py`):
 
 ---
 ## Documentation
-- **[README](../../../src/ontology/README.md)**: Module Overview
-- **[AGENTS](../../../src/ontology/AGENTS.md)**: Agentic Workflows
-- **[SPEC](../../../src/ontology/SPEC.md)**: Architectural Specification
-- **[SKILL](../../../src/ontology/SKILL.md)**: Capability API
+- **[README](../../../src/gnn/ontology/README.md)**: Module Overview
+- **[AGENTS](../../../src/gnn/ontology/AGENTS.md)**: Agentic Workflows
+- **[SPEC](../../../src/gnn/ontology/SPEC.md)**: Architectural Specification
+- **[SKILL](../../../src/gnn/ontology/SKILL.md)**: Capability API
 
 
 ---
 
-**Source Reference**: [src/ontology](../../../src/ontology)
+**Source Reference**: [src/gnn/ontology](../../../src/gnn/ontology)

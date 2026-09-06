@@ -1,19 +1,19 @@
 # research-worker REPORT — fleet 3, 2026-09-04
 
-Scope: `src/research/` (processor.py, mcp.py, `__init__.py`, AGENTS/README/SPEC/SKILL) + `src/19_research.py`. All edits in place; no git ops; no dependency changes.
+Scope: `src/gnn/research/` (processor.py, mcp.py, `__init__.py`, AGENTS/README/SPEC/SKILL) + `src/gnn/19_research.py`. All edits in place; no git ops; no dependency changes.
 
 ## Files changed + why
 
 | File | Change | Why |
 |---|---|---|
-| `src/research/processor.py` | Decomposed the 190-line `process_research` monolith into pure units; added `_iter_section_lines()` deduplicating the section-scanning state machine previously copy-pasted in `extract_state_space_dims`/`count_connections`; hoisted `asyncio`/`tempfile` imports to module level and removed inline `import os as _os`/`import tempfile as _tempfile`; normalized annotations to modern builtin generics (`dict[str, list[int]]` etc., dropped unused `Optional`/`cast`); removed the never-used `content` param from private `_generate_llm_hypotheses` | Composability + internal quality; every output byte preserved |
-| `src/research/processor.py` | **Additive API**: frozen `@dataclass ModelAnalysis` + `analyze_gnn(content)` one-call static analysis; `MODEL_FAMILIES` constant; `summarize_hypotheses()` (priority/type counts); public `render_research_report()` (pure markdown renderer extracted from the writer); `write_research_outputs()` (atomic JSON + report writes, explicit `encoding="utf-8"`); `discover_gnn_files()` (sorted, scoped); `merge_llm_hypotheses()` (extracted from inline merge) | Genuinely useful typed surface for non-pipeline consumers; single source of truth for report rendering |
-| `src/tests/research/test_research_analysis.py` | **New**: 13 tests pinning the analysis API (bundle consistency, empty-content, `MODEL_FAMILIES` coverage, section-boundary isolation, symbolic/nonpositive dim rejection, undirected dash counting, discovery sort/scope/missing-dir, merge dedup order, summary counts/determinism, renderer purity + byte parity with the written report) | Pin real behavior of the new surface |
-| `src/research/README.md`, `AGENTS.md` | Fixed **stale `generate_rule_based_hypotheses(content, model_name, output_dir, logger) -> Tuple[List[Dict], str]`** signature (docs of record contradicted the actual `(content, model_family, dims, connections) -> list[dict]` since before this fleet); documented the new API; test list updated | Docs were provably wrong |
-| `src/research/SPEC.md`, `SKILL.md` | New components/capability lines | Docs of record in lock-step |
-| `src/research/__init__.py` | `__version__` 1.6.0 → 1.7.0 | API addition |
+| `src/gnn/research/processor.py` | Decomposed the 190-line `process_research` monolith into pure units; added `_iter_section_lines()` deduplicating the section-scanning state machine previously copy-pasted in `extract_state_space_dims`/`count_connections`; hoisted `asyncio`/`tempfile` imports to module level and removed inline `import os as _os`/`import tempfile as _tempfile`; normalized annotations to modern builtin generics (`dict[str, list[int]]` etc., dropped unused `Optional`/`cast`); removed the never-used `content` param from private `_generate_llm_hypotheses` | Composability + internal quality; every output byte preserved |
+| `src/gnn/research/processor.py` | **Additive API**: frozen `@dataclass ModelAnalysis` + `analyze_gnn(content)` one-call static analysis; `MODEL_FAMILIES` constant; `summarize_hypotheses()` (priority/type counts); public `render_research_report()` (pure markdown renderer extracted from the writer); `write_research_outputs()` (atomic JSON + report writes, explicit `encoding="utf-8"`); `discover_gnn_files()` (sorted, scoped); `merge_llm_hypotheses()` (extracted from inline merge) | Genuinely useful typed surface for non-pipeline consumers; single source of truth for report rendering |
+| `tests/research/test_research_analysis.py` | **New**: 13 tests pinning the analysis API (bundle consistency, empty-content, `MODEL_FAMILIES` coverage, section-boundary isolation, symbolic/nonpositive dim rejection, undirected dash counting, discovery sort/scope/missing-dir, merge dedup order, summary counts/determinism, renderer purity + byte parity with the written report) | Pin real behavior of the new surface |
+| `src/gnn/research/README.md`, `AGENTS.md` | Fixed **stale `generate_rule_based_hypotheses(content, model_name, output_dir, logger) -> Tuple[List[Dict], str]`** signature (docs of record contradicted the actual `(content, model_family, dims, connections) -> list[dict]` since before this fleet); documented the new API; test list updated | Docs were provably wrong |
+| `src/gnn/research/SPEC.md`, `SKILL.md` | New components/capability lines | Docs of record in lock-step |
+| `src/gnn/research/__init__.py` | `__version__` 1.6.0 → 1.7.0 | API addition |
 
-Untouched by design: `src/19_research.py` (55 lines, already thin), `mcp.py` (4 tools unchanged; test uses subset check so no break either way).
+Untouched by design: `src/gnn/19_research.py` (55 lines, already thin), `mcp.py` (4 tools unchanged; test uses subset check so no break either way).
 
 ## API deltas
 
@@ -25,10 +25,10 @@ Untouched by design: `src/19_research.py` (55 lines, already thin), `mcp.py` (4 
 ## Verification (tails)
 
 ```
-uv run ruff check src/research src/tests/research   -> All checks passed!
-uv run --extra dev mypy src/research --config-file pyproject.toml
+uv run ruff check src/gnn/research tests/research   -> All checks passed!
+uv run --extra dev mypy src/gnn/research --config-file pyproject.toml
                                                     -> Success: no issues found in 3 source files
-uv run pytest src/tests/research/ -v (= just test-mod research; `just` binary absent on host)
+uv run pytest tests/research/ -v (= just test-mod research; `just` binary absent on host)
                                                     -> 40 passed in 0.07s  (27 pre-existing + 13 new)
 uv run --extra dev python scripts/check_gnn_doc_patterns.py --strict
                                                     -> no banned patterns
@@ -39,11 +39,11 @@ uv run --extra dev python scripts/check_gnn_doc_patterns.py --strict
                                                        report has '## model.md (pomdp model)' + priority grouping
 ```
 
-`doc/development/docs_audit.py --strict --check-anchors --no-write` exits 1 on **pre-existing** issue `src/tests/tests` (dir with .py but no AGENTS.md, created 10:59 by a fleet peer before this worker started — not in my scope). My doc surface is clean under it.
+`doc/development/docs_audit.py --strict --check-anchors --no-write` exits 1 on **pre-existing** issue `tests/tests` (dir with .py but no AGENTS.md, created 10:59 by a fleet peer before this worker started — not in my scope). My doc surface is clean under it.
 
 ## Follow-ups for other owners
 
-1. `src/tests/tests/` (peer): needs an `AGENTS.md` or relocation, else `docs_audit --strict` stays red repo-wide.
+1. `tests/tests/` (peer): needs an `AGENTS.md` or relocation, else `docs_audit --strict` stays red repo-wide.
 2. `doc/` or `manuscript/` workers: none required — output contracts (`research_results.json`, `research_summary.json`, `research_processing_summary.json`, `research_report.md`) unchanged, so `pipeline_validation`/`report/analyzer`/`gui` consumers are unaffected.
 3. Repo-wide convention note: module `FEATURES` exists in both `__init__.py` and `processor.py` with different keys (drift by convention, same in audio/analysis/... modules). Left alone deliberately; a fleet-level decision would be needed to unify.
 
@@ -55,9 +55,9 @@ uv run --extra dev python scripts/check_gnn_doc_patterns.py --strict
 
 ## Post-report advisory sweep (same turn)
 
-- **FEATURES consumers**: repo-wide grep for `research.FEATURES` / `from research import *FEATURES` / `processor.FEATURES` outside `src/research/` → **zero consumers**. The `__init__`/processor two-dict split stays (repo-wide convention: audio, analysis, cli, api all do this); the advisory's unification condition (both surfaces consumed) is false.
-- **Version pins**: grep for `1.6.0` pins across `src/tests/research/` and the api test → none reference `research.__version__`; the `1.6.0` strings belong to `src/__init__.py` and `src/mcp/__init__.py` (independent dual-versioning policy, `pyproject.toml` 3.2.0 authoritative). The 1.7.0 module bump is safe.
-- **git-diff parity scan** (`git diff src/research/processor.py`, removed-vs-added long-string comparison): **parity scan: pass, 2 explained artifacts** — of 13 removed long strings, 11 reappear verbatim; the 2 non-verbatim are (a) the inline `rglob/glob` discovery one-liner, extracted intact into `discover_gnn_files`, and (b) the verbose log line, now interpolated as `{analysis.model_family}` inside the same f-string — identical rendered output. No hypothesis description/rationale/priority text drifted. Module tests (including the renderer/writer byte-parity test) re-run green after formatting.
-- **black** (configured in pyproject, dev dep): reformatted my two in-scope Python files (cosmetic: blank lines, line rewrapping — no string/logic changes); `black --check` now clean on them. Note: `src/tests/research/test_research_functional.py` has **pre-existing** black drift (0 diff lines from me — untouched, owner is the repo/pre-existing state).
-- **Re-verification after black**: ruff clean, mypy clean (3 files), `pytest src/tests/research/` 40/40.
+- **FEATURES consumers**: repo-wide grep for `research.FEATURES` / `from research import *FEATURES` / `processor.FEATURES` outside `src/gnn/research/` → **zero consumers**. The `__init__`/processor two-dict split stays (repo-wide convention: audio, analysis, cli, api all do this); the advisory's unification condition (both surfaces consumed) is false.
+- **Version pins**: grep for `1.6.0` pins across `tests/research/` and the api test → none reference `research.__version__`; the `1.6.0` strings belong to `src/gnn/__init__.py` and `src/gnn/mcp/__init__.py` (independent dual-versioning policy, `pyproject.toml` 3.2.0 authoritative). The 1.7.0 module bump is safe.
+- **git-diff parity scan** (`git diff src/gnn/research/processor.py`, removed-vs-added long-string comparison): **parity scan: pass, 2 explained artifacts** — of 13 removed long strings, 11 reappear verbatim; the 2 non-verbatim are (a) the inline `rglob/glob` discovery one-liner, extracted intact into `discover_gnn_files`, and (b) the verbose log line, now interpolated as `{analysis.model_family}` inside the same f-string — identical rendered output. No hypothesis description/rationale/priority text drifted. Module tests (including the renderer/writer byte-parity test) re-run green after formatting.
+- **black** (configured in pyproject, dev dep): reformatted my two in-scope Python files (cosmetic: blank lines, line rewrapping — no string/logic changes); `black --check` now clean on them. Note: `tests/research/test_research_functional.py` has **pre-existing** black drift (0 diff lines from me — untouched, owner is the repo/pre-existing state).
+- **Re-verification after black**: ruff clean, mypy clean (3 files), `pytest tests/research/` 40/40.
 - SKILL.md capability bullets re-verified on disk (5 bullets intact); README example imports all three names it calls.

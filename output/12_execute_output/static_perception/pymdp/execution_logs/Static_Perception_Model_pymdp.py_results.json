@@ -1,0 +1,99 @@
+{
+  "framework": "pymdp",
+  "model_name": "static_perception",
+  "script_name": "Static_Perception_Model_pymdp.py",
+  "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/pymdp/Static_Perception_Model_pymdp.py",
+  "success": true,
+  "return_code": 0,
+  "execution_time": 2.798857,
+  "timestamp": "2026-09-05T20:27:09.756290",
+  "simulation_data": {
+    "traces": [],
+    "free_energy": [],
+    "states": [],
+    "observations": [
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    "actions": [
+      0,
+      1,
+      0,
+      0,
+      0
+    ],
+    "policy": [],
+    "raw_output": "PyMDP 1.0.0+ detected (JAX-first Agent).\n",
+    "raw_error": "2026-09-05 20:27:10,725 - INFO - Running pymdp 1.0.0 rollout for Static Perception Model\n2026-09-05 20:27:10,725 - INFO - Output directory: output/pymdp_simulations/Static Perception Model\n2026-09-05 20:27:10,725 - INFO - Executing PyMDP simulation (correlation_id: render_generated_script)\n2026-09-05 20:27:10,726 - INFO - Starting pymdp 1.0.0 rollout (JAX backend)\n2026-09-05 20:27:10,727 - INFO - Dimensions: No=2, Ns=2, Nu=2 | T=5, batch=1, policy_len=1\n2026-09-05 20:27:10,738 - INFO - Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: dlopen(libtpu.so, 0x0001): tried: 'libtpu.so' (no such file), '/System/Volumes/Preboot/Cryptexes/OSlibtpu.so' (no such file), '/Users/hum/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/lib/libtpu.so' (no such file), '/usr/lib/libtpu.so' (no such file, not in dyld cache), 'libtpu.so' (no such file)\n/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/src/gnn/execute/pymdp/simulation.py:373: UserWarning: A JAX array is being set as static! This can result in unexpected behavior and is usually a mistake to do.\n  agent = Agent(**agent_kwargs)\n2026-09-05 20:27:10,999 - INFO - pymdp 1.0.0 Agent built (batch_size=1)\n2026-09-05 20:27:12,040 - INFO - t=00 obs=1 belief=[0.17, 0.83] action=0 next_state=0\n2026-09-05 20:27:12,118 - INFO - t=01 obs=0 belief=[0.652, 0.348] action=1 next_state=1\n2026-09-05 20:27:12,195 - INFO - t=02 obs=1 belief=[0.104, 0.896] action=0 next_state=1\n2026-09-05 20:27:12,274 - INFO - t=03 obs=1 belief=[0.033, 0.967] action=0 next_state=1\n2026-09-05 20:27:12,354 - INFO - t=04 obs=1 belief=[0.017, 0.983] action=0 next_state=1\n2026-09-05 20:27:12,354 - INFO - Saved simulation results to output/pymdp_simulations/Static Perception Model/simulation_results.json\n2026-09-05 20:27:12,354 - INFO - PyMDP simulation completed successfully\n2026-09-05 20:27:12,354 - INFO - Simulation completed successfully\n2026-09-05 20:27:12,355 - INFO -   framework:    PyMDP\n2026-09-05 20:27:12,355 - INFO -   pymdp ver:    1.0.0\n2026-09-05 20:27:12,355 - INFO -   backend:      jax\n2026-09-05 20:27:12,355 - INFO -   num_timesteps:5\n",
+    "beliefs": [
+      [
+        0.16981130838394165,
+        0.8301886320114136
+      ],
+      [
+        0.6520029902458191,
+        0.34799695014953613
+      ],
+      [
+        0.10447344183921814,
+        0.8955265879631042
+      ],
+      [
+        0.03327170014381409,
+        0.9667283296585083
+      ],
+      [
+        0.01746278814971447,
+        0.9825372099876404
+      ]
+    ],
+    "expected_free_energy": [
+      [
+        0.19300532341003418,
+        0.18202835321426392
+      ],
+      [
+        0.25696614384651184,
+        0.2634946405887604
+      ],
+      [
+        0.15095651149749756,
+        0.14028030633926392
+      ],
+      [
+        0.09327065944671631,
+        0.0850425660610199
+      ],
+      [
+        0.07856377959251404,
+        0.07129043340682983
+      ]
+    ],
+    "expected_free_energy_convention": "pymdp 1.0.0 neg_efe sign convention: policy posterior q(pi) \u221d E(pi) exp(-gamma * EFE); the emitted expected_free_energy is neg_efe = -EFE, where EFE (pymdp/control.py compute_neg_efe_policy) = expected utility (linear payoff sum sum_o q(o) C[o] over predicted observations \u2014 NOT a KL against C) + states info gain (expected information gain about hidden states). A pymdp 'expected_free_energy' value is therefore not comparable to the risk+ambiguity EFE of the jax renderer or the Lean expectedFreeEnergy_eq_risk_add_ambiguity without sign and convention mapping (bridge finding O1).",
+    "num_timesteps": 5
+  },
+  "execution_benchmark_repeats": 1,
+  "execution_metadata": {
+    "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+    "accelerator_type": "mps",
+    "stdout_length": 41,
+    "stderr_length": 2150,
+    "output_directory": "output/12_execute_output/static_perception/pymdp"
+  },
+  "execution_time_mean": 2.798857,
+  "execution_time_std": 0.0,
+  "execution_time_samples": [
+    2.798857
+  ],
+  "collected_outputs": {
+    "visualizations": [],
+    "simulation_data": [
+      "output/12_execute_output/static_perception/pymdp/simulation_data/simulation_results.json"
+    ],
+    "traces": [],
+    "other": []
+  }
+}

@@ -11,7 +11,7 @@ This document provides agent scaffolding for the RxInfer.jl Framework documentat
 
 ## Purpose
 
-Documentation for the RxInfer.jl (Bayesian inference) framework integration with GNN. The integration is a genuine `@model` + `infer()` variational message-passing pipeline: `src/render/rxinfer/rxinfer_renderer.py` emits Julia scripts defining `@model pomdp_model(y, A, B, D, u, T)` with `Categorical` / `DiscreteTransition` nodes, and `src/execute/rxinfer/` executes them under a committed `Project.toml` + `Manifest.toml` env (RxInfer 5.5.0) via `julia --startup-file=no --project=src/execute/rxinfer <script>`.
+Documentation for the RxInfer.jl (Bayesian inference) framework integration with GNN. The integration is a genuine `@model` + `infer()` variational message-passing pipeline: `src/gnn/render/rxinfer/rxinfer_renderer.py` emits Julia scripts defining `@model pomdp_model(y, A, B, D, u, T)` with `Categorical` / `DiscreteTransition` nodes, and `src/gnn/execute/rxinfer/` executes them under a committed `Project.toml` + `Manifest.toml` env (RxInfer 5.5.0) via `julia --startup-file=no --project=src/gnn/execute/rxinfer <script>`.
 
 ## Documentation Organization
 
@@ -20,7 +20,7 @@ The RxInfer.jl Framework documentation system is part of the broader GNN (Genera
 ### Related Systems
 - **Main Documentation**: [doc/README.md](../README.md)
 - **GNN Documentation**: [gnn/AGENTS.md](../gnn/AGENTS.md)
-- **Pipeline Reference**: [src/AGENTS.md](../../src/AGENTS.md)
+- **Pipeline Reference**: [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)
 - **Active Inference**: [activeinference.org](https://activeinference.org)
 
 ## Subsystems
@@ -32,7 +32,7 @@ The RxInfer.jl Framework documentation system is part of the broader GNN (Genera
 ## Quick Navigation
 
 - **Get Started**: See [README.md](README.md)
-- **Pipeline Overview**: [src/AGENTS.md](../../src/AGENTS.md)
+- **Pipeline Overview**: [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)
 - **Full Documentation Index**: [doc/README.md](../README.md)
 
 ## Documentation Standards
@@ -55,7 +55,7 @@ This documentation integrates with the 25-step GNN processing pipeline:
 5. **Simulation** (Steps 10-16): Model execution and analysis
 6. **Integration** (Steps 17-24): Output and reporting
 
-See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
+See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documentation.
 
 ---
 

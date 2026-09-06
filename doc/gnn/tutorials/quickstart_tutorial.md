@@ -39,7 +39,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 uv sync
 
 # Test the installation
-uv run python src/main.py --help
+uv run python src/gnn/main.py --help
 ```
 
 ### Create your workspace
@@ -224,7 +224,7 @@ Save this as `grid_agent.md` in your `my_first_gnn_model` folder.
 
 > Any registered GNN spec extension (`.md`, `.gnn`, and the other non-binary
 > extensions in the parser registry) works: Step 5's discovery
-> (`src/type_checker/checking/core.py`) walks every registered non-binary
+> (`src/gnn/type_checker/checking/core.py`) walks every registered non-binary
 > extension, not just `*.md`.
 
 ## ✅ Step 4: Validate Your Model (2 minutes)
@@ -233,7 +233,7 @@ Check if your model is correct:
 
 ```bash
 # Run the GNN type checker (Step 5)
-uv run python src/5_type_checker.py --target-dir my_first_gnn_model/ --verbose
+uv run python src/gnn/5_type_checker.py --target-dir my_first_gnn_model/ --verbose
 
 # If successful, you should see:
 # ✅ grid_agent.md: Valid GNN model
@@ -242,7 +242,7 @@ uv run python src/5_type_checker.py --target-dir my_first_gnn_model/ --verbose
 
 **If you see errors**: Check the [Common Errors Guide](../../troubleshooting/error_taxonomy.md) or compare with the template above.
 
-For more information on the type checker, see **[src/type_checker/AGENTS.md](../../../src/type_checker/AGENTS.md)**.
+For more information on the type checker, see **[src/gnn/type_checker/AGENTS.md](../../../src/gnn/type_checker/AGENTS.md)**.
 
 ## 🚀 Step 5: Generate Runnable Code (3 minutes)
 
@@ -250,7 +250,7 @@ Convert your GNN model to executable Python code:
 
 ```bash
 # Generate PyMDP code (Steps 3, 11, 12)
-uv run python src/main.py --only-steps "3,11,12" --target-dir my_first_gnn_model/ --output-dir output/my_first_model/ --frameworks pymdp --verbose
+uv run python src/gnn/main.py --only-steps "3,11,12" --target-dir my_first_gnn_model/ --output-dir output/my_first_model/ --frameworks pymdp --verbose
 
 # Every step writes under the --output-dir you passed, so with
 # --output-dir output/my_first_model/ this run creates:
@@ -265,8 +265,8 @@ uv run python src/main.py --only-steps "3,11,12" --target-dir my_first_gnn_model
 
 For more details on code generation, see:
 
-- **[src/render/AGENTS.md](../../../src/render/AGENTS.md)**: Code rendering module documentation  
-- **[src/execute/AGENTS.md](../../../src/execute/AGENTS.md)**: Execution module documentation
+- **[src/gnn/render/AGENTS.md](../../../src/gnn/render/AGENTS.md)**: Code rendering module documentation  
+- **[src/gnn/execute/AGENTS.md](../../../src/gnn/execute/AGENTS.md)**: Execution module documentation
 
 ### Test the generated code
 
@@ -298,7 +298,7 @@ its results as JSON next to itself. Step 12 does the same thing for every render
 backend at once, which is usually what you want:
 
 ```bash
-uv run python src/12_execute.py --target-dir my_first_gnn_model/ \
+uv run python src/gnn/12_execute.py --target-dir my_first_gnn_model/ \
   --output-dir output/my_first_model/ --frameworks pymdp --verbose
 ```
 
@@ -335,15 +335,15 @@ Your agent:
 2. **Try examples**: Explore [more complex models](gnn_examples_doc.md)
 3. **Different domains**: Navigation → Perception → Decision making
 4. **Advanced features**: Multi-agent, learning, hierarchical models
-5. **Pipeline architecture**: See **[src/AGENTS.md](../../../src/AGENTS.md)** for complete module documentation
-6. **Pipeline safety**: Read **[src/README.md](../../../src/README.md)** for architecture patterns
+5. **Pipeline architecture**: See **[src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md)** for complete module documentation
+6. **Pipeline safety**: Read **[src/gnn/README.md](../../../src/gnn/README.md)** for architecture patterns
 
 ### Build Your Own Model
 
 1. **Start with the template**: Use [`templates/basic_gnn_template.md`](../../templates/basic_gnn_template.md)
 2. **Model your domain**: What states, observations, actions make sense?
 3. **Get help**: Check [FAQ](../README.md) and [community discussions](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions)
-4. **Process with pipeline**: Use `src/main.py` to run complete workflow
+4. **Process with pipeline**: Use `src/gnn/main.py` to run complete workflow
 
 ## 🧠 Key Concepts You've Learned
 
@@ -383,8 +383,8 @@ Your agent:
 ## 📚 Resources
 
 - **Pipeline Documentation**:
-  - [src/AGENTS.md](../../../src/AGENTS.md): Complete module registry
-  - [src/README.md](../../../src/README.md): Pipeline architecture and safety
+  - [src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md): Complete module registry
+  - [src/gnn/README.md](../../../src/gnn/README.md): Pipeline architecture and safety
 - **Documentation**: [Full GNN guide](../about_gnn.md) and [GNN Overview](../gnn_overview.md)
 - **Examples**: [Model gallery](gnn_examples_doc.md)
 - **Help**:

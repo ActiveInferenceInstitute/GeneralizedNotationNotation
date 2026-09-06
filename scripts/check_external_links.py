@@ -90,7 +90,7 @@ SKIP_HOSTS = {
     "example.com",
     "www.example.com",
     "docs.example.com",
-    "api.example.com",
+    "gnn.api.example.com",
     "mcp-server.example.com",
     "yourdomain.com",
     "gnn_backends",

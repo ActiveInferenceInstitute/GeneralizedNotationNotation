@@ -2,8 +2,8 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/0_template.py` (59 lines)
-**Implementation Layer**: `src/template/`
+**Orchestrator**: `src/gnn/0_template.py` (59 lines)
+**Implementation Layer**: `src/gnn/template/`
 
 ## Module Description
 
@@ -20,7 +20,7 @@ main.py → Numbered Scripts (Thin Orchestrators) → Modular Scripts in Folders
 flowchart TD
     Main[main.py<br/>Pipeline Orchestrator] -->| Executes| Step0[0_template.py<br/>Thin Orchestrator]
     
-    subgraph "src/template/ Module"
+    subgraph "src/gnn/template/ Module"
         Init[__init__.py<br/>Public API]
         Proc[processor.py<br/>Core Logic]
     end
@@ -127,7 +127,7 @@ success = process_template_standardized(
 - `warnings` (List[str]): List of validation warnings
 
 #### `safe_template_execution(logger: Any, correlation_id: str) -> Any`
-**Description**: Context manager wrapping a template operation with error handling and correlated logging (`src/template/processor.py`).
+**Description**: Context manager wrapping a template operation with error handling and correlated logging (`src/gnn/template/processor.py`).
 
 **Parameters**:
 - `logger` (Any): Logger used for the wrapped operation
@@ -305,11 +305,11 @@ Template Input → Processing → Pattern Demonstration → Validation → Docum
 ## Testing
 
 ### Test Files
-- `src/tests/template/test_template_overall.py` - Module-level tests (imports, outputs, and core behaviors)
-- `src/tests/pipeline/test_pipeline_scripts.py` - Orchestrator-level checks that include `0_template.py`
+- `tests/template/test_template_overall.py` - Module-level tests (imports, outputs, and core behaviors)
+- `tests/pipeline/test_pipeline_scripts.py` - Orchestrator-level checks that include `0_template.py`
 
 ### Test Coverage
-- Measure: `uv run --extra dev python -m pytest src/tests/template/ --cov=template --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
+- Measure: `uv run --extra dev python -m pytest tests/template/ --cov=template --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
 
 ### Key Test Scenarios
 1. Template processing and generation
@@ -338,12 +338,12 @@ def process_template_tool(target_dir, output_dir):
 
 ---
 ## Documentation
-- **[README](../../../src/template/README.md)**: Module Overview
-- **[AGENTS](../../../src/template/AGENTS.md)**: Agentic Workflows
-- **[SPEC](../../../src/template/SPEC.md)**: Architectural Specification
-- **[SKILL](../../../src/template/SKILL.md)**: Capability API
+- **[README](../../../src/gnn/template/README.md)**: Module Overview
+- **[AGENTS](../../../src/gnn/template/AGENTS.md)**: Agentic Workflows
+- **[SPEC](../../../src/gnn/template/SPEC.md)**: Architectural Specification
+- **[SKILL](../../../src/gnn/template/SKILL.md)**: Capability API
 
 
 ---
 
-**Source Reference**: [src/template](../../../src/template)
+**Source Reference**: [src/gnn/template](../../../src/gnn/template)

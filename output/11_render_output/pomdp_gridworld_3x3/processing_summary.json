@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-06-18T09:04:51.474153",
+  "timestamp": "2026-09-05T20:25:30.153220",
   "source_file": "input/gnn_files/pomdp_gridworld/pomdp_gridworld_3x3.md",
   "model_name": "POMDP GridWorld 3x3",
   "pomdp_dimensions": {
@@ -29,5 +29,7 @@
     "stan",
     "bnlearn"
   ],
-  "frameworks_failed": []
+  "frameworks_failed": [],
+  "frameworks_unsupported": [],
+  "model_kind": "discrete"
 }

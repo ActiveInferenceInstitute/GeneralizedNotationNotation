@@ -22,11 +22,11 @@ are tracked); your job is to apply them to the .md files exactly.
 
 ## Specific fixes to apply
 FIXES:
-1. doc/pedalboard/AGENTS.md:130 and README.md:11 — change "Production Ready" claim to scaffold/planned: src/audio/pedalboard/ is scaffold-only (no .py). Reword the Status and remove/relabel the module-level function signatures (generate_audio_from_gnn, apply_audio_effects) as planned/not-yet-implemented.
+1. doc/pedalboard/AGENTS.md:130 and README.md:11 — change "Production Ready" claim to scaffold/planned: src/gnn/audio/pedalboard/ is scaffold-only (no .py). Reword the Status and remove/relabel the module-level function signatures (generate_audio_from_gnn, apply_audio_effects) as planned/not-yet-implemented.
 2. doc/pedalboard/README.md:37 — "Files: 3 | Subdirectories: 1" -> Files: 5 (AGENTS.md, README.md, SPEC.md, pedalboard_gnn.md, pedalboard.md), Subdirectories: 0
 3. doc/sapf/README.md:38 — "Files: 3 | Subdirectories: 0" -> Files: 5, Subdirectories: 0
 4. doc/sapf/AGENTS.md metadata "Files: 3 | Subdirectories: 1" -> Files: 5, Subdirectories: 0
-5. doc/audio/AGENTS.md:14 — SAPF acronym expansion: pick ONE canonical from src/audio ("Synthetic Audio Processing Framework" per src/audio/README.md, or "Structured Audio Processing Format" per src/audio/AGENTS.md); reconcile doc/audio to match one of these (do not use "Sonified Active Inference Parameter Framework").
+5. doc/audio/AGENTS.md:14 — SAPF acronym expansion: pick ONE canonical from src/gnn/audio ("Synthetic Audio Processing Framework" per src/gnn/audio/README.md, or "Structured Audio Processing Format" per src/gnn/audio/AGENTS.md); reconcile doc/audio to match one of these (do not use "Sonified Active Inference Parameter Framework").
 6. doc/audio/README.md:15,36 — "Files 1 | Subdirectories 0" -> Files: 3 (README.md, AGENTS.md, SPEC.md)
 7. doc/other/README.md:38 — "Files 10+ | Subdirectories 0" -> actual ~43 files / 19 subdirs (count via ls) — update
 8. doc/other/README.md:28,91,111 — self-referential "Archive ../other/README.md" pointing to same file — repoint to a real sibling or drop the entry

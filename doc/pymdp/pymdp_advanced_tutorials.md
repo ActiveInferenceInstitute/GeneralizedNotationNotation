@@ -3,8 +3,8 @@
 > **Scope:** This document contains *illustrative* patterns for building
 > advanced active-inference agents on top of pymdp 1.0.0 (JAX-first). These
 > examples are not pipeline contracts — the canonical pipeline entry points
-> live in `src/execute/pymdp/simulation.py` and
-> `src/execute/pymdp/pymdp_simulation.py`.
+> live in `src/gnn/execute/pymdp/simulation.py` and
+> `src/gnn/execute/pymdp/pymdp_simulation.py`.
 >
 > All examples use the real 1.0.0 API (batched `list[jax.Array]` models,
 > `infer_states(empirical_prior=…, return_info=True)`, `infer_policies(qs)`,
@@ -156,5 +156,5 @@ Features available upstream that this repository does **not** wrap:
 - `pymdp.control.generate_I_matrix` — inductive-inference pruning
 - `pymdp.envs.*` — built-in JAX environments for agent training
 
-See the upstream documentation and `src/tests/execute/test_pymdp_1_0_0_upstream_api.py`
+See the upstream documentation and `tests/execute/test_pymdp_1_0_0_upstream_api.py`
 for the exact surface currently asserted by this repository.

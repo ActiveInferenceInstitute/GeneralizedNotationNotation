@@ -1,0 +1,172 @@
+{
+  "success": true,
+  "framework": "jax",
+  "model_name": "Static_Perception_Model",
+  "num_timesteps": 5,
+  "timestamp": "2026-09-05T20:27:07.467378",
+  "simulation_trace": {
+    "observations": [
+      1,
+      1,
+      0,
+      1,
+      1
+    ],
+    "beliefs": [
+      [
+        0.16981132328510284,
+        0.8301886916160583
+      ],
+      [
+        0.049469511955976486,
+        0.950530469417572
+      ],
+      [
+        0.43460917472839355,
+        0.5653907656669617
+      ],
+      [
+        0.139018252491951,
+        0.8609817624092102
+      ],
+      [
+        0.041616298258304596,
+        0.9583837389945984
+      ]
+    ],
+    "actions": [
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "efe_history": [
+      [
+        0.5861380696296692,
+        0.6496361494064331
+      ],
+      [
+        0.5062902569770813,
+        0.5988765358924866
+      ],
+      [
+        0.6819468140602112,
+        0.6937631368637085
+      ],
+      [
+        0.56809002161026,
+        0.638489842414856
+      ],
+      [
+        0.5001834034919739,
+        0.5949100852012634
+      ]
+    ],
+    "belief_confidence": [
+      0.8301886916160583,
+      0.950530469417572,
+      0.5653907656669617,
+      0.8609817624092102,
+      0.9583837389945984
+    ]
+  },
+  "observations": [
+    1,
+    1,
+    0,
+    1,
+    1
+  ],
+  "beliefs": [
+    [
+      0.16981132328510284,
+      0.8301886916160583
+    ],
+    [
+      0.049469511955976486,
+      0.950530469417572
+    ],
+    [
+      0.43460917472839355,
+      0.5653907656669617
+    ],
+    [
+      0.139018252491951,
+      0.8609817624092102
+    ],
+    [
+      0.041616298258304596,
+      0.9583837389945984
+    ]
+  ],
+  "actions": [
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "final_belief": [
+    0.0874546691775322,
+    0.912545382976532
+  ],
+  "model_parameters": {
+    "A_shape": [
+      2,
+      2
+    ],
+    "B_shape": [
+      2,
+      2,
+      2
+    ],
+    "C_shape": [
+      2
+    ],
+    "D_shape": [
+      2
+    ],
+    "num_states": 2,
+    "num_observations": 2,
+    "num_actions": 2
+  },
+  "metrics": {
+    "expected_free_energy": [
+      [
+        0.5861380696296692,
+        0.6496361494064331
+      ],
+      [
+        0.5062902569770813,
+        0.5988765358924866
+      ],
+      [
+        0.6819468140602112,
+        0.6937631368637085
+      ],
+      [
+        0.56809002161026,
+        0.638489842414856
+      ],
+      [
+        0.5001834034919739,
+        0.5949100852012634
+      ]
+    ],
+    "expected_free_energy_convention": "jax renderer compute_expected_free_energy heuristic: EFE = obs_entropy - pragmatic_value + 0.1 * kl_divergence, where obs_entropy is the entropy of predicted observations, pragmatic_value = sum_o q(o) C[o] (a LINEAR payoff sum, not a KL against C), and kl_divergence = KL(next_belief || D) weighted by a fixed 0.1 coefficient. This is NOT the risk+ambiguity EFE decomposition (risk is the KL against C) and is not comparable to the pymdp neg_efe or the Lean expectedFreeEnergy_eq_risk_add_ambiguity without convention mapping (bridge finding O1).",
+    "average_efe": 0.6018324494361877,
+    "belief_confidence": [
+      0.8301886916160583,
+      0.950530469417572,
+      0.5653907656669617,
+      0.8609817624092102,
+      0.9583837389945984
+    ]
+  },
+  "validation": {
+    "all_beliefs_valid": true,
+    "beliefs_sum_to_one": true,
+    "actions_in_range": true
+  }
+}

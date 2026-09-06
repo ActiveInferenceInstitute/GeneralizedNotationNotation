@@ -2,8 +2,8 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/12_execute.py` (111 lines)
-**Implementation Layer**: `src/execute/`
+**Orchestrator**: `src/gnn/12_execute.py` (111 lines)
+**Implementation Layer**: `src/gnn/execute/`
 
 ## Module Description
 
@@ -24,7 +24,7 @@ This module is responsible for running GNN models that have been rendered into f
 
 JAX, NumPyro and DisCoPy are **core** dependencies (`uv sync`); PyTorch needs the `torch` extra (`uv sync --extra torch`; torch>=2.13.0 resolves GHSA-rrmf-rvhw-rf47), bnlearn stays manual, and Stan needs `uv sync --extra stan` plus a CmdStan toolchain. If the environment is incomplete, the affected scripts are **skipped** (not failed). Julia frameworks require Julia installed.
 
-Two behaviours introduced in v3.2.0: `_merge_prior_execution_summary` (`src/execute/processor.py`) folds a previously written `execution_summary.json` into the current results so the durable summary covers every input folder rather than the last one processed; and script discovery only considers `.py`/`.jl` files, so companion artifacts such as `<stem>_stan.stan` and `<stem>_stan_data.json` are never treated as executables.
+Two behaviours introduced in v3.2.0: `_merge_prior_execution_summary` (`src/gnn/execute/processor.py`) folds a previously written `execution_summary.json` into the current results so the durable summary covers every input folder rather than the last one processed; and script discovery only considers `.py`/`.jl` files, so companion artifacts such as `<stem>_stan.stan` and `<stem>_stan_data.json` are never treated as executables.
 
 Continuous (linear-Gaussian) models reach Step 12 only for the backends that render them (JAX, NumPyro, PyTorch, Stan, RxInfer.jl); the categorical backends report render status `unsupported` in Step 11 and emit nothing to execute.
 
@@ -67,7 +67,7 @@ Continuous (linear-Gaussian) models reach Step 12 only for the backends that ren
 - Comprehensive error logging
 - Result capture and validation
 - Execution timeout handling
-- Distributed execution across a Ray or Dask cluster for parallel script/parameter-sweep dispatch (`src/execute/distributed.py`, `--distributed`, `--execution-workers`, `--backend {ray,dask}`)
+- Distributed execution across a Ray or Dask cluster for parallel script/parameter-sweep dispatch (`src/gnn/execute/distributed.py`, `--distributed`, `--execution-workers`, `--backend {ray,dask}`)
 
 ---
 
@@ -77,12 +77,12 @@ Both Julia backends run against **committed** environments checked into the repo
 
 | Framework | Environment | Pinned contents |
 |---|---|---|
-| RxInfer.jl | `src/execute/rxinfer/` | The `GnnRxInferModels` package — RxInfer 5.5.0 plus Distributions, JSON, Plots, StatsBase, PrecompileTools. Precompiles the `pomdp`, `continuous`, `hierarchical`, `factored`, and `learning` models loudly: a precompile failure surfaces rather than being swallowed. |
-| ActiveInference.jl | `src/execute/activeinference_jl/` | A deliberately **minimal** environment — ActiveInference 0.1.2, Distributions, JSON, StatsBase, and nothing else. |
+| RxInfer.jl | `src/gnn/execute/rxinfer/` | The `GnnRxInferModels` package — RxInfer 5.5.0 plus Distributions, JSON, Plots, StatsBase, PrecompileTools. Precompiles the `pomdp`, `continuous`, `hierarchical`, `factored`, and `learning` models loudly: a precompile failure surfaces rather than being swallowed. |
+| ActiveInference.jl | `src/gnn/execute/activeinference_jl/` | A deliberately **minimal** environment — ActiveInference 0.1.2, Distributions, JSON, StatsBase, and nothing else. |
 
 ### `JULIA_PROJECT` defaulting
 
-`_build_execution_environment` (`src/execute/processor.py`) sets `JULIA_PROJECT` to the committed environment matching the script's framework, using `setdefault` — **an explicitly exported `JULIA_PROJECT` still wins**. This is what lets `using GnnRxInferModels` / `using ActiveInference` resolve without an ambient environment, including under test runners whose temporary depot may not exist.
+`_build_execution_environment` (`src/gnn/execute/processor.py`) sets `JULIA_PROJECT` to the committed environment matching the script's framework, using `setdefault` — **an explicitly exported `JULIA_PROJECT` still wins**. This is what lets `using GnnRxInferModels` / `using ActiveInference` resolve without an ambient environment, including under test runners whose temporary depot may not exist.
 
 `setup_environment.jl` activates and instantiates the environment (`Pkg.activate()` + `Pkg.instantiate()`); there is no runtime `Pkg.add`.
 
@@ -140,7 +140,7 @@ success = process_execute(
 ```
 
 #### `execute_simulation_from_gnn(gnn_file: Path, output_dir: Path) -> Dict[str, Any]`
-**Description**: Execute the simulation for one GNN file (`src/execute/processor.py`).
+**Description**: Execute the simulation for one GNN file (`src/gnn/execute/processor.py`).
 
 **Parameters**:
 - `gnn_file` (Path): Path to GNN file
@@ -155,7 +155,7 @@ success = process_execute(
 - `output_files` (List[Path]): Generated output files
 
 #### Framework health
-There is no `get_execution_health_status` function in `src/execute/`. Framework availability is probed by `utils.framework_availability` and surfaced through the `gnn health` CLI; the fields below describe that report.
+There is no `get_execution_health_status` function in `src/gnn/execute/`. Framework availability is probed by `utils.framework_availability` and surfaced through the `gnn health` CLI; the fields below describe that report.
 
 **Returns**: `Dict[str, Any]` - Health status dictionary with:
 - `pymdp_available` (bool): PyMDP availability
@@ -216,7 +216,7 @@ elif not detection.get("correct_package"):
 #### Distributed Execution
 - `distributed` (bool, CLI: `--distributed`): Run scripts and model parameter sweeps in parallel across a Ray/Dask cluster (default: `False`)
 - `execution_workers` (int, CLI: `--execution-workers`): Number of local or distributed workers for rendered script execution (default: `1`)
-- `backend` (str, CLI: `--backend {ray,dask}`): Backend to use for distributed execution (default: `"ray"`); implemented by `src/execute/distributed.py`'s `Dispatcher` class
+- `backend` (str, CLI: `--backend {ray,dask}`): Backend to use for distributed execution (default: `"ray"`); implemented by `src/gnn/execute/distributed.py`'s `Dispatcher` class
 
 #### Framework-Specific Configuration
 - `julia_path` (str): Path to Julia executable (default: auto-detect)
@@ -256,11 +256,11 @@ success = process_execute(
 ### Distributed Execution
 ```bash
 # Fan out rendered scripts / parameter sweeps across a local or remote Ray cluster
-python src/12_execute.py --target-dir output/11_render_output --output-dir output \
+python src/gnn/12_execute.py --target-dir output/11_render_output --output-dir output \
   --distributed --execution-workers 4 --backend ray
 
 # Use Dask instead of Ray
-python src/12_execute.py --target-dir output/11_render_output --output-dir output \
+python src/gnn/12_execute.py --target-dir output/11_render_output --output-dir output \
   --distributed --execution-workers 4 --backend dask
 ```
 
@@ -338,7 +338,7 @@ Per-run duration, memory, and per-script outcomes are recorded in `execution_sum
 
 ### External Integration
 - **PyMDP**: Executes Python Active Inference simulations
-- **Julia Runtime**: Executes Julia simulation scripts (RxInfer.jl, ActiveInference.jl) under the committed environments described in [Julia Execution Environments](#julia-execution-environments). Equivalent by hand: `julia --startup-file=no --project=src/execute/rxinfer <script>`.
+- **Julia Runtime**: Executes Julia simulation scripts (RxInfer.jl, ActiveInference.jl) under the committed environments described in [Julia Execution Environments](#julia-execution-environments). Equivalent by hand: `julia --startup-file=no --project=src/gnn/execute/rxinfer <script>`.
 - **JAX**: Executes JAX-based simulations
 - **DisCoPy**: Executes categorical diagram computations
 
@@ -359,12 +359,12 @@ Per-run duration, memory, and per-script outcomes are recorded in `execution_sum
 ## Testing
 
 ### Test Files
-- `src/tests/execute/test_execute_overall.py`
-- `src/tests/execute/test_execute_pymdp_integration.py`
-- `src/tests/execute/test_execute_pymdp_package.py`
+- `tests/execute/test_execute_overall.py`
+- `tests/execute/test_execute_pymdp_integration.py`
+- `tests/execute/test_execute_pymdp_package.py`
 
 ### Test Coverage
-- Measure: `uv run --extra dev python -m pytest src/tests/execute/ --cov=execute --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
+- Measure: `uv run --extra dev python -m pytest tests/execute/ --cov=execute --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
 
 ### Key Test Scenarios
 1. Multi-framework execution
@@ -392,7 +392,7 @@ def run_simulation_tool(script_path: str, framework: str) -> Dict[str, Any]:
 ```
 
 ### MCP File Location
-- `src/execute/mcp.py` - MCP tool registrations
+- `src/gnn/execute/mcp.py` - MCP tool registrations
 
 ---
 
@@ -415,7 +415,7 @@ def run_simulation_tool(script_path: str, framework: str) -> Dict[str, Any]:
 **Solution**:
 - Install framework dependencies: `uv pip install inferactively-pymdp jax`
 - **Note**: The correct PyMDP package name is `inferactively-pymdp`, not `pymdp`
-- For Julia: the RxInfer.jl environment is pinned by the committed `Project.toml` + `Manifest.toml` under `src/execute/rxinfer/` (RxInfer 5.5.0). `setup_environment.jl` activates and instantiates it (`Pkg.activate()` + `Pkg.instantiate()`) — there is no runtime `Pkg.add`.
+- For Julia: the RxInfer.jl environment is pinned by the committed `Project.toml` + `Manifest.toml` under `src/gnn/execute/rxinfer/` (RxInfer 5.5.0). `setup_environment.jl` activates and instantiates it (`Pkg.activate()` + `Pkg.instantiate()`) — there is no runtime `Pkg.add`.
 - Check framework-specific requirements in documentation
 
 #### Issue 2a: Wrong PyMDP package installed
@@ -424,7 +424,7 @@ def run_simulation_tool(script_path: str, framework: str) -> Dict[str, Any]:
 **Solution**:
 - Uninstall wrong package: `uv pip uninstall pymdp`
 - Install correct package: `uv pip install inferactively-pymdp`
-- Or use setup module: `python src/1_setup.py --install-optional --optional-groups pymdp`
+- Or use setup module: `python src/gnn/1_setup.py --install-optional --optional-groups pymdp`
 - The execute module automatically detects wrong package variants and provides clear error messages
 
 #### Issue 3: Execution timeout
@@ -463,10 +463,10 @@ See [pyproject.toml](../../../pyproject.toml).
 ## References
 
 ### Related Documentation
-- [Pipeline Overview](../../../src/execute/../../README.md)
-- [Architecture Guide](../../../src/execute/../../ARCHITECTURE.md)
-- [Render Module](../../../src/execute/../render/AGENTS.md)
-- [Execution Guide](../../../src/execute/../../doc/execution/)
+- [Pipeline Overview](../../../README.md)
+- [Architecture Guide](../../../ARCHITECTURE.md)
+- [Render Module](../../../src/gnn/execute/../render/AGENTS.md)
+- [Execution Guide](../../../doc/execution/)
 
 ### External Resources
 - [PyMDP Framework](https://github.com/infer-actively/pymdp)
@@ -485,12 +485,12 @@ See [pyproject.toml](../../../pyproject.toml).
 
 ---
 ## Documentation
-- **[README](../../../src/execute/README.md)**: Module Overview
-- **[AGENTS](../../../src/execute/AGENTS.md)**: Agentic Workflows
-- **[SPEC](../../../src/execute/SPEC.md)**: Architectural Specification
-- **[SKILL](../../../src/execute/SKILL.md)**: Capability API
+- **[README](../../../src/gnn/execute/README.md)**: Module Overview
+- **[AGENTS](../../../src/gnn/execute/AGENTS.md)**: Agentic Workflows
+- **[SPEC](../../../src/gnn/execute/SPEC.md)**: Architectural Specification
+- **[SKILL](../../../src/gnn/execute/SKILL.md)**: Capability API
 
 
 ---
 
-**Source Reference**: [src/execute](../../../src/execute)
+**Source Reference**: [src/gnn/execute](../../../src/gnn/execute)

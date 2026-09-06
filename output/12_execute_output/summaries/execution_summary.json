@@ -1,33 +1,40 @@
 {
-  "timestamp": "2026-06-18T09:04:52.080655",
-  "target_directory": "input/gnn_files/pomdp_gridworld",
+  "timestamp": "2026-09-05T20:25:32.616149",
+  "target_directory": "input/gnn_files/basics",
   "output_directory": "output/12_execute_output",
-  "total_scripts_found": 8,
-  "successful_executions": 6,
+  "total_scripts_found": 18,
+  "successful_executions": 14,
   "failed_executions": 0,
-  "skipped_executions": 2,
+  "skipped_executions": 4,
   "execution_details": [
     {
-      "script_path": "output/11_render_output/pomdp_gridworld_3x3/numpyro/POMDP GridWorld 3x3_numpyro.py",
-      "script_name": "POMDP GridWorld 3x3_numpyro.py",
-      "framework": "numpyro",
-      "model_name": "pomdp_gridworld_3x3",
-      "executor": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+      "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/activeinference_jl/Dynamic_Perception_Model_activeinference.jl",
+      "script_name": "Dynamic_Perception_Model_activeinference.jl",
+      "framework": "activeinference_jl",
+      "model_name": "dynamic_perception",
+      "executor": "julia",
       "success": true,
       "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
       "return_code": 0,
-      "execution_time": 1.077094,
-      "timestamp": "2026-06-18T09:04:52.501384",
+      "execution_time": 14.881168,
+      "timestamp": "2026-09-05T20:25:32.633004",
       "execution_benchmark_repeats": 1,
-      "execution_time_mean": 1.077094,
+      "execution_time_mean": 14.881168,
       "execution_time_std": 0.0,
       "execution_time_samples": [
-        1.077094
+        14.881168
       ],
-      "structured_result_file": "output/12_execute_output/pomdp_gridworld_3x3/numpyro/execution_logs/POMDP GridWorld 3x3_numpyro.py_results.json",
-      "output_file": "output/12_execute_output/pomdp_gridworld_3x3/numpyro/execution_logs/POMDP GridWorld 3x3_numpyro.py_execution.log",
-      "implementation_directory": "output/12_execute_output/pomdp_gridworld_3x3/numpyro",
-      "stdout_length": 281,
+      "structured_result_file": "output/12_execute_output/dynamic_perception/activeinference_jl/execution_logs/Dynamic_Perception_Model_activeinference.jl_results.json",
+      "output_file": "output/12_execute_output/dynamic_perception/activeinference_jl/execution_logs/Dynamic_Perception_Model_activeinference.jl_execution.log",
+      "implementation_directory": "output/12_execute_output/dynamic_perception/activeinference_jl",
+      "script_identity": {
+        "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/activeinference_jl/Dynamic_Perception_Model_activeinference.jl",
+        "sha256": "4c4857752feb802b8121e5acb72d43c795ef0cc5f6c81a96baf7595612f5b63b"
+      },
+      "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+      "stdout_length": 60,
       "stderr_length": 0,
       "collected_outputs_summary": {
         "visualizations": {
@@ -45,117 +52,57 @@
       }
     },
     {
-      "script_path": "output/11_render_output/pomdp_gridworld_3x3/pymdp/POMDP GridWorld 3x3_pymdp.py",
-      "script_name": "POMDP GridWorld 3x3_pymdp.py",
-      "framework": "pymdp",
-      "model_name": "pomdp_gridworld_3x3",
-      "executor": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
-      "success": true,
-      "skipped": false,
-      "return_code": 0,
-      "execution_time": 2.698324,
-      "timestamp": "2026-06-18T09:04:53.612721",
-      "execution_benchmark_repeats": 1,
-      "execution_time_mean": 2.698324,
-      "execution_time_std": 0.0,
-      "execution_time_samples": [
-        2.698324
-      ],
-      "structured_result_file": "output/12_execute_output/pomdp_gridworld_3x3/pymdp/execution_logs/POMDP GridWorld 3x3_pymdp.py_results.json",
-      "output_file": "output/12_execute_output/pomdp_gridworld_3x3/pymdp/execution_logs/POMDP GridWorld 3x3_pymdp.py_execution.log",
-      "implementation_directory": "output/12_execute_output/pomdp_gridworld_3x3/pymdp",
-      "stdout_length": 41,
-      "stderr_length": 3207,
-      "collected_outputs_summary": {
-        "visualizations": {
-          "count": 0
-        },
-        "simulation_data": {
-          "count": 1
-        },
-        "traces": {
-          "count": 0
-        },
-        "other": {
-          "count": 0
-        }
-      }
-    },
-    {
-      "script_path": "output/11_render_output/pomdp_gridworld_3x3/pytorch/POMDP GridWorld 3x3_pytorch.py",
-      "script_name": "POMDP GridWorld 3x3_pytorch.py",
-      "framework": "pytorch",
-      "model_name": "pomdp_gridworld_3x3",
-      "executor": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+      "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/bnlearn/Dynamic_Perception_Model_bnlearn.py",
+      "script_name": "Dynamic_Perception_Model_bnlearn.py",
+      "framework": "bnlearn",
+      "model_name": "dynamic_perception",
+      "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
       "success": false,
       "skipped": true,
+      "status": "skipped",
+      "attempts_started": 0,
       "return_code": null,
-      "error": "Dependency not installed: torch",
+      "error": "Dependency not installed: bnlearn",
       "error_type": "DependencyNotInstalled",
       "execution_time": 0,
-      "timestamp": "2026-06-18T09:04:56.341825",
+      "timestamp": "2026-09-05T20:25:59.290543",
       "execution_metadata": {},
+      "script_identity": {
+        "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/bnlearn/Dynamic_Perception_Model_bnlearn.py",
+        "sha256": "24f1470308c8487fcef65c7c577ac2244969a49cd0701f789a727a4d8f0d19ef"
+      },
+      "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
       "stdout_length": 0,
       "stderr_length": 0
     },
     {
-      "script_path": "output/11_render_output/pomdp_gridworld_3x3/jax/POMDP GridWorld 3x3_jax.py",
-      "script_name": "POMDP GridWorld 3x3_jax.py",
-      "framework": "jax",
-      "model_name": "pomdp_gridworld_3x3",
-      "executor": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
-      "success": true,
-      "skipped": false,
-      "return_code": 0,
-      "execution_time": 0.993259,
-      "timestamp": "2026-06-18T09:04:56.622360",
-      "execution_benchmark_repeats": 1,
-      "execution_time_mean": 0.993259,
-      "execution_time_std": 0.0,
-      "execution_time_samples": [
-        0.993259
-      ],
-      "structured_result_file": "output/12_execute_output/pomdp_gridworld_3x3/jax/execution_logs/POMDP GridWorld 3x3_jax.py_results.json",
-      "output_file": "output/12_execute_output/pomdp_gridworld_3x3/jax/execution_logs/POMDP GridWorld 3x3_jax.py_execution.log",
-      "implementation_directory": "output/12_execute_output/pomdp_gridworld_3x3/jax",
-      "stdout_length": 1382,
-      "stderr_length": 0,
-      "collected_outputs_summary": {
-        "visualizations": {
-          "count": 0
-        },
-        "simulation_data": {
-          "count": 1
-        },
-        "traces": {
-          "count": 0
-        },
-        "other": {
-          "count": 0
-        }
-      }
-    },
-    {
-      "script_path": "output/11_render_output/pomdp_gridworld_3x3/discopy/POMDP GridWorld 3x3_discopy.py",
-      "script_name": "POMDP GridWorld 3x3_discopy.py",
+      "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/discopy/Dynamic_Perception_Model_discopy.py",
+      "script_name": "Dynamic_Perception_Model_discopy.py",
       "framework": "discopy",
-      "model_name": "pomdp_gridworld_3x3",
-      "executor": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+      "model_name": "dynamic_perception",
+      "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
       "success": true,
       "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
       "return_code": 0,
-      "execution_time": 0.298156,
-      "timestamp": "2026-06-18T09:04:57.923511",
+      "execution_time": 0.436074,
+      "timestamp": "2026-09-05T20:25:59.778805",
       "execution_benchmark_repeats": 1,
-      "execution_time_mean": 0.298156,
+      "execution_time_mean": 0.436074,
       "execution_time_std": 0.0,
       "execution_time_samples": [
-        0.298156
+        0.436074
       ],
-      "structured_result_file": "output/12_execute_output/pomdp_gridworld_3x3/discopy/execution_logs/POMDP GridWorld 3x3_discopy.py_results.json",
-      "output_file": "output/12_execute_output/pomdp_gridworld_3x3/discopy/execution_logs/POMDP GridWorld 3x3_discopy.py_execution.log",
-      "implementation_directory": "output/12_execute_output/pomdp_gridworld_3x3/discopy",
-      "stdout_length": 1538,
+      "structured_result_file": "output/12_execute_output/dynamic_perception/discopy/execution_logs/Dynamic_Perception_Model_discopy.py_results.json",
+      "output_file": "output/12_execute_output/dynamic_perception/discopy/execution_logs/Dynamic_Perception_Model_discopy.py_execution.log",
+      "implementation_directory": "output/12_execute_output/dynamic_perception/discopy",
+      "script_identity": {
+        "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/discopy/Dynamic_Perception_Model_discopy.py",
+        "sha256": "d4cb00370bfe47f7195c742374889bb5fb295a5260adf732be547ec9383239be"
+      },
+      "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+      "stdout_length": 1451,
       "stderr_length": 0,
       "collected_outputs_summary": {
         "visualizations": {
@@ -173,44 +120,33 @@
       }
     },
     {
-      "script_path": "output/11_render_output/pomdp_gridworld_3x3/bnlearn/POMDP GridWorld 3x3_bnlearn.py",
-      "script_name": "POMDP GridWorld 3x3_bnlearn.py",
-      "framework": "bnlearn",
-      "model_name": "pomdp_gridworld_3x3",
-      "executor": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
-      "success": false,
-      "skipped": true,
-      "return_code": null,
-      "error": "Dependency not installed: bnlearn",
-      "error_type": "DependencyNotInstalled",
-      "execution_time": 0,
-      "timestamp": "2026-06-18T09:04:58.246946",
-      "execution_metadata": {},
-      "stdout_length": 0,
-      "stderr_length": 0
-    },
-    {
-      "script_path": "output/11_render_output/pomdp_gridworld_3x3/rxinfer/POMDP GridWorld 3x3_rxinfer.jl",
-      "script_name": "POMDP GridWorld 3x3_rxinfer.jl",
-      "framework": "rxinfer",
-      "model_name": "pomdp_gridworld_3x3",
-      "executor": "julia",
+      "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/jax/Dynamic_Perception_Model_jax.py",
+      "script_name": "Dynamic_Perception_Model_jax.py",
+      "framework": "jax",
+      "model_name": "dynamic_perception",
+      "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
       "success": true,
       "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
       "return_code": 0,
-      "execution_time": 6.349163,
-      "timestamp": "2026-06-18T09:04:58.246990",
+      "execution_time": 1.291627,
+      "timestamp": "2026-09-05T20:26:00.754387",
       "execution_benchmark_repeats": 1,
-      "execution_time_mean": 6.349163,
+      "execution_time_mean": 1.291627,
       "execution_time_std": 0.0,
       "execution_time_samples": [
-        6.349163
+        1.291627
       ],
-      "structured_result_file": "output/12_execute_output/pomdp_gridworld_3x3/rxinfer/execution_logs/POMDP GridWorld 3x3_rxinfer.jl_results.json",
-      "output_file": "output/12_execute_output/pomdp_gridworld_3x3/rxinfer/execution_logs/POMDP GridWorld 3x3_rxinfer.jl_execution.log",
-      "implementation_directory": "output/12_execute_output/pomdp_gridworld_3x3/rxinfer",
-      "execution_metadata": {},
-      "stdout_length": 52,
+      "structured_result_file": "output/12_execute_output/dynamic_perception/jax/execution_logs/Dynamic_Perception_Model_jax.py_results.json",
+      "output_file": "output/12_execute_output/dynamic_perception/jax/execution_logs/Dynamic_Perception_Model_jax.py_execution.log",
+      "implementation_directory": "output/12_execute_output/dynamic_perception/jax",
+      "script_identity": {
+        "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/jax/Dynamic_Perception_Model_jax.py",
+        "sha256": "2e79adc4bf314bec156d454fba7fa08c9d98eeaa451973b4c4f05d5bc7640f4b"
+      },
+      "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+      "stdout_length": 1327,
       "stderr_length": 0,
       "collected_outputs_summary": {
         "visualizations": {
@@ -228,25 +164,233 @@
       }
     },
     {
-      "script_path": "output/11_render_output/pomdp_gridworld_3x3/activeinference_jl/POMDP GridWorld 3x3_activeinference.jl",
-      "script_name": "POMDP GridWorld 3x3_activeinference.jl",
-      "framework": "activeinference_jl",
-      "model_name": "pomdp_gridworld_3x3",
+      "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/numpyro/Dynamic_Perception_Model_numpyro.py",
+      "script_name": "Dynamic_Perception_Model_numpyro.py",
+      "framework": "numpyro",
+      "model_name": "dynamic_perception",
+      "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 1.356919,
+      "timestamp": "2026-09-05T20:26:02.746815",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 1.356919,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        1.356919
+      ],
+      "structured_result_file": "output/12_execute_output/dynamic_perception/numpyro/execution_logs/Dynamic_Perception_Model_numpyro.py_results.json",
+      "output_file": "output/12_execute_output/dynamic_perception/numpyro/execution_logs/Dynamic_Perception_Model_numpyro.py_execution.log",
+      "implementation_directory": "output/12_execute_output/dynamic_perception/numpyro",
+      "script_identity": {
+        "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/numpyro/Dynamic_Perception_Model_numpyro.py",
+        "sha256": "16d1d2c016f9e964a34b70469bfe52f2d0f3eda85a31a74b4d0d1d86eecadc7c"
+      },
+      "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+      "stdout_length": 280,
+      "stderr_length": 0,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/pymdp/Dynamic_Perception_Model_pymdp.py",
+      "script_name": "Dynamic_Perception_Model_pymdp.py",
+      "framework": "pymdp",
+      "model_name": "dynamic_perception",
+      "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 3.266598,
+      "timestamp": "2026-09-05T20:26:04.146413",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 3.266598,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        3.266598
+      ],
+      "structured_result_file": "output/12_execute_output/dynamic_perception/pymdp/execution_logs/Dynamic_Perception_Model_pymdp.py_results.json",
+      "output_file": "output/12_execute_output/dynamic_perception/pymdp/execution_logs/Dynamic_Perception_Model_pymdp.py_execution.log",
+      "implementation_directory": "output/12_execute_output/dynamic_perception/pymdp",
+      "script_identity": {
+        "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/pymdp/Dynamic_Perception_Model_pymdp.py",
+        "sha256": "23243b5b2c19242ec848708954e88c1cbc09a83cd830e2609fb5b74d956b6480"
+      },
+      "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+      "stdout_length": 41,
+      "stderr_length": 2595,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/pytorch/Dynamic_Perception_Model_pytorch.py",
+      "script_name": "Dynamic_Perception_Model_pytorch.py",
+      "framework": "pytorch",
+      "model_name": "dynamic_perception",
+      "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+      "success": false,
+      "skipped": true,
+      "status": "skipped",
+      "attempts_started": 0,
+      "return_code": null,
+      "error": "Dependency not installed: torch",
+      "error_type": "DependencyNotInstalled",
+      "execution_time": 0,
+      "timestamp": "2026-09-05T20:26:07.454742",
+      "execution_metadata": {},
+      "script_identity": {
+        "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/pytorch/Dynamic_Perception_Model_pytorch.py",
+        "sha256": "71c32e8a8fb1ca01e9d31ef9e7c6776eb812b839305fb9c50770b6c94ea74ae1"
+      },
+      "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+      "stdout_length": 0,
+      "stderr_length": 0
+    },
+    {
+      "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/rxinfer/Dynamic_Perception_Model_rxinfer.jl",
+      "script_name": "Dynamic_Perception_Model_rxinfer.jl",
+      "framework": "rxinfer",
+      "model_name": "dynamic_perception",
       "executor": "julia",
       "success": true,
       "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
       "return_code": 0,
-      "execution_time": 9.351349,
-      "timestamp": "2026-06-18T09:05:09.391758",
+      "execution_time": 18.57297,
+      "timestamp": "2026-09-05T20:26:07.454813",
       "execution_benchmark_repeats": 1,
-      "execution_time_mean": 9.351349,
+      "execution_time_mean": 18.57297,
       "execution_time_std": 0.0,
       "execution_time_samples": [
-        9.351349
+        18.57297
       ],
-      "structured_result_file": "output/12_execute_output/pomdp_gridworld_3x3/activeinference_jl/execution_logs/POMDP GridWorld 3x3_activeinference.jl_results.json",
-      "output_file": "output/12_execute_output/pomdp_gridworld_3x3/activeinference_jl/execution_logs/POMDP GridWorld 3x3_activeinference.jl_execution.log",
-      "implementation_directory": "output/12_execute_output/pomdp_gridworld_3x3/activeinference_jl",
+      "structured_result_file": "output/12_execute_output/dynamic_perception/rxinfer/execution_logs/Dynamic_Perception_Model_rxinfer.jl_results.json",
+      "output_file": "output/12_execute_output/dynamic_perception/rxinfer/execution_logs/Dynamic_Perception_Model_rxinfer.jl_execution.log",
+      "implementation_directory": "output/12_execute_output/dynamic_perception/rxinfer",
+      "execution_metadata": {},
+      "script_identity": {
+        "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/rxinfer/Dynamic_Perception_Model_rxinfer.jl",
+        "sha256": "c50ab8f22da3bf649f923726b14a63c5826a5edb8af404517e32b53e73f855ca"
+      },
+      "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+      "stdout_length": 221,
+      "stderr_length": 0,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/stan/Dynamic_Perception_Model_stan.py",
+      "script_name": "Dynamic_Perception_Model_stan.py",
+      "framework": "stan",
+      "model_name": "dynamic_perception",
+      "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 9.542055,
+      "timestamp": "2026-09-05T20:26:30.357582",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 9.542055,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        9.542055
+      ],
+      "structured_result_file": "output/12_execute_output/dynamic_perception/stan/execution_logs/Dynamic_Perception_Model_stan.py_results.json",
+      "output_file": "output/12_execute_output/dynamic_perception/stan/execution_logs/Dynamic_Perception_Model_stan.py_execution.log",
+      "implementation_directory": "output/12_execute_output/dynamic_perception/stan",
+      "script_identity": {
+        "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/stan/Dynamic_Perception_Model_stan.py",
+        "sha256": "2815d016464b3e757d79b9b2cafa868ef141a10db7400ffffa4295599ddc2ca3"
+      },
+      "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+      "stdout_length": 394,
+      "stderr_length": 1047,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 3
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/activeinference_jl/Static_Perception_Model_activeinference.jl",
+      "script_name": "Static_Perception_Model_activeinference.jl",
+      "framework": "activeinference_jl",
+      "model_name": "static_perception",
+      "executor": "julia",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 14.294767,
+      "timestamp": "2026-09-05T20:26:39.918261",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 14.294767,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        14.294767
+      ],
+      "structured_result_file": "output/12_execute_output/static_perception/activeinference_jl/execution_logs/Static_Perception_Model_activeinference.jl_results.json",
+      "output_file": "output/12_execute_output/static_perception/activeinference_jl/execution_logs/Static_Perception_Model_activeinference.jl_execution.log",
+      "implementation_directory": "output/12_execute_output/static_perception/activeinference_jl",
+      "script_identity": {
+        "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/activeinference_jl/Static_Perception_Model_activeinference.jl",
+        "sha256": "630ae5e12ab124420ccea720c54c3719a64d9fa4426c67e9345bc46509076dfb"
+      },
+      "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
       "stdout_length": 60,
       "stderr_length": 0,
       "collected_outputs_summary": {
@@ -263,50 +407,429 @@
           "count": 0
         }
       }
+    },
+    {
+      "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/bnlearn/Static_Perception_Model_bnlearn.py",
+      "script_name": "Static_Perception_Model_bnlearn.py",
+      "framework": "bnlearn",
+      "model_name": "static_perception",
+      "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+      "success": false,
+      "skipped": true,
+      "status": "skipped",
+      "attempts_started": 0,
+      "return_code": null,
+      "error": "Dependency not installed: bnlearn",
+      "error_type": "DependencyNotInstalled",
+      "execution_time": 0,
+      "timestamp": "2026-09-05T20:27:04.964563",
+      "execution_metadata": {},
+      "script_identity": {
+        "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/bnlearn/Static_Perception_Model_bnlearn.py",
+        "sha256": "c151bc7295fe4073c68a97c4998e9fe6f4b1ca241437999274fd5773e528d378"
+      },
+      "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+      "stdout_length": 0,
+      "stderr_length": 0
+    },
+    {
+      "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/discopy/Static_Perception_Model_discopy.py",
+      "script_name": "Static_Perception_Model_discopy.py",
+      "framework": "discopy",
+      "model_name": "static_perception",
+      "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 0.431309,
+      "timestamp": "2026-09-05T20:27:05.475549",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 0.431309,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        0.431309
+      ],
+      "structured_result_file": "output/12_execute_output/static_perception/discopy/execution_logs/Static_Perception_Model_discopy.py_results.json",
+      "output_file": "output/12_execute_output/static_perception/discopy/execution_logs/Static_Perception_Model_discopy.py_execution.log",
+      "implementation_directory": "output/12_execute_output/static_perception/discopy",
+      "script_identity": {
+        "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/discopy/Static_Perception_Model_discopy.py",
+        "sha256": "7eb2208e28d1aab448f0cd7b68ace04687e840430453d390cbd8748605344b37"
+      },
+      "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+      "stdout_length": 1450,
+      "stderr_length": 0,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 2
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/jax/Static_Perception_Model_jax.py",
+      "script_name": "Static_Perception_Model_jax.py",
+      "framework": "jax",
+      "model_name": "static_perception",
+      "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 1.289918,
+      "timestamp": "2026-09-05T20:27:06.429020",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 1.289918,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        1.289918
+      ],
+      "structured_result_file": "output/12_execute_output/static_perception/jax/execution_logs/Static_Perception_Model_jax.py_results.json",
+      "output_file": "output/12_execute_output/static_perception/jax/execution_logs/Static_Perception_Model_jax.py_execution.log",
+      "implementation_directory": "output/12_execute_output/static_perception/jax",
+      "script_identity": {
+        "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/jax/Static_Perception_Model_jax.py",
+        "sha256": "6f90f7a0daef8b3f8716e6c9f2d861dfc5ed6061192fd9e521da73f603e09e6d"
+      },
+      "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+      "stdout_length": 1327,
+      "stderr_length": 0,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/numpyro/Static_Perception_Model_numpyro.py",
+      "script_name": "Static_Perception_Model_numpyro.py",
+      "framework": "numpyro",
+      "model_name": "static_perception",
+      "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 1.298174,
+      "timestamp": "2026-09-05T20:27:08.415298",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 1.298174,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        1.298174
+      ],
+      "structured_result_file": "output/12_execute_output/static_perception/numpyro/execution_logs/Static_Perception_Model_numpyro.py_results.json",
+      "output_file": "output/12_execute_output/static_perception/numpyro/execution_logs/Static_Perception_Model_numpyro.py_execution.log",
+      "implementation_directory": "output/12_execute_output/static_perception/numpyro",
+      "script_identity": {
+        "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/numpyro/Static_Perception_Model_numpyro.py",
+        "sha256": "0bd3531e5577319a9bfdbd5bb4031b9588e40881afacd750c8a4325057efe758"
+      },
+      "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+      "stdout_length": 278,
+      "stderr_length": 0,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/pymdp/Static_Perception_Model_pymdp.py",
+      "script_name": "Static_Perception_Model_pymdp.py",
+      "framework": "pymdp",
+      "model_name": "static_perception",
+      "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 2.798857,
+      "timestamp": "2026-09-05T20:27:09.756290",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 2.798857,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        2.798857
+      ],
+      "structured_result_file": "output/12_execute_output/static_perception/pymdp/execution_logs/Static_Perception_Model_pymdp.py_results.json",
+      "output_file": "output/12_execute_output/static_perception/pymdp/execution_logs/Static_Perception_Model_pymdp.py_execution.log",
+      "implementation_directory": "output/12_execute_output/static_perception/pymdp",
+      "script_identity": {
+        "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/pymdp/Static_Perception_Model_pymdp.py",
+        "sha256": "d8a604434a9c817e3b98533d7b35cb10aad9e4946a990e86312c98d9e3a1fbd6"
+      },
+      "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+      "stdout_length": 41,
+      "stderr_length": 2150,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/pytorch/Static_Perception_Model_pytorch.py",
+      "script_name": "Static_Perception_Model_pytorch.py",
+      "framework": "pytorch",
+      "model_name": "static_perception",
+      "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+      "success": false,
+      "skipped": true,
+      "status": "skipped",
+      "attempts_started": 0,
+      "return_code": null,
+      "error": "Dependency not installed: torch",
+      "error_type": "DependencyNotInstalled",
+      "execution_time": 0,
+      "timestamp": "2026-09-05T20:27:12.597569",
+      "execution_metadata": {},
+      "script_identity": {
+        "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/pytorch/Static_Perception_Model_pytorch.py",
+        "sha256": "440d49e1f7e313eb2a3bb07840617add44b7d5652636e34cf75eac53ed79ea33"
+      },
+      "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+      "stdout_length": 0,
+      "stderr_length": 0
+    },
+    {
+      "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/rxinfer/Static_Perception_Model_rxinfer.jl",
+      "script_name": "Static_Perception_Model_rxinfer.jl",
+      "framework": "rxinfer",
+      "model_name": "static_perception",
+      "executor": "julia",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 18.265583,
+      "timestamp": "2026-09-05T20:27:12.597637",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 18.265583,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        18.265583
+      ],
+      "structured_result_file": "output/12_execute_output/static_perception/rxinfer/execution_logs/Static_Perception_Model_rxinfer.jl_results.json",
+      "output_file": "output/12_execute_output/static_perception/rxinfer/execution_logs/Static_Perception_Model_rxinfer.jl_execution.log",
+      "implementation_directory": "output/12_execute_output/static_perception/rxinfer",
+      "execution_metadata": {},
+      "script_identity": {
+        "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/rxinfer/Static_Perception_Model_rxinfer.jl",
+        "sha256": "b1b9cc74b3a6fa86f344383eb363d5cef3d732cd3e4e39e55588e455bc42b9e4"
+      },
+      "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+      "stdout_length": 221,
+      "stderr_length": 0,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/stan/Static_Perception_Model_stan.py",
+      "script_name": "Static_Perception_Model_stan.py",
+      "framework": "stan",
+      "model_name": "static_perception",
+      "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 8.240584,
+      "timestamp": "2026-09-05T20:27:35.083226",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 8.240584,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        8.240584
+      ],
+      "structured_result_file": "output/12_execute_output/static_perception/stan/execution_logs/Static_Perception_Model_stan.py_results.json",
+      "output_file": "output/12_execute_output/static_perception/stan/execution_logs/Static_Perception_Model_stan.py_execution.log",
+      "implementation_directory": "output/12_execute_output/static_perception/stan",
+      "script_identity": {
+        "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/stan/Static_Perception_Model_stan.py",
+        "sha256": "97c5a7e7c987df25d108cd11cabc50b8a0d4cdbcfd79da01d72101c501be3ff0"
+      },
+      "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+      "stdout_length": 392,
+      "stderr_length": 1039,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 3
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
     }
   ],
   "framework_status": {
-    "numpyro": {
-      "status": "success",
-      "executions": 1
-    },
-    "pymdp": {
-      "status": "success",
-      "executions": 1
-    },
-    "pytorch": {
-      "status": "skipped",
-      "executions": 1,
-      "error": "Dependency not installed: torch"
-    },
-    "jax": {
-      "status": "success",
-      "executions": 1
-    },
-    "discopy": {
-      "status": "success",
-      "executions": 1
+    "activeinference_jl": {
+      "executions": 2,
+      "successful": 2,
+      "failed": 0,
+      "skipped": 0,
+      "status": "success"
     },
     "bnlearn": {
-      "status": "skipped",
-      "executions": 1,
-      "error": "Dependency not installed: bnlearn"
+      "executions": 2,
+      "successful": 0,
+      "failed": 0,
+      "skipped": 2,
+      "error": "Dependency not installed: bnlearn",
+      "status": "skipped"
+    },
+    "discopy": {
+      "executions": 2,
+      "successful": 2,
+      "failed": 0,
+      "skipped": 0,
+      "status": "success"
+    },
+    "jax": {
+      "executions": 2,
+      "successful": 2,
+      "failed": 0,
+      "skipped": 0,
+      "status": "success"
+    },
+    "numpyro": {
+      "executions": 2,
+      "successful": 2,
+      "failed": 0,
+      "skipped": 0,
+      "status": "success"
+    },
+    "pymdp": {
+      "executions": 2,
+      "successful": 2,
+      "failed": 0,
+      "skipped": 0,
+      "status": "success"
+    },
+    "pytorch": {
+      "executions": 2,
+      "successful": 0,
+      "failed": 0,
+      "skipped": 2,
+      "error": "Dependency not installed: torch",
+      "status": "skipped"
     },
     "rxinfer": {
-      "status": "success",
-      "executions": 1
+      "executions": 2,
+      "successful": 2,
+      "failed": 0,
+      "skipped": 0,
+      "status": "success"
     },
-    "activeinference_jl": {
-      "status": "success",
-      "executions": 1
+    "stan": {
+      "executions": 2,
+      "successful": 2,
+      "failed": 0,
+      "skipped": 0,
+      "status": "success"
     }
   },
   "execution_mode": "local",
   "execution_workers": 1,
   "backend": null,
   "execution_benchmark_repeats": 1,
-  "execution_summary_detail": true,
+  "execution_summary_detail": false,
+  "dispatch_max_retries": 0,
   "success": true,
+  "status": "success_with_skips",
+  "exit_code": 0,
+  "run_id": "48e92b72e51740949087eb44dad10379",
+  "configuration": {
+    "frameworks": [
+      "activeinference_jl",
+      "bnlearn",
+      "discopy",
+      "jax",
+      "numpyro",
+      "pymdp",
+      "pytorch",
+      "rxinfer",
+      "stan"
+    ],
+    "strict_requested_frameworks": false,
+    "options": {
+      "recursive": true,
+      "timeout": 300,
+      "render_output_dir": null,
+      "distributed": false,
+      "execution_workers": 1,
+      "backend": "ray",
+      "execution_benchmark_repeats": 1,
+      "execution_summary_detail": false
+    }
+  },
+  "input_identity": {
+    "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+    "files": {
+      "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics/dynamic_perception.md": "b0abd0b673915c98093150d78c1b4b1442287c7bc094f1fe42b07a1730f2258c",
+      "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics/static_perception.md": "48f67dd7912851a6081ce17fc0df2597cab0bd61d46afb19918f9320236393f3"
+    }
+  },
   "render_failures": [],
   "missing_render_scripts": [],
   "requested_frameworks": [
@@ -317,9 +840,1484 @@
     "activeinference_jl",
     "pytorch",
     "numpyro",
+    "stan",
     "bnlearn"
   ],
-  "total_scripts": 8,
+  "total_scripts": 18,
+  "attempted_scripts": 14,
   "success_rate": 100.0,
+  "outcome_reason": "optional_dependencies_unavailable",
+  "receipt_identity": {
+    "run_id": "48e92b72e51740949087eb44dad10379",
+    "config_sha256": "6a9133c72bed9ad7da9ce81920e6837a6f5471ce630955a87ee2629611a6d689"
+  },
+  "invocation_receipts": {
+    "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics": {
+      "status": "success_with_skips",
+      "success": true,
+      "exit_code": 0,
+      "outcome_reason": "optional_dependencies_unavailable",
+      "render_failures": [],
+      "missing_render_scripts": [],
+      "missing_render_summary": null,
+      "input_identity": {
+        "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+        "files": {
+          "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics/dynamic_perception.md": "b0abd0b673915c98093150d78c1b4b1442287c7bc094f1fe42b07a1730f2258c",
+          "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics/static_perception.md": "48f67dd7912851a6081ce17fc0df2597cab0bd61d46afb19918f9320236393f3"
+        }
+      },
+      "execution_details": [
+        {
+          "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/activeinference_jl/Dynamic_Perception_Model_activeinference.jl",
+          "script_name": "Dynamic_Perception_Model_activeinference.jl",
+          "framework": "activeinference_jl",
+          "model_name": "dynamic_perception",
+          "executor": "julia",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 14.881168,
+          "timestamp": "2026-09-05T20:25:32.633004",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 14.881168,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            14.881168
+          ],
+          "structured_result_file": "output/12_execute_output/dynamic_perception/activeinference_jl/execution_logs/Dynamic_Perception_Model_activeinference.jl_results.json",
+          "output_file": "output/12_execute_output/dynamic_perception/activeinference_jl/execution_logs/Dynamic_Perception_Model_activeinference.jl_execution.log",
+          "implementation_directory": "output/12_execute_output/dynamic_perception/activeinference_jl",
+          "script_identity": {
+            "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/activeinference_jl/Dynamic_Perception_Model_activeinference.jl",
+            "sha256": "4c4857752feb802b8121e5acb72d43c795ef0cc5f6c81a96baf7595612f5b63b"
+          },
+          "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+          "stdout_length": 60,
+          "stderr_length": 0,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 1
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        },
+        {
+          "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/bnlearn/Dynamic_Perception_Model_bnlearn.py",
+          "script_name": "Dynamic_Perception_Model_bnlearn.py",
+          "framework": "bnlearn",
+          "model_name": "dynamic_perception",
+          "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+          "success": false,
+          "skipped": true,
+          "status": "skipped",
+          "attempts_started": 0,
+          "return_code": null,
+          "error": "Dependency not installed: bnlearn",
+          "error_type": "DependencyNotInstalled",
+          "execution_time": 0,
+          "timestamp": "2026-09-05T20:25:59.290543",
+          "execution_metadata": {},
+          "script_identity": {
+            "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/bnlearn/Dynamic_Perception_Model_bnlearn.py",
+            "sha256": "24f1470308c8487fcef65c7c577ac2244969a49cd0701f789a727a4d8f0d19ef"
+          },
+          "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+          "stdout_length": 0,
+          "stderr_length": 0
+        },
+        {
+          "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/discopy/Dynamic_Perception_Model_discopy.py",
+          "script_name": "Dynamic_Perception_Model_discopy.py",
+          "framework": "discopy",
+          "model_name": "dynamic_perception",
+          "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 0.436074,
+          "timestamp": "2026-09-05T20:25:59.778805",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 0.436074,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            0.436074
+          ],
+          "structured_result_file": "output/12_execute_output/dynamic_perception/discopy/execution_logs/Dynamic_Perception_Model_discopy.py_results.json",
+          "output_file": "output/12_execute_output/dynamic_perception/discopy/execution_logs/Dynamic_Perception_Model_discopy.py_execution.log",
+          "implementation_directory": "output/12_execute_output/dynamic_perception/discopy",
+          "script_identity": {
+            "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/discopy/Dynamic_Perception_Model_discopy.py",
+            "sha256": "d4cb00370bfe47f7195c742374889bb5fb295a5260adf732be547ec9383239be"
+          },
+          "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+          "stdout_length": 1451,
+          "stderr_length": 0,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 2
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        },
+        {
+          "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/jax/Dynamic_Perception_Model_jax.py",
+          "script_name": "Dynamic_Perception_Model_jax.py",
+          "framework": "jax",
+          "model_name": "dynamic_perception",
+          "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 1.291627,
+          "timestamp": "2026-09-05T20:26:00.754387",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 1.291627,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            1.291627
+          ],
+          "structured_result_file": "output/12_execute_output/dynamic_perception/jax/execution_logs/Dynamic_Perception_Model_jax.py_results.json",
+          "output_file": "output/12_execute_output/dynamic_perception/jax/execution_logs/Dynamic_Perception_Model_jax.py_execution.log",
+          "implementation_directory": "output/12_execute_output/dynamic_perception/jax",
+          "script_identity": {
+            "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/jax/Dynamic_Perception_Model_jax.py",
+            "sha256": "2e79adc4bf314bec156d454fba7fa08c9d98eeaa451973b4c4f05d5bc7640f4b"
+          },
+          "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+          "stdout_length": 1327,
+          "stderr_length": 0,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 1
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        },
+        {
+          "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/numpyro/Dynamic_Perception_Model_numpyro.py",
+          "script_name": "Dynamic_Perception_Model_numpyro.py",
+          "framework": "numpyro",
+          "model_name": "dynamic_perception",
+          "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 1.356919,
+          "timestamp": "2026-09-05T20:26:02.746815",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 1.356919,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            1.356919
+          ],
+          "structured_result_file": "output/12_execute_output/dynamic_perception/numpyro/execution_logs/Dynamic_Perception_Model_numpyro.py_results.json",
+          "output_file": "output/12_execute_output/dynamic_perception/numpyro/execution_logs/Dynamic_Perception_Model_numpyro.py_execution.log",
+          "implementation_directory": "output/12_execute_output/dynamic_perception/numpyro",
+          "script_identity": {
+            "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/numpyro/Dynamic_Perception_Model_numpyro.py",
+            "sha256": "16d1d2c016f9e964a34b70469bfe52f2d0f3eda85a31a74b4d0d1d86eecadc7c"
+          },
+          "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+          "stdout_length": 280,
+          "stderr_length": 0,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 1
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        },
+        {
+          "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/pymdp/Dynamic_Perception_Model_pymdp.py",
+          "script_name": "Dynamic_Perception_Model_pymdp.py",
+          "framework": "pymdp",
+          "model_name": "dynamic_perception",
+          "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 3.266598,
+          "timestamp": "2026-09-05T20:26:04.146413",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 3.266598,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            3.266598
+          ],
+          "structured_result_file": "output/12_execute_output/dynamic_perception/pymdp/execution_logs/Dynamic_Perception_Model_pymdp.py_results.json",
+          "output_file": "output/12_execute_output/dynamic_perception/pymdp/execution_logs/Dynamic_Perception_Model_pymdp.py_execution.log",
+          "implementation_directory": "output/12_execute_output/dynamic_perception/pymdp",
+          "script_identity": {
+            "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/pymdp/Dynamic_Perception_Model_pymdp.py",
+            "sha256": "23243b5b2c19242ec848708954e88c1cbc09a83cd830e2609fb5b74d956b6480"
+          },
+          "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+          "stdout_length": 41,
+          "stderr_length": 2595,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 1
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        },
+        {
+          "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/pytorch/Dynamic_Perception_Model_pytorch.py",
+          "script_name": "Dynamic_Perception_Model_pytorch.py",
+          "framework": "pytorch",
+          "model_name": "dynamic_perception",
+          "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+          "success": false,
+          "skipped": true,
+          "status": "skipped",
+          "attempts_started": 0,
+          "return_code": null,
+          "error": "Dependency not installed: torch",
+          "error_type": "DependencyNotInstalled",
+          "execution_time": 0,
+          "timestamp": "2026-09-05T20:26:07.454742",
+          "execution_metadata": {},
+          "script_identity": {
+            "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/pytorch/Dynamic_Perception_Model_pytorch.py",
+            "sha256": "71c32e8a8fb1ca01e9d31ef9e7c6776eb812b839305fb9c50770b6c94ea74ae1"
+          },
+          "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+          "stdout_length": 0,
+          "stderr_length": 0
+        },
+        {
+          "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/rxinfer/Dynamic_Perception_Model_rxinfer.jl",
+          "script_name": "Dynamic_Perception_Model_rxinfer.jl",
+          "framework": "rxinfer",
+          "model_name": "dynamic_perception",
+          "executor": "julia",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 18.57297,
+          "timestamp": "2026-09-05T20:26:07.454813",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 18.57297,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            18.57297
+          ],
+          "structured_result_file": "output/12_execute_output/dynamic_perception/rxinfer/execution_logs/Dynamic_Perception_Model_rxinfer.jl_results.json",
+          "output_file": "output/12_execute_output/dynamic_perception/rxinfer/execution_logs/Dynamic_Perception_Model_rxinfer.jl_execution.log",
+          "implementation_directory": "output/12_execute_output/dynamic_perception/rxinfer",
+          "execution_metadata": {},
+          "script_identity": {
+            "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/rxinfer/Dynamic_Perception_Model_rxinfer.jl",
+            "sha256": "c50ab8f22da3bf649f923726b14a63c5826a5edb8af404517e32b53e73f855ca"
+          },
+          "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+          "stdout_length": 221,
+          "stderr_length": 0,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 1
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        },
+        {
+          "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/stan/Dynamic_Perception_Model_stan.py",
+          "script_name": "Dynamic_Perception_Model_stan.py",
+          "framework": "stan",
+          "model_name": "dynamic_perception",
+          "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 9.542055,
+          "timestamp": "2026-09-05T20:26:30.357582",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 9.542055,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            9.542055
+          ],
+          "structured_result_file": "output/12_execute_output/dynamic_perception/stan/execution_logs/Dynamic_Perception_Model_stan.py_results.json",
+          "output_file": "output/12_execute_output/dynamic_perception/stan/execution_logs/Dynamic_Perception_Model_stan.py_execution.log",
+          "implementation_directory": "output/12_execute_output/dynamic_perception/stan",
+          "script_identity": {
+            "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/stan/Dynamic_Perception_Model_stan.py",
+            "sha256": "2815d016464b3e757d79b9b2cafa868ef141a10db7400ffffa4295599ddc2ca3"
+          },
+          "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+          "stdout_length": 394,
+          "stderr_length": 1047,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 3
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        },
+        {
+          "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/activeinference_jl/Static_Perception_Model_activeinference.jl",
+          "script_name": "Static_Perception_Model_activeinference.jl",
+          "framework": "activeinference_jl",
+          "model_name": "static_perception",
+          "executor": "julia",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 14.294767,
+          "timestamp": "2026-09-05T20:26:39.918261",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 14.294767,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            14.294767
+          ],
+          "structured_result_file": "output/12_execute_output/static_perception/activeinference_jl/execution_logs/Static_Perception_Model_activeinference.jl_results.json",
+          "output_file": "output/12_execute_output/static_perception/activeinference_jl/execution_logs/Static_Perception_Model_activeinference.jl_execution.log",
+          "implementation_directory": "output/12_execute_output/static_perception/activeinference_jl",
+          "script_identity": {
+            "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/activeinference_jl/Static_Perception_Model_activeinference.jl",
+            "sha256": "630ae5e12ab124420ccea720c54c3719a64d9fa4426c67e9345bc46509076dfb"
+          },
+          "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+          "stdout_length": 60,
+          "stderr_length": 0,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 1
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        },
+        {
+          "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/bnlearn/Static_Perception_Model_bnlearn.py",
+          "script_name": "Static_Perception_Model_bnlearn.py",
+          "framework": "bnlearn",
+          "model_name": "static_perception",
+          "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+          "success": false,
+          "skipped": true,
+          "status": "skipped",
+          "attempts_started": 0,
+          "return_code": null,
+          "error": "Dependency not installed: bnlearn",
+          "error_type": "DependencyNotInstalled",
+          "execution_time": 0,
+          "timestamp": "2026-09-05T20:27:04.964563",
+          "execution_metadata": {},
+          "script_identity": {
+            "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/bnlearn/Static_Perception_Model_bnlearn.py",
+            "sha256": "c151bc7295fe4073c68a97c4998e9fe6f4b1ca241437999274fd5773e528d378"
+          },
+          "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+          "stdout_length": 0,
+          "stderr_length": 0
+        },
+        {
+          "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/discopy/Static_Perception_Model_discopy.py",
+          "script_name": "Static_Perception_Model_discopy.py",
+          "framework": "discopy",
+          "model_name": "static_perception",
+          "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 0.431309,
+          "timestamp": "2026-09-05T20:27:05.475549",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 0.431309,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            0.431309
+          ],
+          "structured_result_file": "output/12_execute_output/static_perception/discopy/execution_logs/Static_Perception_Model_discopy.py_results.json",
+          "output_file": "output/12_execute_output/static_perception/discopy/execution_logs/Static_Perception_Model_discopy.py_execution.log",
+          "implementation_directory": "output/12_execute_output/static_perception/discopy",
+          "script_identity": {
+            "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/discopy/Static_Perception_Model_discopy.py",
+            "sha256": "7eb2208e28d1aab448f0cd7b68ace04687e840430453d390cbd8748605344b37"
+          },
+          "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+          "stdout_length": 1450,
+          "stderr_length": 0,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 2
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        },
+        {
+          "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/jax/Static_Perception_Model_jax.py",
+          "script_name": "Static_Perception_Model_jax.py",
+          "framework": "jax",
+          "model_name": "static_perception",
+          "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 1.289918,
+          "timestamp": "2026-09-05T20:27:06.429020",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 1.289918,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            1.289918
+          ],
+          "structured_result_file": "output/12_execute_output/static_perception/jax/execution_logs/Static_Perception_Model_jax.py_results.json",
+          "output_file": "output/12_execute_output/static_perception/jax/execution_logs/Static_Perception_Model_jax.py_execution.log",
+          "implementation_directory": "output/12_execute_output/static_perception/jax",
+          "script_identity": {
+            "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/jax/Static_Perception_Model_jax.py",
+            "sha256": "6f90f7a0daef8b3f8716e6c9f2d861dfc5ed6061192fd9e521da73f603e09e6d"
+          },
+          "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+          "stdout_length": 1327,
+          "stderr_length": 0,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 1
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        },
+        {
+          "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/numpyro/Static_Perception_Model_numpyro.py",
+          "script_name": "Static_Perception_Model_numpyro.py",
+          "framework": "numpyro",
+          "model_name": "static_perception",
+          "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 1.298174,
+          "timestamp": "2026-09-05T20:27:08.415298",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 1.298174,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            1.298174
+          ],
+          "structured_result_file": "output/12_execute_output/static_perception/numpyro/execution_logs/Static_Perception_Model_numpyro.py_results.json",
+          "output_file": "output/12_execute_output/static_perception/numpyro/execution_logs/Static_Perception_Model_numpyro.py_execution.log",
+          "implementation_directory": "output/12_execute_output/static_perception/numpyro",
+          "script_identity": {
+            "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/numpyro/Static_Perception_Model_numpyro.py",
+            "sha256": "0bd3531e5577319a9bfdbd5bb4031b9588e40881afacd750c8a4325057efe758"
+          },
+          "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+          "stdout_length": 278,
+          "stderr_length": 0,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 1
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        },
+        {
+          "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/pymdp/Static_Perception_Model_pymdp.py",
+          "script_name": "Static_Perception_Model_pymdp.py",
+          "framework": "pymdp",
+          "model_name": "static_perception",
+          "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 2.798857,
+          "timestamp": "2026-09-05T20:27:09.756290",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 2.798857,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            2.798857
+          ],
+          "structured_result_file": "output/12_execute_output/static_perception/pymdp/execution_logs/Static_Perception_Model_pymdp.py_results.json",
+          "output_file": "output/12_execute_output/static_perception/pymdp/execution_logs/Static_Perception_Model_pymdp.py_execution.log",
+          "implementation_directory": "output/12_execute_output/static_perception/pymdp",
+          "script_identity": {
+            "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/pymdp/Static_Perception_Model_pymdp.py",
+            "sha256": "d8a604434a9c817e3b98533d7b35cb10aad9e4946a990e86312c98d9e3a1fbd6"
+          },
+          "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+          "stdout_length": 41,
+          "stderr_length": 2150,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 1
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        },
+        {
+          "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/pytorch/Static_Perception_Model_pytorch.py",
+          "script_name": "Static_Perception_Model_pytorch.py",
+          "framework": "pytorch",
+          "model_name": "static_perception",
+          "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+          "success": false,
+          "skipped": true,
+          "status": "skipped",
+          "attempts_started": 0,
+          "return_code": null,
+          "error": "Dependency not installed: torch",
+          "error_type": "DependencyNotInstalled",
+          "execution_time": 0,
+          "timestamp": "2026-09-05T20:27:12.597569",
+          "execution_metadata": {},
+          "script_identity": {
+            "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/pytorch/Static_Perception_Model_pytorch.py",
+            "sha256": "440d49e1f7e313eb2a3bb07840617add44b7d5652636e34cf75eac53ed79ea33"
+          },
+          "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+          "stdout_length": 0,
+          "stderr_length": 0
+        },
+        {
+          "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/rxinfer/Static_Perception_Model_rxinfer.jl",
+          "script_name": "Static_Perception_Model_rxinfer.jl",
+          "framework": "rxinfer",
+          "model_name": "static_perception",
+          "executor": "julia",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 18.265583,
+          "timestamp": "2026-09-05T20:27:12.597637",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 18.265583,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            18.265583
+          ],
+          "structured_result_file": "output/12_execute_output/static_perception/rxinfer/execution_logs/Static_Perception_Model_rxinfer.jl_results.json",
+          "output_file": "output/12_execute_output/static_perception/rxinfer/execution_logs/Static_Perception_Model_rxinfer.jl_execution.log",
+          "implementation_directory": "output/12_execute_output/static_perception/rxinfer",
+          "execution_metadata": {},
+          "script_identity": {
+            "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/rxinfer/Static_Perception_Model_rxinfer.jl",
+            "sha256": "b1b9cc74b3a6fa86f344383eb363d5cef3d732cd3e4e39e55588e455bc42b9e4"
+          },
+          "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+          "stdout_length": 221,
+          "stderr_length": 0,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 1
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        },
+        {
+          "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/stan/Static_Perception_Model_stan.py",
+          "script_name": "Static_Perception_Model_stan.py",
+          "framework": "stan",
+          "model_name": "static_perception",
+          "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 8.240584,
+          "timestamp": "2026-09-05T20:27:35.083226",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 8.240584,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            8.240584
+          ],
+          "structured_result_file": "output/12_execute_output/static_perception/stan/execution_logs/Static_Perception_Model_stan.py_results.json",
+          "output_file": "output/12_execute_output/static_perception/stan/execution_logs/Static_Perception_Model_stan.py_execution.log",
+          "implementation_directory": "output/12_execute_output/static_perception/stan",
+          "script_identity": {
+            "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/stan/Static_Perception_Model_stan.py",
+            "sha256": "97c5a7e7c987df25d108cd11cabc50b8a0d4cdbcfd79da01d72101c501be3ff0"
+          },
+          "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+          "stdout_length": 392,
+          "stderr_length": 1039,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 3
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        }
+      ]
+    }
+  },
+  "current_invocation": {
+    "status": "success_with_skips",
+    "success": true,
+    "exit_code": 0,
+    "outcome_reason": "optional_dependencies_unavailable",
+    "render_failures": [],
+    "missing_render_scripts": [],
+    "missing_render_summary": null,
+    "input_identity": {
+      "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+      "files": {
+        "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics/dynamic_perception.md": "b0abd0b673915c98093150d78c1b4b1442287c7bc094f1fe42b07a1730f2258c",
+        "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics/static_perception.md": "48f67dd7912851a6081ce17fc0df2597cab0bd61d46afb19918f9320236393f3"
+      }
+    },
+    "execution_details": [
+      {
+        "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/activeinference_jl/Dynamic_Perception_Model_activeinference.jl",
+        "script_name": "Dynamic_Perception_Model_activeinference.jl",
+        "framework": "activeinference_jl",
+        "model_name": "dynamic_perception",
+        "executor": "julia",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 14.881168,
+        "timestamp": "2026-09-05T20:25:32.633004",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 14.881168,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          14.881168
+        ],
+        "structured_result_file": "output/12_execute_output/dynamic_perception/activeinference_jl/execution_logs/Dynamic_Perception_Model_activeinference.jl_results.json",
+        "output_file": "output/12_execute_output/dynamic_perception/activeinference_jl/execution_logs/Dynamic_Perception_Model_activeinference.jl_execution.log",
+        "implementation_directory": "output/12_execute_output/dynamic_perception/activeinference_jl",
+        "script_identity": {
+          "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/activeinference_jl/Dynamic_Perception_Model_activeinference.jl",
+          "sha256": "4c4857752feb802b8121e5acb72d43c795ef0cc5f6c81a96baf7595612f5b63b"
+        },
+        "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+        "stdout_length": 60,
+        "stderr_length": 0,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 1
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      },
+      {
+        "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/bnlearn/Dynamic_Perception_Model_bnlearn.py",
+        "script_name": "Dynamic_Perception_Model_bnlearn.py",
+        "framework": "bnlearn",
+        "model_name": "dynamic_perception",
+        "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+        "success": false,
+        "skipped": true,
+        "status": "skipped",
+        "attempts_started": 0,
+        "return_code": null,
+        "error": "Dependency not installed: bnlearn",
+        "error_type": "DependencyNotInstalled",
+        "execution_time": 0,
+        "timestamp": "2026-09-05T20:25:59.290543",
+        "execution_metadata": {},
+        "script_identity": {
+          "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/bnlearn/Dynamic_Perception_Model_bnlearn.py",
+          "sha256": "24f1470308c8487fcef65c7c577ac2244969a49cd0701f789a727a4d8f0d19ef"
+        },
+        "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+        "stdout_length": 0,
+        "stderr_length": 0
+      },
+      {
+        "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/discopy/Dynamic_Perception_Model_discopy.py",
+        "script_name": "Dynamic_Perception_Model_discopy.py",
+        "framework": "discopy",
+        "model_name": "dynamic_perception",
+        "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 0.436074,
+        "timestamp": "2026-09-05T20:25:59.778805",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 0.436074,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          0.436074
+        ],
+        "structured_result_file": "output/12_execute_output/dynamic_perception/discopy/execution_logs/Dynamic_Perception_Model_discopy.py_results.json",
+        "output_file": "output/12_execute_output/dynamic_perception/discopy/execution_logs/Dynamic_Perception_Model_discopy.py_execution.log",
+        "implementation_directory": "output/12_execute_output/dynamic_perception/discopy",
+        "script_identity": {
+          "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/discopy/Dynamic_Perception_Model_discopy.py",
+          "sha256": "d4cb00370bfe47f7195c742374889bb5fb295a5260adf732be547ec9383239be"
+        },
+        "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+        "stdout_length": 1451,
+        "stderr_length": 0,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 2
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      },
+      {
+        "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/jax/Dynamic_Perception_Model_jax.py",
+        "script_name": "Dynamic_Perception_Model_jax.py",
+        "framework": "jax",
+        "model_name": "dynamic_perception",
+        "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 1.291627,
+        "timestamp": "2026-09-05T20:26:00.754387",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 1.291627,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          1.291627
+        ],
+        "structured_result_file": "output/12_execute_output/dynamic_perception/jax/execution_logs/Dynamic_Perception_Model_jax.py_results.json",
+        "output_file": "output/12_execute_output/dynamic_perception/jax/execution_logs/Dynamic_Perception_Model_jax.py_execution.log",
+        "implementation_directory": "output/12_execute_output/dynamic_perception/jax",
+        "script_identity": {
+          "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/jax/Dynamic_Perception_Model_jax.py",
+          "sha256": "2e79adc4bf314bec156d454fba7fa08c9d98eeaa451973b4c4f05d5bc7640f4b"
+        },
+        "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+        "stdout_length": 1327,
+        "stderr_length": 0,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 1
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      },
+      {
+        "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/numpyro/Dynamic_Perception_Model_numpyro.py",
+        "script_name": "Dynamic_Perception_Model_numpyro.py",
+        "framework": "numpyro",
+        "model_name": "dynamic_perception",
+        "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 1.356919,
+        "timestamp": "2026-09-05T20:26:02.746815",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 1.356919,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          1.356919
+        ],
+        "structured_result_file": "output/12_execute_output/dynamic_perception/numpyro/execution_logs/Dynamic_Perception_Model_numpyro.py_results.json",
+        "output_file": "output/12_execute_output/dynamic_perception/numpyro/execution_logs/Dynamic_Perception_Model_numpyro.py_execution.log",
+        "implementation_directory": "output/12_execute_output/dynamic_perception/numpyro",
+        "script_identity": {
+          "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/numpyro/Dynamic_Perception_Model_numpyro.py",
+          "sha256": "16d1d2c016f9e964a34b70469bfe52f2d0f3eda85a31a74b4d0d1d86eecadc7c"
+        },
+        "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+        "stdout_length": 280,
+        "stderr_length": 0,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 1
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      },
+      {
+        "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/pymdp/Dynamic_Perception_Model_pymdp.py",
+        "script_name": "Dynamic_Perception_Model_pymdp.py",
+        "framework": "pymdp",
+        "model_name": "dynamic_perception",
+        "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 3.266598,
+        "timestamp": "2026-09-05T20:26:04.146413",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 3.266598,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          3.266598
+        ],
+        "structured_result_file": "output/12_execute_output/dynamic_perception/pymdp/execution_logs/Dynamic_Perception_Model_pymdp.py_results.json",
+        "output_file": "output/12_execute_output/dynamic_perception/pymdp/execution_logs/Dynamic_Perception_Model_pymdp.py_execution.log",
+        "implementation_directory": "output/12_execute_output/dynamic_perception/pymdp",
+        "script_identity": {
+          "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/pymdp/Dynamic_Perception_Model_pymdp.py",
+          "sha256": "23243b5b2c19242ec848708954e88c1cbc09a83cd830e2609fb5b74d956b6480"
+        },
+        "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+        "stdout_length": 41,
+        "stderr_length": 2595,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 1
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      },
+      {
+        "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/pytorch/Dynamic_Perception_Model_pytorch.py",
+        "script_name": "Dynamic_Perception_Model_pytorch.py",
+        "framework": "pytorch",
+        "model_name": "dynamic_perception",
+        "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+        "success": false,
+        "skipped": true,
+        "status": "skipped",
+        "attempts_started": 0,
+        "return_code": null,
+        "error": "Dependency not installed: torch",
+        "error_type": "DependencyNotInstalled",
+        "execution_time": 0,
+        "timestamp": "2026-09-05T20:26:07.454742",
+        "execution_metadata": {},
+        "script_identity": {
+          "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/pytorch/Dynamic_Perception_Model_pytorch.py",
+          "sha256": "71c32e8a8fb1ca01e9d31ef9e7c6776eb812b839305fb9c50770b6c94ea74ae1"
+        },
+        "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+        "stdout_length": 0,
+        "stderr_length": 0
+      },
+      {
+        "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/rxinfer/Dynamic_Perception_Model_rxinfer.jl",
+        "script_name": "Dynamic_Perception_Model_rxinfer.jl",
+        "framework": "rxinfer",
+        "model_name": "dynamic_perception",
+        "executor": "julia",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 18.57297,
+        "timestamp": "2026-09-05T20:26:07.454813",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 18.57297,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          18.57297
+        ],
+        "structured_result_file": "output/12_execute_output/dynamic_perception/rxinfer/execution_logs/Dynamic_Perception_Model_rxinfer.jl_results.json",
+        "output_file": "output/12_execute_output/dynamic_perception/rxinfer/execution_logs/Dynamic_Perception_Model_rxinfer.jl_execution.log",
+        "implementation_directory": "output/12_execute_output/dynamic_perception/rxinfer",
+        "execution_metadata": {},
+        "script_identity": {
+          "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/rxinfer/Dynamic_Perception_Model_rxinfer.jl",
+          "sha256": "c50ab8f22da3bf649f923726b14a63c5826a5edb8af404517e32b53e73f855ca"
+        },
+        "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+        "stdout_length": 221,
+        "stderr_length": 0,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 1
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      },
+      {
+        "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/stan/Dynamic_Perception_Model_stan.py",
+        "script_name": "Dynamic_Perception_Model_stan.py",
+        "framework": "stan",
+        "model_name": "dynamic_perception",
+        "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 9.542055,
+        "timestamp": "2026-09-05T20:26:30.357582",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 9.542055,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          9.542055
+        ],
+        "structured_result_file": "output/12_execute_output/dynamic_perception/stan/execution_logs/Dynamic_Perception_Model_stan.py_results.json",
+        "output_file": "output/12_execute_output/dynamic_perception/stan/execution_logs/Dynamic_Perception_Model_stan.py_execution.log",
+        "implementation_directory": "output/12_execute_output/dynamic_perception/stan",
+        "script_identity": {
+          "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/stan/Dynamic_Perception_Model_stan.py",
+          "sha256": "2815d016464b3e757d79b9b2cafa868ef141a10db7400ffffa4295599ddc2ca3"
+        },
+        "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+        "stdout_length": 394,
+        "stderr_length": 1047,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 3
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      },
+      {
+        "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/activeinference_jl/Static_Perception_Model_activeinference.jl",
+        "script_name": "Static_Perception_Model_activeinference.jl",
+        "framework": "activeinference_jl",
+        "model_name": "static_perception",
+        "executor": "julia",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 14.294767,
+        "timestamp": "2026-09-05T20:26:39.918261",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 14.294767,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          14.294767
+        ],
+        "structured_result_file": "output/12_execute_output/static_perception/activeinference_jl/execution_logs/Static_Perception_Model_activeinference.jl_results.json",
+        "output_file": "output/12_execute_output/static_perception/activeinference_jl/execution_logs/Static_Perception_Model_activeinference.jl_execution.log",
+        "implementation_directory": "output/12_execute_output/static_perception/activeinference_jl",
+        "script_identity": {
+          "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/activeinference_jl/Static_Perception_Model_activeinference.jl",
+          "sha256": "630ae5e12ab124420ccea720c54c3719a64d9fa4426c67e9345bc46509076dfb"
+        },
+        "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+        "stdout_length": 60,
+        "stderr_length": 0,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 1
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      },
+      {
+        "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/bnlearn/Static_Perception_Model_bnlearn.py",
+        "script_name": "Static_Perception_Model_bnlearn.py",
+        "framework": "bnlearn",
+        "model_name": "static_perception",
+        "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+        "success": false,
+        "skipped": true,
+        "status": "skipped",
+        "attempts_started": 0,
+        "return_code": null,
+        "error": "Dependency not installed: bnlearn",
+        "error_type": "DependencyNotInstalled",
+        "execution_time": 0,
+        "timestamp": "2026-09-05T20:27:04.964563",
+        "execution_metadata": {},
+        "script_identity": {
+          "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/bnlearn/Static_Perception_Model_bnlearn.py",
+          "sha256": "c151bc7295fe4073c68a97c4998e9fe6f4b1ca241437999274fd5773e528d378"
+        },
+        "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+        "stdout_length": 0,
+        "stderr_length": 0
+      },
+      {
+        "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/discopy/Static_Perception_Model_discopy.py",
+        "script_name": "Static_Perception_Model_discopy.py",
+        "framework": "discopy",
+        "model_name": "static_perception",
+        "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 0.431309,
+        "timestamp": "2026-09-05T20:27:05.475549",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 0.431309,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          0.431309
+        ],
+        "structured_result_file": "output/12_execute_output/static_perception/discopy/execution_logs/Static_Perception_Model_discopy.py_results.json",
+        "output_file": "output/12_execute_output/static_perception/discopy/execution_logs/Static_Perception_Model_discopy.py_execution.log",
+        "implementation_directory": "output/12_execute_output/static_perception/discopy",
+        "script_identity": {
+          "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/discopy/Static_Perception_Model_discopy.py",
+          "sha256": "7eb2208e28d1aab448f0cd7b68ace04687e840430453d390cbd8748605344b37"
+        },
+        "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+        "stdout_length": 1450,
+        "stderr_length": 0,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 2
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      },
+      {
+        "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/jax/Static_Perception_Model_jax.py",
+        "script_name": "Static_Perception_Model_jax.py",
+        "framework": "jax",
+        "model_name": "static_perception",
+        "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 1.289918,
+        "timestamp": "2026-09-05T20:27:06.429020",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 1.289918,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          1.289918
+        ],
+        "structured_result_file": "output/12_execute_output/static_perception/jax/execution_logs/Static_Perception_Model_jax.py_results.json",
+        "output_file": "output/12_execute_output/static_perception/jax/execution_logs/Static_Perception_Model_jax.py_execution.log",
+        "implementation_directory": "output/12_execute_output/static_perception/jax",
+        "script_identity": {
+          "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/jax/Static_Perception_Model_jax.py",
+          "sha256": "6f90f7a0daef8b3f8716e6c9f2d861dfc5ed6061192fd9e521da73f603e09e6d"
+        },
+        "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+        "stdout_length": 1327,
+        "stderr_length": 0,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 1
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      },
+      {
+        "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/numpyro/Static_Perception_Model_numpyro.py",
+        "script_name": "Static_Perception_Model_numpyro.py",
+        "framework": "numpyro",
+        "model_name": "static_perception",
+        "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 1.298174,
+        "timestamp": "2026-09-05T20:27:08.415298",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 1.298174,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          1.298174
+        ],
+        "structured_result_file": "output/12_execute_output/static_perception/numpyro/execution_logs/Static_Perception_Model_numpyro.py_results.json",
+        "output_file": "output/12_execute_output/static_perception/numpyro/execution_logs/Static_Perception_Model_numpyro.py_execution.log",
+        "implementation_directory": "output/12_execute_output/static_perception/numpyro",
+        "script_identity": {
+          "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/numpyro/Static_Perception_Model_numpyro.py",
+          "sha256": "0bd3531e5577319a9bfdbd5bb4031b9588e40881afacd750c8a4325057efe758"
+        },
+        "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+        "stdout_length": 278,
+        "stderr_length": 0,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 1
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      },
+      {
+        "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/pymdp/Static_Perception_Model_pymdp.py",
+        "script_name": "Static_Perception_Model_pymdp.py",
+        "framework": "pymdp",
+        "model_name": "static_perception",
+        "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 2.798857,
+        "timestamp": "2026-09-05T20:27:09.756290",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 2.798857,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          2.798857
+        ],
+        "structured_result_file": "output/12_execute_output/static_perception/pymdp/execution_logs/Static_Perception_Model_pymdp.py_results.json",
+        "output_file": "output/12_execute_output/static_perception/pymdp/execution_logs/Static_Perception_Model_pymdp.py_execution.log",
+        "implementation_directory": "output/12_execute_output/static_perception/pymdp",
+        "script_identity": {
+          "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/pymdp/Static_Perception_Model_pymdp.py",
+          "sha256": "d8a604434a9c817e3b98533d7b35cb10aad9e4946a990e86312c98d9e3a1fbd6"
+        },
+        "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+        "stdout_length": 41,
+        "stderr_length": 2150,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 1
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      },
+      {
+        "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/pytorch/Static_Perception_Model_pytorch.py",
+        "script_name": "Static_Perception_Model_pytorch.py",
+        "framework": "pytorch",
+        "model_name": "static_perception",
+        "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+        "success": false,
+        "skipped": true,
+        "status": "skipped",
+        "attempts_started": 0,
+        "return_code": null,
+        "error": "Dependency not installed: torch",
+        "error_type": "DependencyNotInstalled",
+        "execution_time": 0,
+        "timestamp": "2026-09-05T20:27:12.597569",
+        "execution_metadata": {},
+        "script_identity": {
+          "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/pytorch/Static_Perception_Model_pytorch.py",
+          "sha256": "440d49e1f7e313eb2a3bb07840617add44b7d5652636e34cf75eac53ed79ea33"
+        },
+        "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+        "stdout_length": 0,
+        "stderr_length": 0
+      },
+      {
+        "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/rxinfer/Static_Perception_Model_rxinfer.jl",
+        "script_name": "Static_Perception_Model_rxinfer.jl",
+        "framework": "rxinfer",
+        "model_name": "static_perception",
+        "executor": "julia",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 18.265583,
+        "timestamp": "2026-09-05T20:27:12.597637",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 18.265583,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          18.265583
+        ],
+        "structured_result_file": "output/12_execute_output/static_perception/rxinfer/execution_logs/Static_Perception_Model_rxinfer.jl_results.json",
+        "output_file": "output/12_execute_output/static_perception/rxinfer/execution_logs/Static_Perception_Model_rxinfer.jl_execution.log",
+        "implementation_directory": "output/12_execute_output/static_perception/rxinfer",
+        "execution_metadata": {},
+        "script_identity": {
+          "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/rxinfer/Static_Perception_Model_rxinfer.jl",
+          "sha256": "b1b9cc74b3a6fa86f344383eb363d5cef3d732cd3e4e39e55588e455bc42b9e4"
+        },
+        "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+        "stdout_length": 221,
+        "stderr_length": 0,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 1
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      },
+      {
+        "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/stan/Static_Perception_Model_stan.py",
+        "script_name": "Static_Perception_Model_stan.py",
+        "framework": "stan",
+        "model_name": "static_perception",
+        "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 8.240584,
+        "timestamp": "2026-09-05T20:27:35.083226",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 8.240584,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          8.240584
+        ],
+        "structured_result_file": "output/12_execute_output/static_perception/stan/execution_logs/Static_Perception_Model_stan.py_results.json",
+        "output_file": "output/12_execute_output/static_perception/stan/execution_logs/Static_Perception_Model_stan.py_execution.log",
+        "implementation_directory": "output/12_execute_output/static_perception/stan",
+        "script_identity": {
+          "path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/stan/Static_Perception_Model_stan.py",
+          "sha256": "97c5a7e7c987df25d108cd11cabc50b8a0d4cdbcfd79da01d72101c501be3ff0"
+        },
+        "source_scope": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics",
+        "stdout_length": 392,
+        "stderr_length": 1039,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 3
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      }
+    ],
+    "target_directory": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/input/gnn_files/basics"
+  },
+  "merged_prior_folder_runs": 0,
   "execution_summary_format": "slim_v1"
 }

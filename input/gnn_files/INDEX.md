@@ -88,5 +88,5 @@ ActiveInference.jl, DisCoPy and bnlearn. Live counts come from
 ## Running an example
 
 ```bash
-uv run python src/main.py --target-dir input/gnn_files/discrete --output-dir output
+uv run python src/gnn/main.py --target-dir input/gnn_files/discrete --output-dir output
 ```

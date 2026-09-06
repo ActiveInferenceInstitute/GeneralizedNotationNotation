@@ -34,12 +34,12 @@ stems, and focused regression tests.
 
 ## Changed Surfaces
 
-- `src/execute/mcp.py`
-- `src/execute/processor.py`
-- `src/llm/mcp.py`
-- `src/render/generators.py`
-- `src/render/processor.py`
-- `src/render/pomdp_processor.py`
+- `src/gnn/execute/mcp.py`
+- `src/gnn/execute/processor.py`
+- `src/gnn/llm/mcp.py`
+- `src/gnn/render/generators.py`
+- `src/gnn/render/processor.py`
+- `src/gnn/render/pomdp_processor.py`
 
 ## Regression Coverage
 
@@ -59,26 +59,26 @@ The remediation was verified with:
 
 ```bash
 uv run --extra dev python -m pytest \
-  src/tests/execute/test_execute_mcp_wiring.py \
-  src/tests/llm/test_llm_mcp_security.py \
-  src/tests/render/test_render_cli_targets.py \
-  src/tests/render/test_pomdp_renderer_regressions.py -q
+  tests/execute/test_execute_mcp_wiring.py \
+  tests/llm/test_llm_mcp_security.py \
+  tests/render/test_render_cli_targets.py \
+  tests/render/test_pomdp_renderer_regressions.py -q
 
 uv run --extra dev python -m ruff check \
-  src/execute/mcp.py src/execute/processor.py src/llm/mcp.py \
-  src/render/generators.py src/render/pomdp_processor.py src/render/processor.py \
-  src/tests/execute/test_execute_mcp_wiring.py \
-  src/tests/llm/test_llm_mcp_security.py \
-  src/tests/render/test_render_cli_targets.py \
-  src/tests/render/test_pomdp_renderer_regressions.py
+  src/gnn/execute/mcp.py src/gnn/execute/processor.py src/gnn/llm/mcp.py \
+  src/gnn/render/generators.py src/gnn/render/pomdp_processor.py src/gnn/render/processor.py \
+  tests/execute/test_execute_mcp_wiring.py \
+  tests/llm/test_llm_mcp_security.py \
+  tests/render/test_render_cli_targets.py \
+  tests/render/test_pomdp_renderer_regressions.py
 
 uv run --extra dev python -m ruff format --check \
-  src/execute/mcp.py src/execute/processor.py src/llm/mcp.py \
-  src/render/generators.py src/render/pomdp_processor.py src/render/processor.py \
-  src/tests/execute/test_execute_mcp_wiring.py \
-  src/tests/llm/test_llm_mcp_security.py \
-  src/tests/render/test_render_cli_targets.py \
-  src/tests/render/test_pomdp_renderer_regressions.py
+  src/gnn/execute/mcp.py src/gnn/execute/processor.py src/gnn/llm/mcp.py \
+  src/gnn/render/generators.py src/gnn/render/pomdp_processor.py src/gnn/render/processor.py \
+  tests/execute/test_execute_mcp_wiring.py \
+  tests/llm/test_llm_mcp_security.py \
+  tests/render/test_render_cli_targets.py \
+  tests/render/test_pomdp_renderer_regressions.py
 
 git diff --check
 ```

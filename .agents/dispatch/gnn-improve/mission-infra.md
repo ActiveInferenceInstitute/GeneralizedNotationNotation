@@ -3,15 +3,15 @@
 You own these paths ONLY within the GNN repo at
 `/home/trim/Documents/Git/HumOS/projects/outside_of_hum/GeneralizedNotationNotation`:
 
-- src/setup/
-- src/template/
-- src/tests/infrastructure/   (env/utils/infra test mirror)
-- src/utils/                   (shared helpers; you are the ONLY owner)
-- src/pipeline/                (orchestration contracts: durable_streams,
+- src/gnn/setup/
+- src/gnn/template/
+- tests/infrastructure/   (env/utils/infra test mirror)
+- src/gnn/utils/                   (shared helpers; you are the ONLY owner)
+- src/gnn/pipeline/                (orchestration contracts: durable_streams,
   run_session, container_plan, session_acceptance, run_manifest,
   pipeline_container_plan)
-- src/lsp/
-- src/sapf/ (public entry; impl lives under src/audio/sapf)
+- src/gnn/lsp/
+- src/gnn/sapf/ (public entry; impl lives under src/gnn/audio/sapf)
 - doc/                        (technical doc subtree; strict docs build)
 - doc's gates: doc/development/docs_audit.py, scripts/check_gnn_doc_patterns.py,
   scripts/check_maintained_doc_terms.py, scripts/check_repo_terminology.py
@@ -37,8 +37,8 @@ VERIFY (scoped):
 - `uv run --extra dev python scripts/check_maintained_doc_terms.py --strict`
 - `uv run --extra dev python scripts/check_repo_terminology.py --strict`
 - `uv run --extra dev python scripts/run_v3_orchestration_acceptance.py`
-- `uv run --extra dev python -m pytest src/tests/infrastructure src/tests/setup src/tests/template src/tests/pipeline -q --tb=no -x`
-- `uv run ruff check src/utils src/pipeline src/setup src/template` (+ format)
+- `uv run --extra dev python -m pytest tests/infrastructure tests/setup tests/template tests/pipeline -q --tb=no -x`
+- `uv run ruff check src/gnn/utils src/gnn/pipeline src/gnn/setup src/gnn/template` (+ format)
 
 If the full docs audit was already green, add targeted improvements only
 where genuinely missing; do not pad.

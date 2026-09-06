@@ -7,13 +7,13 @@ and use `uv run` so they target the project environment.
 
 ```bash
 # Inspect the actual command surface and environment.
-uv run python src/main.py --help
+uv run python src/gnn/main.py --help
 uv run gnn --help
 uv run gnn preflight
 uv run gnn health
 
 # Re-run a small, observable path.
-uv run python src/main.py \
+uv run python src/gnn/main.py \
   --target-dir input/gnn_files \
   --output-dir output \
   --only-steps "3,5" \
@@ -54,7 +54,7 @@ uv run gnn validate path/to/model.md --strict --json
 For directory discovery and resource checks:
 
 ```bash
-uv run python src/5_type_checker.py \
+uv run python src/gnn/5_type_checker.py \
   --target-dir path/to/model-directory \
   --strict --estimate-resources --verbose
 ```
@@ -69,13 +69,13 @@ replacement for that directory argument. The parser discovers Markdown files; us
 uv sync --extra dev
 uv run gnn preflight
 uv run gnn health
-uv run python src/1_setup.py --dev --verbose
+uv run python src/gnn/1_setup.py --dev --verbose
 ```
 
 To install selected optional groups:
 
 ```bash
-uv run python src/1_setup.py \
+uv run python src/gnn/1_setup.py \
   --install-optional \
   --optional-groups "audio,gui,graphs"
 ```
@@ -83,7 +83,7 @@ uv run python src/1_setup.py \
 To rebuild the UV-managed environment, use the supported flag:
 
 ```bash
-uv run python src/1_setup.py --recreate-uv-env --dev
+uv run python src/gnn/1_setup.py --recreate-uv-env --dev
 ```
 
 The current flags are hyphenated. `--install_optional`, `--optional_groups`, and
@@ -94,7 +94,7 @@ The current flags are hyphenated. `--install_optional`, `--optional_groups`, and
 Render a deliberately small target set first:
 
 ```bash
-uv run python src/11_render.py \
+uv run python src/gnn/11_render.py \
   --target-dir input/gnn_files \
   --output-dir output \
   --frameworks "pymdp" \
@@ -105,7 +105,7 @@ uv run python src/11_render.py \
 Then execute only that isolated render output:
 
 ```bash
-uv run python src/12_execute.py \
+uv run python src/gnn/12_execute.py \
   --target-dir input/gnn_files \
   --output-dir output \
   --render-output-dir output/11_render_output \
@@ -141,9 +141,9 @@ uv run python -c "import jax, numpyro, discopy; print('core backends OK')"
 Use the committed Julia project for the framework being checked:
 
 ```bash
-julia --startup-file=no --project=src/execute/rxinfer \
+julia --startup-file=no --project=src/gnn/execute/rxinfer \
   -e 'using Pkg; Pkg.instantiate()'
-julia --startup-file=no --project=src/execute/activeinference_jl \
+julia --startup-file=no --project=src/gnn/execute/activeinference_jl \
   -e 'using Pkg; Pkg.instantiate()'
 ```
 
@@ -151,7 +151,7 @@ julia --startup-file=no --project=src/execute/activeinference_jl \
 
 These targets are intentionally not locked by default because their dependency chain
 currently carries a known unpatched PyTorch security concern. They are not evidence of
-a broken normal installation. Review `src/render/framework_registry.py` before enabling
+a broken normal installation. Review `src/gnn/render/framework_registry.py` before enabling
 them manually.
 
 ## Pipeline control and performance
@@ -160,16 +160,16 @@ Use only the supported step controls:
 
 ```bash
 # Run a focused path.
-uv run python src/main.py --only-steps "3,5,8" --verbose
+uv run python src/gnn/main.py --only-steps "3,5,8" --verbose
 
 # Skip expensive or environment-dependent steps.
-uv run python src/main.py --skip-steps "2,13,15" --verbose
+uv run python src/gnn/main.py --skip-steps "2,13,15" --verbose
 
 # Skip just LLM processing.
-uv run python src/main.py --skip-llm --verbose
+uv run python src/gnn/main.py --skip-llm --verbose
 
 # Reduce generated animation artifacts in Step 16.
-uv run python src/main.py --only-steps "16" --no-animations --verbose
+uv run python src/gnn/main.py --only-steps "16" --no-animations --verbose
 ```
 
 There is no main-pipeline `--debug`, `--diagnostics`, `--conservative`,

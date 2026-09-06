@@ -59,7 +59,7 @@ jobs:
 
       - name: Ruff check
         if: matrix.python-version == '3.12'
-        run: uv run --extra dev ruff check src scripts
+        run: uv run --extra dev ruff check src/gnn scripts
 
       - name: Repository terminology audit
         if: matrix.python-version == '3.12'
@@ -89,11 +89,11 @@ jobs:
         if: matrix.python-version == '3.12'
         run: |
           uv run --extra dev python -m pytest \
-            src/tests/mcp/test_mcp_functional.py \
-            src/tests/mcp/test_mcp_http_auth.py \
-            src/tests/mcp/test_transport_reliability.py \
-            src/tests/render/test_framework_availability.py \
-            src/tests/docs/test_capability_contracts.py \
+            tests/mcp/test_mcp_functional.py \
+            tests/mcp/test_mcp_http_auth.py \
+            tests/mcp/test_transport_reliability.py \
+            tests/render/test_framework_availability.py \
+            tests/docs/test_capability_contracts.py \
             -q --tb=short -rs --junitxml=junit/mcp-capabilities.xml
 
       - name: MCP and capability test evidence
@@ -106,22 +106,22 @@ jobs:
 
       - name: Mypy type check
         if: matrix.python-version == '3.12'
-        run: uv run --extra dev mypy src --show-error-codes
+        run: uv run --extra dev mypy src/gnn --show-error-codes
 
       - name: Pytest collect-only
         if: matrix.python-version == '3.12'
         run: |
-          uv run --extra dev python -m pytest --collect-only src/tests/ -q --tb=no \
-            --ignore=src/tests/llm/test_llm_ollama.py \
-            --ignore=src/tests/llm/test_llm_ollama_integration.py
+          uv run --extra dev python -m pytest --collect-only tests/ -q --tb=no \
+            --ignore=tests/llm/test_llm_ollama.py \
+            --ignore=tests/llm/test_llm_ollama_integration.py
 
       - name: Focused PyMDP/POMDP tests
         if: matrix.python-version == '3.12'
         run: |
           uv run --extra dev python -m pytest \
-            src/tests/execute/test_pymdp_contracts.py \
-            src/tests/execute/test_discrete_models_pymdp.py \
-            src/tests/visualization/test_visualization_matrices.py \
+            tests/execute/test_pymdp_contracts.py \
+            tests/execute/test_discrete_models_pymdp.py \
+            tests/visualization/test_visualization_matrices.py \
             -q --tb=short
 
       - name: Run unit and integration tests (parallel, skip pipeline & MCP)
@@ -132,7 +132,7 @@ jobs:
             --tb=short \
             -q \
             -n auto --dist worksteal \
-            --cov=src --cov-report=term-missing --cov-report=json:junit/coverage-${{ matrix.python-version }}.json \
+            --cov=gnn --cov-report=term-missing --cov-report=json:junit/coverage-${{ matrix.python-version }}.json \
             --junitxml=junit/pytest-${{ matrix.python-version }}.xml
 
       - name: Pytest JUnit report
@@ -210,7 +210,7 @@ jobs:
         id: bandit
         continue-on-error: true
         run: |
-          uv run --extra dev bandit -r src -c pyproject.toml \
+          uv run --extra dev bandit -r src/gnn -c pyproject.toml \
             --severity-level medium \
             --confidence-level medium \
             -f sarif \

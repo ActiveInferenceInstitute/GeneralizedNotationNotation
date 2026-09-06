@@ -1,0 +1,21 @@
+{
+  "format": "jsonl",
+  "log_file": "simulation.log",
+  "model_name": "Dynamic Perception Model",
+  "num_steps": 10,
+  "schema_version": "rxinfer_simulation_v1",
+  "validation": {
+    "actions_in_range": true,
+    "all_beliefs_valid": true,
+    "all_valid": true,
+    "belief_accuracy": 1.0,
+    "belief_accuracy_ok": true,
+    "belief_entropy_max": 0.6097070784424047,
+    "belief_entropy_mean": 0.2969049995043893,
+    "belief_entropy_min": 0.13908974719194808,
+    "belief_entropy_ok": true,
+    "beliefs_sum_to_one": true,
+    "inference_converged": true,
+    "vfe_present": true
+  }
+}

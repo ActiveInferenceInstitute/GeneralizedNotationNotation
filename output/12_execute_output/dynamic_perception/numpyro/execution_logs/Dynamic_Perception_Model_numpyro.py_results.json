@@ -1,0 +1,106 @@
+{
+  "framework": "numpyro",
+  "model_name": "dynamic_perception",
+  "script_name": "Dynamic_Perception_Model_numpyro.py",
+  "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/numpyro/Dynamic_Perception_Model_numpyro.py",
+  "success": true,
+  "return_code": 0,
+  "execution_time": 1.356919,
+  "timestamp": "2026-09-05T20:26:02.746815",
+  "simulation_data": {
+    "traces": [],
+    "free_energy": [],
+    "states": [],
+    "observations": [
+      1,
+      1,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "actions": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "policy": [],
+    "raw_output": "NumPyro POMDP simulation complete: 10 timesteps in 0.721s\nResults saved to: output/12_execute_output/dynamic_perception/numpyro/simulation_data/simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
+    "raw_error": "",
+    "beliefs": [
+      [
+        0.1698111593723297,
+        0.8301888704299927
+      ],
+      [
+        0.04015855863690376,
+        0.9598414301872253
+      ],
+      [
+        0.23552405834197998,
+        0.76447594165802
+      ],
+      [
+        0.6940617561340332,
+        0.3059382438659668
+      ],
+      [
+        0.3169576823711395,
+        0.6830423474311829
+      ],
+      [
+        0.0866885706782341,
+        0.9133114218711853
+      ],
+      [
+        0.019045015797019005,
+        0.9809549450874329
+      ],
+      [
+        0.003955490421503782,
+        0.9960445165634155
+      ],
+      [
+        0.0008116303361020982,
+        0.9991883635520935
+      ],
+      [
+        0.00016612235049251467,
+        0.999833881855011
+      ]
+    ],
+    "num_timesteps": 10
+  },
+  "execution_benchmark_repeats": 1,
+  "execution_metadata": {
+    "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+    "accelerator_type": "mps",
+    "stdout_length": 280,
+    "stderr_length": 0,
+    "output_directory": "output/12_execute_output/dynamic_perception/numpyro"
+  },
+  "execution_time_mean": 1.356919,
+  "execution_time_std": 0.0,
+  "execution_time_samples": [
+    1.356919
+  ],
+  "collected_outputs": {
+    "visualizations": [],
+    "simulation_data": [
+      "output/12_execute_output/dynamic_perception/numpyro/simulation_data/simulation_results.json"
+    ],
+    "traces": [],
+    "other": []
+  }
+}

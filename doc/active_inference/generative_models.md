@@ -328,15 +328,15 @@ D = np.array([1.0, 0.0, 0.0, 0.0, 0.0])  # Certain start in center
 | Component | Path |
 |-----------|------|
 | Model Parser | [`src/gnn/`](../../src/gnn/) |
-| Type Checker | [`src/type_checker/`](../../src/type_checker/) |
-| Validation | [`src/validation/`](../../src/validation/) |
+| Type Checker | [`src/gnn/type_checker/`](../../src/gnn/type_checker/) |
+| Validation | [`src/gnn/validation/`](../../src/gnn/validation/) |
 
 ### Execution
 
 | Engine | Path |
 |--------|------|
-| PyMDP | [`src/execute/pymdp/`](../../src/execute/pymdp/) |
-| RxInfer | [`src/execute/rxinfer/`](../../src/execute/rxinfer/) |
+| PyMDP | [`src/gnn/execute/pymdp/`](../../src/gnn/execute/pymdp/) |
+| RxInfer | [`src/gnn/execute/rxinfer/`](../../src/gnn/execute/rxinfer/) |
 
 ### Documentation
 

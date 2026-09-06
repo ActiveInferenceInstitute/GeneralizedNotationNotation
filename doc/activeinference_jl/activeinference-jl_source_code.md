@@ -5206,7 +5206,7 @@ end
 """ Get the history of the agent """
 
 ================================================
-FILE: src/utils/create_matrix_templates.jl
+FILE: src/gnn/utils/create_matrix_templates.jl
 ================================================
 
 ######################## Create Templates Based on states, observations, controls and policy length  ########################
@@ -5413,11 +5413,11 @@ function create_matrix_templates(shapes::Vector{Vector{Int64}}, template_type::S
 end
 
 ================================================
-FILE: src/utils/helper_functions.jl
+FILE: src/gnn/utils/helper_functions.jl
 ================================================
 
 ================================================
-FILE: src/utils/maths.jl
+FILE: src/gnn/utils/maths.jl
 ================================================
 
 """Normalizes a Categorical probability distribution"""
@@ -5701,7 +5701,7 @@ function kl_divergence(P::Vector{Vector{Vector{Real}}}, Q::Vector{Vector{Vector{
 end
 
 ================================================
-FILE: src/utils/utils.jl
+FILE: src/gnn/utils/utils.jl
 ================================================
 
 """ -------- Utility Functions -------- """

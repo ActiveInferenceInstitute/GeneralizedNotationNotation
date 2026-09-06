@@ -13,7 +13,7 @@ analyzes the resulting `pymdp_simulation_v1` JSON in Step 16.
 
 What this backend cannot express: continuous linear-Gaussian models
 (`input/gnn_files/continuous/`) are reported with render status `unsupported`
-for PyMDP (`supports_continuous: False` in `src/render/framework_registry.py`).
+for PyMDP (`supports_continuous: False` in `src/gnn/render/framework_registry.py`).
 Such renders are counted separately from failures under
 `unsupported_framework_renderings` and are not executed by Step 12.
 
@@ -29,11 +29,11 @@ The implementation is split across three current surfaces:
 1. **POMDP extraction**: `src/gnn/pomdp_extractor.py` builds a structured model
    spec with modality maps, state-factor maps, control-factor maps, matrix
    shapes, and `matrix_provenance`.
-2. **Rendering**: `src/render/pymdp/pymdp_renderer.py` exposes
+2. **Rendering**: `src/gnn/render/pymdp/pymdp_renderer.py` exposes
    `render_gnn_to_pymdp(...)` and writes PyMDP 1.0 runner scripts. The default
    script delegates to `src.execute.pymdp.run_pymdp_simulation`.
-3. **Execution and analysis**: `src/execute/pymdp/simulation.py` writes
-   `pymdp_simulation_v1`; `src/analysis/pymdp/analyzer.py` consumes only that
+3. **Execution and analysis**: `src/gnn/execute/pymdp/simulation.py` writes
+   `pymdp_simulation_v1`; `src/gnn/analysis/pymdp/analyzer.py` consumes only that
    schema for PyMDP-specific plots and summaries.
 
 ## Matrix Contract
@@ -77,19 +77,19 @@ diagnostics instead of trying to recover flat traces.
 | Pipeline Stage | Module | Public Surface |
 |---|---|---|
 | Extraction | [pomdp_extractor.py](../../../src/gnn/pomdp_extractor.py) | `extract_pomdp_from_file(...)` |
-| Rendering | [pymdp_renderer.py](../../../src/render/pymdp/pymdp_renderer.py) | `render_gnn_to_pymdp(...)` |
-| Execution | [simulation.py](../../../src/execute/pymdp/simulation.py) | `run_pymdp_simulation(...)` |
-| Analysis | [analyzer.py](../../../src/analysis/pymdp/analyzer.py) | `generate_analysis_from_logs(...)` |
-| Visualization | [visualizer.py](../../../src/analysis/pymdp/visualizer.py) | `PyMDPVisualizer` |
+| Rendering | [pymdp_renderer.py](../../../src/gnn/render/pymdp/pymdp_renderer.py) | `render_gnn_to_pymdp(...)` |
+| Execution | [simulation.py](../../../src/gnn/execute/pymdp/simulation.py) | `run_pymdp_simulation(...)` |
+| Analysis | [analyzer.py](../../../src/gnn/analysis/pymdp/analyzer.py) | `generate_analysis_from_logs(...)` |
+| Visualization | [visualizer.py](../../../src/gnn/analysis/pymdp/visualizer.py) | `PyMDPVisualizer` |
 
 ## Verification
 
 ```bash
 uv run --extra dev python -m pytest \
-    src/tests/execute/test_pymdp_contracts.py \
-    src/tests/execute/test_discrete_models_pymdp.py \
-    src/tests/analysis/test_analysis_post_simulation.py \
-    src/tests/visualization/test_visualization_matrices.py \
+    tests/execute/test_pymdp_contracts.py \
+    tests/execute/test_discrete_models_pymdp.py \
+    tests/analysis/test_analysis_post_simulation.py \
+    tests/visualization/test_visualization_matrices.py \
     -q --tb=short
 ```
 

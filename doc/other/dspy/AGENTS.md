@@ -61,7 +61,7 @@ DSPy integration for structured prompting and LLM coordination within the GNN ec
 
 - **[GNN Documentation](../../gnn/AGENTS.md)**: Core GNN docs
 - **[Main Documentation](../README.md)**: Documentation hub
-- **[Pipeline Reference](../../../src/AGENTS.md)**: Pipeline details
+- **[Pipeline Reference](../../../src/gnn/AGENTS.md)**: Pipeline details
 
 ---
 
@@ -117,7 +117,7 @@ This documentation is integrated with the 25-step GNN processing pipeline:
 - DSPy results integrated into comprehensive outputs
 - LLM-enhanced documentation generation
 
-See [src/AGENTS.md](../../../src/AGENTS.md) for complete pipeline documentation.
+See [src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md) for complete pipeline documentation.
 
 ---
 
@@ -168,8 +168,8 @@ All documentation in this module adheres to professional standards:
 
 ### Pipeline Architecture
 
-- [Pipeline AGENTS](../../../src/AGENTS.md)
-- [Pipeline README](../../../src/README.md)
+- [Pipeline AGENTS](../../../src/gnn/AGENTS.md)
+- [Pipeline README](../../../src/gnn/README.md)
 
 ### External Resources
 

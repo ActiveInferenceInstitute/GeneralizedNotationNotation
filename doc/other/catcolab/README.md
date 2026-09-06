@@ -33,7 +33,7 @@ CatColab provides category-theoretic compositional modeling with domain-specific
 - **CatColab Platform**: [catcolab.org](https://catcolab.org)
 - **GNN Documentation**: [../gnn/README.md](../../gnn/README.md)
 - **DisCoPy Integration**: [../discopy/gnn_discopy.md](../../discopy/gnn_discopy.md)
-- **Pipeline Reference**: [../../src/AGENTS.md](../../../src/AGENTS.md)
+- **Pipeline Reference**: [../../src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md)
 
 ## Related Documentation
 

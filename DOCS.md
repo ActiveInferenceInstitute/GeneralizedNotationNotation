@@ -87,7 +87,7 @@ flowchart LR
 graph TB
   A[main.py] --> B[0_template.py..24_intelligent_analysis.py\nThin orchestrators]
   B --> C[Modules in src/*/\nCore implementations]
-  C --> D[Tests in src/tests/]
+  C --> D[Tests in tests/]
   A --> E[utils/, pipeline/\nShared infra]
 ```
 
@@ -201,25 +201,25 @@ flowchart LR
 
 ## Configuration Pointers
 
-- Command-line options via `src/main.py --help`
+- Command-line options via `src/gnn/main.py --help`
 - Centralized config examples in `doc/configuration/README.md`
 
 ## Integration Notes
 
-- PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, bnlearn rendering configured in `src/render/` (`framework_registry.py` is the single source of the framework list)
-- Execution backends in `src/execute/` (including the `stan/` cmdstanpy runner)
+- PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, bnlearn rendering configured in `src/gnn/render/` (`framework_registry.py` is the single source of the framework list)
+- Execution backends in `src/gnn/execute/` (including the `stan/` cmdstanpy runner)
 - Model kinds: discrete POMDP/HMM specs render and execute on all nine frameworks; continuous linear-Gaussian specs (`input/gnn_files/continuous/`) render and execute on JAX, NumPyro, PyTorch, Stan and RxInfer.jl and are reported with the `unsupported` render status on PyMDP, ActiveInference.jl, DisCoPy and bnlearn (excluded from success rates, never executed by Step 12). See the "Model Kinds and Framework Support (v3.2.0)" section of [README.md](README.md).
-- MCP tools in `src/mcp/`
+- MCP tools in `src/gnn/mcp/`
 
 ## References
 
 - `.agent_rules` — canonical pipeline description (0–24)
-- `src/main.py` — orchestrator implementation
+- `src/gnn/main.py` — orchestrator implementation
 - `doc/PIPELINE_SCRIPTS.md` — step details and flow
 - `ARCHITECTURE.md` — implementation-oriented architecture
-- `src/STEP_INDEX.md` — machine-readable step index (0–24)
-- `src/mcp/audit_report.json` — machine-generated MCP tool inventory
-- `src/cli/template_index.json` — packaged template index
+- `src/gnn/STEP_INDEX.md` — machine-readable step index (0–24)
+- `src/gnn/mcp/audit_report.json` — machine-generated MCP tool inventory
+- `src/gnn/cli/template_index.json` — packaged template index
 
 ## Machine-Readable Step Index
 

@@ -26,17 +26,17 @@ GNN export is integrated into the 25-step processing pipeline:
 
 - Multi-format export generation
 - Export validation
-- See: [src/export/AGENTS.md](../../../src/export/AGENTS.md)
+- See: [src/gnn/export/AGENTS.md](../../../src/gnn/export/AGENTS.md)
 
 **Quick Start:**
 
 ```bash
 # Generate exports
-uv run python src/main.py --only-steps "3,7" --target-dir input/gnn_files --verbose
+uv run python src/gnn/main.py --only-steps "3,7" --target-dir input/gnn_files --verbose
 
 # Step 7 has no format-selection flag — it emits every supported format.
 # Select formats by calling the exporters directly (see the API examples below).
-uv run python src/7_export.py --target-dir input/gnn_files --output-dir output --verbose
+uv run python src/gnn/7_export.py --target-dir input/gnn_files --output-dir output --verbose
 ```
 
 ## Supported Export Formats
@@ -57,8 +57,8 @@ uv run python src/7_export.py --target-dir input/gnn_files --output-dir output -
 - Structured representation
 - Use case: Enterprise integration, validation
 
-> **No YAML exporter ships today.** `src/export/mcp.py` advertises `yaml` in a format
-> list, but `src/export/format_exporters.py` has no YAML writer, so nothing produces it.
+> **No YAML exporter ships today.** `src/gnn/export/mcp.py` advertises `yaml` in a format
+> list, but `src/gnn/export/format_exporters.py` has no YAML writer, so nothing produces it.
 > The formats below plus the two plaintext writers are the complete set. Export to JSON
 > and convert if you need YAML.
 
@@ -209,7 +209,7 @@ Export integrates throughout the pipeline:
 
 ## Related Documentation
 
-- **[Export Module](../../../src/export/AGENTS.md)**: Implementation details
+- **[Export Module](../../../src/gnn/export/AGENTS.md)**: Implementation details
 - **[Export Documentation](../README.md)**: Export documentation overview
 - **[Pkl Integration](../../pkl/pkl_gnn.md)**: Configuration-as-code export
 - **[GNN Tools](../operations/gnn_tools.md)**: Complete GNN tools reference

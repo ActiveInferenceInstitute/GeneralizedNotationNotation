@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Integration Guide | **Audience**: Researchers, Type System Developers | **Complexity**: Advanced  
-> **Cross-References**: [AGENTS.md](AGENTS.md) | [Type Inference Zoo Guide](type-inference-zoo.md) | [Type Checker](../../src/type_checker/AGENTS.md) | [Main Documentation](../README.md)
+> **Cross-References**: [AGENTS.md](AGENTS.md) | [Type Inference Zoo Guide](type-inference-zoo.md) | [Type Checker](../../src/gnn/type_checker/AGENTS.md) | [Main Documentation](../README.md)
 
 ## Overview
 
@@ -24,13 +24,13 @@ This directory contains documentation and resources for integrating the **Type I
 - **[learning_paths.md](../learning_paths.md)**: Learning pathways
 
 ### Related Directories
-- **[Type Checker](../../src/type_checker/AGENTS.md)**: GNN type checking implementation
+- **[Type Checker](../../src/gnn/type_checker/AGENTS.md)**: GNN type checking implementation
 - **[Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md)**: Advanced modeling techniques
 - **[Formal Methods](../other/axiom/axiom_gnn.md)**: Formal verification approaches
 
 ### Pipeline Integration
 - **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
-- **[src/AGENTS.md](../../src/AGENTS.md)**: Implementation details
+- **[src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)**: Implementation details
 
 ## Contents
 
@@ -90,14 +90,14 @@ This documentation is integrated with the 25-step GNN processing pipeline:
 3. **Integration** (Steps 17-24): System coordination and output
    - Type inference results integrated into comprehensive outputs
 
-See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
+See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documentation.
 
 ## Related Resources
 
 ### Main GNN Documentation
 - **[GNN Overview](../gnn/gnn_overview.md)**: Core GNN concepts
 - **[GNN Quickstart](../gnn/tutorials/quickstart_tutorial.md)**: Getting started guide
-- **[Type Checker](../../src/type_checker/AGENTS.md)**: GNN type checking implementation
+- **[Type Checker](../../src/gnn/type_checker/AGENTS.md)**: GNN type checking implementation
 
 ### Research Applications
 - **[Formal Methods](../other/axiom/axiom_gnn.md)**: Related formal verification approaches
@@ -106,8 +106,8 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 
 ### Pipeline Architecture
 - **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
-- **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
-- **[Pipeline README](../../src/README.md)**: Pipeline overview
+- **[Pipeline AGENTS](../../src/gnn/AGENTS.md)**: Implementation details
+- **[Pipeline README](../../src/gnn/README.md)**: Pipeline overview
 
 ## Standards and Guidelines
 
@@ -121,7 +121,7 @@ All documentation in this module adheres to professional standards:
 ## See Also
 
 - **[Type Inference Zoo Cross-Reference](../CROSS_REFERENCE_INDEX.md#type-inference-zoo)**: Cross-reference index entry
-- **[Type Checker](../../src/type_checker/AGENTS.md)**: GNN type checking implementation
+- **[Type Checker](../../src/gnn/type_checker/AGENTS.md)**: GNN type checking implementation
 - **[Formal Methods](../other/axiom/axiom_gnn.md)**: Related formal verification approaches
 - **[Main Index](../README.md)**: Return to main documentation
 

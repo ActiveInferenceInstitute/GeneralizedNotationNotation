@@ -2,8 +2,8 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/7_export.py` (111 lines)
-**Implementation Layer**: `src/export/`
+**Orchestrator**: `src/gnn/7_export.py` (111 lines)
+**Implementation Layer**: `src/gnn/export/`
 
 ## Module Description
 
@@ -11,7 +11,7 @@ This module provides comprehensive multi-format export capabilities for GNN mode
 
 
 ```
-src/export/
+src/gnn/export/
 ├── __init__.py                    # Module initialization and exports
 ├── README.md                      # This documentation
 ├── AGENTS.md                      # Agent scaffolding documentation
@@ -67,7 +67,7 @@ src/export/
 
 #### `process_export(target_dir, output_dir, verbose=False, **kwargs) -> bool`
 
-**Description**: Main export processing function (`src/export/processor.py`), invoked by `src/7_export.py`. Loads the parsed GNN results written by Step 3 (`gnn_processing_results.json`) from the base output directory and exports each parsed model to multiple formats.
+**Description**: Main export processing function (`src/gnn/export/processor.py`), invoked by `src/gnn/7_export.py`. Loads the parsed GNN results written by Step 3 (`gnn_processing_results.json`) from the base output directory and exports each parsed model to multiple formats.
 
 **Parameters**:
 
@@ -308,11 +308,11 @@ output/7_export_output/
 
 ### Test Files
 
-- `src/tests/export/test_export_overall.py`
+- `tests/export/test_export_overall.py`
 
 ### Test Coverage
 
-- Measure: `uv run --extra dev python -m pytest src/tests/export/ --cov=export --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
+- Measure: `uv run --extra dev python -m pytest tests/export/ --cov=export --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
 
 ### Key Test Scenarios
 
@@ -334,7 +334,7 @@ output/7_export_output/
 
 ### MCP File Location
 
-- `src/export/mcp.py` — Tool registrations and MCP wrappers
+- `src/gnn/export/mcp.py` — Tool registrations and MCP wrappers
 
 ---
 
@@ -381,7 +381,7 @@ output/7_export_output/
 
 ```bash
 # Enable verbose logging
-python src/7_export.py --target-dir input/ --verbose
+python src/gnn/7_export.py --target-dir input/ --verbose
 ```
 
 **Solutions**:
@@ -418,9 +418,9 @@ python src/7_export.py --target-dir input/ --verbose
 
 ### Related Documentation
 
-- [Pipeline Overview](../../../src/export/../../README.md)
-- [Architecture Guide](../../../src/export/../../ARCHITECTURE.md)
-- [GNN Export Guide](../../../src/export/../../doc/gnn/integration/gnn_export.md)
+- [Pipeline Overview](../../../README.md)
+- [Architecture Guide](../../../ARCHITECTURE.md)
+- [GNN Export Guide](../../../doc/gnn/integration/gnn_export.md)
 
 ### External Resources
 
@@ -439,12 +439,12 @@ python src/7_export.py --target-dir input/ --verbose
 
 ---
 ## Documentation
-- **[README](../../../src/export/README.md)**: Module Overview
-- **[AGENTS](../../../src/export/AGENTS.md)**: Agentic Workflows
-- **[SPEC](../../../src/export/SPEC.md)**: Architectural Specification
-- **[SKILL](../../../src/export/SKILL.md)**: Capability API
+- **[README](../../../src/gnn/export/README.md)**: Module Overview
+- **[AGENTS](../../../src/gnn/export/AGENTS.md)**: Agentic Workflows
+- **[SPEC](../../../src/gnn/export/SPEC.md)**: Architectural Specification
+- **[SKILL](../../../src/gnn/export/SKILL.md)**: Capability API
 
 
 ---
 
-**Source Reference**: [src/export](../../../src/export)
+**Source Reference**: [src/gnn/export](../../../src/gnn/export)

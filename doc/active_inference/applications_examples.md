@@ -163,7 +163,7 @@ After finding goal: Low uncertainty → Agent exploits
 
 ### Simulation Outputs
 
-Located in: `output/12_execute_output/` (created by pipeline step 12; see `src/pipeline/config.py`)
+Located in: `output/12_execute_output/` (created by pipeline step 12; see `src/gnn/pipeline/config.py`)
 
 | Output | Description |
 |--------|-------------|
@@ -193,7 +193,7 @@ Located in: `output/16_analysis_output/` (created by pipeline step 16 when analy
 ### Source Code
 
 - **Examples**
-- **Output**: run the pipeline with an `output/` directory; layout is defined in `src/pipeline/config.py`
+- **Output**: run the pipeline with an `output/` directory; layout is defined in `src/gnn/pipeline/config.py`
 
 ---
 

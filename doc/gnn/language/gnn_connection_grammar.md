@@ -60,7 +60,7 @@ neither code.
 ## Implementation
 
 - Parser: [`src/gnn/schema.py :: parse_connections()`](../../../src/gnn/schema.py)
-- LSP diagnostics: [`src/lsp/__init__.py`](../../../src/lsp/__init__.py) — real-time connection error highlighting
+- LSP diagnostics: [`src/gnn/lsp/__init__.py`](../../../src/gnn/lsp/__init__.py) — real-time connection error highlighting
 - CLI: `gnn validate <file.md>` runs all connection grammar checks
 
 ---

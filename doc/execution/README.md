@@ -2,7 +2,7 @@
 
 Framework execution and simulation backend management
 
-**Signposts:** [doc/SPEC.md](../SPEC.md) (documentation versioning) · [src/AGENTS.md](../../src/AGENTS.md) (pipeline steps; Step 12 Execute) · [doc/gnn/operations/gnn_tools.md](../gnn/operations/gnn_tools.md)
+**Signposts:** [doc/SPEC.md](../SPEC.md) (documentation versioning) · [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) (pipeline steps; Step 12 Execute) · [doc/gnn/operations/gnn_tools.md](../gnn/operations/gnn_tools.md)
 
 ## Overview
 
@@ -14,7 +14,7 @@ This directory contains documentation and resources for the execution subsystem.
 
 - **Main Documentation**: [doc/README.md](../README.md)
 - **Setup Guide**: [doc/SETUP.md](../SETUP.md)
-- **Pipeline Reference**: [src/AGENTS.md](../../src/AGENTS.md)
+- **Pipeline Reference**: [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)
 
 ## Directory Structure
 
@@ -30,7 +30,7 @@ execution/
 The execution subsystem provides support for multiple Active Inference simulation frameworks:
 
 - **PyMDP**: Python Active Inference (primary)
-- **RxInfer.jl**: Julia Bayesian inference via genuine `@model` + `infer()` (committed `Project.toml` + `Manifest.toml` under `src/execute/rxinfer/` pin RxInfer 5.5.0; run with `julia --startup-file=no --project=src/execute/rxinfer <script>`, no runtime `Pkg.add`)
+- **RxInfer.jl**: Julia Bayesian inference via genuine `@model` + `infer()` (committed `Project.toml` + `Manifest.toml` under `src/gnn/execute/rxinfer/` pin RxInfer 5.5.0; run with `julia --startup-file=no --project=src/gnn/execute/rxinfer <script>`, no runtime `Pkg.add`)
 - **ActiveInference.jl**: Complete Julia implementation
 - **DisCoPy**: Category theory and quantum computing
 - **JAX**: GPU-accelerated tensor operations

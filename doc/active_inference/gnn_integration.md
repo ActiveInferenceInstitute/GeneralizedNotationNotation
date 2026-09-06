@@ -41,24 +41,24 @@ This document describes how GNN (Generalized Notation Notation) integrates with 
 | Component | Path | Description |
 |-----------|------|-------------|
 | **GNN Parser** | [`src/gnn/`](../../src/gnn/) | Model parsing |
-| **Type Checker** | [`src/type_checker/`](../../src/type_checker/) | Type validation |
-| **Validation** | [`src/validation/`](../../src/validation/) | Model validation |
-| **Export** | [`src/export/`](../../src/export/) | Format export |
+| **Type Checker** | [`src/gnn/type_checker/`](../../src/gnn/type_checker/) | Type validation |
+| **Validation** | [`src/gnn/validation/`](../../src/gnn/validation/) | Model validation |
+| **Export** | [`src/gnn/export/`](../../src/gnn/export/) | Format export |
 
 ### Execution Engines
 
 | Engine | Path | Description |
 |--------|------|-------------|
-| **PyMDP** | [`src/execute/pymdp/`](../../src/execute/pymdp/) | Python execution |
-| **RxInfer** | [`src/execute/rxinfer/`](../../src/execute/rxinfer/) | Julia execution |
-| **ActiveInference.jl** | [`src/execute/activeinference_jl/`](../../src/execute/activeinference_jl/) | Julia execution |
+| **PyMDP** | [`src/gnn/execute/pymdp/`](../../src/gnn/execute/pymdp/) | Python execution |
+| **RxInfer** | [`src/gnn/execute/rxinfer/`](../../src/gnn/execute/rxinfer/) | Julia execution |
+| **ActiveInference.jl** | [`src/gnn/execute/activeinference_jl/`](../../src/gnn/execute/activeinference_jl/) | Julia execution |
 
 ### Analysis
 
 | Tool | Path |
 |------|------|
-| **Analyzer** | [`src/analysis/`](../../src/analysis/) |
-| **Visualization** | [`src/visualization/`](../../src/visualization/) |
+| **Analyzer** | [`src/gnn/analysis/`](../../src/gnn/analysis/) |
+| **Visualization** | [`src/gnn/visualization/`](../../src/gnn/visualization/) |
 
 ---
 

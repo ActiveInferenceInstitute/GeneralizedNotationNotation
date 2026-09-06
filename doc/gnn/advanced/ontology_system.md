@@ -9,15 +9,15 @@ This document describes the ontology system used in conjunction with GNN files, 
 
 For implementation details and usage, see:
 
-- **[src/ontology/AGENTS.md](../../../src/ontology/AGENTS.md)**: Ontology processing module documentation
-- **[src/AGENTS.md](../../../src/AGENTS.md)**: Complete pipeline module registry
-- **[src/main.py](../../../src/main.py)**: Pipeline orchestrator (Step 10 handles ontology processing)
+- **[src/gnn/ontology/AGENTS.md](../../../src/gnn/ontology/AGENTS.md)**: Ontology processing module documentation
+- **[src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md)**: Complete pipeline module registry
+- **[src/gnn/main.py](../../../src/gnn/main.py)**: Pipeline orchestrator (Step 10 handles ontology processing)
 
 ## 1. Ontology Terms Definition File
 
 The core of the ontology system is a JSON file that defines recognized ontological terms.
 
-- **Location:** `src/ontology/act_inf_ontology_terms.json`
+- **Location:** `src/gnn/ontology/act_inf_ontology_terms.json`
 - **Structure:** The file is a JSON object where each key is an ontological term (e.g., `HiddenState`, `TransitionMatrix`). The value for each term is another JSON object containing:
   - `description`: A human-readable explanation of the term.
   - `uri`: A Uniform Resource Identifier, often linking to a formal ontology definition (e.g., an OBO Foundry URI like `obo:ACTO_000001`).
@@ -58,9 +58,9 @@ In this example, `A`, `B`, `D`, `s`, and `o` are variables defined elsewhere in 
 
 ## 3. Validation Process
 
-The GNN processing pipeline includes Step 10 (`src/10_ontology.py`) that validates these annotations.
+The GNN processing pipeline includes Step 10 (`src/gnn/10_ontology.py`) that validates these annotations.
 
-For detailed implementation, see **[src/ontology/AGENTS.md](../../../src/ontology/AGENTS.md)**.
+For detailed implementation, see **[src/gnn/ontology/AGENTS.md](../../../src/gnn/ontology/AGENTS.md)**.
 
 - **Parsing:** The `ActInfOntologyAnnotation` section is parsed to extract all `VariableName=OntologyTerm` mappings.
 - **Validation:** Each `OntologyTerm` used in the GNN file is checked for its existence as a key in the loaded `act_inf_ontology_terms.json` file.
@@ -77,15 +77,15 @@ This validation helps ensure that GNN models use consistent and recognized termi
 
 ```bash
 # Validate ontology annotations (Step 10)
-uv run python src/10_ontology.py --target-dir input/gnn_files --verbose
+uv run python src/gnn/10_ontology.py --target-dir input/gnn_files --verbose
 
 # Or as part of the full pipeline
-uv run python src/main.py --only-steps "3,10" --target-dir input/gnn_files
+uv run python src/gnn/main.py --only-steps "3,10" --target-dir input/gnn_files
 ```
 
 ## 4. MCP Integration
 
-The ontology processing logic, including loading term definitions, parsing GNN files, and validating annotations, is typically exposed via MCP tools defined in `src/ontology/mcp.py`. This allows other parts of the system or external tools to leverage the ontology functionalities.
+The ontology processing logic, including loading term definitions, parsing GNN files, and validating annotations, is typically exposed via MCP tools defined in `src/gnn/ontology/mcp.py`. This allows other parts of the system or external tools to leverage the ontology functionalities.
 
 Key functions involved (often wrapped as MCP tools):
 

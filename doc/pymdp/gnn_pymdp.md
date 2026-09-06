@@ -7,17 +7,17 @@ against the **JAX-first pymdp 1.0.0** release
 ## What This Repository Implements
 
 - **Step 11 (render)** produces pymdp 1.0.0 runner scripts from parsed GNN
-  model specs (`src/render/pymdp/pymdp_renderer.py`). Two templates ship:
+  model specs (`src/gnn/render/pymdp/pymdp_renderer.py`). Two templates ship:
     * **Pipeline runner** (default): a thin script that delegates to
       `src.execute.pymdp.run_pymdp_simulation`.
     * **Standalone runner** (`options={"mode": "standalone"}`): a fully
       self-contained pymdp 1.0.0 script — no GNN pipeline on PYTHONPATH.
 - **Step 12 (execute)** runs those scripts and stores JSON execution artifacts
-  (`src/execute/pymdp/pymdp_runner.py`). The canonical rollout lives in
-  `src/execute/pymdp/simulation.py`, which calls real pymdp 1.0.0.
+  (`src/gnn/execute/pymdp/pymdp_runner.py`). The canonical rollout lives in
+  `src/gnn/execute/pymdp/simulation.py`, which calls real pymdp 1.0.0.
 - **Step 16 (analysis)** reads execution artifacts from
   `output/12_execute_output/**/pymdp/simulation_data/simulation_results.json`
-  and generates visualisations (`src/analysis/pymdp/`).
+  and generates visualisations (`src/gnn/analysis/pymdp/`).
 - **POMDP extraction** preserves modalities, state factors, control factors,
   matrix shapes, and `matrix_provenance`. Single-factor models expose
   canonical `A`/`B`/`C`/`D`; factored models retain named source matrices such
@@ -51,7 +51,7 @@ default 1) and is a `jax.Array` inside a `list[...]`:
 | `E`    | `(1, num_policies)` (plain `Array`, not a list)  |
 
 GNN files typically emit **unbatched numpy** matrices. The pipeline converts
-them with `src/execute/pymdp/simulation._to_jax_batched` — it just
+them with `src/gnn/execute/pymdp/simulation._to_jax_batched` — it just
 prepends a batch axis and casts to `jnp.float32`.
 
 ### GNN B layout conversion
@@ -132,9 +132,9 @@ Step 12 sets `GNN_PROJECT_ROOT` so the generated pipeline runner can
 
 ```bash
 uv run --extra dev python -m pytest \
-    src/tests/execute/test_pymdp_1_0_0_upstream_api.py \
-    src/tests/execute/test_pymdp_contracts.py \
-    src/tests/execute/test_execute_pymdp_integration.py \
+    tests/execute/test_pymdp_1_0_0_upstream_api.py \
+    tests/execute/test_pymdp_contracts.py \
+    tests/execute/test_execute_pymdp_integration.py \
     -v
 ```
 
@@ -158,7 +158,7 @@ uv run --extra dev python -m pytest \
 
 ## Basic examples
 
-See [Minimal Local Example (JAX-first)](#minimal-local-example-jax-first) and pipeline tests under `src/tests/execute/test_pymdp_*`.
+See [Minimal Local Example (JAX-first)](#minimal-local-example-jax-first) and pipeline tests under `tests/execute/test_pymdp_*`.
 
 ## POMDP examples
 

@@ -30,7 +30,7 @@ SymPy integration enables:
 - **README.md**: [Directory overview](README.md)
 - **GNN Documentation**: [gnn/AGENTS.md](../gnn/AGENTS.md)
 - **Main Documentation**: [doc/README.md](../README.md)
-- **Pipeline Reference**: [src/AGENTS.md](../../src/AGENTS.md)
+- **Pipeline Reference**: [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)
 
 ## Documentation Structure
 
@@ -59,7 +59,7 @@ This documentation is integrated with the 25-step GNN processing pipeline:
 - **Step 21 (MCP)**: SymPy MCP tool registration
 - **Step 23 (Report)**: Mathematical documentation generation
 
-See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
+See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documentation.
 
 ## Function Signatures and API
 
@@ -108,13 +108,13 @@ All documentation in this module adheres to professional standards:
 
 ### Mathematical Resources
 - **[MCP Integration](../mcp/README.md)**: Model Context Protocol
-- **[Type Checking](../../src/type_checker/AGENTS.md)**: Type validation
+- **[Type Checking](../../src/gnn/type_checker/AGENTS.md)**: Type validation
 - **[Mathematical Foundations](../gnn/advanced/advanced_modeling_patterns.md)**: Mathematical modeling
 
 ### Pipeline Architecture
 - **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
-- **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
-- **[Pipeline README](../../src/README.md)**: Pipeline overview
+- **[Pipeline AGENTS](../../src/gnn/AGENTS.md)**: Implementation details
+- **[Pipeline README](../../src/gnn/README.md)**: Pipeline overview
 
 ## See Also
 

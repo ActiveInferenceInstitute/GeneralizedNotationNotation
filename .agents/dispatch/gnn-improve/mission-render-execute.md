@@ -3,10 +3,10 @@
 You own one of these paths ONLY within the GNN repo at
 `/home/trim/Documents/Git/HumOS/projects/outside_of_hum/GeneralizedNotationNotation`:
 
-- src/render/   (code generation for PyMDP, RxInfer.jl, JAX, NumPyro, Stan,
+- src/gnn/render/   (code generation for PyMDP, RxInfer.jl, JAX, NumPyro, Stan,
   PyTorch, ActiveInference.jl, DisCoPy, bnlearn + stigmergic multi-agent)
-- src/execute/  (simulation / execution of rendered .py and .jl scripts)
-- mirror tests: src/tests/render/, src/tests/execute/
+- src/gnn/execute/  (simulation / execution of rendered .py and .jl scripts)
+- mirror tests: tests/render/, tests/execute/
 
 DO NOT TOUCH anything outside that scope (root config files, conftest,
 macros uagents/, utils/ etc — see the shared "do NOT touch" rule in mission-parse.md).
@@ -22,7 +22,7 @@ GOAL: Deep, strategic improvement of the render→execute→log lifecycle.
    "env-conditioned action selection for stigmergic swarms" (infer
    `env_signal` as a latent from observations and condition per-agent
    action selection on it). If you can complete this cleanly with tests
-   pinned by `src/tests/render/test_stigmergic_multi_agent.py`, do it.
+   pinned by `tests/render/test_stigmergic_multi_agent.py`, do it.
    Otherwise scope it honestly in your report. Do NOT claim completion
    without a live test.
 4. Execution failure/skip/retry reporting: make best-effort paths total
@@ -35,10 +35,10 @@ its keep. Do NOT run Julia/RxInfer heavyweight live runs unless you
 already can quickly; prefer the focused pytest that pins the render path.
 
 VERIFY (scoped only):
-- `python -m ruff check src/render src/execute`
-- `python -m ruff format --check src/render src/execute`
-- `uv run pytest src/tests/render src/tests/execute -q --tb=no -x`
-- `uv run mypy src/render src/execute --config-file pyproject.toml`
+- `python -m ruff check src/gnn/render src/gnn/execute`
+- `python -m ruff format --check src/gnn/render src/gnn/execute`
+- `uv run pytest tests/render tests/execute -q --tb=no -x`
+- `uv run mypy src/gnn/render src/gnn/execute --config-file pyproject.toml`
 
 HARD RULE: leave ALL changes uncommitted. No commit/push/stage. Other
 agents own disjoint paths; if you see new files you don't own, leave them.

@@ -35,9 +35,9 @@ if str(_SRC) not in sys.path:
 
 import numpy as np  # noqa: E402
 
-from pipeline import container_plan as cp  # noqa: E402
-from pipeline import durable_streams as ds  # noqa: E402
-from pipeline import run_session as rs  # noqa: E402
+from gnn.pipeline import container_plan as cp  # noqa: E402
+from gnn.pipeline import durable_streams as ds  # noqa: E402
+from gnn.pipeline import run_session as rs  # noqa: E402
 
 
 class _Gate:

@@ -35,11 +35,11 @@
 ### 2.1 uv 0.12.0 Compatibility (Commits: `abc9947`, `42d50f2`, `09cce17`)
 
 - Verified uv 0.12.0 lock compatibility (310 packages, 0.86ms resolve)
-- Fixed `src/tests/__init__.py` import paths (`src.utils.test_utils` → `utils.test_utils`)
+- Fixed `tests/__init__.py` import paths (`src.utils.test_utils` → `utils.test_utils`)
 - Removed stale `# type: ignore` comments on `main.py` (PIPELINE_STEPS_TUPLE) and `lsp/__init__.py` (pygls attr-defined)
-- Fixed `src/api/app.py` `step.name` → `step.description` (StepInfo has no `name` attribute)
-- Added `list_available_resources` alias to `src/mcp/__init__.py`
-- Fixed type annotation on `deps` in `src/pipeline/mcp.py` (isinstance guard)
+- Fixed `src/gnn/api/app.py` `step.name` → `step.description` (StepInfo has no `name` attribute)
+- Added `list_available_resources` alias to `src/gnn/mcp/__init__.py`
+- Fixed type annotation on `deps` in `src/gnn/pipeline/mcp.py` (isinstance guard)
 - Added `sphinx.*` and `.venv/` to mypy overrides/excludes
 - Updated `Dockerfile` `UV_VERSION` from 0.7.8 → 0.12.0
 - Added `.python-version` file (3.11)
@@ -104,7 +104,7 @@ invalid by `Distributions` ≥0.25.127 (June 2026).
    `@check_args(Gamma, (α, α > zero(α)), (θ, θ > zero(θ)))`
 2. Local depot patched — ActiveInference.jl now precompiles and executes on
    Julia 1.12.6
-3. `src/execute/activeinference_jl/setup_environment.jl` now applies the same
+3. `src/gnn/execute/activeinference_jl/setup_environment.jl` now applies the same
    patch automatically during environment setup via `patch_distributionsad_reversediff()`
 4. Full end-to-end smoke test: GNN render → ActiveInference.jl script →
    `simulation_results.json` produced successfully
@@ -171,12 +171,12 @@ The `lsp/` module requires `pygls` which is an optional dependency. The `Languag
    - Mypy/ruff gates
    - Dependabot auto-merge for low-risk updates
 
-8. **Standalone test files** — 7 test files exist outside `src/tests/` in `doc/` and `src/llm/`:
+8. **Standalone test files** — 7 test files exist outside `tests/` in `doc/` and `src/gnn/llm/`:
    - `doc/activeinference_jl/test_activeinference_renderer.py`
    - `doc/cognitive_phenomena/*/test_*.py` (3 files)
    - `doc/pymdp/pymdp_pomdp/test_*.py` (2 files)
-   - `src/llm/test_llm_system.py`
-   - These are documentation-embedded examples, not pytest tests. Consider moving into `src/tests/` with proper pytest markers.
+   - `src/gnn/llm/test_llm_system.py`
+   - These are documentation-embedded examples, not pytest tests. Consider moving into `tests/` with proper pytest markers.
 
 ---
 
@@ -184,10 +184,10 @@ The `lsp/` module requires `pygls` which is an optional dependency. The `Languag
 
 ```bash
 # Run all tests (2649 tests, ~16 minutes)
-uv run --extra dev python -m pytest src/tests/ -q --tb=no --timeout=300
+uv run --extra dev python -m pytest tests/ -q --tb=no --timeout=300
 
 # Run specific test module
-uv run --extra dev python -m pytest src/tests/pipeline/ -q --tb=short
+uv run --extra dev python -m pytest tests/pipeline/ -q --tb=short
 
 # Run mypy type checking
 uv run --extra dev python -m mypy src/ --config-file pyproject.toml
@@ -202,7 +202,7 @@ julia --project=/tmp/julia_test_env --startup-file=no \
 
 # Run Ollama LLM tests
 ollama serve  # Start server first
-uv run --extra dev python -m pytest src/tests/llm/ -q --tb=short
+uv run --extra dev python -m pytest tests/llm/ -q --tb=short
 
 # Update uv lock
 uv lock --check
@@ -245,13 +245,13 @@ abc9947 uv 0.12.0 compatibility: fix imports, test failures, and disable pygls t
 |------|---------|
 | `doc/HANDOFF.md` | This document |
 | `doc/uv_0.12.0_compatibility_audit.md` | Comprehensive audit report (442 lines) |
-| `src/tests/__init__.py` | Test suite bootstrap |
-| `src/tests/runner.py` | Test runner (TestRunner class + run_tests function) |
-| `src/tests/test_uv_environment.py` | uv environment tests |
-| `src/tests/pipeline/test_pomdp_gridworld_cross_framework.py` | Julia backend tests |
-| `src/llm/providers/base_provider.py` | LLM provider base class |
-| `src/mcp/__init__.py` | MCP module (tools, resources) |
-| `src/pipeline/step_registry.py` | Step registry (discover_steps added) |
+| `tests/__init__.py` | Test suite bootstrap |
+| `tests/runner.py` | Test runner (TestRunner class + run_tests function) |
+| `tests/test_uv_environment.py` | uv environment tests |
+| `tests/pipeline/test_pomdp_gridworld_cross_framework.py` | Julia backend tests |
+| `src/gnn/llm/providers/base_provider.py` | LLM provider base class |
+| `src/gnn/mcp/__init__.py` | MCP module (tools, resources) |
+| `src/gnn/pipeline/step_registry.py` | Step registry (discover_steps added) |
 | `pyproject.toml` | Project configuration (mypy, ruff, pytest) |
 | `Dockerfile` | Container build (UV_VERSION → 0.12.0) |
 | `.python-version` | Python version pin (3.11) |

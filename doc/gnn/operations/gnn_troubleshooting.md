@@ -18,7 +18,7 @@ Before diving into specific errors, use these tools to diagnose issues:
 Run the pipeline with `--verbose` to see detailed logs:
 
 ```bash
-uv run python src/main.py --verbose
+uv run python src/gnn/main.py --verbose
 ```
 
 ### 2. Step-Specific Checks
@@ -27,10 +27,10 @@ Run individual steps to isolate the problem:
 
 ```bash
 # Check parsing
-uv run python src/3_gnn.py --target-dir input/gnn_files --verbose
+uv run python src/gnn/3_gnn.py --target-dir input/gnn_files --verbose
 
 # Check type validity
-uv run python src/5_type_checker.py --target-dir input/gnn_files --verbose
+uv run python src/gnn/5_type_checker.py --target-dir input/gnn_files --verbose
 ```
 
 ### 3. Output Inspection
@@ -116,7 +116,7 @@ MyVariable[2,1,type=float]
 
 - Run `uv run gnn health` to check renderer and dependency status, including the Julia backends.
 - Verify the committed Julia environment resolves:
-  `julia --startup-file=no --project=src/execute/rxinfer -e 'using RxInfer, JSON, Distributions, StatsBase'`
+  `julia --startup-file=no --project=src/gnn/execute/rxinfer -e 'using RxInfer, JSON, Distributions, StatsBase'`
 - Check `output/11_render_output/<model>/rxinfer/*.jl` for syntax correctness.
 - A script that runs to completion but exits non-zero is reporting failed validation, not a crash: rendered RxInfer scripts exit on `validation.all_valid`. Inspect the `validation` block of `simulation_results.json` to see which check failed.
 
@@ -149,7 +149,7 @@ The current pipeline design is stateless between runs, but you can skip successf
 
 ```bash
 # Skip steps 0-3 if they passed
-uv run python src/main.py --only-steps "4,5,6,7,8,9,10,11,12"
+uv run python src/gnn/main.py --only-steps "4,5,6,7,8,9,10,11,12"
 ```
 
 ---

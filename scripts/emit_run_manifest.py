@@ -21,7 +21,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
-from pipeline.run_manifest import (  # noqa: E402
+from gnn.pipeline.run_manifest import (  # noqa: E402
     emit_run_manifests,
     verify_run_manifests,
 )

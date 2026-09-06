@@ -2,7 +2,7 @@
 
 **Version**: 3.0.0 | **Status**: Maintained | **Updated**: 2026-05-20
 
-> **Quick Start**: Run `uv run python src/main.py --verbose` from the project root. All tooling uses `uv`.
+> **Quick Start**: Run `uv run python src/gnn/main.py --verbose` from the project root. All tooling uses `uv`.
 
 ---
 
@@ -53,8 +53,8 @@ Steps 8, 9, 12 (Visualization/Execute) **never stop the pipeline**:
 ### 5. Environment
 Always use `uv` for all operations:
 ```bash
-uv run python src/main.py --verbose    # Run pipeline
-uv run pytest src/tests/ -v           # Run tests
+uv run python src/gnn/main.py --verbose    # Run pipeline
+uv run pytest tests/ -v           # Run tests
 uv pip install -e .                   # Install deps
 ```
 
@@ -90,4 +90,4 @@ uv pip install -e .                   # Install deps
 
 ---
 
-**Pipeline Version**: 2.0.0 | **Steps**: 25 | **Tests**: use the command of record in the repository `README.md` for current collect/pass evidence | **MCP Tools**: verify with `src/tests/mcp/test_mcp_audit.py`
+**Pipeline Version**: 2.0.0 | **Steps**: 25 | **Tests**: use the command of record in the repository `README.md` for current collect/pass evidence | **MCP Tools**: verify with `tests/mcp/test_mcp_audit.py`

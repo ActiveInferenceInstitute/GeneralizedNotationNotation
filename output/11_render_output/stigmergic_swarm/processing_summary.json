@@ -1,0 +1,35 @@
+{
+  "timestamp": "2026-09-05T20:32:39.132966",
+  "source_file": "input/gnn_files/multiagent/stigmergic_swarm.md",
+  "model_name": "Stigmergic Swarm Active Inference",
+  "pomdp_dimensions": {
+    "num_states": 729,
+    "num_observations": 4,
+    "num_actions": 4
+  },
+  "frameworks_requested": [
+    "pymdp",
+    "rxinfer",
+    "activeinference_jl",
+    "jax",
+    "discopy",
+    "pytorch",
+    "numpyro",
+    "stan",
+    "bnlearn"
+  ],
+  "frameworks_processed": [
+    "pymdp",
+    "rxinfer",
+    "activeinference_jl",
+    "jax",
+    "discopy",
+    "pytorch",
+    "numpyro",
+    "stan",
+    "bnlearn"
+  ],
+  "frameworks_failed": [],
+  "frameworks_unsupported": [],
+  "model_kind": "discrete"
+}

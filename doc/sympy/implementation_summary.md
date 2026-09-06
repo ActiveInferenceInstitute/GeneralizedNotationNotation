@@ -22,9 +22,9 @@ The GNN (Generalized Notation Notation) project now includes complete integratio
 
 ### 2. Core Implementation Files
 
-- ✅ `src/mcp/sympy_mcp_client.py` (502 lines) - SymPy MCP HTTP client with async support
-- ✅ `src/mcp/sympy_mcp.py` (474 lines) - MCP tool registration and integration layer
-- ✅ `src/mcp/mcp.py` - Enhanced with SymPy tool discovery
+- ✅ `src/gnn/mcp/sympy_mcp_client.py` (502 lines) - SymPy MCP HTTP client with async support
+- ✅ `src/gnn/mcp/sympy_mcp.py` (474 lines) - MCP tool registration and integration layer
+- ✅ `src/gnn/mcp/mcp.py` - Enhanced with SymPy tool discovery
 - ✅ `pyproject.toml` - Added `httpx` dependency
 
 ## 🛠️ Technical Implementation Details
@@ -78,7 +78,7 @@ The GNN (Generalized Notation Notation) project now includes complete integratio
 ### Pipeline Integration Test
 
 ```bash
-python3 src/main.py --only-steps 7 --verbose
+python3 src/gnn/main.py --only-steps 7 --verbose
 ```
 
 **Result**: ✅ SUCCESS - All tools registered and discoverable
@@ -101,7 +101,7 @@ python3 src/main.py --only-steps 7 --verbose
 ### Basic Tool Execution
 
 ```python
-from src.mcp.mcp import mcp_instance
+from gnn.mcp.mcp import mcp_instance
 
 # Execute SymPy tools through MCP
 result = mcp_instance.execute_tool(

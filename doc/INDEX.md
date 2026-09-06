@@ -34,8 +34,8 @@ short audience map, use [START_HERE.md](START_HERE.md). For curricula, use
 
 ## Pipeline and development
 
-- [Source pipeline README](../src/README.md)
-- [Source step index](../src/STEP_INDEX.md)
+- [Source pipeline README](../src/gnn/README.md)
+- [Source step index](../src/gnn/STEP_INDEX.md)
 - [Architecture reference](gnn/reference/architecture_reference.md)
 - [Implementation guide](gnn/integration/gnn_implementation.md)
 - [Framework integration](gnn/integration/framework_integration_guide.md)
@@ -56,6 +56,7 @@ short audience map, use [START_HERE.md](START_HERE.md). For curricula, use
 - [MCP](mcp/README.md)
 - [LLM](llm/README.md)
 - [Audio](audio/README.md)
+- [fep_lean (Lean 4)](other/fep_lean/README.md) — Lean ↔ GNN bridge program (contract v0.5); canonical contract in the sibling checkout at `../fep_lean/docs/design/gnn-bridge/`
 
 ## Theory and applications
 

@@ -1,6 +1,6 @@
 # advanced_visualization worker — fleet report
 
-**Scope:** `src/advanced_visualization/` (entire module incl. AGENTS.md/README) + numbered orchestrator `src/9_advanced_viz.py`
+**Scope:** `src/gnn/advanced_visualization/` (entire module incl. AGENTS.md/README) + numbered orchestrator `src/gnn/9_advanced_viz.py`
 **Repo:** `GeneralizedNotationNotation` (branch main, HEAD `f64ac9085`)
 **Worker:** advanced_visualization-worker
 **Date:** 2026-09-04
@@ -9,27 +9,27 @@
 
 ## Summary
 
-Raised composability, functionality, and internal quality of `src/advanced_visualization` considered separately and alone. Fixed a 100%-silent dashboard-generation bug, deduplicated triplicated attempt-accounting and connection-expansion logic, deleted dead code across four files, added a live capability probe + canonical `viz_type` choice set, made the MCP tool's `generate_d2` parameter honest, and added 26 deterministic tests pinning the new behavior. All three verification gates green: ruff clean, mypy 12/12, 82/82 tests passed (was 56 baseline + 26 new).
+Raised composability, functionality, and internal quality of `src/gnn/advanced_visualization` considered separately and alone. Fixed a 100%-silent dashboard-generation bug, deduplicated triplicated attempt-accounting and connection-expansion logic, deleted dead code across four files, added a live capability probe + canonical `viz_type` choice set, made the MCP tool's `generate_d2` parameter honest, and added 26 deterministic tests pinning the new behavior. All three verification gates green: ruff clean, mypy 12/12, 82/82 tests passed (was 56 baseline + 26 new).
 
 ## Files changed + why
 
-### `src/advanced_visualization/dashboard.py` — **bug fix**
+### `src/gnn/advanced_visualization/dashboard.py` — **bug fix**
 - **Imported `datetime`** and prefixed the footer HTML chunk with `f`. Previously the footer chunk was a plain `"""` string (no `f` prefix) and `datetime` was never imported, so `{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}` shipped as **literal text** in every generated dashboard. The broad `except Exception` in `generate_dashboard` swallowed the `NameError`, so dashboard generation silently returned `None` 100% of the time. Verified live: before the fix the output contained `{datetime.now().strftime` literally; after, it contains `Generated on 20YY-MM-DD HH:MM:SS`.
 - **Regression test:** `test_dashboard_timestamp_renders` in `test_advanced_visualization_public_api_refactor.py`.
 
-### `src/advanced_visualization/_shared.py` — **composability helpers + determinism**
+### `src/gnn/advanced_visualization/_shared.py` — **composability helpers + determinism**
 - **Added `record_attempt(results, attempt, *, optional_message_filter=None)`** — pure aggregate bookkeeping for `AdvancedVisualizationAttempt` → `AdvancedVisualizationResults` (success/failed/skipped counts, output_files/errors/warnings). The `optional_message_filter` suppresses warning entries whose message mentions an optional dependency marker (e.g. `"D2 CLI"`) so optional CLI absence is not surfaced as a hard warning. Replaces the triplicated attempt-accounting in `processor.py` (the inline `_track` closure + two manual D2 blocks).
 - **Added `_conn_endpoints(conn_info) -> (source_variables, target_variables)`** — normalizes legacy `{"source", "target"}` and new `{"source_variables", "target_variables"}` connection formats in one call. Replaces the triplicated normalize-then-extract dance in `network_viz.py` (3D, dashboard adjacency, dashboard 3D scatter, network metrics).
 - **Added `VAR_TYPE_COLORS` / `VAR_TYPE_UNKNOWN_COLOR`** — canonical var-type → hex color palette, replacing the two inlined `type_color_map` dicts in `network_viz.py`.
 - **Added named layout constants** `FORCE_LAYOUT_SEED` (=42), `LAYOUT_SEED`, `LAYOUT_SPAN` (=10.0), `LAYOUT_ITERATIONS` (=50), `LAYOUT_STEP` (=0.01). Replaced the process-global `np.random.seed(42)` mutation with a local `np.random.default_rng(42)` so importing the module no longer mutates the global RNG state.
 - Deduplicated the connection-expansion loop inside `_calculate_semantic_positions` (now uses `_conn_endpoints`).
 
-### `src/advanced_visualization/processor.py` — **dedup + dead-code removal**
+### `src/gnn/advanced_visualization/processor.py` — **dedup + dead-code removal**
 - **Dropped the duplicated matplotlib/numpy/seaborn import-guard blocks** (lines 28-40, 88-95 in the original) — these are the single source of truth in `_shared.py`; processor now imports `MATPLOTLIB_AVAILABLE`, `SEABORN_AVAILABLE`, `np`, `plt` from `._shared`.
 - **Deleted the dead `global MATPLOTLIB_AVAILABLE, SEABORN_AVAILABLE`** statement in `_check_dependencies` (never assigned).
 - **Replaced the per-model `_track` closure + two manual D2-accounting blocks with `record_attempt`** — three duplicated accounting sites → one pure helper. The empty-input contract is preserved: `process_advanced_viz` still returns `2` with `summary["warnings"] == ["No GNN models found"]` and `total_attempts == 0` (verified by the existing `test_process_advanced_viz_empty_input_returns_warning_code`).
 
-### `src/advanced_visualization/network_viz.py` — **dedup + dead-code removal + O(V²)→O(V)**
+### `src/gnn/advanced_visualization/network_viz.py` — **dedup + dead-code removal + O(V²)→O(V)**
 - **Deleted the dead `_module_logger`** (created, never used — all functions take a `logger` param).
 - **Replaced the eager `from visualization.matrix_visualizer import MatrixVisualizer as _MatrixVisualizer`** with the lazy `_MatrixVisualizer` factory from `_shared` (matching `statistical_viz`/`interactive_viz`). The eager import defeated the lazy factory and shadowed its name.
 - **Replaced three `var_names.index(s)` / O(V²) linear name scans with `name_to_idx` dict lookups** in the 3D viz, dashboard adjacency, and dashboard 3D scatter.
@@ -38,47 +38,47 @@ Raised composability, functionality, and internal quality of `src/advanced_visua
 - **Dropped dead `len(variables)` / `len(connections)` bare-expression statements** (results discarded).
 - *Note:* an advisor caught that my initial import edit had dropped `SEABORN_AVAILABLE` from the import block — re-added before moving on; the POMDP transition/policy paths that use `SEABORN_AVAILABLE and sns` are now exercised by a smoke test.
 
-### `src/advanced_visualization/d2_visualizer.py` — **dead code + temp-leak fix + constants**
+### `src/gnn/advanced_visualization/d2_visualizer.py` — **dead code + temp-leak fix + constants**
 - **Deleted the dead numpy try/except import block** (lines 29-36 in the original) — `np`/`NUMPY_AVAILABLE` were never referenced anywhere else in the file.
 - **Moved the local `import re`** in `_sanitize_name` to the module top.
 - **Hoisted `D2_COMPILE_TIMEOUT_S` (=30), `D2_MISSING_MESSAGE`, `VALID_D2_FORMATS` (=("svg","png","pdf"))** as named constants. The compile loop now uses `D2_COMPILE_TIMEOUT_S` and the missing-CLI message uses `D2_MISSING_MESSAGE`.
 - **Fixed a temp-file leak** in `compile_d2_diagram`: on `os.replace` failure the `NamedTemporaryFile(delete=False)` was never cleaned up; now unlinks it in the except path.
 - **Added format validation**: unsupported formats are dropped before the CLI is invoked (previously arbitrary suffixes were passed to `d2`).
 
-### `src/advanced_visualization/visualizer.py` — **dedup + determinism + real data**
+### `src/gnn/advanced_visualization/visualizer.py` — **dedup + determinism + real data**
 - **Collapsed three near-identical wrapper methods** (`_generate_statistical_visualizations`, `_generate_network_visualizations`, `_generate_matrix_visualizations`) — each was a try/except + inner `import matplotlib`/`import numpy` + vacuous `if matplotlib:` truthiness check + call to `_create_*`. Replaced with a single `_run_stage(label, create_fn, ...)` helper and a stage-dispatch loop in `generate_visualizations`. Removed the redundant inner imports and dead `if matplotlib:` checks.
 - **Seeded the RNG** in `_create_network_graph` and `_create_matrix_heatmap` with `np.random.default_rng(42)` (was `np.random.rand` — unseeded, non-deterministic outputs).
 - **Wired `_create_matrix_heatmap` to real matrix data** from `extracted_data["parameters"]` when available, with a clearly-labeled deterministic fallback matrix (was: `np.random.rand(5, 5)` — random placeholder data unrelated to the model, written to disk as if real).
 
-### `src/advanced_visualization/__init__.py` — **new public functionality**
+### `src/gnn/advanced_visualization/__init__.py` — **new public functionality**
 - **Added `VIZ_TYPE_CHOICES`** — canonical tuple of `viz_type` values accepted by `process_advanced_viz`. The `9_advanced_viz.py` orchestrator now imports this instead of hand-maintaining a duplicate list (single source of truth).
 - **Added `probe_capabilities()`** — a live runtime probe (`d2` CLI on PATH, `plotly`/`seaborn`/`matplotlib`/`numpy`/`networkx` importability), distinct from the static `FEATURES` map. Used by the `check_visualization_capabilities` MCP tool so its docstring ("Probes D2 availability, dashboard generation support, and network visualization backends") is honest for the first time.
 - Exported both in `__all__`.
 
-### `src/advanced_visualization/mcp.py` — **honest params + reuse**
+### `src/gnn/advanced_visualization/mcp.py` — **honest params + reuse**
 - **`process_advanced_visualization_mcp` now honors `generate_d2`**: `False` → `viz_type="network"` (non-D2); `True` → `viz_type="all"`. Previously `generate_d2` was accepted and documented in the schema but **silently ignored**. The return payload now includes `generate_d2` and `viz_type` in the message.
 - **Stopped passing the lying `verbose=verbose` kwarg** to `process_advanced_viz` (which has no `verbose` parameter — it was swallowed into `**kwargs`). `verbose` remains in the signature for schema stability.
 - **`check_visualization_capabilities_mcp` now calls `probe_capabilities()`** and returns a `capabilities` dict + `d2_cli_available` (live probe) alongside the static `FEATURES`.
 - **`get_advanced_visualization_module_info_mcp` now reuses `get_module_info()`** instead of the `importlib.import_module(__package__)` + `getattr` dance.
 
-### `src/9_advanced_viz.py` — **single source of truth for choices**
+### `src/gnn/9_advanced_viz.py` — **single source of truth for choices**
 - Imports `VIZ_TYPE_CHOICES` from the package and uses `list(VIZ_TYPE_CHOICES)` for the argparse `choices`, instead of a hand-maintained duplicate list (10 entries). Still 53 lines (well under the 150-line thin-orchestrator ceiling).
 
-### `src/advanced_visualization/AGENTS.md` — **docs of record**
+### `src/gnn/advanced_visualization/AGENTS.md` — **docs of record**
 - Updated the Test Files list (was 2 files; now 8, including the 2 new test files).
 - Added a **Composability Helpers** section documenting `record_attempt`, `_conn_endpoints`, `VAR_TYPE_COLORS`, `LAYOUT_*` constants, `VIZ_TYPE_CHOICES`, `probe_capabilities`, `D2_COMPILE_TIMEOUT_S`/`D2_MISSING_MESSAGE`/`VALID_D2_FORMATS`.
 - Added a **Dashboard Footer Timestamp (Fixed)** section documenting the bug + fix + regression test.
 - Updated the MCP `process_advanced_visualization_mcp` endpoint doc to reflect `generate_d2` honoring + `verbose` no longer passed through.
 
-### `src/advanced_visualization/README.md` — **docs of record**
+### `src/gnn/advanced_visualization/README.md` — **docs of record**
 - Updated the Module Structure block (was 5 files; now 14, reflecting `_shared.py`, `processor.py`, `network_viz.py`, `statistical_viz.py`, `interactive_viz.py`, `d2_visualizer.py`, `mcp.py`, `AGENTS.md`).
 
-### `src/tests/advanced_visualization/test_advanced_visualization_composability.py` — **NEW** (13 tests)
+### `tests/advanced_visualization/test_advanced_visualization_composability.py` — **NEW** (13 tests)
 - `TestRecordAttempt` (7 tests): success/failed/skipped counts, output_files/errors/warnings extension, `optional_message_filter` behavior, aggregate across multiple attempts.
 - `TestConnEndpoints` (4 tests): new format, legacy format, empty, extra-keys-preserved.
 - `TestSharedConstants` (2 tests): palette coverage, layout constant values.
 
-### `src/tests/advanced_visualization/test_advanced_visualization_public_api_refactor.py` — **NEW** (13 tests)
+### `tests/advanced_visualization/test_advanced_visualization_public_api_refactor.py` — **NEW** (13 tests)
 - `TestVizTypeChoices` (3): is-tuple-of-strings, includes documented values, orchestrator sources from it.
 - `TestProbeCapabilities` (3): returns dict of bools, `d2_cli` reflects `shutil.which`, numpy/matplotlib true in test env.
 - `TestRecordAttemptReExport` (1): importable from package.
@@ -115,7 +115,7 @@ Raised composability, functionality, and internal quality of `src/advanced_visua
 - `process_advanced_viz` signature + return contract preserved (empty → `2` + `warnings==["No GNN models found"]`; success → `True`; hard fail → `False`).
 - `generate_dashboard(content, model_name, output_dir) -> Optional[Path]` signature preserved; behavior **fixed** (was silently `None`; now returns the path).
 - All `create_*` free functions, `AdvancedVisualizer`, `DashboardGenerator`, `VisualizationDataExtractor`, `D2Visualizer`, `D2DiagramSpec`, `D2GenerationResult`, `process_gnn_file_with_d2` signatures unchanged.
-- MCP tool names/schemas unchanged (pinned in `src/mcp/audit_report.json`).
+- MCP tool names/schemas unchanged (pinned in `src/gnn/mcp/audit_report.json`).
 
 ## Verification output tails
 
@@ -126,7 +126,7 @@ All checks passed!
 --- mypy (module, default traversal) ---
 Success: no issues found in 12 source files
 
---- just test-mod advanced_visualization (recipe = uv run pytest src/tests/advanced_visualization/ -v) ---
+--- just test-mod advanced_visualization (recipe = uv run pytest tests/advanced_visualization/ -v) ---
 `just` is not installed on this host; ran the recipe's exact command directly:
 ============================= 82 passed in 4.21s ==============================
 ```
@@ -135,7 +135,7 @@ Baseline before any edits: 56 passed. After: 82 passed (+26 new tests, 0 regress
 
 ## Fleet-coincidence note
 
-Mid-run, `test_generates_html_dashboard` briefly failed with a circular-import error in `src/visualization/analysis/combined_analysis.py` — a fleet peer's in-flight file (dirty ` M`, syntax error visible mid-refactor). My module has zero references to `combined_analysis` (verified via grep). The peer fixed their syntax error before my final verification run; the test now passes. No action needed from me, but the `visualization/` module is a shared dependency and concurrent edits there can transiently break my module's import graph.
+Mid-run, `test_generates_html_dashboard` briefly failed with a circular-import error in `src/gnn/visualization/analysis/combined_analysis.py` — a fleet peer's in-flight file (dirty ` M`, syntax error visible mid-refactor). My module has zero references to `combined_analysis` (verified via grep). The peer fixed their syntax error before my final verification run; the test now passes. No action needed from me, but the `visualization/` module is a shared dependency and concurrent edits there can transiently break my module's import graph.
 
 ## doc/ or manuscript/ follow-ups needed (other workers own those)
 
@@ -159,8 +159,8 @@ Mid-run, `test_generates_html_dashboard` briefly failed with a circular-import e
 
 Verified all 10 advisory items live; fixes applied where warranted. No git
 operations, no dependency changes, scope respected
-(`src/advanced_visualization/` + `src/9_advanced_viz.py` +
-`src/tests/advanced_visualization/` only).
+(`src/gnn/advanced_visualization/` + `src/gnn/9_advanced_viz.py` +
+`tests/advanced_visualization/` only).
 
 ### Item 1 — Dashboard JS/CSS braces: VERIFIED FIXED (was real, now resolved)
 The footer chunk (`dashboard.py` ~line 521) is now an f-string with `{{`
@@ -215,8 +215,8 @@ of a raw ImportError. Doc'ed in AGENTS.md Composability Helpers.
   contract — `list(VIZ_TYPE_CHOICES) ==
   utils.ArgumentParser.ARGUMENT_DEFINITIONS["viz_type"].choices` (the
   choices the actual CLI parser enforces).
-- MCP audit reports (`src/mcp/audit_report.json`,
-  `src/tests/mcp_audit_report.json`) pin only tool `name`/`fn`/`description`
+- MCP audit reports (`src/gnn/mcp/audit_report.json`,
+  `tests/mcp_audit_report.json`) pin only tool `name`/`fn`/`description`
   for `check_visualization_capabilities` — no payload-shape pins exist; the
   new `capabilities`/`d2_cli_available` keys break nothing.
 - Dashboard regression test now also covers the JS braces (item 1).
@@ -243,7 +243,7 @@ All checks passed!
 22 files already formatted
 --- mypy (module, default traversal) ---
 Success: no issues found in 12 source files
---- pytest src/tests/advanced_visualization/ -v ---
+--- pytest tests/advanced_visualization/ -v ---
 ============================== 82 passed in 9.83s ==============================
 ```
 
@@ -257,7 +257,7 @@ contains `capabilities` + `d2_cli_available`.
 
 ## Follow-up ideas — amended
 
-8. **`viz_type` choices are duplicated between `src/utils/arg_parsing.py`
+8. **`viz_type` choices are duplicated between `src/gnn/utils/arg_parsing.py`
    and the orchestrator — and the enhanced parser wins at runtime.**
    `utils.ArgumentParser.ARGUMENT_DEFINITIONS["viz_type"]` (arg_parsing.py
    ~393) carries its own hardcoded choices list; `_parse_step_args` only
@@ -347,7 +347,7 @@ constructor example corrected. No new public API surface (module-private
 All checks passed!
 --- mypy (module, default traversal) ---
 Success: no issues found in 13 source files
---- pytest src/tests/advanced_visualization/ -v ---
+--- pytest tests/advanced_visualization/ -v ---
 ============================== 90 passed in 5.15s ==============================
 ```
 

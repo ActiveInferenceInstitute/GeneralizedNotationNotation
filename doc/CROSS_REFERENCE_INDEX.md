@@ -21,7 +21,7 @@ a second pipeline or directory inventory; use [INDEX.md](INDEX.md) for flat link
 
 ### Developer
 
-[Pipeline Architecture](../src/README.md) → [Step Index](../src/STEP_INDEX.md) →
+[Pipeline Architecture](../src/gnn/README.md) → [Step Index](../src/gnn/STEP_INDEX.md) →
 [Pipeline Scripts](PIPELINE_SCRIPTS.md) → [API](api/README.md) →
 [Development](development/README.md)
 
@@ -45,7 +45,7 @@ for the current render/execute split.
 - **PyTorch**: [implementation guide](gnn/implementations/pytorch.md); manually enabled and not in the default lock
 - **NumPyro**: [implementation guide](gnn/implementations/numpyro.md)
 - **Stan**: [implementation guide](gnn/implementations/stan.md); executable in Step 12 via the cmdstanpy driver
-- **bnlearn**: [renderer inventory](../src/render/AGENTS.md); manually enabled and not in the default lock
+- **bnlearn**: [renderer inventory](../src/gnn/render/AGENTS.md); manually enabled and not in the default lock
 
 ## Operations network
 
@@ -56,12 +56,12 @@ for the current render/execute split.
 
 ## Source of truth
 
-- Pipeline order: `src/pipeline/step_registry.py`
-- CLI options: `src/utils/arg_parsing.py` and `src/cli/__init__.py`
-- Automatic YAML path: `input/config.yaml` and `src/utils/config_loader.py`
+- Pipeline order: `src/gnn/pipeline/step_registry.py`
+- CLI options: `src/gnn/utils/arg_parsing.py` and `src/gnn/cli/__init__.py`
+- Automatic YAML path: `input/config.yaml` and `src/gnn/utils/config_loader.py`
 - Required GNN sections: `src/gnn/schema.py`
-- Render inventory: `src/render/framework_registry.py`
-- Execute inventory: `src/execute/processor.py::parse_frameworks_parameter`
+- Render inventory: `src/gnn/render/framework_registry.py`
+- Execute inventory: `src/gnn/execute/processor.py::parse_frameworks_parameter`
 
 ## Inbound topic anchors
 

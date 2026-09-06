@@ -18,7 +18,7 @@ SRC_DIR = REPO_ROOT / "src"
 if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
 
-from pipeline.session_acceptance import run_session_acceptance
+from gnn.pipeline.session_acceptance import run_session_acceptance
 
 
 def main(argv: list[str] | None = None) -> int:

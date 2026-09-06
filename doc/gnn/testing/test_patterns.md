@@ -1,6 +1,6 @@
 # GNN Test Patterns and Standards
 
-Real conventions drawn from `src/tests/conftest.py`, `src/tests/runner.py`, and test files.
+Real conventions drawn from `tests/conftest.py`, `tests/runner.py`, and test files.
 
 **Last Updated**: 2026-08-07
 
@@ -12,14 +12,14 @@ Every test file follows a strict **real-implementation** policy, described in
 - ❌ No standard testing substitution libraries (like patching)
 - ❌ No monkeypatching of functions or classes
 - ✅ Real code paths executed in every test
-- ✅ Real data — representative GNN files from `src/tests/test_data/`
+- ✅ Real data — representative GNN files from `tests/test_data/`
 - ✅ Real dependencies — an unavailable surface fails loudly, it is never substituted
 - ✅ File-based assertions on real output artifacts
 
 ## The Zero-Skip Contract
 
-The policy above is not enforced by review alone. `src/tests/test_zero_skip_contracts.py`
-enforces it mechanically: it walks every `test_*.py` under `src/tests/` and fails if the
+The policy above is not enforced by review alone. `tests/test_zero_skip_contracts.py`
+enforces it mechanically: it walks every `test_*.py` under `tests/` and fails if the
 file's text contains any skip-shaped token —
 
 ```text
@@ -85,14 +85,14 @@ def test_audio_backend_optional():
 
 ```bash
 # Selective execution by marker
-uv run --extra dev python -m pytest src/tests/ -m fast -q
-uv run --extra dev python -m pytest src/tests/ -m "not slow" -q
-uv run --extra dev python -m pytest src/tests/ -m "integration and not slow" -q
+uv run --extra dev python -m pytest tests/ -m fast -q
+uv run --extra dev python -m pytest tests/ -m "not slow" -q
+uv run --extra dev python -m pytest tests/ -m "integration and not slow" -q
 ```
 
 ## Fixture Convention (conftest.py)
 
-All shared fixtures live in `src/tests/conftest.py`. Note that the sample-data fixtures
+All shared fixtures live in `tests/conftest.py`. Note that the sample-data fixtures
 synthesize their content into a temporary directory and tear it down afterwards — they do
 **not** hand back a path into the `input/gnn_files/` corpus, so a test may write next to
 the fixture file without disturbing the repository.
@@ -171,7 +171,7 @@ def test_torch_rendering():
 
 When a test genuinely cannot run without software outside the Python environment (a Julia
 toolchain, a running Ollama server), the file belongs in `DEFAULT_SKIP_ALLOWLIST` in
-`src/tests/test_zero_skip_contracts.py` rather than carrying a skip decorator.
+`tests/test_zero_skip_contracts.py` rather than carrying a skip decorator.
 
 ## File Naming Conventions
 
@@ -202,7 +202,7 @@ fail_under = 50
 Generate HTML report:
 
 ```bash
-uv run --extra dev python -m pytest src/tests/ \
+uv run --extra dev python -m pytest tests/ \
   --cov=src --cov-report=html --cov-report=term-missing -q
 # → htmlcov/index.html
 ```
@@ -211,6 +211,6 @@ uv run --extra dev python -m pytest src/tests/ \
 
 - [testing/README.md](README.md) — test suite overview + category table
 - [testing/mcp_audit.md](mcp_audit.md) — MCP audit anatomy
-- [`src/tests/TEST_SUITE_SUMMARY.md`](../../../src/tests/TEST_SUITE_SUMMARY.md) — canonical reference
-- [`src/tests/conftest.py`](../../../src/tests/conftest.py) — all fixtures and markers
-- [`src/tests/test_zero_skip_contracts.py`](../../../src/tests/test_zero_skip_contracts.py) — the zero-skip contract and `DEFAULT_SKIP_ALLOWLIST`
+- [`tests/TEST_SUITE_SUMMARY.md`](../../../tests/TEST_SUITE_SUMMARY.md) — canonical reference
+- [`tests/conftest.py`](../../../tests/conftest.py) — all fixtures and markers
+- [`tests/test_zero_skip_contracts.py`](../../../tests/test_zero_skip_contracts.py) — the zero-skip contract and `DEFAULT_SKIP_ALLOWLIST`

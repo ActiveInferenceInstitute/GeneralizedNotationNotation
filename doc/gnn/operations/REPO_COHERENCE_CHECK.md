@@ -9,9 +9,9 @@
 
 This document validates the complete GNN pipeline architecture. For current implementation:
 
-- **[src/AGENTS.md](../../../src/AGENTS.md)**: Master agent scaffolding and complete 25-step pipeline registry
-- **[src/README.md](../../../src/README.md)**: Pipeline architecture and thin orchestrator pattern
-- **[src/main.py](../../../src/main.py)**: Pipeline orchestrator implementation (25 steps: 0-24)
+- **[src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md)**: Master agent scaffolding and complete 25-step pipeline registry
+- **[src/gnn/README.md](../../../src/gnn/README.md)**: Pipeline architecture and thin orchestrator pattern
+- **[src/gnn/main.py](../../../src/gnn/main.py)**: Pipeline orchestrator implementation (25 steps: 0-24)
 - [Architecture Reference](../reference/architecture_reference.md): Implementation patterns and cross-module data flow
 - [Technical Reference](../reference/technical_reference.md): Complete entry points and round-trip data flow
 
@@ -79,125 +79,125 @@ For each script `N_[module_name].py`, verify:
 
 #### Specific Pipeline Scripts to Validate
 
-**Step 0**: `src/0_template.py` → `src/template/`
+**Step 0**: `src/gnn/0_template.py` → `src/gnn/template/`
 
 - Verify: Uses `create_standardized_pipeline_script()` pattern
 - Verify: Delegates to `process_template_standardized()`
 
-**Step 1**: `src/1_setup.py` → `src/setup/`
+**Step 1**: `src/gnn/1_setup.py` → `src/gnn/setup/`
 
 - Verify: Environment setup delegation
 - Verify: Dependency management patterns
 
-**Step 2**: `src/2_tests.py` → `src/tests/`
+**Step 2**: `src/gnn/2_tests.py` → `tests/`
 
 - Verify: Test orchestration delegation
 - Verify: Real test execution (no substitutions)
 
-**Step 3**: `src/3_gnn.py` → `src/gnn/`
+**Step 3**: `src/gnn/3_gnn.py` → `src/gnn/`
 
 - Verify: GNN file discovery and parsing delegation
 - Verify: Multi-format support delegation
 - Verify: Delegates to `process_gnn_multi_format()` from `gnn.multi_format_processor`
 
-**Step 4**: `src/4_model_registry.py` → `src/model_registry/`
+**Step 4**: `src/gnn/4_model_registry.py` → `src/gnn/model_registry/`
 
 - Verify: Registry management delegation
 - Verify: Versioning and metadata handling
 
-**Step 5**: `src/5_type_checker.py` → `src/type_checker/`
+**Step 5**: `src/gnn/5_type_checker.py` → `src/gnn/type_checker/`
 
 - Verify: Type checking delegation
 - Verify: Resource estimation delegation
 
-**Step 6**: `src/6_validation.py` → `src/validation/`
+**Step 6**: `src/gnn/6_validation.py` → `src/gnn/validation/`
 
 - Verify: Validation logic delegation
 - Verify: Consistency checking delegation
 
-**Step 7**: `src/7_export.py` → `src/export/`
+**Step 7**: `src/gnn/7_export.py` → `src/gnn/export/`
 
 - Verify: Multi-format export delegation
 - Verify: Format-specific exporters
 
-**Step 8**: `src/8_visualization.py` → `src/visualization/`
+**Step 8**: `src/gnn/8_visualization.py` → `src/gnn/visualization/`
 
 - Verify: Visualization generation delegation
 - Verify: Graph and matrix visualization
 - Verify: Delegates to `process_visualization()` from `visualization` module
 
-**Step 9**: `src/9_advanced_viz.py` → `src/advanced_visualization/`
+**Step 9**: `src/gnn/9_advanced_viz.py` → `src/gnn/advanced_visualization/`
 
 - Verify: Advanced visualization delegation
 - Verify: Interactive plot generation
 
-**Step 10**: `src/10_ontology.py` → `src/ontology/`
+**Step 10**: `src/gnn/10_ontology.py` → `src/gnn/ontology/`
 
 - Verify: Ontology processing delegation
 - Verify: Active Inference term mapping
 
-**Step 11**: `src/11_render.py` → `src/render/`
+**Step 11**: `src/gnn/11_render.py` → `src/gnn/render/`
 
 - Verify: Code generation delegation
 - Verify: Multi-framework rendering (PyMDP, RxInfer, ActiveInference.jl)
 
-**Step 12**: `src/12_execute.py` → `src/execute/`
+**Step 12**: `src/gnn/12_execute.py` → `src/gnn/execute/`
 
 - Verify: Execution orchestration delegation
 - Verify: Multi-environment execution
 
-**Step 13**: `src/13_llm.py` → `src/llm/`
+**Step 13**: `src/gnn/13_llm.py` → `src/gnn/llm/`
 
 - Verify: LLM processing delegation
 - Verify: AI-enhanced analysis
 
-**Step 14**: `src/14_ml_integration.py` → `src/ml_integration/`
+**Step 14**: `src/gnn/14_ml_integration.py` → `src/gnn/ml_integration/`
 
 - Verify: ML integration delegation
 - Verify: Model training and evaluation
 
-**Step 15**: `src/15_audio.py` → `src/audio/`
+**Step 15**: `src/gnn/15_audio.py` → `src/gnn/audio/`
 
 - Verify: Audio generation delegation
 - Verify: Multi-backend audio (SAPF, Pedalboard)
 
-**Step 16**: `src/16_analysis.py` → `src/analysis/`
+**Step 16**: `src/gnn/16_analysis.py` → `src/gnn/analysis/`
 
 - Verify: Statistical analysis delegation
 - Verify: Performance metric computation
 - Verify: Delegates to `process_analysis()` from `analysis` module
 
-**Step 17**: `src/17_integration.py` → `src/integration/`
+**Step 17**: `src/gnn/17_integration.py` → `src/gnn/integration/`
 
 - Verify: System integration delegation
 - Verify: Cross-module coordination
 
-**Step 18**: `src/18_security.py` → `src/security/`
+**Step 18**: `src/gnn/18_security.py` → `src/gnn/security/`
 
 - Verify: Security validation delegation
 - Verify: Access control implementation
 
-**Step 19**: `src/19_research.py` → `src/research/`
+**Step 19**: `src/gnn/19_research.py` → `src/gnn/research/`
 
 - Verify: Research tools delegation
 - Verify: Experimental features
 
-**Step 20**: `src/20_website.py` → `src/website/`
+**Step 20**: `src/gnn/20_website.py` → `src/gnn/website/`
 
 - Verify: Website generation delegation
 - Verify: Static HTML generation
 
-**Step 21**: `src/21_mcp.py` → `src/mcp/`
+**Step 21**: `src/gnn/21_mcp.py` → `src/gnn/mcp/`
 
 - Verify: MCP processing delegation
 - Verify: Tool registration
 
-**Step 22**: `src/22_gui.py` → `src/gui/`
+**Step 22**: `src/gnn/22_gui.py` → `src/gnn/gui/`
 
 - Verify: GUI generation delegation
 - Verify: Interactive model construction
 
-**Step 23**: `src/23_report.py` → `src/report/`
+**Step 23**: `src/gnn/23_report.py` → `src/gnn/report/`
 
 - Verify: Report generation delegation
 - Verify: Comprehensive analysis reports
@@ -238,7 +238,7 @@ if __name__ == "__main__":
 
 ### 1.2 Centralized Utilities Usage
 
-**Requirement**: All pipeline scripts must use centralized utilities from `src/utils/`.
+**Requirement**: All pipeline scripts must use centralized utilities from `src/gnn/utils/`.
 
 #### P1.2 Logic Validation Checklist
 
@@ -802,7 +802,7 @@ def test_pipeline_integration():
 
     # Run actual pipeline script
     result = subprocess.run(
-        ["python", "src/main.py", "--target-dir", "test_data/gnn_files"],
+        ["python", "src/gnn/main.py", "--target-dir", "test_data/gnn_files"],
         capture_output=True,
         text=True,
     )
@@ -1154,7 +1154,7 @@ Each action item should include:
 ```markdown
 ### Action Item: Add Type Hints to process_validation
 
-- **File**: `src/validation/processor.py`
+- **File**: `src/gnn/validation/processor.py`
 - **Lines**: 45-60
 - **Issue**: Function `process_validation` missing type hints
 - **Recommended Fix**: Add type hints for all parameters and return type
@@ -1208,16 +1208,16 @@ python -m cli preflight
 
 ```bash
 # Run all tests
-uv run python src/2_tests.py --comprehensive
+uv run python src/gnn/2_tests.py --comprehensive
 ```
 
 ```bash
-uv run python src/3_gnn.py --test-mode
+uv run python src/gnn/3_gnn.py --test-mode
 ```
 
 # Run specific test module
 
-uv run --extra dev python -m pytest src/tests/validation/test_validation_overall.py -v
+uv run --extra dev python -m pytest tests/validation/test_validation_overall.py -v
 
 ```
 
@@ -1266,7 +1266,7 @@ Provide:
 
 ### 13.1 Pipeline Validation Module
 
-**Location**: `src/pipeline/pipeline_validation.py`
+**Location**: `src/gnn/pipeline/pipeline_validation.py`
 
 **Capabilities**:
 
@@ -1286,7 +1286,7 @@ python -m pipeline.pipeline_validation
 
 ### 13.2 Validation Module
 
-**Location**: `src/validation/`
+**Location**: `src/gnn/validation/`
 
 **Capabilities**:
 
@@ -1297,7 +1297,7 @@ python -m pipeline.pipeline_validation
 
 ### 13.3 Test Infrastructure
 
-**Location**: `src/tests/`
+**Location**: `tests/`
 
 **Capabilities**:
 
@@ -1449,7 +1449,7 @@ This mega-prompt provides a comprehensive framework for validating repo-wide coh
 **Status**: Maintained
 **Version**: v3.2.0 Engine (Bundle v2.0.0)
 **Coverage**: all 25 pipeline steps plus the live module and `AGENTS.md`
-inventories; derive changing counts from `src/AGENTS.md` and `rg --files`
+inventories; derive changing counts from `src/gnn/AGENTS.md` and `rg --files`
 
 ---
 
@@ -1461,13 +1461,13 @@ inventories; derive changing counts from `src/AGENTS.md` and `rg --files`
 
 **Affected Files**:
 
-- `src/tests/utils/test_pipeline_warnings_fix.py`
-- `src/tests/pipeline/test_pipeline_recovery.py`
-- `src/tests/pipeline/test_pipeline_error_scenarios.py`
-- `src/tests/test_fast_suite.py`
-- `src/tests/visualization/test_d2_visualizer.py`
-- `src/tests/advanced_visualization/test_advanced_visualization_overall.py`
-- `src/tests/conftest.py`
+- `tests/utils/test_pipeline_warnings_fix.py`
+- `tests/pipeline/test_pipeline_recovery.py`
+- `tests/pipeline/test_pipeline_error_scenarios.py`
+- `tests/test_fast_suite.py`
+- `tests/visualization/test_d2_visualizer.py`
+- `tests/advanced_visualization/test_advanced_visualization_overall.py`
+- `tests/conftest.py`
 
 **Priority**: High
 **Action**: Refactor these tests to use real code paths and real data. Tests may skip when external dependencies are unavailable, but must never replace dependencies with substitutions.
@@ -1488,7 +1488,7 @@ When using this mega-prompt for code review, prioritize:
 
 ```bash
 # Check for patch usage
-grep -r "import patch" src/tests/
+grep -r "import patch" tests/
 
 # Check pipeline script lengths
 find src -name "[0-9]_*.py" -exec wc -l {} \; | sort -n

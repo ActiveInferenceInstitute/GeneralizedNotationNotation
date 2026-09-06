@@ -14,15 +14,15 @@
 
 ## Verification
 
-- `uv run ruff check src/ontology src/llm src/audio src/ml_integration src/security src/report src/intelligent_analysis src/research`
+- `uv run ruff check src/gnn/ontology src/gnn/llm src/gnn/audio src/gnn/ml_integration src/gnn/security src/gnn/report src/gnn/intelligent_analysis src/gnn/research`
   - `All checks passed!`
-- `uv run ruff format --check src/ontology src/llm src/audio src/ml_integration src/security src/report src/intelligent_analysis src/research`
+- `uv run ruff format --check src/gnn/ontology src/gnn/llm src/gnn/audio src/gnn/ml_integration src/gnn/security src/gnn/report src/gnn/intelligent_analysis src/gnn/research`
   - `61 files already formatted`
 - Scoped pytest command with the two charter-excluded live Ollama files passed:
   - `443 passed in 12.93s`
 - Scoped `git diff --check` passed with no whitespace errors.
 
-The live files `src/tests/llm/test_llm_ollama.py` and `src/tests/llm/test_llm_ollama_integration.py` were intentionally not executed, as required. No live-daemon result is claimed; provider behavior and absent-provider degradation are covered by the scoped unit tests.
+The live files `tests/llm/test_llm_ollama.py` and `tests/llm/test_llm_ollama_integration.py` were intentionally not executed, as required. No live-daemon result is claimed; provider behavior and absent-provider degradation are covered by the scoped unit tests.
 
 ## Worktree State
 

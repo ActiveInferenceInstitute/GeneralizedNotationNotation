@@ -66,7 +66,7 @@ upstream context only.
 
 ## Upstream Agent API regression tests
 
-- `src/tests/execute/test_pymdp_1_0_0_upstream_api.py` — asserts the installed wheel's
+- `tests/execute/test_pymdp_1_0_0_upstream_api.py` — asserts the installed wheel's
   `Agent` / `utils` behaviour used by `execute/pymdp/simulation.py`
   through direct package calls. Covers:
     - Metadata version ≥ 1.0.0
@@ -74,9 +74,9 @@ upstream context only.
     - Single-step `infer_states` → `infer_policies` → `sample_action`
     - `empirical_prior` carry-through via `update_empirical_prior`
     - Optional `E` habit vector matches policy count
-- `src/tests/execute/test_pymdp_contracts.py` — exercises the full GNN
+- `tests/execute/test_pymdp_contracts.py` — exercises the full GNN
   render → execute → analysis path against real pymdp 1.0.0.
-- `src/tests/execute/test_execute_pymdp_integration.py` — exercises the JAX-first
+- `tests/execute/test_execute_pymdp_integration.py` — exercises the JAX-first
   Agent directly and the pipeline's `run_pymdp_simulation`.
-- `src/tests/execute/test_discrete_models_pymdp.py` — checks passive 2-D `B`,
+- `tests/execute/test_discrete_models_pymdp.py` — checks passive 2-D `B`,
   factored T-maze preservation, matrix provenance, and execution output schema.

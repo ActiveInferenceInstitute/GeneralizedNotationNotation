@@ -1,0 +1,807 @@
+{
+  "model_name": "Multi Armed Bandit Agent",
+  "version": "1.0",
+  "annotation": "This model describes a 3-armed bandit as a degenerate POMDP:\n\n- 3 hidden states representing the \"reward context\" (which arm is currently best).\n- 3 observations representing reward signals (no-reward, small-reward, big-reward).\n- 3 actions: pull arm 0, pull arm 1, or pull arm 2.\n- Context switches slowly (sticky transitions), testing exploration vs exploitation.\n- The agent prefers big-reward observations (observation 2).\n- Tests the bandit structure: meaningful actions despite nearly-static state dynamics.",
+  "variables": [
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "69ea438b-0f7a-49c3-a6df-4dbe190a3359",
+      "name": "A",
+      "var_type": "likelihood_matrix",
+      "dimensions": [
+        3,
+        3
+      ],
+      "data_type": "float",
+      "description": "Reward likelihood given context state",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "b48c6b37-8709-4aba-b9d2-aebb5a47936c",
+      "name": "B",
+      "var_type": "transition_matrix",
+      "dimensions": [
+        3,
+        3,
+        3
+      ],
+      "data_type": "float",
+      "description": "Context transitions (mostly identity \u2014 context is sticky)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "665841ba-aa53-4f7c-ab98-ab000d630f83",
+      "name": "C",
+      "var_type": "preference_vector",
+      "dimensions": [
+        3
+      ],
+      "data_type": "float",
+      "description": "Prefer big rewards",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "a9036443-13a8-4d0f-8e37-deb32acace8f",
+      "name": "D",
+      "var_type": "prior_vector",
+      "dimensions": [
+        3
+      ],
+      "data_type": "float",
+      "description": "Prior over reward context",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "87191bef-df2c-46dc-82c8-1e019dff482f",
+      "name": "s",
+      "var_type": "hidden_state",
+      "dimensions": [
+        3,
+        1
+      ],
+      "data_type": "float",
+      "description": "Current reward context belief",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "b2e4ef81-6ead-4238-bec1-178e59beaffb",
+      "name": "s_prime",
+      "var_type": "hidden_state",
+      "dimensions": [
+        3,
+        1
+      ],
+      "data_type": "float",
+      "description": "Next context belief",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "45beb3db-a21c-4c3c-8921-7e89ae5a7d98",
+      "name": "o",
+      "var_type": "observation",
+      "dimensions": [
+        3,
+        1
+      ],
+      "data_type": "integer",
+      "description": "Reward observation",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "3e1fd91f-1c56-4876-b8d3-bb8d96c88fde",
+      "name": "\u03c0",
+      "var_type": "policy",
+      "dimensions": [
+        3
+      ],
+      "data_type": "float",
+      "description": "Policy over arms",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "cbe342f6-774d-490a-8d3a-4f82b08de0ca",
+      "name": "u",
+      "var_type": "action",
+      "dimensions": [
+        1
+      ],
+      "data_type": "integer",
+      "description": "Arm pulled",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "fe5f46b6-62a8-484d-9f8f-a384a71b5572",
+      "name": "G",
+      "var_type": "policy",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Expected Free Energy",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "4e325631-8146-4ff5-a5df-80e4733a2795",
+      "name": "t",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "integer",
+      "description": "Discrete time step",
+      "constraints": {}
+    }
+  ],
+  "connections": [
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "2165ee55-fef1-4d77-9b0e-908f6947a4e9",
+      "source_variables": [
+        "D"
+      ],
+      "target_variables": [
+        "s"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "a341e9ef-bd83-4292-8c05-b0de352b043f",
+      "source_variables": [
+        "s"
+      ],
+      "target_variables": [
+        "A"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "a7b7bb9d-4bb6-4966-9054-71ad7dbe73c0",
+      "source_variables": [
+        "A"
+      ],
+      "target_variables": [
+        "o"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "ef950a61-37e0-46ec-b894-eade80b672f9",
+      "source_variables": [
+        "s"
+      ],
+      "target_variables": [
+        "s_prime"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "360a51c4-d44d-46d5-b71f-c1f83abf6cb7",
+      "source_variables": [
+        "s"
+      ],
+      "target_variables": [
+        "B"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "b6796689-2cc3-4f6f-ae99-55266e8b7056",
+      "source_variables": [
+        "C"
+      ],
+      "target_variables": [
+        "G"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "d78481ee-778b-4858-ba73-19cc82a9de65",
+      "source_variables": [
+        "G"
+      ],
+      "target_variables": [
+        "\u03c0"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "d46e8bcf-57d7-4895-8052-0658011bd642",
+      "source_variables": [
+        "\u03c0"
+      ],
+      "target_variables": [
+        "u"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "431e996e-9545-4e57-b1c2-42d6f5dbaa43",
+      "source_variables": [
+        "B"
+      ],
+      "target_variables": [
+        "u"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "61529595-13df-4904-86af-0d8e128dac50",
+      "source_variables": [
+        "u"
+      ],
+      "target_variables": [
+        "s_prime"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    }
+  ],
+  "parameters": [
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "31a944b9-88f1-4426-9b84-feb4a97cfbce",
+      "name": "A",
+      "value": [
+        [
+          0.1,
+          0.5,
+          0.5
+        ],
+        [
+          0.3,
+          0.4,
+          0.3
+        ],
+        [
+          0.6,
+          0.1,
+          0.2
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "002c300e-8057-4e43-94c8-6ec1ca304b38",
+      "name": "B",
+      "value": [
+        [
+          [
+            0.9,
+            0.05,
+            0.05
+          ],
+          [
+            0.05,
+            0.9,
+            0.05
+          ],
+          [
+            0.05,
+            0.05,
+            0.9
+          ]
+        ],
+        [
+          [
+            0.9,
+            0.05,
+            0.05
+          ],
+          [
+            0.05,
+            0.9,
+            0.05
+          ],
+          [
+            0.05,
+            0.05,
+            0.9
+          ]
+        ],
+        [
+          [
+            0.9,
+            0.05,
+            0.05
+          ],
+          [
+            0.05,
+            0.9,
+            0.05
+          ],
+          [
+            0.05,
+            0.05,
+            0.9
+          ]
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "ac086521-da43-4986-b23f-55f5b447044a",
+      "name": "C",
+      "value": [
+        [
+          0.0,
+          1.0,
+          3.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "da5ae14a-8454-43f5-9a62-8b2d5047bbe9",
+      "name": "D",
+      "value": [
+        [
+          0.33333,
+          0.33333,
+          0.33333
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "675da4e2-af61-472c-8831-e58f4f052dff",
+      "name": "num_hidden_states",
+      "value": 3,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "3eff3df1-58cd-44b5-a4e5-b289c303f1a0",
+      "name": "num_obs",
+      "value": 3,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "74a909c1-c0fa-44da-bba4-d2b07076503a",
+      "name": "num_actions",
+      "value": 3,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "c0a39d3d-4266-4e6c-98b6-c19e4503d0c3",
+      "name": "num_timesteps",
+      "value": 30,
+      "type_hint": null,
+      "description": null
+    }
+  ],
+  "equations": [],
+  "time_specification": {
+    "node_type": "TimeSpecification",
+    "source_location": null,
+    "metadata": {},
+    "id": "3819376e-fc2d-46c9-a638-30ad99340f0c",
+    "time_type": "Dynamic",
+    "discretization": null,
+    "horizon": "Unbounded",
+    "step_size": null
+  },
+  "ontology_mappings": [
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "ad9a4bd1-75f0-404a-ba71-2f7da0bf4d15",
+      "variable_name": "A",
+      "ontology_term": "LikelihoodMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "396ff2dc-1aaf-43e8-baf7-85b624fc0f99",
+      "variable_name": "B",
+      "ontology_term": "TransitionMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "ae48c7a6-69f1-4f61-ab62-00ab9f2f22af",
+      "variable_name": "C",
+      "ontology_term": "LogPreferenceVector",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "add18977-d8b0-4c08-ac54-6be531a4de17",
+      "variable_name": "D",
+      "ontology_term": "PriorOverHiddenStates",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "83f47b56-5cd6-4740-a492-8fd8640a85eb",
+      "variable_name": "G",
+      "ontology_term": "ExpectedFreeEnergy",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "9c92ebbf-5e87-4ec8-a029-a4d72584f7fa",
+      "variable_name": "s",
+      "ontology_term": "HiddenState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "f5478997-c4d7-41f7-839e-03153a451f39",
+      "variable_name": "s_prime",
+      "ontology_term": "NextHiddenState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "6c47819d-4b65-4c73-840e-9a5c105add51",
+      "variable_name": "o",
+      "ontology_term": "Observation",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "05b08d70-e18f-43e3-8ed7-9bf915270bfb",
+      "variable_name": "\u03c0",
+      "ontology_term": "PolicyVector",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "d456eb63-49a2-4f71-95b3-b7605b7c4530",
+      "variable_name": "u",
+      "ontology_term": "Action",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "cb757a8d-f829-4726-b1ad-70db980c3fd8",
+      "variable_name": "t",
+      "ontology_term": "Time",
+      "description": null
+    }
+  ],
+  "source_format": "markdown",
+  "created_at": "2026-09-05T20:30:53.896542",
+  "modified_at": "2026-09-05T20:30:53.896543",
+  "checksum": null,
+  "extensions": {
+    "gnn_section": "ActInfPOMDP",
+    "footer": "Multi Armed Bandit Agent v1 - GNN Representation.\n3-armed bandit as degenerate POMDP. Tests exploration vs exploitation with sticky context.",
+    "signature": "Cryptographic signature goes here"
+  },
+  "raw_sections": {
+    "GNNSection": "ActInfPOMDP",
+    "GNNVersionAndFlags": "GNN v1",
+    "ModelName": "Multi Armed Bandit Agent",
+    "ModelAnnotation": "This model describes a 3-armed bandit as a degenerate POMDP:\n\n- 3 hidden states representing the \"reward context\" (which arm is currently best).\n- 3 observations representing reward signals (no-reward, small-reward, big-reward).\n- 3 actions: pull arm 0, pull arm 1, or pull arm 2.\n- Context switches slowly (sticky transitions), testing exploration vs exploitation.\n- The agent prefers big-reward observations (observation 2).\n- Tests the bandit structure: meaningful actions despite nearly-static state dynamics.",
+    "StateSpaceBlock": "# Likelihood matrix: A[observations, hidden_states]\n\nA[3,3,type=float]     # Reward likelihood given context state\n\n# Transition matrix: B[next_state, previous_state, actions]\n\nB[3,3,3,type=float]   # Context transitions (mostly identity \u2014 context is sticky)\n\n# Preference vector: C[observations]\n\nC[3,type=float]       # Prefer big rewards\n\n# Prior vector: D[states]\n\nD[3,type=float]       # Prior over reward context\n\n# Hidden State\n\ns[3,1,type=float]     # Current reward context belief\ns_prime[3,1,type=float] # Next context belief\n\n# Observation\n\no[3,1,type=int]       # Reward observation\n\n# Policy and Control\n\n\u03c0[3,type=float]       # Policy over arms\nu[1,type=int]         # Arm pulled\nG[\u03c0,type=float]       # Expected Free Energy\n\n# Time\n\nt[1,type=int]         # Discrete time step",
+    "Connections": "D>s\ns-A\nA-o\ns>s_prime\ns-B\nC>G\nG>\u03c0\n\u03c0>u\nB>u\nu>s_prime",
+    "InitialParameterization": "# A: Reward likelihood. Context 0 \u2192 arm 0 best, context 1 \u2192 arm 1 best, etc\n\n# Columns are contexts, rows are reward observations (none/small/big)\n\nA={\n  (0.1, 0.5, 0.5),\n  (0.3, 0.4, 0.3),\n  (0.6, 0.1, 0.2)\n}\n\n# B: Context is sticky regardless of action (arms don't change the world). The transition tensor B is stored as (next_state, previous_state, action); per-action slices are column-stochastic: rows are next states, columns are previous states, and each column sums to 1 over next states.\n\nB={\n  ( (0.9, 0.05, 0.05), (0.05, 0.9, 0.05), (0.05, 0.05, 0.9) ),\n  ( (0.9, 0.05, 0.05), (0.05, 0.9, 0.05), (0.05, 0.05, 0.9) ),\n  ( (0.9, 0.05, 0.05), (0.05, 0.9, 0.05), (0.05, 0.05, 0.9) )\n}\n\n# C: Strongly prefer big reward (obs 2), mildly prefer small (obs 1)\n\nC={(0.0, 1.0, 3.0)}\n\n# D: Uniform prior \u2014 don't know which arm is best\n\nD={(0.33333, 0.33333, 0.33333)}",
+    "Equations": "# Active Inference bandit\n\n# qs = infer_states(reward_obs) \u2014 learn which context/arm is active\n\n# G(pi) = EFE(pi) \u2014 trade off pragmatic (reward) and epistemic (info gain) value\n\n# u ~ softmax(-G) \u2014 select arm balancing exploration vs exploitation",
+    "Time": "Time=t\nDynamic\nDiscrete\nModelTimeHorizon=Unbounded",
+    "ActInfOntologyAnnotation": "A=LikelihoodMatrix\nB=TransitionMatrix\nC=LogPreferenceVector\nD=PriorOverHiddenStates\nG=ExpectedFreeEnergy\ns=HiddenState\ns_prime=NextHiddenState\no=Observation\n\u03c0=PolicyVector\nu=Action\nt=Time",
+    "ModelParameters": "num_hidden_states: 3\nnum_obs: 3\nnum_actions: 3\nnum_timesteps: 30",
+    "Footer": "Multi Armed Bandit Agent v1 - GNN Representation.\n3-armed bandit as degenerate POMDP. Tests exploration vs exploitation with sticky context.",
+    "Signature": "Cryptographic signature goes here"
+  },
+  "initialparameterization": {
+    "A": [
+      [
+        0.1,
+        0.5,
+        0.5
+      ],
+      [
+        0.3,
+        0.4,
+        0.3
+      ],
+      [
+        0.6,
+        0.1,
+        0.2
+      ]
+    ],
+    "B": [
+      [
+        [
+          0.9,
+          0.05,
+          0.05
+        ],
+        [
+          0.05,
+          0.9,
+          0.05
+        ],
+        [
+          0.05,
+          0.05,
+          0.9
+        ]
+      ],
+      [
+        [
+          0.9,
+          0.05,
+          0.05
+        ],
+        [
+          0.05,
+          0.9,
+          0.05
+        ],
+        [
+          0.05,
+          0.05,
+          0.9
+        ]
+      ],
+      [
+        [
+          0.9,
+          0.05,
+          0.05
+        ],
+        [
+          0.05,
+          0.9,
+          0.05
+        ],
+        [
+          0.05,
+          0.05,
+          0.9
+        ]
+      ]
+    ],
+    "C": [
+      [
+        0.0,
+        1.0,
+        3.0
+      ]
+    ],
+    "D": [
+      [
+        0.33333,
+        0.33333,
+        0.33333
+      ]
+    ],
+    "num_hidden_states": 3,
+    "num_obs": 3,
+    "num_actions": 3,
+    "num_timesteps": 30
+  },
+  "model_parameters": {
+    "A": [
+      [
+        0.1,
+        0.5,
+        0.5
+      ],
+      [
+        0.3,
+        0.4,
+        0.3
+      ],
+      [
+        0.6,
+        0.1,
+        0.2
+      ]
+    ],
+    "B": [
+      [
+        [
+          0.9,
+          0.05,
+          0.05
+        ],
+        [
+          0.05,
+          0.9,
+          0.05
+        ],
+        [
+          0.05,
+          0.05,
+          0.9
+        ]
+      ],
+      [
+        [
+          0.9,
+          0.05,
+          0.05
+        ],
+        [
+          0.05,
+          0.9,
+          0.05
+        ],
+        [
+          0.05,
+          0.05,
+          0.9
+        ]
+      ],
+      [
+        [
+          0.9,
+          0.05,
+          0.05
+        ],
+        [
+          0.05,
+          0.9,
+          0.05
+        ],
+        [
+          0.05,
+          0.05,
+          0.9
+        ]
+      ]
+    ],
+    "C": [
+      [
+        0.0,
+        1.0,
+        3.0
+      ]
+    ],
+    "D": [
+      [
+        0.33333,
+        0.33333,
+        0.33333
+      ]
+    ],
+    "num_hidden_states": 3,
+    "num_obs": 3,
+    "num_actions": 3,
+    "num_timesteps": 30
+  }
+}

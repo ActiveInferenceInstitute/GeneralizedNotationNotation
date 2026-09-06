@@ -3,7 +3,7 @@
 
 Thin orchestrator: reads real data from
   - input/model_family_manifest.json  (rows = families, "frameworks" field = declared backends)
-  - src/render/framework_registry.py  (cols = canonical backend keys)
+  - src/gnn/render/framework_registry.py  (cols = canonical backend keys)
 and renders an annotated coverage heatmap. A cell is "covered" when a family
 declares that framework in its comma-separated "frameworks" field.
 

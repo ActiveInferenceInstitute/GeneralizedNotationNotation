@@ -11,7 +11,7 @@ Active Inference relies natively on Partially Observable Markov Decision Process
 ## GNN Pipeline Touchpoints
 
 ### Step 3: GNN File Discovery & Parsing
-Within the `src/3_gnn.py` thin orchestrator layer, `bnlearn` can consume structurally serialized model dictionaries. 
+Within the `src/gnn/3_gnn.py` thin orchestrator layer, `bnlearn` can consume structurally serialized model dictionaries. 
 *   **Structural Import**: GNN representations of generative models ($A$, $B$, $C$, $D$ matrices) can be directly transformed into an adjacency matrix using `bn.vec2adjmat()` or `bn.dag2adjmat()`.
 *   **Validation Check**: Passing the extracted matrices through `bn.check_model()` immediately surfaces disconnected nodes or cyclical violations, ensuring rigorous structural integrity early in the pipeline.
 

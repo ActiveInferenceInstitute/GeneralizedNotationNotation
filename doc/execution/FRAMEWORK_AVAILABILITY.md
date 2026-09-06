@@ -2,10 +2,10 @@
 
 GNN has two related framework inventories:
 
-- **Render registry** (`src/render/framework_registry.py`): 9 targets, including Stan.
-- **Step 12 executor** (`src/execute/processor.py`): 8 executable framework families —
+- **Render registry** (`src/gnn/render/framework_registry.py`): 9 targets, including Stan.
+- **Step 12 executor** (`src/gnn/execute/processor.py`): 8 executable framework families —
   every render target except bnlearn. Stan executes via the cmdstanpy driver
-  (`src/execute/stan/`) and is reported `skipped` when cmdstanpy/CmdStan is absent.
+  (`src/gnn/execute/stan/`) and is reported `skipped` when cmdstanpy/CmdStan is absent.
 
 PyTorch is a supported render/execute path and bnlearn is a supported render path;
 both are intentionally unavailable in the default lock because their dependency chain
@@ -45,9 +45,9 @@ uv run python -c "import jax, numpyro, discopy; print('JAX, NumPyro, and DisCoPy
 ### Julia targets
 
 ```bash
-julia --startup-file=no --project=src/execute/rxinfer \
+julia --startup-file=no --project=src/gnn/execute/rxinfer \
   -e 'using RxInfer; println("RxInfer.jl available")'
-julia --startup-file=no --project=src/execute/activeinference_jl \
+julia --startup-file=no --project=src/gnn/execute/activeinference_jl \
   -e 'using ActiveInference; println("ActiveInference.jl available")'
 ```
 
@@ -58,14 +58,14 @@ environments when launching rendered scripts.
 
 ```bash
 # Python-only quick preset.
-uv run python src/12_execute.py \
+uv run python src/gnn/12_execute.py \
   --target-dir input/gnn_files \
   --output-dir output \
   --frameworks lite \
   --verbose
 
 # Explicit requested frameworks. Missing requested frameworks are reported clearly.
-uv run python src/12_execute.py \
+uv run python src/gnn/12_execute.py \
   --target-dir input/gnn_files \
   --output-dir output \
   --render-output-dir output/11_render_output \
@@ -92,6 +92,6 @@ summary for a specific run.
 
 - [Setup](../SETUP.md)
 - [Pipeline](../pipeline/README.md)
-- [Render registry](../../src/render/framework_registry.py)
-- [Execute module](../../src/execute/AGENTS.md)
+- [Render registry](../../src/gnn/render/framework_registry.py)
+- [Execute module](../../src/gnn/execute/AGENTS.md)
 - [Troubleshooting](../troubleshooting/README.md)

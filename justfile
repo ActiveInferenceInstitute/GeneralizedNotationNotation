@@ -15,27 +15,27 @@ default:
 # Run tests with the same marker filter as CI, so local and CI
 # exercise the same surface; use test-stopfast or test-full for other scopes.
 test:
-    uv run pytest src/tests/ -q --tb=short -m "not pipeline and not mcp"
+    uv run pytest tests/ -q --tb=short -m "not pipeline and not mcp"
 
 # Run fast test suite, stop at first failure
 test-stopfast:
-    uv run pytest src/tests/ -q --tb=short -x -m "not pipeline and not mcp"
+    uv run pytest tests/ -q --tb=short -x -m "not pipeline and not mcp"
 
 # Run full test suite (with Ollama ignores)
 test-full:
-    uv run pytest src/tests/ -q --tb=no \
-        --ignore=src/tests/llm/test_llm_ollama.py \
-        --ignore=src/tests/llm/test_llm_ollama_integration.py
+    uv run pytest tests/ -q --tb=no \
+        --ignore=tests/llm/test_llm_ollama.py \
+        --ignore=tests/llm/test_llm_ollama_integration.py
 
 # Run tests for a specific module (e.g., just test-mod render)
 test-mod MODULE:
-    uv run pytest src/tests/{{ MODULE }}/ -v
+    uv run pytest tests/{{ MODULE }}/ -v
 
 # Run tests with coverage report
 test-cov:
-    uv run pytest src/tests/ --cov=src --cov-report=term-missing \
-        --ignore=src/tests/llm/test_llm_ollama.py \
-        --ignore=src/tests/llm/test_llm_ollama_integration.py
+    uv run pytest tests/ --cov=gnn --cov-report=term-missing \
+        --ignore=tests/llm/test_llm_ollama.py \
+        --ignore=tests/llm/test_llm_ollama_integration.py
 
 # ─────────────────────────────────────────────
 # Linting & Formatting
@@ -43,28 +43,28 @@ test-cov:
 
 # Run ruff linter
 lint:
-    uv run ruff check src scripts
+    uv run ruff check src/gnn scripts
 
 # Run ruff linter with auto-fix
 lint-fix:
-    uv run ruff check src scripts --fix
+    uv run ruff check src/gnn scripts --fix
 
 # Format code with ruff
 format:
-    uv run ruff format src scripts
-    uv run ruff check src scripts --select I --fix
+    uv run ruff format src/gnn scripts
+    uv run ruff check src/gnn scripts --select I --fix
 
 # Check formatting without modifying files
 format-check:
-    uv run ruff format --check src scripts
+    uv run ruff format --check src/gnn scripts
 
 # Run mypy type checking
 typecheck:
-    uv run mypy src --show-error-codes
+    uv run mypy src/gnn --show-error-codes
 
 # Run bandit security scan (same thresholds as CI)
 security:
-    uv run bandit -r src -c pyproject.toml -q --severity-level medium --confidence-level medium
+    uv run bandit -r src/gnn -c pyproject.toml -q --severity-level medium --confidence-level medium
 
 # Run MCP + skills resolvability health gate
 skills-health:
@@ -104,16 +104,16 @@ quality: format-check lint terminology doc-terms audit doc-contracts doc-pattern
 # Run focused PyMDP/POMDP behavior checks
 test-pymdp-focused:
     uv run pytest \
-        src/tests/execute/test_pymdp_contracts.py \
-        src/tests/execute/test_discrete_models_pymdp.py \
-        src/tests/visualization/test_visualization_matrices.py \
+        tests/execute/test_pymdp_contracts.py \
+        tests/execute/test_discrete_models_pymdp.py \
+        tests/visualization/test_visualization_matrices.py \
         -q --tb=short
 
 # Collect pytest inventory without executing tests
 test-collect:
-    uv run pytest --collect-only src/tests/ -q --tb=no \
-        --ignore=src/tests/llm/test_llm_ollama.py \
-        --ignore=src/tests/llm/test_llm_ollama_integration.py
+    uv run pytest --collect-only tests/ -q --tb=no \
+        --ignore=tests/llm/test_llm_ollama.py \
+        --ignore=tests/llm/test_llm_ollama_integration.py
 
 # ─────────────────────────────────────────────
 # Pipeline Execution
@@ -121,15 +121,15 @@ test-collect:
 
 # Run full pipeline
 pipeline:
-    uv run python src/main.py --target-dir input/gnn_files --verbose
+    uv run python src/gnn/main.py --target-dir input/gnn_files --verbose
 
 # Run specific pipeline steps (e.g., just pipeline-steps "3,5,7,8")
 pipeline-steps STEPS:
-    uv run python src/main.py --only-steps "{{ STEPS }}" --target-dir input/gnn_files --verbose
+    uv run python src/gnn/main.py --only-steps "{{ STEPS }}" --target-dir input/gnn_files --verbose
 
 # Run a single pipeline step (e.g., just step 3)
 step N:
-    uv run python src/{{ N }}_*.py --target-dir input/gnn_files --output-dir output --verbose
+    uv run python src/gnn/{{ N }}_*.py --target-dir input/gnn_files --output-dir output --verbose
 
 # ─────────────────────────────────────────────
 # Renderer Operations
@@ -137,13 +137,13 @@ step N:
 
 # Check renderer availability
 render-health:
-    PYTHONPATH=src uv run python -c "from render.health import check_renderers; \
+    PYTHONPATH=src uv run python -c "from gnn.render.health import check_renderers; \
         statuses = check_renderers(); \
         [print(f'  {\"✅\" if s.available else \"❌\"} {s.name}') for s in statuses.values()]"
 
 # Render and execute for specific frameworks (e.g., just render-exec "pymdp,jax")
 render-exec FRAMEWORKS:
-    uv run python src/main.py --only-steps "11,12" \
+    uv run python src/gnn/main.py --only-steps "11,12" \
         --frameworks "{{ FRAMEWORKS }}" \
         --target-dir input/gnn_files --verbose
 
@@ -163,11 +163,11 @@ terminology:
 # Count test files and items
 test-count:
     @echo "Test files:"
-    @find src/tests -name 'test_*.py' | wc -l
+    @find tests -name 'test_*.py' | wc -l
     @echo "Collected test items:"
-    @uv run pytest --collect-only src/tests/ -q --tb=no \
-        --ignore=src/tests/llm/test_llm_ollama.py \
-        --ignore=src/tests/llm/test_llm_ollama_integration.py 2>/dev/null | tail -1
+    @uv run pytest --collect-only tests/ -q --tb=no \
+        --ignore=tests/llm/test_llm_ollama.py \
+        --ignore=tests/llm/test_llm_ollama_integration.py 2>/dev/null | tail -1
 
 # ─────────────────────────────────────────────
 # Environment Setup
@@ -184,7 +184,7 @@ setup-clean:
 
 # Validate the JAX + PyMDP stack
 validate-stack:
-    PYTHONPATH=src uv run python -c "from utils.jax_stack_validation import verify_jax_pymdp_stack; \
+    PYTHONPATH=src uv run python -c "from gnn.utils.jax_stack_validation import verify_jax_pymdp_stack; \
         verify_jax_pymdp_stack(); print('✅ JAX + PyMDP stack OK')"
 
 # ─────────────────────────────────────────────
@@ -193,14 +193,14 @@ validate-stack:
 
 # Run performance benchmark tests (pipeline performance group)
 bench:
-    uv run pytest src/tests/pipeline/test_pipeline_performance.py \
+    uv run pytest tests/pipeline/test_pipeline_performance.py \
         -v --tb=short \
         -m "performance" \
         --benchmark-save=baseline
 
 # Run performance tests and compare against saved baseline
 bench-compare:
-    uv run pytest src/tests/pipeline/test_pipeline_performance.py \
+    uv run pytest tests/pipeline/test_pipeline_performance.py \
         -v --tb=short \
         -m "performance" \
         --benchmark-compare=baseline

@@ -24,5 +24,5 @@ At its heart, this system isn't just simulating a GridWorld; it’s implementing
 
 Let’s dissect the commands:
 
-* **`uv run pytest ...`**:  This runs unit tests within the `src/tests/pipeline/...` directory. It's a crucial step for verifying that the core components of the GNN and its interaction with the GridWorld fixture are working correctly *before* running the full simulation.
+* **`uv run pytest ...`**:  This runs unit tests within the `tests/pipeline/...` directory. It's a crucial step for verifying that the core components of the GNN and its interaction with the GridWorld fixture are working correctly *before* running the full simulation.
 * **`uv run python src/main.

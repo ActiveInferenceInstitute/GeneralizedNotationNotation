@@ -53,7 +53,7 @@ The repository provides parsing through the `gnn` CLI and Step 3 orchestrator:
 uv run gnn parse input/gnn_files/discrete/actinf_pomdp_agent.md --format json
 
 # Parse via step-3 script (directory-oriented, used by the pipeline)
-uv run python src/3_gnn.py --target-dir input/gnn_files --output-dir output --verbose
+uv run python src/gnn/3_gnn.py --target-dir input/gnn_files --output-dir output --verbose
 ```
 
 ### GNN Parser API Reference
@@ -62,7 +62,7 @@ uv run python src/3_gnn.py --target-dir input/gnn_files --output-dir output --ve
 |----------|-------------|--------|
 | `uv run gnn parse <file> [--format json\|yaml\|summary]` | Parse and serialize a single GNN model | stdout (JSON/YAML/summary) |
 | `uv run gnn validate <file> [--strict]` | Validate GNN syntax and structure | validation report + exit status |
-| `uv run python src/main.py --only-steps "3,5"` | Parse then type-check (all files in `--target-dir`) | `output/3_gnn_output/`, `output/5_type_checker_output/` |
+| `uv run python src/gnn/main.py --only-steps "3,5"` | Parse then type-check (all files in `--target-dir`) | `output/3_gnn_output/`, `output/5_type_checker_output/` |
 
 ## Visualization Tools
 
@@ -100,7 +100,7 @@ graph TD
 uv run gnn graph input/gnn_files/discrete/actinf_pomdp_agent.md --format mermaid
 
 # Or run visualization step directly (directory-oriented, used by the pipeline)
-uv run python src/main.py --only-steps "8,9" --target-dir input/gnn_files --verbose
+uv run python src/gnn/main.py --only-steps "8,9" --target-dir input/gnn_files --verbose
 ```
 
 #### Python API
@@ -123,22 +123,22 @@ The pipeline generates executable code from GNN files via Step 11 (Render):
 
 ```bash
 # Generate code for all supported frameworks
-uv run python src/11_render.py --target-dir input/gnn_files --output-dir output --verbose
+uv run python src/gnn/11_render.py --target-dir input/gnn_files --output-dir output --verbose
 
 # Generate for a specific framework
-uv run python src/12_execute.py --frameworks "pymdp,jax" --verbose
+uv run python src/gnn/12_execute.py --frameworks "pymdp,jax" --verbose
 ```
 
 ### GNN Export Formats
 
 The export step (Step 7) serializes GNN models to several structured
 formats (JSON, XML, GraphML, GEXF, pickle, plaintext summary, plaintext
-DSL — see `src/export/formatters.py` and `list_export_formats` for the
-live list). There is currently no LaTeX export target in `src/export/`.
+DSL — see `src/gnn/export/formatters.py` and `list_export_formats` for the
+live list). There is currently no LaTeX export target in `src/gnn/export/`.
 
 ```bash
 # Export GNN models to all supported formats
-uv run python src/7_export.py --target-dir input/gnn_files --output-dir output --verbose
+uv run python src/gnn/7_export.py --target-dir input/gnn_files --output-dir output --verbose
 ```
 
 ## Validation Tools
@@ -149,8 +149,8 @@ The pipeline validates GNN files via Step 5 (Type Checker) and Step 6 (Validatio
 
 ```bash
 # Type checking and validation
-uv run python src/5_type_checker.py --target-dir input/gnn_files --output-dir output --strict
-uv run python src/6_validation.py --target-dir input/gnn_files --output-dir output --verbose
+uv run python src/gnn/5_type_checker.py --target-dir input/gnn_files --output-dir output --strict
+uv run python src/gnn/6_validation.py --target-dir input/gnn_files --output-dir output --verbose
 ```
 
 #### Common Validation Checks
@@ -244,8 +244,8 @@ PyMDP requires the `inferactively-pymdp` package — **not** the unrelated PyPI 
 
 ```bash
 # Render and execute via PyMDP backend
-uv run python src/11_render.py --target-dir input/gnn_files --output-dir output --verbose
-uv run python src/12_execute.py --frameworks "pymdp" --verbose
+uv run python src/gnn/11_render.py --target-dir input/gnn_files --output-dir output --verbose
+uv run python src/gnn/12_execute.py --frameworks "pymdp" --verbose
 ```
 
 See [PyMDP implementation guide](../implementations/pymdp.md) for details on the generated code structure.
@@ -294,7 +294,7 @@ uv run gnn parse input/gnn_files/discrete/actinf_pomdp_agent.md --format json
 uv run gnn graph input/gnn_files/discrete/actinf_pomdp_agent.md --format mermaid
 
 # Run the full pipeline (directory-oriented)
-uv run python src/main.py --target-dir input/gnn_files --verbose
+uv run python src/gnn/main.py --target-dir input/gnn_files --verbose
 ```
 
 ## Documentation and Resources
@@ -355,19 +355,19 @@ timeline
 2. Active Inference Institute: [Generalized Notation Notation (GNN) GitHub Repository](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation)
 3. Smith, R., Friston, K.J., & Whyte, C.J. (2022). A step-by-step tutorial on active inference and its application to empirical data. Journal of Mathematical Psychology, 107, 102632.
 
-## GNN Processing Pipeline (`src/main.py`)
+## GNN Processing Pipeline (`src/gnn/main.py`)
 
-The GNN project includes a comprehensive 25-step pipeline orchestrated by `src/main.py`. This main pipeline script is designed to process GNN files through the complete workflow from parsing to execution, visualization, and report generation.
+The GNN project includes a comprehensive 25-step pipeline orchestrated by `src/gnn/main.py`. This main pipeline script is designed to process GNN files through the complete workflow from parsing to execution, visualization, and report generation.
 
 For detailed architecture information, see:
 
-- **[src/AGENTS.md](../../../src/AGENTS.md)**: Complete module registry and architectural patterns
-- **[src/README.md](../../../src/README.md)**: Pipeline safety and reliability documentation
+- **[src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md)**: Complete module registry and architectural patterns
+- **[src/gnn/README.md](../../../src/gnn/README.md)**: Pipeline safety and reliability documentation
 - **[Quickstart Tutorial](../tutorials/quickstart_tutorial.md)**: Step-by-step tutorial for using the pipeline
 
 ### Overview
 
-The `src/main.py` script orchestrates 25 numbered Python scripts (steps 0-24) located in the `src/` directory. Each script corresponds to a specific processing stage following the **thin orchestrator pattern** - delegating core functionality to modular implementations in their associated directories.
+The `src/gnn/main.py` script orchestrates 25 numbered Python scripts (steps 0-24) located in the `src/` directory. Each script corresponds to a specific processing stage following the **thin orchestrator pattern** - delegating core functionality to modular implementations in their associated directories.
 
 The pipeline is designed to be flexible, allowing users to run the entire sequence, skip certain steps, or run only specific steps. It manages configurations like target directories for GNN files and output directories for generated artifacts.
 
@@ -376,12 +376,12 @@ The pipeline is designed to be flexible, allowing users to run the entire sequen
 To use the pipeline, navigate to the root directory of the GeneralizedNotationNotation project and execute:
 
 ```bash
-uv run python src/main.py [options]
+uv run python src/gnn/main.py [options]
 ```
 
 ### Command-Line Options
 
-The `src/main.py` script accepts several command-line arguments:
+The `src/gnn/main.py` script accepts several command-line arguments:
 
 - `--target-dir DIR`: Specifies the primary target directory for GNN files. Default: `input/gnn_files`
 - `--output-dir DIR`: Defines the base directory where all output files will be saved. Default: `output/`
@@ -392,92 +392,92 @@ The `src/main.py` script accepts several command-line arguments:
 - `--strict`: Activates strict type checking mode (for step 5)
 - `--estimate-resources`: Enables computational resource estimation (for step 5)
 
-View all options: `python src/main.py --help`
+View all options: `python src/gnn/main.py --help`
 
 ### Complete Pipeline Stages (25 Steps)
 
 The GNN processing pipeline consists of exactly 25 steps (0-24), executed in order:
 
-0. **`0_template.py` (Template Initialization)** → `src/template/`
+0. **`0_template.py` (Template Initialization)** → `src/gnn/template/`
     - Purpose: Pipeline template and initialization
 
-1. **`1_setup.py` (Environment Setup)** → `src/setup/`
+1. **`1_setup.py` (Environment Setup)** → `src/gnn/setup/`
     - Purpose: Environment setup, virtual environment management, dependency installation
 
-2. **`2_tests.py` (Test Suite)** → `src/tests/`
+2. **`2_tests.py` (Test Suite)** → `tests/`
     - Purpose: Comprehensive test suite execution
 
 3. **`3_gnn.py` (GNN Core Processing)** → `src/gnn/`
     - Purpose: GNN file discovery, multi-format parsing, and validation
     - See: [src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md)
 
-4. **`4_model_registry.py` (Model Registry)** → `src/model_registry/`
+4. **`4_model_registry.py` (Model Registry)** → `src/gnn/model_registry/`
     - Purpose: Model registry management and versioning
 
-5. **`5_type_checker.py` (Type Checking)** → `src/type_checker/`
+5. **`5_type_checker.py` (Type Checking)** → `src/gnn/type_checker/`
     - Purpose: GNN syntax validation and resource estimation
     - Supports `--strict` and `--estimate-resources` flags
 
-6. **`6_validation.py` (Validation)** → `src/validation/`
+6. **`6_validation.py` (Validation)** → `src/gnn/validation/`
     - Purpose: Advanced validation and consistency checking
 
-7. **`7_export.py` (Export)** → `src/export/`
+7. **`7_export.py` (Export)** → `src/gnn/export/`
     - Purpose: Multi-format export (JSON, XML, GraphML, GEXF, Pickle)
 
-8. **`8_visualization.py` (Visualization)** → `src/visualization/`
+8. **`8_visualization.py` (Visualization)** → `src/gnn/visualization/`
     - Purpose: Graph and matrix visualization generation
-    - See: [src/visualization/AGENTS.md](../../../src/visualization/AGENTS.md)
+    - See: [src/gnn/visualization/AGENTS.md](../../../src/gnn/visualization/AGENTS.md)
 
-9. **`9_advanced_viz.py` (Advanced Visualization)** → `src/advanced_visualization/`
+9. **`9_advanced_viz.py` (Advanced Visualization)** → `src/gnn/advanced_visualization/`
     - Purpose: Advanced visualization and interactive plots
 
-10. **`10_ontology.py` (Ontology Processing)** → `src/ontology/`
+10. **`10_ontology.py` (Ontology Processing)** → `src/gnn/ontology/`
     - Purpose: Active Inference Ontology processing and validation
-    - See: [src/ontology/AGENTS.md](../../../src/ontology/AGENTS.md)
+    - See: [src/gnn/ontology/AGENTS.md](../../../src/gnn/ontology/AGENTS.md)
 
-11. **`11_render.py` (Code Rendering)** → `src/render/`
+11. **`11_render.py` (Code Rendering)** → `src/gnn/render/`
     - Purpose: Code generation for PyMDP, RxInfer, ActiveInference.jl, DisCoPy, JAX
-    - See: [src/render/AGENTS.md](../../../src/render/AGENTS.md)
+    - See: [src/gnn/render/AGENTS.md](../../../src/gnn/render/AGENTS.md)
 
-12. **`12_execute.py` (Execution)** → `src/execute/`
+12. **`12_execute.py` (Execution)** → `src/gnn/execute/`
     - Purpose: Execute rendered simulation scripts with result capture
-    - See: [src/execute/AGENTS.md](../../../src/execute/AGENTS.md)
+    - See: [src/gnn/execute/AGENTS.md](../../../src/gnn/execute/AGENTS.md)
 
-13. **`13_llm.py` (LLM Integration)** → `src/llm/`
+13. **`13_llm.py` (LLM Integration)** → `src/gnn/llm/`
     - Purpose: LLM-enhanced analysis, model interpretation, and AI assistance
-    - See: [src/llm/AGENTS.md](../../../src/llm/AGENTS.md)
+    - See: [src/gnn/llm/AGENTS.md](../../../src/gnn/llm/AGENTS.md)
 
-14. **`14_ml_integration.py` (ML Integration)** → `src/ml_integration/`
+14. **`14_ml_integration.py` (ML Integration)** → `src/gnn/ml_integration/`
     - Purpose: Machine learning integration and model training
 
-15. **`15_audio.py` (Audio Generation)** → `src/audio/`
+15. **`15_audio.py` (Audio Generation)** → `src/gnn/audio/`
     - Purpose: Audio generation (SAPF, Pedalboard, and other backends)
 
-16. **`16_analysis.py` (Analysis)** → `src/analysis/`
+16. **`16_analysis.py` (Analysis)** → `src/gnn/analysis/`
     - Purpose: Advanced analysis and statistical processing
 
-17. **`17_integration.py` (System Integration)** → `src/integration/`
+17. **`17_integration.py` (System Integration)** → `src/gnn/integration/`
     - Purpose: System integration and cross-module coordination
 
-18. **`18_security.py` (Security)** → `src/security/`
+18. **`18_security.py` (Security)** → `src/gnn/security/`
     - Purpose: Security validation and access control
 
-19. **`19_research.py` (Research Tools)** → `src/research/`
+19. **`19_research.py` (Research Tools)** → `src/gnn/research/`
     - Purpose: Research tools and experimental features
 
-20. **`20_website.py` (Website Generation)** → `src/website/`
+20. **`20_website.py` (Website Generation)** → `src/gnn/website/`
     - Purpose: Static HTML website generation from pipeline artifacts
 
-21. **`21_mcp.py` (Model Context Protocol)** → `src/mcp/`
+21. **`21_mcp.py` (Model Context Protocol)** → `src/gnn/mcp/`
     - Purpose: Model Context Protocol processing and tool registration
 
-22. **`22_gui.py` (GUI)** → `src/gui/`
+22. **`22_gui.py` (GUI)** → `src/gnn/gui/`
     - Purpose: Interactive GUI for constructing/editing GNN models
 
-23. **`23_report.py` (Report Generation)** → `src/report/`
+23. **`23_report.py` (Report Generation)** → `src/gnn/report/`
     - Purpose: Comprehensive analysis report generation
 
-24. **`24_intelligent_analysis.py` (Intelligent Analysis)** → `src/intelligent_analysis/`
+24. **`24_intelligent_analysis.py` (Intelligent Analysis)** → `src/gnn/intelligent_analysis/`
     - Purpose: AI-enhanced analysis of GNN models and pipeline outputs
 
 ### MCP Tools (Step 21)
@@ -486,13 +486,13 @@ The MCP step exposes pipeline modules as callable tools through the central MCP 
 
 ```bash
 # Validate the MCP tool contract
-uv run --extra dev python -m pytest src/tests/mcp/test_mcp_audit.py -q
+uv run --extra dev python -m pytest tests/mcp/test_mcp_audit.py -q
 
 # Generate a live inventory report
-uv run python src/mcp/validate_tools.py
+uv run python src/gnn/mcp/validate_tools.py
 
 # Or via pytest (full suite totals: repository README.md)
-uv run --extra dev python -m pytest src/tests/mcp/test_mcp_audit.py -v
+uv run --extra dev python -m pytest tests/mcp/test_mcp_audit.py -v
 ```
 
 Key tool groups:
@@ -517,10 +517,10 @@ For the complete tool inventory, see **[modules/21_mcp.md](../modules/21_mcp.md)
 
     ```bash
     # Parse and type-check GNN files
-    uv run python src/main.py --only-steps "3,5" --target-dir input/gnn_files
+    uv run python src/gnn/main.py --only-steps "3,5" --target-dir input/gnn_files
     
     # With resource estimation
-    uv run python src/main.py --only-steps "3,5" --estimate-resources --target-dir input/gnn_files
+    uv run python src/gnn/main.py --only-steps "3,5" --estimate-resources --target-dir input/gnn_files
     ```
 
 - **Outputs:** `output/3_gnn_output/` and `output/5_type_checker_output/`
@@ -533,7 +533,7 @@ For the complete tool inventory, see **[modules/21_mcp.md](../modules/21_mcp.md)
 
     ```bash
     # Generate visualizations
-    uv run python src/main.py --only-steps "8,9" --target-dir input/gnn_files
+    uv run python src/gnn/main.py --only-steps "8,9" --target-dir input/gnn_files
     ```
 
 - **Outputs:** `output/8_visualization_output/` and `output/9_advanced_viz_output/`
@@ -546,10 +546,10 @@ For the complete tool inventory, see **[modules/21_mcp.md](../modules/21_mcp.md)
 
     ```bash
     # Generate and execute code
-    uv run python src/main.py --only-steps "11,12" --target-dir input/gnn_files
+    uv run python src/gnn/main.py --only-steps "11,12" --target-dir input/gnn_files
     
     # Execute specific frameworks
-    uv run python src/12_execute.py --frameworks "pymdp,jax" --verbose
+    uv run python src/gnn/12_execute.py --frameworks "pymdp,jax" --verbose
     ```
 
 - **Outputs:** `output/11_render_output/` and `output/12_execute_output/`
@@ -562,10 +562,10 @@ For the complete tool inventory, see **[modules/21_mcp.md](../modules/21_mcp.md)
 
     ```bash
     # Run full render → execute → analyze pipeline
-    uv run python src/main.py --only-steps "3,11,12,16" --target-dir input/gnn_files --verbose
+    uv run python src/gnn/main.py --only-steps "3,11,12,16" --target-dir input/gnn_files --verbose
 
     # Run analysis on existing execution results
-    uv run python src/main.py --only-steps "16" --verbose
+    uv run python src/gnn/main.py --only-steps "16" --verbose
     ```
 
 - **Outputs:** `output/16_analysis_output/` — includes `analysis_results.json`, `analysis_summary.md`, per-model post-simulation analysis, framework-specific visualizations, and cross-framework comparison dashboards
@@ -580,19 +580,19 @@ For the complete tool inventory, see **[modules/21_mcp.md](../modules/21_mcp.md)
 
 ```bash
 # Run full pipeline
-uv run python src/main.py --target-dir input/gnn_files --verbose
+uv run python src/gnn/main.py --target-dir input/gnn_files --verbose
 
 # Run specific steps only
-uv run python src/main.py --only-steps "3,5,7,8,11,12" --verbose
+uv run python src/gnn/main.py --only-steps "3,5,7,8,11,12" --verbose
 
 # Skip certain steps
-uv run python src/main.py --skip-steps "15,16" --verbose
+uv run python src/gnn/main.py --skip-steps "15,16" --verbose
 
 # Run with specific framework execution
-uv run python src/main.py --only-steps "11,12"
-uv run python src/12_execute.py --frameworks "lite" --verbose  # Python-only: PyMDP, JAX, DisCoPy, bnlearn
+uv run python src/gnn/main.py --only-steps "11,12"
+uv run python src/gnn/12_execute.py --frameworks "lite" --verbose  # Python-only: PyMDP, JAX, DisCoPy, bnlearn
 ```
 
-For more detailed information on each module, see **[src/AGENTS.md](../../../src/AGENTS.md)**.
+For more detailed information on each module, see **[src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md)**.
 
 ---

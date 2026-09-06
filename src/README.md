@@ -45,8 +45,8 @@ graph TB
 
 - **Numbered Scripts** (e.g., `11_render.py`, `10_ontology.py`): Thin orchestrators that handle pipeline orchestration, argument parsing, logging, and result aggregation
 - **Module `__init__.py`**: Imports and exposes functions from modular files within the module folder  
-- **Modular Files** (e.g., `src/render/processor.py`, `src/ontology/processor.py`): Contain the actual implementation of core methods
-- **Tests**: All methods are tested in `src/tests/` with comprehensive test coverage
+- **Modular Files** (e.g., `src/gnn/render/processor.py`, `src/gnn/ontology/processor.py`): Contain the actual implementation of core methods
+- **Tests**: All methods are tested in `tests/` with comprehensive test coverage
 
 ### Module Dependency Graph
 
@@ -114,8 +114,8 @@ src/
 
 ### ✅ Correct Pattern Examples
 
-- `11_render.py` imports from `src/render/` and calls `process_render()`; `10_ontology.py`
-  imports from `src/ontology/` and calls `process_ontology()`. The per-framework emitters
+- `11_render.py` imports from `src/gnn/render/` and calls `process_render()`; `10_ontology.py`
+  imports from `src/gnn/ontology/` and calls `process_ontology()`. The per-framework emitters
   (`generate_pymdp_code()`, `generate_rxinfer_code()`, ...) live inside the module and are
   dispatched by its processor, never called from the numbered script.
 - Scripts contain only orchestration logic, not domain-specific processing code
@@ -150,7 +150,7 @@ return a structured exit code rather than propagating an exception.
   `with_safe_matplotlib()` context managers.
 - **Step 12 (Execute)**: circuit breaker with bounded exponential backoff, per-framework
   environment validation, timeout-aware resource monitoring.
-- **Step 13 (LLM)**: provider chain (Ollama → OpenAI → OpenRouter → Perplexity, matching `src/llm/providers/`) with
+- **Step 13 (LLM)**: provider chain (Ollama → OpenAI → OpenRouter → Perplexity, matching `src/gnn/llm/providers/`) with
   configurable timeouts; a missing provider is a warning, not a failure.
 - **Step 11 (Render)**: matrix normalization and POMDP-shape pre-checks before any
   framework-specific emitter runs. Continuous linear-Gaussian models render only on the
@@ -174,7 +174,7 @@ return a structured exit code rather than propagating an exception.
 
 `output/` is a generated local run tree and is ignored by Git except for its directory
 marker. Keep curated fixtures and hand-maintained examples outside this tree.
-The same policy applies to redirected generated trees such as `src/output/` and
+The same policy applies to redirected generated trees such as `src/gnn/output/` and
 documentation `test_output/` folders: regenerate them from the relevant command
 instead of editing or committing them.
 
@@ -213,26 +213,26 @@ output/
 
 ```bash
 # Full pipeline
-uv run python src/main.py
+uv run python src/gnn/main.py
 
 # A single step
-uv run python src/8_visualization.py --verbose
-uv run python src/12_execute.py --verbose
+uv run python src/gnn/8_visualization.py --verbose
+uv run python src/gnn/12_execute.py --verbose
 
 # Pick execution frameworks for Step 12
-uv run python src/12_execute.py --frameworks "pymdp,jax" --verbose
+uv run python src/gnn/12_execute.py --frameworks "pymdp,jax" --verbose
 
 # Install optional dependency groups
-uv run python src/1_setup.py --install-optional --optional-groups "llm,visualization"
+uv run python src/gnn/1_setup.py --install-optional --optional-groups "llm,visualization"
 
 # Staged folder execution (driven by input/config.yaml → testing_matrix)
-uv run python src/main.py --only-steps "3,5,6,11" --verbose
+uv run python src/gnn/main.py --only-steps "3,5,6,11" --verbose
 ```
 
 Step selection is validated up front: non-numeric or fully unknown
 `--only-steps` / `--skip-steps` values fail fast at startup with exit code 1
 and a clear error instead of silently running zero steps, and out-of-range
-step numbers are logged and dropped (see `src/main.py::select_pipeline_steps`
+step numbers are logged and dropped (see `src/gnn/main.py::select_pipeline_steps`
 for the programmatic API).
 
 ### Inspecting outputs

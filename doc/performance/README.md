@@ -8,7 +8,7 @@ flag layer.
 ## Measure a focused run
 
 ```bash
-uv run python src/main.py \
+uv run python src/gnn/main.py \
   --target-dir input/gnn_files \
   --output-dir output/performance-baseline \
   --only-steps "3,5,11,12" \
@@ -23,7 +23,7 @@ local timing into a general performance guarantee.
 ## Estimate model resources
 
 ```bash
-uv run python src/5_type_checker.py \
+uv run python src/gnn/5_type_checker.py \
   --target-dir input/gnn_files \
   --estimate-resources \
   --verbose
@@ -40,14 +40,14 @@ uv run python scripts/run_pymdp_gnn_scaling_analysis.py --help
 
 ```bash
 # Render only one backend.
-uv run python src/11_render.py \
+uv run python src/gnn/11_render.py \
   --target-dir input/gnn_files \
   --output-dir output/pymdp-run \
   --frameworks pymdp \
   --strict-framework-success
 
 # Execute only that run's artifacts.
-uv run python src/12_execute.py \
+uv run python src/gnn/12_execute.py \
   --target-dir input/gnn_files \
   --output-dir output/pymdp-run \
   --render-output-dir output/pymdp-run/11_render_output \
@@ -66,13 +66,13 @@ Use explicit step selection rather than undocumented optimization flags:
 
 ```bash
 # Parse and type-check only.
-uv run python src/main.py --only-steps "3,5" --estimate-resources --verbose
+uv run python src/gnn/main.py --only-steps "3,5" --estimate-resources --verbose
 
 # Skip visual and LLM work for a validation loop.
-uv run python src/main.py --only-steps "3,5,6" --skip-llm --verbose
+uv run python src/gnn/main.py --only-steps "3,5,6" --skip-llm --verbose
 
 # Disable Step 16 GridWorld animation artifacts.
-uv run python src/main.py --only-steps "16" --no-animations --verbose
+uv run python src/gnn/main.py --only-steps "16" --no-animations --verbose
 ```
 
 The following are not main-pipeline options: `--performance-tracking`, `--workers`,

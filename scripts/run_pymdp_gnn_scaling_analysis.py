@@ -11,7 +11,7 @@ This script end-to-end manages the PyMDP scaling study by:
 Dense matrix text for B is O(n^3) in output size; use ``max_n`` and ``max_file_size_mb`` in
 config to avoid multi-gigabyte files and OSError: [Errno 28] when the volume is full.
 Preflight messages align with Pipeline Step 5 (type checker) storage/resource estimation
-(``src/type_checker/resource_estimator.py``); for per-file reports after generation, use
+(``src/gnn/type_checker/resource_estimator.py``); for per-file reports after generation, use
 ``src/5_type_checker.py --estimate-resources``.
 
 Usage:
@@ -45,7 +45,7 @@ from pymdp_spec_generator import (  # type: ignore[import-not-found]
     generate_gnn_file,
 )
 
-from utils.visual_logging import VisualConfig, create_visual_logger
+from gnn.utils.visual_logging import VisualConfig, create_visual_logger
 
 # Default sweep grid
 DEFAULT_N_VALUES = [2, 4, 8, 16]
@@ -486,7 +486,7 @@ def _resource_gate_dict(
             "step": 5,
             "module": "type_checker",
             "role": "storage_and_resource_estimation",
-            "see": "src/type_checker/resource_estimator.py; estimation_strategies.estimate_storage",
+            "see": "src/gnn/type_checker/resource_estimator.py; estimation_strategies.estimate_storage",
         },
         "volume": {k: v for k, v in snap.items() if k != "path"},
         "check_path": snap["path"],
@@ -870,7 +870,7 @@ def _run_factorized_sweep(args: argparse.Namespace) -> int:
         generate_factorized_gnn_file,  # type: ignore[import-not-found]
     )
 
-    from execute.jax.kronecker_factorized import (  # type: ignore[import-not-found]
+    from gnn.execute.jax.kronecker_factorized import (  # type: ignore[import-not-found]
         build_generic_factor_model,
         run_factorized_active_inference,
     )

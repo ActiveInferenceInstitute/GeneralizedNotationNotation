@@ -13,43 +13,43 @@ All pipeline steps follow the thin orchestrator pattern. Each step is documented
 
 ### Core Processing (0-9)
 
-- `0_template.py` → `src/template/AGENTS.md`
-- `1_setup.py` → `src/setup/AGENTS.md`
-- `2_tests.py` → `src/tests/AGENTS.md`
+- `0_template.py` → `src/gnn/template/AGENTS.md`
+- `1_setup.py` → `src/gnn/setup/AGENTS.md`
+- `2_tests.py` → `tests/AGENTS.md`
 - `3_gnn.py` → `src/gnn/AGENTS.md`
-- `4_model_registry.py` → `src/model_registry/AGENTS.md`
-- `5_type_checker.py` → `src/type_checker/AGENTS.md`
-- `6_validation.py` → `src/validation/AGENTS.md`
-- `7_export.py` → `src/export/AGENTS.md`
-- `8_visualization.py` → `src/visualization/AGENTS.md`
-- `9_advanced_viz.py` → `src/advanced_visualization/AGENTS.md`
+- `4_model_registry.py` → `src/gnn/model_registry/AGENTS.md`
+- `5_type_checker.py` → `src/gnn/type_checker/AGENTS.md`
+- `6_validation.py` → `src/gnn/validation/AGENTS.md`
+- `7_export.py` → `src/gnn/export/AGENTS.md`
+- `8_visualization.py` → `src/gnn/visualization/AGENTS.md`
+- `9_advanced_viz.py` → `src/gnn/advanced_visualization/AGENTS.md`
 
 ### Simulation & Analysis (10-16)
 
-- `10_ontology.py` → `src/ontology/AGENTS.md`
-- `11_render.py` → `src/render/AGENTS.md`
-- `12_execute.py` → `src/execute/AGENTS.md`
-- `13_llm.py` → `src/llm/AGENTS.md`
-- `14_ml_integration.py` → `src/ml_integration/AGENTS.md`
-- `15_audio.py` → `src/audio/AGENTS.md`
-- `16_analysis.py` → `src/analysis/AGENTS.md`
+- `10_ontology.py` → `src/gnn/ontology/AGENTS.md`
+- `11_render.py` → `src/gnn/render/AGENTS.md`
+- `12_execute.py` → `src/gnn/execute/AGENTS.md`
+- `13_llm.py` → `src/gnn/llm/AGENTS.md`
+- `14_ml_integration.py` → `src/gnn/ml_integration/AGENTS.md`
+- `15_audio.py` → `src/gnn/audio/AGENTS.md`
+- `16_analysis.py` → `src/gnn/analysis/AGENTS.md`
 
 ### Integration & Output (17-24)
 
-- `17_integration.py` → `src/integration/AGENTS.md`
-- `18_security.py` → `src/security/AGENTS.md`
-- `19_research.py` → `src/research/AGENTS.md`
-- `20_website.py` → `src/website/AGENTS.md`
-- `21_mcp.py` → `src/mcp/AGENTS.md`
-- `22_gui.py` → `src/gui/AGENTS.md`
-- `23_report.py` → `src/report/AGENTS.md`
-- `24_intelligent_analysis.py` → `src/intelligent_analysis/AGENTS.md`
+- `17_integration.py` → `src/gnn/integration/AGENTS.md`
+- `18_security.py` → `src/gnn/security/AGENTS.md`
+- `19_research.py` → `src/gnn/research/AGENTS.md`
+- `20_website.py` → `src/gnn/website/AGENTS.md`
+- `21_mcp.py` → `src/gnn/mcp/AGENTS.md`
+- `22_gui.py` → `src/gnn/gui/AGENTS.md`
+- `23_report.py` → `src/gnn/report/AGENTS.md`
+- `24_intelligent_analysis.py` → `src/gnn/intelligent_analysis/AGENTS.md`
 
 ### Main Documentation
 
-- **[src/AGENTS.md](../../../src/AGENTS.md)**: Master agent scaffolding and module registry
-- **[src/README.md](../../../src/README.md)**: Pipeline architecture and safety patterns
-- **[src/main.py](../../../src/main.py)**: Pipeline orchestrator implementation
+- **[src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md)**: Master agent scaffolding and module registry
+- **[src/gnn/README.md](../../../src/gnn/README.md)**: Pipeline architecture and safety patterns
+- **[src/gnn/main.py](../../../src/gnn/main.py)**: Pipeline orchestrator implementation
 
 ---
 
@@ -57,7 +57,7 @@ All pipeline steps follow the thin orchestrator pattern. Each step is documented
 
 ### Stage 1: GNN → Parsed JSON (Step 3)
 
-**Entry Point:** `src/3_gnn.py:main()` → `src/gnn/multi_format_processor.py:process_gnn_multi_format()`
+**Entry Point:** `src/gnn/3_gnn.py:main()` → `src/gnn/multi_format_processor.py:process_gnn_multi_format()`
 
 **Key Parsing Patterns:**
 
@@ -108,7 +108,7 @@ A-o                         # Likelihood relates to observation
 
 ### Stage 2: Type Analysis (Step 5)  
 
-**Entry Point:** `src/5_type_checker.py:main()` → `src/type_checker/checking/core.py:GNNTypeChecker`
+**Entry Point:** `src/gnn/5_type_checker.py:main()` → `src/gnn/type_checker/checking/core.py:GNNTypeChecker`
 
 **Core Analysis Method:** (lines 13-62 in analysis_utils.py)
 
@@ -151,7 +151,7 @@ def analyze_variable_types(variables: List[Dict[str, Any]]) -> Dict[str, Any]:
 
 ### Stage 3: Multi-format Export (Step 7)
 
-**Entry Point:** `src/7_export.py:process_export()` → `src/export/`
+**Entry Point:** `src/gnn/7_export.py:process_export()` → `src/gnn/export/`
 
 **Framework Targets:**
 
@@ -163,7 +163,7 @@ def analyze_variable_types(variables: List[Dict[str, Any]]) -> Dict[str, Any]:
 
 ### Stage 4: Code Generation (Step 11)
 
-**Entry Point:** `src/11_render.py:main()` → `src/render:process_render()`
+**Entry Point:** `src/gnn/11_render.py:main()` → `src/gnn/render:process_render()`
 
 **Framework Integration Points:**
 
@@ -236,13 +236,13 @@ agent = ActiveInferenceAgent(pomdp)
 
 ### Stage 5: Execution (Step 12)
 
-**Entry Point:** `src/12_execute.py:main()` → `src/execute:process_execute()`
+**Entry Point:** `src/gnn/12_execute.py:main()` → `src/gnn/execute:process_execute()`
 
 **Execution Results:** `output/12_execute_output/execution_results.json`
 
 Illustrative shape with invented values — not a captured run. The
 authoritative RxInfer payload schema is `rxinfer_simulation_v1`, documented in
-[`src/render/rxinfer/README.md`](../../../src/render/rxinfer/README.md):
+[`src/gnn/render/rxinfer/README.md`](../../../src/gnn/render/rxinfer/README.md):
 
 ```json
 {
@@ -295,24 +295,24 @@ Step 11 (Render) → generated framework code
 
 #### Visualization System  
 
-- **Core Visualizer:** `src/visualization/visualizer.py:GNNVisualizer` (line 66)
-- **Matrix Processing:** `src/visualization/processor.py`
+- **Core Visualizer:** `src/gnn/visualization/visualizer.py:GNNVisualizer` (line 66)
+- **Matrix Processing:** `src/gnn/visualization/processor.py`
   - `parse_matrix_data()` (line 367)
   - `generate_matrix_visualizations()` (line 403)
   - `generate_network_visualizations()` (line 523)
-- **Safe Import Pattern:** `src/visualization/__init__.py` (line 15-47)
+- **Safe Import Pattern:** `src/gnn/visualization/__init__.py` (line 15-47)
 
 #### Type Analysis System
 
-- **Core Analysis:** `src/type_checker/analysis_utils.py:analyze_variable_types()` (line 13)
-- **Validation Logic:** `src/type_checker/checking/core.py:GNNTypeChecker` (line 111)
-- **Processing Pipeline:** `src/type_checker/processor.py` (line 20)
+- **Core Analysis:** `src/gnn/type_checker/analysis_utils.py:analyze_variable_types()` (line 13)
+- **Validation Logic:** `src/gnn/type_checker/checking/core.py:GNNTypeChecker` (line 111)
+- **Processing Pipeline:** `src/gnn/type_checker/processor.py` (line 20)
 
 ## Framework Integration Validation
 
 ### Round-Trip Validation (Step 6)
 
-**Implementation:** `src/6_validation.py:main()` → `src/validation:process_validation()`
+**Implementation:** `src/gnn/6_validation.py:main()` → `src/gnn/validation:process_validation()`
 
 The sketch below is **illustrative pseudocode** for the round-trip property,
 not a function that exists under that name:
@@ -383,7 +383,7 @@ benchmark results** — no committed benchmark artifact produces them. Use
 
 ### Entry Point and Module Delegation
 
-**Orchestrator:** `src/16_analysis.py` → `src/analysis/processor.py:process_analysis()`
+**Orchestrator:** `src/gnn/16_analysis.py` → `src/gnn/analysis/processor.py:process_analysis()`
 
 The analysis step consumes outputs from both the GNN source files and the execution results directory (`output/12_execute_output/`).
 

@@ -118,25 +118,25 @@ This documentation connects to the GNN source code:
 
 | Engine | Path | Language |
 |--------|------|----------|
-| PyMDP | [`src/execute/pymdp/`](../../src/execute/pymdp/) | Python |
-| RxInfer | [`src/execute/rxinfer/`](../../src/execute/rxinfer/) | Julia |
-| ActiveInference.jl | [`src/execute/activeinference_jl/`](../../src/execute/activeinference_jl/) | Julia |
+| PyMDP | [`src/gnn/execute/pymdp/`](../../src/gnn/execute/pymdp/) | Python |
+| RxInfer | [`src/gnn/execute/rxinfer/`](../../src/gnn/execute/rxinfer/) | Julia |
+| ActiveInference.jl | [`src/gnn/execute/activeinference_jl/`](../../src/gnn/execute/activeinference_jl/) | Julia |
 
 ### Analysis Tools
 
 | Tool | Path | Purpose |
 |------|------|---------|
-| PyMDP Analyzer | [`src/analysis/pymdp/analyzer.py`](../../src/analysis/pymdp/analyzer.py) | Post-simulation analysis |
-| PyMDP Visualizer | [`src/analysis/pymdp/visualizer.py`](../../src/analysis/pymdp/visualizer.py) | Visualization |
-| Post-Simulation | [`src/analysis/post_simulation.py`](../../src/analysis/post_simulation.py) | Comprehensive analysis |
+| PyMDP Analyzer | [`src/gnn/analysis/pymdp/analyzer.py`](../../src/gnn/analysis/pymdp/analyzer.py) | Post-simulation analysis |
+| PyMDP Visualizer | [`src/gnn/analysis/pymdp/visualizer.py`](../../src/gnn/analysis/pymdp/visualizer.py) | Visualization |
+| Post-Simulation | [`src/gnn/analysis/post_simulation.py`](../../src/gnn/analysis/post_simulation.py) | Comprehensive analysis |
 
 ### GNN Core
 
 | Component | Path |
 |-----------|------|
 | GNN Parser | [`src/gnn/`](../../src/gnn/) |
-| Type Checker | [`src/type_checker/`](../../src/type_checker/) |
-| Validation | [`src/validation/`](../../src/validation/) |
+| Type Checker | [`src/gnn/type_checker/`](../../src/gnn/type_checker/) |
+| Validation | [`src/gnn/validation/`](../../src/gnn/validation/) |
 
 ---
 

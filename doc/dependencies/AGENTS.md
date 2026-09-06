@@ -20,7 +20,7 @@ The dependencies documentation system is part of the broader GNN (Generalized No
 ### Related Systems
 - **Main Documentation**: [doc/README.md](../README.md)
 - **Setup Guide**: [doc/SETUP.md](../SETUP.md)
-- **Pipeline Reference**: [src/AGENTS.md](../../src/AGENTS.md)
+- **Pipeline Reference**: [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)
 - **Active Inference**: [activeinference.org](https://activeinference.org)
 
 ## Subsystems
@@ -57,7 +57,7 @@ This documentation integrates with the 25-step GNN processing pipeline:
 4. **Execution** (Step 12): Framework-specific dependencies for simulation
 5. **Optional Features**: Advanced features requiring additional packages
 
-See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
+See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documentation.
 
 ---
 

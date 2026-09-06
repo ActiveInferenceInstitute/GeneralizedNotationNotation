@@ -2,12 +2,12 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/11_render.py` (82 lines)
-**Implementation Layer**: `src/render/`
+**Orchestrator**: `src/gnn/11_render.py` (82 lines)
+**Implementation Layer**: `src/gnn/render/`
 
 ## Module Description
 
-This module provides **POMDP-aware code generation** for GNN models. It translates parsed GNN/POMDP specifications into executable simulation code for nine frameworks: PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, NumPyro and Stan are always rendered; PyTorch and bnlearn are also rendered but their runtimes are gated on manual installs (`available: False` in `src/render/framework_registry.py`). Continuous (linear-Gaussian) models render on JAX, NumPyro, PyTorch, Stan and RxInfer.jl; PyMDP, ActiveInference.jl, DisCoPy and bnlearn report render status `unsupported` for them.
+This module provides **POMDP-aware code generation** for GNN models. It translates parsed GNN/POMDP specifications into executable simulation code for nine frameworks: PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, NumPyro and Stan are always rendered; PyTorch and bnlearn are also rendered but their runtimes are gated on manual installs (`available: False` in `src/gnn/render/framework_registry.py`). Continuous (linear-Gaussian) models render on JAX, NumPyro, PyTorch, Stan and RxInfer.jl; PyMDP, ActiveInference.jl, DisCoPy and bnlearn report render status `unsupported` for them.
 
 
 - **POMDP state space extraction**: extracts Active Inference matrices (A, B, C, D, E) and dimensions from GNN specs.
@@ -71,14 +71,14 @@ graph TD
 #### RxInfer.jl (Julia)
 - **Purpose**: Probabilistic programming and inference
 - **Features**: Genuine `@model` + `infer()` variational message passing with `free_energy = true`; per-`ModelKind` strategy dispatch (see below)
-- **Output**: Julia scripts via `src/render/rxinfer/rxinfer_renderer.py`
+- **Output**: Julia scripts via `src/gnn/render/rxinfer/rxinfer_renderer.py`
 - **Optimization**: Variational constraints, efficient inference
 
 ##### ModelKind strategy dispatch
 
-`detect_model_kind` (`src/render/pomdp_contract.py`) classifies each spec **structurally** — from the `GNNSection` value, per-level / per-agent matrix key patterns, explicit `nr_agents` / `num_factors`, `F`/`H`/`Q`/`R` keys, and `dirichlet_[A-E]` keys. There is no free-text scanning, and a non-mapping `InitialParameterization` raises `ValueError` rather than being guessed at.
+`detect_model_kind` (`src/gnn/render/pomdp_contract.py`) classifies each spec **structurally** — from the `GNNSection` value, per-level / per-agent matrix key patterns, explicit `nr_agents` / `num_factors`, `F`/`H`/`Q`/`R` keys, and `dirichlet_[A-E]` keys. There is no free-text scanning, and a non-mapping `InitialParameterization` raises `ValueError` rather than being guessed at.
 
-The canonical renderer (`rxinfer_renderer.py`) then dispatches to a per-kind strategy in `src/render/rxinfer/model_strategies.py`. Each strategy emits a genuine Julia script running `infer()`; each raises `ValueError` naming the missing parameterization when a spec reaches it without the matrices its `@model` requires.
+The canonical renderer (`rxinfer_renderer.py`) then dispatches to a per-kind strategy in `src/gnn/render/rxinfer/model_strategies.py`. Each strategy emits a genuine Julia script running `infer()`; each raises `ValueError` naming the missing parameterization when a spec reaches it without the matrices its `@model` requires.
 
 | ModelKind | Strategy | Generated model |
 |---|---|---|
@@ -179,7 +179,7 @@ success = process_render(
 - `message` (str): Status message
 - `generated_files` (List[str]): List of generated file paths
 
-**Location**: `src/render/processor.py`
+**Location**: `src/gnn/render/processor.py`
 
 ### Canonical POMDP renderers
 
@@ -204,7 +204,7 @@ The shared contract is `canonical_pomdp_v1`, with B stored as `(next_state, prev
 - `supported_formats` (List[str]): List of supported output formats
 - `processing_modes` (List[str]): List of available processing modes
 
-**Location**: `src/render/processor.py`
+**Location**: `src/gnn/render/processor.py`
 
 #### `get_available_renderers() -> Dict[str, Dict[str, Any]]`
 **Description**: Get information about available renderers for each framework.
@@ -220,7 +220,7 @@ The shared contract is `canonical_pomdp_v1`, with B stored as `(next_state, prev
   - `output_format` (str): Output format type
   - `pomdp_compatible` (bool): Whether POMDP-aware processing is supported
 
-**Location**: `src/render/processor.py`
+**Location**: `src/gnn/render/processor.py`
 
 #### `validate_pomdp_for_rendering(pomdp_space: Any) -> Tuple[bool, List[str]]`
 **Description**: Validate POMDP state space structure for rendering compatibility.
@@ -232,7 +232,7 @@ The shared contract is `canonical_pomdp_v1`, with B stored as `(next_state, prev
 - `is_valid` (bool): Whether POMDP structure is valid
 - `errors` (List[str]): List of validation error messages
 
-**Location**: `src/render/processor.py`
+**Location**: `src/gnn/render/processor.py`
 
 #### `normalize_matrices(pomdp_space: Any, logger) -> Any`
 **Description**: Normalize POMDP matrices for consistent rendering.
@@ -243,7 +243,7 @@ The shared contract is `canonical_pomdp_v1`, with B stored as `(next_state, prev
 
 **Returns**: `Any` - Normalized POMDP state space object
 
-**Location**: `src/render/processor.py`
+**Location**: `src/gnn/render/processor.py`
 
 ---
 
@@ -256,7 +256,7 @@ The shared contract is `canonical_pomdp_v1`, with B stored as `(next_state, prev
 
 ### Framework-Specific Dependencies
 - **PyMDP**: `pymdp` package
-- **RxInfer.jl**: Julia with the RxInfer.jl package (committed `Project.toml` + `Manifest.toml` under `src/execute/rxinfer/` pin RxInfer 5.5.0)
+- **RxInfer.jl**: Julia with the RxInfer.jl package (committed `Project.toml` + `Manifest.toml` under `src/gnn/execute/rxinfer/` pin RxInfer 5.5.0)
 - **ActiveInference.jl**: Julia with ActiveInference.jl package
 - **DisCoPy**: `discopy` package
 - **JAX**: `jax`, `jaxlib` packages
@@ -285,7 +285,7 @@ RXINFER_CONFIG = {
 }
 ```
 
-Configuration is primarily controlled by the Step 11 orchestrator (`src/11_render.py`) and forwarded parameters to `process_render(...)`. Avoid documenting configuration keys that are not backed by code.
+Configuration is primarily controlled by the Step 11 orchestrator (`src/gnn/11_render.py`) and forwarded parameters to `process_render(...)`. Avoid documenting configuration keys that are not backed by code.
 
 ---
 
@@ -404,12 +404,12 @@ GNN Parsing → Model Validation → Framework Selection → Code Generation →
 ## Testing
 
 ### Test Files
-- `src/tests/render/test_render_integration.py` - Integration tests
-- `src/tests/render/test_render_overall.py` - Overall functionality tests
-- `src/tests/render/test_render_performance.py` - Performance tests
+- `tests/render/test_render_integration.py` - Integration tests
+- `tests/render/test_render_overall.py` - Overall functionality tests
+- `tests/render/test_render_performance.py` - Performance tests
 
 ### Test Coverage
-- Measure: `uv run --extra dev python -m pytest src/tests/render/ --cov=render --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
+- Measure: `uv run --extra dev python -m pytest tests/render/ --cov=render --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
 
 ### Key Test Scenarios
 1. Multi-framework code generation
@@ -437,7 +437,7 @@ def generate_pymdp_tool(model_data, options=None):
 ```
 
 ### MCP File Location
-- `src/render/mcp.py` - MCP tool registrations
+- `src/gnn/render/mcp.py` - MCP tool registrations
 
 ---
 
@@ -477,12 +477,12 @@ def generate_pymdp_tool(model_data, options=None):
 ## References
 
 ### Related Documentation
-- [Pipeline Overview](../../../src/render/../../README.md)
-- [Architecture Guide](../../../src/render/../../ARCHITECTURE.md)
-- [PyMDP Integration](../../../src/render/../../doc/pymdp/)
-- [RxInfer Integration](../../../src/render/../../doc/rxinfer/)
-- [ActiveInference.jl Integration](../../../src/render/../../doc/activeinference_jl/)
-- [DisCoPy Integration](../../../src/render/../../doc/discopy/)
+- [Pipeline Overview](../../../README.md)
+- [Architecture Guide](../../../ARCHITECTURE.md)
+- [PyMDP Integration](../../../doc/pymdp/)
+- [RxInfer Integration](../../../doc/rxinfer/)
+- [ActiveInference.jl Integration](../../../doc/activeinference_jl/)
+- [DisCoPy Integration](../../../doc/discopy/)
 
 ### External Resources
 - [PyMDP Framework](https://github.com/infer-actively/pymdp)
@@ -497,12 +497,12 @@ def generate_pymdp_tool(model_data, options=None):
 
 ---
 ## Documentation
-- **[README](../../../src/render/README.md)**: Module Overview
-- **[AGENTS](../../../src/render/AGENTS.md)**: Agentic Workflows
-- **[SPEC](../../../src/render/SPEC.md)**: Architectural Specification
-- **[SKILL](../../../src/render/SKILL.md)**: Capability API
+- **[README](../../../src/gnn/render/README.md)**: Module Overview
+- **[AGENTS](../../../src/gnn/render/AGENTS.md)**: Agentic Workflows
+- **[SPEC](../../../src/gnn/render/SPEC.md)**: Architectural Specification
+- **[SKILL](../../../src/gnn/render/SKILL.md)**: Capability API
 
 
 ---
 
-**Source Reference**: [src/render](../../../src/render)
+**Source Reference**: [src/gnn/render](../../../src/gnn/render)

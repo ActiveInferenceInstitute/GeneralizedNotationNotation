@@ -25,19 +25,19 @@ just pipeline            # Full 25-step pipeline
 just render-health       # Check all 9 renderer backends
 
 # Run full pipeline directly
-python src/main.py --target-dir input/gnn_files --verbose
+python src/gnn/main.py --target-dir input/gnn_files --verbose
 
 # Run specific steps only
-python src/main.py --only-steps "3,5,11,12" --verbose
+python src/gnn/main.py --only-steps "3,5,11,12" --verbose
 
 # Run a single step directly
-python src/3_gnn.py --target-dir input/gnn_files --output-dir output --verbose
+python src/gnn/3_gnn.py --target-dir input/gnn_files --output-dir output --verbose
 
 # Run tests
-pytest src/tests/ -v
+pytest tests/ -v
 
 # Setup environment
-uv sync && uv run python src/main.py --target-dir input/gnn_files --verbose
+uv sync && uv run python src/gnn/main.py --target-dir input/gnn_files --verbose
 ```
 
 ## Architecture: Thin Orchestrator Pattern
@@ -96,18 +96,18 @@ s=HiddenState
 
 ```bash
 # Execute specific frameworks
-python src/12_execute.py --frameworks "pymdp,jax" --verbose
+python src/gnn/12_execute.py --frameworks "pymdp,jax" --verbose
 
 # Lite preset (PyMDP, JAX, DisCoPy, bnlearn)
-python src/12_execute.py --frameworks "lite" --verbose
+python src/gnn/12_execute.py --frameworks "lite" --verbose
 
 # All frameworks (default)
-python src/12_execute.py --frameworks "all" --verbose
+python src/gnn/12_execute.py --frameworks "all" --verbose
 ```
 
 ## Module Skills
 
-Each `src/module/` directory contains its own `SKILL.md` with module-specific instructions. See `src/AGENTS.md` for the complete module registry.
+Each `src/module/` directory contains its own `SKILL.md` with module-specific instructions. See `src/gnn/AGENTS.md` for the complete module registry.
 
 ## Testing
 
@@ -117,10 +117,10 @@ Each `src/module/` directory contains its own `SKILL.md` with module-specific in
 # pass/skip counts before publishing them.
 
 # Test a specific module
-pytest src/tests/gnn/test_gnn_overall.py -v
+pytest tests/gnn/test_gnn_overall.py -v
 
 # With coverage
-pytest src/tests/ --cov=src -v
+pytest tests/ --cov=src -v
 ```
 
 ## References
@@ -130,7 +130,7 @@ pytest src/tests/ --cov=src -v
 - [ARCHITECTURE.md](ARCHITECTURE.md) — System architecture
 - [SECURITY.md](SECURITY.md) — Security policy and remediation
 - [SETUP_GUIDE.md](SETUP_GUIDE.md) — Environment setup guide
-- [src/SPEC.md](src/SPEC.md) — Source specification
+- [src/gnn/SPEC.md](src/gnn/SPEC.md) — Source specification
 - [doc/gnn/README.md](doc/gnn/README.md) — GNN documentation index
 - [doc/gnn/reference/gnn_syntax.md](doc/gnn/reference/gnn_syntax.md) — GNN syntax reference
 - [doc/gnn/tutorials/gnn_examples_doc.md](doc/gnn/tutorials/gnn_examples_doc.md) — Example GNN models

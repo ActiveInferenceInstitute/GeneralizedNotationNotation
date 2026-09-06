@@ -1,0 +1,225 @@
+"""
+Test suite for Setup module.
+
+Tests environment setup, UV integration, and dependency management.
+"""
+
+from typing import Any
+
+
+class TestSetupModule:
+    """Test suite for Setup module functionality."""
+
+    def test_default_pipeline_extras_empty(self) -> Any:
+        """Step 12 backends are core deps; step 1 does not require a default extra group."""
+        from gnn.setup.constants import SETUP_DEFAULT_PIPELINE_EXTRAS
+
+        assert SETUP_DEFAULT_PIPELINE_EXTRAS == ()
+
+    def test_pyproject_core_lists_safe_default_backends(self) -> Any:
+        import tomllib
+        from pathlib import Path
+
+        root = Path(__file__).resolve().parents[2]
+        data = tomllib.loads((root / "pyproject.toml").read_text(encoding="utf-8"))
+        blob = " ".join(data["project"]["dependencies"]).lower()
+        assert "jax" in blob
+        assert "jaxlib" in blob
+        assert "numpyro" in blob
+        assert "discopy" in blob
+        assert "plotly" in blob
+        assert "torch" not in blob
+        assert "bnlearn" not in blob
+
+    def test_build_step_command_passes_setup_core_only(self) -> Any:
+        """main.py forwards --setup-core-only to 1_setup when set on pipeline args."""
+        from pathlib import Path
+
+        from gnn.utils.argument_utils import PipelineArguments, build_step_command_args
+
+        args = PipelineArguments()
+        args.setup_core_only = True
+        cmd = build_step_command_args(
+            "1_setup.py",
+            args,
+            "python",
+            Path("src/1_setup.py"),
+        )
+        assert "--setup-core-only" in cmd
+
+    def test_module_imports(self) -> Any:
+        """Test that setup module can be imported."""
+        from gnn.setup import (
+            FEATURES,
+            __version__,
+            check_uv_availability,
+            setup_uv_environment,
+            validate_uv_setup,
+        )
+
+        assert __version__ is not None
+        assert isinstance(FEATURES, dict)
+        assert callable(setup_uv_environment)
+        assert callable(validate_uv_setup)
+        assert callable(check_uv_availability)
+
+    def test_features_available(self) -> Any:
+        """Test that FEATURES dict is properly populated."""
+        from gnn.setup import FEATURES
+
+        expected_features: list[Any] = [
+            "uv_environment_setup",
+            "uv_dependency_management",
+            "system_validation",
+            "mcp_integration",
+        ]
+
+        for feature in expected_features:
+            assert feature in FEATURES, f"Missing feature: {feature}"
+
+    def test_version_format(self) -> Any:
+        """Test version string format."""
+        from gnn.setup import __version__
+
+        # Should be semantic versioning format
+        parts = __version__.split(".")
+        assert len(parts) >= 2, "Version should have at least major.minor"
+        assert all(p.isdigit() for p in parts[:2]), "Major and minor should be numeric"
+
+    def test_check_uv_availability(self) -> Any:
+        """Test UV availability check."""
+        from gnn.setup import check_uv_availability
+
+        result = check_uv_availability()
+        assert isinstance(result, bool)
+
+    def test_validate_uv_setup(self) -> Any:
+        """Test UV setup validation."""
+        from gnn.setup import validate_uv_setup
+
+        result = validate_uv_setup()
+        assert isinstance(result, dict)
+        assert (
+            "overall_status" in result
+            or "valid" in result
+            or isinstance(result.get("uv_available"), bool)
+        )
+
+    def test_environment_manager_class(self) -> Any:
+        """Test EnvironmentManager class exists and works."""
+        from gnn.setup import EnvironmentManager
+
+        manager = EnvironmentManager()
+        assert hasattr(manager, "setup_environment")
+        assert hasattr(manager, "validate_environment")
+
+        # Test methods are callable
+        assert callable(manager.setup_environment)
+        assert callable(manager.validate_environment)
+
+    def test_virtual_environment_class(self) -> Any:
+        """Test VirtualEnvironment class exists."""
+        from gnn.setup import VirtualEnvironment
+
+        venv = VirtualEnvironment("test_env")
+        assert venv.name == "test_env"
+        assert hasattr(venv, "create")
+        assert hasattr(venv, "activate")
+
+    def test_get_module_info(self) -> Any:
+        """Test get_module_info function."""
+        from gnn.setup import get_module_info
+
+        info = get_module_info()
+        assert isinstance(info, dict)
+        # Should have environment_types per the module definition
+        assert "environment_types" in info
+
+    def test_check_python_version(self) -> Any:
+        """Test Python version check."""
+        from gnn.setup import check_python_version
+
+        result = check_python_version()
+        assert result is True  # We're running Python 3+
+
+    def test_optional_groups_constant(self) -> Any:
+        """Test OPTIONAL_GROUPS constant exists."""
+        from gnn.setup import OPTIONAL_GROUPS
+
+        assert isinstance(OPTIONAL_GROUPS, (dict, list, tuple))
+
+
+class TestSetupUtilities:
+    """Test setup utility functions."""
+
+    def test_ensure_directory(self, safe_filesystem: Any) -> Any:
+        """Test directory creation utility."""
+        from gnn.setup import ensure_directory
+
+        test_dir = safe_filesystem.temp_dir / "test_ensure_dir"
+        ensure_directory(test_dir)
+        assert test_dir.exists()
+
+    def test_find_gnn_files(self, safe_filesystem: Any) -> Any:
+        """Test GNN file discovery."""
+        from gnn.setup import find_gnn_files
+
+        # Create test GNN file
+        gnn_content = """# Test Model
+## StateSpaceBlock
+s[3]
+"""
+        safe_filesystem.create_file("test.md", gnn_content)
+
+        files = find_gnn_files(safe_filesystem.temp_dir)
+        assert isinstance(files, list)
+
+    def test_get_output_paths(self, safe_filesystem: Any) -> Any:
+        """Test output path generation."""
+        from gnn.setup import get_output_paths
+
+        # get_output_paths takes only base_output_dir parameter
+        paths = get_output_paths(safe_filesystem.temp_dir)
+        assert isinstance(paths, dict)
+
+
+class TestSetupIntegration:
+    """Integration tests for setup module."""
+
+    def test_setup_environment_function(self, monkeypatch: Any) -> Any:
+        """setup_environment forwards kwargs to setup_uv_environment.
+
+        The real ``setup_uv_environment`` path ends in a mutating, non-frozen
+        ``uv sync`` and — on a transient venv-probe failure under
+        ``pytest-xdist`` concurrency — a destructive
+        ``create_uv_environment(recreate=True)`` that ``rmtree``s ``.venv``.
+        Running it inside the default suite rewrites the shared venv out from
+        under sibling workers (the mechanism that corrupted the environment
+        during parallel validation), so the delegate is mocked and this test
+        pins only the argument-forwarding contract — consistent with
+        ``test_environment_overall.py::test_dependency_installation`` and
+        ``test_execute_pymdp_package.py::test_attempt_pymdp_auto_install``.
+        """
+        from gnn.setup import setup_environment, uv_management
+
+        calls: list[dict[str, Any]] = []
+
+        def fake_setup_uv_environment(**kwargs: Any) -> bool:
+            calls.append(kwargs)
+            return True
+
+        monkeypatch.setattr(
+            uv_management, "setup_uv_environment", fake_setup_uv_environment
+        )
+
+        result = setup_environment(dev=True, skip_jax_test=True)
+        assert result is True
+        assert calls and calls[0].get("dev") is True
+        assert calls[0].get("skip_jax_test") is True
+
+    def test_install_dependencies_function(self) -> Any:
+        """Test install_dependencies utility."""
+        from gnn.setup import install_dependencies
+
+        # Should be callable and not crash
+        assert callable(install_dependencies)

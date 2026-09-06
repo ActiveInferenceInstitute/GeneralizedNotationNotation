@@ -2,9 +2,9 @@
 """Deterministic generator: GNN rendering backend registry table figure.
 
 Thin orchestrator. Reads real data from:
-  - src/render/framework_registry.py (FRAMEWORK_REGISTRY: registry key, display name)
-  - src/render/<key>/ subdirectory existence (render-output presence)
-  - input/model_family_manifest.json + src/pipeline/cross_framework_reliability.py
+  - src/gnn/render/framework_registry.py (FRAMEWORK_REGISTRY: registry key, display name)
+  - src/gnn/render/<key>/ subdirectory existence (render-output presence)
+  - input/model_family_manifest.json + src/gnn/pipeline/cross_framework_reliability.py
     (the single cross-framework comparison family selected by
     src.manuscript_variables.select_cross_framework_family, intersected with the
     reliability gate's MAINTAINED_FRAMEWORKS)
@@ -37,7 +37,7 @@ OUT_PNG = PROJECT_ROOT / "output" / "figures" / "gnn_backend_capability_matrix.p
 def load_registry() -> dict:
     """Import FRAMEWORK_REGISTRY from the real source module."""
     sys.path.insert(0, str(SRC))
-    from render.framework_registry import FRAMEWORK_REGISTRY  # type: ignore
+    from gnn.render.framework_registry import FRAMEWORK_REGISTRY  # type: ignore
 
     return dict(FRAMEWORK_REGISTRY)
 
@@ -52,7 +52,7 @@ def cross_framework_backends() -> tuple[str, list[str], list[str]]:
     family and the footer called the union "the cross-framework comparison
     family", producing a third cardinality for one concept inside one document.
     """
-    from src.manuscript_variables import select_cross_framework_family
+    from gnn.manuscript_variables import select_cross_framework_family
 
     manifest = json.loads(MANIFEST.read_text())
     family = select_cross_framework_family(manifest.get("families", []))
@@ -169,7 +169,7 @@ def main() -> None:
     n_cross = len(profiled)
     caption = (
         f"{n_backends} registered backends · {n_with_dir} with a render-output "
-        f"subdir under src/render/ · highlighted {n_cross} backends are profiled "
+        f"subdir under src/gnn/render/ · highlighted {n_cross} backends are profiled "
         f"in the {family_name or 'cross-framework'} reference comparison"
     )
     if declared_only:

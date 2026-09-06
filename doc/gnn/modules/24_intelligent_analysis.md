@@ -2,8 +2,8 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/24_intelligent_analysis.py` (53 lines)
-**Implementation Layer**: `src/intelligent_analysis/`
+**Orchestrator**: `src/gnn/24_intelligent_analysis.py` (53 lines)
+**Implementation Layer**: `src/gnn/intelligent_analysis/`
 
 ## Module Description
 
@@ -95,16 +95,16 @@ intelligent_analysis/
 
 ```bash
 # Full intelligent analysis
-python src/24_intelligent_analysis.py --verbose
+python src/gnn/24_intelligent_analysis.py --verbose
 
 # Skip LLM analysis (rule-based only)
-python src/24_intelligent_analysis.py --skip-llm
+python src/gnn/24_intelligent_analysis.py --skip-llm
 
 # Custom bottleneck threshold (seconds)
-python src/24_intelligent_analysis.py --bottleneck-threshold 30.0
+python src/gnn/24_intelligent_analysis.py --bottleneck-threshold 30.0
 
 # Specific LLM model
-python src/24_intelligent_analysis.py --analysis-model "gpt-4"
+python src/gnn/24_intelligent_analysis.py --analysis-model "gpt-4"
 ```
 
 ### Programmatic
@@ -549,8 +549,8 @@ The module implements a layered recovery approach:
 
 ### Test Files
 
-- `src/tests/intelligent_analysis/test_intelligent_analysis_overall.py` - Module-level tests
-- Test via full pipeline: `python src/main.py --only-steps 24 --verbose`
+- `tests/intelligent_analysis/test_intelligent_analysis_overall.py` - Module-level tests
+- Test via full pipeline: `python src/gnn/main.py --only-steps 24 --verbose`
 
 ### Required Test Fixtures
 
@@ -953,16 +953,16 @@ The `_run_llm_analysis()` function is async because it uses the shared `llm.llm_
 
 ### Related Documentation
 
-- [Pipeline Overview](../../../src/intelligent_analysis/../../README.md)
-- [Analysis Module](../../../src/intelligent_analysis/../analysis/AGENTS.md)
-- [LLM Module](../../../src/intelligent_analysis/../llm/AGENTS.md)
-- [Execute Module](../../../src/intelligent_analysis/../execute/AGENTS.md)
+- [Pipeline Overview](../../../README.md)
+- [Analysis Module](../../../src/gnn/intelligent_analysis/../analysis/AGENTS.md)
+- [LLM Module](../../../src/gnn/intelligent_analysis/../llm/AGENTS.md)
+- [Execute Module](../../../src/gnn/intelligent_analysis/../execute/AGENTS.md)
 
 ### Internal References
 
-- `src/main.py` - Pipeline orchestrator that generates the summary consumed by this module
-- `src/llm/llm_processor.py` - LLM processor used for AI-powered analysis
-- `src/utils/pipeline_template.py` - Logging utilities used throughout
+- `src/gnn/main.py` - Pipeline orchestrator that generates the summary consumed by this module
+- `src/gnn/llm/llm_processor.py` - LLM processor used for AI-powered analysis
+- `src/gnn/utils/pipeline_template.py` - Logging utilities used throughout
 
 ---
 
@@ -976,12 +976,12 @@ The `_run_llm_analysis()` function is async because it uses the shared `llm.llm_
 
 ## Documentation
 
-- **[README](../../../src/intelligent_analysis/README.md)**: Module Overview
-- **[AGENTS](../../../src/intelligent_analysis/AGENTS.md)**: Agentic Workflows
-- **[SPEC](../../../src/intelligent_analysis/SPEC.md)**: Architectural Specification
-- **[SKILL](../../../src/intelligent_analysis/SKILL.md)**: Capability API
+- **[README](../../../src/gnn/intelligent_analysis/README.md)**: Module Overview
+- **[AGENTS](../../../src/gnn/intelligent_analysis/AGENTS.md)**: Agentic Workflows
+- **[SPEC](../../../src/gnn/intelligent_analysis/SPEC.md)**: Architectural Specification
+- **[SKILL](../../../src/gnn/intelligent_analysis/SKILL.md)**: Capability API
 
 
 ---
 
-**Source Reference**: [src/intelligent_analysis](../../../src/intelligent_analysis)
+**Source Reference**: [src/gnn/intelligent_analysis](../../../src/gnn/intelligent_analysis)

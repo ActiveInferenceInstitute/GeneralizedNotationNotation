@@ -11,9 +11,9 @@ Historical analysis of identified areas for improvement, streamlining, and ensur
 
 For current pipeline implementation and standards:
 
-- **[src/AGENTS.md](../../../src/AGENTS.md)**: Master agent scaffolding and complete 25-step pipeline registry
-- **[src/README.md](../../../src/README.md)**: Pipeline architecture and thin orchestrator pattern
-- **[src/main.py](../../../src/main.py)**: Pipeline orchestrator implementation
+- **[src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md)**: Master agent scaffolding and complete 25-step pipeline registry
+- **[src/gnn/README.md](../../../src/gnn/README.md)**: Pipeline architecture and thin orchestrator pattern
+- **[src/gnn/main.py](../../../src/gnn/main.py)**: Pipeline orchestrator implementation
 - **[architecture_reference.md](../reference/architecture_reference.md)**: Implementation patterns and cross-module data flow
 
 - 25 steps (0-24) are maintained through the thin-orchestrator architecture.
@@ -40,7 +40,7 @@ Based on codebase analysis, there are **5 critical areas** requiring systematic 
 
 Multiple modules use different approaches for handling optional dependencies:
 
-**Pattern A: Basic try/except** (`src/visualization/processor.py:19-52`)
+**Pattern A: Basic try/except** (`src/gnn/visualization/processor.py:19-52`)
 
 ```python
 try:
@@ -52,7 +52,7 @@ except (ImportError, RecursionError):
     MATPLOTLIB_AVAILABLE = False
 ```
 
-**Pattern B: Complex availability checking** (`src/utils/dependency_manager.py:134-173`)
+**Pattern B: Complex availability checking** (`src/gnn/utils/dependency_manager.py:134-173`)
 
 ```python
 def check_python_dependency(
@@ -65,7 +65,7 @@ def check_python_dependency(
     # ... more special cases
 ```
 
-**Pattern C: Safe imports with multiple alternatives** (`src/execute/executor.py:18-67`)
+**Pattern C: Safe imports with multiple alternatives** (`src/gnn/execute/executor.py:18-67`)
 
 ```python
 try:
@@ -86,7 +86,7 @@ except ImportError as e:
 - Standardized alternative functions for all optional imports
 - Central registration of all dependency requirements
 
-**Implementation Location:** `src/utils/dependency_manager.py` needs expansion to handle all modules
+**Implementation Location:** `src/gnn/utils/dependency_manager.py` needs expansion to handle all modules
 
 ## 2. Error Handling Pattern Fragmentation
 
@@ -94,7 +94,7 @@ except ImportError as e:
 
 #### Multiple Error Handling Systems
 
-**System A: PipelineErrorHandler** (`src/utils/error_handling.py:101`)
+**System A: PipelineErrorHandler** (`src/gnn/utils/error_handling.py:101`)
 
 ```python
 class PipelineErrorHandler:
@@ -102,7 +102,7 @@ class PipelineErrorHandler:
         # Comprehensive error classification and recovery strategies
 ```
 
-**System B: StructuredLogger** (`src/utils/structured_logging.py:82`)  
+**System B: StructuredLogger** (`src/gnn/utils/structured_logging.py:82`)  
 
 ```python
 class StructuredLogger:
@@ -110,14 +110,14 @@ class StructuredLogger:
         # Enhanced logging with context and tracebacks
 ```
 
-**System C: Basic logging functions** (`src/utils/logging_utils.py:714-765`)
+**System C: Basic logging functions** (`src/gnn/utils/logging_utils.py:714-765`)
 
 ```python
 def log_step_error(logger_or_step_name, message: str = None, **metadata):
     # Simple error logging functions
 ```
 
-**System D: Module-specific alternatives** (`src/execute/executor.py:56-67`)
+**System D: Module-specific alternatives** (`src/gnn/execute/executor.py:56-67`)
 
 ```python
 # Inline alternative functions when utils not available
@@ -144,7 +144,7 @@ def log_step_error(logger, msg):
 
 Different modules use different approaches for cross-step communication:
 
-**JSON File Exchange** (`src/5_type_checker.py:52-64`)
+**JSON File Exchange** (`src/gnn/5_type_checker.py:52-64`)
 
 ```python
 gnn_output_dir = get_output_dir_for_script("3_gnn.py", Path(args.output_dir))
@@ -160,7 +160,7 @@ from visualization import process_visualization
 # Direct function invocation without standardized interface
 ```
 
-**Module Availability Flags** (`src/mcp/IMPLEMENTATION_SUMMARY.md:26-30`)
+**Module Availability Flags** (`src/gnn/mcp/IMPLEMENTATION_SUMMARY.md:26-30`)
 
 ```text
 render     | ⚠️ Partial | 0 | 0 | Some import issues
@@ -186,7 +186,7 @@ ontology   | ⚠️ Partial | 0 | 0 | Missing register_tools
 
 #### Mixed Import Approaches
 
-**Python 3.13 Compatibility Issues** (`src/visualization/processor.py:38-51`)
+**Python 3.13 Compatibility Issues** (`src/gnn/visualization/processor.py:38-51`)
 
 ```python
 try:
@@ -216,7 +216,7 @@ except (ImportError, RecursionError, AttributeError, ValueError) as e:
 - Python version compatibility handled centrally  
 - Standard error messages and user guidance
 
-**Implementation Location:** `src/utils/import_manager.py` (new module)
+**Implementation Location:** `src/gnn/utils/import_manager.py` (new module)
 
 ## 5. MCP Integration Gaps
 
@@ -224,7 +224,7 @@ except (ImportError, RecursionError, AttributeError, ValueError) as e:
 
 #### Incomplete MCP Coverage
 
-From `src/mcp/IMPLEMENTATION_SUMMARY.md:26-30`:
+From `src/gnn/mcp/IMPLEMENTATION_SUMMARY.md:26-30`:
 
 - **render**: Partial (import issues)
 - **execute**: Partial (JAX import issues)
@@ -271,7 +271,7 @@ def process_gnn_content(content: str) -> dict:
 - Mixed step counting (template says 13 steps, actual pipeline has 24)
 - Inconsistent validation patterns
 
-### src/utils/ Module  
+### src/gnn/utils/ Module  
 
 **Issues:**
 
@@ -279,7 +279,7 @@ def process_gnn_content(content: str) -> dict:
 - Import alternatives defined inline instead of centrally managed
 - Performance tracking scattered across multiple files
 
-### src/render/ Module
+### src/gnn/render/ Module
 
 **Issues:**
 
@@ -287,7 +287,7 @@ def process_gnn_content(content: str) -> dict:
 - Framework-specific dependencies not properly managed
 - Generated code validation not standardized
 
-### src/execute/ Module
+### src/gnn/execute/ Module
 
 **Issues:**
 
@@ -322,7 +322,7 @@ as background context, not as an active dated schedule.
    - Implement result validation pipelines
 
 2. **Import System Overhaul**
-   - Create `src/utils/import_manager.py`
+   - Create `src/gnn/utils/import_manager.py`
    - Handle Python 3.13 compatibility centrally
    - Standardize alternative function patterns
 

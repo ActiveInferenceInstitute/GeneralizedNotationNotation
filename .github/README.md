@@ -34,8 +34,8 @@ This file is the **GitHub-oriented entry point**: GNN concepts, deep links into 
 ## What GNN is
 
 - **Notation**: Models are written as **Markdown** with labeled sections (for example `## GNNSection`, `## StateSpaceBlock`, `## Connections`, `## InitialParameterization`, ontology annotations). The normative and reference material is split across [doc/gnn/reference/gnn_syntax.md](../doc/gnn/reference/gnn_syntax.md) (v1.6.0 living spec), [doc/gnn/tutorials/gnn_examples_doc.md](../doc/gnn/tutorials/gnn_examples_doc.md) (examples and patterns), and the [language hub](../doc/gnn/language/README.md).
-- **Processing**: A single orchestrator ([src/main.py](../src/main.py)) runs the numbered steps in order (or a subset via `--only-steps` / `--skip-steps`). Step **3** produces parsed representations consumed by type checking, validation, export, visualization, ontology, render, LLM, and related steps; **11 → 12** is the main **generate code → run simulation** bridge. See [doc/gnn/reference/architecture_reference.md](../doc/gnn/reference/architecture_reference.md) and [doc/gnn/reference/technical_reference.md](../doc/gnn/reference/technical_reference.md).
-- **Architecture**: Each step is a **thin orchestrator** (`src/N_*.py`) delegating to `src/<module>/` with `AGENTS.md` and usually `processor.py`. Diagram and conventions: root [AGENTS.md](../AGENTS.md), [ARCHITECTURE.md](../ARCHITECTURE.md), [src/README.md](../src/README.md).
+- **Processing**: A single orchestrator ([src/gnn/main.py](../src/gnn/main.py)) runs the numbered steps in order (or a subset via `--only-steps` / `--skip-steps`). Step **3** produces parsed representations consumed by type checking, validation, export, visualization, ontology, render, LLM, and related steps; **11 → 12** is the main **generate code → run simulation** bridge. See [doc/gnn/reference/architecture_reference.md](../doc/gnn/reference/architecture_reference.md) and [doc/gnn/reference/technical_reference.md](../doc/gnn/reference/technical_reference.md).
+- **Architecture**: Each step is a **thin orchestrator** (`src/N_*.py`) delegating to `src/<module>/` with `AGENTS.md` and usually `processor.py`. Diagram and conventions: root [AGENTS.md](../AGENTS.md), [ARCHITECTURE.md](../ARCHITECTURE.md), [src/gnn/README.md](../src/gnn/README.md).
 
 ---
 
@@ -71,42 +71,42 @@ Troubleshooting and operator notes: [doc/gnn/operations/gnn_troubleshooting.md](
 
 Orchestrator scripts live in [src/](../src/); module AGENTS in each folder; per-step **documentation** in [doc/gnn/modules/](../doc/gnn/modules/).
 
-| Step | Module | Orchestrator | [Module AGENTS](../src/AGENTS.md) | [Step doc](../doc/gnn/modules/README.md) |
+| Step | Module | Orchestrator | [Module AGENTS](../src/gnn/AGENTS.md) | [Step doc](../doc/gnn/modules/README.md) |
 |-----:|--------|--------------|-----------------------------------|----------------------------------------|
-| 0 | template | [0_template.py](../src/0_template.py) | [template/AGENTS.md](../src/template/AGENTS.md) | [00_template.md](../doc/gnn/modules/00_template.md) |
-| 1 | setup | [1_setup.py](../src/1_setup.py) | [setup/AGENTS.md](../src/setup/AGENTS.md) | [01_setup.md](../doc/gnn/modules/01_setup.md) |
-| 2 | tests | [2_tests.py](../src/2_tests.py) | [tests/AGENTS.md](../src/tests/AGENTS.md) | [02_tests.md](../doc/gnn/modules/02_tests.md) |
-| 3 | gnn | [3_gnn.py](../src/3_gnn.py) | [gnn/AGENTS.md](../src/gnn/AGENTS.md) | [03_gnn.md](../doc/gnn/modules/03_gnn.md) |
-| 4 | model_registry | [4_model_registry.py](../src/4_model_registry.py) | [model_registry/AGENTS.md](../src/model_registry/AGENTS.md) | [04_model_registry.md](../doc/gnn/modules/04_model_registry.md) |
-| 5 | type_checker | [5_type_checker.py](../src/5_type_checker.py) | [type_checker/AGENTS.md](../src/type_checker/AGENTS.md) | [05_type_checker.md](../doc/gnn/modules/05_type_checker.md) |
-| 6 | validation | [6_validation.py](../src/6_validation.py) | [validation/AGENTS.md](../src/validation/AGENTS.md) | [06_validation.md](../doc/gnn/modules/06_validation.md) |
-| 7 | export | [7_export.py](../src/7_export.py) | [export/AGENTS.md](../src/export/AGENTS.md) | [07_export.md](../doc/gnn/modules/07_export.md) |
-| 8 | visualization | [8_visualization.py](../src/8_visualization.py) | [visualization/AGENTS.md](../src/visualization/AGENTS.md) | [08_visualization.md](../doc/gnn/modules/08_visualization.md) |
-| 9 | advanced_visualization | [9_advanced_viz.py](../src/9_advanced_viz.py) | [advanced_visualization/AGENTS.md](../src/advanced_visualization/AGENTS.md) | [09_advanced_viz.md](../doc/gnn/modules/09_advanced_viz.md) |
-| 10 | ontology | [10_ontology.py](../src/10_ontology.py) | [ontology/AGENTS.md](../src/ontology/AGENTS.md) | [10_ontology.md](../doc/gnn/modules/10_ontology.md) |
-| 11 | render | [11_render.py](../src/11_render.py) | [render/AGENTS.md](../src/render/AGENTS.md) | [11_render.md](../doc/gnn/modules/11_render.md) |
-| 12 | execute | [12_execute.py](../src/12_execute.py) | [execute/AGENTS.md](../src/execute/AGENTS.md) | [12_execute.md](../doc/gnn/modules/12_execute.md) |
-| 13 | llm | [13_llm.py](../src/13_llm.py) | [llm/AGENTS.md](../src/llm/AGENTS.md) | [13_llm.md](../doc/gnn/modules/13_llm.md) |
-| 14 | ml_integration | [14_ml_integration.py](../src/14_ml_integration.py) | [ml_integration/AGENTS.md](../src/ml_integration/AGENTS.md) | [14_ml_integration.md](../doc/gnn/modules/14_ml_integration.md) |
-| 15 | audio | [15_audio.py](../src/15_audio.py) | [audio/AGENTS.md](../src/audio/AGENTS.md) | [15_audio.md](../doc/gnn/modules/15_audio.md) |
-| 16 | analysis | [16_analysis.py](../src/16_analysis.py) | [analysis/AGENTS.md](../src/analysis/AGENTS.md) | [16_analysis.md](../doc/gnn/modules/16_analysis.md) |
-| 17 | integration | [17_integration.py](../src/17_integration.py) | [integration/AGENTS.md](../src/integration/AGENTS.md) | [17_integration.md](../doc/gnn/modules/17_integration.md) |
-| 18 | security | [18_security.py](../src/18_security.py) | [security/AGENTS.md](../src/security/AGENTS.md) | [18_security.md](../doc/gnn/modules/18_security.md) |
-| 19 | research | [19_research.py](../src/19_research.py) | [research/AGENTS.md](../src/research/AGENTS.md) | [19_research.md](../doc/gnn/modules/19_research.md) |
-| 20 | website | [20_website.py](../src/20_website.py) | [website/AGENTS.md](../src/website/AGENTS.md) | [20_website.md](../doc/gnn/modules/20_website.md) |
-| 21 | mcp | [21_mcp.py](../src/21_mcp.py) | [mcp/AGENTS.md](../src/mcp/AGENTS.md) | [21_mcp.md](../doc/gnn/modules/21_mcp.md) |
-| 22 | gui | [22_gui.py](../src/22_gui.py) | [gui/AGENTS.md](../src/gui/AGENTS.md) | [22_gui.md](../doc/gnn/modules/22_gui.md) |
-| 23 | report | [23_report.py](../src/23_report.py) | [report/AGENTS.md](../src/report/AGENTS.md) | [23_report.md](../doc/gnn/modules/23_report.md) |
-| 24 | intelligent_analysis | [24_intelligent_analysis.py](../src/24_intelligent_analysis.py) | [intelligent_analysis/AGENTS.md](../src/intelligent_analysis/AGENTS.md) | [24_intelligent_analysis.md](../doc/gnn/modules/24_intelligent_analysis.md) |
+| 0 | template | [0_template.py](../src/gnn/0_template.py) | [template/AGENTS.md](../src/gnn/template/AGENTS.md) | [00_template.md](../doc/gnn/modules/00_template.md) |
+| 1 | setup | [1_setup.py](../src/gnn/1_setup.py) | [setup/AGENTS.md](../src/gnn/setup/AGENTS.md) | [01_setup.md](../doc/gnn/modules/01_setup.md) |
+| 2 | tests | [2_tests.py](../src/gnn/2_tests.py) | [tests/AGENTS.md](../tests/AGENTS.md) | [02_tests.md](../doc/gnn/modules/02_tests.md) |
+| 3 | gnn | [3_gnn.py](../src/gnn/3_gnn.py) | [gnn/AGENTS.md](../src/gnn/AGENTS.md) | [03_gnn.md](../doc/gnn/modules/03_gnn.md) |
+| 4 | model_registry | [4_model_registry.py](../src/gnn/4_model_registry.py) | [model_registry/AGENTS.md](../src/gnn/model_registry/AGENTS.md) | [04_model_registry.md](../doc/gnn/modules/04_model_registry.md) |
+| 5 | type_checker | [5_type_checker.py](../src/gnn/5_type_checker.py) | [type_checker/AGENTS.md](../src/gnn/type_checker/AGENTS.md) | [05_type_checker.md](../doc/gnn/modules/05_type_checker.md) |
+| 6 | validation | [6_validation.py](../src/gnn/6_validation.py) | [validation/AGENTS.md](../src/gnn/validation/AGENTS.md) | [06_validation.md](../doc/gnn/modules/06_validation.md) |
+| 7 | export | [7_export.py](../src/gnn/7_export.py) | [export/AGENTS.md](../src/gnn/export/AGENTS.md) | [07_export.md](../doc/gnn/modules/07_export.md) |
+| 8 | visualization | [8_visualization.py](../src/gnn/8_visualization.py) | [visualization/AGENTS.md](../src/gnn/visualization/AGENTS.md) | [08_visualization.md](../doc/gnn/modules/08_visualization.md) |
+| 9 | advanced_visualization | [9_advanced_viz.py](../src/gnn/9_advanced_viz.py) | [advanced_visualization/AGENTS.md](../src/gnn/advanced_visualization/AGENTS.md) | [09_advanced_viz.md](../doc/gnn/modules/09_advanced_viz.md) |
+| 10 | ontology | [10_ontology.py](../src/gnn/10_ontology.py) | [ontology/AGENTS.md](../src/gnn/ontology/AGENTS.md) | [10_ontology.md](../doc/gnn/modules/10_ontology.md) |
+| 11 | render | [11_render.py](../src/gnn/11_render.py) | [render/AGENTS.md](../src/gnn/render/AGENTS.md) | [11_render.md](../doc/gnn/modules/11_render.md) |
+| 12 | execute | [12_execute.py](../src/gnn/12_execute.py) | [execute/AGENTS.md](../src/gnn/execute/AGENTS.md) | [12_execute.md](../doc/gnn/modules/12_execute.md) |
+| 13 | llm | [13_llm.py](../src/gnn/13_llm.py) | [llm/AGENTS.md](../src/gnn/llm/AGENTS.md) | [13_llm.md](../doc/gnn/modules/13_llm.md) |
+| 14 | ml_integration | [14_ml_integration.py](../src/gnn/14_ml_integration.py) | [ml_integration/AGENTS.md](../src/gnn/ml_integration/AGENTS.md) | [14_ml_integration.md](../doc/gnn/modules/14_ml_integration.md) |
+| 15 | audio | [15_audio.py](../src/gnn/15_audio.py) | [audio/AGENTS.md](../src/gnn/audio/AGENTS.md) | [15_audio.md](../doc/gnn/modules/15_audio.md) |
+| 16 | analysis | [16_analysis.py](../src/gnn/16_analysis.py) | [analysis/AGENTS.md](../src/gnn/analysis/AGENTS.md) | [16_analysis.md](../doc/gnn/modules/16_analysis.md) |
+| 17 | integration | [17_integration.py](../src/gnn/17_integration.py) | [integration/AGENTS.md](../src/gnn/integration/AGENTS.md) | [17_integration.md](../doc/gnn/modules/17_integration.md) |
+| 18 | security | [18_security.py](../src/gnn/18_security.py) | [security/AGENTS.md](../src/gnn/security/AGENTS.md) | [18_security.md](../doc/gnn/modules/18_security.md) |
+| 19 | research | [19_research.py](../src/gnn/19_research.py) | [research/AGENTS.md](../src/gnn/research/AGENTS.md) | [19_research.md](../doc/gnn/modules/19_research.md) |
+| 20 | website | [20_website.py](../src/gnn/20_website.py) | [website/AGENTS.md](../src/gnn/website/AGENTS.md) | [20_website.md](../doc/gnn/modules/20_website.md) |
+| 21 | mcp | [21_mcp.py](../src/gnn/21_mcp.py) | [mcp/AGENTS.md](../src/gnn/mcp/AGENTS.md) | [21_mcp.md](../doc/gnn/modules/21_mcp.md) |
+| 22 | gui | [22_gui.py](../src/gnn/22_gui.py) | [gui/AGENTS.md](../src/gnn/gui/AGENTS.md) | [22_gui.md](../doc/gnn/modules/22_gui.md) |
+| 23 | report | [23_report.py](../src/gnn/23_report.py) | [report/AGENTS.md](../src/gnn/report/AGENTS.md) | [23_report.md](../doc/gnn/modules/23_report.md) |
+| 24 | intelligent_analysis | [24_intelligent_analysis.py](../src/gnn/24_intelligent_analysis.py) | [intelligent_analysis/AGENTS.md](../src/gnn/intelligent_analysis/AGENTS.md) | [24_intelligent_analysis.md](../doc/gnn/modules/24_intelligent_analysis.md) |
 
-**Also documented**: [init.md](../doc/gnn/modules/init.md) (template init), [main.md](../doc/gnn/modules/main.md) (orchestrator). **Infrastructure** (not separate numbered steps): [pipeline/AGENTS.md](../src/pipeline/AGENTS.md), [utils/AGENTS.md](../src/utils/AGENTS.md), [api/AGENTS.md](../src/api/AGENTS.md), [cli/AGENTS.md](../src/cli/AGENTS.md), [lsp/AGENTS.md](../src/lsp/AGENTS.md), [src/doc/AGENTS.md](../src/doc/AGENTS.md).
+**Also documented**: [init.md](../doc/gnn/modules/init.md) (template init), [main.md](../doc/gnn/modules/main.md) (orchestrator). **Infrastructure** (not separate numbered steps): [pipeline/AGENTS.md](../src/gnn/pipeline/AGENTS.md), [utils/AGENTS.md](../src/gnn/utils/AGENTS.md), [api/AGENTS.md](../src/gnn/api/AGENTS.md), [cli/AGENTS.md](../src/gnn/cli/AGENTS.md), [lsp/AGENTS.md](../src/gnn/lsp/AGENTS.md), [src/gnn/doc/AGENTS.md](../src/gnn/doc/AGENTS.md).
 
 **Run examples**
 
 ```bash
-uv run python src/main.py --target-dir input/gnn_files --verbose
-uv run python src/main.py --only-steps "3,5,11,12" --verbose
-uv run python src/3_gnn.py --target-dir input/gnn_files --output-dir output --verbose
+uv run python src/gnn/main.py --target-dir input/gnn_files --verbose
+uv run python src/gnn/main.py --only-steps "3,5,11,12" --verbose
+uv run python src/gnn/3_gnn.py --target-dir input/gnn_files --output-dir output --verbose
 ```
 
 More command patterns: [CLAUDE.md](../CLAUDE.md), [doc/gnn/operations/gnn_tools.md](../doc/gnn/operations/gnn_tools.md).
@@ -115,7 +115,7 @@ More command patterns: [CLAUDE.md](../CLAUDE.md), [doc/gnn/operations/gnn_tools.
 
 ## Render and execute backends
 
-Code generation and execution are organized under [src/render/](../src/render/) and [src/execute/](../src/execute/). Documentation:
+Code generation and execution are organized under [src/gnn/render/](../src/gnn/render/) and [src/gnn/execute/](../src/gnn/execute/). Documentation:
 
 | Topic | Link |
 |------|------|
@@ -140,10 +140,10 @@ Visualization and export docs: [integration/gnn_visualization.md](../doc/gnn/int
 
 | Interface | Code | Documentation |
 |-----------|------|----------------|
-| CLI (`gnn` command) | [src/cli/](../src/cli/) | [cli/README.md](../src/cli/README.md), [cli/AGENTS.md](../src/cli/AGENTS.md) |
-| REST API | [src/api/](../src/api/) | [api/AGENTS.md](../src/api/AGENTS.md), [doc/api/README.md](../doc/api/README.md) |
-| LSP | [src/lsp/](../src/lsp/) | [lsp/AGENTS.md](../src/lsp/AGENTS.md), [lsp/README.md](../src/lsp/README.md) |
-| MCP tools | [src/mcp/](../src/mcp/) | [doc/gnn/mcp/README.md](../doc/gnn/mcp/README.md), [doc/gnn/mcp/tool_reference.md](../doc/gnn/mcp/tool_reference.md), [doc/gnn/testing/mcp_audit.md](../doc/gnn/testing/mcp_audit.md) |
+| CLI (`gnn` command) | [src/gnn/cli/](../src/gnn/cli/) | [cli/README.md](../src/gnn/cli/README.md), [cli/AGENTS.md](../src/gnn/cli/AGENTS.md) |
+| REST API | [src/gnn/api/](../src/gnn/api/) | [api/AGENTS.md](../src/gnn/api/AGENTS.md), [doc/api/README.md](../doc/api/README.md) |
+| LSP | [src/gnn/lsp/](../src/gnn/lsp/) | [lsp/AGENTS.md](../src/gnn/lsp/AGENTS.md), [lsp/README.md](../src/gnn/lsp/README.md) |
+| MCP tools | [src/gnn/mcp/](../src/gnn/mcp/) | [doc/gnn/mcp/README.md](../doc/gnn/mcp/README.md), [doc/gnn/mcp/tool_reference.md](../doc/gnn/mcp/tool_reference.md), [doc/gnn/testing/mcp_audit.md](../doc/gnn/testing/mcp_audit.md) |
 
 ---
 
@@ -224,10 +224,10 @@ Visualization and export docs: [integration/gnn_visualization.md](../doc/gnn/int
 
 | Path | Description |
 |------|-------------|
-| [src/main.py](../src/main.py) | Pipeline orchestrator (run full or selected steps) |
-| [src/AGENTS.md](../src/AGENTS.md) | Per-folder technical notes for `src/` |
-| [src/gnn/](../src/gnn/), [src/render/](../src/render/), [src/execute/](../src/execute/) | Parse, codegen, simulation |
-| [src/tests/](../src/tests/) | Pytest suite |
+| [src/gnn/main.py](../src/gnn/main.py) | Pipeline orchestrator (run full or selected steps) |
+| [src/gnn/AGENTS.md](../src/gnn/AGENTS.md) | Per-folder technical notes for `src/` |
+| [src/gnn/](../src/gnn/), [src/gnn/render/](../src/gnn/render/), [src/gnn/execute/](../src/gnn/execute/) | Parse, codegen, simulation |
+| [tests/](../tests/) | Pytest suite |
 | [input/gnn_files/](../input/gnn_files/) | Sample GNN models; [input/config.yaml](../input/config.yaml) defaults |
 | [output/](../output/) | Pipeline outputs (tracked per repo policy) |
 | [pyproject.toml](../pyproject.toml) | Dependencies and tool config |
@@ -331,20 +331,20 @@ uv run --extra dev mypy src --show-error-codes
 # hosts like crates.io/paperswithcode can false-positive; not wired into CI)
 uv run --extra dev python scripts/check_external_links.py
 uv run --extra dev bandit -r src -c pyproject.toml -q
-uv run --extra dev python -m pytest --collect-only src/tests/ -q --tb=no \
-  --ignore=src/tests/llm/test_llm_ollama.py \
-  --ignore=src/tests/llm/test_llm_ollama_integration.py
+uv run --extra dev python -m pytest --collect-only tests/ -q --tb=no \
+  --ignore=tests/llm/test_llm_ollama.py \
+  --ignore=tests/llm/test_llm_ollama_integration.py
 uv run --extra dev python -m pytest \
-  src/tests/execute/test_pymdp_contracts.py \
-  src/tests/execute/test_discrete_models_pymdp.py \
-  src/tests/visualization/test_visualization_matrices.py \
+  tests/execute/test_pymdp_contracts.py \
+  tests/execute/test_discrete_models_pymdp.py \
+  tests/visualization/test_visualization_matrices.py \
   -q --tb=short
 uv run --extra dev python -m pytest -m "not pipeline and not mcp" --tb=short -q
 # Same output as CI security job (SARIF for artifacts / code scanning):
 # uv run --extra dev bandit -r src -c pyproject.toml --severity-level medium --confidence-level medium -f sarif -o bandit-results.sarif
 ```
 
-Full local suite (broader than default CI marker filter): `uv run --extra dev python -m pytest src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py`. Ollama integration tests may need a local daemon; see [README.md](../README.md) and [pytest.ini](../pytest.ini).
+Full local suite (broader than default CI marker filter): `uv run --extra dev python -m pytest tests/ -q --tb=no --ignore=tests/llm/test_llm_ollama.py --ignore=tests/llm/test_llm_ollama_integration.py`. Ollama integration tests may need a local daemon; see [README.md](../README.md) and [pytest.ini](../pytest.ini).
 
 ---
 

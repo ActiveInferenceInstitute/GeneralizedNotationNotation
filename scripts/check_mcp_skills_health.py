@@ -30,7 +30,7 @@ from pathlib import Path
 from scripts.lib.shared import add_strict_flag, exit_with_findings, repo_root
 
 REPO = repo_root()
-SRC = REPO / "src"
+SRC = REPO / "src" / "gnn"
 # Make src/ importable when the script is invoked without PYTHONPATH=src.
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
@@ -57,7 +57,7 @@ _TMPDIR = Path(tempfile.mkdtemp(prefix="gnn_mcp_audit_"))
 _MODEL_COPY = _TMPDIR / "model.md"
 _MODEL_COPY.write_bytes(
     (
-        SRC.parent / "input" / "gnn_files" / "basics" / "static_perception.md"
+        SRC.parent.parent / "input" / "gnn_files" / "basics" / "static_perception.md"
     ).read_bytes()
 )
 _OUTPUT_PATH = _TMPDIR / "output"
@@ -107,7 +107,7 @@ def _build_args(schema: dict | None) -> dict:
 def audit_mcp_tools() -> list[str]:
     """Execute every registered MCP tool; return findings for crashes/missing handlers."""
     findings: list[str] = []
-    from mcp import initialize, mcp_instance
+    from gnn.mcp import initialize, mcp_instance
 
     # Run the sweep from the temp dir so relative output paths (some pipeline
     # tools default to "output") never write into the repository.
@@ -224,21 +224,22 @@ def _resolve(mod: str, symbol: str | None) -> bool:
 
 
 def _module_package_resolve(module_dir: Path, symbol: str) -> bool:
-    for cand in (module_dir.name, f"src.{module_dir.name}"):
+    for cand in (f"gnn.{module_dir.name}", module_dir.name, f"src.{module_dir.name}"):
         try:
             if hasattr(importlib.import_module(cand), symbol):
                 return True
         except Exception:
             continue
     try:
-        pkg = importlib.import_module(module_dir.name)
+        pkg = importlib.import_module(f"gnn.{module_dir.name}")
         for sub in pkg.__path__:
             for f in Path(sub).glob("*.py"):
                 if f.name.startswith("_"):
                     continue
                 try:
                     if hasattr(
-                        importlib.import_module(f"{module_dir.name}.{f.stem}"), symbol
+                        importlib.import_module(f"gnn.{module_dir.name}.{f.stem}"),
+                        symbol,
                     ):
                         return True
                 except Exception:
@@ -295,7 +296,7 @@ def _resolvability_findings(skill: Path, rel: Path) -> tuple[list[str], int]:
 def audit_skills() -> list[str]:
     """Verify every SKILL.md documents a resolvable surface; return findings."""
     findings: list[str] = []
-    from mcp import initialize, mcp_instance
+    from gnn.mcp import initialize, mcp_instance
 
     initialize(halt_on_missing_sdk=False, force_proceed_flag=True, force_refresh=True)
     live_tools: set[str] = set(mcp_instance.tools.keys())

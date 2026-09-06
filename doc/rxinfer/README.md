@@ -32,7 +32,7 @@ This directory contains documentation, scripts, and resources for integrating GN
 
 ### Pipeline Integration
 - **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
-- **[src/AGENTS.md](../../src/AGENTS.md)**: Implementation details
+- **[src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)**: Implementation details
 
 ## Contents
 
@@ -88,7 +88,7 @@ This directory contains documentation, scripts, and resources for integrating GN
 - **Factor Graph Models**: Natural representation of Active Inference models
 - **Reproducible Execution**: A committed Julia environment
   (`Project.toml` + `Manifest.toml` pinning RxInfer 5.5.0 under
-  `src/execute/rxinfer/`) with `--project=<env>` execution
+  `src/gnn/execute/rxinfer/`) with `--project=<env>` execution
 - **Multi-agent Support**: Coordinated multi-agent systems
 
 ### GNN to RxInfer.jl Translation
@@ -98,9 +98,9 @@ The GNN pipeline translates GNN models to RxInfer.jl through:
 1. **Model Parsing**: GNN `canonical_pomdp_v1` syntax parsed into structured representation
 2. **Factor Graph Construction**: Active Inference components mapped to factor graph
 3. **Code Generation**: Julia code generation with RxInfer.jl `@model` + `infer()` API
-   (emitted by `src/render/rxinfer/rxinfer_renderer.py`)
+   (emitted by `src/gnn/render/rxinfer/rxinfer_renderer.py`)
 4. **Environment Setup**: Committed `Project.toml` + `Manifest.toml` under
-   `src/execute/rxinfer/` pins RxInfer 5.5.0; `setup_environment.jl` uses
+   `src/gnn/execute/rxinfer/` pins RxInfer 5.5.0; `setup_environment.jl` uses
    `Pkg.activate()` + `Pkg.instantiate()` (no runtime `Pkg.add`)
 5. **Validation**: Automated validation of generated code and inference results
 
@@ -115,7 +115,7 @@ model:
 
 #### Execute (Step 12)
 - Runs each rendered `.jl` with
-  `julia --startup-file=no --project=src/execute/rxinfer <script>`
+  `julia --startup-file=no --project=src/gnn/execute/rxinfer <script>`
 - `setup_environment.jl` activates and instantiates the committed environment
   (`Pkg.activate()` + `Pkg.instantiate()`, no runtime `Pkg.add`)
 - Records `random.seed!(seed)` and the script SHA256 in `runtime_metadata`
@@ -149,7 +149,7 @@ This documentation is integrated with the 25-step GNN processing pipeline:
    - RxInfer.jl results integrated into comprehensive outputs
    - Multi-agent coordination and analysis
 
-See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
+See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documentation.
 
 ## Render → Execute → Log → Visualize lifecycle
 
@@ -161,7 +161,7 @@ generators (multi-agent renders as the documented joint composition).
 
 ### 1. Render (Step 11)
 
-`src/render/rxinfer/` consumes `canonical_pomdp_v1` specs and emits an executable
+`src/gnn/render/rxinfer/` consumes `canonical_pomdp_v1` specs and emits an executable
 RxInfer.jl script per model:
 
 ```text
@@ -170,7 +170,7 @@ output/11_render_output/<model>/rxinfer/<model>_rxinfer.jl
 
 ### 2. Execute (Step 12)
 
-`src/execute/rxinfer/` runs the rendered `.jl` under Julia with RxInfer.jl. The
+`src/gnn/execute/rxinfer/` runs the rendered `.jl` under Julia with RxInfer.jl. The
 script writes the **required** result artifact in its working directory:
 
 ```text
@@ -194,7 +194,7 @@ Two complementary visualization layers exist:
 - **Julia-native (best-effort, emitted at render/execute time)** — `Plots.jl`
   figures when Plots rendering is available:
   `belief_evolution.png`, `efe_over_time.png`, `policy_posterior.png`.
-- **Step-16 matplotlib analysis** — `src/analysis/rxinfer/` produces the full
+- **Step-16 matplotlib analysis** — `src/gnn/analysis/rxinfer/` produces the full
   per-exemplar set from `rxinfer_simulation_v1`, written under
   `output/16_analysis_output/rxinfer/`: `belief_evolution`, `obs_vs_true`,
   `belief_heatmap`, `belief_entropy`, `accuracy`, `action_frequencies`,
@@ -248,8 +248,8 @@ end
 
 ### Pipeline Architecture
 - **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
-- **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
-- **[Pipeline README](../../src/README.md)**: Pipeline overview
+- **[Pipeline AGENTS](../../src/gnn/AGENTS.md)**: Implementation details
+- **[Pipeline README](../../src/gnn/README.md)**: Pipeline overview
 
 ## Standards and Guidelines
 

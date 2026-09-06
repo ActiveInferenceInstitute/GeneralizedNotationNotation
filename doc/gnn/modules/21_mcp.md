@@ -2,8 +2,8 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/21_mcp.py` (56 lines)
-**Implementation Layer**: `src/mcp/`
+**Orchestrator**: `src/gnn/21_mcp.py` (56 lines)
+**Implementation Layer**: `src/gnn/mcp/`
 
 ## Module Description
 
@@ -106,7 +106,7 @@ success = process_mcp(
 ```
 
 #### `register_module_tools(module_name: str | None = None) -> Any`
-**Description**: Register tools for a specific module, or all modules if no name given (`src/mcp/processor.py`). Tools are discovered from each module's `mcp.py` `register_tools`, not passed in by the caller.
+**Description**: Register tools for a specific module, or all modules if no name given (`src/gnn/mcp/processor.py`). Tools are discovered from each module's `mcp.py` `register_tools`, not passed in by the caller.
 
 #### `get_available_tools() -> List[Dict[str, Any]]`
 **Description**: Get list of all available MCP tools across all modules.
@@ -189,8 +189,8 @@ success = process_mcp(
 
 No dedicated `mcp_config.yaml` is read and there is no `DEFAULT_MCP_SETTINGS`
 constant. Runtime configuration is set via the `initialize(...)` factory
-(`src/mcp/mcp.py`) and the `GNN_MCP_*` environment variables — not via
-step-21 CLI flags (`src/21_mcp.py` exposes only `--target-dir`,
+(`src/gnn/mcp/mcp.py`) and the `GNN_MCP_*` environment variables — not via
+step-21 CLI flags (`src/gnn/21_mcp.py` exposes only `--target-dir`,
 `--output-dir`, `--verbose`).
 
 ---
@@ -280,7 +280,7 @@ output/21_mcp_output/
 - `pipeline.config` - Configuration management
 
 ### Imported By
-- `src/tests/mcp/test_mcp_overall.py` - MCP module tests
+- `tests/mcp/test_mcp_overall.py` - MCP module tests
 - `main.py` - Pipeline orchestration
 
 ### Data Flow
@@ -293,12 +293,12 @@ Module Tools → MCP Registration → Tool Discovery → Execution Requests → 
 ## Testing
 
 ### Test Files
-- `src/tests/mcp/test_mcp_tools.py` - Tool registration tests
-- `src/tests/mcp/test_mcp_functional.py` - Functional tests
-- `src/tests/mcp/test_mcp_audit.py` - Audit tests
+- `tests/mcp/test_mcp_tools.py` - Tool registration tests
+- `tests/mcp/test_mcp_functional.py` - Functional tests
+- `tests/mcp/test_mcp_audit.py` - Audit tests
 
 ### Test Coverage
-- Measure: `uv run --extra dev python -m pytest src/tests/mcp/ --cov=mcp --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
+- Measure: `uv run --extra dev python -m pytest tests/mcp/ --cov=mcp --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
 
 ### Key Test Scenarios
 1. Tool registration and discovery across modules
@@ -376,10 +376,10 @@ See [pyproject.toml](../../../pyproject.toml).
 ## References
 
 ### Related Documentation
-- [Pipeline Overview](../../../src/mcp/../../README.md)
-- [Architecture Guide](../../../src/mcp/../../ARCHITECTURE.md)
-- [MCP Implementation Spec](../../../src/mcp/mcp_implementation_spec.md)
-- [MCP Integration Guide](../../../src/mcp/../../doc/mcp/)
+- [Pipeline Overview](../../../README.md)
+- [Architecture Guide](../../../ARCHITECTURE.md)
+- [MCP Implementation Spec](../../../src/gnn/mcp/mcp_implementation_spec.md)
+- [MCP Integration Guide](../../../doc/mcp/)
 
 ### External Resources
 - [Model Context Protocol Specification](https://modelcontextprotocol.io)
@@ -395,12 +395,12 @@ See [pyproject.toml](../../../pyproject.toml).
 
 ---
 ## Documentation
-- **[README](../../../src/mcp/README.md)**: Module Overview
-- **[AGENTS](../../../src/mcp/AGENTS.md)**: Agentic Workflows
-- **[SPEC](../../../src/mcp/SPEC.md)**: Architectural Specification
-- **[SKILL](../../../src/mcp/SKILL.md)**: Capability API
+- **[README](../../../src/gnn/mcp/README.md)**: Module Overview
+- **[AGENTS](../../../src/gnn/mcp/AGENTS.md)**: Agentic Workflows
+- **[SPEC](../../../src/gnn/mcp/SPEC.md)**: Architectural Specification
+- **[SKILL](../../../src/gnn/mcp/SKILL.md)**: Capability API
 
 
 ---
 
-**Source Reference**: [src/mcp](../../../src/mcp)
+**Source Reference**: [src/gnn/mcp](../../../src/gnn/mcp)

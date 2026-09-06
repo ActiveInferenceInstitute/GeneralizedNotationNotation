@@ -1,0 +1,271 @@
+{
+  "actions": [
+    0,
+    0,
+    0,
+    1,
+    1
+  ],
+  "actions_by_control_factor": {
+    "joint_action": [
+      0,
+      0,
+      0,
+      1,
+      1
+    ]
+  },
+  "beliefs": [
+    [
+      0.20283018867924527,
+      0.7971698113207547
+    ],
+    [
+      0.09452256167710597,
+      0.9054774383228941
+    ],
+    [
+      0.06881544774507686,
+      0.9311845522549231
+    ],
+    [
+      0.9365980868253039,
+      0.06340191317469614
+    ],
+    [
+      0.05819832342894958,
+      0.9418016765710504
+    ]
+  ],
+  "beliefs_by_factor": {
+    "joint_state": [
+      [
+        0.20283018867924527,
+        0.7971698113207547
+      ],
+      [
+        0.09452256167710597,
+        0.9054774383228941
+      ],
+      [
+        0.06881544774507686,
+        0.9311845522549231
+      ],
+      [
+        0.9365980868253039,
+        0.06340191317469614
+      ],
+      [
+        0.05819832342894958,
+        0.9418016765710504
+      ]
+    ]
+  },
+  "efe_per_action": [
+    [
+      0.5001418818238259,
+      0.5111188650115952
+    ],
+    [
+      0.585560215345435,
+      0.5945924208212406
+    ],
+    [
+      0.6113165511601354,
+      0.6188130825922883
+    ],
+    [
+      0.6170470077876806,
+      0.6241477489814189
+    ],
+    [
+      0.6293543108986575,
+      0.6226601339334615
+    ]
+  ],
+  "expected_free_energy": [
+    0.5001418818238259,
+    0.585560215345435,
+    0.6113165511601354,
+    0.6241477489814189,
+    0.6226601339334615
+  ],
+  "framework": "ActiveInference.jl",
+  "hidden_states_by_factor": {
+    "joint_state": [
+      1,
+      1,
+      1,
+      0,
+      1
+    ]
+  },
+  "matrix_provenance": {
+    "A": {
+      "derived": false,
+      "shape": [
+        2,
+        2
+      ],
+      "source": "InitialParameterization"
+    },
+    "B": {
+      "canonical_order": "next_state_previous_state_action",
+      "claimed_slice_convention": "rows_next_columns_previous",
+      "contradiction": false,
+      "declared_order": [
+        "next_state",
+        "previous_state",
+        "action"
+      ],
+      "derived": false,
+      "detected_order": null,
+      "reason": null,
+      "shape": [
+        2,
+        2,
+        2
+      ],
+      "source": "InitialParameterization",
+      "source_order": "next_state_previous_state_action"
+    },
+    "C": {
+      "derived": false,
+      "shape": [
+        2
+      ],
+      "source": "InitialParameterization"
+    },
+    "D": {
+      "derived": false,
+      "shape": [
+        2
+      ],
+      "source": "InitialParameterization"
+    }
+  },
+  "metrics": {
+    "belief_confidence": [
+      0.7971698113207547,
+      0.9054774383228941,
+      0.9311845522549231,
+      0.9365980868253039,
+      0.9418016765710504
+    ],
+    "expected_free_energy": [
+      0.5001418818238259,
+      0.585560215345435,
+      0.6113165511601354,
+      0.6241477489814189,
+      0.6226601339334615
+    ],
+    "policy_posterior": [
+      [
+        0.5109752199778755,
+        0.4890247800221244
+      ],
+      [
+        0.5090312231320723,
+        0.49096877686792767
+      ],
+      [
+        0.5074959697627233,
+        0.4925040302372768
+      ],
+      [
+        0.5071002638681088,
+        0.4928997361318911
+      ],
+      [
+        0.4933062229787861,
+        0.5066937770212139
+      ]
+    ]
+  },
+  "model_name": "Static Perception Model",
+  "model_parameters": {
+    "A_shape": [
+      2,
+      2
+    ],
+    "B_shape": [
+      2,
+      2,
+      2
+    ],
+    "C_shape": [
+      2
+    ],
+    "D_shape": [
+      2
+    ],
+    "E_shape": [
+      2
+    ],
+    "num_actions": 2,
+    "num_observations": 2,
+    "num_states": 2
+  },
+  "num_timesteps": 5,
+  "observations": [
+    1,
+    1,
+    1,
+    1,
+    0
+  ],
+  "observations_by_modality": {
+    "joint_observation": [
+      1,
+      1,
+      1,
+      1,
+      0
+    ]
+  },
+  "policy_posterior": [
+    [
+      0.5109752199778755,
+      0.4890247800221244
+    ],
+    [
+      0.5090312231320723,
+      0.49096877686792767
+    ],
+    [
+      0.5074959697627233,
+      0.4925040302372768
+    ],
+    [
+      0.5071002638681088,
+      0.4928997361318911
+    ],
+    [
+      0.4933062229787861,
+      0.5066937770212139
+    ]
+  ],
+  "runtime_metadata": {
+    "activeinference_jl_version": "0.1.2",
+    "generated_at": "2026-09-05T20:27:03.240",
+    "julia_version": "1.12.7",
+    "random_seed": 42,
+    "schema_version": "activeinference_jl_simulation_v1"
+  },
+  "schema_version": "activeinference_jl_simulation_v1",
+  "success": true,
+  "true_states": [
+    1,
+    1,
+    1,
+    0,
+    1
+  ],
+  "validation": {
+    "actions_in_range": true,
+    "all_beliefs_valid": true,
+    "all_valid": true,
+    "beliefs_sum_to_one": true
+  },
+  "variational_free_energy": []
+}

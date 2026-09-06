@@ -10,7 +10,7 @@ This document provides a comprehensive guide to optional dependencies in the GNN
 | JAX + Flax | Core | JAX neural networks | `uv sync` | 12 (Execute) |
 | NumPyro | Core | Probabilistic programming | `uv sync` | 12 (Execute) |
 | DisCoPy | Core | Category theory / string diagrams | `uv sync` | 12 (Execute) |
-| RxInfer.jl | Optional (Julia) | Julia probabilistic inference | `julia --startup-file=no --project=src/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'` | 12 (Execute) |
+| RxInfer.jl | Optional (Julia) | Julia probabilistic inference | `julia --startup-file=no --project=src/gnn/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'` | 12 (Execute) |
 | ActiveInference.jl | Optional (Julia) | Julia Active Inference | `julia -e 'import Pkg; Pkg.add("ActiveInference")'` | 12 (Execute) |
 | PyTorch | Optional (manual) | Deep learning backend | `uv pip install torch` | 12 (Execute) |
 | Plotly | Core | Interactive visualizations | `uv sync` | 8-9 (Visualization) |
@@ -118,15 +118,15 @@ ModuleNotFoundError: No module named 'flax'
 **Used in**: Step 12 (Execute) - RxInfer execution
 
 **Installation**: RxInfer 5.5.0 and all Julia dependencies are pinned by the
-committed environment under `src/execute/rxinfer/` (`Project.toml` +
+committed environment under `src/gnn/execute/rxinfer/` (`Project.toml` +
 `Manifest.toml`). Install by activating + instantiating that environment — there
 is no runtime `Pkg.add`:
 
 ```bash
-julia --startup-file=no --project=src/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'
+julia --startup-file=no --project=src/gnn/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'
 ```
 
-The runner invokes `julia --startup-file=no --project=src/execute/rxinfer <script>`.
+The runner invokes `julia --startup-file=no --project=src/gnn/execute/rxinfer <script>`.
 
 **Prerequisites**: Julia must be installed (`julia --version`)
 
@@ -134,7 +134,7 @@ The runner invokes `julia --startup-file=no --project=src/execute/rxinfer <scrip
 
 ```
 ERROR: LoadError: ArgumentError: Package RxInfer not found in current path.
-Run `julia --startup-file=no --project=src/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'` to instantiate the committed RxInfer environment.
+Run `julia --startup-file=no --project=src/gnn/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'` to instantiate the committed RxInfer environment.
 ```
 
 **Impact on pipeline**:
@@ -257,7 +257,7 @@ uv sync
 uv sync
 # Optional: Julia frameworks
 # RxInfer.jl — instantiate the committed env (no runtime Pkg.add)
-julia --startup-file=no --project=src/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'
+julia --startup-file=no --project=src/gnn/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'
 # ActiveInference.jl — see its own setup
 julia -e 'import Pkg; Pkg.add("ActiveInference")'
 ```
@@ -283,7 +283,7 @@ uv sync --all-extras
 
 # Julia packages
 # RxInfer.jl — instantiate the committed env (no runtime Pkg.add)
-julia --startup-file=no --project=src/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'
+julia --startup-file=no --project=src/gnn/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'
 # ActiveInference.jl — see its own setup
 julia -e 'import Pkg; Pkg.add("ActiveInference")'
 
@@ -324,7 +324,7 @@ which dot    # GraphViz installed?
 
 ```bash
 # Run the setup step with verbose mode
-uv run python src/1_setup.py --verbose
+uv run python src/gnn/1_setup.py --verbose
 
 # Or check within Python
 python -c "
@@ -346,7 +346,7 @@ except:
 
 ```bash
 # See which modules successfully loaded
-uv run python src/21_mcp.py --verbose
+uv run python src/gnn/21_mcp.py --verbose
 
 # Grep output for successfully loaded modules
 grep -i "successfully loaded" output/21_mcp_output/*.log
@@ -382,9 +382,9 @@ grep -i "successfully loaded" output/21_mcp_output/*.log
 
 **Solutions**:
 
-1. Instantiate the committed RxInfer env: `julia --startup-file=no --project=src/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'` (no runtime `Pkg.add`)
+1. Instantiate the committed RxInfer env: `julia --startup-file=no --project=src/gnn/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'` (no runtime `Pkg.add`)
 2. Verify Julia: `julia --version`
-3. Check installation: `julia --startup-file=no --project=src/execute/rxinfer -e 'using RxInfer'`
+3. Check installation: `julia --startup-file=no --project=src/gnn/execute/rxinfer -e 'using RxInfer'`
 
 ### Issue: Advanced visualizations not generating
 
@@ -394,7 +394,7 @@ grep -i "successfully loaded" output/21_mcp_output/*.log
 
 1. Install GraphViz (system): See installation steps above
 2. Install Plotly through the core environment: `uv sync`
-3. Run Step 9 with verbose: `python src/9_advanced_viz.py --verbose`
+3. Run Step 9 with verbose: `python src/gnn/9_advanced_viz.py --verbose`
 
 ---
 
@@ -407,7 +407,7 @@ grep -i "successfully loaded" output/21_mcp_output/*.log
 uv sync
 # Plus Julia packages
 # RxInfer.jl — instantiate the committed env (no runtime Pkg.add)
-julia --startup-file=no --project=src/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'
+julia --startup-file=no --project=src/gnn/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'
 # Plus system dependencies
 brew install graphviz  # or apt-get on Linux
 ```

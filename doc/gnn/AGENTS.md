@@ -34,7 +34,7 @@ prose in a `ModelName` or annotation is never scanned and cannot change how a
 model renders. Rules and precedence live in
 [`gnn_syntax.md` § Parameterization families](gnn_syntax.md#parameterization-families),
 enforced by `detect_model_kind` in
-[`src/render/pomdp_contract.py`](../../src/render/pomdp_contract.py).
+[`src/gnn/render/pomdp_contract.py`](../../src/gnn/render/pomdp_contract.py).
 
 ### Subsystem Indices Available
 

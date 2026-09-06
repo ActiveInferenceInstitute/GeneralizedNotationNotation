@@ -30,7 +30,7 @@ The retained GNN template translated model specifications into Julia code using 
 
 The historical reference below describes the template's data flow from GNN JSON specification through Julia agent struct construction, the unified POMDP generative environment loop, EFE extraction (via the `.G` property), and JSON telemetry serialization.
 
-This backend is discrete-only: continuous (linear-Gaussian) models are reported with render status `unsupported` (`supports_continuous: False` in `src/render/framework_registry.py`), counted separately from failures and never executed by Step 12.
+This backend is discrete-only: continuous (linear-Gaussian) models are reported with render status `unsupported` (`supports_continuous: False` in `src/gnn/render/framework_registry.py`), counted separately from failures and never executed by Step 12.
 
 ## Architecture
 
@@ -42,7 +42,7 @@ The ActiveInference.jl implementation consists of three interconnected layers:
 
 ### Source File
 
-[activeinference_renderer.py](../../../src/render/activeinference_jl/activeinference_renderer.py)
+[activeinference_renderer.py](../../../src/gnn/render/activeinference_jl/activeinference_renderer.py)
 
 ---
 
@@ -316,7 +316,7 @@ other frameworks perform.
 
 ## Dependencies and the committed Julia environment
 
-`src/execute/activeinference_jl/` is a committed Julia environment with its own
+`src/gnn/execute/activeinference_jl/` is a committed Julia environment with its own
 `Project.toml` + `Manifest.toml`. It is deliberately **minimal** — four declared
 dependencies, nothing more:
 
@@ -336,12 +336,12 @@ the ActiveInference.jl preflight checks only `JSON`, `Distributions`, `StatsBase
 `ActiveInference`.
 
 Step 12 defaults `JULIA_PROJECT` to this directory when running ActiveInference.jl
-scripts (`_build_execution_environment()` in `src/execute/processor.py`), so the script
+scripts (`_build_execution_environment()` in `src/gnn/execute/processor.py`), so the script
 resolves its packages without an ambient environment. An explicitly set `JULIA_PROJECT`
 still wins.
 
 ```bash
-julia --startup-file=no --project=src/execute/activeinference_jl \
+julia --startup-file=no --project=src/gnn/execute/activeinference_jl \
   -e 'using ActiveInference, Distributions, JSON, StatsBase'
 ```
 
@@ -351,15 +351,15 @@ julia --startup-file=no --project=src/execute/activeinference_jl \
 
 | Pipeline Stage | Module | Key Function |
 |---|---|---|
-| Matrix Conversion | [activeinference_renderer.py](../../../src/render/activeinference_jl/activeinference_renderer.py) | `_matrix_to_julia()` |
-| Model Extraction | [activeinference_renderer.py](../../../src/render/activeinference_jl/activeinference_renderer.py) | `extract_model_info()` |
-| Script Generation | [activeinference_renderer.py](../../../src/render/activeinference_jl/activeinference_renderer.py) | `generate_activeinference_script()` |
-| Env Setup | [activeinference_runner.py](../../../src/execute/activeinference_jl/activeinference_runner.py) | `setup_julia_environment()` |
-| Execution | [activeinference_runner.py](../../../src/execute/activeinference_jl/activeinference_runner.py) | `execute_activeinference_script()` |
-| Julia Check | [julia_setup.py](../../../src/execute/julia_setup.py) | `is_julia_available()` (imported by the runner) |
-| Analysis | [analyzer.py](../../../src/analysis/activeinference_jl/analyzer.py) | `generate_analysis_from_logs()` |
-| Trace Reconstruction | [analyzer.py](../../../src/analysis/activeinference_jl/analyzer.py) | `create_trace_reconstruction()` |
-| Matrix Heatmaps | [analyzer.py](../../../src/analysis/activeinference_jl/analyzer.py) | `create_model_matrix_heatmaps()` |
+| Matrix Conversion | [activeinference_renderer.py](../../../src/gnn/render/activeinference_jl/activeinference_renderer.py) | `_matrix_to_julia()` |
+| Model Extraction | [activeinference_renderer.py](../../../src/gnn/render/activeinference_jl/activeinference_renderer.py) | `extract_model_info()` |
+| Script Generation | [activeinference_renderer.py](../../../src/gnn/render/activeinference_jl/activeinference_renderer.py) | `generate_activeinference_script()` |
+| Env Setup | [activeinference_runner.py](../../../src/gnn/execute/activeinference_jl/activeinference_runner.py) | `setup_julia_environment()` |
+| Execution | [activeinference_runner.py](../../../src/gnn/execute/activeinference_jl/activeinference_runner.py) | `execute_activeinference_script()` |
+| Julia Check | [julia_setup.py](../../../src/gnn/execute/julia_setup.py) | `is_julia_available()` (imported by the runner) |
+| Analysis | [analyzer.py](../../../src/gnn/analysis/activeinference_jl/analyzer.py) | `generate_analysis_from_logs()` |
+| Trace Reconstruction | [analyzer.py](../../../src/gnn/analysis/activeinference_jl/analyzer.py) | `create_trace_reconstruction()` |
+| Matrix Heatmaps | [analyzer.py](../../../src/gnn/analysis/activeinference_jl/analyzer.py) | `create_model_matrix_heatmaps()` |
 
 ---
 
@@ -369,7 +369,7 @@ julia --startup-file=no --project=src/execute/activeinference_jl \
 |---|---|---|---|
 | AIF-1 | Telemetry | ~~No `validation` dict in `simulation_results.json`~~ — now includes `beliefs_in_range`, `beliefs_sum_to_one`, `actions_in_range`, `all_valid` | ✅ FIXED |
 | AIF-2 | Rendering | ~~4 renderer variants existed~~ — deleted `activeinference_jl_renderer.py`, `_fixed.py`, `_simple.py`; only canonical `activeinference_renderer.py` remains | ✅ FIXED |
-| AIF-3 | Execution | `is_julia_available()` is now imported from the shared `src/execute/julia_setup.py`, but this runner still defines its own `setup_julia_environment()` and `_fallback_environment_setup()` alongside the shared `julia_setup.setup_julia_environment()` — the remaining duplication to collapse | Medium |
+| AIF-3 | Execution | `is_julia_available()` is now imported from the shared `src/gnn/execute/julia_setup.py`, but this runner still defines its own `setup_julia_environment()` and `_fallback_environment_setup()` alongside the shared `julia_setup.setup_julia_environment()` — the remaining duplication to collapse | Medium |
 | AIF-4 | Rendering | ~~`POLICY_LENGTH` was referenced but defined as `POLICY_LEN`~~ — removed orphaned `POLICY_LENGTH`; only `POLICY_LEN` is used | ✅ FIXED |
 | AIF-5 | Analysis | `parse_julia_matrix()` and `parse_julia_vector()` nested helpers could be extracted to shared Julia parsing utility | Low |
 

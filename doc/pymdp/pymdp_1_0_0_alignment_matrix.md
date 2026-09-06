@@ -9,16 +9,16 @@ integration points in this repository.
     - <https://github.com/infer-actively/pymdp>
     - <https://github.com/infer-actively/pymdp/releases/tag/v1.0.0>
 - Local surfaces reviewed:
-    - `src/render/pymdp/`
-    - `src/execute/pymdp/`
+    - `src/gnn/render/pymdp/`
+    - `src/gnn/execute/pymdp/`
     - `doc/pymdp/`
-    - `src/tests/execute/test_pymdp_*` / `src/tests/execute/test_execute_pymdp_*`
+    - `tests/execute/test_pymdp_*` / `tests/execute/test_execute_pymdp_*`
 
 ## Matrix
 
 | Upstream 1.0.0 item | Local status | Action |
 |---|---|---|
-| **JAX-first Agent** (`equinox.Module`-based) | **Fully integrated** | `src/execute/pymdp/simulation._build_pymdp_agent` builds a real JAX-first Agent from GNN matrices. Exercised by `test_pymdp_1_0_0_upstream_api.py` and `test_pymdp_contracts.py`. |
+| **JAX-first Agent** (`equinox.Module`-based) | **Fully integrated** | `src/gnn/execute/pymdp/simulation._build_pymdp_agent` builds a real JAX-first Agent from GNN matrices. Exercised by `test_pymdp_1_0_0_upstream_api.py` and `test_pymdp_contracts.py`. |
 | `Agent(A, B, C, D, E, num_controls, control_fac_idx, policy_len, batch_size, …)` | **Fully integrated** | Used verbatim by `_build_pymdp_agent`. Passive factors (num_controls[f] == 1) omit `control_fac_idx` as required by `Agent._validate`. |
 | `infer_states(observations, empirical_prior, *, return_info=False)` → `qs [, info]` | **Fully integrated** | `simulation.run_pymdp_simulation` always calls with `empirical_prior=…, return_info=True` and extracts `info["vfe"]`. |
 | `infer_policies(qs)` → `(q_pi, neg_efe)` | **Fully integrated** | The return tuple is unpacked as `(q_pi, neg_efe)` (upstream docstring calls the second value `G` = negative EFE per policy). |
@@ -38,15 +38,15 @@ integration points in this repository.
 ## Local Contract Clarifications
 
 - **Render-side public API**
-  (`src/render/pymdp/__init__.py`): `render_gnn_to_pymdp(gnn_spec, output_path, options=…)`.
+  (`src/gnn/render/pymdp/__init__.py`): `render_gnn_to_pymdp(gnn_spec, output_path, options=…)`.
   `options={"mode": "pipeline"}` (default) emits a pipeline runner; `options={"mode": "standalone"}`
   emits a fully self-contained pymdp 1.0.0 script.
 
 - **Execute-side public API**
-  (`src/execute/pymdp/__init__.py`): `execute_pymdp_simulation(gnn_spec, output_dir, correlation_id)` — canonical entry.
+  (`src/gnn/execute/pymdp/__init__.py`): `execute_pymdp_simulation(gnn_spec, output_dir, correlation_id)` — canonical entry.
   Also exposes `PyMDPSimulation` (the GNN-driven wrapper class).
 
-- **Visualisation** belongs to Step 16 (`src/analysis/pymdp/`), not Step 12.
+- **Visualisation** belongs to Step 16 (`src/gnn/analysis/pymdp/`), not Step 12.
 
 ## B Tensor Axis Order And Stochasticity (Canonical Contract)
 
@@ -85,9 +85,9 @@ Run:
 
 ```bash
 uv run --extra dev python -m pytest \
-    src/tests/execute/test_pymdp_1_0_0_upstream_api.py \
-    src/tests/execute/test_pymdp_contracts.py \
-    src/tests/execute/test_execute_pymdp_integration.py \
+    tests/execute/test_pymdp_1_0_0_upstream_api.py \
+    tests/execute/test_pymdp_contracts.py \
+    tests/execute/test_execute_pymdp_integration.py \
     -v
 ```
 
@@ -106,7 +106,7 @@ Covered surfaces (installed package exercised directly):
 - Import of `pymdp.control` and `pymdp.inference` (used internally by Agent)
 
 Pipeline-level integration is covered by
-`src/tests/execute/test_pymdp_contracts.py::test_actinf_pomdp_render_execute_analyze_e2e`,
+`tests/execute/test_pymdp_contracts.py::test_actinf_pomdp_render_execute_analyze_e2e`,
 which renders real GNN POMDP input → runs pymdp 1.0.0 via Step 12 → collects
 the JSON result → analyses via Step 16.
 

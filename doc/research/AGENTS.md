@@ -21,7 +21,7 @@ Research papers, theoretical foundations, and academic references for Active Inf
 
 - **GNN Documentation**: [gnn/AGENTS.md](../gnn/AGENTS.md)
 - **Main Documentation**: [doc/README.md](../README.md)
-- **Pipeline Reference**: [src/AGENTS.md](../../src/AGENTS.md)
+- **Pipeline Reference**: [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)
 - **POMDP Theory**: [pomdp/AGENTS.md](../pomdp/AGENTS.md)
 
 ## Topics
@@ -38,7 +38,7 @@ This documentation provides theoretical grounding for:
 - Ontology system (Step 10)
 - LLM analysis integration (Step 13)
 
-See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
+See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documentation.
 
 ## Related Resources
 

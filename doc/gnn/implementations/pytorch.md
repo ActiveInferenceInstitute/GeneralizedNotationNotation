@@ -15,16 +15,16 @@ This enables a continuous learning trajectory: start with hand-specified GNN mat
 
 | Stage | Module | Description |
 |---|---|---|
-| Rendering (Step 11) | `src/render/pytorch/pytorch_renderer.py` | GNN JSON → PyTorch Agent script |
-| Execution (Step 12) | `src/execute/pytorch/pytorch_runner.py` | Subprocess launch, log persistence |
-| Analysis (Step 16) | `src/analysis/pytorch/analyzer.py` | Loss curves, belief accuracy, action histograms |
+| Rendering (Step 11) | `src/gnn/render/pytorch/pytorch_renderer.py` | GNN JSON → PyTorch Agent script |
+| Execution (Step 12) | `src/gnn/execute/pytorch/pytorch_runner.py` | Subprocess launch, log persistence |
+| Analysis (Step 16) | `src/gnn/analysis/pytorch/analyzer.py` | Loss curves, belief accuracy, action histograms |
 
 ## Continuous (linear-Gaussian) models
 
 `pytorch_renderer.py` branches on `_is_continuous_spec`: continuous
 specifications (`F`/`H`/`Q`/`R`, `prior_mean`/`prior_cov`, optional `u`,
 `goal_mean`, `control_gain`) are rendered by `_render_continuous`, which calls the
-shared generator `src/render/continuous_script.py` with the `pytorch` target. The
+shared generator `src/gnn/render/continuous_script.py` with the `pytorch` target. The
 emitted script runs an online Kalman filter (closed-loop when `goal_mean` and
 `control_gain` are declared) and writes the continuous result schema (`beliefs` as
 posterior means, `posterior_cov`, `true_states_continuous`,
@@ -121,10 +121,10 @@ PYTHONPATH=src python -c "from execute.pytorch import is_pytorch_available; prin
 
 ```bash
 # Render GNN to PyTorch script
-python src/11_render.py --target-dir input/gnn_files/ --frameworks pytorch
+python src/gnn/11_render.py --target-dir input/gnn_files/ --frameworks pytorch
 
 # Execute PyTorch script
-python src/12_execute.py --target-dir input/gnn_files/ --frameworks pytorch
+python src/gnn/12_execute.py --target-dir input/gnn_files/ --frameworks pytorch
 
 # The MCP tool takes no framework argument — it dispatches to PyMDP:
 # execute_gnn_model_mcp(gnn_file_path="...", output_directory="...")
@@ -147,9 +147,9 @@ During the **March 6, 2026** pipeline benchmarking audit, the PyTorch integratio
 
 | Stage | Module | Key Function |
 |---|---|---|
-| Rendering | [pytorch_renderer.py](../../../src/render/pytorch/pytorch_renderer.py) | `render_gnn_to_pytorch()` |
-| Execution | [pytorch_runner.py](../../../src/execute/pytorch/pytorch_runner.py) | `execute_pytorch_script()` |
-| Analysis | [analyzer.py](../../../src/analysis/pytorch/analyzer.py) | `generate_analysis_from_logs()` |
+| Rendering | [pytorch_renderer.py](../../../src/gnn/render/pytorch/pytorch_renderer.py) | `render_gnn_to_pytorch()` |
+| Execution | [pytorch_runner.py](../../../src/gnn/execute/pytorch/pytorch_runner.py) | `execute_pytorch_script()` |
+| Analysis | [analyzer.py](../../../src/gnn/analysis/pytorch/analyzer.py) | `generate_analysis_from_logs()` |
 
 ## Improvement Opportunities
 

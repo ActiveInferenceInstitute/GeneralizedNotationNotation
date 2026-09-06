@@ -1,0 +1,35 @@
+{
+  "timestamp": "2026-09-05T20:25:30.718655",
+  "source_file": "input/gnn_files/precision/curiosity_driven_agent.md",
+  "model_name": "Curiosity-Driven Active Inference Agent",
+  "pomdp_dimensions": {
+    "num_states": 5,
+    "num_observations": 5,
+    "num_actions": 4
+  },
+  "frameworks_requested": [
+    "pymdp",
+    "rxinfer",
+    "activeinference_jl",
+    "jax",
+    "discopy",
+    "pytorch",
+    "numpyro",
+    "stan",
+    "bnlearn"
+  ],
+  "frameworks_processed": [
+    "pymdp",
+    "rxinfer",
+    "activeinference_jl",
+    "jax",
+    "discopy",
+    "pytorch",
+    "numpyro",
+    "stan",
+    "bnlearn"
+  ],
+  "frameworks_failed": [],
+  "frameworks_unsupported": [],
+  "model_kind": "discrete"
+}

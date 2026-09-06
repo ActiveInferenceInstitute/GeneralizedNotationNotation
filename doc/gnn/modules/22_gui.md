@@ -2,8 +2,8 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/22_gui.py` (96 lines)
-**Implementation Layer**: `src/gui/`
+**Orchestrator**: `src/gnn/22_gui.py` (96 lines)
+**Implementation Layer**: `src/gnn/gui/`
 
 ## Module Description
 
@@ -406,7 +406,7 @@ The `navigation.html` file provides comprehensive navigation to all pipeline out
 - `pipeline.config` - Configuration management
 
 ### Imported By
-- `src/tests/gui/test_gui_overall.py` - GUI module tests
+- `tests/gui/test_gui_overall.py` - GUI module tests
 - `main.py` - Pipeline orchestration
 
 ### Data Flow
@@ -419,11 +419,11 @@ GNN Files → GUI Construction → Visual Editing → Model Validation → GNN E
 ## Testing
 
 ### Test Files
-- `src/tests/gui/test_gui_functionality.py` - GUI functionality tests
-- `src/tests/gui/test_oxdraw_integration.py` - oxdraw integration tests
+- `tests/gui/test_gui_functionality.py` - GUI functionality tests
+- `tests/gui/test_oxdraw_integration.py` - oxdraw integration tests
 
 ### Test Coverage
-- Measure: `uv run --extra dev python -m pytest src/tests/gui/ --cov=gui --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
+- Measure: `uv run --extra dev python -m pytest tests/gui/ --cov=gui --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
 
 ### Key Test Scenarios
 1. GUI startup and shutdown in headless mode
@@ -438,12 +438,12 @@ GNN Files → GUI Construction → Visual Editing → Model Validation → GNN E
 
 ### Tools Registered
 
-Registered in `register_tools` (`src/gui/mcp.py`):
+Registered in `register_tools` (`src/gnn/gui/mcp.py`):
 
 - `process_gui` - Run Step 22 (headless by default)
 - `list_available_guis` - List GUI implementations and ports
 - `get_gui_module_info` - Module metadata
-- oxdraw tools registered dynamically from `src/gui/oxdraw/` tool definitions
+- oxdraw tools registered dynamically from `src/gnn/gui/oxdraw/` tool definitions
 
 ---
 
@@ -539,9 +539,9 @@ Registered in `register_tools` (`src/gui/mcp.py`):
 ## References
 
 ### Related Documentation
-- [Pipeline Overview](../../../src/gui/../../README.md)
-- [Architecture Guide](../../../src/gui/../../ARCHITECTURE.md)
-- [GUI Guide](../../../src/gui/../../doc/gui_oxdraw/)
+- [Pipeline Overview](../../../README.md)
+- [Architecture Guide](../../../ARCHITECTURE.md)
+- [GUI Guide](../../../doc/gui_oxdraw/)
 
 ### External Resources
 - [Gradio Documentation](https://gradio.app/)
@@ -557,12 +557,12 @@ Registered in `register_tools` (`src/gui/mcp.py`):
 
 ---
 ## Documentation
-- **[README](../../../src/gui/README.md)**: Module Overview
-- **[AGENTS](../../../src/gui/AGENTS.md)**: Agentic Workflows
-- **[SPEC](../../../src/gui/SPEC.md)**: Architectural Specification
-- **[SKILL](../../../src/gui/SKILL.md)**: Capability API
+- **[README](../../../src/gnn/gui/README.md)**: Module Overview
+- **[AGENTS](../../../src/gnn/gui/AGENTS.md)**: Agentic Workflows
+- **[SPEC](../../../src/gnn/gui/SPEC.md)**: Architectural Specification
+- **[SKILL](../../../src/gnn/gui/SKILL.md)**: Capability API
 
 
 ---
 
-**Source Reference**: [src/gui](../../../src/gui)
+**Source Reference**: [src/gnn/gui](../../../src/gnn/gui)

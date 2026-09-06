@@ -21,7 +21,7 @@ Graph rendering, matrix visualization, and diagram generation for Active Inferen
 
 - **GNN Documentation**: [gnn/AGENTS.md](../gnn/AGENTS.md)
 - **Main Documentation**: [doc/README.md](../README.md)
-- **Pipeline Reference**: [src/AGENTS.md](../../src/AGENTS.md)
+- **Pipeline Reference**: [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)
 - **Advanced Visualization**: [advanced_visualization/AGENTS.md](../advanced_visualization/AGENTS.md)
 
 ## Capabilities
@@ -35,11 +35,11 @@ Graph rendering, matrix visualization, and diagram generation for Active Inferen
 
 This documentation covers Step 9 (Visualization) of the 25-step GNN processing pipeline.
 
-See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
+See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documentation.
 
 ## Related Resources
 
-- [Visualization Module](../../src/visualization/AGENTS.md)
+- [Visualization Module](../../src/gnn/visualization/AGENTS.md)
 - [D2 Diagrams](../d2/README.md)
 - [oxdraw Integration](../gui_oxdraw/README.md)
 

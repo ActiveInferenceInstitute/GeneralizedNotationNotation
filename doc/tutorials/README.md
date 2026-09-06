@@ -26,14 +26,14 @@ uv sync --extra dev
 uv run gnn validate input/gnn_files/discrete/actinf_pomdp_agent.md --strict
 
 # Parse and type-check a directory.
-uv run python src/main.py \
+uv run python src/gnn/main.py \
   --target-dir input/gnn_files \
   --output-dir output \
   --only-steps "3,5" \
   --verbose
 
 # Render and execute selected frameworks.
-uv run python src/main.py \
+uv run python src/gnn/main.py \
   --target-dir input/gnn_files \
   --output-dir output \
   --only-steps "11,12" \
@@ -41,7 +41,7 @@ uv run python src/main.py \
   --verbose
 
 # Skip environment-dependent work.
-uv run python src/main.py --skip-steps "2,13,15" --verbose
+uv run python src/gnn/main.py --skip-steps "2,13,15" --verbose
 ```
 
 `--target-dir` receives a directory. GNN discovery uses Markdown files under that

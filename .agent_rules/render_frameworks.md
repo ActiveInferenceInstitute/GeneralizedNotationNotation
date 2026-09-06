@@ -1,7 +1,7 @@
 # Render Frameworks
 
 > Step 11 generates simulation code for multiple Active Inference frameworks.
-> Run: `uv run python src/11_render.py --target-dir input/gnn_files`
+> Run: `uv run python src/gnn/11_render.py --target-dir input/gnn_files`
 
 ## Supported Frameworks
 
@@ -108,7 +108,7 @@ result = infer(
 )
 ```
 
-**Setup**: `julia --startup-file=no --project=src/execute/rxinfer src/execute/rxinfer/setup_environment.jl --verbose`
+**Setup**: `julia --startup-file=no --project=src/gnn/execute/rxinfer src/gnn/execute/rxinfer/setup_environment.jl --verbose`
 
 ---
 

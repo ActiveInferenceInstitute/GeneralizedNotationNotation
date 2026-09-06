@@ -20,7 +20,7 @@ The execution framework documentation system is part of the broader GNN (General
 ### Related Systems
 - **Main Documentation**: [doc/README.md](../README.md)
 - **GNN Documentation**: [gnn/AGENTS.md](../gnn/AGENTS.md)
-- **Pipeline Reference**: [src/AGENTS.md](../../src/AGENTS.md)
+- **Pipeline Reference**: [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)
 - **Setup Guide**: [doc/SETUP.md](../SETUP.md)
 
 ## Subsystems
@@ -35,7 +35,7 @@ The execution framework documentation system is part of the broader GNN (General
 
 - **Get Started**: See [README.md](README.md)
 - **Framework Status**: [FRAMEWORK_AVAILABILITY.md](FRAMEWORK_AVAILABILITY.md)
-- **Pipeline Overview**: [src/AGENTS.md](../../src/AGENTS.md)
+- **Pipeline Overview**: [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)
 - **Full Documentation Index**: [doc/README.md](../README.md)
 
 ## Documentation Standards
@@ -57,7 +57,7 @@ This documentation integrates with the 25-step GNN processing pipeline:
 4. **Analysis** (Steps 13-16): Results processing and interpretation
 5. **Reporting** (Steps 17-24): Output generation and documentation
 
-See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
+See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documentation.
 
 ---
 

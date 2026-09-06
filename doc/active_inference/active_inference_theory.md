@@ -294,16 +294,16 @@ graph TB
 
 | Engine | Source | Language |
 |--------|--------|----------|
-| PyMDP | [`src/execute/pymdp/`](../../src/execute/pymdp/) | Python |
-| RxInfer | [`src/execute/rxinfer/`](../../src/execute/rxinfer/) | Julia |
-| ActiveInference.jl | [`src/execute/activeinference_jl/`](../../src/execute/activeinference_jl/) | Julia |
+| PyMDP | [`src/gnn/execute/pymdp/`](../../src/gnn/execute/pymdp/) | Python |
+| RxInfer | [`src/gnn/execute/rxinfer/`](../../src/gnn/execute/rxinfer/) | Julia |
+| ActiveInference.jl | [`src/gnn/execute/activeinference_jl/`](../../src/gnn/execute/activeinference_jl/) | Julia |
 
 ### Analysis Tools
 
 | Tool | Source |
 |------|--------|
-| Analyzer | [`src/analysis/analyzer.py`](../../src/analysis/analyzer.py) |
-| Post-Simulation | [`src/analysis/post_simulation.py`](../../src/analysis/post_simulation.py) |
+| Analyzer | [`src/gnn/analysis/analyzer.py`](../../src/gnn/analysis/analyzer.py) |
+| Post-Simulation | [`src/gnn/analysis/post_simulation.py`](../../src/gnn/analysis/post_simulation.py) |
 
 ### GNN Specification
 

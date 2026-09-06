@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Audio Processing Documentation | **Audience**: Researchers, Audio Engineers, Developers | **Complexity**: Intermediate-Advanced  
-> **Cross-References**: [Audio Module](../../src/audio/README.md) | [SAPF Integration](../sapf/sapf_gnn.md) | [Pedalboard Integration](../pedalboard/pedalboard_gnn.md) | [Main Documentation](../README.md)
+> **Cross-References**: [Audio Module](../../src/gnn/audio/README.md) | [SAPF Integration](../sapf/sapf_gnn.md) | [Pedalboard Integration](../pedalboard/pedalboard_gnn.md) | [Main Documentation](../README.md)
 
 ## Overview
 
@@ -22,14 +22,14 @@ This directory contains comprehensive documentation for audio processing, sonifi
 - **[learning_paths.md](../learning_paths.md)**: Learning pathways
 
 ### Related Directories
-- **[Audio Module](../../src/audio/README.md)**: Audio generation and sonification implementation
+- **[Audio Module](../../src/gnn/audio/README.md)**: Audio generation and sonification implementation
 - **[SAPF Integration](../sapf/sapf_gnn.md)**: Sound As Pure Form framework
 - **[Pedalboard Integration](../pedalboard/pedalboard_gnn.md)**: Audio processing library
 - **[Sonification](../CROSS_REFERENCE_INDEX.md#audio-and-sonification)**: Audio sonification tools
 
 ### Pipeline Integration
 - **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
-- **[src/AGENTS.md](../../src/AGENTS.md)**: Implementation details
+- **[src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)**: Implementation details
 
 ## Contents
 
@@ -83,14 +83,14 @@ This documentation is integrated with the 25-step GNN processing pipeline:
    - Audio visualization and analysis
    - Multi-format audio export
 
-See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
+See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documentation.
 
 ## Related Resources
 
 ### Main GNN Documentation
 - **[GNN Overview](../gnn/gnn_overview.md)**: Core GNN concepts
 - **[GNN Quickstart](../gnn/tutorials/quickstart_tutorial.md)**: Getting started guide
-- **[Audio Module](../../src/audio/README.md)**: Audio generation implementation
+- **[Audio Module](../../src/gnn/audio/README.md)**: Audio generation implementation
 
 ### Audio Resources
 - **[SAPF Integration](../sapf/sapf_gnn.md)**: Sound As Pure Form framework
@@ -99,8 +99,8 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 
 ### Pipeline Architecture
 - **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
-- **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
-- **[Pipeline README](../../src/README.md)**: Pipeline overview
+- **[Pipeline AGENTS](../../src/gnn/AGENTS.md)**: Implementation details
+- **[Pipeline README](../../src/gnn/README.md)**: Pipeline overview
 
 ## Standards and Guidelines
 

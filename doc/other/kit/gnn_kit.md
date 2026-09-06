@@ -276,7 +276,7 @@ GNN specifications are meant to be translatable into executable code. `kit` and 
 
 ## 4. MCP Server Integration and Agent-Based Interactions
 
-The Model Context Protocol (MCP) in both GNN (via `src/main.py` and `src/mcp/`) and `kit` (`kit-mcp`) enables advanced agent interactions.
+The Model Context Protocol (MCP) in both GNN (via `src/gnn/main.py` and `src/gnn/mcp/`) and `kit` (`kit-mcp`) enables advanced agent interactions.
 
 ### 4.1. Dual MCP Roles in AI Development Environments
 An AI agent could:

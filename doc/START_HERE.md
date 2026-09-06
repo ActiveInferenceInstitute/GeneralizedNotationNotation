@@ -26,7 +26,7 @@ and then open the target-specific guide from
 
 ## I am developing the pipeline
 
-Read the [pipeline architecture](../src/README.md),
+Read the [pipeline architecture](../src/gnn/README.md),
 [Pipeline Scripts](PIPELINE_SCRIPTS.md), and [Development Guide](development/README.md).
 
 For the complete flat inventory, use [INDEX.md](INDEX.md). For curricula, use

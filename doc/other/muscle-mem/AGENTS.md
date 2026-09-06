@@ -50,7 +50,7 @@ Muscle-Mem integration enables:
 
 ### Pipeline Integration
 - **[Pipeline Documentation](../../gnn/operations/gnn_tools.md)**: Complete pipeline guide
-- **[src/AGENTS.md](../../../src/AGENTS.md)**: Implementation details
+- **[src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md)**: Implementation details
 
 ## Technical Documentation
 
@@ -105,7 +105,7 @@ This documentation is integrated with the 25-step GNN processing pipeline:
 - **Step 20 (Website)**: Cache website generation
 - **Step 23 (Report)**: Cache report generation
 
-See [src/AGENTS.md](../../../src/AGENTS.md) for complete pipeline documentation.
+See [src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md) for complete pipeline documentation.
 
 ## Function Signatures and API
 
@@ -162,8 +162,8 @@ All documentation in this module adheres to professional standards:
 
 ### Pipeline Architecture
 - **[Pipeline Documentation](../../gnn/operations/gnn_tools.md)**: Complete pipeline guide
-- **[Pipeline AGENTS](../../../src/AGENTS.md)**: Implementation details
-- **[Pipeline README](../../../src/README.md)**: Pipeline overview
+- **[Pipeline AGENTS](../../../src/gnn/AGENTS.md)**: Implementation details
+- **[Pipeline README](../../../src/gnn/README.md)**: Pipeline overview
 
 ## See Also
 

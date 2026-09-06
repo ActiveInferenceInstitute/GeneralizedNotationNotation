@@ -1,6 +1,6 @@
 # Testing Framework
 
-> **Run tests**: `uv run pytest src/tests/ -v` or `PYTHONPATH=src pytest src/tests/ -v`
+> **Run tests**: `uv run pytest tests/ -v` or `PYTHONPATH=src pytest tests/ -v`
 
 ## Import Pattern ⚠️ CRITICAL
 
@@ -138,19 +138,19 @@ def test_optional_functionality(self):
 
 ```bash
 # Full suite via pipeline
-python src/2_tests.py --verbose
+python src/gnn/2_tests.py --verbose
 
 # Individual file
-PYTHONPATH=src pytest src/tests/gnn/test_gnn_overall.py -v
+PYTHONPATH=src pytest tests/gnn/test_gnn_overall.py -v
 
 # Specific class/method
-PYTHONPATH=src pytest src/tests/gnn/test_gnn_overall.py::TestGNNComprehensive::test_imports -v
+PYTHONPATH=src pytest tests/gnn/test_gnn_overall.py::TestGNNComprehensive::test_imports -v
 
 # Fast tests only
-python src/2_tests.py --fast-only
+python src/gnn/2_tests.py --fast-only
 
 # Coverage
-PYTHONPATH=src pytest --cov=src --cov-report=term-missing src/tests/
+PYTHONPATH=src pytest --cov=src --cov-report=term-missing tests/
 ```
 
 ---
@@ -168,7 +168,7 @@ PYTHONPATH=src pytest --cov=src --cov-report=term-missing src/tests/
 ## Test File Naming Convention
 
 ```
-src/tests/
+tests/
 ├── test_MODULENAME_overall.py    # Comprehensive module coverage
 ├── test_MODULENAME_parsing.py   # Specific area
 ├── test_MODULENAME_integration.py

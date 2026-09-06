@@ -26,7 +26,7 @@ import psutil
 sys.path.insert(0, os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
 
 try:
-    from gnn.mcp import get_gnn_documentation, validate_gnn_content
+    from gnn.mcp.gnn_root import get_gnn_documentation, validate_gnn_content
     from gnn.schema_validator import (
         GNNParser,
         GNNValidator,

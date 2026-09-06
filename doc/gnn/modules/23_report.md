@@ -2,8 +2,8 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/23_report.py` (55 lines)
-**Implementation Layer**: `src/report/`
+**Orchestrator**: `src/gnn/23_report.py` (55 lines)
+**Implementation Layer**: `src/gnn/report/`
 
 ## Module Description
 
@@ -11,7 +11,7 @@ This module provides comprehensive report generation capabilities for GNN pipeli
 
 
 ```
-src/report/
+src/gnn/report/
 ├── __init__.py                       # Module initialization and exports
 ├── README.md                         # This documentation
 ├── analyzer.py                       # Report analysis system
@@ -396,13 +396,13 @@ Pipeline Results → Report Aggregation → Data Analysis → Format Generation 
 
 ### Test Files
 
-- `src/tests/report/test_report_integration.py` - Integration tests
-- `src/tests/report/test_report_generation.py` - Generation tests
-- `src/tests/report/test_report_formats.py` - Format tests
+- `tests/report/test_report_integration.py` - Integration tests
+- `tests/report/test_report_generation.py` - Generation tests
+- `tests/report/test_report_formats.py` - Format tests
 
 ### Test Coverage
 
-- Measure: `uv run --extra dev python -m pytest src/tests/report/ --cov=report --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
+- Measure: `uv run --extra dev python -m pytest tests/report/ --cov=report --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
 
 ### Key Test Scenarios
 
@@ -425,7 +425,7 @@ Pipeline Results → Report Aggregation → Data Analysis → Format Generation 
 - `get_report_module_info` - Module metadata
 
 ### MCP File Location
-- `src/report/mcp.py` - MCP tool registrations
+- `src/gnn/report/mcp.py` - MCP tool registrations
 
 ---
 
@@ -483,9 +483,9 @@ Pipeline Results → Report Aggregation → Data Analysis → Format Generation 
 
 ### Related Documentation
 
-- [Pipeline Overview](../../../src/report/../../README.md)
-- [Architecture Guide](../../../src/report/../../ARCHITECTURE.md)
-- [Documentation Index](../../../src/report/../../doc/README.md)
+- [Pipeline Overview](../../../README.md)
+- [Architecture Guide](../../../ARCHITECTURE.md)
+- [Documentation Index](../../../doc/README.md)
 
 ### External Resources
 
@@ -502,12 +502,12 @@ Pipeline Results → Report Aggregation → Data Analysis → Format Generation 
 
 ---
 ## Documentation
-- **[README](../../../src/report/README.md)**: Module Overview
-- **[AGENTS](../../../src/report/AGENTS.md)**: Agentic Workflows
-- **[SPEC](../../../src/report/SPEC.md)**: Architectural Specification
-- **[SKILL](../../../src/report/SKILL.md)**: Capability API
+- **[README](../../../src/gnn/report/README.md)**: Module Overview
+- **[AGENTS](../../../src/gnn/report/AGENTS.md)**: Agentic Workflows
+- **[SPEC](../../../src/gnn/report/SPEC.md)**: Architectural Specification
+- **[SKILL](../../../src/gnn/report/SKILL.md)**: Capability API
 
 
 ---
 
-**Source Reference**: [src/report](../../../src/report)
+**Source Reference**: [src/gnn/report](../../../src/gnn/report)

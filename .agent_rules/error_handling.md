@@ -152,7 +152,7 @@ STEP_TIMEOUTS = {
     "visualization": 180,  # viz generation
 }
 
-# Environment override: STEP_TIMEOUT_RENDER=60 python src/11_render.py
+# Environment override: STEP_TIMEOUT_RENDER=60 python src/gnn/11_render.py
 ```
 
 ---

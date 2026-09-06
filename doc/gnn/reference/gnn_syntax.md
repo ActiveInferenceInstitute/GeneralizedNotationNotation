@@ -10,18 +10,18 @@ Quick reference for GNN syntax with working examples. The normative specificatio
 
 GNN syntax is validated through the pipeline type checker:
 
-- **`src/5_type_checker.py`** → Syntax validation and type checking
-  - See: **[src/type_checker/AGENTS.md](../../../src/type_checker/AGENTS.md)** for validation details
-- **`src/6_validation.py`** → Advanced consistency checking
+- **`src/gnn/5_type_checker.py`** → Syntax validation and type checking
+  - See: **[src/gnn/type_checker/AGENTS.md](../../../src/gnn/type_checker/AGENTS.md)** for validation details
+- **`src/gnn/6_validation.py`** → Advanced consistency checking
 
 **Quick Start:**
 
 ```bash
 # Validate GNN syntax
-uv run python src/5_type_checker.py --target-dir input/gnn_files --strict --verbose
+uv run python src/gnn/5_type_checker.py --target-dir input/gnn_files --strict --verbose
 ```
 
-For complete pipeline documentation, see **[src/AGENTS.md](../../../src/AGENTS.md)**.
+For complete pipeline documentation, see **[src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md)**.
 
 ---
 
@@ -134,7 +134,7 @@ retrospective one — drives expected-free-energy and habit-prior action
 selection. Any value other than `batch` or `online` is rejected. The same
 setting can be passed as a render option, but declaring it here keeps the
 file self-describing. Per-kind strategy details:
-[`src/render/rxinfer/README.md`](../../../src/render/rxinfer/README.md).
+[`src/gnn/render/rxinfer/README.md`](../../../src/gnn/render/rxinfer/README.md).
 
 ```gnn
 ## ModelParameters
@@ -442,7 +442,7 @@ Directed edges use `>`; undirected compatibility uses `-` (see [Connections](#co
 
 ## Mathematical expressions
 
-Matrix literals and tuples belong in `InitialParameterization` and equation blocks; keep shapes aligned with the [type checker](../../../src/type_checker/AGENTS.md).
+Matrix literals and tuples belong in `InitialParameterization` and equation blocks; keep shapes aligned with the [type checker](../../../src/gnn/type_checker/AGENTS.md).
 
 ## Multi-agent extensions
 

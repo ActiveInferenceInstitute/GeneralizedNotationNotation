@@ -1,29 +1,29 @@
 # type_checker-worker — Fleet 3 Report
 
-**Worker**: type_checker-worker · **Scope**: `src/type_checker/**` + `src/5_type_checker.py` · **Date**: 2026-09-04
+**Worker**: type_checker-worker · **Scope**: `src/gnn/type_checker/**` + `src/gnn/5_type_checker.py` · **Date**: 2026-09-04
 
 ## Files changed + why
 
 ### New files
 | File | Why |
 |---|---|
-| `src/tests/type_checker/test_type_checker_content_validation.py` | 19 tests pinning `sections.*`, `summarize_type_check_results`, `validate_content`, `strict_mode` plumbing, the real-newline summary fix, the `estimate_resources` flag, and the `validate_single_gnn_file` never-raises contract. |
-| `src/type_checker/checking/summary.py` | `ValidationSummary` TypedDict + `summarize_type_check_results` — typed aggregation of a directory run (counts, complexity tiers, totals). Pure, no I/O; consumed by `validate_gnn_files` to write `type_check_summary.json` and by MCP/reports. |
-| `src/tests/type_checker/test_type_checker_estimator_cli_mcp.py` | 10 tests pinning the `## Time` classifier, estimator `.gnn` discovery, the CLI end-to-end path (previously crashed), and MCP strict passthrough. |
+| `tests/type_checker/test_type_checker_content_validation.py` | 19 tests pinning `sections.*`, `summarize_type_check_results`, `validate_content`, `strict_mode` plumbing, the real-newline summary fix, the `estimate_resources` flag, and the `validate_single_gnn_file` never-raises contract. |
+| `src/gnn/type_checker/checking/summary.py` | `ValidationSummary` TypedDict + `summarize_type_check_results` — typed aggregation of a directory run (counts, complexity tiers, totals). Pure, no I/O; consumed by `validate_gnn_files` to write `type_check_summary.json` and by MCP/reports. |
+| `tests/type_checker/test_type_checker_estimator_cli_mcp.py` | 10 tests pinning the `## Time` classifier, estimator `.gnn` discovery, the CLI end-to-end path (previously crashed), and MCP strict passthrough. |
 | `docs/development/fleet-logs/type_checker-worker.md` | Per-phase checkpoint log (this worker's home). |
 
 ### Modified files
 | File | Why |
 |---|---|
-| `src/type_checker/checking/core.py` | Removed the three duplicated private helpers (now imported from `sections.py`); **fixed a literal-`\n` rendering bug** in `_generate_type_check_summary` (5 lines emitted `\n` text instead of newlines); **fixed `GNNTypeChecker.__init__` silently swallowing `strict_mode`** (cli.py passed it; it was ignored) → `__init__(self, strict_mode: bool = False)`; split `validate_single_gnn_file` into a read + a new pure `validate_content(content, *, source_name, strict)` **with the `validate_content` delegation wrapped in try/except so a parser failure surfaces as an invalid-file dict (recoverable exit-2) instead of propagating (hard exit-1)**; thread `strict` through `validate_gnn_files` kwargs (defaults to `self.strict_mode`); honour the `estimate_resources` kwarg by running the estimator + writing `resource_estimates/`; write `type_check_summary.json` (was documented but never emitted); enrich the validation dict with additive `variables`/`connections`(+`is_temporal`)/`sections`/`model_complexity`/`type_distribution`/`time_dynamics` so the CLI report renderers have structured data; drop a redundant local `import json`. |
-| `src/type_checker/checking/__init__.py` | Re-export the additive surface (`ResourceEstimate`, `VALID_TYPES`, `parse_state_variables`, `extract_b_matrix_evidence`, `extract_gnn_dimensions_with_diagnostics`, `sections.*`, `ValidationSummary`, `summarize_type_check_results`, `CANONICAL_GNN_SECTIONS`). |
-| `src/type_checker/__init__.py` | Bump `__version__` 1.6.0 → 1.7.0; extend `FEATURES`; add a curated additive subset of the checking surface (`estimate_file_resources`, `extract_gnn_dimensions`, `summarize_type_check_results`, `ValidationEstimate`, `validate_dimension_compatibility`) while keeping the package import light (no estimator/matplotlib import at package import time). |
-| `src/type_checker/processor.py` | Facade re-exports the additive surface (`ResourceEstimate`, `ValidationSummary`, `extract_b_matrix_evidence`, `extract_gnn_dimensions`, `extract_gnn_dimensions_with_diagnostics`, `parse_state_variables`, `summarize_type_check_results`). |
-| `src/type_checker/estimation/estimator.py` | **Fixed `time_spec = "Dynamic" if "t" in content`** (true for almost every spec — read the `## Time` section via `_classify_time_spec` instead → Static/Dynamic/Hierarchical); replaced naive whole-content `re.findall` edge/equation parsing with section-scoped `parse_resource_connections` / `extract_markdown_section`; `estimate_from_directory` now walks every registered non-binary spec extension (mirroring the type-checker discovery fix) instead of only `*.md`; dropped the dead `is_hierarchical = any("hierarchical" in key.lower() for key in content)` heuristic (the content-dict keys never contain "hierarchical" — `time_spec` now carries Hierarchical). |
-| `src/type_checker/estimation/report_html.py` | **Fixed a pre-existing `TypeError`**: `f"{metrics.get('flops_estimate', 0):.2e}"` / `f"{metrics.get('inference_time_estimate', 0) * 1000:.4f}"` formatted **dict** values (`flops_estimate`/`inference_time_estimate` are dicts from the strategies) → `unsupported format string passed to dict.__format__`. Added `_metric_scalar` to reach into the dicts; the HTML report now renders instead of crashing on any real input. |
-| `src/type_checker/cli.py` | **Fixed the live `KeyError: 'is_valid'` crash** (`per_file_markdown_report` indexed `result['is_valid']` but `check_file` returns `valid`; the CLI exited 1 on every run before writing reports) by merging `is_valid` into each details entry; directory mode now uses the checker's registered-extension discovery instead of `*.md`/`**/*.md`; `--strict` now actually threads through the fixed constructor. |
-| `src/type_checker/mcp.py` | `validate_gnn_files_mcp` / `validate_single_gnn_file_mcp` now construct `GNNTypeChecker(strict_mode=strict)` and pass `strict`/`estimate_resources` through (previously the params were accepted and silently dropped). |
-| `src/type_checker/AGENTS.md`, `README.md`, `SPEC.md`, `SKILL.md`, `checking/AGENTS.md`, `estimation/AGENTS.md` | Docs of record updated for the new modules, `validate_content`, `strict_mode`, `estimate_resources`, `type_check_summary.json`, version 1.7.0 / 3.3.0. |
+| `src/gnn/type_checker/checking/core.py` | Removed the three duplicated private helpers (now imported from `sections.py`); **fixed a literal-`\n` rendering bug** in `_generate_type_check_summary` (5 lines emitted `\n` text instead of newlines); **fixed `GNNTypeChecker.__init__` silently swallowing `strict_mode`** (cli.py passed it; it was ignored) → `__init__(self, strict_mode: bool = False)`; split `validate_single_gnn_file` into a read + a new pure `validate_content(content, *, source_name, strict)` **with the `validate_content` delegation wrapped in try/except so a parser failure surfaces as an invalid-file dict (recoverable exit-2) instead of propagating (hard exit-1)**; thread `strict` through `validate_gnn_files` kwargs (defaults to `self.strict_mode`); honour the `estimate_resources` kwarg by running the estimator + writing `resource_estimates/`; write `type_check_summary.json` (was documented but never emitted); enrich the validation dict with additive `variables`/`connections`(+`is_temporal`)/`sections`/`model_complexity`/`type_distribution`/`time_dynamics` so the CLI report renderers have structured data; drop a redundant local `import json`. |
+| `src/gnn/type_checker/checking/__init__.py` | Re-export the additive surface (`ResourceEstimate`, `VALID_TYPES`, `parse_state_variables`, `extract_b_matrix_evidence`, `extract_gnn_dimensions_with_diagnostics`, `sections.*`, `ValidationSummary`, `summarize_type_check_results`, `CANONICAL_GNN_SECTIONS`). |
+| `src/gnn/type_checker/__init__.py` | Bump `__version__` 1.6.0 → 1.7.0; extend `FEATURES`; add a curated additive subset of the checking surface (`estimate_file_resources`, `extract_gnn_dimensions`, `summarize_type_check_results`, `ValidationEstimate`, `validate_dimension_compatibility`) while keeping the package import light (no estimator/matplotlib import at package import time). |
+| `src/gnn/type_checker/processor.py` | Facade re-exports the additive surface (`ResourceEstimate`, `ValidationSummary`, `extract_b_matrix_evidence`, `extract_gnn_dimensions`, `extract_gnn_dimensions_with_diagnostics`, `parse_state_variables`, `summarize_type_check_results`). |
+| `src/gnn/type_checker/estimation/estimator.py` | **Fixed `time_spec = "Dynamic" if "t" in content`** (true for almost every spec — read the `## Time` section via `_classify_time_spec` instead → Static/Dynamic/Hierarchical); replaced naive whole-content `re.findall` edge/equation parsing with section-scoped `parse_resource_connections` / `extract_markdown_section`; `estimate_from_directory` now walks every registered non-binary spec extension (mirroring the type-checker discovery fix) instead of only `*.md`; dropped the dead `is_hierarchical = any("hierarchical" in key.lower() for key in content)` heuristic (the content-dict keys never contain "hierarchical" — `time_spec` now carries Hierarchical). |
+| `src/gnn/type_checker/estimation/report_html.py` | **Fixed a pre-existing `TypeError`**: `f"{metrics.get('flops_estimate', 0):.2e}"` / `f"{metrics.get('inference_time_estimate', 0) * 1000:.4f}"` formatted **dict** values (`flops_estimate`/`inference_time_estimate` are dicts from the strategies) → `unsupported format string passed to dict.__format__`. Added `_metric_scalar` to reach into the dicts; the HTML report now renders instead of crashing on any real input. |
+| `src/gnn/type_checker/cli.py` | **Fixed the live `KeyError: 'is_valid'` crash** (`per_file_markdown_report` indexed `result['is_valid']` but `check_file` returns `valid`; the CLI exited 1 on every run before writing reports) by merging `is_valid` into each details entry; directory mode now uses the checker's registered-extension discovery instead of `*.md`/`**/*.md`; `--strict` now actually threads through the fixed constructor. |
+| `src/gnn/type_checker/mcp.py` | `validate_gnn_files_mcp` / `validate_single_gnn_file_mcp` now construct `GNNTypeChecker(strict_mode=strict)` and pass `strict`/`estimate_resources` through (previously the params were accepted and silently dropped). |
+| `src/gnn/type_checker/AGENTS.md`, `README.md`, `SPEC.md`, `SKILL.md`, `checking/AGENTS.md`, `estimation/AGENTS.md` | Docs of record updated for the new modules, `validate_content`, `strict_mode`, `estimate_resources`, `type_check_summary.json`, version 1.7.0 / 3.3.0. |
 
 ## API deltas (additive; no breaking changes)
 
@@ -48,13 +48,13 @@
 ## Verification output tails
 
 ```
-$ uv run ruff check src/type_checker src/tests/type_checker
+$ uv run ruff check src/gnn/type_checker tests/type_checker
 All checks passed!
 
-$ uv run --extra dev mypy src/type_checker --config-file pyproject.toml
+$ uv run --extra dev mypy src/gnn/type_checker --config-file pyproject.toml
 Success: no issues found in 21 source files
 
-$ uv run pytest src/tests/type_checker/ -v   # ≡ `just test-mod type_checker` (just binary absent on host)
+$ uv run pytest tests/type_checker/ -v   # ≡ `just test-mod type_checker` (just binary absent on host)
 ============================== 74 passed in 1.06s ==============================
 ```
 Baseline was 41 passing (0 regressions). New total: **74** (41 existing + 33 new).
@@ -110,11 +110,11 @@ other worker), the flagged follow-ups were resolved in this same scope:
    `sections.py` is an untracked new file of this worker (no foreign edit).
 
 Note: `doc/development/docs_audit.py --strict` currently flags 1 issue —
-`src/tests/tests` (tests-worker's new directory) lacks an AGENTS.md. That is
+`tests/tests` (tests-worker's new directory) lacks an AGENTS.md. That is
 tests-worker scope, not this module's.
 
 ## 5-line summary
-- Audited `src/type_checker/**` + `5_type_checker.py`; baseline 41 tests, ruff+mypy clean; proved live bugs (CLI `KeyError`, literal `\n` summary, `strict_mode` swallowed, `--estimate-resources` ignored, `## Time` misclassified, HTML report `dict.__format__` crash); verified `visualizer` charts are NOT dead (probe disproved the matplotlib 3.9-cmap-removal assumption; no visualizer change made).
+- Audited `src/gnn/type_checker/**` + `5_type_checker.py`; baseline 41 tests, ruff+mypy clean; proved live bugs (CLI `KeyError`, literal `\n` summary, `strict_mode` swallowed, `--estimate-resources` ignored, `## Time` misclassified, HTML report `dict.__format__` crash); verified `visualizer` charts are NOT dead (probe disproved the matplotlib 3.9-cmap-removal assumption; no visualizer change made).
 - Added `checking/sections.py` (shared section-scoped parsing) + `checking/summary.py` (`ValidationSummary` TypedDict) and re-exported the additive surface; dedup'd the checker/estimator connection parsing.
-- Post-check comprehensive round: Phase 1.1 exit-2 alignment (no-files), doc/tutorial/CHANGELOG reconciliation, single-read-per-file + `_invalid_file_result` dedup, `model_type` + granular `model_complexity` enrichment (shared `classify_time_spec`, Dynamic markers unified with `detect_time_dynamics`), `report_html` matplotlib guard — see "Post-check comprehensive round" above. Final gate green: `ruff` clean, `mypy` 21 files 0 errors, `pytest src/tests/type_checker/` **74 passed** (41 existing + 33 new, 0 regressions).
+- Post-check comprehensive round: Phase 1.1 exit-2 alignment (no-files), doc/tutorial/CHANGELOG reconciliation, single-read-per-file + `_invalid_file_result` dedup, `model_type` + granular `model_complexity` enrichment (shared `classify_time_spec`, Dynamic markers unified with `detect_time_dynamics`), `report_html` matplotlib guard — see "Post-check comprehensive round" above. Final gate green: `ruff` clean, `mypy` 21 files 0 errors, `pytest tests/type_checker/` **74 passed** (41 existing + 33 new, 0 regressions).
 - Added 33 deterministic tests (`test_type_checker_content_validation.py` 23, `test_type_checker_estimator_cli_mcp.py` 10), incl. the `validate_single_gnn_file` never-raises regression, the Phase 1.1 no-files exit-2 regression, and the classify/detect time-marker agreement test; updated AGENTS/README/SPEC/SKILL/subpackage docs to v1.7.0/3.3.0.

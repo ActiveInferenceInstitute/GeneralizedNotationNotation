@@ -75,7 +75,7 @@ oxdraw serves as a visual interface for the Generalized Notation Notation (GNN) 
 
 ## Implementation: GNN to Mermaid Conversion
 
-### Module: `src/gui/oxdraw/mermaid_converter.py`
+### Module: `src/gnn/gui/oxdraw/mermaid_converter.py`
 
 This module translates parsed GNN models to Mermaid flowchart syntax compatible with oxdraw.
 
@@ -352,7 +352,7 @@ def convert_gnn_file_to_mermaid(
 
 ## Implementation: Mermaid to GNN Conversion
 
-### Module: `src/gui/oxdraw/mermaid_parser.py`
+### Module: `src/gnn/gui/oxdraw/mermaid_parser.py`
 
 This module parses Mermaid diagrams edited in oxdraw back to GNN format.
 
@@ -766,7 +766,7 @@ import subprocess
 subprocess.run(
     [
         "python3",
-        "src/3_gnn.py",
+        "src/gnn/3_gnn.py",
         "--target-dir",
         "output/oxdraw_interface",
         "--output-dir",
@@ -779,7 +779,7 @@ subprocess.run(
 subprocess.run(
     [
         "python3",
-        "src/5_type_checker.py",
+        "src/gnn/5_type_checker.py",
         "--target-dir",
         "output/oxdraw_interface",
         "--output-dir",
@@ -791,7 +791,7 @@ subprocess.run(
 subprocess.run(
     [
         "python3",
-        "src/6_validation.py",
+        "src/gnn/6_validation.py",
         "--target-dir",
         "output/oxdraw_interface",
         "--output-dir",
@@ -803,13 +803,13 @@ subprocess.run(
 subprocess.run(
     [
         "python3",
-        "src/10_ontology.py",
+        "src/gnn/10_ontology.py",
         "--target-dir",
         "output/oxdraw_interface",
         "--output-dir",
         "output",
         "--ontology-terms-file",
-        "src/ontology/act_inf_ontology_terms.json",
+        "src/gnn/ontology/act_inf_ontology_terms.json",
     ]
 )
 
@@ -820,11 +820,11 @@ print("✅ Model validated through GNN pipeline")
 
 ## Advanced Integration: Pipeline Step 22 (oxdraw GUI)
 
-### Module: `src/gui/oxdraw/`
+### Module: `src/gnn/gui/oxdraw/`
 
 Create a dedicated pipeline step for oxdraw integration.
 
-#### File: `src/22_gui.py`
+#### File: `src/gnn/22_gui.py`
 
 ```python
 #!/usr/bin/env python3
@@ -861,7 +861,7 @@ if __name__ == "__main__":
     exit(main())
 ```
 
-#### File: `src/gui/oxdraw/__init__.py`
+#### File: `src/gnn/gui/oxdraw/__init__.py`
 
 ```python
 """
@@ -885,7 +885,7 @@ __all__ = [
 __version__ = "1.0.0"
 ```
 
-#### File: `src/gui/oxdraw/processor.py`
+#### File: `src/gnn/gui/oxdraw/processor.py`
 
 ```python
 """
@@ -1220,9 +1220,9 @@ This integration demonstrates how **diagram-as-code** tools can enhance scientif
 ### GNN Pipeline Documentation
 
 - [GNN Parser](../../src/gnn/AGENTS.md) - Core parsing and validation
-- [Ontology Module](../../src/ontology/AGENTS.md) - Active Inference ontology
-- [Visualization Module](../../src/visualization/AGENTS.md) - Graph rendering
-- [GUI Module](../../src/gui/AGENTS.md) - Interactive constructors
+- [Ontology Module](../../src/gnn/ontology/AGENTS.md) - Active Inference ontology
+- [Visualization Module](../../src/gnn/visualization/AGENTS.md) - Graph rendering
+- [GUI Module](../../src/gnn/gui/AGENTS.md) - Interactive constructors
 
 ### oxdraw Resources
 
@@ -1232,7 +1232,7 @@ This integration demonstrates how **diagram-as-code** tools can enhance scientif
 
 ### Active Inference
 
-- [Active Inference Ontology](../../src/ontology/act_inf_ontology_terms.json)
+- [Active Inference Ontology](../../src/gnn/ontology/act_inf_ontology_terms.json)
 - [POMDP Specification](../gnn/reference/gnn_standards.md)
 
 ---

@@ -33,17 +33,17 @@ All examples can be processed through the GNN pipeline for parsing, validation, 
 
 ```bash
 # Process all examples
-uv run python src/main.py --target-dir input/gnn_files --verbose
+uv run python src/gnn/main.py --target-dir input/gnn_files --verbose
 
 # Run specific processing steps
-uv run python src/main.py --only-steps "3,5,8,11,12" --target-dir input/gnn_files
+uv run python src/gnn/main.py --only-steps "3,5,8,11,12" --target-dir input/gnn_files
 ```
 
 For module-specific documentation:
 
 - **[src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md)**: GNN parsing module
-- **[src/render/AGENTS.md](../../../src/render/AGENTS.md)**: Code generation module
-- **[src/AGENTS.md](../../../src/AGENTS.md)**: Complete pipeline registry
+- **[src/gnn/render/AGENTS.md](../../../src/gnn/render/AGENTS.md)**: Code generation module
+- **[src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md)**: Complete pipeline registry
 
 ---
 

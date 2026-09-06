@@ -1,7 +1,7 @@
 # REPORT-parse.md — Parse & Core-Authoring Scope
 
 **Mission:** `.agents/dispatch/gnn-improve/mission-parse.md`
-**Scope:** `src/gnn/`, `src/model_registry/`, `src/type_checker/`, `src/validation/`, `src/export/` + mirror tests.
+**Scope:** `src/gnn/`, `src/gnn/model_registry/`, `src/gnn/type_checker/`, `src/gnn/validation/`, `src/gnn/export/` + mirror tests.
 **Status:** Complete. All scoped gates green. No commit / push / stage performed (working tree left dirty as required).
 
 ---
@@ -29,7 +29,7 @@ The helper is quote- and bracket-aware, so a `#` inside a quoted string or insid
 matrix row is preserved as data (matching intent), and multiline braced matrices with
 per-row `#` comments still parse correctly.
 
-### 2. `src/tests/gnn/test_gnn_parsing.py` — targeted regression tests (5 added)
+### 2. `tests/gnn/test_gnn_parsing.py` — targeted regression tests (5 added)
 New `TestParameterParsing` class pinning the invariants above:
 - `test_matrix_with_trailing_comment_stays_a_matrix`
 - `test_inline_comment_stripped_from_token_value`
@@ -47,7 +47,7 @@ agents on disjoint paths and were intentionally left untouched and uncommitted.
 ## Verification (scoped)
 
 Command of record:
-`uv run pytest src/tests/gnn src/tests/model_registry src/tests/type_checker src/tests/validation src/tests/export -q --tb=no -x`
+`uv run pytest tests/gnn tests/model_registry tests/type_checker tests/validation tests/export -q --tb=no -x`
 
 - **pytest:** **438 passed, 0 failed** (baseline 433 → +5 new regression tests).
 - **ruff check:** `All checks passed!`

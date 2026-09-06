@@ -127,7 +127,7 @@ Before submitting a new module, verify:
 - [ ] `mcp.py` with `register_tools(mcp_instance)` and explicit `register_tool(...)` schemas
 - [ ] `AGENTS.md` documenting capabilities
 - [ ] `README.md` with usage examples
-- [ ] Tests in `src/tests/MODULENAME/test_MODULENAME_overall.py`
+- [ ] Tests in `tests/MODULENAME/test_MODULENAME_overall.py`
 - [ ] All public functions have complete type hints
 - [ ] All public functions have docstrings with examples
 - [ ] No unused imports

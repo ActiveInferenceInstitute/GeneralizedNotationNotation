@@ -1,6 +1,6 @@
 # Troubleshooting Guide
 
-> **Quick health check**: `python src/main.py --verbose` | `python src/2_tests.py --fast-only`
+> **Quick health check**: `python src/gnn/main.py --verbose` | `python src/gnn/2_tests.py --fast-only`
 
 ## Expected Healthy Output
 
@@ -23,7 +23,7 @@ Peak memory: ~36MB | Total: ~2m53s
 | Error | Cause | Fix |
 |-------|-------|-----|
 | `ModuleNotFoundError: pymdp` | Optional dep absent | `uv pip install inferactively-pymdp` — or ignore (expected) |
-| `ModuleNotFoundError: flax` | Stale JAX code | Re-run `python src/11_render.py --target-dir input/gnn_files` |
+| `ModuleNotFoundError: flax` | Stale JAX code | Re-run `python src/gnn/11_render.py --target-dir input/gnn_files` |
 | `ImportError: cannot import 'X'` | Version mismatch | `uv pip install -U -r requirements.txt` |
 | `ModuleNotFoundError: src.gnn` | Wrong import style | Use `sys.path.insert` + direct import, not `from src.gnn import…` |
 
@@ -31,7 +31,7 @@ Peak memory: ~36MB | Total: ~2m53s
 
 | Error | Fix |
 |-------|-----|
-| `Package RxInfer not found` | `julia --startup-file=no --project=src/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'` |
+| `Package RxInfer not found` | `julia --startup-file=no --project=src/gnn/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'` |
 | `Julia not found in PATH` | Install from julialang.org, add to `~/.zshrc` |
 | Slow first run | Normal — Julia compiles packages on first use (~2–5 min) |
 
@@ -48,7 +48,7 @@ Peak memory: ~36MB | Total: ~2m53s
 | Issue | Cause | Fix |
 |-------|-------|-----|
 | Tests skipped | Optional deps absent | Expected — skip count is normal |
-| `RecursionError` | Pytest plugin conflict | `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest src/tests/` |
+| `RecursionError` | Pytest plugin conflict | `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest tests/` |
 | Timeout | Tests take too long | `export FAST_TESTS_TIMEOUT=300` |
 | `FileNotFoundError` | Wrong working directory | Run from project root: `/path/to/generalizednotationnotation` |
 
@@ -96,20 +96,20 @@ grep -r "ERROR" output/*/  2>/dev/null | head -20
 ```bash
 # Clean and restart
 rm -rf output/*
-python src/main.py --verbose
+python src/gnn/main.py --verbose
 
 # Rebuild environment
 rm -rf .venv
 uv venv && uv pip install -e .
 
 # Resume from checkpoint (skip completed steps)
-python src/main.py --skip-steps "0,1,2,3"
+python src/gnn/main.py --skip-steps "0,1,2,3"
 
 # Run specific steps only
-python src/main.py --only-steps "11,12,13"
+python src/gnn/main.py --only-steps "11,12,13"
 
 # Run a single step directly
-python src/3_gnn.py --target-dir input/gnn_files --output-dir output --verbose
+python src/gnn/3_gnn.py --target-dir input/gnn_files --output-dir output --verbose
 ```
 
 ---

@@ -83,7 +83,7 @@ None - No critical issues detected.
 
 **Output Snippet**:
 ```
-2026-06-18 09:02:49,680 [c3338a84:2_tests] 2_tests.py - INFO - Executing fast tests: /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python -m pytest --tb=short --maxfail=5 --durations=10 -ra --timeout 600 -v -m not slow --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py --ignore=src/tests/test_pipeline_performance.py --ignore=src/tests/test_pipeline_recovery.py --ignore=src/tests/test_report_integration.py src/tests/
+2026-06-18 09:02:49,680 [c3338a84:2_tests] 2_tests.py - INFO - Executing fast tests: /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python -m pytest --tb=short --maxfail=5 --durations=10 -ra --timeout 600 -v -m not slow --ignore=tests/llm/test_llm_ollama.py --ignore=tests/llm/test_llm_ollama_integration.py --ignore=tests/test_pipeline_performance.py --ignore=tests/test_pipeline_recovery.py --ignore=tests/test_report_integration.py tests/
 ```
 
 ### 13_llm.py

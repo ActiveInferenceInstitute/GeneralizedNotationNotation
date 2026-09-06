@@ -19,16 +19,16 @@
 
 | Component | Path | Description |
 |-----------|------|-------------|
-| **PyMDP Runner** | [`src/execute/pymdp/pymdp_runner.py`](../../src/execute/pymdp/pymdp_runner.py) | Main execution script |
-| **Model Builder** | [`src/execute/pymdp/`](../../src/execute/pymdp/) | GNN to PyMDP conversion |
+| **PyMDP Runner** | [`src/gnn/execute/pymdp/pymdp_runner.py`](../../src/gnn/execute/pymdp/pymdp_runner.py) | Main execution script |
+| **Model Builder** | [`src/gnn/execute/pymdp/`](../../src/gnn/execute/pymdp/) | GNN to PyMDP conversion |
 
 ### Analysis Tools
 
 | Component | Path | Description |
 |-----------|------|-------------|
-| **PyMDP Analyzer** | [`src/analysis/pymdp/analyzer.py`](../../src/analysis/pymdp/analyzer.py) | Post-simulation analysis |
-| **PyMDP Visualizer** | [`src/analysis/pymdp/visualizer.py`](../../src/analysis/pymdp/visualizer.py) | Visualization generation |
-| **Post-Simulation** | [`src/analysis/post_simulation.py`](../../src/analysis/post_simulation.py) | Comprehensive analysis |
+| **PyMDP Analyzer** | [`src/gnn/analysis/pymdp/analyzer.py`](../../src/gnn/analysis/pymdp/analyzer.py) | Post-simulation analysis |
+| **PyMDP Visualizer** | [`src/gnn/analysis/pymdp/visualizer.py`](../../src/gnn/analysis/pymdp/visualizer.py) | Visualization generation |
+| **Post-Simulation** | [`src/gnn/analysis/post_simulation.py`](../../src/gnn/analysis/post_simulation.py) | Comprehensive analysis |
 
 ---
 

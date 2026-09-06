@@ -7,28 +7,28 @@
 
 GNN framework integration is handled by **Steps 11 and 12** of the processing pipeline:
 
-- **`src/11_render.py`** → Code generation for PyMDP, RxInfer.jl, ActiveInference.jl, DisCoPy, JAX, PyTorch, NumPyro, Stan, bnlearn
-  - See: **[src/render/AGENTS.md](../../../src/render/AGENTS.md)** for rendering module details
-- **`src/12_execute.py`** → Execution of rendered simulation scripts
-  - See: **[src/execute/AGENTS.md](../../../src/execute/AGENTS.md)** for execution module details
+- **`src/gnn/11_render.py`** → Code generation for PyMDP, RxInfer.jl, ActiveInference.jl, DisCoPy, JAX, PyTorch, NumPyro, Stan, bnlearn
+  - See: **[src/gnn/render/AGENTS.md](../../../src/gnn/render/AGENTS.md)** for rendering module details
+- **`src/gnn/12_execute.py`** → Execution of rendered simulation scripts
+  - See: **[src/gnn/execute/AGENTS.md](../../../src/gnn/execute/AGENTS.md)** for execution module details
 
 **Quick Start:**
 
 ```bash
 # Generate and execute the default framework set
-uv run python src/main.py --only-steps "11,12" --target-dir input/gnn_files --output-dir output --verbose
+uv run python src/gnn/main.py --only-steps "11,12" --target-dir input/gnn_files --output-dir output --verbose
 
 # Execute specific frameworks only
-uv run python src/12_execute.py --frameworks "pymdp,jax" --verbose
+uv run python src/gnn/12_execute.py --frameworks "pymdp,jax" --verbose
 ```
 
-For complete pipeline documentation, see **[src/AGENTS.md](../../../src/AGENTS.md)**.
+For complete pipeline documentation, see **[src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md)**.
 
 ## Overview
 
 This guide describes how GNN models actually flow through the framework integration
 surface. There is no separate framework-agnostic intermediate-representation class in
-the codebase — each renderer under `src/render/<framework>/` consumes the parsed GNN
+the codebase — each renderer under `src/gnn/render/<framework>/` consumes the parsed GNN
 model dictionary directly (as produced by `src/gnn/parsers/`) and emits framework-native
 code. Per-framework rendering, execution, and troubleshooting detail lives in the
 per-framework guides linked below; this document covers the parts of the pattern that
@@ -37,7 +37,7 @@ cross-framework comparison step.
 
 ## Supported Frameworks
 
-Step 11 renders to 9 registered targets (see `src/render/AGENTS.md`). Step 12 executes 8 — every render target except bnlearn, which is render-only (Stan via the cmdstanpy driver `<stem>_stan.py`, executor `src/execute/stan/`; skipped when cmdstanpy/CmdStan is absent). PyTorch and bnlearn are registry-gated unless installed manually. Continuous (linear-Gaussian) models execute on jax, numpyro, pytorch, stan and rxinfer only; the four categorical backends (pymdp, activeinference_jl, discopy, bnlearn) return render status `unsupported` for them, recorded in `render_processing_summary.json` under `unsupported_framework_renderings` and never handed to Step 12:
+Step 11 renders to 9 registered targets (see `src/gnn/render/AGENTS.md`). Step 12 executes 8 — every render target except bnlearn, which is render-only (Stan via the cmdstanpy driver `<stem>_stan.py`, executor `src/gnn/execute/stan/`; skipped when cmdstanpy/CmdStan is absent). PyTorch and bnlearn are registry-gated unless installed manually. Continuous (linear-Gaussian) models execute on jax, numpyro, pytorch, stan and rxinfer only; the four categorical backends (pymdp, activeinference_jl, discopy, bnlearn) return render status `unsupported` for them, recorded in `render_processing_summary.json` under `unsupported_framework_renderings` and never handed to Step 12:
 
 | Framework | Per-framework guide |
 |-----------|----------------------|
@@ -49,9 +49,9 @@ Step 11 renders to 9 registered targets (see `src/render/AGENTS.md`). Step 12 ex
 | PyTorch | [implementations/pytorch.md](../implementations/pytorch.md) |
 | NumPyro | [implementations/numpyro.md](../implementations/numpyro.md) |
 | Stan | [implementations/stan.md](../implementations/stan.md) |
-| bnlearn | `src/render/AGENTS.md` (no standalone guide yet) |
+| bnlearn | `src/gnn/render/AGENTS.md` (no standalone guide yet) |
 
-Use `--frameworks` (plural) on `src/11_render.py` / `src/12_execute.py` to restrict to a
+Use `--frameworks` (plural) on `src/gnn/11_render.py` / `src/gnn/12_execute.py` to restrict to a
 subset, e.g. `--frameworks pymdp,jax`, or `--frameworks lite` for the executor's
 Python-oriented quick subset. The unified `gnn render` command uses singular
 `--framework`; do not confuse the two CLI surfaces.
@@ -72,13 +72,13 @@ framework-specific behavior at each stage.
 | **DisCoPy** | `render/discopy/` | `.py` | Python `subprocess` | `extract_discopy_data()` | Diagram executions, categorical outputs |
 
 `extract_pymdp_data`, `extract_rxinfer_data`, `extract_activeinference_jl_data`, and
-`extract_discopy_data` live in `src/execute/data_extractors.py` (raw stdout/stderr
-parsing) and `src/analysis/framework_extractors.py` (post-simulation JSON-payload
+`extract_discopy_data` live in `src/gnn/execute/data_extractors.py` (raw stdout/stderr
+parsing) and `src/gnn/analysis/framework_extractors.py` (post-simulation JSON-payload
 normalization) — see those modules for the current field-level schema.
 
 ### PyMDP Pipeline Details
 
-**Render:** `src/render/pymdp/` generates complete PyMDP Python scripts with A, B, C, D
+**Render:** `src/gnn/render/pymdp/` generates complete PyMDP Python scripts with A, B, C, D
 matrices, `Agent` instantiation, a simulation loop, and result serialization.
 
 **Execute:** Python subprocess with `PYTHONPATH` extended for PyMDP imports. Dependency
@@ -89,14 +89,14 @@ from JSON output. Supports reading from collected files in `output/pymdp_simulat
 
 ### ActiveInference.jl Pipeline Details
 
-**Render:** `src/render/activeinference_jl/activeinference_renderer.py` generates Julia
+**Render:** `src/gnn/render/activeinference_jl/activeinference_renderer.py` generates Julia
 scripts using `ActiveInference.jl` with POMDP agent setup, environment initialization,
 and a simulation loop.
 
 **Execute:** Julia subprocess. The package-availability preflight runs
 `using JSON, Distributions, StatsBase, ActiveInference` (see
-`src/execute/processor.py`). As with RxInfer, Step 12 defaults `JULIA_PROJECT` to the
-committed environment at `src/execute/activeinference_jl/`, whose `Project.toml` is
+`src/gnn/execute/processor.py`). As with RxInfer, Step 12 defaults `JULIA_PROJECT` to the
+committed environment at `src/gnn/execute/activeinference_jl/`, whose `Project.toml` is
 deliberately minimal: `ActiveInference` (0.1), `Distributions`, `JSON`, and
 `StatsBase`. Reads output from `simulation_results.csv`.
 
@@ -106,17 +106,17 @@ error handling.
 
 ### RxInfer.jl Pipeline Details
 
-**Render:** `src/render/rxinfer/rxinfer_renderer.py` is the canonical renderer. It does
+**Render:** `src/gnn/render/rxinfer/rxinfer_renderer.py` is the canonical renderer. It does
 not emit one flat model shape for every spec: it calls `detect_model_kind()`
-(`src/render/pomdp_contract.py`) and dispatches by the detected `ModelKind` to a
-per-kind strategy in `src/render/rxinfer/model_strategies.py`. Detection is
+(`src/gnn/render/pomdp_contract.py`) and dispatches by the detected `ModelKind` to a
+per-kind strategy in `src/gnn/render/rxinfer/model_strategies.py`. Detection is
 *structural* — it reads the `GNNSection` value, per-level/per-agent matrix key
 patterns, explicit `nr_agents`/`num_factors`, `F`/`H`/`Q`/`R` keys, and
 `dirichlet_[A-E]` keys — never free text. Every strategy emits a genuine Julia
 script that runs `infer()` with `free_energy = true`.
 
 The `@model` definitions themselves are *not* inlined into each generated script. They
-live in the committed Julia package `src/execute/rxinfer/src/GnnRxInferModels.jl`, and a
+live in the committed Julia package `src/gnn/execute/rxinfer/src/GnnRxInferModels.jl`, and a
 rendered script pulls in the one it needs — for example
 `using GnnRxInferModels: pomdp_model`, then
 `infer(model = pomdp_model(A=A, B=B, D=D, u=model_actions, T=TIME_STEPS), …)`. Keeping
@@ -133,10 +133,10 @@ result serialization.
 | `FACTORED` | `FactoredStrategy` | `factored_pomdp_model` — native mean-field two-factor model with a multi-parent likelihood, `DiscreteTransition(s1, A_m0, s2)`, yielding per-factor posteriors |
 | `CONTINUOUS` | `ContinuousStrategy` | `continuous_pomdp_model` — native linear-Gaussian state space built from `F`/`H`/`Q`/`R` plus `prior_mean`/`prior_cov` in `InitialParameterization`. Beliefs are posterior *means* alongside `posterior_cov`, and VFE validation is sign-agnostic because a Gaussian Bethe free energy is routinely negative |
 | `LEARNING` | `LearningStrategy` | `learning_pomdp_model` — the likelihood `A` is learned jointly with the states as `DirichletCollection(dirichlet_A)`; `a_learning_improved` is a hard validation gate |
-| `MULTI_AGENT` | `MultiAgentStrategy` | joint composition stamping the true kind. There is no native multi-agent `@model`; per-agent marginals are recovered downstream by `compute_per_factor_beliefs()` (`src/analysis/rxinfer/analyzer.py`) from the `state_factors` echo |
+| `MULTI_AGENT` | `MultiAgentStrategy` | joint composition stamping the true kind. There is no native multi-agent `@model`; per-agent marginals are recovered downstream by `compute_per_factor_beliefs()` (`src/gnn/analysis/rxinfer/analyzer.py`) from the `state_factors` echo |
 
 The strategy table is maintained alongside the code in
-[`src/render/rxinfer/README.md`](../../../src/render/rxinfer/README.md). The
+[`src/gnn/render/rxinfer/README.md`](../../../src/gnn/render/rxinfer/README.md). The
 TOML-emitting `toml_generator.py` is retired and retained only as a warning surface —
 `render_gnn_to_rxinfer_toml` raises a `DeprecationWarning`; do not build on it.
 
@@ -148,11 +148,11 @@ timestep on the observation prefix, and the resulting *filtered* posterior — n
 smoothed joint posterior — drives action selection via `softmax(log E − γ·EFE)`.
 
 **Execute:** Julia subprocess invoking
-`julia --startup-file=no --project=src/execute/rxinfer <script>`. Step 12 defaults
+`julia --startup-file=no --project=src/gnn/execute/rxinfer <script>`. Step 12 defaults
 `JULIA_PROJECT` to the committed environment for the framework being run
-(`_build_execution_environment()` in `src/execute/processor.py`), so scripts resolve
+(`_build_execution_environment()` in `src/gnn/execute/processor.py`), so scripts resolve
 their packages without an ambient environment; an explicitly set `JULIA_PROJECT` still
-wins. The committed `Project.toml` + `Manifest.toml` under `src/execute/rxinfer/` pin
+wins. The committed `Project.toml` + `Manifest.toml` under `src/gnn/execute/rxinfer/` pin
 RxInfer 5.5.0 and define the `GnnRxInferModels` package, which precompiles the pomdp,
 continuous, hierarchical, factored, and learning models loudly — a precompilation
 failure surfaces rather than being swallowed. `setup_environment.jl` activates and
@@ -196,15 +196,15 @@ outputs from `discopy_diagrams/`. Treats individual diagram evaluations as simul
 
 ### Cross-Framework Analysis
 
-After individual framework execution, Step 16 (`src/analysis/analyzer.py`) and Step 23
-(`src/report/`) perform comparative analysis and dashboard generation:
+After individual framework execution, Step 16 (`src/gnn/analysis/analyzer.py`) and Step 23
+(`src/gnn/report/`) perform comparative analysis and dashboard generation:
 
 1. **`analyze_framework_outputs()`** — loads and normalizes results from all frameworks
    into standard JSON targets.
 2. **`generate_framework_comparison_report()`** — generates comparison metrics (execution
    time, convergence, accuracy).
 3. **`visualize_cross_framework_metrics()`** — native side-by-side metric visualizations.
-4. **`generate_unified_framework_dashboard()`** (`src/analysis/visualizations.py`) —
+4. **`generate_unified_framework_dashboard()`** (`src/gnn/analysis/visualizations.py`) —
    writes multi-panel PNG comparison plots across frameworks
    (`unified_belief_comparison.png`, `unified_action_efe_comparison.png`,
    `unified_entropy_comparison.png`). The filterable HTML compare dashboard
@@ -212,7 +212,7 @@ After individual framework execution, Step 16 (`src/analysis/analyzer.py`) and S
    `analysis.rxinfer.dashboard.generate_dashboard` (see
    [16_analysis.md](../modules/16_analysis.md)).
 5. **`run_cross_framework_comparison()`**
-   (`src/analysis/rxinfer/cross_framework.py`) — the RxInfer-anchored cross-framework
+   (`src/gnn/analysis/rxinfer/cross_framework.py`) — the RxInfer-anchored cross-framework
    comparison entry point, reachable as
    `analysis.rxinfer.cross_framework.run_cross_framework_comparison`.
 

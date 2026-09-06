@@ -2,8 +2,8 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/13_llm.py` (55 lines)
-**Implementation Layer**: `src/llm/`
+**Orchestrator**: `src/gnn/13_llm.py` (55 lines)
+**Implementation Layer**: `src/gnn/llm/`
 
 ## Module Description
 
@@ -11,7 +11,7 @@ This module provides comprehensive LLM (Large Language Model) integration capabi
 
 
 ```
-src/llm/
+src/gnn/llm/
 ├── __init__.py                    # Module initialization and exports
 ├── README.md                      # This documentation
 ├── analyzer.py                    # LLM analysis system
@@ -73,11 +73,11 @@ src/llm/
 - `analysis_type` (str, optional): Type of analysis ("comprehensive", "summary", "explain", "optimize") (default: "comprehensive")
 - `provider` (str, optional): LLM provider ("auto", "openai", "openrouter", "perplexity", "ollama") (default: "auto")
   - `"auto"`: Automatically select best available provider (checks API keys, then Ollama)
-  - `"openai"`: Use OpenAI API (requires OPENAI_API_KEY; implemented in `src/llm/providers/openai_provider.py`)
-  - `"openrouter"`: Use OpenRouter API (requires OPENROUTER_API_KEY; implemented in `src/llm/providers/openrouter_provider.py`)
-  - `"perplexity"`: Use Perplexity API (requires PERPLEXITY_API_KEY; implemented in `src/llm/providers/perplexity_provider.py`)
+  - `"openai"`: Use OpenAI API (requires OPENAI_API_KEY; implemented in `src/gnn/llm/providers/openai_provider.py`)
+  - `"openrouter"`: Use OpenRouter API (requires OPENROUTER_API_KEY; implemented in `src/gnn/llm/providers/openrouter_provider.py`)
+  - `"perplexity"`: Use Perplexity API (requires PERPLEXITY_API_KEY; implemented in `src/gnn/llm/providers/perplexity_provider.py`)
   - `"ollama"`: Use local Ollama (requires Ollama installation)
-  - Note: `src/llm/providers/` has no `anthropic_provider.py`. `ANTHROPIC_API_KEY` only surfaces as an availability flag in the diagnostic provider matrix (see below) and in auth-error attribution; there is no wired Anthropic provider to select via this parameter.
+  - Note: `src/gnn/llm/providers/` has no `anthropic_provider.py`. `ANTHROPIC_API_KEY` only surfaces as an availability flag in the diagnostic provider matrix (see below) and in auth-error attribution; there is no wired Anthropic provider to select via this parameter.
 - `llm_tasks` (str, optional): Specific tasks ("all", "summarize", "explain", "optimize") (default: "all")
 - `llm_timeout` (int, optional): Timeout for LLM API calls in seconds (default: 60)
 - `max_tokens` (int, optional): Maximum tokens in response (default: 2000)
@@ -187,7 +187,7 @@ success = process_llm(
   - `"openrouter"`: Use OpenRouter API (requires OPENROUTER_API_KEY)
   - `"perplexity"`: Use Perplexity API (requires PERPLEXITY_API_KEY)
   - `"ollama"`: Use local Ollama (requires Ollama installation)
-  - No `"anthropic"` provider is implemented (`src/llm/providers/` has no Anthropic provider file); `ANTHROPIC_API_KEY` only appears as an availability flag in the provider matrix, not as a selectable provider
+  - No `"anthropic"` provider is implemented (`src/gnn/llm/providers/` has no Anthropic provider file); `ANTHROPIC_API_KEY` only appears as an availability flag in the provider matrix, not as a selectable provider
 
 #### Analysis Type
 - `analysis_type` (str): Type of analysis to perform (default: `"comprehensive"`)
@@ -231,7 +231,7 @@ success = process_llm(
 ### Optional Dependencies
 - `openai` — OpenAI API (also backs the OpenRouter provider, which uses the OpenAI-compatible client)
 - `ollama` (PyPI) — Python client; if import fails or `chat` is missing, `OllamaProvider` uses the `ollama` CLI when on `PATH`
-- Note: there is no `anthropic` package dependency in use — no code in `src/llm/` imports `anthropic`; `ANTHROPIC_API_KEY` is only checked for presence in the provider matrix
+- Note: there is no `anthropic` package dependency in use — no code in `src/gnn/llm/` imports `anthropic`; `ANTHROPIC_API_KEY` is only checked for presence in the provider matrix
 
 ### Internal Dependencies
 - `utils.pipeline_template` - Logging utilities
@@ -313,13 +313,13 @@ if result.returncode == 0:
 ## Testing
 
 ### Test Files
-- `src/tests/llm/test_llm_overall.py` - Module-level tests
-- `src/tests/llm/test_llm_functional.py` - Functional tests
-- `src/tests/llm/test_llm_ollama.py` - Ollama-specific tests
-- `src/tests/llm/test_llm_ollama_integration.py` - Ollama integration tests
+- `tests/llm/test_llm_overall.py` - Module-level tests
+- `tests/llm/test_llm_functional.py` - Functional tests
+- `tests/llm/test_llm_ollama.py` - Ollama-specific tests
+- `tests/llm/test_llm_ollama_integration.py` - Ollama integration tests
 
 ### Test Coverage
-- Measure: `uv run --extra dev python -m pytest src/tests/llm/ --cov=llm --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
+- Measure: `uv run --extra dev python -m pytest tests/llm/ --cov=llm --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
 
 ### Key Test Scenarios
 1. Ollama detection and availability check
@@ -426,7 +426,7 @@ ollama list
 export OLLAMA_MODEL=tinyllama
 
 # Or specify in command
-OLLAMA_MODEL=tinyllama python src/13_llm.py --target-dir input/gnn_files
+OLLAMA_MODEL=tinyllama python src/gnn/13_llm.py --target-dir input/gnn_files
 ```
 
 **Automatic Selection**:
@@ -484,7 +484,7 @@ cat output/13_llm_output/llm_results.json | grep "selected_model"
 4. **Process files individually**:
    ```bash
    # Process one file at a time
-   uv run python src/13_llm.py --target-dir input/gnn_files --verbose
+   uv run python src/gnn/13_llm.py --target-dir input/gnn_files --verbose
    ```
 
 **Performance**: Measure with your hardware; smaller instruct models are usually faster on CPU.
@@ -542,7 +542,7 @@ cat output/13_llm_output/llm_results.json | grep "selected_model"
    ollama serve
    
    # Terminal 2: Run pipeline
-   python src/main.py --only-steps "13" --verbose
+   python src/gnn/main.py --only-steps "13" --verbose
    ```
 
 2. **Use Appropriate Model for Task**:
@@ -553,7 +553,7 @@ cat output/13_llm_output/llm_results.json | grep "selected_model"
 3. **Monitor Performance**:
    ```bash
    # Run with verbose logging
-   python src/13_llm.py --verbose --target-dir input/gnn_files
+   python src/gnn/13_llm.py --verbose --target-dir input/gnn_files
    
    # Check timing in results
    cat output/13_llm_output/llm_results.json
@@ -682,10 +682,10 @@ configs["ollama"]["default_max_tokens"] = 1024
 ## References
 
 ### Related Documentation
-- [Pipeline Overview](../../../src/llm/../../README.md)
-- [Architecture Guide](../../../src/llm/../../ARCHITECTURE.md)
-- [Ollama Integration Guide](../../../src/llm/../../doc/llm/)
-- [LLM Configuration](../../../src/llm/../../.agent_rules#ollama-llm-integration-standards)
+- [Pipeline Overview](../../../README.md)
+- [Architecture Guide](../../../ARCHITECTURE.md)
+- [Ollama Integration Guide](../../../doc/llm/)
+- [LLM Configuration](../../../.agent_rules#ollama-llm-integration-standards)
 
 ### External Resources
 - [OpenAI API Documentation](https://platform.openai.com/docs)
@@ -703,12 +703,12 @@ configs["ollama"]["default_max_tokens"] = 1024
 
 ---
 ## Documentation
-- **[README](../../../src/llm/README.md)**: Module Overview
-- **[AGENTS](../../../src/llm/AGENTS.md)**: Agentic Workflows
-- **[SPEC](../../../src/llm/SPEC.md)**: Architectural Specification
-- **[SKILL](../../../src/llm/SKILL.md)**: Capability API
+- **[README](../../../src/gnn/llm/README.md)**: Module Overview
+- **[AGENTS](../../../src/gnn/llm/AGENTS.md)**: Agentic Workflows
+- **[SPEC](../../../src/gnn/llm/SPEC.md)**: Architectural Specification
+- **[SKILL](../../../src/gnn/llm/SKILL.md)**: Capability API
 
 
 ---
 
-**Source Reference**: [src/llm](../../../src/llm)
+**Source Reference**: [src/gnn/llm](../../../src/gnn/llm)

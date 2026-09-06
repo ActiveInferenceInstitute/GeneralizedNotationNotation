@@ -291,7 +291,7 @@ This optimization process moves beyond manual prompt engineering for these inter
 
 ### Orchestrating GNN and DSPy Workflows
 
-The GNN project includes a pipeline script (`src/main.py` detailed in `gnn_tools.md`) that orchestrates various processing stages for GNN files (parsing, type checking, visualization, etc.). DSPy-managed LLM programs could be integrated into this pipeline or operate in conjunction with it.
+The GNN project includes a pipeline script (`src/gnn/main.py` detailed in `gnn_tools.md`) that orchestrates various processing stages for GNN files (parsing, type checking, visualization, etc.). DSPy-managed LLM programs could be integrated into this pipeline or operate in conjunction with it.
 
 - **LLM-Assisted GNN Authoring**: A DSPy program could assist a user in authoring a GNN file by providing suggestions, auto-completing sections based on high-level descriptions, or translating natural language descriptions of model components into GNN syntax. The `gnn_syntax.md` provides the target syntax for such LLM assistance.
 - **Interactive Model Refinement**: A DSPy-powered agent could discuss GNN model validation errors (from `5_type_checker.py`) with a user, helping to debug or refine the GNN specification.
@@ -430,9 +430,9 @@ While the combination of GNN and DSPy holds significant promise, several challen
     - **Challenge**: How can an LLM reliably propose meaningful and valid structural changes (new states, factors, or connections) to a GNN model based on high-level descriptions, observed data, or persistent model failures?
     - **Future Work**: Investigating the use of `dspy.ProgramOfThought` or similar modules where the LLM generates GNN syntax representing model modifications. This would require robust GNN validation and simulation tools to evaluate the proposed changes within a DSPy optimization loop. This aligns with ideas of LLMs aiding model adaptation in `gnn_llm_neurosymbolic_active_inference.md`.
 
-5. **Toolchain Interoperability and Workflow Automation**: Seamless integration between DSPy's Python environment and the GNN toolchain (which might involve various scripts and parsers, as seen in `src/main.py` in `gnn_tools.md`) is crucial for practical development.
+5. **Toolchain Interoperability and Workflow Automation**: Seamless integration between DSPy's Python environment and the GNN toolchain (which might involve various scripts and parsers, as seen in `src/gnn/main.py` in `gnn_tools.md`) is crucial for practical development.
     - **Challenge**: Ensuring that data flows smoothly between DSPy modules and GNN processing steps, and that DSPy optimizations can effectively use feedback from GNN tools.
-    - **Future Work**: Developing standardized APIs or data exchange formats between DSPy and GNN components. Enhancing the GNN `src/main.py` pipeline to allow for easy insertion of DSPy-driven LLM steps.
+    - **Future Work**: Developing standardized APIs or data exchange formats between DSPy and GNN components. Enhancing the GNN `src/gnn/main.py` pipeline to allow for easy insertion of DSPy-driven LLM steps.
 
 6. **Handling Partial Specifications and Ambiguity**: Users might provide incomplete or ambiguous descriptions when trying to generate GNN models or components. DSPy-managed LLMs need to handle this gracefully.
     - **Challenge**: How can an LLM query the user for clarification (perhaps using `dspy.ReAct`) in a way that helps resolve ambiguity for GNN specification, without overwhelming the user?

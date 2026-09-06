@@ -3,7 +3,7 @@
 > **Document Metadata**
 > **Type**: Research program | **Audience**: Researchers, Developers, Agents | **Complexity**: Advanced
 > **Cross-References**: [README.md](README.md) | [fep_lean overview](fep_lean.md) | [Bridge contract mirror](bridge-contract.md)
-> **Last Updated**: 2026-09-04
+> **Last Updated**: 2026-09-06
 
 ## Overview
 
@@ -37,6 +37,20 @@ filtering, blanket factorization with native `CondIndepFun`, policy trees,
 and the linear-Gaussian/OU semigroup family. Full inventory:
 [fep_lean.md](fep_lean.md).
 
+## GNN side surface (v0.5)
+
+Since contract v0.5 the GNN-side Python package is canonically `gnn`
+(src-layout `src/gnn/`); the root package is the one aggregate facade
+(`parse_gnn_file`, `run_pipeline`, `render_gnn_spec`, `GNNExecutor`,
+`generate_exports`, `ModelRegistry`, `load_config`, …). The executor
+registers `lean` as an execution family: `GNNExecutor.execute_gnn_model`
+with `execution_type="lean"`, or the Step 12 runner, drives the fep_lean
+bridge `verify-document` operation over rendered `*.lean` / emitted GNN
+`*.md` documents and records per-document receipts. The serializer behind
+the Lean surface (`gnn.parsers.lean_serializer`) emits the frozen
+13-section `FEP.GnnDocument` inventory with a canonical `-- MODEL_DATA:`
+typed payload.
+
 ## Lean-derived models in the pipeline
 
 A fep_lean-emitted document is ordinary GNN syntax and flows through the
@@ -60,20 +74,20 @@ Step touchpoints:
 | Step | Module | Role for bridge documents |
 | --- | --- | --- |
 | 3 parse | `src/gnn/` | parse the emitted document; first acceptance gate |
-| 5 type check | `src/type_checker/` | state-space typing and dimension consistency |
-| 10 ontology | `src/ontology/` | validate bindings against `src/ontology/act_inf_ontology_terms.json`; unknown bindings need an explicit vocabulary decision, not silent misspellings |
-| 11 render | `src/render/` | nine render targets; continuous models on categorical-only backends report `unsupported`, never execute |
-| 12 execute | `src/execute/` | eight execute targets; outputs land under `output/12_execute_output/summaries/execution_summary.json` |
+| 5 type check | `src/gnn/type_checker/` | state-space typing and dimension consistency |
+| 10 ontology | `src/gnn/ontology/` | validate bindings against `src/gnn/ontology/act_inf_ontology_terms.json`; unknown bindings need an explicit vocabulary decision, not silent misspellings |
+| 11 render | `src/gnn/render/` | nine render targets; continuous models on categorical-only backends report `unsupported`, never execute |
+| 12 execute | `src/gnn/execute/` | eight execute targets; outputs land under `output/12_execute_output/summaries/execution_summary.json` |
 
 Commands of record (from the repository root):
 
 ```bash
 uv run gnn validate input/gnn_files/discrete/actinf_pomdp_agent.md --strict
-uv run python src/main.py --target-dir input/gnn_files --output-dir output \
+uv run python src/gnn/main.py --target-dir input/gnn_files --output-dir output \
   --only-steps "3,5,10,11,12" --verbose
-uv run python src/11_render.py --target-dir input/gnn_files --output-dir output \
+uv run python src/gnn/11_render.py --target-dir input/gnn_files --output-dir output \
   --frameworks "pymdp,jax" --strict-framework-success
-uv run python src/12_execute.py --target-dir input/gnn_files --output-dir output \
+uv run python src/gnn/12_execute.py --target-dir input/gnn_files --output-dir output \
   --render-output-dir output/11_render_output --frameworks "pymdp,jax" --timeout 600
 ```
 
@@ -123,7 +137,7 @@ and `.../direction-2-gnn-to-lean.md`).
 
 - **Vocabulary extensions.** Lean-specific ontology bindings beyond the
   exemplar terms need a decision process against
-  `src/ontology/act_inf_ontology_terms.json` before emission.
+  `src/gnn/ontology/act_inf_ontology_terms.json` before emission.
 - **Syntax version pinning.** Each formalization slice pins one
   `GNNVersionAndFlags` surface; drift requires an explicit re-freeze.
 - **Float boundary.** `type=float` state-space values are approximate

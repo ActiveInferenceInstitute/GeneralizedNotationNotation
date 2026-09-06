@@ -1,10 +1,17 @@
 {
-  "processed_files": 3,
-  "reports": [
-    "output/10_ontology_output/README_ontology_report.json",
-    "output/10_ontology_output/pomdp_gridworld_3x3_ontology_report.json",
-    "output/10_ontology_output/AGENTS_ontology_report.json"
+  "processed_files": 0,
+  "reports": [],
+  "success": false,
+  "errors": [
+    {
+      "file": "src/ontology/act_inf_ontology_terms.json",
+      "error": "Ontology terms file not found: src/ontology/act_inf_ontology_terms.json",
+      "error_type": "ontology_terms_load_error"
+    }
   ],
-  "success": true,
-  "errors": []
+  "configuration": {
+    "strict_validation": false,
+    "recursive": true,
+    "ontology_terms_file": "src/ontology/act_inf_ontology_terms.json"
+  }
 }

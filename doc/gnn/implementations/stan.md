@@ -10,7 +10,7 @@
 
 ## Overview
 
-The Stan renderer (`src/render/stan/stan_renderer.py`,
+The Stan renderer (`src/gnn/render/stan/stan_renderer.py`,
 `render_gnn_to_stan(gnn_spec, output_path, options)`) emits two artifacts per
 model with one stem: `<stem>_stan.stan` (the program) and `<stem>_stan.py`
 (the driver). The driver simulates a trajectory from the GNN's own generative
@@ -64,7 +64,7 @@ continuous scripts do. Results follow the continuous schema (`beliefs`,
 ```bash
 uv sync --extra stan                                   # cmdstanpy
 uv run python -c "import cmdstanpy; cmdstanpy.install_cmdstan()"   # CmdStan toolchain (once)
-uv run python src/main.py --only-steps "3,11,12" --target-dir input/gnn_files/discrete
+uv run python src/gnn/main.py --only-steps "3,11,12" --target-dir input/gnn_files/discrete
 ```
 
 Without `cmdstanpy` *and* a CmdStan toolchain, Step 12 marks Stan scripts as
@@ -84,6 +84,6 @@ does not execute it.
 All 29 exemplars render and execute under Stan on the reference machine
 (CmdStan 2.39): 26 discrete HMM programs (NUTS or MAP by budget) and 3
 continuous LGSSM programs, each with `validation.all_valid == true`. Tests:
-`src/tests/render/test_render_stan.py`, `src/tests/execute/test_execute_stan.py`,
-`src/tests/render/test_continuous_renderers.py` (compile/sample steps skip
+`tests/render/test_render_stan.py`, `tests/execute/test_execute_stan.py`,
+`tests/render/test_continuous_renderers.py` (compile/sample steps skip
 when CmdStan is absent).
