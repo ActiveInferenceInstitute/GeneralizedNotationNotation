@@ -658,7 +658,8 @@ maintained families declared in the manifest and fails on any
 regression:</p>
 <div class="sourceCode" id="cb2"><pre
 class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python scripts/run_model_family_acceptance.py <span class="dt">\</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--manifest</span> input/model_family_manifest.json <span class="at">--strict</span></span></code></pre></div>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--manifest</span> input/model_family_manifest.json <span class="dt">\</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--output-dir</span> output/model_family_acceptance <span class="at">--strict</span></span></code></pre></div>
 <p>The semantic-fidelity gate verifies that a parse → serialize → parse
 round trip preserves variables, edges, dimensions, parameter shapes,
 equations, time semantics, and ontology mappings across the 9 model
@@ -710,8 +711,8 @@ so a missing copy degrades rather than failing the build.</p>
 <p>Because the variables file is regenerated before rendering, the
 counts in the rendered PDF track the repository state at the commit
 recorded in <code>output/data/manuscript_variables.json</code>
-(078c6d008): a code change that alters, for example, the test inventory
-(367 test files, 4133 test functions) propagates into the prose on the
+(05689d7ad): a code change that alters, for example, the test inventory
+(369 test files, 4144 test functions) propagates into the prose on the
 next regeneration without any manual editing.</p>
 <h2 id="reproducibility-contract">Reproducibility Contract</h2>
 <ul>

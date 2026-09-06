@@ -18,7 +18,8 @@ GNN's reproducibility guarantees rest on a small set of strict, deterministic ga
 
 ```bash
 uv run python scripts/run_model_family_acceptance.py \
-  --manifest input/model_family_manifest.json --strict
+  --manifest input/model_family_manifest.json \
+  --output-dir output/model_family_acceptance --strict
 ```
 
 The semantic-fidelity gate verifies that a parse → serialize → parse round trip preserves variables, edges, dimensions, parameter shapes, equations, time semantics, and ontology mappings across the 9 model families; the cross-framework gate profiles the 7 maintained backends (PyMDP, RxInfer.jl, JAX, NumPyro, PyTorch, ActiveInference.jl, DisCoPy) — refusing any framework outside that set — and records explicit compatible and unsupported statuses rather than silently degrading. Both write their ledgers to an output directory of your choosing:
@@ -57,7 +58,7 @@ uv run --frozen python scripts/pipeline/stage_03_render.py \
 
 The render needs a LaTeX installation providing the packages listed in `manuscript/preamble.md` plus `seqsplit`; the template guards `seqsplit` with `\IfFileExists`, so a missing copy degrades rather than failing the build.
 
-Because the variables file is regenerated before rendering, the counts in the rendered PDF track the repository state at the commit recorded in `output/data/manuscript_variables.json` (078c6d008): a code change that alters, for example, the test inventory (367 test files, 4133 test functions) propagates into the prose on the next regeneration without any manual editing.
+Because the variables file is regenerated before rendering, the counts in the rendered PDF track the repository state at the commit recorded in `output/data/manuscript_variables.json` (05689d7ad): a code change that alters, for example, the test inventory (369 test files, 4144 test functions) propagates into the prose on the next regeneration without any manual editing.
 
 ## Reproducibility Contract
 

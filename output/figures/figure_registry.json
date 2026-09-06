@@ -35,13 +35,13 @@
         "GNN_MCP_TOOL_COUNT": "141",
         "GNN_SRC_PACKAGE_COUNT": "31",
         "GNN_STEP_COUNT": "25",
-        "GNN_TEST_FILE_COUNT": "367",
+        "GNN_TEST_FILE_COUNT": "369",
         "GNN_VERSION": "3.2.0"
       },
       "filename": "gnn_repo_metrics.png",
       "generated_by": "scripts/manuscript_fig_repo_metrics.py",
       "label": "fig:repo_metrics",
-      "png_sha256": "de795ba16e6962ab9c72796766447d7f90556247fe21c7c459222c79bd6b56ba"
+      "png_sha256": "857f4a7e73e2d18417a0d1b2d3428f0841156e8a4ba108cf3ba121fd4c5c4466"
     },
     {
       "alt_text": "The Triple Play as one central GNN specification with three projections radiating from it: the readable text form, graphical visualizations of state-space and factor structure, and executable model code. All three point back to the single specification at the center.",
