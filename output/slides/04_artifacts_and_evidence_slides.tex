@@ -220,7 +220,7 @@
 This section reports what the project has actually produced and how each
 quantitative claim is grounded. Every number below is substituted at
 render time from the deterministic producer, which reads the repository
-state at commit 57905ac5e, so each figure here is regenerated from the
+state at commit 13c05e121, so each figure here is regenerated from the
 artifacts it describes rather than transcribed.
 \end{frame}
 
@@ -236,16 +236,15 @@ concrete example models. The three sets are not coextensive, and the
 manuscript does not treat them as one. Registered in no family:
 \breaktt{input/gnn\_files/learning} (1 of the 10 corpus directories),
 covered in sec.~7. Registered but outside
-the scanned tree: the \texttt{multiagent} family's target directory,
-whose model the gates exercise even though it is not among the 29 models
-under \texttt{input/gnn\_files}. Each family declares the simulation
+the scanned tree: none, because all 9 target directories are themselves
+\texttt{input/gnn\_files} corpus directories. Each family declares the
+simulation frameworks it is meant to drive, which is what lets the same
 \end{frame}
 
 \begin{frame}[fragile,allowframebreaks]{Model-Family Coverage}
-frameworks it is meant to drive, which is what lets the same text model
-fan out across the executable-model leg of the Triple Play (Smékal and
-Friedman 2023). The families and their declared frameworks are
-enumerated below.
+text model fan out across the executable-model leg of the Triple Play
+(Smékal and Friedman 2023). The families and their declared frameworks
+are enumerated below.
 
 \end{frame}
 
@@ -381,7 +380,7 @@ contract exists to prevent.
 \protect\phantomsection\label{repository-scale}
 The repository's scale is itself evidence of the surface that the gates
 and pipeline cover, and it is reported in fig.~\ref{fig:repo_metrics}
-directly from the tracked files at commit 57905ac5e.
+directly from the tracked files at commit 13c05e121.
 
 \end{frame}
 
@@ -397,8 +396,8 @@ producer stamps.}\label{fig:repo_metrics}
 \end{frame}
 
 \begin{frame}[fragile,allowframebreaks]{Repository Scale}
-The test suite comprises 365 test files containing 4103 test functions,
-exercising a source base of 582 Python files across 31 packages (194646
+The test suite comprises 366 test files containing 4117 test functions,
+exercising a source base of 582 Python files across 31 packages (194696
 lines of source). The Model Context Protocol surface --- which exposes
 GNN's capabilities to external agents and tools --- provides 141 tools
 across 32 modules. The pipeline itself runs as 25 steps (0--24), and 105

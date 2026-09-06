@@ -10,7 +10,7 @@ The fastest way to confirm a working installation is to drive the full pipeline 
 uv run python src/main.py --target-dir input/gnn_files/discrete --output-dir /tmp/gnn-smoke --skip-llm
 ```
 
-This parses the discrete GNN files, runs visualization and rendering across the maintained backends, and writes all artifacts under the chosen output directory. The `--skip-llm` flag keeps the run hermetic and free of external API calls, which makes it suitable for continuous integration and for offline reproduction. To exercise every registered family rather than a single one, drive the manifest through the model-family acceptance gate given below: pointing `--target-dir` at `input/gnn_files` covers that tree's 10 corpus directories but not the `multiagent` family, whose target directory is `input/multi_agent_models`.
+This parses the discrete GNN files, runs visualization and rendering across the maintained backends, and writes all artifacts under the chosen output directory. The `--skip-llm` flag keeps the run hermetic and free of external API calls, which makes it suitable for continuous integration and for offline reproduction. To exercise every registered family rather than a single one, drive the manifest through the model-family acceptance gate given below: pointing `--target-dir` at `input/gnn_files` covers that tree's 10 corpus directories. All 9 registered family target directories lie inside that tree, so a single invocation reaches every registered family.
 
 ## Validation Gates
 
@@ -57,7 +57,7 @@ uv run --frozen python scripts/pipeline/stage_03_render.py \
 
 The render needs a LaTeX installation providing the packages listed in `manuscript/preamble.md` plus `seqsplit`; the template guards `seqsplit` with `\IfFileExists`, so a missing copy degrades rather than failing the build.
 
-Because the variables file is regenerated before rendering, the counts in the rendered PDF track the repository state at the commit recorded in `output/data/manuscript_variables.json` (57905ac5e): a code change that alters, for example, the test inventory (365 test files, 4103 test functions) propagates into the prose on the next regeneration without any manual editing.
+Because the variables file is regenerated before rendering, the counts in the rendered PDF track the repository state at the commit recorded in `output/data/manuscript_variables.json` (13c05e121): a code change that alters, for example, the test inventory (366 test files, 4117 test functions) propagates into the prose on the next regeneration without any manual editing.
 
 ## Reproducibility Contract
 

@@ -568,7 +568,7 @@ separately so that the boundary between hand-written source and
 reproducible output stays explicit.</p>
 <p>The <code>src/</code> tree is the executable core of GNN. It is
 organized into 31 Python packages spanning 582 source files and roughly
-194646 lines of code. Alongside these packages sit the 25 top-level step
+194696 lines of code. Alongside these packages sit the 25 top-level step
 modules (0–24) that implement the numbered pipeline as thin
 orchestrators delegating into the packages, each module owning one stage
 of the progression from a parsed GNN text model through visualization,
@@ -578,8 +578,8 @@ to one of these step modules rather than to descriptive prose alone.</p>
 <p>The <code>input/</code> tree holds the model corpora that exercise
 the pipeline. Its <code>gnn_files/</code> subtree contains 10 corpus
 directories organized by model family, together totaling 29 example
-files; <code>input/multi_agent_models/</code> holds the
-<code>multiagent</code> family’s model outside that count, and
+files; <code>input/multi_agent_models/</code> holds a compact acceptance
+fixture that no manifest family registers, outside that count, and
 <code>input/recursive_models/</code> is a reserved directory that ships
 documentation only. A <code>model_family_manifest.json</code> enumerates
 the 9 registered families and their target directories. This manifest is
@@ -627,7 +627,7 @@ figures, and the template render stage for the PDF. Which values become
 tokens is not a matter of taste: any quantity the producer can derive
 from a source surface is a token,
 <code>scripts/check_manuscript_tokens.py</code> fails the build when a
-section hard-codes one instead, and the resulting 82-entry map is
+section hard-codes one instead, and the resulting 84-entry map is
 committed at <code>output/data/manuscript_variables.json</code> for
 audit. External references are resolved from
 <code>manuscript/references.bib</code>, which the same gate cross-checks

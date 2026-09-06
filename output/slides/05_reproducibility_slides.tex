@@ -270,11 +270,12 @@ continuous integration and for offline reproduction. To exercise every
 registered family rather than a single one, drive the manifest through
 the model-family acceptance gate given below: pointing
 \texttt{-\/-target-dir} at \texttt{input/gnn\_files} covers that tree's
-10 corpus directories but not the \texttt{multiagent} family, whose
+10 corpus directories. All 9 registered family target directories lie
 \end{frame}
 
 \begin{frame}[fragile,allowframebreaks]{Pipeline Smoke Run}
-target directory is \breaktt{input/multi\_agent\_models}.
+inside that tree, so a single invocation reaches every registered
+family.
 \end{frame}
 
 \begin{frame}[fragile,allowframebreaks]{Validation Gates}
@@ -384,9 +385,9 @@ a missing copy degrades rather than failing the build.
 \begin{frame}[fragile,allowframebreaks]{Manuscript Reproducibility}
 Because the variables file is regenerated before rendering, the counts
 in the rendered PDF track the repository state at the commit recorded in
-\breaktt{output/data/manuscript\_variables.json} (57905ac5e): a code
-change that alters, for example, the test inventory (365 test files,
-4103 test functions) propagates into the prose on the next regeneration
+\breaktt{output/data/manuscript\_variables.json} (13c05e121): a code
+change that alters, for example, the test inventory (366 test files,
+4117 test functions) propagates into the prose on the next regeneration
 without any manual editing.
 \end{frame}
 
