@@ -8,6 +8,9 @@ that explains them (at most one per paragraph-column ``longtable``).
 The finding itself, with the experiments that established it, is written up in
 ``manuscript/AGENTS.md`` under "Known benign LaTeX diagnostics".
 
+Both artifacts these tests read are tracked, so they are asserted present rather
+than skipped over; ``.gitignore`` carries a named exception for the log.
+
 Two facts these tests exist to protect:
 
 * TeX breaks its own log lines and will split the message mid-word, so
@@ -48,9 +51,7 @@ def count_message(log_text: str) -> int:
 def count_paragraph_column_longtables(tex_text: str) -> int:
     """``longtable`` environments whose column preamble declares a ``p{...}``."""
     return sum(
-        1
-        for preamble in _LONGTABLE_PREAMBLE_RE.findall(tex_text)
-        if "p{" in preamble
+        1 for preamble in _LONGTABLE_PREAMBLE_RE.findall(tex_text) if "p{" in preamble
     )
 
 
@@ -90,8 +91,25 @@ def test_paragraph_column_longtables_are_told_apart_from_plain_ones() -> None:
 
 
 def _shipped() -> tuple[str, str]:
-    if not LOG_PATH.exists() or not TEX_PATH.exists():
-        pytest.skip("no rendered manuscript in output/pdf; run the render first")
+    """The committed render artifacts, or an explicit failure.
+
+    No skip guard: both files are tracked (``.gitignore`` carries an explicit
+    exception for the log), so their absence means the committed render is
+    incomplete, and the repo's zero-skip contract
+    (``src/tests/test_zero_skip_contracts.py``) forbids hiding that behind a
+    skip. A skip here also silently disarmed the only check on the shipped
+    LaTeX diagnostics.
+    """
+    missing = [
+        path.relative_to(REPO_ROOT).as_posix()
+        for path in (LOG_PATH, TEX_PATH)
+        if not path.exists()
+    ]
+    assert not missing, (
+        f"committed render artifacts missing: {missing}. These are tracked "
+        "files; regenerate them with the template's stage_03_render and commit "
+        "the result."
+    )
     return (
         LOG_PATH.read_text(encoding="utf-8", errors="replace"),
         TEX_PATH.read_text(encoding="utf-8", errors="replace"),

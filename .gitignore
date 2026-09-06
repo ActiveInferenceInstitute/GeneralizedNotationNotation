@@ -275,6 +275,14 @@ logs/
 log/
 *.log.*
 
+# Exception: the manuscript's LaTeX log is evidence, not scratch.
+# src/tests/test_manuscript_latex_log.py pins the diagnostics the shipped PDF
+# carries, and every sibling artifact from the same render (.aux/.bbl/.blg/.toc/
+# .tex) is already tracked under the "Keep it committed!" policy above. Tracking
+# it is what lets that test fail explicitly on a clean checkout instead of
+# skipping, which the zero-skip contract forbids.
+!output/pdf/_combined_manuscript.log
+
 # Debug files
 debug/
 debug_*
