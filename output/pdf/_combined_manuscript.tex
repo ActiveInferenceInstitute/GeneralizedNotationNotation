@@ -862,7 +862,7 @@ Auto-Injection}\label{reproducibility-and-auto-injection}
 
 Every count reported in this manuscript is emitted by the producer
 \breaktt{scripts/z\_generate\_manuscript\_variables.py} from the
-repository state at commit 852f4bdbf, not typed by hand. The producer
+repository state at commit 57905ac5e, not typed by hand. The producer
 reads that commit's source surfaces directly --- the step modules, the
 source tree, the model-family manifest, and the framework registry ---
 together with the project's maintained ledgers, notably the Model
@@ -890,7 +890,7 @@ the build if a section reintroduces a literal that a token already owns.
 This section reports what the project has actually produced and how each
 quantitative claim is grounded. Every number below is substituted at
 render time from the deterministic producer, which reads the repository
-state at commit 852f4bdbf, so each figure here is regenerated from the
+state at commit 57905ac5e, so each figure here is regenerated from the
 artifacts it describes rather than transcribed.
 
 \subsection{Model-Family Coverage}\label{model-family-coverage}
@@ -1026,7 +1026,7 @@ contract exists to prevent.
 
 The repository's scale is itself evidence of the surface that the gates
 and pipeline cover, and it is reported in fig.~\ref{fig:repo_metrics}
-directly from the tracked files at commit 852f4bdbf.
+directly from the tracked files at commit 57905ac5e.
 
 \begin{figure}
 \centering
@@ -1205,7 +1205,7 @@ a missing copy degrades rather than failing the build.
 
 Because the variables file is regenerated before rendering, the counts
 in the rendered PDF track the repository state at the commit recorded in
-\breaktt{output/data/manuscript\_variables.json} (852f4bdbf): a code
+\breaktt{output/data/manuscript\_variables.json} (57905ac5e): a code
 change that alters, for example, the test inventory (365 test files,
 4103 test functions) propagates into the prose on the next regeneration
 without any manual editing.
@@ -1365,17 +1365,15 @@ version control; the generated artifacts it produces are described
 separately so that the boundary between hand-written source and
 reproducible output stays explicit.
 
-The \texttt{src/} tree is the executable core of
-GeneralizedNotationNotation: A Text Language for Active Inference
-Models. It is organized into 31 Python packages spanning 582 source
-files and roughly 194646 lines of code. Alongside these packages sit the
-25 top-level step modules (0--24) that implement the numbered pipeline
-as thin orchestrators delegating into the packages, each module owning
-one stage of the progression from a parsed GNN text model through
-visualization, type checking, code export, and executable cognitive
-simulation. Every claim the manuscript makes about pipeline behavior
-should be traceable to one of these step modules rather than to
-descriptive prose alone.
+The \texttt{src/} tree is the executable core of GNN. It is organized
+into 31 Python packages spanning 582 source files and roughly 194646
+lines of code. Alongside these packages sit the 25 top-level step
+modules (0--24) that implement the numbered pipeline as thin
+orchestrators delegating into the packages, each module owning one stage
+of the progression from a parsed GNN text model through visualization,
+type checking, code export, and executable cognitive simulation. Every
+claim the manuscript makes about pipeline behavior should be traceable
+to one of these step modules rather than to descriptive prose alone.
 
 The \texttt{input/} tree holds the model corpora that exercise the
 pipeline. Its \texttt{gnn\_files/} subtree contains 10 corpus
