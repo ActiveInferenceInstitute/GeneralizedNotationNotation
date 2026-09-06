@@ -111,3 +111,30 @@ emits it was never verified — treat it as an open question, not a finding.
 Silencing the message would mean changing glue inside rows that render correctly,
 for no reader-visible gain, so this stays deferred. Do not suppress the message by
 dropping a table.
+
+### Underfull hboxes are the price of readable identifiers
+
+`grep -c Underfull output/pdf/_combined_manuscript.log` reports a small number
+(3 at the time of writing; expect it to move with pagination). Do **not** buy it
+back by unbounding `\breaktt` — that would reintroduce a correctness defect.
+
+Each one was traced to its paragraph in `_combined_manuscript.tex` via the line
+range the log prints:
+
+| badness | .tex lines | cause |
+|---|---|---|
+| 1019 | 1206–1212 | `\breaktt{output/data/manuscript\_variables.json}` |
+| 3657 | 1221–1225 | `\texttt{output/}` / `\texttt{manuscript/}` in a narrow `\item` measure |
+| 1852 | 1598–1612 | four consecutive `\breaktt{A=LikelihoodMatrix}`-style spans |
+
+Two of the three are `\breaktt`, which deliberately forbids line breaks inside an
+identifier's first 2 and last 5 characters. That bound exists because unbounded
+`\seqsplit` rendered `model_family_manifest.json` as `model_family_manifest.js` +
+`on` — and the first fragment is itself a valid filename, so a reader could not
+tell a line break from a name. An unbreakable token in a narrow measure makes the
+line stretch; that is the cost, and it is the right one to pay.
+
+An underfull hbox is a *loose* line, not lost content: every badness here is far
+under TeX's 10000 ceiling and `grep -c Overfull` is 0, so nothing is clipped or
+run into the margin. The third case is a plain `\texttt` list item and has
+nothing to do with `\breaktt`.
