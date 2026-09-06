@@ -5,7 +5,7 @@ Thin orchestrator (docxology/template contract). The render pipeline
 (``infrastructure.rendering._manuscript_source.run_manuscript_variable_script``)
 invokes this exact script name automatically before PDF render.
 
-Responsibilities (delegated to :mod:`src.manuscript_variables`):
+Responsibilities (delegated to :mod:`gnn.manuscript_variables`):
 
 1. Compute the deterministic ``{{TOKEN}}`` map from the repository at ``HEAD``.
 2. Write the producer-owned ``manuscript/config.yaml`` fields (``version:``,

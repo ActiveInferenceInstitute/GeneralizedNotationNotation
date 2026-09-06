@@ -8,14 +8,11 @@ producer output.
 from __future__ import annotations
 
 import json
-import sys
 from pathlib import Path
 
 import pytest
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-
-from manuscript_variables import (  # noqa: E402
+from gnn.manuscript_variables import (
     generate_variables,
     load_variables,
     save_variables,

@@ -4,7 +4,7 @@
 Deterministic checks run before/after rendering the token-injected manuscript:
 
 1. **Unknown tokens** — every ``{{TOKEN}}`` used in a rendered section must be a key
-   emitted by ``src.manuscript_variables.generate_variables``. An unknown token would
+   emitted by ``gnn.manuscript_variables.generate_variables``. An unknown token would
    survive substitution and render literally in the PDF.
 2. **Dangling citations** — every Pandoc ``[@key]`` must resolve to an entry in
    ``manuscript/references.bib``.

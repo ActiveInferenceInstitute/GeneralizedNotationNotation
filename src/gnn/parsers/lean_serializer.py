@@ -10,7 +10,7 @@ A round-trip ``-- MODEL_DATA:`` JSON payload is appended for parser round-trip
 fidelity (``gnn.parsers.lean_parser`` consumes it via ``BaseGNNParser``). The
 payload carries the canonical typed-payload keys (``schema_version``,
 ``model_family``, ``state_spaces``, ``parameterizations``,
-``ontology_bindings``) plus the legacy keys the shared strict reconstruction
+``ontology_bindings``) plus the parser-facing keys the shared strict reconstruction
 path reads (``model_name``, ``variables``, ``connections``, ``parameters``,
 ``equations``, ``time_specification``, ``ontology_mappings``).
 """
@@ -308,7 +308,7 @@ class LeanSerializer(BaseGNNSerializer):
         model: GNNInternalRepresentation,
         brace_params: list[tuple[str, str]],
     ) -> dict[str, Any]:
-        """Build the round-trip payload: canonical keys, then legacy keys."""
+        """Build the round-trip payload: canonical keys, then parser-facing keys."""
         data: dict[str, Any] = {
             "schema_version": 1,
             "model_family": self._model_family(model),
@@ -331,7 +331,7 @@ class LeanSerializer(BaseGNNSerializer):
                 }
                 for mapping in model.ontology_mappings
             ],
-            # Legacy keys: read by the shared strict reconstruction path in
+            # Parser-facing keys: read by the shared strict reconstruction path in
             # gnn.parsers.common.BaseGNNParser._parse_from_embedded_data.
             "model_name": model.model_name,
             "annotation": model.annotation,
@@ -376,7 +376,7 @@ class LeanSerializer(BaseGNNSerializer):
         return data
 
     # ------------------------------------------------------------------
-    # Legacy helpers (kept for round-trip payload construction)
+    # Round-trip payload helpers (build the parser-facing keys)
     # ------------------------------------------------------------------
 
     def _serialize_time_spec(self, time_spec: Any) -> Any:

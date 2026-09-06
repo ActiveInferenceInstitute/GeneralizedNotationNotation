@@ -1,7 +1,7 @@
 """Tests for the deterministic manuscript-variable producer.
 
 Real objects only: every assertion recomputes the expected value from the live repository
-and compares it against :func:`src.manuscript_variables.generate_variables`, so the
+and compares it against :func:`gnn.manuscript_variables.generate_variables`, so the
 test fails if the producer drifts from the source surfaces it claims to read.
 """
 
@@ -10,17 +10,14 @@ from __future__ import annotations
 import ast
 import json
 import re
-import sys
 from pathlib import Path
 
 import pytest
 
-# Import the producer by its canonical top-level name (src/ on path), matching the
-# repo convention (`from pipeline.X import ...`). Importing it as `src.manuscript_variables`
-# makes mypy (mypy_path=src) resolve the same file under two module names and fail.
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
-from manuscript_variables import (  # noqa: E402
+# Import the producer by its canonical package name; the venv's editable
+# install exposes ``gnn``, so no sys.path bootstrap is needed and mypy
+# (mypy_path=src) resolves a single module name.
+from gnn.manuscript_variables import (
     RepositorySnapshot,
     _capability_clause,
     _registry_specs,
@@ -45,7 +42,7 @@ def _registry_flags(snapshot: RepositorySnapshot, flag: str) -> list[str]:
     parser, so an assertion failure means the token really disagrees with the
     registry literal — not that both read the same helper.
     """
-    tree = ast.parse(snapshot.read_text("src/render/framework_registry.py"))
+    tree = ast.parse(snapshot.read_text("src/gnn/render/framework_registry.py"))
     for node in ast.walk(tree):
         if not isinstance(node, (ast.Assign, ast.AnnAssign)):
             continue
@@ -117,7 +114,7 @@ def test_step_count_matches_step_modules(
     variables: dict[str, str], snapshot: RepositorySnapshot
 ) -> None:
     step_modules = [
-        rel for rel in snapshot.glob("src", "[0-9]*_*.py") if len(rel.parts) == 2
+        rel for rel in snapshot.glob("src/gnn", "[0-9]*_*.py") if len(rel.parts) == 3
     ]
     assert variables["GNN_STEP_COUNT"] == str(len(step_modules))
     assert int(variables["GNN_STEP_COUNT"]) >= 1
@@ -128,16 +125,16 @@ def test_step_modules_and_packages_are_disjoint_sets(
 ) -> None:
     """GNN_STEP_COUNT and GNN_SRC_PACKAGE_COUNT count sets with no overlap.
 
-    Step modules are top-level ``src/N_*.py`` files; packages are ``src/<name>/``
+    Step modules are top-level ``src/gnn/N_*.py`` files; packages are ``src/gnn/<name>/``
     directories. No prose may say the step modules "sit inside" the packages.
     """
     step_modules = [
-        rel for rel in snapshot.glob("src", "[0-9]*_*.py") if len(rel.parts) == 2
+        rel for rel in snapshot.glob("src/gnn", "[0-9]*_*.py") if len(rel.parts) == 3
     ]
     packages = {
-        rel.parts[1]
-        for rel in snapshot.glob("src", "__init__.py")
-        if len(rel.parts) == 3 and rel.parts[1] != "tests"
+        rel.parts[2]
+        for rel in snapshot.glob("src/gnn", "__init__.py")
+        if len(rel.parts) == 4
     }
     assert step_modules, "no step modules found"
     assert packages, "no source packages found"
@@ -155,7 +152,7 @@ def test_family_count_matches_manifest(
 def test_backend_count_matches_registry(
     variables: dict[str, str], snapshot: RepositorySnapshot
 ) -> None:
-    registry = snapshot.read_text("src/render/framework_registry.py")
+    registry = snapshot.read_text("src/gnn/render/framework_registry.py")
     names = re.findall(r'"name"\s*:\s*"([^"]+)"', registry)
     assert variables["GNN_BACKEND_COUNT"] == str(len(names))
     assert int(variables["GNN_BACKEND_COUNT"]) >= 2
@@ -182,11 +179,11 @@ def test_cross_framework_backends_are_all_profiled_by_the_gate(
 ) -> None:
     """The reported cross-framework engines are ones the gate will actually run.
 
-    ``src/pipeline/cross_framework_reliability.py`` raises on any framework
+    ``src/gnn/pipeline/cross_framework_reliability.py`` raises on any framework
     outside ``MAINTAINED_FRAMEWORKS``, so a declared-but-unprofiled framework
     (``stan``) must not be counted among the reference-comparison engines.
     """
-    gate = snapshot.read_text("src/pipeline/cross_framework_reliability.py")
+    gate = snapshot.read_text("src/gnn/pipeline/cross_framework_reliability.py")
     block = re.search(r"MAINTAINED_FRAMEWORKS = \(([^)]*)\)", gate)
     assert block is not None
     maintained_keys = re.findall(r'"([a-z_]+)"', block.group(1))
@@ -283,7 +280,7 @@ def test_family_table_renders_the_split_for_the_declaring_family(
 def test_mcp_tool_count_matches_audit(
     variables: dict[str, str], snapshot: RepositorySnapshot
 ) -> None:
-    audit = json.loads(snapshot.read_text("src/mcp/audit_report.json"))
+    audit = json.loads(snapshot.read_text("src/gnn/mcp/audit_report.json"))
     assert variables["GNN_MCP_TOOL_COUNT"] == str(audit["tools_total"])
 
 
@@ -303,11 +300,7 @@ def test_counts_describe_the_stamped_commit_not_the_working_tree(
     assert snapshot.from_git, "snapshot is not reading committed blobs"
     assert variables["GNN_GIT_COMMIT"] == snapshot.commit
     assert variables["GNN_GIT_COMMIT"] != "unknown"
-    sources = [
-        rel
-        for rel in snapshot.glob("src", "*.py")
-        if Path("src/tests") not in rel.parents
-    ]
+    sources = list(snapshot.glob("src", "*.py"))
     snapshot.prefetch(sources)
     total = 0
     for rel in sources:

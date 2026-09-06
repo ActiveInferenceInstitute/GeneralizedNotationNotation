@@ -261,16 +261,15 @@ def _load_config(project_root: Path) -> dict:
 
 
 def _count_python(snapshot: RepositorySnapshot) -> tuple[int, int]:
-    """Return ``(file_count, total_lines)`` for authored non-test ``.py``.
+    """Return ``(file_count, total_lines)`` for package ``.py`` sources.
 
-    ``src/tests/`` is excluded: the test suite has its own tokens
-    (``GNN_TEST_FILE_COUNT`` / ``GNN_TEST_FUNCTION_COUNT``) and counting it here
-    too would report every test file twice in the manuscript. Both the file set
+    The test suite lives outside ``src/`` and has its own tokens
+    (``GNN_TEST_FILE_COUNT`` / ``GNN_TEST_FUNCTION_COUNT``), so it is never
+    counted here. Both the file set
     and the bytes come from the snapshot's commit, so the pair reproduces from
     that commit alone.
     """
-    tests_dir = Path("src/tests")
-    sources = [py for py in snapshot.glob("src", "*.py") if tests_dir not in py.parents]
+    sources = list(snapshot.glob("src", "*.py"))
     snapshot.prefetch(sources)
     files = 0
     lines = 0
@@ -281,12 +280,12 @@ def _count_python(snapshot: RepositorySnapshot) -> tuple[int, int]:
 
 
 def _count_packages(snapshot: RepositorySnapshot) -> int:
-    """Count top-level importable packages under ``src/`` (excluding ``tests``)."""
+    """Count importable subpackages under ``src/gnn/``."""
     return len(
         {
-            rel.parts[1]
-            for rel in snapshot.glob("src", "__init__.py")
-            if len(rel.parts) == 3 and rel.parts[1] != "tests"
+            rel.parts[2]
+            for rel in snapshot.glob("src/gnn", "__init__.py")
+            if len(rel.parts) == 4
         }
     )
 
@@ -296,7 +295,7 @@ def _count_test_functions(snapshot: RepositorySnapshot) -> tuple[int, int]:
     file_count = 0
     func_count = 0
     pattern = re.compile(r"^\s*(?:async\s+)?def (test_\w+)", re.MULTILINE)
-    tests = snapshot.glob("src/tests", "test_*.py")
+    tests = snapshot.glob("tests", "test_*.py")
     snapshot.prefetch(tests)
     for py in tests:
         file_count += 1
@@ -307,13 +306,13 @@ def _count_test_functions(snapshot: RepositorySnapshot) -> tuple[int, int]:
 def _pipeline_steps(snapshot: RepositorySnapshot) -> list[tuple[int, str]]:
     """Return sorted ``(step_number, script_name)`` for ``N_*.py`` step modules.
 
-    Step modules are top-level files directly under ``src/`` — they are siblings
-    of the source packages, never members of one, which is why
+    Step modules are top-level files directly under ``src/gnn/`` — they are
+    siblings of the source packages, never members of one, which is why
     ``GNN_STEP_COUNT`` and ``GNN_SRC_PACKAGE_COUNT`` count disjoint sets.
     """
     steps: list[tuple[int, str]] = []
-    for rel in snapshot.glob("src", "[0-9]*_*.py"):
-        if len(rel.parts) != 2:
+    for rel in snapshot.glob("src/gnn", "[0-9]*_*.py"):
+        if len(rel.parts) != 3:
             continue
         match = re.match(r"(\d+)_", rel.name)
         if match:
@@ -322,9 +321,9 @@ def _pipeline_steps(snapshot: RepositorySnapshot) -> list[tuple[int, str]]:
 
 
 def _step_purposes(snapshot: RepositorySnapshot) -> dict[int, str]:
-    """Parse ``src/STEP_INDEX.md`` master table for per-step purposes."""
+    """Parse ``src/gnn/STEP_INDEX.md`` master table for per-step purposes."""
     purposes: dict[int, str] = {}
-    for line in snapshot.read_text("src/STEP_INDEX.md").splitlines():
+    for line in snapshot.read_text("src/gnn/STEP_INDEX.md").splitlines():
         cells = [c.strip() for c in line.split("|")]
         # Master table rows look like: | 0 | `0_template.py` | template/ | Global | Purpose | ...
         if len(cells) >= 7 and cells[1].isdigit():
@@ -382,7 +381,7 @@ def _registry_specs(snapshot: RepositorySnapshot) -> dict[str, dict]:
     ``supports_continuous`` (linear-Gaussian semantics) are the registry's own
     fields, never restated by hand anywhere downstream.
     """
-    text = snapshot.read_text("src/render/framework_registry.py")
+    text = snapshot.read_text("src/gnn/render/framework_registry.py")
     if not text:
         return {}
     data = _module_literal(text, "FRAMEWORK_REGISTRY")
@@ -415,12 +414,12 @@ def _maintained_frameworks(snapshot: RepositorySnapshot) -> tuple[str, ...]:
     """Return ``MAINTAINED_FRAMEWORKS`` from the cross-framework gate.
 
     This is the set the reliability gate will actually profile:
-    ``src/pipeline/cross_framework_reliability.py`` raises
+    ``src/gnn/pipeline/cross_framework_reliability.py`` raises
     ``ValueError("Unprofiled frameworks: ...")`` for anything outside it. It is
     a strict subset of the registry, so no manuscript sentence may use
     ``GNN_BACKEND_COUNT`` to describe what the gate profiles.
     """
-    text = snapshot.read_text("src/pipeline/cross_framework_reliability.py")
+    text = snapshot.read_text("src/gnn/pipeline/cross_framework_reliability.py")
     if not text:
         return ()
     value = _module_literal(text, "MAINTAINED_FRAMEWORKS")
@@ -433,23 +432,23 @@ def _mcp_counts(snapshot: RepositorySnapshot) -> dict[str, int]:
     """MCP tool/module counts.
 
     ``tools``/``modules`` are read from the project's maintained MCP audit ledger
-    (``src/mcp/audit_report.json``), which is regenerated by
-    ``PYTHONPATH=src python src/mcp/validate_tools.py`` (``just mcp-ledger``) by
+    (``src/gnn/mcp/audit_report.json``), which is regenerated by
+    ``uv run python src/gnn/mcp/validate_tools.py`` by
     actually loading every MCP module and counting registered tools — a count
     that cannot be reproduced by static text scanning. This is a *source ledger*
     (one of the manuscript's allowed evidence types), and it is only as current
-    as the committed file: ``src/tests/mcp/test_mcp_audit.py`` fails when the
+    as the committed file: ``tests/mcp/test_mcp_audit.py`` fails when the
     ledger drifts from the live registry. The ``files`` count is recomputed live
     from the snapshot each run.
     """
     counts = {"tools": 0, "modules_total": 0, "modules_loaded": 0, "files": 0}
-    raw = snapshot.read_text("src/mcp/audit_report.json")
+    raw = snapshot.read_text("src/gnn/mcp/audit_report.json")
     if raw:
         data = json.loads(raw)
         counts["tools"] = int(data.get("tools_total", 0))
         counts["modules_total"] = int(data.get("modules_total", 0))
         counts["modules_loaded"] = int(data.get("modules_loaded", 0))
-    counts["files"] = len(snapshot.glob("src", "mcp.py"))
+    counts["files"] = len(snapshot.glob("src/gnn", "mcp.py"))
     return counts
 
 

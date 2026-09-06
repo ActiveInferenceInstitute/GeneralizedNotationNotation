@@ -6,7 +6,7 @@ Thin orchestrator. Reads real data from:
   - src/gnn/render/<key>/ subdirectory existence (render-output presence)
   - input/model_family_manifest.json + src/gnn/pipeline/cross_framework_reliability.py
     (the single cross-framework comparison family selected by
-    src.manuscript_variables.select_cross_framework_family, intersected with the
+    gnn.manuscript_variables.select_cross_framework_family, intersected with the
     reliability gate's MAINTAINED_FRAMEWORKS)
 
 Writes output/figures/gnn_backend_capability_matrix.png at >=150 DPI.
