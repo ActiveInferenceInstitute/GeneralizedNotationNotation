@@ -3,7 +3,7 @@
 > **Document Metadata**
 > **Type**: External project documentation (research archive) | **Audience**: Researchers, Developers | **Complexity**: Advanced
 > **Cross-References**: [AGENTS.md](AGENTS.md) | [Main documentation](../../README.md)
-> **Last Updated**: 2026-09-06 | **Version**: 0.5
+> **Last Updated**: 2026-09-06 | **Version**: 0.6
 
 ## Overview
 
@@ -75,7 +75,7 @@ is still required. Current records and exact test scopes live in
   [GNN integration](../../active_inference/gnn_integration.md)
 - [Pipeline guide](../../pipeline/README.md) and
   [PyMDP documentation](../../pymdp/README.md)
-- [doc/other archive](../README.md) — this folder's parent
+- [docs/other archive](../README.md) — this folder's parent
 
 The canonical bridge documentation lives in the sibling checkout at
 `../fep_lean/docs/design/gnn-bridge/` (design program, canonical contract,

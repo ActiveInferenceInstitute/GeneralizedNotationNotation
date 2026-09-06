@@ -56,7 +56,7 @@
 **Test Suite**: The command of record is `uv run --extra dev python -m pytest tests/ -q --tb=no --ignore=tests/llm/test_llm_ollama.py --ignore=tests/llm/test_llm_ollama_integration.py`. Run it in the current environment for pass/skip totals; Julia RxInfer execution uses the committed `Project.toml` under `src/gnn/execute/rxinfer/`, and ActiveInference.jl uses the committed environment under `src/gnn/execute/activeinference_jl/` (`julia --startup-file=no --project=<env> <script>`). Ollama tests are opt-in when a local daemon and configured test model are available.
 **Published Output Evidence (verified 2026-06-18)**: root `output/` is a POMDP GridWorld full-pipeline publication generated from `input/gnn_files/pomdp_gridworld` with `--frameworks all` and validated by `uv run --extra dev python scripts/check_pomdp_gridworld_outputs.py output`.
 **Features (v2.0.0)**: semantic fidelity ledgers across all maintained model families, strict JSON parse/serialize/parse preservation for variables, edges, dimensions, parameter shapes, equations, time, and ontology mappings; cross-framework reliability ledgers with explicit compatible/unsupported backend statuses; GridWorld comparison across PyMDP, RxInfer, and ActiveInference.jl; model-family acceptance and interpretability ledgers; maintained template CLI (`gnn templates list`, `gnn templates show`, `gnn pull`); authenticated local MCP HTTP orchestration; structured PyMDP 1.0 POMDP execution; static/headless GUI publication; PyMDP Scaling Study; and MCP Full Module Exposure.
-**New in v3.0.0 ("Long-Running Orchestration")**: three safe-by-design `src/gnn/pipeline/` contracts — durable observation streams, resumable run sessions, and auditable container plans — plus additive live wiring, a strict acceptance gate (`scripts/run_v3_orchestration_acceptance.py`), and 3 new MCP tools. No live infrastructure mutation; every module generates, validates, replays, or plans data only. See [doc/pipeline/v3_orchestration.md](./doc/pipeline/v3_orchestration.md); run identity, reproduction, and manifest-verification rules: [doc/development/durable-runs.md](./doc/development/durable-runs.md).
+**New in v3.0.0 ("Long-Running Orchestration")**: three safe-by-design `src/gnn/pipeline/` contracts — durable observation streams, resumable run sessions, and auditable container plans — plus additive live wiring, a strict acceptance gate (`scripts/run_v3_orchestration_acceptance.py`), and 3 new MCP tools. No live infrastructure mutation; every module generates, validates, replays, or plans data only. See [docs/pipeline/v3_orchestration.md](./docs/pipeline/v3_orchestration.md); run identity, reproduction, and manifest-verification rules: [docs/development/durable-runs.md](./docs/development/durable-runs.md).
 **New in v3.2.0 ("Exemplar Gold Standard")**: the `input/gnn_files/continuous/` exemplars are pure linear-Gaussian state-space models (`F/H/Q/R`, `prior_mean/prior_cov`, optional `goal_mean/control_gain`) with native JAX, NumPyro, PyTorch, Stan and RxInfer.jl backends; `unsupported` is a first-class render status for categorical backends (PyMDP, ActiveInference.jl, DisCoPy, bnlearn) on continuous models and is never handed to Step 12; the Stan renderer emits runnable HMM (forward algorithm) and LGSSM (Kalman marginal likelihood) programs plus a `<stem>_stan.py` cmdstanpy driver executed by `src/gnn/execute/stan/`; Step 12 merges `execution_summary.json` across input folders; the Julia pre-exec gate degrades to an advisory sweep instead of blocking scripts on a toolchain-less launcher. See [CHANGELOG.md](./CHANGELOG.md) §3.2.0 and [Model Kinds and Framework Support](#-model-kinds-and-framework-support-v320).
 📖 **DOI:** [10.5281/zenodo.7803328](https://doi.org/10.5281/zenodo.7803328)  
 📁 **Archive:** [zenodo.org/records/7803328](https://zenodo.org/records/7803328)
@@ -84,8 +84,8 @@ GNN addresses the challenge of communicating Active Inference models, which are 
 | **[AGENTS.md](./AGENTS.md)** | Master agent scaffolding - all 25 pipeline steps and 32 module directories documented | You want to understand the pipeline architecture |
 | **[DOCS.md](./DOCS.md)** | Comprehensive documentation with all diagrams | You need the complete system overview |
 | **[ARCHITECTURE.md](./ARCHITECTURE.md)** | Implementation patterns and extension guides | You're developing or extending GNN |
-| **[doc/quickstart.md](./doc/quickstart.md)** | Step-by-step getting started guide | You want to run your first pipeline |
-| **[doc/gnn/reference/gnn_syntax.md](./doc/gnn/reference/gnn_syntax.md)** | Complete GNN syntax specification | You're writing GNN model files |
+| **[docs/quickstart.md](./docs/quickstart.md)** | Step-by-step getting started guide | You want to run your first pipeline |
+| **[docs/gnn/reference/gnn_syntax.md](./docs/gnn/reference/gnn_syntax.md)** | Complete GNN syntax specification | You're writing GNN model files |
 | **[pyproject.toml](./pyproject.toml)** | Project dependencies and configuration | You're setting up the environment |
 | **[SETUP_GUIDE.md](./SETUP_GUIDE.md)** | Detailed installation instructions | You're having setup issues |
 | **[SECURITY.md](./SECURITY.md)** | Security policy and vulnerability reporting | You found a security issue |
@@ -104,7 +104,7 @@ GeneralizedNotationNotation/
 │   ├── 0_template.py → 24_intelligent_analysis.py  # Numbered pipeline scripts
 │   ├── gnn/, render/, execute/, llm/, ...  # Agent modules
 │   └── tests/                # Comprehensive test suite
-├── 📁 doc/                    # Maintained Markdown documentation and assets (see doc/README.md)
+├── 📁 docs/                    # Maintained Markdown documentation and assets (see docs/README.md)
 │   ├── gnn/                  # GNN language specification
 │   ├── pymdp/, rxinfer/      # Framework notes and experiment results
 │   └── cognitive_phenomena/  # Example cognitive models
@@ -217,7 +217,7 @@ GNN v3.0.0 adds **safe-by-design** orchestration so extended model-family accept
 - **Resumable run sessions** (`pipeline.run_session`): immutable-style run manifests with atomic checkpoints, status reports, resume plans, and path-escape-safe cancellation cleanup, so an interrupted run never corrupts its prior checkpoint.
 - **Auditable container plans** (`pipeline.container_plan`): declarative, deterministically hashed container/run plans that describe what *would* execute — no container is ever started.
 
-These ship with additive live wiring (`session_acceptance.py`, `run_manifest.py`, `pipeline_container_plan.py`), a strict end-to-end acceptance gate (`scripts/run_v3_orchestration_acceptance.py`), and 3 new MCP tools. Full API reference: [doc/pipeline/v3_orchestration.md](./doc/pipeline/v3_orchestration.md). Run identity (`gnn-run-v2`), reproduction preflight validation, run-manifest verification (index schema 3.1), and session-reuse rules are specified in [doc/development/durable-runs.md](./doc/development/durable-runs.md).
+These ship with additive live wiring (`session_acceptance.py`, `run_manifest.py`, `pipeline_container_plan.py`), a strict end-to-end acceptance gate (`scripts/run_v3_orchestration_acceptance.py`), and 3 new MCP tools. Full API reference: [docs/pipeline/v3_orchestration.md](./docs/pipeline/v3_orchestration.md). Run identity (`gnn-run-v2`), reproduction preflight validation, run-manifest verification (index schema 3.1), and session-reuse rules are specified in [docs/development/durable-runs.md](./docs/development/durable-runs.md).
 
 ### 📋 Structured File Format
 
@@ -291,7 +291,7 @@ o=Observation
 - `s-A` — s connects to A (undirected/bidirectional)
 - `π>u` — Policy determines action
 
-📖 **Full syntax reference**: [doc/gnn/reference/gnn_syntax.md](./doc/gnn/reference/gnn_syntax.md)
+📖 **Full syntax reference**: [docs/gnn/reference/gnn_syntax.md](./docs/gnn/reference/gnn_syntax.md)
 
 ---
 
@@ -307,7 +307,7 @@ graph TB
             D[🧪 Testing<br/>tests/]
         end
         
-        subgraph "📚 Documentation (doc/)"
+        subgraph "📚 Documentation (docs/)"
             E[📖 Core Docs<br/>gnn/, syntax, examples]
             F[🎯 Specialized<br/>pymdp/, rxinfer/, mcp/]
             G[🧩 Applications<br/>cognitive_phenomena/]
@@ -489,7 +489,7 @@ files; the prose above does not carry numbers.
 <details>
 <summary><strong>📂 src/ Directory Structure</strong></summary>
 
-The `src/` directory contains the 25-step pipeline scripts (`0_template.py` → `24_intelligent_analysis.py`), their corresponding modules, and shared infrastructure. See `DOCS.md` and `doc/pipeline/README.md` for the full step-by-step mapping.
+The `src/` directory contains the 25-step pipeline scripts (`0_template.py` → `24_intelligent_analysis.py`), their corresponding modules, and shared infrastructure. See `DOCS.md` and `docs/pipeline/README.md` for the full step-by-step mapping.
 
 ```text
 src/
@@ -505,12 +505,12 @@ src/
 </details>
 
 <details>
-<summary><strong>📂 doc/ Directory Structure</strong></summary>
+<summary><strong>📂 docs/ Directory Structure</strong></summary>
 
-The `doc/` directory contains all supplementary documentation, including conceptual explanations, syntax guides, and examples.
+The `docs/` directory contains all supplementary documentation, including conceptual explanations, syntax guides, and examples.
 
 ```text
-doc/
+docs/
 ├── 📖 Core Documentation
 │   ├── gnn/                       # GNN specifications
 │   ├── quickstart.md             # Getting started guide
@@ -948,12 +948,12 @@ If you use [uv](https://github.com/astral-sh/uv) (`uv sync` / `uv run`), prefer 
 
 ### 🎯 **Choose Your Journey**
 
-- **⚡ Quick Start**: Validate and run a maintained model → [Quick Start Guide](doc/quickstart.md#gnn-quick-start-guide)
-- **🔬 I'm a Researcher**: Theory-first approach → [Research Path](doc/learning_paths.md#research-focused-path)  
-- **💻 I'm a Developer**: Code-first approach → [Developer Path](doc/learning_paths.md#developer-focused-path)
-- **🎓 I'm Learning**: Structured curriculum → [Academic Path](doc/learning_paths.md#academic-learning-path)
+- **⚡ Quick Start**: Validate and run a maintained model → [Quick Start Guide](docs/quickstart.md#gnn-quick-start-guide)
+- **🔬 I'm a Researcher**: Theory-first approach → [Research Path](docs/learning_paths.md#research-focused-path)  
+- **💻 I'm a Developer**: Code-first approach → [Developer Path](docs/learning_paths.md#developer-focused-path)
+- **🎓 I'm Learning**: Structured curriculum → [Academic Path](docs/learning_paths.md#academic-learning-path)
 
-**📚 Need guidance choosing?** → [Complete Learning Paths Guide](doc/learning_paths.md)
+**📚 Need guidance choosing?** → [Complete Learning Paths Guide](docs/learning_paths.md)
 
 ### 🛠️ **Direct Installation** (if you know what you want)
 
@@ -1077,7 +1077,7 @@ rm -rf output/*
 **🔗 Get Support:**
 
 - 📖 **Documentation**: See [Documentation](#-documentation) section below
-- 🐛 **Known Issues**: Check [troubleshooting guide](./doc/troubleshooting/)
+- 🐛 **Known Issues**: Check [troubleshooting guide](./docs/troubleshooting/)
 - 💬 **Community**: Open an issue on [GitHub](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/issues)
 - 🚀 **Quick Fix**: Try `python src/gnn/main.py --only-steps 2 --dev` first
 
@@ -1085,7 +1085,7 @@ rm -rf output/*
 
 ## 📖 Documentation
 
-Comprehensive documentation is organized in the `doc/` directory.
+Comprehensive documentation is organized in the `docs/` directory.
 
 > [!TIP]
 > **Start Here for Architecture**:
@@ -1099,42 +1099,43 @@ Comprehensive documentation is organized in the `doc/` directory.
 |----------|-------------|
 | [**AGENTS.md**](./AGENTS.md) | **MUST READ**: The master guide to all pipeline agents and modules. |
 | [**DOCS.md**](./DOCS.md) | High-level system architecture and comprehensive documentation index. |
-| [**GNN Overview**](./doc/gnn/gnn_overview.md) | High-level introduction to the GNN language. |
-| [**Syntax Guide**](./doc/gnn/reference/gnn_syntax.md) | Detailed GNN syntax specification. |
-| [**File Structure**](./doc/gnn/reference/gnn_file_structure_doc.md) | Guide to GNN file organization. |
-| [**Quick Start Tutorial**](./doc/gnn/tutorials/quickstart_tutorial.md) | Step-by-step beginner guide. |
+| [**GNN Overview**](./docs/gnn/gnn_overview.md) | High-level introduction to the GNN language. |
+| [**Syntax Guide**](./docs/gnn/reference/gnn_syntax.md) | Detailed GNN syntax specification. |
+| [**File Structure**](./docs/gnn/reference/gnn_file_structure_doc.md) | Guide to GNN file organization. |
+| [**Quick Start Tutorial**](./docs/gnn/tutorials/quickstart_tutorial.md) | Step-by-step beginner guide. |
 | [**Architecture Guide**](./ARCHITECTURE.md) | Implementation, extension patterns, and system design. |
-| [**Machine-Readable Indices**](./doc/api/README.md) | API index and generator. |
+| [**Machine-Readable Indices**](./docs/api/README.md) | API index and generator. |
 
 ### 🎯 Specialized Guides
 
 | Topic | Documentation |
 |-------|---------------|
-| **🧠 Active Inference** | [About GNN](./doc/gnn/about_gnn.md) |
-| **🤖 LLM Integration** | [LLM & Neurosymbolic AI](./doc/gnn/advanced/gnn_llm_neurosymbolic_active_inference.md) |
-| **📊 Implementation** | [Implementation Guide](./doc/gnn/integration/gnn_implementation.md) |
-| **🛠️ Tools** | [Tools & Resources](./doc/gnn/operations/gnn_tools.md) |
-| **📄 Research Paper** | [Academic Paper Details](./doc/gnn/gnn_paper.md) |
+| **🧠 Active Inference** | [About GNN](./docs/gnn/about_gnn.md) |
+| **🤖 LLM Integration** | [LLM & Neurosymbolic AI](./docs/gnn/advanced/gnn_llm_neurosymbolic_active_inference.md) |
+| **📊 Implementation** | [Implementation Guide](./docs/gnn/integration/gnn_implementation.md) |
+| **🛠️ Tools** | [Tools & Resources](./docs/gnn/operations/gnn_tools.md) |
+| **📄 Research Paper** | [Academic Paper Details](./docs/gnn/gnn_paper.md) |
 
 ### 🎯 Integration Guides
 
 | Platform | Documentation |
 |----------|---------------|
-| **🐍 PyMDP** | [PyMDP Integration](./doc/pymdp/) |
-| **🔬 RxInfer.jl** | [RxInfer Integration](./doc/rxinfer/) |
-| **🧠 ActiveInference.jl** | [ActiveInference.jl Integration](./doc/activeinference_jl/) |
-| **📡 MCP** | [Model Context Protocol](./doc/mcp/) |
-| **🧮 SymPy** | [Mathematical Processing](./doc/sympy/) |
-| **🔄 DisCoPy** | [Categorical Diagrams](./doc/discopy/) |
-| **🔬 fep_lean (Lean 4)** | [fep_lean collaboration program](./doc/other/fep_lean/README.md) — bridge contract mirror; canonical bridge docs live in the sibling checkout at `../fep_lean/docs/design/gnn-bridge/` |
+| **🐍 PyMDP** | [PyMDP Integration](./docs/pymdp/) |
+| **🔬 RxInfer.jl** | [RxInfer Integration](./docs/rxinfer/) |
+| **🧠 ActiveInference.jl** | [ActiveInference.jl Integration](./docs/activeinference_jl/) |
+| **📡 MCP** | [Model Context Protocol](./docs/mcp/) |
+| **🧮 SymPy** | [Mathematical Processing](./docs/sympy/) |
+| **🔄 DisCoPy** | [Categorical Diagrams](./docs/discopy/) |
+| **🔬 fep_lean (Lean 4)** | [fep_lean collaboration program](./docs/other/fep_lean/README.md) — bridge contract mirror; canonical bridge docs live in the sibling checkout at `../fep_lean/docs/design/gnn-bridge/` |
+| **🌍 GEO-INFER (spatial)** | [GEO-INFER interchange](./docs/other/geo_infer/README.md) — categorical, Gaussian, and factored artifact contracts; canonical interchange docs live in the sibling checkout at `../GEO-INFER/GEO-INFER-ACT/docs/gnn_interchange.md` |
 
 ### 🧩 Application Examples
 
 | Domain | Examples |
 |--------|----------|
-| **🧠 Cognitive Phenomena** | [Cognitive Models](./doc/cognitive_phenomena/) |
-| **🎯 Templates** | [Model Templates](./doc/templates/) |
-| **📋 Configuration** | [Configuration Examples](./doc/configuration/) |
+| **🧠 Cognitive Phenomena** | [Cognitive Models](./docs/cognitive_phenomena/) |
+| **🎯 Templates** | [Model Templates](./docs/templates/) |
+| **📋 Configuration** | [Configuration Examples](./docs/configuration/) |
 
 ---
 
@@ -1146,8 +1147,8 @@ Explore practical GNN implementations and use cases:
 
 - **📁 Primary Examples**: [`input/gnn_files/`](./input/gnn_files/) — the maintained exemplar corpus (discrete and continuous model kinds across task folders); start from its [`INDEX.md`](./input/gnn_files/INDEX.md)
 - **📁 Single Packaged Example**: [`src/gnn/gnn_examples/`](./src/gnn/gnn_examples/) — one POMDP agent shipped with the `gnn` package
-- **📁 Cognitive Models**: [`doc/cognitive_phenomena/`](./doc/cognitive_phenomena/)
-- **📁 Templates**: [`doc/templates/`](./doc/templates/)
+- **📁 Cognitive Models**: [`docs/cognitive_phenomena/`](./docs/cognitive_phenomena/)
+- **📁 Templates**: [`docs/templates/`](./docs/templates/)
 
 ### 🔥 Featured Examples
 
@@ -1155,19 +1156,19 @@ Explore practical GNN implementations and use cases:
 |---------|-------------|----------|
 | **🎯 PyMDP POMDP Agent** | Complete POMDP implementation | [`src/gnn/gnn_examples/actinf_pomdp_agent.md`](src/gnn/gnn_examples/actinf_pomdp_agent.md) |
 | **🧭 Continuous Navigation** | Continuous-state linear-Gaussian model with closed-loop control (`F/H/Q/R`, `goal_mean/control_gain`); runs on JAX, NumPyro, PyTorch, Stan and RxInfer.jl | [`input/gnn_files/continuous/continuous_navigation.md`](input/gnn_files/continuous/continuous_navigation.md) |
-| **🔬 RxInfer Hidden Markov Model** | Probabilistic sequence modeling | [`doc/other/rxinfer_hidden_markov_model.md`](doc/other/rxinfer_hidden_markov_model.md) |
-| **🧠 ActiveInference.jl Examples** | Julia-based Active Inference models | [`doc/activeinference_jl/actinf_jl_src/`](doc/activeinference_jl/actinf_jl_src/) |
-| **🤝 Multi-Agent System** | Collaborative agent modeling | [`doc/other/rxinfer_multiagent_gnn.md`](doc/other/rxinfer_multiagent_gnn.md) |
+| **🔬 RxInfer Hidden Markov Model** | Probabilistic sequence modeling | [`docs/other/rxinfer_hidden_markov_model.md`](docs/other/rxinfer_hidden_markov_model.md) |
+| **🧠 ActiveInference.jl Examples** | Julia-based Active Inference models | [`docs/activeinference_jl/actinf_jl_src/`](docs/activeinference_jl/actinf_jl_src/) |
+| **🤝 Multi-Agent System** | Collaborative agent modeling | [`docs/other/rxinfer_multiagent_gnn.md`](docs/other/rxinfer_multiagent_gnn.md) |
 
 ### 🧠 Cognitive Phenomena Examples
 
 | Phenomenon | Model | Documentation |
 |------------|-------|---------------|
-| **🎯 Attention** | Attention mechanisms | [`doc/cognitive_phenomena/attention/`](./doc/cognitive_phenomena/attention/) |
-| **🧠 Consciousness** | Global workspace theory | [`doc/cognitive_phenomena/consciousness/`](./doc/cognitive_phenomena/consciousness/) |
-| **💪 Cognitive Effort** | Effort and control | [`doc/cognitive_phenomena/effort/`](./doc/cognitive_phenomena/effort/) |
-| **❤️ Emotion & Affect** | Interoceptive emotion | [`doc/cognitive_phenomena/emotion_affect/`](./doc/cognitive_phenomena/emotion_affect/) |
-| **🎮 Executive Control** | Task switching | [`doc/cognitive_phenomena/executive_control/`](./doc/cognitive_phenomena/executive_control/) |
+| **🎯 Attention** | Attention mechanisms | [`docs/cognitive_phenomena/attention/`](./docs/cognitive_phenomena/attention/) |
+| **🧠 Consciousness** | Global workspace theory | [`docs/cognitive_phenomena/consciousness/`](./docs/cognitive_phenomena/consciousness/) |
+| **💪 Cognitive Effort** | Effort and control | [`docs/cognitive_phenomena/effort/`](./docs/cognitive_phenomena/effort/) |
+| **❤️ Emotion & Affect** | Interoceptive emotion | [`docs/cognitive_phenomena/emotion_affect/`](./docs/cognitive_phenomena/emotion_affect/) |
+| **🎮 Executive Control** | Task switching | [`docs/cognitive_phenomena/executive_control/`](./docs/cognitive_phenomena/executive_control/) |
 
 ### 🏃‍♂️ Running Examples
 
@@ -1242,7 +1243,7 @@ The GNN project maintains high standards for code quality, testing, and document
 - Pipeline orchestration, module docs, and tests are maintained together.
 - Use current test and pipeline runs as the source of truth for operational status.
 - See `tests/` and step-specific outputs in `output/` for current validation artifacts.
-- See [Validation Evidence Guide](doc/pipeline/validation_evidence_guide.md) for the commands that certify examples, templates, docs, health checks, and cross-framework proof paths.
+- See [Validation Evidence Guide](docs/pipeline/validation_evidence_guide.md) for the commands that certify examples, templates, docs, health checks, and cross-framework proof paths.
 
 ### 🧪 Testing Infrastructure
 
@@ -1308,7 +1309,7 @@ Please read our [Code of Conduct](./CODE_OF_CONDUCT.md) to understand the standa
 
 ### 📞 Getting Help
 
-- 📖 **Documentation**: Check the [docs](./doc/) first
+- 📖 **Documentation**: Check the [docs](./docs/) first
 - 💬 **Discussions**: Use [GitHub Discussions](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions)
 - 🐛 **Issues**: For bugs, use [GitHub Issues](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/issues)
 - 📧 **Contact**: Reach out to the maintainers
