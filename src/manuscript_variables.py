@@ -61,6 +61,7 @@ except ModuleNotFoundError:  # pragma: no cover - yaml is a GNN dependency
 
 __all__ = [
     "RepositorySnapshot",
+    "corpus_coverage_notes",
     "generate_variables",
     "load_variables",
     "save_variables",
@@ -481,6 +482,50 @@ def _example_models(snapshot: RepositorySnapshot) -> list[Path]:
     return [md for md in candidates if "## GNNSection" in snapshot.read_text(md)]
 
 
+def corpus_coverage_notes(
+    family_target_dirs: set[str] | Sequence[str],
+    unscanned_corpus_dirs: Sequence[str],
+    example_count: int,
+) -> tuple[str, str]:
+    """Build the two generated sentences about family/corpus coverage.
+
+    Returns ``(unscanned_corpus_note, target_dir_coverage_note)``: the first for
+    the model-family coverage paragraph, the second for the reproduction
+    section's ``--target-dir`` note.
+
+    These are *sentences*, not counts, because the claim that goes stale is the
+    relationship, not a number. A commit repointed the ``multiagent`` family's
+    ``target_dir`` from ``input/multi_agent_models`` into ``input/gnn_files/``;
+    every count beside the three prose sites describing the old layout stayed
+    correct, so every count-based check stayed green. Generating the whole clause
+    from the manifest removes the typed claim rather than replacing it with a
+    newer true value that can stale the same way.
+    """
+    total = len(set(family_target_dirs))
+    outside = list(unscanned_corpus_dirs)
+    target_word = "directory" if total == 1 else "directories"
+    if not outside:
+        return (
+            f"Registered but outside the scanned tree: none, because all "
+            f"{total} target {target_word} are themselves `input/gnn_files` "
+            f"corpus directories.",
+            f"All {total} registered family target {target_word} lie inside "
+            f"that tree, so a single invocation reaches every registered family.",
+        )
+    outside_word = "directory" if len(outside) == 1 else "directories"
+    outside_verb = "lies" if len(outside) == 1 else "lie"
+    outside_needs = "needs" if len(outside) == 1 else "need"
+    listed = ", ".join(f"`{d}`" for d in outside)
+    return (
+        f"Registered but outside the scanned tree: {listed} "
+        f"({len(outside)} of the {total} target {target_word}), whose models "
+        f"the gates exercise even though they are not among the "
+        f"{example_count} models under `input/gnn_files`.",
+        f"{len(outside)} registered family target {outside_word} ({listed}) "
+        f"{outside_verb} outside that tree and {outside_needs} a separate run.",
+    )
+
+
 def _release_metadata(snapshot: RepositorySnapshot) -> list[tuple[str, str, str]]:
     """Parse ``CHANGELOG.md`` into ``(version, date, codename)`` triples.
 
@@ -781,6 +826,9 @@ def generate_variables(project_root: Path) -> dict[str, str]:
     unscanned_corpus_dirs = sorted(
         d for d in family_target_dirs if not d.startswith("input/gnn_files/")
     )
+    unscanned_corpus_note, target_dir_coverage_note = corpus_coverage_notes(
+        family_target_dirs, unscanned_corpus_dirs, len(example_models)
+    )
     figure_count = _count_files(snapshot, "output", "*.png")
     manuscript_figure_count = _count_files(snapshot, "output/figures", "*.png")
     doc_file_count = _count_files(snapshot, "doc", "*.md")
@@ -839,6 +887,8 @@ def generate_variables(project_root: Path) -> dict[str, str]:
         ),
         "GNN_UNSCANNED_CORPUS_DIR_COUNT": str(len(unscanned_corpus_dirs)),
         "GNN_UNSCANNED_CORPUS_DIRS": ", ".join(f"`{d}`" for d in unscanned_corpus_dirs),
+        "GNN_UNSCANNED_CORPUS_NOTE": unscanned_corpus_note,
+        "GNN_TARGET_DIR_COVERAGE_NOTE": target_dir_coverage_note,
         # Backends
         "GNN_BACKEND_COUNT": str(len(backends)),
         "GNN_BACKEND_LIST": ", ".join(backend_names),

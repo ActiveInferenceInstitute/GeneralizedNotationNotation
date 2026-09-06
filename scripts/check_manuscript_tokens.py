@@ -24,10 +24,16 @@ Deterministic checks run before/after rendering the token-injected manuscript:
    image file. The template's own ``validate_figure_registry`` runs at the *validation*
    stage, not the render stage, so a render could (and did) ship a PDF with the registry
    absent entirely. This is the in-repo gate that does not depend on the template.
+8. **Repository path claims** — every ``input/...`` literal must exist on disk, and where
+   prose names a manifest family beside such a literal, the literal must match that
+   family's declared ``target_dir``. Every other check compares a *number* against the
+   producer; a path is not a number, so all of them stayed green while a commit moved a
+   family's ``target_dir`` and three prose sites went on naming the old directory.
 
-Exit code is non-zero when an unknown token, dangling citation, malformed cross-reference
-or config.yaml drift is found (hard gate). Hard-coded count and step-number findings are
-reported as warnings unless ``--strict`` is passed.
+Exit code is non-zero when an unknown token, dangling citation, malformed
+cross-reference, config.yaml drift or contradicted path claim is found (hard gate).
+Hard-coded count and step-number findings are reported as warnings unless
+``--strict`` is passed.
 
 Usage:
     python scripts/check_manuscript_tokens.py [--strict]
@@ -46,6 +52,8 @@ if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
 from src.manuscript_variables import (  # noqa: E402
+    RepositorySnapshot,
+    _families,
     config_metadata_drift,
     generate_variables,
 )
@@ -134,6 +142,98 @@ def _strip_code(text: str) -> str:
     text = re.sub(r"```.*?```", "", text, flags=re.DOTALL)
     text = re.sub(r"`[^`]*`", "", text)
     return text
+
+
+# --- Rule 8: repository path claims -----------------------------------------
+#
+# Every check above compares a *number* against the producer. A path is not a
+# number, so all of them stayed green while a commit repointed the `multiagent`
+# family's target_dir from input/multi_agent_models into input/gnn_files/ and
+# three prose sites went on naming the old directory. That is the gap this rule
+# closes, in the same shape as the rest of the gate: the manifest is the source
+# of truth and the manuscript is checked against it.
+#
+# Two independent checks:
+#   (a) existence — an `input/...` literal must name something on disk;
+#   (b) family pairing — where prose names a manifest family and an `input/...`
+#       literal in the same breath, the literal must be that family's declared
+#       target_dir, an ancestor of it (`input/gnn_files` covering a family), or
+#       a path inside it.
+_INLINE_CODE_RE = re.compile(r"`([^`\n]+)`")
+_INPUT_PATH_RE = re.compile(r"^input/[\w./-]+$")
+# How far from a family mention a path literal is still read as a claim about
+# that family. Wide enough to span "the `x` family, whose target directory is
+# `input/y`", narrow enough not to reach across a paragraph.
+_CLAIM_WINDOW = 160
+
+
+def _code_spans(text: str) -> list[tuple[int, str]]:
+    """``(offset, content)`` for each inline code span, fenced blocks removed.
+
+    Fenced blocks are dropped because they hold reproduction *commands*, where a
+    path is an argument rather than a claim about where a family lives.
+    """
+    without_fences = re.sub(
+        r"```.*?```", lambda m: " " * len(m.group(0)), text, flags=re.DOTALL
+    )
+    return [(m.start(1), m.group(1)) for m in _INLINE_CODE_RE.finditer(without_fences)]
+
+
+def _path_claim_issues(sections: list[Path], families: list[dict]) -> list[str]:
+    """Check `input/...` literals against the model-family manifest."""
+    target_dirs = {
+        str(f.get("name", "")): str(f.get("target_dir", "")).rstrip("/")
+        for f in families
+        if f.get("name") and f.get("target_dir")
+    }
+    issues: list[str] = []
+    for path in sections:
+        raw = path.read_text(encoding="utf-8")
+        spans = _code_spans(raw)
+        paths = [
+            (offset, content.rstrip("/"))
+            for offset, content in spans
+            if _INPUT_PATH_RE.match(content.rstrip("/"))
+        ]
+        for offset, literal in paths:
+            if not (_PROJECT_ROOT / literal).exists():
+                issues.append(
+                    f"{path.name}: `{literal}` does not exist in the repository"
+                )
+        for offset, content in spans:
+            family = content.strip()
+            declared = target_dirs.get(family)
+            if declared is None:
+                continue
+            # Only a mention that actually calls it a family is a family claim;
+            # `continuous` and `structured` are ordinary words otherwise.
+            around = raw[max(0, offset - 40) : offset + len(content) + 40]
+            if "famil" not in around.lower():
+                continue
+            # Only the NEAREST path literal is read as this family's location.
+            # Taking every literal in the window swept in unrelated siblings
+            # ("`input/recursive_models/` is a reserved directory") that happen
+            # to share a sentence with a family mention.
+            near = [
+                (abs(p_offset - offset), literal)
+                for p_offset, literal in paths
+                if abs(p_offset - offset) <= _CLAIM_WINDOW
+            ]
+            if not near:
+                continue
+            _, literal = min(near)
+            related = (
+                literal == declared
+                or literal.startswith(declared + "/")
+                or declared.startswith(literal + "/")
+            )
+            if not related:
+                issues.append(
+                    f"{path.name}: the `{family}` family is named beside "
+                    f"`{literal}`, but the manifest declares its target_dir "
+                    f"as `{declared}`"
+                )
+    return sorted(set(issues))
 
 
 def main() -> int:
@@ -272,6 +372,15 @@ def main() -> int:
         print(f"\nFIGURE REGISTRY ({len(figure_issues)}):")
         for f in figure_issues:
             print(f"  ✗ {f}")
+    path_claims = _path_claim_issues(
+        _section_files(manuscript_dir),
+        _families(RepositorySnapshot(_PROJECT_ROOT)),
+    )
+    if path_claims:
+        ok = False
+        print(f"\nREPOSITORY PATH CLAIMS ({len(path_claims)}):")
+        for c in path_claims:
+            print(f"  \u2717 {c}")
     if config_drift:
         ok = False
         print(f"\nCONFIG.YAML DRIFT ({len(config_drift)}):")

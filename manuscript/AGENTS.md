@@ -38,6 +38,30 @@ Evidence boundary: Do not treat root output churn as manuscript evidence until t
   `stage_04_validate`, not `stage_03_render`, so relying on it alone let a 29-page
   PDF ship with no registry at all.
 
+## Paths are claims, and are checked like counts
+
+Do not type a model family's target directory into prose. The manifest owns it,
+and the producer emits the whole sentence:
+`{{GNN_UNSCANNED_CORPUS_NOTE}}` for the coverage paragraph and
+`{{GNN_TARGET_DIR_COVERAGE_NOTE}}` for the `--target-dir` note. Both flip with
+the manifest, including between the "all inside `input/gnn_files`" and "some
+outside" wordings.
+
+This exists because a typed path is the one claim every other check was blind
+to. A commit repointed the `multiagent` family's `target_dir` from
+`input/multi_agent_models` into `input/gnn_files/multiagent`; three prose sites
+went on describing the old layout, every count beside them stayed correct, and
+`check_manuscript_tokens.py --strict` reported "clean" over the contradiction —
+so the false text shipped in the PDF.
+
+Rule 8 of that gate now cross-checks the manifest: an `input/...` literal must
+exist on disk, and a literal typed next to a family name must be that family's
+declared `target_dir` (or an ancestor of it, so `input/gnn_files` still reads as
+covering every family). `src/tests/test_manuscript_path_claims.py` pins both the
+generated sentences and the gate rule, and its two live-repository tests fail on
+the pre-fix prose.
+
+
 ## Known benign LaTeX diagnostics
 
 `output/pdf/_combined_manuscript.log` carries one
