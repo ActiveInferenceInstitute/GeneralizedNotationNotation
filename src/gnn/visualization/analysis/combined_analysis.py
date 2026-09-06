@@ -461,7 +461,7 @@ def generate_combined_visualizations(
         return visualizations
 
     try:
-        from ..parser import GNNParser
+        from gnn.schema_validator import GNNParser
 
         all_variables: List[Dict[str, Any]] = []
         all_connections: List[Dict[str, Any]] = []
@@ -471,30 +471,36 @@ def generate_combined_visualizations(
         for gnn_file in gnn_files:
             try:
                 parsed_data = parser.parse_file(str(gnn_file))
-                variables = parsed_data.get("Variables", {})
+                variables = parsed_data.variables
                 for var_name, var_info in variables.items():
                     all_variables.append(
                         {
                             "name": var_name,
-                            "type": var_info.get("type", "unknown"),
-                            "dimensions": var_info.get("dimensions", []),
-                            "comment": var_info.get("comment", ""),
+                            "type": var_info.data_type,
+                            "dimensions": list(var_info.dimensions),
+                            "comment": var_info.description or "",
                         }
                     )
-                connections = parsed_data.get("Edges", [])
-                all_connections.extend(connections)
+                all_connections.extend(
+                    {
+                        "source": conn.source,
+                        "target": conn.target,
+                        "type": conn.connection_type,
+                    }
+                    for conn in parsed_data.connections
+                )
                 for var_name, var_info in variables.items():
-                    dimensions = var_info.get("dimensions", [])
-                    if len(dimensions) >= 2 and all(
-                        isinstance(d, int) for d in dimensions[:2]
+                    dimensions = list(var_info.dimensions)
+                    if (
+                        len(dimensions) >= 2
+                        and isinstance(dimensions[0], int)
+                        and isinstance(dimensions[1], int)
                     ):
                         all_matrices.append(
                             {
                                 "name": var_name,
                                 "shape": dimensions,
-                                "size": dimensions[0] * dimensions[1]
-                                if len(dimensions) >= 2
-                                else 0,
+                                "size": dimensions[0] * dimensions[1],
                             }
                         )
             except Exception as e:

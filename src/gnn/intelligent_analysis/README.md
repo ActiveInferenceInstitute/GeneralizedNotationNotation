@@ -25,6 +25,7 @@ intelligent_analysis/
 ├── README.md         # This file
 ├── processor.py      # Core processing logic and report generation
 ├── analyzer.py       # IntelligentAnalyzer class and analysis utilities
+├── history.py        # Run-history snapshots, deltas, trend classification
 ├── remediation.py    # ContractViolation fix suggestions (auxiliary)
 └── mcp.py            # MCP tool registrations
 ```
@@ -88,6 +89,26 @@ class StepAnalysis:
 | `generate_executive_report()` | Create formatted reports |
 | `identify_bottlenecks()` | Find performance issues |
 | `generate_recommendations()` | Rule-based improvement suggestions |
+
+#### Run-history & full-analysis API
+
+Cross-run and one-shot analysis entry points exported from
+`gnn.intelligent_analysis`:
+
+| Function / Class | Purpose |
+|------------------|---------|
+| `compute_full_analysis()` | One-shot full analysis producing a `FullAnalysisResult` |
+| `FullAnalysisResult` | Typed result container for the full analysis |
+| `build_run_snapshot()` | Capture a `RunSnapshot` for one pipeline run |
+| `RunSnapshot` | Snapshot of a single run (status, durations, memory) |
+| `compute_step_deltas()` | Compute `StepDelta` values between two snapshots |
+| `StepDelta` | Per-step change between two runs |
+| `classify_trend()` | Classify step deltas into improvement/regression trends |
+| `analyze_run_history()` | Analyze a sequence of run snapshots over time |
+| `get_supported_analysis_types()` | List supported analysis types |
+| `validate_pipeline_summary()` | Validate pipeline summary structure |
+| `check_intelligent_analysis_tools()` | Check analysis tool and LLM backend availability |
+| `check_analysis_tools()` | Alias of `check_intelligent_analysis_tools` for MCP |
 
 ### IntelligentAnalyzer Class
 

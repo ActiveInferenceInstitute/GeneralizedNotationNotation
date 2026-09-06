@@ -25,19 +25,20 @@ logger = logging.getLogger(__name__)
 
 # Import enhanced GNN capabilities
 try:
-    from ..cross_format_validator import (
+    from gnn.schema_validator import (
         validate_cross_format_consistency,
         validate_schema_consistency,
     )
-    from ..processors import (
-        process_gnn_folder,
-        run_gnn_round_trip_tests,
-        validate_gnn_cross_format_consistency,
-    )
+
     from ..schema_validator import (
         GNNParser,
         GNNValidator,
         ValidationLevel,
+    )
+    from .processors import (
+        process_gnn_folder,
+        run_gnn_round_trip_tests,
+        validate_gnn_cross_format_consistency,
     )
 
     ENHANCED_CAPABILITIES_AVAILABLE = True

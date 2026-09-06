@@ -27,7 +27,7 @@ sum of factor sizes. ``kron_matvec_flat`` additionally applies a Kronecker
 product to an *arbitrary* (non-factorised) vector via tensor contraction
 without materialising the joint — used by the EFE and validation paths.
 
-The Kronecker identities are pinned by ``src/tests/execute/test_kronecker_factorized.py``:
+The Kronecker identities are pinned by ``tests/execute/test_kronecker_factorized.py``:
 
 - ``kron_matvec(factors, vecs) == dense_kron(factors) @ (⊗ vecs)``,
 - ``kron_matvec_flat(factors, v) == dense_kron(factors) @ v`` for any ``v``,

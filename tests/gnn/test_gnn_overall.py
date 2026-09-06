@@ -39,7 +39,7 @@ class TestGNNCoreProcessor:
 
 # Migrated from test_gnn_core_modules.py
 class TestGNNReporting:
-    """Test gnn.reporting module."""
+    """Test the gnn.report processing surface."""
 
     @pytest.mark.unit
     def test_reporting_imports(self) -> Any:

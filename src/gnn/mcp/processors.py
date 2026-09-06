@@ -89,8 +89,8 @@ def process_gnn_folder(
     fail_count = 0
 
     try:
-        from .schema_validator import GNNValidator
-        from .schema_validator import ValidationLevel as VL
+        from gnn.schema_validator import GNNValidator
+        from gnn.schema_validator import ValidationLevel as VL
 
         _vl_map: dict[str, Any] = {
             "basic": VL.BASIC,
@@ -233,7 +233,7 @@ def run_gnn_round_trip_tests(
     overall_pass = True
 
     try:
-        from .schema_validator import GNNParser
+        from gnn.schema_validator import GNNParser
 
         parser = GNNParser(enhanced_validation=False)
     except Exception as exc:
@@ -383,7 +383,7 @@ def validate_gnn_cross_format_consistency(
         return True
 
     try:
-        from .cross_format_validator import CrossFormatValidator
+        from gnn.schema_validator import CrossFormatValidator
 
         validator = CrossFormatValidator(
             enable_round_trip_testing=False,

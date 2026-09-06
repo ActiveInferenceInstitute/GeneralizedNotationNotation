@@ -12,6 +12,7 @@ src/gnn/validation/
 ├── SPEC.md                        # Module specification
 ├── consistency_checker.py         # Consistency checking (naming, style, structure, references)
 ├── semantic_validator.py          # Semantic validation (structure, state space, connections, math)
+├── simple.py                      # Dependency-free basic validator: marker/extension sniffing
 ├── performance_profiler.py        # Performance profiling (complexity, memory, parallelization)
 ├── structure.py                   # Shared helpers (content extraction, cycle detection, score clamping)
 ├── workflow.py                    # Step-6 directory workflow (stage runner, receipts, accumulation)
@@ -117,7 +118,7 @@ flowchart LR
 
 #### `process_validation(target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs) -> bool`
 
-Main pipeline orchestrator (called by `6_validation.py`). Reads GNN results JSON from step 3, then runs all three validators on each parsed file.
+Main pipeline orchestrator (called by `src/gnn/6_validation.py`). Reads GNN results JSON from step 3, then runs all three validators on each parsed file.
 
 **kwargs:** `validation_level` (semantic depth: `basic`/`standard`/`strict`/`research`; default `standard`), `strict` (shorthand for `validation_level="strict"`, wired to the orchestrator's `--strict` flag). `logger`, `recursive`, and `profile` are accepted for the pipeline-template contract and do not alter behavior.
 
@@ -275,7 +276,7 @@ result = profiler.profile(gnn_content)  # Returns {metrics, warnings}
 
 ### Pipeline Step 6: Validation Processing
 
-The `process_validation()` orchestrator is called by `6_validation.py`. It:
+The `process_validation()` orchestrator is called by `src/gnn/6_validation.py`. It:
 
 1. Reads `gnn_processing_results.json` from step 3 output
 2. Iterates over each successfully parsed file

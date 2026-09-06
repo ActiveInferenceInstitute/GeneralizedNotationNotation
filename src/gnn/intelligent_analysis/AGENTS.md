@@ -23,7 +23,10 @@ intelligent_analysis/
 ├── __init__.py       # Public API exports, module utilities, tool checks
 ├── AGENTS.md         # This documentation
 ├── processor.py      # Core analysis processing logic and report generation
-└── analyzer.py       # IntelligentAnalyzer class, health scoring, pattern detection
+├── analyzer.py       # IntelligentAnalyzer class, health scoring, pattern detection
+├── history.py        # Run-history snapshots, deltas, trend classification
+├── remediation.py    # ContractViolation fix suggestions (auxiliary)
+└── mcp.py            # MCP tool registrations
 ```
 
 ## Key Components

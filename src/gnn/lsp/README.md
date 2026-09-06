@@ -21,7 +21,7 @@ Minimal Language Server Protocol implementation for GNN files. Provides real-tim
 gnn lsp
 
 # Or directly
-python -m src.lsp
+python -m gnn.lsp
 ```
 
 ### VS Code Integration
@@ -42,13 +42,18 @@ Add to `.vscode/settings.json`:
 - **Hover**: Parses state-space to show variable metadata at cursor position
 - **Fallback**: Graceful degradation when `pygls` is not installed
 
+The `gnn lsp` CLI subcommand routes through `src/gnn/cli/lsp.py`; the pygls
+server itself lives in `gnn.lsp`.
+
 ## File Structure
 
 ```
-lsp/
-├── __init__.py    # Server implementation (226 lines)
+src/gnn/lsp/
+├── __init__.py    # Server implementation
+├── mcp.py         # Model Context Protocol integration
 ├── AGENTS.md      # Agent documentation
 ├── README.md      # This file
+├── SKILL.md       # Capability API
 └── SPEC.md        # Module specification
 ```
 

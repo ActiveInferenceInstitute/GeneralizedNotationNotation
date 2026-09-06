@@ -12,6 +12,7 @@ This module provides **POMDP-aware code generation** for GNN models. It translat
 
 ## POMDP Processing Pipeline
 
+<!-- 5 of 9 renderers shown; the full renderer set lives in framework_registry.py -->
 ```mermaid
 graph TD
     GNN[GNN File] --> Extract[POMDP Extraction]
@@ -34,6 +35,8 @@ graph TD
 ```
 
 ### Framework Rendering Architecture
+
+<!-- 5 of 9 renderers shown; the full renderer set lives in framework_registry.py -->
 
 ```mermaid
 graph TB
@@ -141,6 +144,7 @@ src/gnn/render/
 ├── README.md                      # This documentation
 ├── mcp.py                         # Model Context Protocol integration
 ├── framework_registry.py          # Canonical framework inventory + availability
+├── contracts.py                   # Framework output contract checks for rendered code
 ├── render.py                      # Standalone CLI renderer entry point
 ├── health.py                      # Renderer importability health check
 ├── processor.py                   # Main render processor (Step 11 entry)
@@ -188,6 +192,17 @@ src/gnn/render/
     ├── discopy_renderer.py       # DisCoPy renderer
     ├── translator.py              # GNN to DisCoPy translator
 ```
+
+## Module exports
+
+`gnn.render.__all__` (from `src/gnn/render/__init__.py`):
+
+- Core: `process_render`, `render_gnn_spec`, `get_available_renderers`, `get_module_info`
+- Generators: `generate_pymdp_code`, `generate_rxinfer_code`, `generate_activeinference_jl_code`, `generate_discopy_code`
+- Per-framework renders: `render_gnn_to_pymdp`, `render_gnn_to_rxinfer`, `render_gnn_to_discopy`, `render_gnn_to_activeinference_jl`, `render_gnn_to_pytorch`, `render_gnn_to_numpyro`, `render_stan`
+- Renderer classes: `PyMDPRenderer`, `JAXRenderer`
+- POMDP processing: `POMDPRenderProcessor`, `process_pomdp_for_frameworks`
+- Utilities: `get_supported_frameworks`, `validate_render`
 
 ## Core Components
 
@@ -452,26 +467,7 @@ config = {
 
 ### Framework-Specific Settings
 
-```python
-# Framework-specific configuration
-framework_config = {
-    "pymdp": {
-        "version": "0.4.0",
-        "include_visualization": True,
-        "include_testing": True,
-    },
-    "rxinfer": {
-        "julia_version": "1.9",
-        "include_benchmarks": True,
-        "include_documentation": True,
-    },
-    "jax": {
-        "jax_version": "0.4.0",
-        "include_gpu_support": True,
-        "include_optimization": True,
-    },
-}
-```
+Per-framework renderer options (versions, feature toggles, output paths) are declared in `src/gnn/render/framework_registry.py`; consult that registry for the authoritative settings instead of hardcoding them here.
 
 ## Error Handling
 

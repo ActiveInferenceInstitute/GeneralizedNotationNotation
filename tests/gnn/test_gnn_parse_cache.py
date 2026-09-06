@@ -15,7 +15,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from gnn.parse_cache import ParseCache  # noqa: E402
+from gnn.parsers.cache import ParseCache  # noqa: E402
 
 
 class TestParseCacheHitMiss:

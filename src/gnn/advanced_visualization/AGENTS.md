@@ -4,7 +4,7 @@
 
 **Purpose**: Advanced visualization artifact generation for GNN models: statistical panels, POMDP plots, network metrics, optional Plotly/HTML dashboards, and optional D2 diagrams
 
-**Pipeline Step**: Step 9: Advanced visualization (9_advanced_viz.py)
+**Pipeline Step**: Step 9: Advanced visualization (src/gnn/9_advanced_viz.py)
 
 **Category**: Advanced Visualization / Interactive Analysis
 
@@ -43,7 +43,7 @@
 
 #### `process_advanced_viz(target_dir, output_dir, logger, **kwargs) -> bool | int`
 
-**Description**: Main advanced visualization processing function called by orchestrator ([9_advanced_viz.py](../9_advanced_viz.py)). Implementation: [processor.py](processor.py).
+**Description**: Main advanced visualization processing function called by orchestrator ([src/gnn/9_advanced_viz.py](../9_advanced_viz.py)). Implementation: [processor.py](processor.py).
 
 **Parameters**:
 
@@ -396,7 +396,7 @@ in `_shared.py` and the package root:
   step=0.01). The layout now uses `np.random.default_rng(42)` instead of mutating the
   process-global RNG via `np.random.seed(42)`.
 - `VIZ_TYPE_CHOICES` (package root) — the canonical tuple of `viz_type` values
-  accepted by `process_advanced_viz`; the `9_advanced_viz.py` orchestrator imports
+  accepted by `process_advanced_viz`; the `src/gnn/9_advanced_viz.py` orchestrator imports
   this instead of hand-maintaining a duplicate list. Scope note: this is true at
   import/config level only — at runtime the enhanced parser
   (`utils.ArgumentParser.ARGUMENT_DEFINITIONS["viz_type"]`) enforces its own copy of
@@ -427,7 +427,7 @@ in `_shared.py` and the package root:
   `extract_from_content(content) -> dict` is accepted (test doubles included).
   When omitted, a real `VisualizationDataExtractor` is built lazily per run;
   if unavailable, `generate_visualizations` degrades to the recovery path.
-  `VIS_PROCESSOR_AVAILABLE` remains a module symbol for back-compat.
+  `VIS_PROCESSOR_AVAILABLE` is retained for existing importers.
 - `process_gnn_file_with_d2(..., parsed_json_dir=None)` — optional keyword
   overriding the cwd-dependent `output/3_gnn_output` parsed-JSON lookup;
   `None` preserves the historical behavior.

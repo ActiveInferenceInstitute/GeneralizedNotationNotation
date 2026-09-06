@@ -1,6 +1,6 @@
 # Execute Module
 
-This module is responsible for running GNN models that have been rendered into framework-specific simulation code by Step 11 (`11_render.py`).
+This module is responsible for running GNN models that have been rendered into framework-specific simulation code by Step 11 (`src/gnn/11_render.py`).
 
 ## Supported Frameworks
 
@@ -14,6 +14,7 @@ This module is responsible for running GNN models that have been rendered into f
 | **PyTorch** | Python | `pytorch/` | `*_pytorch.py` | ✅ Full support |
 | **NumPyro** | Python | `numpyro/` | `*_numpyro.py` | ✅ Full support |
 | **Stan** | Python (cmdstanpy driver) | `stan/` | `*_stan.py` | ✅ Full support (requires `uv sync --extra stan` + CmdStan toolchain; skipped otherwise) |
+| **Lean 4** | Lean (fep_lean bridge) | `lean/` | `*.lean` + emitted `*.md` | ✅ Full support (requires the fep_lean checkout via `FEP_LEAN_ROOT`; skipped otherwise) |
 JAX, NumPyro, PyTorch, and DisCoPy are **core** dependencies (`uv sync`). If the environment is incomplete, their scripts report an explicit skipped status. Requested Julia frameworks require Julia plus their package set; in strict requested-framework runs, missing packages make Step 12 fail.
 
 ## Module Structure
@@ -36,6 +37,7 @@ src/gnn/execute/
 ├── discopy/                 # DisCoPy execution
 │   └── discopy_translator_module/
 ├── stan/                    # Stan execution (cmdstanpy driver runner)
+├── lean/                    # Lean verification via the fep_lean bridge
 └── mcp.py                   # MCP tool integration
 ```
 
@@ -43,7 +45,7 @@ src/gnn/execute/
 
 ```mermaid
 graph TD
-    Pipeline[Main Pipeline] --> Step12[12_execute.py]
+    Pipeline[Main Pipeline] --> Step12[src/gnn/12_execute.py]
     Step12 --> Discovery[Discover Rendered Scripts]
     Discovery --> List[Script List]
     

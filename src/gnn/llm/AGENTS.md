@@ -4,7 +4,7 @@
 
 **Purpose**: LLM-enhanced analysis, model interpretation, and AI assistance for GNN models
 
-**Pipeline Step**: Step 13: LLM processing (13_llm.py)
+**Pipeline Step**: Step 13: LLM processing (src/gnn/13_llm.py)
 
 **Category**: AI Enhancement / Analysis
 
@@ -587,7 +587,7 @@ configs["ollama"]["default_max_tokens"] = 1024
   ↓
 12_execute.py (Execution results) [optional]
   ↓
-13_llm.py (LLM analysis)
+src/gnn/13_llm.py (LLM analysis)
   ↓
   ├→ 16_analysis.py (Enhanced analysis)
   ├→ 20_website.py (LLM summaries)

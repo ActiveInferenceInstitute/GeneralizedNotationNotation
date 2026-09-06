@@ -205,12 +205,12 @@ current run's duration, memory, and file counts; this document does not track th
 
 ### Data Flow
 ```
-3_gnn.py (GNN parsing)
+src/gnn/3_gnn.py (GNN parsing)
   ↓
-15_audio.py (Audio generation)
+src/gnn/15_audio.py (Audio generation)
   ↓
-  ├→ 20_website.py (Audio embedding)
-  ├→ 23_report.py (Audio analysis)
+  ├→ src/gnn/20_website.py (Audio embedding)
+  ├→ src/gnn/23_report.py (Audio analysis)
   └→ output/15_audio_output/ (Standalone audio files)
 ```
 
@@ -271,7 +271,7 @@ def register_tools(mcp_instance):
 **Cause**: Required audio libraries not installed  
 **Solution**: 
 - Install audio dependencies: `uv sync --extra audio`
-- Check backend availability: `python -c "from audio import check_audio_backends; print(check_audio_backends())"`
+- Check backend availability: `python -c "from gnn.audio import check_audio_backends; print(check_audio_backends())"`
 - Generation itself needs only `numpy`; missing optional libraries only reduce analysis
 
 #### Issue 2: WAV file generation fails

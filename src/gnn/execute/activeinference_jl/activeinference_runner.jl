@@ -551,10 +551,10 @@ function run_multi_step_planning_example(output_dir::String)
     end
 end
 
-    # Analysis summary generation moved to src/16_analysis.py
+    # Analysis summary generation moved to src/gnn/16_analysis.py
 
 # Visualization integration
-# Visualization and Enhanced Analysis logic moved to src/16_analysis.py
+# Visualization and Enhanced Analysis logic moved to src/gnn/16_analysis.py
 
 # Main execution function
 function main()

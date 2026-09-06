@@ -15,12 +15,14 @@ from enum import Enum, auto
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+from gnn.report.processing_report import ReportGenerator
+
 # Import testing strategy lazily to avoid circular imports
 # from .testing import RoundTripTestStrategy
-from .cross_format import CrossFormatValidator
+from gnn.schema_validator import CrossFormatValidator
+
 from .discovery import FileDiscoveryStrategy
 from .processor import validate_gnn_structure
-from .reporting import ReportGenerator
 
 logger = logging.getLogger(__name__)
 

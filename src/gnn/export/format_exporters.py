@@ -490,4 +490,4 @@ def export_to_plaintext_dsl(
 
 
 # This file is now the single source of truth for GNN parsing and exporting.
-# The main 7_export.py script should now correctly find and use these functions.
+# The main src/gnn/7_export.py script should now correctly find and use these functions.

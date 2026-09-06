@@ -14,6 +14,10 @@ src/gnn/ontology/
 └── act_inf_ontology_terms.json   # Active Inference ontology terms
 ```
 
+### Utility exports
+
+`gnn.ontology.__all__` includes the utility surface: `get_module_info`, `get_ontology_processing_options`, `get_mcp_interface`, plus the annotation dataclass `ParsedAnnotation` and the suggestion tuning constant `SUGGESTION_MAX_DISTANCE`.
+
 ### Module Integration Flow
 
 ```mermaid

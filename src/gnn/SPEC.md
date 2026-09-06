@@ -35,15 +35,14 @@ Do not assume the two lists stay identical: lightweight discovery favors typical
 | Component | File | Purpose |
 |-----------|------|---------|
 | Types | `types.py` | Shared data classes (`ParsedGNN`, `ValidationResult`, etc.). **`GNNFormat` is defined in `parsers/common.py`** and re-exported from `types.py` for consumers that import domain types from one place. |
-| Parser | `parser.py` | GNN file parsing, format detection, validation entry point |
-| Schema Validator | `schema_validator.py` | Full `GNNParser` with section-level parsing, `GNNValidator` for multi-level validation |
-| Simple Validator | `simple_validator.py` | Lightweight recovery validator without complex dependencies |
-| Validation | `validation.py` | `ValidationStrategy` orchestrating multi-level validation |
+| Parser | `parsers/basic.py` | GNN file parsing, format detection, validation entry point (structural/formal surface) |
+| Schema Validator | `schema_validator/` | Full `GNNParser` (`syntax.py`) with section-level parsing, `GNNValidator` (`validator.py`) for multi-level validation |
+| Simple Validator | `validation/simple.py` | Lightweight recovery validator without complex dependencies |
 | Processor | `processor.py` | Lightweight GNN directory processing and file discovery |
 | Core Processor | `core_processor.py` | Full pipeline orchestration with phased processing |
-| Processors | `processors.py` | Enhanced processing with round-trip and cross-format support |
-| Cross-Format | `cross_format_validator.py` | Cross-format consistency validation |
-| MCP | `mcp.py` | Model Context Protocol integration for external tool access |
+| Processors | `mcp/processors.py` | Enhanced processing with round-trip and cross-format support |
+| Cross-Format | `schema_validator/cross_format.py` | Cross-format consistency validation |
+| MCP | `mcp/` | Model Context Protocol integration for external tool access |
 | Multi-Format | `multi_format_processor.py` | Pipeline step for multi-format serialization |
 
 ## Subdirectories

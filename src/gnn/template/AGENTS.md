@@ -39,7 +39,7 @@
 ### Module exports
 
 - `VERSION_INFO` — dict with `version`, `name`, `description`, `author` (included in `__all__`)
-- `FEATURES` — capability flags for tooling and discovery
+- `FEATURES` — capability flags for tooling and discovery (module-level; not in `__all__`)
 
 ### Public Functions
 
@@ -263,7 +263,7 @@ Template Input → Processing → Pattern Demonstration → Validation → Docum
 Measure on demand:
 
 ```bash
-uv run --extra dev python -m pytest tests/test_template*.py \
+uv run --extra dev python -m pytest tests/template/ \
     --cov=src/gnn/template --cov-report=term-missing
 ```
 ### Key Test Scenarios

@@ -2,7 +2,7 @@
 
 import pytest
 
-from gnn.cross_format_validator import CrossFormatValidationResult, CrossFormatValidator
+from gnn.schema_validator import CrossFormatValidationResult, CrossFormatValidator
 from gnn.types import ValidationResult
 
 # ── CrossFormatValidationResult ────────────────────────────────────────────

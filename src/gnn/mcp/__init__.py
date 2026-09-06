@@ -1,6 +1,6 @@
 """MCP (Model Context Protocol) integration for the GNN pipeline: tool discovery, registration, and execution.
 
-See ``src/mcp/AGENTS.md`` for the public API, step-21 wiring, and tool registration patterns.
+See ``src/gnn/mcp/AGENTS.md`` for the public API, step-21 wiring, and tool registration patterns.
 """
 
 from __future__ import annotations
@@ -25,7 +25,7 @@ from .processor import (
 )
 from .server_core import create_mcp_server, register_tools, start_mcp_server
 
-# -- Aliases for backward compatibility (don't add new code depending on these) -----
+# -- Alias names kept for existing consumers (do not add new code depending on these) ---
 MCPRegistry = MCP
 from .server import MCPServer as _JSONRPCServer  # noqa: E402
 

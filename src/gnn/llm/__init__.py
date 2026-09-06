@@ -169,6 +169,7 @@ def get_available_providers() -> list[str]:
 __all__: list[Any] = [
     "process_llm",
     "analyze_gnn_file_with_llm",
+    "analyze_gnn_model",
     "extract_variables",
     "extract_connections",
     "extract_sections",

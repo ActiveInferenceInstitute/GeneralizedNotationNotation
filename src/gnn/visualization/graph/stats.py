@@ -1,8 +1,8 @@
 """Pure connection-statistics for GNN visualization (no plotting dependencies).
 
-The degree-based summary computed here is the one reported by the
-package-root :func:`visualization._generate_network_statistics` alias and
-pinned by ``tests/visualization/test_visualization_module_info.py``. It is
+The degree-based summary computed here is re-exported at the package root as
+:func:`gnn.visualization.compute_connection_statistics` and pinned by
+``tests/visualization/test_visualization_module_info.py``. It is
 intentionally distinct from the richer ``graph.network_visualizations``
 metrics helper, which adds networkx topology counts.
 """

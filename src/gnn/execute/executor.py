@@ -983,7 +983,7 @@ def _write_execution_report(
             f.write("- Review and fix syntax errors in rendered scripts\n")
             f.write("- Check for stray characters or malformed code\n")
             f.write(
-                "- Re-run the rendering step (11_render.py) to regenerate scripts\n\n"
+                "- Re-run the rendering step (src/gnn/11_render.py) to regenerate scripts\n\n"
             )
 
 

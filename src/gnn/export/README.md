@@ -91,7 +91,7 @@ graph TB
 ```mermaid
 flowchart LR
     subgraph "Pipeline Step 7"
-        Step7[7_export.py Orchestrator]
+        Step7[src/gnn/7_export.py Orchestrator]
     end
     
     subgraph "Export Module"
@@ -348,6 +348,10 @@ Exports model data to multiple formats.
 
 Returns the flat list of supported export format names (`json`, `xml`, `graphml`, `gexf`, `pickle`, `txt`, `dsl`). `get_supported_formats_dict()` groups them into `data_formats`, `graph_formats`, and `text_formats`.
 
+#### Additional Public API
+
+Also exported from `gnn.export` (see `src/gnn/export/__init__.py` `__all__`): `Exporter`, `MultiFormatExporter`, `validate_export_format`, `export_to_json_gnn`, `export_to_xml_gnn`, `export_to_python_pickle`, `get_module_info`, `get_export_registry`, `get_format_categories`, `HAS_NETWORKX`.
+
 ## Usage Examples
 
 ### Basic Multi-Format Export
@@ -434,7 +438,7 @@ if success:
 
 ## Export Pipeline
 
-In the pipeline, `process_export` (called by `7_export.py`) does all of this in one pass:
+In the pipeline, `process_export` (called by `src/gnn/7_export.py`) does all of this in one pass:
 
 1. Loads parsed GNN specs from Step 3's `gnn_processing_results.json`.
 2. For each file, writes the requested formats via the formatter functions.
@@ -447,7 +451,7 @@ There is no separate `validate_model_data` or `get_export_function` entry point.
 ### Pipeline Step 7: Export
 
 ```python
-# Called from 7_export.py
+# Called from src/gnn/7_export.py
 from gnn.export import process_export
 
 success = process_export(
@@ -552,7 +556,7 @@ This module is part of the GeneralizedNotationNotation project. See the main rep
 The opt-in `geo_infer` format exports explicit single-factor categorical A–E
 models with state ordering, a caller-declared timestep and source SHA-256.
 Use `export_model(..., formats=['geo_infer'])` with `raw_content` and
-`geo_infer.step_seconds`, or `python -m export.geo_infer --help`.
+`geo_infer.step_seconds`, or `python -m gnn.export.geo_infer --help`.
 
 ### Opt-in via Step 7 / `process_export`
 

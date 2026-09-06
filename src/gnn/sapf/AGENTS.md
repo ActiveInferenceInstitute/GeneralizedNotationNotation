@@ -4,7 +4,7 @@
 
 **Purpose**: Synthetic Audio Processing Framework (SAPF) for audio generation and sonification of GNN models
 
-**Pipeline Step**: Infrastructure module (not a numbered step)
+**Pipeline Step**: Infrastructure module consumed via `gnn.audio` (Step 15 driver imports `gnn.audio`, not `gnn.sapf`); `gnn.sapf` is the standalone surface
 
 **Category**: Audio Framework / Sonification
 
@@ -12,7 +12,7 @@
 
 **Version**: 3.2.0
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-06
 
 
 ## Core Functionality
@@ -76,6 +76,37 @@
 - `sapf_code`: SAPF code to validate
 
 **Returns**: Dictionary with validation results
+
+#### `generate_sapf_audio(sapf_code, output_path, **kwargs) -> Dict[str, Any]`
+**Description**: Generate audio from SAPF code
+
+**Parameters**:
+- `sapf_code`: SAPF code to synthesize
+- `output_path`: Path for the output audio file
+- `**kwargs`: Backend-specific generation options
+
+**Returns**: Dictionary with generation results
+
+#### `create_sapf_visualization(sapf_code, output_path=None) -> Dict[str, Any]`
+**Description**: Create a visualization from SAPF code
+
+**Parameters**:
+- `sapf_code`: SAPF code to visualize
+- `output_path`: Optional path for the visualization file
+
+**Returns**: Dictionary with visualization results
+
+#### `generate_sapf_report(sapf_results, output_path=None) -> Dict[str, Any]`
+**Description**: Generate a report from SAPF processing results
+
+**Parameters**:
+- `sapf_results`: SAPF processing results dictionary
+- `output_path`: Optional path for the report file
+
+**Returns**: Dictionary with report results
+
+#### `FEATURES`
+**Description**: Module feature-availability flags (re-exported from `gnn.audio.sapf`)
 
 ---
 
@@ -197,7 +228,7 @@ output/sapf/
 ## Integration Points
 
 ### Orchestrated By
-- **Script**: `15_audio.py` (Step 15)
+- **Consumed via**: `gnn.audio` (Step 15 driver imports `gnn.audio`; `gnn.sapf` is the standalone surface)
 - **Function**: Audio generation integration
 
 ### Imports From
@@ -238,22 +269,17 @@ uv run --extra dev python -m pytest tests/test_sapf*.py \
 ## MCP Integration
 
 ### Tools Registered
-- `sapf.convert_gnn` - Convert GNN to SAPF
-- `sapf.generate_audio` - Generate audio from SAPF
-- `sapf.validate_code` - Validate SAPF code
-- `sapf.analyze_audio` - Analyze generated audio
+- `process_sapf` - Generate SAPF audio from GNN Active Inference models using SuperCollider synthesis
+- `get_sapf_module_info` - Return metadata about the SAPF audio synthesis module (version, formats, capabilities)
+- `list_audio_artifacts` - List audio and SAPF script artifacts in an output directory
+- `check_audio_backends` - Check which audio generation backends (SuperCollider, Csound, sounddevice) are available
 
-### Tool Endpoints
-```python
-@mcp_tool("sapf.convert_gnn")
-def convert_gnn_to_sapf_tool(gnn_content, output_dir):
-    """Convert GNN content to SAPF format"""
-    # Implementation
-```
+### Tool Registration
+Registrations live in `src/gnn/sapf/mcp.py` (`register_tools(mcp_instance)`; four tools, category `audio`).
 
 ---
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-06
 **Status**: ✅ Production Ready
 
 ---

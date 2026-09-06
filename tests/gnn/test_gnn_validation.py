@@ -43,19 +43,19 @@ class TestGNNValidation:
 
 # Migrated from test_gnn_core_modules.py
 class TestGNNSimpleValidator:
-    """Test gnn.simple_validator module."""
+    """Test gnn.validation.simple module."""
 
     @pytest.mark.unit
     def test_simple_validator_imports(self) -> Any:
         """Test that simple validator can be imported."""
-        from gnn import simple_validator
+        from gnn.validation import simple
 
-        assert hasattr(simple_validator, "SimpleValidator")
+        assert hasattr(simple, "SimpleValidator")
 
     @pytest.mark.unit
     def test_simple_validator_instantiation(self) -> Any:
         """Test SimpleValidator instantiation."""
-        from gnn.simple_validator import SimpleValidator
+        from gnn.validation import SimpleValidator
 
         validator = SimpleValidator()
 
@@ -66,7 +66,7 @@ class TestGNNSimpleValidator:
     @pytest.mark.unit
     def test_simple_validation(self, sample_gnn_files: Any) -> Any:
         """Test simple validation functionality."""
-        from gnn.simple_validator import SimpleValidator
+        from gnn.validation import SimpleValidator
 
         validator = SimpleValidator()
 

@@ -46,7 +46,7 @@ The module exposes two independent FastAPI apps. The table above is the
 `api.server` job/tool surface; `api.app` (started by `gnn serve`) exposes
 `POST /api/v1/run`, `GET /api/v1/runs`, `GET /api/v1/runs/{hash}`,
 `GET /api/v1/runs/{hash}/report` (Markdown), `GET /api/v1/runs/{hash}/stream`
-(SSE), and `GET /api/v1/health`. Both share the canonical
+(SSE), and `GET /api/v1/health`. Both share the canonical `{status,data,error,meta}` JSON envelope.
 
 ## Installation
 
@@ -55,9 +55,9 @@ The API module requires optional dependencies:
 ```bash
 uv sync --extra api
 # then:
-python -m api.server
+python -m gnn.api.server
 # or:
-uvicorn api.server:app --reload
+uvicorn gnn.api.server:app --reload
 ```
 
 ## Design Decisions

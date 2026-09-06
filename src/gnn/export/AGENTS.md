@@ -4,7 +4,7 @@
 
 **Purpose**: Multi-format export generation (JSON, XML, GraphML, GEXF, Pickle) from parsed GNN models
 
-**Pipeline Step**: Step 7: Multi-format export (7_export.py)
+**Pipeline Step**: Step 7: Multi-format export (`src/gnn/7_export.py`)
 
 **Category**: Data Export / Transformation
 
@@ -42,7 +42,7 @@
 
 #### `process_export(target_dir, output_dir, verbose=False, **kwargs) -> bool`
 
-**Description**: Pipeline entry point (called by `7_export.py`). Loads parsed GNN specs from Step 3 output (`gnn_processing_results.json`) and exports each file to the requested formats. Accepts a `formats` keyword (list of format names) and an optional opt-in `geo_infer` options mapping (see Configuration).
+**Description**: Pipeline entry point (called by `src/gnn/7_export.py`). Loads parsed GNN specs from Step 3 output (`gnn_processing_results.json`) and exports each file to the requested formats. Accepts a `formats` keyword (list of format names) and an optional opt-in `geo_infer` options mapping (see Configuration).
 
 #### `validate_export_outputs(output_dir, expected_formats=None) -> Dict[str, Any]`
 
@@ -188,7 +188,7 @@ output/7_export_output/
 
 - **Input**: Receives parsed GNN models from Step 3 (gnn processing)
 - **Output**: Generates exports consumed by Step 8 (visualization), Step 11 (render), and Step 20 (website generation)
-- **Dependencies**: Requires GNN parsing results from `3_gnn.py` output
+- **Dependencies**: Requires GNN parsing results from `src/gnn/3_gnn.py` output
 
 ### Module Dependencies
 
@@ -206,13 +206,13 @@ output/7_export_output/
 ### Data Flow
 
 ```
-3_gnn.py (GNN parsing)
+src/gnn/3_gnn.py (GNN parsing)
   ↓
-7_export.py (Multi-format export)
+src/gnn/7_export.py (Multi-format export)
   ↓
-  ├→ 8_visualization.py (Graph visualization)
-  ├→ 11_render.py (Code generation)
-  ├→ 20_website.py (Website integration)
+  ├→ src/gnn/8_visualization.py (Graph visualization)
+  ├→ src/gnn/11_render.py (Code generation)
+  ├→ src/gnn/20_website.py (Website integration)
   └→ output/7_export_output/ (Standalone exports)
 ```
 
@@ -325,7 +325,7 @@ python src/gnn/7_export.py --target-dir input/ --verbose
 
 ## Version History
 
-### Current Version: 3.0.0
+### Current Version: 3.2.0
 
 **Features**:
 

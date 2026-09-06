@@ -9,6 +9,9 @@ src/gnn/security/
 ├── __init__.py                    # Module initialization and exports
 ├── processor.py                   # Scanning, scoring, recommendations, pre-exec gate
 ├── mcp.py                         # MCP tool registrations
+├── AGENTS.md                      # Agent scaffolding and workflows
+├── SPEC.md                        # Architectural specification
+├── SKILL.md                       # Capability API
 └── README.md                      # This documentation
 ```
 

@@ -10,7 +10,7 @@
 
 **Status**: Production Ready
 
-**Version**: 1.6.0 (MCP subsystem has independent versioning; see `__init__.py`)
+**Version**: 3.2.0 (single pipeline version; see `pyproject.toml`)
 
 **Last Updated**: 2026-09-04
 
@@ -23,7 +23,7 @@
 2. Provide standardized interface for tool execution across modules
 3. Enable inter-module communication and resource sharing
 4. Manage MCP server lifecycle and client connections
-5. Support multiple MCP transport protocols (stdio, HTTP, WebSocket)
+5. Support multiple MCP transport protocols (stdio, HTTP)
 
 ### Key Capabilities
 - Tool registration and discovery system
@@ -167,7 +167,7 @@ on the live execution path.
 
 ### Optional Dependencies
 - `aiohttp` - HTTP server implementation (recovery: basic HTTP)
-- `websockets` - WebSocket server (recovery: polling-based)
+- `websockets` - currently unused by the maintained server transports (stdio/HTTP)
 - `fastapi` - REST API framework (recovery: basic HTTP)
 
 ### Internal Dependencies
@@ -377,7 +377,7 @@ uv run --extra dev python -m pytest tests/mcp/ \
 
 ## Version History
 
-Module `__version__` is `1.6.0` (`__init__.py`). No formal changelog is maintained in this file.
+Module `__version__` is `3.2.0` (`__init__.py`), matching the unified pipeline version. No formal changelog is maintained in this file.
 
 ---
 

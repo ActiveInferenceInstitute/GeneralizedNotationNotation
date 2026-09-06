@@ -8,7 +8,7 @@ This directory contains formal mathematical specifications of GNN (Generalized N
 
 The formal specifications serve three roles:
 
-1. **Mathematical Foundation** — Provide precise definitions of GNN constructs (variables, connections, state spaces) that ground the Python implementation in `parser.py` and `types.py`.
+1. **Mathematical Foundation** — Provide precise definitions of GNN constructs (variables, connections, state spaces) that ground the Python implementation in `src/gnn/parsers/basic.py` and `src/gnn/types.py`.
 2. **Property Verification** — Express and (where tooling permits) verify invariants such as matrix dimension consistency, probability normalization, and well-formedness of POMDP structures.
 3. **Cross-Language Reference** — Offer templates for researchers who need to interface GNN models with theorem provers or symbolic computation environments.
 

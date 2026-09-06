@@ -18,7 +18,7 @@ For the reference model (`input/gnn_files/discrete/actinf_pomdp_agent.md`, with 
 - **Schema (7):** JSON, XML, YAML, PKL, ASN.1, Protobuf, XSD  
 - **Languages (6):** Scala, Python, Lean, Coq, Isabelle, Haskell  
 - **Formal (5):** Alloy, BNF, Z-notation, TLA+, Agda  
-- **Other (2):** Pickle, Maxima  
+- **Other (1):** Maxima  
 - **Reference (1):** Markdown  
 
 ### Performance (order of magnitude)

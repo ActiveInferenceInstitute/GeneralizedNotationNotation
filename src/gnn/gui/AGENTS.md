@@ -526,8 +526,8 @@ normal MCP keyword arguments.
 
 ### Related Documentation
 - [Pipeline Overview](../../README.md)
-- [Architecture Guide](../../../ARCHITECTURE.md)
-- [GUI Guide](../../../doc/gui_oxdraw/)
+- [Architecture Guide](../../../../ARCHITECTURE.md)
+- [GUI Guide](../../../../doc/gui_oxdraw/)
 
 ### External Resources
 - [Gradio Documentation](https://gradio.app/)

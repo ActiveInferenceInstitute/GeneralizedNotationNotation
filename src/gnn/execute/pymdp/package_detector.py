@@ -136,7 +136,7 @@ def get_pymdp_installation_instructions() -> str:
             "Install the correct package with:\n"
             "  uv pip install inferactively-pymdp\n"
             "Or using the setup module:\n"
-            "  python src/1_setup.py --install_optional --optional_groups pymdp"
+            "  python src/gnn/1_setup.py --install-optional --optional-groups pymdp"
         )
 
     if not detection.get("installed"):
@@ -145,7 +145,7 @@ def get_pymdp_installation_instructions() -> str:
             "Install with:\n"
             "  uv pip install inferactively-pymdp\n"
             "Or using the setup module:\n"
-            "  python src/1_setup.py --install_optional --optional_groups pymdp"
+            "  python src/gnn/1_setup.py --install-optional --optional-groups pymdp"
         )
 
     return (

@@ -4,7 +4,7 @@
 
 Unified command-line interface for the GNN pipeline. Provides subcommands for running, validating, rendering, templating, and managing GNN models.
 
-**Entry point**: `gnn = "src.cli:main"` (defined in `pyproject.toml`)
+**Entry point**: `gnn = "gnn.cli:main"` (defined in `pyproject.toml`)
 
 ## Subcommands
 

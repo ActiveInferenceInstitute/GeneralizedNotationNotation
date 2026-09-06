@@ -234,7 +234,7 @@ end
 #
 # IMPORTANT: The precompile cache is machine-local and NOT portable across
 # machines or Julia versions. It must be rebuilt on each machine via
-# `julia --project=src/execute/rxinfer -e 'using PrecompileTools;
+# `julia --project=src/gnn/execute/rxinfer -e 'using PrecompileTools;
 # PrecompileTools.workload()'` or by importing this module once.
 #
 # One-time cost: ~10-20 min for all configs. Runtime savings: ~80s per run.

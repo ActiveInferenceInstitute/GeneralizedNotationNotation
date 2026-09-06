@@ -64,7 +64,7 @@ Model-family detection (POMDP, MDP, continuous, mixed, etc.) from GNN content.
 
 Structural feature extraction helpers.
 
-### Exports (`from research import ...`)
+### Exports (`from gnn.research import ...`)
 
 - `process_research`
 - `FEATURES`, `__version__`

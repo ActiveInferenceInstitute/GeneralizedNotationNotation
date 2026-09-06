@@ -42,7 +42,7 @@ Analyzes parameter-sweep runtime and simulation outputs produced by Step 12 (and
 
 Submodules: `collector.py`, `statistics.py`, `validator.py`, `visualizer.py`, `reporter.py`.
 
-### Exports (`from integration import ...`)
+### Exports (`from gnn.integration import ...`)
 
 - `process_integration`
 - `analyze_system`, `build_system_graph`, `verify_references`, `export_dependency_graph`
@@ -142,7 +142,7 @@ The meta-analysis only runs when `output/12_execute_output/` (Step 12 execution 
 ## References
 
 - Project overview: ../../README.md
-- Pipeline details: ../../../doc/pipeline/README.md
+- Pipeline details: ../../../../doc/pipeline/README.md
 
 ---
 ## Documentation

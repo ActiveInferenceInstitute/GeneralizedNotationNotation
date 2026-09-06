@@ -12,6 +12,7 @@ src/gnn/report/
 ├── analyzer.py                    # Pipeline data collection (collect_pipeline_data)
 ├── formatters.py                  # HTML/Markdown section rendering
 ├── pipeline_report.py             # Per-step status/timing/artifact sections
+├── processing_report.py           # Processing-context report generator (ReportGenerator)
 ├── diff_report.py                 # Run-to-run diffing (compare_runs, archive_run)
 ├── model_family.py                # Model-family ledger markdown renderer
 ├── semantic_fidelity.py           # Semantic-fidelity ledger markdown renderer
@@ -42,7 +43,7 @@ File-level analysis of GNN `.md` files (`analyze_gnn_file()` per file); returns 
 - `process_report`, `generate_report` (file-level report builder)
 - `generate_comprehensive_report` (generator version)
 - `analyze_gnn_file`, `generate_html_report`, `generate_markdown_report`
-- `ReportGenerator`, `ReportFormatter`, `analyze_pipeline_data`
+- `ReportGenerator` (re-exported from `processing_report`: `generate_processing_report`, `generate_report`, `format_report`), `ReportFormatter`, `analyze_pipeline_data`
 - `get_module_info`, `get_supported_formats`, `validate_report`
 
 ## Usage Examples

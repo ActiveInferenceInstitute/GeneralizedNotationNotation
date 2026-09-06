@@ -182,7 +182,7 @@ flowchart LR
     subgraph "GNN Module"
         MultiFormat[multi_format_processor.py]
         Processor[processor.py]
-        Parser[parser.py]
+        Parser[parsers/basic.py]
         ParsingSystem[parsers/GNNParsingSystem]
     end
     
@@ -216,11 +216,9 @@ src/gnn/
 ├── extract.py                     # Headless extraction entry: python -m gnn.extract FILE [--strict|--no-strict] [--compact]
 ├── README.md                      # This documentation
 ├── SPEC.md                        # Canonical format counts and architecture
-├── mcp.py                         # Model Context Protocol integration
-├── schema_validator.py            # Enhanced validator with multiple validation levels
-├── cross_format_validator.py      # Cross-format consistency validation
-├── processors.py                  # Enhanced processing with comprehensive testing
-├── alignment_status.md            # Format compatibility status tracking
+├── mcp/                           # Model Context Protocol integration (see mcp/README.md)
+├── schema_validator/              # Syntax-level validation: syntax.py (GNNParser), validator.py (GNNValidator), cross_format.py
+├── multimodel/                    # Multi-model files: splitting, per-model parsing, dependency graphs (dep_graph.py)
 │
 ├── parsers/                       # Parser ecosystem (see SPEC.md for 23/22 counts)
 │   ├── __init__.py               # Package exports
@@ -337,7 +335,7 @@ print(f"Tests passed: {report.successful_tests}/{report.total_tests}")
 ### Multi-Level Processing
 
 ```python
-from gnn.processors import process_gnn_folder
+from gnn.mcp.processors import process_gnn_folder
 
 success = process_gnn_folder(
     target_dir=Path("models/"),
@@ -352,7 +350,7 @@ success = process_gnn_folder(
 ### Cross-Format Consistency
 
 ```python
-from gnn.cross_format_validator import CrossFormatValidator
+from gnn.schema_validator import CrossFormatValidator
 
 validator = CrossFormatValidator()
 result = validator.validate_cross_format_consistency(gnn_content)
@@ -485,7 +483,7 @@ Integration with the broader GNN pipeline:
 ### Pipeline Usage
 
 ```python
-from gnn.processors import process_gnn_folder
+from gnn.mcp.processors import process_gnn_folder
 
 success = process_gnn_folder(
     target_dir=Path("models/"),

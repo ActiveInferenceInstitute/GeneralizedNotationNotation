@@ -2,7 +2,7 @@
 
 > **Note**: This repository uses dual versioning:
 > - **Documentation version** (doc/): v2.0.0
-> - **Pipeline version** (src/): v1.6.0
+> - **Pipeline version** (src/gnn/): v3.2.0
 >
 > **Latest Update**: March 2026
 > **Status**: Production Ready

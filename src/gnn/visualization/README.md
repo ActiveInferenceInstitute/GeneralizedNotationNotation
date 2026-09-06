@@ -130,6 +130,14 @@ flowchart LR
 | `collect_visualization_matrices` | [`matrix/extract.py`](matrix/extract.py): pure matrix collection (parameters → variables → raw matrices) |
 | `compute_connection_statistics` | [`graph/stats.py`](graph/stats.py): pure degree-based statistics |
 | `GNNVisualizer` | [`visualizer.py`](visualizer.py): optional class API for ad hoc graph/matrix generation |
+| `process_single_gnn_file` | [`core/process.py`](core/process.py): per-file pipeline — cache check → model load → sampling → rendering → manifest |
+| `OntologyVisualizer` | [`ontology/visualizer.py`](ontology/visualizer.py): ontology legend/TSV rendering class |
+| `process_matrix_visualization` | [`matrix/visualizer.py`](matrix/visualizer.py): standalone matrix-visualization entry over parameter dicts |
+| `generate_graph_visualization` | [`visualizer.py`](visualizer.py): one-shot graph PNG from GNN data |
+| `generate_matrix_visualization` | [`visualizer.py`](visualizer.py): one-shot matrix visualization from GNN data |
+| `generate_matrix_visualizations` | [`matrix/visualizer.py`](matrix/visualizer.py): batch heatmaps/tensors via `MatrixVisualizer` |
+| `generate_visualizations` | [`visualizer.py`](visualizer.py): logger-injected batch entry over a target directory |
+| `parse_matrix_data` | [`matrix/compat.py`](matrix/compat.py): parse a matrix string into a numpy array |
 
 Interactive HTML for the network is produced only when Plotly is installed; most outputs are PNG + JSON.
 
@@ -165,7 +173,7 @@ data = load_visualization_model(
 )
 ```
 
-CLI: `python -m visualization` (see [`__main__.py`](__main__.py)).
+CLI: `python -m gnn.visualization` (see [`__main__.py`](__main__.py)).
 
 ## Processing order (inside `process_single_gnn_file`)
 
@@ -179,7 +187,7 @@ CLI: `python -m visualization` (see [`__main__.py`](__main__.py)).
 
 ## Integration with Pipeline
 
-`8_visualization.py` calls `process_visualization` only (no separate report generator inside this module).
+`src/gnn/8_visualization.py` calls `process_visualization` only (no separate report generator inside this module).
 
 ### Output layout (typical)
 
@@ -216,7 +224,7 @@ hard processing failures.
 
 ## Tests
 
-`uv run --extra dev python -m pytest tests/test_visualization_*.py -v` — full suite `uv run --extra dev python -m pytest tests/ -v`.
+`uv run --extra dev python -m pytest tests/visualization/ -v` — full suite `uv run --extra dev python -m pytest tests/ -v`.
 
 ## Dependencies
 

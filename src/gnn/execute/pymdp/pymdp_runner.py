@@ -130,7 +130,7 @@ def execute_pymdp_script_with_outputs(
         env = os.environ.copy()
 
         # Calculate paths relative to this runner file, not the target script
-        # This runner is in src/execute/pymdp/pymdp_runner.py
+        # This runner is in src/gnn/execute/pymdp/pymdp_runner.py
         runner_path = Path(__file__).resolve()
         src_path = runner_path.parent.parent.parent
         project_root = src_path.parent

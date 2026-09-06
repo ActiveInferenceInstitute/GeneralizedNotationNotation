@@ -10,7 +10,7 @@
 
 **Status**: Production Ready
 
-**Version**: 3.3.0
+**Version**: 3.2.0
 
 **Last Updated**: 2026-09-04
 
@@ -61,8 +61,8 @@
 - `verbose` (bool): Enable verbose output (default: False)
 - `generate_animations` (bool, optional): Generate current-schema GridWorld GIF
   artifacts (default: True; CLI: `--no-animations` disables this). This is
-  the canonical programmatic key. Compatibility callers may pass
-  `no_animations`, but it is normalized as the inverse and conflicts with
+  the canonical programmatic key. Callers passing the inverse flag
+  `no_animations` have it normalized as the inverse, and conflicts with
   `generate_animations` are rejected.
 - `**kwargs`: Additional pipeline options (unused kwargs are ignored)
 
@@ -264,7 +264,7 @@ Single source of truth for framework-name normalization, path inference, and
 current-schema simulation-results discovery. Consumed by `processor.py` (and
 available to all framework analyzers):
 
-- `FRAMEWORK_DIR_NAMES` — frozenset of all 8 pipeline framework dir names
+- `FRAMEWORK_DIR_NAMES` — frozenset of the 8 analyzed pipeline frameworks
   (incl. `bnlearn`, which is rendered+executed but has no analyzer).
 - `SCHEMA_GATED_FRAMEWORKS` — frozenset `{pymdp, rxinfer, activeinference_jl}`.
 - `CURRENT_SIMULATION_SCHEMAS` — frozenset of `*_simulation_v1` schema strings.
@@ -317,7 +317,7 @@ unchanged. Exports: `FlatPayloadSpec`, `compute_flat_payload_metrics` (pure),
 
 ## Version History
 
-### Current Version: 3.3.0 (2026-09-04)
+### Current Version: 3.2.0 (2026-09-04)
 
 **Features**:
 - Statistical analysis
@@ -357,7 +357,7 @@ unchanged. Exports: `FlatPayloadSpec`, `compute_flat_payload_metrics` (pure),
 **Last Updated**: 2026-09-04
 **Maintainer**: GNN Pipeline Team
 **Status**: Production Ready
-**Version**: 3.3.0
+**Version**: 3.2.0
 **Architecture Compliance**: 100% Thin Orchestrator Pattern
 
 

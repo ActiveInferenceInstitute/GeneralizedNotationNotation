@@ -18,7 +18,7 @@ graph/
 
 - **`generate_network_visualizations(parsed_data, output_dir, model_name) -> List[str]`** — Creates network topology plots showing state-observation-action relationships with Active Inference edge semantics. Node colors come from `visualization.theme.VAR_TYPE_COLORS` and edge styles from `visualization.theme.get_edge_style` (single source of truth). Returns list of generated file paths.
 - **`generate_variable_parameter_bipartite(parsed_data, output_dir, model_name) -> List[str]`** — Renders bipartite layouts: GNN variables (left) vs named parameter tensors (right), edges where parameter names match variable names.
-- **`compute_connection_statistics(variables, connections) -> Dict[str, Any]`** (stats.py) — Pure degree-based statistics (totals, degree distribution, hubs, isolated nodes). Re-exported at the package root as `compute_connection_statistics` and pinned as `visualization._generate_network_statistics`.
+- **`compute_connection_statistics(variables, connections) -> Dict[str, Any]`** (stats.py) — Pure degree-based statistics (totals, degree distribution, hubs, isolated nodes). Re-exported at the package root as `compute_connection_statistics`.
 
 ### Internal Helpers
 

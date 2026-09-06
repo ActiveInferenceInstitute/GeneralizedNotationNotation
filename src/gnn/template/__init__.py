@@ -9,12 +9,13 @@ Architectural Pattern:
     main.py → Numbered Scripts (Thin Orchestrators) → Modular Scripts in Folders
 
 This module provides the core template processing functionality that is called by
-src/0_template.py (the thin orchestrator) which is executed by src/main.py (the pipeline orchestrator).
+src/gnn/0_template.py (the thin orchestrator) which is executed by
+src/gnn/main.py (the pipeline orchestrator).
 
 For complete documentation of this architectural pattern, see:
-- src/template/README.md: Comprehensive architectural documentation
-- src/0_template.py: Example thin orchestrator implementation
-- src/main.py: Main pipeline orchestrator
+- src/gnn/template/README.md: Comprehensive architectural documentation
+- src/gnn/0_template.py: Example thin orchestrator implementation
+- src/gnn/main.py: Main pipeline orchestrator
 """
 
 from typing import Any

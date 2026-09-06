@@ -457,7 +457,7 @@ output/16_analysis_output/
 
 ### Analysis Settings
 
-`process_analysis` accepts `generate_animations` (canonical; default `True`) and the compatibility inverse `no_animations`; unused kwargs are ignored. CLI flags on Step 16: `--no-animations` and `--advanced-stats`. There are no memory/CPU profiling toggles or benchmark-iteration settings.
+`process_analysis` accepts `generate_animations` (canonical; default `True`) and callers passing the inverse flag `no_animations`; unused kwargs are ignored. CLI flags on Step 16: `--no-animations` and `--advanced-stats`. There are no memory/CPU profiling toggles or benchmark-iteration settings.
 
 ## Error Handling
 

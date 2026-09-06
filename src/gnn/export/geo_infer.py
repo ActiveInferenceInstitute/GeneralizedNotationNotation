@@ -1,7 +1,7 @@
 """Export strict GNN categorical models to the versioned GEO-INFER contract.
 
 This data-only boundary does not import GEO-INFER or execute generated source.
-Use ``python -m export.geo_infer MODEL.md OUTPUT.json --step-seconds 1``.
+Use ``python -m gnn.export.geo_infer MODEL.md OUTPUT.json --step-seconds 1``.
 """
 
 from __future__ import annotations
@@ -194,7 +194,7 @@ def export_to_geo_infer(model_data: dict[str, Any], output_file: Path) -> bool:
 def main() -> int:
     """Export a GNN source file; return zero after writing its validated artifact.
 
-    Arguments are described by ``python -m export.geo_infer --help``.
+    Arguments are described by ``python -m gnn.export.geo_infer --help``.
     Raises ValueError for invalid or oversized source models.
     """
     parser = argparse.ArgumentParser(description=__doc__)

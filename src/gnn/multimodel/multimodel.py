@@ -36,7 +36,7 @@ def split_models(content: str) -> List[str]:
     # Strip optional front-matter first
     stripped = content
     try:
-        from .frontmatter import has_frontmatter, parse_frontmatter
+        from gnn.parsers.frontmatter import has_frontmatter, parse_frontmatter
 
         if has_frontmatter(content):
             _, stripped = parse_frontmatter(content)
@@ -75,7 +75,7 @@ def parse_multimodel(
           - errors: list of parse errors
           - model_index: 0-based index within file
     """
-    from .schema import parse_connections, parse_state_space
+    from gnn.schema import parse_connections, parse_state_space
 
     model_blocks = split_models(content)
     results: list[Any] = []

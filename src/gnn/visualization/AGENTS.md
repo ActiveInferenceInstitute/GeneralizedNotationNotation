@@ -4,7 +4,7 @@
 
 **Purpose**: Graph and matrix visualization generation for GNN models
 
-**Pipeline Step**: Step 8: Visualization (8_visualization.py)
+**Pipeline Step**: Step 8: Visualization (src/gnn/8_visualization.py)
 
 **Category**: Visualization / Graph Analysis
 
@@ -113,8 +113,8 @@ parameters → variables → raw `matrices` entries ([matrix/extract.py](matrix/
 
 #### `compute_connection_statistics(variables, connections) -> Dict[str, Any]`
 **Description**: Pure degree-based statistics (totals, degree distribution,
-hubs, isolated nodes) ([graph/stats.py](graph/stats.py)). Also pinned at
-package root as `visualization._generate_network_statistics`.
+hubs, isolated nodes) ([graph/stats.py](graph/stats.py)). Re-exported at the
+package root as `compute_connection_statistics`.
 
 #### `load_visualization_model(gnn_file, content, results_dir, verbose=False) -> Dict[str, Any]`
 **Description**: JSON-first model loader; re-exported at package root
@@ -235,7 +235,7 @@ output/8_visualization_output/
 ## Integration Points
 
 ### Orchestrated By
-- **Script**: `8_visualization.py` (Step 8)
+- **Script**: `src/gnn/8_visualization.py` (Step 8)
 - **Function**: `process_visualization()` ([core/process.py](core/process.py))
 
 ### Imports From
@@ -267,7 +267,7 @@ GNN Files → Graph Extraction → Layout Calculation → Visualization Generati
 - `tests/visualization/test_visualization_pkg_api.py` - Package-root API surface + logger-DI tests
 
 ### Test Coverage
-- **Measurement**: `uv run --extra dev python -m pytest tests/visualization/ --cov=src.visualization --cov-report=term-missing` (do not treat a fixed percentage in this file as canonical).
+- **Measurement**: `uv run --extra dev python -m pytest tests/visualization/ --cov=src/gnn/visualization --cov-report=term-missing` (do not treat a fixed percentage in this file as canonical).
 
 ### Key Test Scenarios
 1. Graph visualization with various layouts

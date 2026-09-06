@@ -63,7 +63,7 @@ result = process_gnn_to_audio(
 
 ## Integration
 
-This module integrates with the GNN pipeline as Step 15: Audio processing.
+This module is pipeline infrastructure consumed via `gnn.audio`: the Step 15 driver (`src/gnn/15_audio.py`) imports `gnn.audio`, not `gnn.sapf`; `gnn.sapf` is the standalone surface.
 
 ## Status
 

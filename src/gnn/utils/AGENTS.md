@@ -117,7 +117,7 @@ logger = setup_step_logging("3_gnn", verbose=True)
 
 **Returns**: `List[str]` - Command-line argument list
 
-#### `audit_step_contracts(python_executable: Optional[str] = None, script_dir: Optional[Path] = None) -> List[Dict[str, Any]]`
+#### `utils.arg_parsing.audit_step_contracts(python_executable: Optional[str] = None, script_dir: Optional[Path] = None) -> List[Dict[str, Any]]`
 **Description**: Audit registered step contracts for drift between `STEP_ARGUMENTS`, `StepConfiguration`, parser defaults, and command-builder propagation.
 
 **Returns**: `List[Dict[str, Any]]` - Contract audit issues; each entry describes a per-step mismatch (empty list means no drift)

@@ -9,9 +9,9 @@ Optional module — requires the [api] extra:
     uv sync --extra api
 
 Usage:
-    python -m api.server
+    python -m gnn.api.server
     # or via pipeline:
-    python src/main.py --only-steps 21  # MCP step also registers API tools
+    python src/gnn/main.py --only-steps 21  # MCP step also registers API tools
 """
 
 from typing import Any

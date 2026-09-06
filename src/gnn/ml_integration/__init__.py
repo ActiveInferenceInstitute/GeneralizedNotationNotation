@@ -28,7 +28,7 @@ from .processor import (
     summarize_features,
 )
 
-__version__ = "1.7.0"
+__version__ = "3.2.0"
 
 FEATURES: dict[str, Any] = {
     "model_training": True,

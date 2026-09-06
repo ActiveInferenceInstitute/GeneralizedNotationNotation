@@ -13,8 +13,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 - **Headless extraction.** New `gnn extract FILE` CLI subcommand and
   `python -m gnn.extract` module entry point print the POMDP extractor's
   `to_dict()` payload as JSON. The wheel now ships the top-level `gnn`
-  package alongside the `src.*` packages, so both import surfaces work from
-  an installed wheel.
+  package: the `src.*` import surface was removed by the v0.5 package rename,
+  so `gnn.*` is the single canonical import surface from an installed wheel.
 - **Structured extraction errors.** The POMDP extractor gains
   `on_error="lenient" | "raise" | "collect"`; failed parameter blocks are
   never silently dropped — they are recorded with machine-readable codes

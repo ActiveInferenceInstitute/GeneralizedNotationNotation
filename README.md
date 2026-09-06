@@ -411,6 +411,7 @@ graph TB
         StanExec[Stan Runner]
         PyTorchExec[PyTorch Runner]
         NumPyroExec[NumPyro Runner]
+        LeanExec[Lean Runner]
     end
     
     subgraph "Analysis"
@@ -449,6 +450,7 @@ graph TB
     Executor --> StanExec
     Executor --> PyTorchExec
     Executor --> NumPyroExec
+    Executor --> LeanExec
     
     PyMDPExec --> Analyzer
     RxInferExec --> Analyzer
@@ -458,6 +460,7 @@ graph TB
     StanExec --> Analyzer
     PyTorchExec --> Analyzer
     NumPyroExec --> Analyzer
+    LeanExec --> Analyzer
     
     Analyzer --> Results
 ```
@@ -664,7 +667,7 @@ The GNN framework is built around a modular architecture, where each pipeline st
 | `advanced_visualization` | 9 | Provides advanced, interactive and dashboard visualizations. | `plotly`, D3/HTML output, `matplotlib`, `networkx` |
 | `ontology` | 10 | Maps GNN concepts to Active Inference ontology terms. | Ontology Mapper, Knowledge Graph |
 | `render` | 11 | Renders GNN models into executable code for various backends. | Code Generators (PyMDP, RxInfer, JAX, ActInf.jl, PyTorch, NumPyro, Stan, DisCoPy, bnlearn) |
-| `execute` | 12 | Executes the rendered code using the specified backend. | PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan (cmdstanpy) — bnlearn is render-only and has no executor |
+| `execute` | 12 | Executes the rendered code using the specified backend. | PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan (cmdstanpy), and fep_lean (Lean 4) document verification via `src/gnn/execute/lean/` — bnlearn is render-only and has no executor |
 | `llm` | 13 | Integrates Large Language Models for analysis, generation, and insights. | Ollama (local default), OpenAI, OpenRouter, Perplexity |
 | `ml_integration` | 14 | Integrates with machine learning frameworks for advanced analysis. | `scikit-learn`, `tensorflow`, `pytorch` |
 | `audio` | 15 | Generates audio representations of GNN model dynamics. | `SAPF`, `Pedalboard`, Audio Synthesis Engines |

@@ -24,6 +24,7 @@ from .semantic_validator import (
     process_semantic_validation,
     validate_content,
 )
+from .simple import SimpleValidator
 from .workflow import StageServices, validate_directory
 
 
@@ -77,6 +78,7 @@ __all__: list[str] = [
     "__version__",
     "FEATURES",
     "SemanticValidator",
+    "SimpleValidator",
     "PerformanceProfiler",
     "ConsistencyChecker",
     "process_semantic_validation",

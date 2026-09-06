@@ -122,7 +122,7 @@ def _render_mermaid_graph(summary: dict) -> str:
         return ""
 
     try:
-        from gnn.dep_graph import render_graph_from_file
+        from gnn.multimodel.dep_graph import render_graph_from_file
 
         # Find first .gnn file
         gnn_files = list(target_path.glob("*.gnn"))

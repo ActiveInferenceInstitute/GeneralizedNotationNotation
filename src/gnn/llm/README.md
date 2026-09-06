@@ -94,16 +94,21 @@ flowchart TD
     UseOpenRouter --> Process
     UseOllama --> Process
     Recovery --> Process
+
     
     Process --> Results[Analysis Results]
 ```
+Package exports (`from gnn.llm import ...`): `LLMAnalyzer`, `AnalysisType`,
+`UnifiedLLMProcessor`, `ProviderType`, `LLMConfig`, `LLMMessage`, `LLMResponse`,
+`BaseLLMProvider`, `DEFAULT_OLLAMA_MODEL`, `get_available_providers`,
+`load_api_keys_from_env` — see `__init__.py` `__all__` for the complete list.
 
 ### Module Integration Flow
 
 ```mermaid
 flowchart LR
     subgraph "Pipeline Step 13"
-        Step13[13_llm.py Orchestrator]
+        Step13[src/gnn/13_llm.py Orchestrator]
     end
     
     subgraph "LLM Module"
@@ -275,7 +280,7 @@ executions with cache lookups, and per-file markdown output.
 
 ### Pipeline Step 13: LLM Processing
 ```python
-# Called from 13_llm.py
+# Called from src/gnn/13_llm.py
 def process_llm(target_dir, output_dir, verbose=False, **kwargs):
     # Discover GNN files, select providers, run structured + custom prompts
     # per file, write results and cache entries

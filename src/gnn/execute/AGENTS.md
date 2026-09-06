@@ -4,7 +4,7 @@
 
 **Purpose**: Execute rendered simulation scripts across multiple frameworks (PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan). Per-folder `execution_summary.json` files are merged so the durable summary covers every input folder; frameworks a model's kind cannot use are reported `unsupported` by Step 11 and are never executed.
 
-**Pipeline Step**: Step 12: Execution (12_execute.py)
+**Pipeline Step**: Step 12: Execution (src/gnn/12_execute.py)
 
 **Category**: Simulation / Execution
 
@@ -46,7 +46,7 @@
 ### Public Functions
 
 #### `process_execute(target_dir: Path, output_dir: Path, verbose: bool = False, frameworks: str = "all", **kwargs) -> Union[bool, int]`
-**Description**: Main execution function called by orchestrator (12_execute.py). Executes rendered simulation scripts across multiple frameworks.
+**Description**: Main execution function called by orchestrator (src/gnn/12_execute.py). Executes rendered simulation scripts across multiple frameworks.
 
 **Parameters**:
 - `target_dir` (Path): Directory containing rendered scripts (typically output from Step 11)
@@ -117,7 +117,7 @@ if not result["success"]:
 
 
 #### `execute_rendered_simulators(target_dir: Path, output_dir: Path, logger: logging.Logger, recursive: bool = False, verbose: bool = False, **kwargs) -> bool`
-**Description**: Iterate over the `ExecutorFrameworkSpec` registry for every supported framework runner (PyMDP, RxInfer.jl, DisCoPy, ActiveInference.jl, JAX, NumPyro, PyTorch) and write a summary JSON + markdown report under ``output_dir / "12_execute_output" / "summaries" /``. Missing optional dependencies are recorded as ``"SKIPPED"`` instead of failures.
+**Description**: Iterate over the `ExecutorFrameworkSpec` registry for every supported framework runner (PyMDP, RxInfer.jl, DisCoPy, ActiveInference.jl, JAX, NumPyro, PyTorch, Stan, Lean) and write a summary JSON + markdown report under ``output_dir / "12_execute_output" / "summaries" /``. Missing optional dependencies are recorded as ``"SKIPPED"`` instead of failures.
 
 #### `plan_execute(target_dir: Path, output_dir: Path, frameworks: str = "all", **config) -> ExecutionPlan`
 **Description**: Dry-run Step 12 planner (``execute.planning``). Composes the same discovery / render-contract / dependency primitives as `process_execute` but runs **no scripts and no Julia package probing** — it answers "what would Step 12 do?" for preflight checks, CI gates, and interactive debugging. Returns a typed `ExecutionPlan` (``execute.types``) with `requested_frameworks`, `render_output_dir`, `render_contract_found`, `status` (`"ready"` | `"no_render_output"` | `"no_executable_scripts"` | `"invalid_frameworks"`), `total_scripts`, and per-script disposition lists (`would_execute`, `would_skip_dependency`, `unknown_framework_scripts`), plus `missing_render_scripts` and `render_failures`. Raises `ValueError` on an invalid `frameworks` argument (the same exception `process_execute` catches and converts to `return False`).
@@ -178,7 +178,7 @@ elif not detection.get("correct_package"):
 ### Configuration Options
 
 #### Framework Selection
-- `frameworks` (str): `"all"` (the eight executors: PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan — plus bnlearn, which is accepted by `parse_frameworks_parameter` but has no executor and always skips), `"lite"` (PyMDP, JAX, DisCoPy, bnlearn), or a comma-separated subset — parsed by `parse_frameworks_parameter` in `execute/processor.py`
+- `frameworks` (str): `"all"` (the nine executors: PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, Lean — plus bnlearn, which is accepted by `parse_frameworks_parameter` but has no executor and always skips), `"lite"` (PyMDP, JAX, DisCoPy, bnlearn), or a comma-separated subset — parsed by `parse_frameworks_parameter` in `execute/processor.py`
 
 #### Execution Parameters
 - `timeout` (int): Execution timeout in seconds (default: `3600`)
@@ -297,7 +297,7 @@ Use the current `output/*/00_pipeline_summary/pipeline_execution_summary.json` a
 ### Pipeline Integration
 - **Input**: Receives rendered simulation scripts from Step 11 (render)
 - **Output**: Generates execution results for Step 13 (llm analysis), Step 16 (analysis), and Step 23 (report generation)
-- **Dependencies**: Requires rendered code from `11_render.py` output. Use `--render-output-dir` for isolated pipeline runs.
+- **Dependencies**: Requires rendered code from `src/gnn/11_render.py` output. Use `--render-output-dir` for isolated pipeline runs.
 
 ### Module Dependencies
 - **render/**: Consumes rendered simulation scripts
@@ -313,13 +313,13 @@ Use the current `output/*/00_pipeline_summary/pipeline_execution_summary.json` a
 
 ### Data Flow
 ```
-11_render.py (Code generation)
+src/gnn/11_render.py (Code generation)
   ↓
-12_execute.py (Script execution; optional explicit render_output_dir)
+src/gnn/12_execute.py (Script execution; optional explicit render_output_dir)
   ↓
-  ├→ 13_llm.py (LLM analysis of results)
-  ├→ 16_analysis.py (Statistical analysis)
-  ├→ 23_report.py (Execution reports)
+  ├→ src/gnn/13_llm.py (LLM analysis of results)
+  ├→ src/gnn/16_analysis.py (Statistical analysis)
+  ├→ src/gnn/23_report.py (Execution reports)
   └→ output/12_execute_output/ (Execution results)
 ```
 

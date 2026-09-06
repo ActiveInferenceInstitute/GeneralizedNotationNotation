@@ -14,7 +14,7 @@ The CLI module provides the `gnn` command-line tool — a unified interface to t
 ## Architecture
 
 - **Pattern**: Thin dispatcher (not a pipeline step)
-- **Entry point**: `src.cli:main` (registered in `pyproject.toml [project.scripts]`)
+- **Entry point**: `gnn.cli:main` (registered in `pyproject.toml [project.scripts]`)
 - **Dependencies**: All pipeline modules (imported lazily per subcommand)
 
 ## Capabilities
@@ -22,7 +22,7 @@ The CLI module provides the `gnn` command-line tool — a unified interface to t
 - **Pipeline execution** via `gnn run` with skip/only-steps, log-format, and skip-llm options
 - **File validation** via `gnn validate` (section, state-space, connection, dimension checks)
 - **JSON/YAML parsing** via `gnn parse` with format and summary modes
-- **Code generation** via `gnn render` (PyMDP, RxInfer, JAX, NumPyro, Stan, PyTorch)
+- **Code generation** via `gnn render` (PyMDP, RxInfer, ActiveInference.jl, JAX, NumPyro, Stan, PyTorch, DisCoPy, bnlearn)
 - **POMDP extraction** via `gnn extract` (structured JSON of the POMDP state space, with graceful degradation when the extractor is unavailable)
 - **Run reproduction** via `gnn reproduce` using content-addressable hashing
 - **Environment checks** via `gnn preflight` and `gnn health`
@@ -36,7 +36,7 @@ The CLI module provides the `gnn` command-line tool — a unified interface to t
 ```
 cli/
 ├── __init__.py          # Main dispatcher and 16 subcommands
-├── __main__.py          # `python -m cli` entry point
+├── __main__.py          # `python -m gnn.cli` entry point
 ├── lsp.py               # GNN Language Server (stdio)
 ├── mcp.py               # MCP tool surface for CLI subcommands
 ├── templates.py         # Maintained template index and copy helpers

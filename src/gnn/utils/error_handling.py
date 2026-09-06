@@ -386,9 +386,9 @@ def coerce_step_exit_code(
 ) -> int:
     """Coerce a processor return value to the canonical pipeline exit code.
 
-    Contract: ``bool`` remains backward compatible (``True`` -> 0,
-    ``False`` -> 1), ``int`` passes through, and all other values are coerced
-    by truthiness. Integer ``2`` is the warning/skipped continuation path.
+    Contract: ``bool`` maps to exit codes (``True`` -> 0, ``False`` -> 1),
+    ``int`` passes through, and all other values are coerced by truthiness.
+    Integer ``2`` is the warning/skipped continuation path.
     """
     if isinstance(result, bool):
         return ExitCode.SUCCESS if result else ExitCode.ERROR

@@ -8,6 +8,7 @@ as Mermaid diagrams or plain-text adjacency lists.
 
 import logging
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any, Dict, List, Optional, Set
 
 logger = logging.getLogger(__name__)
@@ -145,9 +146,7 @@ def render_graph_from_file(
     Returns:
         Rendered graph string.
     """
-    from pathlib import Path as _Path
-
-    path = _Path(file_path)
+    path = Path(file_path)
     if not path.is_file():
         logger.warning(f"GNN file not found or not a regular file: {file_path}")
         content = ""
@@ -158,14 +157,7 @@ def render_graph_from_file(
             logger.warning(f"Could not read GNN file {file_path}: {e}")
             content = ""
 
-    import sys
-
-    src_dir = str(_Path(__file__).parent.parent)
-    if src_dir not in sys.path:
-        sys.path.insert(0, src_dir)
-
-    from gnn.multimodel import parse_multimodel
-
+    from gnn.multimodel.multimodel import parse_multimodel
     models = parse_multimodel(content, file_path=file_path)
 
     # Assign names from file sections or indices

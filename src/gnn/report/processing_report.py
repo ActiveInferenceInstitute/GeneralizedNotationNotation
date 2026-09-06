@@ -28,18 +28,26 @@ class ReportGenerator:
         self.report_formats = ["json", "markdown", "html"]
 
     def generate_processing_report(
-        self, context: Any, output_dir: Path
+        self,
+        context: Any | None = None,
+        output_dir: Path | None = None,
     ) -> Dict[str, Any]:
         """
         Generate comprehensive processing report.
 
         Args:
-            context: Processing context with results
-            output_dir: Directory for report output
+            context: Processing context with results (None returns an empty
+                success envelope for lightweight callers)
+            output_dir: Directory for report output (defaults to the
+                context's output directory)
 
         Returns:
             Dictionary with report metadata and file paths
         """
+        if context is None:
+            return {"status": "SUCCESS", "reports": []}
+        if output_dir is None:
+            output_dir = Path(context.output_dir)
         logger.info("Generating comprehensive processing report")
 
         # Ensure output directory exists
@@ -81,6 +89,16 @@ class ReportGenerator:
             "report_files": report_files,
             "report_data": report_data,
         }
+
+    def generate_report(self, data: Dict[str, Any] | None = None) -> Dict[str, Any]:
+        """Generate a lightweight report envelope from arbitrary data."""
+        return {"status": "SUCCESS", "data": data or {}}
+
+    def format_report(self, content: Any, fmt: str = "markdown") -> str:
+        """Render report content as markdown or HTML text."""
+        if fmt == "html":
+            return f"<html><body><pre>{content}</pre></body></html>"
+        return f"# Report\n\n{content}"
 
     def _compile_report_data(self, context: Any) -> Dict[str, Any]:
         """Compile comprehensive report data from processing context."""

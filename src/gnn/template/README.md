@@ -56,8 +56,8 @@ flowchart TD
 ## Template Module Structure
 
 ```
-src/
-├── ../main.py (pipeline driver)                           # Main pipeline orchestrator
+src/gnn/
+├── main.py (pipeline driver)                             # Main pipeline orchestrator
 ├── 0_template.py                     # Thin orchestrator for template step
 └── template/                         # Modular template implementation
     ├── __init__.py                   # Module exports and initialization

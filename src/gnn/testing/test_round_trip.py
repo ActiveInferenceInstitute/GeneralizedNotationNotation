@@ -279,11 +279,11 @@ try:
 
     GNN_AVAILABLE = True
 
-    from gnn.cross_format_validator import (
+    from gnn.schema_validator import (
         CrossFormatValidator,
+        GNNValidator,
         validate_cross_format_consistency,
     )
-    from gnn.schema_validator import GNNValidator
     from gnn.types import ParsedGNN, ValidationResult
 
     CROSS_FORMAT_AVAILABLE = True

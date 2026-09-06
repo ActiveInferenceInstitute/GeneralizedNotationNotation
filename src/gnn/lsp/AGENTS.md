@@ -36,10 +36,12 @@ The LSP module implements a GNN Language Server using the Language Server Protoc
 ## File Structure
 
 ```
-lsp/
-├── __init__.py    # Full server implementation (226 lines)
+src/gnn/lsp/
+├── __init__.py    # Full server implementation
+├── mcp.py         # Model Context Protocol integration
 ├── AGENTS.md      # This file
 ├── README.md      # Usage guide
+├── SKILL.md       # Capability API
 └── SPEC.md        # Module specification
 ```
 

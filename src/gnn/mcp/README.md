@@ -11,6 +11,7 @@ The GNN MCP implementation provides:
 - **Meta-Tools**: Server introspection and diagnostic capabilities
 - **CLI Interface**: Command-line access to all MCP functionality
 - **Extensible Architecture**: Easy addition of new tools and resources
+- **Public exports** (from `gnn.mcp` `__all__`): `MCPRegistry`, `MCPServer`, `get_mcp_instance`, `list_available_tools`, `list_available_resources`, `MCPError`, `MCPToolExecutionError`, `MCPToolNotFoundError`, `MCPValidationError`, `create_mcp_server`, `start_mcp_server`
 
 ## Architecture
 
@@ -73,17 +74,17 @@ The central MCP server implementation that:
 Comprehensive CLI for MCP operations:
 ```bash
 # List all capabilities
-python -m src.mcp.cli list
+python -m gnn.mcp.cli list
 
 # Execute a tool
-python -m src.mcp.cli execute get_gnn_files --params '{"target_dir": "doc"}'
+python -m gnn.mcp.cli execute get_gnn_files --params '{"target_dir": "doc"}'
 
 # Get server status
-python -m src.mcp.cli status
+python -m gnn.mcp.cli status
 
 # Start server
-python -m src.mcp.cli server --transport stdio
-GNN_MCP_TOKEN=local-dev-token python -m src.mcp.cli server --transport http --host 127.0.0.1 --port 8080
+python -m gnn.mcp.cli server --transport stdio
+GNN_MCP_TOKEN=local-dev-token python -m gnn.mcp.cli server --transport http --host 127.0.0.1 --port 8080
 ```
 
 ### 4. Meta-Tools (`meta_mcp.py`)
@@ -97,9 +98,18 @@ Server introspection and diagnostic tools:
 - `get_mcp_tool_categories`: Tools organized by category
 - `get_mcp_performance_metrics`: Performance statistics
 
+### 5. GNN Processors (`processors.py`)
+
+Enhanced GNN processing functions used by `gnn_root.py` to back the GNN tools:
+- `process_gnn_folder`: orchestrates full-folder GNN processing
+- `run_gnn_round_trip_tests`: parse → render → re-parse round-trip checks
+- `validate_gnn_cross_format_consistency`: consistency validation across render targets
+
+Implementation lives at `src/gnn/mcp/processors.py`; validators come from `gnn.schema_validator` and `gnn.cross_format_validator`.
+
 ## Available Tools by Module
 
-### GNN Module (`src/gnn/mcp.py`)
+### GNN Module (`src/gnn/mcp/gnn_root.py`)
 - GNN file discovery and parsing
 - Model structure analysis
 - Parameter extraction and validation
@@ -160,12 +170,12 @@ Server introspection and diagnostic tools:
 
 #### stdio Transport (Recommended for local use)
 ```bash
-python -m src.mcp.cli server --transport stdio
+python -m gnn.mcp.cli server --transport stdio
 ```
 
 #### HTTP Transport (Local JSON-RPC orchestration)
 ```bash
-GNN_MCP_TOKEN=local-dev-token python -m src.mcp.cli server --transport http --host 127.0.0.1 --port 8080
+GNN_MCP_TOKEN=local-dev-token python -m gnn.mcp.cli server --transport http --host 127.0.0.1 --port 8080
 ```
 
 HTTP tool execution and resource reads are guarded separately. Tool calls are
@@ -178,17 +188,17 @@ throttled by the same per-client limit.
 
 #### List all available tools
 ```bash
-python -m src.mcp.cli list --format human
+python -m gnn.mcp.cli list --format human
 ```
 
 #### Execute a GNN tool
 ```bash
-python -m src.mcp.cli execute get_gnn_files --params '{"target_dir": "doc", "recursive": true}'
+python -m gnn.mcp.cli execute get_gnn_files --params '{"target_dir": "doc", "recursive": true}'
 ```
 
 #### Get server status
 ```bash
-python -m src.mcp.cli status --format json
+python -m gnn.mcp.cli status --format json
 ```
 
 ### 3. JSON-RPC API Usage
@@ -275,7 +285,7 @@ The MCP server tracks various performance metrics:
 
 Access performance data via:
 ```bash
-python -m src.mcp.cli execute get_mcp_performance_metrics
+python -m gnn.mcp.cli execute get_mcp_performance_metrics
 ```
 
 ## Security Considerations
@@ -334,10 +344,10 @@ def register_tools(mcp_instance):
 Use the CLI to test tools:
 ```bash
 # Test tool execution
-python -m src.mcp.cli execute my_tool --params '{"param1": "value"}'
+python -m gnn.mcp.cli execute my_tool --params '{"param1": "value"}'
 
 # Test tool info
-python -m src.mcp.cli info my_tool
+python -m gnn.mcp.cli info my_tool
 ```
 
 ## Integration with External Clients
@@ -381,7 +391,7 @@ The server is compatible with any JSON-RPC 2.0 MCP client. Use the HTTP transpor
 
 Enable verbose logging:
 ```bash
-python -m src.mcp.cli --verbose list
+python -m gnn.mcp.cli --verbose list
 ```
 
 ### Log Files

@@ -22,7 +22,13 @@ src/gnn/pipeline/
 ├── durable_streams.py            # v3: stream manifests + replayable execution traces
 ├── run_session.py                # v3: resumable run sessions (checkpoint/resume/cleanup)
 ├── container_plan.py             # v3: auditable container plans + static security review
+├── dag.py                        # Dependency-graph construction and step ordering
+├── step_registry.py              # Canonical step registry (names, numbers, scripts)
 ```
+
+### Also exported
+
+Beyond the API classes above, `gnn.pipeline.__all__` exports `STEP_METADATA`, `DEFAULT_TARGET_DIR`, `DEFAULT_OUTPUT_DIR`, `FEATURES`, `__version__`, `get_module_info`, `create_pipeline_config`, `get_pipeline_info`, `validate_pipeline_config`, and `EnhancedHealthChecker`.
 
 ### v3.0.0 Long-Running Orchestration (safe-by-design)
 

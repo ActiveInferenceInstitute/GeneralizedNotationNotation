@@ -78,7 +78,7 @@ from .post_simulation import (
 )
 from .processor import convert_numpy_types, process_analysis
 
-# Note: framework-specific analyzers live in ``src/analysis/<framework>/analyzer.py``
+# Note: framework-specific analyzers live in ``src/gnn/analysis/<framework>/analyzer.py``
 # and are discovered by ``processor.process_analysis`` via ``importlib`` — no
 # need to re-export per-framework aliases at the package level.
 

@@ -130,7 +130,7 @@ Parses arguments for a specific pipeline step with recovery support. Standard ar
 #### `build_step_command_args(step_name, args) -> List[str]`
 Builds the command-line argument list for invoking a step script.
 
-#### `audit_step_contracts() -> Dict[str, Any]`
+#### `utils.arg_parsing.audit_step_contracts() -> Dict[str, Any]`
 Audits for drift between `STEP_ARGUMENTS`, `StepConfiguration`, parser defaults, and command-builder propagation. Exit codes are canonical: `0=success`, `1=error`, `2=success with warnings/skipped`.
 
 ### Pipeline Orchestration Utilities

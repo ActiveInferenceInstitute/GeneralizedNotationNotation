@@ -4,7 +4,7 @@
 
 **Purpose**: Advanced validation and consistency checking for GNN models and pipeline components
 
-**Pipeline Step**: Step 6: Validation (6_validation.py)
+**Pipeline Step**: Step 6: Validation (src/gnn/6_validation.py)
 
 **Category**: Validation / Quality Assurance
 
@@ -13,6 +13,22 @@
 **Version**: 3.2.0 (module `__version__` 1.7.0)
 
 **Last Updated**: 2026-09-04
+
+---
+
+## Module Structure
+
+```
+src/gnn/validation/
+├── __init__.py             # Module exports and thin process_validation facade
+├── consistency_checker.py  # Consistency checking (naming, style, structure, references)
+├── semantic_validator.py   # Semantic validation (structure, state space, connections, math)
+├── simple.py               # Dependency-free basic validator: marker/extension sniffing
+├── performance_profiler.py # Performance profiling (complexity, memory, parallelization)
+├── structure.py            # Shared helpers (content extraction, cycle detection, score clamping)
+├── workflow.py             # Step-6 directory workflow (stage runner, receipts, accumulation)
+└── mcp.py                  # Model Context Protocol integration
+```
 
 ---
 
@@ -39,7 +55,7 @@
 ### Public Functions
 
 #### `process_validation(target_dir, output_dir, verbose=False, **kwargs) -> bool`
-**Description**: Main validation processing function called by orchestrator (6_validation.py)
+**Description**: Main validation processing function called by orchestrator (src/gnn/6_validation.py)
 
 **Parameters**:
 - `target_dir` (Path): Directory containing GNN files to validate
@@ -190,7 +206,7 @@ output/6_validation_output/
 ## Integration Points
 
 ### Orchestrated By
-- **Script**: `6_validation.py` (Step 6)
+- **Script**: `src/gnn/6_validation.py` (Step 6)
 - **Function**: `process_validation()`
 
 ### Imports From

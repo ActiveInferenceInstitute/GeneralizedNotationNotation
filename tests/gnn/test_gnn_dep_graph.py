@@ -15,7 +15,10 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from gnn.dep_graph import build_dependency_graph, render_graph_from_file  # noqa: E402
+from gnn.multimodel.dep_graph import (  # noqa: E402
+    build_dependency_graph,
+    render_graph_from_file,
+)
 
 
 def _multi_model_gnn_file(tmp_path: Path) -> Path:

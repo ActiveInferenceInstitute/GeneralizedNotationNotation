@@ -69,13 +69,14 @@ Framework boundaries are deliberately explicit:
 
 - Step 11 exposes 9 render targets: PyMDP, RxInfer.jl, ActiveInference.jl, JAX,
   DisCoPy, PyTorch, NumPyro, Stan, and bnlearn.
-- Step 12 executes 8 targets — all render targets except bnlearn, which is render-only.
+- Step 12 executes 9 targets — the 8 executable render targets (all except bnlearn, which is render-only) plus Lean document verification via fep_lean (`src/gnn/execute/lean/`).
   Stan runs through the cmdstanpy driver
   `<stem>_stan.py` via `src/gnn/execute/stan/`; without cmdstanpy plus a CmdStan toolchain
   it is reported skipped. PyTorch and bnlearn are registry-gated and are not installed
   by the default lock.
 - Discrete exemplars render on all 9 targets and execute on the 8 executable
-  targets. The continuous
+  render targets (plus Lean document verification where the fep_lean bridge is
+  present). The continuous
   (linear-Gaussian) exemplars render and execute on JAX, NumPyro, PyTorch, Stan and
   RxInfer.jl; PyMDP, ActiveInference.jl, DisCoPy and bnlearn report the render status
   `unsupported` for them (counted separately from failures, never executed).

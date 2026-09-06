@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     from .export.processor import generate_exports
     from .model_registry.registry import ModelRegistry
     from .multi_format_processor import process_gnn_multi_format
-    from .parser import (
+    from .parsers.basic import (
         GNNFormalParser,
         ParsedGNNFormal,
         get_parse_tree_visualization,
@@ -61,13 +61,13 @@ FEATURES: dict[str, Any] = {
 _EXPORT_MAP: dict[str, str] = {
     # multi_format_processor
     "process_gnn_multi_format": "multi_format_processor",
-    # parser
-    "GNNFormalParser": "parser",
-    "ParsedGNNFormal": "parser",
-    "get_parse_tree_visualization": "parser",
-    "parse_gnn_formal": "parser",
-    "validate_gnn": "parser",
-    "validate_gnn_syntax_formal": "parser",
+    # parsers.basic
+    "GNNFormalParser": "parsers.basic",
+    "ParsedGNNFormal": "parsers.basic",
+    "get_parse_tree_visualization": "parsers.basic",
+    "parse_gnn_formal": "parsers.basic",
+    "validate_gnn": "parsers.basic",
+    "validate_gnn_syntax_formal": "parsers.basic",
     # parsers.common
     "GNNFormat": "parsers.common",
     # parsers.system — canonical 23-format registry (23 parsers, 22 serializers;
@@ -138,7 +138,7 @@ def validate_gnn_file(source: Any, *, is_content: bool = False) -> Any:
         content = _Path(source).read_text(encoding="utf-8")
     else:
         content = str(source)
-    from .parser import validate_gnn as _validate_gnn
+    from .parsers.basic import validate_gnn as _validate_gnn
 
     is_valid, errors = _validate_gnn(content)
     return {"is_valid": is_valid, "errors": errors}

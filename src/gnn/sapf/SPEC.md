@@ -16,7 +16,7 @@ Structured Audio Processing Format support.
 
 ## Key Exports
 ```python
-from gnn.sapf import generate_sapf
+from gnn.sapf import generate_sapf_audio
 ```
 
 

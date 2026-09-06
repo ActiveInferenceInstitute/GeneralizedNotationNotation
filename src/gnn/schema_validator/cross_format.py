@@ -19,10 +19,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from .schema_validator import ValidationLevel
-
 # Import these at module level to avoid circular imports
-from .types import GNNFormat, ValidationResult
+from gnn.types import GNNFormat, ValidationLevel, ValidationResult
 
 logger = logging.getLogger(__name__)
 
@@ -85,7 +83,7 @@ class CrossFormatValidator:
         # Initialize parsing system if available
         try:
             # Import here to avoid circular imports
-            from .parsers import GNNParsingSystem
+            from gnn.parsers import GNNParsingSystem
 
             self.parsing_system = GNNParsingSystem()
             logger.info(
@@ -118,8 +116,7 @@ class CrossFormatValidator:
 
     def _initialize_validators(self) -> Any:
         """Initialize enhanced validators for different schema formats."""
-        # Import here to avoid circular imports
-        from .schema_validator import GNNValidator
+        from gnn.schema_validator.validator import GNNValidator
 
         # Enhanced validation levels for different formats
         validation_levels: dict[str, Any] = {
@@ -355,7 +352,7 @@ class CrossFormatValidator:
         """Test round-trip compatibility between formats."""
         try:
             # Import here to avoid circular imports
-            from .schema_validator import GNNParser
+            from gnn.schema_validator.syntax import GNNParser
 
             # Create temporary file for parsing
             temp_file = self._create_temp_file(gnn_content, "markdown")

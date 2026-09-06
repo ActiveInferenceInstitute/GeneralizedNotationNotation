@@ -31,7 +31,9 @@ Features:
 - Unicode support for mathematical symbols (e.g., π, σ, μ) in variable names
 - Special handling for Active Inference models with standard variables (A, B, C, D, E, F, G)
 - Comprehensive validation for model consistency and correctness
-- Cross-format conversion while preserving semantics
+- Structural/formal parse surface (gnn.parsers.basic), frontmatter utilities
+  (gnn.parsers.frontmatter), and the parse cache (gnn.parsers.cache)
+  live alongside the registry-driven system.
 
 Author: @docxology
 Date: 2025-01-11
@@ -44,8 +46,19 @@ from pathlib import Path as _Path
 from typing import Any, Union
 from typing import Optional as _Optional
 
+from .basic import (
+    GNNFormalParser,
+    GNNFormatSpec,
+    ParsedGNNFormal,
+    get_parse_tree_visualization,
+    parse_gnn_formal,
+    validate_gnn,
+    validate_gnn_syntax_formal,
+)
+from .cache import ParseCache
 from .common import ASTNode, ValidationError, ValidationWarning
 from .converters import ConversionError, FormatConverter
+from .frontmatter import has_frontmatter, parse_frontmatter
 from .schema_serializer import SchemaSerializer
 from .system import (
     PARSER_REGISTRY,
@@ -142,7 +155,11 @@ __all__: list[Any] = [
     "GNNFormat",
     "ParseResult",
     "GNNInternalRepresentation",
+    "GNNFormalParser",
+    "GNNFormatSpec",
     "ASTNode",
+    "ParseCache",
+    "ParsedGNNFormal",
     "ParseError",
     "GNNParser",
     # Parsers
@@ -199,8 +216,14 @@ __all__: list[Any] = [
     "GNNValidator",
     "ValidationError",
     "ValidationWarning",
-    "parse_gnn_file_structured",
     "convert_gnn_format",
+    "get_parse_tree_visualization",
+    "has_frontmatter",
+    "parse_frontmatter",
+    "parse_gnn_file_structured",
+    "parse_gnn_formal",
+    "validate_gnn",
+    "validate_gnn_syntax_formal",
     # Registries
     "PARSER_REGISTRY",
     "SERIALIZER_REGISTRY",

@@ -1,6 +1,6 @@
 # ActiveInference.jl Execution — Technical Specification
 
-**Version**: 1.6.0
+**Version**: 3.2.0
 
 ## Execution Model
 

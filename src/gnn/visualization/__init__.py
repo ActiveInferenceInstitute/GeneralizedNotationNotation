@@ -7,9 +7,9 @@ including matrix visualizations, network graphs, and combined analysis plots.
 The package-root surface re-exports the full documented public API so callers
 can import every entry point from ``visualization`` directly:
 
->>> from visualization import process_visualization, MatrixVisualizer
->>> from visualization import generate_network_visualizations
->>> from visualization import load_visualization_model, GNNParser
+>>> from gnn.visualization import process_visualization, MatrixVisualizer
+>>> from gnn.visualization import generate_network_visualizations
+>>> from gnn.visualization import load_visualization_model, GNNParser
 """
 
 from typing import Any

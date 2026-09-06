@@ -43,7 +43,7 @@ strings; they make no geographic claim.
 
 ```bash
 uv sync --extra dev --extra geo-infer
-PYTHONPATH=src uv run --no-sync python -m export.geo_infer \
+PYTHONPATH=src uv run --no-sync python -m gnn.export.geo_infer \
   input/gnn_files/pomdp_gridworld/pomdp_gridworld_3x3.md \
   /tmp/gridworld.geo-infer.json --step-seconds 60
 ```
@@ -127,7 +127,7 @@ be booleans. Dense storage is bounded to one million entries. GEO additionally
 bounds JSON input to 32 MiB and rejects duplicate keys.
 
 ```bash
-PYTHONPATH=src uv run python -m export.geo_infer \
+PYTHONPATH=src uv run python -m gnn.export.geo_infer \
   tests/export/gaussian_rectangular.md gaussian.geo-infer.json \
   --model-type linear_gaussian --step-seconds 2 --units units.json
 ```

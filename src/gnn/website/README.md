@@ -63,7 +63,7 @@ Step 16 analysis JSON, and Step 23 reports discovered under the
 
 ### `process_website(target_dir: Path, output_dir: Path, verbose: bool = False, pipeline_output_root: Path | None = None, **kwargs) -> bool`
 
-Top-level entry point called by `20_website.py`. Creates `output_dir`,
+Top-level entry point called by `src/gnn/20_website.py`. Creates `output_dir`,
 delegates to `generate_website`, and writes a minimal `website_results.json`
 manifest. Returns `True` on success.
 
@@ -78,7 +78,7 @@ success = process_website(
 )
 ```
 
-The orchestrator (`20_website.py`) also passes `--website-html-filename`
+The orchestrator (`src/gnn/20_website.py`) also passes `--website-html-filename`
 through `**kwargs`; it is accepted and not used by the generator.
 
 ### `generate_website(logger, input_dir, output_dir, *, pipeline_output_root=None) -> dict`
@@ -159,7 +159,7 @@ python src/gnn/20_website.py --target-dir input/gnn_files --output-dir output --
 python src/gnn/main.py --only-steps 20 --verbose
 ```
 
-`20_website.py` adds `--website-html-filename` (default
+`src/gnn/20_website.py` adds `--website-html-filename` (default
 `gnn_pipeline_summary_website.html`); it is forwarded through `**kwargs`.
 
 ## Dependencies

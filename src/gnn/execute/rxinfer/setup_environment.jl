@@ -4,7 +4,7 @@
 RxInfer.jl Environment Setup Script
 
 This script sets up the Julia environment for RxInfer.jl simulations using
-the committed Project.toml and Manifest.toml under src/execute/rxinfer/.
+the committed Project.toml and Manifest.toml under src/gnn/execute/rxinfer/.
 It replaces the previous runtime Pkg.add approach with a reproducible,
 committed environment.
 

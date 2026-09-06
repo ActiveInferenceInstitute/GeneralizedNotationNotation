@@ -182,7 +182,7 @@ def _setup_logging(verbose: bool) -> None:
 
 def _ensure_src_on_path() -> None:
     """Ensure ``src/`` is on ``sys.path`` for lazy subcommand imports."""
-    src_dir = Path(__file__).parent.parent / "src"
+    src_dir = Path(__file__).resolve().parents[3] / "src"
     if str(src_dir) not in sys.path:
         sys.path.insert(0, str(src_dir))
 
@@ -668,7 +668,7 @@ def _cmd_parse(args: argparse.Namespace) -> int:
     # Try frontmatter
     metadata: dict[Any, Any] = {}
     try:
-        from gnn.frontmatter import parse_frontmatter
+        from gnn.parsers.frontmatter import parse_frontmatter
 
         metadata, _ = parse_frontmatter(content)
     except ImportError as e:
@@ -1266,7 +1266,7 @@ def _cmd_graph(args: argparse.Namespace) -> int:
         return EXIT_ERROR
 
     try:
-        from gnn.dep_graph import render_graph_from_file
+        from gnn.multimodel.dep_graph import render_graph_from_file
 
         output = render_graph_from_file(str(args.file), output_format=args.format)
         if is_json:

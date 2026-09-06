@@ -63,26 +63,9 @@ def analyze_pipeline_data(data: Dict[str, Any]) -> Dict[str, Any]:
         return {"status": "FAILED", "error": str(e)}
 
 
-# Minimal classes expected by tests
-class ReportGenerator:
-    """Minimal ReportGenerator API expected by tests."""
-
-    def generate_processing_report(
-        self, context: "Any | None" = None, output_dir: Path | None = None
-    ) -> dict:
-        """Generate processing report."""
-        return {"status": "SUCCESS", "reports": []}
-
-    # Methods expected by tests
-    def generate_report(self, data: Dict[str, Any] | None = None) -> Dict[str, Any]:
-        """Generate report."""
-        return {"status": "SUCCESS", "data": data or {}}
-
-    def format_report(self, content: Any, fmt: str = "markdown") -> str:
-        """Provide format report behavior."""
-        if fmt == "html":
-            return f"<html><body><pre>{content}</pre></body></html>"
-        return f"# Report\n\n{content}"
+# The full implementation lives in processing_report (generate_processing_report,
+# generate_report, format_report); re-exported here as the package-level API.
+from gnn.report.processing_report import ReportGenerator
 
 
 class ReportFormatter:
@@ -338,6 +321,7 @@ __all__: list[Any] = [
     # Processor functions
     "process_report",
     "generate_comprehensive_report",
+    "analyze_pipeline_data",
     "analyze_gnn_file",
     "generate_html_report",
     "generate_markdown_report",

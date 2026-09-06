@@ -225,7 +225,7 @@ existing path and `is_content` is `False`, the file is read first; otherwise
 
 **Returns**: `Tuple[bool, List[str]]` - Tuple of (is_valid, list_of_errors)
 
-**Location**: `src/gnn/parser.py`
+**Location**: `src/gnn/parsers/basic.py`
 
 ### Headless Extraction (`extract.py`)
 
@@ -334,7 +334,7 @@ Parsers with semantically richer embedded handling keep their own implementation
 
 **Typical use**: `GNNParsingSystem().parse_file(path)`, then serialize via the system’s serializer map for a chosen `GNNFormat`.
 
-#### `GNNFormalParser` (`parser.py`)
+#### `GNNFormalParser` (`parsers/basic.py`)
 
 **Description**: Formal / section-oriented parsing helpers used with `validate_gnn`, `parse_gnn_formal`, etc.
 

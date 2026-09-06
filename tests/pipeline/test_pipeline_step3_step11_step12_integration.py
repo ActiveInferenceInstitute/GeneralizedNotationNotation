@@ -34,7 +34,7 @@ class TestStep3ParseProducesModel:
     def test_gnn_parser_parses_minimal_content(self) -> Any:
         """GNNParsingSystem can parse minimal GNN content without errors."""
         try:
-            from gnn.parser import GNNParsingSystem
+            from gnn.parsers.basic import GNNParsingSystem
         except ImportError:
             raise AssertionError("GNN parser not available")
         parser = GNNParsingSystem()
@@ -50,7 +50,7 @@ class TestStep3ParseProducesModel:
     def test_parse_file_returns_parse_result_with_model(self) -> Any:
         """parse_file result has .model or usable structure."""
         try:
-            from gnn.parser import GNNParsingSystem
+            from gnn.parsers.basic import GNNParsingSystem
         except ImportError:
             raise AssertionError("GNN parser not available")
         parser = GNNParsingSystem()
@@ -72,7 +72,7 @@ class TestStep3ParseProducesModel:
         if not GNN_FILE_PATH.exists():
             raise AssertionError(f"Sample GNN file not found: {GNN_FILE_PATH}")
         try:
-            from gnn.parser import GNNParsingSystem
+            from gnn.parsers.basic import GNNParsingSystem
         except ImportError:
             raise AssertionError("GNN parser not available")
         parser = GNNParsingSystem()

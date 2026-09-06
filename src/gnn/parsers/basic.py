@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union, cast
 
 # Single authoritative definition lives in types.py (includes RESEARCH and ROUND_TRIP).
-from .types import ParsedGNN, ValidationLevel
+from gnn.types import ParsedGNN, ValidationLevel
 
 
 class _GNNParseAccumulator:
@@ -366,8 +366,8 @@ def _convert_parse_result_to_parsed_gnn(
 
     try:
         # Import types needed for conversion
-        from .parsers.common import ParseResult as ParseResultType
-        from .types import GNNConnection, GNNVariable, ParsedGNN
+        from gnn.parsers.common import ParseResult as ParseResultType
+        from gnn.types import GNNConnection, GNNVariable, ParsedGNN
 
         # Verify it's a ParseResult
         if not isinstance(parse_result, ParseResultType):

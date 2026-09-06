@@ -78,6 +78,9 @@ from gnn.gui import (
     gui_1,
     gui_2,
     gui_3,
+    # oxdraw
+    oxdraw_gui,
+    get_oxdraw_info,
     # Information functions
     get_available_guis,
     get_gui_1_info,
