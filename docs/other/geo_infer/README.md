@@ -73,6 +73,10 @@ requirements.
 
 fep_lean verifies the well-formedness of GNN **source documents** in Lean 4,
 upstream of export (see [docs/other/fep_lean/](../fep_lean/README.md));
+explicitly, `fep-lean bridge verify-document` consumes GNN Markdown via
+`gnn.extract.pomdp_extractor` and cannot validate GEO-INFER's interchange
+artifact JSON (a different format, validated by `GNNArtifact`); the Lean
+gate applies to the notation before export, not to the artifacts after it,
 GEO-INFER consumes the **exported artifacts** downstream. No Lean toolchain
 is involved anywhere in the GEO-INFER interchange.
 

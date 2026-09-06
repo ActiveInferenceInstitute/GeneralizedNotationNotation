@@ -299,7 +299,7 @@ class GNNExecutor:
         options: Optional[Dict[str, Any]] = None,
         timeout: Optional[int] = None,
     ) -> Dict[str, Any]:
-        """Verify one document via the fep_lean bridge (contract v0.5)."""
+        """Verify one document via the fep_lean bridge (contract v0.6)."""
         if not LEAN_AVAILABLE or run_lean_scripts is None:
             return {"success": False, "error": "fep_lean unavailable"}
 

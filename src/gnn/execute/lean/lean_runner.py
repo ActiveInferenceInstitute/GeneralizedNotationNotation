@@ -3,7 +3,7 @@
 Resolves the sibling ``fep_lean`` checkout (env ``FEP_LEAN_ROOT`` overrides
 the ``../fep_lean`` default), discovers emitted Lean/GNN documents under the
 rendered target directory, and verifies each through the fep_lean bridge
-``verify-document`` operation (bridge contract v0.5, Direction 2 S7:
+``verify-document`` operation (bridge contract v0.6, Direction 2 S7:
 well-formedness against the ``FEP.GnnDocument`` typed AST).
 """
 
@@ -34,11 +34,7 @@ def resolve_fep_lean_root() -> Path | None:
     ``pyproject.toml`` and the ``src/fep_lean`` package.
     """
     env = os.environ.get(FEP_LEAN_ROOT_ENV)
-    root = (
-        Path(env)
-        if env
-        else Path(__file__).resolve().parents[4].parent / "fep_lean"
-    )
+    root = Path(env) if env else Path(__file__).resolve().parents[4].parent / "fep_lean"
     root = root.resolve()
     if (root / "pyproject.toml").is_file() and (root / "src" / "fep_lean").is_dir():
         return root
@@ -132,9 +128,8 @@ def verify_document(
         return record
 
     record["error"] = (
-        (completed.stderr or completed.stdout or "verify-document failed")
-        .strip()[-2000:]
-    )
+        completed.stderr or completed.stdout or "verify-document failed"
+    ).strip()[-2000:]
     return record
 
 
@@ -161,13 +156,9 @@ def run_lean_scripts(
     target = Path(rendered_simulators_dir)
     glob = target.rglob if recursive_search else target.glob
     documents = sorted(set(glob("*.lean")))
-    documents += sorted(
-        path for path in glob("*.md") if _is_gnn_document(path)
-    )
+    documents += sorted(path for path in glob("*.md") if _is_gnn_document(path))
 
-    output_dir = (
-        Path(execution_output_dir) if execution_output_dir else target / "lean"
-    )
+    output_dir = Path(execution_output_dir) if execution_output_dir else target / "lean"
     output_dir.mkdir(parents=True, exist_ok=True)
 
     if not documents:
@@ -176,9 +167,7 @@ def run_lean_scripts(
 
     all_ok = True
     for document in documents:
-        record = verify_document(
-            document, output_dir / f"{document.stem}-receipt.json"
-        )
+        record = verify_document(document, output_dir / f"{document.stem}-receipt.json")
         ok = bool(record.get("success"))
         all_ok = all_ok and ok
         status_icon = "✅" if ok else "❌"
@@ -186,7 +175,9 @@ def run_lean_scripts(
         if ok or verbose:
             logger.info(f"{status_icon} Lean verification {document.name}: {message}")
         else:
-            logger.warning(f"{status_icon} Lean verification {document.name}: {message}")
+            logger.warning(
+                f"{status_icon} Lean verification {document.name}: {message}"
+            )
     return all_ok
 
 
