@@ -49,12 +49,17 @@ which emits plain `\ref`. Reinstating it means guarding it AND converting the
 % Document metadata. config.yaml declares a subtitle and a keyword list, and
 % the producer emits both as tokens, but the template's \hypersetup writes only
 % pdftitle/pdfauthor/pdflang -- so `pdfinfo` reported no Subject and no
-% Keywords. This block runs after the template's, so it wins; preamble.md is
-% token-substituted like any other manuscript section, so neither value is
-% typed here.
+% Keywords. This block runs after the template's, so it wins.
+%
+% The two values below are WRITTEN by scripts/z_generate_manuscript_variables.py
+% (sync_preamble_metadata), never typed. A {{TOKEN}} cannot be used here:
+% preamble.md is substituted into output/manuscript/ like any other section, but
+% the template's _manuscript_source.py then copies the raw file back over that
+% copy, so an unresolved token would reach hyperref and land in the PDF's
+% metadata verbatim.
 \hypersetup{
-  pdfsubject={{{GNN_SUBTITLE}}},
-  pdfkeywords={{{GNN_KEYWORDS}}}}
+  pdfsubject={A text language and modular processing pipeline for Active Inference generative models},
+  pdfkeywords={GNN, active inference, generative models, model notation, pipeline automation}}
 
 % Bounded identifier splitting. The template defines
 %   \protected\def\breaktt#1{\begingroup\ttfamily\seqsplit{#1}\endgroup}
