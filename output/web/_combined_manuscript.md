@@ -141,7 +141,7 @@ This staged design keeps the architecture modular. The implementation is organiz
 
 ## The Triple Play
 
-The reason for separating a single written language from a multi-stage pipeline is the design goal GNN calls the Triple Play: one model specification, three coordinated modes of existence. The same GNN text is simultaneously a human-readable model description, a set of graphical visualizations of its state space and factor structure, and an executable cognitive model that can be run as a simulation. +@fig:triple_play depicts these three faces and the shared specification at their center.
+The reason for separating a single written language from a multi-stage pipeline is the design goal GNN calls the Triple Play: one model specification, three coordinated modes of existence. The same GNN text is simultaneously a human-readable model description, a set of graphical visualizations of its state space and factor structure, and an executable cognitive model that can be run as a simulation. @fig:triple_play depicts these three faces and the shared specification at their center.
 
 ![The Triple Play: a single GNN specification rendered as readable text, as graphical visualizations, and as an executable model.](../figures/gnn_triple_play.png){#fig:triple_play width=70%}
 
