@@ -15,7 +15,7 @@ Headless (MPLBACKEND=Agg), deterministic (no timestamps/random state), saves a
 
 from __future__ import annotations
 
-import json
+import sys
 from pathlib import Path
 
 import matplotlib
@@ -25,14 +25,22 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-DATA_PATH = PROJECT_ROOT / "output" / "data" / "manuscript_variables.json"
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from scripts.lib.manuscript_figure_tokens import load_tokens  # noqa: E402
+
 OUT_PATH = PROJECT_ROOT / "output" / "figures" / "gnn_triple_play.png"
 
 
 def load_variables() -> dict:
-    """Load the deterministic manuscript-variable producer output."""
-    with DATA_PATH.open("r", encoding="utf-8") as fh:
-        return json.load(fh)
+    """Load the producer output through the recorder that pins figure freshness.
+
+    Every key read here is written into ``output/figures/figure_registry.json``
+    by the figure build, so a committed PNG whose counts have fallen behind the
+    token map fails the suite rather than shipping.
+    """
+    return load_tokens()
 
 
 def draw_box(

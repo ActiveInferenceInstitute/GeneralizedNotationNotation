@@ -13,6 +13,16 @@ all come from the same table below. Only ``alt_text`` is authored — it must de
 what a reader who cannot see the figure needs, in different words from the caption
 (the caption is a title; the alt text says what the image shows).
 
+Each entry also carries build provenance, which is what stops a stale figure from
+shipping. ``png_sha256`` is the digest of the PNG this build produced, and
+``consumed_tokens`` is the ``{key: value}`` map the generator actually read out of
+``output/data/manuscript_variables.json`` (observed by
+``scripts/lib/manuscript_figure_tokens.py``, not declared).
+``src/tests/test_manuscript_figure_freshness.py`` re-checks both against the
+committed PNG and the live token map, so a figure built before a count moved fails
+the suite. Without it, ``fig:repo_metrics`` shipped "365 test files" on the same PDF
+page as prose reading 367.
+
 Usage:
     python scripts/manuscript_build_figures.py
 Exit code is non-zero if any generator fails, any expected PNG is missing, or the
@@ -21,16 +31,19 @@ registry does not cover every ``{#fig:...}`` label the manuscript declares.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 _PROJECT_ROOT = Path(__file__).resolve().parents[1]
 _FIG_DIR = _PROJECT_ROOT / "output" / "figures"
 _MANUSCRIPT_DIR = _PROJECT_ROOT / "manuscript"
 _REGISTRY_PATH = _FIG_DIR / "figure_registry.json"
+_PROVENANCE_ENV = "GNN_FIGURE_TOKEN_PROVENANCE"
 
 # (crossref label, generator script, expected PNG, alt text).
 #
@@ -117,7 +130,19 @@ def _declared_labels() -> set[str]:
     return labels
 
 
-def _write_registry() -> list[str]:
+def _sha256(path: Path) -> str:
+    """Digest of a built artifact, so a swapped or stale PNG is detectable.
+
+    Returns the empty string when the figure was not produced: this build has
+    already recorded that as a failure and exits non-zero, and an empty digest
+    can never match a real PNG in the freshness gate.
+    """
+    if not path.is_file():
+        return ""
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _write_registry(provenance: dict[str, dict[str, str]]) -> list[str]:
     """Write figure_registry.json; return coverage problems (empty when clean)."""
     declared = _declared_labels()
     registered = {label for label, _, _, _ in _FIGURES}
@@ -130,13 +155,15 @@ def _write_registry() -> list[str]:
         for label in sorted(registered - declared)
     ]
     payload = {
-        "schema_version": "gnn_figure_registry_v1",
+        "schema_version": "gnn_figure_registry_v2",
         "figures": [
             {
                 "label": label,
                 "filename": png,
                 "alt_text": alt,
                 "generated_by": f"scripts/{script}",
+                "png_sha256": _sha256(_FIG_DIR / png),
+                "consumed_tokens": provenance.get(label, {}),
             }
             for label, script, png, alt in _FIGURES
         ],
@@ -162,23 +189,38 @@ def main() -> int:
 
     _FIG_DIR.mkdir(parents=True, exist_ok=True)
     failures: list[str] = []
-    for _label, script, png, _alt in _FIGURES:
-        script_path = _PROJECT_ROOT / "scripts" / script
-        result = subprocess.run(
-            [sys.executable, str(script_path)],
-            cwd=str(_PROJECT_ROOT),
-            env={"MPLBACKEND": "Agg", **_environ()},
-            check=False,
-        )
-        out = _FIG_DIR / png
-        if result.returncode != 0:
-            failures.append(f"{script} exited {result.returncode}")
-        elif not (out.is_file() and out.stat().st_size > 5_000):
-            failures.append(f"{script} did not produce {png} (>5KB)")
-        else:
+    provenance: dict[str, dict[str, str]] = {}
+    with tempfile.TemporaryDirectory() as tmp:
+        for label, script, png, _alt in _FIGURES:
+            script_path = _PROJECT_ROOT / "scripts" / script
+            # Each generator writes the token keys it actually read here.
+            token_record = Path(tmp) / f"{label.replace(':', '_')}.json"
+            result = subprocess.run(
+                [sys.executable, str(script_path)],
+                cwd=str(_PROJECT_ROOT),
+                env={
+                    "MPLBACKEND": "Agg",
+                    _PROVENANCE_ENV: str(token_record),
+                    **_environ(),
+                },
+                check=False,
+            )
+            out = _FIG_DIR / png
+            if result.returncode != 0:
+                failures.append(f"{script} exited {result.returncode}")
+                continue
+            if not (out.is_file() and out.stat().st_size > 5_000):
+                failures.append(f"{script} did not produce {png} (>5KB)")
+                continue
+            # Absent record = the generator reads no tokens (e.g. fig:orchestration).
+            provenance[label] = (
+                json.loads(token_record.read_text(encoding="utf-8"))
+                if token_record.is_file()
+                else {}
+            )
             print(f"  ✓ {png} ({out.stat().st_size // 1024} KB)")
 
-    failures.extend(_write_registry())
+    failures.extend(_write_registry(provenance))
 
     if failures:
         print("\n❌ Figure build FAILED:")

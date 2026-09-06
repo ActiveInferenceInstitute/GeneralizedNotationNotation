@@ -38,6 +38,26 @@ Evidence boundary: Do not treat root output churn as manuscript evidence until t
   `stage_04_validate`, not `stage_03_render`, so relying on it alone let a 29-page
   PDF ship with no registry at all.
 
+### A figure is a second renderer of the token map, and it does not re-run
+
+Prose is re-hydrated from `output/data/manuscript_variables.json` on every render.
+A figure is a committed PNG: move a count in the token map and the prose follows,
+while the figure keeps printing the old value. `fig:repo_metrics` shipped
+"Test files: 365" on the same PDF page as prose reading 367, under a caption
+claiming it was measured at the stamped commit — the count had moved 365 → 366 →
+367 across three commits and no one re-ran the build.
+
+So: **any commit that moves a count must re-run
+`python -m scripts.manuscript_build_figures` and commit the PNGs.** This is now
+mechanical rather than remembered. Generators read the token map through
+`scripts/lib/manuscript_figure_tokens.load_tokens()`, which records the
+`{key: value}` pairs each generator actually reads; the build writes them, plus
+the PNG's SHA-256, into `figure_registry.json`; and
+`src/tests/test_manuscript_figure_freshness.py` fails when a recorded value
+disagrees with the live token map, or when a committed PNG is not the one the
+registry records. A new generator that opens the token map directly fails that
+suite too, because bypassing the loader would leave its numbers unchecked.
+
 ## Paths are claims, and are checked like counts
 
 Do not type a model family's target directory into prose. The manifest owns it,
@@ -60,7 +80,6 @@ declared `target_dir` (or an ancestor of it, so `input/gnn_files` still reads as
 covering every family). `src/tests/test_manuscript_path_claims.py` pins both the
 generated sentences and the gate rule, and its two live-repository tests fail on
 the pre-fix prose.
-
 
 ## Known benign LaTeX diagnostics
 

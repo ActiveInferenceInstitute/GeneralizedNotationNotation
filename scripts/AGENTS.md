@@ -63,6 +63,7 @@ This folder hosts the explicit, stateless developer workflow validation agents r
 The [`lib/`](lib/) subdirectory provides shared utility functions for multiple audit scripts:
 
 - `lib/shared.py` — `repo_root()`, `should_skip_path()`, `is_generated_output()`, `add_strict_flag()`, `exit_with_findings()`
+- `lib/manuscript_figure_tokens.py` — `load_tokens()`: the manuscript token map, recording which keys a figure generator reads so `manuscript_build_figures.py` can stamp figure provenance
 - [`lib/AGENTS.md`](lib/AGENTS.md) — Documentation
 - [`lib/README.md`](lib/README.md) — Quick reference
 - [`lib/SPEC.md`](lib/SPEC.md) — Specification
