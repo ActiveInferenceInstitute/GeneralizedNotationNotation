@@ -2,8 +2,8 @@
 
 | Field | Value |
 | --- | --- |
-| Version | 0.4 |
-| Date | 2026-09-04 |
+| Version | 0.5 |
+| Date | 2026-09-06 |
 | Canonical copy | `../fep_lean/docs/design/gnn-bridge/bridge-contract.md` — edit there first |
 | Mirror copy | this file, `doc/other/fep_lean/bridge-contract.md` |
 | Change rule | substance changes bump the version and land in both checkouts in the same working session |
@@ -171,6 +171,12 @@ The historical P3 comparison default is read-only; report writing requires
 `--output`. Supported source-bound operations use `fep-lean bridge` with an
 explicit `--gnn-root`. Legacy script locations remain compatibility entry points.
 
+v0.5 rename migration: the canonical GNN Python package is `gnn`
+(src-layout `src/gnn/`); the GNN owner roster is re-pinned to the single glob
+`src/gnn/**/*.py` plus fixed owners `pyproject.toml`, `uv.lock`,
+`src/gnn/main.py`, the mirror, and the pinned syntax files
+(`doc/gnn/gnn_syntax.md`, `src/gnn/pipeline/step_registry.py`).
+
 ## 11. Concrete artifact proofs and shared receipts (v0.4)
 
 The artifact slices have separate mathematical contracts. Acceptance requires a
@@ -223,3 +229,36 @@ An accepted terminal record opens only read-only H3.G0 eligibility review.
 prospective study declarations. It does not select a dataset, invent license
 or sampling metadata, or authorize H3.0--H3.7 empirical execution. Numerical
 witnesses and bridge proofs do not replace these study requirements.
+
+## 13. GNN package layout and verify-document (v0.5)
+
+The canonical GNN Python package is `gnn` (src-layout `src/gnn/`). Every
+former top-level pipeline module (including the numbered step drivers and
+`main.py`) lives under `src/gnn/`; tests live outside the wheel under
+`tests/`. The root package is the one aggregate facade.
+
+The `verify-document` operation (Direction 2 S7) checks one emitted GNN
+document: `fep-lean bridge verify-document --gnn-root PATH --document PATH`
+`[--model finite|continuous] [--receipt PATH] [--fail-on-warnings]`. It
+extracts the typed payload through the pinned render route
+(`gnn.pomdp_extractor.extract_pomdp_from_file`, strict validation; full
+StateSpaceBlock inventory via `gnn.schema.parse_state_space`), constructs a
+`FEP.GnnDocument.GnnDocument` value in a compile-once Lean probe, and decides
+`documentWellFormed doc = true` in the committed `lean/FepSketches/`
+workspace. The receipt schema is `{"schema_version": 2, "document" (sha256),
+"model_family", "extracted_family", "toolchain" (lean version), "status"
+("ok" | "failed" | "skipped"), "warnings"}`. Missing Lean toolchain yields
+`status: "skipped"` and a non-zero exit — fail-closed, never a silent pass.
+
+The canonical `MODEL_DATA` payload schema embedded by the GNN Lean surface is
+`{"schema_version": 1, "model_family": "finite" | "continuous",
+"state_spaces": [{"decl", "dims", "value_type"}], "parameterizations":
+[{"var_name", "payload"}], "ontology_bindings": [{"var_name", "term"}]}`
+plus the legacy keys the shared strict reconstruction path consumes
+(`model_name`, `variables`, `connections`, `parameters`, `equations`,
+`time_specification`, `ontology_mappings`).
+
+No-go: `verify-document` does not auto-prove `DiscreteConforms` or
+`ContinuousConforms` for arbitrary documents. That is research-grade and
+stays out of scope; conformance proofs remain explicit, document-specific
+Lean artifacts (§7 evidence firewall).
