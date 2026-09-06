@@ -482,6 +482,84 @@ def _example_models(snapshot: RepositorySnapshot) -> list[Path]:
     return [md for md in candidates if "## GNNSection" in snapshot.read_text(md)]
 
 
+def _outside_corpus_dirs(snapshot: RepositorySnapshot) -> list[tuple[str, int]]:
+    """Model directories directly under ``input/`` other than ``gnn_files``.
+
+    Returns ``(path, model_count)`` pairs, sorted by path, where *model_count*
+    is the number of ``## GNNSection``-bearing ``.md`` files the directory
+    holds. ``_example_models`` deliberately scans only ``input/gnn_files``, so
+    without this the rest of the ``input/`` tree is invisible to every token and
+    can only be described by typed prose — which is how a fixture came to carry
+    a ``## GNNSection`` while no manifest, count, table or figure knew it
+    existed.
+    """
+    names = sorted(
+        {
+            rel.parts[1]
+            for rel in snapshot.glob("input", "*")
+            if len(rel.parts) > 2 and rel.parts[1] != "gnn_files"
+        }
+    )
+    pairs: list[tuple[str, int]] = []
+    for name in names:
+        candidates = snapshot.glob(f"input/{name}", "*.md")
+        snapshot.prefetch(candidates)
+        models = [md for md in candidates if "## GNNSection" in snapshot.read_text(md)]
+        pairs.append((f"input/{name}", len(models)))
+    return pairs
+
+
+def outside_corpus_note(
+    outside_dirs: Sequence[tuple[str, int]],
+    family_target_dirs: set[str] | Sequence[str],
+    example_count: int,
+) -> str:
+    """Build the generated sentences about model files outside the corpus tree.
+
+    This is a *sentence*, not a count, for the same reason
+    ``corpus_coverage_notes`` is: what goes stale is the relationship between a
+    directory, its model files, and the manifest — not any one number. Typed
+    prose describing that relationship stayed true only by luck through two
+    remediation passes, because every count beside it was computed from
+    ``input/gnn_files`` alone and so could not contradict it.
+
+    Flips on all three axes: a directory appearing or disappearing, a model file
+    being added to or removed from one, and a manifest family being pointed at
+    one.
+    """
+    registered = {str(d).rstrip("/") for d in family_target_dirs}
+    if not outside_dirs:
+        return (
+            f"Every model file under `input/` lives in that subtree, so the "
+            f"{example_count}-file count covers the whole tree."
+        )
+    fragments: list[str] = []
+    for path, count in outside_dirs:
+        noun = "model file" if count == 1 else "model files"
+        held = f"{count} {noun}" if count else "no model files"
+        claim = (
+            "is registered as a manifest family target directory"
+            if path in registered
+            else "is registered by no manifest family"
+        )
+        fragments.append(f"`{path}/` holds {held} and {claim}")
+    listed = "; ".join(fragments)
+    total = sum(count for _, count in outside_dirs)
+    if total == 0:
+        tail = (
+            f"No model file lies outside `input/gnn_files`, so the "
+            f"{example_count}-file count covers every model in the tree."
+        )
+    elif total == 1:
+        tail = f"That model file is outside the {example_count}-file count above."
+    else:
+        tail = (
+            f"Those {total} model files are outside the "
+            f"{example_count}-file count above."
+        )
+    return f"Outside that subtree, {listed}. {tail}"
+
+
 def corpus_coverage_notes(
     family_target_dirs: set[str] | Sequence[str],
     unscanned_corpus_dirs: Sequence[str],
@@ -829,6 +907,8 @@ def generate_variables(project_root: Path) -> dict[str, str]:
     unscanned_corpus_note, target_dir_coverage_note = corpus_coverage_notes(
         family_target_dirs, unscanned_corpus_dirs, len(example_models)
     )
+    outside_corpus_dirs = _outside_corpus_dirs(snapshot)
+    outside_corpus_models = sum(count for _, count in outside_corpus_dirs)
     figure_count = _count_files(snapshot, "output", "*.png")
     manuscript_figure_count = _count_files(snapshot, "output/figures", "*.png")
     doc_file_count = _count_files(snapshot, "doc", "*.md")
@@ -888,6 +968,13 @@ def generate_variables(project_root: Path) -> dict[str, str]:
         "GNN_UNSCANNED_CORPUS_DIR_COUNT": str(len(unscanned_corpus_dirs)),
         "GNN_UNSCANNED_CORPUS_DIRS": ", ".join(f"`{d}`" for d in unscanned_corpus_dirs),
         "GNN_UNSCANNED_CORPUS_NOTE": unscanned_corpus_note,
+        # Model files under input/ but outside input/gnn_files. GNN_EXAMPLE_COUNT
+        # deliberately excludes them, so without these two tokens nothing the
+        # producer emits can see them at all.
+        "GNN_OUTSIDE_CORPUS_MODEL_COUNT": str(outside_corpus_models),
+        "GNN_OUTSIDE_CORPUS_NOTE": outside_corpus_note(
+            outside_corpus_dirs, family_target_dirs, len(example_models)
+        ),
         "GNN_TARGET_DIR_COVERAGE_NOTE": target_dir_coverage_note,
         # Backends
         "GNN_BACKEND_COUNT": str(len(backends)),

@@ -13,8 +13,8 @@
 - `gnn_files/` — the maintained GNN exemplar specs, organised into task folders (`basics/`, `discrete/`, `hierarchical/`, `learning/`, `multiagent/`, `pomdp_gridworld/`, `precision/`, `pymdp_scaling_study/`, `structured/`, `continuous/`). [`gnn_files/INDEX.md`](gnn_files/INDEX.md) is the cold-start index and selection table.
 - `config.yaml` — pipeline routing: which steps run, skip lists, Step 2 test mode, timeouts, and per-step options. Every folder under `gnn_files/` goes through the full pipeline.
 - `model_family_manifest.json` — acceptance profile per model family (`schema`, `acceptance_profile_defaults`, `families`), consumed by `scripts/run_session_acceptance.py --manifest`.
-- `multi_agent_models/` — compact 3-agent clustered mean-field acceptance fixture used by roadmap acceptance commands; the authored multi-agent exemplars live in `gnn_files/multiagent/`.
-- `recursive_models/` — default target of bounded `--autonomous` proposal-loop acceptance runs; holds no committed models.
+- `multi_agent_models/` — one compact 3-agent clustered mean-field fixture, reachable by hand with `--target-dir`; the authored multi-agent exemplars live in `gnn_files/multiagent/`. No `TO-DO.md` verification command targets it.
+- `recursive_models/` — reserved target for bounded `--autonomous` proposal-loop runs; holds no committed models, and no `TO-DO.md` verification command targets it (`--autonomous` runs against `gnn_files/`).
 
 ## Model kinds and framework support
 

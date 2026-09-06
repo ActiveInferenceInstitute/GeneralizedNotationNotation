@@ -34,8 +34,10 @@ sys.path.insert(0, str(REPO_ROOT / "src"))
 from manuscript_variables import (  # noqa: E402
     RepositorySnapshot,
     _families,
+    _outside_corpus_dirs,
     corpus_coverage_notes,
     generate_variables,
+    outside_corpus_note,
 )
 
 
@@ -223,6 +225,106 @@ def test_live_manuscript_types_no_family_target_directory_by_hand() -> None:
         "family target directories are typed into prose instead of arriving "
         f"through the manifest: {offenders}"
     )
+
+
+# --- model files that live outside input/gnn_files --------------------------
+#
+# GNN_EXAMPLE_COUNT counts ``## GNNSection``-bearing files under
+# ``input/gnn_files`` only. A remediation pass gave
+# ``input/multi_agent_models/multi_agent_coordination.md`` the ``## GNNSection``
+# header the manuscript calls Required, which made it a model file that no
+# count, table, figure or gate could see; the only thing that described it was a
+# typed sentence in S01. These tests pin the generated replacement.
+
+
+def test_outside_corpus_note_names_each_directory_and_its_model_count() -> None:
+    note = outside_corpus_note(
+        [("input/multi_agent_models", 1), ("input/recursive_models", 0)],
+        {"input/gnn_files/multiagent"},
+        29,
+    )
+    assert "`input/multi_agent_models/` holds 1 model file" in note
+    assert "`input/recursive_models/` holds no model files" in note
+    assert "registered by no manifest family" in note
+    assert "That model file is outside the 29-file count above." in note
+
+
+def test_outside_corpus_note_flips_when_a_family_claims_the_directory() -> None:
+    """Registering the fixture must change the sentence, not just a number."""
+    note = outside_corpus_note(
+        [("input/multi_agent_models", 1)], {"input/multi_agent_models"}, 29
+    )
+    assert "is registered as a manifest family target directory" in note
+    assert "registered by no manifest family" not in note
+
+
+def test_outside_corpus_note_flips_when_a_model_is_added() -> None:
+    single = outside_corpus_note([("input/multi_agent_models", 1)], set(), 29)
+    double = outside_corpus_note([("input/multi_agent_models", 2)], set(), 29)
+    assert "holds 1 model file" in single
+    assert "holds 2 model files" in double
+    assert "Those 2 model files are outside the 29-file count above." in double
+
+
+def test_outside_corpus_note_states_full_coverage_when_nothing_is_outside() -> None:
+    assert outside_corpus_note([], set(), 29) == (
+        "Every model file under `input/` lives in that subtree, so the "
+        "29-file count covers the whole tree."
+    )
+    docs_only = outside_corpus_note([("input/recursive_models", 0)], set(), 29)
+    assert "No model file lies outside `input/gnn_files`" in docs_only
+
+
+def test_live_outside_corpus_dirs_see_the_multi_agent_fixture() -> None:
+    """The live repository's out-of-corpus model files are actually counted."""
+    pairs = dict(_outside_corpus_dirs(RepositorySnapshot(REPO_ROOT)))
+    assert pairs.get("input/multi_agent_models") == 1, pairs
+
+
+def test_live_s01_states_the_outside_corpus_relationship_through_the_token() -> None:
+    """S01 must not re-type the sentence the producer now owns."""
+    raw = (REPO_ROOT / "manuscript" / "S01_source_surface.md").read_text(
+        encoding="utf-8"
+    )
+    assert "{{GNN_OUTSIDE_CORPUS_NOTE}}" in raw
+    assert "multi_agent_models" not in raw
+    assert "recursive_models" not in raw
+
+
+def test_live_variables_carry_the_outside_corpus_tokens() -> None:
+    variables = generate_variables(REPO_ROOT)
+    assert variables["GNN_OUTSIDE_CORPUS_MODEL_COUNT"] == "1"
+    note = variables["GNN_OUTSIDE_CORPUS_NOTE"]
+    assert "`input/multi_agent_models/` holds 1 model file" in note
+    assert f"outside the {variables['GNN_EXAMPLE_COUNT']}-file count above" in note
+
+
+def test_producer_model_census_matches_pipeline_discovery() -> None:
+    """The counts the manuscript prints must be the files the pipeline sees.
+
+    ``_example_models`` recognizes a model by its ``## GNNSection`` header;
+    ``src/main.py`` discovers one with ``gnn.discovery.is_model_source_path``.
+    Two independent predicates over the same tree is how a corpus count can be
+    true of the producer and false of the pipeline, so this pins them equal.
+    """
+    from gnn.discovery import is_model_source_path  # noqa: PLC0415
+
+    variables = generate_variables(REPO_ROOT)
+    discovered = {
+        root: sum(
+            1
+            for md in (REPO_ROOT / root).rglob("*.md")
+            if is_model_source_path(md)
+        )
+        for root in (
+            "input/gnn_files",
+            "input/multi_agent_models",
+            "input/recursive_models",
+        )
+    }
+    assert discovered["input/gnn_files"] == int(variables["GNN_EXAMPLE_COUNT"])
+    outside = discovered["input/multi_agent_models"] + discovered["input/recursive_models"]
+    assert outside == int(variables["GNN_OUTSIDE_CORPUS_MODEL_COUNT"])
 
 
 if __name__ == "__main__":  # pragma: no cover - convenience

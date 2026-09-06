@@ -29,8 +29,13 @@ counts; do not trust hard-coded numbers in prose.
 
 ## Other directories
 
-- `multi_agent_models/` — compact multi-agent acceptance fixture (3-agent
-  clustered mean-field topology) used by roadmap acceptance commands; the
-  authored multi-agent exemplars live in `gnn_files/multiagent/`.
-- `recursive_models/` — default target for bounded `--autonomous` proposal-loop
-  acceptance runs; holds no committed models.
+- `multi_agent_models/` — one compact multi-agent fixture (3-agent clustered
+  mean-field topology), reachable by hand with `--target-dir`; the authored
+  multi-agent exemplars live in `gnn_files/multiagent/`.
+- `recursive_models/` — reserved target for bounded `--autonomous` proposal-loop
+  runs; holds no committed models.
+
+No verification command in [`../TO-DO.md`](../TO-DO.md) targets either
+directory — they all point at `gnn_files/` — so neither is inside the model
+counts the manuscript publishes. Each directory's own `README.md` records what
+it is for.
