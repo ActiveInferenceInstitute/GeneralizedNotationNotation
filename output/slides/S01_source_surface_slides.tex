@@ -210,7 +210,7 @@ separately so that the boundary between hand-written source and
 reproducible output stays explicit.
 
 The \texttt{src/} tree is the executable core of GNN. It is organized
-into 31 Python packages spanning 582 source files and roughly 194696
+into 31 Python packages spanning 582 source files and roughly 194808
 lines of code. Alongside these packages sit the 25 top-level step
 modules (0--24) that implement the numbered pipeline as thin
 orchestrators delegating into the packages, each module owning one stage
@@ -225,15 +225,16 @@ to one of these step modules rather than to descriptive prose alone.
 The \texttt{input/} tree holds the model corpora that exercise the
 pipeline. Its \texttt{gnn\_files/} subtree contains 10 corpus
 directories organized by model family, together totaling 29 example
-files; \breaktt{input/multi\_agent\_models/} holds a compact acceptance
-fixture that no manifest family registers, outside that count, and
-\breaktt{input/recursive\_models/} is a reserved directory that ships
-documentation only. A \breaktt{model\_family\_manifest.json} enumerates
-the 9 registered families and their target directories. This manifest is
-the authoritative registry that downstream steps and the manuscript
-variable producer read when they report family counts and
-cross-framework coverage; it should be consulted directly rather than
-inferred from directory listings.
+files. Outside that subtree, \breaktt{input/multi\_agent\_models/} holds
+1 model file and is registered by no manifest family;
+\breaktt{input/recursive\_models/} holds no model files and is registered
+by no manifest family. That model file is outside the 29-file count
+above. A \breaktt{model\_family\_manifest.json} enumerates the 9
+registered families and their target directories. This manifest is the
+authoritative registry that downstream steps and the manuscript variable
+producer read when they report family counts and cross-framework
+coverage; it should be consulted directly rather than inferred from
+directory listings.
 
 \end{frame}
 
@@ -288,7 +289,7 @@ from a source surface is a token,
 
 \begin{frame}[fragile,allowframebreaks]{Authored Source Versus Generated
 Output}
-section hard-codes one instead, and the resulting 84-entry map is
+section hard-codes one instead, and the resulting 86-entry map is
 committed at \breaktt{output/data/manuscript\_variables.json} for audit.
 External references are resolved from
 \breaktt{manuscript/references.bib}, which the same gate cross-checks

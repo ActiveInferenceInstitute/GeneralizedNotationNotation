@@ -862,7 +862,7 @@ Auto-Injection}\label{reproducibility-and-auto-injection}
 
 Every count reported in this manuscript is emitted by the producer
 \breaktt{scripts/z\_generate\_manuscript\_variables.py} from the
-repository state at commit 13c05e121, not typed by hand. The producer
+repository state at commit d4c6f248f, not typed by hand. The producer
 reads that commit's source surfaces directly --- the step modules, the
 source tree, the model-family manifest, and the framework registry ---
 together with the project's maintained ledgers, notably the Model
@@ -890,7 +890,7 @@ the build if a section reintroduces a literal that a token already owns.
 This section reports what the project has actually produced and how each
 quantitative claim is grounded. Every number below is substituted at
 render time from the deterministic producer, which reads the repository
-state at commit 13c05e121, so each figure here is regenerated from the
+state at commit d4c6f248f, so each figure here is regenerated from the
 artifacts it describes rather than transcribed.
 
 \subsection{Model-Family Coverage}\label{model-family-coverage}
@@ -1025,7 +1025,7 @@ contract exists to prevent.
 
 The repository's scale is itself evidence of the surface that the gates
 and pipeline cover, and it is reported in fig.~\ref{fig:repo_metrics}
-directly from the tracked files at commit 13c05e121.
+directly from the tracked files at commit d4c6f248f.
 
 \begin{figure}
 \centering
@@ -1035,8 +1035,8 @@ tool surface --- measured from the tracked files at the commit the
 producer stamps.}\label{fig:repo_metrics}
 \end{figure}
 
-The test suite comprises 366 test files containing 4117 test functions,
-exercising a source base of 582 Python files across 31 packages (194696
+The test suite comprises 367 test files containing 4133 test functions,
+exercising a source base of 582 Python files across 31 packages (194808
 lines of source). The Model Context Protocol surface --- which exposes
 GNN's capabilities to external agents and tools --- provides 141 tools
 across 32 modules. The pipeline itself runs as 25 steps (0--24), and 105
@@ -1205,9 +1205,9 @@ a missing copy degrades rather than failing the build.
 
 Because the variables file is regenerated before rendering, the counts
 in the rendered PDF track the repository state at the commit recorded in
-\breaktt{output/data/manuscript\_variables.json} (13c05e121): a code
-change that alters, for example, the test inventory (366 test files,
-4117 test functions) propagates into the prose on the next regeneration
+\breaktt{output/data/manuscript\_variables.json} (d4c6f248f): a code
+change that alters, for example, the test inventory (367 test files,
+4133 test functions) propagates into the prose on the next regeneration
 without any manual editing.
 
 \subsection{Reproducibility Contract}\label{reproducibility-contract}
@@ -1292,7 +1292,8 @@ prior, and the repository ships both a corpus model that does so
 which learns its likelihood matrix \texttt{A} from observations by joint
 variational message passing) and the renderer strategy that emits code
 for it (\breaktt{src/render/rxinfer/\_strategies\_learning.py}). That
-corpus directory is the one registered in no manifest family, so
+corpus directory is registered in no manifest family --- the
+unregistered set is exactly \breaktt{input/gnn\_files/learning} --- so
 parameter learning is exercised by neither the semantic-fidelity nor the
 cross-framework ledger and carries no figure or table in this
 manuscript. We state it here as implemented-but-out-of-scope rather than
@@ -1366,7 +1367,7 @@ separately so that the boundary between hand-written source and
 reproducible output stays explicit.
 
 The \texttt{src/} tree is the executable core of GNN. It is organized
-into 31 Python packages spanning 582 source files and roughly 194696
+into 31 Python packages spanning 582 source files and roughly 194808
 lines of code. Alongside these packages sit the 25 top-level step
 modules (0--24) that implement the numbered pipeline as thin
 orchestrators delegating into the packages, each module owning one stage
@@ -1378,15 +1379,16 @@ to one of these step modules rather than to descriptive prose alone.
 The \texttt{input/} tree holds the model corpora that exercise the
 pipeline. Its \texttt{gnn\_files/} subtree contains 10 corpus
 directories organized by model family, together totaling 29 example
-files; \breaktt{input/multi\_agent\_models/} holds a compact acceptance
-fixture that no manifest family registers, outside that count, and
-\breaktt{input/recursive\_models/} is a reserved directory that ships
-documentation only. A \breaktt{model\_family\_manifest.json} enumerates
-the 9 registered families and their target directories. This manifest is
-the authoritative registry that downstream steps and the manuscript
-variable producer read when they report family counts and
-cross-framework coverage; it should be consulted directly rather than
-inferred from directory listings.
+files. Outside that subtree, \breaktt{input/multi\_agent\_models/} holds
+1 model file and is registered by no manifest family;
+\breaktt{input/recursive\_models/} holds no model files and is registered
+by no manifest family. That model file is outside the 29-file count
+above. A \breaktt{model\_family\_manifest.json} enumerates the 9
+registered families and their target directories. This manifest is the
+authoritative registry that downstream steps and the manuscript variable
+producer read when they report family counts and cross-framework
+coverage; it should be consulted directly rather than inferred from
+directory listings.
 
 The \texttt{scripts/} tree contains the thin orchestrators that gate and
 reproduce the project. These include the acceptance scripts that confirm
@@ -1430,7 +1432,7 @@ figures, and the template render stage for the PDF. Which values become
 tokens is not a matter of taste: any quantity the producer can derive
 from a source surface is a token,
 \breaktt{scripts/check\_manuscript\_tokens.py} fails the build when a
-section hard-codes one instead, and the resulting 84-entry map is
+section hard-codes one instead, and the resulting 86-entry map is
 committed at \breaktt{output/data/manuscript\_variables.json} for audit.
 External references are resolved from
 \breaktt{manuscript/references.bib}, which the same gate cross-checks
