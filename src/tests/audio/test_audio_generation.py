@@ -15,14 +15,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-try:
-    import numpy as np
-
-    NUMPY_AVAILABLE = True
-except ImportError:
-    NUMPY_AVAILABLE = False
-
-pytestmark = pytest.mark.skipif(not NUMPY_AVAILABLE, reason="numpy required")
+import numpy as np
 
 
 @pytest.fixture(autouse=True)

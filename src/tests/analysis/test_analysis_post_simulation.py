@@ -17,14 +17,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-try:
-    import numpy as np
-
-    HAS_NUMPY = True
-except ImportError:
-    HAS_NUMPY = False
-
-pytestmark = pytest.mark.skipif(not HAS_NUMPY, reason="numpy required")
+import numpy as np
 
 from analysis.post_simulation import (
     analyze_free_energy,

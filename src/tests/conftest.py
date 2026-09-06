@@ -79,24 +79,6 @@ def _auto_seed_rng() -> None:
 
 
 @pytest.fixture(scope="session")
-def test_config() -> Generator[Dict[str, Any], None, None]:
-    """Session-wide test configuration."""
-    temp_dir = tempfile.mkdtemp()
-    config = {
-        "test_mode": True,
-        "safe_mode": True,
-        "temp_dir": temp_dir,
-        "max_test_duration": 300,
-        "memory_limit_mb": 1024,
-    }
-    yield config
-    # Cleanup: remove the temporary directory created for this session
-    import shutil
-
-    shutil.rmtree(temp_dir, ignore_errors=True)
-
-
-@pytest.fixture(scope="session")
 def project_root() -> Path:
     """Absolute path to the project root."""
     return Path(__file__).parent.parent.parent

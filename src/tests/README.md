@@ -31,6 +31,10 @@ uv run --extra dev python -m pytest -m fast          # fast tests only
 uv run --extra dev python -m pytest -m slow          # slow/performance tests only
 ```
 
+Opt-in markers: `pipeline` and `mcp` tests are excluded from CI and the
+default suite (`-m "not pipeline and not mcp"`); run them explicitly when
+working on those surfaces (see also `just bench` for pipeline performance).
+
 ## Test Statistics
 
 - **Live file inventory**: `rg --files src/tests -g 'test_*.py'`
