@@ -1,5 +1,5 @@
 \frametitle{References}
-Bibliography lives in
-\href{references.bib}{\breaktt{manuscript/references.bib}} and is read by
-Pandoc during PDF render. Add real BibTeX entries before adding citation
-markers to the manuscript.
+Entries below are resolved by Pandoc from
+\href{references.bib}{\breaktt{manuscript/references.bib}} at render
+time; \breaktt{scripts/check\_manuscript\_tokens.py} fails the build on a
+citation key that file does not define.

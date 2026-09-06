@@ -673,6 +673,22 @@ generators.</td>
 <code>ModelTimeHorizon</code>.</td>
 </tr>
 <tr>
+<td><code>## Equations</code></td>
+<td>Optional LaTeX-rendered formulas defining model dynamics and the
+relationships between declared variables; round-tripped by the
+semantic-fidelity gate.</td>
+</tr>
+<tr>
+<td><code>## Footer</code></td>
+<td>Optional closing section that terminates the file and lets a reader
+or parser enter it from either end.</td>
+</tr>
+<tr>
+<td><code>## Signature</code></td>
+<td>Optional provenance block carrying a cryptographic signature over
+the specification.</td>
+</tr>
+<tr>
 <td><code>NAME[d₁,d₂,…,type=…]</code></td>
 <td>A variable or tensor declaration; dimensions are positive integers
 or named references, and a <code>type</code> (<code>float</code>,
@@ -810,10 +826,12 @@ variable to a canonical term (<code>A=LikelihoodMatrix</code>,
 <code>o=Observation</code>, <code>π=PolicyVector</code>), which
 downstream pipeline steps use for semantic analysis and validation. The
 same GNN specification feeds the project’s rendering backends —
-including the 9 executable targets (PyMDP, RxInfer.jl,
-ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, bnlearn) — so
-that a model written once in this notation can be parsed, visualized,
-and executed across the 25-step pipeline (0–24) without restating its
+including the 9 registered targets (PyMDP, RxInfer.jl,
+ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, bnlearn), of
+which the 8 listed as executable (PyMDP, RxInfer.jl, ActiveInference.jl,
+JAX, DisCoPy, PyTorch, NumPyro, Stan) also run at Step 12 — so that a
+model written once in this notation can be parsed, visualized, and
+executed across the 25-step pipeline (0–24) without restating its
 mathematics [gnn2023; heins2022; defelice2021].</p>
 </main>
 </body>

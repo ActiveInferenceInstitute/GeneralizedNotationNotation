@@ -560,10 +560,10 @@ mjx-container[display="true"] {
 <a class="skip-link" href="#main-content">Skip to main content</a>
 <main id="main-content" tabindex="-1">
 <h1 id="sec:references">References</h1>
-<p>Bibliography lives in <a
-href="references.bib"><code>manuscript/references.bib</code></a> and is
-read by Pandoc during PDF render. Add real BibTeX entries before adding
-citation markers to the manuscript.</p>
+<p>Entries below are resolved by Pandoc from <a
+href="references.bib"><code>manuscript/references.bib</code></a> at
+render time; <code>scripts/check_manuscript_tokens.py</code> fails the
+build on a citation key that file does not define.</p>
 </main>
 </body>
 </html>

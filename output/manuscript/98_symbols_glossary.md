@@ -26,6 +26,9 @@ load-bearing sections a parser must recognize; they are catalogued in [@tbl:gnn_
 | `## ActInfOntologyAnnotation` | Optional bindings from each variable to a CamelCase Active Inference ontology term. |
 | `## ModelParameters` | Optional key-value dimensions (e.g. `num_hidden_states`, `num_obs`, `num_actions`) consumed by code generators. |
 | `## Time` | Optional dynamics declaration: a time variable plus `Dynamic`/`Static`, `Discrete`/`Continuous`, and `ModelTimeHorizon`. |
+| `## Equations` | Optional LaTeX-rendered formulas defining model dynamics and the relationships between declared variables; round-tripped by the semantic-fidelity gate. |
+| `## Footer` | Optional closing section that terminates the file and lets a reader or parser enter it from either end. |
+| `## Signature` | Optional provenance block carrying a cryptographic signature over the specification. |
 | `NAME[d₁,d₂,…,type=…]` | A variable or tensor declaration; dimensions are positive integers or named references, and a `type` (`float`, `int`, `bool`) is required. |
 | `A>B` | Directed (causal) connection operator: edge from `A` to `B`, e.g. `D>s` (a prior conditions a hidden state). |
 | `A-B` | Undirected (bidirectional) connection operator, e.g. `s-A` (a hidden state participates in the likelihood mapping). |
@@ -64,7 +67,9 @@ The `## ActInfOntologyAnnotation` section binds each variable to a canonical ter
 `D=PriorOverHiddenStates`, `s=HiddenState`, `o=Observation`, `π=PolicyVector`),
 which downstream pipeline steps use for semantic analysis and validation. The
 same GNN specification feeds the project's rendering backends — including the
-9 executable targets (PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, bnlearn) — so that a model
-written once in this notation can be parsed, visualized, and executed across the
+9 registered targets (PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, bnlearn), of which the
+8 listed as executable
+(PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan) also run at Step 12 — so that a
+model written once in this notation can be parsed, visualized, and executed across the
 25-step pipeline (0–24) without restating its
 mathematics [@gnn2023; @heins2022; @defelice2021].

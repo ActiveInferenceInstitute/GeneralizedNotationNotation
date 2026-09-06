@@ -595,8 +595,31 @@ collapsed into one settled executable recipe [champion2024reframingEfe;
 nuijten2026typeInference; rangarajan2026hierarchicalSuccessor]. The
 practical consequence is that not every model expressible in the GNN
 syntax can be executed on every registered backend today, and authors
-should consult the recorded backend matrix before assuming a given
-family will round-trip through a given framework.</p>
+should consult the profiled-unsupported ledger that
+<code>scripts/run_model_family_acceptance.py</code> writes — the command
+is given in <span class="citation"
+data-cites="sec:reproducibility">[@sec:reproducibility]</span> — before
+assuming a given family will round-trip through a given framework.</p>
+<p>A third limitation is one of scope rather than capability. The formal
+account in <span class="citation"
+data-cites="sec:system_context">[@sec:system_context]</span> fixes the
+generative-model components <code>A</code>, <code>B</code>,
+<code>C</code>, <code>D</code> and <code>E</code> as given and defines
+only state inference (<span class="citation"
+data-cites="eq:vfe">[@eq:vfe]</span>) and policy inference (<span
+class="citation" data-cites="eq:efe">[@eq:efe]</span>). GNN can also
+express <em>parameter</em> learning: a matrix may be declared as a
+latent variable with a Dirichlet prior, and the repository ships both a
+corpus model that does so
+(<code>input/gnn_files/learning/dirichlet_likelihood_learning.md</code>,
+which learns its likelihood matrix <code>A</code> from observations by
+joint variational message passing) and the renderer strategy that emits
+code for it (<code>src/render/rxinfer/_strategies_learning.py</code>).
+That corpus directory is the one registered in no manifest family, so
+parameter learning is exercised by neither the semantic-fidelity nor the
+cross-framework ledger and carries no figure or table in this
+manuscript. We state it here as implemented-but-out-of-scope rather than
+leave the omission to be inferred from the family tables.</p>
 <p>Finally, several capabilities depend on optional dependencies that
 are not part of the minimal install. The simulation frameworks
 themselves, the audio sonification path, the LLM-enhanced analysis step,
@@ -610,28 +633,29 @@ has installed. We consider this an acceptable engineering trade for
 portability, but it is a limitation a reader should hold in mind when
 interpreting any single end-to-end run.</p>
 <h2 id="next-steps">Next Steps</h2>
-<p>The roadmap is concrete and staged. The current release, GNN 3.2.0
-(“Long-Running Orchestration”), delivers three safe-by-design
-orchestration contracts that generate and validate data only, with no
-live infrastructure mutation. The first is <em>durable observation
-streams</em>: file- and array-backed stream manifests
-(content-checksummed) with replayable execution traces, so that an
-extended run can be observed, paused, and re-derived deterministically
-before any live sensor or device-backed stream is ever introduced. The
-second is <em>resumable run sessions</em>: run-session manifests with
-atomic checkpoint/resume, status inspection, and cancellation-safe
-cleanup so that extended model-family acceptance runs can be interrupted
-and resumed without corrupting partial state. The third is <em>auditable
-container plans</em>: generating hardened container plans with an
-explicit static security-review and rollback descriptor, deliberately
-stopping short of mutating any real cluster. Each contract is covered by
-tests over real objects with negative controls and a strict acceptance
-gate, additive live wiring connects them to the session-acceptance and
-run-manifest paths, and three new Model Context Protocol tools expose
-them. The unifying discipline across all three is that orchestration
-becomes more capable only as fast as it becomes more inspectable.</p>
+<p>The roadmap is concrete and staged. The current release is GNN 3.2.0
+(“Exemplar Gold Standard”, 2026-09-02). It builds on the three
+safe-by-design orchestration contracts introduced in GNN 3.0.0, which
+generate and validate data only, with no live infrastructure mutation.
+The first is <em>durable observation streams</em>: file- and
+array-backed stream manifests (content-checksummed) with replayable
+execution traces, so that an extended run can be observed, paused, and
+re-derived deterministically before any live sensor or device-backed
+stream is ever introduced. The second is <em>resumable run
+sessions</em>: run-session manifests with atomic checkpoint/resume,
+status inspection, and cancellation-safe cleanup so that extended
+model-family acceptance runs can be interrupted and resumed without
+corrupting partial state. The third is <em>auditable container
+plans</em>: generating hardened container plans with an explicit static
+security-review and rollback descriptor, deliberately stopping short of
+mutating any real cluster. Each contract is covered by tests over real
+objects with negative controls and a strict acceptance gate, additive
+live wiring connects them to the session-acceptance and run-manifest
+paths, and three new Model Context Protocol tools expose them. The
+unifying discipline across all three is that orchestration becomes more
+capable only as fast as it becomes more inspectable.</p>
 <p>The next major target, v4.0.0, pushes toward bounded autonomy, and it
-is gated behind the 3.2.0 orchestration work for good reason. The intent
+is gated behind the 3.0.0 orchestration work for good reason. The intent
 is to promote today’s proposal-only candidate-scoring machinery — which
 already ranks candidate patches using the existing validators,
 model-family ledgers, and interpretability reports — toward <em>reviewed
@@ -646,7 +670,7 @@ under explicit generative models [friston2010; parr2022]: an agent
 should expand its license to act only in proportion to the reviewability
 of what it does. The v4.0.0 items are not claimed as complete here; they
 are the recorded direction of travel, and each will be evidenced by its
-own gates when it lands, just as the 3.2.0 contracts are evidenced by
+own gates when it lands, just as the 3.0.0 contracts are evidenced by
 theirs today.</p>
 </main>
 </body>

@@ -606,11 +606,11 @@ authoritative, editable description. From it, GNN produces graphical
 visualizations that expose the model’s factor and dependency structure
 for inspection and communication. And from the same source it produces
 executable cognitive models that can actually be run, so that the
-diagram, the equations, and the running code are provably the same model
-rather than three artifacts that merely claim to be. The Triple Play
-turns a model from a description scattered across media into one
-specification with multiple faithful projections (see <span
-class="citation"
+diagram, the equations, and the running code are all generated from one
+parsed document rather than three artifacts that merely claim to
+describe the same model. The Triple Play turns a model from a
+description scattered across media into one specification with multiple
+faithful projections (see <span class="citation"
 data-cites="fig:triple_play">[@fig:triple_play]</span>).</p>
 <h2 id="contributions">Contributions</h2>
 <p>This work contributes a standard notation together with the
@@ -619,14 +619,16 @@ infrastructure that makes it usable in practice:</p>
 <li><strong>A parseable, human-readable notation</strong> for Active
 Inference generative models, whose text form is authoritative and from
 which every other representation is derived.</li>
-<li><strong>A 25-step processing pipeline</strong>, implemented across
-31 source packages (0–24), that carries a specification from parsing and
-validation through visualization, rendering, and execution.</li>
+<li><strong>A 25-step processing pipeline</strong> (0–24), whose stages
+are implemented across 31 source packages, that carries a specification
+from parsing and validation through visualization, rendering, and
+execution.</li>
 <li><strong>9 rendering backends</strong> (PyMDP, RxInfer.jl,
 ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, bnlearn) that
-materialize a single GNN specification as executable cognitive models
-across multiple simulation frameworks, realizing the executable arm of
-the Triple Play.</li>
+materialize a single GNN specification as backend-specific model code,
+of which 8 (PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy,
+PyTorch, NumPyro, Stan) also execute at Step 12, realizing the
+executable arm of the Triple Play.</li>
 <li><strong>141 Model Context Protocol tools</strong> that expose the
 pipeline’s capabilities to agentic and programmatic clients, so the
 notation and its tooling are directly accessible to automated
@@ -657,7 +659,7 @@ a specification through the pipeline — parsing, type checking,
 rendering, execution, and reporting — and presents the backend registry
 (<span class="citation"
 data-cites="tbl:backend_registry">[@tbl:backend_registry]</span>), the
-backend capability surface (<span class="citation"
+backend registry surface (<span class="citation"
 data-cites="fig:backend_matrix">[@fig:backend_matrix]</span>), and the
 long-running orchestration contracts (<span class="citation"
 data-cites="fig:orchestration">[@fig:orchestration]</span>). <span

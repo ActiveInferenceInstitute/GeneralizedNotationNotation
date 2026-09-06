@@ -643,10 +643,12 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="
 across the maintained backends, and writes all artifacts under the
 chosen output directory. The <code>--skip-llm</code> flag keeps the run
 hermetic and free of external API calls, which makes it suitable for
-continuous integration and for offline reproduction. To exercise the
-complete model corpus rather than a single family, point
-<code>--target-dir</code> at <code>input/gnn_files</code>, which
-contains 10 family directories.</p>
+continuous integration and for offline reproduction. To exercise every
+registered family rather than a single one, drive the manifest through
+the model-family acceptance gate given below: pointing
+<code>--target-dir</code> at <code>input/gnn_files</code> covers that
+tree’s 10 corpus directories but not the <code>multiagent</code> family,
+whose target directory is <code>input/multi_agent_models</code>.</p>
 <h2 id="validation-gates">Validation Gates</h2>
 <p>GNN’s reproducibility guarantees rest on a small set of strict,
 deterministic gates that bind the manuscript’s quantitative claims to
@@ -659,10 +661,11 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="
 <p>The semantic-fidelity gate verifies that a parse → serialize → parse
 round trip preserves variables, edges, dimensions, parameter shapes,
 equations, time semantics, and ontology mappings across the 9 model
-families; the cross-framework gate profiles the 9 maintained backends
-and records explicit compatible and unsupported statuses rather than
-silently degrading. Both write their ledgers to an output directory of
-your choosing:</p>
+families; the cross-framework gate profiles the 7 maintained backends
+(PyMDP, RxInfer.jl, JAX, NumPyro, PyTorch, ActiveInference.jl, DisCoPy)
+— refusing any framework outside that set — and records explicit
+compatible and unsupported statuses rather than silently degrading. Both
+write their ledgers to an output directory of your choosing:</p>
 <div class="sourceCode" id="cb3"><pre
 class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python scripts/run_semantic_fidelity_gate.py <span class="dt">\</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--manifest</span> input/model_family_manifest.json <span class="dt">\</span></span>
@@ -682,23 +685,32 @@ documentation, type, and security checks for a full pre-commit gate.</p>
 value in the prose — the pipeline step count, the family and backend
 counts, the source and test inventories — is a token rather than a
 hard-coded literal, and the deterministic producer regenerates all of
-them from the live repository state:</p>
+them from the tracked files at the current commit:</p>
 <div class="sourceCode" id="cb4"><pre
 class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/z_generate_manuscript_variables.py</span></code></pre></div>
 <p>That command recomputes the {{…}} tokens, persists them to
 <code>output/data/manuscript_variables.json</code> for audit, and
 hydrates the manuscript sources into <code>output/manuscript/</code>.
-The hydrated sources are then rendered to PDF through the template
-research pipeline (invoked from the parent monorepo / template
-framework), whose rendering stage converts the markdown sections,
-figures, and references into the final document:</p>
+The manuscript’s own figures are rebuilt from the same token map:</p>
 <div class="sourceCode" id="cb5"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> scripts.manuscript_build_figures</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> scripts.z_generate_manuscript_variables</span></code></pre></div>
-<p>Because the variables file is regenerated immediately before
-rendering, the numbers in the rendered PDF cannot drift from the
-repository: a code change that alters, for example, the test inventory
-(365 test files, 4101 test functions) propagates into the prose on the
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> scripts.manuscript_build_figures</span></code></pre></div>
+<p>The hydrated sources are then rendered to PDF by the docxology
+template’s render stage. That stage lives in a separate checkout, with
+this repository symlinked into it at
+<code>projects/active/GeneralizedNotationNotation</code>; run from the
+template root:</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run <span class="at">--frozen</span> python scripts/pipeline/stage_03_render.py <span class="dt">\</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--project</span> GeneralizedNotationNotation</span></code></pre></div>
+<p>The render needs a LaTeX installation providing the packages listed
+in <code>manuscript/preamble.md</code> plus <code>seqsplit</code>; the
+template guards <code>seqsplit</code> with <code>\IfFileExists</code>,
+so a missing copy degrades rather than failing the build.</p>
+<p>Because the variables file is regenerated before rendering, the
+counts in the rendered PDF track the repository state at the commit
+recorded in <code>output/data/manuscript_variables.json</code>
+(852f4bdbf): a code change that alters, for example, the test inventory
+(365 test files, 4103 test functions) propagates into the prose on the
 next regeneration without any manual editing.</p>
 <h2 id="reproducibility-contract">Reproducibility Contract</h2>
 <ul>

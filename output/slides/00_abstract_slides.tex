@@ -98,6 +98,27 @@
 % of \tableofcontents only, inside a group, so body spacing is untouched and no
 % entry is dropped (reducing \tocdepth would have hidden 29 real subsections).
   \providecommand{\addvspace}[1]{\vskip 2\p@}%
+% Document metadata. config.yaml declares a subtitle and a keyword list, and
+% the producer emits both as tokens, but the template's \hypersetup writes only
+% pdftitle/pdfauthor/pdflang -- so `pdfinfo` reported no Subject and no
+% Keywords. This block runs after the template's, so it wins.
+%
+% The two values below are WRITTEN by scripts/z_generate_manuscript_variables.py
+% (sync_preamble_metadata), never typed. A double-brace token cannot be used here:
+% preamble.md is substituted into output/manuscript/ like any other section, but
+% the template's _manuscript_source.py then copies the raw file back over that
+% copy, so an unresolved token would reach hyperref and land in the PDF's
+% metadata verbatim.
+% Bounded identifier splitting. The template defines
+%   \protected\def\breaktt#1{\begingroup\ttfamily\seqsplit{#1}\endgroup}
+% and \seqsplit permits a break after EVERY character with no continuation cue.
+% In the 2026-09-05 PDF that rendered `model_family_manifest.json` as
+% `model_family_manifest.js` + `on` and `src/manuscript_variables.py` as
+% `(src/manusc` + `ript_variables.py` — the first is itself a valid filename, so
+% a reader cannot tell a line break from a name. Keep seqsplit's guarantee that
+% no code token overflows the measure, but forbid breaks inside the last
+% \GNNttTail characters (an extension is never orphaned) and inside the first
+% \GNNttHead (a one- or two-letter stub is never left behind).
 
 % Slide layout defaults for warning-clean scientific decks.
 \usepackage{etoolbox}
@@ -201,7 +222,7 @@ views --- a textual specification, graphical visualizations, and
 executable cognitive models --- so that one source yields consistent
 outputs across modalities. The framework spans 9 model families and 9
 registered rendering backends, with explicit gates for cross-format
-semantic fidelity and cross-framework reliability. GNN 3.2.0 layers
+semantic fidelity and cross-framework reliability. GNN 3.0.0 layered
 safe-by-design long-running orchestration on top of this language and
 pipeline --- durable observation streams, resumable run sessions, and
 auditable container plans that generate, validate, and replay data only,
