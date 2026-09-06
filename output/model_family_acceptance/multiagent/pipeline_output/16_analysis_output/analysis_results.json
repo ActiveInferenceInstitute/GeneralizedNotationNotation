@@ -1,0 +1,1028 @@
+{
+  "timestamp": "2026-09-06T11:28:33.912739",
+  "processed_files": 1,
+  "success": true,
+  "errors": [],
+  "statistical_analysis": [
+    {
+      "file_path": "output/model_family_acceptance/multiagent/input/multi_agent_coordination.md",
+      "file_name": "multi_agent_coordination.md",
+      "file_size": 4594,
+      "line_count": 187,
+      "variables": [
+        {
+          "name": "Example",
+          "definition": "Example: Multi",
+          "line": 1,
+          "type": "Multi"
+        },
+        {
+          "name": "Version",
+          "definition": "Version: 1",
+          "line": 3,
+          "type": "1"
+        },
+        {
+          "name": "space",
+          "definition": "space: agents",
+          "line": 24,
+          "type": "agents"
+        },
+        {
+          "name": "preferences",
+          "definition": "preferences: both",
+          "line": 26,
+          "type": "both"
+        },
+        {
+          "name": "preference",
+          "definition": "preference: goal",
+          "line": 106,
+          "type": "goal"
+        },
+        {
+          "name": "num_hidden_states",
+          "definition": "num_hidden_states: 16",
+          "line": 170,
+          "type": "16"
+        },
+        {
+          "name": "num_obs",
+          "definition": "num_obs: 16",
+          "line": 171,
+          "type": "16"
+        },
+        {
+          "name": "num_actions",
+          "definition": "num_actions: 3",
+          "line": 172,
+          "type": "3"
+        },
+        {
+          "name": "num_agents",
+          "definition": "num_agents: 2",
+          "line": 173,
+          "type": "2"
+        },
+        {
+          "name": "num_hidden_states_per_agent",
+          "definition": "num_hidden_states_per_agent: 4",
+          "line": 174,
+          "type": "4"
+        },
+        {
+          "name": "num_obs_per_agent",
+          "definition": "num_obs_per_agent: 4",
+          "line": 175,
+          "type": "4"
+        },
+        {
+          "name": "num_actions_per_agent",
+          "definition": "num_actions_per_agent: 3",
+          "line": 176,
+          "type": "3"
+        },
+        {
+          "name": "num_timesteps",
+          "definition": "num_timesteps: 20",
+          "line": 177,
+          "type": "20"
+        },
+        {
+          "name": "4x4",
+          "definition": "4x4 = 16 joint states)",
+          "line": 25,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]     # Agent 1 likelihood",
+          "line": 33,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]   # Agent 1 transitions (3 actions)",
+          "line": 34,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]       # Agent 1 preferences",
+          "line": 35,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]       # Agent 1 prior",
+          "line": 36,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]     # Agent 1 hidden state",
+          "line": 37,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float] # Agent 1 next hidden state",
+          "line": 38,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=int]       # Agent 1 observations (includes Agent 2 obs)",
+          "line": 39,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]       # Agent 1 policy",
+          "line": 40,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=int]         # Agent 1 action",
+          "line": 41,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]      # Agent 1 EFE",
+          "line": 42,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]     # Agent 2 likelihood",
+          "line": 46,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]   # Agent 2 transitions (3 actions)",
+          "line": 47,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]       # Agent 2 preferences",
+          "line": 48,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]       # Agent 2 prior",
+          "line": 49,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]     # Agent 2 hidden state",
+          "line": 50,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float] # Agent 2 next hidden state",
+          "line": 51,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=int]       # Agent 2 observations (includes Agent 1 obs)",
+          "line": 52,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]       # Agent 2 policy",
+          "line": 53,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=int]         # Agent 2 action",
+          "line": 54,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]      # Agent 2 EFE",
+          "line": 55,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]  # Joint state (Agent1_pos x Agent2_pos)",
+          "line": 59,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=int]     # Joint observation (goal achievement)",
+          "line": 60,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=int]",
+          "line": 64,
+          "type": "unknown"
+        },
+        {
+          "name": "A_agent1",
+          "definition": "A_agent1={",
+          "line": 92,
+          "type": "unknown"
+        },
+        {
+          "name": "A_agent2",
+          "definition": "A_agent2={",
+          "line": 99,
+          "type": "unknown"
+        },
+        {
+          "name": "goal",
+          "definition": "goal = state 4 (index 3)",
+          "line": 106,
+          "type": "unknown"
+        },
+        {
+          "name": "C_agent1",
+          "definition": "C_agent1={(-1.0, -1.0, -1.0, 2.0)}",
+          "line": 108,
+          "type": "unknown"
+        },
+        {
+          "name": "C_agent2",
+          "definition": "C_agent2={(-1.0, -1.0, -1.0, 2.0)}",
+          "line": 109,
+          "type": "unknown"
+        },
+        {
+          "name": "D_agent1",
+          "definition": "D_agent1={(0.25, 0.25, 0.25, 0.25)}",
+          "line": 110,
+          "type": "unknown"
+        },
+        {
+          "name": "D_agent2",
+          "definition": "D_agent2={(0.25, 0.25, 0.25, 0.25)}",
+          "line": 111,
+          "type": "unknown"
+        },
+        {
+          "name": "B_agent1",
+          "definition": "B_agent1={",
+          "line": 113,
+          "type": "unknown"
+        },
+        {
+          "name": "B_agent2",
+          "definition": "B_agent2={",
+          "line": 119,
+          "type": "unknown"
+        },
+        {
+          "name": "Time",
+          "definition": "Time=t",
+          "line": 137,
+          "type": "unknown"
+        },
+        {
+          "name": "ModelTimeHorizon",
+          "definition": "ModelTimeHorizon=20",
+          "line": 140,
+          "type": "unknown"
+        },
+        {
+          "name": "A_agent1",
+          "definition": "A_agent1=LikelihoodMatrix",
+          "line": 144,
+          "type": "unknown"
+        },
+        {
+          "name": "B_agent1",
+          "definition": "B_agent1=TransitionMatrix",
+          "line": 145,
+          "type": "unknown"
+        },
+        {
+          "name": "C_agent1",
+          "definition": "C_agent1=LogPreferenceVector",
+          "line": 146,
+          "type": "unknown"
+        },
+        {
+          "name": "D_agent1",
+          "definition": "D_agent1=PriorOverHiddenStates",
+          "line": 147,
+          "type": "unknown"
+        },
+        {
+          "name": "s_agent1",
+          "definition": "s_agent1=Agent1HiddenState",
+          "line": 148,
+          "type": "unknown"
+        },
+        {
+          "name": "x_next1",
+          "definition": "x_next1=Agent1NextHiddenState",
+          "line": 149,
+          "type": "unknown"
+        },
+        {
+          "name": "o_agent1",
+          "definition": "o_agent1=Agent1Observation",
+          "line": 150,
+          "type": "unknown"
+        },
+        {
+          "name": "\u03c01",
+          "definition": "\u03c01=Agent1PolicyVector",
+          "line": 151,
+          "type": "unknown"
+        },
+        {
+          "name": "u1",
+          "definition": "u1=Agent1Action",
+          "line": 152,
+          "type": "unknown"
+        },
+        {
+          "name": "G1",
+          "definition": "G1=Agent1ExpectedFreeEnergy",
+          "line": 153,
+          "type": "unknown"
+        },
+        {
+          "name": "A_agent2",
+          "definition": "A_agent2=LikelihoodMatrix",
+          "line": 154,
+          "type": "unknown"
+        },
+        {
+          "name": "B_agent2",
+          "definition": "B_agent2=TransitionMatrix",
+          "line": 155,
+          "type": "unknown"
+        },
+        {
+          "name": "C_agent2",
+          "definition": "C_agent2=LogPreferenceVector",
+          "line": 156,
+          "type": "unknown"
+        },
+        {
+          "name": "D_agent2",
+          "definition": "D_agent2=PriorOverHiddenStates",
+          "line": 157,
+          "type": "unknown"
+        },
+        {
+          "name": "s_agent2",
+          "definition": "s_agent2=Agent2HiddenState",
+          "line": 158,
+          "type": "unknown"
+        },
+        {
+          "name": "x_next2",
+          "definition": "x_next2=Agent2NextHiddenState",
+          "line": 159,
+          "type": "unknown"
+        },
+        {
+          "name": "o_agent2",
+          "definition": "o_agent2=Agent2Observation",
+          "line": 160,
+          "type": "unknown"
+        },
+        {
+          "name": "\u03c02",
+          "definition": "\u03c02=Agent2PolicyVector",
+          "line": 161,
+          "type": "unknown"
+        },
+        {
+          "name": "u2",
+          "definition": "u2=Agent2Action",
+          "line": 162,
+          "type": "unknown"
+        },
+        {
+          "name": "G2",
+          "definition": "G2=Agent2ExpectedFreeEnergy",
+          "line": 163,
+          "type": "unknown"
+        },
+        {
+          "name": "s_joint",
+          "definition": "s_joint=JointState",
+          "line": 164,
+          "type": "unknown"
+        },
+        {
+          "name": "o_joint",
+          "definition": "o_joint=JointObservation",
+          "line": 165,
+          "type": "unknown"
+        },
+        {
+          "name": "t",
+          "definition": "t=Time",
+          "line": 166,
+          "type": "unknown"
+        },
+        {
+          "name": "A_agent1",
+          "definition": "A_agent1[4,4,type=float]",
+          "line": 33,
+          "type": "unknown"
+        },
+        {
+          "name": "B_agent1",
+          "definition": "B_agent1[4,4,3,type=float]",
+          "line": 34,
+          "type": "unknown"
+        },
+        {
+          "name": "C_agent1",
+          "definition": "C_agent1[4,type=float]",
+          "line": 35,
+          "type": "unknown"
+        },
+        {
+          "name": "D_agent1",
+          "definition": "D_agent1[4,type=float]",
+          "line": 36,
+          "type": "unknown"
+        },
+        {
+          "name": "s_agent1",
+          "definition": "s_agent1[4,1,type=float]",
+          "line": 37,
+          "type": "unknown"
+        },
+        {
+          "name": "x_next1",
+          "definition": "x_next1[4,1,type=float]",
+          "line": 38,
+          "type": "unknown"
+        },
+        {
+          "name": "o_agent1",
+          "definition": "o_agent1[4,1,type=int]",
+          "line": 39,
+          "type": "unknown"
+        },
+        {
+          "name": "\u03c01",
+          "definition": "\u03c01[3,type=float]",
+          "line": 40,
+          "type": "unknown"
+        },
+        {
+          "name": "u1",
+          "definition": "u1[1,type=int]",
+          "line": 41,
+          "type": "unknown"
+        },
+        {
+          "name": "G1",
+          "definition": "G1[\u03c01,type=float]",
+          "line": 42,
+          "type": "unknown"
+        },
+        {
+          "name": "A_agent2",
+          "definition": "A_agent2[4,4,type=float]",
+          "line": 46,
+          "type": "unknown"
+        },
+        {
+          "name": "B_agent2",
+          "definition": "B_agent2[4,4,3,type=float]",
+          "line": 47,
+          "type": "unknown"
+        },
+        {
+          "name": "C_agent2",
+          "definition": "C_agent2[4,type=float]",
+          "line": 48,
+          "type": "unknown"
+        },
+        {
+          "name": "D_agent2",
+          "definition": "D_agent2[4,type=float]",
+          "line": 49,
+          "type": "unknown"
+        },
+        {
+          "name": "s_agent2",
+          "definition": "s_agent2[4,1,type=float]",
+          "line": 50,
+          "type": "unknown"
+        },
+        {
+          "name": "x_next2",
+          "definition": "x_next2[4,1,type=float]",
+          "line": 51,
+          "type": "unknown"
+        },
+        {
+          "name": "o_agent2",
+          "definition": "o_agent2[4,1,type=int]",
+          "line": 52,
+          "type": "unknown"
+        },
+        {
+          "name": "\u03c02",
+          "definition": "\u03c02[3,type=float]",
+          "line": 53,
+          "type": "unknown"
+        },
+        {
+          "name": "u2",
+          "definition": "u2[1,type=int]",
+          "line": 54,
+          "type": "unknown"
+        },
+        {
+          "name": "G2",
+          "definition": "G2[\u03c02,type=float]",
+          "line": 55,
+          "type": "unknown"
+        },
+        {
+          "name": "s_joint",
+          "definition": "s_joint[16,1,type=float]",
+          "line": 59,
+          "type": "unknown"
+        },
+        {
+          "name": "o_joint",
+          "definition": "o_joint[4,1,type=int]",
+          "line": 60,
+          "type": "unknown"
+        },
+        {
+          "name": "t",
+          "definition": "t[1,type=int]",
+          "line": 64,
+          "type": "unknown"
+        }
+      ],
+      "connections": [
+        {
+          "source": "D_agent1",
+          "target": "s_agent1",
+          "connection": "D_agent1>s_agent1",
+          "connection_type": "directional",
+          "line": 67
+        },
+        {
+          "source": "s_agent1",
+          "target": "A_agent1",
+          "connection": "s_agent1-A_agent1",
+          "connection_type": "bidirectional",
+          "line": 68
+        },
+        {
+          "source": "A_agent1",
+          "target": "o_agent1",
+          "connection": "A_agent1-o_agent1",
+          "connection_type": "bidirectional",
+          "line": 69
+        },
+        {
+          "source": "s_agent1",
+          "target": "x_next1",
+          "connection": "s_agent1>x_next1",
+          "connection_type": "directional",
+          "line": 70
+        },
+        {
+          "source": "C_agent1",
+          "target": "G1",
+          "connection": "C_agent1>G1",
+          "connection_type": "directional",
+          "line": 71
+        },
+        {
+          "source": "G1",
+          "target": "\u03c01",
+          "connection": "G1>\u03c01",
+          "connection_type": "directional",
+          "line": 72
+        },
+        {
+          "source": "\u03c01",
+          "target": "u1",
+          "connection": "\u03c01>u1",
+          "connection_type": "directional",
+          "line": 73
+        },
+        {
+          "source": "B_agent1",
+          "target": "u1",
+          "connection": "B_agent1>u1",
+          "connection_type": "directional",
+          "line": 74
+        },
+        {
+          "source": "D_agent2",
+          "target": "s_agent2",
+          "connection": "D_agent2>s_agent2",
+          "connection_type": "directional",
+          "line": 75
+        },
+        {
+          "source": "s_agent2",
+          "target": "A_agent2",
+          "connection": "s_agent2-A_agent2",
+          "connection_type": "bidirectional",
+          "line": 76
+        },
+        {
+          "source": "A_agent2",
+          "target": "o_agent2",
+          "connection": "A_agent2-o_agent2",
+          "connection_type": "bidirectional",
+          "line": 77
+        },
+        {
+          "source": "s_agent2",
+          "target": "x_next2",
+          "connection": "s_agent2>x_next2",
+          "connection_type": "directional",
+          "line": 78
+        },
+        {
+          "source": "C_agent2",
+          "target": "G2",
+          "connection": "C_agent2>G2",
+          "connection_type": "directional",
+          "line": 79
+        },
+        {
+          "source": "G2",
+          "target": "\u03c02",
+          "connection": "G2>\u03c02",
+          "connection_type": "directional",
+          "line": 80
+        },
+        {
+          "source": "\u03c02",
+          "target": "u2",
+          "connection": "\u03c02>u2",
+          "connection_type": "directional",
+          "line": 81
+        },
+        {
+          "source": "B_agent2",
+          "target": "u2",
+          "connection": "B_agent2>u2",
+          "connection_type": "directional",
+          "line": 82
+        },
+        {
+          "source": "u1",
+          "target": "s_joint",
+          "connection": "u1>s_joint",
+          "connection_type": "directional",
+          "line": 83
+        },
+        {
+          "source": "u2",
+          "target": "s_joint",
+          "connection": "u2>s_joint",
+          "connection_type": "directional",
+          "line": 84
+        },
+        {
+          "source": "s_joint",
+          "target": "o_joint",
+          "connection": "s_joint-o_joint",
+          "connection_type": "bidirectional",
+          "line": 85
+        },
+        {
+          "source": "o_agent1",
+          "target": "s_joint",
+          "connection": "o_agent1-s_joint",
+          "connection_type": "bidirectional",
+          "line": 86
+        },
+        {
+          "source": "o_agent2",
+          "target": "s_joint",
+          "connection": "o_agent2-s_joint",
+          "connection_type": "bidirectional",
+          "line": 87
+        }
+      ],
+      "sections": [
+        {
+          "name": "GNN Example: Multi-Agent Cooperative Active Inference",
+          "line": 1
+        },
+        {
+          "name": "GNN Version: 1.0",
+          "line": 3
+        },
+        {
+          "name": "Two agents cooperating via shared observation space",
+          "line": 5
+        },
+        {
+          "name": "GNNSection",
+          "line": 7
+        },
+        {
+          "name": "GNNVersionAndFlags",
+          "line": 11
+        },
+        {
+          "name": "ModelName",
+          "line": 15
+        },
+        {
+          "name": "ModelAnnotation",
+          "line": 19
+        },
+        {
+          "name": "StateSpaceBlock",
+          "line": 29
+        },
+        {
+          "name": "Agent 1",
+          "line": 31
+        },
+        {
+          "name": "Agent 2",
+          "line": 44
+        },
+        {
+          "name": "Shared environment state",
+          "line": 57
+        },
+        {
+          "name": "Time",
+          "line": 62
+        },
+        {
+          "name": "Connections",
+          "line": 66
+        },
+        {
+          "name": "InitialParameterization",
+          "line": 90
+        },
+        {
+          "name": "Shared cooperative preference: goal = state 4 (index 3)",
+          "line": 106
+        },
+        {
+          "name": "Equations",
+          "line": 125
+        },
+        {
+          "name": "Each agent independently minimizes their own VFE",
+          "line": 127
+        },
+        {
+          "name": "Coordination emerges from shared observation space and aligned preferences",
+          "line": 129
+        },
+        {
+          "name": "Agent 1 observes both own state and Agent 2's last action",
+          "line": 131
+        },
+        {
+          "name": "No explicit communication channel \u2014 implicit coordination only",
+          "line": 133
+        },
+        {
+          "name": "Time",
+          "line": 135
+        },
+        {
+          "name": "ActInfOntologyAnnotation",
+          "line": 142
+        },
+        {
+          "name": "ModelParameters",
+          "line": 168
+        },
+        {
+          "name": "Footer",
+          "line": 179
+        },
+        {
+          "name": "Signature",
+          "line": 185
+        }
+      ],
+      "variable_statistics": {
+        "count": 94,
+        "types": {
+          "Multi": 1,
+          "1": 1,
+          "agents": 1,
+          "both": 1,
+          "goal": 1,
+          "16": 2,
+          "3": 2,
+          "2": 1,
+          "4": 2,
+          "20": 1,
+          "unknown": 81
+        },
+        "average_line": 90.51063829787235,
+        "line_std": 54.78055732917203
+      },
+      "connection_statistics": {
+        "count": 21,
+        "average_line": 77.0,
+        "line_std": 6.0553007081949835
+      },
+      "section_statistics": {
+        "count": 25,
+        "average_line": 80.0,
+        "line_std": 60.47743380799155
+      },
+      "distributions": {
+        "variable_distribution": {
+          "mean": 90.51063829787235,
+          "std": 54.78055732917203,
+          "min": 1.0,
+          "max": 177.0,
+          "median": 59.5,
+          "skewness": 0.29413080004136555,
+          "kurtosis": -1.5670711696373305,
+          "entropy": 4.189347285813861
+        },
+        "connection_distribution": {
+          "mean": 77.0,
+          "std": 6.0553007081949835,
+          "min": 67.0,
+          "max": 87.0,
+          "median": 77.0,
+          "skewness": 0.0,
+          "kurtosis": -1.2054545454545453,
+          "entropy": 3.044522437723422
+        },
+        "complexity_metrics": {
+          "total_elements": 115,
+          "variable_complexity": 94,
+          "connection_complexity": 21,
+          "density": 0.22340425531914893,
+          "cyclomatic_complexity": -71
+        }
+      },
+      "correlations": {
+        "variable_connection_correlation": 0.22340425531914893,
+        "line_position_correlation": 0.0
+      },
+      "analysis_timestamp": "2026-09-06T11:28:33.927525"
+    }
+  ],
+  "complexity_metrics": [
+    {
+      "file_path": "output/model_family_acceptance/multiagent/input/multi_agent_coordination.md",
+      "file_name": "multi_agent_coordination.md",
+      "cyclomatic_complexity": -71,
+      "cognitive_complexity": 68.0,
+      "structural_complexity": 42.9,
+      "maintainability_index": 100.0,
+      "technical_debt": 7.4,
+      "analysis_timestamp": "2026-09-06T11:28:33.932254"
+    }
+  ],
+  "performance_benchmarks": [
+    {
+      "file_path": "output/model_family_acceptance/multiagent/input/multi_agent_coordination.md",
+      "file_name": "multi_agent_coordination.md",
+      "parse_time": 0.004727124993223697,
+      "memory_usage": 31562,
+      "complexity_score": 115,
+      "estimated_runtime": 1.1500000000000001,
+      "benchmark_timestamp": "2026-09-06T11:28:33.937262"
+    }
+  ],
+  "model_comparisons": [],
+  "visualization_files": [
+    "output/model_family_acceptance/multiagent/pipeline_output/16_analysis_output/rxinfer/multi_agent_coordination_rxinfer_belief_evolution.png",
+    "output/model_family_acceptance/multiagent/pipeline_output/16_analysis_output/cross_framework/framework_success_rates.png",
+    "output/model_family_acceptance/multiagent/pipeline_output/16_analysis_output/cross_framework/framework_performance_comparison.png"
+  ],
+  "post_simulation_analysis": [
+    {
+      "model_name": "multi_agent_coordination",
+      "analysis_file": "output/model_family_acceptance/multiagent/pipeline_output/16_analysis_output/cross_framework/multi_agent_coordination_post_simulation_analysis.json",
+      "framework_count": 1,
+      "has_comparison": true
+    }
+  ],
+  "overall_statistics": {},
+  "framework_comparison": {
+    "timestamp": "2026-09-06T11:28:34.306021",
+    "frameworks": {
+      "rxinfer": {
+        "success_count": 1,
+        "total_count": 1,
+        "execution_times": [
+          33.412896
+        ],
+        "output_files": [
+          "output/model_family_acceptance/multiagent/pipeline_output/12_execute_output/multi_agent_coordination/rxinfer/execution_logs/Multi-Agent_Cooperative_Active_Inference_rxinfer.jl_execution.log"
+        ],
+        "implementation_dirs": [
+          "output/model_family_acceptance/multiagent/pipeline_output/12_execute_output/multi_agent_coordination/rxinfer"
+        ],
+        "beliefs": [],
+        "actions": [],
+        "observations": [],
+        "free_energy": [],
+        "num_timesteps": 20,
+        "validation": {
+          "all_valid": true,
+          "per_agent": {
+            "agent1": {
+              "actions_in_range": true,
+              "all_beliefs_valid": true,
+              "all_valid": true,
+              "beliefs_sum_to_one": true,
+              "vfe_present": true
+            },
+            "agent2": {
+              "actions_in_range": true,
+              "all_beliefs_valid": true,
+              "all_valid": true,
+              "beliefs_sum_to_one": true,
+              "vfe_present": true
+            }
+          }
+        },
+        "model_parameters": {
+          "inference_iterations": 20,
+          "joint_state_space_size": 16,
+          "num_agents": 2,
+          "per_agent_action_sizes": [
+            3,
+            3
+          ],
+          "per_agent_observation_sizes": [
+            4,
+            4
+          ],
+          "per_agent_state_sizes": [
+            4,
+            4
+          ],
+          "time_steps": 20
+        },
+        "data_source": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/multiagent/pipeline_output/12_execute_output/multi_agent_coordination/rxinfer/simulation_data/simulation_results.json"
+      }
+    },
+    "comparisons": {
+      "success_rates": {
+        "rxinfer": 1.0
+      },
+      "performance_comparison": {
+        "rxinfer": {
+          "mean": 33.412896,
+          "std": 0.0,
+          "min": 33.412896,
+          "max": 33.412896
+        }
+      },
+      "metric_agreement": {},
+      "data_coverage": {
+        "rxinfer": {
+          "has_beliefs": false,
+          "has_actions": false,
+          "has_observations": false,
+          "has_free_energy": false,
+          "has_circuit_info": false,
+          "num_timesteps": 20,
+          "validation_passed": true,
+          "data_source": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/multiagent/pipeline_output/12_execute_output/multi_agent_coordination/rxinfer/simulation_data/simulation_results.json"
+        }
+      },
+      "simulation_statistics": {}
+    },
+    "metrics": {
+      "total_frameworks": 1,
+      "total_successful": 1,
+      "total_executions": 1,
+      "overall_success_rate": 1.0
+    }
+  },
+  "framework_comparison_report": "output/model_family_acceptance/multiagent/pipeline_output/16_analysis_output/cross_framework/framework_comparison_report.md",
+  "comprehensive_visualizations": [],
+  "cross_model_report": "output/model_family_acceptance/multiagent/pipeline_output/16_analysis_output/cross_model_comparison_report.md"
+}

@@ -1,0 +1,104 @@
+{
+  "framework": "jax",
+  "model_name": "stochastic_dynamics",
+  "script_name": "Stochastic_Continuous_Dynamics_Agent_jax.py",
+  "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/stochastic_dynamics/jax/Stochastic_Continuous_Dynamics_Agent_jax.py",
+  "success": true,
+  "return_code": 0,
+  "execution_time": 6.187744,
+  "timestamp": "2026-09-06T11:12:59.454312",
+  "simulation_data": {
+    "traces": [],
+    "free_energy": [],
+    "states": [],
+    "observations": [],
+    "actions": [],
+    "policy": [],
+    "raw_output": "jax continuous LGSSM simulation complete: 15 steps, rmse_vs_true=0.3405\nResults saved to: output/model_family_acceptance/continuous/pipeline_output/12_execute_output/stochastic_dynamics/jax/simulation_data/simulation_results.json\nValidation: {'means_finite': True, 'posterior_cov_psd': True, 'rmse_finite': True, 'controls_finite': True, 'all_valid': True}\n",
+    "raw_error": "",
+    "beliefs": [
+      [
+        0.4924705406868283,
+        0.0
+      ],
+      [
+        0.684674838787735,
+        0.08947441463318072
+      ],
+      [
+        0.8460622533590718,
+        0.1707324760579269
+      ],
+      [
+        0.6497350619347421,
+        0.03025280467571037
+      ],
+      [
+        0.6317678040324238,
+        0.016013917449924125
+      ],
+      [
+        1.0612260180784905,
+        0.22460671881984964
+      ],
+      [
+        1.7332699421445612,
+        0.49872989194739437
+      ],
+      [
+        1.4202081041434007,
+        0.29275002683767726
+      ],
+      [
+        1.2804408609307407,
+        0.19410189262312116
+      ],
+      [
+        1.1354951257900678,
+        0.10964280863434246
+      ],
+      [
+        1.2088147124319966,
+        0.12268480752227413
+      ],
+      [
+        1.0889309236196978,
+        0.06059148632352999
+      ],
+      [
+        1.2972203824811575,
+        0.1295884778668949
+      ],
+      [
+        1.169402248444111,
+        0.06499365569477769
+      ],
+      [
+        1.3914174027255226,
+        0.1368507008044426
+      ]
+    ],
+    "num_timesteps": 15
+  },
+  "execution_benchmark_repeats": 1,
+  "execution_metadata": {
+    "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+    "accelerator_type": "mps",
+    "stdout_length": 357,
+    "stderr_length": 0,
+    "output_directory": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/stochastic_dynamics/jax"
+  },
+  "execution_time_mean": 6.187744,
+  "execution_time_std": 0.0,
+  "execution_time_samples": [
+    6.187744
+  ],
+  "collected_outputs": {
+    "visualizations": [],
+    "simulation_data": [
+      "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/stochastic_dynamics/jax/simulation_data/simulation_results.json"
+    ],
+    "traces": [],
+    "other": []
+  }
+}

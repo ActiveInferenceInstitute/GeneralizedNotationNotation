@@ -1,0 +1,495 @@
+{
+  "model_name": "Dynamic Perception Model",
+  "version": "1.0",
+  "annotation": "A dynamic perception model extending the static model with temporal dynamics:\n\n- 2 hidden states evolving over discrete time via transition matrix B\n- 2 observations generated from states via recognition matrix A\n- Prior D constrains the initial hidden state\n- No action selection — the agent passively observes a changing world\n- Demonstrates belief updating (state inference) across time steps\n- Suitable for tracking hidden sources from noisy observations",
+  "variables": [
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "b3d7806f-5b8b-4683-b9e1-e168d3527bd9",
+      "name": "A",
+      "var_type": "likelihood_matrix",
+      "dimensions": [
+        2,
+        2
+      ],
+      "data_type": "float",
+      "description": "Recognition matrix: P(observation | hidden state)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "c0b33a06-e216-45aa-857c-49b96b7a5ced",
+      "name": "B",
+      "var_type": "transition_matrix",
+      "dimensions": [
+        2,
+        2
+      ],
+      "data_type": "float",
+      "description": "Transition matrix: P(s_{t+1} | s_t) — no action dependence",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "6d5e946c-1767-4ab9-bd8b-c099837f6628",
+      "name": "D",
+      "var_type": "prior_vector",
+      "dimensions": [
+        2,
+        1
+      ],
+      "data_type": "float",
+      "description": "Prior over initial hidden states",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "44850fcd-5c81-4a72-bfd2-006dab3d7ea8",
+      "name": "s_t",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        1
+      ],
+      "data_type": "float",
+      "description": "Hidden state belief at time t",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "d00b85d3-8a9c-4f02-99a7-a3a4ae13f2f1",
+      "name": "s_prime",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        1
+      ],
+      "data_type": "float",
+      "description": "Hidden state belief at time t+1",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "73c70db8-679c-42c2-99ee-f6a89ac65d7e",
+      "name": "o_t",
+      "var_type": "observation",
+      "dimensions": [
+        2,
+        1
+      ],
+      "data_type": "integer",
+      "description": "Observation at time t",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "fc891e89-220f-4c70-9a72-e8581e2392d6",
+      "name": "F",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Variational Free Energy (negative ELBO)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "1297afb1-768a-42b4-a835-a112b559c277",
+      "name": "t",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "integer",
+      "description": "Discrete time index",
+      "constraints": {}
+    }
+  ],
+  "connections": [
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "a7d46c12-0fff-44b2-8f16-ae27c6f6662a",
+      "source_variables": [
+        "D"
+      ],
+      "target_variables": [
+        "s_t"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "72f4a2e7-b5f5-4755-ae28-2a24d4db9c1c",
+      "source_variables": [
+        "s_t"
+      ],
+      "target_variables": [
+        "A"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "eea66913-9b4d-4dcb-8eae-94e9d63ac671",
+      "source_variables": [
+        "A"
+      ],
+      "target_variables": [
+        "o_t"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "d50917da-18e3-4b2e-aeab-75f42630807a",
+      "source_variables": [
+        "s_t"
+      ],
+      "target_variables": [
+        "B"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "40fea192-f7e6-46a6-a4ab-7b81825b5690",
+      "source_variables": [
+        "B"
+      ],
+      "target_variables": [
+        "s_prime"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "619f72b8-2595-4a48-ade5-be44343a69e3",
+      "source_variables": [
+        "s_t"
+      ],
+      "target_variables": [
+        "F"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "00ff8107-a8ef-4a3f-b1f2-b81300f0f6ee",
+      "source_variables": [
+        "o_t"
+      ],
+      "target_variables": [
+        "F"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    }
+  ],
+  "parameters": [
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "af021711-6fae-46ab-b38d-c2bfb5375c7b",
+      "name": "A",
+      "value": [
+        [
+          0.9,
+          0.1
+        ],
+        [
+          0.2,
+          0.8
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "de110871-e884-4ec5-a601-6deb10fa3637",
+      "name": "B",
+      "value": [
+        [
+          0.7,
+          0.3
+        ],
+        [
+          0.3,
+          0.7
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "863df66e-25e0-4d15-a943-f6751f882617",
+      "name": "D",
+      "value": [
+        [
+          0.5,
+          0.5
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "353eadea-1e8a-4ce7-827c-b8989579fe13",
+      "name": "num_hidden_states",
+      "value": 2,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "fab88a81-064f-4d58-9999-bc81f3609884",
+      "name": "num_obs",
+      "value": 2,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "ad26fa97-85b7-4986-8217-8fa268b73ae7",
+      "name": "num_timesteps",
+      "value": 10,
+      "type_hint": null,
+      "description": null
+    }
+  ],
+  "equations": [],
+  "time_specification": {
+    "node_type": "TimeSpecification",
+    "source_location": null,
+    "metadata": {},
+    "id": "acb9db3b-1576-46f7-a664-f16514d2bb88",
+    "time_type": "Dynamic",
+    "discretization": null,
+    "horizon": 10,
+    "step_size": null
+  },
+  "ontology_mappings": [
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "5e25016e-454a-4fd2-9a2b-0ac872755b4f",
+      "variable_name": "A",
+      "ontology_term": "RecognitionMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "b33d6e98-2785-4434-b3e5-55e3284c05d6",
+      "variable_name": "B",
+      "ontology_term": "TransitionMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "97e176fc-be60-461f-8b78-9a6035b460a1",
+      "variable_name": "D",
+      "ontology_term": "Prior",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "a38bba64-18ab-4f81-9331-24f43af02934",
+      "variable_name": "s_t",
+      "ontology_term": "HiddenState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "d25f81cc-2c00-4daa-8278-d8c19eee2cd6",
+      "variable_name": "s_prime",
+      "ontology_term": "NextHiddenState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "07f41f5f-8c05-4919-8bf6-625993f95438",
+      "variable_name": "o_t",
+      "ontology_term": "Observation",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "20cea875-69fb-4d61-8d15-f524d83722fd",
+      "variable_name": "F",
+      "ontology_term": "VariationalFreeEnergy",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "9f99fab4-7aa3-4073-b60b-8641f9122f79",
+      "variable_name": "t",
+      "ontology_term": "Time",
+      "description": null
+    }
+  ],
+  "source_format": "markdown",
+  "created_at": "2026-09-06T11:07:16.297082",
+  "modified_at": "2026-09-06T11:07:16.297083",
+  "checksum": null,
+  "extensions": {
+    "gnn_section": "ActiveInferencePerception",
+    "footer": "Dynamic Perception Model v1 - GNN Representation.\nPassive observer — no actions, no policies.\nDemonstrates temporal belief updating via variational inference.",
+    "signature": "Cryptographic signature goes here"
+  },
+  "raw_sections": {
+    "GNNSection": "ActiveInferencePerception",
+    "GNNVersionAndFlags": "GNN v1",
+    "ModelName": "Dynamic Perception Model",
+    "ModelAnnotation": "A dynamic perception model extending the static model with temporal dynamics:\n\n- 2 hidden states evolving over discrete time via transition matrix B\n- 2 observations generated from states via recognition matrix A\n- Prior D constrains the initial hidden state\n- No action selection — the agent passively observes a changing world\n- Demonstrates belief updating (state inference) across time steps\n- Suitable for tracking hidden sources from noisy observations",
+    "StateSpaceBlock": "# Generative model parameters\n\nA[2,2,type=float]        # Recognition matrix: P(observation | hidden state)\nB[2,2,type=float]        # Transition matrix: P(s_{t+1} | s_t) — no action dependence\nD[2,1,type=float]        # Prior over initial hidden states\n\n# Hidden states\n\ns_t[2,1,type=float]      # Hidden state belief at time t\ns_prime[2,1,type=float]  # Hidden state belief at time t+1\n\n# Observation\n\no_t[2,1,type=int]        # Observation at time t\n\n# Inference quantities\n\nF[1,type=float]          # Variational Free Energy (negative ELBO)\n\n# Time\n\nt[1,type=int]            # Discrete time index",
+    "Connections": "D>s_t\ns_t-A\nA-o_t\ns_t-B\nB>s_prime\ns_t-F\no_t-F",
+    "InitialParameterization": "# Near-identity observation mapping\n\nA={\n  (0.9, 0.1),\n  (0.2, 0.8)\n}\n\n# Mildly persistent transitions (states tend to persist)\n\nB={\n  (0.7, 0.3),\n  (0.3, 0.7)\n}\n\n# Uniform prior\n\nD={(0.5, 0.5)}",
+    "Equations": "# State inference at first timestep\n\n# Q(s_{tau=1}) = softmax((1/2)(ln(D) + ln(B^T *s_{tau+1}) + ln(A^T* o_tau)))\n\n# State inference at subsequent timesteps\n\n# Q(s_{tau>1}) = softmax((1/2)(ln(B *s_{tau-1}) + ln(B^T* s_{tau+1}) + ln(A^T * o_tau)))\n\n# Variational Free Energy\n\n# F = D_KL[Q(s)||D] - E_Q[ln P(o|s)]",
+    "Time": "Time=t\nDynamic\nDiscrete\nModelTimeHorizon=10",
+    "ActInfOntologyAnnotation": "A=RecognitionMatrix\nB=TransitionMatrix\nD=Prior\ns_t=HiddenState\ns_prime=NextHiddenState\no_t=Observation\nF=VariationalFreeEnergy\nt=Time",
+    "ModelParameters": "num_hidden_states: 2\nnum_obs: 2\nnum_timesteps: 10",
+    "Footer": "Dynamic Perception Model v1 - GNN Representation.\nPassive observer — no actions, no policies.\nDemonstrates temporal belief updating via variational inference.",
+    "Signature": "Cryptographic signature goes here"
+  },
+  "initialparameterization": {
+    "A": [
+      [
+        0.9,
+        0.1
+      ],
+      [
+        0.2,
+        0.8
+      ]
+    ],
+    "B": [
+      [
+        0.7,
+        0.3
+      ],
+      [
+        0.3,
+        0.7
+      ]
+    ],
+    "D": [
+      [
+        0.5,
+        0.5
+      ]
+    ],
+    "num_hidden_states": 2,
+    "num_obs": 2,
+    "num_timesteps": 10
+  },
+  "model_parameters": {
+    "A": [
+      [
+        0.9,
+        0.1
+      ],
+      [
+        0.2,
+        0.8
+      ]
+    ],
+    "B": [
+      [
+        0.7,
+        0.3
+      ],
+      [
+        0.3,
+        0.7
+      ]
+    ],
+    "D": [
+      [
+        0.5,
+        0.5
+      ]
+    ],
+    "num_hidden_states": 2,
+    "num_obs": 2,
+    "num_timesteps": 10
+  }
+}

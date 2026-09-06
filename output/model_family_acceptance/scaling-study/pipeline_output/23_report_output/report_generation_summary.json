@@ -1,0 +1,21 @@
+{
+  "report_generation_summary": {
+    "generation_time": "unavailable",
+    "evidence_as_of": "unavailable",
+    "pipeline_directory": "output/model_family_acceptance/scaling-study/pipeline_output",
+    "report_directory": "output/model_family_acceptance/scaling-study/pipeline_output/23_report_output",
+    "health_score": 40.0,
+    "generated_files": [
+      "comprehensive_analysis_report.html",
+      "comprehensive_analysis_report.md",
+      "report_summary.json"
+    ],
+    "pipeline_summary": {
+      "total_steps": 25,
+      "successful_steps": 10,
+      "total_files": 199,
+      "total_size_mb": 27.020000000000003,
+      "success_rate": 40.0
+    }
+  }
+}

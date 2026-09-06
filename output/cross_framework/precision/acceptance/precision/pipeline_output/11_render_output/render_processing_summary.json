@@ -1,0 +1,99 @@
+{
+  "timestamp": "2026-09-06T12:13:34.145098",
+  "processing_type": "POMDP-aware rendering",
+  "receipt_identity": {
+    "run_id": "e43660566d0244e8a9842d43c84b911b",
+    "config_sha256": "d55c61f63c44bfaa722b2f18705e60f7786f54b380f1667049546e4e48d4d284"
+  },
+  "target_directory": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/precision/acceptance/precision/input",
+  "configuration": {
+    "frameworks": [
+      "pymdp"
+    ],
+    "strict_validation": true,
+    "strict_framework_success": true,
+    "verbose": false,
+    "pomdp_processing_available": true,
+    "options": {
+      "recursive": true,
+      "timesteps": null,
+      "simulation_params": "{}"
+    }
+  },
+  "file_results": {
+    "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/precision/acceptance/precision/input/precision_weighted.md": {
+      "overall_success": true,
+      "framework_results": {
+        "pymdp": {
+          "success": true,
+          "message": "Generated pymdp 1.0.0 runner: output/cross_framework/precision/acceptance/precision/pipeline_output/11_render_output/precision_weighted/pymdp/Precision-Weighted_Active_Inference_Agent_pymdp.py",
+          "output_files": [
+            "output/cross_framework/precision/acceptance/precision/pipeline_output/11_render_output/precision_weighted/pymdp/Precision-Weighted_Active_Inference_Agent_pymdp.py"
+          ],
+          "output_directory": "output/cross_framework/precision/acceptance/precision/pipeline_output/11_render_output/precision_weighted/pymdp",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 690,
+            "total_lines": 723,
+            "functions": 1,
+            "classes": 0
+          },
+          "artifact_identities": [
+            {
+              "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/precision/acceptance/precision/pipeline_output/11_render_output/precision_weighted/pymdp/Precision-Weighted_Active_Inference_Agent_pymdp.py",
+              "sha256": "9a0e3e5d723a74f77217e7ffb7497d6e7ccca109c207e1c993072d2ffa55d4eb"
+            }
+          ]
+        }
+      },
+      "summary_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/11_render_output/precision_weighted/processing_summary.json",
+      "output_directory": "output/cross_framework/precision/acceptance/precision/pipeline_output/11_render_output/precision_weighted",
+      "base_output_dir": "output/cross_framework/precision/acceptance/precision/pipeline_output/11_render_output/precision_weighted",
+      "source_identity": {
+        "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/precision/acceptance/precision/input/precision_weighted.md",
+        "sha256": "627ff9009025a028020d26a8c2293f7c0997d1343278be4f0809376719451009"
+      }
+    },
+    "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/precision/acceptance/precision/input/curiosity_driven_agent.md": {
+      "overall_success": true,
+      "framework_results": {
+        "pymdp": {
+          "success": true,
+          "message": "Generated pymdp 1.0.0 runner: output/cross_framework/precision/acceptance/precision/pipeline_output/11_render_output/curiosity_driven_agent/pymdp/Curiosity-Driven_Active_Inference_Agent_pymdp.py",
+          "output_files": [
+            "output/cross_framework/precision/acceptance/precision/pipeline_output/11_render_output/curiosity_driven_agent/pymdp/Curiosity-Driven_Active_Inference_Agent_pymdp.py"
+          ],
+          "output_directory": "output/cross_framework/precision/acceptance/precision/pipeline_output/11_render_output/curiosity_driven_agent/pymdp",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 963,
+            "total_lines": 996,
+            "functions": 1,
+            "classes": 0
+          },
+          "artifact_identities": [
+            {
+              "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/precision/acceptance/precision/pipeline_output/11_render_output/curiosity_driven_agent/pymdp/Curiosity-Driven_Active_Inference_Agent_pymdp.py",
+              "sha256": "af172cb6fec279b4ed8d54e6c5d329012c18b4987c9e9acf016d85ea3fda7397"
+            }
+          ]
+        }
+      },
+      "summary_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/11_render_output/curiosity_driven_agent/processing_summary.json",
+      "output_directory": "output/cross_framework/precision/acceptance/precision/pipeline_output/11_render_output/curiosity_driven_agent",
+      "base_output_dir": "output/cross_framework/precision/acceptance/precision/pipeline_output/11_render_output/curiosity_driven_agent",
+      "source_identity": {
+        "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/precision/acceptance/precision/input/curiosity_driven_agent.md",
+        "sha256": "e40fac659079e9fdb197a52662a0cf64b35b4271771dbc611d1ad29de31afb5f"
+      }
+    }
+  },
+  "total_files": 2,
+  "successful_files": 2,
+  "failed_files": 0,
+  "total_framework_attempts": 2,
+  "successful_framework_renderings": 2,
+  "framework_success_rate": 100.0,
+  "failed_framework_renderings": [],
+  "unsupported_framework_renderings": []
+}

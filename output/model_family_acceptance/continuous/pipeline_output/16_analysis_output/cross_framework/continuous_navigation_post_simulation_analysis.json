@@ -1,0 +1,54 @@
+{
+  "timestamp": "2026-09-06T11:16:39.106230",
+  "execution_results_dir": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/continuous_navigation",
+  "framework_results": {
+    "rxinfer": {
+      "framework": "rxinfer",
+      "result_count": 1,
+      "analyses": []
+    },
+    "numpyro": {
+      "framework": "numpyro",
+      "result_count": 1,
+      "analyses": []
+    },
+    "stan": {
+      "framework": "stan",
+      "result_count": 1,
+      "analyses": []
+    },
+    "jax": {
+      "framework": "jax",
+      "result_count": 1,
+      "analyses": []
+    }
+  },
+  "cross_framework_comparison": {
+    "model_name": "continuous_navigation",
+    "frameworks_compared": [
+      "rxinfer",
+      "numpyro",
+      "stan",
+      "jax"
+    ],
+    "framework_count": 4,
+    "comparisons": {
+      "execution_time": {
+        "rxinfer": 62.368386,
+        "numpyro": 12.066875,
+        "stan": 60.161201,
+        "jax": 3.40622
+      },
+      "fastest_execution": {
+        "framework": "jax",
+        "time": 3.40622
+      },
+      "success_rates": {
+        "rxinfer": true,
+        "numpyro": true,
+        "stan": true,
+        "jax": true
+      }
+    }
+  }
+}

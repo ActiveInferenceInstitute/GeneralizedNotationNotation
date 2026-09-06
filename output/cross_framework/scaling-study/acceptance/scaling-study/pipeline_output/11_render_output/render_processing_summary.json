@@ -1,0 +1,99 @@
+{
+  "timestamp": "2026-09-06T12:21:28.363392",
+  "processing_type": "POMDP-aware rendering",
+  "receipt_identity": {
+    "run_id": "18c8d9415fda4a82950c3fd6a2dd9f81",
+    "config_sha256": "d55c61f63c44bfaa722b2f18705e60f7786f54b380f1667049546e4e48d4d284"
+  },
+  "target_directory": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/scaling-study/acceptance/scaling-study/input",
+  "configuration": {
+    "frameworks": [
+      "pymdp"
+    ],
+    "strict_validation": true,
+    "strict_framework_success": true,
+    "verbose": false,
+    "pomdp_processing_available": true,
+    "options": {
+      "recursive": true,
+      "timesteps": null,
+      "simulation_params": "{}"
+    }
+  },
+  "file_results": {
+    "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/scaling-study/acceptance/scaling-study/input/pymdp_scaling_N8_T100.md": {
+      "overall_success": true,
+      "framework_results": {
+        "pymdp": {
+          "success": true,
+          "message": "Generated pymdp 1.0.0 runner: output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/11_render_output/pymdp_scaling_N8_T100/pymdp/PyMDP_Scaling_N8_T100_pymdp.py",
+          "output_files": [
+            "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/11_render_output/pymdp_scaling_N8_T100/pymdp/PyMDP_Scaling_N8_T100_pymdp.py"
+          ],
+          "output_directory": "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/11_render_output/pymdp_scaling_N8_T100/pymdp",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 1963,
+            "total_lines": 1996,
+            "functions": 1,
+            "classes": 0
+          },
+          "artifact_identities": [
+            {
+              "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/11_render_output/pymdp_scaling_N8_T100/pymdp/PyMDP_Scaling_N8_T100_pymdp.py",
+              "sha256": "a8274fba17d6468d8a603e027a0d4eb47562487828851ff8277444228f471e51"
+            }
+          ]
+        }
+      },
+      "summary_file": "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/11_render_output/pymdp_scaling_N8_T100/processing_summary.json",
+      "output_directory": "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/11_render_output/pymdp_scaling_N8_T100",
+      "base_output_dir": "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/11_render_output/pymdp_scaling_N8_T100",
+      "source_identity": {
+        "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/scaling-study/acceptance/scaling-study/input/pymdp_scaling_N8_T100.md",
+        "sha256": "4640bdecdddc37207ee29e369371b133be507c98b29220e583c8ea660a88dc85"
+      }
+    },
+    "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/scaling-study/acceptance/scaling-study/input/pymdp_scaling_N4_T100.md": {
+      "overall_success": true,
+      "framework_results": {
+        "pymdp": {
+          "success": true,
+          "message": "Generated pymdp 1.0.0 runner: output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/11_render_output/pymdp_scaling_N4_T100/pymdp/PyMDP_Scaling_N4_T100_pymdp.py",
+          "output_files": [
+            "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/11_render_output/pymdp_scaling_N4_T100/pymdp/PyMDP_Scaling_N4_T100_pymdp.py"
+          ],
+          "output_directory": "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/11_render_output/pymdp_scaling_N4_T100/pymdp",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 731,
+            "total_lines": 764,
+            "functions": 1,
+            "classes": 0
+          },
+          "artifact_identities": [
+            {
+              "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/11_render_output/pymdp_scaling_N4_T100/pymdp/PyMDP_Scaling_N4_T100_pymdp.py",
+              "sha256": "b88ba80d2643c0c0945fac88da5f11a1ffe21c69cda0ade0f34eaa15d7c670ad"
+            }
+          ]
+        }
+      },
+      "summary_file": "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/11_render_output/pymdp_scaling_N4_T100/processing_summary.json",
+      "output_directory": "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/11_render_output/pymdp_scaling_N4_T100",
+      "base_output_dir": "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/11_render_output/pymdp_scaling_N4_T100",
+      "source_identity": {
+        "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/scaling-study/acceptance/scaling-study/input/pymdp_scaling_N4_T100.md",
+        "sha256": "c54742b89e0850124459c7a16e7e279ec1a2dece202e3c4434520a696886347e"
+      }
+    }
+  },
+  "total_files": 2,
+  "successful_files": 2,
+  "failed_files": 0,
+  "total_framework_attempts": 2,
+  "successful_framework_renderings": 2,
+  "framework_success_rate": 100.0,
+  "failed_framework_renderings": [],
+  "unsupported_framework_renderings": []
+}

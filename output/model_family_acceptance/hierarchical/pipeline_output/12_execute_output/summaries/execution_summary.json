@@ -1,0 +1,923 @@
+{
+  "timestamp": "2026-09-06T11:18:29.812867",
+  "target_directory": "output/model_family_acceptance/hierarchical/input",
+  "output_directory": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output",
+  "total_scripts_found": 6,
+  "successful_executions": 6,
+  "failed_executions": 0,
+  "skipped_executions": 0,
+  "execution_details": [
+    {
+      "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/pipeline_output/11_render_output/hierarchical_pomdp/jax/Hierarchical_Active_Inference_POMDP_jax.py",
+      "script_name": "Hierarchical_Active_Inference_POMDP_jax.py",
+      "framework": "jax",
+      "model_name": "hierarchical_pomdp",
+      "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 10.924036,
+      "timestamp": "2026-09-06T11:18:31.099189",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 10.924036,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        10.924036
+      ],
+      "structured_result_file": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/hierarchical_pomdp/jax/execution_logs/Hierarchical_Active_Inference_POMDP_jax.py_results.json",
+      "output_file": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/hierarchical_pomdp/jax/execution_logs/Hierarchical_Active_Inference_POMDP_jax.py_execution.log",
+      "implementation_directory": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/hierarchical_pomdp/jax",
+      "script_identity": {
+        "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/pipeline_output/11_render_output/hierarchical_pomdp/jax/Hierarchical_Active_Inference_POMDP_jax.py",
+        "sha256": "897dc9c7060f20af865d197c9fc6e6f64c384177841fbd0ac4155d16762e9c09"
+      },
+      "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/input",
+      "stdout_length": 1640,
+      "stderr_length": 0,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/pipeline_output/11_render_output/hierarchical_pomdp/pymdp/Hierarchical_Active_Inference_POMDP_pymdp.py",
+      "script_name": "Hierarchical_Active_Inference_POMDP_pymdp.py",
+      "framework": "pymdp",
+      "model_name": "hierarchical_pomdp",
+      "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 15.972547,
+      "timestamp": "2026-09-06T11:18:42.170781",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 15.972547,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        15.972547
+      ],
+      "structured_result_file": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/hierarchical_pomdp/pymdp/execution_logs/Hierarchical_Active_Inference_POMDP_pymdp.py_results.json",
+      "output_file": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/hierarchical_pomdp/pymdp/execution_logs/Hierarchical_Active_Inference_POMDP_pymdp.py_execution.log",
+      "implementation_directory": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/hierarchical_pomdp/pymdp",
+      "script_identity": {
+        "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/pipeline_output/11_render_output/hierarchical_pomdp/pymdp/Hierarchical_Active_Inference_POMDP_pymdp.py",
+        "sha256": "ff37b5de832168744af44cfedf895b2a3d1cb39f61508c343c6274ddc1acb85d"
+      },
+      "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/input",
+      "stdout_length": 41,
+      "stderr_length": 4216,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/pipeline_output/11_render_output/hierarchical_pomdp/rxinfer/Hierarchical_Active_Inference_POMDP_rxinfer.jl",
+      "script_name": "Hierarchical_Active_Inference_POMDP_rxinfer.jl",
+      "framework": "rxinfer",
+      "model_name": "hierarchical_pomdp",
+      "executor": "julia",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 56.887699,
+      "timestamp": "2026-09-06T11:18:58.195746",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 56.887699,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        56.887699
+      ],
+      "structured_result_file": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/hierarchical_pomdp/rxinfer/execution_logs/Hierarchical_Active_Inference_POMDP_rxinfer.jl_results.json",
+      "output_file": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/hierarchical_pomdp/rxinfer/execution_logs/Hierarchical_Active_Inference_POMDP_rxinfer.jl_execution.log",
+      "implementation_directory": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/hierarchical_pomdp/rxinfer",
+      "execution_metadata": {},
+      "script_identity": {
+        "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/pipeline_output/11_render_output/hierarchical_pomdp/rxinfer/Hierarchical_Active_Inference_POMDP_rxinfer.jl",
+        "sha256": "9dc34d40edb25e6287b63ac6e096e09217981fe8e7386aee46e1168dadeb06cf"
+      },
+      "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/input",
+      "stdout_length": 203,
+      "stderr_length": 0,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/pipeline_output/11_render_output/temporal_hierarchy/jax/Three-Level_Temporal_Hierarchy_Agent_jax.py",
+      "script_name": "Three-Level_Temporal_Hierarchy_Agent_jax.py",
+      "framework": "jax",
+      "model_name": "temporal_hierarchy",
+      "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 6.007791,
+      "timestamp": "2026-09-06T11:20:13.145063",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 6.007791,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        6.007791
+      ],
+      "structured_result_file": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/temporal_hierarchy/jax/execution_logs/Three-Level_Temporal_Hierarchy_Agent_jax.py_results.json",
+      "output_file": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/temporal_hierarchy/jax/execution_logs/Three-Level_Temporal_Hierarchy_Agent_jax.py_execution.log",
+      "implementation_directory": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/temporal_hierarchy/jax",
+      "script_identity": {
+        "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/pipeline_output/11_render_output/temporal_hierarchy/jax/Three-Level_Temporal_Hierarchy_Agent_jax.py",
+        "sha256": "3261baa7d0184147a8e586ea50db7456e803a0c958ff0a7b52ad2c02427c160b"
+      },
+      "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/input",
+      "stdout_length": 2438,
+      "stderr_length": 0,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/pipeline_output/11_render_output/temporal_hierarchy/pymdp/Three-Level_Temporal_Hierarchy_Agent_pymdp.py",
+      "script_name": "Three-Level_Temporal_Hierarchy_Agent_pymdp.py",
+      "framework": "pymdp",
+      "model_name": "temporal_hierarchy",
+      "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 73.061524,
+      "timestamp": "2026-09-06T11:20:19.283933",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 73.061524,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        73.061524
+      ],
+      "structured_result_file": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/temporal_hierarchy/pymdp/execution_logs/Three-Level_Temporal_Hierarchy_Agent_pymdp.py_results.json",
+      "output_file": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/temporal_hierarchy/pymdp/execution_logs/Three-Level_Temporal_Hierarchy_Agent_pymdp.py_execution.log",
+      "implementation_directory": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/temporal_hierarchy/pymdp",
+      "script_identity": {
+        "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/pipeline_output/11_render_output/temporal_hierarchy/pymdp/Three-Level_Temporal_Hierarchy_Agent_pymdp.py",
+        "sha256": "810c7053cb5455762cf4f2a983554a2431b44beacec75d699b7f15cb0f99af98"
+      },
+      "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/input",
+      "stdout_length": 41,
+      "stderr_length": 23378,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/pipeline_output/11_render_output/temporal_hierarchy/rxinfer/Three-Level_Temporal_Hierarchy_Agent_rxinfer.jl",
+      "script_name": "Three-Level_Temporal_Hierarchy_Agent_rxinfer.jl",
+      "framework": "rxinfer",
+      "model_name": "temporal_hierarchy",
+      "executor": "julia",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 62.575735,
+      "timestamp": "2026-09-06T11:21:32.442605",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 62.575735,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        62.575735
+      ],
+      "structured_result_file": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/temporal_hierarchy/rxinfer/execution_logs/Three-Level_Temporal_Hierarchy_Agent_rxinfer.jl_results.json",
+      "output_file": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/temporal_hierarchy/rxinfer/execution_logs/Three-Level_Temporal_Hierarchy_Agent_rxinfer.jl_execution.log",
+      "implementation_directory": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/temporal_hierarchy/rxinfer",
+      "execution_metadata": {},
+      "script_identity": {
+        "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/pipeline_output/11_render_output/temporal_hierarchy/rxinfer/Three-Level_Temporal_Hierarchy_Agent_rxinfer.jl",
+        "sha256": "525029341b270d07c9fd5014dd171ddfd61aec2aeb46e491288630659210e824"
+      },
+      "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/input",
+      "stdout_length": 221,
+      "stderr_length": 0,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    }
+  ],
+  "framework_status": {
+    "jax": {
+      "executions": 2,
+      "successful": 2,
+      "failed": 0,
+      "skipped": 0,
+      "status": "success"
+    },
+    "pymdp": {
+      "executions": 2,
+      "successful": 2,
+      "failed": 0,
+      "skipped": 0,
+      "status": "success"
+    },
+    "rxinfer": {
+      "executions": 2,
+      "successful": 2,
+      "failed": 0,
+      "skipped": 0,
+      "status": "success"
+    }
+  },
+  "execution_mode": "local",
+  "execution_workers": 1,
+  "backend": null,
+  "execution_benchmark_repeats": 1,
+  "execution_summary_detail": false,
+  "dispatch_max_retries": 0,
+  "success": true,
+  "status": "success",
+  "exit_code": 0,
+  "run_id": "63164dcffde8427c9cc773d2c7bbab34",
+  "configuration": {
+    "frameworks": [
+      "jax",
+      "pymdp",
+      "rxinfer"
+    ],
+    "strict_requested_frameworks": true,
+    "options": {
+      "recursive": true,
+      "timeout": 300,
+      "render_output_dir": null,
+      "distributed": false,
+      "execution_workers": 1,
+      "backend": "ray",
+      "execution_benchmark_repeats": 1,
+      "execution_summary_detail": false
+    }
+  },
+  "input_identity": {
+    "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/input",
+    "files": {
+      "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/input/hierarchical_pomdp.md": "d43cbeafa28a2cf48578c069d90d86792f4b5cb578b0fe38664c44d6e6cbf260",
+      "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/input/temporal_hierarchy.md": "378de7440c26956910c7fa927569f86f093535ef86cabd45007c9a78f9fc0792"
+    }
+  },
+  "render_failures": [],
+  "missing_render_scripts": [],
+  "requested_frameworks": [
+    "pymdp",
+    "rxinfer",
+    "jax"
+  ],
+  "total_scripts": 6,
+  "attempted_scripts": 6,
+  "success_rate": 100.0,
+  "outcome_reason": "all_scripts_succeeded",
+  "receipt_identity": {
+    "run_id": "63164dcffde8427c9cc773d2c7bbab34",
+    "config_sha256": "b9b2bc0f0732f0e4a4479a17f822fd8dce46e9405a0b04a3b9b9ce50af9bc042"
+  },
+  "invocation_receipts": {
+    "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/input": {
+      "status": "success",
+      "success": true,
+      "exit_code": 0,
+      "outcome_reason": "all_scripts_succeeded",
+      "render_failures": [],
+      "missing_render_scripts": [],
+      "missing_render_summary": null,
+      "input_identity": {
+        "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/input",
+        "files": {
+          "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/input/hierarchical_pomdp.md": "d43cbeafa28a2cf48578c069d90d86792f4b5cb578b0fe38664c44d6e6cbf260",
+          "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/input/temporal_hierarchy.md": "378de7440c26956910c7fa927569f86f093535ef86cabd45007c9a78f9fc0792"
+        }
+      },
+      "execution_details": [
+        {
+          "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/pipeline_output/11_render_output/hierarchical_pomdp/jax/Hierarchical_Active_Inference_POMDP_jax.py",
+          "script_name": "Hierarchical_Active_Inference_POMDP_jax.py",
+          "framework": "jax",
+          "model_name": "hierarchical_pomdp",
+          "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 10.924036,
+          "timestamp": "2026-09-06T11:18:31.099189",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 10.924036,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            10.924036
+          ],
+          "structured_result_file": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/hierarchical_pomdp/jax/execution_logs/Hierarchical_Active_Inference_POMDP_jax.py_results.json",
+          "output_file": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/hierarchical_pomdp/jax/execution_logs/Hierarchical_Active_Inference_POMDP_jax.py_execution.log",
+          "implementation_directory": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/hierarchical_pomdp/jax",
+          "script_identity": {
+            "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/pipeline_output/11_render_output/hierarchical_pomdp/jax/Hierarchical_Active_Inference_POMDP_jax.py",
+            "sha256": "897dc9c7060f20af865d197c9fc6e6f64c384177841fbd0ac4155d16762e9c09"
+          },
+          "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/input",
+          "stdout_length": 1640,
+          "stderr_length": 0,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 1
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        },
+        {
+          "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/pipeline_output/11_render_output/hierarchical_pomdp/pymdp/Hierarchical_Active_Inference_POMDP_pymdp.py",
+          "script_name": "Hierarchical_Active_Inference_POMDP_pymdp.py",
+          "framework": "pymdp",
+          "model_name": "hierarchical_pomdp",
+          "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 15.972547,
+          "timestamp": "2026-09-06T11:18:42.170781",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 15.972547,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            15.972547
+          ],
+          "structured_result_file": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/hierarchical_pomdp/pymdp/execution_logs/Hierarchical_Active_Inference_POMDP_pymdp.py_results.json",
+          "output_file": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/hierarchical_pomdp/pymdp/execution_logs/Hierarchical_Active_Inference_POMDP_pymdp.py_execution.log",
+          "implementation_directory": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/hierarchical_pomdp/pymdp",
+          "script_identity": {
+            "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/pipeline_output/11_render_output/hierarchical_pomdp/pymdp/Hierarchical_Active_Inference_POMDP_pymdp.py",
+            "sha256": "ff37b5de832168744af44cfedf895b2a3d1cb39f61508c343c6274ddc1acb85d"
+          },
+          "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/input",
+          "stdout_length": 41,
+          "stderr_length": 4216,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 1
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        },
+        {
+          "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/pipeline_output/11_render_output/hierarchical_pomdp/rxinfer/Hierarchical_Active_Inference_POMDP_rxinfer.jl",
+          "script_name": "Hierarchical_Active_Inference_POMDP_rxinfer.jl",
+          "framework": "rxinfer",
+          "model_name": "hierarchical_pomdp",
+          "executor": "julia",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 56.887699,
+          "timestamp": "2026-09-06T11:18:58.195746",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 56.887699,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            56.887699
+          ],
+          "structured_result_file": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/hierarchical_pomdp/rxinfer/execution_logs/Hierarchical_Active_Inference_POMDP_rxinfer.jl_results.json",
+          "output_file": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/hierarchical_pomdp/rxinfer/execution_logs/Hierarchical_Active_Inference_POMDP_rxinfer.jl_execution.log",
+          "implementation_directory": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/hierarchical_pomdp/rxinfer",
+          "execution_metadata": {},
+          "script_identity": {
+            "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/pipeline_output/11_render_output/hierarchical_pomdp/rxinfer/Hierarchical_Active_Inference_POMDP_rxinfer.jl",
+            "sha256": "9dc34d40edb25e6287b63ac6e096e09217981fe8e7386aee46e1168dadeb06cf"
+          },
+          "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/input",
+          "stdout_length": 203,
+          "stderr_length": 0,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 1
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        },
+        {
+          "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/pipeline_output/11_render_output/temporal_hierarchy/jax/Three-Level_Temporal_Hierarchy_Agent_jax.py",
+          "script_name": "Three-Level_Temporal_Hierarchy_Agent_jax.py",
+          "framework": "jax",
+          "model_name": "temporal_hierarchy",
+          "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 6.007791,
+          "timestamp": "2026-09-06T11:20:13.145063",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 6.007791,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            6.007791
+          ],
+          "structured_result_file": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/temporal_hierarchy/jax/execution_logs/Three-Level_Temporal_Hierarchy_Agent_jax.py_results.json",
+          "output_file": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/temporal_hierarchy/jax/execution_logs/Three-Level_Temporal_Hierarchy_Agent_jax.py_execution.log",
+          "implementation_directory": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/temporal_hierarchy/jax",
+          "script_identity": {
+            "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/pipeline_output/11_render_output/temporal_hierarchy/jax/Three-Level_Temporal_Hierarchy_Agent_jax.py",
+            "sha256": "3261baa7d0184147a8e586ea50db7456e803a0c958ff0a7b52ad2c02427c160b"
+          },
+          "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/input",
+          "stdout_length": 2438,
+          "stderr_length": 0,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 1
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        },
+        {
+          "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/pipeline_output/11_render_output/temporal_hierarchy/pymdp/Three-Level_Temporal_Hierarchy_Agent_pymdp.py",
+          "script_name": "Three-Level_Temporal_Hierarchy_Agent_pymdp.py",
+          "framework": "pymdp",
+          "model_name": "temporal_hierarchy",
+          "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 73.061524,
+          "timestamp": "2026-09-06T11:20:19.283933",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 73.061524,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            73.061524
+          ],
+          "structured_result_file": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/temporal_hierarchy/pymdp/execution_logs/Three-Level_Temporal_Hierarchy_Agent_pymdp.py_results.json",
+          "output_file": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/temporal_hierarchy/pymdp/execution_logs/Three-Level_Temporal_Hierarchy_Agent_pymdp.py_execution.log",
+          "implementation_directory": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/temporal_hierarchy/pymdp",
+          "script_identity": {
+            "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/pipeline_output/11_render_output/temporal_hierarchy/pymdp/Three-Level_Temporal_Hierarchy_Agent_pymdp.py",
+            "sha256": "810c7053cb5455762cf4f2a983554a2431b44beacec75d699b7f15cb0f99af98"
+          },
+          "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/input",
+          "stdout_length": 41,
+          "stderr_length": 23378,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 1
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        },
+        {
+          "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/pipeline_output/11_render_output/temporal_hierarchy/rxinfer/Three-Level_Temporal_Hierarchy_Agent_rxinfer.jl",
+          "script_name": "Three-Level_Temporal_Hierarchy_Agent_rxinfer.jl",
+          "framework": "rxinfer",
+          "model_name": "temporal_hierarchy",
+          "executor": "julia",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 62.575735,
+          "timestamp": "2026-09-06T11:21:32.442605",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 62.575735,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            62.575735
+          ],
+          "structured_result_file": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/temporal_hierarchy/rxinfer/execution_logs/Three-Level_Temporal_Hierarchy_Agent_rxinfer.jl_results.json",
+          "output_file": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/temporal_hierarchy/rxinfer/execution_logs/Three-Level_Temporal_Hierarchy_Agent_rxinfer.jl_execution.log",
+          "implementation_directory": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/temporal_hierarchy/rxinfer",
+          "execution_metadata": {},
+          "script_identity": {
+            "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/pipeline_output/11_render_output/temporal_hierarchy/rxinfer/Three-Level_Temporal_Hierarchy_Agent_rxinfer.jl",
+            "sha256": "525029341b270d07c9fd5014dd171ddfd61aec2aeb46e491288630659210e824"
+          },
+          "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/input",
+          "stdout_length": 221,
+          "stderr_length": 0,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 1
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        }
+      ]
+    }
+  },
+  "current_invocation": {
+    "status": "success",
+    "success": true,
+    "exit_code": 0,
+    "outcome_reason": "all_scripts_succeeded",
+    "render_failures": [],
+    "missing_render_scripts": [],
+    "missing_render_summary": null,
+    "input_identity": {
+      "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/input",
+      "files": {
+        "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/input/hierarchical_pomdp.md": "d43cbeafa28a2cf48578c069d90d86792f4b5cb578b0fe38664c44d6e6cbf260",
+        "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/input/temporal_hierarchy.md": "378de7440c26956910c7fa927569f86f093535ef86cabd45007c9a78f9fc0792"
+      }
+    },
+    "execution_details": [
+      {
+        "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/pipeline_output/11_render_output/hierarchical_pomdp/jax/Hierarchical_Active_Inference_POMDP_jax.py",
+        "script_name": "Hierarchical_Active_Inference_POMDP_jax.py",
+        "framework": "jax",
+        "model_name": "hierarchical_pomdp",
+        "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 10.924036,
+        "timestamp": "2026-09-06T11:18:31.099189",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 10.924036,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          10.924036
+        ],
+        "structured_result_file": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/hierarchical_pomdp/jax/execution_logs/Hierarchical_Active_Inference_POMDP_jax.py_results.json",
+        "output_file": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/hierarchical_pomdp/jax/execution_logs/Hierarchical_Active_Inference_POMDP_jax.py_execution.log",
+        "implementation_directory": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/hierarchical_pomdp/jax",
+        "script_identity": {
+          "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/pipeline_output/11_render_output/hierarchical_pomdp/jax/Hierarchical_Active_Inference_POMDP_jax.py",
+          "sha256": "897dc9c7060f20af865d197c9fc6e6f64c384177841fbd0ac4155d16762e9c09"
+        },
+        "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/input",
+        "stdout_length": 1640,
+        "stderr_length": 0,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 1
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      },
+      {
+        "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/pipeline_output/11_render_output/hierarchical_pomdp/pymdp/Hierarchical_Active_Inference_POMDP_pymdp.py",
+        "script_name": "Hierarchical_Active_Inference_POMDP_pymdp.py",
+        "framework": "pymdp",
+        "model_name": "hierarchical_pomdp",
+        "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 15.972547,
+        "timestamp": "2026-09-06T11:18:42.170781",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 15.972547,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          15.972547
+        ],
+        "structured_result_file": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/hierarchical_pomdp/pymdp/execution_logs/Hierarchical_Active_Inference_POMDP_pymdp.py_results.json",
+        "output_file": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/hierarchical_pomdp/pymdp/execution_logs/Hierarchical_Active_Inference_POMDP_pymdp.py_execution.log",
+        "implementation_directory": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/hierarchical_pomdp/pymdp",
+        "script_identity": {
+          "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/pipeline_output/11_render_output/hierarchical_pomdp/pymdp/Hierarchical_Active_Inference_POMDP_pymdp.py",
+          "sha256": "ff37b5de832168744af44cfedf895b2a3d1cb39f61508c343c6274ddc1acb85d"
+        },
+        "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/input",
+        "stdout_length": 41,
+        "stderr_length": 4216,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 1
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      },
+      {
+        "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/pipeline_output/11_render_output/hierarchical_pomdp/rxinfer/Hierarchical_Active_Inference_POMDP_rxinfer.jl",
+        "script_name": "Hierarchical_Active_Inference_POMDP_rxinfer.jl",
+        "framework": "rxinfer",
+        "model_name": "hierarchical_pomdp",
+        "executor": "julia",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 56.887699,
+        "timestamp": "2026-09-06T11:18:58.195746",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 56.887699,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          56.887699
+        ],
+        "structured_result_file": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/hierarchical_pomdp/rxinfer/execution_logs/Hierarchical_Active_Inference_POMDP_rxinfer.jl_results.json",
+        "output_file": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/hierarchical_pomdp/rxinfer/execution_logs/Hierarchical_Active_Inference_POMDP_rxinfer.jl_execution.log",
+        "implementation_directory": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/hierarchical_pomdp/rxinfer",
+        "execution_metadata": {},
+        "script_identity": {
+          "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/pipeline_output/11_render_output/hierarchical_pomdp/rxinfer/Hierarchical_Active_Inference_POMDP_rxinfer.jl",
+          "sha256": "9dc34d40edb25e6287b63ac6e096e09217981fe8e7386aee46e1168dadeb06cf"
+        },
+        "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/input",
+        "stdout_length": 203,
+        "stderr_length": 0,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 1
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      },
+      {
+        "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/pipeline_output/11_render_output/temporal_hierarchy/jax/Three-Level_Temporal_Hierarchy_Agent_jax.py",
+        "script_name": "Three-Level_Temporal_Hierarchy_Agent_jax.py",
+        "framework": "jax",
+        "model_name": "temporal_hierarchy",
+        "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 6.007791,
+        "timestamp": "2026-09-06T11:20:13.145063",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 6.007791,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          6.007791
+        ],
+        "structured_result_file": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/temporal_hierarchy/jax/execution_logs/Three-Level_Temporal_Hierarchy_Agent_jax.py_results.json",
+        "output_file": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/temporal_hierarchy/jax/execution_logs/Three-Level_Temporal_Hierarchy_Agent_jax.py_execution.log",
+        "implementation_directory": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/temporal_hierarchy/jax",
+        "script_identity": {
+          "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/pipeline_output/11_render_output/temporal_hierarchy/jax/Three-Level_Temporal_Hierarchy_Agent_jax.py",
+          "sha256": "3261baa7d0184147a8e586ea50db7456e803a0c958ff0a7b52ad2c02427c160b"
+        },
+        "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/input",
+        "stdout_length": 2438,
+        "stderr_length": 0,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 1
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      },
+      {
+        "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/pipeline_output/11_render_output/temporal_hierarchy/pymdp/Three-Level_Temporal_Hierarchy_Agent_pymdp.py",
+        "script_name": "Three-Level_Temporal_Hierarchy_Agent_pymdp.py",
+        "framework": "pymdp",
+        "model_name": "temporal_hierarchy",
+        "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 73.061524,
+        "timestamp": "2026-09-06T11:20:19.283933",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 73.061524,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          73.061524
+        ],
+        "structured_result_file": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/temporal_hierarchy/pymdp/execution_logs/Three-Level_Temporal_Hierarchy_Agent_pymdp.py_results.json",
+        "output_file": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/temporal_hierarchy/pymdp/execution_logs/Three-Level_Temporal_Hierarchy_Agent_pymdp.py_execution.log",
+        "implementation_directory": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/temporal_hierarchy/pymdp",
+        "script_identity": {
+          "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/pipeline_output/11_render_output/temporal_hierarchy/pymdp/Three-Level_Temporal_Hierarchy_Agent_pymdp.py",
+          "sha256": "810c7053cb5455762cf4f2a983554a2431b44beacec75d699b7f15cb0f99af98"
+        },
+        "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/input",
+        "stdout_length": 41,
+        "stderr_length": 23378,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 1
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      },
+      {
+        "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/pipeline_output/11_render_output/temporal_hierarchy/rxinfer/Three-Level_Temporal_Hierarchy_Agent_rxinfer.jl",
+        "script_name": "Three-Level_Temporal_Hierarchy_Agent_rxinfer.jl",
+        "framework": "rxinfer",
+        "model_name": "temporal_hierarchy",
+        "executor": "julia",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 62.575735,
+        "timestamp": "2026-09-06T11:21:32.442605",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 62.575735,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          62.575735
+        ],
+        "structured_result_file": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/temporal_hierarchy/rxinfer/execution_logs/Three-Level_Temporal_Hierarchy_Agent_rxinfer.jl_results.json",
+        "output_file": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/temporal_hierarchy/rxinfer/execution_logs/Three-Level_Temporal_Hierarchy_Agent_rxinfer.jl_execution.log",
+        "implementation_directory": "output/model_family_acceptance/hierarchical/pipeline_output/12_execute_output/temporal_hierarchy/rxinfer",
+        "execution_metadata": {},
+        "script_identity": {
+          "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/pipeline_output/11_render_output/temporal_hierarchy/rxinfer/Three-Level_Temporal_Hierarchy_Agent_rxinfer.jl",
+          "sha256": "525029341b270d07c9fd5014dd171ddfd61aec2aeb46e491288630659210e824"
+        },
+        "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/input",
+        "stdout_length": 221,
+        "stderr_length": 0,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 1
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      }
+    ],
+    "target_directory": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/hierarchical/input"
+  },
+  "merged_prior_folder_runs": 0,
+  "execution_summary_format": "slim_v1"
+}

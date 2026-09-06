@@ -1,0 +1,352 @@
+{
+  "timestamp": "2026-09-06T12:11:56.909568",
+  "source_directory": "output/cross_framework/precision/acceptance/precision/input",
+  "output_directory": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output",
+  "processing_config": {
+    "recursive": true,
+    "verbose": false,
+    "serialize_preset": "full",
+    "supported_formats": [
+      "markdown",
+      "scala",
+      "lean",
+      "coq",
+      "python",
+      "bnf",
+      "ebnf",
+      "isabelle",
+      "maxima",
+      "xml",
+      "json",
+      "protobuf",
+      "yaml",
+      "xsd",
+      "asn1",
+      "pkl",
+      "alloy",
+      "z_notation",
+      "tla_plus",
+      "agda",
+      "haskell",
+      "pickle"
+    ],
+    "serialized_formats": [
+      "markdown",
+      "scala",
+      "lean",
+      "coq",
+      "python",
+      "bnf",
+      "ebnf",
+      "isabelle",
+      "maxima",
+      "xml",
+      "json",
+      "protobuf",
+      "yaml",
+      "xsd",
+      "asn1",
+      "pkl",
+      "alloy",
+      "z_notation",
+      "tla_plus",
+      "agda",
+      "haskell",
+      "pickle"
+    ],
+    "available_serializers": {
+      "markdown": "MarkdownSerializer",
+      "json": "JSONSerializer",
+      "xml": "XMLSerializer",
+      "yaml": "YAMLSerializer",
+      "scala": "ScalaSerializer",
+      "protobuf": "ProtobufSerializer",
+      "pkl": "PKLSerializer",
+      "xsd": "XSDSerializer",
+      "asn1": "ASN1Serializer",
+      "lean": "LeanSerializer",
+      "coq": "CoqSerializer",
+      "python": "PythonSerializer",
+      "bnf": "GrammarSerializer",
+      "ebnf": "GrammarSerializer",
+      "isabelle": "IsabelleSerializer",
+      "maxima": "MaximaSerializer",
+      "alloy": "AlloySerializer",
+      "z_notation": "ZNotationSerializer",
+      "tla_plus": "TLASerializer",
+      "agda": "AgdaSerializer",
+      "haskell": "FunctionalSerializer",
+      "pickle": "BinarySerializer"
+    }
+  },
+  "processed_files": [
+    {
+      "file_name": "precision_weighted.md",
+      "file_path": "output/cross_framework/precision/acceptance/precision/input/precision_weighted.md",
+      "parse_success": true,
+      "parsed_model_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/precision_weighted/precision_weighted_parsed.json",
+      "source_format": "markdown",
+      "model_info": {
+        "name": "Precision-Weighted Active Inference Agent",
+        "version": "1.0",
+        "variables_count": 15,
+        "connections_count": 16,
+        "parameters_count": 14,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/precision_weighted/precision_weighted_markdown.md",
+          "file_size": 1755,
+          "success": true
+        },
+        "scala": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/precision_weighted/precision_weighted_scala.scala",
+          "file_size": 6662,
+          "success": true
+        },
+        "lean": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/precision_weighted/precision_weighted_lean.lean",
+          "file_size": 6882,
+          "success": true
+        },
+        "coq": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/precision_weighted/precision_weighted_coq.v",
+          "file_size": 6603,
+          "success": true
+        },
+        "python": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/precision_weighted/precision_weighted_python.py",
+          "file_size": 10898,
+          "success": true
+        },
+        "bnf": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/precision_weighted/precision_weighted_bnf.bnf",
+          "file_size": 6897,
+          "success": true
+        },
+        "ebnf": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/precision_weighted/precision_weighted_ebnf.ebnf",
+          "file_size": 6897,
+          "success": true
+        },
+        "isabelle": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/precision_weighted/precision_weighted_isabelle.thy",
+          "file_size": 6642,
+          "success": true
+        },
+        "maxima": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/precision_weighted/precision_weighted_maxima.max",
+          "file_size": 7289,
+          "success": true
+        },
+        "xml": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/precision_weighted/precision_weighted_xml.xml",
+          "file_size": 11865,
+          "success": true
+        },
+        "json": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/precision_weighted/precision_weighted_json.json",
+          "file_size": 12192,
+          "success": true
+        },
+        "protobuf": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/precision_weighted/precision_weighted_protobuf.proto",
+          "file_size": 8977,
+          "success": true
+        },
+        "yaml": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/precision_weighted/precision_weighted_yaml.yaml",
+          "file_size": 7267,
+          "success": true
+        },
+        "xsd": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/precision_weighted/precision_weighted_xsd.xsd",
+          "file_size": 7645,
+          "success": true
+        },
+        "asn1": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/precision_weighted/precision_weighted_asn1.asn1",
+          "file_size": 9654,
+          "success": true
+        },
+        "pkl": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/precision_weighted/precision_weighted_pkl.pkl",
+          "file_size": 15527,
+          "success": true
+        },
+        "alloy": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/precision_weighted/precision_weighted_alloy.als",
+          "file_size": 10381,
+          "success": true
+        },
+        "z_notation": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/precision_weighted/precision_weighted_z_notation.z",
+          "file_size": 7236,
+          "success": true
+        },
+        "tla_plus": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/precision_weighted/precision_weighted_tla_plus.tla",
+          "file_size": 6135,
+          "success": true
+        },
+        "agda": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/precision_weighted/precision_weighted_agda.agda",
+          "file_size": 6136,
+          "success": true
+        },
+        "haskell": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/precision_weighted/precision_weighted_haskell.hs",
+          "file_size": 6773,
+          "success": true
+        },
+        "pickle": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/precision_weighted/precision_weighted_pickle.pickle",
+          "file_size": 4352,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "curiosity_driven_agent.md",
+      "file_path": "output/cross_framework/precision/acceptance/precision/input/curiosity_driven_agent.md",
+      "parse_success": true,
+      "parsed_model_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_parsed.json",
+      "source_format": "markdown",
+      "model_info": {
+        "name": "Curiosity-Driven Active Inference Agent",
+        "version": "1.0",
+        "variables_count": 16,
+        "connections_count": 15,
+        "parameters_count": 12,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_markdown.md",
+          "file_size": 2275,
+          "success": true
+        },
+        "scala": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_scala.scala",
+          "file_size": 6917,
+          "success": true
+        },
+        "lean": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_lean.lean",
+          "file_size": 7152,
+          "success": true
+        },
+        "coq": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_coq.v",
+          "file_size": 6857,
+          "success": true
+        },
+        "python": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_python.py",
+          "file_size": 11914,
+          "success": true
+        },
+        "bnf": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_bnf.bnf",
+          "file_size": 7132,
+          "success": true
+        },
+        "ebnf": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_ebnf.ebnf",
+          "file_size": 7132,
+          "success": true
+        },
+        "isabelle": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_isabelle.thy",
+          "file_size": 6904,
+          "success": true
+        },
+        "maxima": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_maxima.max",
+          "file_size": 8046,
+          "success": true
+        },
+        "xml": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_xml.xml",
+          "file_size": 12684,
+          "success": true
+        },
+        "json": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_json.json",
+          "file_size": 14039,
+          "success": true
+        },
+        "protobuf": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_protobuf.proto",
+          "file_size": 9700,
+          "success": true
+        },
+        "yaml": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_yaml.yaml",
+          "file_size": 8330,
+          "success": true
+        },
+        "xsd": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_xsd.xsd",
+          "file_size": 7935,
+          "success": true
+        },
+        "asn1": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_asn1.asn1",
+          "file_size": 9954,
+          "success": true
+        },
+        "pkl": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_pkl.pkl",
+          "file_size": 16558,
+          "success": true
+        },
+        "alloy": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_alloy.als",
+          "file_size": 11225,
+          "success": true
+        },
+        "z_notation": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_z_notation.z",
+          "file_size": 7517,
+          "success": true
+        },
+        "tla_plus": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_tla_plus.tla",
+          "file_size": 6415,
+          "success": true
+        },
+        "agda": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_agda.agda",
+          "file_size": 6410,
+          "success": true
+        },
+        "haskell": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_haskell.hs",
+          "file_size": 7037,
+          "success": true
+        },
+        "pickle": {
+          "output_file": "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_pickle.pickle",
+          "file_size": 5492,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    }
+  ],
+  "summary": {
+    "total_files": 2,
+    "successful_parses": 2,
+    "failed_parses": 0,
+    "total_formats_generated": 44,
+    "formats_per_file": {
+      "precision_weighted.md": 22,
+      "curiosity_driven_agent.md": 22
+    }
+  }
+}

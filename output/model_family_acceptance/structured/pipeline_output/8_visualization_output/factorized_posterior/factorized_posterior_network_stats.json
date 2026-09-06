@@ -1,0 +1,37 @@
+{
+  "total_variables": 13,
+  "total_connections": 12,
+  "variable_types": {
+    "hidden_state": 8,
+    "observation": 2,
+    "action": 3
+  },
+  "connection_types": {
+    "D_f0->s_f0": 1,
+    "D_f1->s_f1": 1,
+    "s_f0->B_f0": 1,
+    "u->B_f0": 1,
+    "B_f0->s_f0": 1,
+    "s_f1->B_f1": 1,
+    "B_f1->s_f1": 1,
+    "s_f0->A_m0": 1,
+    "s_f1->A_m0": 1,
+    "A_m0->o_m0": 1,
+    "s_f0->A_m1": 1,
+    "A_m1->o_m1": 1,
+    "C_m0->o_m0": 1,
+    "C_m1->o_m1": 1
+  },
+  "gnn_edge_orientation": {
+    "directed_variable_pairs": 12,
+    "undirected_variable_pairs": 2
+  },
+  "network_properties": {
+    "num_nodes": 13,
+    "num_edges": 14,
+    "density": 0.08974358974358974,
+    "is_strongly_connected": false,
+    "is_weakly_connected": true,
+    "average_clustering": 0.0
+  }
+}

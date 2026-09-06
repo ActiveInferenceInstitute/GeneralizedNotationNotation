@@ -1,0 +1,12 @@
+{
+  "timestamp": "2026-09-06T11:28:33.940104",
+  "execution_results_dir": "output/model_family_acceptance/multiagent/pipeline_output/12_execute_output/multi_agent_coordination",
+  "framework_results": {
+    "rxinfer": {
+      "framework": "rxinfer",
+      "result_count": 1,
+      "analyses": []
+    }
+  },
+  "cross_framework_comparison": {}
+}

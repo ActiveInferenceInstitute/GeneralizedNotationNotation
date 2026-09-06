@@ -1,0 +1,289 @@
+{
+  "framework": "jax",
+  "model_name": "hierarchical_pomdp",
+  "script_name": "Hierarchical_Active_Inference_POMDP_jax.py",
+  "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/11_render_output/hierarchical_pomdp/jax/Hierarchical_Active_Inference_POMDP_jax.py",
+  "success": true,
+  "return_code": 0,
+  "execution_time": 4.621776,
+  "timestamp": "2026-09-06T11:59:09.356741",
+  "simulation_data": {
+    "traces": [],
+    "free_energy": [
+      1.9325,
+      1.532
+    ],
+    "states": [],
+    "observations": [
+      8,
+      3,
+      7,
+      4,
+      12,
+      15,
+      15,
+      11,
+      14,
+      15,
+      14,
+      13,
+      13,
+      14,
+      13,
+      11,
+      15,
+      6,
+      15,
+      12
+    ],
+    "actions": [
+      1,
+      0,
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "policy": [],
+    "raw_output": "============================================================\nJAX Active Inference Model: Hierarchical_Active_Inference_POMDP\n============================================================\n\n\u2705 Model parameters created\n   A matrix shape: (16, 8)\n   B matrix shape: (8, 8, 3)\n   C vector shape: (16,)\n   D vector shape: (8,)\n\nHierarchical_Active_Inference_POMDP Model Summary (Pure JAX Implementation):\n- Number of states: 8\n- Number of observations: 16\n- Number of actions: 3\n- Parameters: A matrix, B matrix, C vector, D vector\n\nKey Functions:\n- create_params(): Create model parameters\n- belief_update(): Bayesian belief update\n- compute_expected_free_energy(): Compute EFE for action\n- choose_action(): Choose action with minimum EFE\n- simulate_step(): One step of Active Inference\n- run_simulation(): Full simulation over observations\n\n\n\ud83e\uddea Running test simulation...\n\n\ud83d\udcca Simulation Results:\n   Initial belief: [0.125 0.125 0.125 0.125 0.125 0.125 0.125 0.125]\n   Updated belief: [0.76499987 0.08499999 0.045      0.005      0.045      0.005\n 0.045      0.005     ]\n   Selected action: 1\n   Expected free energy: 1.9325\n   EFE for all actions: [1.9324828 1.9324826 1.9324826]\n\n\ud83d\udd04 Running 20-step simulation...\n   Actions taken: [1 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]\n   Final belief: [2.6572453e-19 8.3629918e-20 7.6794376e-17 2.4169040e-17 1.3055047e-15\n 4.1087379e-16 7.6061589e-01 2.3938411e-01]\n   Average EFE: 1.5320\n\n\ud83d\udcbe Saved simulation results to: output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/12_execute_output/hierarchical_pomdp/jax/simulation_data/simulation_results.json\n\n\u2705 JAX Active Inference model test successful!\n",
+    "raw_error": "",
+    "beliefs": [
+      [
+        0.044999998062849045,
+        0.004999999422580004,
+        0.044999998062849045,
+        0.004999999422580004,
+        0.7649998664855957,
+        0.08499999344348907,
+        0.044999998062849045,
+        0.004999999422580004
+      ],
+      [
+        0.3872220814228058,
+        0.08499997109174728,
+        0.022777767851948738,
+        0.004999998025596142,
+        0.022777767851948738,
+        0.004999998025596142,
+        0.3872219920158386,
+        0.08499996364116669
+      ],
+      [
+        0.24715374410152435,
+        0.07976920157670975,
+        0.24715374410152435,
+        0.07976920157670975,
+        0.014538454823195934,
+        0.004692305810749531,
+        0.24715368449687958,
+        0.07976918667554855
+      ],
+      [
+        0.05013590678572655,
+        0.0023332261480391026,
+        0.8523104190826416,
+        0.039664845913648605,
+        0.0029491710010915995,
+        0.00013724860036745667,
+        0.05013589188456535,
+        0.0023332256823778152
+      ],
+      [
+        0.00019864027854055166,
+        3.461596861598082e-06,
+        0.0033768839202821255,
+        5.884713027626276e-05,
+        0.0033768846187740564,
+        5.884714119019918e-05,
+        0.9759196639060974,
+        0.017006825655698776
+      ],
+      [
+        1.0607228432490956e-05,
+        1.360792566629243e-06,
+        0.00018032283696811646,
+        2.3133467038860545e-05,
+        0.00018032288062386215,
+        2.313347067683935e-05,
+        0.8859262466430664,
+        0.11365474760532379
+      ],
+      [
+        5.697884830624389e-07,
+        1.344904347888587e-07,
+        9.686401426733937e-06,
+        2.2863368940306827e-06,
+        9.68640324572334e-06,
+        2.286337121404358e-06,
+        0.809018075466156,
+        0.1909571886062622
+      ],
+      [
+        5.261574642645428e-07,
+        1.779859957196095e-07,
+        8.944673936639447e-06,
+        3.0257613161666086e-06,
+        0.00015205948147922754,
+        5.1437949878163636e-05,
+        0.7470682859420776,
+        0.2527146637439728
+      ],
+      [
+        2.8908278437711488e-08,
+        1.2520390058057274e-08,
+        4.914405167255609e-07,
+        2.1284657236719795e-07,
+        8.35449100122787e-06,
+        3.6183926113153575e-06,
+        0.6977754235267639,
+        0.3022117614746094
+      ],
+      [
+        1.604106847352682e-09,
+        8.329029133058441e-10,
+        2.7269807745256003e-08,
+        1.4159345695929915e-08,
+        4.6358684357983293e-07,
+        2.407089141343022e-07,
+        0.6582270264625549,
+        0.34177225828170776
+      ],
+      [
+        8.98227811574337e-11,
+        5.3530811727764416e-11,
+        1.52698675925933e-09,
+        9.100235009995572e-10,
+        2.5958780014434524e-08,
+        1.5470403624817664e-08,
+        0.6265819072723389,
+        0.3734179437160492
+      ],
+      [
+        1.210110137095377e-12,
+        7.22245483905648e-12,
+        2.0571867126450982e-11,
+        1.2278168759483066e-10,
+        3.497218070691588e-10,
+        2.0872892303458457e-09,
+        0.14350439608097076,
+        0.8564954996109009
+      ],
+      [
+        1.4632787237217788e-14,
+        4.814005097331098e-13,
+        2.4875731357600073e-13,
+        8.183806063377652e-12,
+        4.228875062628479e-12,
+        1.3912473950661308e-10,
+        0.029499609023332596,
+        0.9705003499984741
+      ],
+      [
+        3.606444790293104e-15,
+        2.5571983969913635e-14,
+        6.130953898860966e-14,
+        4.347236004335897e-13,
+        1.042262521948334e-12,
+        7.390303646825913e-12,
+        0.12359968572854996,
+        0.8764002323150635
+      ],
+      [
+        4.607297411991348e-17,
+        1.6703055615469335e-15,
+        7.832402490186188e-16,
+        2.8395185440693686e-14,
+        1.3315089421393322e-14,
+        4.827183032636573e-13,
+        0.026843136176466942,
+        0.9731568694114685
+      ],
+      [
+        2.0849606147079256e-16,
+        1.5078809588011722e-15,
+        3.544431814158722e-15,
+        2.5633969840993705e-14,
+        1.0243412021382348e-12,
+        7.408219003524064e-12,
+        0.12147441506385803,
+        0.8785247802734375
+      ],
+      [
+        1.9907931164603578e-17,
+        8.105549439852019e-17,
+        3.3843468752319547e-16,
+        1.3779431400770471e-15,
+        9.780766013723838e-14,
+        3.982256690203412e-13,
+        0.19717960059642792,
+        0.8028203248977661
+      ],
+      [
+        2.6022668628277273e-17,
+        7.494068414295259e-17,
+        7.520548887687915e-15,
+        2.165785488504688e-14,
+        1.278493641249795e-13,
+        3.6818359233810327e-13,
+        0.2577435076236725,
+        0.7422556281089783
+      ],
+      [
+        1.8184997080307183e-18,
+        4.120526188768084e-18,
+        5.255462508051405e-16,
+        1.1908318679626777e-15,
+        8.934289228302705e-15,
+        2.024414503761819e-14,
+        0.3061949908733368,
+        0.6938049793243408
+      ],
+      [
+        2.8848634721125753e-19,
+        6.0868078912366e-20,
+        8.337253317339962e-17,
+        1.7590870883028215e-17,
+        1.4173334543770427e-15,
+        2.9904487614901233e-16,
+        0.8257697224617004,
+        0.17423012852668762
+      ]
+    ],
+    "num_timesteps": 20
+  },
+  "execution_benchmark_repeats": 1,
+  "execution_metadata": {
+    "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+    "accelerator_type": "mps",
+    "stdout_length": 1656,
+    "stderr_length": 0,
+    "output_directory": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/12_execute_output/hierarchical_pomdp/jax"
+  },
+  "execution_time_mean": 4.621776,
+  "execution_time_std": 0.0,
+  "execution_time_samples": [
+    4.621776
+  ],
+  "collected_outputs": {
+    "visualizations": [],
+    "simulation_data": [
+      "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/12_execute_output/hierarchical_pomdp/jax/simulation_data/simulation_results.json"
+    ],
+    "traces": [],
+    "other": []
+  }
+}

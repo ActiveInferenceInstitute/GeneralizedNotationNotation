@@ -1,0 +1,3614 @@
+{
+  "timestamp": "2026-09-06T11:42:36.939248",
+  "processed_files": 2,
+  "success": true,
+  "errors": [],
+  "statistical_analysis": [
+    {
+      "file_path": "output/model_family_acceptance/scaling-study/input/pymdp_scaling_N8_T100.md",
+      "file_name": "pymdp_scaling_N8_T100.md",
+      "file_size": 7567,
+      "line_count": 105,
+      "variables": [
+        {
+          "name": "Example",
+          "definition": "Example: PyMDP",
+          "line": 1,
+          "type": "PyMDP"
+        },
+        {
+          "name": "Version",
+          "definition": "Version: 1",
+          "line": 2,
+          "type": "1"
+        },
+        {
+          "name": "matrix",
+          "definition": "matrix: B",
+          "line": 20,
+          "type": "B"
+        },
+        {
+          "name": "B",
+          "definition": "B: The",
+          "line": 53,
+          "type": "The"
+        },
+        {
+          "name": "axis",
+          "definition": "axis: for",
+          "line": 56,
+          "type": "for"
+        },
+        {
+          "name": "num_hidden_states",
+          "definition": "num_hidden_states: 8",
+          "line": 96,
+          "type": "8"
+        },
+        {
+          "name": "num_obs",
+          "definition": "num_obs: 8",
+          "line": 97,
+          "type": "8"
+        },
+        {
+          "name": "num_actions",
+          "definition": "num_actions: 8",
+          "line": 98,
+          "type": "8"
+        },
+        {
+          "name": "num_timesteps",
+          "definition": "num_timesteps: 100",
+          "line": 99,
+          "type": "100"
+        },
+        {
+          "name": "noisy",
+          "definition": "noisy: A_signal",
+          "line": 102,
+          "type": "A_signal"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]",
+          "line": 17,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=int]",
+          "line": 18,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]",
+          "line": 19,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]  # Transition matrix: B[next_state, previous_state, actions]",
+          "line": 20,
+          "type": "float]  # Transition matrix: B[next_state, previous_state, actions]"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]",
+          "line": 21,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]",
+          "line": 22,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]",
+          "line": 23,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=int]",
+          "line": 24,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]",
+          "line": 25,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]",
+          "line": 26,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=int]",
+          "line": 27,
+          "type": "unknown"
+        },
+        {
+          "name": "A",
+          "definition": "A={",
+          "line": 42,
+          "type": "unknown"
+        },
+        {
+          "name": "B",
+          "definition": "B={",
+          "line": 58,
+          "type": "unknown"
+        },
+        {
+          "name": "C",
+          "definition": "C={(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3.0)}",
+          "line": 69,
+          "type": "unknown"
+        },
+        {
+          "name": "D",
+          "definition": "D={(0.125000, 0.125000, 0.125000, 0.125000, 0.125000, 0.125000, 0.125000, 0.125000)}",
+          "line": 71,
+          "type": "unknown"
+        },
+        {
+          "name": "Time",
+          "definition": "Time=t",
+          "line": 77,
+          "type": "unknown"
+        },
+        {
+          "name": "ModelTimeHorizon",
+          "definition": "ModelTimeHorizon=100",
+          "line": 80,
+          "type": "unknown"
+        },
+        {
+          "name": "A",
+          "definition": "A=LikelihoodMatrix",
+          "line": 83,
+          "type": "unknown"
+        },
+        {
+          "name": "B",
+          "definition": "B=TransitionMatrix",
+          "line": 84,
+          "type": "unknown"
+        },
+        {
+          "name": "C",
+          "definition": "C=LogPreferenceVector",
+          "line": 85,
+          "type": "unknown"
+        },
+        {
+          "name": "D",
+          "definition": "D=PriorOverHiddenStates",
+          "line": 86,
+          "type": "unknown"
+        },
+        {
+          "name": "G",
+          "definition": "G=ExpectedFreeEnergy",
+          "line": 87,
+          "type": "unknown"
+        },
+        {
+          "name": "F",
+          "definition": "F=VariationalFreeEnergy",
+          "line": 88,
+          "type": "unknown"
+        },
+        {
+          "name": "s",
+          "definition": "s=HiddenState",
+          "line": 89,
+          "type": "unknown"
+        },
+        {
+          "name": "o",
+          "definition": "o=Observation",
+          "line": 90,
+          "type": "unknown"
+        },
+        {
+          "name": "pi",
+          "definition": "pi=PolicyVector",
+          "line": 91,
+          "type": "unknown"
+        },
+        {
+          "name": "u",
+          "definition": "u=Action",
+          "line": 92,
+          "type": "unknown"
+        },
+        {
+          "name": "t",
+          "definition": "t=Time",
+          "line": 93,
+          "type": "unknown"
+        },
+        {
+          "name": "A_signal",
+          "definition": "A_signal=0.9, B_signal=0.8).",
+          "line": 102,
+          "type": "unknown"
+        },
+        {
+          "name": "s",
+          "definition": "s[8,1,type=float]",
+          "line": 17,
+          "type": "unknown"
+        },
+        {
+          "name": "o",
+          "definition": "o[8,1,type=int]",
+          "line": 18,
+          "type": "unknown"
+        },
+        {
+          "name": "A",
+          "definition": "A[8,8,type=float]",
+          "line": 19,
+          "type": "unknown"
+        },
+        {
+          "name": "B",
+          "definition": "B[8,8,8,type=float]",
+          "line": 20,
+          "type": "unknown"
+        },
+        {
+          "name": "B",
+          "definition": "B[next_state, previous_state, actions]",
+          "line": 20,
+          "type": "unknown"
+        },
+        {
+          "name": "C",
+          "definition": "C[8,type=float]",
+          "line": 21,
+          "type": "unknown"
+        },
+        {
+          "name": "D",
+          "definition": "D[8,type=float]",
+          "line": 22,
+          "type": "unknown"
+        },
+        {
+          "name": "pi",
+          "definition": "pi[8,type=float]",
+          "line": 23,
+          "type": "unknown"
+        },
+        {
+          "name": "u",
+          "definition": "u[1,type=int]",
+          "line": 24,
+          "type": "unknown"
+        },
+        {
+          "name": "G",
+          "definition": "G[pi,type=float]",
+          "line": 25,
+          "type": "unknown"
+        },
+        {
+          "name": "F",
+          "definition": "F[1,type=float]",
+          "line": 26,
+          "type": "unknown"
+        },
+        {
+          "name": "t",
+          "definition": "t[1,type=int]",
+          "line": 27,
+          "type": "unknown"
+        }
+      ],
+      "connections": [
+        {
+          "source": "D",
+          "target": "s",
+          "connection": "D>s",
+          "connection_type": "directional",
+          "line": 30
+        },
+        {
+          "source": "s",
+          "target": "A",
+          "connection": "s-A",
+          "connection_type": "bidirectional",
+          "line": 31
+        },
+        {
+          "source": "A",
+          "target": "o",
+          "connection": "A-o",
+          "connection_type": "bidirectional",
+          "line": 32
+        },
+        {
+          "source": "s",
+          "target": "B",
+          "connection": "s-B",
+          "connection_type": "bidirectional",
+          "line": 33
+        },
+        {
+          "source": "C",
+          "target": "G",
+          "connection": "C>G",
+          "connection_type": "directional",
+          "line": 34
+        },
+        {
+          "source": "G",
+          "target": "pi",
+          "connection": "G>pi",
+          "connection_type": "directional",
+          "line": 35
+        },
+        {
+          "source": "pi",
+          "target": "u",
+          "connection": "pi>u",
+          "connection_type": "directional",
+          "line": 36
+        },
+        {
+          "source": "B",
+          "target": "u",
+          "connection": "B>u",
+          "connection_type": "directional",
+          "line": 37
+        },
+        {
+          "source": "s",
+          "target": "F",
+          "connection": "s-F",
+          "connection_type": "bidirectional",
+          "line": 38
+        },
+        {
+          "source": "o",
+          "target": "F",
+          "connection": "o-F",
+          "connection_type": "bidirectional",
+          "line": 39
+        }
+      ],
+      "sections": [
+        {
+          "name": "GNN Example: PyMDP Scaling N8 T100",
+          "line": 1
+        },
+        {
+          "name": "GNN Version: 1.0",
+          "line": 2
+        },
+        {
+          "name": "GNNSection",
+          "line": 4
+        },
+        {
+          "name": "GNNVersionAndFlags",
+          "line": 7
+        },
+        {
+          "name": "ModelName",
+          "line": 10
+        },
+        {
+          "name": "ModelAnnotation",
+          "line": 13
+        },
+        {
+          "name": "StateSpaceBlock",
+          "line": 16
+        },
+        {
+          "name": "Connections",
+          "line": 29
+        },
+        {
+          "name": "InitialParameterization",
+          "line": 41
+        },
+        {
+          "name": "B: The transition tensor B is stored as (next_state, previous_state, action):",
+          "line": 53
+        },
+        {
+          "name": "the outer axis is the next state; within each slice, rows are previous",
+          "line": 54
+        },
+        {
+          "name": "states and columns are actions. The tensor is column-stochastic over the",
+          "line": 55
+        },
+        {
+          "name": "next_state axis: for every (previous_state, action) pair, entries along",
+          "line": 56
+        },
+        {
+          "name": "the outer axis sum to 1.",
+          "line": 57
+        },
+        {
+          "name": "Equations",
+          "line": 73
+        },
+        {
+          "name": "Standard Active Inference update equations",
+          "line": 74
+        },
+        {
+          "name": "Time",
+          "line": 76
+        },
+        {
+          "name": "ActInfOntologyAnnotation",
+          "line": 82
+        },
+        {
+          "name": "ModelParameters",
+          "line": 95
+        },
+        {
+          "name": "Footer",
+          "line": 101
+        },
+        {
+          "name": "Signature",
+          "line": 104
+        }
+      ],
+      "variable_statistics": {
+        "count": 51,
+        "types": {
+          "PyMDP": 1,
+          "1": 1,
+          "B": 1,
+          "The": 1,
+          "for": 1,
+          "8": 3,
+          "100": 1,
+          "A_signal": 1,
+          "unknown": 40,
+          "float]  # Transition matrix: B[next_state, previous_state, actions]": 1
+        },
+        "average_line": 50.88235294117647,
+        "line_std": 33.422222886860204
+      },
+      "connection_statistics": {
+        "count": 10,
+        "average_line": 34.5,
+        "line_std": 2.8722813232690143
+      },
+      "section_statistics": {
+        "count": 21,
+        "average_line": 47.76190476190476,
+        "line_std": 33.58982947248958
+      },
+      "distributions": {
+        "variable_distribution": {
+          "mean": 50.88235294117647,
+          "std": 33.422222886860204,
+          "min": 1.0,
+          "max": 102.0,
+          "median": 27.0,
+          "skewness": 0.23911933896156498,
+          "kurtosis": -1.6485548744496763,
+          "entropy": 3.524091997100828
+        },
+        "connection_distribution": {
+          "mean": 34.5,
+          "std": 2.8722813232690143,
+          "min": 30.0,
+          "max": 39.0,
+          "median": 34.5,
+          "skewness": 0.0,
+          "kurtosis": -1.2242424242424244,
+          "entropy": 2.3025850929940455
+        },
+        "complexity_metrics": {
+          "total_elements": 61,
+          "variable_complexity": 51,
+          "connection_complexity": 10,
+          "density": 0.19607843137254902,
+          "cyclomatic_complexity": -39
+        }
+      },
+      "correlations": {
+        "variable_connection_correlation": 0.19607843137254902,
+        "line_position_correlation": 0.0
+      },
+      "analysis_timestamp": "2026-09-06T11:42:36.979969"
+    },
+    {
+      "file_path": "output/model_family_acceptance/scaling-study/input/pymdp_scaling_N4_T100.md",
+      "file_name": "pymdp_scaling_N4_T100.md",
+      "file_size": 2419,
+      "line_count": 97,
+      "variables": [
+        {
+          "name": "Example",
+          "definition": "Example: PyMDP",
+          "line": 1,
+          "type": "PyMDP"
+        },
+        {
+          "name": "Version",
+          "definition": "Version: 1",
+          "line": 2,
+          "type": "1"
+        },
+        {
+          "name": "matrix",
+          "definition": "matrix: B",
+          "line": 20,
+          "type": "B"
+        },
+        {
+          "name": "B",
+          "definition": "B: The",
+          "line": 49,
+          "type": "The"
+        },
+        {
+          "name": "axis",
+          "definition": "axis: for",
+          "line": 52,
+          "type": "for"
+        },
+        {
+          "name": "num_hidden_states",
+          "definition": "num_hidden_states: 4",
+          "line": 88,
+          "type": "4"
+        },
+        {
+          "name": "num_obs",
+          "definition": "num_obs: 4",
+          "line": 89,
+          "type": "4"
+        },
+        {
+          "name": "num_actions",
+          "definition": "num_actions: 4",
+          "line": 90,
+          "type": "4"
+        },
+        {
+          "name": "num_timesteps",
+          "definition": "num_timesteps: 100",
+          "line": 91,
+          "type": "100"
+        },
+        {
+          "name": "noisy",
+          "definition": "noisy: A_signal",
+          "line": 94,
+          "type": "A_signal"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]",
+          "line": 17,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=int]",
+          "line": 18,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]",
+          "line": 19,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]  # Transition matrix: B[next_state, previous_state, actions]",
+          "line": 20,
+          "type": "float]  # Transition matrix: B[next_state, previous_state, actions]"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]",
+          "line": 21,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]",
+          "line": 22,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]",
+          "line": 23,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=int]",
+          "line": 24,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]",
+          "line": 25,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]",
+          "line": 26,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=int]",
+          "line": 27,
+          "type": "unknown"
+        },
+        {
+          "name": "A",
+          "definition": "A={",
+          "line": 42,
+          "type": "unknown"
+        },
+        {
+          "name": "B",
+          "definition": "B={",
+          "line": 54,
+          "type": "unknown"
+        },
+        {
+          "name": "C",
+          "definition": "C={(0.0, 0.0, 0.0, 3.0)}",
+          "line": 61,
+          "type": "unknown"
+        },
+        {
+          "name": "D",
+          "definition": "D={(0.250000, 0.250000, 0.250000, 0.250000)}",
+          "line": 63,
+          "type": "unknown"
+        },
+        {
+          "name": "Time",
+          "definition": "Time=t",
+          "line": 69,
+          "type": "unknown"
+        },
+        {
+          "name": "ModelTimeHorizon",
+          "definition": "ModelTimeHorizon=100",
+          "line": 72,
+          "type": "unknown"
+        },
+        {
+          "name": "A",
+          "definition": "A=LikelihoodMatrix",
+          "line": 75,
+          "type": "unknown"
+        },
+        {
+          "name": "B",
+          "definition": "B=TransitionMatrix",
+          "line": 76,
+          "type": "unknown"
+        },
+        {
+          "name": "C",
+          "definition": "C=LogPreferenceVector",
+          "line": 77,
+          "type": "unknown"
+        },
+        {
+          "name": "D",
+          "definition": "D=PriorOverHiddenStates",
+          "line": 78,
+          "type": "unknown"
+        },
+        {
+          "name": "G",
+          "definition": "G=ExpectedFreeEnergy",
+          "line": 79,
+          "type": "unknown"
+        },
+        {
+          "name": "F",
+          "definition": "F=VariationalFreeEnergy",
+          "line": 80,
+          "type": "unknown"
+        },
+        {
+          "name": "s",
+          "definition": "s=HiddenState",
+          "line": 81,
+          "type": "unknown"
+        },
+        {
+          "name": "o",
+          "definition": "o=Observation",
+          "line": 82,
+          "type": "unknown"
+        },
+        {
+          "name": "pi",
+          "definition": "pi=PolicyVector",
+          "line": 83,
+          "type": "unknown"
+        },
+        {
+          "name": "u",
+          "definition": "u=Action",
+          "line": 84,
+          "type": "unknown"
+        },
+        {
+          "name": "t",
+          "definition": "t=Time",
+          "line": 85,
+          "type": "unknown"
+        },
+        {
+          "name": "A_signal",
+          "definition": "A_signal=0.9, B_signal=0.8).",
+          "line": 94,
+          "type": "unknown"
+        },
+        {
+          "name": "s",
+          "definition": "s[4,1,type=float]",
+          "line": 17,
+          "type": "unknown"
+        },
+        {
+          "name": "o",
+          "definition": "o[4,1,type=int]",
+          "line": 18,
+          "type": "unknown"
+        },
+        {
+          "name": "A",
+          "definition": "A[4,4,type=float]",
+          "line": 19,
+          "type": "unknown"
+        },
+        {
+          "name": "B",
+          "definition": "B[4,4,4,type=float]",
+          "line": 20,
+          "type": "unknown"
+        },
+        {
+          "name": "B",
+          "definition": "B[next_state, previous_state, actions]",
+          "line": 20,
+          "type": "unknown"
+        },
+        {
+          "name": "C",
+          "definition": "C[4,type=float]",
+          "line": 21,
+          "type": "unknown"
+        },
+        {
+          "name": "D",
+          "definition": "D[4,type=float]",
+          "line": 22,
+          "type": "unknown"
+        },
+        {
+          "name": "pi",
+          "definition": "pi[4,type=float]",
+          "line": 23,
+          "type": "unknown"
+        },
+        {
+          "name": "u",
+          "definition": "u[1,type=int]",
+          "line": 24,
+          "type": "unknown"
+        },
+        {
+          "name": "G",
+          "definition": "G[pi,type=float]",
+          "line": 25,
+          "type": "unknown"
+        },
+        {
+          "name": "F",
+          "definition": "F[1,type=float]",
+          "line": 26,
+          "type": "unknown"
+        },
+        {
+          "name": "t",
+          "definition": "t[1,type=int]",
+          "line": 27,
+          "type": "unknown"
+        }
+      ],
+      "connections": [
+        {
+          "source": "D",
+          "target": "s",
+          "connection": "D>s",
+          "connection_type": "directional",
+          "line": 30
+        },
+        {
+          "source": "s",
+          "target": "A",
+          "connection": "s-A",
+          "connection_type": "bidirectional",
+          "line": 31
+        },
+        {
+          "source": "A",
+          "target": "o",
+          "connection": "A-o",
+          "connection_type": "bidirectional",
+          "line": 32
+        },
+        {
+          "source": "s",
+          "target": "B",
+          "connection": "s-B",
+          "connection_type": "bidirectional",
+          "line": 33
+        },
+        {
+          "source": "C",
+          "target": "G",
+          "connection": "C>G",
+          "connection_type": "directional",
+          "line": 34
+        },
+        {
+          "source": "G",
+          "target": "pi",
+          "connection": "G>pi",
+          "connection_type": "directional",
+          "line": 35
+        },
+        {
+          "source": "pi",
+          "target": "u",
+          "connection": "pi>u",
+          "connection_type": "directional",
+          "line": 36
+        },
+        {
+          "source": "B",
+          "target": "u",
+          "connection": "B>u",
+          "connection_type": "directional",
+          "line": 37
+        },
+        {
+          "source": "s",
+          "target": "F",
+          "connection": "s-F",
+          "connection_type": "bidirectional",
+          "line": 38
+        },
+        {
+          "source": "o",
+          "target": "F",
+          "connection": "o-F",
+          "connection_type": "bidirectional",
+          "line": 39
+        }
+      ],
+      "sections": [
+        {
+          "name": "GNN Example: PyMDP Scaling N4 T100",
+          "line": 1
+        },
+        {
+          "name": "GNN Version: 1.0",
+          "line": 2
+        },
+        {
+          "name": "GNNSection",
+          "line": 4
+        },
+        {
+          "name": "GNNVersionAndFlags",
+          "line": 7
+        },
+        {
+          "name": "ModelName",
+          "line": 10
+        },
+        {
+          "name": "ModelAnnotation",
+          "line": 13
+        },
+        {
+          "name": "StateSpaceBlock",
+          "line": 16
+        },
+        {
+          "name": "Connections",
+          "line": 29
+        },
+        {
+          "name": "InitialParameterization",
+          "line": 41
+        },
+        {
+          "name": "B: The transition tensor B is stored as (next_state, previous_state, action):",
+          "line": 49
+        },
+        {
+          "name": "the outer axis is the next state; within each slice, rows are previous",
+          "line": 50
+        },
+        {
+          "name": "states and columns are actions. The tensor is column-stochastic over the",
+          "line": 51
+        },
+        {
+          "name": "next_state axis: for every (previous_state, action) pair, entries along",
+          "line": 52
+        },
+        {
+          "name": "the outer axis sum to 1.",
+          "line": 53
+        },
+        {
+          "name": "Equations",
+          "line": 65
+        },
+        {
+          "name": "Standard Active Inference update equations",
+          "line": 66
+        },
+        {
+          "name": "Time",
+          "line": 68
+        },
+        {
+          "name": "ActInfOntologyAnnotation",
+          "line": 74
+        },
+        {
+          "name": "ModelParameters",
+          "line": 87
+        },
+        {
+          "name": "Footer",
+          "line": 93
+        },
+        {
+          "name": "Signature",
+          "line": 96
+        }
+      ],
+      "variable_statistics": {
+        "count": 51,
+        "types": {
+          "PyMDP": 1,
+          "1": 1,
+          "B": 1,
+          "The": 1,
+          "for": 1,
+          "4": 3,
+          "100": 1,
+          "A_signal": 1,
+          "unknown": 40,
+          "float]  # Transition matrix: B[next_state, previous_state, actions]": 1
+        },
+        "average_line": 47.35294117647059,
+        "line_std": 29.69242560668132
+      },
+      "connection_statistics": {
+        "count": 10,
+        "average_line": 34.5,
+        "line_std": 2.8722813232690143
+      },
+      "section_statistics": {
+        "count": 21,
+        "average_line": 44.142857142857146,
+        "line_std": 30.336659756309164
+      },
+      "distributions": {
+        "variable_distribution": {
+          "mean": 47.35294117647059,
+          "std": 29.69242560668132,
+          "min": 1.0,
+          "max": 94.0,
+          "median": 27.0,
+          "skewness": 0.23917611770812913,
+          "kurtosis": -1.588829829454823,
+          "entropy": 3.524091997100828
+        },
+        "connection_distribution": {
+          "mean": 34.5,
+          "std": 2.8722813232690143,
+          "min": 30.0,
+          "max": 39.0,
+          "median": 34.5,
+          "skewness": 0.0,
+          "kurtosis": -1.2242424242424244,
+          "entropy": 2.3025850929940455
+        },
+        "complexity_metrics": {
+          "total_elements": 61,
+          "variable_complexity": 51,
+          "connection_complexity": 10,
+          "density": 0.19607843137254902,
+          "cyclomatic_complexity": -39
+        }
+      },
+      "correlations": {
+        "variable_connection_correlation": 0.19607843137254902,
+        "line_position_correlation": 0.0
+      },
+      "analysis_timestamp": "2026-09-06T11:42:36.995988"
+    }
+  ],
+  "complexity_metrics": [
+    {
+      "file_path": "output/model_family_acceptance/scaling-study/input/pymdp_scaling_N8_T100.md",
+      "file_name": "pymdp_scaling_N8_T100.md",
+      "cyclomatic_complexity": -39,
+      "cognitive_complexity": 35.5,
+      "structural_complexity": 22.299999999999997,
+      "maintainability_index": 100.0,
+      "technical_debt": 3.1,
+      "analysis_timestamp": "2026-09-06T11:42:36.983892"
+    },
+    {
+      "file_path": "output/model_family_acceptance/scaling-study/input/pymdp_scaling_N4_T100.md",
+      "file_name": "pymdp_scaling_N4_T100.md",
+      "cyclomatic_complexity": -39,
+      "cognitive_complexity": 35.5,
+      "structural_complexity": 22.299999999999997,
+      "maintainability_index": 100.0,
+      "technical_debt": 3.1,
+      "analysis_timestamp": "2026-09-06T11:42:36.997711"
+    }
+  ],
+  "performance_benchmarks": [
+    {
+      "file_path": "output/model_family_acceptance/scaling-study/input/pymdp_scaling_N8_T100.md",
+      "file_name": "pymdp_scaling_N8_T100.md",
+      "parse_time": 0.004442125005880371,
+      "memory_usage": 19496,
+      "complexity_score": 61,
+      "estimated_runtime": 0.61,
+      "benchmark_timestamp": "2026-09-06T11:42:36.988531"
+    },
+    {
+      "file_path": "output/model_family_acceptance/scaling-study/input/pymdp_scaling_N4_T100.md",
+      "file_name": "pymdp_scaling_N4_T100.md",
+      "parse_time": 0.0022873340058140457,
+      "memory_usage": 14348,
+      "complexity_score": 61,
+      "estimated_runtime": 0.61,
+      "benchmark_timestamp": "2026-09-06T11:42:37.000168"
+    }
+  ],
+  "model_comparisons": [
+    {
+      "model_count": 2,
+      "complexity_comparison": {
+        "mean": 61.0,
+        "std": 0.0,
+        "min": 61,
+        "max": 61
+      },
+      "size_comparison": {
+        "mean": 4993.0,
+        "std": 2574.0,
+        "min": 2419,
+        "max": 7567
+      },
+      "structure_comparison": {
+        "variable_counts": {
+          "mean": 51.0,
+          "std": 0.0
+        },
+        "connection_counts": {
+          "mean": 10.0,
+          "std": 0.0
+        }
+      },
+      "comparison_timestamp": "2026-09-06T11:42:58.422455"
+    }
+  ],
+  "visualization_files": [
+    "output/model_family_acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/pymdp_scaling_N4_T100_pymdp_belief_trace.png",
+    "output/model_family_acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/pymdp_scaling_N4_T100_pymdp_belief_convergence.png",
+    "output/model_family_acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/pymdp_scaling_N4_T100_pymdp_action_frequencies.png",
+    "output/model_family_acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/pymdp_scaling_N8_T100_pymdp_belief_trace.png",
+    "output/model_family_acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/pymdp_scaling_N8_T100_pymdp_belief_convergence.png",
+    "output/model_family_acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/pymdp_scaling_N8_T100_pymdp_action_frequencies.png",
+    "output/model_family_acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/PyMDP_Scaling_N4_T100/discrete_states_0.png",
+    "output/model_family_acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/PyMDP_Scaling_N4_T100/belief_evolution_1.png",
+    "output/model_family_acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/PyMDP_Scaling_N4_T100/performance_2.png",
+    "output/model_family_acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/PyMDP_Scaling_N4_T100/energy_dynamics_3.png",
+    "output/model_family_acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/PyMDP_Scaling_N4_T100/cumulative_preference.png",
+    "output/model_family_acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/PyMDP_Scaling_N8_T100/discrete_states_0.png",
+    "output/model_family_acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/PyMDP_Scaling_N8_T100/belief_evolution_1.png",
+    "output/model_family_acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/PyMDP_Scaling_N8_T100/performance_2.png",
+    "output/model_family_acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/PyMDP_Scaling_N8_T100/energy_dynamics_3.png",
+    "output/model_family_acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/PyMDP_Scaling_N8_T100/cumulative_preference.png",
+    "output/model_family_acceptance/scaling-study/pipeline_output/16_analysis_output/cross_framework/framework_success_rates.png",
+    "output/model_family_acceptance/scaling-study/pipeline_output/16_analysis_output/cross_framework/framework_performance_comparison.png",
+    "output/model_family_acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/pymdp_scaling_N8_T100_pymdp_free_energy.png",
+    "output/model_family_acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/pymdp_scaling_N8_T100_pymdp_vfe_vs_efe.png",
+    "output/model_family_acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/pymdp_scaling_N8_T100_pymdp_observations.png",
+    "output/model_family_acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/pymdp_scaling_N4_T100_pymdp_free_energy.png",
+    "output/model_family_acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/pymdp_scaling_N4_T100_pymdp_vfe_vs_efe.png",
+    "output/model_family_acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/pymdp_scaling_N4_T100_pymdp_observations.png"
+  ],
+  "post_simulation_analysis": [
+    {
+      "model_name": "pymdp_scaling_N8_T100",
+      "analysis_file": "output/model_family_acceptance/scaling-study/pipeline_output/16_analysis_output/cross_framework/pymdp_scaling_N8_T100_post_simulation_analysis.json",
+      "framework_count": 1,
+      "has_comparison": true
+    },
+    {
+      "model_name": "pymdp_scaling_N4_T100",
+      "analysis_file": "output/model_family_acceptance/scaling-study/pipeline_output/16_analysis_output/cross_framework/pymdp_scaling_N4_T100_post_simulation_analysis.json",
+      "framework_count": 1,
+      "has_comparison": true
+    }
+  ],
+  "overall_statistics": {},
+  "framework_comparison": {
+    "timestamp": "2026-09-06T11:42:58.423947",
+    "frameworks": {
+      "pymdp": {
+        "success_count": 2,
+        "total_count": 2,
+        "execution_times": [
+          49.123684,
+          46.942231
+        ],
+        "output_files": [
+          "output/model_family_acceptance/scaling-study/pipeline_output/12_execute_output/pymdp_scaling_N4_T100/pymdp/execution_logs/PyMDP_Scaling_N4_T100_pymdp.py_execution.log",
+          "output/model_family_acceptance/scaling-study/pipeline_output/12_execute_output/pymdp_scaling_N8_T100/pymdp/execution_logs/PyMDP_Scaling_N8_T100_pymdp.py_execution.log"
+        ],
+        "implementation_dirs": [
+          "output/model_family_acceptance/scaling-study/pipeline_output/12_execute_output/pymdp_scaling_N4_T100/pymdp",
+          "output/model_family_acceptance/scaling-study/pipeline_output/12_execute_output/pymdp_scaling_N8_T100/pymdp"
+        ],
+        "beliefs": [
+          [
+            0.01249999925494194,
+            0.01249999925494194,
+            0.01249999925494194,
+            0.01249999925494194,
+            0.01249999925494194,
+            0.9125000834465027,
+            0.01249999925494194,
+            0.01249999925494194
+          ],
+          [
+            0.008928575552999973,
+            0.6517858505249023,
+            0.008928575552999973,
+            0.008928575552999973,
+            0.008928575552999973,
+            0.008928575552999973,
+            0.008928575552999973,
+            0.2946428954601288
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.6517854928970337,
+            0.008928575552999973,
+            0.008928575552999973,
+            0.008928575552999973,
+            0.008928575552999973,
+            0.008928575552999973,
+            0.008928575552999973,
+            0.2946428060531616
+          ],
+          [
+            0.0089285708963871,
+            0.0089285708963871,
+            0.6517857909202576,
+            0.0089285708963871,
+            0.0089285708963871,
+            0.0089285708963871,
+            0.0089285708963871,
+            0.2946428656578064
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.008928575552999973,
+            0.6517854928970337,
+            0.008928575552999973,
+            0.008928575552999973,
+            0.008928575552999973,
+            0.008928575552999973,
+            0.008928575552999973,
+            0.2946428060531616
+          ],
+          [
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.008928576484322548,
+            0.008928576484322548,
+            0.008928576484322548,
+            0.008928576484322548,
+            0.008928576484322548,
+            0.6517856121063232,
+            0.008928576484322548,
+            0.2946428656578064
+          ],
+          [
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.008928576484322548,
+            0.008928576484322548,
+            0.008928576484322548,
+            0.6517855525016785,
+            0.008928576484322548,
+            0.008928576484322548,
+            0.008928576484322548,
+            0.294642835855484
+          ],
+          [
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.997102677822113
+          ],
+          [
+            0.008928576484322548,
+            0.008928576484322548,
+            0.008928576484322548,
+            0.008928576484322548,
+            0.6517856121063232,
+            0.008928576484322548,
+            0.008928576484322548,
+            0.2946428656578064
+          ],
+          [
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.008928576484322548,
+            0.008928576484322548,
+            0.008928576484322548,
+            0.008928576484322548,
+            0.6517856121063232,
+            0.008928576484322548,
+            0.008928576484322548,
+            0.2946428656578064
+          ],
+          [
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.997102677822113
+          ],
+          [
+            0.008928576484322548,
+            0.008928576484322548,
+            0.008928576484322548,
+            0.6517855525016785,
+            0.008928576484322548,
+            0.008928576484322548,
+            0.008928576484322548,
+            0.294642835855484
+          ],
+          [
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.008928576484322548,
+            0.008928576484322548,
+            0.008928576484322548,
+            0.008928576484322548,
+            0.6517856121063232,
+            0.008928576484322548,
+            0.008928576484322548,
+            0.2946428656578064
+          ],
+          [
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.997102677822113
+          ],
+          [
+            0.6517854928970337,
+            0.008928575552999973,
+            0.008928575552999973,
+            0.008928575552999973,
+            0.008928575552999973,
+            0.008928575552999973,
+            0.008928575552999973,
+            0.2946428060531616
+          ],
+          [
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.997102677822113
+          ],
+          [
+            0.008928576484322548,
+            0.008928576484322548,
+            0.008928576484322548,
+            0.008928576484322548,
+            0.008928576484322548,
+            0.6517856121063232,
+            0.008928576484322548,
+            0.2946428656578064
+          ],
+          [
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.008928575552999973,
+            0.6517854928970337,
+            0.008928575552999973,
+            0.008928575552999973,
+            0.008928575552999973,
+            0.008928575552999973,
+            0.008928575552999973,
+            0.2946428060531616
+          ],
+          [
+            0.0089285708963871,
+            0.0089285708963871,
+            0.6517857909202576,
+            0.0089285708963871,
+            0.0089285708963871,
+            0.0089285708963871,
+            0.0089285708963871,
+            0.2946428656578064
+          ],
+          [
+            0.008928575552999973,
+            0.6517854928970337,
+            0.008928575552999973,
+            0.008928575552999973,
+            0.008928575552999973,
+            0.008928575552999973,
+            0.008928575552999973,
+            0.2946428060531616
+          ],
+          [
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.997102677822113
+          ],
+          [
+            0.008928576484322548,
+            0.008928576484322548,
+            0.008928576484322548,
+            0.008928576484322548,
+            0.008928576484322548,
+            0.6517856121063232,
+            0.008928576484322548,
+            0.2946428656578064
+          ],
+          [
+            0.008928576484322548,
+            0.008928576484322548,
+            0.008928576484322548,
+            0.008928576484322548,
+            0.008928576484322548,
+            0.6517856121063232,
+            0.008928576484322548,
+            0.2946428656578064
+          ],
+          [
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.008928576484322548,
+            0.008928576484322548,
+            0.008928576484322548,
+            0.008928576484322548,
+            0.6517856121063232,
+            0.008928576484322548,
+            0.008928576484322548,
+            0.2946428656578064
+          ],
+          [
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.008928575552999973,
+            0.6517854928970337,
+            0.008928575552999973,
+            0.008928575552999973,
+            0.008928575552999973,
+            0.008928575552999973,
+            0.008928575552999973,
+            0.2946428060531616
+          ],
+          [
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.997102677822113
+          ],
+          [
+            0.6517854928970337,
+            0.008928575552999973,
+            0.008928575552999973,
+            0.008928575552999973,
+            0.008928575552999973,
+            0.008928575552999973,
+            0.008928575552999973,
+            0.2946428060531616
+          ],
+          [
+            0.0089285708963871,
+            0.0089285708963871,
+            0.0089285708963871,
+            0.6517857909202576,
+            0.0089285708963871,
+            0.0089285708963871,
+            0.0089285708963871,
+            0.2946428656578064
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.008928576484322548,
+            0.008928576484322548,
+            0.008928576484322548,
+            0.008928576484322548,
+            0.6517856121063232,
+            0.008928576484322548,
+            0.008928576484322548,
+            0.2946428656578064
+          ],
+          [
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.008928576484322548,
+            0.008928576484322548,
+            0.008928576484322548,
+            0.008928576484322548,
+            0.008928576484322548,
+            0.6517856121063232,
+            0.008928576484322548,
+            0.2946428656578064
+          ],
+          [
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.0004139075754210353,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.0004139073716942221,
+            0.997102677822113
+          ],
+          [
+            0.6517854928970337,
+            0.008928575552999973,
+            0.008928575552999973,
+            0.008928575552999973,
+            0.008928575552999973,
+            0.008928575552999973,
+            0.008928575552999973,
+            0.2946428060531616
+          ],
+          [
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.997102677822113
+          ]
+        ],
+        "actions": [
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7
+        ],
+        "observations": [
+          5,
+          1,
+          7,
+          7,
+          7,
+          0,
+          2,
+          7,
+          7,
+          7,
+          1,
+          7,
+          7,
+          7,
+          7,
+          7,
+          5,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          3,
+          7,
+          4,
+          7,
+          7,
+          4,
+          7,
+          3,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          4,
+          7,
+          0,
+          7,
+          5,
+          7,
+          7,
+          7,
+          7,
+          7,
+          1,
+          2,
+          1,
+          7,
+          5,
+          5,
+          7,
+          7,
+          7,
+          7,
+          4,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          1,
+          7,
+          0,
+          3,
+          7,
+          7,
+          4,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          5,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          0,
+          7
+        ],
+        "free_energy": [
+          [
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715407371520996,
+            0.6715407371520996,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            2.831541061401367
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715408563613892,
+            0.6715408563613892,
+            0.6715409755706787,
+            0.6715409755706787,
+            0.6715409755706787,
+            0.6715409755706787,
+            0.6715409755706787,
+            2.83154034614563
+          ],
+          [
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715408563613892,
+            0.6715408563613892,
+            0.6715407967567444,
+            0.6715407967567444,
+            0.6715407967567444,
+            0.6715407967567444,
+            0.6715407967567444,
+            2.831540107727051
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            2.831540584564209
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715407967567444,
+            0.6715407967567444,
+            0.6715407967567444,
+            0.6715407967567444,
+            0.6715407967567444,
+            0.6715408563613892,
+            0.6715408563613892,
+            2.831540107727051
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            2.831540584564209
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            2.831540584564209
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715407967567444,
+            0.6715407967567444,
+            0.6715407967567444,
+            0.6715407967567444,
+            0.6715407967567444,
+            0.6715408563613892,
+            0.6715408563613892,
+            2.831540107727051
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            2.831540584564209
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715408563613892,
+            0.6715408563613892,
+            0.6715409755706787,
+            0.6715409755706787,
+            0.6715409755706787,
+            0.6715409755706787,
+            0.6715409755706787,
+            2.83154034614563
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            2.831540584564209
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715408563613892,
+            0.6715408563613892,
+            0.6715407967567444,
+            0.6715407967567444,
+            0.6715407967567444,
+            0.6715407967567444,
+            0.6715407967567444,
+            2.831540107727051
+          ],
+          [
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715408563613892,
+            0.6715408563613892,
+            0.6715407967567444,
+            0.6715407967567444,
+            0.6715407967567444,
+            0.6715407967567444,
+            0.6715407967567444,
+            2.831540107727051
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            2.831540584564209
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            2.831540584564209
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            2.831540584564209
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715408563613892,
+            0.6715408563613892,
+            0.6715407967567444,
+            0.6715407967567444,
+            0.6715407967567444,
+            0.6715407967567444,
+            0.6715407967567444,
+            2.831540107727051
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715408563613892,
+            0.6715408563613892,
+            0.6715409755706787,
+            0.6715409755706787,
+            0.6715409755706787,
+            0.6715409755706787,
+            0.6715409755706787,
+            2.83154034614563
+          ],
+          [
+            0.6715407371520996,
+            0.6715407371520996,
+            0.6715407371520996,
+            0.6715407371520996,
+            0.6715407371520996,
+            0.6715408563613892,
+            0.6715408563613892,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            2.831540584564209
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            2.831540584564209
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715408563613892,
+            0.6715408563613892,
+            0.6715409755706787,
+            0.6715409755706787,
+            0.6715409755706787,
+            0.6715409755706787,
+            0.6715409755706787,
+            2.83154034614563
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ]
+        ],
+        "num_timesteps": 100,
+        "validation": {
+          "all_beliefs_valid": true,
+          "beliefs_sum_to_one": true,
+          "actions_in_range": true,
+          "pymdp_version_ge_1_0_0": true,
+          "all_valid": true
+        },
+        "model_parameters": {
+          "A_shape": [
+            8,
+            8
+          ],
+          "B_shape": [
+            8,
+            8,
+            8
+          ],
+          "C_shape": [
+            8
+          ],
+          "D_shape": [
+            8
+          ],
+          "num_states": 8,
+          "num_observations": 8,
+          "num_actions": 8,
+          "batch_size": 1,
+          "policy_len": 1,
+          "gamma": 16.0,
+          "alpha": 16.0
+        },
+        "data_source": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/scaling-study/pipeline_output/12_execute_output/pymdp_scaling_N8_T100/pymdp/simulation_data/simulation_results.json",
+        "belief_confidence": [
+          0.9125000834465027,
+          0.6517858505249023,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.6517854928970337,
+          0.6517857909202576,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.6517854928970337,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.6517856121063232,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.6517855525016785,
+          0.997102677822113,
+          0.6517856121063232,
+          0.997102677822113,
+          0.997102677822113,
+          0.6517856121063232,
+          0.997102677822113,
+          0.6517855525016785,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.6517856121063232,
+          0.997102677822113,
+          0.6517854928970337,
+          0.997102677822113,
+          0.6517856121063232,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.6517854928970337,
+          0.6517857909202576,
+          0.6517854928970337,
+          0.997102677822113,
+          0.6517856121063232,
+          0.6517856121063232,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.6517856121063232,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.6517854928970337,
+          0.997102677822113,
+          0.6517854928970337,
+          0.6517857909202576,
+          0.997102677822113,
+          0.997102677822113,
+          0.6517856121063232,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.6517856121063232,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.997102677822113,
+          0.6517854928970337,
+          0.997102677822113
+        ]
+      }
+    },
+    "comparisons": {
+      "success_rates": {
+        "pymdp": 1.0
+      },
+      "performance_comparison": {
+        "pymdp": {
+          "mean": 48.032957499999995,
+          "std": 1.0907264999999988,
+          "min": 46.942231,
+          "max": 49.123684
+        }
+      },
+      "metric_agreement": {},
+      "data_coverage": {
+        "pymdp": {
+          "has_beliefs": true,
+          "has_actions": true,
+          "has_observations": true,
+          "has_free_energy": true,
+          "has_circuit_info": false,
+          "num_timesteps": 100,
+          "validation_passed": true,
+          "data_source": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/scaling-study/pipeline_output/12_execute_output/pymdp_scaling_N8_T100/pymdp/simulation_data/simulation_results.json"
+        }
+      },
+      "simulation_statistics": {
+        "pymdp": {
+          "belief_dims": [
+            100,
+            8
+          ],
+          "mean_confidence": 0.9133805531263351,
+          "final_belief": [
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.00041390719707123935,
+            0.997102677822113
+          ],
+          "efe_mean": 0.9415406820178032,
+          "efe_std": 0.7143528757273903,
+          "efe_min": 0.6715406179428101,
+          "efe_max": 2.831541061401367
+        }
+      }
+    },
+    "metrics": {
+      "total_frameworks": 1,
+      "total_successful": 2,
+      "total_executions": 2,
+      "overall_success_rate": 1.0
+    }
+  },
+  "framework_comparison_report": "output/model_family_acceptance/scaling-study/pipeline_output/16_analysis_output/cross_framework/framework_comparison_report.md",
+  "comprehensive_visualizations": [
+    "output/model_family_acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/pymdp_scaling_N8_T100_pymdp_free_energy.png",
+    "output/model_family_acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/pymdp_scaling_N8_T100_pymdp_vfe_vs_efe.png",
+    "output/model_family_acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/pymdp_scaling_N8_T100_pymdp_observations.png",
+    "output/model_family_acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/pymdp_scaling_N4_T100_pymdp_free_energy.png",
+    "output/model_family_acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/pymdp_scaling_N4_T100_pymdp_vfe_vs_efe.png",
+    "output/model_family_acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/pymdp_scaling_N4_T100_pymdp_observations.png"
+  ],
+  "cross_model_report": "output/model_family_acceptance/scaling-study/pipeline_output/16_analysis_output/cross_model_comparison_report.md"
+}

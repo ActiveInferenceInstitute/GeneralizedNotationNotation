@@ -1,0 +1,813 @@
+{
+  "model_name": "Continuous State Navigation Agent",
+  "version": "1.0",
+  "annotation": "A continuous-state Active Inference navigation agent rendered as a native\nlinear-Gaussian state-space model (LGSSM):\n- Hidden state x = (x, y): the continuous 2D position of the navigator.\n- Observation y: noisy readings of the 2D position (identity readout).\n- Control input u: a goal-seeking command added to the state each step.\n- The controller closes the loop on beliefs — it pushes the filtered posterior\n  mean toward the preferred position goal_mean = (2.0, 2.0) with proportional\n  gain control_gain = 0.3, i.e. u_t = control_gain * (goal_mean - mu_t).",
+  "variables": [
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "06fd5e1d-cf80-4374-abb4-907ba45a68bc",
+      "name": "x",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        1
+      ],
+      "data_type": "float",
+      "description": "continuous latent state",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "4403f128-64b7-40fc-94ea-0b8ac50c5907",
+      "name": "y",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        1
+      ],
+      "data_type": "float",
+      "description": "continuous observation",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "d22609a8-1f59-46a6-8e6b-14c36a3bb1d4",
+      "name": "u",
+      "var_type": "action",
+      "dimensions": [
+        2,
+        1
+      ],
+      "data_type": "float",
+      "description": "control input",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "221e1315-c3f8-4064-82fa-3a713b412383",
+      "name": "F",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        2
+      ],
+      "data_type": "float",
+      "description": "state transition",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "91b5cb4b-9ca0-4753-b4cc-3254f0d70eba",
+      "name": "H",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        2
+      ],
+      "data_type": "float",
+      "description": "observation matrix",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "b1d6087e-c8ae-402c-9130-f24d75c44990",
+      "name": "Q",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        2
+      ],
+      "data_type": "float",
+      "description": "process-noise covariance",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "2a22f384-f388-4f42-ac95-f7e996e0eb4d",
+      "name": "R",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        2
+      ],
+      "data_type": "float",
+      "description": "observation-noise covariance",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "5d2ba1f3-94ca-43ea-a263-8f8648615a7b",
+      "name": "prior_mean",
+      "var_type": "prior_vector",
+      "dimensions": [
+        2
+      ],
+      "data_type": "float",
+      "description": "prior mean over the initial latent state",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "6dec6651-4664-483a-ba70-121c34e3aa13",
+      "name": "prior_cov",
+      "var_type": "prior_vector",
+      "dimensions": [
+        2,
+        2
+      ],
+      "data_type": "float",
+      "description": "prior covariance over the initial latent state",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "82416e9a-8a8e-48c1-8485-381a52809f28",
+      "name": "goal_mean",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2
+      ],
+      "data_type": "float",
+      "description": "preferred state (goal)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "766999f4-cf2e-4e9e-bff4-dd85665526a3",
+      "name": "control_gain",
+      "var_type": "action",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "scalar proportional gain",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "550d86d8-eb8a-4b00-8c72-86b74b8df8e7",
+      "name": "t",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "integer",
+      "description": "discrete time step",
+      "constraints": {}
+    }
+  ],
+  "connections": [
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "ec6c3aa1-9fef-4ac8-8629-c7a513c88bf4",
+      "source_variables": [
+        "prior_mean"
+      ],
+      "target_variables": [
+        "x"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "30770df9-f19f-43f7-9056-e6fc2b80aafe",
+      "source_variables": [
+        "F"
+      ],
+      "target_variables": [
+        "x"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "e8ecbdfd-819a-455b-986e-b97d52fecf1f",
+      "source_variables": [
+        "x"
+      ],
+      "target_variables": [
+        "y"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "f52156a6-3478-4559-909a-3e3f35c5cc8b",
+      "source_variables": [
+        "H"
+      ],
+      "target_variables": [
+        "y"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "1e5727f8-5349-45dd-adfa-0dd2f58f6eaf",
+      "source_variables": [
+        "Q"
+      ],
+      "target_variables": [
+        "x"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "f18ad2a4-cc75-4da7-97ea-76fa4b3f30d8",
+      "source_variables": [
+        "R"
+      ],
+      "target_variables": [
+        "y"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "1efadf2b-9c48-4850-a930-6d91d986c89e",
+      "source_variables": [
+        "u"
+      ],
+      "target_variables": [
+        "x"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "884e94df-be49-45b2-93bd-464148f1367c",
+      "source_variables": [
+        "goal_mean"
+      ],
+      "target_variables": [
+        "u"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "c963f04e-4b5f-438e-a74c-785d841bd36e",
+      "source_variables": [
+        "control_gain"
+      ],
+      "target_variables": [
+        "u"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    }
+  ],
+  "parameters": [
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "501c0357-e0de-4b73-af6d-2b53b90ddada",
+      "name": "F",
+      "value": [
+        [
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "fda7cce5-5ddc-405f-944f-8c30a0c468df",
+      "name": "H",
+      "value": [
+        [
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "cab0803b-ef6f-426e-8105-772715fbb645",
+      "name": "Q",
+      "value": [
+        [
+          0.05,
+          0.0
+        ],
+        [
+          0.0,
+          0.05
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "22a659b4-cfc3-4bff-8cf0-7a4dabd1bc2b",
+      "name": "R",
+      "value": [
+        [
+          0.1,
+          0.0
+        ],
+        [
+          0.0,
+          0.1
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "da73841b-109d-4040-a7e1-d5b09f76ac10",
+      "name": "prior_mean",
+      "value": [
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "c4388c60-b371-4693-85fe-c27538dc234f",
+      "name": "prior_cov",
+      "value": [
+        [
+          0.5,
+          0.0
+        ],
+        [
+          0.0,
+          0.5
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "a7437a04-9e4e-43a2-a453-d76b10c68f6f",
+      "name": "goal_mean",
+      "value": [
+        [
+          2.0,
+          2.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "77a1150d-f38e-4601-bfaa-79ea858e7ffc",
+      "name": "control_gain",
+      "value": [
+        [
+          0.3
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "3ccb14e8-57aa-4590-91aa-a949f830d5aa",
+      "name": "num_timesteps",
+      "value": 15,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "1c06c7d9-5eba-4197-a74f-6c5419354fcb",
+      "name": "dt",
+      "value": 0.1,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "dc958b95-b94c-41ca-882f-0028ed72ea1b",
+      "name": "random_seed",
+      "value": 42,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "351914d0-64bb-4db3-8d64-7461c7fcde90",
+      "name": "num_states",
+      "value": 2,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "bb4be0f2-240b-4ca1-abb9-d56cfb64f00f",
+      "name": "num_observations",
+      "value": 2,
+      "type_hint": null,
+      "description": null
+    }
+  ],
+  "equations": [],
+  "time_specification": {
+    "node_type": "TimeSpecification",
+    "source_location": null,
+    "metadata": {},
+    "id": "6b3c77d0-a31e-41d2-a5da-ed0d09e8905b",
+    "time_type": "Dynamic",
+    "discretization": null,
+    "horizon": 15,
+    "step_size": null
+  },
+  "ontology_mappings": [
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "a08ce00d-895c-4dce-859c-62c0d822cf8a",
+      "variable_name": "F",
+      "ontology_term": "StateTransitionMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "91c58b3d-b48a-493e-baf6-f5a2aebe304f",
+      "variable_name": "H",
+      "ontology_term": "ObservationMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "f6704bed-ed49-4ea9-b06e-a6e9676a5ced",
+      "variable_name": "Q",
+      "ontology_term": "ProcessNoiseCovariance",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "bb77626a-8d0b-4d00-b2e5-c962b21e5f8c",
+      "variable_name": "R",
+      "ontology_term": "ObservationNoiseCovariance",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "ee06c9e8-5f6f-42c0-83d3-80b1e200ee62",
+      "variable_name": "prior_mean",
+      "ontology_term": "PriorMean",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "2e3a4337-8e31-45f9-91a5-56813e3d6b31",
+      "variable_name": "prior_cov",
+      "ontology_term": "PriorCovariance",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "bd82e905-7d1c-4644-8311-721bdd3f2800",
+      "variable_name": "goal_mean",
+      "ontology_term": "PreferredState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "19ff9f2d-8396-43e2-afb1-020be3a79ade",
+      "variable_name": "control_gain",
+      "ontology_term": "ControlGain",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "37319076-0c05-4afd-8937-de7fb61a7fe3",
+      "variable_name": "x",
+      "ontology_term": "ContinuousHiddenState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "1a95fd32-5203-4f9f-b5b5-c49d213cc7d2",
+      "variable_name": "y",
+      "ontology_term": "ContinuousObservation",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "597b91c0-f17f-49db-bd7c-2a81762ee6a6",
+      "variable_name": "u",
+      "ontology_term": "ControlInput",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "80db546c-50fa-43a9-8b50-8eec92ea0ae6",
+      "variable_name": "t",
+      "ontology_term": "Time",
+      "description": null
+    }
+  ],
+  "source_format": "markdown",
+  "created_at": "2026-09-06T11:09:37.477816",
+  "modified_at": "2026-09-06T11:09:37.477818",
+  "checksum": null,
+  "extensions": {
+    "gnn_section": "ActInfContinuous",
+    "footer": "Continuous State Navigation Agent v1 - native linear-Gaussian (LGSSM) GNN model.\nClosed-loop 2D navigator: the control input steers the belief toward the goal.",
+    "signature": "Cryptographic signature goes here"
+  },
+  "raw_sections": {
+    "GNNSection": "ActInfContinuous",
+    "GNNVersionAndFlags": "GNN v1",
+    "ModelName": "Continuous State Navigation Agent",
+    "ModelAnnotation": "A continuous-state Active Inference navigation agent rendered as a native\nlinear-Gaussian state-space model (LGSSM):\n- Hidden state x = (x, y): the continuous 2D position of the navigator.\n- Observation y: noisy readings of the 2D position (identity readout).\n- Control input u: a goal-seeking command added to the state each step.\n- The controller closes the loop on beliefs — it pushes the filtered posterior\n  mean toward the preferred position goal_mean = (2.0, 2.0) with proportional\n  gain control_gain = 0.3, i.e. u_t = control_gain * (goal_mean - mu_t).",
+    "StateSpaceBlock": "# Continuous latent state x = (x, y) position\nx[2,1,type=float]        # continuous latent state\n# Continuous observation y = noisy position readings\ny[2,1,type=float]        # continuous observation\n# Control input added to the state each step\nu[2,1,type=float]        # control input\n# State transition matrix (position persists between steps)\nF[2,2,type=float]        # state transition\n# Observation matrix (identity readout of the position)\nH[2,2,type=float]        # observation matrix\n# Process-noise covariance\nQ[2,2,type=float]        # process-noise covariance\n# Observation-noise covariance\nR[2,2,type=float]        # observation-noise covariance\n# Gaussian prior over the initial position\nprior_mean[2,type=float] # prior mean over the initial latent state\nprior_cov[2,2,type=float]# prior covariance over the initial latent state\n# Preferred state the controller steers toward\ngoal_mean[2,type=float]  # preferred state (goal)\n# Scalar proportional control gain\ncontrol_gain[1,type=float] # scalar proportional gain\n# Time index\nt[1,type=int]            # discrete time step",
+    "Connections": "prior_mean>x\nF>x\nx>y\nH>y\nQ>x\nR>y\nu>x\ngoal_mean>u\ncontrol_gain>u",
+    "InitialParameterization": "# F: position persists between steps; movement enters through the control input u.\nF={\n  (1.0, 0.0),\n  (0.0, 1.0)\n}\n\n# H: identity readout — the observation reads the 2D position directly.\nH={\n  (1.0, 0.0),\n  (0.0, 1.0)\n}\n\n# Q: process (motion) noise — modest slip per step.\nQ={\n  (0.05, 0.0),\n  (0.0, 0.05)\n}\n\n# R: observation noise on the position readings.\nR={\n  (0.1, 0.0),\n  (0.0, 0.1)\n}\n\n# Gaussian prior over the initial position: start at the origin, fairly certain.\nprior_mean={(0.0, 0.0)}\nprior_cov={\n  (0.5, 0.0),\n  (0.0, 0.5)\n}\n\n# goal_mean: the preferred position the closed-loop controller steers toward.\ngoal_mean={(2.0, 2.0)}\n\n# control_gain: scalar proportional gain on (goal_mean - posterior_mean).\ncontrol_gain={(0.3)}",
+    "Equations": "# Generative model (linear-Gaussian state-space):\n#   x_1 ~ N(prior_mean, prior_cov)\n#   x_t = F x_{t-1} + u_{t-1} + N(0, Q)\n#   y_t = H x_t + N(0, R)\n# Closed-loop control on beliefs:\n#   u_t = control_gain * (goal_mean - mu_t),  mu_t = current filtered posterior mean.",
+    "Time": "Time=t\nDynamic\nDiscrete\nModelTimeHorizon=15",
+    "ActInfOntologyAnnotation": "F=StateTransitionMatrix\nH=ObservationMatrix\nQ=ProcessNoiseCovariance\nR=ObservationNoiseCovariance\nprior_mean=PriorMean\nprior_cov=PriorCovariance\ngoal_mean=PreferredState\ncontrol_gain=ControlGain\nx=ContinuousHiddenState\ny=ContinuousObservation\nu=ControlInput\nt=Time",
+    "ModelParameters": "num_timesteps: 15\ndt: 0.1\nrandom_seed: 42\nnum_states: 2\nnum_observations: 2",
+    "Footer": "Continuous State Navigation Agent v1 - native linear-Gaussian (LGSSM) GNN model.\nClosed-loop 2D navigator: the control input steers the belief toward the goal.",
+    "Signature": "Cryptographic signature goes here"
+  },
+  "initialparameterization": {
+    "F": [
+      [
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0
+      ]
+    ],
+    "H": [
+      [
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0
+      ]
+    ],
+    "Q": [
+      [
+        0.05,
+        0.0
+      ],
+      [
+        0.0,
+        0.05
+      ]
+    ],
+    "R": [
+      [
+        0.1,
+        0.0
+      ],
+      [
+        0.0,
+        0.1
+      ]
+    ],
+    "prior_mean": [
+      [
+        0.0,
+        0.0
+      ]
+    ],
+    "prior_cov": [
+      [
+        0.5,
+        0.0
+      ],
+      [
+        0.0,
+        0.5
+      ]
+    ],
+    "goal_mean": [
+      [
+        2.0,
+        2.0
+      ]
+    ],
+    "control_gain": [
+      [
+        0.3
+      ]
+    ],
+    "num_timesteps": 15,
+    "dt": 0.1,
+    "random_seed": 42,
+    "num_states": 2,
+    "num_observations": 2
+  },
+  "model_parameters": {
+    "F": [
+      [
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0
+      ]
+    ],
+    "H": [
+      [
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0
+      ]
+    ],
+    "Q": [
+      [
+        0.05,
+        0.0
+      ],
+      [
+        0.0,
+        0.05
+      ]
+    ],
+    "R": [
+      [
+        0.1,
+        0.0
+      ],
+      [
+        0.0,
+        0.1
+      ]
+    ],
+    "prior_mean": [
+      [
+        0.0,
+        0.0
+      ]
+    ],
+    "prior_cov": [
+      [
+        0.5,
+        0.0
+      ],
+      [
+        0.0,
+        0.5
+      ]
+    ],
+    "goal_mean": [
+      [
+        2.0,
+        2.0
+      ]
+    ],
+    "control_gain": [
+      [
+        0.3
+      ]
+    ],
+    "num_timesteps": 15,
+    "dt": 0.1,
+    "random_seed": 42,
+    "num_states": 2,
+    "num_observations": 2
+  }
+}

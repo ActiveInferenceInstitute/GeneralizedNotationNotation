@@ -1,0 +1,290 @@
+{
+  "timestamp": "2026-09-06T11:44:20.212971",
+  "processed_files": 1,
+  "success": true,
+  "errors": [],
+  "validation_results": [
+    {
+      "file_path": "output/cross_framework/basics/acceptance/basics/input/dynamic_perception.md",
+      "file_name": "dynamic_perception.md",
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "type_issues": [],
+      "validation_timestamp": "2026-09-06T11:44:20.279732",
+      "dimension_compatibility": {
+        "compatible": true,
+        "issues": [],
+        "warnings": [],
+        "variables_checked": [
+          "A",
+          "B",
+          "D",
+          "s_t",
+          "s_prime",
+          "o_t",
+          "F",
+          "t"
+        ],
+        "dimension_map": {
+          "A": [
+            2,
+            2
+          ],
+          "B": [
+            2,
+            2
+          ],
+          "D": [
+            2,
+            1
+          ],
+          "s_t": [
+            2,
+            1
+          ],
+          "s_prime": [
+            2,
+            1
+          ],
+          "o_t": [
+            2,
+            1
+          ],
+          "F": [
+            1
+          ],
+          "t": [
+            1
+          ]
+        }
+      },
+      "resource_estimation": {
+        "complexity_tier": "medium",
+        "estimated_memory_bytes": 72,
+        "total_parameters": 18,
+        "variables": 8,
+        "connections": 7,
+        "flops_estimate": 2521.331051914615,
+        "complexity_score": 5.04266210382923,
+        "diagnostics": []
+      },
+      "variables": [
+        {
+          "name": "A",
+          "type": "float",
+          "dimensions": [
+            2,
+            2
+          ],
+          "total_elements": 4
+        },
+        {
+          "name": "B",
+          "type": "float",
+          "dimensions": [
+            2,
+            2
+          ],
+          "total_elements": 4
+        },
+        {
+          "name": "D",
+          "type": "float",
+          "dimensions": [
+            2,
+            1
+          ],
+          "total_elements": 2
+        },
+        {
+          "name": "s_t",
+          "type": "float",
+          "dimensions": [
+            2,
+            1
+          ],
+          "total_elements": 2
+        },
+        {
+          "name": "s_prime",
+          "type": "float",
+          "dimensions": [
+            2,
+            1
+          ],
+          "total_elements": 2
+        },
+        {
+          "name": "o_t",
+          "type": "int",
+          "dimensions": [
+            2,
+            1
+          ],
+          "total_elements": 2
+        },
+        {
+          "name": "F",
+          "type": "float",
+          "dimensions": [
+            1
+          ],
+          "total_elements": 1
+        },
+        {
+          "name": "t",
+          "type": "int",
+          "dimensions": [
+            1
+          ],
+          "total_elements": 1
+        }
+      ],
+      "variable_count": 8,
+      "connections": [
+        {
+          "source": "D",
+          "target": "s_t",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "s_t",
+          "target": "A",
+          "type": "undirected",
+          "is_temporal": false
+        },
+        {
+          "source": "A",
+          "target": "o_t",
+          "type": "undirected",
+          "is_temporal": false
+        },
+        {
+          "source": "s_t",
+          "target": "B",
+          "type": "undirected",
+          "is_temporal": false
+        },
+        {
+          "source": "B",
+          "target": "s_prime",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "s_t",
+          "target": "F",
+          "type": "undirected",
+          "is_temporal": false
+        },
+        {
+          "source": "o_t",
+          "target": "F",
+          "type": "undirected",
+          "is_temporal": false
+        }
+      ],
+      "connection_count": 7,
+      "connection_types": {
+        "directed": 2,
+        "undirected": 5,
+        "temporal": 0
+      },
+      "sections": {
+        "GNNSection": true,
+        "GNNVersionAndFlags": true,
+        "ModelName": true,
+        "ModelAnnotation": true,
+        "StateSpaceBlock": true,
+        "Connections": true,
+        "InitialParameterization": true,
+        "Equations": true,
+        "Time": true,
+        "ActInfOntologyAnnotation": true,
+        "ModelParameters": true,
+        "Footer": true,
+        "Signature": true
+      },
+      "model_complexity": {
+        "state_space_complexity": 4.247927513443585,
+        "graph_density": 0.125,
+        "avg_in_degree": 1.1666666666666667,
+        "avg_out_degree": 1.4,
+        "max_in_degree": 2,
+        "max_out_degree": 3,
+        "cyclic_complexity": 0.0,
+        "temporal_complexity": 0.0,
+        "equation_complexity": 4.760330578512396,
+        "overall_complexity": 5.04266210382923,
+        "variable_count": 8,
+        "edge_count": 7,
+        "total_state_space_dim": 18,
+        "max_variable_dim": 4
+      },
+      "model_type": "Dynamic",
+      "type_distribution": {
+        "float": 6,
+        "int": 2
+      },
+      "time_dynamics": {
+        "is_dynamic": true
+      }
+    }
+  ],
+  "type_analysis": [
+    {
+      "file_path": "output/cross_framework/basics/acceptance/basics/input/dynamic_perception.md",
+      "file_name": "dynamic_perception.md",
+      "types_found": [
+        {
+          "name": "A",
+          "type": "float",
+          "line": 34
+        },
+        {
+          "name": "B",
+          "type": "float",
+          "line": 35
+        },
+        {
+          "name": "D",
+          "type": "float",
+          "line": 36
+        },
+        {
+          "name": "s_t",
+          "type": "float",
+          "line": 40
+        },
+        {
+          "name": "s_prime",
+          "type": "float",
+          "line": 41
+        },
+        {
+          "name": "o_t",
+          "type": "int",
+          "line": 45
+        },
+        {
+          "name": "F",
+          "type": "float",
+          "line": 49
+        },
+        {
+          "name": "t",
+          "type": "int",
+          "line": 53
+        }
+      ],
+      "type_distribution": {
+        "float": 6,
+        "int": 2
+      },
+      "total_variables": 8,
+      "analysis_timestamp": "2026-09-06T11:44:20.281154"
+    }
+  ]
+}

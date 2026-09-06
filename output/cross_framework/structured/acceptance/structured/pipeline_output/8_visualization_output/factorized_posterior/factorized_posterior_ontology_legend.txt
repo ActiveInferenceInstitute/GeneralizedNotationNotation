@@ -1,0 +1,12 @@
+variable	ontology_term
+A_m0	LikelihoodMatrixModality0
+A_m1	LikelihoodMatrixModality1
+C_m0	PreferenceModality0
+C_m1	PreferenceModality1
+D_f0	PriorFactor0
+D_f1	PriorFactor1
+o_m0	ObservationModality0
+o_m1	ObservationModality1
+s_f0	HiddenStateFactor0
+s_f1	HiddenStateFactor1
+u	Action

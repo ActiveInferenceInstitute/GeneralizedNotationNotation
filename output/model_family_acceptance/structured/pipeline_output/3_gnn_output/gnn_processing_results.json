@@ -1,0 +1,222 @@
+{
+  "timestamp": "2026-09-06T11:30:28.981342",
+  "source_directory": "output/model_family_acceptance/structured/input",
+  "output_directory": "output/model_family_acceptance/structured/pipeline_output/3_gnn_output",
+  "processing_config": {
+    "recursive": true,
+    "verbose": false,
+    "serialize_preset": "full",
+    "supported_formats": [
+      "markdown",
+      "scala",
+      "lean",
+      "coq",
+      "python",
+      "bnf",
+      "ebnf",
+      "isabelle",
+      "maxima",
+      "xml",
+      "json",
+      "protobuf",
+      "yaml",
+      "xsd",
+      "asn1",
+      "pkl",
+      "alloy",
+      "z_notation",
+      "tla_plus",
+      "agda",
+      "haskell",
+      "pickle"
+    ],
+    "serialized_formats": [
+      "markdown",
+      "scala",
+      "lean",
+      "coq",
+      "python",
+      "bnf",
+      "ebnf",
+      "isabelle",
+      "maxima",
+      "xml",
+      "json",
+      "protobuf",
+      "yaml",
+      "xsd",
+      "asn1",
+      "pkl",
+      "alloy",
+      "z_notation",
+      "tla_plus",
+      "agda",
+      "haskell",
+      "pickle"
+    ],
+    "available_serializers": {
+      "markdown": "MarkdownSerializer",
+      "json": "JSONSerializer",
+      "xml": "XMLSerializer",
+      "yaml": "YAMLSerializer",
+      "scala": "ScalaSerializer",
+      "protobuf": "ProtobufSerializer",
+      "pkl": "PKLSerializer",
+      "xsd": "XSDSerializer",
+      "asn1": "ASN1Serializer",
+      "lean": "LeanSerializer",
+      "coq": "CoqSerializer",
+      "python": "PythonSerializer",
+      "bnf": "GrammarSerializer",
+      "ebnf": "GrammarSerializer",
+      "isabelle": "IsabelleSerializer",
+      "maxima": "MaximaSerializer",
+      "alloy": "AlloySerializer",
+      "z_notation": "ZNotationSerializer",
+      "tla_plus": "TLASerializer",
+      "agda": "AgdaSerializer",
+      "haskell": "FunctionalSerializer",
+      "pickle": "BinarySerializer"
+    }
+  },
+  "processed_files": [
+    {
+      "file_name": "factorized_posterior.md",
+      "file_path": "output/model_family_acceptance/structured/input/factorized_posterior.md",
+      "parse_success": true,
+      "parsed_model_file": "output/model_family_acceptance/structured/pipeline_output/3_gnn_output/factorized_posterior/factorized_posterior_parsed.json",
+      "source_format": "markdown",
+      "model_info": {
+        "name": "Factorized Posterior Agent",
+        "version": "1.0",
+        "variables_count": 13,
+        "connections_count": 12,
+        "parameters_count": 18,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "output/model_family_acceptance/structured/pipeline_output/3_gnn_output/factorized_posterior/factorized_posterior_markdown.md",
+          "file_size": 2422,
+          "success": true
+        },
+        "scala": {
+          "output_file": "output/model_family_acceptance/structured/pipeline_output/3_gnn_output/factorized_posterior/factorized_posterior_scala.scala",
+          "file_size": 6594,
+          "success": true
+        },
+        "lean": {
+          "output_file": "output/model_family_acceptance/structured/pipeline_output/3_gnn_output/factorized_posterior/factorized_posterior_lean.lean",
+          "file_size": 6976,
+          "success": true
+        },
+        "coq": {
+          "output_file": "output/model_family_acceptance/structured/pipeline_output/3_gnn_output/factorized_posterior/factorized_posterior_coq.v",
+          "file_size": 6708,
+          "success": true
+        },
+        "python": {
+          "output_file": "output/model_family_acceptance/structured/pipeline_output/3_gnn_output/factorized_posterior/factorized_posterior_python.py",
+          "file_size": 11449,
+          "success": true
+        },
+        "bnf": {
+          "output_file": "output/model_family_acceptance/structured/pipeline_output/3_gnn_output/factorized_posterior/factorized_posterior_bnf.bnf",
+          "file_size": 7167,
+          "success": true
+        },
+        "ebnf": {
+          "output_file": "output/model_family_acceptance/structured/pipeline_output/3_gnn_output/factorized_posterior/factorized_posterior_ebnf.ebnf",
+          "file_size": 7167,
+          "success": true
+        },
+        "isabelle": {
+          "output_file": "output/model_family_acceptance/structured/pipeline_output/3_gnn_output/factorized_posterior/factorized_posterior_isabelle.thy",
+          "file_size": 6745,
+          "success": true
+        },
+        "maxima": {
+          "output_file": "output/model_family_acceptance/structured/pipeline_output/3_gnn_output/factorized_posterior/factorized_posterior_maxima.max",
+          "file_size": 7832,
+          "success": true
+        },
+        "xml": {
+          "output_file": "output/model_family_acceptance/structured/pipeline_output/3_gnn_output/factorized_posterior/factorized_posterior_xml.xml",
+          "file_size": 11902,
+          "success": true
+        },
+        "json": {
+          "output_file": "output/model_family_acceptance/structured/pipeline_output/3_gnn_output/factorized_posterior/factorized_posterior_json.json",
+          "file_size": 12697,
+          "success": true
+        },
+        "protobuf": {
+          "output_file": "output/model_family_acceptance/structured/pipeline_output/3_gnn_output/factorized_posterior/factorized_posterior_protobuf.proto",
+          "file_size": 9403,
+          "success": true
+        },
+        "yaml": {
+          "output_file": "output/model_family_acceptance/structured/pipeline_output/3_gnn_output/factorized_posterior/factorized_posterior_yaml.yaml",
+          "file_size": 7638,
+          "success": true
+        },
+        "xsd": {
+          "output_file": "output/model_family_acceptance/structured/pipeline_output/3_gnn_output/factorized_posterior/factorized_posterior_xsd.xsd",
+          "file_size": 7684,
+          "success": true
+        },
+        "asn1": {
+          "output_file": "output/model_family_acceptance/structured/pipeline_output/3_gnn_output/factorized_posterior/factorized_posterior_asn1.asn1",
+          "file_size": 9984,
+          "success": true
+        },
+        "pkl": {
+          "output_file": "output/model_family_acceptance/structured/pipeline_output/3_gnn_output/factorized_posterior/factorized_posterior_pkl.pkl",
+          "file_size": 16306,
+          "success": true
+        },
+        "alloy": {
+          "output_file": "output/model_family_acceptance/structured/pipeline_output/3_gnn_output/factorized_posterior/factorized_posterior_alloy.als",
+          "file_size": 10873,
+          "success": true
+        },
+        "z_notation": {
+          "output_file": "output/model_family_acceptance/structured/pipeline_output/3_gnn_output/factorized_posterior/factorized_posterior_z_notation.z",
+          "file_size": 7329,
+          "success": true
+        },
+        "tla_plus": {
+          "output_file": "output/model_family_acceptance/structured/pipeline_output/3_gnn_output/factorized_posterior/factorized_posterior_tla_plus.tla",
+          "file_size": 6024,
+          "success": true
+        },
+        "agda": {
+          "output_file": "output/model_family_acceptance/structured/pipeline_output/3_gnn_output/factorized_posterior/factorized_posterior_agda.agda",
+          "file_size": 6002,
+          "success": true
+        },
+        "haskell": {
+          "output_file": "output/model_family_acceptance/structured/pipeline_output/3_gnn_output/factorized_posterior/factorized_posterior_haskell.hs",
+          "file_size": 6774,
+          "success": true
+        },
+        "pickle": {
+          "output_file": "output/model_family_acceptance/structured/pipeline_output/3_gnn_output/factorized_posterior/factorized_posterior_pickle.pickle",
+          "file_size": 5372,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    }
+  ],
+  "summary": {
+    "total_files": 1,
+    "successful_parses": 1,
+    "failed_parses": 0,
+    "total_formats_generated": 22,
+    "formats_per_file": {
+      "factorized_posterior.md": 22
+    }
+  }
+}

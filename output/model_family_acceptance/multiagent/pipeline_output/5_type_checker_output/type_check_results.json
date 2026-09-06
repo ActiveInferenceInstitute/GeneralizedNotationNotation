@@ -1,0 +1,645 @@
+{
+  "timestamp": "2026-09-06T11:26:45.145924",
+  "processed_files": 1,
+  "success": true,
+  "errors": [],
+  "validation_results": [
+    {
+      "file_path": "output/model_family_acceptance/multiagent/input/multi_agent_coordination.md",
+      "file_name": "multi_agent_coordination.md",
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "type_issues": [],
+      "validation_timestamp": "2026-09-06T11:26:45.181526",
+      "dimension_compatibility": {
+        "compatible": true,
+        "issues": [],
+        "warnings": [],
+        "variables_checked": [
+          "A_agent1",
+          "B_agent1",
+          "C_agent1",
+          "D_agent1",
+          "s_agent1",
+          "x_next1",
+          "o_agent1",
+          "\u03c01",
+          "u1",
+          "G1",
+          "A_agent2",
+          "B_agent2",
+          "C_agent2",
+          "D_agent2",
+          "s_agent2",
+          "x_next2",
+          "o_agent2",
+          "\u03c02",
+          "u2",
+          "G2",
+          "s_joint",
+          "o_joint",
+          "t"
+        ],
+        "dimension_map": {
+          "A_agent1": [
+            4,
+            4
+          ],
+          "B_agent1": [
+            4,
+            4,
+            3
+          ],
+          "C_agent1": [
+            4
+          ],
+          "D_agent1": [
+            4
+          ],
+          "s_agent1": [
+            4,
+            1
+          ],
+          "x_next1": [
+            4,
+            1
+          ],
+          "o_agent1": [
+            4,
+            1
+          ],
+          "\u03c01": [
+            3
+          ],
+          "u1": [
+            1
+          ],
+          "G1": [
+            3
+          ],
+          "A_agent2": [
+            4,
+            4
+          ],
+          "B_agent2": [
+            4,
+            4,
+            3
+          ],
+          "C_agent2": [
+            4
+          ],
+          "D_agent2": [
+            4
+          ],
+          "s_agent2": [
+            4,
+            1
+          ],
+          "x_next2": [
+            4,
+            1
+          ],
+          "o_agent2": [
+            4,
+            1
+          ],
+          "\u03c02": [
+            3
+          ],
+          "u2": [
+            1
+          ],
+          "G2": [
+            3
+          ],
+          "s_joint": [
+            16,
+            1
+          ],
+          "o_joint": [
+            4,
+            1
+          ],
+          "t": [
+            1
+          ]
+        }
+      },
+      "resource_estimation": {
+        "complexity_tier": "medium",
+        "estimated_memory_bytes": 812,
+        "total_parameters": 203,
+        "variables": 23,
+        "connections": 21,
+        "flops_estimate": 3581.5430540538155,
+        "complexity_score": 7.163086108107631,
+        "diagnostics": []
+      },
+      "variables": [
+        {
+          "name": "A_agent1",
+          "type": "float",
+          "dimensions": [
+            4,
+            4
+          ],
+          "total_elements": 16
+        },
+        {
+          "name": "B_agent1",
+          "type": "float",
+          "dimensions": [
+            4,
+            4,
+            3
+          ],
+          "total_elements": 48
+        },
+        {
+          "name": "C_agent1",
+          "type": "float",
+          "dimensions": [
+            4
+          ],
+          "total_elements": 4
+        },
+        {
+          "name": "D_agent1",
+          "type": "float",
+          "dimensions": [
+            4
+          ],
+          "total_elements": 4
+        },
+        {
+          "name": "s_agent1",
+          "type": "float",
+          "dimensions": [
+            4,
+            1
+          ],
+          "total_elements": 4
+        },
+        {
+          "name": "x_next1",
+          "type": "float",
+          "dimensions": [
+            4,
+            1
+          ],
+          "total_elements": 4
+        },
+        {
+          "name": "o_agent1",
+          "type": "int",
+          "dimensions": [
+            4,
+            1
+          ],
+          "total_elements": 4
+        },
+        {
+          "name": "\u03c01",
+          "type": "float",
+          "dimensions": [
+            3
+          ],
+          "total_elements": 3
+        },
+        {
+          "name": "u1",
+          "type": "int",
+          "dimensions": [
+            1
+          ],
+          "total_elements": 1
+        },
+        {
+          "name": "G1",
+          "type": "float",
+          "dimensions": [
+            3
+          ],
+          "total_elements": 3
+        },
+        {
+          "name": "A_agent2",
+          "type": "float",
+          "dimensions": [
+            4,
+            4
+          ],
+          "total_elements": 16
+        },
+        {
+          "name": "B_agent2",
+          "type": "float",
+          "dimensions": [
+            4,
+            4,
+            3
+          ],
+          "total_elements": 48
+        },
+        {
+          "name": "C_agent2",
+          "type": "float",
+          "dimensions": [
+            4
+          ],
+          "total_elements": 4
+        },
+        {
+          "name": "D_agent2",
+          "type": "float",
+          "dimensions": [
+            4
+          ],
+          "total_elements": 4
+        },
+        {
+          "name": "s_agent2",
+          "type": "float",
+          "dimensions": [
+            4,
+            1
+          ],
+          "total_elements": 4
+        },
+        {
+          "name": "x_next2",
+          "type": "float",
+          "dimensions": [
+            4,
+            1
+          ],
+          "total_elements": 4
+        },
+        {
+          "name": "o_agent2",
+          "type": "int",
+          "dimensions": [
+            4,
+            1
+          ],
+          "total_elements": 4
+        },
+        {
+          "name": "\u03c02",
+          "type": "float",
+          "dimensions": [
+            3
+          ],
+          "total_elements": 3
+        },
+        {
+          "name": "u2",
+          "type": "int",
+          "dimensions": [
+            1
+          ],
+          "total_elements": 1
+        },
+        {
+          "name": "G2",
+          "type": "float",
+          "dimensions": [
+            3
+          ],
+          "total_elements": 3
+        },
+        {
+          "name": "s_joint",
+          "type": "float",
+          "dimensions": [
+            16,
+            1
+          ],
+          "total_elements": 16
+        },
+        {
+          "name": "o_joint",
+          "type": "int",
+          "dimensions": [
+            4,
+            1
+          ],
+          "total_elements": 4
+        },
+        {
+          "name": "t",
+          "type": "int",
+          "dimensions": [
+            1
+          ],
+          "total_elements": 1
+        }
+      ],
+      "variable_count": 23,
+      "connections": [
+        {
+          "source": "D_agent1",
+          "target": "s_agent1",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "s_agent1",
+          "target": "A_agent1",
+          "type": "undirected",
+          "is_temporal": false
+        },
+        {
+          "source": "A_agent1",
+          "target": "o_agent1",
+          "type": "undirected",
+          "is_temporal": false
+        },
+        {
+          "source": "s_agent1",
+          "target": "x_next1",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "C_agent1",
+          "target": "G1",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "G1",
+          "target": "\u03c01",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "\u03c01",
+          "target": "u1",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "B_agent1",
+          "target": "u1",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "D_agent2",
+          "target": "s_agent2",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "s_agent2",
+          "target": "A_agent2",
+          "type": "undirected",
+          "is_temporal": false
+        },
+        {
+          "source": "A_agent2",
+          "target": "o_agent2",
+          "type": "undirected",
+          "is_temporal": false
+        },
+        {
+          "source": "s_agent2",
+          "target": "x_next2",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "C_agent2",
+          "target": "G2",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "G2",
+          "target": "\u03c02",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "\u03c02",
+          "target": "u2",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "B_agent2",
+          "target": "u2",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "u1",
+          "target": "s_joint",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "u2",
+          "target": "s_joint",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "s_joint",
+          "target": "o_joint",
+          "type": "undirected",
+          "is_temporal": false
+        },
+        {
+          "source": "o_agent1",
+          "target": "s_joint",
+          "type": "undirected",
+          "is_temporal": false
+        },
+        {
+          "source": "o_agent2",
+          "target": "s_joint",
+          "type": "undirected",
+          "is_temporal": false
+        }
+      ],
+      "connection_count": 21,
+      "connection_types": {
+        "directed": 14,
+        "undirected": 7,
+        "temporal": 0
+      },
+      "sections": {
+        "GNNSection": true,
+        "GNNVersionAndFlags": true,
+        "ModelName": true,
+        "ModelAnnotation": true,
+        "StateSpaceBlock": true,
+        "Connections": true,
+        "InitialParameterization": true,
+        "Equations": true,
+        "Time": true,
+        "ActInfOntologyAnnotation": true,
+        "ModelParameters": true,
+        "Footer": true,
+        "Signature": true
+      },
+      "model_complexity": {
+        "state_space_complexity": 7.672425341971495,
+        "graph_density": 0.041501976284584984,
+        "avg_in_degree": 1.3125,
+        "avg_out_degree": 1.105263157894737,
+        "max_in_degree": 4,
+        "max_out_degree": 2,
+        "cyclic_complexity": 0.0,
+        "temporal_complexity": 0.0,
+        "equation_complexity": 5.5102040816326525,
+        "overall_complexity": 7.163086108107631,
+        "variable_count": 23,
+        "edge_count": 21,
+        "total_state_space_dim": 203,
+        "max_variable_dim": 48
+      },
+      "model_type": "Dynamic",
+      "type_distribution": {
+        "float": 17,
+        "int": 6
+      },
+      "time_dynamics": {
+        "is_dynamic": true
+      }
+    }
+  ],
+  "type_analysis": [
+    {
+      "file_path": "output/model_family_acceptance/multiagent/input/multi_agent_coordination.md",
+      "file_name": "multi_agent_coordination.md",
+      "types_found": [
+        {
+          "name": "A_agent1",
+          "type": "float",
+          "line": 33
+        },
+        {
+          "name": "B_agent1",
+          "type": "float",
+          "line": 34
+        },
+        {
+          "name": "C_agent1",
+          "type": "float",
+          "line": 35
+        },
+        {
+          "name": "D_agent1",
+          "type": "float",
+          "line": 36
+        },
+        {
+          "name": "s_agent1",
+          "type": "float",
+          "line": 37
+        },
+        {
+          "name": "x_next1",
+          "type": "float",
+          "line": 38
+        },
+        {
+          "name": "o_agent1",
+          "type": "int",
+          "line": 39
+        },
+        {
+          "name": "\u03c01",
+          "type": "float",
+          "line": 40
+        },
+        {
+          "name": "u1",
+          "type": "int",
+          "line": 41
+        },
+        {
+          "name": "G1",
+          "type": "float",
+          "line": 42
+        },
+        {
+          "name": "A_agent2",
+          "type": "float",
+          "line": 46
+        },
+        {
+          "name": "B_agent2",
+          "type": "float",
+          "line": 47
+        },
+        {
+          "name": "C_agent2",
+          "type": "float",
+          "line": 48
+        },
+        {
+          "name": "D_agent2",
+          "type": "float",
+          "line": 49
+        },
+        {
+          "name": "s_agent2",
+          "type": "float",
+          "line": 50
+        },
+        {
+          "name": "x_next2",
+          "type": "float",
+          "line": 51
+        },
+        {
+          "name": "o_agent2",
+          "type": "int",
+          "line": 52
+        },
+        {
+          "name": "\u03c02",
+          "type": "float",
+          "line": 53
+        },
+        {
+          "name": "u2",
+          "type": "int",
+          "line": 54
+        },
+        {
+          "name": "G2",
+          "type": "float",
+          "line": 55
+        },
+        {
+          "name": "s_joint",
+          "type": "float",
+          "line": 59
+        },
+        {
+          "name": "o_joint",
+          "type": "int",
+          "line": 60
+        },
+        {
+          "name": "t",
+          "type": "int",
+          "line": 64
+        }
+      ],
+      "type_distribution": {
+        "float": 17,
+        "int": 6
+      },
+      "total_variables": 23,
+      "analysis_timestamp": "2026-09-06T11:26:45.183237"
+    }
+  ]
+}

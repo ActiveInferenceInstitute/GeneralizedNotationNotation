@@ -1,0 +1,94 @@
+{
+  "timestamp": "2026-09-06T12:11:51.487682",
+  "frameworks": {
+    "rxinfer": {
+      "success_count": 1,
+      "total_count": 1,
+      "execution_times": [
+        102.593163
+      ],
+      "output_files": [
+        "output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/12_execute_output/multi_agent_coordination/rxinfer/execution_logs/Multi-Agent_Cooperative_Active_Inference_rxinfer.jl_execution.log"
+      ],
+      "implementation_dirs": [
+        "output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/12_execute_output/multi_agent_coordination/rxinfer"
+      ],
+      "beliefs": [],
+      "actions": [],
+      "observations": [],
+      "free_energy": [],
+      "num_timesteps": 20,
+      "validation": {
+        "all_valid": true,
+        "per_agent": {
+          "agent1": {
+            "actions_in_range": true,
+            "all_beliefs_valid": true,
+            "all_valid": true,
+            "beliefs_sum_to_one": true,
+            "vfe_present": true
+          },
+          "agent2": {
+            "actions_in_range": true,
+            "all_beliefs_valid": true,
+            "all_valid": true,
+            "beliefs_sum_to_one": true,
+            "vfe_present": true
+          }
+        }
+      },
+      "model_parameters": {
+        "inference_iterations": 20,
+        "joint_state_space_size": 16,
+        "num_agents": 2,
+        "per_agent_action_sizes": [
+          3,
+          3
+        ],
+        "per_agent_observation_sizes": [
+          4,
+          4
+        ],
+        "per_agent_state_sizes": [
+          4,
+          4
+        ],
+        "time_steps": 20
+      },
+      "data_source": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/12_execute_output/multi_agent_coordination/rxinfer/simulation_data/simulation_results.json"
+    }
+  },
+  "comparisons": {
+    "success_rates": {
+      "rxinfer": 1.0
+    },
+    "performance_comparison": {
+      "rxinfer": {
+        "mean": 102.593163,
+        "std": 0.0,
+        "min": 102.593163,
+        "max": 102.593163
+      }
+    },
+    "metric_agreement": {},
+    "data_coverage": {
+      "rxinfer": {
+        "has_beliefs": false,
+        "has_actions": false,
+        "has_observations": false,
+        "has_free_energy": false,
+        "has_circuit_info": false,
+        "num_timesteps": 20,
+        "validation_passed": true,
+        "data_source": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/12_execute_output/multi_agent_coordination/rxinfer/simulation_data/simulation_results.json"
+      }
+    },
+    "simulation_statistics": {}
+  },
+  "metrics": {
+    "total_frameworks": 1,
+    "total_successful": 1,
+    "total_executions": 1,
+    "overall_success_rate": 1.0
+  }
+}

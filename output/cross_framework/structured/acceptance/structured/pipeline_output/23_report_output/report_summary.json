@@ -1,0 +1,2201 @@
+{
+  "report_generation_time": "unavailable",
+  "report_timestamp_source": "unavailable",
+  "pipeline_output_directory": "output/cross_framework/structured/acceptance/structured/pipeline_output",
+  "steps": {
+    "0_template_output": {
+      "directory": "output/cross_framework/structured/acceptance/structured/pipeline_output/0_template_output",
+      "exists": false,
+      "file_count": 0,
+      "total_size_mb": 0.0,
+      "file_types": {},
+      "last_modified": null,
+      "status": "missing"
+    },
+    "1_setup_output": {
+      "directory": "output/cross_framework/structured/acceptance/structured/pipeline_output/1_setup_output",
+      "exists": false,
+      "file_count": 0,
+      "total_size_mb": 0.0,
+      "file_types": {},
+      "last_modified": null,
+      "status": "missing"
+    },
+    "2_tests_output": {
+      "directory": "output/cross_framework/structured/acceptance/structured/pipeline_output/2_tests_output",
+      "exists": false,
+      "file_count": 0,
+      "total_size_mb": 0.0,
+      "file_types": {},
+      "last_modified": null,
+      "status": "missing"
+    },
+    "3_gnn_output": {
+      "directory": "output/cross_framework/structured/acceptance/structured/pipeline_output/3_gnn_output",
+      "exists": true,
+      "file_count": 26,
+      "total_size_mb": 0.21,
+      "file_types": {
+        ".agda": {
+          "count": 1,
+          "total_size_mb": 0.0057239532470703125
+        },
+        ".als": {
+          "count": 1,
+          "total_size_mb": 0.010369300842285156
+        },
+        ".asn1": {
+          "count": 1,
+          "total_size_mb": 0.009521484375
+        },
+        ".bnf": {
+          "count": 1,
+          "total_size_mb": 0.006834983825683594
+        },
+        ".v": {
+          "count": 1,
+          "total_size_mb": 0.006397247314453125
+        },
+        ".ebnf": {
+          "count": 1,
+          "total_size_mb": 0.006834983825683594
+        },
+        ".hs": {
+          "count": 1,
+          "total_size_mb": 0.0064601898193359375
+        },
+        ".thy": {
+          "count": 1,
+          "total_size_mb": 0.006432533264160156
+        },
+        ".json": {
+          "count": 5,
+          "total_size_mb": 0.05095481872558594
+        },
+        ".lean": {
+          "count": 1,
+          "total_size_mb": 0.00665283203125
+        },
+        ".md": {
+          "count": 1,
+          "total_size_mb": 0.0023097991943359375
+        },
+        ".max": {
+          "count": 1,
+          "total_size_mb": 0.00746917724609375
+        },
+        ".pickle": {
+          "count": 1,
+          "total_size_mb": 0.005123138427734375
+        },
+        ".pkl": {
+          "count": 1,
+          "total_size_mb": 0.015550613403320312
+        },
+        ".proto": {
+          "count": 1,
+          "total_size_mb": 0.008967399597167969
+        },
+        ".py": {
+          "count": 1,
+          "total_size_mb": 0.010918617248535156
+        },
+        ".scala": {
+          "count": 1,
+          "total_size_mb": 0.0062885284423828125
+        },
+        ".tla": {
+          "count": 1,
+          "total_size_mb": 0.00574493408203125
+        },
+        ".xml": {
+          "count": 1,
+          "total_size_mb": 0.011350631713867188
+        },
+        ".xsd": {
+          "count": 1,
+          "total_size_mb": 0.007328033447265625
+        },
+        ".yaml": {
+          "count": 1,
+          "total_size_mb": 0.0072841644287109375
+        },
+        ".z": {
+          "count": 1,
+          "total_size_mb": 0.006989479064941406
+        }
+      },
+      "last_modified": "2026-09-06T19:15:06.154291+00:00",
+      "status": "success",
+      "performance_metrics": {},
+      "error_logs": [],
+      "key_files": [
+        {
+          "name": "gnn_processing_results.json",
+          "size_mb": 0.01,
+          "type": ".json"
+        }
+      ]
+    },
+    "4_model_registry_output": {
+      "directory": "output/cross_framework/structured/acceptance/structured/pipeline_output/4_model_registry_output",
+      "exists": false,
+      "file_count": 0,
+      "total_size_mb": 0.0,
+      "file_types": {},
+      "last_modified": null,
+      "status": "missing"
+    },
+    "5_type_checker_output": {
+      "directory": "output/cross_framework/structured/acceptance/structured/pipeline_output/5_type_checker_output",
+      "exists": true,
+      "file_count": 14,
+      "total_size_mb": 0.58,
+      "file_types": {
+        ".png": {
+          "count": 8,
+          "total_size_mb": 0.5567703247070312
+        },
+        ".json": {
+          "count": 3,
+          "total_size_mb": 0.011239051818847656
+        },
+        ".md": {
+          "count": 2,
+          "total_size_mb": 0.004268646240234375
+        },
+        ".html": {
+          "count": 1,
+          "total_size_mb": 0.004544258117675781
+        }
+      },
+      "last_modified": "2026-09-06T19:15:10.341536+00:00",
+      "status": "success",
+      "performance_metrics": {},
+      "error_logs": [],
+      "key_files": [
+        {
+          "name": "type_check_summary.json",
+          "size_mb": 0.0,
+          "type": ".json"
+        }
+      ]
+    },
+    "6_validation_output": {
+      "directory": "output/cross_framework/structured/acceptance/structured/pipeline_output/6_validation_output",
+      "exists": true,
+      "file_count": 2,
+      "total_size_mb": 0.01,
+      "file_types": {
+        ".json": {
+          "count": 2,
+          "total_size_mb": 0.005213737487792969
+        }
+      },
+      "last_modified": "2026-09-06T19:15:11.228836+00:00",
+      "status": "success",
+      "performance_metrics": {},
+      "error_logs": [],
+      "key_files": [
+        {
+          "name": "validation_results.json",
+          "size_mb": 0.0,
+          "type": ".json"
+        }
+      ]
+    },
+    "7_export_output": {
+      "directory": "output/cross_framework/structured/acceptance/structured/pipeline_output/7_export_output",
+      "exists": true,
+      "file_count": 7,
+      "total_size_mb": 0.05,
+      "file_types": {
+        ".json": {
+          "count": 3,
+          "total_size_mb": 0.03170299530029297
+        },
+        ".gexf": {
+          "count": 1,
+          "total_size_mb": 0.0012350082397460938
+        },
+        ".graphml": {
+          "count": 1,
+          "total_size_mb": 0.0015125274658203125
+        },
+        ".pkl": {
+          "count": 1,
+          "total_size_mb": 0.015167236328125
+        },
+        ".xml": {
+          "count": 1,
+          "total_size_mb": 0.0009965896606445312
+        }
+      },
+      "last_modified": "2026-09-06T19:15:13.210224+00:00",
+      "status": "success",
+      "performance_metrics": {},
+      "error_logs": [],
+      "key_files": [
+        {
+          "name": "export_results.json",
+          "size_mb": 0.0,
+          "type": ".json"
+        },
+        {
+          "name": "export_summary.json",
+          "size_mb": 0.0,
+          "type": ".json"
+        },
+        {
+          "name": "factorized_posterior_gexf.gexf",
+          "size_mb": 0.0,
+          "type": ".gexf"
+        },
+        {
+          "name": "factorized_posterior_graphml.graphml",
+          "size_mb": 0.0,
+          "type": ".graphml"
+        },
+        {
+          "name": "factorized_posterior_json.json",
+          "size_mb": 0.03,
+          "type": ".json"
+        },
+        {
+          "name": "factorized_posterior_xml.xml",
+          "size_mb": 0.0,
+          "type": ".xml"
+        }
+      ]
+    },
+    "8_visualization_output": {
+      "directory": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output",
+      "exists": true,
+      "file_count": 53,
+      "total_size_mb": 8.34,
+      "file_types": {
+        ".png": {
+          "count": 27,
+          "total_size_mb": 3.6831398010253906
+        },
+        ".html": {
+          "count": 4,
+          "total_size_mb": 4.640933036804199
+        },
+        ".json": {
+          "count": 6,
+          "total_size_mb": 0.013579368591308594
+        },
+        ".csv": {
+          "count": 15,
+          "total_size_mb": 0.0012493133544921875
+        },
+        ".txt": {
+          "count": 1,
+          "total_size_mb": 0.00026702880859375
+        }
+      },
+      "last_modified": "2026-09-06T19:16:03.920443+00:00",
+      "status": "success",
+      "performance_metrics": {},
+      "error_logs": [],
+      "key_files": [
+        {
+          "name": "factorized_posterior_A_m0_analysis.png",
+          "size_mb": 0.07,
+          "type": ".png"
+        },
+        {
+          "name": "factorized_posterior_A_m0_tensor.png",
+          "size_mb": 0.17,
+          "type": ".png"
+        },
+        {
+          "name": "factorized_posterior_A_m0_threejs.html",
+          "size_mb": 0.0,
+          "type": ".html"
+        },
+        {
+          "name": "factorized_posterior_A_m1_heatmap.png",
+          "size_mb": 0.09,
+          "type": ".png"
+        },
+        {
+          "name": "factorized_posterior_B_f0_analysis.png",
+          "size_mb": 0.08,
+          "type": ".png"
+        },
+        {
+          "name": "factorized_posterior_B_f0_tensor.png",
+          "size_mb": 0.21,
+          "type": ".png"
+        },
+        {
+          "name": "factorized_posterior_B_f0_threejs.html",
+          "size_mb": 0.0,
+          "type": ".html"
+        },
+        {
+          "name": "factorized_posterior_B_f1_tensor.png",
+          "size_mb": 0.15,
+          "type": ".png"
+        },
+        {
+          "name": "factorized_posterior_B_f1_threejs.html",
+          "size_mb": 0.0,
+          "type": ".html"
+        },
+        {
+          "name": "factorized_posterior_C_m0_heatmap.png",
+          "size_mb": 0.08,
+          "type": ".png"
+        },
+        {
+          "name": "factorized_posterior_C_m1_heatmap.png",
+          "size_mb": 0.07,
+          "type": ".png"
+        },
+        {
+          "name": "factorized_posterior_D_f0_heatmap.png",
+          "size_mb": 0.07,
+          "type": ".png"
+        },
+        {
+          "name": "factorized_posterior_D_f1_heatmap.png",
+          "size_mb": 0.09,
+          "type": ".png"
+        },
+        {
+          "name": "factorized_posterior_combined_analysis.png",
+          "size_mb": 0.42,
+          "type": ".png"
+        },
+        {
+          "name": "factorized_posterior_generative_model.png",
+          "size_mb": 0.21,
+          "type": ".png"
+        },
+        {
+          "name": "factorized_posterior_matrix_size_distribution.png",
+          "size_mb": 0.08,
+          "type": ".png"
+        },
+        {
+          "name": "factorized_posterior_network_graph.png",
+          "size_mb": 0.48,
+          "type": ".png"
+        },
+        {
+          "name": "factorized_posterior_network_interactive.html",
+          "size_mb": 4.63,
+          "type": ".html"
+        },
+        {
+          "name": "factorized_posterior_num_actions_heatmap.png",
+          "size_mb": 0.08,
+          "type": ".png"
+        },
+        {
+          "name": "factorized_posterior_num_factors_heatmap.png",
+          "size_mb": 0.08,
+          "type": ".png"
+        },
+        {
+          "name": "factorized_posterior_num_hidden_states_factor0_heatmap.png",
+          "size_mb": 0.08,
+          "type": ".png"
+        },
+        {
+          "name": "factorized_posterior_num_hidden_states_factor1_heatmap.png",
+          "size_mb": 0.09,
+          "type": ".png"
+        },
+        {
+          "name": "factorized_posterior_num_hidden_states_heatmap.png",
+          "size_mb": 0.08,
+          "type": ".png"
+        },
+        {
+          "name": "factorized_posterior_num_modalities_heatmap.png",
+          "size_mb": 0.08,
+          "type": ".png"
+        },
+        {
+          "name": "factorized_posterior_num_obs_heatmap.png",
+          "size_mb": 0.08,
+          "type": ".png"
+        },
+        {
+          "name": "factorized_posterior_num_obs_modality0_heatmap.png",
+          "size_mb": 0.08,
+          "type": ".png"
+        },
+        {
+          "name": "factorized_posterior_num_obs_modality1_heatmap.png",
+          "size_mb": 0.09,
+          "type": ".png"
+        },
+        {
+          "name": "factorized_posterior_num_timesteps_heatmap.png",
+          "size_mb": 0.08,
+          "type": ".png"
+        },
+        {
+          "name": "factorized_posterior_section_content_length.png",
+          "size_mb": 0.19,
+          "type": ".png"
+        },
+        {
+          "name": "factorized_posterior_variable_parameter_bipartite.png",
+          "size_mb": 0.29,
+          "type": ".png"
+        },
+        {
+          "name": "factorized_posterior_variable_type_distribution.png",
+          "size_mb": 0.11,
+          "type": ".png"
+        }
+      ]
+    },
+    "9_advanced_viz_output": {
+      "directory": "output/cross_framework/structured/acceptance/structured/pipeline_output/9_advanced_viz_output",
+      "exists": false,
+      "file_count": 0,
+      "total_size_mb": 0.0,
+      "file_types": {},
+      "last_modified": null,
+      "status": "missing"
+    },
+    "10_ontology_output": {
+      "directory": "output/cross_framework/structured/acceptance/structured/pipeline_output/10_ontology_output",
+      "exists": false,
+      "file_count": 0,
+      "total_size_mb": 0.0,
+      "file_types": {},
+      "last_modified": null,
+      "status": "missing"
+    },
+    "11_render_output": {
+      "directory": "output/cross_framework/structured/acceptance/structured/pipeline_output/11_render_output",
+      "exists": true,
+      "file_count": 6,
+      "total_size_mb": 0.07,
+      "file_types": {
+        ".md": {
+          "count": 2,
+          "total_size_mb": 0.00319671630859375
+        },
+        ".json": {
+          "count": 3,
+          "total_size_mb": 0.03014373779296875
+        },
+        ".py": {
+          "count": 1,
+          "total_size_mb": 0.03372001647949219
+        }
+      },
+      "last_modified": "2026-09-06T19:16:18.433919+00:00",
+      "status": "success",
+      "performance_metrics": {},
+      "error_logs": [],
+      "key_files": [
+        {
+          "name": "Factorized_Posterior_Agent_pymdp.py",
+          "size_mb": 0.03,
+          "type": ".py"
+        },
+        {
+          "name": "render_processing_summary.json",
+          "size_mb": 0.0,
+          "type": ".json"
+        }
+      ]
+    },
+    "12_execute_output": {
+      "directory": "output/cross_framework/structured/acceptance/structured/pipeline_output/12_execute_output",
+      "exists": true,
+      "file_count": 5,
+      "total_size_mb": 0.05,
+      "file_types": {
+        ".log": {
+          "count": 1,
+          "total_size_mb": 0.003918647766113281
+        },
+        ".json": {
+          "count": 3,
+          "total_size_mb": 0.049271583557128906
+        },
+        ".md": {
+          "count": 1,
+          "total_size_mb": 0.0012388229370117188
+        }
+      },
+      "last_modified": "2026-09-06T19:16:18.977278+00:00",
+      "status": "success",
+      "performance_metrics": {},
+      "error_logs": [],
+      "key_files": []
+    },
+    "13_llm_output": {
+      "directory": "output/cross_framework/structured/acceptance/structured/pipeline_output/13_llm_output",
+      "exists": false,
+      "file_count": 0,
+      "total_size_mb": 0.0,
+      "file_types": {},
+      "last_modified": null,
+      "status": "missing"
+    },
+    "14_ml_integration_output": {
+      "directory": "output/cross_framework/structured/acceptance/structured/pipeline_output/14_ml_integration_output",
+      "exists": false,
+      "file_count": 0,
+      "total_size_mb": 0.0,
+      "file_types": {},
+      "last_modified": null,
+      "status": "missing"
+    },
+    "15_audio_output": {
+      "directory": "output/cross_framework/structured/acceptance/structured/pipeline_output/15_audio_output",
+      "exists": true,
+      "file_count": 8,
+      "total_size_mb": 2.36,
+      "file_types": {
+        ".json": {
+          "count": 3,
+          "total_size_mb": 0.004909515380859375
+        },
+        ".md": {
+          "count": 1,
+          "total_size_mb": 0.00037860870361328125
+        },
+        ".wav": {
+          "count": 4,
+          "total_size_mb": 2.3553619384765625
+        }
+      },
+      "last_modified": "2026-09-06T19:16:20.060524+00:00",
+      "status": "success",
+      "performance_metrics": {},
+      "error_logs": [],
+      "key_files": [
+        {
+          "name": "factorized_posterior_ambient.wav",
+          "size_mb": 0.84,
+          "type": ".wav"
+        },
+        {
+          "name": "factorized_posterior_rhythmic.wav",
+          "size_mb": 0.42,
+          "type": ".wav"
+        },
+        {
+          "name": "factorized_posterior_sonification.wav",
+          "size_mb": 0.67,
+          "type": ".wav"
+        },
+        {
+          "name": "factorized_posterior_tonal.wav",
+          "size_mb": 0.42,
+          "type": ".wav"
+        }
+      ]
+    },
+    "16_analysis_output": {
+      "directory": "output/cross_framework/structured/acceptance/structured/pipeline_output/16_analysis_output",
+      "exists": true,
+      "file_count": 19,
+      "total_size_mb": 2.25,
+      "file_types": {
+        ".json": {
+          "count": 3,
+          "total_size_mb": 0.047997474670410156
+        },
+        ".md": {
+          "count": 3,
+          "total_size_mb": 0.00296783447265625
+        },
+        ".png": {
+          "count": 13,
+          "total_size_mb": 2.200596809387207
+        }
+      },
+      "last_modified": "2026-09-06T19:16:31.126578+00:00",
+      "status": "success",
+      "performance_metrics": {},
+      "error_logs": [],
+      "key_files": [
+        {
+          "name": "analysis_results.json",
+          "size_mb": 0.03,
+          "type": ".json"
+        },
+        {
+          "name": "analysis_summary.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        }
+      ]
+    },
+    "17_integration_output": {
+      "directory": "output/cross_framework/structured/acceptance/structured/pipeline_output/17_integration_output",
+      "exists": false,
+      "file_count": 0,
+      "total_size_mb": 0.0,
+      "file_types": {},
+      "last_modified": null,
+      "status": "missing"
+    },
+    "18_security_output": {
+      "directory": "output/cross_framework/structured/acceptance/structured/pipeline_output/18_security_output",
+      "exists": false,
+      "file_count": 0,
+      "total_size_mb": 0.0,
+      "file_types": {},
+      "last_modified": null,
+      "status": "missing"
+    },
+    "19_research_output": {
+      "directory": "output/cross_framework/structured/acceptance/structured/pipeline_output/19_research_output",
+      "exists": false,
+      "file_count": 0,
+      "total_size_mb": 0.0,
+      "file_types": {},
+      "last_modified": null,
+      "status": "missing"
+    },
+    "20_website_output": {
+      "directory": "output/cross_framework/structured/acceptance/structured/pipeline_output/20_website_output",
+      "exists": false,
+      "file_count": 0,
+      "total_size_mb": 0.0,
+      "file_types": {},
+      "last_modified": null,
+      "status": "missing"
+    },
+    "21_mcp_output": {
+      "directory": "output/cross_framework/structured/acceptance/structured/pipeline_output/21_mcp_output",
+      "exists": false,
+      "file_count": 0,
+      "total_size_mb": 0.0,
+      "file_types": {},
+      "last_modified": null,
+      "status": "missing"
+    },
+    "22_gui_output": {
+      "directory": "output/cross_framework/structured/acceptance/structured/pipeline_output/22_gui_output",
+      "exists": false,
+      "file_count": 0,
+      "total_size_mb": 0.0,
+      "file_types": {},
+      "last_modified": null,
+      "status": "missing"
+    },
+    "23_report_output": {
+      "directory": "output/cross_framework/structured/acceptance/structured/pipeline_output/23_report_output",
+      "exists": true,
+      "file_count": 0,
+      "total_size_mb": 0.0,
+      "file_types": {},
+      "last_modified": null,
+      "status": "generating",
+      "performance_metrics": {},
+      "error_logs": [],
+      "key_files": [],
+      "note": "Report step output (self-referencing \u2014 files generated during this step)"
+    },
+    "24_intelligent_analysis_output": {
+      "directory": "output/cross_framework/structured/acceptance/structured/pipeline_output/24_intelligent_analysis_output",
+      "exists": false,
+      "file_count": 0,
+      "total_size_mb": 0.0,
+      "file_types": {},
+      "last_modified": null,
+      "status": "missing"
+    }
+  },
+  "summary": {
+    "total_files_processed": 140,
+    "total_errors": 0,
+    "total_warnings": 0,
+    "processing_time": 0.0,
+    "total_size_mb": 13.92,
+    "success_rate": 40.0,
+    "status_source": "artifacts_only",
+    "successful_steps": 10,
+    "failed_steps": 0,
+    "warning_steps": 0,
+    "unknown_steps": 15
+  },
+  "performance_metrics": {},
+  "error_analysis": {},
+  "file_type_analysis": {
+    "total_by_type": {
+      ".agda": {
+        "count": 1,
+        "total_size_mb": 0.01
+      },
+      ".als": {
+        "count": 1,
+        "total_size_mb": 0.01
+      },
+      ".asn1": {
+        "count": 1,
+        "total_size_mb": 0.01
+      },
+      ".bnf": {
+        "count": 1,
+        "total_size_mb": 0.01
+      },
+      ".v": {
+        "count": 1,
+        "total_size_mb": 0.01
+      },
+      ".ebnf": {
+        "count": 1,
+        "total_size_mb": 0.01
+      },
+      ".hs": {
+        "count": 1,
+        "total_size_mb": 0.01
+      },
+      ".thy": {
+        "count": 1,
+        "total_size_mb": 0.01
+      },
+      ".json": {
+        "count": 31,
+        "total_size_mb": 0.25
+      },
+      ".lean": {
+        "count": 1,
+        "total_size_mb": 0.01
+      },
+      ".md": {
+        "count": 10,
+        "total_size_mb": 0.01
+      },
+      ".max": {
+        "count": 1,
+        "total_size_mb": 0.01
+      },
+      ".pickle": {
+        "count": 1,
+        "total_size_mb": 0.01
+      },
+      ".pkl": {
+        "count": 2,
+        "total_size_mb": 0.03
+      },
+      ".proto": {
+        "count": 1,
+        "total_size_mb": 0.01
+      },
+      ".py": {
+        "count": 2,
+        "total_size_mb": 0.04
+      },
+      ".scala": {
+        "count": 1,
+        "total_size_mb": 0.01
+      },
+      ".tla": {
+        "count": 1,
+        "total_size_mb": 0.01
+      },
+      ".xml": {
+        "count": 2,
+        "total_size_mb": 0.01
+      },
+      ".xsd": {
+        "count": 1,
+        "total_size_mb": 0.01
+      },
+      ".yaml": {
+        "count": 1,
+        "total_size_mb": 0.01
+      },
+      ".z": {
+        "count": 1,
+        "total_size_mb": 0.01
+      },
+      ".png": {
+        "count": 48,
+        "total_size_mb": 6.44
+      },
+      ".html": {
+        "count": 5,
+        "total_size_mb": 4.65
+      },
+      ".gexf": {
+        "count": 1,
+        "total_size_mb": 0.0
+      },
+      ".graphml": {
+        "count": 1,
+        "total_size_mb": 0.0
+      },
+      ".csv": {
+        "count": 15,
+        "total_size_mb": 0.0
+      },
+      ".txt": {
+        "count": 1,
+        "total_size_mb": 0.0
+      },
+      ".log": {
+        "count": 1,
+        "total_size_mb": 0.0
+      },
+      ".wav": {
+        "count": 4,
+        "total_size_mb": 2.36
+      }
+    },
+    "largest_files_by_type": {},
+    "step_distribution": {
+      ".agda": {
+        "3_gnn_output": {
+          "count": 1,
+          "size_mb": 0.0057239532470703125
+        }
+      },
+      ".als": {
+        "3_gnn_output": {
+          "count": 1,
+          "size_mb": 0.010369300842285156
+        }
+      },
+      ".asn1": {
+        "3_gnn_output": {
+          "count": 1,
+          "size_mb": 0.009521484375
+        }
+      },
+      ".bnf": {
+        "3_gnn_output": {
+          "count": 1,
+          "size_mb": 0.006834983825683594
+        }
+      },
+      ".v": {
+        "3_gnn_output": {
+          "count": 1,
+          "size_mb": 0.006397247314453125
+        }
+      },
+      ".ebnf": {
+        "3_gnn_output": {
+          "count": 1,
+          "size_mb": 0.006834983825683594
+        }
+      },
+      ".hs": {
+        "3_gnn_output": {
+          "count": 1,
+          "size_mb": 0.0064601898193359375
+        }
+      },
+      ".thy": {
+        "3_gnn_output": {
+          "count": 1,
+          "size_mb": 0.006432533264160156
+        }
+      },
+      ".json": {
+        "3_gnn_output": {
+          "count": 5,
+          "size_mb": 0.05095481872558594
+        },
+        "5_type_checker_output": {
+          "count": 3,
+          "size_mb": 0.011239051818847656
+        },
+        "6_validation_output": {
+          "count": 2,
+          "size_mb": 0.005213737487792969
+        },
+        "7_export_output": {
+          "count": 3,
+          "size_mb": 0.03170299530029297
+        },
+        "8_visualization_output": {
+          "count": 6,
+          "size_mb": 0.013579368591308594
+        },
+        "11_render_output": {
+          "count": 3,
+          "size_mb": 0.03014373779296875
+        },
+        "12_execute_output": {
+          "count": 3,
+          "size_mb": 0.049271583557128906
+        },
+        "15_audio_output": {
+          "count": 3,
+          "size_mb": 0.004909515380859375
+        },
+        "16_analysis_output": {
+          "count": 3,
+          "size_mb": 0.047997474670410156
+        }
+      },
+      ".lean": {
+        "3_gnn_output": {
+          "count": 1,
+          "size_mb": 0.00665283203125
+        }
+      },
+      ".md": {
+        "3_gnn_output": {
+          "count": 1,
+          "size_mb": 0.0023097991943359375
+        },
+        "5_type_checker_output": {
+          "count": 2,
+          "size_mb": 0.004268646240234375
+        },
+        "11_render_output": {
+          "count": 2,
+          "size_mb": 0.00319671630859375
+        },
+        "12_execute_output": {
+          "count": 1,
+          "size_mb": 0.0012388229370117188
+        },
+        "15_audio_output": {
+          "count": 1,
+          "size_mb": 0.00037860870361328125
+        },
+        "16_analysis_output": {
+          "count": 3,
+          "size_mb": 0.00296783447265625
+        }
+      },
+      ".max": {
+        "3_gnn_output": {
+          "count": 1,
+          "size_mb": 0.00746917724609375
+        }
+      },
+      ".pickle": {
+        "3_gnn_output": {
+          "count": 1,
+          "size_mb": 0.005123138427734375
+        }
+      },
+      ".pkl": {
+        "3_gnn_output": {
+          "count": 1,
+          "size_mb": 0.015550613403320312
+        },
+        "7_export_output": {
+          "count": 1,
+          "size_mb": 0.015167236328125
+        }
+      },
+      ".proto": {
+        "3_gnn_output": {
+          "count": 1,
+          "size_mb": 0.008967399597167969
+        }
+      },
+      ".py": {
+        "3_gnn_output": {
+          "count": 1,
+          "size_mb": 0.010918617248535156
+        },
+        "11_render_output": {
+          "count": 1,
+          "size_mb": 0.03372001647949219
+        }
+      },
+      ".scala": {
+        "3_gnn_output": {
+          "count": 1,
+          "size_mb": 0.0062885284423828125
+        }
+      },
+      ".tla": {
+        "3_gnn_output": {
+          "count": 1,
+          "size_mb": 0.00574493408203125
+        }
+      },
+      ".xml": {
+        "3_gnn_output": {
+          "count": 1,
+          "size_mb": 0.011350631713867188
+        },
+        "7_export_output": {
+          "count": 1,
+          "size_mb": 0.0009965896606445312
+        }
+      },
+      ".xsd": {
+        "3_gnn_output": {
+          "count": 1,
+          "size_mb": 0.007328033447265625
+        }
+      },
+      ".yaml": {
+        "3_gnn_output": {
+          "count": 1,
+          "size_mb": 0.0072841644287109375
+        }
+      },
+      ".z": {
+        "3_gnn_output": {
+          "count": 1,
+          "size_mb": 0.006989479064941406
+        }
+      },
+      ".png": {
+        "5_type_checker_output": {
+          "count": 8,
+          "size_mb": 0.5567703247070312
+        },
+        "8_visualization_output": {
+          "count": 27,
+          "size_mb": 3.6831398010253906
+        },
+        "16_analysis_output": {
+          "count": 13,
+          "size_mb": 2.200596809387207
+        }
+      },
+      ".html": {
+        "5_type_checker_output": {
+          "count": 1,
+          "size_mb": 0.004544258117675781
+        },
+        "8_visualization_output": {
+          "count": 4,
+          "size_mb": 4.640933036804199
+        }
+      },
+      ".gexf": {
+        "7_export_output": {
+          "count": 1,
+          "size_mb": 0.0012350082397460938
+        }
+      },
+      ".graphml": {
+        "7_export_output": {
+          "count": 1,
+          "size_mb": 0.0015125274658203125
+        }
+      },
+      ".csv": {
+        "8_visualization_output": {
+          "count": 15,
+          "size_mb": 0.0012493133544921875
+        }
+      },
+      ".txt": {
+        "8_visualization_output": {
+          "count": 1,
+          "size_mb": 0.00026702880859375
+        }
+      },
+      ".log": {
+        "12_execute_output": {
+          "count": 1,
+          "size_mb": 0.003918647766113281
+        }
+      },
+      ".wav": {
+        "15_audio_output": {
+          "count": 4,
+          "size_mb": 2.3553619384765625
+        }
+      }
+    }
+  },
+  "step_dependencies": {
+    "step_order": [
+      "0_template_output",
+      "1_setup_output",
+      "2_tests_output",
+      "3_gnn_output",
+      "4_model_registry_output",
+      "5_type_checker_output",
+      "6_validation_output",
+      "7_export_output",
+      "8_visualization_output",
+      "9_advanced_viz_output",
+      "10_ontology_output",
+      "11_render_output",
+      "12_execute_output",
+      "13_llm_output",
+      "14_ml_integration_output",
+      "15_audio_output",
+      "16_analysis_output",
+      "17_integration_output",
+      "18_security_output",
+      "19_research_output",
+      "20_website_output",
+      "21_mcp_output",
+      "22_gui_output",
+      "23_report_output",
+      "24_intelligent_analysis_output"
+    ],
+    "dependency_chain": {
+      "3_gnn_output": {
+        "prerequisites": [
+          "1_setup_output"
+        ],
+        "missing_prerequisites": [
+          "1_setup_output"
+        ],
+        "status": "incomplete"
+      },
+      "5_type_checker_output": {
+        "prerequisites": [
+          "3_gnn_output"
+        ],
+        "missing_prerequisites": [],
+        "status": "complete"
+      },
+      "6_validation_output": {
+        "prerequisites": [
+          "3_gnn_output"
+        ],
+        "missing_prerequisites": [],
+        "status": "complete"
+      },
+      "7_export_output": {
+        "prerequisites": [
+          "5_type_checker_output"
+        ],
+        "missing_prerequisites": [],
+        "status": "complete"
+      },
+      "8_visualization_output": {
+        "prerequisites": [
+          "7_export_output"
+        ],
+        "missing_prerequisites": [],
+        "status": "complete"
+      },
+      "11_render_output": {
+        "prerequisites": [
+          "7_export_output"
+        ],
+        "missing_prerequisites": [],
+        "status": "complete"
+      },
+      "12_execute_output": {
+        "prerequisites": [
+          "11_render_output"
+        ],
+        "missing_prerequisites": [],
+        "status": "complete"
+      },
+      "15_audio_output": {
+        "prerequisites": [
+          "3_gnn_output"
+        ],
+        "missing_prerequisites": [],
+        "status": "complete"
+      },
+      "16_analysis_output": {
+        "prerequisites": [
+          "12_execute_output"
+        ],
+        "missing_prerequisites": [],
+        "status": "complete"
+      },
+      "23_report_output": {
+        "prerequisites": [
+          "8_visualization_output",
+          "10_ontology_output",
+          "15_audio_output"
+        ],
+        "missing_prerequisites": [
+          "10_ontology_output"
+        ],
+        "status": "incomplete"
+      }
+    },
+    "missing_prerequisites": [
+      {
+        "step": "3_gnn_output",
+        "missing": [
+          "1_setup_output"
+        ]
+      },
+      {
+        "step": "23_report_output",
+        "missing": [
+          "10_ontology_output"
+        ]
+      }
+    ]
+  },
+  "health_score_basis": "artifact_coverage_only",
+  "visualizations": {
+    "total_count": 31,
+    "by_step": {
+      "8_visualization_output": {
+        "step": "8_visualization_output",
+        "count": 31,
+        "files": [
+          {
+            "name": "factorized_posterior_A_m0_analysis.png",
+            "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_A_m0_analysis.png",
+            "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_A_m0_analysis.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 76599,
+            "size_mb": 0.07,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "factorized_posterior_A_m0_tensor.png",
+            "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_A_m0_tensor.png",
+            "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_A_m0_tensor.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 175726,
+            "size_mb": 0.17,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "factorized_posterior_A_m1_heatmap.png",
+            "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_A_m1_heatmap.png",
+            "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_A_m1_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 89184,
+            "size_mb": 0.09,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "factorized_posterior_B_f0_analysis.png",
+            "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_B_f0_analysis.png",
+            "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_B_f0_analysis.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 86662,
+            "size_mb": 0.08,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "factorized_posterior_B_f0_tensor.png",
+            "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_B_f0_tensor.png",
+            "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_B_f0_tensor.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 216685,
+            "size_mb": 0.21,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "factorized_posterior_B_f1_tensor.png",
+            "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_B_f1_tensor.png",
+            "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_B_f1_tensor.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 152539,
+            "size_mb": 0.15,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "factorized_posterior_C_m0_heatmap.png",
+            "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_C_m0_heatmap.png",
+            "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_C_m0_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 79629,
+            "size_mb": 0.08,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "factorized_posterior_C_m1_heatmap.png",
+            "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_C_m1_heatmap.png",
+            "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_C_m1_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 74855,
+            "size_mb": 0.07,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "factorized_posterior_D_f0_heatmap.png",
+            "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_D_f0_heatmap.png",
+            "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_D_f0_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 77316,
+            "size_mb": 0.07,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "factorized_posterior_D_f1_heatmap.png",
+            "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_D_f1_heatmap.png",
+            "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_D_f1_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 93160,
+            "size_mb": 0.09,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "factorized_posterior_combined_analysis.png",
+            "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_combined_analysis.png",
+            "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_combined_analysis.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 436957,
+            "size_mb": 0.42,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "factorized_posterior_generative_model.png",
+            "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_generative_model.png",
+            "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_generative_model.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 220786,
+            "size_mb": 0.21,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "factorized_posterior_matrix_size_distribution.png",
+            "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_matrix_size_distribution.png",
+            "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_matrix_size_distribution.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 86315,
+            "size_mb": 0.08,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "factorized_posterior_network_graph.png",
+            "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_network_graph.png",
+            "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_network_graph.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 508147,
+            "size_mb": 0.48,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "factorized_posterior_num_actions_heatmap.png",
+            "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_num_actions_heatmap.png",
+            "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_num_actions_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 79285,
+            "size_mb": 0.08,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "factorized_posterior_num_factors_heatmap.png",
+            "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_num_factors_heatmap.png",
+            "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_num_factors_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 87130,
+            "size_mb": 0.08,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "factorized_posterior_num_hidden_states_factor0_heatmap.png",
+            "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_num_hidden_states_factor0_heatmap.png",
+            "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_num_hidden_states_factor0_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 88114,
+            "size_mb": 0.08,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "factorized_posterior_num_hidden_states_factor1_heatmap.png",
+            "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_num_hidden_states_factor1_heatmap.png",
+            "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_num_hidden_states_factor1_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 93270,
+            "size_mb": 0.09,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "factorized_posterior_num_hidden_states_heatmap.png",
+            "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_num_hidden_states_heatmap.png",
+            "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_num_hidden_states_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 87224,
+            "size_mb": 0.08,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "factorized_posterior_num_modalities_heatmap.png",
+            "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_num_modalities_heatmap.png",
+            "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_num_modalities_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 88147,
+            "size_mb": 0.08,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "factorized_posterior_num_obs_heatmap.png",
+            "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_num_obs_heatmap.png",
+            "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_num_obs_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 79069,
+            "size_mb": 0.08,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "factorized_posterior_num_obs_modality0_heatmap.png",
+            "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_num_obs_modality0_heatmap.png",
+            "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_num_obs_modality0_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 83021,
+            "size_mb": 0.08,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "factorized_posterior_num_obs_modality1_heatmap.png",
+            "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_num_obs_modality1_heatmap.png",
+            "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_num_obs_modality1_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 89768,
+            "size_mb": 0.09,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "factorized_posterior_num_timesteps_heatmap.png",
+            "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_num_timesteps_heatmap.png",
+            "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_num_timesteps_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 80118,
+            "size_mb": 0.08,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "factorized_posterior_section_content_length.png",
+            "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_section_content_length.png",
+            "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_section_content_length.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 202460,
+            "size_mb": 0.19,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "factorized_posterior_variable_parameter_bipartite.png",
+            "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_variable_parameter_bipartite.png",
+            "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_variable_parameter_bipartite.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 309311,
+            "size_mb": 0.29,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "factorized_posterior_variable_type_distribution.png",
+            "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_variable_type_distribution.png",
+            "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_variable_type_distribution.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 120575,
+            "size_mb": 0.11,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "factorized_posterior_A_m0_threejs.html",
+            "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_A_m0_threejs.html",
+            "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_A_m0_threejs.html",
+            "type": "html",
+            "extension": ".html",
+            "size_bytes": 4294,
+            "size_mb": 0.0,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "factorized_posterior_B_f0_threejs.html",
+            "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_B_f0_threejs.html",
+            "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_B_f0_threejs.html",
+            "type": "html",
+            "extension": ".html",
+            "size_bytes": 4414,
+            "size_mb": 0.0,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "factorized_posterior_B_f1_threejs.html",
+            "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_B_f1_threejs.html",
+            "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_B_f1_threejs.html",
+            "type": "html",
+            "extension": ".html",
+            "size_bytes": 4170,
+            "size_mb": 0.0,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "factorized_posterior_network_interactive.html",
+            "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_network_interactive.html",
+            "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_network_interactive.html",
+            "type": "html",
+            "extension": ".html",
+            "size_bytes": 4853493,
+            "size_mb": 4.63,
+            "step": "8_visualization_output"
+          }
+        ]
+      }
+    },
+    "by_type": {
+      "image": [
+        {
+          "name": "factorized_posterior_A_m0_analysis.png",
+          "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_A_m0_analysis.png",
+          "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_A_m0_analysis.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 76599,
+          "size_mb": 0.07,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "factorized_posterior_A_m0_tensor.png",
+          "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_A_m0_tensor.png",
+          "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_A_m0_tensor.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 175726,
+          "size_mb": 0.17,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "factorized_posterior_A_m1_heatmap.png",
+          "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_A_m1_heatmap.png",
+          "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_A_m1_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 89184,
+          "size_mb": 0.09,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "factorized_posterior_B_f0_analysis.png",
+          "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_B_f0_analysis.png",
+          "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_B_f0_analysis.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 86662,
+          "size_mb": 0.08,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "factorized_posterior_B_f0_tensor.png",
+          "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_B_f0_tensor.png",
+          "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_B_f0_tensor.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 216685,
+          "size_mb": 0.21,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "factorized_posterior_B_f1_tensor.png",
+          "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_B_f1_tensor.png",
+          "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_B_f1_tensor.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 152539,
+          "size_mb": 0.15,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "factorized_posterior_C_m0_heatmap.png",
+          "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_C_m0_heatmap.png",
+          "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_C_m0_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 79629,
+          "size_mb": 0.08,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "factorized_posterior_C_m1_heatmap.png",
+          "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_C_m1_heatmap.png",
+          "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_C_m1_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 74855,
+          "size_mb": 0.07,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "factorized_posterior_D_f0_heatmap.png",
+          "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_D_f0_heatmap.png",
+          "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_D_f0_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 77316,
+          "size_mb": 0.07,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "factorized_posterior_D_f1_heatmap.png",
+          "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_D_f1_heatmap.png",
+          "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_D_f1_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 93160,
+          "size_mb": 0.09,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "factorized_posterior_combined_analysis.png",
+          "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_combined_analysis.png",
+          "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_combined_analysis.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 436957,
+          "size_mb": 0.42,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "factorized_posterior_generative_model.png",
+          "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_generative_model.png",
+          "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_generative_model.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 220786,
+          "size_mb": 0.21,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "factorized_posterior_matrix_size_distribution.png",
+          "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_matrix_size_distribution.png",
+          "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_matrix_size_distribution.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 86315,
+          "size_mb": 0.08,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "factorized_posterior_network_graph.png",
+          "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_network_graph.png",
+          "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_network_graph.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 508147,
+          "size_mb": 0.48,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "factorized_posterior_num_actions_heatmap.png",
+          "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_num_actions_heatmap.png",
+          "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_num_actions_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 79285,
+          "size_mb": 0.08,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "factorized_posterior_num_factors_heatmap.png",
+          "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_num_factors_heatmap.png",
+          "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_num_factors_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 87130,
+          "size_mb": 0.08,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "factorized_posterior_num_hidden_states_factor0_heatmap.png",
+          "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_num_hidden_states_factor0_heatmap.png",
+          "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_num_hidden_states_factor0_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 88114,
+          "size_mb": 0.08,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "factorized_posterior_num_hidden_states_factor1_heatmap.png",
+          "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_num_hidden_states_factor1_heatmap.png",
+          "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_num_hidden_states_factor1_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 93270,
+          "size_mb": 0.09,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "factorized_posterior_num_hidden_states_heatmap.png",
+          "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_num_hidden_states_heatmap.png",
+          "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_num_hidden_states_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 87224,
+          "size_mb": 0.08,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "factorized_posterior_num_modalities_heatmap.png",
+          "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_num_modalities_heatmap.png",
+          "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_num_modalities_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 88147,
+          "size_mb": 0.08,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "factorized_posterior_num_obs_heatmap.png",
+          "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_num_obs_heatmap.png",
+          "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_num_obs_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 79069,
+          "size_mb": 0.08,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "factorized_posterior_num_obs_modality0_heatmap.png",
+          "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_num_obs_modality0_heatmap.png",
+          "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_num_obs_modality0_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 83021,
+          "size_mb": 0.08,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "factorized_posterior_num_obs_modality1_heatmap.png",
+          "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_num_obs_modality1_heatmap.png",
+          "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_num_obs_modality1_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 89768,
+          "size_mb": 0.09,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "factorized_posterior_num_timesteps_heatmap.png",
+          "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_num_timesteps_heatmap.png",
+          "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_num_timesteps_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 80118,
+          "size_mb": 0.08,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "factorized_posterior_section_content_length.png",
+          "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_section_content_length.png",
+          "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_section_content_length.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 202460,
+          "size_mb": 0.19,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "factorized_posterior_variable_parameter_bipartite.png",
+          "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_variable_parameter_bipartite.png",
+          "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_variable_parameter_bipartite.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 309311,
+          "size_mb": 0.29,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "factorized_posterior_variable_type_distribution.png",
+          "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_variable_type_distribution.png",
+          "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_variable_type_distribution.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 120575,
+          "size_mb": 0.11,
+          "step": "8_visualization_output"
+        }
+      ],
+      "html": [
+        {
+          "name": "factorized_posterior_A_m0_threejs.html",
+          "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_A_m0_threejs.html",
+          "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_A_m0_threejs.html",
+          "type": "html",
+          "extension": ".html",
+          "size_bytes": 4294,
+          "size_mb": 0.0,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "factorized_posterior_B_f0_threejs.html",
+          "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_B_f0_threejs.html",
+          "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_B_f0_threejs.html",
+          "type": "html",
+          "extension": ".html",
+          "size_bytes": 4414,
+          "size_mb": 0.0,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "factorized_posterior_B_f1_threejs.html",
+          "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_B_f1_threejs.html",
+          "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_B_f1_threejs.html",
+          "type": "html",
+          "extension": ".html",
+          "size_bytes": 4170,
+          "size_mb": 0.0,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "factorized_posterior_network_interactive.html",
+          "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_network_interactive.html",
+          "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_network_interactive.html",
+          "type": "html",
+          "extension": ".html",
+          "size_bytes": 4853493,
+          "size_mb": 4.63,
+          "step": "8_visualization_output"
+        }
+      ]
+    },
+    "all_visualizations": [
+      {
+        "name": "factorized_posterior_A_m0_analysis.png",
+        "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_A_m0_analysis.png",
+        "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_A_m0_analysis.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 76599,
+        "size_mb": 0.07,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "factorized_posterior_A_m0_tensor.png",
+        "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_A_m0_tensor.png",
+        "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_A_m0_tensor.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 175726,
+        "size_mb": 0.17,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "factorized_posterior_A_m1_heatmap.png",
+        "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_A_m1_heatmap.png",
+        "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_A_m1_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 89184,
+        "size_mb": 0.09,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "factorized_posterior_B_f0_analysis.png",
+        "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_B_f0_analysis.png",
+        "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_B_f0_analysis.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 86662,
+        "size_mb": 0.08,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "factorized_posterior_B_f0_tensor.png",
+        "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_B_f0_tensor.png",
+        "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_B_f0_tensor.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 216685,
+        "size_mb": 0.21,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "factorized_posterior_B_f1_tensor.png",
+        "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_B_f1_tensor.png",
+        "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_B_f1_tensor.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 152539,
+        "size_mb": 0.15,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "factorized_posterior_C_m0_heatmap.png",
+        "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_C_m0_heatmap.png",
+        "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_C_m0_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 79629,
+        "size_mb": 0.08,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "factorized_posterior_C_m1_heatmap.png",
+        "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_C_m1_heatmap.png",
+        "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_C_m1_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 74855,
+        "size_mb": 0.07,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "factorized_posterior_D_f0_heatmap.png",
+        "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_D_f0_heatmap.png",
+        "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_D_f0_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 77316,
+        "size_mb": 0.07,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "factorized_posterior_D_f1_heatmap.png",
+        "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_D_f1_heatmap.png",
+        "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_D_f1_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 93160,
+        "size_mb": 0.09,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "factorized_posterior_combined_analysis.png",
+        "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_combined_analysis.png",
+        "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_combined_analysis.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 436957,
+        "size_mb": 0.42,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "factorized_posterior_generative_model.png",
+        "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_generative_model.png",
+        "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_generative_model.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 220786,
+        "size_mb": 0.21,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "factorized_posterior_matrix_size_distribution.png",
+        "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_matrix_size_distribution.png",
+        "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_matrix_size_distribution.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 86315,
+        "size_mb": 0.08,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "factorized_posterior_network_graph.png",
+        "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_network_graph.png",
+        "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_network_graph.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 508147,
+        "size_mb": 0.48,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "factorized_posterior_num_actions_heatmap.png",
+        "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_num_actions_heatmap.png",
+        "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_num_actions_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 79285,
+        "size_mb": 0.08,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "factorized_posterior_num_factors_heatmap.png",
+        "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_num_factors_heatmap.png",
+        "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_num_factors_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 87130,
+        "size_mb": 0.08,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "factorized_posterior_num_hidden_states_factor0_heatmap.png",
+        "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_num_hidden_states_factor0_heatmap.png",
+        "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_num_hidden_states_factor0_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 88114,
+        "size_mb": 0.08,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "factorized_posterior_num_hidden_states_factor1_heatmap.png",
+        "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_num_hidden_states_factor1_heatmap.png",
+        "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_num_hidden_states_factor1_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 93270,
+        "size_mb": 0.09,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "factorized_posterior_num_hidden_states_heatmap.png",
+        "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_num_hidden_states_heatmap.png",
+        "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_num_hidden_states_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 87224,
+        "size_mb": 0.08,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "factorized_posterior_num_modalities_heatmap.png",
+        "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_num_modalities_heatmap.png",
+        "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_num_modalities_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 88147,
+        "size_mb": 0.08,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "factorized_posterior_num_obs_heatmap.png",
+        "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_num_obs_heatmap.png",
+        "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_num_obs_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 79069,
+        "size_mb": 0.08,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "factorized_posterior_num_obs_modality0_heatmap.png",
+        "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_num_obs_modality0_heatmap.png",
+        "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_num_obs_modality0_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 83021,
+        "size_mb": 0.08,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "factorized_posterior_num_obs_modality1_heatmap.png",
+        "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_num_obs_modality1_heatmap.png",
+        "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_num_obs_modality1_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 89768,
+        "size_mb": 0.09,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "factorized_posterior_num_timesteps_heatmap.png",
+        "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_num_timesteps_heatmap.png",
+        "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_num_timesteps_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 80118,
+        "size_mb": 0.08,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "factorized_posterior_section_content_length.png",
+        "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_section_content_length.png",
+        "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_section_content_length.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 202460,
+        "size_mb": 0.19,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "factorized_posterior_variable_parameter_bipartite.png",
+        "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_variable_parameter_bipartite.png",
+        "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_variable_parameter_bipartite.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 309311,
+        "size_mb": 0.29,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "factorized_posterior_variable_type_distribution.png",
+        "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_variable_type_distribution.png",
+        "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_variable_type_distribution.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 120575,
+        "size_mb": 0.11,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "factorized_posterior_A_m0_threejs.html",
+        "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_A_m0_threejs.html",
+        "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_A_m0_threejs.html",
+        "type": "html",
+        "extension": ".html",
+        "size_bytes": 4294,
+        "size_mb": 0.0,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "factorized_posterior_B_f0_threejs.html",
+        "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_B_f0_threejs.html",
+        "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_B_f0_threejs.html",
+        "type": "html",
+        "extension": ".html",
+        "size_bytes": 4414,
+        "size_mb": 0.0,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "factorized_posterior_B_f1_threejs.html",
+        "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_B_f1_threejs.html",
+        "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_B_f1_threejs.html",
+        "type": "html",
+        "extension": ".html",
+        "size_bytes": 4170,
+        "size_mb": 0.0,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "factorized_posterior_network_interactive.html",
+        "path": "output/cross_framework/structured/acceptance/structured/pipeline_output/8_visualization_output/factorized_posterior/factorized_posterior_network_interactive.html",
+        "relative_path": "8_visualization_output/factorized_posterior/factorized_posterior_network_interactive.html",
+        "type": "html",
+        "extension": ".html",
+        "size_bytes": 4853493,
+        "size_mb": 4.63,
+        "step": "8_visualization_output"
+      }
+    ]
+  },
+  "health_score": 40.0,
+  "report_metadata": {
+    "generation_time": "unavailable",
+    "evidence_as_of": "unavailable",
+    "timestamp_source": "unavailable",
+    "formats_generated": [
+      "html",
+      "markdown",
+      "json"
+    ],
+    "options": {
+      "include_performance": true,
+      "include_errors": true,
+      "include_dependencies": true
+    }
+  }
+}

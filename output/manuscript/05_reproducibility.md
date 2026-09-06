@@ -10,7 +10,7 @@ The fastest way to confirm a working installation is to drive the full pipeline 
 uv run python src/main.py --target-dir input/gnn_files/discrete --output-dir /tmp/gnn-smoke --skip-llm
 ```
 
-This parses the discrete GNN files, runs visualization and rendering across the maintained backends, and writes all artifacts under the chosen output directory. The `--skip-llm` flag keeps the run hermetic and free of external API calls, which makes it suitable for continuous integration and for offline reproduction. To exercise every registered family rather than a single one, drive the manifest through the model-family acceptance gate given below: pointing `--target-dir` at `input/gnn_files` covers that tree's 10 corpus directories. All 9 registered family target directories lie inside that tree, so a single invocation reaches every registered family.
+This parses the discrete GNN files, runs visualization and rendering across the maintained backends, and writes all artifacts under the chosen output directory. The `--skip-llm` flag keeps the run hermetic and free of external API calls: the non-LLM steps all execute, the steps that would read the skipped LLM outputs record that as a warning, and the run exits 2 — the pipeline's documented warning code (0 success, 1 error, 2 warning) — rather than 0. To exercise every registered family rather than a single one, drive the manifest through the model-family acceptance gate given below: pointing `--target-dir` at `input/gnn_files` covers that tree's 10 corpus directories. All 9 registered family target directories lie inside that tree, so a single invocation reaches every registered family.
 
 ## Validation Gates
 
@@ -40,13 +40,13 @@ Under `--strict`, each gate exits non-zero on the first mismatch, so these comma
 This manuscript is itself a reproducible artifact. Every quantitative value in the prose — the pipeline step count, the family and backend counts, the source and test inventories — is a token rather than a hard-coded literal, and the deterministic producer regenerates all of them from the tracked files at the current commit:
 
 ```bash
-python scripts/z_generate_manuscript_variables.py
+uv run python scripts/z_generate_manuscript_variables.py
 ```
 
 That command recomputes the {{...}} tokens, persists them to `output/data/manuscript_variables.json` for audit, and hydrates the manuscript sources into `output/manuscript/`. The manuscript's own figures are rebuilt from the same token map:
 
 ```bash
-python -m scripts.manuscript_build_figures
+uv run python -m scripts.manuscript_build_figures
 ```
 
 The hydrated sources are then rendered to PDF by the docxology template's render stage. That stage lives in a separate checkout, with this repository symlinked into it at `projects/active/GeneralizedNotationNotation`; run from the template root:
@@ -58,7 +58,7 @@ uv run --frozen python scripts/pipeline/stage_03_render.py \
 
 The render needs a LaTeX installation providing the packages listed in `manuscript/preamble.md` plus `seqsplit`; the template guards `seqsplit` with `\IfFileExists`, so a missing copy degrades rather than failing the build.
 
-Because the variables file is regenerated before rendering, the counts in the rendered PDF track the repository state at the commit recorded in `output/data/manuscript_variables.json` (05689d7ad): a code change that alters, for example, the test inventory (369 test files, 4144 test functions) propagates into the prose on the next regeneration without any manual editing.
+Because the variables file is regenerated before rendering, the counts in the rendered PDF track the repository state at the commit recorded in `output/data/manuscript_variables.json` (0a0f0ac92): a code change that alters, for example, the test inventory (369 test files, 4144 test functions) propagates into the prose on the next regeneration without any manual editing.
 
 ## Reproducibility Contract
 

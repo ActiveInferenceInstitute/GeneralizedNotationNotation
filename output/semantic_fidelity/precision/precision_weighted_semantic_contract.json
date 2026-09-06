@@ -1,0 +1,464 @@
+{
+  "contract_hash": "b6fdbaa5a3d549c1d4ef6877c8a6430107997f4fc4d87e82dbc37fc21b2970a2",
+  "declared_metadata": {
+    "extensions": [
+      "footer",
+      "gnn_section",
+      "signature"
+    ],
+    "raw_sections": [
+      "ActInfOntologyAnnotation",
+      "Connections",
+      "Equations",
+      "Footer",
+      "GNNSection",
+      "GNNVersionAndFlags",
+      "InitialParameterization",
+      "ModelAnnotation",
+      "ModelName",
+      "ModelParameters",
+      "Signature",
+      "StateSpaceBlock",
+      "Time"
+    ],
+    "source_format": "markdown"
+  },
+  "edges": [
+    {
+      "connection_type": "undirected",
+      "description": "",
+      "source": "A",
+      "target": "o",
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "",
+      "source": "B",
+      "target": "u",
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "",
+      "source": "C",
+      "target": "G",
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "",
+      "source": "D",
+      "target": "s",
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "",
+      "source": "E",
+      "target": "\u03c0",
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "",
+      "source": "G",
+      "target": "\u03c0",
+      "weight": null
+    },
+    {
+      "connection_type": "undirected",
+      "description": "",
+      "source": "o",
+      "target": "F",
+      "weight": null
+    },
+    {
+      "connection_type": "undirected",
+      "description": "",
+      "source": "s",
+      "target": "A",
+      "weight": null
+    },
+    {
+      "connection_type": "undirected",
+      "description": "",
+      "source": "s",
+      "target": "F",
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "",
+      "source": "s",
+      "target": "s_prime",
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "",
+      "source": "u",
+      "target": "s_prime",
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "",
+      "source": "\u03b2",
+      "target": "\u03c0",
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "",
+      "source": "\u03b3",
+      "target": "\u03c0",
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "",
+      "source": "\u03c0",
+      "target": "u",
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "",
+      "source": "\u03c9",
+      "target": "A",
+      "weight": null
+    },
+    {
+      "connection_type": "undirected",
+      "description": "",
+      "source": "\u03c9",
+      "target": "F",
+      "weight": null
+    }
+  ],
+  "equations": [],
+  "model_identity": {
+    "annotation": "An Active Inference agent with explicit precision parameters:\n- \u03c9 (omega): sensory precision weighting likelihood confidence\n- \u03b3 (gamma): policy precision controlling action randomness\n- \u03b2 (beta): inverse temperature for policy selection (softmax)\n- 3 hidden states, 3 observations, 3 actions (same topology as base POMDP)\n- Precision parameters enable modeling of attention and confidence",
+    "model_name": "Precision-Weighted Active Inference Agent",
+    "version": "1.0"
+  },
+  "ontology_mappings": [
+    {
+      "description": "",
+      "ontology_term": "LikelihoodMatrix",
+      "variable_name": "A"
+    },
+    {
+      "description": "",
+      "ontology_term": "TransitionMatrix",
+      "variable_name": "B"
+    },
+    {
+      "description": "",
+      "ontology_term": "LogPreferenceVector",
+      "variable_name": "C"
+    },
+    {
+      "description": "",
+      "ontology_term": "PriorOverHiddenStates",
+      "variable_name": "D"
+    },
+    {
+      "description": "",
+      "ontology_term": "Habit",
+      "variable_name": "E"
+    },
+    {
+      "description": "",
+      "ontology_term": "VariationalFreeEnergy",
+      "variable_name": "F"
+    },
+    {
+      "description": "",
+      "ontology_term": "ExpectedFreeEnergy",
+      "variable_name": "G"
+    },
+    {
+      "description": "",
+      "ontology_term": "Observation",
+      "variable_name": "o"
+    },
+    {
+      "description": "",
+      "ontology_term": "HiddenState",
+      "variable_name": "s"
+    },
+    {
+      "description": "",
+      "ontology_term": "NextHiddenState",
+      "variable_name": "s_prime"
+    },
+    {
+      "description": "",
+      "ontology_term": "Time",
+      "variable_name": "t"
+    },
+    {
+      "description": "",
+      "ontology_term": "Action",
+      "variable_name": "u"
+    },
+    {
+      "description": "",
+      "ontology_term": "InverseTemperature",
+      "variable_name": "\u03b2"
+    },
+    {
+      "description": "",
+      "ontology_term": "PolicyPrecision",
+      "variable_name": "\u03b3"
+    },
+    {
+      "description": "",
+      "ontology_term": "PolicyVector",
+      "variable_name": "\u03c0"
+    },
+    {
+      "description": "",
+      "ontology_term": "SensoryPrecision",
+      "variable_name": "\u03c9"
+    }
+  ],
+  "parameter_names": [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "num_actions",
+    "num_hidden_states",
+    "num_obs",
+    "num_timesteps",
+    "policy_precision",
+    "sensory_precision",
+    "\u03b2",
+    "\u03b3",
+    "\u03c9"
+  ],
+  "parameter_shapes": {
+    "A": [
+      3,
+      3
+    ],
+    "B": [
+      3,
+      3,
+      3
+    ],
+    "C": [
+      1,
+      3
+    ],
+    "D": [
+      1,
+      3
+    ],
+    "E": [
+      1,
+      3
+    ],
+    "num_actions": [],
+    "num_hidden_states": [],
+    "num_obs": [],
+    "num_timesteps": [],
+    "policy_precision": [],
+    "sensory_precision": [],
+    "\u03b2": [
+      1,
+      1
+    ],
+    "\u03b3": [
+      1,
+      1
+    ],
+    "\u03c9": [
+      1,
+      1
+    ]
+  },
+  "parser_diagnostics": {
+    "connection_errors": [
+      "[GNN-E005] Unparseable connection: '\u03c9>A' [/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/input/gnn_files/precision/precision_weighted.md:50]",
+      "[GNN-E005] Unparseable connection: '\u03b3>\u03c0' [/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/input/gnn_files/precision/precision_weighted.md:54]",
+      "[GNN-E005] Unparseable connection: '\u03b2>\u03c0' [/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/input/gnn_files/precision/precision_weighted.md:55]",
+      "[GNN-E005] Unparseable connection: '\u03c9-F' [/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/input/gnn_files/precision/precision_weighted.md:62]"
+    ],
+    "matrix_errors": [],
+    "structure_issues": [
+      "Ontology mapping references unknown variable: t"
+    ],
+    "variable_errors": []
+  },
+  "schema": "gnn_semantic_contract_v1",
+  "source_file": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/input/gnn_files/precision/precision_weighted.md",
+  "time_specification": {
+    "discretization": "",
+    "horizon": "Unbounded",
+    "step_size": null,
+    "time_type": "Dynamic"
+  },
+  "variables": [
+    {
+      "constraints": {},
+      "data_type": "float",
+      "description": "Likelihood matrix (modulated by \u03c9)",
+      "dimensions": [
+        3,
+        3
+      ],
+      "name": "A",
+      "var_type": "likelihood_matrix"
+    },
+    {
+      "constraints": {},
+      "data_type": "float",
+      "description": "Transition matrix",
+      "dimensions": [
+        3,
+        3,
+        3
+      ],
+      "name": "B",
+      "var_type": "transition_matrix"
+    },
+    {
+      "constraints": {},
+      "data_type": "float",
+      "description": "Log-preferences over observations",
+      "dimensions": [
+        3
+      ],
+      "name": "C",
+      "var_type": "preference_vector"
+    },
+    {
+      "constraints": {},
+      "data_type": "float",
+      "description": "Prior over hidden states",
+      "dimensions": [
+        3
+      ],
+      "name": "D",
+      "var_type": "prior_vector"
+    },
+    {
+      "constraints": {},
+      "data_type": "float",
+      "description": "Habit (prior over actions)",
+      "dimensions": [
+        3
+      ],
+      "name": "E",
+      "var_type": "policy"
+    },
+    {
+      "constraints": {},
+      "data_type": "float",
+      "description": "Variational Free Energy",
+      "dimensions": [
+        1
+      ],
+      "name": "F",
+      "var_type": "hidden_state"
+    },
+    {
+      "constraints": {},
+      "data_type": "float",
+      "description": "Expected Free Energy",
+      "dimensions": [
+        1
+      ],
+      "name": "G",
+      "var_type": "policy"
+    },
+    {
+      "constraints": {},
+      "data_type": "integer",
+      "description": "Current observation",
+      "dimensions": [
+        3,
+        1
+      ],
+      "name": "o",
+      "var_type": "observation"
+    },
+    {
+      "constraints": {},
+      "data_type": "float",
+      "description": "Hidden state distribution",
+      "dimensions": [
+        3,
+        1
+      ],
+      "name": "s",
+      "var_type": "hidden_state"
+    },
+    {
+      "constraints": {},
+      "data_type": "float",
+      "description": "Next hidden state",
+      "dimensions": [
+        3,
+        1
+      ],
+      "name": "s_prime",
+      "var_type": "hidden_state"
+    },
+    {
+      "constraints": {},
+      "data_type": "integer",
+      "description": "Selected action",
+      "dimensions": [
+        1
+      ],
+      "name": "u",
+      "var_type": "action"
+    },
+    {
+      "constraints": {},
+      "data_type": "float",
+      "description": "Inverse temperature (\u03b2 = 1/\u03b3, controls randomness)",
+      "dimensions": [
+        1
+      ],
+      "name": "\u03b2",
+      "var_type": "hidden_state"
+    },
+    {
+      "constraints": {},
+      "data_type": "float",
+      "description": "Policy precision (temperature for action selection)",
+      "dimensions": [
+        1
+      ],
+      "name": "\u03b3",
+      "var_type": "hidden_state"
+    },
+    {
+      "constraints": {},
+      "data_type": "float",
+      "description": "Policy distribution",
+      "dimensions": [
+        3
+      ],
+      "name": "\u03c0",
+      "var_type": "policy"
+    },
+    {
+      "constraints": {},
+      "data_type": "float",
+      "description": "Sensory precision (modulates A matrix confidence)",
+      "dimensions": [
+        1
+      ],
+      "name": "\u03c9",
+      "var_type": "hidden_state"
+    }
+  ]
+}

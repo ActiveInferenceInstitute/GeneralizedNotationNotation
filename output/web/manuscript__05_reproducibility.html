@@ -642,8 +642,10 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="
 <p>This parses the discrete GNN files, runs visualization and rendering
 across the maintained backends, and writes all artifacts under the
 chosen output directory. The <code>--skip-llm</code> flag keeps the run
-hermetic and free of external API calls, which makes it suitable for
-continuous integration and for offline reproduction. To exercise every
+hermetic and free of external API calls: the non-LLM steps all execute,
+the steps that would read the skipped LLM outputs record that as a
+warning, and the run exits 2 — the pipeline’s documented warning code (0
+success, 1 error, 2 warning) — rather than 0. To exercise every
 registered family rather than a single one, drive the manifest through
 the model-family acceptance gate given below: pointing
 <code>--target-dir</code> at <code>input/gnn_files</code> covers that
@@ -689,13 +691,13 @@ counts, the source and test inventories — is a token rather than a
 hard-coded literal, and the deterministic producer regenerates all of
 them from the tracked files at the current commit:</p>
 <div class="sourceCode" id="cb4"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/z_generate_manuscript_variables.py</span></code></pre></div>
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python scripts/z_generate_manuscript_variables.py</span></code></pre></div>
 <p>That command recomputes the {{…}} tokens, persists them to
 <code>output/data/manuscript_variables.json</code> for audit, and
 hydrates the manuscript sources into <code>output/manuscript/</code>.
 The manuscript’s own figures are rebuilt from the same token map:</p>
 <div class="sourceCode" id="cb5"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> scripts.manuscript_build_figures</span></code></pre></div>
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> scripts.manuscript_build_figures</span></code></pre></div>
 <p>The hydrated sources are then rendered to PDF by the docxology
 template’s render stage. That stage lives in a separate checkout, with
 this repository symlinked into it at
@@ -711,7 +713,7 @@ so a missing copy degrades rather than failing the build.</p>
 <p>Because the variables file is regenerated before rendering, the
 counts in the rendered PDF track the repository state at the commit
 recorded in <code>output/data/manuscript_variables.json</code>
-(05689d7ad): a code change that alters, for example, the test inventory
+(0a0f0ac92): a code change that alters, for example, the test inventory
 (369 test files, 4144 test functions) propagates into the prose on the
 next regeneration without any manual editing.</p>
 <h2 id="reproducibility-contract">Reproducibility Contract</h2>

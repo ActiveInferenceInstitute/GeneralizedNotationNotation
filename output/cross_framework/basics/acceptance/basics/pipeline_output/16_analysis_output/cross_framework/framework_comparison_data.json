@@ -1,0 +1,210 @@
+{
+  "timestamp": "2026-09-06T11:46:22.481151",
+  "frameworks": {
+    "pymdp": {
+      "success_count": 1,
+      "total_count": 1,
+      "execution_times": [
+        27.012015
+      ],
+      "output_files": [
+        "output/cross_framework/basics/acceptance/basics/pipeline_output/12_execute_output/dynamic_perception/pymdp/execution_logs/Dynamic_Perception_Model_pymdp.py_execution.log"
+      ],
+      "implementation_dirs": [
+        "output/cross_framework/basics/acceptance/basics/pipeline_output/12_execute_output/dynamic_perception/pymdp"
+      ],
+      "beliefs": [
+        [
+          0.16981130838394165,
+          0.8301886320114136
+        ],
+        [
+          0.8108316659927368,
+          0.18916839361190796
+        ],
+        [
+          0.2536980211734772,
+          0.7463019490242004
+        ],
+        [
+          0.12065199762582779,
+          0.8793479800224304
+        ],
+        [
+          0.09853069484233856,
+          0.9014692902565002
+        ],
+        [
+          0.790946364402771,
+          0.20905357599258423
+        ],
+        [
+          0.922066330909729,
+          0.07793368399143219
+        ],
+        [
+          0.2923324704170227,
+          0.7076675295829773
+        ],
+        [
+          0.12760064005851746,
+          0.8723993301391602
+        ],
+        [
+          0.7993255257606506,
+          0.20067445933818817
+        ]
+      ],
+      "actions": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "observations": [
+        1,
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        0
+      ],
+      "free_energy": [
+        [
+          0.26468712091445923
+        ],
+        [
+          0.26054665446281433
+        ],
+        [
+          0.27178558707237244
+        ],
+        [
+          0.25941014289855957
+        ],
+        [
+          0.2567617893218994
+        ],
+        [
+          0.2626663148403168
+        ],
+        [
+          0.24632075428962708
+        ],
+        [
+          0.27425938844680786
+        ],
+        [
+          0.2602068781852722
+        ],
+        [
+          0.2617887258529663
+        ]
+      ],
+      "num_timesteps": 10,
+      "validation": {
+        "all_beliefs_valid": true,
+        "beliefs_sum_to_one": true,
+        "actions_in_range": true,
+        "pymdp_version_ge_1_0_0": true,
+        "all_valid": true
+      },
+      "model_parameters": {
+        "A_shape": [
+          2,
+          2
+        ],
+        "B_shape": [
+          2,
+          2,
+          1
+        ],
+        "C_shape": [
+          2
+        ],
+        "D_shape": [
+          2
+        ],
+        "num_states": 2,
+        "num_observations": 2,
+        "num_actions": 1,
+        "batch_size": 1,
+        "policy_len": 1,
+        "gamma": 16.0,
+        "alpha": 16.0
+      },
+      "data_source": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/basics/acceptance/basics/pipeline_output/12_execute_output/dynamic_perception/pymdp/simulation_data/simulation_results.json",
+      "belief_confidence": [
+        0.8301886320114136,
+        0.8108316659927368,
+        0.7463019490242004,
+        0.8793479800224304,
+        0.9014692902565002,
+        0.790946364402771,
+        0.922066330909729,
+        0.7076675295829773,
+        0.8723993301391602,
+        0.7993255257606506
+      ]
+    }
+  },
+  "comparisons": {
+    "success_rates": {
+      "pymdp": 1.0
+    },
+    "performance_comparison": {
+      "pymdp": {
+        "mean": 27.012015,
+        "std": 0.0,
+        "min": 27.012015,
+        "max": 27.012015
+      }
+    },
+    "metric_agreement": {},
+    "data_coverage": {
+      "pymdp": {
+        "has_beliefs": true,
+        "has_actions": true,
+        "has_observations": true,
+        "has_free_energy": true,
+        "has_circuit_info": false,
+        "num_timesteps": 10,
+        "validation_passed": true,
+        "data_source": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/basics/acceptance/basics/pipeline_output/12_execute_output/dynamic_perception/pymdp/simulation_data/simulation_results.json"
+      }
+    },
+    "simulation_statistics": {
+      "pymdp": {
+        "belief_dims": [
+          10,
+          2
+        ],
+        "mean_confidence": 0.8260544598102569,
+        "final_belief": [
+          0.7993255257606506,
+          0.20067445933818817
+        ],
+        "efe_mean": 0.26184333562850953,
+        "efe_std": 0.007340480701435876,
+        "efe_min": 0.24632075428962708,
+        "efe_max": 0.27425938844680786
+      }
+    }
+  },
+  "metrics": {
+    "total_frameworks": 1,
+    "total_successful": 1,
+    "total_executions": 1,
+    "overall_success_rate": 1.0
+  }
+}

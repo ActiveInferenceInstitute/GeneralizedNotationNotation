@@ -1,0 +1,748 @@
+{
+  "timestamp": "2026-09-06T11:46:39.714230",
+  "processed_files": 2,
+  "success": true,
+  "errors": [],
+  "validation_results": [
+    {
+      "file_path": "output/cross_framework/discrete/acceptance/discrete/input/actinf_pomdp_agent.md",
+      "file_name": "actinf_pomdp_agent.md",
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "type_issues": [],
+      "validation_timestamp": "2026-09-06T11:46:39.780576",
+      "dimension_compatibility": {
+        "compatible": true,
+        "issues": [],
+        "warnings": [],
+        "variables_checked": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E",
+          "s",
+          "s_prime",
+          "F",
+          "o",
+          "\u03c0",
+          "u",
+          "G",
+          "t"
+        ],
+        "dimension_map": {
+          "A": [
+            3,
+            3
+          ],
+          "B": [
+            3,
+            3,
+            3
+          ],
+          "C": [
+            3
+          ],
+          "D": [
+            3
+          ],
+          "E": [
+            3
+          ],
+          "s": [
+            3,
+            1
+          ],
+          "s_prime": [
+            3,
+            1
+          ],
+          "F": [
+            3
+          ],
+          "o": [
+            3,
+            1
+          ],
+          "\u03c0": [
+            3
+          ],
+          "u": [
+            1
+          ],
+          "G": [
+            3
+          ],
+          "t": [
+            1
+          ]
+        }
+      },
+      "resource_estimation": {
+        "complexity_tier": "large",
+        "estimated_memory_bytes": 260,
+        "total_parameters": 65,
+        "variables": 13,
+        "connections": 11,
+        "flops_estimate": 5000.0,
+        "complexity_score": 10,
+        "diagnostics": []
+      },
+      "variables": [
+        {
+          "name": "A",
+          "type": "float",
+          "dimensions": [
+            3,
+            3
+          ],
+          "total_elements": 9
+        },
+        {
+          "name": "B",
+          "type": "float",
+          "dimensions": [
+            3,
+            3,
+            3
+          ],
+          "total_elements": 27
+        },
+        {
+          "name": "C",
+          "type": "float",
+          "dimensions": [
+            3
+          ],
+          "total_elements": 3
+        },
+        {
+          "name": "D",
+          "type": "float",
+          "dimensions": [
+            3
+          ],
+          "total_elements": 3
+        },
+        {
+          "name": "E",
+          "type": "float",
+          "dimensions": [
+            3
+          ],
+          "total_elements": 3
+        },
+        {
+          "name": "s",
+          "type": "float",
+          "dimensions": [
+            3,
+            1
+          ],
+          "total_elements": 3
+        },
+        {
+          "name": "s_prime",
+          "type": "float",
+          "dimensions": [
+            3,
+            1
+          ],
+          "total_elements": 3
+        },
+        {
+          "name": "F",
+          "type": "float",
+          "dimensions": [
+            3
+          ],
+          "total_elements": 3
+        },
+        {
+          "name": "o",
+          "type": "int",
+          "dimensions": [
+            3,
+            1
+          ],
+          "total_elements": 3
+        },
+        {
+          "name": "\u03c0",
+          "type": "float",
+          "dimensions": [
+            3
+          ],
+          "total_elements": 3
+        },
+        {
+          "name": "u",
+          "type": "int",
+          "dimensions": [
+            1
+          ],
+          "total_elements": 1
+        },
+        {
+          "name": "G",
+          "type": "float",
+          "dimensions": [
+            3
+          ],
+          "total_elements": 3
+        },
+        {
+          "name": "t",
+          "type": "int",
+          "dimensions": [
+            1
+          ],
+          "total_elements": 1
+        }
+      ],
+      "variable_count": 13,
+      "connections": [
+        {
+          "source": "D",
+          "target": "s",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "s",
+          "target": "A",
+          "type": "undirected",
+          "is_temporal": false
+        },
+        {
+          "source": "s",
+          "target": "s_prime",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "A",
+          "target": "o",
+          "type": "undirected",
+          "is_temporal": false
+        },
+        {
+          "source": "s",
+          "target": "B",
+          "type": "undirected",
+          "is_temporal": false
+        },
+        {
+          "source": "C",
+          "target": "G",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "E",
+          "target": "\u03c0",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "G",
+          "target": "\u03c0",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "\u03c0",
+          "target": "u",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "B",
+          "target": "u",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "u",
+          "target": "s_prime",
+          "type": "directed",
+          "is_temporal": false
+        }
+      ],
+      "connection_count": 11,
+      "connection_types": {
+        "directed": 8,
+        "undirected": 3,
+        "temporal": 0
+      },
+      "sections": {
+        "GNNSection": true,
+        "GNNVersionAndFlags": true,
+        "ModelName": true,
+        "ModelAnnotation": true,
+        "StateSpaceBlock": true,
+        "Connections": true,
+        "InitialParameterization": true,
+        "Equations": true,
+        "Time": true,
+        "ActInfOntologyAnnotation": true,
+        "ModelParameters": true,
+        "Footer": true,
+        "Signature": true
+      },
+      "model_complexity": {
+        "state_space_complexity": 6.044394119358453,
+        "graph_density": 0.07051282051282051,
+        "avg_in_degree": 1.375,
+        "avg_out_degree": 1.2222222222222223,
+        "max_in_degree": 2,
+        "max_out_degree": 3,
+        "cyclic_complexity": 0.0,
+        "temporal_complexity": 0.0,
+        "equation_complexity": 14.2,
+        "overall_complexity": 10,
+        "variable_count": 13,
+        "edge_count": 11,
+        "total_state_space_dim": 65,
+        "max_variable_dim": 27
+      },
+      "model_type": "Dynamic",
+      "type_distribution": {
+        "float": 10,
+        "int": 3
+      },
+      "time_dynamics": {
+        "is_dynamic": true
+      }
+    },
+    {
+      "file_path": "output/cross_framework/discrete/acceptance/discrete/input/simple_mdp.md",
+      "file_name": "simple_mdp.md",
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "type_issues": [],
+      "validation_timestamp": "2026-09-06T11:46:39.782632",
+      "dimension_compatibility": {
+        "compatible": true,
+        "issues": [],
+        "warnings": [],
+        "variables_checked": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "s",
+          "s_prime",
+          "o",
+          "\u03c0",
+          "u",
+          "G",
+          "t"
+        ],
+        "dimension_map": {
+          "A": [
+            4,
+            4
+          ],
+          "B": [
+            4,
+            4,
+            4
+          ],
+          "C": [
+            4
+          ],
+          "D": [
+            4
+          ],
+          "s": [
+            4,
+            1
+          ],
+          "s_prime": [
+            4,
+            1
+          ],
+          "o": [
+            4,
+            1
+          ],
+          "\u03c0": [
+            4
+          ],
+          "u": [
+            1
+          ],
+          "G": [
+            4
+          ],
+          "t": [
+            1
+          ]
+        }
+      },
+      "resource_estimation": {
+        "complexity_tier": "medium",
+        "estimated_memory_bytes": 440,
+        "total_parameters": 110,
+        "variables": 11,
+        "connections": 10,
+        "flops_estimate": 3411.127157682146,
+        "complexity_score": 6.822254315364292,
+        "diagnostics": []
+      },
+      "variables": [
+        {
+          "name": "A",
+          "type": "float",
+          "dimensions": [
+            4,
+            4
+          ],
+          "total_elements": 16
+        },
+        {
+          "name": "B",
+          "type": "float",
+          "dimensions": [
+            4,
+            4,
+            4
+          ],
+          "total_elements": 64
+        },
+        {
+          "name": "C",
+          "type": "float",
+          "dimensions": [
+            4
+          ],
+          "total_elements": 4
+        },
+        {
+          "name": "D",
+          "type": "float",
+          "dimensions": [
+            4
+          ],
+          "total_elements": 4
+        },
+        {
+          "name": "s",
+          "type": "float",
+          "dimensions": [
+            4,
+            1
+          ],
+          "total_elements": 4
+        },
+        {
+          "name": "s_prime",
+          "type": "float",
+          "dimensions": [
+            4,
+            1
+          ],
+          "total_elements": 4
+        },
+        {
+          "name": "o",
+          "type": "int",
+          "dimensions": [
+            4,
+            1
+          ],
+          "total_elements": 4
+        },
+        {
+          "name": "\u03c0",
+          "type": "float",
+          "dimensions": [
+            4
+          ],
+          "total_elements": 4
+        },
+        {
+          "name": "u",
+          "type": "int",
+          "dimensions": [
+            1
+          ],
+          "total_elements": 1
+        },
+        {
+          "name": "G",
+          "type": "float",
+          "dimensions": [
+            4
+          ],
+          "total_elements": 4
+        },
+        {
+          "name": "t",
+          "type": "int",
+          "dimensions": [
+            1
+          ],
+          "total_elements": 1
+        }
+      ],
+      "variable_count": 11,
+      "connections": [
+        {
+          "source": "D",
+          "target": "s",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "s",
+          "target": "A",
+          "type": "undirected",
+          "is_temporal": false
+        },
+        {
+          "source": "s",
+          "target": "s_prime",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "A",
+          "target": "o",
+          "type": "undirected",
+          "is_temporal": false
+        },
+        {
+          "source": "s",
+          "target": "B",
+          "type": "undirected",
+          "is_temporal": false
+        },
+        {
+          "source": "C",
+          "target": "G",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "G",
+          "target": "\u03c0",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "\u03c0",
+          "target": "u",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "B",
+          "target": "u",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "u",
+          "target": "s_prime",
+          "type": "directed",
+          "is_temporal": false
+        }
+      ],
+      "connection_count": 10,
+      "connection_types": {
+        "directed": 7,
+        "undirected": 3,
+        "temporal": 0
+      },
+      "sections": {
+        "GNNSection": true,
+        "GNNVersionAndFlags": true,
+        "ModelName": true,
+        "ModelAnnotation": true,
+        "StateSpaceBlock": true,
+        "Connections": true,
+        "InitialParameterization": true,
+        "Equations": true,
+        "Time": true,
+        "ActInfOntologyAnnotation": true,
+        "ModelParameters": true,
+        "Footer": true,
+        "Signature": true
+      },
+      "model_complexity": {
+        "state_space_complexity": 6.794415866350106,
+        "graph_density": 0.09090909090909091,
+        "avg_in_degree": 1.25,
+        "avg_out_degree": 1.25,
+        "max_in_degree": 2,
+        "max_out_degree": 3,
+        "cyclic_complexity": 0.0,
+        "temporal_complexity": 0.0,
+        "equation_complexity": 5.63265306122449,
+        "overall_complexity": 6.822254315364292,
+        "variable_count": 11,
+        "edge_count": 10,
+        "total_state_space_dim": 110,
+        "max_variable_dim": 64
+      },
+      "model_type": "Dynamic",
+      "type_distribution": {
+        "float": 8,
+        "int": 3
+      },
+      "time_dynamics": {
+        "is_dynamic": true
+      }
+    }
+  ],
+  "type_analysis": [
+    {
+      "file_path": "output/cross_framework/discrete/acceptance/discrete/input/actinf_pomdp_agent.md",
+      "file_name": "actinf_pomdp_agent.md",
+      "types_found": [
+        {
+          "name": "A",
+          "type": "float",
+          "line": 24
+        },
+        {
+          "name": "B",
+          "type": "float",
+          "line": 27
+        },
+        {
+          "name": "C",
+          "type": "float",
+          "line": 30
+        },
+        {
+          "name": "D",
+          "type": "float",
+          "line": 33
+        },
+        {
+          "name": "E",
+          "type": "float",
+          "line": 36
+        },
+        {
+          "name": "s",
+          "type": "float",
+          "line": 39
+        },
+        {
+          "name": "s_prime",
+          "type": "float",
+          "line": 40
+        },
+        {
+          "name": "F",
+          "type": "float",
+          "line": 41
+        },
+        {
+          "name": "o",
+          "type": "int",
+          "line": 44
+        },
+        {
+          "name": "\u03c0",
+          "type": "float",
+          "line": 47
+        },
+        {
+          "name": "u",
+          "type": "int",
+          "line": 48
+        },
+        {
+          "name": "G",
+          "type": "float",
+          "line": 49
+        },
+        {
+          "name": "t",
+          "type": "int",
+          "line": 52
+        }
+      ],
+      "type_distribution": {
+        "float": 10,
+        "int": 3
+      },
+      "total_variables": 13,
+      "analysis_timestamp": "2026-09-06T11:46:39.782133"
+    },
+    {
+      "file_path": "output/cross_framework/discrete/acceptance/discrete/input/simple_mdp.md",
+      "file_name": "simple_mdp.md",
+      "types_found": [
+        {
+          "name": "A",
+          "type": "float",
+          "line": 35
+        },
+        {
+          "name": "B",
+          "type": "float",
+          "line": 39
+        },
+        {
+          "name": "C",
+          "type": "float",
+          "line": 43
+        },
+        {
+          "name": "D",
+          "type": "float",
+          "line": 47
+        },
+        {
+          "name": "s",
+          "type": "float",
+          "line": 51
+        },
+        {
+          "name": "s_prime",
+          "type": "float",
+          "line": 52
+        },
+        {
+          "name": "o",
+          "type": "int",
+          "line": 56
+        },
+        {
+          "name": "\u03c0",
+          "type": "float",
+          "line": 60
+        },
+        {
+          "name": "u",
+          "type": "int",
+          "line": 61
+        },
+        {
+          "name": "G",
+          "type": "float",
+          "line": 62
+        },
+        {
+          "name": "t",
+          "type": "int",
+          "line": 66
+        }
+      ],
+      "type_distribution": {
+        "float": 8,
+        "int": 3
+      },
+      "total_variables": 11,
+      "analysis_timestamp": "2026-09-06T11:46:39.784110"
+    }
+  ]
+}

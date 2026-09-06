@@ -265,15 +265,17 @@ LLM steps:
 This parses the discrete GNN files, runs visualization and rendering
 across the maintained backends, and writes all artifacts under the
 chosen output directory. The \texttt{-\/-skip-llm} flag keeps the run
-hermetic and free of external API calls, which makes it suitable for
-continuous integration and for offline reproduction. To exercise every
+hermetic and free of external API calls: the non-LLM steps all execute,
+the steps that would read the skipped LLM outputs record that as a
+warning, and the run exits 2 --- the pipeline's documented warning code
+(0 success, 1 error, 2 warning) --- rather than 0. To exercise every
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]{Pipeline Smoke Run}
 registered family rather than a single one, drive the manifest through
 the model-family acceptance gate given below: pointing
 \texttt{-\/-target-dir} at \texttt{input/gnn\_files} covers that tree's
 10 corpus directories. All 9 registered family target directories lie
-\end{frame}
-
-\begin{frame}[fragile,allowframebreaks]{Pipeline Smoke Run}
 inside that tree, so a single invocation reaches every registered
 family.
 \end{frame}
@@ -342,7 +344,7 @@ them from the tracked files at the current commit:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\ExtensionTok{python}\NormalTok{ scripts/z\_generate\_manuscript\_variables.py}
+\ExtensionTok{uv}\NormalTok{ run python scripts/z\_generate\_manuscript\_variables.py}
 \end{Highlighting}
 \end{Shaded}
 
@@ -356,7 +358,7 @@ manuscript's own figures are rebuilt from the same token map:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\ExtensionTok{python} \AttributeTok{{-}m}\NormalTok{ scripts.manuscript\_build\_figures}
+\ExtensionTok{uv}\NormalTok{ run python }\AttributeTok{{-}m}\NormalTok{ scripts.manuscript\_build\_figures}
 \end{Highlighting}
 \end{Shaded}
 
@@ -386,7 +388,7 @@ a missing copy degrades rather than failing the build.
 \begin{frame}[fragile,allowframebreaks]{Manuscript Reproducibility}
 Because the variables file is regenerated before rendering, the counts
 in the rendered PDF track the repository state at the commit recorded in
-\breaktt{output/data/manuscript\_variables.json} (05689d7ad): a code
+\breaktt{output/data/manuscript\_variables.json} (0a0f0ac92): a code
 change that alters, for example, the test inventory (369 test files,
 4144 test functions) propagates into the prose on the next regeneration
 without any manual editing.

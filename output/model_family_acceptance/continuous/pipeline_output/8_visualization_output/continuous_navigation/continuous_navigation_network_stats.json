@@ -1,0 +1,32 @@
+{
+  "total_variables": 12,
+  "total_connections": 9,
+  "variable_types": {
+    "hidden_state": 8,
+    "action": 2,
+    "prior_vector": 2
+  },
+  "connection_types": {
+    "prior_mean->x": 1,
+    "F->x": 1,
+    "x->y": 1,
+    "H->y": 1,
+    "Q->x": 1,
+    "R->y": 1,
+    "u->x": 1,
+    "goal_mean->u": 1,
+    "control_gain->u": 1
+  },
+  "gnn_edge_orientation": {
+    "directed_variable_pairs": 9,
+    "undirected_variable_pairs": 0
+  },
+  "network_properties": {
+    "num_nodes": 10,
+    "num_edges": 9,
+    "density": 0.1,
+    "is_strongly_connected": false,
+    "is_weakly_connected": true,
+    "average_clustering": 0.0
+  }
+}

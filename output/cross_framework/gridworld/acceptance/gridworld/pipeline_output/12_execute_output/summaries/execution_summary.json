@@ -1,0 +1,521 @@
+{
+  "timestamp": "2026-09-06T12:16:59.309585",
+  "target_directory": "output/cross_framework/gridworld/acceptance/gridworld/input",
+  "output_directory": "output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/12_execute_output",
+  "total_scripts_found": 3,
+  "successful_executions": 3,
+  "failed_executions": 0,
+  "skipped_executions": 0,
+  "execution_details": [
+    {
+      "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/11_render_output/pomdp_gridworld_3x3/activeinference_jl/POMDP_GridWorld_3x3_activeinference.jl",
+      "script_name": "POMDP_GridWorld_3x3_activeinference.jl",
+      "framework": "activeinference_jl",
+      "model_name": "pomdp_gridworld_3x3",
+      "executor": "julia",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 38.525664,
+      "timestamp": "2026-09-06T12:16:59.322272",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 38.525664,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        38.525664
+      ],
+      "structured_result_file": "output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/12_execute_output/pomdp_gridworld_3x3/activeinference_jl/execution_logs/POMDP_GridWorld_3x3_activeinference.jl_results.json",
+      "output_file": "output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/12_execute_output/pomdp_gridworld_3x3/activeinference_jl/execution_logs/POMDP_GridWorld_3x3_activeinference.jl_execution.log",
+      "implementation_directory": "output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/12_execute_output/pomdp_gridworld_3x3/activeinference_jl",
+      "script_identity": {
+        "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/11_render_output/pomdp_gridworld_3x3/activeinference_jl/POMDP_GridWorld_3x3_activeinference.jl",
+        "sha256": "c6d556b80e131ad918d554ddc8ba1e65732ea19465f392b98e4814bd0dd1244c"
+      },
+      "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/gridworld/acceptance/gridworld/input",
+      "stdout_length": 60,
+      "stderr_length": 0,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/11_render_output/pomdp_gridworld_3x3/pymdp/POMDP_GridWorld_3x3_pymdp.py",
+      "script_name": "POMDP_GridWorld_3x3_pymdp.py",
+      "framework": "pymdp",
+      "model_name": "pomdp_gridworld_3x3",
+      "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 11.84648,
+      "timestamp": "2026-09-06T12:18:06.984902",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 11.84648,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        11.84648
+      ],
+      "structured_result_file": "output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/12_execute_output/pomdp_gridworld_3x3/pymdp/execution_logs/POMDP_GridWorld_3x3_pymdp.py_results.json",
+      "output_file": "output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/12_execute_output/pomdp_gridworld_3x3/pymdp/execution_logs/POMDP_GridWorld_3x3_pymdp.py_execution.log",
+      "implementation_directory": "output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/12_execute_output/pomdp_gridworld_3x3/pymdp",
+      "script_identity": {
+        "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/11_render_output/pomdp_gridworld_3x3/pymdp/POMDP_GridWorld_3x3_pymdp.py",
+        "sha256": "f4dbd1365ea0ba11ca4dbdc976fec1a220d4871683e022fdf64f59c8420b1299"
+      },
+      "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/gridworld/acceptance/gridworld/input",
+      "stdout_length": 41,
+      "stderr_length": 3534,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/11_render_output/pomdp_gridworld_3x3/rxinfer/POMDP_GridWorld_3x3_rxinfer.jl",
+      "script_name": "POMDP_GridWorld_3x3_rxinfer.jl",
+      "framework": "rxinfer",
+      "model_name": "pomdp_gridworld_3x3",
+      "executor": "julia",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 56.175566,
+      "timestamp": "2026-09-06T12:18:18.895878",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 56.175566,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        56.175566
+      ],
+      "structured_result_file": "output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/12_execute_output/pomdp_gridworld_3x3/rxinfer/execution_logs/POMDP_GridWorld_3x3_rxinfer.jl_results.json",
+      "output_file": "output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/12_execute_output/pomdp_gridworld_3x3/rxinfer/execution_logs/POMDP_GridWorld_3x3_rxinfer.jl_execution.log",
+      "implementation_directory": "output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/12_execute_output/pomdp_gridworld_3x3/rxinfer",
+      "execution_metadata": {},
+      "script_identity": {
+        "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/11_render_output/pomdp_gridworld_3x3/rxinfer/POMDP_GridWorld_3x3_rxinfer.jl",
+        "sha256": "dd9ddc8983b30c0f61f71d530e483a916e7fdc23e336bbaa402fc13b8cfd7993"
+      },
+      "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/gridworld/acceptance/gridworld/input",
+      "stdout_length": 221,
+      "stderr_length": 0,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    }
+  ],
+  "framework_status": {
+    "activeinference_jl": {
+      "executions": 1,
+      "successful": 1,
+      "failed": 0,
+      "skipped": 0,
+      "status": "success"
+    },
+    "pymdp": {
+      "executions": 1,
+      "successful": 1,
+      "failed": 0,
+      "skipped": 0,
+      "status": "success"
+    },
+    "rxinfer": {
+      "executions": 1,
+      "successful": 1,
+      "failed": 0,
+      "skipped": 0,
+      "status": "success"
+    }
+  },
+  "execution_mode": "local",
+  "execution_workers": 1,
+  "backend": null,
+  "execution_benchmark_repeats": 1,
+  "execution_summary_detail": false,
+  "dispatch_max_retries": 0,
+  "success": true,
+  "status": "success",
+  "exit_code": 0,
+  "run_id": "e9119b260ac045c0a5771d8af8e1c049",
+  "configuration": {
+    "frameworks": [
+      "activeinference_jl",
+      "pymdp",
+      "rxinfer"
+    ],
+    "strict_requested_frameworks": true,
+    "options": {
+      "recursive": true,
+      "timeout": 300,
+      "render_output_dir": null,
+      "distributed": false,
+      "execution_workers": 1,
+      "backend": "ray",
+      "execution_benchmark_repeats": 1,
+      "execution_summary_detail": false
+    }
+  },
+  "input_identity": {
+    "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/gridworld/acceptance/gridworld/input",
+    "files": {
+      "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/gridworld/acceptance/gridworld/input/pomdp_gridworld_3x3.md": "a87cdc89163bcd1b612f902d21ad16f95e3d25c7ff59e3718fa0179b1bc4d302"
+    }
+  },
+  "render_failures": [],
+  "missing_render_scripts": [],
+  "requested_frameworks": [
+    "pymdp",
+    "rxinfer",
+    "activeinference_jl"
+  ],
+  "total_scripts": 3,
+  "attempted_scripts": 3,
+  "success_rate": 100.0,
+  "outcome_reason": "all_scripts_succeeded",
+  "receipt_identity": {
+    "run_id": "e9119b260ac045c0a5771d8af8e1c049",
+    "config_sha256": "2b4a7eaf129c2fb5956a699d27d8e9c531623d6c06f200cfd95440285966bf61"
+  },
+  "invocation_receipts": {
+    "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/gridworld/acceptance/gridworld/input": {
+      "status": "success",
+      "success": true,
+      "exit_code": 0,
+      "outcome_reason": "all_scripts_succeeded",
+      "render_failures": [],
+      "missing_render_scripts": [],
+      "missing_render_summary": null,
+      "input_identity": {
+        "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/gridworld/acceptance/gridworld/input",
+        "files": {
+          "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/gridworld/acceptance/gridworld/input/pomdp_gridworld_3x3.md": "a87cdc89163bcd1b612f902d21ad16f95e3d25c7ff59e3718fa0179b1bc4d302"
+        }
+      },
+      "execution_details": [
+        {
+          "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/11_render_output/pomdp_gridworld_3x3/activeinference_jl/POMDP_GridWorld_3x3_activeinference.jl",
+          "script_name": "POMDP_GridWorld_3x3_activeinference.jl",
+          "framework": "activeinference_jl",
+          "model_name": "pomdp_gridworld_3x3",
+          "executor": "julia",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 38.525664,
+          "timestamp": "2026-09-06T12:16:59.322272",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 38.525664,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            38.525664
+          ],
+          "structured_result_file": "output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/12_execute_output/pomdp_gridworld_3x3/activeinference_jl/execution_logs/POMDP_GridWorld_3x3_activeinference.jl_results.json",
+          "output_file": "output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/12_execute_output/pomdp_gridworld_3x3/activeinference_jl/execution_logs/POMDP_GridWorld_3x3_activeinference.jl_execution.log",
+          "implementation_directory": "output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/12_execute_output/pomdp_gridworld_3x3/activeinference_jl",
+          "script_identity": {
+            "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/11_render_output/pomdp_gridworld_3x3/activeinference_jl/POMDP_GridWorld_3x3_activeinference.jl",
+            "sha256": "c6d556b80e131ad918d554ddc8ba1e65732ea19465f392b98e4814bd0dd1244c"
+          },
+          "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/gridworld/acceptance/gridworld/input",
+          "stdout_length": 60,
+          "stderr_length": 0,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 1
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        },
+        {
+          "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/11_render_output/pomdp_gridworld_3x3/pymdp/POMDP_GridWorld_3x3_pymdp.py",
+          "script_name": "POMDP_GridWorld_3x3_pymdp.py",
+          "framework": "pymdp",
+          "model_name": "pomdp_gridworld_3x3",
+          "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 11.84648,
+          "timestamp": "2026-09-06T12:18:06.984902",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 11.84648,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            11.84648
+          ],
+          "structured_result_file": "output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/12_execute_output/pomdp_gridworld_3x3/pymdp/execution_logs/POMDP_GridWorld_3x3_pymdp.py_results.json",
+          "output_file": "output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/12_execute_output/pomdp_gridworld_3x3/pymdp/execution_logs/POMDP_GridWorld_3x3_pymdp.py_execution.log",
+          "implementation_directory": "output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/12_execute_output/pomdp_gridworld_3x3/pymdp",
+          "script_identity": {
+            "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/11_render_output/pomdp_gridworld_3x3/pymdp/POMDP_GridWorld_3x3_pymdp.py",
+            "sha256": "f4dbd1365ea0ba11ca4dbdc976fec1a220d4871683e022fdf64f59c8420b1299"
+          },
+          "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/gridworld/acceptance/gridworld/input",
+          "stdout_length": 41,
+          "stderr_length": 3534,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 1
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        },
+        {
+          "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/11_render_output/pomdp_gridworld_3x3/rxinfer/POMDP_GridWorld_3x3_rxinfer.jl",
+          "script_name": "POMDP_GridWorld_3x3_rxinfer.jl",
+          "framework": "rxinfer",
+          "model_name": "pomdp_gridworld_3x3",
+          "executor": "julia",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 56.175566,
+          "timestamp": "2026-09-06T12:18:18.895878",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 56.175566,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            56.175566
+          ],
+          "structured_result_file": "output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/12_execute_output/pomdp_gridworld_3x3/rxinfer/execution_logs/POMDP_GridWorld_3x3_rxinfer.jl_results.json",
+          "output_file": "output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/12_execute_output/pomdp_gridworld_3x3/rxinfer/execution_logs/POMDP_GridWorld_3x3_rxinfer.jl_execution.log",
+          "implementation_directory": "output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/12_execute_output/pomdp_gridworld_3x3/rxinfer",
+          "execution_metadata": {},
+          "script_identity": {
+            "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/11_render_output/pomdp_gridworld_3x3/rxinfer/POMDP_GridWorld_3x3_rxinfer.jl",
+            "sha256": "dd9ddc8983b30c0f61f71d530e483a916e7fdc23e336bbaa402fc13b8cfd7993"
+          },
+          "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/gridworld/acceptance/gridworld/input",
+          "stdout_length": 221,
+          "stderr_length": 0,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 1
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        }
+      ]
+    }
+  },
+  "current_invocation": {
+    "status": "success",
+    "success": true,
+    "exit_code": 0,
+    "outcome_reason": "all_scripts_succeeded",
+    "render_failures": [],
+    "missing_render_scripts": [],
+    "missing_render_summary": null,
+    "input_identity": {
+      "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/gridworld/acceptance/gridworld/input",
+      "files": {
+        "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/gridworld/acceptance/gridworld/input/pomdp_gridworld_3x3.md": "a87cdc89163bcd1b612f902d21ad16f95e3d25c7ff59e3718fa0179b1bc4d302"
+      }
+    },
+    "execution_details": [
+      {
+        "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/11_render_output/pomdp_gridworld_3x3/activeinference_jl/POMDP_GridWorld_3x3_activeinference.jl",
+        "script_name": "POMDP_GridWorld_3x3_activeinference.jl",
+        "framework": "activeinference_jl",
+        "model_name": "pomdp_gridworld_3x3",
+        "executor": "julia",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 38.525664,
+        "timestamp": "2026-09-06T12:16:59.322272",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 38.525664,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          38.525664
+        ],
+        "structured_result_file": "output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/12_execute_output/pomdp_gridworld_3x3/activeinference_jl/execution_logs/POMDP_GridWorld_3x3_activeinference.jl_results.json",
+        "output_file": "output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/12_execute_output/pomdp_gridworld_3x3/activeinference_jl/execution_logs/POMDP_GridWorld_3x3_activeinference.jl_execution.log",
+        "implementation_directory": "output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/12_execute_output/pomdp_gridworld_3x3/activeinference_jl",
+        "script_identity": {
+          "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/11_render_output/pomdp_gridworld_3x3/activeinference_jl/POMDP_GridWorld_3x3_activeinference.jl",
+          "sha256": "c6d556b80e131ad918d554ddc8ba1e65732ea19465f392b98e4814bd0dd1244c"
+        },
+        "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/gridworld/acceptance/gridworld/input",
+        "stdout_length": 60,
+        "stderr_length": 0,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 1
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      },
+      {
+        "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/11_render_output/pomdp_gridworld_3x3/pymdp/POMDP_GridWorld_3x3_pymdp.py",
+        "script_name": "POMDP_GridWorld_3x3_pymdp.py",
+        "framework": "pymdp",
+        "model_name": "pomdp_gridworld_3x3",
+        "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 11.84648,
+        "timestamp": "2026-09-06T12:18:06.984902",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 11.84648,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          11.84648
+        ],
+        "structured_result_file": "output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/12_execute_output/pomdp_gridworld_3x3/pymdp/execution_logs/POMDP_GridWorld_3x3_pymdp.py_results.json",
+        "output_file": "output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/12_execute_output/pomdp_gridworld_3x3/pymdp/execution_logs/POMDP_GridWorld_3x3_pymdp.py_execution.log",
+        "implementation_directory": "output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/12_execute_output/pomdp_gridworld_3x3/pymdp",
+        "script_identity": {
+          "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/11_render_output/pomdp_gridworld_3x3/pymdp/POMDP_GridWorld_3x3_pymdp.py",
+          "sha256": "f4dbd1365ea0ba11ca4dbdc976fec1a220d4871683e022fdf64f59c8420b1299"
+        },
+        "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/gridworld/acceptance/gridworld/input",
+        "stdout_length": 41,
+        "stderr_length": 3534,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 1
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      },
+      {
+        "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/11_render_output/pomdp_gridworld_3x3/rxinfer/POMDP_GridWorld_3x3_rxinfer.jl",
+        "script_name": "POMDP_GridWorld_3x3_rxinfer.jl",
+        "framework": "rxinfer",
+        "model_name": "pomdp_gridworld_3x3",
+        "executor": "julia",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 56.175566,
+        "timestamp": "2026-09-06T12:18:18.895878",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 56.175566,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          56.175566
+        ],
+        "structured_result_file": "output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/12_execute_output/pomdp_gridworld_3x3/rxinfer/execution_logs/POMDP_GridWorld_3x3_rxinfer.jl_results.json",
+        "output_file": "output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/12_execute_output/pomdp_gridworld_3x3/rxinfer/execution_logs/POMDP_GridWorld_3x3_rxinfer.jl_execution.log",
+        "implementation_directory": "output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/12_execute_output/pomdp_gridworld_3x3/rxinfer",
+        "execution_metadata": {},
+        "script_identity": {
+          "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/gridworld/acceptance/gridworld/pipeline_output/11_render_output/pomdp_gridworld_3x3/rxinfer/POMDP_GridWorld_3x3_rxinfer.jl",
+          "sha256": "dd9ddc8983b30c0f61f71d530e483a916e7fdc23e336bbaa402fc13b8cfd7993"
+        },
+        "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/gridworld/acceptance/gridworld/input",
+        "stdout_length": 221,
+        "stderr_length": 0,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 1
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      }
+    ],
+    "target_directory": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/gridworld/acceptance/gridworld/input"
+  },
+  "merged_prior_folder_runs": 0,
+  "execution_summary_format": "slim_v1"
+}

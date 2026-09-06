@@ -1,0 +1,487 @@
+{
+  "timestamp": "2026-09-06T12:02:10.225086",
+  "processed_files": 2,
+  "success": true,
+  "errors": [],
+  "audio_files_generated": [
+    {
+      "file_path": "output/cross_framework/hierarchical/acceptance/hierarchical/input/temporal_hierarchy.md",
+      "file_name": "temporal_hierarchy.md",
+      "audio_files": {
+        "tonal": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/15_audio_output/temporal_hierarchy_tonal.wav",
+        "rhythmic": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/15_audio_output/temporal_hierarchy_rhythmic.wav",
+        "ambient": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/15_audio_output/temporal_hierarchy_ambient.wav"
+      },
+      "variables_count": 31,
+      "connections_count": 26,
+      "generation_timestamp": "2026-09-06T12:02:10.768838"
+    },
+    {
+      "file_path": "output/cross_framework/hierarchical/acceptance/hierarchical/input/hierarchical_pomdp.md",
+      "file_name": "hierarchical_pomdp.md",
+      "audio_files": {
+        "tonal": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/15_audio_output/hierarchical_pomdp_tonal.wav",
+        "rhythmic": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/15_audio_output/hierarchical_pomdp_rhythmic.wav",
+        "ambient": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/15_audio_output/hierarchical_pomdp_ambient.wav"
+      },
+      "variables_count": 19,
+      "connections_count": 16,
+      "generation_timestamp": "2026-09-06T12:02:11.149213"
+    }
+  ],
+  "sonification_results": [
+    {
+      "file_path": "output/cross_framework/hierarchical/acceptance/hierarchical/input/temporal_hierarchy.md",
+      "sonification_file": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/15_audio_output/temporal_hierarchy_sonification.wav",
+      "dynamics_analyzed": 5,
+      "sonification_type": "model_dynamics",
+      "generation_timestamp": "2026-09-06T12:02:10.829631"
+    },
+    {
+      "file_path": "output/cross_framework/hierarchical/acceptance/hierarchical/input/hierarchical_pomdp.md",
+      "sonification_file": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/15_audio_output/hierarchical_pomdp_sonification.wav",
+      "dynamics_analyzed": 3,
+      "sonification_type": "model_dynamics",
+      "generation_timestamp": "2026-09-06T12:02:11.186821"
+    }
+  ],
+  "audio_analysis": [
+    {
+      "file_path": "output/cross_framework/hierarchical/acceptance/hierarchical/input/temporal_hierarchy.md",
+      "audio_characteristics": {
+        "tonal": {
+          "error": "No module named 'soundfile'"
+        },
+        "rhythmic": {
+          "error": "No module named 'soundfile'"
+        },
+        "ambient": {
+          "error": "No module named 'soundfile'"
+        }
+      },
+      "spectral_analysis": {},
+      "temporal_analysis": {}
+    },
+    {
+      "file_path": "output/cross_framework/hierarchical/acceptance/hierarchical/input/hierarchical_pomdp.md",
+      "audio_characteristics": {
+        "tonal": {
+          "error": "No module named 'soundfile'"
+        },
+        "rhythmic": {
+          "error": "No module named 'soundfile'"
+        },
+        "ambient": {
+          "error": "No module named 'soundfile'"
+        }
+      },
+      "spectral_analysis": {},
+      "temporal_analysis": {}
+    }
+  ],
+  "audio_streaming": {
+    "schema": "gnn_audio_stream_chunks_v1",
+    "status": "ready",
+    "streaming_safe": true,
+    "frame_count": 1080,
+    "duration_frames": 1080,
+    "chunk_count": 34,
+    "chunks": [
+      {
+        "index": 0,
+        "frame_start": 0,
+        "frame_count": 32,
+        "amplitude": 0.9759196639060974,
+        "frequency_hz": 271.9675,
+        "metadata": {
+          "mean_free_energy": 1.73225,
+          "last_action": 0
+        }
+      },
+      {
+        "index": 1,
+        "frame_start": 32,
+        "frame_count": 32,
+        "amplitude": 0.9731568694114685,
+        "frequency_hz": 249.90775004029274,
+        "metadata": {
+          "mean_free_energy": 0.9969250013430914,
+          "last_action": 0
+        }
+      },
+      {
+        "index": 2,
+        "frame_start": 64,
+        "frame_count": 32,
+        "amplitude": 0.999999999997,
+        "frequency_hz": 276.3269327901444,
+        "metadata": {
+          "mean_free_energy": 0.8775644263381451,
+          "last_action": 2
+        }
+      },
+      {
+        "index": 3,
+        "frame_start": 96,
+        "frame_count": 32,
+        "amplitude": 0.999999999997,
+        "frequency_hz": 250.6479149895483,
+        "metadata": {
+          "mean_free_energy": 1.0215971663182768,
+          "last_action": 0
+        }
+      },
+      {
+        "index": 4,
+        "frame_start": 128,
+        "frame_count": 32,
+        "amplitude": 0.9731568694114685,
+        "frequency_hz": 220.0,
+        "metadata": {
+          "mean_free_energy": 0.0,
+          "last_action": 0
+        }
+      },
+      {
+        "index": 5,
+        "frame_start": 160,
+        "frame_count": 32,
+        "amplitude": 0.999999999997,
+        "frequency_hz": 253.5285753685033,
+        "metadata": {
+          "mean_free_energy": 1.1176191789501106,
+          "last_action": 0
+        }
+      },
+      {
+        "index": 6,
+        "frame_start": 192,
+        "frame_count": 32,
+        "amplitude": 0.9609095454216003,
+        "frequency_hz": 220.0,
+        "metadata": {
+          "mean_free_energy": 0.0,
+          "last_action": 0
+        }
+      },
+      {
+        "index": 7,
+        "frame_start": 224,
+        "frame_count": 32,
+        "amplitude": 0.9706220626831055,
+        "frequency_hz": 220.0,
+        "metadata": {
+          "mean_free_energy": 0.0,
+          "last_action": 0
+        }
+      },
+      {
+        "index": 8,
+        "frame_start": 256,
+        "frame_count": 32,
+        "amplitude": 0.9702227115631104,
+        "frequency_hz": 220.0,
+        "metadata": {
+          "mean_free_energy": 0.0,
+          "last_action": 0
+        }
+      },
+      {
+        "index": 9,
+        "frame_start": 288,
+        "frame_count": 32,
+        "amplitude": 0.9688755869865417,
+        "frequency_hz": 235.0,
+        "metadata": {
+          "mean_free_energy": 0.0,
+          "last_action": 1
+        }
+      },
+      {
+        "index": 10,
+        "frame_start": 320,
+        "frame_count": 32,
+        "amplitude": 0.9705008864402771,
+        "frequency_hz": 235.0,
+        "metadata": {
+          "mean_free_energy": 0.0,
+          "last_action": 1
+        }
+      },
+      {
+        "index": 11,
+        "frame_start": 352,
+        "frame_count": 32,
+        "amplitude": 0.9975883436421932,
+        "frequency_hz": 329.57823737037234,
+        "metadata": {
+          "mean_free_energy": 2.652607912345745,
+          "last_action": 2
+        }
+      },
+      {
+        "index": 12,
+        "frame_start": 384,
+        "frame_count": 32,
+        "amplitude": 0.9981193200502325,
+        "frequency_hz": 339.30856875538655,
+        "metadata": {
+          "mean_free_energy": 2.976952291846218,
+          "last_action": 2
+        }
+      },
+      {
+        "index": 13,
+        "frame_start": 416,
+        "frame_count": 32,
+        "amplitude": 0.9969487856915842,
+        "frequency_hz": 368.18065101727996,
+        "metadata": {
+          "mean_free_energy": 3.9393550339093313,
+          "last_action": 2
+        }
+      },
+      {
+        "index": 14,
+        "frame_start": 448,
+        "frame_count": 32,
+        "amplitude": 0.9942057190459007,
+        "frequency_hz": 370.55756193798044,
+        "metadata": {
+          "mean_free_energy": 4.018585397932681,
+          "last_action": 2
+        }
+      },
+      {
+        "index": 15,
+        "frame_start": 480,
+        "frame_count": 32,
+        "amplitude": 0.96208256483078,
+        "frequency_hz": 298.30150000000003,
+        "metadata": {
+          "mean_free_energy": 2.61005,
+          "last_action": 0
+        }
+      },
+      {
+        "index": 16,
+        "frame_start": 512,
+        "frame_count": 32,
+        "amplitude": 0.9643263816833496,
+        "frequency_hz": 220.0,
+        "metadata": {
+          "mean_free_energy": 0.0,
+          "last_action": 0
+        }
+      },
+      {
+        "index": 17,
+        "frame_start": 544,
+        "frame_count": 32,
+        "amplitude": 0.9706220626831055,
+        "frequency_hz": 235.0,
+        "metadata": {
+          "mean_free_energy": 0.0,
+          "last_action": 1
+        }
+      },
+      {
+        "index": 18,
+        "frame_start": 576,
+        "frame_count": 32,
+        "amplitude": 0.9669523239135742,
+        "frequency_hz": 220.0,
+        "metadata": {
+          "mean_free_energy": 0.0,
+          "last_action": 0
+        }
+      },
+      {
+        "index": 19,
+        "frame_start": 608,
+        "frame_count": 32,
+        "amplitude": 0.9643263816833496,
+        "frequency_hz": 220.0,
+        "metadata": {
+          "mean_free_energy": 0.0,
+          "last_action": 0
+        }
+      },
+      {
+        "index": 20,
+        "frame_start": 640,
+        "frame_count": 32,
+        "amplitude": 0.9706220626831055,
+        "frequency_hz": 220.0,
+        "metadata": {
+          "mean_free_energy": 0.0,
+          "last_action": 0
+        }
+      },
+      {
+        "index": 21,
+        "frame_start": 672,
+        "frame_count": 32,
+        "amplitude": 0.9702227115631104,
+        "frequency_hz": 220.0,
+        "metadata": {
+          "mean_free_energy": 0.0,
+          "last_action": 0
+        }
+      },
+      {
+        "index": 22,
+        "frame_start": 704,
+        "frame_count": 32,
+        "amplitude": 0.9646362662315369,
+        "frequency_hz": 220.0,
+        "metadata": {
+          "mean_free_energy": 0.0,
+          "last_action": 0
+        }
+      },
+      {
+        "index": 23,
+        "frame_start": 736,
+        "frame_count": 32,
+        "amplitude": 0.9705008864402771,
+        "frequency_hz": 220.0,
+        "metadata": {
+          "mean_free_energy": 0.0,
+          "last_action": 0
+        }
+      },
+      {
+        "index": 24,
+        "frame_start": 768,
+        "frame_count": 32,
+        "amplitude": 0.966672956943512,
+        "frequency_hz": 295.6037304997444,
+        "metadata": {
+          "mean_free_energy": 2.52012434999148,
+          "last_action": 0
+        }
+      },
+      {
+        "index": 25,
+        "frame_start": 800,
+        "frame_count": 32,
+        "amplitude": 0.9688755869865417,
+        "frequency_hz": 298.7598180770874,
+        "metadata": {
+          "mean_free_energy": 2.6253272692362466,
+          "last_action": 0
+        }
+      },
+      {
+        "index": 26,
+        "frame_start": 832,
+        "frame_count": 32,
+        "amplitude": 0.9705008864402771,
+        "frequency_hz": 300.86583998054266,
+        "metadata": {
+          "mean_free_energy": 2.695527999351422,
+          "last_action": 0
+        }
+      },
+      {
+        "index": 27,
+        "frame_start": 864,
+        "frame_count": 32,
+        "amplitude": 0.9981193200502325,
+        "frequency_hz": 339.3374609517116,
+        "metadata": {
+          "mean_free_energy": 2.9779153650570525,
+          "last_action": 2
+        }
+      },
+      {
+        "index": 28,
+        "frame_start": 896,
+        "frame_count": 32,
+        "amplitude": 0.9969487856915842,
+        "frequency_hz": 325.39786162036944,
+        "metadata": {
+          "mean_free_energy": 3.0132620540123147,
+          "last_action": 1
+        }
+      },
+      {
+        "index": 29,
+        "frame_start": 928,
+        "frame_count": 32,
+        "amplitude": 0.9950621322971767,
+        "frequency_hz": 351.6019682661471,
+        "metadata": {
+          "mean_free_energy": 4.386732275538237,
+          "last_action": 0
+        }
+      },
+      {
+        "index": 30,
+        "frame_start": 960,
+        "frame_count": 32,
+        "amplitude": 0.9981193200502325,
+        "frequency_hz": 323.223749814459,
+        "metadata": {
+          "mean_free_energy": 3.440791660481966,
+          "last_action": 0
+        }
+      },
+      {
+        "index": 31,
+        "frame_start": 992,
+        "frame_count": 32,
+        "amplitude": 0.9969487856915842,
+        "frequency_hz": 340.5033818081911,
+        "metadata": {
+          "mean_free_energy": 3.01677939360637,
+          "last_action": 2
+        }
+      },
+      {
+        "index": 32,
+        "frame_start": 1024,
+        "frame_count": 32,
+        "amplitude": 0.9950621322971767,
+        "frequency_hz": 361.06582783333886,
+        "metadata": {
+          "mean_free_energy": 4.202194261111296,
+          "last_action": 1
+        }
+      },
+      {
+        "index": 33,
+        "frame_start": 1056,
+        "frame_count": 24,
+        "amplitude": 0.988047632431534,
+        "frequency_hz": 361.2528387287542,
+        "metadata": {
+          "mean_free_energy": 3.70842795762514,
+          "last_action": 2
+        }
+      }
+    ],
+    "telemetry_source_count": 18,
+    "telemetry_provenance": [
+      "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/12_execute_output/hierarchical_pomdp/jax/execution_logs/Hierarchical_Active_Inference_POMDP_jax.py_results.json",
+      "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/12_execute_output/hierarchical_pomdp/jax/simulation_data/simulation_results.json",
+      "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/12_execute_output/hierarchical_pomdp/pymdp/execution_logs/Hierarchical_Active_Inference_POMDP_pymdp.py_results.json",
+      "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/12_execute_output/hierarchical_pomdp/pymdp/simulation_data/simulation_results.json",
+      "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/12_execute_output/hierarchical_pomdp/rxinfer/execution_logs/Hierarchical_Active_Inference_POMDP_rxinfer.jl_results.json",
+      "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/12_execute_output/hierarchical_pomdp/rxinfer/simulation_data/simulation_results.json",
+      "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/12_execute_output/hierarchical_pomdp/jax/execution_logs/Hierarchical_Active_Inference_POMDP_jax.py_results.json",
+      "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/12_execute_output/hierarchical_pomdp/pymdp/execution_logs/Hierarchical_Active_Inference_POMDP_pymdp.py_results.json",
+      "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/12_execute_output/hierarchical_pomdp/rxinfer/execution_logs/Hierarchical_Active_Inference_POMDP_rxinfer.jl_results.json",
+      "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/12_execute_output/temporal_hierarchy/jax/execution_logs/Three-Level_Temporal_Hierarchy_Agent_jax.py_results.json",
+      "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/12_execute_output/temporal_hierarchy/pymdp/execution_logs/Three-Level_Temporal_Hierarchy_Agent_pymdp.py_results.json",
+      "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/12_execute_output/temporal_hierarchy/rxinfer/execution_logs/Three-Level_Temporal_Hierarchy_Agent_rxinfer.jl_results.json",
+      "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/12_execute_output/temporal_hierarchy/jax/execution_logs/Three-Level_Temporal_Hierarchy_Agent_jax.py_results.json",
+      "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/12_execute_output/temporal_hierarchy/jax/simulation_data/simulation_results.json",
+      "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/12_execute_output/temporal_hierarchy/pymdp/execution_logs/Three-Level_Temporal_Hierarchy_Agent_pymdp.py_results.json",
+      "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/12_execute_output/temporal_hierarchy/pymdp/simulation_data/simulation_results.json",
+      "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/12_execute_output/temporal_hierarchy/rxinfer/execution_logs/Three-Level_Temporal_Hierarchy_Agent_rxinfer.jl_results.json",
+      "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/12_execute_output/temporal_hierarchy/rxinfer/simulation_data/simulation_results.json"
+    ]
+  }
+}

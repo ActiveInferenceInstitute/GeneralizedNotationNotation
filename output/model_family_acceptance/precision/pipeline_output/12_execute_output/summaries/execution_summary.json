@@ -1,0 +1,371 @@
+{
+  "timestamp": "2026-09-06T11:29:19.355104",
+  "target_directory": "output/model_family_acceptance/precision/input",
+  "output_directory": "output/model_family_acceptance/precision/pipeline_output/12_execute_output",
+  "total_scripts_found": 2,
+  "successful_executions": 2,
+  "failed_executions": 0,
+  "skipped_executions": 0,
+  "execution_details": [
+    {
+      "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/precision/pipeline_output/11_render_output/curiosity_driven_agent/pymdp/Curiosity-Driven_Active_Inference_Agent_pymdp.py",
+      "script_name": "Curiosity-Driven_Active_Inference_Agent_pymdp.py",
+      "framework": "pymdp",
+      "model_name": "curiosity_driven_agent",
+      "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 17.486338,
+      "timestamp": "2026-09-06T11:29:19.402718",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 17.486338,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        17.486338
+      ],
+      "structured_result_file": "output/model_family_acceptance/precision/pipeline_output/12_execute_output/curiosity_driven_agent/pymdp/execution_logs/Curiosity-Driven_Active_Inference_Agent_pymdp.py_results.json",
+      "output_file": "output/model_family_acceptance/precision/pipeline_output/12_execute_output/curiosity_driven_agent/pymdp/execution_logs/Curiosity-Driven_Active_Inference_Agent_pymdp.py_execution.log",
+      "implementation_directory": "output/model_family_acceptance/precision/pipeline_output/12_execute_output/curiosity_driven_agent/pymdp",
+      "script_identity": {
+        "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/precision/pipeline_output/11_render_output/curiosity_driven_agent/pymdp/Curiosity-Driven_Active_Inference_Agent_pymdp.py",
+        "sha256": "0c8a39eaa94b50926e328351490f1802d71ce98f2cf7aa30ed314cf4d089f8c6"
+      },
+      "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/precision/input",
+      "stdout_length": 41,
+      "stderr_length": 4858,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/precision/pipeline_output/11_render_output/precision_weighted/pymdp/Precision-Weighted_Active_Inference_Agent_pymdp.py",
+      "script_name": "Precision-Weighted_Active_Inference_Agent_pymdp.py",
+      "framework": "pymdp",
+      "model_name": "precision_weighted",
+      "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 21.308435,
+      "timestamp": "2026-09-06T11:29:36.997133",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 21.308435,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        21.308435
+      ],
+      "structured_result_file": "output/model_family_acceptance/precision/pipeline_output/12_execute_output/precision_weighted/pymdp/execution_logs/Precision-Weighted_Active_Inference_Agent_pymdp.py_results.json",
+      "output_file": "output/model_family_acceptance/precision/pipeline_output/12_execute_output/precision_weighted/pymdp/execution_logs/Precision-Weighted_Active_Inference_Agent_pymdp.py_execution.log",
+      "implementation_directory": "output/model_family_acceptance/precision/pipeline_output/12_execute_output/precision_weighted/pymdp",
+      "script_identity": {
+        "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/precision/pipeline_output/11_render_output/precision_weighted/pymdp/Precision-Weighted_Active_Inference_Agent_pymdp.py",
+        "sha256": "6986bbc9c4ab0dc12f7b37d0fc30b5de260b77705b8bd43b3a616f1d75411807"
+      },
+      "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/precision/input",
+      "stdout_length": 41,
+      "stderr_length": 4515,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    }
+  ],
+  "framework_status": {
+    "pymdp": {
+      "executions": 2,
+      "successful": 2,
+      "failed": 0,
+      "skipped": 0,
+      "status": "success"
+    }
+  },
+  "execution_mode": "local",
+  "execution_workers": 1,
+  "backend": null,
+  "execution_benchmark_repeats": 1,
+  "execution_summary_detail": false,
+  "dispatch_max_retries": 0,
+  "success": true,
+  "status": "success",
+  "exit_code": 0,
+  "run_id": "d2291da538e84f6f9c2650a4d73cdb4e",
+  "configuration": {
+    "frameworks": [
+      "pymdp"
+    ],
+    "strict_requested_frameworks": true,
+    "options": {
+      "recursive": true,
+      "timeout": 300,
+      "render_output_dir": null,
+      "distributed": false,
+      "execution_workers": 1,
+      "backend": "ray",
+      "execution_benchmark_repeats": 1,
+      "execution_summary_detail": false
+    }
+  },
+  "input_identity": {
+    "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/precision/input",
+    "files": {
+      "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/precision/input/curiosity_driven_agent.md": "e40fac659079e9fdb197a52662a0cf64b35b4271771dbc611d1ad29de31afb5f",
+      "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/precision/input/precision_weighted.md": "627ff9009025a028020d26a8c2293f7c0997d1343278be4f0809376719451009"
+    }
+  },
+  "render_failures": [],
+  "missing_render_scripts": [],
+  "requested_frameworks": [
+    "pymdp"
+  ],
+  "total_scripts": 2,
+  "attempted_scripts": 2,
+  "success_rate": 100.0,
+  "outcome_reason": "all_scripts_succeeded",
+  "receipt_identity": {
+    "run_id": "d2291da538e84f6f9c2650a4d73cdb4e",
+    "config_sha256": "727b3bc903e5c99d2d5923e78dde1d5e049efe71295f92db91cd4acd573adbbf"
+  },
+  "invocation_receipts": {
+    "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/precision/input": {
+      "status": "success",
+      "success": true,
+      "exit_code": 0,
+      "outcome_reason": "all_scripts_succeeded",
+      "render_failures": [],
+      "missing_render_scripts": [],
+      "missing_render_summary": null,
+      "input_identity": {
+        "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/precision/input",
+        "files": {
+          "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/precision/input/curiosity_driven_agent.md": "e40fac659079e9fdb197a52662a0cf64b35b4271771dbc611d1ad29de31afb5f",
+          "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/precision/input/precision_weighted.md": "627ff9009025a028020d26a8c2293f7c0997d1343278be4f0809376719451009"
+        }
+      },
+      "execution_details": [
+        {
+          "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/precision/pipeline_output/11_render_output/curiosity_driven_agent/pymdp/Curiosity-Driven_Active_Inference_Agent_pymdp.py",
+          "script_name": "Curiosity-Driven_Active_Inference_Agent_pymdp.py",
+          "framework": "pymdp",
+          "model_name": "curiosity_driven_agent",
+          "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 17.486338,
+          "timestamp": "2026-09-06T11:29:19.402718",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 17.486338,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            17.486338
+          ],
+          "structured_result_file": "output/model_family_acceptance/precision/pipeline_output/12_execute_output/curiosity_driven_agent/pymdp/execution_logs/Curiosity-Driven_Active_Inference_Agent_pymdp.py_results.json",
+          "output_file": "output/model_family_acceptance/precision/pipeline_output/12_execute_output/curiosity_driven_agent/pymdp/execution_logs/Curiosity-Driven_Active_Inference_Agent_pymdp.py_execution.log",
+          "implementation_directory": "output/model_family_acceptance/precision/pipeline_output/12_execute_output/curiosity_driven_agent/pymdp",
+          "script_identity": {
+            "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/precision/pipeline_output/11_render_output/curiosity_driven_agent/pymdp/Curiosity-Driven_Active_Inference_Agent_pymdp.py",
+            "sha256": "0c8a39eaa94b50926e328351490f1802d71ce98f2cf7aa30ed314cf4d089f8c6"
+          },
+          "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/precision/input",
+          "stdout_length": 41,
+          "stderr_length": 4858,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 1
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        },
+        {
+          "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/precision/pipeline_output/11_render_output/precision_weighted/pymdp/Precision-Weighted_Active_Inference_Agent_pymdp.py",
+          "script_name": "Precision-Weighted_Active_Inference_Agent_pymdp.py",
+          "framework": "pymdp",
+          "model_name": "precision_weighted",
+          "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 21.308435,
+          "timestamp": "2026-09-06T11:29:36.997133",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 21.308435,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            21.308435
+          ],
+          "structured_result_file": "output/model_family_acceptance/precision/pipeline_output/12_execute_output/precision_weighted/pymdp/execution_logs/Precision-Weighted_Active_Inference_Agent_pymdp.py_results.json",
+          "output_file": "output/model_family_acceptance/precision/pipeline_output/12_execute_output/precision_weighted/pymdp/execution_logs/Precision-Weighted_Active_Inference_Agent_pymdp.py_execution.log",
+          "implementation_directory": "output/model_family_acceptance/precision/pipeline_output/12_execute_output/precision_weighted/pymdp",
+          "script_identity": {
+            "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/precision/pipeline_output/11_render_output/precision_weighted/pymdp/Precision-Weighted_Active_Inference_Agent_pymdp.py",
+            "sha256": "6986bbc9c4ab0dc12f7b37d0fc30b5de260b77705b8bd43b3a616f1d75411807"
+          },
+          "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/precision/input",
+          "stdout_length": 41,
+          "stderr_length": 4515,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 1
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        }
+      ]
+    }
+  },
+  "current_invocation": {
+    "status": "success",
+    "success": true,
+    "exit_code": 0,
+    "outcome_reason": "all_scripts_succeeded",
+    "render_failures": [],
+    "missing_render_scripts": [],
+    "missing_render_summary": null,
+    "input_identity": {
+      "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/precision/input",
+      "files": {
+        "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/precision/input/curiosity_driven_agent.md": "e40fac659079e9fdb197a52662a0cf64b35b4271771dbc611d1ad29de31afb5f",
+        "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/precision/input/precision_weighted.md": "627ff9009025a028020d26a8c2293f7c0997d1343278be4f0809376719451009"
+      }
+    },
+    "execution_details": [
+      {
+        "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/precision/pipeline_output/11_render_output/curiosity_driven_agent/pymdp/Curiosity-Driven_Active_Inference_Agent_pymdp.py",
+        "script_name": "Curiosity-Driven_Active_Inference_Agent_pymdp.py",
+        "framework": "pymdp",
+        "model_name": "curiosity_driven_agent",
+        "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 17.486338,
+        "timestamp": "2026-09-06T11:29:19.402718",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 17.486338,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          17.486338
+        ],
+        "structured_result_file": "output/model_family_acceptance/precision/pipeline_output/12_execute_output/curiosity_driven_agent/pymdp/execution_logs/Curiosity-Driven_Active_Inference_Agent_pymdp.py_results.json",
+        "output_file": "output/model_family_acceptance/precision/pipeline_output/12_execute_output/curiosity_driven_agent/pymdp/execution_logs/Curiosity-Driven_Active_Inference_Agent_pymdp.py_execution.log",
+        "implementation_directory": "output/model_family_acceptance/precision/pipeline_output/12_execute_output/curiosity_driven_agent/pymdp",
+        "script_identity": {
+          "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/precision/pipeline_output/11_render_output/curiosity_driven_agent/pymdp/Curiosity-Driven_Active_Inference_Agent_pymdp.py",
+          "sha256": "0c8a39eaa94b50926e328351490f1802d71ce98f2cf7aa30ed314cf4d089f8c6"
+        },
+        "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/precision/input",
+        "stdout_length": 41,
+        "stderr_length": 4858,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 1
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      },
+      {
+        "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/precision/pipeline_output/11_render_output/precision_weighted/pymdp/Precision-Weighted_Active_Inference_Agent_pymdp.py",
+        "script_name": "Precision-Weighted_Active_Inference_Agent_pymdp.py",
+        "framework": "pymdp",
+        "model_name": "precision_weighted",
+        "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 21.308435,
+        "timestamp": "2026-09-06T11:29:36.997133",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 21.308435,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          21.308435
+        ],
+        "structured_result_file": "output/model_family_acceptance/precision/pipeline_output/12_execute_output/precision_weighted/pymdp/execution_logs/Precision-Weighted_Active_Inference_Agent_pymdp.py_results.json",
+        "output_file": "output/model_family_acceptance/precision/pipeline_output/12_execute_output/precision_weighted/pymdp/execution_logs/Precision-Weighted_Active_Inference_Agent_pymdp.py_execution.log",
+        "implementation_directory": "output/model_family_acceptance/precision/pipeline_output/12_execute_output/precision_weighted/pymdp",
+        "script_identity": {
+          "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/precision/pipeline_output/11_render_output/precision_weighted/pymdp/Precision-Weighted_Active_Inference_Agent_pymdp.py",
+          "sha256": "6986bbc9c4ab0dc12f7b37d0fc30b5de260b77705b8bd43b3a616f1d75411807"
+        },
+        "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/precision/input",
+        "stdout_length": 41,
+        "stderr_length": 4515,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 1
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      }
+    ],
+    "target_directory": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/precision/input"
+  },
+  "merged_prior_folder_runs": 0,
+  "execution_summary_format": "slim_v1"
+}

@@ -1,6 +1,6 @@
 # Artifacts and Evidence {#sec:artifacts_evidence}
 
-This section reports what the project has actually produced and how each quantitative claim is grounded. Every number below is substituted at render time from the deterministic producer, which reads the repository state at commit 05689d7ad, so each figure here is regenerated from the artifacts it describes rather than transcribed.
+This section reports what the project has actually produced and how each quantitative claim is grounded. Every number below is substituted at render time from the deterministic producer, which reads the repository state at commit 0a0f0ac92, so each figure here is regenerated from the artifacts it describes rather than transcribed.
 
 ## Model-Family Coverage
 
@@ -37,11 +37,11 @@ Both gates are stated here as commands you can run, not as asserted pass counts.
 
 ## Repository Scale
 
-The repository's scale is itself evidence of the surface that the gates and pipeline cover, and it is reported in @fig:repo_metrics directly from the tracked files at commit 05689d7ad.
+The repository's scale is itself evidence of the surface that the gates and pipeline cover, and it is reported in @fig:repo_metrics directly from the tracked files at commit 0a0f0ac92.
 
 ![Repository-scale metrics — source packages, test files, and tool surface — measured from the tracked files at the commit the producer stamps.](../output/figures/gnn_repo_metrics.png){#fig:repo_metrics width=80%}
 
-The test suite comprises 369 test files containing 4144 test functions, exercising a source base of 582 Python files across 31 packages (194808 lines of source). The Model Context Protocol surface — which exposes GNN's capabilities to external agents and tools — provides 141 tools across 32 modules. The pipeline itself runs as 25 steps (0–24), and 105 figure artifacts from the rendering of figures, models, and reports are committed under `output/`, of which 6 are the manuscript's own.
+The test suite comprises 369 test files containing 4144 test functions, exercising a source base of 582 Python files across 31 packages (194817 lines of source). The Model Context Protocol surface — which exposes GNN's capabilities to external agents and tools — provides 141 tools across 32 modules. The pipeline itself runs as 25 steps (0–24), and 105 figure artifacts from the rendering of figures, models, and reports are committed under `output/`, of which 6 are the manuscript's own.
 
 ## Claim Discipline
 

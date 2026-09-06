@@ -1,0 +1,542 @@
+{
+  "schema": "gnn_model_family_interpretability_v1",
+  "family": "discrete",
+  "target_dir": "output/cross_framework/discrete/acceptance/discrete/input",
+  "model_count": 2,
+  "models": [
+    {
+      "model_name": "Active Inference POMDP Agent",
+      "source_file": "output/cross_framework/discrete/acceptance/discrete/input/actinf_pomdp_agent.md",
+      "variables": [
+        {
+          "name": "A",
+          "dimensions": [
+            "3",
+            "3"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "B",
+          "dimensions": [
+            "3",
+            "3",
+            "3"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "C",
+          "dimensions": [
+            "3"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "D",
+          "dimensions": [
+            "3"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "E",
+          "dimensions": [
+            "3"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "s",
+          "dimensions": [
+            "3",
+            "1"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "s_prime",
+          "dimensions": [
+            "3",
+            "1"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "F",
+          "dimensions": [
+            "\u03c0"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "o",
+          "dimensions": [
+            "3",
+            "1"
+          ],
+          "dtype": "int"
+        },
+        {
+          "name": "\u03c0",
+          "dimensions": [
+            "3"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "u",
+          "dimensions": [
+            "1"
+          ],
+          "dtype": "int"
+        },
+        {
+          "name": "G",
+          "dimensions": [
+            "\u03c0"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "t",
+          "dimensions": [
+            "1"
+          ],
+          "dtype": "int"
+        }
+      ],
+      "variable_count": 13,
+      "connections": [
+        {
+          "source": "D",
+          "target": "s",
+          "directed": true,
+          "label": null
+        },
+        {
+          "source": "s",
+          "target": "A",
+          "directed": false,
+          "label": null
+        },
+        {
+          "source": "s",
+          "target": "s_prime",
+          "directed": true,
+          "label": null
+        },
+        {
+          "source": "A",
+          "target": "o",
+          "directed": false,
+          "label": null
+        },
+        {
+          "source": "s",
+          "target": "B",
+          "directed": false,
+          "label": null
+        },
+        {
+          "source": "C",
+          "target": "G",
+          "directed": true,
+          "label": null
+        },
+        {
+          "source": "E",
+          "target": "\u03c0",
+          "directed": true,
+          "label": null
+        },
+        {
+          "source": "G",
+          "target": "\u03c0",
+          "directed": true,
+          "label": null
+        },
+        {
+          "source": "\u03c0",
+          "target": "u",
+          "directed": true,
+          "label": null
+        },
+        {
+          "source": "B",
+          "target": "u",
+          "directed": true,
+          "label": null
+        },
+        {
+          "source": "u",
+          "target": "s_prime",
+          "directed": true,
+          "label": null
+        }
+      ],
+      "connection_count": 11,
+      "matrix_shapes": {
+        "A": [
+          3,
+          3
+        ],
+        "B": [
+          3,
+          3,
+          3
+        ],
+        "C": [
+          3
+        ],
+        "D": [
+          3
+        ],
+        "E": [
+          3
+        ]
+      },
+      "validation_messages": [],
+      "pipeline_evidence": {
+        "pipeline_summary_available": true,
+        "render_status": "passed",
+        "execution_status": "passed",
+        "render_summary_available": true,
+        "execution_summary_available": true,
+        "skip_or_failure_reason": null
+      },
+      "telemetry_present": true,
+      "telemetry_preview": {
+        "expected_free_energy": [
+          [
+            0.39597561955451965,
+            0.39597561955451965,
+            0.39597561955451965
+          ],
+          [
+            0.6751062273979187,
+            0.6751062273979187,
+            1.02659273147583
+          ],
+          [
+            0.30419912934303284,
+            0.3041991591453552,
+            0.26628369092941284
+          ],
+          [
+            0.15525978803634644,
+            0.15525981783866882,
+            0.9154220819473267
+          ],
+          [
+            0.9103058576583862,
+            0.9103058576583862,
+            0.1455753892660141
+          ]
+        ],
+        "observations": [
+          1,
+          0,
+          1,
+          0,
+          2
+        ],
+        "actions": [
+          0,
+          2,
+          1,
+          2,
+          0
+        ]
+      },
+      "artifact_links": [
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/11_render_output/actinf_pomdp_agent/processing_summary.json",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/11_render_output/actinf_pomdp_agent/pymdp/Active_Inference_POMDP_Agent_pymdp.py",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/11_render_output/actinf_pomdp_agent/pymdp/README.md",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Active Inference POMDP Agent/simulation_results.json",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/12_execute_output/actinf_pomdp_agent/pymdp/execution_logs/Active_Inference_POMDP_Agent_pymdp.py_execution.log",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/12_execute_output/actinf_pomdp_agent/pymdp/execution_logs/Active_Inference_POMDP_Agent_pymdp.py_results.json",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/12_execute_output/actinf_pomdp_agent/pymdp/simulation_data/simulation_results.json",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/15_audio_output/actinf_pomdp_agent_ambient.wav",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/15_audio_output/actinf_pomdp_agent_rhythmic.wav",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/15_audio_output/actinf_pomdp_agent_sonification.wav",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/15_audio_output/actinf_pomdp_agent_tonal.wav",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/16_analysis_output/cross_framework/actinf_pomdp_agent_post_simulation_analysis.json",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/16_analysis_output/pymdp/actinf_pomdp_agent_pymdp_action_frequencies.png",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/16_analysis_output/pymdp/actinf_pomdp_agent_pymdp_belief_convergence.png",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/16_analysis_output/pymdp/actinf_pomdp_agent_pymdp_belief_trace.png",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/16_analysis_output/pymdp/actinf_pomdp_agent_pymdp_free_energy.png",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/16_analysis_output/pymdp/actinf_pomdp_agent_pymdp_observations.png",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/16_analysis_output/pymdp/actinf_pomdp_agent_pymdp_vfe_vs_efe.png",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_agda.agda",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_alloy.als",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_asn1.asn1",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_bnf.bnf",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_coq.v",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_ebnf.ebnf",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_haskell.hs"
+      ]
+    },
+    {
+      "model_name": "Simple MDP Agent",
+      "source_file": "output/cross_framework/discrete/acceptance/discrete/input/simple_mdp.md",
+      "variables": [
+        {
+          "name": "A",
+          "dimensions": [
+            "4",
+            "4"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "B",
+          "dimensions": [
+            "4",
+            "4",
+            "4"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "C",
+          "dimensions": [
+            "4"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "D",
+          "dimensions": [
+            "4"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "s",
+          "dimensions": [
+            "4",
+            "1"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "s_prime",
+          "dimensions": [
+            "4",
+            "1"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "o",
+          "dimensions": [
+            "4",
+            "1"
+          ],
+          "dtype": "int"
+        },
+        {
+          "name": "\u03c0",
+          "dimensions": [
+            "4"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "u",
+          "dimensions": [
+            "1"
+          ],
+          "dtype": "int"
+        },
+        {
+          "name": "G",
+          "dimensions": [
+            "\u03c0"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "t",
+          "dimensions": [
+            "1"
+          ],
+          "dtype": "int"
+        }
+      ],
+      "variable_count": 11,
+      "connections": [
+        {
+          "source": "D",
+          "target": "s",
+          "directed": true,
+          "label": null
+        },
+        {
+          "source": "s",
+          "target": "A",
+          "directed": false,
+          "label": null
+        },
+        {
+          "source": "s",
+          "target": "s_prime",
+          "directed": true,
+          "label": null
+        },
+        {
+          "source": "A",
+          "target": "o",
+          "directed": false,
+          "label": null
+        },
+        {
+          "source": "s",
+          "target": "B",
+          "directed": false,
+          "label": null
+        },
+        {
+          "source": "C",
+          "target": "G",
+          "directed": true,
+          "label": null
+        },
+        {
+          "source": "G",
+          "target": "\u03c0",
+          "directed": true,
+          "label": null
+        },
+        {
+          "source": "\u03c0",
+          "target": "u",
+          "directed": true,
+          "label": null
+        },
+        {
+          "source": "B",
+          "target": "u",
+          "directed": true,
+          "label": null
+        },
+        {
+          "source": "u",
+          "target": "s_prime",
+          "directed": true,
+          "label": null
+        }
+      ],
+      "connection_count": 10,
+      "matrix_shapes": {
+        "A": [
+          4,
+          4
+        ],
+        "B": [
+          4,
+          4,
+          4
+        ],
+        "C": [
+          4
+        ],
+        "D": [
+          4
+        ]
+      },
+      "validation_messages": [],
+      "pipeline_evidence": {
+        "pipeline_summary_available": true,
+        "render_status": "passed",
+        "execution_status": "passed",
+        "render_summary_available": true,
+        "execution_summary_available": true,
+        "skip_or_failure_reason": null
+      },
+      "telemetry_present": true,
+      "telemetry_preview": {
+        "expected_free_energy": [
+          [
+            0.6250829696655273,
+            3.02508282661438,
+            0.3250829875469208,
+            0.3250829875469208
+          ],
+          [
+            0.6250829696655273,
+            3.02508282661438,
+            0.3250829875469208,
+            0.3250829875469208
+          ],
+          [
+            3.02508282661438,
+            0.6250829696655273,
+            0.3250829875469208,
+            0.3250829875469208
+          ],
+          [
+            3.02508282661438,
+            0.6250829696655273,
+            0.3250829875469208,
+            0.3250829875469208
+          ],
+          [
+            3.02508282661438,
+            0.6250829696655273,
+            0.3250829875469208,
+            0.3250829875469208
+          ]
+        ],
+        "observations": [
+          2,
+          2,
+          3,
+          3,
+          3
+        ],
+        "actions": [
+          1,
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      "artifact_links": [
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/11_render_output/simple_mdp/processing_summary.json",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/11_render_output/simple_mdp/pymdp/README.md",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/11_render_output/simple_mdp/pymdp/Simple_MDP_Agent_pymdp.py",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/11_render_output/simple_mdp/pymdp/output/pymdp_simulations/Simple MDP Agent/simulation_results.json",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/12_execute_output/simple_mdp/pymdp/execution_logs/Simple_MDP_Agent_pymdp.py_execution.log",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/12_execute_output/simple_mdp/pymdp/execution_logs/Simple_MDP_Agent_pymdp.py_results.json",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/12_execute_output/simple_mdp/pymdp/simulation_data/simulation_results.json",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/15_audio_output/simple_mdp_ambient.wav",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/15_audio_output/simple_mdp_rhythmic.wav",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/15_audio_output/simple_mdp_sonification.wav",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/15_audio_output/simple_mdp_tonal.wav",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/16_analysis_output/cross_framework/simple_mdp_post_simulation_analysis.json",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/16_analysis_output/pymdp/Simple_MDP_Agent/belief_evolution_1.png",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/16_analysis_output/pymdp/Simple_MDP_Agent/cumulative_preference.png",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/16_analysis_output/pymdp/Simple_MDP_Agent/discrete_states_0.png",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/16_analysis_output/pymdp/Simple_MDP_Agent/energy_dynamics_3.png",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/16_analysis_output/pymdp/Simple_MDP_Agent/performance_2.png",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/16_analysis_output/pymdp/simple_mdp_pymdp_action_frequencies.png",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/16_analysis_output/pymdp/simple_mdp_pymdp_belief_convergence.png",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/16_analysis_output/pymdp/simple_mdp_pymdp_belief_trace.png",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/16_analysis_output/pymdp/simple_mdp_pymdp_free_energy.png",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/16_analysis_output/pymdp/simple_mdp_pymdp_observations.png",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/16_analysis_output/pymdp/simple_mdp_pymdp_vfe_vs_efe.png",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/simple_mdp/simple_mdp_agda.agda",
+        "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/simple_mdp/simple_mdp_alloy.als"
+      ]
+    }
+  ],
+  "totals": {
+    "variables": 24,
+    "connections": 21,
+    "validation_messages": 0,
+    "models_with_telemetry": 2
+  }
+}

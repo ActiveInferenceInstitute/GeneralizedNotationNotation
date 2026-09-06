@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999998 (TeX Live 2026) (preloaded format=xelatex 2026.3.1)  6 SEP 2026 08:17
+This is XeTeX, Version 3.141592653-2.6-0.999998 (TeX Live 2026) (preloaded format=xelatex 2026.3.1)  6 SEP 2026 15:03
 entering extended mode
  %&-line parsing enabled.
 **_combined_manuscript.tex
@@ -1269,13 +1269,13 @@ File: ../figures/gnn_repo_metrics.png Graphic file (type bmp)
 <../figures/gnn_repo_metrics.png>
  [16] [17]
 [18]
-Underfull \hbox (badness 1019) in paragraph at lines 1207--1213
+Underfull \hbox (badness 1019) in paragraph at lines 1209--1215
 \TU/lmr/m/n/10 the repository state at the commit recorded in \TU/lmtt/m/n/10 o
 utput/data/manuscript_variables.json
  []
 
 
-Underfull \hbox (badness 3657) in paragraph at lines 1222--1226
+Underfull \hbox (badness 3657) in paragraph at lines 1224--1228
 []\TU/lmr/m/n/10 Keep generated outputs under \TU/lmtt/m/n/10 output/ \TU/lmr/m
 /n/10 and maintained manuscript source under
  []
@@ -1284,7 +1284,7 @@ Underfull \hbox (badness 3657) in paragraph at lines 1222--1226
 ignored: Infinite glue shrinkage found in box being split [24]
 ignored: In
 finite glue shrinkage found in box being split [25]
-Underfull \hbox (badness 1852) in paragraph at lines 1601--1615
+Underfull \hbox (badness 1852) in paragraph at lines 1603--1617
 \TU/lmtt/m/n/10 elihoodMatrix\TU/lmr/m/n/10 , \TU/lmtt/m/n/10 B=TransitionMatri
 x\TU/lmr/m/n/10 , \TU/lmtt/m/n/10 C=LogPreferenceVector\TU/lmr/m/n/10 , \TU/lmt
 t/m/n/10 D=PriorOverHiddenStates\TU/lmr/m/n/10 ,

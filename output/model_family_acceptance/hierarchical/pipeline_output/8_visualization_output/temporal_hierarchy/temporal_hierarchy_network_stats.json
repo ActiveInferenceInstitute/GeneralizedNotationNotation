@@ -1,0 +1,50 @@
+{
+  "total_variables": 31,
+  "total_connections": 26,
+  "variable_types": {
+    "action": 6,
+    "hidden_state": 19,
+    "observation": 3,
+    "policy": 3
+  },
+  "connection_types": {
+    "D_level0->s_level0": 1,
+    "s_level0->A_level0": 1,
+    "A_level0->o_level0": 1,
+    "C_level0->G0": 1,
+    "G0->pi0": 1,
+    "pi0->u_level0": 1,
+    "B_level0->u_level0": 1,
+    "D_level1->s_level1": 1,
+    "s_level1->A_level1": 1,
+    "A_level1->o_level1": 1,
+    "C_level1->G1": 1,
+    "G1->pi1": 1,
+    "pi1->u_level1": 1,
+    "B_level1->u_level1": 1,
+    "D_level2->s_level2": 1,
+    "s_level2->A_level2": 1,
+    "A_level2->o_level2": 1,
+    "C_level2->G2": 1,
+    "G2->pi2": 1,
+    "pi2->u_level2": 1,
+    "B_level2->u_level2": 1,
+    "s_level2->C_level1": 1,
+    "s_level1->C_level0": 1,
+    "s_level2->D_level1": 1,
+    "s_level0->o_level1": 1,
+    "s_level1->o_level2": 1
+  },
+  "gnn_edge_orientation": {
+    "directed_variable_pairs": 20,
+    "undirected_variable_pairs": 6
+  },
+  "network_properties": {
+    "num_nodes": 27,
+    "num_edges": 26,
+    "density": 0.037037037037037035,
+    "is_strongly_connected": false,
+    "is_weakly_connected": false,
+    "average_clustering": 0.0
+  }
+}

@@ -1,0 +1,72 @@
+# GNN Script Execution Report
+
+**Generated:** 2026-09-06T11:59:08.276921
+**Target Directory:** output/cross_framework/hierarchical/acceptance/hierarchical/input
+**Output Directory:** output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/12_execute_output
+
+## Summary
+
+- **Total Scripts Found:** 6
+- **Successful Executions:** 6
+- **Failed Executions:** 0
+
+## Execution Details
+
+### Hierarchical_Active_Inference_POMDP_jax.py - ✅ SUCCESS
+
+- **Framework:** jax
+- **Executor:** /private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python
+- **Path:** `/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/11_render_output/hierarchical_pomdp/jax/Hierarchical_Active_Inference_POMDP_jax.py`
+- **Return Code:** 0
+- **Execution Time:** 4.62 seconds
+- **Detailed Output:** output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/12_execute_output/hierarchical_pomdp/jax/execution_logs/Hierarchical_Active_Inference_POMDP_jax.py_execution.log
+
+### Hierarchical_Active_Inference_POMDP_pymdp.py - ✅ SUCCESS
+
+- **Framework:** pymdp
+- **Executor:** /private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python
+- **Path:** `/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/11_render_output/hierarchical_pomdp/pymdp/Hierarchical_Active_Inference_POMDP_pymdp.py`
+- **Return Code:** 0
+- **Execution Time:** 12.90 seconds
+- **Detailed Output:** output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/12_execute_output/hierarchical_pomdp/pymdp/execution_logs/Hierarchical_Active_Inference_POMDP_pymdp.py_execution.log
+
+### Hierarchical_Active_Inference_POMDP_rxinfer.jl - ✅ SUCCESS
+
+- **Framework:** rxinfer
+- **Executor:** julia
+- **Path:** `/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/11_render_output/hierarchical_pomdp/rxinfer/Hierarchical_Active_Inference_POMDP_rxinfer.jl`
+- **Return Code:** 0
+- **Execution Time:** 44.17 seconds
+- **Detailed Output:** output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/12_execute_output/hierarchical_pomdp/rxinfer/execution_logs/Hierarchical_Active_Inference_POMDP_rxinfer.jl_execution.log
+
+### Three-Level_Temporal_Hierarchy_Agent_jax.py - ✅ SUCCESS
+
+- **Framework:** jax
+- **Executor:** /private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python
+- **Path:** `/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/11_render_output/temporal_hierarchy/jax/Three-Level_Temporal_Hierarchy_Agent_jax.py`
+- **Return Code:** 0
+- **Execution Time:** 6.27 seconds
+- **Detailed Output:** output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/12_execute_output/temporal_hierarchy/jax/execution_logs/Three-Level_Temporal_Hierarchy_Agent_jax.py_execution.log
+
+### Three-Level_Temporal_Hierarchy_Agent_pymdp.py - ✅ SUCCESS
+
+- **Framework:** pymdp
+- **Executor:** /private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python
+- **Path:** `/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/11_render_output/temporal_hierarchy/pymdp/Three-Level_Temporal_Hierarchy_Agent_pymdp.py`
+- **Return Code:** 0
+- **Execution Time:** 42.37 seconds
+- **Detailed Output:** output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/12_execute_output/temporal_hierarchy/pymdp/execution_logs/Three-Level_Temporal_Hierarchy_Agent_pymdp.py_execution.log
+
+### Three-Level_Temporal_Hierarchy_Agent_rxinfer.jl - ✅ SUCCESS
+
+- **Framework:** rxinfer
+- **Executor:** julia
+- **Path:** `/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/11_render_output/temporal_hierarchy/rxinfer/Three-Level_Temporal_Hierarchy_Agent_rxinfer.jl`
+- **Return Code:** 0
+- **Execution Time:** 45.67 seconds
+- **Detailed Output:** output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/12_execute_output/temporal_hierarchy/rxinfer/execution_logs/Three-Level_Temporal_Hierarchy_Agent_rxinfer.jl_execution.log
+
+## Next Steps
+
+All scripts executed successfully! Check individual output files for results.
+
