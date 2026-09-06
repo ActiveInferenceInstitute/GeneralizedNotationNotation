@@ -18,7 +18,8 @@ GNN's reproducibility guarantees rest on a small set of strict, deterministic ga
 
 ```bash
 uv run python scripts/run_model_family_acceptance.py \
-  --manifest input/model_family_manifest.json --strict
+  --manifest input/model_family_manifest.json \
+  --output-dir output/model_family_acceptance --strict
 ```
 
 The semantic-fidelity gate verifies that a parse → serialize → parse round trip preserves variables, edges, dimensions, parameter shapes, equations, time semantics, and ontology mappings across the {{GNN_FAMILY_COUNT}} model families; the cross-framework gate profiles the {{GNN_MAINTAINED_FRAMEWORK_COUNT}} maintained backends ({{GNN_MAINTAINED_FRAMEWORK_LIST}}) — refusing any framework outside that set — and records explicit compatible and unsupported statuses rather than silently degrading. Both write their ledgers to an output directory of your choosing:

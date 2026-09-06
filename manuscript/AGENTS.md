@@ -81,6 +81,25 @@ covering every family). `src/tests/test_manuscript_path_claims.py` pins both the
 generated sentences and the gate rule, and its two live-repository tests fail on
 the pre-fix prose.
 
+## Commands are claims too, and "it exists" is not the claim
+
+§6 promises it "lists only commands that exist in the repository, so that a
+reader with a clean checkout can reproduce the pipeline". It shipped
+`scripts/run_model_family_acceptance.py --manifest ... --strict`, which exits 2:
+`--output-dir` is `required=True`. The file existed, so nothing complained —
+"exists" had quietly come to mean "the path is there" rather than "the
+invocation runs".
+
+`src/tests/test_manuscript_published_commands.py` reads every command out of the
+manuscript's `bash` blocks and checks it against the script's own `argparse`
+declarations: every flag passed must be declared, and every `required=True`
+option must be passed. It is static — it proves the repository would accept the
+arguments, not that the command succeeds — so a published command still has to
+be run before it is called verified. One command is exempt by name, the
+template's `stage_03_render.py`, because §6.3 says in prose that it runs from a
+separate checkout; a test pins that sentence so the exemption cannot outlive it.
+
+
 ## Known benign LaTeX diagnostics
 
 `output/pdf/_combined_manuscript.log` carries
