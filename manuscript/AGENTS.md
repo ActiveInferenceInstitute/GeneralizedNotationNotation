@@ -65,13 +65,100 @@ the pre-fix prose.
 ## Known benign LaTeX diagnostics
 
 `output/pdf/_combined_manuscript.log` carries
-`Infinite glue shrinkage found in box being split` warnings — count them with
-`grep -c 'Infinite glue' output/pdf/_combined_manuscript.log`, and expect the
-number to move when pagination does.
+`Infinite glue shrinkage found in box being split` warnings. **This is settled,
+not open.** Do not re-open it; the experiments below are the reason.
 
-**They cannot affect the shipped page, and this is checkable rather than
-inferred.** The `\vsplit` that emits them is `longtable.sty:212`, inside
-`\LT@start`:
+### Count them like this, not with a bare grep
+
+```bash
+tr -d '\n' < output/pdf/_combined_manuscript.log \
+  | grep -o 'Infinite glue shrinkage found in box being split' | wc -l
+```
+
+TeX breaks its own log lines, and it will split this message mid-word. The log
+this note was written against contains, verbatim (lines 1284-1286):
+
+```
+ignored: Infinite glue shrinkage found in box being split [24]
+ignored: In
+finite glue shrinkage found in box being split [25]
+```
+
+so `grep -c 'Infinite glue'` reported **3** against a true count of **4**, and
+the earlier version of this note prescribed exactly that under-counting probe.
+Treat every log probe this way: join the lines before matching.
+`src/tests/test_manuscript_latex_log.py` pins the split line verbatim and the
+counting that survives it.
+
+### One per wide table — not one per page break
+
+The old note (and the audit that raised this) said "one at every longtable page
+break". That is false; the folios coincided. Dropping each `longtable` from
+`_combined_manuscript.tex` in turn and re-rendering gives:
+
+| dropped table | column spec | occurrences |
+|---|---|---|
+| — (baseline) | — | 4 |
+| `tbl:pipeline_steps` | `p{...}` ×3 | 3 |
+| `tbl:backend_registry` | `lll` | **4** |
+| `tbl:model_families` | `p{...}` ×3 | 3 |
+| `tbl:gnn_constructs` | `p{...}` ×2 | 3 |
+| `tbl:actinf_symbols` | `p{...}` ×2 | 3 |
+
+In this document each of the four paragraph-column tables owns exactly one
+message, and the one `lll` table owns none. The *bound* is structural rather
+than a tally: `\LT@start` (`longtable.sty:196`) does `\let\LT@start\endgraf`
+on its first call, so its `\vsplit` runs once per `longtable` and one table can
+contribute at most one message. `src/tests/test_manuscript_latex_log.py`
+asserts that bound against the shipped log, so a fifth message would fail the
+suite instead of being re-discovered by the next audit.
+
+### The emitter is proven, not inferred
+
+`\endlongtable` was wrapped in `\message` markers and the document re-rendered:
+
+```latex
+\makeatletter
+\let\GNNorigendlongtable\endlongtable
+\def\endlongtable{\message{^^JPROBE-BEGIN^^J}\GNNorigendlongtable\message{^^JPROBE-END^^J}}
+\makeatother
+```
+
+Every occurrence lands strictly between a `PROBE-BEGIN` and its `PROBE-END`.
+`\vsplit` appears exactly once in `longtable.sty` (line 212), inside
+`\LT@start`, which `\endlongtable` calls — so that is the emitter.
+`latex.ltx`'s `\@doclearpage` (line 20594) holds the only other `\vsplit`
+reachable here; it was hooked in the same run, fires once at `\end{document}`,
+and emits nothing between its markers.
+
+### The cause is the `p{...}` column, and nothing above it
+
+Reduced to one table in a document that reproduces exactly one occurrence, then
+changed one thing at a time:
+
+| variant | occurrences |
+|---|---|
+| as Pandoc emits it | 1 |
+| `>{\raggedright\arraybackslash}p{...}` → `lll` | **0** |
+| `minipage[b]{\linewidth}\raggedright` headers removed | 1 |
+| `\raggedright\arraybackslash` dropped, plain `p{...}` kept | 1 |
+| `\caption` removed | 1 |
+
+Only the column type matters. The `minipage` headers — the cause the first
+version of this note asserted — are irrelevant, and so are `\raggedright` and
+the caption. It is also position-sensitive: the same table in a short document
+emits 0, 1 or 0 as filler pushes it down the page, so this is not a property of
+the table alone and cannot be fixed by editing the table.
+
+Pandoc emits `p{...}` for any table whose cells wrap. The only manuscript-level
+change that removes the message is making every table narrow enough for `l`
+columns, which would destroy the content of `tbl:gnn_constructs`,
+`tbl:actinf_symbols`, `tbl:model_families` and `tbl:pipeline_steps`. **There is
+no fix, and there is nothing to fix.**
+
+### Why the message cannot affect the shipped page
+
+The `\vsplit` at `longtable.sty:212` splits a *copy*:
 
 ```latex
 \setbox\tw@\copy\z@                          % 211: a COPY of the chunk box
@@ -83,34 +170,37 @@ inferred.** The `\vsplit` that emits them is `longtable.sty:212`, inside
 `grep -n 'tw@' $(kpsewhich longtable.sty)` confirms box `\tw@` is never `\box`ed
 or `\unvbox`ed onto the page in that macro: it is measured and dropped. The
 measurement feeds one decision — whether the table's first row fits in the space
-left on the current page, or whether to `\vfil\break` first. So the split box is
-a throwaway probe, the warning is TeX describing that probe, and the typeset
-output is not the box that was split. The corroborating evidence agrees:
-`grep -c Overfull output/pdf/_combined_manuscript.log` is 0, and every data row of
-`tbl:gnn_constructs` and `tbl:actinf_symbols` is present in the rendered PDF.
+left on the current page, or whether to `\vfil\break` first. The typeset output
+is not the box that was split. Corroborating: `Overfull` count is 0, and every
+data row of `tbl:gnn_constructs` and `tbl:actinf_symbols` is present in the
+rendered PDF.
 
-This also explains why the remediation the audit prescribed could not have
-worked, for a sharper reason than the one first recorded here. Two candidates
-were tested against a full render on 2026-09-05 and both are kept on record as
-**not** working, so they are not retried:
+### Two remedies that were tested and do not work
 
-1. `\setlength{\LTpre}{0pt}\setlength{\LTpost}{0pt}` — no change, same folios.
+Kept on record so they are not retried. Measured again in the one-table rig
+above, whose baseline is 1 occurrence, 0 underfull, 0 overfull:
+
+| applied | occurrences | underfull |
+|---|---|---|
+| baseline | 1 | 0 |
+| `\setlength{\LTpre}{0pt}\setlength{\LTpost}{0pt}` | 1 | 0 |
+| `\setlength{\@flushglue}{0pt plus 2em}` | 1 | 15 |
+
+1. `\LTpre`/`\LTpost` is the audit's own prescription and it changes nothing.
    `\LTpre` is applied at `longtable.sty:198` (`\vskip\LTpre`), *before and
-   outside* the box whose copy line 212 splits. It is not in the split box at
-   all, so its value is irrelevant; that it also happens to default to the
-   finite `\bigskipamount` is a second, weaker reason.
-2. `\setlength{\@flushglue}{0pt plus 2em}` (finite ragged glue, testing whether
-   the `\raggedright` minipage column headers Pandoc emits are the source) —
-   strictly worse: the warnings remained *and* 144 Underfull/Overfull boxes
-   appeared. `\@flushglue` is horizontal (`\rightskip`); the reported shrinkage
-   is vertical, so this was aimed at the wrong axis.
+   outside* the box whose copy line 212 splits, so its value is irrelevant.
+2. `\@flushglue` is strictly worse — the warning survives and loose lines
+   appear (15 here; a full render on 2026-09-05 produced 144). `\@flushglue`
+   is horizontal (`\rightskip`); the reported shrinkage is vertical.
 
-The vertical infinite-shrink glue inside the chunk box has not been isolated to a
-specific emitter, and the earlier claim here that Pandoc's header construction
-emits it was never verified — treat it as an open question, not a finding.
-Silencing the message would mean changing glue inside rows that render correctly,
-for no reader-visible gain, so this stays deferred. Do not suppress the message by
-dropping a table.
+### What is still not known, and why it does not matter
+
+The specific glue node has not been named: dumping the chunk box with
+`\showbox\z@` immediately before `\LT@start` shows only row `\hbox`es and
+`\glue(\lineskip) 0.0` at top level, with no infinite shrink. That is a question
+about TeX's `vpack` internals, not about this manuscript — the bound, the
+emitter, the cause and the harmlessness are all established without it. Do not
+spend another pass on it, and do not suppress the message by dropping a table.
 
 ### Underfull hboxes are the price of readable identifiers
 
