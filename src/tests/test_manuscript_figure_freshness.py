@@ -43,7 +43,7 @@ REBUILD = "python -m scripts.manuscript_build_figures"
 def _registry() -> list[dict]:
     assert REGISTRY.is_file(), f"figure_registry.json missing — run {REBUILD}"
     payload = json.loads(REGISTRY.read_text(encoding="utf-8"))
-    figures = payload["figures"]
+    figures: list[dict] = payload["figures"]
     assert figures, "figure registry records no figures"
     return figures
 

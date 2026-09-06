@@ -474,7 +474,14 @@ def _count_files(snapshot: RepositorySnapshot, prefix: str, pattern: str) -> int
 # rather than importing them, so the producer stays free of pipeline imports.
 # ``test_producer_model_census_matches_pipeline_discovery`` pins the two equal.
 _NON_MODEL_MARKDOWN_FILENAMES = frozenset(
-    {"agents.md", "changelog.md", "contributing.md", "index.md", "license.md", "readme.md"}
+    {
+        "agents.md",
+        "changelog.md",
+        "contributing.md",
+        "index.md",
+        "license.md",
+        "readme.md",
+    }
 )
 _NON_MODEL_MARKDOWN_SUFFIXES = (".example.md", ".template.md")
 # ``## GNNSection`` must open a line to be the model's header. A doc that merely
@@ -495,7 +502,9 @@ def _models_under(snapshot: RepositorySnapshot, prefix: str) -> list[Path]:
     """Markdown files under *prefix* that are GNN model sources."""
     candidates = [md for md in snapshot.glob(prefix, "*.md") if _is_model_markdown(md)]
     snapshot.prefetch(candidates)
-    return [md for md in candidates if _GNN_SECTION_HEADER.search(snapshot.read_text(md))]
+    return [
+        md for md in candidates if _GNN_SECTION_HEADER.search(snapshot.read_text(md))
+    ]
 
 
 def _example_models(snapshot: RepositorySnapshot) -> list[Path]:

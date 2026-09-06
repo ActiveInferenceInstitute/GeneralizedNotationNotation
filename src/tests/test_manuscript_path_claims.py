@@ -25,6 +25,7 @@ from __future__ import annotations
 import importlib.util
 import sys
 from pathlib import Path
+from types import ModuleType
 
 import pytest
 
@@ -41,7 +42,7 @@ from manuscript_variables import (  # noqa: E402
 )
 
 
-def _load_gate():
+def _load_gate() -> ModuleType:
     """Import the gate script by path; ``scripts/`` is not an importable package."""
     spec = importlib.util.spec_from_file_location(
         "_check_manuscript_tokens", REPO_ROOT / "scripts" / "check_manuscript_tokens.py"
@@ -146,8 +147,7 @@ def test_gate_accepts_an_ancestor_directory_that_covers_the_family(
     """`input/gnn_files` legitimately *contains* the family's target_dir."""
     sections = _section(
         tmp_path,
-        "Pointing --target-dir at `input/gnn_files` reaches the `multiagent` "
-        "family.\n",
+        "Pointing --target-dir at `input/gnn_files` reaches the `multiagent` family.\n",
     )
     assert GATE._path_claim_issues(sections, _MANIFEST_FAMILIES) == []
 
@@ -312,9 +312,7 @@ def test_producer_model_census_matches_pipeline_discovery() -> None:
     variables = generate_variables(REPO_ROOT)
     discovered = {
         root: sum(
-            1
-            for md in (REPO_ROOT / root).rglob("*.md")
-            if is_model_source_path(md)
+            1 for md in (REPO_ROOT / root).rglob("*.md") if is_model_source_path(md)
         )
         for root in (
             "input/gnn_files",
@@ -323,7 +321,9 @@ def test_producer_model_census_matches_pipeline_discovery() -> None:
         )
     }
     assert discovered["input/gnn_files"] == int(variables["GNN_EXAMPLE_COUNT"])
-    outside = discovered["input/multi_agent_models"] + discovered["input/recursive_models"]
+    outside = (
+        discovered["input/multi_agent_models"] + discovered["input/recursive_models"]
+    )
     assert outside == int(variables["GNN_OUTSIDE_CORPUS_MODEL_COUNT"])
 
 
@@ -345,9 +345,7 @@ def test_a_doc_that_only_names_the_header_is_not_counted_as_a_model(
         "It carries the `## GNNSection` header the reference marks Required.\n",
         encoding="utf-8",
     )
-    (fixtures / "real_model.md").write_text(
-        "## GNNSection\nReal\n", encoding="utf-8"
-    )
+    (fixtures / "real_model.md").write_text("## GNNSection\nReal\n", encoding="utf-8")
     snapshot = RepositorySnapshot(tmp_path)
     assert dict(_outside_corpus_dirs(snapshot)) == {"input/fixtures": 1}
 
