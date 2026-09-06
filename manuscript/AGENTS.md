@@ -64,26 +64,50 @@ the pre-fix prose.
 
 ## Known benign LaTeX diagnostics
 
-`output/pdf/_combined_manuscript.log` carries one
-`Infinite glue shrinkage found in box being split` warning at each longtable page
-break — count them with
+`output/pdf/_combined_manuscript.log` carries
+`Infinite glue shrinkage found in box being split` warnings — count them with
 `grep -c 'Infinite glue' output/pdf/_combined_manuscript.log`, and expect the
-number to move when pagination does. They are TeX *informational* messages
-("ignored: ..."); no content is lost — every data row of `tbl:gnn_constructs` and
-`tbl:actinf_symbols` is present in the rendered PDF, and
-`grep -c Overfull output/pdf/_combined_manuscript.log` is 0.
+number to move when pagination does.
 
-Two candidate remediations were tested against a full render on 2026-09-05 and
-both are recorded here as **not** working, so they are not retried:
+**They cannot affect the shipped page, and this is checkable rather than
+inferred.** The `\vsplit` that emits them is `longtable.sty:212`, inside
+`\LT@start`:
 
-1. `\setlength{\LTpre}{0pt}\setlength{\LTpost}{0pt}` — no change, still 4
-   occurrences at the same folios. (This was the remediation the audit
-   prescribed; it is wrong: `\LTpre`/`\LTpost` default to `\bigskipamount`,
-   which is finite and therefore not the infinite-shrink glue TeX is reporting.)
-2. `\setlength{\@flushglue}{0pt plus 2em}` (finite ragged glue, to test whether
+```latex
+\setbox\tw@\copy\z@                          % 211: a COPY of the chunk box
+\setbox\tw@\vsplit\tw@ to \ht\@arstrutbox    % 212: the split TeX warns about
+\setbox\tw@\vbox{\unvbox\tw@}%               % 213
+...\ht\tw@...  ...\dp\tw@...                % 216, 218: its ONLY consumers
+```
+
+`grep -n 'tw@' $(kpsewhich longtable.sty)` confirms box `\tw@` is never `\box`ed
+or `\unvbox`ed onto the page in that macro: it is measured and dropped. The
+measurement feeds one decision — whether the table's first row fits in the space
+left on the current page, or whether to `\vfil\break` first. So the split box is
+a throwaway probe, the warning is TeX describing that probe, and the typeset
+output is not the box that was split. The corroborating evidence agrees:
+`grep -c Overfull output/pdf/_combined_manuscript.log` is 0, and every data row of
+`tbl:gnn_constructs` and `tbl:actinf_symbols` is present in the rendered PDF.
+
+This also explains why the remediation the audit prescribed could not have
+worked, for a sharper reason than the one first recorded here. Two candidates
+were tested against a full render on 2026-09-05 and both are kept on record as
+**not** working, so they are not retried:
+
+1. `\setlength{\LTpre}{0pt}\setlength{\LTpost}{0pt}` — no change, same folios.
+   `\LTpre` is applied at `longtable.sty:198` (`\vskip\LTpre`), *before and
+   outside* the box whose copy line 212 splits. It is not in the split box at
+   all, so its value is irrelevant; that it also happens to default to the
+   finite `\bigskipamount` is a second, weaker reason.
+2. `\setlength{\@flushglue}{0pt plus 2em}` (finite ragged glue, testing whether
    the `\raggedright` minipage column headers Pandoc emits are the source) —
-   made it strictly worse: 4 occurrences *and* 144 Underfull/Overfull boxes.
+   strictly worse: the warnings remained *and* 144 Underfull/Overfull boxes
+   appeared. `\@flushglue` is horizontal (`\rightskip`); the reported shrinkage
+   is vertical, so this was aimed at the wrong axis.
 
-The glue is emitted by Pandoc's own longtable header construction, which this
-project does not control from `preamble.md`; a real fix belongs in the template's
-LaTeX post-processing. Do not suppress the message by dropping a table.
+The vertical infinite-shrink glue inside the chunk box has not been isolated to a
+specific emitter, and the earlier claim here that Pandoc's header construction
+emits it was never verified — treat it as an open question, not a finding.
+Silencing the message would mean changing glue inside rows that render correctly,
+for no reader-visible gain, so this stays deferred. Do not suppress the message by
+dropping a table.
