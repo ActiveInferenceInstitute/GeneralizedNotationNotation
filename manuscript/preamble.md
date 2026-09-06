@@ -46,6 +46,16 @@ which emits plain `\ref`. Reinstating it means guarding it AND converting the
   \GNNoriginaltableofcontents
   \endgroup}
 \makeatother
+% Document metadata. config.yaml declares a subtitle and a keyword list, and
+% the producer emits both as tokens, but the template's \hypersetup writes only
+% pdftitle/pdfauthor/pdflang -- so `pdfinfo` reported no Subject and no
+% Keywords. This block runs after the template's, so it wins; preamble.md is
+% token-substituted like any other manuscript section, so neither value is
+% typed here.
+\hypersetup{
+  pdfsubject={{{GNN_SUBTITLE}}},
+  pdfkeywords={{{GNN_KEYWORDS}}}}
+
 % Bounded identifier splitting. The template defines
 %   \protected\def\breaktt#1{\begingroup\ttfamily\seqsplit{#1}\endgroup}
 % and \seqsplit permits a break after EVERY character with no continuation cue.

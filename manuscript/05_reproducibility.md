@@ -10,7 +10,7 @@ The fastest way to confirm a working installation is to drive the full pipeline 
 uv run python src/main.py --target-dir input/gnn_files/discrete --output-dir /tmp/gnn-smoke --skip-llm
 ```
 
-This parses the discrete GNN files, runs visualization and rendering across the maintained backends, and writes all artifacts under the chosen output directory. The `--skip-llm` flag keeps the run hermetic and free of external API calls, which makes it suitable for continuous integration and for offline reproduction. To exercise every registered family, drive the manifest instead — `uv run python scripts/run_model_family_acceptance.py --manifest input/model_family_manifest.json` — because pointing `--target-dir` at `input/gnn_files` covers that tree's {{GNN_INPUT_FAMILY_DIR_COUNT}} corpus directories but not the `multiagent` family, whose target directory is `input/multi_agent_models`.
+This parses the discrete GNN files, runs visualization and rendering across the maintained backends, and writes all artifacts under the chosen output directory. The `--skip-llm` flag keeps the run hermetic and free of external API calls, which makes it suitable for continuous integration and for offline reproduction. To exercise every registered family rather than a single one, drive the manifest through the model-family acceptance gate given below: pointing `--target-dir` at `input/gnn_files` covers that tree's {{GNN_INPUT_FAMILY_DIR_COUNT}} corpus directories but not the `multiagent` family, whose target directory is `input/multi_agent_models`.
 
 ## Validation Gates
 
