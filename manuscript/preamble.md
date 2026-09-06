@@ -46,4 +46,44 @@ which emits plain `\ref`. Reinstating it means guarding it AND converting the
   \GNNoriginaltableofcontents
   \endgroup}
 \makeatother
+% Bounded identifier splitting. The template defines
+%   \protected\def\breaktt#1{\begingroup\ttfamily\seqsplit{#1}\endgroup}
+% and \seqsplit permits a break after EVERY character with no continuation cue.
+% In the 2026-09-05 PDF that rendered `model_family_manifest.json` as
+% `model_family_manifest.js` + `on` and `src/manuscript_variables.py` as
+% `(src/manusc` + `ript_variables.py` — the first is itself a valid filename, so
+% a reader cannot tell a line break from a name. Keep seqsplit's guarantee that
+% no code token overflows the measure, but forbid breaks inside the last
+% \GNNttTail characters (an extension is never orphaned) and inside the first
+% \GNNttHead (a one- or two-letter stub is never left behind).
+\makeatletter
+\newcount\GNN@ttlen
+\newcount\GNN@ttpos
+\newcount\GNN@ttleft
+\def\GNNttHead{2}
+\def\GNNttTail{5}
+\def\GNN@ttstop{}
+\long\def\GNN@ttcount#1{%
+  \ifx#1\GNN@ttstop \let\GNN@ttnext\relax
+  \else \advance\GNN@ttlen\@ne \let\GNN@ttnext\GNN@ttcount \fi
+  \GNN@ttnext}
+\long\def\GNN@ttemit#1{%
+  \ifx#1\GNN@ttstop \let\GNN@ttnext\relax
+  \else
+    #1%
+    \advance\GNN@ttpos\@ne
+    \GNN@ttleft\GNN@ttlen \advance\GNN@ttleft-\GNN@ttpos
+    \ifnum\GNN@ttpos>\GNNttHead
+      \ifnum\GNN@ttleft>\GNNttTail \discretionary{}{}{}\fi
+    \fi
+    \let\GNN@ttnext\GNN@ttemit
+  \fi
+  \GNN@ttnext}
+\protected\def\breaktt#1{%
+  \begingroup
+  \ttfamily
+  \GNN@ttlen\z@ \GNN@ttcount#1\GNN@ttstop
+  \GNN@ttpos\z@ \GNN@ttemit#1\GNN@ttstop
+  \endgroup}
+\makeatother
 ```
