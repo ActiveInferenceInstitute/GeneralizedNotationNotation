@@ -12,7 +12,7 @@
 
 **Version**: 1.6.0 (MCP subsystem has independent versioning; see `__init__.py`)
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-04
 
 ---
 

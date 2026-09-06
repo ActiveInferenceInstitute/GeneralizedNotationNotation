@@ -2,6 +2,7 @@
 
 > **Status**: Living document · Last updated 2026-04-14
 > **Canonical reference for parsers, validators, and editor support.**
+> For the condensed example-driven companion, see [reference/gnn_syntax.md](reference/gnn_syntax.md).
 
 ---
 

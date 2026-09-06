@@ -12,7 +12,7 @@
 
 **Version**: 3.2.0
 
-**Last Updated**: 2026-04-24
+**Last Updated**: 2026-09-04
 
 ---
 

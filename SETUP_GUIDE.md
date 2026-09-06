@@ -19,7 +19,7 @@ git clone https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotatio
 cd GeneralizedNotationNotation
 
 # Run basic setup
-python3 src/1_setup.py --verbose
+uv run python src/1_setup.py --verbose
 ```
 
 A normal `uv sync` / core install includes:
@@ -151,7 +151,7 @@ with `uv sync --extra <group>` or together with `uv sync --all-extras`):
 
 ```bash
 # List available groups (shown in pyproject.toml [project.optional-dependencies])
-# Groups: dev, api, ml-ai, audio, gui, graphs, research, scaling, stan, all
+# Groups: dev, api, ml-ai, audio, gui, graphs, research, scaling, stan, torch, geo-infer, all
 
 # Install all optional packages
 uv sync --all-extras
@@ -164,7 +164,7 @@ uv sync --extra ml-ai --extra audio --extra gui
 
 ```bash
 # Install via the setup step
-python3 src/1_setup.py --verbose
+uv run python src/1_setup.py --verbose
 ```
 
 ### Method 3: Using UV Directly
@@ -222,21 +222,21 @@ print("✅ Plotly working!")
 ### Full Pipeline
 
 ```bash
-python3 src/main.py --target-dir input/gnn_files --verbose
+uv run python src/main.py --target-dir input/gnn_files --verbose
 ```
 
 ### Specific Steps
 
 ```bash
 # GNN parsing, rendering, and execution
-python3 src/main.py --only-steps "3,11,12" --verbose
+uv run python src/main.py --only-steps "3,11,12" --verbose
 ```
 
 ### Individual Steps
 
 ```bash
 # Just GNN parsing
-python3 src/3_gnn.py --target-dir input/gnn_files --verbose
+uv run python src/3_gnn.py --target-dir input/gnn_files --verbose
 ```
 
 ## Troubleshooting
@@ -246,7 +246,7 @@ python3 src/3_gnn.py --target-dir input/gnn_files --verbose
 **Solution**: Run setup to install core dependencies
 
 ```bash
-python3 src/1_setup.py --verbose
+uv run python src/1_setup.py --verbose
 ```
 
 ### Issue: "externally-managed-environment" error with pip

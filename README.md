@@ -106,7 +106,7 @@ GeneralizedNotationNotation/
 │   └── tests/                # Comprehensive test suite
 ├── 📁 doc/                    # Maintained Markdown documentation and assets (see doc/README.md)
 │   ├── gnn/                  # GNN language specification
-│   ├── pymdp/, rxinfer/      # Framework integration guides
+│   ├── pymdp/, rxinfer/      # Framework notes and experiment results
 │   └── cognitive_phenomena/  # Example cognitive models
 ├── 📁 input/                  # Input GNN files and configuration
 │   └── gnn_files/            # Sample GNN model files

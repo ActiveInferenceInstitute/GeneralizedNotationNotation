@@ -4,7 +4,7 @@
 **Last Updated**: 2026-08-19
 **Status**: Maintained  
 
-Quick reference for GNN syntax with working examples.
+Quick reference for GNN syntax with working examples. The normative specification lives at [../gnn_syntax.md](../gnn_syntax.md).
 
 ## Syntax Validation
 
