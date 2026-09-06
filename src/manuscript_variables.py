@@ -871,6 +871,10 @@ def generate_variables(project_root: Path) -> dict[str, str]:
         "GNN_MANUSCRIPT_FIGURE_COUNT": str(manuscript_figure_count),
     }
     variables.update(step_tokens)
+    # Self-describing size of the map, so a section can state how many tokens the
+    # producer emits without hand-typing it. Counted after every other token is
+    # in place, and includes itself.
+    variables["GNN_TOKEN_COUNT"] = str(len(variables) + 1)
     return variables
 
 

@@ -1,5 +1,11 @@
 # Multi-Agent Coordination Acceptance Fixture
 
+## GNNSection
+MultiAgentCoordination
+
+## GNNVersionAndFlags
+GNN v1
+
 ## ModelName
 Multi-Agent Coordination Acceptance Fixture
 

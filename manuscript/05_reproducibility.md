@@ -10,7 +10,7 @@ The fastest way to confirm a working installation is to drive the full pipeline 
 uv run python src/main.py --target-dir input/gnn_files/discrete --output-dir /tmp/gnn-smoke --skip-llm
 ```
 
-This parses the discrete GNN files, runs visualization and rendering across the maintained backends, and writes all artifacts under the chosen output directory. The `--skip-llm` flag keeps the run hermetic and free of external API calls, which makes it suitable for continuous integration and for offline reproduction. To exercise the complete model corpus rather than a single family, point `--target-dir` at `input/gnn_files`, which contains {{GNN_INPUT_FAMILY_DIR_COUNT}} family directories.
+This parses the discrete GNN files, runs visualization and rendering across the maintained backends, and writes all artifacts under the chosen output directory. The `--skip-llm` flag keeps the run hermetic and free of external API calls, which makes it suitable for continuous integration and for offline reproduction. To exercise every registered family, drive the manifest instead — `uv run python scripts/run_model_family_acceptance.py --manifest input/model_family_manifest.json` — because pointing `--target-dir` at `input/gnn_files` covers that tree's {{GNN_INPUT_FAMILY_DIR_COUNT}} corpus directories but not the `multiagent` family, whose target directory is `input/multi_agent_models`.
 
 ## Validation Gates
 
@@ -21,7 +21,7 @@ uv run python scripts/run_model_family_acceptance.py \
   --manifest input/model_family_manifest.json --strict
 ```
 
-The semantic-fidelity gate verifies that a parse → serialize → parse round trip preserves variables, edges, dimensions, parameter shapes, equations, time semantics, and ontology mappings across the {{GNN_FAMILY_COUNT}} model families; the cross-framework gate profiles the {{GNN_BACKEND_COUNT}} maintained backends and records explicit compatible and unsupported statuses rather than silently degrading. Both write their ledgers to an output directory of your choosing:
+The semantic-fidelity gate verifies that a parse → serialize → parse round trip preserves variables, edges, dimensions, parameter shapes, equations, time semantics, and ontology mappings across the {{GNN_FAMILY_COUNT}} model families; the cross-framework gate profiles the {{GNN_MAINTAINED_FRAMEWORK_COUNT}} maintained backends ({{GNN_MAINTAINED_FRAMEWORK_LIST}}) — refusing any framework outside that set — and records explicit compatible and unsupported statuses rather than silently degrading. Both write their ledgers to an output directory of your choosing:
 
 ```bash
 uv run python scripts/run_semantic_fidelity_gate.py \
@@ -36,20 +36,28 @@ Under `--strict`, each gate exits non-zero on the first mismatch, so these comma
 
 ## Manuscript Reproducibility
 
-This manuscript is itself a reproducible artifact. Every quantitative value in the prose — the pipeline step count, the family and backend counts, the source and test inventories — is a token rather than a hard-coded literal, and the deterministic producer regenerates all of them from the live repository state:
+This manuscript is itself a reproducible artifact. Every quantitative value in the prose — the pipeline step count, the family and backend counts, the source and test inventories — is a token rather than a hard-coded literal, and the deterministic producer regenerates all of them from the tracked files at the current commit:
 
 ```bash
 python scripts/z_generate_manuscript_variables.py
 ```
 
-That command recomputes the {{...}} tokens, persists them to `output/data/manuscript_variables.json` for audit, and hydrates the manuscript sources into `output/manuscript/`. The hydrated sources are then rendered to PDF through the template research pipeline (invoked from the parent monorepo / template framework), whose rendering stage converts the markdown sections, figures, and references into the final document:
+That command recomputes the {{...}} tokens, persists them to `output/data/manuscript_variables.json` for audit, and hydrates the manuscript sources into `output/manuscript/`. The manuscript's own figures are rebuilt from the same token map:
 
 ```bash
 python -m scripts.manuscript_build_figures
-python -m scripts.z_generate_manuscript_variables
 ```
 
-Because the variables file is regenerated immediately before rendering, the numbers in the rendered PDF cannot drift from the repository: a code change that alters, for example, the test inventory ({{GNN_TEST_FILE_COUNT}} test files, {{GNN_TEST_FUNCTION_COUNT}} test functions) propagates into the prose on the next regeneration without any manual editing.
+The hydrated sources are then rendered to PDF by the docxology template's render stage. That stage lives in a separate checkout, with this repository symlinked into it at `projects/active/GeneralizedNotationNotation`; run from the template root:
+
+```bash
+uv run --frozen python scripts/pipeline/stage_03_render.py \
+  --project GeneralizedNotationNotation
+```
+
+The render needs a LaTeX installation providing the packages listed in `manuscript/preamble.md` plus `seqsplit`; the template guards `seqsplit` with `\IfFileExists`, so a missing copy degrades rather than failing the build.
+
+Because the variables file is regenerated before rendering, the counts in the rendered PDF track the repository state at the commit recorded in `output/data/manuscript_variables.json` ({{GNN_GIT_COMMIT}}): a code change that alters, for example, the test inventory ({{GNN_TEST_FILE_COUNT}} test files, {{GNN_TEST_FUNCTION_COUNT}} test functions) propagates into the prose on the next regeneration without any manual editing.
 
 ## Reproducibility Contract
 
