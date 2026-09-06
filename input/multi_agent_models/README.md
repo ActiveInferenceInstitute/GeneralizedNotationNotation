@@ -5,10 +5,12 @@ This directory holds one compact multi-agent GNN fixture,
 maintained examples under `input/gnn_files/multiagent/` remain the canonical
 authored models.
 
-It is a hand-runnable target: `uv run python src/main.py --target-dir
-input/multi_agent_models` reaches exactly this one model. `gnn.discovery.
-is_model_source_path` accepts it, and it carries the `## GNNSection` and
-`## GNNVersionAndFlags` headers the syntax reference marks Required.
+It is a hand-runnable target: `--target-dir input/multi_agent_models` points a
+run at this directory, where `gnn.discovery.is_model_source_path` accepts
+exactly this one file. It carries the `## GNNSection` and
+`## GNNVersionAndFlags` headers that
+[`doc/gnn/reference/gnn_syntax.md`](../../doc/gnn/reference/gnn_syntax.md)
+marks **Enforced**.
 
 **No committed command or test targets this directory.** Every verification
 command in `TO-DO.md` points at `input/gnn_files`, and

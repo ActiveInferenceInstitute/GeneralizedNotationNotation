@@ -127,9 +127,9 @@ suite instead of being re-discovered by the next audit.
 Every occurrence lands strictly between a `PROBE-BEGIN` and its `PROBE-END`.
 `\vsplit` appears exactly once in `longtable.sty` (line 212), inside
 `\LT@start`, which `\endlongtable` calls — so that is the emitter.
-`latex.ltx`'s `\@doclearpage` (line 20594) holds the only other `\vsplit`
-reachable here; it was hooked in the same run, fires once at `\end{document}`,
-and emits nothing between its markers.
+`latex.ltx`'s `\@doclearpage` (line 20594) — the kernel's other `\vsplit`
+user — was hooked in the same run as a control: it fires once, at
+`\end{document}`, and emits nothing between its markers.
 
 ### The cause is the `p{...}` column, and nothing above it
 
@@ -150,11 +150,11 @@ the caption. It is also position-sensitive: the same table in a short document
 emits 0, 1 or 0 as filler pushes it down the page, so this is not a property of
 the table alone and cannot be fixed by editing the table.
 
-Pandoc emits `p{...}` for any table whose cells wrap. The only manuscript-level
-change that removes the message is making every table narrow enough for `l`
-columns, which would destroy the content of `tbl:gnn_constructs`,
-`tbl:actinf_symbols`, `tbl:model_families` and `tbl:pipeline_steps`. **There is
-no fix, and there is nothing to fix.**
+Pandoc chose `p{...}` for the four tables whose cells wrap and `lll` for the one
+whose cells do not, so the only manuscript-level change that removes the message
+is narrowing `tbl:gnn_constructs`, `tbl:actinf_symbols`, `tbl:model_families`
+and `tbl:pipeline_steps` until their cells fit on one line — which would destroy
+their content. **There is no fix, and there is nothing to fix.**
 
 ### Why the message cannot affect the shipped page
 
