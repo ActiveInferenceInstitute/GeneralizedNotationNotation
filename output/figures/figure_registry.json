@@ -31,7 +31,7 @@
       "label": "fig:triple_play"
     },
     {
-      "alt_text": "The three long-running orchestration contracts side by side — durable observation streams, resumable run sessions, and auditable container plans — each shown with the artifacts it generates and validates, and each stopping short of any live mutation.",
+      "alt_text": "The three long-running orchestration contracts side by side \u2014 durable observation streams, resumable run sessions, and auditable container plans \u2014 each shown with the artifacts it generates and validates, and each stopping short of any live mutation.",
       "filename": "gnn_orchestration.png",
       "generated_by": "scripts/manuscript_fig_orchestration.py",
       "label": "fig:orchestration"

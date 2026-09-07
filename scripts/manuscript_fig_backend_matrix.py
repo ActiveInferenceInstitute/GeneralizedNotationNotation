@@ -29,14 +29,14 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 SRC = PROJECT_ROOT / "src"
-RENDER_DIR = SRC / "render"
+RENDER_DIR = SRC / "gnn" / "render"
 MANIFEST = PROJECT_ROOT / "input" / "model_family_manifest.json"
 OUT_PNG = PROJECT_ROOT / "output" / "figures" / "gnn_backend_capability_matrix.png"
 
 
 def load_registry() -> dict:
     """Import FRAMEWORK_REGISTRY from the real source module."""
-    sys.path.insert(0, str(SRC))
+    sys.path.insert(0, str(SRC / "gnn"))
     from gnn.render.framework_registry import FRAMEWORK_REGISTRY  # type: ignore
 
     return dict(FRAMEWORK_REGISTRY)
@@ -62,7 +62,7 @@ def cross_framework_backends() -> tuple[str, list[str], list[str]]:
         k.strip() for k in str(family.get("frameworks", "")).split(",") if k.strip()
     ]
 
-    gate = (SRC / "pipeline" / "cross_framework_reliability.py").read_text()
+    gate = (SRC / "gnn" / "pipeline" / "cross_framework_reliability.py").read_text()
     block = re.search(r"MAINTAINED_FRAMEWORKS = \(([^)]*)\)", gate)
     maintained = set(re.findall(r'"([a-z_]+)"', block.group(1))) if block else set()
     if not maintained:

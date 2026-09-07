@@ -30,7 +30,7 @@ from matplotlib.axes import Axes  # noqa: E402
 from matplotlib.patches import FancyArrowPatch, FancyBboxPatch  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-STEP_INDEX = REPO_ROOT / "src" / "STEP_INDEX.md"
+STEP_INDEX = REPO_ROOT / "src" / "gnn" / "STEP_INDEX.md"
 OUT_PNG = REPO_ROOT / "output" / "figures" / "gnn_pipeline_dag.png"
 
 # Phase -> color (stable, ordered for the legend).

@@ -24,7 +24,7 @@ import numpy as np  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 MANIFEST_PATH = REPO_ROOT / "input" / "model_family_manifest.json"
-REGISTRY_PATH = REPO_ROOT / "src" / "render" / "framework_registry.py"
+REGISTRY_PATH = REPO_ROOT / "src" / "gnn" / "render" / "framework_registry.py"
 OUTPUT_PATH = REPO_ROOT / "output" / "figures" / "gnn_family_framework_matrix.png"
 
 
