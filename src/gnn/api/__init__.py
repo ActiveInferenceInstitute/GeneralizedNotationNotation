@@ -16,13 +16,13 @@ Usage:
 
 from typing import Any
 
-__version__ = "3.2.0"
+__version__ = "3.3.0"
 
 
 from pathlib import Path
 
 MODULE_NAME = "api"
-MODULE_VERSION = "3.2.0"
+MODULE_VERSION = "3.3.0"
 MODULE_DESCRIPTION = "FastAPI-based REST interface for the GNN processing pipeline"
 
 # API is optional — check for fastapi at import time

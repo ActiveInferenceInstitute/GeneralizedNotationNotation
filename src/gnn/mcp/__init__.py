@@ -37,7 +37,7 @@ list_available_tools = get_available_tools
 list_available_resources = get_available_tools
 
 # -- Module metadata -----------------------------------------------------------------
-__version__ = "3.2.0"
+__version__ = "3.3.0"
 __author__ = "Active Inference Institute"
 __description__ = "Enhanced Model Context Protocol implementation for GNN"
 

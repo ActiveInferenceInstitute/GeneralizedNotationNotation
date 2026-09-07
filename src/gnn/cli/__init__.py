@@ -35,7 +35,7 @@ import tempfile
 from pathlib import Path
 from typing import Any, Callable, Final, List, Optional, cast
 
-__version__ = "3.2.0"
+__version__ = "3.3.0"
 
 FEATURES: dict[str, Any] = {
     "subcommands": True,

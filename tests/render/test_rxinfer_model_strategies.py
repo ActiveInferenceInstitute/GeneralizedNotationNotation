@@ -8,7 +8,7 @@ Pins two invariants the 2026-08-05 red-team review found broken:
    "Hierarchy" in its name and made every exemplar one doc-comment away
    from a render failure).
 2. Every GNN exemplar renders through the real pipeline path (the
-   "29/29 render" contract), with the intended kind taxonomy.
+   "30/30 render" contract), with the intended kind taxonomy.
 
 Pure Python — no Julia required, zero skips.
 """
@@ -40,7 +40,7 @@ from gnn.render.rxinfer.rxinfer_renderer import render_gnn_to_rxinfer
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 GNN_FILES = PROJECT_ROOT / "input" / "gnn_files"
 
-EXEMPLAR_COUNT = 29
+EXEMPLAR_COUNT = 30
 
 # The intended kind for every non-flat exemplar; everything else is FLAT.
 EXPECTED_NON_FLAT = {
@@ -51,6 +51,7 @@ EXPECTED_NON_FLAT = {
     "hierarchical/temporal_hierarchy.md": ModelKind.HIERARCHICAL,
     "learning/dirichlet_likelihood_learning.md": ModelKind.LEARNING,
     "multiagent/multi_agent_coordination.md": ModelKind.MULTI_AGENT,
+    "multiagent/multi_agent_coordination_acceptance.md": ModelKind.MULTI_AGENT,
     "multiagent/stigmergic_swarm.md": ModelKind.MULTI_AGENT,
     "structured/factorized_posterior.md": ModelKind.FACTORED,
 }

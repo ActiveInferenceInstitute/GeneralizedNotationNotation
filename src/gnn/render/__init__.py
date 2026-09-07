@@ -102,7 +102,7 @@ __all__: list[Any] = [
 ]
 
 
-__version__ = "3.2.0"
+__version__ = "3.3.0"
 FEATURES: dict[str, Any] = {
     "pymdp_rendering": True,
     "rxinfer_rendering": True,

@@ -183,7 +183,7 @@ if TYPE_CHECKING:
     )
     from .venv_utils import get_venv_python
 
-__version__ = "3.2.0"
+__version__ = "3.3.0"
 
 FEATURES: dict[str, Any] = {
     "argument_parsing": True,

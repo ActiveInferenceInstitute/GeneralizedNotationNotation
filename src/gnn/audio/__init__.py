@@ -45,7 +45,7 @@ from .processor import (
 )
 
 # Module metadata
-__version__ = "3.2.0"
+__version__ = "3.3.0"
 __author__ = "Active Inference Institute"
 __description__ = "Audio generation and sonification for GNN Processing Pipeline"
 

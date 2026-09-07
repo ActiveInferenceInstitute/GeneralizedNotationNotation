@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from typing import Any
 
-__version__ = "3.2.0"
+__version__ = "3.3.0"
 FEATURES: dict[str, Any] = {
     "html_reports": True,
     "markdown_reports": True,

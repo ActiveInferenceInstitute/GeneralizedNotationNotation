@@ -13,7 +13,7 @@ def test_single_version() -> None:
     import gnn
     import gnn.api as api
     import gnn.cli as cli
-    expected = "3.2.0"
+    expected = "3.3.0"
     assert gnn.__version__ == expected
     assert gnn.cli.__version__ == expected
     assert gnn.api.__version__ == expected

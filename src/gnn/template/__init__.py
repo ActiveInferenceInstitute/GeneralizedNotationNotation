@@ -20,7 +20,7 @@ For complete documentation of this architectural pattern, see:
 
 from typing import Any
 
-__version__ = "3.2.0"
+__version__ = "3.3.0"
 __author__ = "GNN Pipeline Team"
 __description__ = "Standardized template for GNN pipeline steps"
 

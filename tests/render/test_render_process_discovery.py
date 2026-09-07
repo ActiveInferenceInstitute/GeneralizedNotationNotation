@@ -4,7 +4,7 @@ Verifies the recursive-discovery fix in ``src/render/processor.py``:
 
 1. ``process_render(..., recursive=True)`` (the default) walks nested exemplar
    folders (discrete/, basics/, continuous/, pomdp_gridworld/, ...) and renders
-   every exemplar GNN spec to RxInfer.jl — 29 exemplar ``*.md`` files all
+   every exemplar GNN spec to RxInfer.jl — 30 exemplar ``*.md`` files all
    discovered and rendered.
 2. Passing ``recursive=False`` via kwargs reverts to a top-level-only glob, so
    no nested files are found and ``process_render`` returns exit code ``2``.
@@ -23,7 +23,7 @@ from gnn.render.processor import process_render
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 EXEMPLAR_DIR = REPO_ROOT / "input" / "gnn_files"
-EXPECTED_EXEMPLAR_COUNT = 29
+EXPECTED_EXEMPLAR_COUNT = 30
 
 
 def _count_exemplar_md_files() -> int:

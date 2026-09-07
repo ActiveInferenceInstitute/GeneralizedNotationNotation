@@ -12,7 +12,7 @@ from typing import Any, Dict, List
 try:
     from gnn.setup import __version__
 except ImportError:
-    __version__ = "3.2.0"
+    __version__ = "3.3.0"
 
 logger = logging.getLogger(__name__)
 

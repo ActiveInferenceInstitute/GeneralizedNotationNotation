@@ -6,7 +6,7 @@ This module provides GNN syntax validation and resource estimation.
 
 from typing import Any
 
-__version__ = "3.2.0"
+__version__ = "3.3.0"
 FEATURES: dict[str, Any] = {
     "syntax_validation": True,
     "resource_estimation": True,

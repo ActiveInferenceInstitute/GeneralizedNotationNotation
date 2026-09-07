@@ -52,7 +52,7 @@ from .uv_package_ops import (
 from .validator import get_environment_info, get_uv_status, validate_system
 
 # Module metadata and lightweight API expected by tests
-__version__ = "3.2.0"
+__version__ = "3.3.0"
 __author__ = "Active Inference Institute"
 __description__ = "GNN environment setup and management with UV"
 

@@ -8,7 +8,7 @@ with yellow/red flag detection, and executive report generation using LLM infras
 
 from typing import Any
 
-__version__ = "3.2.0"
+__version__ = "3.3.0"
 FEATURES: dict[str, Any] = {
     "pipeline_analysis": True,
     "failure_root_cause": True,
