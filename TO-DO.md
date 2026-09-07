@@ -1,6 +1,6 @@
 # TO-DO - GNN Pipeline Roadmap
 
-**Last Updated**: 2026-09-07 (3.3.0 post-release hygiene: GNN-02/GNN-03 closed with evidence, GNN-04/GNN-05 narrowed, majors MAJ-04..07 scoped)
+**Last Updated**: 2026-09-07 (wave 2: MAJ-07 closed - both pipeline utilities kept and wired with tests; setup_step_logging delegates + migration fossil retired; local-gates CI workflow added; dependency floors raised)
 **Current Version**: 3.3.0
 **Next Target**: v4.0.0 (bounded autonomy, pipeline stage consolidation, multi-agent stigmergic topologies, and high-dimensional active inference)
 
@@ -19,41 +19,54 @@ GNN-03 (factor/modal dependency axes and multi-step policy enumeration:
 `src/gnn/export/geo_infer_factored.py`, `tests/export/test_geo_infer_factored.py`)
 closed 2026-09-07 after re-verification against the 3.3.0 tree.
 
+MAJ-07 closed 2026-09-07: both pipeline utilities are KEPT and wired with
+direct tests - they are documented public API (`gnn.pipeline.__all__` +
+`pipeline/SKILL.md` usage examples) and `pipeline/pipeline_validator.py` is
+the health check's live integration probe. Fixes landed while wiring: the
+core-dependency check imported PyYAML by distribution name (`pyyaml` vs
+`yaml`, so core deps always reported unhealthy), scipy/pathlib were listed
+as core (scipy moved to the ml-ai extra in 3.3.0), the runtime validator
+shelled out to the retired `src/main.py`, and its import fallback could
+raise NameError. Tests: `tests/pipeline/test_health_check.py`,
+`tests/pipeline/test_pipeline_validator.py`.
+
 ## Open Scoped Roadmap
 
 Every item below is cold-startable: scope, files, verification, and acceptance
-are pinned. Rough order: MAJ-07 (decision-first) -> MAJ-05 -> MAJ-06 -> MAJ-04
-(largest; one module per PR).
+are pinned. Rough order: MAJ-05 -> MAJ-06 -> MAJ-04 (largest; one module
+per PR).
 
 | ID | Scope | Acceptance evidence |
 | --- | --- | --- |
 | MAJ-04 | Decompose the six >2000-line modules (`integration/meta_analysis/visualizer.py` 2871, `analysis/visualizations.py` 2412, `testing/test_round_trip.py` 2214, `render/jax/jax_renderer.py` 2200, `render/discopy/translator.py` 2150, `analysis/analyzer.py` 2031) following the 3.3.0 `execute/processor.py` split pattern (mechanical extraction into sibling modules, facade re-exports preserved, one module per PR), and extract the shared subprocess envelope the nine per-framework renderers duplicate. | Per module: no import path changes (old names still importable), `uv run --extra dev mypy src` clean, `just lint` and `just format-check` clean, module tests plus `just test` green, moved code byte-identical modulo import lines. |
 | MAJ-05 | De-duplicate the `validate_gnn*` public surface - 6+ unrelated semantics share the name (`gnn/__init__.py` `validate_gnn_file`, `llm/llm_operations.py` `validate_gnn`, `parsers/basic.py` `validate_gnn` / `validate_gnn_syntax_formal`, `processing/processor.py` `validate_gnn_structure`, `mcp/processors.py` `validate_gnn_cross_format_consistency`, `execute/pymdp/pymdp_utils.py`). Rename to unambiguous names with deprecation aliases, one module per PR. | One unambiguous `def validate_gnn*` name per semantic; every old name re-exported with a `DeprecationWarning`; old-name and new-name tests pass; MCP tool registry unchanged. |
 | MAJ-06 | Collapse the ~10 copy-pasted `process_<module>_mcp(target_directory, output_directory, verbose)` wrappers (`advanced_visualization/mcp.py`, `analysis/mcp.py`, `audio/mcp.py`, `execute/mcp.py`, `export/mcp.py`, `gui/mcp.py`, `integration/mcp.py`, plus the render variants) into one generic dispatcher with per-module registration. | Tools register under identical names/signatures (`just skills-health` green, the mcp-audit CI job green); per-module MCP tests pass; wrapper files shrink to registration calls. |
-| MAJ-07 | Consolidate the pipeline health/utility cluster: `src/gnn/pipeline/health_check.py` (703 lines, zero direct tests; the CLI `health` command routes via `render.health` instead) and `src/gnn/pipeline/pipeline_validator.py` (467 lines; near-name collision with the tested `gnn.utils.pipeline_validator`, plus `pipeline_validation.py` and `verify_pipeline.py`). Decide per file - delete, or test and wire - and record the decision here. | If deleted: no inbound imports remain (`grep -rn "pipeline.health_check\|pipeline.pipeline_validator" src/gnn tests`) and `just test` green. If kept: `tests/pipeline/` covers the public functions and the live consumer chain is named. |
 
 ### Smaller scoped cleanups (independent of the majors)
 
-- Retire the `setup_step_logging` migration residue: delegation shims at
-  `src/gnn/utils/logging_utils.py` and `src/gnn/utils/pipeline.py` (both
-  forward to the canonical `utils/logging/logging_utils.py`) and the
-  outlived-its-migration regex in `src/gnn/utils/migration_helper.py`;
-  migrate remaining shim callers, delete the shims.
+- `setup_step_logging` residue: RESOLVED 2026-09-07 where it was real -
+  the `gnn.utils.pipeline` delegate and `utils/migration_helper.py` fossil
+  are gone; `utils/logging_utils.py` stays (documented facade entry with
+  its own tested `PipelineLogger`; retiring it is a rename-class change).
 - Audit the 87 `ruff --select F401,F811` findings (currently
   policy-ignored in `pyproject.toml` with an "optional deps,
   import-or-skip probes" rationale): split the global ignore into
   per-file-ignores that keep the guarded optional-dependency probes and
   facade re-exports while removing genuinely dead imports
   (e.g. `src/gnn/parsers/*`, `src/gnn/api/app.py`).
-- Close the local/CI parity gaps found 2026-09-07: `just tokens`,
-  `just gridworld`, `just skills-health` run nowhere in CI; the
-  `ml-ai`/`torch` extras would unlock 12 environment-skipped tests
+- Local/CI parity: tokens and skills-health are CI-wired via
+  `.github/workflows/local-gates.yml` (2026-09-07; `skills-health` also
+  needed a repo-root sys.path bootstrap). `just gridworld` remains
+  unwired deliberately - the committed `output/` tree currently fails
+  its contract and regeneration needs the Julia toolchains. Still open:
+  the `ml-ai`/`torch` extras would unlock 12 environment-skipped tests
   (11 sklearn, 1 torch); `test-cov` locally ignores the Ollama tests
   while the CI coverage run does not.
-- Raise the most misleading dependency floors (numpy 1.21, pandas 1.3,
-  networkx 2.6, openai 1.0, pytest 6.0, mypy 0.950 vs locked 2.x/3.x/9.x/1.20)
-  at the next deliberate lock refresh - zero install risk, pure
-  metadata hygiene; do not let it churn `uv.lock` casually.
+- Dependency floors: RAISED 2026-09-07 for numpy (>=2.0), pandas
+  (>=2.0), openai (>=2.0), pytest (>=8.0), mypy (>=1.0) - the lock
+  resolved identically (only requires-dist metadata moved; zero package
+  pins changed). Remaining cosmetic floors (networkx 2.6, plotly 5.15,
+  scipy 1.7, ...) can follow at the next deliberate lock refresh.
 
 ---
 

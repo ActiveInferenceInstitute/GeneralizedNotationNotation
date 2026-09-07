@@ -6,6 +6,54 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ---
 
+## [Unreleased]
+
+### Fixed
+
+- **Flaky MCP module loading killed the CI gate.** The discovery
+  executor imported `gnn.<module>.mcp` files on worker threads; several
+  module bodies call `matplotlib.use(...)` at import time, and a
+  concurrent `matplotlib.use` while a sibling thread is still executing
+  `matplotlib.pyplot`'s module body raised "partially initialized module
+  'matplotlib.pyplot' has no attribute 'switch_backend'" — dropping the
+  tool count to 129 < 140 on fresh CI runners. `_load_module` now
+  imports every module under `MCP._module_import_lock`; pinned by
+  `tests/mcp/test_module_import_serialization.py`.
+- **Pipeline health check always reported unhealthy core deps.** The
+  checker imported PyYAML by distribution name (`pyyaml` — the module
+  is `yaml`); scipy/pathlib are no longer listed as core (scipy moved to
+  the ml-ai extra in 3.3.0). The runtime integration validator no longer
+  shells out to the retired `src/main.py` (absolute `src/gnn/main.py`)
+  and degrades cleanly when pipeline utilities fail to import. Both
+  utilities — documented public API — now have direct tests
+  (`tests/pipeline/test_health_check.py`,
+  `test_pipeline_validator.py`); this closes MAJ-07 (kept, not deleted).
+- **`just skills-health` could not import its shared library** when
+  invoked as a file (repo root missing from `sys.path`); bootstrapped,
+  and the gate is now CI-wired.
+- Broken local/CI commands from the 2026-09-07 audit: justfile `audit`
+  path, `steps`/`steps-json` step-registry imports, CI stack-validation
+  imports (`utils.*` → `gnn.utils.*`), `capability` strictness parity.
+
+### Added
+
+- `.github/workflows/local-gates.yml` wires the previously
+  local-only manuscript-token and MCP/skills-health gates into CI
+  (`just gridworld` stays unwired until the committed `output/` tree
+  passes its contract again).
+- 8 new real-behavior tests across the MCP loader and pipeline health
+  utilities.
+
+### Changed
+
+- Stale dependency floors raised toward the locked generation (numpy
+  >=2.0, pandas >=2.0, openai >=2.0, pytest >=8.0, mypy >=1.0); the lock
+  resolved identically (requires-dist metadata only, zero package pins
+  changed). `setup_step_logging` now has a single canonical
+  implementation (`gnn.utils.logging.logging_utils`); the
+  `gnn.utils.pipeline` delegate and the outlived `migration_helper.py`
+  fossil are removed.
+
 ## [3.3.0] — 2026-09-06
 
 > **One Corpus.** Every model file under `input/` now lives inside
