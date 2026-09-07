@@ -33,7 +33,7 @@ import hashlib
 import json
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
+REPO_ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = REPO_ROOT / "output" / "figures" / "figure_registry.json"
 TOKENS = REPO_ROOT / "output" / "data" / "manuscript_variables.json"
 GENERATORS = sorted((REPO_ROOT / "scripts").glob("manuscript_fig_*.py"))

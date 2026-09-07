@@ -12,8 +12,10 @@ from gnn.manuscript.variables import (
     generate_variables,
     load_variables,
     save_variables,
+    preamble_metadata_drift,
     select_cross_framework_family,
     sync_config_metadata,
+    sync_preamble_metadata,
     token_checksum,
 )
 
@@ -23,7 +25,9 @@ __all__ = [
     "generate_variables",
     "load_variables",
     "save_variables",
+    "preamble_metadata_drift",
     "select_cross_framework_family",
     "sync_config_metadata",
+    "sync_preamble_metadata",
     "token_checksum",
 ]

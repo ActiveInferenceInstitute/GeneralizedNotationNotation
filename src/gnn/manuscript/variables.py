@@ -1089,6 +1089,80 @@ def config_metadata_drift(
     return drift
 
 
+# Fields in manuscript/preamble.md's LaTeX block the producer owns, and the token
+# that owns each. preamble.md IS token-substituted into output/manuscript/, but
+# the template's _manuscript_source.py then copies the RAW file over that copy
+# (`_shutil.copy2(preamble_src, preamble_dst)`), so a {{TOKEN}} written here
+# reaches LaTeX unresolved and hyperref writes the token name into the PDF's
+# metadata. Same remedy as config.yaml: the producer writes the value.
+_PREAMBLE_OWNED_FIELDS = {
+    "pdfsubject": "GNN_SUBTITLE",
+    "pdfkeywords": "GNN_KEYWORDS",
+}
+
+_PREAMBLE_FIELD_RE = re.compile(
+    r"^(?P<indent>\s*)(?P<field>pdf\w+)=\{(?P<value>.*?)\}(?P<tail>[,}]*)\s*$"
+)
+
+
+def _preamble_fields(project_root: Path) -> list[tuple[int, str, str, str]]:
+    """Return ``(line_index, field, current_value, whole_line)`` for owned fields."""
+    path = Path(project_root) / "manuscript" / "preamble.md"
+    if not path.is_file():
+        return []
+    found = []
+    for index, line in enumerate(
+        path.read_text(encoding="utf-8").splitlines(keepends=True)
+    ):
+        match = _PREAMBLE_FIELD_RE.match(line.rstrip("\n"))
+        if match and match.group("field") in _PREAMBLE_OWNED_FIELDS:
+            found.append((index, match.group("field"), match.group("value"), line))
+    return found
+
+
+def preamble_metadata_drift(
+    project_root: Path, variables: Mapping[str, str]
+) -> list[str]:
+    """Return one message per ``preamble.md`` PDF-metadata field out of sync."""
+    drift: list[str] = []
+    for _index, field, value, _line in _preamble_fields(project_root):
+        expected = variables.get(_PREAMBLE_OWNED_FIELDS[field], "")
+        if expected and value != expected:
+            token = _PREAMBLE_OWNED_FIELDS[field]
+            drift.append(f"preamble.md: {field}: {value!r} != {token} ({expected!r})")
+    return drift
+
+
+def sync_preamble_metadata(
+    project_root: Path, variables: Mapping[str, str]
+) -> list[str]:
+    """Rewrite the producer-owned ``preamble.md`` PDF-metadata values in place.
+
+    Returns the list of ``"field: old -> new"`` changes applied.
+    """
+    path = Path(project_root) / "manuscript" / "preamble.md"
+    fields = _preamble_fields(project_root)
+    if not fields:
+        return []
+    lines = path.read_text(encoding="utf-8").splitlines(keepends=True)
+    changes: list[str] = []
+    for index, field, value, line in fields:
+        expected = variables.get(_PREAMBLE_OWNED_FIELDS[field], "")
+        if not expected or value == expected:
+            continue
+        match = _PREAMBLE_FIELD_RE.match(line.rstrip("\n"))
+        assert match is not None
+        newline = "\n" if line.endswith("\n") else ""
+        lines[index] = (
+            f"{match.group('indent')}{field}={{{expected}}}{match.group('tail')}{newline}"
+        )
+        changes.append(f"{field}: {value} -> {expected}")
+    if changes:
+        path.write_text("".join(lines), encoding="utf-8")
+    return changes
+
+
+
 def sync_config_metadata(project_root: Path, variables: Mapping[str, str]) -> list[str]:
     """Rewrite the producer-owned ``manuscript/config.yaml`` fields in place.
 

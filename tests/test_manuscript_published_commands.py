@@ -32,7 +32,7 @@ import re
 import shlex
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
+REPO_ROOT = Path(__file__).resolve().parents[1]
 MANUSCRIPT = REPO_ROOT / "manuscript"
 # Authoring guides, not published sections.
 _SKIP_DOCS = {"SYNTAX.md", "README.md", "AGENTS.md"}

@@ -29,15 +29,17 @@ from types import ModuleType
 
 import pytest
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
+REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / "src"))
 
-from manuscript_variables import (  # noqa: E402
+from gnn.manuscript import (  # noqa: E402
     RepositorySnapshot,
+    generate_variables,
+)
+from gnn.manuscript.variables import (  # noqa: E402
     _families,
     _outside_corpus_dirs,
     corpus_coverage_notes,
-    generate_variables,
     outside_corpus_note,
 )
 
@@ -303,11 +305,11 @@ def test_producer_model_census_matches_pipeline_discovery() -> None:
     """The counts the manuscript prints must be the files the pipeline sees.
 
     ``_example_models`` recognizes a model by its ``## GNNSection`` header;
-    ``src/main.py`` discovers one with ``gnn.discovery.is_model_source_path``.
+    ``src/main.py`` discovers one with ``gnn.processing.discovery.is_model_source_path``.
     Two independent predicates over the same tree is how a corpus count can be
     true of the producer and false of the pipeline, so this pins them equal.
     """
-    from gnn.discovery import is_model_source_path  # noqa: PLC0415
+    from gnn.processing.discovery import is_model_source_path  # noqa: PLC0415
 
     variables = generate_variables(REPO_ROOT)
     discovered = {
