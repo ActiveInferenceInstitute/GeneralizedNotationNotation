@@ -4,8 +4,8 @@
 paper:
   title: "GeneralizedNotationNotation: A Text Language for Active Inference Models"
   subtitle: "A text language and modular processing pipeline for Active Inference generative models"
-  version: "3.2.0"
-  date: "2026-09-02"
+  version: "3.3.0"
+  date: "2026-09-06"
 
 authors:
   - name: "Daniel Ari Friedman"
