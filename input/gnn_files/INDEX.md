@@ -64,11 +64,15 @@ ActiveInference.jl, DisCoPy and bnlearn. Live counts come from
 
 ### multiagent/
 - [multi_agent_coordination.md](multiagent/multi_agent_coordination.md)
+- [multi_agent_coordination_acceptance.md](multiagent/multi_agent_coordination_acceptance.md) — compact 3-agent clustered mean-field acceptance fixture (relocated from `input/multi_agent_models/`); hand-runnable `--target-dir` target for the RxInfer and DisCoPy roadmap acceptance checks, not a manifest-family exemplar
 - [stigmergic_swarm.md](multiagent/stigmergic_swarm.md)
 
 ### pomdp_gridworld/
 - [pomdp_gridworld_3x3.md](pomdp_gridworld/pomdp_gridworld_3x3.md)
 - folder docs: [AGENTS.md](pomdp_gridworld/AGENTS.md), [README.md](pomdp_gridworld/README.md)
+
+### recursive/
+- reserved directory for bounded `--autonomous` proposal-loop runs — holds no committed models ([README.md](recursive/README.md)); nothing here contributes to the example counts
 
 ### precision/
 - [curiosity_driven_agent.md](precision/curiosity_driven_agent.md)

@@ -1,6 +1,6 @@
 # Recursive Model Fixtures
 
-This directory is a reserved target for bounded `--autonomous` proposal-loop
+This directory (relocated from `input/recursive_models/`) is a reserved target for bounded `--autonomous` proposal-loop
 runs. It holds no committed models, and no committed command points at it:
 `TO-DO.md`'s `--autonomous` verification command runs against
 `--target-dir input/gnn_files`.

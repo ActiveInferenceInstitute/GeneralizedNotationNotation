@@ -29,13 +29,18 @@ counts; do not trust hard-coded numbers in prose.
 
 ## Other directories
 
-- `multi_agent_models/` — one compact multi-agent fixture (3-agent clustered
-  mean-field topology), reachable by hand with `--target-dir`; the authored
-  multi-agent exemplars live in `gnn_files/multiagent/`.
-- `recursive_models/` — reserved target for bounded `--autonomous` proposal-loop
-  runs; holds no committed models.
+`input/` now holds only the corpus tree and its configuration: every model
+fixture lives under `gnn_files/`, so the model counts the manuscript publishes
+cover the whole `input/` tree.
 
-No verification command in [`../TO-DO.md`](../TO-DO.md) targets either
-directory — they all point at `gnn_files/` — so neither is inside the model
-counts the manuscript publishes. Each directory's own `README.md` records what
+- `gnn_files/multiagent/multi_agent_coordination_acceptance.md` — one compact
+  3-agent clustered mean-field fixture (relocated from the former
+  `multi_agent_models/` directory), still a hand-runnable `--target-dir` target
+  for the RxInfer and DisCoPy roadmap acceptance checks.
+- `gnn_files/recursive/` — reserved target for bounded `--autonomous`
+  proposal-loop runs; holds no committed models, so it adds nothing to the
+  model counts.
+
+No verification command in [`../TO-DO.md`](../TO-DO.md) targets either — they
+all point at `gnn_files/` broadly. Each directory's own `README.md` records what
 it is for.
