@@ -47,7 +47,7 @@ jobs:
         run: uv sync --frozen --extra dev
 
       - name: Manuscript token audit
-        run: uv run --extra dev python scripts/check_manuscript_tokens.py
+        run: uv run --extra dev python scripts/check_manuscript_tokens.py --strict
 
       - name: MCP + skills resolvability health gate
         run: uv run --extra dev python scripts/check_mcp_skills_health.py --strict

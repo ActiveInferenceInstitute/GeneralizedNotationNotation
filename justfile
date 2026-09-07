@@ -68,7 +68,7 @@ security:
 
 # Run MCP + skills resolvability health gate
 skills-health:
-    uv run --extra dev python scripts/check_mcp_skills_health.py
+    uv run --extra dev python scripts/check_mcp_skills_health.py --strict
 
 # Run capability contract audit
 capability:
@@ -76,11 +76,19 @@ capability:
 
 # Run manuscript token audit
 tokens:
-    uv run python scripts/check_manuscript_tokens.py
+    uv run python scripts/check_manuscript_tokens.py --strict
 
 # Run POMDP gridworld outputs check
 gridworld:
     uv run python scripts/check_pomdp_gridworld_outputs.py
+
+# Run the v3 orchestration acceptance gate (same command as CI)
+v3-acceptance:
+    PYTHONPATH=src uv run --extra dev python scripts/run_v3_orchestration_acceptance.py --strict
+
+# Assert the live MCP tool count meets the CI floor (141 registered as of 2026-09-07)
+mcp-count:
+    PYTHONPATH=src uv run --extra dev python -c "from tests.mcp.test_mcp_audit import count_mcp_tools; assert count_mcp_tools() >= 140, 'MCP tool count below CI floor'"
 
 # Emit durable v3 run manifests for a completed run (e.g. just manifest output)
 manifest OUT:
@@ -99,7 +107,7 @@ doc-patterns:
     uv run python scripts/check_gnn_doc_patterns.py --strict
 
 # Run fast quality gates without the full pytest suite
-quality: format-check lint terminology doc-terms audit doc-contracts doc-patterns typecheck security
+quality: format-check lint terminology doc-terms audit doc-contracts doc-patterns typecheck security v3-acceptance mcp-count
 
 # Run focused PyMDP/POMDP behavior checks
 test-pymdp-focused:
