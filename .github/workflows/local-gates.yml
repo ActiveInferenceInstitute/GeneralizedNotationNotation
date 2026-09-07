@@ -1,0 +1,53 @@
+name: Local gates
+
+# Gates that were previously runnable only by hand via `just` and wired
+# into no workflow (found in the 2026-09-07 local/CI parity audit):
+#   - just tokens       (manuscript token/citation integrity)
+#   - just skills-health (MCP tool + SKILL.md resolvability)
+#
+# Deliberately NOT wired here: `just gridworld`
+# (scripts/check_pomdp_gridworld_outputs.py) — the committed output/ tree
+# currently fails its contract (Step 3/11 + pymdp/rxinfer/activeinference_jl
+# timestep and B-shape checks fail as of 2026-09-07), and regenerating the
+# publication outputs requires the Julia toolchains. Re-wire it once the
+# output/ tree is regenerated and the check passes locally.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: local-gates-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  repo-gates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+
+      - name: Install dependencies (dev)
+        run: uv sync --frozen --extra dev
+
+      - name: Manuscript token audit
+        run: uv run --extra dev python scripts/check_manuscript_tokens.py
+
+      - name: MCP + skills resolvability health gate
+        run: uv run --extra dev python scripts/check_mcp_skills_health.py --strict
