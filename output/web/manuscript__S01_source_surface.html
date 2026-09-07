@@ -566,24 +566,26 @@ into a verifiable claim. Each surface below is authored material under
 version control; the generated artifacts it produces are described
 separately so that the boundary between hand-written source and
 reproducible output stays explicit.</p>
-<p>The <code>src/</code> tree is the executable core of
-GeneralizedNotationNotation: A Text Language for Active Inference
-Models. It is organized into 44 Python packages spanning 589 source
-files and roughly 195034 lines of code. Among these packages sit the 25
-step modules that implement the numbered pipeline (0–24), each module
-owning one stage of the progression from a parsed GNN text model through
-visualization, type checking, code export, and executable cognitive
-simulation. Every claim the manuscript makes about pipeline behavior
-should be traceable to one of these step modules rather than to
-descriptive prose alone.</p>
+<p>The <code>src/</code> tree is the executable core of GNN. It is
+organized into 44 Python packages spanning 589 source files and roughly
+195362 lines of code. Alongside these packages sit the 25 top-level step
+modules (0–24) that implement the numbered pipeline as thin
+orchestrators delegating into the packages, each module owning one stage
+of the progression from a parsed GNN text model through visualization,
+type checking, code export, and executable cognitive simulation. Every
+claim the manuscript makes about pipeline behavior should be traceable
+to one of these step modules rather than to descriptive prose alone.</p>
 <p>The <code>input/</code> tree holds the model corpora that exercise
-the pipeline. It contains 10 GNN corpora organized by model family,
-together totaling 29 example files, plus a
-<code>model_family_manifest.json</code> that enumerates the families and
-their representative models. This manifest is the authoritative registry
-that downstream steps and the manuscript variable producer read when
-they report family counts and cross-framework coverage; it should be
-consulted directly rather than inferred from directory listings.</p>
+the pipeline. Its <code>gnn_files/</code> subtree contains 11 corpus
+directories organized by model family, together totaling 30 example
+files. Every model file under <code>input/</code> lives in that subtree,
+so the 30-file count covers the whole tree. A
+<code>model_family_manifest.json</code> enumerates the 9 registered
+families and their target directories. This manifest is the
+authoritative registry that downstream steps and the manuscript variable
+producer read when they report family counts and cross-framework
+coverage; it should be consulted directly rather than inferred from
+directory listings.</p>
 <p>The <code>scripts/</code> tree contains the thin orchestrators that
 gate and reproduce the project. These include the acceptance scripts
 that confirm the pipeline runs end to end, the reliability gates that
@@ -601,21 +603,35 @@ GNN syntax or semantics matches the documented language rather than a
 convenient paraphrase.</p>
 <p>The <code>output/</code> tree collects per-step pipeline artifacts:
 the data dumps, intermediate representations, validation reports, and
-the 693 figures regenerated on each run. Everything here is disposable
-and reproducible from the surfaces above, so it should be read as
-evidence of a run rather than as authored source. Notably,
+the 1991 figure artifacts committed under it. Everything here is
+disposable and reproducible from the surfaces above, so it should be
+read as evidence of a run rather than as authored source. Notably,
 <code>output/data/manuscript_variables.json</code> is where the
 manuscript’s substituted token values are materialized.</p>
-<h2 id="expansion-checklist">Expansion Checklist</h2>
-<ul>
-<li>Confirm which files are authored source and which are
-generated.</li>
-<li>Confirm which commands reproduce the current outputs.</li>
-<li>Confirm which values should become manuscript variables.</li>
-<li>Confirm which external references need verified BibTeX entries.</li>
-<li>Confirm whether any private material must be summarized rather than
-quoted or copied.</li>
-</ul>
+<h2 id="authored-source-versus-generated-output">Authored Source Versus
+Generated Output</h2>
+<p><code>src/</code>, <code>scripts/</code>, <code>input/</code>,
+<code>doc/</code> and <code>manuscript/</code> are authored and
+reviewed; everything under <code>output/</code> is generated and
+disposable, including <code>output/manuscript/</code>, which holds the
+token-substituted copies of the <code>manuscript/</code> sources rather
+than the sources themselves. The commands that regenerate the output
+surfaces are listed in <span class="citation"
+data-cites="sec:reproducibility">[@sec:reproducibility]</span>: the
+smoke run for the per-step artifacts,
+<code>scripts/z_generate_manuscript_variables.py</code> for the token
+map and the hydrated sections,
+<code>scripts.manuscript_build_figures</code> for the 6 manuscript
+figures, and the template render stage for the PDF. Which values become
+tokens is not a matter of taste: any quantity the producer can derive
+from a source surface is a token,
+<code>scripts/check_manuscript_tokens.py</code> fails the build when a
+section hard-codes one instead, and the resulting 86-entry map is
+committed at <code>output/data/manuscript_variables.json</code> for
+audit. External references are resolved from
+<code>manuscript/references.bib</code>, which the same gate cross-checks
+against every citation key in the prose. This manuscript quotes no
+private or unpublished material.</p>
 </main>
 </body>
 </html>

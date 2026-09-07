@@ -1,15 +1,7 @@
-\frametitle{Supplemental Source Surface}
-The \texttt{docs/} tree is the prose and reference surface, comprising
-618 files of specification, tutorial, and design documentation for the
-GNN language and its Active Inference grounding (Smékal and Friedman
-2023). It is the place to verify that a manuscript statement about GNN
-syntax or semantics matches the documented language rather than a
-convenient paraphrase.
-
-The \texttt{output/} tree collects per-step pipeline artifacts: the data
-dumps, intermediate representations, validation reports, and the 693
-figures regenerated on each run. Everything here is disposable and
-reproducible from the surfaces above, so it should be read as evidence
-of a run rather than as authored source. Notably,
-\breaktt{output/data/manuscript\_variables.json} is where the
-manuscript's substituted token values are materialized.
+\frametitle{Authored Source Versus Generated Output}
+section hard-codes one instead, and the resulting 86-entry map is
+committed at \breaktt{output/data/manuscript\_variables.json} for audit.
+External references are resolved from
+\breaktt{manuscript/references.bib}, which the same gate cross-checks
+against every citation key in the prose. This manuscript quotes no
+private or unpublished material.

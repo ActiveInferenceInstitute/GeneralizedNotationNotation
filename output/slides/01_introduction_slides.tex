@@ -98,6 +98,27 @@
 % of \tableofcontents only, inside a group, so body spacing is untouched and no
 % entry is dropped (reducing \tocdepth would have hidden 29 real subsections).
   \providecommand{\addvspace}[1]{\vskip 2\p@}%
+% Document metadata. config.yaml declares a subtitle and a keyword list, and
+% the producer emits both as tokens, but the template's \hypersetup writes only
+% pdftitle/pdfauthor/pdflang -- so `pdfinfo` reported no Subject and no
+% Keywords. This block runs after the template's, so it wins.
+%
+% The two values below are WRITTEN by scripts/z_generate_manuscript_variables.py
+% (sync_preamble_metadata), never typed. A double-brace token cannot be used here:
+% preamble.md is substituted into output/manuscript/ like any other section, but
+% the template's _manuscript_source.py then copies the raw file back over that
+% copy, so an unresolved token would reach hyperref and land in the PDF's
+% metadata verbatim.
+% Bounded identifier splitting. The template defines
+%   \protected\def\breaktt#1{\begingroup\ttfamily\seqsplit{#1}\endgroup}
+% and \seqsplit permits a break after EVERY character with no continuation cue.
+% In the 2026-09-05 PDF that rendered `model_family_manifest.json` as
+% `model_family_manifest.js` + `on` and `src/manuscript_variables.py` as
+% `(src/manusc` + `ript_variables.py` — the first is itself a valid filename, so
+% a reader cannot tell a line break from a name. Keep seqsplit's guarantee that
+% no code token overflows the measure, but forbid breaks inside the last
+% \GNNttTail characters (an extension is never orphaned) and inside the first
+% \GNNttHead (a one- or two-letter stub is never left behind).
 
 % Slide layout defaults for warning-clean scientific decks.
 \usepackage{etoolbox}
@@ -240,11 +261,11 @@ authoritative, editable description. From it, GNN produces graphical
 visualizations that expose the model's factor and dependency structure
 for inspection and communication. And from the same source it produces
 executable cognitive models that can actually be run, so that the
-diagram, the equations, and the running code are provably the same model
-rather than three artifacts that merely claim to be. The Triple Play
-turns a model from a description scattered across media into one
-specification with multiple faithful projections (see
-fig.~2).
+diagram, the equations, and the running code are all generated from one
+parsed document rather than three artifacts that merely claim to
+describe the same model. The Triple Play turns a model from a
+description scattered across media into one specification with multiple
+faithful projections (see fig.~2).
 \end{frame}
 
 \begin{frame}[allowframebreaks]{Contributions}
@@ -262,15 +283,17 @@ infrastructure that makes it usable in practice:
   generative models, whose text form is authoritative and from which
   every other representation is derived.
 \item
-  \textbf{A 25-step processing pipeline}, implemented across 44 source
-  packages (0--24), that carries a specification from parsing and
-  validation through visualization, rendering, and execution.
+  \textbf{A 25-step processing pipeline} (0--24), whose stages are
+  implemented across 44 source packages, that carries a specification
+  from parsing and validation through visualization, rendering, and
+  execution.
 \item
   \textbf{9 rendering backends} (PyMDP, RxInfer.jl, ActiveInference.jl,
   JAX, DisCoPy, PyTorch, NumPyro, Stan, bnlearn) that materialize a
-  single GNN specification as executable cognitive models across
-  multiple simulation frameworks, realizing the executable arm of the
-  Triple Play.
+  single GNN specification as backend-specific model code, of which 8
+  (PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch,
+  NumPyro, Stan) also execute at Step 12, realizing the executable arm
+  of the Triple Play.
 \item
   \textbf{141 Model Context Protocol tools} that expose the pipeline's
   capabilities to agentic and programmatic clients, so the notation and
@@ -296,9 +319,9 @@ the pipeline structure (fig.~1), the Triple Play
 (tbl.~1). sec.~4 follows a
 specification through the pipeline --- parsing, type checking,
 rendering, execution, and reporting --- and presents the backend
-registry (tbl.~2), the backend capability
-surface (fig.~3), and the long-running
-orchestration contracts (fig.~4).
+registry (tbl.~2), the backend registry surface
+(fig.~3), and the long-running orchestration
+contracts (fig.~4).
 sec.~5 reports what the project has produced
 and how each number is grounded, with the model-family registry
 (tbl.~3), the family-by-framework coverage

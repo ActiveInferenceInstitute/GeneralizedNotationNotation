@@ -203,7 +203,7 @@
 
 \begin{frame}[fragile,allowframebreaks]{Current Limitations}
 \protect\phantomsection\label{current-limitations}
-GNN 3.2.0 is a working system with deliberately scoped boundaries, and
+GNN 3.3.0 is a working system with deliberately scoped boundaries, and
 it is worth stating those boundaries plainly rather than implying
 broader completeness than the artifacts support. The reliability gates
 that underpin our confidence in the system --- the semantic-fidelity
@@ -264,14 +264,15 @@ which learns its likelihood matrix \texttt{A} from observations by joint
 variational message passing) and the renderer strategy that emits code
 for it (\breaktt{src/render/rxinfer/\_strategies\_learning.py}). That
 corpus directory is registered in no manifest family --- the
-unregistered set is exactly \breaktt{input/gnn\_files/learning} --- so
-parameter learning is exercised by neither the semantic-fidelity nor the
+unregistered set is exactly \breaktt{input/gnn\_files/learning},
+\breaktt{input/gnn\_files/recursive} --- so parameter learning is
 \end{frame}
 
 \begin{frame}[fragile,allowframebreaks]{Current Limitations}
-cross-framework ledger and carries no figure or table in this
-manuscript. We state it here as implemented-but-out-of-scope rather than
-leave the omission to be inferred from the family tables.
+exercised by neither the semantic-fidelity nor the cross-framework
+ledger and carries no figure or table in this manuscript. We state it
+here as implemented-but-out-of-scope rather than leave the omission to
+be inferred from the family tables.
 
 Finally, several capabilities depend on optional dependencies that are
 not part of the minimal install. The simulation frameworks themselves,
@@ -283,22 +284,22 @@ This keeps the core parse-validate-export-visualize spine runnable in
 constrained environments, but it means a full 0--24 traversal of all 25
 steps reflects the optional surface that a particular machine has
 installed. We consider this an acceptable engineering trade for
-portability, but it is a limitation a reader should hold in mind when
 \end{frame}
 
 \begin{frame}[fragile,allowframebreaks]{Current Limitations}
+portability, but it is a limitation a reader should hold in mind when
 interpreting any single end-to-end run.
 \end{frame}
 
 \begin{frame}[allowframebreaks]{Next Steps}
 \protect\phantomsection\label{next-steps}
-The roadmap is concrete and staged. The current release is GNN 3.2.0
-(``Exemplar Gold Standard'', 2026-09-02). It builds on the three
-safe-by-design orchestration contracts introduced in GNN 3.0.0, which
-generate and validate data only, with no live infrastructure mutation.
-The first is \emph{durable observation streams}: file- and array-backed
-stream manifests (content-checksummed) with replayable execution traces,
-so that an extended run can be observed, paused, and re-derived
+The roadmap is concrete and staged. The current release is GNN 3.3.0
+(``One Corpus'', 2026-09-06). It builds on the three safe-by-design
+orchestration contracts introduced in GNN 3.0.0, which generate and
+validate data only, with no live infrastructure mutation. The first is
+\emph{durable observation streams}: file- and array-backed stream
+manifests (content-checksummed) with replayable execution traces, so
+that an extended run can be observed, paused, and re-derived
 deterministically before any live sensor or device-backed stream is ever
 introduced. The second is \emph{resumable run sessions}: run-session
 manifests with atomic checkpoint/resume, status inspection, and

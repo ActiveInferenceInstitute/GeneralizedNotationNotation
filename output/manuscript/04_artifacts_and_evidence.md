@@ -1,10 +1,10 @@
 # Artifacts and Evidence {#sec:artifacts_evidence}
 
-This section reports what the project has actually produced and how each quantitative claim is grounded. Every number below is substituted at render time from the deterministic producer that reads the repository state, so the manuscript can never drift from the artifacts it describes.
+This section reports what the project has actually produced and how each quantitative claim is grounded. Every number below is substituted at render time from the deterministic producer, which reads the repository state at commit dd195067f, so each figure here is regenerated from the artifacts it describes rather than transcribed.
 
 ## Model-Family Coverage
 
-GNN ships a curated corpus of model families that exercise the language across the difficulty gradient from minimal parser fixtures to full multi-agent and scaling studies. The current corpus spans 9 families (basics, discrete, continuous, hierarchical, multiagent, precision, structured, gridworld, scaling-study), drawn from 10 family directories under `input/` and comprising 29 concrete example models. Each family declares the simulation frameworks it is meant to drive, which is what lets the same text model fan out across the executable-model leg of the Triple Play [@gnn2023]. The families and their declared frameworks are enumerated below.
+GNN ships a curated corpus of model families that exercise the language across the difficulty gradient from minimal parser fixtures to full multi-agent and scaling studies. The manifest registers 9 families (basics, discrete, continuous, hierarchical, multiagent, precision, structured, gridworld, scaling-study) across 9 target directories, and `input/gnn_files` holds 11 corpus directories containing 30 concrete example models. The three sets are not coextensive, and the manuscript does not treat them as one. Registered in no family: `input/gnn_files/learning`, `input/gnn_files/recursive` (2 of the 11 corpus directories), covered in [@sec:limitations_next_steps]. Registered but outside the scanned tree: none, because all 9 target directories are themselves `input/gnn_files` corpus directories. Each family declares the simulation frameworks it is meant to drive, which is what lets the same text model fan out across the executable-model leg of the Triple Play [@gnn2023]. The families and their declared frameworks are enumerated below.
 
 | Family | Frameworks | Description |
 |---|---|---|
@@ -31,17 +31,17 @@ Two reproducible-by-command gates check that GNN's promise — one text model, m
 
 The semantic-fidelity gate, `scripts/run_semantic_fidelity_gate.py`, checks that a model parsed from GNN text and then re-emitted preserves its semantic content: the state-space structure, the factor and modality declarations, and the matrix shapes implied by a discrete Active Inference generative model survive the round trip [@dacosta2020]. It is meant to be run as a command and to report fidelity per model, not as a static claim baked into prose.
 
-The cross-framework reliability gate, `scripts/run_cross_framework_reliability.py`, takes a single GNN model and renders it across multiple simulation backends, then checks that the resulting executable models agree on the structure they were generated from. The reference comparison runs on the continuous family across JAX, NumPyro, RxInfer.jl — three independent Active Inference engines spanning the Python and Julia ecosystems [@heins2022]. Because the same source model drives all three renderings, disagreement between backends localizes a generator defect rather than a modeling choice.
+The cross-framework reliability gate, `scripts/run_cross_framework_reliability.py`, takes a single GNN model and renders it across multiple simulation backends, then checks that the resulting executable models agree on the structure they were generated from. The reference comparison runs on the continuous family across JAX, NumPyro, RxInfer.jl — 3 independent Active Inference engines spanning the Python and Julia ecosystems [@heins2022]. The family declares 4 backends (JAX, NumPyro, Stan, RxInfer.jl); Stan is declared but not among the 7 frameworks the gate profiles, so it is excluded from the comparison. Because the same source model drives all 3 renderings, disagreement between backends localizes a generator defect rather than a modeling choice.
 
 Both gates are stated here as commands you can run, not as asserted pass counts. The manuscript deliberately does not quote a fixed number of passing checks: the authoritative, current result is whatever those scripts report when executed against the corpus, and binding a frozen count into prose would invite exactly the drift the auto-injection contract exists to prevent.
 
 ## Repository Scale
 
-The repository's scale is itself evidence of the surface that the gates and pipeline cover, and it is reported in @fig:repo_metrics directly from a scan of the working tree.
+The repository's scale is itself evidence of the surface that the gates and pipeline cover, and it is reported in @fig:repo_metrics directly from the tracked files at commit dd195067f.
 
-![Repository-scale metrics — source packages, test files, and tool surface — measured from the live repository.](../output/figures/gnn_repo_metrics.png){#fig:repo_metrics width=80%}
+![Repository-scale metrics — source packages, test files, and tool surface — measured from the tracked files at the commit the producer stamps.](../output/figures/gnn_repo_metrics.png){#fig:repo_metrics width=80%}
 
-The test suite comprises 369 test files containing 4112 test functions, exercising a source base of 589 Python files across 44 packages (195034 lines of source). The Model Context Protocol surface — which exposes GNN's capabilities to external agents and tools — provides 141 tools across 32 modules. The pipeline itself runs as 25 steps (0–24), and the rendering of figures, models, and reports produced 693 figures in the current run.
+The test suite comprises 373 test files containing 4155 test functions, exercising a source base of 589 Python files across 44 packages (195362 lines of source). The Model Context Protocol surface — which exposes GNN's capabilities to external agents and tools — provides 141 tools across 32 modules. The pipeline itself runs as 25 steps (0–24), and 1991 figure artifacts from the rendering of figures, models, and reports are committed under `output/`, of which 6 are the manuscript's own.
 
 ## Claim Discipline
 

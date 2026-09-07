@@ -136,6 +136,27 @@
 % of \tableofcontents only, inside a group, so body spacing is untouched and no
 % entry is dropped (reducing \tocdepth would have hidden 29 real subsections).
   \providecommand{\addvspace}[1]{\vskip 2\p@}%
+% Document metadata. config.yaml declares a subtitle and a keyword list, and
+% the producer emits both as tokens, but the template's \hypersetup writes only
+% pdftitle/pdfauthor/pdflang -- so `pdfinfo` reported no Subject and no
+% Keywords. This block runs after the template's, so it wins.
+%
+% The two values below are WRITTEN by scripts/z_generate_manuscript_variables.py
+% (sync_preamble_metadata), never typed. A double-brace token cannot be used here:
+% preamble.md is substituted into output/manuscript/ like any other section, but
+% the template's _manuscript_source.py then copies the raw file back over that
+% copy, so an unresolved token would reach hyperref and land in the PDF's
+% metadata verbatim.
+% Bounded identifier splitting. The template defines
+%   \protected\def\breaktt#1{\begingroup\ttfamily\seqsplit{#1}\endgroup}
+% and \seqsplit permits a break after EVERY character with no continuation cue.
+% In the 2026-09-05 PDF that rendered `model_family_manifest.json` as
+% `model_family_manifest.js` + `on` and `src/manuscript_variables.py` as
+% `(src/manusc` + `ript_variables.py` — the first is itself a valid filename, so
+% a reader cannot tell a line break from a name. Keep seqsplit's guarantee that
+% no code token overflows the measure, but forbid breaks inside the last
+% \GNNttTail characters (an extension is never orphaned) and inside the first
+% \GNNttHead (a one- or two-letter stub is never left behind).
 
 % Slide layout defaults for warning-clean scientific decks.
 \usepackage{etoolbox}
@@ -244,11 +265,19 @@ LLM steps:
 This parses the discrete GNN files, runs visualization and rendering
 across the maintained backends, and writes all artifacts under the
 chosen output directory. The \texttt{-\/-skip-llm} flag keeps the run
-hermetic and free of external API calls, which makes it suitable for
-continuous integration and for offline reproduction. To exercise the
-complete model corpus rather than a single family, point
-\texttt{-\/-target-dir} at \texttt{input/gnn\_files}, which contains 10
-family directories.
+hermetic and free of external API calls: the non-LLM steps all execute,
+the steps that would read the skipped LLM outputs record that as a
+warning, and the run exits 2 --- the pipeline's documented warning code
+(0 success, 1 error, 2 warning) --- rather than 0. To exercise every
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]{Pipeline Smoke Run}
+registered family rather than a single one, drive the manifest through
+the model-family acceptance gate given below: pointing
+\texttt{-\/-target-dir} at \texttt{input/gnn\_files} covers that tree's
+11 corpus directories. All 9 registered family target directories lie
+inside that tree, so a single invocation reaches every registered
+family.
 \end{frame}
 
 \begin{frame}[fragile,allowframebreaks]{Validation Gates}
@@ -262,7 +291,8 @@ regression:
 \begin{Shaded}
 \begin{Highlighting}[]
 \ExtensionTok{uv}\NormalTok{ run python scripts/run\_model\_family\_acceptance.py }\DataTypeTok{\textbackslash{}}
-  \AttributeTok{{-}{-}manifest}\NormalTok{ input/model\_family\_manifest.json }\AttributeTok{{-}{-}strict}
+  \AttributeTok{{-}{-}manifest}\NormalTok{ input/model\_family\_manifest.json }\DataTypeTok{\textbackslash{}}
+  \AttributeTok{{-}{-}output{-}dir}\NormalTok{ output/model\_family\_acceptance }\AttributeTok{{-}{-}strict}
 \end{Highlighting}
 \end{Shaded}
 
@@ -272,10 +302,11 @@ regression:
 The semantic-fidelity gate verifies that a parse \texorpdfstring{\ensuremath{\to}}{->} serialize \texorpdfstring{\ensuremath{\to}}{->} parse
 round trip preserves variables, edges, dimensions, parameter shapes,
 equations, time semantics, and ontology mappings across the 9 model
-families; the cross-framework gate profiles the 9 maintained backends
-and records explicit compatible and unsupported statuses rather than
-silently degrading. Both write their ledgers to an output directory of
-your choosing:
+families; the cross-framework gate profiles the 7 maintained backends
+(PyMDP, RxInfer.jl, JAX, NumPyro, PyTorch, ActiveInference.jl, DisCoPy)
+--- refusing any framework outside that set --- and records explicit
+compatible and unsupported statuses rather than silently degrading. Both
+write their ledgers to an output directory of your choosing:
 
 \end{frame}
 
@@ -309,11 +340,11 @@ This manuscript is itself a reproducible artifact. Every quantitative
 value in the prose --- the pipeline step count, the family and backend
 counts, the source and test inventories --- is a token rather than a
 hard-coded literal, and the deterministic producer regenerates all of
-them from the live repository state:
+them from the tracked files at the current commit:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\ExtensionTok{python}\NormalTok{ scripts/z\_generate\_manuscript\_variables.py}
+\ExtensionTok{uv}\NormalTok{ run python scripts/z\_generate\_manuscript\_variables.py}
 \end{Highlighting}
 \end{Shaded}
 
@@ -322,26 +353,44 @@ them from the live repository state:
 \begin{frame}[fragile,allowframebreaks]{Manuscript Reproducibility}
 That command recomputes the \{\{\ldots\}\} tokens, persists them to
 \breaktt{output/data/manuscript\_variables.json} for audit, and hydrates
-the manuscript sources into \breaktt{output/manuscript/}. The hydrated
-sources are then rendered to PDF through the template research pipeline
-(invoked from the parent monorepo / template framework), whose rendering
-stage converts the markdown sections, figures, and references into the
-final document:
+the manuscript sources into \breaktt{output/manuscript/}. The
+manuscript's own figures are rebuilt from the same token map:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\ExtensionTok{python} \AttributeTok{{-}m}\NormalTok{ scripts.manuscript\_build\_figures}
-\ExtensionTok{python} \AttributeTok{{-}m}\NormalTok{ scripts.z\_generate\_manuscript\_variables}
+\ExtensionTok{uv}\NormalTok{ run python }\AttributeTok{{-}m}\NormalTok{ scripts.manuscript\_build\_figures}
 \end{Highlighting}
 \end{Shaded}
+
+The hydrated sources are then rendered to PDF by the docxology
+template's render stage. That stage lives in a separate checkout, with
+this repository symlinked into it at
+\breaktt{projects/active/GeneralizedNotationNotation}; run from the
+template root:
 
 \end{frame}
 
 \begin{frame}[fragile,allowframebreaks]{Manuscript Reproducibility}
-Because the variables file is regenerated immediately before rendering,
-the numbers in the rendered PDF cannot drift from the repository: a code
-change that alters, for example, the test inventory (369 test files,
-4112 test functions) propagates into the prose on the next regeneration
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{uv}\NormalTok{ run }\AttributeTok{{-}{-}frozen}\NormalTok{ python scripts/pipeline/stage\_03\_render.py }\DataTypeTok{\textbackslash{}}
+  \AttributeTok{{-}{-}project}\NormalTok{ GeneralizedNotationNotation}
+\end{Highlighting}
+\end{Shaded}
+
+The render needs a LaTeX installation providing the packages listed in
+\breaktt{manuscript/preamble.md} plus \texttt{seqsplit}; the template
+guards \texttt{seqsplit} with \texttt{\textbackslash{}IfFileExists}, so
+a missing copy degrades rather than failing the build.
+
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]{Manuscript Reproducibility}
+Because the variables file is regenerated before rendering, the counts
+in the rendered PDF track the repository state at the commit recorded in
+\breaktt{output/data/manuscript\_variables.json} (dd195067f): a code
+change that alters, for example, the test inventory (373 test files,
+4155 test functions) propagates into the prose on the next regeneration
 without any manual editing.
 \end{frame}
 
