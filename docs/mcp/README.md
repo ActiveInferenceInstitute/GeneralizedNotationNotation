@@ -94,7 +94,7 @@ result = mcp_instance.execute_tool(
 ```bash
 # Start MCP HTTP server
 GNN_MCP_TOKEN=local-dev-token \
-  python -m src.mcp.cli server --transport http --host 127.0.0.1 --port 8080
+  python -m gnn.mcp.cli server --transport http --host 127.0.0.1 --port 8080
 
 # Execute an HTTP-safe tool through JSON-RPC
 curl -X POST http://127.0.0.1:8080/ \
@@ -106,17 +106,17 @@ curl -X POST http://127.0.0.1:8080/ \
 ### STDIO Server (for AI assistants)
 ```bash
 # Start STDIO server for AI assistant integration
-python -m src.mcp.cli server --transport stdio
+python -m gnn.mcp.cli server --transport stdio
 ```
 
 ### Command Line Interface
 ```bash
 # List capabilities and inspect a tool
-python -m src.mcp.cli list
-python -m src.mcp.cli info parse_gnn_content
+python -m gnn.mcp.cli list
+python -m gnn.mcp.cli info parse_gnn_content
 
 # Execute a tool
-python -m src.mcp.cli execute parse_gnn_content \
+python -m gnn.mcp.cli execute parse_gnn_content \
   --params '{"content":"## GNNSection\nActInfPOMDP\n","format_hint":"markdown","enhanced_validation":true}'
 ```
 
@@ -239,7 +239,7 @@ def register_tools(mcp_instance):
 
 3. **Test the tool**:
 ```bash
-python -m src.mcp.cli execute my_new_tool --params '{"param1":"test"}'
+python -m gnn.mcp.cli execute my_new_tool --params '{"param1":"test"}'
 ```
 
 ### Tool Design Principles
@@ -277,10 +277,10 @@ python -m src.mcp.cli execute my_new_tool --params '{"param1":"test"}'
 
 ```bash
 # Run with verbose MCP logging
-python -m src.mcp.cli --verbose list
+python -m gnn.mcp.cli --verbose list
 
 # Test tool with debugging
-python -m src.mcp.cli --verbose execute tool_name --params '{}'
+python -m gnn.mcp.cli --verbose execute tool_name --params '{}'
 ```
 
 ## API Reference

@@ -83,9 +83,11 @@ Run `tests/export/` and `tests/gnn/test_pomdp_extractor*` locally. GEO's
 paths, checks the real gridworld and a SPACE-generated seven-cell H3 model, and
 verifies exact matrix/order preservation and deterministic real inference.
 
-Continuous GNN, factorized models, irregular time and longer policies require
-separate contracts. See GNN-02 through GNN-05 in `TO-DO.md`; they are not accepted
-by version 1.
+Continuous GNN, factorized models, irregular time and longer policies are
+covered by the separate contracts below ("Linear Gaussian v2" and the factored
+contract); v1 itself does not accept them. GNN-02/GNN-03 in `TO-DO.md` are
+closed by those contracts, GNN-05 records the Step 7 CLI wiring, and GNN-04
+(cross-repository revision pairing) remains open.
 
 ## Verified companion implementation
 

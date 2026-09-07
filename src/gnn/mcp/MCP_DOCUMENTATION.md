@@ -201,7 +201,7 @@ module discovery.
 ## Installation and Setup
 
 ### Prerequisites
-- Python 3.11 through 3.13, matching `pyproject.toml`
+- Python 3.11 through 3.14, matching `pyproject.toml`
 - Required dependencies resolved from `pyproject.toml` / `uv.lock` with `uv sync`
 
 ### Installation
@@ -217,7 +217,7 @@ uv sync
 uv sync --extra dev
 
 # Verify installation
-python -m src.mcp.cli --help
+python -m gnn.mcp.cli --help
 ```
 
 ### Basic Usage
@@ -226,12 +226,12 @@ python -m src.mcp.cli --help
 
 **stdio Transport (Recommended for local use):**
 ```bash
-python -m src.mcp.cli server --transport stdio
+python -m gnn.mcp.cli server --transport stdio
 ```
 
 **HTTP Transport (Authenticated local orchestration):**
 ```bash
-GNN_MCP_TOKEN=local-dev-token python -m src.mcp.cli server --transport http --host 127.0.0.1 --port 8080
+GNN_MCP_TOKEN=local-dev-token python -m gnn.mcp.cli server --transport http --host 127.0.0.1 --port 8080
 ```
 
 HTTP exposes only safe tools by default. Resource reads are denied unless an
@@ -243,17 +243,17 @@ The HTTP capability response is filtered to this exposed safe surface.
 
 **List all available tools:**
 ```bash
-python -m src.mcp.cli list --format human
+python -m gnn.mcp.cli list --format human
 ```
 
 **Execute a tool:**
 ```bash
-python -m src.mcp.cli execute get_gnn_files --params '{"target_dir": "doc", "recursive": true}'
+python -m gnn.mcp.cli execute get_gnn_files --params '{"target_dir": "doc", "recursive": true}'
 ```
 
 **Get server status:**
 ```bash
-python -m src.mcp.cli status --format json
+python -m gnn.mcp.cli status --format json
 ```
 
 ## API Reference
@@ -467,7 +467,7 @@ server.start()
 
 **Usage:**
 ```bash
-python -m src.mcp.cli server --transport stdio
+python -m gnn.mcp.cli server --transport stdio
 ```
 
 ### HTTP Server
@@ -491,7 +491,7 @@ server.serve_forever()
 
 **Usage:**
 ```bash
-GNN_MCP_TOKEN=local-dev-token python -m src.mcp.cli server --transport http --host 127.0.0.1 --port 8080
+GNN_MCP_TOKEN=local-dev-token python -m gnn.mcp.cli server --transport http --host 127.0.0.1 --port 8080
 ```
 
 ## JSON-RPC API
