@@ -1,0 +1,29 @@
+name: "GNN CodeQL config"
+
+# Scope extraction to analysis-relevant sources. The repository commits large
+# generated artifact trees (output/ alone carries ~295 extracted .py files);
+# extracting them adds no analysis value and pushed the analyze step over the
+# hosted-runner limit (silent mid-extraction death, 3/3 runs after the bnlearn
+# dependency expansion on 2026-09-07, see PR #27 and the fix discussion).
+
+paths-ignore:
+  - output
+  - output/**
+  - outputs
+  - outputs/**
+  - out
+  - out/**
+  - dist
+  - dist/**
+  - build
+  - build/**
+  - cache
+  - cache/**
+  - demo_output
+  - demo_output/**
+  - cascadia_output
+  - cascadia_output/**
+  - del_norte_output
+  - del_norte_output/**
+  - visualizations_output
+  - visualizations_output/**
