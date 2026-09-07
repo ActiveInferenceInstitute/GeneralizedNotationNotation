@@ -49,7 +49,7 @@ jobs:
 
       - name: Validate JAX + PyMDP stack
         run: |
-          uv run --all-extras python -c "from utils.jax_stack_validation import verify_jax_pymdp_stack; verify_jax_pymdp_stack(); print('jax_stack_ok')"
+          uv run --all-extras python -c "from gnn.utils.jax_stack_validation import verify_jax_pymdp_stack; verify_jax_pymdp_stack(); print('jax_stack_ok')"
 
       - name: Validate optional imports (audio)
         run: |

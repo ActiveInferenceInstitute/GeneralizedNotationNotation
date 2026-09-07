@@ -2,8 +2,8 @@
 
 This guide details the architecture of the Generalized Notation Notation (GNN) system. It complements `DOCS.md` and `docs/pipeline/README.md` with an implementation-oriented perspective for developers.
 
-**Last Updated**: 2026-09-02
-**Version**: 3.2.0
+**Last Updated**: 2026-09-07
+**Version**: 3.3.0
 **Status**: Maintained
 **Pipeline Steps**: 25 (0-24)
 
@@ -166,6 +166,19 @@ Version 3.2.0 makes every exemplar under `input/gnn_files/` render *and* execute
 - **Step 12 summary merge**: `src/gnn/execute/processor.py` merges the prior `execution_summary.json` so one durable summary covers every input folder, mirroring Step 11.
 
 See `CHANGELOG.md` §3.2.0 and the README section "Model Kinds and Framework Support".
+
+## One Corpus (v3.3.0)
+
+Version 3.3.0 folds every model file under `input/` into the `input/gnn_files/`
+corpus tree, makes `gnn.*` the single canonical import surface (the `src.*`
+surface was removed by the package rename), and adds headless extraction
+(`gnn extract FILE` / `python -m gnn.extract`), canonical
+`(next_state, previous_state, action)` B-orientation enforcement with
+`canonicalize_pomdp()`, factor counts and dimension provenance in the extractor
+payload, durable `gnn-run-v2` run identity with verified `gnn reproduce`, and a
+dedicated `torch` optional extra for the Step 11/12 PyTorch backend. The
+manuscript remediation gates are reconciled onto `src/gnn/`. See
+`CHANGELOG.md` §3.3.0.
 
 ## Current Implementation Status
 
@@ -362,8 +375,8 @@ Each agent implements comprehensive performance monitoring:
 
 ---
 
-**Architecture Version**: 3.2.0
-**Last Updated**: 2026-09-02
+**Architecture Version**: 3.3.0
+**Last Updated**: 2026-09-07
 **Status**: Maintained
 **Compliance**: Thin orchestrator pattern
 **Latest Validation**: See current test and pipeline runs

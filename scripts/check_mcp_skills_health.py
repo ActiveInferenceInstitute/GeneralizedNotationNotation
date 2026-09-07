@@ -13,7 +13,8 @@ Two independent surface audits:
    must resolve against the live codebase. A skill that documents a symbol the
    module does not export would fail for an agent following it.
 
-Informational gate (not CI-wired, like ``check_external_links.py``):
+CI-wired in ``.github/workflows/local-gates.yml`` (historically an
+informational gate, like ``check_external_links.py``):
     uv run --extra dev python scripts/check_mcp_skills_health.py [--strict]
 """
 
@@ -26,6 +27,13 @@ import re
 import sys
 import tempfile
 from pathlib import Path
+
+# Bootstrap the repo root so ``scripts.lib`` is importable when the script
+# is invoked as a file (uv run python scripts/... puts scripts/ on
+# sys.path[0], not the repo root).
+_REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
 
 from scripts.lib.shared import add_strict_flag, exit_with_findings, repo_root
 

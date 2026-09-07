@@ -18,15 +18,9 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List
 
-# Add src to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
-try:
-    from gnn.utils.logging.logging_utils import log_step_warning, setup_step_logging
-    from gnn.utils.pipeline import get_output_dir_for_script
-    from gnn.utils.pipeline_dependencies import get_pipeline_dependency_manager
-except ImportError as e:
-    print(f"Warning: Could not import pipeline utilities: {e}")
+# gnn.utils.* are same-package core imports; no path bootstrap or
+# degraded-mode scaffolding is needed for them.
+from gnn.utils.pipeline_dependencies import get_pipeline_dependency_manager
 
 
 class PipelineValidator:
@@ -196,10 +190,13 @@ class PipelineValidator:
         try:
             start_time = datetime.now()
 
-            # Use main.py to execute pipeline steps
+            # Use main.py to execute pipeline steps. Absolute path: the
+            # orchestrator lives at src/gnn/main.py since the package
+            # restructure, and the validator must not depend on CWD.
+            main_py = Path(__file__).resolve().parents[1] / "main.py"
             cmd: list[Any] = [
                 sys.executable,
-                "src/main.py",
+                str(main_py),
                 "--target-dir",
                 "input/gnn_files",
                 "--output-dir",

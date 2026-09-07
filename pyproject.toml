@@ -29,7 +29,7 @@ classifiers = [
 # Core dependencies (essential for basic functionality)
 dependencies = [
     # Core scientific computing (lightweight)
-    "numpy>=1.21.0",
+    "numpy>=2.0",
     "matplotlib>=3.5.0",
     "networkx>=2.6.0",
     "pyyaml>=6.0",
@@ -42,7 +42,7 @@ dependencies = [
     # Pygments: official fix for CVE-2026-4539 (AdlLexer ReDoS) — replaced git fork override
     "pygments>=2.20.0",
     # LLM stack (Step 13+); local Ollama + cloud APIs — defaults in ``llm/defaults.py`` / config
-    "openai>=1.0.0",
+    "openai>=2.0",
     "ollama>=0.1.0",
     "python-dotenv>=1.0.0",
     # Safe XML parsing (replaces stdlib xml.etree/minidom for untrusted input)
@@ -67,7 +67,7 @@ dependencies = [
     "numpyro>=0.14",
     "discopy>=1.1.0",
     # Interactive visualization (Step 9 advanced viz Plotly dashboards; steps 8/16)
-    "pandas>=1.3.0",
+    "pandas>=2.0",
     "plotly>=5.15.0",
     "seaborn>=0.12.0",
     "h5py>=3.8.0",
@@ -88,7 +88,7 @@ dev = [
     "uvicorn[standard]>=0.23.0",
     "websockets>=16.0",
     "pygls>=1.3.1",
-    "pytest>=6.0.0",
+    "pytest>=8.0",
     "pytest-asyncio>=0.23.0",
     "pytest-cov>=3.0.0",
     "pytest-json-report>=1.5.0",
@@ -105,7 +105,7 @@ dev = [
     "isort>=5.12.0",
     "black>=26.3.1",
     "flake8>=4.0.0",
-    "mypy>=0.950",
+    "mypy>=1.0",
     "pre-commit>=3.0.0",
     "mypy-extensions>=1.0.0",
     "ruff>=0.1.0",

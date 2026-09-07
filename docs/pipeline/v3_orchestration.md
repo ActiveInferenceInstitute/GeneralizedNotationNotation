@@ -6,7 +6,7 @@ mutation*: each module generates, validates, replays, or plans **data only** —
 container, contacts a cluster, or opens a device/sensor stream.
 
 All three live in `src/gnn/pipeline/` and follow the repository conventions (Pydantic v2 models,
-`from pipeline.X import Y` imports, atomic file writes, deterministic hashing). They are exercised by
+`from gnn.pipeline.X import Y` imports, atomic file writes, deterministic hashing). They are exercised by
 real-implementation unit tests in `tests/pipeline/` and an end-to-end gate
 (`scripts/run_v3_orchestration_acceptance.py`).
 

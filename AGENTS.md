@@ -245,7 +245,7 @@ graph TD
 - **GNN doc patterns**: `uv run --extra dev python scripts/check_gnn_doc_patterns.py --strict` reports no banned GNN documentation patterns.
 - **Repository terminology**: `uv run --extra dev python scripts/check_repo_terminology.py --strict` and `scripts/check_maintained_doc_terms.py --strict` report no violations.
 - **Mypy**: `uv run --extra dev mypy src --config-file pyproject.toml` passes (0 errors).
-- **Tests**: command of record is `uv run --extra dev python -m pytest tests/ -q --tb=no -rsx --ignore=tests/llm/test_llm_ollama.py --ignore=tests/llm/test_llm_ollama_integration.py`; the release receipt for the current version (collected/passed/skipped totals on the curated exemplar corpus) is recorded in `CHANGELOG.md` §3.2.0 (2026-09-02); re-run the command for live totals rather than trusting numbers in prose. Julia RxInfer execution uses the committed `Project.toml` under `src/gnn/execute/rxinfer/` (RxInfer 5.5.0 pinned); ActiveInference.jl uses the committed minimal env under `src/gnn/execute/activeinference_jl/`. With a local Ollama daemon and `smollm2:135m-instruct-q4_K_S` pulled, the two Ollama files are re-enabled.
+- **Tests**: command of record is `uv run --extra dev python -m pytest tests/ -q --tb=no -rsx --ignore=tests/llm/test_llm_ollama.py --ignore=tests/llm/test_llm_ollama_integration.py`; the release receipt for the current version (collected/passed/skipped totals on the curated exemplar corpus) is recorded in `CHANGELOG.md` §3.3.0 (2026-09-07); re-run the command for live totals rather than trusting numbers in prose. Julia RxInfer execution uses the committed `Project.toml` under `src/gnn/execute/rxinfer/` (RxInfer 5.5.0 pinned); ActiveInference.jl uses the committed minimal env under `src/gnn/execute/activeinference_jl/`. With a local Ollama daemon and `smollm2:135m-instruct-q4_K_S` pulled, the two Ollama files are re-enabled.
 - **LLM Default Model**: `smollm2:135m-instruct-q4_K_S` via Ollama (`llm.defaults.DEFAULT_OLLAMA_MODEL`; override with `OLLAMA_MODEL` / `input/config.yaml`).
 - **Renderer inventory**: PyMDP, RxInfer, JAX, NumPyro, Stan, PyTorch, ActiveInference.jl, DisCoPy, and bnlearn have maintained render paths. The public root `output/` contract is the POMDP GridWorld full run with strict execution proof for PyMDP, RxInfer.jl, and ActiveInference.jl.
 - **Default dev suite**: FastAPI, websocket bridge, and LSP tests run under the `dev` extra; browser, public-network, live GUI, audio-DSP, and Ollama integrations remain explicit opt-in surfaces rather than hidden default-suite skips.
@@ -260,6 +260,18 @@ graph TD
 - **Step 12 summary merge**: `execute/processor.py` (`_merge_prior_execution_summary`) folds the previous `execution_summary.json` into the current run so the durable summary covers every input folder, mirroring Step 11.
 - **Julia pre-exec gate**: a `julia` launcher without a working toolchain no longer blocks scripts; the probe degrades to the advisory regex sweep unless the parser itself reports a failure.
 - Live counts come from `output/11_render_output/render_processing_summary.json` and `output/12_execute_output/summaries/execution_summary.json`; see `CHANGELOG.md` §3.2.0 for the release receipt.
+
+### v3.3.0 "One Corpus" (2026-09-06)
+
+- The `src.*` import surface is gone: `gnn.*` is the single canonical import
+  surface (from an installed wheel, or with `PYTHONPATH=src` from the repo), and
+  `src/` holds only the `gnn` package.
+- Every model file lives inside `input/gnn_files`; the former top-level
+  `multi_agent_models/` and `recursive_models/` directories are folded into
+  `multiagent/` and `recursive/` respectively.
+- Headless extraction (`gnn extract FILE` / `python -m gnn.extract`), canonical
+  B orientation with `canonicalize_pomdp()`, factor/dimension provenance, and
+  the `torch` optional extra are documented in `CHANGELOG.md` §3.3.0.
 
 ---
 
@@ -561,7 +573,7 @@ uv run --extra dev python scripts/run_v3_orchestration_acceptance.py
 
 ---
 
-**Last Updated**: 2026-09-02
-**Pipeline Version**: 3.2.0 ("Exemplar Gold Standard")
+**Last Updated**: 2026-09-07
+**Pipeline Version**: 3.3.0 ("One Corpus")
 **Total Steps**: 25 (0-24)
 **Status**: Maintained

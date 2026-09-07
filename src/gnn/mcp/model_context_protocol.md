@@ -221,7 +221,7 @@ To start using GNN with MCP-enabled LLMs:
 1. **Setup the MCP Server**:
 
    ```bash
-   python -m src.mcp.cli server --transport stdio
+   python -m gnn.mcp.cli server --transport stdio
    ```
 
 2. **Configure Claude Desktop**:

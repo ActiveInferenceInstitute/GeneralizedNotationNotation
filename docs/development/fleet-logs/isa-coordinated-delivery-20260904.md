@@ -79,7 +79,7 @@ snapshot, and neither repository HEAD changed. Later backend proofs, continuous
 semantics, wider H2 acceptance, H3, current-release/provider evidence, and
 publication retain their independent acceptance boundaries.
 
-Detailed cross-repository evidence: [delivery report](docs/development/fleet-logs/coordinated-delivery-20260904.md).
+Detailed cross-repository evidence: [delivery report](coordinated-delivery-20260904.md).
 
 ## Comprehensive continuation (2026-09-04, wave 2)
 
@@ -144,4 +144,4 @@ H3.G0 machinery is implemented and tested; actual prospective study metadata
 remains unselected. No G0 study acceptance or H3.0--H3.7 execution is claimed.
 Broader release/provider criteria elsewhere in this ISA remain independent.
 
-Detailed changes, exact test scopes, repairs, and evidence: [wave-2 report](docs/development/fleet-logs/comprehensive-wave2-20260904.md).
+Detailed changes, exact test scopes, repairs, and evidence: [wave-2 report](comprehensive-wave2-20260904.md).

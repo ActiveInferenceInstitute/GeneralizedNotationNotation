@@ -14,7 +14,7 @@ description: GNN Language Server Protocol integration. Use when starting editor 
 gnn lsp
 
 # Or directly via Python module
-python -m src.lsp
+python -m gnn.lsp
 ```
 
 ## Programmatic Usage

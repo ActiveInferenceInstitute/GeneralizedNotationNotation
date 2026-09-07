@@ -1,6 +1,6 @@
 # GeneralizedNotationNotation (GNN)
 
-**Last Updated**: 2026-09-02
+**Last Updated**: 2026-09-07
 
 <div align="center">
 
@@ -48,16 +48,17 @@
 ### 📚 Initial Publication
 
 **Smékal, J., & Friedman, D. A. (2023)**. *Generalized Notation Notation for Active Inference Models*. Active Inference Journal.  
-**Version**: 3.2.0 ("Exemplar Gold Standard")
+**Version**: 3.3.0 ("One Corpus")
 **Status**: Beta package with maintained validation gates (Active Inference Institute)
 
 **Toolchain**: The committed `uv.lock` is the dependency source of truth (`uv lock --check` and `uv sync --frozen` must pass); the Dockerfile constraint `uv>=0.7.8` is the minimum bootstrap floor. Ruff lint and MyPy gates are maintained clean on `src/`.
 
 **Test Suite**: The command of record is `uv run --extra dev python -m pytest tests/ -q --tb=no --ignore=tests/llm/test_llm_ollama.py --ignore=tests/llm/test_llm_ollama_integration.py`. Run it in the current environment for pass/skip totals; Julia RxInfer execution uses the committed `Project.toml` under `src/gnn/execute/rxinfer/`, and ActiveInference.jl uses the committed environment under `src/gnn/execute/activeinference_jl/` (`julia --startup-file=no --project=<env> <script>`). Ollama tests are opt-in when a local daemon and configured test model are available.
 **Published Output Evidence (verified 2026-06-18)**: root `output/` is a POMDP GridWorld full-pipeline publication generated from `input/gnn_files/pomdp_gridworld` with `--frameworks all` and validated by `uv run --extra dev python scripts/check_pomdp_gridworld_outputs.py output`.
-**Features (v2.0.0)**: semantic fidelity ledgers across all maintained model families, strict JSON parse/serialize/parse preservation for variables, edges, dimensions, parameter shapes, equations, time, and ontology mappings; cross-framework reliability ledgers with explicit compatible/unsupported backend statuses; GridWorld comparison across PyMDP, RxInfer, and ActiveInference.jl; model-family acceptance and interpretability ledgers; maintained template CLI (`gnn templates list`, `gnn templates show`, `gnn pull`); authenticated local MCP HTTP orchestration; structured PyMDP 1.0 POMDP execution; static/headless GUI publication; PyMDP Scaling Study; and MCP Full Module Exposure.
+**Features**: semantic fidelity ledgers across all maintained model families, strict JSON parse/serialize/parse preservation for variables, edges, dimensions, parameter shapes, equations, time, and ontology mappings; cross-framework reliability ledgers with explicit compatible/unsupported backend statuses; GridWorld comparison across PyMDP, RxInfer, and ActiveInference.jl; model-family acceptance and interpretability ledgers; maintained template CLI (`gnn templates list`, `gnn templates show`, `gnn pull`); authenticated local MCP HTTP orchestration; structured PyMDP 1.0 POMDP execution; static/headless GUI publication; PyMDP Scaling Study; and MCP Full Module Exposure.
 **New in v3.0.0 ("Long-Running Orchestration")**: three safe-by-design `src/gnn/pipeline/` contracts — durable observation streams, resumable run sessions, and auditable container plans — plus additive live wiring, a strict acceptance gate (`scripts/run_v3_orchestration_acceptance.py`), and 3 new MCP tools. No live infrastructure mutation; every module generates, validates, replays, or plans data only. See [docs/pipeline/v3_orchestration.md](./docs/pipeline/v3_orchestration.md); run identity, reproduction, and manifest-verification rules: [docs/development/durable-runs.md](./docs/development/durable-runs.md).
-**New in v3.2.0 ("Exemplar Gold Standard")**: the `input/gnn_files/continuous/` exemplars are pure linear-Gaussian state-space models (`F/H/Q/R`, `prior_mean/prior_cov`, optional `goal_mean/control_gain`) with native JAX, NumPyro, PyTorch, Stan and RxInfer.jl backends; `unsupported` is a first-class render status for categorical backends (PyMDP, ActiveInference.jl, DisCoPy, bnlearn) on continuous models and is never handed to Step 12; the Stan renderer emits runnable HMM (forward algorithm) and LGSSM (Kalman marginal likelihood) programs plus a `<stem>_stan.py` cmdstanpy driver executed by `src/gnn/execute/stan/`; Step 12 merges `execution_summary.json` across input folders; the Julia pre-exec gate degrades to an advisory sweep instead of blocking scripts on a toolchain-less launcher. See [CHANGELOG.md](./CHANGELOG.md) §3.2.0 and [Model Kinds and Framework Support](#-model-kinds-and-framework-support-v320).
+**New in v3.2.0 ("Exemplar Gold Standard")**: the `input/gnn_files/continuous/` exemplars are pure linear-Gaussian state-space models (`F/H/Q/R`, `prior_mean/prior_cov`, optional `goal_mean/control_gain`) with native JAX, NumPyro, PyTorch, Stan and RxInfer.jl backends; `unsupported` is a first-class render status for categorical backends (PyMDP, ActiveInference.jl, DisCoPy, bnlearn) on continuous models and is never handed to Step 12; the Stan renderer emits runnable HMM (forward algorithm) and LGSSM (Kalman marginal likelihood) programs plus a `<stem>_stan.py` cmdstanpy driver executed by `src/gnn/execute/stan/`; Step 12 merges `execution_summary.json` across input folders; the Julia pre-exec gate degrades to an advisory sweep instead of blocking scripts on a toolchain-less launcher. See [CHANGELOG.md](./CHANGELOG.md) §3.2.0 and [Model Kinds and Framework Support](#-model-kinds-and-framework-support).
+**New in v3.3.0 ("One Corpus")**: every model file under `input/` now lives inside `input/gnn_files` (the two former top-level fixture directories are folded in), `gnn.*` is the single canonical import surface from an installed wheel, and the POMDP extractor is headless-consumable via `gnn extract FILE` / `python -m gnn.extract` with structured extraction errors (`GNN-E002` shape mismatch, `GNN-E006` parameter parse), canonical `(next_state, previous_state, action)` B-orientation enforcement plus `canonicalize_pomdp()`, factor counts and dimension provenance in `to_dict()`, a `torch>=2.13.0` optional extra for the Step 11 render + Step 12 execute PyTorch backend, and durable `gnn-run-v2` run identity with verified `gnn reproduce`. See [CHANGELOG.md](./CHANGELOG.md) §3.3.0.
 📖 **DOI:** [10.5281/zenodo.7803328](https://doi.org/10.5281/zenodo.7803328)  
 📁 **Archive:** [zenodo.org/records/7803328](https://zenodo.org/records/7803328)
 
@@ -465,7 +466,7 @@ graph TB
     Analyzer --> Results
 ```
 
-### 🧭 Model Kinds and Framework Support (v3.2.0)
+### 🧭 Model Kinds and Framework Support
 
 Every exemplar under `input/gnn_files/` renders **and executes** on every
 framework that can represent it, and is explicitly flagged on the ones that

@@ -1,6 +1,6 @@
 # Generalized Notation Notation (GNN) — Comprehensive Documentation
 
-**Last Updated**: 2026-09-02 · **Version**: v3.2.0 ("Exemplar Gold Standard")
+**Last Updated**: 2026-09-07 · **Version**: v3.3.0 ("One Corpus")
 
 This document provides a complete, machine-parsable and human-accessible overview of GNN: the what, why, and how. It consolidates architecture, pipeline, data flows, artifacts, and integration points with multiple Mermaid diagrams.
 
