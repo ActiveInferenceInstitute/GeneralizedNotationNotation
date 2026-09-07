@@ -5,11 +5,18 @@ Thin orchestrator: reads repository-scale counts STRICTLY from the deterministic
 producer output (output/data/manuscript_variables.json) and renders a horizontal
 bar chart. No counts are hard-coded; only the metric keys and human-readable
 labels live here.
+
+The token map is loaded through
+``scripts.lib.manuscript_figure_tokens.load_tokens`` so that every value this
+figure prints is recorded in ``output/figures/figure_registry.json``. That
+record is what lets the suite fail a committed PNG whose numbers have fallen
+behind the token map, instead of shipping a bar chart that contradicts the
+prose beside it.
 """
 
 from __future__ import annotations
 
-import json
+import sys
 from pathlib import Path
 
 import matplotlib
@@ -19,7 +26,11 @@ import matplotlib.pyplot as plt
 
 # Repo root = parent of this scripts/ directory.
 REPO_ROOT = Path(__file__).resolve().parent.parent
-DATA_PATH = REPO_ROOT / "output" / "data" / "manuscript_variables.json"
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from scripts.lib.manuscript_figure_tokens import load_tokens  # noqa: E402
+
 OUTPUT_PATH = REPO_ROOT / "output" / "figures" / "gnn_repo_metrics.png"
 
 # (json_key, human-readable label) — order is rendering order (top to bottom).
@@ -44,8 +55,7 @@ METRICS: list[tuple[str, str]] = [
 
 
 def main() -> None:
-    with DATA_PATH.open(encoding="utf-8") as fh:
-        data = json.load(fh)
+    data = load_tokens()
 
     labels = [label for _, label in METRICS]
     values = [int(data[key]) for key, _ in METRICS]

@@ -1,0 +1,19 @@
+{
+  "timestamp": "2026-09-06T11:40:45.265111",
+  "source_file": "output/model_family_acceptance/scaling-study/input/pymdp_scaling_N4_T100.md",
+  "model_name": "PyMDP Scaling N4 T100",
+  "pomdp_dimensions": {
+    "num_states": 4,
+    "num_observations": 4,
+    "num_actions": 4
+  },
+  "frameworks_requested": [
+    "pymdp"
+  ],
+  "frameworks_processed": [
+    "pymdp"
+  ],
+  "frameworks_failed": [],
+  "frameworks_unsupported": [],
+  "model_kind": "discrete"
+}

@@ -1,0 +1,1344 @@
+{
+  "timestamp": "2026-09-06T11:17:19.674469",
+  "processed_files": 2,
+  "success": true,
+  "errors": [],
+  "validation_results": [
+    {
+      "file_path": "output/model_family_acceptance/hierarchical/input/hierarchical_pomdp.md",
+      "file_name": "hierarchical_pomdp.md",
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "type_issues": [],
+      "validation_timestamp": "2026-09-06T11:17:19.707873",
+      "dimension_compatibility": {
+        "compatible": true,
+        "issues": [],
+        "warnings": [],
+        "variables_checked": [
+          "A_level1",
+          "B_level1",
+          "C_level1",
+          "D_level1",
+          "s_level1",
+          "x_next1",
+          "o_level1",
+          "\u03c01",
+          "u_level1",
+          "G1",
+          "A_level2",
+          "B_level2",
+          "C_level2",
+          "D_level2",
+          "s_level2",
+          "o_level2",
+          "G2",
+          "t1",
+          "t2"
+        ],
+        "dimension_map": {
+          "A_level1": [
+            4,
+            4
+          ],
+          "B_level1": [
+            4,
+            4,
+            3
+          ],
+          "C_level1": [
+            4
+          ],
+          "D_level1": [
+            4
+          ],
+          "s_level1": [
+            4,
+            1
+          ],
+          "x_next1": [
+            4,
+            1
+          ],
+          "o_level1": [
+            4,
+            1
+          ],
+          "\u03c01": [
+            3
+          ],
+          "u_level1": [
+            1
+          ],
+          "G1": [
+            3
+          ],
+          "A_level2": [
+            4,
+            2
+          ],
+          "B_level2": [
+            2,
+            2,
+            1
+          ],
+          "C_level2": [
+            2
+          ],
+          "D_level2": [
+            2
+          ],
+          "s_level2": [
+            2,
+            1
+          ],
+          "o_level2": [
+            4,
+            1
+          ],
+          "G2": [
+            1
+          ],
+          "t1": [
+            1
+          ],
+          "t2": [
+            1
+          ]
+        }
+      },
+      "resource_estimation": {
+        "complexity_tier": "large",
+        "estimated_memory_bytes": 464,
+        "total_parameters": 116,
+        "variables": 19,
+        "connections": 16,
+        "flops_estimate": 5000.0,
+        "complexity_score": 10,
+        "diagnostics": []
+      },
+      "variables": [
+        {
+          "name": "A_level1",
+          "type": "float",
+          "dimensions": [
+            4,
+            4
+          ],
+          "total_elements": 16
+        },
+        {
+          "name": "B_level1",
+          "type": "float",
+          "dimensions": [
+            4,
+            4,
+            3
+          ],
+          "total_elements": 48
+        },
+        {
+          "name": "C_level1",
+          "type": "float",
+          "dimensions": [
+            4
+          ],
+          "total_elements": 4
+        },
+        {
+          "name": "D_level1",
+          "type": "float",
+          "dimensions": [
+            4
+          ],
+          "total_elements": 4
+        },
+        {
+          "name": "s_level1",
+          "type": "float",
+          "dimensions": [
+            4,
+            1
+          ],
+          "total_elements": 4
+        },
+        {
+          "name": "x_next1",
+          "type": "float",
+          "dimensions": [
+            4,
+            1
+          ],
+          "total_elements": 4
+        },
+        {
+          "name": "o_level1",
+          "type": "int",
+          "dimensions": [
+            4,
+            1
+          ],
+          "total_elements": 4
+        },
+        {
+          "name": "\u03c01",
+          "type": "float",
+          "dimensions": [
+            3
+          ],
+          "total_elements": 3
+        },
+        {
+          "name": "u_level1",
+          "type": "int",
+          "dimensions": [
+            1
+          ],
+          "total_elements": 1
+        },
+        {
+          "name": "G1",
+          "type": "float",
+          "dimensions": [
+            3
+          ],
+          "total_elements": 3
+        },
+        {
+          "name": "A_level2",
+          "type": "float",
+          "dimensions": [
+            4,
+            2
+          ],
+          "total_elements": 8
+        },
+        {
+          "name": "B_level2",
+          "type": "float",
+          "dimensions": [
+            2,
+            2,
+            1
+          ],
+          "total_elements": 4
+        },
+        {
+          "name": "C_level2",
+          "type": "float",
+          "dimensions": [
+            2
+          ],
+          "total_elements": 2
+        },
+        {
+          "name": "D_level2",
+          "type": "float",
+          "dimensions": [
+            2
+          ],
+          "total_elements": 2
+        },
+        {
+          "name": "s_level2",
+          "type": "float",
+          "dimensions": [
+            2,
+            1
+          ],
+          "total_elements": 2
+        },
+        {
+          "name": "o_level2",
+          "type": "float",
+          "dimensions": [
+            4,
+            1
+          ],
+          "total_elements": 4
+        },
+        {
+          "name": "G2",
+          "type": "float",
+          "dimensions": [
+            1
+          ],
+          "total_elements": 1
+        },
+        {
+          "name": "t1",
+          "type": "int",
+          "dimensions": [
+            1
+          ],
+          "total_elements": 1
+        },
+        {
+          "name": "t2",
+          "type": "int",
+          "dimensions": [
+            1
+          ],
+          "total_elements": 1
+        }
+      ],
+      "variable_count": 19,
+      "connections": [
+        {
+          "source": "D_level1",
+          "target": "s_level1",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "s_level1",
+          "target": "A_level1",
+          "type": "undirected",
+          "is_temporal": false
+        },
+        {
+          "source": "s_level1",
+          "target": "x_next1",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "A_level1",
+          "target": "o_level1",
+          "type": "undirected",
+          "is_temporal": false
+        },
+        {
+          "source": "C_level1",
+          "target": "G1",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "G1",
+          "target": "\u03c01",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "\u03c01",
+          "target": "u_level1",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "B_level1",
+          "target": "u_level1",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "u_level1",
+          "target": "x_next1",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "s_level1",
+          "target": "o_level2",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "D_level2",
+          "target": "s_level2",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "s_level2",
+          "target": "A_level2",
+          "type": "undirected",
+          "is_temporal": false
+        },
+        {
+          "source": "A_level2",
+          "target": "D_level1",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "s_level2",
+          "target": "B_level2",
+          "type": "undirected",
+          "is_temporal": false
+        },
+        {
+          "source": "C_level2",
+          "target": "G2",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "G2",
+          "target": "s_level2",
+          "type": "directed",
+          "is_temporal": false
+        }
+      ],
+      "connection_count": 16,
+      "connection_types": {
+        "directed": 12,
+        "undirected": 4,
+        "temporal": 0
+      },
+      "sections": {
+        "GNNSection": true,
+        "GNNVersionAndFlags": true,
+        "ModelName": true,
+        "ModelAnnotation": true,
+        "StateSpaceBlock": true,
+        "Connections": true,
+        "InitialParameterization": true,
+        "Equations": true,
+        "Time": true,
+        "ActInfOntologyAnnotation": true,
+        "ModelParameters": true,
+        "Footer": true,
+        "Signature": true
+      },
+      "model_complexity": {
+        "state_space_complexity": 6.870364719583405,
+        "graph_density": 0.04678362573099415,
+        "avg_in_degree": 1.2307692307692308,
+        "avg_out_degree": 1.2307692307692308,
+        "max_in_degree": 2,
+        "max_out_degree": 3,
+        "cyclic_complexity": 0.0,
+        "temporal_complexity": 0.0,
+        "equation_complexity": 17.4375,
+        "overall_complexity": 10,
+        "variable_count": 19,
+        "edge_count": 16,
+        "total_state_space_dim": 116,
+        "max_variable_dim": 48
+      },
+      "model_type": "Dynamic",
+      "type_distribution": {
+        "float": 15,
+        "int": 4
+      },
+      "time_dynamics": {
+        "is_dynamic": true
+      }
+    },
+    {
+      "file_path": "output/model_family_acceptance/hierarchical/input/temporal_hierarchy.md",
+      "file_name": "temporal_hierarchy.md",
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "type_issues": [],
+      "validation_timestamp": "2026-09-06T11:17:19.710065",
+      "dimension_compatibility": {
+        "compatible": true,
+        "issues": [],
+        "warnings": [],
+        "variables_checked": [
+          "A_level0",
+          "B_level0",
+          "C_level0",
+          "D_level0",
+          "s_level0",
+          "o_level0",
+          "pi0",
+          "u_level0",
+          "G0",
+          "A_level1",
+          "B_level1",
+          "C_level1",
+          "D_level1",
+          "s_level1",
+          "o_level1",
+          "pi1",
+          "u_level1",
+          "G1",
+          "A_level2",
+          "B_level2",
+          "C_level2",
+          "D_level2",
+          "s_level2",
+          "o_level2",
+          "pi2",
+          "u_level2",
+          "G2",
+          "tau_level0",
+          "tau_level1",
+          "tau_level2",
+          "t"
+        ],
+        "dimension_map": {
+          "A_level0": [
+            3,
+            4
+          ],
+          "B_level0": [
+            4,
+            4,
+            3
+          ],
+          "C_level0": [
+            3
+          ],
+          "D_level0": [
+            4
+          ],
+          "s_level0": [
+            4,
+            1
+          ],
+          "o_level0": [
+            3,
+            1
+          ],
+          "pi0": [
+            3
+          ],
+          "u_level0": [
+            1
+          ],
+          "G0": [
+            3
+          ],
+          "A_level1": [
+            4,
+            3
+          ],
+          "B_level1": [
+            3,
+            3,
+            3
+          ],
+          "C_level1": [
+            4
+          ],
+          "D_level1": [
+            3
+          ],
+          "s_level1": [
+            3,
+            1
+          ],
+          "o_level1": [
+            4,
+            1
+          ],
+          "pi1": [
+            3
+          ],
+          "u_level1": [
+            1
+          ],
+          "G1": [
+            3
+          ],
+          "A_level2": [
+            3,
+            2
+          ],
+          "B_level2": [
+            2,
+            2,
+            2
+          ],
+          "C_level2": [
+            3
+          ],
+          "D_level2": [
+            2
+          ],
+          "s_level2": [
+            2,
+            1
+          ],
+          "o_level2": [
+            3,
+            1
+          ],
+          "pi2": [
+            2
+          ],
+          "u_level2": [
+            1
+          ],
+          "G2": [
+            2
+          ],
+          "tau_level0": [
+            1
+          ],
+          "tau_level1": [
+            1
+          ],
+          "tau_level2": [
+            1
+          ],
+          "t": [
+            1
+          ]
+        }
+      },
+      "resource_estimation": {
+        "complexity_tier": "medium",
+        "estimated_memory_bytes": 696,
+        "total_parameters": 174,
+        "variables": 31,
+        "connections": 26,
+        "flops_estimate": 2796.458691936577,
+        "complexity_score": 5.592917383873154,
+        "diagnostics": []
+      },
+      "variables": [
+        {
+          "name": "A_level0",
+          "type": "float",
+          "dimensions": [
+            3,
+            4
+          ],
+          "total_elements": 12
+        },
+        {
+          "name": "B_level0",
+          "type": "float",
+          "dimensions": [
+            4,
+            4,
+            3
+          ],
+          "total_elements": 48
+        },
+        {
+          "name": "C_level0",
+          "type": "float",
+          "dimensions": [
+            3
+          ],
+          "total_elements": 3
+        },
+        {
+          "name": "D_level0",
+          "type": "float",
+          "dimensions": [
+            4
+          ],
+          "total_elements": 4
+        },
+        {
+          "name": "s_level0",
+          "type": "float",
+          "dimensions": [
+            4,
+            1
+          ],
+          "total_elements": 4
+        },
+        {
+          "name": "o_level0",
+          "type": "int",
+          "dimensions": [
+            3,
+            1
+          ],
+          "total_elements": 3
+        },
+        {
+          "name": "pi0",
+          "type": "float",
+          "dimensions": [
+            3
+          ],
+          "total_elements": 3
+        },
+        {
+          "name": "u_level0",
+          "type": "int",
+          "dimensions": [
+            1
+          ],
+          "total_elements": 1
+        },
+        {
+          "name": "G0",
+          "type": "float",
+          "dimensions": [
+            3
+          ],
+          "total_elements": 3
+        },
+        {
+          "name": "A_level1",
+          "type": "float",
+          "dimensions": [
+            4,
+            3
+          ],
+          "total_elements": 12
+        },
+        {
+          "name": "B_level1",
+          "type": "float",
+          "dimensions": [
+            3,
+            3,
+            3
+          ],
+          "total_elements": 27
+        },
+        {
+          "name": "C_level1",
+          "type": "float",
+          "dimensions": [
+            4
+          ],
+          "total_elements": 4
+        },
+        {
+          "name": "D_level1",
+          "type": "float",
+          "dimensions": [
+            3
+          ],
+          "total_elements": 3
+        },
+        {
+          "name": "s_level1",
+          "type": "float",
+          "dimensions": [
+            3,
+            1
+          ],
+          "total_elements": 3
+        },
+        {
+          "name": "o_level1",
+          "type": "float",
+          "dimensions": [
+            4,
+            1
+          ],
+          "total_elements": 4
+        },
+        {
+          "name": "pi1",
+          "type": "float",
+          "dimensions": [
+            3
+          ],
+          "total_elements": 3
+        },
+        {
+          "name": "u_level1",
+          "type": "int",
+          "dimensions": [
+            1
+          ],
+          "total_elements": 1
+        },
+        {
+          "name": "G1",
+          "type": "float",
+          "dimensions": [
+            3
+          ],
+          "total_elements": 3
+        },
+        {
+          "name": "A_level2",
+          "type": "float",
+          "dimensions": [
+            3,
+            2
+          ],
+          "total_elements": 6
+        },
+        {
+          "name": "B_level2",
+          "type": "float",
+          "dimensions": [
+            2,
+            2,
+            2
+          ],
+          "total_elements": 8
+        },
+        {
+          "name": "C_level2",
+          "type": "float",
+          "dimensions": [
+            3
+          ],
+          "total_elements": 3
+        },
+        {
+          "name": "D_level2",
+          "type": "float",
+          "dimensions": [
+            2
+          ],
+          "total_elements": 2
+        },
+        {
+          "name": "s_level2",
+          "type": "float",
+          "dimensions": [
+            2,
+            1
+          ],
+          "total_elements": 2
+        },
+        {
+          "name": "o_level2",
+          "type": "float",
+          "dimensions": [
+            3,
+            1
+          ],
+          "total_elements": 3
+        },
+        {
+          "name": "pi2",
+          "type": "float",
+          "dimensions": [
+            2
+          ],
+          "total_elements": 2
+        },
+        {
+          "name": "u_level2",
+          "type": "int",
+          "dimensions": [
+            1
+          ],
+          "total_elements": 1
+        },
+        {
+          "name": "G2",
+          "type": "float",
+          "dimensions": [
+            2
+          ],
+          "total_elements": 2
+        },
+        {
+          "name": "tau_level0",
+          "type": "float",
+          "dimensions": [
+            1
+          ],
+          "total_elements": 1
+        },
+        {
+          "name": "tau_level1",
+          "type": "float",
+          "dimensions": [
+            1
+          ],
+          "total_elements": 1
+        },
+        {
+          "name": "tau_level2",
+          "type": "float",
+          "dimensions": [
+            1
+          ],
+          "total_elements": 1
+        },
+        {
+          "name": "t",
+          "type": "int",
+          "dimensions": [
+            1
+          ],
+          "total_elements": 1
+        }
+      ],
+      "variable_count": 31,
+      "connections": [
+        {
+          "source": "D_level0",
+          "target": "s_level0",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "s_level0",
+          "target": "A_level0",
+          "type": "undirected",
+          "is_temporal": false
+        },
+        {
+          "source": "A_level0",
+          "target": "o_level0",
+          "type": "undirected",
+          "is_temporal": false
+        },
+        {
+          "source": "C_level0",
+          "target": "G0",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "G0",
+          "target": "pi0",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "pi0",
+          "target": "u_level0",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "B_level0",
+          "target": "u_level0",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "D_level1",
+          "target": "s_level1",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "s_level1",
+          "target": "A_level1",
+          "type": "undirected",
+          "is_temporal": false
+        },
+        {
+          "source": "A_level1",
+          "target": "o_level1",
+          "type": "undirected",
+          "is_temporal": false
+        },
+        {
+          "source": "C_level1",
+          "target": "G1",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "G1",
+          "target": "pi1",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "pi1",
+          "target": "u_level1",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "B_level1",
+          "target": "u_level1",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "D_level2",
+          "target": "s_level2",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "s_level2",
+          "target": "A_level2",
+          "type": "undirected",
+          "is_temporal": false
+        },
+        {
+          "source": "A_level2",
+          "target": "o_level2",
+          "type": "undirected",
+          "is_temporal": false
+        },
+        {
+          "source": "C_level2",
+          "target": "G2",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "G2",
+          "target": "pi2",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "pi2",
+          "target": "u_level2",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "B_level2",
+          "target": "u_level2",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "s_level2",
+          "target": "C_level1",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "s_level1",
+          "target": "C_level0",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "s_level2",
+          "target": "D_level1",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "s_level0",
+          "target": "o_level1",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "s_level1",
+          "target": "o_level2",
+          "type": "directed",
+          "is_temporal": false
+        }
+      ],
+      "connection_count": 26,
+      "connection_types": {
+        "directed": 20,
+        "undirected": 6,
+        "temporal": 0
+      },
+      "sections": {
+        "GNNSection": true,
+        "GNNVersionAndFlags": true,
+        "ModelName": true,
+        "ModelAnnotation": true,
+        "StateSpaceBlock": true,
+        "Connections": true,
+        "InitialParameterization": true,
+        "Equations": true,
+        "Time": true,
+        "ActInfOntologyAnnotation": true,
+        "ModelParameters": true,
+        "Footer": true,
+        "Signature": true
+      },
+      "model_complexity": {
+        "state_space_complexity": 7.451211111832329,
+        "graph_density": 0.02795698924731183,
+        "avg_in_degree": 1.2380952380952381,
+        "avg_out_degree": 1.2380952380952381,
+        "max_in_degree": 2,
+        "max_out_degree": 3,
+        "cyclic_complexity": 0.0,
+        "temporal_complexity": 0.0,
+        "equation_complexity": 3.0888888888888886,
+        "overall_complexity": 5.592917383873154,
+        "variable_count": 31,
+        "edge_count": 26,
+        "total_state_space_dim": 174,
+        "max_variable_dim": 48
+      },
+      "model_type": "Dynamic",
+      "type_distribution": {
+        "float": 26,
+        "int": 5
+      },
+      "time_dynamics": {
+        "is_dynamic": true
+      }
+    }
+  ],
+  "type_analysis": [
+    {
+      "file_path": "output/model_family_acceptance/hierarchical/input/hierarchical_pomdp.md",
+      "file_name": "hierarchical_pomdp.md",
+      "types_found": [
+        {
+          "name": "A_level1",
+          "type": "float",
+          "line": 23
+        },
+        {
+          "name": "B_level1",
+          "type": "float",
+          "line": 24
+        },
+        {
+          "name": "C_level1",
+          "type": "float",
+          "line": 25
+        },
+        {
+          "name": "D_level1",
+          "type": "float",
+          "line": 26
+        },
+        {
+          "name": "s_level1",
+          "type": "float",
+          "line": 27
+        },
+        {
+          "name": "x_next1",
+          "type": "float",
+          "line": 28
+        },
+        {
+          "name": "o_level1",
+          "type": "int",
+          "line": 29
+        },
+        {
+          "name": "\u03c01",
+          "type": "float",
+          "line": 30
+        },
+        {
+          "name": "u_level1",
+          "type": "int",
+          "line": 31
+        },
+        {
+          "name": "G1",
+          "type": "float",
+          "line": 32
+        },
+        {
+          "name": "A_level2",
+          "type": "float",
+          "line": 35
+        },
+        {
+          "name": "B_level2",
+          "type": "float",
+          "line": 36
+        },
+        {
+          "name": "C_level2",
+          "type": "float",
+          "line": 37
+        },
+        {
+          "name": "D_level2",
+          "type": "float",
+          "line": 38
+        },
+        {
+          "name": "s_level2",
+          "type": "float",
+          "line": 39
+        },
+        {
+          "name": "o_level2",
+          "type": "float",
+          "line": 40
+        },
+        {
+          "name": "G2",
+          "type": "float",
+          "line": 41
+        },
+        {
+          "name": "t1",
+          "type": "int",
+          "line": 44
+        },
+        {
+          "name": "t2",
+          "type": "int",
+          "line": 45
+        }
+      ],
+      "type_distribution": {
+        "float": 15,
+        "int": 4
+      },
+      "total_variables": 19,
+      "analysis_timestamp": "2026-09-06T11:17:19.709840"
+    },
+    {
+      "file_path": "output/model_family_acceptance/hierarchical/input/temporal_hierarchy.md",
+      "file_name": "temporal_hierarchy.md",
+      "types_found": [
+        {
+          "name": "A_level0",
+          "type": "float",
+          "line": 36
+        },
+        {
+          "name": "B_level0",
+          "type": "float",
+          "line": 37
+        },
+        {
+          "name": "C_level0",
+          "type": "float",
+          "line": 38
+        },
+        {
+          "name": "D_level0",
+          "type": "float",
+          "line": 39
+        },
+        {
+          "name": "s_level0",
+          "type": "float",
+          "line": 40
+        },
+        {
+          "name": "o_level0",
+          "type": "int",
+          "line": 41
+        },
+        {
+          "name": "pi0",
+          "type": "float",
+          "line": 42
+        },
+        {
+          "name": "u_level0",
+          "type": "int",
+          "line": 43
+        },
+        {
+          "name": "G0",
+          "type": "float",
+          "line": 44
+        },
+        {
+          "name": "A_level1",
+          "type": "float",
+          "line": 48
+        },
+        {
+          "name": "B_level1",
+          "type": "float",
+          "line": 49
+        },
+        {
+          "name": "C_level1",
+          "type": "float",
+          "line": 50
+        },
+        {
+          "name": "D_level1",
+          "type": "float",
+          "line": 51
+        },
+        {
+          "name": "s_level1",
+          "type": "float",
+          "line": 52
+        },
+        {
+          "name": "o_level1",
+          "type": "float",
+          "line": 53
+        },
+        {
+          "name": "pi1",
+          "type": "float",
+          "line": 54
+        },
+        {
+          "name": "u_level1",
+          "type": "int",
+          "line": 55
+        },
+        {
+          "name": "G1",
+          "type": "float",
+          "line": 56
+        },
+        {
+          "name": "A_level2",
+          "type": "float",
+          "line": 60
+        },
+        {
+          "name": "B_level2",
+          "type": "float",
+          "line": 61
+        },
+        {
+          "name": "C_level2",
+          "type": "float",
+          "line": 62
+        },
+        {
+          "name": "D_level2",
+          "type": "float",
+          "line": 63
+        },
+        {
+          "name": "s_level2",
+          "type": "float",
+          "line": 64
+        },
+        {
+          "name": "o_level2",
+          "type": "float",
+          "line": 65
+        },
+        {
+          "name": "pi2",
+          "type": "float",
+          "line": 66
+        },
+        {
+          "name": "u_level2",
+          "type": "int",
+          "line": 67
+        },
+        {
+          "name": "G2",
+          "type": "float",
+          "line": 68
+        },
+        {
+          "name": "tau_level0",
+          "type": "float",
+          "line": 72
+        },
+        {
+          "name": "tau_level1",
+          "type": "float",
+          "line": 73
+        },
+        {
+          "name": "tau_level2",
+          "type": "float",
+          "line": 74
+        },
+        {
+          "name": "t",
+          "type": "int",
+          "line": 78
+        }
+      ],
+      "type_distribution": {
+        "float": 26,
+        "int": 5
+      },
+      "total_variables": 31,
+      "analysis_timestamp": "2026-09-06T11:17:19.713052"
+    }
+  ]
+}

@@ -2,13 +2,14 @@
 
 ## Overview
 
-Common utility functions used across audit and check scripts. Reduces code duplication for repo-root discovery, skip-path detection, and exit-code handling.
+Common utility functions used across audit, check, and manuscript-figure scripts. Reduces code duplication for repo-root discovery, skip-path detection, and exit-code handling, and supplies the token-map loader that records figure provenance.
 
 ## Contents
 
 | File | Purpose |
 |---|---|
 | [`shared.py`](shared.py) | `repo_root()`, `should_skip_path()`, `is_generated_output()`, `add_strict_flag()`, `exit_with_findings()` |
+| [`manuscript_figure_tokens.py`](manuscript_figure_tokens.py) | `load_tokens()` — the manuscript token map as a mapping that records every key a figure generator reads |
 
 ## Usage
 

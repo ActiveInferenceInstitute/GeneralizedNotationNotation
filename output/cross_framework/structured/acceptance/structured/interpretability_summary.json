@@ -1,0 +1,306 @@
+{
+  "schema": "gnn_model_family_interpretability_v1",
+  "family": "structured",
+  "target_dir": "output/cross_framework/structured/acceptance/structured/input",
+  "model_count": 1,
+  "models": [
+    {
+      "model_name": "Factorized Posterior Agent",
+      "source_file": "output/cross_framework/structured/acceptance/structured/input/factorized_posterior.md",
+      "variables": [
+        {
+          "name": "s_f0",
+          "dimensions": [
+            "4",
+            "1"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "s_f1",
+          "dimensions": [
+            "2",
+            "1"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "o_m0",
+          "dimensions": [
+            "3",
+            "1"
+          ],
+          "dtype": "int"
+        },
+        {
+          "name": "o_m1",
+          "dimensions": [
+            "2",
+            "1"
+          ],
+          "dtype": "int"
+        },
+        {
+          "name": "u",
+          "dimensions": [
+            "3",
+            "1"
+          ],
+          "dtype": "int"
+        },
+        {
+          "name": "A_m0",
+          "dimensions": [
+            "3",
+            "4",
+            "2"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "A_m1",
+          "dimensions": [
+            "2",
+            "4"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "B_f0",
+          "dimensions": [
+            "4",
+            "4",
+            "3"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "B_f1",
+          "dimensions": [
+            "2",
+            "2"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "D_f0",
+          "dimensions": [
+            "4",
+            "1"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "D_f1",
+          "dimensions": [
+            "2",
+            "1"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "C_m0",
+          "dimensions": [
+            "3",
+            "1"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "C_m1",
+          "dimensions": [
+            "2",
+            "1"
+          ],
+          "dtype": "float"
+        }
+      ],
+      "variable_count": 13,
+      "connections": [
+        {
+          "source": "D_f0",
+          "target": "s_f0",
+          "directed": true,
+          "label": null
+        },
+        {
+          "source": "D_f1",
+          "target": "s_f1",
+          "directed": true,
+          "label": null
+        },
+        {
+          "source": "B_f0",
+          "target": "s_f0",
+          "directed": true,
+          "label": null
+        },
+        {
+          "source": "s_f1",
+          "target": "B_f1",
+          "directed": true,
+          "label": null
+        },
+        {
+          "source": "B_f1",
+          "target": "s_f1",
+          "directed": true,
+          "label": null
+        },
+        {
+          "source": "A_m0",
+          "target": "o_m0",
+          "directed": true,
+          "label": null
+        },
+        {
+          "source": "s_f0",
+          "target": "A_m1",
+          "directed": true,
+          "label": null
+        },
+        {
+          "source": "A_m1",
+          "target": "o_m1",
+          "directed": true,
+          "label": null
+        },
+        {
+          "source": "C_m0",
+          "target": "o_m0",
+          "directed": false,
+          "label": null
+        },
+        {
+          "source": "C_m1",
+          "target": "o_m1",
+          "directed": false,
+          "label": null
+        }
+      ],
+      "connection_count": 10,
+      "matrix_shapes": {
+        "A_m0": [
+          3,
+          4,
+          2
+        ],
+        "A_m1": [
+          2,
+          4
+        ],
+        "B_f0": [
+          3,
+          4,
+          4
+        ],
+        "B_f1": [
+          2,
+          2
+        ],
+        "C_m0": [
+          3
+        ],
+        "C_m1": [
+          2
+        ],
+        "D_f0": [
+          4
+        ],
+        "D_f1": [
+          2
+        ]
+      },
+      "validation_messages": [
+        "[GNN-E005] Unparseable connection: '(s_f0, u)>B_f0' [output/cross_framework/structured/acceptance/structured/input/factorized_posterior.md:75]",
+        "[GNN-E005] Unparseable connection: '(s_f0, s_f1)>A_m0' [output/cross_framework/structured/acceptance/structured/input/factorized_posterior.md:81]",
+        "[GNN-E002] Matrix 'B_f1': declared shape 2x2 but parameterization has shape 1x2x2 [output/cross_framework/structured/acceptance/structured/input/factorized_posterior.md:136]"
+      ],
+      "pipeline_evidence": {
+        "pipeline_summary_available": true,
+        "render_status": "passed",
+        "execution_status": "passed",
+        "render_summary_available": true,
+        "execution_summary_available": true,
+        "skip_or_failure_reason": null
+      },
+      "telemetry_present": true,
+      "telemetry_preview": {
+        "expected_free_energy": [
+          [
+            1.581231713294983,
+            1.4862236976623535,
+            1.5825185775756836
+          ],
+          [
+            1.5329657793045044,
+            1.5588147640228271,
+            1.5302157402038574
+          ],
+          [
+            1.3770034313201904,
+            1.5901260375976562,
+            1.3878874778747559
+          ],
+          [
+            1.3383625745773315,
+            1.4347249269485474,
+            1.3472623825073242
+          ],
+          [
+            1.342290997505188,
+            1.2243375778198242,
+            1.3590035438537598
+          ]
+        ],
+        "observations": [
+          4,
+          1,
+          5,
+          5,
+          4
+        ],
+        "actions": [
+          2,
+          1,
+          1,
+          1,
+          2
+        ]
+      },
+      "artifact_links": [
+        "output/cross_framework/structured/acceptance/structured/pipeline_output/11_render_output/factorized_posterior/processing_summary.json",
+        "output/cross_framework/structured/acceptance/structured/pipeline_output/11_render_output/factorized_posterior/pymdp/Factorized_Posterior_Agent_pymdp.py",
+        "output/cross_framework/structured/acceptance/structured/pipeline_output/11_render_output/factorized_posterior/pymdp/README.md",
+        "output/cross_framework/structured/acceptance/structured/pipeline_output/11_render_output/factorized_posterior/pymdp/output/pymdp_simulations/Factorized Posterior Agent/simulation_results.json",
+        "output/cross_framework/structured/acceptance/structured/pipeline_output/12_execute_output/factorized_posterior/pymdp/execution_logs/Factorized_Posterior_Agent_pymdp.py_execution.log",
+        "output/cross_framework/structured/acceptance/structured/pipeline_output/12_execute_output/factorized_posterior/pymdp/execution_logs/Factorized_Posterior_Agent_pymdp.py_results.json",
+        "output/cross_framework/structured/acceptance/structured/pipeline_output/12_execute_output/factorized_posterior/pymdp/simulation_data/simulation_results.json",
+        "output/cross_framework/structured/acceptance/structured/pipeline_output/15_audio_output/factorized_posterior_ambient.wav",
+        "output/cross_framework/structured/acceptance/structured/pipeline_output/15_audio_output/factorized_posterior_rhythmic.wav",
+        "output/cross_framework/structured/acceptance/structured/pipeline_output/15_audio_output/factorized_posterior_sonification.wav",
+        "output/cross_framework/structured/acceptance/structured/pipeline_output/15_audio_output/factorized_posterior_tonal.wav",
+        "output/cross_framework/structured/acceptance/structured/pipeline_output/16_analysis_output/cross_framework/factorized_posterior_post_simulation_analysis.json",
+        "output/cross_framework/structured/acceptance/structured/pipeline_output/16_analysis_output/pymdp/Factorized_Posterior_Agent/belief_evolution_1.png",
+        "output/cross_framework/structured/acceptance/structured/pipeline_output/16_analysis_output/pymdp/Factorized_Posterior_Agent/cumulative_preference.png",
+        "output/cross_framework/structured/acceptance/structured/pipeline_output/16_analysis_output/pymdp/Factorized_Posterior_Agent/discrete_states_0.png",
+        "output/cross_framework/structured/acceptance/structured/pipeline_output/16_analysis_output/pymdp/Factorized_Posterior_Agent/energy_dynamics_3.png",
+        "output/cross_framework/structured/acceptance/structured/pipeline_output/16_analysis_output/pymdp/Factorized_Posterior_Agent/performance_2.png",
+        "output/cross_framework/structured/acceptance/structured/pipeline_output/16_analysis_output/pymdp/factorized_posterior_pymdp_action_frequencies.png",
+        "output/cross_framework/structured/acceptance/structured/pipeline_output/16_analysis_output/pymdp/factorized_posterior_pymdp_belief_convergence.png",
+        "output/cross_framework/structured/acceptance/structured/pipeline_output/16_analysis_output/pymdp/factorized_posterior_pymdp_belief_trace.png",
+        "output/cross_framework/structured/acceptance/structured/pipeline_output/16_analysis_output/pymdp/factorized_posterior_pymdp_free_energy.png",
+        "output/cross_framework/structured/acceptance/structured/pipeline_output/16_analysis_output/pymdp/factorized_posterior_pymdp_observations.png",
+        "output/cross_framework/structured/acceptance/structured/pipeline_output/16_analysis_output/pymdp/factorized_posterior_pymdp_vfe_vs_efe.png",
+        "output/cross_framework/structured/acceptance/structured/pipeline_output/3_gnn_output/factorized_posterior/factorized_posterior_agda.agda",
+        "output/cross_framework/structured/acceptance/structured/pipeline_output/3_gnn_output/factorized_posterior/factorized_posterior_alloy.als"
+      ]
+    }
+  ],
+  "totals": {
+    "variables": 13,
+    "connections": 10,
+    "validation_messages": 3,
+    "models_with_telemetry": 1
+  }
+}

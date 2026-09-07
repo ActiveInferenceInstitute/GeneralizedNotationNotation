@@ -1,0 +1,32 @@
+{
+  "total_variables": 8,
+  "total_connections": 7,
+  "variable_types": {
+    "likelihood_matrix": 1,
+    "transition_matrix": 1,
+    "prior_vector": 1,
+    "hidden_state": 4,
+    "observation": 1
+  },
+  "connection_types": {
+    "D->s_t": 1,
+    "s_t->A": 1,
+    "A->o_t": 1,
+    "s_t->B": 1,
+    "B->s_prime": 1,
+    "s_t->F": 1,
+    "o_t->F": 1
+  },
+  "gnn_edge_orientation": {
+    "directed_variable_pairs": 2,
+    "undirected_variable_pairs": 5
+  },
+  "network_properties": {
+    "num_nodes": 7,
+    "num_edges": 7,
+    "density": 0.16666666666666666,
+    "is_strongly_connected": false,
+    "is_weakly_connected": true,
+    "average_clustering": 0.0
+  }
+}

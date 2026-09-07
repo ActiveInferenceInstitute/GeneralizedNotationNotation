@@ -1,0 +1,85 @@
+{
+  "timestamp": "2026-09-06T12:16:19.610999",
+  "processed_files": 1,
+  "success": true,
+  "errors": [],
+  "audio_files_generated": [
+    {
+      "file_path": "output/cross_framework/structured/acceptance/structured/input/factorized_posterior.md",
+      "file_name": "factorized_posterior.md",
+      "audio_files": {
+        "tonal": "output/cross_framework/structured/acceptance/structured/pipeline_output/15_audio_output/factorized_posterior_tonal.wav",
+        "rhythmic": "output/cross_framework/structured/acceptance/structured/pipeline_output/15_audio_output/factorized_posterior_rhythmic.wav",
+        "ambient": "output/cross_framework/structured/acceptance/structured/pipeline_output/15_audio_output/factorized_posterior_ambient.wav"
+      },
+      "variables_count": 13,
+      "connections_count": 10,
+      "generation_timestamp": "2026-09-06T12:16:19.803674"
+    }
+  ],
+  "sonification_results": [
+    {
+      "file_path": "output/cross_framework/structured/acceptance/structured/input/factorized_posterior.md",
+      "sonification_file": "output/cross_framework/structured/acceptance/structured/pipeline_output/15_audio_output/factorized_posterior_sonification.wav",
+      "dynamics_analyzed": 5,
+      "sonification_type": "model_dynamics",
+      "generation_timestamp": "2026-09-06T12:16:19.860093"
+    }
+  ],
+  "audio_analysis": [
+    {
+      "file_path": "output/cross_framework/structured/acceptance/structured/input/factorized_posterior.md",
+      "audio_characteristics": {
+        "tonal": {
+          "error": "No module named 'soundfile'"
+        },
+        "rhythmic": {
+          "error": "No module named 'soundfile'"
+        },
+        "ambient": {
+          "error": "No module named 'soundfile'"
+        }
+      },
+      "spectral_analysis": {},
+      "temporal_analysis": {}
+    }
+  ],
+  "audio_streaming": {
+    "schema": "gnn_audio_stream_chunks_v1",
+    "status": "ready",
+    "streaming_safe": true,
+    "frame_count": 45,
+    "duration_frames": 45,
+    "chunk_count": 2,
+    "chunks": [
+      {
+        "index": 0,
+        "frame_start": 0,
+        "frame_count": 32,
+        "amplitude": 0.9981824159622192,
+        "frequency_hz": 270.4276506503423,
+        "metadata": {
+          "mean_free_energy": 1.1809216883447433,
+          "last_action": 1
+        }
+      },
+      {
+        "index": 1,
+        "frame_start": 32,
+        "frame_count": 13,
+        "amplitude": 0.9981824159622192,
+        "frequency_hz": 250.0,
+        "metadata": {
+          "mean_free_energy": 0.0,
+          "last_action": 2
+        }
+      }
+    ],
+    "telemetry_source_count": 3,
+    "telemetry_provenance": [
+      "output/cross_framework/structured/acceptance/structured/pipeline_output/12_execute_output/factorized_posterior/pymdp/execution_logs/Factorized_Posterior_Agent_pymdp.py_results.json",
+      "output/cross_framework/structured/acceptance/structured/pipeline_output/12_execute_output/factorized_posterior/pymdp/simulation_data/simulation_results.json",
+      "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/structured/acceptance/structured/pipeline_output/12_execute_output/factorized_posterior/pymdp/execution_logs/Factorized_Posterior_Agent_pymdp.py_results.json"
+    ]
+  }
+}

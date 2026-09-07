@@ -61,12 +61,15 @@ except ModuleNotFoundError:  # pragma: no cover - yaml is a GNN dependency
 
 __all__ = [
     "RepositorySnapshot",
+    "corpus_coverage_notes",
     "generate_variables",
     "load_variables",
     "save_variables",
     "config_metadata_drift",
+    "preamble_metadata_drift",
     "select_cross_framework_family",
     "sync_config_metadata",
+    "sync_preamble_metadata",
     "token_checksum",
 ]
 
@@ -465,17 +468,173 @@ def _count_files(snapshot: RepositorySnapshot, prefix: str, pattern: str) -> int
     return len(snapshot.glob(prefix, pattern))
 
 
+# Markdown filenames the pipeline never treats as a model source. Mirrors
+# ``gnn.discovery.NON_MODEL_MARKDOWN_FILENAMES`` / ``NON_MODEL_MARKDOWN_SUFFIXES``
+# rather than importing them, so the producer stays free of pipeline imports.
+# ``test_producer_model_census_matches_pipeline_discovery`` pins the two equal.
+_NON_MODEL_MARKDOWN_FILENAMES = frozenset(
+    {
+        "agents.md",
+        "changelog.md",
+        "contributing.md",
+        "index.md",
+        "license.md",
+        "readme.md",
+    }
+)
+_NON_MODEL_MARKDOWN_SUFFIXES = (".example.md", ".template.md")
+# ``## GNNSection`` must open a line to be the model's header. A doc that merely
+# *names* the header inline (`` `## GNNSection` ``) is prose, not a model — which
+# is how a fixture README came within one commit of being counted as a model.
+_GNN_SECTION_HEADER = re.compile(r"^## GNNSection\b", re.MULTILINE)
+
+
+def _is_model_markdown(rel: Path) -> bool:
+    """Filename half of the model test, mirroring ``gnn.discovery``."""
+    name = rel.name.lower()
+    if name in _NON_MODEL_MARKDOWN_FILENAMES:
+        return False
+    return not any(name.endswith(suffix) for suffix in _NON_MODEL_MARKDOWN_SUFFIXES)
+
+
+def _models_under(snapshot: RepositorySnapshot, prefix: str) -> list[Path]:
+    """Markdown files under *prefix* that are GNN model sources."""
+    candidates = [md for md in snapshot.glob(prefix, "*.md") if _is_model_markdown(md)]
+    snapshot.prefetch(candidates)
+    return [
+        md for md in candidates if _GNN_SECTION_HEADER.search(snapshot.read_text(md))
+    ]
+
+
 def _example_models(snapshot: RepositorySnapshot) -> list[Path]:
     """Return the GNN example *models* under ``input/gnn_files``.
 
-    A GNN model file is identified by its mandatory ``## GNNSection`` header, so
-    the corpus README/AGENTS/INDEX documents that live alongside the models are
-    not counted as models. Model corpora that live outside ``input/gnn_files``
-    (see ``GNN_UNSCANNED_CORPUS_DIRS``) are deliberately not in this set.
+    A GNN model file is identified by its mandatory ``## GNNSection`` header at
+    the start of a line, and by not being one of the README/AGENTS/INDEX
+    scaffolds the pipeline itself excludes. Model corpora that live outside
+    ``input/gnn_files`` are not in this set; ``GNN_OUTSIDE_CORPUS_NOTE`` reports
+    those.
     """
-    candidates = snapshot.glob("input/gnn_files", "*.md")
-    snapshot.prefetch(candidates)
-    return [md for md in candidates if "## GNNSection" in snapshot.read_text(md)]
+    return _models_under(snapshot, "input/gnn_files")
+
+
+def _outside_corpus_dirs(snapshot: RepositorySnapshot) -> list[tuple[str, int]]:
+    """Model directories directly under ``input/`` other than ``gnn_files``.
+
+    Returns ``(path, model_count)`` pairs, sorted by path, where *model_count*
+    is the number of ``## GNNSection``-bearing ``.md`` files the directory
+    holds. ``_example_models`` deliberately scans only ``input/gnn_files``, so
+    without this the rest of the ``input/`` tree is invisible to every token and
+    can only be described by typed prose — which is how a fixture came to carry
+    a ``## GNNSection`` while no manifest, count, table or figure knew it
+    existed.
+    """
+    names = sorted(
+        {
+            rel.parts[1]
+            for rel in snapshot.glob("input", "*")
+            if len(rel.parts) > 2 and rel.parts[1] != "gnn_files"
+        }
+    )
+    return [
+        (f"input/{name}", len(_models_under(snapshot, f"input/{name}")))
+        for name in names
+    ]
+
+
+def outside_corpus_note(
+    outside_dirs: Sequence[tuple[str, int]],
+    family_target_dirs: set[str] | Sequence[str],
+    example_count: int,
+) -> str:
+    """Build the generated sentences about model files outside the corpus tree.
+
+    This is a *sentence*, not a count, for the same reason
+    ``corpus_coverage_notes`` is: what goes stale is the relationship between a
+    directory, its model files, and the manifest — not any one number. Typed
+    prose describing that relationship stayed true only by luck through two
+    remediation passes, because every count beside it was computed from
+    ``input/gnn_files`` alone and so could not contradict it.
+
+    Flips on all three axes: a directory appearing or disappearing, a model file
+    being added to or removed from one, and a manifest family being pointed at
+    one.
+    """
+    registered = {str(d).rstrip("/") for d in family_target_dirs}
+    if not outside_dirs:
+        return (
+            f"Every model file under `input/` lives in that subtree, so the "
+            f"{example_count}-file count covers the whole tree."
+        )
+    fragments: list[str] = []
+    for path, count in outside_dirs:
+        noun = "model file" if count == 1 else "model files"
+        held = f"{count} {noun}" if count else "no model files"
+        claim = (
+            "is registered as a manifest family target directory"
+            if path in registered
+            else "is registered by no manifest family"
+        )
+        fragments.append(f"`{path}/` holds {held} and {claim}")
+    listed = "; ".join(fragments)
+    total = sum(count for _, count in outside_dirs)
+    if total == 0:
+        tail = (
+            f"No model file lies outside `input/gnn_files`, so the "
+            f"{example_count}-file count covers every model in the tree."
+        )
+    elif total == 1:
+        tail = f"That model file is outside the {example_count}-file count above."
+    else:
+        tail = (
+            f"Those {total} model files are outside the "
+            f"{example_count}-file count above."
+        )
+    return f"Outside that subtree, {listed}. {tail}"
+
+
+def corpus_coverage_notes(
+    family_target_dirs: set[str] | Sequence[str],
+    unscanned_corpus_dirs: Sequence[str],
+    example_count: int,
+) -> tuple[str, str]:
+    """Build the two generated sentences about family/corpus coverage.
+
+    Returns ``(unscanned_corpus_note, target_dir_coverage_note)``: the first for
+    the model-family coverage paragraph, the second for the reproduction
+    section's ``--target-dir`` note.
+
+    These are *sentences*, not counts, because the claim that goes stale is the
+    relationship, not a number. A commit repointed the ``multiagent`` family's
+    ``target_dir`` from ``input/multi_agent_models`` into ``input/gnn_files/``;
+    every count beside the three prose sites describing the old layout stayed
+    correct, so every count-based check stayed green. Generating the whole clause
+    from the manifest removes the typed claim rather than replacing it with a
+    newer true value that can stale the same way.
+    """
+    total = len(set(family_target_dirs))
+    outside = list(unscanned_corpus_dirs)
+    target_word = "directory" if total == 1 else "directories"
+    if not outside:
+        return (
+            f"Registered but outside the scanned tree: none, because all "
+            f"{total} target {target_word} are themselves `input/gnn_files` "
+            f"corpus directories.",
+            f"All {total} registered family target {target_word} lie inside "
+            f"that tree, so a single invocation reaches every registered family.",
+        )
+    outside_word = "directory" if len(outside) == 1 else "directories"
+    outside_verb = "lies" if len(outside) == 1 else "lie"
+    outside_needs = "needs" if len(outside) == 1 else "need"
+    listed = ", ".join(f"`{d}`" for d in outside)
+    return (
+        f"Registered but outside the scanned tree: {listed} "
+        f"({len(outside)} of the {total} target {target_word}), whose models "
+        f"the gates exercise even though they are not among the "
+        f"{example_count} models under `input/gnn_files`.",
+        f"{len(outside)} registered family target {outside_word} ({listed}) "
+        f"{outside_verb} outside that tree and {outside_needs} a separate run.",
+    )
 
 
 def _release_metadata(snapshot: RepositorySnapshot) -> list[tuple[str, str, str]]:
@@ -778,6 +937,11 @@ def generate_variables(project_root: Path) -> dict[str, str]:
     unscanned_corpus_dirs = sorted(
         d for d in family_target_dirs if not d.startswith("input/gnn_files/")
     )
+    unscanned_corpus_note, target_dir_coverage_note = corpus_coverage_notes(
+        family_target_dirs, unscanned_corpus_dirs, len(example_models)
+    )
+    outside_corpus_dirs = _outside_corpus_dirs(snapshot)
+    outside_corpus_models = sum(count for _, count in outside_corpus_dirs)
     figure_count = _count_files(snapshot, "output", "*.png")
     manuscript_figure_count = _count_files(snapshot, "output/figures", "*.png")
     # fleet-logs are historical run records, not maintained documentation; the
@@ -840,6 +1004,15 @@ def generate_variables(project_root: Path) -> dict[str, str]:
         ),
         "GNN_UNSCANNED_CORPUS_DIR_COUNT": str(len(unscanned_corpus_dirs)),
         "GNN_UNSCANNED_CORPUS_DIRS": ", ".join(f"`{d}`" for d in unscanned_corpus_dirs),
+        "GNN_UNSCANNED_CORPUS_NOTE": unscanned_corpus_note,
+        # Model files under input/ but outside input/gnn_files. GNN_EXAMPLE_COUNT
+        # deliberately excludes them, so without these two tokens nothing the
+        # producer emits can see them at all.
+        "GNN_OUTSIDE_CORPUS_MODEL_COUNT": str(outside_corpus_models),
+        "GNN_OUTSIDE_CORPUS_NOTE": outside_corpus_note(
+            outside_corpus_dirs, family_target_dirs, len(example_models)
+        ),
+        "GNN_TARGET_DIR_COVERAGE_NOTE": target_dir_coverage_note,
         # Backends
         "GNN_BACKEND_COUNT": str(len(backends)),
         "GNN_BACKEND_LIST": ", ".join(backend_names),
@@ -874,6 +1047,10 @@ def generate_variables(project_root: Path) -> dict[str, str]:
         "GNN_MANUSCRIPT_FIGURE_COUNT": str(manuscript_figure_count),
     }
     variables.update(step_tokens)
+    # Self-describing size of the map, so a section can state how many tokens the
+    # producer emits without hand-typing it. Counted after every other token is
+    # in place, and includes itself.
+    variables["GNN_TOKEN_COUNT"] = str(len(variables) + 1)
     return variables
 
 
@@ -945,6 +1122,79 @@ def sync_config_metadata(project_root: Path, variables: Mapping[str, str]) -> li
             changes.append(f"{field}: {actual} -> {expected}")
     if changes:
         config_path.write_text("".join(lines), encoding="utf-8")
+    return changes
+
+
+# Fields in manuscript/preamble.md's LaTeX block the producer owns, and the token
+# that owns each. preamble.md IS token-substituted into output/manuscript/, but
+# the template's _manuscript_source.py then copies the RAW file over that copy
+# (`_shutil.copy2(preamble_src, preamble_dst)`), so a {{TOKEN}} written here
+# reaches LaTeX unresolved and hyperref writes the token name into the PDF's
+# metadata. Same remedy as config.yaml: the producer writes the value.
+_PREAMBLE_OWNED_FIELDS = {
+    "pdfsubject": "GNN_SUBTITLE",
+    "pdfkeywords": "GNN_KEYWORDS",
+}
+
+_PREAMBLE_FIELD_RE = re.compile(
+    r"^(?P<indent>\s*)(?P<field>pdf\w+)=\{(?P<value>.*?)\}(?P<tail>[,}]*)\s*$"
+)
+
+
+def _preamble_fields(project_root: Path) -> list[tuple[int, str, str, str]]:
+    """Return ``(line_index, field, current_value, whole_line)`` for owned fields."""
+    path = Path(project_root) / "manuscript" / "preamble.md"
+    if not path.is_file():
+        return []
+    found = []
+    for index, line in enumerate(
+        path.read_text(encoding="utf-8").splitlines(keepends=True)
+    ):
+        match = _PREAMBLE_FIELD_RE.match(line.rstrip("\n"))
+        if match and match.group("field") in _PREAMBLE_OWNED_FIELDS:
+            found.append((index, match.group("field"), match.group("value"), line))
+    return found
+
+
+def preamble_metadata_drift(
+    project_root: Path, variables: Mapping[str, str]
+) -> list[str]:
+    """Return one message per ``preamble.md`` PDF-metadata field out of sync."""
+    drift: list[str] = []
+    for _index, field, value, _line in _preamble_fields(project_root):
+        expected = variables.get(_PREAMBLE_OWNED_FIELDS[field], "")
+        if expected and value != expected:
+            token = _PREAMBLE_OWNED_FIELDS[field]
+            drift.append(f"preamble.md: {field}: {value!r} != {token} ({expected!r})")
+    return drift
+
+
+def sync_preamble_metadata(
+    project_root: Path, variables: Mapping[str, str]
+) -> list[str]:
+    """Rewrite the producer-owned ``preamble.md`` PDF-metadata values in place.
+
+    Returns the list of ``"field: old -> new"`` changes applied.
+    """
+    path = Path(project_root) / "manuscript" / "preamble.md"
+    fields = _preamble_fields(project_root)
+    if not fields:
+        return []
+    lines = path.read_text(encoding="utf-8").splitlines(keepends=True)
+    changes: list[str] = []
+    for index, field, value, line in fields:
+        expected = variables.get(_PREAMBLE_OWNED_FIELDS[field], "")
+        if not expected or value == expected:
+            continue
+        match = _PREAMBLE_FIELD_RE.match(line.rstrip("\n"))
+        assert match is not None
+        newline = "\n" if line.endswith("\n") else ""
+        lines[index] = (
+            f"{match.group('indent')}{field}={{{expected}}}{match.group('tail')}{newline}"
+        )
+        changes.append(f"{field}: {value} -> {expected}")
+    if changes:
+        path.write_text("".join(lines), encoding="utf-8")
     return changes
 
 

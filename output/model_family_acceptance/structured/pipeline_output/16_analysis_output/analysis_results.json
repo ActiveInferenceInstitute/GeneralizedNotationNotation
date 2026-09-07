@@ -1,0 +1,1275 @@
+{
+  "timestamp": "2026-09-06T11:31:32.849076",
+  "processed_files": 1,
+  "success": true,
+  "errors": [],
+  "statistical_analysis": [
+    {
+      "file_path": "output/model_family_acceptance/structured/input/factorized_posterior.md",
+      "file_name": "factorized_posterior.md",
+      "file_size": 4631,
+      "line_count": 193,
+      "variables": [
+        {
+          "name": "Example",
+          "definition": "Example: Factorized",
+          "line": 1,
+          "type": "Factorized"
+        },
+        {
+          "name": "Version",
+          "definition": "Version: 1",
+          "line": 3,
+          "type": "1"
+        },
+        {
+          "name": "factors",
+          "definition": "factors: location",
+          "line": 29,
+          "type": "location"
+        },
+        {
+          "name": "modalities",
+          "definition": "modalities: visual",
+          "line": 30,
+          "type": "visual"
+        },
+        {
+          "name": "0",
+          "definition": "0: agent",
+          "line": 39,
+          "type": "agent"
+        },
+        {
+          "name": "1",
+          "definition": "1: goal",
+          "line": 40,
+          "type": "goal"
+        },
+        {
+          "name": "0",
+          "definition": "0: visual",
+          "line": 44,
+          "type": "visual"
+        },
+        {
+          "name": "1",
+          "definition": "1: proprioceptive",
+          "line": 45,
+          "type": "proprioceptive"
+        },
+        {
+          "name": "actions",
+          "definition": "actions: stay",
+          "line": 49,
+          "type": "stay"
+        },
+        {
+          "name": "likelihood",
+          "definition": "likelihood: depends",
+          "line": 53,
+          "type": "depends"
+        },
+        {
+          "name": "likelihood",
+          "definition": "likelihood: depends",
+          "line": 54,
+          "type": "depends"
+        },
+        {
+          "name": "A_m0",
+          "definition": "A_m0: visual",
+          "line": 92,
+          "type": "visual"
+        },
+        {
+          "name": "A_m1",
+          "definition": "A_m1: proprioceptive",
+          "line": 101,
+          "type": "proprioceptive"
+        },
+        {
+          "name": "D_f0",
+          "definition": "D_f0: uniform",
+          "line": 108,
+          "type": "uniform"
+        },
+        {
+          "name": "D_f1",
+          "definition": "D_f1: slight",
+          "line": 112,
+          "type": "slight"
+        },
+        {
+          "name": "C_m0",
+          "definition": "C_m0: prefer",
+          "line": 116,
+          "type": "prefer"
+        },
+        {
+          "name": "C_m1",
+          "definition": "C_m1: neutral",
+          "line": 120,
+          "type": "neutral"
+        },
+        {
+          "name": "B_f0",
+          "definition": "B_f0: location",
+          "line": 124,
+          "type": "location"
+        },
+        {
+          "name": "B_f1",
+          "definition": "B_f1: goal",
+          "line": 132,
+          "type": "goal"
+        },
+        {
+          "name": "num_hidden_states",
+          "definition": "num_hidden_states: 8",
+          "line": 175,
+          "type": "8"
+        },
+        {
+          "name": "num_obs",
+          "definition": "num_obs: 6",
+          "line": 176,
+          "type": "6"
+        },
+        {
+          "name": "num_hidden_states_factor0",
+          "definition": "num_hidden_states_factor0: 4",
+          "line": 177,
+          "type": "4"
+        },
+        {
+          "name": "num_hidden_states_factor1",
+          "definition": "num_hidden_states_factor1: 2",
+          "line": 178,
+          "type": "2"
+        },
+        {
+          "name": "num_obs_modality0",
+          "definition": "num_obs_modality0: 3",
+          "line": 179,
+          "type": "3"
+        },
+        {
+          "name": "num_obs_modality1",
+          "definition": "num_obs_modality1: 2",
+          "line": 180,
+          "type": "2"
+        },
+        {
+          "name": "num_actions",
+          "definition": "num_actions: 3",
+          "line": 181,
+          "type": "3"
+        },
+        {
+          "name": "num_factors",
+          "definition": "num_factors: 2",
+          "line": 182,
+          "type": "2"
+        },
+        {
+          "name": "num_modalities",
+          "definition": "num_modalities: 2",
+          "line": 183,
+          "type": "2"
+        },
+        {
+          "name": "num_timesteps",
+          "definition": "num_timesteps: 15",
+          "line": 184,
+          "type": "15"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]      # Factor 0: agent location (4 possible positions)",
+          "line": 39,
+          "type": "float]      # Factor 0: agent location (4 possible positions)"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]      # Factor 1: goal identity (2 possible goals)",
+          "line": 40,
+          "type": "float]      # Factor 1: goal identity (2 possible goals)"
+        },
+        {
+          "name": "type",
+          "definition": "type=int]        # Modality 0: visual observation (3 visual cues)",
+          "line": 44,
+          "type": "int]        # Modality 0: visual observation (3 visual cues)"
+        },
+        {
+          "name": "type",
+          "definition": "type=int]        # Modality 1: proprioceptive observation (2 body states)",
+          "line": 45,
+          "type": "int]        # Modality 1: proprioceptive observation (2 body states)"
+        },
+        {
+          "name": "type",
+          "definition": "type=int]           # 3 possible actions: stay, forward, backward",
+          "line": 49,
+          "type": "int]           # 3 possible actions: stay, forward, backward"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]    # Visual likelihood: depends on both factors",
+          "line": 53,
+          "type": "float]    # Visual likelihood: depends on both factors"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]      # Proprioceptive likelihood: depends only on location",
+          "line": 54,
+          "type": "float]      # Proprioceptive likelihood: depends only on location"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]    # Location transitions (depends on action)",
+          "line": 58,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]      # Goal transitions (typically identity \u2014 goal is static)",
+          "line": 59,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]      # Prior over locations (uniform)",
+          "line": 63,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]      # Prior over goals",
+          "line": 64,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]      # Visual preferences",
+          "line": 65,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]      # Proprioceptive preferences",
+          "line": 66,
+          "type": "unknown"
+        },
+        {
+          "name": "A_m0",
+          "definition": "A_m0={",
+          "line": 95,
+          "type": "unknown"
+        },
+        {
+          "name": "A_m1",
+          "definition": "A_m1={",
+          "line": 103,
+          "type": "unknown"
+        },
+        {
+          "name": "D_f0",
+          "definition": "D_f0={(0.25, 0.25, 0.25, 0.25)}",
+          "line": 110,
+          "type": "unknown"
+        },
+        {
+          "name": "D_f1",
+          "definition": "D_f1={(0.6, 0.4)}",
+          "line": 114,
+          "type": "unknown"
+        },
+        {
+          "name": "C_m0",
+          "definition": "C_m0={(0.0, 0.0, 1.0)}",
+          "line": 118,
+          "type": "unknown"
+        },
+        {
+          "name": "C_m1",
+          "definition": "C_m1={(0.5, 0.5)}",
+          "line": 122,
+          "type": "unknown"
+        },
+        {
+          "name": "B_f0",
+          "definition": "B_f0={",
+          "line": 126,
+          "type": "unknown"
+        },
+        {
+          "name": "B_f1",
+          "definition": "B_f1={",
+          "line": 134,
+          "type": "unknown"
+        },
+        {
+          "name": "DiscreteTime",
+          "definition": "DiscreteTime=t",
+          "line": 154,
+          "type": "unknown"
+        },
+        {
+          "name": "ModelTimeHorizon",
+          "definition": "ModelTimeHorizon=15",
+          "line": 155,
+          "type": "unknown"
+        },
+        {
+          "name": "s_f0",
+          "definition": "s_f0=HiddenStateFactor0",
+          "line": 159,
+          "type": "unknown"
+        },
+        {
+          "name": "s_f1",
+          "definition": "s_f1=HiddenStateFactor1",
+          "line": 160,
+          "type": "unknown"
+        },
+        {
+          "name": "o_m0",
+          "definition": "o_m0=ObservationModality0",
+          "line": 161,
+          "type": "unknown"
+        },
+        {
+          "name": "o_m1",
+          "definition": "o_m1=ObservationModality1",
+          "line": 162,
+          "type": "unknown"
+        },
+        {
+          "name": "u",
+          "definition": "u=Action",
+          "line": 163,
+          "type": "unknown"
+        },
+        {
+          "name": "A_m0",
+          "definition": "A_m0=LikelihoodMatrixModality0",
+          "line": 164,
+          "type": "unknown"
+        },
+        {
+          "name": "A_m1",
+          "definition": "A_m1=LikelihoodMatrixModality1",
+          "line": 165,
+          "type": "unknown"
+        },
+        {
+          "name": "D_f0",
+          "definition": "D_f0=PriorFactor0",
+          "line": 168,
+          "type": "unknown"
+        },
+        {
+          "name": "D_f1",
+          "definition": "D_f1=PriorFactor1",
+          "line": 169,
+          "type": "unknown"
+        },
+        {
+          "name": "C_m0",
+          "definition": "C_m0=PreferenceModality0",
+          "line": 170,
+          "type": "unknown"
+        },
+        {
+          "name": "C_m1",
+          "definition": "C_m1=PreferenceModality1",
+          "line": 171,
+          "type": "unknown"
+        },
+        {
+          "name": "s_f0",
+          "definition": "s_f0[4,1,type=float]",
+          "line": 39,
+          "type": "unknown"
+        },
+        {
+          "name": "s_f1",
+          "definition": "s_f1[2,1,type=float]",
+          "line": 40,
+          "type": "unknown"
+        },
+        {
+          "name": "o_m0",
+          "definition": "o_m0[3,1,type=int]",
+          "line": 44,
+          "type": "unknown"
+        },
+        {
+          "name": "o_m1",
+          "definition": "o_m1[2,1,type=int]",
+          "line": 45,
+          "type": "unknown"
+        },
+        {
+          "name": "u",
+          "definition": "u[3,1,type=int]",
+          "line": 49,
+          "type": "unknown"
+        },
+        {
+          "name": "A_m0",
+          "definition": "A_m0[3,4,2,type=float]",
+          "line": 53,
+          "type": "unknown"
+        },
+        {
+          "name": "A_m1",
+          "definition": "A_m1[2,4,type=float]",
+          "line": 54,
+          "type": "unknown"
+        },
+        {
+          "name": "B_f0",
+          "definition": "B_f0[4,4,3,type=float]",
+          "line": 58,
+          "type": "unknown"
+        },
+        {
+          "name": "B_f1",
+          "definition": "B_f1[2,2,type=float]",
+          "line": 59,
+          "type": "unknown"
+        },
+        {
+          "name": "D_f0",
+          "definition": "D_f0[4,1,type=float]",
+          "line": 63,
+          "type": "unknown"
+        },
+        {
+          "name": "D_f1",
+          "definition": "D_f1[2,1,type=float]",
+          "line": 64,
+          "type": "unknown"
+        },
+        {
+          "name": "C_m0",
+          "definition": "C_m0[3,1,type=float]",
+          "line": 65,
+          "type": "unknown"
+        },
+        {
+          "name": "C_m1",
+          "definition": "C_m1[2,1,type=float]",
+          "line": 66,
+          "type": "unknown"
+        },
+        {
+          "name": "A_m",
+          "definition": "A_m[s_f0, s_f1]",
+          "line": 144,
+          "type": "unknown"
+        },
+        {
+          "name": "A_m",
+          "definition": "A_m[s_f0, s_f1]",
+          "line": 145,
+          "type": "unknown"
+        },
+        {
+          "name": "\u03a3_m",
+          "definition": "\u03a3_m [E_Q[ln Q(o_m|\u03c0) - ln C_m]",
+          "line": 149,
+          "type": "unknown"
+        },
+        {
+          "name": "H",
+          "definition": "H[Q(s_f0|\u03c0)]",
+          "line": 149,
+          "type": "unknown"
+        },
+        {
+          "name": "H",
+          "definition": "H[Q(s_f1|\u03c0)]",
+          "line": 149,
+          "type": "unknown"
+        }
+      ],
+      "connections": [
+        {
+          "source": "D_f0",
+          "target": "s_f0",
+          "connection": "D_f0>s_f0",
+          "connection_type": "directional",
+          "line": 70
+        },
+        {
+          "source": "D_f1",
+          "target": "s_f1",
+          "connection": "D_f1>s_f1",
+          "connection_type": "directional",
+          "line": 71
+        },
+        {
+          "source": "B_f0",
+          "target": "s_f0",
+          "connection": "B_f0>s_f0",
+          "connection_type": "directional",
+          "line": 75
+        },
+        {
+          "source": "s_f1",
+          "target": "B_f1",
+          "connection": "s_f1>B_f1",
+          "connection_type": "directional",
+          "line": 76
+        },
+        {
+          "source": "B_f1",
+          "target": "s_f1",
+          "connection": "B_f1>s_f1",
+          "connection_type": "directional",
+          "line": 77
+        },
+        {
+          "source": "A_m0",
+          "target": "o_m0",
+          "connection": "A_m0>o_m0",
+          "connection_type": "directional",
+          "line": 81
+        },
+        {
+          "source": "s_f0",
+          "target": "A_m1",
+          "connection": "s_f0>A_m1",
+          "connection_type": "directional",
+          "line": 82
+        },
+        {
+          "source": "A_m1",
+          "target": "o_m1",
+          "connection": "A_m1>o_m1",
+          "connection_type": "directional",
+          "line": 83
+        },
+        {
+          "source": "C_m0",
+          "target": "o_m0",
+          "connection": "C_m0-o_m0",
+          "connection_type": "bidirectional",
+          "line": 86
+        },
+        {
+          "source": "C_m1",
+          "target": "o_m1",
+          "connection": "C_m1-o_m1",
+          "connection_type": "bidirectional",
+          "line": 87
+        }
+      ],
+      "sections": [
+        {
+          "name": "GNN Example: Factorized Posterior Model",
+          "line": 1
+        },
+        {
+          "name": "GNN Version: 1.0",
+          "line": 3
+        },
+        {
+          "name": "Demonstrates explicit mean-field factorization of the posterior",
+          "line": 5
+        },
+        {
+          "name": "Q(s) = Q(s_1) * Q(s_2) \u2014 a key computational simplification in",
+          "line": 6
+        },
+        {
+          "name": "variational inference when exact joint inference is intractable.",
+          "line": 7
+        },
+        {
+          "name": "GNNSection",
+          "line": 9
+        },
+        {
+          "name": "GNNVersionAndFlags",
+          "line": 13
+        },
+        {
+          "name": "ModelName",
+          "line": 17
+        },
+        {
+          "name": "ModelAnnotation",
+          "line": 21
+        },
+        {
+          "name": "StateSpaceBlock",
+          "line": 35
+        },
+        {
+          "name": "Two factorized state dimensions",
+          "line": 37
+        },
+        {
+          "name": "Two observation modalities",
+          "line": 42
+        },
+        {
+          "name": "Actions",
+          "line": 47
+        },
+        {
+          "name": "Likelihood matrices (one per modality)",
+          "line": 51
+        },
+        {
+          "name": "Transition matrices (one per factor)",
+          "line": 56
+        },
+        {
+          "name": "Priors and preferences",
+          "line": 61
+        },
+        {
+          "name": "Connections",
+          "line": 68
+        },
+        {
+          "name": "Factor-wise priors",
+          "line": 70
+        },
+        {
+          "name": "Transitions per factor",
+          "line": 74
+        },
+        {
+          "name": "Observations couple modalities to state factors",
+          "line": 80
+        },
+        {
+          "name": "Preferences",
+          "line": 86
+        },
+        {
+          "name": "InitialParameterization",
+          "line": 90
+        },
+        {
+          "name": "A_m0: visual observation depends on (location, goal) jointly",
+          "line": 92
+        },
+        {
+          "name": "Simplified uniform mapping for each goal",
+          "line": 93
+        },
+        {
+          "name": "A_m1: proprioceptive depends only on location",
+          "line": 101
+        },
+        {
+          "name": "D_f0: uniform over 4 locations",
+          "line": 108
+        },
+        {
+          "name": "D_f1: slight bias toward goal 0",
+          "line": 112
+        },
+        {
+          "name": "C_m0: prefer the third visual observation",
+          "line": 116
+        },
+        {
+          "name": "C_m1: neutral",
+          "line": 120
+        },
+        {
+          "name": "B_f0: location transitions (depends on action)",
+          "line": 124
+        },
+        {
+          "name": "B_f1: goal transitions (static)",
+          "line": 132
+        },
+        {
+          "name": "Equations",
+          "line": 138
+        },
+        {
+          "name": "Mean-field factorization assumption:",
+          "line": 140
+        },
+        {
+          "name": "Q(s_f0, s_f1) = Q(s_f0) * Q(s_f1)",
+          "line": 141
+        },
+        {
+          "name": "# Per-factor updates (coordinate ascent VI):",
+          "line": 142
+        },
+        {
+          "name": "Q(s_f0) = softmax(ln(D_f0) + \u03a3_m ln(\u03a3_{s_f1} A_m[s_f0, s_f1] * Q(s_f1)^T * o_m))",
+          "line": 144
+        },
+        {
+          "name": "Q(s_f1) = softmax(ln(D_f1) + \u03a3_m ln(\u03a3_{s_f0} A_m[s_f0, s_f1] * Q(s_f0)^T * o_m))",
+          "line": 145
+        },
+        {
+          "name": "# Factorized policy posterior:",
+          "line": 146
+        },
+        {
+          "name": "Q(\u03c0) = softmax(-G(\u03c0))",
+          "line": 148
+        },
+        {
+          "name": "G(\u03c0) = \u03a3_m [E_Q[ln Q(o_m|\u03c0) - ln C_m] - H[Q(s_f0|\u03c0)] - H[Q(s_f1|\u03c0)]]",
+          "line": 149
+        },
+        {
+          "name": "Time",
+          "line": 151
+        },
+        {
+          "name": "ActInfOntologyAnnotation",
+          "line": 157
+        },
+        {
+          "name": "ModelParameters",
+          "line": 173
+        },
+        {
+          "name": "Footer",
+          "line": 186
+        },
+        {
+          "name": "Signature",
+          "line": 191
+        }
+      ],
+      "variable_statistics": {
+        "count": 81,
+        "types": {
+          "Factorized": 1,
+          "1": 1,
+          "location": 2,
+          "visual": 3,
+          "agent": 1,
+          "goal": 2,
+          "proprioceptive": 2,
+          "stay": 1,
+          "depends": 2,
+          "uniform": 1,
+          "slight": 1,
+          "prefer": 1,
+          "neutral": 1,
+          "8": 1,
+          "6": 1,
+          "4": 1,
+          "2": 4,
+          "3": 2,
+          "15": 1,
+          "float]      # Factor 0: agent location (4 possible positions)": 1,
+          "float]      # Factor 1: goal identity (2 possible goals)": 1,
+          "int]        # Modality 0: visual observation (3 visual cues)": 1,
+          "int]        # Modality 1: proprioceptive observation (2 body states)": 1,
+          "int]           # 3 possible actions: stay, forward, backward": 1,
+          "float]    # Visual likelihood: depends on both factors": 1,
+          "float]      # Proprioceptive likelihood: depends only on location": 1,
+          "unknown": 45
+        },
+        "average_line": 102.0246913580247,
+        "line_std": 54.339575944182975
+      },
+      "connection_statistics": {
+        "count": 10,
+        "average_line": 78.8,
+        "line_std": 5.617828762075256
+      },
+      "section_statistics": {
+        "count": 45,
+        "average_line": 89.5111111111111,
+        "line_std": 55.77240345954549
+      },
+      "distributions": {
+        "variable_distribution": {
+          "mean": 102.0246913580247,
+          "std": 54.339575944182975,
+          "min": 1.0,
+          "max": 184.0,
+          "median": 103.0,
+          "skewness": 0.07797977355444097,
+          "kurtosis": -1.474924121976732,
+          "entropy": 3.9662459312804135
+        },
+        "connection_distribution": {
+          "mean": 78.8,
+          "std": 5.617828762075256,
+          "min": 70.0,
+          "max": 87.0,
+          "median": 79.0,
+          "skewness": -0.11086377221345722,
+          "kurtosis": -1.2302813880977508,
+          "entropy": 2.3025850929940455
+        },
+        "complexity_metrics": {
+          "total_elements": 91,
+          "variable_complexity": 81,
+          "connection_complexity": 10,
+          "density": 0.12345679012345678,
+          "cyclomatic_complexity": -69
+        }
+      },
+      "correlations": {
+        "variable_connection_correlation": 0.12345679012345678,
+        "line_position_correlation": 0.0
+      },
+      "analysis_timestamp": "2026-09-06T11:31:32.860744"
+    }
+  ],
+  "complexity_metrics": [
+    {
+      "file_path": "output/model_family_acceptance/structured/input/factorized_posterior.md",
+      "file_name": "factorized_posterior.md",
+      "cyclomatic_complexity": -69,
+      "cognitive_complexity": 50.5,
+      "structural_complexity": 31.3,
+      "maintainability_index": 100.0,
+      "technical_debt": 6.1000000000000005,
+      "analysis_timestamp": "2026-09-06T11:31:32.864493"
+    }
+  ],
+  "performance_benchmarks": [
+    {
+      "file_path": "output/model_family_acceptance/structured/input/factorized_posterior.md",
+      "file_name": "factorized_posterior.md",
+      "parse_time": 0.004875167011050507,
+      "memory_usage": 27018,
+      "complexity_score": 91,
+      "estimated_runtime": 0.91,
+      "benchmark_timestamp": "2026-09-06T11:31:32.869504"
+    }
+  ],
+  "model_comparisons": [],
+  "visualization_files": [
+    "output/model_family_acceptance/structured/pipeline_output/16_analysis_output/pymdp/factorized_posterior_pymdp_belief_trace.png",
+    "output/model_family_acceptance/structured/pipeline_output/16_analysis_output/pymdp/factorized_posterior_pymdp_belief_convergence.png",
+    "output/model_family_acceptance/structured/pipeline_output/16_analysis_output/pymdp/factorized_posterior_pymdp_action_frequencies.png",
+    "output/model_family_acceptance/structured/pipeline_output/16_analysis_output/pymdp/Factorized_Posterior_Agent/discrete_states_0.png",
+    "output/model_family_acceptance/structured/pipeline_output/16_analysis_output/pymdp/Factorized_Posterior_Agent/belief_evolution_1.png",
+    "output/model_family_acceptance/structured/pipeline_output/16_analysis_output/pymdp/Factorized_Posterior_Agent/performance_2.png",
+    "output/model_family_acceptance/structured/pipeline_output/16_analysis_output/pymdp/Factorized_Posterior_Agent/energy_dynamics_3.png",
+    "output/model_family_acceptance/structured/pipeline_output/16_analysis_output/pymdp/Factorized_Posterior_Agent/cumulative_preference.png",
+    "output/model_family_acceptance/structured/pipeline_output/16_analysis_output/cross_framework/framework_success_rates.png",
+    "output/model_family_acceptance/structured/pipeline_output/16_analysis_output/cross_framework/framework_performance_comparison.png",
+    "output/model_family_acceptance/structured/pipeline_output/16_analysis_output/pymdp/factorized_posterior_pymdp_free_energy.png",
+    "output/model_family_acceptance/structured/pipeline_output/16_analysis_output/pymdp/factorized_posterior_pymdp_vfe_vs_efe.png",
+    "output/model_family_acceptance/structured/pipeline_output/16_analysis_output/pymdp/factorized_posterior_pymdp_observations.png"
+  ],
+  "post_simulation_analysis": [
+    {
+      "model_name": "factorized_posterior",
+      "analysis_file": "output/model_family_acceptance/structured/pipeline_output/16_analysis_output/cross_framework/factorized_posterior_post_simulation_analysis.json",
+      "framework_count": 1,
+      "has_comparison": true
+    }
+  ],
+  "overall_statistics": {},
+  "framework_comparison": {
+    "timestamp": "2026-09-06T11:31:39.657954",
+    "frameworks": {
+      "pymdp": {
+        "success_count": 1,
+        "total_count": 1,
+        "execution_times": [
+          12.338864
+        ],
+        "output_files": [
+          "output/model_family_acceptance/structured/pipeline_output/12_execute_output/factorized_posterior/pymdp/execution_logs/Factorized_Posterior_Agent_pymdp.py_execution.log"
+        ],
+        "implementation_dirs": [
+          "output/model_family_acceptance/structured/pipeline_output/12_execute_output/factorized_posterior/pymdp"
+        ],
+        "beliefs": [
+          [
+            0.30000001192092896,
+            0.19999998807907104,
+            0.03333333134651184,
+            0.02222222089767456,
+            0.13333332538604736,
+            0.08888888359069824,
+            0.13333332538604736,
+            0.08888888359069824
+          ],
+          [
+            0.22363638877868652,
+            0.021298697218298912,
+            0.04558441787958145,
+            0.21272723376750946,
+            0.1402597278356552,
+            0.09350648522377014,
+            0.15779219567775726,
+            0.10519479960203171
+          ],
+          [
+            0.008133724331855774,
+            0.004790137987583876,
+            0.09166490286588669,
+            0.018010245636105537,
+            0.09806738048791885,
+            0.35770636796951294,
+            0.25297635793685913,
+            0.16865089535713196
+          ],
+          [
+            0.010356185957789421,
+            0.00690125860273838,
+            0.0067252544686198235,
+            0.0024932471569627523,
+            0.15061119198799133,
+            0.08481378108263016,
+            0.185289204120636,
+            0.5528098940849304
+          ],
+          [
+            0.20741966366767883,
+            0.6158697009086609,
+            0.0013725432800129056,
+            0.0008873383048921824,
+            0.01159987784922123,
+            0.005892444867640734,
+            0.08465050160884857,
+            0.07230793684720993
+          ],
+          [
+            0.6912640333175659,
+            0.29304561018943787,
+            0.00014068484597373754,
+            0.0005706001538783312,
+            0.0011103680590167642,
+            0.0007361755124293268,
+            0.005692964885383844,
+            0.007439528126269579
+          ],
+          [
+            0.9402273893356323,
+            0.05695217847824097,
+            5.700849669665331e-06,
+            9.8593627626542e-05,
+            3.762840788112953e-05,
+            3.373953950358555e-05,
+            0.0017811190336942673,
+            0.0008635752601549029
+          ],
+          [
+            0.9895226359367371,
+            0.008564229123294353,
+            1.6507728162196145e-07,
+            1.196757784782676e-05,
+            3.9345904951915145e-06,
+            2.166538934034179e-06,
+            0.0017749429680407047,
+            0.00012013713421765715
+          ],
+          [
+            0.9969586133956909,
+            0.0012328465236350894,
+            9.631422770439713e-09,
+            1.366672108815692e-06,
+            3.21685865856125e-06,
+            2.481220917616156e-07,
+            0.0017866897396743298,
+            1.713923666102346e-05
+          ],
+          [
+            0.9980292916297913,
+            0.0001763317995937541,
+            5.832610394662652e-09,
+            1.5508194906033168e-07,
+            3.205630264346837e-06,
+            3.4203122112330675e-08,
+            0.0017885839333757758,
+            2.449011844873894e-06
+          ],
+          [
+            0.9981824159622192,
+            2.51965884672245e-05,
+            5.747130327193872e-09,
+            1.765627821725957e-08,
+            3.2058437682280783e-06,
+            4.862895419677216e-09,
+            0.001788858207874,
+            3.4991771258319204e-07
+          ],
+          [
+            0.8730348944664001,
+            3.1484705687034875e-06,
+            4.070211616635788e-07,
+            1.4323667585358635e-07,
+            0.00022711629571858793,
+            4.918936014064457e-08,
+            0.12673087418079376,
+            3.541710157151101e-06
+          ],
+          [
+            0.9956896901130676,
+            5.155652615940198e-07,
+            4.642014630462654e-07,
+            1.884376032990076e-08,
+            0.0002590241492725909,
+            8.014457542060427e-09,
+            0.004050281830132008,
+            7.044881300544148e-08
+          ],
+          [
+            0.19333578646183014,
+            1.005152654443009e-07,
+            5.1106700993841514e-05,
+            3.4486742350736677e-08,
+            0.004956451244652271,
+            1.1073964856223029e-07,
+            0.8016555905342102,
+            8.928872148317168e-07
+          ],
+          [
+            0.00592133728787303,
+            3.195771647312995e-09,
+            0.005935250781476498,
+            1.2584242981006355e-08,
+            0.10367176681756973,
+            2.3147919137045392e-07,
+            0.8844704627990723,
+            9.980165032175137e-07
+          ]
+        ],
+        "actions": [
+          2,
+          1,
+          1,
+          1,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          0,
+          2
+        ],
+        "observations": [
+          4,
+          1,
+          5,
+          5,
+          4,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          5,
+          5
+        ],
+        "free_energy": [
+          [
+            1.581231713294983,
+            1.4862236976623535,
+            1.5825185775756836
+          ],
+          [
+            1.5329657793045044,
+            1.5588147640228271,
+            1.5302157402038574
+          ],
+          [
+            1.3770034313201904,
+            1.5901260375976562,
+            1.3878874778747559
+          ],
+          [
+            1.3383625745773315,
+            1.4347249269485474,
+            1.3472623825073242
+          ],
+          [
+            1.342290997505188,
+            1.2243375778198242,
+            1.3590035438537598
+          ],
+          [
+            1.1039667129516602,
+            1.0874159336090088,
+            1.1689660549163818
+          ],
+          [
+            0.9565209150314331,
+            0.9534428119659424,
+            1.0132246017456055
+          ],
+          [
+            0.9155482053756714,
+            0.9134479761123657,
+            0.967595100402832
+          ],
+          [
+            0.908850908279419,
+            0.9068662524223328,
+            0.9600898027420044
+          ],
+          [
+            0.9078740477561951,
+            0.9059054851531982,
+            0.9589940309524536
+          ],
+          [
+            0.907734215259552,
+            0.905768096446991,
+            0.9588369131088257
+          ],
+          [
+            1.1478818655014038,
+            1.0470988750457764,
+            1.1590807437896729
+          ],
+          [
+            0.9138380289077759,
+            0.9091514348983765,
+            0.9635202288627625
+          ],
+          [
+            1.494048833847046,
+            1.1672990322113037,
+            1.4866690635681152
+          ],
+          [
+            1.3154431581497192,
+            1.143686294555664,
+            1.319741129875183
+          ]
+        ],
+        "num_timesteps": 15,
+        "validation": {
+          "all_beliefs_valid": true,
+          "beliefs_sum_to_one": true,
+          "actions_in_range": true,
+          "pymdp_version_ge_1_0_0": true,
+          "all_valid": true
+        },
+        "model_parameters": {
+          "A_shape": [
+            6,
+            8
+          ],
+          "B_shape": [
+            8,
+            8,
+            3
+          ],
+          "C_shape": [
+            6
+          ],
+          "D_shape": [
+            8
+          ],
+          "num_states": 8,
+          "num_observations": 6,
+          "num_actions": 3,
+          "batch_size": 1,
+          "policy_len": 1,
+          "gamma": 16.0,
+          "alpha": 16.0
+        },
+        "data_source": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/structured/pipeline_output/12_execute_output/factorized_posterior/pymdp/simulation_data/simulation_results.json",
+        "belief_confidence": [
+          0.30000001192092896,
+          0.22363638877868652,
+          0.35770636796951294,
+          0.5528098940849304,
+          0.6158697009086609,
+          0.6912640333175659,
+          0.9402273893356323,
+          0.9895226359367371,
+          0.9969586133956909,
+          0.9980292916297913,
+          0.9981824159622192,
+          0.8730348944664001,
+          0.9956896901130676,
+          0.8016555905342102,
+          0.8844704627990723
+        ]
+      }
+    },
+    "comparisons": {
+      "success_rates": {
+        "pymdp": 1.0
+      },
+      "performance_comparison": {
+        "pymdp": {
+          "mean": 12.338864,
+          "std": 0.0,
+          "min": 12.338864,
+          "max": 12.338864
+        }
+      },
+      "metric_agreement": {},
+      "data_coverage": {
+        "pymdp": {
+          "has_beliefs": true,
+          "has_actions": true,
+          "has_observations": true,
+          "has_free_energy": true,
+          "has_circuit_info": false,
+          "num_timesteps": 15,
+          "validation_passed": true,
+          "data_source": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/structured/pipeline_output/12_execute_output/factorized_posterior/pymdp/simulation_data/simulation_results.json"
+        }
+      },
+      "simulation_statistics": {
+        "pymdp": {
+          "belief_dims": [
+            15,
+            8
+          ],
+          "mean_confidence": 0.7479371587435405,
+          "final_belief": [
+            0.00592133728787303,
+            3.195771647312995e-09,
+            0.005935250781476498,
+            1.2584242981006355e-08,
+            0.10367176681756973,
+            2.3147919137045392e-07,
+            0.8844704627990723,
+            9.980165032175137e-07
+          ],
+          "efe_mean": 1.1809216883447435,
+          "efe_std": 0.2403992979635404,
+          "efe_min": 0.905768096446991,
+          "efe_max": 1.5901260375976562
+        }
+      }
+    },
+    "metrics": {
+      "total_frameworks": 1,
+      "total_successful": 1,
+      "total_executions": 1,
+      "overall_success_rate": 1.0
+    }
+  },
+  "framework_comparison_report": "output/model_family_acceptance/structured/pipeline_output/16_analysis_output/cross_framework/framework_comparison_report.md",
+  "comprehensive_visualizations": [
+    "output/model_family_acceptance/structured/pipeline_output/16_analysis_output/pymdp/factorized_posterior_pymdp_free_energy.png",
+    "output/model_family_acceptance/structured/pipeline_output/16_analysis_output/pymdp/factorized_posterior_pymdp_vfe_vs_efe.png",
+    "output/model_family_acceptance/structured/pipeline_output/16_analysis_output/pymdp/factorized_posterior_pymdp_observations.png"
+  ],
+  "cross_model_report": "output/model_family_acceptance/structured/pipeline_output/16_analysis_output/cross_model_comparison_report.md"
+}

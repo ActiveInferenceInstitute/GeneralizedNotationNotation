@@ -1,0 +1,1196 @@
+{
+  "timestamp": "2026-09-06T11:10:21.992976",
+  "target_directory": "output/model_family_acceptance/continuous/input",
+  "output_directory": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output",
+  "total_scripts_found": 8,
+  "successful_executions": 8,
+  "failed_executions": 0,
+  "skipped_executions": 0,
+  "execution_details": [
+    {
+      "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/continuous_navigation/jax/Continuous_State_Navigation_Agent_jax.py",
+      "script_name": "Continuous_State_Navigation_Agent_jax.py",
+      "framework": "jax",
+      "model_name": "continuous_navigation",
+      "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 3.40622,
+      "timestamp": "2026-09-06T11:10:23.349599",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 3.40622,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        3.40622
+      ],
+      "structured_result_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/continuous_navigation/jax/execution_logs/Continuous_State_Navigation_Agent_jax.py_results.json",
+      "output_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/continuous_navigation/jax/execution_logs/Continuous_State_Navigation_Agent_jax.py_execution.log",
+      "implementation_directory": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/continuous_navigation/jax",
+      "script_identity": {
+        "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/continuous_navigation/jax/Continuous_State_Navigation_Agent_jax.py",
+        "sha256": "3a9c341c0cd1ca8f3fafa5dec6fa76f3c4ee71e442934b8f8ccd4e88827e62df"
+      },
+      "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/input",
+      "stdout_length": 359,
+      "stderr_length": 0,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/continuous_navigation/numpyro/Continuous_State_Navigation_Agent_numpyro.py",
+      "script_name": "Continuous_State_Navigation_Agent_numpyro.py",
+      "framework": "numpyro",
+      "model_name": "continuous_navigation",
+      "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 12.066875,
+      "timestamp": "2026-09-06T11:10:28.506621",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 12.066875,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        12.066875
+      ],
+      "structured_result_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/continuous_navigation/numpyro/execution_logs/Continuous_State_Navigation_Agent_numpyro.py_results.json",
+      "output_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/continuous_navigation/numpyro/execution_logs/Continuous_State_Navigation_Agent_numpyro.py_execution.log",
+      "implementation_directory": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/continuous_navigation/numpyro",
+      "script_identity": {
+        "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/continuous_navigation/numpyro/Continuous_State_Navigation_Agent_numpyro.py",
+        "sha256": "b6b7dccf01c2ed6e0643a44b40ce5283bd01140b66deaab8b41be7a5acfca37a"
+      },
+      "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/input",
+      "stdout_length": 388,
+      "stderr_length": 0,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/continuous_navigation/rxinfer/Continuous_State_Navigation_Agent_rxinfer.jl",
+      "script_name": "Continuous_State_Navigation_Agent_rxinfer.jl",
+      "framework": "rxinfer",
+      "model_name": "continuous_navigation",
+      "executor": "julia",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 62.368386,
+      "timestamp": "2026-09-06T11:10:40.615900",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 62.368386,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        62.368386
+      ],
+      "structured_result_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/continuous_navigation/rxinfer/execution_logs/Continuous_State_Navigation_Agent_rxinfer.jl_results.json",
+      "output_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/continuous_navigation/rxinfer/execution_logs/Continuous_State_Navigation_Agent_rxinfer.jl_execution.log",
+      "implementation_directory": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/continuous_navigation/rxinfer",
+      "execution_metadata": {},
+      "script_identity": {
+        "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/continuous_navigation/rxinfer/Continuous_State_Navigation_Agent_rxinfer.jl",
+        "sha256": "d55cc50719a10015d2ce2faf2e4c7fff202f30f04711a7da1e4592bca2294cfe"
+      },
+      "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/input",
+      "stdout_length": 197,
+      "stderr_length": 0,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/continuous_navigation/stan/Continuous_State_Navigation_Agent_stan.py",
+      "script_name": "Continuous_State_Navigation_Agent_stan.py",
+      "framework": "stan",
+      "model_name": "continuous_navigation",
+      "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 60.161201,
+      "timestamp": "2026-09-06T11:11:56.120381",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 60.161201,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        60.161201
+      ],
+      "structured_result_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/continuous_navigation/stan/execution_logs/Continuous_State_Navigation_Agent_stan.py_results.json",
+      "output_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/continuous_navigation/stan/execution_logs/Continuous_State_Navigation_Agent_stan.py_execution.log",
+      "implementation_directory": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/continuous_navigation/stan",
+      "script_identity": {
+        "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/continuous_navigation/stan/Continuous_State_Navigation_Agent_stan.py",
+        "sha256": "a6b36ff2da9b58cba4b44226ea3263fb4612c1ede8191b7652f59312fdb53ed1"
+      },
+      "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/input",
+      "stdout_length": 380,
+      "stderr_length": 1548,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 3
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/stochastic_dynamics/jax/Stochastic_Continuous_Dynamics_Agent_jax.py",
+      "script_name": "Stochastic_Continuous_Dynamics_Agent_jax.py",
+      "framework": "jax",
+      "model_name": "stochastic_dynamics",
+      "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 6.187744,
+      "timestamp": "2026-09-06T11:12:59.454312",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 6.187744,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        6.187744
+      ],
+      "structured_result_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/stochastic_dynamics/jax/execution_logs/Stochastic_Continuous_Dynamics_Agent_jax.py_results.json",
+      "output_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/stochastic_dynamics/jax/execution_logs/Stochastic_Continuous_Dynamics_Agent_jax.py_execution.log",
+      "implementation_directory": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/stochastic_dynamics/jax",
+      "script_identity": {
+        "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/stochastic_dynamics/jax/Stochastic_Continuous_Dynamics_Agent_jax.py",
+        "sha256": "33b9d3c1a875b34a0ba839ee535a4ef677cc8bae8181be1da45ac2c4df95a8a5"
+      },
+      "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/input",
+      "stdout_length": 357,
+      "stderr_length": 0,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/stochastic_dynamics/numpyro/Stochastic_Continuous_Dynamics_Agent_numpyro.py",
+      "script_name": "Stochastic_Continuous_Dynamics_Agent_numpyro.py",
+      "framework": "numpyro",
+      "model_name": "stochastic_dynamics",
+      "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 14.890521,
+      "timestamp": "2026-09-06T11:13:09.005269",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 14.890521,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        14.890521
+      ],
+      "structured_result_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/stochastic_dynamics/numpyro/execution_logs/Stochastic_Continuous_Dynamics_Agent_numpyro.py_results.json",
+      "output_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/stochastic_dynamics/numpyro/execution_logs/Stochastic_Continuous_Dynamics_Agent_numpyro.py_execution.log",
+      "implementation_directory": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/stochastic_dynamics/numpyro",
+      "script_identity": {
+        "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/stochastic_dynamics/numpyro/Stochastic_Continuous_Dynamics_Agent_numpyro.py",
+        "sha256": "2c897fb0daf2e9f1d44c2e0a9e330ee42d7dee3d9fbfb35216fb8ae84b8f084f"
+      },
+      "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/input",
+      "stdout_length": 386,
+      "stderr_length": 0,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/stochastic_dynamics/rxinfer/Stochastic_Continuous_Dynamics_Agent_rxinfer.jl",
+      "script_name": "Stochastic_Continuous_Dynamics_Agent_rxinfer.jl",
+      "framework": "rxinfer",
+      "model_name": "stochastic_dynamics",
+      "executor": "julia",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 96.859018,
+      "timestamp": "2026-09-06T11:13:23.960860",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 96.859018,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        96.859018
+      ],
+      "structured_result_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/stochastic_dynamics/rxinfer/execution_logs/Stochastic_Continuous_Dynamics_Agent_rxinfer.jl_results.json",
+      "output_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/stochastic_dynamics/rxinfer/execution_logs/Stochastic_Continuous_Dynamics_Agent_rxinfer.jl_execution.log",
+      "implementation_directory": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/stochastic_dynamics/rxinfer",
+      "execution_metadata": {},
+      "script_identity": {
+        "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/stochastic_dynamics/rxinfer/Stochastic_Continuous_Dynamics_Agent_rxinfer.jl",
+        "sha256": "21a3d8841790a891d8354c3437857c0dffca5ca433852eb607b3b3a52ab309b6"
+      },
+      "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/input",
+      "stdout_length": 197,
+      "stderr_length": 0,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/stochastic_dynamics/stan/Stochastic_Continuous_Dynamics_Agent_stan.py",
+      "script_name": "Stochastic_Continuous_Dynamics_Agent_stan.py",
+      "framework": "stan",
+      "model_name": "stochastic_dynamics",
+      "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 58.063199,
+      "timestamp": "2026-09-06T11:15:29.627663",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 58.063199,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        58.063199
+      ],
+      "structured_result_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/stochastic_dynamics/stan/execution_logs/Stochastic_Continuous_Dynamics_Agent_stan.py_results.json",
+      "output_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/stochastic_dynamics/stan/execution_logs/Stochastic_Continuous_Dynamics_Agent_stan.py_execution.log",
+      "implementation_directory": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/stochastic_dynamics/stan",
+      "script_identity": {
+        "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/stochastic_dynamics/stan/Stochastic_Continuous_Dynamics_Agent_stan.py",
+        "sha256": "66518263fffca90bf964b05da3a2460d242302e63ae0e83022bfda134e7bba7e"
+      },
+      "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/input",
+      "stdout_length": 378,
+      "stderr_length": 1547,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 3
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    }
+  ],
+  "framework_status": {
+    "jax": {
+      "executions": 2,
+      "successful": 2,
+      "failed": 0,
+      "skipped": 0,
+      "status": "success"
+    },
+    "numpyro": {
+      "executions": 2,
+      "successful": 2,
+      "failed": 0,
+      "skipped": 0,
+      "status": "success"
+    },
+    "rxinfer": {
+      "executions": 2,
+      "successful": 2,
+      "failed": 0,
+      "skipped": 0,
+      "status": "success"
+    },
+    "stan": {
+      "executions": 2,
+      "successful": 2,
+      "failed": 0,
+      "skipped": 0,
+      "status": "success"
+    }
+  },
+  "execution_mode": "local",
+  "execution_workers": 1,
+  "backend": null,
+  "execution_benchmark_repeats": 1,
+  "execution_summary_detail": false,
+  "dispatch_max_retries": 0,
+  "success": true,
+  "status": "success",
+  "exit_code": 0,
+  "run_id": "8413590900124ccdaaa7c3d04bf58d2e",
+  "configuration": {
+    "frameworks": [
+      "jax",
+      "numpyro",
+      "rxinfer",
+      "stan"
+    ],
+    "strict_requested_frameworks": true,
+    "options": {
+      "recursive": true,
+      "timeout": 300,
+      "render_output_dir": null,
+      "distributed": false,
+      "execution_workers": 1,
+      "backend": "ray",
+      "execution_benchmark_repeats": 1,
+      "execution_summary_detail": false
+    }
+  },
+  "input_identity": {
+    "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/input",
+    "files": {
+      "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/input/continuous_navigation.md": "5e8f3c807c358ac198cf052cb0cd9aca3d5ae1871e1fd02884c9b001529b7ee7",
+      "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/input/stochastic_dynamics.md": "459f23f79e521cd242d9b429d7444677d58a1c10728f0a53d467b3588f9bc049"
+    }
+  },
+  "render_failures": [],
+  "missing_render_scripts": [],
+  "requested_frameworks": [
+    "jax",
+    "numpyro",
+    "stan",
+    "rxinfer"
+  ],
+  "total_scripts": 8,
+  "attempted_scripts": 8,
+  "success_rate": 100.0,
+  "outcome_reason": "all_scripts_succeeded",
+  "receipt_identity": {
+    "run_id": "8413590900124ccdaaa7c3d04bf58d2e",
+    "config_sha256": "55c05b7104a144084bc46f4750ab2f244f438f494ee926012982354a914c9edb"
+  },
+  "invocation_receipts": {
+    "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/input": {
+      "status": "success",
+      "success": true,
+      "exit_code": 0,
+      "outcome_reason": "all_scripts_succeeded",
+      "render_failures": [],
+      "missing_render_scripts": [],
+      "missing_render_summary": null,
+      "input_identity": {
+        "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/input",
+        "files": {
+          "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/input/continuous_navigation.md": "5e8f3c807c358ac198cf052cb0cd9aca3d5ae1871e1fd02884c9b001529b7ee7",
+          "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/input/stochastic_dynamics.md": "459f23f79e521cd242d9b429d7444677d58a1c10728f0a53d467b3588f9bc049"
+        }
+      },
+      "execution_details": [
+        {
+          "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/continuous_navigation/jax/Continuous_State_Navigation_Agent_jax.py",
+          "script_name": "Continuous_State_Navigation_Agent_jax.py",
+          "framework": "jax",
+          "model_name": "continuous_navigation",
+          "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 3.40622,
+          "timestamp": "2026-09-06T11:10:23.349599",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 3.40622,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            3.40622
+          ],
+          "structured_result_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/continuous_navigation/jax/execution_logs/Continuous_State_Navigation_Agent_jax.py_results.json",
+          "output_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/continuous_navigation/jax/execution_logs/Continuous_State_Navigation_Agent_jax.py_execution.log",
+          "implementation_directory": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/continuous_navigation/jax",
+          "script_identity": {
+            "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/continuous_navigation/jax/Continuous_State_Navigation_Agent_jax.py",
+            "sha256": "3a9c341c0cd1ca8f3fafa5dec6fa76f3c4ee71e442934b8f8ccd4e88827e62df"
+          },
+          "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/input",
+          "stdout_length": 359,
+          "stderr_length": 0,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 1
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        },
+        {
+          "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/continuous_navigation/numpyro/Continuous_State_Navigation_Agent_numpyro.py",
+          "script_name": "Continuous_State_Navigation_Agent_numpyro.py",
+          "framework": "numpyro",
+          "model_name": "continuous_navigation",
+          "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 12.066875,
+          "timestamp": "2026-09-06T11:10:28.506621",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 12.066875,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            12.066875
+          ],
+          "structured_result_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/continuous_navigation/numpyro/execution_logs/Continuous_State_Navigation_Agent_numpyro.py_results.json",
+          "output_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/continuous_navigation/numpyro/execution_logs/Continuous_State_Navigation_Agent_numpyro.py_execution.log",
+          "implementation_directory": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/continuous_navigation/numpyro",
+          "script_identity": {
+            "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/continuous_navigation/numpyro/Continuous_State_Navigation_Agent_numpyro.py",
+            "sha256": "b6b7dccf01c2ed6e0643a44b40ce5283bd01140b66deaab8b41be7a5acfca37a"
+          },
+          "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/input",
+          "stdout_length": 388,
+          "stderr_length": 0,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 1
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        },
+        {
+          "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/continuous_navigation/rxinfer/Continuous_State_Navigation_Agent_rxinfer.jl",
+          "script_name": "Continuous_State_Navigation_Agent_rxinfer.jl",
+          "framework": "rxinfer",
+          "model_name": "continuous_navigation",
+          "executor": "julia",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 62.368386,
+          "timestamp": "2026-09-06T11:10:40.615900",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 62.368386,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            62.368386
+          ],
+          "structured_result_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/continuous_navigation/rxinfer/execution_logs/Continuous_State_Navigation_Agent_rxinfer.jl_results.json",
+          "output_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/continuous_navigation/rxinfer/execution_logs/Continuous_State_Navigation_Agent_rxinfer.jl_execution.log",
+          "implementation_directory": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/continuous_navigation/rxinfer",
+          "execution_metadata": {},
+          "script_identity": {
+            "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/continuous_navigation/rxinfer/Continuous_State_Navigation_Agent_rxinfer.jl",
+            "sha256": "d55cc50719a10015d2ce2faf2e4c7fff202f30f04711a7da1e4592bca2294cfe"
+          },
+          "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/input",
+          "stdout_length": 197,
+          "stderr_length": 0,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 1
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        },
+        {
+          "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/continuous_navigation/stan/Continuous_State_Navigation_Agent_stan.py",
+          "script_name": "Continuous_State_Navigation_Agent_stan.py",
+          "framework": "stan",
+          "model_name": "continuous_navigation",
+          "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 60.161201,
+          "timestamp": "2026-09-06T11:11:56.120381",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 60.161201,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            60.161201
+          ],
+          "structured_result_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/continuous_navigation/stan/execution_logs/Continuous_State_Navigation_Agent_stan.py_results.json",
+          "output_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/continuous_navigation/stan/execution_logs/Continuous_State_Navigation_Agent_stan.py_execution.log",
+          "implementation_directory": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/continuous_navigation/stan",
+          "script_identity": {
+            "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/continuous_navigation/stan/Continuous_State_Navigation_Agent_stan.py",
+            "sha256": "a6b36ff2da9b58cba4b44226ea3263fb4612c1ede8191b7652f59312fdb53ed1"
+          },
+          "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/input",
+          "stdout_length": 380,
+          "stderr_length": 1548,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 3
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        },
+        {
+          "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/stochastic_dynamics/jax/Stochastic_Continuous_Dynamics_Agent_jax.py",
+          "script_name": "Stochastic_Continuous_Dynamics_Agent_jax.py",
+          "framework": "jax",
+          "model_name": "stochastic_dynamics",
+          "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 6.187744,
+          "timestamp": "2026-09-06T11:12:59.454312",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 6.187744,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            6.187744
+          ],
+          "structured_result_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/stochastic_dynamics/jax/execution_logs/Stochastic_Continuous_Dynamics_Agent_jax.py_results.json",
+          "output_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/stochastic_dynamics/jax/execution_logs/Stochastic_Continuous_Dynamics_Agent_jax.py_execution.log",
+          "implementation_directory": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/stochastic_dynamics/jax",
+          "script_identity": {
+            "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/stochastic_dynamics/jax/Stochastic_Continuous_Dynamics_Agent_jax.py",
+            "sha256": "33b9d3c1a875b34a0ba839ee535a4ef677cc8bae8181be1da45ac2c4df95a8a5"
+          },
+          "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/input",
+          "stdout_length": 357,
+          "stderr_length": 0,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 1
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        },
+        {
+          "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/stochastic_dynamics/numpyro/Stochastic_Continuous_Dynamics_Agent_numpyro.py",
+          "script_name": "Stochastic_Continuous_Dynamics_Agent_numpyro.py",
+          "framework": "numpyro",
+          "model_name": "stochastic_dynamics",
+          "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 14.890521,
+          "timestamp": "2026-09-06T11:13:09.005269",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 14.890521,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            14.890521
+          ],
+          "structured_result_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/stochastic_dynamics/numpyro/execution_logs/Stochastic_Continuous_Dynamics_Agent_numpyro.py_results.json",
+          "output_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/stochastic_dynamics/numpyro/execution_logs/Stochastic_Continuous_Dynamics_Agent_numpyro.py_execution.log",
+          "implementation_directory": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/stochastic_dynamics/numpyro",
+          "script_identity": {
+            "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/stochastic_dynamics/numpyro/Stochastic_Continuous_Dynamics_Agent_numpyro.py",
+            "sha256": "2c897fb0daf2e9f1d44c2e0a9e330ee42d7dee3d9fbfb35216fb8ae84b8f084f"
+          },
+          "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/input",
+          "stdout_length": 386,
+          "stderr_length": 0,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 1
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        },
+        {
+          "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/stochastic_dynamics/rxinfer/Stochastic_Continuous_Dynamics_Agent_rxinfer.jl",
+          "script_name": "Stochastic_Continuous_Dynamics_Agent_rxinfer.jl",
+          "framework": "rxinfer",
+          "model_name": "stochastic_dynamics",
+          "executor": "julia",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 96.859018,
+          "timestamp": "2026-09-06T11:13:23.960860",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 96.859018,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            96.859018
+          ],
+          "structured_result_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/stochastic_dynamics/rxinfer/execution_logs/Stochastic_Continuous_Dynamics_Agent_rxinfer.jl_results.json",
+          "output_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/stochastic_dynamics/rxinfer/execution_logs/Stochastic_Continuous_Dynamics_Agent_rxinfer.jl_execution.log",
+          "implementation_directory": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/stochastic_dynamics/rxinfer",
+          "execution_metadata": {},
+          "script_identity": {
+            "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/stochastic_dynamics/rxinfer/Stochastic_Continuous_Dynamics_Agent_rxinfer.jl",
+            "sha256": "21a3d8841790a891d8354c3437857c0dffca5ca433852eb607b3b3a52ab309b6"
+          },
+          "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/input",
+          "stdout_length": 197,
+          "stderr_length": 0,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 1
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        },
+        {
+          "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/stochastic_dynamics/stan/Stochastic_Continuous_Dynamics_Agent_stan.py",
+          "script_name": "Stochastic_Continuous_Dynamics_Agent_stan.py",
+          "framework": "stan",
+          "model_name": "stochastic_dynamics",
+          "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 58.063199,
+          "timestamp": "2026-09-06T11:15:29.627663",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 58.063199,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            58.063199
+          ],
+          "structured_result_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/stochastic_dynamics/stan/execution_logs/Stochastic_Continuous_Dynamics_Agent_stan.py_results.json",
+          "output_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/stochastic_dynamics/stan/execution_logs/Stochastic_Continuous_Dynamics_Agent_stan.py_execution.log",
+          "implementation_directory": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/stochastic_dynamics/stan",
+          "script_identity": {
+            "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/stochastic_dynamics/stan/Stochastic_Continuous_Dynamics_Agent_stan.py",
+            "sha256": "66518263fffca90bf964b05da3a2460d242302e63ae0e83022bfda134e7bba7e"
+          },
+          "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/input",
+          "stdout_length": 378,
+          "stderr_length": 1547,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 3
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        }
+      ]
+    }
+  },
+  "current_invocation": {
+    "status": "success",
+    "success": true,
+    "exit_code": 0,
+    "outcome_reason": "all_scripts_succeeded",
+    "render_failures": [],
+    "missing_render_scripts": [],
+    "missing_render_summary": null,
+    "input_identity": {
+      "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/input",
+      "files": {
+        "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/input/continuous_navigation.md": "5e8f3c807c358ac198cf052cb0cd9aca3d5ae1871e1fd02884c9b001529b7ee7",
+        "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/input/stochastic_dynamics.md": "459f23f79e521cd242d9b429d7444677d58a1c10728f0a53d467b3588f9bc049"
+      }
+    },
+    "execution_details": [
+      {
+        "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/continuous_navigation/jax/Continuous_State_Navigation_Agent_jax.py",
+        "script_name": "Continuous_State_Navigation_Agent_jax.py",
+        "framework": "jax",
+        "model_name": "continuous_navigation",
+        "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 3.40622,
+        "timestamp": "2026-09-06T11:10:23.349599",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 3.40622,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          3.40622
+        ],
+        "structured_result_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/continuous_navigation/jax/execution_logs/Continuous_State_Navigation_Agent_jax.py_results.json",
+        "output_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/continuous_navigation/jax/execution_logs/Continuous_State_Navigation_Agent_jax.py_execution.log",
+        "implementation_directory": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/continuous_navigation/jax",
+        "script_identity": {
+          "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/continuous_navigation/jax/Continuous_State_Navigation_Agent_jax.py",
+          "sha256": "3a9c341c0cd1ca8f3fafa5dec6fa76f3c4ee71e442934b8f8ccd4e88827e62df"
+        },
+        "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/input",
+        "stdout_length": 359,
+        "stderr_length": 0,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 1
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      },
+      {
+        "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/continuous_navigation/numpyro/Continuous_State_Navigation_Agent_numpyro.py",
+        "script_name": "Continuous_State_Navigation_Agent_numpyro.py",
+        "framework": "numpyro",
+        "model_name": "continuous_navigation",
+        "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 12.066875,
+        "timestamp": "2026-09-06T11:10:28.506621",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 12.066875,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          12.066875
+        ],
+        "structured_result_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/continuous_navigation/numpyro/execution_logs/Continuous_State_Navigation_Agent_numpyro.py_results.json",
+        "output_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/continuous_navigation/numpyro/execution_logs/Continuous_State_Navigation_Agent_numpyro.py_execution.log",
+        "implementation_directory": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/continuous_navigation/numpyro",
+        "script_identity": {
+          "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/continuous_navigation/numpyro/Continuous_State_Navigation_Agent_numpyro.py",
+          "sha256": "b6b7dccf01c2ed6e0643a44b40ce5283bd01140b66deaab8b41be7a5acfca37a"
+        },
+        "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/input",
+        "stdout_length": 388,
+        "stderr_length": 0,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 1
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      },
+      {
+        "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/continuous_navigation/rxinfer/Continuous_State_Navigation_Agent_rxinfer.jl",
+        "script_name": "Continuous_State_Navigation_Agent_rxinfer.jl",
+        "framework": "rxinfer",
+        "model_name": "continuous_navigation",
+        "executor": "julia",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 62.368386,
+        "timestamp": "2026-09-06T11:10:40.615900",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 62.368386,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          62.368386
+        ],
+        "structured_result_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/continuous_navigation/rxinfer/execution_logs/Continuous_State_Navigation_Agent_rxinfer.jl_results.json",
+        "output_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/continuous_navigation/rxinfer/execution_logs/Continuous_State_Navigation_Agent_rxinfer.jl_execution.log",
+        "implementation_directory": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/continuous_navigation/rxinfer",
+        "execution_metadata": {},
+        "script_identity": {
+          "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/continuous_navigation/rxinfer/Continuous_State_Navigation_Agent_rxinfer.jl",
+          "sha256": "d55cc50719a10015d2ce2faf2e4c7fff202f30f04711a7da1e4592bca2294cfe"
+        },
+        "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/input",
+        "stdout_length": 197,
+        "stderr_length": 0,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 1
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      },
+      {
+        "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/continuous_navigation/stan/Continuous_State_Navigation_Agent_stan.py",
+        "script_name": "Continuous_State_Navigation_Agent_stan.py",
+        "framework": "stan",
+        "model_name": "continuous_navigation",
+        "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 60.161201,
+        "timestamp": "2026-09-06T11:11:56.120381",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 60.161201,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          60.161201
+        ],
+        "structured_result_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/continuous_navigation/stan/execution_logs/Continuous_State_Navigation_Agent_stan.py_results.json",
+        "output_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/continuous_navigation/stan/execution_logs/Continuous_State_Navigation_Agent_stan.py_execution.log",
+        "implementation_directory": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/continuous_navigation/stan",
+        "script_identity": {
+          "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/continuous_navigation/stan/Continuous_State_Navigation_Agent_stan.py",
+          "sha256": "a6b36ff2da9b58cba4b44226ea3263fb4612c1ede8191b7652f59312fdb53ed1"
+        },
+        "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/input",
+        "stdout_length": 380,
+        "stderr_length": 1548,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 3
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      },
+      {
+        "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/stochastic_dynamics/jax/Stochastic_Continuous_Dynamics_Agent_jax.py",
+        "script_name": "Stochastic_Continuous_Dynamics_Agent_jax.py",
+        "framework": "jax",
+        "model_name": "stochastic_dynamics",
+        "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 6.187744,
+        "timestamp": "2026-09-06T11:12:59.454312",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 6.187744,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          6.187744
+        ],
+        "structured_result_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/stochastic_dynamics/jax/execution_logs/Stochastic_Continuous_Dynamics_Agent_jax.py_results.json",
+        "output_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/stochastic_dynamics/jax/execution_logs/Stochastic_Continuous_Dynamics_Agent_jax.py_execution.log",
+        "implementation_directory": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/stochastic_dynamics/jax",
+        "script_identity": {
+          "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/stochastic_dynamics/jax/Stochastic_Continuous_Dynamics_Agent_jax.py",
+          "sha256": "33b9d3c1a875b34a0ba839ee535a4ef677cc8bae8181be1da45ac2c4df95a8a5"
+        },
+        "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/input",
+        "stdout_length": 357,
+        "stderr_length": 0,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 1
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      },
+      {
+        "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/stochastic_dynamics/numpyro/Stochastic_Continuous_Dynamics_Agent_numpyro.py",
+        "script_name": "Stochastic_Continuous_Dynamics_Agent_numpyro.py",
+        "framework": "numpyro",
+        "model_name": "stochastic_dynamics",
+        "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 14.890521,
+        "timestamp": "2026-09-06T11:13:09.005269",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 14.890521,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          14.890521
+        ],
+        "structured_result_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/stochastic_dynamics/numpyro/execution_logs/Stochastic_Continuous_Dynamics_Agent_numpyro.py_results.json",
+        "output_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/stochastic_dynamics/numpyro/execution_logs/Stochastic_Continuous_Dynamics_Agent_numpyro.py_execution.log",
+        "implementation_directory": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/stochastic_dynamics/numpyro",
+        "script_identity": {
+          "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/stochastic_dynamics/numpyro/Stochastic_Continuous_Dynamics_Agent_numpyro.py",
+          "sha256": "2c897fb0daf2e9f1d44c2e0a9e330ee42d7dee3d9fbfb35216fb8ae84b8f084f"
+        },
+        "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/input",
+        "stdout_length": 386,
+        "stderr_length": 0,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 1
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      },
+      {
+        "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/stochastic_dynamics/rxinfer/Stochastic_Continuous_Dynamics_Agent_rxinfer.jl",
+        "script_name": "Stochastic_Continuous_Dynamics_Agent_rxinfer.jl",
+        "framework": "rxinfer",
+        "model_name": "stochastic_dynamics",
+        "executor": "julia",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 96.859018,
+        "timestamp": "2026-09-06T11:13:23.960860",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 96.859018,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          96.859018
+        ],
+        "structured_result_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/stochastic_dynamics/rxinfer/execution_logs/Stochastic_Continuous_Dynamics_Agent_rxinfer.jl_results.json",
+        "output_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/stochastic_dynamics/rxinfer/execution_logs/Stochastic_Continuous_Dynamics_Agent_rxinfer.jl_execution.log",
+        "implementation_directory": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/stochastic_dynamics/rxinfer",
+        "execution_metadata": {},
+        "script_identity": {
+          "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/stochastic_dynamics/rxinfer/Stochastic_Continuous_Dynamics_Agent_rxinfer.jl",
+          "sha256": "21a3d8841790a891d8354c3437857c0dffca5ca433852eb607b3b3a52ab309b6"
+        },
+        "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/input",
+        "stdout_length": 197,
+        "stderr_length": 0,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 1
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      },
+      {
+        "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/stochastic_dynamics/stan/Stochastic_Continuous_Dynamics_Agent_stan.py",
+        "script_name": "Stochastic_Continuous_Dynamics_Agent_stan.py",
+        "framework": "stan",
+        "model_name": "stochastic_dynamics",
+        "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 58.063199,
+        "timestamp": "2026-09-06T11:15:29.627663",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 58.063199,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          58.063199
+        ],
+        "structured_result_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/stochastic_dynamics/stan/execution_logs/Stochastic_Continuous_Dynamics_Agent_stan.py_results.json",
+        "output_file": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/stochastic_dynamics/stan/execution_logs/Stochastic_Continuous_Dynamics_Agent_stan.py_execution.log",
+        "implementation_directory": "output/model_family_acceptance/continuous/pipeline_output/12_execute_output/stochastic_dynamics/stan",
+        "script_identity": {
+          "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/pipeline_output/11_render_output/stochastic_dynamics/stan/Stochastic_Continuous_Dynamics_Agent_stan.py",
+          "sha256": "66518263fffca90bf964b05da3a2460d242302e63ae0e83022bfda134e7bba7e"
+        },
+        "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/input",
+        "stdout_length": 378,
+        "stderr_length": 1547,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 3
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      }
+    ],
+    "target_directory": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/continuous/input"
+  },
+  "merged_prior_folder_runs": 0,
+  "execution_summary_format": "slim_v1"
+}

@@ -1,0 +1,12 @@
+{
+  "timestamp": "2026-09-06T11:30:07.841382",
+  "execution_results_dir": "output/model_family_acceptance/precision/pipeline_output/12_execute_output/curiosity_driven_agent",
+  "framework_results": {
+    "pymdp": {
+      "framework": "pymdp",
+      "result_count": 1,
+      "analyses": []
+    }
+  },
+  "cross_framework_comparison": {}
+}

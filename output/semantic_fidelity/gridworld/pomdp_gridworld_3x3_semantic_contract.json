@@ -1,0 +1,370 @@
+{
+  "contract_hash": "37621112f8e388ae07a11a2837554dc9ba4bc696beee5e760bedddc1811d7a13",
+  "declared_metadata": {
+    "extensions": [
+      "footer",
+      "gnn_section"
+    ],
+    "raw_sections": [
+      "ActInfOntologyAnnotation",
+      "Connections",
+      "Equations",
+      "Footer",
+      "GNNSection",
+      "GNNVersionAndFlags",
+      "InitialParameterization",
+      "ModelAnnotation",
+      "ModelName",
+      "ModelParameters",
+      "StateSpaceBlock",
+      "Time"
+    ],
+    "source_format": "markdown"
+  },
+  "edges": [
+    {
+      "connection_type": "undirected",
+      "description": "",
+      "source": "A",
+      "target": "o",
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "",
+      "source": "B",
+      "target": "u",
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "",
+      "source": "C",
+      "target": "G",
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "",
+      "source": "D",
+      "target": "s",
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "",
+      "source": "E",
+      "target": "\u03c0",
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "",
+      "source": "G",
+      "target": "\u03c0",
+      "weight": null
+    },
+    {
+      "connection_type": "undirected",
+      "description": "",
+      "source": "s",
+      "target": "A",
+      "weight": null
+    },
+    {
+      "connection_type": "undirected",
+      "description": "",
+      "source": "s",
+      "target": "B",
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "",
+      "source": "s",
+      "target": "s_prime",
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "",
+      "source": "u",
+      "target": "s_prime",
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "",
+      "source": "\u03c0",
+      "target": "u",
+      "weight": null
+    }
+  ],
+  "equations": [
+    {
+      "content": "State inference uses the observation likelihood and previous predictive belief. Action selection minimizes expected free energy under the shared transition tensor.",
+      "description": "",
+      "format": "latex",
+      "label": ""
+    }
+  ],
+  "model_identity": {
+    "annotation": "Discrete 3x3 GridWorld POMDP for strict cross-framework validation. The model has one hidden state factor with 9 grid cells, one observation modality with noisy cell observations, and one control factor with 5 boundary-clamped actions: up, down, left, right, and stay.",
+    "model_name": "POMDP GridWorld 3x3",
+    "version": "1.0"
+  },
+  "ontology_mappings": [
+    {
+      "description": "",
+      "ontology_term": "LikelihoodMatrix",
+      "variable_name": "A"
+    },
+    {
+      "description": "",
+      "ontology_term": "TransitionMatrix",
+      "variable_name": "B"
+    },
+    {
+      "description": "",
+      "ontology_term": "LogPreferenceVector",
+      "variable_name": "C"
+    },
+    {
+      "description": "",
+      "ontology_term": "PriorOverHiddenStates",
+      "variable_name": "D"
+    },
+    {
+      "description": "",
+      "ontology_term": "Habit",
+      "variable_name": "E"
+    },
+    {
+      "description": "",
+      "ontology_term": "ExpectedFreeEnergy",
+      "variable_name": "G"
+    },
+    {
+      "description": "",
+      "ontology_term": "Observation",
+      "variable_name": "o"
+    },
+    {
+      "description": "",
+      "ontology_term": "HiddenState",
+      "variable_name": "s"
+    },
+    {
+      "description": "",
+      "ontology_term": "NextHiddenState",
+      "variable_name": "s_prime"
+    },
+    {
+      "description": "",
+      "ontology_term": "Time",
+      "variable_name": "t"
+    },
+    {
+      "description": "",
+      "ontology_term": "Action",
+      "variable_name": "u"
+    },
+    {
+      "description": "",
+      "ontology_term": "PolicyVector",
+      "variable_name": "\u03c0"
+    }
+  ],
+  "parameter_names": [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "action_labels",
+    "b_tensor_order",
+    "goal_state",
+    "grid_cols",
+    "grid_rows",
+    "num_actions",
+    "num_hidden_states",
+    "num_obs",
+    "num_timesteps",
+    "random_seed"
+  ],
+  "parameter_shapes": {
+    "A": [
+      9,
+      9
+    ],
+    "B": [
+      9,
+      9,
+      5
+    ],
+    "C": [
+      1,
+      9
+    ],
+    "D": [
+      1,
+      9
+    ],
+    "E": [
+      1,
+      5
+    ],
+    "action_labels": [],
+    "b_tensor_order": [],
+    "goal_state": [],
+    "grid_cols": [],
+    "grid_rows": [],
+    "num_actions": [],
+    "num_hidden_states": [],
+    "num_obs": [],
+    "num_timesteps": [],
+    "random_seed": []
+  },
+  "parser_diagnostics": {
+    "connection_errors": [],
+    "matrix_errors": [],
+    "structure_issues": [],
+    "variable_errors": []
+  },
+  "schema": "gnn_semantic_contract_v1",
+  "source_file": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/input/gnn_files/pomdp_gridworld/pomdp_gridworld_3x3.md",
+  "time_specification": {
+    "discretization": "",
+    "horizon": 15,
+    "step_size": null,
+    "time_type": "Dynamic"
+  },
+  "variables": [
+    {
+      "constraints": {},
+      "data_type": "float",
+      "description": "Likelihood matrix: observations by hidden states",
+      "dimensions": [
+        9,
+        9
+      ],
+      "name": "A",
+      "var_type": "likelihood_matrix"
+    },
+    {
+      "constraints": {},
+      "data_type": "float",
+      "description": "Transition tensor: next_state, previous_state, action",
+      "dimensions": [
+        9,
+        9,
+        5
+      ],
+      "name": "B",
+      "var_type": "transition_matrix"
+    },
+    {
+      "constraints": {},
+      "data_type": "float",
+      "description": "Log-preferences over observations",
+      "dimensions": [
+        9
+      ],
+      "name": "C",
+      "var_type": "preference_vector"
+    },
+    {
+      "constraints": {},
+      "data_type": "float",
+      "description": "Prior over initial hidden state",
+      "dimensions": [
+        9
+      ],
+      "name": "D",
+      "var_type": "prior_vector"
+    },
+    {
+      "constraints": {},
+      "data_type": "float",
+      "description": "Policy prior over actions",
+      "dimensions": [
+        5
+      ],
+      "name": "E",
+      "var_type": "policy"
+    },
+    {
+      "constraints": {},
+      "data_type": "float",
+      "description": "Expected Free Energy per action",
+      "dimensions": [
+        1
+      ],
+      "name": "G",
+      "var_type": "policy"
+    },
+    {
+      "constraints": {},
+      "data_type": "integer",
+      "description": "Current observation",
+      "dimensions": [
+        9,
+        1
+      ],
+      "name": "o",
+      "var_type": "observation"
+    },
+    {
+      "constraints": {},
+      "data_type": "float",
+      "description": "Current hidden state distribution",
+      "dimensions": [
+        9,
+        1
+      ],
+      "name": "s",
+      "var_type": "hidden_state"
+    },
+    {
+      "constraints": {},
+      "data_type": "float",
+      "description": "Next hidden state distribution",
+      "dimensions": [
+        9,
+        1
+      ],
+      "name": "s_prime",
+      "var_type": "hidden_state"
+    },
+    {
+      "constraints": {},
+      "data_type": "integer",
+      "description": "Discrete time step",
+      "dimensions": [
+        1
+      ],
+      "name": "t",
+      "var_type": "hidden_state"
+    },
+    {
+      "constraints": {},
+      "data_type": "integer",
+      "description": "Action index",
+      "dimensions": [
+        1
+      ],
+      "name": "u",
+      "var_type": "action"
+    },
+    {
+      "constraints": {},
+      "data_type": "float",
+      "description": "Policy distribution over actions",
+      "dimensions": [
+        5
+      ],
+      "name": "\u03c0",
+      "var_type": "policy"
+    }
+  ]
+}

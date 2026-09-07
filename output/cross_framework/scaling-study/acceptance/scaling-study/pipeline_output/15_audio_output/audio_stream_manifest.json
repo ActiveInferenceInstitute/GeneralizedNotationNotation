@@ -1,0 +1,14 @@
+{
+  "stream_id": "audio_stream_20260906_122302",
+  "kind": "ARRAY",
+  "dtype": "float32",
+  "shape": [
+    2
+  ],
+  "source": "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/15_audio_output/audio_results.json",
+  "chunk_size": 32,
+  "n_elements": 2,
+  "checksum": "af5570f5a1810b7af78caf4bc70a660f0df51e42baf91d4de5b2328de0e83dfc",
+  "schema_version": "1.0",
+  "created_by": "15_audio"
+}

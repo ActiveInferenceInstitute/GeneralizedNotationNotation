@@ -1,0 +1,146 @@
+{
+  "output/model_family_acceptance/discrete/input/actinf_pomdp_agent.md": {
+    "file": "output/model_family_acceptance/discrete/input/actinf_pomdp_agent.md",
+    "model_name": "actinf_pomdp_agent",
+    "memory_estimate": 0.25390625,
+    "inference_estimate": 110.82320754236241,
+    "storage_estimate": 3.5669296875,
+    "flops_estimate": {
+      "total_flops": 150.0,
+      "matrix_operations": 60,
+      "element_operations": 0,
+      "nonlinear_operations": 0
+    },
+    "inference_time_estimate": {
+      "cpu_time_seconds": 3e-09,
+      "cpu_time_ms": 3e-06,
+      "cpu_time_us": 0.003
+    },
+    "batched_inference_estimate": {
+      "batch_1": {
+        "flops": 150.0,
+        "time_seconds": 3e-09,
+        "throughput_per_second": 333333333.3333333
+      },
+      "batch_8": {
+        "flops": 953.5673556428623,
+        "time_seconds": 1.9071347112857244e-08,
+        "throughput_per_second": 419477447.11786383
+      },
+      "batch_32": {
+        "flops": 3645.465402965607,
+        "time_seconds": 7.290930805931215e-08,
+        "throughput_per_second": 438901435.93144256
+      },
+      "batch_128": {
+        "flops": 14261.539480915351,
+        "time_seconds": 2.85230789618307e-07,
+        "throughput_per_second": 448759406.9745707
+      },
+      "batch_512": {
+        "flops": 56319.199534818654,
+        "time_seconds": 1.126383990696373e-06,
+        "throughput_per_second": 454551915.00321513
+      }
+    },
+    "model_overhead": {
+      "compilation_ms": 72,
+      "optimization_ms": 104.5,
+      "memory_overhead_kb": 2.4453125
+    },
+    "complexity": {
+      "state_space_complexity": 6.044394119358453,
+      "graph_density": 0.07051282051282051,
+      "avg_in_degree": 1.375,
+      "avg_out_degree": 1.2222222222222223,
+      "max_in_degree": 2,
+      "max_out_degree": 3,
+      "cyclic_complexity": 0.0,
+      "temporal_complexity": 0.0,
+      "equation_complexity": 14.2,
+      "overall_complexity": 10,
+      "variable_count": 13,
+      "edge_count": 11,
+      "total_state_space_dim": 65,
+      "max_variable_dim": 27
+    },
+    "model_info": {
+      "variables_count": 13,
+      "edges_count": 11,
+      "time_spec": "Dynamic",
+      "equation_count": 5
+    }
+  },
+  "output/model_family_acceptance/discrete/input/simple_mdp.md": {
+    "file": "output/model_family_acceptance/discrete/input/simple_mdp.md",
+    "model_name": "simple_mdp",
+    "memory_estimate": 0.4296875,
+    "inference_estimate": 130.90831829622581,
+    "storage_estimate": 3.4950390625,
+    "flops_estimate": {
+      "total_flops": 412.5,
+      "matrix_operations": 104,
+      "element_operations": 1,
+      "nonlinear_operations": 60
+    },
+    "inference_time_estimate": {
+      "cpu_time_seconds": 8.25e-09,
+      "cpu_time_ms": 8.249999999999999e-06,
+      "cpu_time_us": 0.008249999999999999
+    },
+    "batched_inference_estimate": {
+      "batch_1": {
+        "flops": 412.5,
+        "time_seconds": 8.25e-09,
+        "throughput_per_second": 121212121.21212122
+      },
+      "batch_8": {
+        "flops": 2622.310228017871,
+        "time_seconds": 5.2446204560357416e-08,
+        "throughput_per_second": 152537253.49740505
+      },
+      "batch_32": {
+        "flops": 10025.02985815542,
+        "time_seconds": 2.005005971631084e-07,
+        "throughput_per_second": 159600522.15688822
+      },
+      "batch_128": {
+        "flops": 39219.233572517216,
+        "time_seconds": 7.843846714503443e-07,
+        "throughput_per_second": 163185238.8998439
+      },
+      "batch_512": {
+        "flops": 154877.79872075128,
+        "time_seconds": 3.0975559744150254e-06,
+        "throughput_per_second": 165291605.4557146
+      }
+    },
+    "model_overhead": {
+      "compilation_ms": 77,
+      "optimization_ms": 80.5,
+      "memory_overhead_kb": 2.513671875
+    },
+    "complexity": {
+      "state_space_complexity": 6.794415866350106,
+      "graph_density": 0.09090909090909091,
+      "avg_in_degree": 1.25,
+      "avg_out_degree": 1.25,
+      "max_in_degree": 2,
+      "max_out_degree": 3,
+      "cyclic_complexity": 0.0,
+      "temporal_complexity": 0.0,
+      "equation_complexity": 5.63265306122449,
+      "overall_complexity": 6.822254315364292,
+      "variable_count": 11,
+      "edge_count": 10,
+      "total_state_space_dim": 110,
+      "max_variable_dim": 64
+    },
+    "model_info": {
+      "variables_count": 11,
+      "edges_count": 10,
+      "time_spec": "Dynamic",
+      "equation_count": 7
+    }
+  }
+}

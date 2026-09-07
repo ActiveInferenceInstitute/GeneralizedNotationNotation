@@ -1,0 +1,980 @@
+{
+  "schema": "gnn_model_family_acceptance_ledger_v1",
+  "created_at": "2026-09-06T12:11:55.456376",
+  "manifest": "input/model_family_manifest.json",
+  "strict": true,
+  "only_steps": "3,5,6,11,12,15,16,23",
+  "frameworks": "pymdp",
+  "family_count": 1,
+  "families": [
+    {
+      "name": "precision",
+      "description": "Precision weighting and curiosity-driven fixtures.",
+      "source_target_dir": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/input/gnn_files/precision",
+      "staged_target_dir": "output/cross_framework/precision/acceptance/precision/input",
+      "representative_files": [
+        "output/cross_framework/precision/acceptance/precision/input/curiosity_driven_agent.md",
+        "output/cross_framework/precision/acceptance/precision/input/precision_weighted.md"
+      ],
+      "command": [
+        "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python3",
+        "src/main.py",
+        "--target-dir",
+        "output/cross_framework/precision/acceptance/precision/input",
+        "--output-dir",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output",
+        "--only-steps",
+        "3,5,6,11,12,15,16,23",
+        "--frameworks",
+        "pymdp",
+        "--skip-llm"
+      ],
+      "return_code": 2,
+      "status": "passed",
+      "acceptance_profile": {
+        "required_steps": [
+          3,
+          5,
+          6,
+          15,
+          16,
+          23
+        ],
+        "evidence_steps": [
+          11,
+          12
+        ],
+        "allow_unsupported_steps": [],
+        "unsupported_step_reasons": {}
+      },
+      "profiled_unsupported_steps": [],
+      "pipeline_summary": {
+        "available": true,
+        "overall_status": "SUCCESS_WITH_WARNINGS",
+        "total_duration_seconds": 188.7966,
+        "performance_summary": {
+          "peak_memory_mb": 39.1875,
+          "total_steps": 10,
+          "failed_steps": 0,
+          "critical_failures": 0,
+          "successful_steps": 10,
+          "warnings": 1
+        }
+      },
+      "stdout_tail": " - INFO - \ud83d\udcc7 Indexed run 377aa1bf14c8 in output/cross_framework/precision/acceptance/precision/pipeline_output/00_pipeline_summary/.history/index.json\n2026-09-06 12:15:05,272 [a8802297:pipeline] pipeline - INFO - \ud83d\udcca D3 Performance Dashboard rendered to: output/cross_framework/precision/acceptance/precision/pipeline_output/00_pipeline_summary/performance_dashboard.html\n2026-09-06 12:15:05,331 [a8802297:pipeline] report.pipeline_report - INFO - \ud83d\udcc4 Pipeline report generated (3564 chars)\n2026-09-06 12:15:05,337 [a8802297:pipeline] pipeline - INFO - \ud83d\udcc4 Final pipeline report written to: output/cross_framework/precision/acceptance/precision/pipeline_output/PIPELINE_REPORT.md\n2026-09-06 12:15:05,337 [a8802297:pipeline] pipeline - INFO - Summary: 10/10 steps successful, 0 failed\n\u256d\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 \ud83c\udfaf Pipeline Complete (188.8s) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u256e\n\u2502 \u26a0\ufe0f Pipeline COMPLETED WITH ISSUES                                            \u2502\n\u2502                                                                              \u2502\n\u2502 Total Steps: 10                                                              \u2502\n\u2502 Successful: 10                                                               \u2502\n\u2502 Failed: 0                                                                    \u2502\n\u2502 Warnings: 1                                                                  \u2502\n\u2502 Peak Memory: 39.2MB                                                          \u2502\n\u2502 Duration: 188.8s                                                             \u2502\n\u2570\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u256f\n2026-09-06 12:15:05,338 [a8802297:pipeline] pipeline - INFO - \u250c\u2500 Step 10/10: Overall Progress SUCCESS\n\u2514\u2500 Progress: [\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588] (100%)\nStats: \u2705 Success: 10 | \u26a0\ufe0f Warnings: 1 | \u274c Failed: 0 | \u23f1\ufe0f Elapsed: 3m9s\n2026-09-06 12:15:05,338 [a8802297:pipeline] pipeline - INFO - \n2026-09-06 12:15:05,338 [a8802297:pipeline] pipeline - INFO - \u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557\n2026-09-06 12:15:05,338 [a8802297:pipeline] pipeline - INFO - \u2551             \u26a0\ufe0f PIPELINE EXECUTION SUMMARY - SUCCESS_WITH_WARNINGS \u26a0\ufe0f              \u2551\n2026-09-06 12:15:05,338 [a8802297:pipeline] pipeline - INFO - \u2560\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2563\n2026-09-06 12:15:05,339 [a8802297:pipeline] pipeline - INFO - \u2551 Total Steps: 10                                                                   \u2551\n2026-09-06 12:15:05,339 [a8802297:pipeline] pipeline - INFO - \u2551 \u2705 Successful: 10 (9 pure, 1 with warnings)                                        \u2551\n2026-09-06 12:15:05,339 [a8802297:pipeline] pipeline - INFO - \u2551 \u26a0\ufe0f Warnings: 1                                                                    \u2551\n2026-09-06 12:15:05,339 [a8802297:pipeline] pipeline - INFO - \u2551 \u274c Failed: 0                                                                       \u2551\n2026-09-06 12:15:05,339 [a8802297:pipeline] pipeline - INFO - \u2551 \u23f1\ufe0f Total Time: 3m9s                                                                 \u2551\n2026-09-06 12:15:05,339 [a8802297:pipeline] pipeline - INFO - \u2551 Average Step Time: 18.9s                                                          \u2551\n2026-09-06 12:15:05,339 [a8802297:pipeline] pipeline - INFO - \u2551 \ud83d\udcca Success Rate: 100.0%                                                            \u2551\n2026-09-06 12:15:05,339 [a8802297:pipeline] pipeline - INFO - \u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d\n2026-09-06 12:15:05,339 [a8802297:pipeline] pipeline - INFO - \n2026-09-06 12:15:05,339 [a8802297:pipeline] pipeline - INFO - \ud83d\udd0d DETAILED STEP ANALYSIS:\n2026-09-06 12:15:05,340 [a8802297:pipeline] pipeline - INFO -   \u26a0\ufe0f 23_report.py: SUCCESS_WITH_WARNINGS (340ms)\n2026-09-06 12:15:05,340 [a8802297:pipeline] pipeline - INFO -     \u2514\u2500 Missing prerequisite output directory: output/cross_framework/precision/acceptance/precision/pipelin\n2026-09-06 12:15:05,340 [a8802297:pipeline] pipeline - INFO - \n",
+      "stderr_tail": "",
+      "steps": {
+        "0": "skipped",
+        "1": "skipped",
+        "2": "skipped",
+        "3": "passed",
+        "4": "skipped",
+        "5": "passed",
+        "6": "passed",
+        "7": "skipped",
+        "8": "skipped",
+        "9": "skipped",
+        "10": "skipped",
+        "11": "passed",
+        "12": "passed",
+        "13": "skipped",
+        "14": "skipped",
+        "15": "passed",
+        "16": "passed",
+        "17": "skipped",
+        "18": "skipped",
+        "19": "skipped",
+        "20": "skipped",
+        "21": "skipped",
+        "22": "skipped",
+        "23": "passed",
+        "24": "skipped"
+      },
+      "raw_steps": {
+        "0": "skipped",
+        "1": "skipped",
+        "2": "skipped",
+        "3": "passed",
+        "4": "skipped",
+        "5": "passed",
+        "6": "passed",
+        "7": "skipped",
+        "8": "skipped",
+        "9": "skipped",
+        "10": "skipped",
+        "11": "passed",
+        "12": "passed",
+        "13": "skipped",
+        "14": "skipped",
+        "15": "passed",
+        "16": "passed",
+        "17": "skipped",
+        "18": "skipped",
+        "19": "skipped",
+        "20": "skipped",
+        "21": "skipped",
+        "22": "skipped",
+        "23": "passed",
+        "24": "skipped"
+      },
+      "step_evidence": {
+        "0": {
+          "raw_status": "skipped",
+          "status": "skipped",
+          "acceptance": "required",
+          "reason": null,
+          "artifact_links": []
+        },
+        "1": {
+          "raw_status": "skipped",
+          "status": "skipped",
+          "acceptance": "required",
+          "reason": null,
+          "artifact_links": []
+        },
+        "2": {
+          "raw_status": "skipped",
+          "status": "skipped",
+          "acceptance": "required",
+          "reason": null,
+          "artifact_links": []
+        },
+        "3": {
+          "raw_status": "passed",
+          "status": "passed",
+          "acceptance": "required",
+          "reason": null,
+          "artifact_links": [
+            "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/gnn_processing_summary.json",
+            "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/gnn_processing_results.json"
+          ]
+        },
+        "4": {
+          "raw_status": "skipped",
+          "status": "skipped",
+          "acceptance": "required",
+          "reason": null,
+          "artifact_links": []
+        },
+        "5": {
+          "raw_status": "passed",
+          "status": "passed",
+          "acceptance": "required",
+          "reason": null,
+          "artifact_links": [
+            "output/cross_framework/precision/acceptance/precision/pipeline_output/5_type_checker_output/type_check_results.json"
+          ]
+        },
+        "6": {
+          "raw_status": "passed",
+          "status": "passed",
+          "acceptance": "required",
+          "reason": null,
+          "artifact_links": [
+            "output/cross_framework/precision/acceptance/precision/pipeline_output/6_validation_output/validation_summary.json",
+            "output/cross_framework/precision/acceptance/precision/pipeline_output/6_validation_output/validation_results.json"
+          ]
+        },
+        "7": {
+          "raw_status": "skipped",
+          "status": "skipped",
+          "acceptance": "required",
+          "reason": null,
+          "artifact_links": []
+        },
+        "8": {
+          "raw_status": "skipped",
+          "status": "skipped",
+          "acceptance": "required",
+          "reason": null,
+          "artifact_links": []
+        },
+        "9": {
+          "raw_status": "skipped",
+          "status": "skipped",
+          "acceptance": "required",
+          "reason": null,
+          "artifact_links": []
+        },
+        "10": {
+          "raw_status": "skipped",
+          "status": "skipped",
+          "acceptance": "required",
+          "reason": null,
+          "artifact_links": []
+        },
+        "11": {
+          "raw_status": "passed",
+          "status": "passed",
+          "acceptance": "required",
+          "reason": null,
+          "artifact_links": [
+            "output/cross_framework/precision/acceptance/precision/pipeline_output/11_render_output/render_processing_summary.json"
+          ]
+        },
+        "12": {
+          "raw_status": "passed",
+          "status": "passed",
+          "acceptance": "required",
+          "reason": null,
+          "artifact_links": [
+            "output/cross_framework/precision/acceptance/precision/pipeline_output/12_execute_output/summaries/execution_summary.json"
+          ]
+        },
+        "13": {
+          "raw_status": "skipped",
+          "status": "skipped",
+          "acceptance": "required",
+          "reason": null,
+          "artifact_links": []
+        },
+        "14": {
+          "raw_status": "skipped",
+          "status": "skipped",
+          "acceptance": "required",
+          "reason": null,
+          "artifact_links": []
+        },
+        "15": {
+          "raw_status": "passed",
+          "status": "passed",
+          "acceptance": "required",
+          "reason": null,
+          "artifact_links": [
+            "output/cross_framework/precision/acceptance/precision/pipeline_output/15_audio_output/audio_results.json"
+          ]
+        },
+        "16": {
+          "raw_status": "passed",
+          "status": "passed",
+          "acceptance": "required",
+          "reason": null,
+          "artifact_links": [
+            "output/cross_framework/precision/acceptance/precision/pipeline_output/16_analysis_output/analysis_results.json"
+          ]
+        },
+        "17": {
+          "raw_status": "skipped",
+          "status": "skipped",
+          "acceptance": "required",
+          "reason": null,
+          "artifact_links": []
+        },
+        "18": {
+          "raw_status": "skipped",
+          "status": "skipped",
+          "acceptance": "required",
+          "reason": null,
+          "artifact_links": []
+        },
+        "19": {
+          "raw_status": "skipped",
+          "status": "skipped",
+          "acceptance": "required",
+          "reason": null,
+          "artifact_links": []
+        },
+        "20": {
+          "raw_status": "skipped",
+          "status": "skipped",
+          "acceptance": "required",
+          "reason": null,
+          "artifact_links": []
+        },
+        "21": {
+          "raw_status": "skipped",
+          "status": "skipped",
+          "acceptance": "required",
+          "reason": null,
+          "artifact_links": []
+        },
+        "22": {
+          "raw_status": "skipped",
+          "status": "skipped",
+          "acceptance": "required",
+          "reason": null,
+          "artifact_links": []
+        },
+        "23": {
+          "raw_status": "passed",
+          "status": "passed",
+          "acceptance": "required",
+          "reason": null,
+          "artifact_links": [
+            "output/cross_framework/precision/acceptance/precision/pipeline_output/23_report_output/report_processing_summary.json"
+          ]
+        },
+        "24": {
+          "raw_status": "skipped",
+          "status": "skipped",
+          "acceptance": "required",
+          "reason": null,
+          "artifact_links": []
+        }
+      },
+      "step_status_counts": {
+        "available": 0,
+        "passed": 8,
+        "skipped": 17,
+        "failed": 0
+      },
+      "artifact_links": [
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/00_pipeline_logs/pipeline.jsonl",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/00_pipeline_logs/pipeline.log",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/00_pipeline_summary/.history/index.json",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/00_pipeline_summary/performance_dashboard.html",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/00_pipeline_summary/pipeline_execution_summary.json",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/00_pipeline_summary/preliminary_summary.json",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/11_render_output/README.md",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/11_render_output/curiosity_driven_agent/processing_summary.json",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/11_render_output/curiosity_driven_agent/pymdp/Curiosity-Driven_Active_Inference_Agent_pymdp.py",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/11_render_output/curiosity_driven_agent/pymdp/README.md",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/11_render_output/curiosity_driven_agent/pymdp/output/pymdp_simulations/Curiosity-Driven Active Inference Agent/simulation_results.json",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/11_render_output/precision_weighted/processing_summary.json",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/11_render_output/precision_weighted/pymdp/Precision-Weighted_Active_Inference_Agent_pymdp.py",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/11_render_output/precision_weighted/pymdp/README.md",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/11_render_output/precision_weighted/pymdp/output/pymdp_simulations/Precision-Weighted Active Inference Agent/simulation_results.json",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/11_render_output/render_processing_summary.json",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/12_execute_output/curiosity_driven_agent/pymdp/execution_logs/Curiosity-Driven_Active_Inference_Agent_pymdp.py_execution.log",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/12_execute_output/curiosity_driven_agent/pymdp/execution_logs/Curiosity-Driven_Active_Inference_Agent_pymdp.py_results.json",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/12_execute_output/curiosity_driven_agent/pymdp/simulation_data/simulation_results.json",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/12_execute_output/precision_weighted/pymdp/execution_logs/Precision-Weighted_Active_Inference_Agent_pymdp.py_execution.log",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/12_execute_output/precision_weighted/pymdp/execution_logs/Precision-Weighted_Active_Inference_Agent_pymdp.py_results.json",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/12_execute_output/precision_weighted/pymdp/simulation_data/simulation_results.json",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/12_execute_output/summaries/execution_report.md",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/12_execute_output/summaries/execution_summary.json",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/15_audio_output/audio_results.json",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/15_audio_output/audio_stream_chunks.json",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/15_audio_output/audio_stream_manifest.json",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/15_audio_output/audio_summary.md",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/15_audio_output/curiosity_driven_agent_ambient.wav",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/15_audio_output/curiosity_driven_agent_rhythmic.wav",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/15_audio_output/curiosity_driven_agent_sonification.wav",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/15_audio_output/curiosity_driven_agent_tonal.wav",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/15_audio_output/precision_weighted_ambient.wav",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/15_audio_output/precision_weighted_rhythmic.wav",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/15_audio_output/precision_weighted_sonification.wav",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/15_audio_output/precision_weighted_tonal.wav",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/16_analysis_output/analysis_results.json",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/16_analysis_output/analysis_summary.md",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/16_analysis_output/cross_framework/curiosity_driven_agent_post_simulation_analysis.json",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/16_analysis_output/cross_framework/framework_comparison_data.json",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/16_analysis_output/cross_framework/framework_comparison_report.md",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/16_analysis_output/cross_framework/framework_performance_comparison.png",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/16_analysis_output/cross_framework/framework_success_rates.png",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/16_analysis_output/cross_framework/precision_weighted_post_simulation_analysis.json",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/16_analysis_output/cross_model_comparison_report.md",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/16_analysis_output/pymdp/Curiosity-Driven_Active_Inference_Agent/belief_evolution_1.png",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/16_analysis_output/pymdp/Curiosity-Driven_Active_Inference_Agent/cumulative_preference.png",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/16_analysis_output/pymdp/Curiosity-Driven_Active_Inference_Agent/discrete_states_0.png",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/16_analysis_output/pymdp/Curiosity-Driven_Active_Inference_Agent/energy_dynamics_3.png",
+        "output/cross_framework/precision/acceptance/precision/pipeline_output/16_analysis_output/pymdp/Curiosity-Driven_Active_Inference_Agent/performance_2.png"
+      ],
+      "interpretability_summary": {
+        "schema": "gnn_model_family_interpretability_v1",
+        "family": "precision",
+        "target_dir": "output/cross_framework/precision/acceptance/precision/input",
+        "model_count": 2,
+        "models": [
+          {
+            "model_name": "Curiosity-Driven Active Inference Agent",
+            "source_file": "output/cross_framework/precision/acceptance/precision/input/curiosity_driven_agent.md",
+            "variables": [
+              {
+                "name": "A",
+                "dimensions": [
+                  "5",
+                  "5"
+                ],
+                "dtype": "float"
+              },
+              {
+                "name": "B",
+                "dimensions": [
+                  "5",
+                  "5",
+                  "4"
+                ],
+                "dtype": "float"
+              },
+              {
+                "name": "C",
+                "dimensions": [
+                  "5"
+                ],
+                "dtype": "float"
+              },
+              {
+                "name": "D",
+                "dimensions": [
+                  "5"
+                ],
+                "dtype": "float"
+              },
+              {
+                "name": "E",
+                "dimensions": [
+                  "4"
+                ],
+                "dtype": "float"
+              },
+              {
+                "name": "s",
+                "dimensions": [
+                  "5",
+                  "1"
+                ],
+                "dtype": "float"
+              },
+              {
+                "name": "s_prime",
+                "dimensions": [
+                  "5",
+                  "1"
+                ],
+                "dtype": "float"
+              },
+              {
+                "name": "o",
+                "dimensions": [
+                  "5",
+                  "1"
+                ],
+                "dtype": "int"
+              },
+              {
+                "name": "\u03c0",
+                "dimensions": [
+                  "4"
+                ],
+                "dtype": "float"
+              },
+              {
+                "name": "u",
+                "dimensions": [
+                  "1"
+                ],
+                "dtype": "int"
+              },
+              {
+                "name": "G",
+                "dimensions": [
+                  "\u03c0"
+                ],
+                "dtype": "float"
+              },
+              {
+                "name": "G_epi",
+                "dimensions": [
+                  "\u03c0"
+                ],
+                "dtype": "float"
+              },
+              {
+                "name": "G_ins",
+                "dimensions": [
+                  "\u03c0"
+                ],
+                "dtype": "float"
+              },
+              {
+                "name": "F",
+                "dimensions": [
+                  "\u03c0"
+                ],
+                "dtype": "float"
+              },
+              {
+                "name": "t",
+                "dimensions": [
+                  "1"
+                ],
+                "dtype": "int"
+              }
+            ],
+            "variable_count": 15,
+            "connections": [
+              {
+                "source": "D",
+                "target": "s",
+                "directed": true,
+                "label": null
+              },
+              {
+                "source": "s",
+                "target": "A",
+                "directed": false,
+                "label": null
+              },
+              {
+                "source": "s",
+                "target": "s_prime",
+                "directed": true,
+                "label": null
+              },
+              {
+                "source": "A",
+                "target": "o",
+                "directed": false,
+                "label": null
+              },
+              {
+                "source": "C",
+                "target": "G_ins",
+                "directed": true,
+                "label": null
+              },
+              {
+                "source": "G_epi",
+                "target": "G",
+                "directed": true,
+                "label": null
+              },
+              {
+                "source": "G_ins",
+                "target": "G",
+                "directed": true,
+                "label": null
+              },
+              {
+                "source": "E",
+                "target": "\u03c0",
+                "directed": true,
+                "label": null
+              },
+              {
+                "source": "G",
+                "target": "\u03c0",
+                "directed": true,
+                "label": null
+              },
+              {
+                "source": "\u03c0",
+                "target": "u",
+                "directed": true,
+                "label": null
+              },
+              {
+                "source": "B",
+                "target": "u",
+                "directed": true,
+                "label": null
+              },
+              {
+                "source": "u",
+                "target": "s_prime",
+                "directed": true,
+                "label": null
+              },
+              {
+                "source": "s",
+                "target": "F",
+                "directed": false,
+                "label": null
+              },
+              {
+                "source": "o",
+                "target": "F",
+                "directed": false,
+                "label": null
+              }
+            ],
+            "connection_count": 14,
+            "matrix_shapes": {
+              "A": [
+                5,
+                5
+              ],
+              "B": [
+                5,
+                5,
+                4
+              ],
+              "C": [
+                5
+              ],
+              "D": [
+                5
+              ],
+              "E": [
+                4
+              ]
+            },
+            "validation_messages": [
+              "[GNN-E005] Unparseable connection: '\u03b3>G' [output/cross_framework/precision/acceptance/precision/input/curiosity_driven_agent.md:57]"
+            ],
+            "pipeline_evidence": {
+              "pipeline_summary_available": true,
+              "render_status": "passed",
+              "execution_status": "passed",
+              "render_summary_available": true,
+              "execution_summary_available": true,
+              "skip_or_failure_reason": null
+            },
+            "telemetry_present": true,
+            "telemetry_preview": {
+              "expected_free_energy": [
+                [
+                  -0.8919893503189087,
+                  -1.0491710901260376,
+                  -1.3708341121673584,
+                  -1.0236425399780273
+                ],
+                [
+                  -0.6355428695678711,
+                  -0.6514426469802856,
+                  -0.8900277614593506,
+                  -0.4912971258163452
+                ],
+                [
+                  -0.7994229793548584,
+                  -0.8856918811798096,
+                  -0.9303783178329468,
+                  -0.5975594520568848
+                ],
+                [
+                  -1.3948734998703003,
+                  -1.6035518646240234,
+                  -1.603677749633789,
+                  -1.261642575263977
+                ],
+                [
+                  -1.4353103637695312,
+                  -1.6507841348648071,
+                  -1.6518487930297852,
+                  -1.3061048984527588
+                ]
+              ],
+              "observations": [
+                3,
+                0,
+                2,
+                2,
+                2
+              ],
+              "actions": [
+                0,
+                3,
+                3,
+                3,
+                3
+              ]
+            },
+            "artifact_links": [
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/11_render_output/curiosity_driven_agent/processing_summary.json",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/11_render_output/curiosity_driven_agent/pymdp/Curiosity-Driven_Active_Inference_Agent_pymdp.py",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/11_render_output/curiosity_driven_agent/pymdp/README.md",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/11_render_output/curiosity_driven_agent/pymdp/output/pymdp_simulations/Curiosity-Driven Active Inference Agent/simulation_results.json",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/12_execute_output/curiosity_driven_agent/pymdp/execution_logs/Curiosity-Driven_Active_Inference_Agent_pymdp.py_execution.log",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/12_execute_output/curiosity_driven_agent/pymdp/execution_logs/Curiosity-Driven_Active_Inference_Agent_pymdp.py_results.json",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/12_execute_output/curiosity_driven_agent/pymdp/simulation_data/simulation_results.json",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/15_audio_output/curiosity_driven_agent_ambient.wav",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/15_audio_output/curiosity_driven_agent_rhythmic.wav",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/15_audio_output/curiosity_driven_agent_sonification.wav",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/15_audio_output/curiosity_driven_agent_tonal.wav",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/16_analysis_output/cross_framework/curiosity_driven_agent_post_simulation_analysis.json",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/16_analysis_output/pymdp/curiosity_driven_agent_pymdp_action_frequencies.png",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/16_analysis_output/pymdp/curiosity_driven_agent_pymdp_belief_convergence.png",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/16_analysis_output/pymdp/curiosity_driven_agent_pymdp_belief_trace.png",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/16_analysis_output/pymdp/curiosity_driven_agent_pymdp_free_energy.png",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/16_analysis_output/pymdp/curiosity_driven_agent_pymdp_observations.png",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/16_analysis_output/pymdp/curiosity_driven_agent_pymdp_vfe_vs_efe.png",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_agda.agda",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_alloy.als",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_asn1.asn1",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_bnf.bnf",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_coq.v",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_ebnf.ebnf",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_haskell.hs"
+            ]
+          },
+          {
+            "model_name": "Precision-Weighted Active Inference Agent",
+            "source_file": "output/cross_framework/precision/acceptance/precision/input/precision_weighted.md",
+            "variables": [
+              {
+                "name": "A",
+                "dimensions": [
+                  "3",
+                  "3"
+                ],
+                "dtype": "float"
+              },
+              {
+                "name": "B",
+                "dimensions": [
+                  "3",
+                  "3",
+                  "3"
+                ],
+                "dtype": "float"
+              },
+              {
+                "name": "C",
+                "dimensions": [
+                  "3"
+                ],
+                "dtype": "float"
+              },
+              {
+                "name": "D",
+                "dimensions": [
+                  "3"
+                ],
+                "dtype": "float"
+              },
+              {
+                "name": "E",
+                "dimensions": [
+                  "3"
+                ],
+                "dtype": "float"
+              },
+              {
+                "name": "s",
+                "dimensions": [
+                  "3",
+                  "1"
+                ],
+                "dtype": "float"
+              },
+              {
+                "name": "s_prime",
+                "dimensions": [
+                  "3",
+                  "1"
+                ],
+                "dtype": "float"
+              },
+              {
+                "name": "o",
+                "dimensions": [
+                  "3",
+                  "1"
+                ],
+                "dtype": "int"
+              },
+              {
+                "name": "F",
+                "dimensions": [
+                  "\u03c0"
+                ],
+                "dtype": "float"
+              },
+              {
+                "name": "\u03c0",
+                "dimensions": [
+                  "3"
+                ],
+                "dtype": "float"
+              },
+              {
+                "name": "u",
+                "dimensions": [
+                  "1"
+                ],
+                "dtype": "int"
+              },
+              {
+                "name": "G",
+                "dimensions": [
+                  "\u03c0"
+                ],
+                "dtype": "float"
+              }
+            ],
+            "variable_count": 12,
+            "connections": [
+              {
+                "source": "D",
+                "target": "s",
+                "directed": true,
+                "label": null
+              },
+              {
+                "source": "s",
+                "target": "A",
+                "directed": false,
+                "label": null
+              },
+              {
+                "source": "A",
+                "target": "o",
+                "directed": false,
+                "label": null
+              },
+              {
+                "source": "s",
+                "target": "s_prime",
+                "directed": true,
+                "label": null
+              },
+              {
+                "source": "C",
+                "target": "G",
+                "directed": true,
+                "label": null
+              },
+              {
+                "source": "G",
+                "target": "\u03c0",
+                "directed": true,
+                "label": null
+              },
+              {
+                "source": "E",
+                "target": "\u03c0",
+                "directed": true,
+                "label": null
+              },
+              {
+                "source": "\u03c0",
+                "target": "u",
+                "directed": true,
+                "label": null
+              },
+              {
+                "source": "B",
+                "target": "u",
+                "directed": true,
+                "label": null
+              },
+              {
+                "source": "u",
+                "target": "s_prime",
+                "directed": true,
+                "label": null
+              },
+              {
+                "source": "s",
+                "target": "F",
+                "directed": false,
+                "label": null
+              },
+              {
+                "source": "o",
+                "target": "F",
+                "directed": false,
+                "label": null
+              }
+            ],
+            "connection_count": 12,
+            "matrix_shapes": {
+              "A": [
+                3,
+                3
+              ],
+              "B": [
+                3,
+                3,
+                3
+              ],
+              "C": [
+                3
+              ],
+              "D": [
+                3
+              ],
+              "E": [
+                3
+              ]
+            },
+            "validation_messages": [
+              "[GNN-E005] Unparseable connection: '\u03c9>A' [output/cross_framework/precision/acceptance/precision/input/precision_weighted.md:50]",
+              "[GNN-E005] Unparseable connection: '\u03b3>\u03c0' [output/cross_framework/precision/acceptance/precision/input/precision_weighted.md:54]",
+              "[GNN-E005] Unparseable connection: '\u03b2>\u03c0' [output/cross_framework/precision/acceptance/precision/input/precision_weighted.md:55]",
+              "[GNN-E005] Unparseable connection: '\u03c9-F' [output/cross_framework/precision/acceptance/precision/input/precision_weighted.md:62]"
+            ],
+            "pipeline_evidence": {
+              "pipeline_summary_available": true,
+              "render_status": "passed",
+              "execution_status": "passed",
+              "render_summary_available": true,
+              "execution_summary_available": true,
+              "skip_or_failure_reason": null
+            },
+            "telemetry_present": true,
+            "telemetry_preview": {
+              "expected_free_energy": [
+                [
+                  0.39597561955451965,
+                  0.39597561955451965,
+                  0.39597561955451965
+                ],
+                [
+                  0.6751062273979187,
+                  0.6751062273979187,
+                  1.02659273147583
+                ],
+                [
+                  0.30419912934303284,
+                  0.3041991591453552,
+                  0.26628369092941284
+                ],
+                [
+                  0.15525978803634644,
+                  0.15525981783866882,
+                  0.9154220819473267
+                ],
+                [
+                  0.9103058576583862,
+                  0.9103058576583862,
+                  0.1455753892660141
+                ]
+              ],
+              "observations": [
+                1,
+                0,
+                1,
+                0,
+                2
+              ],
+              "actions": [
+                0,
+                2,
+                1,
+                2,
+                0
+              ]
+            },
+            "artifact_links": [
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/11_render_output/precision_weighted/processing_summary.json",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/11_render_output/precision_weighted/pymdp/Precision-Weighted_Active_Inference_Agent_pymdp.py",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/11_render_output/precision_weighted/pymdp/README.md",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/11_render_output/precision_weighted/pymdp/output/pymdp_simulations/Precision-Weighted Active Inference Agent/simulation_results.json",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/12_execute_output/precision_weighted/pymdp/execution_logs/Precision-Weighted_Active_Inference_Agent_pymdp.py_execution.log",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/12_execute_output/precision_weighted/pymdp/execution_logs/Precision-Weighted_Active_Inference_Agent_pymdp.py_results.json",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/12_execute_output/precision_weighted/pymdp/simulation_data/simulation_results.json",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/15_audio_output/precision_weighted_ambient.wav",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/15_audio_output/precision_weighted_rhythmic.wav",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/15_audio_output/precision_weighted_sonification.wav",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/15_audio_output/precision_weighted_tonal.wav",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/16_analysis_output/cross_framework/precision_weighted_post_simulation_analysis.json",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/16_analysis_output/pymdp/precision_weighted_pymdp_action_frequencies.png",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/16_analysis_output/pymdp/precision_weighted_pymdp_belief_convergence.png",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/16_analysis_output/pymdp/precision_weighted_pymdp_belief_trace.png",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/16_analysis_output/pymdp/precision_weighted_pymdp_free_energy.png",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/16_analysis_output/pymdp/precision_weighted_pymdp_observations.png",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/16_analysis_output/pymdp/precision_weighted_pymdp_vfe_vs_efe.png",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/precision_weighted/precision_weighted_agda.agda",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/precision_weighted/precision_weighted_alloy.als",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/precision_weighted/precision_weighted_asn1.asn1",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/precision_weighted/precision_weighted_bnf.bnf",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/precision_weighted/precision_weighted_coq.v",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/precision_weighted/precision_weighted_ebnf.ebnf",
+              "output/cross_framework/precision/acceptance/precision/pipeline_output/3_gnn_output/precision_weighted/precision_weighted_haskell.hs"
+            ]
+          }
+        ],
+        "totals": {
+          "variables": 27,
+          "connections": 26,
+          "validation_messages": 5,
+          "models_with_telemetry": 2
+        }
+      }
+    }
+  ],
+  "status": "passed",
+  "failed_families": []
+}

@@ -1,0 +1,12 @@
+{
+  "timestamp": "2026-09-06T11:09:22.268274",
+  "execution_results_dir": "output/model_family_acceptance/discrete/pipeline_output/12_execute_output/actinf_pomdp_agent",
+  "framework_results": {
+    "pymdp": {
+      "framework": "pymdp",
+      "result_count": 1,
+      "analyses": []
+    }
+  },
+  "cross_framework_comparison": {}
+}

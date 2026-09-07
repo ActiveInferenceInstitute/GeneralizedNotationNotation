@@ -1,0 +1,732 @@
+{
+  "annotation": "A two-level hierarchical POMDP where:\n- Level 1 (fast): 4 observations, 4 hidden states, 3 actions\n- Level 2 (slow): 2 contextual states that modulate Level 1 likelihood\n- Higher-level beliefs are updated at a slower timescale\n- Top-down predictions constrain bottom-up inference at Level 1",
+  "checksum": null,
+  "connections": [
+    {
+      "annotation": null,
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "D_level1"
+      ],
+      "target_variables": [
+        "s_level1"
+      ],
+      "weight": null
+    },
+    {
+      "annotation": null,
+      "connection_type": "undirected",
+      "description": null,
+      "source_variables": [
+        "s_level1"
+      ],
+      "target_variables": [
+        "A_level1"
+      ],
+      "weight": null
+    },
+    {
+      "annotation": null,
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "s_level1"
+      ],
+      "target_variables": [
+        "x_next1"
+      ],
+      "weight": null
+    },
+    {
+      "annotation": null,
+      "connection_type": "undirected",
+      "description": null,
+      "source_variables": [
+        "A_level1"
+      ],
+      "target_variables": [
+        "o_level1"
+      ],
+      "weight": null
+    },
+    {
+      "annotation": null,
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "C_level1"
+      ],
+      "target_variables": [
+        "G1"
+      ],
+      "weight": null
+    },
+    {
+      "annotation": null,
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "G1"
+      ],
+      "target_variables": [
+        "π1"
+      ],
+      "weight": null
+    },
+    {
+      "annotation": null,
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "π1"
+      ],
+      "target_variables": [
+        "u_level1"
+      ],
+      "weight": null
+    },
+    {
+      "annotation": null,
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "B_level1"
+      ],
+      "target_variables": [
+        "u_level1"
+      ],
+      "weight": null
+    },
+    {
+      "annotation": null,
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "u_level1"
+      ],
+      "target_variables": [
+        "x_next1"
+      ],
+      "weight": null
+    },
+    {
+      "annotation": null,
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "s_level1"
+      ],
+      "target_variables": [
+        "o_level2"
+      ],
+      "weight": null
+    },
+    {
+      "annotation": null,
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "D_level2"
+      ],
+      "target_variables": [
+        "s_level2"
+      ],
+      "weight": null
+    },
+    {
+      "annotation": null,
+      "connection_type": "undirected",
+      "description": null,
+      "source_variables": [
+        "s_level2"
+      ],
+      "target_variables": [
+        "A_level2"
+      ],
+      "weight": null
+    },
+    {
+      "annotation": null,
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "A_level2"
+      ],
+      "target_variables": [
+        "D_level1"
+      ],
+      "weight": null
+    },
+    {
+      "annotation": null,
+      "connection_type": "undirected",
+      "description": null,
+      "source_variables": [
+        "s_level2"
+      ],
+      "target_variables": [
+        "B_level2"
+      ],
+      "weight": null
+    },
+    {
+      "annotation": null,
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "C_level2"
+      ],
+      "target_variables": [
+        "G2"
+      ],
+      "weight": null
+    },
+    {
+      "annotation": null,
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "G2"
+      ],
+      "target_variables": [
+        "s_level2"
+      ],
+      "weight": null
+    }
+  ],
+  "created_at": "2026-09-06T11:17:18.588147",
+  "equations": [],
+  "extensions": {
+    "footer": "Hierarchical Active Inference POMDP v1 - GNN Representation.\nLevel 2 updates every 5 Level 1 timesteps (timescale_ratio=5).\nDemonstrates context-dependent behavior modulation.",
+    "gnn_section": "ActInfPOMDP_Hierarchical",
+    "signature": "Cryptographic signature goes here"
+  },
+  "model_name": "Hierarchical Active Inference POMDP",
+  "modified_at": "2026-09-06T11:17:18.588149",
+  "ontology_mappings": [
+    {
+      "description": null,
+      "ontology_term": "LikelihoodMatrix",
+      "variable_name": "A_level1"
+    },
+    {
+      "description": null,
+      "ontology_term": "TransitionMatrix",
+      "variable_name": "B_level1"
+    },
+    {
+      "description": null,
+      "ontology_term": "LogPreferenceVector",
+      "variable_name": "C_level1"
+    },
+    {
+      "description": null,
+      "ontology_term": "PriorOverHiddenStates",
+      "variable_name": "D_level1"
+    },
+    {
+      "description": null,
+      "ontology_term": "HiddenState",
+      "variable_name": "s_level1"
+    },
+    {
+      "description": null,
+      "ontology_term": "Observation",
+      "variable_name": "o_level1"
+    },
+    {
+      "description": null,
+      "ontology_term": "PolicyVector",
+      "variable_name": "π1"
+    },
+    {
+      "description": null,
+      "ontology_term": "Action",
+      "variable_name": "u_level1"
+    },
+    {
+      "description": null,
+      "ontology_term": "ExpectedFreeEnergy",
+      "variable_name": "G1"
+    },
+    {
+      "description": null,
+      "ontology_term": "HigherLevelLikelihoodMatrix",
+      "variable_name": "A_level2"
+    },
+    {
+      "description": null,
+      "ontology_term": "ContextTransitionMatrix",
+      "variable_name": "B_level2"
+    },
+    {
+      "description": null,
+      "ontology_term": "ContextualHiddenState",
+      "variable_name": "s_level2"
+    },
+    {
+      "description": null,
+      "ontology_term": "HigherLevelObservation",
+      "variable_name": "o_level2"
+    },
+    {
+      "description": null,
+      "ontology_term": "HigherLevelExpectedFreeEnergy",
+      "variable_name": "G2"
+    }
+  ],
+  "parameters": [
+    {
+      "description": null,
+      "name": "A_level1",
+      "type_hint": null,
+      "value": [
+        [
+          0.85,
+          0.05,
+          0.05,
+          0.05
+        ],
+        [
+          0.05,
+          0.85,
+          0.05,
+          0.05
+        ],
+        [
+          0.05,
+          0.05,
+          0.85,
+          0.05
+        ],
+        [
+          0.05,
+          0.05,
+          0.05,
+          0.85
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "B_level1",
+      "type_hint": null,
+      "value": [
+        [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        [
+          [
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        [
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ]
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "C_level1",
+      "type_hint": null,
+      "value": [
+        [
+          0.1,
+          0.1,
+          0.1,
+          1.0
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "D_level1",
+      "type_hint": null,
+      "value": [
+        [
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "A_level2",
+      "type_hint": null,
+      "value": [
+        [
+          0.9,
+          0.1
+        ],
+        [
+          0.1,
+          0.9
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "B_level2",
+      "type_hint": null,
+      "value": [
+        [
+          [
+            0.9,
+            0.1
+          ],
+          [
+            0.1,
+            0.9
+          ]
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "C_level2",
+      "type_hint": null,
+      "value": [
+        [
+          0.0,
+          0.5,
+          0.0,
+          0.5
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "D_level2",
+      "type_hint": null,
+      "value": [
+        [
+          0.5,
+          0.5
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "num_hidden_states",
+      "type_hint": null,
+      "value": 8
+    },
+    {
+      "description": null,
+      "name": "num_obs",
+      "type_hint": null,
+      "value": 16
+    },
+    {
+      "description": null,
+      "name": "num_actions",
+      "type_hint": null,
+      "value": 3
+    },
+    {
+      "description": null,
+      "name": "num_timesteps",
+      "type_hint": null,
+      "value": 20
+    },
+    {
+      "description": null,
+      "name": "num_hidden_states_l1",
+      "type_hint": null,
+      "value": 4
+    },
+    {
+      "description": null,
+      "name": "num_obs_l1",
+      "type_hint": null,
+      "value": 4
+    },
+    {
+      "description": null,
+      "name": "num_actions_l1",
+      "type_hint": null,
+      "value": 3
+    },
+    {
+      "description": null,
+      "name": "num_context_states_l2",
+      "type_hint": null,
+      "value": 2
+    },
+    {
+      "description": null,
+      "name": "timescale_ratio",
+      "type_hint": null,
+      "value": 5
+    }
+  ],
+  "time_specification": {
+    "discretization": null,
+    "horizon": "Unbounded",
+    "step_size": null,
+    "time_type": "Dynamic"
+  },
+  "variables": [
+    {
+      "data_type": "float",
+      "description": "Level 1 likelihood: observations x hidden states",
+      "dimensions": [
+        4,
+        4
+      ],
+      "name": "A_level1",
+      "var_type": "action"
+    },
+    {
+      "data_type": "float",
+      "description": "Level 1 transitions: next x prev x actions",
+      "dimensions": [
+        4,
+        4,
+        3
+      ],
+      "name": "B_level1",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "Level 1 preferences over observations",
+      "dimensions": [
+        4
+      ],
+      "name": "C_level1",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "Level 1 prior over hidden states",
+      "dimensions": [
+        4
+      ],
+      "name": "D_level1",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "Level 1 hidden state distribution",
+      "dimensions": [
+        4,
+        1
+      ],
+      "name": "s_level1",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "Level 1 next hidden state",
+      "dimensions": [
+        4,
+        1
+      ],
+      "name": "x_next1",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "integer",
+      "description": "Level 1 observations",
+      "dimensions": [
+        4,
+        1
+      ],
+      "name": "o_level1",
+      "var_type": "observation"
+    },
+    {
+      "data_type": "float",
+      "description": "Level 1 policy (actions)",
+      "dimensions": [
+        3
+      ],
+      "name": "π1",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "integer",
+      "description": "Level 1 action",
+      "dimensions": [
+        1
+      ],
+      "name": "u_level1",
+      "var_type": "action"
+    },
+    {
+      "data_type": "float",
+      "description": "Level 1 Expected Free Energy",
+      "dimensions": [
+        1
+      ],
+      "name": "G1",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "Level 2 likelihood: maps context to Level 1 hidden state prior",
+      "dimensions": [
+        4,
+        2
+      ],
+      "name": "A_level2",
+      "var_type": "action"
+    },
+    {
+      "data_type": "float",
+      "description": "Level 2 transitions (context switches)",
+      "dimensions": [
+        2,
+        2,
+        1
+      ],
+      "name": "B_level2",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "Level 2 preferences over context",
+      "dimensions": [
+        2
+      ],
+      "name": "C_level2",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "Level 2 prior over contextual states",
+      "dimensions": [
+        2
+      ],
+      "name": "D_level2",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "Level 2 contextual hidden state",
+      "dimensions": [
+        2,
+        1
+      ],
+      "name": "s_level2",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "Level 2 observation (= Level 1 hidden state distribution)",
+      "dimensions": [
+        4,
+        1
+      ],
+      "name": "o_level2",
+      "var_type": "observation"
+    },
+    {
+      "data_type": "float",
+      "description": "Level 2 Expected Free Energy",
+      "dimensions": [
+        1
+      ],
+      "name": "G2",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "integer",
+      "description": "Fast timescale counter",
+      "dimensions": [
+        1
+      ],
+      "name": "t1",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "integer",
+      "description": "Slow timescale counter",
+      "dimensions": [
+        1
+      ],
+      "name": "t2",
+      "var_type": "hidden_state"
+    }
+  ],
+  "version": "1.0"
+}

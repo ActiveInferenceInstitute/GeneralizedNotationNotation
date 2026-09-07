@@ -1,0 +1,214 @@
+{
+  "schema": "gnn_model_family_interpretability_v1",
+  "family": "basics",
+  "target_dir": "output/cross_framework/basics/acceptance/basics/input",
+  "model_count": 1,
+  "models": [
+    {
+      "model_name": "Dynamic Perception Model",
+      "source_file": "output/cross_framework/basics/acceptance/basics/input/dynamic_perception.md",
+      "variables": [
+        {
+          "name": "A",
+          "dimensions": [
+            "2",
+            "2"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "B",
+          "dimensions": [
+            "2",
+            "2"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "D",
+          "dimensions": [
+            "2",
+            "1"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "s_t",
+          "dimensions": [
+            "2",
+            "1"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "s_prime",
+          "dimensions": [
+            "2",
+            "1"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "o_t",
+          "dimensions": [
+            "2",
+            "1"
+          ],
+          "dtype": "int"
+        },
+        {
+          "name": "F",
+          "dimensions": [
+            "1"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "t",
+          "dimensions": [
+            "1"
+          ],
+          "dtype": "int"
+        }
+      ],
+      "variable_count": 8,
+      "connections": [
+        {
+          "source": "D",
+          "target": "s_t",
+          "directed": true,
+          "label": null
+        },
+        {
+          "source": "s_t",
+          "target": "A",
+          "directed": false,
+          "label": null
+        },
+        {
+          "source": "A",
+          "target": "o_t",
+          "directed": false,
+          "label": null
+        },
+        {
+          "source": "s_t",
+          "target": "B",
+          "directed": false,
+          "label": null
+        },
+        {
+          "source": "B",
+          "target": "s_prime",
+          "directed": true,
+          "label": null
+        },
+        {
+          "source": "s_t",
+          "target": "F",
+          "directed": false,
+          "label": null
+        },
+        {
+          "source": "o_t",
+          "target": "F",
+          "directed": false,
+          "label": null
+        }
+      ],
+      "connection_count": 7,
+      "matrix_shapes": {
+        "A": [
+          2,
+          2
+        ],
+        "B": [
+          2,
+          2
+        ],
+        "C": [
+          2
+        ],
+        "D": [
+          2
+        ]
+      },
+      "validation_messages": [],
+      "pipeline_evidence": {
+        "pipeline_summary_available": true,
+        "render_status": "passed",
+        "execution_status": "passed",
+        "render_summary_available": true,
+        "execution_summary_available": true,
+        "skip_or_failure_reason": null
+      },
+      "telemetry_present": true,
+      "telemetry_preview": {
+        "expected_free_energy": [
+          [
+            0.26468712091445923
+          ],
+          [
+            0.26054665446281433
+          ],
+          [
+            0.27178558707237244
+          ],
+          [
+            0.25941014289855957
+          ],
+          [
+            0.2567617893218994
+          ]
+        ],
+        "observations": [
+          1,
+          0,
+          1,
+          1,
+          1
+        ],
+        "actions": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "artifact_links": [
+        "output/cross_framework/basics/acceptance/basics/pipeline_output/11_render_output/dynamic_perception/processing_summary.json",
+        "output/cross_framework/basics/acceptance/basics/pipeline_output/11_render_output/dynamic_perception/pymdp/Dynamic_Perception_Model_pymdp.py",
+        "output/cross_framework/basics/acceptance/basics/pipeline_output/11_render_output/dynamic_perception/pymdp/README.md",
+        "output/cross_framework/basics/acceptance/basics/pipeline_output/11_render_output/dynamic_perception/pymdp/output/pymdp_simulations/Dynamic Perception Model/simulation_results.json",
+        "output/cross_framework/basics/acceptance/basics/pipeline_output/12_execute_output/dynamic_perception/pymdp/execution_logs/Dynamic_Perception_Model_pymdp.py_execution.log",
+        "output/cross_framework/basics/acceptance/basics/pipeline_output/12_execute_output/dynamic_perception/pymdp/execution_logs/Dynamic_Perception_Model_pymdp.py_results.json",
+        "output/cross_framework/basics/acceptance/basics/pipeline_output/12_execute_output/dynamic_perception/pymdp/simulation_data/simulation_results.json",
+        "output/cross_framework/basics/acceptance/basics/pipeline_output/15_audio_output/dynamic_perception_ambient.wav",
+        "output/cross_framework/basics/acceptance/basics/pipeline_output/15_audio_output/dynamic_perception_rhythmic.wav",
+        "output/cross_framework/basics/acceptance/basics/pipeline_output/15_audio_output/dynamic_perception_sonification.wav",
+        "output/cross_framework/basics/acceptance/basics/pipeline_output/15_audio_output/dynamic_perception_tonal.wav",
+        "output/cross_framework/basics/acceptance/basics/pipeline_output/16_analysis_output/cross_framework/dynamic_perception_post_simulation_analysis.json",
+        "output/cross_framework/basics/acceptance/basics/pipeline_output/16_analysis_output/pymdp/Dynamic_Perception_Model/belief_evolution_1.png",
+        "output/cross_framework/basics/acceptance/basics/pipeline_output/16_analysis_output/pymdp/Dynamic_Perception_Model/cumulative_preference.png",
+        "output/cross_framework/basics/acceptance/basics/pipeline_output/16_analysis_output/pymdp/Dynamic_Perception_Model/discrete_states_0.png",
+        "output/cross_framework/basics/acceptance/basics/pipeline_output/16_analysis_output/pymdp/Dynamic_Perception_Model/energy_dynamics_3.png",
+        "output/cross_framework/basics/acceptance/basics/pipeline_output/16_analysis_output/pymdp/Dynamic_Perception_Model/performance_2.png",
+        "output/cross_framework/basics/acceptance/basics/pipeline_output/16_analysis_output/pymdp/dynamic_perception_pymdp_action_frequencies.png",
+        "output/cross_framework/basics/acceptance/basics/pipeline_output/16_analysis_output/pymdp/dynamic_perception_pymdp_belief_convergence.png",
+        "output/cross_framework/basics/acceptance/basics/pipeline_output/16_analysis_output/pymdp/dynamic_perception_pymdp_belief_trace.png",
+        "output/cross_framework/basics/acceptance/basics/pipeline_output/16_analysis_output/pymdp/dynamic_perception_pymdp_free_energy.png",
+        "output/cross_framework/basics/acceptance/basics/pipeline_output/16_analysis_output/pymdp/dynamic_perception_pymdp_observations.png",
+        "output/cross_framework/basics/acceptance/basics/pipeline_output/16_analysis_output/pymdp/dynamic_perception_pymdp_vfe_vs_efe.png",
+        "output/cross_framework/basics/acceptance/basics/pipeline_output/3_gnn_output/dynamic_perception/dynamic_perception_agda.agda",
+        "output/cross_framework/basics/acceptance/basics/pipeline_output/3_gnn_output/dynamic_perception/dynamic_perception_alloy.als"
+      ]
+    }
+  ],
+  "totals": {
+    "variables": 8,
+    "connections": 7,
+    "validation_messages": 0,
+    "models_with_telemetry": 1
+  }
+}

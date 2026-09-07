@@ -1,0 +1,452 @@
+{
+  "contract_hash": "d8f074a45bdcb7d505faad2f6193ef44644dbaa9c8809f0af1681003b3d45836",
+  "declared_metadata": {
+    "extensions": [
+      "footer",
+      "gnn_section",
+      "signature"
+    ],
+    "raw_sections": [
+      "ActInfOntologyAnnotation",
+      "Connections",
+      "Equations",
+      "Footer",
+      "GNNSection",
+      "GNNVersionAndFlags",
+      "InitialParameterization",
+      "ModelAnnotation",
+      "ModelName",
+      "ModelParameters",
+      "Signature",
+      "StateSpaceBlock",
+      "Time"
+    ],
+    "source_format": "markdown"
+  },
+  "edges": [
+    {
+      "connection_type": "undirected",
+      "description": "",
+      "source": "A",
+      "target": "o",
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "",
+      "source": "B",
+      "target": "u",
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "",
+      "source": "C",
+      "target": "G_ins",
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "",
+      "source": "D",
+      "target": "s",
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "",
+      "source": "E",
+      "target": "\u03c0",
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "",
+      "source": "G",
+      "target": "\u03c0",
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "",
+      "source": "G_epi",
+      "target": "G",
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "",
+      "source": "G_ins",
+      "target": "G",
+      "weight": null
+    },
+    {
+      "connection_type": "undirected",
+      "description": "",
+      "source": "o",
+      "target": "F",
+      "weight": null
+    },
+    {
+      "connection_type": "undirected",
+      "description": "",
+      "source": "s",
+      "target": "A",
+      "weight": null
+    },
+    {
+      "connection_type": "undirected",
+      "description": "",
+      "source": "s",
+      "target": "F",
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "",
+      "source": "s",
+      "target": "s_prime",
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "",
+      "source": "u",
+      "target": "s_prime",
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "",
+      "source": "\u03b3",
+      "target": "G",
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "",
+      "source": "\u03c0",
+      "target": "u",
+      "weight": null
+    }
+  ],
+  "equations": [],
+  "model_identity": {
+    "annotation": "An Active Inference agent with:\n- Explicit epistemic value (information gain / Bayesian surprise) component in G\n- Separate instrumental value (preference satisfaction) component\n- Precision parameter \u03b3 weighting epistemic vs instrumental contributions\n- 5 hidden states, 5 observations, 4 actions in a navigation context\n- Agent is rewarded for reducing posterior uncertainty",
+    "model_name": "Curiosity-Driven Active Inference Agent",
+    "version": "1.0"
+  },
+  "ontology_mappings": [
+    {
+      "description": "",
+      "ontology_term": "LikelihoodMatrix",
+      "variable_name": "A"
+    },
+    {
+      "description": "",
+      "ontology_term": "TransitionMatrix",
+      "variable_name": "B"
+    },
+    {
+      "description": "",
+      "ontology_term": "LogPreferenceVector",
+      "variable_name": "C"
+    },
+    {
+      "description": "",
+      "ontology_term": "PriorOverHiddenStates",
+      "variable_name": "D"
+    },
+    {
+      "description": "",
+      "ontology_term": "Habit",
+      "variable_name": "E"
+    },
+    {
+      "description": "",
+      "ontology_term": "VariationalFreeEnergy",
+      "variable_name": "F"
+    },
+    {
+      "description": "",
+      "ontology_term": "ExpectedFreeEnergy",
+      "variable_name": "G"
+    },
+    {
+      "description": "",
+      "ontology_term": "EpistemicValue",
+      "variable_name": "G_epi"
+    },
+    {
+      "description": "",
+      "ontology_term": "InstrumentalValue",
+      "variable_name": "G_ins"
+    },
+    {
+      "description": "",
+      "ontology_term": "Observation",
+      "variable_name": "o"
+    },
+    {
+      "description": "",
+      "ontology_term": "HiddenState",
+      "variable_name": "s"
+    },
+    {
+      "description": "",
+      "ontology_term": "NextHiddenState",
+      "variable_name": "s_prime"
+    },
+    {
+      "description": "",
+      "ontology_term": "Time",
+      "variable_name": "t"
+    },
+    {
+      "description": "",
+      "ontology_term": "Action",
+      "variable_name": "u"
+    },
+    {
+      "description": "",
+      "ontology_term": "PrecisionParameter",
+      "variable_name": "\u03b3"
+    },
+    {
+      "description": "",
+      "ontology_term": "PolicyVector",
+      "variable_name": "\u03c0"
+    }
+  ],
+  "parameter_names": [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "epistemic_weight",
+    "instrumental_weight",
+    "num_actions",
+    "num_hidden_states",
+    "num_obs",
+    "num_timesteps",
+    "\u03b3"
+  ],
+  "parameter_shapes": {
+    "A": [
+      5,
+      5
+    ],
+    "B": [
+      5,
+      5,
+      4
+    ],
+    "C": [
+      1,
+      5
+    ],
+    "D": [
+      1,
+      5
+    ],
+    "E": [
+      1,
+      4
+    ],
+    "epistemic_weight": [],
+    "instrumental_weight": [],
+    "num_actions": [],
+    "num_hidden_states": [],
+    "num_obs": [],
+    "num_timesteps": [],
+    "\u03b3": [
+      1,
+      1
+    ]
+  },
+  "parser_diagnostics": {
+    "connection_errors": [
+      "[GNN-E005] Unparseable connection: '\u03b3>G' [/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/input/gnn_files/precision/curiosity_driven_agent.md:57]"
+    ],
+    "matrix_errors": [],
+    "structure_issues": [],
+    "variable_errors": []
+  },
+  "schema": "gnn_semantic_contract_v1",
+  "source_file": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/input/gnn_files/precision/curiosity_driven_agent.md",
+  "time_specification": {
+    "discretization": "",
+    "horizon": 30,
+    "step_size": null,
+    "time_type": "Dynamic"
+  },
+  "variables": [
+    {
+      "constraints": {},
+      "data_type": "float",
+      "description": "Likelihood matrix",
+      "dimensions": [
+        5,
+        5
+      ],
+      "name": "A",
+      "var_type": "likelihood_matrix"
+    },
+    {
+      "constraints": {},
+      "data_type": "float",
+      "description": "Transition matrix (4 actions: up/down/left/right)",
+      "dimensions": [
+        5,
+        5,
+        4
+      ],
+      "name": "B",
+      "var_type": "transition_matrix"
+    },
+    {
+      "constraints": {},
+      "data_type": "float",
+      "description": "Instrumental preference vector (goal observations)",
+      "dimensions": [
+        5
+      ],
+      "name": "C",
+      "var_type": "preference_vector"
+    },
+    {
+      "constraints": {},
+      "data_type": "float",
+      "description": "Prior over hidden states (uniform = no preference)",
+      "dimensions": [
+        5
+      ],
+      "name": "D",
+      "var_type": "prior_vector"
+    },
+    {
+      "constraints": {},
+      "data_type": "float",
+      "description": "Habit vector over actions",
+      "dimensions": [
+        4
+      ],
+      "name": "E",
+      "var_type": "policy"
+    },
+    {
+      "constraints": {},
+      "data_type": "float",
+      "description": "Variational Free Energy for state inference",
+      "dimensions": [
+        1
+      ],
+      "name": "F",
+      "var_type": "hidden_state"
+    },
+    {
+      "constraints": {},
+      "data_type": "float",
+      "description": "Total Expected Free Energy (epistemic + instrumental)",
+      "dimensions": [
+        1
+      ],
+      "name": "G",
+      "var_type": "policy"
+    },
+    {
+      "constraints": {},
+      "data_type": "float",
+      "description": "Epistemic value component (information gain)",
+      "dimensions": [
+        1
+      ],
+      "name": "G_epi",
+      "var_type": "policy"
+    },
+    {
+      "constraints": {},
+      "data_type": "float",
+      "description": "Instrumental value component (preference satisfaction)",
+      "dimensions": [
+        1
+      ],
+      "name": "G_ins",
+      "var_type": "hidden_state"
+    },
+    {
+      "constraints": {},
+      "data_type": "integer",
+      "description": "Current observation",
+      "dimensions": [
+        5,
+        1
+      ],
+      "name": "o",
+      "var_type": "observation"
+    },
+    {
+      "constraints": {},
+      "data_type": "float",
+      "description": "Hidden state belief",
+      "dimensions": [
+        5,
+        1
+      ],
+      "name": "s",
+      "var_type": "hidden_state"
+    },
+    {
+      "constraints": {},
+      "data_type": "float",
+      "description": "Next hidden state belief",
+      "dimensions": [
+        5,
+        1
+      ],
+      "name": "s_prime",
+      "var_type": "hidden_state"
+    },
+    {
+      "constraints": {},
+      "data_type": "integer",
+      "description": "Discrete time step",
+      "dimensions": [
+        1
+      ],
+      "name": "t",
+      "var_type": "hidden_state"
+    },
+    {
+      "constraints": {},
+      "data_type": "integer",
+      "description": "Selected action",
+      "dimensions": [
+        1
+      ],
+      "name": "u",
+      "var_type": "action"
+    },
+    {
+      "constraints": {},
+      "data_type": "float",
+      "description": "Precision weighting epistemic vs instrumental value",
+      "dimensions": [
+        1
+      ],
+      "name": "\u03b3",
+      "var_type": "hidden_state"
+    },
+    {
+      "constraints": {},
+      "data_type": "float",
+      "description": "Policy distribution over actions",
+      "dimensions": [
+        4
+      ],
+      "name": "\u03c0",
+      "var_type": "policy"
+    }
+  ]
+}

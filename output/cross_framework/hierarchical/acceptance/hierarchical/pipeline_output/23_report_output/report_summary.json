@@ -1,0 +1,3971 @@
+{
+  "report_generation_time": "unavailable",
+  "report_timestamp_source": "unavailable",
+  "pipeline_output_directory": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output",
+  "steps": {
+    "0_template_output": {
+      "directory": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/0_template_output",
+      "exists": false,
+      "file_count": 0,
+      "total_size_mb": 0.0,
+      "file_types": {},
+      "last_modified": null,
+      "status": "missing"
+    },
+    "1_setup_output": {
+      "directory": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/1_setup_output",
+      "exists": false,
+      "file_count": 0,
+      "total_size_mb": 0.0,
+      "file_types": {},
+      "last_modified": null,
+      "status": "missing"
+    },
+    "2_tests_output": {
+      "directory": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/2_tests_output",
+      "exists": false,
+      "file_count": 0,
+      "total_size_mb": 0.0,
+      "file_types": {},
+      "last_modified": null,
+      "status": "missing"
+    },
+    "3_gnn_output": {
+      "directory": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/3_gnn_output",
+      "exists": true,
+      "file_count": 49,
+      "total_size_mb": 0.63,
+      "file_types": {
+        ".json": {
+          "count": 7,
+          "total_size_mb": 0.13791465759277344
+        },
+        ".agda": {
+          "count": 2,
+          "total_size_mb": 0.018563270568847656
+        },
+        ".als": {
+          "count": 2,
+          "total_size_mb": 0.03235149383544922
+        },
+        ".asn1": {
+          "count": 2,
+          "total_size_mb": 0.026708602905273438
+        },
+        ".bnf": {
+          "count": 2,
+          "total_size_mb": 0.020452499389648438
+        },
+        ".v": {
+          "count": 2,
+          "total_size_mb": 0.019661903381347656
+        },
+        ".ebnf": {
+          "count": 2,
+          "total_size_mb": 0.020452499389648438
+        },
+        ".hs": {
+          "count": 2,
+          "total_size_mb": 0.021612167358398438
+        },
+        ".thy": {
+          "count": 2,
+          "total_size_mb": 0.01987457275390625
+        },
+        ".lean": {
+          "count": 2,
+          "total_size_mb": 0.020667076110839844
+        },
+        ".md": {
+          "count": 2,
+          "total_size_mb": 0.006327629089355469
+        },
+        ".max": {
+          "count": 2,
+          "total_size_mb": 0.022706985473632812
+        },
+        ".pickle": {
+          "count": 2,
+          "total_size_mb": 0.014797210693359375
+        },
+        ".pkl": {
+          "count": 2,
+          "total_size_mb": 0.047367095947265625
+        },
+        ".proto": {
+          "count": 2,
+          "total_size_mb": 0.026521682739257812
+        },
+        ".py": {
+          "count": 2,
+          "total_size_mb": 0.033329010009765625
+        },
+        ".scala": {
+          "count": 2,
+          "total_size_mb": 0.02064228057861328
+        },
+        ".tla": {
+          "count": 2,
+          "total_size_mb": 0.018829345703125
+        },
+        ".xml": {
+          "count": 2,
+          "total_size_mb": 0.03606700897216797
+        },
+        ".xsd": {
+          "count": 2,
+          "total_size_mb": 0.02234935760498047
+        },
+        ".yaml": {
+          "count": 2,
+          "total_size_mb": 0.022574424743652344
+        },
+        ".z": {
+          "count": 2,
+          "total_size_mb": 0.021719932556152344
+        }
+      },
+      "last_modified": "2026-09-06T18:57:38.024806+00:00",
+      "status": "success",
+      "performance_metrics": {},
+      "error_logs": [],
+      "key_files": [
+        {
+          "name": "gnn_processing_results.json",
+          "size_mb": 0.01,
+          "type": ".json"
+        }
+      ]
+    },
+    "4_model_registry_output": {
+      "directory": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/4_model_registry_output",
+      "exists": false,
+      "file_count": 0,
+      "total_size_mb": 0.0,
+      "file_types": {},
+      "last_modified": null,
+      "status": "missing"
+    },
+    "5_type_checker_output": {
+      "directory": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/5_type_checker_output",
+      "exists": true,
+      "file_count": 15,
+      "total_size_mb": 0.73,
+      "file_types": {
+        ".png": {
+          "count": 9,
+          "total_size_mb": 0.6876306533813477
+        },
+        ".json": {
+          "count": 3,
+          "total_size_mb": 0.03181171417236328
+        },
+        ".md": {
+          "count": 2,
+          "total_size_mb": 0.005015373229980469
+        },
+        ".html": {
+          "count": 1,
+          "total_size_mb": 0.005496978759765625
+        }
+      },
+      "last_modified": "2026-09-06T18:57:41.833635+00:00",
+      "status": "success",
+      "performance_metrics": {},
+      "error_logs": [],
+      "key_files": [
+        {
+          "name": "type_check_summary.json",
+          "size_mb": 0.0,
+          "type": ".json"
+        }
+      ]
+    },
+    "6_validation_output": {
+      "directory": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/6_validation_output",
+      "exists": true,
+      "file_count": 2,
+      "total_size_mb": 0.01,
+      "file_types": {
+        ".json": {
+          "count": 2,
+          "total_size_mb": 0.008996009826660156
+        }
+      },
+      "last_modified": "2026-09-06T18:57:42.213546+00:00",
+      "status": "success",
+      "performance_metrics": {},
+      "error_logs": [],
+      "key_files": [
+        {
+          "name": "validation_results.json",
+          "size_mb": 0.01,
+          "type": ".json"
+        }
+      ]
+    },
+    "7_export_output": {
+      "directory": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/7_export_output",
+      "exists": true,
+      "file_count": 12,
+      "total_size_mb": 0.15,
+      "file_types": {
+        ".json": {
+          "count": 4,
+          "total_size_mb": 0.08976459503173828
+        },
+        ".gexf": {
+          "count": 2,
+          "total_size_mb": 0.0041675567626953125
+        },
+        ".graphml": {
+          "count": 2,
+          "total_size_mb": 0.005352020263671875
+        },
+        ".pkl": {
+          "count": 2,
+          "total_size_mb": 0.04294395446777344
+        },
+        ".xml": {
+          "count": 2,
+          "total_size_mb": 0.003604888916015625
+        }
+      },
+      "last_modified": "2026-09-06T18:57:42.842394+00:00",
+      "status": "success",
+      "performance_metrics": {},
+      "error_logs": [],
+      "key_files": [
+        {
+          "name": "export_results.json",
+          "size_mb": 0.0,
+          "type": ".json"
+        },
+        {
+          "name": "export_summary.json",
+          "size_mb": 0.0,
+          "type": ".json"
+        },
+        {
+          "name": "hierarchical_pomdp_gexf.gexf",
+          "size_mb": 0.0,
+          "type": ".gexf"
+        },
+        {
+          "name": "hierarchical_pomdp_graphml.graphml",
+          "size_mb": 0.0,
+          "type": ".graphml"
+        },
+        {
+          "name": "hierarchical_pomdp_json.json",
+          "size_mb": 0.03,
+          "type": ".json"
+        },
+        {
+          "name": "hierarchical_pomdp_xml.xml",
+          "size_mb": 0.0,
+          "type": ".xml"
+        },
+        {
+          "name": "temporal_hierarchy_gexf.gexf",
+          "size_mb": 0.0,
+          "type": ".gexf"
+        },
+        {
+          "name": "temporal_hierarchy_graphml.graphml",
+          "size_mb": 0.0,
+          "type": ".graphml"
+        },
+        {
+          "name": "temporal_hierarchy_json.json",
+          "size_mb": 0.05,
+          "type": ".json"
+        },
+        {
+          "name": "temporal_hierarchy_xml.xml",
+          "size_mb": 0.0,
+          "type": ".xml"
+        }
+      ]
+    },
+    "8_visualization_output": {
+      "directory": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output",
+      "exists": true,
+      "file_count": 129,
+      "total_size_mb": 18.84,
+      "file_types": {
+        ".png": {
+          "count": 67,
+          "total_size_mb": 9.524002075195312
+        },
+        ".csv": {
+          "count": 43,
+          "total_size_mb": 0.0038099288940429688
+        },
+        ".html": {
+          "count": 7,
+          "total_size_mb": 9.282196998596191
+        },
+        ".json": {
+          "count": 10,
+          "total_size_mb": 0.030465126037597656
+        },
+        ".txt": {
+          "count": 2,
+          "total_size_mb": 0.001220703125
+        }
+      },
+      "last_modified": "2026-09-06T18:59:04.114964+00:00",
+      "status": "success",
+      "performance_metrics": {},
+      "error_logs": [],
+      "key_files": [
+        {
+          "name": "combined_analysis.png",
+          "size_mb": 0.34,
+          "type": ".png"
+        },
+        {
+          "name": "hierarchical_pomdp_A_level1_heatmap.png",
+          "size_mb": 0.1,
+          "type": ".png"
+        },
+        {
+          "name": "hierarchical_pomdp_A_level2_heatmap.png",
+          "size_mb": 0.09,
+          "type": ".png"
+        },
+        {
+          "name": "hierarchical_pomdp_B_level1_tensor.png",
+          "size_mb": 0.2,
+          "type": ".png"
+        },
+        {
+          "name": "hierarchical_pomdp_B_level1_threejs.html",
+          "size_mb": 0.0,
+          "type": ".html"
+        },
+        {
+          "name": "hierarchical_pomdp_B_level2_analysis.png",
+          "size_mb": 0.07,
+          "type": ".png"
+        },
+        {
+          "name": "hierarchical_pomdp_B_level2_tensor.png",
+          "size_mb": 0.15,
+          "type": ".png"
+        },
+        {
+          "name": "hierarchical_pomdp_B_level2_threejs.html",
+          "size_mb": 0.0,
+          "type": ".html"
+        },
+        {
+          "name": "hierarchical_pomdp_C_level1_heatmap.png",
+          "size_mb": 0.08,
+          "type": ".png"
+        },
+        {
+          "name": "hierarchical_pomdp_C_level2_heatmap.png",
+          "size_mb": 0.08,
+          "type": ".png"
+        },
+        {
+          "name": "hierarchical_pomdp_D_level1_heatmap.png",
+          "size_mb": 0.08,
+          "type": ".png"
+        },
+        {
+          "name": "hierarchical_pomdp_D_level2_heatmap.png",
+          "size_mb": 0.07,
+          "type": ".png"
+        },
+        {
+          "name": "hierarchical_pomdp_combined_analysis.png",
+          "size_mb": 0.42,
+          "type": ".png"
+        },
+        {
+          "name": "hierarchical_pomdp_generative_model.png",
+          "size_mb": 0.21,
+          "type": ".png"
+        },
+        {
+          "name": "hierarchical_pomdp_matrix_size_distribution.png",
+          "size_mb": 0.08,
+          "type": ".png"
+        },
+        {
+          "name": "hierarchical_pomdp_network_graph.png",
+          "size_mb": 0.6,
+          "type": ".png"
+        },
+        {
+          "name": "hierarchical_pomdp_network_interactive.html",
+          "size_mb": 4.63,
+          "type": ".html"
+        },
+        {
+          "name": "hierarchical_pomdp_num_actions_heatmap.png",
+          "size_mb": 0.08,
+          "type": ".png"
+        },
+        {
+          "name": "hierarchical_pomdp_num_actions_l1_heatmap.png",
+          "size_mb": 0.08,
+          "type": ".png"
+        },
+        {
+          "name": "hierarchical_pomdp_num_context_states_l2_heatmap.png",
+          "size_mb": 0.09,
+          "type": ".png"
+        },
+        {
+          "name": "hierarchical_pomdp_num_hidden_states_heatmap.png",
+          "size_mb": 0.08,
+          "type": ".png"
+        },
+        {
+          "name": "hierarchical_pomdp_num_hidden_states_l1_heatmap.png",
+          "size_mb": 0.08,
+          "type": ".png"
+        },
+        {
+          "name": "hierarchical_pomdp_num_obs_heatmap.png",
+          "size_mb": 0.07,
+          "type": ".png"
+        },
+        {
+          "name": "hierarchical_pomdp_num_obs_l1_heatmap.png",
+          "size_mb": 0.08,
+          "type": ".png"
+        },
+        {
+          "name": "hierarchical_pomdp_num_timesteps_heatmap.png",
+          "size_mb": 0.08,
+          "type": ".png"
+        },
+        {
+          "name": "hierarchical_pomdp_section_content_length.png",
+          "size_mb": 0.2,
+          "type": ".png"
+        },
+        {
+          "name": "hierarchical_pomdp_timescale_ratio_heatmap.png",
+          "size_mb": 0.07,
+          "type": ".png"
+        },
+        {
+          "name": "hierarchical_pomdp_variable_parameter_bipartite.png",
+          "size_mb": 0.34,
+          "type": ".png"
+        },
+        {
+          "name": "hierarchical_pomdp_variable_type_distribution.png",
+          "size_mb": 0.12,
+          "type": ".png"
+        },
+        {
+          "name": "temporal_hierarchy_A_level0_heatmap.png",
+          "size_mb": 0.1,
+          "type": ".png"
+        },
+        {
+          "name": "temporal_hierarchy_A_level1_heatmap.png",
+          "size_mb": 0.09,
+          "type": ".png"
+        },
+        {
+          "name": "temporal_hierarchy_A_level2_heatmap.png",
+          "size_mb": 0.09,
+          "type": ".png"
+        },
+        {
+          "name": "temporal_hierarchy_B_level0_analysis.png",
+          "size_mb": 0.08,
+          "type": ".png"
+        },
+        {
+          "name": "temporal_hierarchy_B_level0_tensor.png",
+          "size_mb": 0.21,
+          "type": ".png"
+        },
+        {
+          "name": "temporal_hierarchy_B_level0_threejs.html",
+          "size_mb": 0.0,
+          "type": ".html"
+        },
+        {
+          "name": "temporal_hierarchy_B_level1_analysis.png",
+          "size_mb": 0.08,
+          "type": ".png"
+        },
+        {
+          "name": "temporal_hierarchy_B_level1_tensor.png",
+          "size_mb": 0.18,
+          "type": ".png"
+        },
+        {
+          "name": "temporal_hierarchy_B_level1_threejs.html",
+          "size_mb": 0.0,
+          "type": ".html"
+        },
+        {
+          "name": "temporal_hierarchy_B_level2_analysis.png",
+          "size_mb": 0.07,
+          "type": ".png"
+        },
+        {
+          "name": "temporal_hierarchy_B_level2_tensor.png",
+          "size_mb": 0.15,
+          "type": ".png"
+        },
+        {
+          "name": "temporal_hierarchy_B_level2_threejs.html",
+          "size_mb": 0.0,
+          "type": ".html"
+        },
+        {
+          "name": "temporal_hierarchy_C_level0_heatmap.png",
+          "size_mb": 0.09,
+          "type": ".png"
+        },
+        {
+          "name": "temporal_hierarchy_C_level1_heatmap.png",
+          "size_mb": 0.08,
+          "type": ".png"
+        },
+        {
+          "name": "temporal_hierarchy_C_level2_heatmap.png",
+          "size_mb": 0.08,
+          "type": ".png"
+        },
+        {
+          "name": "temporal_hierarchy_D_level0_heatmap.png",
+          "size_mb": 0.08,
+          "type": ".png"
+        },
+        {
+          "name": "temporal_hierarchy_D_level1_heatmap.png",
+          "size_mb": 0.09,
+          "type": ".png"
+        },
+        {
+          "name": "temporal_hierarchy_D_level2_heatmap.png",
+          "size_mb": 0.07,
+          "type": ".png"
+        },
+        {
+          "name": "temporal_hierarchy_combined_analysis.png",
+          "size_mb": 0.43,
+          "type": ".png"
+        },
+        {
+          "name": "temporal_hierarchy_generative_model.png",
+          "size_mb": 0.21,
+          "type": ".png"
+        },
+        {
+          "name": "temporal_hierarchy_matrix_size_distribution.png",
+          "size_mb": 0.09,
+          "type": ".png"
+        },
+        {
+          "name": "temporal_hierarchy_network_graph.png",
+          "size_mb": 0.91,
+          "type": ".png"
+        },
+        {
+          "name": "temporal_hierarchy_network_interactive.html",
+          "size_mb": 4.63,
+          "type": ".html"
+        },
+        {
+          "name": "temporal_hierarchy_num_actions_heatmap.png",
+          "size_mb": 0.08,
+          "type": ".png"
+        },
+        {
+          "name": "temporal_hierarchy_num_actions_l0_heatmap.png",
+          "size_mb": 0.08,
+          "type": ".png"
+        },
+        {
+          "name": "temporal_hierarchy_num_actions_l1_heatmap.png",
+          "size_mb": 0.08,
+          "type": ".png"
+        },
+        {
+          "name": "temporal_hierarchy_num_actions_l2_heatmap.png",
+          "size_mb": 0.08,
+          "type": ".png"
+        },
+        {
+          "name": "temporal_hierarchy_num_hidden_states_heatmap.png",
+          "size_mb": 0.07,
+          "type": ".png"
+        },
+        {
+          "name": "temporal_hierarchy_num_levels_heatmap.png",
+          "size_mb": 0.08,
+          "type": ".png"
+        },
+        {
+          "name": "temporal_hierarchy_num_obs_heatmap.png",
+          "size_mb": 0.08,
+          "type": ".png"
+        },
+        {
+          "name": "temporal_hierarchy_num_obs_l0_heatmap.png",
+          "size_mb": 0.08,
+          "type": ".png"
+        },
+        {
+          "name": "temporal_hierarchy_num_obs_l1_heatmap.png",
+          "size_mb": 0.08,
+          "type": ".png"
+        },
+        {
+          "name": "temporal_hierarchy_num_obs_l2_heatmap.png",
+          "size_mb": 0.08,
+          "type": ".png"
+        },
+        {
+          "name": "temporal_hierarchy_num_states_l0_heatmap.png",
+          "size_mb": 0.08,
+          "type": ".png"
+        },
+        {
+          "name": "temporal_hierarchy_num_states_l1_heatmap.png",
+          "size_mb": 0.08,
+          "type": ".png"
+        },
+        {
+          "name": "temporal_hierarchy_num_states_l2_heatmap.png",
+          "size_mb": 0.08,
+          "type": ".png"
+        },
+        {
+          "name": "temporal_hierarchy_num_timesteps_heatmap.png",
+          "size_mb": 0.09,
+          "type": ".png"
+        },
+        {
+          "name": "temporal_hierarchy_section_content_length.png",
+          "size_mb": 0.19,
+          "type": ".png"
+        },
+        {
+          "name": "temporal_hierarchy_tau_level0_heatmap.png",
+          "size_mb": 0.09,
+          "type": ".png"
+        },
+        {
+          "name": "temporal_hierarchy_tau_level1_heatmap.png",
+          "size_mb": 0.09,
+          "type": ".png"
+        },
+        {
+          "name": "temporal_hierarchy_tau_level2_heatmap.png",
+          "size_mb": 0.09,
+          "type": ".png"
+        },
+        {
+          "name": "temporal_hierarchy_timescale_ratio_1_0_heatmap.png",
+          "size_mb": 0.09,
+          "type": ".png"
+        },
+        {
+          "name": "temporal_hierarchy_timescale_ratio_2_1_heatmap.png",
+          "size_mb": 0.09,
+          "type": ".png"
+        },
+        {
+          "name": "temporal_hierarchy_variable_parameter_bipartite.png",
+          "size_mb": 0.54,
+          "type": ".png"
+        },
+        {
+          "name": "temporal_hierarchy_variable_type_distribution.png",
+          "size_mb": 0.13,
+          "type": ".png"
+        }
+      ]
+    },
+    "9_advanced_viz_output": {
+      "directory": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/9_advanced_viz_output",
+      "exists": false,
+      "file_count": 0,
+      "total_size_mb": 0.0,
+      "file_types": {},
+      "last_modified": null,
+      "status": "missing"
+    },
+    "10_ontology_output": {
+      "directory": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/10_ontology_output",
+      "exists": false,
+      "file_count": 0,
+      "total_size_mb": 0.0,
+      "file_types": {},
+      "last_modified": null,
+      "status": "missing"
+    },
+    "11_render_output": {
+      "directory": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/11_render_output",
+      "exists": true,
+      "file_count": 31,
+      "total_size_mb": 1.6,
+      "file_types": {
+        ".md": {
+          "count": 7,
+          "total_size_mb": 0.010101318359375
+        },
+        ".py": {
+          "count": 4,
+          "total_size_mb": 0.2994718551635742
+        },
+        ".json": {
+          "count": 11,
+          "total_size_mb": 0.7286109924316406
+        },
+        ".jl": {
+          "count": 2,
+          "total_size_mb": 0.1898822784423828
+        },
+        ".png": {
+          "count": 5,
+          "total_size_mb": 0.23873043060302734
+        },
+        ".log": {
+          "count": 2,
+          "total_size_mb": 0.1320486068725586
+        }
+      },
+      "last_modified": "2026-09-06T19:02:08.779969+00:00",
+      "status": "success",
+      "performance_metrics": {},
+      "error_logs": [],
+      "key_files": [
+        {
+          "name": "Hierarchical_Active_Inference_POMDP_jax.py",
+          "size_mb": 0.02,
+          "type": ".py"
+        },
+        {
+          "name": "Hierarchical_Active_Inference_POMDP_pymdp.py",
+          "size_mb": 0.04,
+          "type": ".py"
+        },
+        {
+          "name": "Hierarchical_Active_Inference_POMDP_rxinfer.jl",
+          "size_mb": 0.04,
+          "type": ".jl"
+        },
+        {
+          "name": "render_processing_summary.json",
+          "size_mb": 0.01,
+          "type": ".json"
+        },
+        {
+          "name": "Three-Level_Temporal_Hierarchy_Agent_jax.py",
+          "size_mb": 0.06,
+          "type": ".py"
+        },
+        {
+          "name": "Three-Level_Temporal_Hierarchy_Agent_pymdp.py",
+          "size_mb": 0.19,
+          "type": ".py"
+        },
+        {
+          "name": "Three-Level_Temporal_Hierarchy_Agent_rxinfer.jl",
+          "size_mb": 0.15,
+          "type": ".jl"
+        }
+      ]
+    },
+    "12_execute_output": {
+      "directory": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/12_execute_output",
+      "exists": true,
+      "file_count": 20,
+      "total_size_mb": 1.1,
+      "file_types": {
+        ".log": {
+          "count": 6,
+          "total_size_mb": 0.033400535583496094
+        },
+        ".json": {
+          "count": 13,
+          "total_size_mb": 1.065812110900879
+        },
+        ".md": {
+          "count": 1,
+          "total_size_mb": 0.005030632019042969
+        }
+      },
+      "last_modified": "2026-09-06T19:02:09.337276+00:00",
+      "status": "success",
+      "performance_metrics": {},
+      "error_logs": [],
+      "key_files": []
+    },
+    "13_llm_output": {
+      "directory": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/13_llm_output",
+      "exists": false,
+      "file_count": 0,
+      "total_size_mb": 0.0,
+      "file_types": {},
+      "last_modified": null,
+      "status": "missing"
+    },
+    "14_ml_integration_output": {
+      "directory": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/14_ml_integration_output",
+      "exists": false,
+      "file_count": 0,
+      "total_size_mb": 0.0,
+      "file_types": {},
+      "last_modified": null,
+      "status": "missing"
+    },
+    "15_audio_output": {
+      "directory": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/15_audio_output",
+      "exists": true,
+      "file_count": 12,
+      "total_size_mb": 4.74,
+      "file_types": {
+        ".json": {
+          "count": 3,
+          "total_size_mb": 0.029264450073242188
+        },
+        ".md": {
+          "count": 1,
+          "total_size_mb": 0.0005807876586914062
+        },
+        ".wav": {
+          "count": 8,
+          "total_size_mb": 4.710723876953125
+        }
+      },
+      "last_modified": "2026-09-06T19:02:11.623990+00:00",
+      "status": "success",
+      "performance_metrics": {},
+      "error_logs": [],
+      "key_files": [
+        {
+          "name": "hierarchical_pomdp_ambient.wav",
+          "size_mb": 0.84,
+          "type": ".wav"
+        },
+        {
+          "name": "hierarchical_pomdp_rhythmic.wav",
+          "size_mb": 0.42,
+          "type": ".wav"
+        },
+        {
+          "name": "hierarchical_pomdp_sonification.wav",
+          "size_mb": 0.67,
+          "type": ".wav"
+        },
+        {
+          "name": "hierarchical_pomdp_tonal.wav",
+          "size_mb": 0.42,
+          "type": ".wav"
+        },
+        {
+          "name": "temporal_hierarchy_ambient.wav",
+          "size_mb": 0.84,
+          "type": ".wav"
+        },
+        {
+          "name": "temporal_hierarchy_rhythmic.wav",
+          "size_mb": 0.42,
+          "type": ".wav"
+        },
+        {
+          "name": "temporal_hierarchy_sonification.wav",
+          "size_mb": 0.67,
+          "type": ".wav"
+        },
+        {
+          "name": "temporal_hierarchy_tonal.wav",
+          "size_mb": 0.42,
+          "type": ".wav"
+        }
+      ]
+    },
+    "16_analysis_output": {
+      "directory": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/16_analysis_output",
+      "exists": true,
+      "file_count": 87,
+      "total_size_mb": 22.15,
+      "file_types": {
+        ".json": {
+          "count": 6,
+          "total_size_mb": 0.6996803283691406
+        },
+        ".md": {
+          "count": 3,
+          "total_size_mb": 0.005565643310546875
+        },
+        ".png": {
+          "count": 76,
+          "total_size_mb": 16.549857139587402
+        },
+        ".gif": {
+          "count": 2,
+          "total_size_mb": 4.89799690246582
+        }
+      },
+      "last_modified": "2026-09-06T19:06:33.285141+00:00",
+      "status": "success",
+      "performance_metrics": {},
+      "error_logs": [],
+      "key_files": [
+        {
+          "name": "analysis_results.json",
+          "size_mb": 0.37,
+          "type": ".json"
+        },
+        {
+          "name": "analysis_summary.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        }
+      ]
+    },
+    "17_integration_output": {
+      "directory": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/17_integration_output",
+      "exists": false,
+      "file_count": 0,
+      "total_size_mb": 0.0,
+      "file_types": {},
+      "last_modified": null,
+      "status": "missing"
+    },
+    "18_security_output": {
+      "directory": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/18_security_output",
+      "exists": false,
+      "file_count": 0,
+      "total_size_mb": 0.0,
+      "file_types": {},
+      "last_modified": null,
+      "status": "missing"
+    },
+    "19_research_output": {
+      "directory": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/19_research_output",
+      "exists": false,
+      "file_count": 0,
+      "total_size_mb": 0.0,
+      "file_types": {},
+      "last_modified": null,
+      "status": "missing"
+    },
+    "20_website_output": {
+      "directory": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/20_website_output",
+      "exists": false,
+      "file_count": 0,
+      "total_size_mb": 0.0,
+      "file_types": {},
+      "last_modified": null,
+      "status": "missing"
+    },
+    "21_mcp_output": {
+      "directory": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/21_mcp_output",
+      "exists": false,
+      "file_count": 0,
+      "total_size_mb": 0.0,
+      "file_types": {},
+      "last_modified": null,
+      "status": "missing"
+    },
+    "22_gui_output": {
+      "directory": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/22_gui_output",
+      "exists": false,
+      "file_count": 0,
+      "total_size_mb": 0.0,
+      "file_types": {},
+      "last_modified": null,
+      "status": "missing"
+    },
+    "23_report_output": {
+      "directory": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/23_report_output",
+      "exists": true,
+      "file_count": 0,
+      "total_size_mb": 0.0,
+      "file_types": {},
+      "last_modified": null,
+      "status": "generating",
+      "performance_metrics": {},
+      "error_logs": [],
+      "key_files": [],
+      "note": "Report step output (self-referencing \u2014 files generated during this step)"
+    },
+    "24_intelligent_analysis_output": {
+      "directory": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/24_intelligent_analysis_output",
+      "exists": false,
+      "file_count": 0,
+      "total_size_mb": 0.0,
+      "file_types": {},
+      "last_modified": null,
+      "status": "missing"
+    }
+  },
+  "summary": {
+    "total_files_processed": 357,
+    "total_errors": 0,
+    "total_warnings": 0,
+    "processing_time": 0.0,
+    "total_size_mb": 49.95,
+    "success_rate": 40.0,
+    "status_source": "artifacts_only",
+    "successful_steps": 10,
+    "failed_steps": 0,
+    "warning_steps": 0,
+    "unknown_steps": 15
+  },
+  "performance_metrics": {},
+  "error_analysis": {},
+  "file_type_analysis": {
+    "total_by_type": {
+      ".json": {
+        "count": 59,
+        "total_size_mb": 2.82
+      },
+      ".agda": {
+        "count": 2,
+        "total_size_mb": 0.02
+      },
+      ".als": {
+        "count": 2,
+        "total_size_mb": 0.03
+      },
+      ".asn1": {
+        "count": 2,
+        "total_size_mb": 0.03
+      },
+      ".bnf": {
+        "count": 2,
+        "total_size_mb": 0.02
+      },
+      ".v": {
+        "count": 2,
+        "total_size_mb": 0.02
+      },
+      ".ebnf": {
+        "count": 2,
+        "total_size_mb": 0.02
+      },
+      ".hs": {
+        "count": 2,
+        "total_size_mb": 0.02
+      },
+      ".thy": {
+        "count": 2,
+        "total_size_mb": 0.02
+      },
+      ".lean": {
+        "count": 2,
+        "total_size_mb": 0.02
+      },
+      ".md": {
+        "count": 16,
+        "total_size_mb": 0.03
+      },
+      ".max": {
+        "count": 2,
+        "total_size_mb": 0.02
+      },
+      ".pickle": {
+        "count": 2,
+        "total_size_mb": 0.01
+      },
+      ".pkl": {
+        "count": 4,
+        "total_size_mb": 0.09
+      },
+      ".proto": {
+        "count": 2,
+        "total_size_mb": 0.03
+      },
+      ".py": {
+        "count": 6,
+        "total_size_mb": 0.33
+      },
+      ".scala": {
+        "count": 2,
+        "total_size_mb": 0.02
+      },
+      ".tla": {
+        "count": 2,
+        "total_size_mb": 0.02
+      },
+      ".xml": {
+        "count": 4,
+        "total_size_mb": 0.04
+      },
+      ".xsd": {
+        "count": 2,
+        "total_size_mb": 0.02
+      },
+      ".yaml": {
+        "count": 2,
+        "total_size_mb": 0.02
+      },
+      ".z": {
+        "count": 2,
+        "total_size_mb": 0.02
+      },
+      ".png": {
+        "count": 157,
+        "total_size_mb": 27.0
+      },
+      ".html": {
+        "count": 8,
+        "total_size_mb": 9.29
+      },
+      ".gexf": {
+        "count": 2,
+        "total_size_mb": 0.0
+      },
+      ".graphml": {
+        "count": 2,
+        "total_size_mb": 0.01
+      },
+      ".csv": {
+        "count": 43,
+        "total_size_mb": 0.0
+      },
+      ".txt": {
+        "count": 2,
+        "total_size_mb": 0.0
+      },
+      ".jl": {
+        "count": 2,
+        "total_size_mb": 0.19
+      },
+      ".log": {
+        "count": 8,
+        "total_size_mb": 0.17
+      },
+      ".wav": {
+        "count": 8,
+        "total_size_mb": 4.71
+      },
+      ".gif": {
+        "count": 2,
+        "total_size_mb": 4.9
+      }
+    },
+    "largest_files_by_type": {},
+    "step_distribution": {
+      ".json": {
+        "3_gnn_output": {
+          "count": 7,
+          "size_mb": 0.13791465759277344
+        },
+        "5_type_checker_output": {
+          "count": 3,
+          "size_mb": 0.03181171417236328
+        },
+        "6_validation_output": {
+          "count": 2,
+          "size_mb": 0.008996009826660156
+        },
+        "7_export_output": {
+          "count": 4,
+          "size_mb": 0.08976459503173828
+        },
+        "8_visualization_output": {
+          "count": 10,
+          "size_mb": 0.030465126037597656
+        },
+        "11_render_output": {
+          "count": 11,
+          "size_mb": 0.7286109924316406
+        },
+        "12_execute_output": {
+          "count": 13,
+          "size_mb": 1.065812110900879
+        },
+        "15_audio_output": {
+          "count": 3,
+          "size_mb": 0.029264450073242188
+        },
+        "16_analysis_output": {
+          "count": 6,
+          "size_mb": 0.6996803283691406
+        }
+      },
+      ".agda": {
+        "3_gnn_output": {
+          "count": 2,
+          "size_mb": 0.018563270568847656
+        }
+      },
+      ".als": {
+        "3_gnn_output": {
+          "count": 2,
+          "size_mb": 0.03235149383544922
+        }
+      },
+      ".asn1": {
+        "3_gnn_output": {
+          "count": 2,
+          "size_mb": 0.026708602905273438
+        }
+      },
+      ".bnf": {
+        "3_gnn_output": {
+          "count": 2,
+          "size_mb": 0.020452499389648438
+        }
+      },
+      ".v": {
+        "3_gnn_output": {
+          "count": 2,
+          "size_mb": 0.019661903381347656
+        }
+      },
+      ".ebnf": {
+        "3_gnn_output": {
+          "count": 2,
+          "size_mb": 0.020452499389648438
+        }
+      },
+      ".hs": {
+        "3_gnn_output": {
+          "count": 2,
+          "size_mb": 0.021612167358398438
+        }
+      },
+      ".thy": {
+        "3_gnn_output": {
+          "count": 2,
+          "size_mb": 0.01987457275390625
+        }
+      },
+      ".lean": {
+        "3_gnn_output": {
+          "count": 2,
+          "size_mb": 0.020667076110839844
+        }
+      },
+      ".md": {
+        "3_gnn_output": {
+          "count": 2,
+          "size_mb": 0.006327629089355469
+        },
+        "5_type_checker_output": {
+          "count": 2,
+          "size_mb": 0.005015373229980469
+        },
+        "11_render_output": {
+          "count": 7,
+          "size_mb": 0.010101318359375
+        },
+        "12_execute_output": {
+          "count": 1,
+          "size_mb": 0.005030632019042969
+        },
+        "15_audio_output": {
+          "count": 1,
+          "size_mb": 0.0005807876586914062
+        },
+        "16_analysis_output": {
+          "count": 3,
+          "size_mb": 0.005565643310546875
+        }
+      },
+      ".max": {
+        "3_gnn_output": {
+          "count": 2,
+          "size_mb": 0.022706985473632812
+        }
+      },
+      ".pickle": {
+        "3_gnn_output": {
+          "count": 2,
+          "size_mb": 0.014797210693359375
+        }
+      },
+      ".pkl": {
+        "3_gnn_output": {
+          "count": 2,
+          "size_mb": 0.047367095947265625
+        },
+        "7_export_output": {
+          "count": 2,
+          "size_mb": 0.04294395446777344
+        }
+      },
+      ".proto": {
+        "3_gnn_output": {
+          "count": 2,
+          "size_mb": 0.026521682739257812
+        }
+      },
+      ".py": {
+        "3_gnn_output": {
+          "count": 2,
+          "size_mb": 0.033329010009765625
+        },
+        "11_render_output": {
+          "count": 4,
+          "size_mb": 0.2994718551635742
+        }
+      },
+      ".scala": {
+        "3_gnn_output": {
+          "count": 2,
+          "size_mb": 0.02064228057861328
+        }
+      },
+      ".tla": {
+        "3_gnn_output": {
+          "count": 2,
+          "size_mb": 0.018829345703125
+        }
+      },
+      ".xml": {
+        "3_gnn_output": {
+          "count": 2,
+          "size_mb": 0.03606700897216797
+        },
+        "7_export_output": {
+          "count": 2,
+          "size_mb": 0.003604888916015625
+        }
+      },
+      ".xsd": {
+        "3_gnn_output": {
+          "count": 2,
+          "size_mb": 0.02234935760498047
+        }
+      },
+      ".yaml": {
+        "3_gnn_output": {
+          "count": 2,
+          "size_mb": 0.022574424743652344
+        }
+      },
+      ".z": {
+        "3_gnn_output": {
+          "count": 2,
+          "size_mb": 0.021719932556152344
+        }
+      },
+      ".png": {
+        "5_type_checker_output": {
+          "count": 9,
+          "size_mb": 0.6876306533813477
+        },
+        "8_visualization_output": {
+          "count": 67,
+          "size_mb": 9.524002075195312
+        },
+        "11_render_output": {
+          "count": 5,
+          "size_mb": 0.23873043060302734
+        },
+        "16_analysis_output": {
+          "count": 76,
+          "size_mb": 16.549857139587402
+        }
+      },
+      ".html": {
+        "5_type_checker_output": {
+          "count": 1,
+          "size_mb": 0.005496978759765625
+        },
+        "8_visualization_output": {
+          "count": 7,
+          "size_mb": 9.282196998596191
+        }
+      },
+      ".gexf": {
+        "7_export_output": {
+          "count": 2,
+          "size_mb": 0.0041675567626953125
+        }
+      },
+      ".graphml": {
+        "7_export_output": {
+          "count": 2,
+          "size_mb": 0.005352020263671875
+        }
+      },
+      ".csv": {
+        "8_visualization_output": {
+          "count": 43,
+          "size_mb": 0.0038099288940429688
+        }
+      },
+      ".txt": {
+        "8_visualization_output": {
+          "count": 2,
+          "size_mb": 0.001220703125
+        }
+      },
+      ".jl": {
+        "11_render_output": {
+          "count": 2,
+          "size_mb": 0.1898822784423828
+        }
+      },
+      ".log": {
+        "11_render_output": {
+          "count": 2,
+          "size_mb": 0.1320486068725586
+        },
+        "12_execute_output": {
+          "count": 6,
+          "size_mb": 0.033400535583496094
+        }
+      },
+      ".wav": {
+        "15_audio_output": {
+          "count": 8,
+          "size_mb": 4.710723876953125
+        }
+      },
+      ".gif": {
+        "16_analysis_output": {
+          "count": 2,
+          "size_mb": 4.89799690246582
+        }
+      }
+    }
+  },
+  "step_dependencies": {
+    "step_order": [
+      "0_template_output",
+      "1_setup_output",
+      "2_tests_output",
+      "3_gnn_output",
+      "4_model_registry_output",
+      "5_type_checker_output",
+      "6_validation_output",
+      "7_export_output",
+      "8_visualization_output",
+      "9_advanced_viz_output",
+      "10_ontology_output",
+      "11_render_output",
+      "12_execute_output",
+      "13_llm_output",
+      "14_ml_integration_output",
+      "15_audio_output",
+      "16_analysis_output",
+      "17_integration_output",
+      "18_security_output",
+      "19_research_output",
+      "20_website_output",
+      "21_mcp_output",
+      "22_gui_output",
+      "23_report_output",
+      "24_intelligent_analysis_output"
+    ],
+    "dependency_chain": {
+      "3_gnn_output": {
+        "prerequisites": [
+          "1_setup_output"
+        ],
+        "missing_prerequisites": [
+          "1_setup_output"
+        ],
+        "status": "incomplete"
+      },
+      "5_type_checker_output": {
+        "prerequisites": [
+          "3_gnn_output"
+        ],
+        "missing_prerequisites": [],
+        "status": "complete"
+      },
+      "6_validation_output": {
+        "prerequisites": [
+          "3_gnn_output"
+        ],
+        "missing_prerequisites": [],
+        "status": "complete"
+      },
+      "7_export_output": {
+        "prerequisites": [
+          "5_type_checker_output"
+        ],
+        "missing_prerequisites": [],
+        "status": "complete"
+      },
+      "8_visualization_output": {
+        "prerequisites": [
+          "7_export_output"
+        ],
+        "missing_prerequisites": [],
+        "status": "complete"
+      },
+      "11_render_output": {
+        "prerequisites": [
+          "7_export_output"
+        ],
+        "missing_prerequisites": [],
+        "status": "complete"
+      },
+      "12_execute_output": {
+        "prerequisites": [
+          "11_render_output"
+        ],
+        "missing_prerequisites": [],
+        "status": "complete"
+      },
+      "15_audio_output": {
+        "prerequisites": [
+          "3_gnn_output"
+        ],
+        "missing_prerequisites": [],
+        "status": "complete"
+      },
+      "16_analysis_output": {
+        "prerequisites": [
+          "12_execute_output"
+        ],
+        "missing_prerequisites": [],
+        "status": "complete"
+      },
+      "23_report_output": {
+        "prerequisites": [
+          "8_visualization_output",
+          "10_ontology_output",
+          "15_audio_output"
+        ],
+        "missing_prerequisites": [
+          "10_ontology_output"
+        ],
+        "status": "incomplete"
+      }
+    },
+    "missing_prerequisites": [
+      {
+        "step": "3_gnn_output",
+        "missing": [
+          "1_setup_output"
+        ]
+      },
+      {
+        "step": "23_report_output",
+        "missing": [
+          "10_ontology_output"
+        ]
+      }
+    ]
+  },
+  "health_score_basis": "artifact_coverage_only",
+  "visualizations": {
+    "total_count": 79,
+    "by_step": {
+      "8_visualization_output": {
+        "step": "8_visualization_output",
+        "count": 74,
+        "files": [
+          {
+            "name": "combined_analysis.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/combined_analysis.png",
+            "relative_path": "8_visualization_output/combined_analysis.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 354723,
+            "size_mb": 0.34,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "hierarchical_pomdp_A_level1_heatmap.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_A_level1_heatmap.png",
+            "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_A_level1_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 106816,
+            "size_mb": 0.1,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "hierarchical_pomdp_A_level2_heatmap.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_A_level2_heatmap.png",
+            "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_A_level2_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 97726,
+            "size_mb": 0.09,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "hierarchical_pomdp_B_level1_tensor.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_B_level1_tensor.png",
+            "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_B_level1_tensor.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 206592,
+            "size_mb": 0.2,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "hierarchical_pomdp_B_level2_analysis.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_B_level2_analysis.png",
+            "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_B_level2_analysis.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 75785,
+            "size_mb": 0.07,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "hierarchical_pomdp_B_level2_tensor.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_B_level2_tensor.png",
+            "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_B_level2_tensor.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 160024,
+            "size_mb": 0.15,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "hierarchical_pomdp_C_level1_heatmap.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_C_level1_heatmap.png",
+            "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_C_level1_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 87600,
+            "size_mb": 0.08,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "hierarchical_pomdp_C_level2_heatmap.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_C_level2_heatmap.png",
+            "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_C_level2_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 81931,
+            "size_mb": 0.08,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "hierarchical_pomdp_D_level1_heatmap.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_D_level1_heatmap.png",
+            "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_D_level1_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 78656,
+            "size_mb": 0.08,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "hierarchical_pomdp_D_level2_heatmap.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_D_level2_heatmap.png",
+            "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_D_level2_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 77326,
+            "size_mb": 0.07,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "hierarchical_pomdp_combined_analysis.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_combined_analysis.png",
+            "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_combined_analysis.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 438549,
+            "size_mb": 0.42,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "hierarchical_pomdp_generative_model.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_generative_model.png",
+            "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_generative_model.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 219279,
+            "size_mb": 0.21,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "hierarchical_pomdp_matrix_size_distribution.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_matrix_size_distribution.png",
+            "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_matrix_size_distribution.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 88061,
+            "size_mb": 0.08,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "hierarchical_pomdp_network_graph.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_network_graph.png",
+            "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_network_graph.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 632664,
+            "size_mb": 0.6,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "hierarchical_pomdp_num_actions_heatmap.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_actions_heatmap.png",
+            "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_actions_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 79285,
+            "size_mb": 0.08,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "hierarchical_pomdp_num_actions_l1_heatmap.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_actions_l1_heatmap.png",
+            "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_actions_l1_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 79517,
+            "size_mb": 0.08,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "hierarchical_pomdp_num_context_states_l2_heatmap.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_context_states_l2_heatmap.png",
+            "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_context_states_l2_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 91766,
+            "size_mb": 0.09,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "hierarchical_pomdp_num_hidden_states_heatmap.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_hidden_states_heatmap.png",
+            "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_hidden_states_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 87224,
+            "size_mb": 0.08,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "hierarchical_pomdp_num_hidden_states_l1_heatmap.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_hidden_states_l1_heatmap.png",
+            "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_hidden_states_l1_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 83904,
+            "size_mb": 0.08,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "hierarchical_pomdp_num_obs_heatmap.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_obs_heatmap.png",
+            "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_obs_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 77612,
+            "size_mb": 0.07,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "hierarchical_pomdp_num_obs_l1_heatmap.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_obs_l1_heatmap.png",
+            "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_obs_l1_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 79758,
+            "size_mb": 0.08,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "hierarchical_pomdp_num_timesteps_heatmap.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_timesteps_heatmap.png",
+            "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_timesteps_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 88747,
+            "size_mb": 0.08,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "hierarchical_pomdp_section_content_length.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_section_content_length.png",
+            "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_section_content_length.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 205077,
+            "size_mb": 0.2,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "hierarchical_pomdp_timescale_ratio_heatmap.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_timescale_ratio_heatmap.png",
+            "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_timescale_ratio_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 76594,
+            "size_mb": 0.07,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "hierarchical_pomdp_variable_parameter_bipartite.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_variable_parameter_bipartite.png",
+            "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_variable_parameter_bipartite.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 351739,
+            "size_mb": 0.34,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "hierarchical_pomdp_variable_type_distribution.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_variable_type_distribution.png",
+            "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_variable_type_distribution.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 128124,
+            "size_mb": 0.12,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_A_level0_heatmap.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_A_level0_heatmap.png",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_A_level0_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 100471,
+            "size_mb": 0.1,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_A_level1_heatmap.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_A_level1_heatmap.png",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_A_level1_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 98426,
+            "size_mb": 0.09,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_A_level2_heatmap.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_A_level2_heatmap.png",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_A_level2_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 93951,
+            "size_mb": 0.09,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_B_level0_analysis.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level0_analysis.png",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level0_analysis.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 87422,
+            "size_mb": 0.08,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_B_level0_tensor.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level0_tensor.png",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level0_tensor.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 222647,
+            "size_mb": 0.21,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_B_level1_analysis.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level1_analysis.png",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level1_analysis.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 81038,
+            "size_mb": 0.08,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_B_level1_tensor.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level1_tensor.png",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level1_tensor.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 191710,
+            "size_mb": 0.18,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_B_level2_analysis.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level2_analysis.png",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level2_analysis.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 74751,
+            "size_mb": 0.07,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_B_level2_tensor.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level2_tensor.png",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level2_tensor.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 160360,
+            "size_mb": 0.15,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_C_level0_heatmap.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_C_level0_heatmap.png",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_C_level0_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 94457,
+            "size_mb": 0.09,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_C_level1_heatmap.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_C_level1_heatmap.png",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_C_level1_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 83894,
+            "size_mb": 0.08,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_C_level2_heatmap.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_C_level2_heatmap.png",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_C_level2_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 82822,
+            "size_mb": 0.08,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_D_level0_heatmap.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_D_level0_heatmap.png",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_D_level0_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 79785,
+            "size_mb": 0.08,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_D_level1_heatmap.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_D_level1_heatmap.png",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_D_level1_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 89962,
+            "size_mb": 0.09,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_D_level2_heatmap.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_D_level2_heatmap.png",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_D_level2_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 77326,
+            "size_mb": 0.07,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_combined_analysis.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_combined_analysis.png",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_combined_analysis.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 448142,
+            "size_mb": 0.43,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_generative_model.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_generative_model.png",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_generative_model.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 219633,
+            "size_mb": 0.21,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_matrix_size_distribution.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_matrix_size_distribution.png",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_matrix_size_distribution.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 96631,
+            "size_mb": 0.09,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_network_graph.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_network_graph.png",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_network_graph.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 952547,
+            "size_mb": 0.91,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_num_actions_heatmap.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_actions_heatmap.png",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_actions_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 79285,
+            "size_mb": 0.08,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_num_actions_l0_heatmap.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_actions_l0_heatmap.png",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_actions_l0_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 80587,
+            "size_mb": 0.08,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_num_actions_l1_heatmap.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_actions_l1_heatmap.png",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_actions_l1_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 79517,
+            "size_mb": 0.08,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_num_actions_l2_heatmap.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_actions_l2_heatmap.png",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_actions_l2_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 88023,
+            "size_mb": 0.08,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_num_hidden_states_heatmap.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_hidden_states_heatmap.png",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_hidden_states_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 77876,
+            "size_mb": 0.07,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_num_levels_heatmap.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_levels_heatmap.png",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_levels_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 78651,
+            "size_mb": 0.08,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_num_obs_heatmap.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_obs_heatmap.png",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_obs_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 79165,
+            "size_mb": 0.08,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_num_obs_l0_heatmap.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_obs_l0_heatmap.png",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_obs_l0_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 79311,
+            "size_mb": 0.08,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_num_obs_l1_heatmap.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_obs_l1_heatmap.png",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_obs_l1_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 79758,
+            "size_mb": 0.08,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_num_obs_l2_heatmap.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_obs_l2_heatmap.png",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_obs_l2_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 78970,
+            "size_mb": 0.08,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_num_states_l0_heatmap.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_states_l0_heatmap.png",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_states_l0_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 82134,
+            "size_mb": 0.08,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_num_states_l1_heatmap.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_states_l1_heatmap.png",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_states_l1_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 79464,
+            "size_mb": 0.08,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_num_states_l2_heatmap.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_states_l2_heatmap.png",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_states_l2_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 87915,
+            "size_mb": 0.08,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_num_timesteps_heatmap.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_timesteps_heatmap.png",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_timesteps_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 92785,
+            "size_mb": 0.09,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_section_content_length.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_section_content_length.png",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_section_content_length.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 199138,
+            "size_mb": 0.19,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_tau_level0_heatmap.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_tau_level0_heatmap.png",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_tau_level0_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 98767,
+            "size_mb": 0.09,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_tau_level1_heatmap.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_tau_level1_heatmap.png",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_tau_level1_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 91431,
+            "size_mb": 0.09,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_tau_level2_heatmap.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_tau_level2_heatmap.png",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_tau_level2_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 91238,
+            "size_mb": 0.09,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_timescale_ratio_1_0_heatmap.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_timescale_ratio_1_0_heatmap.png",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_timescale_ratio_1_0_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 95134,
+            "size_mb": 0.09,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_timescale_ratio_2_1_heatmap.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_timescale_ratio_2_1_heatmap.png",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_timescale_ratio_2_1_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 94751,
+            "size_mb": 0.09,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_variable_parameter_bipartite.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_variable_parameter_bipartite.png",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_variable_parameter_bipartite.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 563769,
+            "size_mb": 0.54,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_variable_type_distribution.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_variable_type_distribution.png",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_variable_type_distribution.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 137917,
+            "size_mb": 0.13,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "hierarchical_pomdp_B_level1_threejs.html",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_B_level1_threejs.html",
+            "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_B_level1_threejs.html",
+            "type": "html",
+            "extension": ".html",
+            "size_bytes": 4428,
+            "size_mb": 0.0,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "hierarchical_pomdp_B_level2_threejs.html",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_B_level2_threejs.html",
+            "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_B_level2_threejs.html",
+            "type": "html",
+            "extension": ".html",
+            "size_bytes": 4184,
+            "size_mb": 0.0,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "hierarchical_pomdp_network_interactive.html",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_network_interactive.html",
+            "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_network_interactive.html",
+            "type": "html",
+            "extension": ".html",
+            "size_bytes": 4854532,
+            "size_mb": 4.63,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_B_level0_threejs.html",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level0_threejs.html",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level0_threejs.html",
+            "type": "html",
+            "extension": ".html",
+            "size_bytes": 4446,
+            "size_mb": 0.0,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_B_level1_threejs.html",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level1_threejs.html",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level1_threejs.html",
+            "type": "html",
+            "extension": ".html",
+            "size_bytes": 4335,
+            "size_mb": 0.0,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_B_level2_threejs.html",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level2_threejs.html",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level2_threejs.html",
+            "type": "html",
+            "extension": ".html",
+            "size_bytes": 4188,
+            "size_mb": 0.0,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "temporal_hierarchy_network_interactive.html",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_network_interactive.html",
+            "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_network_interactive.html",
+            "type": "html",
+            "extension": ".html",
+            "size_bytes": 4856976,
+            "size_mb": 4.63,
+            "step": "8_visualization_output"
+          }
+        ]
+      },
+      "11_render_output": {
+        "step": "11_render_output",
+        "count": 5,
+        "files": [
+          {
+            "name": "belief_evolution.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/11_render_output/hierarchical_pomdp/rxinfer/belief_evolution.png",
+            "relative_path": "11_render_output/hierarchical_pomdp/rxinfer/belief_evolution.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 32101,
+            "size_mb": 0.03,
+            "step": "11_render_output"
+          },
+          {
+            "name": "context_evolution.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/11_render_output/hierarchical_pomdp/rxinfer/context_evolution.png",
+            "relative_path": "11_render_output/hierarchical_pomdp/rxinfer/context_evolution.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 27958,
+            "size_mb": 0.03,
+            "step": "11_render_output"
+          },
+          {
+            "name": "belief_evolution.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/11_render_output/temporal_hierarchy/rxinfer/belief_evolution.png",
+            "relative_path": "11_render_output/temporal_hierarchy/rxinfer/belief_evolution.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 136080,
+            "size_mb": 0.13,
+            "step": "11_render_output"
+          },
+          {
+            "name": "efe_over_time.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/11_render_output/temporal_hierarchy/rxinfer/efe_over_time.png",
+            "relative_path": "11_render_output/temporal_hierarchy/rxinfer/efe_over_time.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 33477,
+            "size_mb": 0.03,
+            "step": "11_render_output"
+          },
+          {
+            "name": "policy_posterior.png",
+            "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/11_render_output/temporal_hierarchy/rxinfer/policy_posterior.png",
+            "relative_path": "11_render_output/temporal_hierarchy/rxinfer/policy_posterior.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 20711,
+            "size_mb": 0.02,
+            "step": "11_render_output"
+          }
+        ]
+      }
+    },
+    "by_type": {
+      "image": [
+        {
+          "name": "combined_analysis.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/combined_analysis.png",
+          "relative_path": "8_visualization_output/combined_analysis.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 354723,
+          "size_mb": 0.34,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "hierarchical_pomdp_A_level1_heatmap.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_A_level1_heatmap.png",
+          "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_A_level1_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 106816,
+          "size_mb": 0.1,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "hierarchical_pomdp_A_level2_heatmap.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_A_level2_heatmap.png",
+          "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_A_level2_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 97726,
+          "size_mb": 0.09,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "hierarchical_pomdp_B_level1_tensor.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_B_level1_tensor.png",
+          "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_B_level1_tensor.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 206592,
+          "size_mb": 0.2,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "hierarchical_pomdp_B_level2_analysis.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_B_level2_analysis.png",
+          "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_B_level2_analysis.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 75785,
+          "size_mb": 0.07,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "hierarchical_pomdp_B_level2_tensor.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_B_level2_tensor.png",
+          "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_B_level2_tensor.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 160024,
+          "size_mb": 0.15,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "hierarchical_pomdp_C_level1_heatmap.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_C_level1_heatmap.png",
+          "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_C_level1_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 87600,
+          "size_mb": 0.08,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "hierarchical_pomdp_C_level2_heatmap.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_C_level2_heatmap.png",
+          "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_C_level2_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 81931,
+          "size_mb": 0.08,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "hierarchical_pomdp_D_level1_heatmap.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_D_level1_heatmap.png",
+          "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_D_level1_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 78656,
+          "size_mb": 0.08,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "hierarchical_pomdp_D_level2_heatmap.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_D_level2_heatmap.png",
+          "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_D_level2_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 77326,
+          "size_mb": 0.07,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "hierarchical_pomdp_combined_analysis.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_combined_analysis.png",
+          "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_combined_analysis.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 438549,
+          "size_mb": 0.42,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "hierarchical_pomdp_generative_model.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_generative_model.png",
+          "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_generative_model.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 219279,
+          "size_mb": 0.21,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "hierarchical_pomdp_matrix_size_distribution.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_matrix_size_distribution.png",
+          "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_matrix_size_distribution.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 88061,
+          "size_mb": 0.08,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "hierarchical_pomdp_network_graph.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_network_graph.png",
+          "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_network_graph.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 632664,
+          "size_mb": 0.6,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "hierarchical_pomdp_num_actions_heatmap.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_actions_heatmap.png",
+          "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_actions_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 79285,
+          "size_mb": 0.08,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "hierarchical_pomdp_num_actions_l1_heatmap.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_actions_l1_heatmap.png",
+          "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_actions_l1_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 79517,
+          "size_mb": 0.08,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "hierarchical_pomdp_num_context_states_l2_heatmap.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_context_states_l2_heatmap.png",
+          "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_context_states_l2_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 91766,
+          "size_mb": 0.09,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "hierarchical_pomdp_num_hidden_states_heatmap.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_hidden_states_heatmap.png",
+          "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_hidden_states_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 87224,
+          "size_mb": 0.08,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "hierarchical_pomdp_num_hidden_states_l1_heatmap.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_hidden_states_l1_heatmap.png",
+          "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_hidden_states_l1_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 83904,
+          "size_mb": 0.08,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "hierarchical_pomdp_num_obs_heatmap.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_obs_heatmap.png",
+          "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_obs_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 77612,
+          "size_mb": 0.07,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "hierarchical_pomdp_num_obs_l1_heatmap.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_obs_l1_heatmap.png",
+          "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_obs_l1_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 79758,
+          "size_mb": 0.08,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "hierarchical_pomdp_num_timesteps_heatmap.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_timesteps_heatmap.png",
+          "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_timesteps_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 88747,
+          "size_mb": 0.08,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "hierarchical_pomdp_section_content_length.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_section_content_length.png",
+          "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_section_content_length.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 205077,
+          "size_mb": 0.2,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "hierarchical_pomdp_timescale_ratio_heatmap.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_timescale_ratio_heatmap.png",
+          "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_timescale_ratio_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 76594,
+          "size_mb": 0.07,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "hierarchical_pomdp_variable_parameter_bipartite.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_variable_parameter_bipartite.png",
+          "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_variable_parameter_bipartite.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 351739,
+          "size_mb": 0.34,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "hierarchical_pomdp_variable_type_distribution.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_variable_type_distribution.png",
+          "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_variable_type_distribution.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 128124,
+          "size_mb": 0.12,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_A_level0_heatmap.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_A_level0_heatmap.png",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_A_level0_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 100471,
+          "size_mb": 0.1,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_A_level1_heatmap.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_A_level1_heatmap.png",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_A_level1_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 98426,
+          "size_mb": 0.09,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_A_level2_heatmap.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_A_level2_heatmap.png",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_A_level2_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 93951,
+          "size_mb": 0.09,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_B_level0_analysis.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level0_analysis.png",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level0_analysis.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 87422,
+          "size_mb": 0.08,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_B_level0_tensor.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level0_tensor.png",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level0_tensor.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 222647,
+          "size_mb": 0.21,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_B_level1_analysis.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level1_analysis.png",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level1_analysis.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 81038,
+          "size_mb": 0.08,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_B_level1_tensor.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level1_tensor.png",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level1_tensor.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 191710,
+          "size_mb": 0.18,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_B_level2_analysis.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level2_analysis.png",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level2_analysis.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 74751,
+          "size_mb": 0.07,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_B_level2_tensor.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level2_tensor.png",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level2_tensor.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 160360,
+          "size_mb": 0.15,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_C_level0_heatmap.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_C_level0_heatmap.png",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_C_level0_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 94457,
+          "size_mb": 0.09,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_C_level1_heatmap.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_C_level1_heatmap.png",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_C_level1_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 83894,
+          "size_mb": 0.08,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_C_level2_heatmap.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_C_level2_heatmap.png",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_C_level2_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 82822,
+          "size_mb": 0.08,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_D_level0_heatmap.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_D_level0_heatmap.png",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_D_level0_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 79785,
+          "size_mb": 0.08,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_D_level1_heatmap.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_D_level1_heatmap.png",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_D_level1_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 89962,
+          "size_mb": 0.09,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_D_level2_heatmap.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_D_level2_heatmap.png",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_D_level2_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 77326,
+          "size_mb": 0.07,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_combined_analysis.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_combined_analysis.png",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_combined_analysis.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 448142,
+          "size_mb": 0.43,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_generative_model.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_generative_model.png",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_generative_model.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 219633,
+          "size_mb": 0.21,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_matrix_size_distribution.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_matrix_size_distribution.png",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_matrix_size_distribution.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 96631,
+          "size_mb": 0.09,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_network_graph.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_network_graph.png",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_network_graph.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 952547,
+          "size_mb": 0.91,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_num_actions_heatmap.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_actions_heatmap.png",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_actions_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 79285,
+          "size_mb": 0.08,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_num_actions_l0_heatmap.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_actions_l0_heatmap.png",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_actions_l0_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 80587,
+          "size_mb": 0.08,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_num_actions_l1_heatmap.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_actions_l1_heatmap.png",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_actions_l1_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 79517,
+          "size_mb": 0.08,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_num_actions_l2_heatmap.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_actions_l2_heatmap.png",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_actions_l2_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 88023,
+          "size_mb": 0.08,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_num_hidden_states_heatmap.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_hidden_states_heatmap.png",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_hidden_states_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 77876,
+          "size_mb": 0.07,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_num_levels_heatmap.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_levels_heatmap.png",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_levels_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 78651,
+          "size_mb": 0.08,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_num_obs_heatmap.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_obs_heatmap.png",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_obs_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 79165,
+          "size_mb": 0.08,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_num_obs_l0_heatmap.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_obs_l0_heatmap.png",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_obs_l0_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 79311,
+          "size_mb": 0.08,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_num_obs_l1_heatmap.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_obs_l1_heatmap.png",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_obs_l1_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 79758,
+          "size_mb": 0.08,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_num_obs_l2_heatmap.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_obs_l2_heatmap.png",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_obs_l2_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 78970,
+          "size_mb": 0.08,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_num_states_l0_heatmap.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_states_l0_heatmap.png",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_states_l0_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 82134,
+          "size_mb": 0.08,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_num_states_l1_heatmap.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_states_l1_heatmap.png",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_states_l1_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 79464,
+          "size_mb": 0.08,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_num_states_l2_heatmap.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_states_l2_heatmap.png",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_states_l2_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 87915,
+          "size_mb": 0.08,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_num_timesteps_heatmap.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_timesteps_heatmap.png",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_timesteps_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 92785,
+          "size_mb": 0.09,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_section_content_length.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_section_content_length.png",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_section_content_length.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 199138,
+          "size_mb": 0.19,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_tau_level0_heatmap.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_tau_level0_heatmap.png",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_tau_level0_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 98767,
+          "size_mb": 0.09,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_tau_level1_heatmap.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_tau_level1_heatmap.png",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_tau_level1_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 91431,
+          "size_mb": 0.09,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_tau_level2_heatmap.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_tau_level2_heatmap.png",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_tau_level2_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 91238,
+          "size_mb": 0.09,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_timescale_ratio_1_0_heatmap.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_timescale_ratio_1_0_heatmap.png",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_timescale_ratio_1_0_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 95134,
+          "size_mb": 0.09,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_timescale_ratio_2_1_heatmap.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_timescale_ratio_2_1_heatmap.png",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_timescale_ratio_2_1_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 94751,
+          "size_mb": 0.09,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_variable_parameter_bipartite.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_variable_parameter_bipartite.png",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_variable_parameter_bipartite.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 563769,
+          "size_mb": 0.54,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_variable_type_distribution.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_variable_type_distribution.png",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_variable_type_distribution.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 137917,
+          "size_mb": 0.13,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "belief_evolution.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/11_render_output/hierarchical_pomdp/rxinfer/belief_evolution.png",
+          "relative_path": "11_render_output/hierarchical_pomdp/rxinfer/belief_evolution.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 32101,
+          "size_mb": 0.03,
+          "step": "11_render_output"
+        },
+        {
+          "name": "context_evolution.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/11_render_output/hierarchical_pomdp/rxinfer/context_evolution.png",
+          "relative_path": "11_render_output/hierarchical_pomdp/rxinfer/context_evolution.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 27958,
+          "size_mb": 0.03,
+          "step": "11_render_output"
+        },
+        {
+          "name": "belief_evolution.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/11_render_output/temporal_hierarchy/rxinfer/belief_evolution.png",
+          "relative_path": "11_render_output/temporal_hierarchy/rxinfer/belief_evolution.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 136080,
+          "size_mb": 0.13,
+          "step": "11_render_output"
+        },
+        {
+          "name": "efe_over_time.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/11_render_output/temporal_hierarchy/rxinfer/efe_over_time.png",
+          "relative_path": "11_render_output/temporal_hierarchy/rxinfer/efe_over_time.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 33477,
+          "size_mb": 0.03,
+          "step": "11_render_output"
+        },
+        {
+          "name": "policy_posterior.png",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/11_render_output/temporal_hierarchy/rxinfer/policy_posterior.png",
+          "relative_path": "11_render_output/temporal_hierarchy/rxinfer/policy_posterior.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 20711,
+          "size_mb": 0.02,
+          "step": "11_render_output"
+        }
+      ],
+      "html": [
+        {
+          "name": "hierarchical_pomdp_B_level1_threejs.html",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_B_level1_threejs.html",
+          "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_B_level1_threejs.html",
+          "type": "html",
+          "extension": ".html",
+          "size_bytes": 4428,
+          "size_mb": 0.0,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "hierarchical_pomdp_B_level2_threejs.html",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_B_level2_threejs.html",
+          "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_B_level2_threejs.html",
+          "type": "html",
+          "extension": ".html",
+          "size_bytes": 4184,
+          "size_mb": 0.0,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "hierarchical_pomdp_network_interactive.html",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_network_interactive.html",
+          "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_network_interactive.html",
+          "type": "html",
+          "extension": ".html",
+          "size_bytes": 4854532,
+          "size_mb": 4.63,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_B_level0_threejs.html",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level0_threejs.html",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level0_threejs.html",
+          "type": "html",
+          "extension": ".html",
+          "size_bytes": 4446,
+          "size_mb": 0.0,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_B_level1_threejs.html",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level1_threejs.html",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level1_threejs.html",
+          "type": "html",
+          "extension": ".html",
+          "size_bytes": 4335,
+          "size_mb": 0.0,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_B_level2_threejs.html",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level2_threejs.html",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level2_threejs.html",
+          "type": "html",
+          "extension": ".html",
+          "size_bytes": 4188,
+          "size_mb": 0.0,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "temporal_hierarchy_network_interactive.html",
+          "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_network_interactive.html",
+          "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_network_interactive.html",
+          "type": "html",
+          "extension": ".html",
+          "size_bytes": 4856976,
+          "size_mb": 4.63,
+          "step": "8_visualization_output"
+        }
+      ]
+    },
+    "all_visualizations": [
+      {
+        "name": "combined_analysis.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/combined_analysis.png",
+        "relative_path": "8_visualization_output/combined_analysis.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 354723,
+        "size_mb": 0.34,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "hierarchical_pomdp_A_level1_heatmap.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_A_level1_heatmap.png",
+        "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_A_level1_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 106816,
+        "size_mb": 0.1,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "hierarchical_pomdp_A_level2_heatmap.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_A_level2_heatmap.png",
+        "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_A_level2_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 97726,
+        "size_mb": 0.09,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "hierarchical_pomdp_B_level1_tensor.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_B_level1_tensor.png",
+        "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_B_level1_tensor.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 206592,
+        "size_mb": 0.2,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "hierarchical_pomdp_B_level2_analysis.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_B_level2_analysis.png",
+        "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_B_level2_analysis.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 75785,
+        "size_mb": 0.07,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "hierarchical_pomdp_B_level2_tensor.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_B_level2_tensor.png",
+        "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_B_level2_tensor.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 160024,
+        "size_mb": 0.15,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "hierarchical_pomdp_C_level1_heatmap.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_C_level1_heatmap.png",
+        "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_C_level1_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 87600,
+        "size_mb": 0.08,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "hierarchical_pomdp_C_level2_heatmap.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_C_level2_heatmap.png",
+        "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_C_level2_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 81931,
+        "size_mb": 0.08,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "hierarchical_pomdp_D_level1_heatmap.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_D_level1_heatmap.png",
+        "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_D_level1_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 78656,
+        "size_mb": 0.08,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "hierarchical_pomdp_D_level2_heatmap.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_D_level2_heatmap.png",
+        "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_D_level2_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 77326,
+        "size_mb": 0.07,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "hierarchical_pomdp_combined_analysis.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_combined_analysis.png",
+        "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_combined_analysis.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 438549,
+        "size_mb": 0.42,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "hierarchical_pomdp_generative_model.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_generative_model.png",
+        "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_generative_model.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 219279,
+        "size_mb": 0.21,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "hierarchical_pomdp_matrix_size_distribution.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_matrix_size_distribution.png",
+        "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_matrix_size_distribution.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 88061,
+        "size_mb": 0.08,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "hierarchical_pomdp_network_graph.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_network_graph.png",
+        "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_network_graph.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 632664,
+        "size_mb": 0.6,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "hierarchical_pomdp_num_actions_heatmap.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_actions_heatmap.png",
+        "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_actions_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 79285,
+        "size_mb": 0.08,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "hierarchical_pomdp_num_actions_l1_heatmap.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_actions_l1_heatmap.png",
+        "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_actions_l1_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 79517,
+        "size_mb": 0.08,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "hierarchical_pomdp_num_context_states_l2_heatmap.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_context_states_l2_heatmap.png",
+        "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_context_states_l2_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 91766,
+        "size_mb": 0.09,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "hierarchical_pomdp_num_hidden_states_heatmap.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_hidden_states_heatmap.png",
+        "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_hidden_states_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 87224,
+        "size_mb": 0.08,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "hierarchical_pomdp_num_hidden_states_l1_heatmap.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_hidden_states_l1_heatmap.png",
+        "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_hidden_states_l1_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 83904,
+        "size_mb": 0.08,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "hierarchical_pomdp_num_obs_heatmap.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_obs_heatmap.png",
+        "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_obs_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 77612,
+        "size_mb": 0.07,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "hierarchical_pomdp_num_obs_l1_heatmap.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_obs_l1_heatmap.png",
+        "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_obs_l1_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 79758,
+        "size_mb": 0.08,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "hierarchical_pomdp_num_timesteps_heatmap.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_timesteps_heatmap.png",
+        "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_num_timesteps_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 88747,
+        "size_mb": 0.08,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "hierarchical_pomdp_section_content_length.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_section_content_length.png",
+        "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_section_content_length.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 205077,
+        "size_mb": 0.2,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "hierarchical_pomdp_timescale_ratio_heatmap.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_timescale_ratio_heatmap.png",
+        "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_timescale_ratio_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 76594,
+        "size_mb": 0.07,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "hierarchical_pomdp_variable_parameter_bipartite.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_variable_parameter_bipartite.png",
+        "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_variable_parameter_bipartite.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 351739,
+        "size_mb": 0.34,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "hierarchical_pomdp_variable_type_distribution.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_variable_type_distribution.png",
+        "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_variable_type_distribution.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 128124,
+        "size_mb": 0.12,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_A_level0_heatmap.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_A_level0_heatmap.png",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_A_level0_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 100471,
+        "size_mb": 0.1,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_A_level1_heatmap.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_A_level1_heatmap.png",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_A_level1_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 98426,
+        "size_mb": 0.09,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_A_level2_heatmap.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_A_level2_heatmap.png",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_A_level2_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 93951,
+        "size_mb": 0.09,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_B_level0_analysis.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level0_analysis.png",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level0_analysis.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 87422,
+        "size_mb": 0.08,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_B_level0_tensor.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level0_tensor.png",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level0_tensor.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 222647,
+        "size_mb": 0.21,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_B_level1_analysis.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level1_analysis.png",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level1_analysis.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 81038,
+        "size_mb": 0.08,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_B_level1_tensor.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level1_tensor.png",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level1_tensor.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 191710,
+        "size_mb": 0.18,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_B_level2_analysis.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level2_analysis.png",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level2_analysis.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 74751,
+        "size_mb": 0.07,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_B_level2_tensor.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level2_tensor.png",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level2_tensor.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 160360,
+        "size_mb": 0.15,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_C_level0_heatmap.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_C_level0_heatmap.png",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_C_level0_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 94457,
+        "size_mb": 0.09,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_C_level1_heatmap.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_C_level1_heatmap.png",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_C_level1_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 83894,
+        "size_mb": 0.08,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_C_level2_heatmap.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_C_level2_heatmap.png",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_C_level2_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 82822,
+        "size_mb": 0.08,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_D_level0_heatmap.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_D_level0_heatmap.png",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_D_level0_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 79785,
+        "size_mb": 0.08,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_D_level1_heatmap.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_D_level1_heatmap.png",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_D_level1_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 89962,
+        "size_mb": 0.09,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_D_level2_heatmap.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_D_level2_heatmap.png",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_D_level2_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 77326,
+        "size_mb": 0.07,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_combined_analysis.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_combined_analysis.png",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_combined_analysis.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 448142,
+        "size_mb": 0.43,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_generative_model.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_generative_model.png",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_generative_model.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 219633,
+        "size_mb": 0.21,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_matrix_size_distribution.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_matrix_size_distribution.png",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_matrix_size_distribution.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 96631,
+        "size_mb": 0.09,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_network_graph.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_network_graph.png",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_network_graph.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 952547,
+        "size_mb": 0.91,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_num_actions_heatmap.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_actions_heatmap.png",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_actions_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 79285,
+        "size_mb": 0.08,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_num_actions_l0_heatmap.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_actions_l0_heatmap.png",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_actions_l0_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 80587,
+        "size_mb": 0.08,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_num_actions_l1_heatmap.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_actions_l1_heatmap.png",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_actions_l1_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 79517,
+        "size_mb": 0.08,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_num_actions_l2_heatmap.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_actions_l2_heatmap.png",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_actions_l2_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 88023,
+        "size_mb": 0.08,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_num_hidden_states_heatmap.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_hidden_states_heatmap.png",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_hidden_states_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 77876,
+        "size_mb": 0.07,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_num_levels_heatmap.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_levels_heatmap.png",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_levels_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 78651,
+        "size_mb": 0.08,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_num_obs_heatmap.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_obs_heatmap.png",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_obs_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 79165,
+        "size_mb": 0.08,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_num_obs_l0_heatmap.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_obs_l0_heatmap.png",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_obs_l0_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 79311,
+        "size_mb": 0.08,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_num_obs_l1_heatmap.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_obs_l1_heatmap.png",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_obs_l1_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 79758,
+        "size_mb": 0.08,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_num_obs_l2_heatmap.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_obs_l2_heatmap.png",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_obs_l2_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 78970,
+        "size_mb": 0.08,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_num_states_l0_heatmap.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_states_l0_heatmap.png",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_states_l0_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 82134,
+        "size_mb": 0.08,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_num_states_l1_heatmap.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_states_l1_heatmap.png",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_states_l1_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 79464,
+        "size_mb": 0.08,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_num_states_l2_heatmap.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_states_l2_heatmap.png",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_states_l2_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 87915,
+        "size_mb": 0.08,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_num_timesteps_heatmap.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_timesteps_heatmap.png",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_num_timesteps_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 92785,
+        "size_mb": 0.09,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_section_content_length.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_section_content_length.png",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_section_content_length.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 199138,
+        "size_mb": 0.19,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_tau_level0_heatmap.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_tau_level0_heatmap.png",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_tau_level0_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 98767,
+        "size_mb": 0.09,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_tau_level1_heatmap.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_tau_level1_heatmap.png",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_tau_level1_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 91431,
+        "size_mb": 0.09,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_tau_level2_heatmap.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_tau_level2_heatmap.png",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_tau_level2_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 91238,
+        "size_mb": 0.09,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_timescale_ratio_1_0_heatmap.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_timescale_ratio_1_0_heatmap.png",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_timescale_ratio_1_0_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 95134,
+        "size_mb": 0.09,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_timescale_ratio_2_1_heatmap.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_timescale_ratio_2_1_heatmap.png",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_timescale_ratio_2_1_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 94751,
+        "size_mb": 0.09,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_variable_parameter_bipartite.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_variable_parameter_bipartite.png",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_variable_parameter_bipartite.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 563769,
+        "size_mb": 0.54,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_variable_type_distribution.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_variable_type_distribution.png",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_variable_type_distribution.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 137917,
+        "size_mb": 0.13,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "hierarchical_pomdp_B_level1_threejs.html",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_B_level1_threejs.html",
+        "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_B_level1_threejs.html",
+        "type": "html",
+        "extension": ".html",
+        "size_bytes": 4428,
+        "size_mb": 0.0,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "hierarchical_pomdp_B_level2_threejs.html",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_B_level2_threejs.html",
+        "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_B_level2_threejs.html",
+        "type": "html",
+        "extension": ".html",
+        "size_bytes": 4184,
+        "size_mb": 0.0,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "hierarchical_pomdp_network_interactive.html",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_network_interactive.html",
+        "relative_path": "8_visualization_output/hierarchical_pomdp/hierarchical_pomdp_network_interactive.html",
+        "type": "html",
+        "extension": ".html",
+        "size_bytes": 4854532,
+        "size_mb": 4.63,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_B_level0_threejs.html",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level0_threejs.html",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level0_threejs.html",
+        "type": "html",
+        "extension": ".html",
+        "size_bytes": 4446,
+        "size_mb": 0.0,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_B_level1_threejs.html",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level1_threejs.html",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level1_threejs.html",
+        "type": "html",
+        "extension": ".html",
+        "size_bytes": 4335,
+        "size_mb": 0.0,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_B_level2_threejs.html",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level2_threejs.html",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_B_level2_threejs.html",
+        "type": "html",
+        "extension": ".html",
+        "size_bytes": 4188,
+        "size_mb": 0.0,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "temporal_hierarchy_network_interactive.html",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/8_visualization_output/temporal_hierarchy/temporal_hierarchy_network_interactive.html",
+        "relative_path": "8_visualization_output/temporal_hierarchy/temporal_hierarchy_network_interactive.html",
+        "type": "html",
+        "extension": ".html",
+        "size_bytes": 4856976,
+        "size_mb": 4.63,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "belief_evolution.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/11_render_output/hierarchical_pomdp/rxinfer/belief_evolution.png",
+        "relative_path": "11_render_output/hierarchical_pomdp/rxinfer/belief_evolution.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 32101,
+        "size_mb": 0.03,
+        "step": "11_render_output"
+      },
+      {
+        "name": "context_evolution.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/11_render_output/hierarchical_pomdp/rxinfer/context_evolution.png",
+        "relative_path": "11_render_output/hierarchical_pomdp/rxinfer/context_evolution.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 27958,
+        "size_mb": 0.03,
+        "step": "11_render_output"
+      },
+      {
+        "name": "belief_evolution.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/11_render_output/temporal_hierarchy/rxinfer/belief_evolution.png",
+        "relative_path": "11_render_output/temporal_hierarchy/rxinfer/belief_evolution.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 136080,
+        "size_mb": 0.13,
+        "step": "11_render_output"
+      },
+      {
+        "name": "efe_over_time.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/11_render_output/temporal_hierarchy/rxinfer/efe_over_time.png",
+        "relative_path": "11_render_output/temporal_hierarchy/rxinfer/efe_over_time.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 33477,
+        "size_mb": 0.03,
+        "step": "11_render_output"
+      },
+      {
+        "name": "policy_posterior.png",
+        "path": "output/cross_framework/hierarchical/acceptance/hierarchical/pipeline_output/11_render_output/temporal_hierarchy/rxinfer/policy_posterior.png",
+        "relative_path": "11_render_output/temporal_hierarchy/rxinfer/policy_posterior.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 20711,
+        "size_mb": 0.02,
+        "step": "11_render_output"
+      }
+    ]
+  },
+  "health_score": 40.0,
+  "report_metadata": {
+    "generation_time": "unavailable",
+    "evidence_as_of": "unavailable",
+    "timestamp_source": "unavailable",
+    "formats_generated": [
+      "html",
+      "markdown",
+      "json"
+    ],
+    "options": {
+      "include_performance": true,
+      "include_errors": true,
+      "include_dependencies": true
+    }
+  }
+}

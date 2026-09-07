@@ -1,0 +1,19 @@
+{
+  "timestamp": "2026-09-06T11:08:41.710046",
+  "source_file": "output/model_family_acceptance/discrete/input/actinf_pomdp_agent.md",
+  "model_name": "Active Inference POMDP Agent",
+  "pomdp_dimensions": {
+    "num_states": 3,
+    "num_observations": 3,
+    "num_actions": 3
+  },
+  "frameworks_requested": [
+    "pymdp"
+  ],
+  "frameworks_processed": [
+    "pymdp"
+  ],
+  "frameworks_failed": [],
+  "frameworks_unsupported": [],
+  "model_kind": "discrete"
+}

@@ -6,5 +6,5 @@ hard-coding any number that has a corresponding token. This makes the
 manuscript a faithful, regenerable description of the system it
 documents: when the 25-step pipeline, the 9 rendering backends, or the
 29-file example corpus change, the reported numbers change with them on
-the next build, with no opportunity for prose and repository to silently
-drift apart.
+the next build, and \breaktt{scripts/check\_manuscript\_tokens.py} fails
+the build if a section reintroduces a literal that a token already owns.

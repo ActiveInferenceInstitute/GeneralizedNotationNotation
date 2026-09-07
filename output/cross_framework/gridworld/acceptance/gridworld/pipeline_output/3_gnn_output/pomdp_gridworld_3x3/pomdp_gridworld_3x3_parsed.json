@@ -1,0 +1,2853 @@
+{
+  "model_name": "POMDP GridWorld 3x3",
+  "version": "1.0",
+  "annotation": "Discrete 3x3 GridWorld POMDP for strict cross-framework validation. The model has one hidden state factor with 9 grid cells, one observation modality with noisy cell observations, and one control factor with 5 boundary-clamped actions: up, down, left, right, and stay.",
+  "variables": [
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "3c959eaa-1144-47a4-b82d-20a0dcbc2b1f",
+      "name": "A",
+      "var_type": "likelihood_matrix",
+      "dimensions": [
+        9,
+        9
+      ],
+      "data_type": "float",
+      "description": "Likelihood matrix: observations by hidden states",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "6d91123e-6d6f-4ac6-a83c-7d342806da4e",
+      "name": "B",
+      "var_type": "transition_matrix",
+      "dimensions": [
+        9,
+        9,
+        5
+      ],
+      "data_type": "float",
+      "description": "Transition tensor: next_state, previous_state, action",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "f3306b11-6428-4d20-a2d6-795f37d97a7f",
+      "name": "C",
+      "var_type": "preference_vector",
+      "dimensions": [
+        9
+      ],
+      "data_type": "float",
+      "description": "Log-preferences over observations",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "191defc6-d616-4645-aa18-c1fb4ae48ab5",
+      "name": "D",
+      "var_type": "prior_vector",
+      "dimensions": [
+        9
+      ],
+      "data_type": "float",
+      "description": "Prior over initial hidden state",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "14eab0ea-b00b-47a0-bc72-7f2faa7ac253",
+      "name": "E",
+      "var_type": "policy",
+      "dimensions": [
+        5
+      ],
+      "data_type": "float",
+      "description": "Policy prior over actions",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "b3284a59-4210-4988-9735-f915b010299a",
+      "name": "s",
+      "var_type": "hidden_state",
+      "dimensions": [
+        9,
+        1
+      ],
+      "data_type": "float",
+      "description": "Current hidden state distribution",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "8ab7a078-47af-406b-8fd9-4a6c974c27e1",
+      "name": "s_prime",
+      "var_type": "hidden_state",
+      "dimensions": [
+        9,
+        1
+      ],
+      "data_type": "float",
+      "description": "Next hidden state distribution",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "64ecf6df-7f86-45c4-8c0a-579a9876e680",
+      "name": "o",
+      "var_type": "observation",
+      "dimensions": [
+        9,
+        1
+      ],
+      "data_type": "integer",
+      "description": "Current observation",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "2b368999-960f-404c-ba5d-f8ef24385f2d",
+      "name": "\u03c0",
+      "var_type": "policy",
+      "dimensions": [
+        5
+      ],
+      "data_type": "float",
+      "description": "Policy distribution over actions",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "0603edd4-548b-473f-a783-4600a6c05fc9",
+      "name": "u",
+      "var_type": "action",
+      "dimensions": [
+        1
+      ],
+      "data_type": "integer",
+      "description": "Action index",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "9daa5b09-83aa-457a-beac-38792c5fb124",
+      "name": "G",
+      "var_type": "policy",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Expected Free Energy per action",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "95991d79-ca2a-47c1-a459-38490ee44c77",
+      "name": "t",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "integer",
+      "description": "Discrete time step",
+      "constraints": {}
+    }
+  ],
+  "connections": [
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "9254da96-1f0f-4235-bb5f-deac21705a6a",
+      "source_variables": [
+        "D"
+      ],
+      "target_variables": [
+        "s"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "a5ab19a4-3b8b-45b5-80f1-008cf61de42a",
+      "source_variables": [
+        "s"
+      ],
+      "target_variables": [
+        "A"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "bf441c8b-5342-47c7-9e73-26d309ce0014",
+      "source_variables": [
+        "A"
+      ],
+      "target_variables": [
+        "o"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "405c7275-74a2-46ce-927a-0896d5bd6c20",
+      "source_variables": [
+        "s"
+      ],
+      "target_variables": [
+        "B"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "ab8857e5-9749-40bf-90a2-73a200825a84",
+      "source_variables": [
+        "B"
+      ],
+      "target_variables": [
+        "u"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "62e30bc4-ccbf-451c-972e-0439e357ad7a",
+      "source_variables": [
+        "u"
+      ],
+      "target_variables": [
+        "s_prime"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "6becebc4-3d0e-4db3-a3f2-ceec35af281e",
+      "source_variables": [
+        "C"
+      ],
+      "target_variables": [
+        "G"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "7038ba14-d707-4b68-b11d-2e33f997d121",
+      "source_variables": [
+        "E"
+      ],
+      "target_variables": [
+        "\u03c0"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "553a5830-b076-407f-800f-ead2a17176cd",
+      "source_variables": [
+        "G"
+      ],
+      "target_variables": [
+        "\u03c0"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "18d47132-a702-4efe-9ddd-db2d20f8e5fa",
+      "source_variables": [
+        "\u03c0"
+      ],
+      "target_variables": [
+        "u"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "ab0fea47-0493-4561-8c11-b682e658d6c6",
+      "source_variables": [
+        "s"
+      ],
+      "target_variables": [
+        "s_prime"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    }
+  ],
+  "parameters": [
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "ba2f3021-049f-49d4-a25c-40db22c277c5",
+      "name": "A",
+      "value": [
+        [
+          0.85,
+          0.01875,
+          0.01875,
+          0.01875,
+          0.01875,
+          0.01875,
+          0.01875,
+          0.01875,
+          0.01875
+        ],
+        [
+          0.01875,
+          0.85,
+          0.01875,
+          0.01875,
+          0.01875,
+          0.01875,
+          0.01875,
+          0.01875,
+          0.01875
+        ],
+        [
+          0.01875,
+          0.01875,
+          0.85,
+          0.01875,
+          0.01875,
+          0.01875,
+          0.01875,
+          0.01875,
+          0.01875
+        ],
+        [
+          0.01875,
+          0.01875,
+          0.01875,
+          0.85,
+          0.01875,
+          0.01875,
+          0.01875,
+          0.01875,
+          0.01875
+        ],
+        [
+          0.01875,
+          0.01875,
+          0.01875,
+          0.01875,
+          0.85,
+          0.01875,
+          0.01875,
+          0.01875,
+          0.01875
+        ],
+        [
+          0.01875,
+          0.01875,
+          0.01875,
+          0.01875,
+          0.01875,
+          0.85,
+          0.01875,
+          0.01875,
+          0.01875
+        ],
+        [
+          0.01875,
+          0.01875,
+          0.01875,
+          0.01875,
+          0.01875,
+          0.01875,
+          0.85,
+          0.01875,
+          0.01875
+        ],
+        [
+          0.01875,
+          0.01875,
+          0.01875,
+          0.01875,
+          0.01875,
+          0.01875,
+          0.01875,
+          0.85,
+          0.01875
+        ],
+        [
+          0.01875,
+          0.01875,
+          0.01875,
+          0.01875,
+          0.01875,
+          0.01875,
+          0.01875,
+          0.01875,
+          0.85
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "c60f8dd6-c763-46d3-be44-5258b55c4769",
+      "name": "B",
+      "value": [
+        [
+          [
+            1.0,
+            0.0,
+            1.0,
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        [
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        [
+          [
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            1.0,
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ]
+        ],
+        [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            1.0,
+            1.0
+          ]
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "86678c8b-f391-4a5c-ba8e-41c859a06c17",
+      "name": "C",
+      "value": [
+        [
+          0.0,
+          0.1,
+          0.3,
+          0.1,
+          0.4,
+          0.8,
+          0.3,
+          0.8,
+          3.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "c0b122a2-e2b8-45ab-a786-3db4586fdbfd",
+      "name": "D",
+      "value": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "b0c48318-45ba-42c1-b5f1-f7b1c1196941",
+      "name": "E",
+      "value": [
+        [
+          0.2,
+          0.2,
+          0.2,
+          0.2,
+          0.2
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "426b13da-5616-48c6-a03c-204de537502f",
+      "name": "num_hidden_states",
+      "value": 9,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "0c87ecdb-b7a2-4e65-ac0e-f2a321b7cae0",
+      "name": "num_obs",
+      "value": 9,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "ce418ac4-0872-483b-a069-a1c681e6d151",
+      "name": "num_actions",
+      "value": 5,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "5a1631a7-3b69-42be-8d06-3827c99f65c5",
+      "name": "num_timesteps",
+      "value": 15,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "aaa6230b-b899-4e47-b411-77fe18937d0f",
+      "name": "random_seed",
+      "value": 42,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "901edfc5-1897-4f0b-a29b-ebbb59fe1895",
+      "name": "b_tensor_order",
+      "value": "next_state_previous_state_action",
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "2b7c0ace-052f-4dc2-8a64-f9327ff284a1",
+      "name": "grid_rows",
+      "value": 3,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "a874e49e-e7bd-4155-8b29-1a3e89461119",
+      "name": "grid_cols",
+      "value": 3,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "97c1bea3-a207-42b8-a5b6-0a9e4a8fe24b",
+      "name": "goal_state",
+      "value": 8,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "8b3a6773-4f24-41fa-a2ce-a308eef9ef2b",
+      "name": "action_labels",
+      "value": "up,down,left,right,stay",
+      "type_hint": null,
+      "description": null
+    }
+  ],
+  "equations": [
+    {
+      "node_type": "Equation",
+      "source_location": null,
+      "metadata": {},
+      "id": "5ad6d308-758f-45b8-b44d-d9935c66262d",
+      "label": null,
+      "content": "State inference uses the observation likelihood and previous predictive belief. Action selection minimizes expected free energy under the shared transition tensor.",
+      "format": "latex",
+      "description": null
+    }
+  ],
+  "time_specification": {
+    "node_type": "TimeSpecification",
+    "source_location": null,
+    "metadata": {},
+    "id": "2ea9b261-0647-4e62-8ade-b0c764d4812b",
+    "time_type": "Dynamic",
+    "discretization": null,
+    "horizon": 15,
+    "step_size": null
+  },
+  "ontology_mappings": [
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "5ae8e1e3-6819-4aeb-8697-3b69180fa273",
+      "variable_name": "A",
+      "ontology_term": "LikelihoodMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "066e6bf1-544b-49e9-b02b-ff3fae1ecf6e",
+      "variable_name": "B",
+      "ontology_term": "TransitionMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "257de4b2-67dd-4d8d-9e37-e26f2a24acb1",
+      "variable_name": "C",
+      "ontology_term": "LogPreferenceVector",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "7ac178e9-3919-44e9-be3b-5d126ba01843",
+      "variable_name": "D",
+      "ontology_term": "PriorOverHiddenStates",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "8ba35718-9da4-43e1-9c59-4004b9ea7a00",
+      "variable_name": "E",
+      "ontology_term": "Habit",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "3546b92f-37b5-43c8-bab9-e7bf27187446",
+      "variable_name": "G",
+      "ontology_term": "ExpectedFreeEnergy",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "351aece7-5d25-4ff6-8533-4ad5bc5de2c4",
+      "variable_name": "s",
+      "ontology_term": "HiddenState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "9907988c-a8f3-46e1-9d88-12a37291f4e5",
+      "variable_name": "s_prime",
+      "ontology_term": "NextHiddenState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "6dd1e59e-9f6c-4572-9756-ae96361dca84",
+      "variable_name": "o",
+      "ontology_term": "Observation",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "40e93bc7-e367-41ed-a942-6cc4cdb2ee34",
+      "variable_name": "\u03c0",
+      "ontology_term": "PolicyVector",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "2435f2a7-2da7-4dca-a211-13ce9c969343",
+      "variable_name": "u",
+      "ontology_term": "Action",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "b3a04bcf-2544-4228-84ca-de53bcfedb71",
+      "variable_name": "t",
+      "ontology_term": "Time",
+      "description": null
+    }
+  ],
+  "source_format": "markdown",
+  "created_at": "2026-09-06T12:16:32.844244",
+  "modified_at": "2026-09-06T12:16:32.844247",
+  "checksum": null,
+  "extensions": {
+    "gnn_section": "ActInfPOMDP",
+    "footer": "POMDP GridWorld 3x3 v1 - canonical cross-framework GNN fixture."
+  },
+  "raw_sections": {
+    "GNNSection": "ActInfPOMDP",
+    "GNNVersionAndFlags": "GNN v1",
+    "ModelName": "POMDP GridWorld 3x3",
+    "ModelAnnotation": "Discrete 3x3 GridWorld POMDP for strict cross-framework validation. The model has one hidden state factor with 9 grid cells, one observation modality with noisy cell observations, and one control factor with 5 boundary-clamped actions: up, down, left, right, and stay.",
+    "StateSpaceBlock": "A[9,9,type=float]      # Likelihood matrix: observations by hidden states\nB[9,9,5,type=float]    # Transition tensor: next_state, previous_state, action\nC[9,type=float]        # Log-preferences over observations\nD[9,type=float]        # Prior over initial hidden state\nE[5,type=float]        # Policy prior over actions\n\ns[9,1,type=float]      # Current hidden state distribution\ns_prime[9,1,type=float] # Next hidden state distribution\no[9,1,type=int]        # Current observation\n\u03c0[5,type=float]        # Policy distribution over actions\nu[1,type=int]          # Action index\nG[\u03c0,type=float]        # Expected Free Energy per action\nt[1,type=int]          # Discrete time step",
+    "Connections": "D>s\ns-A\nA-o\ns-B\nB>u\nu>s_prime\nC>G\nE>\u03c0\nG>\u03c0\n\u03c0>u\ns>s_prime",
+    "InitialParameterization": "A={\n  (0.85000, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875),\n  (0.01875, 0.85000, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875),\n  (0.01875, 0.01875, 0.85000, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875),\n  (0.01875, 0.01875, 0.01875, 0.85000, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875),\n  (0.01875, 0.01875, 0.01875, 0.01875, 0.85000, 0.01875, 0.01875, 0.01875, 0.01875),\n  (0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.85000, 0.01875, 0.01875, 0.01875),\n  (0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.85000, 0.01875, 0.01875),\n  (0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.85000, 0.01875),\n  (0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.01875, 0.85000)\n}\n\nB={\n  (\n    (1.0, 0.0, 1.0, 0.0, 1.0),\n    (0.0, 0.0, 1.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 0.0, 0.0),\n    (1.0, 0.0, 0.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 0.0, 0.0)\n  ),\n  (\n    (0.0, 0.0, 0.0, 1.0, 0.0),\n    (1.0, 0.0, 0.0, 0.0, 1.0),\n    (0.0, 0.0, 1.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 0.0, 0.0),\n    (1.0, 0.0, 0.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 0.0, 0.0)\n  ),\n  (\n    (0.0, 0.0, 0.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 1.0, 0.0),\n    (1.0, 0.0, 0.0, 1.0, 1.0),\n    (0.0, 0.0, 0.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 0.0, 0.0),\n    (1.0, 0.0, 0.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 0.0, 0.0)\n  ),\n  (\n    (0.0, 1.0, 0.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 0.0, 0.0),\n    (0.0, 0.0, 1.0, 0.0, 1.0),\n    (0.0, 0.0, 1.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 0.0, 0.0),\n    (1.0, 0.0, 0.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 0.0, 0.0)\n  ),\n  (\n    (0.0, 0.0, 0.0, 0.0, 0.0),\n    (0.0, 1.0, 0.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 1.0, 0.0),\n    (0.0, 0.0, 0.0, 0.0, 1.0),\n    (0.0, 0.0, 1.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 0.0, 0.0),\n    (1.0, 0.0, 0.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 0.0, 0.0)\n  ),\n  (\n    (0.0, 0.0, 0.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 0.0, 0.0),\n    (0.0, 1.0, 0.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 1.0, 0.0),\n    (0.0, 0.0, 0.0, 1.0, 1.0),\n    (0.0, 0.0, 0.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 0.0, 0.0),\n    (1.0, 0.0, 0.0, 0.0, 0.0)\n  ),\n  (\n    (0.0, 0.0, 0.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 0.0, 0.0),\n    (0.0, 1.0, 0.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 0.0, 0.0),\n    (0.0, 1.0, 1.0, 0.0, 1.0),\n    (0.0, 0.0, 1.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 0.0, 0.0)\n  ),\n  (\n    (0.0, 0.0, 0.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 0.0, 0.0),\n    (0.0, 1.0, 0.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 1.0, 0.0),\n    (0.0, 1.0, 0.0, 0.0, 1.0),\n    (0.0, 0.0, 1.0, 0.0, 0.0)\n  ),\n  (\n    (0.0, 0.0, 0.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 0.0, 0.0),\n    (0.0, 1.0, 0.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 0.0, 0.0),\n    (0.0, 0.0, 0.0, 1.0, 0.0),\n    (0.0, 1.0, 0.0, 1.0, 1.0)\n  )\n}\n\nC={(0.0, 0.1, 0.3, 0.1, 0.4, 0.8, 0.3, 0.8, 3.0)}\n\nD={(1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)}\n\nE={(0.2, 0.2, 0.2, 0.2, 0.2)}",
+    "Equations": "State inference uses the observation likelihood and previous predictive belief. Action selection minimizes expected free energy under the shared transition tensor.",
+    "Time": "Time=t\nDynamic\nDiscrete\nModelTimeHorizon=15",
+    "ActInfOntologyAnnotation": "A=LikelihoodMatrix\nB=TransitionMatrix\nC=LogPreferenceVector\nD=PriorOverHiddenStates\nE=Habit\nG=ExpectedFreeEnergy\ns=HiddenState\ns_prime=NextHiddenState\no=Observation\n\u03c0=PolicyVector\nu=Action\nt=Time",
+    "ModelParameters": "num_hidden_states: 9\nnum_obs: 9\nnum_actions: 5\nnum_timesteps: 15\nrandom_seed: 42\nb_tensor_order: next_state_previous_state_action\ngrid_rows: 3\ngrid_cols: 3\ngoal_state: 8\naction_labels: up,down,left,right,stay",
+    "Footer": "POMDP GridWorld 3x3 v1 - canonical cross-framework GNN fixture."
+  },
+  "initialparameterization": {
+    "A": [
+      [
+        0.85,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875
+      ],
+      [
+        0.01875,
+        0.85,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875
+      ],
+      [
+        0.01875,
+        0.01875,
+        0.85,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875
+      ],
+      [
+        0.01875,
+        0.01875,
+        0.01875,
+        0.85,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875
+      ],
+      [
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.85,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875
+      ],
+      [
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.85,
+        0.01875,
+        0.01875,
+        0.01875
+      ],
+      [
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.85,
+        0.01875,
+        0.01875
+      ],
+      [
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.85,
+        0.01875
+      ],
+      [
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.85
+      ]
+    ],
+    "B": [
+      [
+        [
+          1.0,
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          1.0,
+          0.0,
+          0.0,
+          1.0,
+          1.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          1.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          1.0,
+          1.0
+        ]
+      ]
+    ],
+    "C": [
+      [
+        0.0,
+        0.1,
+        0.3,
+        0.1,
+        0.4,
+        0.8,
+        0.3,
+        0.8,
+        3.0
+      ]
+    ],
+    "D": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "E": [
+      [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+      ]
+    ],
+    "num_hidden_states": 9,
+    "num_obs": 9,
+    "num_actions": 5,
+    "num_timesteps": 15,
+    "random_seed": 42,
+    "b_tensor_order": "next_state_previous_state_action",
+    "grid_rows": 3,
+    "grid_cols": 3,
+    "goal_state": 8,
+    "action_labels": "up,down,left,right,stay"
+  },
+  "model_parameters": {
+    "A": [
+      [
+        0.85,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875
+      ],
+      [
+        0.01875,
+        0.85,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875
+      ],
+      [
+        0.01875,
+        0.01875,
+        0.85,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875
+      ],
+      [
+        0.01875,
+        0.01875,
+        0.01875,
+        0.85,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875
+      ],
+      [
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.85,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875
+      ],
+      [
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.85,
+        0.01875,
+        0.01875,
+        0.01875
+      ],
+      [
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.85,
+        0.01875,
+        0.01875
+      ],
+      [
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.85,
+        0.01875
+      ],
+      [
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.01875,
+        0.85
+      ]
+    ],
+    "B": [
+      [
+        [
+          1.0,
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          1.0,
+          0.0,
+          0.0,
+          1.0,
+          1.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          1.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          1.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          1.0,
+          1.0
+        ]
+      ]
+    ],
+    "C": [
+      [
+        0.0,
+        0.1,
+        0.3,
+        0.1,
+        0.4,
+        0.8,
+        0.3,
+        0.8,
+        3.0
+      ]
+    ],
+    "D": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "E": [
+      [
+        0.2,
+        0.2,
+        0.2,
+        0.2,
+        0.2
+      ]
+    ],
+    "num_hidden_states": 9,
+    "num_obs": 9,
+    "num_actions": 5,
+    "num_timesteps": 15,
+    "random_seed": 42,
+    "b_tensor_order": "next_state_previous_state_action",
+    "grid_rows": 3,
+    "grid_cols": 3,
+    "goal_state": 8,
+    "action_labels": "up,down,left,right,stay"
+  }
+}

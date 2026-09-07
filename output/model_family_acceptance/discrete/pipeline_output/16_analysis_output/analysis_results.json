@@ -1,0 +1,2049 @@
+{
+  "timestamp": "2026-09-06T11:09:21.415990",
+  "processed_files": 2,
+  "success": true,
+  "errors": [],
+  "statistical_analysis": [
+    {
+      "file_path": "output/model_family_acceptance/discrete/input/simple_mdp.md",
+      "file_name": "simple_mdp.md",
+      "file_size": 3532,
+      "line_count": 154,
+      "variables": [
+        {
+          "name": "Example",
+          "definition": "Example: Simple",
+          "line": 1,
+          "type": "Simple"
+        },
+        {
+          "name": "Version",
+          "definition": "Version: 1",
+          "line": 3,
+          "type": "1"
+        },
+        {
+          "name": "actions",
+          "definition": "actions: stay",
+          "line": 27,
+          "type": "stay"
+        },
+        {
+          "name": "matrix",
+          "definition": "matrix: A",
+          "line": 33,
+          "type": "A"
+        },
+        {
+          "name": "model",
+          "definition": "model: identity",
+          "line": 35,
+          "type": "identity"
+        },
+        {
+          "name": "matrix",
+          "definition": "matrix: B",
+          "line": 37,
+          "type": "B"
+        },
+        {
+          "name": "vector",
+          "definition": "vector: C",
+          "line": 41,
+          "type": "C"
+        },
+        {
+          "name": "vector",
+          "definition": "vector: D",
+          "line": 45,
+          "type": "D"
+        },
+        {
+          "name": "A",
+          "definition": "A: 4x4",
+          "line": 83,
+          "type": "4x4"
+        },
+        {
+          "name": "B",
+          "definition": "B: 4",
+          "line": 92,
+          "type": "4"
+        },
+        {
+          "name": "stochastic",
+          "definition": "stochastic: rows",
+          "line": 92,
+          "type": "rows"
+        },
+        {
+          "name": "C",
+          "definition": "C: Strong",
+          "line": 101,
+          "type": "Strong"
+        },
+        {
+          "name": "D",
+          "definition": "D: Uniform",
+          "line": 105,
+          "type": "Uniform"
+        },
+        {
+          "name": "inference",
+          "definition": "inference: qs",
+          "line": 113,
+          "type": "qs"
+        },
+        {
+          "name": "inference",
+          "definition": "inference: G",
+          "line": 115,
+          "type": "G"
+        },
+        {
+          "name": "selection",
+          "definition": "selection: u",
+          "line": 117,
+          "type": "u"
+        },
+        {
+          "name": "num_hidden_states",
+          "definition": "num_hidden_states: 4",
+          "line": 142,
+          "type": "4"
+        },
+        {
+          "name": "num_obs",
+          "definition": "num_obs: 4",
+          "line": 143,
+          "type": "4"
+        },
+        {
+          "name": "num_actions",
+          "definition": "num_actions: 4",
+          "line": 144,
+          "type": "4"
+        },
+        {
+          "name": "num_timesteps",
+          "definition": "num_timesteps: 25",
+          "line": 145,
+          "type": "25"
+        },
+        {
+          "name": "A",
+          "definition": "A = identity matrix).",
+          "line": 26,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]    # Observation model: identity (fully observable)",
+          "line": 35,
+          "type": "float]    # Observation model: identity (fully observable)"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]  # State transitions given state and action",
+          "line": 39,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]      # Log-preferences over observations",
+          "line": 43,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]      # Prior over initial hidden states",
+          "line": 47,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]    # Current hidden state distribution",
+          "line": 51,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float] # Next hidden state distribution",
+          "line": 52,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=int]      # Current observation (same as state in MDP)",
+          "line": 56,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]      # Policy (distribution over actions)",
+          "line": 60,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=int]        # Action taken",
+          "line": 61,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]      # Expected Free Energy (per policy)",
+          "line": 62,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=int]        # Discrete time step",
+          "line": 66,
+          "type": "unknown"
+        },
+        {
+          "name": "A",
+          "definition": "A={",
+          "line": 85,
+          "type": "unknown"
+        },
+        {
+          "name": "0",
+          "definition": "0=stay, 1=go-to-1, 2=go-to-2, 3=go-to-3. The transition tensor B is stored as (next_state, previous_state, action)",
+          "line": 92,
+          "type": "unknown"
+        },
+        {
+          "name": "B",
+          "definition": "B={",
+          "line": 94,
+          "type": "unknown"
+        },
+        {
+          "name": "C",
+          "definition": "C={(0.0, 0.0, 0.0, 3.0)}",
+          "line": 103,
+          "type": "unknown"
+        },
+        {
+          "name": "D",
+          "definition": "D={(0.25, 0.25, 0.25, 0.25)}",
+          "line": 107,
+          "type": "unknown"
+        },
+        {
+          "name": "qs",
+          "definition": "qs = softmax(ln(A[o,:]) + ln(B[s_prev] @ pi))",
+          "line": 113,
+          "type": "softmax(ln(A[o,:]) + ln(B[s_prev] @ pi))"
+        },
+        {
+          "name": "Time",
+          "definition": "Time=t",
+          "line": 121,
+          "type": "unknown"
+        },
+        {
+          "name": "ModelTimeHorizon",
+          "definition": "ModelTimeHorizon=Unbounded",
+          "line": 124,
+          "type": "unknown"
+        },
+        {
+          "name": "A",
+          "definition": "A=LikelihoodMatrix",
+          "line": 128,
+          "type": "unknown"
+        },
+        {
+          "name": "B",
+          "definition": "B=TransitionMatrix",
+          "line": 129,
+          "type": "unknown"
+        },
+        {
+          "name": "C",
+          "definition": "C=LogPreferenceVector",
+          "line": 130,
+          "type": "unknown"
+        },
+        {
+          "name": "D",
+          "definition": "D=PriorOverHiddenStates",
+          "line": 131,
+          "type": "unknown"
+        },
+        {
+          "name": "G",
+          "definition": "G=ExpectedFreeEnergy",
+          "line": 132,
+          "type": "unknown"
+        },
+        {
+          "name": "s",
+          "definition": "s=HiddenState",
+          "line": 133,
+          "type": "unknown"
+        },
+        {
+          "name": "s_prime",
+          "definition": "s_prime=NextHiddenState",
+          "line": 134,
+          "type": "unknown"
+        },
+        {
+          "name": "o",
+          "definition": "o=Observation",
+          "line": 135,
+          "type": "unknown"
+        },
+        {
+          "name": "\u03c0",
+          "definition": "\u03c0=PolicyVector",
+          "line": 136,
+          "type": "unknown"
+        },
+        {
+          "name": "u",
+          "definition": "u=Action",
+          "line": 137,
+          "type": "unknown"
+        },
+        {
+          "name": "t",
+          "definition": "t=Time",
+          "line": 138,
+          "type": "unknown"
+        },
+        {
+          "name": "A",
+          "definition": "A[observation_outcomes, hidden_states]",
+          "line": 33,
+          "type": "unknown"
+        },
+        {
+          "name": "A",
+          "definition": "A[4,4,type=float]",
+          "line": 35,
+          "type": "unknown"
+        },
+        {
+          "name": "B",
+          "definition": "B[next_state, previous_state, actions]",
+          "line": 37,
+          "type": "unknown"
+        },
+        {
+          "name": "B",
+          "definition": "B[4,4,4,type=float]",
+          "line": 39,
+          "type": "unknown"
+        },
+        {
+          "name": "C",
+          "definition": "C[observation_outcomes]",
+          "line": 41,
+          "type": "unknown"
+        },
+        {
+          "name": "C",
+          "definition": "C[4,type=float]",
+          "line": 43,
+          "type": "unknown"
+        },
+        {
+          "name": "D",
+          "definition": "D[states]",
+          "line": 45,
+          "type": "unknown"
+        },
+        {
+          "name": "D",
+          "definition": "D[4,type=float]",
+          "line": 47,
+          "type": "unknown"
+        },
+        {
+          "name": "s",
+          "definition": "s[4,1,type=float]",
+          "line": 51,
+          "type": "unknown"
+        },
+        {
+          "name": "s_prime",
+          "definition": "s_prime[4,1,type=float]",
+          "line": 52,
+          "type": "unknown"
+        },
+        {
+          "name": "o",
+          "definition": "o[4,1,type=int]",
+          "line": 56,
+          "type": "unknown"
+        },
+        {
+          "name": "\u03c0",
+          "definition": "\u03c0[4,type=float]",
+          "line": 60,
+          "type": "unknown"
+        },
+        {
+          "name": "u",
+          "definition": "u[1,type=int]",
+          "line": 61,
+          "type": "unknown"
+        },
+        {
+          "name": "G",
+          "definition": "G[\u03c0,type=float]",
+          "line": 62,
+          "type": "unknown"
+        },
+        {
+          "name": "t",
+          "definition": "t[1,type=int]",
+          "line": 66,
+          "type": "unknown"
+        },
+        {
+          "name": "A",
+          "definition": "A[o,:]",
+          "line": 113,
+          "type": "o,:"
+        },
+        {
+          "name": "B",
+          "definition": "B[s_prev]",
+          "line": 113,
+          "type": "unknown"
+        }
+      ],
+      "connections": [
+        {
+          "source": "D",
+          "target": "s",
+          "connection": "D>s",
+          "connection_type": "directional",
+          "line": 69
+        },
+        {
+          "source": "s",
+          "target": "A",
+          "connection": "s-A",
+          "connection_type": "bidirectional",
+          "line": 70
+        },
+        {
+          "source": "s",
+          "target": "s_prime",
+          "connection": "s>s_prime",
+          "connection_type": "directional",
+          "line": 71
+        },
+        {
+          "source": "A",
+          "target": "o",
+          "connection": "A-o",
+          "connection_type": "bidirectional",
+          "line": 72
+        },
+        {
+          "source": "s",
+          "target": "B",
+          "connection": "s-B",
+          "connection_type": "bidirectional",
+          "line": 73
+        },
+        {
+          "source": "C",
+          "target": "G",
+          "connection": "C>G",
+          "connection_type": "directional",
+          "line": 74
+        },
+        {
+          "source": "G",
+          "target": "\u03c0",
+          "connection": "G>\u03c0",
+          "connection_type": "directional",
+          "line": 75
+        },
+        {
+          "source": "\u03c0",
+          "target": "u",
+          "connection": "\u03c0>u",
+          "connection_type": "directional",
+          "line": 76
+        },
+        {
+          "source": "B",
+          "target": "u",
+          "connection": "B>u",
+          "connection_type": "directional",
+          "line": 77
+        },
+        {
+          "source": "u",
+          "target": "s_prime",
+          "connection": "u>s_prime",
+          "connection_type": "directional",
+          "line": 78
+        }
+      ],
+      "sections": [
+        {
+          "name": "GNN Example: Simple MDP (Fully Observable)",
+          "line": 1
+        },
+        {
+          "name": "GNN Version: 1.0",
+          "line": 3
+        },
+        {
+          "name": "A Markov Decision Process with full observability (identity observation model)",
+          "line": 5
+        },
+        {
+          "name": "This model tests the MDP special case where A is identity \u2014 agent always knows its state",
+          "line": 7
+        },
+        {
+          "name": "GNNSection",
+          "line": 9
+        },
+        {
+          "name": "GNNVersionAndFlags",
+          "line": 13
+        },
+        {
+          "name": "ModelName",
+          "line": 17
+        },
+        {
+          "name": "ModelAnnotation",
+          "line": 21
+        },
+        {
+          "name": "StateSpaceBlock",
+          "line": 31
+        },
+        {
+          "name": "Likelihood matrix: A[observation_outcomes, hidden_states] = Identity",
+          "line": 33
+        },
+        {
+          "name": "Transition matrix: B[next_state, previous_state, actions]",
+          "line": 37
+        },
+        {
+          "name": "Preference vector: C[observation_outcomes]",
+          "line": 41
+        },
+        {
+          "name": "Prior vector: D[states]",
+          "line": 45
+        },
+        {
+          "name": "Hidden State",
+          "line": 49
+        },
+        {
+          "name": "Observation",
+          "line": 54
+        },
+        {
+          "name": "Policy and Control",
+          "line": 58
+        },
+        {
+          "name": "Time",
+          "line": 64
+        },
+        {
+          "name": "Connections",
+          "line": 68
+        },
+        {
+          "name": "InitialParameterization",
+          "line": 81
+        },
+        {
+          "name": "A: 4x4 Identity \u2014 each state maps deterministically to its own observation",
+          "line": 83
+        },
+        {
+          "name": "B: 4 actions. Action 0=stay, 1=go-to-1, 2=go-to-2, 3=go-to-3. The transition tensor B is stored as (next_state, previous_state, action); per-action slices are column-stochastic: rows are next states, columns are previous states, and each column sums to 1 over next states.",
+          "line": 92
+        },
+        {
+          "name": "C: Strong preference for observation/state 3 (goal)",
+          "line": 101
+        },
+        {
+          "name": "D: Uniform prior \u2014 agent starts uncertain about position",
+          "line": 105
+        },
+        {
+          "name": "Equations",
+          "line": 109
+        },
+        {
+          "name": "Standard Active Inference update equations",
+          "line": 111
+        },
+        {
+          "name": "State inference: qs = softmax(ln(A[o,:]) + ln(B[s_prev] @ pi))",
+          "line": 113
+        },
+        {
+          "name": "Policy inference: G(pi) = sum_t EFE(pi,t)",
+          "line": 115
+        },
+        {
+          "name": "Action selection: u ~ Categorical(softmax(-G))",
+          "line": 117
+        },
+        {
+          "name": "Time",
+          "line": 119
+        },
+        {
+          "name": "ActInfOntologyAnnotation",
+          "line": 126
+        },
+        {
+          "name": "ModelParameters",
+          "line": 140
+        },
+        {
+          "name": "Footer",
+          "line": 147
+        },
+        {
+          "name": "Signature",
+          "line": 152
+        }
+      ],
+      "variable_statistics": {
+        "count": 68,
+        "types": {
+          "Simple": 1,
+          "1": 1,
+          "stay": 1,
+          "A": 1,
+          "identity": 1,
+          "B": 1,
+          "C": 1,
+          "D": 1,
+          "4x4": 1,
+          "4": 4,
+          "rows": 1,
+          "Strong": 1,
+          "Uniform": 1,
+          "qs": 1,
+          "G": 1,
+          "u": 1,
+          "25": 1,
+          "unknown": 45,
+          "float]    # Observation model: identity (fully observable)": 1,
+          "softmax(ln(A[o,:]) + ln(B[s_prev] @ pi))": 1,
+          "o,:": 1
+        },
+        "average_line": 80.41176470588235,
+        "line_std": 40.85564087128557
+      },
+      "connection_statistics": {
+        "count": 10,
+        "average_line": 73.5,
+        "line_std": 2.8722813232690143
+      },
+      "section_statistics": {
+        "count": 33,
+        "average_line": 68.6969696969697,
+        "line_std": 46.459160853171895
+      },
+      "distributions": {
+        "variable_distribution": {
+          "mean": 80.41176470588235,
+          "std": 40.85564087128557,
+          "min": 1.0,
+          "max": 145.0,
+          "median": 66.0,
+          "skewness": 0.0900748362239875,
+          "kurtosis": -1.3523411048917922,
+          "entropy": 3.7556110547030666
+        },
+        "connection_distribution": {
+          "mean": 73.5,
+          "std": 2.8722813232690143,
+          "min": 69.0,
+          "max": 78.0,
+          "median": 73.5,
+          "skewness": 0.0,
+          "kurtosis": -1.2242424242424244,
+          "entropy": 2.3025850929940455
+        },
+        "complexity_metrics": {
+          "total_elements": 78,
+          "variable_complexity": 68,
+          "connection_complexity": 10,
+          "density": 0.14705882352941177,
+          "cyclomatic_complexity": -56
+        }
+      },
+      "correlations": {
+        "variable_connection_correlation": 0.14705882352941177,
+        "line_position_correlation": 0.0
+      },
+      "analysis_timestamp": "2026-09-06T11:09:21.426013"
+    },
+    {
+      "file_path": "output/model_family_acceptance/discrete/input/actinf_pomdp_agent.md",
+      "file_name": "actinf_pomdp_agent.md",
+      "file_size": 4448,
+      "line_count": 130,
+      "variables": [
+        {
+          "name": "Example",
+          "definition": "Example: Active",
+          "line": 1,
+          "type": "Active"
+        },
+        {
+          "name": "Version",
+          "definition": "Version: 1",
+          "line": 2,
+          "type": "1"
+        },
+        {
+          "name": "matrix",
+          "definition": "matrix: A",
+          "line": 23,
+          "type": "A"
+        },
+        {
+          "name": "matrix",
+          "definition": "matrix: B",
+          "line": 26,
+          "type": "B"
+        },
+        {
+          "name": "vector",
+          "definition": "vector: C",
+          "line": 29,
+          "type": "C"
+        },
+        {
+          "name": "vector",
+          "definition": "vector: D",
+          "line": 32,
+          "type": "D"
+        },
+        {
+          "name": "vector",
+          "definition": "vector: E",
+          "line": 35,
+          "type": "E"
+        },
+        {
+          "name": "A",
+          "definition": "A: 3",
+          "line": 68,
+          "type": "3"
+        },
+        {
+          "name": "B",
+          "definition": "B: 3",
+          "line": 75,
+          "type": "3"
+        },
+        {
+          "name": "stochastic",
+          "definition": "stochastic: rows",
+          "line": 75,
+          "type": "rows"
+        },
+        {
+          "name": "C",
+          "definition": "C: 3",
+          "line": 82,
+          "type": "3"
+        },
+        {
+          "name": "D",
+          "definition": "D: 3",
+          "line": 85,
+          "type": "3"
+        },
+        {
+          "name": "E",
+          "definition": "E: 3",
+          "line": 88,
+          "type": "3"
+        },
+        {
+          "name": "posterior",
+          "definition": "posterior: action",
+          "line": 95,
+          "type": "action"
+        },
+        {
+          "name": "num_hidden_states",
+          "definition": "num_hidden_states: 3",
+          "line": 120,
+          "type": "3"
+        },
+        {
+          "name": "num_obs",
+          "definition": "num_obs: 3",
+          "line": 121,
+          "type": "3"
+        },
+        {
+          "name": "num_actions",
+          "definition": "num_actions: 3",
+          "line": 122,
+          "type": "3"
+        },
+        {
+          "name": "num_timesteps",
+          "definition": "num_timesteps: 30",
+          "line": 123,
+          "type": "30"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]   # Likelihood mapping hidden states to observations",
+          "line": 24,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]   # State transitions given previous state and action",
+          "line": 27,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]       # Log-preferences over observations",
+          "line": 30,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]       # Prior over initial hidden states",
+          "line": 33,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]       # Initial policy prior (habit) over actions",
+          "line": 36,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]     # Current hidden state distribution",
+          "line": 39,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float] # Next hidden state distribution",
+          "line": 40,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]       # Variational Free Energy for belief updating from observations",
+          "line": 41,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=int]     # Current observation (integer index)",
+          "line": 44,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]       # Policy (distribution over actions), no planning",
+          "line": 47,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=int]         # Action taken",
+          "line": 48,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]       # Expected Free Energy (per policy)",
+          "line": 49,
+          "type": "unknown"
+        },
+        {
+          "name": "type",
+          "definition": "type=int]         # Discrete time step",
+          "line": 52,
+          "type": "unknown"
+        },
+        {
+          "name": "A",
+          "definition": "A={",
+          "line": 69,
+          "type": "unknown"
+        },
+        {
+          "name": "B",
+          "definition": "B={",
+          "line": 76,
+          "type": "unknown"
+        },
+        {
+          "name": "C",
+          "definition": "C={(0.1, 0.1, 1.0)}",
+          "line": 83,
+          "type": "unknown"
+        },
+        {
+          "name": "D",
+          "definition": "D={(0.33333, 0.33333, 0.33333)}",
+          "line": 86,
+          "type": "unknown"
+        },
+        {
+          "name": "E",
+          "definition": "E={(0.33333, 0.33333, 0.33333)}",
+          "line": 89,
+          "type": "unknown"
+        },
+        {
+          "name": "Energy",
+          "definition": "Energy = with infer_policies()",
+          "line": 94,
+          "type": "unknown"
+        },
+        {
+          "name": "action",
+          "definition": "action = sample_action()",
+          "line": 95,
+          "type": "unknown"
+        },
+        {
+          "name": "Time",
+          "definition": "Time=t",
+          "line": 99,
+          "type": "unknown"
+        },
+        {
+          "name": "ModelTimeHorizon",
+          "definition": "ModelTimeHorizon=Unbounded # The agent is defined for an unbounded time horizon",
+          "line": 102,
+          "type": "unknown"
+        },
+        {
+          "name": "A",
+          "definition": "A=LikelihoodMatrix",
+          "line": 105,
+          "type": "unknown"
+        },
+        {
+          "name": "B",
+          "definition": "B=TransitionMatrix",
+          "line": 106,
+          "type": "unknown"
+        },
+        {
+          "name": "C",
+          "definition": "C=LogPreferenceVector",
+          "line": 107,
+          "type": "unknown"
+        },
+        {
+          "name": "D",
+          "definition": "D=PriorOverHiddenStates",
+          "line": 108,
+          "type": "unknown"
+        },
+        {
+          "name": "E",
+          "definition": "E=Habit",
+          "line": 109,
+          "type": "unknown"
+        },
+        {
+          "name": "F",
+          "definition": "F=VariationalFreeEnergy",
+          "line": 110,
+          "type": "unknown"
+        },
+        {
+          "name": "G",
+          "definition": "G=ExpectedFreeEnergy",
+          "line": 111,
+          "type": "unknown"
+        },
+        {
+          "name": "s",
+          "definition": "s=HiddenState",
+          "line": 112,
+          "type": "unknown"
+        },
+        {
+          "name": "s_prime",
+          "definition": "s_prime=NextHiddenState",
+          "line": 113,
+          "type": "unknown"
+        },
+        {
+          "name": "o",
+          "definition": "o=Observation",
+          "line": 114,
+          "type": "unknown"
+        },
+        {
+          "name": "\u03c0",
+          "definition": "\u03c0=PolicyVector # Distribution over actions",
+          "line": 115,
+          "type": "unknown"
+        },
+        {
+          "name": "u",
+          "definition": "u=Action       # Chosen action",
+          "line": 116,
+          "type": "unknown"
+        },
+        {
+          "name": "t",
+          "definition": "t=Time",
+          "line": 117,
+          "type": "unknown"
+        },
+        {
+          "name": "actions_dim",
+          "definition": "actions_dim=3 (controlled by \u03c0)",
+          "line": 122,
+          "type": "unknown"
+        },
+        {
+          "name": "A",
+          "definition": "A[observation_outcomes, hidden_states]",
+          "line": 23,
+          "type": "unknown"
+        },
+        {
+          "name": "A",
+          "definition": "A[3,3,type=float]",
+          "line": 24,
+          "type": "unknown"
+        },
+        {
+          "name": "B",
+          "definition": "B[next_state, previous_state, actions]",
+          "line": 26,
+          "type": "unknown"
+        },
+        {
+          "name": "B",
+          "definition": "B[3,3,3,type=float]",
+          "line": 27,
+          "type": "unknown"
+        },
+        {
+          "name": "C",
+          "definition": "C[observation_outcomes]",
+          "line": 29,
+          "type": "unknown"
+        },
+        {
+          "name": "C",
+          "definition": "C[3,type=float]",
+          "line": 30,
+          "type": "unknown"
+        },
+        {
+          "name": "D",
+          "definition": "D[states]",
+          "line": 32,
+          "type": "unknown"
+        },
+        {
+          "name": "D",
+          "definition": "D[3,type=float]",
+          "line": 33,
+          "type": "unknown"
+        },
+        {
+          "name": "E",
+          "definition": "E[actions]",
+          "line": 35,
+          "type": "unknown"
+        },
+        {
+          "name": "E",
+          "definition": "E[3,type=float]",
+          "line": 36,
+          "type": "unknown"
+        },
+        {
+          "name": "s",
+          "definition": "s[3,1,type=float]",
+          "line": 39,
+          "type": "unknown"
+        },
+        {
+          "name": "s_prime",
+          "definition": "s_prime[3,1,type=float]",
+          "line": 40,
+          "type": "unknown"
+        },
+        {
+          "name": "F",
+          "definition": "F[\u03c0,type=float]",
+          "line": 41,
+          "type": "unknown"
+        },
+        {
+          "name": "o",
+          "definition": "o[3,1,type=int]",
+          "line": 44,
+          "type": "unknown"
+        },
+        {
+          "name": "\u03c0",
+          "definition": "\u03c0[3,type=float]",
+          "line": 47,
+          "type": "unknown"
+        },
+        {
+          "name": "u",
+          "definition": "u[1,type=int]",
+          "line": 48,
+          "type": "unknown"
+        },
+        {
+          "name": "G",
+          "definition": "G[\u03c0,type=float]",
+          "line": 49,
+          "type": "unknown"
+        },
+        {
+          "name": "t",
+          "definition": "t[1,type=int]",
+          "line": 52,
+          "type": "unknown"
+        },
+        {
+          "name": "s",
+          "definition": "s[3]",
+          "line": 120,
+          "type": "unknown"
+        },
+        {
+          "name": "o",
+          "definition": "o[3]",
+          "line": 121,
+          "type": "unknown"
+        }
+      ],
+      "connections": [
+        {
+          "source": "D",
+          "target": "s",
+          "connection": "D>s",
+          "connection_type": "directional",
+          "line": 55
+        },
+        {
+          "source": "s",
+          "target": "A",
+          "connection": "s-A",
+          "connection_type": "bidirectional",
+          "line": 56
+        },
+        {
+          "source": "s",
+          "target": "s_prime",
+          "connection": "s>s_prime",
+          "connection_type": "directional",
+          "line": 57
+        },
+        {
+          "source": "A",
+          "target": "o",
+          "connection": "A-o",
+          "connection_type": "bidirectional",
+          "line": 58
+        },
+        {
+          "source": "s",
+          "target": "B",
+          "connection": "s-B",
+          "connection_type": "bidirectional",
+          "line": 59
+        },
+        {
+          "source": "C",
+          "target": "G",
+          "connection": "C>G",
+          "connection_type": "directional",
+          "line": 60
+        },
+        {
+          "source": "E",
+          "target": "\u03c0",
+          "connection": "E>\u03c0",
+          "connection_type": "directional",
+          "line": 61
+        },
+        {
+          "source": "G",
+          "target": "\u03c0",
+          "connection": "G>\u03c0",
+          "connection_type": "directional",
+          "line": 62
+        },
+        {
+          "source": "\u03c0",
+          "target": "u",
+          "connection": "\u03c0>u",
+          "connection_type": "directional",
+          "line": 63
+        },
+        {
+          "source": "B",
+          "target": "u",
+          "connection": "B>u",
+          "connection_type": "directional",
+          "line": 64
+        },
+        {
+          "source": "u",
+          "target": "s_prime",
+          "connection": "u>s_prime",
+          "connection_type": "directional",
+          "line": 65
+        }
+      ],
+      "sections": [
+        {
+          "name": "GNN Example: Active Inference POMDP Agent",
+          "line": 1
+        },
+        {
+          "name": "GNN Version: 1.0",
+          "line": 2
+        },
+        {
+          "name": "This file is machine-readable and specifies a classic Active Inference agent for a discrete POMDP with one observation modality and one hidden state factor. The model is suitable for rendering into various simulation or inference backends.",
+          "line": 3
+        },
+        {
+          "name": "GNNSection",
+          "line": 5
+        },
+        {
+          "name": "GNNVersionAndFlags",
+          "line": 8
+        },
+        {
+          "name": "ModelName",
+          "line": 11
+        },
+        {
+          "name": "ModelAnnotation",
+          "line": 14
+        },
+        {
+          "name": "StateSpaceBlock",
+          "line": 22
+        },
+        {
+          "name": "Likelihood matrix: A[observation_outcomes, hidden_states]",
+          "line": 23
+        },
+        {
+          "name": "Transition matrix: B[next_state, previous_state, actions]",
+          "line": 26
+        },
+        {
+          "name": "Preference vector: C[observation_outcomes]",
+          "line": 29
+        },
+        {
+          "name": "Prior vector: D[states]",
+          "line": 32
+        },
+        {
+          "name": "Habit vector: E[actions]",
+          "line": 35
+        },
+        {
+          "name": "Hidden State",
+          "line": 38
+        },
+        {
+          "name": "Observation",
+          "line": 43
+        },
+        {
+          "name": "Policy and Control",
+          "line": 46
+        },
+        {
+          "name": "Time",
+          "line": 51
+        },
+        {
+          "name": "Connections",
+          "line": 54
+        },
+        {
+          "name": "InitialParameterization",
+          "line": 67
+        },
+        {
+          "name": "A: 3 observations x 3 hidden states. Identity mapping (each state deterministically produces a unique observation). Rows are observations, columns are hidden states.",
+          "line": 68
+        },
+        {
+          "name": "B: 3 states x 3 previous states x 3 actions. Each action deterministically moves to a state. The transition tensor B is stored as (next_state, previous_state, action); per-action slices are column-stochastic: rows are next states, columns are previous states, and each column sums to 1 over next states. Each slice is a transition matrix corresponding to a different action selection.",
+          "line": 75
+        },
+        {
+          "name": "C: 3 observations. Preference in terms of log-probabilities over observations.",
+          "line": 82
+        },
+        {
+          "name": "D: 3 states. Uniform prior over hidden states. Rows are hidden states, columns are prior probabilities.",
+          "line": 85
+        },
+        {
+          "name": "E: 3 actions. Uniform habit used as initial policy prior.",
+          "line": 88
+        },
+        {
+          "name": "Equations",
+          "line": 91
+        },
+        {
+          "name": "Standard Active Inference update equations for POMDPs:",
+          "line": 92
+        },
+        {
+          "name": "- State inference using Variational Free Energy with infer_states()",
+          "line": 93
+        },
+        {
+          "name": "- Policy inference using Expected Free Energy = with infer_policies()",
+          "line": 94
+        },
+        {
+          "name": "- Action selection from policy posterior: action = sample_action()",
+          "line": 95
+        },
+        {
+          "name": "- Belief updating using Variational Free Energy with update_beliefs()",
+          "line": 96
+        },
+        {
+          "name": "Time",
+          "line": 98
+        },
+        {
+          "name": "ActInfOntologyAnnotation",
+          "line": 104
+        },
+        {
+          "name": "ModelParameters",
+          "line": 119
+        },
+        {
+          "name": "Footer",
+          "line": 125
+        },
+        {
+          "name": "Signature",
+          "line": 129
+        }
+      ],
+      "variable_statistics": {
+        "count": 74,
+        "types": {
+          "Active": 1,
+          "1": 1,
+          "A": 1,
+          "B": 1,
+          "C": 1,
+          "D": 1,
+          "E": 1,
+          "3": 8,
+          "rows": 1,
+          "action": 1,
+          "30": 1,
+          "unknown": 56
+        },
+        "average_line": 67.10810810810811,
+        "line_std": 36.38442181036823
+      },
+      "connection_statistics": {
+        "count": 11,
+        "average_line": 60.0,
+        "line_std": 3.1622776601683795
+      },
+      "section_statistics": {
+        "count": 35,
+        "average_line": 58.4,
+        "line_std": 38.731456392520464
+      },
+      "distributions": {
+        "variable_distribution": {
+          "mean": 67.10810810810811,
+          "std": 36.38442181036823,
+          "min": 1.0,
+          "max": 123.0,
+          "median": 52.0,
+          "skewness": 0.15514718442015182,
+          "kurtosis": -1.4520267632963126,
+          "entropy": 3.8731898188020413
+        },
+        "connection_distribution": {
+          "mean": 60.0,
+          "std": 3.1622776601683795,
+          "min": 55.0,
+          "max": 65.0,
+          "median": 60.0,
+          "skewness": 0.0,
+          "kurtosis": -1.22,
+          "entropy": 2.3978952727983707
+        },
+        "complexity_metrics": {
+          "total_elements": 85,
+          "variable_complexity": 74,
+          "connection_complexity": 11,
+          "density": 0.14864864864864866,
+          "cyclomatic_complexity": -61
+        }
+      },
+      "correlations": {
+        "variable_connection_correlation": 0.14864864864864866,
+        "line_position_correlation": 0.0
+      },
+      "analysis_timestamp": "2026-09-06T11:09:21.446984"
+    }
+  ],
+  "complexity_metrics": [
+    {
+      "file_path": "output/model_family_acceptance/discrete/input/simple_mdp.md",
+      "file_name": "simple_mdp.md",
+      "cyclomatic_complexity": -56,
+      "cognitive_complexity": 44.0,
+      "structural_complexity": 27.4,
+      "maintainability_index": 100.0,
+      "technical_debt": 4.800000000000001,
+      "analysis_timestamp": "2026-09-06T11:09:21.430407"
+    },
+    {
+      "file_path": "output/model_family_acceptance/discrete/input/actinf_pomdp_agent.md",
+      "file_name": "actinf_pomdp_agent.md",
+      "cyclomatic_complexity": -61,
+      "cognitive_complexity": 48.0,
+      "structural_complexity": 29.9,
+      "maintainability_index": 100.0,
+      "technical_debt": 5.4,
+      "analysis_timestamp": "2026-09-06T11:09:21.451358"
+    }
+  ],
+  "performance_benchmarks": [
+    {
+      "file_path": "output/model_family_acceptance/discrete/input/simple_mdp.md",
+      "file_name": "simple_mdp.md",
+      "parse_time": 0.004818249988602474,
+      "memory_usage": 22316,
+      "complexity_score": 78,
+      "estimated_runtime": 0.78,
+      "benchmark_timestamp": "2026-09-06T11:09:21.435373"
+    },
+    {
+      "file_path": "output/model_family_acceptance/discrete/input/actinf_pomdp_agent.md",
+      "file_name": "actinf_pomdp_agent.md",
+      "parse_time": 0.0042287920077797025,
+      "memory_usage": 25442,
+      "complexity_score": 85,
+      "estimated_runtime": 0.85,
+      "benchmark_timestamp": "2026-09-06T11:09:21.455790"
+    }
+  ],
+  "model_comparisons": [
+    {
+      "model_count": 2,
+      "complexity_comparison": {
+        "mean": 81.5,
+        "std": 3.5,
+        "min": 78,
+        "max": 85
+      },
+      "size_comparison": {
+        "mean": 3990.0,
+        "std": 458.0,
+        "min": 3532,
+        "max": 4448
+      },
+      "structure_comparison": {
+        "variable_counts": {
+          "mean": 71.0,
+          "std": 3.0
+        },
+        "connection_counts": {
+          "mean": 10.5,
+          "std": 0.5
+        }
+      },
+      "comparison_timestamp": "2026-09-06T11:09:29.743284"
+    }
+  ],
+  "visualization_files": [
+    "output/model_family_acceptance/discrete/pipeline_output/16_analysis_output/pymdp/actinf_pomdp_agent_pymdp_belief_trace.png",
+    "output/model_family_acceptance/discrete/pipeline_output/16_analysis_output/pymdp/actinf_pomdp_agent_pymdp_belief_convergence.png",
+    "output/model_family_acceptance/discrete/pipeline_output/16_analysis_output/pymdp/actinf_pomdp_agent_pymdp_action_frequencies.png",
+    "output/model_family_acceptance/discrete/pipeline_output/16_analysis_output/pymdp/simple_mdp_pymdp_belief_trace.png",
+    "output/model_family_acceptance/discrete/pipeline_output/16_analysis_output/pymdp/simple_mdp_pymdp_belief_convergence.png",
+    "output/model_family_acceptance/discrete/pipeline_output/16_analysis_output/pymdp/simple_mdp_pymdp_action_frequencies.png",
+    "output/model_family_acceptance/discrete/pipeline_output/16_analysis_output/pymdp/Active_Inference_POMDP_Agent/discrete_states_0.png",
+    "output/model_family_acceptance/discrete/pipeline_output/16_analysis_output/pymdp/Active_Inference_POMDP_Agent/belief_evolution_1.png",
+    "output/model_family_acceptance/discrete/pipeline_output/16_analysis_output/pymdp/Active_Inference_POMDP_Agent/performance_2.png",
+    "output/model_family_acceptance/discrete/pipeline_output/16_analysis_output/pymdp/Active_Inference_POMDP_Agent/energy_dynamics_3.png",
+    "output/model_family_acceptance/discrete/pipeline_output/16_analysis_output/pymdp/Active_Inference_POMDP_Agent/cumulative_preference.png",
+    "output/model_family_acceptance/discrete/pipeline_output/16_analysis_output/pymdp/Simple_MDP_Agent/discrete_states_0.png",
+    "output/model_family_acceptance/discrete/pipeline_output/16_analysis_output/pymdp/Simple_MDP_Agent/belief_evolution_1.png",
+    "output/model_family_acceptance/discrete/pipeline_output/16_analysis_output/pymdp/Simple_MDP_Agent/performance_2.png",
+    "output/model_family_acceptance/discrete/pipeline_output/16_analysis_output/pymdp/Simple_MDP_Agent/energy_dynamics_3.png",
+    "output/model_family_acceptance/discrete/pipeline_output/16_analysis_output/pymdp/Simple_MDP_Agent/cumulative_preference.png",
+    "output/model_family_acceptance/discrete/pipeline_output/16_analysis_output/cross_framework/framework_success_rates.png",
+    "output/model_family_acceptance/discrete/pipeline_output/16_analysis_output/cross_framework/framework_performance_comparison.png",
+    "output/model_family_acceptance/discrete/pipeline_output/16_analysis_output/pymdp/simple_mdp_pymdp_free_energy.png",
+    "output/model_family_acceptance/discrete/pipeline_output/16_analysis_output/pymdp/simple_mdp_pymdp_vfe_vs_efe.png",
+    "output/model_family_acceptance/discrete/pipeline_output/16_analysis_output/pymdp/simple_mdp_pymdp_observations.png",
+    "output/model_family_acceptance/discrete/pipeline_output/16_analysis_output/pymdp/actinf_pomdp_agent_pymdp_free_energy.png",
+    "output/model_family_acceptance/discrete/pipeline_output/16_analysis_output/pymdp/actinf_pomdp_agent_pymdp_vfe_vs_efe.png",
+    "output/model_family_acceptance/discrete/pipeline_output/16_analysis_output/pymdp/actinf_pomdp_agent_pymdp_observations.png"
+  ],
+  "post_simulation_analysis": [
+    {
+      "model_name": "simple_mdp",
+      "analysis_file": "output/model_family_acceptance/discrete/pipeline_output/16_analysis_output/cross_framework/simple_mdp_post_simulation_analysis.json",
+      "framework_count": 1,
+      "has_comparison": true
+    },
+    {
+      "model_name": "actinf_pomdp_agent",
+      "analysis_file": "output/model_family_acceptance/discrete/pipeline_output/16_analysis_output/cross_framework/actinf_pomdp_agent_post_simulation_analysis.json",
+      "framework_count": 1,
+      "has_comparison": true
+    }
+  ],
+  "overall_statistics": {},
+  "framework_comparison": {
+    "timestamp": "2026-09-06T11:09:29.744317",
+    "frameworks": {
+      "pymdp": {
+        "success_count": 2,
+        "total_count": 2,
+        "execution_times": [
+          15.471264,
+          13.302922
+        ],
+        "output_files": [
+          "output/model_family_acceptance/discrete/pipeline_output/12_execute_output/actinf_pomdp_agent/pymdp/execution_logs/Active_Inference_POMDP_Agent_pymdp.py_execution.log",
+          "output/model_family_acceptance/discrete/pipeline_output/12_execute_output/simple_mdp/pymdp/execution_logs/Simple_MDP_Agent_pymdp.py_execution.log"
+        ],
+        "implementation_dirs": [
+          "output/model_family_acceptance/discrete/pipeline_output/12_execute_output/actinf_pomdp_agent/pymdp",
+          "output/model_family_acceptance/discrete/pipeline_output/12_execute_output/simple_mdp/pymdp"
+        ],
+        "beliefs": [
+          [
+            2.2204500197172533e-16,
+            2.2204500197172533e-16,
+            1.0,
+            2.2204500197172533e-16
+          ],
+          [
+            4.930382068224545e-31,
+            4.930382068224545e-31,
+            1.0,
+            1.9984031383911763e-15
+          ],
+          [
+            5.478228028292507e-32,
+            5.478228028292507e-32,
+            2.4671690782076066e-17,
+            1.0
+          ],
+          [
+            5.478228028292507e-32,
+            5.478228028292507e-32,
+            2.4671690782076066e-17,
+            1.0
+          ],
+          [
+            5.478228028292507e-32,
+            5.478228028292507e-32,
+            2.4671690782076066e-17,
+            1.0
+          ],
+          [
+            5.478228028292507e-32,
+            5.478228028292507e-32,
+            2.4671690782076066e-17,
+            1.0
+          ],
+          [
+            5.478228028292507e-32,
+            5.478228028292507e-32,
+            2.4671690782076066e-17,
+            1.0
+          ],
+          [
+            5.478228028292507e-32,
+            5.478228028292507e-32,
+            2.4671690782076066e-17,
+            1.0
+          ],
+          [
+            5.478228028292507e-32,
+            5.478228028292507e-32,
+            2.4671690782076066e-17,
+            1.0
+          ],
+          [
+            5.478228028292507e-32,
+            5.478228028292507e-32,
+            2.4671690782076066e-17,
+            1.0
+          ],
+          [
+            4.930382068224545e-31,
+            4.930382068224545e-31,
+            1.0,
+            1.9984031383911763e-15
+          ],
+          [
+            5.478228028292507e-32,
+            5.478228028292507e-32,
+            2.4671690782076066e-17,
+            1.0
+          ],
+          [
+            5.478228028292507e-32,
+            5.478228028292507e-32,
+            2.4671690782076066e-17,
+            1.0
+          ],
+          [
+            5.478228028292507e-32,
+            5.478228028292507e-32,
+            2.4671690782076066e-17,
+            1.0
+          ],
+          [
+            5.478228028292507e-32,
+            5.478228028292507e-32,
+            2.4671690782076066e-17,
+            1.0
+          ],
+          [
+            5.478228028292507e-32,
+            5.478228028292507e-32,
+            2.4671690782076066e-17,
+            1.0
+          ],
+          [
+            5.478228028292507e-32,
+            5.478228028292507e-32,
+            2.4671690782076066e-17,
+            1.0
+          ],
+          [
+            5.478228028292507e-32,
+            5.478228028292507e-32,
+            2.4671690782076066e-17,
+            1.0
+          ],
+          [
+            5.478228028292507e-32,
+            5.478228028292507e-32,
+            2.4671690782076066e-17,
+            1.0
+          ],
+          [
+            5.478228028292507e-32,
+            5.478228028292507e-32,
+            2.4671690782076066e-17,
+            1.0
+          ],
+          [
+            5.478228028292507e-32,
+            5.478228028292507e-32,
+            2.4671690782076066e-17,
+            1.0
+          ],
+          [
+            5.478228028292507e-32,
+            5.478228028292507e-32,
+            2.4671690782076066e-17,
+            1.0
+          ],
+          [
+            5.478228028292507e-32,
+            5.478228028292507e-32,
+            2.4671690782076066e-17,
+            1.0
+          ],
+          [
+            5.478228028292507e-32,
+            5.478228028292507e-32,
+            2.4671690782076066e-17,
+            1.0
+          ],
+          [
+            4.930382068224545e-31,
+            4.930382068224545e-31,
+            1.0,
+            1.9984031383911763e-15
+          ]
+        ],
+        "actions": [
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "observations": [
+          2,
+          2,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          2,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          2
+        ],
+        "free_energy": [
+          [
+            0.6250829696655273,
+            3.02508282661438,
+            0.3250829875469208,
+            0.3250829875469208
+          ],
+          [
+            0.6250829696655273,
+            3.02508282661438,
+            0.3250829875469208,
+            0.3250829875469208
+          ],
+          [
+            3.02508282661438,
+            0.6250829696655273,
+            0.3250829875469208,
+            0.3250829875469208
+          ],
+          [
+            3.02508282661438,
+            0.6250829696655273,
+            0.3250829875469208,
+            0.3250829875469208
+          ],
+          [
+            3.02508282661438,
+            0.6250829696655273,
+            0.3250829875469208,
+            0.3250829875469208
+          ],
+          [
+            3.02508282661438,
+            0.6250829696655273,
+            0.3250829875469208,
+            0.3250829875469208
+          ],
+          [
+            3.02508282661438,
+            0.6250829696655273,
+            0.3250829875469208,
+            0.3250829875469208
+          ],
+          [
+            3.02508282661438,
+            0.6250829696655273,
+            0.3250829875469208,
+            0.3250829875469208
+          ],
+          [
+            3.02508282661438,
+            0.6250829696655273,
+            0.3250829875469208,
+            0.3250829875469208
+          ],
+          [
+            3.02508282661438,
+            0.6250829696655273,
+            0.3250829875469208,
+            0.3250829875469208
+          ],
+          [
+            0.6250829696655273,
+            3.02508282661438,
+            0.3250829875469208,
+            0.3250829875469208
+          ],
+          [
+            3.02508282661438,
+            0.6250829696655273,
+            0.3250829875469208,
+            0.3250829875469208
+          ],
+          [
+            3.02508282661438,
+            0.6250829696655273,
+            0.3250829875469208,
+            0.3250829875469208
+          ],
+          [
+            3.02508282661438,
+            0.6250829696655273,
+            0.3250829875469208,
+            0.3250829875469208
+          ],
+          [
+            3.02508282661438,
+            0.6250829696655273,
+            0.3250829875469208,
+            0.3250829875469208
+          ],
+          [
+            3.02508282661438,
+            0.6250829696655273,
+            0.3250829875469208,
+            0.3250829875469208
+          ],
+          [
+            3.02508282661438,
+            0.6250829696655273,
+            0.3250829875469208,
+            0.3250829875469208
+          ],
+          [
+            3.02508282661438,
+            0.6250829696655273,
+            0.3250829875469208,
+            0.3250829875469208
+          ],
+          [
+            3.02508282661438,
+            0.6250829696655273,
+            0.3250829875469208,
+            0.3250829875469208
+          ],
+          [
+            3.02508282661438,
+            0.6250829696655273,
+            0.3250829875469208,
+            0.3250829875469208
+          ],
+          [
+            3.02508282661438,
+            0.6250829696655273,
+            0.3250829875469208,
+            0.3250829875469208
+          ],
+          [
+            3.02508282661438,
+            0.6250829696655273,
+            0.3250829875469208,
+            0.3250829875469208
+          ],
+          [
+            3.02508282661438,
+            0.6250829696655273,
+            0.3250829875469208,
+            0.3250829875469208
+          ],
+          [
+            3.02508282661438,
+            0.6250829696655273,
+            0.3250829875469208,
+            0.3250829875469208
+          ],
+          [
+            0.6250829696655273,
+            3.02508282661438,
+            0.3250829875469208,
+            0.3250829875469208
+          ]
+        ],
+        "num_timesteps": 25,
+        "validation": {
+          "all_beliefs_valid": true,
+          "beliefs_sum_to_one": true,
+          "actions_in_range": true,
+          "pymdp_version_ge_1_0_0": true,
+          "all_valid": true
+        },
+        "model_parameters": {
+          "A_shape": [
+            4,
+            4
+          ],
+          "B_shape": [
+            4,
+            4,
+            4
+          ],
+          "C_shape": [
+            4
+          ],
+          "D_shape": [
+            4
+          ],
+          "num_states": 4,
+          "num_observations": 4,
+          "num_actions": 4,
+          "batch_size": 1,
+          "policy_len": 1,
+          "gamma": 16.0,
+          "alpha": 16.0
+        },
+        "data_source": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/discrete/pipeline_output/12_execute_output/simple_mdp/pymdp/simulation_data/simulation_results.json",
+        "belief_confidence": [
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    },
+    "comparisons": {
+      "success_rates": {
+        "pymdp": 1.0
+      },
+      "performance_comparison": {
+        "pymdp": {
+          "mean": 14.387093,
+          "std": 1.0841709999999996,
+          "min": 13.302922,
+          "max": 15.471264
+        }
+      },
+      "metric_agreement": {},
+      "data_coverage": {
+        "pymdp": {
+          "has_beliefs": true,
+          "has_actions": true,
+          "has_observations": true,
+          "has_free_energy": true,
+          "has_circuit_info": false,
+          "num_timesteps": 25,
+          "validation_passed": true,
+          "data_source": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/discrete/pipeline_output/12_execute_output/simple_mdp/pymdp/simulation_data/simulation_results.json"
+        }
+      },
+      "simulation_statistics": {
+        "pymdp": {
+          "belief_dims": [
+            25,
+            4
+          ],
+          "mean_confidence": 1.0,
+          "final_belief": [
+            4.930382068224545e-31,
+            4.930382068224545e-31,
+            1.0,
+            1.9984031383911763e-15
+          ],
+          "efe_mean": 1.0750829428434372,
+          "efe_std": 1.1324750977898326,
+          "efe_min": 0.3250829875469208,
+          "efe_max": 3.02508282661438
+        }
+      }
+    },
+    "metrics": {
+      "total_frameworks": 1,
+      "total_successful": 2,
+      "total_executions": 2,
+      "overall_success_rate": 1.0
+    }
+  },
+  "framework_comparison_report": "output/model_family_acceptance/discrete/pipeline_output/16_analysis_output/cross_framework/framework_comparison_report.md",
+  "comprehensive_visualizations": [
+    "output/model_family_acceptance/discrete/pipeline_output/16_analysis_output/pymdp/simple_mdp_pymdp_free_energy.png",
+    "output/model_family_acceptance/discrete/pipeline_output/16_analysis_output/pymdp/simple_mdp_pymdp_vfe_vs_efe.png",
+    "output/model_family_acceptance/discrete/pipeline_output/16_analysis_output/pymdp/simple_mdp_pymdp_observations.png",
+    "output/model_family_acceptance/discrete/pipeline_output/16_analysis_output/pymdp/actinf_pomdp_agent_pymdp_free_energy.png",
+    "output/model_family_acceptance/discrete/pipeline_output/16_analysis_output/pymdp/actinf_pomdp_agent_pymdp_vfe_vs_efe.png",
+    "output/model_family_acceptance/discrete/pipeline_output/16_analysis_output/pymdp/actinf_pomdp_agent_pymdp_observations.png"
+  ],
+  "cross_model_report": "output/model_family_acceptance/discrete/pipeline_output/16_analysis_output/cross_model_comparison_report.md"
+}

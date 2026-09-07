@@ -7,7 +7,7 @@
 - **GNN spec files** under `gnn_files/<task folder>/*.md` follow the normative syntax in [`../docs/gnn/reference/gnn_syntax.md`](../docs/gnn/reference/gnn_syntax.md) and are discovered by `gnn.discovery.is_model_source_path`, which excludes the `INDEX.md`, `AGENTS.md` and `README.md` scaffolds (plus `*.example.md` / `*.template.md`).
 - **`config.yaml`** routes the run: pipeline steps and skip lists, Step 2 test mode (`fast_only`), timeouts, and per-step options. It is merged with CLI arguments by `src/gnn/utils/pipeline_config_merge.py`.
 - **`model_family_manifest.json`** declares acceptance profiles per model family (`schema`, `acceptance_profile_defaults`, `families`) for `scripts/run_session_acceptance.py`.
-- **`multi_agent_models/`** and **`recursive_models/`** are acceptance fixtures for the roadmap verification commands in `TO-DO.md`.
+- **`multi_agent_models/`** and **`recursive_models/`** are standalone `--target-dir` fixtures. No verification command in `TO-DO.md` targets either — they all point at `gnn_files/` — so neither contributes to `GNN_EXAMPLE_COUNT`; `GNN_OUTSIDE_CORPUS_NOTE` in `src/manuscript_variables.py` is what states their model counts.
 
 ## Model-kind contract
 

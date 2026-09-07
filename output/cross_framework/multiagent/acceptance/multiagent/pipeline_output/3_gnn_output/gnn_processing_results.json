@@ -1,0 +1,222 @@
+{
+  "timestamp": "2026-09-06T12:06:37.831525",
+  "source_directory": "output/cross_framework/multiagent/acceptance/multiagent/input",
+  "output_directory": "output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/3_gnn_output",
+  "processing_config": {
+    "recursive": true,
+    "verbose": false,
+    "serialize_preset": "full",
+    "supported_formats": [
+      "markdown",
+      "scala",
+      "lean",
+      "coq",
+      "python",
+      "bnf",
+      "ebnf",
+      "isabelle",
+      "maxima",
+      "xml",
+      "json",
+      "protobuf",
+      "yaml",
+      "xsd",
+      "asn1",
+      "pkl",
+      "alloy",
+      "z_notation",
+      "tla_plus",
+      "agda",
+      "haskell",
+      "pickle"
+    ],
+    "serialized_formats": [
+      "markdown",
+      "scala",
+      "lean",
+      "coq",
+      "python",
+      "bnf",
+      "ebnf",
+      "isabelle",
+      "maxima",
+      "xml",
+      "json",
+      "protobuf",
+      "yaml",
+      "xsd",
+      "asn1",
+      "pkl",
+      "alloy",
+      "z_notation",
+      "tla_plus",
+      "agda",
+      "haskell",
+      "pickle"
+    ],
+    "available_serializers": {
+      "markdown": "MarkdownSerializer",
+      "json": "JSONSerializer",
+      "xml": "XMLSerializer",
+      "yaml": "YAMLSerializer",
+      "scala": "ScalaSerializer",
+      "protobuf": "ProtobufSerializer",
+      "pkl": "PKLSerializer",
+      "xsd": "XSDSerializer",
+      "asn1": "ASN1Serializer",
+      "lean": "LeanSerializer",
+      "coq": "CoqSerializer",
+      "python": "PythonSerializer",
+      "bnf": "GrammarSerializer",
+      "ebnf": "GrammarSerializer",
+      "isabelle": "IsabelleSerializer",
+      "maxima": "MaximaSerializer",
+      "alloy": "AlloySerializer",
+      "z_notation": "ZNotationSerializer",
+      "tla_plus": "TLASerializer",
+      "agda": "AgdaSerializer",
+      "haskell": "FunctionalSerializer",
+      "pickle": "BinarySerializer"
+    }
+  },
+  "processed_files": [
+    {
+      "file_name": "multi_agent_coordination.md",
+      "file_path": "output/cross_framework/multiagent/acceptance/multiagent/input/multi_agent_coordination.md",
+      "parse_success": true,
+      "parsed_model_file": "output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_parsed.json",
+      "source_format": "markdown",
+      "model_info": {
+        "name": "Multi-Agent Cooperative Active Inference",
+        "version": "1.0",
+        "variables_count": 23,
+        "connections_count": 21,
+        "parameters_count": 16,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_markdown.md",
+          "file_size": 3141,
+          "success": true
+        },
+        "scala": {
+          "output_file": "output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_scala.scala",
+          "file_size": 10085,
+          "success": true
+        },
+        "lean": {
+          "output_file": "output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_lean.lean",
+          "file_size": 10008,
+          "success": true
+        },
+        "coq": {
+          "output_file": "output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_coq.v",
+          "file_size": 9528,
+          "success": true
+        },
+        "python": {
+          "output_file": "output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_python.py",
+          "file_size": 15865,
+          "success": true
+        },
+        "bnf": {
+          "output_file": "output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_bnf.bnf",
+          "file_size": 9841,
+          "success": true
+        },
+        "ebnf": {
+          "output_file": "output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_ebnf.ebnf",
+          "file_size": 9841,
+          "success": true
+        },
+        "isabelle": {
+          "output_file": "output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_isabelle.thy",
+          "file_size": 9620,
+          "success": true
+        },
+        "maxima": {
+          "output_file": "output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_maxima.max",
+          "file_size": 11152,
+          "success": true
+        },
+        "xml": {
+          "output_file": "output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_xml.xml",
+          "file_size": 17406,
+          "success": true
+        },
+        "json": {
+          "output_file": "output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_json.json",
+          "file_size": 18334,
+          "success": true
+        },
+        "protobuf": {
+          "output_file": "output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_protobuf.proto",
+          "file_size": 13025,
+          "success": true
+        },
+        "yaml": {
+          "output_file": "output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_yaml.yaml",
+          "file_size": 11038,
+          "success": true
+        },
+        "xsd": {
+          "output_file": "output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_xsd.xsd",
+          "file_size": 10855,
+          "success": true
+        },
+        "asn1": {
+          "output_file": "output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_asn1.asn1",
+          "file_size": 12726,
+          "success": true
+        },
+        "pkl": {
+          "output_file": "output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_pkl.pkl",
+          "file_size": 22750,
+          "success": true
+        },
+        "alloy": {
+          "output_file": "output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_alloy.als",
+          "file_size": 15485,
+          "success": true
+        },
+        "z_notation": {
+          "output_file": "output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_z_notation.z",
+          "file_size": 10523,
+          "success": true
+        },
+        "tla_plus": {
+          "output_file": "output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_tla_plus.tla",
+          "file_size": 9172,
+          "success": true
+        },
+        "agda": {
+          "output_file": "output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_agda.agda",
+          "file_size": 9063,
+          "success": true
+        },
+        "haskell": {
+          "output_file": "output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_haskell.hs",
+          "file_size": 10519,
+          "success": true
+        },
+        "pickle": {
+          "output_file": "output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_pickle.pickle",
+          "file_size": 7468,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    }
+  ],
+  "summary": {
+    "total_files": 1,
+    "successful_parses": 1,
+    "failed_parses": 0,
+    "total_formats_generated": 22,
+    "formats_per_file": {
+      "multi_agent_coordination.md": 22
+    }
+  }
+}

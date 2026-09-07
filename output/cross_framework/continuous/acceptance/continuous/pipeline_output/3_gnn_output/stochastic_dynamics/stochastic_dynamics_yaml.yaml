@@ -1,0 +1,223 @@
+annotation: "A continuous-state Active Inference agent whose dynamics carry explicit\
+  \ process\nand observation noise, rendered as a native linear-Gaussian state-space\
+  \ model\n(LGSSM). The agent runs passively — it has no control input:\n- Hidden\
+  \ state x = (position, velocity): the Euler-discretized (dt = 0.1) SDE.\n- Observation\
+  \ y: two noisy readouts, both reading the position.\n- Q is the process-noise covariance\
+  \ (inverse process precision); R is the\n  observation-noise covariance (inverse\
+  \ observation precision)."
+connections:
+- annotation: null
+  connection_type: directed
+  description: null
+  source_variables:
+  - F
+  target_variables:
+  - x
+  weight: null
+- annotation: null
+  connection_type: directed
+  description: null
+  source_variables:
+  - H
+  target_variables:
+  - y
+  weight: null
+- annotation: null
+  connection_type: directed
+  description: null
+  source_variables:
+  - Q
+  target_variables:
+  - x
+  weight: null
+- annotation: null
+  connection_type: directed
+  description: null
+  source_variables:
+  - R
+  target_variables:
+  - y
+  weight: null
+- annotation: null
+  connection_type: directed
+  description: null
+  source_variables:
+  - prior_mean
+  target_variables:
+  - x
+  weight: null
+- annotation: null
+  connection_type: directed
+  description: null
+  source_variables:
+  - x
+  target_variables:
+  - y
+  weight: null
+created_at: '2026-09-06T11:50:16.035149'
+equations: []
+model_name: Stochastic Continuous Dynamics Agent
+modified_at: '2026-09-06T11:50:16.035151'
+ontology_mappings:
+- description: null
+  ontology_term: StateTransitionMatrix
+  variable_name: F
+- description: null
+  ontology_term: ObservationMatrix
+  variable_name: H
+- description: null
+  ontology_term: ProcessNoiseCovariance
+  variable_name: Q
+- description: null
+  ontology_term: ObservationNoiseCovariance
+  variable_name: R
+- description: null
+  ontology_term: PriorCovariance
+  variable_name: prior_cov
+- description: null
+  ontology_term: PriorMean
+  variable_name: prior_mean
+- description: null
+  ontology_term: Time
+  variable_name: t
+- description: null
+  ontology_term: ContinuousHiddenState
+  variable_name: x
+- description: null
+  ontology_term: ContinuousObservation
+  variable_name: y
+parameters:
+- description: null
+  name: F
+  type_hint: null
+  value:
+  - - 1.0
+    - 0.1
+  - - 0.0
+    - 0.9
+- description: null
+  name: H
+  type_hint: null
+  value:
+  - - 1.0
+    - 0.0
+  - - 1.0
+    - 0.0
+- description: null
+  name: Q
+  type_hint: null
+  value:
+  - - 0.1
+    - 0.0
+  - - 0.0
+    - 0.1
+- description: null
+  name: R
+  type_hint: null
+  value:
+  - - 0.2
+    - 0.0
+  - - 0.0
+    - 0.2
+- description: null
+  name: dt
+  type_hint: null
+  value: 0.1
+- description: null
+  name: num_observations
+  type_hint: null
+  value: 2
+- description: null
+  name: num_states
+  type_hint: null
+  value: 2
+- description: null
+  name: num_timesteps
+  type_hint: null
+  value: 15
+- description: null
+  name: prior_cov
+  type_hint: null
+  value:
+  - - 0.5
+    - 0.0
+  - - 0.0
+    - 1.0
+- description: null
+  name: prior_mean
+  type_hint: null
+  value:
+  - - 0.0
+    - 0.0
+- description: null
+  name: random_seed
+  type_hint: null
+  value: 42
+time_specification:
+  discretization: null
+  horizon: 15
+  step_size: null
+  time_type: Dynamic
+variables:
+- data_type: float
+  description: state transition
+  dimensions:
+  - 2
+  - 2
+  name: F
+  type: hidden_state
+- data_type: float
+  description: observation matrix
+  dimensions:
+  - 2
+  - 2
+  name: H
+  type: hidden_state
+- data_type: float
+  description: process-noise covariance
+  dimensions:
+  - 2
+  - 2
+  name: Q
+  type: hidden_state
+- data_type: float
+  description: observation-noise covariance
+  dimensions:
+  - 2
+  - 2
+  name: R
+  type: hidden_state
+- data_type: float
+  description: prior covariance over the initial latent state
+  dimensions:
+  - 2
+  - 2
+  name: prior_cov
+  type: prior_vector
+- data_type: float
+  description: prior mean over the initial latent state
+  dimensions:
+  - 2
+  name: prior_mean
+  type: prior_vector
+- data_type: integer
+  description: discrete time step
+  dimensions:
+  - 1
+  name: t
+  type: hidden_state
+- data_type: float
+  description: continuous latent state
+  dimensions:
+  - 2
+  - 1
+  name: x
+  type: hidden_state
+- data_type: float
+  description: continuous observation
+  dimensions:
+  - 2
+  - 1
+  name: y
+  type: hidden_state
+version: '1.0'

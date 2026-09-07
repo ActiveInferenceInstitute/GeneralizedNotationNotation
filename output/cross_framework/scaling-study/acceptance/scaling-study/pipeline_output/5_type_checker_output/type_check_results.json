@@ -1,0 +1,704 @@
+{
+  "timestamp": "2026-09-06T12:20:45.553833",
+  "processed_files": 2,
+  "success": true,
+  "errors": [],
+  "validation_results": [
+    {
+      "file_path": "output/cross_framework/scaling-study/acceptance/scaling-study/input/pymdp_scaling_N4_T100.md",
+      "file_name": "pymdp_scaling_N4_T100.md",
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "type_issues": [],
+      "validation_timestamp": "2026-09-06T12:20:45.603818",
+      "dimension_compatibility": {
+        "compatible": true,
+        "issues": [],
+        "warnings": [],
+        "variables_checked": [
+          "s",
+          "o",
+          "A",
+          "B",
+          "C",
+          "D",
+          "\u03c0",
+          "u",
+          "G",
+          "F",
+          "t"
+        ],
+        "dimension_map": {
+          "s": [
+            4,
+            1
+          ],
+          "o": [
+            4,
+            1
+          ],
+          "A": [
+            4,
+            4
+          ],
+          "B": [
+            4,
+            4,
+            4
+          ],
+          "C": [
+            4
+          ],
+          "D": [
+            4
+          ],
+          "\u03c0": [
+            4
+          ],
+          "u": [
+            1
+          ],
+          "G": [
+            4
+          ],
+          "F": [
+            1
+          ],
+          "t": [
+            1
+          ]
+        }
+      },
+      "resource_estimation": {
+        "complexity_tier": "large",
+        "estimated_memory_bytes": 428,
+        "total_parameters": 107,
+        "variables": 11,
+        "connections": 10,
+        "flops_estimate": 5000.0,
+        "complexity_score": 10,
+        "diagnostics": []
+      },
+      "variables": [
+        {
+          "name": "s",
+          "type": "float",
+          "dimensions": [
+            4,
+            1
+          ],
+          "total_elements": 4
+        },
+        {
+          "name": "o",
+          "type": "int",
+          "dimensions": [
+            4,
+            1
+          ],
+          "total_elements": 4
+        },
+        {
+          "name": "A",
+          "type": "float",
+          "dimensions": [
+            4,
+            4
+          ],
+          "total_elements": 16
+        },
+        {
+          "name": "B",
+          "type": "float",
+          "dimensions": [
+            4,
+            4,
+            4
+          ],
+          "total_elements": 64
+        },
+        {
+          "name": "C",
+          "type": "float",
+          "dimensions": [
+            4
+          ],
+          "total_elements": 4
+        },
+        {
+          "name": "D",
+          "type": "float",
+          "dimensions": [
+            4
+          ],
+          "total_elements": 4
+        },
+        {
+          "name": "\u03c0",
+          "type": "float",
+          "dimensions": [
+            4
+          ],
+          "total_elements": 4
+        },
+        {
+          "name": "u",
+          "type": "int",
+          "dimensions": [
+            1
+          ],
+          "total_elements": 1
+        },
+        {
+          "name": "G",
+          "type": "float",
+          "dimensions": [
+            4
+          ],
+          "total_elements": 4
+        },
+        {
+          "name": "F",
+          "type": "float",
+          "dimensions": [
+            1
+          ],
+          "total_elements": 1
+        },
+        {
+          "name": "t",
+          "type": "int",
+          "dimensions": [
+            1
+          ],
+          "total_elements": 1
+        }
+      ],
+      "variable_count": 11,
+      "connections": [
+        {
+          "source": "D",
+          "target": "s",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "s",
+          "target": "A",
+          "type": "undirected",
+          "is_temporal": false
+        },
+        {
+          "source": "A",
+          "target": "o",
+          "type": "undirected",
+          "is_temporal": false
+        },
+        {
+          "source": "s",
+          "target": "B",
+          "type": "undirected",
+          "is_temporal": false
+        },
+        {
+          "source": "C",
+          "target": "G",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "G",
+          "target": "\u03c0",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "\u03c0",
+          "target": "u",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "B",
+          "target": "u",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "s",
+          "target": "F",
+          "type": "undirected",
+          "is_temporal": false
+        },
+        {
+          "source": "o",
+          "target": "F",
+          "type": "undirected",
+          "is_temporal": false
+        }
+      ],
+      "connection_count": 10,
+      "connection_types": {
+        "directed": 5,
+        "undirected": 5,
+        "temporal": 0
+      },
+      "sections": {
+        "GNNSection": true,
+        "GNNVersionAndFlags": true,
+        "ModelName": true,
+        "ModelAnnotation": true,
+        "StateSpaceBlock": true,
+        "Connections": true,
+        "InitialParameterization": true,
+        "Equations": true,
+        "Time": true,
+        "ActInfOntologyAnnotation": true,
+        "ModelParameters": true,
+        "Footer": true,
+        "Signature": true
+      },
+      "model_complexity": {
+        "state_space_complexity": 6.754887502163468,
+        "graph_density": 0.09090909090909091,
+        "avg_in_degree": 1.25,
+        "avg_out_degree": 1.25,
+        "max_in_degree": 2,
+        "max_out_degree": 3,
+        "cyclic_complexity": 0.0,
+        "temporal_complexity": 0.0,
+        "equation_complexity": 44.0,
+        "overall_complexity": 10,
+        "variable_count": 11,
+        "edge_count": 10,
+        "total_state_space_dim": 107,
+        "max_variable_dim": 64
+      },
+      "model_type": "Dynamic",
+      "type_distribution": {
+        "float": 8,
+        "int": 3
+      },
+      "time_dynamics": {
+        "is_dynamic": true
+      }
+    },
+    {
+      "file_path": "output/cross_framework/scaling-study/acceptance/scaling-study/input/pymdp_scaling_N8_T100.md",
+      "file_name": "pymdp_scaling_N8_T100.md",
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "type_issues": [],
+      "validation_timestamp": "2026-09-06T12:20:45.606158",
+      "dimension_compatibility": {
+        "compatible": true,
+        "issues": [],
+        "warnings": [],
+        "variables_checked": [
+          "s",
+          "o",
+          "A",
+          "B",
+          "C",
+          "D",
+          "\u03c0",
+          "u",
+          "G",
+          "F",
+          "t"
+        ],
+        "dimension_map": {
+          "s": [
+            8,
+            1
+          ],
+          "o": [
+            8,
+            1
+          ],
+          "A": [
+            8,
+            8
+          ],
+          "B": [
+            8,
+            8,
+            8
+          ],
+          "C": [
+            8
+          ],
+          "D": [
+            8
+          ],
+          "\u03c0": [
+            8
+          ],
+          "u": [
+            1
+          ],
+          "G": [
+            8
+          ],
+          "F": [
+            1
+          ],
+          "t": [
+            1
+          ]
+        }
+      },
+      "resource_estimation": {
+        "complexity_tier": "large",
+        "estimated_memory_bytes": 2508,
+        "total_parameters": 627,
+        "variables": 11,
+        "connections": 10,
+        "flops_estimate": 5000.0,
+        "complexity_score": 10,
+        "diagnostics": []
+      },
+      "variables": [
+        {
+          "name": "s",
+          "type": "float",
+          "dimensions": [
+            8,
+            1
+          ],
+          "total_elements": 8
+        },
+        {
+          "name": "o",
+          "type": "int",
+          "dimensions": [
+            8,
+            1
+          ],
+          "total_elements": 8
+        },
+        {
+          "name": "A",
+          "type": "float",
+          "dimensions": [
+            8,
+            8
+          ],
+          "total_elements": 64
+        },
+        {
+          "name": "B",
+          "type": "float",
+          "dimensions": [
+            8,
+            8,
+            8
+          ],
+          "total_elements": 512
+        },
+        {
+          "name": "C",
+          "type": "float",
+          "dimensions": [
+            8
+          ],
+          "total_elements": 8
+        },
+        {
+          "name": "D",
+          "type": "float",
+          "dimensions": [
+            8
+          ],
+          "total_elements": 8
+        },
+        {
+          "name": "\u03c0",
+          "type": "float",
+          "dimensions": [
+            8
+          ],
+          "total_elements": 8
+        },
+        {
+          "name": "u",
+          "type": "int",
+          "dimensions": [
+            1
+          ],
+          "total_elements": 1
+        },
+        {
+          "name": "G",
+          "type": "float",
+          "dimensions": [
+            8
+          ],
+          "total_elements": 8
+        },
+        {
+          "name": "F",
+          "type": "float",
+          "dimensions": [
+            1
+          ],
+          "total_elements": 1
+        },
+        {
+          "name": "t",
+          "type": "int",
+          "dimensions": [
+            1
+          ],
+          "total_elements": 1
+        }
+      ],
+      "variable_count": 11,
+      "connections": [
+        {
+          "source": "D",
+          "target": "s",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "s",
+          "target": "A",
+          "type": "undirected",
+          "is_temporal": false
+        },
+        {
+          "source": "A",
+          "target": "o",
+          "type": "undirected",
+          "is_temporal": false
+        },
+        {
+          "source": "s",
+          "target": "B",
+          "type": "undirected",
+          "is_temporal": false
+        },
+        {
+          "source": "C",
+          "target": "G",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "G",
+          "target": "\u03c0",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "\u03c0",
+          "target": "u",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "B",
+          "target": "u",
+          "type": "directed",
+          "is_temporal": false
+        },
+        {
+          "source": "s",
+          "target": "F",
+          "type": "undirected",
+          "is_temporal": false
+        },
+        {
+          "source": "o",
+          "target": "F",
+          "type": "undirected",
+          "is_temporal": false
+        }
+      ],
+      "connection_count": 10,
+      "connection_types": {
+        "directed": 5,
+        "undirected": 5,
+        "temporal": 0
+      },
+      "sections": {
+        "GNNSection": true,
+        "GNNVersionAndFlags": true,
+        "ModelName": true,
+        "ModelAnnotation": true,
+        "StateSpaceBlock": true,
+        "Connections": true,
+        "InitialParameterization": true,
+        "Equations": true,
+        "Time": true,
+        "ActInfOntologyAnnotation": true,
+        "ModelParameters": true,
+        "Footer": true,
+        "Signature": true
+      },
+      "model_complexity": {
+        "state_space_complexity": 9.294620748891626,
+        "graph_density": 0.09090909090909091,
+        "avg_in_degree": 1.25,
+        "avg_out_degree": 1.25,
+        "max_in_degree": 2,
+        "max_out_degree": 3,
+        "cyclic_complexity": 0.0,
+        "temporal_complexity": 0.0,
+        "equation_complexity": 44.0,
+        "overall_complexity": 10,
+        "variable_count": 11,
+        "edge_count": 10,
+        "total_state_space_dim": 627,
+        "max_variable_dim": 512
+      },
+      "model_type": "Dynamic",
+      "type_distribution": {
+        "float": 8,
+        "int": 3
+      },
+      "time_dynamics": {
+        "is_dynamic": true
+      }
+    }
+  ],
+  "type_analysis": [
+    {
+      "file_path": "output/cross_framework/scaling-study/acceptance/scaling-study/input/pymdp_scaling_N4_T100.md",
+      "file_name": "pymdp_scaling_N4_T100.md",
+      "types_found": [
+        {
+          "name": "s",
+          "type": "float",
+          "line": 17
+        },
+        {
+          "name": "o",
+          "type": "int",
+          "line": 18
+        },
+        {
+          "name": "A",
+          "type": "float",
+          "line": 19
+        },
+        {
+          "name": "B",
+          "type": "float",
+          "line": 20
+        },
+        {
+          "name": "C",
+          "type": "float",
+          "line": 21
+        },
+        {
+          "name": "D",
+          "type": "float",
+          "line": 22
+        },
+        {
+          "name": "\u03c0",
+          "type": "float",
+          "line": 23
+        },
+        {
+          "name": "u",
+          "type": "int",
+          "line": 24
+        },
+        {
+          "name": "G",
+          "type": "float",
+          "line": 25
+        },
+        {
+          "name": "F",
+          "type": "float",
+          "line": 26
+        },
+        {
+          "name": "t",
+          "type": "int",
+          "line": 27
+        }
+      ],
+      "type_distribution": {
+        "float": 8,
+        "int": 3
+      },
+      "total_variables": 11,
+      "analysis_timestamp": "2026-09-06T12:20:45.606017"
+    },
+    {
+      "file_path": "output/cross_framework/scaling-study/acceptance/scaling-study/input/pymdp_scaling_N8_T100.md",
+      "file_name": "pymdp_scaling_N8_T100.md",
+      "types_found": [
+        {
+          "name": "s",
+          "type": "float",
+          "line": 17
+        },
+        {
+          "name": "o",
+          "type": "int",
+          "line": 18
+        },
+        {
+          "name": "A",
+          "type": "float",
+          "line": 19
+        },
+        {
+          "name": "B",
+          "type": "float",
+          "line": 20
+        },
+        {
+          "name": "C",
+          "type": "float",
+          "line": 21
+        },
+        {
+          "name": "D",
+          "type": "float",
+          "line": 22
+        },
+        {
+          "name": "\u03c0",
+          "type": "float",
+          "line": 23
+        },
+        {
+          "name": "u",
+          "type": "int",
+          "line": 24
+        },
+        {
+          "name": "G",
+          "type": "float",
+          "line": 25
+        },
+        {
+          "name": "F",
+          "type": "float",
+          "line": 26
+        },
+        {
+          "name": "t",
+          "type": "int",
+          "line": 27
+        }
+      ],
+      "type_distribution": {
+        "float": 8,
+        "int": 3
+      },
+      "total_variables": 11,
+      "analysis_timestamp": "2026-09-06T12:20:45.608898"
+    }
+  ]
+}

@@ -1,0 +1,644 @@
+{
+  "model_name": "Stochastic Continuous Dynamics Agent",
+  "version": "1.0",
+  "annotation": "A continuous-state Active Inference agent whose dynamics carry explicit process\nand observation noise, rendered as a native linear-Gaussian state-space model\n(LGSSM). The agent runs passively \u2014 it has no control input:\n- Hidden state x = (position, velocity): the Euler-discretized (dt = 0.1) SDE.\n- Observation y: two noisy readouts, both reading the position.\n- Q is the process-noise covariance (inverse process precision); R is the\n  observation-noise covariance (inverse observation precision).",
+  "variables": [
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "6bfe33cf-7599-4282-aeee-c8e369c777ef",
+      "name": "x",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        1
+      ],
+      "data_type": "float",
+      "description": "continuous latent state",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "e44b5984-be07-4d0b-a3ac-c7ee3d27540b",
+      "name": "y",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        1
+      ],
+      "data_type": "float",
+      "description": "continuous observation",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "5998e7d4-466e-4d20-92c0-9639470cff08",
+      "name": "F",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        2
+      ],
+      "data_type": "float",
+      "description": "state transition",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "43b60edf-6043-420e-a140-be35fd1ce39c",
+      "name": "H",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        2
+      ],
+      "data_type": "float",
+      "description": "observation matrix",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "04c43dfd-68f4-498f-ac2f-d6dc5cf88900",
+      "name": "Q",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        2
+      ],
+      "data_type": "float",
+      "description": "process-noise covariance",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "3b9a75ba-6f42-4fe8-9ee0-2875cec283f0",
+      "name": "R",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        2
+      ],
+      "data_type": "float",
+      "description": "observation-noise covariance",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "1ca62d59-7629-4859-bbed-647706115272",
+      "name": "prior_mean",
+      "var_type": "prior_vector",
+      "dimensions": [
+        2
+      ],
+      "data_type": "float",
+      "description": "prior mean over the initial latent state",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "e0a5aae0-ba4e-4323-80d1-a87156d179d5",
+      "name": "prior_cov",
+      "var_type": "prior_vector",
+      "dimensions": [
+        2,
+        2
+      ],
+      "data_type": "float",
+      "description": "prior covariance over the initial latent state",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "7b24d28e-2d57-4976-b612-c02cca0c416d",
+      "name": "t",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "integer",
+      "description": "discrete time step",
+      "constraints": {}
+    }
+  ],
+  "connections": [
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "58f8ace5-5372-4478-ae91-a7b4c7ba46e3",
+      "source_variables": [
+        "prior_mean"
+      ],
+      "target_variables": [
+        "x"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "ffba9ef5-a0ff-4054-82c4-2efdf8409a24",
+      "source_variables": [
+        "F"
+      ],
+      "target_variables": [
+        "x"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "7f00ba34-5812-46a0-99cc-7b25eee9311a",
+      "source_variables": [
+        "x"
+      ],
+      "target_variables": [
+        "y"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "7f7ae6b0-d5c4-4de4-8ccd-cae172369006",
+      "source_variables": [
+        "H"
+      ],
+      "target_variables": [
+        "y"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "d1bb1e46-643f-483d-b978-c96bb5fce177",
+      "source_variables": [
+        "Q"
+      ],
+      "target_variables": [
+        "x"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "68fcb637-090a-4c3f-9db1-7edd45fe4021",
+      "source_variables": [
+        "R"
+      ],
+      "target_variables": [
+        "y"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "annotation": null,
+      "description": null
+    }
+  ],
+  "parameters": [
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "aafad94c-2af6-4639-bceb-fd3133801ccb",
+      "name": "F",
+      "value": [
+        [
+          1.0,
+          0.1
+        ],
+        [
+          0.0,
+          0.9
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "40dc35c8-0d3b-4120-a6cf-e5aa319b83f5",
+      "name": "H",
+      "value": [
+        [
+          1.0,
+          0.0
+        ],
+        [
+          1.0,
+          0.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "56e7119d-cbf6-4bcb-9125-f9c8d14bae14",
+      "name": "Q",
+      "value": [
+        [
+          0.1,
+          0.0
+        ],
+        [
+          0.0,
+          0.1
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "3275ed31-6a53-4cb0-be5f-77acc0302545",
+      "name": "R",
+      "value": [
+        [
+          0.2,
+          0.0
+        ],
+        [
+          0.0,
+          0.2
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "a62aa614-3ad5-4cb5-90c7-c96b34d58862",
+      "name": "prior_mean",
+      "value": [
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "8de2271b-7873-48d5-8587-45c4154f7ced",
+      "name": "prior_cov",
+      "value": [
+        [
+          0.5,
+          0.0
+        ],
+        [
+          0.0,
+          1.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "7a4fbe5e-a700-49c9-af44-90ef4fbff723",
+      "name": "num_timesteps",
+      "value": 15,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "c82f7014-db6a-4f58-9ec0-5e396e97f0c8",
+      "name": "dt",
+      "value": 0.1,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "7c976cbf-af77-4af5-920a-07971c9c5f3f",
+      "name": "random_seed",
+      "value": 42,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "40b4d003-a058-4940-b6d9-71eb3edd3e2c",
+      "name": "num_states",
+      "value": 2,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "13148631-95b4-4b17-b191-0f6395485eca",
+      "name": "num_observations",
+      "value": 2,
+      "type_hint": null,
+      "description": null
+    }
+  ],
+  "equations": [],
+  "time_specification": {
+    "node_type": "TimeSpecification",
+    "source_location": null,
+    "metadata": {},
+    "id": "6b45e335-2b52-4723-a67c-8e2c00f02ce2",
+    "time_type": "Dynamic",
+    "discretization": null,
+    "horizon": 15,
+    "step_size": null
+  },
+  "ontology_mappings": [
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "c7a53b90-5d4c-4e65-bf13-0e8495ef000b",
+      "variable_name": "F",
+      "ontology_term": "StateTransitionMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "4de6360c-f600-42a2-b666-96540cdd34e2",
+      "variable_name": "H",
+      "ontology_term": "ObservationMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "ec379549-471a-4e2d-9cbd-39fe8856825b",
+      "variable_name": "Q",
+      "ontology_term": "ProcessNoiseCovariance",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "c7856646-4190-4c95-a08f-4b181af1fd02",
+      "variable_name": "R",
+      "ontology_term": "ObservationNoiseCovariance",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "6d0b0f6a-3a53-43c4-b509-39e630bf033a",
+      "variable_name": "prior_mean",
+      "ontology_term": "PriorMean",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "d28a3c6f-28ce-4425-8aca-7e0bb53a1834",
+      "variable_name": "prior_cov",
+      "ontology_term": "PriorCovariance",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "7c3eaa72-7282-4a9e-af68-c2c84eeadd8b",
+      "variable_name": "x",
+      "ontology_term": "ContinuousHiddenState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "7223b46f-c5a5-4fdb-b192-0b2a81d34e1a",
+      "variable_name": "y",
+      "ontology_term": "ContinuousObservation",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "284e5c17-bfe1-442d-a45c-9e9928b6a30e",
+      "variable_name": "t",
+      "ontology_term": "Time",
+      "description": null
+    }
+  ],
+  "source_format": "markdown",
+  "created_at": "2026-09-06T11:09:37.455989",
+  "modified_at": "2026-09-06T11:09:37.455991",
+  "checksum": null,
+  "extensions": {
+    "gnn_section": "ActInfContinuous",
+    "footer": "Stochastic Continuous Dynamics Agent v1.0 - native linear-Gaussian (LGSSM) GNN model.\nPassive linear-Gaussian SDE with explicit process and observation noise.",
+    "signature": "Cryptographic signature goes here"
+  },
+  "raw_sections": {
+    "GNNSection": "ActInfContinuous",
+    "GNNVersionAndFlags": "GNN v1",
+    "ModelName": "Stochastic Continuous Dynamics Agent",
+    "ModelAnnotation": "A continuous-state Active Inference agent whose dynamics carry explicit process\nand observation noise, rendered as a native linear-Gaussian state-space model\n(LGSSM). The agent runs passively \u2014 it has no control input:\n- Hidden state x = (position, velocity): the Euler-discretized (dt = 0.1) SDE.\n- Observation y: two noisy readouts, both reading the position.\n- Q is the process-noise covariance (inverse process precision); R is the\n  observation-noise covariance (inverse observation precision).",
+    "StateSpaceBlock": "# Continuous latent state x = (position, velocity)\nx[2,1,type=float]        # continuous latent state\n# Continuous observation (two noisy position readouts)\ny[2,1,type=float]        # continuous observation\n# State transition matrix (Euler-discretized SDE with velocity damping)\nF[2,2,type=float]        # state transition\n# Observation matrix (both channels read position)\nH[2,2,type=float]        # observation matrix\n# Process-noise covariance\nQ[2,2,type=float]        # process-noise covariance\n# Observation-noise covariance\nR[2,2,type=float]        # observation-noise covariance\n# Gaussian prior over the initial state\nprior_mean[2,type=float] # prior mean over the initial latent state\nprior_cov[2,2,type=float]# prior covariance over the initial latent state\n# Time index\nt[1,type=int]            # discrete time step",
+    "Connections": "prior_mean>x\nF>x\nx>y\nH>y\nQ>x\nR>y",
+    "InitialParameterization": "# F: Euler discretization (dt = 0.1) of dx/dt = F x with mild velocity damping.\nF={\n  (1.0, 0.1),\n  (0.0, 0.9)\n}\n\n# H: two noisy position readouts (both observation channels read position).\nH={\n  (1.0, 0.0),\n  (1.0, 0.0)\n}\n\n# Q: process-noise covariance = gamma_state^-1 * I (gamma_state = 10.0).\nQ={\n  (0.1, 0.0),\n  (0.0, 0.1)\n}\n\n# R: observation-noise covariance = gamma_obs^-1 * I (gamma_obs = 5.0).\nR={\n  (0.2, 0.0),\n  (0.0, 0.2)\n}\n\n# Gaussian prior over the initial state: position fairly certain, velocity less so.\nprior_mean={(0.0, 0.0)}\nprior_cov={\n  (0.5, 0.0),\n  (0.0, 1.0)\n}",
+    "Equations": "# Generative model (linear-Gaussian state-space):\n#   x_1 ~ N(prior_mean, prior_cov)\n#   x_t = F x_{t-1} + N(0, Q)      (passive: no control input)\n#   y_t = H x_t + N(0, R)\n# SDE reading: dx/dt = F x + eps_state, eps_state ~ N(0, gamma_state^-1 I);\n# y = H x + eps_obs, eps_obs ~ N(0, gamma_obs^-1 I).",
+    "Time": "Time=t\nDynamic\nDiscrete\nModelTimeHorizon=15",
+    "ActInfOntologyAnnotation": "F=StateTransitionMatrix\nH=ObservationMatrix\nQ=ProcessNoiseCovariance\nR=ObservationNoiseCovariance\nprior_mean=PriorMean\nprior_cov=PriorCovariance\nx=ContinuousHiddenState\ny=ContinuousObservation\nt=Time",
+    "ModelParameters": "num_timesteps: 15\ndt: 0.1\nrandom_seed: 42\nnum_states: 2\nnum_observations: 2",
+    "Footer": "Stochastic Continuous Dynamics Agent v1.0 - native linear-Gaussian (LGSSM) GNN model.\nPassive linear-Gaussian SDE with explicit process and observation noise.",
+    "Signature": "Cryptographic signature goes here"
+  },
+  "initialparameterization": {
+    "F": [
+      [
+        1.0,
+        0.1
+      ],
+      [
+        0.0,
+        0.9
+      ]
+    ],
+    "H": [
+      [
+        1.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0
+      ]
+    ],
+    "Q": [
+      [
+        0.1,
+        0.0
+      ],
+      [
+        0.0,
+        0.1
+      ]
+    ],
+    "R": [
+      [
+        0.2,
+        0.0
+      ],
+      [
+        0.0,
+        0.2
+      ]
+    ],
+    "prior_mean": [
+      [
+        0.0,
+        0.0
+      ]
+    ],
+    "prior_cov": [
+      [
+        0.5,
+        0.0
+      ],
+      [
+        0.0,
+        1.0
+      ]
+    ],
+    "num_timesteps": 15,
+    "dt": 0.1,
+    "random_seed": 42,
+    "num_states": 2,
+    "num_observations": 2
+  },
+  "model_parameters": {
+    "F": [
+      [
+        1.0,
+        0.1
+      ],
+      [
+        0.0,
+        0.9
+      ]
+    ],
+    "H": [
+      [
+        1.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0
+      ]
+    ],
+    "Q": [
+      [
+        0.1,
+        0.0
+      ],
+      [
+        0.0,
+        0.1
+      ]
+    ],
+    "R": [
+      [
+        0.2,
+        0.0
+      ],
+      [
+        0.0,
+        0.2
+      ]
+    ],
+    "prior_mean": [
+      [
+        0.0,
+        0.0
+      ]
+    ],
+    "prior_cov": [
+      [
+        0.5,
+        0.0
+      ],
+      [
+        0.0,
+        1.0
+      ]
+    ],
+    "num_timesteps": 15,
+    "dt": 0.1,
+    "random_seed": 42,
+    "num_states": 2,
+    "num_observations": 2
+  }
+}

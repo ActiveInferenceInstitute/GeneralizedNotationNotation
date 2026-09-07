@@ -1,0 +1,19 @@
+{
+  "timestamp": "2026-09-06T12:13:34.119657",
+  "source_file": "output/cross_framework/precision/acceptance/precision/input/precision_weighted.md",
+  "model_name": "Precision-Weighted Active Inference Agent",
+  "pomdp_dimensions": {
+    "num_states": 3,
+    "num_observations": 3,
+    "num_actions": 3
+  },
+  "frameworks_requested": [
+    "pymdp"
+  ],
+  "frameworks_processed": [
+    "pymdp"
+  ],
+  "frameworks_failed": [],
+  "frameworks_unsupported": [],
+  "model_kind": "discrete"
+}

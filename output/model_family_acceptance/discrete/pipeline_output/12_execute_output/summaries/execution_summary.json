@@ -1,0 +1,371 @@
+{
+  "timestamp": "2026-09-06T11:08:44.748896",
+  "target_directory": "output/model_family_acceptance/discrete/input",
+  "output_directory": "output/model_family_acceptance/discrete/pipeline_output/12_execute_output",
+  "total_scripts_found": 2,
+  "successful_executions": 2,
+  "failed_executions": 0,
+  "skipped_executions": 0,
+  "execution_details": [
+    {
+      "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/discrete/pipeline_output/11_render_output/actinf_pomdp_agent/pymdp/Active_Inference_POMDP_Agent_pymdp.py",
+      "script_name": "Active_Inference_POMDP_Agent_pymdp.py",
+      "framework": "pymdp",
+      "model_name": "actinf_pomdp_agent",
+      "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 15.471264,
+      "timestamp": "2026-09-06T11:08:44.802040",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 15.471264,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        15.471264
+      ],
+      "structured_result_file": "output/model_family_acceptance/discrete/pipeline_output/12_execute_output/actinf_pomdp_agent/pymdp/execution_logs/Active_Inference_POMDP_Agent_pymdp.py_results.json",
+      "output_file": "output/model_family_acceptance/discrete/pipeline_output/12_execute_output/actinf_pomdp_agent/pymdp/execution_logs/Active_Inference_POMDP_Agent_pymdp.py_execution.log",
+      "implementation_directory": "output/model_family_acceptance/discrete/pipeline_output/12_execute_output/actinf_pomdp_agent/pymdp",
+      "script_identity": {
+        "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/discrete/pipeline_output/11_render_output/actinf_pomdp_agent/pymdp/Active_Inference_POMDP_Agent_pymdp.py",
+        "sha256": "a521ac423ca1e8ad80c86b52b265464d35390fd58290b661e65b5be895fd9387"
+      },
+      "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/discrete/input",
+      "stdout_length": 41,
+      "stderr_length": 4476,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/discrete/pipeline_output/11_render_output/simple_mdp/pymdp/Simple_MDP_Agent_pymdp.py",
+      "script_name": "Simple_MDP_Agent_pymdp.py",
+      "framework": "pymdp",
+      "model_name": "simple_mdp",
+      "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 13.302922,
+      "timestamp": "2026-09-06T11:09:00.383103",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 13.302922,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        13.302922
+      ],
+      "structured_result_file": "output/model_family_acceptance/discrete/pipeline_output/12_execute_output/simple_mdp/pymdp/execution_logs/Simple_MDP_Agent_pymdp.py_results.json",
+      "output_file": "output/model_family_acceptance/discrete/pipeline_output/12_execute_output/simple_mdp/pymdp/execution_logs/Simple_MDP_Agent_pymdp.py_execution.log",
+      "implementation_directory": "output/model_family_acceptance/discrete/pipeline_output/12_execute_output/simple_mdp/pymdp",
+      "script_identity": {
+        "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/discrete/pipeline_output/11_render_output/simple_mdp/pymdp/Simple_MDP_Agent_pymdp.py",
+        "sha256": "d74fe815c2cff6dcfeee89da796afe537fd65ec200444bb2a00ea42eb71b670f"
+      },
+      "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/discrete/input",
+      "stdout_length": 41,
+      "stderr_length": 4090,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    }
+  ],
+  "framework_status": {
+    "pymdp": {
+      "executions": 2,
+      "successful": 2,
+      "failed": 0,
+      "skipped": 0,
+      "status": "success"
+    }
+  },
+  "execution_mode": "local",
+  "execution_workers": 1,
+  "backend": null,
+  "execution_benchmark_repeats": 1,
+  "execution_summary_detail": false,
+  "dispatch_max_retries": 0,
+  "success": true,
+  "status": "success",
+  "exit_code": 0,
+  "run_id": "cd7c0325d08341e29a33a6dd9cb7678e",
+  "configuration": {
+    "frameworks": [
+      "pymdp"
+    ],
+    "strict_requested_frameworks": true,
+    "options": {
+      "recursive": true,
+      "timeout": 300,
+      "render_output_dir": null,
+      "distributed": false,
+      "execution_workers": 1,
+      "backend": "ray",
+      "execution_benchmark_repeats": 1,
+      "execution_summary_detail": false
+    }
+  },
+  "input_identity": {
+    "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/discrete/input",
+    "files": {
+      "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/discrete/input/actinf_pomdp_agent.md": "ea58f38a031aab36ebf44078ebcdcc2a2ca5594a32c9a8ed92e0f09d61f579bf",
+      "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/discrete/input/simple_mdp.md": "e0d5c9850aca787b8fd8345e0b6f095e625ec2e49fa189afe806e93c5b66dc26"
+    }
+  },
+  "render_failures": [],
+  "missing_render_scripts": [],
+  "requested_frameworks": [
+    "pymdp"
+  ],
+  "total_scripts": 2,
+  "attempted_scripts": 2,
+  "success_rate": 100.0,
+  "outcome_reason": "all_scripts_succeeded",
+  "receipt_identity": {
+    "run_id": "cd7c0325d08341e29a33a6dd9cb7678e",
+    "config_sha256": "727b3bc903e5c99d2d5923e78dde1d5e049efe71295f92db91cd4acd573adbbf"
+  },
+  "invocation_receipts": {
+    "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/discrete/input": {
+      "status": "success",
+      "success": true,
+      "exit_code": 0,
+      "outcome_reason": "all_scripts_succeeded",
+      "render_failures": [],
+      "missing_render_scripts": [],
+      "missing_render_summary": null,
+      "input_identity": {
+        "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/discrete/input",
+        "files": {
+          "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/discrete/input/actinf_pomdp_agent.md": "ea58f38a031aab36ebf44078ebcdcc2a2ca5594a32c9a8ed92e0f09d61f579bf",
+          "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/discrete/input/simple_mdp.md": "e0d5c9850aca787b8fd8345e0b6f095e625ec2e49fa189afe806e93c5b66dc26"
+        }
+      },
+      "execution_details": [
+        {
+          "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/discrete/pipeline_output/11_render_output/actinf_pomdp_agent/pymdp/Active_Inference_POMDP_Agent_pymdp.py",
+          "script_name": "Active_Inference_POMDP_Agent_pymdp.py",
+          "framework": "pymdp",
+          "model_name": "actinf_pomdp_agent",
+          "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 15.471264,
+          "timestamp": "2026-09-06T11:08:44.802040",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 15.471264,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            15.471264
+          ],
+          "structured_result_file": "output/model_family_acceptance/discrete/pipeline_output/12_execute_output/actinf_pomdp_agent/pymdp/execution_logs/Active_Inference_POMDP_Agent_pymdp.py_results.json",
+          "output_file": "output/model_family_acceptance/discrete/pipeline_output/12_execute_output/actinf_pomdp_agent/pymdp/execution_logs/Active_Inference_POMDP_Agent_pymdp.py_execution.log",
+          "implementation_directory": "output/model_family_acceptance/discrete/pipeline_output/12_execute_output/actinf_pomdp_agent/pymdp",
+          "script_identity": {
+            "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/discrete/pipeline_output/11_render_output/actinf_pomdp_agent/pymdp/Active_Inference_POMDP_Agent_pymdp.py",
+            "sha256": "a521ac423ca1e8ad80c86b52b265464d35390fd58290b661e65b5be895fd9387"
+          },
+          "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/discrete/input",
+          "stdout_length": 41,
+          "stderr_length": 4476,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 1
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        },
+        {
+          "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/discrete/pipeline_output/11_render_output/simple_mdp/pymdp/Simple_MDP_Agent_pymdp.py",
+          "script_name": "Simple_MDP_Agent_pymdp.py",
+          "framework": "pymdp",
+          "model_name": "simple_mdp",
+          "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 13.302922,
+          "timestamp": "2026-09-06T11:09:00.383103",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 13.302922,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            13.302922
+          ],
+          "structured_result_file": "output/model_family_acceptance/discrete/pipeline_output/12_execute_output/simple_mdp/pymdp/execution_logs/Simple_MDP_Agent_pymdp.py_results.json",
+          "output_file": "output/model_family_acceptance/discrete/pipeline_output/12_execute_output/simple_mdp/pymdp/execution_logs/Simple_MDP_Agent_pymdp.py_execution.log",
+          "implementation_directory": "output/model_family_acceptance/discrete/pipeline_output/12_execute_output/simple_mdp/pymdp",
+          "script_identity": {
+            "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/discrete/pipeline_output/11_render_output/simple_mdp/pymdp/Simple_MDP_Agent_pymdp.py",
+            "sha256": "d74fe815c2cff6dcfeee89da796afe537fd65ec200444bb2a00ea42eb71b670f"
+          },
+          "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/discrete/input",
+          "stdout_length": 41,
+          "stderr_length": 4090,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 1
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        }
+      ]
+    }
+  },
+  "current_invocation": {
+    "status": "success",
+    "success": true,
+    "exit_code": 0,
+    "outcome_reason": "all_scripts_succeeded",
+    "render_failures": [],
+    "missing_render_scripts": [],
+    "missing_render_summary": null,
+    "input_identity": {
+      "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/discrete/input",
+      "files": {
+        "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/discrete/input/actinf_pomdp_agent.md": "ea58f38a031aab36ebf44078ebcdcc2a2ca5594a32c9a8ed92e0f09d61f579bf",
+        "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/discrete/input/simple_mdp.md": "e0d5c9850aca787b8fd8345e0b6f095e625ec2e49fa189afe806e93c5b66dc26"
+      }
+    },
+    "execution_details": [
+      {
+        "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/discrete/pipeline_output/11_render_output/actinf_pomdp_agent/pymdp/Active_Inference_POMDP_Agent_pymdp.py",
+        "script_name": "Active_Inference_POMDP_Agent_pymdp.py",
+        "framework": "pymdp",
+        "model_name": "actinf_pomdp_agent",
+        "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 15.471264,
+        "timestamp": "2026-09-06T11:08:44.802040",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 15.471264,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          15.471264
+        ],
+        "structured_result_file": "output/model_family_acceptance/discrete/pipeline_output/12_execute_output/actinf_pomdp_agent/pymdp/execution_logs/Active_Inference_POMDP_Agent_pymdp.py_results.json",
+        "output_file": "output/model_family_acceptance/discrete/pipeline_output/12_execute_output/actinf_pomdp_agent/pymdp/execution_logs/Active_Inference_POMDP_Agent_pymdp.py_execution.log",
+        "implementation_directory": "output/model_family_acceptance/discrete/pipeline_output/12_execute_output/actinf_pomdp_agent/pymdp",
+        "script_identity": {
+          "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/discrete/pipeline_output/11_render_output/actinf_pomdp_agent/pymdp/Active_Inference_POMDP_Agent_pymdp.py",
+          "sha256": "a521ac423ca1e8ad80c86b52b265464d35390fd58290b661e65b5be895fd9387"
+        },
+        "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/discrete/input",
+        "stdout_length": 41,
+        "stderr_length": 4476,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 1
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      },
+      {
+        "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/discrete/pipeline_output/11_render_output/simple_mdp/pymdp/Simple_MDP_Agent_pymdp.py",
+        "script_name": "Simple_MDP_Agent_pymdp.py",
+        "framework": "pymdp",
+        "model_name": "simple_mdp",
+        "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 13.302922,
+        "timestamp": "2026-09-06T11:09:00.383103",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 13.302922,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          13.302922
+        ],
+        "structured_result_file": "output/model_family_acceptance/discrete/pipeline_output/12_execute_output/simple_mdp/pymdp/execution_logs/Simple_MDP_Agent_pymdp.py_results.json",
+        "output_file": "output/model_family_acceptance/discrete/pipeline_output/12_execute_output/simple_mdp/pymdp/execution_logs/Simple_MDP_Agent_pymdp.py_execution.log",
+        "implementation_directory": "output/model_family_acceptance/discrete/pipeline_output/12_execute_output/simple_mdp/pymdp",
+        "script_identity": {
+          "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/discrete/pipeline_output/11_render_output/simple_mdp/pymdp/Simple_MDP_Agent_pymdp.py",
+          "sha256": "d74fe815c2cff6dcfeee89da796afe537fd65ec200444bb2a00ea42eb71b670f"
+        },
+        "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/discrete/input",
+        "stdout_length": 41,
+        "stderr_length": 4090,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 1
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      }
+    ],
+    "target_directory": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/discrete/input"
+  },
+  "merged_prior_folder_runs": 0,
+  "execution_summary_format": "slim_v1"
+}

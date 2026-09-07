@@ -98,6 +98,27 @@
 % of \tableofcontents only, inside a group, so body spacing is untouched and no
 % entry is dropped (reducing \tocdepth would have hidden 29 real subsections).
   \providecommand{\addvspace}[1]{\vskip 2\p@}%
+% Document metadata. config.yaml declares a subtitle and a keyword list, and
+% the producer emits both as tokens, but the template's \hypersetup writes only
+% pdftitle/pdfauthor/pdflang -- so `pdfinfo` reported no Subject and no
+% Keywords. This block runs after the template's, so it wins.
+%
+% The two values below are WRITTEN by scripts/z_generate_manuscript_variables.py
+% (sync_preamble_metadata), never typed. A double-brace token cannot be used here:
+% preamble.md is substituted into output/manuscript/ like any other section, but
+% the template's _manuscript_source.py then copies the raw file back over that
+% copy, so an unresolved token would reach hyperref and land in the PDF's
+% metadata verbatim.
+% Bounded identifier splitting. The template defines
+%   \protected\def\breaktt#1{\begingroup\ttfamily\seqsplit{#1}\endgroup}
+% and \seqsplit permits a break after EVERY character with no continuation cue.
+% In the 2026-09-05 PDF that rendered `model_family_manifest.json` as
+% `model_family_manifest.js` + `on` and `src/manuscript_variables.py` as
+% `(src/manusc` + `ript_variables.py` — the first is itself a valid filename, so
+% a reader cannot tell a line break from a name. Keep seqsplit's guarantee that
+% no code token overflows the measure, but forbid breaks inside the last
+% \GNNttTail characters (an extension is never orphaned) and inside the first
+% \GNNttHead (a one- or two-letter stub is never left behind).
 
 % Slide layout defaults for warning-clean scientific decks.
 \usepackage{etoolbox}
@@ -180,7 +201,7 @@
 
 \section{Limitations and Next Steps}\label{sec:limitations_next_steps}
 
-\begin{frame}[allowframebreaks]{Current Limitations}
+\begin{frame}[fragile,allowframebreaks]{Current Limitations}
 \protect\phantomsection\label{current-limitations}
 GNN 3.2.0 is a working system with deliberately scoped boundaries, and
 it is worth stating those boundaries plainly rather than implying
@@ -197,7 +218,7 @@ tallies to the ledgers and execution traces that the pipeline writes
 alongside each run. A reader who wants a number should regenerate it in
 \end{frame}
 
-\begin{frame}[allowframebreaks]{Current Limitations}
+\begin{frame}[fragile,allowframebreaks]{Current Limitations}
 their own environment rather than trust a transcribed digit here.
 
 A second limitation lives at the boundary between the model families and
@@ -215,20 +236,43 @@ status with a recorded reason is more trustworthy than a forced
 translation that quietly misrepresents the model. It also reflects the
 \end{frame}
 
-\begin{frame}[allowframebreaks]{Current Limitations}
+\begin{frame}[fragile,allowframebreaks]{Current Limitations}
 state of the surrounding literature, where expected-free-energy
 formulations, variational-inference reductions, and hierarchical
 active-inference methods are still being actively refined rather than
 collapsed into one settled executable recipe (Champion et al. 2024;
 Nuijten et al. 2026; Rangarajan and Rao 2026). The practical consequence
 is that not every model expressible in the GNN syntax can be executed on
-every registered backend today, and authors should consult the recorded
-backend matrix before assuming a given family will round-trip through a
-given framework.
+every registered backend today, and authors should consult the
+profiled-unsupported ledger that
+\breaktt{scripts/run\_model\_family\_acceptance.py} writes --- the
+command is given in sec.~6 --- before assuming a
+given family will round-trip through a given framework.
 
 \end{frame}
 
-\begin{frame}[allowframebreaks]{Current Limitations}
+\begin{frame}[fragile,allowframebreaks]{Current Limitations}
+A third limitation is one of scope rather than capability. The formal
+account in sec.~3 fixes the generative-model
+components \texttt{A}, \texttt{B}, \texttt{C}, \texttt{D} and \texttt{E}
+as given and defines only state inference (eq.~6) and policy
+inference (eq.~7). GNN can also express \emph{parameter}
+learning: a matrix may be declared as a latent variable with a Dirichlet
+prior, and the repository ships both a corpus model that does so
+(\breaktt{input/gnn\_files/learning/dirichlet\_likelihood\_learning.md},
+which learns its likelihood matrix \texttt{A} from observations by joint
+variational message passing) and the renderer strategy that emits code
+for it (\breaktt{src/render/rxinfer/\_strategies\_learning.py}). That
+corpus directory is registered in no manifest family --- the
+unregistered set is exactly \breaktt{input/gnn\_files/learning} --- so
+parameter learning is exercised by neither the semantic-fidelity nor the
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]{Current Limitations}
+cross-framework ledger and carries no figure or table in this
+manuscript. We state it here as implemented-but-out-of-scope rather than
+leave the omission to be inferred from the family tables.
+
 Finally, several capabilities depend on optional dependencies that are
 not part of the minimal install. The simulation frameworks themselves,
 the audio sonification path, the LLM-enhanced analysis step, and the
@@ -240,40 +284,44 @@ constrained environments, but it means a full 0--24 traversal of all 25
 steps reflects the optional surface that a particular machine has
 installed. We consider this an acceptable engineering trade for
 portability, but it is a limitation a reader should hold in mind when
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]{Current Limitations}
 interpreting any single end-to-end run.
 \end{frame}
 
 \begin{frame}[allowframebreaks]{Next Steps}
 \protect\phantomsection\label{next-steps}
-The roadmap is concrete and staged. The current release, GNN 3.2.0
-(``Long-Running Orchestration''), delivers three safe-by-design
-orchestration contracts that generate and validate data only, with no
-live infrastructure mutation. The first is \emph{durable observation
-streams}: file- and array-backed stream manifests (content-checksummed)
-with replayable execution traces, so that an extended run can be
-observed, paused, and re-derived deterministically before any live
-sensor or device-backed stream is ever introduced. The second is
-\emph{resumable run sessions}: run-session manifests with atomic
-checkpoint/resume, status inspection, and cancellation-safe cleanup so
-that extended model-family acceptance runs can be interrupted and
-resumed without corrupting partial state. The third is \emph{auditable
-container plans}: generating hardened container plans with an explicit
+The roadmap is concrete and staged. The current release is GNN 3.2.0
+(``Exemplar Gold Standard'', 2026-09-02). It builds on the three
+safe-by-design orchestration contracts introduced in GNN 3.0.0, which
+generate and validate data only, with no live infrastructure mutation.
+The first is \emph{durable observation streams}: file- and array-backed
+stream manifests (content-checksummed) with replayable execution traces,
+so that an extended run can be observed, paused, and re-derived
+deterministically before any live sensor or device-backed stream is ever
+introduced. The second is \emph{resumable run sessions}: run-session
+manifests with atomic checkpoint/resume, status inspection, and
+cancellation-safe cleanup so that extended model-family acceptance runs
+can be interrupted and resumed without corrupting partial state. The
+third is \emph{auditable container plans}: generating hardened container
 \end{frame}
 
 \begin{frame}[allowframebreaks]{Next Steps}
-static security-review and rollback descriptor, deliberately stopping
-short of mutating any real cluster. Each contract is covered by tests
-over real objects with negative controls and a strict acceptance gate,
-additive live wiring connects them to the session-acceptance and
-run-manifest paths, and three new Model Context Protocol tools expose
-them. The unifying discipline across all three is that orchestration
-becomes more capable only as fast as it becomes more inspectable.
+plans with an explicit static security-review and rollback descriptor,
+deliberately stopping short of mutating any real cluster. Each contract
+is covered by tests over real objects with negative controls and a
+strict acceptance gate, additive live wiring connects them to the
+session-acceptance and run-manifest paths, and three new Model Context
+Protocol tools expose them. The unifying discipline across all three is
+that orchestration becomes more capable only as fast as it becomes more
+inspectable.
 
 \end{frame}
 
 \begin{frame}[allowframebreaks]{Next Steps}
 The next major target, v4.0.0, pushes toward bounded autonomy, and it is
-gated behind the 3.2.0 orchestration work for good reason. The intent is
+gated behind the 3.0.0 orchestration work for good reason. The intent is
 to promote today's proposal-only candidate-scoring machinery --- which
 already ranks candidate patches using the existing validators,
 model-family ledgers, and interpretability reports --- toward
@@ -292,7 +340,7 @@ Parr et al. 2022): an agent should expand its license to act only in
 proportion to the reviewability of what it does. The v4.0.0 items are
 not claimed as complete here; they are the recorded direction of travel,
 and each will be evidenced by its own gates when it lands, just as the
-3.2.0 contracts are evidenced by theirs today.
+3.0.0 contracts are evidenced by theirs today.
 \end{frame}
 
 \end{document}

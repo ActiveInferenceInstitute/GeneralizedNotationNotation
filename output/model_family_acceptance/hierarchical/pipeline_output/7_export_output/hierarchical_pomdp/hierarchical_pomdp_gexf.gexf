@@ -1,0 +1,48 @@
+<?xml version="1.0" ?>
+<gexf xmlns="http://www.gexf.net/1.2draft" version="1.2">
+  <meta lastmodifieddate="2024-01-01">
+    <creator>GNN Pipeline</creator>
+    <description>GNN Model Export</description>
+  </meta>
+  <graph mode="static" defaultedgetype="directed">
+    <nodes>
+      <node id="n0" label="A_level1"/>
+      <node id="n1" label="B_level1"/>
+      <node id="n2" label="C_level1"/>
+      <node id="n3" label="D_level1"/>
+      <node id="n4" label="s_level1"/>
+      <node id="n5" label="x_next1"/>
+      <node id="n6" label="o_level1"/>
+      <node id="n7" label="π1"/>
+      <node id="n8" label="u_level1"/>
+      <node id="n9" label="G1"/>
+      <node id="n10" label="A_level2"/>
+      <node id="n11" label="B_level2"/>
+      <node id="n12" label="C_level2"/>
+      <node id="n13" label="D_level2"/>
+      <node id="n14" label="s_level2"/>
+      <node id="n15" label="o_level2"/>
+      <node id="n16" label="G2"/>
+      <node id="n17" label="t1"/>
+      <node id="n18" label="t2"/>
+    </nodes>
+    <edges>
+      <edge id="e0" source="" target=""/>
+      <edge id="e1" source="" target=""/>
+      <edge id="e2" source="" target=""/>
+      <edge id="e3" source="" target=""/>
+      <edge id="e4" source="" target=""/>
+      <edge id="e5" source="" target=""/>
+      <edge id="e6" source="" target=""/>
+      <edge id="e7" source="" target=""/>
+      <edge id="e8" source="" target=""/>
+      <edge id="e9" source="" target=""/>
+      <edge id="e10" source="" target=""/>
+      <edge id="e11" source="" target=""/>
+      <edge id="e12" source="" target=""/>
+      <edge id="e13" source="" target=""/>
+      <edge id="e14" source="" target=""/>
+      <edge id="e15" source="" target=""/>
+    </edges>
+  </graph>
+</gexf>

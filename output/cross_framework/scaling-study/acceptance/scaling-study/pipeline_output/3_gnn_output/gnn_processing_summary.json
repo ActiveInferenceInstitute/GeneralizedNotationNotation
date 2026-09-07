@@ -1,0 +1,10 @@
+{
+  "total_files": 2,
+  "successful_parses": 2,
+  "failed_parses": 0,
+  "total_formats_generated": 44,
+  "formats_per_file": {
+    "pymdp_scaling_N8_T100.md": 22,
+    "pymdp_scaling_N4_T100.md": 22
+  }
+}

@@ -17,7 +17,7 @@ This folder hosts the explicit, stateless developer workflow validation agents r
 | `check_external_links.py` | Scans maintained docs for dead external (http/https) URLs — informational, not CI-wired | ⚪ no (flaky external checks) |
 | `check_mcp_skills_health.py` | Executes every registered MCP tool and verifies every SKILL.md documents a resolvable surface | ⚪ no (informational) |
 | `check_capability_contracts.py` | Validates capability-contract claims against measured codebase state | ✅ exit 1 on mismatch |
-| `check_manuscript_tokens.py` | Manuscript integrity gate: unknown `{{TOKEN}}`s, dangling `[@key]` citations, hard-coded counts | ✅ hard gate (`--strict` also fails count warnings) |
+| `check_manuscript_tokens.py` | Manuscript integrity gate: unknown `{{TOKEN}}`s, dangling `[@key]` citations, hard-coded counts, contradicted `input/...` path claims | ✅ hard gate (`--strict` also fails count warnings) |
 | `check_pomdp_gridworld_outputs.py` | End-to-end GridWorld output validity check for the canonical POMDP test case | ✅ exit 1 on mismatch |
 
 ### Pipeline Orchestration (7 scripts)
@@ -63,6 +63,7 @@ This folder hosts the explicit, stateless developer workflow validation agents r
 The [`lib/`](lib/) subdirectory provides shared utility functions for multiple audit scripts:
 
 - `lib/shared.py` — `repo_root()`, `should_skip_path()`, `is_generated_output()`, `add_strict_flag()`, `exit_with_findings()`
+- `lib/manuscript_figure_tokens.py` — `load_tokens()`: the manuscript token map, recording which keys a figure generator reads so `manuscript_build_figures.py` can stamp figure provenance
 - [`lib/AGENTS.md`](lib/AGENTS.md) — Documentation
 - [`lib/README.md`](lib/README.md) — Quick reference
 - [`lib/SPEC.md`](lib/SPEC.md) — Specification

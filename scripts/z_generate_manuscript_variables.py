@@ -39,6 +39,7 @@ from gnn.manuscript import (  # noqa: E402
     generate_variables,
     save_variables,
     sync_config_metadata,
+    sync_preamble_metadata,
 )
 
 _INJECTION_REL = Path("infrastructure") / "rendering" / "manuscript_injection.py"
@@ -94,6 +95,8 @@ def main() -> int:
     variables = generate_variables(_PROJECT_ROOT)
     for change in sync_config_metadata(_PROJECT_ROOT, variables):
         print(f"[manuscript-variables] config.yaml {change}", file=sys.stderr)
+    for change in sync_preamble_metadata(_PROJECT_ROOT, variables):
+        print(f"[manuscript-variables] preamble.md {change}", file=sys.stderr)
     _report_dirty_tree()
     out_path = _PROJECT_ROOT / "output" / "data" / "manuscript_variables.json"
     save_variables(variables, out_path)

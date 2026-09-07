@@ -1,0 +1,252 @@
+{
+  "contract_hash": "046247aaf59f3a9d528b2042b7a0cd3e0ccc2d7da7a957b7406aed8df8322ac8",
+  "declared_metadata": {
+    "extensions": [
+      "footer",
+      "gnn_section",
+      "signature"
+    ],
+    "raw_sections": [
+      "ActInfOntologyAnnotation",
+      "Connections",
+      "Equations",
+      "Footer",
+      "GNNSection",
+      "GNNVersionAndFlags",
+      "InitialParameterization",
+      "ModelAnnotation",
+      "ModelName",
+      "ModelParameters",
+      "Signature",
+      "StateSpaceBlock",
+      "Time"
+    ],
+    "source_format": "markdown"
+  },
+  "edges": [
+    {
+      "connection_type": "undirected",
+      "description": "",
+      "source": "A",
+      "target": "o_t",
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "",
+      "source": "B",
+      "target": "s_prime",
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": "",
+      "source": "D",
+      "target": "s_t",
+      "weight": null
+    },
+    {
+      "connection_type": "undirected",
+      "description": "",
+      "source": "o_t",
+      "target": "F",
+      "weight": null
+    },
+    {
+      "connection_type": "undirected",
+      "description": "",
+      "source": "s_t",
+      "target": "A",
+      "weight": null
+    },
+    {
+      "connection_type": "undirected",
+      "description": "",
+      "source": "s_t",
+      "target": "B",
+      "weight": null
+    },
+    {
+      "connection_type": "undirected",
+      "description": "",
+      "source": "s_t",
+      "target": "F",
+      "weight": null
+    }
+  ],
+  "equations": [],
+  "model_identity": {
+    "annotation": "A dynamic perception model extending the static model with temporal dynamics:\n\n- 2 hidden states evolving over discrete time via transition matrix B\n- 2 observations generated from states via recognition matrix A\n- Prior D constrains the initial hidden state\n- No action selection \u2014 the agent passively observes a changing world\n- Demonstrates belief updating (state inference) across time steps\n- Suitable for tracking hidden sources from noisy observations",
+    "model_name": "Dynamic Perception Model",
+    "version": "1.0"
+  },
+  "ontology_mappings": [
+    {
+      "description": "",
+      "ontology_term": "RecognitionMatrix",
+      "variable_name": "A"
+    },
+    {
+      "description": "",
+      "ontology_term": "TransitionMatrix",
+      "variable_name": "B"
+    },
+    {
+      "description": "",
+      "ontology_term": "Prior",
+      "variable_name": "D"
+    },
+    {
+      "description": "",
+      "ontology_term": "VariationalFreeEnergy",
+      "variable_name": "F"
+    },
+    {
+      "description": "",
+      "ontology_term": "Observation",
+      "variable_name": "o_t"
+    },
+    {
+      "description": "",
+      "ontology_term": "NextHiddenState",
+      "variable_name": "s_prime"
+    },
+    {
+      "description": "",
+      "ontology_term": "HiddenState",
+      "variable_name": "s_t"
+    },
+    {
+      "description": "",
+      "ontology_term": "Time",
+      "variable_name": "t"
+    }
+  ],
+  "parameter_names": [
+    "A",
+    "B",
+    "D",
+    "num_hidden_states",
+    "num_obs",
+    "num_timesteps"
+  ],
+  "parameter_shapes": {
+    "A": [
+      2,
+      2
+    ],
+    "B": [
+      2,
+      2
+    ],
+    "D": [
+      1,
+      2
+    ],
+    "num_hidden_states": [],
+    "num_obs": [],
+    "num_timesteps": []
+  },
+  "parser_diagnostics": {
+    "connection_errors": [],
+    "matrix_errors": [],
+    "structure_issues": [],
+    "variable_errors": []
+  },
+  "schema": "gnn_semantic_contract_v1",
+  "source_file": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/input/gnn_files/basics/dynamic_perception.md",
+  "time_specification": {
+    "discretization": "",
+    "horizon": 10,
+    "step_size": null,
+    "time_type": "Dynamic"
+  },
+  "variables": [
+    {
+      "constraints": {},
+      "data_type": "float",
+      "description": "Recognition matrix: P(observation | hidden state)",
+      "dimensions": [
+        2,
+        2
+      ],
+      "name": "A",
+      "var_type": "likelihood_matrix"
+    },
+    {
+      "constraints": {},
+      "data_type": "float",
+      "description": "Transition matrix: P(s_{t+1} | s_t) \u2014 no action dependence",
+      "dimensions": [
+        2,
+        2
+      ],
+      "name": "B",
+      "var_type": "transition_matrix"
+    },
+    {
+      "constraints": {},
+      "data_type": "float",
+      "description": "Prior over initial hidden states",
+      "dimensions": [
+        2,
+        1
+      ],
+      "name": "D",
+      "var_type": "prior_vector"
+    },
+    {
+      "constraints": {},
+      "data_type": "float",
+      "description": "Variational Free Energy (negative ELBO)",
+      "dimensions": [
+        1
+      ],
+      "name": "F",
+      "var_type": "hidden_state"
+    },
+    {
+      "constraints": {},
+      "data_type": "integer",
+      "description": "Observation at time t",
+      "dimensions": [
+        2,
+        1
+      ],
+      "name": "o_t",
+      "var_type": "observation"
+    },
+    {
+      "constraints": {},
+      "data_type": "float",
+      "description": "Hidden state belief at time t+1",
+      "dimensions": [
+        2,
+        1
+      ],
+      "name": "s_prime",
+      "var_type": "hidden_state"
+    },
+    {
+      "constraints": {},
+      "data_type": "float",
+      "description": "Hidden state belief at time t",
+      "dimensions": [
+        2,
+        1
+      ],
+      "name": "s_t",
+      "var_type": "hidden_state"
+    },
+    {
+      "constraints": {},
+      "data_type": "integer",
+      "description": "Discrete time index",
+      "dimensions": [
+        1
+      ],
+      "name": "t",
+      "var_type": "hidden_state"
+    }
+  ]
+}

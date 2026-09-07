@@ -1,0 +1,83 @@
+{
+  "timestamp": "2026-09-06T11:39:43.651997",
+  "source_directory": "output/model_family_acceptance/scaling-study/input",
+  "output_directory": "output/model_family_acceptance/scaling-study/pipeline_output/7_export_output",
+  "files_exported": [
+    {
+      "file_name": "pymdp_scaling_N8_T100.md",
+      "file_path": "output/model_family_acceptance/scaling-study/input/pymdp_scaling_N8_T100.md",
+      "exports": {
+        "json": {
+          "success": true,
+          "export_file": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/scaling-study/pipeline_output/7_export_output/pymdp_scaling_N8_T100/pymdp_scaling_N8_T100_json.json",
+          "file_size": 57026
+        },
+        "xml": {
+          "success": true,
+          "export_file": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/scaling-study/pipeline_output/7_export_output/pymdp_scaling_N8_T100/pymdp_scaling_N8_T100_xml.xml",
+          "file_size": 868
+        },
+        "graphml": {
+          "success": true,
+          "export_file": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/scaling-study/pipeline_output/7_export_output/pymdp_scaling_N8_T100/pymdp_scaling_N8_T100_graphml.graphml",
+          "file_size": 1345
+        },
+        "gexf": {
+          "success": true,
+          "export_file": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/scaling-study/pipeline_output/7_export_output/pymdp_scaling_N8_T100/pymdp_scaling_N8_T100_gexf.gexf",
+          "file_size": 1108
+        },
+        "pickle": {
+          "success": true,
+          "export_file": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/scaling-study/pipeline_output/7_export_output/pymdp_scaling_N8_T100/pymdp_scaling_N8_T100_pickle.pkl",
+          "file_size": 29796
+        }
+      },
+      "success": true
+    },
+    {
+      "file_name": "pymdp_scaling_N4_T100.md",
+      "file_path": "output/model_family_acceptance/scaling-study/input/pymdp_scaling_N4_T100.md",
+      "exports": {
+        "json": {
+          "success": true,
+          "export_file": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/scaling-study/pipeline_output/7_export_output/pymdp_scaling_N4_T100/pymdp_scaling_N4_T100_json.json",
+          "file_size": 21634
+        },
+        "xml": {
+          "success": true,
+          "export_file": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/scaling-study/pipeline_output/7_export_output/pymdp_scaling_N4_T100/pymdp_scaling_N4_T100_xml.xml",
+          "file_size": 868
+        },
+        "graphml": {
+          "success": true,
+          "export_file": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/scaling-study/pipeline_output/7_export_output/pymdp_scaling_N4_T100/pymdp_scaling_N4_T100_graphml.graphml",
+          "file_size": 1345
+        },
+        "gexf": {
+          "success": true,
+          "export_file": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/scaling-study/pipeline_output/7_export_output/pymdp_scaling_N4_T100/pymdp_scaling_N4_T100_gexf.gexf",
+          "file_size": 1108
+        },
+        "pickle": {
+          "success": true,
+          "export_file": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/model_family_acceptance/scaling-study/pipeline_output/7_export_output/pymdp_scaling_N4_T100/pymdp_scaling_N4_T100_pickle.pkl",
+          "file_size": 10368
+        }
+      },
+      "success": true
+    }
+  ],
+  "summary": {
+    "total_files": 2,
+    "successful_exports": 2,
+    "failed_exports": 0,
+    "formats_generated": {
+      "json": 2,
+      "xml": 2,
+      "graphml": 2,
+      "gexf": 2,
+      "pickle": 2
+    }
+  }
+}

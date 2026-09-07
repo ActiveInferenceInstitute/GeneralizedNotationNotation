@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GNN Pipeline Performance Dashboard</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root {
+  --bg: #0f172a; --surface: #1e293b; --border: #334155;
+  --text: #e2e8f0; --muted: #94a3b8; --accent: #3b82f6;
+  --success: #22c55e; --warning: #f59e0b; --danger: #ef4444;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); padding: 32px; }
+.header { margin-bottom: 32px; border-bottom: 1px solid var(--border); padding-bottom: 16px; }
+.header h1 { font-size: 28px; font-weight: 700; color: #fff; }
+.header p { color: var(--muted); margin-top: 8px; }
+
+.metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; margin-bottom: 40px; }
+.metric-card { background: var(--surface); padding: 24px; border-radius: 12px; border: 1px solid var(--border); text-align: center; }
+.metric-value { font-size: 32px; font-weight: 700; margin-bottom: 8px; }
+.metric-label { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+
+.charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 40px; }
+.chart-container { background: var(--surface); padding: 24px; border-radius: 12px; border: 1px solid var(--border); }
+.chart-container h2 { font-size: 18px; margin-bottom: 16px; color: #fff; }
+
+.gantt-container { background: var(--surface); padding: 24px; border-radius: 12px; border: 1px solid var(--border); overflow-x: auto; margin-bottom: 40px; }
+.gantt-container h2 { font-size: 18px; margin-bottom: 16px; color: #fff; }
+#gantt-chart { min-width: 800px; height: 400px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>GNN Pipeline Performance</h1>
+  <p id="dashboard-meta">Loading execution metrics...</p>
+</div>
+
+<div class="metrics-grid">
+  <div class="metric-card">
+    <div class="metric-value" id="val-health" style="color: var(--success)">--</div>
+    <div class="metric-label">Overall Health Score</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-value" id="val-duration" style="color: var(--accent)">--</div>
+    <div class="metric-label">Total Duration (s)</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-value" id="val-memory" style="color: var(--warning)">--</div>
+    <div class="metric-label">Peak Memory (MB)</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-value" id="val-errors" style="color: var(--danger)">--</div>
+    <div class="metric-label">Total Errors</div>
+  </div>
+</div>
+
+<div class="charts-grid">
+  <div class="chart-container">
+    <h2>Step Duration Distribution</h2>
+    <canvas id="durationChart"></canvas>
+  </div>
+  <div class="chart-container">
+    <h2>Memory Usage Profile</h2>
+    <canvas id="memoryChart"></canvas>
+  </div>
+</div>
+
+<div class="gantt-container">
+  <h2>Execution Gantt Chart (D3.js)</h2>
+  <div id="gantt-chart"></div>
+</div>
+
+<script>
+// SUMMARY_JSON is injected by the dashboard renderer.
+const rawData = {"run_id": "7fd5469521214afba707d424e03eef99", "run_hash": "39b359505392", "run_hash_schema": "gnn-run-v2", "identity_config": {"arguments": {"recursive": true, "formats": null, "geo_infer_options_file": null, "enable_round_trip": false, "enable_cross_format": false, "parallel": false, "autonomous": false, "strict": false, "estimate_resources": false, "profile": false, "simulate_error": false, "registry_path": null, "query_ontology": null, "ontology_terms_file": "src/ontology/act_inf_ontology_terms.json", "llm_tasks": null, "llm_timeout": null, "website_html_filename": null, "recreate_venv": false, "dev": true, "setup_core_only": false, "install_optional": false, "optional_groups": null, "frameworks": "pymdp", "strict_framework_success": false, "render_output_dir": null, "distributed": false, "execution_workers": 1, "backend": "ray", "serialize_preset": "full", "execution_benchmark_repeats": 1, "execution_summary_detail": false, "duration": 30.0, "audio_backend": "auto", "sonification": true, "full_analysis": false, "fast_only": true, "include_performance": false, "comprehensive": false, "skip_llm": true, "viz_type": "all", "interactive": false, "export_formats": ["html", "json"], "headless": false, "gui_types": "gui_1,gui_2", "open_browser": false, "analysis_model": null, "bottleneck_threshold": 60.0, "install_all_extras": false, "performance_mode": "low", "mcp_strict_validation": false, "mcp_cache_ttl": null, "mcp_per_module_timeout": null, "mcp_overall_timeout": null, "mcp_modules_allowlist": null, "timesteps": null, "simulation_params": "{}", "timeout": 300, "advanced_stats": false, "generate_animations": true}, "pipeline": {"enabled": true, "steps": [], "skip_steps": [], "fast_only": true, "force_steps": [], "parallel": {"enabled": false, "max_workers": 4}, "timeout": {"step": 3600, "total": 7200}}, "selected_steps": ["3_gnn.py", "5_type_checker.py", "6_validation.py", "7_export.py", "8_visualization.py", "11_render.py", "12_execute.py", "15_audio.py", "16_analysis.py", "23_report.py"], "runtime_config": {"present": true, "sha256": "7143f386d6c73f1c0cbd377d2badab63364346d950a91c7e3866474ab1d9d79a"}, "input_config": {"pipeline": {"enabled": true, "steps": [], "skip_steps": [], "fast_only": true, "force_steps": [], "parallel": {"enabled": false, "max_workers": 4}, "timeout": {"step": 3600, "total": 7200}}, "setup": {"dev": true, "recreate_venv": false}, "uv": {"recreate_uv_env": false, "uv_env_dir": ".venv"}, "io": {"input_dir": "input/gnn_files", "output_dir": "output", "temp_dir": "temp", "log_dir": "logs"}, "testing_matrix": {"enabled": true, "global_steps": {"0_template": true, "1_setup": true, "2_tests": true}, "default_steps": [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24], "folders": {}}, "llm": {"model": "smollm2:135m-instruct-q4_K_S", "timeout_seconds": 600, "max_files": 8, "prompt_timeout": 45}, "logging": {"level": "INFO", "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s", "file": {"enabled": true, "max_size": "10MB", "backup_count": 5}}, "validation": {"enabled": true, "strict": false, "timeout": 300}, "performance": {"memory_limit": 4096, "cpu_limit": 4, "cache": {"enabled": true, "max_size": "1GB", "ttl": 3600}}, "security": {"enabled": true, "network_access": true, "file_permissions": "644"}}}, "file_hashes": {"dynamic_perception.md": "b0abd0b673915c98093150d78c1b4b1442287c7bc094f1fe42b07a1730f2258c"}, "start_time": "2026-09-06T11:44:17.568454", "arguments": {"target_dir": "output/cross_framework/basics/acceptance/basics/input", "output_dir": "output/cross_framework/basics/acceptance/basics/pipeline_output", "recursive": true, "verbose": false, "formats": null, "geo_infer_options_file": null, "log_format": "human", "enable_round_trip": false, "enable_cross_format": false, "skip_steps": "13", "only_steps": "3,5,6,11,12,15,16,23", "parallel": false, "autonomous": false, "strict": false, "estimate_resources": false, "profile": false, "simulate_error": false, "registry_path": null, "query_ontology": null, "ontology_terms_file": "src/ontology/act_inf_ontology_terms.json", "pipeline_summary_file": "output/cross_framework/basics/acceptance/basics/pipeline_output/00_pipeline_summary/pipeline_execution_summary.json", "llm_tasks": null, "llm_timeout": null, "website_html_filename": null, "recreate_venv": false, "dev": true, "setup_core_only": false, "install_optional": false, "optional_groups": null, "frameworks": "pymdp", "strict_framework_success": false, "render_output_dir": null, "distributed": false, "execution_workers": 1, "backend": "ray", "serialize_preset": "full", "execution_benchmark_repeats": 1, "execution_summary_detail": false, "duration": 30.0, "audio_backend": "auto", "sonification": true, "full_analysis": false, "fast_only": true, "include_performance": false, "comprehensive": false, "skip_llm": true, "viz_type": "all", "interactive": false, "export_formats": ["html", "json"], "headless": false, "gui_types": "gui_1,gui_2", "open_browser": false, "analysis_model": null, "bottleneck_threshold": 60.0, "install_all_extras": false, "performance_mode": "low", "mcp_strict_validation": false, "mcp_cache_ttl": null, "mcp_per_module_timeout": null, "mcp_overall_timeout": null, "mcp_modules_allowlist": null, "timesteps": null, "simulation_params": "{}", "timeout": 300, "advanced_stats": false, "generate_animations": true}, "steps": [{"status": "SUCCESS", "stdout": "2026-09-06 11:44:18,165 [668f2520:3_gnn] 3_gnn.py - INFO - \ud83d\ude80 Starting step: Processing GNN files with full multi-format generation\n2026-09-06 11:44:18,171 [668f2520:3_gnn] 3_gnn.py - INFO - Initialized GNN parsing system with 22 supported formats (full preset emits 22 serializers)\n2026-09-06 11:44:18,171 [668f2520:3_gnn] 3_gnn.py - INFO - Available serializers: [<GNNFormat.MARKDOWN: 'markdown'>, <GNNFormat.JSON: 'json'>, <GNNFormat.XML: 'xml'>, <GNNFormat.YAML: 'yaml'>, <GNNFormat.SCALA: 'scala'>, <GNNFormat.PROTOBUF: 'protobuf'>, <GNNFormat.PKL: 'pkl'>, <GNNFormat.XSD: 'xsd'>, <GNNFormat.ASN1: 'asn1'>, <GNNFormat.LEAN: 'lean'>, <GNNFormat.COQ: 'coq'>, <GNNFormat.PYTHON: 'python'>, <GNNFormat.BNF: 'bnf'>, <GNNFormat.EBNF: 'ebnf'>, <GNNFormat.ISABELLE: 'isabelle'>, <GNNFormat.MAXIMA: 'maxima'>, <GNNFormat.ALLOY: 'alloy'>, <GNNFormat.Z_NOTATION: 'z_notation'>, <GNNFormat.TLA_PLUS: 'tla_plus'>, <GNNFormat.AGDA: 'agda'>, <GNNFormat.HASKELL: 'haskell'>, <GNNFormat.PICKLE: 'pickle'>]\n2026-09-06 11:44:18,182 [668f2520:3_gnn] 3_gnn.py - INFO - Found 1 potential GNN files\n2026-09-06 11:44:18,182 [668f2520:3_gnn] 3_gnn.py - INFO - Processing: output/cross_framework/basics/acceptance/basics/input/dynamic_perception.md\n2026-09-06 11:44:18,259 [668f2520:3_gnn] 3_gnn.py - INFO - Generated 22 formats for dynamic_perception.md\n2026-09-06 11:44:18,261 [668f2520:3_gnn] 3_gnn.py - INFO - \u2705 Processed 1 files, generated 22 format instances across 22 formats (preset=full)\n", "stderr": "", "memory_usage_mb": 37.1875, "peak_memory_mb": 39.328125, "memory_delta_mb": -2.140625, "exit_code": 0, "retry_count": 0, "prerequisite_check": true, "dependency_warnings": [], "recoverable": false, "step_number": 1, "script_name": "3_gnn.py", "description": "GNN file processing", "start_time": "2026-09-06T11:44:17.625047", "end_time": "2026-09-06T11:44:18.440611", "duration_seconds": 0.8155431747436523}, {"status": "SUCCESS", "stdout": "2026-09-06 11:44:20,212 [3292651d:5_type_checker] type_checker - INFO - \ud83d\ude80 Starting step: Processing type checker\n2026-09-06 11:44:23,014 [3292651d:5_type_checker] type_checker - INFO - \u2705 Type checking completed successfully\n", "stderr": "", "memory_usage_mb": 14.03125, "peak_memory_mb": 37.203125, "memory_delta_mb": -23.171875, "exit_code": 0, "retry_count": 0, "prerequisite_check": true, "dependency_warnings": [], "recoverable": false, "step_number": 2, "script_name": "5_type_checker.py", "description": "Type checking", "start_time": "2026-09-06T11:44:18.443175", "end_time": "2026-09-06T11:44:23.202807", "duration_seconds": 4.75961709022522}, {"status": "SUCCESS", "stdout": "2026-09-06 11:44:23,541 [858fda13:6_validation] validation.workflow - INFO - Loaded 1 parsed GNN files\n2026-09-06 11:44:23,547 [858fda13:6_validation] validation.workflow - INFO - Validating: dynamic_perception.md\n2026-09-06 11:44:23,549 [858fda13:6_validation] validation.workflow - INFO - Loaded parsed GNN specification from output/cross_framework/basics/acceptance/basics/pipeline_output/3_gnn_output/dynamic_perception/dynamic_perception_parsed.json\n2026-09-06 11:44:23,687 [858fda13:6_validation] validation.workflow - INFO - Semantic validation completed for dynamic_perception.md\n2026-09-06 11:44:23,687 [858fda13:6_validation] validation.workflow - INFO - Performance profiling completed for dynamic_perception.md\n2026-09-06 11:44:23,687 [858fda13:6_validation] validation.workflow - INFO - Consistency checking completed for dynamic_perception.md\n2026-09-06 11:44:23,690 [858fda13:6_validation] validation.workflow - INFO - Validation processing completed:\n2026-09-06 11:44:23,693 [858fda13:6_validation] validation.workflow - INFO -   Total files: 1\n2026-09-06 11:44:23,693 [858fda13:6_validation] validation.workflow - INFO -   Successful validations: 1\n2026-09-06 11:44:23,693 [858fda13:6_validation] validation.workflow - INFO -   Failed validations: 0\n2026-09-06 11:44:23,693 [858fda13:6_validation] validation.workflow - INFO -   Average semantic score: 1.00\n2026-09-06 11:44:23,693 [858fda13:6_validation] validation.workflow - INFO -   Average performance score: 0.70\n2026-09-06 11:44:23,693 [858fda13:6_validation] validation.workflow - INFO -   Average consistency score: 0.80\n", "stderr": "", "memory_usage_mb": 24.25, "peak_memory_mb": 24.25, "memory_delta_mb": 1.96875, "exit_code": 0, "retry_count": 0, "prerequisite_check": true, "dependency_warnings": [], "recoverable": false, "step_number": 3, "script_name": "6_validation.py", "description": "Validation", "start_time": "2026-09-06T11:44:23.210063", "end_time": "2026-09-06T11:44:23.792076", "duration_seconds": 0.5820088386535645}, {"status": "SUCCESS", "stdout": "2026-09-06 11:44:24,791 [10de6a70:7_export] 7_export.py - INFO - Loaded 1 parsed GNN files\n2026-09-06 11:44:24,791 [10de6a70:7_export] 7_export.py - INFO - Exporting: dynamic_perception.md\n2026-09-06 11:44:24,792 [10de6a70:7_export] 7_export.py - INFO - Loaded parsed GNN specification from output/cross_framework/basics/acceptance/basics/pipeline_output/3_gnn_output/dynamic_perception/dynamic_perception_parsed.json\n2026-09-06 11:44:24,793 [10de6a70:7_export] 7_export.py - INFO - Generated json export for dynamic_perception.md\n2026-09-06 11:44:24,801 [10de6a70:7_export] 7_export.py - INFO - Generated xml export for dynamic_perception.md\n2026-09-06 11:44:24,802 [10de6a70:7_export] 7_export.py - INFO - Generated graphml export for dynamic_perception.md\n2026-09-06 11:44:24,804 [10de6a70:7_export] 7_export.py - INFO - Generated gexf export for dynamic_perception.md\n2026-09-06 11:44:24,805 [10de6a70:7_export] 7_export.py - INFO - Generated pickle export for dynamic_perception.md\n2026-09-06 11:44:24,809 [10de6a70:7_export] 7_export.py - INFO - Export processing completed:\n2026-09-06 11:44:24,809 [10de6a70:7_export] 7_export.py - INFO -   Total files: 1\n2026-09-06 11:44:24,809 [10de6a70:7_export] 7_export.py - INFO -   Successful exports: 1\n2026-09-06 11:44:24,809 [10de6a70:7_export] 7_export.py - INFO -   Failed exports: 0\n2026-09-06 11:44:24,809 [10de6a70:7_export] 7_export.py - INFO -   Formats generated: {'json': 1, 'xml': 1, 'graphml': 1, 'gexf': 1, 'pickle': 1}\n", "stderr": "", "memory_usage_mb": 24.171875, "peak_memory_mb": 24.34375, "memory_delta_mb": -0.171875, "exit_code": 0, "retry_count": 0, "prerequisite_check": true, "dependency_warnings": [], "recoverable": false, "step_number": 4, "script_name": "7_export.py", "description": "Multi-format export", "start_time": "2026-09-06T11:44:23.795235", "end_time": "2026-09-06T11:44:25.318745", "duration_seconds": 1.5235028266906738}, {"status": "SUCCESS", "stdout": "2026-09-06 11:44:37,053 [b443a632:8_visualization] 8_visualization.py - INFO - Processing visualizations [step_number=None | total_steps=None]\n2026-09-06 11:44:37,055 [b443a632:8_visualization] 8_visualization.py - INFO - Visualization discovery recursive=True\n2026-09-06 11:45:12,528 [b443a632:8_visualization] 8_visualization.py - INFO - \u2705 Generated 17 visualizations [step_number=None]\n", "stderr": "", "memory_usage_mb": 12.09375, "peak_memory_mb": 24.390625, "memory_delta_mb": -12.296875, "exit_code": 0, "retry_count": 0, "prerequisite_check": true, "dependency_warnings": [], "recoverable": false, "step_number": 5, "script_name": "8_visualization.py", "description": "Visualization", "start_time": "2026-09-06T11:44:25.323987", "end_time": "2026-09-06T11:45:16.025155", "duration_seconds": 50.70114612579346}, {"status": "SUCCESS", "stdout": "2026-09-06 11:45:16,913 [1f7323cc:11_render] render.processor - INFO - Processing GNN files in: output/cross_framework/basics/acceptance/basics/input\n2026-09-06 11:45:16,913 [1f7323cc:11_render] render.processor - INFO - Output directory: output/cross_framework/basics/acceptance/basics/pipeline_output/11_render_output\n2026-09-06 11:45:16,923 [1f7323cc:11_render] render.processor - INFO - Found 1 GNN files to process\n2026-09-06 11:45:16,923 [1f7323cc:11_render] render.processor - INFO - Target frameworks: ['pymdp']\n2026-09-06 11:45:16,923 [1f7323cc:11_render] render.processor - INFO - Processing: output/cross_framework/basics/acceptance/basics/input/dynamic_perception.md\n2026-09-06 11:45:16,926 [1f7323cc:11_render] gnn.pomdp_extractor - INFO - Inferred num_actions=1 from B matrix dimensions\n2026-09-06 11:45:16,926 [1f7323cc:11_render] render.processor - INFO - Extracted POMDP 'Dynamic Perception Model' with 2 states, 2 observations, 1 actions\n2026-09-06 11:45:16,927 [1f7323cc:11_render] render.pomdp_processor - INFO - Processing POMDP 'Dynamic Perception Model' for frameworks: ['pymdp']\n2026-09-06 11:45:16,927 [1f7323cc:11_render] render.pomdp_processor - INFO - Processing framework: pymdp\n2026-09-06 11:45:16,930 [1f7323cc:11_render] render.pomdp_processor - INFO - Created documentation: output/cross_framework/basics/acceptance/basics/pipeline_output/11_render_output/dynamic_perception/pymdp/README.md\n2026-09-06 11:45:16,931 [1f7323cc:11_render] render.pomdp_processor - INFO - \u2705 pymdp: Generated pymdp 1.0.0 runner: output/cross_framework/basics/acceptance/basics/pipeline_output/11_render_output/dynamic_perception/pymdp/Dynamic_Perception_Model_pymdp.py\n2026-09-06 11:45:16,931 [1f7323cc:11_render] render.processor - INFO - Successfully processed dynamic_perception.md\n2026-09-06 11:45:16,936 [1f7323cc:11_render] render.processor - INFO - Created overview documentation: output/cross_framework/basics/acceptance/basics/pipeline_output/11_render_output/README.md\n2026-09-06 11:45:16,936 [1f7323cc:11_render] render.processor - INFO - Render processing completed\n2026-09-06 11:45:16,936 [1f7323cc:11_render] render.processor - INFO - Files: 1/1 successful\n2026-09-06 11:45:16,936 [1f7323cc:11_render] render.processor - INFO - Framework renderings: 1/1 successful (100.0%)\n2026-09-06 11:45:16,936 [1f7323cc:11_render] render.processor - INFO - Summary saved to: output/cross_framework/basics/acceptance/basics/pipeline_output/11_render_output/render_processing_summary.json\n", "stderr": "", "memory_usage_mb": 22.515625, "peak_memory_mb": 22.515625, "memory_delta_mb": 1.875, "exit_code": 0, "retry_count": 0, "prerequisite_check": true, "dependency_warnings": [], "recoverable": false, "step_number": 6, "script_name": "11_render.py", "description": "Code rendering", "start_time": "2026-09-06T11:45:16.033606", "end_time": "2026-09-06T11:45:17.476883", "duration_seconds": 1.4432709217071533}, {"status": "SUCCESS", "stdout": "2026-09-06 11:45:24,754 [e360de1e:12_execute] execute - INFO - Processing execute - searching for rendered implementations [step_number=None | total_steps=None]\n2026-09-06 11:45:24,755 [e360de1e:12_execute] execute - INFO - Requested frameworks: ['pymdp']\n2026-09-06 11:45:24,773 [e360de1e:12_execute] execute - INFO - Found render output directory: output/cross_framework/basics/acceptance/basics/pipeline_output/11_render_output\n2026-09-06 11:45:24,794 [e360de1e:12_execute] execute - INFO - Found 1 executable scripts to run\n2026-09-06 11:45:51,959 [e360de1e:12_execute] execute - INFO - \u2705 Successfully executed Dynamic_Perception_Model_pymdp.py\n2026-09-06 11:45:51,987 [e360de1e:12_execute] execute - INFO - Collecting execution outputs for pymdp script Dynamic_Perception_Model_pymdp.py\n2026-09-06 11:45:51,991 [e360de1e:12_execute] execute - INFO - Found 1 output files to collect for pymdp\n2026-09-06 11:45:51,993 [e360de1e:12_execute] execute - INFO - Copied simulation_results.json -> simulation_data/simulation_results.json\n2026-09-06 11:45:51,994 [e360de1e:12_execute] execute - INFO - Collected 1 output files: 0 visualizations, 1 data files, 0 traces\n2026-09-06 11:45:51,994 [e360de1e:12_execute] execute - INFO - Extracting simulation data from collected files for pymdp\n2026-09-06 11:45:51,995 [e360de1e:12_execute] execute - INFO - Extracted 6 data fields from files\n2026-09-06 11:45:51,997 [e360de1e:12_execute] execute - INFO - pymdp_execution_summary model=dynamic_perception script=Dynamic_Perception_Model_pymdp.py simulation_results=output/cross_framework/basics/acceptance/basics/pipeline_output/12_execute_output/dynamic_perception/pymdp/simulation_data/simulation_results.json timesteps=10\n2026-09-06 11:45:52,008 [e360de1e:12_execute] execute - INFO - Generated execution report: output/cross_framework/basics/acceptance/basics/pipeline_output/12_execute_output/summaries/execution_report.md\n2026-09-06 11:45:52,008 [e360de1e:12_execute] execute - INFO - \u2705 Execute processing completed successfully [step_number=None]\n", "stderr": "", "memory_usage_mb": 12.28125, "peak_memory_mb": 22.609375, "memory_delta_mb": -10.328125, "exit_code": 0, "retry_count": 0, "prerequisite_check": true, "dependency_warnings": [], "recoverable": false, "step_number": 7, "script_name": "12_execute.py", "description": "Execution", "start_time": "2026-09-06T11:45:17.481549", "end_time": "2026-09-06T11:45:54.475541", "duration_seconds": 36.99396777153015}, {"status": "SUCCESS", "stdout": "2026-09-06 11:45:55,433 [4824d2df:15_audio] audio - INFO - Processing audio [step_number=None | total_steps=None]\n2026-09-06 11:45:56,721 [4824d2df:15_audio] audio - INFO - \u2705 Audio processing completed successfully [step_number=None]\n", "stderr": "", "memory_usage_mb": 22.109375, "peak_memory_mb": 22.109375, "memory_delta_mb": 1.453125, "exit_code": 0, "retry_count": 0, "prerequisite_check": true, "dependency_warnings": [], "recoverable": false, "step_number": 8, "script_name": "15_audio.py", "description": "Audio processing", "start_time": "2026-09-06T11:45:54.481325", "end_time": "2026-09-06T11:45:57.035554", "duration_seconds": 2.5542221069335938}, {"status": "SUCCESS", "stdout": "2026-09-06 11:46:10,279 [ac00917b:16_analysis] analysis - INFO - Processing analysis [step_number=None | total_steps=None]\n2026-09-06 11:46:10,279 [ac00917b:16_analysis] analysis - INFO - Step 16 GridWorld animations enabled: True\n2026-09-06 11:46:10,354 [ac00917b:16_analysis] analysis - INFO - Looking for execution results in: output/cross_framework/basics/acceptance/basics/pipeline_output/12_execute_output\n2026-09-06 11:46:10,354 [ac00917b:16_analysis] analysis - INFO - Found execution results directory, performing post-simulation analysis\n2026-09-06 11:46:11,613 [ac00917b:16_analysis] analysis - INFO - Generated 3 empirical visualizations from execution summary\n2026-09-06 11:46:11,613 [ac00917b:16_analysis] analysis - INFO - Analyzing execution results for dynamic_perception\n2026-09-06 11:46:11,617 [ac00917b:16_analysis] analysis - INFO - Post-simulation analysis completed for dynamic_perception\n2026-09-06 11:46:11,617 [ac00917b:16_analysis] analysis - INFO - Generated overall summary statistics\n2026-09-06 11:46:11,622 [ac00917b:16_analysis] analysis - INFO - Generating PyMDP visualizations...\n2026-09-06 11:46:22,480 [ac00917b:16_analysis] analysis.pymdp - INFO - PyMDP analysis complete: generated 5 visualization files\n2026-09-06 11:46:22,480 [ac00917b:16_analysis] analysis - INFO - Generated 5 PyMDP visualization files\n2026-09-06 11:46:22,481 [ac00917b:16_analysis] analysis - INFO - Performing cross-framework analysis...\n2026-09-06 11:46:22,486 [ac00917b:16_analysis] analysis - INFO -   [pymdp] Loaded pymdp_simulation_v1 data from: /private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/basics/acceptance/basics/pipeline_output/12_execute_output/dynamic_perception/pymdp/simulation_data/simulation_results.json\n2026-09-06 11:46:22,520 [ac00917b:16_analysis] analysis - INFO -   [pymdp] Extracted: beliefs(10 steps), actions(10), observations(10), free_energy(10), model_parameters\n2026-09-06 11:46:22,522 [ac00917b:16_analysis] analysis - INFO - Generated framework comparison report: output/cross_framework/basics/acceptance/basics/pipeline_output/16_analysis_output/cross_framework/framework_comparison_report.md\n2026-09-06 11:46:24,227 [ac00917b:16_analysis] analysis - INFO - Generated 2 cross-framework comparison visualizations\n2026-09-06 11:46:24,229 [ac00917b:16_analysis] analysis - INFO - Generating comprehensive visualizations for all execution outputs...\n2026-09-06 11:46:24,256 [ac00917b:16_analysis] analysis - INFO - Found 1 framework/model combinations for visualization\n2026-09-06 11:46:27,086 [ac00917b:16_analysis] analysis.visualizations - INFO - Saved visualization: dynamic_perception_pymdp_free_energy.png\n2026-09-06 11:46:27,101 [ac00917b:16_analysis] analysis - INFO - Generated free energy plot: dynamic_perception_pymdp_free_energy.png\n2026-09-06 11:46:28,590 [ac00917b:16_analysis] analysis.visualizations - INFO - Saved visualization: dynamic_perception_pymdp_vfe_vs_efe.png\n2026-09-06 11:46:28,591 [ac00917b:16_analysis] analysis - INFO - Generated dual free energy plot: dynamic_perception_pymdp_vfe_vs_efe.png\n2026-09-06 11:46:29,594 [ac00917b:16_analysis] analysis.visualizations - INFO - Saved visualization: dynamic_perception_pymdp_observations.png\n2026-09-06 11:46:29,596 [ac00917b:16_analysis] analysis - INFO - Generated observation analysis: dynamic_perception_pymdp_observations.png\n2026-09-06 11:46:29,610 [ac00917b:16_analysis] analysis - INFO - Generated 3 visualization files\n2026-09-06 11:46:29,610 [ac00917b:16_analysis] analysis - INFO - Generated 3 comprehensive visualization files\n2026-09-06 11:46:29,610 [ac00917b:16_analysis] analysis - INFO - Generating unified framework dashboard...\n2026-09-06 11:46:29,613 [ac00917b:16_analysis] analysis - INFO - Less than 2 frameworks with data - skipping unified dashboard\n2026-09-06 11:46:29,621 [ac00917b:16_analysis] analysis.generate_cross_model_report - INFO - Generating cross-model comparison report...\n2026-09-06 11:46:29,625 [ac00917b:16_analysis] analysis.generate_cross_model_report - INFO - Cross-model comparison report written to output/cross_framework/basics/acceptance/basics/pipeline_output/16_analysis_output/cross_model_comparison_report.md\n2026-09-06 11:46:29,625 [ac00917b:16_analysis] analysis - INFO - Generated cross-model comparison report: output/cross_framework/basics/acceptance/basics/pipeline_output/16_analysis_output/cross_model_comparison_report.md\n2026-09-06 11:46:29,630 [ac00917b:16_analysis] analysis - INFO - \u2705 Analysis processing completed successfully [step_number=None]\n", "stderr": "", "memory_usage_mb": 11.8125, "peak_memory_mb": 22.375, "memory_delta_mb": -10.5625, "exit_code": 0, "retry_count": 0, "prerequisite_check": true, "dependency_warnings": [], "recoverable": false, "step_number": 9, "script_name": "16_analysis.py", "description": "Analysis", "start_time": "2026-09-06T11:45:57.040058", "end_time": "2026-09-06T11:46:32.419297", "duration_seconds": 35.37921094894409}, {"status": "SUCCESS_WITH_WARNINGS", "stdout": "2026-09-06 11:46:32,985 [5b7a3df2:23_report] 23_report.py - INFO - Processing report for files in output/cross_framework/basics/acceptance/basics/input\n2026-09-06 11:46:32,985 [5b7a3df2:23_report] 23_report.py - INFO - Pipeline output directory: output/cross_framework/basics/acceptance/basics/pipeline_output\n2026-09-06 11:46:32,985 [5b7a3df2:23_report] 23_report.py - INFO - Report output directory: output/cross_framework/basics/acceptance/basics/pipeline_output/23_report_output\n2026-09-06 11:46:32,985 [5b7a3df2:23_report] 23_report.py - INFO - Generating comprehensive analysis report from pipeline outputs\n2026-09-06 11:46:32,985 [5b7a3df2:23_report] 23_report.py - INFO - Starting comprehensive report generation from pipeline outputs\n2026-09-06 11:46:32,985 [5b7a3df2:23_report] 23_report.py - INFO - Collecting pipeline data for analysis\n2026-09-06 11:46:33,011 [5b7a3df2:23_report] 23_report.py - INFO - Found 14 visualizations in 8_visualization_output\n2026-09-06 11:46:33,020 [5b7a3df2:23_report] 23_report.py - INFO - Total visualizations discovered: 14\n2026-09-06 11:46:33,020 [5b7a3df2:23_report] 23_report.py - INFO - Generating HTML report\n2026-09-06 11:46:33,021 [5b7a3df2:23_report] 23_report.py - INFO - HTML report generated: output/cross_framework/basics/acceptance/basics/pipeline_output/23_report_output/comprehensive_analysis_report.html (0.02 MB)\n2026-09-06 11:46:33,021 [5b7a3df2:23_report] 23_report.py - INFO - Generating Markdown report\n2026-09-06 11:46:33,022 [5b7a3df2:23_report] 23_report.py - INFO - Markdown report generated: output/cross_framework/basics/acceptance/basics/pipeline_output/23_report_output/comprehensive_analysis_report.md (0.01 MB)\n2026-09-06 11:46:33,022 [5b7a3df2:23_report] 23_report.py - INFO - Generating JSON report\n2026-09-06 11:46:33,025 [5b7a3df2:23_report] 23_report.py - INFO - JSON report generated: output/cross_framework/basics/acceptance/basics/pipeline_output/23_report_output/report_summary.json (0.05 MB)\n2026-09-06 11:46:33,098 [5b7a3df2:23_report] 23_report.py - INFO - Report generation summary created: output/cross_framework/basics/acceptance/basics/pipeline_output/23_report_output/report_generation_summary.json\n2026-09-06 11:46:33,098 [5b7a3df2:23_report] 23_report.py - INFO - Generated comprehensive report with 3 files\n2026-09-06 11:46:33,098 [5b7a3df2:23_report] 23_report.py - INFO - Pipeline health score: 40.0/100\n2026-09-06 11:46:33,098 [5b7a3df2:23_report] 23_report.py - INFO - Report files: comprehensive_analysis_report.html, comprehensive_analysis_report.md, report_summary.json\n2026-09-06 11:46:33,196 [5b7a3df2:23_report] report.pipeline_report - INFO - \ud83d\udcc4 Pipeline report generated (2443 chars)\n2026-09-06 11:46:33,197 [5b7a3df2:23_report] 23_report.py - INFO - \ud83d\udcc4 Pipeline report written to: output/cross_framework/basics/acceptance/basics/pipeline_output/PIPELINE_REPORT.md\n2026-09-06 11:46:33,198 [5b7a3df2:23_report] 23_report.py - INFO - \ud83d\udcca Report summary saved to: output/cross_framework/basics/acceptance/basics/pipeline_output/23_report_output/report_processing_summary.json\n2026-09-06 11:46:33,198 [5b7a3df2:23_report] 23_report.py - INFO - \u2705 Report processing completed - Generated 4 report files\n", "stderr": "", "memory_usage_mb": 22.546875, "peak_memory_mb": 22.546875, "memory_delta_mb": 1.296875, "exit_code": 0, "retry_count": 0, "prerequisite_check": false, "dependency_warnings": ["Missing prerequisite output directory: output/cross_framework/basics/acceptance/basics/pipeline_output/13_llm_output. Step 13_llm.py may not have been executed."], "recoverable": false, "step_number": 10, "script_name": "23_report.py", "description": "Report generation", "start_time": "2026-09-06T11:46:32.426680", "end_time": "2026-09-06T11:46:33.427884", "duration_seconds": 1.0011999607086182}], "end_time": "2026-09-06T11:46:33.435385", "overall_status": "SUCCESS_WITH_WARNINGS", "total_duration_seconds": 135.866931, "environment_info": {"python_version": "3.11.15 (main, May  4 2026, 21:04:48) [Clang 22.1.3 ]", "platform": "darwin", "cpu_count": 10, "working_directory": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation", "user": "hum", "memory_total_gb": "16.0", "disk_free_gb": "2.1"}, "performance_summary": {"peak_memory_mb": 39.328125, "total_steps": 10, "failed_steps": 0, "critical_failures": 0, "successful_steps": 10, "warnings": 1}};
+
+document.addEventListener("DOMContentLoaded", () => {
+    try {
+        if (!rawData || !rawData.steps) {
+            document.getElementById('dashboard-meta').innerText = 'No valid execution data found.';
+            return;
+        }
+
+        // 1. Populate Header & Metrics
+        document.getElementById('dashboard-meta').innerText = `Execution ID: ${rawData.process_id || 'Unknown'} | Timestamp: ${rawData.timestamp || ''}`;
+        
+        // Derive a health score when Step 24 has not produced one yet.
+        const health = rawData.health_score || (100 - (rawData.failures ? rawData.failures.length : 0) * 10);
+        document.getElementById('val-health').innerText = `${health}/100`;
+        // Color code health
+        document.getElementById('val-health').style.color = health > 80 ? 'var(--success)' : health > 50 ? 'var(--warning)' : 'var(--danger)';
+
+        document.getElementById('val-duration').innerText = (rawData.total_duration_seconds || rawData.total_duration || 0).toFixed(2);
+        
+        // Find Peak Memory
+        const maxMem = Math.max(...rawData.steps.map(s => s.memory_mb || 0).filter(v => v));
+        document.getElementById('val-memory').innerText = maxMem > 0 ? maxMem.toFixed(1) : 'N/A';
+        
+        const errs = rawData.failures ? rawData.failures.length : 0;
+        document.getElementById('val-errors').innerText = errs;
+
+
+        // 2. Prepare Chart Data
+        const labels = rawData.steps.map(s => s.name);
+        const durations = rawData.steps.map(s => Math.max(0, s.duration_seconds || 0));
+        const memories = rawData.steps.map(s => Math.max(0, s.memory_mb || 0));
+
+        // 3. Duration Chart (Chart.js)
+        new Chart(document.getElementById('durationChart'), {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Duration (seconds)',
+                    data: durations,
+                    backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: { 
+                    y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' } },
+                    x: { ticks: { maxRotation: 45, minRotation: 45 }, grid: { display: false } }
+                }
+            }
+        });
+
+        // 4. Memory Chart (Chart.js)
+        new Chart(document.getElementById('memoryChart'), {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Memory (MB)',
+                    data: memories,
+                    borderColor: 'rgba(245, 158, 11, 0.8)',
+                    backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: { 
+                    y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' } },
+                    x: { ticks: { maxRotation: 45, minRotation: 45 }, grid: { display: false } }
+                }
+            }
+        });
+
+        // 5. Build D3 Gantt Chart
+        const ganttDiv = d3.select("#gantt-chart");
+        const width = 800;
+        const height = rawData.steps.length * 30 + 50;
+
+        const svg = ganttDiv.append("svg")
+            .attr("width", "100%")
+            .attr("height", height)
+            .style("background", "var(--surface)");
+
+        // We build cumulative start times
+        let currentStart = 0;
+        const ganttData = rawData.steps.map(s => {
+            const dur = Math.max(0.1, s.duration_seconds || 0); // min 0.1s for visibility
+            const item = {
+                name: s.name,
+                status: s.status,
+                start: currentStart,
+                duration: dur,
+                end: currentStart + dur
+            };
+            currentStart += dur;
+            return item;
+        });
+
+        const xScale = d3.scaleLinear()
+            .domain([0, currentStart])
+            .range([200, width - 40]);
+
+        const yScale = d3.scaleBand()
+            .domain(ganttData.map(d => d.name))
+            .range([0, height - 30])
+            .padding(0.2);
+
+        // Name Labels
+        svg.selectAll(".gantt-label")
+            .data(ganttData)
+            .enter().append("text")
+            .attr("x", 190)
+            .attr("y", d => yScale(d.name) + yScale.bandwidth() / 2 + 4)
+            .attr("text-anchor", "end")
+            .attr("fill", "#94a3b8")
+            .attr("font-size", "12px")
+            .text(d => d.name.length > 25 ? d.name.substring(0,25)+'...' : d.name);
+
+        // Bars
+        svg.selectAll(".gantt-bar")
+            .data(ganttData)
+            .enter().append("rect")
+            .attr("x", d => xScale(d.start))
+            .attr("y", d => yScale(d.name))
+            .attr("width", d => Math.max(2, xScale(d.end) - xScale(d.start))) // Min 2px width
+            .attr("height", yScale.bandwidth())
+            .attr("rx", 4)
+            .attr("fill", d => {
+                const s = String(d.status).toLowerCase();
+                if (s.includes("success") || s.includes("passed")) return "#22c55e";
+                if (s.includes("warn")) return "#f59e0b";
+                if (s.includes("fail") || s.includes("error")) return "#ef4444";
+                return "#3b82f6";
+            })
+            .style("opacity", 0.9);
+
+        // Duration overlay inside/next to bar
+        svg.selectAll(".gantt-dur")
+            .data(ganttData)
+            .enter().append("text")
+            .attr("x", d => xScale(d.end) + 5)
+            .attr("y", d => yScale(d.name) + yScale.bandwidth() / 2 + 4)
+            .attr("fill", "#64748b")
+            .attr("font-size", "10px")
+            .text(d => d.duration.toFixed(2) + "s");
+
+    } catch (err) {
+        console.error(err);
+        document.getElementById('dashboard-meta').innerText = 'Error initializing dashboard visuals.';
+    }
+});
+</script>
+</body>
+</html>

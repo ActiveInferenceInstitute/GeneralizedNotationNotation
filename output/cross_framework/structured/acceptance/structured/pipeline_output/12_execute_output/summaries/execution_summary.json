@@ -1,0 +1,236 @@
+{
+  "timestamp": "2026-09-06T12:16:09.017540",
+  "target_directory": "output/cross_framework/structured/acceptance/structured/input",
+  "output_directory": "output/cross_framework/structured/acceptance/structured/pipeline_output/12_execute_output",
+  "total_scripts_found": 1,
+  "successful_executions": 1,
+  "failed_executions": 0,
+  "skipped_executions": 0,
+  "execution_details": [
+    {
+      "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/structured/acceptance/structured/pipeline_output/11_render_output/factorized_posterior/pymdp/Factorized_Posterior_Agent_pymdp.py",
+      "script_name": "Factorized_Posterior_Agent_pymdp.py",
+      "framework": "pymdp",
+      "model_name": "factorized_posterior",
+      "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 9.838355,
+      "timestamp": "2026-09-06T12:16:09.059243",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 9.838355,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        9.838355
+      ],
+      "structured_result_file": "output/cross_framework/structured/acceptance/structured/pipeline_output/12_execute_output/factorized_posterior/pymdp/execution_logs/Factorized_Posterior_Agent_pymdp.py_results.json",
+      "output_file": "output/cross_framework/structured/acceptance/structured/pipeline_output/12_execute_output/factorized_posterior/pymdp/execution_logs/Factorized_Posterior_Agent_pymdp.py_execution.log",
+      "implementation_directory": "output/cross_framework/structured/acceptance/structured/pipeline_output/12_execute_output/factorized_posterior/pymdp",
+      "script_identity": {
+        "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/structured/acceptance/structured/pipeline_output/11_render_output/factorized_posterior/pymdp/Factorized_Posterior_Agent_pymdp.py",
+        "sha256": "b28e0543cc409f3e3c9d62a24c064ac4306a2198d2c28607521c6f15b34509e2"
+      },
+      "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/structured/acceptance/structured/input",
+      "stdout_length": 41,
+      "stderr_length": 3616,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    }
+  ],
+  "framework_status": {
+    "pymdp": {
+      "executions": 1,
+      "successful": 1,
+      "failed": 0,
+      "skipped": 0,
+      "status": "success"
+    }
+  },
+  "execution_mode": "local",
+  "execution_workers": 1,
+  "backend": null,
+  "execution_benchmark_repeats": 1,
+  "execution_summary_detail": false,
+  "dispatch_max_retries": 0,
+  "success": true,
+  "status": "success",
+  "exit_code": 0,
+  "run_id": "5b92c150c1a5409a93d77f9343a72ded",
+  "configuration": {
+    "frameworks": [
+      "pymdp"
+    ],
+    "strict_requested_frameworks": true,
+    "options": {
+      "recursive": true,
+      "timeout": 300,
+      "render_output_dir": null,
+      "distributed": false,
+      "execution_workers": 1,
+      "backend": "ray",
+      "execution_benchmark_repeats": 1,
+      "execution_summary_detail": false
+    }
+  },
+  "input_identity": {
+    "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/structured/acceptance/structured/input",
+    "files": {
+      "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/structured/acceptance/structured/input/factorized_posterior.md": "948a21928905b8dbeb3b398f1745482d0fdebd2ea6fd5fe1a37ccff977e7131a"
+    }
+  },
+  "render_failures": [],
+  "missing_render_scripts": [],
+  "requested_frameworks": [
+    "pymdp"
+  ],
+  "total_scripts": 1,
+  "attempted_scripts": 1,
+  "success_rate": 100.0,
+  "outcome_reason": "all_scripts_succeeded",
+  "receipt_identity": {
+    "run_id": "5b92c150c1a5409a93d77f9343a72ded",
+    "config_sha256": "727b3bc903e5c99d2d5923e78dde1d5e049efe71295f92db91cd4acd573adbbf"
+  },
+  "invocation_receipts": {
+    "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/structured/acceptance/structured/input": {
+      "status": "success",
+      "success": true,
+      "exit_code": 0,
+      "outcome_reason": "all_scripts_succeeded",
+      "render_failures": [],
+      "missing_render_scripts": [],
+      "missing_render_summary": null,
+      "input_identity": {
+        "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/structured/acceptance/structured/input",
+        "files": {
+          "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/structured/acceptance/structured/input/factorized_posterior.md": "948a21928905b8dbeb3b398f1745482d0fdebd2ea6fd5fe1a37ccff977e7131a"
+        }
+      },
+      "execution_details": [
+        {
+          "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/structured/acceptance/structured/pipeline_output/11_render_output/factorized_posterior/pymdp/Factorized_Posterior_Agent_pymdp.py",
+          "script_name": "Factorized_Posterior_Agent_pymdp.py",
+          "framework": "pymdp",
+          "model_name": "factorized_posterior",
+          "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 9.838355,
+          "timestamp": "2026-09-06T12:16:09.059243",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 9.838355,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            9.838355
+          ],
+          "structured_result_file": "output/cross_framework/structured/acceptance/structured/pipeline_output/12_execute_output/factorized_posterior/pymdp/execution_logs/Factorized_Posterior_Agent_pymdp.py_results.json",
+          "output_file": "output/cross_framework/structured/acceptance/structured/pipeline_output/12_execute_output/factorized_posterior/pymdp/execution_logs/Factorized_Posterior_Agent_pymdp.py_execution.log",
+          "implementation_directory": "output/cross_framework/structured/acceptance/structured/pipeline_output/12_execute_output/factorized_posterior/pymdp",
+          "script_identity": {
+            "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/structured/acceptance/structured/pipeline_output/11_render_output/factorized_posterior/pymdp/Factorized_Posterior_Agent_pymdp.py",
+            "sha256": "b28e0543cc409f3e3c9d62a24c064ac4306a2198d2c28607521c6f15b34509e2"
+          },
+          "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/structured/acceptance/structured/input",
+          "stdout_length": 41,
+          "stderr_length": 3616,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 1
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        }
+      ]
+    }
+  },
+  "current_invocation": {
+    "status": "success",
+    "success": true,
+    "exit_code": 0,
+    "outcome_reason": "all_scripts_succeeded",
+    "render_failures": [],
+    "missing_render_scripts": [],
+    "missing_render_summary": null,
+    "input_identity": {
+      "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/structured/acceptance/structured/input",
+      "files": {
+        "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/structured/acceptance/structured/input/factorized_posterior.md": "948a21928905b8dbeb3b398f1745482d0fdebd2ea6fd5fe1a37ccff977e7131a"
+      }
+    },
+    "execution_details": [
+      {
+        "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/structured/acceptance/structured/pipeline_output/11_render_output/factorized_posterior/pymdp/Factorized_Posterior_Agent_pymdp.py",
+        "script_name": "Factorized_Posterior_Agent_pymdp.py",
+        "framework": "pymdp",
+        "model_name": "factorized_posterior",
+        "executor": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/.venv/bin/python",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 9.838355,
+        "timestamp": "2026-09-06T12:16:09.059243",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 9.838355,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          9.838355
+        ],
+        "structured_result_file": "output/cross_framework/structured/acceptance/structured/pipeline_output/12_execute_output/factorized_posterior/pymdp/execution_logs/Factorized_Posterior_Agent_pymdp.py_results.json",
+        "output_file": "output/cross_framework/structured/acceptance/structured/pipeline_output/12_execute_output/factorized_posterior/pymdp/execution_logs/Factorized_Posterior_Agent_pymdp.py_execution.log",
+        "implementation_directory": "output/cross_framework/structured/acceptance/structured/pipeline_output/12_execute_output/factorized_posterior/pymdp",
+        "script_identity": {
+          "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/structured/acceptance/structured/pipeline_output/11_render_output/factorized_posterior/pymdp/Factorized_Posterior_Agent_pymdp.py",
+          "sha256": "b28e0543cc409f3e3c9d62a24c064ac4306a2198d2c28607521c6f15b34509e2"
+        },
+        "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/structured/acceptance/structured/input",
+        "stdout_length": 41,
+        "stderr_length": 3616,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 1
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      }
+    ],
+    "target_directory": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/structured/acceptance/structured/input"
+  },
+  "merged_prior_folder_runs": 0,
+  "execution_summary_format": "slim_v1"
+}

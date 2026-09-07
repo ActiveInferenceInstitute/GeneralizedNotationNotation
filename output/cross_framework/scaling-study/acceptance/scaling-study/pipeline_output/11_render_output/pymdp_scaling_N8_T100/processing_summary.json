@@ -1,0 +1,19 @@
+{
+  "timestamp": "2026-09-06T12:21:28.338987",
+  "source_file": "output/cross_framework/scaling-study/acceptance/scaling-study/input/pymdp_scaling_N8_T100.md",
+  "model_name": "PyMDP Scaling N8 T100",
+  "pomdp_dimensions": {
+    "num_states": 8,
+    "num_observations": 8,
+    "num_actions": 8
+  },
+  "frameworks_requested": [
+    "pymdp"
+  ],
+  "frameworks_processed": [
+    "pymdp"
+  ],
+  "frameworks_failed": [],
+  "frameworks_unsupported": [],
+  "model_kind": "discrete"
+}

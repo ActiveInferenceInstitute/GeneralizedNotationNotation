@@ -1,0 +1,352 @@
+{
+  "timestamp": "2026-09-06T11:50:16.034933",
+  "source_directory": "output/cross_framework/continuous/acceptance/continuous/input",
+  "output_directory": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output",
+  "processing_config": {
+    "recursive": true,
+    "verbose": false,
+    "serialize_preset": "full",
+    "supported_formats": [
+      "markdown",
+      "scala",
+      "lean",
+      "coq",
+      "python",
+      "bnf",
+      "ebnf",
+      "isabelle",
+      "maxima",
+      "xml",
+      "json",
+      "protobuf",
+      "yaml",
+      "xsd",
+      "asn1",
+      "pkl",
+      "alloy",
+      "z_notation",
+      "tla_plus",
+      "agda",
+      "haskell",
+      "pickle"
+    ],
+    "serialized_formats": [
+      "markdown",
+      "scala",
+      "lean",
+      "coq",
+      "python",
+      "bnf",
+      "ebnf",
+      "isabelle",
+      "maxima",
+      "xml",
+      "json",
+      "protobuf",
+      "yaml",
+      "xsd",
+      "asn1",
+      "pkl",
+      "alloy",
+      "z_notation",
+      "tla_plus",
+      "agda",
+      "haskell",
+      "pickle"
+    ],
+    "available_serializers": {
+      "markdown": "MarkdownSerializer",
+      "json": "JSONSerializer",
+      "xml": "XMLSerializer",
+      "yaml": "YAMLSerializer",
+      "scala": "ScalaSerializer",
+      "protobuf": "ProtobufSerializer",
+      "pkl": "PKLSerializer",
+      "xsd": "XSDSerializer",
+      "asn1": "ASN1Serializer",
+      "lean": "LeanSerializer",
+      "coq": "CoqSerializer",
+      "python": "PythonSerializer",
+      "bnf": "GrammarSerializer",
+      "ebnf": "GrammarSerializer",
+      "isabelle": "IsabelleSerializer",
+      "maxima": "MaximaSerializer",
+      "alloy": "AlloySerializer",
+      "z_notation": "ZNotationSerializer",
+      "tla_plus": "TLASerializer",
+      "agda": "AgdaSerializer",
+      "haskell": "FunctionalSerializer",
+      "pickle": "BinarySerializer"
+    }
+  },
+  "processed_files": [
+    {
+      "file_name": "stochastic_dynamics.md",
+      "file_path": "output/cross_framework/continuous/acceptance/continuous/input/stochastic_dynamics.md",
+      "parse_success": true,
+      "parsed_model_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_parsed.json",
+      "source_format": "markdown",
+      "model_info": {
+        "name": "Stochastic Continuous Dynamics Agent",
+        "version": "1.0",
+        "variables_count": 9,
+        "connections_count": 6,
+        "parameters_count": 11,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_markdown.md",
+          "file_size": 1446,
+          "success": true
+        },
+        "scala": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_scala.scala",
+          "file_size": 4028,
+          "success": true
+        },
+        "lean": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_lean.lean",
+          "file_size": 4591,
+          "success": true
+        },
+        "coq": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_coq.v",
+          "file_size": 4381,
+          "success": true
+        },
+        "python": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_python.py",
+          "file_size": 7361,
+          "success": true
+        },
+        "bnf": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_bnf.bnf",
+          "file_size": 4717,
+          "success": true
+        },
+        "ebnf": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_ebnf.ebnf",
+          "file_size": 4717,
+          "success": true
+        },
+        "isabelle": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_isabelle.thy",
+          "file_size": 4383,
+          "success": true
+        },
+        "maxima": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_maxima.max",
+          "file_size": 4674,
+          "success": true
+        },
+        "xml": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_xml.xml",
+          "file_size": 7328,
+          "success": true
+        },
+        "json": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_json.json",
+          "file_size": 7145,
+          "success": true
+        },
+        "protobuf": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_protobuf.proto",
+          "file_size": 6097,
+          "success": true
+        },
+        "yaml": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_yaml.yaml",
+          "file_size": 4358,
+          "success": true
+        },
+        "xsd": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_xsd.xsd",
+          "file_size": 5207,
+          "success": true
+        },
+        "asn1": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_asn1.asn1",
+          "file_size": 6947,
+          "success": true
+        },
+        "pkl": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_pkl.pkl",
+          "file_size": 9965,
+          "success": true
+        },
+        "alloy": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_alloy.als",
+          "file_size": 6480,
+          "success": true
+        },
+        "z_notation": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_z_notation.z",
+          "file_size": 4906,
+          "success": true
+        },
+        "tla_plus": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_tla_plus.tla",
+          "file_size": 3809,
+          "success": true
+        },
+        "agda": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_agda.agda",
+          "file_size": 3808,
+          "success": true
+        },
+        "haskell": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_haskell.hs",
+          "file_size": 4079,
+          "success": true
+        },
+        "pickle": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_pickle.pickle",
+          "file_size": 3120,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "continuous_navigation.md",
+      "file_path": "output/cross_framework/continuous/acceptance/continuous/input/continuous_navigation.md",
+      "parse_success": true,
+      "parsed_model_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/continuous_navigation/continuous_navigation_parsed.json",
+      "source_format": "markdown",
+      "model_info": {
+        "name": "Continuous State Navigation Agent",
+        "version": "1.0",
+        "variables_count": 12,
+        "connections_count": 9,
+        "parameters_count": 13,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/continuous_navigation/continuous_navigation_markdown.md",
+          "file_size": 1711,
+          "success": true
+        },
+        "scala": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/continuous_navigation/continuous_navigation_scala.scala",
+          "file_size": 5197,
+          "success": true
+        },
+        "lean": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/continuous_navigation/continuous_navigation_lean.lean",
+          "file_size": 5746,
+          "success": true
+        },
+        "coq": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/continuous_navigation/continuous_navigation_coq.v",
+          "file_size": 5484,
+          "success": true
+        },
+        "python": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/continuous_navigation/continuous_navigation_python.py",
+          "file_size": 9147,
+          "success": true
+        },
+        "bnf": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/continuous_navigation/continuous_navigation_bnf.bnf",
+          "file_size": 5824,
+          "success": true
+        },
+        "ebnf": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/continuous_navigation/continuous_navigation_ebnf.ebnf",
+          "file_size": 5824,
+          "success": true
+        },
+        "isabelle": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/continuous_navigation/continuous_navigation_isabelle.thy",
+          "file_size": 5510,
+          "success": true
+        },
+        "maxima": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/continuous_navigation/continuous_navigation_maxima.max",
+          "file_size": 5908,
+          "success": true
+        },
+        "xml": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/continuous_navigation/continuous_navigation_xml.xml",
+          "file_size": 9326,
+          "success": true
+        },
+        "json": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/continuous_navigation/continuous_navigation_json.json",
+          "file_size": 9105,
+          "success": true
+        },
+        "protobuf": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/continuous_navigation/continuous_navigation_protobuf.proto",
+          "file_size": 7426,
+          "success": true
+        },
+        "yaml": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/continuous_navigation/continuous_navigation_yaml.yaml",
+          "file_size": 5560,
+          "success": true
+        },
+        "xsd": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/continuous_navigation/continuous_navigation_xsd.xsd",
+          "file_size": 6424,
+          "success": true
+        },
+        "asn1": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/continuous_navigation/continuous_navigation_asn1.asn1",
+          "file_size": 8269,
+          "success": true
+        },
+        "pkl": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/continuous_navigation/continuous_navigation_pkl.pkl",
+          "file_size": 12512,
+          "success": true
+        },
+        "alloy": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/continuous_navigation/continuous_navigation_alloy.als",
+          "file_size": 8240,
+          "success": true
+        },
+        "z_notation": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/continuous_navigation/continuous_navigation_z_notation.z",
+          "file_size": 6098,
+          "success": true
+        },
+        "tla_plus": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/continuous_navigation/continuous_navigation_tla_plus.tla",
+          "file_size": 4881,
+          "success": true
+        },
+        "agda": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/continuous_navigation/continuous_navigation_agda.agda",
+          "file_size": 4858,
+          "success": true
+        },
+        "haskell": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/continuous_navigation/continuous_navigation_haskell.hs",
+          "file_size": 5307,
+          "success": true
+        },
+        "pickle": {
+          "output_file": "output/cross_framework/continuous/acceptance/continuous/pipeline_output/3_gnn_output/continuous_navigation/continuous_navigation_pickle.pickle",
+          "file_size": 3732,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    }
+  ],
+  "summary": {
+    "total_files": 2,
+    "successful_parses": 2,
+    "failed_parses": 0,
+    "total_formats_generated": 44,
+    "formats_per_file": {
+      "stochastic_dynamics.md": 22,
+      "continuous_navigation.md": 22
+    }
+  }
+}

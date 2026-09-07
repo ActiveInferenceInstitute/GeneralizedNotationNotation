@@ -1,0 +1,239 @@
+{
+  "timestamp": "2026-09-06T12:08:48.692865",
+  "target_directory": "output/cross_framework/multiagent/acceptance/multiagent/input",
+  "output_directory": "output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/12_execute_output",
+  "total_scripts_found": 1,
+  "successful_executions": 1,
+  "failed_executions": 0,
+  "skipped_executions": 0,
+  "execution_details": [
+    {
+      "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/11_render_output/multi_agent_coordination/rxinfer/Multi-Agent_Cooperative_Active_Inference_rxinfer.jl",
+      "script_name": "Multi-Agent_Cooperative_Active_Inference_rxinfer.jl",
+      "framework": "rxinfer",
+      "model_name": "multi_agent_coordination",
+      "executor": "julia",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 102.593163,
+      "timestamp": "2026-09-06T12:08:48.712191",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 102.593163,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        102.593163
+      ],
+      "structured_result_file": "output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/12_execute_output/multi_agent_coordination/rxinfer/execution_logs/Multi-Agent_Cooperative_Active_Inference_rxinfer.jl_results.json",
+      "output_file": "output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/12_execute_output/multi_agent_coordination/rxinfer/execution_logs/Multi-Agent_Cooperative_Active_Inference_rxinfer.jl_execution.log",
+      "implementation_directory": "output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/12_execute_output/multi_agent_coordination/rxinfer",
+      "execution_metadata": {},
+      "script_identity": {
+        "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/11_render_output/multi_agent_coordination/rxinfer/Multi-Agent_Cooperative_Active_Inference_rxinfer.jl",
+        "sha256": "1ea3bb16ed188722726d621d30caf9de9f8546e6883c8ef6b0cb053a7d2b0d19"
+      },
+      "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/multiagent/acceptance/multiagent/input",
+      "stdout_length": 63,
+      "stderr_length": 0,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    }
+  ],
+  "framework_status": {
+    "rxinfer": {
+      "executions": 1,
+      "successful": 1,
+      "failed": 0,
+      "skipped": 0,
+      "status": "success"
+    }
+  },
+  "execution_mode": "local",
+  "execution_workers": 1,
+  "backend": null,
+  "execution_benchmark_repeats": 1,
+  "execution_summary_detail": false,
+  "dispatch_max_retries": 0,
+  "success": true,
+  "status": "success",
+  "exit_code": 0,
+  "run_id": "1dacd81171db4a4d8fb76da6b3a735a4",
+  "configuration": {
+    "frameworks": [
+      "rxinfer"
+    ],
+    "strict_requested_frameworks": true,
+    "options": {
+      "recursive": true,
+      "timeout": 300,
+      "render_output_dir": null,
+      "distributed": false,
+      "execution_workers": 1,
+      "backend": "ray",
+      "execution_benchmark_repeats": 1,
+      "execution_summary_detail": false
+    }
+  },
+  "input_identity": {
+    "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/multiagent/acceptance/multiagent/input",
+    "files": {
+      "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/multiagent/acceptance/multiagent/input/multi_agent_coordination.md": "d237ab7df9db7aea3eac8eb5dcb4c764074c6520b86d261c90c76af67fcf8373"
+    }
+  },
+  "render_failures": [],
+  "missing_render_scripts": [],
+  "requested_frameworks": [
+    "rxinfer"
+  ],
+  "total_scripts": 1,
+  "attempted_scripts": 1,
+  "success_rate": 100.0,
+  "outcome_reason": "all_scripts_succeeded",
+  "receipt_identity": {
+    "run_id": "1dacd81171db4a4d8fb76da6b3a735a4",
+    "config_sha256": "6a410c7d5866f55591092873b610db301cadd94871d923fe06b04addb95f70e1"
+  },
+  "invocation_receipts": {
+    "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/multiagent/acceptance/multiagent/input": {
+      "status": "success",
+      "success": true,
+      "exit_code": 0,
+      "outcome_reason": "all_scripts_succeeded",
+      "render_failures": [],
+      "missing_render_scripts": [],
+      "missing_render_summary": null,
+      "input_identity": {
+        "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/multiagent/acceptance/multiagent/input",
+        "files": {
+          "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/multiagent/acceptance/multiagent/input/multi_agent_coordination.md": "d237ab7df9db7aea3eac8eb5dcb4c764074c6520b86d261c90c76af67fcf8373"
+        }
+      },
+      "execution_details": [
+        {
+          "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/11_render_output/multi_agent_coordination/rxinfer/Multi-Agent_Cooperative_Active_Inference_rxinfer.jl",
+          "script_name": "Multi-Agent_Cooperative_Active_Inference_rxinfer.jl",
+          "framework": "rxinfer",
+          "model_name": "multi_agent_coordination",
+          "executor": "julia",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 102.593163,
+          "timestamp": "2026-09-06T12:08:48.712191",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 102.593163,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            102.593163
+          ],
+          "structured_result_file": "output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/12_execute_output/multi_agent_coordination/rxinfer/execution_logs/Multi-Agent_Cooperative_Active_Inference_rxinfer.jl_results.json",
+          "output_file": "output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/12_execute_output/multi_agent_coordination/rxinfer/execution_logs/Multi-Agent_Cooperative_Active_Inference_rxinfer.jl_execution.log",
+          "implementation_directory": "output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/12_execute_output/multi_agent_coordination/rxinfer",
+          "execution_metadata": {},
+          "script_identity": {
+            "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/11_render_output/multi_agent_coordination/rxinfer/Multi-Agent_Cooperative_Active_Inference_rxinfer.jl",
+            "sha256": "1ea3bb16ed188722726d621d30caf9de9f8546e6883c8ef6b0cb053a7d2b0d19"
+          },
+          "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/multiagent/acceptance/multiagent/input",
+          "stdout_length": 63,
+          "stderr_length": 0,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 1
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        }
+      ]
+    }
+  },
+  "current_invocation": {
+    "status": "success",
+    "success": true,
+    "exit_code": 0,
+    "outcome_reason": "all_scripts_succeeded",
+    "render_failures": [],
+    "missing_render_scripts": [],
+    "missing_render_summary": null,
+    "input_identity": {
+      "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/multiagent/acceptance/multiagent/input",
+      "files": {
+        "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/multiagent/acceptance/multiagent/input/multi_agent_coordination.md": "d237ab7df9db7aea3eac8eb5dcb4c764074c6520b86d261c90c76af67fcf8373"
+      }
+    },
+    "execution_details": [
+      {
+        "script_path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/11_render_output/multi_agent_coordination/rxinfer/Multi-Agent_Cooperative_Active_Inference_rxinfer.jl",
+        "script_name": "Multi-Agent_Cooperative_Active_Inference_rxinfer.jl",
+        "framework": "rxinfer",
+        "model_name": "multi_agent_coordination",
+        "executor": "julia",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 102.593163,
+        "timestamp": "2026-09-06T12:08:48.712191",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 102.593163,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          102.593163
+        ],
+        "structured_result_file": "output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/12_execute_output/multi_agent_coordination/rxinfer/execution_logs/Multi-Agent_Cooperative_Active_Inference_rxinfer.jl_results.json",
+        "output_file": "output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/12_execute_output/multi_agent_coordination/rxinfer/execution_logs/Multi-Agent_Cooperative_Active_Inference_rxinfer.jl_execution.log",
+        "implementation_directory": "output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/12_execute_output/multi_agent_coordination/rxinfer",
+        "execution_metadata": {},
+        "script_identity": {
+          "path": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/multiagent/acceptance/multiagent/pipeline_output/11_render_output/multi_agent_coordination/rxinfer/Multi-Agent_Cooperative_Active_Inference_rxinfer.jl",
+          "sha256": "1ea3bb16ed188722726d621d30caf9de9f8546e6883c8ef6b0cb053a7d2b0d19"
+        },
+        "source_scope": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/multiagent/acceptance/multiagent/input",
+        "stdout_length": 63,
+        "stderr_length": 0,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 1
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      }
+    ],
+    "target_directory": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/multiagent/acceptance/multiagent/input"
+  },
+  "merged_prior_folder_runs": 0,
+  "execution_summary_format": "slim_v1"
+}

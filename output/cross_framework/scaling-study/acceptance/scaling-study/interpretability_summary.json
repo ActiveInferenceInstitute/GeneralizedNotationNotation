@@ -1,0 +1,542 @@
+{
+  "schema": "gnn_model_family_interpretability_v1",
+  "family": "scaling-study",
+  "target_dir": "output/cross_framework/scaling-study/acceptance/scaling-study/input",
+  "model_count": 2,
+  "models": [
+    {
+      "model_name": "PyMDP Scaling N4 T100",
+      "source_file": "output/cross_framework/scaling-study/acceptance/scaling-study/input/pymdp_scaling_N4_T100.md",
+      "variables": [
+        {
+          "name": "s",
+          "dimensions": [
+            "4",
+            "1"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "o",
+          "dimensions": [
+            "4",
+            "1"
+          ],
+          "dtype": "int"
+        },
+        {
+          "name": "A",
+          "dimensions": [
+            "4",
+            "4"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "B",
+          "dimensions": [
+            "4",
+            "4",
+            "4"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "C",
+          "dimensions": [
+            "4"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "D",
+          "dimensions": [
+            "4"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "pi",
+          "dimensions": [
+            "4"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "u",
+          "dimensions": [
+            "1"
+          ],
+          "dtype": "int"
+        },
+        {
+          "name": "G",
+          "dimensions": [
+            "pi"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "F",
+          "dimensions": [
+            "1"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "t",
+          "dimensions": [
+            "1"
+          ],
+          "dtype": "int"
+        }
+      ],
+      "variable_count": 11,
+      "connections": [
+        {
+          "source": "D",
+          "target": "s",
+          "directed": true,
+          "label": null
+        },
+        {
+          "source": "s",
+          "target": "A",
+          "directed": false,
+          "label": null
+        },
+        {
+          "source": "A",
+          "target": "o",
+          "directed": false,
+          "label": null
+        },
+        {
+          "source": "s",
+          "target": "B",
+          "directed": false,
+          "label": null
+        },
+        {
+          "source": "C",
+          "target": "G",
+          "directed": true,
+          "label": null
+        },
+        {
+          "source": "G",
+          "target": "pi",
+          "directed": true,
+          "label": null
+        },
+        {
+          "source": "pi",
+          "target": "u",
+          "directed": true,
+          "label": null
+        },
+        {
+          "source": "B",
+          "target": "u",
+          "directed": true,
+          "label": null
+        },
+        {
+          "source": "s",
+          "target": "F",
+          "directed": false,
+          "label": null
+        },
+        {
+          "source": "o",
+          "target": "F",
+          "directed": false,
+          "label": null
+        }
+      ],
+      "connection_count": 10,
+      "matrix_shapes": {
+        "A": [
+          4,
+          4
+        ],
+        "B": [
+          4,
+          4,
+          4
+        ],
+        "C": [
+          4
+        ],
+        "D": [
+          4
+        ]
+      },
+      "validation_messages": [],
+      "pipeline_evidence": {
+        "pipeline_summary_available": true,
+        "render_status": "passed",
+        "execution_status": "passed",
+        "render_summary_available": true,
+        "execution_summary_available": true,
+        "skip_or_failure_reason": null
+      },
+      "telemetry_present": true,
+      "telemetry_preview": {
+        "expected_free_energy": [
+          [
+            0.6058846712112427,
+            0.6058847904205322,
+            0.6058847904205322,
+            2.7658851146698
+          ],
+          [
+            0.6058847904205322,
+            0.6058847904205322,
+            0.6058847904205322,
+            2.7658848762512207
+          ],
+          [
+            0.6058847904205322,
+            0.6058847904205322,
+            0.6058847904205322,
+            2.7658851146698
+          ],
+          [
+            0.6058847904205322,
+            0.6058847904205322,
+            0.6058847904205322,
+            2.7658851146698
+          ],
+          [
+            0.6058847904205322,
+            0.6058847904205322,
+            0.6058847904205322,
+            2.7658851146698
+          ]
+        ],
+        "observations": [
+          2,
+          0,
+          3,
+          3,
+          3
+        ],
+        "actions": [
+          3,
+          3,
+          3,
+          3,
+          3
+        ]
+      },
+      "artifact_links": [
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/11_render_output/pymdp_scaling_N4_T100/processing_summary.json",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/11_render_output/pymdp_scaling_N4_T100/pymdp/PyMDP_Scaling_N4_T100_pymdp.py",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/11_render_output/pymdp_scaling_N4_T100/pymdp/README.md",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/11_render_output/pymdp_scaling_N4_T100/pymdp/output/pymdp_simulations/PyMDP Scaling N4 T100/simulation_results.json",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/12_execute_output/pymdp_scaling_N4_T100/pymdp/execution_logs/PyMDP_Scaling_N4_T100_pymdp.py_execution.log",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/12_execute_output/pymdp_scaling_N4_T100/pymdp/execution_logs/PyMDP_Scaling_N4_T100_pymdp.py_results.json",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/12_execute_output/pymdp_scaling_N4_T100/pymdp/simulation_data/simulation_results.json",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/15_audio_output/pymdp_scaling_N4_T100_ambient.wav",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/15_audio_output/pymdp_scaling_N4_T100_rhythmic.wav",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/15_audio_output/pymdp_scaling_N4_T100_sonification.wav",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/15_audio_output/pymdp_scaling_N4_T100_tonal.wav",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/16_analysis_output/cross_framework/pymdp_scaling_N4_T100_post_simulation_analysis.json",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/PyMDP_Scaling_N4_T100/belief_evolution_1.png",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/PyMDP_Scaling_N4_T100/cumulative_preference.png",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/PyMDP_Scaling_N4_T100/discrete_states_0.png",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/PyMDP_Scaling_N4_T100/energy_dynamics_3.png",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/PyMDP_Scaling_N4_T100/performance_2.png",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/pymdp_scaling_N4_T100_pymdp_action_frequencies.png",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/pymdp_scaling_N4_T100_pymdp_belief_convergence.png",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/pymdp_scaling_N4_T100_pymdp_belief_trace.png",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/pymdp_scaling_N4_T100_pymdp_free_energy.png",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/pymdp_scaling_N4_T100_pymdp_observations.png",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/pymdp_scaling_N4_T100_pymdp_vfe_vs_efe.png",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/3_gnn_output/pymdp_scaling_N4_T100/pymdp_scaling_N4_T100_agda.agda",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/3_gnn_output/pymdp_scaling_N4_T100/pymdp_scaling_N4_T100_alloy.als"
+      ]
+    },
+    {
+      "model_name": "PyMDP Scaling N8 T100",
+      "source_file": "output/cross_framework/scaling-study/acceptance/scaling-study/input/pymdp_scaling_N8_T100.md",
+      "variables": [
+        {
+          "name": "s",
+          "dimensions": [
+            "8",
+            "1"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "o",
+          "dimensions": [
+            "8",
+            "1"
+          ],
+          "dtype": "int"
+        },
+        {
+          "name": "A",
+          "dimensions": [
+            "8",
+            "8"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "B",
+          "dimensions": [
+            "8",
+            "8",
+            "8"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "C",
+          "dimensions": [
+            "8"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "D",
+          "dimensions": [
+            "8"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "pi",
+          "dimensions": [
+            "8"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "u",
+          "dimensions": [
+            "1"
+          ],
+          "dtype": "int"
+        },
+        {
+          "name": "G",
+          "dimensions": [
+            "pi"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "F",
+          "dimensions": [
+            "1"
+          ],
+          "dtype": "float"
+        },
+        {
+          "name": "t",
+          "dimensions": [
+            "1"
+          ],
+          "dtype": "int"
+        }
+      ],
+      "variable_count": 11,
+      "connections": [
+        {
+          "source": "D",
+          "target": "s",
+          "directed": true,
+          "label": null
+        },
+        {
+          "source": "s",
+          "target": "A",
+          "directed": false,
+          "label": null
+        },
+        {
+          "source": "A",
+          "target": "o",
+          "directed": false,
+          "label": null
+        },
+        {
+          "source": "s",
+          "target": "B",
+          "directed": false,
+          "label": null
+        },
+        {
+          "source": "C",
+          "target": "G",
+          "directed": true,
+          "label": null
+        },
+        {
+          "source": "G",
+          "target": "pi",
+          "directed": true,
+          "label": null
+        },
+        {
+          "source": "pi",
+          "target": "u",
+          "directed": true,
+          "label": null
+        },
+        {
+          "source": "B",
+          "target": "u",
+          "directed": true,
+          "label": null
+        },
+        {
+          "source": "s",
+          "target": "F",
+          "directed": false,
+          "label": null
+        },
+        {
+          "source": "o",
+          "target": "F",
+          "directed": false,
+          "label": null
+        }
+      ],
+      "connection_count": 10,
+      "matrix_shapes": {
+        "A": [
+          8,
+          8
+        ],
+        "B": [
+          8,
+          8,
+          8
+        ],
+        "C": [
+          8
+        ],
+        "D": [
+          8
+        ]
+      },
+      "validation_messages": [],
+      "pipeline_evidence": {
+        "pipeline_summary_available": true,
+        "render_status": "passed",
+        "execution_status": "passed",
+        "render_summary_available": true,
+        "execution_summary_available": true,
+        "skip_or_failure_reason": null
+      },
+      "telemetry_present": true,
+      "telemetry_preview": {
+        "expected_free_energy": [
+          [
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715407371520996,
+            0.6715407371520996,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            2.831541061401367
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ],
+          [
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715406179428101,
+            0.6715407371520996,
+            0.6715407371520996,
+            2.831540822982788
+          ]
+        ],
+        "observations": [
+          5,
+          1,
+          7,
+          7,
+          7
+        ],
+        "actions": [
+          7,
+          7,
+          7,
+          7,
+          7
+        ]
+      },
+      "artifact_links": [
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/11_render_output/pymdp_scaling_N8_T100/processing_summary.json",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/11_render_output/pymdp_scaling_N8_T100/pymdp/PyMDP_Scaling_N8_T100_pymdp.py",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/11_render_output/pymdp_scaling_N8_T100/pymdp/README.md",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/11_render_output/pymdp_scaling_N8_T100/pymdp/output/pymdp_simulations/PyMDP Scaling N8 T100/simulation_results.json",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/12_execute_output/pymdp_scaling_N8_T100/pymdp/execution_logs/PyMDP_Scaling_N8_T100_pymdp.py_execution.log",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/12_execute_output/pymdp_scaling_N8_T100/pymdp/execution_logs/PyMDP_Scaling_N8_T100_pymdp.py_results.json",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/12_execute_output/pymdp_scaling_N8_T100/pymdp/simulation_data/simulation_results.json",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/15_audio_output/pymdp_scaling_N8_T100_ambient.wav",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/15_audio_output/pymdp_scaling_N8_T100_rhythmic.wav",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/15_audio_output/pymdp_scaling_N8_T100_sonification.wav",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/15_audio_output/pymdp_scaling_N8_T100_tonal.wav",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/16_analysis_output/cross_framework/pymdp_scaling_N8_T100_post_simulation_analysis.json",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/PyMDP_Scaling_N8_T100/belief_evolution_1.png",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/PyMDP_Scaling_N8_T100/cumulative_preference.png",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/PyMDP_Scaling_N8_T100/discrete_states_0.png",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/PyMDP_Scaling_N8_T100/energy_dynamics_3.png",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/PyMDP_Scaling_N8_T100/performance_2.png",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/pymdp_scaling_N8_T100_pymdp_action_frequencies.png",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/pymdp_scaling_N8_T100_pymdp_belief_convergence.png",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/pymdp_scaling_N8_T100_pymdp_belief_trace.png",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/pymdp_scaling_N8_T100_pymdp_free_energy.png",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/pymdp_scaling_N8_T100_pymdp_observations.png",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/16_analysis_output/pymdp/pymdp_scaling_N8_T100_pymdp_vfe_vs_efe.png",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/3_gnn_output/pymdp_scaling_N8_T100/pymdp_scaling_N8_T100_agda.agda",
+        "output/cross_framework/scaling-study/acceptance/scaling-study/pipeline_output/3_gnn_output/pymdp_scaling_N8_T100/pymdp_scaling_N8_T100_alloy.als"
+      ]
+    }
+  ],
+  "totals": {
+    "variables": 22,
+    "connections": 20,
+    "validation_messages": 0,
+    "models_with_telemetry": 2
+  }
+}

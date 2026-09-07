@@ -1,0 +1,352 @@
+{
+  "timestamp": "2026-09-06T11:46:35.869175",
+  "source_directory": "output/cross_framework/discrete/acceptance/discrete/input",
+  "output_directory": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output",
+  "processing_config": {
+    "recursive": true,
+    "verbose": false,
+    "serialize_preset": "full",
+    "supported_formats": [
+      "markdown",
+      "scala",
+      "lean",
+      "coq",
+      "python",
+      "bnf",
+      "ebnf",
+      "isabelle",
+      "maxima",
+      "xml",
+      "json",
+      "protobuf",
+      "yaml",
+      "xsd",
+      "asn1",
+      "pkl",
+      "alloy",
+      "z_notation",
+      "tla_plus",
+      "agda",
+      "haskell",
+      "pickle"
+    ],
+    "serialized_formats": [
+      "markdown",
+      "scala",
+      "lean",
+      "coq",
+      "python",
+      "bnf",
+      "ebnf",
+      "isabelle",
+      "maxima",
+      "xml",
+      "json",
+      "protobuf",
+      "yaml",
+      "xsd",
+      "asn1",
+      "pkl",
+      "alloy",
+      "z_notation",
+      "tla_plus",
+      "agda",
+      "haskell",
+      "pickle"
+    ],
+    "available_serializers": {
+      "markdown": "MarkdownSerializer",
+      "json": "JSONSerializer",
+      "xml": "XMLSerializer",
+      "yaml": "YAMLSerializer",
+      "scala": "ScalaSerializer",
+      "protobuf": "ProtobufSerializer",
+      "pkl": "PKLSerializer",
+      "xsd": "XSDSerializer",
+      "asn1": "ASN1Serializer",
+      "lean": "LeanSerializer",
+      "coq": "CoqSerializer",
+      "python": "PythonSerializer",
+      "bnf": "GrammarSerializer",
+      "ebnf": "GrammarSerializer",
+      "isabelle": "IsabelleSerializer",
+      "maxima": "MaximaSerializer",
+      "alloy": "AlloySerializer",
+      "z_notation": "ZNotationSerializer",
+      "tla_plus": "TLASerializer",
+      "agda": "AgdaSerializer",
+      "haskell": "FunctionalSerializer",
+      "pickle": "BinarySerializer"
+    }
+  },
+  "processed_files": [
+    {
+      "file_name": "simple_mdp.md",
+      "file_path": "output/cross_framework/discrete/acceptance/discrete/input/simple_mdp.md",
+      "parse_success": true,
+      "parsed_model_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/simple_mdp/simple_mdp_parsed.json",
+      "source_format": "markdown",
+      "model_info": {
+        "name": "Simple MDP Agent",
+        "version": "1.0",
+        "variables_count": 11,
+        "connections_count": 10,
+        "parameters_count": 8,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/simple_mdp/simple_mdp_markdown.md",
+          "file_size": 1682,
+          "success": true
+        },
+        "scala": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/simple_mdp/simple_mdp_scala.scala",
+          "file_size": 4841,
+          "success": true
+        },
+        "lean": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/simple_mdp/simple_mdp_lean.lean",
+          "file_size": 5130,
+          "success": true
+        },
+        "coq": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/simple_mdp/simple_mdp_coq.v",
+          "file_size": 4925,
+          "success": true
+        },
+        "python": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/simple_mdp/simple_mdp_python.py",
+          "file_size": 8505,
+          "success": true
+        },
+        "bnf": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/simple_mdp/simple_mdp_bnf.bnf",
+          "file_size": 5239,
+          "success": true
+        },
+        "ebnf": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/simple_mdp/simple_mdp_ebnf.ebnf",
+          "file_size": 5239,
+          "success": true
+        },
+        "isabelle": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/simple_mdp/simple_mdp_isabelle.thy",
+          "file_size": 4958,
+          "success": true
+        },
+        "maxima": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/simple_mdp/simple_mdp_maxima.max",
+          "file_size": 5662,
+          "success": true
+        },
+        "xml": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/simple_mdp/simple_mdp_xml.xml",
+          "file_size": 8899,
+          "success": true
+        },
+        "json": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/simple_mdp/simple_mdp_json.json",
+          "file_size": 9601,
+          "success": true
+        },
+        "protobuf": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/simple_mdp/simple_mdp_protobuf.proto",
+          "file_size": 7107,
+          "success": true
+        },
+        "yaml": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/simple_mdp/simple_mdp_yaml.yaml",
+          "file_size": 5736,
+          "success": true
+        },
+        "xsd": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/simple_mdp/simple_mdp_xsd.xsd",
+          "file_size": 5837,
+          "success": true
+        },
+        "asn1": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/simple_mdp/simple_mdp_asn1.asn1",
+          "file_size": 7606,
+          "success": true
+        },
+        "pkl": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/simple_mdp/simple_mdp_pkl.pkl",
+          "file_size": 11747,
+          "success": true
+        },
+        "alloy": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/simple_mdp/simple_mdp_alloy.als",
+          "file_size": 7823,
+          "success": true
+        },
+        "z_notation": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/simple_mdp/simple_mdp_z_notation.z",
+          "file_size": 5430,
+          "success": true
+        },
+        "tla_plus": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/simple_mdp/simple_mdp_tla_plus.tla",
+          "file_size": 4488,
+          "success": true
+        },
+        "agda": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/simple_mdp/simple_mdp_agda.agda",
+          "file_size": 4497,
+          "success": true
+        },
+        "haskell": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/simple_mdp/simple_mdp_haskell.hs",
+          "file_size": 4903,
+          "success": true
+        },
+        "pickle": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/simple_mdp/simple_mdp_pickle.pickle",
+          "file_size": 4052,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "actinf_pomdp_agent.md",
+      "file_path": "output/cross_framework/discrete/acceptance/discrete/input/actinf_pomdp_agent.md",
+      "parse_success": true,
+      "parsed_model_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_parsed.json",
+      "source_format": "markdown",
+      "model_info": {
+        "name": "Active Inference POMDP Agent",
+        "version": "1.0",
+        "variables_count": 13,
+        "connections_count": 11,
+        "parameters_count": 8,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_markdown.md",
+          "file_size": 1741,
+          "success": true
+        },
+        "scala": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_scala.scala",
+          "file_size": 5353,
+          "success": true
+        },
+        "lean": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_lean.lean",
+          "file_size": 5722,
+          "success": true
+        },
+        "coq": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_coq.v",
+          "file_size": 5482,
+          "success": true
+        },
+        "python": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_python.py",
+          "file_size": 9355,
+          "success": true
+        },
+        "bnf": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_bnf.bnf",
+          "file_size": 5742,
+          "success": true
+        },
+        "ebnf": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_ebnf.ebnf",
+          "file_size": 5742,
+          "success": true
+        },
+        "isabelle": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_isabelle.thy",
+          "file_size": 5518,
+          "success": true
+        },
+        "maxima": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_maxima.max",
+          "file_size": 5997,
+          "success": true
+        },
+        "xml": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_xml.xml",
+          "file_size": 9960,
+          "success": true
+        },
+        "json": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_json.json",
+          "file_size": 9920,
+          "success": true
+        },
+        "protobuf": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_protobuf.proto",
+          "file_size": 7492,
+          "success": true
+        },
+        "yaml": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_yaml.yaml",
+          "file_size": 6076,
+          "success": true
+        },
+        "xsd": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_xsd.xsd",
+          "file_size": 6458,
+          "success": true
+        },
+        "asn1": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_asn1.asn1",
+          "file_size": 8429,
+          "success": true
+        },
+        "pkl": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_pkl.pkl",
+          "file_size": 12373,
+          "success": true
+        },
+        "alloy": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_alloy.als",
+          "file_size": 8543,
+          "success": true
+        },
+        "z_notation": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_z_notation.z",
+          "file_size": 6047,
+          "success": true
+        },
+        "tla_plus": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_tla_plus.tla",
+          "file_size": 4976,
+          "success": true
+        },
+        "agda": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_agda.agda",
+          "file_size": 4983,
+          "success": true
+        },
+        "haskell": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_haskell.hs",
+          "file_size": 5426,
+          "success": true
+        },
+        "pickle": {
+          "output_file": "output/cross_framework/discrete/acceptance/discrete/pipeline_output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_pickle.pickle",
+          "file_size": 3936,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    }
+  ],
+  "summary": {
+    "total_files": 2,
+    "successful_parses": 2,
+    "failed_parses": 0,
+    "total_formats_generated": 44,
+    "formats_per_file": {
+      "simple_mdp.md": 22,
+      "actinf_pomdp_agent.md": 22
+    }
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "timestamp": "2026-09-06T11:44:24.791915",
+  "source_directory": "output/cross_framework/basics/acceptance/basics/input",
+  "output_directory": "output/cross_framework/basics/acceptance/basics/pipeline_output/7_export_output",
+  "files_exported": [
+    {
+      "file_name": "dynamic_perception.md",
+      "file_path": "output/cross_framework/basics/acceptance/basics/input/dynamic_perception.md",
+      "exports": {
+        "json": {
+          "success": true,
+          "export_file": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/basics/acceptance/basics/pipeline_output/7_export_output/dynamic_perception/dynamic_perception_json.json",
+          "file_size": 13831
+        },
+        "xml": {
+          "success": true,
+          "export_file": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/basics/acceptance/basics/pipeline_output/7_export_output/dynamic_perception/dynamic_perception_xml.xml",
+          "file_size": 664
+        },
+        "graphml": {
+          "success": true,
+          "export_file": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/basics/acceptance/basics/pipeline_output/7_export_output/dynamic_perception/dynamic_perception_graphml.graphml",
+          "file_size": 1050
+        },
+        "gexf": {
+          "success": true,
+          "export_file": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/basics/acceptance/basics/pipeline_output/7_export_output/dynamic_perception/dynamic_perception_gexf.gexf",
+          "file_size": 894
+        },
+        "pickle": {
+          "success": true,
+          "export_file": "/private/tmp/claude-501/-Users-hum-Documents-GitHub-HumOS/61e99712-2be6-42f2-9983-d73d6ffca46e/scratchpad/wt/GeneralizedNotationNotation/output/cross_framework/basics/acceptance/basics/pipeline_output/7_export_output/dynamic_perception/dynamic_perception_pickle.pkl",
+          "file_size": 7559
+        }
+      },
+      "success": true
+    }
+  ],
+  "summary": {
+    "total_files": 1,
+    "successful_exports": 1,
+    "failed_exports": 0,
+    "formats_generated": {
+      "json": 1,
+      "xml": 1,
+      "graphml": 1,
+      "gexf": 1,
+      "pickle": 1
+    }
+  }
+}
