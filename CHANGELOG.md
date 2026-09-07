@@ -17,8 +17,6 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ### Added
 
-### Added
-
 - **Headless extraction.** New `gnn extract FILE` CLI subcommand and
   `python -m gnn.extract` module entry point print the POMDP extractor's
   `to_dict()` payload as JSON. The wheel now ships the top-level `gnn`
