@@ -134,6 +134,21 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   to its new home (`src/gnn/execute/metadata.py`); the provenance/hash guards the
   contract pins are unchanged.
 
+### Verified (2026-09-07)
+
+- CI-filter suite (macOS, arm64): `uv run --extra dev pytest tests/ -q
+  --tb=short -rsx -m "not pipeline and not mcp"` — **4,280 passed,
+  20 skipped (environmental: sklearn, Ollama, Julia, torch, D2),
+  557 deselected (`pipeline`/`mcp` markers), 0 failed** in 646 s. Run on
+  the post-release hygiene branch; the only src deltas vs the release
+  tip are the MCP CLI help-epilog string, the setup version list, and
+  the six new `tests/pipeline/test_diagnostic_enhancer.py` contracts.
+- `ruff check src/gnn scripts`, `ruff format --check src scripts`, and
+  `mypy src --config-file pyproject.toml` (589 files) pass; `uv lock
+  --check` passes; the five documentation audits (docs_audit, doc
+  contracts, repo terminology, GNN doc patterns, maintained-doc terms)
+  pass on the same tree.
+
 ## [3.2.0] — 2026-09-02
 
 > **Exemplar Gold Standard.** Every exemplar GNN file renders *and executes* on
