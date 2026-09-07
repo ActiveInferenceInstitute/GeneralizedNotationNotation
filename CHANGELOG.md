@@ -9,7 +9,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 ## [3.3.0] — 2026-09-06
 
 > **One Corpus.** Every model file under `input/` now lives inside
-> `input/gnn_files` — the two legacy top-level fixture directories are folded
+> `input/gnn_files` — the two former top-level fixture directories are folded
 > into the corpus tree, the `gnn.*` import surface is the single canonical
 > one, and the manuscript remediation campaign's gates, provenance fixes and
 > rendered-artifact hygiene are reconciled onto the restructured `src/gnn/`
@@ -97,7 +97,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   transitive deps via pgmpy→torch, no Step-12 executor) with its registry
   reason reworded to the policy rationale.
 
-- **Input corpus closure.** The two legacy directories outside the corpus
+- **Input corpus closure.** The two orphan directories outside the corpus
   tree are gone: `multi_agent_models/` joins `gnn_files/multiagent/` as
   `multi_agent_coordination_acceptance.md` (the compact 3-agent clustered
   mean-field fixture, still a hand-runnable `--target-dir` target), and
