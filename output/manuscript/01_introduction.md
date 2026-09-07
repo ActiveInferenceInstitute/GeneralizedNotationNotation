@@ -17,7 +17,7 @@ The defining commitment of GNN is what the project calls the Triple Play: a sing
 This work contributes a standard notation together with the infrastructure that makes it usable in practice:
 
 - **A parseable, human-readable notation** for Active Inference generative models, whose text form is authoritative and from which every other representation is derived.
-- **A 25-step processing pipeline**, implemented across 31 source packages (0–24), that carries a specification from parsing and validation through visualization, rendering, and execution.
+- **A 25-step processing pipeline**, implemented across 44 source packages (0–24), that carries a specification from parsing and validation through visualization, rendering, and execution.
 - **9 rendering backends** (PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, bnlearn) that materialize a single GNN specification as executable cognitive models across multiple simulation frameworks, realizing the executable arm of the Triple Play.
 - **141 Model Context Protocol tools** that expose the pipeline's capabilities to agentic and programmatic clients, so the notation and its tooling are directly accessible to automated workflows.
 - **9-family reliability gates** that exercise the pipeline against a curated set of model families (basics, discrete, continuous, hierarchical, multiagent, precision, structured, gridworld, scaling-study), turning interoperability claims into checks that must pass rather than assertions that are merely made.

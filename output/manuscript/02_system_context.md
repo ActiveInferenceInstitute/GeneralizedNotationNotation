@@ -91,9 +91,9 @@ The per-step responsibilities are enumerated in [@tbl:pipeline_steps]; each row 
 | 22 | `22_gui.py` | Interactive GNN constructor GUI |
 | 23 | `23_report.py` | Comprehensive analysis report generation |
 | 24 | `24_intelligent_analysis.py` | AI-powered pipeline analysis & executive reports |
-: The pipeline steps, their thin orchestrator modules, and their purposes, read from `src/gnn/STEP_INDEX.md`. {#tbl:pipeline_steps}
+: The pipeline steps, their thin orchestrator modules, and their purposes, read from `src/STEP_INDEX.md`. {#tbl:pipeline_steps}
 
-This staged design keeps the architecture modular. The implementation is organized into 31 source packages, one cluster of responsibilities per concern, and is documented across 616 documentation files so that each step's contract, inputs, and outputs are specified independently of the others. New backends or analyses attach to the graph by declaring their dependencies rather than by editing a monolith, and the deterministic step ordering means a model processed today yields the same artifacts when reprocessed tomorrow.
+This staged design keeps the architecture modular. The implementation is organized into 44 source packages, one cluster of responsibilities per concern, and is documented across 682 documentation files so that each step's contract, inputs, and outputs are specified independently of the others. New backends or analyses attach to the graph by declaring their dependencies rather than by editing a monolith, and the deterministic step ordering means a model processed today yields the same artifacts when reprocessed tomorrow.
 
 ## The Triple Play
 

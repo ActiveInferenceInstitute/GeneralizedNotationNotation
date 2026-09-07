@@ -568,8 +568,8 @@ separately so that the boundary between hand-written source and
 reproducible output stays explicit.</p>
 <p>The <code>src/</code> tree is the executable core of
 GeneralizedNotationNotation: A Text Language for Active Inference
-Models. It is organized into 31 Python packages spanning 582 source
-files and roughly 194567 lines of code. Among these packages sit the 25
+Models. It is organized into 44 Python packages spanning 589 source
+files and roughly 195030 lines of code. Among these packages sit the 25
 step modules that implement the numbered pipeline (0–24), each module
 owning one stage of the progression from a parsed GNN text model through
 visualization, type checking, code export, and executable cognitive
@@ -588,20 +588,20 @@ consulted directly rather than inferred from directory listings.</p>
 gate and reproduce the project. These include the acceptance scripts
 that confirm the pipeline runs end to end, the reliability gates that
 enforce determinism and coverage expectations, and the manuscript
-variable producer (<code>src/manuscript_variables.py</code> driven from
-this layer) that emits the double-brace <code>{{...}}</code> token
+variable producer (<code>src/gnn/manuscript/variables.py</code> driven
+from this layer) that emits the double-brace <code>{{...}}</code> token
 values consumed throughout the manuscript. Treating these scripts as the
 source of reproduction commands keeps reported numbers bound to what the
 code actually computes.</p>
-<p>The <code>doc/</code> tree is the prose and reference surface,
-comprising 616 files of specification, tutorial, and design
+<p>The <code>docs/</code> tree is the prose and reference surface,
+comprising 682 files of specification, tutorial, and design
 documentation for the GNN language and its Active Inference grounding
 [gnn2023]. It is the place to verify that a manuscript statement about
 GNN syntax or semantics matches the documented language rather than a
 convenient paraphrase.</p>
 <p>The <code>output/</code> tree collects per-step pipeline artifacts:
 the data dumps, intermediate representations, validation reports, and
-the 105 figures regenerated on each run. Everything here is disposable
+the 693 figures regenerated on each run. Everything here is disposable
 and reproducible from the surfaces above, so it should be read as
 evidence of a run rather than as authored source. Notably,
 <code>output/data/manuscript_variables.json</code> is where the

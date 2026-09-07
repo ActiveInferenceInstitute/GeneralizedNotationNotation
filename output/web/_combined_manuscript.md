@@ -27,7 +27,7 @@ The defining commitment of GNN is what the project calls the Triple Play: a sing
 This work contributes a standard notation together with the infrastructure that makes it usable in practice:
 
 - **A parseable, human-readable notation** for Active Inference generative models, whose text form is authoritative and from which every other representation is derived.
-- **A 25-step processing pipeline**, implemented across 31 source packages (0–24), that carries a specification from parsing and validation through visualization, rendering, and execution.
+- **A 25-step processing pipeline**, implemented across 44 source packages (0–24), that carries a specification from parsing and validation through visualization, rendering, and execution.
 - **9 rendering backends** (PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, bnlearn) that materialize a single GNN specification as executable cognitive models across multiple simulation frameworks, realizing the executable arm of the Triple Play.
 - **141 Model Context Protocol tools** that expose the pipeline's capabilities to agentic and programmatic clients, so the notation and its tooling are directly accessible to automated workflows.
 - **9-family reliability gates** that exercise the pipeline against a curated set of model families (basics, discrete, continuous, hierarchical, multiagent, precision, structured, gridworld, scaling-study), turning interoperability claims into checks that must pass rather than assertions that are merely made.
@@ -135,9 +135,9 @@ The per-step responsibilities are enumerated in [@tbl:pipeline_steps]; each row 
 | 22 | `22_gui.py` | Interactive GNN constructor GUI |
 | 23 | `23_report.py` | Comprehensive analysis report generation |
 | 24 | `24_intelligent_analysis.py` | AI-powered pipeline analysis & executive reports |
-: The pipeline steps, their thin orchestrator modules, and their purposes, read from `src/gnn/STEP_INDEX.md`. {#tbl:pipeline_steps}
+: The pipeline steps, their thin orchestrator modules, and their purposes, read from `src/STEP_INDEX.md`. {#tbl:pipeline_steps}
 
-This staged design keeps the architecture modular. The implementation is organized into 31 source packages, one cluster of responsibilities per concern, and is documented across 616 documentation files so that each step's contract, inputs, and outputs are specified independently of the others. New backends or analyses attach to the graph by declaring their dependencies rather than by editing a monolith, and the deterministic step ordering means a model processed today yields the same artifacts when reprocessed tomorrow.
+This staged design keeps the architecture modular. The implementation is organized into 44 source packages, one cluster of responsibilities per concern, and is documented across 682 documentation files so that each step's contract, inputs, and outputs are specified independently of the others. New backends or analyses attach to the graph by declaring their dependencies rather than by editing a monolith, and the deterministic step ordering means a model processed today yields the same artifacts when reprocessed tomorrow.
 
 ## The Triple Play
 
@@ -180,7 +180,7 @@ The central act of the "Triple Play" is turning a validated specification into e
 | `numpyro` | NumPyro | yes |
 | `stan` | Stan | yes |
 | `bnlearn` | bnlearn | render-only |
-: Render targets in `src/gnn/render/framework_registry.py`. The *Executes* column is the registry's own `supports_execution` flag: a render-only backend has no Step-12 executor. {#tbl:backend_registry}
+: Render targets in `src/render/framework_registry.py`. The *Executes* column is the registry's own `supports_execution` flag: a render-only backend has no Step-12 executor. {#tbl:backend_registry}
 
 The capability surface of these backends — which model families each one can express and execute — is summarized in @fig:backend_matrix.
 
@@ -231,7 +231,7 @@ GNN ships a curated corpus of model families that exercise the language across t
 | `structured` | pymdp | Structured factor graph and posterior fixtures. |
 | `gridworld` | pymdp, rxinfer, activeinference_jl | Gridworld POMDP fixture used for cross-framework acceptance checks. |
 | `scaling-study` | pymdp | PyMDP scaling-study fixtures, sampled conservatively for acceptance. |
-: Model families declared in `input/model_family_manifest.json` and the frameworks each family targets. Capability splits in the Description column are generated from `src/gnn/render/framework_registry.py`, not authored in the manifest. {#tbl:model_families}
+: Model families declared in `input/model_family_manifest.json` and the frameworks each family targets. Capability splits in the Description column are generated from `src/render/framework_registry.py`, not authored in the manifest. {#tbl:model_families}
 
 The family-by-framework structure is shown in @fig:family_matrix, which renders the coverage matrix directly from the family registry rather than from a hand-maintained table.
 
@@ -255,7 +255,7 @@ The repository's scale is itself evidence of the surface that the gates and pipe
 
 ![Repository-scale metrics — source packages, test files, and tool surface — measured from the live repository.](../figures/gnn_repo_metrics.png){#fig:repo_metrics width=80%}
 
-The test suite comprises 365 test files containing 4101 test functions, exercising a source base of 582 Python files across 31 packages (194567 lines of source). The Model Context Protocol surface — which exposes GNN's capabilities to external agents and tools — provides 141 tools across 32 modules. The pipeline itself runs as 25 steps (0–24), and the rendering of figures, models, and reports produced 105 figures in the current run.
+The test suite comprises 369 test files containing 4112 test functions, exercising a source base of 589 Python files across 44 packages (195030 lines of source). The Model Context Protocol surface — which exposes GNN's capabilities to external agents and tools — provides 141 tools across 32 modules. The pipeline itself runs as 25 steps (0–24), and the rendering of figures, models, and reports produced 693 figures in the current run.
 
 ## Claim Discipline
 
@@ -325,7 +325,7 @@ python -m scripts.manuscript_build_figures
 python -m scripts.z_generate_manuscript_variables
 ```
 
-Because the variables file is regenerated immediately before rendering, the numbers in the rendered PDF cannot drift from the repository: a code change that alters, for example, the test inventory (365 test files, 4101 test functions) propagates into the prose on the next regeneration without any manual editing.
+Because the variables file is regenerated immediately before rendering, the numbers in the rendered PDF cannot drift from the repository: a code change that alters, for example, the test inventory (369 test files, 4112 test functions) propagates into the prose on the next regeneration without any manual editing.
 
 ## Reproducibility Contract
 
@@ -367,15 +367,15 @@ The next major target, v4.0.0, pushes toward bounded autonomy, and it is gated b
 
 This supplement records the top-level source surfaces a reader or reviewer should inspect before turning any prose in the main manuscript into a verifiable claim. Each surface below is authored material under version control; the generated artifacts it produces are described separately so that the boundary between hand-written source and reproducible output stays explicit.
 
-The `src/` tree is the executable core of GeneralizedNotationNotation: A Text Language for Active Inference Models. It is organized into 31 Python packages spanning 582 source files and roughly 194567 lines of code. Among these packages sit the 25 step modules that implement the numbered pipeline (0–24), each module owning one stage of the progression from a parsed GNN text model through visualization, type checking, code export, and executable cognitive simulation. Every claim the manuscript makes about pipeline behavior should be traceable to one of these step modules rather than to descriptive prose alone.
+The `src/` tree is the executable core of GeneralizedNotationNotation: A Text Language for Active Inference Models. It is organized into 44 Python packages spanning 589 source files and roughly 195030 lines of code. Among these packages sit the 25 step modules that implement the numbered pipeline (0–24), each module owning one stage of the progression from a parsed GNN text model through visualization, type checking, code export, and executable cognitive simulation. Every claim the manuscript makes about pipeline behavior should be traceable to one of these step modules rather than to descriptive prose alone.
 
 The `input/` tree holds the model corpora that exercise the pipeline. It contains 10 GNN corpora organized by model family, together totaling 29 example files, plus a `model_family_manifest.json` that enumerates the families and their representative models. This manifest is the authoritative registry that downstream steps and the manuscript variable producer read when they report family counts and cross-framework coverage; it should be consulted directly rather than inferred from directory listings.
 
-The `scripts/` tree contains the thin orchestrators that gate and reproduce the project. These include the acceptance scripts that confirm the pipeline runs end to end, the reliability gates that enforce determinism and coverage expectations, and the manuscript variable producer (`src/gnn/manuscript_variables.py` driven from this layer) that emits the double-brace `{{...}}` token values consumed throughout the manuscript. Treating these scripts as the source of reproduction commands keeps reported numbers bound to what the code actually computes.
+The `scripts/` tree contains the thin orchestrators that gate and reproduce the project. These include the acceptance scripts that confirm the pipeline runs end to end, the reliability gates that enforce determinism and coverage expectations, and the manuscript variable producer (`src/gnn/manuscript/variables.py` driven from this layer) that emits the double-brace `{{...}}` token values consumed throughout the manuscript. Treating these scripts as the source of reproduction commands keeps reported numbers bound to what the code actually computes.
 
-The `doc/` tree is the prose and reference surface, comprising 616 files of specification, tutorial, and design documentation for the GNN language and its Active Inference grounding [@gnn2023]. It is the place to verify that a manuscript statement about GNN syntax or semantics matches the documented language rather than a convenient paraphrase.
+The `docs/` tree is the prose and reference surface, comprising 682 files of specification, tutorial, and design documentation for the GNN language and its Active Inference grounding [@gnn2023]. It is the place to verify that a manuscript statement about GNN syntax or semantics matches the documented language rather than a convenient paraphrase.
 
-The `output/` tree collects per-step pipeline artifacts: the data dumps, intermediate representations, validation reports, and the 105 figures regenerated on each run. Everything here is disposable and reproducible from the surfaces above, so it should be read as evidence of a run rather than as authored source. Notably, `output/data/manuscript_variables.json` is where the manuscript's substituted token values are materialized.
+The `output/` tree collects per-step pipeline artifacts: the data dumps, intermediate representations, validation reports, and the 693 figures regenerated on each run. Everything here is disposable and reproducible from the surfaces above, so it should be read as evidence of a run rather than as authored source. Notably, `output/data/manuscript_variables.json` is where the manuscript's substituted token values are materialized.
 
 ## Expansion Checklist
 

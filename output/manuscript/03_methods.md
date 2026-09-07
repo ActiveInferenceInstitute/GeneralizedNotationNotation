@@ -25,7 +25,7 @@ The central act of the "Triple Play" is turning a validated specification into e
 | `numpyro` | NumPyro | yes |
 | `stan` | Stan | yes |
 | `bnlearn` | bnlearn | render-only |
-: Render targets in `src/gnn/render/framework_registry.py`. The *Executes* column is the registry's own `supports_execution` flag: a render-only backend has no Step-12 executor. {#tbl:backend_registry}
+: Render targets in `src/render/framework_registry.py`. The *Executes* column is the registry's own `supports_execution` flag: a render-only backend has no Step-12 executor. {#tbl:backend_registry}
 
 The capability surface of these backends — which model families each one can express and execute — is summarized in @fig:backend_matrix.
 

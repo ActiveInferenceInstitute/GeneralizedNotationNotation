@@ -638,7 +638,7 @@ gates, and this manuscript itself.</p>
 full pipeline over the discrete model family without invoking the
 optional LLM steps:</p>
 <div class="sourceCode" id="cb1"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python src/main.py <span class="at">--target-dir</span> input/gnn_files/discrete <span class="at">--output-dir</span> /tmp/gnn-smoke <span class="at">--skip-llm</span></span></code></pre></div>
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python src/gnn/main.py <span class="at">--target-dir</span> input/gnn_files/discrete <span class="at">--output-dir</span> /tmp/gnn-smoke <span class="at">--skip-llm</span></span></code></pre></div>
 <p>This parses the discrete GNN files, runs visualization and rendering
 across the maintained backends, and writes all artifacts under the
 chosen output directory. The <code>--skip-llm</code> flag keeps the run
@@ -698,7 +698,7 @@ class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="
 <p>Because the variables file is regenerated immediately before
 rendering, the numbers in the rendered PDF cannot drift from the
 repository: a code change that alters, for example, the test inventory
-(365 test files, 4101 test functions) propagates into the prose on the
+(369 test files, 4112 test functions) propagates into the prose on the
 next regeneration without any manual editing.</p>
 <h2 id="reproducibility-contract">Reproducibility Contract</h2>
 <ul>
