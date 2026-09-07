@@ -13,7 +13,7 @@ from typing import Any, Callable, Dict, List, Optional
 
 from gnn.pipeline.config import get_output_dir_for_script
 from gnn.utils.error_handling import coerce_step_exit_code
-from gnn.utils.pipeline import (
+from gnn.utils.logging.logging_utils import (
     setup_step_logging,
 )
 from gnn.utils.structured_logging import (  # noqa: F401 - standard pipeline imports

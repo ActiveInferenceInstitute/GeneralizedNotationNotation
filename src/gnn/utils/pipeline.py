@@ -36,22 +36,6 @@ def get_output_dir_for_script(
         return base_output_dir / f"{normalized}_output"
 
 
-def setup_step_logging(step_name: str, verbose: bool = False) -> Any:
-    """Set up logging for a pipeline step, delegating to logging_utils."""
-    try:
-        from .logging.logging_utils import setup_step_logging as _setup_step_logging
-
-        return _setup_step_logging(step_name, verbose)
-    except ImportError:
-        # Recovery logging setup
-        logger = logging.getLogger(step_name)
-        if verbose:
-            logger.setLevel(logging.DEBUG)
-        else:
-            logger.setLevel(logging.INFO)
-        return logger
-
-
 class _DefaultStepArgs:
     """Default pipeline step arguments returned by RecoveryArgumentParser."""
 
@@ -137,7 +121,10 @@ def execute_pipeline_step_template(
         import_dependencies: Optional list of dependencies to import
     """
     try:
-        # Setup logging
+        # Setup logging (canonical implementation lives in
+        # gnn.utils.logging.logging_utils)
+        from .logging.logging_utils import setup_step_logging
+
         logger = setup_step_logging(step_name, verbose=True)
 
         # Log step start
