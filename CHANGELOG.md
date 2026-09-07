@@ -43,6 +43,22 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   passes its contract again).
 - 8 new real-behavior tests across the MCP loader and pipeline health
   utilities.
+- **`bnlearn` extra + registry availability.** The bnlearn backend
+  (Step 11 render for categorical Bayesian-network exports; pgmpy arrives
+  transitively) ships as `uv sync --extra bnlearn`, and
+  `FRAMEWORK_REGISTRY["bnlearn"]["available"]` is now `True`: the stale
+  torch lock exclusion that gated it resolved when torch >= 2.13.0 landed
+  (GHSA-rrmf-rvhw-rf47). bnlearn remains render-only with no Step 12
+  executor; its rendered artifacts execute against the installed package.
+  `tests/render/test_framework_availability.py` moves bnlearn to the
+  available contract; `test_render_receipt_reliability.py` still pins
+  `supports_execution=False`.
+- **Full-toolchain reference environment documented** (README "Model
+  Kinds and Framework Support"): every Step 12 backend is provisioned in
+  the maintained dev environment (torch ≥ 2.13.0, Julia 1.12 + RxInfer
+  5.5.0 + ActiveInference.jl pinned envs, CmdStan 2.39 + cmdstanpy, plus
+  the core pymdp/JAX/NumPyro/DisCoPy stack), so no compatible model is
+  `skipped` for a missing toolchain.
 
 ### Changed
 

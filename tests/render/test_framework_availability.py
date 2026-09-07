@@ -5,10 +5,12 @@ Asserts:
   1. Every framework in ``FRAMEWORK_REGISTRY`` carries either an importable
      backend *or* an explicit ``available=False`` with a human-readable
      ``unavailable_reason`` string.
-  2. Requesting the intentionally unavailable framework (``bnlearn``) raises
-     ``ValueError`` with a documented, actionable reason via
-     ``validate_framework_requested()``. PyTorch left this set once
-     torch>=2.13.0 resolved GHSA-rrmf-rvhw-rf47.
+  2. ``validate_framework_requested()`` accepts every registry-available
+     framework and documents enable paths for any intentionally gated one.
+     PyTorch left the gated set once torch>=2.13.0 resolved
+     GHSA-rrmf-rvhw-rf47; bnlearn left it when the ``bnlearn`` extra
+     (bnlearn>=0.14.0 with pgmpy transitively) became the supported enable
+     path and the stale torch lock exclusion no longer applied.
 """
 
 from __future__ import annotations
@@ -35,7 +37,7 @@ from gnn.render.framework_registry import (
 
 # Frameworks that MUST be marked unavailable in the registry because their
 # Python dependency is intentionally absent from the default lock.
-INTENTIONALLY_UNAVAILABLE: set[str] = {"bnlearn"}
+INTENTIONALLY_UNAVAILABLE: set[str] = set()
 
 # Frameworks that ARE importable (Python) or unconditionally available
 # (Julia/Stan code generation).  These should never be marked unavailable.
@@ -50,6 +52,9 @@ EXPECTED_AVAILABLE: set[str] = {
     "pytorch",
     "numpyro",
     "stan",
+    # bnlearn joined when its dependency precondition was resolved by the
+    # ``bnlearn`` extra (render-only backend; no Step 12 executor).
+    "bnlearn",
 }
 
 
@@ -168,13 +173,10 @@ class TestValidationGate:
             f"Error message should suggest how to enable: {msg}"
         )
 
-    def test_validate_bnlearn_message_exact(self) -> None:
-        with pytest.raises(ValueError) as exc_info:
-            validate_framework_requested("bnlearn")
-        msg = str(exc_info.value)
-        assert "bnlearn" in msg
-        assert "pgmpy" in msg
-        assert "uv add" in msg
+    def test_validate_bnlearn_is_available(self) -> None:
+        """bnlearn is registry-available via the ``bnlearn`` extra: requesting
+        it must not raise."""
+        validate_framework_requested("bnlearn")
 
     def test_validate_pytorch_is_available(self) -> None:
         """PyTorch is registry-available: torch>=2.13.0 resolves

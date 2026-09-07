@@ -199,16 +199,10 @@ FRAMEWORK_REGISTRY: Mapping[str, Dict[str, Any]] = MappingProxyType(
             "optional_matrices": ["A", "B", "C", "D", "E"],
             "supports_multi_modality": True,
             "supports_multi_factor": True,
-            "available": False,
+            "available": True,
             "supports_execution": False,
             "supports_continuous": False,
-            "unavailable_reason": (
-                "Manual, render-only backend: bnlearn depends on pgmpy, which "
-                "transitively pulls PyTorch (torch) — keep torch>=2.13.0, the "
-                "floor that resolves GHSA-rrmf-rvhw-rf47. bnlearn has no "
-                "Step-12 executor, so it stays out of the default lock. "
-                "Run 'uv add bnlearn pgmpy' to enable."
-            ),
+            "unavailable_reason": None,
         },
     }
 )

@@ -485,6 +485,18 @@ means a *toolchain* is missing on the machine (Julia, `torch`, `cmdstanpy`/CmdSt
 not that the model is unrepresentable. Live counts always come from the two summary
 files; the prose above does not carry numbers.
 
+**Reference environment (all toolchains installed, 2026-09-07).** The maintained
+development environment provisions every Step 12 backend, so no compatible model
+is ever `skipped` for a missing toolchain: Python backends via
+`uv sync --extra dev --extra torch --extra ml-ai --extra geo-infer --extra bnlearn`
+(torch ≥ 2.13.0, NumPyro, DisCoPy, pymdp, bnlearn + pgmpy for the render-only
+categorical exports), Julia 1.12+ via juliaup/brew with the two pinned project
+environments instantiated from `src/gnn/execute/rxinfer/Project.toml`
+(RxInfer 5.5.0) and `src/gnn/execute/activeinference_jl/`, and CmdStan 2.39 via
+the release tarball (`~/.cmdstan`) with `cmdstanpy` from the dev extra.
+bnlearn renders for every categorical exemplar and its generated artifacts run
+against the installed package; it remains without a Step 12 executor by design.
+
 ### 📁 Directory Structure
 
 <details>

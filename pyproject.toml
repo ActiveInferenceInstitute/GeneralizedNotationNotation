@@ -201,6 +201,13 @@ scaling = [
     "ray>=2.0.0",  # distributed execution in execute/distributed.py
 ]
 
+# bnlearn backend (Step 11 render for categorical Bayesian-network exports):
+# pgmpy arrives transitively with its own pinned floors. Render-only — bnlearn
+# has no Step 12 executor (see FRAMEWORK_REGISTRY).
+bnlearn = [
+    "bnlearn>=0.14.0",
+]
+
 # All optional dependencies (install everything).
 # MAINTAINER NOTE: This list manually duplicates packages from the named
 # optional groups above (api, ml-ai, audio, gui, graphs, research, scaling).
@@ -247,6 +254,9 @@ all = [
     "dask>=2023.0.0",
     "distributed>=2023.0.0",
     "ray>=2.0.0",
+
+    # Categorical Bayesian-network exports
+    "bnlearn>=0.14.0",
 
 ]
 
