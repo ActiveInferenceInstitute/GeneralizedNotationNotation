@@ -78,6 +78,13 @@ class MCP:
         self._request_count = 0
         self._error_count = 0
         self._lock = threading.RLock()
+        # Serializes module-body imports across the discovery executor:
+        # several module bodies call ``matplotlib.use(...)`` at import
+        # time, and a concurrent ``matplotlib.use`` while a sibling thread
+        # is still executing ``matplotlib.pyplot``'s module body raises
+        # "partially initialized module 'matplotlib.pyplot' has no
+        # attribute 'switch_backend'" (flaky CI failure on fresh runners,
+        # where the first pyplot import is slow enough to open the window).
         self._module_import_lock = threading.RLock()
         self._registration_context = threading.local()
 
@@ -404,12 +411,15 @@ class MCP:
         if module_name is None:
             module_name = directory.name
 
-        # Import the module. Imports are serialized because several
-        # modules expose both `src.<module>` and top-level package
-        # paths, and Python's import cache is process-global.
-        # The root package's gold-standard tools module relocates to
-        # ``gnn.mcp.gnn_root`` (the flat ``gnn/mcp.py`` was shadowed by the
-        # ``gnn/mcp/`` package after the v0.5 rename).
+        # Import the module under the process-wide import lock: module
+        # bodies run ``matplotlib.use(...)`` at import time, and a
+        # concurrent ``matplotlib.use`` while another thread is still
+        # executing ``matplotlib.pyplot``'s module body raises
+        # "partially initialized module 'matplotlib.pyplot' has no
+        # attribute 'switch_backend'". The lock also keeps the process-
+        # global import cache consistent for the relocated
+        # ``gnn.mcp.gnn_root`` tools module (the flat ``gnn/mcp.py`` was
+        # shadowed by the ``gnn/mcp/`` package after the v0.5 rename).
         full_module_name = (
             "gnn.mcp.gnn_root" if module_name == "gnn" else f"gnn.{module_name}.mcp"
         )
@@ -420,7 +430,8 @@ class MCP:
                 sys.path.insert(0, str(root_dir.parent))
             if str(root_dir) not in sys.path:
                 sys.path.insert(0, str(root_dir))
-            module = importlib.import_module(full_module_name)
+            with self._module_import_lock:
+                module = importlib.import_module(full_module_name)
             import_time = time.time() - module_start
 
             logger.debug(
