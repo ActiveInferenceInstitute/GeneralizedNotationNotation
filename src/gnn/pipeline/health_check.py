@@ -60,9 +60,7 @@ class EnhancedHealthChecker:
             "networkx": ">=2.6.0",
             "pandas": ">=1.3.0",
             "pytest": ">=6.0.0",
-            "scipy": ">=1.7.0",
-            "pyyaml": ">=6.0",
-            "pathlib": ">=1.0.0",  # Standard library but check availability
+            "yaml": ">=6.0",  # the PyYAML distribution imports as ``yaml``
         }
 
         self.optional_feature_groups: Dict[str, Dict[str, Any]] = {

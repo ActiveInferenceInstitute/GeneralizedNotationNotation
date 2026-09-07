@@ -26,7 +26,12 @@ try:
     from gnn.utils.pipeline import get_output_dir_for_script
     from gnn.utils.pipeline_dependencies import get_pipeline_dependency_manager
 except ImportError as e:
+    # Degraded mode: method bodies handle the missing manager via the
+    # existing per-call try/except blocks.
     print(f"Warning: Could not import pipeline utilities: {e}")
+    _PIPELINE_UTILS_AVAILABLE = False
+else:
+    _PIPELINE_UTILS_AVAILABLE = True
 
 
 class PipelineValidator:
@@ -36,7 +41,9 @@ class PipelineValidator:
         """Initialize the instance."""
         self.verbose = verbose
         self.logger = self._setup_logging()
-        self.dependency_manager = get_pipeline_dependency_manager()
+        self.dependency_manager = (
+            get_pipeline_dependency_manager() if _PIPELINE_UTILS_AVAILABLE else None
+        )
         self.validation_results: dict[str, Any] = {}
 
     def _setup_logging(self) -> logging.Logger:
@@ -126,8 +133,16 @@ class PipelineValidator:
             ]
             step_results: dict[Any, Any] = {}
 
+            dependency_manager = self.dependency_manager
+            if dependency_manager is None:
+                return {
+                    "validation_successful": False,
+                    "error": "dependency manager unavailable "
+                    "(pipeline utilities failed to import)",
+                }
+
             for step in test_steps:
-                result = self.dependency_manager.check_step_dependencies(step)
+                result = dependency_manager.check_step_dependencies(step)
                 step_results[step] = {
                     "status": result["status"],
                     "required_satisfied": all(
@@ -196,10 +211,13 @@ class PipelineValidator:
         try:
             start_time = datetime.now()
 
-            # Use main.py to execute pipeline steps
+            # Use main.py to execute pipeline steps. Absolute path: the
+            # orchestrator lives at src/gnn/main.py since the package
+            # restructure, and the validator must not depend on CWD.
+            main_py = Path(__file__).resolve().parents[1] / "main.py"
             cmd: list[Any] = [
                 sys.executable,
-                "src/main.py",
+                str(main_py),
                 "--target-dir",
                 "input/gnn_files",
                 "--output-dir",
