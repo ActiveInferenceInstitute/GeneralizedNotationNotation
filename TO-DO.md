@@ -1,7 +1,7 @@
 # TO-DO - GNN Pipeline Roadmap
 
-**Last Updated**: 2026-09-02 (MAJ-02/MAJ-03 closed 2026-08-24; v4.0.0 roadmap refreshed; 3.2.0 shipped)
-**Current Version**: 3.2.0
+**Last Updated**: 2026-09-06 (3.3.0 shipped: input corpus closure, manuscript remediation reconciled onto src/gnn)
+**Current Version**: 3.3.0
 **Next Target**: v4.0.0 (bounded autonomy, pipeline stage consolidation, multi-agent stigmergic topologies, and high-dimensional active inference)
 
 **Recently closed** (audit trail in `CHANGELOG.md` and git history, not here):

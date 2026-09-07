@@ -1,10 +1,11 @@
 # GNN Version Map
 
 One-stop map of what changed at each release and where the authoritative record
-lives. Current version: **3.2.0** (see `pyproject.toml`, `CHANGELOG.md`).
+lives. Current version: **3.3.0** (see `pyproject.toml`, `CHANGELOG.md`).
 
 | Version | Date | Theme | Primary record |
 | --- | --- | --- | --- |
+| 3.3.0 | 2026-09-06 | One Corpus: input corpus closure (legacy fixture dirs folded into `gnn_files/`), manuscript remediation reconciled onto the `src/gnn/` layout (Rule-8 path-claims gate, preamble PDF-metadata ownership, relocated manuscript gates), `gnn.*` as the single canonical import surface | [CHANGELOG §3.3.0](../CHANGELOG.md) |
 | 3.2.0 | 2026-09-02 | Exemplar Gold Standard: pure continuous (linear-Gaussian) exemplars with native JAX/NumPyro/PyTorch/Stan/RxInfer.jl backends, `unsupported` render status for categorical backends, runnable Stan HMM/LGSSM programs + cmdstanpy executor, Step 12 per-folder summary merge, Julia pre-exec gate fix | [CHANGELOG §3.2.0](../CHANGELOG.md) |
 | 3.1.0 | 2026-08-30 | Release hardening: `GNN_STEP_TIMEOUT_SCALE` for slow-storage checkouts, meta-analysis correctness fix, justfile repair | [CHANGELOG §3.1.0](../CHANGELOG.md) |
 | 3.0.0 | 2026-06-20 | Long-Running Orchestration: durable streams, run sessions, resumable manifests, safe-by-design contracts in `src/gnn/pipeline/` | [src/gnn/pipeline/AGENTS.md](../src/gnn/pipeline/AGENTS.md) |

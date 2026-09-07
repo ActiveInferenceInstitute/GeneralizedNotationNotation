@@ -6,7 +6,16 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ---
 
-## [Unreleased]
+## [3.3.0] — 2026-09-06
+
+> **One Corpus.** Every model file under `input/` now lives inside
+> `input/gnn_files` — the two legacy top-level fixture directories are folded
+> into the corpus tree, the `gnn.*` import surface is the single canonical
+> one, and the manuscript remediation campaign's gates, provenance fixes and
+> rendered-artifact hygiene are reconciled onto the restructured `src/gnn/`
+> package layout.
+
+### Added
 
 ### Added
 
@@ -87,6 +96,26 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   patched-torch reality. bnlearn stays a manual render-only backend (heavy
   transitive deps via pgmpy→torch, no Step-12 executor) with its registry
   reason reworded to the policy rationale.
+
+- **Input corpus closure.** The two legacy directories outside the corpus
+  tree are gone: `multi_agent_models/` joins `gnn_files/multiagent/` as
+  `multi_agent_coordination_acceptance.md` (the compact 3-agent clustered
+  mean-field fixture, still a hand-runnable `--target-dir` target), and
+  `recursive_models/` becomes `gnn_files/recursive/` — still the reserved
+  `--autonomous` proposal-loop target, still holding no committed models.
+  `input/{README,AGENTS,SPEC}.md` and `gnn_files/INDEX.md` describe the new
+  layout; `GNN_OUTSIDE_CORPUS_NOTE` now regenerates to state full corpus
+  coverage instead of naming the two orphans.
+- **Manuscript remediation reconciled onto `src/gnn/`.** The remediation
+  campaign's gates and producers merged with the package restructure:
+  `scripts/check_manuscript_tokens.py` carries the Rule-8
+  repository-path-claims gate (every `input/...` literal in the prose must
+  exist and match the manifest family named beside it); the producer owns
+  `preamble.md`'s PDF metadata (`sync_preamble_metadata`,
+  `preamble_metadata_drift`); the relocated manuscript gates live in
+  `tests/test_manuscript_{figure_freshness,latex_log,path_claims,
+  published_commands}.py` against the committed figure registry
+  (`png_sha256`, `consumed_tokens`).
 
 ### Refactored
 
@@ -947,7 +976,8 @@ Completes the remaining RED_TEAM_REVIEW.md items from the 2026-08-14 wave.
 - pytest test suite with comprehensive coverage
 - MCP tool registration framework
 
-[Unreleased]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v3.2.0...HEAD
+[Unreleased]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v3.3.0...HEAD
+[3.3.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v3.2.0...v3.3.0
 [3.2.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v3.1.0...v3.2.0
 [3.1.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v3.0.0...v3.1.0
 [2.0.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v1.9.0...v2.0.0
