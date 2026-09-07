@@ -160,7 +160,7 @@ def test_gate_ignores_a_family_name_used_as_an_ordinary_word(
     """Without "family" nearby, `basics` is just a backticked word."""
     sections = _section(
         tmp_path,
-        "The `basics` fixtures are documented under `input/multi_agent_models`.\n",
+        "The `basics` fixtures are documented under `input/gnn_files/recursive`.\n",
     )
     assert GATE._path_claim_issues(sections, _MANIFEST_FAMILIES) == []
 
@@ -172,7 +172,7 @@ def test_gate_does_not_sweep_in_an_unrelated_sibling_directory(
     sections = _section(
         tmp_path,
         "The `multiagent` family lives in `input/gnn_files/multiagent`, and "
-        "`input/recursive_models/` is a reserved directory that ships "
+        "`input/gnn_files/recursive/` is a reserved directory that ships "
         "documentation only.\n",
     )
     assert GATE._path_claim_issues(sections, _MANIFEST_FAMILIES) == []
@@ -277,10 +277,10 @@ def test_outside_corpus_note_states_full_coverage_when_nothing_is_outside() -> N
     assert "No model file lies outside `input/gnn_files`" in docs_only
 
 
-def test_live_outside_corpus_dirs_see_the_multi_agent_fixture() -> None:
-    """The live repository's out-of-corpus model files are actually counted."""
+def test_live_outside_corpus_dirs_are_empty_after_corpus_closure() -> None:
+    """The 3.3.0 corpus closure folded the two legacy dirs into gnn_files."""
     pairs = dict(_outside_corpus_dirs(RepositorySnapshot(REPO_ROOT)))
-    assert pairs.get("input/multi_agent_models") == 1, pairs
+    assert pairs == {}, pairs
 
 
 def test_live_s01_states_the_outside_corpus_relationship_through_the_token() -> None:
@@ -295,10 +295,13 @@ def test_live_s01_states_the_outside_corpus_relationship_through_the_token() -> 
 
 def test_live_variables_carry_the_outside_corpus_tokens() -> None:
     variables = generate_variables(REPO_ROOT)
-    assert variables["GNN_OUTSIDE_CORPUS_MODEL_COUNT"] == "1"
+    assert variables["GNN_OUTSIDE_CORPUS_MODEL_COUNT"] == "0"
     note = variables["GNN_OUTSIDE_CORPUS_NOTE"]
-    assert "`input/multi_agent_models/` holds 1 model file" in note
-    assert f"outside the {variables['GNN_EXAMPLE_COUNT']}-file count above" in note
+    assert "Every model file under `input/` lives in that subtree" in note
+    assert (
+        f"so the {variables['GNN_EXAMPLE_COUNT']}-file count covers the whole tree"
+        in note
+    )
 
 
 def test_producer_model_census_matches_pipeline_discovery() -> None:
