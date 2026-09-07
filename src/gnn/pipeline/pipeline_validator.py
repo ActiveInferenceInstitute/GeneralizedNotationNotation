@@ -18,20 +18,9 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List
 
-# Add src to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
-try:
-    from gnn.utils.logging.logging_utils import log_step_warning, setup_step_logging
-    from gnn.utils.pipeline import get_output_dir_for_script
-    from gnn.utils.pipeline_dependencies import get_pipeline_dependency_manager
-except ImportError as e:
-    # Degraded mode: method bodies handle the missing manager via the
-    # existing per-call try/except blocks.
-    print(f"Warning: Could not import pipeline utilities: {e}")
-    _PIPELINE_UTILS_AVAILABLE = False
-else:
-    _PIPELINE_UTILS_AVAILABLE = True
+# gnn.utils.* are same-package core imports; no path bootstrap or
+# degraded-mode scaffolding is needed for them.
+from gnn.utils.pipeline_dependencies import get_pipeline_dependency_manager
 
 
 class PipelineValidator:
@@ -41,9 +30,7 @@ class PipelineValidator:
         """Initialize the instance."""
         self.verbose = verbose
         self.logger = self._setup_logging()
-        self.dependency_manager = (
-            get_pipeline_dependency_manager() if _PIPELINE_UTILS_AVAILABLE else None
-        )
+        self.dependency_manager = get_pipeline_dependency_manager()
         self.validation_results: dict[str, Any] = {}
 
     def _setup_logging(self) -> logging.Logger:
@@ -133,16 +120,8 @@ class PipelineValidator:
             ]
             step_results: dict[Any, Any] = {}
 
-            dependency_manager = self.dependency_manager
-            if dependency_manager is None:
-                return {
-                    "validation_successful": False,
-                    "error": "dependency manager unavailable "
-                    "(pipeline utilities failed to import)",
-                }
-
             for step in test_steps:
-                result = dependency_manager.check_step_dependencies(step)
+                result = self.dependency_manager.check_step_dependencies(step)
                 step_results[step] = {
                     "status": result["status"],
                     "required_satisfied": all(
