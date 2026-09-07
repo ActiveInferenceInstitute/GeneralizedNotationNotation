@@ -41,7 +41,7 @@ The repository's scale is itself evidence of the surface that the gates and pipe
 
 ![Repository-scale metrics — source packages, test files, and tool surface — measured from the live repository.](../output/figures/gnn_repo_metrics.png){#fig:repo_metrics width=80%}
 
-The test suite comprises 369 test files containing 4112 test functions, exercising a source base of 589 Python files across 44 packages (195030 lines of source). The Model Context Protocol surface — which exposes GNN's capabilities to external agents and tools — provides 141 tools across 32 modules. The pipeline itself runs as 25 steps (0–24), and the rendering of figures, models, and reports produced 693 figures in the current run.
+The test suite comprises 369 test files containing 4112 test functions, exercising a source base of 589 Python files across 44 packages (195034 lines of source). The Model Context Protocol surface — which exposes GNN's capabilities to external agents and tools — provides 141 tools across 32 modules. The pipeline itself runs as 25 steps (0–24), and the rendering of figures, models, and reports produced 693 figures in the current run.
 
 ## Claim Discipline
 
