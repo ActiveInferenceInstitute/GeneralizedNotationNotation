@@ -23,6 +23,16 @@ from typing import Any, Callable, Dict, List, Optional, Tuple, Union, cast
 # Configure logging
 logger = logging.getLogger("mcp")
 
+# Process-wide lock serializing module-body imports across the discovery
+# executor (and across MCP instances): several module bodies call
+# ``matplotlib.use(...)`` at import time, and a concurrent
+# ``matplotlib.use`` while a sibling thread is still executing
+# ``matplotlib.pyplot``'s module body raises "partially initialized module
+# 'matplotlib.pyplot' has no attribute 'switch_backend'" (flaky CI failure
+# on fresh runners, where the first pyplot import is slow enough to open
+# the race window).
+_MODULE_IMPORT_LOCK = threading.RLock()
+
 # --- Import MCP Exceptions from dedicated module ---
 from .exceptions import (
     MCPInvalidParamsError,
@@ -78,14 +88,6 @@ class MCP:
         self._request_count = 0
         self._error_count = 0
         self._lock = threading.RLock()
-        # Serializes module-body imports across the discovery executor:
-        # several module bodies call ``matplotlib.use(...)`` at import
-        # time, and a concurrent ``matplotlib.use`` while a sibling thread
-        # is still executing ``matplotlib.pyplot``'s module body raises
-        # "partially initialized module 'matplotlib.pyplot' has no
-        # attribute 'switch_backend'" (flaky CI failure on fresh runners,
-        # where the first pyplot import is slow enough to open the window).
-        self._module_import_lock = threading.RLock()
         self._registration_context = threading.local()
 
         self._performance_metrics = MCPPerformanceMetrics()
@@ -430,7 +432,7 @@ class MCP:
                 sys.path.insert(0, str(root_dir.parent))
             if str(root_dir) not in sys.path:
                 sys.path.insert(0, str(root_dir))
-            with self._module_import_lock:
+            with _MODULE_IMPORT_LOCK:
                 module = importlib.import_module(full_module_name)
             import_time = time.time() - module_start
 
