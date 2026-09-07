@@ -780,7 +780,11 @@ def generate_variables(project_root: Path) -> dict[str, str]:
     )
     figure_count = _count_files(snapshot, "output", "*.png")
     manuscript_figure_count = _count_files(snapshot, "output/figures", "*.png")
-    doc_file_count = _count_files(snapshot, "docs", "*.md")
+    # fleet-logs are historical run records, not maintained documentation; the
+    # doc gates exclude them, so the manuscript's count does too.
+    doc_file_count = _count_files(snapshot, "docs", "*.md") - _count_files(
+        snapshot, "docs/development/fleet-logs", "*.md"
+    )
 
     variables: dict[str, str] = {
         # Identity / config
