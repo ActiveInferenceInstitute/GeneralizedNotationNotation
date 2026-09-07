@@ -26,8 +26,9 @@ the health check's live integration probe. Fixes landed while wiring: the
 core-dependency check imported PyYAML by distribution name (`pyyaml` vs
 `yaml`, so core deps always reported unhealthy), scipy/pathlib were listed
 as core (scipy moved to the ml-ai extra in 3.3.0), the runtime validator
-shelled out to the retired `src/main.py`, and its import fallback could
-raise NameError. Tests: `tests/pipeline/test_health_check.py`,
+shelled out to the retired pre-restructure orchestrator (`main.py` at the
+`src/` root; now `src/gnn/main.py`), and its import fallback could raise
+NameError. Tests: `tests/pipeline/test_health_check.py` and
 `tests/pipeline/test_pipeline_validator.py`.
 
 ## Open Scoped Roadmap
