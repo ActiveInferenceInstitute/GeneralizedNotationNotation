@@ -485,7 +485,7 @@ Pipeline Results → Report Aggregation → Data Analysis → Format Generation 
 
 - [Pipeline Overview](../../../README.md)
 - [Architecture Guide](../../../ARCHITECTURE.md)
-- [Documentation Index](../../../doc/README.md)
+- [Documentation Index](../../../docs/README.md)
 
 ### External Resources
 

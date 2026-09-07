@@ -5,7 +5,7 @@
 | Version | 0.6 |
 | Date | 2026-09-06 |
 | Canonical copy | `../fep_lean/docs/design/gnn-bridge/bridge-contract.md` — edit there first |
-| Mirror copy | this file, `doc/other/fep_lean/bridge-contract.md` |
+| Mirror copy | this file, `docs/other/fep_lean/bridge-contract.md` |
 | Change rule | substance changes bump the version and land in both checkouts in the same working session |
 
 ## 1. Purpose and scope
@@ -60,7 +60,7 @@ casing on the GNN side.
 
 The only interchange artifact is a **GNN document** (`.md` in GNN syntax,
 version `GNN v1.x`), whose section inventory is normatively defined by
-`GeneralizedNotationNotation/doc/gnn/gnn_syntax.md`:
+`GeneralizedNotationNotation/docs/gnn/gnn_syntax.md`:
 
 | Section | Status | Bridge use |
 | --- | --- | --- |
@@ -96,7 +96,7 @@ targeted. A document without provenance is not a bridge artifact.
 
 | Stage | Owner | Target | Acceptance |
 | --- | --- | --- | --- |
-| S1 Syntax surface freeze | GNN | the normative section inventory in `doc/gnn/gnn_syntax.md` | a pinned version reference both sides cite |
+| S1 Syntax surface freeze | GNN | the normative section inventory in `docs/gnn/gnn_syntax.md` | a pinned version reference both sides cite |
 | S2 Document AST | fep_lean (prospective) | GNN sections, state-space blocks, and connections as Lean inductive types | compiles in the pinned workspace |
 | S3 Well-formedness | fep_lean | decidable predicates mirroring parse, connection grammar, state-space typing, and ontology binding checks | every `input/gnn_files` exemplar decides correctly |
 | S4 Dynamic semantics | fep_lean | discrete-family denotation over `FiniteLaw`/`FiniteKernel`/`FiniteHMM`; continuous-family denotation over `LinearGaussianParameters` | theorem statements for both families accepted in a slice |
@@ -125,13 +125,13 @@ proved property.
 ## 8. Synchronization and ownership
 
 - Canonical contract: `fep_lean/docs/design/gnn-bridge/bridge-contract.md`.
-  Mirror: `GeneralizedNotationNotation/doc/other/fep_lean/bridge-contract.md`.
+  Mirror: `GeneralizedNotationNotation/docs/other/fep_lean/bridge-contract.md`.
 - Contract edits land in both checkouts in the same working session; the
   mirror stays identical to the canonical body except for (a) the
   canonical-pointer header rows and (b) cross-repository markdown links,
   which the mirror renders as inline code paths.
 - `fep_lean/docs/design/gnn-bridge/` is maintained by fep_lean-side agents;
-  `doc/other/fep_lean/` in the GNN checkout by GNN-side agents.
+  `docs/other/fep_lean/` in the GNN checkout by GNN-side agents.
 - Version bumps follow the change rule in the header table.
 
 ## 9. Policies and no-go registry
@@ -139,7 +139,7 @@ proved property.
 | Trigger | Action |
 | --- | --- |
 | A field of the GNN document cannot be derived deterministically from the named Lean definition | stop; narrow the extraction contract; never hand-fit the document |
-| Syntax surface drift in `doc/gnn/gnn_syntax.md` | freeze the pinned version per slice; re-freeze explicitly before extending |
+| Syntax surface drift in `docs/gnn/gnn_syntax.md` | freeze the pinned version per slice; re-freeze explicitly before extending |
 | Numeric rounding of exact Lean values — terminating decimals emit exactly; non-terminating exact Lean reals emit as float64 (shortest round-trip repr), with the exact formula recorded verbatim in provenance, and consumers treat the float as an approximation, never as the Lean value | rounding policy fixed once in this contract's first slice and extended by v0.2; the digest of the exact source is recorded in provenance |
 | A projected model exceeds a backend (e.g. continuous model on a categorical-only renderer) | report `unsupported`; never distort the model |
 | A desired ontology binding is absent from the GNN canonical vocabulary | either use existing terms or open an explicit vocabulary-extension request on the GNN side; never emit bindings that fail step 10 |
@@ -178,7 +178,7 @@ v0.6 extraction-package migration: the pinned render route is
 (src-layout `src/gnn/`); the GNN owner roster is re-pinned to the single glob
 `src/gnn/**/*.py` plus fixed owners `pyproject.toml`, `uv.lock`,
 `src/gnn/main.py`, the mirror, and the pinned syntax files
-(`doc/gnn/gnn_syntax.md`, `src/gnn/pipeline/step_registry.py`).
+(`docs/gnn/gnn_syntax.md`, `src/gnn/pipeline/step_registry.py`).
 
 ## 11. Concrete artifact proofs and shared receipts (v0.4)
 

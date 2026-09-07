@@ -88,7 +88,7 @@ All tests follow strict real-implementation policy:
 
 ## Coverage Layout
 
-The suite mirrors the source tree: module-focused tests live in `tests/<module>/`, while root-level `tests/test_*.py` files cover cross-cutting environment, coverage, and runner behavior. Mechanical AGENTS/README coverage for maintained test subdirectories is enforced by `doc/development/docs_audit.py --strict`.
+The suite mirrors the source tree: module-focused tests live in `tests/<module>/`, while root-level `tests/test_*.py` files cover cross-cutting environment, coverage, and runner behavior. Mechanical AGENTS/README coverage for maintained test subdirectories is enforced by `docs/development/docs_audit.py --strict`.
 
 ---
 
@@ -111,8 +111,7 @@ Organized by module and functionality:
 
 ### Test Markers
 
-Registered in `pytest.ini` (plus conftest's extended registry — see
-`PYTEST_MARKERS` in `conftest.py`). For selective execution:
+Registered in `pytest.ini` (single source of truth). For selective execution:
 - `@pytest.mark.fast` - Fast tests (< 1 second)
 - `@pytest.mark.slow` - Slow tests (minutes)
 - `@pytest.mark.unit` - Unit tests

@@ -70,7 +70,7 @@ DSPy integration for structured prompting and LLM coordination within the GNN ec
 This module is organized as follows:
 
 ```
-doc/dspy/
+docs/dspy/
 │
 ├── Overview & Navigation
 │   ├── README.md              # Entry point

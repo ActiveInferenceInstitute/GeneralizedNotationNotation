@@ -38,7 +38,7 @@ class TestPipelineDiscovery:
         try:
             from gnn.pipeline.discovery import get_pipeline_scripts
 
-            src_dir = project_root / "src"
+            src_dir = project_root / "src" / "gnn"
             scripts = get_pipeline_scripts(src_dir)
             assert isinstance(scripts, list)
             assert len(scripts) >= 1
@@ -58,7 +58,7 @@ class TestPipelineDiscovery:
         try:
             from gnn.pipeline.discovery import get_pipeline_scripts
 
-            src_dir = project_root / "src"
+            src_dir = project_root / "src" / "gnn"
             scripts = get_pipeline_scripts(src_dir)
             assert isinstance(scripts, list)
             assert len(scripts) >= 1
@@ -129,7 +129,7 @@ class TestPipelineValidation:
         """Test validate_module_imports function."""
         from gnn.pipeline.pipeline_validation import validate_module_imports
 
-        sample_module = project_root / "src" / "3_gnn.py"
+        sample_module = project_root / "src" / "gnn" / "3_gnn.py"
         if sample_module.exists():
             result = validate_module_imports(sample_module)
             assert isinstance(result, dict)
@@ -193,7 +193,7 @@ class TestUtilsMigrationHelper:
         """Test PipelineMigrationHelper class functionality."""
         from gnn.utils.migration_helper import PipelineMigrationHelper
 
-        src_dir = project_root / "src"
+        src_dir = project_root / "src" / "gnn"
         helper = PipelineMigrationHelper(src_dir)
         assert hasattr(helper, "analyze_module")
         assert hasattr(helper, "apply_improvements")
@@ -203,7 +203,7 @@ class TestUtilsMigrationHelper:
         """Test analyze_module function."""
         from gnn.utils.migration_helper import PipelineMigrationHelper
 
-        src_dir = project_root / "src"
+        src_dir = project_root / "src" / "gnn"
         helper = PipelineMigrationHelper(src_dir)
         sample_module = src_dir / "3_gnn.py"
         if sample_module.exists():
@@ -307,7 +307,7 @@ class TestUtilsScriptValidator:
         """Test PipelineScriptValidator class functionality."""
         from gnn.utils.script_validator import PipelineScriptValidator
 
-        src_dir = project_root / "src"
+        src_dir = project_root / "src" / "gnn"
         validator = PipelineScriptValidator(src_dir)
         assert hasattr(validator, "validate_script")
         assert hasattr(validator, "validate_all_scripts")
@@ -317,7 +317,7 @@ class TestUtilsScriptValidator:
         """Test validate_pipeline_scripts function."""
         from gnn.utils.script_validator import validate_pipeline_scripts
 
-        src_dir = project_root / "src"
+        src_dir = project_root / "src" / "gnn"
         result = validate_pipeline_scripts(src_dir)
         assert isinstance(result, dict)
         assert "script_details" in result or "issue_summary" in result
@@ -332,7 +332,7 @@ class TestPipelineInfrastructureIntegration:
         from gnn.pipeline.discovery import get_pipeline_scripts
         from gnn.pipeline.pipeline_validation import validate_module_imports
 
-        src_dir = project_root / "src"
+        src_dir = project_root / "src" / "gnn"
         scripts = get_pipeline_scripts(src_dir)
         assert len(scripts) >= 1
         if scripts:
@@ -377,9 +377,12 @@ def test_pipeline_infrastructure_performance() -> None:
 def test_pipeline_infrastructure_completeness() -> None:
     """Test that pipeline infrastructure modules have expected functionality."""
     expected_modules: list[Any] = [
-        ("pipeline", ["discovery", "pipeline_validation", "verify_pipeline"]),
         (
-            "utils",
+            "gnn.pipeline",
+            ["discovery", "pipeline_validation", "verify_pipeline"],
+        ),
+        (
+            "gnn.utils",
             [
                 "migration_helper",
                 "pipeline_monitor",

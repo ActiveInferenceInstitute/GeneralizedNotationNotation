@@ -24,7 +24,7 @@ Integration between GNN (Generalized Notation Notation) and CatColab, the Topos 
 ## Quick Navigation
 
 - **GNN Documentation**: [gnn/AGENTS.md](../../gnn/AGENTS.md)
-- **Main Documentation**: [doc/README.md](../README.md)
+- **Main Documentation**: [docs/README.md](../README.md)
 - **Pipeline Reference**: [src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md)
 - **DisCoPy Integration**: [discopy/AGENTS.md](../../discopy/AGENTS.md)
 

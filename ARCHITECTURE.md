@@ -1,6 +1,6 @@
 # GNN Architecture Guide
 
-This guide details the architecture of the Generalized Notation Notation (GNN) system. It complements `DOCS.md` and `doc/pipeline/README.md` with an implementation-oriented perspective for developers.
+This guide details the architecture of the Generalized Notation Notation (GNN) system. It complements `DOCS.md` and `docs/pipeline/README.md` with an implementation-oriented perspective for developers.
 
 **Last Updated**: 2026-09-02
 **Version**: 3.2.0
@@ -133,7 +133,7 @@ graph TD
 
 ## Long-Running Orchestration (v3.0.0)
 
-Version 3.0.0 ("Long-Running Orchestration") adds a safe-by-design surface under `src/gnn/pipeline/` for durable, resumable, and auditable pipeline runs. The defining property is that no module mutates live infrastructure: every contract generates, validates, replays, or plans **data only**, so the entire surface is inspectable before anything is acted upon. See [doc/pipeline/v3_orchestration.md](doc/pipeline/v3_orchestration.md) for the full reference.
+Version 3.0.0 ("Long-Running Orchestration") adds a safe-by-design surface under `src/gnn/pipeline/` for durable, resumable, and auditable pipeline runs. The defining property is that no module mutates live infrastructure: every contract generates, validates, replays, or plans **data only**, so the entire surface is inspectable before anything is acted upon. See [docs/pipeline/v3_orchestration.md](docs/pipeline/v3_orchestration.md) for the full reference.
 
 ### Three Safe-by-Design Contracts
 
@@ -354,11 +354,11 @@ Each agent implements comprehensive performance monitoring:
 ## References
 
 - **Main Documentation**: [README.md](README.md) — Project overview and quick start
-- **Pipeline Documentation**: [doc/PIPELINE_SCRIPTS.md](doc/PIPELINE_SCRIPTS.md) — Detailed step-by-step descriptions
+- **Pipeline Documentation**: [docs/PIPELINE_SCRIPTS.md](docs/PIPELINE_SCRIPTS.md) — Detailed step-by-step descriptions
 - **Development Rules**: [.agent_rules](.agent_rules) — Canonical rules for scripts and modules
 - **Agent Registry**: [AGENTS.md](AGENTS.md) — Master agent scaffolding and module registry
 - **Template Guide**: [AGENTS_TEMPLATE.md](AGENTS_TEMPLATE.md) — Template for new modules
-- **Doc link checks**: [DOCS.md](DOCS.md) — “Documentation maintenance” (`doc/development/docs_audit.py`)
+- **Doc link checks**: [DOCS.md](DOCS.md) — “Documentation maintenance” (`docs/development/docs_audit.py`)
 
 ---
 

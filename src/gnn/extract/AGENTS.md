@@ -47,7 +47,7 @@ src/gnn/extract/
 
 ## Cross-Repo Pin (do not move)
 
-The fep_lean bridge `verify-document` operation imports `gnn.extract.pomdp_extractor.extract_pomdp_from_file` as its render route (bridge contract `doc/other/fep_lean/bridge-contract.md` §13, mirrored in the fep_lean checkout). This import path is part of the cross-repo source-custody pin: any move or rename must be coordinated with the fep_lean checkout and a re-pin of `specs/gnn-bridge-w2-source-custody/source-pin.json`.
+The fep_lean bridge `verify-document` operation imports `gnn.extract.pomdp_extractor.extract_pomdp_from_file` as its render route (bridge contract `docs/other/fep_lean/bridge-contract.md` §13, mirrored in the fep_lean checkout). This import path is part of the cross-repo source-custody pin: any move or rename must be coordinated with the fep_lean checkout and a re-pin of `specs/gnn-bridge-w2-source-custody/source-pin.json`.
 
 `__main__.py` preserves `python -m gnn.extract` as the documented headless entry; `__init__.py` imports only the standard library at module scope so the CLI runs without the full pipeline stack.
 

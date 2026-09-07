@@ -39,7 +39,7 @@ PYTHONPATH=src uv run python scripts/generate_pipeline_container_plan.py --confi
 PYTHONPATH=src uv run python scripts/run_session_acceptance.py --manifest input/model_family_manifest.json --output-dir /tmp/gnn-v3-session-acceptance --session /tmp/gnn-v3-session.json --strict
 PYTHONPATH=src uv run python src/gnn/main.py --autonomous --target-dir input/gnn_files --output-dir /tmp/gnn-autonomous-smoke
 
-uv run python doc/development/docs_audit.py --strict --check-anchors --no-write
+uv run python docs/development/docs_audit.py --strict --check-anchors --no-write
 uv run python scripts/check_gnn_doc_patterns.py --strict
 uv run python scripts/check_maintained_doc_terms.py --strict
 uv run python scripts/check_repo_terminology.py --strict

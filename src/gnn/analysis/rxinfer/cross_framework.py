@@ -32,7 +32,9 @@ SRC_ROOT = Path(__file__).resolve().parents[4]
 PROJECT_ROOT = SRC_ROOT
 
 RXINFER_JULIA_PROJECT = SRC_ROOT / "src" / "gnn" / "execute" / "rxinfer"
-ACTIVEINFERENCE_JULIA_PROJECT = SRC_ROOT / "src" / "gnn" / "execute" / "activeinference_jl"
+ACTIVEINFERENCE_JULIA_PROJECT = (
+    SRC_ROOT / "src" / "gnn" / "execute" / "activeinference_jl"
+)
 
 FRAMEWORKS = ("rxinfer", "pymdp", "activeinference_jl")
 

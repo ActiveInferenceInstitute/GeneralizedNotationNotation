@@ -4,7 +4,7 @@
 
 ## Purpose
 
-Static **reference specifications** of GNN-related structures in eight external languages (proof assistants and specification tools). These files are **not** the Python round-trip suite itself; they complement [`../parsers/`](../parsers/) and [`../types.py`](../types.py).
+Static **reference specifications** of GNN-related structures in eight external languages (proof assistants and specification tools). These files are **not** the Python round-trip suite itself; they complement [`../parsers/`](../parsers/) and [`../types.py`](../types/__init__.py).
 
 ## Files
 

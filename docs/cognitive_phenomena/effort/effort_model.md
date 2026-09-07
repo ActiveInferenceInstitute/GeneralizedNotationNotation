@@ -36,4 +36,4 @@ A-o
 
 ---
 
-*See also: [doc/cognitive_phenomena/executive_control/](../executive_control/) for task switching models*
+*See also: [docs/cognitive_phenomena/executive_control/](../executive_control/) for task switching models*

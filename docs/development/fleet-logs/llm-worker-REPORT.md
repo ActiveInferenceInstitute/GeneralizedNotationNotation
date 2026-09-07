@@ -15,7 +15,7 @@ Scope: `src/gnn/llm/` (all files) + `src/gnn/13_llm.py`. Branch main @ f64ac9085
 | `src/gnn/llm/cache.py` | `summary() -> dict[str, Any]` (was bare `dict`). | Typing only. |
 | `src/gnn/llm/mcp.py` (470→~505 lines) | `analyze_gnn_with_llm_mcp` now honors its advertised params: unknown `analysis_type` → `{"success": False, error listing allowed values}` (was silently ignored); `provider="ollama"` pins `DEFAULT_OLLAMA_MODEL` for the summary call (was ignored); both params echoed in the payload; `get_llm_providers_mcp` adds openrouter/perplexity (missing entries); `register_tools` is table-driven (5 near-identical blocks → `tool_specs` tuple + loop; schema enum now derives from `_ANALYSIS_TYPES`). | Dead advertised params + incomplete provider matrix + registration boilerplate. |
 | `src/gnn/llm/__init__.py` | `get_available_providers()` env/config-driven via `load_api_keys_from_env()` (ollama unless `OLLAMA_DISABLED`; cloud only with keys; perplexity now included) — was import-probe based (always listed openai/openrouter, never perplexity); `analyze_gnn_model` compat helper dedup'd (removed duplicated except-branch); unused imports (`os`, `List`, `Optional`, `Tuple`) removed. | Misleading "availability" + dead code. |
-| `src/gnn/llm/llm_system_demo.py`, `src/gnn/llm/demo_llm_features.py` | **Deleted.** | Zero references repo-wide (grep incl. doc/). The former "tested" local stubs (fabricated assertions, ~60% no-op); the latter called live LLM providers when run. Usage examples live in AGENTS.md/README. |
+| `src/gnn/llm/llm_system_demo.py`, `src/gnn/llm/demo_llm_features.py` | **Deleted.** | Zero references repo-wide (grep incl. docs/). The former "tested" local stubs (fabricated assertions, ~60% no-op); the latter called live LLM providers when run. Usage examples live in AGENTS.md/README. |
 | `src/gnn/llm/AGENTS.md`, `src/gnn/llm/README.md`, `src/gnn/llm/SKILL.md` | New "2026-09-04 Composability Refactor (API deltas)" section + test-file list + footer date; README mermaid diagrams corrected (Anthropic nodes → Perplexity/OpenRouter reality, matching the prose at line 6); SKILL.md `get_available_providers` comment updated. | Docs of record must match API/behavior. |
 | `src/gnn/13_llm.py` | Unchanged (55 lines). | Already thin; contract preserved. |
 | `tests/llm/` (+6 files, ~28KB) | `test_llm_analyzer_extractors.py`, `test_llm_prompts_registry.py` (regression: registry covers every enum member), `test_llm_cache.py` (key sensitivity/roundtrip/corruption/clear), `test_llm_generator.py`, `test_llm_processor_helpers.py` (auth classifier, budget resolvers, sort key, config merge, `get_default_provider`, full `_execute_prompt` funnel: cache hit / fail-fast / success-caches / empty-response / auth-recorded-once / timeout / non-auth error), `test_llm_sync_wrappers.py` (never-raises contracts, offline). | Audit showed extractors/generator/cache/prompts had zero direct behavioral tests. |
@@ -47,9 +47,9 @@ consumer regression: test_core_modules + test_coverage_overall +
 
 ## Doc/manuscript follow-ups (other workers own these)
 
-- `doc/api/comprehensive_api_reference.md:426` still references a fictional `gnn.llm` module path (pre-existing).
-- `doc/llm/README.md` + `doc/mcp/tool_reference.md` may want the MCP `analysis_type` validation + `provider` honoring semantics mirrored.
-- `doc/api/README.md:90` / provider tables still say "Anthropic provider" in places outside my scope.
+- `docs/api/comprehensive_api_reference.md:426` still references a fictional `gnn.llm` module path (pre-existing).
+- `docs/llm/README.md` + `docs/mcp/tool_reference.md` may want the MCP `analysis_type` validation + `provider` honoring semantics mirrored.
+- `docs/api/README.md:90` / provider tables still say "Anthropic provider" in places outside my scope.
 
 ## Follow-up ideas
 

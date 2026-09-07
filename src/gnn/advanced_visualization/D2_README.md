@@ -496,7 +496,7 @@ d2 version
 
 - [Advanced Visualization Module](AGENTS.md)
 - [Pipeline Architecture](../../../ARCHITECTURE.md)
-- [D2 Integration Guide](../../../doc/d2/gnn_d2.md)
+- [D2 Integration Guide](../../../docs/d2/gnn_d2.md)
 
 ---
 

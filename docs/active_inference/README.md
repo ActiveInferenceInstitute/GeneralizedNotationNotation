@@ -198,7 +198,7 @@ graph TD
 ## File Structure
 
 ```
-doc/active_inference/
+docs/active_inference/
 ├── README.md                             # This overview
 ├── AGENTS.md                             # Technical scaffolding
 │

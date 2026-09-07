@@ -20,7 +20,7 @@ Step 9 advanced visualization documentation for generated graph, matrix, POMDP, 
 ## Quick Navigation
 
 - **GNN Documentation**: [gnn/AGENTS.md](../gnn/AGENTS.md)
-- **Main Documentation**: [doc/README.md](../README.md)
+- **Main Documentation**: [docs/README.md](../README.md)
 - **Pipeline Reference**: [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)
 - **Base Visualization**: [visualization/AGENTS.md](../visualization/AGENTS.md)
 

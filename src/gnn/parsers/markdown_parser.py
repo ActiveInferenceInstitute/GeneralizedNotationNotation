@@ -343,7 +343,7 @@ class MarkdownGNNParser(ParameterParsingMixin, BaseGNNParser):
             target_part = line[op_pos + len(found_op) :].strip()
 
             # v1.1 connection annotation: an ':annotation' suffix on the
-            # target side (doc/gnn/gnn_syntax.md section 3, "Annotated
+            # target side (docs/gnn/gnn_syntax.md section 3, "Annotated
             # directed edge" `A>B:label`). Annotations are labels for
             # rendering/documentation; parsers must accept and preserve
             # them but not treat them as part of the target variable name.

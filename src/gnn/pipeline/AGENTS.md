@@ -15,7 +15,7 @@ manifests + replayable execution traces), `run_session.py` (resumable run sessio
 checkpoint/resume + path-safe cleanup), and `container_plan.py` (auditable container plans + static
 security review + rollback). These generate/validate **data only** — no container or cluster is
 executed. Acceptance: `scripts/run_v3_orchestration_acceptance.py --strict`. Reference:
-[`doc/pipeline/v3_orchestration.md`](../../../doc/pipeline/v3_orchestration.md).
+[`docs/pipeline/v3_orchestration.md`](../../../docs/pipeline/v3_orchestration.md).
 
 **Version**: 3.2.0
 
@@ -513,8 +513,8 @@ Internal quality pass; every external entry point's behavior is preserved:
 
 ### External Resources
 
-- [v3 Orchestration](../../../doc/pipeline/v3_orchestration.md)
-- [Stage Hardening Review](../../../doc/pipeline/pipeline_stage_hardening_review.md)
+- [v3 Orchestration](../../../docs/pipeline/v3_orchestration.md)
+- [Stage Hardening Review](../../../docs/pipeline/pipeline_stage_hardening_review.md)
 
 
 ---

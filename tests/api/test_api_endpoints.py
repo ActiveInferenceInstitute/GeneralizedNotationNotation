@@ -210,7 +210,7 @@ def test_api_submit_run_stores_normalized_output_dir(monkeypatch: Any) -> None:
 
 @pytest.mark.asyncio
 async def test_job_processor_uses_requested_output_dir(monkeypatch: Any) -> None:
-    """Async job execution should pass the job's output_dir to src/main.py."""
+    """Async job execution should pass the job's output_dir to src/gnn/main.py."""
     from gnn.api import processor as job_mgr
 
     captured_cmd: list[str] = []
@@ -248,7 +248,7 @@ async def test_job_processor_uses_requested_output_dir(monkeypatch: Any) -> None
 async def test_run_api_executes_real_main_subprocess_and_preserves_warning_exit(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    """The run API must invoke src/main.py instead of simulating successful steps."""
+    """The run API must invoke src/gnn/main.py instead of simulating successful steps."""
     import json
 
     import gnn.api.app as api_app

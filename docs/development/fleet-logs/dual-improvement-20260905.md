@@ -13,7 +13,7 @@ Key discoveries, all file:line grounded:
 - **Custody rosters measured, not assumed.** `gnn.owners` = 271 paths:
   src/gnn (82), src/gnn/render (53), src/gnn/utils (51), src/gnn/execute (45),
   src/gnn/pipeline (31), src/gnn/ontology (4), plus uv.lock, pyproject.toml,
-  src/gnn/main.py, doc/gnn/gnn_syntax.md, doc/other/fep_lean/bridge-contract.md.
+  src/gnn/main.py, docs/gnn/gnn_syntax.md, docs/other/fep_lean/bridge-contract.md.
   `fep_lean.owners` = 146 paths. Everything else — src/gnn/export/**,
   tests/**, src/{analysis,llm,mcp,gui,integration,report,audio,
   model_registry,setup,rxinfer}/**, scripts/**, README/CHANGELOG/TO-DO,

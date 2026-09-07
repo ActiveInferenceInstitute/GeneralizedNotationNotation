@@ -665,13 +665,13 @@ cat output/3_gnn_output/gnn_processing_summary.json | python -m json.tool
 
 ### Related Documentation
 
-- [GNN Syntax Guide](../../../src/gnn/../../doc/gnn/reference/gnn_syntax.md)
+- [GNN Syntax Guide](../../../src/gnn/../../docs/gnn/reference/gnn_syntax.md)
 - [Pipeline Overview](../../../src/gnn/../../README.md)
 - [.agent_rules](../../../src/gnn/../../.agent_rules)
 
 ### External Resources
 
-- [GNN Specification](../../../src/gnn/../../doc/gnn/reference/gnn_dsl_manual.md)
+- [GNN Specification](../../../src/gnn/../../docs/gnn/reference/gnn_dsl_manual.md)
 - [Active Inference Papers](https://en.wikipedia.org/wiki/Active_inference)
 
 ---

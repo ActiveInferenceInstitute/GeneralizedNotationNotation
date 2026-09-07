@@ -1,7 +1,7 @@
 # GNN Documentation Changelog
 
 > **Note**: This repository uses dual versioning:
-> - **Documentation version** (doc/): v2.0.0
+> - **Documentation version** (docs/): v2.0.0
 > - **Pipeline version** (src/gnn/): v3.2.0
 >
 > **Latest Update**: March 2026
@@ -17,18 +17,18 @@ This document tracks changes, additions, and improvements to the GNN documentati
 
 #### 🆕 New Documentation Added
 
-- **doc/CHANGELOG.md** - New! Comprehensive changelog for tracking documentation updates
-- **doc/QUICK_REFERENCE.md** - New! Quick reference guide with common commands and patterns
-- **doc/arc-agi/** - New directory with ARC-AGI model documentation
-- **doc/cerebrum/** - New directory with Cerebrum v1.4 integration
-- **doc/muscle-mem/** - New directory with muscle memory model documentation
+- **docs/CHANGELOG.md** - New! Comprehensive changelog for tracking documentation updates
+- **docs/QUICK_REFERENCE.md** - New! Quick reference guide with common commands and patterns
+- **docs/arc-agi/** - New directory with ARC-AGI model documentation
+- **docs/cerebrum/** - New directory with Cerebrum v1.4 integration
+- **docs/muscle-mem/** - New directory with muscle memory model documentation
 
 #### 📚 Expanded Documentation
 
 - **cognitive_phenomena/attention/** - Added `attention_model.md` with implementation details
 - **cognitive_phenomena/consciousness/** - Added `global_workspace_model.md` with neural network mapping
 - **cognitive_phenomena/effort/** - Enhanced with computational load examples
-- **doc/gnn/** - Expanded to 10 subdirectories: advanced, implementations, integration, language, mcp, modules, operations, reference, testing, tutorials
+- **docs/gnn/** - Expanded to 10 subdirectories: advanced, implementations, integration, language, mcp, modules, operations, reference, testing, tutorials
 
 #### 🔗 Improved Cross-References
 
@@ -77,9 +77,9 @@ This document tracks changes, additions, and improvements to the GNN documentati
 
 #### 📚 Tutorial Content
 
-- **doc/tutorials/** - Step-by-step learning modules
-- **doc/gnn/tutorials/** - GNN-specific tutorials
-- **doc/gnn/tutorials/quickstart_tutorial.md** - Beginner-friendly introduction
+- **docs/tutorials/** - Step-by-step learning modules
+- **docs/gnn/tutorials/** - GNN-specific tutorials
+- **docs/gnn/tutorials/quickstart_tutorial.md** - Beginner-friendly introduction
 
 ---
 
@@ -87,14 +87,14 @@ This document tracks changes, additions, and improvements to the GNN documentati
 
 #### 🆕 Core Documentation
 
-- **doc/gnn/reference/gnn_syntax.md** - Complete GNN syntax specification
-- **doc/gnn/gnn_overview.md** - High-level introduction to GNN
-- **doc/gnn/about_gnn.md** - Academic and theoretical background
-- **doc/gnn/gnn_paper.md** - Research paper details and DOI
+- **docs/gnn/reference/gnn_syntax.md** - Complete GNN syntax specification
+- **docs/gnn/gnn_overview.md** - High-level introduction to GNN
+- **docs/gnn/about_gnn.md** - Academic and theoretical background
+- **docs/gnn/gnn_paper.md** - Research paper details and DOI
 
 #### 🏗️ Architecture Documentation
 
-- **doc/pipeline/** - Complete 25-step pipeline reference
+- **docs/pipeline/** - Complete 25-step pipeline reference
 - **AGENTS.md** files for all 25 pipeline modules
 - Module dependency graphs and data flow diagrams
 
@@ -130,8 +130,8 @@ When adding new documentation:
 
 1. Create appropriate `README.md` in the directory
 2. Add `AGENTS.md` for agent-facing documentation
-3. Update `doc/INDEX.md` with new entry
-4. Update `doc/CROSS_REFERENCE_INDEX.md` for machine navigation
+3. Update `docs/INDEX.md` with new entry
+4. Update `docs/CROSS_REFERENCE_INDEX.md` for machine navigation
 5. Add entry to this changelog
 
 ---
@@ -140,7 +140,7 @@ When adding new documentation:
 
 - **Issues**: [GitHub Issues](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions)
-- **Documentation**: See [doc/SUPPORT.md](../../../doc/SUPPORT.md)
+- **Documentation**: See [docs/SUPPORT.md](../../../docs/SUPPORT.md)
 
 ---
 

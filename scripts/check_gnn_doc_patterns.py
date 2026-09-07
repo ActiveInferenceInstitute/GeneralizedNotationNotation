@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Spot-check markdown under doc/ and src/gnn/ for known-stale GNN documentation patterns.
+Spot-check markdown under docs/ and src/gnn/ for known-stale GNN documentation patterns.
 
 Does not fail the build by default; run in CI with --strict to exit non-zero on hits.
 
@@ -41,14 +41,14 @@ PATTERNS: list[tuple[re.Pattern[str], str]] = [
         re.compile(r"- Python 3\.12\+"),
         "use Python >= 3.11 to match pyproject.toml in SPEC examples",
     ),
-    # Stale doc paths (canonical: doc/gnn/reference/gnn_file_structure_doc.md; punctuation: src/gnn/documentation/punctuation.md)
+    # Stale doc paths (canonical: docs/gnn/reference/gnn_file_structure_doc.md; punctuation: src/gnn/documentation/punctuation.md)
     (
-        re.compile(r"doc/gnn/gnn_file_structure\.md"),
-        "use doc/gnn/reference/gnn_file_structure_doc.md",
+        re.compile(r"docs/gnn/gnn_file_structure\.md"),
+        "use docs/gnn/reference/gnn_file_structure_doc.md",
     ),
     (
-        re.compile(r"doc/gnn/gnn_punctuation\.md"),
-        "use src/gnn/documentation/punctuation.md or doc/gnn/gnn_syntax.md",
+        re.compile(r"docs/gnn/gnn_punctuation\.md"),
+        "use src/gnn/documentation/punctuation.md or docs/gnn/gnn_syntax.md",
     ),
     (
         re.compile(r"src/gnn/gnn_file_structure\.md"),
@@ -89,12 +89,12 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    targets = [ROOT / "doc", ROOT / "src" / "gnn"]
+    targets = [ROOT / "docs", ROOT / "src" / "gnn"]
     violations = scan(targets)
 
     if not violations:
         print(
-            "check_gnn_doc_patterns: no banned patterns in doc/ and src/gnn/ (markdown)."
+            "check_gnn_doc_patterns: no banned patterns in docs/ and src/gnn/ (markdown)."
         )
         return 0
 

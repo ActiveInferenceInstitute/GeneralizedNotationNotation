@@ -207,7 +207,7 @@ uv run --extra dev python -m pytest tests/test_*oxdraw*.py tests/test_mermaid*.p
 
 ## Examples
 
-See `doc/oxdraw/gnn_oxdraw.md` for comprehensive examples including:
+See `docs/oxdraw/gnn_oxdraw.md` for comprehensive examples including:
 - Converting `actinf_pomdp_agent.md` to Mermaid
 - Visual editing workflows
 - Round-trip validation
@@ -253,8 +253,8 @@ Follow GNN pipeline development guidelines:
 ## References
 
 - [oxdraw GitHub](https://github.com/RohanAdwankar/oxdraw)
-- [oxdraw Technical Overview](../../../../doc/gui_oxdraw/oxdraw.md)
-- [GNN-oxdraw Integration Guide](../../../../doc/gui_oxdraw/gnn_oxdraw.md)
+- [oxdraw Technical Overview](../../../../docs/gui_oxdraw/oxdraw.md)
+- [GNN-oxdraw Integration Guide](../../../../docs/gui_oxdraw/gnn_oxdraw.md)
 - [GNN Pipeline Documentation](../AGENTS.md)
 - [Mermaid Documentation](https://mermaid.js.org/)
 

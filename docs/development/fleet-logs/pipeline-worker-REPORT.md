@@ -55,7 +55,7 @@ uv run --extra dev python -m pytest tests/pipeline/ -q   (≡ just test-mod pipe
 Note: three transient fleet churn windows hit `import pipeline`/mypy via peer files (`src/gnn/utils/pipeline.py`, `src/gnn/utils/arg_parsing.py`, `src/gnn/parsers/common.py` syntax errors mid-edit); all were fixed by their owners and final gates ran clean.
 
 ## Follow-ups for other workers (not my scope)
-- `doc/api/comprehensive_api_reference.md` documents a non-existent `gnn.pipeline` module (`Pipeline`, `StepResult`) and `doc/troubleshooting/api_error_reference.md` shows an outdated `run_pipeline` signature — doc owners should sync with the corrected signatures now in `src/gnn/pipeline/{AGENTS,README}.md`.
+- `docs/api/comprehensive_api_reference.md` documents a non-existent `gnn.pipeline` module (`Pipeline`, `StepResult`) and `docs/troubleshooting/api_error_reference.md` shows an outdated `run_pipeline` signature — doc owners should sync with the corrected signatures now in `src/gnn/pipeline/{AGENTS,README}.md`.
 - `src/gnn/utils/pipeline_validator.py` class-name collision (`PipelineValidator` exists in both `utils/` and `pipeline/pipeline_validator.py`) — utils worker.
 - Health-rating thresholds (excellent/good/fair/poor) still triplicated with three different formulas across `pipeline_validator`/`diagnostic_enhancer`/`health_check` (all in-scope files, but unifying changes scoring output; deferred as a deliberate behavior-preserving call — needs an owner decision on the canonical formula).
 - `mcp.get_pipeline_status` still reads summaries via hardcoded candidate paths; a shared "latest summary locator" helper could serve `mcp.py`, `diagnostic_enhancer.py`, and `verify_pipeline.py`.

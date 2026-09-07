@@ -28,7 +28,7 @@ Petri net modeling enables:
 - **[AGENTS.md](AGENTS.md)**: Technical documentation and agent scaffolding
 
 ### Main Documentation
-- **[doc/README.md](../README.md)**: Main documentation hub
+- **[docs/README.md](../README.md)**: Main documentation hub
 - **[CROSS_REFERENCE_INDEX.md](../CROSS_REFERENCE_INDEX.md)**: Complete cross-reference index
 - **[learning_paths.md](../learning_paths.md)**: Learning pathways
 

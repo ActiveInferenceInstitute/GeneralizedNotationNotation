@@ -42,7 +42,7 @@ any live infrastructure mutation** (no container execution, no cluster/sensor ca
 - **`container_plan.py`** — hardened container plan generation, static `security_review`
   (CRITICAL/HIGH/MEDIUM/LOW), rollback descriptors, and deterministic plan hashes.
 
-Full reference: [`doc/pipeline/v3_orchestration.md`](../../../doc/pipeline/v3_orchestration.md). Acceptance
+Full reference: [`docs/pipeline/v3_orchestration.md`](../../../docs/pipeline/v3_orchestration.md). Acceptance
 gate: `PYTHONPATH=src uv run python scripts/run_v3_orchestration_acceptance.py --strict`.
 
 ### Pipeline Flow
@@ -347,7 +347,7 @@ This module is part of the GeneralizedNotationNotation project. See the main rep
 - Project overview: ../../../README.md
 - Comprehensive docs: ../../../DOCS.md
 - Architecture guide: ../../../ARCHITECTURE.md
-- Pipeline details: ../../../doc/pipeline/README.md
+- Pipeline details: ../../../docs/pipeline/README.md
 
 ---
 ## Documentation

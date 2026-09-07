@@ -15,22 +15,22 @@ This document tracks notable changes, additions, and improvements to the GNN doc
 
 #### Security documentation
 
-- **doc/security/codex_security_remediation_2026-06-24.md** — Documents the Codex Security standard scan remediation for MCP execution, LLM MCP file boundaries, generated bnlearn code escaping, generated artifact filename stems, and focused verification evidence.
+- **docs/security/codex_security_remediation_2026-06-24.md** — Documents the Codex Security standard scan remediation for MCP execution, LLM MCP file boundaries, generated bnlearn code escaping, generated artifact filename stems, and focused verification evidence.
 
 ### v2.0.0 (March 2026)
 
 #### New documentation
 
-- **doc/CHANGELOG.md** — Changelog for documentation updates
-- **doc/QUICK_REFERENCE.md** — Short command and pattern reference
-- **doc/other/arc-agi/** — ARC-AGI model documentation
-- **doc/other/cerebrum/** — Cerebrum integration notes
-- **doc/other/muscle-mem/** — Muscle memory model documentation
+- **docs/CHANGELOG.md** — Changelog for documentation updates
+- **docs/QUICK_REFERENCE.md** — Short command and pattern reference
+- **docs/other/arc-agi/** — ARC-AGI model documentation
+- **docs/other/cerebrum/** — Cerebrum integration notes
+- **docs/other/muscle-mem/** — Muscle memory model documentation
 
 #### Expanded documentation
 
 - **cognitive_phenomena/** — Additional topic pages (attention, consciousness, effort, etc.)
-- **doc/gnn/** — Subdirectories include advanced, implementations, integration, language, mcp, modules, operations, reference, testing, tutorials
+- **docs/gnn/** — Subdirectories include advanced, implementations, integration, language, mcp, modules, operations, reference, testing, tutorials
 
 #### Cross-references
 
@@ -56,10 +56,10 @@ This document tracks notable changes, additions, and improvements to the GNN doc
 Counts drift as the tree grows. For **mechanical** link and pairing checks, run from the repository root:
 
 ```bash
-uv run --extra dev python doc/development/docs_audit.py --strict
+uv run --extra dev python docs/development/docs_audit.py --strict
 ```
 
-Approximate scale (order of magnitude): hundreds of Markdown files under `doc/`, many AGENTS/README pairs, cross-links maintained via audits rather than fixed integers here.
+Approximate scale (order of magnitude): hundreds of Markdown files under `docs/`, many AGENTS/README pairs, cross-links maintained via audits rather than fixed integers here.
 
 ---
 
@@ -67,8 +67,8 @@ Approximate scale (order of magnitude): hundreds of Markdown files under `doc/`,
 
 1. Add or update **README.md** in the relevant directory
 2. Add **AGENTS.md** where the subtree uses agent-oriented signposts
-3. Update **doc/INDEX.md** when adding a major entry point
-4. Update **doc/CROSS_REFERENCE_INDEX.md** for topic graph changes when appropriate
+3. Update **docs/INDEX.md** when adding a major entry point
+4. Update **docs/CROSS_REFERENCE_INDEX.md** for topic graph changes when appropriate
 5. Add a short entry to this changelog for user-visible doc changes
 
 ---

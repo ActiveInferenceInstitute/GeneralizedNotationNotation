@@ -1,4 +1,4 @@
-# doc/dev
+# docs/dev
 
 ## Overview
 
@@ -15,7 +15,7 @@ Holds lightweight scripts and generated markdown inventories used to track docum
 From repository root:
 
 ```bash
-uv run python doc/dev/regenerate_src_doc_inventory.py
+uv run python docs/dev/regenerate_src_doc_inventory.py
 ```
 
 Full-repo markdown link and pairing audits: [../development/docs_audit.py](../development/docs_audit.py).

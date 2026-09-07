@@ -249,7 +249,7 @@ class TestPipelineIntegrationScenarios:
         try:
             cmd: list[Any] = [
                 sys.executable,
-                str(SRC_DIR / "main.py"),
+                str(SRC_DIR / "gnn" / "main.py"),
                 "--target-dir",
                 str(temp_directories["input_dir"]),
                 "--output-dir",
@@ -286,7 +286,7 @@ class TestPipelineIntegrationScenarios:
         try:
             cmd: list[Any] = [
                 sys.executable,
-                str(SRC_DIR / "main.py"),
+                str(SRC_DIR / "gnn" / "main.py"),
                 "--target-dir",
                 str(temp_directories["input_dir"]),
                 "--output-dir",

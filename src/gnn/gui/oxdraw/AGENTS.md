@@ -537,7 +537,7 @@ for error in errors:
 
 - [oxdraw Technical Overview](./README.md)
 - [GNN-oxdraw Integration Guide](./README.md)
-- [GNN Parser](../../../../doc/gnn/AGENTS.md)
+- [GNN Parser](../../../../docs/gnn/AGENTS.md)
 - [Ontology Module](../../ontology/AGENTS.md)
 
 ### External Resources

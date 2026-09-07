@@ -4,7 +4,7 @@
 
 This document outlines structured learning paths for users of varying expertise levels in Generalized Notation Notation (GNN) and Active Inference. Each path includes key resources, prerequisites, and progression steps. Paths are designed to be modular, example-driven, and tied to the project's pipeline for reproducibility.
 
-**See also**: [doc/SPEC.md](SPEC.md) (how `doc/` versioning relates to the GNN language and the Python package), [CLAUDE.md](../CLAUDE.md) (commands and measured test expectations).
+**See also**: [docs/SPEC.md](SPEC.md) (how `docs/` versioning relates to the GNN language and the Python package), [CLAUDE.md](../CLAUDE.md) (commands and measured test expectations).
 
 ## Research-focused path
 
@@ -98,7 +98,7 @@ Same content as [Intermediate Path: Building and Integrating Models](#intermedia
 **Prerequisites**: Complete Intermediate Path.
 
 1. **Domain-Specific Applications**:
-   - Cognitive Phenomena: Explore subdirs in [/doc/cognitive_phenomena/](cognitive_phenomena/README.md) (e.g., [Meta-Awareness](cognitive_phenomena/meta-awareness/)).
+   - Cognitive Phenomena: Explore subdirs in [/docs/cognitive_phenomena/](cognitive_phenomena/README.md) (e.g., [Meta-Awareness](cognitive_phenomena/meta-awareness/)).
    - Ontology: [Ontology System](gnn/advanced/ontology_system.md).
 
 2. **Custom Development**:

@@ -431,7 +431,7 @@ All five are registered by `register_tools()` in `src/gnn/execute/mcp.py`.
 - [Pipeline Overview](../../../README.md)
 - [Architecture Guide](../../../ARCHITECTURE.md)
 - [Render Module](../render/AGENTS.md)
-- [Execution Guide](../../../doc/execution/)
+- [Execution Guide](../../../docs/execution/)
 
 ### External Resources
 - [PyMDP Framework](https://github.com/infer-actively/pymdp)

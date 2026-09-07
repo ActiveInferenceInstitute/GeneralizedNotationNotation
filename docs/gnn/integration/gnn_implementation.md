@@ -994,4 +994,4 @@ Compose multiple agents or factors in GNN structure and validate before render; 
 2. Smékal, J., & Friedman, D. A. (2023). Generalized Notation Notation for Active Inference Models. Active Inference Institute. <https://doi.org/10.5281/zenodo.7803328>
 3. Hesp, C., Tschantz, A., Millidge, B., Ramstead, M., Friston, K., & Smith, R. (2021). Sophisticated Inference. Neural Computation, 33(3), 713-762.
 4. PyTorch Documentation: <https://pytorch.org/docs/stable/index.html>
-5. NumPy Documentation: <https://numpy.org/doc/stable/>
+5. NumPy Documentation: <https://numpy.org/docs/stable/>

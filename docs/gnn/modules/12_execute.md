@@ -466,7 +466,7 @@ See [pyproject.toml](../../../pyproject.toml).
 - [Pipeline Overview](../../../README.md)
 - [Architecture Guide](../../../ARCHITECTURE.md)
 - [Render Module](../../../src/gnn/execute/../render/AGENTS.md)
-- [Execution Guide](../../../doc/execution/)
+- [Execution Guide](../../../docs/execution/)
 
 ### External Resources
 - [PyMDP Framework](https://github.com/infer-actively/pymdp)

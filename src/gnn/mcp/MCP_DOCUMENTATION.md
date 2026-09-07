@@ -921,4 +921,4 @@ rate limiting, and metrics. `get_enhanced_server_status()` is the canonical
 snapshot for debugging live servers.
 
 For per-module tool inventories, see the `mcp.py` files in each module and the
-main documentation in `doc/mcp/`.
+main documentation in `docs/mcp/`.

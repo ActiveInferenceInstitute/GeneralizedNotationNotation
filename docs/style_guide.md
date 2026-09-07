@@ -310,7 +310,7 @@ See [FR23] for foundational theory and [SM24] for implementation details.
 # Documentation change workflow
 git checkout -b docs/update-integration-guide
 # Make documentation changes
-git add doc/framework_integration_guide.md
+git add docs/framework_integration_guide.md
 git commit -m "docs: update PyMDP integration patterns
 
 - Add error handling examples
@@ -669,7 +669,7 @@ class GNNTypeChecker:
 
 ```bash
 # Check for broken links
-markdown-link-check doc/**/*.md
+markdown-link-check docs/**/*.md
 
 # Validate cross-references
 uv run python src/gnn/19_research.py --verbose
@@ -679,17 +679,17 @@ uv run python src/gnn/19_research.py --verbose
 
 ```bash
 # Spell check with technical dictionary
-aspell check --mode=markdown --add-extra-dicts=./tech-dictionary.txt doc/**/*.md
+aspell check --mode=markdown --add-extra-dicts=./tech-dictionary.txt docs/**/*.md
 ```
 
 **Style Linting**:
 
 ```bash
 # Markdown style checking
-markdownlint doc/**/*.md
+markdownlint docs/**/*.md
 
 # Prose style checking
-write-good doc/**/*.md
+write-good docs/**/*.md
 ```
 
 ## 🔄 **Documentation Workflow**

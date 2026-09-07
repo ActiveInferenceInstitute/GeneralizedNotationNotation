@@ -59,11 +59,11 @@ uv run ruff format --check src/gnn tests/gnn → 107 files already formatted
 ```
 Baseline before work: ruff+mypy clean, 387 tests passing at HEAD f64ac9085.
 
-## Follow-ups for doc/ and manuscript/ owners (other workers)
-- `doc/gnn/modules/03_gnn.md` documents `generate_gnn_report(processing_results, output_path=None)` — behavior changed slightly (output_path now honored); worth a one-line note.
+## Follow-ups for docs/ and manuscript/ owners (other workers)
+- `docs/gnn/modules/03_gnn.md` documents `generate_gnn_report(processing_results, output_path=None)` — behavior changed slightly (output_path now honored); worth a one-line note.
 - `src/gnn/parsers/` subdocs don't mention the embedded-data mechanism; if you keep per-parser docs, add the `EMBEDDED_JSON_PATTERNS` extension point.
 - `src/gnn/parse_cache.py` and `contracts.py` have zero production callers (ParseCache is test-hardened, kept; `contracts.validate_rendered_output` has no production callers) — needs an owner decision (wire up or remove).
-- `README.md:488` phantom-API fix is inside my scope, but doc/gnn/modules/03_gnn.md mirrors parts of the README — cross-check for the same stale examples there.
+- `README.md:488` phantom-API fix is inside my scope, but docs/gnn/modules/03_gnn.md mirrors parts of the README — cross-check for the same stale examples there.
 
 ## Follow-up ideas (ranked, from the 8-lens audit — largest were executed this session)
 1. **Serializer dedup (~1300 LOC)**: 15 serializers copy-paste the ~55-line embedded-dict block; `base_serializer._create_embedded_model_data`/`_add_embedded_model_data` already exist. Also remove `datetime.now()` from markdown/python/pkl serializers for deterministic golden outputs (check pinned "Generated:" tests first).

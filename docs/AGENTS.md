@@ -1,4 +1,4 @@
-# doc/ — agent scaffolding
+# docs/ — agent scaffolding
 
 ## Overview
 

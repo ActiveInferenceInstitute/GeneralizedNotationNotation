@@ -13,7 +13,7 @@ from GNN specifications. Two shapes of output are emitted (see
    with external users or running without the GNN pipeline on PYTHONPATH.
 
 Upstream reference: https://github.com/infer-actively/pymdp
-Breaking-change notes: doc/pymdp/pymdp_1_0_0_alignment_matrix.md
+Breaking-change notes: docs/pymdp/pymdp_1_0_0_alignment_matrix.md
 """
 
 from __future__ import annotations
@@ -181,7 +181,7 @@ def _extract_dimensions(
         arr = np.asarray(B_raw)
         if arr.ndim == 3:
             # Canonical order is (next_state, previous_state, action) =
-            # pymdp 1.0.0 B[s',s,a] (see doc/pymdp/pymdp_1_0_0_alignment_matrix.md).
+            # pymdp 1.0.0 B[s',s,a] (see docs/pymdp/pymdp_1_0_0_alignment_matrix.md).
             # Prefer matrix_provenance canonical_order when present: it marks
             # a tensor already in canonical order, so the action axis is
             # last. The shape match below remains the documented fallback

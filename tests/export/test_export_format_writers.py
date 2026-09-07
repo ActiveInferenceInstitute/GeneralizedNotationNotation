@@ -2,7 +2,7 @@
 """Direct coverage for the documented GNN-aware export writers.
 
 ``src/export/format_exporters.py`` is the module the export documentation
-(user-facing README and doc/gnn/integration/gnn_export.md) names as the GNN
+(user-facing README and docs/gnn/integration/gnn_export.md) names as the GNN
 export surface, yet its format writers had zero direct coverage — only the
 higher-level ``formatters``/``processor`` path was exercised. These tests pin
 the documented public writers (``export_to_json_gnn``, ``export_to_xml_gnn``,

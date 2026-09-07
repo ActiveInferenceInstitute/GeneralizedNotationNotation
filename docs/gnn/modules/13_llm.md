@@ -684,7 +684,7 @@ configs["ollama"]["default_max_tokens"] = 1024
 ### Related Documentation
 - [Pipeline Overview](../../../README.md)
 - [Architecture Guide](../../../ARCHITECTURE.md)
-- [Ollama Integration Guide](../../../doc/llm/)
+- [Ollama Integration Guide](../../../docs/llm/)
 - [LLM Configuration](../../../.agent_rules#ollama-llm-integration-standards)
 
 ### External Resources

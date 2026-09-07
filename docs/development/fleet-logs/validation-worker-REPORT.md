@@ -44,8 +44,8 @@ uv run pytest tests/validation/ -q
 
 ## Follow-ups for other workers (docs/manuscript owners)
 
-- `doc/gnn/modules/06_validation.md` still says kwargs are "accepted but not consumed" and doesn't mention `validate_content`/`validate_directory`/`StageServices` or the uniform profiler error contract — needs the same deltas (not my scope).
-- `doc/PIPELINE_SCRIPTS.md` / `doc/gnn/mcp/tool_reference.md`: `validate_gnn_file` now returns `semantic`; worth one line.
+- `docs/gnn/modules/06_validation.md` still says kwargs are "accepted but not consumed" and doesn't mention `validate_content`/`validate_directory`/`StageServices` or the uniform profiler error contract — needs the same deltas (not my scope).
+- `docs/PIPELINE_SCRIPTS.md` / `docs/gnn/mcp/tool_reference.md`: `validate_gnn_file` now returns `semantic`; worth one line.
 - No `manuscript/` impact found (no references to validation internals).
 
 ## Follow-up ideas (out of scope today)

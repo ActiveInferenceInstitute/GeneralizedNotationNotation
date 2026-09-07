@@ -29,7 +29,7 @@
 - `src/gnn/11_render.py` - Updated to use PyMDP renderer for GNN files
 - `src/gnn/12_execute.py` - Enhanced to execute rendered PyMDP simulations
 
-### 📚 **Reference Files** (`doc/pymdp/pymdp_pomdp/`)
+### 📚 **Reference Files** (`docs/pymdp/pymdp_pomdp/`)
 - Original files maintained as reference implementations
 - Updated `README.md` explains integration and new locations
 - `POMDP_EXPLANATION.md` - Technical documentation preserved
@@ -231,10 +231,10 @@ The PyMDP-GNN pipeline integration is **complete and functional**. The system no
 - **Comprehensive scientific output** with proper data management
 - **Modular, testable architecture** following GNN pipeline patterns
 
-The reference implementations in `doc/pymdp/pymdp_pomdp/` are preserved for understanding, while the production pipeline uses the integrated modules in `src/gnn/execute/pymdp/` and `src/gnn/render/pymdp/`.
+The reference implementations in `docs/pymdp/pymdp_pomdp/` are preserved for understanding, while the production pipeline uses the integrated modules in `src/gnn/execute/pymdp/` and `src/gnn/render/pymdp/`.
 
 **Next Steps**: The system is ready for production use and can be extended with additional POMDP environments or more sophisticated GNN parameter extraction as needed.
 
 ---
 
-**Documentation**: See `doc/pymdp/pymdp_pomdp/README.md` for usage details and `src/gnn/render/README.md` for technical implementation details. 
+**Documentation**: See `docs/pymdp/pymdp_pomdp/README.md` for usage details and `src/gnn/render/README.md` for technical implementation details. 

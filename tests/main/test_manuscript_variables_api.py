@@ -12,7 +12,7 @@ from pathlib import Path
 
 import pytest
 
-from gnn.manuscript_variables import (
+from gnn.manuscript import (
     generate_variables,
     load_variables,
     save_variables,

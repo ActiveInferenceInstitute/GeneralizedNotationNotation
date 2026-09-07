@@ -76,7 +76,7 @@ The single `activeinference_runner.jl` script provides the complete ActiveInfere
 
 1. Navigate to this directory:
    ```bash
-   cd doc/activeinference_jl/actinf_jl_src
+   cd docs/activeinference_jl/actinf_jl_src
    ```
 
 2. Run the consolidated script:

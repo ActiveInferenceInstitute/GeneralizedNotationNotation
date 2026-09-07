@@ -131,6 +131,6 @@ pytest tests/ --cov=src -v
 - [SECURITY.md](SECURITY.md) — Security policy and remediation
 - [SETUP_GUIDE.md](SETUP_GUIDE.md) — Environment setup guide
 - [src/gnn/SPEC.md](src/gnn/SPEC.md) — Source specification
-- [doc/gnn/README.md](doc/gnn/README.md) — GNN documentation index
-- [doc/gnn/reference/gnn_syntax.md](doc/gnn/reference/gnn_syntax.md) — GNN syntax reference
-- [doc/gnn/tutorials/gnn_examples_doc.md](doc/gnn/tutorials/gnn_examples_doc.md) — Example GNN models
+- [docs/gnn/README.md](docs/gnn/README.md) — GNN documentation index
+- [docs/gnn/reference/gnn_syntax.md](docs/gnn/reference/gnn_syntax.md) — GNN syntax reference
+- [docs/gnn/tutorials/gnn_examples_doc.md](docs/gnn/tutorials/gnn_examples_doc.md) — Example GNN models

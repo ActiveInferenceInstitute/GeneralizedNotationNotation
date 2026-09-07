@@ -387,7 +387,7 @@ Module `__version__` is `3.2.0` (`__init__.py`), matching the unified pipeline v
 - [Pipeline Overview](../../../README.md)
 - [Architecture Guide](../../../ARCHITECTURE.md)
 - [MCP Implementation Spec](mcp_implementation_spec.md)
-- [MCP Integration Guide](../../../doc/mcp/)
+- [MCP Integration Guide](../../../docs/mcp/)
 
 ### External Resources
 - [Model Context Protocol Specification](https://modelcontextprotocol.io)

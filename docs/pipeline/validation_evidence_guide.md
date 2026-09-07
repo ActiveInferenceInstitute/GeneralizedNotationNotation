@@ -24,7 +24,7 @@ flowchart LR
 | Packaged templates | `for template in src/gnn/cli/template_assets/*.md; do uv run --extra dev gnn validate "$template" --strict; done` | All templates exposed by `gnn templates list`, `gnn templates show`, and `gnn pull` pass strict CLI validation. |
 | Schema and template regressions | `uv run --extra dev python -m pytest tests/gnn/test_gnn_schema.py tests/cli/test_templates_cli.py -q --tb=short` | Structural tensor validation, negative controls, and packaged template CLI validation. |
 | Focused PyMDP proof path | `uv run --extra dev python -m pytest tests/execute/test_pymdp_contracts.py tests/execute/test_discrete_models_pymdp.py tests/visualization/test_visualization_matrices.py -q --tb=short` | Render, execute, analysis, and visualization behavior for representative discrete models. |
-| Documentation integrity | `uv run --extra dev python doc/development/docs_audit.py --strict --check-anchors --no-write` | Relative links, anchors, and AGENTS/README coverage. |
+| Documentation integrity | `uv run --extra dev python docs/development/docs_audit.py --strict --check-anchors --no-write` | Relative links, anchors, and AGENTS/README coverage. |
 | GNN doc terminology | `uv run --extra dev python scripts/check_gnn_doc_patterns.py --strict` | Maintained GNN docs avoid known-stale syntax and path patterns. |
 | Capability claims | `uv run --extra dev python scripts/check_capability_contracts.py` | Roadmap-visible capability claims have source support. |
 | Renderer generator modules | `uv run --extra dev gnn health` | Renderer generator modules import and environment preflight issues are reported. |

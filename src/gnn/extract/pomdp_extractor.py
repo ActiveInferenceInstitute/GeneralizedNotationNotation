@@ -41,7 +41,7 @@ class GNNExtractionError(Exception):
     Local, hermetic type: structurally compatible with
     ``gnn.schema.GNNParseError`` (code/message/line + severity) so consumers can
     normalize across both surfaces, but deliberately not imported from there —
-    probing ``from gnn.schema import GNNParseError`` shows schema.py itself is
+    probing ``from gnn.schema import GNNParseError`` shows the schema package core is
     import-light (ast/logging/re/dataclasses/typing only), yet routing through
     the ``gnn`` package ``__init__`` drags pipeline weight, and this module must
     stay importable headless. Line numbers are best-effort (relative to the

@@ -16,7 +16,7 @@ This file is the **GitHub-oriented entry point**: GNN concepts, deep links into 
 - [Render and execute backends](#render-and-execute-backends)
 - [Interfaces: CLI, API, LSP, MCP](#interfaces-cli-api-lsp-mcp)
 - [Active Inference and cognitive modeling docs](#active-inference-and-cognitive-modeling-docs)
-- [Deep link map (doc/gnn and neighbors)](#deep-link-map-docgnn-and-neighbors)
+- [Deep link map (docs/gnn and neighbors)](#deep-link-map-docgnn-and-neighbors)
 - [Canonical documentation](#canonical-documentation)
 - [Repository map](#repository-map)
 - [Community and policies](#community-and-policies)
@@ -33,8 +33,8 @@ This file is the **GitHub-oriented entry point**: GNN concepts, deep links into 
 
 ## What GNN is
 
-- **Notation**: Models are written as **Markdown** with labeled sections (for example `## GNNSection`, `## StateSpaceBlock`, `## Connections`, `## InitialParameterization`, ontology annotations). The normative and reference material is split across [doc/gnn/reference/gnn_syntax.md](../doc/gnn/reference/gnn_syntax.md) (v1.6.0 living spec), [doc/gnn/tutorials/gnn_examples_doc.md](../doc/gnn/tutorials/gnn_examples_doc.md) (examples and patterns), and the [language hub](../doc/gnn/language/README.md).
-- **Processing**: A single orchestrator ([src/gnn/main.py](../src/gnn/main.py)) runs the numbered steps in order (or a subset via `--only-steps` / `--skip-steps`). Step **3** produces parsed representations consumed by type checking, validation, export, visualization, ontology, render, LLM, and related steps; **11 → 12** is the main **generate code → run simulation** bridge. See [doc/gnn/reference/architecture_reference.md](../doc/gnn/reference/architecture_reference.md) and [doc/gnn/reference/technical_reference.md](../doc/gnn/reference/technical_reference.md).
+- **Notation**: Models are written as **Markdown** with labeled sections (for example `## GNNSection`, `## StateSpaceBlock`, `## Connections`, `## InitialParameterization`, ontology annotations). The normative and reference material is split across [docs/gnn/reference/gnn_syntax.md](../docs/gnn/reference/gnn_syntax.md) (v1.6.0 living spec), [docs/gnn/tutorials/gnn_examples_doc.md](../docs/gnn/tutorials/gnn_examples_doc.md) (examples and patterns), and the [language hub](../docs/gnn/language/README.md).
+- **Processing**: A single orchestrator ([src/gnn/main.py](../src/gnn/main.py)) runs the numbered steps in order (or a subset via `--only-steps` / `--skip-steps`). Step **3** produces parsed representations consumed by type checking, validation, export, visualization, ontology, render, LLM, and related steps; **11 → 12** is the main **generate code → run simulation** bridge. See [docs/gnn/reference/architecture_reference.md](../docs/gnn/reference/architecture_reference.md) and [docs/gnn/reference/technical_reference.md](../docs/gnn/reference/technical_reference.md).
 - **Architecture**: Each step is a **thin orchestrator** (`src/N_*.py`) delegating to `src/<module>/` with `AGENTS.md` and usually `processor.py`. Diagram and conventions: root [AGENTS.md](../AGENTS.md), [ARCHITECTURE.md](../ARCHITECTURE.md), [src/gnn/README.md](../src/gnn/README.md).
 
 ---
@@ -63,43 +63,43 @@ flowchart LR
   s16 --> s23[Step23_report]
 ```
 
-Troubleshooting and operator notes: [doc/gnn/operations/gnn_troubleshooting.md](../doc/gnn/operations/gnn_troubleshooting.md), [doc/gnn/operations/gnn_tools.md](../doc/gnn/operations/gnn_tools.md).
+Troubleshooting and operator notes: [docs/gnn/operations/gnn_troubleshooting.md](../docs/gnn/operations/gnn_troubleshooting.md), [docs/gnn/operations/gnn_tools.md](../docs/gnn/operations/gnn_tools.md).
 
 ---
 
 ## Pipeline: all 25 steps
 
-Orchestrator scripts live in [src/](../src/); module AGENTS in each folder; per-step **documentation** in [doc/gnn/modules/](../doc/gnn/modules/).
+Orchestrator scripts live in [src/](../src/); module AGENTS in each folder; per-step **documentation** in [docs/gnn/modules/](../docs/gnn/modules/).
 
-| Step | Module | Orchestrator | [Module AGENTS](../src/gnn/AGENTS.md) | [Step doc](../doc/gnn/modules/README.md) |
+| Step | Module | Orchestrator | [Module AGENTS](../src/gnn/AGENTS.md) | [Step doc](../docs/gnn/modules/README.md) |
 |-----:|--------|--------------|-----------------------------------|----------------------------------------|
-| 0 | template | [0_template.py](../src/gnn/0_template.py) | [template/AGENTS.md](../src/gnn/template/AGENTS.md) | [00_template.md](../doc/gnn/modules/00_template.md) |
-| 1 | setup | [1_setup.py](../src/gnn/1_setup.py) | [setup/AGENTS.md](../src/gnn/setup/AGENTS.md) | [01_setup.md](../doc/gnn/modules/01_setup.md) |
-| 2 | tests | [2_tests.py](../src/gnn/2_tests.py) | [tests/AGENTS.md](../tests/AGENTS.md) | [02_tests.md](../doc/gnn/modules/02_tests.md) |
-| 3 | gnn | [3_gnn.py](../src/gnn/3_gnn.py) | [gnn/AGENTS.md](../src/gnn/AGENTS.md) | [03_gnn.md](../doc/gnn/modules/03_gnn.md) |
-| 4 | model_registry | [4_model_registry.py](../src/gnn/4_model_registry.py) | [model_registry/AGENTS.md](../src/gnn/model_registry/AGENTS.md) | [04_model_registry.md](../doc/gnn/modules/04_model_registry.md) |
-| 5 | type_checker | [5_type_checker.py](../src/gnn/5_type_checker.py) | [type_checker/AGENTS.md](../src/gnn/type_checker/AGENTS.md) | [05_type_checker.md](../doc/gnn/modules/05_type_checker.md) |
-| 6 | validation | [6_validation.py](../src/gnn/6_validation.py) | [validation/AGENTS.md](../src/gnn/validation/AGENTS.md) | [06_validation.md](../doc/gnn/modules/06_validation.md) |
-| 7 | export | [7_export.py](../src/gnn/7_export.py) | [export/AGENTS.md](../src/gnn/export/AGENTS.md) | [07_export.md](../doc/gnn/modules/07_export.md) |
-| 8 | visualization | [8_visualization.py](../src/gnn/8_visualization.py) | [visualization/AGENTS.md](../src/gnn/visualization/AGENTS.md) | [08_visualization.md](../doc/gnn/modules/08_visualization.md) |
-| 9 | advanced_visualization | [9_advanced_viz.py](../src/gnn/9_advanced_viz.py) | [advanced_visualization/AGENTS.md](../src/gnn/advanced_visualization/AGENTS.md) | [09_advanced_viz.md](../doc/gnn/modules/09_advanced_viz.md) |
-| 10 | ontology | [10_ontology.py](../src/gnn/10_ontology.py) | [ontology/AGENTS.md](../src/gnn/ontology/AGENTS.md) | [10_ontology.md](../doc/gnn/modules/10_ontology.md) |
-| 11 | render | [11_render.py](../src/gnn/11_render.py) | [render/AGENTS.md](../src/gnn/render/AGENTS.md) | [11_render.md](../doc/gnn/modules/11_render.md) |
-| 12 | execute | [12_execute.py](../src/gnn/12_execute.py) | [execute/AGENTS.md](../src/gnn/execute/AGENTS.md) | [12_execute.md](../doc/gnn/modules/12_execute.md) |
-| 13 | llm | [13_llm.py](../src/gnn/13_llm.py) | [llm/AGENTS.md](../src/gnn/llm/AGENTS.md) | [13_llm.md](../doc/gnn/modules/13_llm.md) |
-| 14 | ml_integration | [14_ml_integration.py](../src/gnn/14_ml_integration.py) | [ml_integration/AGENTS.md](../src/gnn/ml_integration/AGENTS.md) | [14_ml_integration.md](../doc/gnn/modules/14_ml_integration.md) |
-| 15 | audio | [15_audio.py](../src/gnn/15_audio.py) | [audio/AGENTS.md](../src/gnn/audio/AGENTS.md) | [15_audio.md](../doc/gnn/modules/15_audio.md) |
-| 16 | analysis | [16_analysis.py](../src/gnn/16_analysis.py) | [analysis/AGENTS.md](../src/gnn/analysis/AGENTS.md) | [16_analysis.md](../doc/gnn/modules/16_analysis.md) |
-| 17 | integration | [17_integration.py](../src/gnn/17_integration.py) | [integration/AGENTS.md](../src/gnn/integration/AGENTS.md) | [17_integration.md](../doc/gnn/modules/17_integration.md) |
-| 18 | security | [18_security.py](../src/gnn/18_security.py) | [security/AGENTS.md](../src/gnn/security/AGENTS.md) | [18_security.md](../doc/gnn/modules/18_security.md) |
-| 19 | research | [19_research.py](../src/gnn/19_research.py) | [research/AGENTS.md](../src/gnn/research/AGENTS.md) | [19_research.md](../doc/gnn/modules/19_research.md) |
-| 20 | website | [20_website.py](../src/gnn/20_website.py) | [website/AGENTS.md](../src/gnn/website/AGENTS.md) | [20_website.md](../doc/gnn/modules/20_website.md) |
-| 21 | mcp | [21_mcp.py](../src/gnn/21_mcp.py) | [mcp/AGENTS.md](../src/gnn/mcp/AGENTS.md) | [21_mcp.md](../doc/gnn/modules/21_mcp.md) |
-| 22 | gui | [22_gui.py](../src/gnn/22_gui.py) | [gui/AGENTS.md](../src/gnn/gui/AGENTS.md) | [22_gui.md](../doc/gnn/modules/22_gui.md) |
-| 23 | report | [23_report.py](../src/gnn/23_report.py) | [report/AGENTS.md](../src/gnn/report/AGENTS.md) | [23_report.md](../doc/gnn/modules/23_report.md) |
-| 24 | intelligent_analysis | [24_intelligent_analysis.py](../src/gnn/24_intelligent_analysis.py) | [intelligent_analysis/AGENTS.md](../src/gnn/intelligent_analysis/AGENTS.md) | [24_intelligent_analysis.md](../doc/gnn/modules/24_intelligent_analysis.md) |
+| 0 | template | [0_template.py](../src/gnn/0_template.py) | [template/AGENTS.md](../src/gnn/template/AGENTS.md) | [00_template.md](../docs/gnn/modules/00_template.md) |
+| 1 | setup | [1_setup.py](../src/gnn/1_setup.py) | [setup/AGENTS.md](../src/gnn/setup/AGENTS.md) | [01_setup.md](../docs/gnn/modules/01_setup.md) |
+| 2 | tests | [2_tests.py](../src/gnn/2_tests.py) | [tests/AGENTS.md](../tests/AGENTS.md) | [02_tests.md](../docs/gnn/modules/02_tests.md) |
+| 3 | gnn | [3_gnn.py](../src/gnn/3_gnn.py) | [gnn/AGENTS.md](../src/gnn/AGENTS.md) | [03_gnn.md](../docs/gnn/modules/03_gnn.md) |
+| 4 | model_registry | [4_model_registry.py](../src/gnn/4_model_registry.py) | [model_registry/AGENTS.md](../src/gnn/model_registry/AGENTS.md) | [04_model_registry.md](../docs/gnn/modules/04_model_registry.md) |
+| 5 | type_checker | [5_type_checker.py](../src/gnn/5_type_checker.py) | [type_checker/AGENTS.md](../src/gnn/type_checker/AGENTS.md) | [05_type_checker.md](../docs/gnn/modules/05_type_checker.md) |
+| 6 | validation | [6_validation.py](../src/gnn/6_validation.py) | [validation/AGENTS.md](../src/gnn/validation/AGENTS.md) | [06_validation.md](../docs/gnn/modules/06_validation.md) |
+| 7 | export | [7_export.py](../src/gnn/7_export.py) | [export/AGENTS.md](../src/gnn/export/AGENTS.md) | [07_export.md](../docs/gnn/modules/07_export.md) |
+| 8 | visualization | [8_visualization.py](../src/gnn/8_visualization.py) | [visualization/AGENTS.md](../src/gnn/visualization/AGENTS.md) | [08_visualization.md](../docs/gnn/modules/08_visualization.md) |
+| 9 | advanced_visualization | [9_advanced_viz.py](../src/gnn/9_advanced_viz.py) | [advanced_visualization/AGENTS.md](../src/gnn/advanced_visualization/AGENTS.md) | [09_advanced_viz.md](../docs/gnn/modules/09_advanced_viz.md) |
+| 10 | ontology | [10_ontology.py](../src/gnn/10_ontology.py) | [ontology/AGENTS.md](../src/gnn/ontology/AGENTS.md) | [10_ontology.md](../docs/gnn/modules/10_ontology.md) |
+| 11 | render | [11_render.py](../src/gnn/11_render.py) | [render/AGENTS.md](../src/gnn/render/AGENTS.md) | [11_render.md](../docs/gnn/modules/11_render.md) |
+| 12 | execute | [12_execute.py](../src/gnn/12_execute.py) | [execute/AGENTS.md](../src/gnn/execute/AGENTS.md) | [12_execute.md](../docs/gnn/modules/12_execute.md) |
+| 13 | llm | [13_llm.py](../src/gnn/13_llm.py) | [llm/AGENTS.md](../src/gnn/llm/AGENTS.md) | [13_llm.md](../docs/gnn/modules/13_llm.md) |
+| 14 | ml_integration | [14_ml_integration.py](../src/gnn/14_ml_integration.py) | [ml_integration/AGENTS.md](../src/gnn/ml_integration/AGENTS.md) | [14_ml_integration.md](../docs/gnn/modules/14_ml_integration.md) |
+| 15 | audio | [15_audio.py](../src/gnn/15_audio.py) | [audio/AGENTS.md](../src/gnn/audio/AGENTS.md) | [15_audio.md](../docs/gnn/modules/15_audio.md) |
+| 16 | analysis | [16_analysis.py](../src/gnn/16_analysis.py) | [analysis/AGENTS.md](../src/gnn/analysis/AGENTS.md) | [16_analysis.md](../docs/gnn/modules/16_analysis.md) |
+| 17 | integration | [17_integration.py](../src/gnn/17_integration.py) | [integration/AGENTS.md](../src/gnn/integration/AGENTS.md) | [17_integration.md](../docs/gnn/modules/17_integration.md) |
+| 18 | security | [18_security.py](../src/gnn/18_security.py) | [security/AGENTS.md](../src/gnn/security/AGENTS.md) | [18_security.md](../docs/gnn/modules/18_security.md) |
+| 19 | research | [19_research.py](../src/gnn/19_research.py) | [research/AGENTS.md](../src/gnn/research/AGENTS.md) | [19_research.md](../docs/gnn/modules/19_research.md) |
+| 20 | website | [20_website.py](../src/gnn/20_website.py) | [website/AGENTS.md](../src/gnn/website/AGENTS.md) | [20_website.md](../docs/gnn/modules/20_website.md) |
+| 21 | mcp | [21_mcp.py](../src/gnn/21_mcp.py) | [mcp/AGENTS.md](../src/gnn/mcp/AGENTS.md) | [21_mcp.md](../docs/gnn/modules/21_mcp.md) |
+| 22 | gui | [22_gui.py](../src/gnn/22_gui.py) | [gui/AGENTS.md](../src/gnn/gui/AGENTS.md) | [22_gui.md](../docs/gnn/modules/22_gui.md) |
+| 23 | report | [23_report.py](../src/gnn/23_report.py) | [report/AGENTS.md](../src/gnn/report/AGENTS.md) | [23_report.md](../docs/gnn/modules/23_report.md) |
+| 24 | intelligent_analysis | [24_intelligent_analysis.py](../src/gnn/24_intelligent_analysis.py) | [intelligent_analysis/AGENTS.md](../src/gnn/intelligent_analysis/AGENTS.md) | [24_intelligent_analysis.md](../docs/gnn/modules/24_intelligent_analysis.md) |
 
-**Also documented**: [init.md](../doc/gnn/modules/init.md) (template init), [main.md](../doc/gnn/modules/main.md) (orchestrator). **Infrastructure** (not separate numbered steps): [pipeline/AGENTS.md](../src/gnn/pipeline/AGENTS.md), [utils/AGENTS.md](../src/gnn/utils/AGENTS.md), [api/AGENTS.md](../src/gnn/api/AGENTS.md), [cli/AGENTS.md](../src/gnn/cli/AGENTS.md), [lsp/AGENTS.md](../src/gnn/lsp/AGENTS.md), [src/gnn/doc/AGENTS.md](../src/gnn/doc/AGENTS.md).
+**Also documented**: [init.md](../docs/gnn/modules/init.md) (template init), [main.md](../docs/gnn/modules/main.md) (orchestrator). **Infrastructure** (not separate numbered steps): [pipeline/AGENTS.md](../src/gnn/pipeline/AGENTS.md), [utils/AGENTS.md](../src/gnn/utils/AGENTS.md), [api/AGENTS.md](../src/gnn/api/AGENTS.md), [cli/AGENTS.md](../src/gnn/cli/AGENTS.md), [lsp/AGENTS.md](../src/gnn/lsp/AGENTS.md), [src/gnn/doc/AGENTS.md](../src/gnn/doc/AGENTS.md).
 
 **Run examples**
 
@@ -109,7 +109,7 @@ uv run python src/gnn/main.py --only-steps "3,5,11,12" --verbose
 uv run python src/gnn/3_gnn.py --target-dir input/gnn_files --output-dir output --verbose
 ```
 
-More command patterns: [CLAUDE.md](../CLAUDE.md), [doc/gnn/operations/gnn_tools.md](../doc/gnn/operations/gnn_tools.md).
+More command patterns: [CLAUDE.md](../CLAUDE.md), [docs/gnn/operations/gnn_tools.md](../docs/gnn/operations/gnn_tools.md).
 
 ---
 
@@ -119,20 +119,20 @@ Code generation and execution are organized under [src/gnn/render/](../src/gnn/r
 
 | Topic | Link |
 |------|------|
-| Integration overview | [framework_integration_guide.md](../doc/gnn/integration/framework_integration_guide.md) |
-| Implementation patterns | [gnn_implementation.md](../doc/gnn/integration/gnn_implementation.md) |
-| Per-framework index | [implementations/README.md](../doc/gnn/implementations/README.md) |
-| PyMDP | [pymdp.md](../doc/gnn/implementations/pymdp.md), [doc/pymdp/gnn_pymdp.md](../doc/pymdp/gnn_pymdp.md) |
-| JAX | [jax.md](../doc/gnn/implementations/jax.md) |
-| RxInfer | [rxinfer.md](../doc/gnn/implementations/rxinfer.md), [doc/rxinfer/gnn_rxinfer.md](../doc/rxinfer/gnn_rxinfer.md) |
-| ActiveInference.jl | [activeinference_jl.md](../doc/gnn/implementations/activeinference_jl.md), [activeinference-jl.md](../doc/activeinference_jl/activeinference-jl.md) |
-| NumPyro | [numpyro.md](../doc/gnn/implementations/numpyro.md) |
-| PyTorch | [pytorch.md](../doc/gnn/implementations/pytorch.md) |
-| DisCoPy | [discopy.md](../doc/gnn/implementations/discopy.md), [doc/discopy/gnn_discopy.md](../doc/discopy/gnn_discopy.md) |
-| Stan | [stan.md](../doc/gnn/implementations/stan.md) |
-| CatColab | [catcolab.md](../doc/gnn/implementations/catcolab.md), [doc/other/catcolab/catcolab_gnn.md](../doc/other/catcolab/catcolab_gnn.md) |
+| Integration overview | [framework_integration_guide.md](../docs/gnn/integration/framework_integration_guide.md) |
+| Implementation patterns | [gnn_implementation.md](../docs/gnn/integration/gnn_implementation.md) |
+| Per-framework index | [implementations/README.md](../docs/gnn/implementations/README.md) |
+| PyMDP | [pymdp.md](../docs/gnn/implementations/pymdp.md), [docs/pymdp/gnn_pymdp.md](../docs/pymdp/gnn_pymdp.md) |
+| JAX | [jax.md](../docs/gnn/implementations/jax.md) |
+| RxInfer | [rxinfer.md](../docs/gnn/implementations/rxinfer.md), [docs/rxinfer/gnn_rxinfer.md](../docs/rxinfer/gnn_rxinfer.md) |
+| ActiveInference.jl | [activeinference_jl.md](../docs/gnn/implementations/activeinference_jl.md), [activeinference-jl.md](../docs/activeinference_jl/activeinference-jl.md) |
+| NumPyro | [numpyro.md](../docs/gnn/implementations/numpyro.md) |
+| PyTorch | [pytorch.md](../docs/gnn/implementations/pytorch.md) |
+| DisCoPy | [discopy.md](../docs/gnn/implementations/discopy.md), [docs/discopy/gnn_discopy.md](../docs/discopy/gnn_discopy.md) |
+| Stan | [stan.md](../docs/gnn/implementations/stan.md) |
+| CatColab | [catcolab.md](../docs/gnn/implementations/catcolab.md), [docs/other/catcolab/catcolab_gnn.md](../docs/other/catcolab/catcolab_gnn.md) |
 
-Visualization and export docs: [integration/gnn_visualization.md](../doc/gnn/integration/gnn_visualization.md), [integration/gnn_export.md](../doc/gnn/integration/gnn_export.md). Optional Julia installs for Julia backends are called out in [CLAUDE.md](../CLAUDE.md) and [SETUP_GUIDE.md](../SETUP_GUIDE.md).
+Visualization and export docs: [integration/gnn_visualization.md](../docs/gnn/integration/gnn_visualization.md), [integration/gnn_export.md](../docs/gnn/integration/gnn_export.md). Optional Julia installs for Julia backends are called out in [CLAUDE.md](../CLAUDE.md) and [SETUP_GUIDE.md](../SETUP_GUIDE.md).
 
 ---
 
@@ -141,9 +141,9 @@ Visualization and export docs: [integration/gnn_visualization.md](../doc/gnn/int
 | Interface | Code | Documentation |
 |-----------|------|----------------|
 | CLI (`gnn` command) | [src/gnn/cli/](../src/gnn/cli/) | [cli/README.md](../src/gnn/cli/README.md), [cli/AGENTS.md](../src/gnn/cli/AGENTS.md) |
-| REST API | [src/gnn/api/](../src/gnn/api/) | [api/AGENTS.md](../src/gnn/api/AGENTS.md), [doc/api/README.md](../doc/api/README.md) |
+| REST API | [src/gnn/api/](../src/gnn/api/) | [api/AGENTS.md](../src/gnn/api/AGENTS.md), [docs/api/README.md](../docs/api/README.md) |
 | LSP | [src/gnn/lsp/](../src/gnn/lsp/) | [lsp/AGENTS.md](../src/gnn/lsp/AGENTS.md), [lsp/README.md](../src/gnn/lsp/README.md) |
-| MCP tools | [src/gnn/mcp/](../src/gnn/mcp/) | [doc/gnn/mcp/README.md](../doc/gnn/mcp/README.md), [doc/gnn/mcp/tool_reference.md](../doc/gnn/mcp/tool_reference.md), [doc/gnn/testing/mcp_audit.md](../doc/gnn/testing/mcp_audit.md) |
+| MCP tools | [src/gnn/mcp/](../src/gnn/mcp/) | [docs/gnn/mcp/README.md](../docs/gnn/mcp/README.md), [docs/gnn/mcp/tool_reference.md](../docs/gnn/mcp/tool_reference.md), [docs/gnn/testing/mcp_audit.md](../docs/gnn/testing/mcp_audit.md) |
 
 ---
 
@@ -151,40 +151,40 @@ Visualization and export docs: [integration/gnn_visualization.md](../doc/gnn/int
 
 | Resource | Link |
 |----------|------|
-| Active Inference (conceptual hub in this repo) | [doc/active_inference/README.md](../doc/active_inference/README.md) |
-| Learning paths | [doc/learning_paths.md](../doc/learning_paths.md) |
-| Cognitive phenomena examples | [doc/cognitive_phenomena/README.md](../doc/cognitive_phenomena/README.md) |
-| GNN + LLM / neurosymbolic | [gnn_llm_neurosymbolic_active_inference.md](../doc/gnn/advanced/gnn_llm_neurosymbolic_active_inference.md) |
-| Ontology system | [ontology_system.md](../doc/gnn/advanced/ontology_system.md) |
+| Active Inference (conceptual hub in this repo) | [docs/active_inference/README.md](../docs/active_inference/README.md) |
+| Learning paths | [docs/learning_paths.md](../docs/learning_paths.md) |
+| Cognitive phenomena examples | [docs/cognitive_phenomena/README.md](../docs/cognitive_phenomena/README.md) |
+| GNN + LLM / neurosymbolic | [gnn_llm_neurosymbolic_active_inference.md](../docs/gnn/advanced/gnn_llm_neurosymbolic_active_inference.md) |
+| Ontology system | [ontology_system.md](../docs/gnn/advanced/ontology_system.md) |
 
 ---
 
-## Deep link map (doc/gnn and neighbors)
+## Deep link map (docs/gnn and neighbors)
 
 **Hub and manifest**
 
-- [doc/gnn/README.md](../doc/gnn/README.md) — full documentation index (pipelines, language, tutorials, integration).
-- [doc/gnn/AGENTS.md](../doc/gnn/AGENTS.md) — subtree manifest and metrics notes.
+- [docs/gnn/README.md](../docs/gnn/README.md) — full documentation index (pipelines, language, tutorials, integration).
+- [docs/gnn/AGENTS.md](../docs/gnn/AGENTS.md) — subtree manifest and metrics notes.
 
 **Language and reference**
 
-- [gnn_overview.md](../doc/gnn/gnn_overview.md), [about_gnn.md](../doc/gnn/about_gnn.md), [gnn_paper.md](../doc/gnn/gnn_paper.md)
-- [reference/gnn_file_structure_doc.md](../doc/gnn/reference/gnn_file_structure_doc.md), [reference/gnn_schema.md](../doc/gnn/reference/gnn_schema.md), [reference/gnn_type_system.md](../doc/gnn/reference/gnn_type_system.md)
-- [reference/gnn_dsl_manual.md](../doc/gnn/reference/gnn_dsl_manual.md), [reference/gnn_standards.md](../doc/gnn/reference/gnn_standards.md)
+- [gnn_overview.md](../docs/gnn/gnn_overview.md), [about_gnn.md](../docs/gnn/about_gnn.md), [gnn_paper.md](../docs/gnn/gnn_paper.md)
+- [reference/gnn_file_structure_doc.md](../docs/gnn/reference/gnn_file_structure_doc.md), [reference/gnn_schema.md](../docs/gnn/reference/gnn_schema.md), [reference/gnn_type_system.md](../docs/gnn/reference/gnn_type_system.md)
+- [reference/gnn_dsl_manual.md](../docs/gnn/reference/gnn_dsl_manual.md), [reference/gnn_standards.md](../docs/gnn/reference/gnn_standards.md)
 
 **Tutorials and examples**
 
-- [tutorials/quickstart_tutorial.md](../doc/gnn/tutorials/quickstart_tutorial.md), [tutorials/gnn_examples_doc.md](../doc/gnn/tutorials/gnn_examples_doc.md)
-- [advanced/advanced_modeling_patterns.md](../doc/gnn/advanced/advanced_modeling_patterns.md), [advanced/gnn_multiagent.md](../doc/gnn/advanced/gnn_multiagent.md)
+- [tutorials/quickstart_tutorial.md](../docs/gnn/tutorials/quickstart_tutorial.md), [tutorials/gnn_examples_doc.md](../docs/gnn/tutorials/gnn_examples_doc.md)
+- [advanced/advanced_modeling_patterns.md](../docs/gnn/advanced/advanced_modeling_patterns.md), [advanced/gnn_multiagent.md](../docs/gnn/advanced/gnn_multiagent.md)
 
 **Operations and quality**
 
-- [operations/resource_metrics.md](../doc/gnn/operations/resource_metrics.md), [operations/improvement_analysis.md](../doc/gnn/operations/improvement_analysis.md), [operations/REPO_COHERENCE_CHECK.md](../doc/gnn/operations/REPO_COHERENCE_CHECK.md)
-- [testing/README.md](../doc/gnn/testing/README.md), [testing/test_patterns.md](../doc/gnn/testing/test_patterns.md)
+- [operations/resource_metrics.md](../docs/gnn/operations/resource_metrics.md), [operations/improvement_analysis.md](../docs/gnn/operations/improvement_analysis.md), [operations/REPO_COHERENCE_CHECK.md](../docs/gnn/operations/REPO_COHERENCE_CHECK.md)
+- [testing/README.md](../docs/gnn/testing/README.md), [testing/test_patterns.md](../docs/gnn/testing/test_patterns.md)
 
 **Templates (authoring)**
 
-- [doc/templates/README.md](../doc/templates/README.md)
+- [docs/templates/README.md](../docs/templates/README.md)
 
 ---
 
@@ -210,13 +210,13 @@ Visualization and export docs: [integration/gnn_visualization.md](../doc/gnn/int
 
 | Path | Role |
 |------|------|
-| [doc/README.md](../doc/README.md) | Documentation subtree overview |
-| [doc/INDEX.md](../doc/INDEX.md) | Machine-oriented index |
-| [doc/START_HERE.md](../doc/START_HERE.md) | Guided entry into docs |
-| [doc/quickstart.md](../doc/quickstart.md) | Step-by-step first pipeline run |
-| [doc/gnn/README.md](../doc/gnn/README.md) | GNN language and pipeline doc hub |
-| [doc/development/docs_audit.py](../doc/development/docs_audit.py) | Markdown link and AGENTS/README pairing audit |
-| [doc/development/agents_readme_triple_review.md](../doc/development/agents_readme_triple_review.md) | Three-pass AGENTS/README review checklist |
+| [docs/README.md](../docs/README.md) | Documentation subtree overview |
+| [docs/INDEX.md](../docs/INDEX.md) | Machine-oriented index |
+| [docs/START_HERE.md](../docs/START_HERE.md) | Guided entry into docs |
+| [docs/quickstart.md](../docs/quickstart.md) | Step-by-step first pipeline run |
+| [docs/gnn/README.md](../docs/gnn/README.md) | GNN language and pipeline doc hub |
+| [docs/development/docs_audit.py](../docs/development/docs_audit.py) | Markdown link and AGENTS/README pairing audit |
+| [docs/development/agents_readme_triple_review.md](../docs/development/agents_readme_triple_review.md) | Three-pass AGENTS/README review checklist |
 
 ---
 
@@ -285,7 +285,7 @@ Configured in [dependabot.yml](dependabot.yml):
 | [ci.yml](workflows/ci.yml) | `push` and `pull_request` to `main` (`opened`, `synchronize`, `reopened`, `ready_for_review`); no path filter — runs on doc-only changes too. `workflow_dispatch` | **test**: matrix 3.11 / 3.12 / 3.13; Python 3.12 also runs Ruff format/check over `src scripts`, terminology audits, docs audit, documentation contract audit (`check_doc_contracts.py`), GNN doc patterns, mypy, collect-only, focused PyMDP/POMDP tests, MCP ≥ 140, and the v3 orchestration acceptance gate. All matrix entries run pytest with coverage, JUnit/summary. **security**: Bandit SARIF → `upload-sarif` + artifact. |
 | [mcp-audit.yml](workflows/mcp-audit.yml) | `push` / `pull_request` to `main`. `workflow_dispatch` | MCP tool count ≥ 140 via `tests.mcp.test_mcp_audit.count_mcp_tools`. |
 | [full-extras.yml](workflows/full-extras.yml) | Weekly cron Sunday 06:00 UTC (`0 6 * * 0`). `workflow_dispatch` | `uv sync --frozen --all-extras`, optional-import validation (audio, GUI, research/scaling), full pytest suite under all extras (Python 3.12). |
-| [docs-audit.yml](workflows/docs-audit.yml) | `push` / `pull_request` to `main` when paths include `**/*.md`, `doc/**`, root `AGENTS.md`, `CLAUDE.md`, `README.md`, `SKILL.md`, or `doc/development/docs_audit.py`. `workflow_dispatch` | `uv sync --frozen --extra dev`, strict docs audit with anchors, repository/doc terminology audits, and GNN doc-pattern audit. |
+| [docs-audit.yml](workflows/docs-audit.yml) | `push` / `pull_request` to `main` when paths include `**/*.md`, `docs/**`, root `AGENTS.md`, `CLAUDE.md`, `README.md`, `SKILL.md`, or `docs/development/docs_audit.py`. `workflow_dispatch` | `uv sync --frozen --extra dev`, strict docs audit with anchors, repository/doc terminology audits, and GNN doc-pattern audit. |
 | [actionlint.yml](workflows/actionlint.yml) | `push` / `pull_request` when `.github/workflows/**` changes. `workflow_dispatch` | `rhysd/actionlint@v1.7.12` |
 | [dependency-review.yml](workflows/dependency-review.yml) | `pull_request` to `main`. `workflow_dispatch` | `fail-on-severity: high`, AGPL deny list, PR comment summary on failure ([fork limitations](https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/about-dependency-review#dependency-review-for-forked-repositories)). |
 | [codeql.yml](workflows/codeql.yml) | `push` / `pull_request` (paths-ignore doc-only), weekly schedule, `workflow_dispatch` | `init` → `uv sync --frozen --extra dev` → `analyze` (Python). |
@@ -295,7 +295,7 @@ Configured in [dependabot.yml](dependabot.yml):
 
 ### Why a separate docs-audit workflow
 
-[ci.yml](workflows/ci.yml) runs on every push/PR to `main` with no path filter, and its 3.12 job already includes the doc audits. [docs-audit.yml](workflows/docs-audit.yml) is path-filtered (`**/*.md`, `doc/**`, root `AGENTS.md`/`CLAUDE.md`/`README.md`/`SKILL.md`, `doc/development/docs_audit.py`) and runs the same audit set in a lean single job, so doc-only changes get a fast, focused signal.
+[ci.yml](workflows/ci.yml) runs on every push/PR to `main` with no path filter, and its 3.12 job already includes the doc audits. [docs-audit.yml](workflows/docs-audit.yml) is path-filtered (`**/*.md`, `docs/**`, root `AGENTS.md`/`CLAUDE.md`/`README.md`/`SKILL.md`, `docs/development/docs_audit.py`) and runs the same audit set in a lean single job, so doc-only changes get a fast, focused signal.
 
 ### Automation on a typical PR
 
@@ -324,7 +324,7 @@ uv run --extra dev ruff format --check src scripts
 uv run --extra dev ruff check src scripts
 uv run --extra dev python scripts/check_repo_terminology.py --strict
 uv run --extra dev python scripts/check_maintained_doc_terms.py --strict
-uv run --extra dev python doc/development/docs_audit.py --strict --check-anchors --no-write
+uv run --extra dev python docs/development/docs_audit.py --strict --check-anchors --no-write
 uv run --extra dev python scripts/check_gnn_doc_patterns.py --strict
 uv run --extra dev mypy src --show-error-codes
 # Optional: external-URL health across maintained docs (informational — bot-blocked
@@ -350,5 +350,5 @@ Full local suite (broader than default CI marker filter): `uv run --extra dev py
 
 ## Related tooling docs
 
-- [doc/style_guide.md](../doc/style_guide.md) — documentation style
-- [doc/development/README.md](../doc/development/README.md) — development doc folder
+- [docs/style_guide.md](../docs/style_guide.md) — documentation style
+- [docs/development/README.md](../docs/development/README.md) — development doc folder

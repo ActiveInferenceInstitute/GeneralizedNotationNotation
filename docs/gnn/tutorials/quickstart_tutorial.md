@@ -118,7 +118,7 @@ t[1,type=int]        # Time step
 ## Connections
 # Each connection is a single "source>target" (directed) or "source-target"
 # (undirected) pair with no spaces — see the Connections grammar in
-# doc/gnn/reference/gnn_syntax.md for the full rule.
+# docs/gnn/reference/gnn_syntax.md for the full rule.
 
 # Prior influences initial state
 D_f0>s_f0

@@ -10,8 +10,8 @@ This directory contains documentation and resources for dependency management.
 
 ## Quick Links
 
-- **Main Documentation**: [doc/README.md](../README.md)
-- **Setup Guide**: [doc/SETUP.md](../SETUP.md)
+- **Main Documentation**: [docs/README.md](../README.md)
+- **Setup Guide**: [docs/SETUP.md](../SETUP.md)
 - **Pipeline Reference**: [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)
 
 ## Directory Structure
@@ -37,8 +37,8 @@ The GNN project manages dependencies across several categories:
 
 For comprehensive installation guidance, see:
 
-- **Quick Setup**: [doc/SETUP.md](../SETUP.md) - Installation overview
-- **Framework Selection**: [doc/SETUP.md](../SETUP.md#framework-selection-strategies)
+- **Quick Setup**: [docs/SETUP.md](../SETUP.md) - Installation overview
+- **Framework Selection**: [docs/SETUP.md](../SETUP.md#framework-selection-strategies)
 - **Optional Packages**: [OPTIONAL_DEPENDENCIES.md](OPTIONAL_DEPENDENCIES.md)
 
 ## Integration
@@ -46,7 +46,7 @@ For comprehensive installation guidance, see:
 This subsystem is part of the broader GNN (Generalized Notation Notation) documentation ecosystem and pipeline.
 
 **Related Components**:
-- Setup orchestration: [doc/SETUP.md](../SETUP.md)
+- Setup orchestration: [docs/SETUP.md](../SETUP.md)
 - Execution framework: [execution/](../execution/)
 - Pipeline integration: [src/](../../src/)
 

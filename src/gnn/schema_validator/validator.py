@@ -47,8 +47,6 @@ except ImportError:  # pragma: no cover
 logger = logging.getLogger(__name__)
 
 
-
-
 class GNNValidator:
     """Enhanced validator for GNN files with comprehensive round-trip and cross-format support."""
 

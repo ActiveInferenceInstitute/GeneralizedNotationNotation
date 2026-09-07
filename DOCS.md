@@ -202,7 +202,7 @@ flowchart LR
 ## Configuration Pointers
 
 - Command-line options via `src/gnn/main.py --help`
-- Centralized config examples in `doc/configuration/README.md`
+- Centralized config examples in `docs/configuration/README.md`
 
 ## Integration Notes
 
@@ -215,7 +215,7 @@ flowchart LR
 
 - `.agent_rules` — canonical pipeline description (0–24)
 - `src/gnn/main.py` — orchestrator implementation
-- `doc/PIPELINE_SCRIPTS.md` — step details and flow
+- `docs/PIPELINE_SCRIPTS.md` — step details and flow
 - `ARCHITECTURE.md` — implementation-oriented architecture
 - `src/gnn/STEP_INDEX.md` — machine-readable step index (0–24)
 - `src/gnn/mcp/audit_report.json` — machine-generated MCP tool inventory
@@ -260,13 +260,13 @@ flowchart LR
 Repeatable checks for Markdown in the repo (including tracked `output/**/*.md`; large trees may slow the scan):
 
 ```bash
-uv run python doc/development/docs_audit.py   # writes doc/development/docs_audit_report.md
+uv run python docs/development/docs_audit.py   # writes docs/development/docs_audit_report.md
 ```
 
-After reorganizing paths under `doc/gnn/`, refresh stale `gnn/...` links in bulk:
+After reorganizing paths under `docs/gnn/`, refresh stale `gnn/...` links in bulk:
 
 ```bash
-uv run python doc/development/rewrite_gnn_doc_links.py
+uv run python docs/development/rewrite_gnn_doc_links.py
 ```
 
-Details: [doc/development/README.md](doc/development/README.md).
+Details: [docs/development/README.md](docs/development/README.md).

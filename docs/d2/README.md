@@ -20,7 +20,7 @@ This directory contains documentation, resources, and implementation guides for 
 - **[d2.md](d2.md)**: D2 framework overview
 
 ### Main Documentation
-- **[doc/README.md](../README.md)**: Main documentation hub
+- **[docs/README.md](../README.md)**: Main documentation hub
 - **[CROSS_REFERENCE_INDEX.md](../CROSS_REFERENCE_INDEX.md)**: Complete cross-reference index
 - **[learning_paths.md](../learning_paths.md)**: Learning pathways
 

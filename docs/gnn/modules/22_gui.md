@@ -541,7 +541,7 @@ Registered in `register_tools` (`src/gnn/gui/mcp.py`):
 ### Related Documentation
 - [Pipeline Overview](../../../README.md)
 - [Architecture Guide](../../../ARCHITECTURE.md)
-- [GUI Guide](../../../doc/gui_oxdraw/)
+- [GUI Guide](../../../docs/gui_oxdraw/)
 
 ### External Resources
 - [Gradio Documentation](https://gradio.app/)

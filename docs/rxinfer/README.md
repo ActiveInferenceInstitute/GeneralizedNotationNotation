@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Framework Integration Guide | **Audience**: Researchers, Developers | **Complexity**: Intermediate-Advanced  
-> **Cross-References**: [AGENTS.md](AGENTS.md) | [GNN RxInfer Guide](gnn_rxinfer.md) | [Framework Integration](../gnn/integration/framework_integration_guide.md) | [Main Documentation](../README.md) | [doc/SPEC.md](../SPEC.md) (versioning)
+> **Cross-References**: [AGENTS.md](AGENTS.md) | [GNN RxInfer Guide](gnn_rxinfer.md) | [Framework Integration](../gnn/integration/framework_integration_guide.md) | [Main Documentation](../README.md) | [docs/SPEC.md](../SPEC.md) (versioning)
 
 ## Overview
 
@@ -20,7 +20,7 @@ This directory contains documentation, scripts, and resources for integrating GN
 - **[Multiagent_GNN_RxInfer.jl](Multiagent_GNN_RxInfer.jl)**: Validation script
 
 ### Main Documentation
-- **[doc/README.md](../README.md)**: Main documentation hub
+- **[docs/README.md](../README.md)**: Main documentation hub
 - **[CROSS_REFERENCE_INDEX.md](../CROSS_REFERENCE_INDEX.md)**: Complete cross-reference index
 - **[learning_paths.md](../learning_paths.md)**: Learning pathways
 
@@ -209,7 +209,7 @@ All log and visualization artifacts are best-effort and preserve the fields in
 
 ```bash
 # Ensure Julia environment with required packages
-julia doc/rxinfer/Multiagent_GNN_RxInfer.jl
+julia docs/rxinfer/Multiagent_GNN_RxInfer.jl
 ```
 
 ### Basic RxInfer.jl Model

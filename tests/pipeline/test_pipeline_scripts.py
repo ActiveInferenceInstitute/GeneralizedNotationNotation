@@ -30,7 +30,7 @@ import pytest
 
 pytestmark: list[Any] = [pytest.mark.pipeline]
 PROJECT_ROOT = Path(__file__).parent.parent.parent
-SRC_DIR = PROJECT_ROOT / "src"
+SRC_DIR = PROJECT_ROOT / "src" / "gnn"
 MAX_NUMBERED_SCRIPT_LINES = 150
 # Single small POMDP for subprocess smoke tests (avoids entire input/gnn_files, e.g. large scaling study dir).
 SMOKE_GNN = PROJECT_ROOT / "input" / "gnn_files" / "discrete" / "simple_mdp.md"
@@ -717,7 +717,7 @@ def test_pipeline_script_completeness() -> None:
     """Test that all pipeline scripts are complete and functional."""
     from pathlib import Path
 
-    src_dir = Path(__file__).parent.parent.parent
+    src_dir = Path(__file__).parents[2] / "src" / "gnn"
     expected_scripts: list[Any] = [
         "0_template.py",
         "1_setup.py",

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Check external (http/https) URLs referenced in maintained docs.
 
-The in-repo audit (doc/development/docs_audit.py) validates *relative* links
+The in-repo audit (docs/development/docs_audit.py) validates *relative* links
 only. This script extends coverage to external URLs so moved/retired resources
 can be caught before they rot.
 

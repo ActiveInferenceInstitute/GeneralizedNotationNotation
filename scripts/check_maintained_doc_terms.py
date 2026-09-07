@@ -25,8 +25,9 @@ ROOT_MARKDOWN = {
     "SPEC.md",
     "SKILL.md",
 }
-MAINTAINED_DIRS = (".agent_rules", ".github", "doc", "input", "scripts", "src")
+MAINTAINED_DIRS = (".agent_rules", ".github", "docs", "input", "scripts", "src")
 SKIP_PARTS = {
+    "fleet-logs",
     ".git",
     ".venv",
     ".pytest_cache",

@@ -506,7 +506,7 @@ This module is part of the GeneralizedNotationNotation project. See the main rep
 - Project overview: ../../../README.md
 - Comprehensive docs: ../../../DOCS.md
 - Architecture guide: ../../../ARCHITECTURE.md
-- Pipeline details: ../../../doc/pipeline/README.md
+- Pipeline details: ../../../docs/pipeline/README.md
 
 ---
 ## Documentation

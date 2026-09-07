@@ -5,7 +5,10 @@ Shared types for GNN module to avoid circular imports.
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
+
+if TYPE_CHECKING:  # runtime re-export lives in gnn/types/__init__.py
+    from gnn.parsers.common import GNNFormat, GNNInternalRepresentation
 
 
 class ValidationLevel(Enum):
@@ -129,18 +132,11 @@ class ParsedGNN:
     round_trip_verified: bool = False
 
 
-# Single authoritative definition lives in parsers/common.py.
-from .parsers.common import (  # re-export for types module consumers  # noqa: E402
-    GNNFormat,
-    GNNInternalRepresentation,
-)
-
-
 @dataclass
 class ParseResult:
     """Provide ParseResult behavior."""
 
-    model: Optional[GNNInternalRepresentation] = None
+    model: "Optional[GNNInternalRepresentation]" = None
     success: bool = False
     errors: List[str] = field(default_factory=list)
     warnings: List[str] = field(default_factory=list)
@@ -160,12 +156,12 @@ class ParseResult:
 class RoundTripResult:
     """Provide RoundTripResult behavior."""
 
-    source_format: GNNFormat
-    target_format: GNNFormat
+    source_format: "GNNFormat"
+    target_format: "GNNFormat"
     success: bool
-    original_model: Optional[GNNInternalRepresentation] = None
+    original_model: "Optional[GNNInternalRepresentation]" = None
     converted_content: Optional[str] = None
-    parsed_back_model: Optional[GNNInternalRepresentation] = None
+    parsed_back_model: "Optional[GNNInternalRepresentation]" = None
     differences: List[str] = field(default_factory=list)
     warnings: List[str] = field(default_factory=list)
     errors: List[str] = field(default_factory=list)
@@ -198,7 +194,9 @@ class ComprehensiveTestReport:
     successful_tests: int = 0
     failed_tests: int = 0
     round_trip_results: List[RoundTripResult] = field(default_factory=list)
-    format_matrix: Dict[Tuple[GNNFormat, GNNFormat], bool] = field(default_factory=dict)
+    format_matrix: "Dict[Tuple[GNNFormat, GNNFormat], bool]" = field(
+        default_factory=dict
+    )
     semantic_differences: List[str] = field(default_factory=list)
     critical_errors: List[str] = field(default_factory=list)
 
@@ -224,7 +222,7 @@ class ComprehensiveTestReport:
             else 0.0
         )
 
-    def get_format_summary(self) -> Dict[GNNFormat, Dict[str, int]]:
+    def get_format_summary(self) -> "Dict[GNNFormat, Dict[str, int]]":
         """Return format summary."""
         format_summary: dict[Any, Any] = {}
         for result in self.round_trip_results:

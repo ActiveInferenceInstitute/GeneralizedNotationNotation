@@ -48,7 +48,7 @@ Examples:
 
 For complete usage information, see:
 - README.md: Project overview and quick start
-- doc/pipeline/README.md: Detailed pipeline documentation
+- docs/pipeline/README.md: Detailed pipeline documentation
 - src/README.md: Pipeline safety and reliability documentation
 """
 

@@ -15,6 +15,6 @@ Provides theoretical background and references for GNN model designers working w
 
 ## Parent Module
 
-See [doc/AGENTS.md](../AGENTS.md) for the overall documentation architecture.
+See [docs/AGENTS.md](../AGENTS.md) for the overall documentation architecture.
 
 **Version**: 3.2.0

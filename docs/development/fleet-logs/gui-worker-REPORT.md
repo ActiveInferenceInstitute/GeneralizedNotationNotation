@@ -46,7 +46,7 @@ Exit codes, logging conventions, and output contracts unchanged (all 70 pre-exis
 ## Follow-ups needed (other workers own these)
 
 - None blocking. Mid-run, `src/gnn/mcp/mcp.py` transiently broke `test_oxdraw_integration.py` (missing `import logging` — foreign scope); the owning peer fixed it and the full gui module is green again.
-- `doc/` / `manuscript/`: no changes required; if the manuscript references GUI internals, note the new `gui.runner` module and v1.7.0 exports.
+- `docs/` / `manuscript/`: no changes required; if the manuscript references GUI internals, note the new `gui.runner` module and v1.7.0 exports.
 
 ## Follow-up ideas
 

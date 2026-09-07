@@ -58,7 +58,7 @@ Fleet interference note: three times the tree was transiently broken by concurre
 
 ## Follow-ups needed (other workers own these)
 
-- **doc/ workers**: `doc/gnn/modules/11_render.md` and `doc/gnn/integration/gnn_implementation.md` document the CLI target list and processor API — worth syncing with `parse_frameworks_selection`/lite-preset wording (they are not wrong today, just less specific).
+- **docs/ workers**: `docs/gnn/modules/11_render.md` and `docs/gnn/integration/gnn_implementation.md` document the CLI target list and processor API — worth syncing with `parse_frameworks_selection`/lite-preset wording (they are not wrong today, just less specific).
 - **manuscript/ workers**: none needed; no user-facing pipeline behavior changed (exit codes, summary JSON schema, artifact names all preserved).
 - **mcp/ workers**: `src/gnn/mcp/validate_tools.py` pins expected tool names for listed modules — `render` wasn't in its list, but if the fleet touches it, `render_spec_to_format` should be added to whatever registry they maintain.
 

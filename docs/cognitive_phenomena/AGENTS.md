@@ -47,7 +47,7 @@ This subsystem is part of the broader GNN (Generalized Notation Notation) docume
 - **[AGENTS.md](AGENTS.md)**: Technical documentation (this file)
 
 ### Main Documentation
-- **[doc/README.md](../README.md)**: Main documentation hub
+- **[docs/README.md](../README.md)**: Main documentation hub
 - **[CROSS_REFERENCE_INDEX.md](../CROSS_REFERENCE_INDEX.md)**: Complete cross-reference index
 - **[learning_paths.md](../learning_paths.md)**: Learning pathways
 

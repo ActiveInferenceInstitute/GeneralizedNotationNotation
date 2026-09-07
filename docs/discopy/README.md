@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Framework Integration Guide | **Audience**: Researchers, Mathematicians | **Complexity**: Advanced  
-> **Cross-References**: [AGENTS.md](AGENTS.md) | [DisCoPy GNN Guide](gnn_discopy.md) | [Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md) | [Main Documentation](../README.md) | [doc/SPEC.md](../SPEC.md) (versioning)
+> **Cross-References**: [AGENTS.md](AGENTS.md) | [DisCoPy GNN Guide](gnn_discopy.md) | [Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md) | [Main Documentation](../README.md) | [docs/SPEC.md](../SPEC.md) (versioning)
 
 ## Overview
 
@@ -19,7 +19,7 @@ This directory contains documentation, resources, and implementation guides for 
 - **[gnn_discopy.md](gnn_discopy.md)**: Complete DisCoPy-GNN integration guide
 
 ### Main Documentation
-- **[doc/README.md](../README.md)**: Main documentation hub
+- **[docs/README.md](../README.md)**: Main documentation hub
 - **[CROSS_REFERENCE_INDEX.md](../CROSS_REFERENCE_INDEX.md)**: Complete cross-reference index
 - **[learning_paths.md](../learning_paths.md)**: Learning pathways
 

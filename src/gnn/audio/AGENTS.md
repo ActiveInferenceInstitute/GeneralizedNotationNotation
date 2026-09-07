@@ -316,11 +316,11 @@ def register_tools(mcp_instance):
 ### Related Documentation
 - [Pipeline Overview](../../../README.md)
 - [Architecture Guide](../../../ARCHITECTURE.md)
-- [SAPF Documentation](../../../doc/sapf/)
-- [Pedalboard Documentation](../../../doc/pedalboard/)
+- [SAPF Documentation](../../../docs/sapf/)
+- [Pedalboard Documentation](../../../docs/pedalboard/)
 
 ### External Resources
-- [SAPF Specification](../../../doc/sapf/README.md)
+- [SAPF Specification](../../../docs/sapf/README.md)
 - [Pedalboard Documentation](https://github.com/spotify/pedalboard)
 - [Librosa Documentation](https://librosa.org/)
 

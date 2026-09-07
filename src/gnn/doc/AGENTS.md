@@ -16,7 +16,7 @@ Defines scope for files under `src/gnn/doc/`.
 ## Responsibilities
 
 - Keep local implementation notes concise and accurate.
-- Link to canonical docs in `doc/` and `src/` when relevant.
+- Link to canonical docs in `docs/` and `src/` when relevant.
 - Avoid duplicating generated artifacts or cache content.
 
 ## Exclusions

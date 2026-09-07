@@ -381,7 +381,7 @@ Registered in `register_tools` (`src/gnn/ontology/mcp.py`):
 - [Pipeline Overview](../../../README.md)
 - [Architecture Guide](../../../ARCHITECTURE.md)
 - [Active Inference Ontology](https://activeinference.org)
-- [GNN Ontology Guide](../../../doc/gnn/advanced/gnn_ontology.md)
+- [GNN Ontology Guide](../../../docs/gnn/advanced/gnn_ontology.md)
 
 ### External Resources
 - [Active Inference Institute](https://activeinference.institute/)

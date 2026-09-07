@@ -9,7 +9,7 @@ The repository root governs real-implementation testing across all integrations,
 There are no python source packages instantiated directly within this root location. Instead, the root contains the infrastructural map that triggers the pipeline execution and validation layer:
 
 1. **`src/`**: Master source tree for the 25-step `gnn` execution orchestrators.
-2. **`doc/`**: Deep-linked, versioned, extensive framework mapping and cognitive systems documentation.
+2. **`docs/`**: Deep-linked, versioned, extensive framework mapping and cognitive systems documentation.
 3. **`tests/`** (via `src/tests`): Real-implementation execution boundaries.
 4. **`.github/`**: Declarative workflow integration interfaces for continuous validation.
 5. **`scripts/`**: Specialized tooling.

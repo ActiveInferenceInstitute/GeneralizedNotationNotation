@@ -88,7 +88,7 @@
 
 ### 🔗 Resources
 
-- **Documentation:** `doc/` directory in the repository
+- **Documentation:** `docs/` directory in the repository
 - **Examples:** `src/gnn/gnn_examples/` for reference GNN files
 - **Pipeline Scripts:** Numbered scripts in `src/` for processing workflow
 - **Visualization Outputs:** `output/visualization/` for generated diagrams and reports

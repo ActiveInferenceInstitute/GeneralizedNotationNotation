@@ -34,29 +34,6 @@ from tests.helpers.gnn_samples import (  # noqa: E402 - needs the alias above
 )
 from tests.helpers.mcp_stubs import MCPTools  # noqa: E402 - needs the alias above
 
-# -----------------------------------------------------------------------------
-# Marker configuration
-# -----------------------------------------------------------------------------
-
-PYTEST_MARKERS: Dict[str, str] = {
-    "unit": "Unit tests for individual components",
-    "integration": "Integration tests for component interactions",
-    "performance": "Performance and resource usage tests",
-    "slow": "Tests that take significant time to complete",
-    "fast": "Quick tests for rapid feedback",
-    "core": "Core module tests",
-    "pipeline": "Pipeline infrastructure tests",
-    "recovery": "Pipeline recovery tests",
-    "main_orchestrator": "Main orchestrator tests",
-    "mcp": "Model Context Protocol tests",
-}
-
-
-def pytest_configure(config: Any) -> None:
-    """Register project-specific pytest markers."""
-    for name, description in PYTEST_MARKERS.items():
-        config.addinivalue_line("markers", f"{name}: {description}")
-
 
 def pytest_collection_modifyitems(config: Any, items: list) -> None:
     """Tag slow tests with the performance marker for dashboarding."""

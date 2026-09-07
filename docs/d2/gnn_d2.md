@@ -751,7 +751,7 @@ D2's efficient compilation pipeline ensures minimal memory footprint for GNN dia
 
 ```bash
 # Recommended directory structure for D2 files
-doc/diagrams/
+docs/diagrams/
 ├── pipeline/
 │   ├── architecture.d2
 │   ├── data_flow.d2

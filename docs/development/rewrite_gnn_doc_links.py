@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-Rewrite stale doc/gnn/* paths after the gnn doc tree was reorganized into
+Rewrite stale docs/gnn/* paths after the gnn doc tree was reorganized into
 tutorials/, reference/, operations/, integration/, advanced/.
 
 Run from repo root:
-  uv run python doc/development/rewrite_gnn_doc_links.py
+  uv run python docs/development/rewrite_gnn_doc_links.py
 """
 
 from __future__ import annotations

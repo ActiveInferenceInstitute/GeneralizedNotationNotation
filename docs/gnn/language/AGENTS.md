@@ -16,7 +16,7 @@
 ## Precedence
 
 These files carry grammatical detail, not authority. The normative
-specification is [`doc/gnn/gnn_syntax.md`](../gnn_syntax.md); on any conflict
+specification is [`docs/gnn/gnn_syntax.md`](../gnn_syntax.md); on any conflict
 it wins and the file here is the bug.
 
 ## Implementation Details

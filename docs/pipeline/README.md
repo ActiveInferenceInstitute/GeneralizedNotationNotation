@@ -32,7 +32,7 @@ The main pipeline loads `input/config.yaml` automatically. See the
   pytorch, stan and rxinfer; the categorical backends report `unsupported` for
   them and are not executed. Lean verifies emitted documents against the
   fep_lean `FEP.GnnDocument` typed surface (requires the sibling fep_lean
-  checkout; see `doc/other/fep_lean/README.md`).
+  checkout; see `docs/other/fep_lean/README.md`).
 - Steps 13–24 provide LLM, ML, audio, analysis, integration, security, research,
   website, MCP, GUI, reporting, and intelligent-analysis surfaces.
 
@@ -66,7 +66,7 @@ coverage from the renderer registry.
 
 ```bash
 # Documentation contracts and link/anchor audit.
-uv run --extra dev python doc/development/docs_audit.py --strict --check-anchors --no-write
+uv run --extra dev python docs/development/docs_audit.py --strict --check-anchors --no-write
 uv run --extra dev python scripts/check_doc_contracts.py --strict
 
 # Pipeline orchestration acceptance.

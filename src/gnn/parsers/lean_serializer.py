@@ -125,11 +125,16 @@ class LeanSerializer(BaseGNNSerializer):
             lines.append(f"def _{kind} : GnnSection := {sections[kind]}")
             lines.append("")
         lines.append("def document : GnnDocument :=")
-        lines.append("  { sections := [" + ", ".join(f"_{k}" for k in _SECTION_KINDS) + "] }")
+        lines.append(
+            "  { sections := [" + ", ".join(f"_{k}" for k in _SECTION_KINDS) + "] }"
+        )
         lines.append("")
 
         model_data = self._model_data(model, brace_params)
-        lines.append("-- MODEL_DATA: " + json.dumps(model_data, separators=(",", ":"), ensure_ascii=False))
+        lines.append(
+            "-- MODEL_DATA: "
+            + json.dumps(model_data, separators=(",", ":"), ensure_ascii=False)
+        )
         lines.append("")
 
         return "\n".join(lines)
@@ -140,9 +145,7 @@ class LeanSerializer(BaseGNNSerializer):
 
     def _section_identifier(self, model: GNNInternalRepresentation) -> str:
         """Derive the ``GNNSection`` identifier from the model name."""
-        allowed = "".join(
-            c for c in model.model_name if c.isalnum() or c in "_π'"
-        )
+        allowed = "".join(c for c in model.model_name if c.isalnum() or c in "_π'")
         return allowed or "GNNModel"
 
     def _lean_version(self, version: str) -> str:
@@ -321,8 +324,7 @@ class LeanSerializer(BaseGNNSerializer):
                 for var in sorted(model.variables, key=lambda v: v.name)
             ],
             "parameterizations": [
-                {"var_name": name, "payload": payload}
-                for name, payload in brace_params
+                {"var_name": name, "payload": payload} for name, payload in brace_params
             ],
             "ontology_bindings": [
                 {
@@ -361,12 +363,8 @@ class LeanSerializer(BaseGNNSerializer):
                 }
                 for param in model.parameters
             ],
-            "equations": [
-                eq.content for eq in model.equations
-            ],
-            "time_specification": self._serialize_time_spec(
-                model.time_specification
-            )
+            "equations": [eq.content for eq in model.equations],
+            "time_specification": self._serialize_time_spec(model.time_specification)
             if model.time_specification
             else None,
             "ontology_mappings": self._serialize_ontology_mappings(
@@ -414,6 +412,4 @@ class LeanSerializer(BaseGNNSerializer):
 
 def _valid_name(text: str) -> bool:
     """Return True when ``text`` is a valid GNN name (syntax doc §2)."""
-    return bool(text) and all(
-        c.isalnum() or c in "_π'" for c in text
-    )
+    return bool(text) and all(c.isalnum() or c in "_π'" for c in text)

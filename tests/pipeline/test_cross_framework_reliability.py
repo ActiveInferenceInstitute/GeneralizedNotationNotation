@@ -186,7 +186,7 @@ def _acceptance_ledger(name: str, pipeline_output: Path) -> dict[str, Any]:
                 "status": "passed",
                 "command": [
                     "python",
-                    "src/main.py",
+                    "src/gnn/main.py",
                     "--output-dir",
                     str(pipeline_output),
                 ],

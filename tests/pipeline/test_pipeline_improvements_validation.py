@@ -339,7 +339,7 @@ ModelTimeHorizon=5
     try:
         cmd: list[Any] = [
             sys.executable,
-            str(SRC_DIR / "main.py"),
+            str(SRC_DIR / "gnn" / "main.py"),
             "--target-dir",
             str(temp_directories["input_dir"]),
             "--output-dir",

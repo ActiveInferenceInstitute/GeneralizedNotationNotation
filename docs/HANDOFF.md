@@ -80,7 +80,7 @@
 
 ### 2.4 Audit Report
 
-Comprehensive `doc/uv_0.12.0_compatibility_audit.md` (442 lines) covering:
+Comprehensive `docs/uv_0.12.0_compatibility_audit.md` (442 lines) covering:
 - All 7 Python tooling fixes with patterns
 - Julia/D2/Ollama installation details
 - Matplotlib headless behavior notes
@@ -163,7 +163,7 @@ The `lsp/` module requires `pygls` which is an optional dependency. The `Languag
 
 ### 4.3 Low Priority
 
-6. **Doc parity** — 609 doc pages vs 760 source files. Some doc/ pages may be stale or missing for modules
+6. **Doc parity** — 609 doc pages vs 760 source files. Some docs/ pages may be stale or missing for modules
 
 7. **CI pipeline improvements** — Add GitHub Actions workflow for:
    - Parallel test execution
@@ -171,10 +171,10 @@ The `lsp/` module requires `pygls` which is an optional dependency. The `Languag
    - Mypy/ruff gates
    - Dependabot auto-merge for low-risk updates
 
-8. **Standalone test files** — 7 test files exist outside `tests/` in `doc/` and `src/gnn/llm/`:
-   - `doc/activeinference_jl/test_activeinference_renderer.py`
-   - `doc/cognitive_phenomena/*/test_*.py` (3 files)
-   - `doc/pymdp/pymdp_pomdp/test_*.py` (2 files)
+8. **Standalone test files** — 7 test files exist outside `tests/` in `docs/` and `src/gnn/llm/`:
+   - `docs/activeinference_jl/test_activeinference_renderer.py`
+   - `docs/cognitive_phenomena/*/test_*.py` (3 files)
+   - `docs/pymdp/pymdp_pomdp/test_*.py` (2 files)
    - `src/gnn/llm/test_llm_system.py`
    - These are documentation-embedded examples, not pytest tests. Consider moving into `tests/` with proper pytest markers.
 
@@ -243,8 +243,8 @@ abc9947 uv 0.12.0 compatibility: fix imports, test failures, and disable pygls t
 
 | File | Purpose |
 |------|---------|
-| `doc/HANDOFF.md` | This document |
-| `doc/uv_0.12.0_compatibility_audit.md` | Comprehensive audit report (442 lines) |
+| `docs/HANDOFF.md` | This document |
+| `docs/uv_0.12.0_compatibility_audit.md` | Comprehensive audit report (442 lines) |
 | `tests/__init__.py` | Test suite bootstrap |
 | `tests/runner.py` | Test runner (TestRunner class + run_tests function) |
 | `tests/test_uv_environment.py` | uv environment tests |

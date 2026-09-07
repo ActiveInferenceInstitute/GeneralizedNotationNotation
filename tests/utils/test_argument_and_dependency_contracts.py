@@ -165,7 +165,7 @@ def test_exit_code_contract_docs_use_canonical_wording() -> None:
     canonical = "0=success, 1=error, 2=success with warnings/skipped"
     checked_paths = [
         Path("ARCHITECTURE.md"),
-        Path("doc/PIPELINE_SCRIPTS.md"),
+        Path("docs/PIPELINE_SCRIPTS.md"),
         Path("src/gnn/STEP_INDEX.md"),
         Path("src/gnn/template/README.md"),
         Path("tests/README.md"),

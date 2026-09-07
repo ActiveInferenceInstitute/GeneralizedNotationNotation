@@ -19,7 +19,7 @@ This directory contains documentation, resources, and implementation guides for 
 - **[gnn_autogenlib.md](gnn_autogenlib.md)**: Complete AutoGenLib-GNN integration guide
 
 ### Main Documentation
-- **[doc/README.md](../README.md)**: Main documentation hub
+- **[docs/README.md](../README.md)**: Main documentation hub
 - **[CROSS_REFERENCE_INDEX.md](../../CROSS_REFERENCE_INDEX.md)**: Complete cross-reference index
 - **[learning_paths.md](../../learning_paths.md)**: Learning pathways
 

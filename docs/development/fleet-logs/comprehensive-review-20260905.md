@@ -19,7 +19,7 @@ preserved; no source pins, dependency changes, or FEP edits.
 | Wave2 pipeline + run identity | pytest over `tests/pipeline/test_wave2_sessions.py`, `test_wave2_identity.py`, `test_wave2_manifests.py`, `test_wave2_container_plans.py`, `test_run_identity.py` | `68 passed in 1.88s` — 0 failed, 0 skipped |
 | LLM sync wrappers | pytest over `tests/llm/test_openai_sync_analysis_contract.py`, `test_llm_sync_wrappers.py` | `13 passed in 1.20s` — 0 failed, 0 skipped, no network/Ollama needed |
 | Zero-skip + doc contracts | pytest over `test_zero_skip_contracts.py`, `test_doc_accuracy_contracts.py`, `test_doc_contracts.py`, `test_docs_audit.py` | `11 passed in 0.24s` pre-edit; `11 passed in 0.27s` after the doc edits below |
-| Doc audits | `doc/development/docs_audit.py --strict --check-anchors --no-write`; `scripts/check_gnn_doc_patterns.py --strict`; `scripts/check_repo_terminology.py --strict`; `scripts/check_maintained_doc_terms.py --strict` | all exit 0 — broken links 0, bad anchors 0, AGENTS/README gaps 0, no banned patterns, terminology clean |
+| Doc audits | `docs/development/docs_audit.py --strict --check-anchors --no-write`; `scripts/check_gnn_doc_patterns.py --strict`; `scripts/check_repo_terminology.py --strict`; `scripts/check_maintained_doc_terms.py --strict` | all exit 0 — broken links 0, bad anchors 0, AGENTS/README gaps 0, no banned patterns, terminology clean |
 | v3 orchestration acceptance | `uv run --extra dev python scripts/run_v3_orchestration_acceptance.py --strict` | `19/19 checks passed`, exit 0 (streams 9, session 6, container 4, negative controls firing) |
 | Full suite (ground truth) | command of record: `uv run --extra dev python -m pytest tests/ -q --tb=no -rsx --ignore=tests/llm/test_llm_ollama.py --ignore=tests/llm/test_llm_ollama_integration.py` (run exactly once) | `4693 passed, 14 skipped in 536.44s (0:08:56)` — 0 failed, no collection errors |
 
@@ -54,14 +54,14 @@ Verified coherent, no action:
 - Hygiene: zero TODO/FIXME/XXX in the wave2-owned files (`src/gnn/main.py`,
   `src/gnn/cli/__init__.py`, `src/gnn/pipeline/*.py`).
 - No stale suite/mypy numbers in living docs; `CHANGELOG.md` historical
-  entries are dated and correct as history. `doc/HANDOFF.md` is a
+  entries are dated and correct as history. `docs/HANDOFF.md` is a
   deliberately superseded 2026-07-30 snapshot and was left untouched.
 
 Fixed by this review (docs only; every edit re-verified — see below):
 1. Discovery gap: all six durable-run topics from the wave2 receipt
    (`gnn-run-v2` hash schema, manifest index 3.1, legacy rejection/re-emission,
    source/config-bound DONE reuse, RUNNING recovery, single-writer boundary)
-   were documented in `doc/development/durable-runs.md` but nothing linked to
+   were documented in `docs/development/durable-runs.md` but nothing linked to
    it from the repo's front doors. `README.md`'s v3.0.0 overview bullet and
    the Long-Running Orchestration section now point at it, naming `gnn-run-v2`
    and index schema 3.1 explicitly.
@@ -69,7 +69,7 @@ Fixed by this review (docs only; every edit re-verified — see below):
    identity hardening; an `[Unreleased]` → Changed entry ("Durable run
    identity and reproduction") now records it with the rules link.
 3. Stale dependency lists: `src/gnn/export/AGENTS.md` and
-   `doc/gnn/modules/07_export.md` Required Dependencies omitted the hardened
+   `docs/gnn/modules/07_export.md` Required Dependencies omitted the hardened
    reader; both now list `defusedxml` (mirroring `src/gnn/export/README.md`,
    which already documented it).
 
@@ -107,7 +107,7 @@ clean) and the 11 zero-skip + doc contract tests.
   pass totals move as lanes add tests (4028 → 4102 → 4693 across receipts).
 - The wave2 receipt's documentation handoff item (durable-run/reproduction
   docs for the six topics) is closed: coverage exists in
-  `doc/development/durable-runs.md` and is now discoverable from README and
+  `docs/development/durable-runs.md` and is now discoverable from README and
   CHANGELOG.
 
 ## Appendix — dirty-state ledger (advisory close-out, 2026-09-05)
@@ -116,7 +116,7 @@ Method: day-level mtime grouping over `git status --porcelain` (tracked-modified
 and untracked), then minute-level `stat` on every file dated 2026-09-05.
 
 - This session's footprint (verified): 4 tracked doc edits (`README.md`,
-  `CHANGELOG.md`, `src/gnn/export/AGENTS.md`, `doc/gnn/modules/07_export.md`) plus
+  `CHANGELOG.md`, `src/gnn/export/AGENTS.md`, `docs/gnn/modules/07_export.md`) plus
   this report file. Zero deletions, zero reverts, zero commits.
 - No verification-run artifacts from this session's pytest/docs-audit runs:
   every `out/` artifact is dated 2026-09-04 13:47–13:59 (prior sessions), and

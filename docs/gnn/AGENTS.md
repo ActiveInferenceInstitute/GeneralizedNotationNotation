@@ -38,14 +38,14 @@ enforced by `detect_model_kind` in
 
 ### Subsystem Indices Available
 
-- `doc/gnn/advanced/`: Ontology, multi-agent, LLM/neurosymbolic topics, and advanced modeling patterns.
-- `doc/gnn/implementations/`: Specific platform references (PyMDP, RxInfer, etc.).
-- `doc/gnn/language/`: DSL specific syntax rules.
-- `doc/gnn/modules/`: Component behaviors (including structural documentation for all 25 modules).
-- `doc/gnn/operations/`: Internal pipeline processing guides, troubleshooting, and coherence checks.
-- `doc/gnn/reference/`: Raw variable mappings and type systems.
-- `doc/gnn/testing/`: Testing standards for the notation itself.
-- `doc/gnn/tutorials/`: End-user construction guides.
+- `docs/gnn/advanced/`: Ontology, multi-agent, LLM/neurosymbolic topics, and advanced modeling patterns.
+- `docs/gnn/implementations/`: Specific platform references (PyMDP, RxInfer, etc.).
+- `docs/gnn/language/`: DSL specific syntax rules.
+- `docs/gnn/modules/`: Component behaviors (including structural documentation for all 25 modules).
+- `docs/gnn/operations/`: Internal pipeline processing guides, troubleshooting, and coherence checks.
+- `docs/gnn/reference/`: Raw variable mappings and type systems.
+- `docs/gnn/testing/`: Testing standards for the notation itself.
+- `docs/gnn/tutorials/`: End-user construction guides.
 
 ## Implementation Details
 

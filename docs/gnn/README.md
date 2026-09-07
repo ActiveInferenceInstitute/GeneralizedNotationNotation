@@ -5,7 +5,7 @@
 **Status**: Maintained
 **Pipeline Steps**: 25
 
-Complete navigation guide for all GNN (Generalized Notation Notation) documentation. For the machine-oriented tree manifest (directory counts and new-module index), see **[AGENTS.md](AGENTS.md)**. Parent doc hub: [doc/README.md](../README.md), [doc/INDEX.md](../INDEX.md). **Versioning policy** (GNN language vs doc bundle vs Python package): [doc/SPEC.md](../SPEC.md).
+Complete navigation guide for all GNN (Generalized Notation Notation) documentation. For the machine-oriented tree manifest (directory counts and new-module index), see **[AGENTS.md](AGENTS.md)**. Parent doc hub: [docs/README.md](../README.md), [docs/INDEX.md](../INDEX.md). **Versioning policy** (GNN language vs doc bundle vs Python package): [docs/SPEC.md](../SPEC.md).
 
 ## 🚀 Quick Start
 
@@ -266,4 +266,4 @@ All GNN documentation follows these principles:
 **Total Pipeline Steps**: 25 (0–24)
 **Last Updated**: 2026-09-02
 
-**Status**: Maintained (re-run `uv run --extra dev python doc/development/docs_audit.py` after link or tree changes)
+**Status**: Maintained (re-run `uv run --extra dev python docs/development/docs_audit.py` after link or tree changes)

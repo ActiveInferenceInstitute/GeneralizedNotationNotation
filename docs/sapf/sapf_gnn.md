@@ -1012,7 +1012,7 @@ SAPF-GNN integration enables developers to "hear" model inconsistencies:
 
 ```sapf
 ; Convert a basic POMDP model to audio representation
-"doc/gnn/examples/pymdp_pomdp_agent.md" load_gnn_file = pomdp_model
+"docs/gnn/examples/pymdp_pomdp_agent.md" load_gnn_file = pomdp_model
 
 ; Extract key components
 pomdp_model 'StateSpaceBlock get = states
@@ -1041,8 +1041,8 @@ play
 ```sapf
 ; Compare multiple agent models through differentiated audio
 [
-  "doc/gnn/examples/rxinfer_multiagent_gnn.md"
-  "doc/gnn/examples/pymdp_pomdp_agent.md"  
+  "docs/gnn/examples/rxinfer_multiagent_gnn.md"
+  "docs/gnn/examples/pymdp_pomdp_agent.md"  
 ] = model_files
 
 ; Generate comparative audio
@@ -1329,7 +1329,7 @@ problematic_model = debug_model
 
 ```sapf
 ; Convert a basic POMDP model to audio representation
-"doc/gnn/examples/pymdp_pomdp_agent.md" load_gnn_file = pomdp_model
+"docs/gnn/examples/pymdp_pomdp_agent.md" load_gnn_file = pomdp_model
 
 ; Extract key components
 pomdp_model 'StateSpaceBlock get = states
@@ -1358,8 +1358,8 @@ play
 ```sapf
 ; Compare multiple agent models through differentiated audio
 [
-  "doc/gnn/examples/rxinfer_multiagent_gnn.md"
-  "doc/gnn/examples/pymdp_pomdp_agent.md"  
+  "docs/gnn/examples/rxinfer_multiagent_gnn.md"
+  "docs/gnn/examples/pymdp_pomdp_agent.md"  
 ] = model_files
 
 ; Generate comparative audio

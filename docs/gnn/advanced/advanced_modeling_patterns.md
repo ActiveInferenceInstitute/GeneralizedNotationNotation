@@ -57,7 +57,7 @@ This guide covers advanced patterns for modeling complex cognitive and behaviora
 >
 > Copying a `Connections` block from this document straight into a `.md` model will not
 > parse. Translate each grouped arrow into individual `>` / `-` edges first, and see
-> [`doc/gnn/reference/gnn_syntax.md`](../reference/gnn_syntax.md) for the authoritative
+> [`docs/gnn/reference/gnn_syntax.md`](../reference/gnn_syntax.md) for the authoritative
 > grammar plus [`input/gnn_files/`](../../../input/gnn_files/) for models that do parse.
 > Everything else here — `StateSpaceBlock` dimensions, `InitialParameterization`, `Time`,
 > and the ontology annotations — is literal GNN.

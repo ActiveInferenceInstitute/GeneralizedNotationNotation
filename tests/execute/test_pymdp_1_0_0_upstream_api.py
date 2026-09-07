@@ -14,7 +14,7 @@ They lock the exact API surface that ``execute/pymdp/simulation`` and
 * ``Agent.update_empirical_prior(action, qs)`` closes the rollout loop
 
 See also:
-  * doc/pymdp/pymdp_1_0_0_alignment_matrix.md — upstream mapping
+  * docs/pymdp/pymdp_1_0_0_alignment_matrix.md — upstream mapping
   * src/execute/pymdp/simulation.py — the code under test
 """
 

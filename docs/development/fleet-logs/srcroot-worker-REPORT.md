@@ -70,8 +70,8 @@ help). Re-run the gate command once `src/gnn/parsers/common.py` parses.
 ## Follow-ups needed (other workers own those)
 
 1. `src/gnn/parsers/common.py` — restore parseable state so the repo mypy gate runs again.
-2. `tests/tests/` (created 10:09 today, before my session) has `.py` files but no `AGENTS.md` — `doc/development/docs_audit.py --strict` fails on it (`src/ tests with .py but no AGENTS.md: tests/tests`). Tests-tree owner should add `AGENTS.md` (+`README.md` per audit pairing) or relocate the contract tests.
-3. `doc/modules/main.md` (doc worker) — optionally document the new `select_pipeline_steps`/`StepSelection`/`parse_step_list_strict`/`step_number_from_script_name` API.
+2. `tests/tests/` (created 10:09 today, before my session) has `.py` files but no `AGENTS.md` — `docs/development/docs_audit.py --strict` fails on it (`src/ tests with .py but no AGENTS.md: tests/tests`). Tests-tree owner should add `AGENTS.md` (+`README.md` per audit pairing) or relocate the contract tests.
+3. `docs/modules/main.md` (doc worker) — optionally document the new `select_pipeline_steps`/`StepSelection`/`parse_step_list_strict`/`step_number_from_script_name` API.
 4. `manuscript/` tooling (manuscript worker) — `scripts/check_manuscript_tokens.py` could use `token_checksum` to detect token drift cheaply; `manuscript_fig_repo_metrics.py`/`manuscript_fig_triple_play.py` could use `load_variables` for validated JSON reads.
 
 ## Follow-up ideas

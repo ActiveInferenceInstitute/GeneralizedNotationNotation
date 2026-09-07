@@ -3,7 +3,7 @@
 
 Both FastAPI surfaces — ``api.app`` (run/runs) and ``api.server``
 (process/jobs/tools) — delegate real execution to the same orchestrator,
-``src/main.py``, and read the same canonical summary
+``src/gnn/main.py``, and read the same canonical summary
 (``<output_dir>/00_pipeline_summary/pipeline_execution_summary.json``).
 
 This module is the single home for that shared contract so the two surfaces
@@ -56,7 +56,7 @@ def build_pipeline_command(
     strict: bool = False,
     repo_root: Optional[Path] = None,
 ) -> List[str]:
-    """Return the argv for one real ``src/main.py`` orchestrator invocation.
+    """Return the argv for one real ``src/gnn/main.py`` orchestrator invocation.
 
     Pure function: no filesystem access and no side effects. ``only_steps``
     and ``skip_steps`` are emitted sorted and comma-joined so identical

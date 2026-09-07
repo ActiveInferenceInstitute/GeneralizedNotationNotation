@@ -680,7 +680,7 @@ any signature change.
 ### Related Documentation
 - [Pipeline Overview](../../../README.md)
 - [Architecture Guide](../../../ARCHITECTURE.md)
-- [Ollama Integration Guide](../../../doc/llm/)
+- [Ollama Integration Guide](../../../docs/llm/)
 - [LLM Configuration](../../../AGENTS.md)
 
 ### External Resources

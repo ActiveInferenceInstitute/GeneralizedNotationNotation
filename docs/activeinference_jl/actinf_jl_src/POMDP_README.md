@@ -94,7 +94,7 @@ const STEP_COST = -0.1                     # Cost per step
 
 1. Navigate to the directory:
    ```bash
-   cd doc/activeinference_jl/actinf_jl_src
+   cd docs/activeinference_jl/actinf_jl_src
    ```
 
 2. Run the main simulation:

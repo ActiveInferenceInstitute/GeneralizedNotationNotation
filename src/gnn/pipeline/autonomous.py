@@ -21,7 +21,7 @@ from gnn.pipeline.pipeline_container_plan import PINNED_PIPELINE_IMAGE
 
 VALIDATOR_COMMANDS = [
     "uv run --frozen --extra dev python scripts/check_capability_contracts.py --strict",
-    "uv run --frozen --extra dev python doc/development/docs_audit.py --strict --check-anchors --no-write",
+    "uv run --frozen --extra dev python docs/development/docs_audit.py --strict --check-anchors --no-write",
     "PYTHONPATH=src uv run --frozen python -m pytest src/tests/pipeline/test_autonomous_contract.py -q",
 ]
 

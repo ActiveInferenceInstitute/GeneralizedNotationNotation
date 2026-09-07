@@ -129,7 +129,7 @@ python verify_paper_accuracy.py
 ## 📁 File Structure
 
 ```
-doc/cognitive_phenomena/meta-awareness/
+docs/cognitive_phenomena/meta-awareness/
 ├── README.md                                    # Complete documentation
 ├── sandved_smith_2021.py                       # Main implementation  
 ├── utils.py                                     # Mathematical utilities

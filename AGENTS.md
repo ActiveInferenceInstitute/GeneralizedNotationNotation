@@ -12,8 +12,8 @@ New to this repo as an agent? In order:
 
 1. **What this is**: [SPEC.md](SPEC.md) + this file's Overview (25-step GNN pipeline, thin orchestrators).
 2. **Exemplar spec files**: [input/gnn_files/INDEX.md](input/gnn_files/INDEX.md) — every runnable example with a selection table.
-3. **Version map**: [doc/VERSION_MAP.md](doc/VERSION_MAP.md) — release history and version-sensitive surfaces.
-4. **How to verify**: verification commands live in [TO-DO.md](TO-DO.md); doc audits: `uv run python doc/development/docs_audit.py --strict --check-anchors --no-write`.
+3. **Version map**: [docs/VERSION_MAP.md](docs/VERSION_MAP.md) — release history and version-sensitive surfaces.
+4. **How to verify**: verification commands live in [TO-DO.md](TO-DO.md); doc audits: `uv run python docs/development/docs_audit.py --strict --check-anchors --no-write`.
 ---
 
 ## Module Registry
@@ -60,7 +60,7 @@ New to this repo as an agent? In order:
 - **[cli/](src/gnn/cli/AGENTS.md)** - `gnn` CLI entry point
 - **[lsp/](src/gnn/lsp/AGENTS.md)** - Language Server Protocol support
 - **[sapf/](src/gnn/sapf/AGENTS.md)** - SAPF public entry point (implementation in `src/gnn/audio/sapf/`)
-- **[doc/](src/gnn/doc/AGENTS.md)** - In-repo technical documentation subtree
+- **[docs/](src/gnn/doc/AGENTS.md)** - In-repo technical documentation subtree
 
 ### v3.0.0 Long-Running Orchestration Modules (`src/gnn/pipeline/`)
 
@@ -75,8 +75,8 @@ Safe-by-design contracts and additive live wiring introduced in v3.0.0 ("Long-Ru
 
 ### Documentation Agents
 
-- **[gnn/](doc/gnn/AGENTS.md)** - GNN Documentation System
-- **[deployment/](doc/deployment/AGENTS.md)** - Deployment Documentation
+- **[gnn/](docs/gnn/AGENTS.md)** - GNN Documentation System
+- **[deployment/](docs/deployment/AGENTS.md)** - Deployment Documentation
 
 ---
 
@@ -241,7 +241,7 @@ graph TD
 ### Current Validation (September 2026)
 
 - **uv 0.12.0 compatibility**: Verified. `uv lock --check` passes and `uv sync --frozen` succeeds. `uv run --extra dev` executes all tests. The `uv` toolchain constraint `uv>=0.7.8` in Dockerfile is the minimum bootstrap floor.
-- **Docs audit**: `uv run --extra dev python doc/development/docs_audit.py --strict --check-anchors --no-write` reports no broken links, anchor gaps, or AGENTS/README coverage gaps.
+- **Docs audit**: `uv run --extra dev python docs/development/docs_audit.py --strict --check-anchors --no-write` reports no broken links, anchor gaps, or AGENTS/README coverage gaps.
 - **GNN doc patterns**: `uv run --extra dev python scripts/check_gnn_doc_patterns.py --strict` reports no banned GNN documentation patterns.
 - **Repository terminology**: `uv run --extra dev python scripts/check_repo_terminology.py --strict` and `scripts/check_maintained_doc_terms.py --strict` report no violations.
 - **Mypy**: `uv run --extra dev mypy src --config-file pyproject.toml` passes (0 errors).

@@ -1,6 +1,6 @@
 """Shared, typed module loader for tests that exercise standalone scripts.
 
-Several root-level test files load ``scripts/*.py`` (and ``doc/development/*.py``)
+Several root-level test files load ``scripts/*.py`` (and ``docs/development/*.py``)
 helpers by file path because those tools are standalone CLIs, not importable
 packages. This helper centralizes the ``importlib`` boilerplate, including the
 optional sibling-directory ``sys.path`` injection some scripts need

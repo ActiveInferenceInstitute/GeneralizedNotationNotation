@@ -16,9 +16,9 @@ The GNN (Generalized Notation Notation) project now includes complete integratio
 
 ### 1. Documentation
 
-- ✅ `doc/sympy/gnn_sympy.md` - Comprehensive integration strategy and technical analysis
-- ✅ `doc/sympy/sympy_integration_demo.md` - Usage demonstration and examples
-- ✅ `doc/sympy/implementation_summary.md` - This summary document
+- ✅ `docs/sympy/gnn_sympy.md` - Comprehensive integration strategy and technical analysis
+- ✅ `docs/sympy/sympy_integration_demo.md` - Usage demonstration and examples
+- ✅ `docs/sympy/implementation_summary.md` - This summary document
 
 ### 2. Core Implementation Files
 

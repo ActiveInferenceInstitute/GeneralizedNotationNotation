@@ -51,10 +51,10 @@ A={(0.9,0.05,0.05), (0.05,0.9,0.05), (0.05,0.05,0.9)}
 
 | Directory | Purpose |
 |-----------|---------|
-| `doc/gnn/` | GNN language spec |
-| `doc/pymdp/` | PyMDP integration |
-| `doc/rxinfer/` | RxInfer.jl integration |
-| `doc/cognitive_phenomena/` | Example models |
+| `docs/gnn/` | GNN language spec |
+| `docs/pymdp/` | PyMDP integration |
+| `docs/rxinfer/` | RxInfer.jl integration |
+| `docs/cognitive_phenomena/` | Example models |
 
 ---
 
@@ -70,4 +70,4 @@ A={(0.9,0.05,0.05), (0.05,0.9,0.05), (0.05,0.05,0.9)}
 
 ---
 
-*For comprehensive documentation, see [doc/INDEX.md](./INDEX.md)*
+*For comprehensive documentation, see [docs/INDEX.md](./INDEX.md)*

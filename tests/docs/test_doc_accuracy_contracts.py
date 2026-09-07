@@ -6,7 +6,7 @@ review found the corresponding drift:
 1. Orchestrator line counts — 14 of 25 module docs carried stale
    ``**Orchestrator**: `src/NN_x.py` (NN lines)`` figures because nothing
    checked them. This test parses every such citation under
-   ``doc/gnn/modules/`` and compares it to the real file length, so a
+   ``docs/gnn/modules/`` and compares it to the real file length, so a
    source edit that changes an orchestrator's length fails loudly here
    until the doc is updated (or the count is deliberately dropped).
 
@@ -35,8 +35,8 @@ _PACKAGE_VERSION_POINTER = "[pyproject.toml](../../../pyproject.toml)"
 
 def test_module_doc_orchestrator_line_counts_match_source() -> None:
     """Every documented orchestrator line count equals the real file length."""
-    module_docs = sorted((PROJECT_ROOT / "doc" / "gnn" / "modules").glob("*.md"))
-    assert module_docs, "doc/gnn/modules is empty — layout changed?"
+    module_docs = sorted((PROJECT_ROOT / "docs" / "gnn" / "modules").glob("*.md"))
+    assert module_docs, "docs/gnn/modules is empty — layout changed?"
 
     citations = 0
     mismatches: list[str] = []
@@ -65,7 +65,7 @@ def test_module_doc_orchestrator_line_counts_match_source() -> None:
 
 def test_module_docs_point_to_package_version_source() -> None:
     """Module docs link to package metadata instead of copying its version."""
-    module_docs = sorted((PROJECT_ROOT / "doc" / "gnn" / "modules").glob("*.md"))
+    module_docs = sorted((PROJECT_ROOT / "docs" / "gnn" / "modules").glob("*.md"))
     copied: list[str] = []
     pointers = 0
     for doc in module_docs:

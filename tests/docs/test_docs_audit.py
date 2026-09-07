@@ -1,4 +1,4 @@
-"""Tests for doc/development/docs_audit.py helpers."""
+"""Tests for docs/development/docs_audit.py helpers."""
 
 from __future__ import annotations
 
@@ -14,7 +14,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 
 def _load_docs_audit() -> Any:
     return load_module_from_path(
-        "docs_audit", REPO_ROOT / "doc" / "development" / "docs_audit.py"
+        "docs_audit", REPO_ROOT / "docs" / "development" / "docs_audit.py"
     )
 
 
@@ -34,7 +34,7 @@ def test_format_strict_issue_detail_lists_link_issues(
     format_strict_issue_detail: Any,
 ) -> None:
     detail = format_strict_issue_detail(
-        link_issues=[(Path("doc/x.md"), 10, "missing.md", "missing: doc/missing.md")],
+        link_issues=[(Path("docs/x.md"), 10, "missing.md", "missing: docs/missing.md")],
         anchor_issues=[],
         anchor_checked=False,
         spec_issues=[],
@@ -46,7 +46,7 @@ def test_format_strict_issue_detail_lists_link_issues(
         doc_agents_structure=[],
     )
     assert "Broken relative links" in detail
-    assert "doc/x.md:10" in detail
+    assert "docs/x.md:10" in detail
     assert "`missing.md`" in detail
 
 
@@ -57,10 +57,10 @@ def test_format_strict_issue_detail_anchor_section_when_checked(
         link_issues=[],
         anchor_issues=[
             (
-                Path("doc/a.md"),
+                Path("docs/a.md"),
                 2,
                 "b.md#frag",
-                "anchor #frag not found (headings in `doc/b.md`)",
+                "anchor #frag not found (headings in `docs/b.md`)",
             )
         ],
         anchor_checked=True,
@@ -73,7 +73,7 @@ def test_format_strict_issue_detail_anchor_section_when_checked(
         doc_agents_structure=[],
     )
     assert "Bad markdown anchors" in detail
-    assert "doc/a.md:2" in detail
+    assert "docs/a.md:2" in detail
 
 
 def test_maintained_doc_terms_flags_stale_phrase(tmp_path: Path) -> None:
@@ -93,7 +93,7 @@ def test_maintained_doc_terms_flags_stale_phrase(tmp_path: Path) -> None:
 def test_maintained_doc_terms_skips_generated_and_archive_paths(tmp_path: Path) -> None:
     mod = _load_doc_terms()
     generated = tmp_path / "src" / "output"
-    archived = tmp_path / "doc" / "other"
+    archived = tmp_path / "docs" / "other"
     generated.mkdir(parents=True)
     archived.mkdir(parents=True)
     (generated / "README.md").write_text("FallbackAgent\n", encoding="utf-8")

@@ -23,7 +23,7 @@ This subsystem is part of the broader GNN (Generalized Notation Notation) docume
 
 - **README.md**: [Directory overview](README.md)
 - **GNN Documentation**: [gnn/AGENTS.md](../gnn/AGENTS.md)
-- **Main Documentation**: [doc/README.md](../README.md)
+- **Main Documentation**: [docs/README.md](../README.md)
 - **Pipeline Reference**: [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)
 
 ## Documentation Structure

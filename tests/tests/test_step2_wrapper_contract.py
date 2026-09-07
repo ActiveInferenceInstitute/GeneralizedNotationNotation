@@ -11,7 +11,7 @@ pytestmark = pytest.mark.fast
 
 
 def test_run_tests_signature_matches_documented_contract() -> None:
-    """2_tests.py and doc/gnn/modules/02_tests.md depend on this signature.
+    """2_tests.py and docs/gnn/modules/02_tests.md depend on this signature.
 
     Import from ``tests.runner`` (the canonical source): under pytest the
     conftest registers a minimal ``sys.modules['tests']`` alias, so the

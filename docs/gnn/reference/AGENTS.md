@@ -22,7 +22,7 @@
 
 These files expand the specification with worked examples, schemas, and
 validation commands; they do not override it. The normative source is
-[`doc/gnn/gnn_syntax.md`](../gnn_syntax.md) — on any conflict it wins and the
+[`docs/gnn/gnn_syntax.md`](../gnn_syntax.md) — on any conflict it wins and the
 file here is the bug.
 
 ## Implementation Details

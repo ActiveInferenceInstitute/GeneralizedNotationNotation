@@ -51,9 +51,9 @@ tests/api/test_comprehensive_api.py -k website   → 5 passed
 tests/test_fast_suite.py -k website              → 1 passed
 ```
 
-## doc/ or manuscript/ follow-ups (other workers own those)
+## docs/ or manuscript/ follow-ups (other workers own those)
 
-- `doc/gnn/modules/20_website.md` (if it exists in maintained docs): may want the manifest-key and resilience notes; I did not touch `doc/`.
+- `docs/gnn/modules/20_website.md` (if it exists in maintained docs): may want the manifest-key and resilience notes; I did not touch `docs/`.
 - `src/gnn/mcp/audit_report.json` / `tests/mcp/mcp_audit_report.json`: unchanged and still accurate (no tool added/removed).
 
 ## Follow-up ideas (out of scope today)

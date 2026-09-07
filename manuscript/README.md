@@ -32,7 +32,7 @@ A standardized text-based language and processing pipeline for Active Inference 
 | `src/` | Source directory to inspect before turning prose into claims. |
 | `input/` | Source directory to inspect before turning prose into claims. |
 | `scripts/` | Source directory to inspect before turning prose into claims. |
-| `doc/` | Source directory to inspect before turning prose into claims. |
+| `docs/` | Source directory to inspect before turning prose into claims. |
 | `output/` | Source directory to inspect before turning prose into claims. |
 
 ## Verification

@@ -45,7 +45,7 @@ roundtrip tests skip locally and execute wherever the `ml-ai` extra is synced.
 
 - `src/gnn/pipeline/pipeline_validation.py` expects `ml_integration_summary.json` for step 14, but the module (always has) writes `ml_integration_results.json` — pre-existing cross-module discrepancy for the pipeline/worker to reconcile; untouched by me.
 - `src/gnn/mcp/audit_report.json` + `validate-mcp-manifest`: a future 5th tool (e.g. `predict_ml_label`) would expose the new inference API; needs that file, which is outside my scope.
-- If `doc/` or `manuscript/` enumerates module files, they may want `frameworks.py`/`inference.py` mentioned (module-local docs already updated).
+- If `docs/` or `manuscript/` enumerates module files, they may want `frameworks.py`/`inference.py` mentioned (module-local docs already updated).
 
 ## Follow-up ideas
 

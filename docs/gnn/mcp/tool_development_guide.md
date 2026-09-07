@@ -128,7 +128,7 @@ Every tool must be callable through `execute_tool` **with no arguments**, so kee
 - [ ] The `logger.info` count matches the actual number of `server.register_tool` calls
 - [ ] Functions call **real module code** and return structured results
 - [ ] `AGENTS.md` for the module lists the new tools
-- [ ] The module's `doc/gnn/modules/NN_<module>.md` has an MCP Tools section
+- [ ] The module's `docs/gnn/modules/NN_<module>.md` has an MCP Tools section
 
 ## Running the Audit
 
@@ -168,12 +168,12 @@ If you are adding a **brand-new** pipeline module (e.g., step 25+):
    any subdirectory containing an `mcp.py` file and loads it automatically
    (there is no static module list or `mcp_instance.py` to edit)
 3. Add the module name to `EXPECTED_MODULES` in `tests/mcp/test_mcp_audit.py`
-4. Update `doc/gnn/mcp/tool_reference.md` with the new tools
-5. Create `doc/gnn/modules/NN_<module>.md` with an MCP Tools section
+4. Update `docs/gnn/mcp/tool_reference.md` with the new tools
+5. Create `docs/gnn/modules/NN_<module>.md` with an MCP Tools section
 
 ## See Also
 
 - [Tool Reference](tool_reference.md) — existing tools
 - [modules/21_mcp.md](../modules/21_mcp.md) — pipeline step documentation
-- [doc/mcp/fastmcp.md](../../../doc/mcp/fastmcp.md) — FastMCP library internals
+- [docs/mcp/fastmcp.md](../../../docs/mcp/fastmcp.md) — FastMCP library internals
 - [src/gnn/mcp/](../../../src/gnn/mcp/) — server implementation source

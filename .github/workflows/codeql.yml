@@ -5,12 +5,12 @@ on:
     branches: [main]
     paths-ignore:
       - "**/*.md"
-      - "doc/**"
+      - "docs/**"
   pull_request:
     branches: [main]
     paths-ignore:
       - "**/*.md"
-      - "doc/**"
+      - "docs/**"
   schedule:
     - cron: "28 4 * * 1"
   workflow_dispatch:

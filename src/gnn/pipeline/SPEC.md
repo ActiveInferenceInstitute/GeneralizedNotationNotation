@@ -29,7 +29,7 @@ Pipeline orchestration, configuration, and execution utilities.
 - `container_plan.py` - `generate_container_plan` (hardened) + static `security_review` +
   `RollbackDescriptor` + deterministic `compute_plan_hash` (no container/cluster is executed)
 - Acceptance: `scripts/run_v3_orchestration_acceptance.py --strict`; reference:
-  `doc/pipeline/v3_orchestration.md`
+  `docs/pipeline/v3_orchestration.md`
 
 ## Key Exports
 ```python

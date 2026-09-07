@@ -75,7 +75,6 @@ from gnn.utils.test_utils import (
     with_resource_limits,
 )
 
-from .conftest import PYTEST_MARKERS
 from .runner import run_tests
 from .test_runner_modular import create_test_runner
 
@@ -89,7 +88,6 @@ __all__: list[Any] = [
     "TEST_CATEGORIES",
     "TEST_STAGES",
     "COVERAGE_TARGETS",
-    "PYTEST_MARKERS",
     # Test runner functions
     "run_tests",
     "create_test_runner",

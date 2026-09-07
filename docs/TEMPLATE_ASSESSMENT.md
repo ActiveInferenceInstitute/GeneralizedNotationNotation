@@ -257,7 +257,7 @@ Follow-ups from the assessment period:
 2. **Align error handling and logging** with utilities already used in thin orchestrators
 3. **Standardize optional-resource behavior** per module SPEC
 
-For **current** step responsibilities and scripts, use [doc/PIPELINE_SCRIPTS.md](PIPELINE_SCRIPTS.md) and [src/gnn/STEP_INDEX.md](../src/gnn/STEP_INDEX.md) rather than the migration phases above as a status dashboard.
+For **current** step responsibilities and scripts, use [docs/PIPELINE_SCRIPTS.md](PIPELINE_SCRIPTS.md) and [src/gnn/STEP_INDEX.md](../src/gnn/STEP_INDEX.md) rather than the migration phases above as a status dashboard.
 
 ## Conclusion
 

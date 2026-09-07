@@ -3,7 +3,7 @@
 > **📋 Document Metadata**  
 > **Type**: Support Guide | **Audience**: All Users | **Complexity**: Beginner-Friendly  
 > **Last Updated**: 2026-09-02 | **Status**: Maintained  
-> **Cross-References**: [README](README.md) | [Troubleshooting](doc/troubleshooting/README.md) | [Contributing](CONTRIBUTING.md)
+> **Cross-References**: [README](README.md) | [Troubleshooting](docs/troubleshooting/README.md) | [Contributing](CONTRIBUTING.md)
 
 If you need help with GeneralizedNotationNotation (GNN), have questions, or want to discuss the project, here are several ways to get support:
 
@@ -12,12 +12,12 @@ If you need help with GeneralizedNotationNotation (GNN), have questions, or want
 Before seeking direct support, please check the extensive documentation provided with the project:
 
 - **README.md**: The [main README file](./README.md) provides an overview of the project, setup instructions, and how to run the processing pipeline.
-- **`doc/` Directory**: This directory contains detailed information on various aspects of GNN:
-  - [`doc/gnn/about_gnn.md`](./doc/gnn/about_gnn.md): General information about GNN.
-  - [`doc/gnn/gnn_overview.md`](./doc/gnn/gnn_overview.md): A high-level overview.
-  - [`doc/gnn/reference/gnn_syntax.md`](./doc/gnn/reference/gnn_syntax.md): Detailed specification of GNN syntax.
-  - [`doc/gnn/reference/gnn_file_structure_doc.md`](./doc/gnn/reference/gnn_file_structure_doc.md): Description of GNN file organization.
-  - [`doc/gnn/tutorials/gnn_examples_doc.md`](./doc/gnn/tutorials/gnn_examples_doc.md): Examples and use cases.
+- **`docs/` Directory**: This directory contains detailed information on various aspects of GNN:
+  - [`docs/gnn/about_gnn.md`](./docs/gnn/about_gnn.md): General information about GNN.
+  - [`docs/gnn/gnn_overview.md`](./docs/gnn/gnn_overview.md): A high-level overview.
+  - [`docs/gnn/reference/gnn_syntax.md`](./docs/gnn/reference/gnn_syntax.md): Detailed specification of GNN syntax.
+  - [`docs/gnn/reference/gnn_file_structure_doc.md`](./docs/gnn/reference/gnn_file_structure_doc.md): Description of GNN file organization.
+  - [`docs/gnn/tutorials/gnn_examples_doc.md`](./docs/gnn/tutorials/gnn_examples_doc.md): Examples and use cases.
   - And many other useful documents covering implementation, tools, and the GNN paper.
 - **Example GNN Files**: Explore the exemplar corpus in `input/gnn_files/` (start from [`input/gnn_files/INDEX.md`](./input/gnn_files/INDEX.md), which maps task folders to model kinds); `src/gnn/gnn_examples/` holds the single example packaged with the `gnn` module.
 - **Pipeline Documentation**: Check [`src/gnn/README.md`](./src/gnn/README.md) for detailed pipeline information.
@@ -113,34 +113,34 @@ Currently, there is no official commercial support offered for GeneralizedNotati
 
 ### 🧠 Active Inference Concepts
 
-- [About GNN](./doc/gnn/about_gnn.md) - Introduction to GNN and Active Inference
-- [GNN Overview](./doc/gnn/gnn_overview.md) - High-level concepts
-- [GNN Paper](./doc/gnn/gnn_paper.md) - Academic paper details
+- [About GNN](./docs/gnn/about_gnn.md) - Introduction to GNN and Active Inference
+- [GNN Overview](./docs/gnn/gnn_overview.md) - High-level concepts
+- [GNN Paper](./docs/gnn/gnn_paper.md) - Academic paper details
 
 ### 🛠️ Technical Implementation
 
-- [GNN Syntax](./doc/gnn/reference/gnn_syntax.md) - Detailed syntax specification
-- [File Structure](./doc/gnn/reference/gnn_file_structure_doc.md) - GNN file organization
-- [Implementation Guide](./doc/gnn/integration/gnn_implementation.md) - Implementation details
+- [GNN Syntax](./docs/gnn/reference/gnn_syntax.md) - Detailed syntax specification
+- [File Structure](./docs/gnn/reference/gnn_file_structure_doc.md) - GNN file organization
+- [Implementation Guide](./docs/gnn/integration/gnn_implementation.md) - Implementation details
 
 ### 🎯 Framework Integration
 
-- [PyMDP Integration](./doc/pymdp/) - PyMDP framework integration
-- [RxInfer.jl Integration](./doc/rxinfer/) - RxInfer.jl framework integration
-- [ActiveInference.jl Integration](./doc/activeinference_jl/) - ActiveInference.jl framework integration
-- [MCP Integration](./doc/mcp/) - Model Context Protocol
+- [PyMDP Integration](./docs/pymdp/) - PyMDP framework integration
+- [RxInfer.jl Integration](./docs/rxinfer/) - RxInfer.jl framework integration
+- [ActiveInference.jl Integration](./docs/activeinference_jl/) - ActiveInference.jl framework integration
+- [MCP Integration](./docs/mcp/) - Model Context Protocol
 
 ### 🔧 Pipeline and Tools
 
 - [Pipeline Architecture](./ARCHITECTURE.md) - 25-step pipeline overview
-- [API Reference](./doc/api/README.md) - Complete API documentation
-- [Testing Guide](./doc/testing/README.md) - Testing strategies
+- [API Reference](./docs/api/README.md) - Complete API documentation
+- [Testing Guide](./docs/testing/README.md) - Testing strategies
 
 ### 🚨 Troubleshooting
 
-- [Troubleshooting Guide](./doc/troubleshooting/) - Common issues and solutions
-- [Security Guide](./doc/security/README.md) - Security considerations
-- [Deployment Guide](./doc/deployment/README.md) - Production deployment
+- [Troubleshooting Guide](./docs/troubleshooting/) - Common issues and solutions
+- [Security Guide](./docs/security/README.md) - Security considerations
+- [Deployment Guide](./docs/deployment/README.md) - Production deployment
 
 ---
 

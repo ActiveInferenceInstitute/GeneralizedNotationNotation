@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 MAINTAINED_ROOTS = [
     ROOT / ".agent_rules",
     ROOT / ".github",
-    ROOT / "doc",
+    ROOT / "docs",
     ROOT / "input",
     ROOT / "scripts",
     ROOT / "src",
@@ -25,6 +25,7 @@ MAINTAINED_ROOTS = [
 ]
 
 SKIP_PARTS = {
+    "fleet-logs",
     ".git",
     ".mypy_cache",
     ".pytest_cache",

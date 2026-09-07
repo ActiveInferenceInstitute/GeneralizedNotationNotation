@@ -7,7 +7,7 @@
 - **Installable package** version is **3.2.0** from the repo root [pyproject.toml](../../pyproject.toml).
 
 ## Design Requirements
-The `doc/gnn` module does not contain execution logic mapping directly to the runtime graph. Instead, it serves as the **Static Source of Truth** for format specifications.
+The `docs/gnn` module does not contain execution logic mapping directly to the runtime graph. Instead, it serves as the **Static Source of Truth** for format specifications.
 
 ## Components
 It governs the architectural parsing constraints across three main modalities:

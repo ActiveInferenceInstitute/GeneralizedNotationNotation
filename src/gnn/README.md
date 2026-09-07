@@ -216,9 +216,9 @@ src/gnn/
 ├── main.py                        # Pipeline driver: python src/gnn/main.py (run/reproduce)
 ├── processing/                    # Discovery/parse/orchestration engine (processor, core_processor, multi_format_processor, discovery)
 ├── extract/                       # Headless extraction + bridge-pinned pomdp_extractor; python -m gnn.extract FILE [--strict|--no-strict] [--compact]
-├── schema.py                      # Import-light section/state-space/connection parsing (bridge-pinned)
-├── types.py                       # Canonical domain dataclasses (ParsedGNN, GNNVariable, ValidationResult, ...)
-├── manuscript_variables.py        # Deterministic manuscript {{TOKEN}} map producer
+├── schema/                        # Import-light section/state-space/connection parsing (bridge-pinned)
+├── types/                         # Canonical domain dataclasses (ParsedGNN, GNNVariable, ValidationResult, ...)
+├── manuscript/                    # Deterministic manuscript {{TOKEN}} map producer
 ├── 0_template.py ... 24_intelligent_analysis.py   # 25 thin step drivers (see STEP_INDEX.md)
 ├── README.md / SPEC.md / AGENTS.md / SKILL.md / STEP_INDEX.md
 │
@@ -251,7 +251,7 @@ src/gnn/
 ├── pipeline/                      # Step orchestration, config, hashing, preflight
 ├── api/                           # FastAPI service (gnn serve)
 ├── cli/                           # CLI surface (gnn = gnn.cli:main)
-├── analysis/ audio/ doc/ documentation/ export/ formal_specs/ gnn_examples/ grammars/
+├── analysis/ audio/ docs/ documentation/ export/ formal_specs/ gnn_examples/ grammars/
 │   gui/ integration/ intelligent_analysis/ llm/ lsp/ ml_integration/ model_registry/
 │   ontology/ research/ sapf/ schemas/ security/ setup/ template/ testing/
 │   type_checker/ type_systems/ utils/ visualization/ website/   # Remaining step/support packages
@@ -592,7 +592,7 @@ This implementation follows the GNN specification v1.0+ and is part of the Gener
 - Project overview: ../../README.md
 - Comprehensive docs: ../../DOCS.md
 - Architecture guide: ../../ARCHITECTURE.md
-- Pipeline details: ../../doc/pipeline/README.md
+- Pipeline details: ../../docs/pipeline/README.md
 
 ## Documentation
 - **[README](README.md)**: Module Overview

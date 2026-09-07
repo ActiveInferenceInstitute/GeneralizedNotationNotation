@@ -66,7 +66,7 @@ Baseline comparison: 32 tests before → 79 after (64 in `tests/integration/` + 
 
 ## Follow-ups needed (other workers own these)
 
-1. `doc/gnn/modules/17_integration.md` — public-facing step doc still documents only `process_integration`; consider adding the pure-API section (same content as README's "Pure analysis API").
+1. `docs/gnn/modules/17_integration.md` — public-facing step doc still documents only `process_integration`; consider adding the pure-API section (same content as README's "Pure analysis API").
 2. `tests/tests/` — missing AGENTS.md (pre-existing docs-audit strict failure; blocks the repo-wide strict gate).
 3. `manuscript/` token audit — no integration-module strings changed there; no action required this round.
 

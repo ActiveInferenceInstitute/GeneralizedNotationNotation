@@ -20,7 +20,7 @@ Graph rendering, matrix visualization, and diagram generation for Active Inferen
 ## Quick Navigation
 
 - **GNN Documentation**: [gnn/AGENTS.md](../gnn/AGENTS.md)
-- **Main Documentation**: [doc/README.md](../README.md)
+- **Main Documentation**: [docs/README.md](../README.md)
 - **Pipeline Reference**: [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)
 - **Advanced Visualization**: [advanced_visualization/AGENTS.md](../advanced_visualization/AGENTS.md)
 

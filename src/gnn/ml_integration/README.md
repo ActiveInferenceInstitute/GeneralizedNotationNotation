@@ -165,7 +165,7 @@ uv run --extra dev python -m pytest tests/ml_integration/ --cov=src/gnn/ml_integ
 ## References
 
 - Project overview: ../../../README.md
-- Pipeline details: ../../../doc/pipeline/README.md
+- Pipeline details: ../../../docs/pipeline/README.md
 
 ---
 ## Documentation

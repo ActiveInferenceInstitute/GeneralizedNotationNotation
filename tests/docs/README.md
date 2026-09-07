@@ -11,5 +11,5 @@ documentation artifacts.
 - `test_check_external_links.py` — regression tests for `scripts/check_external_links.py` URL-capture helpers.
 - `test_doc_accuracy_contracts.py` — doc-accuracy contracts (orchestrator line counts, stale-citation detection).
 - `test_doc_contracts.py` — regression tests for source-backed documentation contracts.
-- `test_docs_audit.py` — tests for the `doc/development/docs_audit.py` helpers.
+- `test_docs_audit.py` — tests for the `docs/development/docs_audit.py` helpers.
 - `test_skill_contracts.py` — skill-documentation contract checks.

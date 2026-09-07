@@ -48,7 +48,7 @@ def _combined_suite_passed_evidence() -> str:
     falling back to the review doc where the measured claim lives) so a re-run
     of the suite with a new, larger count still satisfies the contract.
     """
-    for doc in ("TO-DO.md", "doc/development/agents_readme_triple_review.md"):
+    for doc in ("TO-DO.md", "docs/development/agents_readme_triple_review.md"):
         try:
             match = _COMBINED_SUITE_RE.search(_read(doc))
         except OSError:
@@ -74,8 +74,8 @@ def run_audit() -> List[str]:
         "DOCS.md",
         "ARCHITECTURE.md",
         ".agent_rules/README.md",
-        "doc/gnn/README.md",
-        "doc/gnn/modules/02_tests.md",
+        "docs/gnn/README.md",
+        "docs/gnn/modules/02_tests.md",
         "src/gnn/AGENTS.md",
         "tests/TEST_SUITE_SUMMARY.md",
     ):
@@ -84,7 +84,7 @@ def run_audit() -> List[str]:
             if pattern in text:
                 failures.append(f"{doc}: stale measured-doc pattern remains: {pattern}")
 
-    improvement_text = _read("doc/gnn/operations/improvement_analysis.md")
+    improvement_text = _read("docs/gnn/operations/improvement_analysis.md")
     for pattern in (
         "100% success rate",
         "Execution time: ~2 minutes",
@@ -95,7 +95,7 @@ def run_audit() -> List[str]:
     ):
         if pattern in improvement_text:
             failures.append(
-                "doc/gnn/operations/improvement_analysis.md: "
+                "docs/gnn/operations/improvement_analysis.md: "
                 f"stale live-status wording remains: {pattern}"
             )
 
@@ -106,7 +106,9 @@ def run_audit() -> List[str]:
                 f"src/gnn/cli/__init__.py: missing CLI command contract {command}"
             )
     if not _exists("src/gnn/cli/templates.py"):
-        failures.append("src/gnn/cli/templates.py: template library implementation missing")
+        failures.append(
+            "src/gnn/cli/templates.py: template library implementation missing"
+        )
     else:
         templates_text = _read("src/gnn/cli/templates.py")
         for required in (
@@ -121,7 +123,9 @@ def run_audit() -> List[str]:
                     f"src/gnn/cli/templates.py: missing package-data/template safety guard {required}"
                 )
     if not _exists("src/gnn/cli/template_index.json"):
-        failures.append("src/gnn/cli/template_index.json: external template index missing")
+        failures.append(
+            "src/gnn/cli/template_index.json: external template index missing"
+        )
     elif "pomdp-gridworld-3x3" not in _read("src/gnn/cli/template_index.json"):
         failures.append("src/gnn/cli/template_index.json: gridworld template missing")
 

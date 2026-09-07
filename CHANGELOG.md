@@ -65,16 +65,16 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   only when source, family framework/profile, acceptance policy and output
   artifact bytes still match, interrupted RUNNING units resume, and container
   plan review normalizes root identities and sensitive mounts. Rules and
-  boundaries: [doc/development/durable-runs.md](doc/development/durable-runs.md).
-- **Documentation accuracy sweep (root, `doc/`, `src/` module docs).** Every
+  boundaries: [docs/development/durable-runs.md](docs/development/durable-runs.md).
+- **Documentation accuracy sweep (root, `docs/`, `src/` module docs).** Every
   claim probed against code: fabricated module APIs removed (model_registry,
   analysis, gui, setup, advanced_visualization listed functions/kwargs/files
   that never existed); stale executor claims corrected everywhere to the
   verified contract — 9 render targets, 8 Step-12 executor families, bnlearn
   render-only, Stan executable via cmdstanpy; `src/gnn/STEP_INDEX.md` verified 1:1
   against `src/gnn/pipeline/step_registry.py`; all 4,246 relative links under
-  `doc/` mechanically checked (one repo-escaping link fixed); root README /
-  AGENTS / ARCHITECTURE / SECURITY de-duplicated and re-dated; `doc/pipeline/README.md`
+  `docs/` mechanically checked (one repo-escaping link fixed); root README /
+  AGENTS / ARCHITECTURE / SECURITY de-duplicated and re-dated; `docs/pipeline/README.md`
   and `scripts/check_doc_contracts.py` now state and enforce "bnlearn is
   render-only" (the previous "Stan is render-only" contract was stale since
   Stan gained its cmdstanpy executor in 3.2.0); the `CLAUDE.md`
@@ -82,7 +82,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 - **PyTorch re-enabled in the canonical registry.** `framework_registry.py`
   marks PyTorch `available: True` (rendering is codegen-only — torch is
   imported by the emitted script, not the renderer — and Step 12 keeps its
-  dynamic import gate); the availability/zero-skip tests, `doc/`,
+  dynamic import gate); the availability/zero-skip tests, `docs/`,
   `CLAUDE.md`, `SETUP_GUIDE.md`, and module docs now describe the
   patched-torch reality. bnlearn stays a manual render-only backend (heavy
   transitive deps via pgmpy→torch, no Step-12 executor) with its registry
@@ -367,7 +367,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
     canonical single-agent path unchanged.
   - Regression-pinned by `tests/render/test_stigmergic_multi_agent.py`
     (19 tests: detection, script structure, Julia parse, live execution).
-  - Docs: `doc/gnn/advanced/gnn_multiagent.md` updated (native path +
+  - Docs: `docs/gnn/advanced/gnn_multiagent.md` updated (native path +
     joint fallback + residual), module README/SPEC updated.
 
 ### Added (2026-08-20 — sparse Kronecker-factorized execution, roadmap MAJ-02 milestone 1)
@@ -406,8 +406,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   `just quality`, `just doc-contracts`, and CI; regression-pinned by
   `tests/test_doc_contracts.py`.
 - **Maintained-docs sweep**: stale inline counts/claims replaced with
-  runnable-command guidance across `README.md`, `doc/` hubs and
-  `doc/gnn/`; `paths-ignore` for `**/*.md`/`doc/**` removed from CI so doc
+  runnable-command guidance across `README.md`, `docs/` hubs and
+  `docs/gnn/`; `paths-ignore` for `**/*.md`/`docs/**` removed from CI so doc
   changes now trigger the audit jobs.
 
 ### Added (2026-08-18 — full zero-warn / zero-skip verification pass)
@@ -549,7 +549,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 ### Decisions (2026-08-17)
 
 - **Standalone doc-embedded test files: pin, don't move.** The six `test_*.py`
-  files under `doc/` (activeinference_jl, cognitive_phenomena, pymdp) are
+  files under `docs/` (activeinference_jl, cognitive_phenomena, pymdp) are
   `unittest`/standalone scripts with doc-local imports; they remain pinned as
   documentation examples and are outside `testpaths` (`src/tests`, `tests`).
   `src/gnn/llm/test_llm_system.py` was already removed (commit `40068ba4`).
@@ -631,8 +631,8 @@ Completes the remaining RED_TEAM_REVIEW.md items from the 2026-08-14 wave.
 - **RxInfer strategy extraction**: `render/rxinfer/model_strategies.py`
   (3,560 lines) is now a 380-line dispatcher over `_common` and per-kind
   strategy modules (`_strategies_{flat,continuous,factored,hierarchical,learning}`).
-- **`doc/` archive reorganization**: 19 topic directories moved to
-  `doc/other/` (arc-agi, autogenlib, axiom, catcolab, cerebrum, dspy,
+- **`docs/` archive reorganization**: 19 topic directories moved to
+  `docs/other/` (arc-agi, autogenlib, axiom, catcolab, cerebrum, dspy,
   glowstick, iroh, kit, klong, muscle-mem, nock, ntqr, onefilellm, poe-world,
   quadray, timep, vec2text, x402); cross-document links re-pointed; doc indexes,
   cross-reference index, and `expected_dirs.txt` updated (61 → 42 top-level
@@ -773,7 +773,7 @@ Completes the remaining RED_TEAM_REVIEW.md items from the 2026-08-14 wave.
   CRITICAL/HIGH/MEDIUM/LOW findings, rollback descriptors, deterministic plan hashes). Backed by 40
   real-objects-only unit tests with negative controls, a strict end-to-end acceptance gate
   (`scripts/run_v3_orchestration_acceptance.py`), three new MCP tools (`tools_total` 137→140), and a
-  doc page at `doc/pipeline/v3_orchestration.md`. No container/cluster is ever executed.
+  doc page at `docs/pipeline/v3_orchestration.md`. No container/cluster is ever executed.
 - **v3.0.0 additive live-pipeline integration (safe-by-design)**: `session_acceptance.py` (resumable,
   checkpointed model-family acceptance runs), `run_manifest.py` (emit durable `StreamManifest`s + a
   replayable `ExecutionTrace` from a completed run's `output/`, with re-validation), and
@@ -860,7 +860,7 @@ Completes the remaining RED_TEAM_REVIEW.md items from the 2026-08-14 wave.
 - **Global Documentation Guardrails**: Enforced real-implementation documentation mandates. Provisioned `AGENTS.md`, `README.md`, and `SPEC.md` components natively within transient boundaries (`output/`, `.benchmarks/`, `scripts/`) and defined the master environment `SPEC.md` at root.
 - **Type checker visual dashboards**: Baseball-card style model summary PNGs (dark neon theme), validity mosaics, issue distribution charts, and type category pie charts generated in `output/5_type_checker_output/visualizations/`
 - **Resource estimation integration**: `estimate_file_resources()` now delegates to `estimation_strategies.py` for real FLOPS, memory, and complexity scoring instead of naive heuristics
-- **Documentation hub sync**: Automated `doc/gnn/modules/[00-24].md` reconciliation from `src/*/AGENTS.md` source-of-truth
+- **Documentation hub sync**: Automated `docs/gnn/modules/[00-24].md` reconciliation from `src/*/AGENTS.md` source-of-truth
 
 ### Changed
 - **Real-Implementation Policy Enforcement**: Removed dependency on patch-driven pytest plugins and tightened functional testing constraints.
@@ -963,5 +963,5 @@ Completes the remaining RED_TEAM_REVIEW.md items from the 2026-08-14 wave.
 
 Added strict Gaussian and factored data contracts, explicit Step 7 metadata and
 source provenance, independent conformance fixtures and numerical/path checks.
-[Verification and ancestry](doc/development/geo_infer_2026_09.md) record the
+[Verification and ancestry](docs/development/geo_infer_2026_09.md) record the
 validation scope and inherited fleet changes. No version or package release.

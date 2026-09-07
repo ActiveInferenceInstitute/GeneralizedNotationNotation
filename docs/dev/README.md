@@ -1,4 +1,4 @@
-# doc/dev
+# docs/dev
 
 Small development utilities and generated inventories for the documentation tree.
 
@@ -13,7 +13,7 @@ Small development utilities and generated inventories for the documentation tree
 Run the inventory script from the repository root:
 
 ```bash
-uv run python doc/dev/regenerate_src_doc_inventory.py
+uv run python docs/dev/regenerate_src_doc_inventory.py
 ```
 
 See [../development/README.md](../development/README.md) for the full documentation audit tool. Doc hub: [../INDEX.md](../INDEX.md).

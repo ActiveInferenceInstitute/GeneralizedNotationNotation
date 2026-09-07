@@ -3,13 +3,13 @@
 > **📋 Document Metadata**  
 > **Type**: Security Policy | **Audience**: All Users | **Complexity**: Intermediate  
 > **Last Updated**: 2026-09-02 | **Status**: Maintained  
-> **Cross-References**: [Comprehensive Security Guide](doc/security/README.md) | [Deployment Security](doc/deployment/README.md) | [MCP Security](doc/mcp/README.md)
+> **Cross-References**: [Comprehensive Security Guide](docs/security/README.md) | [Deployment Security](docs/deployment/README.md) | [MCP Security](docs/mcp/README.md)
 
 ## 🔒 Comprehensive Security Framework
 
 The GNN (GeneralizedNotationNotation) project maintains a comprehensive multi-layered security approach covering development, deployment, and production environments.
 
-> **📖 Complete Security Documentation**: For comprehensive security information, see [Security Guide](doc/security/README.md)
+> **📖 Complete Security Documentation**: For comprehensive security information, see [Security Guide](docs/security/README.md)
 
 ## Supported Versions
 
@@ -59,7 +59,7 @@ We are committed to ensuring the security of the GeneralizedNotationNotation (GN
 | Date | Assessment | Scope | Outcome |
 |------|------------|-------|---------|
 | 2026-08-14 | Red-team review (historical `RED_TEAM_REVIEW.md` ledger) | Rendered-code execution ordering, pickle/literal-eval input parsing, FastAPI/MCP auth + path traversal, error disclosure, sandboxing | Closed V-01/V-03/V-04/V-05/V-06/V-07/V-09/V-10: pre-execution AST gate before Step 12, bounded `safe_literal_eval`, optional `GNN_API_KEY` auth + secure-bind refusal, symlink rejection, MCP forwarded-identity rejection, stderr path redaction, and an opt-in `GNN_SANDBOX` wrapper. The remaining items from the same wave were closed afterwards — see `CHANGELOG.md` §"Security (2026-08-14, wave 2 — residual closures)". |
-| 2026-06-24 | Codex Security standard scan | MCP execution, MCP LLM file access, generated bnlearn code, generated artifact paths | Closed four reportable findings with repository-local MCP path validation, Step 11 render-summary execution gating, generated-code literal escaping, safe output filename stems, and regression tests. See [Codex Security Remediation - 2026-06-24](doc/security/codex_security_remediation_2026-06-24.md). |
+| 2026-06-24 | Codex Security standard scan | MCP execution, MCP LLM file access, generated bnlearn code, generated artifact paths | Closed four reportable findings with repository-local MCP path validation, Step 11 render-summary execution gating, generated-code literal escaping, safe output filename stems, and regression tests. See [Codex Security Remediation - 2026-06-24](docs/security/codex_security_remediation_2026-06-24.md). |
 
 ## Dependency automation and local audits
 
@@ -250,22 +250,22 @@ Once a security vulnerability is reported, we commit to:
 
 ### Comprehensive Guides
 
-- **[Complete Security Framework](doc/security/README.md)** - Comprehensive security guide
-- **[Deployment Security](doc/deployment/README.md)** - Production security configurations
-- **[MCP Security](doc/mcp/README.md)** - Model Context Protocol security measures
+- **[Complete Security Framework](docs/security/README.md)** - Comprehensive security guide
+- **[Deployment Security](docs/deployment/README.md)** - Production security configurations
+- **[MCP Security](docs/mcp/README.md)** - Model Context Protocol security measures
 
 ### Framework Security
 
-- **[PyMDP Security](doc/pymdp/gnn_pymdp.md#security-considerations)** - PyMDP-specific security
-- **[RxInfer.jl Security](doc/rxinfer/gnn_rxinfer.md#security-considerations)** - Julia integration security
-- **[ActiveInference.jl Security](doc/activeinference_jl/activeinference-jl.md#security-considerations)** - ActiveInference.jl integration security
-- **[LLM Security](doc/llm/security_guidelines.md)** - AI integration security practices
+- **[PyMDP Security](docs/pymdp/gnn_pymdp.md#security-considerations)** - PyMDP-specific security
+- **[RxInfer.jl Security](docs/rxinfer/gnn_rxinfer.md#security-considerations)** - Julia integration security
+- **[ActiveInference.jl Security](docs/activeinference_jl/activeinference-jl.md#security-considerations)** - ActiveInference.jl integration security
+- **[LLM Security](docs/llm/security_guidelines.md)** - AI integration security practices
 
 ### Incident Response
 
-- **[Security Incident Response](doc/security/incident_response.md)** - Response procedures
-- **[Vulnerability Assessment](doc/security/vulnerability_assessment.md)** - Assessment frameworks
-- **[Security Monitoring](doc/security/monitoring.md)** - Monitoring and alerting
+- **[Security Incident Response](docs/security/incident_response.md)** - Response procedures
+- **[Vulnerability Assessment](docs/security/vulnerability_assessment.md)** - Assessment frameworks
+- **[Security Monitoring](docs/security/monitoring.md)** - Monitoring and alerting
 
 ## 🤝 Security Community
 
@@ -287,4 +287,4 @@ Once a security vulnerability is reported, we commit to:
 
 **We appreciate your help in keeping GeneralizedNotationNotation secure across all dimensions: physical, digital, and cognitive.**
 
-> **🔗 Related Documentation**: [Security Guide](doc/security/README.md) | [Deployment Security](doc/deployment/README.md) | [Contributing Security](CONTRIBUTING.md#security-considerations)
+> **🔗 Related Documentation**: [Security Guide](docs/security/README.md) | [Deployment Security](docs/deployment/README.md) | [Contributing Security](CONTRIBUTING.md#security-considerations)

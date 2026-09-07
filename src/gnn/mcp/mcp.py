@@ -411,9 +411,7 @@ class MCP:
         # ``gnn.mcp.gnn_root`` (the flat ``gnn/mcp.py`` was shadowed by the
         # ``gnn/mcp/`` package after the v0.5 rename).
         full_module_name = (
-            "gnn.mcp.gnn_root"
-            if module_name == "gnn"
-            else f"gnn.{module_name}.mcp"
+            "gnn.mcp.gnn_root" if module_name == "gnn" else f"gnn.{module_name}.mcp"
         )
         module_start = time.time()
         try:

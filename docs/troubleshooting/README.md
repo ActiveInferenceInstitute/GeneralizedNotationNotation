@@ -199,7 +199,7 @@ find output -maxdepth 3 -type f -name '*.log' -o -name '*.json' | sort | head -8
 When a failure may be documentation drift, run the same checks used by CI:
 
 ```bash
-uv run --extra dev python doc/development/docs_audit.py --strict --check-anchors --no-write
+uv run --extra dev python docs/development/docs_audit.py --strict --check-anchors --no-write
 uv run --extra dev python scripts/check_doc_contracts.py --strict
 uv run --extra dev python scripts/check_gnn_doc_patterns.py --strict
 ```

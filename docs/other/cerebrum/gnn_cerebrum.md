@@ -114,7 +114,7 @@ For example, a `RecognitionMatrix A` in GNN, defined as `A[2,2,type=float]`, act
 
 ### 3.3 The GNN Processing Pipeline as a CEREBRUM Workflow
 
-The GNN tools pipeline (described in `doc/gnn_tools.md`) can be viewed as a sequence of case transformations applied to the GNN data, or as an orchestrated system of specialized CEREBRUM models:
+The GNN tools pipeline (described in `docs/gnn_tools.md`) can be viewed as a sequence of case transformations applied to the GNN data, or as an orchestrated system of specialized CEREBRUM models:
 
 1.  **GNN File (Input)**: Initially, the `.gnn` file can be seen in a **Vocative [VOC]** case (being addressed by the pipeline) or **Dative [DAT]** case (as input to the first tool).
 
@@ -151,7 +151,7 @@ This workflow demonstrates how CEREBRUM can provide a structured way to manage t
 
 ### 3.4 GNN Model Progression and Case Complexity
 
-The GNN examples (`doc/gnn_examples_doc.md`) show a progression from simple to more complex models:
+The GNN examples (`docs/gnn_examples_doc.md`) show a progression from simple to more complex models:
 1.  **Static Perception**: A basic model, perhaps primarily in a **Nominative [NOM]** (describing perception) or **Genitive [GEN]** (defining relationships) case.
 2.  **Dynamic Perception**: Adds temporal dynamics. The model might now more strongly exhibit an **Instrumental [INS]** case for its transition dynamics (`B` matrix) and **Locative [LOC]** for time.
 3.  **Dynamic Perception with Policy**: Introduces actions and preferences. The policy selection mechanism (`C`, `G`, `π`) acts in a **Nominative [NOM]** or **Instrumental [INS]** role for decision-making.

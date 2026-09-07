@@ -1,7 +1,7 @@
 # Main Tests
 
 Pytest coverage for the `gnn` entry surfaces (`src/gnn/main.py`,
-`src/gnn/manuscript_variables.py`) owned by the main-suite fleet worker.
+`src/gnn/manuscript/variables.py`) owned by the main-suite fleet worker.
 
 ## What is covered
 
@@ -15,7 +15,7 @@ Pytest coverage for the `gnn` entry surfaces (`src/gnn/main.py`,
   figure registration, `output/figures/figure_registry.json`, manuscript
   figure references, and alt-text presence.
 - `test_manuscript_variables.py`: producer-drift regression suite for
-  `gnn.manuscript_variables.generate_variables` — every assertion recomputes
+  `gnn.manuscript.generate_variables` — every assertion recomputes
   the expected value from the live repository and compares it against the
   producer.
 - `test_manuscript_variables_api.py`: `save_variables` → `load_variables`
@@ -33,5 +33,5 @@ uv run --extra dev python -m pytest tests/main/ -q
 ```
 
 Tests are deterministic, offline, and import `gnn.main` /
-`gnn.manuscript_variables` through the installed `gnn` package (see
+`gnn.manuscript` through the installed `gnn` package (see
 `tests/main/test_manuscript_variables.py`).

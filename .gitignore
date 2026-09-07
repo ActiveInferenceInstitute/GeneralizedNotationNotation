@@ -402,3 +402,8 @@ pytest-junit-*/
 /.claude
 /.desloppify
 /src/.desloppify
+
+# MCP audit reports are regenerated on demand; never track them
+mcp_audit_report.json
+/tests/mcp_audit_report.json
+/tests/mcp/mcp_audit_report.json

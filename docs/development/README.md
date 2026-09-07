@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Development Guide | **Audience**: Developers & Contributors | **Complexity**: Intermediate-Advanced  
-> **Cross-References**: [Testing Guide](../testing/README.md) | [API Documentation](../api/README.md) | [AGENTS.md](AGENTS.md) | [doc/INDEX.md](../INDEX.md) | [doc/SPEC.md](../SPEC.md) (versioning policy)
+> **Cross-References**: [Testing Guide](../testing/README.md) | [API Documentation](../api/README.md) | [AGENTS.md](AGENTS.md) | [docs/INDEX.md](../INDEX.md) | [docs/SPEC.md](../SPEC.md) (versioning policy)
 
 ## Overview
 This guide provides information for developers contributing to the GNN project, including code organization, development workflows, and architecture patterns.
@@ -13,23 +13,23 @@ From the repository root:
 
 ```bash
 # Scan maintained Markdown for broken relative links (generated output/ is skipped)
-uv run --extra dev python doc/development/docs_audit.py
+uv run --extra dev python docs/development/docs_audit.py
 # Fail the shell if any issues (for CI / pre-commit)
-uv run --extra dev python doc/development/docs_audit.py --strict
+uv run --extra dev python docs/development/docs_audit.py --strict
 # With --strict and failures, full per-issue lines go to stderr by default (fix loop). Use -q for summary only.
-uv run --extra dev python doc/development/docs_audit.py --strict -q
+uv run --extra dev python docs/development/docs_audit.py --strict -q
 # Optional: validate #fragments against heading slugs (heuristic; can be noisy)
-uv run --extra dev python doc/development/docs_audit.py --check-anchors
+uv run --extra dev python docs/development/docs_audit.py --check-anchors
 # Optional: log markdown file count and other diagnostics to stderr
-uv run --extra dev python doc/development/docs_audit.py --verbose
+uv run --extra dev python docs/development/docs_audit.py --verbose
 # Check maintained docs for stale PyMDP and policy terminology
 uv run --extra dev python scripts/check_maintained_doc_terms.py --strict
 ```
 
-Writes [docs_audit_report.md](docs_audit_report.md): broken relative links, `AGENTS.md`→`SPEC.md` consistency, `src/` dirs with `.py` but no `AGENTS.md`, maintained `doc/` dirs missing `AGENTS.md` or `README.md`, `AGENTS.md`/`README.md` pairing under `src/`, `doc/`, `.github/`, and the repo root, and **`doc/**/AGENTS.md` orientation** (`## Overview`, `## Purpose`, or `## Directory Identity`; substantive `## Purpose` when present). Generated snapshots under `doc/` are excluded from pairing where noted. After moving files under `doc/gnn/`, run the rewriter (idempotent on already-fixed links):
+Writes [docs_audit_report.md](docs_audit_report.md): broken relative links, `AGENTS.md`→`SPEC.md` consistency, `src/` dirs with `.py` but no `AGENTS.md`, maintained `docs/` dirs missing `AGENTS.md` or `README.md`, `AGENTS.md`/`README.md` pairing under `src/`, `docs/`, `.github/`, and the repo root, and **`docs/**/AGENTS.md` orientation** (`## Overview`, `## Purpose`, or `## Directory Identity`; substantive `## Purpose` when present). Generated snapshots under `docs/` are excluded from pairing where noted. After moving files under `docs/gnn/`, run the rewriter (idempotent on already-fixed links):
 
 ```bash
-uv run python doc/development/rewrite_gnn_doc_links.py
+uv run python docs/development/rewrite_gnn_doc_links.py
 ```
 
 Source: [docs_audit.py](docs_audit.py), [rewrite_gnn_doc_links.py](rewrite_gnn_doc_links.py), [../../scripts/check_maintained_doc_terms.py](../../scripts/check_maintained_doc_terms.py). Documentation improvement tracker: [../DOCS_TO_IMPROVE.md](../DOCS_TO_IMPROVE.md).
@@ -417,7 +417,7 @@ uv run --extra dev python -m pytest tests/pipeline/ -v
 
 ### Quality Gates
 1. Formatting and lint pass (`uv run --extra dev ruff format --check src scripts`; `uv run --extra dev ruff check src scripts`)
-2. Terminology and documentation audits pass (`scripts/check_repo_terminology.py`, `scripts/check_maintained_doc_terms.py`, `doc/development/docs_audit.py`, `scripts/check_gnn_doc_patterns.py`)
+2. Terminology and documentation audits pass (`scripts/check_repo_terminology.py`, `scripts/check_maintained_doc_terms.py`, `docs/development/docs_audit.py`, `scripts/check_gnn_doc_patterns.py`)
 3. Type checking passes (`uv run --extra dev mypy src --show-error-codes`)
 4. Security scan passes (`uv run --extra dev bandit -r src -c pyproject.toml -q`)
 5. Focused PyMDP/POMDP tests, collect-only, and the full suite command of record pass

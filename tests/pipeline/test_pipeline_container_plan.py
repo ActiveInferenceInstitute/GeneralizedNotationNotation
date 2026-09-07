@@ -6,7 +6,7 @@ running the GNN pipeline.
 Real objects only: all tests use real Pydantic models, real YAML files (real
 input/config.yaml plus real tmp_path YAML), real serialization, and the real
 static security review. Includes a positive control (the generated plan reviews
-clean), command-shape assertions (src/main.py + dirs + skip-steps propagation),
+clean), command-shape assertions (src/gnn/main.py + dirs + skip-steps propagation),
 rollback semantics, and a negative control (a manually-degraded privileged spec
 forces a CRITICAL — proving the review is wired and has teeth).
 """
@@ -79,7 +79,7 @@ class TestCommandShape:
         cfg = _write_config(tmp_path, [])
         plan = plan_for_pipeline(cfg, target_dir="input/gnn_files", output_dir="output")
         command = plan.specs[0].command
-        assert "src/main.py" in command
+        assert "src/gnn/main.py" in command
         i = command.index("--target-dir")
         assert command[i + 1] == "input/gnn_files"
         j = command.index("--output-dir")

@@ -16,4 +16,4 @@ Provides theoretical background, design rationale, and reference material for GN
 
 - [src/gnn/AGENTS.md](../AGENTS.md) — Pipeline module registry
 - [src/gnn/SPEC.md](../SPEC.md) — Pipeline specification
-- [doc/gnn/](../../../doc/gnn/) — External GNN documentation hub
+- [docs/gnn/](../../../docs/gnn/) — External GNN documentation hub

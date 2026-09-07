@@ -6,7 +6,7 @@ This script end-to-end manages the PyMDP scaling study by:
 1. Loading defaults from a plaintext config file (scripts/pymdp_scaling_config.yaml).
 2. Generating stochastic (non-trivial) GNN specifications across an N×T parameter grid.
 3. Clearing previous generated files by default (configurable).
-4. Invoking the core GNN pipeline (src/main.py) to parse, render, execute, and analyze them.
+4. Invoking the core GNN pipeline (src/gnn/main.py) to parse, render, execute, and analyze them.
 
 Dense matrix text for B is O(n^3) in output size; use ``max_n`` and ``max_file_size_mb`` in
 config to avoid multi-gigabyte files and OSError: [Errno 28] when the volume is full.
@@ -267,7 +267,7 @@ def _build_pipeline_invocation(
         "uv",
         "run",
         "python",
-        "src/main.py",
+        "src/gnn/main.py",
         "--target-dir",
         str(out_dir),
         "--output-dir",

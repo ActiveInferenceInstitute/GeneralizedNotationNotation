@@ -62,7 +62,7 @@ uv run --offline --no-sync pytest \
   -m 'not slow and not pipeline' --timeout=120 -q
 uv run --offline --no-sync pytest tests/mcp/test_mcp_http_auth.py -q
 uv run --offline --no-sync ruff check src
-uv run --offline --no-sync python doc/development/docs_audit.py --strict --no-write
+uv run --offline --no-sync python docs/development/docs_audit.py --strict --no-write
 ```
 
 Local logs: `/tmp/gnn-fep-gnn-accepted-suite.log`,

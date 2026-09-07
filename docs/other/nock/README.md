@@ -20,7 +20,7 @@ This directory contains documentation, resources, and implementation guides for 
 - **[cognitive-security-framework.md](cognitive-security-framework.md)**: Cognitive security framework
 
 ### Main Documentation
-- **[doc/README.md](../README.md)**: Main documentation hub
+- **[docs/README.md](../README.md)**: Main documentation hub
 - **[CROSS_REFERENCE_INDEX.md](../../CROSS_REFERENCE_INDEX.md)**: Complete cross-reference index
 - **[learning_paths.md](../../learning_paths.md)**: Learning pathways
 

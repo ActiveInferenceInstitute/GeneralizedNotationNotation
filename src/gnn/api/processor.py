@@ -164,7 +164,7 @@ async def execute_job_async(job_id: str) -> None:
     """
     Execute a pipeline job asynchronously.
 
-    Runs `python src/main.py` with appropriate arguments in a subprocess.
+    Runs `python src/gnn/main.py` with appropriate arguments in a subprocess.
     Updates job status as execution progresses.
 
     This coroutine is meant to be launched with asyncio.create_task().

@@ -1,6 +1,6 @@
 # GNN — Start Here
 
-Use [doc/README.md](README.md) as the primary documentation hub. This page keeps the
+Use [docs/README.md](README.md) as the primary documentation hub. This page keeps the
 first decision small rather than duplicating the full index.
 
 ## I am new to GNN

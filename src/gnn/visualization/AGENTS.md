@@ -477,7 +477,7 @@ python src/gnn/8_visualization.py --verbose --target-dir input/gnn_files
 - [Pipeline Overview](../../../README.md)
 - [Architecture Guide](../../../ARCHITECTURE.md)
 - [Advanced Visualization](../advanced_visualization/AGENTS.md)
-- [GNN Visualization Guide](../../../doc/gnn/integration/gnn_visualization.md)
+- [GNN Visualization Guide](../../../docs/gnn/integration/gnn_visualization.md)
 
 ### External Resources
 - [Matplotlib Documentation](https://matplotlib.org/)

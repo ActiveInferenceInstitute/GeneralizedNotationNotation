@@ -28,7 +28,7 @@ uv run --offline --no-sync --extra dev ruff check --no-cache src/gnn/validation 
 uv run --offline --no-sync --extra dev mypy --no-incremental src/gnn/validation src/gnn/parsers src/gnn/schema_validator.py src/gnn/cli/__init__.py --config-file pyproject.toml
 # Success: no issues found in 54 source files; /tmp/gnn-validation-mypy-final.log
 
-uv run --offline --no-sync --extra dev python doc/development/docs_audit.py --strict --check-anchors --no-write
+uv run --offline --no-sync --extra dev python docs/development/docs_audit.py --strict --check-anchors --no-write
 # Exit 1: zero broken links/anchors, one unrelated missing AGENTS.md under tests/tests.
 # /tmp/gnn-validation-docs.log
 

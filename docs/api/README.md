@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: API Reference | **Audience**: Developers, Integrators | **Complexity**: Intermediate-Advanced  
-> **Cross-References**: [AGENTS.md](AGENTS.md) | [Comprehensive API Reference](comprehensive_api_reference.md) | [Pipeline Architecture](../gnn/operations/gnn_tools.md) | [Main Documentation](../README.md) | [doc/SPEC.md](../SPEC.md) (versioning)
+> **Cross-References**: [AGENTS.md](AGENTS.md) | [Comprehensive API Reference](comprehensive_api_reference.md) | [Pipeline Architecture](../gnn/operations/gnn_tools.md) | [Main Documentation](../README.md) | [docs/SPEC.md](../SPEC.md) (versioning)
 
 ## Overview
 
@@ -23,7 +23,7 @@ API surfaces follow normal Python packaging and process boundaries: validate inp
 - **[comprehensive_api_reference.md](comprehensive_api_reference.md)**: Complete API reference documentation
 
 ### Main Documentation
-- **[doc/README.md](../README.md)**: Main documentation hub
+- **[docs/README.md](../README.md)**: Main documentation hub
 - **[CROSS_REFERENCE_INDEX.md](../CROSS_REFERENCE_INDEX.md)**: Complete cross-reference index
 - **[learning_paths.md](../learning_paths.md)**: Learning pathways
 

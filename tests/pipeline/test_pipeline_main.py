@@ -83,7 +83,7 @@ D: 0.6 0.4
             # Run pipeline steps 3,7,8
             cmd: list[Any] = [
                 sys.executable,
-                "src/main.py",
+                "src/gnn/main.py",
                 "--target-dir",
                 str(self.test_input_dir),
                 "--output-dir",
@@ -200,7 +200,7 @@ D: 0.6 0.4
             # Run pipeline with smaller subset of fast steps to avoid timeout
             cmd: list[Any] = [
                 sys.executable,
-                "src/main.py",
+                "src/gnn/main.py",
                 "--target-dir",
                 str(self.test_input_dir),
                 "--output-dir",

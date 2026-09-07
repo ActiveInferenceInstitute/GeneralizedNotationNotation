@@ -45,10 +45,10 @@ populating `variational_free_energy` with real values (previously `Float64[]`).
 
 | Document | Path | Description |
 |----------|------|-------------|
-| **README** | [`doc/rxinfer/README.md`](../rxinfer/README.md) | Overview |
-| **GNN RxInfer Guide** | [`doc/rxinfer/gnn_rxinfer.md`](../rxinfer/gnn_rxinfer.md) | Integration guide |
-| **Multiagent** | [`doc/rxinfer/Multiagent_GNN_RxInfer.jl`](../rxinfer/Multiagent_GNN_RxInfer.jl) | Multi-agent models |
-| **Engineering Guide** | [`doc/rxinfer/engineering_rxinfer_gnn.md`](../rxinfer/engineering_rxinfer_gnn.md) | Engineering details |
+| **README** | [`docs/rxinfer/README.md`](../rxinfer/README.md) | Overview |
+| **GNN RxInfer Guide** | [`docs/rxinfer/gnn_rxinfer.md`](../rxinfer/gnn_rxinfer.md) | Integration guide |
+| **Multiagent** | [`docs/rxinfer/Multiagent_GNN_RxInfer.jl`](../rxinfer/Multiagent_GNN_RxInfer.jl) | Multi-agent models |
+| **Engineering Guide** | [`docs/rxinfer/engineering_rxinfer_gnn.md`](../rxinfer/engineering_rxinfer_gnn.md) | Engineering details |
 
 ---
 

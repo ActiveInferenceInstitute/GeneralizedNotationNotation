@@ -20,7 +20,7 @@ Multi-format export capabilities for GNN models including JSON, XML, GraphML, an
 ## Quick Navigation
 
 - **GNN Documentation**: [gnn/AGENTS.md](../gnn/AGENTS.md)
-- **Main Documentation**: [doc/README.md](../README.md)
+- **Main Documentation**: [docs/README.md](../README.md)
 - **Pipeline Reference**: [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)
 - **Export Module**: [src/gnn/export/AGENTS.md](../../src/gnn/export/AGENTS.md)
 

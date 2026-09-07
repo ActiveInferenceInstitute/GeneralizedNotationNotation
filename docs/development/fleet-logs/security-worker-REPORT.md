@@ -65,14 +65,14 @@ uv run ruff format --check src/gnn/security tests/security
   → 11 files already formatted (after `ruff format` reformatted
     src/gnn/security/processor.py + tests/security/test_security_policy_and_source.py;
     ruff check / mypy / 102 tests re-verified green post-format)
-Version pins: doc/VERSION_MAP.md has no security entries; src/gnn/mcp's 1.6.0 is
+Version pins: docs/VERSION_MAP.md has no security entries; src/gnn/mcp's 1.6.0 is
   that subsystem's independent version — the security 1.7.0 bump pins nothing.
 ```
 
 ## Doc / manuscript follow-ups (other workers own these)
 
-- `doc/gnn/mcp/tool_reference.md`: security tools unchanged; no action needed.
-- `doc/` pipeline docs referencing Step 18 outputs: unchanged contract (security_results.json + security_summary.md), no action.
+- `docs/gnn/mcp/tool_reference.md`: security tools unchanged; no action needed.
+- `docs/` pipeline docs referencing Step 18 outputs: unchanged contract (security_results.json + security_summary.md), no action.
 - If another worker wires `scan_source` into `render/` (recommended: validate rendered Python before writing), the doc cross-ref belongs in `src/gnn/render/AGENTS.md`, not mine.
 
 ## Follow-up ideas
@@ -94,7 +94,7 @@ uv run ruff format --check src/gnn/security tests/security
   pytest tests/security/ → 102 passed.
 ```
 
-Version pins: `doc/VERSION_MAP.md` has no security-module entries; all 1.6.0
+Version pins: `docs/VERSION_MAP.md` has no security-module entries; all 1.6.0
 hits in `src/gnn/mcp/` are the MCP subsystem's independent version; the security
 1.7.0 bump pins nothing.
 

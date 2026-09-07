@@ -2,7 +2,7 @@
 
 ## Overview
 
-Canonical documentation for running and configuring the GNN pipeline (steps 0–24), hosted under `doc/pipeline/`.
+Canonical documentation for running and configuring the GNN pipeline (steps 0–24), hosted under `docs/pipeline/`.
 
 **Status**: Documentation  
 **Version**: 1.0  
@@ -39,7 +39,7 @@ This tree is part of the GNN documentation system; implementation lives in `src/
 
 ## Standards
 
-Same conventions as other `doc/*` manifests: concrete paths, no duplicate claims about code that lives elsewhere.
+Same conventions as other `docs/*` manifests: concrete paths, no duplicate claims about code that lives elsewhere.
 
 ---
 

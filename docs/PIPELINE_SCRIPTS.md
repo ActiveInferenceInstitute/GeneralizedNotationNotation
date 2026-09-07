@@ -75,4 +75,4 @@ Numbered scripts typically wrap a module entrypoint such as `process_<module>(ta
 ## Related documentation
 
 - [`src/gnn/main.py`](../src/gnn/main.py) — orchestrator
-- [`doc/gnn/operations/gnn_tools.md`](gnn/operations/gnn_tools.md) — tooling and pipeline narrative
+- [`docs/gnn/operations/gnn_tools.md`](gnn/operations/gnn_tools.md) — tooling and pipeline narrative

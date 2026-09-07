@@ -89,7 +89,7 @@ This directory contains template files for different types of GNN models, provid
 
 ### Method 1: Copy and Modify
 ```bash
-cp doc/templates/basic_gnn_template.md my_model.md
+cp docs/templates/basic_gnn_template.md my_model.md
 # Edit my_model.md with your specific model details
 ```
 
@@ -222,7 +222,7 @@ The same contract is covered by `tests/cli/test_templates_cli.py`.
 
 **Cross-References**:
 - [Contributing Guide](../../CONTRIBUTING.md)
-- [Template Standards](../../doc/gnn/reference/gnn_standards.md)
+- [Template Standards](../../docs/gnn/reference/gnn_standards.md)
 
 ### Template Naming Convention
 - **Use descriptive names**: `multimodal_perception_template.md`
@@ -340,10 +340,10 @@ template_system:
     intermediate: ["pomdp_template.md"]
     advanced: ["multiagent_template.md", "hierarchical_template.md"]
   cross_references:
-    syntax: "doc/gnn/reference/gnn_syntax.md"
-    examples: "doc/gnn/tutorials/gnn_examples_doc.md"
-    implementation: "doc/gnn/integration/gnn_implementation.md"
-    validation: "doc/gnn/operations/gnn_tools.md#validation-tools"
+    syntax: "docs/gnn/reference/gnn_syntax.md"
+    examples: "docs/gnn/tutorials/gnn_examples_doc.md"
+    implementation: "docs/gnn/integration/gnn_implementation.md"
+    validation: "docs/gnn/operations/gnn_tools.md#validation-tools"
 ```
 
 ---

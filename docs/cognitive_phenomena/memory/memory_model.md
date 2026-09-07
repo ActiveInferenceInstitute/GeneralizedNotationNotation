@@ -42,4 +42,4 @@ A-o
 
 ---
 
-*See also: [doc/cognitive_phenomena/perception/](../perception/) for perception models*
+*See also: [docs/cognitive_phenomena/perception/](../perception/) for perception models*

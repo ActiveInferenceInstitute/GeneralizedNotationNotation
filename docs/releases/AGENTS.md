@@ -18,7 +18,7 @@ Release management and version control documentation for the GNN project.
 The Release Management documentation system is part of the broader GNN (Generalized Notation Notation) pipeline and ecosystem.
 
 ### Related Systems
-- **Main Documentation**: [doc/README.md](../README.md)
+- **Main Documentation**: [docs/README.md](../README.md)
 - **GNN Documentation**: [gnn/AGENTS.md](../gnn/AGENTS.md)
 - **Pipeline Reference**: [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)
 - **Setup Guide**: [SETUP.md](../SETUP.md)
@@ -33,7 +33,7 @@ The Release Management documentation system is part of the broader GNN (Generali
 
 - **Get Started**: See [README.md](README.md)
 - **Pipeline Overview**: [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)
-- **Full Documentation Index**: [doc/README.md](../README.md)
+- **Full Documentation Index**: [docs/README.md](../README.md)
 
 ## Documentation Standards
 

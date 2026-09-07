@@ -33,7 +33,7 @@ The T-maze is the classic Active Inference benchmark:
 **Files**:
 
 - Examples: `examples/`
-- Documentation: [`doc/pymdp/pymdp_pomdp/`](../pymdp/pymdp_pomdp/)
+- Documentation: [`docs/pymdp/pymdp_pomdp/`](../pymdp/pymdp_pomdp/)
 
 ### Grid World Exploration
 

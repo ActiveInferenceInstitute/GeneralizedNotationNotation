@@ -22,7 +22,7 @@ uv run --extra dev python -m pytest \
 The documentation checks themselves are:
 
 ```bash
-uv run --extra dev python doc/development/docs_audit.py \
+uv run --extra dev python docs/development/docs_audit.py \
   --strict --check-anchors --no-write
 uv run --extra dev python scripts/check_doc_contracts.py --strict
 uv run --extra dev python scripts/check_gnn_doc_patterns.py --strict

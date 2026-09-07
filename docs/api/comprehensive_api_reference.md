@@ -724,5 +724,5 @@ print(f"⚡ Processing Time: {report.performance_metrics.total_time:.2f}s")
 ---
 
 **Status**: Production- **Start Here**: [Overview](../../README.md)
-- **Examples**: [Model Examples](../../doc/gnn/tutorials/gnn_examples_doc.md)
+- **Examples**: [Model Examples](../../docs/gnn/tutorials/gnn_examples_doc.md)
 - **Development**: [Contribution Guide](../../CONTRIBUTING.md)

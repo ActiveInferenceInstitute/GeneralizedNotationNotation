@@ -24,6 +24,6 @@ lives. Current version: **3.2.0** (see `pyproject.toml`, `CHANGELOG.md`).
 - `CHANGELOG.md` release heading + compare links
 - `CITATION.cff`
 - `TO-DO.md` "Current Version" line
-- Release test-evidence claims in `doc/releases/`
+- Release test-evidence claims in `docs/releases/`
 - `src/gnn/__init__.py` `__version__` (documented in [gnn/modules/init.md](gnn/modules/init.md); at the 3.2.0 release this field still reads `1.6.0` and needs a maintainer bump)
 - Package-version lines in [gnn/README.md](gnn/README.md), [gnn/AGENTS.md](gnn/AGENTS.md) and [gnn/reference/SPEC.md](gnn/reference/SPEC.md)

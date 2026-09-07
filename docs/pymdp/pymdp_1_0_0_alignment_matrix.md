@@ -11,7 +11,7 @@ integration points in this repository.
 - Local surfaces reviewed:
     - `src/gnn/render/pymdp/`
     - `src/gnn/execute/pymdp/`
-    - `doc/pymdp/`
+    - `docs/pymdp/`
     - `tests/execute/test_pymdp_*` / `tests/execute/test_execute_pymdp_*`
 
 ## Matrix

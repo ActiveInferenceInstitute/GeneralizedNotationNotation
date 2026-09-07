@@ -18,10 +18,10 @@ Framework execution and simulation backend management documentation for the GNN 
 The execution framework documentation system is part of the broader GNN (Generalized Notation Notation) pipeline and ecosystem.
 
 ### Related Systems
-- **Main Documentation**: [doc/README.md](../README.md)
+- **Main Documentation**: [docs/README.md](../README.md)
 - **GNN Documentation**: [gnn/AGENTS.md](../gnn/AGENTS.md)
 - **Pipeline Reference**: [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)
-- **Setup Guide**: [doc/SETUP.md](../SETUP.md)
+- **Setup Guide**: [docs/SETUP.md](../SETUP.md)
 
 ## Subsystems
 
@@ -36,7 +36,7 @@ The execution framework documentation system is part of the broader GNN (General
 - **Get Started**: See [README.md](README.md)
 - **Framework Status**: [FRAMEWORK_AVAILABILITY.md](FRAMEWORK_AVAILABILITY.md)
 - **Pipeline Overview**: [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)
-- **Full Documentation Index**: [doc/README.md](../README.md)
+- **Full Documentation Index**: [docs/README.md](../README.md)
 
 ## Documentation Standards
 

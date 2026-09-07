@@ -71,7 +71,7 @@ jobs:
 
       - name: Documentation audit
         if: matrix.python-version == '3.12'
-        run: uv run --extra dev python doc/development/docs_audit.py --strict --check-anchors --no-write
+        run: uv run --extra dev python docs/development/docs_audit.py --strict --check-anchors --no-write
 
       - name: Documentation contract audit
         if: matrix.python-version == '3.12'

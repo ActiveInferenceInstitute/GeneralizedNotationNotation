@@ -1,4 +1,4 @@
-# fep_lean (doc/other archive entry)
+# fep_lean (docs/other archive entry)
 
 ## Overview
 
@@ -34,7 +34,7 @@ The mirrored bridge contract is version 0.4.
 ## Quick navigation
 
 - [Main documentation](../../README.md)
-- [doc/other archive](../README.md) and its [AGENTS.md](../AGENTS.md)
+- [docs/other archive](../README.md) and its [AGENTS.md](../AGENTS.md)
 - [GNN syntax](../../gnn/gnn_syntax.md)
 - [Active Inference theory folder](../../active_inference/README.md)
 
@@ -71,7 +71,7 @@ the continuous family so kind detection stays mechanical. Details:
   this mirror in the same working session, keeping the bodies identical.
 - Keep all links relative and verify targets exist; the repository-wide
   documentation audit (`uv run --extra dev python
-  doc/development/docs_audit.py --strict --check-anchors --no-write`) checks
+  docs/development/docs_audit.py --strict --check-anchors --no-write`) checks
   them for every markdown file.
 - Follow [style_guide.md](../../style_guide.md): `uv run python` command
   spellings, H1 title, metadata block, honest claims without embedded

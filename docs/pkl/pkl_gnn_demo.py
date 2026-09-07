@@ -33,7 +33,7 @@ class PklGNNDemo:
 
     def __init__(self, use_examples_dir=False):
         if use_examples_dir:
-            self.temp_dir = Path("doc/pkl/examples")
+            self.temp_dir = Path("docs/pkl/examples")
             self.temp_dir.mkdir(exist_ok=True)
         else:
             self.temp_dir = Path(tempfile.mkdtemp(prefix="pkl_gnn_demo_"))
@@ -745,7 +745,7 @@ def main():
     """Run the Pkl-GNN demonstration."""
     try:
         # Check if running from project root and use examples directory
-        use_examples = Path("doc/pkl/examples").exists() or Path("doc/pkl").exists()
+        use_examples = Path("docs/pkl/examples").exists() or Path("docs/pkl").exists()
         demo = PklGNNDemo(use_examples_dir=use_examples)
         demo.run_demonstration()
 
@@ -756,7 +756,7 @@ def main():
         print("2. Explore the generated .pkl files")
         print("3. Try evaluating them with: pkl eval -f yaml <file.pkl>")
         print("4. Consider integrating Pkl into the GNN pipeline")
-        print("\n📖 See doc/pkl/pkl_gnn.md for detailed analysis")
+        print("\n📖 See docs/pkl/pkl_gnn.md for detailed analysis")
 
     except KeyboardInterrupt:
         print("\n\n⏹️  Demo interrupted by user")

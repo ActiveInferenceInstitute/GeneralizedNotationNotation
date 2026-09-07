@@ -342,9 +342,9 @@ D = np.array([1.0, 0.0, 0.0, 0.0, 0.0])  # Certain start in center
 
 | Resource | Path |
 |----------|------|
-| PyMDP Guide | [`doc/pymdp/gnn_pymdp.md`](../pymdp/gnn_pymdp.md) |
-| GNN Syntax | [`doc/gnn/reference/gnn_syntax.md`](../gnn/reference/gnn_syntax.md) |
-| Examples | [`doc/gnn/tutorials/gnn_examples_doc.md`](../gnn/tutorials/gnn_examples_doc.md) |
+| PyMDP Guide | [`docs/pymdp/gnn_pymdp.md`](../pymdp/gnn_pymdp.md) |
+| GNN Syntax | [`docs/gnn/reference/gnn_syntax.md`](../gnn/reference/gnn_syntax.md) |
+| Examples | [`docs/gnn/tutorials/gnn_examples_doc.md`](../gnn/tutorials/gnn_examples_doc.md) |
 
 ---
 

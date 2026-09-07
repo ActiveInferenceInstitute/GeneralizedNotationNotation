@@ -484,10 +484,10 @@ Tool functions live in `src/gnn/render/mcp.py` and are registered in `register_t
 ### Related Documentation
 - [Pipeline Overview](../../../README.md)
 - [Architecture Guide](../../../ARCHITECTURE.md)
-- [PyMDP Integration](../../../doc/pymdp/)
-- [RxInfer Integration](../../../doc/rxinfer/)
-- [ActiveInference.jl Integration](../../../doc/activeinference_jl/)
-- [DisCoPy Integration](../../../doc/discopy/)
+- [PyMDP Integration](../../../docs/pymdp/)
+- [RxInfer Integration](../../../docs/rxinfer/)
+- [ActiveInference.jl Integration](../../../docs/activeinference_jl/)
+- [DisCoPy Integration](../../../docs/discopy/)
 
 ### External Resources
 - [PyMDP Framework](https://github.com/infer-actively/pymdp)

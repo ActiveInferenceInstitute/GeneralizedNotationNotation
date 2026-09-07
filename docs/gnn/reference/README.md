@@ -8,7 +8,7 @@
 This directory contains documentation and references for the Reference domain of Generalized Notation Notation (GNN).
 
 The normative language specification is
-**[`doc/gnn/gnn_syntax.md`](../gnn_syntax.md)**. The pages below expand it
+**[`docs/gnn/gnn_syntax.md`](../gnn_syntax.md)**. The pages below expand it
 with worked examples, schemas, and validation commands; where one disagrees
 with the specification, the specification wins.
 

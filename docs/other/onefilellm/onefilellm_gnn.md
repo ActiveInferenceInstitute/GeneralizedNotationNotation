@@ -54,7 +54,7 @@ onefilellm \
   ./local/sim_pymdp.ipynb \
   https://zenodo.org/records/7803328 \
   --crawl-max-depth 2 \
-  --alias-add gnn_spec "https://raw.githubusercontent.com/ActiveInferenceInstitute/GeneralizedNotationNotation/main/doc/gnn/reference/{0}.md" \
+  --alias-add gnn_spec "https://raw.githubusercontent.com/ActiveInferenceInstitute/GeneralizedNotationNotation/main/docs/gnn/reference/{0}.md" \
   gnn_spec GNN_Specification
 ```
 
@@ -111,7 +111,7 @@ By piping all three through OneFileLLM, a modeler can hand a single prompt to an
 | Path | Purpose | Notes |
 |------|---------|-------|
 | `/src/` | Python utilities (`render_gnn.py`, `gnn2pymdp.py`) | Stateless; safe to vendor into projects[4] |
-| `/doc/` | Human-readable tutorials & spec chapters | Markdown; cross-linked to YAML anchors |
+| `/docs/` | Human-readable tutorials & spec chapters | Markdown; cross-linked to YAML anchors |
 | `/examples/` | End-to-end Active Inference demos | Many importable via OneFileLLM |
 
 ## Interoperability Patterns
@@ -132,7 +132,7 @@ By piping all three through OneFileLLM, a modeler can hand a single prompt to an
 Create reusable shorthand for spec modules:
 
 ```bash
-onefilellm --alias-add gnnsec "https://raw.githubusercontent.com/ActiveInferenceInstitute/GeneralizedNotationNotation/main/doc/gnn/reference/{0}.md"
+onefilellm --alias-add gnnsec "https://raw.githubusercontent.com/ActiveInferenceInstitute/GeneralizedNotationNotation/main/docs/gnn/reference/{0}.md"
 onefilellm gnnsec State_Space gnnsec Likelihood_Matrix gnnsec Policy_Prior
 ```
 

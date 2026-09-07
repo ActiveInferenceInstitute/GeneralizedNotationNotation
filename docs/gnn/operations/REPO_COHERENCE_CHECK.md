@@ -16,7 +16,7 @@ This document validates the complete GNN pipeline architecture. For current impl
 - [Technical Reference](../reference/technical_reference.md): Complete entry points and round-trip data flow
 
 - ✅ 25 steps (0-24), each following the thin orchestrator pattern
-- ✅ Every `src/` package ships `AGENTS.md` — enforced by `doc/development/docs_audit.py`, which fails on any missing file
+- ✅ Every `src/` package ships `AGENTS.md` — enforced by `docs/development/docs_audit.py`, which fails on any missing file
 - ℹ️ Per-run success rate, execution time, and peak memory come from the pipeline execution summary for the run in question; this document does not carry a performance snapshot
 
 ---

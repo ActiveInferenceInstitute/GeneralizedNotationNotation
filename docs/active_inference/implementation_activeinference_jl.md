@@ -37,10 +37,10 @@
 
 | Document | Path | Description |
 |----------|------|-------------|
-| **README** | [`doc/activeinference_jl/README.md`](../activeinference_jl/README.md) | Overview |
-| **Integration Guide** | [`doc/activeinference_jl/activeinference-jl.md`](../activeinference_jl/activeinference-jl.md) | Main guide |
-| **Source Code Doc** | [`doc/activeinference_jl/activeinference-jl_source_code.md`](../activeinference_jl/activeinference-jl_source_code.md) | Source reference |
-| **Analysis Doc** | [`doc/activeinference_jl/analysis_documentation.md`](../activeinference_jl/analysis_documentation.md) | Analysis guide |
+| **README** | [`docs/activeinference_jl/README.md`](../activeinference_jl/README.md) | Overview |
+| **Integration Guide** | [`docs/activeinference_jl/activeinference-jl.md`](../activeinference_jl/activeinference-jl.md) | Main guide |
+| **Source Code Doc** | [`docs/activeinference_jl/activeinference-jl_source_code.md`](../activeinference_jl/activeinference-jl_source_code.md) | Source reference |
+| **Analysis Doc** | [`docs/activeinference_jl/analysis_documentation.md`](../activeinference_jl/analysis_documentation.md) | Analysis guide |
 
 ---
 

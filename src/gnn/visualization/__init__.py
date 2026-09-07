@@ -101,5 +101,3 @@ __all__: list[Any] = [
     "backend_status",
     "__version__",
 ]
-
-

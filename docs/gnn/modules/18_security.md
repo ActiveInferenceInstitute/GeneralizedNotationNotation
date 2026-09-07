@@ -403,7 +403,7 @@ File Input → Security Validation → Threat Detection → Access Control → S
 ### Related Documentation
 - [Pipeline Overview](../../../README.md)
 - [Architecture Guide](../../../ARCHITECTURE.md)
-- [Security Guide](../../../doc/security/)
+- [Security Guide](../../../docs/security/)
 
 ### External Resources
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/)

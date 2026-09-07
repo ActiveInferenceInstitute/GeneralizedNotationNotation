@@ -1,6 +1,6 @@
 # Support
 
-**Hub**: [README.md](README.md) (full `doc/` navigation).
+**Hub**: [README.md](README.md) (full `docs/` navigation).
 
 For help with **Generalized Notation Notation (GNN)**, please refer to the following resources:
 

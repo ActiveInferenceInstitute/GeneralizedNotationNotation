@@ -119,7 +119,7 @@ See [src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md) for complete pipeline docume
 ## File Structure
 
 ```
-doc/dspy/
+docs/dspy/
 ├── README.md                          # This overview
 ├── AGENTS.md                          # Technical scaffolding
 ├── gnn_dspy.md                        # Core DSPy-GNN theory

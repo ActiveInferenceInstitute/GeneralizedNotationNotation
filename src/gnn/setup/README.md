@@ -218,7 +218,7 @@ system requirement validation, and the JAX stack probe.
 - [`src/gnn/1_setup.py`](../1_setup.py) — thin orchestrator
 - [`pyproject.toml`](../../../pyproject.toml) — dependency declarations and extras
 - [`SETUP_GUIDE.md`](../../../SETUP_GUIDE.md) — end-to-end install walkthrough
-- [`doc/gnn/modules/01_setup.md`](../../../doc/gnn/modules/01_setup.md) — module documentation
+- [`docs/gnn/modules/01_setup.md`](../../../docs/gnn/modules/01_setup.md) — module documentation
 
 ---
 

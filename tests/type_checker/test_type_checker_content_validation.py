@@ -366,7 +366,7 @@ def test_validate_single_gnn_file_never_raises_on_content_error(
 def test_validate_gnn_files_no_files_is_warning_exit_2(tmp_path: Path) -> None:
     """Phase 1.1 widened contract: "no GNN files found" is a warning
     (exit 2), not a hard error (exit 1) — matching Steps 12/16 and the
-    render step. See doc/gnn/testing/SPEC.md."""
+    render step. See docs/gnn/testing/SPEC.md."""
     out = tmp_path / "out"
     success = GNNTypeChecker().validate_gnn_files(tmp_path, out)
     assert success == 2

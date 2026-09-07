@@ -19,8 +19,8 @@ Fill in after each triple review.
 | Field | Value |
 |--------|--------|
 | Date | 2026-03-24 |
-| Pass 1 | `uv run --extra dev python doc/development/docs_audit.py --strict` — exit 0; all audit sections empty |
-| Pass 1b | `uv run python doc/dev/regenerate_src_doc_inventory.py` — 0 missing AGENTS, 0 missing README under `src/` |
+| Pass 1 | `uv run --extra dev python docs/development/docs_audit.py --strict` — exit 0; all audit sections empty |
+| Pass 1b | `uv run python docs/dev/regenerate_src_doc_inventory.py` — 0 missing AGENTS, 0 missing README under `src/` |
 | Pass 2 | Historical run: `uv run --extra dev python -m pytest tests/ -q --tb=no --ignore=tests/llm/test_llm_ollama.py --ignore=tests/llm/test_llm_ollama_integration.py`; use current run output instead of the 2026-03-24 pass/skip totals |
 | Pass 3 | **25** files `src/N_*.py` for steps 0–24 present; Tier A step lines in module `AGENTS.md` previously spot-checked against orchestrators |
 | CI parity | `uv sync --frozen --extra dev`; `PYTHONPATH=src uv run --extra dev python -m pytest -m "not pipeline and not mcp" --tb=short -q` — **1532 passed, 31 skipped**; MCP tools **133** (`count_mcp_tools` ≥ 131); `uv run --extra dev ruff check src/`; Bandit medium+ exit 0 |

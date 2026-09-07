@@ -3,7 +3,7 @@
 Main Orchestrator Tests for GNN Pipeline
 
 This module contains comprehensive tests for the main pipeline orchestrator
-(src/main.py) which coordinates the execution of all pipeline steps.
+(src/gnn/main.py) which coordinates the execution of all pipeline steps.
 
 Tests cover:
 1. Import validation and component checking
@@ -36,7 +36,7 @@ pytestmark = [pytest.mark.pipeline, pytest.mark.main_orchestrator]
 
 # Local paths
 PROJECT_ROOT = Path(__file__).parent.parent.parent
-SRC_DIR = PROJECT_ROOT / "src"
+POINTS_DIR = PROJECT_ROOT / "src" / "gnn"
 
 
 class TestMainOrchestratorImport:
@@ -45,7 +45,7 @@ class TestMainOrchestratorImport:
     @pytest.mark.unit
     def test_main_orchestrator_file_exists(self) -> None:
         """Test that main.py exists and is readable."""
-        main_script = SRC_DIR / "main.py"
+        main_script = POINTS_DIR / "main.py"
 
         assert main_script.exists(), (
             f"Main orchestrator script not found: {main_script}"
@@ -73,7 +73,7 @@ class TestMainOrchestratorImport:
     @pytest.mark.unit
     def test_main_orchestrator_help_executes(self) -> None:
         """main.py should print help and exit 0."""
-        main_py = SRC_DIR / "main.py"
+        main_py = POINTS_DIR / "main.py"
         result = subprocess.run(
             [sys.executable, str(main_py), "--help"],
             capture_output=True,
@@ -88,9 +88,9 @@ class TestMainOrchestratorImport:
         """Test that main orchestrator components are available."""
         # Test that main components exist
         components: dict[str, Any] = {
-            "utils_package": SRC_DIR / "utils" / "__init__.py",
-            "pipeline_package": SRC_DIR / "pipeline" / "__init__.py",
-            "main_script": SRC_DIR / "main.py",
+            "utils_package": POINTS_DIR / "utils" / "__init__.py",
+            "pipeline_package": POINTS_DIR / "pipeline" / "__init__.py",
+            "main_script": POINTS_DIR / "main.py",
         }
 
         missing_components: list[Any] = []
@@ -109,7 +109,7 @@ class TestArgumentParsing:
 
     @pytest.mark.unit
     def test_help(self) -> None:
-        main_py = SRC_DIR / "main.py"
+        main_py = POINTS_DIR / "main.py"
         result = subprocess.run(
             [sys.executable, str(main_py), "--help"],
             capture_output=True,
@@ -193,7 +193,7 @@ class TestStepExecution:
 
     @pytest.mark.integration
     def test_run_core_step(self) -> None:
-        script = SRC_DIR / "3_gnn.py"
+        script = POINTS_DIR / "3_gnn.py"
         if not script.exists():
             raise AssertionError("3_gnn.py missing")
         with tempfile.TemporaryDirectory() as td:
@@ -217,7 +217,7 @@ class TestPipelineCoordination:
     @pytest.mark.slow
     @pytest.mark.integration
     def test_minimal_pipeline_execution(self) -> None:
-        main_py = SRC_DIR / "main.py"
+        main_py = POINTS_DIR / "main.py"
         with tempfile.TemporaryDirectory() as td:
             outdir = Path(td) / "output"
             target_dir = PROJECT_ROOT / "input" / "gnn_files" / "discrete"
@@ -275,7 +275,7 @@ class TestEndToEndIntegration:
     @pytest.mark.slow
     @pytest.mark.integration
     def test_run_pipeline_subset(self) -> None:
-        main_py = SRC_DIR / "main.py"
+        main_py = POINTS_DIR / "main.py"
         with tempfile.TemporaryDirectory() as td:
             target_dir = Path(td) / "input"
             target_dir.mkdir()

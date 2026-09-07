@@ -535,7 +535,7 @@ python src/gnn/9_advanced_viz.py --target-dir input/ --verbose
 - [Pipeline Overview](../../../README.md)
 - [Architecture Guide](../../../ARCHITECTURE.md)
 - [Visualization Module](../../../src/gnn/advanced_visualization/../visualization/AGENTS.md)
-- [D2 Documentation](../../../doc/d2/)
+- [D2 Documentation](../../../docs/d2/)
 
 ### External Resources
 

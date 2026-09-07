@@ -4,7 +4,7 @@
 The `scripts/` directory is the repository's hub for standalone maintenance, linting, and developer acceleration utilities. These tools operate externally to the core `src/` orchestrator pipeline, actively protecting codebase integrity over time.
 
 ## Key Files
-- `check_gnn_doc_patterns.py`: A strict RegEx-enforced documentation linter that audits `doc/` and `src/gnn/` against retired path aliases and import references.
+- `check_gnn_doc_patterns.py`: A strict RegEx-enforced documentation linter that audits `docs/` and `src/gnn/` against retired path aliases and import references.
 - `check_repo_terminology.py`: A maintained-source terminology audit for stale API and generated-artifact terms. CI-wired with `--strict`.
 - `check_doc_contracts.py`: A strict contract check for enforced quickstart sections, current CLI spellings, `input/config.yaml`, and the 9-render-target / 8-executor framework split. CI-wired with `--strict`.
 - `check_maintained_doc_terms.py`: A maintained-document terminology audit that catches retired PyMDP surface references and stale policy phrases while skipping generated and archive Markdown.

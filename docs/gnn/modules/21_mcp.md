@@ -379,7 +379,7 @@ See [pyproject.toml](../../../pyproject.toml).
 - [Pipeline Overview](../../../README.md)
 - [Architecture Guide](../../../ARCHITECTURE.md)
 - [MCP Implementation Spec](../../../src/gnn/mcp/mcp_implementation_spec.md)
-- [MCP Integration Guide](../../../doc/mcp/)
+- [MCP Integration Guide](../../../docs/mcp/)
 
 ### External Resources
 - [Model Context Protocol Specification](https://modelcontextprotocol.io)

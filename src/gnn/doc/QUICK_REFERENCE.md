@@ -166,7 +166,7 @@ uv run python -c "import gnn; print('OK')"
 ## 📁 Directory Reference
 
 ```
-doc/                  # Documentation root
+docs/                  # Documentation root
 ├── gnn/              # GNN language spec
 │   ├── gnn_syntax.md
 │   └── quickstart_tutorial.md
@@ -199,11 +199,11 @@ output/               # Generated outputs
 
 | Topic | Link |
 |-------|------|
-| Full Syntax | [doc/gnn/reference/gnn_syntax.md](../../../doc/gnn/reference/gnn_syntax.md) |
-| Quick Start | [doc/quickstart.md](../../../doc/quickstart.md) |
+| Full Syntax | [docs/gnn/reference/gnn_syntax.md](../../../docs/gnn/reference/gnn_syntax.md) |
+| Quick Start | [docs/quickstart.md](../../../docs/quickstart.md) |
 | Pipeline Reference | [src/gnn/AGENTS.md](../AGENTS.md) |
-| Learning Paths | [doc/learning_paths.md](../../../doc/learning_paths.md) |
-| API Reference | [doc/api/README.md](../../../doc/api/README.md) |
+| Learning Paths | [docs/learning_paths.md](../../../docs/learning_paths.md) |
+| API Reference | [docs/api/README.md](../../../docs/api/README.md) |
 
 ---
 
@@ -221,5 +221,5 @@ output/               # Generated outputs
 
 ---
 
-*For documentation index, see [doc/INDEX.md](../../../doc/INDEX.md)*
+*For documentation index, see [docs/INDEX.md](../../../docs/INDEX.md)*
 *For changelog, see [CHANGELOG.md](CHANGELOG.md)*

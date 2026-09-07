@@ -57,7 +57,7 @@ dependency changes.
    could use `tests.helpers.mcp_stubs.MCPTools` instead of local `_CapturingMCP`/
    `StubMCP`/`_FakeMCP`; inline GNN blobs (10+ dirs) can import
    `tests.helpers.gnn_samples`. Behavior-neutral cleanups in their dirs.
-2. **doc/gnn/modules/02_tests.md** still describes pre-refactor runner internals
+2. **docs/gnn/modules/02_tests.md** still describes pre-refactor runner internals
    (it documents the API accurately, but the "runner.py contains TestRunner" wording
    should be refreshed by the docs worker).
 3. `test_runner_output_isolation.py` + `test_tests_package_imports.py` reach into
@@ -105,7 +105,7 @@ with per-dir ownership and the behavior-preservation contract.
   (destructive, external, utilities, environment, render, export, parsers,
   type_checking, sapf, visualization); pytest.ini untouched (all 9 used);
   registries consistent; independently re-verified (0 refs, fast suite green).
-- **DocsRefresher**: doc/gnn/modules/02_tests.md refreshed to the unified
+- **DocsRefresher**: docs/gnn/modules/02_tests.md refreshed to the unified
   architecture (doc trio 15->15 green, orchestrator citation + links valid).
 - **Disciplined negatives** (zero edits, every candidate failed the
   behavior-preservation bar): McpVizAdvanced (4 dirs), SetupOntologyTail (9 dirs),

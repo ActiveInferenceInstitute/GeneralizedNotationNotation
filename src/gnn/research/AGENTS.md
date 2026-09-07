@@ -271,7 +271,7 @@ uv run --extra dev python -m pytest tests/research/ \
 - [Research Module](README.md)
 
 ### External Resources
-- [Active Inference Research](../../../doc/research/README.md)
+- [Active Inference Research](../../../docs/research/README.md)
 
 ---
 

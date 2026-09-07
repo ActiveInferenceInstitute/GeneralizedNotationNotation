@@ -26,7 +26,7 @@ This module is a **static documentation directory** — it does not export runti
 ## Policy
 
 - Does not define runtime pipeline behavior
-- Complements top-level `doc/` content for implementation-near material
+- Complements top-level `docs/` content for implementation-near material
 - Generated outputs, caches, and transient artifacts are excluded from coverage expectations
 
 

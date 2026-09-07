@@ -188,7 +188,7 @@ toolchain, a running Ollama server), the file belongs in `DEFAULT_SKIP_ALLOWLIST
 
 Runtime pytest settings live in `pytest.ini` at the repository root, which takes
 precedence over the `[tool.pytest.ini_options]` block in `pyproject.toml`. Markers are
-registered from both `pytest.ini` and the `PYTEST_MARKERS` table in `conftest.py`.
+registered in `pytest.ini` (single source of truth, covered by `--strict-markers`).
 Coverage settings are in `pyproject.toml`:
 
 ```toml

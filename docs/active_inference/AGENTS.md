@@ -116,26 +116,26 @@ Central documentation hub for all theoretical, computational, and implementation
 
 | Resource | Path | Description |
 |----------|------|-------------|
-| PyMDP | [`doc/pymdp/`](../pymdp/) | Complete PyMDP documentation |
-| RxInfer | [`doc/rxinfer/`](../rxinfer/) | RxInfer.jl documentation |
-| ActiveInference.jl | [`doc/activeinference_jl/`](../activeinference_jl/) | ActiveInference.jl docs |
-| POMDP | [`doc/pomdp/`](../pomdp/) | POMDP theoretical foundations |
+| PyMDP | [`docs/pymdp/`](../pymdp/) | Complete PyMDP documentation |
+| RxInfer | [`docs/rxinfer/`](../rxinfer/) | RxInfer.jl documentation |
+| ActiveInference.jl | [`docs/activeinference_jl/`](../activeinference_jl/) | ActiveInference.jl docs |
+| POMDP | [`docs/pomdp/`](../pomdp/) | POMDP theoretical foundations |
 
 ### GNN Core
 
 | Resource | Path | Description |
 |----------|------|-------------|
-| GNN Overview | [`doc/gnn/gnn_overview.md`](../gnn/gnn_overview.md) | Core GNN concepts |
-| GNN Syntax | [`doc/gnn/reference/gnn_syntax.md`](../gnn/reference/gnn_syntax.md) | Syntax specification |
-| Neurosymbolic | [`doc/gnn/advanced/gnn_llm_neurosymbolic_active_inference.md`](../gnn/advanced/gnn_llm_neurosymbolic_active_inference.md) | LLM + Active Inference |
-| GNN Examples | [`doc/gnn/tutorials/gnn_examples_doc.md`](../gnn/tutorials/gnn_examples_doc.md) | Example models |
+| GNN Overview | [`docs/gnn/gnn_overview.md`](../gnn/gnn_overview.md) | Core GNN concepts |
+| GNN Syntax | [`docs/gnn/reference/gnn_syntax.md`](../gnn/reference/gnn_syntax.md) | Syntax specification |
+| Neurosymbolic | [`docs/gnn/advanced/gnn_llm_neurosymbolic_active_inference.md`](../gnn/advanced/gnn_llm_neurosymbolic_active_inference.md) | LLM + Active Inference |
+| GNN Examples | [`docs/gnn/tutorials/gnn_examples_doc.md`](../gnn/tutorials/gnn_examples_doc.md) | Example models |
 
 ### LLM Integration
 
 | Resource | Path | Description |
 |----------|------|-------------|
-| DSPy | [`doc/other/dspy/`](../other/dspy/) | DSPy integration |
-| LLM | [`doc/llm/`](../llm/) | LLM documentation |
+| DSPy | [`docs/other/dspy/`](../other/dspy/) | DSPy integration |
+| LLM | [`docs/llm/`](../llm/) | LLM documentation |
 
 ---
 

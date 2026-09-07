@@ -325,10 +325,10 @@ As we advance toward increasingly sophisticated AI systems, the **mathematical r
 [61] https://news.ycombinator.com/item?id=40648960
 [62] https://dl.acm.org/doi/fullHtml/10.1145/3629296.3629336
 [63] https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation
-[64] https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/blob/main/doc/gnn/gnn_overview.md
-[65] https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/blob/main/doc/gnn/reference/gnn_syntax.md
-[66] https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/blob/main/doc/gnn/about_gnn.md
-[67] https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/blob/main/doc/gnn/reference/gnn_file_structure_doc.md
+[64] https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/blob/main/docs/gnn/gnn_overview.md
+[65] https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/blob/main/docs/gnn/reference/gnn_syntax.md
+[66] https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/blob/main/docs/gnn/about_gnn.md
+[67] https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/blob/main/docs/gnn/reference/gnn_file_structure_doc.md
 [68] http://www-formal.stanford.edu/jmc/ailogic.pdf
 [69] http://arxiv.org/pdf/2405.04550.pdf
 [70] https://plato.stanford.edu/entries/logic-ai/

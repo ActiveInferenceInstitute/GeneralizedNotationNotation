@@ -1,7 +1,7 @@
 """Tests for the deterministic manuscript-variable producer.
 
 Real objects only: every assertion recomputes the expected value from the live repository
-and compares it against :func:`gnn.manuscript_variables.generate_variables`, so the
+and compares it against :func:`gnn.manuscript.variables.generate_variables`, so the
 test fails if the producer drifts from the source surfaces it claims to read.
 """
 
@@ -17,7 +17,7 @@ import pytest
 # Import the producer by its canonical package name; the venv's editable
 # install exposes ``gnn``, so no sys.path bootstrap is needed and mypy
 # (mypy_path=src) resolves a single module name.
-from gnn.manuscript_variables import (
+from gnn.manuscript.variables import (
     RepositorySnapshot,
     _capability_clause,
     _registry_specs,

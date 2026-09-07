@@ -137,10 +137,10 @@ Baseline before any edits: 56 passed. After: 82 passed (+26 new tests, 0 regress
 
 Mid-run, `test_generates_html_dashboard` briefly failed with a circular-import error in `src/gnn/visualization/analysis/combined_analysis.py` — a fleet peer's in-flight file (dirty ` M`, syntax error visible mid-refactor). My module has zero references to `combined_analysis` (verified via grep). The peer fixed their syntax error before my final verification run; the test now passes. No action needed from me, but the `visualization/` module is a shared dependency and concurrent edits there can transiently break my module's import graph.
 
-## doc/ or manuscript/ follow-ups needed (other workers own those)
+## docs/ or manuscript/ follow-ups needed (other workers own those)
 
 - **`docs/` owner:** RESOLVED in the advisory sweep (2026-09-04): AGENTS.md Version History bumped 3.0.0 → 3.2.0 to match the header, and both stale "Last Updated" stamps refreshed to 2026-09-04 (within this module's scope; no external release process consulted).
-- **`doc/` owner:** the D2_README.md `docs/development/fleet-logs/` README convention doc is owned by the fleet coordinator; my checkpoint log follows it.
+- **`docs/` owner:** the D2_README.md `docs/development/fleet-logs/` README convention doc is owned by the fleet coordinator; my checkpoint log follows it.
 - **`manuscript/` owner:** none — no manuscript references my module's API.
 
 ## Follow-up ideas (not done; out of scope or higher-risk)

@@ -250,8 +250,8 @@ Even with full observability, Active Inference maintains:
 
 | Resource | Path |
 |----------|------|
-| POMDP Overview | [`doc/pomdp/pomdp_overall.md`](../pomdp/pomdp_overall.md) |
-| POMDP Analytics | [`doc/pomdp/pomdp_analytic.md`](../pomdp/pomdp_analytic.md) |
+| POMDP Overview | [`docs/pomdp/pomdp_overall.md`](../pomdp/pomdp_overall.md) |
+| POMDP Analytics | [`docs/pomdp/pomdp_analytic.md`](../pomdp/pomdp_analytic.md) |
 
 ### Implementation
 

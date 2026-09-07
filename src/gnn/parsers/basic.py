@@ -6,8 +6,10 @@ GNN parser module for GNN pipeline.
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union, cast
 
-# Single authoritative definition lives in types.py (includes RESEARCH and ROUND_TRIP).
-from gnn.types import ParsedGNN, ValidationLevel
+# Single authoritative definitions live in gnn/types/definitions.py (import from
+# the implementation module, not the package facade, to keep the parsers <-> types
+# import graph acyclic at runtime).
+from gnn.types.definitions import ParsedGNN, ValidationLevel
 
 
 class _GNNParseAccumulator:

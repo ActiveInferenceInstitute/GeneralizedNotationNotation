@@ -20,7 +20,7 @@ This directory contains documentation, resources, and implementation guides for 
 - **[cerebrum_v1-4.md](cerebrum_v1-4.md)**: CEREBRUM v1.4 comprehensive specification
 
 ### Main Documentation
-- **[doc/README.md](../README.md)**: Main documentation hub
+- **[docs/README.md](../README.md)**: Main documentation hub
 - **[CROSS_REFERENCE_INDEX.md](../../CROSS_REFERENCE_INDEX.md)**: Complete cross-reference index
 - **[learning_paths.md](../../learning_paths.md)**: Learning pathways
 

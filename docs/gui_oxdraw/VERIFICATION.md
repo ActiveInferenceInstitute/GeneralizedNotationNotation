@@ -43,7 +43,7 @@ The oxdraw integration module is **fully complete** with comprehensive implement
 |------|-------|--------|---------|
 | `22_gui.py` (oxdraw option) | 79 | ✅ Complete | Thin orchestrator (Step 22) |
 
-### Documentation (doc/oxdraw/)
+### Documentation (docs/oxdraw/)
 
 | File | Lines | Status | Purpose |
 |------|-------|--------|---------|
@@ -188,7 +188,7 @@ The oxdraw integration module is **fully complete** with comprehensive implement
 - ✅ Troubleshooting section
 - ✅ References
 
-### Integration Documentation (doc/oxdraw/)
+### Integration Documentation (docs/oxdraw/)
 
 #### gnn_oxdraw.md (1,186 lines)
 - ✅ Executive summary

@@ -82,7 +82,7 @@ def build_pipeline_command(
     """Construct the GNN pipeline run command as an argv list.
 
     The shape mirrors the documented invocation:
-    ``python src/main.py --target-dir <dir> --output-dir <dir> [--skip-steps "n,m"]``.
+    ``python src/gnn/main.py --target-dir <dir> --output-dir <dir> [--skip-steps "n,m"]``.
 
     Args:
         target_dir: Directory of GNN input files.
@@ -94,7 +94,7 @@ def build_pipeline_command(
     """
     command: List[str] = [
         "python",
-        "src/main.py",
+        "src/gnn/main.py",
         "--target-dir",
         target_dir,
         "--output-dir",
@@ -116,7 +116,7 @@ def plan_for_pipeline(
     """Build a hardened container plan FOR RUNNING the GNN pipeline.
 
     The plan declares a single ``gnn-pipeline`` container whose command runs
-    ``src/main.py`` over ``target_dir``/``output_dir``, honoring ``skip_steps``
+    ``src/gnn/main.py`` over ``target_dir``/``output_dir``, honoring ``skip_steps``
     read from ``config_path``. The container is hardened: a digest-pinned image,
     a read-only root filesystem with an explicit *named output volume* (never a
     host-path mount), no host namespaces, no added capabilities, and explicit

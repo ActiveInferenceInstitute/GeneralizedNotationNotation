@@ -7,22 +7,22 @@ on:
     branches: [main]
     paths:
       - "**/*.md"
-      - "doc/**"
+      - "docs/**"
       - "AGENTS.md"
       - "CLAUDE.md"
       - "README.md"
       - "SKILL.md"
-      - "doc/development/docs_audit.py"
+      - "docs/development/docs_audit.py"
   pull_request:
     branches: [main]
     paths:
       - "**/*.md"
-      - "doc/**"
+      - "docs/**"
       - "AGENTS.md"
       - "CLAUDE.md"
       - "README.md"
       - "SKILL.md"
-      - "doc/development/docs_audit.py"
+      - "docs/development/docs_audit.py"
   workflow_dispatch:
 
 concurrency:
@@ -55,7 +55,7 @@ jobs:
         run: uv sync --frozen --extra dev
 
       - name: Documentation audit (strict)
-        run: uv run --extra dev python doc/development/docs_audit.py --strict --check-anchors --no-write
+        run: uv run --extra dev python docs/development/docs_audit.py --strict --check-anchors --no-write
 
       - name: Repository terminology audit
         run: uv run --extra dev python scripts/check_repo_terminology.py --strict

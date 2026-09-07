@@ -338,8 +338,8 @@ Registered in `register_tools` (`src/gnn/audio/mcp.py`):
 ### Related Documentation
 - [Pipeline Overview](../../../README.md)
 - [Architecture Guide](../../../ARCHITECTURE.md)
-- [SAPF Documentation](../../../doc/sapf/)
-- [Pedalboard Documentation](../../../doc/pedalboard/)
+- [SAPF Documentation](../../../docs/sapf/)
+- [Pedalboard Documentation](../../../docs/pedalboard/)
 
 ### External Resources
 - [SAPF Specification](../../sapf/README.md)

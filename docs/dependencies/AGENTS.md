@@ -18,8 +18,8 @@ Dependency management, package versioning, and optional installation documentati
 The dependencies documentation system is part of the broader GNN (Generalized Notation Notation) pipeline and ecosystem.
 
 ### Related Systems
-- **Main Documentation**: [doc/README.md](../README.md)
-- **Setup Guide**: [doc/SETUP.md](../SETUP.md)
+- **Main Documentation**: [docs/README.md](../README.md)
+- **Setup Guide**: [docs/SETUP.md](../SETUP.md)
 - **Pipeline Reference**: [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)
 - **Active Inference**: [activeinference.org](https://activeinference.org)
 
@@ -35,8 +35,8 @@ The dependencies documentation system is part of the broader GNN (Generalized No
 
 - **Get Started**: See [README.md](README.md)
 - **Optional Packages**: [OPTIONAL_DEPENDENCIES.md](OPTIONAL_DEPENDENCIES.md)
-- **Setup Guide**: [doc/SETUP.md](../SETUP.md)
-- **Full Documentation Index**: [doc/README.md](../README.md)
+- **Setup Guide**: [docs/SETUP.md](../SETUP.md)
+- **Full Documentation Index**: [docs/README.md](../README.md)
 
 ## Documentation Standards
 

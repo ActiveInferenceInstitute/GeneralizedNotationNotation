@@ -390,7 +390,7 @@ python src/gnn/2_tests.py --comprehensive --verbose
 - `@pytest.mark.fast` - Fast tests
 - `@pytest.mark.performance` - Performance tests (also auto-applied to `slow` tests by `conftest.py`)
 
-Registered in `pytest.ini`, `pyproject.toml`, and `conftest.py::PYTEST_MARKERS`; `--strict-markers` rejects unregistered markers (there is no `safe_to_fail` marker).
+Registered in `pytest.ini` (single source of truth); `--strict-markers` rejects unregistered markers (there is no `safe_to_fail` marker).
 
 ### Running Tests by Marker
 
@@ -736,7 +736,7 @@ This test infrastructure provides a solid foundation for comprehensive testing o
 - Project overview: ../../README.md
 - Comprehensive docs: ../../DOCS.md
 - Architecture guide: ../../ARCHITECTURE.md
-- Pipeline details: ../../doc/pipeline/README.md
+- Pipeline details: ../../docs/pipeline/README.md
 
 
 ---

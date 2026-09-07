@@ -142,4 +142,4 @@ uv run --extra dev python -m pytest tests/mcp/test_mcp_audit.py -v --tb=short
 - [Tool Reference](tool_reference.md) — registered tools in a flat table
 - [Tool Development Guide](tool_development_guide.md) — add your own tools
 - [modules/21_mcp.md](../modules/21_mcp.md) — pipeline step documentation
-- [doc/mcp/fastmcp.md](../../../doc/mcp/fastmcp.md) — FastMCP library guide
+- [docs/mcp/fastmcp.md](../../../docs/mcp/fastmcp.md) — FastMCP library guide

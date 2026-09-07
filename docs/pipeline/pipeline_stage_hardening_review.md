@@ -65,7 +65,7 @@ uv run --extra dev mypy src --show-error-codes
 uv run --extra dev bandit -r src -c pyproject.toml -q
 uv run --extra dev python scripts/check_repo_terminology.py --strict
 uv run --extra dev python scripts/check_maintained_doc_terms.py --strict
-uv run --extra dev python doc/development/docs_audit.py --strict --check-anchors --no-write
+uv run --extra dev python docs/development/docs_audit.py --strict --check-anchors --no-write
 uv run --extra dev python scripts/check_gnn_doc_patterns.py --strict
 uv lock --check
 julia --startup-file=no -e 'using RxInfer, ActiveInference, JSON, Distributions, StatsBase'

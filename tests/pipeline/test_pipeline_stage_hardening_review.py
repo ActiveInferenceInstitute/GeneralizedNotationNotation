@@ -6,7 +6,7 @@ import re
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-REVIEW_PATH = REPO_ROOT / "doc" / "pipeline" / "pipeline_stage_hardening_review.md"
+REVIEW_PATH = REPO_ROOT / "docs" / "pipeline" / "pipeline_stage_hardening_review.md"
 
 
 def test_pipeline_stage_hardening_review_covers_all_steps() -> None:
@@ -57,7 +57,7 @@ def test_pipeline_stage_hardening_review_lists_required_gates() -> None:
         "uv run --extra dev bandit -r src -c pyproject.toml -q",
         "uv run --extra dev python scripts/check_repo_terminology.py --strict",
         "uv run --extra dev python scripts/check_maintained_doc_terms.py --strict",
-        "uv run --extra dev python doc/development/docs_audit.py --strict --check-anchors --no-write",
+        "uv run --extra dev python docs/development/docs_audit.py --strict --check-anchors --no-write",
         "uv run --extra dev python scripts/check_gnn_doc_patterns.py --strict",
         "uv run --extra dev python -m pytest tests/pipeline/test_pomdp_gridworld_cross_framework.py -q --tb=short",
         "uv run --extra dev python -m pytest --collect-only tests/ -q --tb=no",

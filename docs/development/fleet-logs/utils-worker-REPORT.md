@@ -57,7 +57,7 @@ Root-surface smoke: lazy-PEP562 resolution verified for all touched submodules (
 
 ## Doc/ or manuscript/ follow-ups (other workers own those)
 
-- `doc/` architecture references still describe the (pre-existing) tripled dependency catalogs and dual error frameworks — update when/if those consolidations happen.
+- `docs/` architecture references still describe the (pre-existing) tripled dependency catalogs and dual error frameworks — update when/if those consolidations happen.
 - `utils/SKILL.md` MCP tools list could name the new redaction helpers if docs workers want MCP-surface parity.
 - `REPO_COHERENCE_CHECK.md` / `architecture_reference.md` hardcode `from utils.pipeline_template import ...` examples — unchanged, still valid.
 

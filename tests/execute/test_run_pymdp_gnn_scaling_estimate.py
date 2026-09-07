@@ -65,7 +65,7 @@ def test_pipeline_invocation_uses_project_root_python_and_frameworks(
     )
 
     assert cwd == scaling_mod.PROJECT_ROOT
-    assert cmd[:4] == ["uv", "run", "python", "src/main.py"]
+    assert cmd[:4] == ["uv", "run", "python", "src/gnn/main.py"]
     assert cmd[cmd.index("--target-dir") + 1] == str(tmp_path)
     assert cmd[cmd.index("--output-dir") + 1] == str(tmp_path / "pipeline_output")
     assert cmd[cmd.index("--render-output-dir") + 1] == str(

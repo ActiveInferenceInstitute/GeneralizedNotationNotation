@@ -39,7 +39,7 @@
 **Behavior fixes (regressions corrected, not contract changes)**:
 1. `GNNTypeChecker(strict_mode=True)` + `--strict` now promote `[GNN-E002]` B-orientation contradictions from warnings to errors (the flag was silently ignored before).
 2. `validate_gnn_files(..., estimate_resources=True)` now runs the resource estimator and writes `resource_estimates/resource_data.json` + `resource_report.md` (the documented `--estimate-resources` Step 5 option was silently ignored before).
-3. `type_check_summary.json` is now written (documented at `doc/gnn/modules/05_type_checker.md:111` but never emitted before).
+3. `type_check_summary.json` is now written (documented at `docs/gnn/modules/05_type_checker.md:111` but never emitted before).
 4. The CLI (`python -m type_checker.cli`) no longer crashes with `KeyError: 'is_valid'`; it writes per-file reports + CSV artifacts with real data.
 5. The Markdown summary uses real newlines (the 5 `\\n`-literal lines emitted `\n` text before).
 6. The estimator classifies `## Time` as Static/Dynamic/Hierarchical (the old `"Dynamic" if 't' in content` was true for ~every spec).
@@ -61,24 +61,24 @@ Baseline was 41 passing (0 regressions). New total: **74** (41 existing + 33 new
 
 ## Post-check comprehensive round (2026-09-04, after fleet re-check)
 
-With the orchestrator's go-ahead (doc/ and CHANGELOG.md were untouched by any
+With the orchestrator's go-ahead (docs/ and CHANGELOG.md were untouched by any
 other worker), the flagged follow-ups were resolved in this same scope:
 
 1. **Phase 1.1 exit-code contract aligned.** Repo-wide evidence
    (`test_pipeline_render_execute_analyze.py:117`, analysis/execute/render
-   regression tests, `doc/gnn/testing/SPEC.md:51`) shows "no input" must be
+   regression tests, `docs/gnn/testing/SPEC.md:51`) shows "no input" must be
    exit-2 warning, not exit-1. `validate_gnn_files` no longer sets
    `hard_failure` on no-files → returns 2; artifacts still written; MCP
    message distinguishes the warning outcome. Regression test:
    `test_validate_gnn_files_no_files_is_warning_exit_2`. (My initial
    "preserve exit 1" call was wrong — the doc was right, the code was the
    outlier.)
-2. **`doc/gnn/modules/05_type_checker.md` reconciled**: strict wording
+2. **`docs/gnn/modules/05_type_checker.md` reconciled**: strict wording
    narrowed to the real semantics (B-orientation `[GNN-E002]` promotion);
    exit-code paragraph rewritten (0/1/2 with Phase 1.1 semantics); Testing
    section now references real tests (the previously listed
    `test_type_checker_strict_mode_promotes_warnings` never existed).
-3. **`doc/gnn/tutorials/quickstart_tutorial.md`**: stale ".gnn silently not
+3. **`docs/gnn/tutorials/quickstart_tutorial.md`**: stale ".gnn silently not
    found" note replaced (discovery now walks registered extensions).
 4. **`CHANGELOG.md`**: `### Fixed (2026-09-04 — type checker contract
    alignment)` entry added under `[Unreleased]`.
@@ -98,23 +98,23 @@ other worker), the flagged follow-ups were resolved in this same scope:
 8. **Strict semantics decision**: `validate_dimension_compatibility` keeps its
    narrow documented semantics (orientation contradictions only) — the module
    docstring, AGENTS.md, and SPEC.md already agree; the broad "all warnings"
-   claim existed only in `doc/gnn/modules/05_type_checker.md` and is fixed.
+   claim existed only in `docs/gnn/modules/05_type_checker.md` and is fixed.
 9. **`classify_time_spec` unifies its Dynamic marker set with
    `detect_time_dynamics`** (delegates to it): a "continuous-time" spec now
    classifies `Dynamic` instead of contradicting `time_dynamics.is_dynamic=True`
    with `model_type="Static"`; agreement pinned by
    `test_classify_time_spec_agrees_with_detect_time_dynamics`.
-10. **Ownership check before doc edits**: `doc/` + `CHANGELOG.md` were and remain
+10. **Ownership check before doc edits**: `docs/` + `CHANGELOG.md` were and remain
    claimed by no worker (dirty surface = this worker's 3 files only); the newly
-   appeared `DocsRefresher` worker owns `doc/gnn/modules/02_tests.md` — no overlap.
+   appeared `DocsRefresher` worker owns `docs/gnn/modules/02_tests.md` — no overlap.
    `sections.py` is an untracked new file of this worker (no foreign edit).
 
-Note: `doc/development/docs_audit.py --strict` currently flags 1 issue —
+Note: `docs/development/docs_audit.py --strict` currently flags 1 issue —
 `tests/tests` (tests-worker's new directory) lacks an AGENTS.md. That is
 tests-worker scope, not this module's.
 
 ## 5-line summary
 - Audited `src/gnn/type_checker/**` + `5_type_checker.py`; baseline 41 tests, ruff+mypy clean; proved live bugs (CLI `KeyError`, literal `\n` summary, `strict_mode` swallowed, `--estimate-resources` ignored, `## Time` misclassified, HTML report `dict.__format__` crash); verified `visualizer` charts are NOT dead (probe disproved the matplotlib 3.9-cmap-removal assumption; no visualizer change made).
 - Added `checking/sections.py` (shared section-scoped parsing) + `checking/summary.py` (`ValidationSummary` TypedDict) and re-exported the additive surface; dedup'd the checker/estimator connection parsing.
-- Post-check comprehensive round: Phase 1.1 exit-2 alignment (no-files), doc/tutorial/CHANGELOG reconciliation, single-read-per-file + `_invalid_file_result` dedup, `model_type` + granular `model_complexity` enrichment (shared `classify_time_spec`, Dynamic markers unified with `detect_time_dynamics`), `report_html` matplotlib guard — see "Post-check comprehensive round" above. Final gate green: `ruff` clean, `mypy` 21 files 0 errors, `pytest tests/type_checker/` **74 passed** (41 existing + 33 new, 0 regressions).
+- Post-check comprehensive round: Phase 1.1 exit-2 alignment (no-files), docs/tutorial/CHANGELOG reconciliation, single-read-per-file + `_invalid_file_result` dedup, `model_type` + granular `model_complexity` enrichment (shared `classify_time_spec`, Dynamic markers unified with `detect_time_dynamics`), `report_html` matplotlib guard — see "Post-check comprehensive round" above. Final gate green: `ruff` clean, `mypy` 21 files 0 errors, `pytest tests/type_checker/` **74 passed** (41 existing + 33 new, 0 regressions).
 - Added 33 deterministic tests (`test_type_checker_content_validation.py` 23, `test_type_checker_estimator_cli_mcp.py` 10), incl. the `validate_single_gnn_file` never-raises regression, the Phase 1.1 no-files exit-2 regression, and the classify/detect time-marker agreement test; updated AGENTS/README/SPEC/SKILL/subpackage docs to v1.7.0/3.3.0.

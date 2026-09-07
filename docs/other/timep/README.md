@@ -19,7 +19,7 @@ This directory contains documentation, resources, and implementation guides for 
 - **[timep_gnn.md](timep_gnn.md)**: Complete TimEP-GNN integration guide
 
 ### Main Documentation
-- **[doc/README.md](../README.md)**: Main documentation hub
+- **[docs/README.md](../README.md)**: Main documentation hub
 - **[CROSS_REFERENCE_INDEX.md](../../CROSS_REFERENCE_INDEX.md)**: Complete cross-reference index
 - **[learning_paths.md](../../learning_paths.md)**: Learning pathways
 

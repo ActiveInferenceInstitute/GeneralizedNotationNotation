@@ -35,7 +35,10 @@ REQUIRED_QUICKSTART_SECTIONS = (
 # the current main/numbered-script parsers. Explanatory prose is allowed when the
 # same line explicitly marks a spelling as unsupported/obsolete.
 STALE_COMMAND_PATTERNS: tuple[tuple[re.Pattern[str], str], ...] = (
-    (re.compile(r"src/gnn/main\.py[^\n]*--config(?:-file)?\b"), "main.py config override"),
+    (
+        re.compile(r"src/gnn/main\.py[^\n]*--config(?:-file)?\b"),
+        "main.py config override",
+    ),
     (re.compile(r"src/gnn/main\.py[^\n]*--skip\s+(?!steps)"), "main.py --skip"),
     (re.compile(r"src/gnn/main\.py[^\n]*--debug\b"), "main.py --debug"),
     (re.compile(r"src/gnn/main\.py[^\n]*--dry-run\b"), "main.py --dry-run"),
@@ -48,8 +51,14 @@ STALE_COMMAND_PATTERNS: tuple[tuple[re.Pattern[str], str], ...] = (
         re.compile(r"src/gnn/11_render\.py[^\n]*--force-regenerate\b"),
         "Step 11 --force-regenerate",
     ),
-    (re.compile(r"src/gnn/1_setup\.py[^\n]*--install_optional\b"), "underscore setup flag"),
-    (re.compile(r"src/gnn/1_setup\.py[^\n]*--optional_groups\b"), "underscore setup flag"),
+    (
+        re.compile(r"src/gnn/1_setup\.py[^\n]*--install_optional\b"),
+        "underscore setup flag",
+    ),
+    (
+        re.compile(r"src/gnn/1_setup\.py[^\n]*--optional_groups\b"),
+        "underscore setup flag",
+    ),
     (re.compile(r"src/gnn/1_setup\.py[^\n]*--recreate-venv\b"), "obsolete venv flag"),
 )
 
@@ -72,7 +81,7 @@ def _is_explanatory_line(line: str) -> bool:
 def scan() -> list[str]:
     """Return human-readable contract violations."""
     issues: list[str] = []
-    quickstart = ROOT / "doc" / "gnn" / "tutorials" / "quickstart_tutorial.md"
+    quickstart = ROOT / "docs" / "gnn" / "tutorials" / "quickstart_tutorial.md"
     text = quickstart.read_text(encoding="utf-8")
     positions = [text.find(f"## {section}") for section in REQUIRED_QUICKSTART_SECTIONS]
     if any(position < 0 for position in positions):
@@ -85,19 +94,19 @@ def scan() -> list[str]:
     elif positions != sorted(positions):
         issues.append("quickstart enforced sections are out of order")
 
-    config = ROOT / "doc" / "configuration" / "README.md"
+    config = ROOT / "docs" / "configuration" / "README.md"
     config_text = config.read_text(encoding="utf-8")
     if "input/config.yaml" not in config_text:
         issues.append("configuration guide does not name input/config.yaml")
 
-    hub = (ROOT / "doc" / "README.md").read_text(encoding="utf-8").lower()
+    hub = (ROOT / "docs" / "README.md").read_text(encoding="utf-8").lower()
     for forbidden in ("doc_markdown_files", "production_ready", "600+", "610 markdown"):
         if forbidden in hub:
             issues.append(
                 f"primary documentation hub contains generated/stale metadata: {forbidden}"
             )
 
-    pipeline = (ROOT / "doc" / "pipeline" / "README.md").read_text(encoding="utf-8")
+    pipeline = (ROOT / "docs" / "pipeline" / "README.md").read_text(encoding="utf-8")
     if "9 render" not in pipeline.lower() or "9 executor" not in pipeline.lower():
         issues.append(
             "pipeline guide does not distinguish nine render targets and nine executors"
@@ -105,9 +114,10 @@ def scan() -> list[str]:
     if "bnlearn is render-only" not in pipeline:
         issues.append("pipeline guide does not identify bnlearn as render-only")
 
-    for path in sorted((ROOT / "doc").rglob("*.md")):
+    for path in sorted((ROOT / "docs").rglob("*.md")):
         if any(
-            part in {"output", "other", ".git", "__pycache__"} for part in path.parts
+            part in {"output", "other", ".git", "__pycache__", "fleet-logs"}
+            for part in path.parts
         ):
             continue
         for line_no, line in enumerate(

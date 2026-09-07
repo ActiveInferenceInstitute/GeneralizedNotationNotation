@@ -58,7 +58,7 @@ Cross-cutting tests: 63/64 pass. The 1 failure is a pre-existing `test_zero_skip
 
 ## Doc / Manuscript Follow-ups Needed (other workers own these)
 
-- **`doc/`** references to export API: The docs_audit and check_doc_links gates should be run by the doc worker to verify no stale references to the old format lists. The module-level docstrings are updated; `doc/` prose may reference old dispatch patterns.
+- **`docs/`** references to export API: The docs_audit and check_doc_links gates should be run by the doc worker to verify no stale references to the old format lists. The module-level docstrings are updated; `docs/` prose may reference old dispatch patterns.
 - **`src/gnn/mcp/audit_report.json`** or equivalent: If the repo has a generated MCP manifest that records per-module tool counts, the manifest worker should regenerate it (no tools were added or removed, but the `__all__` grew by 2).
 - **`src/gnn/export/SPEC.md`** and **`src/gnn/export/SKILL.md`**: Light updates to mention the registry could be done by a doc-focused worker. I updated AGENTS.md/README.md only.
 
@@ -86,4 +86,4 @@ Cross-cutting tests: 63/64 pass. The 1 failure is a pre-existing `test_zero_skip
 ## Transient Cross-Worker Artifacts (not export scope, observed at turn end)
 
 - `tests/test_zero_skip_contracts.py::test_default_suite_does_not_reintroduce_skips_or_xfails` fails on `tests/advanced_visualization/test_advanced_visualization_public_api_refactor.py` containing `pytest.skip` — advanced_visualization is a fleet peer's file; both export-scoped zero-skip assertions pass.
-- `doc/development/docs_audit.py --strict --no-write` reports 1 issue: `tests/tests/` lacks an AGENTS.md — that directory is another worker's active workspace (modified files present); all `src/gnn/export/` doc invariants pass.
+- `docs/development/docs_audit.py --strict --no-write` reports 1 issue: `tests/tests/` lacks an AGENTS.md — that directory is another worker's active workspace (modified files present); all `src/gnn/export/` doc invariants pass.

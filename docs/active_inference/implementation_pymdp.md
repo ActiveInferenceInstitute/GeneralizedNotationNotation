@@ -38,11 +38,11 @@
 
 | Document | Path | Description |
 |----------|------|-------------|
-| **README** | [`doc/pymdp/README.md`](../pymdp/README.md) | Overview |
-| **GNN PyMDP Guide** | [`doc/pymdp/gnn_pymdp.md`](../pymdp/gnn_pymdp.md) | Complete integration guide |
-| **Advanced Tutorials** | [`doc/pymdp/pymdp_advanced_tutorials.md`](../pymdp/pymdp_advanced_tutorials.md) | Advanced usage |
-| **Performance Guide** | [`doc/pymdp/pymdp_performance_guide.md`](../pymdp/pymdp_performance_guide.md) | Optimization |
-| **POMDP Examples** | [`doc/pymdp/pymdp_pomdp/`](../pymdp/pymdp_pomdp/) | POMDP implementations |
+| **README** | [`docs/pymdp/README.md`](../pymdp/README.md) | Overview |
+| **GNN PyMDP Guide** | [`docs/pymdp/gnn_pymdp.md`](../pymdp/gnn_pymdp.md) | Complete integration guide |
+| **Advanced Tutorials** | [`docs/pymdp/pymdp_advanced_tutorials.md`](../pymdp/pymdp_advanced_tutorials.md) | Advanced usage |
+| **Performance Guide** | [`docs/pymdp/pymdp_performance_guide.md`](../pymdp/pymdp_performance_guide.md) | Optimization |
+| **POMDP Examples** | [`docs/pymdp/pymdp_pomdp/`](../pymdp/pymdp_pomdp/) | POMDP implementations |
 
 ---
 

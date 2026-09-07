@@ -373,7 +373,7 @@ uv run --extra dev python -m pytest tests/report/ \
 
 - [Pipeline Overview](../../../README.md)
 - [Architecture Guide](../../../ARCHITECTURE.md)
-- [Documentation Index](../../../doc/README.md)
+- [Documentation Index](../../../docs/README.md)
 
 ### External Resources
 

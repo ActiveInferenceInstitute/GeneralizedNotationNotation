@@ -39,17 +39,17 @@ uv run --extra dev python scripts/check_gnn_doc_patterns.py --strict
                                                        report has '## model.md (pomdp model)' + priority grouping
 ```
 
-`doc/development/docs_audit.py --strict --check-anchors --no-write` exits 1 on **pre-existing** issue `tests/tests` (dir with .py but no AGENTS.md, created 10:59 by a fleet peer before this worker started — not in my scope). My doc surface is clean under it.
+`docs/development/docs_audit.py --strict --check-anchors --no-write` exits 1 on **pre-existing** issue `tests/tests` (dir with .py but no AGENTS.md, created 10:59 by a fleet peer before this worker started — not in my scope). My doc surface is clean under it.
 
 ## Follow-ups for other owners
 
 1. `tests/tests/` (peer): needs an `AGENTS.md` or relocation, else `docs_audit --strict` stays red repo-wide.
-2. `doc/` or `manuscript/` workers: none required — output contracts (`research_results.json`, `research_summary.json`, `research_processing_summary.json`, `research_report.md`) unchanged, so `pipeline_validation`/`report/analyzer`/`gui` consumers are unaffected.
+2. `docs/` or `manuscript/` workers: none required — output contracts (`research_results.json`, `research_summary.json`, `research_processing_summary.json`, `research_report.md`) unchanged, so `pipeline_validation`/`report/analyzer`/`gui` consumers are unaffected.
 3. Repo-wide convention note: module `FEATURES` exists in both `__init__.py` and `processor.py` with different keys (drift by convention, same in audio/analysis/... modules). Left alone deliberately; a fleet-level decision would be needed to unify.
 
 ## Follow-up ideas (out of scope today)
 
-- Promote `summarize_hypotheses` into the MCP surface (e.g. enrich `read_research_results_mcp` with per-priority counts) — additive, would need doc/test updates.
+- Promote `summarize_hypotheses` into the MCP surface (e.g. enrich `read_research_results_mcp` with per-priority counts) — additive, would need docs/test updates.
 - `detect_model_family` could return a `Literal` type derived from `MODEL_FAMILIES` once Python 3.12 `TypeAliasType` ergonomics are acceptable here.
 - LLM enrichment path (`FEATURES["llm_hypothesis_generation"]`) is dead in production (gate is False); consider an env-var override or removal in a future minor.
 

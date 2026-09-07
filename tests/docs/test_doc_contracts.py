@@ -24,7 +24,7 @@ def test_repository_documentation_contracts_pass() -> None:
 def test_quickstart_lists_all_enforced_sections_in_order() -> None:
     checker = _load_checker()
     text = (
-        REPO_ROOT / "doc" / "gnn" / "tutorials" / "quickstart_tutorial.md"
+        REPO_ROOT / "docs" / "gnn" / "tutorials" / "quickstart_tutorial.md"
     ).read_text(encoding="utf-8")
     positions = [
         text.find(f"## {section}") for section in checker.REQUIRED_QUICKSTART_SECTIONS

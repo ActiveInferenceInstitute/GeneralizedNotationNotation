@@ -416,11 +416,11 @@ When contributing to the MCP implementation:
 - [Model Context Protocol Specification](https://modelcontextprotocol.io/)
 - [JSON-RPC 2.0 Specification](https://www.jsonrpc.org/specification)
 - **[Comprehensive MCP Documentation](MCP_DOCUMENTATION.md)** — Full implementation guide and live audit commands for the registered tool surface
-- [GNN Project Documentation](../../../doc/)
-- [MCP Integration Guide](../../../doc/mcp/gnn_mcp_model_context_protocol.md)
+- [GNN Project Documentation](../../../docs/)
+- [MCP Integration Guide](../../../docs/mcp/gnn_mcp_model_context_protocol.md)
 - Project overview: ../../../README.md
 - Comprehensive docs: ../../../DOCS.md
-- Pipeline details (Step 22): ../../../doc/pipeline/README.md
+- Pipeline details (Step 22): ../../../docs/pipeline/README.md
 
 ---
 ## Documentation

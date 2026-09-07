@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Regenerate doc/dev/src_folder_doc_inventory.md from the current src/ tree."""
+"""Regenerate docs/dev/src_folder_doc_inventory.md from the current src/ tree."""
 
 from __future__ import annotations
 

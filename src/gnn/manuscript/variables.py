@@ -780,7 +780,7 @@ def generate_variables(project_root: Path) -> dict[str, str]:
     )
     figure_count = _count_files(snapshot, "output", "*.png")
     manuscript_figure_count = _count_files(snapshot, "output/figures", "*.png")
-    doc_file_count = _count_files(snapshot, "doc", "*.md")
+    doc_file_count = _count_files(snapshot, "docs", "*.md")
 
     variables: dict[str, str] = {
         # Identity / config

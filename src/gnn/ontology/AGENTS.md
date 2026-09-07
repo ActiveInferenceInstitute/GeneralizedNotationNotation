@@ -370,11 +370,11 @@ Registered by `src/gnn/ontology/mcp.py` `register_tools(mcp_instance)` (4 tools)
 - [Pipeline Overview](../../../README.md)
 - [Architecture Guide](../../../ARCHITECTURE.md)
 - [Active Inference Ontology](https://activeinference.org)
-- [GNN Ontology Guide](../../../doc/gnn/advanced/gnn_ontology.md)
+- [GNN Ontology Guide](../../../docs/gnn/advanced/gnn_ontology.md)
 
 ### External Resources
 - [Active Inference Institute](https://activeinference.institute/)
-- [Active Inference Ontology Documentation](../../../doc/gnn/advanced/ontology_system.md)
+- [Active Inference Ontology Documentation](../../../docs/gnn/advanced/ontology_system.md)
 
 ---
 

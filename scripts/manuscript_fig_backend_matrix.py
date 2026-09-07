@@ -6,7 +6,7 @@ Thin orchestrator. Reads real data from:
   - src/gnn/render/<key>/ subdirectory existence (render-output presence)
   - input/model_family_manifest.json + src/gnn/pipeline/cross_framework_reliability.py
     (the single cross-framework comparison family selected by
-    gnn.manuscript_variables.select_cross_framework_family, intersected with the
+    gnn.manuscript.select_cross_framework_family, intersected with the
     reliability gate's MAINTAINED_FRAMEWORKS)
 
 Writes output/figures/gnn_backend_capability_matrix.png at >=150 DPI.
@@ -52,7 +52,7 @@ def cross_framework_backends() -> tuple[str, list[str], list[str]]:
     family and the footer called the union "the cross-framework comparison
     family", producing a third cardinality for one concept inside one document.
     """
-    from gnn.manuscript_variables import select_cross_framework_family
+    from gnn.manuscript import select_cross_framework_family
 
     manifest = json.loads(MANIFEST.read_text())
     family = select_cross_framework_family(manifest.get("families", []))

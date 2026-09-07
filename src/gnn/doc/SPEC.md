@@ -19,10 +19,10 @@ This module does not export runtime Python functionality. It contains:
 | Hand-maintained implementation notes | Generated output artifacts |
 | Developer quick-reference guides | Cache files or temporary data |
 | Cognitive modeling reference docs | Runtime pipeline configuration |
-| Change history for the doc subtree | Top-level `doc/` documentation |
+| Change history for the doc subtree | Top-level `docs/` documentation |
 
 ## Standards
 
-- Content must complement (not duplicate) top-level `doc/` documentation
+- Content must complement (not duplicate) top-level `docs/` documentation
 - Documentation coverage policy applies to maintained source/doc folders only
 - Generated outputs, caches, and transient artifacts are excluded from coverage expectations

@@ -318,7 +318,7 @@ the extractor and the type checker:
   orientation, so no verdict is issued.
 
 > **🔗 Cross-Reference**: terminology for `B` and the other discrete POMDP
-> matrices lives in the [Active Inference glossary](../../../doc/active_inference/glossary.md).
+> matrices lives in the [Active Inference glossary](../../../docs/active_inference/glossary.md).
 
 ## C vector semantics
 
@@ -346,7 +346,7 @@ C={(0.0, -1.0, -2.0)}
 ```
 
 > **🔗 Cross-Reference**: see
-> [C Matrix/Vector](../../../doc/active_inference/glossary.md#c-matrixvector)
+> [C Matrix/Vector](../../../docs/active_inference/glossary.md#c-matrixvector)
 > in the Active Inference glossary.
 
 ## Mathematical Operations

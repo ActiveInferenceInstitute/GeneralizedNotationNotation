@@ -48,7 +48,7 @@ dependencies = [
     # Safe XML parsing (replaces stdlib xml.etree/minidom for untrusted input)
     "defusedxml>=0.7.1",
     # Active Inference ecosystem — pymdp 1.0.0 is the JAX-first rewrite
-    # (see doc/pymdp/pymdp_1_0_0_alignment_matrix.md). Step 12 uses the new
+    # (see docs/pymdp/pymdp_1_0_0_alignment_matrix.md). Step 12 uses the new
     # Agent API: list[jax.Array] models, infer_states(empirical_prior=...),
     # infer_policies(qs), sample_action(q_pi, rng_key=...).
     "inferactively-pymdp>=1.0.0",

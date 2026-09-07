@@ -14,7 +14,7 @@ Steps are controlled via [`input/config.yaml`](../../input/config.yaml) using th
 > See [`SPEC.md`](SPEC.md) for full matrix configuration documentation.
 > For the maintained hardening goal, stage-by-stage operating contract, and
 > GridWorld end-to-end proof path, see
-> [`doc/pipeline/pipeline_stage_hardening_review.md`](../../doc/pipeline/pipeline_stage_hardening_review.md).
+> [`docs/pipeline/pipeline_stage_hardening_review.md`](../../docs/pipeline/pipeline_stage_hardening_review.md).
 
 ---
 

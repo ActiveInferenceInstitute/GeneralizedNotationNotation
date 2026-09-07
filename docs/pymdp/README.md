@@ -1,6 +1,6 @@
 # PyMDP Documentation (pymdp 1.0.0 / JAX-first)
 
-**Signposts:** [AGENTS.md](AGENTS.md) · [doc/INDEX.md](../INDEX.md) · [doc/SPEC.md](../SPEC.md) (versioning)
+**Signposts:** [AGENTS.md](AGENTS.md) · [docs/INDEX.md](../INDEX.md) · [docs/SPEC.md](../SPEC.md) (versioning)
 
 This folder documents how this repository integrates
 [pymdp 1.0.0](https://github.com/infer-actively/pymdp) in the render/execute/
@@ -21,7 +21,7 @@ JAX arrays, and explicit PRNG keys).
 - [`pymdp_1_0_0_alignment_matrix.md`](pymdp_1_0_0_alignment_matrix.md) —
   upstream 1.0.0 claim mapping and local status.
 - [`pymdp_pomdp/README.md`](pymdp_pomdp/README.md) — reference scripts under
-  `doc/pymdp/pymdp_pomdp/` and their boundaries.
+  `docs/pymdp/pymdp_pomdp/` and their boundaries.
 
 ## Version Scope
 

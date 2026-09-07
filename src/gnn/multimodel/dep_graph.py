@@ -158,6 +158,7 @@ def render_graph_from_file(
             content = ""
 
     from gnn.multimodel.multimodel import parse_multimodel
+
     models = parse_multimodel(content, file_path=file_path)
 
     # Assign names from file sections or indices

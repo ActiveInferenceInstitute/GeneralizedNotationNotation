@@ -4,15 +4,15 @@ Markdown documentation audit: relative links, AGENTS→SPEC footers, src/doc cov
 AGENTS↔README pairing.
 
 Run from repository root:
-  uv run --extra dev python doc/development/docs_audit.py
-  uv run --extra dev python doc/development/docs_audit.py --strict   # exit 1 if any issue
-  uv run --extra dev python doc/development/docs_audit.py --check-anchors  # verify #fragments in .md links (optional)
-  uv run --extra dev python doc/development/docs_audit.py --strict --check-anchors --no-write
+  uv run --extra dev python docs/development/docs_audit.py
+  uv run --extra dev python docs/development/docs_audit.py --strict   # exit 1 if any issue
+  uv run --extra dev python docs/development/docs_audit.py --check-anchors  # verify #fragments in .md links (optional)
+  uv run --extra dev python docs/development/docs_audit.py --strict --check-anchors --no-write
 
 With ``--strict`` and any findings, a **full per-issue listing** is written to stderr by default
 (terminal-friendly fix loop). Use ``--quiet`` to print only counts and the one-line summary.
 
-Writes ``doc/development/docs_audit_report.md`` unless ``--no-write`` is passed or a
+Writes ``docs/development/docs_audit_report.md`` unless ``--no-write`` is passed or a
 custom ``--report-path`` is provided.
 """
 
@@ -44,9 +44,10 @@ SKIP_PARTS = frozenset(
     }
 )
 
-# doc/ subtrees excluded from maintained-folder checks (generated or exploratory)
+# docs/ subtrees excluded from maintained-folder checks (generated or exploratory)
 DOC_MAINTAINED_SKIP_PARTS = frozenset(
     {
+        "fleet-logs",
         "other",
         "__pycache__",
         ".git",
@@ -58,6 +59,7 @@ DOC_MAINTAINED_SKIP_PARTS = frozenset(
 # Pairing report: skip dirs where AGENTS/README policy does not apply
 PAIRING_SKIP_PARTS = frozenset(
     {
+        "fleet-logs",
         "node_modules",
         ".venv",
         "__pycache__",
@@ -324,12 +326,12 @@ def _doc_path_is_generated_dump(rel: Path) -> bool:
 
 
 def _doc_dir_is_maintained(d: Path) -> bool:
-    """doc/ subtree folder expected to carry AGENTS.md and README.md."""
+    """docs/ subtree folder expected to carry AGENTS.md and README.md."""
     try:
         rel = d.relative_to(REPO_ROOT)
     except ValueError:
         return False
-    if len(rel.parts) < 2 or rel.parts[0] != "doc":
+    if len(rel.parts) < 2 or rel.parts[0] != "docs":
         return False
     if any(p in DOC_MAINTAINED_SKIP_PARTS for p in rel.parts):
         return False
@@ -361,7 +363,7 @@ def _doc_dir_is_maintained(d: Path) -> bool:
 
 def audit_doc_maintained_missing_agents() -> list[Path]:
     missing: list[Path] = []
-    doc_root = REPO_ROOT / "doc"
+    doc_root = REPO_ROOT / "docs"
     if not doc_root.is_dir():
         return missing
     for d in sorted(doc_root.rglob("*")):
@@ -379,7 +381,7 @@ def audit_doc_maintained_missing_agents() -> list[Path]:
 
 def audit_doc_maintained_missing_readme() -> list[Path]:
     missing: list[Path] = []
-    doc_root = REPO_ROOT / "doc"
+    doc_root = REPO_ROOT / "docs"
     if not doc_root.is_dir():
         return missing
     for d in sorted(doc_root.rglob("*")):
@@ -402,7 +404,7 @@ def _dir_eligible_for_pairing(d: Path) -> bool:
         rel = d.relative_to(REPO_ROOT)
     except ValueError:
         return False
-    if not rel.parts or rel.parts[0] not in ("src", "doc", ".github"):
+    if not rel.parts or rel.parts[0] not in ("src", "docs", ".github"):
         return False
     if any(p in PAIRING_SKIP_PARTS for p in rel.parts):
         return False
@@ -441,12 +443,12 @@ def audit_readme_without_agents() -> list[Path]:
 
 def audit_doc_agents_structure() -> list[tuple[Path, str]]:
     """
-    doc/**/AGENTS.md should include a standard orientation section.
+    docs/**/AGENTS.md should include a standard orientation section.
     Accept ## Overview, ## Purpose, or ## Directory Identity (GNN subtree manifests).
     If ## Purpose exists, its body (until the next ## heading) should be substantive.
     """
     issues: list[tuple[Path, str]] = []
-    doc_root = REPO_ROOT / "doc"
+    doc_root = REPO_ROOT / "docs"
     if not doc_root.is_dir():
         return issues
     orientation = ("## Overview", "## Purpose", "## Directory Identity")
@@ -529,14 +531,14 @@ def format_strict_issue_detail(
 
     if doc_missing_agents:
         chunks.append(
-            f"## doc/ maintained folders missing AGENTS.md ({len(doc_missing_agents)})\n"
+            f"## docs/ maintained folders missing AGENTS.md ({len(doc_missing_agents)})\n"
         )
         for rel in sorted(doc_missing_agents, key=str):
             chunks.append(f"  `{rel}`\n")
 
     if doc_missing_readme:
         chunks.append(
-            f"## doc/ maintained folders missing README.md ({len(doc_missing_readme)})\n"
+            f"## docs/ maintained folders missing README.md ({len(doc_missing_readme)})\n"
         )
         for rel in sorted(doc_missing_readme, key=str):
             chunks.append(f"  `{rel}`\n")
@@ -556,11 +558,11 @@ def format_strict_issue_detail(
             chunks.append(f"  `{rel}`\n")
 
     if doc_agents_structure:
-        chunks.append(f"## doc/**/AGENTS.md structure ({len(doc_agents_structure)})\n")
+        chunks.append(f"## docs/**/AGENTS.md structure ({len(doc_agents_structure)})\n")
         for rel, msg in sorted(doc_agents_structure, key=lambda x: str(x[0])):
             chunks.append(f"  `{rel}`  → {msg}\n")
 
-    chunks.append("\nTip: full tables also in doc/development/docs_audit_report.md\n")
+    chunks.append("\nTip: full tables also in docs/development/docs_audit_report.md\n")
     return "".join(chunks)
 
 
@@ -598,7 +600,7 @@ def main() -> int:
     parser.add_argument(
         "--report-path",
         type=Path,
-        default=REPO_ROOT / "doc" / "development" / "docs_audit_report.md",
+        default=REPO_ROOT / "docs" / "development" / "docs_audit_report.md",
         help="Optional report output path. Ignored when --no-write is set.",
     )
     args = parser.parse_args()
@@ -634,7 +636,7 @@ def main() -> int:
     lines = [
         "# Documentation audit report",
         "",
-        "Generated by `uv run --extra dev python doc/development/docs_audit.py`. Re-run after doc changes.",
+        "Generated by `uv run --extra dev python docs/development/docs_audit.py`. Re-run after doc changes.",
         "",
         "## Broken relative Markdown links",
         "",
@@ -695,7 +697,7 @@ def main() -> int:
     lines.extend(
         [
             "",
-            "## doc/ maintained folders missing AGENTS.md",
+            "## docs/ maintained folders missing AGENTS.md",
             "",
         ]
     )
@@ -707,7 +709,7 @@ def main() -> int:
     lines.extend(
         [
             "",
-            "## doc/ maintained folders missing README.md",
+            "## docs/ maintained folders missing README.md",
             "",
         ]
     )
@@ -743,7 +745,7 @@ def main() -> int:
     lines.extend(
         [
             "",
-            "## doc/**/AGENTS.md structure (Overview/Purpose)",
+            "## docs/**/AGENTS.md structure (Overview/Purpose)",
             "",
         ]
     )

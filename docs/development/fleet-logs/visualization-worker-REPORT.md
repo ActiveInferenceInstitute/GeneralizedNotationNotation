@@ -52,8 +52,8 @@ git status --porcelain (scope)                        → 19 M + 8 ?? (all in sc
 ```
 
 ## Follow-ups for other workers (not my scope)
-- `doc/development/docs_audit.py --strict` fails on pre-existing `tests/tests` (has `.py`, no AGENTS.md) — untouched by me, lives in the src/tests worker's scope.
-- `doc/gnn/integration/gnn_visualization.md` and `doc/gnn/modules/08_visualization.md` document `visualization.processor` imports that still work; if doc workers touch them, the new package-root exports (`backend_status` etc.) are worth adding.
+- `docs/development/docs_audit.py --strict` fails on pre-existing `tests/tests` (has `.py`, no AGENTS.md) — untouched by me, lives in the src/tests worker's scope.
+- `docs/gnn/integration/gnn_visualization.md` and `docs/gnn/modules/08_visualization.md` document `visualization.processor` imports that still work; if doc workers touch them, the new package-root exports (`backend_status` etc.) are worth adding.
 - `advanced_visualization/_shared.py` + `network_viz.py` still lazily import `MatrixVisualizer` via the `matrix_visualizer` facade — works unchanged; they could import from `visualization` root for consistency.
 - `tests/tests/` docs gap noted above; `analysis/combined_analysis.py` has two matrix-size loops with intentionally different fallback semantics (recursive count vs skip) — left unmerged deliberately.
 

@@ -283,7 +283,7 @@ The convergence of these fields represents not just a technical advancement, but
 [90] https://cs224d.stanford.edu/reports/OshriBarak.pdf
 [91] https://openreview.net/forum?id=0bS3M8COYS
 [92] https://core.ac.uk/download/79545253.pdf
-[94] https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/blob/main/doc/gnn/reference/gnn_syntax.md
+[94] https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/blob/main/docs/gnn/reference/gnn_syntax.md
 [95] https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/tree/main/src
 [96] https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/tree/main/src/gnn
 [97] https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/blob/main/src/gnn/gnn_examples/actinf_pomdp_agent.md

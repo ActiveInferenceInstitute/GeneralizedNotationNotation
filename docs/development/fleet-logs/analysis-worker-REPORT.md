@@ -113,8 +113,8 @@ $ uv run pytest tests/analysis/test_analysis_mcp_wrappers.py
 
 ## Doc / Manuscript Follow-ups Needed (other workers own those)
 
-- **`doc/modules/16_analysis.md`** — should add `framework_common.py` and `flat_payload_analyzer.py` to the module's file listing; the `doc/` tree is outside my scope.
-- **`doc/gnn/integration/gnn_implementation.md`** — the PyTorch/NumPyro analyzer dedup should be noted in the framework integration guide; `doc/` is outside my scope.
+- **`docs/modules/16_analysis.md`** — should add `framework_common.py` and `flat_payload_analyzer.py` to the module's file listing; the `docs/` tree is outside my scope.
+- **`docs/gnn/integration/gnn_implementation.md`** — the PyTorch/NumPyro analyzer dedup should be noted in the framework integration guide; `docs/` is outside my scope.
 - **`src/gnn/analysis/README.md`** — I updated `AGENTS.md` (the docs of record per the mission); `README.md` has usage examples that still work (verified: `from analysis import process_analysis`, `from analysis.analyzer import perform_statistical_analysis` etc. all still importable). If the README should list the new shared modules, that's a doc follow-up.
 - **`src/gnn/analysis/SPEC.md`** — unchanged; the architectural spec still describes the module's purpose accurately.
 

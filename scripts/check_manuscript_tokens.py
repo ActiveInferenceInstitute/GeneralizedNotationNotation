@@ -4,7 +4,7 @@
 Deterministic checks run before/after rendering the token-injected manuscript:
 
 1. **Unknown tokens** — every ``{{TOKEN}}`` used in a rendered section must be a key
-   emitted by ``gnn.manuscript_variables.generate_variables``. An unknown token would
+   emitted by ``gnn.manuscript.generate_variables``. An unknown token would
    survive substitution and render literally in the PDF.
 2. **Dangling citations** — every Pandoc ``[@key]`` must resolve to an entry in
    ``manuscript/references.bib``.
@@ -45,7 +45,7 @@ _PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT / "src"))
 
-from gnn.manuscript_variables import (  # noqa: E402
+from gnn.manuscript import (  # noqa: E402
     config_metadata_drift,
     generate_variables,
 )

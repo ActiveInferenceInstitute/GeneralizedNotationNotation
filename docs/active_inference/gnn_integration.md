@@ -19,18 +19,18 @@ This document describes how GNN (Generalized Notation Notation) integrates with 
 
 | Document | Path | Description |
 |----------|------|-------------|
-| **GNN Overview** | [`doc/gnn/gnn_overview.md`](../gnn/gnn_overview.md) | Core concepts |
-| **GNN Syntax** | [`doc/gnn/reference/gnn_syntax.md`](../gnn/reference/gnn_syntax.md) | Syntax specification |
-| **GNN Examples** | [`doc/gnn/tutorials/gnn_examples_doc.md`](../gnn/tutorials/gnn_examples_doc.md) | Example models |
-| **GNN Schema** | [`doc/gnn/reference/gnn_schema.md`](../gnn/reference/gnn_schema.md) | Schema definition |
-| **Type System** | [`doc/gnn/reference/gnn_type_system.md`](../gnn/reference/gnn_type_system.md) | Type specification |
+| **GNN Overview** | [`docs/gnn/gnn_overview.md`](../gnn/gnn_overview.md) | Core concepts |
+| **GNN Syntax** | [`docs/gnn/reference/gnn_syntax.md`](../gnn/reference/gnn_syntax.md) | Syntax specification |
+| **GNN Examples** | [`docs/gnn/tutorials/gnn_examples_doc.md`](../gnn/tutorials/gnn_examples_doc.md) | Example models |
+| **GNN Schema** | [`docs/gnn/reference/gnn_schema.md`](../gnn/reference/gnn_schema.md) | Schema definition |
+| **Type System** | [`docs/gnn/reference/gnn_type_system.md`](../gnn/reference/gnn_type_system.md) | Type specification |
 
 ### Neurosymbolic Integration
 
 | Document | Path | Description |
 |----------|------|-------------|
-| **LLM + Active Inference** | [`doc/gnn/advanced/gnn_llm_neurosymbolic_active_inference.md`](../gnn/advanced/gnn_llm_neurosymbolic_active_inference.md) | Comprehensive guide |
-| **DSPy Integration** | [`doc/other/dspy/dspy_gnn_integration_patterns.md`](../other/dspy/dspy_gnn_integration_patterns.md) | DSPy patterns |
+| **LLM + Active Inference** | [`docs/gnn/advanced/gnn_llm_neurosymbolic_active_inference.md`](../gnn/advanced/gnn_llm_neurosymbolic_active_inference.md) | Comprehensive guide |
+| **DSPy Integration** | [`docs/other/dspy/dspy_gnn_integration_patterns.md`](../other/dspy/dspy_gnn_integration_patterns.md) | DSPy patterns |
 
 ---
 

@@ -14,7 +14,7 @@ The GNN pipeline follows strict architectural patterns and standards:
 - **Module Architecture**: Each module follows consistent structure with public APIs
   - See: **[src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md)** for complete module registry
 - **Testing Standards**: No substitutions, real data validation, >90% test coverage
-  - See: **[doc/gnn/operations/REPO_COHERENCE_CHECK.md](../operations/REPO_COHERENCE_CHECK.md)** for quality standards
+  - See: **[docs/gnn/operations/REPO_COHERENCE_CHECK.md](../operations/REPO_COHERENCE_CHECK.md)** for quality standards
 
 **Architecture Documentation:**
 
@@ -117,7 +117,7 @@ def test_with_real_data():
 
 ### File Metadata
 
-Every documentation file in `doc/gnn/` must include this header:
+Every documentation file in `docs/gnn/` must include this header:
 
 ```markdown
 # [Title]
@@ -131,7 +131,7 @@ Every documentation file in `doc/gnn/` must include this header:
 ### Cross-Referencing
 
 - Link to relevant module AGENTS.md files for implementation details
-- Link to related documentation files within `doc/gnn/`
+- Link to related documentation files within `docs/gnn/`
 - Use relative paths for all internal links
 
 ### Content Principles
