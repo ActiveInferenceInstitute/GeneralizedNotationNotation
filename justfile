@@ -72,7 +72,7 @@ skills-health:
 
 # Run capability contract audit
 capability:
-    uv run python scripts/check_capability_contracts.py
+    uv run python scripts/check_capability_contracts.py --strict
 
 # Run manuscript token audit
 tokens:
@@ -153,7 +153,7 @@ render-exec FRAMEWORKS:
 
 # Run documentation audit without mutating reports
 audit:
-    uv run python doc/development/docs_audit.py --strict --check-anchors --no-write
+    uv run python docs/development/docs_audit.py --strict --check-anchors --no-write
 
 # Run maintained-tree terminology audit
 terminology:
@@ -214,7 +214,7 @@ steps:
     #!/usr/bin/env bash
     export PYTHONPATH=src
     uv run python - <<'PYEOF'
-    from pipeline.step_registry import STEPS
+    from gnn.pipeline.step_registry import STEPS
     for s in STEPS:
         tags = ','.join(sorted(s.tags))
         print(f'{s.script_name:30s} {tags}')
@@ -230,7 +230,7 @@ steps-json:
     export PYTHONPATH=src
     uv run python - <<'PYEOF'
     import json
-    from pipeline.step_registry import STEPS
+    from gnn.pipeline.step_registry import STEPS
     data = [{'script_name': s.script_name, 'description': s.description,
              'module_function': s.module_function, 'tags': sorted(s.tags)}
             for s in STEPS]
