@@ -1,6 +1,6 @@
 # TO-DO - GNN Pipeline Roadmap
 
-**Last Updated**: 2026-09-06 (3.3.0 shipped: input corpus closure, manuscript remediation reconciled onto src/gnn)
+**Last Updated**: 2026-09-07 (3.3.0 post-release hygiene: GNN-02/GNN-03 closed with evidence, GNN-04/GNN-05 narrowed, majors MAJ-04..07 scoped)
 **Current Version**: 3.3.0
 **Next Target**: v4.0.0 (bounded autonomy, pipeline stage consolidation, multi-agent stigmergic topologies, and high-dimensional active inference)
 
@@ -12,10 +12,25 @@ env-conditioned action selection; probe:
 release receipt (tests, mypy, ruff, documentation audits) is in `CHANGELOG.md`
 §3.2.0.
 
+GNN-02 (linear-Gaussian F/control/H/Q/R export:
+`src/gnn/export/geo_infer_gaussian.py`, `tests/export/test_geo_infer_gaussian.py`,
+paired analytic verification in `docs/development/geo_infer_2026_09.md`) and
+GNN-03 (factor/modal dependency axes and multi-step policy enumeration:
+`src/gnn/export/geo_infer_factored.py`, `tests/export/test_geo_infer_factored.py`)
+closed 2026-09-07 after re-verification against the 3.3.0 tree.
+
 ## Open Scoped Roadmap
 
-No P1 roadmap item is currently open; forward-looking work is scoped under
-v4.0.0 below.
+Every item below is cold-startable: scope, files, verification, and acceptance
+are pinned. Rough order: MAJ-07 (decision-first) -> MAJ-05 -> MAJ-06 -> MAJ-04
+(largest; one module per PR).
+
+| ID | Scope | Acceptance evidence |
+| --- | --- | --- |
+| MAJ-04 | Decompose the six >2000-line modules (`integration/meta_analysis/visualizer.py` 2871, `analysis/visualizations.py` 2412, `testing/test_round_trip.py` 2214, `render/jax/jax_renderer.py` 2200, `render/discopy/translator.py` 2150, `analysis/analyzer.py` 2031) following the 3.3.0 `execute/processor.py` split pattern (mechanical extraction into sibling modules, facade re-exports preserved, one module per PR), and extract the shared subprocess envelope the nine per-framework renderers duplicate. | Per module: no import path changes (old names still importable), `uv run --extra dev mypy src` clean, `just lint` and `just format-check` clean, module tests plus `just test` green, moved code byte-identical modulo import lines. |
+| MAJ-05 | De-duplicate the `validate_gnn*` public surface - 6+ unrelated semantics share the name (`gnn/__init__.py` `validate_gnn_file`, `llm/llm_operations.py` `validate_gnn`, `parsers/basic.py` `validate_gnn` / `validate_gnn_syntax_formal`, `processing/processor.py` `validate_gnn_structure`, `mcp/processors.py` `validate_gnn_cross_format_consistency`, `execute/pymdp/pymdp_utils.py`). Rename to unambiguous names with deprecation aliases, one module per PR. | One unambiguous `def validate_gnn*` name per semantic; every old name re-exported with a `DeprecationWarning`; old-name and new-name tests pass; MCP tool registry unchanged. |
+| MAJ-06 | Collapse the ~10 copy-pasted `process_<module>_mcp(target_directory, output_directory, verbose)` wrappers (`advanced_visualization/mcp.py`, `analysis/mcp.py`, `audio/mcp.py`, `execute/mcp.py`, `export/mcp.py`, `gui/mcp.py`, `integration/mcp.py`, plus the render variants) into one generic dispatcher with per-module registration. | Tools register under identical names/signatures (`just skills-health` green, the mcp-audit CI job green); per-module MCP tests pass; wrapper files shrink to registration calls. |
+| MAJ-07 | Consolidate the pipeline health/utility cluster: `src/gnn/pipeline/health_check.py` (703 lines, zero direct tests; the CLI `health` command routes via `render.health` instead) and `src/gnn/pipeline/pipeline_validator.py` (467 lines; near-name collision with the tested `gnn.utils.pipeline_validator`, plus `pipeline_validation.py` and `verify_pipeline.py`). Decide per file - delete, or test and wire - and record the decision here. | If deleted: no inbound imports remain (`grep -rn "pipeline.health_check\|pipeline.pipeline_validator" src/gnn tests`) and `just test` green. If kept: `tests/pipeline/` covers the public functions and the live consumer chain is named. |
 
 ---
 
@@ -25,6 +40,10 @@ The local bounded-autonomy surface emits proposal-only artifacts via
 `--autonomous`: candidate scores, review gates, rollback descriptors, audit
 events, and non-mutating security policy. No source edit, commit, container
 run, or cluster mutation is automatic.
+
+Concrete, cold-startable v4.0.0 work is scoped in the Open Scoped Roadmap
+table above; this section records the unscoped vision and the current
+proposal-only `--autonomous` surface.
 
 ---
 
@@ -67,7 +86,5 @@ space and time semantics.
 
 | ID | Scope | Acceptance evidence |
 | --- | --- | --- |
-| GNN-02 | Specify linear Gaussian F/control/H/Q/R, units and initial beliefs jointly with GEO-INFER-ACT. | Unequal dimensions reproduce analytic filter results; continuous generators cannot be misread as per-step transitions. |
-| GNN-03 | Specify factor/modal dependency axes and multi-step policy enumeration. | Asymmetric, non-square fixtures preserve all axes and E cardinality; unsupported structures remain rejected until covered. |
-| GNN-04 | Pin paired repository revisions in cross-repository CI. | Independent locked environments complete both categorical and H3 round trips; receipts include source/artifact digests and both revisions. |
-| GNN-05 | Wire Step 7 to per-model explicit time/space options and original source provenance. | Step 7 CLI wiring (`--geo-step-seconds`/`--geo-state-ids`/`--geo-space-kind` registered in the shared step-argument registry, mapping via `process_export`'s `geo_infer`), visible failure on missing metadata, and unchanged five-format defaults have landed (`tests/export/test_export_geo_pipeline.py`). Row stays open for per-model notation-driven metadata discovery and original-source provenance plumbing. |
+| GNN-04 | Pin paired repository revisions in cross-repository CI on the GNN side; the GEO side already hosts paired CI retaining both revisions plus categorical/H3/Gaussian/factored digests (`docs/development/geo_infer_2026_09.md`), and `.github/` has no GNN-side equivalent. | A GNN-side workflow (or documented receipt-pinning procedure) completes paired categorical and H3 round trips and records source/artifact digests for both revisions. |
+| GNN-05 | Notation-driven metadata discovery for GEO-INFER export: derive step seconds/units/space kind from the GNN notation instead of explicit user JSON. The explicit-CLI wiring and original-source provenance already landed (`src/gnn/7_export.py`, `src/gnn/export/processor.py`, `tests/export/test_export_geo_pipeline.py`, `tests/export/test_geo_infer_gaussian.py`). | Notation-derived metadata passes the same visible-failure and unchanged-five-format-default tests that pin the explicit path. |
