@@ -26,7 +26,7 @@ permissions:
 jobs:
   analyze:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     permissions:
       contents: read
       security-events: write
@@ -43,6 +43,11 @@ jobs:
         uses: github/codeql-action/init@v4
         with:
           languages: ${{ matrix.language }}
+          # No build tracing: the traced walk of the expanded dependency set
+          # (bnlearn/pgmpy landed 2026-09-07) pushed extraction past the
+          # hosted-runner limit. `none` is the supported build mode for Python.
+          build-mode: none
+          config-file: ./.github/codeql/codeql-config.yml
 
       - name: Set up Python
         uses: actions/setup-python@v7
