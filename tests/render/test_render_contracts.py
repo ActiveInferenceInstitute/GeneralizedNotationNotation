@@ -602,3 +602,59 @@ class TestFirstPartyImportResolution:
         assert success, message
         primary = next(Path(path) for path in paths if Path(path).suffix == ".py")
         assert first_party_unresolvable_imports(primary.read_text()) == []
+
+
+class TestMatrixShapeParity:
+    """Cross-backend matrix shapes must agree per model.
+
+    The extractor understands all four maintained Python emission
+    conventions (pymdp ``*_data`` lists, jax dict-payload calls,
+    pytorch/numpyro ``tensor``/``array`` assigns with ``B_slices`` stacking).
+    """
+
+    def test_extractor_skips_star_imports(self) -> None:
+        from gnn.render.emitted_artifact_checks import matrix_shapes
+
+        assert matrix_shapes("from discopy import *\nTy('x')\n") is None
+
+    def test_extractor_skips_ragged_literals(self) -> None:
+        from gnn.render.emitted_artifact_checks import matrix_shapes
+
+        assert matrix_shapes("A_data = [[1.0, 2.0], [3.0]]\n").get("A") is None
+
+    def test_extractor_flags_shape_difference(self) -> None:
+        from gnn.render.emitted_artifact_checks import matrix_shapes
+
+        left = matrix_shapes("A_data = [[1.0, 2.0], [3.0, 4.0]]\n")
+        right = matrix_shapes("A_data = [[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]]\n")
+        assert left["A"] == (2, 2)
+        assert right["A"] == (2, 3)
+
+    def test_actinf_parity_across_four_backends(self, tmp_path: Path) -> None:
+        from gnn import parse_gnn_file
+        from gnn.render.emitted_artifact_checks import matrix_shapes
+        from gnn.render.processor import render_gnn_spec
+
+        spec = parse_gnn_file(SAMPLE_GNN)
+        collected: dict[str, dict[str, tuple[int, ...]]] = {}
+        for framework, extension in (
+            ("pymdp", ".py"),
+            ("jax", ".py"),
+            ("pytorch", ".py"),
+            ("numpyro", ".py"),
+        ):
+            out_dir = tmp_path / framework
+            success, message, paths = render_gnn_spec(spec, framework, out_dir)
+            assert success, message
+            primary = next(
+                Path(path) for path in paths if Path(path).suffix == extension
+            )
+            collected[framework] = matrix_shapes(primary.read_text())
+        for letter in "ABCD":
+            per_backend = {
+                fw: shapes[letter]
+                for fw, shapes in collected.items()
+                if letter in shapes
+            }
+            assert len(per_backend) >= 2
+            assert len(set(per_backend.values())) == 1, (letter, per_backend)

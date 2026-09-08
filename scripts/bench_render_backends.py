@@ -314,6 +314,59 @@ def _determinism_mismatches(
     return mismatches, diagnostics
 
 
+def _parity_mismatches(receipt: dict[str, Any]) -> tuple[int, list[str]]:
+    """Compare extracted A/B/C/D matrix shapes across backends per model.
+
+    For every source rendered successfully by at least two Python-emitting
+    backends (pymdp, jax, pytorch, numpyro), the extracted canonical matrix
+    shapes must agree. Shapes come from the conservative extractor in
+    ``gnn.render.emitted_artifact_checks.matrix_shapes``; sources whose
+    artifacts yield no clean literal shapes are simply not compared.
+    Returns ``(mismatch_count, diagnostics)``.
+    """
+    from gnn.render.emitted_artifact_checks import matrix_shapes
+
+    per_source: dict[str, dict[str, dict[str, tuple[int, ...]]]] = {}
+    for source, record in receipt["file_results"].items():
+        if not isinstance(record, dict):
+            continue
+        source_name = Path(source).name
+        for framework, result in record.get("framework_results", {}).items():
+            if not isinstance(result, dict) or not result.get("success"):
+                continue
+            for artifact in result.get("output_files", []):
+                path = Path(str(artifact))
+                if (
+                    path.suffix != ".py"
+                    or not path.is_file()
+                    or path.stat().st_size > UNDEFINED_SCAN_MAX_BYTES
+                ):
+                    continue
+                shapes = matrix_shapes(path.read_text(errors="replace"))
+                if shapes:
+                    per_source.setdefault(source_name, {}).setdefault(
+                        framework, {}
+                    ).update(shapes)
+                break
+
+    diagnostics: list[str] = []
+    mismatches = 0
+    for source_name in sorted(per_source):
+        entries = per_source[source_name]
+        for letter in "ABCD":
+            per_backend = {
+                framework: shapes[letter]
+                for framework, shapes in entries.items()
+                if letter in shapes
+            }
+            if len(per_backend) < 2:
+                continue
+            if len(set(per_backend.values())) > 1:
+                mismatches += 1
+                diagnostics.append(f"{source_name} {letter}: {per_backend}")
+    return mismatches, diagnostics
+
+
 def main() -> int:
     # Quiet the module's INFO chatter; METRIC lines stay parseable.
     logging.basicConfig(level=logging.WARNING)
@@ -386,6 +439,7 @@ def main() -> int:
         receipt, receipt_second
     )
     receipt_integrity_findings = _verify_receipt_integrity(receipt)
+    parity_mismatches, parity_diagnostics = _parity_mismatches(receipt)
     conformance_success = rendered - conformance_failures
     success_rate = (rendered / attempts * 100.0) if attempts else 0.0
 
@@ -401,6 +455,7 @@ def main() -> int:
     print(f"METRIC render_undefined_name_findings={undefined_name_findings}")
     print(f"METRIC render_undefined_scan_skipped={undefined_scan_skipped}")
     print(f"METRIC render_first_party_import_findings={first_party_import_findings}")
+    print(f"METRIC render_parity_mismatches={parity_mismatches}")
     print(f"METRIC render_files_total={total_files}")
     print(f"METRIC render_files_successful={successful_files}")
     print(f"METRIC render_files_no_attempts={no_attempt_files}")
@@ -412,6 +467,8 @@ def main() -> int:
         print(f"FAIL {diag.get('framework', '?')} {file_name}: {message}")
     if len(failed) > 25:
         print(f"FAIL ... {len(failed) - 25} more failures omitted")
+    for diag in parity_diagnostics[:25]:
+        print(f"PARITY {diag}")
     for diag in determinism_diagnostics[:25]:
         print(f"NONDETERMINISM {diag}")
     if len(determinism_diagnostics) > 25:
