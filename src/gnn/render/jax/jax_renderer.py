@@ -136,6 +136,8 @@ def render_gnn_to_jax_combined(
     return _render_to_path(
         _generate_jax_combined_code, "JAX combined", gnn_spec, output_path, options
     )
+
+
 from .jax_combined_generator import (
     _generate_jax_combined_code,
 )
