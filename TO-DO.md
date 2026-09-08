@@ -116,6 +116,21 @@ are pinned.
   regression gate `scripts/check_doc_path_references.py` is CI-wired
   (local-gates) and strict (cap 0).
 
+## Deep horizon wave 2 - render backends
+
+Scoping for `src/gnn/render/**` (2026-09-08, deep-horizon session). RB-01
+through RB-07 are RESOLVED (see `CHANGELOG.md`): the deterministic corpus x
+framework conformance benchmark (`bash autoresearch.sh`;
+`scripts/bench_render_backends.py`) drove contract modernization to the
+maintained delegated-executor output shapes, and the conformance-validated
+rendering count moved 142 -> 258 of 258 (0 contract violations, 0 syntax
+errors, 0 render errors, 12 by-design unsupported). Remaining open surface:
+
+| ID | Scope | Acceptance evidence |
+| --- | --- | --- |
+| RB-08 | Minor: `src/gnn/render/rxinfer/toml_generator.py` (46KB) is production-dead (the `rxinfer_toml` target is rejected in `render_gnn_spec` and the CLI choice was removed) but stays importable via two contract-test files and `scripts/check_capability_contracts.py` text markers. Decide: migrate the still-used matrix parsers (`_parse_gnn_matrix`, `_parse_gnn_3d_matrix`, `_parse_gnn_vector`) and topology-structure helpers to a live module (or fold them into the rxinfer renderer), then delete the retired emitter and update the three consumers. | Import-site grep for `toml_generator` returns zero production references; the two test files pin the migrated home; `check_capability_contracts.py` passes against the new location; no render/execute behavior change on the bench. |
+| RB-09 | Minor: generator-facade status decision for `src/gnn/render/generators.py` public exports `generate_rxinfer_code` / `generate_activeinference_jl_code` (exported and README-documented but production routes use the dedicated renderers) and the legacy `src/gnn/render/pymdp_template.py` template (alive only through `generate_pymdp_code`, whose only production caller is the non-POMDP basic fallback). Either document the facade as the supported public surface with tests that pin it, or retire the exports with a deprecation window. | Decision recorded here with evidence; either facade tests pin the exports end to end, or a deprecation alias emits `DeprecationWarning` and consumer grep shows zero stragglers. |
+
 ---
 
 

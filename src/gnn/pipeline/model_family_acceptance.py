@@ -670,7 +670,9 @@ def _render_skip_or_failure_reason(pipeline_output: Path) -> str | None:
     if successful == 0 and messages:
         return "; ".join(messages)
     if successful == 0:
-        return str(summary.get("message") or "no compatible renderings")
+        # The render receipt schema has no top-level ``message`` key; when no
+        # framework diagnostics exist there is nothing more specific to say.
+        return "no compatible renderings"
     if messages:
         return "partial_render_failure"
     return None

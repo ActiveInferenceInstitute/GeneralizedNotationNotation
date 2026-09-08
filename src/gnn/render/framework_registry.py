@@ -246,7 +246,7 @@ def get_pomdp_framework_configs() -> Dict[str, Dict[str, Any]]:
             "optional_matrices": deepcopy(spec["optional_matrices"]),
             "supports_multi_modality": bool(spec["supports_multi_modality"]),
             "supports_multi_factor": bool(spec["supports_multi_factor"]),
-            "supports_execution": True,
+            "supports_execution": bool(spec.get("supports_execution", True)),
             "supports_continuous": bool(spec.get("supports_continuous", False)),
             "name": spec["name"],
         }
