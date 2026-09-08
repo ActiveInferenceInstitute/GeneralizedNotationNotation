@@ -11,6 +11,8 @@ from typing import Any, Dict
 logger = logging.getLogger(__name__)
 
 # Import utilities from the ml_integration module
+from gnn.utils.mcp_dispatch import run_pipeline_step_mcp
+
 from . import FEATURES, check_ml_frameworks, process_ml_integration
 
 # MCP Tools for ML Integration Module
@@ -30,24 +32,16 @@ def process_ml_integration_mcp(
     Returns:
         Dictionary with operation status and results.
     """
-    try:
-        success = process_ml_integration(
-            target_dir=Path(target_directory),
-            output_dir=Path(output_directory),
-            verbose=verbose,
-        )
-        return {
-            "success": success,
-            "target_directory": target_directory,
-            "output_directory": output_directory,
-            "message": f"ML integration processing {'completed successfully' if success else 'failed'}",
-        }
-    except Exception as e:
-        logger.error(
-            f"Error in process_ml_integration_mcp for {target_directory}: {e}",
-            exc_info=True,
-        )
-        return {"success": False, "error": str(e)}
+    return run_pipeline_step_mcp(
+        process_ml_integration,
+        wrapper_name="process_ml_integration_mcp",
+        logger=logger,
+        target_directory=target_directory,
+        output_directory=output_directory,
+        verbose=verbose,
+        label="ML integration processing",
+        failure_wording="failed",
+    )
 
 
 def check_ml_frameworks_mcp() -> Dict[str, Any]:
