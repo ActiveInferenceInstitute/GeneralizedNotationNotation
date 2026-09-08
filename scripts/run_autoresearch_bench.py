@@ -152,9 +152,7 @@ def phase_serialize(
             f"serialize reparse drift for {path.name}",
         )
         for _ in range(SERIALIZE_INNER):
-            payload = json.dumps(
-                _strip_volatile(result), sort_keys=True, default=str
-            )
+            payload = json.dumps(_strip_volatile(result), sort_keys=True, default=str)
             _check(
                 hashlib.sha256(payload.encode("utf-8")).hexdigest() == reference,
                 f"canonical-JSON round-trip drift for {path.name}",
@@ -248,8 +246,7 @@ def phase_envelope(run_subprocess_envelope: Callable[..., dict[str, Any]]) -> fl
     )
     _check(
         timeout_envelope.get("error_type") == "TimeoutExpired",
-        "envelope timeout error_type drifted: "
-        f"{timeout_envelope.get('error_type')}",
+        f"envelope timeout error_type drifted: {timeout_envelope.get('error_type')}",
     )
     return time.perf_counter() - t0
 
@@ -304,7 +301,10 @@ def main() -> int:
     tools_resp = handle_mcp_request(_jsonrpc("tools/list", {}, 0))
     tools = tools_resp.get("result", {}).get("tools", [])
     names = [tool.get("name") for tool in tools]
-    _check(len(tools) >= MIN_REGISTERED_TOOLS, f"tool count {len(tools)} < {MIN_REGISTERED_TOOLS}")
+    _check(
+        len(tools) >= MIN_REGISTERED_TOOLS,
+        f"tool count {len(tools)} < {MIN_REGISTERED_TOOLS}",
+    )
     _check(EXPECTED_TOOL in names, f"{EXPECTED_TOOL} not registered")
 
     expected: dict[str, Any] = {"tool_count": len(tools)}
@@ -418,17 +418,14 @@ def main() -> int:
     dispatch_calls = TOOLS_LIST_INNER + TOOL_CALL_INNER * 2 + WRAPPER_CALLS
 
     print(f"METRIC mcp_execute_bench_ms={best['total'] * 1000.0:.1f}")
-    print(
-        f"METRIC parse_files_per_s={PARSE_INNER * len(files) / best['parse']:.1f}"
-    )
+    print(f"METRIC parse_files_per_s={PARSE_INNER * len(files) / best['parse']:.1f}")
     print(
         "METRIC serialize_roundtrips_per_s="
         f"{len(files) * (1 + SERIALIZE_INNER) / best['serialize']:.1f}"
     )
     print(f"METRIC mcp_dispatch_per_s={dispatch_calls / best['dispatch']:.1f}")
     print(
-        "METRIC envelope_spawns_per_s="
-        f"{(ENVELOPE_SPAWNS + 1) / best['envelope']:.1f}"
+        f"METRIC envelope_spawns_per_s={(ENVELOPE_SPAWNS + 1) / best['envelope']:.1f}"
     )
     print(f"METRIC mcp_setup_ms={setup_seconds * 1000.0:.1f}")
     print(f"METRIC determinism_checks={checks}")
