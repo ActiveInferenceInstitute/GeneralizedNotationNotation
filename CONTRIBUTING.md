@@ -143,7 +143,7 @@ For workflow YAML edits, run `actionlint .github/workflows/*.yml` (see the hub d
 
 Follow the project [Style Guide](docs/style_guide.md) for formatting and naming conventions. Key points:
 - Python code follows PEP 8
-- GNN files use Markdown with structured sections (see [GNN Syntax](docs/gnn/reference/gnn_syntax.md))
+- GNN files use Markdown with structured sections (see [GNN Syntax](docs/gnn/gnn_syntax.md))
 - Commit messages should be imperative ("Add feature" not "Added feature")
 
 ## Security

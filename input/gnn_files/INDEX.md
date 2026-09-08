@@ -3,7 +3,7 @@
 Cold-start index of the exemplar GNN spec files under `input/gnn_files/`. Each
 entry is a runnable Active Inference generative model spec: parse it, render it,
 execute it through the 25-step pipeline. For syntax and file-structure rules see
-[normative syntax](../../docs/gnn/reference/gnn_syntax.md) and the tutorials in
+[normative syntax](../../docs/gnn/gnn_syntax.md) and the tutorials in
 [docs/gnn/tutorials/](../../docs/gnn/tutorials/).
 
 **Counts (measured 2026-09-01):** 29 runnable `.md` spec files across 10 task
