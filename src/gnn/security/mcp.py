@@ -12,7 +12,7 @@ from typing import Any, Dict, List
 
 logger = logging.getLogger(__name__)
 
-from gnn.utils.mcp_dispatch import run_pipeline_step_mcp
+from gnn.utils.mcp_dispatch import run_pipeline_step_mcp, run_tool_envelope
 
 from . import process_security
 
@@ -111,7 +111,8 @@ def get_security_report_mcp(output_directory: str) -> Dict[str, Any]:
     Returns:
         Dictionary with report contents and summary statistics.
     """
-    try:
+
+    def _build() -> Dict[str, Any]:
         out_dir = Path(output_directory)
         if not out_dir.exists():
             return {
@@ -132,9 +133,12 @@ def get_security_report_mcp(output_directory: str) -> Dict[str, Any]:
             "reports_found": len(reports),
             "reports": reports,
         }
-    except Exception as e:
-        logger.error(f"get_security_report_mcp error: {e}", exc_info=True)
-        return {"success": False, "error": str(e)}
+
+    return run_tool_envelope(
+        _build,
+        wrapper_name="get_security_report_mcp",
+        logger=logger,
+    )
 
 
 def list_security_checks_mcp() -> Dict[str, Any]:
