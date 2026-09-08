@@ -7,7 +7,6 @@ and factory functions for server creation and management.
 Extracted from mcp.py for maintainability.
 """
 
-import json
 import logging
 import sys
 from typing import Any, Callable, Dict, Optional
@@ -19,7 +18,12 @@ from .exceptions import (
     MCPError,
     MCPInvalidParamsError,
 )
-from .jsonrpc import jsonrpc_error, jsonrpc_result, validate_request
+from .jsonrpc import (
+    jsonrpc_error,
+    jsonrpc_result,
+    serialize_response,
+    validate_request,
+)
 
 # Import core MCP class and helpers
 from .mcp import MCP, get_mcp_instance, initialize
@@ -200,7 +204,9 @@ class MCPServer:
             raise MCPInvalidParamsError("Tool name is required")
 
         result = self.mcp.execute_tool(tool_name, tool_params)
-        return {"content": [{"type": "text", "text": json.dumps(result, indent=2)}]}
+        return {
+            "content": [{"type": "text", "text": serialize_response(result, indent=2)}]
+        }
 
     def _handle_resources_list(self, params: Dict[str, Any]) -> Dict[str, Any]:
         """Handle resources/list request."""
@@ -219,7 +225,7 @@ class MCPServer:
                 {
                     "uri": uri,
                     "mimeType": result["mime_type"],
-                    "text": json.dumps(result["content"]),
+                    "text": serialize_response(result["content"], ensure_ascii=True),
                 }
             ]
         }
