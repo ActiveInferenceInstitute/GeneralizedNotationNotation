@@ -1,23 +1,96 @@
 #!/usr/bin/env bash
-# MAJ-05 benchmark: de-duplication of the validate_gnn* public surface.
+# =============================================================================
+# autoresearch.sh — deterministic benchmark harness for the GNN pipeline
+# "utility + analysis" territory (deep horizon wave 2).
 #
-# Deterministic workload: AST-based audit of src/gnn (no network, no clock,
-# no randomness) plus — once the alias regression tests exist — a runtime
-# behavior check that old names still work identically and emit
-# DeprecationWarning.
+# Territory: src/gnn/{analysis,utils,advanced_visualization,type_checker,schemas,api}
 #
-# Primary metric:   validate_noncanonical_defs   (lower is better; 0 = done)
-# Secondary:        validate_defs_total, validate_aliases_ok,
-#                   validate_aliases_bad, internal_callers_noncanonical,
-#                   doc_refs_noncanonical, alias_tests_passed
+# Workload (deterministic, offline, fixed environment):
+#   1. ruff check over the territory          -> ruff_errors
+#   2. mypy --strict over the territory       -> mypy_strict_errors
+#   3. deterministic pytest subset over the
+#      territory's own test directories       -> passed/failed/skipped counts
+#
+# Primary metric:
+#   quality_violations = mypy_strict_errors + ruff_errors   (lower is better)
+#
+# Success: exit 0 with all METRIC lines emitted.
+# Failure: any stage crashes without producing a measurable summary -> exit 1.
+# =============================================================================
 set -euo pipefail
 cd "$(dirname "$0")"
 
-# 1) Static surface audit (stdlib-only AST scan).
-uv run --extra dev python scripts/audit_validate_surface.py
+TERRITORY=(
+  src/gnn/analysis
+  src/gnn/utils
+  src/gnn/advanced_visualization
+  src/gnn/type_checker
+  src/gnn/schemas
+  src/gnn/api
+)
 
-# 2) Runtime alias-behavior proof (present from the first migration commit).
-if [ -f tests/test_validate_surface_aliases.py ]; then
-    uv run --extra dev python -m pytest tests/test_validate_surface_aliases.py -q --tb=short -p no:cacheprovider
-    echo "METRIC alias_tests_passed=1"
+# Territory-owned test directories (deterministic, offline, no Ollama/Julia/browser).
+TEST_DIRS=(
+  tests/analysis
+  tests/advanced_visualization
+  tests/api
+  tests/type_checker
+  tests/utils
+)
+
+OUT="$(mktemp -d)"
+trap 'rm -rf "$OUT"' EXIT
+
+count_or_zero() { # count_or_zero <pattern> <file>
+  grep -cE "$1" "$2" 2>/dev/null || true
+}
+
+# --- 1. ruff over the territory ----------------------------------------------
+RUFF_LOG="$OUT/ruff.log"
+if ! uv run --extra dev ruff check "${TERRITORY[@]}" --output-format concise \
+    >"$RUFF_LOG" 2>&1; then
+  echo "ruff completed with findings (expected) — counting" >&2
 fi
+RUFF_ERRORS="$(count_or_zero ': [A-Z]+[0-9]+ ' "$RUFF_LOG")"
+[ -n "$RUFF_ERRORS" ] || RUFF_ERRORS=0
+
+# --- 2. mypy --strict over the territory --------------------------------------
+MYPY_LOG="$OUT/mypy.log"
+if ! uv run --extra dev mypy --strict --follow-imports=silent "${TERRITORY[@]}" --config-file pyproject.toml \
+    >"$MYPY_LOG" 2>&1; then
+  echo "mypy completed with findings (expected) — counting" >&2
+fi
+MYPY_ERRORS="$(count_or_zero 'error:' "$MYPY_LOG")"
+[ -n "$MYPY_ERRORS" ] || MYPY_ERRORS=0
+
+# --- 3. deterministic territory test subset ------------------------------------
+PYTEST_LOG="$OUT/pytest.log"
+set +e
+uv run --extra dev python -m pytest "${TEST_DIRS[@]}" \
+  -q -n 4 --tb=no -p no:cacheprovider \
+  -m "not pipeline and not mcp" \
+  >"$PYTEST_LOG" 2>&1
+PYTEST_RC=$?
+set -e
+
+PASSED="$(grep -oE '[0-9]+ passed' "$PYTEST_LOG" | tail -1 | grep -oE '[0-9]+' || true)"
+FAILED="$(grep -oE '[0-9]+ failed' "$PYTEST_LOG" | tail -1 | grep -oE '[0-9]+' || true)"
+SKIPPED="$(grep -oE '[0-9]+ skipped' "$PYTEST_LOG" | tail -1 | grep -oE '[0-9]+' || true)"
+ERRORS="$(grep -oE '[0-9]+ errors?' "$PYTEST_LOG" | tail -1 | grep -oE '[0-9]+' || true)"
+PASSED="${PASSED:-0}"; FAILED="${FAILED:-0}"; SKIPPED="${SKIPPED:-0}"; ERRORS="${ERRORS:-0}"
+
+# A collection error / internal error yields no summary: harness failure.
+if [ "$PASSED" -eq 0 ] && [ "$FAILED" -eq 0 ] && [ "$SKIPPED" -eq 0 ]; then
+  echo "HARNESS FAILURE: pytest produced no summary (rc=$PYTEST_RC)" >&2
+  tail -30 "$PYTEST_LOG" >&2 || true
+  exit 1
+fi
+
+QUALITY=$((MYPY_ERRORS + RUFF_ERRORS))
+echo "METRIC quality_violations=$QUALITY"
+echo "METRIC mypy_strict_errors=$MYPY_ERRORS"
+echo "METRIC ruff_errors=$RUFF_ERRORS"
+echo "METRIC territory_tests_passed=$PASSED"
+echo "METRIC territory_tests_failed=$FAILED"
+echo "METRIC territory_tests_errors=$ERRORS"
+echo "METRIC territory_tests_skipped=$SKIPPED"
