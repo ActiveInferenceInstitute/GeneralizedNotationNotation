@@ -20,7 +20,6 @@ from .round_trip_availability import GNNInternalRepresentation
 logger = logging.getLogger(__name__)
 
 
-
 class _DirectMarkdownParser:
     """A simple, robust markdown parser that doesn't rely on complex validation."""
 

@@ -12,10 +12,11 @@ from __future__ import annotations
 import json
 import logging
 import os
-import subprocess
 import tempfile
 from pathlib import Path
 from typing import Any, Union
+
+from gnn.execute.subprocess_envelope import run_subprocess_envelope
 
 logger = logging.getLogger(__name__)
 
@@ -104,21 +105,9 @@ def verify_document(
         "document": str(document_path),
         "command": command,
     }
-    try:
-        completed = subprocess.run(
-            command,
-            cwd=root,
-            capture_output=True,
-            text=True,
-            timeout=timeout,
-            check=False,
-        )
-    except (subprocess.TimeoutExpired, OSError) as exc:
-        record["error"] = f"verify-document invocation failed: {exc}"
-        return record
-
-    record["returncode"] = completed.returncode
-    if completed.returncode == 0:
+    envelope = run_subprocess_envelope(command, timeout=timeout, cwd=str(root))
+    record["returncode"] = envelope["return_code"]
+    if envelope["success"]:
         record["success"] = True
         if receipt_path.is_file():
             try:
@@ -127,8 +116,15 @@ def verify_document(
                 record["receipt_error"] = "unparseable receipt JSON"
         return record
 
+    if envelope["return_code"] == -1:
+        # Timeout or invocation failure (OSError) — fail closed with the cause.
+        record["error"] = (
+            f"verify-document invocation failed: {envelope.get('error', '')}"
+        )
+        return record
+
     record["error"] = (
-        completed.stderr or completed.stdout or "verify-document failed"
+        envelope["stderr"] or envelope["stdout"] or "verify-document failed"
     ).strip()[-2000:]
     return record
 
