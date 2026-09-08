@@ -70,6 +70,47 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   `gnn.utils.pipeline` delegate and the outlived `migration_helper.py`
   fossil are removed.
 
+## Deep horizon 2026-09-07 - gnn-maj05-validate-surface
+
+### Changed
+
+- **MAJ-05: de-duplicated the `validate_gnn*` public surface.** 24
+  definitions inventoried (18 non-canonical at baseline) now map to 15
+  canonical names across 13 semantics clusters, plus 8 old-name aliases
+  that emit `DeprecationWarning` and forward with identical behavior.
+  Renames: `validate_gnn_structure` -> `check_gnn_file_structure`,
+  `validate_gnn_pomdp_structure` -> `check_gnn_pomdp_spec`,
+  `validate_gnn_cross_format_consistency` ->
+  `check_cross_format_consistency`, llm `validate_gnn` ->
+  `validate_gnn_with_llm`, schema_validator `validate_gnn_file` ->
+  `validate_gnn_file_comprehensive`, validation/simple
+  `validate_gnn_file`/`validate_gnn_directory` ->
+  `check_gnn_file_basic`/`check_gnn_directory_basic`;
+  `validate_gnn_syntax_formal` now forwards to `validate_gnn`; the gui_2
+  closure `validate_gnn` was renamed in place to
+  `validate_editor_matrices` (never public). Kept canonical:
+  `validate_gnn` (parsers), `validate_gnn_file` (package root),
+  `validate_gnn_content`, `validate_gnn_file_mcp`, `validate_gnn_files`
+  (+`_mcp`), `validate_gnn_object`, `validate_gnn_equation`. The MCP
+  tool registry is unchanged: registered names
+  (`validate_gnn_content`, `validate_gnn_file`, `validate_gnn_files`)
+  keep their registered backing functions. All internal callers and the
+  doc surface (module docs, SKILL/AGENTS/README/SPEC, architecture
+  reference line citations) migrated to canonical names.
+- Deterministic surface audit added:
+  `scripts/audit_validate_surface.py` +
+  `scripts/validate_surface_manifest.json` (AST scan of `src/gnn`
+  classifying canonical/alias/non-canonical, src callers, live-doc
+  refs). Alias contract pinned by `tests/test_validate_surface_aliases.py`
+  (9 tests: warning emission + identical results). Verification:
+  0 non-canonical defs, 0 src callers, 0 live-doc refs; mypy clean
+  (588 files), ruff clean, terminology/doc gates clean.
+- Follow-up scoped out, not forced: the recorded near-name collision
+  between `gnn/utils/pipeline_validator.py` and
+  `gnn/pipeline/pipeline_validator.py` is unrelated to this surface and
+  untouched; a dedicated rename pass should address it separately.
+
+
 ## [3.3.0] — 2026-09-06
 
 > **One Corpus.** Every model file under `input/` now lives inside
