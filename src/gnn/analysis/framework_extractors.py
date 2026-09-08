@@ -49,9 +49,7 @@ def _normalise_current_simulation_payload(
         "observations": observations_by_modality.get(
             "joint_observation", _fallback("observations")
         ),
-        "actions": actions_by_control_factor.get(
-            "joint_action", _fallback("actions")
-        ),
+        "actions": actions_by_control_factor.get("joint_action", _fallback("actions")),
         "policy": payload.get("policy_posterior", []),
         "beliefs": beliefs_by_factor.get("joint_state", _fallback("beliefs")),
         "belief_confidence": metrics.get("belief_confidence", []),

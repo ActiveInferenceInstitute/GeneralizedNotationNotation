@@ -433,7 +433,10 @@ def get_visualization_optimizer(**kwargs: Any) -> VisualizationOptimizer:
 
 
 def optimize_visualization_processing(
-    files: List[Path], output_dir: Path, processing_func: Callable[..., Any], **kwargs: Any
+    files: List[Path],
+    output_dir: Path,
+    processing_func: Callable[..., Any],
+    **kwargs: Any,
 ) -> Dict[str, Any]:
     """Convenience function for optimized visualization processing."""
     optimizer = get_visualization_optimizer()

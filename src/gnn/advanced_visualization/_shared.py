@@ -176,7 +176,6 @@ def record_attempt(
             results.warnings.append(message)
 
 
-
 def _calculate_semantic_positions(
     variables: List[Dict[str, Any]], connections: List[Dict[str, Any]]
 ) -> Any:

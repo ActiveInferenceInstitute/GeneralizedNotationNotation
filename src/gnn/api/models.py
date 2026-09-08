@@ -66,7 +66,6 @@ def validate_step_numbers(
     return list(values)
 
 
-
 class JobStatus(str, Enum):
     """Pipeline job execution status."""
 

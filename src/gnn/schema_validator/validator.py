@@ -95,8 +95,6 @@ class GNNValidator:
                 logger.warning(f"Could not initialize round-trip tester: {e}")
                 self.enable_round_trip_testing = False
 
-
-
     def _level_rank(self, level: Union[ValidationLevel, str]) -> int:
         """Map validation level to an integer rank for safe comparisons."""
         mapping: dict[Any, Any] = {

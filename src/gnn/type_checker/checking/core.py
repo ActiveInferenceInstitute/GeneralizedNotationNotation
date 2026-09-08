@@ -608,5 +608,3 @@ class GNNTypeChecker:
             summary += "- No errors encountered\n"
 
         return summary
-
-
