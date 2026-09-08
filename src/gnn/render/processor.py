@@ -1224,8 +1224,7 @@ def render_gnn_spec(
             known = sorted(set(FRAMEWORK_REGISTRY) | {"jax_pomdp", "discopy_combined"})
             return (
                 False,
-                f"Unsupported target: {target}. "
-                f"Known targets: {', '.join(known)}",
+                f"Unsupported target: {target}. Known targets: {', '.join(known)}",
                 [],
             )
 

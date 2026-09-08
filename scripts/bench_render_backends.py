@@ -93,11 +93,7 @@ def _score_conformance(
                         syntax_errors += 1
                         failures.append(f"syntax: {exc.msg} (line {exc.lineno})")
                         continue
-                if (
-                    extension
-                    and path.suffix == extension
-                    and framework in CONTRACTS
-                ):
+                if extension and path.suffix == extension and framework in CONTRACTS:
                     for violation in validate_rendered_output(
                         code, framework, file_path=str(path)
                     ):
@@ -156,8 +152,8 @@ def main() -> int:
         )
     )
 
-    conformance_failures, syntax_errors, contract_violation_count = (
-        _score_conformance(receipt)
+    conformance_failures, syntax_errors, contract_violation_count = _score_conformance(
+        receipt
     )
     conformance_success = rendered - conformance_failures
     success_rate = (rendered / attempts * 100.0) if attempts else 0.0
