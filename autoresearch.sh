@@ -1,104 +1,101 @@
 #!/usr/bin/env bash
-# autoresearch.sh — deterministic verification-layer benchmark for the GNN pipeline.
+# =============================================================================
+# autoresearch.sh — deterministic benchmark harness for the GNN pipeline
+# "utility + analysis" territory (deep horizon wave 2).
 #
-# Workload (identical every run):
-#   1. `uv sync --frozen` with the exact extras `dev + ml-ai + torch`
-#      (lock-pinned versions; the ml-ai/torch extras unlock the 12
-#      environment-skipped tests: 11 sklearn cases in
-#      tests/ml_integration/test_ml_integration_inference.py and 1 torch
-#      execution case in tests/render/test_continuous_renderers.py).
-#   2. The CI coverage-parity test selection (just test-cov / ci.yml main run):
-#      -m "not pipeline and not mcp", both Ollama files ignored, executed
-#      offline under pytest-xdist with a FIXED -n 4 (deterministic
-#      distribution; CI itself uses -n auto --dist worksteal, which is not
-#      reproducible run-to-run).
-#   3. Coverage over the installed `gnn` package (--cov=gnn), JSON report.
+# Territory: src/gnn/{analysis,utils,advanced_visualization,type_checker,schemas,api}
 #
-# Metrics (printed as `METRIC name=value` lines):
-#   coverage_percent — line coverage of the gnn package (PRIMARY, higher=better)
-#   tests_passed / tests_failed / tests_skipped — junit-aggregated counts
-#   suite_seconds    — wall-clock seconds for the pytest run
+# Workload (deterministic, offline, fixed environment):
+#   1. ruff check over the territory          -> ruff_errors
+#   2. mypy --strict over the territory       -> mypy_strict_errors
+#   3. deterministic pytest subset over the
+#      territory's own test directories       -> passed/failed/skipped counts
 #
-# Artifacts (all under .gitignore'd paths, tree stays clean):
-#   pytest-junit-autoresearch/junit.xml, pytest-junit-autoresearch/pytest-run.log
-#   coverage.json (repo root; ignored by .gitignore)
+# Primary metric:
+#   quality_violations = mypy_strict_errors + ruff_errors   (lower is better)
+#
+# Success: exit 0 with all METRIC lines emitted.
+# Failure: any stage crashes without producing a measurable summary -> exit 1.
+# =============================================================================
 set -euo pipefail
 cd "$(dirname "$0")"
 
-# Deterministic, CI-parity environment (PYTHONPATH/PYTHONHASHSEED mirror ci.yml env).
-export PYTHONPATH=src
-export PYTHONHASHSEED=0
-export TZ=UTC
-export MPLBACKEND=Agg
+TERRITORY=(
+  src/gnn/analysis
+  src/gnn/utils
+  src/gnn/advanced_visualization
+  src/gnn/type_checker
+  src/gnn/schemas
+  src/gnn/api
+)
 
-EXTRAS=(--extra dev --extra ml-ai --extra torch)
-if ! uv sync --frozen --quiet "${EXTRAS[@]}"; then
-    echo "autoresearch.sh: uv sync failed" >&2
-    uv sync --frozen "${EXTRAS[@]}" || exit 3   # retry un-quieted so the error is visible
-    exit 3
+# Territory-owned test directories (deterministic, offline, no Ollama/Julia/browser).
+TEST_DIRS=(
+  tests/analysis
+  tests/advanced_visualization
+  tests/api
+  tests/type_checker
+  tests/utils
+)
+
+OUT="$(mktemp -d)"
+trap 'rm -rf "$OUT"' EXIT
+
+count_or_zero() { # count_or_zero <pattern> <file>
+  grep -cE "$1" "$2" 2>/dev/null || true
+}
+
+# --- 1. ruff over the territory ----------------------------------------------
+RUFF_LOG="$OUT/ruff.log"
+if ! uv run --extra dev ruff check "${TERRITORY[@]}" --output-format concise \
+    >"$RUFF_LOG" 2>&1; then
+  echo "ruff completed with findings (expected) — counting" >&2
 fi
+RUFF_ERRORS="$(count_or_zero ': [A-Z]+[0-9]+ ' "$RUFF_LOG")"
+[ -n "$RUFF_ERRORS" ] || RUFF_ERRORS=0
 
-ART=pytest-junit-autoresearch   # ignored via .gitignore 'pytest-junit-*/'
-mkdir -p "$ART"
+# --- 2. mypy --strict over the territory --------------------------------------
+MYPY_LOG="$OUT/mypy.log"
+if ! uv run --extra dev mypy --strict --follow-imports=silent "${TERRITORY[@]}" --config-file pyproject.toml \
+    >"$MYPY_LOG" 2>&1; then
+  echo "mypy completed with findings (expected) — counting" >&2
+fi
+MYPY_ERRORS="$(count_or_zero 'error:' "$MYPY_LOG")"
+[ -n "$MYPY_ERRORS" ] || MYPY_ERRORS=0
 
-START=$SECONDS
+# --- 3. deterministic territory test subset + coverage -------------------------
+PYTEST_LOG="$OUT/pytest.log"
+COV_TARGETS="--cov=src/gnn/analysis --cov=src/gnn/utils --cov=src/gnn/advanced_visualization --cov=src/gnn/type_checker --cov=src/gnn/schemas --cov=src/gnn/api"
 set +e
-uv run --no-sync python -m pytest tests/ \
-  -n 4 \
-  -q \
+uv run --extra dev python -m pytest "${TEST_DIRS[@]}" \
+  -q -n 4 --tb=no -p no:cacheprovider \
   -m "not pipeline and not mcp" \
-  --ignore=tests/llm/test_llm_ollama.py \
-  --ignore=tests/llm/test_llm_ollama_integration.py \
-  --cov=gnn \
-  --cov-report=json:coverage.json \
-  --junitxml="$ART/junit.xml" \
-  > "$ART/pytest-run.log" 2>&1
+  $COV_TARGETS --cov-report=term \
+  >"$PYTEST_LOG" 2>&1
 PYTEST_RC=$?
 set -e
-WALL_SECONDS=$((SECONDS - START))
 
-# pytest exit codes 3 (internal error) and 4 (usage error) are harness
-# failures, not measurements. Exit code 2 (interrupted / collection error)
-# still yields a parseable junit whose error count surfaces via tests_failed.
-if [ "$PYTEST_RC" -ge 3 ]; then
-    echo "autoresearch.sh: pytest exited with $PYTEST_RC; last log lines:" >&2
-    tail -n 40 "$ART/pytest-run.log" >&2 || true
-    exit 2
+PASSED="$(grep -oE '[0-9]+ passed' "$PYTEST_LOG" | tail -1 | grep -oE '[0-9]+' || true)"
+FAILED="$(grep -oE '[0-9]+ failed' "$PYTEST_LOG" | tail -1 | grep -oE '[0-9]+' || true)"
+SKIPPED="$(grep -oE '[0-9]+ skipped' "$PYTEST_LOG" | tail -1 | grep -oE '[0-9]+' || true)"
+ERRORS="$(grep -oE '[0-9]+ errors?' "$PYTEST_LOG" | tail -1 | grep -oE '[0-9]+' || true)"
+PASSED="${PASSED:-0}"; FAILED="${FAILED:-0}"; SKIPPED="${SKIPPED:-0}"; ERRORS="${ERRORS:-0}"
+
+# A collection error / internal error yields no summary: harness failure.
+if [ "$PASSED" -eq 0 ] && [ "$FAILED" -eq 0 ] && [ "$SKIPPED" -eq 0 ]; then
+  echo "HARNESS FAILURE: pytest produced no summary (rc=$PYTEST_RC)" >&2
+  tail -30 "$PYTEST_LOG" >&2 || true
+  exit 1
 fi
 
-uv run --no-sync python - "$ART/junit.xml" coverage.json "$WALL_SECONDS" <<'PY'
-import json
-import sys
-import xml.etree.ElementTree as ET
-
-junit_path, coverage_path, wall = sys.argv[1], sys.argv[2], int(sys.argv[3])
-
-try:
-    suites = list(ET.parse(junit_path).getroot().iter("testsuite"))
-except Exception as exc:
-    print(f"autoresearch.sh: cannot parse junit report: {exc}", file=sys.stderr)
-    sys.exit(2)
-
-tests = sum(int(s.get("tests", 0)) for s in suites)
-errors = sum(int(s.get("errors", 0)) for s in suites)
-failures = sum(int(s.get("failures", 0)) for s in suites) + errors
-skipped = sum(int(s.get("skipped", 0)) for s in suites)
-passed = tests - failures - skipped
-
-try:
-    with open(coverage_path, encoding="utf-8") as fh:
-        percent = json.load(fh)["totals"]["percent_covered"]
-except Exception as exc:
-    print(f"autoresearch.sh: cannot parse coverage report: {exc}", file=sys.stderr)
-    sys.exit(2)
-
-if tests == 0:
-    print("autoresearch.sh: zero tests collected", file=sys.stderr)
-    sys.exit(2)
-
-print(f"METRIC coverage_percent={percent:.2f}")
-print(f"METRIC tests_passed={passed}")
-print(f"METRIC tests_failed={failures}")
-print(f"METRIC tests_skipped={skipped}")
-print(f"METRIC suite_seconds={wall}")
-PY
+QUALITY=$((MYPY_ERRORS + RUFF_ERRORS))
+COVERAGE="$(grep -E '^TOTAL' "$PYTEST_LOG" | tail -1 | grep -oE '[0-9]+%' | grep -oE '[0-9]+' || true)"
+COVERAGE="${COVERAGE:-0}"
+echo "METRIC territory_coverage_pct=$COVERAGE"
+echo "METRIC quality_violations=$QUALITY"
+echo "METRIC mypy_strict_errors=$MYPY_ERRORS"
+echo "METRIC ruff_errors=$RUFF_ERRORS"
+echo "METRIC territory_tests_passed=$PASSED"
+echo "METRIC territory_tests_failed=$FAILED"
+echo "METRIC territory_tests_errors=$ERRORS"
+echo "METRIC territory_tests_skipped=$SKIPPED"
