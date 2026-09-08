@@ -47,7 +47,6 @@ class PipelineDependencyManager:
         self.dependency_cache: Dict[str, DependencyResult] = {}
         self.step_configs = self._initialize_step_configs()
 
-
     def _initialize_step_configs(self) -> Dict[str, StepDependencyInfo]:
         """Initialize dependency configurations for each pipeline step."""
         return {

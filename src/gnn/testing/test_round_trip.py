@@ -86,7 +86,6 @@ from .round_trip_results import (
     RoundTripResult,
 )
 
-
 # Configure logging based on configuration
 if LOGGING_CONFIG["suppress_parser_warnings"]:
     logging.getLogger("gnn.parsers").setLevel(logging.ERROR)
