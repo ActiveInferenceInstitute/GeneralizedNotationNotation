@@ -633,3 +633,22 @@ def _write_unsupported_render_execute_summaries(
         ),
         encoding="utf-8",
     )
+
+
+def test_render_skip_reason_falls_back_without_diagnostics(tmp_path: Path) -> None:
+    """No top-level ``message`` exists on render receipts; the fallback is a
+    constant when zero renderings succeeded and no diagnostics were recorded."""
+    from gnn.pipeline.model_family_acceptance import _render_skip_or_failure_reason
+
+    render_output = tmp_path / "11_render_output"
+    render_output.mkdir()
+    (render_output / "render_processing_summary.json").write_text(
+        json.dumps(
+            {
+                "successful_framework_renderings": 0,
+                "failed_framework_renderings": [],
+            }
+        ),
+        encoding="utf-8",
+    )
+    assert _render_skip_or_failure_reason(tmp_path) == "no compatible renderings"

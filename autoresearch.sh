@@ -1,14 +1,10 @@
 #!/usr/bin/env bash
-# Canonical benchmark entrypoint for the deep-horizon wave-2 session
-# (MCP surface + execute stack).
+# Canonical autoresearch benchmark entrypoint for the GNN render backends.
 #
-# Runs the deterministic MCP/execute workload
-# (scripts/run_autoresearch_bench.py) against the current source tree and
-# emits one `METRIC <name>=<value>` line per metric on stdout.
-# Exits 0 only when every deterministic surface check passes.
+# Runs the deterministic render-backend conformance workload (see
+# scripts/bench_render_backends.py) and prints METRIC lines. Exits 0 when the
+# workload completes and emits its metrics; non-zero on harness failure.
 set -euo pipefail
-cd "$(dirname "${BASH_SOURCE[0]}")"
-# Test the current tree, not a stale installed wheel (repo convention:
-# `gnn.*` resolves from the repo with PYTHONPATH=src).
-export PYTHONPATH="$PWD/src${PYTHONPATH:+:$PYTHONPATH}"
-exec uv run --extra dev python scripts/run_autoresearch_bench.py "$@"
+cd "$(dirname "$0")"
+
+exec uv run --frozen python scripts/bench_render_backends.py
