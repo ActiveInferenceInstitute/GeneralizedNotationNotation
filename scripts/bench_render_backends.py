@@ -319,12 +319,18 @@ def _parity_mismatches(receipt: dict[str, Any]) -> tuple[int, list[str]]:
 
     For every source rendered successfully by at least two Python-emitting
     backends (pymdp, jax, pytorch, numpyro), the extracted canonical matrix
-    shapes must agree. Shapes come from the conservative extractor in
+    shapes must agree; the Julia backends' dimension constants
+    (NUM_STATES/OBSERVATIONS/ACTIONS) must agree with the Python-derived
+    dims. Shapes come from the conservative extractor in
     ``gnn.render.emitted_artifact_checks.matrix_shapes``; sources whose
     artifacts yield no clean literal shapes are simply not compared.
     Returns ``(mismatch_count, diagnostics)``.
     """
-    from gnn.render.emitted_artifact_checks import matrix_shapes
+    from gnn.render.emitted_artifact_checks import (
+        julia_dimension_constants,
+        julia_render_factorization,
+        matrix_shapes,
+    )
 
     per_source: dict[str, dict[str, dict[str, tuple[int, ...]]]] = {}
     for source, record in receipt["file_results"].items():
@@ -349,6 +355,34 @@ def _parity_mismatches(receipt: dict[str, Any]) -> tuple[int, list[str]]:
                     ).update(shapes)
                 break
 
+    # Julia backends (rxinfer, activeinference_jl) allocate from dimension
+    # constants; check them against the Python backends' derived dims
+    # (n = A columns, m = A rows, k = B action axis).
+    julia_by_source: dict[str, dict[str, dict[str, int]]] = {}
+    for source, record in receipt["file_results"].items():
+        if not isinstance(record, dict):
+            continue
+        source_name = Path(source).name
+        for framework, result in record.get("framework_results", {}).items():
+            if framework not in ("rxinfer", "activeinference_jl"):
+                continue
+            if not isinstance(result, dict) or not result.get("success"):
+                continue
+            for artifact in result.get("output_files", []):
+                path = Path(str(artifact))
+                if path.suffix != ".jl" or not path.is_file():
+                    continue
+                artifact_text = path.read_text(errors="replace")
+                if julia_render_factorization(artifact_text) == "hierarchical":
+                    # Native per-level factorized render: its dimension
+                    # constants describe the fast level only, not the joint
+                    # expansion the Python backends emit.
+                    break
+                constants = julia_dimension_constants(artifact_text)
+                if constants:
+                    julia_by_source.setdefault(source_name, {})[framework] = constants
+                break
+
     diagnostics: list[str] = []
     mismatches = 0
     for source_name in sorted(per_source):
@@ -364,6 +398,27 @@ def _parity_mismatches(receipt: dict[str, Any]) -> tuple[int, list[str]]:
             if len(set(per_backend.values())) > 1:
                 mismatches += 1
                 diagnostics.append(f"{source_name} {letter}: {per_backend}")
+    for source_name, julia_entries in sorted(julia_by_source.items()):
+        derived = {}
+        for shapes in per_source.get(source_name, {}).values():
+            if "A" in shapes and "B" in shapes:
+                derived = {
+                    "NUM_STATES": shapes["A"][1],
+                    "NUM_OBSERVATIONS": shapes["A"][0],
+                    "NUM_ACTIONS": shapes["B"][2] if len(shapes["B"]) == 3 else 1,
+                }
+                break
+        if not derived:
+            continue
+        for framework, constants in sorted(julia_entries.items()):
+            for key, expected in derived.items():
+                actual = constants.get(key)
+                if actual is not None and actual != expected:
+                    mismatches += 1
+                    diagnostics.append(
+                        f"{source_name} {framework}: {key}={actual} "
+                        f"but Python backends imply {expected}"
+                    )
     return mismatches, diagnostics
 
 
