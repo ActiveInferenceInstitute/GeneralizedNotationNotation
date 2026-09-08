@@ -332,7 +332,7 @@ class GNNExecutor:
                 "return_code": 0,
             }
         return run_subprocess_envelope(
-            [sys.executable, script_path], timeout=timeout or 60
+            [sys.executable, script_path], timeout=timeout or 600
         )
 
     def _execute_rxinfer_config(
@@ -1029,7 +1029,7 @@ def execute_rendered_simulators(
 
 def execute_script_safely(
     script_path: Union[str, Path],
-    timeout: int = 60,
+    timeout: int = 3600,
     capture_output: bool = True,
     cwd: Optional[Union[str, Path]] = None,
     env: Optional[Dict[str, str]] = None,
