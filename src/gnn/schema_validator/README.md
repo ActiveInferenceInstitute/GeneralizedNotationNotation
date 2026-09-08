@@ -2,10 +2,9 @@
 
 Syntax-level validation and parsing for GNN model files: a regex-based parser, a
 multi-level validator with round-trip and schema checks, and cross-format
-consistency verification. This package was split in 3.2.0 from the former
-single-file `src/gnn/schema_validator.py` (parser half → `syntax.py`,
-validation half → `validator.py`) plus `src/gnn/cross_format_validator.py`
-(→ `cross_format.py`).
+consistency verification. The package was split in 3.2.0 from a former
+single-file module (parser half → `syntax.py`, validation half →
+`validator.py`) plus a standalone cross-format module (→ `cross_format.py`).
 
 ## Module Structure
 
@@ -47,7 +46,7 @@ Notes:
   removed); `ROUND_TRIP_AVAILABLE` reflects whether `gnn.parsers` imports
   cleanly. `GNNValidator` degrades accordingly.
 - `ValidationLevel`, `ValidationResult`, and `ParsedGNN` live in
-  `src/gnn/types.py` and are re-exported here for convenience.
+  `src/gnn/types/` and are re-exported here for convenience.
 
 ## See Also
 

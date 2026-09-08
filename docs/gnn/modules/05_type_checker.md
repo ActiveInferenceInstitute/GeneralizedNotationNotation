@@ -68,7 +68,7 @@ python src/gnn/5_type_checker.py --target-dir input/gnn_files \
 
 The type checker itself emits one code, `GNN-E004` (matrix dimensions mismatch the
 declared shape). The remaining codes come from the schema validator in
-`src/gnn/schema.py`; their normative meanings are in
+`src/gnn/schema/parser.py`; their normative meanings are in
 [gnn_syntax.md § 8 Error Taxonomy](../gnn_syntax.md) and are summarised here:
 
 | Rule ID | Emitted by | Meaning | Default Severity |

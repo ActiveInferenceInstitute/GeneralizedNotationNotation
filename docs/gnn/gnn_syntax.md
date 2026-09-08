@@ -25,7 +25,7 @@ introduced by a level-2 header (`## SectionName`).
 
 Two code paths are used in this repository:
 
-- **Strict schema validator**: `src/gnn/schema.py` enforces required sections, declaration formats, and connection grammar.
+- **Strict schema validator**: `src/gnn/schema/parser.py` enforces required sections, declaration formats, and connection grammar.
 - **Permissive markdown parser**: `src/gnn/parsers/markdown_parser.py` is more tolerant when loading mixed or partially structured markdown.
 
 For CI, type-checking, and pipeline validation, prefer examples that satisfy the strict schema validator.
@@ -292,12 +292,12 @@ by Step 10. Note the conventional binding: `A` is the **likelihood**
 |------------|---------|
 | `GNN-E001` | Missing required section |
 | `GNN-E002` | Variable dimension mismatch (declaration vs parameterization) |
-| `GNN-E003` | Unknown variable in connection (**reserved, not yet enforced** — `src/gnn/schema.py` reports this condition as the `GNN-W002` warning instead) |
+| `GNN-E003` | Unknown variable in connection (**reserved, not yet enforced** — `src/gnn/schema/parser.py` reports this condition as the `GNN-W002` warning instead) |
 | `GNN-E004` | Duplicate variable declaration |
 | `GNN-E005` | Unparseable connection syntax |
 
 | Warning Code | Meaning |
 |--------------|---------|
-| `GNN-W001` | Variable declared but never used in connections (**planned, not yet enforced** — no emitting code in `src/gnn/schema.py`) |
+| `GNN-W001` | Variable declared but never used in connections (**planned, not yet enforced** — no emitting code in `src/gnn/schema/parser.py`) |
 | `GNN-W002` | Connection references undeclared variable |
 | `GNN-W003` | Parameterization provided for undeclared variable |

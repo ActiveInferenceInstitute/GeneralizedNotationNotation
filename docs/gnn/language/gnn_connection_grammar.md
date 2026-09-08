@@ -52,14 +52,14 @@ s>o:emission                  # state to observation emission
 An undeclared endpoint is reported as a **warning**, not an error: parsing
 continues and the edge is kept. `GNN-E003` is reserved for this condition in
 the error taxonomy but has no emitting code — `parse_connections` in
-[`src/gnn/schema.py`](../../../src/gnn/schema/__init__.py) raises `GNN-W002` for both
+[`src/gnn/schema/parser.py`](../../../src/gnn/schema/__init__.py) raises `GNN-W002` for both
 endpoints instead. Cross-validation only happens when the parser is given the
 declared-variable set; parsing a `Connections` block in isolation reports
 neither code.
 
 ## Implementation
 
-- Parser: [`src/gnn/schema.py :: parse_connections()`](../../../src/gnn/schema/__init__.py)
+- Parser: [`src/gnn/schema/parser.py :: parse_connections()`](../../../src/gnn/schema/__init__.py)
 - LSP diagnostics: [`src/gnn/lsp/__init__.py`](../../../src/gnn/lsp/__init__.py) — real-time connection error highlighting
 - CLI: `gnn validate <file.md>` runs all connection grammar checks
 
