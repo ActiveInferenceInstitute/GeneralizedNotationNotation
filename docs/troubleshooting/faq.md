@@ -519,7 +519,7 @@ goal_weight_01>goal_level_0
 uv pip install jupyter ipywidgets
 
 # Run from the repository root
-from gnn.gnn import parse_gnn_file, validate_gnn_file
+from gnn import parse_gnn_file, validate_gnn_file
 
 # Load and process GNN model
 model = parse_gnn_file('my_model.md')
