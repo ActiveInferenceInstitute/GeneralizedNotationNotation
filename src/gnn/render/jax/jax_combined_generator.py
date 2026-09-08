@@ -21,8 +21,8 @@ def _generate_jax_combined_code(
 
     model_name = _jax_model_name(gnn_spec, "CombinedModel")
 
-    code = f'''"""
-JAX Combined Model Generated from GNN Specification: {model_name}
+    code = '''"""
+JAX Combined Model Generated from GNN Specification: __GNN_MODEL_NAME__
 
 This implements a combined JAX model supporting hierarchical, multi-agent, and continuous extensions.
 Uses advanced JAX features including distributed computing and mixed precision.
@@ -40,7 +40,7 @@ from jax import jit, vmap, pmap
 from typing import Dict, Any, Optional, Tuple, List
 import optax
 
-class {model_name}Combined(nn.Module):
+class __GNN_MODEL_NAME__Combined(nn.Module):
     """
     Combined JAX model supporting hierarchical, multi-agent, and continuous extensions.
     """
@@ -57,7 +57,7 @@ class {model_name}Combined(nn.Module):
         self.hierarchical_weights = []
         for level in range(self.num_hierarchical_levels):
             level_weight = self.param(
-                f"hierarchical_{{level}}",
+                f"hierarchical_{level}",
                 nn.initializers.normal(0.1),
                 (self.num_agents, self.num_agents),
             )
@@ -206,8 +206,8 @@ class {model_name}Combined(nn.Module):
         return updated_params
 
 if __name__ == "__main__":
-    print(f"Combined model {model_name} created successfully!")
+    print(f"Combined model __GNN_MODEL_NAME__ created successfully!")
     print("This model supports hierarchical, multi-agent, and continuous extensions.")
-'''
+'''.replace("__GNN_MODEL_NAME__", model_name)
 
     return code
