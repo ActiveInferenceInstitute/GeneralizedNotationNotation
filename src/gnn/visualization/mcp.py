@@ -80,7 +80,8 @@ def list_visualization_artifacts_mcp(output_directory: str) -> Dict[str, Any]:
     Returns:
         Dictionary with file list, types, sizes, and counts by format.
     """
-    try:
+
+    def _build() -> Dict[str, Any]:
         out_dir = Path(output_directory)
         if not out_dir.exists():
             return {
@@ -111,9 +112,12 @@ def list_visualization_artifacts_mcp(output_directory: str) -> Dict[str, Any]:
             "by_type": by_type,
             "artifacts": artifacts,
         }
-    except Exception as e:
-        logger.error(f"list_visualization_artifacts_mcp error: {e}", exc_info=True)
-        return {"success": False, "error": str(e)}
+
+    return run_tool_envelope(
+        _build,
+        wrapper_name="list_visualization_artifacts_mcp",
+        logger=logger,
+    )
 
 
 def get_visualization_module_info_mcp() -> Dict[str, Any]:

@@ -11,6 +11,8 @@ from typing import Any, Dict, List
 
 logger = logging.getLogger(__name__)
 
+from gnn.utils.mcp_dispatch import run_tool_envelope
+
 from . import get_module_info as _get_mod_info
 from . import process_gnn_to_audio
 
@@ -100,7 +102,8 @@ def list_audio_artifacts_mcp(output_directory: str) -> Dict[str, Any]:
     Returns:
         Dictionary with audio file inventory and format counts.
     """
-    try:
+
+    def _build() -> Dict[str, Any]:
         out_dir = Path(output_directory)
         if not out_dir.exists():
             return {
@@ -131,9 +134,12 @@ def list_audio_artifacts_mcp(output_directory: str) -> Dict[str, Any]:
             "by_type": by_type,
             "artifacts": artifacts,
         }
-    except Exception as e:
-        logger.error(f"list_audio_artifacts_mcp error: {e}", exc_info=True)
-        return {"success": False, "error": str(e)}
+
+    return run_tool_envelope(
+        _build,
+        wrapper_name="list_audio_artifacts_mcp",
+        logger=logger,
+    )
 
 
 def check_audio_backends_mcp() -> Dict[str, Any]:
