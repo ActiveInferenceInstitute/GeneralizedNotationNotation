@@ -39,7 +39,9 @@ def test_main_estimates_single_file_and_prints_report(
 ) -> None:
     spec = tmp_path / "probe.gnn"
     spec.write_text(_SPEC, encoding="utf-8")
-    monkeypatch.setattr(sys, "argv", ["resource_estimator", str(spec)])
+    monkeypatch.setattr(
+        sys, "argv", ["resource_estimator", str(spec), "-o", str(tmp_path)]
+    )
 
     exit_code = resource_estimator.main()
 
@@ -55,7 +57,9 @@ def test_main_estimates_directory_recursive(
     target.mkdir()
     (target / "probe.gnn").write_text(_SPEC, encoding="utf-8")
     monkeypatch.setattr(
-        sys, "argv", ["resource_estimator", str(target), "--recursive"]
+        sys,
+        "argv",
+        ["resource_estimator", str(target), "--recursive", "-o", str(tmp_path)],
     )
 
     exit_code = resource_estimator.main()
