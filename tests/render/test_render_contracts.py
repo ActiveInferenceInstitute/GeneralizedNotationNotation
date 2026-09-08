@@ -658,3 +658,29 @@ class TestMatrixShapeParity:
             }
             assert len(per_backend) >= 2
             assert len(set(per_backend.values())) == 1, (letter, per_backend)
+
+
+    def test_julia_dimension_constants_extraction(self) -> None:
+        from gnn.render.emitted_artifact_checks import julia_dimension_constants
+
+        code = (
+            "const NUM_STATES = 3\n"
+            "const NUM_OBSERVATIONS = 16\n"
+            "const NUM_ACTIONS = 3\n"
+        )
+        assert julia_dimension_constants(code) == {
+            "NUM_STATES": 3,
+            "NUM_OBSERVATIONS": 16,
+            "NUM_ACTIONS": 3,
+        }
+        assert julia_dimension_constants("x = 1") == {}
+
+    def test_julia_hierarchical_render_is_exempt_from_joint_parity(self) -> None:
+        """A native per-level hierarchical render declares the FAST level's
+        dims; joint-vs-per-level comparison must be skipped, not flagged."""
+        from gnn.render.emitted_artifact_checks import julia_render_factorization
+
+        code = 'const MODEL_KIND = "hierarchical"\nconst NUM_OBSERVATIONS = 4\n'
+        assert julia_render_factorization(code) == "hierarchical"
+        assert julia_render_factorization('const MODEL_KIND = "flat"\n') == "flat"
+        assert julia_render_factorization("no marker") is None

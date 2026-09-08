@@ -328,6 +328,7 @@ def _parity_mismatches(receipt: dict[str, Any]) -> tuple[int, list[str]]:
     """
     from gnn.render.emitted_artifact_checks import (
         julia_dimension_constants,
+        julia_render_factorization,
         matrix_shapes,
     )
 
@@ -371,7 +372,13 @@ def _parity_mismatches(receipt: dict[str, Any]) -> tuple[int, list[str]]:
                 path = Path(str(artifact))
                 if path.suffix != ".jl" or not path.is_file():
                     continue
-                constants = julia_dimension_constants(path.read_text(errors="replace"))
+                artifact_text = path.read_text(errors="replace")
+                if julia_render_factorization(artifact_text) == "hierarchical":
+                    # Native per-level factorized render: its dimension
+                    # constants describe the fast level only, not the joint
+                    # expansion the Python backends emit.
+                    break
+                constants = julia_dimension_constants(artifact_text)
                 if constants:
                     julia_by_source.setdefault(source_name, {})[framework] = constants
                 break

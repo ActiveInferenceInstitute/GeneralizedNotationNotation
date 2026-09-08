@@ -286,3 +286,17 @@ def julia_dimension_constants(code: str) -> dict[str, int]:
     ):
         constants[f"NUM_{match.group(1)}"] = int(match.group(2))
     return constants
+
+
+def julia_render_factorization(code: str) -> "str | None":
+    """Extract ``const MODEL_KIND = "..."`` from a .jl artifact, if declared.
+
+    ``"hierarchical"`` marks a native per-level factorized render whose
+    dimension constants describe the FAST level only - joint-vs-per-level
+    comparisons with the Python backends' expanded joint matrices do not
+    apply, and the parity gate must skip it.
+    """
+    import re
+
+    match = re.search(r'const\s+MODEL_KIND\s*=\s*"([^"]+)"', code)
+    return match.group(1) if match else None
