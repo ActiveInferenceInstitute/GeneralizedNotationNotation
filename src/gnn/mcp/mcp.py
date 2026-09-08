@@ -366,7 +366,7 @@ class MCP:
         sympy_mcp_file = mcp_dir / "sympy_mcp.py"
         if sympy_mcp_file.exists():
             try:
-                # Import directly as src.mcp.sympy_mcp since it's in the mcp directory
+                # Import directly as gnn.mcp.sympy_mcp since it's in the mcp directory
                 import_start = time.time()
                 sympy_module = importlib.import_module("gnn.mcp.sympy_mcp")
                 import_time = time.time() - import_start
@@ -396,7 +396,7 @@ class MCP:
                     logger.warning("sympy_mcp module has no register_tools function")
             except Exception as e:
                 logger.error(
-                    f"Failed to load core MCP module src.mcp.sympy_mcp: {str(e)}"
+                    f"Failed to load core MCP module gnn.mcp.sympy_mcp: {str(e)}"
                 )
                 all_modules_loaded_successfully = False
 

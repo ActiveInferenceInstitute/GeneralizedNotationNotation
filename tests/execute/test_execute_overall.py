@@ -443,34 +443,44 @@ print(json.dumps(result))
 
     @pytest.mark.unit
     def test_execute_single_script_timeout_handling(self, safe_filesystem: Any) -> None:
-        """Test that script execution handles timeouts gracefully."""
+        """Timeout yields failure with TimeoutExpired and partial output.
+
+        Wave-2 MAJ-10: the step-12 processor routes script execution through
+        the shared subprocess envelope, so a timeout must be reported as
+        ``error_type == "TimeoutExpired"`` with ``return_code == NEVER_STARTED``
+        (-1) and the partial stdout the child produced before being killed —
+        not the literal ``"Timeout"`` placeholder the pre-envelope loop wrote.
+        The run path is forced with framework ``jax`` (installed) because
+        unknown frameworks short-circuit to a skipped result before any
+        subprocess runs.
+        """
         logger = logging.getLogger("test")
         results_dir = safe_filesystem.create_dir("results")
 
-        # Create a script that would hang
         hanging_script = safe_filesystem.create_file(
             "hanging_script.py",
             """#!/usr/bin/env python3
 import time
-time.sleep(1000)  # Sleep for a long time
+print("partial-marker", flush=True)
+time.sleep(1000)  # Sleep far past the enforced timeout
 """,
         )
 
         script_info: dict[str, Any] = {
             "path": hanging_script,
             "script_path": hanging_script,
-            "framework": "test",
+            "framework": "jax",
             "name": "hanging_script",
+            "executor": sys.executable,
         }
 
-        # This should return with timeout status, not hang
-        try:
-            result = execute_single_script(script_info, results_dir, True, logger)
-            # If it returns, timeout handling works
-            assert isinstance(result, dict)
-        except Exception:
-            # Timeout exceptions are acceptable
-            pass
+        result = execute_single_script(
+            script_info, results_dir, False, logger, timeout=2
+        )
+        assert result["success"] is False
+        assert result["error_type"] == "TimeoutExpired"
+        assert result["return_code"] == -1  # subprocess_envelope.NEVER_STARTED
+        assert "partial-marker" in (result.get("stdout") or "")
 
 
 class TestExecuteIntegration:
