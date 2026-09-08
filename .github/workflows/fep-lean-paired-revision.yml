@@ -1,0 +1,110 @@
+name: Paired fep_lean revision
+
+# GNN-side paired-revision CI (roadmap item GNN-04), mirroring GEO-INFER's
+# `.github/workflows/gnn-interchange.yml` mechanism exactly:
+#
+#   - the companion revision is recorded in a committed pin file
+#     (`.github/fep-lean-pair.json`, same format as GEO's `.github/gnn-pair.json`),
+#   - the pin is validated (known repository slug, 40-hex revision),
+#   - the companion is checked out at exactly the pinned SHA,
+#   - both revisions plus the pin are retained as receipts, and
+#   - the read-only fep_lean bridge surface runs against this checkout.
+#
+# Strictness mirrors GEO: the job is blocking (strict-with-paired-bumps).
+# A red run is the drift-detection signal, not a harness failure: it means one
+# side changed since the pin was recorded and the pair must be re-pinned
+# together (GNN-side re-pin here in the same PR that bumps this file; fep_lean
+# side per its FEP-EVIDENCE-CURRENT policy).
+#
+# What this proves and does NOT prove (evidence-plane discipline): the workflow
+# verifies that the pinned fep_lean checkout and this GNN checkout still agree
+# on the bridge's source binding and emit digests (drift detection). It does
+# NOT verify any Lean theorem or promote any Lean proof claim — notation
+# mapping states symbol correspondence only.
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  fep-lean-pair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          path: gnn
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Read pinned companion revision
+        id: pair
+        working-directory: gnn
+        run: |
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+          pair = json.loads(Path('.github/fep-lean-pair.json').read_text())
+          assert pair['repository'] == 'ActiveInferenceInstitute/fep_lean'
+          assert re.fullmatch('[0-9a-f]{40}', pair['revision'])
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write('revision=' + pair['revision'] + '\n')
+          PY
+      - uses: actions/checkout@v7
+        with:
+          repository: ActiveInferenceInstitute/fep_lean
+          ref: ${{ steps.pair.outputs.revision }}
+          path: fep-lean
+          persist-credentials: false
+      - name: Set up Python ${{ matrix.python }}
+        uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+      - name: Record both checkouts before installing
+        run: |
+          mkdir receipts
+          git -C gnn rev-parse HEAD > receipts/gnn-revision.txt
+          git -C fep-lean rev-parse HEAD > receipts/fep-lean-revision.txt
+          cp gnn/.github/fep-lean-pair.json receipts/pair.json
+      - name: Install independent locked runtimes
+        env:
+          FEP_PYTHON: ${{ matrix.python }}
+        run: |
+          uv sync --project fep-lean --locked --python "$FEP_PYTHON"
+      # Read-only bridge surface only: `status` and `emit --check` inspect
+      # source bytes and emitted-document digests and never write to either
+      # checkout (verified against src/fep_lean/bridge/cli.py at the pin).
+      - name: Bridge status against this checkout
+        run: |
+          uv run --project fep-lean fep-lean bridge status \
+            --gnn-root "$GITHUB_WORKSPACE/gnn" \
+            > receipts/bridge-status-py${{ matrix.python }}.json
+      - name: Bridge emit check (finite model)
+        run: |
+          uv run --project fep-lean fep-lean bridge emit --check --model finite \
+            --gnn-root "$GITHUB_WORKSPACE/gnn" \
+            > receipts/bridge-emit-finite-py${{ matrix.python }}.json
+      - name: Bridge emit check (continuous model)
+        run: |
+          uv run --project fep-lean fep-lean bridge emit --check --model continuous \
+            --gnn-root "$GITHUB_WORKSPACE/gnn" \
+            > receipts/bridge-emit-continuous-py${{ matrix.python }}.json
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: paired-fep-lean-revision-py${{ matrix.python }}
+          path: receipts/
+          if-no-files-found: error
+          retention-days: 14
