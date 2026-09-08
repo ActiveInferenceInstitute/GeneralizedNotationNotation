@@ -18,17 +18,31 @@ LAYOUT_SPAN = 10.0
 LAYOUT_ITERATIONS = 50
 LAYOUT_STEP = 0.01
 
+from gnn.visualization.connection_format import (
+    conn_endpoints as _conn_endpoints,
+)
+from gnn.visualization.connection_format import (
+    normalize_connection_format as normalize_connection_format,
+)
+from gnn.visualization.theme import VAR_TYPE_COLORS_3D as _THEME_3D_PALETTE
+
+# Single-source palette: the 3-D subset of the canonical visualization theme.
+# Do not inline hex values here; extend VAR_TYPE_COLORS_3D in
+# ``gnn/visualization/theme.py`` instead.
 VAR_TYPE_COLORS: dict[str, str] = {
-    "likelihood_matrix": "#FF6B6B",
-    "transition_matrix": "#4ECDC4",
-    "preference_vector": "#45B7D1",
-    "prior_vector": "#96CEB4",
-    "hidden_state": "#FECA57",
-    "observation": "#FF9FF3",
-    "policy": "#A8E6CF",
-    "action": "#DCE9BE",
+    key: _THEME_3D_PALETTE[key]
+    for key in (
+        "likelihood_matrix",
+        "transition_matrix",
+        "preference_vector",
+        "prior_vector",
+        "hidden_state",
+        "observation",
+        "policy",
+        "action",
+    )
 }
-VAR_TYPE_UNKNOWN_COLOR = "#CCCCCC"
+VAR_TYPE_UNKNOWN_COLOR = _THEME_3D_PALETTE["unknown"]
 
 
 try:
@@ -136,31 +150,6 @@ def record_attempt(
         ):
             results.warnings.append(message)
 
-
-def normalize_connection_format(conn_info: Dict[str, Any]) -> Dict[str, Any]:
-    """Normalize connection format to handle both old and new formats."""
-    if "source_variables" in conn_info and "target_variables" in conn_info:
-        return conn_info
-    elif "source" in conn_info and "target" in conn_info:
-        return {
-            "source_variables": [conn_info["source"]],
-            "target_variables": [conn_info["target"]],
-            **{k: v for k, v in conn_info.items() if k not in ["source", "target"]},
-        }
-    else:
-        return conn_info
-
-
-def _conn_endpoints(conn_info: Dict[str, Any]) -> tuple[list[Any], list[Any]]:
-    """Return ``(source_variables, target_variables)`` for a connection dict.
-
-    Normalizes scalar ``{"source": .., "target": ..}`` format first, so
-    callers never repeat the normalize-then-extract dance.
-    """
-    normalized = normalize_connection_format(conn_info)
-    sources = normalized.get("source_variables", [])
-    targets = normalized.get("target_variables", [])
-    return sources, targets
 
 
 def _calculate_semantic_positions(
