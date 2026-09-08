@@ -11,6 +11,8 @@ from typing import Any, Dict, Optional
 logger = logging.getLogger(__name__)
 
 # Import utilities from the intelligent_analysis module
+from gnn.utils.mcp_dispatch import run_pipeline_step_mcp
+
 from . import (
     FEATURES,
     check_intelligent_analysis_tools,
@@ -40,30 +42,20 @@ def process_intelligent_analysis_mcp(
     Returns:
         Dictionary with operation status and results.
     """
-    try:
-        kwargs: dict[Any, Any] = {}
-        if analysis_types:
-            kwargs["analysis_types"] = analysis_types.split(",")
-
-        success = process_intelligent_analysis(
-            target_dir=Path(target_directory),
-            output_dir=Path(output_directory),
-            logger=logger,
-            verbose=verbose,
-            **kwargs,
-        )
-        return {
-            "success": success,
-            "target_directory": target_directory,
-            "output_directory": output_directory,
-            "message": f"Intelligent analysis {'completed successfully' if success else 'failed'}",
-        }
-    except Exception as e:
-        logger.error(
-            f"Error in process_intelligent_analysis_mcp for {target_directory}: {e}",
-            exc_info=True,
-        )
-        return {"success": False, "error": str(e)}
+    step_kwargs: dict[str, Any] = {"logger": logger}
+    if analysis_types:
+        step_kwargs["analysis_types"] = analysis_types.split(",")
+    return run_pipeline_step_mcp(
+        process_intelligent_analysis,
+        wrapper_name="process_intelligent_analysis_mcp",
+        logger=logger,
+        target_directory=target_directory,
+        output_directory=output_directory,
+        verbose=verbose,
+        extra_step_kwargs=step_kwargs,
+        label="Intelligent analysis",
+        failure_wording="failed",
+    )
 
 
 def get_analysis_capabilities_mcp() -> Dict[str, Any]:
