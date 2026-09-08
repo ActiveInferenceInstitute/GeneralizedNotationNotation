@@ -359,7 +359,7 @@ Configure Claude Desktop to use the GNN MCP server:
   "mcpServers": {
     "gnn": {
       "command": "python",
-      "args": ["-m", "src.mcp.cli", "server", "--transport", "stdio"]
+      "args": ["-m", "gnn.mcp.cli", "server", "--transport", "stdio"]
     }
   }
 }
