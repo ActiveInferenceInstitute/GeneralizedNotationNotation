@@ -47,8 +47,6 @@ class PipelineDependencyManager:
         self.dependency_cache: Dict[str, DependencyResult] = {}
         self.step_configs = self._initialize_step_configs()
 
-    # ... (omitting middle lines for brevity in thought process, but tool needs exact match.
-    # Actually, replace_file_content needs exact match. I should use multi_replace for this file since changes are scattered.)
 
     def _initialize_step_configs(self) -> Dict[str, StepDependencyInfo]:
         """Initialize dependency configurations for each pipeline step."""
