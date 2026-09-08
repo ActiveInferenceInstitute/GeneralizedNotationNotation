@@ -113,9 +113,18 @@ def execute_rxinfer_script(
             logger.error("Cannot execute TOML configuration without a runner script")
             return False
 
-        cmd = ["julia", str(runner_script), str(script_path)]
-        logger.debug(f"Running command: {' '.join(cmd)}")
-        envelope = run_subprocess_envelope(cmd, timeout=timeout)
+        # Same committed RxInfer project environment as the .jl branch —
+        # the TOML runner needs `using RxInfer` to resolve packages.
+        rxinfer_project = Path(__file__).parent.resolve()
+        toml_cmd: list[Any] = [
+            "julia",
+            "--startup-file=no",
+            f"--project={rxinfer_project}",
+            str(runner_script),
+            str(script_path),
+        ]
+        logger.debug(f"Running command: {' '.join(toml_cmd)}")
+        envelope = run_subprocess_envelope(toml_cmd, timeout=timeout)
     else:
         logger.error(f"Unsupported file type: {script_path.suffix}")
         return False

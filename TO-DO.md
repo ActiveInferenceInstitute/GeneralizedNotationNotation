@@ -226,7 +226,19 @@ Completed rows (file:line evidence in PR descriptions):
   audit
 
 Remainders (scoped, cold-startable):
-- MED-03: executor timeout/classification divergence (pymdp/rxinfer/lean)
+- MED-03a ✓ (PR #97): executor timeout alignment (60→3600/600), pymdp
+  self-heal (.cleaned.py + discovery filter + 5 tests), lean temp-dir
+  leak, rxinfer TOML --project=
+- MED-03b (OPEN): rxinfer execution evidence persistence — the runner
+  documents `output_dir` as "unused currently, reserved for consistency"
+  (`rxinfer_runner.py:66`); the caller passes nothing (`:201`); no
+  stdout/stderr/log files are written, unlike jax (`jax_runner.py:201-232`)
+  and pymdp (`pymdp_runner.py:120-127`). Fix: persist the envelope's
+  stdout/stderr next to the TOML/.jl target like jax does, and add an
+  execution log. Acceptance: rxinfer runner writes
+  `{output_dir}/{stem}_stdout.txt`, `{stem}_stderr.txt`,
+  `{stem}_execution_log.json` on every run (success and failure), pinned
+  by a test in tests/execute/.
 - MED-04: no request-size limits on HTTP/stdio
 - MIN-01: registry/transport hygiene (dead code, cache by-reference, ensure_ascii)
 
