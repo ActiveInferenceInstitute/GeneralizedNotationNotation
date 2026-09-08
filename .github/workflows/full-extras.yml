@@ -84,6 +84,7 @@ jobs:
       - name: Run full test suite (all-extras)
         run: |
           uv run --all-extras python -m pytest tests/ -q --tb=short \
+            --cov=gnn --cov-report=json:junit/coverage-full-extras.json \
             --junitxml=junit/full-extras-${{ matrix.python-version }}.xml \
             -x
 
