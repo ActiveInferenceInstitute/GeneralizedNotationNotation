@@ -181,6 +181,20 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   between `gnn/utils/pipeline_validator.py` and
   `gnn/pipeline/pipeline_validator.py` is unrelated to this surface and
   untouched; a dedicated rename pass should address it separately.
+- **Follow-up executed: the `gnn/pipeline/pipeline_validator.py` vs
+  `gnn/utils/pipeline_validator.py` near-name collision is resolved.** The
+  lower-traffic module (runtime integration tester; one test importer,
+  zero production imports) is renamed to
+  `gnn/pipeline/pipeline_runtime_validator.py`; the old import path remains
+  as a compatibility module that emits `DeprecationWarning` and re-exports
+  `PipelineValidator` and `main` with identical behavior (contract pinned
+  by `test_old_import_path_warns_and_reexports`). The higher-traffic
+  pre-execution prerequisite checker keeps `gnn/utils/pipeline_validator.py`
+  (production import in `main.py`). Cross-referencing See-also docstrings
+  updated; the test module moved with its subject
+  (`test_pipeline_runtime_validator.py`). Verified: import-site grep has
+  zero stragglers, `mypy src` clean, MCP tools and CLI paths unchanged,
+  pipeline tests green.
 
 
 ## [3.3.0] — 2026-09-06
