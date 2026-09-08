@@ -43,7 +43,10 @@ def write_csv(
 def per_file_markdown_report(filename: str, result: Dict[str, Any]) -> str:
     """Generate a detailed Markdown report for a single file's type check result."""
     lines: list[Any] = [f"# Type Check Report: {filename}"]
-    lines.append(f"Status: {'✅ VALID' if result['is_valid'] else '❌ INVALID'}")
+    lines.append(
+        "Status: "
+        f"{'✅ VALID' if result.get('is_valid', result.get('valid', False)) else '❌ INVALID'}"
+    )
     lines.append(f"File: {result.get('file_path', 'Unknown')}\n")
 
     if result.get("errors"):
