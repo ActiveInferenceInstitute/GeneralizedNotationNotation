@@ -216,3 +216,48 @@ def get_output_dir_for_script(script_name: str, base_output_dir: Path) -> Path:
         expected_dir_name,
     )
     return base_output_dir / expected_dir_name
+
+
+def resolve_step_output_dir(step_stem: str, output_dir: Path) -> Path:
+    """Resolve a step's output directory from an arbitrary caller view.
+
+    Consolidates the three independent base-output-dir reconstruction
+    heuristics that consumers used to reach the same answer:
+
+    - export/processor.py looked up Step 3 results from inside an
+      ``7_export_output`` view (name-prefix parent climb);
+    - analysis/framework_common.py looked up Step 12 execution from inside a
+      ``16_analysis_output`` view (passing ``output_dir.parent``); and
+    - gui/runner.py resolved its own orchestrator output from a base dir.
+
+    All three want the same thing: when ``output_dir`` is already inside a
+    step-output subdirectory (``output/<step>_output`` or deeper), resolve
+    ``step_stem``'s output from the shared pipeline root; otherwise resolve
+    from ``output_dir`` directly. The shared ``_output`` parent is identified
+    by name (the registry-derivable ``<stem>_output`` convention), so no
+    caller-specific prefix list is needed.
+
+    Args:
+        step_stem: Registry step stem, e.g. ``"3_gnn"`` or ``"12_execute"``.
+        output_dir: Caller's view of an output directory (base or nested).
+
+    Returns:
+        The resolved ``output/<step_stem>_output`` path.
+    """
+    candidate = output_dir
+    # Find the nearest ``*_output`` ancestor (the step-output subdir the
+    # caller is nested inside); its parent is the shared pipeline root.
+    # If no such ancestor exists, resolve directly from ``output_dir``.
+    step_output_ancestor: Path | None = None
+    walk = output_dir
+    while walk != walk.parent:  # stop at filesystem root
+        if walk.name.endswith("_output"):
+            step_output_ancestor = walk
+            break
+        walk = walk.parent
+    if (
+        step_output_ancestor is not None
+        and step_output_ancestor.parent != step_output_ancestor
+    ):
+        candidate = step_output_ancestor.parent
+    return get_output_dir_for_script(step_stem, candidate)

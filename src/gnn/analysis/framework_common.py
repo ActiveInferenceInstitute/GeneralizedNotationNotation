@@ -119,15 +119,14 @@ def iter_current_schema_results(
 def resolve_execution_dir(output_dir: Path) -> Path:
     """Resolve the Step 12 execution output directory for a given output dir.
 
-    Prefers ``pipeline.config.get_output_dir_for_script`` (the canonical
-    pipeline layout) and falls back to the sibling
-    ``12_execute_output`` directory when the pipeline package is not
-    importable (e.g. standalone module use).
+    Delegates to ``pipeline.config.resolve_step_output_dir`` when the
+    pipeline package is importable; falls back to the sibling
+    ``12_execute_output`` directory for standalone module use.
     """
     try:
-        from gnn.pipeline.config import get_output_dir_for_script
+        from gnn.pipeline.config import resolve_step_output_dir
 
-        return Path(get_output_dir_for_script("12_execute.py", output_dir.parent))
+        return Path(resolve_step_output_dir("12_execute", output_dir))
     except ImportError:
         return Path(output_dir.parent) / "12_execute_output"
 

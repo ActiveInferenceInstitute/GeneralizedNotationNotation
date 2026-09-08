@@ -127,6 +127,7 @@ def test_get_output_dir_for_script_warns_on_unregistered_stem(
         for rec in caplog.records
     )
 
+
 def test_malformed_yaml_config_logs_error_and_degrades(
     tmp_path: Path, caplog: pytest.LogCaptureFixture
 ) -> None:
@@ -144,3 +145,40 @@ def test_malformed_yaml_config_logs_error_and_degrades(
         for rec in caplog.records
         if rec.levelno == logging.ERROR
     )
+
+
+def test_resolve_step_output_dir_from_base(tmp_path: Path) -> None:
+    """Resolving from the pipeline base yields ``output/<stem>_output``."""
+    from gnn.pipeline.config import resolve_step_output_dir
+
+    assert resolve_step_output_dir("3_gnn", tmp_path) == tmp_path / "3_gnn_output"
+    assert resolve_step_output_dir("12_execute", tmp_path) == (
+        tmp_path / "12_execute_output"
+    )
+
+
+def test_resolve_step_output_dir_walks_up_from_sibling_step(tmp_path: Path) -> None:
+    """A nested caller view inside another step's output resolves against the
+    shared pipeline root, not the sibling step's directory."""
+    from gnn.pipeline.config import resolve_step_output_dir
+
+    nested = tmp_path / "16_analysis_output" / "results"
+    nested.mkdir(parents=True)
+    # Step 3 must resolve from the pipeline base (tmp_path), not from inside
+    # the 16_analysis_output branch.
+    assert resolve_step_output_dir("3_gnn", nested) == tmp_path / "3_gnn_output"
+    # Step 12 likewise resolves from the base.
+    assert resolve_step_output_dir("12_execute", nested) == (
+        tmp_path / "12_execute_output"
+    )
+
+
+def test_resolve_step_output_dir_handles_deep_nesting(tmp_path: Path) -> None:
+    """Nested ``*_output`` subdirectories walk up to the pipeline base."""
+    from gnn.pipeline.config import resolve_step_output_dir
+
+    nested = tmp_path / "16_analysis_output" / "summaries"
+    nested.mkdir(parents=True)
+    # Walks up through 16_analysis_output (ends with _output, parent is
+    # tmp_path = the pipeline root) -> resolves from tmp_path.
+    assert resolve_step_output_dir("3_gnn", nested) == tmp_path / "3_gnn_output"
