@@ -14,6 +14,7 @@ from typing import Any, Dict, Optional
 
 logger = logging.getLogger(__name__)
 from gnn.api.path_utils import PathValidationError, resolve_repo_path
+from gnn.utils.mcp_dispatch import run_pipeline_step_mcp
 
 from . import (
     analyze_gnn_file_with_llm,
@@ -94,31 +95,25 @@ def process_llm_mcp(
     Returns:
         Dictionary with success flag and processing summary.
     """
-    try:
-        target_path = _resolve_input_directory(
-            target_directory,
-            purpose="LLM target directory",
+    def _resolve(target: str, output: str) -> tuple[Path, Path]:
+        return (
+            _resolve_input_directory(target, purpose="LLM target directory"),
+            _resolve_output_directory(output, purpose="LLM output directory"),
         )
-        output_path = _resolve_output_directory(
-            output_directory,
-            purpose="LLM output directory",
-        )
-        success = process_llm(
-            target_dir=target_path,
-            output_dir=output_path,
-            verbose=verbose,
-        )
-        return {
-            "success": success,
-            "target_directory": str(target_path),
-            "output_directory": str(output_path),
-            "message": "LLM processing completed"
-            if success
-            else "LLM processing failed",
-        }
-    except Exception as e:
-        logger.error(f"process_llm_mcp error: {e}", exc_info=True)
-        return {"success": False, "error": str(e)}
+
+    return run_pipeline_step_mcp(
+        process_llm,
+        wrapper_name="process_llm_mcp",
+        logger=logger,
+        target_directory=target_directory,
+        output_directory=output_directory,
+        verbose=verbose,
+        resolve_paths=_resolve,
+        echo_resolved=True,
+        label="LLM processing",
+        success_wording="completed",
+        failure_wording="failed",
+    )
 
 
 def analyze_gnn_with_llm_mcp(
