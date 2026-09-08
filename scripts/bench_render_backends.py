@@ -10,9 +10,10 @@ A successful rendering only counts toward the primary metric when its emitted
 artifacts are conformant:
 
 - every emitted ``.py`` artifact must ``compile()`` (syntax check);
-- every emitted ``.py`` artifact passes a conservative undefined-name scan
-  (Load-context names never bound anywhere in the module - runtime NameError
-  risk the syntax check cannot see);
+- every emitted ``.py`` artifact passes the conservative undefined-name scan
+  from ``gnn.render.emitted_artifact_checks`` (Load-context names never bound
+  anywhere in the module - runtime NameError risk the syntax check cannot
+  see);
 - every framework with an entry in ``gnn.render.contracts.CONTRACTS`` must
   satisfy its output contract on the artifact carrying the framework's
   canonical file extension.
@@ -50,66 +51,10 @@ RUN_ID = "bench"
 
 MAX_DIAGNOSTICS_PER_RENDERING = 4
 
-# Conservative AST undefined-name scan skips very large emitted artifacts
+# The conservative AST undefined-name scan skips very large emitted artifacts
 # (the PyMDP scaling-study exemplars expand dense B tensors as O(n^3) text);
 # compile() still covers their syntax. Deterministic and logged, not silent.
 UNDEFINED_SCAN_MAX_BYTES = 1_000_000
-
-# Module-context names that are never bound by statements but always exist.
-MODULE_CONTEXT_NAMES = frozenset(
-    {"__name__", "__file__", "__doc__", "__package__", "__spec__", "__loader__"}
-)
-
-
-def _undefined_names(code: str) -> tuple[list[tuple[str, int]], bool]:
-    """Conservative undefined-name scan for one Python artifact.
-
-    Returns ``((name, line) findings, star_import_present)``. A name is
-    reported when it appears in Load context, is never bound anywhere in the
-    module (import/def/class/assignment/arg/except/global), and is not a
-    builtin or module-context name. Binding anywhere counts, so the check is
-    imprecise about scoping but has near-zero false positives - the right
-    trade for a deterministic benchmark gate. When the module uses a star
-    import the scan is skipped entirely (names cannot be resolved without
-    executing the source module), reported via the second element.
-    """
-    import ast
-    import builtins
-
-    tree = ast.parse(code)
-    bound: set[str] = set(MODULE_CONTEXT_NAMES)
-    star_import = False
-    for node in ast.walk(tree):
-        if isinstance(node, (ast.Import, ast.ImportFrom)):
-            for alias in node.names:
-                if alias.name == "*":
-                    star_import = True
-                    continue
-                bound.add((alias.asname or alias.name).split(".")[0])
-        elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
-            bound.add(node.name)
-        elif isinstance(node, ast.Name) and isinstance(node.ctx, (ast.Store, ast.Del)):
-            bound.add(node.id)
-        elif isinstance(node, ast.arg):
-            bound.add(node.arg)
-        elif isinstance(node, ast.ExceptHandler) and node.name:
-            bound.add(node.name)
-        elif isinstance(node, (ast.Global, ast.Nonlocal)):
-            bound.update(node.names)
-    if star_import:
-        return [], True
-    findings = sorted(
-        {
-            (node.id, node.lineno)
-            for node in ast.walk(tree)
-            if isinstance(node, ast.Name)
-            and isinstance(node.ctx, ast.Load)
-            and node.id not in bound
-            and not hasattr(builtins, node.id)
-        },
-        key=lambda item: (item[1], item[0]),
-    )
-    return findings, False
 
 
 def _score_conformance(
@@ -129,6 +74,7 @@ def _score_conformance(
         counts size-guard skips.
     """
     from gnn.render.contracts import CONTRACTS, validate_rendered_output
+    from gnn.render.emitted_artifact_checks import undefined_names
 
     canonical_extensions = {
         name: str(spec.get("file_extension", ""))
@@ -170,7 +116,8 @@ def _score_conformance(
                             f"artifact over {UNDEFINED_SCAN_MAX_BYTES} bytes"
                         )
                         continue
-                    for name, lineno in _undefined_names(code)[0]:
+                    findings, _star = undefined_names(code)
+                    for name, lineno in findings:
                         undefined_name_findings += 1
                         failures.append(f"undefined-name: {name!r} (line {lineno})")
                 if extension and path.suffix == extension and framework in CONTRACTS:
