@@ -94,7 +94,9 @@ are pinned.
   degrade gracefully without a daemon. Coverage selection parity on the
   remaining axis: `just test-cov` now adopts CI's
   `-m "not pipeline and not mcp"` deselect so both invocations apply the
-  same pipeline/mcp test policy (4326 tests collected on both sides).
+  same pipeline/mcp test policy (4326 collected locally; CI collects
+  4352 - the 26-test Ollama delta is the open-by-design asymmetry
+  recorded above).
 - Dependency floors: RAISED 2026-09-07 for numpy (>=2.0), pandas
   (>=2.0), openai (>=2.0), pytest (>=8.0), mypy (>=1.0) - the lock
   resolved identically (only requires-dist metadata moved; zero package
