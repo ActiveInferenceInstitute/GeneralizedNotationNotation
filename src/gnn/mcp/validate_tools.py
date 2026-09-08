@@ -11,7 +11,7 @@ Validates that every registered MCP tool is:
 
 Usage:
     cd /path/to/generalizednotationnotation
-    PYTHONPATH=src python src/mcp/validate_tools.py
+    uv run python src/gnn/mcp/validate_tools.py
 """
 
 from __future__ import annotations
@@ -25,7 +25,7 @@ from pathlib import Path
 from typing import Any, Dict, List
 
 # ── Path setup ───────────────────────────────────────────────────────────────
-REPO_ROOT = Path(__file__).parent.parent.parent
+REPO_ROOT = Path(__file__).resolve().parents[3]
 SRC_ROOT = REPO_ROOT / "src"
 sys.path.insert(0, str(SRC_ROOT))
 
