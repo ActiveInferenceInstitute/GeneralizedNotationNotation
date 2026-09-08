@@ -45,9 +45,20 @@ MANIFEST_PATH = ROOT / "scripts" / "validate_surface_manifest.json"
 NAME_RE = re.compile(r"^validate_gnn")
 
 SKIP_DIRS = {
-    ".git", ".venv", "venv", "node_modules", "output", "build", "dist",
-    "__pycache__", ".ruff_cache", ".mypy_cache", ".pytest_cache",
-    "site-packages", ".tox", ".eggs",
+    ".git",
+    ".venv",
+    "venv",
+    "node_modules",
+    "output",
+    "build",
+    "dist",
+    "__pycache__",
+    ".ruff_cache",
+    ".mypy_cache",
+    ".pytest_cache",
+    "site-packages",
+    ".tox",
+    ".eggs",
 }
 # Historical ledgers and append-only worker logs keep old names on purpose.
 HISTORICAL_DOC_FILES = {"CHANGELOG.md", "VERSION_MAP.md"}
@@ -96,8 +107,12 @@ def classify_alias_body(func: ast.AST) -> tuple[str | None, bool]:
     ``pass``. Anything else is not a pure alias.
     """
     body = list(getattr(func, "body", []))
-    if body and isinstance(body[0], ast.Expr) and isinstance(body[0].value, ast.Constant) \
-            and isinstance(body[0].value.value, str):
+    if (
+        body
+        and isinstance(body[0], ast.Expr)
+        and isinstance(body[0].value, ast.Constant)
+        and isinstance(body[0].value.value, str)
+    ):
         body = body[1:]
     target: str | None = None
     warns = False
@@ -124,7 +139,9 @@ def classify_alias_body(func: ast.AST) -> tuple[str | None, bool]:
     return target, warns
 
 
-def collect_defs(tree: ast.Module, rel_file: str, extra_names: set[str]) -> list[SurfaceDef]:
+def collect_defs(
+    tree: ast.Module, rel_file: str, extra_names: set[str]
+) -> list[SurfaceDef]:
     defs: list[SurfaceDef] = []
 
     def visit(node: ast.AST, cls: str | None, fn: str | None) -> None:
@@ -133,7 +150,11 @@ def collect_defs(tree: ast.Module, rel_file: str, extra_names: set[str]) -> list
                 if NAME_RE.match(child.name) or child.name in extra_names:
                     kind = "method" if cls else ("nested" if fn else "function")
                     target, warns = classify_alias_body(child)
-                    defs.append(SurfaceDef(child.name, rel_file, child.lineno, kind, target, warns))
+                    defs.append(
+                        SurfaceDef(
+                            child.name, rel_file, child.lineno, kind, target, warns
+                        )
+                    )
                 visit(child, None, child.name)
             elif isinstance(child, ast.ClassDef):
                 visit(child, child.name, fn)
@@ -142,17 +163,34 @@ def collect_defs(tree: ast.Module, rel_file: str, extra_names: set[str]) -> list
                     if isinstance(t, ast.Name) and NAME_RE.match(t.id):
                         val = child.value
                         tgt = call_target_name(val)
-                        defs.append(SurfaceDef(t.id, rel_file, child.lineno, "assign", tgt, False))
+                        defs.append(
+                            SurfaceDef(
+                                t.id, rel_file, child.lineno, "assign", tgt, False
+                            )
+                        )
             elif isinstance(child, ast.AnnAssign):
                 t = child.target
-                if isinstance(t, ast.Name) and NAME_RE.match(t.id) and child.value is not None:
+                if (
+                    isinstance(t, ast.Name)
+                    and NAME_RE.match(t.id)
+                    and child.value is not None
+                ):
                     tgt = call_target_name(child.value)
-                    defs.append(SurfaceDef(t.id, rel_file, child.lineno, "assign", tgt, False))
+                    defs.append(
+                        SurfaceDef(t.id, rel_file, child.lineno, "assign", tgt, False)
+                    )
             elif isinstance(child, ast.ImportFrom):
                 for a in child.names:
                     if a.asname and NAME_RE.match(a.asname):
                         defs.append(
-                            SurfaceDef(a.asname, rel_file, child.lineno, "import-alias", a.name, False)
+                            SurfaceDef(
+                                a.asname,
+                                rel_file,
+                                child.lineno,
+                                "import-alias",
+                                a.name,
+                                False,
+                            )
                         )
             else:
                 visit(child, cls, fn)
@@ -169,7 +207,9 @@ def load_manifest() -> tuple[set[str], dict[str, str]]:
     old_names = {str(k): str(v) for k, v in data.get("old_names", {}).items()}
     for old, new in old_names.items():
         if new not in canonical:
-            raise SystemExit(f"manifest: old name {old!r} maps to non-canonical {new!r}")
+            raise SystemExit(
+                f"manifest: old name {old!r} maps to non-canonical {new!r}"
+            )
     return canonical, old_names
 
 
@@ -209,7 +249,9 @@ def iter_doc_files() -> Iterator[Path]:
     if docs.is_dir():
         for path in sorted(docs.rglob("*.md")):
             rel = path.relative_to(ROOT).as_posix()
-            if path.name in HISTORICAL_DOC_FILES or rel.startswith(HISTORICAL_DOC_PREFIXES):
+            if path.name in HISTORICAL_DOC_FILES or rel.startswith(
+                HISTORICAL_DOC_PREFIXES
+            ):
                 continue
             yield path
     for pattern in ("SKILL.md", "AGENTS.md"):
@@ -230,7 +272,7 @@ def count_doc_refs(names: set[str]) -> dict[str, int]:
         except UnicodeDecodeError:
             continue
         for name, pattern in patterns.items():
-                counts[name] += len(pattern.findall(text))
+            counts[name] += len(pattern.findall(text))
     return counts
 
 
@@ -250,7 +292,9 @@ def main() -> int:
     defs_by_key = {d.key: d for d in all_defs}
     for key in sorted(canonical_keys):
         if key not in defs_by_key:
-            raise SystemExit(f"manifest: canonical {key!r} has no definition in src/gnn")
+            raise SystemExit(
+                f"manifest: canonical {key!r} has no definition in src/gnn"
+            )
     for old in sorted(deprecated_map):
         if old not in defs_by_key:
             raise SystemExit(f"manifest: old name {old!r} has no definition in src/gnn")
@@ -296,7 +340,11 @@ def main() -> int:
     for d in all_defs:
         state = "canonical"
         if d in noncanonical:
-            state = "ALIAS-OK" if (d.key in deprecated_keys and d.warns and d.forward_target) else "NON-CANONICAL"
+            state = (
+                "ALIAS-OK"
+                if (d.key in deprecated_keys and d.warns and d.forward_target)
+                else "NON-CANONICAL"
+            )
         elif d.key in deprecated_keys:
             state = "alias-ok"
         print(f"  {state:<14} {d.kind:<12} {d.key} @ line {d.line}", file=sys.stderr)

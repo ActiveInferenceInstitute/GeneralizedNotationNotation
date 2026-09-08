@@ -122,7 +122,9 @@ def test_cross_format_alias_matches_canonical(tmp_path: Path) -> None:
     assert old == new is True
 
 
-def test_llm_module_alias_forwards_to_canonical(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_llm_module_alias_forwards_to_canonical(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     import gnn.llm.llm_operations as llo
 
     calls: list[str] = []
