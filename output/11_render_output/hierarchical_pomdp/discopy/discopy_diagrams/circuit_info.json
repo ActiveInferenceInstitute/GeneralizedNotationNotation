@@ -1,0 +1,28 @@
+{
+  "model_name": "Hierarchical Active Inference POMDP",
+  "timestamp": "2026-09-08 06:49:44",
+  "parameters": {
+    "num_states": 8,
+    "num_observations": 16,
+    "num_actions": 3
+  },
+  "components": [
+    "A_matrix",
+    "B_matrix",
+    "C_vector",
+    "D_vector",
+    "E_vector",
+    "state_inference",
+    "policy_inference",
+    "action_selection"
+  ],
+  "matrix_permutation_metadata": {},
+  "matrix_permutation_applied_to_diagram": false,
+  "analysis": {
+    "num_components": 8,
+    "loop_domain": "O",
+    "loop_codomain": "A",
+    "model_domain": "O",
+    "model_codomain": "A"
+  }
+}

@@ -1850,7 +1850,6 @@ def validate_pipeline_summary(summary: dict, logger: Any) -> None:
 # - get_current_memory_usage → utils/resource_manager.py
 # - attempt_step_recovery and recovery functions → utils/error_recovery.py
 # - generate_pipeline_health_report → utils/pipeline_monitor.py
-# - generate_execution_plan → utils/pipeline_planner.py
 
 
 if __name__ == "__main__":

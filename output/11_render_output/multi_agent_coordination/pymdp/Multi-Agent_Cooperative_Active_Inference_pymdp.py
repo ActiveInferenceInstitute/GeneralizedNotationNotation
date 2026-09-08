@@ -10,7 +10,7 @@ real pymdp 1.0.0 (JAX-first) under the hood.
 
 Model:        Multi-Agent Cooperative Active Inference
 Description:  
-Generated:    2026-09-05 20:33:41
+Generated:    2026-09-08 06:58:02
 
 State Space:
   - Hidden States: 256

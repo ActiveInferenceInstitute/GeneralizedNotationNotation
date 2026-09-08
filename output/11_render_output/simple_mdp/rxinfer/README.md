@@ -11,7 +11,7 @@ Generated from GNN POMDP Model: **Simple MDP Agent**
 - 4 actions: stay, move-north, move-south, move-east.
 - Preferences strongly favor state/observation 3 (goal location).
 - Tests the degenerate POMDP case where partial observability is absent.
-- **Generation Date**: 2026-09-05 20:25:28
+- **Generation Date**: 2026-09-08 06:58:12
 
 ## POMDP Dimensions
 

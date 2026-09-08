@@ -11,7 +11,7 @@ Generated from GNN POMDP Model: **Precision-Weighted Active Inference Agent**
 - β (beta): inverse temperature for policy selection (softmax)
 - 3 hidden states, 3 observations, 3 actions (same topology as base POMDP)
 - Precision parameters enable modeling of attention and confidence
-- **Generation Date**: 2026-09-05 20:25:30
+- **Generation Date**: 2026-09-08 06:58:14
 
 ## POMDP Dimensions
 

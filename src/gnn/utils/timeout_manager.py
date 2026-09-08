@@ -40,7 +40,7 @@ class TimeoutConfig:
     strategy: TimeoutStrategy = TimeoutStrategy.RETRY_EXPONENTIAL
     retry_delay: float = 1.0  # Base retry delay in seconds
     exponential_base: float = 2.0  # Exponential backoff base
-    graceful_fallback: Optional[Callable] = (
+    graceful_fallback: Optional[Callable[..., Any]] = (
         None  # Recovery function for graceful degradation
     )
     log_retries: bool = True  # Whether to log retry attempts
@@ -94,7 +94,7 @@ class TimeoutManager:
         self,
         operation_name: str,
         config: TimeoutConfig,
-        operation: Callable[..., Coroutine],
+        operation: Callable[..., Coroutine[Any, Any, Any]],
         *args: Any,
         **kwargs: Any,
     ) -> Any:
@@ -115,7 +115,7 @@ class TimeoutManager:
         self,
         operation_name: str,
         config: TimeoutConfig,
-        operation: Callable,
+        operation: Callable[..., Any],
         *args: Any,
         **kwargs: Any,
     ) -> TimeoutResult:
@@ -227,7 +227,7 @@ class TimeoutManager:
         self,
         operation_name: str,
         config: TimeoutConfig,
-        operation: Callable,
+        operation: Callable[..., Any],
         *args: Any,
         **kwargs: Any,
     ) -> TimeoutResult:
@@ -331,7 +331,7 @@ class TimeoutManager:
         return result
 
     def _execute_with_signal_timeout(
-        self, operation: Callable, timeout: float, *args: Any, **kwargs: Any
+        self, operation: Callable[..., Any], timeout: float, *args: Any, **kwargs: Any
     ) -> Any:
         """Execute operation with signal-based timeout (Unix only)."""
 
@@ -351,7 +351,7 @@ class TimeoutManager:
             signal.signal(signal.SIGALRM, old_handler)  # Restore old handler
 
     def _execute_with_thread_timeout(
-        self, operation: Callable, timeout: float, *args: Any, **kwargs: Any
+        self, operation: Callable[..., Any], timeout: float, *args: Any, **kwargs: Any
     ) -> Any:
         """Execute operation with thread-based timeout (cross-platform)."""
         import concurrent.futures
@@ -393,7 +393,7 @@ class LLMTimeoutManager(TimeoutManager):
 
     async def llm_call_with_timeout(
         self,
-        llm_function: Callable,
+        llm_function: Callable[..., Any],
         prompt: str,
         model: str = "default",
         config: Optional[TimeoutConfig] = None,

@@ -16,7 +16,7 @@ This model describes a discrete POMDP agent that learns its observation model:
   well-determined by actions and likelihood learning is well-conditioned.
 - Inference: structured VMP with mean-field cut q(s, A) = q(s)q(A),
   q(A) initialized at the prior counts, q(s) initialized uniform.
-Generated: 2026-09-05T20:30:53.631720
+Generated: 2026-09-08T06:53:45.803863
 """
 
 import numpy as np

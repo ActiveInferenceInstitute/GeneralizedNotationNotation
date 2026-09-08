@@ -2,7 +2,7 @@
 """
 DisCoPy Categorical Diagram Generation
 Generated from GNN Model: Factorized Posterior Agent
-Generated: 2026-09-05 20:25:29
+Generated: 2026-09-08 06:58:13
 
 This script creates categorical diagrams representing the Active Inference model
 structure using DisCoPy's compositional framework.
@@ -196,7 +196,7 @@ def export_circuit_data(circuit_dict, analysis_results, output_dir="discopy_diag
     # Export circuit information
     circuit_info = {
         'model_name': 'Factorized Posterior Agent',
-        'timestamp': '2026-09-05 20:25:29',
+        'timestamp': '2026-09-08 06:58:13',
         'parameters': {
             'num_states': NUM_STATES,
             'num_observations': NUM_OBSERVATIONS, 

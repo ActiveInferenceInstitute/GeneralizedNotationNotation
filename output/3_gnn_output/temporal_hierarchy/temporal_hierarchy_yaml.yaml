@@ -228,10 +228,10 @@ connections:
   target_variables:
   - D_level1
   weight: null
-created_at: '2026-09-05T20:30:46.072657'
+created_at: '2026-09-08T06:53:37.425605'
 equations: []
 model_name: Three-Level Temporal Hierarchy Agent
-modified_at: '2026-09-05T20:30:46.072657'
+modified_at: '2026-09-08T06:53:37.425606'
 ontology_mappings:
 - description: null
   ontology_term: FastLikelihoodMatrix

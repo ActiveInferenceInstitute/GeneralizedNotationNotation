@@ -1,0 +1,25 @@
+{
+  "total_variables": 3,
+  "total_connections": 3,
+  "variable_types": {
+    "hidden_state": 1,
+    "observation": 1,
+    "action": 1
+  },
+  "connection_types": {
+    "s->o": 1,
+    "u->s": 1
+  },
+  "gnn_edge_orientation": {
+    "directed_variable_pairs": 2,
+    "undirected_variable_pairs": 0
+  },
+  "network_properties": {
+    "num_nodes": 3,
+    "num_edges": 2,
+    "density": 0.3333333333333333,
+    "is_strongly_connected": false,
+    "is_weakly_connected": true,
+    "average_clustering": 0.0
+  }
+}

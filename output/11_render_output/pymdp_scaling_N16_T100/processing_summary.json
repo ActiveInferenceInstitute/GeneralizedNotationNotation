@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-09-05T20:25:21.801185",
-  "source_file": "input/gnn_files/pymdp_scaling_study/pymdp_scaling_N16_T100.md",
+  "timestamp": "2026-09-08T06:58:07.501998",
+  "source_file": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N16_T100.md",
   "model_name": "PyMDP Scaling N16 T100",
   "pomdp_dimensions": {
     "num_states": 16,

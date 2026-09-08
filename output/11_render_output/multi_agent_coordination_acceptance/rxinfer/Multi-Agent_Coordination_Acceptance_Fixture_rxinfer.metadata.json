@@ -1,0 +1,79 @@
+{
+  "agent_count": 3,
+  "agents": [
+    {
+      "id": 1,
+      "initial_position": [
+        0.0,
+        0.0
+      ],
+      "radius": 1.0,
+      "target_position": [
+        2.0,
+        2.0
+      ]
+    },
+    {
+      "id": 2,
+      "initial_position": [
+        1.0,
+        0.0
+      ],
+      "radius": 1.0,
+      "target_position": [
+        3.0,
+        2.0
+      ]
+    },
+    {
+      "id": 3,
+      "initial_position": [
+        0.0,
+        1.0
+      ],
+      "radius": 1.0,
+      "target_position": [
+        2.0,
+        3.0
+      ]
+    }
+  ],
+  "metadata_provenance": "rendered_rxinfer_sidecar",
+  "schema": "gnn_rxinfer_execution_metadata_v1",
+  "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/multi_agent_coordination_acceptance/rxinfer/Multi-Agent_Coordination_Acceptance_Fixture_rxinfer.jl",
+  "script_sha256": "19df2215859321c92069bd2874a71805595a4c56bc0c60ea76a64dbc69965839",
+  "topology": {
+    "agent_ids": [
+      1,
+      2,
+      3
+    ],
+    "clusters": [
+      {
+        "agent_ids": [
+          1,
+          2
+        ],
+        "name": "left"
+      },
+      {
+        "agent_ids": [
+          3
+        ],
+        "name": "right"
+      }
+    ],
+    "edges": [
+      {
+        "source": 1,
+        "target": 2
+      },
+      {
+        "source": 2,
+        "target": 3
+      }
+    ],
+    "source": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/multi_agent_coordination_acceptance/rxinfer/Multi-Agent_Coordination_Acceptance_Fixture_rxinfer.metadata.json",
+    "type": "clustered"
+  }
+}

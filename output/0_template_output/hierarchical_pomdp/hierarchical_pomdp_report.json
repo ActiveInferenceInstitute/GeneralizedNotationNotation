@@ -1,7 +1,7 @@
 {
-  "input_file": "input/gnn_files/hierarchical/hierarchical_pomdp.md",
-  "output_file": "output/0_template_output/hierarchical_pomdp/hierarchical_pomdp_processed.md",
-  "timestamp": "2026-09-05T20:30:45.663211",
+  "input_file": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/hierarchical/hierarchical_pomdp.md",
+  "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/0_template_output/hierarchical_pomdp/hierarchical_pomdp_processed.md",
+  "timestamp": "2026-09-08T06:53:29.064831",
   "file_size_bytes": 3954,
   "file_size_lines": 141,
   "processing_options": {

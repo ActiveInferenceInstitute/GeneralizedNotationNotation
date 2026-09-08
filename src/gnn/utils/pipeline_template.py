@@ -19,11 +19,17 @@ from gnn.utils.error_handling import coerce_step_exit_code
 from gnn.utils.logging.logging_utils import (
     setup_step_logging,
 )
-from gnn.utils.structured_logging import (  # noqa: F401 - standard pipeline imports
-    log_step_error,
-    log_step_start,
-    log_step_success,
-    log_step_warning,
+from gnn.utils.structured_logging import (  # noqa: F401 - re-export surface
+    log_step_error as log_step_error,
+)
+from gnn.utils.structured_logging import (
+    log_step_start as log_step_start,
+)
+from gnn.utils.structured_logging import (
+    log_step_success as log_step_success,
+)
+from gnn.utils.structured_logging import (
+    log_step_warning as log_step_warning,
 )
 
 
@@ -224,13 +230,13 @@ def _resolve_recursive_default(step_name: str, fallback_default: bool) -> bool:
 
 def create_standardized_pipeline_script(
     step_name: str,
-    module_function: Callable,
+    module_function: Callable[..., Any],
     fallback_parser_description: str,
     additional_arguments: Optional[Dict[str, Any]] = None,
     step_specific_imports: Optional[List[str]] = None,
     default_target_dir: Optional[str] = None,
     default_recursive: bool = False,
-) -> Callable:
+) -> Callable[..., Any]:
     """Create a standardized pipeline script with consistent arg parsing and error handling.
 
     The returned callable, when invoked, parses CLI args, sets up logging, resolves the

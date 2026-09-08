@@ -27,7 +27,7 @@ from ._shared import (
 
 def _generate_statistical_plots(
     model_name: str,
-    model_data: Dict,
+    model_data: Dict[str, Any],
     output_dir: Path,
     dependencies: Dict[str, bool],
     logger: logging.Logger,
@@ -149,7 +149,7 @@ def _generate_statistical_plots(
 
 def _generate_matrix_correlations(
     model_name: str,
-    model_data: Dict,
+    model_data: Dict[str, Any],
     output_dir: Path,
     dependencies: Dict[str, bool],
     logger: logging.Logger,

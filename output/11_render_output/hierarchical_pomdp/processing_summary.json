@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-09-05T20:32:38.907669",
-  "source_file": "input/gnn_files/hierarchical/hierarchical_pomdp.md",
+  "timestamp": "2026-09-08T06:56:54.401340",
+  "source_file": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/hierarchical/hierarchical_pomdp.md",
   "model_name": "Hierarchical Active Inference POMDP",
   "pomdp_dimensions": {
     "num_states": 8,

@@ -16,12 +16,13 @@ import numpy as np
 logger = logging.getLogger(__name__)
 
 
-def compute_shannon_entropy(distribution: np.ndarray) -> float:
+def compute_shannon_entropy(distribution: np.typing.ArrayLike) -> float:
     """
     Compute Shannon entropy of a probability distribution.
 
     Args:
-        distribution: Probability distribution (must sum to 1)
+        distribution: Probability distribution (must sum to 1). Any array
+        like (sequence or ndarray) — the body coerces with ``np.asarray``.
 
     Returns:
         Shannon entropy in nats. Returns 0.0 for an empty or fully

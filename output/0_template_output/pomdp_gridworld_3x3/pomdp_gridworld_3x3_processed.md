@@ -1,7 +1,7 @@
 
 # Processed by GNN Pipeline Template
-# Original file: input/gnn_files/pomdp_gridworld/pomdp_gridworld_3x3.md
-# Processed on: 2026-09-05T20:30:45.676070
+# Original file: /private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/pomdp_gridworld/pomdp_gridworld_3x3.md
+# Processed on: 2026-09-08T06:53:29.082108
 # Options: {'verbose': False, 'recursive': True, 'example_param': 'default_value'}
 
 # GNN Example: POMDP GridWorld 3x3

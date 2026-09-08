@@ -10,6 +10,10 @@ import logging
 from pathlib import Path
 from typing import Any
 
+from gnn.schemas.section_contract import (
+    OPTIONAL_SECTIONS,
+    REQUIRED_SECTIONS,
+)
 from gnn.utils.mcp_dispatch import run_pipeline_step_mcp, run_tool_envelope
 
 from . import process_validation
@@ -183,19 +187,8 @@ def check_schema_compliance_mcp(gnn_content: str) -> dict[str, Any]:
     try:
         lines = gnn_content.splitlines()
         section_headers = {l.lstrip("# ").strip() for l in lines if l.startswith("## ")}
-        required: set[Any] = {
-            "ModelName",
-            "StateSpaceBlock",
-            "Connections",
-            "InitialParameterization",
-        }
-        optional: set[Any] = {
-            "Equations",
-            "Time",
-            "Footer",
-            "Signature",
-            "ActInfOntologyAnnotation",
-        }
+        required: set[str] = set(REQUIRED_SECTIONS)
+        optional: set[str] = set(OPTIONAL_SECTIONS)
         missing = required - section_headers
         extra = section_headers - required - optional
 

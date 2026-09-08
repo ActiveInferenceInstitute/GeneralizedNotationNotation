@@ -3,7 +3,7 @@
 """
 GNN Pipeline Utilities Package
 
-Lazy PEP 562 re-export surface: 118 exported names aggregated from 19 source
+Lazy PEP 562 re-export surface: 111 exported names aggregated from 17 source
 modules. All pipeline steps import from this package for consistency. The
 surface area is intentionally wide; a future pass should split it by concern
 into sub-packages.
@@ -20,7 +20,6 @@ Source modules:
 - error_recovery: Error context, severity, and recovery management
 - pipeline_monitor: Pipeline health reporting
 - pipeline_validator: Pre-execution prerequisite checker (step output validation)
-- pipeline_planner: Execution plan generation
 - dependency_validator: Comprehensive dependency validation
 - config_loader: YAML configuration loading and validation (active config system)
 - performance_tracking: Operation timing and performance metrics
@@ -32,7 +31,6 @@ Source modules:
 - pipeline: Pipeline utility exports
 - error_handling: Structured error handler, categories, and recovery strategies
 - structured_logging: Structured log emission with correlation context
-- dependency_audit: Dependency auditing and optimization utilities
 """
 
 from typing import TYPE_CHECKING, Any
@@ -66,14 +64,6 @@ if TYPE_CHECKING:
         save_config,
         set_config_value,
         validate_config,
-    )
-    from .dependency_audit import (
-        AuditResult,
-        DependencyAuditor,
-        DependencyInfo,
-        DependencyOptimizer,
-        audit_project_dependencies,
-        optimize_project_dependencies,
     )
     from .dependency_validator import (
         DependencySpec,
@@ -125,7 +115,6 @@ if TYPE_CHECKING:
         validate_output_directory,
     )
     from .pipeline_monitor import generate_pipeline_health_report
-    from .pipeline_planner import generate_execution_plan
     from .pipeline_template import create_standardized_pipeline_script
     from .pipeline_validator import (
         validate_pipeline_step_sequence,
@@ -229,13 +218,6 @@ _EXPORT_MAP: dict[str, str] = {
     "save_config": "config_loader",
     "set_config_value": "config_loader",
     "validate_config": "config_loader",
-    # dependency_audit
-    "AuditResult": "dependency_audit",
-    "DependencyAuditor": "dependency_audit",
-    "DependencyInfo": "dependency_audit",
-    "DependencyOptimizer": "dependency_audit",
-    "audit_project_dependencies": "dependency_audit",
-    "optimize_project_dependencies": "dependency_audit",
     # dependency_validator
     "DependencySpec": "dependency_validator",
     "DependencyValidator": "dependency_validator",
@@ -283,8 +265,6 @@ _EXPORT_MAP: dict[str, str] = {
     "validate_output_directory": "pipeline",
     # pipeline_monitor
     "generate_pipeline_health_report": "pipeline_monitor",
-    # pipeline_planner
-    "generate_execution_plan": "pipeline_planner",
     # pipeline_template
     "create_standardized_pipeline_script": "pipeline_template",
     # pipeline_validator
@@ -404,8 +384,6 @@ __all__: list[Any] = [
     # Pipeline validation
     "validate_step_prerequisites",
     "validate_pipeline_step_sequence",
-    # Pipeline planning
-    "generate_execution_plan",
     "StepConfiguration",
     "get_pipeline_step_info",
     "validate_pipeline_configuration",
@@ -467,13 +445,6 @@ __all__: list[Any] = [
     "log_step_success",
     "log_step_error",
     "log_step_warning",
-    # Dependency audit utilities
-    "DependencyAuditor",
-    "DependencyOptimizer",
-    "DependencyInfo",
-    "AuditResult",
-    "audit_project_dependencies",
-    "optimize_project_dependencies",
     # Test utilities
     "TEST_CATEGORIES",
     "TEST_STAGES",
@@ -519,7 +490,7 @@ __all__: list[Any] = [
 ]
 
 
-def get_module_info() -> dict:
+def get_module_info() -> dict[str, Any]:
     """Return module metadata for composability and MCP discovery."""
     return {
         "name": "utils",

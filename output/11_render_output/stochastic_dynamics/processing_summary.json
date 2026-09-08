@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-09-05T20:25:31.289511",
-  "source_file": "input/gnn_files/continuous/stochastic_dynamics.md",
+  "timestamp": "2026-09-08T06:58:15.174328",
+  "source_file": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/continuous/stochastic_dynamics.md",
   "model_name": "Stochastic Continuous Dynamics Agent",
   "pomdp_dimensions": {
     "num_states": 2,

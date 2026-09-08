@@ -27,6 +27,7 @@ except ImportError as e:
         "Install with: uv sync --extra api"
     ) from e
 
+from gnn.api import MODULE_VERSION
 from gnn.api import processor as job_mgr
 from gnn.api.auth import api_key_middleware, require_secure_bind
 from gnn.api.models import (
@@ -39,7 +40,11 @@ from gnn.api.models import (
     ToolRequest,
     ToolsResponse,
 )
-from gnn.api.path_utils import PathValidationError, resolve_repo_path
+from gnn.api.path_utils import (
+    PathValidationError,
+    resolve_repo_path,
+    resolve_request_paths,
+)
 from gnn.api.rate_limit import rate_limit_middleware
 from gnn.api.responses import APIEnvelope, install_exception_handlers, success_envelope
 
@@ -63,7 +68,7 @@ def create_app() -> FastAPI:
             "REST interface for the Generalized Notation Notation (GNN) processing pipeline. "
             "Submit jobs, poll status, and invoke individual pipeline steps."
         ),
-        version="1.0.0",
+        version=MODULE_VERSION,
         docs_url="/docs",
         redoc_url="/redoc",
     )
@@ -93,7 +98,7 @@ def create_app() -> FastAPI:
         active = sum(1 for j in jobs if j.get("status") in ("pending", "running"))
         health = HealthResponse(
             status="healthy",
-            version="1.0.0",
+            version=MODULE_VERSION,
             pipeline_steps=len(job_mgr.PIPELINE_STEPS),
             active_jobs=active,
             timestamp=datetime.now(),
@@ -111,15 +116,8 @@ def create_app() -> FastAPI:
         Returns a job ID for polling with GET /api/v1/jobs/{job_id}.
         """
         try:
-            target_path = resolve_repo_path(
-                request.target_dir,
-                purpose="Target directory",
-                must_exist=True,
-            )
-            output_path = resolve_repo_path(
-                request.output_dir,
-                purpose="Output directory",
-                create=True,
+            target_path, output_path = resolve_request_paths(
+                request.target_dir, request.output_dir
             )
         except PathValidationError as err:
             raise HTTPException(status_code=400, detail=str(err)) from err

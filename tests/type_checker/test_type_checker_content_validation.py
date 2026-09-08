@@ -24,6 +24,7 @@ from gnn.type_checker.checking.sections import (
     parse_resource_connections,
     section_presence,
 )
+from gnn.type_checker.output_utils import per_file_markdown_report
 
 # A spec whose StateSpaceBlock declaration comment claims the canonical
 # B axis order (next_state, prev_state, action) while the
@@ -233,6 +234,34 @@ def test_validate_content_duplicate_variable_is_error() -> None:
     result = GNNTypeChecker().validate_content(dup, source_name="dup.gnn")
     assert result["valid"] is False
     assert any("Duplicate" in e for e in result["errors"])
+
+
+# --- validate_content shared time-dynamics contract (W2-03) ------------------
+
+
+def test_validate_content_continuous_time_agrees_on_dynamic() -> None:
+    """A continuous-time spec must be Dynamic in BOTH result fields.
+
+    Regression: the retired ``_time_is_dynamic`` helper matched only the
+    literal marker "dynamic", so ``continuous-time`` specs reported
+    ``model_type == "Dynamic"`` while ``time_dynamics.is_dynamic`` was
+    ``False`` in the same result dict.
+    """
+    content = _VALID_MINIMAL.replace("Static", "continuous-time")
+    result = GNNTypeChecker().validate_content(content, source_name="ct.gnn")
+    assert result["model_type"] == "Dynamic"
+    assert result["time_dynamics"]["is_dynamic"] is True
+
+
+def test_per_file_markdown_report_accepts_canonical_valid_key() -> None:
+    """The report renderer must accept the canonical ``valid`` key.
+
+    Regression: ``per_file_markdown_report`` read only ``is_valid`` and
+    raised ``KeyError`` when handed the raw ``validate_content`` dict.
+    """
+    result = GNNTypeChecker().validate_content(_VALID_MINIMAL, source_name="m.gnn")
+    report = per_file_markdown_report("m.gnn", result)
+    assert "✅ VALID" in report
 
 
 # --- strict_mode plumbing ---------------------------------------------------

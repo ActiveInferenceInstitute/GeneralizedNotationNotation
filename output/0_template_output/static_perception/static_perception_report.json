@@ -1,7 +1,7 @@
 {
-  "input_file": "input/gnn_files/basics/static_perception.md",
-  "output_file": "output/0_template_output/static_perception/static_perception_processed.md",
-  "timestamp": "2026-09-05T20:30:45.662154",
+  "input_file": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics/static_perception.md",
+  "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/0_template_output/static_perception/static_perception_processed.md",
+  "timestamp": "2026-09-08T06:53:29.063942",
   "file_size_bytes": 2490,
   "file_size_lines": 121,
   "processing_options": {

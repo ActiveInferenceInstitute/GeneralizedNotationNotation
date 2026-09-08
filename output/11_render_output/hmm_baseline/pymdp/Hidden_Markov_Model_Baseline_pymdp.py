@@ -10,7 +10,7 @@ real pymdp 1.0.0 (JAX-first) under the hood.
 
 Model:        Hidden Markov Model Baseline
 Description:  
-Generated:    2026-09-05 20:25:28
+Generated:    2026-09-08 06:58:13
 
 State Space:
   - Hidden States: 4

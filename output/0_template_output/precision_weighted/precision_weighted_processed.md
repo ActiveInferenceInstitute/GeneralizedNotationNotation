@@ -1,7 +1,7 @@
 
 # Processed by GNN Pipeline Template
-# Original file: input/gnn_files/precision/precision_weighted.md
-# Processed on: 2026-09-05T20:30:45.677637
+# Original file: /private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/precision/precision_weighted.md
+# Processed on: 2026-09-08T06:53:29.082818
 # Options: {'verbose': False, 'recursive': True, 'example_param': 'default_value'}
 
 # GNN Example: Precision-Weighted Active Inference Agent

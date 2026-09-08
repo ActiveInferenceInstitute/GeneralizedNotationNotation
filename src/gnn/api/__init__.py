@@ -40,10 +40,10 @@ FEATURES: dict[str, Any] = {
     "mcp_tool_registration": True,
 }
 
-__all__: list[Any] = ["MODULE_NAME", "MODULE_VERSION", "FASTAPI_AVAILABLE", "FEATURES"]
+__all__: list[str] = ["MODULE_NAME", "MODULE_VERSION", "FASTAPI_AVAILABLE", "FEATURES"]
 
 
-def get_module_info() -> dict:
+def get_module_info() -> dict[str, Any]:
     """Return module metadata for composability and MCP discovery."""
     return {
         "name": "api",

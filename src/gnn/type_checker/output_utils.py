@@ -13,6 +13,8 @@ import os
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+from gnn.schemas.section_contract import OPTIONAL_SECTIONS, REQUIRED_SECTIONS
+
 
 def write_markdown(path: Path, content: str) -> Any:
     """Write markdown."""
@@ -43,7 +45,10 @@ def write_csv(
 def per_file_markdown_report(filename: str, result: Dict[str, Any]) -> str:
     """Generate a detailed Markdown report for a single file's type check result."""
     lines: list[Any] = [f"# Type Check Report: {filename}"]
-    lines.append(f"Status: {'✅ VALID' if result['is_valid'] else '❌ INVALID'}")
+    lines.append(
+        "Status: "
+        f"{'✅ VALID' if result.get('is_valid', result.get('valid', False)) else '❌ INVALID'}"
+    )
     lines.append(f"File: {result.get('file_path', 'Unknown')}\n")
 
     if result.get("errors"):
@@ -71,23 +76,8 @@ def per_file_markdown_report(filename: str, result: Dict[str, Any]) -> str:
     # Section presence
     if "sections" in result:
         lines.append("## Section Presence:")
-        required_sections: list[Any] = [
-            "GNNSection",
-            "GNNVersionAndFlags",
-            "ModelName",
-            "StateSpaceBlock",
-            "Connections",
-            "Footer",
-            "Signature",
-        ]
-        optional_sections: list[Any] = [
-            "ModelAnnotation",
-            "InitialParameterization",
-            "Equations",
-            "Time",
-            "ActInfOntologyAnnotation",
-            "ModelParameters",
-        ]
+        required_sections: list[str] = list(REQUIRED_SECTIONS)
+        optional_sections: list[str] = list(OPTIONAL_SECTIONS)
 
         lines.append("### Required Sections:")
         for sec in required_sections:

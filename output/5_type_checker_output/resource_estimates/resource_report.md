@@ -6,7 +6,7 @@ Average Inference Time: 92.89 units
 Average Storage: 2.90 KB
 
 ## continuous_navigation.md
-Path: input/gnn_files/continuous/continuous_navigation.md
+Path: /private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/continuous/continuous_navigation.md
 Memory Estimate: 0.12 KB
 Inference Estimate: 98.34 units
 Storage Estimate: 3.15 KB
@@ -34,7 +34,7 @@ Storage Estimate: 3.15 KB
 - max_variable_dim: 4.0000
 
 ## predictive_coding_agent.md
-Path: input/gnn_files/continuous/predictive_coding_agent.md
+Path: /private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/continuous/predictive_coding_agent.md
 Memory Estimate: 0.11 KB
 Inference Estimate: 88.91 units
 Storage Estimate: 2.79 KB
@@ -62,7 +62,7 @@ Storage Estimate: 2.79 KB
 - max_variable_dim: 4.0000
 
 ## stochastic_dynamics.md
-Path: input/gnn_files/continuous/stochastic_dynamics.md
+Path: /private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/continuous/stochastic_dynamics.md
 Memory Estimate: 0.11 KB
 Inference Estimate: 91.41 units
 Storage Estimate: 2.76 KB

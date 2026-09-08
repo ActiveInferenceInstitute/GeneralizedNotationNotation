@@ -14,7 +14,7 @@ control input:
 mu_dot leaks toward the flow.
 - Q and R are the dynamics- and sensory-error covariances (the inverse
 precisions of the predictive-coding formulation).
-- **Generation Date**: 2026-09-05 20:25:31
+- **Generation Date**: 2026-09-08 06:58:15
 
 ## POMDP Dimensions
 

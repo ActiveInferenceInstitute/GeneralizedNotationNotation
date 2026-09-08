@@ -135,7 +135,7 @@
       "weight": null
     }
   ],
-  "created_at": "2026-09-05T20:30:54.537178",
+  "created_at": "2026-09-08T06:53:46.759297",
   "equations": [
     {
       "content": "State inference uses the observation likelihood and previous predictive belief. Action selection minimizes expected free energy under the shared transition tensor.",
@@ -149,7 +149,7 @@
     "gnn_section": "ActInfPOMDP"
   },
   "model_name": "POMDP GridWorld 3x3",
-  "modified_at": "2026-09-05T20:30:54.537180",
+  "modified_at": "2026-09-08T06:53:46.759300",
   "ontology_mappings": [
     {
       "description": null,

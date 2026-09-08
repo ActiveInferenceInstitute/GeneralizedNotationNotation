@@ -219,7 +219,7 @@ def aggregate_simulation_results(results_list: List[Dict[str, Any]]) -> Dict[str
     }
 
     # Extract common metrics
-    metrics_to_gather: list[Any] = [
+    metrics_to_gather: list[str] = [
         "execution_time",
         "free_energy_final",
         "steps_completed",

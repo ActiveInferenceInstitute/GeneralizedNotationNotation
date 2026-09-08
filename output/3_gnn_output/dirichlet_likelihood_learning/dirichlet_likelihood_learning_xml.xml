@@ -16,8 +16,8 @@
   well-determined by actions and likelihood learning is well-conditioned.
 - Inference: structured VMP with mean-field cut q(s, A) = q(s)q(A),
   q(A) initialized at the prior counts, q(s) initialized uniform.</annotation>
-    <created_at>2026-09-05T20:30:53.627286</created_at>
-    <modified_at>2026-09-05T20:30:53.627287</modified_at>
+    <created_at>2026-09-08T06:53:45.798258</created_at>
+    <modified_at>2026-09-08T06:53:45.798258</modified_at>
   </metadata>
   <variables>
     <variable data_type="float" dimensions="3,3" name="A" type="likelihood_matrix" description="Ground-truth observation model P(o|s); latent in the agent"/>

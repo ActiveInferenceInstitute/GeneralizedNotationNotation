@@ -24,7 +24,6 @@ FEATURES: dict[str, Any] = {
 from .analyzer import (
     analyze_distributions,
     analyze_framework_outputs,
-    build_connectivity_matrix,
     calculate_cognitive_complexity,
     calculate_complexity_metrics,
     calculate_connection_statistics,
@@ -35,7 +34,6 @@ from .analyzer import (
     calculate_structural_complexity,
     calculate_technical_debt,
     calculate_variable_statistics,
-    count_type_distribution,
     extract_connections,
     extract_sections,
     extract_variables,
@@ -109,8 +107,6 @@ __all__: list[Any] = [
     "calculate_variable_statistics",
     "calculate_connection_statistics",
     "calculate_section_statistics",
-    "count_type_distribution",
-    "build_connectivity_matrix",
     "analyze_distributions",
     "calculate_correlations",
     "calculate_cyclomatic_complexity",
@@ -157,7 +153,7 @@ __all__: list[Any] = [
 ]
 
 
-def get_module_info() -> dict:
+def get_module_info() -> dict[str, Any]:
     """Return module metadata for composability and MCP discovery."""
     return {
         "name": "analysis",

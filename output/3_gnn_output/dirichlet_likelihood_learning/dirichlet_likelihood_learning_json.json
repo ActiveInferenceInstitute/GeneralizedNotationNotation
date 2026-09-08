@@ -123,7 +123,7 @@
       "weight": null
     }
   ],
-  "created_at": "2026-09-05T20:30:53.627286",
+  "created_at": "2026-09-08T06:53:45.798258",
   "equations": [],
   "extensions": {
     "footer": "Dirichlet Likelihood Learning Agent v1 - GNN Representation.\nLikelihood learning (q(A) from DirichletCollection prior) jointly with state inference.",
@@ -131,7 +131,7 @@
     "signature": "Cryptographic signature goes here"
   },
   "model_name": "Dirichlet Likelihood Learning Agent",
-  "modified_at": "2026-09-05T20:30:53.627287",
+  "modified_at": "2026-09-08T06:53:45.798258",
   "ontology_mappings": [
     {
       "description": null,

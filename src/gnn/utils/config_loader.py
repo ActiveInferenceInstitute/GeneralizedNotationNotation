@@ -344,7 +344,7 @@ def load_config(config_path: Optional[Path] = None) -> GNNPipelineConfig:
     return config
 
 
-def save_config(config: dict, file_path: Path) -> None:
+def save_config(config: dict[str, Any], file_path: Path) -> None:
     """
     Save a configuration dictionary to a file (YAML or JSON based on extension).
     Args:
@@ -379,7 +379,7 @@ def save_config(config: dict, file_path: Path) -> None:
         raise
 
 
-def validate_config(config: dict) -> bool:
+def validate_config(config: dict[str, Any]) -> bool:
     """
     Validate a configuration dictionary for required structure.
     Returns True if valid, False otherwise.
@@ -395,7 +395,7 @@ def validate_config(config: dict) -> bool:
     return False
 
 
-def get_config_value(config: dict, key: str) -> Any:
+def get_config_value(config: dict[str, Any], key: str) -> Any:
     """
     Retrieve a value from a nested config dictionary using dot notation.
     Example: get_config_value(config, 'section.key')
@@ -411,7 +411,7 @@ def get_config_value(config: dict, key: str) -> Any:
         return None
 
 
-def set_config_value(config: dict, key: str, value: Any) -> Any:
+def set_config_value(config: dict[str, Any], key: str, value: Any) -> Any:
     """
     Set a value in a nested config dictionary using dot notation.
     Example: set_config_value(config, 'section.key', value)

@@ -2,11 +2,11 @@
   "framework": "discopy",
   "model_name": "static_perception",
   "script_name": "Static_Perception_Model_discopy.py",
-  "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/discopy/Static_Perception_Model_discopy.py",
+  "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/discopy/Static_Perception_Model_discopy.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.431309,
-  "timestamp": "2026-09-05T20:27:05.475549",
+  "execution_time": 0.454301,
+  "timestamp": "2026-09-08T06:52:18.042123",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -49,22 +49,22 @@
   },
   "execution_benchmark_repeats": 1,
   "execution_metadata": {
-    "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+    "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
     "accelerator_type": "mps",
     "stdout_length": 1450,
     "stderr_length": 0,
-    "output_directory": "output/12_execute_output/static_perception/discopy"
+    "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/discopy"
   },
-  "execution_time_mean": 0.431309,
+  "execution_time_mean": 0.454301,
   "execution_time_std": 0.0,
   "execution_time_samples": [
-    0.431309
+    0.454301
   ],
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [
-      "output/12_execute_output/static_perception/discopy/simulation_data/circuit_analysis.json",
-      "output/12_execute_output/static_perception/discopy/simulation_data/circuit_info.json"
+      "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/discopy/simulation_data/circuit_analysis.json",
+      "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/discopy/simulation_data/circuit_info.json"
     ],
     "traces": [],
     "other": []

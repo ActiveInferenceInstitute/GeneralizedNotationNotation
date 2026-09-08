@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-09-05T20:32:38.820745",
-  "source_file": "input/gnn_files/hierarchical/temporal_hierarchy.md",
+  "timestamp": "2026-09-08T06:56:54.287737",
+  "source_file": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/hierarchical/temporal_hierarchy.md",
   "model_name": "Three-Level Temporal Hierarchy Agent",
   "pomdp_dimensions": {
     "num_states": 24,

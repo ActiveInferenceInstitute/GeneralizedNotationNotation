@@ -15,10 +15,10 @@ from typing import (
 
 def extract_variables(content: str) -> List[Dict[str, Any]]:
     """Extract variables for statistical analysis."""
-    variables: list[Any] = []
+    variables: list[dict[str, Any]] = []
 
     # Look for variable definitions
-    var_patterns: list[Any] = [
+    var_patterns: list[str] = [
         r"(\w+)\s*:\s*(\w+)",  # name: type
         r"(\w+)\s*=\s*([^;\n]+)",  # name = value
         r"(\w+)\s*\[([^\]]+)\]",  # name[dimensions]
@@ -41,8 +41,8 @@ def extract_variables(content: str) -> List[Dict[str, Any]]:
 
 def extract_connections(content: str) -> List[Dict[str, Any]]:
     """Extract connections for statistical analysis."""
-    connections: list[Any] = []
-    seen: set[Any] = set()  # Deduplicate connections
+    connections: list[dict[str, Any]] = []
+    seen: set[tuple[str, str, str]] = set()  # Deduplicate connections
 
     # 1. Parse GNN ## Connections section directly (highest priority)
     connections_section = re.search(
@@ -84,7 +84,7 @@ def extract_connections(content: str) -> List[Dict[str, Any]]:
                     )
 
     # 2. Also look for generic connection patterns outside the section
-    conn_patterns: list[Any] = [
+    conn_patterns: list[tuple[str, str]] = [
         (r"(\w+)\s*->\s*(\w+)", "directional"),  # source -> target
         (r"(\w+)\s*→\s*(\w+)", "directional"),  # source → target
         (r"(\w+)\s*connects\s*(\w+)", "association"),  # source connects target

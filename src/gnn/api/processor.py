@@ -15,7 +15,7 @@ import time
 import uuid
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +31,7 @@ from gnn.api.pipeline_runner import (
 from gnn.pipeline.step_registry import STEPS
 
 # In-memory job store (cleared on restart — research tool, not production service)
-_JOBS: Dict[str, dict] = {}
+_JOBS: Dict[str, dict[str, Any]] = {}
 
 
 def _validate_step_numbers(
@@ -110,7 +110,7 @@ def create_job(
     return job_id
 
 
-def get_job(job_id: str) -> Optional[dict]:
+def get_job(job_id: str) -> Optional[dict[str, Any]]:
     """
     Retrieve job status by ID.
 
@@ -152,7 +152,7 @@ def cancel_job(job_id: str) -> bool:
     return True
 
 
-def list_jobs(limit: int = 50) -> List[dict]:
+def list_jobs(limit: int = 50) -> List[dict[str, Any]]:
     """List recent jobs (most recent first)."""
     if isinstance(limit, bool) or not isinstance(limit, int) or not 1 <= limit <= 100:
         raise ValueError("limit must be an integer between 1 and 100")
@@ -276,7 +276,7 @@ def _derive_pipeline_steps() -> Dict[int, tuple[str, str]]:
 PIPELINE_STEPS: Dict[int, tuple[str, str]] = _derive_pipeline_steps()
 
 
-def get_pipeline_tools() -> List[dict]:
+def get_pipeline_tools() -> List[dict[str, Any]]:
     """Return list of available pipeline tools."""
     return [
         {
