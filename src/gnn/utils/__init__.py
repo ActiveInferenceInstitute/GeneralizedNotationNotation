@@ -490,7 +490,7 @@ __all__: list[Any] = [
 ]
 
 
-def get_module_info() -> dict:
+def get_module_info() -> dict[str, Any]:
     """Return module metadata for composability and MCP discovery."""
     return {
         "name": "utils",

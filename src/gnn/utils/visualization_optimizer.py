@@ -218,7 +218,7 @@ class ParallelVisualizationProcessor:
     def process_files_parallel(
         self,
         files: List[Path],
-        processing_func: Callable,
+        processing_func: Callable[..., Any],
         output_dir: Path,
         **kwargs: Any,
     ) -> Dict[str, Any]:
@@ -296,7 +296,7 @@ class ParallelVisualizationProcessor:
         return results
 
     def _safe_process_task(
-        self, processing_func: Callable, task: Dict[str, Any]
+        self, processing_func: Callable[..., Any], task: Dict[str, Any]
     ) -> Dict[str, Any]:
         """Safely execute a processing task."""
         try:
@@ -338,7 +338,7 @@ class VisualizationOptimizer:
         content: str,
         model_name: str,
         output_dir: Path,
-        processing_func: Callable,
+        processing_func: Callable[..., Any],
         processing_params: Dict[str, Any],
     ) -> Tuple[List[str], bool]:
         """Optimize processing of a single file with caching and sampling."""
@@ -387,7 +387,7 @@ class VisualizationOptimizer:
         self,
         files: List[Path],
         output_dir: Path,
-        processing_func: Callable,
+        processing_func: Callable[..., Any],
         **kwargs: Any,
     ) -> Dict[str, Any]:
         """Optimize batch processing with parallel execution."""
@@ -433,7 +433,7 @@ def get_visualization_optimizer(**kwargs: Any) -> VisualizationOptimizer:
 
 
 def optimize_visualization_processing(
-    files: List[Path], output_dir: Path, processing_func: Callable, **kwargs: Any
+    files: List[Path], output_dir: Path, processing_func: Callable[..., Any], **kwargs: Any
 ) -> Dict[str, Any]:
     """Convenience function for optimized visualization processing."""
     optimizer = get_visualization_optimizer()
@@ -443,7 +443,7 @@ def optimize_visualization_processing(
 
 
 # Performance monitoring utilities
-def monitor_visualization_performance(func: Callable) -> Callable:
+def monitor_visualization_performance(func: Callable[..., Any]) -> Callable[..., Any]:
     """Decorator to monitor visualization performance."""
 
     def wrapper(*args: Any, **kwargs: Any) -> Any:

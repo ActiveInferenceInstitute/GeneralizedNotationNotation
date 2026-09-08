@@ -15,7 +15,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, cast
+from typing import Any, Callable, Dict, List, Optional
 
 
 class HealthStatus(Enum):
@@ -53,7 +53,7 @@ class StepMetrics:
     avg_duration: float = 0.0
     min_duration: float = float("inf")
     max_duration: float = 0.0
-    recent_durations: deque = field(default_factory=lambda: deque(maxlen=10))
+    recent_durations: deque[float] = field(default_factory=lambda: deque(maxlen=10))
     error_types: Dict[str, int] = field(default_factory=dict)
     health_status: HealthStatus = HealthStatus.UNKNOWN
 
@@ -76,7 +76,7 @@ class StepMetrics:
         """Get average duration of recent executions."""
         if not self.recent_durations:
             return 0.0
-        return cast("float", sum(self.recent_durations) / len(self.recent_durations))
+        return sum(self.recent_durations) / len(self.recent_durations)
 
 
 @dataclass
@@ -116,11 +116,11 @@ class PipelineHealth:
 class PipelineMonitor:
     """Comprehensive pipeline monitoring system."""
 
-    def __init__(self, alert_callbacks: Optional[List[Callable]] = None) -> None:
+    def __init__(self, alert_callbacks: Optional[List[Callable[..., Any]]] = None) -> None:
         """Initialize the instance."""
         self.logger = logging.getLogger(__name__)
         self.step_metrics: Dict[str, StepMetrics] = {}
-        self.alerts: deque = deque(maxlen=100)  # Keep last 100 alerts
+        self.alerts: deque[Alert] = deque(maxlen=100)  # Keep last 100 alerts
         self.alert_callbacks = alert_callbacks or []
         self.monitoring_active = False
         self.health_thresholds = self._initialize_health_thresholds()

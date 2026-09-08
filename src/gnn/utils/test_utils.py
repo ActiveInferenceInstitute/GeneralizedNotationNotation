@@ -111,22 +111,14 @@ class TestRunner:
         self.logger = logging.getLogger("test_runner")
 
     def run_tests(self, test_paths: Any, output_dir: Any) -> Any:
-        """Basic test execution."""
-        try:
-            # Import the actual TestRunner from tests.runner
-            from tests.infrastructure.test_config import TestExecutionConfig
-            from tests.runner import TestRunner as ActualTestRunner
+        """Basic test execution.
 
-            runner_config = (
-                self.config
-                if isinstance(self.config, TestExecutionConfig)
-                else TestExecutionConfig()
-            )
-            actual_runner = ActualTestRunner(config=runner_config)
-            return actual_runner.run_tests(test_paths, output_dir)
-        except ImportError:
-            self.logger.warning("Actual TestRunner not available, using recovery")
-            return {"success": False, "error": "TestRunner not available"}
+        ``tests.runner`` never exported a ``TestRunner``; the historical
+        delegation attempt always failed with ImportError. Report the
+        unavailable runner explicitly instead of pretending to try.
+        """
+        self.logger.warning("Actual TestRunner not available, using recovery")
+        return {"success": False, "error": "TestRunner not available"}
 
 
 # Add TestResult class definition

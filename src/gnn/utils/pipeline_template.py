@@ -202,13 +202,13 @@ def _resolve_recursive_default(step_name: str, fallback_default: bool) -> bool:
 
 def create_standardized_pipeline_script(
     step_name: str,
-    module_function: Callable,
+    module_function: Callable[..., Any],
     fallback_parser_description: str,
     additional_arguments: Optional[Dict[str, Any]] = None,
     step_specific_imports: Optional[List[str]] = None,
     default_target_dir: Optional[str] = None,
     default_recursive: bool = False,
-) -> Callable:
+) -> Callable[..., Any]:
     """Create a standardized pipeline script with consistent arg parsing and error handling.
 
     The returned callable, when invoked, parses CLI args, sets up logging, resolves the
