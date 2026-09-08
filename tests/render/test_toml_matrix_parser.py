@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Focused unit tests for the GNN parenthesized-tuple matrix parsers in
-src/render/rxinfer/toml_generator.py.
+src/gnn/render/rxinfer/model_contracts.py.
 
 These tests pin the correct parsing behavior for the parenthesized-tuple matrix
 notation used in the exemplar GNN files, and guard against the historical
@@ -17,7 +17,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from gnn.render.rxinfer.toml_generator import (  # noqa: E402
+from gnn.render.rxinfer.model_contracts import (  # noqa: E402
     _parse_gnn_3d_matrix,
     _parse_gnn_matrix,
     _parse_gnn_vector,

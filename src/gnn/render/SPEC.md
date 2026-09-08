@@ -9,7 +9,7 @@ Multi-framework rendering and code generation from GNN models.
 - `jax/jax_renderer.py` - JAX code generation
 - `pymdp/pymdp_renderer.py` - PyMDP runner generation
 - `discopy/translator.py` - DisCoPy translation
-- `rxinfer/rxinfer_renderer.py` - Canonical RxInfer.jl renderer (genuine `@model` + `infer()`); `toml_generator.py` is the retired TOML emitter (the `rxinfer_toml` target is no longer supported)
+- `rxinfer/rxinfer_renderer.py` - Canonical RxInfer.jl renderer (genuine `@model` + `infer()`); the retired `toml_generator.py` emitter was deleted and its live helpers moved to `rxinfer/model_contracts.py` (the `rxinfer_toml` target is no longer supported)
 - `stan/stan_renderer.py` - Stan program + cmdstanpy driver generation
 - `pytorch/pytorch_renderer.py`, `numpyro/numpyro_renderer.py` - generator-backed continuous backends
 

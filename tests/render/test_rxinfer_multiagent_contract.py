@@ -25,7 +25,7 @@ from gnn.render.rxinfer.rxinfer_renderer import (
     build_rxinfer_execution_metadata,
     render_gnn_to_rxinfer,
 )
-from gnn.render.rxinfer.toml_generator import (
+from gnn.render.rxinfer.model_contracts import (
     _create_toml_config_structure,
     _write_toml_with_exact_formatting,
 )

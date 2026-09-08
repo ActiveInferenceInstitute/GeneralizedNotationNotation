@@ -270,6 +270,29 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   via the new `get_remediation()` helper; `Unsupported target` messages
   list the known targets.
 
+### Refactored (2026-09-08)
+
+- **RB-08: deleted the retired `toml_generator.py` emitter.** The
+  production-dead `render_gnn_to_rxinfer_toml` entry point (and its
+  private code generator `_generate_rxinfer_pomdp_code` and
+  `_extract_parameter_from_section`) were removed. The still-live surface
+  - the GNN matrix/vector literal parsers (`_parse_gnn_matrix`,
+  `_parse_gnn_3d_matrix`, `_parse_gnn_vector`), the compact multi-agent
+  config-structure builder, and the fail-closed topology validation
+  (`_validate_topology_references`) - moved to
+  `src/gnn/render/rxinfer/model_contracts.py`. The two contract-test files
+  and `scripts/check_capability_contracts.py` (text markers) re-pointed to
+  the new home; the five maintained-doc references updated; import-site
+  grep shows zero stragglers. No render/execute behavior change on the
+  benchmark.
+- **RB-09: generator-facade status decision.** The
+  `generate_rxinfer_code` / `generate_activeinference_jl_code` exports are
+  the supported public surface (README-documented, pinned end to end by
+  `tests/render/test_generators_coverage.py`); the legacy
+  `src/gnn/render/pymdp_template.py` template stays with its only
+  production caller (the non-POMDP basic fallback). No deprecation window
+  needed.
+
 ### Verified (2026-09-08)
 
 - `bash autoresearch.sh` (deterministic corpus x framework conformance

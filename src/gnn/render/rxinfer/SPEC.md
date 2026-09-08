@@ -15,7 +15,7 @@ Generates Julia code using the RxInfer.jl genuine `@model` + `infer()` variation
 ## Output
 
 - Julia script files (`.jl`) using the RxInfer API
-- The former TOML parameter path (`toml_generator.py`) is no longer supported; the genuine `@model` + `infer()` renderer is the only supported path
+- The former TOML parameter path (the retired `toml_generator.py` emitter, now deleted) is no longer supported; the genuine `@model` + `infer()` renderer is the only supported path
 
 ## Generated-Script Output Contract
 
@@ -43,7 +43,7 @@ rxinfer/
 ├── rxinfer_renderer.py     # Core renderer — ModelKind dispatch, genuine @model + infer()
 ├── model_strategies.py     # Per-kind generators: flat (batch/online), hierarchical, factored, continuous LGSSM, Dirichlet learning
 ├── _strategies_multiagent.py  # Native stigmergic multi-agent generator (per-agent pomdp_model + shared env_signal trace)
-├── toml_generator.py       # Retired emitter plus topology parsing helpers
+├── model_contracts.py      # Matrix parsers, topology config, fail-closed validation
 └── ...
 ```
 
