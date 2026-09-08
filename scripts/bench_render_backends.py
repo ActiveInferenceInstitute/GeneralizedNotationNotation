@@ -1,11 +1,6 @@
 #!/usr/bin/env python3
 """Deterministic render-backend conformance benchmark (autoresearch harness).
 
-Workload: render every discovered GNN model under ``input/gnn_files`` for every
-framework in ``FRAMEWORK_REGISTRY`` via the canonical Step 11 surface
-(``gnn.render.processor.process_render``), then score the resulting render
-receipt (``render_processing_summary.json``).
-
 A successful rendering only counts toward the primary metric when its emitted
 artifacts are conformant:
 
@@ -18,15 +13,26 @@ artifacts are conformant:
   satisfy its output contract on the artifact carrying the framework's
   canonical file extension.
 
+The receipt itself is also verified (``render_receipt_integrity_findings``):
+
+- every successful rendering records at least one artifact and every
+  recorded artifact exists on disk;
+- every recorded ``artifact_identities`` sha256 matches the on-disk bytes
+  and every ``output_files`` entry has a recorded identity;
+- every ``unsupported`` diagnostic names a backend the registry marks
+  ``supports_continuous: False``, and every continuous-capable backend
+  actually succeeded on the models reported unsupported elsewhere.
+
 Pure codegen: nothing is executed, no network access, fixed run_id. The same
 corpus and framework set produce identical counts on every run.
 
 Output: ``METRIC <name>=<value>`` lines on stdout (primary metric first),
-followed by ``FAIL``/``CONFORMANCE`` diagnostic lines.
+followed by ``FAIL``/``CONFORMANCE``/``INTEGRITY`` diagnostic lines.
 """
 
 from __future__ import annotations
 
+import hashlib
 import json
 import logging
 import sys
@@ -139,6 +145,103 @@ def _score_conformance(
     )
 
 
+def _verify_receipt_integrity(
+    receipt: dict[str, Any],
+) -> int:
+    """Verify the receipt's own claims; returns the integrity finding count.
+
+    Checks (per successful framework rendering, plus receipt-wide):
+      1. success implies at least one recorded artifact, and every recorded
+         ``output_files`` path exists on disk;
+      2. every ``artifact_identities`` entry's sha256 matches the on-disk
+         bytes, and every ``output_files`` entry has a recorded identity
+         (the writer only identities existing files - a listed-but-vanished
+         artifact shows up as a missing identity);
+      3. every ``unsupported`` diagnostic names a backend the registry marks
+         ``supports_continuous: False``;
+      4. every continuous-capable backend actually succeeded on each model
+         reported unsupported elsewhere.
+    """
+    findings = 0
+
+    def flag(message: str) -> None:
+        nonlocal findings
+        findings += 1
+        print(f"INTEGRITY {message}")
+
+    for source, record in receipt["file_results"].items():
+        if not isinstance(record, dict):
+            continue
+        source_name = Path(source).name
+        for framework, result in record.get("framework_results", {}).items():
+            if not isinstance(result, dict) or not result.get("success"):
+                continue
+            output_files = [str(path) for path in result.get("output_files", [])]
+            if not output_files:
+                flag(f"{framework} {source_name}: success without artifacts")
+                continue
+            # The writer keys identities by path.resolve(); output_files
+            # entries carry unresolved paths (/var/... vs /private/var/... on
+            # macOS), so resolve before lookup.
+            identities = {
+                str(Path(str(entry.get("path"))).resolve()): str(entry.get("sha256"))
+                for entry in result.get("artifact_identities", [])
+                if isinstance(entry, dict)
+            }
+            for artifact in output_files:
+                path = Path(artifact)
+                if not path.is_file():
+                    flag(
+                        f"{framework} {source_name}: recorded artifact "
+                        f"missing on disk: {path.name}"
+                    )
+                    continue
+                resolved = str(path.resolve())
+                digest = hashlib.sha256(path.read_bytes()).hexdigest()
+                if resolved not in identities:
+                    flag(
+                        f"{framework} {source_name}: no identity recorded "
+                        f"for artifact {path.name}"
+                    )
+                elif identities[resolved] != digest:
+                    flag(
+                        f"{framework} {source_name}: identity sha256 "
+                        f"mismatch for artifact {path.name}"
+                    )
+
+    registry = FRAMEWORK_REGISTRY
+    unsupported_pairs = {
+        (str(diag.get("file")), str(diag.get("framework")))
+        for diag in receipt.get("unsupported_framework_renderings", [])
+        if isinstance(diag, dict)
+    }
+    unsupported_files = {file for file, _framework in unsupported_pairs}
+    for file, framework in unsupported_pairs:
+        spec = registry.get(framework)
+        if spec is None:
+            flag(f"unsupported diagnostic names unknown framework {framework}")
+        elif spec.get("supports_continuous", False):
+            flag(
+                f"{framework} claims unsupported but registry says "
+                "supports_continuous=True"
+            )
+    for file in unsupported_files:
+        record = receipt["file_results"].get(file)
+        if not isinstance(record, dict):
+            continue
+        for framework, spec in registry.items():
+            if not spec.get("supports_continuous", False):
+                continue
+            result = record.get("framework_results", {}).get(framework)
+            if not isinstance(result, dict) or not result.get("success"):
+                flag(
+                    f"{Path(file).name}: continuous-capable backend "
+                    f"{framework} did not succeed on an unsupported-"
+                    "elsewhere model"
+                )
+    return findings
+
+
 def main() -> int:
     # Quiet the module's INFO chatter; METRIC lines stay parseable.
     logging.basicConfig(level=logging.WARNING)
@@ -192,6 +295,7 @@ def main() -> int:
         undefined_name_findings,
         undefined_scan_skipped,
     ) = _score_conformance(receipt)
+    receipt_integrity_findings = _verify_receipt_integrity(receipt)
     conformance_success = rendered - conformance_failures
     success_rate = (rendered / attempts * 100.0) if attempts else 0.0
 
@@ -205,6 +309,7 @@ def main() -> int:
     print(f"METRIC render_contract_violations={contract_violation_count}")
     print(f"METRIC render_undefined_name_findings={undefined_name_findings}")
     print(f"METRIC render_undefined_scan_skipped={undefined_scan_skipped}")
+    print(f"METRIC render_receipt_integrity_findings={receipt_integrity_findings}")
     print(f"METRIC render_files_total={total_files}")
     print(f"METRIC render_files_successful={successful_files}")
     print(f"METRIC render_files_no_attempts={no_attempt_files}")
