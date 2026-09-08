@@ -11,7 +11,7 @@ from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
 
-from gnn.utils.mcp_dispatch import run_pipeline_step_mcp
+from gnn.utils.mcp_dispatch import run_pipeline_step_mcp, run_tool_envelope
 
 from .generator import generate_website as _generate_website
 from .inspection import inspect_website, list_website_pages
@@ -137,7 +137,8 @@ def get_website_module_info_mcp() -> Dict[str, Any]:
     Returns:
         Dictionary with version, features, supported formats, and MCP tool list.
     """
-    try:
+
+    def _build() -> Dict[str, Any]:
         from . import FEATURES, SUPPORTED_FILE_TYPES, __version__
 
         return {
@@ -162,9 +163,12 @@ def get_website_module_info_mcp() -> Dict[str, Any]:
                 "get_website_module_info",
             ],
         }
-    except Exception as e:
-        logger.error(f"get_website_module_info_mcp error: {e}", exc_info=True)
-        return {"success": False, "error": str(e)}
+
+    return run_tool_envelope(
+        _build,
+        wrapper_name="get_website_module_info_mcp",
+        logger=logger,
+    )
 
 
 # ── MCP Registration ────────────────────────────────────────────────────────
