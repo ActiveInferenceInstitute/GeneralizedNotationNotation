@@ -10,7 +10,6 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ### Changed
 
-### Deep horizon wave 2 - MCP + execute (2026-09-08)
 
 - **MAJ-08: one wire serializer for all MCP transports.** Tool results from
   arbitrary callables can no longer crash the stdio writer thread (client
@@ -33,8 +32,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   `subprocess.run` with hand-rolled timeout/OSError handling replaced by
   `run_subprocess_envelope`; shared exit-code sentinels (`NEVER_STARTED=-1`,
   `INTERNAL_ERROR=-2`, `UNKNOWN_STATE=-3`) eliminate the -1/-2 vocabulary
-  collision. Envelope upgraded to `Popen + communicate` (kill+drain on
-  timeout preserves partial stdout/stderr on all interpreter versions).
+  collision. Envelope initially upgraded to `Popen + communicate`
+  (kill+drain on timeout preserves partial stdout/stderr on all interpreter
+  versions), later reverted to `subprocess.run` for the common success path
+  (partial output still captured from `TimeoutExpired.stdout/stderr`).
   `sandbox.py`, `julia_setup.py`, `lean_runner.py` delegated. (PR #70)
 
 - **MED-01: param-validation fidelity.** `func(**params)` signature
