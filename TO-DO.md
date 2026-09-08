@@ -39,7 +39,7 @@ per PR).
 
 | ID | Scope | Acceptance evidence |
 | --- | --- | --- |
-| MAJ-04 | Decompose the six >2000-line modules (`integration/meta_analysis/visualizer.py` 2871, `analysis/visualizations.py` 2412, `testing/test_round_trip.py` 2214, `render/jax/jax_renderer.py` 2200, `render/discopy/translator.py` 2150, `analysis/analyzer.py` 2031) following the 3.3.0 `execute/processor.py` split pattern (mechanical extraction into sibling modules, facade re-exports preserved, one module per PR), and extract the shared subprocess envelope the nine per-framework renderers duplicate. | Per module: no import path changes (old names still importable), `uv run --extra dev mypy src` clean, `just lint` and `just format-check` clean, module tests plus `just test` green, moved code byte-identical modulo import lines. |
+| MAJ-04 | Decompose the six >2000-line modules via the 3.3.0 `execute/processor.py` split pattern (mechanical extraction into sibling modules, facade re-exports preserved, one module per PR). **LANDED 2026-09-07 (deep-horizon session, 4/6):** `analysis/visualizations.py` 2412→58 (PR #29), `analysis/analyzer.py` 2031→263 (PR #32), `render/jax/jax_renderer.py` 2200→170 (PR #33), `render/discopy/translator.py` 2150→303 (PR #34). **REMAINING:** `integration/meta_analysis/visualizer.py` 2871 — class-method split must preserve byte-identity, so extract `Sweep*PlotMixin` siblings holding verbatim method blocks (runtime/metric/summary/export seams; facade keeps `__init__`, `generate_all`, `_safe_log_scale`, and the `_MPL_AVAILABLE` binding that `tests/integration/test_integration_meta_analysis_validation.py:287-289` monkeypatches); `testing/test_round_trip.py` 2214 — extract config dicts, result dataclasses, `_DirectMarkdownParser`, `_compare_*` helpers, and report writer into `round_trip_*` siblings (non-`test_` names so explicit-path collection is unchanged); facade keeps availability flags, `sys.path.insert`/`setrecursionlimit` side effects, tester core, unittest class. **RESCOPED:** the "shared subprocess envelope the nine per-framework renderers duplicate" — renderers contain zero subprocess code (verified); the duplication is execute-side (`rxinfer/stan/lean/activeinference` runners + 4 `executor.py` MCP methods vs the canonical `execute_script_safely` at `execute/executor.py:1089-1200`) and needs a behavior-preserving refactor with its own tests, not a mechanical split. | Landed modules: no import-path changes (per-module facade-contract probes: 31/34/27/36 names importable), mypy 0 errors, `ruff check src/gnn scripts` clean, targeted module tests green, full suite 4263 passed / 0 failed, moved code byte-identical modulo import lines (2347/2001/2190/2108 verified per module). Session benchmark `oversized_module_lines` 13878 → 5085 (-63.4%). |
 
 
 ### Smaller scoped cleanups (independent of the majors)
@@ -67,6 +67,14 @@ per PR).
   resolved identically (only requires-dist metadata moved; zero package
   pins changed). Remaining cosmetic floors (networkx 2.6, plotly 5.15,
   scipy 1.7, ...) can follow at the next deliberate lock refresh.
+- `gnn/utils/pipeline_validator.py` vs `gnn/pipeline/pipeline_validator.py`
+  near-name collision (recorded during the MAJ-05 validate-surface pass;
+  unrelated to the `validate_gnn*` function surface, which is resolved):
+  audit both modules' roles and repo-wide consumers, then rename the
+  lower-traffic module to an unambiguous name with a compatibility re-export
+  of the old import path. Verify: import-site grep updated with zero
+  stragglers, `uv run --extra dev mypy src` clean, MCP tools and CLI paths
+  unchanged, module tests green.
 
 ---
 

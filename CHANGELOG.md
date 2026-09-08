@@ -107,6 +107,30 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   `gnn.utils.pipeline` delegate and the outlived `migration_helper.py`
   fossil are removed.
 
+## Deep horizon 2026-09-07 - gnn-maj04-modules
+
+### Changed
+
+- **MAJ-04 (4/6 modules landed): mechanical decomposition via the 3.3.0
+  `execute/processor.py` split pattern.** `analysis/visualizations.py`
+  2412→58 (PR #29: `viz_schema`/`viz_animations`/`viz_manifest`/
+  `viz_plots`/`viz_dashboard`), `analysis/analyzer.py` 2031→263 (PR #32:
+  `analysis_extraction`/`analysis_statistics`/`analysis_complexity`/
+  `simulation_visualizations`/`framework_comparison`),
+  `render/jax/jax_renderer.py` 2200→170 (PR #33: `jax_spec_extract`/
+  `jax_factorized_generator`/`jax_model_generator`/`jax_pomdp_generator`/
+  `jax_combined_generator`), `render/discopy/translator.py` 2150→303
+  (PR #34: `bootstrap`/`gnn_parsing`/`diagram_builders`/`matrix_builders`/
+  `file_translation`/`code_templates`). All moved code byte-identical
+  modulo imports (2347/2001/2190/2108 lines verified per module); facades
+  re-export every moved name (including private helpers and availability
+  constants) so consumer import paths are unchanged; package `__init__`
+  files untouched. Full suite 4263 passed / 0 failed; mypy 0 errors; ruff
+  clean. Remaining MAJ-04 modules (`integration/meta_analysis/visualizer.py`,
+  `testing/test_round_trip.py`) have scoped split plans in TO-DO.md; the
+  shared-subprocess-envelope item is rescoped to the execute side (renderers
+  contain no subprocess code; see the MAJ-04 row).
+
 ## Deep horizon 2026-09-07 - gnn-maj05-validate-surface
 
 ### Changed

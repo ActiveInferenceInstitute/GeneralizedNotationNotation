@@ -175,7 +175,7 @@ python3 src/gnn/12_execute.py --target_dir input/gnn_files/
 ### **Direct PyMDP Execution** 
 ```python
 from gnn.execute.pymdp import execute_pymdp_simulation
-from gnn.gnn import parse_gnn_file
+from gnn import parse_gnn_file
 
 # Parse GNN file
 gnn_spec = parse_gnn_file("input/gnn_files/actinf_pomdp_agent.md")

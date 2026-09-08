@@ -418,7 +418,7 @@ class ComputationWarning(GNNPerformanceWarning):
 ### Basic Error Handling
 
 ```python
-from gnn.gnn import parse_gnn_file, validate_gnn_file
+from gnn import parse_gnn_file, validate_gnn_file
 from gnn.types import GNSSyntaxError
 
 

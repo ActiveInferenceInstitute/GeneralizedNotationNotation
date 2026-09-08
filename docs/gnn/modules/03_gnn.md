@@ -117,7 +117,7 @@ success = process_gnn_multi_format(
 - `files` (List[str]): List of processed file paths
 - `processed_files` (List[str]): List of successfully processed files
 
-**Location**: `src/gnn/processor.py`
+**Location**: `src/gnn/processing/processor.py`
 
 #### `process_gnn_directory_lightweight(target_dir: Path, output_dir: Path = None, recursive: bool = False) -> Dict[str, Any]`
 
@@ -140,7 +140,7 @@ success = process_gnn_multi_format(
 - `parsed_files` (List[Dict]): List of parsed file information
 - `validation_results` (List[Dict]): List of validation results
 
-**Location**: `src/gnn/processor.py`
+**Location**: `src/gnn/processing/processor.py`
 
 #### `discover_gnn_files(directory: Union[str, Path], recursive: bool = True) -> List[Path]`
 
@@ -157,15 +157,16 @@ success = process_gnn_multi_format(
 
 **Pipeline Step 3 (`process_gnn_multi_format`)** uses a **broader** extension list in `multi_format_processor.py` (e.g. `.json`, `.yaml`, `.lean`, …) so interchange artifacts on disk are found and re-processed. See [SPEC.md](../../../src/gnn/SPEC.md) § File discovery.
 
-**Location**: `src/gnn/processor.py`
+**Location**: `src/gnn/processing/processor.py`
 
-#### `parse_gnn_file(file_path: Union[str, Path]) -> Dict[str, Any]`
+#### `parse_gnn_file(file_path: Union[str, Path], content: Optional[str] = None) -> Dict[str, Any]`
 
 **Description**: Parse a single GNN file and extract basic information.
 
 **Parameters**:
 
 - `file_path` (Union[str, Path]): Path to the GNN file
+- `content` (Optional[str]): Pre-read file content; if None the file is opened and read.
 
 **Returns**: `Dict[str, Any]` - Dictionary with parsed information containing:
 
@@ -177,15 +178,16 @@ success = process_gnn_multi_format(
 - `structure_info` (Dict): Structure analysis information
 - `parse_timestamp` (str): Timestamp of parsing
 
-**Location**: `src/gnn/processor.py`
+**Location**: `src/gnn/processing/processor.py`
 
-#### `check_gnn_file_structure(file_path: Union[str, Path]) -> Dict[str, Any]`
+#### `check_gnn_file_structure(file_path: Union[str, Path], content: Optional[str] = None) -> Dict[str, Any]`
 
 **Description**: Validate the structure of a GNN file.
 
 **Parameters**:
 
 - `file_path` (Union[str, Path]): Path to the GNN file
+- `content` (Optional[str]): Pre-read file content; if None the file is opened and read.
 
 **Returns**: `Dict[str, Any]` - Dictionary with validation results containing:
 
@@ -196,7 +198,7 @@ success = process_gnn_multi_format(
 - `warnings` (List[str]): List of validation warnings
 - `validation_timestamp` (str): Timestamp of validation
 
-**Location**: `src/gnn/processor.py`
+**Location**: `src/gnn/processing/processor.py`
 
 #### `generate_gnn_report(processing_results: Dict[str, Any], output_path: Union[str, Path] = None) -> str`
 
@@ -209,7 +211,7 @@ success = process_gnn_multi_format(
 
 **Returns**: `str` - Report content as markdown string
 
-**Location**: `src/gnn/processor.py`
+**Location**: `src/gnn/processing/processor.py`
 
 #### `get_module_info() -> Dict[str, Any]`
 
@@ -227,7 +229,7 @@ success = process_gnn_multi_format(
 - `supported_formats` (List[str]): List of supported file formats
 - `capabilities` (Dict): Dictionary of capability flags
 
-**Location**: `src/gnn/processor.py`
+**Location**: `src/gnn/processing/processor.py`
 
 #### `process_gnn(*args, **kwargs) -> Dict[str, Any]`
 
@@ -280,7 +282,7 @@ success = process_gnn_multi_format(
 
 **Returns**: `List[str]` - List of extracted section names
 
-**Location**: `src/gnn/processor.py`
+**Location**: `src/gnn/processing/processor.py`
 
 #### `_extract_variables_lightweight(content: str) -> List[str]`
 
@@ -292,7 +294,7 @@ success = process_gnn_multi_format(
 
 **Returns**: `List[str]` - List of extracted variable names
 
-**Location**: `src/gnn/processor.py`
+**Location**: `src/gnn/processing/processor.py`
 
 ---
 
