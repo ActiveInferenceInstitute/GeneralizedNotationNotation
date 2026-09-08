@@ -23,6 +23,7 @@ import warnings
 from pathlib import Path
 from typing import Any, Optional, Union, cast
 
+from gnn.schemas.section_contract import REQUIRED_SECTIONS
 from gnn.types import (
     GNNFormat,
     ParsedGNN,
@@ -623,18 +624,7 @@ class GNNValidator:
         """Validate comprehensive GNN markdown file structure and semantics."""
         lines = content.split("\n")
 
-        # Check for required sections
-        required_sections: list[Any] = [
-            "GNNSection",
-            "GNNVersionAndFlags",
-            "ModelName",
-            "ModelAnnotation",
-            "StateSpaceBlock",
-            "Connections",
-            "InitialParameterization",
-            "Time",
-            "Footer",
-        ]
+        required_sections: list[str] = list(REQUIRED_SECTIONS)
 
         found_sections: list[Any] = []
         for line in lines:

@@ -17,6 +17,8 @@ from __future__ import annotations
 
 from typing import Any
 
+from gnn.schemas.section_contract import CANONICAL_GNN_SECTIONS
+
 __all__ = [
     "CANONICAL_GNN_SECTIONS",
     "connection_group",
@@ -27,23 +29,9 @@ __all__ = [
 ]
 
 
-# Canonical GNN section headers, in declared order. Used both to build a
-# section-presence map for reports and to drive section-aware parsing.
-CANONICAL_GNN_SECTIONS: tuple[str, ...] = (
-    "GNNSection",
-    "GNNVersionAndFlags",
-    "ModelName",
-    "ModelAnnotation",
-    "StateSpaceBlock",
-    "Connections",
-    "InitialParameterization",
-    "Equations",
-    "Time",
-    "ActInfOntologyAnnotation",
-    "ModelParameters",
-    "Footer",
-    "Signature",
-)
+# Canonical GNN section headers, in declared order — single-sourced from
+# ``gnn.schemas.section_contract`` (W2-01) and re-exported here for the
+# type-checker/estimator consumers.
 
 # Connection operators recognised in the ``Connections`` section, ordered
 # longest/most-specific first so multi-character operators win over their
