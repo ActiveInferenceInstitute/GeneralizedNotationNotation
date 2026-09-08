@@ -51,17 +51,17 @@ class RendererStatus:
 
 # Renderer import paths derived from the canonical framework inventory.
 _RENDERER_MODULE_OVERRIDES: dict[str, str] = {
-    "bnlearn": "render.generators",
+    "bnlearn": "gnn.render.generators",
 }
 _RENDERERS: dict[str, Any] = {
-    name: _RENDERER_MODULE_OVERRIDES.get(name, f"render.{name}")
+    name: _RENDERER_MODULE_OVERRIDES.get(name, f"gnn.render.{name}")
     for name in get_supported_frameworks()
 }
 
 _FRAMEWORK_REMEDIATIONS: dict[str, str] = {
     "julia": "Install Julia from https://julialang.org/downloads/ or run: sudo apt install julia",
-    "rxinfer": "Install Julia and instantiate: julia --project=src/gnn/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'",
-    "activeinference_jl": "Install Julia and instantiate: julia --project=src/gnn/execute/activeinference_jl -e 'using Pkg; Pkg.instantiate()'",
+"rxinfer": "Install Julia and instantiate the committed env: julia --project=src/gnn/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'",
+    "activeinference_jl": "Install Julia and instantiate the committed env: julia --project=src/gnn/execute/activeinference_jl -e 'using Pkg; Pkg.instantiate()'",
     "pytorch": "Add torch: uv add torch",
     "bnlearn": "Add bnlearn (or R bnlearn bridge): uv add bnlearn",
     "numpyro": "Add numpyro: uv add numpyro",
@@ -70,6 +70,11 @@ _FRAMEWORK_REMEDIATIONS: dict[str, str] = {
     "jax": "Add jax: uv add jax jaxlib",
     "pymdp": "Add pymdp: uv add pymdp",
 }
+
+
+def get_remediation(framework: str) -> Optional[str]:
+    """Return the install-remediation hint for ``framework``, if any."""
+    return _FRAMEWORK_REMEDIATIONS.get(framework)
 
 
 def check_renderers() -> Dict[str, RendererStatus]:
