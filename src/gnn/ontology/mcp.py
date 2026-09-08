@@ -6,7 +6,6 @@ annotation extraction, and ontology report generation through MCP.
 """
 
 import logging
-from pathlib import Path
 from typing import Any, Dict, List, Union
 
 logger = logging.getLogger(__name__)

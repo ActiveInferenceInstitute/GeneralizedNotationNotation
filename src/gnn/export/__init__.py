@@ -102,8 +102,6 @@ class Exporter:
         import tempfile
         from pathlib import Path
 
-        from .processor import _gnn_model_to_dict
-
         model_data = _gnn_model_to_dict(gnn_content)
         with tempfile.TemporaryDirectory() as tmp:
             out = export_model(model_data, Path(tmp), formats=[format_name])
@@ -121,8 +119,6 @@ class MultiFormatExporter:
         """Export to multiple formats."""
         import tempfile
         from pathlib import Path
-
-        from .processor import _gnn_model_to_dict
 
         model_data = _gnn_model_to_dict(gnn_content)
         with tempfile.TemporaryDirectory() as tmp:

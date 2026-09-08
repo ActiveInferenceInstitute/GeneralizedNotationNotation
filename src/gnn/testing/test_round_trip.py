@@ -54,7 +54,6 @@ from .round_trip_availability import (
     LeanSerializer,
     ParsedGNN,
     ParseResult,
-    Path,
     PKLSerializer,
     ProtobufSerializer,
     PythonSerializer,
@@ -66,9 +65,7 @@ from .round_trip_availability import (
     YAMLSerializer,
     ZNotationSerializer,
     current_file_dir,
-    os,
     src_path,
-    sys,
     validate_cross_format_consistency,
 )
 from .round_trip_comparison import RoundTripComparisonMixin
@@ -82,7 +79,6 @@ from .round_trip_config import (
 )
 from .round_trip_markdown_parser import (
     _DirectMarkdownParser,
-    logger,
 )
 from .round_trip_report import RoundTripReportMixin
 from .round_trip_results import (

@@ -19,9 +19,7 @@ Public surface:
 """
 
 import hashlib
-import os
 import re
-import tempfile
 from enum import Enum
 from math import prod
 from pathlib import Path

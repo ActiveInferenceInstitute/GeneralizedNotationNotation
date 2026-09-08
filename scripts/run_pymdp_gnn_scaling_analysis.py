@@ -24,7 +24,6 @@ from __future__ import annotations
 import argparse
 import errno
 import json
-import logging
 import os
 import shutil
 import subprocess
@@ -32,7 +31,7 @@ import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, NamedTuple, Optional, Tuple
+from typing import Any, NamedTuple
 
 import yaml
 
@@ -45,7 +44,7 @@ from pymdp_spec_generator import (  # type: ignore[import-not-found]
     generate_gnn_file,
 )
 
-from gnn.utils.visual_logging import VisualConfig, create_visual_logger
+from gnn.utils.visual_logging import create_visual_logger
 
 # Default sweep grid
 DEFAULT_N_VALUES = [2, 4, 8, 16]

@@ -168,7 +168,7 @@ def check_audio_backends_mcp() -> Dict[str, Any]:
             "description": "Csound synthesis engine",
         }
         try:
-            import sounddevice  # type: ignore
+            import sounddevice  # type: ignore[import-not-found]  # noqa: F401 — availability probe; binding intentionally unused
 
             backends["sounddevice"] = {
                 "available": True,

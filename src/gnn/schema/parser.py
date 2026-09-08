@@ -10,7 +10,6 @@ Provides:
   - validate_matrix_dimensions(): cross-checks parameterization vs declarations
 """
 
-import ast
 import logging
 import re
 from collections.abc import Sequence

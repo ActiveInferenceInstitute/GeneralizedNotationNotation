@@ -37,7 +37,7 @@ The Kronecker identities are pinned by ``tests/execute/test_kronecker_factorized
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any, Dict, List, Sequence
 
 import jax.numpy as jnp

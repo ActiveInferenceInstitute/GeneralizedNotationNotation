@@ -16,7 +16,7 @@ try:
 except ImportError:
     import xml.etree.ElementTree as ET  # nosec B405
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional
 
 from .common import (
     BaseGNNParser,

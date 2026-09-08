@@ -15,7 +15,6 @@ Features:
 
 import json
 import logging
-import os
 import subprocess  # nosec B404
 import sys
 import time
