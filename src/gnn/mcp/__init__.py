@@ -32,9 +32,24 @@ from .server import MCPServer as _JSONRPCServer  # noqa: E402
 MCPServer = _JSONRPCServer
 JSONRPCServer = _JSONRPCServer
 
-# list_available_tools and list_available_resources are aliases for get_available_tools
+# ``list_available_tools`` is an alias for ``get_available_tools``. Historically
+# ``list_available_resources`` was the SAME alias — i.e. it returned the tool
+# list, not the resource list. It now delegates to the real resource lister
+# (``MCP.list_available_resources``); the old tools-list-aliased behavior is a
+# contract bug, not an intent.
 list_available_tools = get_available_tools
-list_available_resources = get_available_tools
+
+
+def list_available_resources() -> list:
+    """Return metadata for every registered MCP resource (delegates to MCP).
+
+    Previously this symbol aliased ``get_available_tools`` and returned the
+    tool list mislabelled as resources; it now returns the real resource
+    list (same shape as ``MCP.list_available_resources``).
+    """
+    from .mcp import mcp_instance  # late import keeps package import light
+
+    return list(mcp_instance.list_available_resources())
 
 # -- Module metadata -----------------------------------------------------------------
 __version__ = "3.3.0"

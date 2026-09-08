@@ -156,19 +156,13 @@ class StdioMCPClient:
         return self._send_request(method=tool_name, params=tool_params)
 
     def get_resource(self, uri: str) -> dict:
-        # This might require a specific method name if not using raw URI as method
-        # For now, assuming a hypothetical "resource/get" method, or that resource URIs are tools.
-        # The GNN `cli.py` 'resource' command implies resource URIs are distinct.
-        # Let's assume a tool like `meta.get_resource_content` for now, or adjust if GNN MCP has a specific one.
-        # Based on GNN MCP spec, there isn't a generic "get resource" tool.
-        # Resources are typically outputs of other tools. This function might be less useful directly.
-        # For now, let's make it try to call the URI as if it were a tool (unlikely to work).
+        # Resources are read via the standard ``mcp.resource.get`` MCP method,
+        # not via a raw URI as method. The earlier guess-work (sending the URI
+        # as a method name) could never retrieve a resource.
         """Return resource."""
-        print(
-            "INSPECTOR (warning): Direct resource GET not well-defined in GNN MCP. Trying URI as method.",
-            file=sys.stderr,
+        return self._send_request(
+            method="mcp.resource.get", params={"uri": uri}
         )
-        return self._send_request(method=uri)  # This is a guess
 
 
 # --- CLI Subcommands ---
