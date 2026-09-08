@@ -88,7 +88,10 @@ def run_pipeline_step_mcp(
         if interpret_result is not None:
             success, extras, message = interpret_result(raw)
         else:
-            success, extras, message = bool(raw), {}, None
+            # Echo the step's return value raw — exactly what the
+            # pre-consolidation wrappers did ("success": success with no
+            # coercion); message templates branch on truthiness only.
+            success, extras, message = raw, {}, None
         result: dict[str, Any] = {
             "success": success,
             "target_directory": str(target_path) if echo_resolved else target_directory,
