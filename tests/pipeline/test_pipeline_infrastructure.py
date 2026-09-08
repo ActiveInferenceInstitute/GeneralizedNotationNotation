@@ -253,39 +253,6 @@ class TestUtilsResourceManager:
         assert "duration_seconds" in metrics
 
 
-class TestUtilsScriptValidator:
-    """Test utils.script_validator module."""
-
-    @pytest.mark.unit
-    def test_script_validator_imports(self) -> None:
-        """Test that script validator can be imported."""
-        from gnn.utils import script_validator
-
-        assert hasattr(script_validator, "PipelineScriptValidator")
-        assert hasattr(script_validator, "validate_pipeline_scripts")
-        assert hasattr(script_validator, "ScriptValidationResult")
-        assert callable(script_validator.PipelineScriptValidator)
-
-    @pytest.mark.unit
-    def test_pipeline_script_validator_class(self, project_root: Any) -> None:
-        """Test PipelineScriptValidator class functionality."""
-        from gnn.utils.script_validator import PipelineScriptValidator
-
-        src_dir = project_root / "src" / "gnn"
-        validator = PipelineScriptValidator(src_dir)
-        assert hasattr(validator, "validate_script")
-        assert hasattr(validator, "validate_all_scripts")
-
-    @pytest.mark.unit
-    def test_validate_pipeline_scripts(self, project_root: Any) -> None:
-        """Test validate_pipeline_scripts function."""
-        from gnn.utils.script_validator import validate_pipeline_scripts
-
-        src_dir = project_root / "src" / "gnn"
-        result = validate_pipeline_scripts(src_dir)
-        assert isinstance(result, dict)
-        assert "script_details" in result or "issue_summary" in result
-
 
 class TestPipelineInfrastructureIntegration:
     """Test integration between pipeline infrastructure modules."""
@@ -348,10 +315,8 @@ def test_pipeline_infrastructure_completeness() -> None:
         (
             "gnn.utils",
             [
-                "migration_helper",
                 "pipeline_monitor",
                 "resource_manager",
-                "script_validator",
             ],
         ),
     ]

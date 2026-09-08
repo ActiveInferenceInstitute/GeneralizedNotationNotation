@@ -144,6 +144,6 @@ signal_decay = SignalDecayRate
 t = Time
 
 ## Footer
-Generated: 2026-09-05T20:30:46.263572
+Generated: 2026-09-08T06:53:37.680829
 
 ## Signature

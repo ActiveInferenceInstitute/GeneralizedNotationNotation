@@ -1,6 +1,6 @@
 {
-  "input/gnn_files/continuous/continuous_navigation.md": {
-    "file": "input/gnn_files/continuous/continuous_navigation.md",
+  "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/continuous/continuous_navigation.md": {
+    "file": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/continuous/continuous_navigation.md",
     "model_name": "continuous_navigation",
     "memory_estimate": 0.125,
     "inference_estimate": 98.33613244510647,
@@ -71,8 +71,8 @@
       "equation_count": 6
     }
   },
-  "input/gnn_files/continuous/predictive_coding_agent.md": {
-    "file": "input/gnn_files/continuous/predictive_coding_agent.md",
+  "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/continuous/predictive_coding_agent.md": {
+    "file": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/continuous/predictive_coding_agent.md",
     "model_name": "predictive_coding_agent",
     "memory_estimate": 0.10546875,
     "inference_estimate": 88.9113199415007,
@@ -143,8 +143,8 @@
       "equation_count": 6
     }
   },
-  "input/gnn_files/continuous/stochastic_dynamics.md": {
-    "file": "input/gnn_files/continuous/stochastic_dynamics.md",
+  "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/continuous/stochastic_dynamics.md": {
+    "file": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/continuous/stochastic_dynamics.md",
     "model_name": "stochastic_dynamics",
     "memory_estimate": 0.10546875,
     "inference_estimate": 91.4113199415007,

@@ -255,9 +255,20 @@ The MCP implementation provides comprehensive error handling:
 
 ### Custom MCP Error Codes
 - `-32000`: MCP-specific errors
-- `-32001`: Tool execution errors
-- `-32002`: Resource retrieval errors
+- `-32001`: HTTP not-exposed (tool not on the HTTP safe allowlist)
+- `-32002`: HTTP not-exposed (resource not on the HTTP safe allowlist)
 - `-32003`: Module loading errors
+- `-32004`: Performance threshold exceeded
+- `-32005`: Rate limit exceeded
+- `-32006`: Cache operation failed
+- `-32007`: Module discovery failed
+- `-32008`: Tool execution timed out (wave-2 MAJ-09; enforced via MCPTool.timeout)
+
+JSON-RPC reserved codes are used where the spec defines them:
+- `-32601` (Method not found) is raised for an unknown tool AND for a
+  missing resource (`MCPResourceNotFoundError`), not `-32002`.
+- `-32602` (Invalid params) covers invalid tool arguments.
+- `-32603` (Internal error) covers unhandled execution failures.
 
 ### Error Response Format
 ```json

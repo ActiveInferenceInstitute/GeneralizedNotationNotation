@@ -31,7 +31,7 @@ def batch_write_files(
         Dictionary with write performance metrics
     """
     start_time = time.time()
-    results: list[Any] = []
+    results: list[dict[str, Any]] = []
 
     for file_data in files_data:
         file_path = output_dir / file_data["path"]

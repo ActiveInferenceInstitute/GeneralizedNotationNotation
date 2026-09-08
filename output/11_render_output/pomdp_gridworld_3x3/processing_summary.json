@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-09-05T20:25:30.153220",
-  "source_file": "input/gnn_files/pomdp_gridworld/pomdp_gridworld_3x3.md",
+  "timestamp": "2026-09-08T06:58:14.300699",
+  "source_file": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/pomdp_gridworld/pomdp_gridworld_3x3.md",
   "model_name": "POMDP GridWorld 3x3",
   "pomdp_dimensions": {
     "num_states": 9,

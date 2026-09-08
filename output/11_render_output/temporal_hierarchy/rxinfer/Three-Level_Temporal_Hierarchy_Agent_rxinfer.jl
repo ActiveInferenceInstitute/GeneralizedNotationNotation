@@ -1,7 +1,7 @@
 #!/usr/bin/env julia
 # RxInfer.jl discrete POMDP simulation — genuine @model + infer() pipeline
 # Generated from GNN Model: Three-Level Temporal Hierarchy Agent
-# Generated: 2026-09-05 20:32:38
+# Generated: 2026-09-08 06:56:54
 #
 # This script uses real RxInfer.jl variational message-passing inference:
 #   - @model defines the generative POMDP with Categorical / DiscreteTransition nodes

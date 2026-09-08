@@ -54,10 +54,10 @@ connections:
   target_variables:
   - y
   weight: null
-created_at: '2026-09-05T20:30:54.974876'
+created_at: '2026-09-08T06:53:47.218720'
 equations: []
 model_name: Predictive Coding Active Inference Agent
-modified_at: '2026-09-05T20:30:54.974878'
+modified_at: '2026-09-08T06:53:47.218723'
 ontology_mappings:
 - description: null
   ontology_term: StateTransitionMatrix

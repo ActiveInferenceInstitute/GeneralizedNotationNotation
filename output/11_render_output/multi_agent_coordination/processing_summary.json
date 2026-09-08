@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-09-05T20:33:40.530949",
-  "source_file": "input/gnn_files/multiagent/multi_agent_coordination.md",
+  "timestamp": "2026-09-08T06:58:01.828537",
+  "source_file": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/multiagent/multi_agent_coordination.md",
   "model_name": "Multi-Agent Cooperative Active Inference",
   "pomdp_dimensions": {
     "num_states": 16,

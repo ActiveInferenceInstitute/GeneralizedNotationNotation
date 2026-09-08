@@ -137,3 +137,23 @@ class TestAPIMCPTools:
         data = json.loads(manifest_path.read_text())
         assert data["module"] == "api"
         assert "tools" in data
+
+    @pytest.mark.unit
+    def test_submit_job_creates_pending_job_without_starting(self) -> None:
+        """The submit tool's documented contract: it creates the job record
+        and returns; execution happens only via the API server."""
+        result = api_mcp.gnn_submit_job_mcp("input")
+        assert result["status"] == "success"
+        job_id = result["job_id"]
+        try:
+            from gnn.api.processor import get_job as processor_get_job
+
+            job = processor_get_job(job_id)
+            assert job is not None
+            assert job["status"] == "pending"
+        finally:
+            from gnn.api.processor import _JOBS
+
+            _JOBS.pop(job_id, None)
+        assert "not started" in result["message"].lower()
+        assert "api server" in result["message"].lower()

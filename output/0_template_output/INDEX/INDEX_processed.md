@@ -1,7 +1,7 @@
 
 # Processed by GNN Pipeline Template
-# Original file: input/gnn_files/INDEX.md
-# Processed on: 2026-09-05T20:30:45.661445
+# Original file: /private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/INDEX.md
+# Processed on: 2026-09-08T06:53:29.063266
 # Options: {'verbose': False, 'recursive': True, 'example_param': 'default_value'}
 
 # GNN Examples Index
@@ -9,8 +9,8 @@
 Cold-start index of the exemplar GNN spec files under `input/gnn_files/`. Each
 entry is a runnable Active Inference generative model spec: parse it, render it,
 execute it through the 25-step pipeline. For syntax and file-structure rules see
-[normative syntax](../../doc/gnn/reference/gnn_syntax.md) and the tutorials in
-[doc/gnn/tutorials/](../../doc/gnn/tutorials/).
+[normative syntax](../../docs/gnn/reference/gnn_syntax.md) and the tutorials in
+[docs/gnn/tutorials/](../../docs/gnn/tutorials/).
 
 **Counts (measured 2026-09-01):** 29 runnable `.md` spec files across 10 task
 folders (`INDEX.md`, `AGENTS.md` and `README.md` are non-spec scaffolds and are
@@ -70,11 +70,15 @@ ActiveInference.jl, DisCoPy and bnlearn. Live counts come from
 
 ### multiagent/
 - [multi_agent_coordination.md](multiagent/multi_agent_coordination.md)
+- [multi_agent_coordination_acceptance.md](multiagent/multi_agent_coordination_acceptance.md) — compact 3-agent clustered mean-field acceptance fixture (relocated from `input/multi_agent_models/`); hand-runnable `--target-dir` target for the RxInfer and DisCoPy roadmap acceptance checks, not a manifest-family exemplar
 - [stigmergic_swarm.md](multiagent/stigmergic_swarm.md)
 
 ### pomdp_gridworld/
 - [pomdp_gridworld_3x3.md](pomdp_gridworld/pomdp_gridworld_3x3.md)
 - folder docs: [AGENTS.md](pomdp_gridworld/AGENTS.md), [README.md](pomdp_gridworld/README.md)
+
+### recursive/
+- reserved directory for bounded `--autonomous` proposal-loop runs — holds no committed models ([README.md](recursive/README.md)); nothing here contributes to the example counts
 
 ### precision/
 - [curiosity_driven_agent.md](precision/curiosity_driven_agent.md)

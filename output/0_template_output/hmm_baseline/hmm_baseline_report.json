@@ -1,7 +1,7 @@
 {
-  "input_file": "input/gnn_files/discrete/hmm_baseline.md",
-  "output_file": "output/0_template_output/hmm_baseline/hmm_baseline_processed.md",
-  "timestamp": "2026-09-05T20:30:45.673348",
+  "input_file": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/discrete/hmm_baseline.md",
+  "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/0_template_output/hmm_baseline/hmm_baseline_processed.md",
+  "timestamp": "2026-09-08T06:53:29.078321",
   "file_size_bytes": 2511,
   "file_size_lines": 111,
   "processing_options": {

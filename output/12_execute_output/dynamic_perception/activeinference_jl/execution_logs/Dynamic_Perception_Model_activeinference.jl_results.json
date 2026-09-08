@@ -2,11 +2,11 @@
   "framework": "activeinference_jl",
   "model_name": "dynamic_perception",
   "script_name": "Dynamic_Perception_Model_activeinference.jl",
-  "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/activeinference_jl/Dynamic_Perception_Model_activeinference.jl",
+  "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/activeinference_jl/Dynamic_Perception_Model_activeinference.jl",
   "success": true,
   "return_code": 0,
-  "execution_time": 14.881168,
-  "timestamp": "2026-09-05T20:25:32.633004",
+  "execution_time": 23.60926,
+  "timestamp": "2026-09-08T06:50:32.023585",
   "simulation_data": {
     "traces": [],
     "free_energy": [
@@ -184,17 +184,17 @@
     "accelerator_type": "mps",
     "stdout_length": 60,
     "stderr_length": 0,
-    "output_directory": "output/12_execute_output/dynamic_perception/activeinference_jl"
+    "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/activeinference_jl"
   },
-  "execution_time_mean": 14.881168,
+  "execution_time_mean": 23.60926,
   "execution_time_std": 0.0,
   "execution_time_samples": [
-    14.881168
+    23.60926
   ],
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [
-      "output/12_execute_output/dynamic_perception/activeinference_jl/simulation_data/simulation_results.json"
+      "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/activeinference_jl/simulation_data/simulation_results.json"
     ],
     "traces": [],
     "other": []

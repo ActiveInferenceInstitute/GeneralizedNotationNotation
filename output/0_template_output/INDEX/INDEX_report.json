@@ -1,9 +1,9 @@
 {
-  "input_file": "input/gnn_files/INDEX.md",
-  "output_file": "output/0_template_output/INDEX/INDEX_processed.md",
-  "timestamp": "2026-09-05T20:30:45.661776",
-  "file_size_bytes": 4438,
-  "file_size_lines": 92,
+  "input_file": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/INDEX.md",
+  "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/0_template_output/INDEX/INDEX_processed.md",
+  "timestamp": "2026-09-08T06:53:29.063520",
+  "file_size_bytes": 4955,
+  "file_size_lines": 96,
   "processing_options": {
     "verbose": false,
     "recursive": true,

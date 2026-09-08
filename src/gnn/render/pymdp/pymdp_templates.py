@@ -35,7 +35,6 @@ real pymdp 1.0.0 (JAX-first) under the hood.
 
 Model:        {model_display_name}
 Description:  {model_annotation}
-Generated:    {timestamp}
 
 State Space:
   - Hidden States: {num_states}
@@ -178,7 +177,6 @@ and its JAX/equinox runtime.
 
 Model:        {model_display_name}
 Description:  {model_annotation}
-Generated:    {timestamp}
 """
 from __future__ import annotations
 

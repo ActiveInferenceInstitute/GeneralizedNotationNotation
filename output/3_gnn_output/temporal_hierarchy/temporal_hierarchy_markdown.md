@@ -148,6 +148,6 @@ tau_level2 = StrategicTimeConstant
 t = Time
 
 ## Footer
-Generated: 2026-09-05T20:30:46.076200
+Generated: 2026-09-08T06:53:37.429660
 
 ## Signature

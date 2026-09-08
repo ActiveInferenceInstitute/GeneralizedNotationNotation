@@ -11,7 +11,7 @@ Generated from GNN POMDP Model: **Static Perception Model**
 - Minimal 2-action transition component B so the model is a complete POMDP
 (renderable and executable by pymdp and the general simulation frameworks)
 - Suitable as a minimal baseline and for testing perception-only inference
-- **Generation Date**: 2026-09-05 20:32:38
+- **Generation Date**: 2026-09-08 06:56:53
 
 ## POMDP Dimensions
 

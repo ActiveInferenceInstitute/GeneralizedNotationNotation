@@ -1,7 +1,7 @@
 #!/usr/bin/env julia
 # RxInfer.jl two-level hierarchical POMDP simulation — genuine @model + infer()
 # Generated from GNN Model: Hierarchical Active Inference POMDP
-# Generated: 2026-09-05 20:32:38
+# Generated: 2026-09-08 06:56:54
 #
 # Structure (matches the GNN file's declared semantics):
 #   z (slow context, 2 states) --A_level2--> fast-state prior

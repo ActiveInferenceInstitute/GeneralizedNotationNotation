@@ -75,7 +75,7 @@
       "weight": null
     }
   ],
-  "created_at": "2026-09-05T20:30:45.899425",
+  "created_at": "2026-09-08T06:53:37.244965",
   "equations": [],
   "extensions": {
     "footer": "Static Perception Model v1 - GNN Representation.\nSimplest possible Active Inference model.\nMinimal action/transition component added for POMDP/pymdp compatibility.",
@@ -83,7 +83,7 @@
     "signature": "Cryptographic signature goes here"
   },
   "model_name": "Static Perception Model",
-  "modified_at": "2026-09-05T20:30:45.899427",
+  "modified_at": "2026-09-08T06:53:37.244965",
   "ontology_mappings": [
     {
       "description": null,

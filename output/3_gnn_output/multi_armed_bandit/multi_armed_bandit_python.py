@@ -8,7 +8,7 @@ This model describes a 3-armed bandit as a degenerate POMDP:
 - Context switches slowly (sticky transitions), testing exploration vs exploitation.
 - The agent prefers big-reward observations (observation 2).
 - Tests the bandit structure: meaningful actions despite nearly-static state dynamics.
-Generated: 2026-09-05T20:30:53.901090
+Generated: 2026-09-08T06:53:46.053123
 """
 
 import numpy as np

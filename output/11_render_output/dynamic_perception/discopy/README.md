@@ -12,7 +12,7 @@ Generated from GNN POMDP Model: **Dynamic Perception Model**
 - No action selection — the agent passively observes a changing world
 - Demonstrates belief updating (state inference) across time steps
 - Suitable for tracking hidden sources from noisy observations
-- **Generation Date**: 2026-09-05 20:32:38
+- **Generation Date**: 2026-09-08 06:56:54
 
 ## POMDP Dimensions
 

@@ -23,10 +23,11 @@ MCP servers expose tools over STDIO or HTTP: bind listeners to localhost in untr
 Each functional module includes its own `mcp.py` file that registers domain-specific tools:
 
 ```
-src/
-├── mcp/               # Core MCP infrastructure
+src/gnn/
+├── mcp/               # Core MCP infrastructure (registry, transports)
 ├── export/mcp.py      # Export format tools
-├── gnn/mcp.py         # GNN parsing and validation tools
+├── gnn/mcp.py         # GNN parsing and validation tools (loaded via mcp/gnn_root.py)
+├── gui/mcp.py         # GUI tools (including oxdraw.* wrappers)
 ├── ontology/mcp.py    # Ontology processing tools
 ├── visualization/mcp.py # Visualization generation tools
 └── llm/mcp.py         # LLM integration tools

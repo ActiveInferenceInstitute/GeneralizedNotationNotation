@@ -73,3 +73,24 @@ def resolve_repo_path(
             ) from exc
 
     return resolved
+
+
+def resolve_request_paths(target_dir: str, output_dir: str) -> tuple[Path, Path]:
+    """Resolve the standard API request path pair in one call.
+
+    Both FastAPI surfaces validate requests identically: the target
+    directory must exist inside the repository, the output directory is
+    created on demand. Raises :class:`PathValidationError` when either path
+    is rejected; HTTP surfaces map that to a 400 response.
+    """
+    target_path = resolve_repo_path(
+        target_dir,
+        purpose="Target directory",
+        must_exist=True,
+    )
+    output_path = resolve_repo_path(
+        output_dir,
+        purpose="Output directory",
+        create=True,
+    )
+    return target_path, output_path

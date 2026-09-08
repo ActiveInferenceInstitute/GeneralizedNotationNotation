@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 
 def validate_step_prerequisites(
-    script_name: str, args: Any, logger: Any, skip_steps: (list) | None = None
+    script_name: str, args: Any, logger: Any, skip_steps: list[int] | None = None
 ) -> Dict[str, Any]:
     """Validate prerequisites for a pipeline step before execution.
 
@@ -37,7 +37,7 @@ def validate_step_prerequisites(
     result: dict[str, Any] = {"passed": True, "warnings": [], "errors": []}
 
     # Normalise skip_steps to a set of script names (e.g. {"13_llm.py"})
-    _skipped: set = set()
+    _skipped: set[str] = set()
     for s in skip_steps or []:
         if isinstance(s, int):
             # Map step number -> script name pattern used in step_dependencies
@@ -139,7 +139,7 @@ def validate_step_prerequisites(
 
 
 def validate_pipeline_step_sequence(
-    steps_to_execute: List[tuple], logger: Any
+    steps_to_execute: List[tuple[str, Any]], logger: Any
 ) -> Dict[str, Any]:
     """Validate the sequence of pipeline steps for dependency issues."""
     validation_result: dict[str, Any] = {
@@ -256,7 +256,7 @@ def validate_step_outputs(script_name: str, output_dir: Path) -> Dict[str, Any]:
 
 
 def check_pipeline_readiness(
-    steps_to_execute: List[tuple], args: Any
+    steps_to_execute: List[tuple[str, Any]], args: Any
 ) -> Dict[str, Any]:
     """Comprehensive pipeline readiness check before execution."""
     readiness_check: dict[str, Any] = {

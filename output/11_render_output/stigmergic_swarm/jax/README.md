@@ -14,7 +14,7 @@ Generated from GNN POMDP Model: **Stigmergic Swarm Active Inference**
 - Signal decay: environmental signals decay over time (volatility)
 - Demonstrates emergent collective behavior from individual free energy minimization
 - Models ant colony foraging, distributed robotics, and decentralized coordination
-- **Generation Date**: 2026-09-05 20:33:13
+- **Generation Date**: 2026-09-08 06:57:35
 
 ## POMDP Dimensions
 

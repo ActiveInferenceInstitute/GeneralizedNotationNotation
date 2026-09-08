@@ -474,7 +474,7 @@ def validate_pipeline_dependencies(
     return is_valid
 
 
-def check_optional_dependencies() -> dict:
+def check_optional_dependencies() -> dict[str, Any]:
     """
     Check the status of all optional dependencies and return a summary dictionary.
     Returns:
@@ -500,7 +500,7 @@ def check_optional_dependencies() -> dict:
     }
 
 
-def get_dependency_status() -> dict:
+def get_dependency_status() -> dict[str, Any]:
     """
     Get a summary of required, optional, and missing dependencies for the pipeline.
     Returns:
@@ -528,7 +528,7 @@ def get_dependency_status() -> dict:
     }
 
 
-def install_missing_dependencies() -> dict:
+def install_missing_dependencies() -> dict[str, Any]:
     """
     Attempt to install missing Python dependencies using pip. System dependencies are not installed automatically.
     Returns:

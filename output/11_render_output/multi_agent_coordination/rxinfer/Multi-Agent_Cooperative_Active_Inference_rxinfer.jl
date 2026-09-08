@@ -1,7 +1,7 @@
 #!/usr/bin/env julia
 # RxInfer.jl stigmergic multi-agent simulation — native per-agent compilation
 # Generated from GNN Model: Multi-Agent Cooperative Active Inference
-# Generated: 2026-09-05 20:33:43
+# Generated: 2026-09-08 06:58:03
 #
 # This script runs one genuine RxInfer.jl pomdp_model inference per agent
 # (native per-agent state spaces; NO joint state-space expansion). After all

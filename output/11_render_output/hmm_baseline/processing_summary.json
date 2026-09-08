@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-09-05T20:25:28.855570",
-  "source_file": "input/gnn_files/discrete/hmm_baseline.md",
+  "timestamp": "2026-09-08T06:58:13.018237",
+  "source_file": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/discrete/hmm_baseline.md",
   "model_name": "Hidden Markov Model Baseline",
   "pomdp_dimensions": {
     "num_states": 4,

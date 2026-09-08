@@ -67,7 +67,7 @@ class ErrorRecoveryManager:
     def __init__(self, logger: Optional[logging.Logger] = None) -> None:
         """Initialize error recovery manager."""
         self.logger = logger or logging.getLogger(__name__)
-        self.error_handlers: Dict[str, Callable] = {}
+        self.error_handlers: Dict[str, Callable[..., Any]] = {}
         self.recovery_strategies: Dict[str, List[str]] = {}
         self._setup_default_handlers()
 

@@ -3,7 +3,7 @@
 Infrastructure Coverage Gap Tests
 
 Addresses modules that historically had 0% coverage: timeout_manager,
-simulation_monitor, simulation_utils, visualization_optimizer. The
+simulation_utils, visualization_optimizer. The
 ``utils/recovery.py`` fallback was removed in Phase 6 as dead code —
 ``setup_step_logging`` is covered in place via ``utils/logging/logging_utils``.
 """
@@ -14,7 +14,6 @@ from pathlib import Path
 from typing import Any
 
 # Import targets
-from gnn.utils.simulation_monitor import SimulationMonitor
 from gnn.utils.simulation_utils import DiagramAnalyzer, SimulationTracker
 from gnn.utils.timeout_manager import (
     LLMTimeoutManager,
@@ -69,30 +68,6 @@ class TestTimeoutManager:
         assert manager.default_config.base_timeout == 120.0
 
 
-# 3. Tests for utils/simulation_monitor.py
-class TestSimulationMonitor:
-    def test_monitor_initialization(self, tmp_path: Any) -> Any:
-        log_file = tmp_path / "sim.log"
-        monitor = SimulationMonitor(log_file=log_file)
-        assert monitor.log_file == log_file
-        assert monitor.execution_data["total_attempted"] == 0
-
-    def test_track_simulation_decorator(self, tmp_path: Any) -> Any:
-        monitor = SimulationMonitor(log_file=tmp_path / "sim.log")
-
-        @monitor.track_simulation("test_sim")
-        def lucky_sim(x: Any) -> Any:
-            return x + 1
-
-        result = lucky_sim(10)
-        assert result == 11
-        assert monitor.execution_data["total_successful"] == 1
-        assert "test_sim" in monitor.execution_data["simulations"]
-
-    def test_monitor_data_collection(self, tmp_path: Any) -> Any:
-        monitor = SimulationMonitor(log_file=tmp_path / "sim.log")
-        assert monitor.monitor_data_collection([1, 2, 3], "test") is True
-        assert monitor.monitor_data_collection([], "fail") is False
 
 
 # 4. Tests for utils/simulation_utils.py

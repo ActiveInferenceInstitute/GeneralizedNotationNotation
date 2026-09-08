@@ -75,7 +75,7 @@
       "weight": null
     }
   ],
-  "created_at": "2026-09-05T20:30:54.990657",
+  "created_at": "2026-09-08T06:53:47.231336",
   "equations": [],
   "extensions": {
     "footer": "Stochastic Continuous Dynamics Agent v1.0 - native linear-Gaussian (LGSSM) GNN model.\nPassive linear-Gaussian SDE with explicit process and observation noise.",
@@ -83,7 +83,7 @@
     "signature": "Cryptographic signature goes here"
   },
   "model_name": "Stochastic Continuous Dynamics Agent",
-  "modified_at": "2026-09-05T20:30:54.990658",
+  "modified_at": "2026-09-08T06:53:47.231338",
   "ontology_mappings": [
     {
       "description": null,

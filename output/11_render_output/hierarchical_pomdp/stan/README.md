@@ -10,7 +10,7 @@ Generated from GNN POMDP Model: **Hierarchical Active Inference POMDP**
 - Level 2 (slow): 2 contextual states that modulate Level 1 likelihood
 - Higher-level beliefs are updated at a slower timescale
 - Top-down predictions constrain bottom-up inference at Level 1
-- **Generation Date**: 2026-09-05 20:32:38
+- **Generation Date**: 2026-09-08 06:56:54
 
 ## POMDP Dimensions
 

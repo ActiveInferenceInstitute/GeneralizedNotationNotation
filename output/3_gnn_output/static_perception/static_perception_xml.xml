@@ -7,8 +7,8 @@
 - Minimal 2-action transition component B so the model is a complete POMDP
   (renderable and executable by pymdp and the general simulation frameworks)
 - Suitable as a minimal baseline and for testing perception-only inference</annotation>
-    <created_at>2026-09-05T20:30:45.899425</created_at>
-    <modified_at>2026-09-05T20:30:45.899427</modified_at>
+    <created_at>2026-09-08T06:53:37.244965</created_at>
+    <modified_at>2026-09-08T06:53:37.244965</modified_at>
   </metadata>
   <variables>
     <variable data_type="float" dimensions="2,2" name="A" type="likelihood_matrix" description="Recognition/likelihood matrix: P(observation | hidden state)"/>

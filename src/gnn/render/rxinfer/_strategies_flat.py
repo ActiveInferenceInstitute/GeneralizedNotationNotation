@@ -13,8 +13,6 @@ import base64
 import json
 from typing import Any, Dict
 
-from gnn.render.rxinfer._common import now
-
 
 def _generate_batch_code(
     gnn_spec: Dict[str, Any], model_name: str, kind_value: str
@@ -76,7 +74,6 @@ def _generate_batch_code(
     code = f'''#!/usr/bin/env julia
 # RxInfer.jl discrete POMDP simulation — genuine @model + infer() pipeline
 # Generated from GNN Model: {model_display_name}
-# Generated: {now()}
 #
 # This script uses real RxInfer.jl variational message-passing inference:
 #   - @model defines the generative POMDP with Categorical / DiscreteTransition nodes
@@ -713,7 +710,6 @@ def _generate_online_code(
     code = f'''#!/usr/bin/env julia
 # RxInfer.jl ONLINE active-inference POMDP simulation — per-timestep infer()
 # Generated from GNN Model: {model_display_name}
-# Generated: {now()}
 #
 # Online mode (roadmap A1): at every timestep t, infer() runs on the
 # observation prefix y[1:t]; the FILTERED posterior at t drives EFE action

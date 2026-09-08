@@ -137,11 +137,14 @@ on the live execution path.
 #### `MCPResource` - Resource Definition Class
 **Description**: Represents accessible MCP resources
 
-**Attributes**:
-- `uri` - Resource URI
-- `name` - Resource name
+**Attributes** (see `src/gnn/mcp/models.py` for the dataclass):
+- `uri_template` - URI template (e.g. `gnn://documentation/{doc_name}`)
+- `retriever` - Callable returning the resource content
 - `description` - Resource description
-- `mime_type` - Resource MIME type
+- `module` / `category` / `version` - Provenance metadata
+- `mime_type` - Resource MIME type (default `application/json`)
+- `cacheable` - Whether the resource may be cached
+- `tags` - Free-form tags
 
 ### Transport Protocols
 

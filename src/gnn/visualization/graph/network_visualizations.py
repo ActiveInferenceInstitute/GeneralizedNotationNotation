@@ -9,7 +9,7 @@ import logging
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, cast
 
-from gnn.advanced_visualization._shared import normalize_connection_format
+from gnn.visualization.connection_format import normalize_connection_format
 
 try:
     from gnn.parsers.common import VariableType

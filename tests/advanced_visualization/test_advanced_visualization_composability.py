@@ -162,6 +162,20 @@ class TestSharedConstants:
         ):
             assert key in VAR_TYPE_COLORS
 
+    def test_palette_is_derived_from_visualization_theme(self) -> None:
+        """Single-source guard: the shared palette must equal the theme 3-D
+        subset, so the two viz layers can never drift apart (W2-05)."""
+        from gnn.advanced_visualization._shared import (
+            VAR_TYPE_COLORS,
+            VAR_TYPE_UNKNOWN_COLOR,
+        )
+        from gnn.visualization.theme import VAR_TYPE_COLORS_3D
+
+        assert set(VAR_TYPE_COLORS) <= set(VAR_TYPE_COLORS_3D)
+        for key, hex_color in VAR_TYPE_COLORS.items():
+            assert hex_color == VAR_TYPE_COLORS_3D[key]
+        assert VAR_TYPE_UNKNOWN_COLOR == VAR_TYPE_COLORS_3D["unknown"]
+
     def test_layout_constants_deterministic(self) -> None:
         from gnn.advanced_visualization._shared import (
             FORCE_LAYOUT_SEED,

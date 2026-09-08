@@ -15,7 +15,7 @@ exact joint posteriors are computationally intractable.
 - Separate transition matrices B_1 (location × action) and B_2 (goal is static)
 - Explicit factorization declared in ## Equations
 - Tests multi-factor / multi-modality handling in the parser
-- **Generation Date**: 2026-09-05 20:25:29
+- **Generation Date**: 2026-09-08 06:58:13
 
 ## POMDP Dimensions
 

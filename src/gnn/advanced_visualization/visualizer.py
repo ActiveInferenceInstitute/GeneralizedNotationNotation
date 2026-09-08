@@ -16,12 +16,9 @@ from typing import Any, Callable, Dict, List, Optional, Protocol
 
 logger = logging.getLogger(__name__)
 
-# Use non-interactive backend for server/CI environments
-import matplotlib
-
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
-import numpy as np
+# Shared guarded backends: importing this module never raises ImportError
+# when matplotlib/numpy are absent; plot stages check MATPLOTLIB_AVAILABLE.
+from ._shared import MATPLOTLIB_AVAILABLE, np, plt
 
 # Use local data extraction and visualization utilities
 try:
@@ -282,6 +279,9 @@ pre {{ background: white; padding: 15px; border-radius: 5px; white-space: pre-wr
     ) -> Optional[str]:
         """Create statistical analysis plot"""
         try:
+            if not MATPLOTLIB_AVAILABLE:
+                self.logger.warning("matplotlib unavailable; skipping statistics plot")
+                return None
             fig, ax = plt.subplots(figsize=(10, 6))
 
             # Extract statistics
@@ -319,6 +319,9 @@ pre {{ background: white; padding: 15px; border-radius: 5px; white-space: pre-wr
     ) -> Optional[str]:
         """Create network graph visualization"""
         try:
+            if not MATPLOTLIB_AVAILABLE:
+                self.logger.warning("matplotlib unavailable; skipping network graph")
+                return None
             # Simple network visualization
             fig, ax = plt.subplots(figsize=(8, 6))
 
@@ -393,6 +396,9 @@ pre {{ background: white; padding: 15px; border-radius: 5px; white-space: pre-wr
         self, extracted_data: Dict[str, Any], model_name: str, output_dir: Path
     ) -> Optional[str]:
         try:
+            if not MATPLOTLIB_AVAILABLE:
+                self.logger.warning("matplotlib unavailable; skipping matrix heatmap")
+                return None
             # Use a real matrix from extracted parameters when available; fall back
             # to a deterministic demo matrix (seeded) so output is reproducible.
             sample_data = None

@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-09-05T20:25:28.934711",
-  "source_file": "input/gnn_files/discrete/markov_chain.md",
+  "timestamp": "2026-09-08T06:58:13.050152",
+  "source_file": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/discrete/markov_chain.md",
   "model_name": "Simple Markov Chain",
   "pomdp_dimensions": {
     "num_states": 3,
