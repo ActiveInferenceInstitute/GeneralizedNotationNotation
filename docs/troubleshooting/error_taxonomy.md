@@ -186,7 +186,7 @@ uv run python src/gnn/main.py --verbose \
 import pdb
 
 # Inspect model state with the real public API
-from gnn.gnn import parse_gnn_file, validate_gnn_file
+from gnn import parse_gnn_file, validate_gnn_file
 
 parsed = parse_gnn_file("problematic_model.md")
 result = validate_gnn_file("problematic_model.md")
