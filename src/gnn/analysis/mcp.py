@@ -12,7 +12,7 @@ from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
-from gnn.utils.mcp_dispatch import run_pipeline_step_mcp
+from gnn.utils.mcp_dispatch import run_pipeline_step_mcp, run_tool_envelope
 
 from . import process_analysis
 
@@ -58,7 +58,8 @@ def get_analysis_results_mcp(
     Returns:
         Dictionary containing analysis results data.
     """
-    try:
+
+    def _build() -> Dict[str, Any]:
         out_dir = Path(output_directory)
         if not out_dir.exists():
             return {
@@ -82,9 +83,12 @@ def get_analysis_results_mcp(
             "results_count": len(results),
             "results": results,
         }
-    except Exception as e:
-        logger.error(f"get_analysis_results_mcp error: {e}", exc_info=True)
-        return {"success": False, "error": str(e)}
+
+    return run_tool_envelope(
+        _build,
+        wrapper_name="get_analysis_results_mcp",
+        logger=logger,
+    )
 
 
 def compute_complexity_metrics_mcp(

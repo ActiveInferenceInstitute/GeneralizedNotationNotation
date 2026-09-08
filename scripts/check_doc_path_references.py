@@ -64,7 +64,7 @@ RESIDUE_PATHS = (
 
 # Citation count at sweep registration (see TO-DO). Exceeding this means a
 # NEW stale citation appeared. Lower as the sweep fixes sites; 0 = strict.
-REGISTERED_RESIDUE_COUNT = 21
+REGISTERED_RESIDUE_COUNT = 0
 
 
 def iter_doc_files() -> Iterator[Path]:

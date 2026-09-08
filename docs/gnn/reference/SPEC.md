@@ -26,7 +26,7 @@ specification disagree, the specification wins and the file here is the bug.
 
 ## Status
 Maintained. Every file in this subtree is referenced from `docs/gnn/README.md`
-and should remain consistent with `src/gnn/schema.py` and
+and should remain consistent with `src/gnn/schema/parser.py` and
 `src/gnn/parsers/markdown_parser.py`. A change to the normative syntax must
 update [`docs/gnn/gnn_syntax.md`](../gnn_syntax.md), the parser, and the
 affected pages here in the same change.

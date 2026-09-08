@@ -54,16 +54,15 @@ def check_ml_frameworks_mcp() -> Dict[str, Any]:
     Returns:
         Dictionary with framework names, availability flags, and versions where detectable.
     """
-    try:
-        frameworks = check_ml_frameworks()
-        return {
+    return run_tool_envelope(
+        lambda: {
             "success": True,
-            "frameworks": frameworks,
+            "frameworks": check_ml_frameworks(),
             "features": FEATURES,
-        }
-    except Exception as e:
-        logger.error(f"check_ml_frameworks_mcp error: {e}", exc_info=True)
-        return {"success": False, "error": str(e)}
+        },
+        wrapper_name="check_ml_frameworks_mcp",
+        logger=logger,
+    )
 
 
 def list_ml_integration_targets_mcp() -> Dict[str, Any]:

@@ -12,7 +12,7 @@ Complete specification for GNN syntax parsing and validation.
 GNN schema validation is handled by multiple pipeline steps:
 
 - **`src/gnn/3_gnn.py`** → GNN file parsing and schema validation
-  - Implementation: `src/gnn/schema_validator.py`
+  - Implementation: `src/gnn/schema_validator/syntax.py`
   - See: **[src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md)**
 - **`src/gnn/5_type_checker.py`** → Type and dimensional validation
   - Implementation: `src/gnn/type_checker/checking/core.py` (`GNNTypeChecker`)
@@ -193,7 +193,7 @@ Framework targets:
 ```text
 src/gnn/3_gnn.py (thin orchestrator)
 ├── src/gnn/multi_format_processor.py (main processor)
-├── src/gnn/schema_validator.py
+├── src/gnn/schema_validator/syntax.py
 │   └── GNNParser (line 54-89)
 │       ├── SECTION_PATTERN (line 58)
 │       ├── VARIABLE_PATTERN (line 59) 

@@ -45,8 +45,8 @@ B[3,3,3, type=float, default=ones]        # 3D tensor, ones
 
 ## Implementation
 
-- Parser: [`src/gnn/schema.py :: parse_state_space()`](../../../src/gnn/schema/__init__.py)
-- Validator: [`src/gnn/schema.py :: validate_matrix_dimensions()`](../../../src/gnn/schema/__init__.py)
+- Parser: [`src/gnn/schema/parser.py :: parse_state_space()`](../../../src/gnn/schema/__init__.py)
+- Validator: [`src/gnn/schema/parser.py :: validate_matrix_dimensions()`](../../../src/gnn/schema/__init__.py)
 - CLI: `gnn validate <file.md>` runs all variable grammar checks
 
 ---

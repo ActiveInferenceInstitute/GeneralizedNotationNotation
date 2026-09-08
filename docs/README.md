@@ -150,7 +150,7 @@ See [Framework Integrations](gnn/integration/framework_integration_guide.md).
   run.
 - Keep generated pipeline artifacts under `output/`; do not treat them as maintained
   documentation.
-- Keep the GNN syntax examples aligned with `src/gnn/schema.py` and validate examples
+- Keep the GNN syntax examples aligned with `src/gnn/schema/parser.py` and validate examples
   with `gnn validate` or Step 5 before publishing them.
 
 For versioning policy, see [SPEC.md](SPEC.md). For contribution conventions, see
