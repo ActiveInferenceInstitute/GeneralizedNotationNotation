@@ -131,7 +131,7 @@ This section provides the initial numerical or symbolic values for the variables
 
 **Syntax:**
 
-The content of this section is generally free-form text that describes the parameter settings. While the main parser (`src/gnn/parser.py`) captures this section's content as a single block of text, specific conventions are often followed in practice, as seen in example GNN files. These conventions might involve:
+The content of this section is generally free-form text that describes the parameter settings. While the main parser (`src/gnn/parsers/system.py`) captures this section's content as a single block of text, specific conventions are often followed in practice, as seen in example GNN files. These conventions might involve:
 
 - Comments (`#`) explaining the parameterization logic.
 - Assignments using `=` to set variable values.
@@ -139,7 +139,7 @@ The content of this section is generally free-form text that describes the param
 
 **Parser Behavior:**
 
-- The primary GNN parser (`src/gnn/parser.py`) treats the entire content under `## InitialParameterization` as a text block.
+- The primary GNN parser (`src/gnn/parsers/system.py`) treats the entire content under `## InitialParameterization` as a text block.
 - Downstream tools or specialized parsers might further process this text block to extract specific values based on conventions used within the GNN file.
 
 **Example:**
@@ -167,7 +167,7 @@ The content is typically written in LaTeX format for clear mathematical represen
 
 **Parser Behavior:**
 
-- Similar to `InitialParameterization`, the primary GNN parser (`src/gnn/parser.py`) captures the content of the `## Equations` section as a single block of text.
+- Similar to `InitialParameterization`, the primary GNN parser (`src/gnn/parsers/system.py`) captures the content of the `## Equations` section as a single block of text.
 - Rendering or interpretation of these LaTeX equations is handled by other tools (e.g., for display in documentation or potentially for symbolic processing).
 
 **Example:**
@@ -250,7 +250,7 @@ G=ExpectedFreeEnergy
 
 ### 3.7 Other Standard Sections
 
-The GNN specification includes several other standard sections. The main parser (`src/gnn/parser.py`) generally treats these sections by capturing their content as a block of text under the section name. Their specific meaning and usage are defined by convention and the `src/gnn/documentation/file_structure.md`.
+The GNN specification includes several other standard sections. The main parser (`src/gnn/parsers/system.py`) generally treats these sections by capturing their content as a block of text under the section name. Their specific meaning and usage are defined by convention and the `src/gnn/documentation/file_structure.md`.
 
 - **`ImageFromPaper`**: Contains a link or embedded image of the model's graphical representation from a publication. Content is free-form.
 - **`GNNVersionAndFlags`**: Specifies the GNN version (e.g., `GNN v1`) and any flags affecting interpretation. Content is a text string.
