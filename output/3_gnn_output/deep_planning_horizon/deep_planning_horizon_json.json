@@ -399,7 +399,7 @@
       "weight": null
     }
   ],
-  "created_at": "2026-09-05T20:30:53.917054",
+  "created_at": "2026-09-08T06:53:46.061439",
   "equations": [],
   "extensions": {
     "footer": "Deep Planning Horizon POMDP v1 - GNN Representation.\nT=5 horizon enables multi-step consequence reasoning.\nPolicy space grows exponentially with T: |actions|^T = 4^3 = 64 policies (pruned).",
@@ -407,7 +407,7 @@
     "signature": "Cryptographic signature goes here"
   },
   "model_name": "Deep Planning Horizon POMDP",
-  "modified_at": "2026-09-05T20:30:53.917056",
+  "modified_at": "2026-09-08T06:53:46.061439",
   "ontology_mappings": [
     {
       "description": null,

@@ -1,17 +1,17 @@
 {
-  "timestamp": "2026-09-05T20:31:09.810997",
+  "timestamp": "2026-09-08T06:54:06.318449",
   "processed_files": 3,
   "success": true,
   "errors": [],
   "validation_results": [
     {
-      "file_path": "input/gnn_files/continuous/continuous_navigation.md",
+      "file_path": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/continuous/continuous_navigation.md",
       "file_name": "continuous_navigation.md",
       "valid": true,
       "errors": [],
       "warnings": [],
       "type_issues": [],
-      "validation_timestamp": "2026-09-05T20:31:09.829449",
+      "validation_timestamp": "2026-09-08T06:54:06.349487",
       "dimension_compatibility": {
         "compatible": true,
         "issues": [],
@@ -297,13 +297,13 @@
       }
     },
     {
-      "file_path": "input/gnn_files/continuous/predictive_coding_agent.md",
+      "file_path": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/continuous/predictive_coding_agent.md",
       "file_name": "predictive_coding_agent.md",
       "valid": true,
       "errors": [],
       "warnings": [],
       "type_issues": [],
-      "validation_timestamp": "2026-09-05T20:31:09.830456",
+      "validation_timestamp": "2026-09-08T06:54:06.350514",
       "dimension_compatibility": {
         "compatible": true,
         "issues": [],
@@ -533,13 +533,13 @@
       }
     },
     {
-      "file_path": "input/gnn_files/continuous/stochastic_dynamics.md",
+      "file_path": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/continuous/stochastic_dynamics.md",
       "file_name": "stochastic_dynamics.md",
       "valid": true,
       "errors": [],
       "warnings": [],
       "type_issues": [],
-      "validation_timestamp": "2026-09-05T20:31:09.831104",
+      "validation_timestamp": "2026-09-08T06:54:06.352282",
       "dimension_compatibility": {
         "compatible": true,
         "issues": [],
@@ -771,7 +771,7 @@
   ],
   "type_analysis": [
     {
-      "file_path": "input/gnn_files/continuous/continuous_navigation.md",
+      "file_path": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/continuous/continuous_navigation.md",
       "file_name": "continuous_navigation.md",
       "types_found": [
         {
@@ -840,10 +840,10 @@
         "int": 1
       },
       "total_variables": 12,
-      "analysis_timestamp": "2026-09-05T20:31:09.830392"
+      "analysis_timestamp": "2026-09-08T06:54:06.350342"
     },
     {
-      "file_path": "input/gnn_files/continuous/predictive_coding_agent.md",
+      "file_path": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/continuous/predictive_coding_agent.md",
       "file_name": "predictive_coding_agent.md",
       "types_found": [
         {
@@ -897,10 +897,10 @@
         "int": 1
       },
       "total_variables": 9,
-      "analysis_timestamp": "2026-09-05T20:31:09.831045"
+      "analysis_timestamp": "2026-09-08T06:54:06.351975"
     },
     {
-      "file_path": "input/gnn_files/continuous/stochastic_dynamics.md",
+      "file_path": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/continuous/stochastic_dynamics.md",
       "file_name": "stochastic_dynamics.md",
       "types_found": [
         {
@@ -954,7 +954,7 @@
         "int": 1
       },
       "total_variables": 9,
-      "analysis_timestamp": "2026-09-05T20:31:09.831637"
+      "analysis_timestamp": "2026-09-08T06:54:06.353027"
     }
   ]
 }

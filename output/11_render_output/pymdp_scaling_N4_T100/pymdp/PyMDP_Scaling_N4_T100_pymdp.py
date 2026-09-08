@@ -10,7 +10,7 @@ real pymdp 1.0.0 (JAX-first) under the hood.
 
 Model:        PyMDP Scaling N4 T100
 Description:  
-Generated:    2026-09-05 20:25:27
+Generated:    2026-09-08 06:58:12
 
 State Space:
   - Hidden States: 4

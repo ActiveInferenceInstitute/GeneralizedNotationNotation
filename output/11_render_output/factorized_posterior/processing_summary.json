@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-09-05T20:25:29.584772",
-  "source_file": "input/gnn_files/structured/factorized_posterior.md",
+  "timestamp": "2026-09-08T06:58:13.855938",
+  "source_file": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/structured/factorized_posterior.md",
   "model_name": "Factorized Posterior Agent",
   "pomdp_dimensions": {
     "num_states": 8,

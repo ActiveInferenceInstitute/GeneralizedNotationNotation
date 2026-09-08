@@ -247,7 +247,7 @@
   ],
   "runtime_metadata": {
     "activeinference_jl_version": "0.1.2",
-    "generated_at": "2026-09-05T20:27:03.240",
+    "generated_at": "2026-09-08T06:52:16.165",
     "julia_version": "1.12.7",
     "random_seed": 42,
     "schema_version": "activeinference_jl_simulation_v1"

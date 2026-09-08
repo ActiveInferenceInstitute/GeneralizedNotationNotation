@@ -1,7 +1,7 @@
 #!/usr/bin/env julia
 # RxInfer.jl two-factor mean-field POMDP simulation — genuine @model + infer()
 # Generated from GNN Model: Factorized Posterior Agent
-# Generated: 2026-09-05 20:25:29
+# Generated: 2026-09-08 06:58:13
 #
 # Structure (matches the GNN file's declared semantics):
 #   s1[t] — state factor 0 "s_f0" (4 states), action-driven over B_f0
@@ -130,7 +130,7 @@ end
 
 # --- Per-factor matrix loading -------------------------------------------
 # Nestings below are the EXACT parsed layouts produced by
-# gnn.pomdp_extractor -> render.pomdp_processor.pomdp_to_gnn_spec for
+# gnn.extract.pomdp_extractor -> render.pomdp_processor.pomdp_to_gnn_spec for
 # per-factor matrices; the B_f0 transpose follows
 # render/pomdp_contract.py::canonicalise_b_matrix (raw is action-first
 # [action][prev][next]; canonical is [next, prev, action]).

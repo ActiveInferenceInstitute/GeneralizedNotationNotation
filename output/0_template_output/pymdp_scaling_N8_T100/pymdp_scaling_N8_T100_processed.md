@@ -1,7 +1,7 @@
 
 # Processed by GNN Pipeline Template
-# Original file: input/gnn_files/pymdp_scaling_study/pymdp_scaling_N8_T100.md
-# Processed on: 2026-09-05T20:30:45.664242
+# Original file: /private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N8_T100.md
+# Processed on: 2026-09-08T06:53:29.066747
 # Options: {'verbose': False, 'recursive': True, 'example_param': 'default_value'}
 
 # GNN Example: PyMDP Scaling N8 T100

@@ -24,14 +24,24 @@ except ImportError as e:
     ) from e
 
 
+from gnn.api import MODULE_VERSION
+from gnn.api.pipeline_runner import (
+    MAX_PIPELINE_STEP,
+    PIPELINE_STEP_COUNT,
+    VALID_STEP_NUMBERS,
+)
+
+
 def validate_step_numbers(
     values: Optional[List[int]], *, field_name: str
 ) -> Optional[List[int]]:
-    """Validate an optional list of unique pipeline step numbers (0-24).
+    """Validate an optional list of unique registered pipeline step numbers.
 
     Single source of truth shared by ``ProcessRequest``, ``RunRequest``, and
-    the job manager. Rejects non-integers (including ``bool``), out-of-range
-    numbers, and duplicate selections with an explicit ``ValueError``.
+    the job manager. Bounds derive from ``pipeline.step_registry.STEPS``, not
+    a hardcoded range. Rejects non-integers (including ``bool``),
+    unregistered numbers, and duplicate selections with an explicit
+    ``ValueError``.
     """
     if values is None:
         return None
@@ -43,17 +53,18 @@ def validate_step_numbers(
             for step in values
             if isinstance(step, bool)
             or not isinstance(step, int)
-            or not 0 <= step <= 24
+            or step not in VALID_STEP_NUMBERS
         ],
         key=str,
     )
     if invalid:
         raise ValueError(
-            f"{field_name} must contain integers between 0 and 24: {invalid}"
+            f"{field_name} must contain integers between 0 and {MAX_PIPELINE_STEP}: {invalid}"
         )
     if len(values) != len(set(values)):
         raise ValueError(f"{field_name} must not contain duplicate step numbers")
     return list(values)
+
 
 
 class JobStatus(str, Enum):
@@ -222,7 +233,7 @@ class RunRequest(BaseModel):
     @field_validator("skip_steps", mode="before")
     @classmethod
     def validate_skip_steps(cls, values: List[int]) -> List[int]:
-        """Require unique pipeline step numbers in the supported range."""
+        """Require unique registered pipeline step numbers."""
         checked = validate_step_numbers(values, field_name="skip_steps")
         return checked if checked is not None else []
 
@@ -245,7 +256,7 @@ class RunStatus(BaseModel):
     duration_seconds: Optional[float] = None
     current_step: Optional[str] = None
     steps_completed: int = 0
-    total_steps: int = 25
+    total_steps: int = PIPELINE_STEP_COUNT
     errors: List[str] = Field(default_factory=list)
 
 
@@ -253,7 +264,7 @@ class RunHealthResponse(BaseModel):
     """Health response for the ``api.app`` run surface (renderer availability)."""
 
     status: str = "healthy"
-    version: str = "2.0.0"
-    pipeline_steps: int = 25
+    version: str = MODULE_VERSION
+    pipeline_steps: int = PIPELINE_STEP_COUNT
     renderers: Dict[str, bool] = Field(default_factory=dict)
     uptime_seconds: float = 0.0

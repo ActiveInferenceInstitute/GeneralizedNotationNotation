@@ -12,7 +12,7 @@ and observation noise, rendered as a native linear-Gaussian state-space model
 - Observation y: two noisy readouts, both reading the position.
 - Q is the process-noise covariance (inverse process precision); R is the
 observation-noise covariance (inverse observation precision).
-- **Generation Date**: 2026-09-05 20:25:31
+- **Generation Date**: 2026-09-08 06:58:15
 
 ## POMDP Dimensions
 

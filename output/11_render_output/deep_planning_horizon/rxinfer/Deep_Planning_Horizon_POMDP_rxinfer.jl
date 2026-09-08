@@ -1,7 +1,7 @@
 #!/usr/bin/env julia
 # RxInfer.jl discrete POMDP simulation — genuine @model + infer() pipeline
 # Generated from GNN Model: Deep Planning Horizon POMDP
-# Generated: 2026-09-05 20:25:28
+# Generated: 2026-09-08 06:58:13
 #
 # This script uses real RxInfer.jl variational message-passing inference:
 #   - @model defines the generative POMDP with Categorical / DiscreteTransition nodes

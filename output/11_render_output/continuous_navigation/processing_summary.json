@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-09-05T20:25:31.296875",
-  "source_file": "input/gnn_files/continuous/continuous_navigation.md",
+  "timestamp": "2026-09-08T06:58:15.179613",
+  "source_file": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/continuous/continuous_navigation.md",
   "model_name": "Continuous State Navigation Agent",
   "pomdp_dimensions": {
     "num_states": 2,

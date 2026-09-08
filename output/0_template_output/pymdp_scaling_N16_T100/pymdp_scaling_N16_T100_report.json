@@ -1,7 +1,7 @@
 {
-  "input_file": "input/gnn_files/pymdp_scaling_study/pymdp_scaling_N16_T100.md",
-  "output_file": "output/0_template_output/pymdp_scaling_N16_T100/pymdp_scaling_N16_T100_processed.md",
-  "timestamp": "2026-09-05T20:30:45.664664",
+  "input_file": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N16_T100.md",
+  "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/0_template_output/pymdp_scaling_N16_T100/pymdp_scaling_N16_T100_processed.md",
+  "timestamp": "2026-09-08T06:53:29.067441",
   "file_size_bytes": 45910,
   "file_size_lines": 121,
   "processing_options": {

@@ -17,7 +17,7 @@ sequential game.
 This sample pushes the language extensions around time-indexed tensors
 and tests downstream code generation when matrix literals are
 timestep-dependent.
-- **Generation Date**: 2026-09-05 20:25:28
+- **Generation Date**: 2026-09-08 06:58:13
 
 ## POMDP Dimensions
 

@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-09-05T20:32:38.503798",
-  "source_file": "input/gnn_files/basics/static_perception.md",
+  "timestamp": "2026-09-08T06:56:53.993965",
+  "source_file": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics/static_perception.md",
   "model_name": "Static Perception Model",
   "pomdp_dimensions": {
     "num_states": 2,

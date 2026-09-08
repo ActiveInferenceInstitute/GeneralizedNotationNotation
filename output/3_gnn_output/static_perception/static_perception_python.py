@@ -7,7 +7,7 @@ The simplest Active Inference model demonstrating pure perception:
 - Minimal 2-action transition component B so the model is a complete POMDP
   (renderable and executable by pymdp and the general simulation frameworks)
 - Suitable as a minimal baseline and for testing perception-only inference
-Generated: 2026-09-05T20:30:45.903753
+Generated: 2026-09-08T06:53:37.247755
 """
 
 import numpy as np

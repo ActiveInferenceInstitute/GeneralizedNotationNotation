@@ -2,11 +2,11 @@
   "framework": "stan",
   "model_name": "static_perception",
   "script_name": "Static_Perception_Model_stan.py",
-  "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/stan/Static_Perception_Model_stan.py",
+  "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/stan/Static_Perception_Model_stan.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 8.240584,
-  "timestamp": "2026-09-05T20:27:35.083226",
+  "execution_time": 7.23514,
+  "timestamp": "2026-09-08T06:52:46.777850",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -14,28 +14,28 @@
     "observations": [],
     "actions": [],
     "policy": [],
-    "raw_output": "Stan HMM inference complete (NUTS via CmdStan (1 chain, 300 warmup, 300 draws)): T=5 S=2 O=2 U=2 rhat_max=1.008\nResults saved to: output/12_execute_output/static_perception/stan/simulation_data/simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'a_posterior_columns_sum_to_one': True, 'rhat_ok': True, 'observations_in_range': True, 'all_valid': True}\n",
-    "raw_error": "20:27:35 - cmdstanpy - INFO - compiling stan file /Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/stan/Static_Perception_Model_stan.stan to exe file /Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/stan/Static_Perception_Model_stan\n20:27:42 - cmdstanpy - INFO - compiled model executable: /Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/stan/Static_Perception_Model_stan\n20:27:43 - cmdstanpy - INFO - created output directory: /Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/stan/output/12_execute_output/static_perception/stan/simulation_data/cmdstan\n20:27:43 - cmdstanpy - INFO - CmdStan start processing\n20:27:43 - cmdstanpy - INFO - Chain [1] start processing\n20:27:43 - cmdstanpy - INFO - Chain [1] done processing\n"
+    "raw_output": "Stan HMM inference complete (NUTS via CmdStan (1 chain, 300 warmup, 300 draws)): T=5 S=2 O=2 U=2 rhat_max=1.008\nResults saved to: /private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/stan/simulation_data/simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'a_posterior_columns_sum_to_one': True, 'rhat_ok': True, 'observations_in_range': True, 'all_valid': True}\n",
+    "raw_error": "06:52:47 - cmdstanpy - INFO - compiling stan file /private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/stan/Static_Perception_Model_stan.stan to exe file /private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/stan/Static_Perception_Model_stan\n06:52:53 - cmdstanpy - INFO - compiled model executable: /private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/stan/Static_Perception_Model_stan\n06:52:53 - cmdstanpy - INFO - created output directory: /private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/stan/simulation_data/cmdstan\n06:52:53 - cmdstanpy - INFO - CmdStan start processing\n06:52:53 - cmdstanpy - INFO - Chain [1] start processing\n06:52:53 - cmdstanpy - INFO - Chain [1] done processing\n"
   },
   "execution_benchmark_repeats": 1,
   "execution_metadata": {
-    "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+    "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
     "accelerator_type": "mps",
-    "stdout_length": 392,
-    "stderr_length": 1039,
-    "output_directory": "output/12_execute_output/static_perception/stan"
+    "stdout_length": 431,
+    "stderr_length": 804,
+    "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/stan"
   },
-  "execution_time_mean": 8.240584,
+  "execution_time_mean": 7.23514,
   "execution_time_std": 0.0,
   "execution_time_samples": [
-    8.240584
+    7.23514
   ],
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [
-      "output/12_execute_output/static_perception/stan/simulation_data/Static_Perception_Model_stan_data.json",
-      "output/12_execute_output/static_perception/stan/simulation_data/simulation_results.json",
-      "output/12_execute_output/static_perception/stan/simulation_data/Static_Perception_Model_stan-20260905202743.csv"
+      "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/stan/simulation_data/Static_Perception_Model_stan_data.json",
+      "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/stan/simulation_data/simulation_results.json",
+      "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/stan/simulation_data/Static_Perception_Model_stan-20260905202743.csv"
     ],
     "traces": [],
     "other": []

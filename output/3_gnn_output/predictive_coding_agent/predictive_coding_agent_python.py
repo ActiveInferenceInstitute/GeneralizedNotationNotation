@@ -9,7 +9,7 @@ control input:
   mu_dot leaks toward the flow.
 - Q and R are the dynamics- and sensory-error covariances (the inverse
   precisions of the predictive-coding formulation).
-Generated: 2026-09-05T20:30:54.978835
+Generated: 2026-09-08T06:53:47.221851
 """
 
 import numpy as np

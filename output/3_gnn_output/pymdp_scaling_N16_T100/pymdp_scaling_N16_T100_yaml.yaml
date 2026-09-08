@@ -80,10 +80,10 @@ connections:
   target_variables:
   - u
   weight: null
-created_at: '2026-09-05T20:30:46.503775'
+created_at: '2026-09-08T06:53:37.953064'
 equations: []
 model_name: PyMDP Scaling N16 T100
-modified_at: '2026-09-05T20:30:46.503778'
+modified_at: '2026-09-08T06:53:37.953066'
 ontology_mappings:
 - description: null
   ontology_term: LikelihoodMatrix

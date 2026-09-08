@@ -36,16 +36,22 @@ _src_dir = str(Path(__file__).parent.parent)
 if _src_dir not in sys.path:
     sys.path.insert(0, _src_dir)
 
+from gnn.api import MODULE_VERSION  # noqa: E402,I001
 from gnn.api.auth import api_key_middleware, require_secure_bind
 from gnn.api.models import RunHealthResponse, RunRequest, RunStatus  # noqa: E402,I001
-from gnn.api.path_utils import PathValidationError, resolve_repo_path  # noqa: E402,I001
+from gnn.api.path_utils import (  # noqa: E402,I001
+    PathValidationError,
+    resolve_request_paths,
+)
 from gnn.api.pipeline_runner import (  # noqa: E402,I001
+    LLM_STEP_NUMBERS,
+    PIPELINE_STEP_COUNT,
     build_pipeline_command,
     normalize_summary_steps,
     pipeline_exit_succeeded,
     read_pipeline_summary,
 )
-from gnn.api.rate_limit import rate_limit_middleware
+from gnn.api.rate_limit import rate_limit_middleware  # noqa: E402,I001
 from gnn.api.responses import APIEnvelope, install_exception_handlers, success_envelope
 
 # ── In-memory run store ──────────────────────────────────────────────────────────
@@ -100,8 +106,8 @@ if FASTAPI_AVAILABLE:
             """Health check with renderer availability."""
             response = RunHealthResponse(
                 status="healthy",
-                version="3.2.0",
-                pipeline_steps=25,
+                version=MODULE_VERSION,
+                pipeline_steps=PIPELINE_STEP_COUNT,
                 renderers=_renderer_availability(),
                 uptime_seconds=round(time.time() - _start_time, 1),
             )
@@ -115,15 +121,8 @@ if FASTAPI_AVAILABLE:
             from gnn.pipeline.hasher import compute_run_hash
 
             try:
-                target_path = resolve_repo_path(
-                    request.target_dir,
-                    purpose="Target directory",
-                    must_exist=True,
-                )
-                output_path = resolve_repo_path(
-                    request.output_dir,
-                    purpose="Output directory",
-                    create=True,
+                target_path, output_path = resolve_request_paths(
+                    request.target_dir, request.output_dir
                 )
             except PathValidationError as err:
                 raise HTTPException(
@@ -135,7 +134,8 @@ if FASTAPI_AVAILABLE:
                 target_path,
                 config={
                     "skip_steps": sorted(
-                        set(request.skip_steps) | ({13} if request.skip_llm else set())
+                        set(request.skip_steps)
+                        | (LLM_STEP_NUMBERS if request.skip_llm else set())
                     ),
                     "strict": request.strict,
                     "output_dir": str(output_path),
@@ -167,8 +167,11 @@ if FASTAPI_AVAILABLE:
                 "started_at": datetime.now().isoformat(),
                 "request": normalized_request.model_dump(),
                 "steps_completed": 0,
-                "total_steps": 25
-                - len(set(request.skip_steps) | ({13} if request.skip_llm else set())),
+                "total_steps": PIPELINE_STEP_COUNT
+                - len(
+                    set(request.skip_steps)
+                    | (LLM_STEP_NUMBERS if request.skip_llm else set())
+                ),
                 "errors": [],
                 "events": [],
             }
@@ -198,7 +201,7 @@ if FASTAPI_AVAILABLE:
                 duration_seconds=entry.get("duration_seconds"),
                 current_step=entry.get("current_step"),
                 steps_completed=entry.get("steps_completed", 0),
-                total_steps=entry.get("total_steps", 25),
+                total_steps=entry.get("total_steps", PIPELINE_STEP_COUNT),
                 errors=entry.get("errors", []),
             )
             return success_envelope(

@@ -10,8 +10,8 @@ control input:
   mu_dot leaks toward the flow.
 - Q and R are the dynamics- and sensory-error covariances (the inverse
   precisions of the predictive-coding formulation).</annotation>
-    <created_at>2026-09-05T20:30:54.974876</created_at>
-    <modified_at>2026-09-05T20:30:54.974878</modified_at>
+    <created_at>2026-09-08T06:53:47.218720</created_at>
+    <modified_at>2026-09-08T06:53:47.218723</modified_at>
   </metadata>
   <variables>
     <variable data_type="float" dimensions="2,2" name="F" type="hidden_state" description="state transition"/>

@@ -13,7 +13,7 @@ import logging
 from pathlib import Path
 from typing import Any, Dict, List
 
-from .path_utils import PathValidationError, resolve_repo_path
+from .path_utils import PathValidationError
 from .processor import PIPELINE_STEPS, cancel_job, create_job, get_job, list_jobs
 
 logger = logging.getLogger(__name__)
@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 # Basic module metadata
 __version__ = "1.0.0"
 __description__ = "API module MCP integration for GNN pipeline job management."
-__dependencies__: list[Any] = []
+__dependencies__: list[str] = []
 
 
 def gnn_submit_job_mcp(
@@ -31,32 +31,28 @@ def gnn_submit_job_mcp(
     verbose: bool = False,
     strict: bool = False,
 ) -> Dict[str, Any]:
-    """Submit a GNN pipeline processing job via MCP."""
-    try:
-        target_path = resolve_repo_path(
-            target_dir,
-            purpose="Target directory",
-            must_exist=True,
-        )
+    """Create a pending GNN pipeline job record via MCP.
 
+    Contract: this tool creates the job and returns immediately; it does
+    NOT start pipeline execution. Execution happens when the API server
+    processes the job (``gnn serve`` / POST /api/v1/process), which owns
+    the subprocess lifecycle.
+    """
+    try:
         job_id = create_job(
-            target_dir=str(target_path),
+            target_dir=target_dir,
             steps=steps,
             skip_steps=skip_steps,
             verbose=verbose,
             strict=strict,
         )
-
-        # We need to trigger async execution somehow, but we are in a sync wrapper.
-        # Since we use an external process invocation in create_job_async,
-        # we can use subprocess directly here to initiate it optionally, or
-        # rely on the API server running. We will return the job_id and instructions.
-
-        # Alternatively, we just return the job_id. The user can start the server.
         return {
             "status": "success",
             "job_id": job_id,
-            "message": "Job created. Note: async execution requires the API server to be running.",
+            "message": (
+                "Job created but not started: execution runs only via the "
+                "API server (gnn serve; POST /api/v1/process)."
+            ),
         }
     except (PathValidationError, ValueError) as e:
         logger.warning("Rejected MCP job submission: %s", e)
@@ -113,7 +109,7 @@ def gnn_get_pipeline_tools_mcp() -> Dict[str, Any]:
             {"step_number": step, "name": name, "description": desc}
             for step, (name, desc) in PIPELINE_STEPS.items()
         ]
-        return {"status": "success", "tools": tools}
+        return {"status": "success", "tools": tools, "total": len(tools)}
     except Exception as e:
         logger.error(f"Failed to list pipeline tools via MCP: {e}")
         return {"status": "error", "message": str(e)}
@@ -145,7 +141,11 @@ _MCP_TOOL_DEFINITIONS: tuple[Dict[str, Any], ...] = (
             },
             "required": ["target_dir"],
         },
-        "description": "Submit a GNN pipeline processing job.",
+        "description": (
+            "Create a GNN pipeline job record. Jobs execute only via the API "
+            "server (gnn serve / POST /api/v1/process); this tool does not "
+            "start execution."
+        ),
     },
     {
         "name": "gnn_get_job_status",

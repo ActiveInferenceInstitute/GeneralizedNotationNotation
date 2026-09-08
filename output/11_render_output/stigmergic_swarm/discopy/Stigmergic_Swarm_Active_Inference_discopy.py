@@ -2,7 +2,7 @@
 """
 DisCoPy Categorical Diagram Generation
 Generated from GNN Model: Stigmergic Swarm Active Inference
-Generated: 2026-09-05 20:33:18
+Generated: 2026-09-08 06:57:39
 
 This script creates categorical diagrams representing the Active Inference model
 structure using DisCoPy's compositional framework.
@@ -196,7 +196,7 @@ def export_circuit_data(circuit_dict, analysis_results, output_dir="discopy_diag
     # Export circuit information
     circuit_info = {
         'model_name': 'Stigmergic Swarm Active Inference',
-        'timestamp': '2026-09-05 20:33:18',
+        'timestamp': '2026-09-08 06:57:39',
         'parameters': {
             'num_states': NUM_STATES,
             'num_observations': NUM_OBSERVATIONS, 

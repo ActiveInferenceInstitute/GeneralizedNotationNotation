@@ -2,11 +2,11 @@
   "framework": "jax",
   "model_name": "dynamic_perception",
   "script_name": "Dynamic_Perception_Model_jax.py",
-  "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/jax/Dynamic_Perception_Model_jax.py",
+  "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/jax/Dynamic_Perception_Model_jax.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 1.291627,
-  "timestamp": "2026-09-05T20:26:00.754387",
+  "execution_time": 1.95096,
+  "timestamp": "2026-09-08T06:51:09.368682",
   "simulation_data": {
     "traces": [],
     "free_energy": [
@@ -39,7 +39,7 @@
       0
     ],
     "policy": [],
-    "raw_output": "============================================================\nJAX Active Inference Model: Dynamic_Perception_Model\n============================================================\n\n\u2705 Model parameters created\n   A matrix shape: (2, 2)\n   B matrix shape: (2, 2, 1)\n   C vector shape: (2,)\n   D vector shape: (2,)\n\nDynamic_Perception_Model Model Summary (Pure JAX Implementation):\n- Number of states: 2\n- Number of observations: 2\n- Number of actions: 1\n- Parameters: A matrix, B matrix, C vector, D vector\n\nKey Functions:\n- create_params(): Create model parameters\n- belief_update(): Bayesian belief update\n- compute_expected_free_energy(): Compute EFE for action\n- choose_action(): Choose action with minimum EFE\n- simulate_step(): One step of Active Inference\n- run_simulation(): Full simulation over observations\n\n\n\ud83e\uddea Running test simulation...\n\n\ud83d\udcca Simulation Results:\n   Initial belief: [0.5 0.5]\n   Updated belief: [0.8804348  0.11956522]\n   Selected action: 0\n   Expected free energy: 0.6874\n   EFE for all actions: [0.6873778]\n\n\ud83d\udd04 Running 10-step simulation...\n   Actions taken: [0 0 0 0 0 0 0 0 0 0]\n   Final belief: [0.3381187 0.6618813]\n   Average EFE: 0.6703\n\n\ud83d\udcbe Saved simulation results to: output/12_execute_output/dynamic_perception/jax/simulation_data/simulation_results.json\n\n\u2705 JAX Active Inference model test successful!\n",
+    "raw_output": "============================================================\nJAX Active Inference Model: Dynamic_Perception_Model\n============================================================\n\n\u2705 Model parameters created\n   A matrix shape: (2, 2)\n   B matrix shape: (2, 2, 1)\n   C vector shape: (2,)\n   D vector shape: (2,)\n\nDynamic_Perception_Model Model Summary (Pure JAX Implementation):\n- Number of states: 2\n- Number of observations: 2\n- Number of actions: 1\n- Parameters: A matrix, B matrix, C vector, D vector\n\nKey Functions:\n- create_params(): Create model parameters\n- belief_update(): Bayesian belief update\n- compute_expected_free_energy(): Compute EFE for action\n- choose_action(): Choose action with minimum EFE\n- simulate_step(): One step of Active Inference\n- run_simulation(): Full simulation over observations\n\n\n\ud83e\uddea Running test simulation...\n\n\ud83d\udcca Simulation Results:\n   Initial belief: [0.5 0.5]\n   Updated belief: [0.8804348  0.11956522]\n   Selected action: 0\n   Expected free energy: 0.6874\n   EFE for all actions: [0.6873778]\n\n\ud83d\udd04 Running 10-step simulation...\n   Actions taken: [0 0 0 0 0 0 0 0 0 0]\n   Final belief: [0.3381187 0.6618813]\n   Average EFE: 0.6703\n\n\ud83d\udcbe Saved simulation results to: /private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/jax/simulation_data/simulation_results.json\n\n\u2705 JAX Active Inference model test successful!\n",
     "raw_error": "",
     "beliefs": [
       [
@@ -87,21 +87,21 @@
   },
   "execution_benchmark_repeats": 1,
   "execution_metadata": {
-    "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+    "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
     "accelerator_type": "mps",
-    "stdout_length": 1327,
+    "stdout_length": 1366,
     "stderr_length": 0,
-    "output_directory": "output/12_execute_output/dynamic_perception/jax"
+    "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/jax"
   },
-  "execution_time_mean": 1.291627,
+  "execution_time_mean": 1.95096,
   "execution_time_std": 0.0,
   "execution_time_samples": [
-    1.291627
+    1.95096
   ],
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [
-      "output/12_execute_output/dynamic_perception/jax/simulation_data/simulation_results.json"
+      "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/jax/simulation_data/simulation_results.json"
     ],
     "traces": [],
     "other": []

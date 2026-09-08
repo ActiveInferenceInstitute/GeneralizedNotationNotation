@@ -1,7 +1,7 @@
 #!/usr/bin/env julia
 # RxInfer.jl linear-Gaussian state-space simulation — genuine @model + infer()
 # Generated from GNN Model: Stochastic Continuous Dynamics Agent
-# Generated: 2026-09-05 20:25:31
+# Generated: 2026-09-08 06:58:15
 #
 # Structure (the continuous parameterization the GNN file declares):
 #   x[1]  ~ MvNormal(prior_mean, prior_cov)

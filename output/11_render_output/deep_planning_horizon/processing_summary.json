@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-09-05T20:25:28.810679",
-  "source_file": "input/gnn_files/discrete/deep_planning_horizon.md",
+  "timestamp": "2026-09-08T06:58:12.997496",
+  "source_file": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/discrete/deep_planning_horizon.md",
   "model_name": "Deep Planning Horizon POMDP",
   "pomdp_dimensions": {
     "num_states": 4,

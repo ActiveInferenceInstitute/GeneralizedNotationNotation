@@ -26,8 +26,21 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
 from gnn.api.path_utils import get_repo_root
+from gnn.pipeline.step_registry import STEPS, get_llm_steps
 
 logger = logging.getLogger(__name__)
+
+# Canonical step surface, derived once from the pipeline step registry so no
+# API surface hardcodes step counts or the LLM-step set (single source of
+# truth; adding step 25 or renumbering LLM updates the API automatically).
+PIPELINE_STEP_COUNT: int = len(STEPS)
+VALID_STEP_NUMBERS: frozenset[int] = frozenset(
+    int(s.script_stem.partition("_")[0]) for s in STEPS
+)
+MAX_PIPELINE_STEP: int = max(VALID_STEP_NUMBERS)
+LLM_STEP_NUMBERS: frozenset[int] = frozenset(
+    int(s.script_stem.partition("_")[0]) for s in get_llm_steps()
+)
 
 #: Location of the orchestrator script relative to the repository root.
 MAIN_SCRIPT = Path("src/gnn") / "main.py"

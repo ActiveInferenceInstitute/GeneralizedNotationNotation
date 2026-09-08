@@ -1,0 +1,8 @@
+Matrix: agent_initial_positions
+"Shape: (3, 2)"
+Data type: float64
+
+Col 0,Col 1
+Row 0,0.0,0.0
+Row 1,1.0,0.0
+Row 2,0.0,1.0

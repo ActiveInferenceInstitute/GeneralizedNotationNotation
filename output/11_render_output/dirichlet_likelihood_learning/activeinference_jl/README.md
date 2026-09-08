@@ -20,7 +20,7 @@ variational inference converges to a label-switched optimum.
 well-determined by actions and likelihood learning is well-conditioned.
 - Inference: structured VMP with mean-field cut q(s, A) = q(s)q(A),
 q(A) initialized at the prior counts, q(s) initialized uniform.
-- **Generation Date**: 2026-09-05 20:25:28
+- **Generation Date**: 2026-09-08 06:58:12
 
 ## POMDP Dimensions
 

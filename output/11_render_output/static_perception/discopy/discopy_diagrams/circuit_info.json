@@ -1,6 +1,6 @@
 {
   "model_name": "Static Perception Model",
-  "timestamp": "2026-09-05 20:24:25",
+  "timestamp": "2026-09-08 06:49:44",
   "parameters": {
     "num_states": 2,
     "num_observations": 2,

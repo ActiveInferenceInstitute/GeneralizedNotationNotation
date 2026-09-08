@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-09-05T20:32:38.518059",
-  "source_file": "input/gnn_files/basics/dynamic_perception.md",
+  "timestamp": "2026-09-08T06:56:54.014450",
+  "source_file": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics/dynamic_perception.md",
   "model_name": "Dynamic Perception Model",
   "pomdp_dimensions": {
     "num_states": 2,

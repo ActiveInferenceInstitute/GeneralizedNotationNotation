@@ -1,7 +1,7 @@
 {
-  "timestamp": "2026-09-05T20:30:54.974669",
-  "source_directory": "input/gnn_files/continuous",
-  "output_directory": "output/3_gnn_output",
+  "timestamp": "2026-09-08T06:53:47.218310",
+  "source_directory": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/continuous",
+  "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output",
   "processing_config": {
     "recursive": true,
     "verbose": false,
@@ -82,9 +82,9 @@
   "processed_files": [
     {
       "file_name": "predictive_coding_agent.md",
-      "file_path": "input/gnn_files/continuous/predictive_coding_agent.md",
+      "file_path": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/continuous/predictive_coding_agent.md",
       "parse_success": true,
-      "parsed_model_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_parsed.json",
+      "parsed_model_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_parsed.json",
       "source_format": "markdown",
       "model_info": {
         "name": "Predictive Coding Active Inference Agent",
@@ -96,112 +96,112 @@
       },
       "generated_formats": {
         "markdown": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_markdown.md",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_markdown.md",
           "file_size": 1503,
           "success": true
         },
         "scala": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_scala.scala",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_scala.scala",
           "file_size": 4090,
           "success": true
         },
         "lean": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_lean.lean",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_lean.lean",
           "file_size": 9967,
           "success": true
         },
         "coq": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_coq.v",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_coq.v",
           "file_size": 4501,
           "success": true
         },
         "python": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_python.py",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_python.py",
           "file_size": 7541,
           "success": true
         },
         "bnf": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_bnf.bnf",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_bnf.bnf",
           "file_size": 4831,
           "success": true
         },
         "ebnf": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_ebnf.ebnf",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_ebnf.ebnf",
           "file_size": 4831,
           "success": true
         },
         "isabelle": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_isabelle.thy",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_isabelle.thy",
           "file_size": 4500,
           "success": true
         },
         "maxima": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_maxima.max",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_maxima.max",
           "file_size": 4790,
           "success": true
         },
         "xml": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_xml.xml",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_xml.xml",
           "file_size": 7444,
           "success": true
         },
         "json": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_json.json",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_json.json",
           "file_size": 7196,
           "success": true
         },
         "protobuf": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_protobuf.proto",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_protobuf.proto",
           "file_size": 6217,
           "success": true
         },
         "yaml": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_yaml.yaml",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_yaml.yaml",
           "file_size": 4414,
           "success": true
         },
         "xsd": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_xsd.xsd",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_xsd.xsd",
           "file_size": 5325,
           "success": true
         },
         "asn1": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_asn1.asn1",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_asn1.asn1",
           "file_size": 7128,
           "success": true
         },
         "pkl": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_pkl.pkl",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_pkl.pkl",
           "file_size": 10138,
           "success": true
         },
         "alloy": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_alloy.als",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_alloy.als",
           "file_size": 6610,
           "success": true
         },
         "z_notation": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_z_notation.z",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_z_notation.z",
           "file_size": 5032,
           "success": true
         },
         "tla_plus": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_tla_plus.tla",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_tla_plus.tla",
           "file_size": 3871,
           "success": true
         },
         "agda": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_agda.agda",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_agda.agda",
           "file_size": 3870,
           "success": true
         },
         "haskell": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_haskell.hs",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_haskell.hs",
           "file_size": 4141,
           "success": true
         },
         "pickle": {
-          "output_file": "output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_pickle.pickle",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_pickle.pickle",
           "file_size": 3192,
           "success": true
         }
@@ -211,9 +211,9 @@
     },
     {
       "file_name": "stochastic_dynamics.md",
-      "file_path": "input/gnn_files/continuous/stochastic_dynamics.md",
+      "file_path": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/continuous/stochastic_dynamics.md",
       "parse_success": true,
-      "parsed_model_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_parsed.json",
+      "parsed_model_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_parsed.json",
       "source_format": "markdown",
       "model_info": {
         "name": "Stochastic Continuous Dynamics Agent",
@@ -225,112 +225,112 @@
       },
       "generated_formats": {
         "markdown": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_markdown.md",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_markdown.md",
           "file_size": 1446,
           "success": true
         },
         "scala": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_scala.scala",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_scala.scala",
           "file_size": 4028,
           "success": true
         },
         "lean": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_lean.lean",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_lean.lean",
           "file_size": 9787,
           "success": true
         },
         "coq": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_coq.v",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_coq.v",
           "file_size": 4381,
           "success": true
         },
         "python": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_python.py",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_python.py",
           "file_size": 7361,
           "success": true
         },
         "bnf": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_bnf.bnf",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_bnf.bnf",
           "file_size": 4717,
           "success": true
         },
         "ebnf": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_ebnf.ebnf",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_ebnf.ebnf",
           "file_size": 4717,
           "success": true
         },
         "isabelle": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_isabelle.thy",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_isabelle.thy",
           "file_size": 4383,
           "success": true
         },
         "maxima": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_maxima.max",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_maxima.max",
           "file_size": 4674,
           "success": true
         },
         "xml": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_xml.xml",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_xml.xml",
           "file_size": 7328,
           "success": true
         },
         "json": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_json.json",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_json.json",
           "file_size": 7145,
           "success": true
         },
         "protobuf": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_protobuf.proto",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_protobuf.proto",
           "file_size": 6097,
           "success": true
         },
         "yaml": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_yaml.yaml",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_yaml.yaml",
           "file_size": 4358,
           "success": true
         },
         "xsd": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_xsd.xsd",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_xsd.xsd",
           "file_size": 5207,
           "success": true
         },
         "asn1": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_asn1.asn1",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_asn1.asn1",
           "file_size": 6947,
           "success": true
         },
         "pkl": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_pkl.pkl",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_pkl.pkl",
           "file_size": 9965,
           "success": true
         },
         "alloy": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_alloy.als",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_alloy.als",
           "file_size": 6480,
           "success": true
         },
         "z_notation": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_z_notation.z",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_z_notation.z",
           "file_size": 4906,
           "success": true
         },
         "tla_plus": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_tla_plus.tla",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_tla_plus.tla",
           "file_size": 3809,
           "success": true
         },
         "agda": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_agda.agda",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_agda.agda",
           "file_size": 3808,
           "success": true
         },
         "haskell": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_haskell.hs",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_haskell.hs",
           "file_size": 4079,
           "success": true
         },
         "pickle": {
-          "output_file": "output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_pickle.pickle",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/stochastic_dynamics/stochastic_dynamics_pickle.pickle",
           "file_size": 3120,
           "success": true
         }
@@ -340,9 +340,9 @@
     },
     {
       "file_name": "continuous_navigation.md",
-      "file_path": "input/gnn_files/continuous/continuous_navigation.md",
+      "file_path": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/continuous/continuous_navigation.md",
       "parse_success": true,
-      "parsed_model_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_parsed.json",
+      "parsed_model_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/continuous_navigation/continuous_navigation_parsed.json",
       "source_format": "markdown",
       "model_info": {
         "name": "Continuous State Navigation Agent",
@@ -354,112 +354,112 @@
       },
       "generated_formats": {
         "markdown": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_markdown.md",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/continuous_navigation/continuous_navigation_markdown.md",
           "file_size": 1711,
           "success": true
         },
         "scala": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_scala.scala",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/continuous_navigation/continuous_navigation_scala.scala",
           "file_size": 5197,
           "success": true
         },
         "lean": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_lean.lean",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/continuous_navigation/continuous_navigation_lean.lean",
           "file_size": 11976,
           "success": true
         },
         "coq": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_coq.v",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/continuous_navigation/continuous_navigation_coq.v",
           "file_size": 5484,
           "success": true
         },
         "python": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_python.py",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/continuous_navigation/continuous_navigation_python.py",
           "file_size": 9147,
           "success": true
         },
         "bnf": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_bnf.bnf",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/continuous_navigation/continuous_navigation_bnf.bnf",
           "file_size": 5824,
           "success": true
         },
         "ebnf": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_ebnf.ebnf",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/continuous_navigation/continuous_navigation_ebnf.ebnf",
           "file_size": 5824,
           "success": true
         },
         "isabelle": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_isabelle.thy",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/continuous_navigation/continuous_navigation_isabelle.thy",
           "file_size": 5510,
           "success": true
         },
         "maxima": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_maxima.max",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/continuous_navigation/continuous_navigation_maxima.max",
           "file_size": 5908,
           "success": true
         },
         "xml": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_xml.xml",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/continuous_navigation/continuous_navigation_xml.xml",
           "file_size": 9326,
           "success": true
         },
         "json": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_json.json",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/continuous_navigation/continuous_navigation_json.json",
           "file_size": 9105,
           "success": true
         },
         "protobuf": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_protobuf.proto",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/continuous_navigation/continuous_navigation_protobuf.proto",
           "file_size": 7426,
           "success": true
         },
         "yaml": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_yaml.yaml",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/continuous_navigation/continuous_navigation_yaml.yaml",
           "file_size": 5560,
           "success": true
         },
         "xsd": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_xsd.xsd",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/continuous_navigation/continuous_navigation_xsd.xsd",
           "file_size": 6424,
           "success": true
         },
         "asn1": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_asn1.asn1",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/continuous_navigation/continuous_navigation_asn1.asn1",
           "file_size": 8269,
           "success": true
         },
         "pkl": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_pkl.pkl",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/continuous_navigation/continuous_navigation_pkl.pkl",
           "file_size": 12512,
           "success": true
         },
         "alloy": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_alloy.als",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/continuous_navigation/continuous_navigation_alloy.als",
           "file_size": 8240,
           "success": true
         },
         "z_notation": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_z_notation.z",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/continuous_navigation/continuous_navigation_z_notation.z",
           "file_size": 6098,
           "success": true
         },
         "tla_plus": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_tla_plus.tla",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/continuous_navigation/continuous_navigation_tla_plus.tla",
           "file_size": 4881,
           "success": true
         },
         "agda": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_agda.agda",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/continuous_navigation/continuous_navigation_agda.agda",
           "file_size": 4858,
           "success": true
         },
         "haskell": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_haskell.hs",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/continuous_navigation/continuous_navigation_haskell.hs",
           "file_size": 5307,
           "success": true
         },
         "pickle": {
-          "output_file": "output/3_gnn_output/continuous_navigation/continuous_navigation_pickle.pickle",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/3_gnn_output/continuous_navigation/continuous_navigation_pickle.pickle",
           "file_size": 3732,
           "success": true
         }

@@ -76,7 +76,7 @@
       "weight": null
     }
   ],
-  "created_at": "2026-09-05T20:30:54.008975",
+  "created_at": "2026-09-08T06:53:46.160206",
   "equations": [],
   "extensions": {
     "footer": "Time-Varying Transition Dynamics Agent v1.0 — demonstrates non-stationary\nB_t tensor in a 3-state POMDP. Tests time-indexed matrix handling.",
@@ -84,7 +84,7 @@
     "signature": "Cryptographic signature goes here"
   },
   "model_name": "Time-Varying Transition Dynamics Agent",
-  "modified_at": "2026-09-05T20:30:54.008976",
+  "modified_at": "2026-09-08T06:53:46.160209",
   "ontology_mappings": [
     {
       "description": null,

@@ -1,7 +1,7 @@
 
 # Processed by GNN Pipeline Template
-# Original file: input/gnn_files/discrete/markov_chain.md
-# Processed on: 2026-09-05T20:30:45.674574
+# Original file: /private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/discrete/markov_chain.md
+# Processed on: 2026-09-08T06:53:29.079833
 # Options: {'verbose': False, 'recursive': True, 'example_param': 'default_value'}
 
 # GNN Example: Markov Chain (Passive Dynamics)

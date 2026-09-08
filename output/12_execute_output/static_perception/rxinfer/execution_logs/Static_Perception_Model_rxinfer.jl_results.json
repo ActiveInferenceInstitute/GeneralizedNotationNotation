@@ -2,11 +2,11 @@
   "framework": "rxinfer",
   "model_name": "static_perception",
   "script_name": "Static_Perception_Model_rxinfer.jl",
-  "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/rxinfer/Static_Perception_Model_rxinfer.jl",
+  "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/rxinfer/Static_Perception_Model_rxinfer.jl",
   "success": true,
   "return_code": 0,
-  "execution_time": 18.265583,
-  "timestamp": "2026-09-05T20:27:12.597637",
+  "execution_time": 16.351125,
+  "timestamp": "2026-09-08T06:52:26.053003",
   "simulation_data": {
     "traces": [],
     "free_energy": [
@@ -170,17 +170,17 @@
     "accelerator_type": "mps",
     "stdout_length": 221,
     "stderr_length": 0,
-    "output_directory": "output/12_execute_output/static_perception/rxinfer"
+    "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/rxinfer"
   },
-  "execution_time_mean": 18.265583,
+  "execution_time_mean": 16.351125,
   "execution_time_std": 0.0,
   "execution_time_samples": [
-    18.265583
+    16.351125
   ],
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [
-      "output/12_execute_output/static_perception/rxinfer/simulation_data/simulation_results.json"
+      "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/rxinfer/simulation_data/simulation_results.json"
     ],
     "traces": [],
     "other": []

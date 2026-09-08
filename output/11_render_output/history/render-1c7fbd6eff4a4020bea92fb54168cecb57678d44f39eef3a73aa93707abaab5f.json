@@ -1,0 +1,863 @@
+{
+  "timestamp": "2026-09-08T06:49:44.826909",
+  "processing_type": "POMDP-aware rendering",
+  "receipt_identity": {
+    "run_id": "cf23102141ad46098e012653cdd2293c",
+    "config_sha256": "d3bd2b28dfb31cfcfcc59f9ce72e42c5982f63e5b575d0a0eeb6a41795da9278"
+  },
+  "target_directory": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/hierarchical",
+  "configuration": {
+    "frameworks": "all",
+    "strict_validation": true,
+    "strict_framework_success": false,
+    "verbose": false,
+    "pomdp_processing_available": true,
+    "options": {
+      "recursive": true,
+      "timesteps": null,
+      "simulation_params": "{}"
+    }
+  },
+  "file_results": {
+    "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics/static_perception.md": {
+      "overall_success": true,
+      "framework_results": {
+        "pymdp": {
+          "success": true,
+          "message": "Generated pymdp 1.0.0 runner: /private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/pymdp/Static_Perception_Model_pymdp.py",
+          "output_files": [
+            "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/pymdp/Static_Perception_Model_pymdp.py"
+          ],
+          "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/pymdp",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 453,
+            "total_lines": 486,
+            "functions": 1,
+            "classes": 0
+          },
+          "artifact_identities": [
+            {
+              "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/pymdp/Static_Perception_Model_pymdp.py",
+              "sha256": "8b445833350321cfd82b527d63440b48b4c1fe41dc56042541764a55f6de6bcd"
+            }
+          ]
+        },
+        "rxinfer": {
+          "success": true,
+          "message": "Generated RxInfer.jl simulation script: /private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/rxinfer/Static_Perception_Model_rxinfer.jl",
+          "output_files": [
+            "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/rxinfer/Static_Perception_Model_rxinfer.jl"
+          ],
+          "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/rxinfer",
+          "warnings": [
+            "rxinfer has limited multi-modality support"
+          ],
+          "code_metrics": {
+            "lines_of_code": 446,
+            "total_lines": 604,
+            "functions": 13,
+            "classes": 0
+          },
+          "artifact_identities": [
+            {
+              "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/rxinfer/Static_Perception_Model_rxinfer.jl",
+              "sha256": "16814356441dd7ccb67ed6293dca23fdf752afbd967affa8e48a8984924a2ce3"
+            }
+          ]
+        },
+        "activeinference_jl": {
+          "success": true,
+          "message": "Successfully rendered ActiveInference.jl script to Static_Perception_Model_activeinference.jl",
+          "output_files": [
+            "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/activeinference_jl/Static_Perception_Model_activeinference.jl"
+          ],
+          "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/activeinference_jl",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 236,
+            "total_lines": 265,
+            "functions": 13,
+            "classes": 0
+          },
+          "artifact_identities": [
+            {
+              "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/activeinference_jl/Static_Perception_Model_activeinference.jl",
+              "sha256": "630ae5e12ab124420ccea720c54c3719a64d9fa4426c67e9345bc46509076dfb"
+            }
+          ]
+        },
+        "jax": {
+          "success": true,
+          "message": "JAX model generated successfully.",
+          "output_files": [
+            "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/jax/Static_Perception_Model_jax.py"
+          ],
+          "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/jax",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 295,
+            "total_lines": 431,
+            "functions": 13,
+            "classes": 0
+          },
+          "artifact_identities": [
+            {
+              "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/jax/Static_Perception_Model_jax.py",
+              "sha256": "6f90f7a0daef8b3f8716e6c9f2d861dfc5ed6061192fd9e521da73f603e09e6d"
+            }
+          ]
+        },
+        "discopy": {
+          "success": true,
+          "message": "Generated DisCoPy categorical diagram script: /private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/discopy/Static_Perception_Model_discopy.py",
+          "output_files": [
+            "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/discopy/Static_Perception_Model_discopy.py"
+          ],
+          "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/discopy",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 167,
+            "total_lines": 258,
+            "functions": 7,
+            "classes": 0
+          },
+          "artifact_identities": [
+            {
+              "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/discopy/Static_Perception_Model_discopy.py",
+              "sha256": "d931ab73f12643b13f5eb02dde26524a9227d3a07b259c98b51407965162cb38"
+            }
+          ]
+        },
+        "pytorch": {
+          "success": true,
+          "message": "PyTorch script generated: /private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/pytorch/Static_Perception_Model_pytorch.py",
+          "output_files": [
+            "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/pytorch/Static_Perception_Model_pytorch.py"
+          ],
+          "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/pytorch",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 120,
+            "total_lines": 161,
+            "functions": 1,
+            "classes": 0
+          },
+          "artifact_identities": [
+            {
+              "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/pytorch/Static_Perception_Model_pytorch.py",
+              "sha256": "440d49e1f7e313eb2a3bb07840617add44b7d5652636e34cf75eac53ed79ea33"
+            }
+          ]
+        },
+        "numpyro": {
+          "success": true,
+          "message": "NumPyro script generated: /private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/numpyro/Static_Perception_Model_numpyro.py",
+          "output_files": [
+            "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/numpyro/Static_Perception_Model_numpyro.py"
+          ],
+          "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/numpyro",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 123,
+            "total_lines": 163,
+            "functions": 1,
+            "classes": 0
+          },
+          "artifact_identities": [
+            {
+              "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/numpyro/Static_Perception_Model_numpyro.py",
+              "sha256": "0bd3531e5577319a9bfdbd5bb4031b9588e40881afacd750c8a4325057efe758"
+            }
+          ]
+        },
+        "stan": {
+          "success": true,
+          "message": "Stan discrete POMDP/HMM program generated: Static_Perception_Model_stan.stan (+ driver Static_Perception_Model_stan.py)",
+          "output_files": [
+            "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/stan/Static_Perception_Model_stan.py",
+            "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/stan/Static_Perception_Model_stan.stan"
+          ],
+          "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/stan",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 140,
+            "total_lines": 158,
+            "functions": 2,
+            "classes": 0
+          },
+          "artifact_identities": [
+            {
+              "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/stan/Static_Perception_Model_stan.py",
+              "sha256": "97c5a7e7c987df25d108cd11cabc50b8a0d4cdbcfd79da01d72101c501be3ff0"
+            },
+            {
+              "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/stan/Static_Perception_Model_stan.stan",
+              "sha256": "466fcb8917d61d6bf987950f84b2ccdc5f3c476e56d84465da1fddf7a6982231"
+            }
+          ]
+        },
+        "bnlearn": {
+          "success": true,
+          "message": "bnlearn code generated",
+          "output_files": [
+            "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/bnlearn/Static_Perception_Model_bnlearn.py"
+          ],
+          "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/bnlearn",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 65,
+            "total_lines": 71,
+            "functions": 2,
+            "classes": 1
+          },
+          "artifact_identities": [
+            {
+              "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/bnlearn/Static_Perception_Model_bnlearn.py",
+              "sha256": "c151bc7295fe4073c68a97c4998e9fe6f4b1ca241437999274fd5773e528d378"
+            }
+          ]
+        }
+      },
+      "summary_file": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/processing_summary.json",
+      "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception",
+      "base_output_dir": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception",
+      "source_identity": {
+        "path": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics/static_perception.md",
+        "sha256": "48f67dd7912851a6081ce17fc0df2597cab0bd61d46afb19918f9320236393f3"
+      }
+    },
+    "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics/dynamic_perception.md": {
+      "overall_success": true,
+      "framework_results": {
+        "pymdp": {
+          "success": true,
+          "message": "Generated pymdp 1.0.0 runner: /private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/pymdp/Dynamic_Perception_Model_pymdp.py",
+          "output_files": [
+            "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/pymdp/Dynamic_Perception_Model_pymdp.py"
+          ],
+          "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/pymdp",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 456,
+            "total_lines": 489,
+            "functions": 1,
+            "classes": 0
+          },
+          "artifact_identities": [
+            {
+              "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/pymdp/Dynamic_Perception_Model_pymdp.py",
+              "sha256": "efcc7e5767f08b287a7a15bc9fbf452422a012759990e155ed7dd846847eb01e"
+            }
+          ]
+        },
+        "rxinfer": {
+          "success": true,
+          "message": "Generated RxInfer.jl simulation script: /private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/rxinfer/Dynamic_Perception_Model_rxinfer.jl",
+          "output_files": [
+            "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/rxinfer/Dynamic_Perception_Model_rxinfer.jl"
+          ],
+          "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/rxinfer",
+          "warnings": [
+            "rxinfer has limited multi-modality support"
+          ],
+          "code_metrics": {
+            "lines_of_code": 446,
+            "total_lines": 604,
+            "functions": 13,
+            "classes": 0
+          },
+          "artifact_identities": [
+            {
+              "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/rxinfer/Dynamic_Perception_Model_rxinfer.jl",
+              "sha256": "2dd512dcd5abd404c36ee3535dca464e9e919aabdd3423ff91ef71b759c5b950"
+            }
+          ]
+        },
+        "activeinference_jl": {
+          "success": true,
+          "message": "Successfully rendered ActiveInference.jl script to Dynamic_Perception_Model_activeinference.jl",
+          "output_files": [
+            "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/activeinference_jl/Dynamic_Perception_Model_activeinference.jl"
+          ],
+          "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/activeinference_jl",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 236,
+            "total_lines": 265,
+            "functions": 13,
+            "classes": 0
+          },
+          "artifact_identities": [
+            {
+              "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/activeinference_jl/Dynamic_Perception_Model_activeinference.jl",
+              "sha256": "4c4857752feb802b8121e5acb72d43c795ef0cc5f6c81a96baf7595612f5b63b"
+            }
+          ]
+        },
+        "jax": {
+          "success": true,
+          "message": "JAX model generated successfully.",
+          "output_files": [
+            "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/jax/Dynamic_Perception_Model_jax.py"
+          ],
+          "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/jax",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 295,
+            "total_lines": 431,
+            "functions": 13,
+            "classes": 0
+          },
+          "artifact_identities": [
+            {
+              "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/jax/Dynamic_Perception_Model_jax.py",
+              "sha256": "2e79adc4bf314bec156d454fba7fa08c9d98eeaa451973b4c4f05d5bc7640f4b"
+            }
+          ]
+        },
+        "discopy": {
+          "success": true,
+          "message": "Generated DisCoPy categorical diagram script: /private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/discopy/Dynamic_Perception_Model_discopy.py",
+          "output_files": [
+            "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/discopy/Dynamic_Perception_Model_discopy.py"
+          ],
+          "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/discopy",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 167,
+            "total_lines": 258,
+            "functions": 7,
+            "classes": 0
+          },
+          "artifact_identities": [
+            {
+              "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/discopy/Dynamic_Perception_Model_discopy.py",
+              "sha256": "1c40d7fddfb20ebb312e43f5992f29ad6a520c2a40feddaa4db89465f31235f7"
+            }
+          ]
+        },
+        "pytorch": {
+          "success": true,
+          "message": "PyTorch script generated: /private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/pytorch/Dynamic_Perception_Model_pytorch.py",
+          "output_files": [
+            "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/pytorch/Dynamic_Perception_Model_pytorch.py"
+          ],
+          "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/pytorch",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 116,
+            "total_lines": 157,
+            "functions": 1,
+            "classes": 0
+          },
+          "artifact_identities": [
+            {
+              "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/pytorch/Dynamic_Perception_Model_pytorch.py",
+              "sha256": "71c32e8a8fb1ca01e9d31ef9e7c6776eb812b839305fb9c50770b6c94ea74ae1"
+            }
+          ]
+        },
+        "numpyro": {
+          "success": true,
+          "message": "NumPyro script generated: /private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/numpyro/Dynamic_Perception_Model_numpyro.py",
+          "output_files": [
+            "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/numpyro/Dynamic_Perception_Model_numpyro.py"
+          ],
+          "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/numpyro",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 119,
+            "total_lines": 159,
+            "functions": 1,
+            "classes": 0
+          },
+          "artifact_identities": [
+            {
+              "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/numpyro/Dynamic_Perception_Model_numpyro.py",
+              "sha256": "16d1d2c016f9e964a34b70469bfe52f2d0f3eda85a31a74b4d0d1d86eecadc7c"
+            }
+          ]
+        },
+        "stan": {
+          "success": true,
+          "message": "Stan discrete POMDP/HMM program generated: Dynamic_Perception_Model_stan.stan (+ driver Dynamic_Perception_Model_stan.py)",
+          "output_files": [
+            "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/stan/Dynamic_Perception_Model_stan.py",
+            "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/stan/Dynamic_Perception_Model_stan.stan"
+          ],
+          "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/stan",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 140,
+            "total_lines": 158,
+            "functions": 2,
+            "classes": 0
+          },
+          "artifact_identities": [
+            {
+              "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/stan/Dynamic_Perception_Model_stan.py",
+              "sha256": "2815d016464b3e757d79b9b2cafa868ef141a10db7400ffffa4295599ddc2ca3"
+            },
+            {
+              "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/stan/Dynamic_Perception_Model_stan.stan",
+              "sha256": "466fcb8917d61d6bf987950f84b2ccdc5f3c476e56d84465da1fddf7a6982231"
+            }
+          ]
+        },
+        "bnlearn": {
+          "success": true,
+          "message": "bnlearn code generated",
+          "output_files": [
+            "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/bnlearn/Dynamic_Perception_Model_bnlearn.py"
+          ],
+          "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/bnlearn",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 65,
+            "total_lines": 71,
+            "functions": 2,
+            "classes": 1
+          },
+          "artifact_identities": [
+            {
+              "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/bnlearn/Dynamic_Perception_Model_bnlearn.py",
+              "sha256": "24f1470308c8487fcef65c7c577ac2244969a49cd0701f789a727a4d8f0d19ef"
+            }
+          ]
+        }
+      },
+      "summary_file": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/processing_summary.json",
+      "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception",
+      "base_output_dir": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception",
+      "source_identity": {
+        "path": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics/dynamic_perception.md",
+        "sha256": "b0abd0b673915c98093150d78c1b4b1442287c7bc094f1fe42b07a1730f2258c"
+      }
+    },
+    "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/hierarchical/temporal_hierarchy.md": {
+      "overall_success": true,
+      "framework_results": {
+        "pymdp": {
+          "success": true,
+          "message": "Generated pymdp 1.0.0 runner: /private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/temporal_hierarchy/pymdp/Three-Level_Temporal_Hierarchy_Agent_pymdp.py",
+          "output_files": [
+            "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/temporal_hierarchy/pymdp/Three-Level_Temporal_Hierarchy_Agent_pymdp.py"
+          ],
+          "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/temporal_hierarchy/pymdp",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 5170,
+            "total_lines": 5203,
+            "functions": 1,
+            "classes": 0
+          },
+          "artifact_identities": [
+            {
+              "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/temporal_hierarchy/pymdp/Three-Level_Temporal_Hierarchy_Agent_pymdp.py",
+              "sha256": "8d7174261f319055e03d612b6df567a4d04ef7a3d7ac8d2b874804ffe9c4d60d"
+            }
+          ]
+        },
+        "rxinfer": {
+          "success": true,
+          "message": "Generated RxInfer.jl simulation script: /private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/temporal_hierarchy/rxinfer/Three-Level_Temporal_Hierarchy_Agent_rxinfer.jl",
+          "output_files": [
+            "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/temporal_hierarchy/rxinfer/Three-Level_Temporal_Hierarchy_Agent_rxinfer.jl"
+          ],
+          "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/temporal_hierarchy/rxinfer",
+          "warnings": [
+            "rxinfer has limited multi-modality support"
+          ],
+          "code_metrics": {
+            "lines_of_code": 446,
+            "total_lines": 604,
+            "functions": 13,
+            "classes": 0
+          },
+          "artifact_identities": [
+            {
+              "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/temporal_hierarchy/rxinfer/Three-Level_Temporal_Hierarchy_Agent_rxinfer.jl",
+              "sha256": "cb4b94a4a07d7ecde5a125bb5dbb231403abc527f1d67808f93cde7e9935d819"
+            }
+          ]
+        },
+        "activeinference_jl": {
+          "success": true,
+          "message": "Successfully rendered ActiveInference.jl script to Three-Level_Temporal_Hierarchy_Agent_activeinference.jl",
+          "output_files": [
+            "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/temporal_hierarchy/activeinference_jl/Three-Level_Temporal_Hierarchy_Agent_activeinference.jl"
+          ],
+          "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/temporal_hierarchy/activeinference_jl",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 236,
+            "total_lines": 265,
+            "functions": 13,
+            "classes": 0
+          },
+          "artifact_identities": [
+            {
+              "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/temporal_hierarchy/activeinference_jl/Three-Level_Temporal_Hierarchy_Agent_activeinference.jl",
+              "sha256": "53909adbea58a31dcfc1147937a1efccff38808019452a5f9db2b1c5d1a7075f"
+            }
+          ]
+        },
+        "jax": {
+          "success": true,
+          "message": "JAX model generated successfully.",
+          "output_files": [
+            "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/temporal_hierarchy/jax/Three-Level_Temporal_Hierarchy_Agent_jax.py"
+          ],
+          "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/temporal_hierarchy/jax",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 295,
+            "total_lines": 431,
+            "functions": 13,
+            "classes": 0
+          },
+          "artifact_identities": [
+            {
+              "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/temporal_hierarchy/jax/Three-Level_Temporal_Hierarchy_Agent_jax.py",
+              "sha256": "3261baa7d0184147a8e586ea50db7456e803a0c958ff0a7b52ad2c02427c160b"
+            }
+          ]
+        },
+        "discopy": {
+          "success": true,
+          "message": "Generated DisCoPy categorical diagram script: /private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/temporal_hierarchy/discopy/Three-Level_Temporal_Hierarchy_Agent_discopy.py",
+          "output_files": [
+            "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/temporal_hierarchy/discopy/Three-Level_Temporal_Hierarchy_Agent_discopy.py"
+          ],
+          "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/temporal_hierarchy/discopy",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 167,
+            "total_lines": 258,
+            "functions": 7,
+            "classes": 0
+          },
+          "artifact_identities": [
+            {
+              "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/temporal_hierarchy/discopy/Three-Level_Temporal_Hierarchy_Agent_discopy.py",
+              "sha256": "353020409bed4305abdfa4cc58ee425d4344c4fccbb4915dafacff42b45d6673"
+            }
+          ]
+        },
+        "pytorch": {
+          "success": true,
+          "message": "PyTorch script generated: /private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/temporal_hierarchy/pytorch/Three-Level_Temporal_Hierarchy_Agent_pytorch.py",
+          "output_files": [
+            "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/temporal_hierarchy/pytorch/Three-Level_Temporal_Hierarchy_Agent_pytorch.py"
+          ],
+          "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/temporal_hierarchy/pytorch",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 224,
+            "total_lines": 265,
+            "functions": 1,
+            "classes": 0
+          },
+          "artifact_identities": [
+            {
+              "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/temporal_hierarchy/pytorch/Three-Level_Temporal_Hierarchy_Agent_pytorch.py",
+              "sha256": "6021e12fa4f377030c8791b2e07dc5172416e8a540bfc5a23bd4c79d417fbe09"
+            }
+          ]
+        },
+        "numpyro": {
+          "success": true,
+          "message": "NumPyro script generated: /private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/temporal_hierarchy/numpyro/Three-Level_Temporal_Hierarchy_Agent_numpyro.py",
+          "output_files": [
+            "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/temporal_hierarchy/numpyro/Three-Level_Temporal_Hierarchy_Agent_numpyro.py"
+          ],
+          "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/temporal_hierarchy/numpyro",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 227,
+            "total_lines": 267,
+            "functions": 1,
+            "classes": 0
+          },
+          "artifact_identities": [
+            {
+              "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/temporal_hierarchy/numpyro/Three-Level_Temporal_Hierarchy_Agent_numpyro.py",
+              "sha256": "9c058026e87882c8c5b039df3c94a7c43068d04cb55b15302481e4931dc666b6"
+            }
+          ]
+        },
+        "stan": {
+          "success": true,
+          "message": "Stan discrete POMDP/HMM program generated: Three-Level_Temporal_Hierarchy_Agent_stan.stan (+ driver Three-Level_Temporal_Hierarchy_Agent_stan.py)",
+          "output_files": [
+            "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/temporal_hierarchy/stan/Three-Level_Temporal_Hierarchy_Agent_stan.py",
+            "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/temporal_hierarchy/stan/Three-Level_Temporal_Hierarchy_Agent_stan.stan"
+          ],
+          "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/temporal_hierarchy/stan",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 140,
+            "total_lines": 158,
+            "functions": 2,
+            "classes": 0
+          },
+          "artifact_identities": [
+            {
+              "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/temporal_hierarchy/stan/Three-Level_Temporal_Hierarchy_Agent_stan.py",
+              "sha256": "bbd2836226315db0768929bbb84180afe3eb7be0e2c0db5565dffd5c1d9e738d"
+            },
+            {
+              "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/temporal_hierarchy/stan/Three-Level_Temporal_Hierarchy_Agent_stan.stan",
+              "sha256": "466fcb8917d61d6bf987950f84b2ccdc5f3c476e56d84465da1fddf7a6982231"
+            }
+          ]
+        },
+        "bnlearn": {
+          "success": true,
+          "message": "bnlearn code generated",
+          "output_files": [
+            "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/temporal_hierarchy/bnlearn/Three-Level_Temporal_Hierarchy_Agent_bnlearn.py"
+          ],
+          "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/temporal_hierarchy/bnlearn",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 65,
+            "total_lines": 71,
+            "functions": 2,
+            "classes": 1
+          },
+          "artifact_identities": [
+            {
+              "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/temporal_hierarchy/bnlearn/Three-Level_Temporal_Hierarchy_Agent_bnlearn.py",
+              "sha256": "8851eb31af1ddc8c53f43f735e6e98804ddba14739deec5d4aad4aa7d577d4d0"
+            }
+          ]
+        }
+      },
+      "summary_file": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/temporal_hierarchy/processing_summary.json",
+      "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/temporal_hierarchy",
+      "base_output_dir": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/temporal_hierarchy",
+      "source_identity": {
+        "path": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/hierarchical/temporal_hierarchy.md",
+        "sha256": "378de7440c26956910c7fa927569f86f093535ef86cabd45007c9a78f9fc0792"
+      }
+    },
+    "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/hierarchical/hierarchical_pomdp.md": {
+      "overall_success": true,
+      "framework_results": {
+        "pymdp": {
+          "success": true,
+          "message": "Generated pymdp 1.0.0 runner: /private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/hierarchical_pomdp/pymdp/Hierarchical_Active_Inference_POMDP_pymdp.py",
+          "output_files": [
+            "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/hierarchical_pomdp/pymdp/Hierarchical_Active_Inference_POMDP_pymdp.py"
+          ],
+          "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/hierarchical_pomdp/pymdp",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 1356,
+            "total_lines": 1389,
+            "functions": 1,
+            "classes": 0
+          },
+          "artifact_identities": [
+            {
+              "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/hierarchical_pomdp/pymdp/Hierarchical_Active_Inference_POMDP_pymdp.py",
+              "sha256": "971ed3cf750cf9ab9c0e70874f7a7dfdf91405a1c42682e7b00921924ba4bc9c"
+            }
+          ]
+        },
+        "rxinfer": {
+          "success": true,
+          "message": "Generated RxInfer.jl simulation script: /private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/hierarchical_pomdp/rxinfer/Hierarchical_Active_Inference_POMDP_rxinfer.jl",
+          "output_files": [
+            "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/hierarchical_pomdp/rxinfer/Hierarchical_Active_Inference_POMDP_rxinfer.jl"
+          ],
+          "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/hierarchical_pomdp/rxinfer",
+          "warnings": [
+            "rxinfer has limited multi-modality support"
+          ],
+          "code_metrics": {
+            "lines_of_code": 451,
+            "total_lines": 547,
+            "functions": 13,
+            "classes": 0
+          },
+          "artifact_identities": [
+            {
+              "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/hierarchical_pomdp/rxinfer/Hierarchical_Active_Inference_POMDP_rxinfer.jl",
+              "sha256": "63273b19147787f3a2c43000293b9254b67472304d2d14fd7b29a3e840c4268b"
+            }
+          ]
+        },
+        "activeinference_jl": {
+          "success": true,
+          "message": "Successfully rendered ActiveInference.jl script to Hierarchical_Active_Inference_POMDP_activeinference.jl",
+          "output_files": [
+            "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/hierarchical_pomdp/activeinference_jl/Hierarchical_Active_Inference_POMDP_activeinference.jl"
+          ],
+          "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/hierarchical_pomdp/activeinference_jl",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 236,
+            "total_lines": 265,
+            "functions": 13,
+            "classes": 0
+          },
+          "artifact_identities": [
+            {
+              "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/hierarchical_pomdp/activeinference_jl/Hierarchical_Active_Inference_POMDP_activeinference.jl",
+              "sha256": "cbbe2e6587b41f76b80cb3c127bb308d8dea08a094b93f45c919711ee8451d70"
+            }
+          ]
+        },
+        "jax": {
+          "success": true,
+          "message": "JAX model generated successfully.",
+          "output_files": [
+            "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/hierarchical_pomdp/jax/Hierarchical_Active_Inference_POMDP_jax.py"
+          ],
+          "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/hierarchical_pomdp/jax",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 295,
+            "total_lines": 431,
+            "functions": 13,
+            "classes": 0
+          },
+          "artifact_identities": [
+            {
+              "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/hierarchical_pomdp/jax/Hierarchical_Active_Inference_POMDP_jax.py",
+              "sha256": "897dc9c7060f20af865d197c9fc6e6f64c384177841fbd0ac4155d16762e9c09"
+            }
+          ]
+        },
+        "discopy": {
+          "success": true,
+          "message": "Generated DisCoPy categorical diagram script: /private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/hierarchical_pomdp/discopy/Hierarchical_Active_Inference_POMDP_discopy.py",
+          "output_files": [
+            "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/hierarchical_pomdp/discopy/Hierarchical_Active_Inference_POMDP_discopy.py"
+          ],
+          "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/hierarchical_pomdp/discopy",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 167,
+            "total_lines": 258,
+            "functions": 7,
+            "classes": 0
+          },
+          "artifact_identities": [
+            {
+              "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/hierarchical_pomdp/discopy/Hierarchical_Active_Inference_POMDP_discopy.py",
+              "sha256": "f70c178c0491a48a5ef759cd9d815aada022cd987aa1c6ba125b12410833029a"
+            }
+          ]
+        },
+        "pytorch": {
+          "success": true,
+          "message": "PyTorch script generated: /private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/hierarchical_pomdp/pytorch/Hierarchical_Active_Inference_POMDP_pytorch.py",
+          "output_files": [
+            "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/hierarchical_pomdp/pytorch/Hierarchical_Active_Inference_POMDP_pytorch.py"
+          ],
+          "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/hierarchical_pomdp/pytorch",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 156,
+            "total_lines": 197,
+            "functions": 1,
+            "classes": 0
+          },
+          "artifact_identities": [
+            {
+              "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/hierarchical_pomdp/pytorch/Hierarchical_Active_Inference_POMDP_pytorch.py",
+              "sha256": "90cd5e6e7b9179904823756f15175e5da3a8cd3c9cac54301bd99259c6d62fc7"
+            }
+          ]
+        },
+        "numpyro": {
+          "success": true,
+          "message": "NumPyro script generated: /private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/hierarchical_pomdp/numpyro/Hierarchical_Active_Inference_POMDP_numpyro.py",
+          "output_files": [
+            "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/hierarchical_pomdp/numpyro/Hierarchical_Active_Inference_POMDP_numpyro.py"
+          ],
+          "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/hierarchical_pomdp/numpyro",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 159,
+            "total_lines": 199,
+            "functions": 1,
+            "classes": 0
+          },
+          "artifact_identities": [
+            {
+              "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/hierarchical_pomdp/numpyro/Hierarchical_Active_Inference_POMDP_numpyro.py",
+              "sha256": "291d1eec80b8742f05d0446763dfa0c4ee75f59092e39e1e2cc5c872e16fcbb1"
+            }
+          ]
+        },
+        "stan": {
+          "success": true,
+          "message": "Stan discrete POMDP/HMM program generated: Hierarchical_Active_Inference_POMDP_stan.stan (+ driver Hierarchical_Active_Inference_POMDP_stan.py)",
+          "output_files": [
+            "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/hierarchical_pomdp/stan/Hierarchical_Active_Inference_POMDP_stan.py",
+            "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/hierarchical_pomdp/stan/Hierarchical_Active_Inference_POMDP_stan.stan"
+          ],
+          "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/hierarchical_pomdp/stan",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 140,
+            "total_lines": 158,
+            "functions": 2,
+            "classes": 0
+          },
+          "artifact_identities": [
+            {
+              "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/hierarchical_pomdp/stan/Hierarchical_Active_Inference_POMDP_stan.py",
+              "sha256": "7d9f243720835f9d7656c4d124e2469c090d3b8f76dfa1a3f068bf483ef6a96d"
+            },
+            {
+              "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/hierarchical_pomdp/stan/Hierarchical_Active_Inference_POMDP_stan.stan",
+              "sha256": "466fcb8917d61d6bf987950f84b2ccdc5f3c476e56d84465da1fddf7a6982231"
+            }
+          ]
+        },
+        "bnlearn": {
+          "success": true,
+          "message": "bnlearn code generated",
+          "output_files": [
+            "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/hierarchical_pomdp/bnlearn/Hierarchical_Active_Inference_POMDP_bnlearn.py"
+          ],
+          "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/hierarchical_pomdp/bnlearn",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 65,
+            "total_lines": 71,
+            "functions": 2,
+            "classes": 1
+          },
+          "artifact_identities": [
+            {
+              "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/hierarchical_pomdp/bnlearn/Hierarchical_Active_Inference_POMDP_bnlearn.py",
+              "sha256": "8427f3a468425ec2d661250cd7d96a433bff2f066f3bc693c5fb8bc36c7f1b0a"
+            }
+          ]
+        }
+      },
+      "summary_file": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/hierarchical_pomdp/processing_summary.json",
+      "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/hierarchical_pomdp",
+      "base_output_dir": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/hierarchical_pomdp",
+      "source_identity": {
+        "path": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/hierarchical/hierarchical_pomdp.md",
+        "sha256": "d43cbeafa28a2cf48578c069d90d86792f4b5cb578b0fe38664c44d6e6cbf260"
+      }
+    }
+  },
+  "total_files": 4,
+  "successful_files": 4,
+  "failed_files": 0,
+  "total_framework_attempts": 36,
+  "successful_framework_renderings": 36,
+  "framework_success_rate": 100.0,
+  "failed_framework_renderings": [],
+  "unsupported_framework_renderings": []
+}
