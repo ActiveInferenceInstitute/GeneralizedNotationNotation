@@ -215,7 +215,7 @@ class _DirectMarkdownParser:
                 continue
             if "=" in line:
                 key, value = line.split("=", 1)
-                time_spec[key.strip()] = value.strip()
+                time_spec[key.strip().lower()] = value.strip()
             else:
                 time_spec["time_type"] = line
         return time_spec
