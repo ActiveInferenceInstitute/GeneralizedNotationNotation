@@ -11,6 +11,8 @@ from typing import Any, Dict
 logger = logging.getLogger(__name__)
 
 # Import utilities from the advanced_visualization module
+from gnn.utils.mcp_dispatch import run_pipeline_step_mcp
+
 from . import D2_AVAILABLE, process_advanced_viz
 
 # MCP Tools for Advanced Visualization Module
@@ -34,33 +36,25 @@ def process_advanced_visualization_mcp(
     Returns:
         Dictionary with operation status and results.
     """
-    try:
-        # ``generate_d2=False`` restricts to non-D2 visualization; otherwise let
-        # the processor run all viz types (its default).
-        viz_type = "all" if generate_d2 else "network"
-        success = process_advanced_viz(
-            target_dir=Path(target_directory),
-            output_dir=Path(output_directory),
-            viz_type=viz_type,
-        )
-        return {
-            "success": success,
-            "target_directory": target_directory,
-            "output_directory": output_directory,
-            "d2_available": D2_AVAILABLE,
-            "generate_d2": generate_d2,
-            "message": (
-                "Advanced visualization processing "
-                f"{'completed successfully' if success else 'failed'} "
-                f"(viz_type={viz_type})"
-            ),
-        }
-    except Exception as e:
-        logger.error(
-            f"Error in process_advanced_visualization_mcp for {target_directory}: {e}",
-            exc_info=True,
-        )
-        return {"success": False, "error": str(e)}
+    # ``generate_d2=False`` restricts to non-D2 visualization; otherwise let
+    # the processor run all viz types (its default).
+    viz_type = "all" if generate_d2 else "network"
+    return run_pipeline_step_mcp(
+        process_advanced_viz,
+        wrapper_name="process_advanced_visualization_mcp",
+        logger=logger,
+        target_directory=target_directory,
+        output_directory=output_directory,
+        verbose=verbose,
+        pass_verbose=False,
+        extra_step_kwargs={"viz_type": viz_type},
+        static_extras={"d2_available": D2_AVAILABLE, "generate_d2": generate_d2},
+        message_builder=lambda ok: (
+            "Advanced visualization processing "
+            f"{'completed successfully' if ok else 'failed'} "
+            f"(viz_type={viz_type})"
+        ),
+    )
 
 
 def check_visualization_capabilities_mcp() -> Dict[str, Any]:

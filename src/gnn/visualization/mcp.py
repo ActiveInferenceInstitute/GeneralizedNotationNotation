@@ -11,6 +11,8 @@ from typing import Any, Dict, List
 
 logger = logging.getLogger(__name__)
 
+from gnn.utils.mcp_dispatch import run_pipeline_step_mcp
+
 from . import get_module_info as _get_mod_info
 from . import get_visualization_options, process_visualization
 
@@ -32,29 +34,26 @@ def process_visualization_mcp(
     Returns:
         Dictionary with success status and visualization summary.
     """
-    try:
-        success = process_visualization(
-            target_dir=Path(target_directory),
-            output_dir=Path(output_directory),
-            verbose=verbose,
-        )
-        # Count output files
+
+    def _interpret(raw: Any) -> tuple[bool, Dict[str, Any], str | None]:
         out = Path(output_directory)
         n_files = (
             len(list(out.rglob("*.png")) + list(out.rglob("*.svg")))
             if out.exists()
             else 0
         )
-        return {
-            "success": success,
-            "target_directory": target_directory,
-            "output_directory": output_directory,
-            "output_files_count": n_files,
-            "message": f"Visualization {'completed successfully' if success else 'completed with issues'}",
-        }
-    except Exception as e:
-        logger.error(f"process_visualization_mcp error: {e}", exc_info=True)
-        return {"success": False, "error": str(e)}
+        return bool(raw), {"output_files_count": n_files}, None
+
+    return run_pipeline_step_mcp(
+        process_visualization,
+        wrapper_name="process_visualization_mcp",
+        logger=logger,
+        target_directory=target_directory,
+        output_directory=output_directory,
+        verbose=verbose,
+        interpret_result=_interpret,
+        label="Visualization",
+    )
 
 
 def get_visualization_options_mcp() -> Dict[str, Any]:

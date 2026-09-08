@@ -6,7 +6,6 @@ This module provides comprehensive testing for:
 - pipeline.pipeline_step_template
 - pipeline.pipeline_validation
 - pipeline.verify_pipeline
-- utils.migration_helper
 - utils.pipeline_monitor
 - utils.resource_manager
 - utils.script_validator
@@ -174,41 +173,6 @@ class TestVerifyPipeline:
         result = verify_step_files()
         assert isinstance(result, dict)
         assert "success" in result or "existing_files" in result
-
-
-class TestUtilsMigrationHelper:
-    """Test utils.migration_helper module."""
-
-    @pytest.mark.unit
-    def test_migration_imports(self) -> None:
-        """Test that migration helper can be imported."""
-        from gnn.utils import migration_helper
-
-        assert hasattr(migration_helper, "PipelineMigrationHelper")
-        assert hasattr(migration_helper, "main")
-        assert callable(migration_helper.PipelineMigrationHelper)
-
-    @pytest.mark.unit
-    def test_migration_helper_class(self, project_root: Any) -> None:
-        """Test PipelineMigrationHelper class functionality."""
-        from gnn.utils.migration_helper import PipelineMigrationHelper
-
-        src_dir = project_root / "src" / "gnn"
-        helper = PipelineMigrationHelper(src_dir)
-        assert hasattr(helper, "analyze_module")
-        assert hasattr(helper, "apply_improvements")
-
-    @pytest.mark.unit
-    def test_analyze_module(self, project_root: Any) -> None:
-        """Test analyze_module function."""
-        from gnn.utils.migration_helper import PipelineMigrationHelper
-
-        src_dir = project_root / "src" / "gnn"
-        helper = PipelineMigrationHelper(src_dir)
-        sample_module = src_dir / "3_gnn.py"
-        if sample_module.exists():
-            result = helper.analyze_module(sample_module)
-            assert isinstance(result, dict)
 
 
 class TestUtilsPipelineMonitor:

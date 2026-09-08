@@ -12,6 +12,8 @@ from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
+from gnn.utils.mcp_dispatch import run_pipeline_step_mcp
+
 from . import process_analysis
 
 
@@ -29,21 +31,15 @@ def process_analysis_mcp(
     Returns:
         Dictionary with success status and summary of analysis performed.
     """
-    try:
-        success = process_analysis(
-            target_dir=Path(target_directory),
-            output_dir=Path(output_directory),
-            verbose=verbose,
-        )
-        return {
-            "success": success,
-            "target_directory": target_directory,
-            "output_directory": output_directory,
-            "message": f"Analysis {'completed successfully' if success else 'completed with issues'}",
-        }
-    except Exception as e:
-        logger.error(f"process_analysis_mcp error: {e}", exc_info=True)
-        return {"success": False, "error": str(e)}
+    return run_pipeline_step_mcp(
+        process_analysis,
+        wrapper_name="process_analysis_mcp",
+        logger=logger,
+        target_directory=target_directory,
+        output_directory=output_directory,
+        verbose=verbose,
+        label="Analysis",
+    )
 
 
 def get_analysis_results_mcp(

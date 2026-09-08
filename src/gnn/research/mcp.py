@@ -13,6 +13,8 @@ from typing import Any, Dict, List
 
 logger = logging.getLogger(__name__)
 
+from gnn.utils.mcp_dispatch import run_pipeline_step_mcp
+
 from . import process_research
 
 
@@ -33,21 +35,15 @@ def process_research_mcp(
     Returns:
         Dictionary with success status and research summary.
     """
-    try:
-        success = process_research(
-            target_dir=Path(target_directory),
-            output_dir=Path(output_directory),
-            verbose=verbose,
-        )
-        return {
-            "success": success,
-            "target_directory": target_directory,
-            "output_directory": output_directory,
-            "message": f"Research processing {'completed successfully' if success else 'completed with issues'}",
-        }
-    except Exception as e:
-        logger.error(f"process_research_mcp error: {e}", exc_info=True)
-        return {"success": False, "error": str(e)}
+    return run_pipeline_step_mcp(
+        process_research,
+        wrapper_name="process_research_mcp",
+        logger=logger,
+        target_directory=target_directory,
+        output_directory=output_directory,
+        verbose=verbose,
+        label="Research processing",
+    )
 
 
 def list_research_topics_mcp() -> Dict[str, Any]:
