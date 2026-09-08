@@ -14,6 +14,10 @@ maintained transports use the default envelope.
 
 from __future__ import annotations
 
+import datetime
+import json
+import math
+import os
 from typing import Any
 
 __all__ = [
@@ -25,6 +29,9 @@ __all__ = [
     "INTERNAL_ERROR",
     "jsonrpc_result",
     "jsonrpc_error",
+    "sanitize_json_value",
+    "serialize_response",
+    "tag_non_json_values",
 ]
 
 JSONRPC_VERSION = "2.0"
@@ -35,6 +42,12 @@ INVALID_REQUEST = -32600
 METHOD_NOT_FOUND = -32601
 INVALID_PARAMS = -32602
 INTERNAL_ERROR = -32603
+
+# Maximum container nesting the wire walkers descend into. A cyclic or
+# pathologically nested payload raises ValueError here — a normal exception
+# with stack room left for the caller's fallback path — instead of a
+# RecursionError at the interpreter limit, whose handler itself can fail.
+_MAX_SANITIZE_DEPTH = 100
 
 
 def validate_request(request: Any) -> dict[str, Any] | None:
@@ -106,3 +119,128 @@ def jsonrpc_error(
     if request_id is not None or not omit_id_when_none:
         response["id"] = request_id
     return response
+
+
+# --- Wire serialization ----------------------------------------------------------------
+#
+# Tool results and error payloads are produced by arbitrary callables, so the
+# transports must never assume a payload is JSON-serializable: a set, a
+# datetime, a numpy scalar, or a NaN float would otherwise crash the stdio
+# writer thread (silently hanging the client), abort the HTTP response
+# mid-write, or emit bare NaN/Infinity tokens that strict JSON parsers reject
+# (RFC 8259 §6 requires interoperable implementations to never emit them).
+# Every transport serializes outgoing envelopes through serialize_response.
+
+
+def _non_finite_float_token(value: float) -> str:
+    """Canonical JSON-safe token for a non-finite float."""
+    if value != value:
+        return "NaN"
+    return "Infinity" if value > 0 else "-Infinity"
+
+
+def sanitize_json_value(value: Any, _depth: int = 0) -> Any:
+    """Return a JSON-serializable deep copy of ``value``.
+
+    Non-finite floats become their canonical string tokens; sets and
+    frozensets become deterministically ordered lists; bytes decode with a
+    lossless backslash escape; datetimes use ISO format; paths render via
+    ``os.fspath``; numpy-style scalars unwrap via ``item()``; every other
+    non-serializable object degrades to ``str``.
+
+    Nesting deeper than ``_MAX_SANITIZE_DEPTH`` (e.g. a cyclic structure)
+    raises ``ValueError``.
+    """
+    if _depth > _MAX_SANITIZE_DEPTH:
+        raise ValueError(
+            f"JSON payload nesting exceeds maximum depth {_MAX_SANITIZE_DEPTH}"
+        )
+    if value is None or isinstance(value, (bool, str, int)):
+        return value
+    if isinstance(value, float):
+        return value if math.isfinite(value) else _non_finite_float_token(value)
+    if isinstance(value, dict):
+        return {
+            k
+            if isinstance(k, (str, int, bool)) or k is None
+            else str(k): sanitize_json_value(v, _depth + 1)
+            for k, v in value.items()
+        }
+    if isinstance(value, (list, tuple)):
+        return [sanitize_json_value(item, _depth + 1) for item in value]
+    if isinstance(value, (set, frozenset)):
+        sanitized = [sanitize_json_value(item, _depth + 1) for item in value]
+        sanitized.sort(key=repr)
+        return sanitized
+    if isinstance(value, bytes):
+        return value.decode("utf-8", errors="backslashreplace")
+    if isinstance(value, (datetime.date, datetime.time, datetime.datetime)):
+        return value.isoformat()
+    if isinstance(value, os.PathLike):
+        return os.fspath(value)
+    to_item = getattr(value, "item", None)  # numpy scalars and 0-d arrays
+    if callable(to_item):
+        try:
+            return sanitize_json_value(to_item(), _depth + 1)
+        except Exception:  # noqa: BLE001 — degrade to str() below
+            pass
+    return str(value)
+
+
+def serialize_response(
+    payload: Any,
+    *,
+    indent: int | None = None,
+    separators: tuple[str, str] | None = None,
+    ensure_ascii: bool = False,
+) -> str:
+    """Serialize an outgoing payload to protocol-valid JSON text.
+
+    All transports must route results AND error envelopes through this one
+    helper so a payload produced by an arbitrary tool callable can never
+    crash a writer thread or emit invalid JSON. Raises ``ValueError`` for
+    payloads deeper than ``_MAX_SANITIZE_DEPTH`` (callers convert that into a
+    string-only -32603 fallback envelope, which this helper serializes
+    trivially).
+    """
+    return json.dumps(
+        sanitize_json_value(payload),
+        indent=indent,
+        separators=separators,
+        ensure_ascii=ensure_ascii,
+        allow_nan=False,
+    )
+
+
+def tag_non_json_values(value: Any, _depth: int = 0) -> Any:
+    """Deep-copy ``value`` with non-JSON-native values replaced by typed tags.
+
+    Used for result-cache keys so structurally distinct params can never alias
+    to one key the way plain ``json.dumps(..., default=str)`` allowed (the set
+    ``{1}`` and the string ``"{1}"`` both stringify to ``"{1}"``).
+    """
+    if _depth > _MAX_SANITIZE_DEPTH:
+        raise ValueError(
+            f"JSON payload nesting exceeds maximum depth {_MAX_SANITIZE_DEPTH}"
+        )
+    if value is None or isinstance(value, (bool, str)):
+        return value
+    if isinstance(value, float):
+        if math.isfinite(value):
+            return value
+        return {"__json_type__": "float", "repr": repr(value)}
+    if isinstance(value, int):
+        return value
+    if isinstance(value, dict):
+        return {
+            k if isinstance(k, str) else str(k): tag_non_json_values(v, _depth + 1)
+            for k, v in value.items()
+        }
+    if isinstance(value, (list, tuple)):
+        return [tag_non_json_values(item, _depth + 1) for item in value]
+    if isinstance(value, (set, frozenset)):
+        return {
+            "__json_type__": "set",
+            "items": sorted(repr(item) for item in value),
+        }
+    return {"__json_type__": type(value).__name__, "repr": repr(value)}
