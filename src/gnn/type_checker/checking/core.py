@@ -128,7 +128,7 @@ class GNNTypeChecker:
       structured metadata (``variables``, ``connections``, ``sections``,
       ``time_dynamics``, ``model_complexity``, ...). The CLI artifact layer
       re-keys the same verdict as ``is_valid``; renderers accept either.
-    - :meth:`check_file` returns the legacy CLI 4-tuple
+    - :meth:`check_file` returns the CLI 4-tuple
       ``(valid, errors, warnings, result_dict)`` derived from the dict.
     - :meth:`validate_gnn_files` returns the pipeline exit sentinel:
       ``True`` (exit 0), ``2`` (SUCCESS_WITH_WARNINGS), ``False`` (exit 1).
