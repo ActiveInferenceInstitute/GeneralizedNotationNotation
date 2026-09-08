@@ -160,9 +160,7 @@ class StdioMCPClient:
         # not via a raw URI as method. The earlier guess-work (sending the URI
         # as a method name) could never retrieve a resource.
         """Return resource."""
-        return self._send_request(
-            method="mcp.resource.get", params={"uri": uri}
-        )
+        return self._send_request(method="mcp.resource.get", params={"uri": uri})
 
 
 # --- CLI Subcommands ---

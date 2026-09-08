@@ -51,6 +51,7 @@ def list_available_resources() -> list:
 
     return list(mcp_instance.list_available_resources())
 
+
 # -- Module metadata -----------------------------------------------------------------
 __version__ = "3.3.0"
 __author__ = "Active Inference Institute"
