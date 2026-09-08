@@ -15,7 +15,6 @@ src/gnn/utils/
 ├── logging_utils.py                 # Facade over structured logging (setup_step_logging, log_step_*)
 ├── structured_logging.py            # Structured pipeline logging with correlation IDs
 ├── visual_logging.py                # Visual log formatting
-├── diagnostic_logging.py            # Diagnostic logging utilities
 │
 ├── # Configuration & Arguments
 ├── arg_definitions.py               # Shared STEP_ARGUMENTS/constants
@@ -30,16 +29,12 @@ src/gnn/utils/
 ├── pipeline_template.py             # Standardized pipeline script templates
 ├── pipeline_dependencies.py         # Step dependency management
 ├── pipeline_monitor.py              # Pipeline health monitoring
-├── pipeline_planner.py              # Execution planning
 ├── pipeline_validator.py            # Validation utilities
 ├── pipeline_arguments.py            # Pipeline-level argument building
 ├── pipeline_config_merge.py         # Configuration merging
 ├── pipeline_step_dependencies.py    # Step dependency declarations
 │
 ├── # Dependency Management
-├── dependency_audit.py              # Dependency auditing
-├── dependency_installer.py          # Dependency installation
-├── dependency_manager.py            # Dependency management
 ├── dependency_validator.py          # Dependency validation
 │
 ├── # Error Handling & Recovery
@@ -54,14 +49,12 @@ src/gnn/utils/
 │
 ├── # Testing & Validation
 ├── test_utils.py                    # Test utilities
-├── script_validator.py              # Script validation
 ├── validation_schemas.py            # Shared validation schemas
 │
 ├── # Utilities
 ├── base_processor.py                # Base processor class
 ├── execution_utils.py               # Execution helpers
 ├── io_utils.py                      # I/O utilities
-├── network_utils.py                 # Network utilities
 ├── path_utils.py                    # Path utilities
 ├── safe_eval.py                     # Bounded literal evaluation for untrusted strings
 ├── system_utils.py                  # System utilities
@@ -72,8 +65,6 @@ src/gnn/utils/
 │
 ├── # Specialized
 ├── mcp.py                           # MCP integration
-├── migration_helper.py              # Migration utilities
-├── simulation_monitor.py            # Simulation monitoring
 ├── simulation_utils.py              # Simulation utilities
 ├── code_metrics.py                  # Code metrics collection
 └── logging/                         # Logging subpackage (see logging/README.md)
