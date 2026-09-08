@@ -66,16 +66,16 @@ are pinned.
 
 ### Smaller scoped cleanups (independent of the majors)
 
-- `setup_step_logging` residue: RESOLVED 2026-09-07 where it was real -
-  the `gnn.utils.pipeline` delegate and `utils/migration_helper.py` fossil
-  are gone; `utils/logging_utils.py` stays (documented facade entry with
-  its own tested `PipelineLogger`; retiring it is a rename-class change).
-- Audit the 87 `ruff --select F401,F811` findings (currently
-  policy-ignored in `pyproject.toml` with an "optional deps,
-  import-or-skip probes" rationale): split the global ignore into
-  per-file-ignores that keep the guarded optional-dependency probes and
-  facade re-exports while removing genuinely dead imports
-  (e.g. `src/gnn/parsers/*`, `src/gnn/api/app.py`).
+- ruff F401/F811 policy ignore: RESOLVED 2026-09-07 - the global
+  `F401`/`F811` ignore entries are gone from pyproject; nine genuine
+  re-export surfaces (six MAJ-04 facades, `round_trip_availability`,
+  `visualizer_style`, `execute/processor.py`) and the `src/gnn/parsers/*`
+  guarded optional-backend probes hold documented per-file-ignores, and
+  66 genuinely dead imports were removed (57 src/gnn, 10 scripts, 9 F811
+  re-imports). `ruff --select F401,F811 src/gnn` now reports 0 findings;
+  `ruff check src/gnn scripts`, mypy, and the full suite stayed green
+  (4285 passed). Consumer safety: AST-resolved `from <module> import`
+  scan across src/gnn, tests, and scripts against every removed name.
 - Local/CI parity: tokens and skills-health are CI-wired via
   `.github/workflows/local-gates.yml` (2026-09-07; `skills-health` also
   needed a repo-root sys.path bootstrap). `just gridworld` remains
