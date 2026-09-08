@@ -12,6 +12,31 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List, Optional, cast
 
+__all__ = [
+    "FORCE_LAYOUT_SEED",
+    "LAYOUT_SEED",
+    "LAYOUT_SPAN",
+    "LAYOUT_ITERATIONS",
+    "LAYOUT_STEP",
+    "NUMPY_AVAILABLE",
+    "MATPLOTLIB_AVAILABLE",
+    "SEABORN_AVAILABLE",
+    "np",
+    "plt",
+    "sns",
+    "VAR_TYPE_COLORS",
+    "VAR_TYPE_UNKNOWN_COLOR",
+    "AdvancedVisualizationAttempt",
+    "AdvancedVisualizationResults",
+    "record_attempt",
+    "normalize_connection_format",
+    "_conn_endpoints",
+    "_calculate_semantic_positions",
+    "validate_visualization_data",
+    "_generate_fallback_report",
+    "_MatrixVisualizer",
+]
+
 FORCE_LAYOUT_SEED = 42
 LAYOUT_SEED = FORCE_LAYOUT_SEED
 LAYOUT_SPAN = 10.0
@@ -153,7 +178,7 @@ def record_attempt(
 
 
 def _calculate_semantic_positions(
-    variables: List[Dict], connections: List[Dict]
+    variables: List[Dict[str, Any]], connections: List[Dict[str, Any]]
 ) -> Any:
     """
     Calculate meaningful 3D positions for variables based on semantic relationships.
@@ -231,7 +256,7 @@ def _generate_fallback_report(
     model_name: str,
     viz_type: str,
     output_dir: Path,
-    model_data: Dict,
+    model_data: Dict[str, Any],
     logger: logging.Logger,
 ) -> Any:
     """Generate recovery HTML report when advanced libraries unavailable"""
@@ -268,7 +293,7 @@ def _generate_fallback_report(
 
 
 def validate_visualization_data(
-    model_data: Dict, logger: logging.Logger
+    model_data: Dict[str, Any], logger: logging.Logger
 ) -> Dict[str, Any]:
     """
     Validate that visualization data is complete and meaningful.

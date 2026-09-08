@@ -19,6 +19,7 @@ from pathlib import Path
 from typing import Any, Dict, List
 
 import matplotlib
+from matplotlib.patches import Circle
 
 matplotlib.use("Agg")
 import matplotlib.animation as animation
@@ -331,7 +332,7 @@ def _draw_graph_model(
             color = (0.85, 0.85, 0.85)
             alpha = 0.9
 
-        circle = plt.Circle(
+        circle = Circle(
             (x, y), 0.05, color=color, alpha=alpha, ec="#333", lw=1.5, zorder=5
         )
         ax.add_patch(circle)

@@ -113,7 +113,7 @@ def probe_capabilities() -> dict[str, Any]:
     }
 
 
-def get_module_info() -> dict:
+def get_module_info() -> dict[str, Any]:
     """Return module metadata for composability and MCP discovery."""
     return {
         "name": "advanced_visualization",

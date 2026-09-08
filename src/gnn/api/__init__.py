@@ -43,7 +43,7 @@ FEATURES: dict[str, Any] = {
 __all__: list[str] = ["MODULE_NAME", "MODULE_VERSION", "FASTAPI_AVAILABLE", "FEATURES"]
 
 
-def get_module_info() -> dict:
+def get_module_info() -> dict[str, Any]:
     """Return module metadata for composability and MCP discovery."""
     return {
         "name": "api",

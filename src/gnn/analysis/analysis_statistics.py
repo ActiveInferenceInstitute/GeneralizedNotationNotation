@@ -176,3 +176,15 @@ def calculate_correlations(
                 correlations["line_position_correlation"] = 0.0
 
     return correlations
+
+
+# Explicit re-export surface (no_implicit_reexport).
+__all__ = [
+    "SCIPY_AVAILABLE",
+    "analyze_distributions",
+    "calculate_connection_statistics",
+    "calculate_correlations",
+    "calculate_section_statistics",
+    "calculate_variable_statistics",
+    "stats",
+]
