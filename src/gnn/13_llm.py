@@ -6,15 +6,15 @@ This step orchestrates LLM processing for GNN models.
 
 Architectural Role:
     This is a "thin orchestrator" - a minimal script that delegates core functionality
-    to the corresponding module (src/llm/). It handles argument parsing, logging
+    to the corresponding module (src/gnn/llm/). It handles argument parsing, logging
     setup, and calls the actual processing functions from the llm module.
 
 Pipeline Flow:
     main.py → 13_llm.py (this script) → llm/ (modular implementation)
 
 How to run:
-  python src/13_llm.py --target-dir input/gnn_files --output-dir output --verbose
-  python src/main.py  # (runs as part of the pipeline)
+  python src/gnn/13_llm.py --target-dir input/gnn_files --output-dir output --verbose
+  python src/gnn/main.py  # (runs as part of the pipeline)
 
 Expected outputs:
   - LLM processing results in the specified output directory
@@ -24,7 +24,7 @@ Expected outputs:
 
 If you encounter errors:
   - Check that LLM dependencies are installed
-  - Check that src/llm/ contains LLM modules
+  - Check that src/gnn/llm/ contains LLM modules
   - Check that the output directory is writable
   - Verify LLM configuration and requirements
 """

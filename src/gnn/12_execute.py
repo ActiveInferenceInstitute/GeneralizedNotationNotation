@@ -6,15 +6,15 @@ This step orchestrates execute processing for GNN models.
 
 Architectural Role:
     This is a "thin orchestrator" - a minimal script that delegates core functionality
-    to the corresponding module (src/execute/). It handles argument parsing, logging
+    to the corresponding module (src/gnn/execute/). It handles argument parsing, logging
     setup, and calls the actual processing functions from the execute module.
 
 Pipeline Flow:
     main.py → 12_execute.py (this script) → execute/ (modular implementation)
 
 How to run:
-  python src/12_execute.py --target-dir input/gnn_files --output-dir output --verbose
-  python src/main.py  # (runs as part of the pipeline)
+  python src/gnn/12_execute.py --target-dir input/gnn_files --output-dir output --verbose
+  python src/gnn/main.py  # (runs as part of the pipeline)
 
 Expected outputs:
   - Execute processing results in the specified output directory
@@ -24,7 +24,7 @@ Expected outputs:
 
 If you encounter errors:
   - Check that execute dependencies are installed
-  - Check that src/execute/ contains execute modules
+  - Check that src/gnn/execute/ contains execute modules
   - Check that the output directory is writable
   - Verify execute configuration and requirements
 """

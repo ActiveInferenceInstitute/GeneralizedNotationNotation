@@ -1,1 +1,1 @@
-"""Test package mirroring src/ontology/ layout."""
+"""Test package mirroring src/gnn/ontology/ layout."""

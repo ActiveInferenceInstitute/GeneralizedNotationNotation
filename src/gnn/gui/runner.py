@@ -18,15 +18,15 @@ _ORCHESTRATOR_SCRIPT = "22_gui.py"
 def resolve_output_root(output_dir: Path) -> Path:
     """Normalize ``output_dir`` to the pipeline-standard step output root.
 
-    Uses ``pipeline.config.get_output_dir_for_script`` when the pipeline
-    package is importable and falls back to the caller-supplied directory
-    otherwise (e.g. when the GUI runners are used outside the pipeline).
+    Delegates to ``pipeline.config.resolve_step_output_dir`` when the
+    pipeline package is importable; returns the caller-supplied directory
+    for standalone GUI runner use outside the package.
     """
     try:
-        from gnn.pipeline.config import get_output_dir_for_script
+        from gnn.pipeline.config import resolve_step_output_dir
 
-        return Path(get_output_dir_for_script(_ORCHESTRATOR_SCRIPT, output_dir))
-    except Exception:  # pragma: no cover - depends on pipeline availability
+        return Path(resolve_step_output_dir("22_gui", output_dir))
+    except ImportError:
         return Path(output_dir)
 
 
