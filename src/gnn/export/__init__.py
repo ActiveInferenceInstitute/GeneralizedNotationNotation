@@ -31,6 +31,7 @@ from .processor import (
 from .registry import (
     get_export_registry,
     get_format_categories,
+    is_supported_format,
 )
 from .utils import get_module_info
 
@@ -84,7 +85,7 @@ def get_supported_formats_dict() -> dict:
 
 def validate_export_format(format_name: str) -> bool:
     """Return True if the format is supported, False otherwise."""
-    return format_name in get_export_registry()
+    return is_supported_format(format_name)
 
 
 class Exporter:
