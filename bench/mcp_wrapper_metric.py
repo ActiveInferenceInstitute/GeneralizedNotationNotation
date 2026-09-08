@@ -48,7 +48,12 @@ logging.disable(logging.CRITICAL)
 
 
 def scan_wrapper_loc() -> tuple[int, int]:
-    """Return (total lines, count) over all process_*_mcp defs under src/gnn."""
+    """Return (total non-docstring lines, count) over process_*_mcp defs.
+
+    Docstring lines are excluded: they are per-module human documentation,
+    not the copy-pasted executable envelope MAJ-06 collapses. The metric
+    counts the def line, signature, and every executable body line.
+    """
     total_lines = 0
     count = 0
     for py in sorted(SRC.rglob("*.py")):
@@ -62,8 +67,17 @@ def scan_wrapper_loc() -> tuple[int, int]:
                 end_lineno = node.end_lineno
                 if end_lineno is None:  # pragma: no cover - FunctionDef always has one
                     continue
+                span = end_lineno - node.lineno + 1
+                first = node.body[0]
+                if (
+                    isinstance(first, ast.Expr)
+                    and isinstance(first.value, ast.Constant)
+                    and isinstance(first.value.value, str)
+                    and first.end_lineno is not None
+                ):
+                    span -= first.end_lineno - first.lineno + 1
                 count += 1
-                total_lines += end_lineno - node.lineno + 1
+                total_lines += span
     return total_lines, count
 
 
