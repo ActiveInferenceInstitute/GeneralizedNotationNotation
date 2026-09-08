@@ -394,7 +394,10 @@ omit = [
 ]
 
 [tool.coverage.report]
-fail_under = 50
+# Raised from 50 by deep-horizon wave 2 (MAJ-T1): CI dev-only coverage
+# measures 60.56% (run 34240450010) and the wave-2 extras harness measures
+# 61.14%; the floor pins that improvement with headroom for platform jitter.
+fail_under = 60
 exclude_lines = [
     "pragma: no cover",
     "def __repr__",
