@@ -11,6 +11,8 @@ from typing import Any, Dict, Optional
 
 logger = logging.getLogger(__name__)
 
+from gnn.utils.mcp_dispatch import run_pipeline_step_mcp
+
 from . import process_render
 from .framework_registry import get_available_renderers, get_supported_frameworks
 
@@ -29,34 +31,29 @@ def process_render_mcp(
     Returns:
         Dictionary with success status and render summary.
     """
-    try:
-        raw = process_render(
-            target_dir=Path(target_directory),
-            output_dir=Path(output_directory),
-            verbose=verbose,
-        )
+    def _interpret(raw: Any) -> tuple[bool, Dict[str, Any], str | None]:
         # Phase 1.1 contract: process_render may return bool OR int (0/1/2).
         # Coerce to MCP bool envelope; surface "skipped" separately.
         if isinstance(raw, bool):
-            success = raw
-            skipped = False
+            success, skipped = raw, False
         else:  # int
-            success = raw in (0, 2)
-            skipped = raw == 2
-        if skipped:
-            message = "Render skipped (no GNN files found)"
-        else:
-            message = f"Render {'completed successfully' if success else 'completed with issues'}"
-        return {
-            "success": success,
-            "skipped": skipped,
-            "target_directory": target_directory,
-            "output_directory": output_directory,
-            "message": message,
-        }
-    except Exception as e:
-        logger.error(f"process_render_mcp error: {e}", exc_info=True)
-        return {"success": False, "error": str(e)}
+            success, skipped = raw in (0, 2), raw == 2
+        message = (
+            "Render skipped (no GNN files found)"
+            if skipped
+            else f"Render {'completed successfully' if success else 'completed with issues'}"
+        )
+        return success, {"skipped": skipped}, message
+
+    return run_pipeline_step_mcp(
+        process_render,
+        wrapper_name="process_render_mcp",
+        logger=logger,
+        target_directory=target_directory,
+        output_directory=output_directory,
+        verbose=verbose,
+        interpret_result=_interpret,
+    )
 
 
 # Canonical framework descriptions used by both branches of
