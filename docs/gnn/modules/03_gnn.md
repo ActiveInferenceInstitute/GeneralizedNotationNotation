@@ -233,7 +233,9 @@ success = process_gnn_multi_format(
 
 #### `validate_gnn_file(source: Any, *, is_content: bool = False) -> Dict[str, Any]`
 
-**Description**: Validate GNN file content string.
+**Description**: Validate a GNN file path or content string. When `source` is
+an existing path and `is_content` is `False`, the file is read first;
+otherwise `source` is treated as raw content.
 
 **Parameters**:
 
