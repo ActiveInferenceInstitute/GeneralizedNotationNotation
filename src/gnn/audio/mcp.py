@@ -14,6 +14,8 @@ from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
 
+from gnn.utils.mcp_dispatch import run_pipeline_step_mcp
+
 from . import (
     analyze_audio_characteristics,
     check_audio_backends,
@@ -45,23 +47,16 @@ def process_audio_mcp(
     Returns:
         Dictionary with success flag, counts, and output path.
     """
-    try:
-        success = process_audio(
-            target_dir=Path(target_directory),
-            output_dir=Path(output_directory),
-            verbose=verbose,
-        )
-        return {
-            "success": success,
-            "target_directory": target_directory,
-            "output_directory": output_directory,
-            "message": "Audio processing completed successfully"
-            if success
-            else "Audio processing failed",
-        }
-    except Exception as e:
-        logger.error(f"process_audio_mcp error: {e}", exc_info=True)
-        return {"success": False, "error": str(e)}
+    return run_pipeline_step_mcp(
+        process_audio,
+        wrapper_name="process_audio_mcp",
+        logger=logger,
+        target_directory=target_directory,
+        output_directory=output_directory,
+        verbose=verbose,
+        label="Audio processing",
+        failure_wording="failed",
+    )
 
 
 def check_audio_backends_mcp() -> Dict[str, Any]:

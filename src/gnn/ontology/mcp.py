@@ -11,6 +11,8 @@ from typing import Any, Dict, List, Union
 
 logger = logging.getLogger(__name__)
 
+from gnn.utils.mcp_dispatch import run_pipeline_step_mcp
+
 from . import load_defined_ontology_terms, process_ontology, validate_ontology_terms
 
 
@@ -31,21 +33,15 @@ def process_ontology_mcp(
     Returns:
         Dictionary with success status and mapping summary.
     """
-    try:
-        success = process_ontology(
-            target_dir=Path(target_directory),
-            output_dir=Path(output_directory),
-            verbose=verbose,
-        )
-        return {
-            "success": success,
-            "target_directory": target_directory,
-            "output_directory": output_directory,
-            "message": f"Ontology processing {'completed successfully' if success else 'completed with issues'}",
-        }
-    except Exception as e:
-        logger.error(f"process_ontology_mcp error: {e}", exc_info=True)
-        return {"success": False, "error": str(e)}
+    return run_pipeline_step_mcp(
+        process_ontology,
+        wrapper_name="process_ontology_mcp",
+        logger=logger,
+        target_directory=target_directory,
+        output_directory=output_directory,
+        verbose=verbose,
+        label="Ontology processing",
+    )
 
 
 def validate_ontology_terms_mcp(terms: Union[str, List[str]]) -> Dict[str, Any]:

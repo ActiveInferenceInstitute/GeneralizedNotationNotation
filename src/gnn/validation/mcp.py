@@ -10,6 +10,8 @@ import logging
 from pathlib import Path
 from typing import Any
 
+from gnn.utils.mcp_dispatch import run_pipeline_step_mcp
+
 from . import process_validation
 from .semantic_validator import validate_content
 
@@ -33,21 +35,15 @@ def process_validation_mcp(
     Returns:
         Dictionary with success status and validation summary.
     """
-    try:
-        success = process_validation(
-            target_dir=Path(target_directory),
-            output_dir=Path(output_directory),
-            verbose=verbose,
-        )
-        return {
-            "success": success,
-            "target_directory": target_directory,
-            "output_directory": output_directory,
-            "message": f"Validation {'completed successfully' if success else 'completed with issues'}",
-        }
-    except Exception as e:
-        logger.error(f"process_validation_mcp error: {e}", exc_info=True)
-        return {"success": False, "error": str(e)}
+    return run_pipeline_step_mcp(
+        process_validation,
+        wrapper_name="process_validation_mcp",
+        logger=logger,
+        target_directory=target_directory,
+        output_directory=output_directory,
+        verbose=verbose,
+        label="Validation",
+    )
 
 
 def validate_gnn_file_mcp(

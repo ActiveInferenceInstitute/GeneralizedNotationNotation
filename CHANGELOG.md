@@ -8,6 +8,27 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ## [Unreleased]
 
+### Changed
+
+- **MAJ-06: one generic dispatcher for the `process_<module>_mcp` MCP
+  wrappers.** The 18 copy-pasted per-module wrappers (analysis, export,
+  integration, ontology, research, security, validation, ml_integration,
+  audio, advanced_visualization, gui, intelligent_analysis, visualization,
+  website, render, llm, execute, report) now delegate to
+  `gnn.utils.mcp_dispatch.run_pipeline_step_mcp` with thin per-module
+  registrations. Registered tool names, input schemas, descriptions, and
+  success/error shapes are unchanged: the live registry still matches
+  `src/gnn/mcp/audit_report.json` (141 tools), and the mcp-audit job,
+  skills-health gate, and per-module MCP tests stay green. Observed
+  variation points became dispatcher options (`resolve_paths` /
+  `echo_resolved`, `extra_step_kwargs`, `pass_verbose`, `interpret_result`,
+  message wording parameters, `static_extras`). `sapf`'s fan-out wrapper
+  stays bespoke (not an envelope clone). Also repairs
+  `src/gnn/mcp/validate_tools.py` — three v3.3 `src/`-layout residues made
+  the canonical `audit_report.json` regenerator crash — and drops the
+  orphaned `utils.migration_helper` tests left behind by the MAJ-07
+  retirement (verified failing on pristine main).
+
 ### Fixed
 
 - **Flaky MCP module loading killed the CI gate.** The discovery

@@ -40,7 +40,7 @@ per PR).
 | ID | Scope | Acceptance evidence |
 | --- | --- | --- |
 | MAJ-04 | Decompose the six >2000-line modules (`integration/meta_analysis/visualizer.py` 2871, `analysis/visualizations.py` 2412, `testing/test_round_trip.py` 2214, `render/jax/jax_renderer.py` 2200, `render/discopy/translator.py` 2150, `analysis/analyzer.py` 2031) following the 3.3.0 `execute/processor.py` split pattern (mechanical extraction into sibling modules, facade re-exports preserved, one module per PR), and extract the shared subprocess envelope the nine per-framework renderers duplicate. | Per module: no import path changes (old names still importable), `uv run --extra dev mypy src` clean, `just lint` and `just format-check` clean, module tests plus `just test` green, moved code byte-identical modulo import lines. |
-| MAJ-06 | Collapse the ~10 copy-pasted `process_<module>_mcp(target_directory, output_directory, verbose)` wrappers (`advanced_visualization/mcp.py`, `analysis/mcp.py`, `audio/mcp.py`, `execute/mcp.py`, `export/mcp.py`, `gui/mcp.py`, `integration/mcp.py`, plus the render variants) into one generic dispatcher with per-module registration. | Tools register under identical names/signatures (`just skills-health` green, the mcp-audit CI job green); per-module MCP tests pass; wrapper files shrink to registration calls. |
+
 
 ### Smaller scoped cleanups (independent of the majors)
 

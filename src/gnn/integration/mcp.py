@@ -11,6 +11,8 @@ from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
 
+from gnn.utils.mcp_dispatch import run_pipeline_step_mcp
+
 from . import process_integration
 
 
@@ -32,21 +34,15 @@ def process_integration_mcp(
     Returns:
         Dictionary with success status and integration summary.
     """
-    try:
-        success = process_integration(
-            target_dir=Path(target_directory),
-            output_dir=Path(output_directory),
-            verbose=verbose,
-        )
-        return {
-            "success": success,
-            "target_directory": target_directory,
-            "output_directory": output_directory,
-            "message": f"Integration processing {'completed successfully' if success else 'completed with issues'}",
-        }
-    except Exception as e:
-        logger.error(f"process_integration_mcp error: {e}", exc_info=True)
-        return {"success": False, "error": str(e)}
+    return run_pipeline_step_mcp(
+        process_integration,
+        wrapper_name="process_integration_mcp",
+        logger=logger,
+        target_directory=target_directory,
+        output_directory=output_directory,
+        verbose=verbose,
+        label="Integration processing",
+    )
 
 
 def list_supported_integrations_mcp() -> Dict[str, Any]:
