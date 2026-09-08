@@ -12,12 +12,11 @@ callers outside the pipeline.
 from __future__ import annotations
 
 import logging
-import os
-import subprocess  # nosec B404
 import sys
-import time
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
+
+from gnn.execute.subprocess_envelope import run_subprocess_envelope
 
 logger = logging.getLogger(__name__)
 
@@ -53,29 +52,29 @@ def execute_stan_script(
     script = Path(script_path)
     out_dir = Path(output_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
-    env = dict(os.environ)
-    env["STAN_OUTPUT_DIR"] = str(out_dir)
-    start = time.time()
-    proc = subprocess.run(  # nosec B603
+    envelope = run_subprocess_envelope(
         [python_executable or sys.executable, str(script)],
-        capture_output=True,
-        text=True,
         timeout=timeout,
-        env=env,
+        env={"STAN_OUTPUT_DIR": str(out_dir)},
         cwd=str(out_dir),
     )
     result: Dict[str, Any] = {
         "script": str(script),
         "framework": "stan",
-        "return_code": proc.returncode,
-        "success": proc.returncode == 0,
-        "stdout": proc.stdout,
-        "stderr": proc.stderr,
-        "execution_time_seconds": round(time.time() - start, 3),
+        "return_code": envelope["return_code"],
+        "success": envelope["success"],
+        "stdout": envelope["stdout"],
+        "stderr": envelope["stderr"],
+        "execution_time_seconds": round(envelope["duration_seconds"], 3),
         "results_file": str(out_dir / "simulation_results.json"),
     }
-    if not result["success"]:
-        logger.error(f"Stan driver failed ({proc.returncode}): {script.name}")
+    if not envelope["success"]:
+        if envelope.get("error_type") == "TimeoutExpired":
+            logger.error(f"Stan driver timed out after {timeout}s: {script.name}")
+        else:
+            logger.error(
+                f"Stan driver failed ({envelope['return_code']}): {script.name}"
+            )
     return result
 
 
