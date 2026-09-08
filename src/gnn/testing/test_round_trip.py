@@ -111,7 +111,6 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..",
 logger = logging.getLogger(__name__)
 
 
-
 class GNNRoundTripTester(RoundTripComparisonMixin, RoundTripReportMixin):
     """Comprehensive round-trip testing system for GNN formats."""
 
@@ -1148,7 +1147,6 @@ class GNNRoundTripTester(RoundTripComparisonMixin, RoundTripReportMixin):
                 )
 
         return result
-
 
     def _get_file_extension(self, format: GNNFormat) -> str:
         """Get file extension for a format."""

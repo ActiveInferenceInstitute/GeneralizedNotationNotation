@@ -18,7 +18,6 @@ from .round_trip_results import ComprehensiveTestReport
 logger = logging.getLogger(__name__)
 
 
-
 class RoundTripReportMixin:
     """Verbatim methods moved from ``GNNRoundTripTester``."""
 
