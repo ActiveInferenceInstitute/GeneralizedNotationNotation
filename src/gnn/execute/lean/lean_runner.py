@@ -16,7 +16,10 @@ import tempfile
 from pathlib import Path
 from typing import Any, Union
 
-from gnn.execute.subprocess_envelope import run_subprocess_envelope
+from gnn.execute.subprocess_envelope import (
+    NEVER_STARTED,
+    run_subprocess_envelope,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -106,6 +109,9 @@ def verify_document(
         "command": command,
     }
     envelope = run_subprocess_envelope(command, timeout=timeout, cwd=str(root))
+    # Canonical ``return_code`` key (MAJ-10); ``returncode`` kept for
+    # existing consumers of the lean record.
+    record["return_code"] = envelope["return_code"]
     record["returncode"] = envelope["return_code"]
     if envelope["success"]:
         record["success"] = True
@@ -116,7 +122,7 @@ def verify_document(
                 record["receipt_error"] = "unparseable receipt JSON"
         return record
 
-    if envelope["return_code"] == -1:
+    if envelope["return_code"] == NEVER_STARTED:
         # Timeout or invocation failure (OSError) — fail closed with the cause.
         record["error"] = (
             f"verify-document invocation failed: {envelope.get('error', '')}"

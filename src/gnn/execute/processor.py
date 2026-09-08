@@ -60,6 +60,12 @@ from .metadata import (
     _summarize_collected_outputs,
     generate_execution_report,
 )
+from .subprocess_envelope import (
+    INTERNAL_ERROR,
+    NEVER_STARTED,
+    UNKNOWN_STATE,
+    run_subprocess_envelope,
+)
 from .types import (
     _EXECUTABLE_SUFFIXES,
     ExecutionFrameworkName,
@@ -1131,7 +1137,7 @@ def execute_single_script(
                 f"Executor '{executor}' is not available or not working: {e}"
             )
             exec_result["error_type"] = "ExecutorUnavailable"
-            exec_result["return_code"] = -1
+            exec_result["return_code"] = NEVER_STARTED
             logger.warning(
                 f"Executor unavailable for {script_info['name']}: {executor}"
             )
@@ -1163,58 +1169,78 @@ def execute_single_script(
             for rep in range(K):
                 exec_result["attempts_started"] = rep + 1
                 rep_start = datetime.now()
-                try:
-                    run_result = subprocess.run(  # nosec B603
-                        base_command,
-                        capture_output=True,
-                        text=True,
-                        timeout=timeout,
-                        cwd=script_path.parent,
-                        env=env,
-                    )
-                except subprocess.TimeoutExpired:
-                    exec_result["execution_time"] = (
-                        datetime.now() - rep_start
-                    ).total_seconds()
+                # Canonical subprocess envelope (MAJ-10): one structured
+                # outcome for timeout / OSError / non-zero exit, with the
+                # partial stdout/stderr subprocess captured before a timeout
+                # preserved for debugging.
+                envelope = run_subprocess_envelope(
+                    base_command,
+                    timeout=timeout,
+                    cwd=script_path.parent,
+                    env=env,
+                )
+                elapsed_rep = (datetime.now() - rep_start).total_seconds()
+
+                if envelope.get("error_type") == "TimeoutExpired":
+                    exec_result["execution_time"] = elapsed_rep
                     exec_result["error"] = (
                         f"Script execution timed out after {timeout} seconds"
                     )
                     exec_result["error_type"] = "TimeoutExpired"
-                    exec_result["return_code"] = -1
-                    exec_result["stdout"] = ""
-                    exec_result["stderr"] = "Timeout"
+                    exec_result["return_code"] = NEVER_STARTED
+                    exec_result["stdout"] = envelope["stdout"]
+                    exec_result["stderr"] = envelope["stderr"]
                     logger.warning(
                         f"⏰ Script {script_info['name']} timed out after {timeout} seconds "
                         f"(rep {rep + 1}/{K})"
                     )
                     result = subprocess.CompletedProcess(
-                        args=[], returncode=-1, stdout="", stderr="Timeout"
+                        args=base_command,
+                        returncode=NEVER_STARTED,
+                        stdout=envelope["stdout"],
+                        stderr=envelope["stderr"],
                     )
                     broke_early = True
                     break
 
-                elapsed_rep = (datetime.now() - rep_start).total_seconds()
+                run_result = subprocess.CompletedProcess(
+                    args=base_command,
+                    returncode=envelope["return_code"],
+                    stdout=envelope["stdout"],
+                    stderr=envelope["stderr"],
+                )
 
-                if run_result.returncode != 0:
+                if not envelope["success"]:
                     exec_result["execution_time"] = elapsed_rep
                     exec_result["return_code"] = run_result.returncode
                     exec_result["stdout"] = run_result.stdout
                     exec_result["stderr"] = run_result.stderr
-                    exec_result["error"] = (
-                        f"Script failed with return code {run_result.returncode}"
-                    )
-
-                    if "ModuleNotFoundError" in run_result.stderr:
-                        exec_result["error_type"] = "DependencyError"
-                        logger.error(
-                            f"Missing dependency in {script_info['name']}: "
-                            f"{run_result.stderr.splitlines()[-1]}"
+                    if run_result.returncode == NEVER_STARTED:
+                        exec_result["error"] = (
+                            f"Script could not be started: {envelope.get('error', 'unknown error')}"
                         )
-                    elif "SyntaxError" in run_result.stderr:
-                        exec_result["error_type"] = "SyntaxError"
-                        logger.error(f"Syntax error in {script_info['name']}")
+                        exec_result["error_type"] = (
+                            envelope.get("error_type") or "ExecutorUnavailable"
+                        )
+                        logger.error(
+                            f"Script {script_info['name']} could not be started: "
+                            f"{envelope.get('error', 'unknown error')}"
+                        )
                     else:
-                        exec_result["error_type"] = "RuntimeError"
+                        exec_result["error"] = (
+                            f"Script failed with return code {run_result.returncode}"
+                        )
+                        if "ModuleNotFoundError" in run_result.stderr:
+                            exec_result["error_type"] = "DependencyError"
+                            logger.error(
+                                f"Missing dependency in {script_info['name']}: "
+                                f"{run_result.stderr.splitlines()[-1]}"
+                            )
+                        elif "SyntaxError" in run_result.stderr:
+                            exec_result["error_type"] = "SyntaxError"
+                            logger.error(f"Syntax error in {script_info['name']}")
+                        else:
+                            exec_result["error_type"] = "RuntimeError"
 
                     logger.warning(
                         f"⚠️ Script {script_info['name']} failed with return code "
@@ -1254,18 +1280,18 @@ def execute_single_script(
             exec_result["execution_time"] = exec_result.get("execution_time", 0)
             exec_result["error"] = f"Script execution failed: {e}"
             exec_result["error_type"] = type(e).__name__
-            exec_result["return_code"] = -2
+            exec_result["return_code"] = INTERNAL_ERROR
             exec_result["stdout"] = ""
             exec_result["stderr"] = str(e)
             logger.warning(f"❌ Script {script_info['name']} execution failed: {e}")
             result = subprocess.CompletedProcess(
-                args=[], returncode=-2, stdout="", stderr=str(e)
+                args=[], returncode=INTERNAL_ERROR, stdout="", stderr=str(e)
             )
 
         # Ensure result is defined before using it
         if result is None:
             result = subprocess.CompletedProcess(
-                args=[], returncode=-3, stdout="", stderr="Unknown error"
+                args=[], returncode=UNKNOWN_STATE, stdout="", stderr="Unknown error"
             )
 
         # Save individual script output in implementation-specific subdirectory

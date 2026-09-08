@@ -31,9 +31,10 @@ from __future__ import annotations
 import logging
 import os
 import shutil
-import subprocess  # nosec B404
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
+
+from gnn.execute.subprocess_envelope import run_subprocess_envelope  # nosec B404
 
 logger = logging.getLogger(__name__)
 
@@ -167,29 +168,26 @@ def run_sandboxed(
         envelope["sandboxed"] = True
         envelope["sandbox"] = spec.binary
 
-    try:
-        completed = subprocess.run(  # nosec B603 — command list, no shell
-            final_command,
-            capture_output=capture_output,
-            text=True,
-            timeout=timeout,
-            cwd=cwd,
-            env=env,
-            check=False,
-        )
-        envelope["return_code"] = completed.returncode
-        envelope["success"] = completed.returncode == 0
-        envelope["stdout"] = completed.stdout or ""
-        envelope["stderr"] = completed.stderr or ""
-    except subprocess.TimeoutExpired as exc:
-        envelope["error"] = f"Sandboxed execution timed out after {timeout}s"
-        envelope["error_type"] = "TimeoutExpired"
-        envelope["stdout"] = (exc.stdout or "") if capture_output else ""
-        envelope["stderr"] = (exc.stderr or "") if capture_output else ""
-    except Exception as exc:  # noqa: BLE001 — normalize every failure mode
-        envelope["error"] = str(exc)
-        envelope["error_type"] = type(exc).__name__
-        envelope["stderr"] = str(exc)
+    # Canonical subprocess envelope (MAJ-10): one structured outcome for
+    # timeout / OSError / non-zero exit; the sandbox-specific timeout message
+    # shape is preserved on top of the shared envelope.
+    outcome = run_subprocess_envelope(
+        final_command,
+        timeout=timeout,
+        env=env,
+        cwd=cwd,
+        capture_output=capture_output,
+    )
+    envelope["return_code"] = outcome["return_code"]
+    envelope["success"] = outcome["success"]
+    envelope["stdout"] = outcome["stdout"]
+    envelope["stderr"] = outcome["stderr"]
+    if outcome.get("error") is not None:
+        if outcome.get("error_type") == "TimeoutExpired":
+            envelope["error"] = f"Sandboxed execution timed out after {timeout}s"
+        else:
+            envelope["error"] = outcome["error"]
+        envelope["error_type"] = outcome.get("error_type")
 
     return envelope
 
