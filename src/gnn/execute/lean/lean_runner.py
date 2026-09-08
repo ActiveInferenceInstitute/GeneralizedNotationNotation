@@ -85,9 +85,7 @@ def verify_document(
         # mkdtemp leaked one directory per bare verify_document call that
         # did not supply a receipt path.
         _temp_dir = tempfile.TemporaryDirectory(prefix="gnn-lean-verify-")
-        receipt_path = (
-            Path(_temp_dir.name) / f"{document_path.stem}-receipt.json"
-        )
+        receipt_path = Path(_temp_dir.name) / f"{document_path.stem}-receipt.json"
 
     try:
         return _verify_document_impl(
@@ -134,7 +132,9 @@ def _verify_document_impl(
         "document": str(document_path),
         "command": command,
     }
-    envelope = run_subprocess_envelope(command, timeout=timeout, cwd=str(_lean_cwd(gnn_root_path)))
+    envelope = run_subprocess_envelope(
+        command, timeout=timeout, cwd=str(_lean_cwd(gnn_root_path))
+    )
     # Canonical ``return_code`` key (MAJ-10); ``returncode`` kept for
     # existing consumers of the lean record.
     record["return_code"] = envelope["return_code"]
