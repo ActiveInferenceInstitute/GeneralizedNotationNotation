@@ -173,3 +173,28 @@ space and time semantics.
 | --- | --- | --- |
 | GNN-04 | Pin paired repository revisions in cross-repository CI on the GNN side; the GEO side already hosts paired CI retaining both revisions plus categorical/H3/Gaussian/factored digests (`docs/development/geo_infer_2026_09.md`), and `.github/` has no GNN-side equivalent. | A GNN-side workflow (or documented receipt-pinning procedure) completes paired categorical and H3 round trips and records source/artifact digests for both revisions. |
 | GNN-05 | Notation-driven metadata discovery for GEO-INFER export: derive step seconds/units/space kind from the GNN notation instead of explicit user JSON. The explicit-CLI wiring and original-source provenance already landed (`src/gnn/7_export.py`, `src/gnn/export/processor.py`, `tests/export/test_export_geo_pipeline.py`, `tests/export/test_geo_infer_gaussian.py`). | Notation-derived metadata passes the same visible-failure and unchanged-five-format-default tests that pin the explicit path. |
+
+## Deep horizon wave 2 - tests + CI
+
+Scope owner: `deep/gnn-tests-ci` (verification layer: `tests/**`, `ci.yml`,
+`full-extras.yml`, `pytest.ini`, `justfile`). Additions only - no existing
+gate, test, or selection may be weakened. Measurement harness: `bash
+autoresearch.sh` (baseline coverage_percent=60.12; 4343 passed / 0 failed /
+7 skipped under `--extra dev --extra ml-ai --extra torch`, CI coverage-parity
+selection `-m "not pipeline and not mcp"`, fixed `-n 4` xdist, offline).
+
+| ID | Scope | Acceptance evidence |
+| --- | --- | --- |
+| MIN-T1 | PR-time extras job in `ci.yml` (py3.12): `uv sync --frozen --extra dev --extra ml-ai --extra torch`, then run the two extras-unlock files (`tests/ml_integration/test_ml_integration_inference.py`, `tests/render/test_continuous_renderers.py`) with `-q`. Today those 12 tests run only in the weekly scheduled full-extras workflow. Mirror the invocation as a `just test-extras` recipe. | New job green on PR; existing `test`/`security` jobs untouched; `just test-extras` recipe present and green locally. |
+| MIN-T2 | xdist-safe temp paths: `tests/render/test_jax_factorized_pipeline.py:285-289` (fixed `/tmp/gnn_test_analysis_model_jax.py`, `/tmp/gnn_test_analysis_out`) and `tests/api/test_comprehensive_api.py:303-304` (fixed `/tmp/test_output`) move to pytest `tmp_path`. | No fixed `/tmp` write targets remain in those files; assertions unchanged; suite green under `-n 4`. |
+| MIN-T3 | Zero-skip contract completeness: `tests/execute/test_lean_runner.py` uses `pytest.mark.skipif` but is absent from `DEFAULT_SKIP_ALLOWLIST` (`tests/test_zero_skip_contracts.py:24-40`); `tests/visualization/test_d2_visualizer.py` evades `FORBIDDEN_SKIP_TOKENS` via `unittest.skipIf`. Extend the contract to enumerate every skip site (including `unittest.skip*`) and reconcile the allowlist with justifications. | `uv run --extra dev pytest tests/test_zero_skip_contracts.py` green; contract covers `unittest.skipIf`/`skipUnless`; no new skips introduced. |
+| MIN-T4 | `full-extras.yml` weekly run gains `--cov=gnn --cov-report=json:junit/coverage-full-extras.json` so weekly-only paths (`pipeline`/`mcp`-marked, audio/gui/research code) appear in coverage reports. | Weekly (dispatch-triggered) workflow green; coverage JSON artifact produced alongside the existing JUnit artifact. |
+| MED-T1 | Dispatcher/envelope negative-path tests: `src/gnn/utils/mcp_dispatch.py` - `message_builder` on the failure branch (:92-93), `static_extras` dropped when the step raises (:100-102), non-Mapping `build()` result through `run_tool_envelope` (:118), `BaseException` (e.g. `KeyboardInterrupt`) passthrough (:97,:116); `src/gnn/execute/subprocess_envelope.py` - `TimeoutExpired` captured-stream keys and `capture_output=False`+timeout (:105-107). Extend `tests/utils/test_mcp_dispatch.py` and `tests/execute/test_subprocess_envelope.py`. | Every listed branch is exercised by a test that fails on a plausible regression; `just lint` and `uv run --extra dev mypy src/gnn` clean. |
+| MED-T2 | `src/gnn/mcp/validate_tools.py` `main()` has zero test coverage: MCP init failure exit 1 (:46-50), NOT_CALLABLE/UNDOCUMENTED issue classification (:113-124), spot-check SKIP/issue/exception branches (:155-175), `logging_miss` branch (:185-196). New `tests/mcp/test_validate_tools.py` (offline, no `mcp` marker so the default selection runs it). | Branches above covered; `bash autoresearch.sh` coverage_percent increases; suite green. |
+| MED-T3 | `validate_gnn*` alias hardening: error-path equivalence with the canonical function on invalid inputs; package-root `gnn.validate_gnn_syntax_formal` deprecation pin (`src/gnn/__init__.py:27,:71,:169`); `DeprecationWarning` stacklevel pins for all 8 aliases. Extend `tests/test_validate_surface_aliases.py`. | Alias-vs-canonical error parity asserted; stacklevel pinned; suite green. |
+| MED-T4 | Unit tests for currently untested `src/gnn` subpackages, priority order: `schema_validator`, `types`, `type_systems` (census: no dedicated test files). Tests assert observable behavior, not implementation. | New test files per package; harness coverage_percent measurably higher than baseline; suite green. |
+| MAJ-T1 | Coverage floor: after MED-T1..T4 land, raise `[tool.coverage.report] fail_under` from 50 to a measured margin below the achieved harness coverage, pinning the improvement as a gate. | CI coverage job green at the new floor; floor value documented in `CHANGELOG.md`. |
+
+Verification commands: `bash autoresearch.sh` (full harness), targeted
+`uv run --extra dev python -m pytest <file> -q`, `just lint`,
+`uv run --extra dev mypy src/gnn --show-error-codes`.
