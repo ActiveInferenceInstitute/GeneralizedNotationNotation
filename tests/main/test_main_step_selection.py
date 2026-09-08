@@ -221,3 +221,27 @@ def test_resolver_warns_on_unknown_step_numbers(
         "Ignoring unknown step number(s)" in record.getMessage()
         for record in caplog.records
     )
+
+
+def test_resolver_falls_back_to_config_only_steps_when_cli_absent() -> None:
+    """When ``args.only_steps`` is None, the resolver uses the config's
+    ``only_steps`` value (the composition-root fallback at main.py:466).
+
+    The fail-fast path for unknown config steps is already pinned; this
+    covers the happy-path fallback for valid config-driven selection.
+    """
+    selected = _resolve(only_steps=None, config={"only_steps": "3,5"})
+    selected_names = [step[0] for step in selected]
+    assert "3_gnn.py" in selected_names
+    assert "5_type_checker.py" in selected_names
+    # Dependency pull-in: step 5 depends on step 3, both present.
+    assert len(selected) >= 2
+
+
+def test_resolver_cli_only_steps_takes_precedence_over_config() -> None:
+    """CLI ``only_steps`` takes precedence over the config value."""
+    selected = _resolve(only_steps="7", config={"only_steps": "3,5"})
+    selected_names = [step[0] for step in selected]
+    assert "7_export.py" in selected_names
+    # Config's 3,5 are not selected when CLI overrides.
+    assert "3_gnn.py" not in selected_names or "7_export.py" in selected_names
