@@ -269,3 +269,20 @@ def matrix_shapes(code: str) -> "dict[str, tuple[int, ...]] | None":
     if b_slices and all(s == b_slices[0] for s in b_slices):
         _record("B", (*b_slices[0], len(b_slices)))
     return shapes
+
+
+def julia_dimension_constants(code: str) -> dict[str, int]:
+    """Extract ``const NUM_STATES/OBSERVATIONS/ACTIONS = <int>`` from a .jl artifact.
+
+    The Julia backends allocate their matrices from these constants and fill
+    values at runtime, so dimension parity against the Python backends' literal
+    shapes is checked through them. Returns only the constants present.
+    """
+    import re
+
+    constants: dict[str, int] = {}
+    for match in re.finditer(
+        r"const\s+NUM_(STATES|OBSERVATIONS|ACTIONS)\s*=\s*(\d+)", code
+    ):
+        constants[f"NUM_{match.group(1)}"] = int(match.group(2))
+    return constants
