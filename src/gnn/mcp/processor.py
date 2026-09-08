@@ -92,8 +92,9 @@ def register_module_tools(module_name: (str) | None = None) -> Any:
 def handle_mcp_request(request: dict) -> dict:
     """Handle an incoming MCP request and return a JSON-RPC response."""
     try:
-        logger.info(f"Handling MCP request: {request.get('method', 'unknown')}")
-
+        # Late import is cached after the first call (Python module cache);
+        # resolving the proxy attribute once per call is cheaper than a
+        # repeated ``from .mcp import mcp_instance`` statement.
         from .mcp import mcp_instance
 
         method = request.get("method", "")

@@ -16,8 +16,9 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, List
 
-# Set reasonable recursion limit
-sys.setrecursionlimit(100)
+# Note: do NOT set sys.setrecursionlimit at module scope — it poisons the
+# process for any other test that imports this module. The default limit
+# (1000+) is adequate for the round-trip test logic here.
 
 # Add src to path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
