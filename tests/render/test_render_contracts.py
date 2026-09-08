@@ -473,3 +473,58 @@ class TestFailureMessageActionability:
         model_data = {"model_name": "m", "variables": [], "connections": []}
         with pytest.raises(OSError):
             generate_bnlearn_code(model_data, target)
+
+
+_CONTINUOUS_PROBE_SPEC = {
+    "model_name": "Probe",
+    "initialparameterization": {
+        "F": [[1.0, 0.1], [0.0, 1.0]],
+        "H": [[1.0, 0.0], [0.0, 1.0]],
+        "Q": [[0.01, 0.0], [0.0, 0.01]],
+        "R": [[0.05, 0.0], [0.0, 0.05]],
+        "prior_mean": [0.0, 0.0],
+        "prior_cov": [[1.0, 0.0], [0.0, 1.0]],
+        "goal_mean": [1.0, 1.0],
+        "control_gain": [0.5],
+    },
+    "num_timesteps": 5,
+    "random_seed": 42,
+    "dt": 1.0,
+}
+
+
+class TestEmittedArtifactHygiene:
+    """Emitted scripts must not reference names they never bind.
+
+    Regression pin for the continuous-script split: the shared body used to
+    emit the numpyro-only ``run_mcmc`` branch for jax/pytorch too, where
+    ``run_mcmc`` was never defined (static NameError risk). The scan is the
+    same conservative implementation the benchmark consumes.
+    """
+
+    def test_undefined_names_flags_never_bound_names(self) -> None:
+        from gnn.render.emitted_artifact_checks import undefined_names
+
+        findings, star = undefined_names('if FRAMEWORK == "numpyro":\n    run_mcmc()\n')
+        assert star is False
+        assert ("run_mcmc", 2) in findings
+
+    def test_undefined_names_skips_star_imports(self) -> None:
+        from gnn.render.emitted_artifact_checks import undefined_names
+
+        findings, star = undefined_names("from discopy import *\nTy('x')\n")
+        assert star is True
+        assert findings == []
+
+    @pytest.mark.parametrize("backend", ["jax", "pytorch", "numpyro"])
+    def test_continuous_scripts_have_no_undefined_names(self, backend: str) -> None:
+        from gnn.render.continuous_script import generate_continuous_script
+        from gnn.render.continuous_common import extract_continuous_spec
+        from gnn.render.emitted_artifact_checks import undefined_names
+
+        spec = extract_continuous_spec(_CONTINUOUS_PROBE_SPEC)
+        code = generate_continuous_script(spec, backend)
+        compile(code, backend, "exec")
+        findings, star = undefined_names(code)
+        assert findings == []
+        assert ("run_mcmc" in code) == (backend == "numpyro")
