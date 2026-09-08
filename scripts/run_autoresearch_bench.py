@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Deterministic benchmark for the GNN MCP + execute surfaces (deep-horizon wave 2).
 
-One fixed, seeded, network-free workload exercising the four load-bearing
+One fixed, seeded, network-free workload exercising the five load-bearing
 surfaces this session hardens:
 
 1. parse      ``gnn.processing.processor.parse_gnn_file`` over four canonical
@@ -10,7 +10,7 @@ surfaces this session hardens:
 2. serialize  canonical-JSON dumps + SHA-256 digests of the parse dicts,
               re-digested and compared against the warm-up digest every rep.
 3. round_trip ``gnn.parsers.GNNParsingSystem`` real parser/serializer
-              round-trip: parse_file → serialize(JSON) → parse_string →
+              round-trip: parse_string → serialize(JSON) → parse_string →
               serialize(JSON), string-equality check. Exercises the 23-parser
               / 22-serializer system (not json.dumps on a plain dict).
 4. dispatch   ``gnn.mcp.processor.handle_mcp_request`` JSON-RPC traffic
@@ -32,6 +32,7 @@ Printed metrics (one per line, stdout):
     METRIC mcp_execute_bench_ms=<best-of-3 total workload wall time in ms>
     METRIC parse_files_per_s=...
     METRIC serialize_roundtrips_per_s=...
+    METRIC round_trips_per_s=...
     METRIC mcp_dispatch_per_s=...
     METRIC envelope_spawns_per_s=...
     METRIC mcp_setup_ms=<untimed warm-up/registration cost, informational>
