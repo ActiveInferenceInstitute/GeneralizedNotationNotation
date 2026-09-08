@@ -518,8 +518,8 @@ class TestEmittedArtifactHygiene:
 
     @pytest.mark.parametrize("backend", ["jax", "pytorch", "numpyro"])
     def test_continuous_scripts_have_no_undefined_names(self, backend: str) -> None:
-        from gnn.render.continuous_script import generate_continuous_script
         from gnn.render.continuous_common import extract_continuous_spec
+        from gnn.render.continuous_script import generate_continuous_script
         from gnn.render.emitted_artifact_checks import undefined_names
 
         spec = extract_continuous_spec(_CONTINUOUS_PROBE_SPEC)
@@ -528,3 +528,37 @@ class TestEmittedArtifactHygiene:
         findings, star = undefined_names(code)
         assert findings == []
         assert ("run_mcmc" in code) == (backend == "numpyro")
+
+
+class TestRenderDeterminism:
+    """Same input + same renderer must produce byte-identical artifacts.
+
+    Regression pin for the generation-time wall-clock removal: pymdp and
+    discopy headers embedded ``datetime.now()`` values, and rxinfer strategy
+    headers carried ``now()`` timestamps, so re-rendering the same model
+    produced different bytes. The benchmark's determinism gate covers the
+    full corpus per run; these pins cover the previously clocked backends
+    in isolation.
+    """
+
+    @pytest.mark.parametrize("framework", ["pymdp", "rxinfer", "discopy"])
+    def test_repeated_renders_are_byte_identical(
+        self, framework: str, tmp_path: Path
+    ) -> None:
+        from gnn import parse_gnn_file
+        from gnn.render.processor import render_gnn_spec
+
+        extension = {"pymdp": ".py", "rxinfer": ".jl", "discopy": ".py"}[framework]
+        artifacts: list[bytes] = []
+        for index in range(2):
+            out_dir = tmp_path / f"pass_{index}"
+            out_dir.mkdir()
+            success, message, paths = render_gnn_spec(
+                parse_gnn_file(SAMPLE_GNN), framework, out_dir
+            )
+            assert success, message
+            primary = next(
+                Path(path) for path in paths if Path(path).suffix == extension
+            )
+            artifacts.append(primary.read_bytes())
+        assert artifacts[0] == artifacts[1]

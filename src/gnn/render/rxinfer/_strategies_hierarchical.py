@@ -7,8 +7,6 @@ import base64
 import json
 from typing import Any, Dict
 
-from gnn.render.rxinfer._common import now
-
 
 def _generate_two_level_code(
     gnn_spec: Dict[str, Any], model_name: str, kind_value: str
@@ -47,7 +45,6 @@ def _generate_two_level_code(
     code = f'''#!/usr/bin/env julia
 # RxInfer.jl two-level hierarchical POMDP simulation — genuine @model + infer()
 # Generated from GNN Model: {model_display_name}
-# Generated: {now()}
 #
 # Structure (matches the GNN file's declared semantics):
 #   z (slow context, {num_slow} states) --A_level2--> fast-state prior

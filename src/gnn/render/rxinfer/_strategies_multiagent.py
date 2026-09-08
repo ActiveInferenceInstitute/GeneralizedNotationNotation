@@ -31,7 +31,6 @@ from __future__ import annotations
 
 import base64
 import json
-from datetime import datetime
 from typing import Any, Dict, List
 
 from gnn.render.multi_agent_common import (
@@ -43,11 +42,6 @@ from gnn.render.multi_agent_common import (
 )
 
 __all__ = ["_generate_stigmergic_code"]
-
-
-def _now() -> str:
-    """Return a timestamp string for generated-script headers."""
-    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 
 def _ordered_agent_groups(
@@ -146,7 +140,6 @@ def _generate_stigmergic_code(
     return f'''#!/usr/bin/env julia
 # RxInfer.jl stigmergic multi-agent simulation — native per-agent compilation
 # Generated from GNN Model: {model_display_name}
-# Generated: {_now()}
 #
 # This script runs one genuine RxInfer.jl pomdp_model inference per agent
 # (native per-agent state spaces; NO joint state-space expansion). After all

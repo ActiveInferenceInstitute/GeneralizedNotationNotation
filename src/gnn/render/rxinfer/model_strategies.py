@@ -35,7 +35,6 @@ from __future__ import annotations
 
 import re
 from abc import ABC, abstractmethod
-from datetime import datetime
 from typing import Any, Dict, List, Optional
 
 from gnn.render.pomdp_contract import ModelKind
@@ -59,11 +58,6 @@ __all__ = [
     "get_model_strategy",
     "STRATEGY_REGISTRY",
 ]
-
-
-def _now() -> str:
-    """Return a timestamp string for generated-script headers."""
-    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 
 class ModelStrategy(ABC):
