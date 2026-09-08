@@ -12,6 +12,8 @@ from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
 
+from gnn.utils.mcp_dispatch import run_pipeline_step_mcp
+
 from . import get_module_info as _get_mod_info
 from . import get_supported_formats, process_report
 from .generator import generate_comprehensive_report
@@ -68,20 +70,14 @@ def process_report_mcp(
     Returns:
         Dictionary with success status.
     """
-    try:
-        success = process_report(
-            target_dir=Path(target_directory),
-            output_dir=Path(output_directory),
-            verbose=verbose,
-        )
-        return {
-            "success": success,
-            "target_directory": target_directory,
-            "output_directory": output_directory,
-        }
-    except Exception as e:
-        logger.error(f"process_report_mcp error: {e}", exc_info=True)
-        return {"success": False, "error": str(e)}
+    return run_pipeline_step_mcp(
+        process_report,
+        wrapper_name="process_report_mcp",
+        logger=logger,
+        target_directory=target_directory,
+        output_directory=output_directory,
+        verbose=verbose,
+    )
 
 
 def list_report_formats_mcp() -> Dict[str, Any]:
