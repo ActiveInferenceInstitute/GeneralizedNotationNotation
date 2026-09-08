@@ -137,6 +137,86 @@ def test_llm_module_alias_forwards_to_canonical(
     assert calls == ["content"]
 
 
+def test_aliases_match_canonical_on_invalid_input_and_warn_at_caller(
+    tmp_path: Path,
+) -> None:
+    """Error-path parity: each deprecated alias returns exactly what its
+    canonical replacement returns for the same invalid input, and the
+    DeprecationWarning attributes to the caller (``stacklevel=2``), not to
+    the alias module or the package-root lazy export."""
+    missing_file = tmp_path / "does-not-exist.md"
+    missing_dir = tmp_path / "does-not-exist-dir"
+    invalid_spec: dict[str, Any] = {"unexpected_key": True}
+
+    def _normalize_structure(result: dict[str, Any]) -> dict[str, Any]:
+        result.pop("validation_timestamp", None)
+        return result
+
+    cases: list[
+        tuple[str, Callable[[], Any], Callable[[], Any], Callable[[Any], Any]]
+    ] = [
+        (
+            "parsers.validate_gnn_syntax_formal",
+            lambda: validate_gnn_syntax_formal("not a gnn file"),
+            lambda: validate_gnn("not a gnn file"),
+            lambda r: r,
+        ),
+        (
+            "processor.validate_gnn_structure",
+            lambda: validate_gnn_structure(missing_file),
+            lambda: check_gnn_file_structure(missing_file),
+            _normalize_structure,
+        ),
+        (
+            "pomdp.validate_gnn_pomdp_structure",
+            lambda: validate_gnn_pomdp_structure(invalid_spec),
+            lambda: check_gnn_pomdp_spec(invalid_spec),
+            lambda r: r,
+        ),
+        (
+            "simple.validate_gnn_file",
+            lambda: validate_gnn_file(missing_file),
+            lambda: check_gnn_file_basic(missing_file),
+            lambda r: r,
+        ),
+        (
+            "simple.validate_gnn_directory",
+            lambda: validate_gnn_directory(missing_dir),
+            lambda: check_gnn_directory_basic(missing_dir),
+            lambda r: r,
+        ),
+        (
+            "schema.validate_gnn_file",
+            lambda: schema_validate_gnn_file(missing_file),
+            lambda: validate_gnn_file_comprehensive(missing_file),
+            lambda r: (r.is_valid, r.errors),
+        ),
+        (
+            "mcp.validate_gnn_cross_format_consistency",
+            lambda: validate_gnn_cross_format_consistency(
+                missing_dir, tmp_path / "out-x"
+            ),
+            lambda: check_cross_format_consistency(missing_dir, tmp_path / "out-y"),
+            lambda r: r,
+        ),
+    ]
+    for name, alias_call, canonical_call, normalize in cases:
+        with pytest.warns(DeprecationWarning) as caught:
+            old = alias_call()
+        new = normalize(canonical_call())
+        assert normalize(old) == new, name
+        assert caught[0].filename == __file__, name
+
+
+def test_package_root_syntax_formal_lazy_export_still_deprecated() -> None:
+    with pytest.warns(DeprecationWarning) as caught:
+        result = gnn.validate_gnn_syntax_formal("not a gnn file")
+    assert result == validate_gnn("not a gnn file")
+    # The lazy re-export resolves to the parsers.basic alias wrapper whose
+    # ``stacklevel=2`` must attribute the warning to this caller.
+    assert caught[0].filename == __file__
+
+
 def test_pipeline_template_output_dir_reexport_warns() -> None:
     """The legacy ``gnn.utils.pipeline_template`` re-export of the canonical
     ``gnn.pipeline.config.get_output_dir_for_script`` must warn and forward.
