@@ -11,7 +11,7 @@ from typing import Any, Dict, List
 
 logger = logging.getLogger(__name__)
 
-from gnn.utils.mcp_dispatch import run_pipeline_step_mcp
+from gnn.utils.mcp_dispatch import run_pipeline_step_mcp, run_tool_envelope
 
 from . import get_module_info as _get_mod_info
 from . import get_visualization_options, process_visualization
@@ -63,12 +63,11 @@ def get_visualization_options_mcp() -> Dict[str, Any]:
     Returns:
         Dictionary with visualization type names, descriptions, and options.
     """
-    try:
-        options = get_visualization_options()
-        return {"success": True, "options": options}
-    except Exception as e:
-        logger.error("get_visualization_options_mcp error: %s", e, exc_info=True)
-        return {"success": False, "error": str(e)}
+    return run_tool_envelope(
+        lambda: {"success": True, "options": get_visualization_options()},
+        wrapper_name="get_visualization_options_mcp",
+        logger=logger,
+    )
 
 
 def list_visualization_artifacts_mcp(output_directory: str) -> Dict[str, Any]:
@@ -124,12 +123,11 @@ def get_visualization_module_info_mcp() -> Dict[str, Any]:
     Returns:
         Dictionary with version, available backends, and output formats.
     """
-    try:
-        info = _get_mod_info()
-        return {"success": True, **info}
-    except Exception as e:
-        logger.error(f"get_visualization_module_info_mcp error: {e}", exc_info=True)
-        return {"success": False, "error": str(e)}
+    return run_tool_envelope(
+        lambda: {"success": True, **_get_mod_info()},
+        wrapper_name="get_visualization_module_info_mcp",
+        logger=logger,
+    )
 
 
 # ── MCP Registration ────────────────────────────────────────────────────────
