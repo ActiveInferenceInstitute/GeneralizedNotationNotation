@@ -11,7 +11,7 @@ from typing import Any, Dict, Optional
 logger = logging.getLogger(__name__)
 
 # Import utilities from the gui module
-from gnn.utils.mcp_dispatch import run_pipeline_step_mcp
+from gnn.utils.mcp_dispatch import run_pipeline_step_mcp, run_tool_envelope
 
 from . import FEATURES, get_available_guis, process_gui
 
@@ -65,16 +65,15 @@ def list_available_guis_mcp() -> Dict[str, Any]:
     Returns:
         Dictionary with GUI types, capabilities, and feature inventory.
     """
-    try:
-        guis = get_available_guis()
-        return {
+    return run_tool_envelope(
+        lambda: {
             "success": True,
-            "available_guis": guis,
+            "available_guis": get_available_guis(),
             "features": FEATURES,
-        }
-    except Exception as e:
-        logger.error(f"list_available_guis_mcp error: {e}", exc_info=True)
-        return {"success": False, "error": str(e)}
+        },
+        wrapper_name="list_available_guis_mcp",
+        logger=logger,
+    )
 
 
 def get_gui_module_info_mcp() -> Dict[str, Any]:
@@ -84,15 +83,15 @@ def get_gui_module_info_mcp() -> Dict[str, Any]:
     Returns:
         Dictionary with module metadata, GUI types, and tool inventory.
     """
-    try:
+
+    def _build() -> Dict[str, Any]:
         import importlib
 
         mod = importlib.import_module(__package__)
-        version = getattr(mod, "__version__", "unknown")
         return {
             "success": True,
             "module": __package__,
-            "version": version,
+            "version": getattr(mod, "__version__", "unknown"),
             "features": FEATURES,
             "gui_types": ["gui_1", "gui_2", "gui_3", "oxdraw"],
             "tools": [
@@ -106,9 +105,12 @@ def get_gui_module_info_mcp() -> Dict[str, Any]:
                 "oxdraw.get_info",
             ],
         }
-    except Exception as e:
-        logger.error(f"get_gui_module_info_mcp error: {e}", exc_info=True)
-        return {"success": False, "error": str(e)}
+
+    return run_tool_envelope(
+        _build,
+        wrapper_name="get_gui_module_info_mcp",
+        logger=logger,
+    )
 
 
 def oxdraw_convert_to_mermaid_mcp(
