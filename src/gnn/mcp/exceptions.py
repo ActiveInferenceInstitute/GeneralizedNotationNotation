@@ -108,6 +108,23 @@ class MCPToolExecutionError(MCPError):
         )
 
 
+class MCPToolTimeoutError(MCPError):
+    """Raised when a tool exceeds its registered execution timeout.
+
+    The worker thread keeps running in the background (Python threads are
+    not cancellable); the timeout bounds only how long the caller waits.
+    """
+
+    def __init__(self, tool_name: str, timeout: float) -> None:
+        """Initialize the instance."""
+        super().__init__(
+            f"Tool '{tool_name}' timed out after {timeout}s",
+            code=-32008,
+            data={"tool_name": tool_name, "timeout": timeout},
+            tool_name=tool_name,
+        )
+
+
 class MCPSDKNotFoundError(MCPError):
     """Raised when required SDK is not found."""
 
@@ -232,6 +249,7 @@ __all__: list[Any] = [
     "MCPResourceNotFoundError",
     "MCPInvalidParamsError",
     "MCPToolExecutionError",
+    "MCPToolTimeoutError",
     "MCPSDKNotFoundError",
     "MCPValidationError",
     "MCPModuleLoadError",

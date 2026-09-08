@@ -57,7 +57,9 @@ class StdioServer:
 
         Args:
             max_queue_size: Maximum size of request/response queues
-            request_timeout: Timeout for request processing in seconds
+            request_timeout: Reserved for future per-request enforcement.
+                Not yet read by any code path; per-tool timeouts are enforced
+                at the registry layer via ``MCPTool.timeout`` (wave-2 MAJ-09).
         """
         self.running = False
         self.request_queue: queue.Queue[dict[str, Any]] = queue.Queue(
