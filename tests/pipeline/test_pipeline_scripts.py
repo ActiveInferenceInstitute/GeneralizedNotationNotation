@@ -385,13 +385,13 @@ class TestStep2GNNComprehensive:
 
     @pytest.mark.unit
     def test_step2_gnn_validation(self, sample_gnn_files: Any) -> None:
-        """validate_gnn_structure returns a structured validation dict per fixture."""
-        from gnn import validate_gnn_structure
+        """check_gnn_file_structure returns a structured validation dict per fixture."""
+        from gnn.processing.processor import check_gnn_file_structure
 
         for file_path in sample_gnn_files.values():
-            result = validate_gnn_structure(file_path)
+            result = check_gnn_file_structure(file_path)
             assert isinstance(result, dict), (
-                f"{file_path.name}: validate_gnn_structure should return dict, got {type(result).__name__}"
+                f"{file_path.name}: check_gnn_file_structure should return dict, got {type(result).__name__}"
             )
             # Contract: result exposes a 'valid' boolean and (optionally) an errors list.
             assert "valid" in result, (

@@ -13,8 +13,8 @@ import pytest
 from gnn.processing.processor import (
     _extract_sections_lightweight,
     _extract_variables_lightweight,
+    check_gnn_file_structure,
     parse_gnn_file,
-    validate_gnn_structure,
 )
 
 # Deterministic adversarial permutations to emulate Hypothesis coverage
@@ -78,10 +78,10 @@ def test_parse_gnn_file_resilience(content: str) -> Any:
 
 @pytest.mark.unit
 @pytest.mark.parametrize("content", ADVERSARIAL_PAYLOADS)
-def test_validate_gnn_structure_resilience(content: str) -> Any:
+def test_check_gnn_file_structure_resilience(content: str) -> Any:
     """Ensure validation logic handles adversarial brackets and missing properties cleanly."""
     sample_file = Path("sample.gnn")
-    result = validate_gnn_structure(sample_file, content=content)
+    result = check_gnn_file_structure(sample_file, content=content)
 
     assert isinstance(result, dict)
     assert "file_path" in result

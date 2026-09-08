@@ -179,7 +179,7 @@ success = process_gnn_multi_format(
 
 **Location**: `src/gnn/processor.py`
 
-#### `validate_gnn_structure(file_path: Union[str, Path]) -> Dict[str, Any]`
+#### `check_gnn_file_structure(file_path: Union[str, Path]) -> Dict[str, Any]`
 
 **Description**: Validate the structure of a GNN file.
 

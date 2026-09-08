@@ -7,9 +7,8 @@ function, alias assignment, or import alias) whose name starts with
 
 - **canonical**: listed under ``canonical`` in
   ``scripts/validate_surface_manifest.json``;
-- **deprecated alias**: listed under ``deprecated`` AND structurally a pure
-  deprecation forward (emits ``DeprecationWarning`` and forwards to the
-  mapped canonical name);
+- **old-name alias**: listed under ``old_names`` AND structurally a pure
+  forward (emits ``DeprecationWarning`` and calls the mapped canonical name);
 - **non-canonical**: everything else (the primary metric).
 
 Manifest entries are ``"<file-suffix>:<name>"`` where ``<file-suffix>`` is the
@@ -18,7 +17,7 @@ they identify a single definition robustly against line shifts.
 
 Additional metrics: internal call sites (``src/`` + ``tests/``) and live-doc
 references for every name that has no canonical definition anywhere (names
-that are canonical in one module stay uncounted even when a deprecated alias
+that are canonical in one module stay uncounted even when an old-name alias
 of the same name exists in another module).
 
 Fully deterministic: AST + regex over the working tree; no network, no clock,
@@ -52,7 +51,11 @@ SKIP_DIRS = {
 }
 # Historical ledgers and append-only worker logs keep old names on purpose.
 HISTORICAL_DOC_FILES = {"CHANGELOG.md", "VERSION_MAP.md"}
-HISTORICAL_DOC_PREFIXES = ("docs/development/fleet-logs/",)
+HISTORICAL_DOC_PREFIXES = (
+    "docs/development/fleet-logs/",  # append-only worker logs
+    "docs/other/",  # narrative/worldbuilding docs, not API documentation
+    "docs/sympy/",  # external sympy integration notes with pseudocode
+)
 
 
 @dataclass
@@ -121,13 +124,13 @@ def classify_alias_body(func: ast.AST) -> tuple[str | None, bool]:
     return target, warns
 
 
-def collect_defs(tree: ast.Module, rel_file: str) -> list[SurfaceDef]:
+def collect_defs(tree: ast.Module, rel_file: str, extra_names: set[str]) -> list[SurfaceDef]:
     defs: list[SurfaceDef] = []
 
     def visit(node: ast.AST, cls: str | None, fn: str | None) -> None:
         for child in ast.iter_child_nodes(node):
             if isinstance(child, (ast.FunctionDef, ast.AsyncFunctionDef)):
-                if NAME_RE.match(child.name):
+                if NAME_RE.match(child.name) or child.name in extra_names:
                     kind = "method" if cls else ("nested" if fn else "function")
                     target, warns = classify_alias_body(child)
                     defs.append(SurfaceDef(child.name, rel_file, child.lineno, kind, target, warns))
@@ -163,15 +166,15 @@ def load_manifest() -> tuple[set[str], dict[str, str]]:
         return set(), {}
     data = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
     canonical = set(data.get("canonical", []))
-    deprecated = {str(k): str(v) for k, v in data.get("deprecated", {}).items()}
-    for old, new in deprecated.items():
+    old_names = {str(k): str(v) for k, v in data.get("old_names", {}).items()}
+    for old, new in old_names.items():
         if new not in canonical:
-            raise SystemExit(f"manifest: deprecated {old!r} maps to non-canonical {new!r}")
-    return canonical, deprecated
+            raise SystemExit(f"manifest: old name {old!r} maps to non-canonical {new!r}")
+    return canonical, old_names
 
 
 def count_call_sites(files: list[Path], counted_names: set[str]) -> dict[str, int]:
-    counts = {n: 0 for n in sorted(counted_names)}
+    counts = dict.fromkeys(sorted(counted_names), 0)
     for path in files:
         try:
             tree = ast.parse(path.read_text(encoding="utf-8"))
@@ -217,7 +220,7 @@ def iter_doc_files() -> Iterator[Path]:
 
 
 def count_doc_refs(names: set[str]) -> dict[str, int]:
-    counts = {n: 0 for n in sorted(names)}
+    counts = dict.fromkeys(sorted(names), 0)
     if not names:
         return counts
     patterns = {n: re.compile(rf"\b{re.escape(n)}\b") for n in names}
@@ -227,12 +230,13 @@ def count_doc_refs(names: set[str]) -> dict[str, int]:
         except UnicodeDecodeError:
             continue
         for name, pattern in patterns.items():
-            counts[name] += len(pattern.findall(text))
+                counts[name] += len(pattern.findall(text))
     return counts
 
 
 def main() -> int:
     canonical_keys, deprecated_map = load_manifest()
+    extra_names = {key.split(":", 1)[1] for key in canonical_keys}
 
     all_defs: list[SurfaceDef] = []
     for path in iter_py_files(PKG_DIR):
@@ -241,7 +245,7 @@ def main() -> int:
             tree = ast.parse(path.read_text(encoding="utf-8"))
         except (SyntaxError, UnicodeDecodeError) as exc:
             raise SystemExit(f"unparseable file {path}: {exc}") from exc
-        all_defs.extend(collect_defs(tree, rel))
+        all_defs.extend(collect_defs(tree, rel, extra_names))
 
     defs_by_key = {d.key: d for d in all_defs}
     for key in sorted(canonical_keys):
@@ -249,7 +253,7 @@ def main() -> int:
             raise SystemExit(f"manifest: canonical {key!r} has no definition in src/gnn")
     for old in sorted(deprecated_map):
         if old not in defs_by_key:
-            raise SystemExit(f"manifest: deprecated {old!r} has no definition in src/gnn")
+            raise SystemExit(f"manifest: old name {old!r} has no definition in src/gnn")
 
     canonical_names = {key.split(":", 1)[1] for key in canonical_keys}
     deprecated_keys = set(deprecated_map)
@@ -271,11 +275,13 @@ def main() -> int:
         noncanonical.append(d)
 
     noncanonical_names = {d.name for d in noncanonical}
-    counted_names = noncanonical_names - canonical_names
-
+    deprecated_names = {key.split(":", 1)[1] for key in deprecated_keys}
+    counted_names = (noncanonical_names | deprecated_names) - canonical_names
     src_files = list(iter_py_files(PKG_DIR))
-    test_files = list(iter_py_files(TESTS_DIR)) if TESTS_DIR.is_dir() else []
-    caller_counts = count_call_sites(src_files + test_files, counted_names)
+    # Old names are called intentionally by the alias-pinning tests
+    # (tests/test_validate_surface_aliases.py); production callers are the
+    # migration target, so the primary caller metric covers src/ only.
+    caller_counts = count_call_sites(src_files, counted_names)
     doc_counts = count_doc_refs(counted_names)
 
     total_noncanonical = len(noncanonical)

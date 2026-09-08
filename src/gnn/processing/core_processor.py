@@ -22,7 +22,7 @@ from gnn.report.processing_report import ReportGenerator
 from gnn.schema_validator import CrossFormatValidator
 
 from .discovery import FileDiscoveryStrategy
-from .processor import validate_gnn_structure
+from .processor import check_gnn_file_structure
 
 logger = logging.getLogger(__name__)
 
@@ -171,7 +171,7 @@ class GNNProcessor:
         self.logger.info("Phase 2: File validation")
         try:
             validation_results = {
-                str(file_path): validate_gnn_structure(file_path)
+                str(file_path): check_gnn_file_structure(file_path)
                 for file_path in context.discovered_files
             }
             context.valid_files = [

@@ -22,20 +22,20 @@ class TestGNNValidation:
     @pytest.mark.unit
     def test_validation_imports(self) -> Any:
         """Test that validation module can be imported."""
-        from gnn import validate_gnn_structure
+        from gnn.processing.processor import check_gnn_file_structure
 
-        assert callable(validate_gnn_structure)
+        assert callable(check_gnn_file_structure)
 
     @pytest.mark.unit
     def test_validate_gnn_structure_basic(self, sample_gnn_files: Any) -> Any:
         """Test GNN structure validation."""
-        from gnn import validate_gnn_structure
+        from gnn.processing.processor import check_gnn_file_structure
 
         # Get sample file content
         sample_file = list(sample_gnn_files.values())[0]
         content = sample_file.read_text()
 
-        result = validate_gnn_structure(content)
+        result = check_gnn_file_structure(content)
 
         # Verify validation result structure
         assert isinstance(result, dict)

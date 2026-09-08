@@ -34,13 +34,13 @@ class TestGNNModuleComprehensive:
             generate_gnn_report,
             parse_gnn_file,
             process_gnn_directory,
-            validate_gnn_structure,
         )
+        from gnn.processing import check_gnn_file_structure
 
         assert callable(discover_gnn_files), "discover_gnn_files should be callable"
         assert callable(parse_gnn_file), "parse_gnn_file should be callable"
-        assert callable(validate_gnn_structure), (
-            "validate_gnn_structure should be callable"
+        assert callable(check_gnn_file_structure), (
+            "check_gnn_file_structure should be callable"
         )
         assert callable(process_gnn_directory), (
             "process_gnn_directory should be callable"

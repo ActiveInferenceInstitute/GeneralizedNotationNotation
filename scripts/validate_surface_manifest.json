@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "description": "MAJ-05 canonical validate_gnn* surface. Keys are '<file-suffix>:<name>' with file-suffix relative to src/gnn. Old names emit DeprecationWarning and forward to their canonical target with identical behavior. MCP tool registry names (validate_gnn_content, validate_gnn_file, validate_gnn_files) are unchanged contracts.",
+  "clusters": {
+    "general_syntax_validation": ["parsers/basic.py:validate_gnn"],
+    "file_content_convenience_dict": ["__init__.py:validate_gnn_file"],
+    "mcp_content_validation": ["mcp/gnn_root.py:validate_gnn_content"],
+    "mcp_single_file_validation": ["validation/mcp.py:validate_gnn_file_mcp"],
+    "mcp_directory_type_validation": [
+      "type_checker/mcp.py:validate_gnn_files_mcp",
+      "type_checker/checking/core.py:validate_gnn_files"
+    ],
+    "schema_object_validation": ["schema/parser.py:validate_gnn_object"],
+    "equation_validation_sympy": ["mcp/sympy_mcp_client.py:validate_gnn_equation"],
+    "llm_validation": ["llm/llm_operations.py:validate_gnn_with_llm"],
+    "schema_file_validation": ["schema_validator/validator.py:validate_gnn_file_comprehensive"],
+    "lightweight_file_lint": ["processing/processor.py:check_gnn_file_structure"],
+    "pomdp_spec_lint": ["execute/pymdp/pymdp_utils.py:check_gnn_pomdp_spec"],
+    "cross_format_consistency_check": ["mcp/processors.py:check_cross_format_consistency"],
+    "simple_file_checks": [
+      "validation/simple.py:check_gnn_file_basic",
+      "validation/simple.py:check_gnn_directory_basic"
+    ]
+  },
+  "canonical": [
+    "__init__.py:validate_gnn_file",
+    "execute/pymdp/pymdp_utils.py:check_gnn_pomdp_spec",
+    "llm/llm_operations.py:validate_gnn_with_llm",
+    "mcp/gnn_root.py:validate_gnn_content",
+    "mcp/processors.py:check_cross_format_consistency",
+    "mcp/sympy_mcp_client.py:validate_gnn_equation",
+    "parsers/basic.py:validate_gnn",
+    "processing/processor.py:check_gnn_file_structure",
+    "schema/parser.py:validate_gnn_object",
+    "schema_validator/validator.py:validate_gnn_file_comprehensive",
+    "type_checker/checking/core.py:validate_gnn_files",
+    "type_checker/mcp.py:validate_gnn_files_mcp",
+    "validation/mcp.py:validate_gnn_file_mcp",
+    "validation/simple.py:check_gnn_directory_basic",
+    "validation/simple.py:check_gnn_file_basic"
+  ],
+  "old_names": {
+    "execute/pymdp/pymdp_utils.py:validate_gnn_pomdp_structure": "execute/pymdp/pymdp_utils.py:check_gnn_pomdp_spec",
+    "llm/llm_operations.py:validate_gnn": "llm/llm_operations.py:validate_gnn_with_llm",
+    "mcp/processors.py:validate_gnn_cross_format_consistency": "mcp/processors.py:check_cross_format_consistency",
+    "parsers/basic.py:validate_gnn_syntax_formal": "parsers/basic.py:validate_gnn",
+    "processing/processor.py:validate_gnn_structure": "processing/processor.py:check_gnn_file_structure",
+    "schema_validator/validator.py:validate_gnn_file": "schema_validator/validator.py:validate_gnn_file_comprehensive",
+    "validation/simple.py:validate_gnn_directory": "validation/simple.py:check_gnn_directory_basic",
+    "validation/simple.py:validate_gnn_file": "validation/simple.py:check_gnn_file_basic"
+  }
+}

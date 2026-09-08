@@ -224,7 +224,7 @@ src/gnn/5_type_checker.py (thin orchestrator)
     │   ├── core.py
     │   │   └── GNNTypeChecker (line 111)
     │   │       ├── check_file() (line 118)
-    │   │       ├── validate_gnn_files() (line 163)
+    │   │       ├── validate_gnn_files() (line 199)
     │   │       └── _analyze_types() (line 320)
     │   ├── dimensions.py
     │   └── rules.py

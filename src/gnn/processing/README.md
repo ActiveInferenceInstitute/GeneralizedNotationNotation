@@ -9,7 +9,7 @@ step-3 multi-format serialization body. Consolidated into one package in
 
 | File | Purpose |
 |------|---------|
-| `processor.py` | Lightweight surface: `discover_gnn_files`, `parse_gnn_file`, `validate_gnn_structure`, directory processing, `generate_gnn_report`, `get_module_info` |
+| `processor.py` | Lightweight surface: `discover_gnn_files`, `parse_gnn_file`, `check_gnn_file_structure`, directory processing, `generate_gnn_report`, `get_module_info` |
 | `core_processor.py` | `GNNProcessor`: five-phase orchestration engine (discovery → validation → round-trip → cross-format → reporting) over a `ProcessingContext` |
 | `multi_format_processor.py` | `process_gnn_multi_format`: step-3 discovery, parsing, and multi-format serialization orchestrator |
 | `discovery.py` | `is_model_source_path` corpus filtering, `FileDiscoveryStrategy` content-aware discovery, `DiscoveryResult` |
@@ -20,7 +20,7 @@ step-3 multi-format serialization body. Consolidated into one package in
 Re-exported from `gnn.processing` (see `__init__.py`):
 
 - Lightweight surface (`processor.py`): `discover_gnn_files`,
-  `parse_gnn_file`, `validate_gnn_structure`, `process_gnn_directory`,
+  `parse_gnn_file`, `check_gnn_file_structure`, `process_gnn_directory`,
   `process_gnn_directory_lightweight`, `generate_gnn_report`,
   `get_module_info`
 - Orchestration (`core_processor.py`): `GNNProcessor`, `ProcessingContext`,
@@ -44,12 +44,12 @@ from gnn.processing import (
     parse_gnn_file,
     process_gnn_multi_format,
     process_gnn_directory_lightweight,
-    validate_gnn_structure,
+    check_gnn_file_structure,
 )
 
 # Single-file parse and structure validation
 parsed = parse_gnn_file("my_model.gnn")
-check = validate_gnn_structure("my_model.gnn")
+check = check_gnn_file_structure("my_model.gnn")
 
 # Lightweight directory sweep (no heavy dependencies)
 results = process_gnn_directory_lightweight(
@@ -83,7 +83,7 @@ The root package re-exports the lightweight surface and the multi-format
 entry point through the lazy `_EXPORT_MAP` in `src/gnn/__init__.py`:
 `gnn.parse_gnn_file`, `gnn.discover_gnn_files`,
 `gnn.process_gnn_directory`, `gnn.process_gnn_directory_lightweight`,
-`gnn.validate_gnn_structure`, `gnn.generate_gnn_report`,
+`gnn.check_gnn_file_structure`, `gnn.generate_gnn_report`,
 `gnn.get_module_info`, and `gnn.process_gnn_multi_format` all resolve to
 `processing.processor` / `processing.multi_format_processor`. Import the
 orchestration engine (`GNNProcessor`, `create_processor`) and the discovery

@@ -23,6 +23,7 @@ from gnn.schema_validator.validator import (
     ROUND_TRIP_AVAILABLE,
     GNNValidator,
     validate_gnn_file,
+    validate_gnn_file_comprehensive,
 )
 from gnn.types import ParsedGNN, ValidationLevel, ValidationResult
 
@@ -38,5 +39,6 @@ __all__ = [
     "ValidationResult",
     "validate_cross_format_consistency",
     "validate_gnn_file",
+    "validate_gnn_file_comprehensive",
     "validate_schema_consistency",
 ]

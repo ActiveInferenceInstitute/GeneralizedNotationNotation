@@ -16,6 +16,7 @@ import pytest
 
 try:
     from gnn.execute.pymdp.pymdp_utils import (
+        check_gnn_pomdp_spec,
         clean_trace_for_serialization,
         convert_numpy_for_json,
         extract_gnn_dimensions,
@@ -23,10 +24,10 @@ try:
         parse_gnn_vector_string,
         safe_json_dump,
         save_simulation_results,
-        validate_gnn_pomdp_structure,
     )
 except ImportError:
     from gnn.execute.pymdp.pymdp_utils import (
+        check_gnn_pomdp_spec,
         clean_trace_for_serialization,
         convert_numpy_for_json,
         extract_gnn_dimensions,
@@ -34,7 +35,6 @@ except ImportError:
         parse_gnn_vector_string,
         safe_json_dump,
         save_simulation_results,
-        validate_gnn_pomdp_structure,
     )
 
 
@@ -130,9 +130,9 @@ class TestGNNParsing:
         assert dimensions["num_observations"] == 3, "Observations dimension mismatch"
         assert dimensions["num_actions"] == 3, "Actions dimension mismatch"
 
-    def test_validate_gnn_pomdp_structure(self, test_gnn_spec: Any) -> Any:
+    def test_check_gnn_pomdp_spec(self, test_gnn_spec: Any) -> Any:
         """Test POMDP structure validation."""
-        validation = validate_gnn_pomdp_structure(test_gnn_spec)
+        validation = check_gnn_pomdp_spec(test_gnn_spec)
 
         assert validation["valid"], "POMDP structure should be valid"
 

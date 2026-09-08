@@ -73,7 +73,7 @@ is_valid, errors = validate_gnn(content_string)
 - `parse_gnn_file` — parse a single GNN file into structured data
 - `process_gnn_directory` — process all files in a directory
 - `process_gnn_multi_format` — full multi-format serialization (needs `logging.Logger`)
-- `validate_gnn_structure` — structural validation of a parsed model
+- `check_gnn_file_structure` — structural validation of a GNN file
 - `validate_gnn` — content-level syntax validation
 - `GNNParsingSystem`, `GNNFormat` — registry-backed multi-format I/O
 - `GNNFormalParser`, `ParsedGNN`, `ParsedGNNFormal` — formal parser types
