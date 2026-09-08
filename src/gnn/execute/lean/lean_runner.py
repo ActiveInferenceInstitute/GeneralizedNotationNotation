@@ -79,12 +79,36 @@ def verify_document(
     if receipt is not None:
         receipt_path = Path(receipt).resolve()
         receipt_path.parent.mkdir(parents=True, exist_ok=True)
+        _temp_dir = None
     else:
-        receipt_path = (
-            Path(tempfile.mkdtemp(prefix="gnn-lean-verify-"))
-            / f"{document_path.stem}-receipt.json"
-        )
+        # Scoped temp dir (cleaned up in the finally below); the previous
+        # mkdtemp leaked one directory per bare verify_document call that
+        # did not supply a receipt path.
+        _temp_dir = tempfile.TemporaryDirectory(prefix="gnn-lean-verify-")
+        receipt_path = Path(_temp_dir.name) / f"{document_path.stem}-receipt.json"
 
+    try:
+        return _verify_document_impl(
+            document_path,
+            gnn_root_path,
+            receipt_path,
+            model,
+            fail_on_warnings,
+            timeout,
+        )
+    finally:
+        if _temp_dir is not None:
+            _temp_dir.cleanup()
+
+
+def _verify_document_impl(
+    document_path: Path,
+    gnn_root_path: Path,
+    receipt_path: Path,
+    model: str,
+    fail_on_warnings: bool,
+    timeout: int,
+) -> dict[str, Any]:
     command = [
         "uv",
         "run",
@@ -108,7 +132,9 @@ def verify_document(
         "document": str(document_path),
         "command": command,
     }
-    envelope = run_subprocess_envelope(command, timeout=timeout, cwd=str(root))
+    envelope = run_subprocess_envelope(
+        command, timeout=timeout, cwd=str(_lean_cwd(gnn_root_path))
+    )
     # Canonical ``return_code`` key (MAJ-10); ``returncode`` kept for
     # existing consumers of the lean record.
     record["return_code"] = envelope["return_code"]
@@ -133,6 +159,12 @@ def verify_document(
         envelope["stderr"] or envelope["stdout"] or "verify-document failed"
     ).strip()[-2000:]
     return record
+
+
+def _lean_cwd(gnn_root_path: Path) -> str:
+    """Resolve the fep-lean cwd for the subprocess envelope."""
+    root = resolve_fep_lean_root()
+    return str(root) if root is not None else str(gnn_root_path.parent)
 
 
 def run_lean_scripts(

@@ -18,7 +18,7 @@ from typing import Any, Dict, List, Optional, Union
 logger = logging.getLogger(__name__)
 
 
-def validate_and_clean_pymdp_script(script_path: Path) -> bool:
+def validate_and_clean_pymdp_script(script_path: Path) -> Path | None:
     """
     Validate and clean PyMDP script for syntax errors.
 
@@ -26,11 +26,14 @@ def validate_and_clean_pymdp_script(script_path: Path) -> bool:
         script_path: Path to the PyMDP script to validate
 
     Returns:
-        bool: True if script is valid or was successfully cleaned, False otherwise
+        The path to execute: the original path when the script is already
+        valid, a sibling ``.cleaned.py`` path when syntax errors were
+        repaired (the original is preserved as the Step-11 audit trail),
+        or ``None`` when the script is unfixable.
     """
     if not script_path.exists():
         logger.error(f"Script file not found: {script_path}")
-        return False
+        return None
 
     try:
         # First, try to compile the script as-is
@@ -38,7 +41,7 @@ def validate_and_clean_pymdp_script(script_path: Path) -> bool:
             content = f.read()
             compile(content, script_path.name, "exec")
         logger.debug(f"Script {script_path.name} is syntactically valid")
-        return True
+        return script_path
     except SyntaxError as e:
         logger.warning(f"Syntax error in {script_path.name}: {e}")
 
@@ -59,23 +62,31 @@ def validate_and_clean_pymdp_script(script_path: Path) -> bool:
             # Try to compile the cleaned content
             compile(cleaned_content, script_path.name, "exec")
 
-            # If successful, write the cleaned content back
-            with open(script_path, "w") as f:
+            # Write the cleaned content to a sibling .cleaned.py file
+            # (preserves the Step-11 rendered-script audit trail in place).
+            cleaned_path = script_path.with_suffix(".cleaned.py")
+            with open(cleaned_path, "w") as f:
                 f.write(cleaned_content)
 
-            logger.info(f"Successfully cleaned syntax errors in {script_path.name}")
-            return True
+            logger.info(
+                f"Cleaned syntax errors written to {cleaned_path.name} "
+                f"(original preserved)"
+            )
+            return cleaned_path
 
         except SyntaxError as e2:
             logger.error(f"Could not fix syntax errors in {script_path.name}: {e2}")
-            return False
+            return None
         except Exception as e3:
             logger.error(f"Error during script cleanup: {e3}")
-            return False
+            return None
 
 
 def execute_pymdp_script_with_outputs(
-    script_path: Path, output_dir: Path, verbose: bool = False
+    script_path: Path,
+    output_dir: Path,
+    verbose: bool = False,
+    timeout: int = 600,
 ) -> Dict[str, Any]:
     """
     Execute a single PyMDP script with comprehensive output capture and analysis.
@@ -84,6 +95,7 @@ def execute_pymdp_script_with_outputs(
         script_path: Path to the PyMDP script
         output_dir: Directory to save execution outputs
         verbose: Whether to enable verbose output
+        timeout: Wall-clock execution timeout in seconds (default 600)
 
     Returns:
         Dict containing execution results, logs, and analysis data
@@ -98,8 +110,11 @@ def execute_pymdp_script_with_outputs(
     script_output_dir = output_dir / script_path.stem
     script_output_dir.mkdir(parents=True, exist_ok=True)
 
-    # First, validate and clean the script
-    if not validate_and_clean_pymdp_script(script_path):
+    # First, validate and clean the script. The cleaner returns the path
+    # to execute: the original when valid, a sibling .cleaned.py when
+    # repaired, or None when unfixable.
+    execute_path = validate_and_clean_pymdp_script(script_path)
+    if execute_path is None:
         logger.error(f"Script validation failed: {script_path}")
         return {"success": False, "error": "Script validation failed"}
 
@@ -123,8 +138,8 @@ def execute_pymdp_script_with_outputs(
                 "missing_dependencies": missing_deps,
             }
 
-        # Execute the script with output capture
-        abs_script_path = script_path.resolve()
+        # Execute the (possibly cleaned) script with output capture
+        abs_script_path = execute_path.resolve()
 
         # Prepare environment for enhanced execution
         env = os.environ.copy()
@@ -132,12 +147,13 @@ def execute_pymdp_script_with_outputs(
         # Calculate paths relative to this runner file, not the target script
         # This runner is in src/gnn/execute/pymdp/pymdp_runner.py
         runner_path = Path(__file__).resolve()
-        src_path = runner_path.parent.parent.parent
-        project_root = src_path.parent
+        # src/ (the dir containing the gnn package) is what rendered scripts
+        # need for ``import gnn``. Do NOT add src/gnn/ itself — it shadows
+        # stdlib module resolution in the venv's _virtualenv.pth site
+        # initialization (contextlib import fails with a Fatal Python error).
+        src_path = runner_path.parent.parent.parent.parent
 
-        # Add project root and src/gnn to PYTHONPATH so rendered scripts can
-        # import the gnn package even outside the venv.
-        env["PYTHONPATH"] = f"{project_root}:{src_path}:{env.get('PYTHONPATH', '')}"
+        env["PYTHONPATH"] = f"{src_path}:{env.get('PYTHONPATH', '')}"
         env["PYMDP_OUTPUT_DIR"] = str(
             script_output_dir
         )  # Let script know where to save files
@@ -151,7 +167,7 @@ def execute_pymdp_script_with_outputs(
 
         envelope = execute_script_safely(
             abs_script_path,
-            timeout=600,
+            timeout=timeout,
             cwd=abs_script_path.parent,
             env=env,
         )
@@ -347,6 +363,7 @@ def run_pymdp_scripts(
     execution_output_dir: Optional[Union[str, Path]] = None,
     recursive_search: bool = True,
     verbose: bool = False,
+    timeout: int = 600,
 ) -> bool:
     """
     Find and run PyMDP scripts on rendered models with comprehensive output generation.
@@ -394,7 +411,14 @@ def run_pymdp_scripts(
 
     # Filter out __pycache__ and other non-script files
     script_files = [
-        f for f in script_files if not any(part.startswith("__") for part in f.parts)
+        f
+        for f in script_files
+        if not any(part.startswith("__") for part in f.parts)
+        # Exclude self-heal siblings so a first cleanup run does not
+        # poison every later run (duplicate execution, stale artifacts).
+        and f.suffix == ".py"
+        and ".cleaned" not in f.suffixes
+        and not f.name.endswith(".cleaned.py")
     ]
 
     logger.info(f"Found {len(script_files)} PyMDP script(s) in {pymdp_dir}")
@@ -415,7 +439,7 @@ def run_pymdp_scripts(
         logger.info(f"Processing PyMDP script: {script_file.name}")
 
         script_result = execute_pymdp_script_with_outputs(
-            script_file, exec_output_dir, verbose
+            script_file, exec_output_dir, verbose, timeout=timeout
         )
         execution_results.append(script_result)
 
