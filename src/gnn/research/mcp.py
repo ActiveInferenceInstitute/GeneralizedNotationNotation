@@ -13,7 +13,7 @@ from typing import Any, Dict, List
 
 logger = logging.getLogger(__name__)
 
-from gnn.utils.mcp_dispatch import run_pipeline_step_mcp
+from gnn.utils.mcp_dispatch import run_pipeline_step_mcp, run_tool_envelope
 
 from . import process_research
 
@@ -79,7 +79,8 @@ def read_research_results_mcp(
     Returns:
         Dictionary with file contents, counts, and metadata.
     """
-    try:
+
+    def _build() -> Dict[str, Any]:
         out_dir = Path(output_directory)
         if not out_dir.exists():
             return {
@@ -106,9 +107,12 @@ def read_research_results_mcp(
             "results_found": len(results),
             "results": results,
         }
-    except Exception as e:
-        logger.error(f"read_research_results_mcp error: {e}", exc_info=True)
-        return {"success": False, "error": str(e)}
+
+    return run_tool_envelope(
+        _build,
+        wrapper_name="read_research_results_mcp",
+        logger=logger,
+    )
 
 
 def get_research_module_info_mcp() -> Dict[str, Any]:

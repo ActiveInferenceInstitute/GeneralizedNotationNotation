@@ -14,7 +14,7 @@ from typing import Any, Dict
 logger = logging.getLogger(__name__)
 
 from gnn.api.path_utils import PathValidationError, resolve_repo_path
-from gnn.utils.mcp_dispatch import run_pipeline_step_mcp
+from gnn.utils.mcp_dispatch import run_pipeline_step_mcp, run_tool_envelope
 
 from . import (
     check_dependencies,
@@ -229,7 +229,8 @@ def check_execute_dependencies_mcp() -> Dict[str, Any]:
         Dictionary with ``success`` and a ``dependencies`` list of plain dicts
         (``component``, ``status``, ``message``, ``details``, ``suggestion``).
     """
-    try:
+
+    def _build() -> Dict[str, Any]:
         result = check_dependencies()
         if isinstance(result, dict):
             return {"success": True, **result}
@@ -240,9 +241,12 @@ def check_execute_dependencies_mcp() -> Dict[str, Any]:
             for item in result
         ]
         return {"success": True, "dependencies": dependencies}
-    except Exception as e:
-        logger.error(f"check_execute_dependencies_mcp error: {e}", exc_info=True)
-        return {"success": False, "error": str(e)}
+
+    return run_tool_envelope(
+        _build,
+        wrapper_name="check_execute_dependencies_mcp",
+        logger=logger,
+    )
 
 
 def get_execute_module_info_mcp() -> Dict[str, Any]:
@@ -255,17 +259,16 @@ def get_execute_module_info_mcp() -> Dict[str, Any]:
     Returns:
         Dictionary with module metadata and feature inventory.
     """
-    try:
+
+    def _build() -> Dict[str, Any]:
         import importlib
 
         mod = importlib.import_module(__package__)
-        version = getattr(mod, "__version__", "unknown")
-        features = getattr(mod, "FEATURES", {})
         return {
             "success": True,
             "module": __package__,
-            "version": version,
-            "features": features,
+            "version": getattr(mod, "__version__", "unknown"),
+            "features": getattr(mod, "FEATURES", {}),
             "tools": [
                 "process_execute",
                 "execute_gnn_model",
@@ -274,9 +277,12 @@ def get_execute_module_info_mcp() -> Dict[str, Any]:
                 "get_execute_module_info",
             ],
         }
-    except Exception as e:
-        logger.error(f"get_execute_module_info_mcp error: {e}", exc_info=True)
-        return {"success": False, "error": str(e)}
+
+    return run_tool_envelope(
+        _build,
+        wrapper_name="get_execute_module_info_mcp",
+        logger=logger,
+    )
 
 
 # ── MCP Registration ──────────────────────────────────────────────────────────

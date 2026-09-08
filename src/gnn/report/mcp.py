@@ -12,7 +12,7 @@ from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
 
-from gnn.utils.mcp_dispatch import run_pipeline_step_mcp
+from gnn.utils.mcp_dispatch import run_pipeline_step_mcp, run_tool_envelope
 
 from . import get_module_info as _get_mod_info
 from . import get_supported_formats, process_report
@@ -145,12 +145,11 @@ def read_report_mcp(report_file_path: str) -> Dict[str, Any]:
 
 def get_report_module_info_mcp() -> Dict[str, Any]:
     """Return metadata about the report module."""
-    try:
-        info = _get_mod_info()
-        return {"success": True, **info}
-    except Exception as e:
-        logger.error(f"get_report_module_info_mcp error: {e}", exc_info=True)
-        return {"success": False, "error": str(e)}
+    return run_tool_envelope(
+        lambda: {"success": True, **_get_mod_info()},
+        wrapper_name="get_report_module_info_mcp",
+        logger=logger,
+    )
 
 
 # ── MCP Registration ────────────────────────────────────────────────────────

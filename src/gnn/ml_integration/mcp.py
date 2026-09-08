@@ -11,7 +11,7 @@ from typing import Any, Dict
 logger = logging.getLogger(__name__)
 
 # Import utilities from the ml_integration module
-from gnn.utils.mcp_dispatch import run_pipeline_step_mcp
+from gnn.utils.mcp_dispatch import run_pipeline_step_mcp, run_tool_envelope
 
 from . import FEATURES, check_ml_frameworks, process_ml_integration
 
@@ -103,15 +103,15 @@ def get_ml_module_info_mcp() -> Dict[str, Any]:
     Returns:
         Dictionary with module metadata, supported frameworks, and tool inventory.
     """
-    try:
+
+    def _build() -> Dict[str, Any]:
         import importlib
 
         mod = importlib.import_module(__package__)
-        version = getattr(mod, "__version__", "unknown")
         return {
             "success": True,
             "module": __package__,
-            "version": version,
+            "version": getattr(mod, "__version__", "unknown"),
             "features": FEATURES,
             "tools": [
                 "process_ml_integration",
@@ -120,9 +120,12 @@ def get_ml_module_info_mcp() -> Dict[str, Any]:
                 "get_ml_module_info",
             ],
         }
-    except Exception as e:
-        logger.error(f"get_ml_module_info_mcp error: {e}", exc_info=True)
-        return {"success": False, "error": str(e)}
+
+    return run_tool_envelope(
+        _build,
+        wrapper_name="get_ml_module_info_mcp",
+        logger=logger,
+    )
 
 
 # MCP Registration Function
