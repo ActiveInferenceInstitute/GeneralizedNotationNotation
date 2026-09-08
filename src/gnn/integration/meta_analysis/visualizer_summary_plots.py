@@ -35,6 +35,7 @@ class SweepSummaryPlotMixin:
         def _safe_log_scale(
             ax: Any, *, x: bool = False, y: bool = False, base: int = 10
         ) -> None: ...
+
     def _plot_resource_scaling(
         self, records: List[SweepRecord], frameworks: List[str]
     ) -> Optional[Path]:
