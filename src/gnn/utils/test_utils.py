@@ -419,11 +419,7 @@ def get_test_args() -> Dict[str, Any]:
         "duration": 30.0,
         "audio_backend": "auto",
         "ontology_terms_file": str(
-            PROJECT_ROOT
-            / "src"
-            / "gnn"
-            / "ontology"
-            / "act_inf_ontology_terms.json"
+            PROJECT_ROOT / "src" / "gnn" / "ontology" / "act_inf_ontology_terms.json"
         ),
         "pipeline_summary_file": str(
             PROJECT_ROOT
@@ -448,11 +444,7 @@ def get_sample_pipeline_arguments() -> Dict[str, Any]:
         "strict": False,
         "estimate_resources": False,
         "ontology_terms_file": str(
-            PROJECT_ROOT
-            / "src"
-            / "gnn"
-            / "ontology"
-            / "act_inf_ontology_terms.json"
+            PROJECT_ROOT / "src" / "gnn" / "ontology" / "act_inf_ontology_terms.json"
         ),
         "pipeline_summary_file": "output/00_pipeline_summary/pipeline_execution_summary.json",
         "llm_tasks": "all",

@@ -88,7 +88,10 @@ class PipelineValidator:
             jax_generator_path = package_root / "render/jax/jax_model_generator.py"
             if jax_generator_path.exists():
                 content = jax_generator_path.read_text()
-                if "NUM_STATES = {num_states}" in content and ".num_states" not in content:
+                if (
+                    "NUM_STATES = {num_states}" in content
+                    and ".num_states" not in content
+                ):
                     fixes_validation["jax_flax_fix"] = True
                     self.logger.info("✅ JAX Flax attribute access fix validated")
                 else:

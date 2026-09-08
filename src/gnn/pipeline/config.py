@@ -85,9 +85,7 @@ class PipelineConfig:
                     else:
                         return cast("dict[str, Any]", json.load(f))
             except _CONFIG_PARSE_ERRORS as e:
-                logger.error(
-                    "Could not parse config file %s: %s", self.config_path, e
-                )
+                logger.error("Could not parse config file %s: %s", self.config_path, e)
                 return {}
         return {}
 
