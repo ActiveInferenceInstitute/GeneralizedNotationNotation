@@ -90,13 +90,12 @@ are pinned.
   pins changed). Remaining cosmetic floors (networkx 2.6, plotly 5.15,
   scipy 1.7, ...) can follow at the next deliberate lock refresh.
 - `gnn/utils/pipeline_validator.py` vs `gnn/pipeline/pipeline_validator.py`
-  near-name collision (recorded during the MAJ-05 validate-surface pass;
-  unrelated to the `validate_gnn*` function surface, which is resolved):
-  audit both modules' roles and repo-wide consumers, then rename the
-  lower-traffic module to an unambiguous name with a compatibility re-export
-  of the old import path. Verify: import-site grep updated with zero
-  stragglers, `uv run --extra dev mypy src` clean, MCP tools and CLI paths
-  unchanged, module tests green.
+  near-name collision: RESOLVED 2026-09-08 — the lower-traffic runtime
+  integration tester renamed to
+  `gnn/pipeline/pipeline_runtime_validator.py` (compatibility module at the
+  old path emits `DeprecationWarning` and re-exports `PipelineValidator`/`main`;
+  contract pinned in `tests/pipeline/test_pipeline_runtime_validator.py`);
+  import-site grep has zero stragglers.
 - Stale singular module paths in maintained docs: RESOLVED 2026-09-08 —
   all 21 occurrences (19 lines) of `src/gnn/parser.py`, `src/gnn/schema.py`,
   and `src/gnn/schema_validator.py` re-pointed to their verified real homes

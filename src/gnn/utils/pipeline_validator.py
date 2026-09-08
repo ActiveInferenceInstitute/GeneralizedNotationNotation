@@ -8,7 +8,7 @@ Does NOT analyze source code and does NOT run the pipeline itself.
 
 See also:
 - pipeline/pipeline_validation.py: Static code analysis (checks import patterns, naming)
-- pipeline/pipeline_validator.py: Runtime integration tester (runs pipeline via subprocess)
+- pipeline/pipeline_runtime_validator.py: Runtime integration tester (runs pipeline via subprocess)
 """
 
 import logging

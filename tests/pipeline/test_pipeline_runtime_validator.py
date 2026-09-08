@@ -1,4 +1,8 @@
-"""Real-behavior tests for ``src/gnn/pipeline/pipeline_validator.py``.
+"""Real-behavior tests for ``src/gnn/pipeline/pipeline_runtime_validator.py``.
+
+The old import path ``gnn.pipeline.pipeline_validator`` is a deprecated
+compatibility module; its re-export contract is pinned at the bottom of
+this file.
 
 The runtime integration tester is the only consumer chain behind
 ``gnn.pipeline.health_check`` (its constructor is invoked by the health
@@ -12,7 +16,7 @@ from __future__ import annotations
 
 import pytest
 
-from gnn.pipeline.pipeline_validator import PipelineValidator
+from gnn.pipeline.pipeline_runtime_validator import PipelineValidator
 
 pytestmark = pytest.mark.filterwarnings("default")
 
@@ -52,3 +56,29 @@ def test_calculate_overall_health_transitions() -> None:
         )
         == "degraded"
     )
+
+
+def test_old_import_path_warns_and_reexports() -> None:
+    """The renamed module's old path must still import, warn, and bind the
+    same objects (compatibility contract for external callers).
+    """
+    import importlib
+    import sys
+    import warnings
+
+    # Force a fresh module execution so the DeprecationWarning fires even
+    # if another test imported the compat path earlier in this session.
+    sys.modules.pop("gnn.pipeline.pipeline_validator", None)
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        compat = importlib.import_module("gnn.pipeline.pipeline_validator")
+    assert any(
+        issubclass(w.category, DeprecationWarning) for w in caught
+    ), "old import path must emit DeprecationWarning"
+    from gnn.pipeline.pipeline_runtime_validator import (
+        PipelineValidator as Canonical,
+        main as canonical_main,
+    )
+
+    assert compat.PipelineValidator is Canonical
+    assert compat.main is canonical_main

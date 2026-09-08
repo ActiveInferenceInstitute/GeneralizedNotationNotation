@@ -27,7 +27,7 @@ from gnn.utils.logging.logging_utils import setup_step_logging
 
 from .config import get_pipeline_config
 from .diagnostic_enhancer import PipelineDiagnosticEnhancer
-from .pipeline_validator import PipelineValidator
+from .pipeline_runtime_validator import PipelineValidator
 
 # Optional psutil import with recovery
 try:
