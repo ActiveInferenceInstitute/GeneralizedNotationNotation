@@ -11,6 +11,8 @@ from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
 
+from gnn.utils.mcp_dispatch import run_pipeline_step_mcp
+
 from .generator import generate_website as _generate_website
 from .inspection import inspect_website, list_website_pages
 from .renderer import process_website
@@ -30,29 +32,30 @@ def process_website_mcp(
     Returns:
         Dictionary with success status, pages_created count, errors and warnings.
     """
-    try:
-        result = process_website(
-            Path(target_directory), Path(output_directory), verbose=verbose
-        )
+    def _interpret(result: Any) -> tuple[bool, Dict[str, Any], str | None]:
         # process_website returns bool or dict
         if isinstance(result, dict):
-            return {
-                "success": bool(result.get("success", False)),
+            extras: Dict[str, Any] = {
                 "pages_created": result.get("pages_created", 0),
-                "target_directory": target_directory,
-                "output_directory": output_directory,
                 "errors": result.get("errors", []),
                 "warnings": result.get("warnings", []),
             }
-        return {
-            "success": bool(result),
-            "target_directory": target_directory,
-            "output_directory": output_directory,
-            "message": f"Website processing {'completed successfully' if result else 'failed'}",
-        }
-    except Exception as e:
-        logger.error(f"process_website_mcp error: {e}", exc_info=True)
-        return {"success": False, "error": str(e)}
+            return bool(result.get("success", False)), extras, None
+        return (
+            bool(result),
+            {},
+            f"Website processing {'completed successfully' if result else 'failed'}",
+        )
+
+    return run_pipeline_step_mcp(
+        process_website,
+        wrapper_name="process_website_mcp",
+        logger=logger,
+        target_directory=target_directory,
+        output_directory=output_directory,
+        verbose=verbose,
+        interpret_result=_interpret,
+    )
 
 
 def build_from_pipeline_output_mcp(
