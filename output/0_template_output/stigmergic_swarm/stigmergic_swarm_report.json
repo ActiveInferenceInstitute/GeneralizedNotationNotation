@@ -1,7 +1,7 @@
 {
-  "input_file": "input/gnn_files/multiagent/stigmergic_swarm.md",
-  "output_file": "output/0_template_output/stigmergic_swarm/stigmergic_swarm_processed.md",
-  "timestamp": "2026-09-05T20:30:45.663698",
+  "input_file": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/multiagent/stigmergic_swarm.md",
+  "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/0_template_output/stigmergic_swarm/stigmergic_swarm_processed.md",
+  "timestamp": "2026-09-08T06:53:29.065846",
   "file_size_bytes": 13088,
   "file_size_lines": 298,
   "processing_options": {

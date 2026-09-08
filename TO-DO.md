@@ -116,6 +116,23 @@ are pinned.
   regression gate `scripts/check_doc_path_references.py` is CI-wired
   (local-gates) and strict (cap 0).
 
+## Deep horizon wave 2 - analysis + utils
+
+All eleven scoped rows (W2-01..W2-11) landed via PR #60 (2026-09-08);
+audit trail: git history and the PR description. Final measured state via
+`bash autoresearch.sh`: `quality_violations=0` (mypy `--strict
+--follow-imports=silent` over `src/gnn/{analysis,utils,advanced_
+visualization,type_checker,schemas,api}` — was 120) with ruff at 0 and
+the territory test subset at 821 passed / 0 failed (was 808 passed).
+Key landings: single canonical GNN section contract
+(`gnn/schemas/section_contract.py` with schema-drift tests), eight
+production-dead utils modules removed, type_checker/analysis/advanced_
+visualization/api deduplication and contract unification, api step
+surface registry-derived, whole-territory strict typing clean.
+
+---
+
+
 ## Deep horizon wave 2 - pipeline orchestration
 
 Scouted 2026-09-08 against tip b73e467bf (six read-only scouts over

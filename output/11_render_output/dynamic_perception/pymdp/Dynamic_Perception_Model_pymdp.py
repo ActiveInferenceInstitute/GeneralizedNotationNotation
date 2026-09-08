@@ -10,7 +10,7 @@ real pymdp 1.0.0 (JAX-first) under the hood.
 
 Model:        Dynamic Perception Model
 Description:  
-Generated:    2026-09-05 20:32:38
+Generated:    2026-09-08 06:56:54
 
 State Space:
   - Hidden States: 2

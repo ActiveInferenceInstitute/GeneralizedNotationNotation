@@ -31,7 +31,7 @@ from ._shared import (
 
 def _generate_3d_visualization(
     model_name: str,
-    model_data: Dict,
+    model_data: Dict[str, Any],
     output_dir: Path,
     export_formats: List[str],
     dependencies: Dict[str, bool],
@@ -151,29 +151,6 @@ def _generate_3d_visualization(
                                             alpha=0.7,
                                         )
 
-                for i, (pos, color, size) in enumerate(
-                    zip(positions, node_colors, node_sizes)
-                ):
-                    ax.scatter(
-                        pos[0],
-                        pos[1],
-                        pos[2],
-                        c=color,
-                        s=size,
-                        alpha=0.8,
-                        edgecolors="black",
-                    )
-                    ax.text(
-                        pos[0],
-                        pos[1],
-                        pos[2],
-                        variables[i].get("name", f"Var{i}"),
-                        fontsize=8,
-                        ha="center",
-                        va="center",
-                        fontweight="bold",
-                    )
-
                 ax.set_xlabel("X Dimension")
                 ax.set_ylabel("Y Dimension")
                 ax.set_zlabel("Z Dimension")
@@ -225,7 +202,7 @@ def _generate_3d_visualization(
 
 def _generate_interactive_dashboard(
     model_name: str,
-    model_data: Dict,
+    model_data: Dict[str, Any],
     output_dir: Path,
     export_formats: List[str],
     dependencies: Dict[str, bool],
@@ -386,7 +363,7 @@ def _generate_interactive_dashboard(
 
 def _generate_pomdp_transition_analysis(
     model_name: str,
-    model_data: Dict,
+    model_data: Dict[str, Any],
     output_dir: Path,
     dependencies: Dict[str, bool],
     logger: logging.Logger,
@@ -498,7 +475,7 @@ def _generate_pomdp_transition_analysis(
 
 def _generate_policy_visualization(
     model_name: str,
-    model_data: Dict,
+    model_data: Dict[str, Any],
     output_dir: Path,
     dependencies: Dict[str, bool],
     logger: logging.Logger,
@@ -588,7 +565,7 @@ def _generate_policy_visualization(
 
 def _generate_network_metrics(
     model_name: str,
-    model_data: Dict,
+    model_data: Dict[str, Any],
     output_dir: Path,
     dependencies: Dict[str, bool],
     logger: logging.Logger,

@@ -425,14 +425,14 @@
   "runtime_metadata": {
     "b_tensor_order": "next_state_previous_state_action",
     "belief_accuracy": 1.0,
-    "generated_at": "2026-09-05T20:26:23.208",
+    "generated_at": "2026-09-08T06:51:40.913",
     "inference_converged": true,
     "julia_version": "1.12.7",
     "model_kind": "flat",
     "random_seed": 42,
     "rxinfer_version": "5.5.0",
     "schema_version": "rxinfer_simulation_v1",
-    "script_sha256": "c50ab8f22da3bf649f923726b14a63c5826a5edb8af404517e32b53e73f855ca",
+    "script_sha256": "2dd512dcd5abd404c36ee3535dca464e9e919aabdd3423ff91ef71b759c5b950",
     "uses_real_rxinfer": true
   },
   "schema_version": "rxinfer_simulation_v1",

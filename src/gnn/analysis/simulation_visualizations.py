@@ -106,7 +106,7 @@ def visualize_simulation_results(
 
                 # Local Helper for attaching robust context
                 def apply_chart_metadata(
-                    framework: str = framework, data: dict = data
+                    framework: str = framework, data: dict[str, Any] = data
                 ) -> None:
                     """Apply chart metadata."""
                     try:
@@ -435,3 +435,14 @@ def visualize_cross_framework_metrics(
         logger.debug(traceback.format_exc())
 
     return visualizations
+
+
+# Explicit re-export surface (no_implicit_reexport).
+__all__ = [
+    "SEABORN_AVAILABLE",
+    "generate_matrix_visualizations",
+    "parse_matrix_data",
+    "sns",
+    "visualize_cross_framework_metrics",
+    "visualize_simulation_results",
+]

@@ -1,7 +1,7 @@
 
 # Processed by GNN Pipeline Template
-# Original file: input/gnn_files/continuous/continuous_navigation.md
-# Processed on: 2026-09-05T20:30:45.679089
+# Original file: /private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/continuous/continuous_navigation.md
+# Processed on: 2026-09-08T06:53:29.084241
 # Options: {'verbose': False, 'recursive': True, 'example_param': 'default_value'}
 
 # GNN Example: Continuous State Navigation Agent

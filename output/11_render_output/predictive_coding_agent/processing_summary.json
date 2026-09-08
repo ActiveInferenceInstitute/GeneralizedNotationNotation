@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-09-05T20:25:31.278142",
-  "source_file": "input/gnn_files/continuous/predictive_coding_agent.md",
+  "timestamp": "2026-09-08T06:58:15.167272",
+  "source_file": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/continuous/predictive_coding_agent.md",
   "model_name": "Predictive Coding Active Inference Agent",
   "pomdp_dimensions": {
     "num_states": 2,

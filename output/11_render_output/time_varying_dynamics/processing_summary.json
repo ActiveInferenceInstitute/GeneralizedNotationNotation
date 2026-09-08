@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-09-05T20:25:28.893639",
-  "source_file": "input/gnn_files/discrete/time_varying_dynamics.md",
+  "timestamp": "2026-09-08T06:58:13.033696",
+  "source_file": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/discrete/time_varying_dynamics.md",
   "model_name": "Time-Varying Transition Dynamics Agent",
   "pomdp_dimensions": {
     "num_states": 3,

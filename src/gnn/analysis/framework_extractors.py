@@ -21,8 +21,22 @@ CURRENT_SIMULATION_SCHEMAS = {
 }
 
 
-def _normalise_current_simulation_payload(payload: Dict[str, Any]) -> Dict[str, Any]:
-    """Map current framework simulation schemas into analysis fields."""
+def _normalise_current_simulation_payload(
+    payload: Dict[str, Any], *, fallback_top_level: bool = True
+) -> Dict[str, Any]:
+    """Map current framework simulation schemas into analysis fields.
+
+    ``fallback_top_level`` controls whether a missing ``*_by_factor`` /
+    ``by_modality`` map falls back to the payload's top-level arrays. The
+    rxinfer and activeinference_jl schemas carry top-level arrays (default);
+    the pymdp schema stores data exclusively in the by-factor maps, so its
+    extractor disables the fallback — pinned by
+    ``tests/render/test_jax_factorized_pipeline.py``.
+    """
+
+    def _fallback(top_key: str) -> Any:
+        return payload.get(top_key, []) if fallback_top_level else []
+
     beliefs_by_factor = payload.get("beliefs_by_factor", {}) or {}
     observations_by_modality = payload.get("observations_by_modality", {}) or {}
     actions_by_control_factor = payload.get("actions_by_control_factor", {}) or {}
@@ -31,17 +45,13 @@ def _normalise_current_simulation_payload(payload: Dict[str, Any]) -> Dict[str, 
     return {
         "traces": payload.get("simulation_trace", {}),
         "free_energy": payload.get("expected_free_energy", []),
-        "states": hidden_states_by_factor.get(
-            "joint_state", payload.get("true_states", [])
-        ),
+        "states": hidden_states_by_factor.get("joint_state", _fallback("true_states")),
         "observations": observations_by_modality.get(
-            "joint_observation", payload.get("observations", [])
+            "joint_observation", _fallback("observations")
         ),
-        "actions": actions_by_control_factor.get(
-            "joint_action", payload.get("actions", [])
-        ),
+        "actions": actions_by_control_factor.get("joint_action", _fallback("actions")),
         "policy": payload.get("policy_posterior", []),
-        "beliefs": beliefs_by_factor.get("joint_state", payload.get("beliefs", [])),
+        "beliefs": beliefs_by_factor.get("joint_state", _fallback("beliefs")),
         "belief_confidence": metrics.get("belief_confidence", []),
         "action_probabilities": payload.get(
             "policy_posterior", payload.get("action_probabilities", [])
@@ -136,22 +146,21 @@ def extract_pymdp_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
             f"Unsupported PyMDP schema: {payload.get('schema_version')!r}"
         )
     else:
-        beliefs_by_factor = payload.get("beliefs_by_factor", {}) or {}
-        observations_by_modality = payload.get("observations_by_modality", {}) or {}
-        actions_by_control_factor = payload.get("actions_by_control_factor", {}) or {}
-        hidden_states_by_factor = payload.get("hidden_states_by_factor", {}) or {}
-        metrics = payload.get("metrics", {}) or {}
-
-        simulation_data["beliefs"] = beliefs_by_factor.get("joint_state", [])
-        simulation_data["observations"] = observations_by_modality.get(
-            "joint_observation", []
+        # Single canonical field mapping (same normalizer the rxinfer and
+        # activeinference_jl extractors use) so the three extractors cannot
+        # drift. The pymdp schema carries data only in the by-factor maps,
+        # so the normalizer's top-level fallback is disabled here.
+        normalised = _normalise_current_simulation_payload(
+            payload, fallback_top_level=False
         )
-        simulation_data["actions"] = actions_by_control_factor.get("joint_action", [])
-        simulation_data["states"] = hidden_states_by_factor.get("joint_state", [])
-        simulation_data["free_energy"] = payload.get("expected_free_energy", [])
-        simulation_data["policy"] = payload.get("policy_posterior", [])
-        simulation_data["belief_confidence"] = metrics.get("belief_confidence", [])
-        simulation_data["traces"] = payload.get("simulation_trace", {})
+        simulation_data["beliefs"] = normalised["beliefs"]
+        simulation_data["observations"] = normalised["observations"]
+        simulation_data["actions"] = normalised["actions"]
+        simulation_data["states"] = normalised["states"]
+        simulation_data["free_energy"] = normalised["free_energy"]
+        simulation_data["policy"] = normalised["policy"]
+        simulation_data["belief_confidence"] = normalised["belief_confidence"]
+        simulation_data["traces"] = normalised["traces"]
 
     result: dict[str, Any] = {
         "traces": simulation_data.get("traces", []),

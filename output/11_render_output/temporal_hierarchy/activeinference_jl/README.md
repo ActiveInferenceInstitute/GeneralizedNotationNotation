@@ -14,7 +14,7 @@ Generated from GNN POMDP Model: **Three-Level Temporal Hierarchy Agent**
 - Each level maintains its own generative model with A, B, C, D matrices
 - Timescale separation encoded via update ratios (Level 2 updates every 10 Level 0 steps)
 - Demonstrates deep temporal models from Friston et al. hierarchical Active Inference
-- **Generation Date**: 2026-09-05 20:32:38
+- **Generation Date**: 2026-09-08 06:56:54
 
 ## POMDP Dimensions
 

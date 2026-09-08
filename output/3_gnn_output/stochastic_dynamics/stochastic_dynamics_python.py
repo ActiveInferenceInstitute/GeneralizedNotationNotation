@@ -7,7 +7,7 @@ and observation noise, rendered as a native linear-Gaussian state-space model
 - Observation y: two noisy readouts, both reading the position.
 - Q is the process-noise covariance (inverse process precision); R is the
   observation-noise covariance (inverse observation precision).
-Generated: 2026-09-05T20:30:54.993153
+Generated: 2026-09-08T06:53:47.233848
 """
 
 import numpy as np

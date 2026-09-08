@@ -2,11 +2,11 @@
   "framework": "rxinfer",
   "model_name": "dynamic_perception",
   "script_name": "Dynamic_Perception_Model_rxinfer.jl",
-  "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/dynamic_perception/rxinfer/Dynamic_Perception_Model_rxinfer.jl",
+  "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/rxinfer/Dynamic_Perception_Model_rxinfer.jl",
   "success": true,
   "return_code": 0,
-  "execution_time": 18.57297,
-  "timestamp": "2026-09-05T20:26:07.454813",
+  "execution_time": 20.614413,
+  "timestamp": "2026-09-08T06:51:20.168508",
   "simulation_data": {
     "traces": [],
     "free_energy": [
@@ -236,17 +236,17 @@
     "accelerator_type": "mps",
     "stdout_length": 221,
     "stderr_length": 0,
-    "output_directory": "output/12_execute_output/dynamic_perception/rxinfer"
+    "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/rxinfer"
   },
-  "execution_time_mean": 18.57297,
+  "execution_time_mean": 20.614413,
   "execution_time_std": 0.0,
   "execution_time_samples": [
-    18.57297
+    20.614413
   ],
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [
-      "output/12_execute_output/dynamic_perception/rxinfer/simulation_data/simulation_results.json"
+      "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/rxinfer/simulation_data/simulation_results.json"
     ],
     "traces": [],
     "other": []

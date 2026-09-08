@@ -15,6 +15,8 @@ from typing import (
 
 import numpy as np
 
+from .analysis_complexity import calculate_cyclomatic_complexity
+
 logger = logging.getLogger(__name__)
 
 
@@ -78,29 +80,6 @@ def calculate_section_statistics(sections: List[Dict[str, Any]]) -> Dict[str, An
     return stats
 
 
-def count_type_distribution(variables: List[Dict[str, Any]]) -> Dict[str, int]:
-    """Count distribution of variable types."""
-    type_counts: dict[Any, Any] = {}
-    for var in variables:
-        var_type = var.get("type", "unknown")
-        type_counts[var_type] = type_counts.get(var_type, 0) + 1
-    return type_counts
-
-
-def build_connectivity_matrix(
-    connections: List[Dict[str, Any]],
-) -> Dict[str, List[str]]:
-    """Build connectivity matrix from connections."""
-    connectivity: dict[Any, Any] = {}
-    for conn in connections:
-        source = conn.get("source", "")
-        target = conn.get("target", "")
-        if source not in connectivity:
-            connectivity[source] = []
-        connectivity[source].append(target)
-    return connectivity
-
-
 def analyze_distributions(
     variables: List[Dict[str, Any]], connections: List[Dict[str, Any]]
 ) -> Dict[str, Any]:
@@ -157,7 +136,9 @@ def analyze_distributions(
         "variable_complexity": len(variables),
         "connection_complexity": len(connections),
         "density": len(connections) / max(len(variables), 1),
-        "cyclomatic_complexity": len(connections) - len(variables) + 2,
+        "cyclomatic_complexity": calculate_cyclomatic_complexity(
+            variables, connections
+        ),
     }
 
     return analysis
@@ -195,3 +176,15 @@ def calculate_correlations(
                 correlations["line_position_correlation"] = 0.0
 
     return correlations
+
+
+# Explicit re-export surface (no_implicit_reexport).
+__all__ = [
+    "SCIPY_AVAILABLE",
+    "analyze_distributions",
+    "calculate_connection_statistics",
+    "calculate_correlations",
+    "calculate_section_statistics",
+    "calculate_variable_statistics",
+    "stats",
+]

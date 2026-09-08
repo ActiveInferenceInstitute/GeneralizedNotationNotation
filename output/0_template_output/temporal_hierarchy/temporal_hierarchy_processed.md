@@ -1,7 +1,7 @@
 
 # Processed by GNN Pipeline Template
-# Original file: input/gnn_files/hierarchical/temporal_hierarchy.md
-# Processed on: 2026-09-05T20:30:45.662759
+# Original file: /private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/hierarchical/temporal_hierarchy.md
+# Processed on: 2026-09-08T06:53:29.064428
 # Options: {'verbose': False, 'recursive': True, 'example_param': 'default_value'}
 
 # GNN Example: Three-Level Temporal Hierarchy Agent

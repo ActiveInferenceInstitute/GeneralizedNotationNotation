@@ -11,7 +11,7 @@ Generated from GNN POMDP Model: **Curiosity-Driven Active Inference Agent**
 - Precision parameter γ weighting epistemic vs instrumental contributions
 - 5 hidden states, 5 observations, 4 actions in a navigation context
 - Agent is rewarded for reducing posterior uncertainty
-- **Generation Date**: 2026-09-05 20:25:30
+- **Generation Date**: 2026-09-08 06:58:14
 
 ## POMDP Dimensions
 

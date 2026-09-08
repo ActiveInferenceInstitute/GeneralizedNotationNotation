@@ -1,7 +1,7 @@
 
 # Processed by GNN Pipeline Template
-# Original file: input/gnn_files/multiagent/stigmergic_swarm.md
-# Processed on: 2026-09-05T20:30:45.663513
+# Original file: /private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/multiagent/stigmergic_swarm.md
+# Processed on: 2026-09-08T06:53:29.065423
 # Options: {'verbose': False, 'recursive': True, 'example_param': 'default_value'}
 
 # GNN Example: Stigmergic Swarm Active Inference

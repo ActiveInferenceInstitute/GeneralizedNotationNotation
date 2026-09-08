@@ -11,7 +11,7 @@ Generated from GNN POMDP Model: **Active Inference POMDP Agent**
 - The hidden state is fully controllable via 3 discrete actions.
 - The agent's preferences are encoded as log-probabilities over observations.
 - The agent has an initial policy prior (habit) encoded as log-probabilities over actions.
-- **Generation Date**: 2026-09-05 20:25:28
+- **Generation Date**: 2026-09-08 06:58:13
 
 ## POMDP Dimensions
 

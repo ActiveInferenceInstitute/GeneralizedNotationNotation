@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-09-05T20:32:39.132966",
-  "source_file": "input/gnn_files/multiagent/stigmergic_swarm.md",
+  "timestamp": "2026-09-08T06:56:54.741333",
+  "source_file": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/multiagent/stigmergic_swarm.md",
   "model_name": "Stigmergic Swarm Active Inference",
   "pomdp_dimensions": {
     "num_states": 729,

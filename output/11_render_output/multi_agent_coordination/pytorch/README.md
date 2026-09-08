@@ -11,7 +11,7 @@ Generated from GNN POMDP Model: **Multi-Agent Cooperative Active Inference**
 - Joint task state includes both agents' positions (4x4 = 16 joint states)
 - Cooperative preferences: both agents prefer the same goal configuration
 - Models social cognition and coordination without explicit communication
-- **Generation Date**: 2026-09-05 20:33:45
+- **Generation Date**: 2026-09-08 06:58:06
 
 ## POMDP Dimensions
 

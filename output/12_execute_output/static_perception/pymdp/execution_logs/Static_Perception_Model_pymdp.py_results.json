@@ -2,11 +2,11 @@
   "framework": "pymdp",
   "model_name": "static_perception",
   "script_name": "Static_Perception_Model_pymdp.py",
-  "script_path": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/output/11_render_output/static_perception/pymdp/Static_Perception_Model_pymdp.py",
+  "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/pymdp/Static_Perception_Model_pymdp.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 2.798857,
-  "timestamp": "2026-09-05T20:27:09.756290",
+  "execution_time": 2.561325,
+  "timestamp": "2026-09-08T06:52:23.461661",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -27,7 +27,7 @@
     ],
     "policy": [],
     "raw_output": "PyMDP 1.0.0+ detected (JAX-first Agent).\n",
-    "raw_error": "2026-09-05 20:27:10,725 - INFO - Running pymdp 1.0.0 rollout for Static Perception Model\n2026-09-05 20:27:10,725 - INFO - Output directory: output/pymdp_simulations/Static Perception Model\n2026-09-05 20:27:10,725 - INFO - Executing PyMDP simulation (correlation_id: render_generated_script)\n2026-09-05 20:27:10,726 - INFO - Starting pymdp 1.0.0 rollout (JAX backend)\n2026-09-05 20:27:10,727 - INFO - Dimensions: No=2, Ns=2, Nu=2 | T=5, batch=1, policy_len=1\n2026-09-05 20:27:10,738 - INFO - Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: dlopen(libtpu.so, 0x0001): tried: 'libtpu.so' (no such file), '/System/Volumes/Preboot/Cryptexes/OSlibtpu.so' (no such file), '/Users/hum/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/lib/libtpu.so' (no such file), '/usr/lib/libtpu.so' (no such file, not in dyld cache), 'libtpu.so' (no such file)\n/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/src/gnn/execute/pymdp/simulation.py:373: UserWarning: A JAX array is being set as static! This can result in unexpected behavior and is usually a mistake to do.\n  agent = Agent(**agent_kwargs)\n2026-09-05 20:27:10,999 - INFO - pymdp 1.0.0 Agent built (batch_size=1)\n2026-09-05 20:27:12,040 - INFO - t=00 obs=1 belief=[0.17, 0.83] action=0 next_state=0\n2026-09-05 20:27:12,118 - INFO - t=01 obs=0 belief=[0.652, 0.348] action=1 next_state=1\n2026-09-05 20:27:12,195 - INFO - t=02 obs=1 belief=[0.104, 0.896] action=0 next_state=1\n2026-09-05 20:27:12,274 - INFO - t=03 obs=1 belief=[0.033, 0.967] action=0 next_state=1\n2026-09-05 20:27:12,354 - INFO - t=04 obs=1 belief=[0.017, 0.983] action=0 next_state=1\n2026-09-05 20:27:12,354 - INFO - Saved simulation results to output/pymdp_simulations/Static Perception Model/simulation_results.json\n2026-09-05 20:27:12,354 - INFO - PyMDP simulation completed successfully\n2026-09-05 20:27:12,354 - INFO - Simulation completed successfully\n2026-09-05 20:27:12,355 - INFO -   framework:    PyMDP\n2026-09-05 20:27:12,355 - INFO -   pymdp ver:    1.0.0\n2026-09-05 20:27:12,355 - INFO -   backend:      jax\n2026-09-05 20:27:12,355 - INFO -   num_timesteps:5\n",
+    "raw_error": "2026-09-08 06:52:24,245 - INFO - Running pymdp 1.0.0 rollout for Static Perception Model\n2026-09-08 06:52:24,245 - INFO - Output directory: output/pymdp_simulations/Static Perception Model\n2026-09-08 06:52:24,245 - INFO - Executing PyMDP simulation (correlation_id: render_generated_script)\n2026-09-08 06:52:24,245 - INFO - Starting pymdp 1.0.0 rollout (JAX backend)\n2026-09-08 06:52:24,246 - INFO - Dimensions: No=2, Ns=2, Nu=2 | T=5, batch=1, policy_len=1\n2026-09-08 06:52:24,253 - INFO - Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: dlopen(libtpu.so, 0x0001): tried: 'libtpu.so' (no such file), '/System/Volumes/Preboot/Cryptexes/OSlibtpu.so' (no such file), '/Users/hum/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/lib/libtpu.so' (no such file), '/usr/lib/libtpu.so' (no such file, not in dyld cache), 'libtpu.so' (no such file)\n/private/tmp/herdr-worktrees/gnn-utils/src/gnn/execute/pymdp/simulation.py:373: UserWarning: A JAX array is being set as static! This can result in unexpected behavior and is usually a mistake to do.\n  agent = Agent(**agent_kwargs)\n2026-09-08 06:52:24,493 - INFO - pymdp 1.0.0 Agent built (batch_size=1)\n2026-09-08 06:52:25,549 - INFO - t=00 obs=1 belief=[0.17, 0.83] action=0 next_state=0\n2026-09-08 06:52:25,625 - INFO - t=01 obs=0 belief=[0.652, 0.348] action=1 next_state=1\n2026-09-08 06:52:25,699 - INFO - t=02 obs=1 belief=[0.104, 0.896] action=0 next_state=1\n2026-09-08 06:52:25,772 - INFO - t=03 obs=1 belief=[0.033, 0.967] action=0 next_state=1\n2026-09-08 06:52:25,844 - INFO - t=04 obs=1 belief=[0.017, 0.983] action=0 next_state=1\n2026-09-08 06:52:25,845 - INFO - Saved simulation results to output/pymdp_simulations/Static Perception Model/simulation_results.json\n2026-09-08 06:52:25,845 - INFO - PyMDP simulation completed successfully\n2026-09-08 06:52:25,845 - INFO - Simulation completed successfully\n2026-09-08 06:52:25,845 - INFO -   framework:    PyMDP\n2026-09-08 06:52:25,845 - INFO -   pymdp ver:    1.0.0\n2026-09-08 06:52:25,845 - INFO -   backend:      jax\n2026-09-08 06:52:25,845 - INFO -   num_timesteps:5\n",
     "beliefs": [
       [
         0.16981130838394165,
@@ -77,21 +77,21 @@
   },
   "execution_benchmark_repeats": 1,
   "execution_metadata": {
-    "executor": "/Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python",
+    "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
     "accelerator_type": "mps",
     "stdout_length": 41,
-    "stderr_length": 2150,
-    "output_directory": "output/12_execute_output/static_perception/pymdp"
+    "stderr_length": 2103,
+    "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/pymdp"
   },
-  "execution_time_mean": 2.798857,
+  "execution_time_mean": 2.561325,
   "execution_time_std": 0.0,
   "execution_time_samples": [
-    2.798857
+    2.561325
   ],
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [
-      "output/12_execute_output/static_perception/pymdp/simulation_data/simulation_results.json"
+      "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/pymdp/simulation_data/simulation_results.json"
     ],
     "traces": [],
     "other": []

@@ -12,7 +12,7 @@ import sys
 from dataclasses import fields
 from pathlib import Path
 from types import MappingProxyType
-from typing import Any, Dict, List, Mapping, Optional, cast
+from typing import Any, Dict, List, Mapping, Optional, TypedDict, cast
 
 from .arg_definitions import ArgumentDefinition
 from .config_loader import GNNPipelineConfig, load_config
@@ -1050,20 +1050,33 @@ def build_step_command_args(
 
 
 # Utility for step introspection
-def get_pipeline_step_info() -> Dict[str, Any]:
+class PipelineStepInfo(TypedDict):
+    """One step's declarative contract from ``StepConfiguration``."""
+
+    description: str
+    required_args: list[str]
+    optional_args: list[str]
+    defaults: dict[str, Any]
+    critical: bool
+    total_args: int
+
+
+def get_pipeline_step_info() -> dict[str, PipelineStepInfo]:
     """Get comprehensive information about all pipeline steps."""
-    step_info: dict[Any, Any] = {}
+    step_info: dict[str, PipelineStepInfo] = {}
 
     for step_name, config in StepConfiguration.STEP_CONFIGS.items():
-        step_info[step_name] = {
-            "description": config.get("description", ""),
-            "required_args": config.get("required_args", []),
-            "optional_args": config.get("optional_args", []),
-            "defaults": config.get("defaults", {}),
-            "critical": config.get("critical", False),
-            "total_args": len(cast("list[Any]", config.get("required_args", [])))
+        # STEP_CONFIGS is a Mapping[str, object]; the casts document the
+        # declared shape each entry is required to honour.
+        step_info[step_name] = PipelineStepInfo(
+            description=cast("str", config.get("description", "")),
+            required_args=cast("list[str]", config.get("required_args", [])),
+            optional_args=cast("list[str]", config.get("optional_args", [])),
+            defaults=cast("dict[str, Any]", config.get("defaults", {})),
+            critical=cast("bool", config.get("critical", False)),
+            total_args=len(cast("list[Any]", config.get("required_args", [])))
             + len(cast("list[Any]", config.get("optional_args", []))),
-        }
+        )
 
     return step_info
 
@@ -1209,7 +1222,7 @@ def parse_step_arguments(
 
 def validate_arguments(args: argparse.Namespace) -> List[str]:
     """Validate parsed arguments and return list of errors."""
-    errors: list[Any] = []
+    errors: list[str] = []
 
     # Basic validation
     if hasattr(args, "target_dir") and args.target_dir:
@@ -1224,7 +1237,7 @@ def parse_step_list(step_str: str) -> List[int]:
     if not step_str:
         return []
 
-    steps: list[Any] = []
+    steps: list[int] = []
     for item in step_str.split(","):
         item = item.strip()
         # Extract number from formats like "1", "1_gnn", etc.

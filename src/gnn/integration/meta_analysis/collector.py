@@ -10,11 +10,12 @@ from __future__ import annotations
 
 import json
 import logging
-import math
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
+
+from gnn.analysis.math_utils import compute_shannon_entropy
 
 
 @dataclass
@@ -347,10 +348,9 @@ class SweepDataCollector:
             beliefs = data.get("beliefs", [])
             if beliefs:
                 window = max(1, len(beliefs) // 10)
-                entropies: list[Any] = []
+                entropies: list[float] = []
                 for belief in beliefs[-window:]:
                     if isinstance(belief, list):
-                        h = -sum(p * math.log(p + 1e-15) for p in belief if p > 0)
-                        entropies.append(h)
+                        entropies.append(compute_shannon_entropy(belief))
                 if entropies:
                     record.mean_belief_entropy = sum(entropies) / len(entropies)

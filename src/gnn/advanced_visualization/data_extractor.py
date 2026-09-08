@@ -95,7 +95,7 @@ class VisualizationDataExtractor:
             return self._empty_result(errors=[str(e)])
 
     def _empty_result(
-        self, errors: (list) | None = None, warnings: (list) | None = None
+        self, errors: list[str] | None = None, warnings: list[str] | None = None
     ) -> Dict[str, Any]:
         """Return a failure result with the same key shape as a success result."""
         return {

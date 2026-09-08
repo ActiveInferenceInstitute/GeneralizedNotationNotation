@@ -1,0 +1,2323 @@
+{
+  "timestamp": "2026-09-08T06:50:32.012181",
+  "target_directory": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+  "output_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output",
+  "total_scripts_found": 18,
+  "successful_executions": 14,
+  "failed_executions": 0,
+  "skipped_executions": 4,
+  "execution_details": [
+    {
+      "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/activeinference_jl/Dynamic_Perception_Model_activeinference.jl",
+      "script_name": "Dynamic_Perception_Model_activeinference.jl",
+      "framework": "activeinference_jl",
+      "model_name": "dynamic_perception",
+      "executor": "julia",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 23.60926,
+      "timestamp": "2026-09-08T06:50:32.023585",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 23.60926,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        23.60926
+      ],
+      "structured_result_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/activeinference_jl/execution_logs/Dynamic_Perception_Model_activeinference.jl_results.json",
+      "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/activeinference_jl/execution_logs/Dynamic_Perception_Model_activeinference.jl_execution.log",
+      "implementation_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/activeinference_jl",
+      "script_identity": {
+        "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/activeinference_jl/Dynamic_Perception_Model_activeinference.jl",
+        "sha256": "4c4857752feb802b8121e5acb72d43c795ef0cc5f6c81a96baf7595612f5b63b"
+      },
+      "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+      "stdout_length": 60,
+      "stderr_length": 0,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/bnlearn/Dynamic_Perception_Model_bnlearn.py",
+      "script_name": "Dynamic_Perception_Model_bnlearn.py",
+      "framework": "bnlearn",
+      "model_name": "dynamic_perception",
+      "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
+      "success": false,
+      "skipped": true,
+      "status": "skipped",
+      "attempts_started": 0,
+      "return_code": null,
+      "error": "Dependency not installed: bnlearn",
+      "error_type": "DependencyNotInstalled",
+      "execution_time": 0,
+      "timestamp": "2026-09-08T06:51:06.793760",
+      "execution_metadata": {},
+      "script_identity": {
+        "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/bnlearn/Dynamic_Perception_Model_bnlearn.py",
+        "sha256": "24f1470308c8487fcef65c7c577ac2244969a49cd0701f789a727a4d8f0d19ef"
+      },
+      "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+      "stdout_length": 0,
+      "stderr_length": 0
+    },
+    {
+      "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/discopy/Dynamic_Perception_Model_discopy.py",
+      "script_name": "Dynamic_Perception_Model_discopy.py",
+      "framework": "discopy",
+      "model_name": "dynamic_perception",
+      "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 0.697534,
+      "timestamp": "2026-09-08T06:51:07.833107",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 0.697534,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        0.697534
+      ],
+      "structured_result_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/discopy/execution_logs/Dynamic_Perception_Model_discopy.py_results.json",
+      "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/discopy/execution_logs/Dynamic_Perception_Model_discopy.py_execution.log",
+      "implementation_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/discopy",
+      "script_identity": {
+        "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/discopy/Dynamic_Perception_Model_discopy.py",
+        "sha256": "1c40d7fddfb20ebb312e43f5992f29ad6a520c2a40feddaa4db89465f31235f7"
+      },
+      "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+      "stdout_length": 1451,
+      "stderr_length": 0,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 2
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/jax/Dynamic_Perception_Model_jax.py",
+      "script_name": "Dynamic_Perception_Model_jax.py",
+      "framework": "jax",
+      "model_name": "dynamic_perception",
+      "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 1.95096,
+      "timestamp": "2026-09-08T06:51:09.368682",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 1.95096,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        1.95096
+      ],
+      "structured_result_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/jax/execution_logs/Dynamic_Perception_Model_jax.py_results.json",
+      "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/jax/execution_logs/Dynamic_Perception_Model_jax.py_execution.log",
+      "implementation_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/jax",
+      "script_identity": {
+        "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/jax/Dynamic_Perception_Model_jax.py",
+        "sha256": "2e79adc4bf314bec156d454fba7fa08c9d98eeaa451973b4c4f05d5bc7640f4b"
+      },
+      "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+      "stdout_length": 1366,
+      "stderr_length": 0,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/numpyro/Dynamic_Perception_Model_numpyro.py",
+      "script_name": "Dynamic_Perception_Model_numpyro.py",
+      "framework": "numpyro",
+      "model_name": "dynamic_perception",
+      "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 1.91373,
+      "timestamp": "2026-09-08T06:51:12.631944",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 1.91373,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        1.91373
+      ],
+      "structured_result_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/numpyro/execution_logs/Dynamic_Perception_Model_numpyro.py_results.json",
+      "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/numpyro/execution_logs/Dynamic_Perception_Model_numpyro.py_execution.log",
+      "implementation_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/numpyro",
+      "script_identity": {
+        "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/numpyro/Dynamic_Perception_Model_numpyro.py",
+        "sha256": "16d1d2c016f9e964a34b70469bfe52f2d0f3eda85a31a74b4d0d1d86eecadc7c"
+      },
+      "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+      "stdout_length": 319,
+      "stderr_length": 0,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/pymdp/Dynamic_Perception_Model_pymdp.py",
+      "script_name": "Dynamic_Perception_Model_pymdp.py",
+      "framework": "pymdp",
+      "model_name": "dynamic_perception",
+      "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 5.530842,
+      "timestamp": "2026-09-08T06:51:14.585548",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 5.530842,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        5.530842
+      ],
+      "structured_result_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/pymdp/execution_logs/Dynamic_Perception_Model_pymdp.py_results.json",
+      "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/pymdp/execution_logs/Dynamic_Perception_Model_pymdp.py_execution.log",
+      "implementation_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/pymdp",
+      "script_identity": {
+        "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/pymdp/Dynamic_Perception_Model_pymdp.py",
+        "sha256": "efcc7e5767f08b287a7a15bc9fbf452422a012759990e155ed7dd846847eb01e"
+      },
+      "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+      "stdout_length": 41,
+      "stderr_length": 2548,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/pytorch/Dynamic_Perception_Model_pytorch.py",
+      "script_name": "Dynamic_Perception_Model_pytorch.py",
+      "framework": "pytorch",
+      "model_name": "dynamic_perception",
+      "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
+      "success": false,
+      "skipped": true,
+      "status": "skipped",
+      "attempts_started": 0,
+      "return_code": null,
+      "error": "Dependency not installed: torch",
+      "error_type": "DependencyNotInstalled",
+      "execution_time": 0,
+      "timestamp": "2026-09-08T06:51:20.168435",
+      "execution_metadata": {},
+      "script_identity": {
+        "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/pytorch/Dynamic_Perception_Model_pytorch.py",
+        "sha256": "71c32e8a8fb1ca01e9d31ef9e7c6776eb812b839305fb9c50770b6c94ea74ae1"
+      },
+      "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+      "stdout_length": 0,
+      "stderr_length": 0
+    },
+    {
+      "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/rxinfer/Dynamic_Perception_Model_rxinfer.jl",
+      "script_name": "Dynamic_Perception_Model_rxinfer.jl",
+      "framework": "rxinfer",
+      "model_name": "dynamic_perception",
+      "executor": "julia",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 20.614413,
+      "timestamp": "2026-09-08T06:51:20.168508",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 20.614413,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        20.614413
+      ],
+      "structured_result_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/rxinfer/execution_logs/Dynamic_Perception_Model_rxinfer.jl_results.json",
+      "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/rxinfer/execution_logs/Dynamic_Perception_Model_rxinfer.jl_execution.log",
+      "implementation_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/rxinfer",
+      "execution_metadata": {},
+      "script_identity": {
+        "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/rxinfer/Dynamic_Perception_Model_rxinfer.jl",
+        "sha256": "2dd512dcd5abd404c36ee3535dca464e9e919aabdd3423ff91ef71b759c5b950"
+      },
+      "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+      "stdout_length": 221,
+      "stderr_length": 0,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/stan/Dynamic_Perception_Model_stan.py",
+      "script_name": "Dynamic_Perception_Model_stan.py",
+      "framework": "stan",
+      "model_name": "dynamic_perception",
+      "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 8.81106,
+      "timestamp": "2026-09-08T06:51:48.577160",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 8.81106,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        8.81106
+      ],
+      "structured_result_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/stan/execution_logs/Dynamic_Perception_Model_stan.py_results.json",
+      "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/stan/execution_logs/Dynamic_Perception_Model_stan.py_execution.log",
+      "implementation_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/stan",
+      "script_identity": {
+        "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/stan/Dynamic_Perception_Model_stan.py",
+        "sha256": "2815d016464b3e757d79b9b2cafa868ef141a10db7400ffffa4295599ddc2ca3"
+      },
+      "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+      "stdout_length": 433,
+      "stderr_length": 811,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 3
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/activeinference_jl/Static_Perception_Model_activeinference.jl",
+      "script_name": "Static_Perception_Model_activeinference.jl",
+      "framework": "activeinference_jl",
+      "model_name": "static_perception",
+      "executor": "julia",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 10.555338,
+      "timestamp": "2026-09-08T06:51:57.406610",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 10.555338,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        10.555338
+      ],
+      "structured_result_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/activeinference_jl/execution_logs/Static_Perception_Model_activeinference.jl_results.json",
+      "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/activeinference_jl/execution_logs/Static_Perception_Model_activeinference.jl_execution.log",
+      "implementation_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/activeinference_jl",
+      "script_identity": {
+        "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/activeinference_jl/Static_Perception_Model_activeinference.jl",
+        "sha256": "630ae5e12ab124420ccea720c54c3719a64d9fa4426c67e9345bc46509076dfb"
+      },
+      "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+      "stdout_length": 60,
+      "stderr_length": 0,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/bnlearn/Static_Perception_Model_bnlearn.py",
+      "script_name": "Static_Perception_Model_bnlearn.py",
+      "framework": "bnlearn",
+      "model_name": "static_perception",
+      "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
+      "success": false,
+      "skipped": true,
+      "status": "skipped",
+      "attempts_started": 0,
+      "return_code": null,
+      "error": "Dependency not installed: bnlearn",
+      "error_type": "DependencyNotInstalled",
+      "execution_time": 0,
+      "timestamp": "2026-09-08T06:52:17.397175",
+      "execution_metadata": {},
+      "script_identity": {
+        "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/bnlearn/Static_Perception_Model_bnlearn.py",
+        "sha256": "c151bc7295fe4073c68a97c4998e9fe6f4b1ca241437999274fd5773e528d378"
+      },
+      "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+      "stdout_length": 0,
+      "stderr_length": 0
+    },
+    {
+      "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/discopy/Static_Perception_Model_discopy.py",
+      "script_name": "Static_Perception_Model_discopy.py",
+      "framework": "discopy",
+      "model_name": "static_perception",
+      "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 0.454301,
+      "timestamp": "2026-09-08T06:52:18.042123",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 0.454301,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        0.454301
+      ],
+      "structured_result_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/discopy/execution_logs/Static_Perception_Model_discopy.py_results.json",
+      "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/discopy/execution_logs/Static_Perception_Model_discopy.py_execution.log",
+      "implementation_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/discopy",
+      "script_identity": {
+        "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/discopy/Static_Perception_Model_discopy.py",
+        "sha256": "d931ab73f12643b13f5eb02dde26524a9227d3a07b259c98b51407965162cb38"
+      },
+      "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+      "stdout_length": 1450,
+      "stderr_length": 0,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 2
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/jax/Static_Perception_Model_jax.py",
+      "script_name": "Static_Perception_Model_jax.py",
+      "framework": "jax",
+      "model_name": "static_perception",
+      "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 2.390429,
+      "timestamp": "2026-09-08T06:52:19.269056",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 2.390429,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        2.390429
+      ],
+      "structured_result_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/jax/execution_logs/Static_Perception_Model_jax.py_results.json",
+      "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/jax/execution_logs/Static_Perception_Model_jax.py_execution.log",
+      "implementation_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/jax",
+      "script_identity": {
+        "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/jax/Static_Perception_Model_jax.py",
+        "sha256": "6f90f7a0daef8b3f8716e6c9f2d861dfc5ed6061192fd9e521da73f603e09e6d"
+      },
+      "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+      "stdout_length": 1366,
+      "stderr_length": 0,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/numpyro/Static_Perception_Model_numpyro.py",
+      "script_name": "Static_Perception_Model_numpyro.py",
+      "framework": "numpyro",
+      "model_name": "static_perception",
+      "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 1.074919,
+      "timestamp": "2026-09-08T06:52:22.351184",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 1.074919,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        1.074919
+      ],
+      "structured_result_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/numpyro/execution_logs/Static_Perception_Model_numpyro.py_results.json",
+      "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/numpyro/execution_logs/Static_Perception_Model_numpyro.py_execution.log",
+      "implementation_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/numpyro",
+      "script_identity": {
+        "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/numpyro/Static_Perception_Model_numpyro.py",
+        "sha256": "0bd3531e5577319a9bfdbd5bb4031b9588e40881afacd750c8a4325057efe758"
+      },
+      "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+      "stdout_length": 317,
+      "stderr_length": 0,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/pymdp/Static_Perception_Model_pymdp.py",
+      "script_name": "Static_Perception_Model_pymdp.py",
+      "framework": "pymdp",
+      "model_name": "static_perception",
+      "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 2.561325,
+      "timestamp": "2026-09-08T06:52:23.461661",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 2.561325,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        2.561325
+      ],
+      "structured_result_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/pymdp/execution_logs/Static_Perception_Model_pymdp.py_results.json",
+      "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/pymdp/execution_logs/Static_Perception_Model_pymdp.py_execution.log",
+      "implementation_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/pymdp",
+      "script_identity": {
+        "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/pymdp/Static_Perception_Model_pymdp.py",
+        "sha256": "8b445833350321cfd82b527d63440b48b4c1fe41dc56042541764a55f6de6bcd"
+      },
+      "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+      "stdout_length": 41,
+      "stderr_length": 2103,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/pytorch/Static_Perception_Model_pytorch.py",
+      "script_name": "Static_Perception_Model_pytorch.py",
+      "framework": "pytorch",
+      "model_name": "static_perception",
+      "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
+      "success": false,
+      "skipped": true,
+      "status": "skipped",
+      "attempts_started": 0,
+      "return_code": null,
+      "error": "Dependency not installed: torch",
+      "error_type": "DependencyNotInstalled",
+      "execution_time": 0,
+      "timestamp": "2026-09-08T06:52:26.052947",
+      "execution_metadata": {},
+      "script_identity": {
+        "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/pytorch/Static_Perception_Model_pytorch.py",
+        "sha256": "440d49e1f7e313eb2a3bb07840617add44b7d5652636e34cf75eac53ed79ea33"
+      },
+      "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+      "stdout_length": 0,
+      "stderr_length": 0
+    },
+    {
+      "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/rxinfer/Static_Perception_Model_rxinfer.jl",
+      "script_name": "Static_Perception_Model_rxinfer.jl",
+      "framework": "rxinfer",
+      "model_name": "static_perception",
+      "executor": "julia",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 16.351125,
+      "timestamp": "2026-09-08T06:52:26.053003",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 16.351125,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        16.351125
+      ],
+      "structured_result_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/rxinfer/execution_logs/Static_Perception_Model_rxinfer.jl_results.json",
+      "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/rxinfer/execution_logs/Static_Perception_Model_rxinfer.jl_execution.log",
+      "implementation_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/rxinfer",
+      "execution_metadata": {},
+      "script_identity": {
+        "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/rxinfer/Static_Perception_Model_rxinfer.jl",
+        "sha256": "16814356441dd7ccb67ed6293dca23fdf752afbd967affa8e48a8984924a2ce3"
+      },
+      "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+      "stdout_length": 221,
+      "stderr_length": 0,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/stan/Static_Perception_Model_stan.py",
+      "script_name": "Static_Perception_Model_stan.py",
+      "framework": "stan",
+      "model_name": "static_perception",
+      "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "status": "success",
+      "attempts_started": 1,
+      "return_code": 0,
+      "execution_time": 7.23514,
+      "timestamp": "2026-09-08T06:52:46.777850",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 7.23514,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        7.23514
+      ],
+      "structured_result_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/stan/execution_logs/Static_Perception_Model_stan.py_results.json",
+      "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/stan/execution_logs/Static_Perception_Model_stan.py_execution.log",
+      "implementation_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/stan",
+      "script_identity": {
+        "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/stan/Static_Perception_Model_stan.py",
+        "sha256": "97c5a7e7c987df25d108cd11cabc50b8a0d4cdbcfd79da01d72101c501be3ff0"
+      },
+      "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+      "stdout_length": 431,
+      "stderr_length": 804,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 3
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    }
+  ],
+  "framework_status": {
+    "activeinference_jl": {
+      "executions": 2,
+      "successful": 2,
+      "failed": 0,
+      "skipped": 0,
+      "status": "success"
+    },
+    "bnlearn": {
+      "executions": 2,
+      "successful": 0,
+      "failed": 0,
+      "skipped": 2,
+      "error": "Dependency not installed: bnlearn",
+      "status": "skipped"
+    },
+    "discopy": {
+      "executions": 2,
+      "successful": 2,
+      "failed": 0,
+      "skipped": 0,
+      "status": "success"
+    },
+    "jax": {
+      "executions": 2,
+      "successful": 2,
+      "failed": 0,
+      "skipped": 0,
+      "status": "success"
+    },
+    "numpyro": {
+      "executions": 2,
+      "successful": 2,
+      "failed": 0,
+      "skipped": 0,
+      "status": "success"
+    },
+    "pymdp": {
+      "executions": 2,
+      "successful": 2,
+      "failed": 0,
+      "skipped": 0,
+      "status": "success"
+    },
+    "pytorch": {
+      "executions": 2,
+      "successful": 0,
+      "failed": 0,
+      "skipped": 2,
+      "error": "Dependency not installed: torch",
+      "status": "skipped"
+    },
+    "rxinfer": {
+      "executions": 2,
+      "successful": 2,
+      "failed": 0,
+      "skipped": 0,
+      "status": "success"
+    },
+    "stan": {
+      "executions": 2,
+      "successful": 2,
+      "failed": 0,
+      "skipped": 0,
+      "status": "success"
+    }
+  },
+  "execution_mode": "local",
+  "execution_workers": 1,
+  "backend": null,
+  "execution_benchmark_repeats": 1,
+  "execution_summary_detail": false,
+  "dispatch_max_retries": 0,
+  "success": true,
+  "status": "success_with_skips",
+  "exit_code": 0,
+  "run_id": "cf23102141ad46098e012653cdd2293c",
+  "configuration": {
+    "frameworks": [
+      "activeinference_jl",
+      "bnlearn",
+      "discopy",
+      "jax",
+      "numpyro",
+      "pymdp",
+      "pytorch",
+      "rxinfer",
+      "stan"
+    ],
+    "strict_requested_frameworks": false,
+    "options": {
+      "recursive": true,
+      "timeout": 300,
+      "render_output_dir": null,
+      "distributed": false,
+      "execution_workers": 1,
+      "backend": "ray",
+      "execution_benchmark_repeats": 1,
+      "execution_summary_detail": false
+    }
+  },
+  "input_identity": {
+    "path": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+    "files": {
+      "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics/dynamic_perception.md": "b0abd0b673915c98093150d78c1b4b1442287c7bc094f1fe42b07a1730f2258c",
+      "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics/static_perception.md": "48f67dd7912851a6081ce17fc0df2597cab0bd61d46afb19918f9320236393f3"
+    }
+  },
+  "render_failures": [],
+  "missing_render_scripts": [],
+  "requested_frameworks": [
+    "pymdp",
+    "jax",
+    "discopy",
+    "rxinfer",
+    "activeinference_jl",
+    "pytorch",
+    "numpyro",
+    "stan",
+    "bnlearn"
+  ],
+  "total_scripts": 18,
+  "attempted_scripts": 14,
+  "success_rate": 100.0,
+  "outcome_reason": "optional_dependencies_unavailable",
+  "receipt_identity": {
+    "run_id": "cf23102141ad46098e012653cdd2293c",
+    "config_sha256": "6a9133c72bed9ad7da9ce81920e6837a6f5471ce630955a87ee2629611a6d689"
+  },
+  "invocation_receipts": {
+    "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics": {
+      "status": "success_with_skips",
+      "success": true,
+      "exit_code": 0,
+      "outcome_reason": "optional_dependencies_unavailable",
+      "render_failures": [],
+      "missing_render_scripts": [],
+      "missing_render_summary": null,
+      "input_identity": {
+        "path": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+        "files": {
+          "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics/dynamic_perception.md": "b0abd0b673915c98093150d78c1b4b1442287c7bc094f1fe42b07a1730f2258c",
+          "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics/static_perception.md": "48f67dd7912851a6081ce17fc0df2597cab0bd61d46afb19918f9320236393f3"
+        }
+      },
+      "execution_details": [
+        {
+          "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/activeinference_jl/Dynamic_Perception_Model_activeinference.jl",
+          "script_name": "Dynamic_Perception_Model_activeinference.jl",
+          "framework": "activeinference_jl",
+          "model_name": "dynamic_perception",
+          "executor": "julia",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 23.60926,
+          "timestamp": "2026-09-08T06:50:32.023585",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 23.60926,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            23.60926
+          ],
+          "structured_result_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/activeinference_jl/execution_logs/Dynamic_Perception_Model_activeinference.jl_results.json",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/activeinference_jl/execution_logs/Dynamic_Perception_Model_activeinference.jl_execution.log",
+          "implementation_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/activeinference_jl",
+          "script_identity": {
+            "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/activeinference_jl/Dynamic_Perception_Model_activeinference.jl",
+            "sha256": "4c4857752feb802b8121e5acb72d43c795ef0cc5f6c81a96baf7595612f5b63b"
+          },
+          "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+          "stdout_length": 60,
+          "stderr_length": 0,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 1
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        },
+        {
+          "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/bnlearn/Dynamic_Perception_Model_bnlearn.py",
+          "script_name": "Dynamic_Perception_Model_bnlearn.py",
+          "framework": "bnlearn",
+          "model_name": "dynamic_perception",
+          "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
+          "success": false,
+          "skipped": true,
+          "status": "skipped",
+          "attempts_started": 0,
+          "return_code": null,
+          "error": "Dependency not installed: bnlearn",
+          "error_type": "DependencyNotInstalled",
+          "execution_time": 0,
+          "timestamp": "2026-09-08T06:51:06.793760",
+          "execution_metadata": {},
+          "script_identity": {
+            "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/bnlearn/Dynamic_Perception_Model_bnlearn.py",
+            "sha256": "24f1470308c8487fcef65c7c577ac2244969a49cd0701f789a727a4d8f0d19ef"
+          },
+          "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+          "stdout_length": 0,
+          "stderr_length": 0
+        },
+        {
+          "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/discopy/Dynamic_Perception_Model_discopy.py",
+          "script_name": "Dynamic_Perception_Model_discopy.py",
+          "framework": "discopy",
+          "model_name": "dynamic_perception",
+          "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 0.697534,
+          "timestamp": "2026-09-08T06:51:07.833107",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 0.697534,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            0.697534
+          ],
+          "structured_result_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/discopy/execution_logs/Dynamic_Perception_Model_discopy.py_results.json",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/discopy/execution_logs/Dynamic_Perception_Model_discopy.py_execution.log",
+          "implementation_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/discopy",
+          "script_identity": {
+            "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/discopy/Dynamic_Perception_Model_discopy.py",
+            "sha256": "1c40d7fddfb20ebb312e43f5992f29ad6a520c2a40feddaa4db89465f31235f7"
+          },
+          "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+          "stdout_length": 1451,
+          "stderr_length": 0,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 2
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        },
+        {
+          "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/jax/Dynamic_Perception_Model_jax.py",
+          "script_name": "Dynamic_Perception_Model_jax.py",
+          "framework": "jax",
+          "model_name": "dynamic_perception",
+          "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 1.95096,
+          "timestamp": "2026-09-08T06:51:09.368682",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 1.95096,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            1.95096
+          ],
+          "structured_result_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/jax/execution_logs/Dynamic_Perception_Model_jax.py_results.json",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/jax/execution_logs/Dynamic_Perception_Model_jax.py_execution.log",
+          "implementation_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/jax",
+          "script_identity": {
+            "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/jax/Dynamic_Perception_Model_jax.py",
+            "sha256": "2e79adc4bf314bec156d454fba7fa08c9d98eeaa451973b4c4f05d5bc7640f4b"
+          },
+          "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+          "stdout_length": 1366,
+          "stderr_length": 0,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 1
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        },
+        {
+          "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/numpyro/Dynamic_Perception_Model_numpyro.py",
+          "script_name": "Dynamic_Perception_Model_numpyro.py",
+          "framework": "numpyro",
+          "model_name": "dynamic_perception",
+          "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 1.91373,
+          "timestamp": "2026-09-08T06:51:12.631944",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 1.91373,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            1.91373
+          ],
+          "structured_result_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/numpyro/execution_logs/Dynamic_Perception_Model_numpyro.py_results.json",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/numpyro/execution_logs/Dynamic_Perception_Model_numpyro.py_execution.log",
+          "implementation_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/numpyro",
+          "script_identity": {
+            "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/numpyro/Dynamic_Perception_Model_numpyro.py",
+            "sha256": "16d1d2c016f9e964a34b70469bfe52f2d0f3eda85a31a74b4d0d1d86eecadc7c"
+          },
+          "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+          "stdout_length": 319,
+          "stderr_length": 0,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 1
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        },
+        {
+          "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/pymdp/Dynamic_Perception_Model_pymdp.py",
+          "script_name": "Dynamic_Perception_Model_pymdp.py",
+          "framework": "pymdp",
+          "model_name": "dynamic_perception",
+          "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 5.530842,
+          "timestamp": "2026-09-08T06:51:14.585548",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 5.530842,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            5.530842
+          ],
+          "structured_result_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/pymdp/execution_logs/Dynamic_Perception_Model_pymdp.py_results.json",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/pymdp/execution_logs/Dynamic_Perception_Model_pymdp.py_execution.log",
+          "implementation_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/pymdp",
+          "script_identity": {
+            "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/pymdp/Dynamic_Perception_Model_pymdp.py",
+            "sha256": "efcc7e5767f08b287a7a15bc9fbf452422a012759990e155ed7dd846847eb01e"
+          },
+          "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+          "stdout_length": 41,
+          "stderr_length": 2548,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 1
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        },
+        {
+          "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/pytorch/Dynamic_Perception_Model_pytorch.py",
+          "script_name": "Dynamic_Perception_Model_pytorch.py",
+          "framework": "pytorch",
+          "model_name": "dynamic_perception",
+          "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
+          "success": false,
+          "skipped": true,
+          "status": "skipped",
+          "attempts_started": 0,
+          "return_code": null,
+          "error": "Dependency not installed: torch",
+          "error_type": "DependencyNotInstalled",
+          "execution_time": 0,
+          "timestamp": "2026-09-08T06:51:20.168435",
+          "execution_metadata": {},
+          "script_identity": {
+            "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/pytorch/Dynamic_Perception_Model_pytorch.py",
+            "sha256": "71c32e8a8fb1ca01e9d31ef9e7c6776eb812b839305fb9c50770b6c94ea74ae1"
+          },
+          "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+          "stdout_length": 0,
+          "stderr_length": 0
+        },
+        {
+          "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/rxinfer/Dynamic_Perception_Model_rxinfer.jl",
+          "script_name": "Dynamic_Perception_Model_rxinfer.jl",
+          "framework": "rxinfer",
+          "model_name": "dynamic_perception",
+          "executor": "julia",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 20.614413,
+          "timestamp": "2026-09-08T06:51:20.168508",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 20.614413,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            20.614413
+          ],
+          "structured_result_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/rxinfer/execution_logs/Dynamic_Perception_Model_rxinfer.jl_results.json",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/rxinfer/execution_logs/Dynamic_Perception_Model_rxinfer.jl_execution.log",
+          "implementation_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/rxinfer",
+          "execution_metadata": {},
+          "script_identity": {
+            "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/rxinfer/Dynamic_Perception_Model_rxinfer.jl",
+            "sha256": "2dd512dcd5abd404c36ee3535dca464e9e919aabdd3423ff91ef71b759c5b950"
+          },
+          "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+          "stdout_length": 221,
+          "stderr_length": 0,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 1
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        },
+        {
+          "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/stan/Dynamic_Perception_Model_stan.py",
+          "script_name": "Dynamic_Perception_Model_stan.py",
+          "framework": "stan",
+          "model_name": "dynamic_perception",
+          "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 8.81106,
+          "timestamp": "2026-09-08T06:51:48.577160",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 8.81106,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            8.81106
+          ],
+          "structured_result_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/stan/execution_logs/Dynamic_Perception_Model_stan.py_results.json",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/stan/execution_logs/Dynamic_Perception_Model_stan.py_execution.log",
+          "implementation_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/stan",
+          "script_identity": {
+            "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/stan/Dynamic_Perception_Model_stan.py",
+            "sha256": "2815d016464b3e757d79b9b2cafa868ef141a10db7400ffffa4295599ddc2ca3"
+          },
+          "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+          "stdout_length": 433,
+          "stderr_length": 811,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 3
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        },
+        {
+          "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/activeinference_jl/Static_Perception_Model_activeinference.jl",
+          "script_name": "Static_Perception_Model_activeinference.jl",
+          "framework": "activeinference_jl",
+          "model_name": "static_perception",
+          "executor": "julia",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 10.555338,
+          "timestamp": "2026-09-08T06:51:57.406610",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 10.555338,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            10.555338
+          ],
+          "structured_result_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/activeinference_jl/execution_logs/Static_Perception_Model_activeinference.jl_results.json",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/activeinference_jl/execution_logs/Static_Perception_Model_activeinference.jl_execution.log",
+          "implementation_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/activeinference_jl",
+          "script_identity": {
+            "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/activeinference_jl/Static_Perception_Model_activeinference.jl",
+            "sha256": "630ae5e12ab124420ccea720c54c3719a64d9fa4426c67e9345bc46509076dfb"
+          },
+          "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+          "stdout_length": 60,
+          "stderr_length": 0,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 1
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        },
+        {
+          "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/bnlearn/Static_Perception_Model_bnlearn.py",
+          "script_name": "Static_Perception_Model_bnlearn.py",
+          "framework": "bnlearn",
+          "model_name": "static_perception",
+          "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
+          "success": false,
+          "skipped": true,
+          "status": "skipped",
+          "attempts_started": 0,
+          "return_code": null,
+          "error": "Dependency not installed: bnlearn",
+          "error_type": "DependencyNotInstalled",
+          "execution_time": 0,
+          "timestamp": "2026-09-08T06:52:17.397175",
+          "execution_metadata": {},
+          "script_identity": {
+            "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/bnlearn/Static_Perception_Model_bnlearn.py",
+            "sha256": "c151bc7295fe4073c68a97c4998e9fe6f4b1ca241437999274fd5773e528d378"
+          },
+          "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+          "stdout_length": 0,
+          "stderr_length": 0
+        },
+        {
+          "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/discopy/Static_Perception_Model_discopy.py",
+          "script_name": "Static_Perception_Model_discopy.py",
+          "framework": "discopy",
+          "model_name": "static_perception",
+          "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 0.454301,
+          "timestamp": "2026-09-08T06:52:18.042123",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 0.454301,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            0.454301
+          ],
+          "structured_result_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/discopy/execution_logs/Static_Perception_Model_discopy.py_results.json",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/discopy/execution_logs/Static_Perception_Model_discopy.py_execution.log",
+          "implementation_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/discopy",
+          "script_identity": {
+            "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/discopy/Static_Perception_Model_discopy.py",
+            "sha256": "d931ab73f12643b13f5eb02dde26524a9227d3a07b259c98b51407965162cb38"
+          },
+          "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+          "stdout_length": 1450,
+          "stderr_length": 0,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 2
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        },
+        {
+          "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/jax/Static_Perception_Model_jax.py",
+          "script_name": "Static_Perception_Model_jax.py",
+          "framework": "jax",
+          "model_name": "static_perception",
+          "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 2.390429,
+          "timestamp": "2026-09-08T06:52:19.269056",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 2.390429,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            2.390429
+          ],
+          "structured_result_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/jax/execution_logs/Static_Perception_Model_jax.py_results.json",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/jax/execution_logs/Static_Perception_Model_jax.py_execution.log",
+          "implementation_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/jax",
+          "script_identity": {
+            "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/jax/Static_Perception_Model_jax.py",
+            "sha256": "6f90f7a0daef8b3f8716e6c9f2d861dfc5ed6061192fd9e521da73f603e09e6d"
+          },
+          "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+          "stdout_length": 1366,
+          "stderr_length": 0,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 1
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        },
+        {
+          "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/numpyro/Static_Perception_Model_numpyro.py",
+          "script_name": "Static_Perception_Model_numpyro.py",
+          "framework": "numpyro",
+          "model_name": "static_perception",
+          "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 1.074919,
+          "timestamp": "2026-09-08T06:52:22.351184",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 1.074919,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            1.074919
+          ],
+          "structured_result_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/numpyro/execution_logs/Static_Perception_Model_numpyro.py_results.json",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/numpyro/execution_logs/Static_Perception_Model_numpyro.py_execution.log",
+          "implementation_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/numpyro",
+          "script_identity": {
+            "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/numpyro/Static_Perception_Model_numpyro.py",
+            "sha256": "0bd3531e5577319a9bfdbd5bb4031b9588e40881afacd750c8a4325057efe758"
+          },
+          "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+          "stdout_length": 317,
+          "stderr_length": 0,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 1
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        },
+        {
+          "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/pymdp/Static_Perception_Model_pymdp.py",
+          "script_name": "Static_Perception_Model_pymdp.py",
+          "framework": "pymdp",
+          "model_name": "static_perception",
+          "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 2.561325,
+          "timestamp": "2026-09-08T06:52:23.461661",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 2.561325,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            2.561325
+          ],
+          "structured_result_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/pymdp/execution_logs/Static_Perception_Model_pymdp.py_results.json",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/pymdp/execution_logs/Static_Perception_Model_pymdp.py_execution.log",
+          "implementation_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/pymdp",
+          "script_identity": {
+            "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/pymdp/Static_Perception_Model_pymdp.py",
+            "sha256": "8b445833350321cfd82b527d63440b48b4c1fe41dc56042541764a55f6de6bcd"
+          },
+          "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+          "stdout_length": 41,
+          "stderr_length": 2103,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 1
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        },
+        {
+          "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/pytorch/Static_Perception_Model_pytorch.py",
+          "script_name": "Static_Perception_Model_pytorch.py",
+          "framework": "pytorch",
+          "model_name": "static_perception",
+          "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
+          "success": false,
+          "skipped": true,
+          "status": "skipped",
+          "attempts_started": 0,
+          "return_code": null,
+          "error": "Dependency not installed: torch",
+          "error_type": "DependencyNotInstalled",
+          "execution_time": 0,
+          "timestamp": "2026-09-08T06:52:26.052947",
+          "execution_metadata": {},
+          "script_identity": {
+            "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/pytorch/Static_Perception_Model_pytorch.py",
+            "sha256": "440d49e1f7e313eb2a3bb07840617add44b7d5652636e34cf75eac53ed79ea33"
+          },
+          "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+          "stdout_length": 0,
+          "stderr_length": 0
+        },
+        {
+          "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/rxinfer/Static_Perception_Model_rxinfer.jl",
+          "script_name": "Static_Perception_Model_rxinfer.jl",
+          "framework": "rxinfer",
+          "model_name": "static_perception",
+          "executor": "julia",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 16.351125,
+          "timestamp": "2026-09-08T06:52:26.053003",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 16.351125,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            16.351125
+          ],
+          "structured_result_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/rxinfer/execution_logs/Static_Perception_Model_rxinfer.jl_results.json",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/rxinfer/execution_logs/Static_Perception_Model_rxinfer.jl_execution.log",
+          "implementation_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/rxinfer",
+          "execution_metadata": {},
+          "script_identity": {
+            "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/rxinfer/Static_Perception_Model_rxinfer.jl",
+            "sha256": "16814356441dd7ccb67ed6293dca23fdf752afbd967affa8e48a8984924a2ce3"
+          },
+          "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+          "stdout_length": 221,
+          "stderr_length": 0,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 1
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        },
+        {
+          "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/stan/Static_Perception_Model_stan.py",
+          "script_name": "Static_Perception_Model_stan.py",
+          "framework": "stan",
+          "model_name": "static_perception",
+          "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
+          "success": true,
+          "skipped": false,
+          "status": "success",
+          "attempts_started": 1,
+          "return_code": 0,
+          "execution_time": 7.23514,
+          "timestamp": "2026-09-08T06:52:46.777850",
+          "execution_benchmark_repeats": 1,
+          "execution_time_mean": 7.23514,
+          "execution_time_std": 0.0,
+          "execution_time_samples": [
+            7.23514
+          ],
+          "structured_result_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/stan/execution_logs/Static_Perception_Model_stan.py_results.json",
+          "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/stan/execution_logs/Static_Perception_Model_stan.py_execution.log",
+          "implementation_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/stan",
+          "script_identity": {
+            "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/stan/Static_Perception_Model_stan.py",
+            "sha256": "97c5a7e7c987df25d108cd11cabc50b8a0d4cdbcfd79da01d72101c501be3ff0"
+          },
+          "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+          "stdout_length": 431,
+          "stderr_length": 804,
+          "collected_outputs_summary": {
+            "visualizations": {
+              "count": 0
+            },
+            "simulation_data": {
+              "count": 3
+            },
+            "traces": {
+              "count": 0
+            },
+            "other": {
+              "count": 0
+            }
+          }
+        }
+      ]
+    }
+  },
+  "current_invocation": {
+    "status": "success_with_skips",
+    "success": true,
+    "exit_code": 0,
+    "outcome_reason": "optional_dependencies_unavailable",
+    "render_failures": [],
+    "missing_render_scripts": [],
+    "missing_render_summary": null,
+    "input_identity": {
+      "path": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+      "files": {
+        "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics/dynamic_perception.md": "b0abd0b673915c98093150d78c1b4b1442287c7bc094f1fe42b07a1730f2258c",
+        "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics/static_perception.md": "48f67dd7912851a6081ce17fc0df2597cab0bd61d46afb19918f9320236393f3"
+      }
+    },
+    "execution_details": [
+      {
+        "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/activeinference_jl/Dynamic_Perception_Model_activeinference.jl",
+        "script_name": "Dynamic_Perception_Model_activeinference.jl",
+        "framework": "activeinference_jl",
+        "model_name": "dynamic_perception",
+        "executor": "julia",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 23.60926,
+        "timestamp": "2026-09-08T06:50:32.023585",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 23.60926,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          23.60926
+        ],
+        "structured_result_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/activeinference_jl/execution_logs/Dynamic_Perception_Model_activeinference.jl_results.json",
+        "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/activeinference_jl/execution_logs/Dynamic_Perception_Model_activeinference.jl_execution.log",
+        "implementation_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/activeinference_jl",
+        "script_identity": {
+          "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/activeinference_jl/Dynamic_Perception_Model_activeinference.jl",
+          "sha256": "4c4857752feb802b8121e5acb72d43c795ef0cc5f6c81a96baf7595612f5b63b"
+        },
+        "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+        "stdout_length": 60,
+        "stderr_length": 0,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 1
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      },
+      {
+        "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/bnlearn/Dynamic_Perception_Model_bnlearn.py",
+        "script_name": "Dynamic_Perception_Model_bnlearn.py",
+        "framework": "bnlearn",
+        "model_name": "dynamic_perception",
+        "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
+        "success": false,
+        "skipped": true,
+        "status": "skipped",
+        "attempts_started": 0,
+        "return_code": null,
+        "error": "Dependency not installed: bnlearn",
+        "error_type": "DependencyNotInstalled",
+        "execution_time": 0,
+        "timestamp": "2026-09-08T06:51:06.793760",
+        "execution_metadata": {},
+        "script_identity": {
+          "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/bnlearn/Dynamic_Perception_Model_bnlearn.py",
+          "sha256": "24f1470308c8487fcef65c7c577ac2244969a49cd0701f789a727a4d8f0d19ef"
+        },
+        "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+        "stdout_length": 0,
+        "stderr_length": 0
+      },
+      {
+        "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/discopy/Dynamic_Perception_Model_discopy.py",
+        "script_name": "Dynamic_Perception_Model_discopy.py",
+        "framework": "discopy",
+        "model_name": "dynamic_perception",
+        "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 0.697534,
+        "timestamp": "2026-09-08T06:51:07.833107",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 0.697534,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          0.697534
+        ],
+        "structured_result_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/discopy/execution_logs/Dynamic_Perception_Model_discopy.py_results.json",
+        "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/discopy/execution_logs/Dynamic_Perception_Model_discopy.py_execution.log",
+        "implementation_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/discopy",
+        "script_identity": {
+          "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/discopy/Dynamic_Perception_Model_discopy.py",
+          "sha256": "1c40d7fddfb20ebb312e43f5992f29ad6a520c2a40feddaa4db89465f31235f7"
+        },
+        "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+        "stdout_length": 1451,
+        "stderr_length": 0,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 2
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      },
+      {
+        "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/jax/Dynamic_Perception_Model_jax.py",
+        "script_name": "Dynamic_Perception_Model_jax.py",
+        "framework": "jax",
+        "model_name": "dynamic_perception",
+        "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 1.95096,
+        "timestamp": "2026-09-08T06:51:09.368682",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 1.95096,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          1.95096
+        ],
+        "structured_result_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/jax/execution_logs/Dynamic_Perception_Model_jax.py_results.json",
+        "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/jax/execution_logs/Dynamic_Perception_Model_jax.py_execution.log",
+        "implementation_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/jax",
+        "script_identity": {
+          "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/jax/Dynamic_Perception_Model_jax.py",
+          "sha256": "2e79adc4bf314bec156d454fba7fa08c9d98eeaa451973b4c4f05d5bc7640f4b"
+        },
+        "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+        "stdout_length": 1366,
+        "stderr_length": 0,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 1
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      },
+      {
+        "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/numpyro/Dynamic_Perception_Model_numpyro.py",
+        "script_name": "Dynamic_Perception_Model_numpyro.py",
+        "framework": "numpyro",
+        "model_name": "dynamic_perception",
+        "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 1.91373,
+        "timestamp": "2026-09-08T06:51:12.631944",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 1.91373,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          1.91373
+        ],
+        "structured_result_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/numpyro/execution_logs/Dynamic_Perception_Model_numpyro.py_results.json",
+        "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/numpyro/execution_logs/Dynamic_Perception_Model_numpyro.py_execution.log",
+        "implementation_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/numpyro",
+        "script_identity": {
+          "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/numpyro/Dynamic_Perception_Model_numpyro.py",
+          "sha256": "16d1d2c016f9e964a34b70469bfe52f2d0f3eda85a31a74b4d0d1d86eecadc7c"
+        },
+        "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+        "stdout_length": 319,
+        "stderr_length": 0,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 1
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      },
+      {
+        "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/pymdp/Dynamic_Perception_Model_pymdp.py",
+        "script_name": "Dynamic_Perception_Model_pymdp.py",
+        "framework": "pymdp",
+        "model_name": "dynamic_perception",
+        "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 5.530842,
+        "timestamp": "2026-09-08T06:51:14.585548",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 5.530842,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          5.530842
+        ],
+        "structured_result_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/pymdp/execution_logs/Dynamic_Perception_Model_pymdp.py_results.json",
+        "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/pymdp/execution_logs/Dynamic_Perception_Model_pymdp.py_execution.log",
+        "implementation_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/pymdp",
+        "script_identity": {
+          "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/pymdp/Dynamic_Perception_Model_pymdp.py",
+          "sha256": "efcc7e5767f08b287a7a15bc9fbf452422a012759990e155ed7dd846847eb01e"
+        },
+        "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+        "stdout_length": 41,
+        "stderr_length": 2548,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 1
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      },
+      {
+        "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/pytorch/Dynamic_Perception_Model_pytorch.py",
+        "script_name": "Dynamic_Perception_Model_pytorch.py",
+        "framework": "pytorch",
+        "model_name": "dynamic_perception",
+        "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
+        "success": false,
+        "skipped": true,
+        "status": "skipped",
+        "attempts_started": 0,
+        "return_code": null,
+        "error": "Dependency not installed: torch",
+        "error_type": "DependencyNotInstalled",
+        "execution_time": 0,
+        "timestamp": "2026-09-08T06:51:20.168435",
+        "execution_metadata": {},
+        "script_identity": {
+          "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/pytorch/Dynamic_Perception_Model_pytorch.py",
+          "sha256": "71c32e8a8fb1ca01e9d31ef9e7c6776eb812b839305fb9c50770b6c94ea74ae1"
+        },
+        "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+        "stdout_length": 0,
+        "stderr_length": 0
+      },
+      {
+        "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/rxinfer/Dynamic_Perception_Model_rxinfer.jl",
+        "script_name": "Dynamic_Perception_Model_rxinfer.jl",
+        "framework": "rxinfer",
+        "model_name": "dynamic_perception",
+        "executor": "julia",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 20.614413,
+        "timestamp": "2026-09-08T06:51:20.168508",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 20.614413,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          20.614413
+        ],
+        "structured_result_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/rxinfer/execution_logs/Dynamic_Perception_Model_rxinfer.jl_results.json",
+        "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/rxinfer/execution_logs/Dynamic_Perception_Model_rxinfer.jl_execution.log",
+        "implementation_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/rxinfer",
+        "execution_metadata": {},
+        "script_identity": {
+          "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/rxinfer/Dynamic_Perception_Model_rxinfer.jl",
+          "sha256": "2dd512dcd5abd404c36ee3535dca464e9e919aabdd3423ff91ef71b759c5b950"
+        },
+        "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+        "stdout_length": 221,
+        "stderr_length": 0,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 1
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      },
+      {
+        "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/stan/Dynamic_Perception_Model_stan.py",
+        "script_name": "Dynamic_Perception_Model_stan.py",
+        "framework": "stan",
+        "model_name": "dynamic_perception",
+        "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 8.81106,
+        "timestamp": "2026-09-08T06:51:48.577160",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 8.81106,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          8.81106
+        ],
+        "structured_result_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/stan/execution_logs/Dynamic_Perception_Model_stan.py_results.json",
+        "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/stan/execution_logs/Dynamic_Perception_Model_stan.py_execution.log",
+        "implementation_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/dynamic_perception/stan",
+        "script_identity": {
+          "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/dynamic_perception/stan/Dynamic_Perception_Model_stan.py",
+          "sha256": "2815d016464b3e757d79b9b2cafa868ef141a10db7400ffffa4295599ddc2ca3"
+        },
+        "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+        "stdout_length": 433,
+        "stderr_length": 811,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 3
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      },
+      {
+        "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/activeinference_jl/Static_Perception_Model_activeinference.jl",
+        "script_name": "Static_Perception_Model_activeinference.jl",
+        "framework": "activeinference_jl",
+        "model_name": "static_perception",
+        "executor": "julia",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 10.555338,
+        "timestamp": "2026-09-08T06:51:57.406610",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 10.555338,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          10.555338
+        ],
+        "structured_result_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/activeinference_jl/execution_logs/Static_Perception_Model_activeinference.jl_results.json",
+        "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/activeinference_jl/execution_logs/Static_Perception_Model_activeinference.jl_execution.log",
+        "implementation_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/activeinference_jl",
+        "script_identity": {
+          "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/activeinference_jl/Static_Perception_Model_activeinference.jl",
+          "sha256": "630ae5e12ab124420ccea720c54c3719a64d9fa4426c67e9345bc46509076dfb"
+        },
+        "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+        "stdout_length": 60,
+        "stderr_length": 0,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 1
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      },
+      {
+        "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/bnlearn/Static_Perception_Model_bnlearn.py",
+        "script_name": "Static_Perception_Model_bnlearn.py",
+        "framework": "bnlearn",
+        "model_name": "static_perception",
+        "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
+        "success": false,
+        "skipped": true,
+        "status": "skipped",
+        "attempts_started": 0,
+        "return_code": null,
+        "error": "Dependency not installed: bnlearn",
+        "error_type": "DependencyNotInstalled",
+        "execution_time": 0,
+        "timestamp": "2026-09-08T06:52:17.397175",
+        "execution_metadata": {},
+        "script_identity": {
+          "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/bnlearn/Static_Perception_Model_bnlearn.py",
+          "sha256": "c151bc7295fe4073c68a97c4998e9fe6f4b1ca241437999274fd5773e528d378"
+        },
+        "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+        "stdout_length": 0,
+        "stderr_length": 0
+      },
+      {
+        "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/discopy/Static_Perception_Model_discopy.py",
+        "script_name": "Static_Perception_Model_discopy.py",
+        "framework": "discopy",
+        "model_name": "static_perception",
+        "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 0.454301,
+        "timestamp": "2026-09-08T06:52:18.042123",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 0.454301,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          0.454301
+        ],
+        "structured_result_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/discopy/execution_logs/Static_Perception_Model_discopy.py_results.json",
+        "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/discopy/execution_logs/Static_Perception_Model_discopy.py_execution.log",
+        "implementation_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/discopy",
+        "script_identity": {
+          "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/discopy/Static_Perception_Model_discopy.py",
+          "sha256": "d931ab73f12643b13f5eb02dde26524a9227d3a07b259c98b51407965162cb38"
+        },
+        "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+        "stdout_length": 1450,
+        "stderr_length": 0,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 2
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      },
+      {
+        "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/jax/Static_Perception_Model_jax.py",
+        "script_name": "Static_Perception_Model_jax.py",
+        "framework": "jax",
+        "model_name": "static_perception",
+        "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 2.390429,
+        "timestamp": "2026-09-08T06:52:19.269056",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 2.390429,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          2.390429
+        ],
+        "structured_result_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/jax/execution_logs/Static_Perception_Model_jax.py_results.json",
+        "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/jax/execution_logs/Static_Perception_Model_jax.py_execution.log",
+        "implementation_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/jax",
+        "script_identity": {
+          "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/jax/Static_Perception_Model_jax.py",
+          "sha256": "6f90f7a0daef8b3f8716e6c9f2d861dfc5ed6061192fd9e521da73f603e09e6d"
+        },
+        "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+        "stdout_length": 1366,
+        "stderr_length": 0,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 1
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      },
+      {
+        "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/numpyro/Static_Perception_Model_numpyro.py",
+        "script_name": "Static_Perception_Model_numpyro.py",
+        "framework": "numpyro",
+        "model_name": "static_perception",
+        "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 1.074919,
+        "timestamp": "2026-09-08T06:52:22.351184",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 1.074919,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          1.074919
+        ],
+        "structured_result_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/numpyro/execution_logs/Static_Perception_Model_numpyro.py_results.json",
+        "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/numpyro/execution_logs/Static_Perception_Model_numpyro.py_execution.log",
+        "implementation_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/numpyro",
+        "script_identity": {
+          "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/numpyro/Static_Perception_Model_numpyro.py",
+          "sha256": "0bd3531e5577319a9bfdbd5bb4031b9588e40881afacd750c8a4325057efe758"
+        },
+        "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+        "stdout_length": 317,
+        "stderr_length": 0,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 1
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      },
+      {
+        "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/pymdp/Static_Perception_Model_pymdp.py",
+        "script_name": "Static_Perception_Model_pymdp.py",
+        "framework": "pymdp",
+        "model_name": "static_perception",
+        "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 2.561325,
+        "timestamp": "2026-09-08T06:52:23.461661",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 2.561325,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          2.561325
+        ],
+        "structured_result_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/pymdp/execution_logs/Static_Perception_Model_pymdp.py_results.json",
+        "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/pymdp/execution_logs/Static_Perception_Model_pymdp.py_execution.log",
+        "implementation_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/pymdp",
+        "script_identity": {
+          "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/pymdp/Static_Perception_Model_pymdp.py",
+          "sha256": "8b445833350321cfd82b527d63440b48b4c1fe41dc56042541764a55f6de6bcd"
+        },
+        "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+        "stdout_length": 41,
+        "stderr_length": 2103,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 1
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      },
+      {
+        "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/pytorch/Static_Perception_Model_pytorch.py",
+        "script_name": "Static_Perception_Model_pytorch.py",
+        "framework": "pytorch",
+        "model_name": "static_perception",
+        "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
+        "success": false,
+        "skipped": true,
+        "status": "skipped",
+        "attempts_started": 0,
+        "return_code": null,
+        "error": "Dependency not installed: torch",
+        "error_type": "DependencyNotInstalled",
+        "execution_time": 0,
+        "timestamp": "2026-09-08T06:52:26.052947",
+        "execution_metadata": {},
+        "script_identity": {
+          "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/pytorch/Static_Perception_Model_pytorch.py",
+          "sha256": "440d49e1f7e313eb2a3bb07840617add44b7d5652636e34cf75eac53ed79ea33"
+        },
+        "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+        "stdout_length": 0,
+        "stderr_length": 0
+      },
+      {
+        "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/rxinfer/Static_Perception_Model_rxinfer.jl",
+        "script_name": "Static_Perception_Model_rxinfer.jl",
+        "framework": "rxinfer",
+        "model_name": "static_perception",
+        "executor": "julia",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 16.351125,
+        "timestamp": "2026-09-08T06:52:26.053003",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 16.351125,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          16.351125
+        ],
+        "structured_result_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/rxinfer/execution_logs/Static_Perception_Model_rxinfer.jl_results.json",
+        "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/rxinfer/execution_logs/Static_Perception_Model_rxinfer.jl_execution.log",
+        "implementation_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/rxinfer",
+        "execution_metadata": {},
+        "script_identity": {
+          "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/rxinfer/Static_Perception_Model_rxinfer.jl",
+          "sha256": "16814356441dd7ccb67ed6293dca23fdf752afbd967affa8e48a8984924a2ce3"
+        },
+        "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+        "stdout_length": 221,
+        "stderr_length": 0,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 1
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      },
+      {
+        "script_path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/stan/Static_Perception_Model_stan.py",
+        "script_name": "Static_Perception_Model_stan.py",
+        "framework": "stan",
+        "model_name": "static_perception",
+        "executor": "/private/tmp/herdr-worktrees/gnn-utils/.venv/bin/python",
+        "success": true,
+        "skipped": false,
+        "status": "success",
+        "attempts_started": 1,
+        "return_code": 0,
+        "execution_time": 7.23514,
+        "timestamp": "2026-09-08T06:52:46.777850",
+        "execution_benchmark_repeats": 1,
+        "execution_time_mean": 7.23514,
+        "execution_time_std": 0.0,
+        "execution_time_samples": [
+          7.23514
+        ],
+        "structured_result_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/stan/execution_logs/Static_Perception_Model_stan.py_results.json",
+        "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/stan/execution_logs/Static_Perception_Model_stan.py_execution.log",
+        "implementation_directory": "/private/tmp/herdr-worktrees/gnn-utils/output/12_execute_output/static_perception/stan",
+        "script_identity": {
+          "path": "/private/tmp/herdr-worktrees/gnn-utils/output/11_render_output/static_perception/stan/Static_Perception_Model_stan.py",
+          "sha256": "97c5a7e7c987df25d108cd11cabc50b8a0d4cdbcfd79da01d72101c501be3ff0"
+        },
+        "source_scope": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics",
+        "stdout_length": 431,
+        "stderr_length": 804,
+        "collected_outputs_summary": {
+          "visualizations": {
+            "count": 0
+          },
+          "simulation_data": {
+            "count": 3
+          },
+          "traces": {
+            "count": 0
+          },
+          "other": {
+            "count": 0
+          }
+        }
+      }
+    ],
+    "target_directory": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics"
+  },
+  "merged_prior_folder_runs": 0,
+  "execution_summary_format": "slim_v1"
+}

@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 def _generate_interactive_plotly_dashboard(
     model_name: str,
-    model_data: Dict,
+    model_data: Dict[str, Any],
     output_dir: Path,
     export_formats: List[str],
     dependencies: Dict[str, bool],

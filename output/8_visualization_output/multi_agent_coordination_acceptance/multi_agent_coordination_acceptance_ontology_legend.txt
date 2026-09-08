@@ -1,0 +1,4 @@
+variable	ontology_term
+o	Observation
+s	HiddenState
+u	Action

@@ -1,7 +1,7 @@
 {
-  "input_file": "input/gnn_files/basics/dynamic_perception.md",
-  "output_file": "output/0_template_output/dynamic_perception/dynamic_perception_processed.md",
-  "timestamp": "2026-09-05T20:30:45.662546",
+  "input_file": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/basics/dynamic_perception.md",
+  "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/0_template_output/dynamic_perception/dynamic_perception_processed.md",
+  "timestamp": "2026-09-08T06:53:29.064243",
   "file_size_bytes": 2453,
   "file_size_lines": 131,
   "processing_options": {

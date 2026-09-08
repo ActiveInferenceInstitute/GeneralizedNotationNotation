@@ -311,10 +311,12 @@ class TestPipelineIntegrationScenarios:
 class TestErrorReportingAndDiagnostics:
     """Error reporting and diagnostic coverage.
 
-    Phase 7.2: tests referencing utils.standardized_error_handling and
-    utils.diagnostic_logging were removed — those modules were aspirational
-    and never implemented. The real facilities live in utils.error_handling
-    and utils.error_recovery (see test_error_recovery_framework.py).
+    Phase 7.2: tests referencing utils.standardized_error_handling were
+    removed — that module was aspirational and never implemented.
+    utils.diagnostic_logging existed but had no production importer and was
+    deleted in the wave-2 dead-surface cleanup (W2-02). The real facilities
+    live in utils.error_handling and utils.error_recovery
+    (see test_error_recovery_framework.py).
     """
 
     @pytest.mark.unit

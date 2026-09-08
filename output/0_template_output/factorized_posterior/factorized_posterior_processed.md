@@ -1,7 +1,7 @@
 
 # Processed by GNN Pipeline Template
-# Original file: input/gnn_files/structured/factorized_posterior.md
-# Processed on: 2026-09-05T20:30:45.675310
+# Original file: /private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/structured/factorized_posterior.md
+# Processed on: 2026-09-08T06:53:29.081164
 # Options: {'verbose': False, 'recursive': True, 'example_param': 'default_value'}
 
 # GNN Example: Factorized Posterior Model

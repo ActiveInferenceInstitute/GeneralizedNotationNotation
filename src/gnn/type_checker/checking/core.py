@@ -33,6 +33,7 @@ from .rules import (
 )
 from .sections import (
     classify_time_spec,
+    detect_time_dynamics,
     extract_markdown_section,
     parse_resource_connections,
     section_presence,
@@ -117,7 +118,21 @@ def estimate_file_resources(content: str) -> ResourceEstimate:
 
 
 class GNNTypeChecker:
-    """Type checker for GNN files."""
+    """Type checker for GNN files.
+
+    Result contracts (three sibling surfaces, deliberately distinct):
+
+    - :meth:`validate_content` / :meth:`validate_single_gnn_file` return a
+      per-file result dict whose canonical truth key is ``valid`` (bool),
+      plus additive ``errors``/``warnings``/``type_issues`` lists and
+      structured metadata (``variables``, ``connections``, ``sections``,
+      ``time_dynamics``, ``model_complexity``, ...). The CLI artifact layer
+      re-keys the same verdict as ``is_valid``; renderers accept either.
+    - :meth:`check_file` returns the CLI 4-tuple
+      ``(valid, errors, warnings, result_dict)`` derived from the dict.
+    - :meth:`validate_gnn_files` returns the pipeline exit sentinel:
+      ``True`` (exit 0), ``2`` (SUCCESS_WITH_WARNINGS), ``False`` (exit 1).
+    """
 
     def __init__(self, strict_mode: bool = False) -> None:
         """Initialize the GNN type checker.
@@ -408,7 +423,7 @@ class GNNTypeChecker:
         Pure entry point over a spec string — useful for MCP callers, in
         memory pipelines, and tests that do not want to materialise a file.
         ``validate_single_gnn_file`` delegates here after reading the file.
-        The returned dict carries the canonical validation keys plus
+        The returned dict carries the canonical ``valid`` verdict key plus
         additive ``variables``/``connections``/``sections`` metadata so
         downstream report renderers have structured data to work with.
         """
@@ -505,7 +520,9 @@ class GNNTypeChecker:
             )
             for type_info in found_types
         }
-        validation_result["time_dynamics"] = {"is_dynamic": _time_is_dynamic(content)}
+        validation_result["time_dynamics"] = {
+            "is_dynamic": detect_time_dynamics(content)
+        }
         return validation_result
 
     def _analyze_types(
@@ -591,8 +608,3 @@ class GNNTypeChecker:
             summary += "- No errors encountered\n"
 
         return summary
-
-
-def _time_is_dynamic(content: str) -> bool:
-    """Return True when the spec's ``## Time`` section declares a dynamic model."""
-    return extract_markdown_section(content, "Time").lower().find("dynamic") != -1

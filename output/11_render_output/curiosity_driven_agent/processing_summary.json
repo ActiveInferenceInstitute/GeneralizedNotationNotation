@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-09-05T20:25:30.718655",
-  "source_file": "input/gnn_files/precision/curiosity_driven_agent.md",
+  "timestamp": "2026-09-08T06:58:14.780881",
+  "source_file": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/precision/curiosity_driven_agent.md",
   "model_name": "Curiosity-Driven Active Inference Agent",
   "pomdp_dimensions": {
     "num_states": 5,

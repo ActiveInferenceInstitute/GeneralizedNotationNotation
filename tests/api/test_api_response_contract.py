@@ -131,3 +131,56 @@ def test_unexpected_exception_is_sanitized_and_enveloped() -> None:
     envelope = _assert_envelope(response.json(), status="error")
     assert envelope["error"]["code"] == "internal_error"
     assert "sensitive" not in envelope["error"]["message"]
+
+
+def test_run_api_missing_report_uses_envelope(tmp_path: Any) -> None:
+    """The run surface's mixed report contract: envelope 404 (no report yet)
+    vs the documented plain-text 200 download once PIPELINE_REPORT.md exists."""
+    from gnn.api.app import create_app as create_run_app
+
+    runs_store: dict[str, dict[str, Any]] = {
+        "w2testhash": {
+            "status": "completed",
+            "request": {"output_dir": str(tmp_path)},
+        }
+    }
+    response = TestClient(create_run_app(runs_store=runs_store)).get(
+        "/api/v1/runs/w2testhash/report"
+    )
+    assert response.status_code == 404
+    envelope = _assert_envelope(response.json(), status="error")
+    assert envelope["error"]["code"] == "not_found"
+
+    (tmp_path / "PIPELINE_REPORT.md").write_text("# report\n", encoding="utf-8")
+    ok = TestClient(create_run_app(runs_store=runs_store)).get(
+        "/api/v1/runs/w2testhash/report"
+    )
+    assert ok.status_code == 200
+    assert ok.headers["content-type"].startswith("text/markdown")
+
+
+def test_api_step_surface_is_registry_derived() -> None:
+    """API step counts and validation bounds derive from the canonical
+    step registry — hardcoding 25/{13} in an API surface must be impossible
+    to reintroduce silently (W2-06)."""
+    from gnn.api.models import RunHealthResponse, RunStatus
+    from gnn.api.pipeline_runner import (
+        LLM_STEP_NUMBERS,
+        MAX_PIPELINE_STEP,
+        PIPELINE_STEP_COUNT,
+        VALID_STEP_NUMBERS,
+    )
+    from gnn.pipeline.step_registry import STEPS, get_llm_steps
+
+    assert PIPELINE_STEP_COUNT == len(STEPS)
+    assert VALID_STEP_NUMBERS == {
+        int(s.script_stem.partition("_")[0]) for s in STEPS
+    }
+    assert MAX_PIPELINE_STEP == max(VALID_STEP_NUMBERS)
+    assert LLM_STEP_NUMBERS == {
+        int(s.script_stem.partition("_")[0]) for s in get_llm_steps()
+    }
+    assert RunStatus.model_fields["total_steps"].default == PIPELINE_STEP_COUNT
+    health = RunHealthResponse()
+    assert health.pipeline_steps == PIPELINE_STEP_COUNT
+    assert health.version != "2.0.0"

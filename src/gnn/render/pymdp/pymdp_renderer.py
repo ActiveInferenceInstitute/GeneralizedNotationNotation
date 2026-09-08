@@ -20,7 +20,6 @@ from __future__ import annotations
 
 import json as _json
 import logging
-from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -336,7 +335,6 @@ class PyMDPRenderer:
             "num_obs": num_obs,
             "num_states": num_states,
             "num_actions": num_actions,
-            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "A_literal": _json.dumps(A_matrix) if A_matrix is not None else "None",
             "B_literal": _json.dumps(B_matrix) if B_matrix is not None else "None",
             "C_literal": _json.dumps(C_vector) if C_vector is not None else "None",

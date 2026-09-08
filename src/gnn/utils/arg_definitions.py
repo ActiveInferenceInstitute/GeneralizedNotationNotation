@@ -16,7 +16,7 @@ class ArgumentDefinition:
     """Definition of a pipeline argument with metadata."""
 
     flag: str
-    arg_type: Type = str
+    arg_type: Type[Any] = str
     default: Any = None
     required: bool = False
     help_text: str = ""

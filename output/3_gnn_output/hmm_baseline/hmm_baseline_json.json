@@ -147,7 +147,7 @@
       "weight": null
     }
   ],
-  "created_at": "2026-09-05T20:30:53.974561",
+  "created_at": "2026-09-08T06:53:46.134587",
   "equations": [],
   "extensions": {
     "footer": "Hidden Markov Model Baseline v1 - GNN Representation.\nNo action selection — passive observer only.\nUse as baseline comparison for POMDP Active Inference variants.",
@@ -155,7 +155,7 @@
     "signature": "Cryptographic signature goes here"
   },
   "model_name": "Hidden Markov Model Baseline",
-  "modified_at": "2026-09-05T20:30:53.974563",
+  "modified_at": "2026-09-08T06:53:46.134588",
   "ontology_mappings": [
     {
       "description": null,

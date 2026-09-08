@@ -2,7 +2,7 @@
 """
 DisCoPy Categorical Diagram Generation
 Generated from GNN Model: Static Perception Model
-Generated: 2026-09-05 20:32:38
+Generated: 2026-09-08 06:56:54
 
 This script creates categorical diagrams representing the Active Inference model
 structure using DisCoPy's compositional framework.
@@ -196,7 +196,7 @@ def export_circuit_data(circuit_dict, analysis_results, output_dir="discopy_diag
     # Export circuit information
     circuit_info = {
         'model_name': 'Static Perception Model',
-        'timestamp': '2026-09-05 20:32:38',
+        'timestamp': '2026-09-08 06:56:54',
         'parameters': {
             'num_states': NUM_STATES,
             'num_observations': NUM_OBSERVATIONS, 

@@ -27,11 +27,9 @@ def _filter_connections(
 ) -> List[Dict[str, Any]]:
     """Keep connections whose source and target variables survive sampling."""
     out: List[Dict[str, Any]] = []
-    # Imported lazily: advanced_visualization._shared imports back into this
-    # package (visualization.matrix_visualizer), and sampling is loaded from
-    # visualization.core.process during package init — a top-level import
-    # here would be circular.
-    from gnn.advanced_visualization._shared import normalize_connection_format
+    # Single shared home: gnn/visualization/connection_format.py (deferred
+    # import kept: sampling loads during visualization package init).
+    from gnn.visualization.connection_format import normalize_connection_format
 
     for conn in connections:
         if not isinstance(conn, dict):

@@ -13,7 +13,7 @@ linear-Gaussian state-space model (LGSSM):
 - The controller closes the loop on beliefs — it pushes the filtered posterior
 mean toward the preferred position goal_mean = (2.0, 2.0) with proportional
 gain control_gain = 0.3, i.e. u_t = control_gain * (goal_mean - mu_t).
-- **Generation Date**: 2026-09-05 20:25:31
+- **Generation Date**: 2026-09-08 06:58:15
 
 ## POMDP Dimensions
 

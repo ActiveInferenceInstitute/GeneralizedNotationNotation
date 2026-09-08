@@ -102,7 +102,7 @@ def _check_dependencies(logger: logging.Logger) -> Dict[str, bool]:
 
 def _load_gnn_models(
     target_dir: Path, logger: logging.Logger, base_output_dir: Optional[Path] = None
-) -> Dict[str, Dict]:
+) -> Dict[str, Dict[str, Any]]:
     """Load GNN models from processing results"""
     from gnn.pipeline.config import get_output_dir_for_script
 

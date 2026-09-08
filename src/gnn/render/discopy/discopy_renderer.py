@@ -17,7 +17,6 @@ Date: 2024
 
 import json
 import logging
-from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -175,7 +174,6 @@ class DisCoPyRenderer:
 """
 DisCoPy Categorical Diagram Generation
 Generated from GNN Model: {model_display_name}
-Generated: {self._get_timestamp()}
 
 This script creates categorical diagrams representing the Active Inference model
 structure using DisCoPy's compositional framework.
@@ -198,6 +196,7 @@ import numpy as np
 from pathlib import Path
 import json
 import logging
+from datetime import datetime
 
 # Model parameters extracted from GNN specification
 NUM_STATES = {num_states}
@@ -369,7 +368,7 @@ def export_circuit_data(circuit_dict, analysis_results, output_dir="discopy_diag
     # Export circuit information
     circuit_info = {{
         'model_name': '{model_display_name}',
-        'timestamp': '{self._get_timestamp()}',
+        'timestamp': datetime.now().isoformat(),
         'parameters': {{
             'num_states': NUM_STATES,
             'num_observations': NUM_OBSERVATIONS, 
@@ -431,10 +430,6 @@ if __name__ == "__main__":
 '''
 
         return code
-
-    def _get_timestamp(self) -> str:
-        """Get current timestamp string."""
-        return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 
 def render_gnn_to_discopy(

@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-09-05T20:25:28.171182",
-  "source_file": "input/gnn_files/learning/dirichlet_likelihood_learning.md",
+  "timestamp": "2026-09-08T06:58:12.493421",
+  "source_file": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/learning/dirichlet_likelihood_learning.md",
   "model_name": "Dirichlet Likelihood Learning Agent",
   "pomdp_dimensions": {
     "num_states": 3,

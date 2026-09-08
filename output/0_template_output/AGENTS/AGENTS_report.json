@@ -1,7 +1,7 @@
 {
-  "input_file": "input/gnn_files/pomdp_gridworld/AGENTS.md",
-  "output_file": "output/0_template_output/AGENTS/AGENTS_processed.md",
-  "timestamp": "2026-09-05T20:30:45.676609",
+  "input_file": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/pomdp_gridworld/AGENTS.md",
+  "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/0_template_output/AGENTS/AGENTS_processed.md",
+  "timestamp": "2026-09-08T06:53:29.082644",
   "file_size_bytes": 1600,
   "file_size_lines": 34,
   "processing_options": {

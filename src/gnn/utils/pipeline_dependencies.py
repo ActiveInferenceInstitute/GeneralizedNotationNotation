@@ -33,7 +33,7 @@ class StepDependencyInfo:
     required: List[str] = field(default_factory=list)
     optional: List[str] = field(default_factory=list)
     fallbacks: Dict[str, str] = field(default_factory=dict)
-    validators: Dict[str, Callable] = field(default_factory=dict)
+    validators: Dict[str, Callable[..., Any]] = field(default_factory=dict)
 
 
 class PipelineDependencyManager:

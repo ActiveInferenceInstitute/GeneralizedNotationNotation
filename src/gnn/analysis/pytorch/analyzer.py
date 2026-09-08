@@ -14,7 +14,7 @@ public ``generate_analysis_from_logs`` / ``_generate_plots`` entry points.
 """
 
 from pathlib import Path
-from typing import List, Optional
+from typing import Any, List, Optional
 
 import numpy as np
 
@@ -62,8 +62,8 @@ def generate_analysis_from_logs(
 
 def _generate_plots(
     beliefs: np.ndarray,
-    actions: list,
-    observations: list,
+    actions: list[Any],
+    observations: list[Any],
     efe: np.ndarray,
     output_dir: Path,
 ) -> bool:

@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-09-05T20:25:28.832500",
-  "source_file": "input/gnn_files/discrete/actinf_pomdp_agent.md",
+  "timestamp": "2026-09-08T06:58:13.008109",
+  "source_file": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/discrete/actinf_pomdp_agent.md",
   "model_name": "Active Inference POMDP Agent",
   "pomdp_dimensions": {
     "num_states": 3,

@@ -1,7 +1,7 @@
 #!/usr/bin/env julia
 # RxInfer.jl Dirichlet likelihood-learning POMDP — genuine @model + infer()
 # Generated from GNN Model: Dirichlet Likelihood Learning Agent
-# Generated: 2026-09-05 20:25:28
+# Generated: 2026-09-08 06:58:12
 #
 # Same state chain as the flat POMDP, but the likelihood A is a LATENT
 # DirichletCollection instead of a fixed constant. dirichlet_A holds the

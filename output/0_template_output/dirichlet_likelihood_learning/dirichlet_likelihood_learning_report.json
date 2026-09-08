@@ -1,7 +1,7 @@
 {
-  "input_file": "input/gnn_files/learning/dirichlet_likelihood_learning.md",
-  "output_file": "output/0_template_output/dirichlet_likelihood_learning/dirichlet_likelihood_learning_processed.md",
-  "timestamp": "2026-09-05T20:30:45.671882",
+  "input_file": "/private/tmp/herdr-worktrees/gnn-utils/input/gnn_files/learning/dirichlet_likelihood_learning.md",
+  "output_file": "/private/tmp/herdr-worktrees/gnn-utils/output/0_template_output/dirichlet_likelihood_learning/dirichlet_likelihood_learning_processed.md",
+  "timestamp": "2026-09-08T06:53:29.076500",
   "file_size_bytes": 4848,
   "file_size_lines": 185,
   "processing_options": {
