@@ -182,9 +182,48 @@ def is_safe_http_tool(tool_name: str) -> bool:
     return True if safe_tools is None else tool_name in safe_tools
 
 
+def _safe_resource_match(safe_resources: set[str], template_or_uri: str) -> bool:
+    """Decide whether a configured safe URI exposes a resource.
+
+    A registered resource carries a templated ``uri_template`` (e.g.
+    ``gnn://documentation/{doc_name}``) while operators configure concrete
+    URIs in ``GNN_MCP_SAFE_RESOURCES`` (e.g.
+    ``gnn://documentation/grammar``). An exact string match handles both
+    shapes; a template match falls back to the MCP URI matcher so one
+    concrete entry can expose the whole template it instantiates.
+
+    ``template_or_uri`` may be either a template (when filtering capabilities)
+    or a concrete URI (when gating a read). Both directions must agree.
+    """
+    if template_or_uri in safe_resources:
+        return True
+    registered = mcp_instance.resources
+    for configured in safe_resources:
+        for template, resource in registered.items():
+            if resource is None:
+                continue
+            if configured == template:
+                # The configured URI is a template; accept any matching URI.
+                if mcp_instance._match_uri_template(template, template_or_uri):
+                    return True
+            elif mcp_instance._match_uri_template(template, configured):
+                # The configured URI is concrete under this template.
+                if template_or_uri == configured:
+                    # Concrete read gate: the concrete URI is the one configured.
+                    return True
+                if template_or_uri == template:
+                    # Capabilities filter: the template itself is exposed
+                    # because one of its concrete URIs is configured.
+                    return True
+    return False
+
+
 def is_safe_http_resource(uri: str) -> bool:
     """Return True when a resource URI is explicitly exposed over HTTP."""
-    return uri in get_safe_http_resource_uris()
+    safe_resources = get_safe_http_resource_uris()
+    if not safe_resources:
+        return False
+    return _safe_resource_match(safe_resources, uri)
 
 
 def get_http_capabilities() -> Dict[str, Any]:
@@ -200,12 +239,15 @@ def get_http_capabilities() -> Dict[str, Any]:
             for tool in tools
             if isinstance(tool, dict) and str(tool.get("name")) in safe_tools
         ]
-    resources = [
-        resource
-        for resource in resources
-        if isinstance(resource, dict)
-        and str(resource.get("uri_template")) in safe_resources
-    ]
+    if safe_resources:
+        resources = [
+            resource
+            for resource in resources
+            if isinstance(resource, dict)
+            and _safe_resource_match(safe_resources, str(resource.get("uri_template")))
+        ]
+    else:
+        resources = []
     server = dict(capabilities.get("server", {}))
     server["http_access"] = {
         "safe_tools_only": safe_tools is not None,
