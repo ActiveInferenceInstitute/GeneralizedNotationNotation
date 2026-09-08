@@ -76,18 +76,21 @@ per PR).
   stragglers, `uv run --extra dev mypy src` clean, MCP tools and CLI paths
   unchanged, module tests green.
 - Stale singular module paths in maintained docs (companion to the
-  `gnn.gnn` import-path fix): ~19 occurrences of `src/gnn/parser.py`,
-  `src/gnn/schema.py`, and `src/gnn/schema_validator.py` across 12 live
-  files (CROSS_REFERENCE_INDEX, docs/README, gnn_syntax, language
-  grammars, 05_type_checker, reference/SPEC, gnn_file_structure_doc,
-  gnn_schema residual sites, gnn_syntax reference, technical_reference,
+  `gnn.gnn` import-path fix): 21 occurrences (19 lines) of
+  `src/gnn/parser.py`, `src/gnn/schema.py`, and
+  `src/gnn/schema_validator.py` across 12 live files
+  (CROSS_REFERENCE_INDEX, docs/README, gnn_syntax, language grammars,
+  05_type_checker, reference/SPEC, gnn_file_structure_doc, gnn_schema
+  residual sites, gnn_syntax reference, technical_reference,
   schema_validator AGENTS/README). Real targets are the packages:
   `src/gnn/schema/parser.py`, `src/gnn/schema_validator/syntax.py` (or
   `validator.py`), and `src/gnn/parsers/system.py` — map each occurrence
   to the module that actually defines the named symbol before rewriting;
-  exclude fleet-logs and VERSION_MAP (historical). Verify: repo grep for
-  the three singular paths returns only historical files; docs_audit,
-  gnn_doc_patterns, and maintained_doc_terms gates stay green.
+  exclude fleet-logs and VERSION_MAP (historical). Regression gate:
+  `uv run python scripts/check_doc_path_references.py` count-caps these
+  citations at the registered 21 — lower the cap as sites are fixed and
+  add it to Verification Commands when the cap reaches 0. Other gates
+  (docs_audit, gnn_doc_patterns, maintained_doc_terms) stay green.
 
 ---
 
