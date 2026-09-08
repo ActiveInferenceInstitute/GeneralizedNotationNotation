@@ -14,6 +14,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union, cast
 
+from .subprocess_envelope import run_subprocess_envelope
+
 # Import execution functionality
 try:
     from .pymdp.pymdp_runner import run_pymdp_scripts
@@ -329,28 +331,9 @@ class GNNExecutor:
                 "stderr": "",
                 "return_code": 0,
             }
-        try:
-            result = subprocess.run(
-                [sys.executable, script_path],  # nosec B603
-                capture_output=True,
-                text=True,
-                timeout=timeout or 60,
-            )
-            return {
-                "success": result.returncode == 0,
-                "stdout": result.stdout,
-                "stderr": result.stderr,
-                "return_code": result.returncode,
-            }
-        except Exception as e:
-            return {
-                "success": False,
-                "error": str(e),
-                "error_type": type(e).__name__,
-                "stdout": "",
-                "stderr": "",
-                "return_code": -1,
-            }
+        return run_subprocess_envelope(
+            [sys.executable, script_path], timeout=timeout or 60
+        )
 
     def _execute_rxinfer_config(
         self,
@@ -359,25 +342,11 @@ class GNNExecutor:
         timeout: Optional[int] = None,
     ) -> Dict[str, Any]:
         """Execute an RxInfer.jl configuration."""
-        try:
-            # This would typically involve calling Julia
-            result = subprocess.run(
-                ["julia", config_path],  # nosec B607 B603
-                capture_output=True,
-                text=True,
-                timeout=timeout or 300,
-            )
-
-            return {
-                "success": result.returncode == 0,
-                "stdout": result.stdout,
-                "stderr": result.stderr,
-                "return_code": result.returncode,
-            }
-        except subprocess.TimeoutExpired:
-            return {"success": False, "error": "Execution timed out"}
-        except Exception as e:
-            return {"success": False, "error": str(e)}
+        # This would typically involve calling Julia
+        return run_subprocess_envelope(
+            ["julia", config_path],  # nosec B607 B603
+            timeout=timeout or 300,
+        )
 
     def _execute_discopy_diagram(
         self,
@@ -386,24 +355,10 @@ class GNNExecutor:
         timeout: Optional[int] = None,
     ) -> Dict[str, Any]:
         """Execute a DisCoPy diagram."""
-        try:
-            result = subprocess.run(
-                [sys.executable, diagram_path],  # nosec B603
-                capture_output=True,
-                text=True,
-                timeout=timeout or 300,
-            )
-
-            return {
-                "success": result.returncode == 0,
-                "stdout": result.stdout,
-                "stderr": result.stderr,
-                "return_code": result.returncode,
-            }
-        except subprocess.TimeoutExpired:
-            return {"success": False, "error": "Execution timed out"}
-        except Exception as e:
-            return {"success": False, "error": str(e)}
+        return run_subprocess_envelope(
+            [sys.executable, diagram_path],
+            timeout=timeout or 300,
+        )
 
     def _execute_jax_script(
         self,
@@ -412,24 +367,10 @@ class GNNExecutor:
         timeout: Optional[int] = None,
     ) -> Dict[str, Any]:
         """Execute a JAX script."""
-        try:
-            result = subprocess.run(
-                [sys.executable, script_path],  # nosec B603
-                capture_output=True,
-                text=True,
-                timeout=timeout or 300,
-            )
-
-            return {
-                "success": result.returncode == 0,
-                "stdout": result.stdout,
-                "stderr": result.stderr,
-                "return_code": result.returncode,
-            }
-        except subprocess.TimeoutExpired:
-            return {"success": False, "error": "Execution timed out"}
-        except Exception as e:
-            return {"success": False, "error": str(e)}
+        return run_subprocess_envelope(
+            [sys.executable, script_path],
+            timeout=timeout or 300,
+        )
 
     def execute_simulation_from_gnn(
         self, gnn_file: Union[str, Path], output_dir: Optional[Union[str, Path]] = None
@@ -1119,58 +1060,38 @@ def execute_script_safely(
             - ``error_type`` (str, optional): Exception class name on failure.
     """
     script = Path(script_path)
-    envelope: Dict[str, Any] = {
-        "success": False,
-        "script_path": str(script),
-        "return_code": -1,
-        "stdout": "",
-        "stderr": "",
-        "duration_seconds": 0.0,
-    }
-
     if not script.exists():
-        envelope["error"] = f"Script not found: {script}"
-        envelope["error_type"] = "FileNotFoundError"
-        return envelope
+        return {
+            "success": False,
+            "script_path": str(script),
+            "return_code": -1,
+            "stdout": "",
+            "stderr": "",
+            "duration_seconds": 0.0,
+            "error": f"Script not found: {script}",
+            "error_type": "FileNotFoundError",
+        }
     if script.suffix.lower() != ".py":
-        envelope["error"] = (
-            f"execute_script_safely only runs Python scripts; got suffix "
-            f"{script.suffix!r}"
-        )
-        envelope["error_type"] = "ValueError"
-        return envelope
+        return {
+            "success": False,
+            "script_path": str(script),
+            "return_code": -1,
+            "stdout": "",
+            "stderr": "",
+            "duration_seconds": 0.0,
+            "error": (
+                f"execute_script_safely only runs Python scripts; got suffix "
+                f"{script.suffix!r}"
+            ),
+            "error_type": "ValueError",
+        }
 
-    merged_env: Optional[Dict[str, str]] = None
-    if env is not None:
-        import os
-
-        merged_env = dict(os.environ)
-        merged_env.update(env)
-
-    start = time.time()
-    try:
-        completed = subprocess.run(  # nosec B603
-            [sys.executable, str(script)],
-            capture_output=capture_output,
-            text=True,
-            timeout=timeout,
-            cwd=str(cwd) if cwd is not None else None,
-            env=merged_env,
-            check=False,
-        )
-        envelope["return_code"] = completed.returncode
-        envelope["success"] = completed.returncode == 0
-        envelope["stdout"] = completed.stdout or ""
-        envelope["stderr"] = completed.stderr or ""
-    except subprocess.TimeoutExpired as exc:
-        envelope["error"] = f"Execution timed out after {timeout}s"
-        envelope["error_type"] = "TimeoutExpired"
-        envelope["stdout"] = exc.stdout or "" if capture_output else ""
-        envelope["stderr"] = exc.stderr or "" if capture_output else ""
-    except Exception as exc:  # noqa: BLE001 — convert any failure to envelope
-        envelope["error"] = str(exc)
-        envelope["error_type"] = type(exc).__name__
-    finally:
-        envelope["duration_seconds"] = time.time() - start
-
+    envelope = run_subprocess_envelope(
+        [sys.executable, str(script)],
+        timeout=timeout,
+        cwd=str(cwd) if cwd is not None else None,
+        env=env,
+        capture_output=capture_output,
+    )
+    envelope["script_path"] = str(script)
     return envelope
