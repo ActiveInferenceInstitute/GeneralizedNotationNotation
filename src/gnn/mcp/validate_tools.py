@@ -11,7 +11,7 @@ Validates that every registered MCP tool is:
 
 Usage:
     cd /path/to/generalizednotationnotation
-    PYTHONPATH=src python src/mcp/validate_tools.py
+    uv run python src/gnn/mcp/validate_tools.py
 """
 
 from __future__ import annotations
@@ -25,7 +25,7 @@ from pathlib import Path
 from typing import Any, Dict, List
 
 # ── Path setup ───────────────────────────────────────────────────────────────
-REPO_ROOT = Path(__file__).parent.parent.parent
+REPO_ROOT = Path(__file__).resolve().parents[3]
 SRC_ROOT = REPO_ROOT / "src"
 sys.path.insert(0, str(SRC_ROOT))
 
@@ -147,7 +147,7 @@ def main() -> int:
     print("\n[5] Logging coverage check (register_tools uses logger.info?)...")
     submodule_dirs = [
         d
-        for d in SRC_ROOT.iterdir()
+        for d in (SRC_ROOT / "gnn").iterdir()
         if d.is_dir()
         and (d / "mcp.py").exists()
         and not d.name.startswith("_")
@@ -227,7 +227,7 @@ def main() -> int:
         "logging_miss": log_miss,
         "issues": issues,
     }
-    out_path = SRC_ROOT / "mcp" / "audit_report.json"
+    out_path = SRC_ROOT / "gnn" / "mcp" / "audit_report.json"
     with tempfile.NamedTemporaryFile(
         mode="w", encoding="utf-8", dir=out_path.parent, delete=False
     ) as tmp_f:

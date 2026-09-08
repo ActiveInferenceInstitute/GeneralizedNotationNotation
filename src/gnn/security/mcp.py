@@ -12,6 +12,8 @@ from typing import Any, Dict, List
 
 logger = logging.getLogger(__name__)
 
+from gnn.utils.mcp_dispatch import run_pipeline_step_mcp
+
 from . import process_security
 
 
@@ -32,21 +34,15 @@ def process_security_mcp(
     Returns:
         Dictionary with success status and security summary.
     """
-    try:
-        success = process_security(
-            target_dir=Path(target_directory),
-            output_dir=Path(output_directory),
-            verbose=verbose,
-        )
-        return {
-            "success": success,
-            "target_directory": target_directory,
-            "output_directory": output_directory,
-            "message": f"Security processing {'completed successfully' if success else 'completed with issues'}",
-        }
-    except Exception as e:
-        logger.error(f"process_security_mcp error: {e}", exc_info=True)
-        return {"success": False, "error": str(e)}
+    return run_pipeline_step_mcp(
+        process_security,
+        wrapper_name="process_security_mcp",
+        logger=logger,
+        target_directory=target_directory,
+        output_directory=output_directory,
+        verbose=verbose,
+        label="Security processing",
+    )
 
 
 def scan_gnn_file_mcp(file_path: str) -> Dict[str, Any]:

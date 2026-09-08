@@ -14,6 +14,7 @@ from typing import Any, Dict
 logger = logging.getLogger(__name__)
 
 from gnn.api.path_utils import PathValidationError, resolve_repo_path
+from gnn.utils.mcp_dispatch import run_pipeline_step_mcp
 
 from . import (
     check_dependencies,
@@ -88,45 +89,44 @@ def process_execute_mcp(
     Returns:
         Dictionary with success flag and processing summary.
     """
-    try:
-        target_path = _resolve_render_output_directory(target_directory)
-        output_path = _resolve_output_directory(
-            output_directory,
-            purpose="Execution output directory",
+
+    def _resolve(target: str, output: str) -> tuple[Path, Path]:
+        return (
+            _resolve_render_output_directory(target),
+            _resolve_output_directory(output, purpose="Execution output directory"),
         )
-        raw = process_execute(
-            target_dir=target_path,
-            output_dir=output_path,
-            verbose=verbose,
-            render_output_dir=target_path,
-            require_render_summary=True,
-        )
+
+    def _interpret(raw: Any) -> tuple[bool, Dict[str, Any], str | None]:
         # Phase 1.1 contract: process_execute may return bool OR int (0/1/2).
         # Coerce to MCP bool envelope, surfacing the "skipped" case separately.
         if isinstance(raw, bool):
-            success = raw
-            skipped = False
+            success, skipped = raw, False
         else:  # int
-            success = raw in (0, 2)  # 2 = skipped/warnings = not an error
-            skipped = raw == 2
-        if skipped:
-            message = "Execute processing skipped (no work found)"
-        else:
-            message = (
-                "Execute processing completed"
-                if success
-                else "Execute processing failed"
-            )
-        return {
-            "success": success,
-            "skipped": skipped,
-            "target_directory": str(target_path),
-            "output_directory": str(output_path),
-            "message": message,
-        }
-    except Exception as e:
-        logger.error(f"process_execute_mcp error: {e}", exc_info=True)
-        return {"success": False, "error": str(e)}
+            success, skipped = raw in (0, 2), raw == 2  # 2 = skipped/warnings
+        message = (
+            "Execute processing skipped (no work found)"
+            if skipped
+            else "Execute processing completed"
+            if success
+            else "Execute processing failed"
+        )
+        return success, {"skipped": skipped}, message
+
+    return run_pipeline_step_mcp(
+        process_execute,
+        wrapper_name="process_execute_mcp",
+        logger=logger,
+        target_directory=target_directory,
+        output_directory=output_directory,
+        verbose=verbose,
+        resolve_paths=_resolve,
+        extra_step_kwargs=lambda target_path, _output_path: {
+            "render_output_dir": target_path,
+            "require_render_summary": True,
+        },
+        interpret_result=_interpret,
+        echo_resolved=True,
+    )
 
 
 def execute_gnn_model_mcp(
