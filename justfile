@@ -33,7 +33,7 @@ test-mod MODULE:
 
 # Run tests with coverage report
 test-cov:
-    uv run pytest tests/ --cov=gnn --cov-report=term-missing \
+    uv run pytest tests/ -m "not pipeline and not mcp" --cov=gnn --cov-report=term-missing \
         --ignore=tests/llm/test_llm_ollama.py \
         --ignore=tests/llm/test_llm_ollama_integration.py
 

@@ -91,7 +91,12 @@ are pinned.
   item stays open-by-design: no local Ollama daemon exists, so
   `test-cov`'s `--ignore=tests/llm/test_llm_ollama*.py` remains correct
   locally while the CI coverage run exercises those tests where they
-  degrade gracefully without a daemon.
+  degrade gracefully without a daemon. Coverage selection parity on the
+  remaining axis: `just test-cov` now adopts CI's
+  `-m "not pipeline and not mcp"` deselect so both invocations apply the
+  same pipeline/mcp test policy (4326 collected locally; CI collects
+  4352 - the 26-test Ollama delta is the open-by-design asymmetry
+  recorded above).
 - Dependency floors: RAISED 2026-09-07 for numpy (>=2.0), pandas
   (>=2.0), openai (>=2.0), pytest (>=8.0), mypy (>=1.0) - the lock
   resolved identically (only requires-dist metadata moved; zero package
