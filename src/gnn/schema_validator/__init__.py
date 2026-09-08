@@ -19,7 +19,6 @@ from gnn.schema_validator.cross_format import (
 )
 from gnn.schema_validator.syntax import GNNParser
 from gnn.schema_validator.validator import (
-    FORMAL_PARSER_AVAILABLE,
     ROUND_TRIP_AVAILABLE,
     GNNValidator,
     validate_gnn_file,
@@ -28,7 +27,6 @@ from gnn.schema_validator.validator import (
 from gnn.types import ParsedGNN, ValidationLevel, ValidationResult
 
 __all__ = [
-    "FORMAL_PARSER_AVAILABLE",
     "ROUND_TRIP_AVAILABLE",
     "CrossFormatValidationResult",
     "CrossFormatValidator",

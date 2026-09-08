@@ -80,29 +80,6 @@ def calculate_section_statistics(sections: List[Dict[str, Any]]) -> Dict[str, An
     return stats
 
 
-def count_type_distribution(variables: List[Dict[str, Any]]) -> Dict[str, int]:
-    """Count distribution of variable types."""
-    type_counts: dict[str, int] = {}
-    for var in variables:
-        var_type = var.get("type", "unknown")
-        type_counts[var_type] = type_counts.get(var_type, 0) + 1
-    return type_counts
-
-
-def build_connectivity_matrix(
-    connections: List[Dict[str, Any]],
-) -> Dict[str, List[str]]:
-    """Build connectivity matrix from connections."""
-    connectivity: dict[str, list[str]] = {}
-    for conn in connections:
-        source = conn.get("source", "")
-        target = conn.get("target", "")
-        if source not in connectivity:
-            connectivity[source] = []
-        connectivity[source].append(target)
-    return connectivity
-
-
 def analyze_distributions(
     variables: List[Dict[str, Any]], connections: List[Dict[str, Any]]
 ) -> Dict[str, Any]:

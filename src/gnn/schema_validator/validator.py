@@ -33,7 +33,6 @@ from gnn.types import (
 )
 
 # Lark parser removed - too complex and not needed
-FORMAL_PARSER_AVAILABLE = False
 
 # Try to import round-trip testing capabilities (owned by syntax.py)
 try:
@@ -54,18 +53,19 @@ class GNNValidator:
     def __init__(
         self,
         schema_path: Optional[Path] = None,
-        use_formal_parser: bool = True,
         enable_round_trip_testing: bool = False,
         validation_level: ValidationLevel = ValidationLevel.STANDARD,
         enable_cross_validation: bool = True,
     ) -> None:
-        """Initialize the instance."""
+        """Initialize the instance.
+
+        ``schema_path`` is retained for cross-format callers that bind a
+        validator to a specific schema file; it is not parsed at init.
+        """
         if schema_path is None:
             schema_path = Path(__file__).parent.parent / "schemas/json.json"
 
         self.schema_path = schema_path
-        self.schema = self._load_schema()
-        self.use_formal_parser = use_formal_parser and FORMAL_PARSER_AVAILABLE
         self.enable_round_trip_testing = (
             enable_round_trip_testing and ROUND_TRIP_AVAILABLE
         )
@@ -74,8 +74,15 @@ class GNNValidator:
         # Initialize enhanced parser
         self.parser = GNNParser(enhanced_validation=True)
 
-        # Formal parser removed (Lark was too complex)
-        self.formal_parser = None
+        # Initialize cross-format validator (optionally, to avoid recursion)
+        self.cross_validator = None
+        if enable_cross_validation:
+            try:
+                from gnn.schema_validator.cross_format import CrossFormatValidator
+
+                self.cross_validator = CrossFormatValidator()
+            except ImportError:
+                self.cross_validator = None
 
         # Initialize round-trip tester if enabled
         if self.enable_round_trip_testing:
@@ -88,42 +95,7 @@ class GNNValidator:
                 logger.warning(f"Could not initialize round-trip tester: {e}")
                 self.enable_round_trip_testing = False
 
-        # Initialize cross-format validator (optionally, to avoid recursion)
-        self.cross_validator = None
-        if enable_cross_validation:
-            try:
-                from gnn.schema_validator.cross_format import CrossFormatValidator
 
-                self.cross_validator = CrossFormatValidator()
-            except ImportError:
-                self.cross_validator = None
-
-    def _load_schema(self) -> Any:
-        """
-        Load JSON or YAML schema from self.schema_path.
-
-        Raises:
-            FileNotFoundError: If the schema file does not exist.
-            ValueError: If the file extension is unsupported or the file cannot be parsed.
-        """
-        if not self.schema_path.exists():
-            raise FileNotFoundError(
-                f"Schema file not found: {self.schema_path}. "
-                "Ensure the schema file exists before validating."
-            )
-
-        if self.schema_path.suffix.lower() == ".json":
-            import json
-
-            with open(self.schema_path, "r", encoding="utf-8") as f:
-                return json.load(f)
-        elif self.schema_path.suffix.lower() in [".yaml", ".yml"]:
-            import yaml
-
-            with open(self.schema_path, "r", encoding="utf-8") as f:
-                return yaml.safe_load(f)
-        else:
-            raise ValueError(f"Unsupported schema file type: {self.schema_path.suffix}")
 
     def _level_rank(self, level: Union[ValidationLevel, str]) -> int:
         """Map validation level to an integer rank for safe comparisons."""
@@ -661,17 +633,6 @@ class GNNValidator:
             # Non-fatal parsing of content; do not stop validation
             logger.debug(f"Non-fatal error during section content validation: {e}")
 
-        # Additional validation can be added here
-        if self.use_formal_parser and self.formal_parser:
-            try:
-                formal_result = self.formal_parser.parse_content(content)
-                if formal_result:
-                    result.warnings.append("Formal parser validation passed")
-                else:
-                    result.warnings.append("Formal parser could not parse content")
-            except Exception as e:
-                result.warnings.append(f"Formal parser validation failed: {e}")
-
         # Validate using basic parser
         try:
             parser = GNNParser()
@@ -841,31 +802,3 @@ def validate_gnn_file(file_path: Union[str, Path]) -> ValidationResult:
         stacklevel=2,
     )
     return validate_gnn_file_comprehensive(file_path)
-
-
-# Example usage and testing
-if __name__ == "__main__":
-    import sys
-
-    if len(sys.argv) > 1:
-        file_path = sys.argv[1]
-        result = validate_gnn_file_comprehensive(file_path)
-
-        print(f"Validation Result: {'VALID' if result.is_valid else 'INVALID'}")
-
-        if result.errors:
-            print("\nErrors:")
-            for error in result.errors:
-                print(f"  - {error}")
-
-        if result.warnings:
-            print("\nWarnings:")
-            for warning in result.warnings:
-                print(f"  - {warning}")
-
-        if result.suggestions:
-            print("\nSuggestions:")
-            for suggestion in result.suggestions:
-                print(f"  - {suggestion}")
-    else:
-        print("Usage: python schema_validator.py <gnn_file>")

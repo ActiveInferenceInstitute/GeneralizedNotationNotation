@@ -37,12 +37,10 @@ from .analysis_extraction import (
 from .analysis_statistics import (
     SCIPY_AVAILABLE,
     analyze_distributions,
-    build_connectivity_matrix,
     calculate_connection_statistics,
     calculate_correlations,
     calculate_section_statistics,
     calculate_variable_statistics,
-    count_type_distribution,
     stats,
 )
 from .framework_comparison import (
@@ -70,7 +68,6 @@ logger = logging.getLogger(__name__)
 __all__ = [
     "analyze_distributions",
     "analyze_framework_outputs",
-    "build_connectivity_matrix",
     "calculate_cognitive_complexity",
     "calculate_complexity_metrics",
     "calculate_connection_statistics",
@@ -81,7 +78,6 @@ __all__ = [
     "calculate_structural_complexity",
     "calculate_technical_debt",
     "calculate_variable_statistics",
-    "count_type_distribution",
     "extract_connections",
     "extract_sections",
     "extract_variables",
