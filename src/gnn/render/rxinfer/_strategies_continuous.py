@@ -7,8 +7,6 @@ import base64
 import json
 from typing import Any, Dict
 
-from gnn.render.rxinfer._common import now
-
 _REQUIRED_KEYS = ("F", "H", "Q", "R", "prior_mean", "prior_cov")
 
 
@@ -51,7 +49,6 @@ def _generate_continuous_code(
     code = f'''#!/usr/bin/env julia
 # RxInfer.jl linear-Gaussian state-space simulation — genuine @model + infer()
 # Generated from GNN Model: {model_display_name}
-# Generated: {now()}
 #
 # Structure (the continuous parameterization the GNN file declares):
 #   x[1]  ~ MvNormal(prior_mean, prior_cov)

@@ -7,8 +7,6 @@ import base64
 import json
 from typing import Any, Dict
 
-from gnn.render.rxinfer._common import now
-
 _REQUIRED_KEYS = ("dirichlet_A", "A", "B", "C", "D")
 
 
@@ -45,7 +43,6 @@ def _generate_learning_code(
     code = f'''#!/usr/bin/env julia
 # RxInfer.jl Dirichlet likelihood-learning POMDP — genuine @model + infer()
 # Generated from GNN Model: {model_display_name}
-# Generated: {now()}
 #
 # Same state chain as the flat POMDP, but the likelihood A is a LATENT
 # DirichletCollection instead of a fixed constant. dirichlet_A holds the

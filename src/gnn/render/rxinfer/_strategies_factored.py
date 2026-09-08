@@ -7,8 +7,6 @@ import base64
 import json
 from typing import Any, Dict
 
-from gnn.render.rxinfer._common import now
-
 _REQUIRED_MATRICES = ("A_m0", "A_m1", "B_f0", "B_f1", "D_f0", "D_f1")
 
 
@@ -75,7 +73,6 @@ def _generate_factored_code(
     code = f'''#!/usr/bin/env julia
 # RxInfer.jl two-factor mean-field POMDP simulation — genuine @model + infer()
 # Generated from GNN Model: {model_display_name}
-# Generated: {now()}
 #
 # Structure (matches the GNN file's declared semantics):
 #   s1[t] — state factor 0 "{factor0}" ({n_f0} states), action-driven over B_f0
