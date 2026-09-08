@@ -14,7 +14,7 @@ from typing import Any, Dict, Optional
 
 logger = logging.getLogger(__name__)
 from gnn.api.path_utils import PathValidationError, resolve_repo_path
-from gnn.utils.mcp_dispatch import run_pipeline_step_mcp
+from gnn.utils.mcp_dispatch import run_pipeline_step_mcp, run_tool_envelope
 
 from . import (
     analyze_gnn_file_with_llm,
@@ -344,15 +344,15 @@ def get_llm_module_info_mcp() -> Dict[str, Any]:
     Returns:
         Dictionary with module metadata and feature inventory.
     """
-    try:
+
+    def _build() -> Dict[str, Any]:
         import importlib
 
         mod = importlib.import_module(__package__)
-        version = getattr(mod, "__version__", "unknown")
         return {
             "success": True,
             "module": __package__,
-            "version": version,
+            "version": getattr(mod, "__version__", "unknown"),
             "analysis_types": ["comprehensive", "summary", "complexity", "connections"],
             "output_formats": ["markdown", "text"],
             "tools": [
@@ -363,9 +363,12 @@ def get_llm_module_info_mcp() -> Dict[str, Any]:
                 "get_llm_module_info",
             ],
         }
-    except Exception as e:
-        logger.error(f"get_llm_module_info_mcp error: {e}", exc_info=True)
-        return {"success": False, "error": str(e)}
+
+    return run_tool_envelope(
+        _build,
+        wrapper_name="get_llm_module_info_mcp",
+        logger=logger,
+    )
 
 
 # ── MCP Registration ──────────────────────────────────────────────────────────
