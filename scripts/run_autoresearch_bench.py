@@ -9,12 +9,16 @@ surfaces this session hardens:
               digest-pinned at warm-up, volatile ``*_timestamp`` keys stripped).
 2. serialize  canonical-JSON dumps + SHA-256 digests of the parse dicts,
               re-digested and compared against the warm-up digest every rep.
-3. dispatch   ``gnn.mcp.processor.handle_mcp_request`` JSON-RPC traffic
+3. round_trip ``gnn.parsers.GNNParsingSystem`` real parser/serializer
+              round-trip: parse_file → serialize(JSON) → parse_string →
+              serialize(JSON), string-equality check. Exercises the 23-parser
+              / 22-serializer system (not json.dumps on a plain dict).
+4. dispatch   ``gnn.mcp.processor.handle_mcp_request`` JSON-RPC traffic
               (``tools/list`` plus ``tools/call validate_export_format`` in a
               positive and a negative variant) and
               ``gnn.utils.mcp_dispatch.run_pipeline_step_mcp`` driving the real
               ``gnn.validation.process_validation`` step.
-4. envelope   ``gnn.execute.subprocess_envelope.run_subprocess_envelope``
+5. envelope   ``gnn.execute.subprocess_envelope.run_subprocess_envelope``
               spawning a trivial interpreter child with an enforced timeout,
               plus one deliberate timeout probe pinning the
               ``error_type == "TimeoutExpired"`` contract.
@@ -58,6 +62,7 @@ MODEL_RELPATHS: tuple[str, ...] = (
 
 PARSE_INNER = 8
 SERIALIZE_INNER = 8
+ROUND_TRIP_INNER = 8
 TOOLS_LIST_INNER = 20
 TOOL_CALL_INNER = 20
 WRAPPER_CALLS = 4
@@ -251,6 +256,59 @@ def phase_envelope(run_subprocess_envelope: Callable[..., dict[str, Any]]) -> fl
     return time.perf_counter() - t0
 
 
+# Model fields set to datetime.now() during parsing — volatile across
+# calls. Stripped from serialized JSON before the round-trip equality
+# check so the comparison tests parser/serializer determinism, not clocks.
+_VOLATILE_MODEL_KEYS = frozenset({"created_at", "modified_at"})
+
+
+def _normalize_serialization(text: str) -> str:
+    """Strip volatile model fields from a serialized JSON string."""
+    try:
+        obj = json.loads(text)
+    except (json.JSONDecodeError, TypeError):
+        return text
+    if isinstance(obj, dict):
+        for key in _VOLATILE_MODEL_KEYS:
+            obj.pop(key, None)
+    return json.dumps(obj, sort_keys=True, separators=(",", ":"))
+
+
+def phase_round_trip(
+    parsing_system: Any,
+    json_format: Any,
+    files: list[Path],
+    expected_serializations: dict[str, str],
+) -> float:
+    """Real GNN parser/serializer round-trip: parse_file → serialize → parse_string → serialize.
+
+    Exercises the 23-parser / 22-serializer system (not json.dumps on a plain
+    dict). Each file is round-tripped through JSON format with a
+    string-equality check on the normalized serialization (volatile
+    ``created_at``/``modified_at`` model fields stripped) — a regression in
+    parser or serializer determinism fails the bench instead of producing a
+    number.
+    """
+    t0 = time.perf_counter()
+    for _ in range(ROUND_TRIP_INNER):
+        for path in files:
+            result = parsing_system.parse_file(path)
+            s1 = parsing_system.serialize(result.model, json_format)
+            result2 = parsing_system.parse_string(s1, json_format)
+            s2 = parsing_system.serialize(result2.model, json_format)
+            # Within-rep equality holds raw: parse_string preserves
+            # timestamps from the serialized string, so s1 == s2 without
+            # normalization. Only the cross-rep check (against the warm-up
+            # pin) needs normalization (each parse_file generates new
+            # datetime.now() timestamps).
+            _check(s1 == s2, f"round-trip drift for {path.name}")
+            _check(
+                _normalize_serialization(s1) == expected_serializations[path.name],
+                f"round-trip serialization drift for {path.name}",
+            )
+    return time.perf_counter() - t0
+
+
 def run_rep(context: dict[str, Any]) -> dict[str, float]:
     """One full workload pass; returns per-phase wall times."""
     t_parse = phase_parse(
@@ -261,6 +319,12 @@ def run_rep(context: dict[str, Any]) -> dict[str, float]:
         context["files"],
         context["contents"],
         context["expected"],
+    )
+    t_round_trip = phase_round_trip(
+        context["parsing_system"],
+        context["json_format"],
+        context["files"],
+        context["expected_serializations"],
     )
     t_dispatch = phase_dispatch(
         context["handle_mcp_request"],
@@ -274,9 +338,10 @@ def run_rep(context: dict[str, Any]) -> dict[str, float]:
     return {
         "parse": t_parse,
         "serialize": t_serialize,
+        "round_trip": t_round_trip,
         "dispatch": t_dispatch,
         "envelope": t_envelope,
-        "total": t_parse + t_serialize + t_dispatch + t_envelope,
+        "total": t_parse + t_serialize + t_round_trip + t_dispatch + t_envelope,
     }
 
 
@@ -288,6 +353,8 @@ def main() -> int:
     setup_start = time.perf_counter()
     from gnn.execute.subprocess_envelope import run_subprocess_envelope
     from gnn.mcp.processor import handle_mcp_request, register_module_tools
+    from gnn.parsers import GNNParsingSystem
+    from gnn.parsers.common import GNNFormat
     from gnn.processing.multi_format_processor import process_gnn_multi_format
     from gnn.processing.processor import parse_gnn_file
     from gnn.utils.mcp_dispatch import run_pipeline_step_mcp
@@ -325,10 +392,21 @@ def main() -> int:
             files.append(destination)
             contents.append(source.read_text(encoding="utf-8"))
 
+        # GNNParsingSystem for the round-trip phase (constructed once,
+        # reused across reps — construction is ~2ms, 23 parsers/22 serializers).
+        parsing_system = GNNParsingSystem()
+        json_format = GNNFormat.JSON
+        expected_serializations: dict[str, str] = {}
         for path, content in zip(files, contents):
             result = parse_gnn_file(path, content=content)
             _check(result.get("success") is True, f"warm parse failed for {path.name}")
             expected[path.name] = _digest(result)
+            # Pin the round-trip serialization at warm-up so every rep
+            # verifies the serializer hasn't drifted.
+            rt_result = parsing_system.parse_file(path)
+            expected_serializations[path.name] = _normalize_serialization(
+                parsing_system.serialize(rt_result.model, json_format)
+            )
 
         positive = handle_mcp_request(
             _jsonrpc(
@@ -398,8 +476,11 @@ def main() -> int:
             "run_pipeline_step_mcp": run_pipeline_step_mcp,
             "run_subprocess_envelope": run_subprocess_envelope,
             "validation_step": process_validation,
+            "parsing_system": parsing_system,
+            "json_format": json_format,
             "files": files,
             "contents": contents,
+            "expected_serializations": expected_serializations,
             "output_dir": output_dir,
             "bench_logger": bench_logger,
             "expected": expected,
@@ -428,6 +509,10 @@ def main() -> int:
         f"METRIC envelope_spawns_per_s={(ENVELOPE_SPAWNS + 1) / best['envelope']:.1f}"
     )
     print(f"METRIC mcp_setup_ms={setup_seconds * 1000.0:.1f}")
+    print(
+        "METRIC round_trips_per_s="
+        f"{ROUND_TRIP_INNER * len(files) / best['round_trip']:.1f}"
+    )
     print(f"METRIC determinism_checks={checks}")
     return 0
 
