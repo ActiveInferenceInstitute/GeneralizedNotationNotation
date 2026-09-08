@@ -43,6 +43,7 @@ from .exceptions import (
     MCPToolNotFoundError,
     MCPValidationError,
 )
+from .jsonrpc import tag_non_json_values
 
 # --- Enhanced MCP Data Structures (imported from models.py) ---
 from .models import (
@@ -1030,14 +1031,19 @@ class MCP:
     def _result_cache_key(tool_name: str, params: Dict[str, Any]) -> str:
         """Build a deterministic cache key for a tool invocation.
 
-        Returns "" when params are not JSON-serialisable (uncacheable call).
+        Non-JSON-native values are type-tagged (see
+        ``gnn.mcp.jsonrpc.tag_non_json_values``) so structurally distinct
+        params — the set ``{1}`` and the string ``"{1}"`` — can never alias
+        to the same key the way ``default=str`` encoding allowed. Returns ""
+        when params cannot be reduced to a stable JSON encoding (uncacheable
+        call).
         """
         try:
             encoded = json.dumps(
-                {"tool": tool_name, "params": params},
+                {"tool": tool_name, "params": tag_non_json_values(params)},
                 sort_keys=True,
                 separators=(",", ":"),
-                default=str,
+                allow_nan=False,
             )
         except (TypeError, ValueError):
             return ""

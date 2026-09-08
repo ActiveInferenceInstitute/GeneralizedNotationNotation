@@ -38,13 +38,15 @@ SAMPLE_GNN = (
 CLI_TARGETS: List[str] = [
     "pymdp",
     "rxinfer",
-    "rxinfer_toml",
     "activeinference_jl",
     "discopy",
     "discopy_combined",
     "bnlearn",
     "jax",
     "jax_pomdp",
+    "pytorch",
+    "numpyro",
+    "stan",
 ]
 
 

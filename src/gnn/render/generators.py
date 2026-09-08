@@ -3,9 +3,12 @@
 Fixed Render generators module for GNN code generation with enhanced visualizations.
 """
 
+import logging
 import re
 from pathlib import Path
 from typing import Any, Dict, Optional, Union, cast
+
+logger = logging.getLogger(__name__)
 
 
 def _validate_or_return_empty(
@@ -137,8 +140,8 @@ def generate_bnlearn_code(
                 f.write(code)
         return code
     except Exception as e:
-        print(f"Error generating bnlearn code: {e}")
-        return ""
+        logger.error(f"Error generating bnlearn code: {e}")
+        raise
 
 
 def _sanitize_identifier(
@@ -282,8 +285,8 @@ def generate_pymdp_code(
         return code
 
     except Exception as e:
-        print(f"Error generating PyMDP code: {e}")
-        return ""
+        logger.error(f"Error generating PyMDP code: {e}")
+        raise
 
 
 def generate_activeinference_jl_code(
@@ -684,8 +687,8 @@ if __name__ == "__main__":
         return code
 
     except Exception as e:
-        print(f"Error generating DisCoPy code: {e}")
-        return ""
+        logger.error(f"Error generating DisCoPy code: {e}")
+        raise
 
 
 def generate_rxinfer_code(
