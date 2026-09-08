@@ -36,9 +36,9 @@ try:
         ValidationLevel,
     )
     from .processors import (
+        check_cross_format_consistency,
         process_gnn_folder,
         run_gnn_round_trip_tests,
-        validate_gnn_cross_format_consistency,
     )
 
     ENHANCED_CAPABILITIES_AVAILABLE = True
@@ -512,7 +512,7 @@ def validate_directory_cross_format_consistency(
         output_path = Path(output_dir)
 
         # Validate cross-format consistency
-        success = validate_gnn_cross_format_consistency(
+        success = check_cross_format_consistency(
             target_dir=target_path,
             output_dir=output_path,
             logger=logger_instance,

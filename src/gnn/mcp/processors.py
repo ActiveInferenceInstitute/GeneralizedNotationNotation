@@ -11,6 +11,7 @@ to expose enhanced GNN capabilities.
 import json
 import logging
 import time
+import warnings
 from pathlib import Path
 from typing import Any, Dict, List, Optional, cast
 
@@ -323,11 +324,11 @@ def run_gnn_round_trip_tests(
 
 
 # ---------------------------------------------------------------------------
-# validate_gnn_cross_format_consistency
+# check_cross_format_consistency
 # ---------------------------------------------------------------------------
 
 
-def validate_gnn_cross_format_consistency(
+def check_cross_format_consistency(
     target_dir: Path,
     output_dir: Path,
     logger: (logging.Logger) | None = None,
@@ -474,6 +475,31 @@ def validate_gnn_cross_format_consistency(
         f"in {duration:.2f}s"
     )
     return overall_consistent
+
+
+def validate_gnn_cross_format_consistency(
+    target_dir: Path,
+    output_dir: Path,
+    logger: (logging.Logger) | None = None,
+    files_to_test: Optional[List[str]] = None,
+    include_binary: bool = False,
+    **kwargs: Any,
+) -> bool:
+    """Old name for :func:`check_cross_format_consistency`; emits DeprecationWarning."""
+    warnings.warn(
+        "validate_gnn_cross_format_consistency is an old name; "
+        "use check_cross_format_consistency instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return check_cross_format_consistency(
+        target_dir,
+        output_dir,
+        logger=logger,
+        files_to_test=files_to_test,
+        include_binary=include_binary,
+        **kwargs,
+    )
 
 
 # ---------------------------------------------------------------------------

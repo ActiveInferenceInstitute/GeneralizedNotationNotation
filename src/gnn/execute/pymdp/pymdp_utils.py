@@ -5,6 +5,7 @@ import ast
 import json
 import logging
 import pickle  # nosec B403
+import warnings
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
@@ -495,7 +496,7 @@ def extract_gnn_dimensions(gnn_spec: Dict[str, Any]) -> Dict[str, int]:
     return dimensions
 
 
-def validate_gnn_pomdp_structure(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
+def check_gnn_pomdp_spec(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
     """
     Validate that GNN specification contains valid POMDP structure.
 
@@ -534,6 +535,16 @@ def validate_gnn_pomdp_structure(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
         result["warnings"].append("No model name specified")
 
     return result
+
+
+def validate_gnn_pomdp_structure(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
+    """Old name for :func:`check_gnn_pomdp_spec`; emits DeprecationWarning."""
+    warnings.warn(
+        "validate_gnn_pomdp_structure is an old name; use check_gnn_pomdp_spec instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return check_gnn_pomdp_spec(gnn_spec)
 
 
 if __name__ == "__main__":

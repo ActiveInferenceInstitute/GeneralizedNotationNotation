@@ -23,6 +23,7 @@ from gnn.processing.discovery import (
 )
 from gnn.processing.multi_format_processor import process_gnn_multi_format
 from gnn.processing.processor import (
+    check_gnn_file_structure,
     discover_gnn_files,
     generate_gnn_report,
     get_module_info,
@@ -33,6 +34,7 @@ from gnn.processing.processor import (
 )
 
 __all__ = [
+    "check_gnn_file_structure",
     "DiscoveryResult",
     "FileDiscoveryStrategy",
     "GNNProcessor",

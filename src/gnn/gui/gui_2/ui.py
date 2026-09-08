@@ -871,7 +871,7 @@ def build_visual_gui(
             except (OSError, TypeError, ValueError) as e:
                 return f"❌ Save failed: {e}"
 
-        def validate_gnn(
+        def validate_editor_matrices(
             current_state: Any,
             a_data: Any,
             b_data: Any,
@@ -1475,7 +1475,7 @@ def build_visual_gui(
         # File operations
         save_btn.click(save_gnn, inputs=[gnn_output], outputs=[save_status])
         validate_btn.click(
-            validate_gnn,
+            validate_editor_matrices,
             inputs=[
                 matrix_state,
                 a_values,

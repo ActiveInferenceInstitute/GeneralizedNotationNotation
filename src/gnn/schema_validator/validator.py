@@ -6,7 +6,7 @@ for GNN (Generalized Notation Notation) model files with enhanced round-trip
 testing support and cross-format validation.
 
 The regex-based GNNParser lives in gnn/schema_validator/syntax.py; this module
-owns GNNValidator and the validate_gnn_file entry point.
+owns GNNValidator and the validate_gnn_file_comprehensive entry point.
 
 Enhanced Features:
 - Complete format ecosystem support (23 formats)
@@ -20,6 +20,7 @@ import json
 import logging
 import re
 import tempfile
+import warnings
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union, cast
 
@@ -837,10 +838,20 @@ class GNNValidator:
         return True  # Conservative: assume valid if can't check
 
 
-def validate_gnn_file(file_path: Union[str, Path]) -> ValidationResult:
-    """Convenience function to validate a GNN file."""
+def validate_gnn_file_comprehensive(file_path: Union[str, Path]) -> ValidationResult:
+    """Validate a GNN file with the full GNNValidator pipeline."""
     validator = GNNValidator()
     return validator.validate_file(file_path)
+
+
+def validate_gnn_file(file_path: Union[str, Path]) -> ValidationResult:
+    """Old name for :func:`validate_gnn_file_comprehensive`; emits DeprecationWarning."""
+    warnings.warn(
+        "validate_gnn_file is an old name; use validate_gnn_file_comprehensive instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return validate_gnn_file_comprehensive(file_path)
 
 
 # Example usage and testing
@@ -849,7 +860,7 @@ if __name__ == "__main__":
 
     if len(sys.argv) > 1:
         file_path = sys.argv[1]
-        result = validate_gnn_file(file_path)
+        result = validate_gnn_file_comprehensive(file_path)
 
         print(f"Validation Result: {'VALID' if result.is_valid else 'INVALID'}")
 

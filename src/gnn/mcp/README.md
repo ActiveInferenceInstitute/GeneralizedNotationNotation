@@ -103,7 +103,7 @@ Server introspection and diagnostic tools:
 Enhanced GNN processing functions used by `gnn_root.py` to back the GNN tools:
 - `process_gnn_folder`: orchestrates full-folder GNN processing
 - `run_gnn_round_trip_tests`: parse → render → re-parse round-trip checks
-- `validate_gnn_cross_format_consistency`: consistency validation across render targets
+- `check_cross_format_consistency`: consistency validation across render targets
 
 Implementation lives at `src/gnn/mcp/processors.py`; validators come from `gnn.schema_validator` and `gnn.cross_format_validator`.
 

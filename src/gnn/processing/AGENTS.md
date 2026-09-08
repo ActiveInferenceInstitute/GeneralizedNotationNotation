@@ -26,7 +26,7 @@ Four concerns, one package:
 
 1. `processor.py` — lightweight discovery, parsing, validation, and
    reporting surface with no heavy dependencies: `discover_gnn_files`,
-   `parse_gnn_file`, `validate_gnn_structure`,
+   `parse_gnn_file`, `check_gnn_file_structure`,
    `process_gnn_directory`, `process_gnn_directory_lightweight`,
    `generate_gnn_report`, `get_module_info`.
 2. `core_processor.py` — `GNNProcessor` five-phase orchestration engine:

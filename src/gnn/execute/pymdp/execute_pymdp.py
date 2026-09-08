@@ -20,7 +20,11 @@ from .executor import (
     execute_pymdp_simulation_from_gnn,
 )
 from .pymdp_simulation import PyMDPSimulation  # noqa: F401 - re-exported
-from .pymdp_utils import extract_gnn_dimensions, validate_gnn_pomdp_structure
+from .pymdp_utils import (
+    check_gnn_pomdp_spec,
+    extract_gnn_dimensions,
+    validate_gnn_pomdp_structure,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -126,6 +130,7 @@ def batch_execute_pymdp(
 
 
 __all__: list[Any] = [
+    "check_gnn_pomdp_spec",
     "execute_pymdp_simulation",
     "execute_pymdp_simulation_from_gnn",
     "execute_from_gnn_file",
