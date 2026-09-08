@@ -25,6 +25,7 @@ from typing import Any, Dict, List, Optional, Union
 logger = logging.getLogger(__name__)
 
 from gnn.execute.julia_setup import is_julia_available
+from gnn.execute.subprocess_envelope import run_subprocess_envelope
 
 
 def setup_julia_environment(
@@ -303,75 +304,66 @@ def execute_activeinference_script(
         else:
             logger.debug("Environment appears ready")
 
-    try:
-        # Convert to absolute path
-        abs_script_path = script_path.resolve()
+    # Convert to absolute path
+    abs_script_path = script_path.resolve()
 
-        # Prepare Julia command
-        cmd: list[Any] = ["julia", f"--project={project_dir}", str(abs_script_path)]
+    # Prepare Julia command
+    cmd: list[Any] = ["julia", f"--project={project_dir}", str(abs_script_path)]
 
-        # Add output directory argument if provided
-        if output_dir:
-            output_dir.mkdir(parents=True, exist_ok=True)
-            cmd.extend(["--output-dir", str(output_dir)])
+    # Add output directory argument if provided
+    if output_dir:
+        output_dir.mkdir(parents=True, exist_ok=True)
+        cmd.extend(["--output-dir", str(output_dir)])
 
-        logger.debug(f"Running command: {' '.join(cmd)}")
+    logger.debug(f"Running command: {' '.join(cmd)}")
 
-        # Set environment variables
-        env = os.environ.copy()
-        env["JULIA_PROJECT"] = str(project_dir)
+    # Execute the script (JULIA_PROJECT merged over the parent environment;
+    # 10 minute timeout for script execution)
+    envelope = run_subprocess_envelope(
+        cmd,
+        timeout=600,
+        env={"JULIA_PROJECT": str(project_dir)},
+        cwd=str(project_dir),
+    )
 
-        # Execute the script
-        result = subprocess.run(  # nosec B603
-            cmd,
-            capture_output=True,
-            text=True,
-            check=False,
-            env=env,
-            cwd=project_dir,
-            timeout=600,  # 10 minute timeout for script execution
-        )
-
-        # Process the execution result
-        if result.returncode == 0:
-            logger.info(f"✅ Script executed successfully: {script_path.name}")
-            if verbose and result.stdout.strip():
-                logger.debug(f"Output from {script_path.name}:\n{result.stdout}")
-            return True
-        else:
-            logger.error(
-                f"❌ Script execution failed with return code {result.returncode}: {script_path.name}"
-            )
-            if result.stderr.strip():
-                logger.error(f"Error output:\n{result.stderr}")
-            if result.stdout.strip():
-                logger.debug(f"Standard output:\n{result.stdout}")
-
-            # Provide helpful error analysis
-            stderr_lower = result.stderr.lower()
-            if "package" in stderr_lower and (
-                "not found" in stderr_lower or "not in registry" in stderr_lower
-            ):
-                logger.error("💡 This appears to be a missing Julia package issue.")
-                logger.error(
-                    "💡 Try running the environment setup with --force-reinstall"
-                )
-            elif "method error" in stderr_lower or "undefvarerror" in stderr_lower:
-                logger.error(
-                    "💡 This appears to be a package version compatibility issue."
-                )
-                logger.error(
-                    "💡 The script may need updates for the current ActiveInference.jl version"
-                )
-
-            return False
-
-    except subprocess.TimeoutExpired:
+    if envelope["error_type"] == "TimeoutExpired":
         logger.error(f"❌ Script execution timed out: {script_path.name}")
         return False
-    except Exception as e:
-        logger.error(f"❌ Error executing script {script_path.name}: {e}")
+    if envelope["return_code"] == -1:
+        logger.error(
+            f"❌ Error executing script {script_path.name}: {envelope.get('error', '')}"
+        )
         return False
+
+    # Process the execution result
+    if envelope["success"]:
+        logger.info(f"✅ Script executed successfully: {script_path.name}")
+        if verbose and envelope["stdout"].strip():
+            logger.debug(f"Output from {script_path.name}:\n{envelope['stdout']}")
+        return True
+
+    logger.error(
+        f"❌ Script execution failed with return code {envelope['return_code']}: {script_path.name}"
+    )
+    if envelope["stderr"].strip():
+        logger.error(f"Error output:\n{envelope['stderr']}")
+    if envelope["stdout"].strip():
+        logger.debug(f"Standard output:\n{envelope['stdout']}")
+
+    # Provide helpful error analysis
+    stderr_lower = envelope["stderr"].lower()
+    if "package" in stderr_lower and (
+        "not found" in stderr_lower or "not in registry" in stderr_lower
+    ):
+        logger.error("💡 This appears to be a missing Julia package issue.")
+        logger.error("💡 Try running the environment setup with --force-reinstall")
+    elif "method error" in stderr_lower or "undefvarerror" in stderr_lower:
+        logger.error("💡 This appears to be a package version compatibility issue.")
+        logger.error(
+            "💡 The script may need updates for the current ActiveInference.jl version"
+        )
+
+    return False
 
 
 def find_activeinference_scripts(
