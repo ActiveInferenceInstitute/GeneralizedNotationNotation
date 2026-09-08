@@ -11,7 +11,7 @@ from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
-from gnn.utils.mcp_dispatch import run_pipeline_step_mcp
+from gnn.utils.mcp_dispatch import run_pipeline_step_mcp, run_tool_envelope
 
 from . import get_supported_formats, process_export, validate_export_format
 
@@ -69,7 +69,8 @@ def validate_export_format_mcp(format_name: str) -> Dict[str, Any]:
     Returns:
         Dictionary with is_valid flag and supporting information.
     """
-    try:
+
+    def _build() -> Dict[str, Any]:
         is_valid = validate_export_format(format_name)
         return {
             "success": True,
@@ -77,9 +78,12 @@ def validate_export_format_mcp(format_name: str) -> Dict[str, Any]:
             "is_valid": is_valid,
             "message": f"Format '{format_name}' is {'supported' if is_valid else 'not supported'}",
         }
-    except Exception as e:
-        logger.error(f"validate_export_format_mcp error: {e}", exc_info=True)
-        return {"success": False, "error": str(e)}
+
+    return run_tool_envelope(
+        _build,
+        wrapper_name="validate_export_format_mcp",
+        logger=logger,
+    )
 
 
 def export_single_file_mcp(

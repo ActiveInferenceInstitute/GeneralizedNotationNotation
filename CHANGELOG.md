@@ -30,12 +30,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   retirement (verified failing on pristine main).
 - **MAJ-06 follow-up: one envelope for the remaining hand-written MCP
   tools.** New `gnn.utils.mcp_dispatch.run_tool_envelope` runs a
-  zero-argument payload builder behind the same canonical envelope; 18
+  zero-argument payload builder behind the same canonical envelope; 22
   sibling tools now use it (module-info metadata in audio, gui, llm,
   ml_integration, execute, report, visualization, website,
   intelligent_analysis; capability/option probes in audio, gui,
   intelligent_analysis, visualization; the output-directory readers in
-  research, validation, security, sapf, visualization, and report plus
+  research, validation, security, sapf, visualization, report, integration,
+  and analysis plus
   the execute dependencies serializer).
   `run_pipeline_step_mcp`'s default
   path now echoes the step's return value raw (no `bool()` coercion),

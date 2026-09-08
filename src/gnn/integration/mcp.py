@@ -11,7 +11,7 @@ from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
 
-from gnn.utils.mcp_dispatch import run_pipeline_step_mcp
+from gnn.utils.mcp_dispatch import run_pipeline_step_mcp, run_tool_envelope
 
 from . import process_integration
 
@@ -92,7 +92,8 @@ def get_integration_status_mcp(output_directory: str) -> Dict[str, Any]:
     Returns:
         Dictionary with output file inventory and per-integration status.
     """
-    try:
+
+    def _build() -> Dict[str, Any]:
         out_dir = Path(output_directory)
         if not out_dir.exists():
             return {
@@ -113,9 +114,12 @@ def get_integration_status_mcp(output_directory: str) -> Dict[str, Any]:
             "total_files": len([f for f in files if f.is_file()]),
             "by_extension": by_ext,
         }
-    except Exception as e:
-        logger.error(f"get_integration_status_mcp error: {e}", exc_info=True)
-        return {"success": False, "error": str(e)}
+
+    return run_tool_envelope(
+        _build,
+        wrapper_name="get_integration_status_mcp",
+        logger=logger,
+    )
 
 
 def check_integration_dependencies_mcp() -> Dict[str, Any]:
