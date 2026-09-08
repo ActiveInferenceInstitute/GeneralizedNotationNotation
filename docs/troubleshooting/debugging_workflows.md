@@ -162,7 +162,7 @@ sed -i '1s/^\xEF\xBB\xBF//' your_file.md
 
 ```python
 # Interactive dimension debugging using the real public API
-from gnn.gnn import parse_gnn_file, validate_gnn_file
+from gnn import parse_gnn_file, validate_gnn_file
 
 parsed = parse_gnn_file("your_file.md")
 print("Defined variables:")
@@ -488,7 +488,7 @@ import ipdb  # Enhanced debugger
 
 # Insert breakpoint in code
 def debug_model_parsing(filepath):
-    from gnn.gnn import parse_gnn_file
+    from gnn import parse_gnn_file
 
     # Break here to inspect
     pdb.set_trace()  # or ipdb.set_trace()
@@ -639,7 +639,7 @@ uv run python src/gnn/main.py --only-steps 1,2,3 --target-dir ./models
 uv run python src/gnn/1_setup.py --verbose
 
 # Interactive debugging
-uv run python -c "from gnn.gnn import parse_gnn_file; import pdb; pdb.set_trace(); print(parse_gnn_file('file.md'))"
+uv run python -c "from gnn import parse_gnn_file; import pdb; pdb.set_trace(); print(parse_gnn_file('file.md'))"
 ```
 
 ---
