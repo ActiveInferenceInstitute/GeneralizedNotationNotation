@@ -1,22 +1,17 @@
 #!/usr/bin/env python3
-"""Extraction smoke tests for the render.jax split (MAJ-04 3/6).
+"""Router and extraction smoke tests for the render.jax split (MAJ-04 3/6).
 
-``jax_spec_extract`` was measured at 31% — the ~570-line
-``_extract_gnn_matrices`` body plus validation/fallback branches were
-never exercised by the targeted suites. These tests probe the extraction
-body directly across the spec shapes it documents (structured contract,
-raw parameters strings, malformed inputs).
-
-Known finding (documented, pre-dates the split): routing a canonical
-discrete spec through the public ``render_gnn_to_jax`` is
-order-dependent under pytest-xdist — ``detect_model_kind`` /
-``_validated_jax_matrices`` behave differently depending on which tests
-share the worker, sometimes emitting the numpy-only model script instead
-of raising. The direct-extraction surface below is deterministic.
+The public router (``render_gnn_to_jax``/``_pomdp``/``_combined``) renders
+the canonical POMDP fixture deterministically — the general script exposes
+``create_params``/``run_simulation`` behind an ``if __name__ == "__main__"``
+guard rather than a ``def main`` — and the extraction body
+(``_extract_gnn_matrices`` and helpers) is probed across documented spec
+shapes. Previously these bodies were untested (jax_spec_extract 31%).
 """
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any
 
 import numpy as np
@@ -103,3 +98,41 @@ def test_parse_gnn_matrix_string_variants() -> None:
     assert _parse_gnn_matrix_string("{(0.9,0.1),(0.1,0.9)}").shape == (2, 2)
     assert _parse_gnn_matrix_string("garbage").size > 0  # fallback
     assert _parse_vector_string("0.5,0.5").shape == (2,)
+
+
+def test_router_general_end_to_end(tmp_path: Path) -> None:
+    """Public router emits the general model script (create_params +
+    run_simulation + __main__ guard). Regression note: the script has no
+    ``def main`` — the entry point is the ``__main__`` guard."""
+    from gnn.render.jax.jax_renderer import render_gnn_to_jax
+
+    out = tmp_path / "model_router.py"
+    success, message, paths = render_gnn_to_jax(_canonical_spec(), out)
+    assert success, f"render failed: {message}"
+    code = Path(paths[0]).read_text()
+    assert "create_params" in code
+    assert "run_simulation" in code
+    assert 'if __name__ == "__main__"' in code
+    compile(code, str(out), "exec")
+
+
+def test_router_pomdp_end_to_end(tmp_path: Path) -> None:
+    from gnn.render.jax.jax_renderer import render_gnn_to_jax_pomdp
+
+    out = tmp_path / "model_router_pomdp.py"
+    success, message, _ = render_gnn_to_jax_pomdp(_canonical_spec(), out)
+    assert success, f"render failed: {message}"
+    code = out.read_text()
+    assert "solve_pomdp" in code
+    compile(code, str(out), "exec")
+
+
+def test_router_combined_end_to_end(tmp_path: Path) -> None:
+    from gnn.render.jax.jax_renderer import render_gnn_to_jax_combined
+
+    out = tmp_path / "model_router_combined.py"
+    success, message, _ = render_gnn_to_jax_combined(_canonical_spec(), out)
+    assert success, f"render failed: {message}"
+    code = out.read_text()
+    assert "__GNN_MODEL_NAME__" not in code  # token substituted
+    compile(code, str(out), "exec")
