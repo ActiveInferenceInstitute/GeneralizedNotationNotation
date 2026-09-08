@@ -147,6 +147,17 @@ in-memory propagation (steps 5/6/8/10/11/13 re-parse input; only 3→7 and
 11→12 consume artifacts). `run_session`/durable streams are not wired into
 main.py composition (feature gap, not a test gap). These need a design
 decision, not a mechanical fix.
+
+Scope evidence (verified 2026-09-08 against main, post-PR-#69): the
+coverage floor is `fail_under = 50` (pyproject.toml:397), so deleting the
+`test_pipeline_overall.py` hasattr-façade checks is coverage-safe and
+needs no replacement padding. `PipelineContext` removal surface is closed:
+10 files, all inside `src/gnn/pipeline/context.py`, its dedicated test
+`tests/pipeline/test_pipeline_context.py`, the re-export pair in
+`pipeline/__init__.py` (import + `__all__`), and two AGENTS.md doc lines
+(:148, :483) — zero production callers; removal is mechanical once the
+delete-vs-wire-in decision is made.
+
 ## Deep horizon wave 2 - render backends
 
 Scoping for `src/gnn/render/**` (2026-09-08, deep-horizon session). RB-01
