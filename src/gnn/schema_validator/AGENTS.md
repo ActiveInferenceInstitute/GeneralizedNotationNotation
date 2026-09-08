@@ -23,7 +23,7 @@ Three concerns, one package (split from the former single-file
 
 1. `syntax.py` — `GNNParser`: regex-based parsing of GNN source text into a
    `ParsedGNN` structure. No validation policy; parsing only.
-2. `validator.py` — `GNNValidator` + `validate_gnn_file`: schema validation
+2. `validator.py` — `GNNValidator` + `validate_gnn_file_comprehensive`: schema validation
    against `schemas/json.json`, semantic checks, optional round-trip testing
    (via `gnn.parsers`), and binary/pickle validation. Imports `GNNParser`
    from `.syntax`.
