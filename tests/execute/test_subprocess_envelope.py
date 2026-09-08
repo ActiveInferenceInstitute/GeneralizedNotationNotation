@@ -127,3 +127,15 @@ def test_timeout_without_capture_yields_empty_streams() -> None:
     assert result["error_type"] == "TimeoutExpired"
     assert result["stdout"] == ""
     assert result["stderr"] == ""
+
+
+def test_input_support_pipes_stdin_to_child() -> None:
+    """Wave-2 MIN-03: the envelope can feed stdin (no raw bypass needed)."""
+    envelope = run_subprocess_envelope(
+        [sys.executable, "-c", "import sys; print(sys.stdin.read().strip())"],
+        timeout=30,
+        input="envelope-stdin-ok",
+    )
+    assert envelope["success"] is True
+    assert envelope["return_code"] == 0
+    assert "envelope-stdin-ok" in envelope["stdout"]

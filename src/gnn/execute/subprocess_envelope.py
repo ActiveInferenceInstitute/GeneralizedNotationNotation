@@ -43,6 +43,7 @@ def run_subprocess_envelope(
     env: Optional[Dict[str, str]] = None,
     capture_output: bool = True,
     cwd: Optional[Union[str, Path]] = None,
+    input: Optional[str] = None,
 ) -> Dict[str, Any]:
     """Run ``command`` via ``subprocess.run`` and return a structured envelope.
 
@@ -54,6 +55,8 @@ def run_subprocess_envelope(
                         ``os.environ`` (``None`` inherits the parent env).
         capture_output: If True, capture stdout/stderr; otherwise stream to
                         the parent process.
+        input:          Text piped to the child's stdin (implies a stdin
+                        pipe; ``None`` leaves stdin attached to the parent).
 
     Returns:
         Dict with keys:
@@ -95,6 +98,7 @@ def run_subprocess_envelope(
             command,
             stdout=subprocess.PIPE if capture_output else None,
             stderr=subprocess.PIPE if capture_output else None,
+            stdin=subprocess.PIPE if input is not None else None,
             text=True,
             cwd=cwd,
             env=merged_env,
@@ -106,7 +110,7 @@ def run_subprocess_envelope(
         return envelope
 
     try:
-        stdout, stderr = process.communicate(timeout=timeout)
+        stdout, stderr = process.communicate(input=input, timeout=timeout)
         envelope["return_code"] = process.returncode
         envelope["success"] = process.returncode == 0
         envelope["stdout"] = _as_text(stdout)
