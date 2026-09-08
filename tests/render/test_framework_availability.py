@@ -220,3 +220,53 @@ class TestRealEnvironmentCheck:
             assert available is False
             # No need to assert non-importability — the registry says it's
             # unavailable regardless of local env state.
+
+
+class TestRendererHealthModulePaths:
+    """``health.check_renderers`` module paths resolve in the real package.
+
+    Regression pin: the health check used to build ``render.{name}`` module
+    paths, but no top-level ``render`` package exists (the installed package
+    is ``gnn``), so the CLI ``gnn health`` and API ``/api/v1/health`` surfaces
+    reported every renderer unavailable.
+    """
+
+    def test_every_status_module_path_imports(self) -> None:
+        import importlib
+
+        from gnn.render.health import check_renderers
+
+        results = check_renderers()
+        assert set(results) == set(get_supported_frameworks())
+        for name, status in results.items():
+            assert status.available, f"{name}: {status.error}"
+            assert status.module_path is not None
+            assert status.module_path.startswith("gnn.render.")
+            importlib.import_module(status.module_path)
+
+    def test_bnlearn_override_points_at_generators(self) -> None:
+        from gnn.render.health import _RENDERERS
+
+        assert _RENDERERS["bnlearn"] == "gnn.render.generators"
+
+
+class TestPomdpConfigTruthfulness:
+    """``get_pomdp_framework_configs`` must derive fields from the registry."""
+
+    def test_supports_execution_derived_from_registry(self) -> None:
+        from gnn.render.framework_registry import (
+            FRAMEWORK_REGISTRY,
+            get_pomdp_framework_configs,
+        )
+
+        configs = get_pomdp_framework_configs()
+        for name, spec in FRAMEWORK_REGISTRY.items():
+            if not spec.get("pomdp_compatible", False):
+                assert name not in configs
+                continue
+            assert configs[name]["supports_execution"] is bool(
+                spec["supports_execution"]
+            )
+        # bnlearn is render-only (no Step 12 executor) — the config must not
+        # contradict the registry spec.
+        assert configs["bnlearn"]["supports_execution"] is False
