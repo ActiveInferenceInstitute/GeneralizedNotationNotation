@@ -1,6 +1,6 @@
 # GitHub workflows
 
-YAML workflows for CI, MCP tool-count audit, weekly all-extras suite, documentation audit, workflow lint, dependency review, CodeQL, and scheduled supply-chain checks. Parent hub (Dependabot + full index): [../README.md](../README.md). Agent guide: [AGENTS.md](AGENTS.md).
+YAML workflows for CI, MCP tool-count audit, weekly all-extras suite, documentation audit, workflow lint, dependency review, CodeQL, scheduled supply-chain checks, local-gate parity, and paired fep_lean revision CI. Parent hub (Dependabot + full index): [../README.md](../README.md). Agent guide: [AGENTS.md](AGENTS.md).
 
 ## Workflow files
 
@@ -14,6 +14,8 @@ YAML workflows for CI, MCP tool-count audit, weekly all-extras suite, documentat
 | [dependency-review.yml](dependency-review.yml) | `pull_request` → `main`; `workflow_dispatch` | High severity + AGPL deny; PR comment summary on failure. Fork PRs may get limited review. |
 | [codeql.yml](codeql.yml) | `push` / `pull_request` (skips doc-only paths), weekly cron, `workflow_dispatch` | Init → `uv sync --frozen --extra dev` → analyze (Python). |
 | [supply-chain-audit.yml](supply-chain-audit.yml) | Weekly cron Monday 06:00 UTC, `workflow_dispatch` | Two `pip-audit` jobs (OSV); strict shell; job summary. |
+| [local-gates.yml](local-gates.yml) | `push` / `pull_request` → `main`; `workflow_dispatch` | Local `just`-gate parity (2026-09-07 local/CI parity audit): manuscript token audit and MCP + skills resolvability health gate. |
+| [fep-lean-paired-revision.yml](fep-lean-paired-revision.yml) | `push` → `main`; all `pull_request`; `workflow_dispatch` | GNN-04 paired-revision CI: reads the pinned companion revision from `.github/fep-lean-pair.json`, checks out `ActiveInferenceInstitute/fep_lean` at exactly that SHA, and runs its read-only bridge surface (`bridge status`, `bridge emit --check`) against this checkout; retains both revisions plus the pin as artifacts. Expected red until the first paired re-pin. |
 
 ## Local validation
 

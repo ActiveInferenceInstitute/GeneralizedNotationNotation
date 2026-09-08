@@ -112,7 +112,7 @@ src/module_name/
 
 ### CI and automation
 
-Pull requests against `main` run the workflows described in [.github/README.md](.github/README.md): tests and lint (with path filters), docs audit when Markdown or `docs/` changes, dependency review, CodeQL, and workflow lint when `.github/workflows/**` changes.
+Pull requests against `main` run the workflows described in [.github/README.md](.github/README.md): tests and lint (no path filter - runs on doc-only PRs too), docs audit when Markdown or `docs/` changes, dependency review, CodeQL, and workflow lint when `.github/workflows/**` changes.
 
 Before opening a PR, align locally where possible:
 
