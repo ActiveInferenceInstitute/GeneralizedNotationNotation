@@ -3,7 +3,8 @@
 Enhanced GNN Pipeline Health Check
 
 Comprehensive system health validation for the GNN Processing Pipeline.
-Moved from src/ to src/pipeline/ for better integration with pipeline management.
+Enhanced health-check surface for the gnn pipeline package (post-3.3.0 the
+pipeline utilities live under src/gnn/pipeline/).
 
 Features:
 - Core dependency validation
@@ -678,7 +679,7 @@ def main() -> int:
 
         pipeline_struct = results.get("pipeline_structure", {})
         print(
-            f"Pipeline Scripts: {len(pipeline_struct.get('available_scripts', []))}/24 available"
+            f"Pipeline Scripts: {len(pipeline_struct.get('available_scripts', []))}/25 available"
         )
 
     # Save to file if requested

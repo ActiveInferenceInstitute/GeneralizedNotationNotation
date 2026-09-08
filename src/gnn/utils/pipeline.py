@@ -14,6 +14,24 @@ from gnn.utils.io_utils import verify_directory_writable
 logger = logging.getLogger(__name__)
 
 
+def get_output_dir_for_script(
+    script_name: str, base_output_dir: Path | None = None
+) -> Path:
+    """Resolve the output directory for a script.
+
+    Thin delegating re-export preserved for the public ``gnn.utils`` surface
+    (``gnn.utils.__init__`` re-exports it and ``src/gnn/utils/SKILL.md``
+    documents it). The canonical implementation lives in
+    ``gnn.pipeline.config``; the lazy import avoids the circular-import
+    hazard that motivated the original entry point.
+    """
+    from gnn.pipeline.config import get_output_dir_for_script as _canonical
+
+    return _canonical(
+        script_name,
+        base_output_dir if base_output_dir is not None else Path("output"),
+    )
+
 
 class _DefaultStepArgs:
     """Default pipeline step arguments returned by RecoveryArgumentParser."""

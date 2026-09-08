@@ -28,21 +28,22 @@ from gnn.utils.structured_logging import (  # noqa: F401 - standard pipeline imp
 
 
 def __getattr__(name: str) -> Any:
-    """Warn on the legacy ``get_output_dir_for_script`` re-export.
+    """Warn on the incidental ``get_output_dir_for_script`` re-export.
 
     ``gnn.pipeline.config`` is the canonical home; the historical
     ``gnn.utils.pipeline_template`` re-export now warns so internal callers
-    migrate (MAJ-05 deprecation pattern).
+    migrate (MAJ-05 migration pattern).
     """
     if name == "get_output_dir_for_script":
         warnings.warn(
             "gnn.utils.pipeline_template.get_output_dir_for_script is "
-            "deprecated; import it from gnn.pipeline.config instead",
+            "superseded; import it from gnn.pipeline.config instead",
             DeprecationWarning,
             stacklevel=2,
         )
         return _get_output_dir_for_script
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+
 
 UTILS_AVAILABLE = True
 
