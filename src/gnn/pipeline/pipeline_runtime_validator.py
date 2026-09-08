@@ -23,6 +23,11 @@ from typing import Any, Dict, List
 # degraded-mode scaffolding is needed for them.
 from gnn.utils.pipeline_dependencies import get_pipeline_dependency_manager
 
+# Probe targets resolve against the installed ``gnn`` package root so the
+# checks are independent of the working directory and survive repo-layout
+# moves (post-3.3.0 the renderer tree lives at ``src/gnn/render/``).
+_PROBE_PACKAGE_ROOT = Path(__file__).resolve().parents[1]
+
 
 class PipelineValidator:
     """Comprehensive pipeline validator and improvement tester."""
@@ -59,8 +64,13 @@ class PipelineValidator:
         }
 
         try:
-            # Test PyMDP import fix
-            pymdp_renderer_path = Path("src/render/pymdp/pymdp_renderer.py")
+            # Probe targets live inside the gnn package; a missing target is
+            # an error (the check cannot run), not a silent pass.
+            package_root = _PROBE_PACKAGE_ROOT
+
+            # Test PyMDP import fix: the renderer must not import the retired
+            # configure_from_gnn_spec helper.
+            pymdp_renderer_path = package_root / "render/pymdp/pymdp_renderer.py"
             if pymdp_renderer_path.exists():
                 content = pymdp_renderer_path.read_text()
                 # Should NOT contain configure_from_gnn_spec import
@@ -69,38 +79,50 @@ class PipelineValidator:
                     self.logger.info("✅ PyMDP import fix validated")
                 else:
                     self.logger.warning("⚠️ PyMDP import fix not applied")
+            else:
+                self.logger.error(f"❌ Probe target missing: {pymdp_renderer_path}")
 
-            # Test JAX Flax fix
-            jax_renderer_path = Path("src/render/jax/jax_renderer.py")
-            if jax_renderer_path.exists():
-                content = jax_renderer_path.read_text()
-                # Should use variables parameter in get_model_summary
-                if "get_model_summary(num_states" in content:
+            # Test JAX Flax fix: generated model constants must be derived
+            # from matrix shapes (NUM_STATES = {num_states}), never attribute
+            # access (.num_states) on a model object.
+            jax_generator_path = package_root / "render/jax/jax_model_generator.py"
+            if jax_generator_path.exists():
+                content = jax_generator_path.read_text()
+                if (
+                    "NUM_STATES = {num_states}" in content
+                    and ".num_states" not in content
+                ):
                     fixes_validation["jax_flax_fix"] = True
                     self.logger.info("✅ JAX Flax attribute access fix validated")
                 else:
                     self.logger.warning("⚠️ JAX Flax fix not applied")
+            else:
+                self.logger.error(f"❌ Probe target missing: {jax_generator_path}")
 
-            # Test Julia matrix formatting fix
-            julia_renderer_path = Path(
-                "src/render/activeinference_jl/activeinference_renderer.py"
+            # Test Julia matrix formatting fix: element conversion must handle
+            # both scalar values and row containers.
+            julia_renderer_path = (
+                package_root / "render/activeinference_jl/activeinference_renderer.py"
             )
             if julia_renderer_path.exists():
                 content = julia_renderer_path.read_text()
-                # Should have improved matrix conversion function
-                if "convert_element" in content and "tuple, list" in content:
+                if "isinstance(row, (tuple, list))" in content:
                     fixes_validation["julia_matrix_fix"] = True
                     self.logger.info("✅ Julia matrix formatting fix validated")
                 else:
                     self.logger.warning("⚠️ Julia matrix fix not applied")
+            else:
+                self.logger.error(f"❌ Probe target missing: {julia_renderer_path}")
 
             # Test pipeline dependency manager
-            dep_manager_path = Path("src/utils/pipeline_dependencies.py")
+            dep_manager_path = package_root / "utils/pipeline_dependencies.py"
             if dep_manager_path.exists():
                 fixes_validation["dependency_handling"] = True
                 self.logger.info("✅ Pipeline dependency manager created")
             else:
-                self.logger.warning("⚠️ Pipeline dependency manager missing")
+                self.logger.error(
+                    f"❌ Pipeline dependency manager missing: {dep_manager_path}"
+                )
 
         except Exception as e:
             self.logger.error(f"❌ Error validating code generation fixes: {e}")

@@ -5,8 +5,8 @@ Step 9: Advanced Visualization (Thin Orchestrator)
 This step delegates advanced visualization processing to the module implementation.
 
 How to run:
-  python src/9_advanced_viz.py --target-dir input/gnn_files --output-dir output --verbose
-  python src/main.py  # (runs as part of the pipeline)
+  python src/gnn/9_advanced_viz.py --target-dir input/gnn_files --output-dir output --verbose
+  python src/gnn/main.py  # (runs as part of the pipeline)
 """
 
 import sys

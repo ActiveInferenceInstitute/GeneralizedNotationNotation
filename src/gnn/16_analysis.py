@@ -6,15 +6,15 @@ This step orchestrates analysis processing for GNN models.
 
 Architectural Role:
     This is a "thin orchestrator" - a minimal script that delegates core functionality
-    to the corresponding module (src/analysis/). It handles argument parsing, logging
+    to the corresponding module (src/gnn/analysis/). It handles argument parsing, logging
     setup, and calls the actual processing functions from the analysis module.
 
 Pipeline Flow:
     main.py → 16_analysis.py (this script) → analysis/ (modular implementation)
 
 How to run:
-  python src/16_analysis.py --target-dir input/gnn_files --output-dir output --verbose
-  python src/main.py  # (runs as part of the pipeline)
+  python src/gnn/16_analysis.py --target-dir input/gnn_files --output-dir output --verbose
+  python src/gnn/main.py  # (runs as part of the pipeline)
 
 Expected outputs:
   - Analysis processing results in the specified output directory
@@ -24,7 +24,7 @@ Expected outputs:
 
 If you encounter errors:
   - Check that analysis dependencies are installed
-  - Check that src/analysis/ contains analysis modules
+  - Check that src/gnn/analysis/ contains analysis modules
   - Check that the output directory is writable
   - Verify analysis configuration and requirements
 """
