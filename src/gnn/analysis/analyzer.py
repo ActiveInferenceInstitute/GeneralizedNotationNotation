@@ -64,6 +64,37 @@ from .simulation_visualizations import (
 
 logger = logging.getLogger(__name__)
 
+# Explicit re-export surface: every name consumers may import through this
+# facade (analysis/__init__.py, processor.py). Third-party aliases (``stats``,
+# ``sns``) and internal helpers are intentionally excluded.
+__all__ = [
+    "analyze_distributions",
+    "analyze_framework_outputs",
+    "build_connectivity_matrix",
+    "calculate_cognitive_complexity",
+    "calculate_complexity_metrics",
+    "calculate_connection_statistics",
+    "calculate_correlations",
+    "calculate_cyclomatic_complexity",
+    "calculate_maintainability_index",
+    "calculate_section_statistics",
+    "calculate_structural_complexity",
+    "calculate_technical_debt",
+    "calculate_variable_statistics",
+    "count_type_distribution",
+    "extract_connections",
+    "extract_sections",
+    "extract_variables",
+    "generate_analysis_summary",
+    "generate_framework_comparison_report",
+    "generate_matrix_visualizations",
+    "perform_model_comparisons",
+    "perform_statistical_analysis",
+    "run_performance_benchmarks",
+    "visualize_cross_framework_metrics",
+    "visualize_simulation_results",
+]
+
 
 def perform_statistical_analysis(
     file_path: Path, verbose: bool = False
