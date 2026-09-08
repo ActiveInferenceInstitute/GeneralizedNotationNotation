@@ -23,108 +23,126 @@ except ImportError:
 
 try:
     import gnn.type_checker as type_checker
+
     TYPE_CHECKER_AVAILABLE = True
 except ImportError:
     TYPE_CHECKER_AVAILABLE = False
 
 try:
     import gnn.export as export
+
     EXPORT_AVAILABLE = True
 except ImportError:
     EXPORT_AVAILABLE = False
 
 try:
     import gnn.visualization as visualization
+
     VISUALIZATION_AVAILABLE = True
 except ImportError:
     VISUALIZATION_AVAILABLE = False
 
 try:
     import gnn.render as render
+
     RENDER_AVAILABLE = True
 except ImportError:
     RENDER_AVAILABLE = False
 
 try:
     import gnn.execute as execute
+
     EXECUTE_AVAILABLE = True
 except ImportError:
     EXECUTE_AVAILABLE = False
 
 try:
     import gnn.llm as llm
+
     LLM_AVAILABLE = True
 except ImportError:
     LLM_AVAILABLE = False
 
 try:
     import gnn.audio as audio
+
     AUDIO_AVAILABLE = True
 except ImportError:
     AUDIO_AVAILABLE = False
 
 try:
     import gnn.analysis as analysis
+
     ANALYSIS_AVAILABLE = True
 except ImportError:
     ANALYSIS_AVAILABLE = False
 
 try:
     import gnn.integration as integration
+
     INTEGRATION_AVAILABLE = True
 except ImportError:
     INTEGRATION_AVAILABLE = False
 
 try:
     import gnn.security as security
+
     SECURITY_AVAILABLE = True
 except ImportError:
     SECURITY_AVAILABLE = False
 
 try:
     import gnn.research as research
+
     RESEARCH_AVAILABLE = True
 except ImportError:
     RESEARCH_AVAILABLE = False
 
 try:
     import gnn.website as website
+
     WEBSITE_AVAILABLE = True
 except ImportError:
     WEBSITE_AVAILABLE = False
 
 try:
     import gnn.report as report
+
     REPORT_AVAILABLE = True
 except ImportError:
     REPORT_AVAILABLE = False
 
 try:
     import gnn.ontology as ontology
+
     ONTOLOGY_AVAILABLE = True
 except ImportError:
     ONTOLOGY_AVAILABLE = False
 
 try:
     import gnn.mcp as mcp
+
     MCP_AVAILABLE = True
 except ImportError:
     MCP_AVAILABLE = False
 
 try:
     import gnn.setup as setup
+
     SETUP_AVAILABLE = True
 except ImportError:
     SETUP_AVAILABLE = False
 
 try:
     import gnn.utils as utils
+
     UTILS_AVAILABLE = True
 except ImportError:
     UTILS_AVAILABLE = False
 
 try:
     import gnn.pipeline as pipeline
+
     PIPELINE_AVAILABLE = True
 except ImportError:
     PIPELINE_AVAILABLE = False
@@ -293,15 +311,15 @@ class TestWebsiteModule:
         assert "text" in file_types
         assert "html" in file_types
 
-    def test_generate_website_from_pipeline_output_nonexistent(self) -> None:
+    def test_generate_website_from_pipeline_output_nonexistent(self, tmp_path) -> None:
         """Test generate_website with nonexistent directory."""
         import logging
         from pathlib import Path
 
         # Test with nonexistent directory
         logger = logging.getLogger("test")
-        nonexistent_dir = Path("/nonexistent/directory")
-        output_dir = Path("/tmp/test_output")  # nosec B108
+        nonexistent_dir = tmp_path / "nonexistent_source"
+        output_dir = tmp_path / "test_output"
 
         try:
             # This should handle the error gracefully
