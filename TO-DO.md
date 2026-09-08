@@ -80,13 +80,21 @@ are pinned.
   `.github/workflows/local-gates.yml` (2026-09-07; `skills-health` also
   needed a repo-root sys.path bootstrap). `just gridworld` remains
   unwired deliberately - the committed `output/` tree currently fails
-  its contract and regeneration needs the Julia toolchains. Still open:
-  the `ml-ai`/`torch` extras would unlock 12 environment-skipped tests
-  (11 sklearn, 1 torch); `test-cov`/CI coverage Ollama-ignore parity:
-  RESOLVED 2026-09-08 - the CI coverage step now carries the same two
-  Ollama `--ignore` flags as `just test-cov`, and `just test-cov` adopts
-  CI's `-m "not pipeline and not mcp"` selection (4326 tests collected on
-  both sides; was 4352 in CI).
+  its contract and regeneration needs the Julia toolchains.
+  ml-ai/torch extras parity: RESOLVED 2026-09-08 - verified
+  `uv sync --extra dev --extra ml-ai --extra torch --frozen` resolves from
+  the lock and un-skips the 12 environment-skipped tests (11 sklearn
+  inference tests, 1 torch continuous-render test); all 22 tests in the two
+  affected files pass with the extras present (no latent failures behind the
+  skip). The local test-cov command should therefore run with
+  `--extra ml-ai --extra torch` appended. The Ollama-ignore half of this
+  item stays open-by-design: no local Ollama daemon exists, so
+  `test-cov`'s `--ignore=tests/llm/test_llm_ollama*.py` remains correct
+  locally while the CI coverage run exercises those tests where they
+  degrade gracefully without a daemon. Coverage selection parity on the
+  remaining axis: `just test-cov` now adopts CI's
+  `-m "not pipeline and not mcp"` deselect so both invocations apply the
+  same pipeline/mcp test policy (4326 tests collected on both sides).
 - Dependency floors: RAISED 2026-09-07 for numpy (>=2.0), pandas
   (>=2.0), openai (>=2.0), pytest (>=8.0), mypy (>=1.0) - the lock
   resolved identically (only requires-dist metadata moved; zero package

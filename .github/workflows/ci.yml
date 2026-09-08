@@ -132,8 +132,6 @@ jobs:
             --tb=short \
             -q \
             -n auto --dist worksteal \
-            --ignore=tests/llm/test_llm_ollama.py \
-            --ignore=tests/llm/test_llm_ollama_integration.py \
             --cov=gnn --cov-report=term-missing --cov-report=json:junit/coverage-${{ matrix.python-version }}.json \
             --junitxml=junit/pytest-${{ matrix.python-version }}.xml
 
