@@ -10,7 +10,7 @@ from typing import Any
 # Imported after ``.core.process``: core.process itself pulls in
 # analysis.combined_analysis during package init, so by this line the
 # analysis package is fully loaded (import-order-sensitive cycle).
-from .analysis import (
+from .analysis import (  # noqa: F401 — re-export consumed by visualization/__init__
     generate_combined_analysis,
     generate_combined_visualizations,
 )

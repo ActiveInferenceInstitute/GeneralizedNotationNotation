@@ -18,7 +18,7 @@ try:
 except (ImportError, RecursionError, RuntimeError):
     PSUTIL_AVAILABLE = False
 
-from typing import Any, Dict
+from typing import Dict
 
 logger = logging.getLogger(__name__)
 

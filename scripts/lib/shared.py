@@ -4,9 +4,8 @@
 from __future__ import annotations
 
 import argparse
-import sys
 from pathlib import Path
-from typing import FrozenSet, List, Optional, Set
+from typing import FrozenSet, Optional, Set
 
 
 def repo_root() -> Path:

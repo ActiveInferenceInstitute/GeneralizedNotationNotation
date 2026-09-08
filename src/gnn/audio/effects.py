@@ -15,7 +15,7 @@ Use :func:`apply_effects_chain` to compose several effects by name.
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
-from typing import Any, Callable, cast
+from typing import Any, Callable
 
 import numpy as np
 

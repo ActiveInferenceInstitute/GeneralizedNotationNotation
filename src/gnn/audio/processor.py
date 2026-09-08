@@ -40,7 +40,6 @@ from .streaming import (
     frames_from_execution_trace,
     write_stream_summary,
 )
-from .validation import coerce_audio_array, require_sample_rate
 
 
 def process_audio(

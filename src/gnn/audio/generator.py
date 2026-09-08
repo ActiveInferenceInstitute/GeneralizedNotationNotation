@@ -6,7 +6,7 @@ This module provides audio generation functionality.
 """
 
 import logging
-from typing import Any, Dict, List, Optional, cast
+from typing import Any, Dict, List, Optional
 
 import numpy as np
 

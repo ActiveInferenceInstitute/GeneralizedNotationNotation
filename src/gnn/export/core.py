@@ -5,7 +5,7 @@ Public functions: export_gnn_files
 
 import logging
 from pathlib import Path
-from typing import Any, Tuple, cast
+from typing import Any
 
 from gnn.pipeline import get_output_dir_for_script
 from gnn.utils import log_step_error, log_step_start, log_step_success, log_step_warning

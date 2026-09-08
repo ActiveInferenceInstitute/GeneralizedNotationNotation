@@ -16,13 +16,12 @@ Enhanced Features:
 - Enhanced error reporting and suggestions
 """
 
-import json
 import logging
 import re
 import tempfile
 import warnings
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Union, cast
+from typing import Any, Optional, Union, cast
 
 from gnn.types import (
     GNNFormat,

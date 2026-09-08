@@ -25,7 +25,7 @@ warnings.filterwarnings("ignore")
 
 # Import shared visualization utilities (centralized matplotlib setup)
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 from ..viz_base import MATPLOTLIB_AVAILABLE, np, plt
 
