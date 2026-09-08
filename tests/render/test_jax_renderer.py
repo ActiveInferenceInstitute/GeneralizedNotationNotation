@@ -285,3 +285,20 @@ def test_generated_jax_code_executes_with_unequal_dimensions(
 
     assert result.returncode == 0, result.stderr
     assert success_marker in result.stdout
+
+
+def test_render_to_path_failure_message_names_label(tmp_path: Path) -> None:
+    """The returned failure message must name the target and the cause,
+    not degrade to a bare ``str(e)``."""
+    from gnn.render.jax.jax_renderer import _render_to_path
+
+    def _boom(gnn_spec: dict, options: object) -> str:
+        raise RuntimeError("boom")
+
+    success, message, artifacts = _render_to_path(
+        _boom, "JAX model", {}, tmp_path / "out.py", None
+    )
+    assert success is False
+    assert "JAX model" in message
+    assert "boom" in message
+    assert artifacts == []

@@ -437,3 +437,39 @@ class TestMaintainedOutputContracts:
         assert "bnlearn" in CONTRACTS
         with pytest.raises(ValueError):
             validate_rendered_output("", "unknown_framework")
+
+
+class TestFailureMessageActionability:
+    """Render failure messages carry remediation hints and root causes."""
+
+    def test_get_remediation_covers_dependency_backends(self) -> None:
+        from gnn.render.health import get_remediation
+
+        for framework in ("jax", "discopy", "pytorch", "numpyro", "stan", "bnlearn"):
+            hint = get_remediation(framework)
+            assert hint is not None, framework
+            assert "uv add" in hint or "julia" in hint.lower()
+
+    def test_unsupported_target_message_lists_known_targets(
+        self, tmp_path: Path
+    ) -> None:
+        from gnn import parse_gnn_file
+        from gnn.render.processor import render_gnn_spec
+
+        success, message, _artifacts = render_gnn_spec(
+            parse_gnn_file(SAMPLE_GNN), "definitely_not_real", tmp_path
+        )
+        assert success is False
+        assert message.startswith("Unsupported target: definitely_not_real")
+        assert "pymdp" in message and "jax_pomdp" in message
+
+    def test_generator_write_failure_propagates_cause(self, tmp_path: Path) -> None:
+        """Generator exceptions must reach callers (receipt messages), not be
+        swallowed behind a print-and-empty-string sentinel."""
+        from gnn.render.generators import generate_bnlearn_code
+
+        target = tmp_path / "out"
+        target.mkdir()
+        model_data = {"model_name": "m", "variables": [], "connections": []}
+        with pytest.raises(OSError):
+            generate_bnlearn_code(model_data, target)

@@ -248,3 +248,25 @@ class TestRendererHealthModulePaths:
         from gnn.render.health import _RENDERERS
 
         assert _RENDERERS["bnlearn"] == "gnn.render.generators"
+
+
+class TestPomdpConfigTruthfulness:
+    """``get_pomdp_framework_configs`` must derive fields from the registry."""
+
+    def test_supports_execution_derived_from_registry(self) -> None:
+        from gnn.render.framework_registry import (
+            FRAMEWORK_REGISTRY,
+            get_pomdp_framework_configs,
+        )
+
+        configs = get_pomdp_framework_configs()
+        for name, spec in FRAMEWORK_REGISTRY.items():
+            if not spec.get("pomdp_compatible", False):
+                assert name not in configs
+                continue
+            assert configs[name]["supports_execution"] is bool(
+                spec["supports_execution"]
+            )
+        # bnlearn is render-only (no Step 12 executor) — the config must not
+        # contradict the registry spec.
+        assert configs["bnlearn"]["supports_execution"] is False

@@ -18,13 +18,15 @@ from .processor import render_gnn_spec
 RENDER_CLI_TARGETS = [
     "pymdp",
     "rxinfer",
-    "rxinfer_toml",
     "activeinference_jl",
     "discopy",
     "discopy_combined",
     "bnlearn",
     "jax",
     "jax_pomdp",
+    "pytorch",
+    "numpyro",
+    "stan",
 ]
 
 

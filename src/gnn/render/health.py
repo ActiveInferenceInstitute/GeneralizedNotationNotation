@@ -72,6 +72,11 @@ _FRAMEWORK_REMEDIATIONS: dict[str, str] = {
 }
 
 
+def get_remediation(framework: str) -> Optional[str]:
+    """Return the install-remediation hint for ``framework``, if any."""
+    return _FRAMEWORK_REMEDIATIONS.get(framework)
+
+
 def check_renderers() -> Dict[str, RendererStatus]:
     """
     Check importability of all renderer generator modules.
