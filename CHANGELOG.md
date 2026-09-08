@@ -10,6 +10,72 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ### Changed
 
+### Deep horizon wave 2 - MCP + execute (2026-09-08)
+
+- **MAJ-08: one wire serializer for all MCP transports.** Tool results from
+  arbitrary callables can no longer crash the stdio writer thread (client
+  hangs forever), abort HTTP responses mid-write, or emit bare NaN/Infinity
+  tokens (invalid JSON per RFC 8259 §6). `gnn.mcp.jsonrpc.serialize_response`
+  + `sanitize_json_value` is the single choke point (non-finite floats →
+  canonical string tokens, sets/frozensets → deterministically ordered lists,
+  bytes/datetimes/paths/numpy scalars degrade losslessly; nesting >100 raises
+  ValueError with handler stack room). Cache-key type-tags non-JSON-native
+  params via `tag_non_json_values` so the set `{1}` and the string `"{1}"` can
+  never alias to one cache key. (PR #65)
+
+- **MAJ-09: `MCPTool.timeout` is now enforced.** It was accepted at
+  registration, advertised in capabilities, documented — but never
+  consulted. Timed tools run on a dedicated bounded pool; the caller stops
+  waiting at `tool.timeout` and gets `MCPToolTimeoutError` (new wire code
+  -32008). Un-timed tools keep the inline unbounded path. (PR #65)
+
+- **MAJ-10: step-12 processor on the canonical subprocess envelope.** Raw
+  `subprocess.run` with hand-rolled timeout/OSError handling replaced by
+  `run_subprocess_envelope`; shared exit-code sentinels (`NEVER_STARTED=-1`,
+  `INTERNAL_ERROR=-2`, `UNKNOWN_STATE=-3`) eliminate the -1/-2 vocabulary
+  collision. Envelope upgraded to `Popen + communicate` (kill+drain on
+  timeout preserves partial stdout/stderr on all interpreter versions).
+  `sandbox.py`, `julia_setup.py`, `lean_runner.py` delegated. (PR #70)
+
+- **MED-01: param-validation fidelity.** `func(**params)` signature
+  TypeErrors classified as -32602 INVALID_PARAMS (not -32603); `_validate_output`
+  allows `None` returns (no output contract exists); `get_capabilities`
+  exposes `validation_mode`. (PR #66)
+
+- **MED-02: MCP resources API + docs.** Real `list_available_resources`
+  re-export (was aliased to `get_available_tools`); HTTP capability/read gate
+  agreement on templated resources; AGENTS.md/README/docs/mcp tree corrected;
+  dead `npx_inspector.get_resource` routed to `mcp.resource.get`. (PR #76)
+
+- **MIN-02: registry-internals test gaps pinned.** 12 tests covering
+  `requires_auth` gate, non-dict params, result cache hit/TTL/uncacheable,
+  rate limiter trip/recover, audit JSON parity. (PR #73)
+
+- **MIN-03: envelope `input=` + 141-tool schema audit.** Envelope supports
+  stdin (unblocks ollama/security/manuscript raw bypasses); `validate_tools.py`
+  schema-vs-signature checks all 141 tools (was 14/141). (PR #73)
+
+- **Performance: serializer fast-path, subprocess.run envelope, cached
+  tools list, text=False decode.** `serialize_response` fast-paths
+  `json.dumps` (falls back to `sanitize_json_value` only on failure);
+  envelope reverts to `subprocess.run` (C-optimized, partial output from
+  `TimeoutExpired.stdout/stderr`); `list_available_tools` caches the 141-tool
+  list (no copy, invalidates on `register_tool`); envelope uses `text=False`
+  + manual decode (avoids TextIOWrapper overhead). `validate_export_format`
+  uses `is_supported_format` (O(1) no copy). `handle_mcp_request` drops
+  per-call `logger.info` f-string. Best `mcp_execute_bench_ms`:
+  1555.3 → 1288.1 ms (-17.2%). (PRs #79, #80, #84, #85)
+
+- **Testing: removed module-scope `sys.setrecursionlimit(100)`** in
+  `src/gnn/testing/simple_round_trip_test.py` and `test_round_trip.py` that
+  poisoned test processes (RecursionError in unrelated tests). (PR #80)
+
+- **Bench: GNNParsingSystem round-trip phase.** The wave-2 benchmark now
+  exercises the real 23-parser / 22-serializer system via
+  `parse_string → serialize(JSON) → parse_string → serialize` with
+  string-equality check, instead of `json.dumps` on a plain dict. 1208
+  determinism checks (up from 952). (PR #87, #89)
+
 - **MAJ-06: one generic dispatcher for the `process_<module>_mcp` MCP
   wrappers.** The 18 copy-pasted per-module wrappers (analysis, export,
   integration, ontology, research, security, validation, ml_integration,
