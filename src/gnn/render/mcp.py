@@ -31,6 +31,7 @@ def process_render_mcp(
     Returns:
         Dictionary with success status and render summary.
     """
+
     def _interpret(raw: Any) -> tuple[bool, Dict[str, Any], str | None]:
         # Phase 1.1 contract: process_render may return bool OR int (0/1/2).
         # Coerce to MCP bool envelope; surface "skipped" separately.

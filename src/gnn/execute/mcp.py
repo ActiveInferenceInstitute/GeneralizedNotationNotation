@@ -89,6 +89,7 @@ def process_execute_mcp(
     Returns:
         Dictionary with success flag and processing summary.
     """
+
     def _resolve(target: str, output: str) -> tuple[Path, Path]:
         return (
             _resolve_render_output_directory(target),

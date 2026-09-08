@@ -95,6 +95,7 @@ def process_llm_mcp(
     Returns:
         Dictionary with success flag and processing summary.
     """
+
     def _resolve(target: str, output: str) -> tuple[Path, Path]:
         return (
             _resolve_input_directory(target, purpose="LLM target directory"),

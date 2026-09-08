@@ -34,6 +34,7 @@ def process_visualization_mcp(
     Returns:
         Dictionary with success status and visualization summary.
     """
+
     def _interpret(raw: Any) -> tuple[bool, Dict[str, Any], str | None]:
         out = Path(output_directory)
         n_files = (

@@ -32,6 +32,7 @@ def process_website_mcp(
     Returns:
         Dictionary with success status, pages_created count, errors and warnings.
     """
+
     def _interpret(result: Any) -> tuple[bool, Dict[str, Any], str | None]:
         # process_website returns bool or dict
         if isinstance(result, dict):

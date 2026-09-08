@@ -54,9 +54,8 @@ def run_pipeline_step_mcp(
     | None = None,
     echo_resolved: bool = False,
     pass_verbose: bool = True,
-    interpret_result: Callable[
-        [Any], tuple[bool, Mapping[str, Any], str | None]
-    ] | None = None,
+    interpret_result: Callable[[Any], tuple[bool, Mapping[str, Any], str | None]]
+    | None = None,
     label: str | None = None,
     success_wording: str = "completed successfully",
     failure_wording: str = "completed with issues",
@@ -92,12 +91,8 @@ def run_pipeline_step_mcp(
             success, extras, message = bool(raw), {}, None
         result: dict[str, Any] = {
             "success": success,
-            "target_directory": str(target_path)
-            if echo_resolved
-            else target_directory,
-            "output_directory": str(output_path)
-            if echo_resolved
-            else output_directory,
+            "target_directory": str(target_path) if echo_resolved else target_directory,
+            "output_directory": str(output_path) if echo_resolved else output_directory,
             **(static_extras or {}),
             **extras,
         }
