@@ -116,6 +116,29 @@ are pinned.
   regression gate `scripts/check_doc_path_references.py` is CI-wired
   (local-gates) and strict (cap 0).
 
+## Deep horizon wave 2 - render backends
+
+Scoping for `src/gnn/render/**` (2026-09-08, deep-horizon session). Baseline
+measured by the deterministic corpus x framework conformance benchmark
+(`bash autoresearch.sh`; `scripts/bench_render_backends.py`): 258/258
+renderings succeed with 0 errors and 0 syntax errors, but only 142 are
+conformance-validated - 255 contract violations are stale-regex false
+positives predating the delegated-executor output shape, plus suspected real
+divergences. Contract remediation direction: modernize `CONTRACTS` to the
+maintained output shape; never reshape renderer output to satisfy stale
+regexes.
+
+| ID | Scope | Acceptance evidence |
+| --- | --- | --- |
+| RB-01 | Major: modernize `CONTRACTS` in `src/gnn/render/contracts.py` to the maintained delegated-executor output shapes (pymdp `A_data`/`B_data` plus `gnn.execute.pymdp` delegation, jax `'A_matrix': jnp.array(...)` params payloads, numpyro `dist.*.sample`, activeinference_jl runner shape, pytorch continuous params) and add the missing bnlearn contract. Pin every modernized contract to a real corpus-emitted shape in `tests/render/test_render_contracts.py` so contracts cannot rot again. Document the validated-gate surface (bench + tests; no pipeline receipt wiring without a separate schema decision). | `bash autoresearch.sh` reports `render_conformance_success_count >= 250` with `render_success_count` still 258 and `render_syntax_errors` 0; new contract tests fail the stale shapes and pass the maintained shapes. |
+| RB-02 | Minor: fix `src/gnn/render/health.py` renderer module paths (`render.{name}` -> `gnn.render.{name}`, bnlearn override `render.generators` -> `gnn.render.generators`) and the stale Julia project paths in `_FRAMEWORK_REMEDIATIONS`; `check_renderers()` is live in the `gnn health` CLI and `/api/v1/health`. | Unit test imports every returned module path successfully under the default environment; CLI health reports real availability. |
+| RB-03 | Medium: render receipt fidelity in `src/gnn/pipeline/model_family_acceptance.py` and `src/gnn/render/processor.py`: exclude `history/` archives from the `_load_first_json` rglob so the live receipt always wins; remove the nonexistent top-level `message` read or emit the field; exclude `timestamp` from the prior-receipt digest so unchanged runs stop archiving a new `history/render-*.json` every invocation. | New unit test proves the live receipt is chosen when a history archive exists; two consecutive identical renders create no additional history files; `tests/render/test_render_receipt_reliability.py` stays green. |
+| RB-04 | Medium: actionable render failure messages: thread `health.py`-style remediation into the generic failure sites (`src/gnn/render/processor.py` generic catch-alls and renderer-unavailable returns), `src/gnn/render/pomdp_processor.py` wrapper failures, and the bare `str(e)` return in `src/gnn/render/jax/jax_renderer.py`; replace the `src/gnn/render/generators.py` print-sentinel pattern (bnlearn/pymdp/discopy) so the root cause reaches the receipt message. | Unit tests assert availability failures carry an install remediation and generator failures carry the cause; bench FAIL diagnostics render the enriched messages. |
+| RB-05 | Minor: CLI target truthfulness in `src/gnn/render/render.py`: drop the dead `rxinfer_toml` choice, add the three routed-but-unlisted backends (`pytorch`, `numpyro`, `stan`). | `RENDER_CLI_TARGETS` and `tests/render/test_render_cli_targets.py` agree; every choice renders a corpus model or fails at argument parsing; the rejection test is updated. |
+| RB-06 | Minor: registry truthfulness: `get_pomdp_framework_configs` in `src/gnn/render/framework_registry.py` must derive `supports_execution` from `FRAMEWORK_REGISTRY` instead of hardcoding `True` (currently contradicts bnlearn's render-only spec). | `get_pomdp_framework_configs()["bnlearn"]["supports_execution"] is False`; consumers verified name-gated; unit test pins it. |
+| RB-07 | Medium: rxinfer multi-agent divergence: corpus multi-agent models (stigmergic_swarm, multi_agent_coordination) emit rxinfer scripts without `@model` while discrete single-agent renders pass the contract. Determine whether the multi-agent strategy emits a legitimate alternative shape or a defect; fix the renderer or modernize the contract and pin the shape. | rxinfer contract violations drop to 0 on the bench; shape pinned in `tests/render/test_rxinfer_multiagent_contract.py`. |
+
+
 ---
 
 ## v4.0.0 - Bounded Autonomy & Reviewed Self-Editing
