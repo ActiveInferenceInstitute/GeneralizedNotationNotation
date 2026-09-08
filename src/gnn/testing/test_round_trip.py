@@ -86,10 +86,6 @@ from .round_trip_results import (
     RoundTripResult,
 )
 
-# Set reasonable recursion limit to prevent infinite loops while allowing normal imports
-sys.setrecursionlimit(
-    100
-)  # Higher limit to allow imports but still catch deep recursion
 
 # Configure logging based on configuration
 if LOGGING_CONFIG["suppress_parser_warnings"]:
