@@ -90,7 +90,11 @@ fi
 
 QUALITY=$((MYPY_ERRORS + RUFF_ERRORS))
 COVERAGE="$(grep -E '^TOTAL' "$PYTEST_LOG" | tail -1 | grep -oE '[0-9]+%' | grep -oE '[0-9]+' || true)"
-COVERAGE="${COVERAGE:-0}"
+if [ -z "$COVERAGE" ]; then
+  echo "HARNESS FAILURE: coverage TOTAL line not found in pytest report" >&2
+  tail -30 "$PYTEST_LOG" >&2 || true
+  exit 1
+fi
 echo "METRIC territory_coverage_pct=$COVERAGE"
 echo "METRIC quality_violations=$QUALITY"
 echo "METRIC mypy_strict_errors=$MYPY_ERRORS"
