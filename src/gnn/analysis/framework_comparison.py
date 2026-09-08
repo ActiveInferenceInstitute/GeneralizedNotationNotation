@@ -1,0 +1,1004 @@
+#!/usr/bin/env python3
+"""
+Cross-framework execution-output comparison and reporting for GNN Step 16 analysis.
+
+Extracted from ``analysis.analyzer``.
+"""
+
+import json
+import logging
+from datetime import datetime
+from pathlib import Path
+from typing import (
+    Any,
+    Dict,
+    List,
+    Optional,
+)
+
+import numpy as np
+
+
+def analyze_framework_outputs(
+    execution_output_dir: Path,
+    logger: Optional[logging.Logger] = None,
+    allowed_frameworks: Optional[set[str]] = None,
+) -> Dict[str, Any]:
+    """
+    Analyze and compare outputs from the current execution framework scope.
+
+    Args:
+        execution_output_dir: Directory containing execution results (e.g., output/12_execute_output)
+        logger: Optional logger instance
+        allowed_frameworks: Optional normalized framework names to include
+
+    Returns:
+        Dictionary with framework comparison results
+    """
+    import json
+    import logging
+
+    if logger is None:
+        logger = logging.getLogger(__name__)
+
+    results: dict[str, Any] = {
+        "timestamp": datetime.now().isoformat(),
+        "frameworks": {},
+        "comparisons": {},
+        "metrics": {},
+    }
+
+    # Read execution summary - check summaries/ subfolder first, recovery to root
+    execution_summary_file = (
+        execution_output_dir / "summaries" / "execution_summary.json"
+    )
+    if not execution_summary_file.exists():
+        execution_summary_file = execution_output_dir / "execution_summary.json"
+    if not execution_summary_file.exists():
+        logger.warning(f"Execution summary not found at {execution_summary_file}")
+        return results
+
+    try:
+        with open(execution_summary_file, "r") as f:
+            execution_summary = json.load(f)
+
+        execution_details = execution_summary.get("execution_details", [])
+
+        # Group by framework
+        framework_data: dict[Any, Any] = {}
+        for detail in execution_details:
+            framework = str(detail.get("framework", "unknown"))
+            framework = framework.lower().replace(".", "_").replace(" ", "_")
+            if allowed_frameworks and framework not in allowed_frameworks:
+                continue
+            if framework not in framework_data:
+                framework_data[framework] = []
+            framework_data[framework].append(detail)
+
+        # Extract metrics from each framework
+        for framework, details in framework_data.items():
+            framework_results: dict[str, Any] = {
+                "success_count": sum(1 for d in details if d.get("success", False)),
+                "total_count": len(details),
+                "execution_times": [d.get("execution_time", 0) for d in details],
+                "output_files": [d.get("output_file", "") for d in details],
+                "implementation_dirs": [
+                    d.get("implementation_directory", "") for d in details
+                ],
+            }
+
+            # Try to extract simulation data
+            simulation_metrics = _extract_simulation_metrics(
+                framework, details, execution_output_dir, logger
+            )
+            framework_results.update(simulation_metrics)
+
+            results["frameworks"][framework] = framework_results
+
+        # Perform cross-framework comparisons
+        results["comparisons"] = _compare_framework_results(
+            results["frameworks"], logger
+        )
+
+        # Generate aggregate metrics
+        results["metrics"] = _calculate_aggregate_metrics(results["frameworks"], logger)
+
+    except Exception as e:
+        logger.error(f"Error analyzing framework outputs: {e}")
+        import traceback
+
+        logger.debug(traceback.format_exc())
+
+    return results
+
+
+def _discopy_inline_circuit_from_structured(
+    data: Dict[str, Any], metrics: Dict[str, Any]
+) -> None:
+    """Fill circuit_info / model_parameters from Step 12 DisCoPy execution log JSON."""
+    sim = data.get("simulation_data") or {}
+    analysis = sim.get("analysis")
+    params = sim.get("parameters")
+    components = sim.get("components") or []
+    if analysis is None and not params and not components:
+        return
+    if not metrics.get("circuit_info"):
+        num_c = 0
+        if isinstance(analysis, dict):
+            num_c = int(analysis.get("num_components", 0) or 0)
+        if not num_c and components:
+            num_c = len(components)
+        metrics["circuit_info"] = {
+            "model_name": data.get("model_name", ""),
+            "components": components,
+            "num_components": num_c,
+            "parameters": params or {},
+        }
+    if params and not metrics.get("model_parameters"):
+        metrics["model_parameters"] = {
+            "num_states": params.get("num_states", 0),
+            "num_observations": params.get("num_observations", 0),
+            "num_actions": params.get("num_actions", 0),
+        }
+
+
+def _extract_simulation_metrics(
+    framework: str,
+    details: List[Dict[str, Any]],
+    execution_output_dir: Path,
+    logger: logging.Logger,
+) -> Dict[str, Any]:
+    """Extract simulation-specific metrics from framework outputs.
+
+    Searches simulation_data/ subdirectories and maps framework-specific
+    keys to a standardized format for cross-framework comparison.
+    """
+    metrics: dict[str, Any] = {
+        "beliefs": [],
+        "actions": [],
+        "observations": [],
+        "free_energy": [],
+        "execution_times": [],
+        "num_timesteps": None,
+        "validation": {},
+        "model_parameters": {},
+        "data_source": None,
+    }
+    execution_root = execution_output_dir.resolve()
+
+    def _resolve_current_output_path(path_value: Any) -> Path | None:
+        """Resolve an execution artifact path, rejecting paths outside this run."""
+        if not path_value:
+            return None
+        raw_path = Path(str(path_value))
+        candidates = [raw_path]
+        if not raw_path.is_absolute():
+            candidates.extend(
+                [
+                    execution_output_dir / raw_path,
+                    execution_output_dir.parent / raw_path,
+                ]
+            )
+        for candidate in candidates:
+            try:
+                resolved = candidate.resolve()
+                resolved.relative_to(execution_root)
+            except (OSError, ValueError):
+                continue
+            return resolved
+        logger.debug(
+            "  [%s] Ignoring artifact outside current output tree: %s",
+            framework,
+            path_value,
+        )
+        return None
+
+    def _derive_framework_output_dir(detail: Dict[str, Any]) -> Path | None:
+        """Derive the current-run model/framework output directory from Step 12 details."""
+        impl_dir = _resolve_current_output_path(detail.get("implementation_directory"))
+        if impl_dir and impl_dir.exists():
+            return impl_dir
+
+        for path_key in ("structured_result_file", "output_file", "simulation_data"):
+            artifact_path = _resolve_current_output_path(detail.get(path_key))
+            if not artifact_path:
+                continue
+            candidate = (
+                artifact_path if artifact_path.is_dir() else artifact_path.parent
+            )
+            if candidate.name == "execution_logs":
+                candidate = candidate.parent
+            if candidate.exists():
+                return candidate
+
+        model_name = detail.get("model_name")
+        if model_name:
+            candidate = (
+                execution_output_dir
+                / str(model_name)
+                / framework.lower().replace(".", "_").replace(" ", "_")
+            )
+            if candidate.exists():
+                return candidate
+        return None
+
+    for detail in details:
+        framework_key = framework.lower().replace(".", "_").replace(" ", "_")
+        # Collect execution time from the detail record
+        exec_time = detail.get("execution_time", 0)
+        if exec_time:
+            metrics["execution_times"].append(exec_time)
+        if detail.get("success") is False or detail.get("skipped") is True:
+            logger.debug("  [%s] Skipping non-successful execution detail", framework)
+            continue
+
+        impl_dir = _derive_framework_output_dir(detail)
+        if not impl_dir or not impl_dir.exists():
+            logger.debug(
+                "  [%s] implementation directory missing or outside current output tree",
+                framework,
+            )
+            continue
+
+        # Search for simulation data files. PyMDP is schema-locked to
+        # pymdp_simulation_v1; other frameworks still have heterogeneous outputs.
+        candidate_files: List[Path] = []
+
+        def _add_unique(paths: List[Path], p: Path) -> None:
+            """Handle add unique for internal callers."""
+            if p not in paths:
+                paths.append(p)
+
+        if framework_key == "pymdp":
+            sr = detail.get("structured_result_file")
+            if sr:
+                sp = _resolve_current_output_path(sr)
+                if sp and sp.is_file():
+                    try:
+                        with open(sp, "r", encoding="utf-8") as handle:
+                            structured = json.load(handle)
+                        for collected_path in structured.get(
+                            "collected_outputs", {}
+                        ).get("simulation_data", []):
+                            cp = _resolve_current_output_path(collected_path)
+                            if cp and cp.is_file():
+                                _add_unique(candidate_files, cp)
+                    except (json.JSONDecodeError, OSError) as exc:
+                        logger.debug(
+                            "  [pymdp] Unable to inspect structured result %s: %s",
+                            sp,
+                            exc,
+                        )
+
+            sim_dirs: list[Any] = [impl_dir / "simulation_data"]
+            if impl_dir.name == "simulation_data":
+                sim_dirs.append(impl_dir)
+            for sim_dir in sim_dirs:
+                if not sim_dir.exists():
+                    continue
+                for named_result in sorted(sim_dir.glob("*_simulation_results.json")):
+                    _add_unique(candidate_files, named_result)
+                bare_result = sim_dir / "simulation_results.json"
+                if bare_result.exists():
+                    _add_unique(candidate_files, bare_result)
+            direct_result = impl_dir / "simulation_results.json"
+            if direct_result.exists():
+                _add_unique(candidate_files, direct_result)
+        else:
+            for p in (
+                impl_dir / "simulation_data" / "simulation_results.json",
+                impl_dir / "simulation_results.json",
+                impl_dir / "results.json",
+                impl_dir / "output.json",
+                impl_dir / "traces.json",
+            ):
+                _add_unique(candidate_files, p)
+
+            try:
+                for found_file in impl_dir.rglob("simulation_results.json"):
+                    _add_unique(candidate_files, found_file)
+            except Exception as e:
+                logger.debug(f"Error during recursive search in {impl_dir}: {e}")
+
+            sr = detail.get("structured_result_file")
+            if sr:
+                sp = _resolve_current_output_path(sr)
+                if sp and sp.is_file():
+                    _add_unique(candidate_files, sp)
+            exec_logs = impl_dir / "execution_logs"
+            if exec_logs.is_dir():
+                try:
+                    for rj in sorted(exec_logs.glob("*_results.json")):
+                        _add_unique(candidate_files, rj)
+                except OSError as e:
+                    logger.debug(f"  [{framework}] execution_logs glob failed: {e}")
+
+        for output_file in candidate_files:
+            if output_file.exists():
+                try:
+                    with open(output_file, "r") as f:
+                        data = json.load(f)
+
+                    if framework_key == "pymdp":
+                        payload = data
+                        nested_payload = data.get("simulation_data")
+                        if payload.get("schema_version") != "pymdp_simulation_v1":
+                            payload = (
+                                nested_payload
+                                if isinstance(nested_payload, dict)
+                                else {}
+                            )
+                        if payload.get("schema_version") != "pymdp_simulation_v1":
+                            logger.debug(
+                                "  [pymdp] Skipping non-v1 result: %s", output_file
+                            )
+                            continue
+
+                        metrics["data_source"] = str(output_file)
+                        logger.info(
+                            f"  [{framework}] Loaded pymdp_simulation_v1 data from: {output_file}"
+                        )
+                        beliefs = (payload.get("beliefs_by_factor", {}) or {}).get(
+                            "joint_state", []
+                        )
+                        actions = (
+                            payload.get("actions_by_control_factor", {}) or {}
+                        ).get("joint_action", [])
+                        observations = (
+                            payload.get("observations_by_modality", {}) or {}
+                        ).get("joint_observation", [])
+                        free_energy = payload.get("expected_free_energy", [])
+                        if not free_energy:
+                            free_energy = payload.get("variational_free_energy", [])
+
+                        metrics["beliefs"] = beliefs
+                        metrics["actions"] = actions
+                        metrics["observations"] = observations
+                        metrics["free_energy"] = free_energy
+                        metrics["num_timesteps"] = len(beliefs) if beliefs else None
+                        metrics["validation"] = payload.get("validation", {})
+                        metrics["model_parameters"] = payload.get(
+                            "model_parameters", {}
+                        )
+                        confidence = (payload.get("metrics", {}) or {}).get(
+                            "belief_confidence", []
+                        )
+                        if confidence:
+                            metrics["belief_confidence"] = confidence
+                        break
+
+                    metrics["data_source"] = str(output_file)
+                    logger.info(
+                        f"  [{framework}] Loaded simulation data from: {output_file}"
+                    )
+
+                    # Extract beliefs - top-level, simulation_trace, or Step 12 structured simulation_data
+                    beliefs = data.get("beliefs", [])
+                    if not beliefs:
+                        beliefs = data.get("simulation_trace", {}).get("beliefs", [])
+                    if not beliefs:
+                        beliefs = data.get("simulation_data", {}).get("beliefs", [])
+                    if beliefs:
+                        metrics["beliefs"] = beliefs
+
+                    # Extract actions
+                    actions = data.get("actions", [])
+                    if not actions:
+                        actions = data.get("simulation_trace", {}).get("actions", [])
+                    if not actions:
+                        actions = data.get("simulation_data", {}).get("actions", [])
+                    if actions:
+                        metrics["actions"] = actions
+
+                    # Extract observations
+                    observations = data.get("observations", [])
+                    if not observations:
+                        observations = data.get("simulation_trace", {}).get(
+                            "observations", []
+                        )
+                    if not observations:
+                        observations = data.get("simulation_data", {}).get(
+                            "observations", []
+                        )
+                    if observations:
+                        metrics["observations"] = observations
+
+                    # Extract free energy - multiple possible key locations
+                    free_energy = data.get("free_energy", [])
+                    if not free_energy:
+                        free_energy = data.get("efe_history", [])
+                    if not free_energy:
+                        free_energy = data.get("metrics", {}).get(
+                            "expected_free_energy", []
+                        )
+                    if not free_energy:
+                        free_energy = data.get("simulation_trace", {}).get(
+                            "efe_history", []
+                        )
+                    if not free_energy:
+                        free_energy = data.get("simulation_data", {}).get(
+                            "free_energy", []
+                        )
+                    if free_energy:
+                        metrics["free_energy"] = free_energy
+
+                    # Extract additional metadata
+                    metrics["num_timesteps"] = data.get(
+                        "num_timesteps",
+                        data.get("time_steps", len(beliefs) if beliefs else None),
+                    )
+                    metrics["validation"] = data.get("validation", {})
+                    metrics["model_parameters"] = data.get("model_parameters", {})
+                    if (
+                        framework == "bnlearn"
+                        and data.get("success") is not None
+                        and not metrics["model_parameters"]
+                    ):
+                        metrics["model_parameters"] = {
+                            "model_name": data.get("model_name"),
+                            "bnlearn_completed": bool(data.get("success")),
+                        }
+
+                    if framework == "discopy":
+                        _discopy_inline_circuit_from_structured(data, metrics)
+
+                    # Extract belief confidence if available
+                    confidence = data.get("metrics", {}).get("belief_confidence", [])
+                    if not confidence:
+                        confidence = data.get("simulation_trace", {}).get(
+                            "belief_confidence", []
+                        )
+                    if confidence:
+                        metrics["belief_confidence"] = confidence
+
+                    break  # Found data, stop searching
+                except Exception as e:
+                    logger.debug(f"  [{framework}] Error reading {output_file}: {e}")
+                    continue
+
+        # Recovery: CSV simulation data (ActiveInference.jl outputs CSV, not JSON)
+        if framework_key != "pymdp" and not metrics["data_source"]:
+            csv_candidates: list[Any] = [
+                impl_dir / "simulation_data" / "simulation_results.csv",
+            ]
+            # Also search for timestamped CSV files
+            sim_data_dir = impl_dir / "simulation_data"
+            if sim_data_dir.exists():
+                try:
+                    for csv_file in sorted(
+                        sim_data_dir.glob("*_simulation_results.csv")
+                    ):
+                        if csv_file not in csv_candidates:
+                            csv_candidates.append(csv_file)
+                except Exception as e:
+                    logger.debug(
+                        f"Error searching for timestamped CSV files in {sim_data_dir}: {e}"
+                    )
+
+            for csv_file in csv_candidates:
+                if csv_file.exists():
+                    try:
+                        import csv as csv_module
+
+                        beliefs = []
+                        actions = []
+                        observations = []
+
+                        with open(csv_file, "r") as f:
+                            # Skip comment lines (lines starting with #)
+                            lines = [line for line in f if not line.startswith("#")]
+
+                        if lines:
+                            reader = csv_module.reader(lines)
+                            for row in reader:
+                                if len(row) >= 3:
+                                    try:
+                                        observations.append(int(float(row[1])))
+                                        actions.append(int(float(row[2])))
+                                        # Beliefs are remaining columns
+                                        if len(row) > 3:
+                                            belief = [float(x) for x in row[3:]]
+                                            beliefs.append(belief)
+                                    except ValueError as e:
+                                        logger.debug(
+                                            "Skipping non-numeric CSV row: %s", e
+                                        )
+                                        continue
+
+                        if beliefs or actions or observations:
+                            metrics["data_source"] = str(csv_file)
+                            logger.info(
+                                f"  [{framework}] Loaded CSV simulation data from: {csv_file}"
+                            )
+                            if beliefs:
+                                metrics["beliefs"] = beliefs
+                            if actions:
+                                metrics["actions"] = actions
+                            if observations:
+                                metrics["observations"] = observations
+                            metrics["num_timesteps"] = (
+                                len(beliefs) if beliefs else len(actions)
+                            )
+
+                            # Infer validation from data
+                            if beliefs:
+                                sums_valid = all(
+                                    abs(sum(b) - 1.0) < 0.01 for b in beliefs
+                                )
+                                metrics["validation"] = {
+                                    "all_beliefs_valid": True,
+                                    "beliefs_sum_to_one": sums_valid,
+                                    "actions_in_range": True,
+                                }
+                            break
+                    except Exception as e:
+                        logger.debug(
+                            f"  [{framework}] Error reading CSV {csv_file}: {e}"
+                        )
+                        continue
+
+        # Supplement: model_parameters.json (separate from simulation data)
+        if metrics["data_source"] and not metrics["model_parameters"]:
+            params_candidates: list[Any] = [
+                impl_dir / "simulation_data" / "model_parameters.json",
+            ]
+            # Also search for timestamped parameter files
+            params_dir = impl_dir / "simulation_data"
+            if params_dir.exists():
+                try:
+                    for pf in sorted(params_dir.glob("*_model_parameters.json")):
+                        if pf not in params_candidates:
+                            params_candidates.append(pf)
+                except Exception as e:
+                    logger.debug(
+                        f"Error searching for model parameter files in {params_dir}: {e}"
+                    )
+
+            for params_file in params_candidates:
+                if params_file.exists():
+                    try:
+                        with open(params_file, "r") as f:
+                            params_data = json.load(f)
+                        metrics["model_parameters"] = {
+                            "num_states": params_data.get(
+                                "n_states", params_data.get("num_states", 0)
+                            ),
+                            "num_observations": params_data.get(
+                                "n_observations", params_data.get("num_observations", 0)
+                            ),
+                            "num_actions": params_data.get(
+                                "n_actions", params_data.get("num_actions", 0)
+                            ),
+                        }
+                        logger.info(
+                            f"  [{framework}] Loaded model parameters from: {params_file}"
+                        )
+                        break
+                    except Exception as e:
+                        logger.debug(
+                            f"  [{framework}] Error reading params {params_file}: {e}"
+                        )
+
+        # Supplement: circuit_info.json for DisCoPy (after execution log may lack vectors)
+        if not metrics.get("circuit_info"):
+            circuit_candidates: list[Any] = [
+                impl_dir / "simulation_data" / "circuit_info.json",
+            ]
+            sim_data_dir = impl_dir / "simulation_data"
+            if sim_data_dir.exists():
+                try:
+                    for cf in sorted(sim_data_dir.glob("*_circuit_info.json")):
+                        if cf not in circuit_candidates:
+                            circuit_candidates.append(cf)
+                except Exception as e:
+                    logger.debug(
+                        f"Error searching for circuit info files in {sim_data_dir}: {e}"
+                    )
+
+            for circuit_file in circuit_candidates:
+                if circuit_file.exists():
+                    try:
+                        with open(circuit_file, "r") as f:
+                            circuit_data = json.load(f)
+                        if not metrics.get("data_source"):
+                            metrics["data_source"] = str(circuit_file)
+                        metrics["circuit_info"] = {
+                            "model_name": circuit_data.get("model_name", ""),
+                            "components": circuit_data.get("components", []),
+                            "num_components": circuit_data.get("analysis", {}).get(
+                                "num_components",
+                                len(circuit_data.get("components", [])),
+                            ),
+                            "parameters": circuit_data.get("parameters", {}),
+                        }
+                        # Map circuit parameters to standardized model_parameters
+                        params = circuit_data.get("parameters", {})
+                        if params and not metrics.get("model_parameters"):
+                            metrics["model_parameters"] = {
+                                "num_states": params.get("num_states", 0),
+                                "num_observations": params.get("num_observations", 0),
+                                "num_actions": params.get("num_actions", 0),
+                            }
+                        logger.info(
+                            f"  [{framework}] Loaded circuit info from: {circuit_file}"
+                        )
+                        break
+                    except Exception as e:
+                        logger.debug(
+                            f"  [{framework}] Error reading circuit {circuit_file}: {e}"
+                        )
+
+    # Log summary of what was extracted
+    data_found: list[Any] = []
+    if metrics["beliefs"]:
+        data_found.append(f"beliefs({len(metrics['beliefs'])} steps)")
+    if metrics["actions"]:
+        data_found.append(f"actions({len(metrics['actions'])})")
+    if metrics["observations"]:
+        data_found.append(f"observations({len(metrics['observations'])})")
+    if metrics["free_energy"]:
+        data_found.append(f"free_energy({len(metrics['free_energy'])})")
+    if metrics.get("circuit_info"):
+        data_found.append(
+            f"circuit({metrics['circuit_info'].get('num_components', 0)} components)"
+        )
+    if metrics["model_parameters"]:
+        data_found.append("model_parameters")
+
+    if data_found:
+        logger.info(f"  [{framework}] Extracted: {', '.join(data_found)}")
+    else:
+        if (
+            framework == "bnlearn"
+            and details
+            and all(d.get("skipped", False) for d in details)
+        ):
+            logger.info(f"  [{framework}] No simulation data (all runs skipped)")
+        else:
+            logger.warning(f"  [{framework}] No simulation data found")
+
+    return metrics
+
+
+def _compare_framework_results(
+    framework_data: Dict[str, Dict[str, Any]], logger: logging.Logger
+) -> Dict[str, Any]:
+    """Compare results across frameworks using real simulation data."""
+    comparisons: dict[str, Any] = {
+        "success_rates": {},
+        "performance_comparison": {},
+        "metric_agreement": {},
+        "data_coverage": {},
+        "simulation_statistics": {},
+    }
+
+    # Compare success rates
+    for framework, data in framework_data.items():
+        success_count = data.get("success_count", 0)
+        total_count = data.get("total_count", 0)
+        if total_count > 0:
+            comparisons["success_rates"][framework] = success_count / total_count
+
+    # Compare execution times
+    for framework, data in framework_data.items():
+        times = data.get("execution_times", [])
+        if times and any(t > 0 for t in times):
+            valid_times = [t for t in times if t > 0]
+            comparisons["performance_comparison"][framework] = {
+                "mean": float(np.mean(valid_times)),
+                "std": float(np.std(valid_times)) if len(valid_times) > 1 else 0.0,
+                "min": float(np.min(valid_times)),
+                "max": float(np.max(valid_times)),
+            }
+
+    # Compare data coverage — which frameworks produced which data
+    for framework, data in framework_data.items():
+        coverage: dict[str, Any] = {
+            "has_beliefs": bool(data.get("beliefs")),
+            "has_actions": bool(data.get("actions")),
+            "has_observations": bool(data.get("observations")),
+            "has_free_energy": bool(data.get("free_energy")),
+            "has_circuit_info": bool(data.get("circuit_info")),
+            "num_timesteps": data.get("num_timesteps"),
+            "validation_passed": all(data.get("validation", {}).values())
+            if data.get("validation")
+            else None,
+            "data_source": data.get("data_source"),
+        }
+        comparisons["data_coverage"][framework] = coverage
+
+    # Compare simulation statistics across frameworks with data
+    frameworks_with_beliefs = {
+        fw: data for fw, data in framework_data.items() if data.get("beliefs")
+    }
+    frameworks_with_efe = {
+        fw: data for fw, data in framework_data.items() if data.get("free_energy")
+    }
+
+    for framework, data in frameworks_with_beliefs.items():
+        beliefs = data["beliefs"]
+        try:
+            beliefs_arr = np.array(beliefs)
+            if beliefs_arr.ndim == 2:
+                comparisons["simulation_statistics"][framework] = {
+                    "belief_dims": list(beliefs_arr.shape),
+                    "mean_confidence": float(np.mean(np.max(beliefs_arr, axis=1))),
+                    "final_belief": [float(v) for v in beliefs_arr[-1]]
+                    if len(beliefs_arr) > 0
+                    else [],
+                }
+        except Exception as e:
+            logger.debug(f"Error computing belief statistics for {framework}: {e}")
+
+    for framework, data in frameworks_with_efe.items():
+        efe = data["free_energy"]
+        try:
+            efe_arr = np.array(efe, dtype=float)
+            stats = comparisons["simulation_statistics"].get(framework, {})
+            stats["efe_mean"] = float(np.mean(efe_arr))
+            stats["efe_std"] = float(np.std(efe_arr))
+            stats["efe_min"] = float(np.min(efe_arr))
+            stats["efe_max"] = float(np.max(efe_arr))
+            comparisons["simulation_statistics"][framework] = stats
+        except Exception as e:
+            logger.debug(f"Error computing EFE statistics for {framework}: {e}")
+
+    # Metric agreement — if multiple frameworks have beliefs, compare final convergence
+    if len(frameworks_with_beliefs) >= 2:
+        agreement: dict[Any, Any] = {}
+        fw_names = list(frameworks_with_beliefs.keys())
+        for i in range(len(fw_names)):
+            for j in range(i + 1, len(fw_names)):
+                fw_a, fw_b = fw_names[i], fw_names[j]
+                try:
+                    beliefs_a = np.array(frameworks_with_beliefs[fw_a]["beliefs"])
+                    beliefs_b = np.array(frameworks_with_beliefs[fw_b]["beliefs"])
+                    if beliefs_a.shape == beliefs_b.shape:
+                        if beliefs_a.shape[0] > 1:
+                            with np.errstate(divide="ignore", invalid="ignore"):
+                                corr_val = np.corrcoef(
+                                    np.max(beliefs_a, axis=1), np.max(beliefs_b, axis=1)
+                                )[0, 1]
+                            correlation = 0.0 if np.isnan(corr_val) else float(corr_val)
+                        else:
+                            correlation = 0.0
+                        agreement[f"{fw_a}_vs_{fw_b}"] = {
+                            "confidence_correlation": correlation,
+                            "same_dimensions": True,
+                        }
+                    else:
+                        agreement[f"{fw_a}_vs_{fw_b}"] = {
+                            "same_dimensions": False,
+                            "dims_a": list(beliefs_a.shape),
+                            "dims_b": list(beliefs_b.shape),
+                        }
+                except Exception as e:
+                    logger.debug(
+                        f"Error computing metric agreement for {fw_a} vs {fw_b}: {e}"
+                    )
+        comparisons["metric_agreement"] = agreement
+
+    return comparisons
+
+
+def _calculate_aggregate_metrics(
+    framework_data: Dict[str, Dict[str, Any]], logger: logging.Logger
+) -> Dict[str, Any]:
+    """Calculate aggregate metrics across all frameworks."""
+    metrics: dict[str, Any] = {
+        "total_frameworks": len(framework_data),
+        "total_successful": sum(
+            data.get("success_count", 0) for data in framework_data.values()
+        ),
+        "total_executions": sum(
+            data.get("total_count", 0) for data in framework_data.values()
+        ),
+        "overall_success_rate": 0.0,
+    }
+
+    if metrics["total_executions"] > 0:
+        metrics["overall_success_rate"] = (
+            metrics["total_successful"] / metrics["total_executions"]
+        )
+
+    return metrics
+
+
+def generate_framework_comparison_report(
+    comparison_data: Dict[str, Any],
+    output_dir: Path,
+    logger: Optional[logging.Logger] = None,
+) -> str:
+    """
+    Generate a comprehensive comparison report across frameworks,
+    grounded in real simulation data.
+
+    Args:
+        comparison_data: Output from analyze_framework_outputs()
+        output_dir: Directory to save report
+        logger: Optional logger instance
+
+    Returns:
+        Path to generated report file
+    """
+    import json
+    import logging
+
+    if logger is None:
+        logger = logging.getLogger(__name__)
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    # Generate Markdown report
+    report_lines: list[Any] = [
+        "# Framework Execution Comparison Report",
+        "",
+        f"Generated: {comparison_data.get('timestamp', 'Unknown')}",
+        "",
+        "## Summary",
+        "",
+    ]
+
+    metrics = comparison_data.get("metrics", {})
+    report_lines.extend(
+        [
+            f"- Total Frameworks: {metrics.get('total_frameworks', 0)}",
+            f"- Total Executions: {metrics.get('total_executions', 0)}",
+            f"- Successful Executions: {metrics.get('total_successful', 0)}",
+            f"- Overall Success Rate: {metrics.get('overall_success_rate', 0.0):.2%}",
+            "",
+        ]
+    )
+
+    # Framework details with simulation data
+    report_lines.extend(["## Framework Details", ""])
+
+    for framework, data in comparison_data.get("frameworks", {}).items():
+        success_count = data.get("success_count", 0)
+        total_count = data.get("total_count", 0)
+        success_rate = (success_count / total_count * 100) if total_count > 0 else 0
+
+        report_lines.extend(
+            [
+                f"### {framework.upper()}",
+                "",
+                f"- Success Rate: {success_rate:.1f}% ({success_count}/{total_count})",
+            ]
+        )
+
+        # Add execution time if available
+        times = [t for t in data.get("execution_times", []) if t > 0]
+        if times:
+            report_lines.append(f"- Execution Time: {times[0]:.2f}s")
+
+        # Add simulation data coverage
+        n_beliefs = len(data.get("beliefs", []))
+        n_actions = len(data.get("actions", []))
+        n_obs = len(data.get("observations", []))
+        n_efe = len(data.get("free_energy", []))
+        timesteps = data.get("num_timesteps")
+
+        if any([n_beliefs, n_actions, n_obs, n_efe]):
+            report_lines.append(f"- Timesteps: {timesteps}")
+            report_lines.append(
+                f"- Data: beliefs={n_beliefs}, actions={n_actions}, observations={n_obs}, free_energy={n_efe}"
+            )
+
+        # Add validation status
+        validation = data.get("validation", {})
+        if validation:
+            passed = all(validation.values())
+            checks = ", ".join(
+                f"{k}={'✅' if v else '❌'}" for k, v in validation.items()
+            )
+            report_lines.append(
+                f"- Validation: {'✅ ALL PASSED' if passed else '⚠️ ISSUES'} ({checks})"
+            )
+
+        # Add data source
+        source = data.get("data_source")
+        if source:
+            report_lines.append(f"- Data Source: `{source}`")
+
+        report_lines.append("")
+
+    # Simulation Statistics Comparison
+    comparisons = comparison_data.get("comparisons", {})
+    sim_stats = comparisons.get("simulation_statistics", {})
+    if sim_stats:
+        report_lines.extend(
+            [
+                "## Simulation Data Comparison",
+                "",
+                "| Framework | Timesteps | Mean Confidence | EFE Mean | EFE Std |",
+                "|-----------|-----------|-----------------|----------|---------|",
+            ]
+        )
+
+        for framework, stats in sim_stats.items():
+            dims = stats.get("belief_dims", [])
+            timesteps = dims[0] if dims else "N/A"
+            conf = (
+                f"{stats.get('mean_confidence', 0):.4f}"
+                if "mean_confidence" in stats
+                else "N/A"
+            )
+            efe_mean = (
+                f"{stats.get('efe_mean', 0):.4f}" if "efe_mean" in stats else "N/A"
+            )
+            efe_std = f"{stats.get('efe_std', 0):.4f}" if "efe_std" in stats else "N/A"
+            report_lines.append(
+                f"| {framework} | {timesteps} | {conf} | {efe_mean} | {efe_std} |"
+            )
+        report_lines.append("")
+
+    # Data Coverage
+    data_coverage = comparisons.get("data_coverage", {})
+    if data_coverage:
+        report_lines.extend(
+            [
+                "## Data Coverage",
+                "",
+                "| Framework | Beliefs | Actions | Observations | Free Energy | Validation |",
+                "|-----------|---------|---------|--------------|-------------|------------|",
+            ]
+        )
+        for framework, cov in data_coverage.items():
+            report_lines.append(
+                f"| {framework} "
+                f"| {'✅' if cov.get('has_beliefs') else '❌'} "
+                f"| {'✅' if cov.get('has_actions') else '❌'} "
+                f"| {'✅' if cov.get('has_observations') else '❌'} "
+                f"| {'✅' if cov.get('has_free_energy') else '❌'} "
+                f"| {'✅' if cov.get('validation_passed') else ('❌' if cov.get('validation_passed') is False else '—')} |"
+            )
+        report_lines.append("")
+
+    # Metric Agreement
+    metric_agreement = comparisons.get("metric_agreement", {})
+    if metric_agreement:
+        report_lines.extend(["## Cross-Framework Metric Agreement", ""])
+        for pair, agreement in metric_agreement.items():
+            if agreement.get("same_dimensions"):
+                corr = agreement.get("confidence_correlation", 0)
+                report_lines.append(
+                    f"- **{pair}**: confidence correlation = {corr:.4f}"
+                )
+            else:
+                report_lines.append(
+                    f"- **{pair}**: different dimensions ({agreement.get('dims_a')} vs {agreement.get('dims_b')})"
+                )
+        report_lines.append("")
+
+    # Performance comparison
+    if comparisons.get("performance_comparison"):
+        report_lines.extend(
+            [
+                "## Performance Comparison",
+                "",
+                "| Framework | Mean Time (s) | Std Dev | Min | Max |",
+                "|-----------|---------------|---------|-----|-----|",
+            ]
+        )
+
+        for framework, perf in comparisons["performance_comparison"].items():
+            report_lines.append(
+                f"| {framework} | {perf['mean']:.3f} | {perf['std']:.3f} | {perf['min']:.3f} | {perf['max']:.3f} |"
+            )
+        report_lines.append("")
+
+    # Save report to cross_framework subfolder
+    cross_fw_dir = output_dir / "cross_framework"
+    cross_fw_dir.mkdir(parents=True, exist_ok=True)
+    report_file = cross_fw_dir / "framework_comparison_report.md"
+    with open(report_file, "w") as f:
+        f.write("\n".join(report_lines))
+
+    # Also save JSON version
+    json_file = cross_fw_dir / "framework_comparison_data.json"
+    with open(json_file, "w") as f:
+        json.dump(comparison_data, f, indent=2, default=str)
+
+    logger.info(f"Generated framework comparison report: {report_file}")
+
+    return str(report_file)
