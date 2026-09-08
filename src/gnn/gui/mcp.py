@@ -11,6 +11,8 @@ from typing import Any, Dict, Optional
 logger = logging.getLogger(__name__)
 
 # Import utilities from the gui module
+from gnn.utils.mcp_dispatch import run_pipeline_step_mcp
+
 from . import FEATURES, get_available_guis, process_gui
 
 # MCP Tools for GUI Module
@@ -36,27 +38,21 @@ def process_gui_mcp(
     Returns:
         Dictionary with operation status and results.
     """
-    try:
-        success = process_gui(
-            target_dir=Path(target_directory),
-            output_dir=Path(output_directory),
-            verbose=verbose,
-            gui_types=gui_types,
-            headless=headless,
-        )
-        return {
-            "success": success,
-            "target_directory": target_directory,
-            "output_directory": output_directory,
+    return run_pipeline_step_mcp(
+        process_gui,
+        wrapper_name="process_gui_mcp",
+        logger=logger,
+        target_directory=target_directory,
+        output_directory=output_directory,
+        verbose=verbose,
+        extra_step_kwargs={"gui_types": gui_types, "headless": headless},
+        static_extras={
             "gui_types": gui_types.split(","),
             "mode": "headless" if headless else "interactive",
-            "message": f"GUI processing {'completed successfully' if success else 'failed'}",
-        }
-    except Exception as e:
-        logger.error(
-            f"Error in process_gui_mcp for {target_directory}: {e}", exc_info=True
-        )
-        return {"success": False, "error": str(e)}
+        },
+        label="GUI processing",
+        failure_wording="failed",
+    )
 
 
 def list_available_guis_mcp() -> Dict[str, Any]:
