@@ -62,7 +62,7 @@ All pipeline steps follow the thin orchestrator pattern. Each step is documented
 **Key Parsing Patterns:**
 
 ```python
-# src/gnn/schema_validator.py:58-63 (actual regex patterns)
+# src/gnn/schema_validator/syntax.py:58-63 (actual regex patterns)
 SECTION_PATTERN = re.compile(r"^## (.+)$")
 VARIABLE_PATTERN = re.compile(
     r"^([\w_π][\w\d_π]*)(\[([^\]]+)\])?(?:,type=([a-zA-Z]+))?(?:\s*#\s*(.*))?$"
@@ -286,7 +286,7 @@ Step 11 (Render) → generated framework code
 #### Parsing System
 
 - **Main Interface:** `src/gnn/multi_format_processor.py`
-- **Schema Validation:** `src/gnn/schema_validator.py:GNNParser` (line 54)
+- **Schema Validation:** `src/gnn/schema_validator/syntax.py:GNNParser` (line 54)
 - **Multi-format Support:** `src/gnn/parsers/` directory
   - `markdown_parser.py`: Standard GNN markdown format
   - `python_parser.py`: Neural network implementations (line 25)

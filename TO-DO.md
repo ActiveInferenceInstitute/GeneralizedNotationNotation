@@ -31,15 +31,37 @@ shelled out to the retired pre-restructure orchestrator (`main.py` at the
 NameError. Tests: `tests/pipeline/test_health_check.py` and
 `tests/pipeline/test_pipeline_validator.py`.
 
+MAJ-04 closed 2026-09-07: all six >2000-line modules decomposed via the
+3.3.0 `execute/processor.py` split pattern (mechanical sibling extraction,
+facade re-exports preserved, one module per PR) — `analysis/visualizations.py`
+2412→58 (PR #29), `analysis/analyzer.py` 2031→263 (PR #32),
+`render/jax/jax_renderer.py` 2200→170 (PR #33), `render/discopy/translator.py`
+2150→303 (PR #34), `integration/meta_analysis/visualizer.py` 2871→283 (PR #40,
+`Sweep*Mixin` variant preserving byte-identical class-method moves), and
+`testing/test_round_trip.py` 2214→1356 (PR #43, `round_trip_*` siblings).
+Class-method bodies moved verbatim into mixins where module-level extraction
+was impossible. Every facade re-exports every moved name (no consumer
+import-path changes; per-module facade-contract probes 31/34/27/36/13/47
+names), moved code verified byte-identical modulo imports
+(2347/2001/2190/2108/2811/2172 lines), full suite green at every PR
+(4263→4272 passed), mypy/ruff 0 throughout. Session benchmark
+`oversized_module_lines` 13878 → 0: no tracked `src/gnn` Python file exceeds
+2000 lines (`gnn_python_lines` +0.6% across the series — code moved, not
+deleted). The row's "shared subprocess envelope the nine per-framework
+renderers duplicate" item is RESCOPED to its own future work: renderers
+contain zero subprocess code (verified); the duplication is execute-side
+(`rxinfer`/`stan`/`lean`/`activeinference` runners + 4 `executor.py` MCP
+methods vs the canonical `execute_script_safely` at `execute/executor.py:1089-1200`)
+and needs a behavior-preserving refactor with its own tests, not a
+mechanical split.
+
 ## Open Scoped Roadmap
 
 Every item below is cold-startable: scope, files, verification, and acceptance
-are pinned. Rough order: MAJ-05 -> MAJ-06 -> MAJ-04 (largest; one module
-per PR).
+are pinned.
 
 | ID | Scope | Acceptance evidence |
 | --- | --- | --- |
-| MAJ-04 | Decompose the six >2000-line modules via the 3.3.0 `execute/processor.py` split pattern (mechanical extraction into sibling modules, facade re-exports preserved, one module per PR). **LANDED 2026-09-07 (deep-horizon session, 4/6):** `analysis/visualizations.py` 2412→58 (PR #29), `analysis/analyzer.py` 2031→263 (PR #32), `render/jax/jax_renderer.py` 2200→170 (PR #33), `render/discopy/translator.py` 2150→303 (PR #34). **REMAINING:** `integration/meta_analysis/visualizer.py` 2871 — class-method split must preserve byte-identity, so extract `Sweep*PlotMixin` siblings holding verbatim method blocks (runtime/metric/summary/export seams; facade keeps `__init__`, `generate_all`, `_safe_log_scale`, and the `_MPL_AVAILABLE` binding that `tests/integration/test_integration_meta_analysis_validation.py:287-289` monkeypatches); `testing/test_round_trip.py` 2214 — extract config dicts, result dataclasses, `_DirectMarkdownParser`, `_compare_*` helpers, and report writer into `round_trip_*` siblings (non-`test_` names so explicit-path collection is unchanged); facade keeps availability flags, `sys.path.insert`/`setrecursionlimit` side effects, tester core, unittest class. **RESCOPED:** the "shared subprocess envelope the nine per-framework renderers duplicate" — renderers contain zero subprocess code (verified); the duplication is execute-side (`rxinfer/stan/lean/activeinference` runners + 4 `executor.py` MCP methods vs the canonical `execute_script_safely` at `execute/executor.py:1089-1200`) and needs a behavior-preserving refactor with its own tests, not a mechanical split. | Landed modules: no import-path changes (per-module facade-contract probes: 31/34/27/36 names importable), mypy 0 errors, `ruff check src/gnn scripts` clean, targeted module tests green, full suite 4263 passed / 0 failed, moved code byte-identical modulo import lines (2347/2001/2190/2108 verified per module). Session benchmark `oversized_module_lines` 13878 → 5085 (-63.4%). |
 
 
 ### Smaller scoped cleanups (independent of the majors)
@@ -75,22 +97,12 @@ per PR).
   of the old import path. Verify: import-site grep updated with zero
   stragglers, `uv run --extra dev mypy src` clean, MCP tools and CLI paths
   unchanged, module tests green.
-- Stale singular module paths in maintained docs (companion to the
-  `gnn.gnn` import-path fix): 21 occurrences (19 lines) of
-  `src/gnn/parser.py`, `src/gnn/schema.py`, and
-  `src/gnn/schema_validator.py` across 12 live files
-  (CROSS_REFERENCE_INDEX, docs/README, gnn_syntax, language grammars,
-  05_type_checker, reference/SPEC, gnn_file_structure_doc, gnn_schema
-  residual sites, gnn_syntax reference, technical_reference,
-  schema_validator AGENTS/README). Real targets are the packages:
-  `src/gnn/schema/parser.py`, `src/gnn/schema_validator/syntax.py` (or
-  `validator.py`), and `src/gnn/parsers/system.py` — map each occurrence
-  to the module that actually defines the named symbol before rewriting;
-  exclude fleet-logs and VERSION_MAP (historical). Regression gate:
-  `uv run python scripts/check_doc_path_references.py` count-caps these
-  citations at the registered 21 — lower the cap as sites are fixed and
-  add it to Verification Commands when the cap reaches 0. Other gates
-  (docs_audit, gnn_doc_patterns, maintained_doc_terms) stay green.
+- Stale singular module paths in maintained docs: RESOLVED 2026-09-08 —
+  all 21 occurrences (19 lines) of `src/gnn/parser.py`, `src/gnn/schema.py`,
+  and `src/gnn/schema_validator.py` re-pointed to their verified real homes
+  (`schema/parser.py`, `schema_validator/syntax.py`, `parsers/system.py`);
+  regression gate `scripts/check_doc_path_references.py` is CI-wired
+  (local-gates) and strict (cap 0).
 
 ---
 
@@ -122,6 +134,7 @@ uv run python docs/development/docs_audit.py --strict --check-anchors --no-write
 uv run python scripts/check_gnn_doc_patterns.py --strict
 uv run python scripts/check_maintained_doc_terms.py --strict
 uv run python scripts/check_repo_terminology.py --strict
+uv run python scripts/check_doc_path_references.py
 uv run python scripts/check_capability_contracts.py
 uv run python scripts/run_semantic_fidelity_gate.py --output-dir /tmp/semantic_fidelity --strict
 uv run python scripts/run_cross_framework_reliability.py --output-dir /tmp/cross_framework --strict

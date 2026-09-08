@@ -59,7 +59,7 @@ for the current render/execute split.
 - Pipeline order: `src/gnn/pipeline/step_registry.py`
 - CLI options: `src/gnn/utils/arg_parsing.py` and `src/gnn/cli/__init__.py`
 - Automatic YAML path: `input/config.yaml` and `src/gnn/utils/config_loader.py`
-- Required GNN sections: `src/gnn/schema.py`
+- Required GNN sections: `src/gnn/schema/parser.py`
 - Render inventory: `src/gnn/render/framework_registry.py`
 - Execute inventory: `src/gnn/execute/processor.py::parse_frameworks_parameter`
 
