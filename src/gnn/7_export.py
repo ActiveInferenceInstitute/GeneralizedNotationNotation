@@ -6,15 +6,15 @@ This step generates exports in multiple formats (JSON, XML, GraphML, GEXF, Pickl
 
 Architectural Role:
     This is a "thin orchestrator" - a minimal script that delegates core functionality
-    to the corresponding module (src/export/). It handles argument parsing, logging
+    to the corresponding module (src/gnn/export/). It handles argument parsing, logging
     setup, and calls the actual processing functions from the export module.
 
 Pipeline Flow:
     main.py → 7_export.py (this script) → export/ (modular implementation)
 
 How to run:
-  python src/7_export.py --target-dir input/gnn_files --output-dir output --verbose
-  python src/main.py  # (runs as part of the pipeline)
+  python src/gnn/7_export.py --target-dir input/gnn_files --output-dir output --verbose
+  python src/gnn/main.py  # (runs as part of the pipeline)
 
 Expected outputs:
   - Multi-format exports in the specified output directory
@@ -25,7 +25,7 @@ Expected outputs:
 
 If you encounter errors:
   - Check that export dependencies are installed
-  - Check that src/export/ contains export modules
+  - Check that src/gnn/export/ contains export modules
   - Check that the output directory is writable
   - Verify export configuration and format requirements
 """

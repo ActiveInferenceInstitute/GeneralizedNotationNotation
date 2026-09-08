@@ -280,12 +280,12 @@ class TestAnalysisExtraction:
     """Step 16: analysis consumes the factorized schema."""
 
     @pytest.fixture()
-    def payload(self) -> dict[str, Any]:
+    def payload(self, tmp_path: Path) -> dict[str, Any]:
         spec = _factorized_spec([3, 4], 10)
-        script_path = Path("/tmp/gnn_test_analysis_model_jax.py")
+        script_path = tmp_path / "gnn_test_analysis_model_jax.py"
         success, _, _ = render_gnn_to_jax(spec, script_path)
         assert success
-        out_dir = Path("/tmp/gnn_test_analysis_out")
+        out_dir = tmp_path / "gnn_test_analysis_out"
         env = dict(os.environ)
         env["GNN_PROJECT_ROOT"] = str(PROJECT_ROOT)
         env["GNN_OUTPUT_DIR"] = str(out_dir)
@@ -295,7 +295,7 @@ class TestAnalysisExtraction:
             text=True,
             env=env,
             timeout=300,
-            cwd="/tmp",
+            cwd=tmp_path,
         )
         assert result.returncode == 0, result.stderr
         return dict(

@@ -200,7 +200,7 @@ class TestDerivedExportAliases:
         import importlib
 
         for step in STEPS:
-            module = importlib.import_module(step.script_stem)
+            module = importlib.import_module(f"gnn.{step.script_stem}")
             func = getattr(module, step.module_function, None)
             assert callable(func), (
                 f"{step.script_stem}: registry function {step.module_function!r} "

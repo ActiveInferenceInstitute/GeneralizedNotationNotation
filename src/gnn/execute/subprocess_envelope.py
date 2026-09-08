@@ -124,6 +124,11 @@ def run_subprocess_envelope(
             stdout, stderr = "", ""
         envelope["error"] = f"Execution timed out after {timeout}s"
         envelope["error_type"] = "TimeoutExpired"
+        # CPython delivers TimeoutExpired stream fragments as bytes even
+        # under ``text=True`` (or ``None`` when nothing was read before the
+        # kill); _as_text normalizes to the documented ``str`` envelope
+        # types, and the kill+drain above preserves the partial output that
+        # subprocess.run would lose on POSIX interpreters before gh-87400.
         envelope["stdout"] = _as_text(stdout)
         envelope["stderr"] = _as_text(stderr)
     except Exception as exc:  # noqa: BLE001 — convert any failure to envelope

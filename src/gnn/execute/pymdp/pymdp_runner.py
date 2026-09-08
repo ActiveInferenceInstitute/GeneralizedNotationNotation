@@ -135,7 +135,8 @@ def execute_pymdp_script_with_outputs(
         src_path = runner_path.parent.parent.parent
         project_root = src_path.parent
 
-        # Add both project root (for 'src.x') and src (for 'utils.x') to PYTHONPATH
+        # Add project root and src/gnn to PYTHONPATH so rendered scripts can
+        # import the gnn package even outside the venv.
         env["PYTHONPATH"] = f"{project_root}:{src_path}:{env.get('PYTHONPATH', '')}"
         env["PYMDP_OUTPUT_DIR"] = str(
             script_output_dir

@@ -9,7 +9,7 @@ Design contract
 ---------------
 * **Nothing is hard-coded.** Every quantitative token is computed from a source
   surface in the repository (``pyproject.toml``, ``input/model_family_manifest.json``,
-  ``src/render/framework_registry.py``, ``src/mcp/audit_report.json``, ``src/STEP_INDEX.md``,
+  ``src/gnn/render/framework_registry.py``, ``src/mcp/audit_report.json``, ``src/gnn/STEP_INDEX.md``,
   ``CHANGELOG.md``, and direct filesystem counts). If a source surface changes,
   re-running this producer changes the manuscript.
 * **Counts describe one commit.** Every source surface is read from the git
@@ -683,7 +683,7 @@ def _render_step_table(steps: list[tuple[int, str]], purposes: dict[int, str]) -
     rows.append(
         _caption(
             "The pipeline steps, their thin orchestrator modules, and their "
-            "purposes, read from `src/STEP_INDEX.md`.",
+            "purposes, read from `src/gnn/STEP_INDEX.md`.",
             "pipeline_steps",
         )
     )
@@ -695,7 +695,7 @@ def _capability_clause(axis: str, specs: dict[str, dict]) -> str:
 
     The manifest declares *which* capability axis a family exercises (e.g.
     ``"capability_axis": "supports_continuous"``); the split itself is read from
-    ``src/render/framework_registry.py``. The manifest must never restate the
+    ``src/gnn/render/framework_registry.py``. The manifest must never restate the
     split in prose — that is how ``discopy`` came to be listed as natively
     supporting the continuous family while the registry, the acceptance ledger
     and CLAUDE.md all reported it ``unsupported``.
@@ -743,7 +743,7 @@ def _render_family_table(families: list[dict], specs: dict[str, dict]) -> str:
             "Model families declared in `input/model_family_manifest.json` and "
             "the frameworks each family targets. Capability splits in the "
             "Description column are generated from "
-            "`src/render/framework_registry.py`, not authored in the manifest.",
+            "`src/gnn/render/framework_registry.py`, not authored in the manifest.",
             "model_families",
         )
     )
@@ -757,7 +757,7 @@ def _render_backend_table(backends: list[tuple[str, str, bool]]) -> str:
         rows.append(f"| `{key}` | {name} | {'yes' if executes else 'render-only'} |")
     rows.append(
         _caption(
-            "Render targets in `src/render/framework_registry.py`. The "
+            "Render targets in `src/gnn/render/framework_registry.py`. The "
             "*Executes* column is the registry's own `supports_execution` flag: "
             "a render-only backend has no Step-12 executor.",
             "backend_registry",
@@ -831,7 +831,7 @@ def _cross_framework_selection(
             f"{declared} but the reliability gate profiles none of them "
             f"(MAINTAINED_FRAMEWORKS={list(maintained)}); fix "
             "input/model_family_manifest.json or "
-            "src/pipeline/cross_framework_reliability.py before rendering"
+            "src/gnn/pipeline/cross_framework_reliability.py before rendering"
         )
     return str(family.get("name", "")), declared, profiled
 
@@ -1019,7 +1019,7 @@ def generate_variables(project_root: Path) -> dict[str, str]:
         "GNN_BACKEND_TABLE": backend_table,
         "GNN_EXECUTABLE_BACKEND_COUNT": str(len(executable_backends)),
         "GNN_EXECUTABLE_BACKEND_LIST": ", ".join(executable_backends),
-        # MAINTAINED_FRAMEWORKS in src/pipeline/cross_framework_reliability.py —
+        # MAINTAINED_FRAMEWORKS in src/gnn/pipeline/cross_framework_reliability.py —
         # the set the reliability gate will profile. A strict subset of the
         # registry: GNN_BACKEND_COUNT is never the right number for a sentence
         # about what the gate does.

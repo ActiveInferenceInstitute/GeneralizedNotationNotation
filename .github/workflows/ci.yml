@@ -182,6 +182,42 @@ jobs:
         run: |
           PYTHONPATH=src uv run --extra dev python scripts/run_v3_orchestration_acceptance.py --strict
 
+  extras:
+    # PR-time gate for the 12 environment-skipped tests (11 sklearn cases in
+    # test_ml_integration_inference.py + 1 torch execution case in
+    # test_continuous_renderers.py). Without this job they only run in the
+    # weekly scheduled full-extras workflow. See TO-DO.md MIN-T1.
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    env:
+      PYTHONPATH: src
+      PYTHONHASHSEED: "0"
+      UV_PYTHON: "3.12"
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+
+      - name: Install dependencies (dev + ml-ai + torch)
+        run: uv sync --frozen --extra dev --extra ml-ai --extra torch
+
+      - name: Extras-unlock tests (skipped by the dev-only default env)
+        run: |
+          uv run --extra dev --extra ml-ai --extra torch python -m pytest \
+            tests/ml_integration/test_ml_integration_inference.py \
+            tests/render/test_continuous_renderers.py \
+            -q --tb=short
+
   security:
     runs-on: ubuntu-latest
     timeout-minutes: 20

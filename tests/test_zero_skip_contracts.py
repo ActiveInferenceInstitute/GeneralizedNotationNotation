@@ -28,6 +28,22 @@ DEFAULT_SKIP_ALLOWLIST = {
     # sklearn is an optional ``ml-ai`` extra; the inference round-trip tests
     # skip when scikit-learn is not installed (all uses are deferred imports).
     "tests/ml_integration/test_ml_integration_inference.py",
+    # Bare-form evasions closed 2026-09-08 (deep horizon wave 2): the token
+    # list below now also matches non-decorator ``pytest.mark.skip*`` and
+    # ``unittest.skip*`` usage, so these previously invisible skip sites are
+    # enumerated explicitly with their justifications.
+    # Lean toolchain gate: fep_lean bridge tests skip when the ``lake``
+    # binary/toolchain is unavailable (external toolchain, outside the lock).
+    "tests/execute/test_lean_runner.py",
+    # D2 module + ``d2`` system-binary gates (unittest.skipIf decorators).
+    "tests/visualization/test_d2_visualizer.py",
+    # Environment-integrity gates: skip rather than fail spuriously when the
+    # JAX + pymdp dev stack is broken (``jax_pymdp_stack_ok()``).
+    "tests/execute/test_execute_pymdp_simulation.py",
+    "tests/pipeline/test_pomdp_pipeline_integration.py",
+    # Permission probes: skip when running as root (the probe tests need a
+    # non-root POSIX user for permission-based assertions).
+    "tests/utils/test_shared_helpers.py",
 }
 
 
@@ -38,6 +54,14 @@ FORBIDDEN_SKIP_TOKENS = (
     "@pytest.mark." + "skip",
     "@pytest.mark." + "skipif",
     "@pytest.mark." + "xfail",
+    # Non-decorator marker forms (``pytestmark = pytest.mark.skipif(...)`` and
+    # module-level marker variables) evade the @-prefixed tokens above.
+    "pytest." + "mark.skip",
+    "pytest." + "mark.xfail",
+    # unittest-style skips: decorators and runtime raises.
+    "unittest." + "skip(",
+    "unittest." + "skipIf",
+    "unittest." + "skipUnless",
 )
 
 

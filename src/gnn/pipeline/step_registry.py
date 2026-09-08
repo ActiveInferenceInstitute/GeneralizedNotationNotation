@@ -30,9 +30,10 @@ class StepInfo:
     description: str  # e.g. "Code rendering"
     module_function: str  # e.g. "process_render"
     tags: frozenset[str] = frozenset(("core",))
-    stage: str = "core"  # logical stage: discovery, export_viz, simulation, intelligence, presentation
-    default_recursive: bool = False
-    additional_args_key: str = ""  # key into STEP_ADDITIONAL_ARGUMENTS if any
+    stage: str = (
+        "core"  # logical stage key: discovery_schema, export_static_viz,
+        # simulation_execution, intelligence_analysis, presentation_reporting
+    )
 
     @property
     def script_name(self) -> str:
@@ -62,7 +63,6 @@ STEPS: List[StepInfo] = [
         "setup_orchestrator",
         frozenset({"core"}),
         stage="discovery_schema",
-        additional_args_key="1_setup",
     ),
     StepInfo(
         "2_tests",
@@ -91,7 +91,6 @@ STEPS: List[StepInfo] = [
         "_type_check_dispatch",
         frozenset({"core"}),
         stage="discovery_schema",
-        additional_args_key="5_type_checker",
     ),
     StepInfo(
         "6_validation",
@@ -103,7 +102,7 @@ STEPS: List[StepInfo] = [
     StepInfo(
         "7_export",
         "Multi-format export",
-        "process_export",
+        "_export_with_geo",
         frozenset({"core"}),
         stage="export_static_viz",
     ),
@@ -127,7 +126,6 @@ STEPS: List[StepInfo] = [
         "process_ontology",
         frozenset({"core"}),
         stage="export_static_viz",
-        additional_args_key="10_ontology",
     ),
     StepInfo(
         "11_render",
@@ -149,7 +147,6 @@ STEPS: List[StepInfo] = [
         "process_llm",
         frozenset({"llm"}),
         stage="intelligence_analysis",
-        additional_args_key="13_llm",
     ),
     StepInfo(
         "14_ml_integration",
@@ -199,7 +196,6 @@ STEPS: List[StepInfo] = [
         "process_website",
         frozenset({"core"}),
         stage="presentation_reporting",
-        additional_args_key="20_website",
     ),
     StepInfo(
         "21_mcp",
@@ -207,7 +203,6 @@ STEPS: List[StepInfo] = [
         "process_mcp",
         frozenset({"core"}),
         stage="presentation_reporting",
-        additional_args_key="21_mcp",
     ),
     StepInfo(
         "22_gui",
@@ -222,7 +217,6 @@ STEPS: List[StepInfo] = [
         "process_report",
         frozenset({"core"}),
         stage="presentation_reporting",
-        additional_args_key="23_report",
     ),
     StepInfo(
         "24_intelligent_analysis",

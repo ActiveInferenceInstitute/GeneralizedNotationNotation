@@ -37,6 +37,14 @@ test-cov:
         --ignore=tests/llm/test_llm_ollama.py \
         --ignore=tests/llm/test_llm_ollama_integration.py
 
+# Run the extras-unlock tests (same files the ci.yml `extras` job gates on);
+# needs the ml-ai/torch extras in the environment (uv sync --extra ml-ai --extra torch).
+test-extras:
+    uv run --extra dev --extra ml-ai --extra torch python -m pytest \
+        tests/ml_integration/test_ml_integration_inference.py \
+        tests/render/test_continuous_renderers.py \
+        -q --tb=short
+
 # ─────────────────────────────────────────────
 # Linting & Formatting
 # ─────────────────────────────────────────────

@@ -23,4 +23,4 @@ def main(argv: Optional[List[str]] = None) -> int:
 
 - No state between invocations (pure CLI tool)
 - All domain logic lives in target modules, not in CLI handlers
-- Entry point registered in `pyproject.toml` as `gnn = "src.cli:main"`
+- Entry point registered in `pyproject.toml` as `gnn = "gnn.cli:main"`

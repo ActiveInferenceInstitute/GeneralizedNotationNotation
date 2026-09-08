@@ -14,6 +14,8 @@ tests.
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
 
 from gnn.pipeline.pipeline_runtime_validator import PipelineValidator
@@ -58,6 +60,82 @@ def test_calculate_overall_health_transitions() -> None:
     )
 
 
+def test_probe_targets_exist_in_canonical_layout() -> None:
+    """Retargeted probes must point at real renderer sources.
+
+    Guards against reintroducing the dead pre-3.3.0 ``src/render/...``
+    relative paths, which made every fix flag silently unfireable.
+    """
+    from gnn.pipeline import pipeline_runtime_validator as prv
+
+    root = prv._PROBE_PACKAGE_ROOT
+    assert (root / "render/pymdp/pymdp_renderer.py").is_file()
+    assert (root / "render/jax/jax_model_generator.py").is_file()
+    assert (root / "render/activeinference_jl/activeinference_renderer.py").is_file()
+    assert (root / "utils/pipeline_dependencies.py").is_file()
+
+
+def test_code_generation_fix_probes_validate_clean_tree(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """A clean probe tree flips every fix flag True without raising."""
+    from gnn.pipeline import pipeline_runtime_validator as prv
+
+    monkeypatch.setattr(prv, "_PROBE_PACKAGE_ROOT", tmp_path)
+    (tmp_path / "render/pymdp").mkdir(parents=True)
+    (tmp_path / "render/pymdp/pymdp_renderer.py").write_text("# clean\n")
+    (tmp_path / "render/jax").mkdir()
+    (tmp_path / "render/jax/jax_model_generator.py").write_text(
+        "NUM_STATES = {num_states}\n"
+    )
+    (tmp_path / "render/activeinference_jl").mkdir()
+    (tmp_path / "render/activeinference_jl/activeinference_renderer.py").write_text(
+        "if isinstance(row, (tuple, list)):\n    pass\n"
+    )
+    (tmp_path / "utils").mkdir()
+    (tmp_path / "utils/pipeline_dependencies.py").write_text("")
+
+    validator = PipelineValidator(verbose=False)
+    fixes = validator.validate_code_generation_fixes()
+
+    assert fixes == {
+        "pymdp_import_fix": True,
+        "jax_flax_fix": True,
+        "julia_matrix_fix": True,
+        "dependency_handling": True,
+    }
+
+
+def test_code_generation_fix_probes_fail_closed_on_bad_targets(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """Missing or regressed probe targets leave their flag False, never raise.
+
+    A silently weakened validator must not be able to report success.
+    """
+    from gnn.pipeline import pipeline_runtime_validator as prv
+
+    monkeypatch.setattr(prv, "_PROBE_PACKAGE_ROOT", tmp_path)
+    (tmp_path / "render/pymdp").mkdir(parents=True)
+    (tmp_path / "render/pymdp/pymdp_renderer.py").write_text(
+        "from x import configure_from_gnn_spec\n"
+    )
+    # jax generator missing entirely.
+    (tmp_path / "render/activeinference_jl").mkdir()
+    (tmp_path / "render/activeinference_jl/activeinference_renderer.py").write_text(
+        "x = 1\n"
+    )
+    # dependency manager missing entirely.
+
+    validator = PipelineValidator(verbose=False)
+    fixes = validator.validate_code_generation_fixes()
+
+    assert fixes["pymdp_import_fix"] is False
+    assert fixes["jax_flax_fix"] is False
+    assert fixes["julia_matrix_fix"] is False
+    assert fixes["dependency_handling"] is False
+
+
 def test_old_import_path_warns_and_reexports() -> None:
     """The renamed module's old path must still import, warn, and bind the
     same objects (compatibility contract for external callers).
@@ -77,6 +155,8 @@ def test_old_import_path_warns_and_reexports() -> None:
     ), "old import path must emit DeprecationWarning"
     from gnn.pipeline.pipeline_runtime_validator import (
         PipelineValidator as Canonical,
+    )
+    from gnn.pipeline.pipeline_runtime_validator import (
         main as canonical_main,
     )
 
