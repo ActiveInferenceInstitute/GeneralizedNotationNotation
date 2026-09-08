@@ -277,10 +277,12 @@ def _normalize_serialization(text: str) -> str:
 def phase_round_trip(
     parsing_system: Any,
     json_format: Any,
+    md_format: Any,
     files: list[Path],
+    file_contents: dict[Path, str],
     expected_serializations: dict[str, str],
 ) -> float:
-    """Real GNN parser/serializer round-trip: parse_file → serialize → parse_string → serialize.
+    """Real GNN parser/serializer round-trip: parse_string → serialize → parse_string → serialize.
 
     Exercises the 23-parser / 22-serializer system (not json.dumps on a plain
     dict). Each file is round-tripped through JSON format with a
@@ -288,18 +290,21 @@ def phase_round_trip(
     ``created_at``/``modified_at`` model fields stripped) — a regression in
     parser or serializer determinism fails the bench instead of producing a
     number.
+
+    Uses ``parse_string`` with pre-cached content (not ``parse_file``) so
+    the phase measures parser+serializer CPU, not file I/O.
     """
     t0 = time.perf_counter()
     for _ in range(ROUND_TRIP_INNER):
         for path in files:
-            result = parsing_system.parse_file(path)
+            result = parsing_system.parse_string(file_contents[path], md_format)
             s1 = parsing_system.serialize(result.model, json_format)
             result2 = parsing_system.parse_string(s1, json_format)
             s2 = parsing_system.serialize(result2.model, json_format)
             # Within-rep equality holds raw: parse_string preserves
             # timestamps from the serialized string, so s1 == s2 without
             # normalization. Only the cross-rep check (against the warm-up
-            # pin) needs normalization (each parse_file generates new
+            # pin) needs normalization (each parse generates new
             # datetime.now() timestamps).
             _check(s1 == s2, f"round-trip drift for {path.name}")
             _check(
@@ -323,7 +328,9 @@ def run_rep(context: dict[str, Any]) -> dict[str, float]:
     t_round_trip = phase_round_trip(
         context["parsing_system"],
         context["json_format"],
+        context["md_format"],
         context["files"],
+        context["file_contents_round_trip"],
         context["expected_serializations"],
     )
     t_dispatch = phase_dispatch(
@@ -403,7 +410,7 @@ def main() -> int:
             expected[path.name] = _digest(result)
             # Pin the round-trip serialization at warm-up so every rep
             # verifies the serializer hasn't drifted.
-            rt_result = parsing_system.parse_file(path)
+            rt_result = parsing_system.parse_string(content, GNNFormat.MARKDOWN)
             expected_serializations[path.name] = _normalize_serialization(
                 parsing_system.serialize(rt_result.model, json_format)
             )
@@ -470,6 +477,12 @@ def main() -> int:
 
         setup_seconds = time.perf_counter() - setup_start
 
+        # Pre-read file contents for the round-trip phase so it measures
+        # parser+serializer CPU, not file I/O.
+        file_contents_round_trip = {
+            path: path.read_text(encoding="utf-8") for path in files
+        }
+        md_format = GNNFormat.MARKDOWN
         context = {
             "parse_gnn_file": parse_gnn_file,
             "handle_mcp_request": handle_mcp_request,
@@ -478,8 +491,10 @@ def main() -> int:
             "validation_step": process_validation,
             "parsing_system": parsing_system,
             "json_format": json_format,
+            "md_format": md_format,
             "files": files,
             "contents": contents,
+            "file_contents_round_trip": file_contents_round_trip,
             "expected_serializations": expected_serializations,
             "output_dir": output_dir,
             "bench_logger": bench_logger,

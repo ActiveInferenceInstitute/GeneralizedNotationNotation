@@ -202,8 +202,33 @@ Scope from a six-lens read-only audit (registry, dispatcher/serialization,
 subprocess envelope, per-framework executors, resources/docs, test gaps) of
 `src/gnn/mcp/**` and `src/gnn/execute/**`. Session benchmark:
 `bash autoresearch.sh` (`scripts/run_autoresearch_bench.py`, primary metric
-`mcp_execute_bench_ms`, 952 pinned determinism checks) — every row below
-must leave it green.
+`mcp_execute_bench_ms`, 1208 pinned determinism checks) — every row below
+must leave it green. Segment-2 optimizations (PRs #79, #80, #84, #85, #87)
+improved the primary metric from 1555.3 ms → 1288.1 ms (-17.2%) while
+adding a GNNParsingSystem round-trip phase that exercises the 23-parser /
+22-serializer system.
+
+Completed rows (file:line evidence in PR descriptions):
+- MAJ-08 ✓ (PR #65): shared `serialize_response` choke point — unserializable
+  tool results no longer hang stdio or abort HTTP; NaN/Inf → canonical tokens;
+  cache-key type-tag de-aliasing
+- MAJ-09 ✓ (PR #65): `MCPTool.timeout` enforced via dedicated bounded pool,
+  new wire code -32008
+- MAJ-10 ✓ (PR #70): step-12 processor migrated onto canonical envelope;
+  shared exit-code sentinels; kill+drain partial output; sandbox/julia_setup/
+  lean delegated
+- MED-01 ✓ (PR #66): signature mismatches → -32602; None output allowed;
+  `validation_mode` in capabilities
+- MED-02 ✓ (PR #76): real `list_available_resources`; HTTP gate/capability
+  agreement; docs drift fixed; dead `npx_inspector.get_resource` routed
+- MIN-02 ✓ (PR #73): 12 registry-internals tests
+- MIN-03 ✓ (PR #73): envelope `input=` support; 141/141 schema-vs-signature
+  audit
+
+Remainders (scoped, cold-startable):
+- MED-03: executor timeout/classification divergence (pymdp/rxinfer/lean)
+- MED-04: no request-size limits on HTTP/stdio
+- MIN-01: registry/transport hygiene (dead code, cache by-reference, ensure_ascii)
 
 | ID | Sev | Scope | Acceptance evidence |
 | --- | --- | --- | --- |
