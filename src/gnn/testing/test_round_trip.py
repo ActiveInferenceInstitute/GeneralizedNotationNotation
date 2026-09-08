@@ -86,6 +86,10 @@ from .round_trip_results import (
     RoundTripResult,
 )
 
+# Note: do NOT set sys.setrecursionlimit at module scope — it poisons the
+# process for any other test that imports this module (RecursionError in
+# unrelated tests). The default limit (1000+) is adequate here.
+
 # Configure logging based on configuration
 if LOGGING_CONFIG["suppress_parser_warnings"]:
     logging.getLogger("gnn.parsers").setLevel(logging.ERROR)
