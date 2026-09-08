@@ -13,7 +13,7 @@ validation half → `validator.py`) plus `src/gnn/cross_format_validator.py`
 src/gnn/schema_validator/
 ├── __init__.py        # Curated public surface (__all__)
 ├── syntax.py          # GNNParser: regex-based GNN source parser → ParsedGNN
-├── validator.py       # GNNValidator + validate_gnn_file: schema, round-trip, semantic checks
+├── validator.py       # GNNValidator + validate_gnn_file_comprehensive: schema, round-trip, semantic checks
 ├── cross_format.py    # CrossFormatValidator: cross-format consistency validation
 ├── README.md          # This documentation
 └── AGENTS.md          # Agent scaffolding documentation
@@ -25,7 +25,7 @@ src/gnn/schema_validator/
 from gnn.schema_validator import (
     GNNParser,
     GNNValidator,
-    validate_gnn_file,
+    validate_gnn_file_comprehensive,
     validate_cross_format_consistency,
 )
 
@@ -38,7 +38,7 @@ result = GNNValidator().validate_file("my_model.gnn")
 assert result.is_valid
 
 # One-shot convenience
-result = validate_gnn_file("my_model.gnn")
+result = validate_gnn_file_comprehensive("my_model.gnn")
 ```
 
 Notes:

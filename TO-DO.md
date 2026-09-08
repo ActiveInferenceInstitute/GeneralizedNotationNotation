@@ -40,7 +40,7 @@ per PR).
 | ID | Scope | Acceptance evidence |
 | --- | --- | --- |
 | MAJ-04 | Decompose the six >2000-line modules (`integration/meta_analysis/visualizer.py` 2871, `analysis/visualizations.py` 2412, `testing/test_round_trip.py` 2214, `render/jax/jax_renderer.py` 2200, `render/discopy/translator.py` 2150, `analysis/analyzer.py` 2031) following the 3.3.0 `execute/processor.py` split pattern (mechanical extraction into sibling modules, facade re-exports preserved, one module per PR), and extract the shared subprocess envelope the nine per-framework renderers duplicate. | Per module: no import path changes (old names still importable), `uv run --extra dev mypy src` clean, `just lint` and `just format-check` clean, module tests plus `just test` green, moved code byte-identical modulo import lines. |
-| MAJ-05 | De-duplicate the `validate_gnn*` public surface - 6+ unrelated semantics share the name (`gnn/__init__.py` `validate_gnn_file`, `llm/llm_operations.py` `validate_gnn`, `parsers/basic.py` `validate_gnn` / `validate_gnn_syntax_formal`, `processing/processor.py` `validate_gnn_structure`, `mcp/processors.py` `validate_gnn_cross_format_consistency`, `execute/pymdp/pymdp_utils.py`). Rename to unambiguous names with deprecation aliases, one module per PR. | One unambiguous `def validate_gnn*` name per semantic; every old name re-exported with a `DeprecationWarning`; old-name and new-name tests pass; MCP tool registry unchanged. |
+
 
 ### Smaller scoped cleanups (independent of the majors)
 

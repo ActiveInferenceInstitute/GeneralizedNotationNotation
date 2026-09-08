@@ -3,6 +3,7 @@
 GNN parser module for GNN pipeline.
 """
 
+import warnings
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union, cast
 
@@ -264,8 +265,16 @@ def parse_gnn_formal(file_path: Union[str, Any]) -> Optional[_GNNParseAccumulato
 
 
 def validate_gnn_syntax_formal(content: str) -> Tuple[bool, List[str]]:
-    """Validate GNN syntax using the formal parser facade."""
-    return GNNFormalParser().validate_syntax(content)
+    """Old name for :func:`validate_gnn` at the STANDARD level.
+
+    Retained for compatibility; emits DeprecationWarning.
+    """
+    warnings.warn(
+        "validate_gnn_syntax_formal is an old name; use validate_gnn instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return validate_gnn(content)
 
 
 def get_parse_tree_visualization(content: str) -> str:

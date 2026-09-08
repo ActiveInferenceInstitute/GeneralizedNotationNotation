@@ -31,6 +31,7 @@ if TYPE_CHECKING:
     from .pipeline import run_pipeline
     from .processing.multi_format_processor import process_gnn_multi_format
     from .processing.processor import (
+        check_gnn_file_structure,
         discover_gnn_files,
         generate_gnn_report,
         get_module_info,
@@ -80,6 +81,7 @@ _EXPORT_MAP: dict[str, str] = {
     "parse_gnn_file": "processing.processor",
     "process_gnn_directory": "processing.processor",
     "process_gnn_directory_lightweight": "processing.processor",
+    "check_gnn_file_structure": "processing.processor",
     "validate_gnn_structure": "processing.processor",
     # types — canonical domain types
     "ParsedGNN": "types",
@@ -149,6 +151,7 @@ __all__: list[Any] = [
     "process_gnn_directory_lightweight",
     "discover_gnn_files",
     "parse_gnn_file",
+    "check_gnn_file_structure",
     "validate_gnn_structure",
     "process_gnn_directory",
     "generate_gnn_report",
