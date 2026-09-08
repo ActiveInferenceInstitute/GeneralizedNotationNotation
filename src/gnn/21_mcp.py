@@ -6,15 +6,15 @@ This step orchestrates Model Context Protocol processing for GNN models.
 
 Architectural Role:
     This is a "thin orchestrator" - a minimal script that delegates core functionality
-    to the corresponding module (src/mcp/). It handles argument parsing, logging
+    to the corresponding module (src/gnn/mcp/). It handles argument parsing, logging
     setup, and calls the actual processing functions from the mcp module.
 
 Pipeline Flow:
     main.py → 21_mcp.py (this script) → mcp/ (modular implementation)
 
 How to run:
-  python src/21_mcp.py --target-dir input/gnn_files --output-dir output --verbose
-  python src/main.py  # (runs as part of the pipeline)
+  python src/gnn/21_mcp.py --target-dir input/gnn_files --output-dir output --verbose
+  python src/gnn/main.py  # (runs as part of the pipeline)
 
 Expected outputs:
   - MCP processing results in the specified output directory
@@ -24,7 +24,7 @@ Expected outputs:
 
 If you encounter errors:
   - Check that mcp dependencies are installed
-  - Check that src/mcp/ contains mcp modules
+  - Check that src/gnn/mcp/ contains mcp modules
   - Check that the output directory is writable
   - Verify mcp configuration and requirements
 """

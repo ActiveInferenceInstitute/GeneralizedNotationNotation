@@ -6,8 +6,8 @@ This step orchestrates ontology processing and validation for GNN models.
 It is a thin orchestrator that delegates core functionality to the ontology module.
 
 How to run:
-  python src/10_ontology.py --target-dir input/gnn_files --output-dir output --verbose
-  python src/main.py  # (runs as part of the pipeline)
+  python src/gnn/10_ontology.py --target-dir input/gnn_files --output-dir output --verbose
+  python src/gnn/main.py  # (runs as part of the pipeline)
 
 Expected outputs:
   - Ontology processing results in the specified output directory
