@@ -31,13 +31,13 @@ if TYPE_CHECKING:
     from .pipeline import run_pipeline
     from .processing.multi_format_processor import process_gnn_multi_format
     from .processing.processor import (
+        check_gnn_file_structure,
         discover_gnn_files,
         generate_gnn_report,
         get_module_info,
         parse_gnn_file,
         process_gnn_directory,
         process_gnn_directory_lightweight,
-        check_gnn_file_structure,
         validate_gnn_structure,
     )
     from .render.processor import get_available_renderers, render_gnn_spec
