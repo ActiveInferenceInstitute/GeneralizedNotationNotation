@@ -51,3 +51,6 @@ jobs:
 
       - name: MCP + skills resolvability health gate
         run: uv run --extra dev python scripts/check_mcp_skills_health.py --strict
+
+      - name: Doc path reference gate
+        run: uv run --extra dev python scripts/check_doc_path_references.py

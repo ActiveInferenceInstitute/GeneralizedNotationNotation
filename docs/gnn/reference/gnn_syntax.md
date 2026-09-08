@@ -30,7 +30,7 @@ For complete pipeline documentation, see **[src/gnn/AGENTS.md](../../../src/gnn/
 A valid GNN file uses the following sections in the order below. Two distinct
 levels of obligation apply, and it is worth keeping them apart:
 
-- **Enforced** — listed in `src/gnn/schema.py::REQUIRED_SECTIONS`. Absence is
+- **Enforced** — listed in `src/gnn/schema/parser.py::REQUIRED_SECTIONS`. Absence is
   a hard error: `validate_required_sections` emits `GNN-E001`
   (*missing required section*) and the file fails type checking.
 - **Expected** — not checked by the validator, but every sample in

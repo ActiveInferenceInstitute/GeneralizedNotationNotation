@@ -18,8 +18,8 @@
 
 ## Module Structure
 
-Three concerns, one package (split from the former single-file
-`src/gnn/schema_validator.py` plus `src/gnn/cross_format_validator.py` in 3.2.0):
+Three concerns, one package (split in 3.2.0 from a former single-file
+validator module plus a standalone cross-format module):
 
 1. `syntax.py` — `GNNParser`: regex-based parsing of GNN source text into a
    `ParsedGNN` structure. No validation policy; parsing only.
@@ -32,7 +32,8 @@ Three concerns, one package (split from the former single-file
    consistency checks across the rendered output formats.
 
 Shared types (`ValidationLevel`, `ValidationResult`, `ParsedGNN`) come from
-`src/gnn/types.py`; the package `__init__.py` re-exports them for convenience.
+`src/gnn/types/` (definitions in `definitions.py`); the package `__init__.py`
+re-exports them for convenience.
 
 ## Agent Guidance
 

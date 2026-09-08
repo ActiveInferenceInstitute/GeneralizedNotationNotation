@@ -97,22 +97,12 @@ are pinned.
   of the old import path. Verify: import-site grep updated with zero
   stragglers, `uv run --extra dev mypy src` clean, MCP tools and CLI paths
   unchanged, module tests green.
-- Stale singular module paths in maintained docs (companion to the
-  `gnn.gnn` import-path fix): 21 occurrences (19 lines) of
-  `src/gnn/parser.py`, `src/gnn/schema.py`, and
-  `src/gnn/schema_validator.py` across 12 live files
-  (CROSS_REFERENCE_INDEX, docs/README, gnn_syntax, language grammars,
-  05_type_checker, reference/SPEC, gnn_file_structure_doc, gnn_schema
-  residual sites, gnn_syntax reference, technical_reference,
-  schema_validator AGENTS/README). Real targets are the packages:
-  `src/gnn/schema/parser.py`, `src/gnn/schema_validator/syntax.py` (or
-  `validator.py`), and `src/gnn/parsers/system.py` — map each occurrence
-  to the module that actually defines the named symbol before rewriting;
-  exclude fleet-logs and VERSION_MAP (historical). Regression gate:
-  `uv run python scripts/check_doc_path_references.py` count-caps these
-  citations at the registered 21 — lower the cap as sites are fixed and
-  add it to Verification Commands when the cap reaches 0. Other gates
-  (docs_audit, gnn_doc_patterns, maintained_doc_terms) stay green.
+- Stale singular module paths in maintained docs: RESOLVED 2026-09-08 —
+  all 21 occurrences (19 lines) of `src/gnn/parser.py`, `src/gnn/schema.py`,
+  and `src/gnn/schema_validator.py` re-pointed to their verified real homes
+  (`schema/parser.py`, `schema_validator/syntax.py`, `parsers/system.py`);
+  regression gate `scripts/check_doc_path_references.py` is CI-wired
+  (local-gates) and strict (cap 0).
 
 ---
 
@@ -144,6 +134,7 @@ uv run python docs/development/docs_audit.py --strict --check-anchors --no-write
 uv run python scripts/check_gnn_doc_patterns.py --strict
 uv run python scripts/check_maintained_doc_terms.py --strict
 uv run python scripts/check_repo_terminology.py --strict
+uv run python scripts/check_doc_path_references.py
 uv run python scripts/check_capability_contracts.py
 uv run python scripts/run_semantic_fidelity_gate.py --output-dir /tmp/semantic_fidelity --strict
 uv run python scripts/run_cross_framework_reliability.py --output-dir /tmp/cross_framework --strict

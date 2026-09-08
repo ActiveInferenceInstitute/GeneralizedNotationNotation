@@ -77,7 +77,7 @@ A complete GNN file includes the following sections in this order. Section
 headers are single CamelCase tokens with no spaces — `## StateSpaceBlock`,
 never `## State space block`. Five of them (`GNNSection`,
 `GNNVersionAndFlags`, `ModelName`, `StateSpaceBlock`, `Connections`) are
-enforced by `src/gnn/schema.py::REQUIRED_SECTIONS`; the rest are expected by
+enforced by `src/gnn/schema/parser.py::REQUIRED_SECTIONS`; the rest are expected by
 downstream pipeline steps but not rejected in their absence. See the
 obligation table in [`gnn_syntax.md`](gnn_syntax.md#canonical-section-inventory).
 
