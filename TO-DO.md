@@ -116,20 +116,54 @@ are pinned.
   regression gate `scripts/check_doc_path_references.py` is CI-wired
   (local-gates) and strict (cap 0).
 
+## Deep horizon wave 2 - pipeline orchestration
+
+Scouted 2026-09-08 against tip b73e467bf (six read-only scouts over
+`src/gnn/pipeline/`, the 25 numbered orchestrators, and pipeline-facing
+diagnostics). Import-surface retirement (v3.3.0) is clean; remaining defects
+are stale-path bugs, silent-swallow hardening gaps, and untested wiring
+surfaces.
+
+| ID | Scope | Acceptance evidence |
+| --- | --- | --- |
+| W2-D1 | Medium: `src/gnn/pipeline/pipeline_runtime_validator.py:63-89` probes retired `src/render/...` paths (post-v3.3.0 they are `src/gnn/render/...`), so every renderer probe silently no-ops and the check validates nothing. Retarget probes to the real package paths via `importlib.util` source lookup; delete or fail-loud unreachable ones. | At least one probe reads an existing renderer file and one deliberate bad-path probe is covered by a test that fails when the path is missing; `uv run --extra dev python -m pytest tests/pipeline/test_pipeline_runtime_validator.py -q` green. |
+| W2-D2 | Medium: `src/gnn/utils/pipeline_arguments.py:138` defaults `--ontology-terms-file` to the retired `src/ontology/act_inf_ontology_terms.json` (real file lives at `src/gnn/ontology/`), so the default always misses at runtime. Point the default at the packaged file; migrate fixture strings in `src/gnn/utils/test_utils.py:445,531`. | Pipeline runs without `--ontology-terms-file` resolve the packaged file; fixture-updated tests pass; no other `src/ontology` string remains in src/. |
+| W2-D3 | Medium: `src/gnn/execute/executor.py:91` imports `get_output_dir_for_script` from the legacy `gnn.utils.pipeline_template` copy while `gnn.pipeline.config` is canonical. Cutover the import and add a module-level `DeprecationWarning` re-export shim on the legacy symbol (MAJ-05 pattern). | Same directory names for `12_execute.py` before/after; `gnn.utils.pipeline_template.get_output_dir_for_script` emits `DeprecationWarning`; zero internal non-test callers of the legacy symbol. |
+| W2-D4 | Medium: 11→12 handoff is silent when `render_processing_summary.json` is missing (`execute/processor.py:549` defaults `require_render_summary=False`). Flip the default to True with an explicit opt-out; verify the public POMDP GridWorld run still passes (render always precedes execute there). | Step 12 without a render summary fails exit 1 unless opted out; `just pipeline` / public-run receipts unaffected; targeted execute tests green. |
+| W2-D5 | Medium: preflight's cheap `validate_config` (`src/gnn/pipeline/preflight.py:165-184`) is never run by the pipeline itself - bad `pipeline.skip_steps` config is only caught if the user separately ran `gnn preflight`. Wire the config-only validation into `_prepare_pipeline_context` (`src/gnn/main.py`) before any step executes. | `pipeline.skip_steps: ["abc"]` in `input/config.yaml` fails the run fast with the preflight message before step 0; config-free runs unaffected; new wiring test green. |
+| W2-D6 | Medium: `health_check.py` error branches untested (version_issues :210-214, julia subprocess failure :274-286, incomplete structure :334-337, limited/partial integration :358-366, scoring tiers :388-449, recommendations :456-520, `main()` exit codes :655-700, verbose report). Add monkeypatched deterministic tests; fix stale header comment (:15-16) and the `/24 available` vs 25-step strings (:593,598,684). | +8-10 tests in `tests/pipeline/test_health_check.py`, all offline; full health-check file green; cosmetic strings consistent. |
+| W2-D7 | Medium: composition wiring untested - config-driven `only_steps`/`skip_steps` fallback, `skip_llm` auto-inject, `--autonomous` main() branch, serial/parallel loops with faked `execute_pipeline_step`, publish-gate failure → `_save_minimal_pipeline_summary`, mid-run crash receipt, `GNN_RUN_ID` env scope, `testing_matrix` global_steps skip + folder fan-out (all in `src/gnn/main.py`). Also delete worthless tests: `tests/pipeline/test_pipeline_overall.py` hasattr-façade checks and dict-replay step-numbering test. | Cheap (<10ms each) wiring tests assert real main.py decisions with faked executors; deleted tests' assertions replaced by behavior tests; orchestration subset green. |
+| W2-M1 | Minor: registry dead metadata - `StepInfo.additional_args_key` points at nonexistent `STEP_ADDITIONAL_ARGUMENTS` (step_registry.py:35); `default_recursive` field never consumed (scripts pass it directly to the template); stale stage-name comment (step_registry.py:33); registry `module_function` for 7_export documents inner `process_export` while the script registers wrapper `_export_with_geo` (rename the wrapper). | No `additional_args_key`/`STEP_ADDITIONAL_ARGUMENTS`/`default_recursive` references remain; `STANDARD_MODULE_FUNCTION_NAMES["7_export"]` matches the registered callable; step-registry tests green. |
+| W2-M2 | Minor: `config.py` hardening - unknown stems silently fall back to `<stem>_output` (config.py:193-211) so producer/consumer can diverge on typos; YAML parse failure logged at `debug` (config.py:50-59); unreachable `.py` branch (config.py:172-178). Add a warning naming the script on the recovery path, raise parse-failure logging to error with the path, remove the dead branch with a pinning unit test. | Unknown stem logs a visible warning; malformed config produces error-level log with path; `get_output_dir_for_script("7_export.py", ...)` still returns `7_export_output`; targeted tests green. |
+| W2-M3 | Minor: retired dotted-module references - `src/gnn/cli/SPEC.md:26` says `gnn = "src.cli:main"`, `src/gnn/mcp/README.md:362` documents `-m src.mcp.cli`; stale pre-v3.3.0 PYTHONPATH comment `src/gnn/execute/pymdp/pymdp_runner.py:137-139`; stale Julia project paths `src/gnn/render/health.py:63-64` (real envs under `src/gnn/execute/`); comment-only stub `register_tools` in `src/gnn/utils/test_utils.py:1003-1007`. | No `src.cli`/`src.mcp` dotted refs in src/gnn; documented stdio config resolves; stub deleted; mcp tool-count audit stays ≥140. |
+| W2-M4 | Minor: stale path prose in all 25 numbered-script docstrings + `main.py` usage examples (main.py:37-47) + manuscript prose strings (`src/gnn/manuscript/variables.py:12,686,698,746,760,834`). Mechanical: `python src/NN_*.py` → `uv run python src/gnn/NN_*.py`, `src/X/` → `gnn/X` package refs. | `grep -rn "python src/(main\\\\.py\|[0-9])"` over src/gnn returns zero; doc gates (`check_gnn_doc_patterns`, `check_maintained_doc_terms`, `check_repo_terminology`, `check_doc_path_references`) pass. |
+| W2-J1 | Major: three independent base-output-dir reconstruction heuristics (`export/processor.py:537-544` name-prefix heuristic, `analysis/framework_common.py:127-132` ImportError sibling fallback, `gui/runner.py:26-30` broad-except fallback) duplicate path logic with silent divergence risk. Consolidate into one `resolve_step_output_dir(step_stem, output_dir)` helper in `gnn.pipeline.config` with explicit nested-dir tests; migrate all call sites. | Single helper; all three call sites migrated with identical resolved paths for `output/`, `output/7_export_output/`, and arbitrary subdirs; unit tests pin nested inputs; full orchestration gate green. |
+
+Out-of-scope observations (recorded, not scoped): `PipelineContext`
+(`src/gnn/pipeline/context.py`) is dead weight - never instantiated by
+main.py or any step; docs claim otherwise (context.py:3-5,
+pipeline/AGENTS.md:148). AGENTS.md "Data Dependencies" graph overstates
+in-memory propagation (steps 5/6/8/10/11/13 re-parse input; only 3→7 and
+11→12 consume artifacts). `run_session`/durable streams are not wired into
+main.py composition (feature gap, not a test gap). These need a design
+decision, not a mechanical fix.
 ## Deep horizon wave 2 - render backends
 
 Scoping for `src/gnn/render/**` (2026-09-08, deep-horizon session). RB-01
-through RB-07 are RESOLVED (see `CHANGELOG.md`): the deterministic corpus x
+through RB-09 are RESOLVED (see `CHANGELOG.md`): the deterministic corpus x
 framework conformance benchmark (`bash autoresearch.sh`;
 `scripts/bench_render_backends.py`) drove contract modernization to the
 maintained delegated-executor output shapes, and the conformance-validated
 rendering count moved 142 -> 258 of 258 (0 contract violations, 0 syntax
-errors, 0 render errors, 12 by-design unsupported). Remaining open surface:
-
-| ID | Scope | Acceptance evidence |
-| --- | --- | --- |
-| RB-08 | Minor: `src/gnn/render/rxinfer/toml_generator.py` (46KB) is production-dead (the `rxinfer_toml` target is rejected in `render_gnn_spec` and the CLI choice was removed) but stays importable via two contract-test files and `scripts/check_capability_contracts.py` text markers. Decide: migrate the still-used matrix parsers (`_parse_gnn_matrix`, `_parse_gnn_3d_matrix`, `_parse_gnn_vector`) and topology-structure helpers to a live module (or fold them into the rxinfer renderer), then delete the retired emitter and update the three consumers. | Import-site grep for `toml_generator` returns zero production references; the two test files pin the migrated home; `check_capability_contracts.py` passes against the new location; no render/execute behavior change on the bench. |
-| RB-09 | Minor: generator-facade status decision for `src/gnn/render/generators.py` public exports `generate_rxinfer_code` / `generate_activeinference_jl_code` (exported and README-documented but production routes use the dedicated renderers) and the legacy `src/gnn/render/pymdp_template.py` template (alive only through `generate_pymdp_code`, whose only production caller is the non-POMDP basic fallback). Either document the facade as the supported public surface with tests that pin it, or retire the exports with a deprecation window. | Decision recorded here with evidence; either facade tests pin the exports end to end, or a deprecation alias emits `DeprecationWarning` and consumer grep shows zero stragglers. |
+errors, 0 render errors, 12 by-design unsupported). RB-08 deleted the
+retired `toml_generator.py` emitter, migrating its live matrix parsers and
+topology contract helpers to `src/gnn/render/rxinfer/model_contracts.py`.
+RB-09 recorded the generator-facade decision: the
+`generate_rxinfer_code` / `generate_activeinference_jl_code` exports are
+the supported public surface, pinned end to end by
+`tests/render/test_generators_coverage.py`; `pymdp_template.py` stays with
+its only production caller (the non-POMDP basic fallback). Nothing remains
+open in this subsection.
 
 ---
 

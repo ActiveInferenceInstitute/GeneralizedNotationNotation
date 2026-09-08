@@ -215,3 +215,15 @@ def test_package_root_syntax_formal_lazy_export_still_deprecated() -> None:
     # The lazy re-export resolves to the parsers.basic alias wrapper whose
     # ``stacklevel=2`` must attribute the warning to this caller.
     assert caught[0].filename == __file__
+
+
+def test_pipeline_template_output_dir_reexport_warns() -> None:
+    """The legacy ``gnn.utils.pipeline_template`` re-export of the canonical
+    ``gnn.pipeline.config.get_output_dir_for_script`` must warn and forward.
+    """
+    import gnn.utils.pipeline_template as template
+    from gnn.pipeline.config import get_output_dir_for_script as canonical
+
+    with pytest.warns(DeprecationWarning):
+        legacy = template.get_output_dir_for_script  # noqa: B018
+    assert legacy is canonical

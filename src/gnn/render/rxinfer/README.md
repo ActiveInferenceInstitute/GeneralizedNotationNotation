@@ -30,8 +30,8 @@ Generated scripts import RxInfer.jl and write `simulation_results.json` with sch
 | LEARNING | `LearningStrategy` | `learning_pomdp_model` — likelihood matrix A learned as a latent `DirichletCollection` from `dirichlet_A` pseudo-counts; reports learned-A mean and prior/posterior distance to the true A |
 | MULTI_AGENT | `MultiAgentStrategy` | native compilation when >= 2 complete agent groups are declared: one genuine `pomdp_model` inference per agent (no joint expansion), then a post-hoc `env_signal` trace (deposit + decay) explicitly stamped as not latent-inferred/action-conditioned; specs without per-agent matrices keep the documented joint composition with the true kind stamped |
 
-The TOML emission entry point in `toml_generator.py` is retired and emits a
-`DeprecationWarning`; topology parsing helpers remain in use by contract tests.
+The retired TOML emitter (`toml_generator.py`) was deleted; the topology
+parsing helpers live on in `model_contracts.py`, pinned by contract tests.
 
 ## Generated-script outputs
 

@@ -531,18 +531,12 @@ def process_export(
     geo_options = kwargs.get("geo_infer")
 
     try:
-        # Load parsed GNN data from previous step (step 3)
-        from gnn.pipeline.config import get_output_dir_for_script
+        # Load parsed GNN data from previous step (step 3). The consolidated
+        # helper walks up out of any ``*_output`` subdir, so the old
+        # name-prefix heuristic (6_/7_/8_ -> parent) is no longer needed.
+        from gnn.pipeline.config import resolve_step_output_dir
 
-        # Look in the base output directory, not the step-specific directory
-        base_output_dir = (
-            Path(output_dir).parent
-            if Path(output_dir).name.startswith(
-                ("6_validation", "7_export", "8_visualization")
-            )
-            else output_dir
-        )
-        gnn_output_dir = get_output_dir_for_script("3_gnn.py", base_output_dir)
+        gnn_output_dir = resolve_step_output_dir("3_gnn", Path(output_dir))
         gnn_results_file = gnn_output_dir / "gnn_processing_results.json"
 
         if not gnn_results_file.exists():

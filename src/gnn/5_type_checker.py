@@ -6,15 +6,15 @@ This step performs type checking and validation on GNN files.
 
 Architectural Role:
     This is a "thin orchestrator" - a minimal script that delegates core functionality
-    to the corresponding module (src/type_checker/). It handles argument parsing, logging
+    to the corresponding module (src/gnn/type_checker/). It handles argument parsing, logging
     setup, and calls the actual processing functions from the type_checker module.
 
 Pipeline Flow:
     main.py → 5_type_checker.py (this script) → type_checker/ (modular implementation)
 
 How to run:
-  python src/5_type_checker.py --target-dir input/gnn_files --output-dir output --verbose
-  python src/main.py  # (runs as part of the pipeline)
+  python src/gnn/5_type_checker.py --target-dir input/gnn_files --output-dir output --verbose
+  python src/gnn/main.py  # (runs as part of the pipeline)
 
 Expected outputs:
   - Type checking results in the specified output directory
@@ -24,7 +24,7 @@ Expected outputs:
 
 If you encounter errors:
   - Check that type checker dependencies are installed
-  - Check that src/type_checker/ contains type checker modules
+  - Check that src/gnn/type_checker/ contains type checker modules
   - Check that the output directory is writable
   - Verify type checker configuration and requirements
 """

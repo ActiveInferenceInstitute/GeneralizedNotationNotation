@@ -19,6 +19,19 @@ except ImportError:
     yaml = cast(Any, None)
     _YAML_AVAILABLE = False
 
+# Exception types for config parsing. yaml.YAMLError only exists when PyYAML
+# imported successfully; referencing yaml.YAMLError inside an except tuple
+# would raise AttributeError on the error path when it is absent.
+_YAML_PARSE_ERRORS: tuple[type[Exception], ...] = (
+    (yaml.YAMLError,) if _YAML_AVAILABLE else ()
+)
+_CONFIG_PARSE_ERRORS: tuple[type[Exception], ...] = (
+    json.JSONDecodeError,
+    OSError,
+    ValueError,
+    *_YAML_PARSE_ERRORS,
+)
+
 # Canonical default paths used across the pipeline package (single source).
 DEFAULT_TARGET_DIR = "input/gnn_files"
 DEFAULT_OUTPUT_DIR = "output"
@@ -64,14 +77,15 @@ class PipelineConfig:
                     if self.config_path.suffix in (".yaml", ".yml"):
                         if _YAML_AVAILABLE:
                             return yaml.safe_load(f) or {}
-                        else:
-                            # Gracefully degrade: cannot parse YAML; return empty config
-                            # Downstream code should use sensible defaults
-                            return {}
+                        logger.warning(
+                            "PyYAML unavailable; ignoring config file %s",
+                            self.config_path,
+                        )
+                        return {}
                     else:
                         return cast("dict[str, Any]", json.load(f))
-            except (json.JSONDecodeError, OSError, ValueError) as e:
-                logger.debug("Could not parse config file %s: %s", self.config_path, e)
+            except _CONFIG_PARSE_ERRORS as e:
+                logger.error("Could not parse config file %s: %s", self.config_path, e)
                 return {}
         return {}
 
@@ -169,19 +183,8 @@ def get_output_dir_for_script(script_name: str, base_output_dir: Path) -> Path:
             return base_output_dir
         return result
 
-    # Accept '.py' suffix keys as well
-    if script_name.endswith(".py"):
-        normalized = script_name[:-3]
-        mapped = output_dir_for_stem(normalized)
-        if mapped is not None:
-            result = base_output_dir / mapped
-            if base_output_dir.name == mapped:
-                return base_output_dir
-            return result
-
     # Get expected output directory name for this script
     expected_dir_name = f"{normalized}_output"
-
     # Check if base_output_dir already ends with the expected directory name
     # This prevents nested directories like "10_ontology_output/10_ontology_output"
     if base_output_dir.name == expected_dir_name:
@@ -204,5 +207,57 @@ def get_output_dir_for_script(script_name: str, base_output_dir: Path) -> Path:
             actual_base.parent if actual_base.name.endswith("_output") else actual_base
         )
 
-    # Default recovery
+    # Default recovery (unregistered script name): warn loudly so a typo like
+    # "5_typecheck.py" (vs the registered "5_type_checker") cannot silently
+    # make producer and consumer disagree about the output directory.
+    logger.warning(
+        "Unregistered script name %r; using fallback output dir %r",
+        script_name,
+        expected_dir_name,
+    )
     return base_output_dir / expected_dir_name
+
+
+def resolve_step_output_dir(step_stem: str, output_dir: Path) -> Path:
+    """Resolve a step's output directory from an arbitrary caller view.
+
+    Consolidates the three independent base-output-dir reconstruction
+    heuristics that consumers used to reach the same answer:
+
+    - export/processor.py looked up Step 3 results from inside an
+      ``7_export_output`` view (name-prefix parent climb);
+    - analysis/framework_common.py looked up Step 12 execution from inside a
+      ``16_analysis_output`` view (passing ``output_dir.parent``); and
+    - gui/runner.py resolved its own orchestrator output from a base dir.
+
+    All three want the same thing: when ``output_dir`` is already inside a
+    step-output subdirectory (``output/<step>_output`` or deeper), resolve
+    ``step_stem``'s output from the shared pipeline root; otherwise resolve
+    from ``output_dir`` directly. The shared ``_output`` parent is identified
+    by name (the registry-derivable ``<stem>_output`` convention), so no
+    caller-specific prefix list is needed.
+
+    Args:
+        step_stem: Registry step stem, e.g. ``"3_gnn"`` or ``"12_execute"``.
+        output_dir: Caller's view of an output directory (base or nested).
+
+    Returns:
+        The resolved ``output/<step_stem>_output`` path.
+    """
+    candidate = output_dir
+    # Find the nearest ``*_output`` ancestor (the step-output subdir the
+    # caller is nested inside); its parent is the shared pipeline root.
+    # If no such ancestor exists, resolve directly from ``output_dir``.
+    step_output_ancestor: Path | None = None
+    walk = output_dir
+    while walk != walk.parent:  # stop at filesystem root
+        if walk.name.endswith("_output"):
+            step_output_ancestor = walk
+            break
+        walk = walk.parent
+    if (
+        step_output_ancestor is not None
+        and step_output_ancestor.parent != step_output_ancestor
+    ):
+        candidate = step_output_ancestor.parent
+    return get_output_dir_for_script(step_stem, candidate)

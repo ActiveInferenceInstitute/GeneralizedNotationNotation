@@ -447,7 +447,7 @@ def run_audit() -> List[str]:
                 f"missing model-family oracle hardening marker {required}"
             )
 
-    rxinfer_toml_text = _read("src/gnn/render/rxinfer/toml_generator.py")
+    rxinfer_toml_text = _read("src/gnn/render/rxinfer/model_contracts.py")
     if not all(
         required in rxinfer_toml_text
         for required in (
@@ -464,7 +464,7 @@ def run_audit() -> List[str]:
     ):
         if required not in rxinfer_toml_text:
             failures.append(
-                "src/gnn/render/rxinfer/toml_generator.py: "
+                "src/gnn/render/rxinfer/model_contracts.py: "
                 f"missing topology fail-closed marker {required}"
             )
 
