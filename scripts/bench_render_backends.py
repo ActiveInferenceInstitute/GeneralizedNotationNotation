@@ -65,22 +65,28 @@ UNDEFINED_SCAN_MAX_BYTES = 1_000_000
 
 def _score_conformance(
     receipt: dict[str, Any],
-) -> tuple[int, int, int, int, int]:
+) -> tuple[int, int, int, int, int, int]:
     """Score emitted artifacts of successful renderings for conformance.
 
     Returns:
         ``(conformance_failures, syntax_errors, contract_violations,
-        undefined_name_findings, undefined_scan_skipped)`` where
+        undefined_name_findings, undefined_scan_skipped,
+        first_party_import_findings)`` where
         ``conformance_failures`` counts successful renderings with at least
         one nonconformant artifact; ``syntax_errors`` counts artifacts
         failing ``compile()``; ``contract_violations`` counts individual
         contract violations across validated artifacts;
         ``undefined_name_findings`` counts Load-context names never bound in
         emitted Python (runtime NameError risk); ``undefined_scan_skipped``
-        counts size-guard skips.
+        counts size-guard skips; ``first_party_import_findings`` counts
+        ``gnn.*`` imports in emitted Python that do not resolve from the
+        repository (stale-template drift; runtime ImportError risk).
     """
     from gnn.render.contracts import CONTRACTS, validate_rendered_output
-    from gnn.render.emitted_artifact_checks import undefined_names
+    from gnn.render.emitted_artifact_checks import (
+        first_party_unresolvable_imports,
+        undefined_names,
+    )
 
     canonical_extensions = {
         name: str(spec.get("file_extension", ""))
@@ -91,6 +97,7 @@ def _score_conformance(
     contract_violations = 0
     undefined_name_findings = 0
     undefined_scan_skipped = 0
+    first_party_import_findings = 0
     for source, record in receipt["file_results"].items():
         if not isinstance(record, dict):
             continue
@@ -126,6 +133,9 @@ def _score_conformance(
                     for name, lineno in findings:
                         undefined_name_findings += 1
                         failures.append(f"undefined-name: {name!r} (line {lineno})")
+                    for module, lineno in first_party_unresolvable_imports(code):
+                        first_party_import_findings += 1
+                        failures.append(f"unresolved-import: {module} (line {lineno})")
                 if extension and path.suffix == extension and framework in CONTRACTS:
                     for violation in validate_rendered_output(
                         code, framework, file_path=str(path)
@@ -142,6 +152,7 @@ def _score_conformance(
         contract_violations,
         undefined_name_findings,
         undefined_scan_skipped,
+        first_party_import_findings,
     )
 
 
@@ -369,6 +380,7 @@ def main() -> int:
         contract_violation_count,
         undefined_name_findings,
         undefined_scan_skipped,
+        first_party_import_findings,
     ) = _score_conformance(receipt)
     determinism_mismatches, determinism_diagnostics = _determinism_mismatches(
         receipt, receipt_second
@@ -388,7 +400,7 @@ def main() -> int:
     print(f"METRIC render_contract_violations={contract_violation_count}")
     print(f"METRIC render_undefined_name_findings={undefined_name_findings}")
     print(f"METRIC render_undefined_scan_skipped={undefined_scan_skipped}")
-    print(f"METRIC render_receipt_integrity_findings={receipt_integrity_findings}")
+    print(f"METRIC render_first_party_import_findings={first_party_import_findings}")
     print(f"METRIC render_files_total={total_files}")
     print(f"METRIC render_files_successful={successful_files}")
     print(f"METRIC render_files_no_attempts={no_attempt_files}")

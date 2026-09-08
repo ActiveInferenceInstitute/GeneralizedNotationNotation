@@ -562,3 +562,43 @@ class TestRenderDeterminism:
             )
             artifacts.append(primary.read_bytes())
         assert artifacts[0] == artifacts[1]
+
+
+class TestFirstPartyImportResolution:
+    """Emitted scripts' ``gnn.*`` imports must resolve from the repository.
+
+    Regression pin for the stale-template drift class: a template importing
+    a renamed first-party module compiles clean and passes every name-based
+    check, yet ImportErrors the moment the emitted script runs.
+    """
+
+    def test_checker_flags_unresolvable_first_party_import(self) -> None:
+        from gnn.render.emitted_artifact_checks import (
+            first_party_unresolvable_imports,
+        )
+
+        code = "from gnn.execute.does_not_exist import thing\n"
+        findings = first_party_unresolvable_imports(code)
+        assert ("gnn.execute.does_not_exist", 1) in findings
+
+    def test_checker_accepts_resolvable_first_party_import(self) -> None:
+        from gnn.render.emitted_artifact_checks import (
+            first_party_unresolvable_imports,
+        )
+
+        code = "from gnn.execute.pymdp import execute_pymdp_simulation\n"
+        assert first_party_unresolvable_imports(code) == []
+
+    def test_corpus_pymdp_runner_imports_resolve(self, tmp_path: Path) -> None:
+        from gnn import parse_gnn_file
+        from gnn.render.emitted_artifact_checks import (
+            first_party_unresolvable_imports,
+        )
+        from gnn.render.processor import render_gnn_spec
+
+        success, message, paths = render_gnn_spec(
+            parse_gnn_file(SAMPLE_GNN), "pymdp", tmp_path
+        )
+        assert success, message
+        primary = next(Path(path) for path in paths if Path(path).suffix == ".py")
+        assert first_party_unresolvable_imports(primary.read_text()) == []
