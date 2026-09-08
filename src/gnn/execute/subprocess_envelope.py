@@ -94,47 +94,30 @@ def run_subprocess_envelope(
 
     start = time.time()
     try:
-        process = subprocess.Popen(  # nosec B603 — argument vector, no shell
+        # subprocess.run is C-optimized for the common success path and
+        # internally kills + drains on timeout, populating the
+        # TimeoutExpired exception's stdout/stderr with the partial output.
+        completed = subprocess.run(  # nosec B603 — argument vector, no shell
             command,
-            stdout=subprocess.PIPE if capture_output else None,
-            stderr=subprocess.PIPE if capture_output else None,
-            stdin=subprocess.PIPE if input is not None else None,
+            capture_output=capture_output,
             text=True,
+            timeout=timeout,
             cwd=cwd,
             env=merged_env,
+            input=input,
+            check=False,
         )
-    except Exception as exc:  # noqa: BLE001 — convert any failure to envelope
-        envelope["error"] = str(exc)
-        envelope["error_type"] = type(exc).__name__
-        envelope["duration_seconds"] = time.time() - start
-        return envelope
-
-    try:
-        stdout, stderr = process.communicate(input=input, timeout=timeout)
-        envelope["return_code"] = process.returncode
-        envelope["success"] = process.returncode == 0
-        envelope["stdout"] = _as_text(stdout)
-        envelope["stderr"] = _as_text(stderr)
-    except subprocess.TimeoutExpired:
-        process.kill()
-        # subprocess.run loses a timed-out child's partial output on POSIX
-        # interpreters before gh-87400; kill + drain keeps whatever the child
-        # already wrote, which is the debugging payload for long-running
-        # failures. The drain is bounded and best-effort (a grandchild holding
-        # the pipe open must not hang the caller).
-        try:
-            stdout, stderr = process.communicate(timeout=5)
-        except Exception:  # noqa: BLE001 — drain is best-effort
-            stdout, stderr = "", ""
+        envelope["return_code"] = completed.returncode
+        envelope["success"] = completed.returncode == 0
+        envelope["stdout"] = _as_text(completed.stdout)
+        envelope["stderr"] = _as_text(completed.stderr)
+    except subprocess.TimeoutExpired as exc:
         envelope["error"] = f"Execution timed out after {timeout}s"
         envelope["error_type"] = "TimeoutExpired"
-        # CPython delivers TimeoutExpired stream fragments as bytes even
-        # under ``text=True`` (or ``None`` when nothing was read before the
-        # kill); _as_text normalizes to the documented ``str`` envelope
-        # types, and the kill+drain above preserves the partial output that
-        # subprocess.run would lose on POSIX interpreters before gh-87400.
-        envelope["stdout"] = _as_text(stdout)
-        envelope["stderr"] = _as_text(stderr)
+        # subprocess.run kills and drains on timeout; the exception carries
+        # the partial output (str under text=True, bytes on some interpreters).
+        envelope["stdout"] = _as_text(exc.stdout) if capture_output else ""
+        envelope["stderr"] = _as_text(exc.stderr) if capture_output else ""
     except Exception as exc:  # noqa: BLE001 — convert any failure to envelope
         envelope["error"] = str(exc)
         envelope["error_type"] = type(exc).__name__

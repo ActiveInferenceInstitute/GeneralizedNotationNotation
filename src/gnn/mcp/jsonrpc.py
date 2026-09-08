@@ -202,14 +202,28 @@ def serialize_response(
     payloads deeper than ``_MAX_SANITIZE_DEPTH`` (callers convert that into a
     string-only -32603 fallback envelope, which this helper serializes
     trivially).
+
+    Fast path: try ``json.dumps`` directly first (the common case — payloads
+    that are already JSON-serializable). Fall back to ``sanitize_json_value``
+    only when the fast path raises (non-serializable types, NaN/Inf, deep
+    nesting), so the deep walk is skipped for every well-formed payload.
     """
-    return json.dumps(
-        sanitize_json_value(payload),
-        indent=indent,
-        separators=separators,
-        ensure_ascii=ensure_ascii,
-        allow_nan=False,
-    )
+    try:
+        return json.dumps(
+            payload,
+            indent=indent,
+            separators=separators,
+            ensure_ascii=ensure_ascii,
+            allow_nan=False,
+        )
+    except (TypeError, ValueError):
+        return json.dumps(
+            sanitize_json_value(payload),
+            indent=indent,
+            separators=separators,
+            ensure_ascii=ensure_ascii,
+            allow_nan=False,
+        )
 
 
 def tag_non_json_values(value: Any, _depth: int = 0) -> Any:
