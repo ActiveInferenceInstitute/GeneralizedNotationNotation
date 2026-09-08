@@ -134,7 +134,7 @@ def run_mcmc(y, u, F, H, Q, R, prior_mean, prior_cov, T, n):
     return means, (max(r_hats) if r_hats else float("nan"))
 '''
 
-_BODY = '''
+_BODY_HEAD = '''
 
 def kalman_step(mu, P, y_t, F, H, Q, R, u_prev, first):
     """One predict/update step. ``first`` skips prediction (prior is for x_1)."""
@@ -207,6 +207,10 @@ def run_simulation():
         "actions": [],
         "efe_history": [],
     }
+'''
+
+
+_NUMPYRO_RESULTS = """
     if FRAMEWORK == "numpyro":
         mcmc_means, r_hat_max = run_mcmc(
             arr(observations), arr(controls), F, H, Q, R, prior_mean, prior_cov, T, n
@@ -217,6 +221,10 @@ def run_simulation():
             np.sqrt(np.mean((np.asarray(mcmc_means) - beliefs_np) ** 2))
         )
         validation["mcmc_finite"] = bool(np.all(np.isfinite(np.asarray(mcmc_means))))
+"""
+
+
+_BODY_TAIL = """
     validation["all_valid"] = all(validation.values())
     results["validation"] = validation
     results["execution_time_seconds"] = round(time.time() - start, 4)
@@ -236,7 +244,7 @@ def run_simulation():
 if __name__ == "__main__":
     res = run_simulation()
     sys.exit(0 if res["validation"]["all_valid"] else 1)
-'''
+"""
 
 
 def generate_continuous_script(spec: ContinuousSpec, backend: str) -> str:
@@ -289,5 +297,8 @@ CONTROL_GAIN = {lits["control_gain"]}
     parts = [header, _BACKEND_HEADER[backend]]
     if backend == "numpyro":
         parts.append(_NUMPYRO_INFERENCE)
-    parts.append(_BODY)
+    parts.append(_BODY_HEAD)
+    if backend == "numpyro":
+        parts.append(_NUMPYRO_RESULTS)
+    parts.append(_BODY_TAIL)
     return "".join(parts)

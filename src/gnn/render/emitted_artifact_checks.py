@@ -1,0 +1,65 @@
+"""Static hygiene checks for emitted render artifacts.
+
+``undefined_names`` is a conservative, dependency-free AST scan: it reports
+Load-context names that are never bound anywhere in the module (imports,
+defs, classes, assignments, args, except handlers, global/nonlocal) and are
+not builtins or module-context names. Binding anywhere counts, so the check
+is imprecise about scoping but has near-zero false positives - the right
+trade for a deterministic benchmark gate and contract tests.
+
+Consumers: ``scripts/bench_render_backends.py`` (corpus x framework
+conformance benchmark) and ``tests/render/test_render_contracts.py``.
+"""
+
+from __future__ import annotations
+
+# Module-context names that are never bound by statements but always exist.
+MODULE_CONTEXT_NAMES = frozenset(
+    {"__name__", "__file__", "__doc__", "__package__", "__spec__", "__loader__"}
+)
+
+
+def undefined_names(code: str) -> tuple[list[tuple[str, int]], bool]:
+    """Scan one Python artifact for statically-undefined names.
+
+    Returns ``((name, line) findings, star_import_present)``. When the module
+    uses a star import the scan is skipped entirely (names cannot be resolved
+    without executing the source module), reported via the second element.
+    """
+    import ast
+    import builtins
+
+    tree = ast.parse(code)
+    bound: set[str] = set(MODULE_CONTEXT_NAMES)
+    star_import = False
+    for node in ast.walk(tree):
+        if isinstance(node, (ast.Import, ast.ImportFrom)):
+            for alias in node.names:
+                if alias.name == "*":
+                    star_import = True
+                    continue
+                bound.add((alias.asname or alias.name).split(".")[0])
+        elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            bound.add(node.name)
+        elif isinstance(node, ast.Name) and isinstance(node.ctx, (ast.Store, ast.Del)):
+            bound.add(node.id)
+        elif isinstance(node, ast.arg):
+            bound.add(node.arg)
+        elif isinstance(node, ast.ExceptHandler) and node.name:
+            bound.add(node.name)
+        elif isinstance(node, (ast.Global, ast.Nonlocal)):
+            bound.update(node.names)
+    if star_import:
+        return [], True
+    findings = sorted(
+        {
+            (node.id, node.lineno)
+            for node in ast.walk(tree)
+            if isinstance(node, ast.Name)
+            and isinstance(node.ctx, ast.Load)
+            and node.id not in bound
+            and not hasattr(builtins, node.id)
+        },
+        key=lambda item: (item[1], item[0]),
+    )
+    return findings, False

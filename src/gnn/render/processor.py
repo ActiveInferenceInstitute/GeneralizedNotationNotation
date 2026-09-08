@@ -375,8 +375,14 @@ def _write_render_receipt(
     summary_file = output_dir / "render_processing_summary.json"
     prior = _load_prior_render_summary(summary_file)
     if prior:
+        # Digest the prior receipt WITHOUT its wall-clock timestamp so an
+        # otherwise-identical rerun maps to the same history archive name
+        # instead of appending a new render-<digest>.json every invocation.
+        digest_payload = {
+            key: value for key, value in prior.items() if key != "timestamp"
+        }
         digest = hashlib.sha256(
-            json.dumps(prior, sort_keys=True, default=str).encode()
+            json.dumps(digest_payload, sort_keys=True, default=str).encode()
         ).hexdigest()
         history = output_dir / "history" / f"render-{digest}.json"
         if not history.exists():
@@ -1172,7 +1178,15 @@ def render_gnn_spec(
                 )
                 return (True, msg, [str(output_file)]) if success else (False, msg, [])
             except ImportError:
-                return False, "DisCoPy renderer not available", []
+                from .health import get_remediation
+
+                remediation = get_remediation("discopy")
+                return (
+                    False,
+                    "DisCoPy renderer not available"
+                    + (f". {remediation}" if remediation else ""),
+                    [],
+                )
 
         elif target_lower in ("jax", "jax_pomdp"):
             try:
@@ -1194,10 +1208,25 @@ def render_gnn_spec(
                 success, msg, art = render_fn(canonical_spec, output_file, options)
                 return (True, msg, art) if success else (False, msg, [])
             except ImportError:
-                return False, "JAX renderer not available", []
+                from .health import get_remediation
+
+                remediation = get_remediation("jax")
+                return (
+                    False,
+                    "JAX renderer not available"
+                    + (f". {remediation}" if remediation else ""),
+                    [],
+                )
 
         else:
-            return False, f"Unsupported target: {target}", []
+            from .framework_registry import FRAMEWORK_REGISTRY
+
+            known = sorted(set(FRAMEWORK_REGISTRY) | {"jax_pomdp", "discopy_combined"})
+            return (
+                False,
+                f"Unsupported target: {target}. Known targets: {', '.join(known)}",
+                [],
+            )
 
         if files:
             return True, f"Successfully generated {target} code", files
@@ -1205,7 +1234,7 @@ def render_gnn_spec(
             return False, f"Failed to generate {target} code", []
 
     except Exception as e:
-        return False, f"Error rendering {target}: {e}", []
+        return False, f"Error rendering {target}: {type(e).__name__}: {e}", []
 
 
 def get_module_info() -> Dict[str, Any]:

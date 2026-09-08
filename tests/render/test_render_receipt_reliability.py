@@ -77,3 +77,16 @@ def test_bnlearn_capability_is_render_only() -> None:
         for name, spec in FRAMEWORK_REGISTRY.items()
         if name != "bnlearn"
     )
+
+
+def test_identical_rerun_does_not_append_history(tmp_path: Path) -> None:
+    """Timestamps must not drive the history digest: an unchanged rerun maps
+    to the same archive name instead of growing history/ every invocation."""
+    source = tmp_path / "input"
+    shutil.copytree(EXAMPLES, source)
+    output = tmp_path / "output"
+    render(source, output, "run-a")
+    render(source, output, "run-a")
+    assert len(list((output / "history").glob("render-*.json"))) == 1
+    render(source, output, "run-a")
+    assert len(list((output / "history").glob("render-*.json"))) == 1

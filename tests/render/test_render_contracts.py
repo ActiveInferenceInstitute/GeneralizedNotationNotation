@@ -335,3 +335,196 @@ class TestRenderSpecToFormatMcp:
         )
         assert result["success"] is False
         assert "Unsupported target" in result["message"]
+
+
+CORPUS_DISCRETE = (
+    Path(__file__).resolve().parents[2]
+    / "input/gnn_files/discrete/actinf_pomdp_agent.md"
+)
+CORPUS_MULTIAGENT = (
+    Path(__file__).resolve().parents[2]
+    / "input/gnn_files/multiagent/multi_agent_coordination.md"
+)
+CORPUS_CONTINUOUS = (
+    Path(__file__).resolve().parents[2]
+    / "input/gnn_files/continuous/continuous_navigation.md"
+)
+CORPUS_BASICS = (
+    Path(__file__).resolve().parents[2] / "input/gnn_files/basics/static_perception.md"
+)
+
+
+def _render_corpus_file(
+    source: Path, framework: str, tmp_path: Path
+) -> tuple[str, str]:
+    """Render one corpus model through the canonical render_gnn_spec path."""
+    from gnn import parse_gnn_file
+    from gnn.render.framework_registry import FRAMEWORK_REGISTRY
+    from gnn.render.processor import render_gnn_spec
+
+    gnn_spec = parse_gnn_file(source)
+    out_dir = tmp_path / framework
+    out_dir.mkdir(parents=True, exist_ok=True)
+    success, message, artifacts = render_gnn_spec(gnn_spec, framework, out_dir)
+    assert success, message
+    extension = str(FRAMEWORK_REGISTRY[framework]["file_extension"])
+    canonical = [a for a in artifacts if Path(str(a)).suffix == extension]
+    assert canonical, f"no {extension} artifact among {artifacts}"
+    artifact = Path(canonical[0])
+    return artifact.name, artifact.read_text()
+
+
+class TestMaintainedOutputContracts:
+    """``CONTRACTS`` stays pinned to real ``render_gnn_spec`` output shapes.
+
+    Each case renders a corpus model through the canonical dispatch and
+    asserts the contract passes on the emitted canonical artifact, so the
+    contract table cannot silently rot away from the maintained
+    delegated-executor output shapes again.
+    """
+
+    @pytest.mark.parametrize(
+        ("framework", "source"),
+        [
+            ("pymdp", CORPUS_DISCRETE),
+            ("rxinfer", CORPUS_DISCRETE),
+            ("rxinfer", CORPUS_MULTIAGENT),
+            ("activeinference_jl", CORPUS_DISCRETE),
+            ("jax", CORPUS_DISCRETE),
+            ("jax", CORPUS_CONTINUOUS),
+            ("pytorch", CORPUS_DISCRETE),
+            ("pytorch", CORPUS_CONTINUOUS),
+            ("numpyro", CORPUS_DISCRETE),
+            ("numpyro", CORPUS_CONTINUOUS),
+            ("stan", CORPUS_DISCRETE),
+            ("discopy", CORPUS_DISCRETE),
+            ("bnlearn", CORPUS_BASICS),
+        ],
+    )
+    def test_corpus_render_satisfies_contract(
+        self, framework: str, source: Path, tmp_path: Path
+    ) -> None:
+        from gnn.render.contracts import validate_rendered_output
+
+        artifact_name, code = _render_corpus_file(source, framework, tmp_path)
+        violations = validate_rendered_output(code, framework, file_path=artifact_name)
+        assert violations == []
+
+    def test_contract_requires_maintained_delegated_pymdp_shape(self) -> None:
+        """A pre-delegation inlined-matrix pymdp script fails the contract."""
+        from gnn.render.contracts import validate_rendered_output
+
+        legacy = (
+            "import numpy\n"
+            "A = [[0.9, 0.1], [0.1, 0.9]]\n"
+            "B = [[[1.0, 0.0], [0.0, 1.0]]]\n"
+        )
+        violations = validate_rendered_output(
+            legacy, "pymdp", file_path="legacy_pymdp.py"
+        )
+        assert any(violation.field == "import" for violation in violations)
+
+    def test_rxinfer_contract_requires_model_or_shared_module(self) -> None:
+        from gnn.render.contracts import validate_rendered_output
+
+        code = "using RxInfer\nresult = infer(model = foo())\n"
+        violations = validate_rendered_output(code, "rxinfer", file_path="x.jl")
+        assert any(violation.field == "pattern" for violation in violations)
+
+    def test_bnlearn_contract_closes_ninth_framework_gap(self) -> None:
+        from gnn.render.contracts import CONTRACTS, validate_rendered_output
+
+        assert "bnlearn" in CONTRACTS
+        with pytest.raises(ValueError):
+            validate_rendered_output("", "unknown_framework")
+
+
+class TestFailureMessageActionability:
+    """Render failure messages carry remediation hints and root causes."""
+
+    def test_get_remediation_covers_dependency_backends(self) -> None:
+        from gnn.render.health import get_remediation
+
+        for framework in ("jax", "discopy", "pytorch", "numpyro", "stan", "bnlearn"):
+            hint = get_remediation(framework)
+            assert hint is not None, framework
+            assert "uv add" in hint or "julia" in hint.lower()
+
+    def test_unsupported_target_message_lists_known_targets(
+        self, tmp_path: Path
+    ) -> None:
+        from gnn import parse_gnn_file
+        from gnn.render.processor import render_gnn_spec
+
+        success, message, _artifacts = render_gnn_spec(
+            parse_gnn_file(SAMPLE_GNN), "definitely_not_real", tmp_path
+        )
+        assert success is False
+        assert message.startswith("Unsupported target: definitely_not_real")
+        assert "pymdp" in message and "jax_pomdp" in message
+
+    def test_generator_write_failure_propagates_cause(self, tmp_path: Path) -> None:
+        """Generator exceptions must reach callers (receipt messages), not be
+        swallowed behind a print-and-empty-string sentinel."""
+        from gnn.render.generators import generate_bnlearn_code
+
+        target = tmp_path / "out"
+        target.mkdir()
+        model_data = {"model_name": "m", "variables": [], "connections": []}
+        with pytest.raises(OSError):
+            generate_bnlearn_code(model_data, target)
+
+
+_CONTINUOUS_PROBE_SPEC = {
+    "model_name": "Probe",
+    "initialparameterization": {
+        "F": [[1.0, 0.1], [0.0, 1.0]],
+        "H": [[1.0, 0.0], [0.0, 1.0]],
+        "Q": [[0.01, 0.0], [0.0, 0.01]],
+        "R": [[0.05, 0.0], [0.0, 0.05]],
+        "prior_mean": [0.0, 0.0],
+        "prior_cov": [[1.0, 0.0], [0.0, 1.0]],
+        "goal_mean": [1.0, 1.0],
+        "control_gain": [0.5],
+    },
+    "num_timesteps": 5,
+    "random_seed": 42,
+    "dt": 1.0,
+}
+
+
+class TestEmittedArtifactHygiene:
+    """Emitted scripts must not reference names they never bind.
+
+    Regression pin for the continuous-script split: the shared body used to
+    emit the numpyro-only ``run_mcmc`` branch for jax/pytorch too, where
+    ``run_mcmc`` was never defined (static NameError risk). The scan is the
+    same conservative implementation the benchmark consumes.
+    """
+
+    def test_undefined_names_flags_never_bound_names(self) -> None:
+        from gnn.render.emitted_artifact_checks import undefined_names
+
+        findings, star = undefined_names('if FRAMEWORK == "numpyro":\n    run_mcmc()\n')
+        assert star is False
+        assert ("run_mcmc", 2) in findings
+
+    def test_undefined_names_skips_star_imports(self) -> None:
+        from gnn.render.emitted_artifact_checks import undefined_names
+
+        findings, star = undefined_names("from discopy import *\nTy('x')\n")
+        assert star is True
+        assert findings == []
+
+    @pytest.mark.parametrize("backend", ["jax", "pytorch", "numpyro"])
+    def test_continuous_scripts_have_no_undefined_names(self, backend: str) -> None:
+        from gnn.render.continuous_script import generate_continuous_script
+        from gnn.render.continuous_common import extract_continuous_spec
+        from gnn.render.emitted_artifact_checks import undefined_names
+
+        spec = extract_continuous_spec(_CONTINUOUS_PROBE_SPEC)
+        code = generate_continuous_script(spec, backend)
+        compile(code, backend, "exec")
+        findings, star = undefined_names(code)
+        assert findings == []
+        assert ("run_mcmc" in code) == (backend == "numpyro")

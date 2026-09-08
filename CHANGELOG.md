@@ -197,6 +197,192 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   pipeline tests green.
 
 
+## Deep horizon 2026-09-08 - gnn-render-backends
+
+### Changed
+
+- **RB-01: render output contracts modernized to the maintained
+  delegated-executor shapes.** `src/gnn/render/contracts.py` `CONTRACTS`
+  regexes predated the delegated-executor refactor: they demanded bare
+  `A = ` / `B = ` assignments (pymdp), top-level `A` / `B` variables (jax),
+  `numpyro.sample` literals, and an `Agent(` constructor - none of which the
+  current renderers emit. Against the real corpus, 116 of 258 successful
+  renderings were false-positive contract violations. Every contract now pins
+  the actual maintained shapes (pymdp `A_data`/`B_data` +
+  `gnn.execute.pymdp` delegation; jax `'A_matrix'`/`'B_matrix'` params
+  payloads or continuous Joseph-form `K @ H`; pytorch `torch.tensor` literals
+  or `torch.linalg` Kalman helpers; numpyro `dist.*` + `.sample(` covering
+  discrete `dist.Categorical(...).sample` and continuous `numpyro.sample`;
+  activeinference_jl `using ActiveInference` + emitted function runners;
+  rxinfer `using RxInfer` + `@model`/`GnnRxInferModels` + `infer(`), and
+  bnlearn gained the missing ninth contract (`bn.make_DAG` +
+  `bn.parameter_learning.fit`). Anti-rot pins:
+  `tests/render/test_render_contracts.py::TestMaintainedOutputContracts`
+  renders real corpus models (discrete, multi-agent, continuous, basics)
+  through `render_gnn_spec` for all 9 frameworks and asserts zero violations;
+  negative pins keep stale pre-delegation shapes failing. The rxinfer
+  multi-agent shape was confirmed legitimate (native per-agent compilation
+  importing the committed `GnnRxInferModels` module with real `infer()`
+  calls) - RB-07 closed by the contract alternation plus the corpus pin.
+  Benchmark: conformance-validated renderings 142 -> 258 of 258
+  (contract violations 255 -> 0; success/errors/syntax unchanged at
+  258/0/0).
+- **RB-05: CLI render targets aligned with the canonical registry.**
+  `src/gnn/render/render.py` `RENDER_CLI_TARGETS` dropped the dead
+  `rxinfer_toml` choice (the processor rejection message is retained and
+  still tested) and added the three routed-but-unlisted backends
+  (`pytorch`, `numpyro`, `stan`); `tests/render/test_render_cli_targets.py`
+  keeps the list in sync.
+- **RB-06: registry truthfulness for POMDP framework configs.**
+  `get_pomdp_framework_configs` derives `supports_execution` from
+  `FRAMEWORK_REGISTRY` instead of hardcoding `True`, so bnlearn's
+  render-only spec is no longer contradicted (verified unconsumed by
+  name-gated executors; pinned in
+  `tests/render/test_framework_availability.py`).
+
+### Fixed
+
+- **RB-02: renderer health reported every backend unavailable.**
+  `src/gnn/render/health.py` built module paths as `render.{name}` - no
+  top-level `render` package exists - so the live `gnn health` CLI and
+  `/api/v1/health` surfaces always failed the import probe. Paths are now
+  `gnn.render.{name}` (bnlearn override `gnn.render.generators`), stale
+  Julia project paths point at the committed envs under
+  `src/gnn/execute/{rxinfer,activeinference_jl}/`, and 9/9 renderers report
+  available. Regression tests import every returned module path.
+- **RB-03: render receipt fidelity.** The prior-receipt history digest
+  excludes `timestamp`, so an otherwise-identical rerun maps to the same
+  `history/render-*.json` archive name instead of appending a new archive
+  every invocation (`test_identical_rerun_does_not_append_history`); the
+  nonexistent top-level `message` read in
+  `src/gnn/pipeline/model_family_acceptance.py`
+  `_render_skip_or_failure_reason` was removed (fallback constant
+  preserved). A third candidate - history archives shadowing the live
+  receipt in `_load_first_json` - was falsified: the basename filter never
+  matches `render-<digest>.json` archive names.
+- **RB-04: render failure messages carry causes and remediation.** The
+  `src/gnn/render/generators.py` print-and-empty-string sentinels re-raise
+  after `logger.error`, so the root cause reaches receipt messages (basic
+  path, `_GENERATOR_TARGETS`, and `_call_bnlearn_renderer` all catch);
+  `jax_renderer._render_to_path` returns `"{label} rendering failed: {e}"`
+  instead of a bare `str(e)`; the POMDP wrapper names the framework;
+  renderer-unavailable returns append the `health.py` install remediation
+  via the new `get_remediation()` helper; `Unsupported target` messages
+  list the known targets.
+
+### Refactored (2026-09-08)
+
+- **RB-08: deleted the retired `toml_generator.py` emitter.** The
+  production-dead `render_gnn_to_rxinfer_toml` entry point (and its
+  private code generator `_generate_rxinfer_pomdp_code` and
+  `_extract_parameter_from_section`) were removed. The still-live surface
+  - the GNN matrix/vector literal parsers (`_parse_gnn_matrix`,
+  `_parse_gnn_3d_matrix`, `_parse_gnn_vector`), the compact multi-agent
+  config-structure builder, and the fail-closed topology validation
+  (`_validate_topology_references`) - moved to
+  `src/gnn/render/rxinfer/model_contracts.py`. The two contract-test files
+  and `scripts/check_capability_contracts.py` (text markers) re-pointed to
+  the new home; the five maintained-doc references updated; import-site
+  grep shows zero stragglers. No render/execute behavior change on the
+  benchmark.
+- **RB-09: generator-facade status decision.** The
+  `generate_rxinfer_code` / `generate_activeinference_jl_code` exports are
+  the supported public surface (README-documented, pinned end to end by
+  `tests/render/test_generators_coverage.py`); the legacy
+  `src/gnn/render/pymdp_template.py` template stays with its only
+  production caller (the non-POMDP basic fallback). No deprecation window
+  needed.
+
+### Verified (2026-09-08)
+
+- `bash autoresearch.sh` (deterministic corpus x framework conformance
+  benchmark): `render_conformance_success_count=258`,
+  `render_success_count=258`, `render_errors=0`,
+  `render_syntax_errors=0`, `render_contract_violations=0`,
+  `render_unsupported=12` (by-design), 30/30 files with attempts.
+- Touched test files: 124 passed + 1 env-skipped across the render
+  contracts/CLI/availability/overall/integration files; mypy clean and
+  ruff clean on all touched files.
+
+
+## Deep horizon wave 2 - tests + CI (2026-09-08)
+
+Verification-layer wave from the `deep/gnn-tests-ci` session. Additions
+only; no existing gate weakened. Harness (`autoresearch.sh`):
+dev+ml-ai+torch extras, CI coverage-parity selection, fixed `-n 4` xdist,
+`--cov=gnn` — baseline 60.12% / 4343 passed / 0 failed / 7 skipped, final
+61.14% / 4417 passed (the 12 environment-skipped tests run in every
+harness measurement).
+
+### Added
+
+- **PR-time extras gate.** New `extras` job in `ci.yml` (py3.12) runs
+  `tests/ml_integration/test_ml_integration_inference.py` and
+  `tests/render/test_continuous_renderers.py` under
+  `--extra dev --extra ml-ai --extra torch` on every PR; the 12
+  environment-skipped tests previously ran only in the weekly scheduled
+  full-extras workflow. Mirrored as the `just test-extras` recipe.
+- **Negative-path coverage for the MAJ-06 dispatcher and subprocess
+  envelope** (`tests/utils/test_mcp_dispatch.py`,
+  `tests/execute/test_subprocess_envelope.py`): `message_builder` on the
+  failure branch (wins over the label template), `static_extras` pinned as
+  dropped from error envelopes, non-Mapping `build()` results converted to
+  the canonical error dict, `BaseException` (`KeyboardInterrupt`)
+  passthrough, and `TimeoutExpired` stream capture with/without
+  `capture_output`.
+- **`validate_gnn*` alias hardening** (`tests/test_validate_surface_aliases.py`):
+  error-path parity with the canonical function on invalid input for 7
+  alias pairs, `DeprecationWarning` stacklevel pinned to the caller for
+  every pair, and the package-root `gnn.validate_gnn_syntax_formal` lazy
+  export pinned (parity + warning attribution).
+- **`gnn.mcp.validate_tools.main()` covered** (`tests/mcp/test_validate_tools.py`,
+  unmarked so the default selection runs it): MCP init failure exit 1,
+  NOT_CALLABLE (lambda / missing func) and UNDOCUMENTED classification,
+  callability spot-check SKIP / `success=False` / exception branches, and
+  the `logging_miss` `register_tools` scan; `main()` is isolated via
+  stubbed `gnn.mcp.initialize`/`mcp_instance` and a tmp `SRC_ROOT`.
+- **`gnn.pipeline.pipeline_validation` covered**
+  (`tests/pipeline/test_pipeline_validation.py`): module discovery, import
+  and centralized-import validators, output-structure checks,
+  recommendation generation, and `generate_validation_report` shape and
+  status accounting against a synthetic module tree.
+
+### Fixed
+
+- **`generate_validation_report` naming-violations crash.** The report
+  assigned the whole issues dict from `validate_output_naming_conventions()`
+  to `output_validation["naming_violations"]`, so
+  `generate_improvement_recommendations` crashed with
+  `TypeError: unhashable type: 'slice'` whenever naming violations existed.
+  The violations list is extracted instead. Found by the new tests.
+- **`run_subprocess_envelope` timeout streams.** CPython delivers
+  `TimeoutExpired.stdout/stderr` as bytes even under `text=True`, violating
+  the envelope's documented `str` contract; fragments are now decoded
+  (errors="replace") and `None` normalized to `""`.
+- **Flake hardening.** Fixed shared-`/tmp` write paths in
+  `tests/render/test_jax_factorized_pipeline.py` and
+  `tests/api/test_comprehensive_api.py` now use pytest `tmp_path`
+  (cross-worker collisions under xdist); the load-sensitive
+  `test_environment_module_performance` smoke bound was raised 10s → 30s
+  after a spuriously failing 13.5s measurement under `-n 4` + coverage.
+
+### Changed
+
+- **Zero-skip contract completeness.** `FORBIDDEN_SKIP_TOKENS` now also
+  matches bare (non-decorator) `pytest.mark.skip*`/`xfail` forms — which
+  `pytestmark = pytest.mark.skipif(...)` assignments and module-level
+  marker variables evaded — and `unittest.skip`/`skipIf`/`skipUnless`;
+  five previously invisible skip sites are enumerated in
+  `DEFAULT_SKIP_ALLOWLIST` with justifications (`test_lean_runner.py`,
+  `test_d2_visualizer.py`, `test_execute_pymdp_simulation.py`,
+  `test_pomdp_pipeline_integration.py`, `test_shared_helpers.py`).
+- **Coverage floor 50 → 60.** `[tool.coverage.report] fail_under` pins the
+  wave's improvement: CI dev-only coverage measures 60.56% and the wave-2
+  extras harness 61.14% at landing.
+- **Weekly full-extras coverage.** The weekly all-extras run now also
+  emits `junit/coverage-full-extras.json`, so `pipeline`/`mcp`-marked and
+  audio/gui/research paths appear in coverage reports.
+
 ## [3.3.0] — 2026-09-06
 
 > **One Corpus.** Every model file under `input/` now lives inside

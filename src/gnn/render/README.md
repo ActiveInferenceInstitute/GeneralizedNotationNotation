@@ -169,7 +169,7 @@ src/gnn/render/
 │   ├── __init__.py               # RxInfer module initialization
 │   ├── rxinfer_renderer.py       # Canonical renderer — genuine @model + infer()
 │   ├── gnn_parser.py             # GNN parser for RxInfer
-│   └── toml_generator.py         # Retired emitter plus topology parsing helpers
+│   └── model_contracts.py        # Matrix parsers, topology config, fail-closed validation
 ├── activeinference_jl/            # ActiveInference.jl code generation
 │   ├── __init__.py               # ActiveInference.jl module initialization
 │   └── activeinference_renderer.py # ActiveInference.jl renderer

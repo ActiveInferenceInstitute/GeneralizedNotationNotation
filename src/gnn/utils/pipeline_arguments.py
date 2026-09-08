@@ -10,6 +10,11 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+DEFAULT_ONTOLOGY_TERMS_FILE = (
+    Path(__file__).resolve().parents[1] / "ontology" / "act_inf_ontology_terms.json"
+)
+"""Ontology terms file packaged inside the ``gnn`` package."""
+
 
 @dataclass
 class PipelineArguments:
@@ -135,7 +140,7 @@ class PipelineArguments:
 
         # Set defaults for optional paths
         if self.ontology_terms_file is None:
-            self.ontology_terms_file = Path("src/ontology/act_inf_ontology_terms.json")
+            self.ontology_terms_file = DEFAULT_ONTOLOGY_TERMS_FILE
         elif isinstance(self.ontology_terms_file, str):
             self.ontology_terms_file = Path(self.ontology_terms_file)
 

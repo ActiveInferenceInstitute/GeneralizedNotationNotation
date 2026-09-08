@@ -382,7 +382,7 @@ class POMDPRenderProcessor:
         except Exception as e:
             return {
                 "success": False,
-                "message": f"Framework renderer failed: {e}",
+                "message": f"{framework} renderer failed: {e}",
                 "output_files": [],
                 "warnings": validation_result.get("warnings", []),
             }

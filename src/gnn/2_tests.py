@@ -6,8 +6,8 @@ Orchestrates comprehensive tests for the GNN pipeline. Follows thin orchestrator
 delegating all core functionality to the tests module (tests.run_tests() from runner.py).
 
 Usage:
-  python src/2_tests.py --fast-only --verbose      # Fast tests (default)
-  python src/2_tests.py --comprehensive --verbose  # All tests
+  python src/gnn/2_tests.py --fast-only --verbose      # Fast tests (default)
+  python src/gnn/2_tests.py --comprehensive --verbose  # All tests
 
 Environment Variables:
   SKIP_TESTS_IN_PIPELINE  Set to skip tests entirely

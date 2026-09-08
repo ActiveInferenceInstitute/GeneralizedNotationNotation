@@ -8,10 +8,15 @@ for RxInfer.jl and ActiveInference.jl frameworks used in the execution step.
 
 import logging
 import shutil
-import subprocess  # nosec B404
+import subprocess
 import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+
+from gnn.execute.subprocess_envelope import (  # nosec B404
+    NEVER_STARTED,
+    run_subprocess_envelope,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -119,33 +124,31 @@ def run_julia_setup_script(
     if validate_only:
         cmd.append("--validate-only")
 
-    try:
-        result = subprocess.run(  # nosec B603
-            cmd,
-            cwd=setup_script.parent,
-            capture_output=True,
-            text=True,
-            timeout=300,  # 5 minute timeout for package installation
-        )
+    # Canonical subprocess envelope (MAJ-10): timeout / OSError / non-zero
+    # exit all arrive in one structured outcome.
+    outcome = run_subprocess_envelope(
+        cmd,
+        cwd=setup_script.parent,
+        timeout=300,  # 5 minute timeout for package installation
+    )
 
-        if result.stdout:
-            logger.info(f"Julia setup stdout:\n{result.stdout}")
-        if result.stderr:
-            logger.warning(f"Julia setup stderr:\n{result.stderr}")
+    if outcome["stdout"]:
+        logger.info(f"Julia setup stdout:\n{outcome['stdout']}")
+    if outcome["stderr"]:
+        logger.warning(f"Julia setup stderr:\n{outcome['stderr']}")
 
-        if result.returncode == 0:
-            logger.info("✅ Julia setup completed successfully")
-            return True
-        else:
-            logger.error(f"❌ Julia setup failed with return code: {result.returncode}")
-            return False
-
-    except subprocess.TimeoutExpired:
+    if outcome["success"]:
+        logger.info("✅ Julia setup completed successfully")
+        return True
+    if outcome.get("error_type") == "TimeoutExpired":
         logger.error("⏰ Julia setup timed out after 5 minutes")
-        return False
-    except Exception as e:
-        logger.error(f"❌ Julia setup failed: {e}")
-        return False
+    elif outcome["return_code"] != NEVER_STARTED:
+        logger.error(
+            f"❌ Julia setup failed with return code: {outcome['return_code']}"
+        )
+    else:
+        logger.error(f"❌ Julia setup failed: {outcome.get('error', 'unknown error')}")
+    return False
 
 
 def setup_julia_environment(

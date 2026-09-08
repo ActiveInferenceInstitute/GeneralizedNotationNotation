@@ -42,7 +42,7 @@ def _render_to_path(
         return True, f"{label} generated successfully.", [str(output_path)]
     except Exception as e:
         logger.error(f"Failed to render GNN to {label}: {e}")
-        return False, str(e), []
+        return False, f"{label} rendering failed: {e}", []
 
 
 def render_gnn_to_jax(

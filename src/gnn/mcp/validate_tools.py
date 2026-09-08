@@ -8,6 +8,8 @@ Validates that every registered MCP tool is:
   3. Documented (non-empty description string)
   4. Callable (can be invoked via execute_tool with empty args)
   5. Logged (register_tools call has logging.info in its source)
+  6. Schema-honest (declared properties/required match the handler
+     signature for EVERY registered tool, not a curated subset)
 
 Usage:
     cd /path/to/generalizednotationnotation
@@ -16,6 +18,7 @@ Usage:
 
 from __future__ import annotations
 
+import inspect
 import json
 import logging
 import os
@@ -143,6 +146,56 @@ def main() -> int:
             call_err += 1
             issues.append({"tool": tname, "issue": f"exception: {e}"})
 
+    # ── 4b. Schema-vs-signature verification (every tool) ────────────────────
+    print("\n[4b] Schema-vs-signature checks (all tools)...")
+    schema_ok = 0
+    schema_err = 0
+    for name, tool in sorted(m.tools.items()):
+        func = getattr(tool, "func", None) or getattr(tool, "function", None)
+        schema = getattr(tool, "schema", None) or {}
+        properties = schema.get("properties") or {}
+        required = schema.get("required") or []
+        if not callable(func):
+            schema_err += 1
+            issues.append({"tool": name, "issue": "handler is not callable"})
+            continue
+        try:
+            sig = inspect.signature(func)
+        except (TypeError, ValueError):
+            schema_err += 1
+            issues.append({"tool": name, "issue": "signature unresolvable"})
+            continue
+        accepts_kwargs = any(
+            p.kind == inspect.Parameter.VAR_KEYWORD for p in sig.parameters.values()
+        )
+        params = {
+            pname
+            for pname, p in sig.parameters.items()
+            if p.kind
+            in (
+                inspect.Parameter.POSITIONAL_OR_KEYWORD,
+                inspect.Parameter.KEYWORD_ONLY,
+            )
+        }
+        undeclared = sorted(set(properties) - params) if not accepts_kwargs else []
+        missing_required = (
+            [r for r in required if r not in params] if not accepts_kwargs else []
+        )
+        if undeclared or missing_required:
+            schema_err += 1
+            issues.append(
+                {
+                    "tool": name,
+                    "issue": "schema/signature drift",
+                    "schema_properties_not_accepted": undeclared,
+                    "required_without_signature_param": missing_required,
+                }
+            )
+            print(f"  ✗  {name:55s}  drift: {undeclared} / {missing_required}")
+        else:
+            schema_ok += 1
+    print(f"  schema checks: {schema_ok} ok, {schema_err} err")
+
     # ── 5. Logging coverage check ─────────────────────────────────────────────
     print("\n[5] Logging coverage check (register_tools uses logger.info?)...")
     submodule_dirs = [
@@ -187,6 +240,7 @@ def main() -> int:
     print(f"  Tools registered     : {len(m.tools):3d}")
     print(f"  Issues found         : {len(issues):3d}")
     print(f"  Spot-checks OK       : {call_ok:3d} / {call_ok + call_err}")
+    print(f"  Schema checks OK     : {schema_ok:3d} / {schema_ok + schema_err}")
     print(f"  Modules logged       : {log_ok:3d} / {log_ok + log_miss}")
 
     if issues:
@@ -223,6 +277,8 @@ def main() -> int:
         ],
         "spot_checks_ok": call_ok,
         "spot_checks_err": call_err,
+        "schema_checks_ok": schema_ok,
+        "schema_checks_err": schema_err,
         "logging_ok": log_ok,
         "logging_miss": log_miss,
         "issues": issues,

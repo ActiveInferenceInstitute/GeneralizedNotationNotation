@@ -6,15 +6,15 @@ This step orchestrates render processing for GNN models.
 
 Architectural Role:
     This is a "thin orchestrator" - a minimal script that delegates core functionality
-    to the corresponding module (src/render/). It handles argument parsing, logging
+    to the corresponding module (src/gnn/render/). It handles argument parsing, logging
     setup, and calls the actual processing functions from the render module.
 
 Pipeline Flow:
     main.py → 11_render.py (this script) → render/ (modular implementation)
 
 How to run:
-  python src/11_render.py --target-dir input/gnn_files --output-dir output --verbose
-  python src/main.py  # (runs as part of the pipeline)
+  python src/gnn/11_render.py --target-dir input/gnn_files --output-dir output --verbose
+  python src/gnn/main.py  # (runs as part of the pipeline)
 
 Expected outputs:
   - Render processing results in the specified output directory
@@ -24,7 +24,7 @@ Expected outputs:
 
 If you encounter errors:
   - Check that render dependencies are installed
-  - Check that src/render/ contains render modules
+  - Check that src/gnn/render/ contains render modules
   - Check that the output directory is writable
   - Verify render configuration and requirements
 """

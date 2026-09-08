@@ -14,6 +14,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Tuple, cast
 
+from gnn.utils.pipeline_arguments import DEFAULT_ONTOLOGY_TERMS_FILE
 from gnn.utils.resource_manager import get_memory_usage
 
 # Ensure src is in Python path for imports
@@ -86,10 +87,7 @@ TEST_CONFIG: dict[str, Any] = {
     "dev": False,
     "duration": 30.0,
     "audio_backend": "auto",
-    "ontology_terms_file": PROJECT_ROOT
-    / "src"
-    / "ontology"
-    / "act_inf_ontology_terms.json",
+    "ontology_terms_file": DEFAULT_ONTOLOGY_TERMS_FILE,
     "pipeline_summary_file": PROJECT_ROOT
     / "output"
     / "00_pipeline_summary"
@@ -409,9 +407,7 @@ def get_test_args() -> Dict[str, Any]:
         "dev": False,
         "duration": 30.0,
         "audio_backend": "auto",
-        "ontology_terms_file": str(
-            PROJECT_ROOT / "src" / "ontology" / "act_inf_ontology_terms.json"
-        ),
+        "ontology_terms_file": str(DEFAULT_ONTOLOGY_TERMS_FILE),
         "pipeline_summary_file": str(
             PROJECT_ROOT
             / "output"
@@ -434,7 +430,7 @@ def get_sample_pipeline_arguments() -> Dict[str, Any]:
         "only_steps": [],
         "strict": False,
         "estimate_resources": False,
-        "ontology_terms_file": "src/ontology/act_inf_ontology_terms.json",
+        "ontology_terms_file": str(DEFAULT_ONTOLOGY_TERMS_FILE),
         "pipeline_summary_file": "output/00_pipeline_summary/pipeline_execution_summary.json",
         "llm_tasks": "all",
         "llm_timeout": 360,
@@ -520,7 +516,7 @@ type_checker:
   estimate_resources: true
 
 ontology:
-  terms_file: "src/ontology/act_inf_ontology_terms.json"
+  terms_file: "src/gnn/ontology/act_inf_ontology_terms.json"
 
 llm:
   tasks: "all"
@@ -991,12 +987,6 @@ def run_all_tests_mcp(
             "verbose": verbose,
             "timestamp": datetime.now().isoformat(),
         }
-
-
-def register_tools(mcp_instance: Any) -> None:
-    """Register test-related tools with MCP instance."""
-    # This would register test tools with the MCP instance
-    # Implementation depends on the specific MCP framework being used
 
 
 def generate_html_report_file(data: Dict[str, Any], output_path: Path) -> bool:

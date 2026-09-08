@@ -7,15 +7,15 @@ metadata management, and model lifecycle tracking.
 
 Architectural Role:
     This is a "thin orchestrator" - a minimal script that delegates core functionality
-    to the corresponding module (src/model_registry/). It handles argument parsing, logging
+    to the corresponding module (src/gnn/model_registry/). It handles argument parsing, logging
     setup, and calls the actual processing functions from the model_registry module.
 
 Pipeline Flow:
     main.py → 4_model_registry.py (this script) → model_registry/ (modular implementation)
 
 How to run:
-  python src/4_model_registry.py --target-dir input/gnn_files --output-dir output --verbose
-  python src/main.py  # (runs as part of the pipeline)
+  python src/gnn/4_model_registry.py --target-dir input/gnn_files --output-dir output --verbose
+  python src/gnn/main.py  # (runs as part of the pipeline)
 
 Expected outputs:
   - Model registry data in the specified output directory
@@ -26,7 +26,7 @@ Expected outputs:
 
 If you encounter errors:
   - Check that model registry dependencies are installed
-  - Check that src/model_registry/ contains registry modules
+  - Check that src/gnn/model_registry/ contains registry modules
   - Check that the output directory is writable
   - Verify model registry configuration and requirements
 """
