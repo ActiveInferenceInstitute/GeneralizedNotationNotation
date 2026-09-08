@@ -220,3 +220,31 @@ class TestRealEnvironmentCheck:
             assert available is False
             # No need to assert non-importability — the registry says it's
             # unavailable regardless of local env state.
+
+
+class TestRendererHealthModulePaths:
+    """``health.check_renderers`` module paths resolve in the real package.
+
+    Regression pin: the health check used to build ``render.{name}`` module
+    paths, but no top-level ``render`` package exists (the installed package
+    is ``gnn``), so the CLI ``gnn health`` and API ``/api/v1/health`` surfaces
+    reported every renderer unavailable.
+    """
+
+    def test_every_status_module_path_imports(self) -> None:
+        import importlib
+
+        from gnn.render.health import check_renderers
+
+        results = check_renderers()
+        assert set(results) == set(get_supported_frameworks())
+        for name, status in results.items():
+            assert status.available, f"{name}: {status.error}"
+            assert status.module_path is not None
+            assert status.module_path.startswith("gnn.render.")
+            importlib.import_module(status.module_path)
+
+    def test_bnlearn_override_points_at_generators(self) -> None:
+        from gnn.render.health import _RENDERERS
+
+        assert _RENDERERS["bnlearn"] == "gnn.render.generators"

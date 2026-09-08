@@ -335,3 +335,105 @@ class TestRenderSpecToFormatMcp:
         )
         assert result["success"] is False
         assert "Unsupported target" in result["message"]
+
+
+CORPUS_DISCRETE = (
+    Path(__file__).resolve().parents[2]
+    / "input/gnn_files/discrete/actinf_pomdp_agent.md"
+)
+CORPUS_MULTIAGENT = (
+    Path(__file__).resolve().parents[2]
+    / "input/gnn_files/multiagent/multi_agent_coordination.md"
+)
+CORPUS_CONTINUOUS = (
+    Path(__file__).resolve().parents[2]
+    / "input/gnn_files/continuous/continuous_navigation.md"
+)
+CORPUS_BASICS = (
+    Path(__file__).resolve().parents[2] / "input/gnn_files/basics/static_perception.md"
+)
+
+
+def _render_corpus_file(
+    source: Path, framework: str, tmp_path: Path
+) -> tuple[str, str]:
+    """Render one corpus model through the canonical render_gnn_spec path."""
+    from gnn import parse_gnn_file
+    from gnn.render.framework_registry import FRAMEWORK_REGISTRY
+    from gnn.render.processor import render_gnn_spec
+
+    gnn_spec = parse_gnn_file(source)
+    out_dir = tmp_path / framework
+    out_dir.mkdir(parents=True, exist_ok=True)
+    success, message, artifacts = render_gnn_spec(gnn_spec, framework, out_dir)
+    assert success, message
+    extension = str(FRAMEWORK_REGISTRY[framework]["file_extension"])
+    canonical = [a for a in artifacts if Path(str(a)).suffix == extension]
+    assert canonical, f"no {extension} artifact among {artifacts}"
+    artifact = Path(canonical[0])
+    return artifact.name, artifact.read_text()
+
+
+class TestMaintainedOutputContracts:
+    """``CONTRACTS`` stays pinned to real ``render_gnn_spec`` output shapes.
+
+    Each case renders a corpus model through the canonical dispatch and
+    asserts the contract passes on the emitted canonical artifact, so the
+    contract table cannot silently rot away from the maintained
+    delegated-executor output shapes again.
+    """
+
+    @pytest.mark.parametrize(
+        ("framework", "source"),
+        [
+            ("pymdp", CORPUS_DISCRETE),
+            ("rxinfer", CORPUS_DISCRETE),
+            ("rxinfer", CORPUS_MULTIAGENT),
+            ("activeinference_jl", CORPUS_DISCRETE),
+            ("jax", CORPUS_DISCRETE),
+            ("jax", CORPUS_CONTINUOUS),
+            ("pytorch", CORPUS_DISCRETE),
+            ("pytorch", CORPUS_CONTINUOUS),
+            ("numpyro", CORPUS_DISCRETE),
+            ("numpyro", CORPUS_CONTINUOUS),
+            ("stan", CORPUS_DISCRETE),
+            ("discopy", CORPUS_DISCRETE),
+            ("bnlearn", CORPUS_BASICS),
+        ],
+    )
+    def test_corpus_render_satisfies_contract(
+        self, framework: str, source: Path, tmp_path: Path
+    ) -> None:
+        from gnn.render.contracts import validate_rendered_output
+
+        artifact_name, code = _render_corpus_file(source, framework, tmp_path)
+        violations = validate_rendered_output(code, framework, file_path=artifact_name)
+        assert violations == []
+
+    def test_contract_requires_maintained_delegated_pymdp_shape(self) -> None:
+        """A pre-delegation inlined-matrix pymdp script fails the contract."""
+        from gnn.render.contracts import validate_rendered_output
+
+        legacy = (
+            "import numpy\n"
+            "A = [[0.9, 0.1], [0.1, 0.9]]\n"
+            "B = [[[1.0, 0.0], [0.0, 1.0]]]\n"
+        )
+        violations = validate_rendered_output(
+            legacy, "pymdp", file_path="legacy_pymdp.py"
+        )
+        assert any(violation.field == "import" for violation in violations)
+
+    def test_rxinfer_contract_requires_model_or_shared_module(self) -> None:
+        from gnn.render.contracts import validate_rendered_output
+
+        code = "using RxInfer\nresult = infer(model = foo())\n"
+        violations = validate_rendered_output(code, "rxinfer", file_path="x.jl")
+        assert any(violation.field == "pattern" for violation in violations)
+
+    def test_bnlearn_contract_closes_ninth_framework_gap(self) -> None:
+        from gnn.render.contracts import CONTRACTS, validate_rendered_output
+
+        assert "bnlearn" in CONTRACTS
+        with pytest.raises(ValueError):
+            validate_rendered_output("", "unknown_framework")

@@ -1,9 +1,29 @@
 #!/usr/bin/env python3
-"""
-GNN Output Contracts — Framework-specific validation for rendered code.
+"""GNN Output Contracts — Framework-specific validation for rendered code.
 
-Validates that rendered output (pymdp, rxinfer, jax) contains required
-structural elements: matrix shapes, imports, function calls.
+Each contract pins the MAINTAINED output shape of one framework backend, as
+emitted by the current delegated-executor renderers and validated against the
+committed corpus artifacts:
+
+- pymdp: delegated runner importing ``gnn.execute.pymdp`` with ``A_data`` /
+  ``B_data`` matrix literals.
+- rxinfer: genuine ``infer()`` programs using an inline ``@model`` or the
+  shared ``GnnRxInferModels`` module (multi-agent per-agent runners).
+- jax / pytorch: params-payload or Joseph-form Kalman programs
+  (``'A_matrix': jnp.array(...)`` / ``A = torch.tensor(...)`` / ``K @ H``).
+- numpyro: ``numpyro.distributions`` sampling sites (discrete
+  ``dist.Categorical(...).sample`` or continuous ``numpyro.sample``).
+- activeinference_jl: self-contained runner programs with the agent logic in
+  emitted functions (no ``Agent(`` constructor call in the artifact).
+- bnlearn: generator-backed ``bn.make_DAG`` + ``bn.parameter_learning.fit``
+  programs (render-only).
+
+Validation surface: ``scripts/bench_render_backends.py`` (corpus x framework
+conformance benchmark) and ``tests/render/test_render_contracts.py`` (shape
+pins against real ``render_gnn_spec`` output). Nothing gates pipeline receipts
+on these contracts; re-pin a contract here whenever a renderer's output shape
+changes deliberately.
+
 """
 
 import logging
@@ -35,44 +55,49 @@ class ContractViolation:
 
 CONTRACTS: Dict[str, Dict[str, Any]] = {
     "pymdp": {
-        "required_imports": ["numpy", "pymdp"],
-        "required_variables": ["A", "B"],
+        "required_imports": ["gnn.execute.pymdp"],
+        "required_variables": [],
         "matrix_patterns": [
-            r"\bA\s*=\s*",  # Likelihood matrix assignment
-            r"\bB\s*=\s*",  # Transition matrix assignment
+            r"\bA_data\s*=\s*",
+            r"\bB_data\s*=\s*",
+            r"execute_pymdp_simulation\s*\(",
         ],
-        "optional_variables": ["C", "D", "E"],
+        "optional_variables": [],
     },
     "rxinfer": {
         "required_imports": ["RxInfer"],
         "required_variables": [],
         "matrix_patterns": [
-            r"@model",  # Model macro
+            r"using\s+RxInfer",
+            r"(@model|GnnRxInferModels)",
+            r"infer\s*\(",
         ],
         "optional_variables": [],
     },
     "jax": {
         "required_imports": ["jax", "jax.numpy"],
-        "required_variables": ["A", "B"],
+        "required_variables": [],
         "matrix_patterns": [
-            r"jnp\.\w+",  # JAX numpy calls
+            r"jnp\.\w+",
+            r"(A_matrix|B_matrix|K @ H)",
         ],
-        "optional_variables": ["C", "D"],
+        "optional_variables": [],
     },
     "pytorch": {
         "required_imports": ["torch"],
-        "required_variables": ["A", "B"],
-        "matrix_patterns": [
-            r"torch\.(tensor|zeros|ones|eye)",
-        ],
-        "optional_variables": ["C", "D"],
-    },
-    "numpyro": {
-        "required_imports": ["numpyro", "jax"],
         "required_variables": [],
         "matrix_patterns": [
-            r"numpyro\.sample",
-            r"numpyro\.distributions",
+            r"torch\.(tensor|zeros|ones|eye)",
+            r"(torch\.tensor|K @ H|torch\.linalg)",
+        ],
+        "optional_variables": [],
+    },
+    "numpyro": {
+        "required_imports": ["numpyro"],
+        "required_variables": [],
+        "matrix_patterns": [
+            r"dist\.\w+",
+            r"\.sample\s*\(",
         ],
         "optional_variables": [],
     },
@@ -90,7 +115,7 @@ CONTRACTS: Dict[str, Dict[str, Any]] = {
         "required_variables": [],
         "matrix_patterns": [
             r"using\s+ActiveInference",
-            r"Agent\(",
+            r"function\s+\w+\(",
         ],
         "optional_variables": [],
     },
@@ -99,6 +124,15 @@ CONTRACTS: Dict[str, Dict[str, Any]] = {
         "required_variables": [],
         "matrix_patterns": [
             r"(Ty|Box)\(",
+        ],
+        "optional_variables": [],
+    },
+    "bnlearn": {
+        "required_imports": ["bnlearn"],
+        "required_variables": [],
+        "matrix_patterns": [
+            r"bn\.make_DAG",
+            r"bn\.parameter_learning\.fit",
         ],
         "optional_variables": [],
     },
