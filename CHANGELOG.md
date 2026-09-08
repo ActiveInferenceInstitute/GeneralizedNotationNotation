@@ -197,6 +197,91 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   pipeline tests green.
 
 
+## Deep horizon 2026-09-08 - gnn-render-backends
+
+### Changed
+
+- **RB-01: render output contracts modernized to the maintained
+  delegated-executor shapes.** `src/gnn/render/contracts.py` `CONTRACTS`
+  regexes predated the delegated-executor refactor: they demanded bare
+  `A = ` / `B = ` assignments (pymdp), top-level `A` / `B` variables (jax),
+  `numpyro.sample` literals, and an `Agent(` constructor - none of which the
+  current renderers emit. Against the real corpus, 116 of 258 successful
+  renderings were false-positive contract violations. Every contract now pins
+  the actual maintained shapes (pymdp `A_data`/`B_data` +
+  `gnn.execute.pymdp` delegation; jax `'A_matrix'`/`'B_matrix'` params
+  payloads or continuous Joseph-form `K @ H`; pytorch `torch.tensor` literals
+  or `torch.linalg` Kalman helpers; numpyro `dist.*` + `.sample(` covering
+  discrete `dist.Categorical(...).sample` and continuous `numpyro.sample`;
+  activeinference_jl `using ActiveInference` + emitted function runners;
+  rxinfer `using RxInfer` + `@model`/`GnnRxInferModels` + `infer(`), and
+  bnlearn gained the missing ninth contract (`bn.make_DAG` +
+  `bn.parameter_learning.fit`). Anti-rot pins:
+  `tests/render/test_render_contracts.py::TestMaintainedOutputContracts`
+  renders real corpus models (discrete, multi-agent, continuous, basics)
+  through `render_gnn_spec` for all 9 frameworks and asserts zero violations;
+  negative pins keep stale pre-delegation shapes failing. The rxinfer
+  multi-agent shape was confirmed legitimate (native per-agent compilation
+  importing the committed `GnnRxInferModels` module with real `infer()`
+  calls) - RB-07 closed by the contract alternation plus the corpus pin.
+  Benchmark: conformance-validated renderings 142 -> 258 of 258
+  (contract violations 255 -> 0; success/errors/syntax unchanged at
+  258/0/0).
+- **RB-05: CLI render targets aligned with the canonical registry.**
+  `src/gnn/render/render.py` `RENDER_CLI_TARGETS` dropped the dead
+  `rxinfer_toml` choice (the processor rejection message is retained and
+  still tested) and added the three routed-but-unlisted backends
+  (`pytorch`, `numpyro`, `stan`); `tests/render/test_render_cli_targets.py`
+  keeps the list in sync.
+- **RB-06: registry truthfulness for POMDP framework configs.**
+  `get_pomdp_framework_configs` derives `supports_execution` from
+  `FRAMEWORK_REGISTRY` instead of hardcoding `True`, so bnlearn's
+  render-only spec is no longer contradicted (verified unconsumed by
+  name-gated executors; pinned in
+  `tests/render/test_framework_availability.py`).
+
+### Fixed
+
+- **RB-02: renderer health reported every backend unavailable.**
+  `src/gnn/render/health.py` built module paths as `render.{name}` - no
+  top-level `render` package exists - so the live `gnn health` CLI and
+  `/api/v1/health` surfaces always failed the import probe. Paths are now
+  `gnn.render.{name}` (bnlearn override `gnn.render.generators`), stale
+  Julia project paths point at the committed envs under
+  `src/gnn/execute/{rxinfer,activeinference_jl}/`, and 9/9 renderers report
+  available. Regression tests import every returned module path.
+- **RB-03: render receipt fidelity.** The prior-receipt history digest
+  excludes `timestamp`, so an otherwise-identical rerun maps to the same
+  `history/render-*.json` archive name instead of appending a new archive
+  every invocation (`test_identical_rerun_does_not_append_history`); the
+  nonexistent top-level `message` read in
+  `src/gnn/pipeline/model_family_acceptance.py`
+  `_render_skip_or_failure_reason` was removed (fallback constant
+  preserved). A third candidate - history archives shadowing the live
+  receipt in `_load_first_json` - was falsified: the basename filter never
+  matches `render-<digest>.json` archive names.
+- **RB-04: render failure messages carry causes and remediation.** The
+  `src/gnn/render/generators.py` print-and-empty-string sentinels re-raise
+  after `logger.error`, so the root cause reaches receipt messages (basic
+  path, `_GENERATOR_TARGETS`, and `_call_bnlearn_renderer` all catch);
+  `jax_renderer._render_to_path` returns `"{label} rendering failed: {e}"`
+  instead of a bare `str(e)`; the POMDP wrapper names the framework;
+  renderer-unavailable returns append the `health.py` install remediation
+  via the new `get_remediation()` helper; `Unsupported target` messages
+  list the known targets.
+
+### Verified (2026-09-08)
+
+- `bash autoresearch.sh` (deterministic corpus x framework conformance
+  benchmark): `render_conformance_success_count=258`,
+  `render_success_count=258`, `render_errors=0`,
+  `render_syntax_errors=0`, `render_contract_violations=0`,
+  `render_unsupported=12` (by-design), 30/30 files with attempts.
+- Touched test files: 124 passed + 1 env-skipped across the render
+  contracts/CLI/availability/overall/integration files; mypy clean and
+  ruff clean on all touched files.
+
+
 ## [3.3.0] — 2026-09-06
 
 > **One Corpus.** Every model file under `input/` now lives inside
