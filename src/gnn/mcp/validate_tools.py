@@ -147,7 +147,7 @@ def main() -> int:
     print("\n[5] Logging coverage check (register_tools uses logger.info?)...")
     submodule_dirs = [
         d
-        for d in SRC_ROOT.iterdir()
+        for d in (SRC_ROOT / "gnn").iterdir()
         if d.is_dir()
         and (d / "mcp.py").exists()
         and not d.name.startswith("_")
@@ -227,7 +227,7 @@ def main() -> int:
         "logging_miss": log_miss,
         "issues": issues,
     }
-    out_path = SRC_ROOT / "mcp" / "audit_report.json"
+    out_path = SRC_ROOT / "gnn" / "mcp" / "audit_report.json"
     with tempfile.NamedTemporaryFile(
         mode="w", encoding="utf-8", dir=out_path.parent, delete=False
     ) as tmp_f:
