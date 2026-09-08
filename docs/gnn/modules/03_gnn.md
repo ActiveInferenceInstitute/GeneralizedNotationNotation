@@ -231,23 +231,14 @@ success = process_gnn_multi_format(
 
 **Location**: `src/gnn/processing/processor.py`
 
-#### `process_gnn(*args, **kwargs) -> Dict[str, Any]`
-
-**Description**: Alias for `process_gnn_directory`.
-
-**Parameters**: Same as `process_gnn_directory`
-
-**Returns**: Same as `process_gnn_directory`
-
-**Location**: `src/gnn/__init__.py`
-
-#### `validate_gnn_file(content: str) -> Dict[str, Any]`
+#### `validate_gnn_file(source: Any, *, is_content: bool = False) -> Dict[str, Any]`
 
 **Description**: Validate GNN file content string.
 
 **Parameters**:
 
-- `content` (str): GNN file content as string
+- `source` (str | Path): Path to a GNN file or raw GNN content string
+- `is_content` (bool): If True, treat `source` as raw content regardless of type
 
 **Returns**: `Dict[str, Any]` - Dictionary with validation results:
 
@@ -268,7 +259,7 @@ success = process_gnn_multi_format(
 
 **Returns**: `Tuple[bool, List[str]]` - Tuple of (is_valid, list_of_errors)
 
-**Location**: `src/gnn/parser.py`
+**Location**: `src/gnn/parsers/basic.py`
 
 ### Helper Functions (Internal but Exported)
 
