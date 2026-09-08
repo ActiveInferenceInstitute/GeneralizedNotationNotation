@@ -14,7 +14,6 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 PROJECT_ROOT = Path(__file__).parent.parent.parent
-pipeline = __import__("importlib").import_module("pipeline")
 
 
 class TestPipelineModuleComprehensive:

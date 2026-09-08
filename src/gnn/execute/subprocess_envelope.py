@@ -2,7 +2,7 @@
 """
 Uniform subprocess execution envelope for GNN execution backends.
 
-Every GNN execution path (script runners, MCP legacy executors, tool
+Every GNN execution path (script runners, MCP executors, tool
 probes) converts ``subprocess.run`` outcomes into the same structured
 envelope so callers never have to differentiate between a timeout, an
 ``OSError``, and a non-zero exit code.
