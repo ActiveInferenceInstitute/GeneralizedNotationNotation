@@ -21,8 +21,22 @@ CURRENT_SIMULATION_SCHEMAS = {
 }
 
 
-def _normalise_current_simulation_payload(payload: Dict[str, Any]) -> Dict[str, Any]:
-    """Map current framework simulation schemas into analysis fields."""
+def _normalise_current_simulation_payload(
+    payload: Dict[str, Any], *, fallback_top_level: bool = True
+) -> Dict[str, Any]:
+    """Map current framework simulation schemas into analysis fields.
+
+    ``fallback_top_level`` controls whether a missing ``*_by_factor`` /
+    ``by_modality`` map falls back to the payload's top-level arrays. The
+    rxinfer and activeinference_jl schemas carry top-level arrays (default);
+    the pymdp schema stores data exclusively in the by-factor maps, so its
+    extractor disables the fallback — pinned by
+    ``tests/render/test_jax_factorized_pipeline.py``.
+    """
+
+    def _fallback(top_key: str) -> Any:
+        return payload.get(top_key, []) if fallback_top_level else []
+
     beliefs_by_factor = payload.get("beliefs_by_factor", {}) or {}
     observations_by_modality = payload.get("observations_by_modality", {}) or {}
     actions_by_control_factor = payload.get("actions_by_control_factor", {}) or {}
@@ -31,17 +45,15 @@ def _normalise_current_simulation_payload(payload: Dict[str, Any]) -> Dict[str, 
     return {
         "traces": payload.get("simulation_trace", {}),
         "free_energy": payload.get("expected_free_energy", []),
-        "states": hidden_states_by_factor.get(
-            "joint_state", payload.get("true_states", [])
-        ),
+        "states": hidden_states_by_factor.get("joint_state", _fallback("true_states")),
         "observations": observations_by_modality.get(
-            "joint_observation", payload.get("observations", [])
+            "joint_observation", _fallback("observations")
         ),
         "actions": actions_by_control_factor.get(
-            "joint_action", payload.get("actions", [])
+            "joint_action", _fallback("actions")
         ),
         "policy": payload.get("policy_posterior", []),
-        "beliefs": beliefs_by_factor.get("joint_state", payload.get("beliefs", [])),
+        "beliefs": beliefs_by_factor.get("joint_state", _fallback("beliefs")),
         "belief_confidence": metrics.get("belief_confidence", []),
         "action_probabilities": payload.get(
             "policy_posterior", payload.get("action_probabilities", [])
@@ -138,11 +150,11 @@ def extract_pymdp_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
     else:
         # Single canonical field mapping (same normalizer the rxinfer and
         # activeinference_jl extractors use) so the three extractors cannot
-        # drift. For well-formed pymdp_simulation_v1 payloads this is
-        # value-identical to the previous inline mapping; for partially
-        # formed payloads it additionally falls back to the top-level
-        # arrays exactly like the shared pipeline path.
-        normalised = _normalise_current_simulation_payload(payload)
+        # drift. The pymdp schema carries data only in the by-factor maps,
+        # so the normalizer's top-level fallback is disabled here.
+        normalised = _normalise_current_simulation_payload(
+            payload, fallback_top_level=False
+        )
         simulation_data["beliefs"] = normalised["beliefs"]
         simulation_data["observations"] = normalised["observations"]
         simulation_data["actions"] = normalised["actions"]
