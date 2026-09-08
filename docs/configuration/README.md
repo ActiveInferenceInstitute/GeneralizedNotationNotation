@@ -195,7 +195,7 @@ When documentation or code changes the configuration contract, update this page,
 
 - [Setup guide](../SETUP.md)
 - [Pipeline guide](../pipeline/README.md)
-- [GNN syntax reference](../gnn/reference/gnn_syntax.md)
+- [GNN syntax specification](../gnn/gnn_syntax.md)
 - [Unified CLI](../../src/gnn/cli/README.md)
 - [Configuration loader](../../src/gnn/utils/config_loader.py)
 - [Main parser](../../src/gnn/utils/arg_parsing.py)

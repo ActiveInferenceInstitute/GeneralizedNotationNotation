@@ -43,7 +43,7 @@ Same content as [Intermediate Path: Building and Integrating Models](#intermedia
    - Build your first model using [Basic GNN Template](templates/basic_gnn_template.md).
 
 3. **Basic Syntax and Examples**:
-   - Study [GNN Syntax](gnn/reference/gnn_syntax.md).
+   - Study [GNN Syntax](gnn/gnn_syntax.md).
    - Explore simple examples in [GNN Examples](gnn/tutorials/gnn_examples_doc.md).
 
 4. **Run Your First Pipeline**:

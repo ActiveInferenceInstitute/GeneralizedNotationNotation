@@ -86,7 +86,7 @@ GNN addresses the challenge of communicating Active Inference models, which are 
 | **[DOCS.md](./DOCS.md)** | Comprehensive documentation with all diagrams | You need the complete system overview |
 | **[ARCHITECTURE.md](./ARCHITECTURE.md)** | Implementation patterns and extension guides | You're developing or extending GNN |
 | **[docs/quickstart.md](./docs/quickstart.md)** | Step-by-step getting started guide | You want to run your first pipeline |
-| **[docs/gnn/reference/gnn_syntax.md](./docs/gnn/reference/gnn_syntax.md)** | Complete GNN syntax specification | You're writing GNN model files |
+| **[docs/gnn/gnn_syntax.md](./docs/gnn/gnn_syntax.md)** | Complete GNN syntax specification (normative) | You're writing GNN model files |
 | **[pyproject.toml](./pyproject.toml)** | Project dependencies and configuration | You're setting up the environment |
 | **[SETUP_GUIDE.md](./SETUP_GUIDE.md)** | Detailed installation instructions | You're having setup issues |
 | **[SECURITY.md](./SECURITY.md)** | Security policy and vulnerability reporting | You found a security issue |
@@ -292,7 +292,7 @@ o=Observation
 - `s-A` — s connects to A (undirected/bidirectional)
 - `π>u` — Policy determines action
 
-📖 **Full syntax reference**: [docs/gnn/reference/gnn_syntax.md](./docs/gnn/reference/gnn_syntax.md)
+📖 **Full syntax reference**: [docs/gnn/gnn_syntax.md](./docs/gnn/gnn_syntax.md)
 
 ---
 
@@ -1113,7 +1113,7 @@ Comprehensive documentation is organized in the `docs/` directory.
 | [**AGENTS.md**](./AGENTS.md) | **MUST READ**: The master guide to all pipeline agents and modules. |
 | [**DOCS.md**](./DOCS.md) | High-level system architecture and comprehensive documentation index. |
 | [**GNN Overview**](./docs/gnn/gnn_overview.md) | High-level introduction to the GNN language. |
-| [**Syntax Guide**](./docs/gnn/reference/gnn_syntax.md) | Detailed GNN syntax specification. |
+| [**Syntax Guide**](./docs/gnn/gnn_syntax.md) | Detailed GNN syntax specification. |
 | [**File Structure**](./docs/gnn/reference/gnn_file_structure_doc.md) | Guide to GNN file organization. |
 | [**Quick Start Tutorial**](./docs/gnn/tutorials/quickstart_tutorial.md) | Step-by-step beginner guide. |
 | [**Architecture Guide**](./ARCHITECTURE.md) | Implementation, extension patterns, and system design. |

@@ -7,7 +7,7 @@ Repository automation: Dependabot and GitHub Actions. **Start here for humans**:
 ## Files
 
 - [dependabot.yml](dependabot.yml): Dependabot for pip and GitHub Actions (weekly Monday UTC).
-- [workflows/](workflows/): CI (test matrix with Ruff/mypy/doc audits on 3.12, v3 orchestration acceptance, Bandit SARIF), MCP tool-count audit, weekly all-extras suite, docs audit, actionlint, dependency review, CodeQL, scheduled supply-chain `pip-audit`.
+- [workflows/](workflows/): CI (test matrix with Ruff/mypy/doc audits on 3.12, v3 orchestration acceptance, Bandit SARIF), MCP tool-count audit, weekly all-extras suite, docs audit, actionlint, dependency review, CodeQL, scheduled supply-chain `pip-audit`, local-gate parity (manuscript tokens + MCP/skills health), and paired fep_lean revision CI (pinned companion checkout + read-only bridge).
 
 ## Operating rules
 

@@ -16,6 +16,8 @@ Defines behavior and guardrails for workflows in this directory. Human index of 
 | `dependency-review.yml` | PR gate: high-severity failures; AGPL deny list; PR comment summary on failure. |
 | `codeql.yml` | Python CodeQL: `init` → `uv sync --frozen --extra dev` → `analyze`; skips doc-only paths on push/PR; weekly Monday 04:28 UTC cron + `workflow_dispatch`. |
 | `supply-chain-audit.yml` | Scheduled `pip-audit` on frozen exports (core + all extras, no dev); bash `set -euo pipefail`; job summary. |
+| `local-gates.yml` | Local `just`-gate parity: manuscript token audit and MCP + skills resolvability health gate on push/PR to `main`. |
+| `fep-lean-paired-revision.yml` | GNN-04 paired-revision CI: checks out fep_lean at the pinned SHA from `.github/fep-lean-pair.json` and runs its read-only bridge surface; expected red until the first paired re-pin. |
 
 ## Standards
 

@@ -14,7 +14,7 @@ Read [Setup](SETUP.md), [Configuration](configuration/README.md), and
 
 ## I am writing a model
 
-Use the [GNN Syntax Reference](gnn/reference/gnn_syntax.md),
+Use the [GNN Syntax Specification](gnn/gnn_syntax.md),
 [File Structure guide](gnn/reference/gnn_file_structure_doc.md), and
 [Examples](gnn/tutorials/gnn_examples_doc.md).
 
