@@ -22,7 +22,13 @@ import urllib.parse
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from typing import Any, Dict, List, Optional
 
-from .jsonrpc import jsonrpc_error, jsonrpc_result, validate_request
+from .jsonrpc import (
+    INTERNAL_ERROR,
+    jsonrpc_error,
+    jsonrpc_result,
+    serialize_response,
+    validate_request,
+)
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -355,11 +361,29 @@ class MCPHTTPHandler(BaseHTTPRequestHandler):
             self.send_header("Content-Length", "0")
             self.end_headers()
             return
+        try:
+            response_body = self._serialize(data)
+        except Exception:
+            # Serialize before headers: an unserializable payload must still
+            # yield a protocol-valid -32603 response, never a mid-write abort.
+            logger.exception("Response serialization failed")
+            response_body = self._serialize(
+                jsonrpc_error(
+                    getattr(data, "get", lambda *_: None)("id"),
+                    INTERNAL_ERROR,
+                    "Internal error: response serialization failed",
+                )
+            )
         self.send_response(status_code)
         self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(response_body)))
         self.end_headers()
-        response_body = json.dumps(data).encode("utf-8")
         self.wfile.write(response_body)
+
+    @staticmethod
+    def _serialize(data: Any) -> bytes:
+        """Serialize one outgoing HTTP body to protocol-valid JSON bytes."""
+        return serialize_response(data, ensure_ascii=True).encode("utf-8")
 
     def _send_error(self, status_code: int, message: str) -> Any:
         """Send an HTTP error response."""

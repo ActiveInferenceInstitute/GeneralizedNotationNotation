@@ -31,7 +31,13 @@ try:
 except ImportError:  # pragma: no cover - direct-script fallback
     from gnn.mcp import MCPError, initialize, mcp_instance
 
-from .jsonrpc import jsonrpc_error, jsonrpc_result, validate_request
+from .jsonrpc import (
+    INTERNAL_ERROR,
+    jsonrpc_error,
+    jsonrpc_result,
+    serialize_response,
+    validate_request,
+)
 
 _NOTIFICATION = object()
 
@@ -222,9 +228,24 @@ class StdioServer:
                     self._responses_sent += 1
 
                     try:
-                        json_str = json.dumps(
-                            message, separators=(",", ":"), ensure_ascii=False
+                        json_str = serialize_response(message, separators=(",", ":"))
+                    except Exception as e:
+                        # Never hang the client on an unserializable result:
+                        # emit a protocol-valid -32603 envelope instead.
+                        self._errors_encountered += 1
+                        logger.error(f"Response serialization failed: {e}")
+                        fallback_id = (
+                            message.get("id") if isinstance(message, dict) else None
                         )
+                        json_str = serialize_response(
+                            jsonrpc_error(
+                                fallback_id,
+                                INTERNAL_ERROR,
+                                "Internal error: response serialization failed",
+                            ),
+                            separators=(",", ":"),
+                        )
+                    try:
                         logger.debug(f"STDIO OUT: {json_str}")
                         sys.stdout.write(json_str + "\n")
                         sys.stdout.flush()
