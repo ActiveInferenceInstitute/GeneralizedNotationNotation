@@ -108,7 +108,7 @@ def test_get_output_dir_for_script_accepts_py_suffix(tmp_path: Path) -> None:
 
 
 def test_get_output_dir_for_script_warns_on_unregistered_stem(
-    tmp_path: Path, caplog: "pytest.LogCaptureFixture"
+    tmp_path: Path, caplog: pytest.LogCaptureFixture
 ) -> None:
     """Unregistered script names warn loudly, then keep the fallback path.
 
