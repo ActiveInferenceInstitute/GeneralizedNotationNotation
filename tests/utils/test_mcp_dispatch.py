@@ -396,3 +396,97 @@ class TestRunToolEnvelope:
             )
         assert result == {"success": False, "error": "boom"}
         assert "get_x_mcp error: boom" in caplog.text
+
+
+@pytest.mark.unit
+class TestRunPipelineStepMessageBuilderOnFailure:
+    def test_message_builder_receives_false_and_wins_over_label(self) -> None:
+        """``message_builder`` also drives failure results (MAJ-06 branch at
+        mcp_dispatch.py:102-103); its message wins over the label template."""
+        calls: list[bool] = []
+
+        def build(success: bool) -> str:
+            calls.append(success)
+            return f"rendered={'ok' if success else 'with issues'}"
+
+        result = run_pipeline_step_mcp(
+            lambda **kwargs: "renderer-died",
+            wrapper_name="process_x_mcp",
+            logger=logger,
+            target_directory="in",
+            output_directory="out",
+            interpret_result=lambda raw: (False, {}, None),
+            label="X processing",
+            success_wording="completed successfully",
+            failure_wording="completed with issues",
+            message_builder=build,
+        )
+        assert calls == [False]
+        assert result["success"] is False
+        assert result["message"] == "rendered=with issues"
+
+
+@pytest.mark.unit
+class TestRunPipelineStepErrorEnvelopeExtras:
+    def test_static_extras_dropped_when_step_raises(self, caplog: Any) -> None:
+        """The error envelope is exactly ``{"success", "error"}``: neither
+        ``static_extras`` nor step extras are merged into error results."""
+
+        def step(**kwargs: Any) -> bool:
+            raise RuntimeError("boom")
+
+        with caplog.at_level(logging.ERROR, logger="test_mcp_dispatch"):
+            result = run_pipeline_step_mcp(
+                step,
+                wrapper_name="process_x_mcp",
+                logger=logger,
+                target_directory="in",
+                output_directory="out",
+                static_extras={"static_key": "static-value"},
+            )
+        assert result == {"success": False, "error": "boom"}
+        assert list(result) == ["success", "error"]
+
+    def test_base_exception_escapes_the_envelope(self) -> None:
+        """``except Exception`` deliberately lets ``KeyboardInterrupt`` /
+        ``SystemExit`` propagate instead of swallowing them into an error
+        dict (both dispatcher functions)."""
+
+        def step(**kwargs: Any) -> bool:
+            raise KeyboardInterrupt
+
+        with pytest.raises(KeyboardInterrupt):
+            run_pipeline_step_mcp(
+                step,
+                wrapper_name="process_x_mcp",
+                logger=logger,
+                target_directory="in",
+                output_directory="out",
+            )
+
+
+@pytest.mark.unit
+class TestRunToolEnvelopeNegativePaths:
+    def test_non_mapping_build_result_converted_to_error(self, caplog: Any) -> None:
+        """``dict(build())`` on a non-Mapping raises inside the envelope and
+        converts to the canonical error dict (accidental-input path)."""
+
+        def bad_build() -> dict[str, Any]:
+            return 42  # type: ignore[return-value] — accidental-input probe
+
+        with caplog.at_level(logging.ERROR, logger="test_mcp_dispatch"):
+            result = run_tool_envelope(
+                bad_build,
+                wrapper_name="get_x_mcp",
+                logger=logger,
+            )
+        assert result["success"] is False
+        assert "iterable" in result["error"]
+        assert "get_x_mcp error:" in caplog.text
+
+    def test_base_exception_escapes_the_envelope(self) -> None:
+        def build() -> dict[str, Any]:
+            raise KeyboardInterrupt
+
+        with pytest.raises(KeyboardInterrupt):
+            run_tool_envelope(build, wrapper_name="get_x_mcp", logger=logger)

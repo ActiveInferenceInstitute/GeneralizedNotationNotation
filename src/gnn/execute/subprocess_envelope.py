@@ -82,8 +82,18 @@ def run_subprocess_envelope(
     except subprocess.TimeoutExpired as exc:
         envelope["error"] = f"Execution timed out after {timeout}s"
         envelope["error_type"] = "TimeoutExpired"
-        envelope["stdout"] = exc.stdout or "" if capture_output else ""
-        envelope["stderr"] = exc.stderr or "" if capture_output else ""
+        if capture_output:
+            stdout: str | bytes | None = exc.stdout
+            stderr: str | bytes | None = exc.stderr
+            # CPython delivers TimeoutExpired stream fragments as bytes even
+            # under ``text=True`` (or ``None`` when nothing was read before
+            # the kill); normalize to the documented ``str`` envelope types.
+            if isinstance(stdout, bytes):
+                stdout = stdout.decode(errors="replace")
+            if isinstance(stderr, bytes):
+                stderr = stderr.decode(errors="replace")
+            envelope["stdout"] = stdout or ""
+            envelope["stderr"] = stderr or ""
     except Exception as exc:  # noqa: BLE001 — convert any failure to envelope
         envelope["error"] = str(exc)
         envelope["error_type"] = type(exc).__name__

@@ -20,9 +20,7 @@ PYTHON = sys.executable
 
 
 def test_success_envelope() -> None:
-    result = run_subprocess_envelope(
-        [PYTHON, "-c", "print('hello-from-envelope')"]
-    )
+    result = run_subprocess_envelope([PYTHON, "-c", "print('hello-from-envelope')"])
     assert result["success"] is True
     assert result["return_code"] == 0
     assert "hello-from-envelope" in result["stdout"]
@@ -60,7 +58,11 @@ def test_oserror_converted() -> None:
 
 def test_env_overrides_merge_over_parent() -> None:
     result = run_subprocess_envelope(
-        [PYTHON, "-c", "import os; print(os.environ.get('GNN_ENVELOPE_PROBE', 'missing'))"],
+        [
+            PYTHON,
+            "-c",
+            "import os; print(os.environ.get('GNN_ENVELOPE_PROBE', 'missing'))",
+        ],
         env={"GNN_ENVELOPE_PROBE": "present"},
     )
     assert result["success"] is True
@@ -99,3 +101,29 @@ def test_envelope_always_carries_core_keys(missing_key: str) -> None:
     bad = run_subprocess_envelope(["definitely-not-a-real-binary-xyz"])
     assert missing_key in ok
     assert missing_key in bad
+
+
+def test_timeout_captured_streams_are_str_with_partial_output() -> None:
+    """TimeoutExpired streams land as documented ``str`` (CPython delivers
+    bytes under ``text=True``); partial pre-kill output is preserved."""
+    result = run_subprocess_envelope(
+        [PYTHON, "-c", "print('partial-line', flush=True); import time; time.sleep(5)"],
+        timeout=1,
+    )
+    assert result["success"] is False
+    assert result["error_type"] == "TimeoutExpired"
+    assert "timed out after 1s" in result["error"]
+    assert result["stdout"] == "partial-line\n"
+    assert result["stderr"] == ""
+
+
+def test_timeout_without_capture_yields_empty_streams() -> None:
+    result = run_subprocess_envelope(
+        [PYTHON, "-c", "import time; time.sleep(5)"],
+        timeout=1,
+        capture_output=False,
+    )
+    assert result["success"] is False
+    assert result["error_type"] == "TimeoutExpired"
+    assert result["stdout"] == ""
+    assert result["stderr"] == ""
