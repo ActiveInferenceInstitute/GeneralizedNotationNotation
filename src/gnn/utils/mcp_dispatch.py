@@ -49,10 +49,10 @@ def run_pipeline_step_mcp(
     output_directory: str,
     verbose: bool = False,
     resolve_paths: Callable[[str, str], tuple[Path, Path]] | None = None,
+    echo_resolved: bool = False,
     extra_step_kwargs: Mapping[str, Any]
     | Callable[[Path, Path], Mapping[str, Any]]
     | None = None,
-    echo_resolved: bool = False,
     pass_verbose: bool = True,
     interpret_result: Callable[[Any], tuple[bool, Mapping[str, Any], str | None]]
     | None = None,
@@ -108,6 +108,29 @@ def run_pipeline_step_mcp(
                 f"{label} {success_wording if success else failure_wording}"
             )
         return result
+    except Exception as e:
+        logger.error(f"{wrapper_name} error: {e}", exc_info=True)
+        return {"success": False, "error": str(e)}
+
+
+def run_tool_envelope(
+    build: Callable[[], dict[str, Any]],
+    *,
+    wrapper_name: str,
+    logger: Logger,
+) -> dict[str, Any]:
+    """Run a zero-argument payload builder behind the canonical MCP envelope.
+
+    Companion to :func:`run_pipeline_step_mcp` for the remaining hand-written
+    tool families (module-info metadata, output-directory report readers,
+    capability/option probes). ``build`` returns the complete result dict —
+    the success payload including its ``success`` key, or an early-return
+    error dict such as ``{"success": False, "error": "Directory not found:
+    ..."}``. Any raised exception is converted exactly like the pipeline-step
+    dispatcher: error log line, then ``{"success": False, "error": str(e)}``.
+    """
+    try:
+        return dict(build())
     except Exception as e:
         logger.error(f"{wrapper_name} error: {e}", exc_info=True)
         return {"success": False, "error": str(e)}
