@@ -82,8 +82,11 @@ are pinned.
   unwired deliberately - the committed `output/` tree currently fails
   its contract and regeneration needs the Julia toolchains. Still open:
   the `ml-ai`/`torch` extras would unlock 12 environment-skipped tests
-  (11 sklearn, 1 torch); `test-cov` locally ignores the Ollama tests
-  while the CI coverage run does not.
+  (11 sklearn, 1 torch); `test-cov`/CI coverage Ollama-ignore parity:
+  RESOLVED 2026-09-08 - the CI coverage step now carries the same two
+  Ollama `--ignore` flags as `just test-cov`, and `just test-cov` adopts
+  CI's `-m "not pipeline and not mcp"` selection (4326 tests collected on
+  both sides; was 4352 in CI).
 - Dependency floors: RAISED 2026-09-07 for numpy (>=2.0), pandas
   (>=2.0), openai (>=2.0), pytest (>=8.0), mypy (>=1.0) - the lock
   resolved identically (only requires-dist metadata moved; zero package
