@@ -19,7 +19,6 @@ from gnn.render.multi_agent_common import (
     detect_agent_groups,
     detect_env_conditioned,
     detect_env_coupling,
-    has_env_conditioned_action_selection,
     has_native_multi_agent_structure,
 )
 from gnn.render.pomdp_contract import build_canonical_pomdp_spec

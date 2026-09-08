@@ -13,7 +13,7 @@ import matplotlib
 matplotlib.use("Agg")  # Use non-interactive backend for server environments
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
 import matplotlib.pyplot as plt
 

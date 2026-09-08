@@ -14,7 +14,6 @@ Requires: pip install fastapi uvicorn
 """
 
 import asyncio
-import json
 import logging
 import os
 import sys
@@ -22,14 +21,13 @@ import time
 import uuid
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 logger = logging.getLogger(__name__)
 
 from fastapi import BackgroundTasks, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import PlainTextResponse, StreamingResponse
-from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 FASTAPI_AVAILABLE = True
 

@@ -448,13 +448,29 @@ ignore = [
     "C408",  # unnecessary dict call
     "C414",  # unnecessary double cast / process
     "C416",  # unnecessary comprehension
-    "F811",  # redefined while unused
-    "F401",  # unused import (optional deps, import-or-skip probes, test adapters)
 ]
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]
 "tests/**" = ["F401"]
+
+# Facade re-export surfaces (MAJ-04 mechanical splits): these modules import
+# moved names purely to preserve consumer import paths. Every name in each
+# facade's re-export block is part of the module's public surface.
+"src/gnn/analysis/visualizations.py" = ["F401"]
+"src/gnn/analysis/analyzer.py" = ["F401"]
+"src/gnn/render/jax/jax_renderer.py" = ["F401"]
+"src/gnn/render/discopy/translator.py" = ["F401"]
+"src/gnn/integration/meta_analysis/visualizer.py" = ["F401"]
+"src/gnn/integration/meta_analysis/visualizer_style.py" = ["F401"]
+"src/gnn/testing/test_round_trip.py" = ["F401"]
+"src/gnn/testing/round_trip_availability.py" = ["F401"]
+"src/gnn/execute/processor.py" = ["F401"]
+
+# Guarded optional-dependency probes: parsers import serialization backends
+# inside try/except to test availability; the binding itself is intentionally
+# unused (usage is gated on the availability flag).
+"src/gnn/parsers/*" = ["F401"]
 
 # CVE-2026-4539 resolved: Pygments 2.20.0 (released 2026-03-29) includes the
 # official fix for the AdlLexer ReDoS (pygments/pygments#3064).  The git-fork

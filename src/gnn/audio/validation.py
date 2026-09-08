@@ -14,7 +14,7 @@ Error messages are part of the contract — existing tests pin the substrings
 from __future__ import annotations
 
 import math
-from typing import Any, cast
+from typing import Any
 
 import numpy as np
 

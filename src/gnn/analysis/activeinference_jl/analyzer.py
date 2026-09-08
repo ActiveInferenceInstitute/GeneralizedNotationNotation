@@ -258,7 +258,7 @@ def create_trace_reconstruction(csv_path: Path, output_dir: Path) -> List[str]:
         List of generated file paths
     """
     try:
-        from ..viz_base import MATPLOTLIB_AVAILABLE, np, plt
+        from ..viz_base import MATPLOTLIB_AVAILABLE, plt
     except ImportError:
         return []
 

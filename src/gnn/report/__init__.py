@@ -20,7 +20,7 @@ FEATURES: dict[str, Any] = {
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Dict, List
 
 from gnn.utils.pipeline_template import (
     log_step_error,
@@ -126,7 +126,6 @@ def process_report(
         True if processing succeeded, False otherwise
     """
     import json
-    from pathlib import Path
 
     if logger is None:
         logger = logging.getLogger(__name__)

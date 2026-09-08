@@ -33,7 +33,6 @@ import os
 import shutil
 import subprocess  # nosec B404
 from dataclasses import dataclass
-from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)

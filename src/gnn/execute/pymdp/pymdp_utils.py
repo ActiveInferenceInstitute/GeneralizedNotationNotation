@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Utility functions for PyMDP simulations: JSON serialization, numpy array handling, data conversion."""
 
-import ast
 import json
 import logging
 import pickle  # nosec B403

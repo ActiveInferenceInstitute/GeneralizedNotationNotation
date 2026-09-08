@@ -21,7 +21,7 @@ import queue
 import sys
 import threading
 import time
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 # Configure logging
 logger = logging.getLogger(__name__)

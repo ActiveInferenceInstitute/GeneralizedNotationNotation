@@ -7,8 +7,6 @@ formats, including structured data (JSON, XML), graph formats (GEXF, GraphML),
 and text-based representations (Summary, DSL).
 """
 
-import ast
-
 # Imports for specific exporters
 import json
 import logging
