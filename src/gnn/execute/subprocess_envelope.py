@@ -28,6 +28,16 @@ NEVER_STARTED = -1  # the process never ran: OSError or caller-side timeout
 INTERNAL_ERROR = -2  # the harness itself failed while orchestrating the run
 UNKNOWN_STATE = -3  # no execution record exists at all
 
+
+def _as_text(value: Any) -> str:
+    """Normalize stream captures to text (subprocess mixes str/bytes)."""
+    if value is None:
+        return ""
+    if isinstance(value, bytes):
+        return value.decode("utf-8", errors="replace")
+    return str(value)
+
+
 __all__ = [
     "run_subprocess_envelope",
     "NEVER_STARTED",
@@ -84,14 +94,6 @@ def run_subprocess_envelope(
         merged_env = dict(os.environ)
         merged_env.update(env)
 
-    def _as_text(value: Any) -> str:
-        """Normalize stream captures to text (subprocess mixes str/bytes)."""
-        if value is None:
-            return ""
-        if isinstance(value, bytes):
-            return value.decode("utf-8", errors="replace")
-        return str(value)
-
     start = time.time()
     try:
         # subprocess.run is C-optimized for the common success path and
@@ -109,8 +111,9 @@ def run_subprocess_envelope(
         )
         envelope["return_code"] = completed.returncode
         envelope["success"] = completed.returncode == 0
-        envelope["stdout"] = _as_text(completed.stdout)
-        envelope["stderr"] = _as_text(completed.stderr)
+        # text=True guarantees str output; None only when not capturing.
+        envelope["stdout"] = completed.stdout or ""
+        envelope["stderr"] = completed.stderr or ""
     except subprocess.TimeoutExpired as exc:
         envelope["error"] = f"Execution timed out after {timeout}s"
         envelope["error_type"] = "TimeoutExpired"
