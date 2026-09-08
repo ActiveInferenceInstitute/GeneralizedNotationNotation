@@ -305,6 +305,84 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   ruff clean on all touched files.
 
 
+## Deep horizon wave 2 - tests + CI (2026-09-08)
+
+Verification-layer wave from the `deep/gnn-tests-ci` session. Additions
+only; no existing gate weakened. Harness (`autoresearch.sh`):
+dev+ml-ai+torch extras, CI coverage-parity selection, fixed `-n 4` xdist,
+`--cov=gnn` — baseline 60.12% / 4343 passed / 0 failed / 7 skipped, final
+61.14% / 4417 passed (the 12 environment-skipped tests run in every
+harness measurement).
+
+### Added
+
+- **PR-time extras gate.** New `extras` job in `ci.yml` (py3.12) runs
+  `tests/ml_integration/test_ml_integration_inference.py` and
+  `tests/render/test_continuous_renderers.py` under
+  `--extra dev --extra ml-ai --extra torch` on every PR; the 12
+  environment-skipped tests previously ran only in the weekly scheduled
+  full-extras workflow. Mirrored as the `just test-extras` recipe.
+- **Negative-path coverage for the MAJ-06 dispatcher and subprocess
+  envelope** (`tests/utils/test_mcp_dispatch.py`,
+  `tests/execute/test_subprocess_envelope.py`): `message_builder` on the
+  failure branch (wins over the label template), `static_extras` pinned as
+  dropped from error envelopes, non-Mapping `build()` results converted to
+  the canonical error dict, `BaseException` (`KeyboardInterrupt`)
+  passthrough, and `TimeoutExpired` stream capture with/without
+  `capture_output`.
+- **`validate_gnn*` alias hardening** (`tests/test_validate_surface_aliases.py`):
+  error-path parity with the canonical function on invalid input for 7
+  alias pairs, `DeprecationWarning` stacklevel pinned to the caller for
+  every pair, and the package-root `gnn.validate_gnn_syntax_formal` lazy
+  export pinned (parity + warning attribution).
+- **`gnn.mcp.validate_tools.main()` covered** (`tests/mcp/test_validate_tools.py`,
+  unmarked so the default selection runs it): MCP init failure exit 1,
+  NOT_CALLABLE (lambda / missing func) and UNDOCUMENTED classification,
+  callability spot-check SKIP / `success=False` / exception branches, and
+  the `logging_miss` `register_tools` scan; `main()` is isolated via
+  stubbed `gnn.mcp.initialize`/`mcp_instance` and a tmp `SRC_ROOT`.
+- **`gnn.pipeline.pipeline_validation` covered**
+  (`tests/pipeline/test_pipeline_validation.py`): module discovery, import
+  and centralized-import validators, output-structure checks,
+  recommendation generation, and `generate_validation_report` shape and
+  status accounting against a synthetic module tree.
+
+### Fixed
+
+- **`generate_validation_report` naming-violations crash.** The report
+  assigned the whole issues dict from `validate_output_naming_conventions()`
+  to `output_validation["naming_violations"]`, so
+  `generate_improvement_recommendations` crashed with
+  `TypeError: unhashable type: 'slice'` whenever naming violations existed.
+  The violations list is extracted instead. Found by the new tests.
+- **`run_subprocess_envelope` timeout streams.** CPython delivers
+  `TimeoutExpired.stdout/stderr` as bytes even under `text=True`, violating
+  the envelope's documented `str` contract; fragments are now decoded
+  (errors="replace") and `None` normalized to `""`.
+- **Flake hardening.** Fixed shared-`/tmp` write paths in
+  `tests/render/test_jax_factorized_pipeline.py` and
+  `tests/api/test_comprehensive_api.py` now use pytest `tmp_path`
+  (cross-worker collisions under xdist); the load-sensitive
+  `test_environment_module_performance` smoke bound was raised 10s → 30s
+  after a spuriously failing 13.5s measurement under `-n 4` + coverage.
+
+### Changed
+
+- **Zero-skip contract completeness.** `FORBIDDEN_SKIP_TOKENS` now also
+  matches bare (non-decorator) `pytest.mark.skip*`/`xfail` forms — which
+  `pytestmark = pytest.mark.skipif(...)` assignments and module-level
+  marker variables evaded — and `unittest.skip`/`skipIf`/`skipUnless`;
+  five previously invisible skip sites are enumerated in
+  `DEFAULT_SKIP_ALLOWLIST` with justifications (`test_lean_runner.py`,
+  `test_d2_visualizer.py`, `test_execute_pymdp_simulation.py`,
+  `test_pomdp_pipeline_integration.py`, `test_shared_helpers.py`).
+- **Coverage floor 50 → 60.** `[tool.coverage.report] fail_under` pins the
+  wave's improvement: CI dev-only coverage measures 60.56% and the wave-2
+  extras harness 61.14% at landing.
+- **Weekly full-extras coverage.** The weekly all-extras run now also
+  emits `junit/coverage-full-extras.json`, so `pipeline`/`mcp`-marked and
+  audio/gui/research paths appear in coverage reports.
+
 ## [3.3.0] — 2026-09-06
 
 > **One Corpus.** Every model file under `input/` now lives inside

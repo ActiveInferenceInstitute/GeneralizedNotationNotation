@@ -692,7 +692,7 @@ def generate_validation_report(src_dir: Path, output_dir: Path) -> Dict:
 
     # Check output naming conventions
     report["output_validation"]["naming_violations"] = (
-        validate_output_naming_conventions()
+        validate_output_naming_conventions()["naming_violations"]
     )
 
     # Check performance tracking coverage
