@@ -11,114 +11,13 @@ across all supported formats by:
 Author: AI Assistant
 Date: 2025-01-17
 License: MIT
+
+Mechanical split facade: configuration, result dataclasses, the
+serializer availability probe, the direct markdown parser, model
+comparison, and report generation live in ``round_trip_*`` sibling
+modules; every previously module-level name is re-exported here so
+consumer import paths are unchanged.
 """
-
-from typing import Any, cast
-
-# =============================================================================
-# TEST CONFIGURATION - Modify these settings to control test behavior
-# =============================================================================
-
-# Logging Configuration
-LOGGING_CONFIG: dict[str, Any] = {
-    "enable_debug": False,  # Disable debug logging for cleaner output
-    "enable_detailed_output": False,  # Show concise test progress for final confirmation
-    "enable_format_groups": True,  # Group formats by category in output
-    "log_level": "WARNING",  # Python logging level (DEBUG, INFO, WARNING, ERROR) - cleaner output
-    "suppress_parser_warnings": True,  # Suppress parser-specific warnings for cleaner output
-}
-
-# Format Testing Configuration
-FORMAT_TEST_CONFIG: dict[str, Any] = {
-    # Test all formats (set to False for methodical testing)
-    "test_all_formats": False,
-    # Selective format testing - only test these formats when test_all_formats=False
-    "test_formats": [
-        "markdown",  # Always include markdown as reference
-        "json",  # Test JSON serialization - ✅ CONFIRMED 100% FUNCTIONAL
-        "xml",  # Test XML serialization - ✅ CONFIRMED 100% FUNCTIONAL (FIXED!)
-        "yaml",  # Test YAML serialization - ✅ CONFIRMED 100% FUNCTIONAL
-        "python",  # Test Python serialization - ✅ CONFIRMED 100% FUNCTIONAL
-        "pkl",  # Test PKL serialization - ✅ CONFIRMED 100% FUNCTIONAL
-        "scala",  # Test Scala serialization - ✅ CONFIRMED 100% FUNCTIONAL
-        "protobuf",  # Test Protobuf serialization - ✅ CONFIRMED 100% FUNCTIONAL
-        "xsd",  # Test XSD serialization - ✅ CONFIRMED 100% FUNCTIONAL
-        "asn1",  # Test ASN.1 serialization - ✅ CONFIRMED 100% FUNCTIONAL
-        "alloy",  # Test Alloy serialization - ✅ CONFIRMED 100% FUNCTIONAL
-        "lean",  # Test Lean serialization - ✅ CONFIRMED 100% FUNCTIONAL
-        "coq",  # Test Coq serialization - ✅ CONFIRMED 100% FUNCTIONAL
-        "isabelle",  # Test Isabelle serialization - ✅ CONFIRMED 100% FUNCTIONAL
-        "haskell",  # Test Haskell serialization - ✅ CONFIRMED 100% FUNCTIONAL
-        "bnf",  # Test BNF serialization - ✅ CONFIRMED 100% FUNCTIONAL
-        "pickle",  # Test Pickle serialization - ✅ CONFIRMED 100% FUNCTIONAL
-        "z_notation",  # Test Z notation serialization - ✅ CONFIRMED 100% FUNCTIONAL
-        "tla_plus",  # Test TLA+ serialization - ✅ CONFIRMED 100% FUNCTIONAL
-        "agda",  # Test Agda serialization - ✅ CONFIRMED 100% FUNCTIONAL
-        "maxima",  # Test Maxima serialization - ✅ CONFIRMED 100% FUNCTIONAL
-        # PNML disabled in default list (parse-focused; see SPEC.md / FORMAT_TEST_CONFIG notes)
-    ],
-    # Format categories to test (when test_all_formats=True)
-    "test_categories": {
-        "schema_formats": True,  # JSON, XML, YAML, XSD, ASN.1, PKL, Protobuf
-        "language_formats": True,  # Scala, Python, Haskell, etc.
-        "formal_formats": True,  # Lean, Coq, Isabelle, Alloy, Z-notation, etc.
-        "grammar_formats": True,  # BNF, EBNF
-        "temporal_formats": True,  # TLA+, Agda
-        "binary_formats": True,  # Pickle, Binary
-    },
-    # Individual format control (overrides categories)
-    "format_overrides": {
-        # 'alloy': False,   # Force disable Alloy testing
-        # 'asn1': False,    # Force disable ASN.1 testing
-        # 'pickle': False,  # Force disable Pickle testing
-    },
-}
-
-# Test Behavior Configuration
-TEST_BEHAVIOR_CONFIG: dict[str, Any] = {
-    "strict_validation": False,  # Disable strict validation to avoid recursion issues
-    "fail_fast": False,  # Stop testing on first failure
-    "save_converted_files": False,  # Don't save converted files for cleaner output
-    "run_cross_format_validation": False,  # Disable cross-format validation to avoid recursion
-    "compute_checksums": True,  # Compute semantic checksums for comparison
-    "validate_round_trip": True,  # Validate that round-trip preserves semantics - ENABLED!
-    "max_test_time": 60,  # Maximum time for all tests (seconds) - reduced for faster testing
-    "per_format_timeout": 10,  # Maximum time per format test (seconds) - reduced for faster testing
-}
-
-# Output Configuration
-OUTPUT_CONFIG: dict[str, Any] = {
-    "generate_detailed_report": True,  # Generate detailed markdown report
-    "save_test_artifacts": False,  # Don't save test files for cleaner output
-    "show_progress_bar": False,  # Don't show progress bar for cleaner output
-    "colored_output": True,  # Use colored console output
-    "export_json_results": True,  # Export results as JSON
-}
-
-# Reference Model Configuration
-REFERENCE_CONFIG: dict[str, Any] = {
-    "reference_file": "input/gnn_files/actinf_pomdp_agent.md",  # Relative to project root
-    "fallback_reference_files": [
-        "src/gnn/gnn_examples/actinf_pomdp_agent.md",
-        "examples/actinf_pomdp_agent.md",
-    ],
-    "require_reference_validation": True,  # Require reference file to validate before testing
-}
-
-# =============================================================================
-# ENHANCED TEST CONFIGURATION - Real functionality
-# =============================================================================
-
-ENHANCED_TEST_CONFIG: dict[str, Any] = {
-    "graceful_parser_fallback": True,  # Fall back gracefully when parsers fail
-    "isolated_serializer_testing": True,  # Test serializers independently
-    "robust_error_handling": True,  # Enhanced error handling and reporting
-    "direct_file_operations": True,  # Use direct file I/O when needed
-}
-
-# =============================================================================
-# END CONFIGURATION
-# =============================================================================
 
 import hashlib
 import json
@@ -131,7 +30,65 @@ import unittest
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, cast
+
+from .round_trip_availability import (
+    CROSS_FORMAT_AVAILABLE,
+    GNN_AVAILABLE,
+    AlloySerializer,
+    ASN1Serializer,
+    BinarySerializer,
+    Connection,
+    ConnectionType,
+    CoqSerializer,
+    CrossFormatValidator,
+    DataType,
+    FunctionalSerializer,
+    GNNFormat,
+    GNNInternalRepresentation,
+    GNNParsingSystem,
+    GNNValidator,
+    GrammarSerializer,
+    IsabelleSerializer,
+    JSONSerializer,
+    LeanSerializer,
+    ParsedGNN,
+    ParseResult,
+    Path,
+    PKLSerializer,
+    ProtobufSerializer,
+    PythonSerializer,
+    ScalaSerializer,
+    ValidationResult,
+    Variable,
+    XMLSerializer,
+    XSDSerializer,
+    YAMLSerializer,
+    ZNotationSerializer,
+    current_file_dir,
+    os,
+    src_path,
+    sys,
+    validate_cross_format_consistency,
+)
+from .round_trip_comparison import RoundTripComparisonMixin
+from .round_trip_config import (
+    ENHANCED_TEST_CONFIG,
+    FORMAT_TEST_CONFIG,
+    LOGGING_CONFIG,
+    OUTPUT_CONFIG,
+    REFERENCE_CONFIG,
+    TEST_BEHAVIOR_CONFIG,
+)
+from .round_trip_markdown_parser import (
+    _DirectMarkdownParser,
+    logger,
+)
+from .round_trip_report import RoundTripReportMixin
+from .round_trip_results import (
+    ComprehensiveTestReport,
+    RoundTripResult,
+)
 
 # Set reasonable recursion limit to prevent infinite loops while allowing normal imports
 sys.setrecursionlimit(
@@ -151,375 +108,11 @@ logging.basicConfig(
 # Add the src directory to the Python path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 
-
-# Define types locally to avoid circular imports
-# Recovery: define simple types to avoid import issues
-@dataclass
-class RoundTripResult:
-    """Record one source-to-target round-trip conversion result."""
-
-    source_format: Any = None
-    target_format: Any = None
-    success: bool = True
-    original_model: Any = None
-    converted_content: str = ""
-    parsed_back_model: Any = None
-    checksum_original: str = ""
-    checksum_converted: str = ""
-    test_time: float = 0.0
-    errors: List[str] = field(default_factory=list)
-    warnings: List[str] = field(default_factory=list)
-    differences: List[str] = field(default_factory=list)
-
-    def add_error(self, error: str) -> Any:
-        """Record a failing error message and mark the result unsuccessful."""
-        self.errors.append(error)
-        self.success = False
-
-    def add_warning(self, warning: str) -> Any:
-        """Record a non-fatal warning message for the round trip."""
-        self.warnings.append(warning)
-
-    def add_difference(self, difference: str) -> Any:
-        """Record a detected model/content difference."""
-        self.differences.append(difference)
-
-
-@dataclass
-class ComprehensiveTestReport:
-    """Aggregate round-trip results and derived report metrics."""
-
-    reference_file: str = ""
-    test_timestamp: datetime = field(default_factory=datetime.now)
-    round_trip_results: List[RoundTripResult] = field(default_factory=list)
-    critical_errors: List[str] = field(default_factory=list)
-
-    def add_result(self, result: RoundTripResult) -> Any:
-        """Append one round-trip result to the report."""
-        self.round_trip_results.append(result)
-
-    @property
-    def total_tests(self) -> int:
-        """Return the number of recorded round-trip tests."""
-        return len(self.round_trip_results)
-
-    @property
-    def successful_tests(self) -> int:
-        """Return the count of successful round-trip results."""
-        return sum(1 for r in self.round_trip_results if r.success)
-
-    @property
-    def failed_tests(self) -> int:
-        """Return the count of unsuccessful round-trip results."""
-        return self.total_tests - self.successful_tests
-
-    def get_success_rate(self) -> float:
-        """Return the success percentage across recorded results."""
-        return (
-            (self.successful_tests / self.total_tests * 100)
-            if self.total_tests > 0
-            else 0.0
-        )
-
-    def get_format_summary(self) -> Dict[Any, Dict[str, int]]:
-        """Return per-target-format success and total counts."""
-        summary: dict[Any, Any] = {}
-        for result in self.round_trip_results:
-            fmt = result.target_format
-            if fmt not in summary:
-                summary[fmt] = {"success": 0, "total": 0}
-            summary[fmt]["total"] += 1
-            if result.success:
-                summary[fmt]["success"] += 1
-        return summary
-
-
-try:
-    # Use proper absolute imports from src
-    # Add src directory to path if not already there using safer path operations
-    import os
-    import sys
-    from pathlib import Path
-
-    current_file_dir = os.path.dirname(os.path.abspath(__file__))
-    src_path = os.path.join(current_file_dir, "..", "..", "..", "src")
-    src_path = os.path.normpath(src_path)
-    if src_path not in sys.path:
-        sys.path.insert(0, src_path)
-
-    from gnn.parsers import GNNParsingSystem
-    from gnn.parsers.alloy_serializer import AlloySerializer
-    from gnn.parsers.asn1_serializer import ASN1Serializer
-    from gnn.parsers.binary_serializer import BinarySerializer
-    from gnn.parsers.common import (
-        Connection,
-        ConnectionType,
-        DataType,
-        GNNFormat,
-        GNNInternalRepresentation,
-        ParseResult,
-        Variable,
-    )
-    from gnn.parsers.coq_serializer import CoqSerializer
-    from gnn.parsers.functional_serializer import FunctionalSerializer
-    from gnn.parsers.grammar_serializer import GrammarSerializer
-    from gnn.parsers.isabelle_serializer import IsabelleSerializer
-
-    # Update serializer imports
-    from gnn.parsers.json_serializer import JSONSerializer
-    from gnn.parsers.lean_serializer import LeanSerializer
-    from gnn.parsers.pkl_serializer import PKLSerializer
-    from gnn.parsers.protobuf_serializer import ProtobufSerializer
-    from gnn.parsers.python_serializer import PythonSerializer
-    from gnn.parsers.scala_serializer import ScalaSerializer
-    from gnn.parsers.xml_serializer import XMLSerializer
-    from gnn.parsers.xsd_serializer import XSDSerializer
-    from gnn.parsers.yaml_serializer import YAMLSerializer
-    from gnn.parsers.znotation_serializer import ZNotationSerializer
-
-    GNN_AVAILABLE = True
-
-    from gnn.schema_validator import (
-        CrossFormatValidator,
-        GNNValidator,
-        validate_cross_format_consistency,
-    )
-    from gnn.types import ParsedGNN, ValidationResult
-
-    CROSS_FORMAT_AVAILABLE = True
-
-except ImportError as e:
-    if LOGGING_CONFIG["enable_debug"]:
-        print(f"GNN module not available: {e}")
-    GNN_AVAILABLE = False
-
 logger = logging.getLogger(__name__)
 
 
-class _DirectMarkdownParser:
-    """A simple, robust markdown parser that doesn't rely on complex validation."""
 
-    def parse_file(self, file_path: Path) -> "GNNInternalRepresentation":
-        """Parse a GNN markdown file directly."""
-        with open(file_path, "r", encoding="utf-8") as f:
-            content = f.read()
-        return self.parse_content(content)
-
-    def parse_content(self, content: str) -> "GNNInternalRepresentation":
-        """Parse GNN markdown content."""
-        sections = self._extract_sections(content)
-        model = GNNInternalRepresentation(
-            model_name=sections.get("ModelName", "Unknown Model"),
-            annotation=sections.get("ModelAnnotation", ""),
-        )
-        model.version = sections.get("GNNVersionAndFlags", "1.0")
-        model.created_at = datetime.now()
-        model.modified_at = datetime.now()
-        model.checksum = None
-        model.extensions = {}
-        model.raw_sections = sections
-        model.equations = []
-        if "StateSpaceBlock" in sections:
-            model.variables = self._parse_variables(sections["StateSpaceBlock"])
-        if "Connections" in sections:
-            model.connections = self._parse_connections(sections["Connections"])
-        if "InitialParameterization" in sections:
-            model.parameters = self._parse_parameters(
-                sections["InitialParameterization"]
-            )
-        if "Time" in sections:
-            time_data = self._parse_time_spec(sections["Time"])
-            model.time_specification = (
-                type(
-                    "TimeSpecification",
-                    (),
-                    {
-                        "time_type": time_data.get("time_type", "dynamic"),
-                        "discretization": time_data.get("discretization", None),
-                        "horizon": time_data.get("horizon", None),
-                        "step_size": time_data.get("step_size", None),
-                    },
-                )()
-                if time_data
-                else None
-            )
-        if "ActInfOntologyAnnotation" in sections:
-            model.ontology_mappings = self._parse_ontology(
-                sections["ActInfOntologyAnnotation"]
-            )
-        return model
-
-    def _extract_sections(self, content: str) -> Dict[str, str]:
-        """Extract sections from GNN markdown content."""
-        sections: Dict[str, str] = {}
-        current_section = None
-        current_content: List[str] = []
-        for line in content.split("\n"):
-            if line.startswith("## "):
-                if current_section:
-                    sections[current_section] = "\n".join(current_content).strip()
-                current_section = line[3:].strip()
-                current_content = []
-            elif current_section:
-                current_content.append(line)
-        if current_section:
-            sections[current_section] = "\n".join(current_content).strip()
-        return sections
-
-    def _parse_variables(self, content: str) -> List[Any]:
-        """Parse variables from StateSpaceBlock content."""
-        variables: list[Any] = []
-        var_pattern = re.compile(r"(\w+)\[([^\]]+)\](?:\s*#\s*(.*))?")
-        for line in content.split("\n"):
-            line = line.strip()
-            if not line or line.startswith("#"):
-                continue
-            match = var_pattern.match(line)
-            if match:
-                name = match.group(1)
-                dims_str = match.group(2)
-                description = match.group(3) or ""
-                dims_parts = [p.strip() for p in dims_str.split(",")]
-                dimensions: List[int] = []
-                data_type = "float"
-                for part in dims_parts:
-                    if part.startswith("type="):
-                        raw_type = part[5:]
-                        type_mapping: dict[str, Any] = {
-                            "int": "integer",
-                            "float": "float",
-                            "bool": "binary",
-                            "str": "categorical",
-                            "string": "categorical",
-                        }
-                        data_type = type_mapping.get(raw_type, raw_type)
-                    else:
-                        try:
-                            dimensions.append(int(part))
-                        except ValueError as e:
-                            logger.debug(
-                                "Ignoring non-dimension token %r: %s",
-                                part,
-                                e,
-                            )
-                var_type = "hidden_state"
-                if name in ["A", "B", "C", "D"]:
-                    var_type = (
-                        "likelihood_matrix"
-                        if name == "A"
-                        else "transition_matrix"
-                        if name == "B"
-                        else "preference_vector"
-                        if name == "C"
-                        else "prior_vector"
-                    )
-                elif name in ["o", "u"]:
-                    var_type = "observation" if name == "o" else "action"
-                elif name in ["s", "s_prime"]:
-                    var_type = "hidden_state"
-                elif name in ["π", "G"]:
-                    var_type = "policy"
-                var = type(
-                    "Variable",
-                    (),
-                    {
-                        "name": name,
-                        "dimensions": dimensions,
-                        "var_type": type("VarType", (), {"value": var_type})(),
-                        "data_type": type("DataType", (), {"value": data_type})(),
-                        "description": description,
-                    },
-                )()
-                variables.append(var)
-        return variables
-
-    def _parse_connections(self, content: str) -> List[Any]:
-        """Parse connections from Connections content."""
-        connections: list[Any] = []
-        for line in content.split("\n"):
-            line = line.strip()
-            if not line or line.startswith("#"):
-                continue
-            if ">" in line:
-                parts = line.split(">")
-                if len(parts) == 2:
-                    conn = type(
-                        "Connection",
-                        (),
-                        {
-                            "source_variables": [parts[0].strip()],
-                            "target_variables": [parts[1].strip()],
-                            "connection_type": type(
-                                "ConnType", (), {"value": "directed"}
-                            )(),
-                            "weight": None,
-                            "description": "",
-                        },
-                    )()
-                    connections.append(conn)
-        return connections
-
-    def _parse_parameters(self, content: str) -> List[Any]:
-        """Parse parameters from InitialParameterization content."""
-        parameters: list[Any] = []
-        for line in content.split("\n"):
-            line = line.strip()
-            if not line or line.startswith("#"):
-                continue
-            if "=" in line:
-                parts = line.split("=", 1)
-                if len(parts) == 2:
-                    param = type(
-                        "Parameter",
-                        (),
-                        {
-                            "name": parts[0].strip(),
-                            "value": parts[1].strip(),
-                            "type_hint": "constant",
-                            "description": "",
-                        },
-                    )()
-                    parameters.append(param)
-        return parameters
-
-    def _parse_time_spec(self, content: str) -> Dict[str, str]:
-        """Parse time specification."""
-        time_spec: Dict[str, str] = {}
-        for line in content.split("\n"):
-            line = line.strip()
-            if not line or line.startswith("#"):
-                continue
-            if "=" in line:
-                key, value = line.split("=", 1)
-                time_spec[key.strip()] = value.strip()
-            else:
-                time_spec["time_type"] = line
-        return time_spec
-
-    def _parse_ontology(self, content: str) -> List[Any]:
-        """Parse ontology mappings."""
-        mappings: list[Any] = []
-        for line in content.split("\n"):
-            line = line.strip()
-            if not line or line.startswith("#"):
-                continue
-            if "=" in line:
-                parts = line.split("=", 1)
-                if len(parts) == 2:
-                    mapping = type(
-                        "OntologyMapping",
-                        (),
-                        {
-                            "variable_name": parts[0].strip(),
-                            "ontology_term": parts[1].strip(),
-                            "description": "",
-                        },
-                    )()
-                    mappings.append(mapping)
-        return mappings
-
-
-class GNNRoundTripTester:
+class GNNRoundTripTester(RoundTripComparisonMixin, RoundTripReportMixin):
     """Comprehensive round-trip testing system for GNN formats."""
 
     def __init__(self, temp_dir: Optional[Path] = None) -> None:
@@ -1556,354 +1149,6 @@ class GNNRoundTripTester:
 
         return result
 
-    def _compare_models(
-        self,
-        original: GNNInternalRepresentation,
-        converted: GNNInternalRepresentation,
-        result: RoundTripResult,
-    ) -> Any:
-        """Compare two models for semantic equivalence."""
-
-        # Compare basic metadata
-        if original.model_name != converted.model_name:
-            result.add_difference(
-                f"Model name mismatch: '{original.model_name}' vs '{converted.model_name}'"
-            )
-
-        if original.annotation != converted.annotation:
-            result.add_difference("Annotation mismatch")
-
-        # Compare variables
-        self._compare_variables(original.variables, converted.variables, result)
-
-        # Compare connections
-        self._compare_connections(original.connections, converted.connections, result)
-
-        # Compare parameters
-        self._compare_parameters(original.parameters, converted.parameters, result)
-
-        # Compare equations
-        self._compare_equations(original.equations, converted.equations, result)
-
-        # Compare time specification
-        self._compare_time_specification(
-            original.time_specification, converted.time_specification, result
-        )
-
-        # Compare ontology mappings
-        self._compare_ontology_mappings(
-            original.ontology_mappings, converted.ontology_mappings, result
-        )
-
-    def _compare_variables(
-        self, orig_vars: List, conv_vars: List, result: RoundTripResult
-    ) -> Any:
-        """Compare variable lists."""
-        orig_dict = {var.name: var for var in orig_vars}
-        conv_dict = {var.name: var for var in conv_vars}
-
-        # Check for missing variables
-        missing_in_converted = set(orig_dict) - set(conv_dict)
-        extra_in_converted = set(conv_dict) - set(orig_dict)
-
-        for var_name in missing_in_converted:
-            result.add_difference(f"Variable missing in converted: {var_name}")
-
-        for var_name in extra_in_converted:
-            result.add_difference(f"Extra variable in converted: {var_name}")
-
-        # Compare common variables
-        for var_name in set(orig_dict) & set(conv_dict):
-            orig_var = orig_dict[var_name]
-            conv_var = conv_dict[var_name]
-
-            if hasattr(orig_var, "var_type") and hasattr(conv_var, "var_type"):
-                # Compare using .value attribute to handle different object types
-                orig_type = (
-                    orig_var.var_type.value
-                    if hasattr(orig_var.var_type, "value")
-                    else str(orig_var.var_type)
-                )
-                conv_type = (
-                    conv_var.var_type.value
-                    if hasattr(conv_var.var_type, "value")
-                    else str(conv_var.var_type)
-                )
-                if orig_type != conv_type:
-                    result.add_difference(
-                        f"Variable {var_name} type mismatch: {orig_type} vs {conv_type}"
-                    )
-
-            if hasattr(orig_var, "data_type") and hasattr(conv_var, "data_type"):
-                # Compare using .value attribute to handle different object types
-                orig_dtype = (
-                    orig_var.data_type.value
-                    if hasattr(orig_var.data_type, "value")
-                    else str(orig_var.data_type)
-                )
-                conv_dtype = (
-                    conv_var.data_type.value
-                    if hasattr(conv_var.data_type, "value")
-                    else str(conv_var.data_type)
-                )
-                if orig_dtype != conv_dtype:
-                    result.add_difference(
-                        f"Variable {var_name} data type mismatch: {orig_dtype} vs {conv_dtype}"
-                    )
-
-            if hasattr(orig_var, "dimensions") and hasattr(conv_var, "dimensions"):
-                if orig_var.dimensions != conv_var.dimensions:
-                    result.add_difference(
-                        f"Variable {var_name} dimensions mismatch: {orig_var.dimensions} vs {conv_var.dimensions}"
-                    )
-
-    def _compare_connections(
-        self, orig_conns: List, conv_conns: List, result: RoundTripResult
-    ) -> Any:
-        """Compare connection lists."""
-        if len(orig_conns) != len(conv_conns):
-            result.add_difference(
-                f"Connection count mismatch: {len(orig_conns)} vs {len(conv_conns)}"
-            )
-
-        # Compare connections by content (simplified)
-        orig_conn_strs: set[Any] = set()
-        conv_conn_strs: set[Any] = set()
-
-        for conn in orig_conns:
-            if (
-                hasattr(conn, "source_variables")
-                and hasattr(conn, "target_variables")
-                and hasattr(conn, "connection_type")
-            ):
-                # Handle different object types for connection_type
-                conn_type = (
-                    conn.connection_type.value
-                    if hasattr(conn.connection_type, "value")
-                    else str(conn.connection_type)
-                )
-                conn_str = f"{','.join(conn.source_variables)}--{conn_type}-->{','.join(conn.target_variables)}"
-                orig_conn_strs.add(conn_str)
-
-        for conn in conv_conns:
-            if (
-                hasattr(conn, "source_variables")
-                and hasattr(conn, "target_variables")
-                and hasattr(conn, "connection_type")
-            ):
-                # Handle different object types for connection_type
-                conn_type = (
-                    conn.connection_type.value
-                    if hasattr(conn.connection_type, "value")
-                    else str(conn.connection_type)
-                )
-                conn_str = f"{','.join(conn.source_variables)}--{conn_type}-->{','.join(conn.target_variables)}"
-                conv_conn_strs.add(conn_str)
-
-        missing_conns = orig_conn_strs - conv_conn_strs
-        extra_conns = conv_conn_strs - orig_conn_strs
-
-        for conn in missing_conns:
-            result.add_difference(f"Missing connection: {conn}")
-
-        for conn in extra_conns:
-            result.add_difference(f"Extra connection: {conn}")
-
-    def _compare_parameters(
-        self, orig_params: List, conv_params: List, result: RoundTripResult
-    ) -> Any:
-        """Compare parameter lists."""
-        orig_dict = {param.name: param for param in orig_params}
-        conv_dict = {param.name: param for param in conv_params}
-
-        missing_params = set(orig_dict) - set(conv_dict)
-        extra_params = set(conv_dict) - set(orig_dict)
-
-        for param_name in missing_params:
-            result.add_difference(f"Missing parameter: {param_name}")
-
-        for param_name in extra_params:
-            result.add_difference(f"Extra parameter: {param_name}")
-
-        # Compare parameter values (simplified - could be more sophisticated)
-        for param_name in set(orig_dict) & set(conv_dict):
-            orig_val = orig_dict[param_name].value
-            conv_val = conv_dict[param_name].value
-
-            if str(orig_val) != str(conv_val):  # Simple string comparison
-                result.add_difference(
-                    f"Parameter {param_name} value mismatch: {orig_val} vs {conv_val}"
-                )
-
-    def _compare_equations(
-        self, orig_eqs: List, conv_eqs: List, result: RoundTripResult
-    ) -> Any:
-        """Compare equation lists."""
-        if len(orig_eqs) != len(conv_eqs):
-            result.add_difference(
-                f"Equation count mismatch: {len(orig_eqs)} vs {len(conv_eqs)}"
-            )
-
-    def _compare_time_specification(
-        self, orig_time: Any, conv_time: Any, result: RoundTripResult
-    ) -> Any:
-        """Compare time specifications."""
-        if (orig_time is None) != (conv_time is None):
-            result.add_difference("Time specification presence mismatch")
-        elif orig_time and conv_time:
-            if hasattr(orig_time, "time_type") and hasattr(conv_time, "time_type"):
-                if orig_time.time_type != conv_time.time_type:
-                    result.add_difference(
-                        f"Time type mismatch: {orig_time.time_type} vs {conv_time.time_type}"
-                    )
-
-    def _compare_ontology_mappings(
-        self, orig_mappings: List, conv_mappings: List, result: RoundTripResult
-    ) -> Any:
-        """Compare ontology mappings."""
-        orig_dict = {
-            mapping.variable_name: mapping.ontology_term for mapping in orig_mappings
-        }
-        conv_dict = {
-            mapping.variable_name: mapping.ontology_term for mapping in conv_mappings
-        }
-
-        if orig_dict != conv_dict:
-            result.add_difference("Ontology mappings mismatch")
-
-    def _test_cross_format_consistency(
-        self,
-        reference_model: GNNInternalRepresentation,
-        report: ComprehensiveTestReport,
-    ) -> Any:
-        """Test cross-format consistency validation."""
-        try:
-            # Convert to multiple formats and test consistency
-            format_contents: dict[Any, Any] = {}
-
-            print("   ➤ Generating content for all formats...")
-            for fmt in self.supported_formats:
-                if fmt == GNNFormat.MARKDOWN:
-                    # Read original content
-                    format_contents[fmt] = self.reference_file.read_text()
-                    print(
-                        f"      ✓ {fmt.value}: read original ({len(format_contents[fmt])} chars)"
-                    )
-                else:
-                    try:
-                        if self.parsing_system:
-                            format_contents[fmt] = self.parsing_system.serialize(
-                                reference_model, fmt
-                            )
-                        else:
-                            format_contents[fmt] = None
-
-                        if format_contents[fmt]:
-                            print(
-                                f"      ✓ {fmt.value}: serialized ({len(format_contents[fmt])} chars)"
-                            )
-                        else:
-                            print(f"      ❌ {fmt.value}: empty content")
-                    except Exception as e:
-                        print(f"      ❌ {fmt.value}: serialization failed - {e}")
-                        report.critical_errors.append(
-                            f"Failed to serialize to {fmt.value}: {e}"
-                        )
-
-            # Test cross-format validation if available
-            if CROSS_FORMAT_AVAILABLE and self.cross_validator:
-                print("   ➤ Validating cross-format consistency...")
-                consistent_formats = 0
-                total_formats = 0
-
-                for fmt, content in format_contents.items():
-                    if content:
-                        total_formats += 1
-                        try:
-                            cross_result = (
-                                self.cross_validator.validate_cross_format_consistency(
-                                    content
-                                )
-                            )
-                            if cross_result.is_consistent:
-                                print(f"      ✓ {fmt.value}: consistent")
-                                consistent_formats += 1
-                            else:
-                                print(f"      ❌ {fmt.value}: inconsistent")
-                                for inconsistency in cross_result.inconsistencies:
-                                    print(f"         • {inconsistency}")
-                                report.critical_errors.extend(
-                                    cross_result.inconsistencies
-                                )
-                        except Exception as e:
-                            print(f"      ❌ {fmt.value}: validation error - {e}")
-                            report.critical_errors.append(
-                                f"Cross-format validation failed for {fmt.value}: {e}"
-                            )
-
-                if total_formats > 0:
-                    consistency_rate = (consistent_formats / total_formats) * 100
-                    print(
-                        f"      📊 Consistency rate: {consistent_formats}/{total_formats} ({consistency_rate:.1f}%)"
-                    )
-            else:
-                print("   ➤ Cross-format validation skipped (module not available)")
-
-        except Exception as e:
-            print(f"   ❌ Cross-format consistency test failed: {e}")
-            report.critical_errors.append(f"Cross-format consistency test failed: {e}")
-
-    def _compute_model_checksum(self, model: GNNInternalRepresentation) -> str:
-        """Compute a semantic checksum for a model."""
-        # Create a normalized representation for checksumming
-        checksum_data: dict[str, Any] = {
-            "model_name": model.model_name,
-            "variables": sorted(
-                [
-                    {
-                        "name": var.name,
-                        "type": var.var_type.value
-                        if hasattr(var, "var_type")
-                        else "unknown",
-                        "dimensions": var.dimensions
-                        if hasattr(var, "dimensions")
-                        else [],
-                        "data_type": var.data_type.value
-                        if hasattr(var, "data_type")
-                        else "unknown",
-                    }
-                    for var in model.variables
-                ],
-                key=lambda x: x["name"],
-            ),
-            "connections": sorted(
-                [
-                    {
-                        "sources": sorted(conn.source_variables)
-                        if hasattr(conn, "source_variables")
-                        else [],
-                        "targets": sorted(conn.target_variables)
-                        if hasattr(conn, "target_variables")
-                        else [],
-                        "type": conn.connection_type.value
-                        if hasattr(conn, "connection_type")
-                        else "unknown",
-                    }
-                    for conn in model.connections
-                ],
-                key=lambda x: str(x),
-            ),
-            "parameters": sorted(
-                [
-                    {"name": param.name, "value": str(param.value)}
-                    for param in model.parameters
-                ],
-                key=lambda x: x["name"],
-            ),
-        }
-
-        checksum_str = json.dumps(checksum_data, sort_keys=True)
-        return hashlib.md5(checksum_str.encode(), usedforsecurity=False).hexdigest()
 
     def _get_file_extension(self, format: GNNFormat) -> str:
         """Get file extension for a format."""
@@ -1928,109 +1173,6 @@ class GNNRoundTripTester:
             GNNFormat.Z_NOTATION: "zed",
         }
         return cast("str", extensions.get(format, "txt"))
-
-    def generate_report(
-        self, report: ComprehensiveTestReport, output_file: Optional[Path] = None
-    ) -> str:
-        """Generate a comprehensive test report."""
-        lines: list[Any] = []
-
-        lines.append("# GNN Round-Trip Testing Report")
-        lines.append(
-            f"**Generated:** {report.test_timestamp.strftime('%Y-%m-%d %H:%M:%S')}"
-        )
-        lines.append(f"**Reference File:** `{report.reference_file}`")
-        lines.append("")
-
-        lines.append("## Summary")
-        lines.append(f"- **Total Tests:** {report.total_tests}")
-        lines.append(f"- **Successful:** {report.successful_tests}")
-        lines.append(f"- **Failed:** {report.failed_tests}")
-        lines.append(f"- **Success Rate:** {report.get_success_rate():.1f}%")
-        lines.append("")
-
-        # Format summary
-        lines.append("## Format Summary")
-        format_summary = report.get_format_summary()
-
-        for fmt, stats in format_summary.items():
-            success_rate = (
-                (stats["success"] / stats["total"]) * 100 if stats["total"] > 0 else 0
-            )
-            status = "✅" if success_rate == 100 else "⚠️" if success_rate > 50 else "❌"
-            lines.append(
-                f"- **{fmt.value}** {status}: {stats['success']}/{stats['total']} ({success_rate:.1f}%)"
-            )
-
-        lines.append("")
-
-        # Detailed results
-        lines.append("## Detailed Results")
-
-        for result in report.round_trip_results:
-            status = "✅ PASS" if result.success else "❌ FAIL"
-            lines.append(f"### {result.target_format.value} {status}")
-
-            if result.checksum_original and result.checksum_converted:
-                checksum_match = result.checksum_original == result.checksum_converted
-                checksum_status = "✅" if checksum_match else "❌"
-                lines.append(f"- **Semantic Checksum:** {checksum_status}")
-
-            if result.differences:
-                lines.append("- **Differences:**")
-                for diff in result.differences:
-                    lines.append(f"  - {diff}")
-
-            if result.errors:
-                lines.append("- **Errors:**")
-                for error in result.errors:
-                    lines.append(f"  - {error}")
-
-            if result.warnings:
-                lines.append("- **Warnings:**")
-                for warning in result.warnings:
-                    lines.append(f"  - {warning}")
-
-            lines.append("")
-
-        # Critical issues
-        if report.critical_errors:
-            lines.append("## Critical Issues")
-            for error in report.critical_errors:
-                lines.append(f"- ❌ {error}")
-            lines.append("")
-
-        # Recommendations
-        lines.append("## Recommendations")
-
-        if report.get_success_rate() == 100.0:
-            lines.append(
-                "🎉 **All tests passed!** The GNN system has 100% confidence in round-trip format conversion."
-            )
-        else:
-            lines.append(
-                "⚠️ **Some tests failed.** Review the failed formats and address the differences:"
-            )
-
-            failed_formats = [
-                result.target_format.value
-                for result in report.round_trip_results
-                if not result.success
-            ]
-            for fmt in failed_formats:
-                lines.append(f"  - Fix serialization/parsing for {fmt}")
-
-        report_content = "\n".join(lines)
-
-        if output_file:
-            with tempfile.NamedTemporaryFile(
-                mode="w", encoding="utf-8", dir=output_file.parent, delete=False
-            ) as tmp_f:
-                tmp_f.write(report_content)
-            os.replace(tmp_f.name, str(output_file))
-            logger.info(f"Report saved to {output_file}")
-
-        return report_content
 
 
 class TestGNNRoundTrip(unittest.TestCase):
