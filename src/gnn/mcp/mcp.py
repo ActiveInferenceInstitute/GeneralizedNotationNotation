@@ -15,7 +15,12 @@ import sys
 import threading
 import time
 from collections import defaultdict
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import (
+    ThreadPoolExecutor,
+)
+from concurrent.futures import (
+    TimeoutError as FuturesTimeoutError,
+)
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union, cast
@@ -33,6 +38,12 @@ logger = logging.getLogger("mcp")
 # the race window).
 _MODULE_IMPORT_LOCK = threading.RLock()
 
+# Bounded pool enforcing per-tool timeouts. A hung tool occupies one worker
+# until its (uncancellable) thread finishes; when the pool is exhausted,
+# further timed calls surface a timeout instead of hanging the caller — the
+# safe failure direction. Un-timed tools never touch this pool.
+_TOOL_TIMEOUT_POOL_SIZE = 8
+
 # --- Import MCP Exceptions from dedicated module ---
 from .exceptions import (
     MCPInvalidParamsError,
@@ -41,6 +52,7 @@ from .exceptions import (
     MCPSDKNotFoundError,
     MCPToolExecutionError,
     MCPToolNotFoundError,
+    MCPToolTimeoutError,
     MCPValidationError,
 )
 from .jsonrpc import tag_non_json_values
@@ -118,6 +130,16 @@ class MCP:
         except Exception as e:
             logger.warning(f"Failed to create thread pool executor: {e}")
             self._executor = None
+
+        self._tool_timeout_executor: Optional[ThreadPoolExecutor]
+        try:
+            self._tool_timeout_executor = ThreadPoolExecutor(
+                max_workers=_TOOL_TIMEOUT_POOL_SIZE,
+                thread_name_prefix="MCP-ToolTimeout",
+            )
+        except Exception as e:  # pragma: no cover - defensive
+            logger.warning(f"Failed to create tool timeout executor: {e}")
+            self._tool_timeout_executor = None
 
         self._enable_caching = enable_caching
         self._enable_rate_limiting = enable_rate_limiting
@@ -972,11 +994,19 @@ class MCP:
                 self._performance_metrics.concurrent_requests,
             )
 
-        # Synchronous execution
+        # Synchronous execution. When the tool registered a timeout, the call
+        # runs on the dedicated timeout pool and the CALLER stops waiting at
+        # tool.timeout; Python threads cannot be killed, so the worker may
+        # keep running — only the caller's wait is bounded.
         start_time = time.time()
         try:
             with self._track_performance(f"tool_execution_{tool_name}"):
-                result = tool.func(**params)
+                if tool.timeout is not None:
+                    result = self._execute_with_timeout(
+                        tool.func, tool_name, params, tool.timeout
+                    )
+                else:
+                    result = tool.func(**params)
             if tool.output_validation:
                 self._validate_output(result)
             execution_time = time.time() - start_time
@@ -996,6 +1026,39 @@ class MCP:
                         )
             logger.debug(f"Tool {tool_name} executed successfully")
             return cast("dict[str, Any]", result)
+        except MCPToolTimeoutError:
+            # Timeout already carries its own wire code and metrics context;
+            # do not double-wrap into a -32603 execution error.
+            execution_time = time.time() - start_time
+            with self._lock:
+                self._error_count += 1
+                self._performance_metrics.failed_requests += 1
+                self._performance_metrics.error_counts[tool_name] = (
+                    self._performance_metrics.error_counts.get(tool_name, 0) + 1
+                )
+            raise
+        except TypeError as e:
+            # A func(**params) signature mismatch (unexpected or missing
+            # keyword arguments) is an INVALID_PARAMS wire failure (-32602),
+            # not an internal error. TypeErrors raised inside tool bodies
+            # keep the -32603 path unless they carry the signature-mismatch
+            # shape.
+            message = str(e)
+            execution_time = time.time() - start_time
+            if "unexpected keyword argument" in message or (
+                "missing" in message and "required positional argument" in message
+            ):
+                with self._lock:
+                    self._error_count += 1
+                    self._performance_metrics.failed_requests += 1
+                    self._performance_metrics.error_counts[tool_name] = (
+                        self._performance_metrics.error_counts.get(tool_name, 0) + 1
+                    )
+                raise MCPInvalidParamsError(
+                    f"Invalid parameters for tool '{tool_name}': {message}",
+                    tool_name=tool_name,
+                ) from e
+            raise MCPToolExecutionError(tool_name, e, execution_time) from e
         except Exception as e:
             execution_time = time.time() - start_time
             with self._lock:
@@ -1048,6 +1111,37 @@ class MCP:
         except (TypeError, ValueError):
             return ""
         return hashlib.sha256(encoded.encode("utf-8")).hexdigest()
+
+    # --- Tool timeout enforcement (used by execute_tool) --------------------
+
+    def _execute_with_timeout(
+        self,
+        func: Callable[..., Any],
+        tool_name: str,
+        params: Dict[str, Any],
+        timeout: float,
+    ) -> Any:
+        """Run ``func(**params)`` bounded by ``timeout`` seconds.
+
+        Uses a dedicated bounded pool so a hung tool cannot starve module
+        discovery or un-timed tools (which run inline). The worker thread
+        keeps running after the timeout — Python threads are not
+        cancellable — so a pool-saturating set of hung tools makes further
+        timed calls surface a timeout instead of hanging the caller.
+        """
+        executor = self._tool_timeout_executor
+        if executor is None:  # pragma: no cover - constructor fallback
+            executor = ThreadPoolExecutor(
+                max_workers=_TOOL_TIMEOUT_POOL_SIZE,
+                thread_name_prefix="MCP-ToolTimeout",
+            )
+            self._tool_timeout_executor = executor
+        future = executor.submit(func, **params)
+        try:
+            return future.result(timeout=timeout)
+        except FuturesTimeoutError as exc:
+            future.cancel()
+            raise MCPToolTimeoutError(tool_name, timeout) from exc
 
     def _cache_get(self, cache_key: str) -> Tuple[bool, Any]:
         """Read a result-cache entry, returning (is_hit, value)."""
@@ -1182,6 +1276,9 @@ class MCP:
             return {
                 "tools": tools_list,
                 "resources": resources_list,
+                "validation_mode": (
+                    "strict" if self._strict_validation else "required_only"
+                ),
                 "server": {
                     "name": "GNN MCP Server",
                     "version": "1.0.0",
@@ -1596,9 +1693,16 @@ class MCP:
             logger.debug(f"Operation '{operation}' completed in {execution_time:.4f}s")
 
     def _validate_output(self, result: Any) -> Any:
-        """Validate tool output (basic validation)."""
-        if result is None:
-            raise MCPValidationError("Tool output cannot be None")
+        """Validate tool output against its declared contract.
+
+        ``MCPTool`` declares no output schema today, so there is no contract
+        to validate against: any return value — including ``None`` — passes.
+        (The previous behavior rejected ``None`` with -32602 INVALID_PARAMS
+        even though the params were valid and no contract existed; tools
+        returning ``None`` are legitimate.) Keep the method as the extension
+        point for a future ``returns`` schema.
+        """
+        return result
 
     def get_enhanced_server_status(self) -> Dict[str, Any]:
         """
