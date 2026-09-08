@@ -110,7 +110,8 @@ def read_report_mcp(report_file_path: str) -> Dict[str, Any]:
     Returns:
         Dictionary with report content and metadata.
     """
-    try:
+
+    def _build() -> Dict[str, Any]:
         import json as _json
 
         rpath = Path(report_file_path)
@@ -138,9 +139,12 @@ def read_report_mcp(report_file_path: str) -> Dict[str, Any]:
             "content": content[:5000],
             "data": parsed,
         }
-    except Exception as e:
-        logger.error(f"read_report_mcp error: {e}", exc_info=True)
-        return {"success": False, "error": str(e)}
+
+    return run_tool_envelope(
+        _build,
+        wrapper_name="read_report_mcp",
+        logger=logger,
+    )
 
 
 def get_report_module_info_mcp() -> Dict[str, Any]:
