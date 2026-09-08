@@ -10,7 +10,7 @@ import logging
 from pathlib import Path
 from typing import Any
 
-from gnn.utils.mcp_dispatch import run_pipeline_step_mcp
+from gnn.utils.mcp_dispatch import run_pipeline_step_mcp, run_tool_envelope
 
 from . import process_validation
 from .semantic_validator import validate_content
@@ -131,7 +131,8 @@ def get_validation_report_mcp(output_directory: str) -> dict[str, Any]:
     Returns:
         Dictionary with validation report contents.
     """
-    try:
+
+    def _build() -> dict[str, Any]:
         out_dir = Path(output_directory)
         if not out_dir.exists():
             return {
@@ -159,9 +160,12 @@ def get_validation_report_mcp(output_directory: str) -> dict[str, Any]:
             "text_reports": txt_reports,
             "reports_found": len(reports) + len(txt_reports),
         }
-    except Exception as e:
-        logger.error(f"get_validation_report_mcp error: {e}", exc_info=True)
-        return {"success": False, "error": str(e)}
+
+    return run_tool_envelope(
+        _build,
+        wrapper_name="get_validation_report_mcp",
+        logger=logger,
+    )
 
 
 def check_schema_compliance_mcp(gnn_content: str) -> dict[str, Any]:
