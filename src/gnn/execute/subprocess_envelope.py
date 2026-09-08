@@ -102,18 +102,29 @@ def run_subprocess_envelope(
         completed = subprocess.run(  # nosec B603 — argument vector, no shell
             command,
             capture_output=capture_output,
-            text=True,
+            text=False,
             timeout=timeout,
             cwd=cwd,
             env=merged_env,
-            input=input,
+            input=input.encode("utf-8") if input is not None else None,
             check=False,
         )
         envelope["return_code"] = completed.returncode
         envelope["success"] = completed.returncode == 0
-        # text=True guarantees str output; None only when not capturing.
-        envelope["stdout"] = completed.stdout or ""
-        envelope["stderr"] = completed.stderr or ""
+        # text=False returns bytes (faster than text=True which wraps in
+        # TextIOWrapper); decode inline for the common success path.
+        _stdout = completed.stdout
+        _stderr = completed.stderr
+        envelope["stdout"] = (
+            _stdout.decode("utf-8", "replace")
+            if isinstance(_stdout, bytes)
+            else (_stdout or "")
+        )
+        envelope["stderr"] = (
+            _stderr.decode("utf-8", "replace")
+            if isinstance(_stderr, bytes)
+            else (_stderr or "")
+        )
     except subprocess.TimeoutExpired as exc:
         envelope["error"] = f"Execution timed out after {timeout}s"
         envelope["error_type"] = "TimeoutExpired"
