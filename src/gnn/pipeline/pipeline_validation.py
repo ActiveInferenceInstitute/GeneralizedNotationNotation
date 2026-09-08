@@ -8,7 +8,7 @@ Does NOT run the pipeline or check runtime behavior.
 
 See also:
 - utils/pipeline_validator.py: Pre-execution prerequisite checker (checks step outputs exist)
-- pipeline/pipeline_validator.py: Runtime integration tester (runs pipeline via subprocess)
+- pipeline/pipeline_runtime_validator.py: Runtime integration tester (runs pipeline via subprocess)
 
 Usage:
     python pipeline_validation.py [--fix-issues]
