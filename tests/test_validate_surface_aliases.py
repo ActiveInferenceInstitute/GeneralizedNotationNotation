@@ -135,3 +135,15 @@ def test_llm_module_alias_forwards_to_canonical(
         result = llo.validate_gnn("content")
     assert result == "ok"
     assert calls == ["content"]
+
+
+def test_pipeline_template_output_dir_reexport_warns() -> None:
+    """The legacy ``gnn.utils.pipeline_template`` re-export of the canonical
+    ``gnn.pipeline.config.get_output_dir_for_script`` must warn and forward.
+    """
+    import gnn.utils.pipeline_template as template
+    from gnn.pipeline.config import get_output_dir_for_script as canonical
+
+    with pytest.warns(DeprecationWarning):
+        legacy = template.get_output_dir_for_script  # noqa: B018
+    assert legacy is canonical

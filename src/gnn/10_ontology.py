@@ -18,7 +18,7 @@ Expected outputs:
 
 If you encounter errors:
   - Check that ontology dependencies are installed
-  - Check that src/ontology/ contains ontology modules
+  - Check that src/gnn/ontology/ contains ontology modules
   - Check that the output directory is writable
   - Verify ontology configuration and term mapping setup
 """

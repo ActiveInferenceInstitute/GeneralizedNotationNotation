@@ -19,6 +19,19 @@ except ImportError:
     yaml = cast(Any, None)
     _YAML_AVAILABLE = False
 
+# Exception types for config parsing. yaml.YAMLError only exists when PyYAML
+# imported successfully; referencing yaml.YAMLError inside an except tuple
+# would raise AttributeError on the error path when it is absent.
+_YAML_PARSE_ERRORS: tuple[type[Exception], ...] = (
+    (yaml.YAMLError,) if _YAML_AVAILABLE else ()
+)
+_CONFIG_PARSE_ERRORS: tuple[type[Exception], ...] = (
+    json.JSONDecodeError,
+    OSError,
+    ValueError,
+    *_YAML_PARSE_ERRORS,
+)
+
 # Canonical default paths used across the pipeline package (single source).
 DEFAULT_TARGET_DIR = "input/gnn_files"
 DEFAULT_OUTPUT_DIR = "output"
@@ -64,14 +77,17 @@ class PipelineConfig:
                     if self.config_path.suffix in (".yaml", ".yml"):
                         if _YAML_AVAILABLE:
                             return yaml.safe_load(f) or {}
-                        else:
-                            # Gracefully degrade: cannot parse YAML; return empty config
-                            # Downstream code should use sensible defaults
-                            return {}
+                        logger.warning(
+                            "PyYAML unavailable; ignoring config file %s",
+                            self.config_path,
+                        )
+                        return {}
                     else:
                         return cast("dict[str, Any]", json.load(f))
-            except (json.JSONDecodeError, OSError, ValueError) as e:
-                logger.debug("Could not parse config file %s: %s", self.config_path, e)
+            except _CONFIG_PARSE_ERRORS as e:
+                logger.error(
+                    "Could not parse config file %s: %s", self.config_path, e
+                )
                 return {}
         return {}
 
@@ -169,19 +185,8 @@ def get_output_dir_for_script(script_name: str, base_output_dir: Path) -> Path:
             return base_output_dir
         return result
 
-    # Accept '.py' suffix keys as well
-    if script_name.endswith(".py"):
-        normalized = script_name[:-3]
-        mapped = output_dir_for_stem(normalized)
-        if mapped is not None:
-            result = base_output_dir / mapped
-            if base_output_dir.name == mapped:
-                return base_output_dir
-            return result
-
     # Get expected output directory name for this script
     expected_dir_name = f"{normalized}_output"
-
     # Check if base_output_dir already ends with the expected directory name
     # This prevents nested directories like "10_ontology_output/10_ontology_output"
     if base_output_dir.name == expected_dir_name:
@@ -204,5 +209,12 @@ def get_output_dir_for_script(script_name: str, base_output_dir: Path) -> Path:
             actual_base.parent if actual_base.name.endswith("_output") else actual_base
         )
 
-    # Default recovery
+    # Default recovery (unregistered script name): warn loudly so a typo like
+    # "5_typecheck.py" (vs the registered "5_type_checker") cannot silently
+    # make producer and consumer disagree about the output directory.
+    logger.warning(
+        "Unregistered script name %r; using fallback output dir %r",
+        script_name,
+        expected_dir_name,
+    )
     return base_output_dir / expected_dir_name

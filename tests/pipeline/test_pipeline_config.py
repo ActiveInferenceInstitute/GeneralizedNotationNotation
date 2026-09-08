@@ -5,6 +5,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
+
 from gnn.pipeline.config import PipelineConfig, StepConfig, get_pipeline_config_dict
 
 
@@ -87,3 +89,58 @@ def test_save_config_roundtrips_json(tmp_path: Path) -> None:
 def test_get_pipeline_config_dict_returns_mapping() -> None:
     data = get_pipeline_config_dict()
     assert isinstance(data, dict)
+
+
+def test_get_output_dir_for_script_accepts_py_suffix(tmp_path: Path) -> None:
+    """Stem handling must cover ``.py`` names after dead-branch removal.
+
+    ``Path(name).stem`` already strips the suffix, so the registry lookup
+    resolves identically with or without it.
+    """
+    from gnn.pipeline.config import get_output_dir_for_script
+
+    assert get_output_dir_for_script("7_export.py", tmp_path) == (
+        tmp_path / "7_export_output"
+    )
+    assert get_output_dir_for_script("7_export", tmp_path) == (
+        tmp_path / "7_export_output"
+    )
+
+
+def test_get_output_dir_for_script_warns_on_unregistered_stem(
+    tmp_path: Path, caplog: "pytest.LogCaptureFixture"
+) -> None:
+    """Unregistered script names warn loudly, then keep the fallback path.
+
+    A typo like ``5_typecheck.py`` must not silently make producer and
+    consumer disagree about the output directory.
+    """
+    import logging
+
+    from gnn.pipeline.config import get_output_dir_for_script
+
+    with caplog.at_level(logging.WARNING, logger="gnn.pipeline.config"):
+        result = get_output_dir_for_script("5_typecheck.py", tmp_path)
+    assert result == tmp_path / "5_typecheck_output"
+    assert any(
+        "5_typecheck.py" in rec.message and "Unregistered" in rec.message
+        for rec in caplog.records
+    )
+
+def test_malformed_yaml_config_logs_error_and_degrades(
+    tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> None:
+    """A malformed YAML config must log at error level, not debug, and fall
+    back to an empty settings dict."""
+    import logging
+
+    path = tmp_path / "config.yaml"
+    path.write_text("pipeline: [unclosed\n  bad: : yaml\n")
+    with caplog.at_level(logging.ERROR, logger="gnn.pipeline.config"):
+        cfg = PipelineConfig(path)
+    assert cfg.config == {}
+    assert any(
+        "Could not parse config file" in rec.message
+        for rec in caplog.records
+        if rec.levelno == logging.ERROR
+    )

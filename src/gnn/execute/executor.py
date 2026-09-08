@@ -81,6 +81,7 @@ except ImportError:
     LEAN_AVAILABLE = False
     run_lean_scripts = cast(Any, None)
 
+from gnn.pipeline.config import get_output_dir_for_script
 from gnn.utils import performance_tracker
 from gnn.utils.logging.logging_utils import (
     log_step_error,
@@ -88,7 +89,6 @@ from gnn.utils.logging.logging_utils import (
     log_step_success,
     log_step_warning,
 )
-from gnn.utils.pipeline_template import get_output_dir_for_script
 
 logger = logging.getLogger(__name__)
 
