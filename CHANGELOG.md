@@ -28,6 +28,22 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   the canonical `audit_report.json` regenerator crash — and drops the
   orphaned `utils.migration_helper` tests left behind by the MAJ-07
   retirement (verified failing on pristine main).
+- **MAJ-06 follow-up: one envelope for the remaining hand-written MCP
+  tools.** New `gnn.utils.mcp_dispatch.run_tool_envelope` runs a
+  zero-argument payload builder behind the same canonical envelope; 13
+  sibling tools now use it (module-info metadata in audio, gui, llm,
+  ml_integration, execute, report, visualization, website,
+  intelligent_analysis; capability/option probes in audio, gui,
+  intelligent_analysis, visualization; the research results reader and
+  execute dependencies serializer). `run_pipeline_step_mcp`'s default
+  path now echoes the step's return value raw (no `bool()` coercion),
+  matching the pre-consolidation wrappers exactly — the coerce-by-design
+  `interpret_result` paths (render, execute, website) are unchanged.
+  Tools with non-canonical error policies (silent fallbacks in
+  `report.list_report_formats`, `sapf.get_sapf_module_info`,
+  `render.get_render_module_info`) and bare passthroughs are left
+  bespoke on purpose. Registered surface unchanged (141 tools;
+  skills-health strict: 0 findings).
 
 ### Fixed
 

@@ -39,7 +39,7 @@ For complete pipeline documentation, see **[src/gnn/AGENTS.md](../../../src/gnn/
 <name>[<dimensions>,type=<type>]
 ```
 
-**Implementation:** `src/gnn/schema.py:parse_state_space()` (strict) / `src/gnn/schema_validator.py:VARIABLE_PATTERN` (permissive)
+**Implementation:** `src/gnn/schema/parser.py:parse_state_space()` (strict) / `src/gnn/schema_validator/syntax.py:VARIABLE_PATTERN` (permissive)
 
 **Schema Rules:**
 
@@ -66,7 +66,7 @@ t[1,type=int]               # scalar, integer type
 <source>><target>    # Directed connection
 ```
 
-**Implementation:** `src/gnn/schema.py:parse_connections()` (strict) / `src/gnn/schema_validator.py:CONNECTION_PATTERN` (permissive)
+**Implementation:** `src/gnn/schema/parser.py:parse_connections()` (strict) / `src/gnn/schema_validator/syntax.py:CONNECTION_PATTERN` (permissive)
 
 **Schema Rules:**
 
@@ -88,10 +88,10 @@ A-o          # A relates to o (undirected)
 ## <SectionName>
 ```
 
-**Implementation:** `src/gnn/schema.py:validate_required_sections()`
+**Implementation:** `src/gnn/schema/parser.py:validate_required_sections()`
 
 **Required sections** — the exact contents of
-`src/gnn/schema.py::REQUIRED_SECTIONS`. A missing one is a hard `GNN-E001`
+`src/gnn/schema/parser.py::REQUIRED_SECTIONS`. A missing one is a hard `GNN-E001`
 error:
 
 - `## GNNSection` - Short, space-free model identifier
@@ -199,7 +199,7 @@ src/gnn/3_gnn.py (thin orchestrator)
 │       ├── VARIABLE_PATTERN (line 59) 
 │       ├── CONNECTION_PATTERN (line 60)
 │       └── PARAMETER_PATTERN (line 62)
-├── src/gnn/parser.py
+├── src/gnn/parsers/system.py
 │   └── GNNParsingSystem (line 72-173)
 │       ├── _detect_format() (line 107)
 │       └── _basic_parser() (line 120)
@@ -286,9 +286,9 @@ src/gnn/11_render.py (thin orchestrator)
 
 ### Schema Validation Chain
 
-1. **Lexical / syntactic**: `src/gnn/schema.py` - section, declaration, and
+1. **Lexical / syntactic**: `src/gnn/schema/parser.py` - section, declaration, and
    connection parsing (there is no separate lexer module)
-2. **Structural**: `src/gnn/parser.py` and `src/gnn/parsers/` - multi-format
+2. **Structural**: `src/gnn/parsers/system.py` and `src/gnn/parsers/` - multi-format
    parsing into the shared model dict
 3. **Semantic**: `src/gnn/type_checker/checking/core.py` - type and dimension validation
 4. **Ontological**: `src/gnn/ontology/processor.py` - domain validation

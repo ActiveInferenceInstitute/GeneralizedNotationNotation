@@ -14,7 +14,7 @@ from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
 
-from gnn.utils.mcp_dispatch import run_pipeline_step_mcp
+from gnn.utils.mcp_dispatch import run_pipeline_step_mcp, run_tool_envelope
 
 from . import (
     analyze_audio_characteristics,
@@ -69,12 +69,11 @@ def check_audio_backends_mcp() -> Dict[str, Any]:
     Returns:
         Dictionary with backend names and their availability flags.
     """
-    try:
-        result = check_audio_backends()
-        return {"success": True, **result}
-    except Exception as e:
-        logger.error(f"check_audio_backends_mcp error: {e}", exc_info=True)
-        return {"success": False, "error": str(e)}
+    return run_tool_envelope(
+        lambda: {"success": True, **check_audio_backends()},
+        wrapper_name="check_audio_backends_mcp",
+        logger=logger,
+    )
 
 
 def get_audio_generation_options_mcp() -> Dict[str, Any]:
@@ -87,12 +86,11 @@ def get_audio_generation_options_mcp() -> Dict[str, Any]:
     Returns:
         Dictionary with option names, types, defaults, and valid ranges.
     """
-    try:
-        options = get_audio_generation_options()
-        return {"success": True, "options": options}
-    except Exception as e:
-        logger.error(f"get_audio_generation_options_mcp error: {e}", exc_info=True)
-        return {"success": False, "error": str(e)}
+    return run_tool_envelope(
+        lambda: {"success": True, "options": get_audio_generation_options()},
+        wrapper_name="get_audio_generation_options_mcp",
+        logger=logger,
+    )
 
 
 def analyze_audio_characteristics_mcp(audio_file_path: str) -> Dict[str, Any]:
@@ -130,12 +128,11 @@ def get_audio_module_info_mcp() -> Dict[str, Any]:
     Returns:
         Dictionary with module metadata and feature inventory.
     """
-    try:
-        info = get_module_info()
-        return {"success": True, **info}
-    except Exception as e:
-        logger.error(f"get_audio_module_info_mcp error: {e}", exc_info=True)
-        return {"success": False, "error": str(e)}
+    return run_tool_envelope(
+        lambda: {"success": True, **get_module_info()},
+        wrapper_name="get_audio_module_info_mcp",
+        logger=logger,
+    )
 
 
 def validate_audio_content_mcp(audio_file_path: str) -> Dict[str, Any]:

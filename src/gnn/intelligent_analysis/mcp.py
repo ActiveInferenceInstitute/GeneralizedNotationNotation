@@ -11,7 +11,7 @@ from typing import Any, Dict, Optional
 logger = logging.getLogger(__name__)
 
 # Import utilities from the intelligent_analysis module
-from gnn.utils.mcp_dispatch import run_pipeline_step_mcp
+from gnn.utils.mcp_dispatch import run_pipeline_step_mcp, run_tool_envelope
 
 from . import (
     FEATURES,
@@ -68,17 +68,17 @@ def get_analysis_capabilities_mcp() -> Dict[str, Any]:
     Returns:
         Dictionary with capabilities, analysis types, and feature inventory.
     """
-    try:
-        return {
+    return run_tool_envelope(
+        lambda: {
             "success": True,
             "module_info": get_module_info(),
             "supported_analysis_types": get_supported_analysis_types(),
             "available_tools": check_intelligent_analysis_tools(),
             "features": FEATURES,
-        }
-    except Exception as e:
-        logger.error(f"get_analysis_capabilities_mcp error: {e}", exc_info=True)
-        return {"success": False, "error": str(e)}
+        },
+        wrapper_name="get_analysis_capabilities_mcp",
+        logger=logger,
+    )
 
 
 def get_intelligent_analysis_module_info_mcp() -> Dict[str, Any]:
@@ -88,15 +88,15 @@ def get_intelligent_analysis_module_info_mcp() -> Dict[str, Any]:
     Returns:
         Dictionary with module metadata, supported analysis types, and tool list.
     """
-    try:
+
+    def _build() -> Dict[str, Any]:
         import importlib
 
         mod = importlib.import_module(__package__)
-        version = getattr(mod, "__version__", "unknown")
         return {
             "success": True,
             "module": __package__,
-            "version": version,
+            "version": getattr(mod, "__version__", "unknown"),
             "features": FEATURES,
             "supported_analysis_types": get_supported_analysis_types(),
             "tools": [
@@ -105,11 +105,12 @@ def get_intelligent_analysis_module_info_mcp() -> Dict[str, Any]:
                 "get_intelligent_analysis_module_info",
             ],
         }
-    except Exception as e:
-        logger.error(
-            f"get_intelligent_analysis_module_info_mcp error: {e}", exc_info=True
-        )
-        return {"success": False, "error": str(e)}
+
+    return run_tool_envelope(
+        _build,
+        wrapper_name="get_intelligent_analysis_module_info_mcp",
+        logger=logger,
+    )
 
 
 # MCP Registration Function
