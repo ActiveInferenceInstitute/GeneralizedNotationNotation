@@ -6,7 +6,7 @@
   "tools_list": [
     {
       "name": "analyze_audio_characteristics",
-      "module": "src.audio",
+      "module": "gnn.audio",
       "category": "audio",
       "fn": "analyze_audio_characteristics_mcp",
       "documented": true,
@@ -14,7 +14,7 @@
     },
     {
       "name": "analyze_gnn_with_llm",
-      "module": "src.llm",
+      "module": "gnn.llm",
       "category": "llm",
       "fn": "analyze_gnn_with_llm_mcp",
       "documented": true,
@@ -22,7 +22,7 @@
     },
     {
       "name": "build_website_from_pipeline_output",
-      "module": "src.website",
+      "module": "gnn.website",
       "category": "website",
       "fn": "build_from_pipeline_output_mcp",
       "documented": true,
@@ -30,7 +30,7 @@
     },
     {
       "name": "check_audio_backends",
-      "module": "src.sapf",
+      "module": "gnn.sapf",
       "category": "audio",
       "fn": "check_audio_backends_mcp",
       "documented": true,
@@ -38,7 +38,7 @@
     },
     {
       "name": "check_execute_dependencies",
-      "module": "src.execute",
+      "module": "gnn.execute",
       "category": "execute",
       "fn": "check_execute_dependencies_mcp",
       "documented": true,
@@ -46,7 +46,7 @@
     },
     {
       "name": "check_integration_dependencies",
-      "module": "src.integration",
+      "module": "gnn.integration",
       "category": "integration",
       "fn": "check_integration_dependencies_mcp",
       "documented": true,
@@ -54,7 +54,7 @@
     },
     {
       "name": "check_ml_frameworks",
-      "module": "src.ml_integration",
+      "module": "gnn.ml_integration",
       "category": "ml_integration",
       "fn": "check_ml_frameworks_mcp",
       "documented": true,
@@ -62,7 +62,7 @@
     },
     {
       "name": "check_schema_compliance",
-      "module": "src.validation",
+      "module": "gnn.validation",
       "category": "validation",
       "fn": "check_schema_compliance_mcp",
       "documented": true,
@@ -70,7 +70,7 @@
     },
     {
       "name": "check_uv_project_status",
-      "module": "src.setup",
+      "module": "gnn.setup",
       "category": "setup",
       "fn": "check_uv_project_status_mcp",
       "documented": true,
@@ -78,7 +78,7 @@
     },
     {
       "name": "check_visualization_capabilities",
-      "module": "src.advanced_visualization",
+      "module": "gnn.advanced_visualization",
       "category": "advanced_visualization",
       "fn": "check_visualization_capabilities_mcp",
       "documented": true,
@@ -102,7 +102,7 @@
     },
     {
       "name": "compute_complexity_metrics",
-      "module": "src.analysis",
+      "module": "gnn.analysis",
       "category": "analysis",
       "fn": "compute_complexity_metrics_mcp",
       "documented": true,
@@ -110,7 +110,7 @@
     },
     {
       "name": "ensure_directory_exists",
-      "module": "src.setup",
+      "module": "gnn.setup",
       "category": "setup",
       "fn": "ensure_directory_exists_mcp",
       "documented": true,
@@ -118,7 +118,7 @@
     },
     {
       "name": "execute_gnn_model",
-      "module": "src.execute",
+      "module": "gnn.execute",
       "category": "execute",
       "fn": "execute_gnn_model_mcp",
       "documented": true,
@@ -126,7 +126,7 @@
     },
     {
       "name": "execute_pymdp_simulation",
-      "module": "src.execute",
+      "module": "gnn.execute",
       "category": "execute",
       "fn": "execute_pymdp_simulation_mcp",
       "documented": true,
@@ -134,7 +134,7 @@
     },
     {
       "name": "export_single_gnn_file",
-      "module": "src.export",
+      "module": "gnn.export",
       "category": "export",
       "fn": "export_single_file_mcp",
       "documented": true,
@@ -142,7 +142,7 @@
     },
     {
       "name": "extract_ontology_annotations",
-      "module": "src.ontology",
+      "module": "gnn.ontology",
       "category": "ontology",
       "fn": "extract_ontology_annotations_mcp",
       "documented": true,
@@ -150,7 +150,7 @@
     },
     {
       "name": "find_project_gnn_files",
-      "module": "src.setup",
+      "module": "gnn.setup",
       "category": "setup",
       "fn": "find_project_gnn_files_mcp",
       "documented": true,
@@ -158,7 +158,7 @@
     },
     {
       "name": "generate_llm_documentation",
-      "module": "src.llm",
+      "module": "gnn.llm",
       "category": "llm",
       "fn": "generate_llm_documentation_mcp",
       "documented": true,
@@ -166,7 +166,7 @@
     },
     {
       "name": "generate_report",
-      "module": "src.report",
+      "module": "gnn.report",
       "category": "report",
       "fn": "generate_report_mcp",
       "documented": true,
@@ -174,7 +174,7 @@
     },
     {
       "name": "get_advanced_visualization_module_info",
-      "module": "src.advanced_visualization",
+      "module": "gnn.advanced_visualization",
       "category": "advanced_visualization",
       "fn": "get_advanced_visualization_module_info_mcp",
       "documented": true,
@@ -182,7 +182,7 @@
     },
     {
       "name": "get_analysis_capabilities",
-      "module": "src.intelligent_analysis",
+      "module": "gnn.intelligent_analysis",
       "category": "intelligent_analysis",
       "fn": "get_analysis_capabilities_mcp",
       "documented": true,
@@ -190,7 +190,7 @@
     },
     {
       "name": "get_analysis_results",
-      "module": "src.analysis",
+      "module": "gnn.analysis",
       "category": "analysis",
       "fn": "get_analysis_results_mcp",
       "documented": true,
@@ -198,7 +198,7 @@
     },
     {
       "name": "get_audio_generation_options",
-      "module": "src.audio",
+      "module": "gnn.audio",
       "category": "audio",
       "fn": "get_audio_generation_options_mcp",
       "documented": true,
@@ -206,7 +206,7 @@
     },
     {
       "name": "get_audio_module_info",
-      "module": "src.audio",
+      "module": "gnn.audio",
       "category": "audio",
       "fn": "get_audio_module_info_mcp",
       "documented": true,
@@ -214,7 +214,7 @@
     },
     {
       "name": "get_environment_info",
-      "module": "src.utils",
+      "module": "gnn.utils",
       "category": "utils",
       "fn": "get_environment_info_tool",
       "documented": true,
@@ -222,7 +222,7 @@
     },
     {
       "name": "get_execute_module_info",
-      "module": "src.execute",
+      "module": "gnn.execute",
       "category": "execute",
       "fn": "get_execute_module_info_mcp",
       "documented": true,
@@ -230,7 +230,7 @@
     },
     {
       "name": "get_file_info",
-      "module": "src.utils",
+      "module": "gnn.utils",
       "category": "utils",
       "fn": "get_file_info_tool",
       "documented": true,
@@ -238,7 +238,7 @@
     },
     {
       "name": "get_gnn_documentation",
-      "module": "src.gnn",
+      "module": "gnn.gnn",
       "category": "gnn",
       "fn": "get_gnn_documentation",
       "documented": true,
@@ -246,7 +246,7 @@
     },
     {
       "name": "get_gnn_module_info",
-      "module": "src.gnn",
+      "module": "gnn.gnn",
       "category": "gnn",
       "fn": "get_gnn_module_info",
       "documented": true,
@@ -254,7 +254,7 @@
     },
     {
       "name": "get_gnn_schema_info",
-      "module": "src.gnn",
+      "module": "gnn.gnn",
       "category": "gnn",
       "fn": "get_gnn_schema_info",
       "documented": true,
@@ -262,7 +262,7 @@
     },
     {
       "name": "get_gui_module_info",
-      "module": "src.gui",
+      "module": "gnn.gui",
       "category": "gui",
       "fn": "get_gui_module_info_mcp",
       "documented": true,
@@ -270,7 +270,7 @@
     },
     {
       "name": "get_integration_status",
-      "module": "src.integration",
+      "module": "gnn.integration",
       "category": "integration",
       "fn": "get_integration_status_mcp",
       "documented": true,
@@ -278,7 +278,7 @@
     },
     {
       "name": "get_intelligent_analysis_module_info",
-      "module": "src.intelligent_analysis",
+      "module": "gnn.intelligent_analysis",
       "category": "intelligent_analysis",
       "fn": "get_intelligent_analysis_module_info_mcp",
       "documented": true,
@@ -286,7 +286,7 @@
     },
     {
       "name": "get_llm_module_info",
-      "module": "src.llm",
+      "module": "gnn.llm",
       "category": "llm",
       "fn": "get_llm_module_info_mcp",
       "documented": true,
@@ -294,7 +294,7 @@
     },
     {
       "name": "get_llm_providers",
-      "module": "src.llm",
+      "module": "gnn.llm",
       "category": "llm",
       "fn": "get_llm_providers_mcp",
       "documented": true,
@@ -302,7 +302,7 @@
     },
     {
       "name": "get_logging_info",
-      "module": "src.utils",
+      "module": "gnn.utils",
       "category": "utils",
       "fn": "get_logging_info_tool",
       "documented": true,
@@ -310,7 +310,7 @@
     },
     {
       "name": "get_ml_module_info",
-      "module": "src.ml_integration",
+      "module": "gnn.ml_integration",
       "category": "ml_integration",
       "fn": "get_ml_module_info_mcp",
       "documented": true,
@@ -318,7 +318,7 @@
     },
     {
       "name": "get_pipeline_config_info",
-      "module": "src.pipeline",
+      "module": "gnn.pipeline",
       "category": "pipeline",
       "fn": "get_pipeline_config_info_tool",
       "documented": true,
@@ -326,7 +326,7 @@
     },
     {
       "name": "get_pipeline_status",
-      "module": "src.pipeline",
+      "module": "gnn.pipeline",
       "category": "pipeline",
       "fn": "get_pipeline_status_tool",
       "documented": true,
@@ -334,7 +334,7 @@
     },
     {
       "name": "get_pipeline_steps",
-      "module": "src.pipeline",
+      "module": "gnn.pipeline",
       "category": "pipeline",
       "fn": "get_pipeline_steps_tool",
       "documented": true,
@@ -342,7 +342,7 @@
     },
     {
       "name": "get_render_module_info",
-      "module": "src.render",
+      "module": "gnn.render",
       "category": "render",
       "fn": "get_render_module_info_mcp",
       "documented": true,
@@ -350,7 +350,7 @@
     },
     {
       "name": "get_report_module_info",
-      "module": "src.report",
+      "module": "gnn.report",
       "category": "report",
       "fn": "get_report_module_info_mcp",
       "documented": true,
@@ -358,7 +358,7 @@
     },
     {
       "name": "get_research_module_info",
-      "module": "src.research",
+      "module": "gnn.research",
       "category": "research",
       "fn": "get_research_module_info_mcp",
       "documented": true,
@@ -366,7 +366,7 @@
     },
     {
       "name": "get_sapf_module_info",
-      "module": "src.sapf",
+      "module": "gnn.sapf",
       "category": "audio",
       "fn": "get_sapf_module_info_mcp",
       "documented": true,
@@ -374,7 +374,7 @@
     },
     {
       "name": "get_security_report",
-      "module": "src.security",
+      "module": "gnn.security",
       "category": "security",
       "fn": "get_security_report_mcp",
       "documented": true,
@@ -382,7 +382,7 @@
     },
     {
       "name": "get_standard_output_paths",
-      "module": "src.setup",
+      "module": "gnn.setup",
       "category": "setup",
       "fn": "get_standard_output_paths_mcp",
       "documented": true,
@@ -390,7 +390,7 @@
     },
     {
       "name": "get_system_info",
-      "module": "src.utils",
+      "module": "gnn.utils",
       "category": "utils",
       "fn": "get_system_info_tool",
       "documented": true,
@@ -398,7 +398,7 @@
     },
     {
       "name": "get_uv_environment_info",
-      "module": "src.setup",
+      "module": "gnn.setup",
       "category": "setup",
       "fn": "get_uv_environment_info_mcp",
       "documented": true,
@@ -406,7 +406,7 @@
     },
     {
       "name": "get_v3_orchestration_capabilities",
-      "module": "src.pipeline",
+      "module": "gnn.pipeline",
       "category": "pipeline",
       "fn": "get_v3_orchestration_capabilities_tool",
       "documented": true,
@@ -414,7 +414,7 @@
     },
     {
       "name": "get_validation_report",
-      "module": "src.validation",
+      "module": "gnn.validation",
       "category": "validation",
       "fn": "get_validation_report_mcp",
       "documented": true,
@@ -422,7 +422,7 @@
     },
     {
       "name": "get_visualization_module_info",
-      "module": "src.visualization",
+      "module": "gnn.visualization",
       "category": "visualization",
       "fn": "get_visualization_module_info_mcp",
       "documented": true,
@@ -430,7 +430,7 @@
     },
     {
       "name": "get_visualization_options",
-      "module": "src.visualization",
+      "module": "gnn.visualization",
       "category": "visualization",
       "fn": "get_visualization_options_mcp",
       "documented": true,
@@ -438,7 +438,7 @@
     },
     {
       "name": "get_website_module_info",
-      "module": "src.website",
+      "module": "gnn.website",
       "category": "website",
       "fn": "get_website_module_info_mcp",
       "documented": true,
@@ -446,7 +446,7 @@
     },
     {
       "name": "get_website_status",
-      "module": "src.website",
+      "module": "gnn.website",
       "category": "website",
       "fn": "get_website_status_mcp",
       "documented": true,
@@ -454,7 +454,7 @@
     },
     {
       "name": "gnn_cancel_job",
-      "module": "src.api",
+      "module": "gnn.api",
       "category": "api",
       "fn": "gnn_cancel_job_mcp",
       "documented": true,
@@ -462,7 +462,7 @@
     },
     {
       "name": "gnn_get_job_status",
-      "module": "src.api",
+      "module": "gnn.api",
       "category": "api",
       "fn": "gnn_get_job_status_mcp",
       "documented": true,
@@ -470,7 +470,7 @@
     },
     {
       "name": "gnn_get_pipeline_tools",
-      "module": "src.api",
+      "module": "gnn.api",
       "category": "api",
       "fn": "gnn_get_pipeline_tools_mcp",
       "documented": true,
@@ -478,7 +478,7 @@
     },
     {
       "name": "gnn_list_jobs",
-      "module": "src.api",
+      "module": "gnn.api",
       "category": "api",
       "fn": "gnn_list_jobs_mcp",
       "documented": true,
@@ -486,7 +486,7 @@
     },
     {
       "name": "gnn_submit_job",
-      "module": "src.api",
+      "module": "gnn.api",
       "category": "api",
       "fn": "gnn_submit_job_mcp",
       "documented": true,
@@ -494,7 +494,7 @@
     },
     {
       "name": "install_uv_dependency",
-      "module": "src.setup",
+      "module": "gnn.setup",
       "category": "setup",
       "fn": "install_uv_dependency_mcp",
       "documented": true,
@@ -502,7 +502,7 @@
     },
     {
       "name": "list_analysis_tools",
-      "module": "src.analysis",
+      "module": "gnn.analysis",
       "category": "analysis",
       "fn": "list_analysis_tools_mcp",
       "documented": true,
@@ -510,7 +510,7 @@
     },
     {
       "name": "list_audio_artifacts",
-      "module": "src.sapf",
+      "module": "gnn.sapf",
       "category": "audio",
       "fn": "list_audio_artifacts_mcp",
       "documented": true,
@@ -518,7 +518,7 @@
     },
     {
       "name": "list_available_guis",
-      "module": "src.gui",
+      "module": "gnn.gui",
       "category": "gui",
       "fn": "list_available_guis_mcp",
       "documented": true,
@@ -526,7 +526,7 @@
     },
     {
       "name": "list_d2_visualization_types",
-      "module": "src.advanced_visualization",
+      "module": "gnn.advanced_visualization",
       "category": "advanced_visualization",
       "fn": "list_d2_visualization_types_mcp",
       "documented": true,
@@ -534,7 +534,7 @@
     },
     {
       "name": "list_export_formats",
-      "module": "src.export",
+      "module": "gnn.export",
       "category": "export",
       "fn": "list_export_formats_mcp",
       "documented": true,
@@ -542,7 +542,7 @@
     },
     {
       "name": "list_generated_website_pages",
-      "module": "src.website",
+      "module": "gnn.website",
       "category": "website",
       "fn": "list_generated_pages_mcp",
       "documented": true,
@@ -550,7 +550,7 @@
     },
     {
       "name": "list_ml_integration_targets",
-      "module": "src.ml_integration",
+      "module": "gnn.ml_integration",
       "category": "ml_integration",
       "fn": "list_ml_integration_targets_mcp",
       "documented": true,
@@ -558,7 +558,7 @@
     },
     {
       "name": "list_render_frameworks",
-      "module": "src.render",
+      "module": "gnn.render",
       "category": "render",
       "fn": "list_render_frameworks_mcp",
       "documented": true,
@@ -566,7 +566,7 @@
     },
     {
       "name": "list_report_formats",
-      "module": "src.report",
+      "module": "gnn.report",
       "category": "report",
       "fn": "list_report_formats_mcp",
       "documented": true,
@@ -574,7 +574,7 @@
     },
     {
       "name": "list_research_topics",
-      "module": "src.research",
+      "module": "gnn.research",
       "category": "research",
       "fn": "list_research_topics_mcp",
       "documented": true,
@@ -582,7 +582,7 @@
     },
     {
       "name": "list_security_checks",
-      "module": "src.security",
+      "module": "gnn.security",
       "category": "security",
       "fn": "list_security_checks_mcp",
       "documented": true,
@@ -590,7 +590,7 @@
     },
     {
       "name": "list_standard_ontology_terms",
-      "module": "src.ontology",
+      "module": "gnn.ontology",
       "category": "ontology",
       "fn": "list_standard_ontology_terms_mcp",
       "documented": true,
@@ -598,7 +598,7 @@
     },
     {
       "name": "list_supported_integrations",
-      "module": "src.integration",
+      "module": "gnn.integration",
       "category": "integration",
       "fn": "list_supported_integrations_mcp",
       "documented": true,
@@ -606,7 +606,7 @@
     },
     {
       "name": "list_visualization_artifacts",
-      "module": "src.visualization",
+      "module": "gnn.visualization",
       "category": "visualization",
       "fn": "list_visualization_artifacts_mcp",
       "documented": true,
@@ -614,7 +614,7 @@
     },
     {
       "name": "mcp.list_available_resources",
-      "module": "src.mcp",
+      "module": "gnn.mcp",
       "category": "mcp",
       "fn": "list_core_resources",
       "documented": true,
@@ -622,7 +622,7 @@
     },
     {
       "name": "mcp.list_available_tools",
-      "module": "src.mcp",
+      "module": "gnn.mcp",
       "category": "mcp",
       "fn": "list_core_tools",
       "documented": true,
@@ -630,7 +630,7 @@
     },
     {
       "name": "model_registry.get_model",
-      "module": "src.model_registry",
+      "module": "gnn.model_registry",
       "category": "model_registry",
       "fn": "get_model",
       "documented": true,
@@ -638,7 +638,7 @@
     },
     {
       "name": "model_registry.list_models",
-      "module": "src.model_registry",
+      "module": "gnn.model_registry",
       "category": "model_registry",
       "fn": "list_models",
       "documented": true,
@@ -646,7 +646,7 @@
     },
     {
       "name": "model_registry.register_model",
-      "module": "src.model_registry",
+      "module": "gnn.model_registry",
       "category": "model_registry",
       "fn": "register_model",
       "documented": true,
@@ -654,7 +654,7 @@
     },
     {
       "name": "model_registry.search_models",
-      "module": "src.model_registry",
+      "module": "gnn.model_registry",
       "category": "model_registry",
       "fn": "search_models",
       "documented": true,
@@ -662,7 +662,7 @@
     },
     {
       "name": "oxdraw.check_installation",
-      "module": "src.gui.oxdraw",
+      "module": "gnn.gui.oxdraw",
       "category": "gui",
       "fn": "oxdraw_check_installation_mcp",
       "documented": true,
@@ -670,7 +670,7 @@
     },
     {
       "name": "oxdraw.convert_from_mermaid",
-      "module": "src.gui.oxdraw",
+      "module": "gnn.gui.oxdraw",
       "category": "gui",
       "fn": "oxdraw_convert_from_mermaid_mcp",
       "documented": true,
@@ -678,7 +678,7 @@
     },
     {
       "name": "oxdraw.convert_to_mermaid",
-      "module": "src.gui.oxdraw",
+      "module": "gnn.gui.oxdraw",
       "category": "gui",
       "fn": "oxdraw_convert_to_mermaid_mcp",
       "documented": true,
@@ -686,7 +686,7 @@
     },
     {
       "name": "oxdraw.get_info",
-      "module": "src.gui.oxdraw",
+      "module": "gnn.gui.oxdraw",
       "category": "gui",
       "fn": "oxdraw_get_info_mcp",
       "documented": true,
@@ -694,7 +694,7 @@
     },
     {
       "name": "oxdraw.launch_editor",
-      "module": "src.gui.oxdraw",
+      "module": "gnn.gui.oxdraw",
       "category": "gui",
       "fn": "oxdraw_launch_editor_mcp",
       "documented": true,
@@ -702,7 +702,7 @@
     },
     {
       "name": "parse_gnn_content",
-      "module": "src.gnn",
+      "module": "gnn.gnn",
       "category": "gnn",
       "fn": "parse_gnn_content",
       "documented": true,
@@ -710,7 +710,7 @@
     },
     {
       "name": "process_advanced_visualization",
-      "module": "src.advanced_visualization",
+      "module": "gnn.advanced_visualization",
       "category": "advanced_visualization",
       "fn": "process_advanced_visualization_mcp",
       "documented": true,
@@ -718,7 +718,7 @@
     },
     {
       "name": "process_analysis",
-      "module": "src.analysis",
+      "module": "gnn.analysis",
       "category": "analysis",
       "fn": "process_analysis_mcp",
       "documented": true,
@@ -726,7 +726,7 @@
     },
     {
       "name": "process_audio",
-      "module": "src.audio",
+      "module": "gnn.audio",
       "category": "audio",
       "fn": "process_audio_mcp",
       "documented": true,
@@ -734,7 +734,7 @@
     },
     {
       "name": "process_execute",
-      "module": "src.execute",
+      "module": "gnn.execute",
       "category": "execute",
       "fn": "process_execute_mcp",
       "documented": true,
@@ -742,7 +742,7 @@
     },
     {
       "name": "process_export",
-      "module": "src.export",
+      "module": "gnn.export",
       "category": "export",
       "fn": "process_export_mcp",
       "documented": true,
@@ -750,7 +750,7 @@
     },
     {
       "name": "process_gnn_directory",
-      "module": "src.gnn",
+      "module": "gnn.gnn",
       "category": "gnn",
       "fn": "process_gnn_directory",
       "documented": true,
@@ -758,7 +758,7 @@
     },
     {
       "name": "process_gui",
-      "module": "src.gui",
+      "module": "gnn.gui",
       "category": "gui",
       "fn": "process_gui_mcp",
       "documented": true,
@@ -766,7 +766,7 @@
     },
     {
       "name": "process_integration",
-      "module": "src.integration",
+      "module": "gnn.integration",
       "category": "integration",
       "fn": "process_integration_mcp",
       "documented": true,
@@ -774,7 +774,7 @@
     },
     {
       "name": "process_intelligent_analysis",
-      "module": "src.intelligent_analysis",
+      "module": "gnn.intelligent_analysis",
       "category": "intelligent_analysis",
       "fn": "process_intelligent_analysis_mcp",
       "documented": true,
@@ -782,7 +782,7 @@
     },
     {
       "name": "process_llm",
-      "module": "src.llm",
+      "module": "gnn.llm",
       "category": "llm",
       "fn": "process_llm_mcp",
       "documented": true,
@@ -790,7 +790,7 @@
     },
     {
       "name": "process_ml_integration",
-      "module": "src.ml_integration",
+      "module": "gnn.ml_integration",
       "category": "ml_integration",
       "fn": "process_ml_integration_mcp",
       "documented": true,
@@ -798,7 +798,7 @@
     },
     {
       "name": "process_ontology",
-      "module": "src.ontology",
+      "module": "gnn.ontology",
       "category": "ontology",
       "fn": "process_ontology_mcp",
       "documented": true,
@@ -806,7 +806,7 @@
     },
     {
       "name": "process_render",
-      "module": "src.render",
+      "module": "gnn.render",
       "category": "render",
       "fn": "process_render_mcp",
       "documented": true,
@@ -814,7 +814,7 @@
     },
     {
       "name": "process_report",
-      "module": "src.report",
+      "module": "gnn.report",
       "category": "report",
       "fn": "process_report_mcp",
       "documented": true,
@@ -822,7 +822,7 @@
     },
     {
       "name": "process_research",
-      "module": "src.research",
+      "module": "gnn.research",
       "category": "research",
       "fn": "process_research_mcp",
       "documented": true,
@@ -830,7 +830,7 @@
     },
     {
       "name": "process_sapf",
-      "module": "src.sapf",
+      "module": "gnn.sapf",
       "category": "audio",
       "fn": "process_sapf_mcp",
       "documented": true,
@@ -838,7 +838,7 @@
     },
     {
       "name": "process_security",
-      "module": "src.security",
+      "module": "gnn.security",
       "category": "security",
       "fn": "process_security_mcp",
       "documented": true,
@@ -846,7 +846,7 @@
     },
     {
       "name": "process_validation",
-      "module": "src.validation",
+      "module": "gnn.validation",
       "category": "validation",
       "fn": "process_validation_mcp",
       "documented": true,
@@ -854,7 +854,7 @@
     },
     {
       "name": "process_visualization",
-      "module": "src.visualization",
+      "module": "gnn.visualization",
       "category": "visualization",
       "fn": "process_visualization_mcp",
       "documented": true,
@@ -862,7 +862,7 @@
     },
     {
       "name": "process_website",
-      "module": "src.website",
+      "module": "gnn.website",
       "category": "website",
       "fn": "process_website_mcp",
       "documented": true,
@@ -870,7 +870,7 @@
     },
     {
       "name": "read_report",
-      "module": "src.report",
+      "module": "gnn.report",
       "category": "report",
       "fn": "read_report_mcp",
       "documented": true,
@@ -878,7 +878,7 @@
     },
     {
       "name": "read_research_results",
-      "module": "src.research",
+      "module": "gnn.research",
       "category": "research",
       "fn": "read_research_results_mcp",
       "documented": true,
@@ -886,7 +886,7 @@
     },
     {
       "name": "render_gnn_to_format",
-      "module": "src.render",
+      "module": "gnn.render",
       "category": "render",
       "fn": "render_gnn_to_format_mcp",
       "documented": true,
@@ -894,7 +894,7 @@
     },
     {
       "name": "render_spec_to_format",
-      "module": "src.render",
+      "module": "gnn.render",
       "category": "render",
       "fn": "render_spec_to_format_mcp",
       "documented": true,
@@ -902,7 +902,7 @@
     },
     {
       "name": "run_round_trip_tests",
-      "module": "src.gnn",
+      "module": "gnn.gnn",
       "category": "gnn",
       "fn": "run_round_trip_tests",
       "documented": true,
@@ -910,7 +910,7 @@
     },
     {
       "name": "run_v3_container_security_review",
-      "module": "src.pipeline",
+      "module": "gnn.pipeline",
       "category": "pipeline",
       "fn": "run_v3_container_security_review_tool",
       "documented": true,
@@ -918,7 +918,7 @@
     },
     {
       "name": "run_v3_orchestration_self_check",
-      "module": "src.pipeline",
+      "module": "gnn.pipeline",
       "category": "pipeline",
       "fn": "run_v3_orchestration_self_check_tool",
       "documented": true,
@@ -926,7 +926,7 @@
     },
     {
       "name": "scan_gnn_file",
-      "module": "src.security",
+      "module": "gnn.security",
       "category": "security",
       "fn": "scan_gnn_file_mcp",
       "documented": true,
@@ -934,7 +934,7 @@
     },
     {
       "name": "setup_uv_project_structure",
-      "module": "src.setup",
+      "module": "gnn.setup",
       "category": "setup",
       "fn": "setup_uv_project_structure_mcp",
       "documented": true,
@@ -942,7 +942,7 @@
     },
     {
       "name": "sympy_analyze_stability",
-      "module": "src.mcp.sympy_mcp",
+      "module": "gnn.mcp.sympy_mcp",
       "category": "sympy_mcp",
       "fn": "analyze_stability_tool_sync",
       "documented": true,
@@ -950,7 +950,7 @@
     },
     {
       "name": "sympy_cleanup",
-      "module": "src.mcp.sympy_mcp",
+      "module": "gnn.mcp.sympy_mcp",
       "category": "sympy_mcp",
       "fn": "cleanup_sympy_tool_sync",
       "documented": true,
@@ -958,7 +958,7 @@
     },
     {
       "name": "sympy_get_latex",
-      "module": "src.mcp.sympy_mcp",
+      "module": "gnn.mcp.sympy_mcp",
       "category": "sympy_mcp",
       "fn": "get_latex_tool_sync",
       "documented": true,
@@ -966,7 +966,7 @@
     },
     {
       "name": "sympy_initialize",
-      "module": "src.mcp.sympy_mcp",
+      "module": "gnn.mcp.sympy_mcp",
       "category": "sympy_mcp",
       "fn": "initialize_sympy_tool_sync",
       "documented": true,
@@ -974,7 +974,7 @@
     },
     {
       "name": "sympy_simplify_expression",
-      "module": "src.mcp.sympy_mcp",
+      "module": "gnn.mcp.sympy_mcp",
       "category": "sympy_mcp",
       "fn": "simplify_expression_tool_sync",
       "documented": true,
@@ -982,7 +982,7 @@
     },
     {
       "name": "sympy_solve_equation",
-      "module": "src.mcp.sympy_mcp",
+      "module": "gnn.mcp.sympy_mcp",
       "category": "sympy_mcp",
       "fn": "solve_equation_tool_sync",
       "documented": true,
@@ -990,7 +990,7 @@
     },
     {
       "name": "sympy_validate_equation",
-      "module": "src.mcp.sympy_mcp",
+      "module": "gnn.mcp.sympy_mcp",
       "category": "sympy_mcp",
       "fn": "validate_equation_tool_sync",
       "documented": true,
@@ -998,7 +998,7 @@
     },
     {
       "name": "sympy_validate_matrix",
-      "module": "src.mcp.sympy_mcp",
+      "module": "gnn.mcp.sympy_mcp",
       "category": "sympy_mcp",
       "fn": "validate_matrix_tool_sync",
       "documented": true,
@@ -1006,7 +1006,7 @@
     },
     {
       "name": "sync_uv_dependencies",
-      "module": "src.setup",
+      "module": "gnn.setup",
       "category": "setup",
       "fn": "sync_uv_dependencies_mcp",
       "documented": true,
@@ -1014,7 +1014,7 @@
     },
     {
       "name": "template.get_info",
-      "module": "src.template",
+      "module": "gnn.template",
       "category": "template",
       "fn": "get_template_info",
       "documented": true,
@@ -1022,7 +1022,7 @@
     },
     {
       "name": "template.process_directory",
-      "module": "src.template",
+      "module": "gnn.template",
       "category": "template",
       "fn": "process_directory",
       "documented": true,
@@ -1030,7 +1030,7 @@
     },
     {
       "name": "template.process_file",
-      "module": "src.template",
+      "module": "gnn.template",
       "category": "template",
       "fn": "process_file",
       "documented": true,
@@ -1038,7 +1038,7 @@
     },
     {
       "name": "validate_audio_content",
-      "module": "src.audio",
+      "module": "gnn.audio",
       "category": "audio",
       "fn": "validate_audio_content_mcp",
       "documented": true,
@@ -1046,7 +1046,7 @@
     },
     {
       "name": "validate_cross_format_consistency_content",
-      "module": "src.gnn",
+      "module": "gnn.gnn",
       "category": "gnn",
       "fn": "validate_cross_format_consistency_content",
       "documented": true,
@@ -1054,7 +1054,7 @@
     },
     {
       "name": "validate_dependencies",
-      "module": "src.utils",
+      "module": "gnn.utils",
       "category": "utils",
       "fn": "validate_dependencies_tool",
       "documented": true,
@@ -1062,7 +1062,7 @@
     },
     {
       "name": "validate_directory_cross_format_consistency",
-      "module": "src.gnn",
+      "module": "gnn.gnn",
       "category": "gnn",
       "fn": "validate_directory_cross_format_consistency",
       "documented": true,
@@ -1070,7 +1070,7 @@
     },
     {
       "name": "validate_export_format",
-      "module": "src.export",
+      "module": "gnn.export",
       "category": "export",
       "fn": "validate_export_format_mcp",
       "documented": true,
@@ -1078,7 +1078,7 @@
     },
     {
       "name": "validate_gnn_content",
-      "module": "src.gnn",
+      "module": "gnn.gnn",
       "category": "gnn",
       "fn": "validate_gnn_content",
       "documented": true,
@@ -1086,7 +1086,7 @@
     },
     {
       "name": "validate_gnn_file",
-      "module": "src.validation",
+      "module": "gnn.validation",
       "category": "validation",
       "fn": "validate_gnn_file_mcp",
       "documented": true,
@@ -1094,7 +1094,7 @@
     },
     {
       "name": "validate_gnn_files",
-      "module": "src.type_checker",
+      "module": "gnn.type_checker",
       "category": "type_checker",
       "fn": "validate_gnn_files_mcp",
       "documented": true,
@@ -1102,7 +1102,7 @@
     },
     {
       "name": "validate_ontology_terms",
-      "module": "src.ontology",
+      "module": "gnn.ontology",
       "category": "ontology",
       "fn": "validate_ontology_terms_mcp",
       "documented": true,
@@ -1110,7 +1110,7 @@
     },
     {
       "name": "validate_pipeline_dependencies",
-      "module": "src.pipeline",
+      "module": "gnn.pipeline",
       "category": "pipeline",
       "fn": "validate_pipeline_dependencies_tool",
       "documented": true,
@@ -1118,7 +1118,7 @@
     },
     {
       "name": "validate_schema_definitions_consistency",
-      "module": "src.gnn",
+      "module": "gnn.gnn",
       "category": "gnn",
       "fn": "validate_schema_definitions_consistency",
       "documented": true,
@@ -1126,7 +1126,7 @@
     },
     {
       "name": "validate_single_gnn_file",
-      "module": "src.type_checker",
+      "module": "gnn.type_checker",
       "category": "type_checker",
       "fn": "validate_single_gnn_file_mcp",
       "documented": true,
@@ -1135,7 +1135,7 @@
   ],
   "spot_checks_ok": 14,
   "spot_checks_err": 0,
-  "logging_ok": 31,
+  "logging_ok": 29,
   "logging_miss": 0,
   "issues": []
 }
