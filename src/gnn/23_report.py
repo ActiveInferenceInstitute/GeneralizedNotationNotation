@@ -6,15 +6,15 @@ This step orchestrates report generation for GNN models.
 
 Architectural Role:
     This is a "thin orchestrator" - a minimal script that delegates core functionality
-    to the corresponding module (src/report/). It handles argument parsing, logging
+    to the corresponding module (src/gnn/report/). It handles argument parsing, logging
     setup, and calls the actual processing functions from the report module.
 
 Pipeline Flow:
     main.py → 23_report.py (this script) → report/ (modular implementation)
 
 How to run:
-  python src/23_report.py --target-dir input/gnn_files --output-dir output --verbose
-  python src/main.py  # (runs as part of the pipeline)
+  python src/gnn/23_report.py --target-dir input/gnn_files --output-dir output --verbose
+  python src/gnn/main.py  # (runs as part of the pipeline)
 
 Expected outputs:
   - Report generation results in the specified output directory
@@ -24,7 +24,7 @@ Expected outputs:
 
 If you encounter errors:
   - Check that report dependencies are installed
-  - Check that src/report/ contains report modules
+  - Check that src/gnn/report/ contains report modules
   - Check that the output directory is writable
   - Verify report configuration and requirements
 """

@@ -6,15 +6,15 @@ This step orchestrates audio processing for GNN models.
 
 Architectural Role:
     This is a "thin orchestrator" - a minimal script that delegates core functionality
-    to the corresponding module (src/audio/). It handles argument parsing, logging
+    to the corresponding module (src/gnn/audio/). It handles argument parsing, logging
     setup, and calls the actual processing functions from the audio module.
 
 Pipeline Flow:
     main.py → 15_audio.py (this script) → audio/ (modular implementation)
 
 How to run:
-  python src/15_audio.py --target-dir input/gnn_files --output-dir output --verbose
-  python src/main.py  # (runs as part of the pipeline)
+  python src/gnn/15_audio.py --target-dir input/gnn_files --output-dir output --verbose
+  python src/gnn/main.py  # (runs as part of the pipeline)
 
 Expected outputs:
   - Audio processing results in the specified output directory
@@ -24,7 +24,7 @@ Expected outputs:
 
 If you encounter errors:
   - Check that audio dependencies are installed
-  - Check that src/audio/ contains audio modules
+  - Check that src/gnn/audio/ contains audio modules
   - Check that the output directory is writable
   - Verify audio configuration and requirements
 """

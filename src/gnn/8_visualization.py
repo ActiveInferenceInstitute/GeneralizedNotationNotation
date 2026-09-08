@@ -7,15 +7,15 @@ safe-to-fail patterns and robust output management.
 
 Architectural Role:
     This is a "thin orchestrator" - a minimal script that delegates core functionality
-    to the corresponding module (src/visualization/). It handles argument parsing, logging
+    to the corresponding module (src/gnn/visualization/). It handles argument parsing, logging
     setup, and calls the actual processing functions from the visualization module.
 
 Pipeline Flow:
     main.py → 8_visualization.py (this script) → visualization/ (modular implementation)
 
 How to run:
-  python src/8_visualization.py --target-dir input/gnn_files --output-dir output --verbose
-  python src/main.py  # (runs as part of the pipeline)
+  python src/gnn/8_visualization.py --target-dir input/gnn_files --output-dir output --verbose
+  python src/gnn/main.py  # (runs as part of the pipeline)
 
 Expected outputs:
   - Visualization results in the specified output directory
@@ -26,7 +26,7 @@ Expected outputs:
 
 If you encounter errors:
   - Check that visualization dependencies are installed
-  - Check that src/visualization/ contains visualization modules
+  - Check that src/gnn/visualization/ contains visualization modules
   - Check that the output directory is writable
   - Verify visualization configuration and requirements
 """

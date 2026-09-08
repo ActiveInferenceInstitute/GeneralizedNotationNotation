@@ -135,7 +135,14 @@ class PipelineArguments:
 
         # Set defaults for optional paths
         if self.ontology_terms_file is None:
-            self.ontology_terms_file = Path("src/ontology/act_inf_ontology_terms.json")
+            # Default to the ontology terms file packaged inside gnn
+            # (src/gnn/ontology/); repo-relative src/ontology/ is a retired
+            # pre-3.3.0 path.
+            self.ontology_terms_file = (
+                Path(__file__).resolve().parents[1]
+                / "ontology"
+                / "act_inf_ontology_terms.json"
+            )
         elif isinstance(self.ontology_terms_file, str):
             self.ontology_terms_file = Path(self.ontology_terms_file)
 

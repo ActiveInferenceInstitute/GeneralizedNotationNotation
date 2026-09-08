@@ -15,25 +15,22 @@ logger = logging.getLogger(__name__)
 
 
 def get_output_dir_for_script(
-    script_name: str, base_output_dir: (Path) | None = None
+    script_name: str, base_output_dir: Path | None = None
 ) -> Path:
-    """Get output directory for a script, delegating to pipeline.config to avoid circular imports."""
-    try:
-        from gnn.pipeline.config import get_output_dir_for_script as _get_output_dir
+    """Resolve the output directory for a script.
 
-        return _get_output_dir(
-            script_name,
-            base_output_dir if base_output_dir is not None else Path("output"),
-        )
-    except (ImportError, Exception):
-        # Recovery implementation if pipeline.config is not available
-        if base_output_dir is None:
-            base_output_dir = Path("output")
-        script_stem = Path(script_name).stem
-        normalized = (
-            script_stem if not script_name.endswith(".py") else script_name[:-3]
-        )
-        return base_output_dir / f"{normalized}_output"
+    Thin delegating re-export preserved for the public ``gnn.utils`` surface
+    (``gnn.utils.__init__`` re-exports it and ``src/gnn/utils/SKILL.md``
+    documents it). The canonical implementation lives in
+    ``gnn.pipeline.config``; the lazy import avoids the circular-import
+    hazard that motivated the original entry point.
+    """
+    from gnn.pipeline.config import get_output_dir_for_script as _canonical
+
+    return _canonical(
+        script_name,
+        base_output_dir if base_output_dir is not None else Path("output"),
+    )
 
 
 class _DefaultStepArgs:
