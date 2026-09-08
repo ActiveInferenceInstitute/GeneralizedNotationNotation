@@ -122,6 +122,11 @@ class MCP:
         self._result_cache: Dict[str, Tuple[Any, float]] = {}
         self._result_cache_lock = threading.Lock()
 
+        # Tools-list cache: invalidated on register_tool/unregister. The
+        # list is rebuilt only when the registry changes, not on every call.
+        self._tools_list_cache: List[Dict[str, Any]] | None = None
+        self._tools_names_cache: List[str] | None = None
+
         self._executor: Optional[ThreadPoolExecutor]
         try:
             self._executor = ThreadPoolExecutor(
@@ -192,20 +197,24 @@ class MCP:
         """
         with self._lock:
             if include_metadata:
-                result: List[Dict[str, Any]] = []
-                for name, tool in self.tools.items():
-                    result.append(
-                        {
-                            "name": name,
-                            "description": getattr(tool, "description", ""),
-                            "module": getattr(tool, "module", ""),
-                            "category": getattr(tool, "category", ""),
-                            "version": getattr(tool, "version", "1.0.0"),
-                        }
-                    )
-                return sorted(result, key=lambda t: t["name"])
+                if self._tools_list_cache is None:
+                    result: List[Dict[str, Any]] = []
+                    for name, tool in self.tools.items():
+                        result.append(
+                            {
+                                "name": name,
+                                "description": getattr(tool, "description", ""),
+                                "module": getattr(tool, "module", ""),
+                                "category": getattr(tool, "category", ""),
+                                "version": getattr(tool, "version", "1.0.0"),
+                            }
+                        )
+                    self._tools_list_cache = sorted(result, key=lambda t: t["name"])
+                return self._tools_list_cache
             else:
-                return sorted(self.tools.keys())
+                if self._tools_names_cache is None:
+                    self._tools_names_cache = sorted(self.tools.keys())
+                return self._tools_names_cache
 
     def list_available_resources(
         self, include_metadata: bool = True
@@ -808,6 +817,8 @@ class MCP:
             )
 
             self.tools[name] = tool
+            self._tools_list_cache = None
+            self._tools_names_cache = None
             logger.debug(f"Registered tool: {name}")
 
     def register_resource(

@@ -61,7 +61,7 @@ tests/
 ├── tests/                 # shared-plumbing regression tests (intentional)
 │
 ├── <module>/test_*.py     # per-module tests mirroring src/gnn/<module>/
-│   (36 maintained first-level subdirectories; 34 contain direct test files)
+│   (37 maintained first-level subdirectories; 35 contain direct test files)
 │
 └── test_*.py              # cross-cutting / meta-tests at root
     (coverage assessments, environment probes, runner self-tests,
