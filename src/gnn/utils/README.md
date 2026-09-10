@@ -48,7 +48,7 @@ src/gnn/utils/
 ├── visualization_optimizer.py       # Visualization optimization
 │
 ├── # Testing & Validation
-├── test_utils.py                    # Test utilities
+├── testing_utils.py                 # Test runner and shared helpers (production)
 ├── validation_schemas.py            # Shared validation schemas
 │
 ├── # Utilities
@@ -148,7 +148,7 @@ The one writable-directory probe (create temp file → atomic rename → cleanup
 Raises `OSError` when the directory does not accept writes.
 
 #### `get_memory_usage() -> float`
-Canonical process-memory probe in MB (`utils.resource_manager`); `utils.test_utils`
+Canonical process-memory probe in MB (`utils.resource_manager`); `utils.testing_utils`
 and `utils.visualization_optimizer` re-export it.
 
 #### `redact_environment() -> dict[str, str]` (`utils.mcp`)

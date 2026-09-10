@@ -17,6 +17,7 @@ class TestModelRegistryConstants:
 
     def test_features_dict(self) -> None:
         import gnn.model_registry as model_registry
+
         assert hasattr(model_registry, "FEATURES")
         assert isinstance(model_registry.FEATURES, dict)
         for key in (
@@ -29,6 +30,7 @@ class TestModelRegistryConstants:
 
     def test_version(self) -> None:
         import gnn.model_registry as model_registry
+
         assert hasattr(model_registry, "__version__")
         assert isinstance(model_registry.__version__, str)
 

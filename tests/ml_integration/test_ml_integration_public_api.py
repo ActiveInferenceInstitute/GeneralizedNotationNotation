@@ -17,6 +17,7 @@ class TestMLIntegrationConstants:
 
     def test_features_dict(self) -> None:
         import gnn.ml_integration as ml_integration
+
         assert hasattr(ml_integration, "FEATURES")
         assert isinstance(ml_integration.FEATURES, dict)
         for key in (
@@ -29,6 +30,7 @@ class TestMLIntegrationConstants:
 
     def test_version(self) -> None:
         import gnn.ml_integration as ml_integration
+
         assert hasattr(ml_integration, "__version__")
         assert isinstance(ml_integration.__version__, str)
 

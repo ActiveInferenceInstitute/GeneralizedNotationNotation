@@ -24,7 +24,11 @@ from typing import Any
 import pytest
 
 # Test markers
-pytestmark: list[Any] = [pytest.mark.integration, pytest.mark.uv]
+pytestmark: list[Any] = [
+    pytest.mark.integration,
+    pytest.mark.uv,
+    pytest.mark.toolchain,  # S2-16: shells out to ~13 uv subprocesses
+]
 
 # Get project root
 PROJECT_ROOT = Path(__file__).parents[2].absolute()
@@ -527,6 +531,7 @@ class TestUVCacheAndPerformance:
         Path(result.stdout.strip())
         # Cache dir may not exist if nothing has been cached
         # Just verify the command works
+
     @pytest.mark.env_heavy  # SC-44: real `uv sync` with 120s timeout, 3 attempts
     def test_uv_sync_fast(self) -> Any:
         """Check required dev dependencies without pruning optional packages.

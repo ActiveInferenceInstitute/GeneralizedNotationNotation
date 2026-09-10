@@ -17,7 +17,9 @@ def test_11_render_success(monkeypatch: Any, tmp_path: Any) -> Any:
     output_dir = tmp_path / "test_output"
 
     script_path = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), "..", "..", "src", "gnn", "11_render.py")
+        os.path.join(
+            os.path.dirname(__file__), "..", "..", "src", "gnn", "11_render.py"
+        )
     )
 
     original_process = getattr(render, "process_render", None)
@@ -48,7 +50,9 @@ def test_11_render_failure(monkeypatch: Any, tmp_path: Any) -> Any:
     target_dir = tmp_path / "test_input"
 
     script_path = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), "..", "..", "src", "gnn", "11_render.py")
+        os.path.join(
+            os.path.dirname(__file__), "..", "..", "src", "gnn", "11_render.py"
+        )
     )
 
     original_process = getattr(render, "process_render", None)

@@ -19,7 +19,6 @@ import hashlib
 import json
 import logging
 import re
-import shutil
 import stat
 import subprocess
 from dataclasses import dataclass
@@ -1000,7 +999,9 @@ def _julia_meta_parseall(content: str) -> Optional[tuple[bool, str]]:
         ``None`` when Julia is not available on PATH (caller should fall back
         to the advisory regex sweep).
     """
-    if shutil.which("julia") is None:
+    from gnn.execute.julia_setup import julia_available
+
+    if not julia_available():
         return None
 
     probe = (

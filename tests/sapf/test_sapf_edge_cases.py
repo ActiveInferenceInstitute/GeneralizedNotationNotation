@@ -63,11 +63,13 @@ class TestSapfMetadata:
 
     def test_sapf_has_version(self) -> None:
         import gnn.sapf as sapf
+
         assert hasattr(sapf, "__version__")
         assert isinstance(sapf.__version__, str)
 
     def test_sapf_features_is_dict(self) -> None:
         import gnn.sapf as sapf
+
         assert hasattr(sapf, "FEATURES")
         assert isinstance(sapf.FEATURES, dict)
 

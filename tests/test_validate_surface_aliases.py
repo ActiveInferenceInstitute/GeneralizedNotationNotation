@@ -250,4 +250,6 @@ def test_pipeline_template_output_dir_reexport_warns(tmp_path: Path) -> None:
     with pytest.warns(DeprecationWarning):
         legacy = template.get_output_dir_for_script  # noqa: B018
     assert callable(legacy)
-    assert legacy("3_gnn.py", tmp_path) == get_output_dir_for_script("3_gnn.py", tmp_path)
+    assert legacy("3_gnn.py", tmp_path) == get_output_dir_for_script(
+        "3_gnn.py", tmp_path
+    )

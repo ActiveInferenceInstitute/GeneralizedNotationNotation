@@ -22,7 +22,7 @@ from typing import Any, cast
 import psutil
 import pytest
 
-from gnn.utils.test_utils import performance_tracker
+from gnn.utils.testing_utils import performance_tracker
 
 # Test markers
 pytestmark = [pytest.mark.pipeline, pytest.mark.performance]
@@ -365,7 +365,6 @@ class TestDiskIOPerformance:
         )
         # Allow more time for export operations
         assert tracker.duration < 30.0  # 30 seconds should be enough for export
-
 
 
 class TestResourceScaling:

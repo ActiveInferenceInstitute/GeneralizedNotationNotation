@@ -13,7 +13,6 @@ from gnn.research.processor import process_research
 class TestResearchOverall:
     """Test suite for Research module."""
 
-
     @pytest.mark.integration
     @pytest.mark.slow
     def test_process_research_flow(

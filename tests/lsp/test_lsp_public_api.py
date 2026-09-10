@@ -16,6 +16,7 @@ class TestLSPConstants:
 
     def test_features_dict(self) -> None:
         import gnn.lsp as lsp
+
         assert hasattr(lsp, "FEATURES")
         assert isinstance(lsp.FEATURES, dict)
         for key in ("diagnostics", "hover_info", "completion", "gnn_language_support"):
@@ -23,6 +24,7 @@ class TestLSPConstants:
 
     def test_version(self) -> None:
         import gnn.lsp as lsp
+
         assert hasattr(lsp, "__version__")
         assert isinstance(lsp.__version__, str)
 
@@ -109,6 +111,7 @@ class TestStartServer:
 
     def test_start_server_handles_missing_pygls(self, monkeypatch: Any) -> None:
         import gnn.lsp as lsp
+
         original_flag = lsp.PYGLS_AVAILABLE
         try:
             lsp.PYGLS_AVAILABLE = False
@@ -119,6 +122,7 @@ class TestStartServer:
 
     def test_start_server_with_pygls_present(self) -> None:
         import gnn.lsp as lsp
+
         assert lsp.PYGLS_AVAILABLE, "pygls must be installed in the dev environment"
 
         # start_server would block on stdio; monkeypatch create_server to return None

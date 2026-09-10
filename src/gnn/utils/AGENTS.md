@@ -57,13 +57,10 @@ from gnn.utils import setup_step_logging
 logger = setup_step_logging("3_gnn", verbose=True)
 ```
 
-#### `setup_main_logging(verbose: bool = False) -> logging.Logger`
-**Description**: Set up logging for main pipeline orchestrator
+#### `setup_main_logging(log_dir: Optional[Path] = None, verbose: bool = False, log_format: str = "human") -> logging.Logger`
+**Description**: Set up logging for the main pipeline orchestrator. `log_dir` is the directory for log files; `log_format` selects console output style (`"human"` or `"json"`). Initializes `PipelineLogger`, sets verbosity, establishes the `"main"` correlation context, and returns the configured `GNN_Pipeline` logger.
 
-**Parameters**:
-- `verbose` (bool): Enable verbose logging (default: False)
-
-**Returns**: `logging.Logger` - Configured main logger instance
+**Location**: `src/gnn/utils/logging/logging_utils.py:172` (re-exported by the `utils/logging_utils.py` shim).
 
 #### `log_step_start(logger, message)` / `log_step_success(logger, message)` / `log_step_error(logger, message)` / `log_step_warning(logger, message)`
 **Description**: Step lifecycle logging helpers (`utils/logging_utils.py`). `log_step_start` returns a correlation-aware context; the others log structured lifecycle events. `utils/structured_logging.py` additionally exposes `log_step_start(logger, step_name, **context)` and friends with richer metadata when a step needs it.
@@ -158,17 +155,16 @@ logger = setup_step_logging("3_gnn", verbose=True)
 
 **Returns**: `float` - Memory usage in megabytes (MB)
 
-
 #### `get_memory_usage() -> float`
-**Description**: Canonical MB-scale process-memory probe (alias of `get_current_memory_usage`). `utils.test_utils.get_memory_usage` and `utils.visualization_optimizer.get_memory_usage` re-export it.
+**Description**: Canonical MB-scale process-memory probe (alias of `get_current_memory_usage`). `utils.testing_utils.get_memory_usage` and `utils.visualization_optimizer.get_memory_usage` re-export it.
 
 ### Error Recovery Functions
 
 #### `ErrorRecoveryManager(logger=None).handle_error(context: ErrorContext) -> bool`
 **Description**: Handle an error through the registered recovery strategies (`utils/error_recovery.py`). Errors are constructed as `ErrorContext` objects (operation, severity, message, error_code, details).
 
-#### `format_and_log_error(logger: logging.Logger, error: Exception, context: Dict[str, Any] = None) -> None`
-**Description**: Format and log an error with full context
+#### `format_and_log_error(error_code: str, operation: str, message: str, severity: ErrorSeverity = ErrorSeverity.ERROR, details: Optional[Dict[str, Any]] = None, suggestions: Optional[List[str]] = None, exception: Optional[Exception] = None) -> ErrorContext`
+**Description**: Build an `ErrorContext`, run it through the shared `ErrorRecoveryManager`, and return the context (`src/gnn/utils/error_recovery.py:252`).
 
 ### Configuration Functions
 
@@ -194,8 +190,8 @@ logger = setup_step_logging("3_gnn", verbose=True)
 #### `PerformanceTracker.track_operation(operation: str, metadata: Optional[Dict[str, Any]] = None)`
 **Description**: Context manager tracking operation timing; usage: `with tracker.track_operation("name", {...}):`
 
-#### `track_operation_standalone(operation: str, metadata: Optional[Dict[str, Any]] = None) -> Any`
-**Description**: Record a single standalone timing measurement
+#### `track_operation_standalone(operation: str, metadata: Optional[Dict[str, Any]] = None) -> ContextManager[None]`
+**Description**: `@contextmanager` that measures the duration of a `with` block and records it on the global `performance_tracker` via `record_timing(operation, duration, metadata)`. Usage: `with track_operation_standalone("name", {...}):`. Yields `None` (`src/gnn/utils/performance_tracking.py:151`).
 
 
 ## Composability Notes
@@ -206,7 +202,7 @@ Duplicated logic was collapsed onto one implementation each; every
 historical entry point remains valid:
 
 - **Writable-directory probe**: `utils.io_utils.verify_directory_writable(directory, probe_name=".write_probe") -> None` is the single create-rename-cleanup probe. `utils.pipeline.validate_output_directory` and `utils.pipeline_validator.check_pipeline_readiness` call it; both keep their own error messaging.
-- **Canonical memory probe**: `utils.resource_manager.get_memory_usage` (alias of `get_current_memory_usage`); `utils.test_utils.get_memory_usage` and `utils.visualization_optimizer.get_memory_usage` delegate to it instead of carrying their own psutil copies.
+- **Canonical memory probe**: `utils.resource_manager.get_memory_usage` (alias of `get_current_memory_usage`); `utils.testing_utils.get_memory_usage` and `utils.visualization_optimizer.get_memory_usage` delegate to it instead of carrying their own psutil copies.
 - **Step-argument fallback defaults**: `utils.arg_parsing.fallback_default_for(arg_name)` backed by the `_FALLBACK_DEFAULTS` mapping replaced two ~70-line if/elif ladders in `ArgumentParser.parse_step_arguments` and `ArgumentParser.create_default_namespace`. `create_default_namespace` now matches the registered contract for `advanced_stats` (`False`) and `simulation_params` (`"{}"`) where it previously fell through to `None`.
 - **Injectable project root**: `StepConfiguration.validate_step_args(step_name, args, project_root=None)` accepts an explicit project root for missing-input-path repair; when omitted, the caller-frame heuristic (long-standing default) applies (unchanged behavior for existing callers).
 - **`with_resource_limits`**: exceptions raised by the wrapped body always propagate; limit violations are only raised when the body completed normally (previously a `RuntimeError` raised from `finally` could mask a body failure).

@@ -40,11 +40,11 @@ class GNNParseError:
 
 # ─── Connection Parsing ─────────────────────────────────────────────────────────
 
-# Matches: A>B, A-B, A>B:label, A-B:label
+# Matches: A>B, A-B, A>B:label, A-B:label (names may contain '+', e.g. s_t+1)
 _CONNECTION_RE = re.compile(
-    r"^(?P<source>[A-Za-z_π'][A-Za-z0-9_π']*)"
+    r"^(?P<source>[A-Za-z_π'][A-Za-z0-9_π'+]*)"
     r"(?P<op>[>\-])"
-    r"(?P<target>[A-Za-z_π'][A-Za-z0-9_π']*)"
+    r"(?P<target>[A-Za-z_π'][A-Za-z0-9_π'+]*)"
     r"(?::(?P<label>[A-Za-z0-9_]+))?$"
 )
 
@@ -145,7 +145,7 @@ def parse_connections(
 # ─── Variable Parsing (enhanced) ────────────────────────────────────────────────
 
 _VAR_RE = re.compile(
-    r"^(?P<name>[A-Za-z_π'][A-Za-z0-9_π']*)"
+    r"^(?P<name>[A-Za-z_π'][A-Za-z0-9_π'+]*)"
     r"\[(?P<dims>[^\]]+)\]"
 )
 

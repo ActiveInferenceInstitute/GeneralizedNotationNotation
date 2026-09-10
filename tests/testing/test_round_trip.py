@@ -15,8 +15,9 @@ from typing import Any
 # import time (a process-global side effect); restore the interpreter
 # default immediately after import so later tests are unaffected.
 _prev_recursion_limit = sys.getrecursionlimit()
-from gnn.testing.round_trip_availability import GNNFormat, GNN_AVAILABLE
+from gnn.testing.round_trip_availability import GNN_AVAILABLE, GNNFormat
 from gnn.testing.test_round_trip import GNNRoundTripTester
+
 sys.setrecursionlimit(max(_prev_recursion_limit, 1000))
 
 

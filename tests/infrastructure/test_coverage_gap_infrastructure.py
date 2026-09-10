@@ -68,8 +68,6 @@ class TestTimeoutManager:
         assert manager.default_config.base_timeout == 120.0
 
 
-
-
 # 4. Tests for utils/simulation_utils.py
 class TestSimulationUtils:
     def test_simulation_tracker(self, tmp_path: Any) -> Any:

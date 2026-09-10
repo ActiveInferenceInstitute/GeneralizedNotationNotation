@@ -19,6 +19,7 @@ class TestCLIConstants:
 
     def test_features_dict(self) -> None:
         import gnn.cli as cli
+
         assert hasattr(cli, "FEATURES")
         assert isinstance(cli.FEATURES, dict)
         for key in (
@@ -33,6 +34,7 @@ class TestCLIConstants:
 
     def test_version(self) -> None:
         import gnn.cli as cli
+
         assert hasattr(cli, "__version__")
         assert isinstance(cli.__version__, str)
 
@@ -168,6 +170,7 @@ class TestCmdHandlers:
         # verify the handler wiring instead: api.app must be importable and
         # the serve handler must accept the documented args.
         import gnn.cli as cli
+
         assert hasattr(cli, "_cmd_serve")
         import gnn.api.app  # noqa: F401
 

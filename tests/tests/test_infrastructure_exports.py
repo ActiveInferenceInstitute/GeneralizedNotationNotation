@@ -10,7 +10,7 @@ pytestmark = pytest.mark.fast
 
 
 def test_infrastructure_exports_are_importable() -> None:
-    """Every ``__all__`` entry resolves — guards the surface utils/test_utils.py uses."""
+    """Every ``__all__`` entry resolves — guards the surface utils/testing_utils.py uses."""
     infrastructure = importlib.import_module("tests.infrastructure")
     for name in infrastructure.__all__:
         assert hasattr(infrastructure, name), f"tests.infrastructure.{name} missing"

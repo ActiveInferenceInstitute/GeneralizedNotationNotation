@@ -100,6 +100,14 @@ def check_julia_dependencies(
             if project_dir is None:
                 return False
             using_clause = ", ".join(packages)
+            # The probe script is built by f-string from the *hardcoded*
+            # ``packages`` list literal directly above — repo-controlled
+            # input, never client-supplied — so no injection vector exists.
+            # The invocation below is already the argv-list form (no shell):
+            # each element is passed verbatim as one argument, and the
+            # script body rides the final ``-e`` operand, so even a
+            # hypothetical hostile package name could not escape the argv.
+            # Do not introduce client input into this construction.
             check_script = f"using {using_clause}"
             result = subprocess.run(  # nosec B607 B603
                 [

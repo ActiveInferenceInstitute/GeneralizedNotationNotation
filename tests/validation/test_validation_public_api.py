@@ -18,6 +18,7 @@ class TestValidationConstants:
 
     def test_features_dict(self) -> None:
         import gnn.validation as validation
+
         assert hasattr(validation, "FEATURES")
         assert isinstance(validation.FEATURES, dict)
         assert validation.FEATURES.get("semantic_validation") is True
@@ -26,6 +27,7 @@ class TestValidationConstants:
 
     def test_version(self) -> None:
         import gnn.validation as validation
+
         assert hasattr(validation, "__version__")
         assert isinstance(validation.__version__, str)
 

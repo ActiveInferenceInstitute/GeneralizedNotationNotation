@@ -133,7 +133,8 @@ def check_integration_dependencies_mcp() -> Dict[str, Any]:
         Dictionary with dependency names and availability flags.
     """
     import importlib.util
-    import shutil
+
+    from gnn.execute.julia_setup import julia_available
 
     deps: Dict[str, Dict[str, Any]] = {}
     for pkg, label in [
@@ -148,7 +149,7 @@ def check_integration_dependencies_mcp() -> Dict[str, Any]:
             found = False
         deps[label] = {"available": found}
 
-    deps["Julia"] = {"available": bool(shutil.which("julia"))}
+    deps["Julia"] = {"available": julia_available()}
     return {"success": True, "dependencies": deps}
 
 

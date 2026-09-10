@@ -27,6 +27,7 @@ class TestBackendStatus:
 
     def test_module_info_reports_backends(self) -> None:
         import gnn.visualization as visualization
+
         info = visualization.get_module_info()
         assert info["backends"] == backend_status()
 

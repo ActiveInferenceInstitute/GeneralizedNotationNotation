@@ -307,7 +307,9 @@ def test_julia_execution_command_pins_committed_project(framework: str) -> None:
     )
     command = _build_script_execution_command(context, ["sandbox"])
 
-    expected_project = Path(__file__).resolve().parents[2] / "src" / "gnn" / "execute" / framework
+    expected_project = (
+        Path(__file__).resolve().parents[2] / "src" / "gnn" / "execute" / framework
+    )
     assert command == [
         "sandbox",
         "julia",
@@ -319,7 +321,12 @@ def test_julia_execution_command_pins_committed_project(framework: str) -> None:
 
 def test_rxinfer_manifest_pins_5_5_0() -> None:
     manifest = (
-        Path(__file__).resolve().parents[2] / "src" / "gnn" / "execute" / "rxinfer" / "Manifest.toml"
+        Path(__file__).resolve().parents[2]
+        / "src"
+        / "gnn"
+        / "execute"
+        / "rxinfer"
+        / "Manifest.toml"
     ).read_text(encoding="utf-8")
     assert "[[deps.RxInfer]]" in manifest
     rxinfer_section = manifest.split("[[deps.RxInfer]]", maxsplit=1)[1].split(

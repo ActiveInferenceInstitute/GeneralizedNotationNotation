@@ -20,7 +20,7 @@ class TestEnvironmentSetupIntegration:
     @pytest.mark.integration
     def test_environment_validates_before_pipeline(self) -> None:
         """Test environment validation runs before pipeline."""
-        from gnn.utils.test_utils import validate_test_environment
+        from gnn.utils.testing_utils import validate_test_environment
 
         result = validate_test_environment()
         # validate_test_environment returns (bool, list) tuple or bool
@@ -32,7 +32,6 @@ class TestEnvironmentSetupIntegration:
     @pytest.mark.integration
     def test_environment_paths_accessible(self) -> None:
         """Test all required paths are accessible."""
-        from pathlib import Path
 
         # Check project structure
         test_dir = Path(__file__).parent
@@ -95,7 +94,6 @@ class TestEnvironmentPipelineIntegration:
     @pytest.mark.integration
     def test_pipeline_finds_scripts(self) -> None:
         """Test pipeline can find step scripts."""
-        from pathlib import Path
 
         src_dir = Path(__file__).parents[2] / "src"
 

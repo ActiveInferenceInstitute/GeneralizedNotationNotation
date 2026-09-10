@@ -24,7 +24,9 @@ def test_get_output_dir_for_script_delegates_to_canonical(tmp_path: Path) -> Non
     assert resolved.is_dir() is False or resolved.is_dir()
 
 
-def test_get_output_dir_for_script_default_base(tmp_path: Path, monkeypatch: object) -> None:
+def test_get_output_dir_for_script_default_base(
+    tmp_path: Path, monkeypatch: object
+) -> None:
     monkeypatch.chdir(tmp_path)  # type: ignore[attr-defined]
 
     resolved = get_output_dir_for_script("7_export.py")

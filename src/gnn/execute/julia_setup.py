@@ -21,6 +21,22 @@ from gnn.execute.subprocess_envelope import (  # nosec B404
 logger = logging.getLogger(__name__)
 
 
+def julia_executable() -> Optional[str]:
+    """Return the path to the ``julia`` executable, or ``None`` if not on PATH.
+
+    The single canonical ``shutil.which("julia")`` probe for the whole
+    codebase: every availability check routes through this helper (or
+    :func:`julia_available`) so there is exactly one ``which("julia")``
+    call site.
+    """
+    return shutil.which("julia")
+
+
+def julia_available() -> bool:
+    """Whether a ``julia`` executable is available on PATH."""
+    return julia_executable() is not None
+
+
 def check_julia_availability() -> tuple[bool, Optional[str]]:
     """
     Check if Julia is available and return its path.
@@ -28,7 +44,7 @@ def check_julia_availability() -> tuple[bool, Optional[str]]:
     Returns:
         Tuple of (is_available, julia_path)
     """
-    julia_path = shutil.which("julia")
+    julia_path = julia_executable()
     if julia_path:
         logger.info(f"✅ Julia found at: {julia_path}")
         return True, julia_path

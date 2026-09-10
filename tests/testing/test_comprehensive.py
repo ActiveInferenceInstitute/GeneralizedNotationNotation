@@ -467,9 +467,7 @@ class TestGNNExampleValidation(unittest.TestCase):
 
         # Only actual GNN models — skip bundled docs (README/SPEC/AGENTS/INDEX).
         doc_names = {"readme.md", "index.md", "spec.md", "agents.md"}
-        example_files = [
-            f for f in example_files if f.name.lower() not in doc_names
-        ]
+        example_files = [f for f in example_files if f.name.lower() not in doc_names]
         validation_results: dict[Any, Any] = {}
 
         for example_file in example_files:
@@ -814,5 +812,3 @@ End
         self.assertIsInstance(result, dict)
         self.assertFalse(result["success"])
         self.assertIn("error", result)
-
-

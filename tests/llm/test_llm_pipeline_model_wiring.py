@@ -119,7 +119,8 @@ def test_structured_prompt_get_response_passes_model_name(
                 self.get_available_providers = lambda: [ProviderType.OLLAMA]
 
         m.setattr(
-            "gnn.llm.processor.LLMProcessor", lambda *args, **kwargs: InMemoryProcessor()
+            "gnn.llm.processor.LLMProcessor",
+            lambda *args, **kwargs: InMemoryProcessor(),
         )
 
         async def controlled_analyze(*args: Any, **kwargs: Any) -> Any:
@@ -127,9 +128,15 @@ def test_structured_prompt_get_response_passes_model_name(
 
         m.setattr("gnn.llm.processor.analyze_gnn_file_with_llm", controlled_analyze)
 
-        m.setattr("gnn.llm.processor.generate_model_insights", lambda *args, **kwargs: {})
-        m.setattr("gnn.llm.processor.generate_code_suggestions", lambda *args, **kwargs: {})
-        m.setattr("gnn.llm.processor.generate_documentation", lambda *args, **kwargs: {})
+        m.setattr(
+            "gnn.llm.processor.generate_model_insights", lambda *args, **kwargs: {}
+        )
+        m.setattr(
+            "gnn.llm.processor.generate_code_suggestions", lambda *args, **kwargs: {}
+        )
+        m.setattr(
+            "gnn.llm.processor.generate_documentation", lambda *args, **kwargs: {}
+        )
         m.setattr(
             "gnn.llm.processor._start_ollama_if_needed",
             lambda *args, **kwargs: (True, ["smollm2:135m-instruct-q4_K_S"]),
@@ -158,7 +165,8 @@ def test_structured_prompt_get_response_passes_model_name(
 
         m.setattr("gnn.llm.processor.LLMCache", lambda *args, **kwargs: InMemoryCache())
         m.setattr(
-            "gnn.llm.processor.generate_llm_summary", lambda *args, **kwargs: "# summary\n"
+            "gnn.llm.processor.generate_llm_summary",
+            lambda *args, **kwargs: "# summary\n",
         )
         m.setattr(
             "gnn.llm.processor.get_prompt",
@@ -222,11 +230,18 @@ def test_process_llm_limits_files_from_config(
             lambda *args, **kwargs: UnavailableProcessor(),
         )
         m.setattr("gnn.llm.processor.analyze_gnn_file_with_llm", controlled_analyze)
-        m.setattr("gnn.llm.processor.generate_model_insights", lambda *args, **kwargs: {})
-        m.setattr("gnn.llm.processor.generate_code_suggestions", lambda *args, **kwargs: {})
-        m.setattr("gnn.llm.processor.generate_documentation", lambda *args, **kwargs: {})
         m.setattr(
-            "gnn.llm.processor.generate_llm_summary", lambda *args, **kwargs: "# summary\n"
+            "gnn.llm.processor.generate_model_insights", lambda *args, **kwargs: {}
+        )
+        m.setattr(
+            "gnn.llm.processor.generate_code_suggestions", lambda *args, **kwargs: {}
+        )
+        m.setattr(
+            "gnn.llm.processor.generate_documentation", lambda *args, **kwargs: {}
+        )
+        m.setattr(
+            "gnn.llm.processor.generate_llm_summary",
+            lambda *args, **kwargs: "# summary\n",
         )
 
         from gnn.llm.processor import process_llm

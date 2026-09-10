@@ -93,7 +93,9 @@ def _analysis(variables: int, connections: int, size: int) -> dict[str, Any]:
         "file_size": size,
         "variables": [{"name": f"v{i}"} for i in range(variables)],
         "connections": [{"source": "a", "target": "b"} for _ in range(connections)],
-        "distributions": {"complexity_metrics": {"total_elements": variables + connections}},
+        "distributions": {
+            "complexity_metrics": {"total_elements": variables + connections}
+        },
     }
 
 

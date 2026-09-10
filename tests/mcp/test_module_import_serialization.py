@@ -32,9 +32,7 @@ def _write_module(directory: Path, name: str) -> Path:
     (pkg / "__init__.py").write_text("", encoding="utf-8")
     mcp_file = pkg / "mcp.py"
     mcp_file.write_text(
-        '"""Stub MCP module."""\n'
-        "def register_tools(server):\n"
-        "    return None\n",
+        '"""Stub MCP module."""\ndef register_tools(server):\n    return None\n',
         encoding="utf-8",
     )
     return mcp_file

@@ -48,6 +48,7 @@ def test_timeout_kills_process_and_reports_status() -> None:
     # The process tree was terminated, so no exit code can be collected.
     assert result["exit_code"] != 0
 
+
 def test_env_extension_is_visible_to_the_child() -> None:
     result = execute_command_streaming(
         [PY, "-c", "import os; print(os.environ['W2_PROBE_VALUE'])"],

@@ -20,6 +20,7 @@ class TestLLMModuleComprehensive:
     def test_llm_module_imports(self) -> Any:
         """Test that LLM module can be imported."""
         import gnn.llm as llm
+
         assert hasattr(llm, "__version__")
         assert hasattr(llm, "LLMProcessor")
         assert hasattr(llm, "LLMAnalyzer")
@@ -136,6 +137,7 @@ def test_llm_module_completeness() -> Any:
     ]
     try:
         import gnn.llm as llm
+
         for component in required_components:
             assert hasattr(llm, component), f"Missing component: {component}"
     except ImportError:

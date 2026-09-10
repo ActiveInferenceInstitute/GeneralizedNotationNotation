@@ -15,7 +15,7 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, List
 
-from gnn.utils.test_utils import TEST_DIR
+from gnn.utils.testing_utils import TEST_DIR
 
 
 def check_test_dependencies(logger: logging.Logger) -> Dict[str, Any]:
@@ -51,7 +51,6 @@ def check_test_dependencies(logger: logging.Logger) -> Dict[str, Any]:
             dependencies[label] = importlib.util.find_spec(module_name) is not None
         except (ImportError, ValueError):
             dependencies[label] = False
-
 
     # Log results: only pytest is required for fast pipeline tests; others are dev/CI extras.
     if not dependencies["pytest"]:

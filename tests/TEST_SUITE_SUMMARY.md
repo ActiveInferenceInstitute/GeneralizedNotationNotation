@@ -219,7 +219,7 @@ output/2_tests_output/
 
 ### Scalability
 
-- **Test Discovery**: Handles 54 files efficiently
+- **Test Discovery**: Handles 433 files efficiently (all `tests/**/test_*.py`, counted 2026-09-10)
 - **Parallel Execution**: Category-based parallelization
 - **Timeout Handling**: Per-category timeouts prevent hangs
 - **Resource Monitoring**: Built-in memory and CPU tracking

@@ -20,6 +20,7 @@ class TestWebsiteModuleComprehensive:
     def test_website_module_imports(self) -> Any:
         """Test that website module can be imported."""
         import gnn.website as website
+
         assert hasattr(website, "__version__")
         assert hasattr(website, "WebsiteGenerator")
         assert hasattr(website, "WebsiteRenderer")
@@ -154,6 +155,7 @@ def test_website_module_completeness() -> Any:
     ]
     try:
         import gnn.website as website
+
         for component in required_components:
             assert hasattr(website, component), f"Missing component: {component}"
     except ImportError:

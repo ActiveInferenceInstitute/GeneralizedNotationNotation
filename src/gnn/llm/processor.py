@@ -7,6 +7,7 @@ import inspect
 import json
 import logging
 import os
+import re
 import shutil
 import subprocess  # nosec B404
 from datetime import datetime
@@ -56,18 +57,55 @@ def _get_llm_config() -> dict:
         return {}
 
 
+_OLLAMA_MODEL_NAME_PATTERN = re.compile(
+    r"""^[A-Za-z0-9][A-Za-z0-9._-]*      # model base name (no leading dash/space)
+        (?:/[A-Za-z0-9][A-Za-z0-9._-]*)? # optional namespace
+        (?::[A-Za-z0-9][A-Za-z0-9._-]*)? # optional tag (e.g. :8b, :latest)
+        $""",
+    re.VERBOSE,
+)
+
+
+class ModelNameValidationError(ValueError):
+    """Raised when a client/config-supplied Ollama model name is rejected."""
+
+
+def _validate_model_name(model_name: str) -> str:
+    """Validate an Ollama model name before it is interpolated into CLI flags.
+
+    Accepts ``name``, ``namespace/name``, and ``name:tag`` forms of strictly
+    alphanumeric/``._-`` characters. Rejects whitespace, leading dashes (flag
+    injection like ``--help`` or ``-e``), and any shell metacharacters.
+    Raises :class:`ModelNameValidationError` on any violation.
+    """
+    if not isinstance(model_name, str) or not model_name.strip():
+        raise ModelNameValidationError("model name must be a non-empty string")
+    name = model_name.strip()
+    if not _OLLAMA_MODEL_NAME_PATTERN.match(name):
+        raise ModelNameValidationError(
+            f"rejected model name {model_name!r}: must be a plain Ollama "
+            "model identifier ([ns/]name[:tag], alphanumerics plus . _ -), "
+            "with no spaces, leading dashes, or shell metacharacters"
+        )
+    return name
+
+
 def _model_is_cached(model_name: str, logger: logging.Logger) -> bool:
     """Check if an Ollama model is already cached locally using 'ollama show'."""
     try:
+        validated = _validate_model_name(model_name)
         result = subprocess.run(  # nosec B607 B603
-            ["ollama", "show", model_name, "--modelfile"],
+            ["ollama", "show", validated, "--modelfile"],
             capture_output=True,
             text=True,
             timeout=5,
         )
         if result.returncode == 0 and result.stdout.strip():
-            logger.info(f"✅ Model '{model_name}' is already cached locally")
+            logger.info(f"✅ Model '{validated}' is already cached locally")
             return True
+        return False
+    except ModelNameValidationError as e:
+        logger.warning(f"Rejected invalid model name: {e}")
         return False
     except (subprocess.TimeoutExpired, FileNotFoundError, Exception) as e:
         logger.debug(f"Model cache check failed for '{model_name}': {e}")
@@ -780,6 +818,15 @@ async def _process_llm_async(
                         ollama_model = (
                             selected_model if selected_model else DEFAULT_OLLAMA_MODEL
                         )
+                        try:
+                            ollama_model = _validate_model_name(ollama_model)
+                        except ModelNameValidationError as e:
+                            # Flag-injection guard: never interpolate an
+                            # unvalidated model name into an ollama CLI flag.
+                            logger.warning(
+                                f"⚠️ Invalid model name; falling back to default: {e}"
+                            )
+                            ollama_model = DEFAULT_OLLAMA_MODEL
                         logger.info(f"🤖 Using model '{ollama_model}' for LLM prompts")
                         # Per-prompt timeout: config-driven, recovery to kwargs.
                         # Loop-invariant, shared by structured and custom prompts.

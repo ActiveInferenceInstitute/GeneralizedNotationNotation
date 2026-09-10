@@ -234,7 +234,8 @@ class TestComprehensiveReport:
         monkeypatch: pytest.MonkeyPatch,
     ) -> None:
         monkeypatch.setattr(
-            "gnn.report.processor.analyze_gnn_file", lambda _path: {"error": "unreadable"}
+            "gnn.report.processor.analyze_gnn_file",
+            lambda _path: {"error": "unreadable"},
         )
 
         result = generate_comprehensive_report(

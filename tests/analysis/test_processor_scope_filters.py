@@ -42,9 +42,12 @@ def _summary() -> dict:
 
 
 def test_canonical_true_and_false_are_returned() -> None:
-    assert _normalize_generate_animations({"generate_animations": True}, _logger()) is True
     assert (
-        _normalize_generate_animations({"generate_animations": False}, _logger()) is False
+        _normalize_generate_animations({"generate_animations": True}, _logger()) is True
+    )
+    assert (
+        _normalize_generate_animations({"generate_animations": False}, _logger())
+        is False
     )
 
 
@@ -95,8 +98,6 @@ def test_requested_frameworks_survive_when_no_details_succeed() -> None:
 
 
 # --- _filter_execution_summary -----------------------------------------------
-
-
 
 
 def test_successful_details_restrict_frameworks() -> None:

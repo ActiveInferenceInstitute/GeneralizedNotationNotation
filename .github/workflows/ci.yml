@@ -129,7 +129,7 @@ jobs:
         id: pytest
         run: |
           mkdir -p junit
-          uv run --extra dev python -m pytest -m "not pipeline and not mcp and not ollama and not env_heavy" \
+          uv run --extra dev python -m pytest -m "not pipeline and not mcp and not ollama and not env_heavy and not toolchain" \
             --tb=short \
             -q \
             -n auto --dist worksteal \

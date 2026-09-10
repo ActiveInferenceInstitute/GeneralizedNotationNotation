@@ -151,8 +151,6 @@ except ImportError:
 class TestGNNModule:
     """Test the GNN module's exposed API."""
 
-
-
     def test_validate_gnn_function(self) -> None:
         """Test the validate_gnn_syntax function and its deprecated alias."""
         # Test with invalid input — validate_gnn_syntax returns tuple(bool, list[str])
@@ -175,8 +173,6 @@ class TestGNNModule:
 class TestExportModule:
     """Test the export module's exposed API."""
 
-
-
     def test_get_supported_formats(self) -> None:
         """Test the get_supported_formats function."""
         formats = export.get_supported_formats_dict()
@@ -195,8 +191,6 @@ class TestExportModule:
 
 class TestRenderModule:
     """Test the render module's exposed API."""
-
-
 
     def test_get_available_renderers(self) -> None:
         """Test the get_available_renderers function."""
@@ -222,8 +216,6 @@ class TestRenderModule:
 
 class TestWebsiteModule:
     """Test the website module's exposed API."""
-
-
 
     def test_get_supported_file_types(self) -> None:
         """Test the get_supported_file_types function."""
@@ -277,8 +269,6 @@ class TestWebsiteModule:
 class TestSAPFModule:
     """Test the SAPF module's exposed API."""
 
-
-
     def test_get_audio_generation_options(self) -> None:
         """Test the get_audio_generation_options function."""
         options = audio.get_audio_generation_options()
@@ -297,8 +287,6 @@ class TestSAPFModule:
 
 class TestOntologyModule:
     """Test the ontology module's exposed API."""
-
-
 
     def test_get_ontology_processing_options(self) -> None:
         """Test the get_ontology_processing_options function."""
@@ -325,7 +313,6 @@ class TestOntologyModule:
 class TestTypeCheckerModule:
     """Test the type checker module's exposed API."""
 
-
     def test_type_checker_instantiation(self) -> None:
         """Test that the type checker can be instantiated."""
         from gnn.type_checker.processor import GNNTypeChecker
@@ -336,7 +323,6 @@ class TestTypeCheckerModule:
 
 class TestVisualizationModule:
     """Test the visualization module's exposed API."""
-
 
     def test_visualizer_instantiation(self) -> None:
         """Test that the visualizer can be instantiated."""
@@ -349,7 +335,6 @@ class TestVisualizationModule:
 class TestExecuteModule:
     """Test the execute module's exposed API."""
 
-
     def test_executor_instantiation(self) -> None:
         """Test that the executor can be instantiated."""
         from gnn.execute.executor import GNNExecutor
@@ -360,7 +345,6 @@ class TestExecuteModule:
 
 class TestLLMModule:
     """Test the LLM module's exposed API."""
-
 
     def test_llm_processor_instantiation(self) -> None:
         """Test that the LLM processor can be instantiated."""
@@ -373,7 +357,6 @@ class TestLLMModule:
 class TestMCPModule:
     """Test the MCP module's exposed API."""
 
-
     def test_mcp_server_instantiation(self) -> None:
         """Test that the MCP server can be instantiated."""
         from gnn.mcp.server import MCPServer
@@ -384,7 +367,6 @@ class TestMCPModule:
 
 class TestSetupModule:
     """Test the setup module's exposed API."""
-
 
     def test_setup_functions_exist(self) -> None:
         """Test that setup functions exist and are callable."""
@@ -397,7 +379,6 @@ class TestSetupModule:
 class TestUtilsModule:
     """Test the utils module's exposed API."""
 
-
     def test_utils_classes_instantiation(self) -> None:
         """Test that utility classes can be instantiated."""
         from gnn.utils.argument_utils import ArgumentParser
@@ -408,7 +389,6 @@ class TestUtilsModule:
 
 class TestPipelineModule:
     """Test the pipeline module's exposed API."""
-
 
     def test_pipeline_config(self) -> None:
         """Test that pipeline configuration is accessible."""

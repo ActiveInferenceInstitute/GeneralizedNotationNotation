@@ -513,7 +513,9 @@ def test_core_module_completeness() -> Any:
         f"{len(failures)}/{len(core_modules)} core modules failed to import:\n"
         + "\n".join(failures)
     )
-    logging.info(f"Core module completeness: all {len(core_modules)} modules importable")
+    logging.info(
+        f"Core module completeness: all {len(core_modules)} modules importable"
+    )
 
 
 @pytest.mark.slow

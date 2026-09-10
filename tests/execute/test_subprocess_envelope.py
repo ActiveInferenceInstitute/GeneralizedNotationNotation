@@ -139,3 +139,86 @@ def test_input_support_pipes_stdin_to_child() -> None:
     assert envelope["success"] is True
     assert envelope["return_code"] == 0
     assert "envelope-stdin-ok" in envelope["stdout"]
+
+
+def test_sandbox_false_runs_unsandboxed_with_receipt(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    """sandbox=False runs the command verbatim and emits the disabled receipt."""
+    import logging
+
+    with caplog.at_level(logging.WARNING, logger="gnn.execute.subprocess_envelope"):
+        result = run_subprocess_envelope(
+            [PYTHON, "-c", "print('unsandboxed-ok')"], sandbox=False
+        )
+    assert result["success"] is True
+    assert result["sandbox_mode"] == "off"
+    assert result["sandboxed"] is False
+    assert "unsandboxed-ok" in result["stdout"]
+    receipts = [
+        r
+        for r in caplog.records
+        if r.__dict__.get("event") == "sandbox_disabled_receipt"
+    ]
+    assert receipts, "sandbox=False must emit sandbox_disabled_receipt"
+
+
+def test_sandbox_default_off_mode_runs_unsandboxed_with_receipt(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    """Default sandbox=True with GNN_SANDBOX=off runs unsandboxed with receipt."""
+    import logging
+
+    with caplog.at_level(logging.WARNING, logger="gnn.execute.subprocess_envelope"):
+        result = run_subprocess_envelope([PYTHON, "-c", "print('default-off-ok')"])
+    assert result["success"] is True
+    assert result["sandbox_mode"] == "off"
+    assert result["sandboxed"] is False
+    receipts = [
+        r
+        for r in caplog.records
+        if r.__dict__.get("event") == "sandbox_disabled_receipt"
+    ]
+    assert receipts, "GNN_SANDBOX=off default must emit sandbox_disabled_receipt"
+
+
+def test_sandbox_require_without_backend_refuses_to_run(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """GNN_SANDBOX=require with no backend blocks before any subprocess runs."""
+    import subprocess as sp
+
+    from gnn.execute import subprocess_envelope as se
+
+    monkeypatch.setenv("GNN_SANDBOX", "require")
+    monkeypatch.setattr(
+        "gnn.execute.sandbox.detect_sandbox", lambda: None, raising=False
+    )
+
+    def _boom(*args: object, **kwargs: object) -> object:
+        raise AssertionError("subprocess must not run when sandbox require is blocked")
+
+    monkeypatch.setattr(sp, "run", _boom)
+    result = run_subprocess_envelope([PYTHON, "-c", "print('must-not-run')"])
+    assert result["success"] is False
+    assert result["return_code"] == se.NEVER_STARTED
+    assert result["error_type"] == "SandboxUnavailable"
+    assert "require" in result["error"]
+
+
+def test_sandbox_prefer_wraps_command_when_backend_present(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """GNN_SANDBOX=prefer with a backend prefixes the command vector."""
+    from gnn.execute.sandbox import SandboxSpec
+
+    monkeypatch.setenv("GNN_SANDBOX", "prefer")
+    monkeypatch.setattr(
+        "gnn.execute.sandbox.detect_sandbox",
+        lambda: SandboxSpec("echo", ("echo", "SANDBOXED")),
+    )
+    result = run_subprocess_envelope([PYTHON, "-c", "print('wrapped')"])
+    assert result["success"] is True
+    assert result["sandboxed"] is True
+    assert result["sandbox_mode"] == "prefer"
+    assert "SANDBOXED" in result["stdout"]

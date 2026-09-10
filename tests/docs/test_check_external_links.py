@@ -72,14 +72,10 @@ class TestHostAllowed:
         assert checker._host_allowed("https://doi.org/10.5281/x", ["doi.org"])
 
     def test_subdomain_match(self, checker: Any) -> None:
-        assert checker._host_allowed(
-            "https://records.zenodo.org/a", ["zenodo.org"]
-        )
+        assert checker._host_allowed("https://records.zenodo.org/a", ["zenodo.org"])
 
     def test_unrelated_host_rejected(self, checker: Any) -> None:
-        assert not checker._host_allowed(
-            "https://evil.example.com/y", ["doi.org"]
-        )
+        assert not checker._host_allowed("https://evil.example.com/y", ["doi.org"])
 
     def test_empty_allowlist_rejects(self, checker: Any) -> None:
         assert not checker._host_allowed("https://doi.org/x", [])
@@ -89,13 +85,8 @@ class TestBotBlockedCodes:
     """Exemption semantics: only fully-allow-listed code groups clear."""
 
     def test_all_allowlisted_group_is_exempt(self, checker: Any) -> None:
-        by_code = {
-            "403": ["https://doi.org/10.5281/x", "https://zenodo.org/r/7803328"]
-        }
-        assert (
-            checker._bot_blocked_codes(by_code, ["doi.org", "zenodo.org"])
-            == set()
-        )
+        by_code = {"403": ["https://doi.org/10.5281/x", "https://zenodo.org/r/7803328"]}
+        assert checker._bot_blocked_codes(by_code, ["doi.org", "zenodo.org"]) == set()
 
     def test_no_allowlist_flags_everything(self, checker: Any) -> None:
         by_code = {"403": ["https://doi.org/x"]}

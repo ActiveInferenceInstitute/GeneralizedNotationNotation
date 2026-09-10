@@ -19,6 +19,7 @@ class TestEnvironmentModuleComprehensive:
     def test_environment_module_imports(self) -> None:
         """Test that environment module can be imported."""
         import gnn.setup as setup
+
         assert hasattr(setup, "__version__")
         assert hasattr(setup, "EnvironmentManager")
         assert hasattr(setup, "VirtualEnvironment")
@@ -148,6 +149,7 @@ def test_environment_module_completeness() -> None:
     ]
     try:
         import gnn.setup as setup
+
         for component in required_components:
             assert hasattr(setup, component), f"Missing component: {component}"
     except ImportError as exc:

@@ -30,6 +30,7 @@ import json
 import os
 import re
 import shutil
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -42,6 +43,7 @@ from gnn.analysis.rxinfer.cross_framework import (
     FrameworkRun,
     _chart_payload,
     _classify_exit,
+    _run_subprocess,
     _stderr_excerpt,
     render_comparison_html,
     run_cross_framework_comparison,
@@ -374,4 +376,78 @@ def test_live_cross_framework_comparison(tmp_path: Path) -> None:
         "RxInfer produced no belief trajectory. Per-framework reasons: "
         + "; ".join(f"{fw}={reason}" for fw, reason in zip(FRAMEWORKS, reasons))
     )
+
     assert payload["num_steps"] > 0
+
+
+# --- pre-execution security gate (SEC-R1) --------------------------------------
+
+_UNSAFE_RENDERED = """import pathlib
+pathlib.Path("marker.txt").write_text("ran")
+import subprocess
+subprocess.run("ls", shell=True)
+"""
+
+
+def test_unsafe_rendered_script_is_gate_blocked(tmp_path: Path) -> None:
+    """A rendered script with a dangerous pattern is refused before any run."""
+    script = tmp_path / "model_pymdp.py"
+    script.write_text(_UNSAFE_RENDERED, encoding="utf-8")
+
+    run = _run_subprocess(
+        "pymdp",
+        [sys.executable, str(script)],
+        tmp_path,
+        60,
+        tmp_path / "simulation_results.json",
+        script_path=script,
+    )
+
+    assert run.status == "execution_failed"
+    assert "Pre-execution security gate blocked" in run.detail
+    assert run.results is None
+    # The command would have created the marker; its absence proves the
+    # subprocess never started.
+    assert not (tmp_path / "marker.txt").exists()
+
+
+def test_security_scanner_unavailable_fails_closed(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A sabotaged security import hard-blocks instead of skipping the scan."""
+    script = tmp_path / "model_pymdp.py"
+    script.write_text(_UNSAFE_RENDERED, encoding="utf-8")
+    monkeypatch.setitem(sys.modules, "gnn.security.processor", None)
+
+    run = _run_subprocess(
+        "pymdp",
+        [sys.executable, str(script)],
+        tmp_path,
+        60,
+        tmp_path / "simulation_results.json",
+        script_path=script,
+    )
+
+    assert run.status == "execution_failed"
+    assert "unavailable" in run.detail
+    assert not (tmp_path / "marker.txt").exists()
+
+
+def test_safe_rendered_script_is_executed_not_blocked(tmp_path: Path) -> None:
+    """A clean script passes the gate and is classified like any other run."""
+    script = tmp_path / "model_pymdp.py"
+    script.write_text("print('safe')\n", encoding="utf-8")
+
+    run = _run_subprocess(
+        "pymdp",
+        [sys.executable, str(script)],
+        tmp_path,
+        60,
+        tmp_path / "simulation_results.json",
+        script_path=script,
+    )
+
+    # Exit 0 with no results violates the results contract — which proves the
+    # script actually ran (the gate did not block it).
+    assert run.status == "execution_failed"
+    assert "not written" in run.detail

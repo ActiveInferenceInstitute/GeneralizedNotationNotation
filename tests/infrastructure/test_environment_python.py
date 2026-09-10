@@ -74,6 +74,7 @@ class TestPythonPath:
         import gnn
         import gnn.render as render
         import gnn.report as report
+
         assert gnn is not None
         assert render is not None
         assert report is not None

@@ -17,6 +17,7 @@ import pytest
 
 pytestmark = pytest.mark.mcp
 
+import gnn.mcp.mcp as mcp_module
 from gnn.mcp.exceptions import (
     MCPInvalidParamsError,
     MCPRateLimitError,
@@ -30,6 +31,25 @@ def _registry(**kwargs: Any) -> MCP:
     defaults: dict[str, Any] = {"enable_caching": False, "enable_rate_limiting": False}
     defaults.update(kwargs)
     return MCP(**defaults)
+
+
+class _FakeMCPTime:
+    """Injectable clock standing in for ``gnn.mcp.mcp.time``.
+
+    The registry reads ``time.time()`` for cache expiry and the sliding-window
+    rate limiter. Swapping the module attribute lets tests advance wall-clock
+    time instantly instead of sleeping — no production seam required.
+    """
+
+    def __init__(self) -> None:
+        self._offset = 0.0
+
+    def advance(self, seconds: float) -> None:
+        """Move the observable clock forward without real delay."""
+        self._offset += seconds
+
+    def time(self) -> float:
+        return time.time() + self._offset
 
 
 class TestRequiresAuthGate:
@@ -114,7 +134,9 @@ class TestResultCache:
         assert len(calls) == 1
 
     @pytest.mark.unit
-    def test_ttl_expiry_recomputes(self) -> None:
+    def test_ttl_expiry_recomputes(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        fake_time = _FakeMCPTime()
+        monkeypatch.setattr(mcp_module, "time", fake_time)
         registry = _registry(enable_caching=True)
         calls: list[int] = []
         registry.register_tool(
@@ -125,7 +147,7 @@ class TestResultCache:
             cache_ttl=0.05,
         )
         registry.execute_tool("expiring_tool", {})
-        time.sleep(0.12)
+        fake_time.advance(0.12)  # cache entry is now past its TTL
         result = registry.execute_tool("expiring_tool", {})
         assert result == {"n": 2}  # cache expired, tool re-executed
         assert len(calls) == 2
@@ -172,7 +194,11 @@ class TestPerToolRateLimiter:
         assert registry._performance_metrics.failed_requests >= 1
 
     @pytest.mark.unit
-    def test_window_recovery_allows_calls_again(self) -> None:
+    def test_window_recovery_allows_calls_again(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        fake_time = _FakeMCPTime()
+        monkeypatch.setattr(mcp_module, "time", fake_time)
         registry = _registry(enable_rate_limiting=True)
         registry.register_tool(
             name="hot_tool",
@@ -185,7 +211,7 @@ class TestPerToolRateLimiter:
         with pytest.raises(MCPRateLimitError):
             registry.execute_tool("hot_tool", {})
         # Outside the 1s window the limiter resets.
-        time.sleep(1.05)
+        fake_time.advance(1.1)
         assert registry.execute_tool("hot_tool", {}) == {"ok": True}
 
 

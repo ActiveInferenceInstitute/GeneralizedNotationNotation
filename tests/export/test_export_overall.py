@@ -20,6 +20,7 @@ class TestExportModuleComprehensive:
     def test_export_module_imports(self) -> None:
         """Test that export module can be imported."""
         import gnn.export as export
+
         assert hasattr(export, "__version__")
         assert hasattr(export, "Exporter")
         assert hasattr(export, "MultiFormatExporter")
@@ -143,6 +144,7 @@ def test_export_module_completeness() -> None:
     ]
     try:
         import gnn.export as export
+
         for component in required_components:
             assert hasattr(export, component), f"Missing component: {component}"
     except ImportError:

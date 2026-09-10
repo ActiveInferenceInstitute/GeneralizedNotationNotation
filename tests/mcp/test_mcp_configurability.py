@@ -44,7 +44,9 @@ class TestMCPExportsContract:
         import gnn.mcp as _mcp
 
         missing = [s for s in _mcp.__all__ if not hasattr(_mcp, s)]
-        assert missing == [], f"gnn.mcp.__all__ lists symbols not on the module: {missing}"
+        assert missing == [], (
+            f"gnn.mcp.__all__ lists symbols not on the module: {missing}"
+        )
 
     def test_mcp_server_is_request_handler(self) -> None:
         from gnn.mcp import JSONRPCServer, MCPServer

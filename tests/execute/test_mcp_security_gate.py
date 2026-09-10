@@ -20,9 +20,9 @@ import pytest
 
 from gnn.execute.executor import GNNExecutor
 
-_UNSAFE_SCRIPT = '''import subprocess
+_UNSAFE_SCRIPT = """import subprocess
 subprocess.run("ls", shell=True)
-'''
+"""
 
 _SAFE_SCRIPT = "print('hello from a safe rendered script')\n"
 

@@ -20,6 +20,7 @@ class TestAudioModuleComprehensive:
     def test_audio_module_imports(self) -> Any:
         """Test that audio module can be imported."""
         import gnn.audio as audio
+
         assert hasattr(audio, "__version__")
         assert hasattr(audio, "AudioGenerator")
         assert hasattr(audio, "SAPFGNNProcessor")
@@ -136,6 +137,7 @@ def test_audio_module_completeness() -> Any:
     ]
     try:
         import gnn.audio as audio
+
         for component in required_components:
             assert hasattr(audio, component), f"Missing component: {component}"
     except ImportError:

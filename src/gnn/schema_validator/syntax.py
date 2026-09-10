@@ -40,15 +40,15 @@ class GNNParser:
     # Regular expressions for GNN syntax elements (enhanced)
     SECTION_PATTERN = re.compile(r"^## (.+)$")
     VARIABLE_PATTERN = re.compile(
-        r"^([\w_π][\w\d_π]*)(\[([^\]]+)\])?(?:,type=([a-zA-Z]+))?(?:\s*#\s*(.*))?$"
+        r"^([\w_π][\w\d_π+]*)(\[([^\]]+)\])?(?:,type=([a-zA-Z]+))?(?:\s*#\s*(.*))?$"
     )
     CONNECTION_PATTERN = re.compile(r"^(.+?)\s*(>|->|-|\|)\s*(.+?)(?:\s*#\s*(.*))?$")
     # Accept both '=' and ':' as assignment separators to support previous files
     PARAMETER_PATTERN = re.compile(
-        r"^([\w_π][\w\d_π]*)(\s*[:=]\s*)(.+?)(?:\s*#\s*(.*))?$"
+        r"^([\w_π][\w\d_π+]*)(\s*[:=]\s*)(.+?)(?:\s*#\s*(.*))?$"
     )
     ONTOLOGY_PATTERN = re.compile(
-        r"^([\w_π][\w\d_π]*)(\s*=\s*)([a-zA-Z_][a-zA-Z0-9_]*)(?:\s*#\s*(.*))?$"
+        r"^([\w_π][\w\d_π+]*)(\s*=\s*)([a-zA-Z_][a-zA-Z0-9_]*)(?:\s*#\s*(.*))?$"
     )
     COMMENT_PATTERN = re.compile(r"^\s*#\s*(.*)$")
 

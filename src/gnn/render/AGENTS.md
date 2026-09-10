@@ -220,15 +220,30 @@ The shared contract is `canonical_pomdp_v1`; B is stored as `(next_state, previo
 
 **Location**: `src/gnn/render/processor.py`
 
-### `generate_jax_code` (JAX generator)
+### `render_gnn_to_jax` and friends (JAX generator)
 
-**Module**: `src/gnn/render/generators.py`
+**Module**: `src/gnn/render/jax/jax_renderer.py` (re-exported via `gnn.render.jax`). There is no `generate_jax_code` function in `generators.py` or anywhere in the codebase; the JAX entrypoints live in the `jax` submodule.
+
+**Signatures** (all four share this shape):
+```python
+def render_gnn_to_jax(
+    gnn_spec: Dict[str, Any],
+    output_path: Path,
+    options: Optional[Dict[str, Any]] = None,
+) -> Tuple[bool, str, List[str]]
+```
+
+- `render_gnn_to_jax` — general JAX model (routes continuous specs to the LGSSM generator and Kronecker-factorized specs to `render_gnn_to_jax_factorized`)
+- `render_gnn_to_jax_factorized(gnn_spec, output_path, options=None)` — sparse mean-field script for per-factor `A_fN`/`B_fN` specs
+- `render_gnn_to_jax_pomdp(gnn_spec, output_path, options=None)` — JAX POMDP solver
+- `render_gnn_to_jax_combined(gnn_spec, output_path, options=None)` — combined hierarchical/multi-agent variant
 
 **Parameters**:
-- `model_data`: GNN model data
-- `output_path`: Optional output file path
+- `gnn_spec` (`Dict[str, Any]`): Parsed GNN specification
+- `output_path` (`Path`): Exact path of the `.py` file to write
+- `options` (`Optional[Dict[str, Any]]`): Opaque options bag forwarded to the generator
 
-**Returns**: Generated JAX code as string
+**Returns**: `(success, message, generated_files)` — success flag, human-readable message, and list of written file paths (empty list on failure).
 
 ---
 

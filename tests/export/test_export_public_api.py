@@ -18,12 +18,14 @@ class TestExportConstants:
 
     def test_features_dict(self) -> None:
         import gnn.export as export
+
         assert hasattr(export, "FEATURES")
         assert isinstance(export.FEATURES, dict)
         assert export.FEATURES.get("json_export") is True
 
     def test_has_networkx_flag(self) -> None:
         import gnn.export as export
+
         assert hasattr(export, "HAS_NETWORKX")
         assert isinstance(export.HAS_NETWORKX, bool)
 

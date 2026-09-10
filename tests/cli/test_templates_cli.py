@@ -40,9 +40,13 @@ def test_template_index_is_externalized_and_has_three_entries() -> None:
 @pytest.mark.parametrize(
     "template_path",
     sorted(
-        (Path(__file__).resolve().parents[2] / "src" / "gnn" / "cli" / "template_assets").glob(
-            "*.md"
-        )
+        (
+            Path(__file__).resolve().parents[2]
+            / "src"
+            / "gnn"
+            / "cli"
+            / "template_assets"
+        ).glob("*.md")
     ),
     ids=lambda path: path.name,
 )
@@ -202,7 +206,8 @@ def test_cli_json_envelope_support(
     pkg_template = (
         Path(__file__).resolve().parents[2]
         / "src"
-        / "gnn" / "cli"
+        / "gnn"
+        / "cli"
         / "template_assets"
         / "actinf_pomdp_2state.md"
     )

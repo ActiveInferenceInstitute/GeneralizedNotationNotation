@@ -32,8 +32,16 @@ from gnn.llm.providers.base_provider import BaseLLMProvider, LLMConfig  # noqa: 
 # ---------------------------------------------------------------------------
 PROVIDER_CHECKLIST: list[tuple[str, str, str]] = [
     ("openai_provider", "OpenAIProvider", "gnn.llm.providers.openai_provider"),
-    ("openrouter_provider", "OpenRouterProvider", "gnn.llm.providers.openrouter_provider"),
-    ("perplexity_provider", "PerplexityProvider", "gnn.llm.providers.perplexity_provider"),
+    (
+        "openrouter_provider",
+        "OpenRouterProvider",
+        "gnn.llm.providers.openrouter_provider",
+    ),
+    (
+        "perplexity_provider",
+        "PerplexityProvider",
+        "gnn.llm.providers.perplexity_provider",
+    ),
     ("ollama_provider", "OllamaProvider", "gnn.llm.providers.ollama_provider"),
 ]
 

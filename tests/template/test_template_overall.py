@@ -9,7 +9,6 @@ from typing import Any
 class TestTemplateModule:
     """Test suite for Template module functionality."""
 
-
     def test_features_available(self) -> None:
         """Test that FEATURES dict is properly populated."""
         from gnn.template import FEATURES
@@ -220,7 +219,6 @@ class TestUtilityPatterns:
 
 class TestTemplateUtils:
     """Smoke tests for template.utils sub-module."""
-
 
     def test_get_version_info_returns_dict(self) -> Any:
         from gnn.template.utils import get_version_info

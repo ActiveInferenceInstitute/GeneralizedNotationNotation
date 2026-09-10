@@ -19,6 +19,7 @@ class TestAdvancedVizConstants:
 
     def test_features_dict(self) -> None:
         import gnn.advanced_visualization as advanced_visualization
+
         assert hasattr(advanced_visualization, "FEATURES")
         assert isinstance(advanced_visualization.FEATURES, dict)
         for key in (
@@ -34,6 +35,7 @@ class TestAdvancedVizConstants:
 
     def test_version(self) -> None:
         import gnn.advanced_visualization as advanced_visualization
+
         assert hasattr(advanced_visualization, "__version__")
         assert isinstance(advanced_visualization.__version__, str)
 
@@ -124,4 +126,5 @@ class TestD2Types:
 
     def test_process_gnn_file_with_d2_available(self) -> None:
         import gnn.advanced_visualization as advanced_visualization
+
         assert hasattr(advanced_visualization, "process_gnn_file_with_d2")

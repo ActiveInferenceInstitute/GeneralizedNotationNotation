@@ -20,6 +20,7 @@ class TestOntologyModuleComprehensive:
     def test_ontology_module_imports(self) -> Any:
         """Test that ontology module can be imported."""
         import gnn.ontology as ontology
+
         assert hasattr(ontology, "__version__")
         assert hasattr(ontology, "OntologyProcessor")
         assert hasattr(ontology, "OntologyValidator")
@@ -135,6 +136,7 @@ def test_ontology_module_completeness() -> Any:
     ]
     try:
         import gnn.ontology as ontology
+
         for component in required_components:
             assert hasattr(ontology, component), f"Missing component: {component}"
     except ImportError:

@@ -31,9 +31,7 @@ def _load_by_path(name: str, relative: str):
 
 
 GATE = _load_by_path("gate", "scripts/check_manuscript_tokens.py")
-Z_GENERATE = _load_by_path(
-    "z_generate", "scripts/z_generate_manuscript_variables.py"
-)
+Z_GENERATE = _load_by_path("z_generate", "scripts/z_generate_manuscript_variables.py")
 
 # A stand-in producer output: one structure count, one step token, one big
 # count. Values chosen to trip the gate's own floors.
@@ -182,12 +180,9 @@ def test_the_checksum_ignores_the_commit_token(tmp_path) -> None:
     ``counts_describe_commit`` instead. Without the normalization the gate
     fails on every commit that moves HEAD.
     """
-    committed = _write_committed(
-        tmp_path, {**_PRODUCER, "GNN_GIT_COMMIT": "deadbeef"}
-    )
+    committed = _write_committed(tmp_path, {**_PRODUCER, "GNN_GIT_COMMIT": "deadbeef"})
     producer_now = {**_PRODUCER, "GNN_GIT_COMMIT": "cafef00d"}
     assert GATE._committed_variables_issue(producer_now, committed) == ""
-
 
 
 def test_a_missing_committed_token_map_is_named(tmp_path) -> None:

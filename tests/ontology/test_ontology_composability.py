@@ -404,6 +404,7 @@ class TestMcpExtractionVocabulary:
 class TestPublicSurface:
     def test_new_exports_present(self) -> None:
         import gnn.ontology as ontology
+
         for name in (
             "ParsedAnnotation",
             "SUGGESTION_MAX_DISTANCE",

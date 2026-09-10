@@ -15,7 +15,6 @@ import json
 class TestMCPModule:
     """Test suite for MCP module functionality."""
 
-
     def test_features_available(self) -> None:
         """Test that FEATURES dict is properly populated."""
         from gnn.mcp import FEATURES

@@ -16,6 +16,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 class TestModuleInfo:
     def test_get_module_info(self) -> None:
         import gnn.visualization as visualization
+
         info = visualization.get_module_info()
         assert isinstance(info, dict)
         assert "version" in info
@@ -25,6 +26,7 @@ class TestModuleInfo:
 
     def test_get_visualization_options(self) -> None:
         import gnn.visualization as visualization
+
         opts = visualization.get_visualization_options()
         assert isinstance(opts, dict)
         assert "matrix_types" in opts
@@ -33,6 +35,7 @@ class TestModuleInfo:
 
     def test_features_dict(self) -> None:
         import gnn.visualization as visualization
+
         assert isinstance(visualization.FEATURES, dict)
         for key in ("matrix_visualization", "network_graphs", "combined_analysis"):
             assert key in visualization.FEATURES
@@ -41,6 +44,7 @@ class TestModuleInfo:
 class TestNetworkStatistics:
     def _fn(self) -> Any:
         import gnn.visualization as visualization
+
         return visualization.compute_connection_statistics
 
     def test_with_connections_counts_degrees(self) -> None:
@@ -70,9 +74,11 @@ class TestNetworkStatistics:
 class TestPublicSurface:
     def test_all_exports_resolve(self) -> None:
         import gnn.visualization as visualization
+
         for name in visualization.__all__:
             assert hasattr(visualization, name), f"missing export: {name}"
 
     def test_version_is_string(self) -> None:
         import gnn.visualization as visualization
+
         assert isinstance(visualization.__version__, str)

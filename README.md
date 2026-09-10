@@ -1027,7 +1027,7 @@ Use `uv` to run the pipeline inside the managed project environment:
 
 ```bash
 uv sync                # ensure dependencies from pyproject.toml are installed
-uv run python src/gnn/main.py -- --target-dir input/gnn_files --verbose
+uv run python src/gnn/main.py --target-dir input/gnn_files --verbose
 ```
 
 You can also run individual commands under `uv` (recommended):

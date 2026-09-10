@@ -21,13 +21,13 @@ from gnn.execute.processor import (
 )
 from gnn.extract.pomdp_extractor import POMDPExtractor
 from gnn.render.pomdp_processor import POMDPRenderProcessor
-from gnn.render.rxinfer.rxinfer_renderer import (
-    build_rxinfer_execution_metadata,
-    render_gnn_to_rxinfer,
-)
 from gnn.render.rxinfer.model_contracts import (
     _create_toml_config_structure,
     _write_toml_with_exact_formatting,
+)
+from gnn.render.rxinfer.rxinfer_renderer import (
+    build_rxinfer_execution_metadata,
+    render_gnn_to_rxinfer,
 )
 
 

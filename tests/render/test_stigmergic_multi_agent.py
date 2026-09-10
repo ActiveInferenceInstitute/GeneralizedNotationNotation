@@ -227,9 +227,7 @@ class TestRxInferStigmergicScript:
             "pomdp_model(A=A, B=B, D=D, u=model_actions, T=TIME_STEPS)" in text
         )  # one genuine inference per agent
 
-    def test_swarm_script_embeds_declared_env_coupling(
-        self, tmp_path: Path
-    ) -> None:
+    def test_swarm_script_embeds_declared_env_coupling(self, tmp_path: Path) -> None:
         text = _render_rxinfer(SWARM_FILE, tmp_path).read_text(encoding="utf-8")
         assert "env_signal" in text
         assert "const ENV_INITIAL = [0.0" in text
@@ -237,30 +235,19 @@ class TestRxInferStigmergicScript:
         assert "const SIGNAL_SEEK = 2.0" in text
 
     def test_coordination_script_stays_unconditioned(self, tmp_path: Path) -> None:
-        text = _render_rxinfer(COORDINATION_FILE, tmp_path).read_text(
-            encoding="utf-8"
-        )
+        text = _render_rxinfer(COORDINATION_FILE, tmp_path).read_text(encoding="utf-8")
         _assert_unconditioned_script(text)
 
-    def test_coordination_renders_native_without_env(
-        self, tmp_path: Path
-    ) -> None:
-        text = _render_rxinfer(COORDINATION_FILE, tmp_path).read_text(
-            encoding="utf-8"
-        )
+    def test_coordination_renders_native_without_env(self, tmp_path: Path) -> None:
+        text = _render_rxinfer(COORDINATION_FILE, tmp_path).read_text(encoding="utf-8")
         _assert_swarm_native_script(text)
         assert "const NUM_AGENTS = 2" in text
         assert "const NUM_STATES = 16" not in text
 
-    def test_flat_model_renders_through_flat_strategy(
-        self, tmp_path: Path
-    ) -> None:
+    def test_flat_model_renders_through_flat_strategy(self, tmp_path: Path) -> None:
         """A flat model must not pick up multi-agent scaffolding."""
-        text = _render_rxinfer(GRIDWORLD_FILE, tmp_path).read_text(
-            encoding="utf-8"
-        )
+        text = _render_rxinfer(GRIDWORLD_FILE, tmp_path).read_text(encoding="utf-8")
         _assert_flat_script(text)
-
 
 
 class TestActiveInferenceJlStigmergicScript:
@@ -274,9 +261,7 @@ class TestActiveInferenceJlStigmergicScript:
         assert "const NUM_AGENTS = 3" in text
         _assert_env_conditioned_script(text)
 
-    def test_coordination_renders_native_without_env(
-        self, tmp_path: Path
-    ) -> None:
+    def test_coordination_renders_native_without_env(self, tmp_path: Path) -> None:
         text = _render_activeinference_jl(COORDINATION_FILE, tmp_path).read_text(
             encoding="utf-8"
         )
