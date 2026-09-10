@@ -68,9 +68,11 @@ from .subprocess_envelope import (
 )
 from .types import (
     _EXECUTABLE_SUFFIXES,
+    _GNN_ALLOW_UNSAFE_EXEC,
     ExecutionFrameworkName,
     ExecutionOutcome,
     ScriptExecutionContext,
+    _gnn_allow_unsafe_exec,
 )
 
 logger = logging.getLogger(__name__)
@@ -950,20 +952,6 @@ def _framework_for_data_helpers(framework: str) -> ExecutionFrameworkName:
     return cast(ExecutionFrameworkName, framework)
 
 
-#: Environment escape hatch: set to "1" to bypass the pre-execution security
-#: gate (trusted-local research use only; see SECURITY.md).
-_GNN_ALLOW_UNSAFE_EXEC = "GNN_ALLOW_UNSAFE_EXEC"
-
-
-def _gnn_allow_unsafe_exec() -> bool:
-    """Whether the operator has explicitly opted out of the pre-exec gate."""
-    return os.environ.get(_GNN_ALLOW_UNSAFE_EXEC, "").strip().lower() in (
-        "1",
-        "true",
-        "yes",
-    )
-
-
 def _sandbox_mode() -> str:
     """Effective sandbox mode from ``GNN_SANDBOX`` (default ``off``)."""
     from .sandbox import SANDBOX_MODES
@@ -1039,24 +1027,35 @@ def execute_single_script(
     if not _gnn_allow_unsafe_exec():
         try:
             from gnn.security.processor import scan_script_for_execution
-
-            verdict = scan_script_for_execution(script_path)
-            if not verdict.get("ok", True):
-                blocked = verdict.get("blocked", [])
-                detail = "; ".join(
-                    f"{b.get('vulnerability_type', 'unknown')}@{b.get('line', '?')}"
-                    for b in blocked[:5]
-                )
-                exec_result["error"] = (
-                    f"Pre-execution security gate blocked {script_info['name']}: "
-                    f"{detail}"
-                )
-                exec_result["error_type"] = "SecurityGateBlocked"
-                exec_result["security_findings"] = blocked
-                logger.error(exec_result["error"])
-                return exec_result
-        except ImportError:
-            logger.debug("security.processor unavailable; pre-exec gate skipped")
+        except ImportError as exc:
+            # Fail closed (RED_TEAM_REVIEW V-01/V-06 follow-up): a broken
+            # security module must block execution rather than silently skip
+            # the pre-exec gate. Same SecurityGateBlocked path as a scan deny,
+            # with the import failure as the distinct reason.
+            exec_result["error"] = (
+                "Pre-execution security gate unavailable "
+                f"(security.processor import failed: {exc}); "
+                f"refusing to execute {script_info['name']} (fail closed)"
+            )
+            exec_result["error_type"] = "SecurityGateBlocked"
+            exec_result["security_findings"] = []
+            logger.error(exec_result["error"])
+            return exec_result
+        verdict = scan_script_for_execution(script_path)
+        if not verdict.get("ok", True):
+            blocked = verdict.get("blocked", [])
+            detail = "; ".join(
+                f"{b.get('vulnerability_type', 'unknown')}@{b.get('line', '?')}"
+                for b in blocked[:5]
+            )
+            exec_result["error"] = (
+                f"Pre-execution security gate blocked {script_info['name']}: "
+                f"{detail}"
+            )
+            exec_result["error_type"] = "SecurityGateBlocked"
+            exec_result["security_findings"] = blocked
+            logger.error(exec_result["error"])
+            return exec_result
 
     if framework == "rxinfer":
         exec_result["execution_metadata"] = (
