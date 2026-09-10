@@ -14,13 +14,9 @@ Date: 2025-01-17
 
 import argparse
 import logging
-import os
 import sys
 from pathlib import Path
 from typing import Any
-
-# Add the src directory to the Python path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 
 
 def setup_logging(verbose: bool = False) -> Any:
