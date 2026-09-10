@@ -833,6 +833,9 @@ class MCP:
             schema = self._normalize_tool_schema(schema)
             module, category = self._default_tool_metadata(module, category)
 
+            # func was None-guarded above (MCPInvalidParamsError); narrow for mypy.
+            assert func is not None, "func must be resolved before MCPTool construction"
+
             tool = MCPTool(
                 name=name,
                 func=func,
