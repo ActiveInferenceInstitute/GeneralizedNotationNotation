@@ -1,0 +1,12 @@
+# Keep Docker build context small and clean
+.venv
+venv
+__pycache__
+*.pyc
+.pytest_cache
+.mypy_cache
+.ruff_cache
+.git
+output
+out
+.benchmarks

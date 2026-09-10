@@ -27,10 +27,10 @@ RUN uv venv /opt/venv
 ENV VIRTUAL_ENV="/opt/venv"
 ENV PATH="/opt/venv/bin:$PATH"
 
-# Install project and test dependencies via uv
-RUN uv pip install . || true
-RUN uv pip install pytest pytest-cov pytest-asyncio pytest-json-report
-RUN uv pip install jax jaxlib
+# Install project + test dependencies lock-faithfully into /opt/venv
+# (UV_PROJECT_ENVIRONMENT points uv sync at the venv created above)
+ENV UV_PROJECT_ENVIRONMENT=/opt/venv
+RUN uv sync --frozen --extra dev
 
 # Verify XLA compile compatibility
 RUN python -c "import jax, jax.numpy as jnp; jax.jit(lambda x: x * 2)(jnp.ones(10)).block_until_ready()"
@@ -40,4 +40,4 @@ RUN chown -R gnn:gnn /workspace /opt/venv
 USER gnn
 
 # Default test command
-CMD ["/bin/bash","-lc",". /opt/venv/bin/activate && python -m pytest -n0 --cov=src --cov-report=html:output/2_tests_output/singleproc_htmlcov --tb=short --maxfail=10 -q"]
+CMD ["/bin/bash","-lc",". /opt/venv/bin/activate && python -m pytest -n 0 --cov=gnn --cov-report=html:output/2_tests_output/singleproc_htmlcov --tb=short --maxfail=10 -q"]
