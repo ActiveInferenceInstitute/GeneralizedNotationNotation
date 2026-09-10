@@ -131,7 +131,17 @@ def test_committed_token_map_reproduces_at_the_commit_it_names() -> None:
         "unavailable at generation), so no gate can verify it — regenerate "
         "inside the checkout: python scripts/z_generate_manuscript_variables.py"
     )
-    pinned = _named_commit_is_resolvable(stamp)
+    pinned = _resolve_with_fetch(stamp)
+    if pinned is None:
+        # Shallow merge-ref checkouts may lack the branch-side history the
+        # stamp names even after a bounded fetch; the maintainer ritual
+        # after merge is the remedy.
+        raise Skipped(
+            f"committed token map names {stamp!r}, unreachable from this "
+            "checkout — maintainers: re-run python scripts/"
+            "manuscript_build_figures.py after merge"
+        )
+    assert _sha_matches(stamp, pinned.commit)
     fresh_at_stamp = generate_variables(REPO_ROOT, snapshot=pinned)
     # The stamp itself is checkout-dependent metadata (rev-parse --short
     # length varies with core.shorteningLength); exclude it from the
