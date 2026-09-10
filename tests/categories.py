@@ -29,6 +29,9 @@ class TestCategory(TypedDict, total=False):
     files: List[str]
     markers: List[str]
     timeout_seconds: int
+    # Per-category subprocess stop threshold. pytest.ini's ``--maxfail`` (10)
+    # is the authority for the default single-process suite; category runners
+    # may deliberately stop earlier. (SC-26)
     max_failures: int
     parallel: bool
 
