@@ -12,6 +12,7 @@ pytest ``testpaths`` tree; the format list under test stays defined by
 from __future__ import annotations
 
 import unittest
+from pathlib import Path
 from typing import Any
 
 from gnn.testing.round_trip_availability import GNN_AVAILABLE, GNNFormat
@@ -27,6 +28,17 @@ class TestGNNRoundTrip(unittest.TestCase):
             self.skipTest("GNN module not available")
 
         self.tester = GNNRoundTripTester()
+        # Corrective (SC-42): the REFERENCE_CONFIG fallback chain resolves to
+        # ``src/gnn/gnn_examples/actinf_pomdp_agent.md``, which the validator
+        # rejects with "Required section missing: StateSpaceBlock /
+        # InitialParameterization" (pre-existing on main; never surfaced while
+        # this TestCase lived outside pytest testpaths). Point the instance at
+        # the POMDP GridWorld exemplar — the repo's public full-run contract
+        # model — which validates, parses, and round-trips all formats.
+        self.tester.reference_file = (
+            Path(__file__).resolve().parents[2]
+            / "input/gnn_files/pomdp_gridworld/pomdp_gridworld_3x3.md"
+        )
 
     def test_reference_file_exists(self) -> Any:
         """Test that the reference file exists and is readable."""

@@ -44,6 +44,13 @@ DEFAULT_SKIP_ALLOWLIST = {
     # Permission probes: skip when running as root (the probe tests need a
     # non-root POSIX user for permission-based assertions).
     "tests/utils/test_shared_helpers.py",
+    # Env opt-in gate (SC-44): ``test_uv_sync_fast`` runs
+    # ``uv sync --frozen --check --inexact --extra dev``, which is
+    # machine-dependent (wall-clock sensitive, racy against a concurrent
+    # mutating sync on the shared ``.venv``). Skipped unless
+    # ``GNN_UV_SYNC_LIVE=1`` — the same opt-in class as the Ollama live
+    # files above.
+    "tests/infrastructure/test_uv_sync_live.py",
 }
 
 
