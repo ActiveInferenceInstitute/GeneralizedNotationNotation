@@ -14,7 +14,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union, cast
 
+from .security_gate import check_script_allowed
 from .subprocess_envelope import run_subprocess_envelope
+from .types import _EXECUTABLE_SUFFIXES
 
 # Import execution functionality
 try:
@@ -83,7 +85,7 @@ except ImportError:
 
 from gnn.pipeline.config import get_output_dir_for_script
 from gnn.utils import performance_tracker
-from gnn.utils.logging.logging_utils import (
+from gnn.utils.logging_utils import (
     log_step_error,
     log_step_start,
     log_step_success,
@@ -175,6 +177,36 @@ class GNNExecutor:
             Dictionary with execution results
         """
         try:
+            # SC-1: pre-execution security gate — same shared helper as the
+            # Step 12 processor path. GNNExecutor runs rendered scripts; the
+            # MCP tools (execute_gnn_model_mcp → execute_simulation_from_gnn)
+            # reach execution only through this dispatch, so one gate here
+            # covers every script GNNExecutor is about to run.
+            if Path(model_path).suffix.lower() in _EXECUTABLE_SUFFIXES:
+                gate_verdict = check_script_allowed(Path(model_path))
+            else:
+                # Non-script model sources (e.g. .md) are not executed; the
+                # scanner only accepts executable scripts, so skip the gate.
+                gate_verdict = {"ok": True, "overridden": False, "blocked": []}
+            if gate_verdict["overridden"]:
+                logger.warning(
+                    "GNN_ALLOW_UNSAFE_EXEC set: pre-execution security gate "
+                    "bypassed for %s (trusted-local use only)",
+                    model_path,
+                )
+            if not gate_verdict["ok"]:
+                return {
+                    "success": False,
+                    "error": (
+                        f"Pre-execution security gate blocked {model_path}: "
+                        f"{gate_verdict['reason']}"
+                    ),
+                    "error_type": gate_verdict.get("error_type", "SecurityGateBlocked"),
+                    "security_findings": gate_verdict["blocked"],
+                    "execution_type": execution_type,
+                    "model_path": model_path,
+                }
+
             start_time = time.time()
 
             if execution_type == "pymdp":
