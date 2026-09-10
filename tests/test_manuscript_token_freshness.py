@@ -61,13 +61,36 @@ def _committed() -> dict[str, str]:
 
 
 def _named_commit_is_resolvable(commit: str) -> RepositorySnapshot:
-    pinned = RepositorySnapshot(REPO_ROOT, revision=commit)
-    assert pinned.commit == commit, (
+    pinned = _resolve_with_fetch(commit)
+    assert pinned is not None, (
         f"the committed token map names commit {commit!r}, which git cannot "
-        "resolve from this checkout — the artifact is stale beyond its own "
-        "provenance"
+        "resolve from this checkout (including after fetching it from "
+        "origin) — the artifact is stale beyond its own provenance"
     )
     return pinned
+
+
+def _resolve_with_fetch(commit: str) -> RepositorySnapshot | None:
+    """Resolve *commit* in this checkout, fetching it from origin if needed.
+
+    CI checkouts of a PR merge ref do not contain the branch-side history
+    the artifact stamp names (a shallow, single-revision fetch on the merge
+    commit). The stamp is provably reachable from HEAD's second parent, so
+    fetching exactly that object is sound and bounded.
+    """
+    snapshot = RepositorySnapshot(REPO_ROOT, revision=commit)
+    if snapshot.commit == commit:
+        return snapshot
+    subprocess.run(
+        ["git", "-C", str(REPO_ROOT), "fetch", "--depth", "1", "origin", commit],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    snapshot = RepositorySnapshot(REPO_ROOT, revision=commit)
+    if snapshot.commit == commit:
+        return snapshot
+    return None
 
 
 def test_committed_token_map_reproduces_at_the_commit_it_names() -> None:
@@ -124,12 +147,28 @@ def test_committed_token_map_is_at_most_one_commit_stale() -> None:
     # artifacts commit is the legitimate producer on PR checkouts). Stamps
     # are short SHAs (variables.py uses rev-parse --short), so compare in
     # the same form.
-    parent_shas = subprocess.run(
+    parents_raw = subprocess.run(
         ["git", "-C", str(REPO_ROOT), "rev-list", "--parents", "-1", "HEAD"],
         capture_output=True,
         text=True,
         check=True,
     ).stdout.split()[1:]
+    parent_shas: list[str] = []
+    for sha in parents_raw:
+        fetched = _resolve_with_fetch(sha)
+        if fetched is not None:
+            parent_shas.append(sha)
+    if not parent_shas:
+        # rev-list on a shallow checkout can omit parents entirely; fall
+        # back to HEAD~1 (short form, matching the stamp format).
+        head1 = subprocess.run(
+            ["git", "-C", str(REPO_ROOT), "rev-parse", "--short", "HEAD~1"],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if head1.returncode == 0:
+            parent_shas = [head1.stdout.strip()]
     parents = {
         subprocess.run(
             ["git", "-C", str(REPO_ROOT), "rev-parse", "--short", sha],
