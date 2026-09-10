@@ -49,7 +49,6 @@ Examples:
 For complete usage information, see:
 - README.md: Project overview and quick start
 - docs/pipeline/README.md: Detailed pipeline documentation
-- src/README.md: Pipeline safety and reliability documentation
 """
 
 import argparse
