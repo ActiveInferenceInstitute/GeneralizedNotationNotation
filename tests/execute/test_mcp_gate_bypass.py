@@ -192,28 +192,44 @@ class TestGateFailsClosed:
         assert result["error_type"] == "SecurityGateBlocked"
         assert "fail closed" in result["error"]
 
-    def test_unreadable_script_fails_closed(
+    def test_dangerous_script_blocked_at_runner_level(
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
     ) -> None:
-        """Unscannable targets deny (deny_unreadable) and never start."""
-        script = tmp_path / "missing.py"  # never created
+        """A real dangerous script on disk never starts (NEVER_STARTED)."""
+        script = tmp_path / "dangerous_runner.py"
+        script.write_text(_DANGEROUS_SCRIPT)
         _no_unsafe_exec(monkeypatch)
 
-        result = execute_script_safely(script)
+        result = execute_script_safely(script, timeout=60)
 
         assert result["success"] is False
         assert result["error_type"] == "SecurityGateBlocked"
         assert result["return_code"] == NEVER_STARTED
 
+    def test_missing_script_keeps_historical_envelope(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Missing/suffix rejections keep their pre-gate envelopes; the gate
+        covers only scripts that could actually execute."""
+        _no_unsafe_exec(monkeypatch)
 
-def test_mcp_execute_path_result_shape_unchanged() -> None:
+        missing = execute_script_safely(tmp_path / "never_created.py")
+        assert missing["error_type"] == "FileNotFoundError"
+
+        wrong_suffix = tmp_path / "notes.md"
+        wrong_suffix.write_text("not a script\n")
+        rejected = execute_script_safely(wrong_suffix)
+        assert rejected["error_type"] == "ValueError"
+
+
+def test_mcp_execute_path_result_shape_unchanged(tmp_path: Path) -> None:
     """The MCP-visible envelope still carries the execution metadata keys.
 
     Guard against the gate accidentally reshaping the result the MCP tool
     returns: the block envelope is decorated with the same execution-time /
     device fields as a normal run.
     """
-    executor = GNNExecutor(output_dir=str(Path(__file__).parent / "_scratch_shape"))
+    executor = GNNExecutor(output_dir=str(tmp_path))
     blocked = executor.execute_gnn_model(
         "definitely_not_a_real_script.py", execution_type="pymdp"
     )

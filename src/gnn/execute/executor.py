@@ -197,8 +197,6 @@ def _pre_execution_gate(model_path: Union[str, Path]) -> Optional[Dict[str, Any]
     }
 
 
-
-
 class GNNExecutor:
     """
     Main executor for GNN model simulations and scripts.
@@ -1132,14 +1130,6 @@ def execute_script_safely(
             - ``error_type`` (str, optional): Exception class name on failure.
     """
     script = Path(script_path)
-    gate_result = _pre_execution_gate(script)
-    if gate_result is not None:
-        gate_result["script_path"] = str(script)
-        gate_result["return_code"] = NEVER_STARTED
-        gate_result["stdout"] = ""
-        gate_result["stderr"] = ""
-        gate_result["duration_seconds"] = 0.0
-        return gate_result
     if not script.exists():
         return {
             "success": False,
@@ -1165,6 +1155,17 @@ def execute_script_safely(
             ),
             "error_type": "ValueError",
         }
+    # Pre-execution security gate (SC-1): real Python scripts are scanned
+    # before running. Missing/suffix rejections keep their historical
+    # envelopes; the gate covers everything that could actually execute.
+    gate_result = _pre_execution_gate(script)
+    if gate_result is not None:
+        gate_result["script_path"] = str(script)
+        gate_result["return_code"] = NEVER_STARTED
+        gate_result["stdout"] = ""
+        gate_result["stderr"] = ""
+        gate_result["duration_seconds"] = 0.0
+        return gate_result
 
     envelope = run_subprocess_envelope(
         [sys.executable, str(script)],

@@ -186,6 +186,7 @@ def run_sandboxed(
             "backend": spec.binary,
             "reason": None,
         }
+    # Canonical subprocess envelope (MAJ-10): one structured outcome for
     # timeout / OSError / non-zero exit; the sandbox-specific timeout message
     # shape is preserved on top of the shared envelope.
     outcome = run_subprocess_envelope(
