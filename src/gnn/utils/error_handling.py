@@ -57,21 +57,41 @@ class RecoveryStrategy(Enum):
     MANUAL = "manual"
 
 
-@dataclass
-class PipelineError:
-    """Structured error information for pipeline steps."""
+class PipelineError(Exception):
+    """Structured error information for pipeline steps.
 
-    step_name: str
-    error_type: str
-    message: str
-    severity: PipelineErrorSeverity
-    category: ErrorCategory
-    recoverable: bool
-    recovery_strategy: RecoveryStrategy
-    context: Dict[str, Any] = field(default_factory=dict)
-    traceback: Optional[str] = None
-    timestamp: float = field(default_factory=time.time)
-    correlation_id: Optional[str] = None
+    Usable as a plain exception — ``raise PipelineError("message")`` — or
+    constructed with the full structured metadata that
+    :class:`PipelineErrorHandler.create_error` attaches.
+    """
+
+    def __init__(
+        self,
+        message: str = "",
+        *,
+        step_name: str = "",
+        error_type: str = "",
+        severity: PipelineErrorSeverity = PipelineErrorSeverity.MEDIUM,
+        category: ErrorCategory = ErrorCategory.UNKNOWN,
+        recoverable: bool = True,
+        recovery_strategy: RecoveryStrategy = RecoveryStrategy.CONTINUE,
+        context: Dict[str, Any] | None = None,
+        traceback: Optional[str] = None,
+        timestamp: float | None = None,
+        correlation_id: Optional[str] = None,
+    ) -> None:
+        super().__init__(message)
+        self.message = message
+        self.step_name = step_name
+        self.error_type = error_type
+        self.severity = severity
+        self.category = category
+        self.recoverable = recoverable
+        self.recovery_strategy = recovery_strategy
+        self.context: Dict[str, Any] = context if context is not None else {}
+        self.traceback = traceback
+        self.timestamp: float = time.time() if timestamp is None else timestamp
+        self.correlation_id = correlation_id
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert error to dictionary for serialization."""
