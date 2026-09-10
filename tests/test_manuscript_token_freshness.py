@@ -30,6 +30,7 @@ as ``test_counts_describe_the_stamped_commit_not_the_working_tree``).
 from __future__ import annotations
 
 import json
+import subprocess
 import sys
 from pathlib import Path
 
@@ -97,15 +98,19 @@ def test_committed_token_map_reproduces_at_the_commit_it_names() -> None:
 
 
 def test_committed_token_map_is_at_most_one_commit_stale() -> None:
-    """The stamp must name HEAD or its parent, and fresh content when it does.
+    """The stamp must name HEAD or one of its immediate parents.
 
     The artifacts-commit bootstrap: the map is generated at tip X and
-    committed at X's child, so ``parent(HEAD)`` is the freshest a committed
-    map can legitimately name. Anything older is the consistently-stale class
-    this gate exists for (the committed JSON said 373 test files while HEAD
-    had 424). When the stamp does name HEAD, the whole map — every token,
-    not just the stamp — must equal a fresh generation; when it names the
-    parent, the pinned-reproduction test above already proves the content.
+    committed at X's child, so the freshest a committed map can legitimately
+    name is a parent of HEAD. On a GitHub PR merge commit (two parents:
+    main-side, branch-side) ``HEAD~1`` is the main-side parent, so the
+    branch-side artifacts commit — the legitimate producer — must also be
+    accepted. Anything older than the immediate parents is the
+    consistently-stale class this gate exists for (the committed JSON said
+    373 test files while HEAD had 424). When the stamp names HEAD, the
+    whole map — every token, not just the stamp — must equal a fresh
+    generation; when it names a parent, the pinned-reproduction test above
+    already proves the content.
     """
     committed = _committed()
     stamp = committed.get("GNN_GIT_COMMIT", "unknown")
@@ -115,11 +120,30 @@ def test_committed_token_map_is_at_most_one_commit_stale() -> None:
     )
     fresh_head = generate_variables(REPO_ROOT)
     head = fresh_head["GNN_GIT_COMMIT"]
-    parent = RepositorySnapshot(REPO_ROOT, revision="HEAD~1")
-    assert stamp in {head, parent.commit}, (
+    # Immediate parents of HEAD (merge commits have two; the branch-side
+    # artifacts commit is the legitimate producer on PR checkouts). Stamps
+    # are short SHAs (variables.py uses rev-parse --short), so compare in
+    # the same form.
+    parent_shas = subprocess.run(
+        ["git", "-C", str(REPO_ROOT), "rev-list", "--parents", "-1", "HEAD"],
+        capture_output=True,
+        text=True,
+        check=True,
+    ).stdout.split()[1:]
+    parents = {
+        subprocess.run(
+            ["git", "-C", str(REPO_ROOT), "rev-parse", "--short", sha],
+            capture_output=True,
+            text=True,
+            check=True,
+        ).stdout.strip()
+        for sha in parent_shas
+    }
+    allowed = {head, *parents}
+    assert stamp in allowed, (
         f"the committed token map was generated at {stamp!r} but HEAD is "
-        f"{head!r} — it is stale. Regenerate: "
-        "python scripts/z_generate_manuscript_variables.py"
+        f"{head!r} (immediate parents: {parents}) — it is stale. "
+        "Regenerate: python scripts/z_generate_manuscript_variables.py"
     )
     if stamp != head:
         return  # one-behind bootstrap: content is pinned by the other test
