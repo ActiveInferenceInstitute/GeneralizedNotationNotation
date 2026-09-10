@@ -96,8 +96,17 @@ def test_committed_token_map_reproduces_at_the_commit_it_names() -> None:
     )
 
 
-def test_committed_token_map_matches_a_fresh_head_generation() -> None:
-    """Every token but the stamp must equal a fresh HEAD generation."""
+def test_committed_token_map_is_at_most_one_commit_stale() -> None:
+    """The stamp must name HEAD or its parent, and fresh content when it does.
+
+    The artifacts-commit bootstrap: the map is generated at tip X and
+    committed at X's child, so ``parent(HEAD)`` is the freshest a committed
+    map can legitimately name. Anything older is the consistently-stale class
+    this gate exists for (the committed JSON said 373 test files while HEAD
+    had 424). When the stamp does name HEAD, the whole map — every token,
+    not just the stamp — must equal a fresh generation; when it names the
+    parent, the pinned-reproduction test above already proves the content.
+    """
     committed = _committed()
     stamp = committed.get("GNN_GIT_COMMIT", "unknown")
     assert stamp != "unknown", (
@@ -106,30 +115,25 @@ def test_committed_token_map_matches_a_fresh_head_generation() -> None:
     )
     fresh_head = generate_variables(REPO_ROOT)
     head = fresh_head["GNN_GIT_COMMIT"]
+    parent = RepositorySnapshot(REPO_ROOT, revision="HEAD~1")
+    assert stamp in {head, parent.commit}, (
+        f"the committed token map was generated at {stamp!r} but HEAD is "
+        f"{head!r} — it is stale. Regenerate: "
+        "python scripts/z_generate_manuscript_variables.py"
+    )
     if stamp != head:
-        # The artifacts-commit bootstrap: the map is generated at tip X and
-        # committed at X's child, so naming parent(HEAD) is the freshest a
-        # committed map can be. Anything older is stale.
-        parent = RepositorySnapshot(REPO_ROOT, revision="HEAD~1")
-        assert stamp in {head, parent.commit}, (
-            f"the committed token map was generated at {stamp!r} but HEAD is "
-            f"{head!r} — it is stale. Regenerate: "
-            "python scripts/z_generate_manuscript_variables.py"
-        )
-    ignored = {"GNN_GIT_COMMIT"}
-    committed_live = {k: v for k, v in committed.items() if k not in ignored}
-    fresh_live = {k: v for k, v in fresh_head.items() if k not in ignored}
+        return  # one-behind bootstrap: content is pinned by the other test
     drift = sorted(
         key
-        for key in set(committed_live) | set(fresh_live)
-        if committed_live.get(key) != fresh_live.get(key)
+        for key in set(committed) | set(fresh_head)
+        if committed.get(key) != fresh_head.get(key)
     )
     preview = "\n".join(
-        f"  {key}: committed={committed_live.get(key)!r} "
-        f"fresh@HEAD={fresh_live.get(key)!r}"
+        f"  {key}: committed={committed.get(key)!r} "
+        f"fresh@HEAD={fresh_head.get(key)!r}"
         for key in drift[:8]
     )
-    assert committed_live == fresh_live, (
+    assert committed == fresh_head, (
         "output/data/manuscript_variables.json disagrees with a fresh "
         f"generate_variables(HEAD={head}). Drifting tokens:\n{preview}\n"
         "regenerate and commit: python scripts/z_generate_manuscript_variables.py"
