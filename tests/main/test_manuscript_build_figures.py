@@ -21,8 +21,15 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 SCRIPT = REPO_ROOT / "scripts" / "manuscript_build_figures.py"
 REGISTRY = REPO_ROOT / "output" / "figures" / "figure_registry.json"
 MANUSCRIPT = REPO_ROOT / "manuscript"
-# manuscript/SYNTAX.md is the authoring guide; its example embeds are not figures.
-_LABEL_SCAN_SKIP = {"SYNTAX.md", "README.md", "AGENTS.md"}
+import sys  # noqa: E402
+
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from scripts.lib.manuscript_exclusions import AUTHORING_GUIDE_SKIP  # noqa: E402
+
+# Authoring guides (SYNTAX.md etc.) are not published sections.
+_LABEL_SCAN_SKIP = AUTHORING_GUIDE_SKIP
 _FIG_LABEL_RE = re.compile(r"\{#(fig:[\w:-]+)")
 
 

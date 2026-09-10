@@ -38,6 +38,7 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path
+from scripts.lib.manuscript_exclusions import AUTHORING_GUIDE_SKIP  # noqa: E402
 
 _PROJECT_ROOT = Path(__file__).resolve().parents[1]
 _FIG_DIR = _PROJECT_ROOT / "output" / "figures"
@@ -116,8 +117,8 @@ _FIGURES = [
 ]
 
 _FIG_LABEL_RE = re.compile(r"\{#(fig:[\w:-]+)")
-# manuscript/SYNTAX.md is the authoring guide; its example embeds are not figures.
-_LABEL_SCAN_SKIP = {"SYNTAX.md", "README.md", "AGENTS.md"}
+# Authoring guides (SYNTAX.md etc.) hold example embeds, not figures.
+_LABEL_SCAN_SKIP = AUTHORING_GUIDE_SKIP
 
 
 def _declared_labels() -> set[str]:

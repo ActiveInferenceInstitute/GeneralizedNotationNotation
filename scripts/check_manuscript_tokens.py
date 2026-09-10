@@ -50,6 +50,8 @@ from pathlib import Path
 _PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(_PROJECT_ROOT / "src") not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT / "src"))
+if str(_PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT))
 
 from gnn.manuscript import (  # noqa: E402
     RepositorySnapshot,
@@ -57,6 +59,7 @@ from gnn.manuscript import (  # noqa: E402
     generate_variables,
 )
 from gnn.manuscript.variables import _families  # noqa: E402
+from scripts.lib.manuscript_exclusions import AUTHORING_GUIDE_SKIP  # noqa: E402
 
 # The set of manuscript/*.md files the renderer does NOT substitute, taken from
 # the renderer itself so this gate cannot drift from what actually ships. The
@@ -80,7 +83,7 @@ try:  # pragma: no cover - exercised only with a template checkout present
 
     _EXCLUDED = set(_EXCLUDED_FROZEN)
 except ModuleNotFoundError:
-    _EXCLUDED = {"AGENTS.md", "MANUSCRIPT_STATUS.md", "README.md", "SYNTAX.md"}
+    _EXCLUDED = {"MANUSCRIPT_STATUS.md", *AUTHORING_GUIDE_SKIP}
 
 _TOKEN_RE = re.compile(r"\{\{([A-Z][A-Z0-9_]*)\}\}")
 _CITE_RE = re.compile(r"@([A-Za-z][\w:-]+)")
