@@ -79,13 +79,13 @@ _RENDER_INVOKED_ENV = "GNN_RENDER_INVOKED"
 _ALLOW_NO_GIT_ENV = "GNN_MANUSCRIPT_VARIABLES_ALLOW_NO_GIT"
 
 
-def _report_dirty_tree() -> list[str]:
+def _report_dirty_tree() -> None:
     """Print a receipt when the tree differs from the commit being counted.
 
-    Returns the dirty paths (repo-relative) so the caller can record them.
-    The receipt is printed even when the invocation logs are discarded: the
-    count goes to stderr unconditionally, naming the paths so a reader can
-    tell whether their own edits are the divergence.
+    The receipt is the stderr line itself — the visible record the release
+    ritual asks for — so it surfaces even when invocation logs are discarded:
+    the count goes to stderr unconditionally, naming the paths so a reader
+    can tell whether their own edits are the divergence.
     """
     try:
         result = subprocess.run(
@@ -96,9 +96,9 @@ def _report_dirty_tree() -> list[str]:
             check=False,
         )
     except (OSError, subprocess.SubprocessError):  # pragma: no cover - env dependent
-        return []
+        return
     if result.returncode != 0 or not result.stdout.strip():
-        return []
+        return
     paths = [line[3:] for line in result.stdout.splitlines() if line.strip()]
     print(
         f"[manuscript-variables] dirty-tree receipt: {len(paths)} uncommitted "
@@ -106,7 +106,6 @@ def _report_dirty_tree() -> list[str]:
         "Paths: " + ", ".join(paths[:20]) + (" …" if len(paths) > 20 else ""),
         file=sys.stderr,
     )
-    return paths
 
 
 def main() -> int:

@@ -5,9 +5,10 @@ Four sites used to hand-duplicate the same ``{SYNTAX.md, README.md,
 AGENTS.md}`` skip set — the token gate, the figure build, and two tests. A
 fifth filename added to one site and not the others made the sites disagree
 about what "the manuscript" is. Import :data:`AUTHORING_GUIDE_SKIP` everywhere
-instead; the fallback set in ``scripts/check_manuscript_tokens.py`` (used when
-the template checkout is absent) is a strict superset documented at its
-definition and is deliberately not folded in here.
+instead. The token gate additionally never scans the producer's status log;
+that superset lives here too as :data:`TOKEN_GATE_FALLBACK_EXCLUSIONS` (the
+gate uses it only when the template checkout is absent — the template's own
+``EXCLUDED_DOC_FILENAMES`` wins otherwise).
 """
 
 from __future__ import annotations
@@ -16,4 +17,9 @@ from __future__ import annotations
 #: their example embeds, commands and labels are documentation, not claims.
 AUTHORING_GUIDE_SKIP = frozenset({"SYNTAX.md", "README.md", "AGENTS.md"})
 
-__all__ = ["AUTHORING_GUIDE_SKIP"]
+#: The token gate's standalone fallback: authoring guides PLUS the producer's
+#: status log, which is an internal dashboard, not a published section — but
+#: also not an authoring guide, so the figure/test sites do not skip it.
+TOKEN_GATE_FALLBACK_EXCLUSIONS = AUTHORING_GUIDE_SKIP | {"MANUSCRIPT_STATUS.md"}
+
+__all__ = ["AUTHORING_GUIDE_SKIP", "TOKEN_GATE_FALLBACK_EXCLUSIONS"]

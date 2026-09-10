@@ -33,6 +33,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
 import subprocess
 import sys
@@ -245,12 +246,21 @@ def main() -> int:
     # the map describes a different commit than the one being built from.
     variables_json = _PROJECT_ROOT / "output" / "data" / "manuscript_variables.json"
     try:
+        # Figures need the token map, not hydration: strip the render-invocation
+        # markers so a figure build inside a render context cannot trip
+        # z_generate's standalone fallback or its render-strictness.
+        producer_env = {
+            key: value
+            for key, value in os.environ.items()
+            if key != "GNN_RENDER_INVOKED"
+        }
         subprocess.run(
             [
                 sys.executable,
                 str(_PROJECT_ROOT / "scripts" / "z_generate_manuscript_variables.py"),
             ],
             cwd=str(_PROJECT_ROOT),
+            env=producer_env,
             check=True,
         )
     except subprocess.CalledProcessError as exc:

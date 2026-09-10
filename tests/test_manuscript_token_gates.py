@@ -229,12 +229,18 @@ def test_figure_count_families_are_policed() -> None:
     }
 
 
-def test_live_hardcode_targets_include_the_new_families() -> None:
-    """A generator typing 2000 instead of {{GNN_OUTPUT_FIGURE_COUNT}} fails."""
+def test_live_hardcode_policing_covers_the_new_families() -> None:
+    """The gate's actual target map must police the new count families.
+
+    Through the gate's own ``_hardcode_targets`` (not a replicated
+    comprehension): the live >=_HARDCODE_MIN counts land in the map with
+    their token names, and the sub-10 families stay out of the bare-number
+    scan (phrase-anchored step detection covers those separately).
+    """
     from gnn.manuscript.variables import generate_variables
 
     variables = generate_variables(REPO_ROOT)
-    keys = {
+    new_families = {
         "GNN_STEP_COUNT",
         "GNN_FAMILY_COUNT",
         "GNN_BACKEND_COUNT",
@@ -243,7 +249,24 @@ def test_live_hardcode_targets_include_the_new_families() -> None:
         "GNN_OUTPUT_ARTIFACT_FIGURE_COUNT",
         "GNN_MANUSCRIPT_FIGURE_COUNT",
     }
-    assert keys.issubset(variables), keys - set(variables)
+    assert new_families.issubset(GATE._HARDCODE_KEYS), (
+        new_families - set(GATE._HARDCODE_KEYS)
+    )
+    big = {k for k in new_families if int(variables[k]) >= GATE._HARDCODE_MIN}
+    small = new_families - big
+    targets = GATE._hardcode_targets(variables)
+    for key in big:
+        expected = variables[key]
+        assert expected in targets, f"{key}={expected} is not policed"
+        # GNN_OUTPUT_FIGURE_COUNT and GNN_OUTPUT_ARTIFACT_FIGURE_COUNT are
+        # aliases of one census and share a value; the bare-number scan can
+        # only attribute a literal to one of them, and either is correct.
+        assert targets[expected] in {key, "GNN_OUTPUT_ARTIFACT_FIGURE_COUNT"}, key
+    for key in small:
+        assert variables[key] not in targets, (
+            f"{key}={variables[key]} is below _HARDCODE_MIN and must not be "
+            "bare-number-policed (too coincidental)"
+        )
 
 
 # --- live end-to-end ----------------------------------------------------------

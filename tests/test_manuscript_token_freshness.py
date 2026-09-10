@@ -149,19 +149,42 @@ def test_committed_map_is_wellformed_sorted_json() -> None:
     assert set(committed) == set(raw)
 
 
-def test_gate_script_rejects_a_stale_stamp() -> None:
-    """scripts/manuscript_build_figures.py must fail loudly on a stale map."""
-    build = (REPO_ROOT / "scripts" / "manuscript_build_figures.py").read_text(
-        encoding="utf-8"
+def test_build_figures_rejects_a_stale_stamp(tmp_path: Path) -> None:
+    """manuscript_build_figures.main() must SystemExit on a commit mismatch.
+
+    Behavioral, not source-text: a sandbox tree whose fake producer writes a
+    JSON stamped with a foreign commit must fail the build's gate before any
+    generator runs. (Running the real main() would rebuild the real tree's
+    artifacts as a side effect — this fake-root drive keeps the suite
+    deterministic and worktree-clean.)
+    """
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "manuscript_build_figures_gate",
+        REPO_ROOT / "scripts" / "manuscript_build_figures.py",
     )
-    assert "check=True" in build, (
-        "manuscript_build_figures.py no longer fails on a failed variable "
-        "regeneration (check=False reintroduced?)"
+    assert spec is not None and spec.loader is not None
+    build = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(build)
+
+    root = tmp_path / "repo"
+    (root / "scripts").mkdir(parents=True)
+    (root / "output" / "data").mkdir(parents=True)
+    # The producer subprocess is faked: it writes a map stamped with a commit
+    # no snapshot of this tree can resolve (the tree is not even a git repo,
+    # so the snapshot's commit is "unknown" — mismatch either way).
+    fake_producer = root / "scripts" / "z_generate_manuscript_variables.py"
+    fake_producer.write_text(
+        "import json\n"
+        "from pathlib import Path\n"
+        "out = Path('output/data/manuscript_variables.json')\n"
+        "out.write_text(json.dumps({'GNN_GIT_COMMIT': 'deadbeef'}))\n",
+        encoding="utf-8",
     )
-    assert "GNN_GIT_COMMIT" in build and "head.commit" in build, (
-        "manuscript_build_figures.py no longer verifies the regenerated map's "
-        "commit against HEAD"
-    )
+    build._PROJECT_ROOT = root
+    with pytest.raises(SystemExit, match="deadbeef"):
+        build.main()
 
 
 if __name__ == "__main__":  # pragma: no cover - convenience

@@ -59,7 +59,10 @@ from gnn.manuscript import (  # noqa: E402
     generate_variables,
 )
 from gnn.manuscript.variables import _families  # noqa: E402
-from scripts.lib.manuscript_exclusions import AUTHORING_GUIDE_SKIP  # noqa: E402
+from scripts.lib.manuscript_exclusions import (  # noqa: E402
+    AUTHORING_GUIDE_SKIP,
+    TOKEN_GATE_FALLBACK_EXCLUSIONS,
+)
 
 # The set of manuscript/*.md files the renderer does NOT substitute, taken from
 # the renderer itself so this gate cannot drift from what actually ships. The
@@ -83,8 +86,7 @@ try:  # pragma: no cover - exercised only with a template checkout present
 
     _EXCLUDED = set(_EXCLUDED_FROZEN)
 except ModuleNotFoundError:
-    _EXCLUDED = {"MANUSCRIPT_STATUS.md", *AUTHORING_GUIDE_SKIP}
-
+    _EXCLUDED = set(TOKEN_GATE_FALLBACK_EXCLUSIONS)
 _TOKEN_RE = re.compile(r"\{\{([A-Z][A-Z0-9_]*)\}\}")
 _CITE_RE = re.compile(r"@([A-Za-z][\w:-]+)")
 _BIB_KEY_RE = re.compile(r"^@\w+\{([^,]+),", re.MULTILINE)
@@ -96,20 +98,49 @@ _INVERTED_STEP_PHRASE_RE = re.compile(
     r"\b(\d+(?:\s*(?:,|and|to|through|–|-)\s*\d+)*)(?:-|\s+)steps?\b"
 )
 _HARDCODE_MIN = 10
-# "step 3", "Steps 5 and 6", "steps 11 and 12" — the integers a GNN_STEP_* token owns.
-_STEP_PHRASE_RE = re.compile(r"[Ss]teps?\s+(\d+(?:\s*(?:,|and|to|through|–|-)\s*\d+)*)")
 _INT_RE = re.compile(r"\d+")
 # A crossref marker preceded by a character that is neither "[" nor "!" nor
 # whitespace: the marker resolves, so the reference gate stays green, and the
 # stray prefix renders literally.
 _MALFORMED_XREF_RE = re.compile(r"(?<=[^\[!\s])@(?:fig|tbl|eq|sec):[\w:-]+")
 
+# Every producer count the body scan polices as a bare literal. Below
+# _HARDCODE_MIN the filter drops the small ones (6, 7, 9 — too coincidental);
+# the step-phrase scan covers step numbers regardless of size.
+_HARDCODE_KEYS = (
+    "GNN_MCP_TOOL_COUNT",
+    "GNN_TEST_FILE_COUNT",
+    "GNN_TEST_FUNCTION_COUNT",
+    "GNN_DOC_FILE_COUNT",
+    "GNN_SRC_PY_FILE_COUNT",
+    "GNN_SRC_LOC",
+    "GNN_EXAMPLE_COUNT",
+    "GNN_SRC_PACKAGE_COUNT",
+    "GNN_STEP_COUNT",
+    "GNN_FAMILY_COUNT",
+    "GNN_BACKEND_COUNT",
+    "GNN_MAINTAINED_FRAMEWORK_COUNT",
+    "GNN_OUTPUT_FIGURE_COUNT",
+    "GNN_OUTPUT_ARTIFACT_FIGURE_COUNT",
+    "GNN_MANUSCRIPT_FIGURE_COUNT",
+)
 
-def _section_files(manuscript_dir: Path) -> list[Path]:
-    return [p for p in sorted(manuscript_dir.glob("*.md")) if p.name not in _EXCLUDED]
+
+def _hardcode_targets(variables: dict[str, str]) -> dict[str, str]:
+    """Map each producer count value (>= _HARDCODE_MIN) to its token name."""
+    return {
+        variables[k]: k
+        for k in _HARDCODE_KEYS
+        if variables.get(k, "").isdigit() and int(variables[k]) >= _HARDCODE_MIN
+    }
+
 
 _HYDRATED_DIR = _PROJECT_ROOT / "output" / "manuscript"
 _DECLARED_LABEL_RE = re.compile(r"\{#((?:fig|tbl|eq|sec):[\w:-]+)")
+
+
+def _section_files(manuscript_dir: Path) -> list[Path]:
+    return [p for p in sorted(manuscript_dir.glob("*.md")) if p.name not in _EXCLUDED]
 
 
 def _hydrated_token_issues(hydrated_dir: Path = _HYDRATED_DIR) -> list[str]:
@@ -349,27 +380,7 @@ def main() -> int:
     # below _HARDCODE_MIN they are filtered out automatically (a count of 6 or
     # 9 is too coincidental to police), so the list can name every producer
     # count without inventing false positives.
-    hardcode_targets = {
-        variables[k]: k
-        for k in (
-            "GNN_MCP_TOOL_COUNT",
-            "GNN_TEST_FILE_COUNT",
-            "GNN_TEST_FUNCTION_COUNT",
-            "GNN_DOC_FILE_COUNT",
-            "GNN_SRC_PY_FILE_COUNT",
-            "GNN_SRC_LOC",
-            "GNN_EXAMPLE_COUNT",
-            "GNN_SRC_PACKAGE_COUNT",
-            "GNN_STEP_COUNT",
-            "GNN_FAMILY_COUNT",
-            "GNN_BACKEND_COUNT",
-            "GNN_MAINTAINED_FRAMEWORK_COUNT",
-            "GNN_OUTPUT_FIGURE_COUNT",
-            "GNN_OUTPUT_ARTIFACT_FIGURE_COUNT",
-            "GNN_MANUSCRIPT_FIGURE_COUNT",
-        )
-        if variables.get(k, "").isdigit() and int(variables[k]) >= _HARDCODE_MIN
-    }
+    hardcode_targets = _hardcode_targets(variables)
 
     # config.yaml title/subtitle are NOT token-substituted (the injector only
     # processes manuscript/*.md), so a count baked into them silently drifts.
