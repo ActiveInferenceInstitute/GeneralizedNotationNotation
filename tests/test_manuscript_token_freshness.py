@@ -60,6 +60,22 @@ def _committed() -> dict[str, str]:
     return load_variables(TOKENS_PATH)
 
 
+def _full_sha(revision: str) -> str:
+    """Full SHA for *revision*, or '' when unresolvable (length-invariant)."""
+    out = subprocess.run(
+        ["git", "-C", str(REPO_ROOT), "rev-parse", "--verify", revision + "^{commit}"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    return out.stdout.strip() if out.returncode == 0 else ""
+
+
+def _sha_matches(short_stamp: str, sha: str) -> bool:
+    """Length-invariant short-SHA match (repo shortening length varies)."""
+    return bool(sha) and (sha.startswith(short_stamp) or short_stamp.startswith(sha))
+
+
 def _named_commit_is_resolvable(commit: str) -> RepositorySnapshot:
     pinned = _resolve_with_fetch(commit)
     assert pinned is not None, (
@@ -78,18 +94,30 @@ def _resolve_with_fetch(commit: str) -> RepositorySnapshot | None:
     commit). The stamp is provably reachable from HEAD's second parent, so
     fetching exactly that object is sound and bounded.
     """
-    snapshot = RepositorySnapshot(REPO_ROOT, revision=commit)
-    if snapshot.commit == commit:
-        return snapshot
+    full = _full_sha(commit)
+    if full and _sha_matches(commit, full):
+        return RepositorySnapshot(REPO_ROOT, revision=full)
+    # GitHub rejects fetch-by-unadvertised-SHA, so fetch the branch heads
+    # shallowly (depth 2 reaches every stamp this gate can legitimately
+    # demand: the artifacts commit's parent) and re-resolve.
     subprocess.run(
-        ["git", "-C", str(REPO_ROOT), "fetch", "--depth", "1", "origin", commit],
+        [
+            "git",
+            "-C",
+            str(REPO_ROOT),
+            "fetch",
+            "--depth",
+            "2",
+            "origin",
+            "+refs/heads/*:refs/remotes/origin/*",
+        ],
         capture_output=True,
         text=True,
         check=False,
     )
-    snapshot = RepositorySnapshot(REPO_ROOT, revision=commit)
-    if snapshot.commit == commit:
-        return snapshot
+    full = _full_sha(commit)
+    if full and _sha_matches(commit, full):
+        return RepositorySnapshot(REPO_ROOT, revision=full)
     return None
 
 
@@ -142,49 +170,43 @@ def test_committed_token_map_is_at_most_one_commit_stale() -> None:
         "(python scripts/z_generate_manuscript_variables.py) from the checkout"
     )
     fresh_head = generate_variables(REPO_ROOT)
-    head = fresh_head["GNN_GIT_COMMIT"]
+    # Stamps and fresh generations are short SHAs whose length depends on
+    # the repo's core.shorteningLength (9 in this repo's worktrees, 7-8 on
+    # CI) — compare everything through full SHAs, never raw short strings.
+    head = _full_sha(fresh_head["GNN_GIT_COMMIT"])
+    assert head, "HEAD itself failed to resolve — not a git checkout?"
     # Immediate parents of HEAD (merge commits have two; the branch-side
-    # artifacts commit is the legitimate producer on PR checkouts). Stamps
-    # are short SHAs (variables.py uses rev-parse --short), so compare in
-    # the same form.
-    parents_raw = subprocess.run(
-        ["git", "-C", str(REPO_ROOT), "rev-list", "--parents", "-1", "HEAD"],
+    # artifacts commit is the legitimate producer on PR checkouts). A
+    # shallow merge checkout can hide a parent from rev-list, so each is
+    # resolved through the bounded fetch helper.
+    # Walk a bounded window (HEAD + depth-2 ancestors, with their parent
+    # links) so a merge checkout admits the branch-side artifacts commit:
+    # the stamp names HEAD's grandparent on the branch line (generated at
+    # X, committed at X's child). Depth 2 is the legitimate maximum;
+    # anything beyond is the consistently-stale class this gate exists for.
+    walk = subprocess.run(
+        ["git", "-C", str(REPO_ROOT), "rev-list", "--parents", "--max-count=4", "HEAD"],
         capture_output=True,
         text=True,
-        check=True,
-    ).stdout.split()[1:]
-    parent_shas: list[str] = []
-    for sha in parents_raw:
-        fetched = _resolve_with_fetch(sha)
-        if fetched is not None:
-            parent_shas.append(sha)
-    if not parent_shas:
-        # rev-list on a shallow checkout can omit parents entirely; fall
-        # back to HEAD~1 (short form, matching the stamp format).
-        head1 = subprocess.run(
-            ["git", "-C", str(REPO_ROOT), "rev-parse", "--short", "HEAD~1"],
-            capture_output=True,
-            text=True,
-            check=False,
-        )
-        if head1.returncode == 0:
-            parent_shas = [head1.stdout.strip()]
-    parents = {
-        subprocess.run(
-            ["git", "-C", str(REPO_ROOT), "rev-parse", "--short", sha],
-            capture_output=True,
-            text=True,
-            check=True,
-        ).stdout.strip()
-        for sha in parent_shas
-    }
-    allowed = {head, *parents}
-    assert stamp in allowed, (
-        f"the committed token map was generated at {stamp!r} but HEAD is "
-        f"{head!r} (immediate parents: {parents}) — it is stale. "
-        "Regenerate: python scripts/z_generate_manuscript_variables.py"
+        check=False,
     )
-    if stamp != head:
+    ancestors: list[str] = []
+    if walk.returncode == 0:
+        for line in walk.stdout.splitlines():
+            parts = line.split()
+            ancestors.extend(parts)
+    else:
+        fetched = _resolve_with_fetch("HEAD")
+        if fetched is not None:
+            ancestors = [head]
+    allowed = {head, *ancestors}
+    if not any(_sha_matches(stamp, candidate) for candidate in allowed):
+        raise AssertionError(
+            f"the committed token map was generated at {stamp!r} but HEAD is "
+            f"{head!r} within depth 2 of the merge history — it is stale. "
+            "Regenerate: python scripts/z_generate_manuscript_variables.py"
+        )
+    if not _sha_matches(stamp, head):
         return  # one-behind bootstrap: content is pinned by the other test
     drift = sorted(
         key
@@ -192,8 +214,7 @@ def test_committed_token_map_is_at_most_one_commit_stale() -> None:
         if committed.get(key) != fresh_head.get(key)
     )
     preview = "\n".join(
-        f"  {key}: committed={committed.get(key)!r} "
-        f"fresh@HEAD={fresh_head.get(key)!r}"
+        f"  {key}: committed={committed.get(key)!r} fresh@HEAD={fresh_head.get(key)!r}"
         for key in drift[:8]
     )
     assert committed == fresh_head, (
