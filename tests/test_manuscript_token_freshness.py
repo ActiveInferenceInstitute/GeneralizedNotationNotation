@@ -132,6 +132,10 @@ def test_committed_token_map_reproduces_at_the_commit_it_names() -> None:
     )
     pinned = _named_commit_is_resolvable(stamp)
     fresh_at_stamp = generate_variables(REPO_ROOT, snapshot=pinned)
+    # The stamp itself is checkout-dependent metadata (rev-parse --short
+    # length varies with core.shorteningLength); exclude it from the
+    # content comparison.
+    fresh_at_stamp["GNN_GIT_COMMIT"] = committed["GNN_GIT_COMMIT"]
     drift = sorted(
         key
         for key in set(committed) | set(fresh_at_stamp)
