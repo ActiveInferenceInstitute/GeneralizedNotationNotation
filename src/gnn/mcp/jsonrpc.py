@@ -68,6 +68,7 @@ TRUNCATION_NOTICE = (
 # RecursionError at the interpreter limit, whose handler itself can fail.
 _MAX_SANITIZE_DEPTH = 100
 
+
 def validate_request(request: Any) -> dict[str, Any] | None:
     """Reject invalid envelopes; supported MCP methods require object params.
 

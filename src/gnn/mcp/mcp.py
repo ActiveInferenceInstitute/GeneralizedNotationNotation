@@ -789,9 +789,7 @@ class MCP:
                     # Identical-callable re-registration (e.g. a module's
                     # register_tools() running twice): full re-registration
                     # falls through silently so metadata updates still apply.
-                    logger.debug(
-                        f"Tool '{name}' re-registered with the same callable"
-                    )
+                    logger.debug(f"Tool '{name}' re-registered with the same callable")
                 else:
                     # A DIFFERENT callable under an existing name is a
                     # registry collision: warn deterministically and let the
@@ -1035,9 +1033,7 @@ class MCP:
                     # Return a fresh deep copy: the caller may mutate the
                     # returned result; the cache must keep serving the
                     # pristine stored snapshot (see _snapshot_result).
-                    return cast(
-                        "dict[str, Any]", _snapshot_result(cached_result)
-                    )
+                    return cast("dict[str, Any]", _snapshot_result(cached_result))
                 with self._lock:
                     self._performance_metrics.update_cache_stats(False)
 
@@ -1068,8 +1064,7 @@ class MCP:
             with self._lock:
                 self._performance_metrics.successful_requests += 1
                 self._performance_metrics.tool_usage_stats[tool_name] = (
-                    self._performance_metrics.tool_usage_stats.get(tool_name, 0)
-                    + 1
+                    self._performance_metrics.tool_usage_stats.get(tool_name, 0) + 1
                 )
                 self._performance_metrics.update_execution_time(execution_time)
                 self._tool_execution_times[tool_name].append(execution_time)

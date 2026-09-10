@@ -213,7 +213,9 @@ class StdioServer:
                         self.request_queue.put(message, timeout=1.0)
 
                     except json.JSONDecodeError as e:
-                        logger.error(f"Invalid JSON message: {line.strip()[:200]} - {e}")
+                        logger.error(
+                            f"Invalid JSON message: {line.strip()[:200]} - {e}"
+                        )
                         self._connection_errors += 1
 
                         # Send JSON-RPC parse error
