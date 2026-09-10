@@ -33,7 +33,7 @@ Large dense transition tensors can grow cubically with state size. Use the scali
 orchestrator's preflight limits before generating large studies:
 
 ```bash
-uv run python scripts/run_pymdp_gnn_scaling_analysis.py --help
+uv run python scripts/experiments/run_pymdp_gnn_scaling_analysis.py --help
 ```
 
 ## Select the backend and scope outputs

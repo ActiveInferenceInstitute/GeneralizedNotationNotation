@@ -16,7 +16,7 @@ JAX arrays, and explicit PRNG keys).
   (matrix shapes, rollout loop, embedded code samples).
 - [`pymdp_performance_guide.md`](pymdp_performance_guide.md) — performance
   notes (JAX/JIT, batching, memory) and **Systematic Scaling Studies**.
-- [`run_pymdp_gnn_scaling_analysis.py`](../../scripts/run_pymdp_gnn_scaling_analysis.py) —
+- [`run_pymdp_gnn_scaling_analysis.py`](../../scripts/experiments/run_pymdp_gnn_scaling_analysis.py) —
   The automated orchestrator for PyMDP performance sweeps.
 - [`pymdp_1_0_0_alignment_matrix.md`](pymdp_1_0_0_alignment_matrix.md) —
   upstream 1.0.0 claim mapping and local status.

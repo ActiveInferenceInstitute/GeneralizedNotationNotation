@@ -124,14 +124,14 @@ matrices with `jnp.asarray(..., dtype=jnp.float32)`. `float64` is possible
 
 ## Systematic Scaling Studies
 
-For production-grade performance analysis, the repository provides an automated scaling orchestrator: `scripts/run_pymdp_gnn_scaling_analysis.py`.
+For production-grade performance analysis, the repository provides an automated scaling orchestrator: `scripts/experiments/run_pymdp_gnn_scaling_analysis.py`.
 
 ### The Scaling Orchestrator
 This tool automates the generation, execution, and analysis of model grids (e.g., N=2 to 128 states, T=10 to 1000 steps).
 
 **Usage:**
 ```bash
-uv run python scripts/run_pymdp_gnn_scaling_analysis.py
+uv run python scripts/experiments/run_pymdp_gnn_scaling_analysis.py
 ```
 
 ### O(n³) Complexity Warning
@@ -154,8 +154,8 @@ in every result), so joint sizes of 64-256 states (e.g. six to eight binary
 factors) execute in time proportional to the *sum* of factor sizes.
 
 ```bash
-uv run python scripts/run_pymdp_gnn_scaling_analysis.py --factorized --factors 4,4,4
-uv run python scripts/run_pymdp_gnn_scaling_analysis.py --factorized --factors 2,2,2,2,2,2,2,2
+uv run python scripts/experiments/run_pymdp_gnn_scaling_analysis.py --factorized --factors 4,4,4
+uv run python scripts/experiments/run_pymdp_gnn_scaling_analysis.py --factorized --factors 2,2,2,2,2,2,2,2
 ```
 
 `--factors` accepts comma-separated per-factor state sizes; `--factor-timesteps`

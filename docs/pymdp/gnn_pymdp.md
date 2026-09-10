@@ -172,7 +172,7 @@ Multi-factor and multi-control setups follow the factorial `A`/`B` list layout i
 
 Systematic performance analysis is supported via the **Scaling Orchestrator**. This tool allows for empirical complexity sweeps across state-space dimensions (N) and time horizons (T).
 
-- **Orchestrator**: [`scripts/run_pymdp_gnn_scaling_analysis.py`](../../scripts/run_pymdp_gnn_scaling_analysis.py)
+- **Orchestrator**: [`scripts/experiments/run_pymdp_gnn_scaling_analysis.py`](../../scripts/experiments/run_pymdp_gnn_scaling_analysis.py)
 - **Configuration**: [`scripts/pymdp_scaling_config.yaml`](../../scripts/pymdp_scaling_config.yaml)
 - **Performance Guide**: See [pymdp_performance_guide.md](pymdp_performance_guide.md) for O(n³) scaling details and safety guardrails.
 
