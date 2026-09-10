@@ -123,6 +123,38 @@ _FIGURES = [
     ),
 ]
 
+# Repository files each generator's OUTPUT is a function of (SC-21): the
+# generator script itself plus its declared data sources. The build records a
+# digest of these, read from the HEAD snapshot — the same mechanism the prose
+# counts use — so a figure built against one tree cannot silently describe
+# another. ``src/tests/test_manuscript_figure_freshness.py`` recomputes the
+# digest at HEAD and fails when a figure's inputs moved since its build.
+_FIGURE_SOURCES: dict[str, list[str]] = {
+    "fig:pipeline": [
+        "scripts/manuscript_fig_pipeline_dag.py",
+        "src/gnn/STEP_INDEX.md",
+    ],
+    "fig:family_matrix": [
+        "scripts/manuscript_fig_family_framework.py",
+        "input/model_family_manifest.json",
+        "src/gnn/render/framework_registry.py",
+    ],
+    "fig:backend_matrix": [
+        "scripts/manuscript_fig_backend_matrix.py",
+        "input/model_family_manifest.json",
+        "src/gnn/render/framework_registry.py",
+        "src/gnn/pipeline/cross_framework_reliability.py",
+    ],
+    # output/data/manuscript_variables.json is deliberately absent: the token
+    # map is verified value-by-value via consumed_tokens below, and it is
+    # regenerated after the figures at the release tip.
+    "fig:repo_metrics": [
+        "scripts/manuscript_fig_repo_metrics.py",
+    ],
+    "fig:triple_play": ["scripts/manuscript_fig_triple_play.py"],
+    "fig:orchestration": ["scripts/manuscript_fig_orchestration.py"],
+}
+
 _FIG_LABEL_RE = re.compile(r"\{#(fig:[\w:-]+)")
 # Authoring guides (SYNTAX.md etc.) hold example embeds, not figures.
 _LABEL_SCAN_SKIP = AUTHORING_GUIDE_SKIP
@@ -150,6 +182,29 @@ def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def _sources_digest(label: str, snapshot: RepositorySnapshot) -> str:
+    """Digest of the repository sources a figure's generator reads.
+
+    Computed from the snapshot (committed blobs, like every published count),
+    so the digest describes the commit the build ran at, not whatever is on
+    disk. The generator script itself is always included, even for figures
+    with no further declared inputs.
+    """
+    rels = sorted(set(_FIGURE_SOURCES.get(label, [])))
+    h = hashlib.sha256()
+    for rel in rels:
+        blob = snapshot.read_text(rel)
+        h.update(rel.encode("utf-8"))
+        h.update(b"\0")
+        h.update(blob.encode("utf-8"))
+        h.update(b"\n")
+    return h.hexdigest()
+
+
+# One HEAD snapshot shared by every per-figure source digest.
+_sources_snapshot = RepositorySnapshot(_PROJECT_ROOT)
+
+
 def _write_registry(provenance: dict[str, dict[str, str]]) -> list[str]:
     """Write figure_registry.json; return coverage problems (empty when clean)."""
     declared = _declared_labels()
@@ -171,6 +226,7 @@ def _write_registry(provenance: dict[str, dict[str, str]]) -> list[str]:
                 "alt_text": alt,
                 "generated_by": f"scripts/{script}",
                 "png_sha256": _sha256(_FIG_DIR / png),
+                "sources_sha256": _sources_digest(label, _sources_snapshot),
                 "consumed_tokens": provenance.get(label, {}),
             }
             for label, script, png, alt in _FIGURES
