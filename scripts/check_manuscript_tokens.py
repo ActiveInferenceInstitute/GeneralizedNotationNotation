@@ -143,13 +143,13 @@ def _section_files(manuscript_dir: Path) -> list[Path]:
 
 
 def _hydrated_token_issues(hydrated_dir: Path = _HYDRATED_DIR) -> list[str]:
-    """Find unresolved ``{{TOKEN}}`` placeholders in the hydrated copies.
+    """Find unresolved ``{{TOKEN}}`` substitutions in the hydrated copies.
 
     ``output/manuscript/*.md`` is what the renderer actually consumes; a token
     that survives hydration reaches the PDF verbatim. Matching is the same
     ``_TOKEN_RE`` on code-stripped text as the source scan, so documented
     literal-brace prose (``{{...}}`` in 05_reproducibility.md) stays green
-    while a real ``{{UPPERCASE}}`` placeholder fails the gate.
+    while a real ``{{UPPERCASE}}`` token reaching the copy fails the gate.
     """
     if not hydrated_dir.is_dir():
         return []
