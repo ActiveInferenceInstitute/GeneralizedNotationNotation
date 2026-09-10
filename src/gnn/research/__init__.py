@@ -9,7 +9,7 @@ from typing import Any
 
 from .processor import process_research
 
-__version__ = "1.7.0"
+__version__ = "3.3.0"
 __author__ = "Active Inference Institute"
 __description__ = "research processing for GNN Processing Pipeline"
 

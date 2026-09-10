@@ -23,7 +23,7 @@ _META_ANALYSIS_AVAILABLE = True
 
 
 # Module metadata
-__version__ = "1.7.0"
+__version__ = "3.3.0"
 __author__ = "Active Inference Institute"
 __description__ = "integration processing for GNN Processing Pipeline"
 
