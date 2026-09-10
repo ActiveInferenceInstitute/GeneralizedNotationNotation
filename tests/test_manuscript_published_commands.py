@@ -30,12 +30,18 @@ from __future__ import annotations
 import ast
 import re
 import shlex
+import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 MANUSCRIPT = REPO_ROOT / "manuscript"
-# Authoring guides, not published sections.
-_SKIP_DOCS = {"SYNTAX.md", "README.md", "AGENTS.md"}
+# Authoring guides, not published sections — single-sourced with the token
+# gate and the figure build (scripts/lib/manuscript_exclusions.py).
+sys.path.insert(0, str(REPO_ROOT))
+from scripts.lib.manuscript_exclusions import (
+    AUTHORING_GUIDE_FILENAMES as _SKIP_DOCS,  # noqa: E402
+)
+
 _BASH_BLOCK_RE = re.compile(r"```bash\n(.*?)```", re.DOTALL)
 
 # The render stage is the docxology template's, run from the template root with

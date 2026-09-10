@@ -20,15 +20,34 @@ dirty working tree is reported on stderr because the rendered numbers will then
 describe the last commit rather than what is on disk.
 
 Runs standalone too (``python scripts/z_generate_manuscript_variables.py``);
-the template hydration step is skipped gracefully when the sibling template
-``infrastructure`` package is not importable.
+the template hydration step is skipped gracefully there when the sibling
+template ``infrastructure`` package is not importable.
+
+Two modes, told apart mechanically:
+
+* **Standalone** (a developer ran this script; ``TEMPLATE_REPO_ROOT`` unset):
+  hydration is a best effort — when the injector cannot be imported the script
+  writes the variables and exits 0.
+* **Render-invoked** (the template launcher exported ``TEMPLATE_REPO_ROOT`` —
+  that export is the chosen detection mechanism, documented in
+  ``infrastructure.rendering._manuscript_source.run_manuscript_variable_script``):
+  hydration is the contract. If the template root / injector cannot be found
+  the render would ship an unsubstituted manuscript, so the script FAILS
+  (exit 1) instead of degrading to variables-only.
+
+A machine-readable provenance receipt is always written to
+``output/data/manuscript_variables_receipt.json`` (which commit the counts
+describe, whether the working tree is dirty, and the dirty paths), so the
+dirty-tree caveat is a file the gates can read, not just a stderr line.
 """
 
 from __future__ import annotations
 
+import json
 import os
 import subprocess
 import sys
+from collections.abc import Mapping
 from pathlib import Path
 
 _PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -41,6 +60,10 @@ from gnn.manuscript import (  # noqa: E402
     sync_config_metadata,
     sync_preamble_metadata,
 )
+
+_RENDER_INVOCATION_ENV = "TEMPLATE_REPO_ROOT"
+_RECEIPT_REL = Path("output") / "data" / "manuscript_variables_receipt.json"
+_DIRTY_PATH_LIMIT = 200
 
 _INJECTION_REL = Path("infrastructure") / "rendering" / "manuscript_injection.py"
 
@@ -69,8 +92,20 @@ def _discover_template_root() -> Path | None:
     return None
 
 
-def _report_dirty_tree() -> None:
-    """Say so when the working tree differs from the commit being counted."""
+def _render_invoked() -> bool:
+    """True when the docxology render pipeline invoked this script.
+
+    ``run_manuscript_variable_script`` exports ``TEMPLATE_REPO_ROOT`` before
+    calling this exact script name; a developer running the script by hand
+    does not set it. Detection deliberately keys on the exported variable
+    rather than a cwd heuristic: the launcher is the only caller that both
+    knows the template root and requires hydration to have happened.
+    """
+    return bool(os.environ.get(_RENDER_INVOCATION_ENV))
+
+
+def _dirty_state() -> dict:
+    """``git status --porcelain`` as data: ``{"git_available", "dirty_paths"}``."""
     try:
         result = subprocess.run(
             ["git", "status", "--porcelain"],
@@ -80,15 +115,53 @@ def _report_dirty_tree() -> None:
             check=False,
         )
     except (OSError, subprocess.SubprocessError):  # pragma: no cover - env dependent
-        return
-    if result.returncode != 0 or not result.stdout.strip():
-        return
-    changed = len(result.stdout.strip().splitlines())
-    print(
-        f"[manuscript-variables] working tree has {changed} uncommitted change(s); "
-        "every count describes the last commit, not the files on disk",
-        file=sys.stderr,
+        return {"git_available": False, "dirty_paths": []}
+    if result.returncode != 0:
+        return {"git_available": False, "dirty_paths": []}
+    paths = sorted(line[3:] for line in result.stdout.splitlines() if line.strip())
+    return {"git_available": True, "dirty_paths": paths}
+
+
+def _dirty_receipt(variables: Mapping[str, str], state: dict) -> dict:
+    """Assemble the machine-readable provenance receipt (pure; no I/O)."""
+    paths: list[str] = state["dirty_paths"]
+    return {
+        "receipt_version": "gnn_manuscript_variables_receipt_v1",
+        "generator": "scripts/z_generate_manuscript_variables.py",
+        "counts_describe_commit": variables.get("GNN_GIT_COMMIT", "unknown"),
+        "git_available": state["git_available"],
+        "working_tree_clean": state["git_available"] and not paths,
+        "dirty_path_count": len(paths),
+        "dirty_paths": paths[:_DIRTY_PATH_LIMIT],
+    }
+
+
+def _report_dirty_tree(variables: Mapping[str, str]) -> dict:
+    """Write the receipt under ``output/data/``; keep the stderr warning."""
+    receipt = _dirty_receipt(variables, _dirty_state())
+    receipt_path = (
+        _PROJECT_ROOT / "output" / "data" / ("manuscript_variables_receipt.json")
     )
+    receipt_path.parent.mkdir(parents=True, exist_ok=True)
+    receipt_path.write_text(
+        json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    if not receipt["git_available"]:
+        print(
+            "[manuscript-variables] git unavailable; counts describe the working "
+            "tree with no commit provenance (receipt: "
+            f"{receipt_path.relative_to(_PROJECT_ROOT)})",
+            file=sys.stderr,
+        )
+    elif receipt["dirty_path_count"]:
+        print(
+            f"[manuscript-variables] working tree has "
+            f"{receipt['dirty_path_count']} uncommitted change(s); every count "
+            "describes the last commit, not the files on disk "
+            f"(receipt: {receipt_path.relative_to(_PROJECT_ROOT)})",
+            file=sys.stderr,
+        )
+    return receipt
 
 
 def main() -> int:
@@ -97,7 +170,7 @@ def main() -> int:
         print(f"[manuscript-variables] config.yaml {change}", file=sys.stderr)
     for change in sync_preamble_metadata(_PROJECT_ROOT, variables):
         print(f"[manuscript-variables] preamble.md {change}", file=sys.stderr)
-    _report_dirty_tree()
+    _report_dirty_tree(variables)
     out_path = _PROJECT_ROOT / "output" / "data" / "manuscript_variables.json"
     save_variables(variables, out_path)
 
@@ -107,6 +180,16 @@ def main() -> int:
             write_resolved_manuscript_tree,
         )
     except ModuleNotFoundError:
+        if _render_invoked():
+            print(
+                "[manuscript-variables] render invocation could not load the "
+                f"template injector (looked for {_INJECTION_REL.as_posix()}; "
+                f"{_RENDER_INVOCATION_ENV} is set). The render would ship an "
+                "unsubstituted manuscript — failing instead of writing "
+                "variables only",
+                file=sys.stderr,
+            )
+            return 1
         print(
             "[manuscript-variables] template injector unavailable; "
             "wrote variables only (standalone mode)",

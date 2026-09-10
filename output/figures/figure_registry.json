@@ -6,7 +6,10 @@
       "filename": "gnn_pipeline_dag.png",
       "generated_by": "scripts/manuscript_fig_pipeline_dag.py",
       "label": "fig:pipeline",
-      "png_sha256": "3805819ac49834db359bf800862762436a7a4bb962f6170d835a7f3dd8b51e8e"
+      "png_sha256": "3805819ac49834db359bf800862762436a7a4bb962f6170d835a7f3dd8b51e8e",
+      "source_sha256": {
+        "src/gnn/STEP_INDEX.md": "aa82cb56dd1d05f21948924b5796b9c138e03d869ac517c7e3b30a8bcd9e79b1"
+      }
     },
     {
       "alt_text": "Grid of model families (rows) against rendering backends (columns). A filled cell means the family declares that backend in input/model_family_manifest.json. The grid is sparse: most families declare a single backend, and only the continuous, hierarchical and gridworld families declare several. Cells record declared coverage, not profiled outcomes.",
@@ -14,7 +17,11 @@
       "filename": "gnn_family_framework_matrix.png",
       "generated_by": "scripts/manuscript_fig_family_framework.py",
       "label": "fig:family_matrix",
-      "png_sha256": "046d35916d0b0712ffead7c66b3f686bdb749870b9e6051417db407de144a22f"
+      "png_sha256": "046d35916d0b0712ffead7c66b3f686bdb749870b9e6051417db407de144a22f",
+      "source_sha256": {
+        "input/model_family_manifest.json": "c72c7de61cde1ecdda4b8669a0539ee26bc15c83bbb5cfae9dece845f8cddda4",
+        "src/gnn/render/framework_registry.py": "576e44ea07a39cd04dd8ddf76f25c185b0a60394a4dcc50919e8e92acfb0a8e7"
+      }
     },
     {
       "alt_text": "Table of the registered rendering backends, one row each, with columns for registry key, display name, implementation language, whether a render-output subdirectory exists under src/gnn/render/, and the backend's role in the cross-framework reference comparison. Highlighted rows are the backends the reliability gate profiles; a backend the family declares but the gate never profiles is marked separately.",
@@ -22,26 +29,33 @@
       "filename": "gnn_backend_capability_matrix.png",
       "generated_by": "scripts/manuscript_fig_backend_matrix.py",
       "label": "fig:backend_matrix",
-      "png_sha256": "e0cb1189e3f3dc29be77598c81a0365423e3c8ba6ac0c1c11b4be43eab664e00"
+      "png_sha256": "e0cb1189e3f3dc29be77598c81a0365423e3c8ba6ac0c1c11b4be43eab664e00",
+      "source_sha256": {
+        "input/model_family_manifest.json": "c72c7de61cde1ecdda4b8669a0539ee26bc15c83bbb5cfae9dece845f8cddda4",
+        "src/gnn/manuscript/variables.py": "b77d65474fc3486a5dab57a46211f060f0c9694869b77f1b8f02447cdb00b388",
+        "src/gnn/pipeline/cross_framework_reliability.py": "f541016765f8c2b843226c9127f011cc77a0e66cbad694e89853db59c6cd8101",
+        "src/gnn/render/framework_registry.py": "576e44ea07a39cd04dd8ddf76f25c185b0a60394a4dcc50919e8e92acfb0a8e7"
+      }
     },
     {
       "alt_text": "Horizontal bar chart on a logarithmic axis of repository-scale counts: pipeline steps, model families, registered backends, execution backends, MCP tools, source packages, test files, example models and documentation files. Each bar is annotated with its exact value; all values come from output/data/manuscript_variables.json.",
       "consumed_tokens": {
         "GNN_BACKEND_COUNT": "9",
-        "GNN_DOC_FILE_COUNT": "618",
+        "GNN_DOC_FILE_COUNT": "619",
         "GNN_EXAMPLE_COUNT": "30",
         "GNN_EXECUTABLE_BACKEND_COUNT": "8",
         "GNN_FAMILY_COUNT": "9",
         "GNN_MCP_TOOL_COUNT": "141",
         "GNN_SRC_PACKAGE_COUNT": "44",
         "GNN_STEP_COUNT": "25",
-        "GNN_TEST_FILE_COUNT": "373",
+        "GNN_TEST_FILE_COUNT": "397",
         "GNN_VERSION": "3.3.0"
       },
       "filename": "gnn_repo_metrics.png",
       "generated_by": "scripts/manuscript_fig_repo_metrics.py",
       "label": "fig:repo_metrics",
-      "png_sha256": "9aa93f761b2ac6d5ae10eb5580e38b1b27e2d4fde2ffe1e22caa34f2e80eb09f"
+      "png_sha256": "2f7270cd4656c36687432dfcd96b1eba43932383b156d16c0016e341ce086134",
+      "source_sha256": {}
     },
     {
       "alt_text": "The Triple Play as one central GNN specification with three projections radiating from it: the readable text form, graphical visualizations of state-space and factor structure, and executable model code. All three point back to the single specification at the center.",
@@ -55,7 +69,8 @@
       "filename": "gnn_triple_play.png",
       "generated_by": "scripts/manuscript_fig_triple_play.py",
       "label": "fig:triple_play",
-      "png_sha256": "8af0e9175dd429c3a97dd757395471e2f43e4a5e6046bedcdb3918335ded7260"
+      "png_sha256": "8af0e9175dd429c3a97dd757395471e2f43e4a5e6046bedcdb3918335ded7260",
+      "source_sha256": {}
     },
     {
       "alt_text": "The three long-running orchestration contracts side by side \u2014 durable observation streams, resumable run sessions, and auditable container plans \u2014 each shown with the artifacts it generates and validates, and each stopping short of any live mutation.",
@@ -63,7 +78,8 @@
       "filename": "gnn_orchestration.png",
       "generated_by": "scripts/manuscript_fig_orchestration.py",
       "label": "fig:orchestration",
-      "png_sha256": "e566646080033e8718b0c95dccb1e7d10494687fcf508adb57efea127adc8759"
+      "png_sha256": "e566646080033e8718b0c95dccb1e7d10494687fcf508adb57efea127adc8759",
+      "source_sha256": {}
     }
   ],
   "schema_version": "gnn_figure_registry_v2"

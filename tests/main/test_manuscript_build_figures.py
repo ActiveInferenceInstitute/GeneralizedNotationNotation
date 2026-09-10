@@ -15,14 +15,20 @@ from __future__ import annotations
 import ast
 import json
 import re
+import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+# Single-source the exclusion set (SC-20): identical semantics to the
+# hand-copied set this file previously duplicated.
+sys.path.insert(0, str(REPO_ROOT / "scripts"))
+from lib.manuscript_exclusions import (
+    AUTHORING_GUIDE_FILENAMES as _LABEL_SCAN_SKIP,  # noqa: E402
+)
+
 SCRIPT = REPO_ROOT / "scripts" / "manuscript_build_figures.py"
 REGISTRY = REPO_ROOT / "output" / "figures" / "figure_registry.json"
 MANUSCRIPT = REPO_ROOT / "manuscript"
-# manuscript/SYNTAX.md is the authoring guide; its example embeds are not figures.
-_LABEL_SCAN_SKIP = {"SYNTAX.md", "README.md", "AGENTS.md"}
 _FIG_LABEL_RE = re.compile(r"\{#(fig:[\w:-]+)")
 
 
