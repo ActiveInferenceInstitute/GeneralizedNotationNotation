@@ -371,6 +371,11 @@ def _git_blob_digest(rel: str) -> str | None:
     return hashlib.sha256(result.stdout).hexdigest()
 
 
+def _strip_volatile_tokens(variables: Mapping[str, str]) -> dict[str, str]:
+    """Copy of a token map without commit-varying tokens (checksum input)."""
+    return {k: v for k, v in variables.items() if k != "GNN_GIT_COMMIT"}
+
+
 def _committed_variables_issue(live: Mapping[str, str], variables_json: Path) -> str:
     """Failure message when the committed token map is not the producer's at HEAD.
 
@@ -388,8 +393,13 @@ def _committed_variables_issue(live: Mapping[str, str], variables_json: Path) ->
         committed = load_variables(variables_json)
     except (OSError, ValueError) as exc:
         return f"{_display(variables_json)} is unreadable: {exc}"
-    live_sum = token_checksum(live)
-    committed_sum = token_checksum(committed)
+    # GNN_GIT_COMMIT cannot participate in the comparison: a committed map
+    # can never record the hash of the commit that carries it, so including
+    # it would make the gate fail on every commit that moves HEAD. The
+    # receipt's ``counts_describe_commit`` pins the commit separately; the
+    # checksum covers the commit-stable counts (the rot SC-3 guards against).
+    live_sum = token_checksum(_strip_volatile_tokens(live))
+    committed_sum = token_checksum(_strip_volatile_tokens(committed))
     if live_sum != committed_sum:
         return (
             "stale: committed token_checksum "
