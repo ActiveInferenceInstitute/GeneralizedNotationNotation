@@ -179,6 +179,7 @@ def test_committed_token_map_is_at_most_one_commit_stale() -> None:
     # CI) — compare everything through full SHAs, never raw short strings.
     head = _full_sha(fresh_head["GNN_GIT_COMMIT"])
     assert head, "HEAD itself failed to resolve — not a git checkout?"
+
     # Immediate parents of HEAD (merge commits have two; the branch-side
     # artifacts commit is the legitimate producer on PR checkouts). A
     # shallow merge checkout can hide a parent from rev-list, so each is
@@ -188,21 +189,50 @@ def test_committed_token_map_is_at_most_one_commit_stale() -> None:
     # the stamp names HEAD's grandparent on the branch line (generated at
     # X, committed at X's child). Depth 2 is the legitimate maximum;
     # anything beyond is the consistently-stale class this gate exists for.
-    walk = subprocess.run(
-        ["git", "-C", str(REPO_ROOT), "rev-list", "--parents", "--max-count=12", "HEAD"],
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-    ancestors: list[str] = []
-    if walk.returncode == 0:
-        for line in walk.stdout.splitlines():
-            parts = line.split()
-            ancestors.extend(parts)
-    else:
-        fetched = _resolve_with_fetch("HEAD")
-        if fetched is not None:
-            ancestors = [head]
+    def _walk() -> list[str]:
+        done = subprocess.run(
+            [
+                "git",
+                "-C",
+                str(REPO_ROOT),
+                "rev-list",
+                "--parents",
+                "--max-count=12",
+                "HEAD",
+            ],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if done.returncode != 0:
+            return []
+        ancestors: list[str] = []
+        for line in done.stdout.splitlines():
+            ancestors.extend(line.split())
+        return ancestors
+
+    ancestors = _walk()
+    if len(ancestors) < 2:
+        # Shallow CI checkout (fetch-depth=1): the merge commit's parents are
+        # pruned, so the branch-side artifacts commit is invisible. Fetch the
+        # branch heads shallowly (same bounded helper the stamp resolution
+        # uses, deep enough to cross the shallow boundary) and re-walk.
+        subprocess.run(
+            [
+                "git",
+                "-C",
+                str(REPO_ROOT),
+                "fetch",
+                "--depth",
+                "12",
+                "origin",
+                "+refs/heads/*:refs/remotes/origin/*",
+            ],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        ancestors = _walk()
     allowed = {head, *ancestors}
     if not any(_sha_matches(stamp, candidate) for candidate in allowed):
         raise AssertionError(
