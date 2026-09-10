@@ -22,8 +22,6 @@ from typing import Any, cast
 
 import psutil
 
-# Add the src directory to the Python path
-sys.path.insert(0, os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
 
 try:
     from gnn.mcp.gnn_root import get_gnn_documentation, validate_gnn_content

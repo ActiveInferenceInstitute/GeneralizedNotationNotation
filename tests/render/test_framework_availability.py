@@ -157,21 +157,30 @@ class TestValidationGate:
         # Unknown frameworks should not be blocked.
         validate_framework_requested("__some_external_tool__")
 
-    @pytest.mark.parametrize("framework", sorted(INTENTIONALLY_UNAVAILABLE))
-    def test_validate_unavailable_raises_value_error(self, framework: str) -> None:
-        """Requesting an unavailable framework raises ValueError with a clear message."""
-        with pytest.raises(ValueError) as exc_info:
-            validate_framework_requested(framework)
+    def test_validate_unavailable_raises_value_error(self) -> None:
+        """Requesting an unavailable framework raises ValueError with a clear message.
 
-        msg = str(exc_info.value)
-        # Must contain the framework name
-        assert framework.lower() in msg.lower(), (
-            f"Error message should mention framework name: {msg}"
-        )
-        # Must mention how to enable
-        assert "uv add" in msg.lower() or "enable" in msg.lower(), (
-            f"Error message should suggest how to enable: {msg}"
-        )
+        SC-29: ``INTENTIONALLY_UNAVAILABLE`` is empty on this tree, so the
+        former per-entry parametrization collected zero parameters and
+        produced a silent "got empty parameter set" skip. This single test
+        documents the contract instead: every entry in the set — now or in
+        the future — must raise ValueError naming the framework and how to
+        enable it. When the set gains entries, this keeps failing loudly on
+        contract violations rather than silently skipping.
+        """
+        for framework in sorted(INTENTIONALLY_UNAVAILABLE):
+            with pytest.raises(ValueError) as exc_info:
+                validate_framework_requested(framework)
+
+            msg = str(exc_info.value)
+            # Must contain the framework name
+            assert framework.lower() in msg.lower(), (
+                f"Error message should mention framework name: {msg}"
+            )
+            # Must mention how to enable
+            assert "uv add" in msg.lower() or "enable" in msg.lower(), (
+                f"Error message should suggest how to enable: {msg}"
+            )
 
     def test_validate_bnlearn_is_available(self) -> None:
         """bnlearn is registry-available via the ``bnlearn`` extra: requesting

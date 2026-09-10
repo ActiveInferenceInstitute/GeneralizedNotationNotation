@@ -28,6 +28,14 @@ from .infrastructure import (
 from .infrastructure.report_generator import flatten_pipeline_test_summary
 
 
+# SC-26: pytest.ini's ``--maxfail`` (10) is the authority for the default
+# suite's stop threshold. The constants below are deliberately tighter
+# subprocess policies for the fast-pipeline and fast-reliable runner modes;
+# revisit them alongside pytest.ini only when stop semantics change.
+FAST_PIPELINE_MAXFAIL = 5
+FAST_RELIABLE_MAXFAIL = 3
+
+
 def run_fast_pipeline_tests(
     logger: logging.Logger, output_dir: Path, verbose: bool = False
 ) -> bool:
@@ -64,7 +72,7 @@ def run_fast_pipeline_tests(
         "-m",
         "pytest",
         "--tb=short",
-        "--maxfail=5",
+        f"--maxfail={FAST_PIPELINE_MAXFAIL}",
         "--durations=10",
         "-ra",
     ]
@@ -254,7 +262,7 @@ def run_fast_reliable_tests(
         "-m",
         "pytest",
         "--tb=short",
-        "--maxfail=3",
+        f"--maxfail={FAST_RELIABLE_MAXFAIL}",
         "--durations=3",
         "-v" if verbose else "-q",
     ]

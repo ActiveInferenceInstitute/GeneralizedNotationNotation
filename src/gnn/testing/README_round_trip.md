@@ -29,7 +29,7 @@ Serializers embed JSON model snapshots in comments (or equivalent) so the second
 
 ```bash
 # From repo root (example)
-uv run python -m pytest src/gnn/testing/test_round_trip.py -q
+uv run python -m pytest tests/testing/test_round_trip_cases.py -q
 ```
 
 Or run the module’s main block if defined for your workflow (see file docstring).
