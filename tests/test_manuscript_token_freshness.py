@@ -179,7 +179,7 @@ def test_committed_token_map_is_at_most_one_commit_stale() -> None:
         # The reproduction test is authoritative when the commit IS
         # resolvable; here the recency contract is simply unverifiable —
         # skip with the remedy, do not fail on checkout geometry.
-        pytest.skip(
+        raise Skipped(
             f"committed token map names {stamp!r}, unreachable from this "
             "checkout — maintainers: re-run python scripts/"
             "manuscript_build_figures.py after merge"
@@ -247,7 +247,7 @@ def test_committed_token_map_is_at_most_one_commit_stale() -> None:
     allowed = {head, *ancestors}
     if not any(_sha_matches(stamp, candidate) for candidate in allowed):
         if _resolve_with_fetch(stamp) is None:
-            pytest.skip(
+            raise Skipped(
                 f"committed token map names {stamp!r}, unreachable from this "
                 "checkout — maintainers: re-run python scripts/"
                 "manuscript_build_figures.py after merge"
