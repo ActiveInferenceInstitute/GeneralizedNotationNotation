@@ -50,6 +50,8 @@ from pathlib import Path
 _PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(_PROJECT_ROOT / "src") not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT / "src"))
+if str(_PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT))
 
 from gnn.manuscript import (  # noqa: E402
     RepositorySnapshot,
@@ -57,6 +59,9 @@ from gnn.manuscript import (  # noqa: E402
     generate_variables,
 )
 from gnn.manuscript.variables import _families  # noqa: E402
+from scripts.lib.manuscript_exclusions import (  # noqa: E402
+    TOKEN_GATE_FALLBACK_EXCLUSIONS,
+)
 
 # The set of manuscript/*.md files the renderer does NOT substitute, taken from
 # the renderer itself so this gate cannot drift from what actually ships. The
@@ -80,24 +85,129 @@ try:  # pragma: no cover - exercised only with a template checkout present
 
     _EXCLUDED = set(_EXCLUDED_FROZEN)
 except ModuleNotFoundError:
-    _EXCLUDED = {"AGENTS.md", "MANUSCRIPT_STATUS.md", "README.md", "SYNTAX.md"}
-
+    _EXCLUDED = set(TOKEN_GATE_FALLBACK_EXCLUSIONS)
 _TOKEN_RE = re.compile(r"\{\{([A-Z][A-Z0-9_]*)\}\}")
 _CITE_RE = re.compile(r"@([A-Za-z][\w:-]+)")
 _BIB_KEY_RE = re.compile(r"^@\w+\{([^,]+),", re.MULTILINE)
-# Counts small enough to appear coincidentally (step numbers, dims) are not flagged.
-_HARDCODE_MIN = 10
-# "step 3", "Steps 5 and 6", "steps 11 and 12" — the integers a GNN_STEP_* token owns.
 _STEP_PHRASE_RE = re.compile(r"[Ss]teps?\s+(\d+(?:\s*(?:,|and|to|through|–|-)\s*\d+)*)")
+# Inverted word orders the forward pattern misses: "25 steps", "25-step
+# pipeline", "25 to 30 steps". The integers are resolved through the same
+# step_literals map (token-backed, no new blocklist).
+_INVERTED_STEP_PHRASE_RE = re.compile(
+    r"\b(\d+(?:\s*(?:,|and|to|through|–|-)\s*\d+)*)(?:-|\s+)steps?\b"
+)
+_HARDCODE_MIN = 10
 _INT_RE = re.compile(r"\d+")
 # A crossref marker preceded by a character that is neither "[" nor "!" nor
 # whitespace: the marker resolves, so the reference gate stays green, and the
 # stray prefix renders literally.
 _MALFORMED_XREF_RE = re.compile(r"(?<=[^\[!\s])@(?:fig|tbl|eq|sec):[\w:-]+")
 
+# Every producer count the body scan polices as a bare literal. Below
+# _HARDCODE_MIN the filter drops the small ones (6, 7, 9 — too coincidental);
+# the step-phrase scan covers step numbers regardless of size.
+_HARDCODE_KEYS = (
+    "GNN_MCP_TOOL_COUNT",
+    "GNN_TEST_FILE_COUNT",
+    "GNN_TEST_FUNCTION_COUNT",
+    "GNN_DOC_FILE_COUNT",
+    "GNN_SRC_PY_FILE_COUNT",
+    "GNN_SRC_LOC",
+    "GNN_EXAMPLE_COUNT",
+    "GNN_SRC_PACKAGE_COUNT",
+    "GNN_STEP_COUNT",
+    "GNN_FAMILY_COUNT",
+    "GNN_BACKEND_COUNT",
+    "GNN_MAINTAINED_FRAMEWORK_COUNT",
+    "GNN_OUTPUT_FIGURE_COUNT",
+    "GNN_OUTPUT_ARTIFACT_FIGURE_COUNT",
+    "GNN_MANUSCRIPT_FIGURE_COUNT",
+)
+
+
+def _hardcode_targets(variables: dict[str, str]) -> dict[str, str]:
+    """Map each producer count value (>= _HARDCODE_MIN) to its token name."""
+    return {
+        variables[k]: k
+        for k in _HARDCODE_KEYS
+        if variables.get(k, "").isdigit() and int(variables[k]) >= _HARDCODE_MIN
+    }
+
+
+_HYDRATED_DIR = _PROJECT_ROOT / "output" / "manuscript"
+_DECLARED_LABEL_RE = re.compile(r"\{#((?:fig|tbl|eq|sec):[\w:-]+)")
+
 
 def _section_files(manuscript_dir: Path) -> list[Path]:
     return [p for p in sorted(manuscript_dir.glob("*.md")) if p.name not in _EXCLUDED]
+
+
+def _hydrated_token_issues(hydrated_dir: Path = _HYDRATED_DIR) -> list[str]:
+    """Find unresolved ``{{TOKEN}}`` substitutions in the hydrated copies.
+
+    ``output/manuscript/*.md`` is what the renderer actually consumes; a token
+    that survives hydration reaches the PDF verbatim. Matching is the same
+    ``_TOKEN_RE`` on code-stripped text as the source scan, so documented
+    literal-brace prose (``{{...}}`` in 05_reproducibility.md) stays green
+    while a real ``{{UPPERCASE}}`` token reaching the copy fails the gate.
+    """
+    if not hydrated_dir.is_dir():
+        return []
+    issues: list[str] = []
+    for path in sorted(hydrated_dir.glob("*.md")):
+        body = _strip_code(path.read_text(encoding="utf-8"))
+        for token in _TOKEN_RE.findall(body):
+            issues.append(
+                f"output/manuscript/{path.name}: unresolved {{{{{token}}}}} "
+                "in the hydrated copy"
+            )
+    return issues
+
+
+def _declared_labels(sections: list[Path], variables: dict[str, str]) -> set[str]:
+    """Every ``{#kind:label}`` declaration in sections and producer tokens.
+
+    Producer-emitted tables carry their own captions (``_caption`` writes
+    ``{#tbl:pipeline_steps}`` inside ``GNN_STEP_TABLE``), so the declared set
+    is the union of the ``.md`` sources and the token values.
+    """
+    labels: set[str] = set()
+    for path in sections:
+        labels.update(_DECLARED_LABEL_RE.findall(path.read_text(encoding="utf-8")))
+    for value in variables.values():
+        labels.update(_DECLARED_LABEL_RE.findall(value))
+    return labels
+
+
+def _dangling_xrefs(referenced: set[str], declared: set[str]) -> list[str]:
+    """Crossref markers (@fig:/@tbl:/@eq:/@sec:) with no declared label."""
+    return sorted(
+        f"{ref} — no {{#{ref}}} declaration in any manuscript section or producer table"
+        for ref in referenced
+        if ref.split(":", 1)[0] in {"fig", "tbl", "eq", "sec"} and ref not in declared
+    )
+
+
+def _step_phrase_issues(
+    name: str, no_tokens: str, step_literals: dict[str, str]
+) -> list[str]:
+    """Step literals in either word order that a GNN_STEP_* token owns.
+
+    Both the forward ("step 3", "steps 11 and 12") and the inverted ("25
+    steps", "25-step pipeline") orders resolve their integers through the
+    same token-backed map — no new blocklist.
+    """
+    issues: list[str] = []
+    for pattern in (_STEP_PHRASE_RE, _INVERTED_STEP_PHRASE_RE):
+        for phrase in pattern.finditer(no_tokens):
+            for number in _INT_RE.findall(phrase.group(1)):
+                step_key = step_literals.get(number)
+                if step_key:
+                    issues.append(
+                        f"{name}: step literal {number} in {phrase.group(0)!r} "
+                        f"should be {{{{{step_key}}}}}"
+                    )
+    return issues
 
 
 _FIG_LABEL_RE = re.compile(r"\{#(fig:[\w:-]+)")
@@ -130,6 +240,15 @@ def _figure_registry_issues(manuscript_dir: Path, sections: list[Path]) -> list[
         if not str(record.get("alt_text", "")).strip():
             issues.append(f"figure_registry.json: {label} has no alt_text")
         filename = str(record.get("filename", ""))
+        candidate = Path(filename)
+        # Reject before joining: an absolute or parent-escaping filename would
+        # otherwise probe (or validate) a file outside output/figures/.
+        if candidate.is_absolute() or ".." in candidate.parts:
+            issues.append(
+                f"figure_registry.json: {label} image {filename!r} must be a "
+                "bare filename inside output/figures/"
+            )
+            continue
         if not filename or not (registry_path.parent / filename).is_file():
             issues.append(
                 f"figure_registry.json: {label} image {filename!r} is missing"
@@ -252,21 +371,12 @@ def main() -> int:
     bib_text = (manuscript_dir / "references.bib").read_text(encoding="utf-8")
     bib_keys = set(_BIB_KEY_RE.findall(bib_text))
 
-    # High-value counts that should always be tokens, not literals.
-    hardcode_targets = {
-        variables[k]: k
-        for k in (
-            "GNN_MCP_TOOL_COUNT",
-            "GNN_TEST_FILE_COUNT",
-            "GNN_TEST_FUNCTION_COUNT",
-            "GNN_DOC_FILE_COUNT",
-            "GNN_SRC_PY_FILE_COUNT",
-            "GNN_SRC_LOC",
-            "GNN_EXAMPLE_COUNT",
-            "GNN_SRC_PACKAGE_COUNT",
-        )
-        if variables.get(k, "").isdigit() and int(variables[k]) >= _HARDCODE_MIN
-    }
+    # High-value counts that should always be tokens, not literals. Includes
+    # the step/family/backend/framework counts and the figure-census families:
+    # below _HARDCODE_MIN they are filtered out automatically (a count of 6 or
+    # 9 is too coincidental to police), so the list can name every producer
+    # count without inventing false positives.
+    hardcode_targets = _hardcode_targets(variables)
 
     # config.yaml title/subtitle are NOT token-substituted (the injector only
     # processes manuscript/*.md), so a count baked into them silently drifts.
@@ -312,6 +422,7 @@ def main() -> int:
     dangling_cites: list[str] = []
     malformed_xrefs: list[str] = []
     hardcoded: list[str] = list(config_hardcoded)
+    referenced_labels: set[str] = set()
 
     for path in _section_files(manuscript_dir):
         raw = path.read_text(encoding="utf-8")
@@ -320,8 +431,9 @@ def main() -> int:
             if tok not in known_tokens:
                 unknown_tokens.append(f"{path.name}: {{{{{tok}}}}}")
         for key in _CITE_RE.findall(body):
-            # Skip {#sec:...}/{#fig:...} anchors which are not citations.
+            # Crossref markers are checked against label declarations below.
             if key.startswith(("sec:", "fig:", "tbl:", "eq:")):
+                referenced_labels.add(key)
                 continue
             if key not in bib_keys:
                 dangling_cites.append(f"{path.name}: [@{key}]")
@@ -336,14 +448,11 @@ def main() -> int:
                 hardcoded.append(
                     f"{path.name}: literal {value} should be {{{{{key}}}}}"
                 )
-        for phrase in _STEP_PHRASE_RE.finditer(no_tokens):
-            for number in _INT_RE.findall(phrase.group(1)):
-                step_key = step_literals.get(number)
-                if step_key:
-                    hardcoded.append(
-                        f"{path.name}: step literal {number} in {phrase.group(0)!r} "
-                        f"should be {{{{{step_key}}}}}"
-                    )
+        hardcoded.extend(_step_phrase_issues(path.name, no_tokens, step_literals))
+
+    declared = _declared_labels(_section_files(manuscript_dir), variables)
+    dangling_xrefs = _dangling_xrefs(referenced_labels, declared)
+    hydrated_issues = _hydrated_token_issues()
 
     print(f"Sections checked: {len(_section_files(manuscript_dir))}")
     print(f"Known tokens: {len(known_tokens)} | Bib keys: {len(bib_keys)}")
@@ -364,6 +473,16 @@ def main() -> int:
         print(f"\nMALFORMED CROSS-REFERENCES ({len(malformed_xrefs)}):")
         for m in sorted(set(malformed_xrefs)):
             print(f"  ✗ {m}")
+    if dangling_xrefs:
+        ok = False
+        print(f"\nDANGLING CROSS-REFERENCES ({len(dangling_xrefs)}):")
+        for d in dangling_xrefs:
+            print(f"  ✗ {d}")
+    if hydrated_issues:
+        ok = False
+        print(f"\nUNRESOLVED TOKENS IN HYDRATED COPIES ({len(hydrated_issues)}):")
+        for h in hydrated_issues:
+            print(f"  ✗ {h}")
     figure_issues = _figure_registry_issues(
         manuscript_dir, _section_files(manuscript_dir)
     )

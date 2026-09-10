@@ -30,7 +30,9 @@ from __future__ import annotations
 
 import ast
 import hashlib
+import importlib.util
 import json
+import types
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -38,6 +40,11 @@ REGISTRY = REPO_ROOT / "output" / "figures" / "figure_registry.json"
 TOKENS = REPO_ROOT / "output" / "data" / "manuscript_variables.json"
 GENERATORS = sorted((REPO_ROOT / "scripts").glob("manuscript_fig_*.py"))
 REBUILD = "python -m scripts.manuscript_build_figures"
+import sys  # noqa: E402
+
+if str(REPO_ROOT / "src") not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT / "src"))
+
 
 
 def _registry() -> list[dict]:
@@ -156,3 +163,67 @@ def test_the_build_records_provenance_for_every_registered_figure() -> None:
                 labels.add(ast.literal_eval(item.elts[0]))
     assert labels, "_FIGURES not found in manuscript_build_figures.py"
     assert {record["label"] for record in _registry()} == labels
+
+
+# --- SC-21: the sources a figure was built from ------------------------------
+
+
+def _build_module() -> types.ModuleType:
+    """Import the figure build script (module-level snapshot costs a git call)."""
+    import importlib.util
+
+    script = REPO_ROOT / "scripts" / "manuscript_build_figures.py"
+    spec = importlib.util.spec_from_file_location("manuscript_build_figures", script)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_every_registered_figure_records_a_source_digest() -> None:
+    """No figure ships without the input digest that pins it to one tree."""
+    build = _build_module()
+    uncovered = [
+        record["label"]
+        for record in _registry()
+        if not str(record.get("sources_sha256", "")).strip()
+    ]
+    assert not uncovered, (
+        f"registry entries without sources_sha256 (rebuild: {REBUILD}): "
+        f"{uncovered}"
+    )
+    missing = {record["label"] for record in _registry()} - set(
+        build._FIGURE_SOURCES
+    )
+    assert not missing, (
+        f"figures with no _FIGURE_SOURCES entry in manuscript_build_figures.py: "
+        f"{sorted(missing)}"
+    )
+
+
+def test_source_digests_still_describe_head() -> None:
+    """A figure built before one of its inputs moved fails here.
+
+    The build recorded the digest of every generator script and data file it
+    reads, computed from the HEAD snapshot at build time. Recomputing at the
+    current HEAD catches a figure that silently describes an older tree —
+    the STEP_INDEX.md edit that never triggered a PNG rebuild.
+    """
+    from gnn.manuscript.variables import RepositorySnapshot
+
+    build = _build_module()
+    snapshot = RepositorySnapshot(REPO_ROOT)
+    assert snapshot.from_git, (
+        "snapshot is not reading committed blobs — git metadata unavailable, "
+        "so figure source digests cannot be verified"
+    )
+    stale = []
+    for record in _registry():
+        label = record["label"]
+        fresh = build._sources_digest(label, snapshot)
+        if str(record.get("sources_sha256", "")) != fresh:
+            stale.append(label)
+    assert not stale, (
+        f"figures whose recorded sources no longer match HEAD (rebuild: "
+        f"{REBUILD}): {stale}"
+    )

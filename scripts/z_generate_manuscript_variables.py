@@ -16,12 +16,18 @@ Responsibilities (delegated to :mod:`gnn.manuscript`):
    resolved, via the template injector when available.
 
 Every count in the map describes the commit reported as ``GNN_GIT_COMMIT``. A
-dirty working tree is reported on stderr because the rendered numbers will then
-describe the last commit rather than what is on disk.
+dirty working tree is reported on stderr as a receipt (path count plus the
+paths) because the rendered numbers will then describe the last commit rather
+than what is on disk. When git is entirely absent the commit degrades to
+``unknown``; the committed-JSON freshness gate treats that as a failure unless
+``GNN_MANUSCRIPT_VARIABLES_ALLOW_NO_GIT=1`` is set explicitly (tarball builds).
 
 Runs standalone too (``python scripts/z_generate_manuscript_variables.py``);
 the template hydration step is skipped gracefully when the sibling template
-``infrastructure`` package is not importable.
+``infrastructure`` package is not importable. When the render pipeline invokes
+this script it MUST export ``GNN_RENDER_INVOKED=1``: in that mode a missing
+template root is a hard failure (exit 2), not a silent standalone fallback —
+a render that hydrated nothing ships every token verbatim into the PDF.
 """
 
 from __future__ import annotations
@@ -69,8 +75,18 @@ def _discover_template_root() -> Path | None:
     return None
 
 
+_RENDER_INVOKED_ENV = "GNN_RENDER_INVOKED"
+_ALLOW_NO_GIT_ENV = "GNN_MANUSCRIPT_VARIABLES_ALLOW_NO_GIT"
+
+
 def _report_dirty_tree() -> None:
-    """Say so when the working tree differs from the commit being counted."""
+    """Print a receipt when the tree differs from the commit being counted.
+
+    The receipt is the stderr line itself — the visible record the release
+    ritual asks for — so it surfaces even when invocation logs are discarded:
+    the count goes to stderr unconditionally, naming the paths so a reader
+    can tell whether their own edits are the divergence.
+    """
     try:
         result = subprocess.run(
             ["git", "status", "--porcelain"],
@@ -83,16 +99,27 @@ def _report_dirty_tree() -> None:
         return
     if result.returncode != 0 or not result.stdout.strip():
         return
-    changed = len(result.stdout.strip().splitlines())
+    paths = [line[3:] for line in result.stdout.splitlines() if line.strip()]
     print(
-        f"[manuscript-variables] working tree has {changed} uncommitted change(s); "
-        "every count describes the last commit, not the files on disk",
+        f"[manuscript-variables] dirty-tree receipt: {len(paths)} uncommitted "
+        "path(s); every count describes the last commit, not the files on disk. "
+        "Paths: " + ", ".join(paths[:20]) + (" …" if len(paths) > 20 else ""),
         file=sys.stderr,
     )
 
 
 def main() -> int:
     variables = generate_variables(_PROJECT_ROOT)
+    if variables.get("GNN_GIT_COMMIT") == "unknown" and (
+        os.environ.get(_ALLOW_NO_GIT_ENV) != "1"
+    ):
+        print(
+            "[manuscript-variables] git is unavailable: GNN_GIT_COMMIT degraded "
+            f"to 'unknown', so the numbers are checkout-dependent and the "
+            f"committed-JSON freshness gate will reject this map. Set "
+            f"{_ALLOW_NO_GIT_ENV}=1 to opt in explicitly (tarball builds).",
+            file=sys.stderr,
+        )
     for change in sync_config_metadata(_PROJECT_ROOT, variables):
         print(f"[manuscript-variables] config.yaml {change}", file=sys.stderr)
     for change in sync_preamble_metadata(_PROJECT_ROOT, variables):
@@ -101,12 +128,23 @@ def main() -> int:
     out_path = _PROJECT_ROOT / "output" / "data" / "manuscript_variables.json"
     save_variables(variables, out_path)
 
+    render_invoked = os.environ.get(_RENDER_INVOKED_ENV) == "1"
     _discover_template_root()
     try:
         from infrastructure.rendering.manuscript_injection import (
             write_resolved_manuscript_tree,
         )
     except ModuleNotFoundError:
+        if render_invoked:
+            print(
+                "❌ [manuscript-variables] invoked by the render pipeline "
+                f"({_RENDER_INVOKED_ENV}=1) but no template root provides "
+                f"{_INJECTION_REL.as_posix()} — hydration cannot run, so every "
+                "{{TOKEN}} would ship verbatim into the PDF. Set "
+                "TEMPLATE_REPO_ROOT to the docxology/template checkout.",
+                file=sys.stderr,
+            )
+            return 2
         print(
             "[manuscript-variables] template injector unavailable; "
             "wrote variables only (standalone mode)",
