@@ -189,7 +189,7 @@ def test_committed_token_map_is_at_most_one_commit_stale() -> None:
     # X, committed at X's child). Depth 2 is the legitimate maximum;
     # anything beyond is the consistently-stale class this gate exists for.
     walk = subprocess.run(
-        ["git", "-C", str(REPO_ROOT), "rev-list", "--parents", "--max-count=4", "HEAD"],
+        ["git", "-C", str(REPO_ROOT), "rev-list", "--parents", "--max-count=12", "HEAD"],
         capture_output=True,
         text=True,
         check=False,
