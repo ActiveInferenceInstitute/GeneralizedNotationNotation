@@ -25,6 +25,10 @@ import pytest
 
 pytestmark = pytest.mark.mcp
 
+# CI floor for registered MCP tools. Single source of truth consumed by
+# ci.yml's inline assertion, mcp-audit.yml, and the justfile mcp-count recipe.
+MIN_MCP_TOOLS = 140
+
 
 def count_mcp_tools() -> int:
     """Return registered MCP tool count after initialize and recovery settle.

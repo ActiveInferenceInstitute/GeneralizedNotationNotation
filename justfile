@@ -15,25 +15,25 @@ default:
 # Run tests with the same marker filter as CI, so local and CI
 # exercise the same surface; use test-stopfast or test-full for other scopes.
 test:
-    uv run pytest tests/ -q --tb=short -m "not pipeline and not mcp"
+    uv run --extra dev pytest tests/ -q --tb=short -m "not pipeline and not mcp"
 
 # Run fast test suite, stop at first failure
 test-stopfast:
-    uv run pytest tests/ -q --tb=short -x -m "not pipeline and not mcp"
+    uv run --extra dev pytest tests/ -q --tb=short -x -m "not pipeline and not mcp"
 
 # Run full test suite (with Ollama ignores)
 test-full:
-    uv run pytest tests/ -q --tb=no \
+    uv run --extra dev pytest tests/ -q --tb=no \
         --ignore=tests/llm/test_llm_ollama.py \
         --ignore=tests/llm/test_llm_ollama_integration.py
 
 # Run tests for a specific module (e.g., just test-mod render)
 test-mod MODULE:
-    uv run pytest tests/{{ MODULE }}/ -v
+    uv run --extra dev pytest tests/{{ MODULE }}/ -v
 
 # Run tests with coverage report
 test-cov:
-    uv run pytest tests/ -m "not pipeline and not mcp" --cov=gnn --cov-report=term-missing \
+    uv run --extra dev pytest tests/ -m "not pipeline and not mcp" --cov=gnn --cov-report=term-missing \
         --ignore=tests/llm/test_llm_ollama.py \
         --ignore=tests/llm/test_llm_ollama_integration.py
 
@@ -51,28 +51,28 @@ test-extras:
 
 # Run ruff linter
 lint:
-    uv run ruff check src/gnn scripts
+    uv run --extra dev ruff check src/gnn scripts
 
 # Run ruff linter with auto-fix
 lint-fix:
-    uv run ruff check src/gnn scripts --fix
+    uv run --extra dev ruff check src/gnn scripts --fix
 
 # Format code with ruff
 format:
-    uv run ruff format src/gnn scripts
-    uv run ruff check src/gnn scripts --select I --fix
+    uv run --extra dev ruff format src/gnn scripts
+    uv run --extra dev ruff check src/gnn scripts --select I --fix
 
 # Check formatting without modifying files
 format-check:
-    uv run ruff format --check src/gnn scripts
+    uv run --extra dev ruff format --check src scripts
 
 # Run mypy type checking
 typecheck:
-    uv run mypy src/gnn --show-error-codes
+    uv run --extra dev mypy src/gnn --show-error-codes
 
 # Run bandit security scan (same thresholds as CI)
 security:
-    uv run bandit -r src/gnn -c pyproject.toml -q --severity-level medium --confidence-level medium
+    uv run --extra dev bandit -r src/gnn -c pyproject.toml -q --severity-level medium --confidence-level medium
 
 # Run MCP + skills resolvability health gate
 skills-health:
@@ -94,9 +94,9 @@ gridworld:
 v3-acceptance:
     PYTHONPATH=src uv run --extra dev python scripts/run_v3_orchestration_acceptance.py --strict
 
-# Assert the live MCP tool count meets the CI floor (141 registered as of 2026-09-07)
+# Assert the live MCP tool count meets the CI floor (single-sourced as MIN_MCP_TOOLS in tests/mcp/test_mcp_audit.py)
 mcp-count:
-    PYTHONPATH=src uv run --extra dev python -c "from tests.mcp.test_mcp_audit import count_mcp_tools; assert count_mcp_tools() >= 140, 'MCP tool count below CI floor'"
+    PYTHONPATH=src uv run --extra dev python -c "from tests.mcp.test_mcp_audit import count_mcp_tools, MIN_MCP_TOOLS; assert count_mcp_tools() >= MIN_MCP_TOOLS, 'MCP tool count below CI floor'"
 
 # Emit durable v3 run manifests for a completed run (e.g. just manifest output)
 manifest OUT:
@@ -115,11 +115,11 @@ doc-patterns:
     uv run python scripts/check_gnn_doc_patterns.py --strict
 
 # Run fast quality gates without the full pytest suite
-quality: format-check lint terminology doc-terms audit doc-contracts doc-patterns typecheck security v3-acceptance mcp-count
+quality: format-check lint terminology doc-terms audit doc-contracts doc-patterns capability skills-health tokens typecheck security v3-acceptance mcp-count
 
 # Run focused PyMDP/POMDP behavior checks
 test-pymdp-focused:
-    uv run pytest \
+    uv run --extra dev pytest \
         tests/execute/test_pymdp_contracts.py \
         tests/execute/test_discrete_models_pymdp.py \
         tests/visualization/test_visualization_matrices.py \
@@ -127,7 +127,7 @@ test-pymdp-focused:
 
 # Collect pytest inventory without executing tests
 test-collect:
-    uv run pytest --collect-only tests/ -q --tb=no \
+    uv run --extra dev pytest --collect-only tests/ -q --tb=no \
         --ignore=tests/llm/test_llm_ollama.py \
         --ignore=tests/llm/test_llm_ollama_integration.py
 
@@ -181,7 +181,7 @@ test-count:
     @echo "Test files:"
     @find tests -name 'test_*.py' | wc -l
     @echo "Collected test items:"
-    @uv run pytest --collect-only tests/ -q --tb=no \
+    @uv run --extra dev pytest --collect-only tests/ -q --tb=no \
         --ignore=tests/llm/test_llm_ollama.py \
         --ignore=tests/llm/test_llm_ollama_integration.py 2>/dev/null | tail -1
 
@@ -209,14 +209,14 @@ validate-stack:
 
 # Run performance benchmark tests (pipeline performance group)
 bench:
-    uv run pytest tests/pipeline/test_pipeline_performance.py \
+    uv run --extra dev pytest tests/pipeline/test_pipeline_performance.py \
         -v --tb=short \
         -m "performance" \
         --benchmark-save=baseline
 
 # Run performance tests and compare against saved baseline
 bench-compare:
-    uv run pytest tests/pipeline/test_pipeline_performance.py \
+    uv run --extra dev pytest tests/pipeline/test_pipeline_performance.py \
         -v --tb=short \
         -m "performance" \
         --benchmark-compare=baseline
