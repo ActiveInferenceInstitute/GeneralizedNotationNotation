@@ -1,9 +1,0 @@
-Matrix: B
-"Shape: (4, 4)"
-Data type: float64
-
-Col 0,Col 1,Col 2,Col 3
-Row 0,0.7,0.1,0.1,0.1
-Row 1,0.1,0.7,0.2,0.1
-Row 2,0.1,0.1,0.6,0.2
-Row 3,0.1,0.1,0.1,0.6

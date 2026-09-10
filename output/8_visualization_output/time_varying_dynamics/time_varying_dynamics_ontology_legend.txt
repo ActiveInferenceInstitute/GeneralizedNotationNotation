@@ -1,8 +1,0 @@
-variable	ontology_term
-A	LikelihoodMatrix
-B_t	TimeVaryingTransitionMatrix
-C	PreferenceVector
-D	Prior
-o_t	Observation
-s_t	HiddenState
-u_t	Action

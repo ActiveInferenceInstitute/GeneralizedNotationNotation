@@ -1,9 +1,0 @@
-variable	ontology_term
-A	RecognitionMatrix
-B	TransitionMatrix
-D	Prior
-F	VariationalFreeEnergy
-o_t	Observation
-s_prime	NextHiddenState
-s_t	HiddenState
-t	Time

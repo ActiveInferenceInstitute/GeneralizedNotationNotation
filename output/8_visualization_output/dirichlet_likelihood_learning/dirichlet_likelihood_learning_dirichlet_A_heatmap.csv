@@ -1,8 +1,0 @@
-Matrix: dirichlet_A
-"Shape: (3, 3)"
-Data type: float64
-
-Col 0,Col 1,Col 2
-Row 0,3.0,1.0,1.0
-Row 1,1.0,3.0,1.0
-Row 2,1.0,1.0,3.0
