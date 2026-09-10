@@ -22,6 +22,7 @@ from .jsonrpc import (
     jsonrpc_error,
     jsonrpc_result,
     serialize_response,
+    truncate_embedded_text,
     validate_request,
 )
 
@@ -204,8 +205,19 @@ class MCPServer:
             raise MCPInvalidParamsError("Tool name is required")
 
         result = self.mcp.execute_tool(tool_name, tool_params)
+        # Response-size policy (MED-04): the tools/call result is embedded as
+        # one text field; an oversized matrix result is truncated to
+        # MAX_RESPONSE_EMBED_CHARS with a named notice rather than streamed
+        # raw. Wire shape is unchanged — the client still gets valid JSON.
         return {
-            "content": [{"type": "text", "text": serialize_response(result, indent=2)}]
+            "content": [
+                {
+                    "type": "text",
+                    "text": truncate_embedded_text(
+                        serialize_response(result, indent=2)
+                    ),
+                }
+            ]
         }
 
     def _handle_resources_list(self, params: Dict[str, Any]) -> Dict[str, Any]:

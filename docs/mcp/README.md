@@ -7,6 +7,26 @@
 ## Overview
 The GNN project implements Model Context Protocol (MCP) to provide structured APIs for AI assistants and LLM integrations. MCP enables external tools and AI systems to interact with GNN processing capabilities through standardized interfaces.
 
+## Size Limits
+
+Both transports enforce a shared request cap, `MAX_REQUEST_BYTES`
+(32 MiB, defined in `gnn.mcp.jsonrpc`):
+
+- **HTTP**: a `Content-Length` above the cap is rejected with HTTP 413
+  before the body is read; a malformed `Content-Length` header returns
+  HTTP 400. Both responses carry a correct `Content-Length`.
+- **STDIO**: a single line above the cap is drained (bounded reads only)
+  and rejected with a JSON-RPC `-32600` error envelope; the server keeps
+  running.
+
+Responses follow a documented truncate policy: `tools/call` embeds the
+tool result as one text field, and results larger than
+`MAX_RESPONSE_EMBED_CHARS` (1,000,000 characters) are truncated with an
+explicit `... [truncated by GNN MCP server response-size policy ...]`
+notice instead of failing the call or streaming unbounded output. Wire
+shape is unchanged; clients parsing the embedded text should treat the
+notice as a marker that the payload is partial.
+
 ## Security
 
 MCP servers expose tools over STDIO or HTTP: bind listeners to localhost in untrusted networks, authenticate HTTP deployments, and treat tool outputs like any sensitive pipeline data. See [security/README.md](../security/README.md).

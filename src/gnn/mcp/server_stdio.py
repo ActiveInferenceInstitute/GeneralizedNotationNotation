@@ -33,6 +33,8 @@ except ImportError:  # pragma: no cover - direct-script fallback
 
 from .jsonrpc import (
     INTERNAL_ERROR,
+    INVALID_REQUEST,
+    MAX_REQUEST_BYTES,
     jsonrpc_error,
     jsonrpc_result,
     serialize_response,
@@ -139,11 +141,60 @@ class StdioServer:
         try:
             while self.running:
                 try:
-                    line = sys.stdin.readline()
+                    # MED-04: bound the per-message read. A single line longer
+                    # than MAX_REQUEST_BYTES is drained with the same bounded
+                    # read and rejected with a protocol-valid -32600 error
+                    # instead of being parsed or queued.
+                    line = sys.stdin.readline(MAX_REQUEST_BYTES + 1)
                     if not line:
                         logger.info("End of input detected, stopping server")
                         self.running = False
                         break
+
+                    def _drain_to_newline() -> bool:
+                        """Consume the rest of the current line, bounded.
+
+                        Returns False on EOF (stream exhausted mid-line).
+                        """
+                        while True:
+                            chunk = sys.stdin.readline(MAX_REQUEST_BYTES + 1)
+                            if not chunk:
+                                return False
+                            if chunk.endswith("\n"):
+                                return True
+
+                    oversize = len(line) > MAX_REQUEST_BYTES
+                    line_complete = line.endswith("\n")
+                    if not line_complete or oversize:
+                        drained = _drain_to_newline()
+                        if oversize:
+                            logger.error(
+                                "Oversize stdio message rejected: limit %d bytes",
+                                MAX_REQUEST_BYTES,
+                            )
+                            error_response: dict[str, Any] = {
+                                "jsonrpc": "2.0",
+                                "error": {
+                                    "code": INVALID_REQUEST,
+                                    "message": (
+                                        "Invalid Request: message exceeds "
+                                        f"MAX_REQUEST_BYTES ({MAX_REQUEST_BYTES} bytes)"
+                                    ),
+                                },
+                                "id": None,
+                            }
+                            try:
+                                self.response_queue.put(error_response, timeout=1.0)
+                            except queue.Full:
+                                logger.warning(
+                                    "Response queue full, dropping error response"
+                                )
+                        if not drained and not line_complete:
+                            logger.info("End of input detected, stopping server")
+                            self.running = False
+                            break
+                        if oversize:
+                            continue
 
                     # Update activity timestamp
                     self._last_activity = time.time()
@@ -162,11 +213,11 @@ class StdioServer:
                         self.request_queue.put(message, timeout=1.0)
 
                     except json.JSONDecodeError as e:
-                        logger.error(f"Invalid JSON message: {line.strip()} - {e}")
+                        logger.error(f"Invalid JSON message: {line.strip()[:200]} - {e}")
                         self._connection_errors += 1
 
                         # Send JSON-RPC parse error
-                        error_response: dict[str, Any] = {
+                        error_response = {
                             "jsonrpc": "2.0",
                             "error": {"code": -32700, "message": "Parse error"},
                             "id": None,

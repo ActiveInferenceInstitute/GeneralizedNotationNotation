@@ -24,6 +24,7 @@ from typing import Any, Dict, List, Optional
 
 from .jsonrpc import (
     INTERNAL_ERROR,
+    MAX_REQUEST_BYTES,
     jsonrpc_error,
     jsonrpc_result,
     serialize_response,
@@ -268,7 +269,25 @@ class MCPHTTPHandler(BaseHTTPRequestHandler):
         """Handle POST requests (JSON-RPC 2.0)."""
         self._notification = False
         urllib.parse.urlparse(self.path)
-        content_length = int(self.headers.get("Content-Length", 0))
+        # A garbage Content-Length must produce a protocol-valid 400, never
+        # an uncaught ValueError that aborts the connection without a
+        # response; an oversized body is rejected 413 before any read.
+        raw_length = self.headers.get("Content-Length", "")
+        try:
+            content_length = int(raw_length)
+        except (TypeError, ValueError):
+            self._send_error(400, "Malformed Content-Length header")
+            self.close_connection = True
+            return
+        if content_length < 0 or content_length > MAX_REQUEST_BYTES:
+            # The bounded drain marks the connection for close instead of
+            # reading a hostile declared length.
+            self._discard_request_body(content_length)
+            self._send_error(
+                413,
+                f"Request body too large (limit {MAX_REQUEST_BYTES} bytes)",
+            )
+            return
         client_host = self.client_address[0] if self.client_address else None
         client_id = client_host or "unknown"
         if is_rate_limited(client_id):
@@ -428,16 +447,24 @@ class MCPHTTPHandler(BaseHTTPRequestHandler):
         return serialize_response(data, ensure_ascii=True).encode("utf-8")
 
     def _send_error(self, status_code: int, message: str) -> Any:
-        """Send an HTTP error response."""
+        """Send an HTTP error response with a correct Content-Length."""
+        error_body = json.dumps({"error": message}).encode("utf-8")
         self.send_response(status_code)
         self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(error_body)))
         self.end_headers()
-        error_body = json.dumps({"error": message}).encode("utf-8")
         self.wfile.write(error_body)
 
     def _discard_request_body(self, content_length: int) -> None:
-        """Drain a rejected request body so clients can read the error cleanly."""
-        if content_length <= 0:
+        """Drain a rejected request body so clients can read the error cleanly.
+
+        The drain is itself bounded: for an oversize (or absurd) declared
+        length the body is NOT read — the connection is closed instead, so a
+        hostile Content-Length cannot make the server block on an unbounded
+        read.
+        """
+        if content_length <= 0 or content_length > MAX_REQUEST_BYTES:
+            self.close_connection = True
             return
         try:
             self.rfile.read(content_length)
