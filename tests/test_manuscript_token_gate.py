@@ -173,6 +173,23 @@ def test_a_fresh_committed_token_map_passes(tmp_path) -> None:
     assert GATE._committed_variables_issue(_PRODUCER, committed) == ""
 
 
+def test_the_checksum_ignores_the_commit_token(tmp_path) -> None:
+    """Pin: GNN_GIT_COMMIT is normalized out of the checksum comparison.
+
+    A committed map can never record the hash of the commit that carries
+    it, so maps differing ONLY in ``GNN_GIT_COMMIT`` must both pass — the
+    gate compares commit-stable counts and pins the commit via the receipt's
+    ``counts_describe_commit`` instead. Without the normalization the gate
+    fails on every commit that moves HEAD.
+    """
+    committed = _write_committed(
+        tmp_path, {**_PRODUCER, "GNN_GIT_COMMIT": "deadbeef"}
+    )
+    producer_now = {**_PRODUCER, "GNN_GIT_COMMIT": "cafef00d"}
+    assert GATE._committed_variables_issue(producer_now, committed) == ""
+
+
+
 def test_a_missing_committed_token_map_is_named(tmp_path) -> None:
     issue = GATE._committed_variables_issue(_PRODUCER, tmp_path / "absent.json")
     assert "missing" in issue and "z_generate_manuscript_variables" in issue
