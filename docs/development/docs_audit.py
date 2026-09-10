@@ -154,7 +154,17 @@ def extract_links(md: str) -> list[str]:
 
 
 def _gfm_heading_slug(heading_line: str) -> str:
-    """Approximate GitHub-style slug from a markdown heading line (with # marks)."""
+    """Approximate GitHub-style slug from a markdown heading line (with # marks).
+
+    Deliberate approximation of GitHub's ``github-slugger``, adequate for
+    matching anchors against headings in this repo: emoji/symbol code points
+    are dropped here via the ``[^\\w\\s-]`` rule (GitHub instead applies its
+    own emoji/Unicode normalization first), and consecutive separator runs
+    collapse to a single hyphen with edges trimmed, whereas ``github-slugger``
+    emits one hyphen per space and keeps leading/trailing hyphens. Slugs for
+    headings with adjacent punctuation or emoji can therefore differ from
+    github.com's rendered anchors.
+    """
     m = re.match(r"^#{1,6}\s+(.+)$", heading_line.strip())
     text = m.group(1) if m else heading_line
     text = re.sub(r"`+", "", text.strip()).lower()
