@@ -170,102 +170,125 @@ class TestMultiAgentDetection:
         assert not has_native_multi_agent_structure(_canonical_spec(GRIDWORLD_FILE))
 
 
+def _assert_swarm_native_script(text: str) -> None:
+    """Structure shared by both backends' native multi-agent scripts.
+
+    Agent count is per-model (swarm=3, coordination=2) and asserted at the
+    call site.
+    """
+    assert 'const MODEL_KIND = "multi_agent"' in text
+    assert "const AGENT_AS" in text
+    assert "function simulate_agent" in text
+    assert "function compute_env_trace" in text
+    assert "env_signal_trace" in text
+    # No joint state-space expansion in the executed model.
+    assert "const NUM_STATES = 729" not in text
+
+
+def _assert_env_conditioned_script(text: str) -> None:
+    """MAJ-03: env-conditioned latent signal inference + action conditioning."""
+    assert "const ENV_DECAY = 0.9" in text
+    assert "const ENV_ACTION_CONDITIONED = true" in text
+    assert "const ENV_OBS_LIKELIHOOD" in text
+    assert "const ENV_SIGNAL_PRIOR = [0.7" in text
+    assert "function update_signal_belief" in text
+    assert "function signal_seeking_preference" in text
+    assert '"mode" => "env_conditioned_signal_selection"' in text
+    assert '"latent_inference" => ENV_ACTION_CONDITIONED' in text
+    assert '"action_selection_conditioned" => ENV_ACTION_CONDITIONED' in text
+
+
+def _assert_unconditioned_script(text: str) -> None:
+    """Coordination scripts keep post-hoc trace handling, no latent inference."""
+    assert "const ENV_ACTION_CONDITIONED = false" in text
+    assert '"mode" => "post_hoc_deposit_decay_trace"' in text
+    assert '"latent_inference" => ENV_ACTION_CONDITIONED' in text
+    assert '"action_selection_conditioned" => ENV_ACTION_CONDITIONED' in text
+
+
+def _assert_flat_script(text: str, *, assert_model_kind: bool = True) -> None:
+    """A flat model must not pick up multi-agent scaffolding."""
+    assert "simulate_agent" not in text
+    assert "AGENT_AS" not in text
+    if assert_model_kind:
+        assert 'const MODEL_KIND = "multi_agent"' not in text
+
+
 class TestRxInferStigmergicScript:
     """The rxinfer native multi-agent script structure."""
 
     def test_swarm_renders_native_per_agent_script(self, tmp_path: Path) -> None:
-        script = _render_rxinfer(SWARM_FILE, tmp_path)
-        text = script.read_text(encoding="utf-8")
-        assert 'const MODEL_KIND = "multi_agent"' in text
+        text = _render_rxinfer(SWARM_FILE, tmp_path).read_text(encoding="utf-8")
+        _assert_swarm_native_script(text)
         assert "const NUM_AGENTS = 3" in text
         assert 'const AGENTS = ["agent1", "agent2", "agent3"]' in text
-        assert "const AGENT_AS" in text
         assert "const AGENT_BS" in text
-        assert "function simulate_agent" in text
-        assert "function compute_env_trace" in text
-        assert "env_signal_trace" in text
-        assert "pomdp_model(A=A, B=B, D=D, u=model_actions, T=TIME_STEPS)" in text
-        # No joint state-space expansion in the executed model.
-        assert "const NUM_STATES = 729" not in text
+        assert (
+            "pomdp_model(A=A, B=B, D=D, u=model_actions, T=TIME_STEPS)" in text
+        )  # one genuine inference per agent
 
-    def test_swarm_script_embeds_declared_env_coupling(self, tmp_path: Path) -> None:
+    def test_swarm_script_embeds_declared_env_coupling(
+        self, tmp_path: Path
+    ) -> None:
         text = _render_rxinfer(SWARM_FILE, tmp_path).read_text(encoding="utf-8")
-        assert '"variable": "env_signal"' in text or "env_signal" in text
-        assert "const ENV_DECAY = 0.9" in text
+        assert "env_signal" in text
         assert "const ENV_INITIAL = [0.0" in text
-        # MAJ-03: env-conditioned latent signal inference + action conditioning.
-        assert "const ENV_ACTION_CONDITIONED = true" in text
-        assert "const ENV_OBS_LIKELIHOOD" in text
-        assert "const ENV_SIGNAL_PRIOR = [0.7" in text
+        _assert_env_conditioned_script(text)
         assert "const SIGNAL_SEEK = 2.0" in text
-        assert "function update_signal_belief" in text
-        assert "function signal_seeking_preference" in text
-        assert '"mode" => "env_conditioned_signal_selection"' in text
-        assert '"latent_inference" => ENV_ACTION_CONDITIONED' in text
-        assert '"action_selection_conditioned" => ENV_ACTION_CONDITIONED' in text
 
     def test_coordination_script_stays_unconditioned(self, tmp_path: Path) -> None:
-        text = _render_rxinfer(COORDINATION_FILE, tmp_path).read_text(encoding="utf-8")
-        assert "const ENV_ACTION_CONDITIONED = false" in text
-        assert '"mode" => "post_hoc_deposit_decay_trace"' in text
-        assert '"latent_inference" => ENV_ACTION_CONDITIONED' in text
-        assert '"action_selection_conditioned" => ENV_ACTION_CONDITIONED' in text
+        text = _render_rxinfer(COORDINATION_FILE, tmp_path).read_text(
+            encoding="utf-8"
+        )
+        _assert_unconditioned_script(text)
 
-    def test_coordination_renders_native_without_env(self, tmp_path: Path) -> None:
-        script = _render_rxinfer(COORDINATION_FILE, tmp_path)
-        text = script.read_text(encoding="utf-8")
+    def test_coordination_renders_native_without_env(
+        self, tmp_path: Path
+    ) -> None:
+        text = _render_rxinfer(COORDINATION_FILE, tmp_path).read_text(
+            encoding="utf-8"
+        )
+        _assert_swarm_native_script(text)
         assert "const NUM_AGENTS = 2" in text
-        assert "function simulate_agent" in text
-        assert "env_signal_trace" in text
         assert "const NUM_STATES = 16" not in text
 
-    def test_flat_model_renders_through_flat_strategy(self, tmp_path: Path) -> None:
+    def test_flat_model_renders_through_flat_strategy(
+        self, tmp_path: Path
+    ) -> None:
         """A flat model must not pick up multi-agent scaffolding."""
-        script = _render_rxinfer(GRIDWORLD_FILE, tmp_path)
-        text = script.read_text(encoding="utf-8")
-        assert "simulate_agent" not in text
-        assert "AGENT_AS" not in text
+        text = _render_rxinfer(GRIDWORLD_FILE, tmp_path).read_text(
+            encoding="utf-8"
+        )
+        _assert_flat_script(text)
+
 
 
 class TestActiveInferenceJlStigmergicScript:
     """The activeinference_jl native multi-agent script structure."""
 
     def test_swarm_renders_native_per_agent_script(self, tmp_path: Path) -> None:
-        script = _render_activeinference_jl(SWARM_FILE, tmp_path)
-        text = script.read_text(encoding="utf-8")
-        assert 'const MODEL_KIND = "multi_agent"' in text
+        text = _render_activeinference_jl(SWARM_FILE, tmp_path).read_text(
+            encoding="utf-8"
+        )
+        _assert_swarm_native_script(text)
         assert "const NUM_AGENTS = 3" in text
-        assert "const AGENT_AS" in text
-        assert "function simulate_agent" in text
-        assert "function compute_env_trace" in text
-        assert "env_signal_trace" in text
-        assert "const ENV_DECAY = 0.9" in text
-        assert "const NUM_STATES = 729" not in text
-        # MAJ-03 env-conditioned latent signal inference + action conditioning.
-        assert "const ENV_ACTION_CONDITIONED = true" in text
-        assert "const ENV_OBS_LIKELIHOOD" in text
-        assert "const ENV_SIGNAL_PRIOR = [0.7" in text
-        assert "function update_signal_belief" in text
-        assert "function signal_seeking_preference" in text
-        assert '"mode" => "env_conditioned_signal_selection"' in text
-        assert '"latent_inference" => ENV_ACTION_CONDITIONED' in text
-        assert '"action_selection_conditioned" => ENV_ACTION_CONDITIONED' in text
+        _assert_env_conditioned_script(text)
 
-    def test_coordination_renders_native_without_env(self, tmp_path: Path) -> None:
-        script = _render_activeinference_jl(COORDINATION_FILE, tmp_path)
-        text = script.read_text(encoding="utf-8")
+    def test_coordination_renders_native_without_env(
+        self, tmp_path: Path
+    ) -> None:
+        text = _render_activeinference_jl(COORDINATION_FILE, tmp_path).read_text(
+            encoding="utf-8"
+        )
+        _assert_swarm_native_script(text)
         assert "const NUM_AGENTS = 2" in text
-        assert "function simulate_agent" in text
-        assert "env_signal_trace" in text
-        assert "const ENV_ACTION_CONDITIONED = false" in text
-        assert '"mode" => "post_hoc_deposit_decay_trace"' in text
+        _assert_unconditioned_script(text)
 
     def test_flat_model_renders_through_flat_path(self, tmp_path: Path) -> None:
-        script = _render_activeinference_jl(GRIDWORLD_FILE, tmp_path)
-        text = script.read_text(encoding="utf-8")
-        assert "simulate_agent" not in text
-        assert "AGENT_AS" not in text
-        assert 'const MODEL_KIND = "multi_agent"' not in text
+        text = _render_activeinference_jl(GRIDWORLD_FILE, tmp_path).read_text(
+            encoding="utf-8"
+        )
+        _assert_flat_script(text)
 
 
 @pytest.mark.skipif(not shutil.which("julia"), reason="Julia not available")

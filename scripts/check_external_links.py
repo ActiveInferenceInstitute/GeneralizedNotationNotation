@@ -15,9 +15,10 @@ Design notes:
 
 - **Informational by default.** External sites rate-limit or bot-block
   automated clients (crates.io, paperswithcode, Wikipedia are common), so a
-  non-2xx response is *not* proof a link is dead. Use ``--strict`` only when
-  you intend to triage every finding; the check is intentionally NOT wired
-  into CI.
+  non-2xx response is *not* proof a link is dead. CI runs this check
+  ``--strict`` on the weekly docs-audit schedule only (not per-PR), with
+  ``--allow-hosts doi.org zenodo.org`` exempting hosts verified to be
+  bot-gated rather than dead.
 - Local/template targets (localhost, 127.0.0.1, example.com, ``{host}``
   templates, ``server:port``) are skipped by design — they are configuration
   examples, not links.
@@ -34,6 +35,7 @@ import urllib.error
 import urllib.request
 from collections import Counter, defaultdict
 from pathlib import Path
+from urllib.parse import urlparse
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -201,6 +203,34 @@ def check(url: str, timeout: int) -> tuple[str, str]:
         return f"ERR:{type(exc).__name__}", url
 
 
+# 403/429/999 are bot-blocking / rate-limiting classes: the URL is usually
+# fine in a real browser (verified: crates.io, medium.com, paperswithcode).
+BOT_BLOCKED = {"401", "403", "429", "999"}
+
+
+def _host_allowed(url: str, allow_hosts: list[str]) -> bool:
+    """Whether ``url``'s host matches an allow-listed host or its subdomain."""
+    netloc = urlparse(url).netloc
+    return any(netloc == h or netloc.endswith("." + h) for h in allow_hosts)
+
+
+def _bot_blocked_codes(
+    by_code: dict[str, list[str]], allow_hosts: list[str]
+) -> set[str]:
+    """Status codes classified as bot-blocking that ``--strict`` must fail on.
+
+    A code is exempt from ``--strict`` only when *every* URL carrying it
+    belongs to an allow-listed host (exact or subdomain match) — a mixed
+    group (one allow-listed host + one unverified host) stays flagged.
+    """
+    return {
+        code
+        for code in by_code
+        if code in BOT_BLOCKED
+        and not all(_host_allowed(url, allow_hosts) for url in by_code[code])
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -220,6 +250,13 @@ def main() -> int:
         type=int,
         default=400,
         help="Report statuses >= this value (default: 400).",
+    )
+    parser.add_argument(
+        "--allow-hosts",
+        nargs="*",
+        default=[],
+        help="Hosts whose bot-blocked (401/403/429/999) responses are exempt "
+        "from --strict (e.g. doi.org zenodo.org — verified live, bot-gated).",
     )
     args = parser.parse_args()
 
@@ -243,10 +280,7 @@ def main() -> int:
     print("summary:", dict(sorted(counts.items())))
     print()
 
-    # 403/429/999 are bot-blocking / rate-limiting classes: the URL is usually
-    # fine in a real browser (verified: crates.io, medium.com, paperswithcode).
-    BOT_BLOCKED = {"401", "403", "429", "999"}
-    bot_blocked = {c for c in by_code if c in BOT_BLOCKED}
+    bot_blocked = _bot_blocked_codes(by_code, args.allow_hosts)
     if bot_blocked:
         n = sum(len(by_code[c]) for c in bot_blocked)
         codes = ", ".join(sorted(bot_blocked))

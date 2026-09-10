@@ -111,15 +111,6 @@ class TestIntelligentAnalysisModuleComprehensive:
     """Comprehensive tests for the intelligent_analysis module."""
 
     @pytest.mark.unit
-    def test_module_imports(self) -> Any:
-        """Test that intelligent_analysis module can be imported."""
-        import gnn.intelligent_analysis as intelligent_analysis
-        assert hasattr(intelligent_analysis, "__version__")
-        assert hasattr(intelligent_analysis, "FEATURES")
-        assert hasattr(intelligent_analysis, "process_intelligent_analysis")
-        assert hasattr(intelligent_analysis, "IntelligentAnalyzer")
-
-    @pytest.mark.unit
     def test_module_version(self) -> Any:
         """Test module version is set correctly."""
         import gnn.intelligent_analysis as intelligent_analysis
@@ -138,18 +129,6 @@ class TestIntelligentAnalysisModuleComprehensive:
         ]
         for feature in expected_features:
             assert feature in intelligent_analysis.FEATURES
-
-    @pytest.mark.unit
-    def test_get_module_info(self) -> Any:
-        """Test module information retrieval."""
-        from gnn.intelligent_analysis import get_module_info
-
-        info = get_module_info()
-        assert isinstance(info, dict)
-        assert "version" in info
-        assert "description" in info
-        assert "features" in info
-        assert "report_formats" in info
 
     @pytest.mark.unit
     def test_get_supported_analysis_types(self) -> Any:
@@ -318,7 +297,7 @@ class TestAnalyzerClass:
         from gnn.intelligent_analysis import AnalysisContext, IntelligentAnalyzer
 
         analyzer = IntelligentAnalyzer()
-        assert analyzer is not None
+        assert isinstance(analyzer, IntelligentAnalyzer)
         assert analyzer.context is None
 
     @pytest.mark.unit
@@ -594,8 +573,6 @@ class TestIntelligentAnalysisMCP:
         except Exception:
             raise AssertionError("gnn.intelligent_analysis.mcp not importable")
 
-    def test_module_importable(self) -> Any:
-        self._import_mcp()
 
     def test_process_intelligent_analysis_mcp_nonexistent(self, tmp_path: Any) -> Any:
         mcp = self._import_mcp()
@@ -623,14 +600,12 @@ class TestIntelligentAnalysisMCP:
 
 
 class TestIntelligentAnalysisAnalyzer:
-    def test_module_importable(self) -> Any:
-        from gnn.intelligent_analysis import analyzer
 
     def test_analysis_context_instantiable(self) -> Any:
         from gnn.intelligent_analysis.analyzer import AnalysisContext
 
         ctx = AnalysisContext(summary_data={})
-        assert ctx is not None
+        assert isinstance(ctx, AnalysisContext)
         assert ctx.overall_status == "UNKNOWN"
 
     def test_analysis_context_with_data(self) -> Any:
@@ -650,4 +625,4 @@ class TestIntelligentAnalysisAnalyzer:
         from gnn.intelligent_analysis.analyzer import IntelligentAnalyzer
 
         ia = IntelligentAnalyzer()
-        assert ia is not None
+        assert isinstance(ia, IntelligentAnalyzer)

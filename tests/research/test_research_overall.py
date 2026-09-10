@@ -13,19 +13,6 @@ from gnn.research.processor import process_research
 class TestResearchOverall:
     """Test suite for Research module."""
 
-    @pytest.fixture
-    def sample_gnn_file(self, safe_filesystem: Any) -> Any:
-        """Create a sample GNN file for research testing."""
-        content = """
-# Research Model
-ModelName: ResearchTest
-
-StateSpaceBlock {
-    Name: test_block
-    Dimensions: 2
-}
-"""
-        return safe_filesystem.create_file("research_model.md", content)
 
     @pytest.mark.integration
     @pytest.mark.slow

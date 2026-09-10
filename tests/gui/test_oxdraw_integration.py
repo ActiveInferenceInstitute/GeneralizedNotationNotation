@@ -79,12 +79,6 @@ def temp_dir() -> Any:
     shutil.rmtree(tmpdir)
 
 
-@pytest.fixture
-def sample_gnn_file(temp_dir: Any) -> Any:
-    """Create sample GNN file for testing."""
-    gnn_file = temp_dir / "test_model.md"
-    gnn_file.write_text(SAMPLE_GNN_CONTENT)
-    return gnn_file
 
 
 @pytest.fixture
@@ -423,9 +417,11 @@ class TestProcessOxdraw:
         assert len(messages) == 1
         load_message = messages[0]
         assert load_message["type"] == "model.load"
-        assert load_message["payload"]["model_id"] == "test_model"
+        assert load_message["payload"]["model_id"] == sample_gnn_file.stem
         assert load_message["payload"]["format"] == "mermaid"
-        assert load_message["payload"]["mermaid_file"].endswith("test_model.mmd")
+        assert load_message["payload"]["mermaid_file"].endswith(
+            f"{sample_gnn_file.stem}.mmd"
+        )
         assert "flowchart TD" in load_message["payload"]["mermaid"]
 
     def test_process_oxdraw_no_files(self, temp_dir: Any, capsys: Any) -> Any:

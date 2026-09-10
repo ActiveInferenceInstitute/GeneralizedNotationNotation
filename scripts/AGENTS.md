@@ -48,7 +48,7 @@ This folder hosts the explicit, stateless developer workflow validation agents r
 
 | Script | Purpose |
 |--------|---------|
-| `run_pymdp_gnn_scaling_analysis.py` | Parameter grid scaling study (NxT) with visual meta-analysis and scaling-law fitting |
+| `scripts/experiments/run_pymdp_gnn_scaling_analysis.py` | Parameter grid scaling study (NxT) with visual meta-analysis and scaling-law fitting |
 | `pymdp_spec_generator.py` | Generate pymdp specification from config |
 | `z_generate_manuscript_variables.py` | Compute the deterministic `{{TOKEN}}` map from the live repo and hydrate manuscript sections before render |
 
@@ -56,7 +56,7 @@ This folder hosts the explicit, stateless developer workflow validation agents r
 
 | Script | Purpose |
 |--------|---------|
-| `add_module_docstrings.py` | Insert composed PEP 257 module docstrings into undocumented files (`--dry-run` supported) |
+| `scripts/experiments/add_module_docstrings.py` | Insert composed PEP 257 module docstrings into undocumented files (`--dry-run` supported) |
 
 ## Shared Utilities — `lib/`
 

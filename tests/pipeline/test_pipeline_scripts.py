@@ -630,7 +630,7 @@ class TestStep14ReportComprehensive:
         from gnn.report import generate_report
 
         assert callable(generate_report)
-        # Full invocation is exercised in src/tests/report/; here we verify
+        # Full invocation is exercised in tests/report/; here we verify
         # the symbol resolves (it's a thin orchestrator that delegates to the
         # processor) without depending on a specific report_data schema.
 

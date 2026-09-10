@@ -14,17 +14,15 @@ Test Coverage:
 All tests validate real function execution.
 """
 
-from typing import Any
+import json
+import sys
+from pathlib import Path
+from typing import Any, Dict
 
 import pytest
 
 pytestmark = pytest.mark.pipeline
-import json
-
 # Add src to path for imports
-import sys
-from pathlib import Path
-from typing import Any, Dict
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
@@ -243,18 +241,6 @@ class TestExecuteAnalyzeIntegration:
 
 class TestRenderExecuteIntegration:
     """Tests for render to execute handoff."""
-
-    @pytest.fixture
-    def sample_gnn_spec(self) -> Dict[str, Any]:
-        """Create a minimal GNN spec dictionary."""
-        return {
-            "name": "integration_test_model",
-            "states": ["s"],
-            "observations": ["o"],
-            "parameters": {
-                "A": [[0.8, 0.2], [0.2, 0.8]],
-            },
-        }
 
     @pytest.mark.integration
     @pytest.mark.slow

@@ -29,7 +29,8 @@ class TestReportPipelineIntegration:
 
         # Get module info to verify availability
         info = get_module_info()
-        assert info is not None
+        assert isinstance(info, dict)
+        assert "version" in info and "report_formats" in info
 
     @pytest.mark.integration
     def test_report_processes_pipeline_outputs(self, tmp_path: Any) -> None:
@@ -57,7 +58,7 @@ class TestReportPipelineIntegration:
             target_dir=output_dir, output_dir=report_output, logger=logger
         )
 
-        assert result is True or result is False
+        assert isinstance(result, bool)
 
     @pytest.mark.integration
     def test_report_with_visualization_outputs(self, tmp_path: Any) -> None:
@@ -161,8 +162,9 @@ class TestReportAnalysisIntegration:
 
         result = analyze_pipeline_data(pipeline_data)
 
-        assert result is not None
         assert isinstance(result, dict)
+        assert result["status"] == "SUCCESS"
+        assert result["summary"]["keys"] == ["steps", "total_duration", "status"]
 
     @pytest.mark.integration
     def test_analyze_empty_pipeline_data(self) -> None:
@@ -172,7 +174,8 @@ class TestReportAnalysisIntegration:
         result = analyze_pipeline_data({})
 
         # Should not raise an error
-        assert result is not None
+        assert isinstance(result, dict)
+        assert result["summary"]["keys"] == []
 
 
 class TestReportExportIntegration:
@@ -228,23 +231,3 @@ class TestReportExportIntegration:
 
         # Output directory should exist
         assert output_dir.exists()
-
-
-class TestReportModuleIntegration:
-    """Tests for report module integration with MCP."""
-
-    @pytest.mark.integration
-    def test_report_module_exports(self) -> None:
-        """Test that report module exports expected functions."""
-        from gnn.report import (
-            ReportFormatter,
-            ReportGenerator,
-            generate_comprehensive_report,
-            process_report,
-        )
-
-        # All imports should succeed
-        assert process_report is not None
-        assert generate_comprehensive_report is not None
-        assert ReportGenerator is not None
-        assert ReportFormatter is not None

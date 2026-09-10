@@ -50,14 +50,15 @@ def sample_gnn_file(test_environment: Any) -> Any:
     file_path.write_text("""
     # ModelName
     Test Model
-    
+
     # StateSpaceBlock
     s[3,1]
-    
+
     # Connections
     s -> s
     """)
     return file_path
+
 
 
 class TestRecursionErrorRecovery:

@@ -15,8 +15,8 @@ Preflight messages align with Pipeline Step 5 (type checker) storage/resource es
 ``src/5_type_checker.py --estimate-resources``.
 
 Usage:
-    uv run python scripts/run_pymdp_gnn_scaling_analysis.py
-    uv run python scripts/run_pymdp_gnn_scaling_analysis.py --no-clear
+    uv run python scripts/experiments/run_pymdp_gnn_scaling_analysis.py
+    uv run python scripts/experiments/run_pymdp_gnn_scaling_analysis.py --no-clear
 """
 
 from __future__ import annotations
@@ -450,7 +450,7 @@ def _path_cwd_note(out_dir: Path) -> str | None:
         return (
             f"Output is under {scripts_dir} (relative output_dir from running inside scripts/). "
             f"To write next to the repo’s input tree, `cd {pr}` then run via "
-            "`uv run python scripts/run_pymdp_gnn_scaling_analysis.py`, or set `output_dir` to "
+            "`uv run python scripts/experiments/run_pymdp_gnn_scaling_analysis.py`, or set `output_dir` to "
             f"`{pr / 'input' / 'gnn_files' / 'pymdp_scaling_study'}`."
         )
     except ValueError:

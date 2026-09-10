@@ -65,6 +65,53 @@ class TestNormalizeUrl:
         assert checker._normalize_url(url) == url
 
 
+class TestHostAllowed:
+    """The ``--allow-hosts`` exemption predicate (exact + subdomain match)."""
+
+    def test_exact_host_match(self, checker: Any) -> None:
+        assert checker._host_allowed("https://doi.org/10.5281/x", ["doi.org"])
+
+    def test_subdomain_match(self, checker: Any) -> None:
+        assert checker._host_allowed(
+            "https://records.zenodo.org/a", ["zenodo.org"]
+        )
+
+    def test_unrelated_host_rejected(self, checker: Any) -> None:
+        assert not checker._host_allowed(
+            "https://evil.example.com/y", ["doi.org"]
+        )
+
+    def test_empty_allowlist_rejects(self, checker: Any) -> None:
+        assert not checker._host_allowed("https://doi.org/x", [])
+
+
+class TestBotBlockedCodes:
+    """Exemption semantics: only fully-allow-listed code groups clear."""
+
+    def test_all_allowlisted_group_is_exempt(self, checker: Any) -> None:
+        by_code = {
+            "403": ["https://doi.org/10.5281/x", "https://zenodo.org/r/7803328"]
+        }
+        assert (
+            checker._bot_blocked_codes(by_code, ["doi.org", "zenodo.org"])
+            == set()
+        )
+
+    def test_no_allowlist_flags_everything(self, checker: Any) -> None:
+        by_code = {"403": ["https://doi.org/x"]}
+        assert checker._bot_blocked_codes(by_code, []) == {"403"}
+
+    def test_mixed_group_stays_flagged(self, checker: Any) -> None:
+        by_code = {"403": ["https://doi.org/x", "https://evil.example.com/y"]}
+        assert checker._bot_blocked_codes(by_code, ["doi.org"]) == {"403"}
+
+    def test_non_bot_codes_never_exempted(self, checker: Any) -> None:
+        by_code = {"404": ["https://gone.example.com/x"]}
+        assert checker._bot_blocked_codes(by_code, ["gone.example.com"]) == set()
+        # 404 is genuinely dead — outside BOT_BLOCKED, unaffected by allow-hosts
+        assert "404" not in checker.BOT_BLOCKED
+
+
 class TestShouldSkipUrl:
     def test_localhost_skipped(self, checker: Any) -> None:
         assert checker._should_skip_url("http://localhost:11434")

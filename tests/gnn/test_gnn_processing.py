@@ -35,18 +35,18 @@ class TestGNNParsersSerializers:
 
     @pytest.mark.unit
     def test_serializers_imports(self) -> Any:
-        """Test that serializers can be imported from modular files."""
-        # Verify serializer classes exist and are proper types
-        assert JSONSerializer is not None
-        assert XMLSerializer is not None
-        assert MarkdownSerializer is not None
-        assert GNNSerializer is not None
+        """Serializer classes import from modular files and define serialize."""
+        for cls in (JSONSerializer, XMLSerializer, MarkdownSerializer):
+            assert callable(getattr(cls, "serialize", None)), (
+                f"{cls.__name__} must define a callable serialize method"
+            )
+        assert isinstance(GNNSerializer, type)
 
     @pytest.mark.unit
     def test_json_serializer_instance(self) -> Any:
         """Test JSONSerializer can be instantiated."""
         serializer = JSONSerializer()
-        assert serializer is not None
+        assert isinstance(serializer, JSONSerializer)
         assert hasattr(serializer, "serialize")
 
     @pytest.mark.unit
@@ -63,4 +63,15 @@ class TestGNNParsersSerializers:
             LeanSerializer,
             CoqSerializer,
         ]
-        assert len(serializers) >= 9, "At least 9 serializers should be available"
+        for serializer_cls in serializers:
+            assert callable(getattr(serializer_cls, "serialize", None)), (
+                f"{serializer_cls.__name__} must define a callable serialize method"
+            )
+        # Concrete serializers must actually inherit the shared ABC base, not
+        # just be listed here by name.
+        from gnn.parsers.base_serializer import BaseGNNSerializer
+
+        assert all(
+            issubclass(cls, BaseGNNSerializer)
+            for cls in (JSONSerializer, XMLSerializer)
+        )

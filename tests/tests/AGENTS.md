@@ -5,4 +5,4 @@ infrastructure exports and Step 2 wrapper. Keep tests aligned with the public
 `tests` package and pipeline wrapper behavior. Production code belongs in its
 own module.
 
-Run `uv run --extra dev python -m pytest src/tests/tests/ -q`.
+Run `uv run --extra dev python -m pytest tests/tests/ -q`.

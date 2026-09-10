@@ -415,9 +415,12 @@ class TestPublicSurface:
             assert name in ontology.__all__, f"{name} missing from __all__"
             assert hasattr(ontology, name), f"{name} missing from module"
 
-    def test_version_bumped(self) -> None:
+    def test_version_tracks_package(self) -> None:
+        import gnn
         import gnn.ontology as ontology
-        assert ontology.__version__ == "1.7.0"
+
+        # SC-16: subpackage versions re-export the canonical package version.
+        assert ontology.__version__ == gnn.__version__
 
     def test_module_info_version_synced(self) -> None:
         from gnn.ontology import __version__, get_module_info

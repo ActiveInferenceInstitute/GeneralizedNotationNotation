@@ -40,43 +40,6 @@ except ImportError as e:
 class TestRenderIntegration:
     """Integration tests for render module."""
 
-    @pytest.fixture
-    def sample_gnn_file(self, safe_filesystem: Any) -> Any:
-        """Create a sample GNN markdown file."""
-        content = """
-# Active Inference POMDP Agent
-
-## ModelName
-test_agent
-
-## StateSpaceBlock
-s[3,1,type=int]
-
-## ObservationBlock
-o[2,1,type=int]
-
-## Connections
-s -> o
-
-## InitialParameterization
-A = [[0.8, 0.1, 0.1], [0.1, 0.8, 0.1]]
-B = [[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]]
-"""
-        return safe_filesystem.create_file("test_agent.md", content)
-
-    @pytest.fixture
-    def sample_gnn_spec(self) -> Any:
-        """Create a minimal GNN spec dictionary."""
-        return {
-            "name": "test_model",
-            "states": ["s"],
-            "observations": ["o"],
-            "parameters": {
-                "A": [[0.8, 0.1, 0.1], [0.2, 0.7, 0.1]],
-                "B": [[0.9, 0.1], [0.1, 0.9]],
-            },
-        }
-
     @pytest.mark.unit
     def test_get_module_info(self) -> Any:
         """Test that render module provides info."""
@@ -225,15 +188,6 @@ B = [[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]]
 class TestRenderOutputStructure:
     """Tests for render output directory structure."""
 
-    @pytest.fixture
-    def sample_gnn_spec(self) -> Any:
-        """Create a minimal GNN spec dictionary."""
-        return {
-            "name": "test_model",
-            "states": ["s"],
-            "observations": ["o"],
-            "parameters": {"A": [[0.5, 0.5]]},
-        }
 
     @pytest.mark.unit
     def test_render_output_follows_conventions(

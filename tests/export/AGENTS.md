@@ -9,7 +9,7 @@ This directory owns pytest coverage for `src/export/`.
 - Do not place production implementation logic here.
 
 ## Verification
-Run `uv run --extra dev python -m pytest src/tests/export/ -q`.
+Run `uv run --extra dev python -m pytest tests/export/ -q`.
 
 Gaussian interchange coverage lives in `test_geo_infer_gaussian.py` with the
 three-state, two-observation, one-control `gaussian_rectangular.md` source.

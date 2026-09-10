@@ -6,7 +6,7 @@ documentation artifacts.
 
 ## Test Files
 
-- `test_add_module_docstrings.py` — regression tests for `scripts/add_module_docstrings.py` (dry-run and write contracts).
+- `test_add_module_docstrings.py` — regression tests for `scripts/experiments/add_module_docstrings.py` (dry-run and write contracts).
 - `test_capability_contracts.py` — capability-count contracts across repository docs.
 - `test_check_external_links.py` — regression tests for `scripts/check_external_links.py` URL-capture helpers.
 - `test_doc_accuracy_contracts.py` — doc-accuracy contracts (orchestrator line counts, stale-citation detection).

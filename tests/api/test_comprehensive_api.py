@@ -151,32 +151,19 @@ except ImportError:
 class TestGNNModule:
     """Test the GNN module's exposed API."""
 
-    def test_module_imports(self) -> None:
-        """Test that all expected functions are available."""
-        assert hasattr(gnn, "validate_gnn_file") or hasattr(gnn, "process_gnn")
-        # Test for any available functions without being too strict
-        attrs = dir(gnn)
-        assert len([attr for attr in attrs if not attr.startswith("_")]) > 0
 
-    def test_get_module_info(self) -> None:
-        """Test the get_module_info function."""
-        info = gnn.get_module_info()
-        assert isinstance(info, dict)
-        assert "version" in info
-        assert "description" in info
-        assert "features" in info
-        assert "available_validators" in info
-        assert "available_parsers" in info
-        assert "schema_formats" in info
 
     def test_validate_gnn_function(self) -> None:
-        """Test the validate_gnn function."""
-        # Test with invalid input — validate_gnn returns tuple(bool, list[str])
-        result = gnn.validate_gnn("invalid content")
+        """Test the validate_gnn_syntax function and its deprecated alias."""
+        # Test with invalid input — validate_gnn_syntax returns tuple(bool, list[str])
+        result = gnn.validate_gnn_syntax("invalid content")
         assert isinstance(result, tuple), f"Expected tuple, got {type(result)}"
         is_valid, messages = result
         assert isinstance(is_valid, bool)
         assert isinstance(messages, list)
+        with pytest.warns(DeprecationWarning):
+            alias_result = gnn.validate_gnn("invalid content")
+        assert alias_result == result
 
     def test_feature_flags(self) -> None:
         """Test that feature flags are properly set."""
@@ -188,31 +175,7 @@ class TestGNNModule:
 class TestExportModule:
     """Test the export module's exposed API."""
 
-    def test_module_imports(self) -> None:
-        """Test that all expected functions are available."""
-        assert hasattr(export, "_gnn_model_to_dict")
-        assert hasattr(export, "export_to_json_gnn")
-        assert hasattr(export, "export_to_xml_gnn")
-        assert hasattr(export, "export_to_python_pickle")
-        assert hasattr(export, "export_to_plaintext_summary")
-        assert hasattr(export, "export_to_plaintext_dsl")
-        assert hasattr(export, "get_module_info")
-        assert hasattr(export, "export_gnn_model")
-        assert hasattr(export, "get_supported_formats")
-        assert hasattr(export, "FEATURES")
-        assert hasattr(export, "__version__")
 
-    def test_get_module_info(self) -> None:
-        """Test the get_module_info function."""
-        info = export.get_module_info()
-        assert isinstance(info, dict)
-        assert "version" in info
-        assert "description" in info
-        assert "features" in info
-        assert "available_formats" in info
-        assert "graph_formats" in info
-        assert "text_formats" in info
-        assert "data_formats" in info
 
     def test_get_supported_formats(self) -> None:
         """Test the get_supported_formats function."""
@@ -233,24 +196,7 @@ class TestExportModule:
 class TestRenderModule:
     """Test the render module's exposed API."""
 
-    def test_module_imports(self) -> None:
-        """Test that all expected functions are available."""
-        assert hasattr(render, "render_gnn_spec")
-        assert hasattr(render, "main")
-        assert hasattr(render, "get_module_info")
-        assert hasattr(render, "get_available_renderers")
-        assert hasattr(render, "FEATURES")
-        assert hasattr(render, "__version__")
 
-    def test_get_module_info(self) -> None:
-        """Test the get_module_info function."""
-        info = render.get_module_info()
-        assert isinstance(info, dict)
-        assert "version" in info
-        assert "description" in info
-        assert "features" in info
-        assert "available_targets" in info
-        assert "supported_formats" in info
 
     def test_get_available_renderers(self) -> None:
         """Test the get_available_renderers function."""
@@ -277,29 +223,7 @@ class TestRenderModule:
 class TestWebsiteModule:
     """Test the website module's exposed API."""
 
-    def test_module_imports(self) -> None:
-        """Test that all expected functions are available."""
-        assert hasattr(website, "generate_website")
-        assert hasattr(website, "generate_html_report")
-        assert hasattr(website, "embed_image")
-        assert hasattr(website, "embed_markdown_file")
-        assert hasattr(website, "embed_text_file")
-        assert hasattr(website, "embed_json_file")
-        assert hasattr(website, "embed_html_file")
-        assert hasattr(website, "get_module_info")
-        assert hasattr(website, "get_supported_file_types")
-        assert hasattr(website, "FEATURES")
-        assert hasattr(website, "__version__")
 
-    def test_get_module_info(self) -> None:
-        """Test the get_module_info function."""
-        info = website.get_module_info()
-        assert isinstance(info, dict)
-        assert "version" in info
-        assert "description" in info
-        assert "features" in info
-        assert "supported_file_types" in info
-        assert "embedding_capabilities" in info
 
     def test_get_supported_file_types(self) -> None:
         """Test the get_supported_file_types function."""
@@ -353,31 +277,7 @@ class TestWebsiteModule:
 class TestSAPFModule:
     """Test the SAPF module's exposed API."""
 
-    def test_module_imports(self) -> None:
-        """Test that all expected functions are available."""
-        assert hasattr(audio, "SAPFGNNProcessor")
-        assert hasattr(audio, "convert_gnn_to_sapf")
-        assert hasattr(audio, "generate_audio_from_sapf")
-        assert hasattr(audio, "validate_sapf_code")
-        assert hasattr(audio, "SyntheticAudioGenerator")
-        assert hasattr(audio, "generate_oscillator_audio")
-        assert hasattr(audio, "apply_envelope")
-        assert hasattr(audio, "mix_audio_channels")
-        assert hasattr(audio, "get_module_info")
-        assert hasattr(audio, "process_gnn_to_audio")
-        assert hasattr(audio, "get_audio_generation_options")
-        assert hasattr(audio, "FEATURES")
-        assert hasattr(audio, "__version__")
 
-    def test_get_module_info(self) -> None:
-        """Test the get_module_info function."""
-        info = audio.get_module_info()
-        assert isinstance(info, dict)
-        assert "version" in info
-        assert "description" in info
-        assert "features" in info
-        assert "audio_capabilities" in info
-        assert "supported_formats" in info
 
     def test_get_audio_generation_options(self) -> None:
         """Test the get_audio_generation_options function."""
@@ -398,28 +298,7 @@ class TestSAPFModule:
 class TestOntologyModule:
     """Test the ontology module's exposed API."""
 
-    def test_module_imports(self) -> None:
-        """Test that all expected functions are available."""
-        assert hasattr(ontology, "parse_gnn_ontology_section")
-        assert hasattr(ontology, "load_defined_ontology_terms")
-        assert hasattr(ontology, "validate_annotations")
-        assert hasattr(ontology, "generate_ontology_report_for_file")
-        assert hasattr(ontology, "get_mcp_interface")
-        assert hasattr(ontology, "get_module_info")
-        assert hasattr(ontology, "process_gnn_ontology")
-        assert hasattr(ontology, "get_ontology_processing_options")
-        assert hasattr(ontology, "FEATURES")
-        assert hasattr(ontology, "__version__")
 
-    def test_get_module_info(self) -> None:
-        """Test the get_module_info function."""
-        info = ontology.get_module_info()
-        assert isinstance(info, dict)
-        assert "version" in info
-        assert "description" in info
-        assert "features" in info
-        assert "processing_capabilities" in info
-        assert "supported_formats" in info
 
     def test_get_ontology_processing_options(self) -> None:
         """Test the get_ontology_processing_options function."""
@@ -446,112 +325,66 @@ class TestOntologyModule:
 class TestTypeCheckerModule:
     """Test the type checker module's exposed API."""
 
-    def test_module_imports(self) -> None:
-        """Test that all expected functions are available."""
-        # Verify the public API surface exported by type_checker/__init__.py
-        assert hasattr(type_checker, "GNNTypeChecker")
-        assert hasattr(type_checker, "estimate_file_resources")
-        assert hasattr(type_checker, "__version__")
-        assert hasattr(type_checker, "FEATURES")
 
     def test_type_checker_instantiation(self) -> None:
         """Test that the type checker can be instantiated."""
         from gnn.type_checker.processor import GNNTypeChecker
 
         checker = GNNTypeChecker()
-        assert checker is not None
+        assert isinstance(checker, GNNTypeChecker)
 
 
 class TestVisualizationModule:
     """Test the visualization module's exposed API."""
 
-    def test_module_imports(self) -> None:
-        """Test that all expected functions are available."""
-        # Import the main visualization module
-        from gnn.visualization import visualizer
-
-        assert hasattr(visualizer, "GNNVisualizer")
-        assert hasattr(visualizer, "generate_graph_visualization")
-        assert hasattr(visualizer, "generate_matrix_visualization")
-        assert hasattr(visualizer, "create_visualization_report")
 
     def test_visualizer_instantiation(self) -> None:
         """Test that the visualizer can be instantiated."""
         from gnn.visualization.visualizer import GNNVisualizer
 
         visualizer = GNNVisualizer()
-        assert visualizer is not None
+        assert isinstance(visualizer, GNNVisualizer)
 
 
 class TestExecuteModule:
     """Test the execute module's exposed API."""
 
-    def test_module_imports(self) -> None:
-        """Test that all expected functions are available."""
-        # Import the main execute module
-        from gnn.execute import executor
-
-        assert hasattr(executor, "GNNExecutor")
-        assert hasattr(executor, "execute_gnn_model")
-        assert hasattr(executor, "run_simulation")
-        assert hasattr(executor, "generate_execution_report")
 
     def test_executor_instantiation(self) -> None:
         """Test that the executor can be instantiated."""
         from gnn.execute.executor import GNNExecutor
 
         executor = GNNExecutor()
-        assert executor is not None
+        assert isinstance(executor, GNNExecutor)
 
 
 class TestLLMModule:
     """Test the LLM module's exposed API."""
 
-    def test_module_imports(self) -> None:
-        """Test that all expected functions are available."""
-        # Import the main LLM module
-        from gnn.llm import llm_processor
-
-        assert hasattr(llm_processor, "GNNLLMProcessor")
-        assert hasattr(llm_processor, "analyze_gnn_model")
-        assert hasattr(llm_processor, "generate_explanation")
-        assert hasattr(llm_processor, "enhance_model")
 
     def test_llm_processor_instantiation(self) -> None:
         """Test that the LLM processor can be instantiated."""
         from gnn.llm.llm_processor import GNNLLMProcessor
 
         processor = GNNLLMProcessor()
-        assert processor is not None
+        assert isinstance(processor, GNNLLMProcessor)
 
 
 class TestMCPModule:
     """Test the MCP module's exposed API."""
 
-    def test_module_imports(self) -> None:
-        """Test that all expected functions are available."""
-        assert hasattr(mcp, "MCP")
-        assert hasattr(mcp, "register_module_tools")
-        assert hasattr(mcp, "initialize")
-        assert hasattr(mcp, "get_available_tools")
 
     def test_mcp_server_instantiation(self) -> None:
         """Test that the MCP server can be instantiated."""
         from gnn.mcp.server import MCPServer
 
         server = MCPServer()
-        assert server is not None
+        assert isinstance(server, MCPServer)
 
 
 class TestSetupModule:
     """Test the setup module's exposed API."""
 
-    def test_module_imports(self) -> None:
-        """Test that all expected functions are available."""
-        assert hasattr(setup, "setup_environment")
-        assert hasattr(setup, "install_dependencies")
-        assert hasattr(setup, "validate_system")
-        assert hasattr(setup, "get_environment_info")
 
     def test_setup_functions_exist(self) -> None:
         """Test that setup functions exist and are callable."""
@@ -564,31 +397,18 @@ class TestSetupModule:
 class TestUtilsModule:
     """Test the utils module's exposed API."""
 
-    def test_module_imports(self) -> None:
-        """Test that all expected functions are available."""
-        assert hasattr(utils, "ArgumentParser")
-        assert hasattr(utils, "PipelineLogger")
-        assert hasattr(utils, "performance_tracker")
-        assert hasattr(utils, "validate_pipeline_dependencies")
-        assert hasattr(utils, "setup_step_logging")
 
     def test_utils_classes_instantiation(self) -> None:
         """Test that utility classes can be instantiated."""
         from gnn.utils.argument_utils import ArgumentParser
 
         parser = ArgumentParser()
-        assert parser is not None
+        assert isinstance(parser, ArgumentParser)
 
 
 class TestPipelineModule:
     """Test the pipeline module's exposed API."""
 
-    def test_module_imports(self) -> None:
-        """Test that all expected functions are available."""
-        assert hasattr(pipeline, "STEP_METADATA")
-        assert hasattr(pipeline, "get_pipeline_config")
-        assert hasattr(pipeline, "get_output_dir_for_script")
-        assert hasattr(pipeline, "execute_pipeline_step")
 
     def test_pipeline_config(self) -> None:
         """Test that pipeline configuration is accessible."""

@@ -15,7 +15,7 @@ from __future__ import annotations
 import sys
 import tempfile
 
-# Make "tests.*" an importable alias for the src/tests/ directory so that
+# Make "tests.*" an importable alias for the tests/ directory so that
 # tests which do `from tests.conftest import X` continue to resolve.
 import types as _types
 from pathlib import Path
@@ -69,7 +69,7 @@ def src_dir() -> Path:
 
 @pytest.fixture(scope="session")
 def test_dir() -> Path:
-    """Absolute path to the src/tests/ directory."""
+    """Absolute path to the tests/ directory."""
     return Path(__file__).parent
 
 

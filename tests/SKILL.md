@@ -16,38 +16,38 @@ Executes the comprehensive test suite across all GNN pipeline modules. Manages t
 python src/2_tests.py --comprehensive
 
 # Run tests directly with pytest
-uv run --extra dev python -m pytest src/tests/ -v
+uv run --extra dev python -m pytest tests/ -v
 
 # Module-specific tests
-uv run --extra dev python -m pytest src/tests/test_gnn_*.py -v
-uv run --extra dev python -m pytest src/tests/test_render_*.py -v
-uv run --extra dev python -m pytest src/tests/test_export_*.py -v
+uv run --extra dev python -m pytest tests/gnn/ -v
+uv run --extra dev python -m pytest tests/render/ -v
+uv run --extra dev python -m pytest tests/export/ -v
 
 # Check coverage
 pytest --cov=src --cov-report=term-missing
 
 # Run with specific markers
-uv run --extra dev python -m pytest src/tests/ -v -m "not slow"
+uv run --extra dev python -m pytest tests/ -v -m "not slow"
 
 # Quick smoke test
-uv run --extra dev python -m pytest src/tests/ -x -q --tb=short
+uv run --extra dev python -m pytest tests/ -x -q --tb=short
 ```
 
 ## Test Organization
 
 ```
-src/tests/
-├── test_gnn_*.py              # GNN parsing tests
-├── test_render_*.py           # Code generation tests
-├── test_export_*.py           # Export format tests
-├── test_visualization_*.py    # Visualization tests
-├── test_pipeline_*.py         # Pipeline integration tests
+tests/
+├── gnn/                       # GNN parsing tests
+├── render/                    # Code generation tests
+├── export/                    # Export format tests
+├── visualization/             # Visualization tests
+├── pipeline/                  # Pipeline integration tests
 └── conftest.py                # Shared fixtures
 ```
 
 ## Writing New Tests
 
-- Place tests in `src/tests/test_{module}_*.py`
+- Place tests in `tests/<module>/test_{module}_*.py`
 - Use real methods only in production code
 - Follow existing patterns: fixtures, parametrize, clear assertions
 - Target >80% coverage per module

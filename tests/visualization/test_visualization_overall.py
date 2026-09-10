@@ -31,7 +31,7 @@ class TestVisualizationModuleComprehensive:
         from gnn.visualization import MatrixVisualizer
 
         visualizer = MatrixVisualizer()
-        assert visualizer is not None
+        assert isinstance(visualizer, MatrixVisualizer)
         assert hasattr(visualizer, "generate_matrix_analysis")
         assert hasattr(visualizer, "create_heatmap")
 
@@ -41,7 +41,7 @@ class TestVisualizationModuleComprehensive:
         from gnn.visualization import GNNVisualizer
 
         visualizer = GNNVisualizer()
-        assert visualizer is not None
+        assert isinstance(visualizer, GNNVisualizer)
         assert hasattr(visualizer, "generate_graph_visualization")
         assert hasattr(visualizer, "create_network_diagram")
 
@@ -51,7 +51,7 @@ class TestVisualizationModuleComprehensive:
         from gnn.visualization import OntologyVisualizer
 
         visualizer = OntologyVisualizer()
-        assert visualizer is not None
+        assert isinstance(visualizer, OntologyVisualizer)
         assert hasattr(visualizer, "extract_ontology_mappings")
         assert hasattr(visualizer, "create_ontology_table")
 
@@ -89,7 +89,7 @@ class TestVisualizationFunctionality:
         visualizer = MatrixVisualizer()
         matrix_data = comprehensive_test_data.get("matrix_data", [[1, 2], [3, 4]])
         result = visualizer.generate_matrix_analysis(matrix_data)
-        assert result is not None
+        assert isinstance(result, bool)
 
     @pytest.mark.unit
     def test_graph_visualization(self, comprehensive_test_data: Any) -> Any:
@@ -101,7 +101,8 @@ class TestVisualizationFunctionality:
             "graph_data", {"nodes": [], "edges": []}
         )
         result = visualizer.generate_graph_visualization(graph_data)
-        assert result is not None
+        assert isinstance(result, dict)
+        assert result["status"] == "SUCCESS"
 
     @pytest.mark.unit
     def test_ontology_visualization(self, comprehensive_test_data: Any) -> Any:
@@ -111,7 +112,7 @@ class TestVisualizationFunctionality:
         visualizer = OntologyVisualizer()
         ontology_data = comprehensive_test_data.get("ontology_data", {})
         result = visualizer.extract_ontology_mappings(ontology_data)
-        assert result is not None
+        assert isinstance(result, list)
 
 
 class TestVisualizationIntegration:
@@ -125,11 +126,8 @@ class TestVisualizationIntegration:
         from gnn.visualization import MatrixVisualizer
 
         visualizer = MatrixVisualizer()
-        gnn_file = list(sample_gnn_files.values())[0]
-        with open(gnn_file, "r") as f:
-            f.read()
         result = visualizer.generate_matrix_analysis([[1.0, 2.0], [3.0, 4.0]])
-        assert result is not None
+        assert isinstance(result, bool)
 
     @pytest.mark.integration
     def test_visualization_mcp_integration(self) -> Any:

@@ -5,14 +5,14 @@ Test Pipeline Integration - Integration tests for pipeline with external systems
 Tests the integration between pipeline steps and external dependencies.
 """
 
+import importlib
+import sys
+from pathlib import Path
 from typing import Any
 
 import pytest
 
 pytestmark = pytest.mark.pipeline
-import sys
-from pathlib import Path
-from typing import Any
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
@@ -38,12 +38,21 @@ class TestPipelineStepIntegration:
 
         # GNN processing
         parsed_data = parse_gnn_file(gnn_file)
-        assert parsed_data is not None
+        assert isinstance(parsed_data, dict), (
+            "parse_gnn_file must produce a spec dict for the render step"
+        )
 
         # Render with parsed data
         render_result = generate_pymdp_code(parsed_data)
 
-        assert render_result is not None
+        # The render step must hand the execute step a runnable Python script,
+        # not just "something".
+        assert isinstance(render_result, str) and render_result.strip(), (
+            "generate_pymdp_code must return non-empty Python source"
+        )
+        assert render_result.lstrip().startswith("#!/usr/bin/env python3"), (
+            "rendered PyMDP code must be a Python script"
+        )
 
     @pytest.mark.integration
     def test_render_to_execute_data_flow(self, tmp_path: Any) -> None:
@@ -61,10 +70,15 @@ class TestPipelineStepIntegration:
 
         code = generate_pymdp_code(parsed_data)
 
-        # Code should be executable Python
-        assert code is not None
-        if isinstance(code, str):
-            assert "import" in code or "def" in code or len(code) > 0
+        # Code should be executable Python: a non-empty script that at least
+        # byte-compiles (the cross-step artifact, not just "any string").
+        assert isinstance(code, str) and code.strip(), (
+            "generate_pymdp_code must return non-empty Python source"
+        )
+        assert code.lstrip().startswith("#!/usr/bin/env python3"), (
+            "rendered PyMDP code must be a Python script"
+        )
+        compile(code, "<generated_pymdp>", "exec")
 
     @pytest.mark.integration
     def test_visualization_to_report_data_flow(self, tmp_path: Any) -> None:
@@ -104,7 +118,10 @@ class TestPipelineExternalIntegration:
         # Should resolve output directory for a step
         result = get_output_dir_for_script("3_gnn.py", output_dir)
 
-        assert result is not None or output_dir.exists()
+        assert isinstance(result, Path), (
+            "get_output_dir_for_script must return the step's output path"
+        )
+        assert result.name == "3_gnn_output"
 
     @pytest.mark.integration
     def test_pipeline_logging_integration(self, tmp_path: Any) -> None:
@@ -123,7 +140,8 @@ class TestPipelineExternalIntegration:
 
         # Verify pipeline config is accessible
         config = get_pipeline_config()
-        assert config is not None
+        assert isinstance(config, dict)
+        assert "steps" in config
 
         # Log something
         logger.info("Test log message")
@@ -138,8 +156,8 @@ class TestPipelineExternalIntegration:
 
         config = get_pipeline_config()
 
-        assert config is not None
         assert isinstance(config, dict)
+        assert "steps" in config
 
 
 class TestPipelineModuleIntegration:
@@ -147,24 +165,32 @@ class TestPipelineModuleIntegration:
 
     @pytest.mark.integration
     def test_all_modules_importable(self) -> None:
-        """Test that all pipeline modules can be imported."""
-        modules: list[Any] = [
-            "gnn",
-            "render",
-            "execute",
-            "visualization",
-            "report",
-            "mcp",
-            "audio",
-            "export",
-        ]
+        """Test that all pipeline modules can be imported.
 
+        Strict: any import failure fails the test with the full failure list.
+        The previous version swallowed ImportError and asserted nothing, so it
+        could never fail.
+        """
+        modules: list[str] = [
+            "gnn",
+            "gnn.render",
+            "gnn.execute",
+            "gnn.visualization",
+            "gnn.report",
+            "gnn.mcp",
+            "gnn.audio",
+            "gnn.export",
+        ]
+        failures: list[str] = []
         for module_name in modules:
             try:
-                __import__(module_name)
-            except ImportError:
-                # Some modules may have optional dependencies
-                pass
+                importlib.import_module(module_name)
+            except Exception as exc:  # noqa: BLE001 — report every failure mode
+                failures.append(f"{module_name}: {type(exc).__name__}: {exc}")
+        assert not failures, (
+            f"{len(failures)}/{len(modules)} pipeline modules failed to import:\n"
+            + "\n".join(failures)
+        )
 
     @pytest.mark.integration
     def test_module_info_consistency(self) -> None:
@@ -175,8 +201,8 @@ class TestPipelineModuleIntegration:
 
         for info_func in [gnn_info, render_info, report_info]:
             info = info_func()
-            assert info is not None
             assert isinstance(info, dict)
+            assert "version" in info and "features" in info
 
     @pytest.mark.integration
     def test_pipeline_step_order(self) -> None:
@@ -207,8 +233,10 @@ class TestPipelineOutputIntegration:
         # Should resolve step-specific output directory
         result = get_output_dir_for_script("3_gnn.py", output_dir)
 
-        # Should create or return directory
-        assert result is not None or output_dir.exists()
+        assert isinstance(result, Path), (
+            "get_output_dir_for_script must return the step's output path"
+        )
+        assert result.name == "3_gnn_output"
 
     @pytest.mark.integration
     def test_summary_file_creation(self, tmp_path: Any) -> None:
@@ -236,11 +264,8 @@ class TestPipelineErrorIntegration:
     @pytest.mark.integration
     def test_graceful_module_failure(self, tmp_path: Any) -> None:
         """Test pipeline handles module failures gracefully."""
-        import logging
-
         from gnn.pipeline import execute_pipeline_step
-
-        logging.getLogger("test_pipeline")
+        from gnn.pipeline.execution import StepExecutionResult
 
         # Run with invalid step configuration - should return result, not crash
         step_config: dict[str, Any] = {"script_path": str(tmp_path / "nonexistent.py")}
@@ -254,8 +279,11 @@ class TestPipelineErrorIntegration:
             pipeline_data=pipeline_data,
         )
 
-        # Should return a result object (success or failure), not crash
-        assert result is not None
+        # Should return a failure result object, not crash — and the failure
+        # must actually be reported, not silently swallowed.
+        assert isinstance(result, StepExecutionResult)
+        assert result.success is False
+        assert result.error, "missing-script failure must carry an error message"
 
     @pytest.mark.integration
     def test_recovery_from_step_failure(self, tmp_path: Any) -> None:
@@ -273,6 +301,6 @@ class TestPipelineErrorIntegration:
         )
 
         # Should be able to instantiate and run
-        assert orchestrator is not None
+        assert isinstance(orchestrator, PipelineOrchestrator)
         result = orchestrator.run()
         assert result is True

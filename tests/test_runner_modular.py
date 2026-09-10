@@ -37,7 +37,7 @@ class _ModularTestRunner:
         self.args = args
         self.logger = logger
         self.project_root = Path(__file__).parent.parent
-        self.test_dir = self.project_root / "src" / "tests"
+        self.test_dir = self.project_root / "tests"
         self.results: dict[str, Any] = {}
         self.start_time = time.time()
 

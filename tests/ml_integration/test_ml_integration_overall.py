@@ -6,27 +6,11 @@ Public classes: TestMLIntegrationOverall
 import json
 from typing import Any
 
-import pytest
-
 from gnn.ml_integration.processor import process_ml_integration
 
 
 class TestMLIntegrationOverall:
     """Test suite for ML Integration module."""
-
-    @pytest.fixture
-    def sample_gnn_file(self, safe_filesystem: Any) -> Any:
-        """Create a sample GNN file for ML integration."""
-        content = """
-# ML Model
-ModelName: Predictor
-
-StateSpaceBlock {
-    Name: s1
-    Dimensions: 10
-}
-"""
-        return safe_filesystem.create_file("ml_model.md", content)
 
     def test_process_ml_integration_flow(
         self, safe_filesystem: Any, sample_gnn_file: Any
@@ -57,7 +41,7 @@ StateSpaceBlock {
         # If missing, 'structural_analysis'
 
         model_info = data["models_trained"][0]
-        assert model_info["source"] == "ml_model.md"
+        assert model_info["source"] == sample_gnn_file.name
         assert model_info["type"] == "structural_analysis"
         assert model_info["validation_status"] == "not_applicable"
         assert "accuracy" not in model_info

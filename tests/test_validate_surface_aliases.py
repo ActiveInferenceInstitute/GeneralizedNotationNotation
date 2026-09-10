@@ -22,7 +22,12 @@ from gnn.mcp.processors import (
     check_cross_format_consistency,
     validate_gnn_cross_format_consistency,
 )
-from gnn.parsers.basic import validate_gnn, validate_gnn_syntax_formal
+from gnn.parsers.basic import (
+    validate_gnn,
+    validate_gnn_syntax,
+    validate_gnn_syntax_formal,
+)
+from gnn.pipeline.config import get_output_dir_for_script
 from gnn.processing.processor import (
     check_gnn_file_structure,
     validate_gnn_structure,
@@ -45,7 +50,14 @@ def test_parsers_syntax_formal_alias_matches_canonical() -> None:
     content = "not a gnn file"
     with pytest.warns(DeprecationWarning):
         old = validate_gnn_syntax_formal(content)
-    assert old == validate_gnn(content)
+    assert old == validate_gnn_syntax(content)
+
+
+def test_parsers_validate_gnn_alias_matches_canonical() -> None:
+    content = "not a gnn file"
+    with pytest.warns(DeprecationWarning):
+        old = validate_gnn(content)
+    assert old == validate_gnn_syntax(content)
 
 
 def test_check_gnn_file_structure_alias_matches_canonical(tmp_path: Path) -> None:
@@ -158,7 +170,19 @@ def test_aliases_match_canonical_on_invalid_input_and_warn_at_caller(
         (
             "parsers.validate_gnn_syntax_formal",
             lambda: validate_gnn_syntax_formal("not a gnn file"),
+            lambda: validate_gnn_syntax("not a gnn file"),
+            lambda r: r,
+        ),
+        (
+            "parsers.validate_gnn",
             lambda: validate_gnn("not a gnn file"),
+            lambda: validate_gnn_syntax("not a gnn file"),
+            lambda r: r,
+        ),
+        (
+            "package.validate_gnn_file",
+            lambda: gnn.validate_gnn_file("not a gnn file"),
+            lambda: gnn.validate_gnn_source("not a gnn file"),
             lambda r: r,
         ),
         (
@@ -211,19 +235,19 @@ def test_aliases_match_canonical_on_invalid_input_and_warn_at_caller(
 def test_package_root_syntax_formal_lazy_export_still_deprecated() -> None:
     with pytest.warns(DeprecationWarning) as caught:
         result = gnn.validate_gnn_syntax_formal("not a gnn file")
-    assert result == validate_gnn("not a gnn file")
+    assert result == validate_gnn_syntax("not a gnn file")
     # The lazy re-export resolves to the parsers.basic alias wrapper whose
     # ``stacklevel=2`` must attribute the warning to this caller.
     assert caught[0].filename == __file__
 
 
-def test_pipeline_template_output_dir_reexport_warns() -> None:
+def test_pipeline_template_output_dir_reexport_warns(tmp_path: Path) -> None:
     """The legacy ``gnn.utils.pipeline_template`` re-export of the canonical
     ``gnn.pipeline.config.get_output_dir_for_script`` must warn and forward.
     """
     import gnn.utils.pipeline_template as template
-    from gnn.pipeline.config import get_output_dir_for_script as canonical
 
     with pytest.warns(DeprecationWarning):
         legacy = template.get_output_dir_for_script  # noqa: B018
-    assert legacy is canonical
+    assert callable(legacy)
+    assert legacy("3_gnn.py", tmp_path) == get_output_dir_for_script("3_gnn.py", tmp_path)

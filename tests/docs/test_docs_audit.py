@@ -44,6 +44,7 @@ def test_format_strict_issue_detail_lists_link_issues(
         agents_no_readme=[],
         readme_no_agents=[],
         doc_agents_structure=[],
+        security_version_issues=[],
     )
     assert "Broken relative links" in detail
     assert "docs/x.md:10" in detail
@@ -71,6 +72,7 @@ def test_format_strict_issue_detail_anchor_section_when_checked(
         agents_no_readme=[],
         readme_no_agents=[],
         doc_agents_structure=[],
+        security_version_issues=[],
     )
     assert "Bad markdown anchors" in detail
     assert "docs/a.md:2" in detail

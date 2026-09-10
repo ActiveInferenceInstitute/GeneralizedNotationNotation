@@ -57,6 +57,7 @@ FORBIDDEN_SKIP_TOKENS = (
     # Non-decorator marker forms (``pytestmark = pytest.mark.skipif(...)`` and
     # module-level marker variables) evade the @-prefixed tokens above.
     "pytest." + "mark.skip",
+    "pytest." + "mark.skipif",
     "pytest." + "mark.xfail",
     # unittest-style skips: decorators and runtime raises.
     "unittest." + "skip(",

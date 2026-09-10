@@ -307,7 +307,7 @@ class TestScalingSweep:
     def test_factorized_sweep_completes_for_n64(self, tmp_path: Path) -> None:
         scaling = _load_module(
             "pymdp_scaling",
-            PROJECT_ROOT / "scripts" / "run_pymdp_gnn_scaling_analysis.py",
+            PROJECT_ROOT / "scripts" / "experiments" / "run_pymdp_gnn_scaling_analysis.py",
         )
         factor_out = tmp_path / "specs"
         pipeline_out = tmp_path / "output"

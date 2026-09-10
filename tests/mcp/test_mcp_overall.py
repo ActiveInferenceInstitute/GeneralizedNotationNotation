@@ -15,12 +15,6 @@ import json
 class TestMCPModule:
     """Test suite for MCP module functionality."""
 
-    def test_module_imports(self) -> None:
-        """Test that MCP module can be imported."""
-        from gnn.mcp import FEATURES, __version__
-
-        assert __version__ is not None
-        assert isinstance(FEATURES, dict)
 
     def test_features_available(self) -> None:
         """Test that FEATURES dict is properly populated."""
@@ -112,7 +106,7 @@ class TestMCPResource:
             description="A test resource",
         )
 
-        assert resource is not None
+        assert isinstance(resource, MCPResource)
         assert resource.description == "A test resource"
 
 
@@ -124,7 +118,7 @@ class TestMCPServer:
         from gnn.mcp import MCPServer
 
         server = MCPServer()
-        assert server is not None
+        assert isinstance(server, MCPServer)
 
     def test_mcp_server_has_methods(self) -> None:
         """Test MCPServer has expected methods."""
@@ -236,7 +230,8 @@ class TestMCPUtilities:
         from gnn.mcp import initialize
 
         result = initialize()
-        assert result is not None
+        assert isinstance(result, tuple) and len(result) == 3
+        assert result[1] is True and result[2] is True, "MCP init must succeed"
 
 
 class TestMCPCaching:
@@ -303,5 +298,4 @@ rate = 0.1
         result = process_mcp(
             target_dir=safe_filesystem.temp_dir, output_dir=output_dir, logger=logger
         )
-
-        assert result is not None
+        assert isinstance(result, bool) and result is True

@@ -4,7 +4,7 @@
 # ╚══════════════════════════════════════════════════════════════════════════════╝
 #
 # This file drives the end-to-end PyMDP scaling study orchestrated by
-#   scripts/run_pymdp_gnn_scaling_analysis.py
+#   scripts/experiments/run_pymdp_gnn_scaling_analysis.py
 #
 # What happens when you run the sweep:
 #   1. GENERATE — For every (N, T) pair below, a stochastic GNN specification

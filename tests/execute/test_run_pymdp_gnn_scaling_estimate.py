@@ -1,4 +1,4 @@
-"""Bounds for generated GNN size estimates in scripts/run_pymdp_gnn_scaling_analysis.py."""
+"""Bounds for generated GNN size estimates in scripts/experiments/run_pymdp_gnn_scaling_analysis.py."""
 
 from __future__ import annotations
 
@@ -13,6 +13,7 @@ from tests.helpers import load_module_from_path
 _SCRIPT = (
     Path(__file__).resolve().parents[2]
     / "scripts"
+    / "experiments"
     / "run_pymdp_gnn_scaling_analysis.py"
 )
 

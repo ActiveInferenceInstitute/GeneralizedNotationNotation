@@ -23,7 +23,7 @@ Provide deterministic GNN fixtures that tests can consume without reaching into
 
 ## Related Files
 
-- `src/tests/conftest.py` — sample fixtures that generate equivalent content in temp dirs
+- `tests/conftest.py` — sample fixtures that generate equivalent content in temp dirs
 - `docs/gnn/tutorials/gnn_examples_doc.md` — the reference model documentation
 - `input/gnn_files/` — full-scale models (not fixtures)
 

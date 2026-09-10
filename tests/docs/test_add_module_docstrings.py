@@ -1,4 +1,4 @@
-"""Regression tests for ``scripts/add_module_docstrings.py``.
+"""Regression tests for ``scripts/experiments/add_module_docstrings.py``.
 
 The script mutates repository trees, so these tests exercise it against temp
 directories only: the dry-run contract (reports candidates, writes nothing)
@@ -16,7 +16,7 @@ from typing import Any
 from tests.helpers import load_module_from_path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-SCRIPT = REPO_ROOT / "scripts" / "add_module_docstrings.py"
+SCRIPT = REPO_ROOT / "scripts" / "experiments" / "add_module_docstrings.py"
 
 
 def _load() -> Any:

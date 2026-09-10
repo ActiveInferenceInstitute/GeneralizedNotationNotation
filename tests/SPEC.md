@@ -29,9 +29,11 @@ Naming convention: `test_{module}_{detail}.py`
 
 ## Test Categories
 
-The live routing table is `categories.py` (`MODULAR_TEST_CATEGORIES`) — 24
-categories whose `files` entries resolve relative to `src/tests/` (module
-subdirectory paths). `missing_category_files()` must stay empty; the
+The live routing table is `categories.py` (`MODULAR_TEST_CATEGORIES`) — 38
+categories whose `files` entries resolve relative to `tests/` (module
+subdirectory paths). The curated lists are grown to cover the whole tree at
+import (`_grow_routing_from_tree`), so the table routes every test file
+pytest would collect. `missing_category_files()` must stay empty; the
 contract test in `tests/test_categories_contract.py` enforces it. Do not
 duplicate counts here; enumerate with:
 
@@ -49,10 +51,10 @@ python src/2_tests.py --fast-only --verbose
 python src/2_tests.py --comprehensive --verbose
 
 # Specific category
-uv run --extra dev python -m pytest src/tests/gnn -v
+uv run --extra dev python -m pytest tests/gnn -v
 
 # All tests
-uv run --extra dev python -m pytest src/tests/ -v
+uv run --extra dev python -m pytest tests/ -v
 ```
 
 ## Key Exports
