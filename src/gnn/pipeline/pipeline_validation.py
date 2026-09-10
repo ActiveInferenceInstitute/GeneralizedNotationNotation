@@ -335,10 +335,10 @@ def generate_improvement_recommendations(report: Dict) -> List[str]:
                 f"🔴 **Critical**: Fix import errors in {error_modules} modules"
             )
             recommendations.append(
-                "   - Use the template in `src/utils/pipeline_template.py` as a reference"
+                "   - Use the template in `gnn/utils/pipeline_template.py` as a reference"
             )
             recommendations.append(
-                "   - Ensure all modules import from the centralized `utils` package"
+                "   - Ensure all modules import from the centralized `gnn.utils` package"
             )
 
         if warning_modules > 0:
@@ -413,9 +413,9 @@ def generate_improvement_recommendations(report: Dict) -> List[str]:
             "   5. Consider adding retry logic for network-dependent steps",
             "",
             "🔧 **Next Steps:**",
-            "   1. Run `python -m utils.argument_utils --validate` to check argument consistency",
-            "   2. Run `python -m utils.dependency_validator` for dependency analysis",
-            "   3. Use `GNN_PIPELINE_VERBOSE=true python src/main.py` for detailed execution logs",
+            "   1. Run `python -m gnn.utils.argument_utils --validate` to check argument consistency",
+            "   2. Run `python -m gnn.utils.dependency_validator` for dependency analysis",
+            "   3. Use `GNN_PIPELINE_VERBOSE=true uv run python src/gnn/main.py` for detailed execution logs",
         ]
     )
 
