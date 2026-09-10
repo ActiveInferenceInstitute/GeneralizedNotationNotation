@@ -485,29 +485,31 @@ class TestCoreModuleIntegration:
 
 
 def test_core_module_completeness() -> Any:
-    """Test that all core modules are complete and functional."""
-    core_modules: list[Any] = [
+    """Test that all core modules are complete and functional.
+
+    SC-43: every documented core module must import. A missing module is a
+    hard failure naming the module, not a lenient ``>= 3`` headcount that
+    masks breakage in the others.
+    """
+    core_modules: list[str] = [
         "gnn",
         "gnn.render",
         "gnn.execute",
         "gnn.validation",
         "gnn.visualization",
     ]
-    imported: list[Any] = []
     for module_name in core_modules:
         try:
             module = __import__(module_name)
-            imported.append(module_name)
-            assert hasattr(module, "__version__") or hasattr(module, "FEATURES"), (
-                f"Module {module_name} missing __version__ or FEATURES"
-            )
-        except ImportError:
-            pass
-    assert len(imported) >= 3, (
-        f"Expected at least 3 core modules, got {len(imported)}: {imported}"
-    )
+        except ImportError as e:
+            raise AssertionError(
+                f"Core module {module_name!r} failed to import: {e}"
+            ) from e
+        assert hasattr(module, "__version__") or hasattr(module, "FEATURES"), (
+            f"Module {module_name} missing __version__ or FEATURES"
+        )
     logging.info(
-        f"Core module completeness: {len(imported)}/{len(core_modules)} modules available"
+        f"Core module completeness: {len(core_modules)}/{len(core_modules)} modules available"
     )
 
 

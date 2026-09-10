@@ -5,7 +5,7 @@ Test Pipeline Integration - Integration tests for pipeline with external systems
 Tests the integration between pipeline steps and external dependencies.
 """
 
-from typing import Any
+import ast
 
 import pytest
 
@@ -61,10 +61,20 @@ class TestPipelineStepIntegration:
 
         code = generate_pymdp_code(parsed_data)
 
-        # Code should be executable Python
-        assert code is not None
-        if isinstance(code, str):
-            assert "import" in code or "def" in code or len(code) > 0
+        # Code must be valid, executable Python defining the pymdp program:
+        # parseable by ast and containing at least one top-level def/class.
+        # (SC-43: replaced the always-true "import" in code or "def" in code
+        # or len(code) > 0 tautology.)
+        assert isinstance(code, str), f"expected str, got {type(code).__name__}"
+        tree = ast.parse(code)
+        top_level_defs = [
+            node
+            for node in tree.body
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef))
+        ]
+        assert top_level_defs, (
+            "rendered pymdp code defines no top-level functions or classes"
+        )
 
     @pytest.mark.integration
     def test_visualization_to_report_data_flow(self, tmp_path: Any) -> None:
