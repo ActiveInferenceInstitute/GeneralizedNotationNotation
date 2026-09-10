@@ -4,6 +4,8 @@ Config Validation & Environment Checks — Pre-flight diagnostics.
 
 Provides:
   - validate_config(): validates input/config.yaml structure and values
+  - validate_config_dict(): in-memory twin validating a parsed config mapping
+    (wired into main.py startup so bad config fails the run before step 0)
   - check_environment(): verifies required tools and dependencies
   - PreflightReport: structured result with issues and recommendations
 """
