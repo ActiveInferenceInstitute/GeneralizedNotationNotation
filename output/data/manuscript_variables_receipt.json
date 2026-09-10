@@ -1,0 +1,17 @@
+{
+  "counts_describe_commit": "94aaf9a2c",
+  "dirty_path_count": 7,
+  "dirty_paths": [
+    ".agent_rules/testing.md",
+    "output/data/manuscript_variables.json",
+    "output/data/manuscript_variables_receipt.json",
+    "src/gnn/AGENTS.md",
+    "src/gnn/SKILL.md",
+    "src/gnn/audio/sapf/__init__.py",
+    "src/gnn/parsers/common.py"
+  ],
+  "generator": "scripts/z_generate_manuscript_variables.py",
+  "git_available": true,
+  "receipt_version": "gnn_manuscript_variables_receipt_v1",
+  "working_tree_clean": false
+}

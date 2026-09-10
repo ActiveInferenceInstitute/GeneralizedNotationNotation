@@ -1,6 +1,0 @@
-Test Execution Timeout
-=====================
-
-Timeout: 630 seconds
-Command: /Users/hum/Documents/GitHub/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.venv/bin/python -m pytest --tb=short --maxfail=5 --durations=10 -ra -n auto --timeout 600 -q -m not slow --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py --ignore=src/tests/test_pipeline_performance.py --ignore=src/tests/test_pipeline_recovery.py --ignore=src/tests/test_report_integration.py src/tests/
-Timestamp: 2026-09-04 13:58:03

@@ -26,6 +26,11 @@ from gnn.llm.processor import (
     process_llm,
 )
 
+# SC-44: these tests detect/start a local Ollama daemon and run real LLM
+# processing. The default suite filters the whole file via ``-m "not ollama"``
+# (see justfile test-cov / ci.yml); run explicitly with ``-m ollama``.
+pytestmark = pytest.mark.ollama
+
 
 class TestOllamaDetection:
     """Test Ollama availability detection."""

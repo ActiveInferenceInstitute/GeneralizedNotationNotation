@@ -6,7 +6,8 @@ This module provides comprehensive analysis and statistical processing for GNN m
 
 from typing import Any, Dict
 
-__version__ = "3.3.0"
+from gnn import __version__
+
 FEATURES: dict[str, Any] = {
     "statistical_analysis": True,
     "framework_comparison": True,

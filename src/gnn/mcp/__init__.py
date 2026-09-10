@@ -53,7 +53,8 @@ def list_available_resources() -> list:
 
 
 # -- Module metadata -----------------------------------------------------------------
-__version__ = "3.3.0"
+from gnn import __version__
+
 __author__ = "Active Inference Institute"
 __description__ = "Enhanced Model Context Protocol implementation for GNN"
 

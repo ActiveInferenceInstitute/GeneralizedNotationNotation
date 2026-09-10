@@ -18,17 +18,6 @@ class TestSecurityOverall:
     """Test suite for Security module."""
 
     @pytest.fixture
-    def sample_gnn_file(self, safe_filesystem: Any) -> Any:
-        """Create a sample GNN file for testing."""
-        content = """
-# Test Model
-
-## Parameters
-A = [[0.5, 0.5]]
-"""
-        return safe_filesystem.create_file("test_model.md", content)
-
-    @pytest.fixture
     def vulnerable_gnn_file(self, safe_filesystem: Any) -> Any:
         """Create a GNN file with simulated vulnerabilities."""
         content = """

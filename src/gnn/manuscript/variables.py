@@ -19,8 +19,12 @@ Design contract
   cannot inflate a published count, a tracked-but-deleted file cannot silently
   vanish from one, and any checkout of that commit reproduces the same numbers.
   When git is unavailable (a source tarball, a vendored copy) the snapshot falls
-  back to the working tree and ``GNN_GIT_COMMIT`` reports ``unknown``, so the
-  provenance of the numbers is always visible in the token map itself.
+  back to the working tree and ``GNN_GIT_COMMIT`` reports the ``unknown``
+  sentinel: the numbers are checkout-dependent, so provenance is visible in
+  the token map itself, and the token gate
+  (``scripts/check_manuscript_tokens.py``) and the figure build both FAIL on
+  the sentinel — a manuscript whose every count names no commit is not
+  publishable.
   ``src/tests/`` is counted once, by the test tokens, and is excluded from the
   source-file and LOC tokens.
 * **Deterministic.** No timestamps, no wall-clock, no randomness. Two runs over an
@@ -123,6 +127,7 @@ class RepositorySnapshot:
                 cwd=self.project_root,
                 capture_output=True,
                 check=False,
+                timeout=30,
             )
         except (OSError, subprocess.SubprocessError):  # pragma: no cover - env
             return None
@@ -182,6 +187,7 @@ class RepositorySnapshot:
                 input=payload.encode("utf-8"),
                 capture_output=True,
                 check=False,
+                timeout=30,
             )
         except (OSError, subprocess.SubprocessError):  # pragma: no cover - env
             return
@@ -293,11 +299,14 @@ def _count_packages(snapshot: RepositorySnapshot) -> int:
     )
 
 
+_TEST_FUNCTION_RE = re.compile(r"^\s*(?:async\s+)?def (test_\w+)", re.MULTILINE)
+
+
 def _count_test_functions(snapshot: RepositorySnapshot) -> tuple[int, int]:
     """Return ``(test_file_count, test_function_count)`` via static text scan."""
     file_count = 0
     func_count = 0
-    pattern = re.compile(r"^\s*(?:async\s+)?def (test_\w+)", re.MULTILINE)
+    pattern = _TEST_FUNCTION_RE
     tests = snapshot.glob("tests", "test_*.py")
     snapshot.prefetch(tests)
     for py in tests:
@@ -637,6 +646,12 @@ def corpus_coverage_notes(
     )
 
 
+_RELEASE_HEADING_RE = re.compile(
+    r"^##\s+\[(?P<version>[^\]]+)\]\s*[—-]\s*(?P<date>[0-9-]+)"
+)
+_RELEASE_CODENAME_RE = re.compile(r"^>\s*\*\*(?P<codename>[^*]+?)\.?\*\*")
+
+
 def _release_metadata(snapshot: RepositorySnapshot) -> list[tuple[str, str, str]]:
     """Parse ``CHANGELOG.md`` into ``(version, date, codename)`` triples.
 
@@ -647,8 +662,8 @@ def _release_metadata(snapshot: RepositorySnapshot) -> list[tuple[str, str, str]
     lines = snapshot.read_text("CHANGELOG.md").splitlines()
     if not lines:
         return []
-    heading = re.compile(r"^##\s+\[(?P<version>[^\]]+)\]\s*[—-]\s*(?P<date>[0-9-]+)")
-    codename = re.compile(r"^>\s*\*\*(?P<codename>[^*]+?)\.?\*\*")
+    heading = _RELEASE_HEADING_RE
+    codename = _RELEASE_CODENAME_RE
     releases: list[tuple[str, str, str]] = []
     for index, line in enumerate(lines):
         match = heading.match(line)

@@ -1,8 +1,0 @@
-variable	ontology_term
-A	RecognitionMatrix
-B	TransitionMatrix
-C	PreferenceVector
-D	Prior
-o	Observation
-s	HiddenState
-u	Action

@@ -453,6 +453,9 @@ print(json.dumps(result))
         The run path is forced with framework ``jax`` (installed) because
         unknown frameworks short-circuit to a skipped result before any
         subprocess runs.
+        SC-44: the hanging script sleeps only 2s against an enforced 1s
+        executor timeout, so a timeout-plumbing regression fails in seconds
+        instead of letting the script run to completion.
         """
         logger = logging.getLogger("test")
         results_dir = safe_filesystem.create_dir("results")
@@ -462,7 +465,7 @@ print(json.dumps(result))
             """#!/usr/bin/env python3
 import time
 print("partial-marker", flush=True)
-time.sleep(1000)  # Sleep far past the enforced timeout
+time.sleep(2)  # Outlives the 1s enforced timeout but no longer
 """,
         )
 
@@ -475,7 +478,7 @@ time.sleep(1000)  # Sleep far past the enforced timeout
         }
 
         result = execute_single_script(
-            script_info, results_dir, False, logger, timeout=2
+            script_info, results_dir, False, logger, timeout=1
         )
         assert result["success"] is False
         assert result["error_type"] == "TimeoutExpired"

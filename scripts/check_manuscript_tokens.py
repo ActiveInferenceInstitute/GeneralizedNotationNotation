@@ -10,10 +10,12 @@ Deterministic checks run before/after rendering the token-injected manuscript:
    ``manuscript/references.bib``.
 3. **Hard-coded counts** — bare literals equal to a high-value producer count (e.g. the
    test-file count, MCP-tool count) are flagged: they should be ``{{TOKEN}}`` instead.
-4. **Hard-coded step numbers** — a bare integer after "step"/"steps" that equals a
-   ``GNN_STEP_*`` token value is flagged regardless of size. Step numbers are below the
-   ``_HARDCODE_MIN`` floor the count scan uses, so they were invisible to check 3 while
-   the producer emitted a token for every one of them.
+4. **Hard-coded step numbers** — a bare integer in a step phrase — "step 3",
+   "Steps 5 and 6", and the plural forms where the number leads ("25 steps",
+   "25-step pipeline") — that equals a ``GNN_STEP_*`` token value is flagged
+   regardless of size. Step numbers are below the ``_HARDCODE_MIN`` floor the
+   count scan uses, so they were invisible to check 3 while the producer
+   emitted a token for every one of them.
 5. **Malformed cross-references** — a pandoc-crossref marker glued to a stray prefix
    character (``+@fig:x``) still resolves, so no reference gate catches it, but the
    prefix renders literally into the PDF ("+fig. 2 depicts...").
@@ -29,11 +31,29 @@ Deterministic checks run before/after rendering the token-injected manuscript:
    family's declared ``target_dir``. Every other check compares a *number* against the
    producer; a path is not a number, so all of them stayed green while a commit moved a
    family's ``target_dir`` and three prose sites went on naming the old directory.
+9. **Unresolved tokens in the shipped copy** — every ``{{TOKEN}}`` surviving in
+   ``output/manuscript/**`` after hydration fails ``--strict``: that is a token
+   the producer does not emit, rendered verbatim into the PDF.
+10. **Cross-reference labels** — every ``@fig:...``/``@tbl:...`` reference must
+   name a label a manuscript section declares (``{#fig:...}``/``{#tbl:...}``);
+   a reference to a label that does not exist renders as "fig. ???".
 
-Exit code is non-zero when an unknown token, dangling citation, malformed
-cross-reference, config.yaml drift or contradicted path claim is found (hard gate).
-Hard-coded count and step-number findings are reported as warnings unless
-``--strict`` is passed.
+Under ``--strict`` the gate additionally proves the committed artifacts agree
+with the producer at HEAD:
+
+* ``token_checksum(generate_variables(HEAD))`` must equal the checksum of the
+  committed ``output/data/manuscript_variables.json``;
+* every registry ``png_sha256`` must be the digest of the PNG on disk;
+* every registry ``source_sha256`` digest must equal the file's bytes at HEAD
+  on a clean tree (dirty trees compare against the working tree instead,
+  since HEAD cannot describe uncommitted sources) — a figure built from
+  working-tree data the prose does not describe (``fig:pipeline`` /
+  ``fig:family_matrix`` / ``fig:backend_matrix`` read STEP_INDEX.md / the
+  manifest / the registry directly) fails here.
+undeclared cross-reference, config.yaml drift, contradicted path claim, or a
+``GNN_GIT_COMMIT`` of ``unknown`` is found (hard gate). Hard-coded count and
+step-number findings and the strict artifact-agreement checks are reported as
+warnings unless ``--strict`` is passed.
 
 Usage:
     python scripts/check_manuscript_tokens.py [--strict]
@@ -42,37 +62,30 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
+import subprocess
 import sys
+from collections.abc import Mapping
 from pathlib import Path
 
 _PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(_PROJECT_ROOT / "src") not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT / "src"))
+if str(_PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT))
 
 from gnn.manuscript import (  # noqa: E402
     RepositorySnapshot,
     config_metadata_drift,
     generate_variables,
+    load_variables,
+    token_checksum,
 )
 from gnn.manuscript.variables import _families  # noqa: E402
 
 # The set of manuscript/*.md files the renderer does NOT substitute, taken from
-# the renderer itself so this gate cannot drift from what actually ships. The
-# literal fallback mirrors infrastructure.rendering.manuscript_injection's
-# EXCLUDED_DOC_FILENAMES for standalone runs (no template checkout on sys.path).
-#
-# Deriving it replaced a hand-maintained list that exempted 99_references.md —
-# a file that IS rendered, as "10 References" in the PDF.
-#
-# preamble.md stays in the checked set, but for the opposite reason: the injector
-# substitutes it into output/manuscript/ and then _manuscript_source.py copies the
-# RAW file back over that copy, so a token written there NEVER resolves and reaches
-# hyperref verbatim (verified 2026-09-05: `Subject: GNNSUBTITLE` in the shipped
-# PDF). Scanning it makes that dead end loud instead of silent. The producer owns
-# preamble.md's two PDF-metadata values directly — see
-# manuscript_variables.sync_preamble_metadata.
 try:  # pragma: no cover - exercised only with a template checkout present
     from infrastructure.rendering.manuscript_injection import (  # type: ignore
         EXCLUDED_DOC_FILENAMES as _EXCLUDED_FROZEN,
@@ -80,15 +93,24 @@ try:  # pragma: no cover - exercised only with a template checkout present
 
     _EXCLUDED = set(_EXCLUDED_FROZEN)
 except ModuleNotFoundError:
-    _EXCLUDED = {"AGENTS.md", "MANUSCRIPT_STATUS.md", "README.md", "SYNTAX.md"}
+    # Standalone fallback: the frozen mirror of the template's excluded-doc
+    # set, single-sourced with the figure build and the published-commands
+    # test so the four call sites cannot drift apart.
+    from scripts.lib.manuscript_exclusions import EXCLUDED_DOC_FILENAMES
+
+    _EXCLUDED = set(EXCLUDED_DOC_FILENAMES)
 
 _TOKEN_RE = re.compile(r"\{\{([A-Z][A-Z0-9_]*)\}\}")
 _CITE_RE = re.compile(r"@([A-Za-z][\w:-]+)")
 _BIB_KEY_RE = re.compile(r"^@\w+\{([^,]+),", re.MULTILINE)
 # Counts small enough to appear coincidentally (step numbers, dims) are not flagged.
 _HARDCODE_MIN = 10
-# "step 3", "Steps 5 and 6", "steps 11 and 12" — the integers a GNN_STEP_* token owns.
-_STEP_PHRASE_RE = re.compile(r"[Ss]teps?\s+(\d+(?:\s*(?:,|and|to|through|–|-)\s*\d+)*)")
+# "step 3", "Steps 5 and 6", "steps 11 and 12" — the integers a GNN_STEP_* token owns —
+# and the plural forms where the number leads: "25 steps", "25-step pipeline".
+_STEP_PHRASE_RE = re.compile(
+    r"(?:[Ss]teps?\s+(?P<lead>\d+(?:\s*(?:,|and|to|through|–|-)\s*\d+)*))"
+    r"|(?:\b(?P<trail>\d+)[\s-]*steps?\b)"
+)
 _INT_RE = re.compile(r"\d+")
 # A crossref marker preceded by a character that is neither "[" nor "!" nor
 # whitespace: the marker resolves, so the reference gate stays green, and the
@@ -130,10 +152,110 @@ def _figure_registry_issues(manuscript_dir: Path, sections: list[Path]) -> list[
         if not str(record.get("alt_text", "")).strip():
             issues.append(f"figure_registry.json: {label} has no alt_text")
         filename = str(record.get("filename", ""))
-        if not filename or not (registry_path.parent / filename).is_file():
+        # A hand-edited registry may carry an absolute or pathy filename;
+        # normalize it into output/figures/ before joining instead of letting
+        # an absolute path bypass the parent directory entirely.
+        image = Path(filename) if filename else Path()
+        if image.is_absolute():
+            try:
+                image = image.relative_to(registry_path.parent)
+            except ValueError:
+                issues.append(
+                    f"figure_registry.json: {label} image {filename!r} is "
+                    "outside output/figures/"
+                )
+                continue
+        if not filename or not (registry_path.parent / image).is_file():
             issues.append(
                 f"figure_registry.json: {label} image {filename!r} is missing"
             )
+    return issues
+
+
+# {#fig:...}/{#tbl:...} declarations a section makes, and the @fig:/@tbl: marks
+# that reference them. A reference to a label nothing declares renders as
+# "fig. ???" / "table ???" in the PDF and no other rule sees it.
+_DECLARED_LABEL_RE = re.compile(r"\{#((?:fig|tbl):[\w:-]+)")
+_XREF_RE = re.compile(r"@(?:fig|tbl):[\w:-]+")
+
+
+def _display(path: Path) -> str:
+    """Repo-relative display name, or the absolute form when outside the repo
+    (fixture trees in tests live in tmp_path, not under _PROJECT_ROOT)."""
+    try:
+        return str(path.relative_to(_PROJECT_ROOT))
+    except ValueError:
+        return str(path)
+
+
+def _crossref_issues(sections: list[Path], variables: Mapping[str, str]) -> list[str]:
+    """Every ``@fig:``/``@tbl:`` reference must name a declared label.
+
+    Declarations live in two places: the section markdown (``{#fig:...}`` on
+    an embed, ``{#tbl:...}`` on a caption) and the producer's table tokens —
+    ``{{GNN_STEP_TABLE}}`` and friends arrive with their ``{#tbl:...}``
+    caption attached, so the declared set is the union of both.
+    """
+    declared: set[str] = set()
+    referenced: set[tuple[str, str]] = set()
+    for path in sections:
+        body = _strip_code(path.read_text(encoding="utf-8"))
+        declared.update(_DECLARED_LABEL_RE.findall(body))
+        referenced.update((path.name, m.group(0)) for m in _XREF_RE.finditer(body))
+    # The producer's table tokens arrive with their {#tbl:...} caption
+    # attached; the tables they carry are declared labels too.
+    for value in variables.values():
+        declared.update(_DECLARED_LABEL_RE.findall(str(value)))
+    return [
+        f"{name}: {mark} names no declared {{#{mark[1:]}}} label"
+        for name, mark in sorted(referenced)
+        if mark[1:] not in declared
+    ]
+
+
+def _unresolved_output_tokens(output_dir: Path) -> list[str]:
+    """Unresolved ``{{TOKEN}}`` in the hydrated copies under output/manuscript/.
+
+    The producer emits every token the sections use; one it does not emit
+    survives substitution and reaches the PDF verbatim. This is the scan of
+    the thing that actually ships, not the sources.
+    """
+    if not output_dir.is_dir():
+        return []
+    issues: list[str] = []
+    for path in sorted(output_dir.rglob("*.md")):
+        body = _strip_code(path.read_text(encoding="utf-8"))
+        for tok in _TOKEN_RE.findall(body):
+            issues.append(
+                f"{_display(path)}: unresolved {{{{{tok}}}}} reached the rendered copy"
+            )
+    return issues
+
+
+def _section_hardcode_issues(
+    name: str,
+    no_tokens: str,
+    hardcode_targets: Mapping[str, str],
+    step_literals: Mapping[str, str],
+) -> list[str]:
+    """Bare-literal and step-phrase findings for one section body.
+
+    ``no_tokens`` must already be code-stripped and have ``{{TOKEN}}`` removed,
+    so a token's own value never reads as a hard-coded literal.
+    """
+    issues: list[str] = []
+    for value, key in hardcode_targets.items():
+        if re.search(rf"(?<!\d){re.escape(value)}(?!\d)", no_tokens):
+            issues.append(f"{name}: literal {value} should be {{{{{key}}}}}")
+    for phrase in _STEP_PHRASE_RE.finditer(no_tokens):
+        numbers = phrase.group("lead") or phrase.group("trail")
+        for number in _INT_RE.findall(numbers):
+            step_key = step_literals.get(number)
+            if step_key:
+                issues.append(
+                    f"{name}: step literal {number} in {phrase.group(0)!r} "
+                    f"should be {{{{{step_key}}}}}"
+                )
     return issues
 
 
@@ -236,6 +358,188 @@ def _path_claim_issues(sections: list[Path], families: list[dict]) -> list[str]:
     return sorted(set(issues))
 
 
+def _git_blob_digest(rel: str) -> str | None:
+    """sha256 of *rel*'s bytes at HEAD, or None when HEAD lacks the file."""
+    result = subprocess.run(
+        ["git", "show", f"HEAD:{rel}"],
+        cwd=str(_PROJECT_ROOT),
+        capture_output=True,
+        check=False,
+    )
+    if result.returncode != 0:
+        return None
+    return hashlib.sha256(result.stdout).hexdigest()
+
+
+def _strip_volatile_tokens(variables: Mapping[str, str]) -> dict[str, str]:
+    """Copy of a token map without commit-varying tokens (checksum input)."""
+    return {k: v for k, v in variables.items() if k != "GNN_GIT_COMMIT"}
+
+
+def _committed_variables_issue(live: Mapping[str, str], variables_json: Path) -> str:
+    """Failure message when the committed token map is not the producer's at HEAD.
+
+    SC-3: the render hydrates prose from the committed JSON while nothing
+    compared it to a fresh ``generate_variables(HEAD)`` — a consistently-stale
+    map (stale JSON, stale PNGs, stale registry) passed every gate together.
+    The checksum pins the committed map to the producer.
+    """
+    if not variables_json.is_file():
+        return (
+            f"{_display(variables_json)} is missing — run "
+            "scripts/z_generate_manuscript_variables.py"
+        )
+    try:
+        committed = load_variables(variables_json)
+    except (OSError, ValueError) as exc:
+        return f"{_display(variables_json)} is unreadable: {exc}"
+    # GNN_GIT_COMMIT cannot participate in the comparison: a committed map
+    # can never record the hash of the commit that carries it, so including
+    # it would make the gate fail on every commit that moves HEAD. The
+    # receipt's ``counts_describe_commit`` pins the commit separately; the
+    # checksum covers the commit-stable counts (the rot SC-3 guards against).
+    live_sum = token_checksum(_strip_volatile_tokens(live))
+    committed_sum = token_checksum(_strip_volatile_tokens(committed))
+    if live_sum != committed_sum:
+        return (
+            "stale: committed token_checksum "
+            f"{committed_sum[:12]} != producer-at-HEAD {live_sum[:12]} — run "
+            "scripts/z_generate_manuscript_variables.py"
+        )
+    return ""
+
+
+def _working_tree_is_clean() -> bool:
+    """True when ``git status --porcelain`` reports nothing (or git is absent
+    — the digest comparison then degrades to the working tree, which is all
+    a tarball checkout has)."""
+    try:
+        result = subprocess.run(
+            ["git", "status", "--porcelain"],
+            cwd=str(_PROJECT_ROOT),
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return True
+    return result.returncode == 0 and not result.stdout.strip()
+
+
+def _figure_artifact_issues() -> tuple[list[str], list[str]]:
+    """``(png_issues, source_issues)`` comparing figure_registry.json to disk/HEAD.
+
+    ``png_sha256`` must be the digest of the PNG file on disk (the artifact a
+    rebuild must reproduce). Every ``source_sha256`` digest must equal the
+    data the prose describes: on a clean tree that is the file's bytes at HEAD
+    (SC-21 — the three figures whose generators read STEP_INDEX.md / the
+    family manifest / the framework registry from the working tree must be
+    built from data the prose's HEAD snapshot also describes); on a dirty tree
+    HEAD cannot describe the current sources, so the reference is the working
+    tree instead, and the check degrades to "figures must match the sources
+    now on disk".
+    """
+    clean = _working_tree_is_clean()
+    registry_path = _PROJECT_ROOT / "output" / "figures" / "figure_registry.json"
+    if not registry_path.is_file():
+        return [
+            "output/figures/figure_registry.json is missing — run "
+            "python -m scripts.manuscript_build_figures"
+        ], []
+    payload = json.loads(registry_path.read_text(encoding="utf-8"))
+    records = payload.get("figures", payload) if isinstance(payload, dict) else payload
+    png_issues: list[str] = []
+    source_issues: list[str] = []
+    for rec in records:
+        if not isinstance(rec, dict):
+            continue
+        label = str(rec.get("label"))
+        filename = str(rec.get("filename", ""))
+        png = Path(filename) if filename else Path()
+        if png.is_absolute():
+            try:
+                png = png.relative_to(registry_path.parent)
+            except ValueError:
+                png_issues.append(
+                    f"{label}: registry image {filename!r} is outside output/figures/"
+                )
+                continue
+        png_file = registry_path.parent / png
+        digest = str(rec.get("png_sha256", ""))
+        if not filename or not png_file.is_file():
+            png_issues.append(
+                f"{label}: {filename!r} not built — run "
+                "python -m scripts.manuscript_build_figures"
+            )
+        elif digest and hashlib.sha256(png_file.read_bytes()).hexdigest() != digest:
+            png_issues.append(
+                f"{label}: committed {filename} is not the figure the registry "
+                "records — rebuild (python -m scripts.manuscript_build_figures) "
+                "and commit both"
+            )
+        for rel, recorded in sorted((rec.get("source_sha256") or {}).items()):
+            if clean:
+                blob = _git_blob_digest(str(rel))
+                reference = "at HEAD"
+            else:
+                source = _PROJECT_ROOT / str(rel)
+                blob = (
+                    hashlib.sha256(source.read_bytes()).hexdigest()
+                    if source.is_file()
+                    else None
+                )
+                reference = "on disk"
+            if blob is None:
+                source_issues.append(
+                    f"{label}: source {rel} cannot be read {reference}"
+                )
+            elif blob != str(recorded):
+                source_issues.append(
+                    f"{label}: source {rel} differs {reference} from the "
+                    "build-time digest — rebuild the figures on a commit the "
+                    "prose describes"
+                )
+    return png_issues, source_issues
+
+
+def _strict_artifact_checks(variables: Mapping[str, str], ok: bool) -> bool:
+    """The --strict artifact-agreement checks; prints findings, returns verdict."""
+    committed_issue = _committed_variables_issue(
+        variables, _PROJECT_ROOT / "output" / "data" / "manuscript_variables.json"
+    )
+    if committed_issue:
+        ok = False
+        print(f"\nCOMMITTED TOKEN MAP: ✗ {committed_issue}")
+    png_issues, source_issues = _figure_artifact_issues()
+    if png_issues:
+        ok = False
+        print(f"\nFIGURE PNG DIGESTS ({len(png_issues)}):")
+        for p in png_issues:
+            print(f"  ✗ {p}")
+    if source_issues:
+        ok = False
+        print(f"\nFIGURE SOURCE DIGESTS vs HEAD ({len(source_issues)}):")
+        for s in source_issues:
+            print(f"  ✗ {s}")
+    output_tokens = _unresolved_output_tokens(_PROJECT_ROOT / "output" / "manuscript")
+    if output_tokens:
+        ok = False
+        print(f"\nUNRESOLVED TOKENS IN output/manuscript ({len(output_tokens)}):")
+        for t in output_tokens:
+            print(f"  ✗ {t}")
+    return ok
+
+
+def _provenance_issue(variables: Mapping[str, str]) -> str:
+    """Failure message when the producer reports no commit (SC-23 sentinel)."""
+    if variables.get("GNN_GIT_COMMIT", "unknown") == "unknown":
+        return (
+            "GNN_GIT_COMMIT=unknown — the token map was computed without git, "
+            "so no commit describes these numbers"
+        )
+    return ""
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Manuscript token/citation integrity gate"
@@ -252,7 +556,9 @@ def main() -> int:
     bib_text = (manuscript_dir / "references.bib").read_text(encoding="utf-8")
     bib_keys = set(_BIB_KEY_RE.findall(bib_text))
 
-    # High-value counts that should always be tokens, not literals.
+    # High-value counts that should always be tokens, not literals. The SC-20
+    # additions are the structure/coverage counts a prose sentence most often
+    # re-types by hand; small ones are filtered by the _HARDCODE_MIN floor.
     hardcode_targets = {
         variables[k]: k
         for k in (
@@ -264,6 +570,13 @@ def main() -> int:
             "GNN_SRC_LOC",
             "GNN_EXAMPLE_COUNT",
             "GNN_SRC_PACKAGE_COUNT",
+            "GNN_STEP_COUNT",
+            "GNN_FAMILY_COUNT",
+            "GNN_BACKEND_COUNT",
+            "GNN_MAINTAINED_FRAMEWORK_COUNT",
+            "GNN_OUTPUT_FIGURE_COUNT",
+            "GNN_OUTPUT_ARTIFACT_FIGURE_COUNT",
+            "GNN_MANUSCRIPT_FIGURE_COUNT",
         )
         if variables.get(k, "").isdigit() and int(variables[k]) >= _HARDCODE_MIN
     }
@@ -331,19 +644,11 @@ def main() -> int:
             )
         # token-stripped body so {{COUNT}} does not count as a literal
         no_tokens = _TOKEN_RE.sub("", body)
-        for value, key in hardcode_targets.items():
-            if re.search(rf"(?<!\d){re.escape(value)}(?!\d)", no_tokens):
-                hardcoded.append(
-                    f"{path.name}: literal {value} should be {{{{{key}}}}}"
-                )
-        for phrase in _STEP_PHRASE_RE.finditer(no_tokens):
-            for number in _INT_RE.findall(phrase.group(1)):
-                step_key = step_literals.get(number)
-                if step_key:
-                    hardcoded.append(
-                        f"{path.name}: step literal {number} in {phrase.group(0)!r} "
-                        f"should be {{{{{step_key}}}}}"
-                    )
+        hardcoded.extend(
+            _section_hardcode_issues(
+                path.name, no_tokens, hardcode_targets, step_literals
+            )
+        )
 
     print(f"Sections checked: {len(_section_files(manuscript_dir))}")
     print(f"Known tokens: {len(known_tokens)} | Bib keys: {len(bib_keys)}")
@@ -359,11 +664,6 @@ def main() -> int:
         print(f"\nDANGLING CITATIONS ({len(dangling_cites)}):")
         for d in sorted(set(dangling_cites)):
             print(f"  ✗ {d}")
-    if malformed_xrefs:
-        ok = False
-        print(f"\nMALFORMED CROSS-REFERENCES ({len(malformed_xrefs)}):")
-        for m in sorted(set(malformed_xrefs)):
-            print(f"  ✗ {m}")
     figure_issues = _figure_registry_issues(
         manuscript_dir, _section_files(manuscript_dir)
     )
@@ -372,6 +672,12 @@ def main() -> int:
         print(f"\nFIGURE REGISTRY ({len(figure_issues)}):")
         for f in figure_issues:
             print(f"  ✗ {f}")
+    crossrefs = _crossref_issues(_section_files(manuscript_dir), variables)
+    if crossrefs:
+        ok = False
+        print(f"\nUNDECLARED CROSS-REFERENCE LABELS ({len(crossrefs)}):")
+        for c in crossrefs:
+            print(f"  ✗ {c}")
     path_claims = _path_claim_issues(
         _section_files(manuscript_dir),
         _families(RepositorySnapshot(_PROJECT_ROOT)),
@@ -389,12 +695,21 @@ def main() -> int:
     if config_hardcoded:
         # config.yaml counts cannot be tokenized away — always a hard failure.
         ok = False
+    provenance_issue = _provenance_issue(variables)
+    if provenance_issue:
+        # SC-23: the degraded snapshot sentinel is a published token; numbers
+        # with no commit behind them are not publishable, so this is a hard
+        # failure in both modes, not a strict-only one.
+        ok = False
+        print(f"\nPRODUCER PROVENANCE: ✗ {provenance_issue}")
     if hardcoded:
         print(f"\nHARD-CODED COUNTS ({len(hardcoded)}) — prefer tokens:")
         for h in sorted(set(hardcoded)):
             print(f"  ! {h}")
         if args.strict:
             ok = False
+    if args.strict:
+        ok = _strict_artifact_checks(variables, ok)
 
     if ok and not hardcoded:
         print("\n✅ Manuscript token/citation integrity: clean")

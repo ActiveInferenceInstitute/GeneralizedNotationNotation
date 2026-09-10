@@ -31,7 +31,7 @@ def run_fast_tests() -> bool:
         "--disable-warnings",
         "-m",
         "fast",
-        "src/tests/test_fast_suite.py",
+        "tests/test_fast_suite.py",
     ]
 
     # Add per-test timeout only when pytest-timeout is importable; an

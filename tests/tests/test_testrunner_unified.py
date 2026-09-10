@@ -29,7 +29,7 @@ def test_build_pytest_command_flags(tmp_path: object) -> None:
     )
     runner = TestRunner(config)
     cmd = runner._build_pytest_command(
-        [pathlib.Path("src/tests/test_fast_suite.py")], cast("pathlib.Path", tmp_path)
+        [pathlib.Path("tests/test_fast_suite.py")], cast("pathlib.Path", tmp_path)
     )
     assert cmd[:3] == [sys.executable, "-m", "pytest"]
     assert "--log-cli-level=WARNING" in cmd
@@ -54,7 +54,7 @@ def test_parse_pytest_output_summary_line() -> None:
 def test_parse_pytest_output_failure_and_collection_errors() -> None:
     config = TestExecutionConfig()
     runner = TestRunner(config)
-    stdout = "ERROR collecting src/tests/broken.py\nImportError: nope\n===== 1 failed in 0.1s =====\n"
+    stdout = "ERROR collecting tests/broken.py\nImportError: nope\n===== 1 failed in 0.1s =====\n"
     stats = runner._parse_pytest_output(stdout, "")
     assert stats["success"] is False
     assert stats["tests_failed"] == 1

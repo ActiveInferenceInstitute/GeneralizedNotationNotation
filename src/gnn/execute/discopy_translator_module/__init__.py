@@ -7,7 +7,7 @@ to DisCoPy categorical diagrams with JAX evaluation capabilities.
 
 from typing import Any
 
-__version__ = "1.1.3"
+from gnn import __version__
 
 # Import main functionality
 from .translator import (

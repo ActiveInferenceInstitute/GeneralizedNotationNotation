@@ -33,7 +33,7 @@ This folder contains module-focused tests for execution processors, framework ru
 - `test_pymdp_1_0_0_upstream_api.py` — PyMDP 1.0.0 upstream API compatibility surface.
 - `test_pymdp_contracts.py` — PyMDP rendering contracts.
 - `test_receipt_reliability.py` — execution receipt reliability.
-- `test_run_pymdp_gnn_scaling_estimate.py` — bounds for generated GNN size estimates in `scripts/run_pymdp_gnn_scaling_analysis.py`.
+- `test_run_pymdp_gnn_scaling_estimate.py` — bounds for generated GNN size estimates in `scripts/experiments/run_pymdp_gnn_scaling_analysis.py`.
 
 Run:
 

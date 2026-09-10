@@ -11,6 +11,9 @@ from typing import Any, Dict
 logger = logging.getLogger(__name__)
 
 # Essential imports
+# Module metadata
+from gnn import __version__
+
 from .analyzer import (
     convert_gnn_to_sapf,
     generate_audio_from_sapf,
@@ -44,8 +47,6 @@ from .processor import (
     write_basic_wav,
 )
 
-# Module metadata
-__version__ = "3.3.0"
 __author__ = "Active Inference Institute"
 __description__ = "Audio generation and sonification for GNN Processing Pipeline"
 

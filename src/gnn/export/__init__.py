@@ -45,7 +45,8 @@ try:
 except ImportError:  # pragma: no cover - exercised when format_exporters broken
     _fe_has_networkx = False
 HAS_NETWORKX: bool = bool(_fe_has_networkx)
-__version__ = "3.3.0"
+from gnn import __version__
+
 FEATURES: dict[str, Any] = {
     "json_export": True,
     "xml_export": True,

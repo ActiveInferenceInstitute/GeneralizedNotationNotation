@@ -34,22 +34,23 @@ Pipeline Steps:
 24. Intelligent analysis (24_intelligent_analysis.py)
 
 Usage:
-    python src/gnn/main.py [options]
+    uv run --extra dev python src/gnn/main.py [options]
 
 Examples:
     # Run full pipeline
-    python src/gnn/main.py --target-dir input/gnn_files --verbose
+    uv run --extra dev python src/gnn/main.py --target-dir input/gnn_files --verbose
 
     # Run specific steps only
-    python src/gnn/main.py --only-steps "0,1,2,3" --verbose
+    uv run --extra dev python src/gnn/main.py --only-steps "0,1,2,3" --verbose
 
     # Skip certain steps
-    python src/gnn/main.py --skip-steps "15,16" --verbose
+    uv run --extra dev python src/gnn/main.py --skip-steps "15,16" --verbose
 
 For complete usage information, see:
+- AGENTS.md: Repository conventions and the command of record
 - README.md: Project overview and quick start
 - docs/pipeline/README.md: Detailed pipeline documentation
-- src/README.md: Pipeline safety and reliability documentation
+- src/gnn/README.md: Module and pipeline safety documentation
 """
 
 import argparse
@@ -103,7 +104,7 @@ from gnn.utils.error_handling import (
 
 # Structured logging and visual progress tracking are maintained pipeline
 # surfaces; import errors should fail loudly during startup.
-from gnn.utils.logging.logging_utils import (
+from gnn.utils.logging_utils import (
     PipelineLogger,
     PipelineProgressTracker,
     log_pipeline_summary,
@@ -641,7 +642,7 @@ def _start_pipeline_run(
     progress_tracker = None
     if STRUCTURED_LOGGING_AVAILABLE:
         progress_tracker = PipelineProgressTracker(len(steps_to_execute))
-        from gnn.utils.logging.logging_utils import set_global_progress_tracker
+        from gnn.utils.logging_utils import set_global_progress_tracker
 
         set_global_progress_tracker(progress_tracker)
 
@@ -694,7 +695,7 @@ def _log_pipeline_step_start(
     """Log step start through structured logging when available."""
     if STRUCTURED_LOGGING_AVAILABLE and progress_tracker:
         progress_tracker.start_step(actual_step_number, description)
-        from gnn.utils.logging.logging_utils import (
+        from gnn.utils.logging_utils import (
             log_step_start as structured_log_step_start,
         )
 
@@ -808,7 +809,7 @@ def _log_pipeline_step_completion(
 
     if STRUCTURED_LOGGING_AVAILABLE and progress_tracker:
         if "WARNING" in status_for_logging:
-            from gnn.utils.logging.logging_utils import (
+            from gnn.utils.logging_utils import (
                 log_step_warning as structured_log_step_warning,
             )
 
@@ -820,7 +821,7 @@ def _log_pipeline_step_completion(
                 status=status_for_logging,
             )
         elif status_for_logging.startswith("SUCCESS"):
-            from gnn.utils.logging.logging_utils import (
+            from gnn.utils.logging_utils import (
                 log_step_success as structured_log_step_success,
             )
 
@@ -832,7 +833,7 @@ def _log_pipeline_step_completion(
                 status=status_for_logging,
             )
         else:
-            from gnn.utils.logging.logging_utils import (
+            from gnn.utils.logging_utils import (
                 log_step_error as structured_log_step_error,
             )
 

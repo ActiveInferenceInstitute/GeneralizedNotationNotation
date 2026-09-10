@@ -14,21 +14,6 @@ import pytest
 class TestAdvancedVisualizationModule:
     """Test suite for Advanced Visualization module functionality."""
 
-    def test_module_imports(self) -> None:
-        """Test that advanced_visualization module can be imported."""
-        from gnn.advanced_visualization import (
-            D2_AVAILABLE,
-            AdvancedVisualizer,
-            DashboardGenerator,
-            VisualizationDataExtractor,
-            process_advanced_viz,
-        )
-
-        assert callable(AdvancedVisualizer)
-        assert callable(DashboardGenerator)
-        assert callable(VisualizationDataExtractor)
-        assert callable(process_advanced_viz)
-        assert isinstance(D2_AVAILABLE, bool)
 
     def test_visualization_functions(self) -> None:
         """Test visualization creation functions."""
@@ -57,7 +42,7 @@ class TestAdvancedVisualizer:
         from gnn.advanced_visualization import AdvancedVisualizer
 
         visualizer = AdvancedVisualizer()
-        assert visualizer is not None
+        assert isinstance(visualizer, AdvancedVisualizer)
 
     def test_visualizer_methods(self) -> None:
         """Test visualizer has expected methods."""
@@ -76,7 +61,7 @@ class TestDashboardGenerator:
         from gnn.advanced_visualization import DashboardGenerator
 
         generator = DashboardGenerator()
-        assert generator is not None
+        assert isinstance(generator, DashboardGenerator)
 
     def test_generate_dashboard_function(self, safe_filesystem: Any) -> None:
         """Test dashboard generation function."""
@@ -116,7 +101,7 @@ class TestVisualizationDataExtractor:
         from gnn.advanced_visualization import VisualizationDataExtractor
 
         extractor = VisualizationDataExtractor()
-        assert extractor is not None
+        assert isinstance(extractor, VisualizationDataExtractor)
 
     def test_extract_visualization_data(self, safe_filesystem: Any) -> None:
         """Test data extraction function."""
@@ -235,8 +220,7 @@ class TestD2Visualization:
         """Test D2Visualizer can be imported when available."""
         from gnn.advanced_visualization import D2Visualizer
 
-        assert D2Visualizer is not None, "D2Visualizer must be importable"
-        assert callable(D2Visualizer)
+        assert callable(D2Visualizer), "D2Visualizer must be importable"
 
     def test_process_gnn_file_with_d2(
         self, safe_filesystem: Any, caplog: pytest.LogCaptureFixture

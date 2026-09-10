@@ -32,16 +32,18 @@ jobs:
     env:
       PYTHONPATH: src
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v7
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: ${{ matrix.python-version }}
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v7
+        uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v7.6.0
         with:
+          # Pin uv to the Dockerfile bootstrap floor series (UV_VERSION=0.12.0).
+          version: "0.12"
           enable-cache: true
 
       - name: Install all dependencies (all-extras)
@@ -59,27 +61,94 @@ jobs:
               print(f'  {mod}: OK')
           "
 
+      # Optional-import validation must distinguish an absent distribution
+      # (optional-extra gap: warn + skip, recorded in $GITHUB_STEP_SUMMARY) from
+      # a real breakage: a distribution that IS installed but whose import
+      # raises ImportError (e.g. a broken C-extension build) fails the step
+      # with a durable summary record instead of a swallowed 'skipped' line.
       - name: Validate optional imports (gui)
         run: |
-          uv run --all-extras python -c "
-          for mod in ['gradio', 'streamlit']:
+          uv run --all-extras python - <<'PY'
+          import importlib.metadata
+          import os
+          import sys
+
+          MODULES = ["gradio", "streamlit"]
+          skipped: list[str] = []
+          failed: list[str] = []
+
+          for mod in MODULES:
+              try:
+                  importlib.metadata.version(mod)
+              except importlib.metadata.PackageNotFoundError:
+                  skipped.append(f"{mod}: distribution not installed (optional-extra gap)")
+                  continue
               try:
                   __import__(mod)
-                  print(f'  {mod}: OK')
-              except ImportError:
-                  print(f'  {mod}: skipped (C-ext build failure)')
-          "
+              except ImportError as exc:
+                  failed.append(f"{mod}: installed but import raised ImportError: {exc!r}")
+              else:
+                  print(f"  {mod}: OK")
+
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary:
+              summary.write("### Optional imports (gui)\n\n")
+              for line in skipped:
+                  summary.write(f"- SKIPPED: {line}\n")
+              for line in failed:
+                  summary.write(f"- FAILED: {line}\n")
+              if not skipped and not failed:
+                  summary.write("- all imports OK\n")
+
+          for line in skipped:
+              print(f"::warning::{line}")
+          for line in failed:
+              print(f"::error::{line}")
+
+          if failed:
+              sys.exit(1)
+          PY
 
       - name: Validate optional imports (research / scaling)
         run: |
-          uv run --all-extras python -c "
-          for mod in ['sympy', 'numba', 'dask', 'distributed']:
+          uv run --all-extras python - <<'PY'
+          import importlib.metadata
+          import os
+          import sys
+
+          MODULES = ["sympy", "numba", "dask", "distributed"]
+          skipped: list[str] = []
+          failed: list[str] = []
+
+          for mod in MODULES:
+              try:
+                  importlib.metadata.version(mod)
+              except importlib.metadata.PackageNotFoundError:
+                  skipped.append(f"{mod}: distribution not installed (optional-extra gap)")
+                  continue
               try:
                   __import__(mod)
-                  print(f'  {mod}: OK')
-              except ImportError:
-                  print(f'  {mod}: skipped (build failure)')
-          "
+              except ImportError as exc:
+                  failed.append(f"{mod}: installed but import raised ImportError: {exc!r}")
+              else:
+                  print(f"  {mod}: OK")
+
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary:
+              summary.write("### Optional imports (research / scaling)\n\n")
+              for line in skipped:
+                  summary.write(f"- SKIPPED: {line}\n")
+              for line in failed:
+                  summary.write(f"- FAILED: {line}\n")
+              if not skipped and not failed:
+                  summary.write("- all imports OK\n")
+
+          for line in skipped:
+              print(f"::warning::{line}")
+          for line in failed:
+              print(f"::error::{line}")
+
+          if failed:
+              sys.exit(1)
+          PY
 
       - name: Run full test suite (all-extras)
         run: |
@@ -90,7 +159,7 @@ jobs:
 
       - name: Pytest JUnit report
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: pytest-junit-full-extras-${{ matrix.python-version }}
           path: junit/full-extras-${{ matrix.python-version }}.xml
@@ -100,3 +169,9 @@ jobs:
         if: failure()
         run: |
           echo "::warning::Full-extras test suite failed. Check workflow logs for details."
+          {
+            echo "## Full-extras run failed"
+            echo ""
+            echo "The scheduled Sunday all-extras run failed. Inspect the job logs and the"
+            echo "\`pytest-junit-full-extras-${{ matrix.python-version }}\` artifact for evidence."
+          } >> "$GITHUB_STEP_SUMMARY"

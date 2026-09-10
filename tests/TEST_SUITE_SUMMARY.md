@@ -1,6 +1,7 @@
 # GNN Pipeline Test Suite - Comprehensive Summary
 
-**Last Updated**: 2026-09-04
+**Last Updated**: 2026-09-10 (SCOPE-2026-09-09 execution wave: markers `ollama`
+and `env_heavy` registered; collect command uses `-m "not ollama"`)
 **Status**: Production Ready
 **Test Infrastructure Version**: 2.0.1
 
@@ -13,7 +14,7 @@ The GNN Processing Pipeline test suite provides comprehensive coverage across al
 ### Key Metrics
 
 - **Live file inventory**: `rg --files tests -g 'test_*.py'`
-- **Live collected inventory**: `uv run --extra dev python -m pytest --collect-only tests/ -q --tb=no --ignore=tests/llm/test_llm_ollama.py --ignore=tests/llm/test_llm_ollama_integration.py`
+- **Live collected inventory**: `uv run --extra dev python -m pytest --collect-only tests/ -q --tb=no -m "not ollama"`
 - **Latest full-run receipt**: the dated command-of-record evidence in the
   root [`README.md`](../../README.md); do not copy that changing total here.
 
@@ -84,6 +85,25 @@ All tests follow strict real-implementation policy:
 - **Recovery Testing**: Tests verify error recovery mechanisms
 - **Timeout Handling**: Tests include timeout scenarios and resource limits
 
+### Skip Inventory (SC-29, measured 2026-09-10)
+
+The default suite is zero-skip by contract (`tests/test_zero_skip_contracts.py`);
+every remaining skip is an environment/toolchain gate enumerated in
+`DEFAULT_SKIP_ALLOWLIST`. Measured profile: **16 env-skips** (was 17 before the
+SC-29 empty-parametrize fix in `tests/render/test_framework_availability.py`,
+whose empty `INTENTIONALLY_UNAVAILABLE` parametrize reported a misleading skip
+and is now a loud registry cross-check).
+
+| # | Condition | Location |
+|---|-----------|----------|
+| 1-11 | `could not import 'sklearn'` (optional `ml-ai` extra) | `tests/ml_integration/test_ml_integration_inference.py:123`, `:162`, `:181`, `:199`, `:213` (x4), `:234` (x2), `:251` |
+| 12 | `could not import 'torch'` (`torch` extra, GHSA-rrmf-rvhw-rf47 lock policy) | `tests/render/test_continuous_renderers.py:109` |
+| 13-14 | `D2 CLI not available` (system `d2` binary) | `tests/visualization/test_d2_visualizer.py:262`, `:384` |
+| 15-16 | `Julia backend packages not installed; skipping live execution` | `tests/render/test_stigmergic_multi_agent.py:379`, `:393` |
+
+Rendering is always asserted; only the execution half skips when the toolchain
+is absent. No skip in the default suite is unconditional.
+
 ---
 
 ## Coverage Layout
@@ -117,11 +137,11 @@ Registered in `pytest.ini` (single source of truth). For selective execution:
 - `@pytest.mark.unit` - Unit tests
 - `@pytest.mark.integration` - Integration tests
 - `@pytest.mark.performance` - Auto-applied to slow tests for dashboarding
-- `@pytest.mark.pipeline` - Pipeline infrastructure tests
-- `@pytest.mark.uv` / `@pytest.mark.jax_stack` / `@pytest.mark.mcp` / `@pytest.mark.xfail` - Toolchain and MCP-audit gates (pytest.ini)
+- `@pytest.mark.uv` / `@pytest.mark.jax_stack` / `@pytest.mark.mcp` / `@pytest.mark.ollama` / `@pytest.mark.env_heavy` - Toolchain, MCP-audit, and environment gates (pytest.ini; `xfail` is NOT registered and not used in the tree)
 
-The full registry (10 conftest markers + pytest.ini's) is the authority;
-unregistered markers fail collection under `--strict-markers`.
+The full registry (pytest.ini `markers`, 13 entries — conftest registers
+none) is the authority; unregistered markers fail collection under
+`--strict-markers`.
 
 ---
 

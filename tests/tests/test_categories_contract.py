@@ -23,15 +23,6 @@ from tests.categories import (
 if TYPE_CHECKING:
     from tests.test_runner_modular import _ModularTestRunner
 
-from tests.categories import (
-    MODULAR_TEST_CATEGORIES,
-    TestCategory,
-    get_all_test_files,
-    get_category,
-    get_category_files,
-    get_category_names,
-    missing_category_files,
-)
 
 pytestmark = pytest.mark.fast
 
@@ -70,7 +61,7 @@ def test_all_test_files_sorted_and_deduplicated() -> None:
 
 
 def test_missing_category_files_empty_for_real_tree() -> None:
-    """The routing table must reference files that exist under src/tests/."""
+    """The routing table must reference files that exist under tests/."""
     assert missing_category_files() == {}
 
 

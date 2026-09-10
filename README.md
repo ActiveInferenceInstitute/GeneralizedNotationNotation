@@ -53,7 +53,7 @@
 
 **Toolchain**: The committed `uv.lock` is the dependency source of truth (`uv lock --check` and `uv sync --frozen` must pass); the Dockerfile constraint `uv>=0.7.8` is the minimum bootstrap floor. Ruff lint and MyPy gates are maintained clean on `src/`.
 
-**Test Suite**: The command of record is `uv run --extra dev python -m pytest tests/ -q --tb=no --ignore=tests/llm/test_llm_ollama.py --ignore=tests/llm/test_llm_ollama_integration.py`. Run it in the current environment for pass/skip totals; Julia RxInfer execution uses the committed `Project.toml` under `src/gnn/execute/rxinfer/`, and ActiveInference.jl uses the committed environment under `src/gnn/execute/activeinference_jl/` (`julia --startup-file=no --project=<env> <script>`). Ollama tests are opt-in when a local daemon and configured test model are available.
+**Test Suite**: The command of record is `uv run --extra dev python -m pytest tests/ -q --tb=no -m "not ollama"`. Run it in the current environment for pass/skip totals; Julia RxInfer execution uses the committed `Project.toml` under `src/gnn/execute/rxinfer/`, and ActiveInference.jl uses the committed environment under `src/gnn/execute/activeinference_jl/` (`julia --startup-file=no --project=<env> <script>`). Ollama tests are opt-in when a local daemon and configured test model are available.
 **Published Output Evidence (verified 2026-06-18)**: root `output/` is a POMDP GridWorld full-pipeline publication generated from `input/gnn_files/pomdp_gridworld` with `--frameworks all` and validated by `uv run --extra dev python scripts/check_pomdp_gridworld_outputs.py output`.
 **Features**: semantic fidelity ledgers across all maintained model families, strict JSON parse/serialize/parse preservation for variables, edges, dimensions, parameter shapes, equations, time, and ontology mappings; cross-framework reliability ledgers with explicit compatible/unsupported backend statuses; GridWorld comparison across PyMDP, RxInfer, and ActiveInference.jl; model-family acceptance and interpretability ledgers; maintained template CLI (`gnn templates list`, `gnn templates show`, `gnn pull`); authenticated local MCP HTTP orchestration; structured PyMDP 1.0 POMDP execution; static/headless GUI publication; PyMDP Scaling Study; and MCP Full Module Exposure.
 **New in v3.0.0 ("Long-Running Orchestration")**: three safe-by-design `src/gnn/pipeline/` contracts — durable observation streams, resumable run sessions, and auditable container plans — plus additive live wiring, a strict acceptance gate (`scripts/run_v3_orchestration_acceptance.py`), and 3 new MCP tools. No live infrastructure mutation; every module generates, validates, replays, or plans data only. See [docs/pipeline/v3_orchestration.md](./docs/pipeline/v3_orchestration.md); run identity, reproduction, and manifest-verification rules: [docs/development/durable-runs.md](./docs/development/durable-runs.md).
@@ -82,7 +82,7 @@ GNN addresses the challenge of communicating Active Inference models, which are 
 | File | Purpose | Start Here If... |
 |------|---------|------------------|
 | **[README.md](./README.md)** | Main entry point and overview | You're new to GNN |
-| **[AGENTS.md](./AGENTS.md)** | Master agent scaffolding - all 25 pipeline steps and 32 module directories documented | You want to understand the pipeline architecture |
+| **[AGENTS.md](./AGENTS.md)** | Master agent scaffolding - all 25 pipeline steps and 46 module directories documented | You want to understand the pipeline architecture |
 | **[DOCS.md](./DOCS.md)** | Comprehensive documentation with all diagrams | You need the complete system overview |
 | **[ARCHITECTURE.md](./ARCHITECTURE.md)** | Implementation patterns and extension guides | You're developing or extending GNN |
 | **[docs/quickstart.md](./docs/quickstart.md)** | Step-by-step getting started guide | You want to run your first pipeline |
@@ -100,7 +100,7 @@ GNN addresses the challenge of communicating Active Inference models, which are 
 ```text
 GeneralizedNotationNotation/
 ├── 📄 README.md, AGENTS.md, DOCS.md, ARCHITECTURE.md  # Core documentation
-├── 📁 src/                    # 25-step pipeline + 32 module directories
+├── 📁 src/                    # 25-step pipeline + 46 module directories (count via `ls -d src/gnn/*/ | wc -l`)
 │   ├── main.py               # 🎯 Main orchestrator - run this!
 │   ├── 0_template.py → 24_intelligent_analysis.py  # Numbered pipeline scripts
 │   ├── gnn/, render/, execute/, llm/, ...  # Agent modules

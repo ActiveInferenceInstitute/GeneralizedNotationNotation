@@ -11,6 +11,7 @@ License: MIT
 
 import logging
 import uuid
+import warnings
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from datetime import datetime
@@ -32,6 +33,8 @@ from typing import (
 
 if TYPE_CHECKING:
     from gnn.types import ValidationResult
+
+from gnn.parsers.converters import ConversionError as _CanonicalConversionError
 
 logger = logging.getLogger(__name__)
 
@@ -83,8 +86,17 @@ class ValidationWarning(Warning):
     """Warning for validation issues."""
 
 
-class ConversionError(Exception):
-    """Exception for format conversion errors."""
+class ConversionError(_CanonicalConversionError):
+    """Earlier ConversionError, kept for the gnn.parsers.converters migration."""
+
+    def __init__(self, *args: object) -> None:
+        warnings.warn(
+            "gnn.parsers.common.ConversionError is the earlier name; import from "
+            "gnn.parsers.converters instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        super().__init__(*args)
 
 
 # ================================

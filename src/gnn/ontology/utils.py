@@ -7,6 +7,8 @@ This module provides ontology utility functions.
 
 from typing import Any, Dict
 
+from gnn import __version__
+
 
 def get_module_info() -> Dict[str, Any]:
     """
@@ -18,7 +20,7 @@ def get_module_info() -> Dict[str, Any]:
     return {
         "module_name": "ontology",
         "description": "Ontology processing for GNN files",
-        "version": "1.7.0",
+        "version": __version__,
         "author": "GNN Team",
         "capabilities": [
             "ontology_parsing",

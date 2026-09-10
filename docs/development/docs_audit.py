@@ -153,15 +153,33 @@ def extract_links(md: str) -> list[str]:
     return links
 
 
-def _gfm_heading_slug(heading_line: str) -> str:
-    """Approximate GitHub-style slug from a markdown heading line (with # marks)."""
+def gfm_slug(heading_line: str) -> str:
+    """GitHub-compatible heading slug, per cmark-gfm's `gfm_auto_identifiers`
+    extension (github/cmark-gfm, extensions/gfm_auto_identifiers.c):
+
+    1. Take the heading text (inline formatting markers such as backticks are
+       removed, as GitHub renders them away before slugging).
+    2. Lowercase (Unicode-aware).
+    3. Remove every character that is not a Unicode letter, digit, underscore,
+       hyphen, or space (this strips emoji and other punctuation).
+    4. Replace each space with a hyphen, then strip leading/trailing hyphens
+       (GitHub drops hyphens left over from removed punctuation/emoji). Interior
+       space runs are NOT collapsed — one hyphen per space.
+
+    >>> gfm_slug("## 🚀 Start here")
+    'start-here'
+    >>> gfm_slug("## 中文 标题!")
+    '中文-标题'
+    >>> gfm_slug("## C++ & Python")
+    'c--python'
+    >>> gfm_slug("## Foo   Bar")
+    'foo---bar'
+    """
     m = re.match(r"^#{1,6}\s+(.+)$", heading_line.strip())
     text = m.group(1) if m else heading_line
-    text = re.sub(r"`+", "", text.strip()).lower()
-    # Keep word chars (Unicode) and spaces; drop punctuation like (), /, emoji
+    text = text.strip().replace("`", "").lower()
     text = re.sub(r"[^\w\s-]", "", text, flags=re.UNICODE)
-    text = re.sub(r"[-\s]+", "-", text.strip())
-    return re.sub(r"-+", "-", text).strip("-")
+    return text.replace(" ", "-").strip("-")
 
 
 def _heading_slugs_in_markdown(md: str) -> set[str]:
@@ -169,7 +187,7 @@ def _heading_slugs_in_markdown(md: str) -> set[str]:
     for line in md.splitlines():
         if not line.strip().startswith("#"):
             continue
-        slugs.add(_gfm_heading_slug(line))
+        slugs.add(gfm_slug(line))
     return slugs
 
 
@@ -282,6 +300,25 @@ def audit_agents_spec() -> list[tuple[Path, str]]:
         if not spec.exists():
             rel = agents.relative_to(REPO_ROOT)
             issues.append((rel, "references SPEC.md but sibling SPEC.md missing"))
+    return issues
+
+
+VERSION_RE = re.compile(r'^version\s*=\s*"([^"]+)"', re.MULTILINE)
+
+
+def audit_security_supported_version() -> list[str]:
+    """SECURITY.md supported-versions table must carry a row for the version
+    declared in pyproject.toml, e.g. a line starting with `| 3.3.0`."""
+    issues: list[str] = []
+    pyproject = REPO_ROOT / "pyproject.toml"
+    security = REPO_ROOT / "SECURITY.md"
+    m = VERSION_RE.search(pyproject.read_text(encoding="utf-8", errors="replace"))
+    if not m:
+        return ["pyproject.toml: no `version = \"…\"` declaration found"]
+    version = m.group(1)
+    row = f"| {version}"
+    if row not in security.read_text(encoding="utf-8", errors="replace"):
+        return [f"SECURITY.md: no supported-versions row for current version {version}"]
     return issues
 
 
@@ -500,6 +537,7 @@ def format_strict_issue_detail(
     agents_no_readme: list[Path],
     readme_no_agents: list[Path],
     doc_agents_structure: list[tuple[Path, str]],
+    security_version_issues: list[str],
 ) -> str:
     """Human-readable listing for terminal fix loops (stderr)."""
     chunks: list[str] = []
@@ -561,6 +599,13 @@ def format_strict_issue_detail(
         chunks.append(f"## docs/**/AGENTS.md structure ({len(doc_agents_structure)})\n")
         for rel, msg in sorted(doc_agents_structure, key=lambda x: str(x[0])):
             chunks.append(f"  `{rel}`  → {msg}\n")
+
+    if security_version_issues:
+        chunks.append(
+            f"## SECURITY.md missing supported-versions row ({len(security_version_issues)})\n"
+        )
+        for msg in security_version_issues:
+            chunks.append(f"  `{msg}`\n")
 
     chunks.append("\nTip: full tables also in docs/development/docs_audit_report.md\n")
     return "".join(chunks)
@@ -629,6 +674,7 @@ def main() -> int:
     agents_no_readme = audit_agents_without_readme()
     readme_no_agents = audit_readme_without_agents()
     doc_agents_structure = audit_doc_agents_structure()
+    security_version_issues = audit_security_supported_version()
 
     report_path = args.report_path
     if not report_path.is_absolute():
@@ -749,6 +795,17 @@ def main() -> int:
             "",
         ]
     )
+    if not security_version_issues:
+        lines.append("None.")
+    else:
+        for msg in security_version_issues:
+            lines.append(f"- {msg}")
+    lines.extend(
+        [
+            "",
+            "",
+        ]
+    )
     if not doc_agents_structure:
         lines.append("None.")
     else:
@@ -774,6 +831,7 @@ def main() -> int:
     print(f"AGENTS without README: {len(agents_no_readme)}")
     print(f"README without AGENTS: {len(readme_no_agents)}")
     print(f"doc AGENTS structure: {len(doc_agents_structure)}")
+    print(f"SECURITY.md version row: {len(security_version_issues)}")
     total_issues = (
         len(link_issues)
         + len(spec_issues)
@@ -783,6 +841,7 @@ def main() -> int:
         + len(agents_no_readme)
         + len(readme_no_agents)
         + len(doc_agents_structure)
+        + len(security_version_issues)
         + (len(anchor_issues) if args.check_anchors else 0)
     )
     if args.strict and total_issues > 0:
@@ -800,6 +859,7 @@ def main() -> int:
                     agents_no_readme=agents_no_readme,
                     readme_no_agents=readme_no_agents,
                     doc_agents_structure=doc_agents_structure,
+                    security_version_issues=security_version_issues,
                 ),
                 file=sys.stderr,
                 end="",

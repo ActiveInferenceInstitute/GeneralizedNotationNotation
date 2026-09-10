@@ -16,7 +16,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union, cast
 
-from gnn.utils.logging.logging_utils import (
+from gnn.utils.logging_utils import (
     log_step_error,
     log_step_start,
     log_step_success,
@@ -60,6 +60,7 @@ from .metadata import (
     _summarize_collected_outputs,
     generate_execution_report,
 )
+from .security_gate import check_script_allowed
 from .subprocess_envelope import (
     INTERNAL_ERROR,
     NEVER_STARTED,
@@ -950,14 +951,12 @@ def _framework_for_data_helpers(framework: str) -> ExecutionFrameworkName:
     return cast(ExecutionFrameworkName, framework)
 
 
-#: Environment escape hatch: set to "1" to bypass the pre-execution security
-#: gate (trusted-local research use only; see SECURITY.md).
-_GNN_ALLOW_UNSAFE_EXEC = "GNN_ALLOW_UNSAFE_EXEC"
+_GNN_ALLOW_MISSING_DEPS = "GNN_ALLOW_MISSING_DEPS"
 
 
-def _gnn_allow_unsafe_exec() -> bool:
-    """Whether the operator has explicitly opted out of the pre-exec gate."""
-    return os.environ.get(_GNN_ALLOW_UNSAFE_EXEC, "").strip().lower() in (
+def _gnn_allow_missing_deps() -> bool:
+    """Whether to continue past a missing PyMDP dependency (SC-34, opt-in)."""
+    return os.environ.get(_GNN_ALLOW_MISSING_DEPS, "").strip().lower() in (
         "1",
         "true",
         "yes",
@@ -1035,28 +1034,27 @@ def execute_single_script(
     exec_result = _new_execution_result(context)
 
     # Pre-execution security gate (RED_TEAM_REVIEW V-01/V-06): scan rendered
-    # code BEFORE running it. Step 18 stays forensic; this closes the gap.
-    if not _gnn_allow_unsafe_exec():
-        try:
-            from gnn.security.processor import scan_script_for_execution
-
-            verdict = scan_script_for_execution(script_path)
-            if not verdict.get("ok", True):
-                blocked = verdict.get("blocked", [])
-                detail = "; ".join(
-                    f"{b.get('vulnerability_type', 'unknown')}@{b.get('line', '?')}"
-                    for b in blocked[:5]
-                )
-                exec_result["error"] = (
-                    f"Pre-execution security gate blocked {script_info['name']}: "
-                    f"{detail}"
-                )
-                exec_result["error_type"] = "SecurityGateBlocked"
-                exec_result["security_findings"] = blocked
-                logger.error(exec_result["error"])
-                return exec_result
-        except ImportError:
-            logger.debug("security.processor unavailable; pre-exec gate skipped")
+    # code BEFORE running it. Shared helper (SC-1) also gates the GNNExecutor
+    # / MCP path and fails CLOSED when the scanner cannot be imported (SC-2a);
+    # GNN_ALLOW_UNSAFE_EXEC remains the explicit operator opt-out at both sites.
+    gate_verdict = check_script_allowed(script_path)
+    if gate_verdict["overridden"]:
+        logger.warning(
+            "GNN_ALLOW_UNSAFE_EXEC set: pre-execution security gate bypassed "
+            "for %s (trusted-local use only)",
+            script_info["name"],
+        )
+    if not gate_verdict["ok"]:
+        exec_result["error"] = (
+            f"Pre-execution security gate blocked {script_info['name']}: "
+            f"{gate_verdict['reason']}"
+        )
+        exec_result["error_type"] = gate_verdict.get(
+            "error_type", "SecurityGateBlocked"
+        )
+        exec_result["security_findings"] = gate_verdict["blocked"]
+        logger.error(exec_result["error"])
+        return exec_result
 
     if framework == "rxinfer":
         exec_result["execution_metadata"] = (
@@ -1097,7 +1095,18 @@ def execute_single_script(
                             exec_result["error"] = (
                                 f"PyMDP dependency missing: {import_check.stderr}"
                             )
-                            # Continue anyway as it might be a local import, but log warning
+                            if not _gnn_allow_missing_deps():
+                                # SC-34: continuation is opt-in. Default is a
+                                # structured fast failure instead of a doomed run.
+                                exec_result["error_type"] = "DependencyMissing"
+                                exec_result["return_code"] = NEVER_STARTED
+                                logger.error(
+                                    f"Failing fast for {script_info['name']}: PyMDP "
+                                    "unavailable (set GNN_ALLOW_MISSING_DEPS=1 to "
+                                    "attempt continuation)"
+                                )
+                                return exec_result
+                            # Opt-in continuation: might still be a local import.
                     except Exception as e:
                         logger.debug(f"Error checking PyMDP importability: {e}")
 
@@ -1164,6 +1173,37 @@ def execute_single_script(
                 exec_result["error_type"] = "SandboxUnavailable"
                 logger.error(sandbox_blocked)
                 return exec_result
+            # SC-2b: running unsandboxed is a record, not a whisper — emit a
+            # pipeline-visible receipt and carry the mode in execution metadata.
+            if sandbox_mode == "off":
+                logger.warning(
+                    "sandbox_disabled_receipt: script %s executed WITHOUT a "
+                    "sandbox (GNN_SANDBOX=off, the default). Rendered scripts "
+                    "run with operator privileges; set GNN_SANDBOX=prefer/require "
+                    "for isolation.",
+                    script_info["name"],
+                    extra={
+                        "event": "sandbox_disabled_receipt",
+                        "sandbox_mode": sandbox_mode,
+                        "script": script_info["name"],
+                    },
+                )
+            else:
+                logger.warning(
+                    "sandbox_active_receipt: script %s will run under sandbox "
+                    "isolation (GNN_SANDBOX=%s)",
+                    script_info["name"],
+                    sandbox_mode,
+                    extra={
+                        "event": "sandbox_active_receipt",
+                        "sandbox_mode": sandbox_mode,
+                    },
+                )
+            exec_result["execution_metadata"] = dict(
+                exec_result.get("execution_metadata") or {}
+            )
+            exec_result["execution_metadata"]["sandbox_mode"] = sandbox_mode
+            exec_result["execution_metadata"]["sandboxed"] = bool(sandbox_prefix)
             base_command = _build_script_execution_command(context, sandbox_prefix)
 
             for rep in range(K):

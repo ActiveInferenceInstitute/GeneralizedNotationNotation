@@ -7,5 +7,5 @@ This folder contains module-focused tests for pipeline summary analysis and exec
 Run:
 
 ```bash
-uv run --extra dev python -m pytest src/tests/intelligent_analysis/ -q
+uv run --extra dev python -m pytest tests/intelligent_analysis/ -q
 ```

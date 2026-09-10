@@ -47,21 +47,6 @@ class TestSetupModule:
         )
         assert "--setup-core-only" in cmd
 
-    def test_module_imports(self) -> Any:
-        """Test that setup module can be imported."""
-        from gnn.setup import (
-            FEATURES,
-            __version__,
-            check_uv_availability,
-            setup_uv_environment,
-            validate_uv_setup,
-        )
-
-        assert __version__ is not None
-        assert isinstance(FEATURES, dict)
-        assert callable(setup_uv_environment)
-        assert callable(validate_uv_setup)
-        assert callable(check_uv_availability)
 
     def test_features_available(self) -> Any:
         """Test that FEATURES dict is properly populated."""
@@ -126,14 +111,6 @@ class TestSetupModule:
         assert hasattr(venv, "create")
         assert hasattr(venv, "activate")
 
-    def test_get_module_info(self) -> Any:
-        """Test get_module_info function."""
-        from gnn.setup import get_module_info
-
-        info = get_module_info()
-        assert isinstance(info, dict)
-        # Should have environment_types per the module definition
-        assert "environment_types" in info
 
     def test_check_python_version(self) -> Any:
         """Test Python version check."""

@@ -24,7 +24,7 @@ import time
 from pathlib import Path
 from typing import Any, Dict, List, cast
 
-from gnn.utils.logging.logging_utils import setup_step_logging
+from gnn.utils.logging_utils import setup_step_logging
 
 from .config import get_pipeline_config
 from .diagnostic_enhancer import PipelineDiagnosticEnhancer
@@ -530,79 +530,76 @@ class EnhancedHealthChecker:
         return recommendations
 
     def print_enhanced_report(self) -> None:
-        """Print comprehensive health report."""
-        print("\n" + "=" * 80)
-        print("🚀 GNN PIPELINE ENHANCED HEALTH CHECK")
-        print("=" * 80)
+        """Log comprehensive health report."""
+        log = self.logger.info
+        log("=" * 80)
+        log("🚀 GNN PIPELINE ENHANCED HEALTH CHECK")
+        log("=" * 80)
 
         health_score = self.results.get("health_score", {})
         score_icon = {"excellent": "🌟", "good": "✅", "fair": "⚠️", "poor": "❌"}.get(
             health_score.get("rating", "unknown"), "❓"
         )
 
-        print(
+        log(
             f"\n{score_icon} Overall Health: {health_score.get('rating', 'unknown').upper()} ({health_score.get('score', 0)}/100)"
         )
 
         # System resources
         sys_resources = self.results.get("system_resources", {})
         if sys_resources.get("status") == "healthy":
-            print("\n💻 System Resources:")
+            log("\n💻 System Resources:")
             memory = sys_resources.get("memory", {})
-            print(
+            log(
                 f"   CPU: {sys_resources.get('cpu', {}).get('cores', '?')} cores ({sys_resources.get('cpu', {}).get('usage_percent', '?')}% usage)"
             )
-            print(
+            log(
                 f"   Memory: {memory.get('total_gb', '?')}GB total ({memory.get('usage_percent', '?')}% usage)"
             )
-            print(
-                f"   Disk: {sys_resources.get('disk', {}).get('free_gb', '?')}GB free"
-            )
-            print(
+            log(f"   Disk: {sys_resources.get('disk', {}).get('free_gb', '?')}GB free")
+            log(
                 f"   Network: {sys_resources.get('network', {}).get('status', 'unknown')}"
             )
 
         # Core dependencies
         core_deps = self.results.get("core_dependencies", {})
         dep_icon = "✅" if core_deps.get("status") == "healthy" else "❌"
-        print(
+        log(
             f"\n{dep_icon} Core Dependencies: {core_deps.get('status', 'unknown').upper()}"
         )
         if core_deps.get("available"):
-            print(
+            log(
                 f"   Available ({len(core_deps['available'])}/{core_deps['total_checked']}):"
             )
             for dep in core_deps["available"][:5]:  # Show first 5
-                print(f"     ✅ {dep}")
+                log(f"     ✅ {dep}")
             if len(core_deps["available"]) > 5:
-                print(f"     ... and {len(core_deps['available']) - 5} more")
+                log(f"     ... and {len(core_deps['available']) - 5} more")
 
         if core_deps.get("missing"):
-            print(f"   Missing ({len(core_deps['missing'])}):")
+            self.logger.warning(f"   Missing ({len(core_deps['missing'])}):")
             for dep in core_deps["missing"]:
-                print(f"     ❌ {dep}")
+                self.logger.warning(f"     ❌ {dep}")
 
         # Optional features
-        print("\n🔧 Optional Features:")
+        log("\n🔧 Optional Features:")
         optional_deps = self.results.get("optional_dependencies", {})
         for group_name, group_info in optional_deps.items():
             status_icon = {"available": "✅", "partial": "⚠️", "unavailable": "❌"}.get(
                 group_info.get("status"), "❓"
             )
-            print(
-                f"   {status_icon} {group_name}: {group_info.get('status', 'unknown')}"
-            )
+            log(f"   {status_icon} {group_name}: {group_info.get('status', 'unknown')}")
 
         # Pipeline structure
         pipeline_struct = self.results.get("pipeline_structure", {})
         struct_icon = "✅" if pipeline_struct.get("status") == "complete" else "❌"
-        print(
+        log(
             f"\n{struct_icon} Pipeline Structure: {pipeline_struct.get('status', 'unknown').upper()}"
         )
-        print(
+        log(
             f"   Scripts: {len(pipeline_struct.get('available_scripts', []))}/24 available"
         )
-        print(
+        log(
             f"   Modules: {len(pipeline_struct.get('available_modules', []))}/24 available"
         )
 
@@ -611,26 +608,26 @@ class EnhancedHealthChecker:
         int_icon = {"full": "✅", "partial": "⚠️", "limited": "❌"}.get(
             integration.get("integration_status"), "❓"
         )
-        print(
+        log(
             f"\n{int_icon} Pipeline Integration: {integration.get('integration_status', 'unknown').upper()}"
         )
 
         # Recommendations
         recommendations = self.results.get("recommendations", [])
         if recommendations:
-            print("\n🎯 RECOMMENDATIONS:")
+            log("\n🎯 RECOMMENDATIONS:")
             for i, rec in enumerate(recommendations, 1):
                 priority_icon = {"high": "🔴", "medium": "🟡", "low": "🔵"}.get(
                     rec.get("priority"), "⚪"
                 )
-                print(
+                log(
                     f"   {i}. {priority_icon} [{rec['category'].upper()}] {rec['title']}"
                 )
-                print(f"      {rec['description']}")
-                print(f"      💡 {rec['action']}")
+                log(f"      {rec['description']}")
+                log(f"      💡 {rec['action']}")
 
-        print(f"\n⏱️ Health check completed in {self.results['execution_time']:.2f}s")
-        print("=" * 80)
+        log(f"\n⏱️ Health check completed in {self.results['execution_time']:.2f}s")
+        log("=" * 80)
 
 
 def run_enhanced_health_check(verbose: bool = False) -> Dict[str, Any]:
@@ -664,29 +661,33 @@ def main() -> int:
 
     # Output format
     if args.json:
-        print(json.dumps(results, indent=2, default=str))
+        print(
+            json.dumps(results, indent=2, default=str)
+        )  # user-output: stdout parsed by --json consumers/tests
     elif not args.verbose:
         # Brief summary for non-verbose mode
         health_score = results.get("health_score", {})
         print(
             f"Health Score: {health_score.get('score', 0)}/100 ({health_score.get('rating', 'unknown')})"
-        )
+        )  # user-output: CLI summary
 
         core_deps = results.get("core_dependencies", {})
         print(
             f"Core Dependencies: {len(core_deps.get('available', []))}/{len(core_deps.get('missing', [])) + len(core_deps.get('available', []))} available"
-        )
+        )  # user-output: CLI summary
 
         pipeline_struct = results.get("pipeline_structure", {})
         print(
             f"Pipeline Scripts: {len(pipeline_struct.get('available_scripts', []))}/25 available"
-        )
+        )  # user-output: CLI summary
 
     # Save to file if requested
     if args.output_file:
         with open(args.output_file, "w") as f:
             json.dump(results, f, indent=2, default=str)
-        print(f"\n📄 Results saved to: {args.output_file}")
+        print(
+            f"\n📄 Results saved to: {args.output_file}"
+        )  # user-output: CLI confirmation
 
     # Exit code based on health
     health_score = results.get("health_score", {})

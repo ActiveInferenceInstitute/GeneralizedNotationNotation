@@ -8,6 +8,10 @@ This script verifies that the complete GNN Processing Pipeline is working correc
 from pathlib import Path
 from typing import Any, Dict
 
+from gnn.utils.logging_utils import setup_step_logging
+
+logger = setup_step_logging("verify_pipeline")
+
 
 def verify_pipeline_discovery() -> Dict[str, Any]:
     """Verify pipeline step discovery."""
@@ -222,57 +226,57 @@ def verify_test_modules() -> Dict[str, Any]:
 
 def main() -> int:
     """Main verification function."""
-    print("🔍 GNN Processing Pipeline Verification")
-    print("=" * 50)
+    logger.info("🔍 GNN Processing Pipeline Verification")
+    logger.info("=" * 50)
 
     verification_results: dict[Any, Any] = {}
 
     # Run all verifications
-    print("\n1. Verifying pipeline discovery...")
+    logger.info("\n1. Verifying pipeline discovery...")
     verification_results["pipeline_discovery"] = verify_pipeline_discovery()
 
-    print("2. Verifying module imports...")
+    logger.info("2. Verifying module imports...")
     verification_results["module_imports"] = verify_module_imports()
 
-    print("3. Verifying pipeline configuration...")
+    logger.info("3. Verifying pipeline configuration...")
     verification_results["pipeline_config"] = verify_pipeline_config()
 
-    print("4. Verifying step files...")
+    logger.info("4. Verifying step files...")
     verification_results["step_files"] = verify_step_files()
 
-    print("5. Verifying MCP integration...")
+    logger.info("5. Verifying MCP integration...")
     verification_results["mcp_integration"] = verify_mcp_integration()
 
-    print("6. Verifying test modules...")
+    logger.info("6. Verifying test modules...")
     verification_results["test_modules"] = verify_test_modules()
 
     # Print results
-    print("\n📊 Verification Results")
-    print("=" * 50)
+    logger.info("\n📊 Verification Results")
+    logger.info("=" * 50)
 
     all_successful = True
     for test_name, result in verification_results.items():
         status = "✅ PASS" if result.get("success", False) else "❌ FAIL"
-        print(f"{test_name:20} {status}")
+        logger.info(f"{test_name:20} {status}")
 
         if not result.get("success", False):
             all_successful = False
             if "error" in result:
-                print(f"    Error: {result['error']}")
+                logger.error(f"    Error: {result['error']}")
             if "missing_files" in result and result["missing_files"]:
-                print(f"    Missing: {result['missing_files']}")
+                logger.warning(f"    Missing: {result['missing_files']}")
             if "failed_modules" in result and result["failed_modules"]:
-                print(f"    Failed: {result['failed_modules']}")
+                logger.warning(f"    Failed: {result['failed_modules']}")
 
     # Overall status
-    print("\n" + "=" * 50)
+    logger.info("\n" + "=" * 50)
     if all_successful:
-        print("🎉 ALL VERIFICATIONS PASSED!")
-        print("✅ The GNN Processing Pipeline is ready for use.")
+        logger.info("🎉 ALL VERIFICATIONS PASSED!")
+        logger.info("✅ The GNN Processing Pipeline is ready for use.")
         return 0
     else:
-        print("❌ SOME VERIFICATIONS FAILED!")
-        print("⚠️  Please check the issues above before using the pipeline.")
+        logger.error("❌ SOME VERIFICATIONS FAILED!")
+        logger.warning("⚠️  Please check the issues above before using the pipeline.")
         return 1
 
 

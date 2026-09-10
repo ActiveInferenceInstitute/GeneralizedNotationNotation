@@ -6,7 +6,7 @@ Fixed Render generators module for GNN code generation with enhanced visualizati
 import logging
 import re
 from pathlib import Path
-from typing import Any, Dict, Optional, Union, cast
+from typing import Any, Dict, Optional, Union
 
 logger = logging.getLogger(__name__)
 
@@ -170,6 +170,26 @@ def _to_pascal_case(base: str, *, allow_empty_fallback: str = "Model") -> str:
     return name
 
 
+def _parse_matrix_literal_or_raise(matrix_data: Any, *, context: str) -> Any:
+    """Parse a string-encoded matrix literal with the bounded safe evaluator.
+
+    SC-2c: raw specification text must NEVER be interpolated verbatim into
+    generated Julia/Python source. If the literal cannot be safely parsed,
+    raise instead of falling back to the raw string.
+    """
+    if not isinstance(matrix_data, str):
+        return matrix_data
+    from gnn.utils.safe_eval import MATRIX_MAX_LEN, safe_literal_eval
+
+    try:
+        return safe_literal_eval(matrix_data.strip(), max_len=MATRIX_MAX_LEN)
+    except (ValueError, SyntaxError) as exc:
+        raise ValueError(
+            f"{context}: matrix literal could not be safely parsed "
+            f"({exc}); refusing to interpolate raw text into generated source"
+        ) from exc
+
+
 def _matrix_to_julia(matrix_data: Any) -> str:
     """Convert Python matrix (list of lists/tuples) to Julia matrix syntax.
 
@@ -178,14 +198,10 @@ def _matrix_to_julia(matrix_data: Any) -> str:
     1D vectors use comma separators: [0.1, 0.2, 0.3]
     """
     if isinstance(matrix_data, str):
-        matrix_data = matrix_data.strip()
-        if matrix_data.startswith("[") or matrix_data.startswith("("):
-            try:
-                from gnn.utils.safe_eval import MATRIX_MAX_LEN, safe_literal_eval
-
-                matrix_data = safe_literal_eval(matrix_data, max_len=MATRIX_MAX_LEN)
-            except (ValueError, SyntaxError):
-                return cast("str", matrix_data)
+        if matrix_data.strip().startswith("[") or matrix_data.strip().startswith("("):
+            matrix_data = _parse_matrix_literal_or_raise(
+                matrix_data, context="_matrix_to_julia"
+            )
 
     if isinstance(matrix_data, (list, tuple)):
         if len(matrix_data) > 0 and isinstance(matrix_data[0], (list, tuple)):
@@ -265,15 +281,23 @@ def generate_pymdp_code(
         c_vector = state_space.get("C", [0.1, 0.1, 1.0, 0.0])
         d_vector = state_space.get("D", [0.333, 0.333, 0.333])
 
+        # SC-2c: template matrices may arrive as string literals from the
+        # spec — parse them with the bounded safe evaluator before they are
+        # interpolated into generated Python source; raise on parse failure.
+        parsed_a = _parse_matrix_literal_or_raise(a_matrix, context="PyMDP A matrix")
+        parsed_b = _parse_matrix_literal_or_raise(b_matrix, context="PyMDP B matrix")
+        parsed_c = _parse_matrix_literal_or_raise(c_vector, context="PyMDP C vector")
+        parsed_d = _parse_matrix_literal_or_raise(d_vector, context="PyMDP D vector")
+
         # Generate PyMDP code using template
         code = PYMDP_TEMPLATE.format(
             model_name=model_name,
             model_snake=model_snake,
             gnn_file=gnn_file,
-            a_matrix=a_matrix,
-            b_matrix=b_matrix,
-            c_vector=c_vector,
-            d_vector=d_vector,
+            a_matrix=parsed_a,
+            b_matrix=parsed_b,
+            c_vector=parsed_c,
+            d_vector=parsed_d,
             num_timesteps=num_timesteps,
         )
 

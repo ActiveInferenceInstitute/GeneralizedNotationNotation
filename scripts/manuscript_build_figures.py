@@ -25,8 +25,12 @@ page as prose reading 367.
 
 Usage:
     python scripts/manuscript_build_figures.py
-Exit code is non-zero if any generator fails, any expected PNG is missing, or the
-registry does not cover every ``{#fig:...}`` label the manuscript declares.
+The token map is regenerated unconditionally first (``z_generate``) and the
+build fails unless its ``GNN_GIT_COMMIT`` equals this checkout's HEAD, so a
+stale-but-present ``manuscript_variables.json`` can never be baked into fresh
+PNGs. Exit code is non-zero if the regeneration or the commit check fails, any
+generator fails, any expected PNG is missing, or the registry does not cover
+every ``{#fig:...}`` label the manuscript declares.
 """
 
 from __future__ import annotations
@@ -40,10 +44,16 @@ import tempfile
 from pathlib import Path
 
 _PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(_PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT))
+
+from scripts.lib.manuscript_exclusions import AUTHORING_GUIDE_FILENAMES  # noqa: E402
+
 _FIG_DIR = _PROJECT_ROOT / "output" / "figures"
 _MANUSCRIPT_DIR = _PROJECT_ROOT / "manuscript"
 _REGISTRY_PATH = _FIG_DIR / "figure_registry.json"
 _PROVENANCE_ENV = "GNN_FIGURE_TOKEN_PROVENANCE"
+_Z_GENERATE = "z_generate_manuscript_variables.py"
 
 # (crossref label, generator script, expected PNG, alt text).
 #
@@ -115,9 +125,34 @@ _FIGURES = [
     ),
 ]
 
+# Repo-relative data surfaces each generator reads DIRECTLY (not through the
+# token map): the step index for the DAG, the family manifest and framework
+# registry for the two matrices, plus the selection helper's module for
+# ``fig:backend_matrix``. These are the SC-21 risk: prose counts come from the
+# HEAD ``RepositorySnapshot`` while these generators read the working tree, so
+# the build digests them into ``source_sha256`` in figure_registry.json and
+# the gates compare those digests against the files (freshness suite) and
+# against HEAD (``check_manuscript_tokens --strict``) — a figure built from a
+# source the prose does not describe fails instead of shipping.
+_FIGURE_SOURCES: dict[str, tuple[str, ...]] = {
+    "fig:pipeline": ("src/gnn/STEP_INDEX.md",),
+    "fig:family_matrix": (
+        "input/model_family_manifest.json",
+        "src/gnn/render/framework_registry.py",
+    ),
+    "fig:backend_matrix": (
+        "src/gnn/render/framework_registry.py",
+        "input/model_family_manifest.json",
+        "src/gnn/pipeline/cross_framework_reliability.py",
+        "src/gnn/manuscript/variables.py",
+    ),
+}
+
 _FIG_LABEL_RE = re.compile(r"\{#(fig:[\w:-]+)")
 # manuscript/SYNTAX.md is the authoring guide; its example embeds are not figures.
-_LABEL_SCAN_SKIP = {"SYNTAX.md", "README.md", "AGENTS.md"}
+# Shared with the token gate and the published-commands test — see
+# scripts/lib/manuscript_exclusions.py.
+_LABEL_SCAN_SKIP = AUTHORING_GUIDE_FILENAMES
 
 
 def _declared_labels() -> set[str]:
@@ -163,6 +198,10 @@ def _write_registry(provenance: dict[str, dict[str, str]]) -> list[str]:
                 "alt_text": alt,
                 "generated_by": f"scripts/{script}",
                 "png_sha256": _sha256(_FIG_DIR / png),
+                "source_sha256": {
+                    rel: _sha256(_PROJECT_ROOT / rel)
+                    for rel in _FIGURE_SOURCES.get(label, ())
+                },
                 "consumed_tokens": provenance.get(label, {}),
             }
             for label, script, png, alt in _FIGURES
@@ -174,18 +213,70 @@ def _write_registry(provenance: dict[str, dict[str, str]]) -> list[str]:
     return problems
 
 
-def main() -> int:
-    # Repo metrics reads output/data/manuscript_variables.json — make sure it exists.
-    variables_json = _PROJECT_ROOT / "output" / "data" / "manuscript_variables.json"
-    if not variables_json.is_file():
-        subprocess.run(
-            [
-                sys.executable,
-                str(_PROJECT_ROOT / "scripts" / "z_generate_manuscript_variables.py"),
-            ],
-            cwd=str(_PROJECT_ROOT),
-            check=False,
+def _generated_commit_mismatch(variables_json: Path) -> str:
+    """Failure message when the regenerated map is not this checkout's HEAD.
+
+    Every figure is built from counts that describe one commit; if the map
+    names another commit (or reports ``unknown`` because git was unavailable)
+    the PNGs and the provenance record would ship numbers the checkout cannot
+    reproduce.
+    """
+    head = subprocess.run(
+        ["git", "rev-parse", "--short", "HEAD"],
+        cwd=str(_PROJECT_ROOT),
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    head_commit = head.stdout.strip() if head.returncode == 0 else "unknown"
+    try:
+        generated = json.loads(variables_json.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        return (
+            f"{variables_json.relative_to(_PROJECT_ROOT)} is unreadable after "
+            f"regeneration: {exc}"
         )
+    commit = str(generated.get("GNN_GIT_COMMIT", "unknown"))
+    if commit == "unknown":
+        return (
+            "regenerated manuscript variables report GNN_GIT_COMMIT=unknown "
+            "(git unavailable): figures cannot be built from counts with no "
+            "commit provenance"
+        )
+    if commit != head_commit:
+        return (
+            f"regenerated manuscript variables describe commit {commit} but "
+            f"this checkout is at {head_commit}"
+        )
+    return ""
+
+
+def main() -> int:
+    # Repo metrics reads output/data/manuscript_variables.json — regenerate it
+    # UNCONDITIONALLY. A stale-but-present map used to be baked into fresh
+    # PNGs and re-recorded as consumed_tokens provenance; the only thing the
+    # build may consume is what the producer emits right now.
+    variables_json = _PROJECT_ROOT / "output" / "data" / "manuscript_variables.json"
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(_PROJECT_ROOT / "scripts" / _Z_GENERATE),
+        ],
+        cwd=str(_PROJECT_ROOT),
+        check=False,
+    )
+    if result.returncode != 0:
+        print(
+            f"\n❌ {_Z_GENERATE} exited {result.returncode} — the variables "
+            "JSON was not regenerated; refusing to build figures from a map "
+            "of unknown freshness"
+        )
+        return 1
+    commit_mismatch = _generated_commit_mismatch(variables_json)
+    if commit_mismatch:
+        print("\n❌ Figure build FAILED:")
+        print(f"  ✗ {commit_mismatch}")
+        return 1
 
     _FIG_DIR.mkdir(parents=True, exist_ok=True)
     failures: list[str] = []

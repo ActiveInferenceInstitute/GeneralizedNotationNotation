@@ -8,7 +8,8 @@ fep_lean bridge) — plus the dependency/environment validators that gate them.
 
 from typing import Any
 
-__version__ = "3.3.0"
+from gnn import __version__
+
 FEATURES: dict[str, Any] = {
     "pymdp_execution": True,
     "rxinfer_execution": True,

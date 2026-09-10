@@ -19,11 +19,13 @@ against the committed PNG and the live token map.
 Scope, stated exactly: this gate covers figures whose numbers come from the
 token map. It does not re-derive counts from the repository (that chain is
 ``test_manuscript_variables.py``, which pins the producer to the committed
-tree), and it does not detect drift in a figure built from some other input —
-``fig:pipeline``, ``fig:family_matrix`` and ``fig:backend_matrix`` read the step
-index and the family manifest directly, and record no tokens. What it
-guarantees is that no committed figure prints a token value that disagrees with
-the producer output the prose beside it is hydrated from.
+tree). ``fig:pipeline``, ``fig:family_matrix`` and ``fig:backend_matrix`` read
+the step index and the family manifest directly and record no tokens, so the
+build also stamps the working-tree digest of every data surface a generator
+reads directly (``source_sha256``); these tests compare those digests against
+the files on disk. The HEAD-side comparison lives in
+``scripts/check_manuscript_tokens.py --strict``, where a figure built from
+uncommitted data the prose does not describe fails the gate.
 """
 
 from __future__ import annotations
@@ -78,6 +80,56 @@ def test_committed_png_is_the_one_the_recorded_build_produced() -> None:
         assert digest == record["png_sha256"], (
             f"{record['label']}: committed {png.name} is not the figure the "
             f"registry records; rebuild and commit both ({REBUILD})"
+        )
+
+
+def test_a_figure_source_edited_after_the_build_fails() -> None:
+    """The SC-21 half of the record: digests of the data each generator read.
+
+    ``fig:pipeline``/``fig:family_matrix``/``fig:backend_matrix`` consume no
+    tokens, so the consumed-token drift check above is blind to them; their
+    staleness shows up as a ``source_sha256`` entry that no longer matches the
+    file on disk.
+    """
+    checked = 0
+    for record in _registry():
+        for rel, digest in sorted((record.get("source_sha256") or {}).items()):
+            source = REPO_ROOT / rel
+            assert source.is_file(), (
+                f"{record['label']}: source surface {rel} is gone — rebuild ({REBUILD})"
+            )
+            assert hashlib.sha256(source.read_bytes()).hexdigest() == digest, (
+                f"{record['label']}: {rel} changed after the figure was built "
+                f"— rebuild ({REBUILD})"
+            )
+            checked += 1
+    assert checked >= 4, (
+        "no source digests recorded — the build is not stamping the data "
+        "surfaces the direct-reading generators consume"
+    )
+
+
+def test_the_build_declares_every_source_surface_it_stamps() -> None:
+    """The build's ``_FIGURE_SOURCES`` table and the registry cannot diverge."""
+    script = (REPO_ROOT / "scripts" / "manuscript_build_figures.py").read_text(
+        encoding="utf-8"
+    )
+    tree = ast.parse(script)
+    sources: dict[str, tuple[str, ...]] = {}
+    for node in ast.walk(tree):
+        if isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name) \
+                and node.target.id == "_FIGURE_SOURCES" and node.value is not None:
+            sources = ast.literal_eval(node.value)
+        if isinstance(node, ast.Assign) and any(
+            isinstance(t, ast.Name) and t.id == "_FIGURE_SOURCES" for t in node.targets
+        ):
+            sources = ast.literal_eval(node.value)
+    assert sources, "_FIGURE_SOURCES not found in manuscript_build_figures.py"
+    for record in _registry():
+        expected = set(sources.get(record["label"], ()))
+        assert set(record.get("source_sha256") or {}) == expected, (
+            f"{record['label']}: registry source digests do not match the "
+            f"build's declared sources {sorted(expected)} — rebuild ({REBUILD})"
         )
 
 

@@ -30,8 +30,8 @@ def test_parse_test_statistics_with_failed_and_errors() -> None:
 
 def test_parse_test_statistics_verbose_per_node() -> None:
     out = """
-src/tests/foo.py::test_a PASSED
-src/tests/foo.py::test_b FAILED
+tests/foo.py::test_a PASSED
+tests/foo.py::test_b FAILED
 """
     s = parse_test_statistics(out)
     assert s["passed"] == 1

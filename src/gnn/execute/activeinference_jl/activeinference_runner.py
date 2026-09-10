@@ -15,7 +15,6 @@ Features:
 
 import json
 import logging
-import subprocess  # nosec B404
 import sys
 import time
 from pathlib import Path
@@ -67,44 +66,28 @@ def setup_julia_environment(
     logger.info("Running comprehensive environment setup...")
     logger.debug(f"Setup command: {' '.join(cmd)}")
 
-    try:
-        # Run setup with extended timeout
-        result = subprocess.run(  # nosec B603
-            cmd,
-            capture_output=True,
-            text=True,
-            check=False,
-            cwd=project_dir,
-            timeout=1800,  # 30 minutes for comprehensive setup
-        )
+    # Shared canonical envelope (MAJ-10): timeout/OSError/non-zero all land
+    # in one structured result, no per-site exception handling.
+    envelope = run_subprocess_envelope(cmd, timeout=1800, cwd=project_dir)
+    if envelope["success"]:
+        logger.info("✅ Julia environment setup completed successfully")
+        if verbose and envelope["stdout"].strip():
+            logger.debug(f"Setup output:\n{envelope['stdout']}")
+        return True
 
-        if result.returncode == 0:
-            logger.info("✅ Julia environment setup completed successfully")
-            if verbose and result.stdout.strip():
-                logger.debug(f"Setup output:\n{result.stdout}")
-            return True
-        else:
-            logger.error(
-                f"❌ Environment setup failed with return code {result.returncode}"
-            )
-            if result.stderr.strip():
-                logger.error(f"Setup errors:\n{result.stderr}")
-            if result.stdout.strip():
-                logger.debug(f"Setup output:\n{result.stdout}")
-
-            # Try recovery setup
-            logger.info("Attempting recovery environment setup...")
-            return _fallback_environment_setup(project_dir)
-
-    except subprocess.TimeoutExpired:
+    logger.error(
+        f"❌ Environment setup failed with return code {envelope['return_code']}"
+    )
+    if envelope["stderr"].strip():
+        logger.error(f"Setup errors:\n{envelope['stderr']}")
+    if envelope["stdout"].strip():
+        logger.debug(f"Setup output:\n{envelope['stdout']}")
+    if envelope.get("error_type") == "TimeoutExpired":
         logger.error("❌ Environment setup timed out after 30 minutes")
-        logger.info("Attempting recovery environment setup...")
-        return _fallback_environment_setup(project_dir)
 
-    except Exception as e:
-        logger.error(f"❌ Error during environment setup: {e}")
-        logger.info("Attempting recovery environment setup...")
-        return _fallback_environment_setup(project_dir)
+    # Try recovery setup
+    logger.info("Attempting recovery environment setup...")
+    return _fallback_environment_setup(project_dir)
 
 
 def _fallback_environment_setup(project_dir: Path) -> bool:
@@ -119,57 +102,42 @@ def _fallback_environment_setup(project_dir: Path) -> bool:
     """
     logger.info("Running recovery environment setup...")
 
-    try:
-        # Basic package instantiation
-        instantiate_cmd: list[Any] = [
-            "julia",
-            f"--project={project_dir}",
-            "-e",
-            "using Pkg; Pkg.instantiate()",
+    instantiate_cmd: list[Any] = [
+        "julia",
+        f"--project={project_dir}",
+        "-e",
+        "using Pkg; Pkg.instantiate()",
+    ]
+    envelope = run_subprocess_envelope(instantiate_cmd, timeout=600, cwd=project_dir)
+
+    if envelope["success"]:
+        logger.info("✅ Recovery environment setup completed")
+
+        # Try to validate core packages
+        core_packages: list[Any] = [
+            "ActiveInference",
+            "Distributions",
+            "LinearAlgebra",
         ]
-        logger.debug(f"Running: {' '.join(instantiate_cmd)}")
+        validation_success = True
 
-        result = subprocess.run(  # nosec B603
-            instantiate_cmd,
-            capture_output=True,
-            text=True,
-            check=False,
-            cwd=project_dir,
-            timeout=600,  # 10 minutes for basic setup
-        )
+        for package in core_packages:
+            if not _validate_package(project_dir, package):
+                logger.warning(f"⚠️ Core package '{package}' validation failed")
+                validation_success = False
 
-        if result.returncode == 0:
-            logger.info("✅ Recovery environment setup completed")
-
-            # Try to validate core packages
-            core_packages: list[Any] = [
-                "ActiveInference",
-                "Distributions",
-                "LinearAlgebra",
-            ]
-            validation_success = True
-
-            for package in core_packages:
-                if not _validate_package(project_dir, package):
-                    logger.warning(f"⚠️ Core package '{package}' validation failed")
-                    validation_success = False
-
-            if validation_success:
-                logger.info("✅ Core packages validated successfully")
-            else:
-                logger.warning("⚠️ Some core packages failed validation")
-
-            return True
+        if validation_success:
+            logger.info("✅ Core packages validated successfully")
         else:
-            logger.error(f"❌ Recovery setup failed: {result.stderr}")
-            return False
+            logger.warning("⚠️ Some core packages failed validation")
 
-    except subprocess.TimeoutExpired:
+        return True
+
+    if envelope.get("error_type") == "TimeoutExpired":
         logger.error("❌ Recovery setup timed out")
-        return False
-    except Exception as e:
-        logger.error(f"❌ Error in recovery setup: {e}")
-        return False
+    else:
+        logger.error(f"❌ Recovery setup failed: {envelope['stderr']}")
+    return False
 
 
 def _validate_package(project_dir: Path, package_name: str) -> bool:
@@ -190,15 +158,8 @@ def _validate_package(project_dir: Path, package_name: str) -> bool:
             "-e",
             f'using {package_name}; println("✅ {package_name} loaded")',
         ]
-        result = subprocess.run(  # nosec B603
-            cmd,
-            capture_output=True,
-            text=True,
-            check=False,
-            cwd=project_dir,
-            timeout=30,
-        )
-        return result.returncode == 0
+        result = run_subprocess_envelope(cmd, timeout=30, cwd=project_dir)
+        return bool(result["success"])
     except Exception:
         return False
 

@@ -9,10 +9,7 @@ import logging
 from pathlib import Path
 from typing import Any, Dict, List
 
-try:
-    from gnn.setup import __version__
-except ImportError:
-    __version__ = "3.3.0"
+from gnn import __version__ as __version__
 
 logger = logging.getLogger(__name__)
 

@@ -47,7 +47,7 @@ def test_flatten_pipeline_test_summary_zero_tests() -> None:
 def test_extract_collection_errors_dedupes() -> None:
     from tests.infrastructure import extract_collection_errors
 
-    stdout = "ERROR collecting src/tests/x.py\nE: ImportError: nope\n" * 2
+    stdout = "ERROR collecting tests/x.py\nE: ImportError: nope\n" * 2
     errors = extract_collection_errors(stdout, "")
     assert len(errors) == len(set(errors))
     assert errors

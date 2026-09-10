@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 """
-Streamlined Logging Utilities for GNN Processing Pipeline.
+Internal implementation module for GNN pipeline logging.
 
 Provides coherent, correlation-based logging across all pipeline steps
 with enhanced visual formatting and centralized configuration.
+
+Do not import this module directly: ``gnn.utils.logging_utils`` is the
+single public entry point and re-exports this module's public surface.
+
 """
 
 import gzip

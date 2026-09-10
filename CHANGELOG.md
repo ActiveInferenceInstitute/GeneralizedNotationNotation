@@ -8,6 +8,113 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ## [Unreleased]
 
+### Changed (2026-09-10 — SCOPE-2026-09-09 execution wave)
+
+- **Execution security (SC-1/SC-2/SC-34).** The remotely invocable MCP
+  execution path now passes the pre-exec security gate: a shared
+  `execute/security_gate.py` helper is called from the
+  `GNNExecutor.execute_gnn_model` chokepoint (covering
+  `execute_gnn_model_mcp` and every per-framework runner) and from the Step
+  12 processor path; a broken `gnn.security.processor` import hard-blocks
+  instead of silently skipping the gate; unsandboxed runs emit a
+  `sandbox_disabled_receipt` and record the sandbox mode in execution
+  metadata; the `_matrix_to_julia` and PyMDP template raw-text fallbacks
+  raise instead of interpolating unvalidated spec text into generated
+  source; `B601` dropped from the bandit skips (0 medium+ findings at the
+  enforced levels); PyMDP-missing environments fail fast
+  (`DependencyMissing`) unless `GNN_ALLOW_MISSING_DEPS` is set. Negative
+  tests: `tests/execute/test_mcp_security_gate.py`.
+- **Manuscript token-gate trustworthiness (SC-3/SC-20/SC-21/SC-23).**
+  Figure builds regenerate the variables JSON unconditionally and fail on
+  HEAD mismatch; `check_manuscript_tokens.py --strict` compares the
+  committed `manuscript_variables.json` checksum to a fresh producer-at-HEAD
+  value, verifies per-figure source digests recorded in
+  `figure_registry.json`, scans `output/manuscript/` for unresolved
+  `{{TOKEN}}`, enforces `@fig:`/`@tbl:` label existence and plural
+  step-phrase tokens, and single-sources the exclusion sets
+  (`scripts/lib/manuscript_exclusions.py`). `z_generate` fails in
+  render-invoked mode when the template injector is missing and writes a
+  machine-readable dirty-tree receipt. 21 fixture negative tests pin the
+  gate; wired into `local-gates.yml` (token audit + figure freshness).
+- **Validate-surface dedup (SC-7/MAJ-05).** `gnn.validate_gnn_file` →
+  `gnn.validate_gnn_source` and `parsers.basic.validate_gnn` →
+  `validate_gnn_syntax`; old names remain as `DeprecationWarning` aliases
+  (pattern of `validation/simple.py`). One canonical name per semantic;
+  alias-parity tests in `tests/test_validate_surface_aliases.py`.
+- **MCP wrapper completion (SC-8 residual).** `process_sapf_mcp` delegates
+  through `run_tool_envelope`; `tests/mcp/test_mcp_module_presence.py`
+  asserts every importable top-level module exposes `mcp.py` with
+  `register_tools` or is on a documented allowlist.
+- **Fresh-clone DX (SC-4/SC-14).** Dev tooling moved to
+  `[dependency-groups] dev` with `[tool.uv] default-groups = ["dev"]`;
+  pre-commit ruff bumped to the locked v0.15.12; black/flake8/isort/pylint
+  deps and configs deleted (ruff covers their roles).
+- **Docker (SC-5).** `uv sync --frozen --extra dev` replaces the
+  false-green `uv pip install . || true`; CMD matches the CI coverage
+  invocation (`--cov=gnn`, marker filters); `.dockerignore` excludes
+  `.venv`/`output/`/caches; build + collect-only verified in-container.
+- **Logging unification (SC-15/SC-18).** `gnn.utils.logging_utils` is the
+  single public entry (identity re-exports; impl module marked internal; 11
+  consumer files converted); `pipeline_template`'s upward import is lazy;
+  pipeline/mcp print seams converted to the logger with machine-parsed
+  stdout kept as `# user-output`.
+- **Version single-sourcing (SC-16/SC-30).** One canonical `__version__`;
+  34 subpackages re-export it (stale 1.x copies removed); `__all__: list[str]`.
+- **Error hygiene (SC-17).** `PipelineError` is now an `Exception`;
+  duplicate `ConversionError` classes unified (deprecated shim subclass);
+  12 silent swallows in `analysis/rxinfer/analyzer.py` converted to logged
+  errors.
+- **Warning ratchet (SC-26).** `DeprecationWarning`/`PendingDeprecationWarning`/
+  `FutureWarning` are suite-wide errors; `asyncio_mode=auto` dropped (all
+  async tests explicitly marked); maxfail single-sourced with documented
+  per-mode overrides.
+- **Test-estate program (SC-40/SC-42/SC-43/SC-44/SC-45).** Runner routes the
+  real tree (401 files/38 categories; fast mode is a marker-based subset; all
+  `src/tests` fossils purged; RecursionError root cause — import-executing
+  dependency probes — replaced with `importlib.util.find_spec`); the five
+  in-package test files adopted into `tests/testing/`/`tests/utils/` or
+  deleted as duplicates; strict module-import loops replace
+  `assert len(imported) >= 3` tautologies; 57 import-smoke clones collapsed
+  into a 28-param registry-driven suite; fixture clones conftest-only;
+  `ollama` + `env_heavy` markers registered with local/CI filter alignment;
+  the 1000s-sleep timeout trap shrunken to a ~1s regression signal.
+
+### Added (2026-09-10)
+
+- `scripts/experiments/` with the dispositioned offline verifier, codemod,
+  and scaling orchestrator (SC-19); `verify_logging_duplication.py` deleted.
+- `docs/development/output_tracking.md` — the curated-vs-volatile `output/`
+  tracking boundary (SC-9): 6,666 volatile step-output files untracked
+  (index-only), curated manuscript/pdf/figures/data bundles stay tracked.
+- `--allow-hosts` on `scripts/check_external_links.py` + weekly
+  schedule-only run in `docs-audit.yml` (+9 exemption-contract tests).
+- cmark-gfm slugger port in `docs/development/docs_audit.py` (doctested) +
+  a SECURITY.md supported-version docs_audit invariant.
+- `tests/execute/test_mcp_security_gate.py`,
+  `tests/mcp/test_mcp_module_presence.py`,
+  `tests/test_grammar_spec_payloads.py`,
+  `tests/test_manuscript_token_gate.py`, `tests/test_module_import_smoke.py`.
+
+### Fixed (2026-09-10)
+
+- `schema_validator._validate_markdown_structure` comment-initial-section
+  false positive (all bundled examples now validate; found by the SC-42
+  adoption wave).
+- `combined_analysis` `visualizations` initialization dropped during the
+  SC-36 seam sanitization (caught by `test_parallel_pipeline_execution_flag`).
+- `gnn_root.py` grammar loader path (`../grammars/ebnf.ebnf`) — the MCP
+  `get_gnn_documentation("grammar")` resource resolved a nonexistent path
+  before (SC-27).
+- CI action SHA pinning (SC-11), setup-uv version pinning (SC-28),
+  full-extras fail-on-ImportError (SC-12), `MCP_TOOL_FLOOR` single source
+  (SC-13), ci.yml concurrency group (SC-36).
+- `check_manuscript_tokens.py` normalizes `GNN_GIT_COMMIT` out of the
+  committed-vs-producer checksum comparison: a committed map can never
+  record the hash of the commit that carries it, so the un-normalized
+  comparison could never pass on a clean tree one commit later. The receipt
+  (`counts_describe_commit`) pins the commit; the checksum covers the
+  commit-stable counts.
+
 ### Changed
 
 

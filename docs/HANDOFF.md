@@ -147,7 +147,7 @@ The `lsp/` module requires `pygls` which is an optional dependency. The `Languag
 2. **[RESOLVED] Module docstrings** — all 760 Python source files now have
    first-statement PEP 257 module docstrings. 70 were added via content-aware
    generation from class/function docstrings; 10 were relocated from
-   after-import positions. Script: `scripts/add_module_docstrings.py`.
+   after-import positions. Script: `scripts/experiments/add_module_docstrings.py`.
 
 ### 4.2 Medium Priority
 

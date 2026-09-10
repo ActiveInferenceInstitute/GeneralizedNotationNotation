@@ -7,6 +7,7 @@ output parsing, and dependency checking.
 
 from __future__ import annotations
 
+import importlib.util
 import json
 import logging
 import re
@@ -31,48 +32,26 @@ def check_test_dependencies(logger: logging.Logger) -> Dict[str, Any]:
         Dictionary mapping package label to availability (``pytest`` required for the
         test step; ``pytest-cov``, ``pytest-xdist``, ``psutil``, ``coverage`` optional).
     """
-    dependencies: dict[str, Any] = {
-        "pytest": False,
-        "pytest-cov": False,
-        "pytest-xdist": False,
-        "psutil": False,
-        "coverage": False,
+    # Presence probes use ``importlib.util.find_spec`` instead of ``import``:
+    # importing a package executes its module graph (hundreds of frames for
+    # pytest), which raises RecursionError when the surrounding test suite has
+    # already consumed most of the stack. find_spec only locates the module —
+    # no execution, no plugin side effects, no deep import chain.
+    _PROBE_MODULES: dict[str, str] = {
+        "pytest": "pytest",
+        "pytest_cov": "pytest-cov",
+        "xdist": "pytest-xdist",
+        "psutil": "psutil",
+        "coverage": "coverage",
     }
+    dependencies: dict[str, Any] = dict.fromkeys(_PROBE_MODULES.values(), False)
 
-    try:
-        import pytest  # noqa: F811 - presence check
+    for module_name, label in _PROBE_MODULES.items():
+        try:
+            dependencies[label] = importlib.util.find_spec(module_name) is not None
+        except (ImportError, ValueError):
+            dependencies[label] = False
 
-        dependencies["pytest"] = True
-    except ImportError:
-        pass
-
-    try:
-        import pytest_cov  # noqa: F811 - presence check
-
-        dependencies["pytest-cov"] = True
-    except ImportError:
-        pass
-
-    try:
-        import xdist  # noqa: F811 - presence check
-
-        dependencies["pytest-xdist"] = True
-    except ImportError:
-        pass
-
-    try:
-        import psutil  # noqa: F811 - presence check
-
-        dependencies["psutil"] = True
-    except ImportError:
-        pass
-
-    try:
-        import coverage  # noqa: F811 - presence check
-
-        dependencies["coverage"] = True
-    except ImportError:
-        pass
 
     # Log results: only pytest is required for fast pipeline tests; others are dev/CI extras.
     if not dependencies["pytest"]:

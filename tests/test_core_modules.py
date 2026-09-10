@@ -14,7 +14,9 @@ to ensure 100% functionality and coverage. Each test validates:
 All tests execute real methods and file operations; tests may skip if optional backends are unavailable.
 """
 
+import importlib
 import logging
+import time
 from pathlib import Path
 from typing import Any
 
@@ -131,7 +133,7 @@ class TestRenderModuleComprehensive:
         """render_gnn_to_pymdp resolves to a real callable.
 
         Full pipeline-level rendering (parsed GNN spec → PyMDP script on
-        disk) is exercised in src/tests/render/test_render_cli_targets.py.
+        disk) is exercised in tests/render/test_render_cli_targets.py.
         Passing a dict-of-Path sample_gnn_files through this public API
         produces opaque errors; assert only the public-symbol contract.
         """
@@ -143,7 +145,7 @@ class TestRenderModuleComprehensive:
     def test_rxinfer_rendering_callable(self) -> Any:
         """render_gnn_to_rxinfer is callable; POMDP content validated elsewhere.
 
-        src/tests/render/test_render_cli_targets.py parametrizes every
+        tests/render/test_render_cli_targets.py parametrizes every
         backend target against the real sample corpus, including RxInfer.
         """
         from gnn.render import render_gnn_to_rxinfer
@@ -448,7 +450,7 @@ class TestSAPFModuleComprehensive:
     def test_sapf_audio_generation_callable(self) -> Any:
         """generate_sapf_audio resolves to a real callable.
 
-        Full audio synthesis exercised in src/tests/audio/. Here we guard the
+        Full audio synthesis exercised in tests/audio/. Here we guard the
         public surface — that the symbol is exported and callable.
         """
         from gnn.audio.sapf import generate_sapf_audio
@@ -464,7 +466,7 @@ class TestCoreModuleIntegration:
         """Cross-module public APIs are importable together without circular-import issues.
 
         Full end-to-end flow (parse → render → execute → report) is covered by
-        src/tests/pipeline/test_pipeline_render_execute_analyze.py. Here we
+        tests/pipeline/test_pipeline_render_execute_analyze.py. Here we
         only assert that the combined import does not break — a common
         regression when modules add reciprocal imports.
         """
@@ -485,44 +487,55 @@ class TestCoreModuleIntegration:
 
 
 def test_core_module_completeness() -> Any:
-    """Test that all core modules are complete and functional."""
-    core_modules: list[Any] = [
+    """Every core module must import and expose its version/feature metadata.
+
+    Strict: any ImportError fails the test with the full failure list — a
+    broken module can no longer hide behind the remaining healthy imports.
+    """
+    core_modules: list[str] = [
         "gnn",
         "gnn.render",
         "gnn.execute",
         "gnn.validation",
         "gnn.visualization",
     ]
-    imported: list[Any] = []
+    failures: list[str] = []
     for module_name in core_modules:
         try:
-            module = __import__(module_name)
-            imported.append(module_name)
-            assert hasattr(module, "__version__") or hasattr(module, "FEATURES"), (
-                f"Module {module_name} missing __version__ or FEATURES"
-            )
-        except ImportError:
-            pass
-    assert len(imported) >= 3, (
-        f"Expected at least 3 core modules, got {len(imported)}: {imported}"
+            module = importlib.import_module(module_name)
+        except Exception as exc:  # noqa: BLE001 — report every failure mode
+            failures.append(f"{module_name}: {type(exc).__name__}: {exc}")
+            continue
+        assert hasattr(module, "__version__") or hasattr(module, "FEATURES"), (
+            f"Module {module_name} missing __version__ or FEATURES"
+        )
+    assert not failures, (
+        f"{len(failures)}/{len(core_modules)} core modules failed to import:\n"
+        + "\n".join(failures)
     )
-    logging.info(
-        f"Core module completeness: {len(imported)}/{len(core_modules)} modules available"
-    )
+    logging.info(f"Core module completeness: all {len(core_modules)} modules importable")
 
 
 @pytest.mark.slow
 def test_core_module_performance() -> Any:
-    """Test performance characteristics of core modules."""
-    import time
-
-    modules_to_time: list[Any] = ["gnn", "render", "validation"]
+    """Core module imports stay fast; a crashing module fails, not escapes."""
+    modules_to_time: list[str] = [
+        "gnn",
+        "gnn.render",
+        "gnn.validation",
+    ]
+    failures: list[str] = []
     for module_name in modules_to_time:
-        start = time.time()
+        start = time.perf_counter()
         try:
-            __import__(module_name)
-            elapsed = time.time() - start
-            assert elapsed < 2.0, f"Module {module_name} import took {elapsed:.2f}s"
-        except ImportError:
-            pass
+            importlib.import_module(module_name)
+        except Exception as exc:  # noqa: BLE001 — report every failure mode
+            failures.append(f"{module_name}: {type(exc).__name__}: {exc}")
+            continue
+        elapsed = time.perf_counter() - start
+        assert elapsed < 2.0, f"Module {module_name} import took {elapsed:.2f}s"
+    assert not failures, (
+        f"{len(failures)}/{len(modules_to_time)} modules failed to import:\n"
+        + "\n".join(failures)
+    )
     logging.info("Core module performance test completed")

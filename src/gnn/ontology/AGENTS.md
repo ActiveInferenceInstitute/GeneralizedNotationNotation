@@ -10,7 +10,7 @@
 
 **Status**: Production Ready
 
-**Version**: 3.2.0 (module `__version__` 1.7.0)
+**Version**: re-exports canonical package `__version__` (SC-16)
 
 **Last Updated**: 2026-09-04
 

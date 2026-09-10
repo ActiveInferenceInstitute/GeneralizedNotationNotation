@@ -23,7 +23,7 @@ except ImportError:
     np = cast(Any, None)
     NUMPY_AVAILABLE = False
 
-from gnn.utils.logging.logging_utils import (
+from gnn.utils.logging_utils import (
     log_step_error,
     log_step_start,
     log_step_success,

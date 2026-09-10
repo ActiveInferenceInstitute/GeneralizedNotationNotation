@@ -10,6 +10,7 @@ the full pipeline stack or heavy module-scope dependencies (psutil,
 matplotlib). Names resolve through ``__getattr__`` on first access.
 """
 
+import warnings
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
@@ -24,6 +25,7 @@ if TYPE_CHECKING:
         get_parse_tree_visualization,
         parse_gnn_formal,
         validate_gnn,
+        validate_gnn_syntax,
         validate_gnn_syntax_formal,
     )
     from .parsers.common import GNNFormat
@@ -68,6 +70,7 @@ _EXPORT_MAP: dict[str, str] = {
     "get_parse_tree_visualization": "parsers.basic",
     "parse_gnn_formal": "parsers.basic",
     "validate_gnn": "parsers.basic",
+    "validate_gnn_syntax": "parsers.basic",
     "validate_gnn_syntax_formal": "parsers.basic",
     # parsers.common
     "GNNFormat": "parsers.common",
@@ -124,8 +127,8 @@ def __dir__() -> list[str]:
     return sorted(set(globals()) | set(_EXPORT_MAP))
 
 
-def validate_gnn_file(source: Any, *, is_content: bool = False) -> Any:
-    """Validate a GNN file or content string.
+def validate_gnn_source(source: Any, *, is_content: bool = False) -> Any:
+    """Validate a GNN source (file path or content string).
 
     Args:
         source: File path (str or Path) or raw GNN content string.
@@ -140,13 +143,23 @@ def validate_gnn_file(source: Any, *, is_content: bool = False) -> Any:
         content = _Path(source).read_text(encoding="utf-8")
     else:
         content = str(source)
-    from .parsers.basic import validate_gnn as _validate_gnn
+    from .parsers.basic import validate_gnn_syntax as _validate_gnn_syntax
 
-    is_valid, errors = _validate_gnn(content)
+    is_valid, errors = _validate_gnn_syntax(content)
     return {"is_valid": is_valid, "errors": errors}
 
 
-__all__: list[Any] = [
+def validate_gnn_file(source: Any, *, is_content: bool = False) -> Any:
+    """Old name for :func:`validate_gnn_source`; emits DeprecationWarning."""
+    warnings.warn(
+        "validate_gnn_file is an old name; use validate_gnn_source instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return validate_gnn_source(source, is_content=is_content)
+
+
+__all__: list[str] = [
     # Processor functions
     "process_gnn_directory_lightweight",
     "discover_gnn_files",
@@ -169,8 +182,10 @@ __all__: list[Any] = [
     "validate_gnn_syntax_formal",
     "get_parse_tree_visualization",
     "validate_gnn",
+    "validate_gnn_syntax",
     "__version__",
     "FEATURES",
+    "validate_gnn_source",
     "validate_gnn_file",
     # Cross-package programmatic entry points
     "run_pipeline",

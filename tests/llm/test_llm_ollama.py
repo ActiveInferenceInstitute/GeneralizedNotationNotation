@@ -22,6 +22,12 @@ import pytest
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
+# SC-44: any test in this file may perform real LLM inference whenever a local
+# Ollama daemon is up. The default suite filters the whole file via
+# ``-m "not ollama"`` (see justfile test-cov / ci.yml); run explicitly with
+# ``-m ollama``.
+pytestmark = pytest.mark.ollama
+
 
 def _ollama_available() -> bool:
     """Check if Ollama is available AND service is running."""

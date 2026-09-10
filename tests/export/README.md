@@ -7,7 +7,7 @@ This folder contains module-focused tests for export processing and serializatio
 Run:
 
 ```bash
-uv run --extra dev python -m pytest src/tests/export/ -q
+uv run --extra dev python -m pytest tests/export/ -q
 ```
 
 `test_geo_infer_gaussian.py` and `gaussian_rectangular.md` cover the v2 Gaussian

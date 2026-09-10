@@ -7,10 +7,10 @@ in the GNN pipeline. It supports all the staging options and provides quick acce
 to common test scenarios.
 
 Usage:
-    python src/tests/test_runner_helper.py --help
-    python src/tests/test_runner_helper.py fast
-    python src/tests/test_runner_helper.py full
-    python src/tests/test_runner_helper.py debug
+    python tests/test_runner_helper.py --help
+    python tests/test_runner_helper.py fast
+    python tests/test_runner_helper.py full
+    python tests/test_runner_helper.py debug
 """
 
 import argparse
@@ -156,9 +156,9 @@ def list_configurations() -> None:
         print(f"  {name:<12} - {description}")
     print()
     print("Usage examples:")
-    print("  python src/tests/test_runner_helper.py fast")
-    print("  python src/tests/test_runner_helper.py full --verbose")
-    print("  python src/tests/test_runner_helper.py debug --target-dir custom/path")
+    print("  python tests/test_runner_helper.py fast")
+    print("  python tests/test_runner_helper.py full --verbose")
+    print("  python tests/test_runner_helper.py debug --target-dir custom/path")
 
 
 def run_custom_tests(

@@ -213,6 +213,7 @@ class TestDependencyManagement:
         # Output is human-readable; just check it's non-empty.
         assert result.stdout.strip(), "uv tree produced no output"
 
+    @pytest.mark.env_heavy  # SC-44: real `uv sync` resolution pass (60s timeout)
     def test_uv_sync_check(self) -> Any:
         """Test that uv sync --dry-run reports no changes needed for dev tests."""
         result = subprocess.run(  # nosec B607 B603
@@ -526,7 +527,7 @@ class TestUVCacheAndPerformance:
         Path(result.stdout.strip())
         # Cache dir may not exist if nothing has been cached
         # Just verify the command works
-
+    @pytest.mark.env_heavy  # SC-44: real `uv sync` with 120s timeout, 3 attempts
     def test_uv_sync_fast(self) -> Any:
         """Check required dev dependencies without pruning optional packages.
 

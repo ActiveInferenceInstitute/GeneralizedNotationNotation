@@ -22,7 +22,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
 from gnn.processing.discovery import is_model_source_path
-from gnn.utils.logging.logging_utils import (
+from gnn.utils.logging_utils import (
     log_step_error,
     log_step_start,
     log_step_success,

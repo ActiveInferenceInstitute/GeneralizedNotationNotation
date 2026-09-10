@@ -485,8 +485,9 @@ def main() -> int:
     """Main function to run comprehensive pipeline validation."""
     validator = PipelineValidator(verbose=True)
 
-    print("🔍 Starting comprehensive pipeline validation...")
-    print("=" * 60)
+    main_logger = logging.getLogger(__name__)
+    main_logger.info("🔍 Starting comprehensive pipeline validation...")
+    main_logger.info("=" * 60)
 
     # Generate comprehensive report
     report = validator.generate_comprehensive_report()
@@ -495,19 +496,19 @@ def main() -> int:
     report_path = validator.save_validation_report(report)
 
     # Print summary
-    print("\n" + "=" * 60)
-    print("📊 VALIDATION SUMMARY")
-    print("=" * 60)
-    print(f"Pipeline Health: {report['pipeline_health'].upper()}")
-    print(
+    main_logger.info("\n" + "=" * 60)
+    main_logger.info("📊 VALIDATION SUMMARY")
+    main_logger.info("=" * 60)
+    main_logger.info(f"Pipeline Health: {report['pipeline_health'].upper()}")
+    main_logger.info(
         f"Improvements Validated: {'✅ YES' if report['improvements_validated'] else '❌ NO'}"
     )
-    print(f"Report saved to: {report_path}")
+    main_logger.info(f"Report saved to: {report_path}")
 
     if report.get("recommendations"):
-        print("\n🎯 RECOMMENDATIONS:")
+        main_logger.info("\n🎯 RECOMMENDATIONS:")
         for i, rec in enumerate(report["recommendations"], 1):
-            print(f"  {i}. {rec}")
+            main_logger.info(f"  {i}. {rec}")
 
     return 0 if report["improvements_validated"] else 1
 

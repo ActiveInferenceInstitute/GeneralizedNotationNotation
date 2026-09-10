@@ -16,6 +16,8 @@ import time
 from pathlib import Path
 from typing import Any, cast
 
+import pytest
+
 # Import from infrastructure
 from .infrastructure import (
     _extract_collection_errors,
@@ -28,13 +30,52 @@ from .infrastructure import (
 from .infrastructure.report_generator import flatten_pipeline_test_summary
 
 
+def _build_fast_pipeline_command(
+    has_xdist: bool, has_timeout: bool, timeout_value: str = "600", verbose: bool = False
+) -> list[Any]:
+    """Build the marker-based fast pytest command.
+
+    SC-40: the fast subset is marker-based (``-m fast``, defined in
+    pytest.ini) and targets the tests/ tree — the pre-3.3.0 test directory
+    named in the old ignores no longer exists, and slow tests are
+    deselected by the marker, so no per-file ignores are needed.
+    """
+    cmd: list[Any] = [
+        sys.executable,
+        "-m",
+        "pytest",
+        "--tb=short",
+        "--maxfail=5",
+        "--durations=10",
+        "-ra",
+    ]
+
+    if has_xdist:
+        # Parallel execution keeps the "fast" subset under the overall timeout
+        # on shared/CI machines (serial ``-m "not slow"`` exceeded 600s).
+        cmd.extend(["-n", "auto"])
+
+    if has_timeout:
+        cmd.extend(["--timeout", timeout_value])
+
+    if verbose:
+        cmd.append("-v")
+    else:
+        cmd.append("-q")
+
+    cmd.extend(["-m", "fast"])
+    cmd.append("tests/")
+    return cmd
+
+
 def run_fast_pipeline_tests(
     logger: logging.Logger, output_dir: Path, verbose: bool = False
 ) -> bool:
     """
     Run FAST tests for quick pipeline validation.
 
-    This runs only fast tests (marked with 'not slow') to keep pipeline execution efficient.
+    This runs only fast tests (marked with the ``fast`` marker) to keep
+    pipeline execution efficient.
     """
     if os.getenv("SKIP_TESTS_IN_PIPELINE"):
         logger.info("Skipping tests (SKIP_TESTS_IN_PIPELINE set)")
@@ -59,43 +100,12 @@ def run_fast_pipeline_tests(
     except ImportError:
         has_xdist = False
 
-    cmd: list[Any] = [
-        sys.executable,
-        "-m",
-        "pytest",
-        "--tb=short",
-        "--maxfail=5",
-        "--durations=10",
-        "-ra",
-    ]
-
-    if has_xdist:
-        # Parallel execution keeps the "fast" subset under the overall timeout
-        # on shared/CI machines (serial ``-m "not slow"`` exceeded 600s).
-        cmd.extend(["-n", "auto"])
-
-    if has_timeout:
-        timeout_value = os.getenv("FAST_TESTS_TIMEOUT", "600")
-        cmd.extend(["--timeout", timeout_value])
-
-    if verbose:
-        cmd.append("-v")
-    else:
-        cmd.append("-q")
-
-    cmd.extend(
-        [
-            "-m",
-            "not slow",
-            "--ignore=src/tests/llm/test_llm_ollama.py",
-            "--ignore=src/tests/llm/test_llm_ollama_integration.py",
-            "--ignore=src/tests/test_pipeline_performance.py",
-            "--ignore=src/tests/test_pipeline_recovery.py",
-            "--ignore=src/tests/test_report_integration.py",
-        ]
+    cmd: list[Any] = _build_fast_pipeline_command(
+        has_xdist=has_xdist,
+        has_timeout=has_timeout,
+        timeout_value=os.getenv("FAST_TESTS_TIMEOUT", "600"),
+        verbose=verbose,
     )
-
-    cmd.append("src/tests/")
 
     output_dir.mkdir(parents=True, exist_ok=True)
     isolated_output_root = output_dir / "isolated_pipeline_outputs"
@@ -294,3 +304,23 @@ def run_fast_reliable_tests(
     except Exception as e:
         logger.error(f"Reliable test execution failed: {e}")
         return False
+
+
+pytestmark = pytest.mark.fast
+
+
+def test_fast_pipeline_command_is_marker_based_on_tests_tree() -> None:
+    """SC-40: the fast subset is ``-m fast`` over tests/, with no stale paths."""
+    cmd = _build_fast_pipeline_command(
+        has_xdist=False, has_timeout=False, verbose=False
+    )
+    assert cmd[-3:] == ["-m", "fast", "tests/"]
+    assert not any("src/tests" in arg for arg in cmd)
+
+
+def test_comprehensive_routing_covers_the_whole_tree() -> None:
+    """SC-40: the routing table is grown from the tree, so every test file
+    pytest would collect is routed for comprehensive runs."""
+    from .categories import discover_test_files, get_all_test_files
+
+    assert set(discover_test_files()) <= set(get_all_test_files())

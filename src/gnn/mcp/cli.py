@@ -15,7 +15,7 @@ import time
 from pathlib import Path
 from typing import Any
 
-from gnn.utils.logging.logging_utils import setup_step_logging
+from gnn.utils.logging_utils import setup_step_logging
 
 # Configure logging
 logger = logging.getLogger("mcp.cli")

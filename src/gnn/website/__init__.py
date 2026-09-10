@@ -6,6 +6,8 @@ This module provides static HTML website generation from pipeline artifacts.
 
 from typing import Any
 
+from gnn import __version__
+
 from .dashboard import render_dashboard
 from .generator import (
     PIPELINE_STEPS,
@@ -29,8 +31,6 @@ from .renderer import (
     process_website,
     validate_website_config,
 )
-
-__version__ = "1.7.0"
 
 # Feature flags/constants expected by tests
 FEATURES: dict[str, Any] = {

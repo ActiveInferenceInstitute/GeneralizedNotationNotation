@@ -12,6 +12,8 @@ import time
 from pathlib import Path
 from typing import Any, Dict, List, cast
 
+from gnn.render.naming import safe_output_stem
+
 from ._shared import (
     MATPLOTLIB_AVAILABLE,
     SEABORN_AVAILABLE,
@@ -37,7 +39,7 @@ def _generate_3d_visualization(
     dependencies: Dict[str, bool],
     logger: logging.Logger,
 ) -> AdvancedVisualizationAttempt:
-    """Generate 3D network visualization"""
+    model_name = safe_output_stem(model_name)
     attempt = AdvancedVisualizationAttempt(
         viz_type="3d", model_name=model_name, status="skipped"
     )
@@ -209,6 +211,7 @@ def _generate_interactive_dashboard(
     logger: logging.Logger,
 ) -> AdvancedVisualizationAttempt:
     """Generate interactive dashboard"""
+    model_name = safe_output_stem(model_name)
     attempt = AdvancedVisualizationAttempt(
         viz_type="dashboard", model_name=model_name, status="skipped"
     )
@@ -369,6 +372,7 @@ def _generate_pomdp_transition_analysis(
     logger: logging.Logger,
 ) -> AdvancedVisualizationAttempt:
     """Generate POMDP transition matrix (B matrix) analysis"""
+    model_name = safe_output_stem(model_name)
     attempt = AdvancedVisualizationAttempt(
         viz_type="pomdp_transitions", model_name=model_name, status="in_progress"
     )
@@ -481,6 +485,7 @@ def _generate_policy_visualization(
     logger: logging.Logger,
 ) -> AdvancedVisualizationAttempt:
     """Generate policy distribution visualizations"""
+    model_name = safe_output_stem(model_name)
     attempt = AdvancedVisualizationAttempt(
         viz_type="policy", model_name=model_name, status="in_progress"
     )
@@ -571,6 +576,7 @@ def _generate_network_metrics(
     logger: logging.Logger,
 ) -> AdvancedVisualizationAttempt:
     """Generate network analysis metrics and visualizations"""
+    model_name = safe_output_stem(model_name)
     attempt = AdvancedVisualizationAttempt(
         viz_type="network_metrics", model_name=model_name, status="in_progress"
     )
@@ -719,7 +725,7 @@ def _generate_d2_visualizations_safe(
     Returns:
         AdvancedVisualizationAttempt tracking the generation
     """
-    model_name = model_data.get("model_name", "unknown_model")
+    model_name = safe_output_stem(model_data.get("model_name", "unknown_model"))
     attempt = AdvancedVisualizationAttempt(
         viz_type="d2_diagrams", model_name=model_name, status="in_progress"
     )

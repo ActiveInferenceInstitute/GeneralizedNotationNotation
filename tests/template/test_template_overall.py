@@ -9,23 +9,6 @@ from typing import Any
 class TestTemplateModule:
     """Test suite for Template module functionality."""
 
-    def test_module_imports(self) -> None:
-        """Test that template module can be imported."""
-        from gnn.template import (
-            FEATURES,
-            __version__,
-            generate_correlation_id,
-            process_single_file,
-            process_template_standardized,
-            validate_file,
-        )
-
-        assert __version__ is not None
-        assert isinstance(FEATURES, dict)
-        assert callable(process_template_standardized)
-        assert callable(process_single_file)
-        assert callable(validate_file)
-        assert callable(generate_correlation_id)
 
     def test_features_available(self) -> None:
         """Test that FEATURES dict is properly populated."""
@@ -99,8 +82,8 @@ s->s
         test_file = safe_filesystem.create_file("valid_model.md", gnn_content)
 
         result = validate_file(test_file)
-        # Should return validation result (dict or bool)
-        assert result is not None
+        # validate_file must yield a verdict (bool or result dict), not None
+        assert isinstance(result, (bool, dict))
 
     def test_validate_file_nonexistent(self, safe_filesystem: Any) -> None:
         """Test validation of non-existent file."""
@@ -111,7 +94,7 @@ s->s
 
         result = validate_file(nonexistent_path)
         # Result can be dict with valid=False or error info
-        assert result is not None
+        assert isinstance(result, (bool, dict))
         if isinstance(result, dict):
             # If file doesn't exist, validation should indicate that
             assert "error" in result or "valid" in result or "exists" in result
@@ -138,7 +121,7 @@ Static
         # process_single_file signature: (input_file, output_dir, options)
         options: dict[str, Any] = {"verbose": True}
         result = process_single_file(test_file, output_dir, options)
-        assert result is not None
+        assert isinstance(result, (bool, dict))
 
     def test_process_template_standardized(self, safe_filesystem: Any) -> None:
         """Test standardized template processing."""
@@ -185,7 +168,7 @@ class TestSafeExecution:
 
         # safe_template_execution is a context manager
         with safe_template_execution(logger, correlation_id) as ctx:
-            assert ctx is not None
+            assert isinstance(ctx, dict)
             assert "correlation_id" in ctx
             assert ctx["correlation_id"] == correlation_id
 
@@ -201,8 +184,7 @@ class TestSafeExecution:
         # Should handle exception gracefully within context
         try:
             with safe_template_execution(logger, correlation_id) as ctx:
-                # Context should be provided
-                assert ctx is not None
+                assert isinstance(ctx, dict)
         except Exception:
             pass  # Context manager may re-raise after cleanup
 
@@ -232,14 +214,13 @@ class TestUtilityPatterns:
 
         info = get_version_info()
         assert isinstance(info, dict)
-        assert "version" in info or "module" in info or len(info) > 0
+        assert "version" in info
+        assert info["version"]
 
 
 class TestTemplateUtils:
     """Smoke tests for template.utils sub-module."""
 
-    def test_module_importable(self) -> Any:
-        from gnn.template import utils  # noqa: F401
 
     def test_get_version_info_returns_dict(self) -> Any:
         from gnn.template.utils import get_version_info

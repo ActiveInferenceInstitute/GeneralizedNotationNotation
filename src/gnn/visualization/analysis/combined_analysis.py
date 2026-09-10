@@ -10,6 +10,8 @@ from typing import Any, Dict, List
 
 import numpy as np
 
+from gnn.render.naming import safe_output_stem
+
 from ..compat.viz_compat import MATPLOTLIB_AVAILABLE, plt
 from ..compat.viz_compat import viz_var_type as _viz_var_type
 from ..core.parsed_model import load_visualization_model
@@ -42,6 +44,7 @@ def generate_combined_analysis(
     parsed_data: Dict[str, Any], output_dir: Path, model_name: str
 ) -> List[str]:
     """Generate combined analysis."""
+    model_name = safe_output_stem(model_name)
     visualizations: List[str] = []
 
     if not MATPLOTLIB_AVAILABLE:
@@ -207,6 +210,7 @@ def _generate_standalone_panels(
     parsed_data: Dict[str, Any], output_dir: Path, model_name: str
 ) -> List[str]:
     """Generate standalone panels."""
+    model_name = safe_output_stem(model_name)
     visualizations: List[str] = []
 
     if not MATPLOTLIB_AVAILABLE:
@@ -336,6 +340,7 @@ def _generate_generative_model_diagram(
     parsed_data: Dict[str, Any], output_dir: Path, model_name: str
 ) -> List[str]:
     """Generate generative model diagram."""
+    model_name = safe_output_stem(model_name)
     visualizations: List[str] = []
 
     if not MATPLOTLIB_AVAILABLE:

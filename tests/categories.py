@@ -7,8 +7,14 @@ execution settings, and list of test files.
 
 The category system is the routing table used by ``_ModularTestRunner``
 (``test_runner_modular.py``): one entry per test group, each naming the
-test files that belong to it (relative to ``src/tests/``). Missing files
-are skipped by discovery; ``missing_category_files()`` reports them.
+test files that belong to it (relative to ``tests/``).
+
+SC-40: the curated lists below cover only a curated subset of the tree,
+so routing is grown from the ``tests/`` tree at import time
+(``_grow_routing_from_tree``): every test file pytest would collect is
+routed through the category matching its directory (curated categories
+are extended in place) or through a generated category with default
+settings. ``missing_category_files()`` reports drift for curated entries.
 """
 
 from __future__ import annotations
@@ -16,8 +22,70 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Dict, List, TypedDict
 
+TEST_ROOT = Path(__file__).parent
+
+# Defaults for tree-grown categories; curated categories keep their own values.
+_GROWN_TIMEOUT_SECONDS = 600
+_GROWN_MAX_FAILURES = 20
+
+
+def discover_test_files() -> List[str]:
+    """Every test file under ``tests/`` that pytest would collect.
+
+    Mirrors pytest.ini ``python_files`` (``test_*.py`` / ``*_test.py``),
+    returned as paths relative to ``tests/``, sorted and deduplicated.
+    """
+    found: set[str] = set()
+    for pattern in ("test_*.py", "*_test.py"):
+        for path in TEST_ROOT.rglob(pattern):
+            found.add(path.relative_to(TEST_ROOT).as_posix())
+    return sorted(found)
+
+
+def _grow_routing_from_tree() -> None:
+    """Extend ``MODULAR_TEST_CATEGORIES`` until it routes the whole tree.
+
+    The curated table predates the 3.3.0 restructure and named only a
+    fraction of the suite (86 of ~400 files), so a comprehensive run
+    silently skipped most tests. Each discovered file joins the category
+    keyed by its directory under ``tests/`` (extending the curated entry
+    when one exists) or a generated default-config category. Top-level
+    files group under a ``root`` category.
+    """
+    routed: set[str] = {
+        entry
+        for category in MODULAR_TEST_CATEGORIES.values()
+        for entry in category.get("files", [])
+    }
+    for rel_path in discover_test_files():
+        if rel_path in routed:
+            continue
+        parts = Path(rel_path).parts
+        group = parts[0] if len(parts) > 1 else "root"
+        category = MODULAR_TEST_CATEGORIES.get(group)
+        if category is not None:
+            category["files"].append(rel_path)
+        else:
+            MODULAR_TEST_CATEGORIES[group] = {
+                "name": f"{group.replace('_', ' ').title()} Tests",
+                "description": (
+                    f"Auto-grown routing for {group}/ tests not covered by "
+                    "curated categories"
+                ),
+                "files": [rel_path],
+                "markers": [],
+                "timeout_seconds": _GROWN_TIMEOUT_SECONDS,
+                "max_failures": _GROWN_MAX_FAILURES,
+                "parallel": True,
+            }
+        routed.add(rel_path)
+
+
+
 
 class TestCategory(TypedDict, total=False):
+
+
     """Configuration for one modular test category.
 
     All keys are optional at the type level for backward compatibility with
@@ -33,7 +101,6 @@ class TestCategory(TypedDict, total=False):
     parallel: bool
 
 
-# Test category definitions for modular test execution
 MODULAR_TEST_CATEGORIES: Dict[str, TestCategory] = {
     "gnn": {
         "name": "GNN Module Tests",
@@ -364,6 +431,11 @@ MODULAR_TEST_CATEGORIES: Dict[str, TestCategory] = {
 }
 
 
+# SC-40: grow the curated routing table to cover the whole tests/ tree so
+# comprehensive runs discover every test file, not just the curated subset.
+_grow_routing_from_tree()
+
+
 def get_category_names() -> List[str]:
     """Get list of all category names."""
     return list(MODULAR_TEST_CATEGORIES.keys())
@@ -395,7 +467,7 @@ def missing_category_files(
 
     Args:
         test_dir: Directory the category file lists are relative to
-            (defaults to the ``src/tests/`` directory containing this file).
+            (defaults to the ``tests/`` directory containing this file).
 
     Returns:
         Mapping of category name to the category's file entries that are

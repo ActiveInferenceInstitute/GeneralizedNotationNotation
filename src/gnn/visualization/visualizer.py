@@ -618,7 +618,7 @@ def generate_visualizations(
     """
     from contextlib import contextmanager
 
-    from gnn.utils.logging.logging_utils import (
+    from gnn.utils.logging_utils import (
         log_step_error,
         log_step_start,
         log_step_success,

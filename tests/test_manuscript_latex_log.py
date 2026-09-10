@@ -96,7 +96,7 @@ def _shipped() -> tuple[str, str]:
     No skip guard: both files are tracked (``.gitignore`` carries an explicit
     exception for the log), so their absence means the committed render is
     incomplete, and the repo's zero-skip contract
-    (``src/tests/test_zero_skip_contracts.py``) forbids hiding that behind a
+    (``tests/test_zero_skip_contracts.py``) forbids hiding that behind a
     skip. A skip here also silently disarmed the only check on the shipped
     LaTeX diagnostics.
     """
