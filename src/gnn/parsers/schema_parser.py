@@ -16,8 +16,20 @@ from typing import Any, cast
 
 try:
     import defusedxml.ElementTree as ET
-except ImportError:
-    import xml.etree.ElementTree as ET  # nosec B405
+except ImportError as exc:  # pragma: no cover - defusedxml is a hard dependency
+    # Fail loud (RED_TEAM_REVIEW follow-up): silently falling back to the
+    # vulnerable stdlib xml.etree parser must never happen. Log the error
+    # and refuse to import rather than degrading XML entity protection.
+    logging.getLogger(__name__).error(
+        "defusedxml is a required dependency for schema (XSD/ASN.1/Alloy/Z) "
+        "parsing but is not installed; refusing to fall back to stdlib "
+        "xml.etree (%s)",
+        exc,
+    )
+    raise ImportError(
+        "defusedxml is required for secure schema parsing; install it "
+        "(e.g. `uv sync`) instead of falling back to stdlib xml.etree"
+    ) from exc
 from pathlib import Path
 from typing import Dict, List, Optional, Union
 
