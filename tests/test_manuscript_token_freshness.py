@@ -219,7 +219,29 @@ def test_committed_token_map_is_at_most_one_commit_stale() -> None:
     # legitimately fresh stamp; explicit per-parent enumeration is
     # topological and immune to that.
     ancestors: list[str] = []
-    for parent in _rev_parents("HEAD"):
+    head_parents = _rev_parents("HEAD")
+    if not head_parents:
+        # Shallow CI checkout (fetch-depth=1): HEAD's parents are pruned.
+        # Fetch the branch heads shallowly (bounded, same helper as the
+        # stamp resolution) so the topological enumeration below can see
+        # the branch side.
+        subprocess.run(
+            [
+                "git",
+                "-C",
+                str(REPO_ROOT),
+                "fetch",
+                "--depth",
+                "12",
+                "origin",
+                "+refs/heads/*:refs/remotes/origin/*",
+            ],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        head_parents = _rev_parents("HEAD")
+    for parent in head_parents:
         ancestors.append(parent)
         ancestors.extend(_rev_parents(parent))
     allowed = {head, *ancestors}
