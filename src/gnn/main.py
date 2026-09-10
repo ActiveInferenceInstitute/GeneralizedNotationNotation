@@ -34,17 +34,17 @@ Pipeline Steps:
 24. Intelligent analysis (24_intelligent_analysis.py)
 
 Usage:
-    python src/gnn/main.py [options]
+    uv run python src/gnn/main.py [options]
 
 Examples:
     # Run full pipeline
-    python src/gnn/main.py --target-dir input/gnn_files --verbose
+    uv run python src/gnn/main.py --target-dir input/gnn_files --verbose
 
     # Run specific steps only
-    python src/gnn/main.py --only-steps "0,1,2,3" --verbose
+    uv run python src/gnn/main.py --only-steps "0,1,2,3" --verbose
 
     # Skip certain steps
-    python src/gnn/main.py --skip-steps "15,16" --verbose
+    uv run python src/gnn/main.py --skip-steps "15,16" --verbose
 
 For complete usage information, see:
 - README.md: Project overview and quick start
