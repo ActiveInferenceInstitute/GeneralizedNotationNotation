@@ -546,6 +546,33 @@ def _initialize_pipeline_summary(
     }
 
 
+def _validate_pipeline_config_preflight(
+    full_config: Dict[str, Any],
+    logger: logging.Logger,
+) -> None:
+    """Run preflight's config-only validation and fail fast on errors.
+
+    Uses :func:`gnn.pipeline.preflight.validate_config_dict` (no filesystem
+    probes) so an invalid ``pipeline.skip_steps`` value or ``llm.timeout_seconds``
+    aborts startup with the preflight message before any step executes.
+    """
+    from gnn.pipeline.preflight import validate_config_dict
+
+    report = validate_config_dict(full_config)
+    if not report.is_ok:
+        raise ValueError(
+            "Pipeline configuration failed preflight validation: "
+            + "; ".join(
+                f"[{i.category}] {i.message}"
+                for i in report.issues
+                if i.severity == "error"
+            )
+        )
+    for issue in report.issues:
+        if issue.severity != "error":
+            logger.warning("Preflight: [%s] %s", issue.category, issue.message)
+
+
 def _prepare_pipeline_context(
     override_args: Optional[PipelineArguments],
     override_config: Optional[Dict[str, Any]],
@@ -570,6 +597,11 @@ def _prepare_pipeline_context(
         full_config, config_pipeline_settings = _load_pipeline_config(
             override_config, logger
         )
+        # Config-only preflight (cheap, no environment probes): a bad
+        # pipeline.skip_steps or llm timeout must fail the run here, before
+        # any step executes — not only when the user separately runs
+        # ``gnn preflight``.
+        _validate_pipeline_config_preflight(full_config, logger)
         apply_input_config_defaults(args, full_config, parsed)
 
         steps_to_execute = _resolve_steps_to_execute(

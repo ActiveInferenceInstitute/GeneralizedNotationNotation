@@ -503,37 +503,6 @@ class TestEndToEndIntegration:
         _finalize_pipeline_summary(summary)
         assert summary["overall_status"] == "FAILED"
 
-    def test_pipeline_summary_step_numbering(self) -> None:
-        """Test that pipeline summary uses correct step numbering."""
-        # Test that step numbers reflect execution order, not script names
-        summary: dict[str, Any] = {
-            "steps": [
-                {
-                    "script_name": "3_gnn.py",
-                    "step_number": 1,  # Should be 1 (first executed)
-                    "status": "SUCCESS",
-                },
-                {
-                    "script_name": "5_type_checker.py",
-                    "step_number": 2,  # Should be 2 (second executed)
-                    "status": "SUCCESS",
-                },
-                {
-                    "script_name": "8_visualization.py",
-                    "step_number": 3,  # Should be 3 (third executed)
-                    "status": "SUCCESS",
-                },
-            ],
-            "performance_summary": {
-                "total_steps": 3  # Should reflect actual executed steps
-            },
-        }
-
-        # Verify step numbering is sequential based on execution order
-        assert summary["steps"][0]["step_number"] == 1
-        assert summary["steps"][1]["step_number"] == 2
-        assert summary["steps"][2]["step_number"] == 3
-        assert summary["performance_summary"]["total_steps"] == 3
 
     def test_pipeline_summary_validation_comprehensive(self) -> None:
         """Test comprehensive pipeline summary validation."""
