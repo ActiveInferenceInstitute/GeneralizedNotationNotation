@@ -38,9 +38,16 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path
-from scripts.lib.manuscript_exclusions import AUTHORING_GUIDE_SKIP  # noqa: E402
 
 _PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(_PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT))
+if str(_PROJECT_ROOT / "src") not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT / "src"))
+
+from gnn.manuscript import RepositorySnapshot  # noqa: E402
+from scripts.lib.manuscript_exclusions import AUTHORING_GUIDE_SKIP  # noqa: E402
+
 _FIG_DIR = _PROJECT_ROOT / "output" / "figures"
 _MANUSCRIPT_DIR = _PROJECT_ROOT / "manuscript"
 _REGISTRY_PATH = _FIG_DIR / "figure_registry.json"
@@ -176,16 +183,41 @@ def _write_registry(provenance: dict[str, dict[str, str]]) -> list[str]:
 
 
 def main() -> int:
-    # Repo metrics reads output/data/manuscript_variables.json — make sure it exists.
+    # Regenerate the token map on EVERY build. The old "only when missing"
+    # skip plus check=False left a stale output/data/manuscript_variables.json
+    # feeding every generator silently. A fresh run also fails loudly below if
+    # the map describes a different commit than the one being built from.
     variables_json = _PROJECT_ROOT / "output" / "data" / "manuscript_variables.json"
-    if not variables_json.is_file():
+    try:
         subprocess.run(
             [
                 sys.executable,
                 str(_PROJECT_ROOT / "scripts" / "z_generate_manuscript_variables.py"),
             ],
             cwd=str(_PROJECT_ROOT),
-            check=False,
+            check=True,
+        )
+    except subprocess.CalledProcessError as exc:
+        raise SystemExit(
+            "❌ scripts/z_generate_manuscript_variables.py failed with exit code "
+            f"{exc.returncode}; fix the producer (see its stderr above) before "
+            "building figures against a token map"
+        ) from exc
+    try:
+        generated = json.loads(variables_json.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise SystemExit(
+            f"❌ {variables_json} is unreadable after regeneration ({exc}); "
+            "figures cannot be built against an auditable token map"
+        ) from exc
+    head = RepositorySnapshot(_PROJECT_ROOT)
+    recorded = str(generated.get("GNN_GIT_COMMIT", "unknown"))
+    if recorded == "unknown" or recorded != head.commit:
+        raise SystemExit(
+            "❌ output/data/manuscript_variables.json was generated for commit "
+            f"{recorded!r} but this build reads {head.commit!r} — the figures "
+            "would print numbers the prose does not. Commit or clean the tree, "
+            "then rerun: python -m scripts.manuscript_build_figures"
         )
 
     _FIG_DIR.mkdir(parents=True, exist_ok=True)
