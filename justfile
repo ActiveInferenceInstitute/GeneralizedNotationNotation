@@ -15,27 +15,27 @@ default:
 # Run tests with the same marker filter as CI, so local and CI
 # exercise the same surface; use test-stopfast or test-full for other scopes.
 test:
-    uv run pytest tests/ -q --tb=short -m "not pipeline and not mcp"
+    uv run pytest tests/ -q --tb=short -m "not pipeline and not mcp and not ollama and not env_heavy"
 
 # Run fast test suite, stop at first failure
 test-stopfast:
-    uv run pytest tests/ -q --tb=short -x -m "not pipeline and not mcp"
+    uv run pytest tests/ -q --tb=short -x -m "not pipeline and not mcp and not ollama and not env_heavy"
 
-# Run full test suite (with Ollama ignores)
+# Run full test suite (excludes ollama + env-heavy via markers)
 test-full:
     uv run pytest tests/ -q --tb=no \
-        --ignore=tests/llm/test_llm_ollama.py \
-        --ignore=tests/llm/test_llm_ollama_integration.py
+        -m "not ollama and not env_heavy"
 
 # Run tests for a specific module (e.g., just test-mod render)
 test-mod MODULE:
     uv run pytest tests/{{ MODULE }}/ -v
 
-# Run tests with coverage report
+# Run tests with coverage report (same marker filter as the default suite:
+# SC-44 replaced the per-file Ollama ignores with the `ollama` marker and
+# excludes env-heavy uv-sync tests).
 test-cov:
-    uv run pytest tests/ -m "not pipeline and not mcp" --cov=gnn --cov-report=term-missing \
-        --ignore=tests/llm/test_llm_ollama.py \
-        --ignore=tests/llm/test_llm_ollama_integration.py
+    uv run pytest tests/ -m "not pipeline and not mcp and not ollama and not env_heavy" \
+        --cov=gnn --cov-report=term-missing
 
 # Run the extras-unlock tests (same files the ci.yml `extras` job gates on);
 # needs the ml-ai/torch extras in the environment (uv sync --extra ml-ai --extra torch).
@@ -51,20 +51,20 @@ test-extras:
 
 # Run ruff linter
 lint:
-    uv run ruff check src/gnn scripts
+    uv run ruff check src scripts
 
 # Run ruff linter with auto-fix
 lint-fix:
-    uv run ruff check src/gnn scripts --fix
+    uv run ruff check src scripts --fix
 
 # Format code with ruff
 format:
-    uv run ruff format src/gnn scripts
-    uv run ruff check src/gnn scripts --select I --fix
+    uv run ruff format src scripts
+    uv run ruff check src scripts --select I --fix
 
 # Check formatting without modifying files
 format-check:
-    uv run ruff format --check src/gnn scripts
+    uv run ruff format --check src scripts
 
 # Run mypy type checking
 typecheck:
@@ -94,9 +94,9 @@ gridworld:
 v3-acceptance:
     PYTHONPATH=src uv run --extra dev python scripts/run_v3_orchestration_acceptance.py --strict
 
-# Assert the live MCP tool count meets the CI floor (141 registered as of 2026-09-07)
+# Assert the live MCP tool count meets the CI floor (MCP_TOOL_FLOOR lives in tests/mcp/test_mcp_audit.py)
 mcp-count:
-    PYTHONPATH=src uv run --extra dev python -c "from tests.mcp.test_mcp_audit import count_mcp_tools; assert count_mcp_tools() >= 140, 'MCP tool count below CI floor'"
+    PYTHONPATH=src uv run --extra dev python -c "from tests.mcp.test_mcp_audit import count_mcp_tools, MCP_TOOL_FLOOR; assert count_mcp_tools() >= MCP_TOOL_FLOOR, 'MCP tool count below CI floor'"
 
 # Emit durable v3 run manifests for a completed run (e.g. just manifest output)
 manifest OUT:
@@ -115,7 +115,7 @@ doc-patterns:
     uv run python scripts/check_gnn_doc_patterns.py --strict
 
 # Run fast quality gates without the full pytest suite
-quality: format-check lint terminology doc-terms audit doc-contracts doc-patterns typecheck security v3-acceptance mcp-count
+quality: format-check lint terminology doc-terms audit doc-contracts doc-patterns typecheck security capability skills-health tokens v3-acceptance mcp-count
 
 # Run focused PyMDP/POMDP behavior checks
 test-pymdp-focused:
@@ -128,8 +128,7 @@ test-pymdp-focused:
 # Collect pytest inventory without executing tests
 test-collect:
     uv run pytest --collect-only tests/ -q --tb=no \
-        --ignore=tests/llm/test_llm_ollama.py \
-        --ignore=tests/llm/test_llm_ollama_integration.py
+        -m "not ollama"
 
 # ─────────────────────────────────────────────
 # Pipeline Execution
@@ -182,8 +181,7 @@ test-count:
     @find tests -name 'test_*.py' | wc -l
     @echo "Collected test items:"
     @uv run pytest --collect-only tests/ -q --tb=no \
-        --ignore=tests/llm/test_llm_ollama.py \
-        --ignore=tests/llm/test_llm_ollama_integration.py 2>/dev/null | tail -1
+        -m "not ollama" 2>/dev/null | tail -1
 
 # ─────────────────────────────────────────────
 # Environment Setup

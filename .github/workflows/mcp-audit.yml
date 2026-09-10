@@ -17,22 +17,18 @@ jobs:
     env:
       PYTHONPATH: src
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-python@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "3.12"
-      - uses: astral-sh/setup-uv@v7
+      - uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v7.6.0
         with:
+          # Pin uv to the Dockerfile bootstrap floor series (UV_VERSION=0.12.0).
+          version: "0.12"
           enable-cache: true
       - run: uv sync --frozen --extra dev
+      # MCP_TOOL_FLOOR lives in tests/mcp/test_mcp_audit.py — single source of
+      # truth shared with ci.yml and the justfile mcp-audit gate.
       - name: MCP tool count audit
         run: |
-          uv run --extra dev python -c "
-          import sys
-          sys.path.insert(0, 'src')
-          from tests.mcp.test_mcp_audit import count_mcp_tools
-          count = count_mcp_tools()
-          print(f'MCP tool count: {count}')
-          assert count > 139, f'MCP tool count {count} is below 140'
-          print('OK')
-          "
+          uv run --extra dev python -c "from tests.mcp.test_mcp_audit import count_mcp_tools, MCP_TOOL_FLOOR; count = count_mcp_tools(); print(f'MCP tool count: {count}'); assert count >= MCP_TOOL_FLOOR, f'MCP tool count {count} is below the floor {MCP_TOOL_FLOOR}'; print('OK')"

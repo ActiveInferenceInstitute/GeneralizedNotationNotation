@@ -1,0 +1,26 @@
+# Build-context hygiene: never ship host-local artifacts into the image
+.venv
+venv
+__pycache__
+*.pyc
+*.pyo
+output/
+out/
+.cache
+.pytest_cache
+.ruff_cache
+.mypy_cache
+htmlcov
+coverage.xml
+.coverage
+.coverage.*
+.git
+.gitignore
+.research
+node_modules
+dist
+build
+*.egg-info
+.env
+.env.*
+.DS_Store

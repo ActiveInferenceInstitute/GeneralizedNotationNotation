@@ -26,6 +26,12 @@ import pytest
 pytestmark = pytest.mark.mcp
 
 
+# Single source of truth for the minimum registered MCP tool count.
+# Consumers: .github/workflows/ci.yml, .github/workflows/mcp-audit.yml,
+# and the justfile mcp-audit gate (tests.mcp.test_mcp_audit.MCP_TOOL_FLOOR).
+MCP_TOOL_FLOOR = 140
+
+
 def count_mcp_tools() -> int:
     """Return registered MCP tool count after initialize and recovery settle.
 

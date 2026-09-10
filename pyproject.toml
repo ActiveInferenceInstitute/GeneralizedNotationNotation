@@ -73,65 +73,17 @@ dependencies = [
     "h5py>=3.8.0",
 ]
 
-# Development dependencies (enhanced for comprehensive development workflow)
+# Optional dependencies. The ``dev`` extra now keeps only genuinely
+# optional-dependency test needs (mirroring named extras); universal dev
+# tooling lives in the PEP 735 ``[dependency-groups]`` ``dev`` group below,
+# installed by default via ``[tool.uv] default-groups``.
 [project.optional-dependencies]
 geo-infer = ["h3>=4.5.0,<5"]
 dev = [
-    # aiohttp is a core dependency; listed here only so ``uv sync --extra dev`` stays explicit in lockfiles
-    "aiohttp>=3.14.3",
     # Stan executor driver library (same pin as the ``stan`` extra) so the dev
     # environment can compile/run the Stan tests when a CmdStan toolchain exists
     # and ``uv sync --extra dev`` never prunes it.
     "cmdstanpy>=1.2",
-    # Maintained lightweight integration surfaces covered by the default test suite
-    "fastapi>=0.100.0",
-    "uvicorn[standard]>=0.23.0",
-    "websockets>=16.0",
-    "pygls>=1.3.1",
-    "pytest>=8.0",
-    "pytest-asyncio>=0.23.0",
-    "pytest-cov>=3.0.0",
-    "pytest-json-report>=1.5.0",
-    "pytest-benchmark>=4.0.0",
-    "pytest-sugar>=0.9.0",
-    "pytest-timeout>=2.1.0",
-    "pytest-xdist>=3.0.0",
-
-    # Security scanning (dev-only tools; pip-audit via uv tool / CI avoids the retired safety->nltk chain)
-    "bandit>=1.7.0",
-    "bandit-sarif-formatter>=1.1.1",
-
-    # Code quality and linting
-    "isort>=5.12.0",
-    "black>=26.3.1",
-    "flake8>=4.0.0",
-    "mypy>=1.0",
-    "pre-commit>=3.0.0",
-    "mypy-extensions>=1.0.0",
-    "ruff>=0.1.0",
-    "pylint>=3.0.0",
-
-    # Documentation generation
-    "sphinx>=7.0.0",
-    "sphinx-rtd-theme>=1.3.0",
-    "myst-parser>=2.0.0",
-    "bleach>=6.4.0",
-
-    # Interactive development
-    "ipython>=8.0.0",
-    "ipdb>=0.13.0",
-    "jupyterlab>=4.5.9",
-    "jupyter-server>=2.20.0",
-    "ipywidgets>=8.0.0",
-
-    # Performance profiling and debugging
-    "py-spy>=0.3.0",
-    "memory-profiler>=0.61.0",
-    "line-profiler>=4.0.0",
-
-    # Development utilities
-    "rich>=13.0.0",
-    "typer>=0.9.0",
 ]
 
 api = [
@@ -183,7 +135,7 @@ torch = [
 ]
 research = [
     # NOTE: jupyterlab/jupyter-server duplicate dev group entries intentionally —
-    # research group targets non-developer end-users who don't install dev extras.
+    # research group targets non-developer end-users who don't install the dev group.
     "bleach>=6.4.0",
     "jupyterlab>=4.5.9",
     "jupyter-server>=2.20.0",
@@ -210,9 +162,8 @@ bnlearn = [
 
 # All optional dependencies (install everything).
 # MAINTAINER NOTE: This list manually duplicates packages from the named
-# optional groups above (api, ml-ai, audio, gui, graphs, research, scaling).
-# When adding a package to any named group, ALSO add it here.
-# Ideally this would use `{include-group = "name"}` syntax once supported.
+# optional groups above (geo-infer, api, ml-ai, audio, gui, graphs, research,
+# scaling). When adding a package to any named group, ALSO add it here.
 all = [
     # Stan backend executor
     "cmdstanpy>=1.2",
@@ -231,6 +182,9 @@ all = [
 
     # Visualization and graphics
     "graphviz>=0.20.0",
+
+    # Geo-infer spatial indexing
+    "h3>=4.5.0,<5",
 
     # Audio processing
     "librosa>=0.10.0",
@@ -260,9 +214,65 @@ all = [
 
 ]
 
+# Development tooling (PEP 735 dependency group). Installed by default via
+# ``[tool.uv] default-groups = ["dev"]`` so a fresh ``uv run`` gets the full
+# dev toolchain without ``--extra dev``. CI recipes that pass ``--extra dev``
+# still include the group (uv sync installs default groups unless
+# ``--no-default-groups`` is passed).
+[dependency-groups]
+dev = [
+    # Test framework and plugins
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23.0",
+    "pytest-cov>=3.0.0",
+    "pytest-json-report>=1.5.0",
+    "pytest-benchmark>=4.0.0",
+    "pytest-sugar>=0.9.0",
+    "pytest-timeout>=2.1.0",
+    "pytest-xdist>=3.0.0",
+
+    # Security scanning (dev-only tools; pip-audit via uv tool / CI avoids the retired safety->nltk chain)
+    "bandit>=1.7.0",
+    "bandit-sarif-formatter>=1.1.1",
+
+    # Code quality and linting (ruff covers isort/black/flake8/pylint roles)
+    "mypy>=1.0",
+    "mypy-extensions>=1.0.0",
+    "pre-commit>=3.0.0",
+    "ruff>=0.1.0",
+
+    # Documentation generation
+    "sphinx>=7.0.0",
+    "sphinx-rtd-theme>=1.3.0",
+    "myst-parser>=2.0.0",
+    "bleach>=6.4.0",
+
+    # Interactive development
+    "ipython>=8.0.0",
+    "ipdb>=0.13.0",
+    "jupyterlab>=4.5.9",
+    "jupyter-server>=2.20.0",
+    "ipywidgets>=8.0.0",
+
+    # Performance profiling and debugging
+    "py-spy>=0.3.0",
+    "memory-profiler>=0.61.0",
+    "line-profiler>=4.0.0",
+
+    # Development utilities
+    "rich>=13.0.0",
+    "typer>=0.9.0",
+
+    # Lightweight integration surfaces exercised by the default test suite
+    "fastapi>=0.100.0",
+    "uvicorn[standard]>=0.23.0",
+    "websockets>=16.0",
+    "pygls>=1.3.1",
+]
+
 [project.urls]
 Homepage = "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation"
-Documentation = "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/tree/main/doc"
+Documentation = "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/tree/main/docs"
 Repository = "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation.git"
 Issues = "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/issues"
 
@@ -270,6 +280,7 @@ Issues = "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotatio
 gnn = "gnn.cli:main"
 
 [tool.uv]
+default-groups = ["dev"]
 # Security floors for transitive packages resolved through optional extras.
 # Keep these as resolver constraints so the packages do not become core runtime
 # dependencies merely because Dependabot tracks them in uv.lock.
@@ -290,30 +301,6 @@ constraint-dependencies = [
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/gnn"]
-
-[tool.black]
-line-length = 88
-target-version = ['py311']
-include = '\.pyi?$'
-extend-exclude = '''
-/(
-  # directories
-  \.eggs
-  | \.git
-  | \.hg
-  | \.mypy_cache
-  | \.tox
-  | \.venv
-  | build
-  | dist
-)/
-'''
-
-[tool.isort]
-profile = "black"
-multi_line_output = 3
-line_length = 88
-known_first_party = ["gnn"]
 
 [tool.mypy]
 python_version = "3.11"
@@ -412,7 +399,7 @@ exclude_lines = [
 
 [tool.bandit]
 exclude_dirs = ["tests"]
-skips = ["B101", "B601"]
+skips = ["B101"]
 
 [tool.ruff]
 target-version = "py311"
@@ -430,7 +417,7 @@ select = [
     "C4", # flake8-comprehensions
 ]
 ignore = [
-    "E501",  # line too long, handled by black
+    "E501",  # line too long, handled by the formatter
     "E402",  # module import not at top (sys.path bootstrap in orchestrators)
     "B008",  # do not perform function calls in argument defaults
     "C901",  # too complex

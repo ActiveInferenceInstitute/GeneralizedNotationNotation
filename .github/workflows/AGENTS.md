@@ -8,8 +8,8 @@ Defines behavior and guardrails for workflows in this directory. Human index of 
 
 | File | Role |
 |------|------|
-| `ci.yml` | Matrix test with JUnit + coverage + artifact + summary; Ruff/mypy/doc audits on 3.12 only (merged into test job); MCP tool count ≥ 140 on 3.12 (`tests.mcp.test_mcp_audit.count_mcp_tools`); v3 orchestration acceptance gate on 3.12; Bandit SARIF → `upload-sarif` + artifact; job fails on findings. No path filter — runs on doc-only changes too. |
-| `mcp-audit.yml` | MCP tool count ≥ 140 audit on push/PR to `main`. |
+| `ci.yml` | Matrix test with JUnit + coverage + artifact + summary; Ruff/mypy/doc audits on 3.12 only (merged into test job); MCP tool count ≥ `MCP_TOOL_FLOOR` (140, defined in `tests/mcp/test_mcp_audit.py` — the single source shared with `mcp-audit.yml` and the justfile gate); v3 orchestration acceptance gate on 3.12; Bandit SARIF → `upload-sarif` + artifact; job fails on findings. No path filter — runs on doc-only changes too. |
+| `mcp-audit.yml` | MCP tool count ≥ `MCP_TOOL_FLOOR` audit on push/PR to `main`. |
 | `full-extras.yml` | Weekly all-extras suite: `uv sync --frozen --all-extras`, optional-import validation, full pytest (Python 3.12). |
 | `docs-audit.yml` | Strict Markdown audit when docs or `docs_audit.py` change. |
 | `actionlint.yml` | Lint workflow YAML when `.github/workflows/**` changes. |
@@ -19,7 +19,8 @@ Defines behavior and guardrails for workflows in this directory. Human index of 
 
 ## Standards
 
-- Use official actions pinned by major version.
+- Pin every third-party action to a full commit SHA with the version as a trailing comment (e.g. `uses: actions/checkout@<sha> # v7.0.1`) for supply-chain hardening; Dependabot reads the version comment. Resolve SHAs with `git ls-remote` — never guess.
+- Pin `astral-sh/setup-uv` steps with `version: "0.12"` (the Dockerfile `UV_VERSION` bootstrap floor minor series).
 - Use explicit `timeout-minutes`.
 - Apply least-privilege `permissions` globally and per job.
 - Use deterministic dependency operations (`uv sync --frozen`, `uv export --frozen`).

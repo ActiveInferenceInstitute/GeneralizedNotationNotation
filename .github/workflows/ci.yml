@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: ci-${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
@@ -34,16 +34,18 @@ jobs:
       PYTHONHASHSEED: "0"
       UV_PYTHON: ${{ matrix.python-version }}
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v7
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: ${{ matrix.python-version }}
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v7
+        uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v7.6.0
         with:
+          # Pin uv to the Dockerfile bootstrap floor series (UV_VERSION=0.12.0).
+          version: "0.12"
           enable-cache: true
 
       - name: Install dependencies (dev)
@@ -98,7 +100,7 @@ jobs:
 
       - name: MCP and capability test evidence
         if: always() && matrix.python-version == '3.12'
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: mcp-capabilities
           path: junit/mcp-capabilities.xml
@@ -112,8 +114,7 @@ jobs:
         if: matrix.python-version == '3.12'
         run: |
           uv run --extra dev python -m pytest --collect-only tests/ -q --tb=no \
-            --ignore=tests/llm/test_llm_ollama.py \
-            --ignore=tests/llm/test_llm_ollama_integration.py
+            -m "not ollama"
 
       - name: Focused PyMDP/POMDP tests
         if: matrix.python-version == '3.12'
@@ -128,7 +129,7 @@ jobs:
         id: pytest
         run: |
           mkdir -p junit
-          uv run --extra dev python -m pytest -m "not pipeline and not mcp" \
+          uv run --extra dev python -m pytest -m "not pipeline and not mcp and not ollama and not env_heavy" \
             --tb=short \
             -q \
             -n auto --dist worksteal \
@@ -137,7 +138,7 @@ jobs:
 
       - name: Pytest JUnit report
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: pytest-junit-${{ matrix.python-version }}
           path: junit/pytest-${{ matrix.python-version }}.xml
@@ -145,7 +146,7 @@ jobs:
 
       - name: Coverage report artifact
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: coverage-${{ matrix.python-version }}
           path: junit/coverage-${{ matrix.python-version }}.json
@@ -166,14 +167,11 @@ jobs:
         if: matrix.python-version == '3.12'
         run: |
           uv run --extra dev python - <<'PY'
-          import sys
-          sys.path.insert(0, "src")
-          from tests.mcp.test_mcp_audit import count_mcp_tools
+          from tests.mcp.test_mcp_audit import count_mcp_tools, MCP_TOOL_FLOOR
 
           count = count_mcp_tools()
           print(f"MCP tools: {count}")
-          if count < 140:
-              raise SystemExit(f"MCP tool count regression: {count} < 140")
+          assert count >= MCP_TOOL_FLOOR, f"MCP tool count regression: {count} < {MCP_TOOL_FLOOR}"
           print("MCP tool count OK")
           PY
 
@@ -196,16 +194,18 @@ jobs:
       PYTHONHASHSEED: "0"
       UV_PYTHON: "3.12"
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up Python 3.12
-        uses: actions/setup-python@v7
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "3.12"
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v7
+        uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v7.6.0
         with:
+          # Pin uv to the Dockerfile bootstrap floor series (UV_VERSION=0.12.0).
+          version: "0.12"
           enable-cache: true
 
       - name: Install dependencies (dev + ml-ai + torch)
@@ -227,16 +227,18 @@ jobs:
       contents: read
       security-events: write
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up Python
-        uses: actions/setup-python@v7
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "3.12"
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v7
+        uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v7.6.0
         with:
+          # Pin uv to the Dockerfile bootstrap floor series (UV_VERSION=0.12.0).
+          version: "0.12"
           enable-cache: true
 
       - name: Install dependencies (dev)
@@ -254,14 +256,14 @@ jobs:
 
       - name: Upload Bandit SARIF to code scanning
         if: always() && hashFiles('bandit-results.sarif') != ''
-        uses: github/codeql-action/upload-sarif@v4
+        uses: github/codeql-action/upload-sarif@b96794f015dfd88f77b49b1c93e0fa7110f94c63 # v4.38.0
         with:
           sarif_file: bandit-results.sarif
           category: bandit
 
       - name: Upload Bandit SARIF artifact
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: bandit-results
           path: bandit-results.sarif
