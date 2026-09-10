@@ -60,7 +60,6 @@ from gnn.manuscript import (  # noqa: E402
 )
 from gnn.manuscript.variables import _families  # noqa: E402
 from scripts.lib.manuscript_exclusions import (  # noqa: E402
-    AUTHORING_GUIDE_SKIP,
     TOKEN_GATE_FALLBACK_EXCLUSIONS,
 )
 
@@ -183,8 +182,7 @@ def _declared_labels(sections: list[Path], variables: dict[str, str]) -> set[str
 def _dangling_xrefs(referenced: set[str], declared: set[str]) -> list[str]:
     """Crossref markers (@fig:/@tbl:/@eq:/@sec:) with no declared label."""
     return sorted(
-        f"{ref} — no {{#{ref}}} declaration in any manuscript section or "
-        "producer table"
+        f"{ref} — no {{#{ref}}} declaration in any manuscript section or producer table"
         for ref in referenced
         if ref.split(":", 1)[0] in {"fig", "tbl", "eq", "sec"} and ref not in declared
     )
@@ -210,8 +208,6 @@ def _step_phrase_issues(
                         f"should be {{{{{step_key}}}}}"
                     )
     return issues
-
-
 
 
 _FIG_LABEL_RE = re.compile(r"\{#(fig:[\w:-]+)")
