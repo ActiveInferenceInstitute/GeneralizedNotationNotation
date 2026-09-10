@@ -365,7 +365,7 @@ def test_generate_recommendations_covers_each_failure_class() -> None:
     assert "Install Julia Support" in by_title
     assert by_title["Install Julia Support"]["priority"] == "medium"
     assert "Complete Pipeline Structure" in by_title
-    assert "Monitor Memory Usage" not in by_title  # memory status not high
+    assert "Monitor Memory Usage" in by_title  # performance class: memory high
 
 
 def test_generate_recommendations_flags_memory_and_slow_runs() -> None:

@@ -156,12 +156,21 @@ def test_config_free_run_executes_steps_with_sequential_numbering(
     )
 
 
-def test_resolve_steps_skip_sets_merge() -> None:
-    """CLI and config skip sets merge (union)."""
+def test_resolve_steps_skip_sets_merge_fully_consumed_raises() -> None:
+    """CLI and config skip sets merge (union); a selection fully consumed by
+    skips fails fast under the W2-D5 no-empty-selection contract."""
     args = _make_args(Path("/tmp"), skip_steps="3")
     settings = {"only_steps": "3,5", "skip_steps": [5]}
+    with pytest.raises(ValueError, match="no executable steps"):
+        main_mod._resolve_steps_to_execute(args, settings, logging.getLogger("t"))
+
+
+def test_resolve_steps_skip_sets_partial_consumption_runs() -> None:
+    """A partially-consumed selection still yields its executable steps."""
+    args = _make_args(Path("/tmp"), skip_steps="3")
+    settings = {"only_steps": "1,3"}
     steps = main_mod._resolve_steps_to_execute(args, settings, logging.getLogger("t"))
-    assert steps == []
+    assert [name for name, _ in steps] == ["1_setup.py"]
 
 
 # ---------------------------------------------------------------------------
@@ -312,9 +321,20 @@ def test_mid_run_crash_writes_failed_receipt(
     )
 
     assert rc == 1
-    assert len(recorder.calls) == 1  # crashed on the second step
+    # Serial loop: 0_template, 1_setup, 2_tests run clean; the fake records
+    # the call, then raises on 3_gnn.py (the 4th executed step — 1_setup and
+    # 2_tests pull in their dependencies). Calls == steps attempted.
+    assert len(recorder.calls) == 4
+    assert recorder.calls[0]["script_name"] == "0_template.py"
+    assert recorder.calls[-1]["script_name"] == "3_gnn.py"
     summary = json.loads(_summary_path(tmp_path / "output").read_text("utf-8"))
     assert summary["overall_status"] == "FAILED"
+    assert summary["run_id"]  # minted uuid, not None
+    assert [s["script_name"] for s in summary["steps"]] == [
+        "0_template.py",
+        "1_setup.py",
+        "2_tests.py",
+    ]  # the crashing 3_gnn.py is never recorded as a step result
 
 
 def test_gnn_run_id_env_scope(
