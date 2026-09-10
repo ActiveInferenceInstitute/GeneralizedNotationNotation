@@ -68,9 +68,18 @@ TRUNCATION_NOTICE = (
 # RecursionError at the interpreter limit, whose handler itself can fail.
 _MAX_SANITIZE_DEPTH = 100
 
-
 def validate_request(request: Any) -> dict[str, Any] | None:
-    """Reject invalid envelopes; supported MCP methods require object params."""
+    """Reject invalid envelopes; supported MCP methods require object params.
+
+    Single-request contract (MIN-01): this server intentionally accepts only
+    ONE JSON-RPC object per message. JSON-RPC 2.0 batch arrays (``[req, ...]``)
+    are rejected with -32600 — GNN MCP tools execute pipeline steps with
+    ordering/locking side effects that a batch would execute concurrently, so
+    the array form is refused rather than silently flattened. Clients with
+    several calls MUST issue them as separate requests on the same transport.
+    A non-dict ``params`` member is rejected -32602 the same way as any other
+    method payload.
+    """
     if (
         not isinstance(request, dict)
         or request.get("jsonrpc") != JSONRPC_VERSION

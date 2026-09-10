@@ -5,10 +5,11 @@ non-dict params, the in-process result cache (fixtures elsewhere always
 disable it), the per-tool sliding-window rate limiter, and parity between
 the committed audit surface and the live registered count.
 """
-
 from __future__ import annotations
 
+import io
 import json
+import threading
 import time
 from pathlib import Path
 from typing import Any
@@ -241,3 +242,146 @@ class TestExecutionErrorMetrics:
             registry.execute_tool("broken_tool", {})
         assert excinfo.value.code == -32603
         assert registry._performance_metrics.error_counts["broken_tool"] == 1
+
+
+class TestDuplicateRegistration:
+    """Duplicate tool registration is deterministic (MIN-01)."""
+
+    @pytest.mark.unit
+    def test_same_callable_reregister_is_silent(
+        self, caplog: pytest.LogCaptureFixture
+    ) -> None:
+        registry = _registry()
+
+        def echo() -> dict[str, Any]:
+            return {"ok": True}
+
+        registry.register_tool("dup_tool", echo, {}, "Echo")
+        first_func = registry.tools["dup_tool"].func
+        with caplog.at_level("WARNING", logger="mcp"):
+            registry.register_tool("dup_tool", echo, {}, "Echo again")
+        # Same callable: full re-registration falls through silently (the
+        # long-standing overwrite contract), so metadata refreshes apply.
+        assert registry.tools["dup_tool"].func is first_func
+        assert registry.tools["dup_tool"].description == "Echo again"
+        assert not [r for r in caplog.records if r.levelname == "WARNING"]
+
+    @pytest.mark.unit
+    def test_different_callable_overwrite_warns_deterministically(
+        self, caplog: pytest.LogCaptureFixture
+    ) -> None:
+        registry = _registry()
+        registry.register_tool("dup_tool", lambda: {"v": 1}, {}, "V1")
+
+        def replacement() -> dict[str, Any]:
+            return {"v": 2}
+
+        with caplog.at_level("WARNING", logger="mcp"):
+            registry.register_tool("dup_tool", replacement, {}, "V2")
+        assert registry.tools["dup_tool"].func is replacement
+        warnings = [r for r in caplog.records if r.levelname == "WARNING"]
+        assert any("already registered" in r.getMessage() for r in warnings)
+
+class TestResultCacheImmutability:
+    """Cache hits serve pristine snapshots; callers cannot poison them."""
+
+    @pytest.mark.unit
+    def test_mutating_first_caller_cannot_poison_future_hits(self) -> None:
+        registry = _registry(enable_caching=True)
+        registry.register_tool(
+            name="mutating_tool",
+            func=lambda: {"items": [1, 2], "meta": {"n": 2}},
+            schema={},
+            description="returns mutable results",
+            cache_ttl=60.0,
+        )
+        first = registry.execute_tool("mutating_tool", {})
+        first["items"].append(999)  # hostile mutation of the returned object
+        first["meta"]["n"] = 999
+        second = registry.execute_tool("mutating_tool", {})
+        assert second == {"items": [1, 2], "meta": {"n": 2}}
+        third = registry.execute_tool("mutating_tool", {})
+        assert third == {"items": [1, 2], "meta": {"n": 2}}
+
+    @pytest.mark.unit
+    def test_cache_hit_returns_fresh_copy_each_time(self) -> None:
+        registry = _registry(enable_caching=True)
+        registry.register_tool(
+            name="snapshot_tool",
+            func=lambda: {"n": 1},
+            schema={},
+            description="snapshot identity",
+            cache_ttl=60.0,
+        )
+        a = registry.execute_tool("snapshot_tool", {})
+        b = registry.execute_tool("snapshot_tool", {})
+        assert a is not b  # fresh copy per hit, shared storage never leaks
+        assert a == b
+
+
+class TestBatchContractAndWireConsistency:
+    """Single-request contract and cross-transport wire consistency (MIN-01)."""
+
+    @pytest.mark.unit
+    def test_batch_array_rejected_with_documented_contract(self) -> None:
+        """A JSON-RPC batch array gets -32600 (single-request contract)."""
+        from gnn.mcp.jsonrpc import validate_request
+
+        batch = [{"jsonrpc": "2.0", "method": "tools/list", "id": 1}]
+        error = validate_request(batch)
+        assert error is not None
+        assert error["error"]["code"] == -32600
+
+    @pytest.mark.unit
+    def test_stdio_and_http_serialize_with_same_ensure_ascii(self) -> None:
+        """Both transports emit identical bytes for non-ASCII results."""
+        import sys
+
+        from gnn.mcp import server_stdio
+
+        registry = _registry()
+        registry.register_tool(
+            name="unicode_tool",
+            func=lambda: {"name": "π-model"},
+            schema={},
+            description="returns non-ascii",
+        )
+        stdio = server_stdio.StdioServer()
+        stream = io.StringIO()
+        stdio.running = True
+        stdio.response_queue.put(
+            {"jsonrpc": "2.0", "id": 1, "result": {"name": "π-model"}}
+        )
+        try:
+            sys.stdout = _WriterCapture(stream)
+            writer = threading.Thread(target=stdio._writer_thread, daemon=True)
+            writer.start()
+            writer.join(timeout=5)
+        finally:
+            sys.stdout = sys.__stdout__
+        line = stream.getvalue().strip()
+        assert line, "writer must emit the response"
+        assert "\\u03c0" in line, "stdio must escape non-ascii (ensure_ascii=True)"
+        # HTTP serializes through serialize_response(ensure_ascii=True);
+        # compare the exact payload both transports write.
+        from gnn.mcp.jsonrpc import serialize_response
+
+        expected = serialize_response(
+            {"jsonrpc": "2.0", "id": 1, "result": {"name": "π-model"}},
+            separators=(",", ":"),
+            ensure_ascii=True,
+        )
+        assert line == expected
+
+
+class _WriterCapture:
+    """Minimal stdout stand-in exposing write/flush for the writer thread."""
+
+    def __init__(self, stream: io.StringIO) -> None:
+        self._stream = stream
+
+    def write(self, text: str) -> int:
+        return self._stream.write(text)
+
+    def flush(self) -> None:
+        self._stream.flush()

@@ -281,7 +281,9 @@ class StdioServer:
                     self._responses_sent += 1
 
                     try:
-                        json_str = serialize_response(message, separators=(",", ":"))
+                        json_str = serialize_response(
+                            message, separators=(",", ":"), ensure_ascii=True
+                        )
                     except Exception as e:
                         # Never hang the client on an unserializable result:
                         # emit a protocol-valid -32603 envelope instead.
@@ -297,6 +299,7 @@ class StdioServer:
                                 "Internal error: response serialization failed",
                             ),
                             separators=(",", ":"),
+                            ensure_ascii=True,
                         )
                     try:
                         logger.debug(f"STDIO OUT: {json_str}")

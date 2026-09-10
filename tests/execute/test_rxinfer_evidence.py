@@ -172,9 +172,9 @@ class TestEvidencePersistence:
 
         assert ok is True
         log = json.loads(
-            (evidence_dir / "pooled_model_execution_log.json").read_text(
+            (evidence_dir / "pooled_model_rxinfer_execution_log.json").read_text(
                 encoding="utf-8"
             )
         )
         assert log["success"] is True
-        assert (evidence_dir / "pooled_model_stdout.txt").exists()
+        assert (evidence_dir / "pooled_model_rxinfer_stdout.txt").exists()

@@ -27,6 +27,12 @@ notice instead of failing the call or streaming unbounded output. Wire
 shape is unchanged; clients parsing the embedded text should treat the
 notice as a marker that the payload is partial.
 
+**Single-request contract**: the server accepts exactly one JSON-RPC object
+per message. JSON-RPC 2.0 batch arrays are rejected with `-32600` — GNN MCP
+tools run pipeline steps whose ordering and locking must not be executed
+concurrently. Clients with several calls MUST send them as separate requests
+on the same transport.
+
 ## Security
 
 MCP servers expose tools over STDIO or HTTP: bind listeners to localhost in untrusted networks, authenticate HTTP deployments, and treat tool outputs like any sensitive pipeline data. See [security/README.md](../security/README.md).
