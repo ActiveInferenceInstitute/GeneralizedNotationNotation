@@ -262,7 +262,7 @@ all = [
 
 [project.urls]
 Homepage = "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation"
-Documentation = "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/tree/main/doc"
+Documentation = "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/tree/main/docs"
 Repository = "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation.git"
 Issues = "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/issues"
 

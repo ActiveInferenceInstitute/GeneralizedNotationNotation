@@ -6,7 +6,7 @@ comment lines, before `from __future__` imports). Content is derived from the
 file's own top-level classes and functions so it stays accurate.
 
 Usage:
-    python scripts/add_module_docstrings.py [ROOT] [--dry-run]
+    python scripts/experiments/add_module_docstrings.py [ROOT] [--dry-run]
 
 Pass ``--dry-run`` to report which files would change without writing them.
 """
