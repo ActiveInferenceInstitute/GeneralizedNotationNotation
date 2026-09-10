@@ -11,6 +11,8 @@ Static **BNF** and **EBNF** grammar files for the GNN surface syntax. They docum
 | `bnf.bnf` | Backus–Naur Form grammar |
 | `ebnf.ebnf` | Extended BNF grammar |
 
+SC-27 decision (2026-09-10): `ebnf.ebnf` is **wired as a functional payload** — served to MCP clients via `gnn.mcp.gnn_root.get_gnn_documentation("grammar")` (resource `gnn://documentation/grammar`). `bnf.bnf` is decorative (no code consumer). Both ship in the wheel via the `src/gnn` package include; `tests/test_grammar_spec_payloads.py` asserts resolution.
+
 See **[README.md](README.md)** for Unicode, comment, and Active Inference variable notes.
 
 ## Relationship to the rest of `gnn/`

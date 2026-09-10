@@ -8,7 +8,8 @@ policy resolution, and a pre-execution gate for rendered scripts.
 
 from typing import Any
 
-__version__ = "1.7.0"
+from gnn import __version__
+
 FEATURES: dict[str, Any] = {
     "vulnerability_detection": True,
     "security_scoring": True,

@@ -27,6 +27,8 @@ Where the same surface syntax exists in the pipeline (e.g. Lean, Coq, Agda, TLA+
 
 Round-trip **automation** is defined by [`../testing/test_round_trip.py`](../testing/test_round_trip.py) and **[../SPEC.md](../SPEC.md)** — not by “all eight files round-trip at 100%” as a blanket statement.
 
+SC-27 decision (2026-09-10): kept as **reference payloads, decorative at runtime** — no code in `src/`, `scripts/`, or `tests/` imports or reads these files; the only loader is `tests/test_grammar_spec_payloads.py` asserting they ship and are non-empty. They ship in the wheel via the `src/gnn` package include.
+
 ## For AI agents
 
 1. Treat these as **ground-truth references** for formal semantics, not as guaranteed-identical to every Python serialization path.

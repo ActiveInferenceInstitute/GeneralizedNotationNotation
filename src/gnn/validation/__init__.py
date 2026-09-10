@@ -8,7 +8,8 @@ including semantic validation, performance profiling, and consistency checking.
 from pathlib import Path
 from typing import Any
 
-__version__ = "1.7.0"
+from gnn import __version__
+
 FEATURES: dict[str, Any] = {
     "semantic_validation": True,
     "performance_profiling": True,

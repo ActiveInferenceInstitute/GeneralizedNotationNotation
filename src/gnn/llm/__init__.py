@@ -8,7 +8,7 @@ are provided as thin wrappers that import implementations on first use.
 
 from typing import Any
 
-__version__ = "3.3.0"
+from gnn import __version__
 
 from .defaults import DEFAULT_OLLAMA_MODEL
 

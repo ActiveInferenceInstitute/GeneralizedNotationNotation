@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Any, Dict
 
 from gnn.utils import performance_tracker
-from gnn.utils.logging.logging_utils import (
+from gnn.utils.logging_utils import (
     log_step_error,
     log_step_success,
     log_step_warning,
@@ -54,7 +54,7 @@ def safe_template_execution(logger: Any, correlation_id: str) -> Any:
                 ErrorRecoveryManager,
                 ErrorSeverity,
             )
-            from gnn.utils.logging.logging_utils import set_correlation_context
+            from gnn.utils.logging_utils import set_correlation_context
             from gnn.utils.resource_manager import ResourceTracker, get_system_info
 
             error_manager = ErrorRecoveryManager(logger)
@@ -63,7 +63,7 @@ def safe_template_execution(logger: Any, correlation_id: str) -> Any:
             resource_tracker = ResourceTracker()
 
             # Set correlation context for enhanced logging
-            set_correlation_context(correlation_id, "template")
+            set_correlation_context("template", correlation_id)
 
             logger.info(
                 f"🎯 Template execution started with correlation ID: {correlation_id}"

@@ -73,7 +73,7 @@ def get_gnn_documentation(
         "punctuation": "documentation/punctuation.md",
         "schema_json": "schemas/json.json",
         "schema_yaml": "schemas/yaml.yaml",
-        "grammar": "grammars/ebnf.ebnf",
+        "grammar": "../grammars/ebnf.ebnf",
     }
 
     if doc_name not in file_map:

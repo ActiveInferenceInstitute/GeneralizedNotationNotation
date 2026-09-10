@@ -6,7 +6,8 @@ Exports real advanced visualization components including D2 diagram generation.
 
 from typing import Any
 
-__version__ = "3.3.0"
+from gnn import __version__
+
 FEATURES: dict[str, Any] = {
     "d2_diagrams": True,
     "interactive_dashboards": True,

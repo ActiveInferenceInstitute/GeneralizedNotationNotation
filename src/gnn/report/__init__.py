@@ -9,7 +9,8 @@ from __future__ import annotations
 
 from typing import Any
 
-__version__ = "3.3.0"
+from gnn import __version__
+
 FEATURES: dict[str, Any] = {
     "html_reports": True,
     "markdown_reports": True,

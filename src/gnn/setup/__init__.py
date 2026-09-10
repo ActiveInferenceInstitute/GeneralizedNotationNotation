@@ -7,6 +7,9 @@ using modern UV-based dependency management and environment setup.
 
 from typing import Any, Dict
 
+# Module metadata and lightweight API expected by tests
+from gnn import __version__
+
 from .constants import OPTIONAL_GROUPS
 from .dependency_setup import (
     create_project_structure,
@@ -51,8 +54,6 @@ from .uv_package_ops import (
 # Import validator functions
 from .validator import get_environment_info, get_uv_status, validate_system
 
-# Module metadata and lightweight API expected by tests
-__version__ = "3.3.0"
 __author__ = "Active Inference Institute"
 __description__ = "GNN environment setup and management with UV"
 

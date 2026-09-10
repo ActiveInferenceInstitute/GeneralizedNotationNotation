@@ -9,6 +9,8 @@ the trained classifier artifacts.
 
 from typing import Any
 
+from gnn import __version__
+
 from .frameworks import check_ml_frameworks
 from .inference import (
     InferenceError,
@@ -27,8 +29,6 @@ from .processor import (
     process_ml_integration,
     summarize_features,
 )
-
-__version__ = "3.3.0"
 
 FEATURES: dict[str, Any] = {
     "model_training": True,

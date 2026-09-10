@@ -21,7 +21,8 @@ Public API:
 
 from typing import Any
 
-__version__ = "1.7.0"
+from gnn import __version__
+
 FEATURES: dict[str, Any] = {
     "form_based_constructor": True,
     "visual_matrix_editor": True,

@@ -12,7 +12,8 @@ generate_sapf_report = _audio_sapf.generate_sapf_report
 process_gnn_to_audio = _audio_sapf.process_gnn_to_audio
 validate_sapf_code = _audio_sapf.validate_sapf_code
 
-__version__ = "3.3.0"
+from gnn import __version__
+
 FEATURES = _audio_sapf.FEATURES
 
 

@@ -1,79 +1,61 @@
 #!/usr/bin/env python3
-"""Logging utilities facade for the GNN processing pipeline."""
+"""Logging utilities for the GNN processing pipeline.
+
+This is the single public entry point for pipeline logging. The
+implementation lives in ``gnn.utils.logging.logging_utils`` (internal);
+import everything from this module.
+"""
 
 import logging
-from pathlib import Path
 from typing import Any, Dict, Optional, cast
 
 # Import the structured logging implementation.
 from .logging.logging_utils import (
-    PipelineLogger as NewPipelineLogger,
+    PipelineLogger as PipelineLogger,
 )
 from .logging.logging_utils import (
-    log_section_header as new_log_section_header,
+    PipelineProgressTracker as PipelineProgressTracker,
+)
+from .logging.logging_utils import (
+    log_pipeline_summary as log_pipeline_summary,
+)
+from .logging.logging_utils import (
+    log_section_header as log_section_header,
 )
 from .logging.logging_utils import (
     log_step_error as new_log_step_error,
 )
 from .logging.logging_utils import (
-    log_step_start as new_log_step_start,
+    log_step_start as log_step_start,
 )
 from .logging.logging_utils import (
-    log_step_success as new_log_step_success,
+    log_step_success as log_step_success,
 )
 from .logging.logging_utils import (
-    log_step_warning as new_log_step_warning,
+    log_step_warning as log_step_warning,
+)
+from .logging.logging_utils import (
+    reset_progress_tracker as reset_progress_tracker,
+)
+from .logging.logging_utils import (
+    rotate_logs as rotate_logs,
+)
+from .logging.logging_utils import (
+    set_correlation_context as set_correlation_context,
+)
+from .logging.logging_utils import (
+    set_global_progress_tracker as set_global_progress_tracker,
 )
 from .logging.logging_utils import (
     setup_correlation_context as new_setup_correlation_context,
 )
 from .logging.logging_utils import (
-    setup_main_logging as new_setup_main_logging,
+    setup_main_logging as setup_main_logging,
 )
 from .logging.logging_utils import (
-    setup_step_logging as new_setup_step_logging,
+    setup_step_logging as setup_step_logging,
 )
 from .performance_tracking import PerformanceTracker, performance_tracker
-
-
-class PipelineLogger:
-    """Facade for the structured pipeline logger."""
-
-    @classmethod
-    def get_logger(cls, name: str, level: int = logging.INFO) -> logging.Logger:
-        """Get a logger, ensuring the new system is initialized."""
-        return NewPipelineLogger.get_logger(name)
-
-    @classmethod
-    def setup(cls, log_dir: (Path) | None = None, verbose: bool = False) -> Any:
-        """Setup the logging system via the new implementation."""
-        NewPipelineLogger.initialize(log_dir=log_dir)
-        NewPipelineLogger.set_verbosity(verbose)
-
-
-def setup_step_logging(step_name: str, verbose: bool = False) -> logging.Logger:
-    """Setup logging for a pipeline step."""
-    return new_setup_step_logging(step_name, verbose)
-
-
-def setup_main_logging(verbose: bool = False) -> logging.Logger:
-    """Setup main pipeline logging."""
-    return new_setup_main_logging(verbose=verbose)
-
-
-def log_step_start(logger: logging.Logger, message: str) -> None:
-    """Log the start of a step."""
-    new_log_step_start(logger, message)
-
-
-def log_step_success(logger: logging.Logger, message: str) -> None:
-    """Log a successful step completion."""
-    new_log_step_success(logger, message)
-
-
-def log_step_warning(logger: logging.Logger, message: str) -> None:
-    """Log a warning during step execution."""
-    new_log_step_warning(logger, message)
 
 
 def log_step_error(
@@ -82,16 +64,11 @@ def log_step_error(
     context: Optional[Dict[str, Any]] = None,
     **metadata: Any,
 ) -> None:
-    """Log an error during step execution."""
+    """Log an error during step execution (merges ``context`` into metadata)."""
     details = dict(metadata)
     if context:
         details.update(context)
     new_log_step_error(logger, message, **details)
-
-
-def log_section_header(logger: logging.Logger, title: str, char: str = "=") -> None:
-    """Log a section header."""
-    new_log_section_header(logger, title, char)
 
 
 def get_performance_summary() -> Dict[str, Any]:
@@ -109,6 +86,7 @@ def setup_correlation_context(
 # Export all public symbols for compatibility
 __all__: list[Any] = [
     "PipelineLogger",
+    "PipelineProgressTracker",
     "setup_step_logging",
     "setup_main_logging",
     "log_step_start",
@@ -116,8 +94,13 @@ __all__: list[Any] = [
     "log_step_warning",
     "log_step_error",
     "log_section_header",
+    "log_pipeline_summary",
     "get_performance_summary",
     "PerformanceTracker",
     "performance_tracker",
+    "reset_progress_tracker",
+    "rotate_logs",
+    "set_correlation_context",
+    "set_global_progress_tracker",
     "setup_correlation_context",
 ]

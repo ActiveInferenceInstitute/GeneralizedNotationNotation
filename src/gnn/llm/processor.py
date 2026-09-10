@@ -76,7 +76,7 @@ def _model_is_cached(model_name: str, logger: logging.Logger) -> bool:
 
 import asyncio
 
-from gnn.utils.logging.logging_utils import (
+from gnn.utils.logging_utils import (
     log_step_error,
     log_step_start,
     log_step_success,

@@ -1,8 +1,14 @@
 #!/usr/bin/env python3
 """
-Utils Pipeline module for GNN Processing Pipeline.
+Compat entry for pipeline utilities.
 
-This module provides pipeline utility functions.
+Most helpers here are thin delegates to canonical homes:
+
+- ``get_output_dir_for_script`` → ``gnn.pipeline.config``
+
+Logging setup goes through ``gnn.utils.logging_utils``, the single
+public logging entry point. Keep new pipeline utilities out of this
+module; add them to their canonical modules instead.
 """
 
 import logging
@@ -65,8 +71,9 @@ def get_pipeline_utilities(step_name: str, verbose: bool = False) -> Tuple[Any, 
     Returns:
         Tuple of pipeline utilities
     """
+    from gnn.utils.logging_utils import setup_step_logging
+
     from .argument_utils import ArgumentParser
-    from .logging.logging_utils import setup_step_logging
 
     logger = setup_step_logging(step_name, verbose)
     return logger, ArgumentParser
@@ -118,14 +125,15 @@ def execute_pipeline_step_template(
         import_dependencies: Optional list of dependencies to import
     """
     try:
-        # Setup logging (canonical implementation lives in
-        # gnn.utils.logging.logging_utils)
-        from .logging.logging_utils import setup_step_logging
+        # Logging goes through the single public entry.
+        from gnn.utils.logging_utils import (
+            log_step_start,
+            setup_step_logging,
+        )
 
         logger = setup_step_logging(step_name, verbose=True)
 
         # Log step start
-        from .logging.logging_utils import log_step_start
 
         log_step_start(logger, step_description)
 
@@ -142,15 +150,14 @@ def execute_pipeline_step_template(
         result = main_function()
 
         # Log step completion
-        from .logging.logging_utils import log_step_success
+        from gnn.utils.logging_utils import log_step_success
 
         log_step_success(logger, f"{step_description} completed successfully")
 
         return result
 
     except Exception as e:
-        # Log step error
-        from .logging.logging_utils import log_step_error
+        from gnn.utils.logging_utils import log_step_error
 
         log_step_error(logger, f"{step_description} failed: {e}")
         raise

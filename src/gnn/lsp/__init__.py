@@ -11,7 +11,7 @@ Requires `pygls` package. Falls back gracefully when not installed.
 
 from typing import Any, cast
 
-__version__ = "3.3.0"
+from gnn import __version__
 
 FEATURES: dict[str, Any] = {
     "diagnostics": True,

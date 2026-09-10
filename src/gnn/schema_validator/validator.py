@@ -620,12 +620,16 @@ class GNNValidator:
                     next_header = re.search(r"^##\s+.+$", content[start:], re.MULTILINE)
                     end = start + next_header.start() if next_header else len(content)
                     section_text = content[start:end].strip()
-                    # Consider comments-only or short markers as missing
-                    if (
-                        not section_text
-                        or section_text.strip().startswith("#")
-                        or len(section_text) < 3
-                    ):
+                    # GNN sections routinely open with '#' description
+                    # comments (every bundled example does); skip leading
+                    # blank/comment lines before judging substance. A
+                    # comment-only body still counts as missing.
+                    body_lines = [
+                        ln
+                        for ln in section_text.splitlines()
+                        if ln.strip() and not ln.strip().startswith("#")
+                    ]
+                    if not body_lines or len("\n".join(body_lines)) < 3:
                         result.errors.append(f"Required section missing: {section}")
         except Exception as e:
             # Non-fatal parsing of content; do not stop validation

@@ -230,7 +230,7 @@ class GNNFormalParser:
 
     def validate_syntax(self, content: str) -> Tuple[bool, List[str]]:
         """Validate GNN content with the built-in structural checks."""
-        return validate_gnn(content, ValidationLevel.STANDARD)
+        return validate_gnn_syntax(content, ValidationLevel.STANDARD)
 
     def visualize_parse_tree(self, content: str) -> str:
         """Return a readable outline of parsed sections, variables, and connections."""
@@ -265,16 +265,16 @@ def parse_gnn_formal(file_path: Union[str, Any]) -> Optional[_GNNParseAccumulato
 
 
 def validate_gnn_syntax_formal(content: str) -> Tuple[bool, List[str]]:
-    """Old name for :func:`validate_gnn` at the STANDARD level.
+    """Old name for :func:`validate_gnn_syntax` at the STANDARD level.
 
     Retained for compatibility; emits DeprecationWarning.
     """
     warnings.warn(
-        "validate_gnn_syntax_formal is an old name; use validate_gnn instead.",
+        "validate_gnn_syntax_formal is an old name; use validate_gnn_syntax instead.",
         DeprecationWarning,
         stacklevel=2,
     )
-    return validate_gnn(content)
+    return validate_gnn_syntax(content)
 
 
 def get_parse_tree_visualization(content: str) -> str:
@@ -282,7 +282,7 @@ def get_parse_tree_visualization(content: str) -> str:
     return GNNFormalParser().visualize_parse_tree(content)
 
 
-def validate_gnn(
+def validate_gnn_syntax(
     file_path_or_content: Union[str, Path],
     validation_level: ValidationLevel = ValidationLevel.STANDARD,
     **kwargs: Any,
@@ -357,6 +357,22 @@ def validate_gnn(
 
     except Exception as e:
         return False, [f"Validation error: {e}"]
+
+
+def validate_gnn(
+    file_path_or_content: Union[str, Path],
+    validation_level: ValidationLevel = ValidationLevel.STANDARD,
+    **kwargs: Any,
+) -> Tuple[bool, List[str]]:
+    """Old name for :func:`validate_gnn_syntax`; emits DeprecationWarning."""
+    warnings.warn(
+        "validate_gnn is an old name; use validate_gnn_syntax instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return validate_gnn_syntax(
+        file_path_or_content, validation_level=validation_level, **kwargs
+    )
 
 
 def _convert_parse_result_to_parsed_gnn(

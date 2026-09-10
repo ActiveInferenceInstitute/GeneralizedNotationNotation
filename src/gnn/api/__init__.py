@@ -14,12 +14,10 @@ Usage:
     python src/gnn/main.py --only-steps 21  # MCP step also registers API tools
 """
 
+from pathlib import Path
 from typing import Any
 
-__version__ = "3.3.0"
-
-
-from pathlib import Path
+from gnn import __version__
 
 MODULE_NAME = "api"
 MODULE_VERSION = "3.3.0"

@@ -34,7 +34,8 @@ def process_sapf_mcp(
     Returns:
         Dictionary with success status and audio generation summary.
     """
-    try:
+
+    def _build() -> Dict[str, Any]:
         out_dir = Path(output_directory)
         out_dir.mkdir(parents=True, exist_ok=True)
         target_dir = Path(target_directory)
@@ -66,9 +67,12 @@ def process_sapf_mcp(
             "audio_files_generated": len(audio_files),
             "message": f"SAPF audio generation {'completed successfully' if success else 'completed with issues'}",
         }
-    except Exception as e:
-        logger.error(f"process_sapf_mcp error: {e}", exc_info=True)
-        return {"success": False, "error": str(e)}
+
+    return run_tool_envelope(
+        _build,
+        wrapper_name="process_sapf_mcp",
+        logger=logger,
+    )
 
 
 def get_sapf_module_info_mcp() -> Dict[str, Any]:

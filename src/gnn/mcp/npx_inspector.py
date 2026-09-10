@@ -20,6 +20,10 @@ import time
 from pathlib import Path
 from typing import Any, Dict, Optional, cast
 
+from gnn.utils.logging_utils import setup_step_logging
+
+logger = setup_step_logging("mcp_npx_inspector")
+
 # --- Configuration ---
 # Adjust these paths if your project structure is different
 GNN_PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
@@ -31,7 +35,9 @@ PYTHON_EXECUTABLE = sys.executable  # Use the same python interpreter
 
 def print_mcp_response(data: Any) -> Any:
     """Prints JSON data with indentation."""
-    print(json.dumps(data, indent=2, sort_keys=True))
+    print(
+        json.dumps(data, indent=2, sort_keys=True)
+    )  # user-output: machine-parsed JSON on stdout
 
 
 def read_server_output(process: Any, output_queue: Any, error_queue: Any) -> Any:
@@ -91,7 +97,7 @@ class StdioMCPClient:
             rpc_request["params"] = params
 
         request_str = json.dumps(rpc_request)
-        print(f"INSPECTOR -> SERVER: {request_str}", file=sys.stderr)
+        logger.info(f"INSPECTOR -> SERVER: {request_str}")
         self.process.stdin.write(request_str + "\n")
         self.process.stdin.flush()
 
@@ -108,20 +114,19 @@ class StdioMCPClient:
                 while not self.server_stderr_queue.empty():
                     err_line = self.server_stderr_queue.get_nowait().strip()
                     if err_line:  # Only print if it's not an empty line
-                        print(f"SERVER (stderr): {err_line}", file=sys.stderr)
+                        logger.warning(f"SERVER (stderr): {err_line}")
 
                 line = self.server_stdout_queue.get(
                     timeout=0.1
                 )  # Check queue with timeout
-                print(f"SERVER -> INSPECTOR: {line.strip()}", file=sys.stderr)
+                logger.info(f"SERVER -> INSPECTOR: {line.strip()}")
                 response = json.loads(line)
                 if response.get("id") == request_id:
                     return cast("dict[str, Any]", response)
                 else:
                     # Might be a notification or unrelated message, log it and continue
-                    print(
+                    logger.info(
                         f"INSPECTOR (info): Received unrelated message or notification: {response}",
-                        file=sys.stderr,
                     )
             except queue.Empty:
                 if self.process.poll() is not None:  # Server process terminated
@@ -130,17 +135,15 @@ class StdioMCPClient:
                     ) from None
                 continue  # Timeout, try again
             except json.JSONDecodeError as e:
-                print(
+                logger.error(
                     f"INSPECTOR (error): Could not decode JSON from server: {line.strip()} - {e}",
-                    file=sys.stderr,
                 )
                 # If it's a fatal error, we might not get a response with our ID.
                 # This could be part of a multi-line error dump from the server.
                 # For now, just log and continue waiting for our specific response ID.
             except Exception as e:
-                print(
+                logger.error(
                     f"INSPECTOR (error): Unexpected error reading server response: {e}",
-                    file=sys.stderr,
                 )
                 raise  # Re-raise for now
 
@@ -168,14 +171,14 @@ class StdioMCPClient:
 
 def handle_list_capabilities(client: StdioMCPClient, args: Any) -> Any:
     """Handles the 'list-capabilities' command."""
-    print("Inspector: Requesting server capabilities...", file=sys.stderr)
+    logger.info("Inspector: Requesting server capabilities...")
     try:
         response = client.get_capabilities()
         print_mcp_response(response)
     except Exception as e:
-        print(f"Error getting capabilities: {e}", file=sys.stderr)
+        logger.error(f"Error getting capabilities: {e}")
         if hasattr(e, "__cause__") and e.__cause__:
-            print(f"Cause: {e.__cause__}", file=sys.stderr)
+            logger.error(f"Cause: {e.__cause__}")
 
 
 def handle_execute_tool(client: StdioMCPClient, args: Any) -> Any:
@@ -184,31 +187,30 @@ def handle_execute_tool(client: StdioMCPClient, args: Any) -> Any:
     try:
         tool_params = json.loads(args.params) if args.params else {}
     except json.JSONDecodeError as e:
-        print(f"Error: Invalid JSON in --params: {e}", file=sys.stderr)
+        logger.error(f"Error: Invalid JSON in --params: {e}")
         return
 
-    print(
+    logger.info(
         f"Inspector: Executing tool '{tool_name}' with params: {tool_params}",
-        file=sys.stderr,
     )
     try:
         response = client.execute_tool(tool_name, tool_params)
         print_mcp_response(response)
     except Exception as e:
-        print(f"Error executing tool '{tool_name}': {e}", file=sys.stderr)
+        logger.error(f"Error executing tool '{tool_name}': {e}")
 
 
 def handle_get_resource(client: StdioMCPClient, args: Any) -> Any:
     """Handles the 'get-resource' command."""
     uri = args.uri
-    print(f"Inspector: Attempting to get resource '{uri}'...", file=sys.stderr)
+    logger.info(f"Inspector: Attempting to get resource '{uri}'...")
     try:
         response = client.get_resource(
             uri
         )  # This might not work as expected with GNN MCP
         print_mcp_response(response)
     except Exception as e:
-        print(f"Error getting resource '{uri}': {e}", file=sys.stderr)
+        logger.error(f"Error getting resource '{uri}': {e}")
 
 
 # --- Main ---
@@ -265,7 +267,7 @@ def main() -> None:
     args = parser.parse_args()
 
     server_cmd_str = args.server_cmd
-    print(f"Inspector: Using server command: {server_cmd_str}", file=sys.stderr)
+    logger.info(f"Inspector: Using server command: {server_cmd_str}")
 
     # Prepare server command for subprocess
     # shlex.split is good for this if the command is a single string.
@@ -279,13 +281,11 @@ def main() -> None:
         not Path(server_cmd_list[1]).is_file()
         and server_cmd_list[0] == PYTHON_EXECUTABLE
     ):  # Check if script path exists
-        print(
+        logger.error(
             f"Inspector Error: MCP CLI script not found at {server_cmd_list[1]}",
-            file=sys.stderr,
         )
-        print(
+        logger.error(
             "Please ensure GNN_PROJECT_ROOT is correct or provide full path in --server-cmd.",
-            file=sys.stderr,
         )
         sys.exit(1)
 
@@ -301,19 +301,17 @@ def main() -> None:
             except ValueError:
                 # 'server' command not found, maybe it's a direct script call.
                 # For simplicity, we assume the main CLI is used.
-                print(
+                logger.info(
                     "Inspector: --verbose not injected because the server subcommand was not found.",
-                    file=sys.stderr,
                 )
-        print(
+        logger.info(
             f"Inspector: Augmented server command for verbose: {' '.join(server_cmd_list)}",
-            file=sys.stderr,
         )
 
     server_process = None
     client = None
     try:
-        print("Inspector: Starting GNN MCP server process...", file=sys.stderr)
+        logger.info("Inspector: Starting GNN MCP server process...")
         server_process = subprocess.Popen(  # nosec B603
             server_cmd_list,
             stdin=subprocess.PIPE,
@@ -327,36 +325,32 @@ def main() -> None:
         time.sleep(1 if "stdio" in server_cmd_str else 3)  # Longer for http potentially
 
         if server_process.poll() is not None:
-            print(
+            logger.error(
                 f"Inspector Error: Server process terminated prematurely (exit code {server_process.returncode}).",
-                file=sys.stderr,
             )
-            print("--- Server stderr (if any) ---", file=sys.stderr)
+            logger.info("--- Server stderr (if any) ---")
             if server_process.stderr:
                 for line in server_process.stderr:
-                    print(line.strip(), file=sys.stderr)
-            print("-----------------------------", file=sys.stderr)
+                    logger.warning(line.strip())
+            logger.info("-----------------------------")
             sys.exit(1)
 
-        print(
-            "Inspector: Server process started. Initializing client...", file=sys.stderr
+        logger.info(
+            "Inspector: Server process started. Initializing client...",
         )
         if "stdio" in server_cmd_str:
             client = StdioMCPClient(server_process)
         elif "http" in server_cmd_str:
-            print(
+            logger.error(
                 "Inspector Error: HTTP transport is unsupported by this inspector.",
-                file=sys.stderr,
             )
-            print(
+            logger.error(
                 "Please use stdio transport for the server with this inspector version.",
-                file=sys.stderr,
             )
             sys.exit(1)
         else:
-            print(
+            logger.error(
                 "Inspector Error: Could not determine server transport from command. Assuming stdio.",
-                file=sys.stderr,
             )
             client = StdioMCPClient(server_process)
 
@@ -365,23 +359,20 @@ def main() -> None:
             args.func(client, args)
 
     except FileNotFoundError:
-        print(
+        logger.error(
             f"Inspector Error: Could not find server command '{server_cmd_list[0]}'. Is it in PATH or path correct?",
-            file=sys.stderr,
         )
     except ConnectionError as e:
-        print(f"Inspector Error: Connection to server failed: {e}", file=sys.stderr)
+        logger.error(f"Inspector Error: Connection to server failed: {e}")
     except TimeoutError as e:
-        print(
-            f"Inspector Error: Timeout communicating with server: {e}", file=sys.stderr
-        )
+        logger.error(f"Inspector Error: Timeout communicating with server: {e}")
     except Exception as e:
-        print(f"Inspector: An unexpected error occurred: {e}", file=sys.stderr)
-        print(f"Details: {type(e).__name__}: {e.args}", file=sys.stderr)
+        logger.error(f"Inspector: An unexpected error occurred: {e}")
+        logger.error(f"Details: {type(e).__name__}: {e.args}")
 
     finally:
         if server_process:
-            print("Inspector: Shutting down server process...", file=sys.stderr)
+            logger.info("Inspector: Shutting down server process...")
             if server_process.stdin:
                 server_process.stdin.close()  # Signal EOF to server if it's reading stdin
 
@@ -396,26 +387,21 @@ def main() -> None:
                 try:
                     server_process.wait(timeout=2)  # Wait for termination
                 except subprocess.TimeoutExpired:
-                    print(
+                    logger.warning(
                         "Inspector: Server did not terminate gracefully, killing.",
-                        file=sys.stderr,
                     )
                     server_process.kill()
-            print("Inspector: Server process shut down.", file=sys.stderr)
+            logger.info("Inspector: Server process shut down.")
 
             # Drain any remaining output from queues (after threads might have exited)
             if client:
-                print("--- Remaining Server Stdout ---", file=sys.stderr)
+                logger.info("--- Remaining Server Stdout ---")
                 while not client.server_stdout_queue.empty():
-                    print(
-                        client.server_stdout_queue.get_nowait().strip(), file=sys.stderr
-                    )
-                print("--- Remaining Server Stderr ---", file=sys.stderr)
+                    logger.info(client.server_stdout_queue.get_nowait().strip())
+                logger.info("--- Remaining Server Stderr ---")
                 while not client.server_stderr_queue.empty():
-                    print(
-                        client.server_stderr_queue.get_nowait().strip(), file=sys.stderr
-                    )
-                print("-----------------------------", file=sys.stderr)
+                    logger.info(client.server_stderr_queue.get_nowait().strip())
+                logger.info("-----------------------------")
 
 
 if __name__ == "__main__":

@@ -733,91 +733,92 @@ def generate_validation_report(src_dir: Path, output_dir: Path) -> Dict:
 
 
 def print_validation_report(report: Dict) -> None:
-    """Print a human-readable validation report."""
-    print("\n" + "=" * 80)
-    print("GNN PIPELINE VALIDATION REPORT")
-    print("=" * 80)
+    """Log a human-readable validation report."""
+    log = logger.info
+    log("\n" + "=" * 80)
+    log("GNN PIPELINE VALIDATION REPORT")
+    log("=" * 80)
 
     summary = report["summary"]
-    print("\nSUMMARY:")
-    print(f"  Status: {summary['status']}")
-    print(f"  Modules checked: {summary['total_modules']}")
-    print(f"  Modules with issues: {summary['modules_with_issues']}")
-    print(f"  Total import issues: {summary['total_import_issues']}")
-    print(f"  Configuration errors: {summary['configuration_errors']}")
-    print(f"  Missing outputs: {summary['missing_outputs']}")
+    log("\nSUMMARY:")
+    log(f"  Status: {summary['status']}")
+    log(f"  Modules checked: {summary['total_modules']}")
+    log(f"  Modules with issues: {summary['modules_with_issues']}")
+    log(f"  Total import issues: {summary['total_import_issues']}")
+    log(f"  Configuration errors: {summary['configuration_errors']}")
+    log(f"  Missing outputs: {summary['missing_outputs']}")
 
     # Configuration validation
     config_val = report.get("configuration_validation", {})
     if config_val.get("errors") or config_val.get("warnings"):
-        print("\nCONFIGURATION ISSUES:")
+        log("\nCONFIGURATION ISSUES:")
         for error in config_val.get("errors", []):
-            print(f"  ERROR: {error}")
+            logger.error(f"  ERROR: {error}")
         for warning in config_val.get("warnings", []):
-            print(f"  WARNING: {warning}")
+            logger.warning(f"  WARNING: {warning}")
 
     # Module issues
     if report["module_issues"]:
-        print("\nMODULE ANALYSIS:")
+        log("\nMODULE ANALYSIS:")
         for module, issues in report["module_issues"].items():
-            print(f"\n  {module}:")
+            log(f"\n  {module}:")
             for error in issues.get("errors", []):
-                print(f"    🔴 ERROR: {error}")
+                logger.error(f"    🔴 ERROR: {error}")
             for warning in issues.get("warnings", []):
-                print(f"    🟡 WARNING: {warning}")
+                logger.warning(f"    🟡 WARNING: {warning}")
             for suggestion in issues.get("suggestions", []):
-                print(f"    💡 SUGGESTION: {suggestion}")
+                log(f"    💡 SUGGESTION: {suggestion}")
             for improvement in issues.get("improvements", []):
-                print(f"    📈 IMPROVEMENT: {improvement}")
+                log(f"    📈 IMPROVEMENT: {improvement}")
 
     # Output validation
     output_val = report["output_validation"]
     if output_val.get("missing"):
-        print("\nMISSING OUTPUTS:")
+        log("\nMISSING OUTPUTS:")
         for missing in output_val["missing"]:
-            print(f"  - {missing}")
+            log(f"  - {missing}")
 
     if output_val.get("present"):
-        print("\nPRESENT OUTPUTS:")
+        log("\nPRESENT OUTPUTS:")
         for present in output_val["present"]:
-            print(f"  ✓ {present}")
+            log(f"  ✓ {present}")
 
     # Argument validation
     arg_val = report.get("argument_validation", {})
     if arg_val.get("inconsistencies"):
-        print("\nARGUMENT INCONSISTENCIES:")
+        log("\nARGUMENT INCONSISTENCIES:")
         for inconsistency in arg_val["inconsistencies"]:
-            print(f"  - {inconsistency}")
+            log(f"  - {inconsistency}")
 
     # Dependency validation
     dep_val = report.get("dependency_validation", {})
     if dep_val.get("cycles"):
-        print("\nDEPENDENCY CYCLES:")
+        log("\nDEPENDENCY CYCLES:")
         for cycle in dep_val["cycles"]:
-            print(f"  - Cycle: {' → '.join(cycle)}")
+            log(f"  - Cycle: {' → '.join(cycle)}")
 
     # Output naming violations
     naming_val = report.get("output_validation", {}).get("naming_violations")
     if naming_val:
-        print("\nOUTPUT NAMING VIOLATIONS:")
+        log("\nOUTPUT NAMING VIOLATIONS:")
         for violation in naming_val:
-            print(f"  - {violation}")
+            log(f"  - {violation}")
 
     # Performance tracking coverage
     perf_val = report.get("performance_tracking_coverage", {})
     if perf_val.get("missing_tracking"):
-        print("\nMISSING PERFORMANCE TRACKING:")
+        log("\nMISSING PERFORMANCE TRACKING:")
         for step in perf_val["missing_tracking"]:
-            print(f"  - {step}")
+            log(f"  - {step}")
 
     # Improvement recommendations
     recommendations = report.get("improvement_recommendations", [])
     if recommendations:
-        print("\nIMPROVEMENT RECOMMENDATIONS:")
+        log("\nIMPROVEMENT RECOMMENDATIONS:")
         for rec in recommendations:
-            print(f"  {rec}")
+            log(f"  {rec}")
 
-    print("\n" + "=" * 80)
+    log("\n" + "=" * 80)
 
 
 def main() -> int:

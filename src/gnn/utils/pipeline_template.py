@@ -12,11 +12,8 @@ import warnings
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
 
-from gnn.pipeline.config import (
-    get_output_dir_for_script as _get_output_dir_for_script,
-)
 from gnn.utils.error_handling import coerce_step_exit_code
-from gnn.utils.logging.logging_utils import (
+from gnn.utils.logging_utils import (
     setup_step_logging,
 )
 from gnn.utils.structured_logging import (  # noqa: F401 - re-export surface
@@ -47,8 +44,21 @@ def __getattr__(name: str) -> Any:
             DeprecationWarning,
             stacklevel=2,
         )
+        # Lazy resolution via the helper keeps ``gnn.pipeline`` out of
+        # sys.modules when this module is merely imported.
         return _get_output_dir_for_script
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+
+
+def _get_output_dir_for_script(script_name: str, base_output_dir: Path) -> Path:
+    """Resolve the step output dir via ``gnn.pipeline.config``.
+
+    The import is deferred to call time so importing this module never
+    pulls in ``gnn.pipeline`` (upward-import-cycle guard).
+    """
+    from gnn.pipeline.config import get_output_dir_for_script
+
+    return get_output_dir_for_script(script_name, base_output_dir)
 
 
 UTILS_AVAILABLE = True

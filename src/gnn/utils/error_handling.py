@@ -57,9 +57,16 @@ class RecoveryStrategy(Enum):
     MANUAL = "manual"
 
 
-@dataclass
-class PipelineError:
-    """Structured error information for pipeline steps."""
+@dataclass(eq=False)
+class PipelineError(Exception):
+    """Structured error information for pipeline steps (SC-17 tier 1).
+
+    Subclasses Exception so ``raise PipelineError(...)`` works; the dataclass
+    field shape is unchanged and ``args``/``str()`` carry the message.
+    """
+
+    def __post_init__(self) -> None:
+        super().__init__(self.message)
 
     step_name: str
     error_type: str

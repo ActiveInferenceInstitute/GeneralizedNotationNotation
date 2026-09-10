@@ -24,6 +24,8 @@ FEATURES: dict[str, Any] = {
 
 # Phase 6: numpy and visualization submodules are required core deps per
 # pyproject.toml. Unconditional imports — any failure is a real bug.
+from gnn import __version__
+
 from .backends import backend_status
 from .core.parsed_model import load_visualization_model
 from .core.sampling import sample_parsed_data
@@ -51,8 +53,6 @@ from .visualizer import (
     generate_matrix_visualization,
     generate_visualizations,
 )
-
-__version__ = "3.3.0"
 
 
 def get_module_info() -> dict:

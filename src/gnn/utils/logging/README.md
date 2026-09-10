@@ -2,13 +2,16 @@
 
 Modular, structured logging system for Active Inference model processing.
 
+Import from `gnn.utils.logging_utils` — the single public entry point. The
+implementation module `gnn.utils.logging.logging_utils` is internal.
+
 ## Quick Start
 
 ### For Pipeline Modules
 Initialize logging at the start of your module:
 
 ```python
-from gnn.utils.logging.logging_utils import setup_step_logging
+from gnn.utils.logging_utils import setup_step_logging
 
 logger = setup_step_logging("my_step_name", verbose=True)
 logger.info("Starting processing")
@@ -18,7 +21,7 @@ logger.info("Starting processing")
 Attach metadata to your logs for better analysis:
 
 ```python
-from gnn.utils.logging.logging_utils import PipelineLogger
+from gnn.utils.logging_utils import PipelineLogger
 
 PipelineLogger.log_structured(
     logger, logging.INFO, "Processed file", file_name="model.md", size_bytes=1024
@@ -29,7 +32,7 @@ PipelineLogger.log_structured(
 Use the context manager to automatically log duration and memory usage:
 
 ```python
-from gnn.utils.logging.logging_utils import PipelineLogger
+from gnn.utils.logging_utils import PipelineLogger
 
 with PipelineLogger.timed_operation("Parsing GNN", logger):
     # Perform expensive work

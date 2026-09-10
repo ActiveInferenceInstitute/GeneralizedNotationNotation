@@ -16,8 +16,12 @@ from typing import Any, cast
 
 try:
     import defusedxml.ElementTree as ET
-except ImportError:
-    import xml.etree.ElementTree as ET  # nosec B405
+except ImportError as _exc:  # pragma: no cover - broken environment only
+    raise RuntimeError(
+        "defusedxml is a required dependency of gnn.parsers.schema_parser but "
+        "could not be imported; the environment is broken. Reinstall with "
+        "'uv sync' (see pyproject.toml)."
+    ) from _exc
 from pathlib import Path
 from typing import Dict, List, Optional, Union
 
