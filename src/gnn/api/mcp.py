@@ -19,7 +19,7 @@ from .processor import PIPELINE_STEPS, cancel_job, create_job, get_job, list_job
 logger = logging.getLogger(__name__)
 
 # Basic module metadata
-__version__ = "1.0.0"
+__version__ = "3.3.0"
 __description__ = "API module MCP integration for GNN pipeline job management."
 __dependencies__: list[str] = []
 

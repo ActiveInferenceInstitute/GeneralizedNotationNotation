@@ -68,9 +68,11 @@ from .subprocess_envelope import (
 )
 from .types import (
     _EXECUTABLE_SUFFIXES,
+    _GNN_ALLOW_UNSAFE_EXEC,
     ExecutionFrameworkName,
     ExecutionOutcome,
     ScriptExecutionContext,
+    _gnn_allow_unsafe_exec,
 )
 
 logger = logging.getLogger(__name__)
@@ -552,7 +554,7 @@ def process_execute(
             1, int(kwargs.get("execution_benchmark_repeats", 1))
         )
         execution_summary_detail = bool(kwargs.get("execution_summary_detail", False))
-        require_render_summary = bool(kwargs.get("require_render_summary", False))
+        require_render_summary = bool(kwargs.get("require_render_summary", True))
 
         # Initialize execution results
         execution_results: dict[str, Any] = _init_execution_summary(
@@ -950,20 +952,6 @@ def _framework_for_data_helpers(framework: str) -> ExecutionFrameworkName:
     return cast(ExecutionFrameworkName, framework)
 
 
-#: Environment escape hatch: set to "1" to bypass the pre-execution security
-#: gate (trusted-local research use only; see SECURITY.md).
-_GNN_ALLOW_UNSAFE_EXEC = "GNN_ALLOW_UNSAFE_EXEC"
-
-
-def _gnn_allow_unsafe_exec() -> bool:
-    """Whether the operator has explicitly opted out of the pre-exec gate."""
-    return os.environ.get(_GNN_ALLOW_UNSAFE_EXEC, "").strip().lower() in (
-        "1",
-        "true",
-        "yes",
-    )
-
-
 def _sandbox_mode() -> str:
     """Effective sandbox mode from ``GNN_SANDBOX`` (default ``off``)."""
     from .sandbox import SANDBOX_MODES
@@ -994,6 +982,35 @@ def _sandbox_command_prefix(mode: str) -> tuple[list[str], Optional[str]]:
         )
         return [], None
     return list(spec.prefix), None
+
+
+def _sandbox_receipt(
+    mode: str, prefix: List[str], blocked_reason: Optional[str]
+) -> Dict[str, Any]:
+    """Build the pipeline-visible sandbox receipt for one script execution.
+
+    ``mode="off"`` keeps the trusted-local default but is recorded in the
+    execution summary rather than left silent (SC-2 fail-closed bundle): the
+    run receipt now shows *why* a script ran with the operator's full
+    privileges. ``prefer`` without a backend is ``fell_back_open``;
+    ``require`` failure never reaches this helper (blocked earlier with
+    ``SandboxUnavailable``).
+    """
+    sandboxed = bool(prefix)
+    if blocked_reason is not None:
+        reason: Optional[str] = blocked_reason
+    elif sandboxed:
+        reason = None
+    elif mode == "off":
+        reason = "unsandboxed execution (GNN_SANDBOX=off default)"
+    else:
+        reason = "unsandboxed execution (no sandbox backend found)"
+    return {
+        "mode": mode,
+        "sandboxed": sandboxed,
+        "backend": prefix[0] if sandboxed else None,
+        "reason": reason,
+    }
 
 
 def execute_single_script(
@@ -1039,24 +1056,34 @@ def execute_single_script(
     if not _gnn_allow_unsafe_exec():
         try:
             from gnn.security.processor import scan_script_for_execution
-
-            verdict = scan_script_for_execution(script_path)
-            if not verdict.get("ok", True):
-                blocked = verdict.get("blocked", [])
-                detail = "; ".join(
-                    f"{b.get('vulnerability_type', 'unknown')}@{b.get('line', '?')}"
-                    for b in blocked[:5]
-                )
-                exec_result["error"] = (
-                    f"Pre-execution security gate blocked {script_info['name']}: "
-                    f"{detail}"
-                )
-                exec_result["error_type"] = "SecurityGateBlocked"
-                exec_result["security_findings"] = blocked
-                logger.error(exec_result["error"])
-                return exec_result
-        except ImportError:
-            logger.debug("security.processor unavailable; pre-exec gate skipped")
+        except ImportError as exc:
+            # Fail closed (RED_TEAM_REVIEW V-01/V-06 follow-up): a broken
+            # security module must block execution rather than silently skip
+            # the pre-exec gate. Same SecurityGateBlocked path as a scan deny,
+            # with the import failure as the distinct reason.
+            exec_result["error"] = (
+                "Pre-execution security gate unavailable "
+                f"(security.processor import failed: {exc}); "
+                f"refusing to execute {script_info['name']} (fail closed)"
+            )
+            exec_result["error_type"] = "SecurityGateBlocked"
+            exec_result["security_findings"] = []
+            logger.error(exec_result["error"])
+            return exec_result
+        verdict = scan_script_for_execution(script_path)
+        if not verdict.get("ok", True):
+            blocked = verdict.get("blocked", [])
+            detail = "; ".join(
+                f"{b.get('vulnerability_type', 'unknown')}@{b.get('line', '?')}"
+                for b in blocked[:5]
+            )
+            exec_result["error"] = (
+                f"Pre-execution security gate blocked {script_info['name']}: {detail}"
+            )
+            exec_result["error_type"] = "SecurityGateBlocked"
+            exec_result["security_findings"] = blocked
+            logger.error(exec_result["error"])
+            return exec_result
 
     if framework == "rxinfer":
         exec_result["execution_metadata"] = (
@@ -1164,6 +1191,9 @@ def execute_single_script(
                 exec_result["error_type"] = "SandboxUnavailable"
                 logger.error(sandbox_blocked)
                 return exec_result
+            exec_result["sandbox"] = _sandbox_receipt(
+                sandbox_mode, sandbox_prefix, sandbox_blocked
+            )
             base_command = _build_script_execution_command(context, sandbox_prefix)
 
             for rep in range(K):

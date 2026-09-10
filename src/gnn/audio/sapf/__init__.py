@@ -32,7 +32,7 @@ from .sapf_gnn_processor import (
 )
 
 # Module metadata
-__version__ = "1.1.3"
+__version__ = "3.3.0"
 __author__ = "Active Inference Institute"
 __description__ = "SAPF audio generation from GNN models"
 

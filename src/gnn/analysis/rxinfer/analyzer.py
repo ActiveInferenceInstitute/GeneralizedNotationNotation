@@ -32,6 +32,21 @@ logger = logging.getLogger(__name__)
 # Import shared visualization utilities (centralized matplotlib setup)
 from ..viz_base import MATPLOTLIB_AVAILABLE, np, plt
 
+
+def _safe_close_figure() -> None:
+    """Best-effort matplotlib teardown after a failed plot; never raises.
+
+    Figure state can be inconsistent when plotting fails mid-construction, so
+    a failing teardown is logged (debug) instead of being silently swallowed.
+    """
+    if plt is None:
+        return
+    try:
+        plt.close()
+    except (OSError, ValueError) as exc:
+        logger.debug(f"Figure teardown after failed plot also failed: {exc}")
+
+
 # ---------------------------------------------------------------------------
 # Data normalisation helpers
 # ---------------------------------------------------------------------------
@@ -593,11 +608,7 @@ def create_rxinfer_visualizations(
             logger.info(f"Generated belief evolution: {viz_file.name}")
         except Exception as e:
             logger.warning(f"Failed to create belief plot: {e}")
-            if plt is not None:
-                try:
-                    plt.close()
-                except (OSError, ValueError):
-                    pass
+            _safe_close_figure()
 
     # 2. Observation vs True State Plot
     if observations and true_states:
@@ -621,11 +632,7 @@ def create_rxinfer_visualizations(
             logger.info(f"Generated obs vs true: {viz_file.name}")
         except Exception as e:
             logger.warning(f"Failed to create obs plot: {e}")
-            if plt is not None:
-                try:
-                    plt.close()
-                except (OSError, ValueError):
-                    pass
+            _safe_close_figure()
 
     # 3. Belief Heatmap (2D visualization of beliefs over time)
     if have_2d_beliefs and beliefs_arr.shape[0] > 1:
@@ -654,11 +661,7 @@ def create_rxinfer_visualizations(
             logger.info(f"Generated belief heatmap: {viz_file.name}")
         except Exception as e:
             logger.warning(f"Failed to create belief heatmap: {e}")
-            if plt is not None:
-                try:
-                    plt.close()
-                except (OSError, ValueError):
-                    pass
+            _safe_close_figure()
 
     # 3b. Per-Factor Belief Marginals (D4): one small-multiple panel per factor
     if per_factor_beliefs:
@@ -739,11 +742,7 @@ def create_rxinfer_visualizations(
             logger.info(f"Generated belief entropy: {viz_file.name}")
         except Exception as e:
             logger.warning(f"Failed to create entropy plot: {e}")
-            if plt is not None:
-                try:
-                    plt.close()
-                except (OSError, ValueError):
-                    pass
+            _safe_close_figure()
 
     # 5. Inference Accuracy (if we have true states + 2D beliefs)
     if have_2d_beliefs and true_states:
@@ -792,11 +791,7 @@ def create_rxinfer_visualizations(
             logger.info(f"Generated inference accuracy: {viz_file.name}")
         except Exception as e:
             logger.warning(f"Failed to create accuracy plot: {e}")
-            if plt is not None:
-                try:
-                    plt.close()
-                except (OSError, ValueError):
-                    pass
+            _safe_close_figure()
 
     # 6. Action Frequencies (bar chart, if actions exist)
     if actions:
@@ -820,11 +815,7 @@ def create_rxinfer_visualizations(
             logger.info(f"Generated action frequencies: {viz_file.name}")
         except Exception as e:
             logger.warning(f"Failed to create action frequencies plot: {e}")
-            if plt is not None:
-                try:
-                    plt.close()
-                except (OSError, ValueError):
-                    pass
+            _safe_close_figure()
 
     # 6b. EFE Per Action Heatmap (structured EFE landscape over time)
     if efe_per_action:
@@ -855,11 +846,7 @@ def create_rxinfer_visualizations(
             logger.info(f"Generated EFE per action heatmap: {viz_file.name}")
         except Exception as e:
             logger.warning(f"Failed to create EFE per action heatmap: {e}")
-            if plt is not None:
-                try:
-                    plt.close()
-                except (OSError, ValueError):
-                    pass
+            _safe_close_figure()
 
     # 7. Belief Convergence (max belief probability over time)
     if have_2d_beliefs:
@@ -888,11 +875,7 @@ def create_rxinfer_visualizations(
             logger.info(f"Generated belief convergence: {viz_file.name}")
         except Exception as e:
             logger.warning(f"Failed to create belief convergence plot: {e}")
-            if plt is not None:
-                try:
-                    plt.close()
-                except (OSError, ValueError):
-                    pass
+            _safe_close_figure()
 
     # 8. Belief Trace (inferred most-likely state over time vs true state)
     if have_2d_beliefs:
@@ -920,11 +903,7 @@ def create_rxinfer_visualizations(
             logger.info(f"Generated belief trace: {viz_file.name}")
         except Exception as e:
             logger.warning(f"Failed to create belief trace plot: {e}")
-            if plt is not None:
-                try:
-                    plt.close()
-                except (OSError, ValueError):
-                    pass
+            _safe_close_figure()
 
     # 9. Free Energy (per-iteration VFE or expected free energy over time)
     if free_energy:
@@ -960,11 +939,7 @@ def create_rxinfer_visualizations(
             logger.info(f"Generated free energy: {viz_file.name}")
         except Exception as e:
             logger.warning(f"Failed to create free energy plot: {e}")
-            if plt is not None:
-                try:
-                    plt.close()
-                except (OSError, ValueError):
-                    pass
+            _safe_close_figure()
 
     # 9b. Convergence Diagnostics (D5): VFE slope / tail rate / iterations to converge
     if free_energy:
@@ -1026,11 +1001,7 @@ def create_rxinfer_visualizations(
             logger.info(f"Generated convergence diagnostics: {viz_file.name}")
         except Exception as e:
             logger.warning(f"Failed to create convergence diagnostics plot: {e}")
-            if plt is not None:
-                try:
-                    plt.close()
-                except (OSError, ValueError):
-                    pass
+            _safe_close_figure()
 
     # 10. Observations (raw observation trace over time)
     if observations:
@@ -1050,11 +1021,7 @@ def create_rxinfer_visualizations(
             logger.info(f"Generated observations: {viz_file.name}")
         except Exception as e:
             logger.warning(f"Failed to create observations plot: {e}")
-            if plt is not None:
-                try:
-                    plt.close()
-                except (OSError, ValueError):
-                    pass
+            _safe_close_figure()
 
     return visualizations
 

@@ -61,7 +61,7 @@ FEATURES: dict[str, Any] = {
     "basic_processing": True,
     "mcp_integration": True,
 }
-__version__ = "1.7.0"
+__version__ = "3.3.0"
 
 
 # Minimal classes expected by tests

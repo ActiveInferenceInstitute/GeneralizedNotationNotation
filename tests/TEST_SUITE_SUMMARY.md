@@ -32,7 +32,7 @@ tests/
 ├── categories.py           # MODULAR_TEST_CATEGORIES routing table (typed)
 ├── infrastructure/         # canonical TestRunner, config, monitoring, reports, parsing
 ├── helpers/                # script_loader, gnn_samples, mcp_stubs, render_recovery
-├── conftest.py             # Pytest fixtures and marker registration
+├── conftest.py             # Pytest fixtures
 ├── __init__.py             # Module exports and utilities
 ├── tests/                  # Shared-plumbing regression tests
 ├── <module>/test_*.py      # Per-module test directories mirroring src/gnn/<module>/
@@ -118,9 +118,9 @@ Registered in `pytest.ini` (single source of truth). For selective execution:
 - `@pytest.mark.integration` - Integration tests
 - `@pytest.mark.performance` - Auto-applied to slow tests for dashboarding
 - `@pytest.mark.pipeline` - Pipeline infrastructure tests
-- `@pytest.mark.uv` / `@pytest.mark.jax_stack` / `@pytest.mark.mcp` / `@pytest.mark.xfail` - Toolchain and MCP-audit gates (pytest.ini)
+- `@pytest.mark.uv` / `@pytest.mark.jax_stack` / `@pytest.mark.mcp` - Toolchain and MCP-audit gates (pytest.ini)
 
-The full registry (10 conftest markers + pytest.ini's) is the authority;
+The full registry (pytest.ini's 12 markers) is the authority;
 unregistered markers fail collection under `--strict-markers`.
 
 ---

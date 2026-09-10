@@ -47,7 +47,7 @@ graph TB
   B --> F["Infrastructure Layer<br/>(utils/, pipeline/)"]
   F --> B
 
-  D --> G["External Integrations<br/>(PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, bnlearn)"]
+  D --> G["External Integrations<br/>(PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan)<br/>bnlearn: render-only optional extra"]
   D --> H["AI Services<br/>(Ollama, OpenAI, OpenRouter, Perplexity)"]
   D --> I["Scientific Frameworks<br/>(JAX, DisCoPy, NetworkX)"]
 
@@ -93,7 +93,7 @@ graph LR
 
 ## Module Dependencies
 
-The GNN pipeline implements a sophisticated dependency graph that ensures proper execution order and data flow between modules.
+The GNN pipeline implements a sophisticated dependency graph that ensures proper execution order and data flow between modules. Arrows denote logical data flow between pipeline stages — execution order and which stage consumes whose outputs — not Python `import` edges; cross-module imports mostly go through the shared `gnn.utils` and `gnn` package surfaces.
 
 ```mermaid
 graph TD

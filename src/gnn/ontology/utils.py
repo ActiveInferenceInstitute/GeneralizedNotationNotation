@@ -15,10 +15,12 @@ def get_module_info() -> Dict[str, Any]:
     Returns:
         Dictionary with module information
     """
+    from gnn import __version__
+
     return {
         "module_name": "ontology",
         "description": "Ontology processing for GNN files",
-        "version": "1.7.0",
+        "version": __version__,
         "author": "GNN Team",
         "capabilities": [
             "ontology_parsing",

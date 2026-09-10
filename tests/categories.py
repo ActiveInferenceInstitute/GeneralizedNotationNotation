@@ -115,6 +115,9 @@ MODULAR_TEST_CATEGORIES: Dict[str, TestCategory] = {
         "name": "Pipeline Module Tests",
         "description": "Pipeline orchestration and step tests",
         "files": [
+            "pipeline/test_health_check.py",
+            "pipeline/test_main_wiring.py",
+            "pipeline/test_preflight_behavior.py",
             "pipeline/test_pipeline_error_scenarios.py",
             "pipeline/test_pipeline_functionality.py",
             "pipeline/test_pipeline_improvements_validation.py",
@@ -122,7 +125,6 @@ MODULAR_TEST_CATEGORIES: Dict[str, TestCategory] = {
             "pipeline/test_pipeline_integration.py",
             "pipeline/test_pipeline_main.py",
             "pipeline/test_pipeline_orchestration.py",
-            "pipeline/test_pipeline_overall.py",
             "pipeline/test_pipeline_performance.py",
             "pipeline/test_pipeline_recovery.py",
             "pipeline/test_pipeline_render_execute_analyze.py",

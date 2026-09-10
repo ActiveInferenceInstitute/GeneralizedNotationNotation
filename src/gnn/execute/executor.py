@@ -14,7 +14,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union, cast
 
-from .subprocess_envelope import run_subprocess_envelope
+from .subprocess_envelope import NEVER_STARTED, run_subprocess_envelope
+from .types import _gnn_allow_unsafe_exec
 
 # Import execution functionality
 try:
@@ -134,6 +135,68 @@ def get_available_hardware() -> list[str]:
         return ["cpu"]
 
 
+def _pre_execution_gate(model_path: Union[str, Path]) -> Optional[Dict[str, Any]]:
+    """Pre-execution security gate for the MCP/``GNNExecutor`` dispatch stack.
+
+    Mirrors the Step 12 processor gate (``execute.processor``): every script
+    dispatched to a runner is scanned by
+    ``gnn.security.processor.scan_script_for_execution`` before execution, so
+    the MCP path cannot bypass the gate the pipeline enforces. Unreadable or
+    unscannable targets fail closed; the ``GNN_ALLOW_UNSAFE_EXEC`` escape
+    hatch is honored identically on both stacks.
+
+    Returns ``None`` when execution may proceed, otherwise a structured
+    blocked result (``error_type="SecurityGateBlocked"``) matching the
+    processor's gate receipt.
+    """
+    if _gnn_allow_unsafe_exec():
+        return None
+    target = Path(model_path)
+    if target.suffix.lower() not in (".py", ".jl"):
+        return None
+    verdict: Dict[str, Any]
+    try:
+        from gnn.security.processor import scan_script_for_execution
+
+        verdict = scan_script_for_execution(target)
+    except Exception as exc:
+        # Fail closed: a broken security module or scanner must block
+        # execution, never silently skip the gate.
+        message = (
+            "Pre-execution security gate failed "
+            f"({type(exc).__name__}: {exc}); refusing to execute "
+            f"{target.name} (fail closed)"
+        )
+        logger.error(message)
+        return {
+            "success": False,
+            "error": message,
+            "error_type": "SecurityGateBlocked",
+            "security_findings": [],
+            "security_gate": {"scanned": False, "decision": "deny_gate_failure"},
+        }
+    if verdict.get("ok", True):
+        return None
+    blocked = verdict.get("blocked", [])
+    detail = "; ".join(
+        f"{b.get('vulnerability_type', 'unknown')}@{b.get('line', '?')}"
+        for b in blocked[:5]
+    )
+    message = f"Pre-execution security gate blocked {target.name}: {detail}"
+    logger.error(message)
+    return {
+        "success": False,
+        "error": message,
+        "error_type": "SecurityGateBlocked",
+        "security_findings": blocked,
+        "security_gate": {
+            "scanned": bool(verdict.get("scanned", False)),
+            "decision": verdict.get("decision", "deny"),
+            "block_on": verdict.get("block_on", "high"),
+        },
+    }
+
+
 class GNNExecutor:
     """
     Main executor for GNN model simulations and scripts.
@@ -177,7 +240,14 @@ class GNNExecutor:
         try:
             start_time = time.time()
 
-            if execution_type == "pymdp":
+            # Pre-execution security gate (RED_TEAM_REVIEW V-01/V-06): the
+            # Step 12 processor gates every rendered script, so this dispatch
+            # (MCP ``execute_gnn_model`` and friends) must not be a bypass.
+            # Blocked/failed-gate results skip the runners entirely.
+            gate_result = _pre_execution_gate(model_path)
+            if gate_result is not None:
+                result = gate_result
+            elif execution_type == "pymdp":
                 result = self._execute_pymdp_script(
                     model_path, options, timeout=timeout
                 )
@@ -1085,6 +1155,17 @@ def execute_script_safely(
             ),
             "error_type": "ValueError",
         }
+    # Pre-execution security gate (SC-1): real Python scripts are scanned
+    # before running. Missing/suffix rejections keep their historical
+    # envelopes; the gate covers everything that could actually execute.
+    gate_result = _pre_execution_gate(script)
+    if gate_result is not None:
+        gate_result["script_path"] = str(script)
+        gate_result["return_code"] = NEVER_STARTED
+        gate_result["stdout"] = ""
+        gate_result["stderr"] = ""
+        gate_result["duration_seconds"] = 0.0
+        return gate_result
 
     envelope = run_subprocess_envelope(
         [sys.executable, str(script)],

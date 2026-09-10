@@ -7,6 +7,7 @@ a leaf: it must not import from ``execute.processor`` or any other execute
 sibling, to keep the facade import graph acyclic.
 """
 
+import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List, Literal, Optional, TypedDict, Union
@@ -74,3 +75,19 @@ class ExecutionPlan(TypedDict):
     unknown_framework_scripts: List[Dict[str, str]]
     missing_render_scripts: List[str]
     render_failures: List[Dict[str, str]]
+
+
+#: Environment escape hatch shared by both execution stacks (Step 12
+#: processor and the MCP/``GNNExecutor`` dispatch): set to "1" to bypass the
+#: pre-execution security gate (trusted-local research use only; see
+#: SECURITY.md).
+_GNN_ALLOW_UNSAFE_EXEC = "GNN_ALLOW_UNSAFE_EXEC"
+
+
+def _gnn_allow_unsafe_exec() -> bool:
+    """Whether the operator has explicitly opted out of the pre-exec gate."""
+    return os.environ.get(_GNN_ALLOW_UNSAFE_EXEC, "").strip().lower() in (
+        "1",
+        "true",
+        "yes",
+    )

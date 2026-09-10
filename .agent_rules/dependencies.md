@@ -13,6 +13,7 @@
 | `pyyaml` | YAML parsing |
 | `pytest` | Testing |
 | `psutil` | System monitoring |
+| `flax` | Neural networks (JAX stack; core dependency) |
 
 ### Optional Python Packages
 | Package | Purpose | Install | Used By |
@@ -20,7 +21,6 @@
 | `inferactively-pymdp` | Active Inference simulations | `uv pip install inferactively-pymdp` | Step 12 |
 | `jax`, `jaxlib` | ML/numerical | `uv pip install jax jaxlib` | Step 11 |
 | `optax` | JAX optimizers | `uv pip install optax` | Step 11 |
-| `flax` | Neural networks | `uv pip install flax` | **Optional** — JAX works without it |
 | `discopy` | Categorical diagrams | `uv pip install discopy` | Step 11 |
 | `ollama` | Local LLM | `uv pip install ollama` | Step 13 |
 | `openai` | OpenAI API | `uv pip install openai` | Step 13 |

@@ -82,7 +82,7 @@ GNN addresses the challenge of communicating Active Inference models, which are 
 | File | Purpose | Start Here If... |
 |------|---------|------------------|
 | **[README.md](./README.md)** | Main entry point and overview | You're new to GNN |
-| **[AGENTS.md](./AGENTS.md)** | Master agent scaffolding - all 25 pipeline steps and 32 module directories documented | You want to understand the pipeline architecture |
+| **[AGENTS.md](./AGENTS.md)** | Master agent scaffolding - all 25 pipeline steps and the module directories documented | You want to understand the pipeline architecture |
 | **[DOCS.md](./DOCS.md)** | Comprehensive documentation with all diagrams | You need the complete system overview |
 | **[ARCHITECTURE.md](./ARCHITECTURE.md)** | Implementation patterns and extension guides | You're developing or extending GNN |
 | **[docs/quickstart.md](./docs/quickstart.md)** | Step-by-step getting started guide | You want to run your first pipeline |
@@ -100,7 +100,7 @@ GNN addresses the challenge of communicating Active Inference models, which are 
 ```text
 GeneralizedNotationNotation/
 ├── 📄 README.md, AGENTS.md, DOCS.md, ARCHITECTURE.md  # Core documentation
-├── 📁 src/                    # 25-step pipeline + 32 module directories
+├── 📁 src/                    # 25-step pipeline + gnn package module directories
 │   ├── main.py               # 🎯 Main orchestrator - run this!
 │   ├── 0_template.py → 24_intelligent_analysis.py  # Numbered pipeline scripts
 │   ├── gnn/, render/, execute/, llm/, ...  # Agent modules

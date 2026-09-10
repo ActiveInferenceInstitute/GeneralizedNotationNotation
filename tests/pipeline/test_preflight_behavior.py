@@ -92,3 +92,48 @@ def test_preflight_issue_fix_is_optional() -> None:
     report.add_issue("config", "warning", "No fix provided")
     assert report.checks_failed == 0
     assert report.is_ok
+
+
+# --- W2-D5: in-memory config validation (wired into main.py startup) --------
+
+
+def test_validate_config_dict_flags_bad_skip_steps() -> None:
+    """An in-memory bad skip_steps value must fail the report like the file path."""
+    report = preflight.validate_config_dict({"pipeline": {"skip_steps": ["abc"]}})
+    assert not report.is_ok
+    assert any(
+        issue.severity == "error" and "Invalid pipeline.skip_steps" in issue.message
+        for issue in report.issues
+    )
+
+
+def test_validate_config_dict_passes_valid_skip_steps() -> None:
+    report = preflight.validate_config_dict({"pipeline": {"skip_steps": [13]}})
+    assert report.is_ok
+
+
+def test_validate_config_dict_rejects_non_mapping() -> None:
+    report = preflight.validate_config_dict(["not", "a", "mapping"])  # type: ignore[arg-type]
+    assert not report.is_ok
+    assert any("must be a YAML mapping" in issue.message for issue in report.issues)
+
+
+def test_validate_config_file_aggregates_dict_findings(tmp_path: Path) -> None:
+    """The file-based validator reuses the in-memory validator for section checks."""
+    cfg = tmp_path / "config.yaml"
+    cfg.write_text("pipeline:\n  skip_steps: [13]\n")
+    report = preflight.validate_config(cfg)
+    assert report.is_ok
+    # "Config file exists" pass + "pipeline.skip_steps" pass.
+    assert report.checks_passed >= 2
+
+
+def test_validate_config_file_propagates_skip_step_errors(tmp_path: Path) -> None:
+    cfg = tmp_path / "config.yaml"
+    cfg.write_text("pipeline:\n  skip_steps: [999]\n")
+    report = preflight.validate_config(cfg)
+    assert not report.is_ok
+    assert any(
+        issue.severity == "error" and "out of range" in issue.message
+        for issue in report.issues
+    )

@@ -7,13 +7,13 @@ This module provides format conversion capabilities for GNN specifications.
 import logging
 from typing import Any
 
+from .common import ConversionError
+
 logger = logging.getLogger(__name__)
 
 
-class ConversionError(Exception):
-    """Raised when format conversion fails."""
-
-
+# ``ConversionError`` is defined canonically in ``parsers.common`` and
+# re-exported here so existing import paths keep working.
 class FormatConverter:
     """
     Converts GNN models between different formats.

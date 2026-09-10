@@ -12,9 +12,9 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from gnn import discover_gnn_files, parse_gnn_file
-from render import render_gnn_to_pymdp
-from utils import setup_step_logging, EnhancedArgumentParser
-from pipeline import get_pipeline_config
+from gnn.render import render_gnn_to_pymdp
+from gnn.utils import ArgumentParser, setup_step_logging
+from gnn.pipeline import get_pipeline_config
 
 # ❌ WRONG — never use src. prefix
 from src.gnn import discover_gnn_files

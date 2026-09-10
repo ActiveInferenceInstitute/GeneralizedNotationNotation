@@ -416,13 +416,16 @@ class TestPublicSurface:
             assert hasattr(ontology, name), f"{name} missing from module"
 
     def test_version_bumped(self) -> None:
+        import gnn
         import gnn.ontology as ontology
-        assert ontology.__version__ == "1.7.0"
+
+        assert ontology.__version__ == gnn.__version__
 
     def test_module_info_version_synced(self) -> None:
-        from gnn.ontology import __version__, get_module_info
+        import gnn
+        from gnn.ontology import get_module_info
 
-        assert get_module_info()["version"] == __version__
+        assert get_module_info()["version"] == gnn.__version__
 
     def test_suggestion_max_distance_constant(self) -> None:
         from gnn.ontology import SUGGESTION_MAX_DISTANCE
