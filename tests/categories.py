@@ -122,7 +122,6 @@ MODULAR_TEST_CATEGORIES: Dict[str, TestCategory] = {
             "pipeline/test_pipeline_integration.py",
             "pipeline/test_pipeline_main.py",
             "pipeline/test_pipeline_orchestration.py",
-            "pipeline/test_pipeline_overall.py",
             "pipeline/test_pipeline_performance.py",
             "pipeline/test_pipeline_recovery.py",
             "pipeline/test_pipeline_render_execute_analyze.py",
