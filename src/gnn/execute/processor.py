@@ -984,6 +984,35 @@ def _sandbox_command_prefix(mode: str) -> tuple[list[str], Optional[str]]:
     return list(spec.prefix), None
 
 
+def _sandbox_receipt(
+    mode: str, prefix: List[str], blocked_reason: Optional[str]
+) -> Dict[str, Any]:
+    """Build the pipeline-visible sandbox receipt for one script execution.
+
+    ``mode="off"`` keeps the trusted-local default but is recorded in the
+    execution summary rather than left silent (SC-2 fail-closed bundle): the
+    run receipt now shows *why* a script ran with the operator's full
+    privileges. ``prefer`` without a backend is ``fell_back_open``;
+    ``require`` failure never reaches this helper (blocked earlier with
+    ``SandboxUnavailable``).
+    """
+    sandboxed = bool(prefix)
+    if blocked_reason is not None:
+        reason: Optional[str] = blocked_reason
+    elif sandboxed:
+        reason = None
+    elif mode == "off":
+        reason = "unsandboxed execution (GNN_SANDBOX=off default)"
+    else:
+        reason = "unsandboxed execution (no sandbox backend found)"
+    return {
+        "mode": mode,
+        "sandboxed": sandboxed,
+        "backend": prefix[0] if sandboxed else None,
+        "reason": reason,
+    }
+
+
 def execute_single_script(
     script_info: Dict[str, Any],
     results_dir: Path,
@@ -1163,6 +1192,9 @@ def execute_single_script(
                 exec_result["error_type"] = "SandboxUnavailable"
                 logger.error(sandbox_blocked)
                 return exec_result
+            exec_result["sandbox"] = _sandbox_receipt(
+                sandbox_mode, sandbox_prefix, sandbox_blocked
+            )
             base_command = _build_script_execution_command(context, sandbox_prefix)
 
             for rep in range(K):

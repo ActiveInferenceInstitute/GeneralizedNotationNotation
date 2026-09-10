@@ -6,7 +6,7 @@ Fixed Render generators module for GNN code generation with enhanced visualizati
 import logging
 import re
 from pathlib import Path
-from typing import Any, Dict, Optional, Union, cast
+from typing import Any, Dict, Optional, Union
 
 logger = logging.getLogger(__name__)
 
@@ -42,6 +42,43 @@ def _positive_int_literal(value: Any, default: int = 15) -> int:
     except (TypeError, ValueError):
         parsed = default
     return max(1, parsed)
+
+
+class RenderMatrixParseError(ValueError):
+    """A GNN matrix literal could not be safely parsed for code generation.
+
+    Raised instead of interpolating raw, unvalidated specification text into
+    generated Python/Julia source (RED_TEAM_REVIEW follow-up: raw text in a
+    generated script is a code-injection sink).
+    """
+
+
+def _parse_matrix_literal(matrix_data: Any, matrix_name: str) -> Any:
+    """Parse a string-encoded matrix literal, failing closed on rejection.
+
+    Strings that look like array literals are parsed with the bounded
+    ``safe_literal_eval`` (DoS-resistant; RED_TEAM V-03). A string that fails
+    to parse is *rejected* — never interpolated verbatim into generated code.
+    Non-string data passes through unchanged.
+    """
+    if not isinstance(matrix_data, str):
+        return matrix_data
+    text = matrix_data.strip()
+    if not (text.startswith("[") or text.startswith("(")):
+        raise RenderMatrixParseError(
+            f"Matrix '{matrix_name}' is not a parseable array literal "
+            f"(got {len(text)} chars of non-literal text); refusing to "
+            "interpolate raw specification text into generated code"
+        )
+    try:
+        from gnn.utils.safe_eval import MATRIX_MAX_LEN, safe_literal_eval
+
+        return safe_literal_eval(text, max_len=MATRIX_MAX_LEN)
+    except (ValueError, SyntaxError) as exc:
+        raise RenderMatrixParseError(
+            f"Matrix '{matrix_name}' failed bounded literal parsing and "
+            f"cannot be embedded in generated code: {exc}"
+        ) from exc
 
 
 def generate_bnlearn_code(
@@ -170,22 +207,18 @@ def _to_pascal_case(base: str, *, allow_empty_fallback: str = "Model") -> str:
     return name
 
 
-def _matrix_to_julia(matrix_data: Any) -> str:
+def _matrix_to_julia(matrix_data: Any, matrix_name: str = "matrix") -> str:
     """Convert Python matrix (list of lists/tuples) to Julia matrix syntax.
 
     2D matrices use semicolon row separators: [0.9 0.05; 0.05 0.9]
     3D matrices use cat(...; dims=3) syntax
     1D vectors use comma separators: [0.1, 0.2, 0.3]
-    """
-    if isinstance(matrix_data, str):
-        matrix_data = matrix_data.strip()
-        if matrix_data.startswith("[") or matrix_data.startswith("("):
-            try:
-                from gnn.utils.safe_eval import MATRIX_MAX_LEN, safe_literal_eval
 
-                matrix_data = safe_literal_eval(matrix_data, max_len=MATRIX_MAX_LEN)
-            except (ValueError, SyntaxError):
-                return cast("str", matrix_data)
+    String inputs are parsed with the bounded literal evaluator; a string
+    that fails to parse raises :class:`RenderMatrixParseError` instead of
+    being interpolated verbatim into generated Julia source.
+    """
+    matrix_data = _parse_matrix_literal(matrix_data, matrix_name)
 
     if isinstance(matrix_data, (list, tuple)):
         if len(matrix_data) > 0 and isinstance(matrix_data[0], (list, tuple)):
@@ -246,24 +279,34 @@ def generate_pymdp_code(
         )
 
         # Format matrices for template (with fallbacks)
-        a_matrix = state_space.get(
+        a_matrix = _parse_matrix_literal(
+            state_space.get(
+                "A",
+                [
+                    [0.9, 0.05, 0.05],
+                    [0.05, 0.9, 0.05],
+                    [0.05, 0.05, 0.9],
+                    [0.33, 0.33, 0.33],
+                ],
+            ),
             "A",
-            [
-                [0.9, 0.05, 0.05],
-                [0.05, 0.9, 0.05],
-                [0.05, 0.05, 0.9],
-                [0.33, 0.33, 0.33],
-            ],
         )
-        b_matrix = state_space.get(
+        b_matrix = _parse_matrix_literal(
+            state_space.get(
+                "B",
+                [
+                    [[0.8, 0.1, 0.1], [0.1, 0.8, 0.1], [0.1, 0.1, 0.8]],
+                    [[0.2, 0.3, 0.5], [0.2, 0.3, 0.5], [0.1, 0.1, 0.8]],
+                ],
+            ),
             "B",
-            [
-                [[0.8, 0.1, 0.1], [0.1, 0.8, 0.1], [0.1, 0.1, 0.8]],
-                [[0.2, 0.3, 0.5], [0.2, 0.3, 0.5], [0.1, 0.1, 0.8]],
-            ],
         )
-        c_vector = state_space.get("C", [0.1, 0.1, 1.0, 0.0])
-        d_vector = state_space.get("D", [0.333, 0.333, 0.333])
+        c_vector = _parse_matrix_literal(
+            state_space.get("C", [0.1, 0.1, 1.0, 0.0]), "C"
+        )
+        d_vector = _parse_matrix_literal(
+            state_space.get("D", [0.333, 0.333, 0.333]), "D"
+        )
 
         # Generate PyMDP code using template
         code = PYMDP_TEMPLATE.format(
