@@ -462,7 +462,7 @@ print(json.dumps(result))
             """#!/usr/bin/env python3
 import time
 print("partial-marker", flush=True)
-time.sleep(1000)  # Sleep far past the enforced timeout
+time.sleep(3)  # Sleep just past the 2s executor timeout below
 """,
         )
 

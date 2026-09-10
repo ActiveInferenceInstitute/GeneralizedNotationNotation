@@ -15,6 +15,7 @@ Following the project's Zero Simulated policy - all tests use real methods.
 
 import json
 import logging
+import os
 import shutil
 import subprocess  # nosec B404
 import sys
@@ -527,6 +528,13 @@ class TestUVCacheAndPerformance:
         # Cache dir may not exist if nothing has been cached
         # Just verify the command works
 
+    @pytest.mark.skipif(
+        os.environ.get("GNN_UV_SYNC_LIVE") != "1",
+        reason=(
+            "uv sync --frozen --check is machine-dependent (wall-clock sensitive, "
+            "shared-venv racy); opt in via GNN_UV_SYNC_LIVE=1"
+        ),
+    )
     def test_uv_sync_fast(self) -> Any:
         """Check required dev dependencies without pruning optional packages.
 

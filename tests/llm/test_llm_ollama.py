@@ -7,6 +7,11 @@ daemon. Chat/stream tests use `asyncio.run()` so they collect under `--strict-ma
 without `pytest-anyio`; they are marked `safe_to_fail` and skip when Ollama is
 not reachable. Model name defaults follow `OLLAMA_TEST_MODEL`, then `OLLAMA_MODEL`,
 then ``llm.defaults.DEFAULT_OLLAMA_MODEL`` (smollm2 instruct).
+
+SC-44: the whole module is opt-in. When a local Ollama daemon is running,
+these tests perform real LLM inference (network I/O, machine-dependent
+latency). A module-level autouse fixture skips every test unless
+``GNN_LLM_LIVE=1`` is set in the environment.
 """
 
 import asyncio
@@ -21,6 +26,18 @@ import pytest
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+
+
+@pytest.fixture(autouse=True)
+def _require_llm_live_opt_in() -> Any:
+    """Skip the entire module unless real-inference mode is explicitly opted in.
+
+    These tests run real LLM inference whenever a local Ollama daemon is up,
+    which makes the default suite machine-dependent. Opt in with
+    ``GNN_LLM_LIVE=1`` to run them against a local daemon.
+    """
+    if os.environ.get("GNN_LLM_LIVE") != "1":
+        pytest.skip("LLM live tests opt-in via GNN_LLM_LIVE=1")
 
 
 def _ollama_available() -> bool:
