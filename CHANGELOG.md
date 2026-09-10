@@ -108,6 +108,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 - CI action SHA pinning (SC-11), setup-uv version pinning (SC-28),
   full-extras fail-on-ImportError (SC-12), `MCP_TOOL_FLOOR` single source
   (SC-13), ci.yml concurrency group (SC-36).
+- `check_manuscript_tokens.py` normalizes `GNN_GIT_COMMIT` out of the
+  committed-vs-producer checksum comparison: a committed map can never
+  record the hash of the commit that carries it, so the un-normalized
+  comparison could never pass on a clean tree one commit later. The receipt
+  (`counts_describe_commit`) pins the commit; the checksum covers the
+  commit-stable counts.
 
 ### Changed
 
