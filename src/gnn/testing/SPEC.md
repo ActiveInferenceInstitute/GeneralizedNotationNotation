@@ -3,7 +3,7 @@
 ## Role
 
 - **`test_round_trip.py`** — `GNNRoundTripTester`; round-trip harness (default **21** format strings in config; see **[../SPEC.md](../SPEC.md)**).
-- **`test_comprehensive.py`**, **`test_integration.py`**, **`test_xml_parser_only.py`**, **`simple_round_trip_test.py`** — focused tests.
+- **`tests/testing/test_comprehensive.py`**, **`tests/testing/test_integration.py`**, **`tests/testing/test_xml_parser_only.py`**, **`tests/testing/test_simple_round_trip.py`** — focused tests (adopted into the pytest `testpaths` tree; SC-42).
 - **`performance_benchmarks.py`**, **`round_trip_strategy.py`** — benchmarks / helpers.
 - **`round_trip_reports/`** — optional output directory for reports.
 
