@@ -189,6 +189,8 @@ All test files follow the pattern:
 
 - `pipeline/test_main_orchestrator.py` - Main orchestrator composition tests
 - `pipeline/test_main_wiring.py` - Faked-executor wiring tests for main.py composition (W2-D5/D7)
+- `pipeline/test_preflight_behavior.py` - Preflight config/environment diagnostics tests
+- `pipeline/test_health_check.py` - Offline enhanced health-check tests
 - `pipeline/test_pipeline_integration.py` - Pipeline integration tests
 - `pipeline/test_pipeline_orchestration.py` - Pipeline orchestration tests
 - `pipeline/test_pipeline_performance.py` - Pipeline performance tests
