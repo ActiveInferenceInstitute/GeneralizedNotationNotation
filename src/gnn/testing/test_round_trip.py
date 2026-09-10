@@ -1173,7 +1173,6 @@ class GNNRoundTripTester(RoundTripComparisonMixin, RoundTripReportMixin):
         return cast("str", extensions.get(format, "txt"))
 
 
-
 if __name__ == "__main__":
     if not GNN_AVAILABLE:
         print(
