@@ -17,6 +17,12 @@ serializer availability probe, the direct markdown parser, model
 comparison, and report generation live in ``round_trip_*`` sibling
 modules; every previously module-level name is re-exported here so
 consumer import paths are unchanged.
+
+The pytest-facing ``TestGNNRoundTrip`` TestCase lives in
+``tests/testing/test_round_trip_cases.py`` (SC-42): this module stays in
+the ``gnn`` package because production code
+(``gnn.schema_validator.validator``) imports ``GNNRoundTripTester`` from
+here, and it now collects zero tests under pytest.
 """
 
 import hashlib

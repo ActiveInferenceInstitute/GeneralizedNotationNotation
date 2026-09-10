@@ -14,7 +14,7 @@
 ## Running
 
 ```bash
-uv run --extra dev python -m pytest src/gnn/testing/ -q
+uv run --extra dev python -m pytest tests/testing/ -q
 uv run --extra dev python -m pytest tests/test_gnn*.py -q
 ```
 
