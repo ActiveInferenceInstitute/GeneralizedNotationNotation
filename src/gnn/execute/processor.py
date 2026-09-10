@@ -1078,8 +1078,7 @@ def execute_single_script(
                 for b in blocked[:5]
             )
             exec_result["error"] = (
-                f"Pre-execution security gate blocked {script_info['name']}: "
-                f"{detail}"
+                f"Pre-execution security gate blocked {script_info['name']}: {detail}"
             )
             exec_result["error_type"] = "SecurityGateBlocked"
             exec_result["security_findings"] = blocked
