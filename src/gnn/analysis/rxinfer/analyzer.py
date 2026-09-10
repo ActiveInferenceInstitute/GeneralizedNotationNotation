@@ -46,6 +46,7 @@ def _safe_close_figure() -> None:
     except (OSError, ValueError) as exc:
         logger.debug(f"Figure teardown after failed plot also failed: {exc}")
 
+
 # ---------------------------------------------------------------------------
 # Data normalisation helpers
 # ---------------------------------------------------------------------------
