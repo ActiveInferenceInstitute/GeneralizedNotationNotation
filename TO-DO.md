@@ -1,6 +1,6 @@
 # TO-DO - GNN Pipeline Roadmap
 
-**Last Updated**: 2026-09-07 (wave 2: MAJ-07 closed - both pipeline utilities kept and wired with tests; setup_step_logging delegates + migration fossil retired; local-gates CI workflow added; dependency floors raised)
+**Last Updated**: 2026-09-09 (scope-campaign roadmap rows added to the Open Scoped Roadmap; fep_lean paired-revision slice merged)
 **Current Version**: 3.3.0
 **Next Target**: v4.0.0 (bounded autonomy, pipeline stage consolidation, multi-agent stigmergic topologies, and high-dimensional active inference)
 
@@ -55,6 +55,24 @@ methods vs the canonical `execute_script_safely` at `execute/executor.py:1089-12
 and needs a behavior-preserving refactor with its own tests, not a
 mechanical split.
 
+2026-09-09 truth pass (against main `222ffe8b8`, PRs #77–#99): the
+following open items were verified closed upstream and removed from this
+file per the Conventions — MAJ-06 (the 19 `process_*_mcp` wrappers now
+delegate through `gnn.utils.mcp_dispatch.run_pipeline_step_mcp` /
+`run_tool_envelope`; CHANGELOG §Unreleased MAJ-06 bullets), the ruff
+F401/F811 audit item (global ignores gone, per-file-ignores in
+`pyproject.toml`, 0 findings), ml-ai/torch extras parity (extras CI job +
+`just test-extras`; 12 env-skipped tests un-skipped), the
+`utils/pipeline_validator` near-name collision (renamed to
+`gnn/pipeline/pipeline_runtime_validator.py` with a `DeprecationWarning`
+shim), stale singular doc paths (re-pointed; `check_doc_path_references.py`
+gate), `TestUtilsMigrationHelper` deletion (default suite green), and the
+`utils/network_utils.py` removal (dead-module sweep; remaining httpx
+egress sets an explicit timeout). Full per-item evidence:
+`SCOPE-2026-09-09.md` §Review-baseline-and-main-delta. The scope-campaign
+review (2026-09-09) repopulated the Open Scoped Roadmap with the
+still-open, re-verified SC-* rows below.
+
 ## Open Scoped Roadmap
 
 Every item below is cold-startable: scope, files, verification, and acceptance
@@ -62,59 +80,32 @@ are pinned.
 
 | ID | Scope | Acceptance evidence |
 | --- | --- | --- |
+| SC-1 | Security: route the MCP execution path through the gated envelope. `execute/mcp.py:132` `execute_gnn_model_mcp` dispatches to `GNNExecutor` (`execute/executor.py`), whose per-framework runners never reference `scan_script_for_execution` or the sandbox; the wired gate exists only on the Step-12 stack (`execute/processor.py:1038-1058`, `SecurityGateBlocked`). Route `execute_gnn_model_mcp` (and ideally all `GNNExecutor` dispatch) through `execute_single_script`, or insert the pre-exec gate + sandbox into `GNNExecutor`; keep MCP tool names/signatures stable. | `uv run --extra dev pytest tests/execute tests/mcp -q` green plus a new negative test (unsafe rendered script via the MCP execute tool returns `SecurityGateBlocked`, not a run); `PYTHONPATH=src uv run --extra dev python scripts/run_v3_orchestration_acceptance.py --strict` stays green. |
+| SC-2 | Security: fail closed at the enforcement seams. (a) `execute/processor.py:1058` catches `ImportError` from the security module and continues at debug level — a broken `security` import silently disables the gate: hard-block instead. (b) `execute/sandbox.py:43` `_DEFAULT_MODE = "off"`: emit a pipeline-visible running-unsandboxed receipt (consider an explicit `GNN_SANDBOX` opt-out per run manifest). (c) `render/generators.py:180-186` `_matrix_to_julia` interpolates raw unvalidated spec text into generated Julia source when `safe_literal_eval` fails (same pattern in the PyMDP template path): replace with a rejected-parse error. (d) `pyproject.toml:415` bandit `skips = ["B101", "B601"]`: drop `B601` and reconcile the nosec suppressions (keep justified ones with comments). | `uv run --extra dev bandit -r src/gnn -c pyproject.toml -q --severity-level medium --confidence-level medium` exits 0 after fixes; unit tests assert gate failure on a sabotaged `security.processor` import and a rejected unparseable matrix. |
+| SC-3 | Tests/gates: close the consistently-stale manuscript-token class. `scripts/manuscript_build_figures.py:178-188` regenerates `output/data/manuscript_variables.json` only when missing, so a stale-but-present JSON is baked into fresh PNGs and re-recorded as `consumed_tokens` provenance; nothing compares the committed JSON to a fresh `generate_variables(HEAD)`; `scripts/z_generate_manuscript_variables.py:106-118` exits 0 in standalone mode when the template injector is missing. Regenerate unconditionally (or fail on `GNN_GIT_COMMIT != HEAD`); add a committed-vs-live token-compare gate; scan `output/manuscript/` for unresolved `{{TOKEN}}`; make a render-invoked `z_generate` fail (not exit 0). | `uv run --extra dev python scripts/check_manuscript_tokens.py --strict` detects a deliberate count perturbation (negative test); `uv run --extra dev pytest tests/test_manuscript_figure_freshness.py -q` green. |
+| SC-16 | Packaging: single-source the version constants — 35 hardcoded `__version__` literals with drift (25x `3.3.0`; 7x `1.7.0` in gui/integration/ontology/research/security/validation/website `__init__.py`; 2x `1.1.3` in `audio/sapf/__init__.py` and `execute/discopy_translator_module/__init__.py`; 1x `1.0.0` in `api/mcp.py`). `pyproject.toml` is never read programmatically, so every release needs 35 hand edits. Make `gnn/__init__.py.__version__` (or `importlib.metadata.version("generalized-notation-notation")`) canonical; subpackages re-export; stale 1.x values become re-exports of the canonical constant. | `grep -rn '__version__ = "' src/gnn --include="*.py" \| grep -v 3\.3\.0 \| wc -l` returns 0; a release-bump dry-run touches 1 file. |
+| SC-17 | Code-quality: error-handling hygiene (tiered). `src/gnn/utils/error_handling.py:61` `PipelineError` is a dataclass, not an Exception — `raise PipelineError(...)` is a `TypeError` in the central error module; duplicate unrelated `ConversionError` classes (`src/gnn/parsers/common.py:86` vs `src/gnn/parsers/converters.py:13`); ~12 `except: pass` swallows concentrated in `src/gnn/analysis/rxinfer/analyzer.py`. Make `PipelineError` raiseable (S); dedupe `ConversionError` (S); convert the rxinfer swallows to logged/collected errors (S); defer the broad `except Exception` long tail to a lint ratchet. | A test constructs and raises `PipelineError` successfully; `uv run --extra dev pytest tests/analysis -q` green with the swallows converted. |
+| SC-24 | Docs/packaging drift (verified 2026-09-09): `README.md:85,103` claim "32 module directories" vs 45 measured under `src/gnn/`; `SECURITY.md:20` supported-versions table tops out at 3.2.x (3.3.x absent); `ARCHITECTURE.md` dependency graphs overstate in-memory step propagation (steps 5/6/8/10/11/13 re-parse input; only 3→7 and 11→12 consume artifacts). Fix each cited line; correct or live-derive the module-dir count; add a docs_audit invariant for the supported-versions table. (`.agent_rules/testing.md` checked 2026-09-09: its `from src.gnn ...` line 20 is a labeled ❌ WRONG counter-example, not drift.) | `uv run python docs/development/docs_audit.py --strict --check-anchors --no-write` green; `grep -rn "32 module" README.md AGENTS.md` empty; SECURITY.md lists 3.3.x. |
+| SC-26 | Tests: `pytest.ini:115-123` blanket-ignores `DeprecationWarning`, `PendingDeprecationWarning`, `UserWarning`, `FutureWarning` suite-wide, so upstream deprecations surface only as hard breakage. Ratchet selected warning classes to errors per-module (`filterwarnings = ["error", "ignore::...", ...]` starting with `src/gnn`-internal modules), keeping the JAX fork `RuntimeWarning` ignore with its comment. | `uv run --extra dev pytest tests/pipeline -q -W error::DeprecationWarning` passes or yields a concrete, actionable deprecation list. |
+| SC-27 | Architecture: verify-and-prune-or-wire `src/gnn/grammars/` + `src/gnn/formal_specs/` — shipped in the wheel but with exactly one inbound code reference (`src/gnn/mcp/gnn_root.py:76` loads `grammars/ebnf.ebnf`). Trace that load path; either wire both directories into a documented loader with a test, or remove them from the wheel and the tree. | `uv run --extra dev pytest tests/mcp -q` green; `uv build` wheel size delta documented. |
+| SC-29 | Tests: empty-parameter-set skip — `tests/render/test_framework_availability.py:160` parametrizes over `sorted(INTENTIONALLY_UNAVAILABLE)` while that set is empty (`:40`), so the case collects zero params and pytest reports a skip, masking a broken fixture/registry assumption. Fail loudly on the empty parametrization; record the full env-skip inventory (11 sklearn + 1 torch via the ml-ai/torch extras, 2 D2 CLI, 2 Julia) in `tests/TEST_SUITE_SUMMARY.md` with conditions. | `uv run --extra dev pytest tests/render/test_framework_availability.py -q` shows 0 skips after the fix; the summary matches `-rs` output. |
+| SC-33 | Security: `src/gnn/parsers/xml_parser.py:15-17` and `src/gnn/parsers/schema_parser.py:17-20` fall back from `defusedxml` to `xml.etree` on `ImportError` with `# nosec B405`; defusedxml is a hard dependency, so the fallback is dead in healthy envs and silently unprotected in broken ones. Fail loudly (log error + raise) instead of the silent fallback. | A sabotaged-import test produces a clear error, not a silent stdlib parse. |
+| SC-41 (residual) | Tests: one-line zero-skip follow-up. `FORBIDDEN_SKIP_TOKENS` (`tests/test_zero_skip_contracts.py:50-63`) gained bare `pytest.mark.skip`/`xfail` + unittest forms but not bare `pytest.mark.skipif`, so `pytestmark = pytest.mark.skipif(...)` still evades the scan. Add the bare skipif token. | Sabotage check: adding `pytestmark = pytest.mark.skipif(...)` to a fixture test fails `uv run --extra dev pytest tests/test_zero_skip_contracts.py -q`; suite green. |
+| SC-42 | Tests/architecture: ~3,935 ln of in-package tests are never collected (`pytest.ini:16` `testpaths = tests` only): `src/gnn/testing/test_round_trip.py` 1349, `test_comprehensive.py` 1005, `test_integration.py` 197, `test_xml_parser_only.py` 137, `src/gnn/utils/test_utils.py` 1247 (only its helpers are imported by `tests/mcp.py:14`). Decide per file: move genuine tests under `tests/` (e.g. `tests/testing/`) and collect them, or delete duplicates; decide before further `testing/` decomposition. | `uv run --extra dev pytest --collect-only -q \| tail -1` grows by the adopted tests; zero `src/gnn/**/test_*.py` outside `tests/` (or a documented allowlist). |
+| SC-43 | Tests: weak-assertion program (145 tautology-only tests measured on the review baseline — re-count on the target tree first). Worst: `tests/test_core_modules.py:503-514` catches `ImportError: pass` then asserts `len(imported) >= 3`, so 7 of ~10 core modules can fail to import while the test passes (`:519-527` repeats the pattern in a perf test). Delete or strengthen worst-first: strict importlib loop for core modules; "overall" files assert observable output or are deleted; establish the bar in `.agent_rules/testing.md`. | Weak-assertion count measurably drops; a deliberately broken module import fails `tests/test_core_modules.py`. |
 
 
 ### Smaller scoped cleanups (independent of the majors)
 
-- ruff F401/F811 policy ignore: RESOLVED 2026-09-07 - the global
-  `F401`/`F811` ignore entries are gone from pyproject; nine genuine
-  re-export surfaces (six MAJ-04 facades, `round_trip_availability`,
-  `visualizer_style`, `execute/processor.py`) and the `src/gnn/parsers/*`
-  guarded optional-backend probes hold documented per-file-ignores, and
-  66 genuinely dead imports were removed (57 src/gnn, 10 scripts, 9 F811
-  re-imports). `ruff --select F401,F811 src/gnn` now reports 0 findings;
-  `ruff check src/gnn scripts`, mypy, and the full suite stayed green
-  (4285 passed). Consumer safety: AST-resolved `from <module> import`
-  scan across src/gnn, tests, and scripts against every removed name.
-- Local/CI parity: tokens and skills-health are CI-wired via
-  `.github/workflows/local-gates.yml` (2026-09-07; `skills-health` also
-  needed a repo-root sys.path bootstrap). `just gridworld` remains
-  unwired deliberately - the committed `output/` tree currently fails
-  its contract and regeneration needs the Julia toolchains.
-  ml-ai/torch extras parity: RESOLVED 2026-09-08 - verified
-  `uv sync --extra dev --extra ml-ai --extra torch --frozen` resolves from
-  the lock and un-skips the 12 environment-skipped tests (11 sklearn
-  inference tests, 1 torch continuous-render test); all 22 tests in the two
-  affected files pass with the extras present (no latent failures behind the
-  skip). The local test-cov command should therefore run with
-  `--extra ml-ai --extra torch` appended. The Ollama-ignore half of this
-  item stays open-by-design: no local Ollama daemon exists, so
-  `test-cov`'s `--ignore=tests/llm/test_llm_ollama*.py` remains correct
-  locally while the CI coverage run exercises those tests where they
-  degrade gracefully without a daemon. Coverage selection parity on the
-  remaining axis: `just test-cov` now adopts CI's
-  `-m "not pipeline and not mcp"` deselect so both invocations apply the
-  same pipeline/mcp test policy (4326 collected locally; CI collects
-  4352 - the 26-test Ollama delta is the open-by-design asymmetry
-  recorded above).
-- Dependency floors: RAISED 2026-09-07 for numpy (>=2.0), pandas
-  (>=2.0), openai (>=2.0), pytest (>=8.0), mypy (>=1.0) - the lock
-  resolved identically (only requires-dist metadata moved; zero package
-  pins changed). Remaining cosmetic floors (networkx 2.6, plotly 5.15,
-  scipy 1.7, ...) can follow at the next deliberate lock refresh.
-- `gnn/utils/pipeline_validator.py` vs `gnn/pipeline/pipeline_validator.py`
-  near-name collision: RESOLVED 2026-09-08 — the lower-traffic runtime
-  integration tester renamed to
-  `gnn/pipeline/pipeline_runtime_validator.py` (compatibility module at the
-  old path emits `DeprecationWarning` and re-exports `PipelineValidator`/`main`;
-  contract pinned in `tests/pipeline/test_pipeline_runtime_validator.py`);
-  import-site grep has zero stragglers.
-- Stale singular module paths in maintained docs: RESOLVED 2026-09-08 —
-  all 21 occurrences (19 lines) of `src/gnn/parser.py`, `src/gnn/schema.py`,
-  and `src/gnn/schema_validator.py` re-pointed to their verified real homes
-  (`schema/parser.py`, `schema_validator/syntax.py`, `parsers/system.py`);
-  regression gate `scripts/check_doc_path_references.py` is CI-wired
-  (local-gates) and strict (cap 0).
+- Dependency floors: cosmetic floors (networkx 2.6, plotly 5.15,
+  scipy 1.7, matplotlib 3.5, ...) remain to be raised at the next
+  deliberate lock refresh; `uv lock --check` must stay green.
+  (Numpy/pandas/openai/pytest/mypy floors already raised 2026-09-07;
+  the 2026-09-09 truth pass moved the resolved ruff F401/F811,
+  ml-ai/torch extras-parity, `pipeline_runtime_validator` rename, and
+  stale-doc-path items out of this file — receipts in
+  `SCOPE-2026-09-09.md` §Review-baseline-and-main-delta and
+  `CHANGELOG.md`.)
 
 ## Deep horizon wave 2 - analysis + utils
 
@@ -308,7 +299,7 @@ space and time semantics.
 
 | ID | Scope | Acceptance evidence |
 | --- | --- | --- |
-| GNN-04 | Pin paired repository revisions in cross-repository CI on the GNN side; the GEO side already hosts paired CI retaining both revisions plus categorical/H3/Gaussian/factored digests (`docs/development/geo_infer_2026_09.md`), and `.github/` has no GNN-side equivalent. | A GNN-side workflow (or documented receipt-pinning procedure) completes paired categorical and H3 round trips and records source/artifact digests for both revisions. |
+| GNN-04 | Pin paired repository revisions in cross-repository CI on the GNN side; the GEO side already hosts paired CI retaining both revisions plus categorical/H3/Gaussian/factored digests (`docs/development/geo_infer_2026_09.md`). **Delivered 2026-09-08 (fep_lean slice):** `.github/workflows/fep-lean-paired-revision.yml` + pin `.github/fep-lean-pair.json` (fep_lean pinned at `3f3100e`), mirroring GEO's pin-file/checkout/receipt mechanism; runs the read-only fep_lean bridge surface (`bridge status`, `emit --check` finite + continuous) against this checkout; protocol documented in `docs/development/fep_lean_paired_revision.md`. **Still open:** paired categorical and H3 round trips (GEO interchange surface) and source/artifact digests for both revisions on the GNN side. | A GNN-side workflow (or documented receipt-pinning procedure) completes paired categorical and H3 round trips and records source/artifact digests for both revisions. The delivered fep_lean slice is verified by a hosted run of the new workflow; until the categorical/H3 slice lands the row stays open. |
 | GNN-05 | Notation-driven metadata discovery for GEO-INFER export: derive step seconds/units/space kind from the GNN notation instead of explicit user JSON. The explicit-CLI wiring and original-source provenance already landed (`src/gnn/7_export.py`, `src/gnn/export/processor.py`, `tests/export/test_export_geo_pipeline.py`, `tests/export/test_geo_infer_gaussian.py`). | Notation-derived metadata passes the same visible-failure and unchanged-five-format-default tests that pin the explicit path. |
 
 ## Deep horizon wave 2 - tests + CI

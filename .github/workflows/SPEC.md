@@ -20,6 +20,8 @@ The module defines strict automation routines via YAML configuration:
 6. **`supply-chain-audit.yml`**: A weekly scheduled audit explicitly exporting headless `uv` lockfiles and executing `pip-audit` via OSV vulnerability tracking.
 7. **`mcp-audit.yml`**: A fast MCP tool-count regression gate (≥ 140 registered tools) on push/PR to `main`.
 8. **`full-extras.yml`**: A weekly scheduled matrix validating optional dependency groups (audio, GUI, research, scaling) and running the full pytest suite under `--all-extras`.
+9. **`local-gates.yml`**: Local/CI parity for previously hand-run `just` gates — strict manuscript token audit and MCP + SKILL.md resolvability health gate on push/PR to `main`.
+10. **`fep-lean-paired-revision.yml`**: GNN-04 paired-revision CI that validates the committed pin in `.github/fep-lean-pair.json`, checks out the fep_lean companion at exactly the pinned SHA, and runs its read-only bridge surface for cross-repository drift detection.
 
 ## Technical Rules
 - **Syntax**: 100% strict adherence to GitHub Actions YAML schemas.

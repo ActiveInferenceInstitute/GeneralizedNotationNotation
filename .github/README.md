@@ -4,7 +4,7 @@
 
 This file is the **GitHub-oriented entry point**: GNN concepts, deep links into language and pipeline docs, repository layout, CI, and local validation. The narrative overview, badges, publication block, and long examples live in the root [README.md](../README.md).
 
-**Last updated**: 2026-09-02
+**Last updated**: 2026-09-08
 
 ---
 
@@ -267,6 +267,8 @@ This directory holds **Dependabot** configuration and **GitHub Actions** workflo
 | [workflows/dependency-review.yml](workflows/dependency-review.yml) | PR dependency and license gate |
 | [workflows/codeql.yml](workflows/codeql.yml) | CodeQL static analysis (Python) |
 | [workflows/supply-chain-audit.yml](workflows/supply-chain-audit.yml) | Scheduled `pip-audit` on lockfile exports |
+| [workflows/local-gates.yml](workflows/local-gates.yml) | Local `just`-gate parity: manuscript tokens + MCP/skills health |
+| [workflows/fep-lean-paired-revision.yml](workflows/fep-lean-paired-revision.yml) | GNN-04 paired fep_lean revision CI (pinned companion + read-only bridge) |
 | [workflows/README.md](workflows/README.md) | Workflow table and local actionlint |
 | [workflows/AGENTS.md](workflows/AGENTS.md) | Workflow agent guide |
 | [workflows/SPEC.md](workflows/SPEC.md) | Workflow folder specification |
@@ -290,6 +292,8 @@ Configured in [dependabot.yml](dependabot.yml):
 | [dependency-review.yml](workflows/dependency-review.yml) | `pull_request` to `main`. `workflow_dispatch` | `fail-on-severity: high`, AGPL deny list, PR comment summary on failure ([fork limitations](https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/about-dependency-review#dependency-review-for-forked-repositories)). |
 | [codeql.yml](workflows/codeql.yml) | `push` / `pull_request` (paths-ignore doc-only), weekly schedule, `workflow_dispatch` | `init` → `uv sync --frozen --extra dev` → `analyze` (Python). |
 | [supply-chain-audit.yml](workflows/supply-chain-audit.yml) | Weekly cron (`0 6 * * 1` UTC), `workflow_dispatch` | **pip-audit (core)** and **pip-audit (all extras, no dev)** via frozen `uv export`; OSV; job summaries. |
+| [local-gates.yml](workflows/local-gates.yml) | `push` / `pull_request` to `main`. `workflow_dispatch` | Local `just`-gate parity (2026-09-07 local/CI parity audit): manuscript token audit (`check_manuscript_tokens.py`) and MCP + skills resolvability health gate (`check_mcp_skills_health.py`). |
+| [fep-lean-paired-revision.yml](workflows/fep-lean-paired-revision.yml) | `push` to `main`; all `pull_request`. `workflow_dispatch` | GNN-04 paired-revision CI: reads the pinned companion revision from `.github/fep-lean-pair.json`, checks out `ActiveInferenceInstitute/fep_lean` at exactly that SHA, and runs its read-only bridge surface (`bridge status`, `bridge emit --check`) against this checkout; retains both revisions plus the pin as artifacts. Expected red until the first paired re-pin. |
 
 **Fork PRs:** Dependency review may be limited for PRs from forks; see the link in the dependency-review row above.
 
@@ -307,6 +311,8 @@ flowchart TB
   pr --> ci[CI_full_matrix_no_path_filter]
   pr --> mc[mcp_audit_tool_count]
   pr --> da[docs_audit_if_md_doc_or_audit_script]
+  pr --> lg[local_gates]
+  pr --> fp[fep_lean_paired_revision]
   pr --> al[actionlint_if_workflows_change]
 ```
 
