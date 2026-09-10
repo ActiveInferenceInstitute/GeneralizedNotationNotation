@@ -103,6 +103,10 @@ def test_process_execute_returns_2_when_no_render_output(
     silently skipping all work. After the fix it returns 2 ("skipped/warnings")
     so the widened pipeline_template contract can surface this as a warning.
 
+    The default ``require_render_summary=True`` contract is pinned by
+    ``test_require_render_summary_missing_fails_by_default`` below; this test
+    exercises the legacy no-contract skip path via the explicit opt-out.
+
     Isolation note: ``_resolve_render_output_dir`` searches CWD-relative
     ``Path("output")`` as a fallback, so we chdir into an isolated tmp dir
     before invoking the processor; otherwise the real project's render output
@@ -118,7 +122,7 @@ def test_process_execute_returns_2_when_no_render_output(
         target_dir=empty_target,
         output_dir=output_dir,
         verbose=False,
-        frameworks="all",
+        require_render_summary=False,
     )
     # Per the new contract, "nothing to do" must be exit-code 2, not True.
     assert result == 2, f"Expected exit-code 2 for empty render output; got {result!r}"
@@ -145,7 +149,7 @@ def test_process_execute_records_local_worker_configuration(tmp_path: Path) -> N
         frameworks="pymdp",
         timeout=10,
         render_output_dir=render_out,
-        execution_workers=2,
+        require_render_summary=False,
     )
 
     assert result is True
@@ -197,7 +201,7 @@ def test_process_execute_records_local_worker_pool_failure(
         frameworks="pymdp",
         timeout=10,
         render_output_dir=render_out,
-        execution_workers=2,
+        require_render_summary=False,
     )
 
     assert result is False
@@ -216,7 +220,13 @@ def test_process_execute_records_local_worker_pool_failure(
     }
 
 
-def test_required_render_summary_fails_closed_and_is_recorded(tmp_path: Path) -> None:
+def test_require_render_summary_missing_fails_by_default(tmp_path: Path) -> None:
+    """The default contract requires a render summary: a render directory
+    without ``render_processing_summary.json`` must fail the step (exit 1),
+    not silently execute whatever is lying around. The pipeline always runs
+    Step 11 before Step 12, so real runs always have the contract; direct
+    programmatic callers opt out explicitly.
+    """
     from gnn.execute.processor import process_execute
 
     render_out = tmp_path / "render" / "11_render_output"
@@ -230,7 +240,6 @@ def test_required_render_summary_fails_closed_and_is_recorded(tmp_path: Path) ->
         output_dir=output_dir,
         frameworks="pymdp",
         render_output_dir=render_out,
-        require_render_summary=True,
     )
 
     assert result is False
@@ -277,6 +286,7 @@ def test_distributed_dispatch_failure_becomes_per_script_result(
         distributed=True,
         backend="ray",
         distributed_max_retries=4,
+        require_render_summary=False,
     )
 
     assert result is False
