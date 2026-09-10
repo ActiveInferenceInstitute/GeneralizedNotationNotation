@@ -600,10 +600,10 @@ class EnhancedHealthChecker:
             f"\n{struct_icon} Pipeline Structure: {pipeline_struct.get('status', 'unknown').upper()}"
         )
         print(
-            f"   Scripts: {len(pipeline_struct.get('available_scripts', []))}/24 available"
+            f"   Scripts: {len(pipeline_struct.get('available_scripts', []))}/25 available"
         )
         print(
-            f"   Modules: {len(pipeline_struct.get('available_modules', []))}/24 available"
+            f"   Modules: {len(pipeline_struct.get('available_modules', []))}/25 available"
         )
 
         # Pipeline integration

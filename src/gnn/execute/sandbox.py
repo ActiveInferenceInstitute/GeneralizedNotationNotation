@@ -141,6 +141,16 @@ def run_sandboxed(
         "sandbox": None,
         "mode": effective,
         "blocked": False,
+        "sandbox_receipt": {
+            "mode": effective,
+            "sandboxed": False,
+            "backend": None,
+            "reason": (
+                "unsandboxed execution (GNN_SANDBOX=off default)"
+                if effective == "off"
+                else None
+            ),
+        },
         "success": False,
         "return_code": -1,
         "stdout": "",
@@ -162,12 +172,20 @@ def run_sandboxed(
                 "GNN_SANDBOX=prefer but no sandbox backend found; "
                 "running rendered script unsandboxed."
             )
+            envelope["sandbox_receipt"]["reason"] = (
+                "unsandboxed execution (no sandbox backend found)"
+            )
         final_command = list(command)
     else:
         final_command = wrap_command(command, spec)
         envelope["sandboxed"] = True
         envelope["sandbox"] = spec.binary
-
+        envelope["sandbox_receipt"] = {
+            "mode": effective,
+            "sandboxed": True,
+            "backend": spec.binary,
+            "reason": None,
+        }
     # Canonical subprocess envelope (MAJ-10): one structured outcome for
     # timeout / OSError / non-zero exit; the sandbox-specific timeout message
     # shape is preserved on top of the shared envelope.

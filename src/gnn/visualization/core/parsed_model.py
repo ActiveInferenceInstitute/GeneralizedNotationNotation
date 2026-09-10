@@ -123,7 +123,7 @@ def stale_json_note_text(gnn_file: Path, parsed_json: Path) -> str:
         f"Step-3 parsed JSON is older than the source GNN file.\n"
         f"Source: {gnn_file}\n"
         f"JSON:   {parsed_json}\n"
-        f"Re-run: python src/main.py --only-steps 3 --verbose\n"
+        f"Re-run: uv run python src/gnn/main.py --only-steps 3 --verbose\n"
     )
 
 

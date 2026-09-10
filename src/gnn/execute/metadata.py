@@ -301,6 +301,7 @@ def _slim_execution_detail(detail: Dict[str, Any]) -> Dict[str, Any]:
         "execution_metadata",
         "script_identity",
         "source_scope",
+        "sandbox",
     )
     slim: Dict[str, Any] = {}
     for k in keys_keep:

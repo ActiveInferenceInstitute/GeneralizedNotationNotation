@@ -483,6 +483,28 @@ time.sleep(1000)  # Sleep far past the enforced timeout
         assert "partial-marker" in (result.get("stdout") or "")
 
 
+def _write_render_contract(render_out: Path, input_dir: Path) -> None:
+    """Write a minimal Step 11 render contract for the fixture script.
+
+    ``process_execute`` defaults to ``require_render_summary=True`` (W2-D4):
+    without the summary the fixture script is never executed and every
+    per-detail assertion below would vacuously pass.
+    """
+    script = render_out / "test_model" / "pymdp" / "fixture_model_pymdp.py"
+    summary = {
+        "file_results": {
+            str(input_dir / "test_model.md"): {
+                "framework_results": {
+                    "pymdp": {"success": True, "output_files": [str(script)]}
+                }
+            }
+        }
+    }
+    (render_out / "render_processing_summary.json").write_text(
+        json.dumps(summary), encoding="utf-8"
+    )
+
+
 class TestExecuteIntegration:
     """Integration tests for execute module."""
 
@@ -570,7 +592,9 @@ print(json.dumps({"status": "ok"}))
 
     @pytest.mark.integration
     @pytest.mark.slow
-    def test_execution_summary_aggregate_is_slim_v1(self, safe_filesystem: Any) -> None:
+    def test_execution_summary_aggregate_is_slim_v1(
+        self, safe_filesystem: Any, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         input_dir = safe_filesystem.create_dir("input")
         output_dir = safe_filesystem.create_dir("output")
         render_out = safe_filesystem.create_dir("render/11_render_output")
@@ -582,6 +606,9 @@ import json
 print(json.dumps({"status": "ok"}))
 """,
         )
+        monkeypatch.delenv("GNN_SANDBOX", raising=False)
+        monkeypatch.delenv("GNN_RUN_ID", raising=False)
+
         process_execute(
             input_dir,
             output_dir,
@@ -604,7 +631,9 @@ print(json.dumps({"status": "ok"}))
 
     @pytest.mark.integration
     @pytest.mark.slow
-    def test_execution_summary_detail_file_optional(self, safe_filesystem: Any) -> None:
+    def test_execution_summary_detail_file_optional(
+        self, safe_filesystem: Any, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         input_dir = safe_filesystem.create_dir("input")
         output_dir = safe_filesystem.create_dir("output")
         render_out = safe_filesystem.create_dir("render/11_render_output")
@@ -616,6 +645,10 @@ import json
 print(json.dumps({"status": "ok"}))
 """,
         )
+        monkeypatch.delenv("GNN_SANDBOX", raising=False)
+        _write_render_contract(render_out, input_dir)
+
+        monkeypatch.delenv("GNN_RUN_ID", raising=False)
         process_execute(
             input_dir,
             output_dir,
@@ -625,6 +658,7 @@ print(json.dumps({"status": "ok"}))
             render_output_dir=render_out,
             execution_summary_detail=True,
         )
+
         slim_path = output_dir / "summaries" / "execution_summary.json"
         detail_path = output_dir / "summaries" / "execution_summary_detail.json"
         assert slim_path.is_file()
@@ -634,6 +668,15 @@ print(json.dumps({"status": "ok"}))
         assert slim.get("execution_summary_format") == "slim_v1"
         assert slim.get("execution_summary_detail") is True
         assert detail.get("execution_summary_format") == "detail_v1"
+        # SC-2: every per-script execution detail carries a sandbox receipt;
+        # with GNN_SANDBOX unset the mode is "off" and unsandboxed.
+        for det in detail["execution_details"]:
+            receipt = det.get("sandbox")
+            assert isinstance(receipt, dict)
+            assert receipt["mode"] == "off"
+            assert receipt["sandboxed"] is False
+            assert receipt["backend"] is None
+            assert "unsandboxed" in receipt["reason"]
         assert detail.get("execution_details")
         assert isinstance(detail["execution_details"][0].get("stdout"), str)
 

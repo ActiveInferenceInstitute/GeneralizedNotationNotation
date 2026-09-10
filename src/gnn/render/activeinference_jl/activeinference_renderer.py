@@ -24,21 +24,18 @@ from gnn.render.multi_agent_common import (
 from gnn.render.pomdp_contract import build_canonical_pomdp_spec
 
 
-def _matrix_to_julia(matrix_data: Any) -> str:
+def _matrix_to_julia(matrix_data: Any, matrix_name: str = "matrix") -> str:
     """
     Convert shared matrix data structures to Julia format.
     Handles lists, tuples, and nested structures (matrices/tensors).
-    """
-    # Handle string input (if coming from string-based GNN spec)
-    if isinstance(matrix_data, str):
-        matrix_data = matrix_data.strip()
-        if matrix_data.startswith("[") or matrix_data.startswith("("):
-            try:
-                from gnn.utils.safe_eval import MATRIX_MAX_LEN, safe_literal_eval
 
-                matrix_data = safe_literal_eval(matrix_data, max_len=MATRIX_MAX_LEN)
-            except (ValueError, SyntaxError) as e:
-                logger.debug("Leaving matrix string unparsed for Julia output: %s", e)
+    String inputs are parsed with the bounded literal evaluator; a string
+    that fails to parse raises :class:`RenderMatrixParseError` instead of
+    being interpolated verbatim into generated Julia source.
+    """
+    from gnn.render.generators import _parse_matrix_literal
+
+    matrix_data = _parse_matrix_literal(matrix_data, matrix_name)
 
     # Normalize tuple to list for unified handling
     if isinstance(matrix_data, tuple):
@@ -717,11 +714,11 @@ def generate_activeinference_script(model_info: Dict[str, Any]) -> str:
     D_vector = model_info["D"]
     E_vector = model_info.get("E") or [1.0 / n_actions] * n_actions
 
-    julia_A = _matrix_to_julia(A_matrix)
-    julia_B = _matrix_to_julia(B_matrix)
-    julia_C = _matrix_to_julia(C_vector)
-    julia_D = _matrix_to_julia(D_vector)
-    julia_E = _matrix_to_julia(E_vector)
+    julia_A = _matrix_to_julia(A_matrix, "A")
+    julia_B = _matrix_to_julia(B_matrix, "B")
+    julia_C = _matrix_to_julia(C_vector, "C")
+    julia_D = _matrix_to_julia(D_vector, "D")
+    julia_E = _matrix_to_julia(E_vector, "E")
 
     script = f'''#!/usr/bin/env julia
 

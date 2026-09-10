@@ -4,6 +4,8 @@ Config Validation & Environment Checks — Pre-flight diagnostics.
 
 Provides:
   - validate_config(): validates input/config.yaml structure and values
+  - validate_config_dict(): in-memory twin validating a parsed config mapping
+    (wired into main.py startup so bad config fails the run before step 0)
   - check_environment(): verifies required tools and dependencies
   - PreflightReport: structured result with issues and recommendations
 """
@@ -13,7 +15,7 @@ import shutil
 from dataclasses import dataclass, field
 from importlib import import_module
 from pathlib import Path
-from typing import Any, List, Optional
+from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -95,6 +97,63 @@ class PreflightReport:
         return "\n".join(lines)
 
 
+def validate_config_dict(config: Dict[str, Any]) -> PreflightReport:
+    """Validate an already-parsed pipeline config mapping.
+
+    In-memory twin of :func:`validate_config`: same checks, no filesystem
+    access. main.py startup uses it so config errors fail the run before any
+    step executes; the file-based :func:`validate_config` reuses it after
+    parsing.
+    """
+    report = PreflightReport()
+
+    if not isinstance(config, dict):
+        report.add_issue("config", "error", "Config file must be a YAML mapping")
+        return report
+
+    # Validate known sections
+    if "llm" in config:
+        llm = config["llm"]
+        if "model" in llm:
+            report.add_pass(f"LLM model configured: {llm['model']}")
+        if "timeout_seconds" in llm:
+            timeout = llm["timeout_seconds"]
+            if not isinstance(timeout, (int, float)) or timeout < 0:
+                report.add_issue(
+                    "config", "error", f"Invalid llm.timeout_seconds: {timeout}"
+                )
+            elif timeout > 3600:
+                report.add_issue(
+                    "config", "warning", f"Very large LLM timeout: {timeout}s"
+                )
+            else:
+                report.add_pass(f"LLM timeout: {timeout}s")
+
+    # Validate pipeline.skip_steps with the canonical validator (values must
+    # be exact integers in 0..24). Catching a bad list here — before a
+    # container plan or a pipeline run consumes it — is the whole point of
+    # preflight.
+    pipeline_section = config.get("pipeline")
+    if isinstance(pipeline_section, dict) and "skip_steps" in pipeline_section:
+        from gnn.pipeline.pipeline_container_plan import validate_skip_step_values
+
+        try:
+            skipped = validate_skip_step_values(
+                pipeline_section.get("skip_steps") or []
+            )
+        except ValueError as e:
+            report.add_issue(
+                "config",
+                "error",
+                f"Invalid pipeline.skip_steps: {e}",
+                fix="Use exact integers 0-24, e.g. skip_steps: [15, 16]",
+            )
+        else:
+            report.add_pass(f"pipeline.skip_steps: {skipped if skipped else 'none'}")
+
+    return report
+
+
 def validate_config(config_path: Optional[Path] = None) -> PreflightReport:
     """
     Validate pipeline config file.
@@ -128,7 +187,6 @@ def validate_config(config_path: Optional[Path] = None) -> PreflightReport:
             config = yaml.safe_load(f)
     except ImportError:
         # Manual parse
-        config = {}
         report.add_issue(
             "dependency", "info", "PyYAML not installed — limited config validation"
         )
@@ -137,49 +195,10 @@ def validate_config(config_path: Optional[Path] = None) -> PreflightReport:
         report.add_issue("config", "error", f"Config parse error: {e}")
         return report
 
-    if not isinstance(config, dict):
-        report.add_issue("config", "error", "Config file must be a YAML mapping")
-        return report
-
-    report.add_pass("Config is valid YAML")
-
-    # Validate known sections
-    if "llm" in config:
-        llm = config["llm"]
-        if "model" in llm:
-            report.add_pass(f"LLM model configured: {llm['model']}")
-        if "timeout_seconds" in llm:
-            timeout = llm["timeout_seconds"]
-            if not isinstance(timeout, (int, float)) or timeout < 0:
-                report.add_issue(
-                    "config", "error", f"Invalid llm.timeout_seconds: {timeout}"
-                )
-            elif timeout > 3600:
-                report.add_issue(
-                    "config", "warning", f"Very large LLM timeout: {timeout}s"
-                )
-            else:
-                report.add_pass(f"LLM timeout: {timeout}s")
-
-    # Validate pipeline.skip_steps with the canonical parser (values must be
-    # exact integers in 0..24). Catching a bad list here — before a container
-    # plan or a pipeline run consumes it — is the whole point of preflight.
-    pipeline_section = config.get("pipeline")
-    if isinstance(pipeline_section, dict) and "skip_steps" in pipeline_section:
-        from gnn.pipeline.pipeline_container_plan import read_skip_steps
-
-        try:
-            skipped = read_skip_steps(config_path)
-        except ValueError as e:
-            report.add_issue(
-                "config",
-                "error",
-                f"Invalid pipeline.skip_steps: {e}",
-                fix="Use exact integers 0-24, e.g. skip_steps: [15, 16]",
-            )
-        else:
-            report.add_pass(f"pipeline.skip_steps: {skipped if skipped else 'none'}")
-
+    file_report = validate_config_dict(config)
+    report.checks_passed += file_report.checks_passed
+    report.checks_failed += file_report.checks_failed
+    report.issues.extend(file_report.issues)
     return report
 
 

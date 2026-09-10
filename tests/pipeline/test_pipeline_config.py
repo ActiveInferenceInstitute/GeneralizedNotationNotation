@@ -182,3 +182,33 @@ def test_resolve_step_output_dir_handles_deep_nesting(tmp_path: Path) -> None:
     # Walks up through 16_analysis_output (ends with _output, parent is
     # tmp_path = the pipeline root) -> resolves from tmp_path.
     assert resolve_step_output_dir("3_gnn", nested) == tmp_path / "3_gnn_output"
+
+
+def test_resolve_step_output_dir_matches_migrated_consumer_sites(
+    tmp_path: Path,
+) -> None:
+    """Pins the three consolidated consumer heuristics (W2-J1): export's
+    Step-3 lookup from inside ``7_export_output``, analysis's Step-12 lookup
+    from inside ``16_analysis_output``, and the GUI runner's own step
+    resolution from the pipeline base — all agree with the single helper."""
+    from gnn.pipeline.config import resolve_step_output_dir
+
+    export_view = tmp_path / "7_export_output"
+    export_view.mkdir()
+    analysis_view = tmp_path / "16_analysis_output"
+    analysis_view.mkdir()
+
+    # export/processor.py: resolve Step 3 from the export output view.
+    assert resolve_step_output_dir("3_gnn", export_view) == tmp_path / "3_gnn_output"
+    # analysis/framework_common.py: resolve Step 12 from the analysis view.
+    assert resolve_step_output_dir("12_execute", analysis_view) == (
+        tmp_path / "12_execute_output"
+    )
+    # gui/runner.py: resolve its own step from the pipeline base.
+    assert resolve_step_output_dir("22_gui", tmp_path) == tmp_path / "22_gui_output"
+    # Same answers regardless of how deep the caller view sits.
+    deep = analysis_view / "reports" / "daily"
+    deep.mkdir(parents=True)
+    assert resolve_step_output_dir("12_execute", deep) == (
+        tmp_path / "12_execute_output"
+    )
