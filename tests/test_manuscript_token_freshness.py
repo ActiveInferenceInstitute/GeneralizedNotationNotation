@@ -35,6 +35,7 @@ import sys
 from pathlib import Path
 
 import pytest
+from _pytest.outcomes import Skipped  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT / "src") not in sys.path:
