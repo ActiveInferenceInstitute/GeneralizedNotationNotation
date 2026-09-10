@@ -338,3 +338,90 @@ def test_main_exit_code_maps_rating_to_status(
     monkeypatch.setattr("sys.stdout", buf2)
     assert health_check_module.main() == 1
     assert _json.loads(buf2.getvalue())["health_score"]["rating"] == "fair"
+
+
+# --- W2-D6: recommendations + verbose report branches -----------------------
+
+
+def test_generate_recommendations_covers_each_failure_class() -> None:
+    """Recommendations fire for missing core deps, unavailable critical
+    optional groups, missing scripts, and high memory usage."""
+    checker = EnhancedHealthChecker()
+    checker.results = {
+        "core_dependencies": {"missing": ["numpy", "yaml"]},
+        "optional_dependencies": {
+            "julia": {"status": "unavailable", "critical": True, "description": "Julia"},
+            "gui": {"status": "unavailable", "critical": False},
+        },
+        "pipeline_structure": {"missing_scripts": ["9_advanced_viz.py"]},
+        "system_resources": {"memory": {"status": "high"}},
+        "execution_time": 0.1,
+    }
+    recs = checker._generate_recommendations()
+
+    by_title = {rec["title"]: rec for rec in recs}
+    assert "Install Missing Core Dependencies" in by_title
+    assert "numpy" in by_title["Install Missing Core Dependencies"]["description"]
+    assert "Install Julia Support" in by_title
+    assert by_title["Install Julia Support"]["priority"] == "medium"
+    assert "Complete Pipeline Structure" in by_title
+    assert "Monitor Memory Usage" not in by_title  # memory status not high
+
+
+def test_generate_recommendations_flags_memory_and_slow_runs() -> None:
+    checker = EnhancedHealthChecker()
+    checker.results = {
+        "core_dependencies": {"missing": []},
+        "optional_dependencies": {},
+        "pipeline_structure": {"missing_scripts": []},
+        "system_resources": {"memory": {"status": "high"}},
+        "execution_time": 12.5,
+    }
+    recs = checker._generate_recommendations()
+    titles = {rec["title"] for rec in recs}
+    assert "Monitor Memory Usage" in titles
+    assert "Optimize Health Check Performance" in titles
+
+
+def test_generate_recommendations_empty_when_healthy() -> None:
+    checker = EnhancedHealthChecker()
+    checker.results = {
+        "core_dependencies": {"missing": []},
+        "optional_dependencies": {},
+        "pipeline_structure": {"missing_scripts": []},
+        "system_resources": {"memory": {"status": "healthy"}},
+        "execution_time": 0.5,
+    }
+    assert checker._generate_recommendations() == []
+
+
+def test_print_enhanced_report_renders_every_section(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    """The verbose report prints the health banner and the /25 structure
+    counters without raising on a partially-populated results dict."""
+    checker = EnhancedHealthChecker()
+    checker.results = {
+        "system_resources": {"status": "healthy", "cpu": {}, "memory": {}, "disk": {}},
+        "core_dependencies": {
+            "status": "healthy",
+            "available": ["python"],
+            "missing": ["numpy"],
+            "total_checked": 2,
+        },
+        "pipeline_structure": {
+            "status": "complete",
+            "available_scripts": [f"{n}_s.py" for n in range(25)],
+            "available_modules": ["3_gnn", "11_render"],
+        },
+        "pipeline_integration": {"integration_status": "full"},
+        "health_score": {"rating": "good", "score": 85.0},
+        "execution_time": 0.42,
+    }
+    checker.print_enhanced_report()
+
+    out = capsys.readouterr().out
+    assert "GNN PIPELINE ENHANCED HEALTH CHECK" in out
+    assert "GOOD (85.0/100)" in out
+    assert "25 available" in out  # consistent 25-step counts
+    assert "Pipeline Structure: COMPLETE" in out
