@@ -201,50 +201,27 @@ def test_committed_token_map_is_at_most_one_commit_stale() -> None:
     # the stamp names HEAD's grandparent on the branch line (generated at
     # X, committed at X's child). Depth 2 is the legitimate maximum;
     # anything beyond is the consistently-stale class this gate exists for.
-    def _walk() -> list[str]:
+    def _rev_parents(rev: str) -> list[str]:
+        """Full-SHA parents of *rev* (empty on failure/shallow pruning)."""
         done = subprocess.run(
-            [
-                "git",
-                "-C",
-                str(REPO_ROOT),
-                "rev-list",
-                "--parents",
-                "--max-count=12",
-                "HEAD",
-            ],
+            ["git", "-C", str(REPO_ROOT), "rev-list", "--parents", "-1", rev],
             capture_output=True,
             text=True,
             check=False,
         )
         if done.returncode != 0:
             return []
-        ancestors: list[str] = []
-        for line in done.stdout.splitlines():
-            ancestors.extend(line.split())
-        return ancestors
+        return done.stdout.split()[1:]
 
-    ancestors = _walk()
-    if len(ancestors) < 2:
-        # Shallow CI checkout (fetch-depth=1): the merge commit's parents are
-        # pruned, so the branch-side artifacts commit is invisible. Fetch the
-        # branch heads shallowly (same bounded helper the stamp resolution
-        # uses, deep enough to cross the shallow boundary) and re-walk.
-        subprocess.run(
-            [
-                "git",
-                "-C",
-                str(REPO_ROOT),
-                "fetch",
-                "--depth",
-                "12",
-                "origin",
-                "+refs/heads/*:refs/remotes/origin/*",
-            ],
-            capture_output=True,
-            text=True,
-            check=False,
-        )
-        ancestors = _walk()
+    # Explicit two-level enumeration: HEAD's parents, then each parent's
+    # own parents. A date-ordered --max-count window starves the branch
+    # side of a merge ref whenever main has newer commits, hiding a
+    # legitimately fresh stamp; explicit per-parent enumeration is
+    # topological and immune to that.
+    ancestors: list[str] = []
+    for parent in _rev_parents("HEAD"):
+        ancestors.append(parent)
+        ancestors.extend(_rev_parents(parent))
     allowed = {head, *ancestors}
     if not any(_sha_matches(stamp, candidate) for candidate in allowed):
         if _resolve_with_fetch(stamp) is None:
