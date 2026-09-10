@@ -836,11 +836,17 @@ def _cross_framework_selection(
     return str(family.get("name", "")), declared, profiled
 
 
-def generate_variables(project_root: Path) -> dict[str, str]:
+def generate_variables(
+    project_root: Path, *, snapshot: RepositorySnapshot | None = None
+) -> dict[str, str]:
     """Compute the manuscript token map by introspecting the live repository.
 
     Args:
         project_root: Path to the GeneralizedNotationNotation project root.
+        snapshot: Pin the introspection to one commit. ``None`` (every
+            production call site) builds a ``HEAD`` snapshot. Passing an
+            explicit snapshot lets the freshness gates re-derive the map for
+            the commit an artifact names instead of the current tip.
 
     Returns:
         Flat ``dict[str, str]`` of ``UPPERCASE_KEY`` -> value. All values are
@@ -863,7 +869,8 @@ def generate_variables(project_root: Path) -> dict[str, str]:
     metadata = config.get("metadata", {}) if isinstance(config, dict) else {}
     keywords = config.get("keywords", []) if isinstance(config, dict) else []
 
-    snapshot = RepositorySnapshot(project_root)
+    if snapshot is None:
+        snapshot = RepositorySnapshot(project_root)
     version = _read_pyproject_version(snapshot)
     steps = _pipeline_steps(snapshot)
     purposes = _step_purposes(snapshot)
