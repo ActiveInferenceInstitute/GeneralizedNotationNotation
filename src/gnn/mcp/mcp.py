@@ -44,6 +44,35 @@ _MODULE_IMPORT_LOCK = threading.RLock()
 # safe failure direction. Un-timed tools never touch this pool.
 _TOOL_TIMEOUT_POOL_SIZE = 8
 
+
+def _snapshot_result(value: Any, _depth: int = 0) -> Any:
+    """Deep-copy a tool result into an immutable snapshot for result caching.
+
+    The result cache stores values across calls; if callers could mutate the
+    stored object (lists/dicts are mutable), a hostile or buggy caller would
+    poison every future cache hit. JSON-native containers are recursively
+    rebuilt; leaves are JSON-native scalars or immutable builtins, shared by
+    reference (they cannot be mutated through the result). Un-encodable
+    leaves degrade to their string form, matching the wire contract.
+    """
+    if _depth > 50:  # defensive: matches _MAX_SANITIZE_DEPTH semantics
+        return str(value)
+    if value is None or isinstance(value, (bool, int, float, str, bytes)):
+        return value
+    if isinstance(value, dict):
+        return {
+            key if isinstance(key, str) else str(key): _snapshot_result(
+                item, _depth + 1
+            )
+            for key, item in value.items()
+        }
+    if isinstance(value, (list, tuple)):
+        return [_snapshot_result(item, _depth + 1) for item in value]
+    if isinstance(value, (set, frozenset)):
+        return sorted(repr(item) for item in value)
+    return str(value)
+
+
 # --- Import MCP Exceptions from dedicated module ---
 from .exceptions import (
     MCPInvalidParamsError,
@@ -755,14 +784,22 @@ class MCP:
                 raise MCPInvalidParamsError("Tool schema must be a dictionary")
 
             if name in self.tools:
-                # Check if this is a duplicate registration from the same module
-                self.tools[name]
-                # If it's from the same module/registration context, skip it silently
-                # If it's from a different source, log a warning but allow overwriting
-                # This reduces noise from multiple registration attempts
-                logger.debug(
-                    f"Tool '{name}' already registered, updating with new version"
-                )
+                existing = self.tools[name]
+                if getattr(existing, "func", None) is func:
+                    # Identical-callable re-registration (e.g. a module's
+                    # register_tools() running twice): full re-registration
+                    # falls through silently so metadata updates still apply.
+                    logger.debug(f"Tool '{name}' re-registered with the same callable")
+                else:
+                    # A DIFFERENT callable under an existing name is a
+                    # registry collision: warn deterministically and let the
+                    # re-registration overwrite (last registration wins),
+                    # observable instead of a silent no-op read.
+                    logger.warning(
+                        f"Tool '{name}' already registered by "
+                        f"'{getattr(existing.func, '__module__', existing.func)}'; "
+                        "overwriting with new implementation"
+                    )
 
             # Convert older "parameters" list format into JSON schema if provided
             if parameters and not schema:
@@ -795,6 +832,9 @@ class MCP:
 
             schema = self._normalize_tool_schema(schema)
             module, category = self._default_tool_metadata(module, category)
+
+            # func was None-guarded above (MCPInvalidParamsError); narrow for mypy.
+            assert func is not None, "func must be resolved before MCPTool construction"
 
             tool = MCPTool(
                 name=name,
@@ -993,7 +1033,10 @@ class MCP:
                         )
                         self._performance_metrics.update_cache_stats(True)
                     logger.debug(f"Tool {tool_name} served from result cache")
-                    return cast("dict[str, Any]", cached_result)
+                    # Return a fresh deep copy: the caller may mutate the
+                    # returned result; the cache must keep serving the
+                    # pristine stored snapshot (see _snapshot_result).
+                    return cast("dict[str, Any]", _snapshot_result(cached_result))
                 with self._lock:
                     self._performance_metrics.update_cache_stats(False)
 
@@ -1031,8 +1074,11 @@ class MCP:
                 tool.mark_used()
                 if cache_key and tool.cache_ttl is not None:
                     with self._result_cache_lock:
+                        # Store an immutable deep snapshot (MED-01 hygiene):
+                        # a mutating caller must not be able to poison the
+                        # entry served to future cache hits.
                         self._result_cache[cache_key] = (
-                            result,
+                            _snapshot_result(result),
                             time.time() + tool.cache_ttl,
                         )
             logger.debug(f"Tool {tool_name} executed successfully")

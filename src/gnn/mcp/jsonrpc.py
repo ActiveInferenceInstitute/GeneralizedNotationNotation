@@ -31,6 +31,10 @@ __all__ = [
     "jsonrpc_error",
     "sanitize_json_value",
     "serialize_response",
+    "MAX_REQUEST_BYTES",
+    "MAX_RESPONSE_EMBED_CHARS",
+    "TRUNCATION_NOTICE",
+    "truncate_embedded_text",
     "tag_non_json_values",
 ]
 
@@ -43,6 +47,21 @@ METHOD_NOT_FOUND = -32601
 INVALID_PARAMS = -32602
 INTERNAL_ERROR = -32603
 
+# --- Request/response size policy (wave-2 MED-04) --------------------------------------
+#
+# Unbounded reads let a garbage Content-Length header abort the HTTP
+# connection uncaught and let a hostile line hang the stdio reader, so both
+# transports enforce one shared cap. Responses larger than
+# MAX_RESPONSE_EMBED_CHARS are truncated to the policy documented below
+# instead of being streamed raw.
+MAX_REQUEST_BYTES = 32 * 1024 * 1024  # 32 MiB request body cap, both transports
+MAX_RESPONSE_EMBED_CHARS = 1_000_000  # 1M chars per embedded response text
+
+TRUNCATION_NOTICE = (
+    "... [truncated by GNN MCP server response-size policy "
+    "(MAX_RESPONSE_EMBED_CHARS); the full result exceeded the embed limit]"
+)
+
 # Maximum container nesting the wire walkers descend into. A cyclic or
 # pathologically nested payload raises ValueError here — a normal exception
 # with stack room left for the caller's fallback path — instead of a
@@ -51,7 +70,17 @@ _MAX_SANITIZE_DEPTH = 100
 
 
 def validate_request(request: Any) -> dict[str, Any] | None:
-    """Reject invalid envelopes; supported MCP methods require object params."""
+    """Reject invalid envelopes; supported MCP methods require object params.
+
+    Single-request contract (MIN-01): this server intentionally accepts only
+    ONE JSON-RPC object per message. JSON-RPC 2.0 batch arrays (``[req, ...]``)
+    are rejected with -32600 — GNN MCP tools execute pipeline steps with
+    ordering/locking side effects that a batch would execute concurrently, so
+    the array form is refused rather than silently flattened. Clients with
+    several calls MUST issue them as separate requests on the same transport.
+    A non-dict ``params`` member is rejected -32602 the same way as any other
+    method payload.
+    """
     if (
         not isinstance(request, dict)
         or request.get("jsonrpc") != JSONRPC_VERSION
@@ -258,3 +287,19 @@ def tag_non_json_values(value: Any, _depth: int = 0) -> Any:
             "items": sorted(repr(item) for item in value),
         }
     return {"__json_type__": type(value).__name__, "repr": repr(value)}
+
+
+def truncate_embedded_text(text: str, limit: int = MAX_RESPONSE_EMBED_CHARS) -> str:
+    """Apply the documented response-size policy to an embedded text payload.
+
+    Tools that return large matrices serialize their results into a single
+    text field (``tools/call`` embeds ``serialize_response(result)``). To
+    keep responses bounded on every transport without changing wire shape,
+    an oversized payload is TRUNCATED (never dropped and never turned into a
+    hard error): the head ``limit`` characters survive and a named notice
+    documents the cut, so clients always receive parseable JSON with an
+    explicit marker instead of a silent partial payload.
+    """
+    if len(text) <= limit:
+        return text
+    return text[:limit] + TRUNCATION_NOTICE

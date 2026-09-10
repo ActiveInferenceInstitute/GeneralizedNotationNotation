@@ -22,6 +22,7 @@ from .jsonrpc import (
     jsonrpc_error,
     jsonrpc_result,
     serialize_response,
+    truncate_embedded_text,
     validate_request,
 )
 
@@ -104,16 +105,10 @@ class MCPServer:
         """Dispatch valid requests; notifications execute without a response."""
         error = validate_request(request)
         if error is not None:
-            if error["error"]["code"] == -32600:
-                return error
-            invalid = MCPInvalidParamsError("JSON-RPC params must be an object")
-            return (
-                self._create_error_response(
-                    invalid.code, str(invalid), invalid.data, request.get("id")
-                )
-                if "id" in request
-                else None
-            )
+            # Pass the shared envelope through unchanged so -32602 messages
+            # can never diverge from jsonrpc.validate_request (MIN-01);
+            # notifications (no "id" key) get no response.
+            return error if "id" in request else None
         response = self._dispatch_request(request)
         return response if "id" in request else None
 
@@ -128,11 +123,9 @@ class MCPServer:
             JSON-RPC response dictionary
         """
         try:
-            if not isinstance(request, dict):
-                return self._create_error_response(
-                    -32700, "Parse error", "Invalid JSON"
-                )
-
+            # Non-dict requests are unreachable here: handle_request already
+            # routed them through validate_request (which returns -32600 for
+            # any non-dict envelope) before dispatching.
             if "jsonrpc" not in request or request["jsonrpc"] != "2.0":
                 return self._create_error_response(
                     -32600, "Invalid Request", "Missing or invalid jsonrpc field"
@@ -149,8 +142,7 @@ class MCPServer:
             if params is None:
                 params = {}
             if not isinstance(params, dict):
-                raise MCPInvalidParamsError("JSON-RPC params must be an object")
-
+                raise MCPInvalidParamsError("Params must be an object")
             if method in self.request_handlers:
                 result = self.request_handlers[method](params)
                 return self._create_success_response(result, request_id)
@@ -204,8 +196,19 @@ class MCPServer:
             raise MCPInvalidParamsError("Tool name is required")
 
         result = self.mcp.execute_tool(tool_name, tool_params)
+        # Response-size policy (MED-04): the tools/call result is embedded as
+        # one text field; an oversized matrix result is truncated to
+        # MAX_RESPONSE_EMBED_CHARS with a named notice rather than streamed
+        # raw. Wire shape is unchanged — the client still gets valid JSON.
         return {
-            "content": [{"type": "text", "text": serialize_response(result, indent=2)}]
+            "content": [
+                {
+                    "type": "text",
+                    "text": truncate_embedded_text(
+                        serialize_response(result, indent=2, ensure_ascii=True)
+                    ),
+                }
+            ]
         }
 
     def _handle_resources_list(self, params: Dict[str, Any]) -> Dict[str, Any]:

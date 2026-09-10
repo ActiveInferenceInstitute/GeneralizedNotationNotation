@@ -376,8 +376,7 @@ class TestMCPServerLifecycle:
         )
         assert response is not None
         assert response["error"]["code"] == -32602
-        assert response["error"]["message"] == "JSON-RPC params must be an object"
-        assert "details" in response["error"]["data"]
+        assert response["error"]["message"] == "Params must be an object"
 
 
 class TestMCPCapabilities:
