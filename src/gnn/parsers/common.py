@@ -87,11 +87,11 @@ class ValidationWarning(Warning):
 
 
 class ConversionError(_CanonicalConversionError):
-    """Deprecated subclass of gnn.parsers.converters.ConversionError."""
+    """Earlier ConversionError, kept for the gnn.parsers.converters migration."""
 
     def __init__(self, *args: object) -> None:
         warnings.warn(
-            "gnn.parsers.common.ConversionError is deprecated; import from "
+            "gnn.parsers.common.ConversionError is the earlier name; import from "
             "gnn.parsers.converters instead",
             DeprecationWarning,
             stacklevel=2,

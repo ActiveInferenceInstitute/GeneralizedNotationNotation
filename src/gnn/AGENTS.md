@@ -212,7 +212,7 @@ success = process_gnn_multi_format(
 **Description**: Validate a GNN source — file path or content string. When
 `source` is an existing path and `is_content` is `False`, the file is read
 first; otherwise `source` is treated as raw content. The old name
-`validate_gnn_file` remains as a deprecated alias emitting
+`validate_gnn_file` remains as an earlier alias emitting
 `DeprecationWarning`.
 
 **Returns**: `Dict[str, Any]` with `is_valid` (bool) and `errors` (List[str])
@@ -220,7 +220,7 @@ first; otherwise `source` is treated as raw content. The old name
 #### `validate_gnn_syntax(file_path_or_content: str, validation_level: ValidationLevel = ValidationLevel.STANDARD, **kwargs) -> Tuple[bool, List[str]]`
 
 **Description**: Validate a GNN file or content string. The old name
-`validate_gnn` remains as a deprecated alias emitting `DeprecationWarning`.
+`validate_gnn` remains as an earlier alias emitting `DeprecationWarning`.
 
 
 **Parameters**:

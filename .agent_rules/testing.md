@@ -16,7 +16,7 @@ from render import render_gnn_to_pymdp
 from utils import setup_step_logging, EnhancedArgumentParser
 from pipeline import get_pipeline_config
 
-# ❌ WRONG — never use the deprecated src. prefix; use the canonical form shown above
+# ❌ WRONG — never use the earlier src. prefix; use the canonical form shown above
 # from src.gnn import discover_gnn_files
 ```
 

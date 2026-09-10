@@ -8,7 +8,7 @@ enabling auditory exploration and debugging of Active Inference generative model
 from typing import Any
 
 # Module metadata
-# Package version (re-exported): 1.1.3 here was a legacy module-version stamp,
+# Package version (re-exported): 1.1.3 here was an earlier module-version stamp,
 # not a SAPF language/protocol version -- the module docs (README/SPEC/AGENTS)
 # never define a SAPF language version, and module_info.py mirrors this value
 # as *module* metadata.

@@ -74,7 +74,7 @@ is_valid, errors = validate_gnn_syntax(content_string)
 - `process_gnn_directory` — process all files in a directory
 - `process_gnn_multi_format` — full multi-format serialization (needs `logging.Logger`)
 - `check_gnn_file_structure` — structural validation of a GNN file
-- `validate_gnn_syntax` — content-level syntax validation (`validate_gnn` is a deprecated alias)
+- `validate_gnn_syntax` — content-level syntax validation (`validate_gnn` is the earlier alias)
 - `GNNParsingSystem`, `GNNFormat` — registry-backed multi-format I/O
 - `GNNFormalParser`, `ParsedGNN`, `ParsedGNNFormal` — formal parser types
 
