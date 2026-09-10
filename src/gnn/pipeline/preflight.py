@@ -15,7 +15,7 @@ import shutil
 from dataclasses import dataclass, field
 from importlib import import_module
 from pathlib import Path
-from typing import Any, List, Optional
+from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
