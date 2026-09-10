@@ -52,11 +52,11 @@ This folder hosts the explicit, stateless developer workflow validation agents r
 | `pymdp_spec_generator.py` | Generate pymdp specification from config |
 | `z_generate_manuscript_variables.py` | Compute the deterministic `{{TOKEN}}` map from the live repo and hydrate manuscript sections before render |
 
-### Maintenance (1 script)
+### Maintenance (moved to `experiments/`)
 
 | Script | Purpose |
 |--------|---------|
-| `add_module_docstrings.py` | Insert composed PEP 257 module docstrings into undocumented files (`--dry-run` supported) |
+| [`experiments/add_module_docstrings.py`](experiments/add_module_docstrings.py) | Insert composed PEP 257 module docstrings into undocumented files (`--dry-run` supported) |
 
 ## Shared Utilities — `lib/`
 
