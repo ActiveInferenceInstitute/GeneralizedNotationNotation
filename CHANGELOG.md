@@ -10,6 +10,16 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ### Changed
 
+- **Docs: 2026-09-09 scope-campaign review artifacts.** Added
+  `SCOPE-2026-09-09.md` (45-item improvement spec re-baselined against main
+  `222ffe8b8`, PRs #77–#99: MAJ-04/ruff-audit/SC-10/MAJ-06/SC-25 verified
+  closed upstream, remaining items re-pinned with evidence) and a `TO-DO.md`
+  truth pass whose Open Scoped Roadmap now carries the 13 still-open
+  scope-campaign rows (SC-1, SC-2, SC-3, SC-16, SC-17, SC-24, SC-26, SC-27,
+  SC-29, SC-33, SC-41 residual, SC-42, SC-43) with file paths and acceptance
+  commands. Includes the fep_lean paired-revision slice (GNN-04:
+  paired-revision CI workflow, pin file, and protocol doc). Review artifacts
+  only — no runtime code changes.
 
 - **MAJ-08: one wire serializer for all MCP transports.** Tool results from
   arbitrary callables can no longer crash the stdio writer thread (client
