@@ -6,6 +6,7 @@ This module provides format conversion capabilities for GNN specifications.
 
 import logging
 from typing import Any
+
 from .common import ConversionError
 
 logger = logging.getLogger(__name__)

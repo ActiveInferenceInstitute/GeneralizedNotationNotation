@@ -43,8 +43,17 @@ def _version_literals() -> dict[str, str]:
 
 
 def test_canonical_version_literal_exists() -> None:
-    """The scan anchor must be present: src/gnn/__init__.py defines ``__version__``."""
+    """The scan anchor must be present and the corpus non-trivial.
+
+    The floor guards against a silently broken scan (REPO_ROOT resolution or
+    rglob regression) passing vacuously on a near-empty literal map. Update
+    it consciously if the single-source pattern changes.
+    """
     literals = _version_literals()
+    assert len(literals) >= 30, (
+        f"version scan found only {len(literals)} literals; expected the "
+        "known src/gnn corpus (~34) — REPO_ROOT resolution or the scan is broken"
+    )
     assert "src/gnn/__init__.py" in literals
 
 
