@@ -11,6 +11,7 @@ nothing here invokes it.
 
 Public API:
   - PINNED_PIPELINE_IMAGE: documented stand-in image pinned by digest
+  - validate_skip_step_values(skip): validate raw skip values (in-memory)
   - read_skip_steps(config_path): parse pipeline.skip_steps from config YAML
   - build_pipeline_command(target_dir, output_dir, skip_steps): run argv
   - plan_for_pipeline(config_path, *, image, target_dir, output_dir, previous):
@@ -20,7 +21,7 @@ Public API:
 
 import posixpath
 from pathlib import Path
-from typing import List, Optional, Union
+from typing import Any, List, Optional, Union
 
 import yaml
 
@@ -44,6 +45,33 @@ PINNED_PIPELINE_IMAGE = "ghcr.io/generalizednotationnotation/gnn-pipeline@sha256
 )
 
 
+def validate_skip_step_values(skip: List[Any]) -> List[int]:
+    """Validate raw ``pipeline.skip_steps`` values from any config source.
+
+    Args:
+        skip: Raw skip values (in-memory list, already defaulted to ``[]``).
+
+    Returns:
+        A sorted, de-duplicated list of valid step numbers (0-24).
+
+    Raises:
+        ValueError: if a skip value is not an exact non-negative integer in
+            range (a float like 15.9, a negative, or a non-numeric string) —
+            silently truncating or accepting such values would mis-target the
+            skip set. Shared by ``read_skip_steps`` and the in-memory
+            ``preflight.validate_config_dict`` used by main.py startup.
+    """
+    cleaned: set[int] = set()
+    for s in skip:
+        # bool is an int subclass but is never a valid step number.
+        if isinstance(s, bool) or not isinstance(s, int):
+            raise ValueError(f"skip_steps must be integers in 0..24, got {s!r}")
+        if not (0 <= s <= 24):
+            raise ValueError(f"skip_steps value out of range 0..24: {s}")
+        cleaned.add(s)
+    return sorted(cleaned)
+
+
 def read_skip_steps(config_path: Union[str, Path]) -> List[int]:
     """Read ``pipeline.skip_steps`` from a GNN config YAML file.
 
@@ -63,15 +91,7 @@ def read_skip_steps(config_path: Union[str, Path]) -> List[int]:
     data = yaml.safe_load(raw) or {}
     pipeline = data.get("pipeline") or {}
     skip = pipeline.get("skip_steps") or []
-    cleaned: set[int] = set()
-    for s in skip:
-        # bool is an int subclass but is never a valid step number.
-        if isinstance(s, bool) or not isinstance(s, int):
-            raise ValueError(f"skip_steps must be integers in 0..24, got {s!r}")
-        if not (0 <= s <= 24):
-            raise ValueError(f"skip_steps value out of range 0..24: {s}")
-        cleaned.add(s)
-    return sorted(cleaned)
+    return validate_skip_step_values(skip)
 
 
 def build_pipeline_command(

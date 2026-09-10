@@ -122,6 +122,7 @@ def test_process_execute_returns_2_when_no_render_output(
         target_dir=empty_target,
         output_dir=output_dir,
         verbose=False,
+        frameworks="all",
         require_render_summary=False,
     )
     # Per the new contract, "nothing to do" must be exit-code 2, not True.
@@ -150,6 +151,7 @@ def test_process_execute_records_local_worker_configuration(tmp_path: Path) -> N
         timeout=10,
         render_output_dir=render_out,
         require_render_summary=False,
+        execution_workers=2,
     )
 
     assert result is True
@@ -202,6 +204,7 @@ def test_process_execute_records_local_worker_pool_failure(
         timeout=10,
         render_output_dir=render_out,
         require_render_summary=False,
+        execution_workers=2,
     )
 
     assert result is False
