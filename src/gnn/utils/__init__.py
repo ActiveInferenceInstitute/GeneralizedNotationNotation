@@ -15,7 +15,7 @@ resource_manager, matplotlib via simulation_utils) are only paid when an
 exported name is actually resolved through ``__getattr__``.
 
 Source modules:
-- logging_utils: Re-export shim over utils/logging/logging_utils.py (centralized, correlation-aware logging system)
+- logging_utils: Re-export facade over utils/logging/logging_utils.py (centralized, correlation-aware logging system)
 - argument_utils: Streamlined argument parsing and validation
 - resource_manager: Memory and resource usage tracking
 - error_recovery: Error context, severity, and recovery management

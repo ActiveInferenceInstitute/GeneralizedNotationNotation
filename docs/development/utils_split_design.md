@@ -54,7 +54,7 @@ these seams rather than inventing new ones:
 
 - **`logging/`** subpackage exists: `logging/logging_utils.py` (1,338 lines, internal
   implementation) behind `logging_utils.py` (106 lines, "single public entry point"
-  public shim) + `logging/__init__.py` (25 lines).
+  public facade) + `logging/__init__.py` (25 lines).
 - **Argument family** exists as a seam: `arg_parsing.py` (1,458), `arg_definitions.py`
   (69), `pipeline_arguments.py` (220), `pipeline_config_merge.py` (64),
   `step_config.py` (477), `path_conversion.py` (106), behind the
@@ -92,13 +92,13 @@ facade `_EXPORT_MAP` can be repointed in the same PR cheaply.
 - **No breaking `_EXPORT_MAP` consumers.** `from gnn.utils import X` must keep working
   through the entire migration.
 - **No breaking old submodule paths.** `from gnn.utils.testing_utils import X` keeps
-  working (shim + DeprecationWarning) until a separate, owner-decided deprecation
+  working (facade + DeprecationWarning) until a separate, owner-decided deprecation
   window ends.
 - **No MCP tool registry changes.** Tool names and discovery paths are untouched
   (SC-7 precedent: "MCP tool registry unchanged").
 - **No `validate_gnn*` alias retirement** — explicitly deferred per
   `SCOPE-2026-09-10.md` (needs a deprecation-window decision).
-- **No behavior changes.** Every step is a mechanical move behind a shim.
+- **No behavior changes.** Every step is a mechanical move behind a facade.
 
 ---
 
@@ -112,7 +112,7 @@ Seven packages, each matching an existing seam. The existing separated families 
 | File | Lines |
 |---|---|
 | `logging/logging_utils.py` (internal implementation) | 1,338 |
-| `logging_utils.py` (public entry shim) | 106 |
+| `logging_utils.py` (public entry facade) | 106 |
 | `logging/__init__.py` | 25 |
 
 Already the "single public entry point" pattern (its docstring says exactly that).
@@ -147,13 +147,13 @@ argument names repoint into this package.
 | `base_processor.py` | 314 |
 | `pipeline_validator.py` | 311 |
 | `pipeline_template.py` | 290 |
-| `pipeline.py` (compat shim) | 163 |
+| `pipeline.py` (compat facade) | 163 |
 | `pipeline_step_dependencies.py` | 129 |
 | `execution_utils.py` | 171 |
 
 Seam already proven: `pipeline.py` is a self-declared "compat entry… thin delegates to
 canonical homes" (`pipeline.py:1-14`). Note `pipeline_template` is the single most
-imported submodule in the repo (44 import sites) — its old path shim must be perfect.
+imported submodule in the repo (44 import sites) — its old path facade must be perfect.
 Careful: `gnn.pipeline` (a *different*, pre-existing package elsewhere in `gnn`) already
 exists; the utils subpackage must not collide at the `gnn.pipeline` name. Proposal: name
 the package `gnn/utils/pipeline_orchestration/` — see risk R1.
@@ -169,7 +169,7 @@ Biggest grab-bag core. Wave A already renamed `test_utils.py → testing_utils.p
 cycle for this family is already paid. Consumers: `tests/__init__.py:47` (imports
 `PROJECT_ROOT`, `SRC_DIR`, `TEST_DIR`, constants and helpers — note `PROJECT_ROOT`,
 `SRC_DIR`, `TEST_DIR` are **not** facade exports, they are submodule-path-only),
-`tests/utils/test_shared_helpers.py` (pins the delegating shim), and
+`tests/utils/test_shared_helpers.py` (pins the delegating facade), and
 `tests/tests/test_infrastructure_exports.py` ("guards the surface
 utils/testing_utils.py uses"). Zero `src/` consumers besides the facade.
 
@@ -253,14 +253,14 @@ SC-7 established the pattern in this repo: "rename to unambiguous names with
 
 1. **Move** the implementation with `git mv` into its new package
    (e.g. `src/gnn/utils/testing/`), splitting internally if the design table says so.
-2. **Replace** the old module path with a shim:
+2. **Replace** the old module path with a facade:
 
    ```python
-   """Deprecated: implementation moved to gnn/utils/testing/runners.py."""
+   """Earlier name; implementation moved to gnn/utils/testing/runners.py."""
    import warnings
 
    warnings.warn(
-       "gnn.utils.testing_utils is deprecated; import gnn.utils.testing instead",
+       "gnn.utils.testing_utils is the earlier name; import gnn.utils.testing instead",
        DeprecationWarning,
        stacklevel=2,
    )
@@ -269,7 +269,7 @@ SC-7 established the pattern in this repo: "rename to unambiguous names with
    __all__ = list(_new_all)
    ```
 
-   Precedents in-tree: `utils/logging_utils.py` (public-entry shim over
+   Precedents in-tree: `utils/logging_utils.py` (public-entry facade over
    `utils/logging/logging_utils.py`) and `utils/pipeline.py` (thin-delegate compat
    entry with lazy imports).
 3. **Repoint the facade** in the same PR: `_EXPORT_MAP` values change (e.g.
@@ -313,13 +313,13 @@ For each concern package P with modules M1..Mn:
    not lazy), so intra-family imports read `from gnn.utils.testing import TestRunner`.
 2. Every `_EXPORT_MAP` entry whose implementation moved is repointed to the new leaf
    module in the same PR as the move.
-3. Every old path `gnn/utils/<Mi>.py` becomes a warning shim (§4.1) — no exception,
+3. Every old path `gnn/utils/<Mi>.py` becomes a warning facade (§4.1) — no exception,
    including "internal" modules: the census (§1.4) shows submodule paths are the
    traffic, and `tests/__init__.py` proves test code depends on a submodule path
    (`testing_utils`) that the facade never exported.
-4. The shim `__all__` covers exactly the moved module's public names; private names
+4. The facade `__all__` covers exactly the moved module's public names; private names
    (`_`-prefixed, e.g. `_PerformanceTracker` in `testing_utils.py:1145`) do not get
-   shim re-exports and are free to move without a shim alias.
+   facade re-exports and are free to move without a facade alias.
 
 ---
 
@@ -343,12 +343,12 @@ registry coupling). "Gate" = commands that must be green before the next step.
   *Gate:* `uv run --extra dev pytest tests/ -q` green (SC-38's stated acceptance
   probe per moved module) with emphasis on `tests/utils/test_shared_helpers.py` and
   `tests/tests/test_infrastructure_exports.py`; grep census shows no new direct
-  imports of `gnn.utils.testing_utils` outside `tests/` and the shim itself.
+  imports of `gnn.utils.testing_utils` outside `tests/` and the facade itself.
 
 - **Step 2 — arguments/.** Move `arg_parsing.py`, `arg_definitions.py`,
   `pipeline_arguments.py`, `pipeline_config_merge.py`, `step_config.py`,
   `path_conversion.py` into `gnn/utils/arguments/`; `argument_utils.py` becomes the
-  package facade (it already is one). 16 direct import sites ride the shim.
+  package facade (it already is one). 16 direct import sites ride the facade.
   *Gate:* Step-0 tests green; mypy + ruff clean; facade resolution spot-check
   (`from gnn.utils import StepConfiguration, parse_arguments`).
 
@@ -373,13 +373,13 @@ registry coupling). "Gate" = commands that must be green before the next step.
   **last** (R2/R3).
   *Gate:* `uv run --extra dev python scripts/check_mcp_skills_health.py --strict`
   green; mcp-audit CI job green; all 21 `mcp_dispatch` import sites resolve through
-  the shim.
+  the facade.
 
 - **Step 7 — residual decision (owner).** `errors/`, `config_io/`, `system_env/`,
   `simulation_utils` disposition per §3.8. Out of this design's committed scope.
 
 Deferred to the same later wave as SC-38 (owner decision, per the spec): ending the
-shim deprecation window (deleting old paths), and `validate_gnn*` alias retirement.
+facade deprecation window (deleting old paths), and `validate_gnn*` alias retirement.
 
 ---
 
@@ -407,7 +407,7 @@ Mechanics:
 
 1. Create `gnn/utils/testing/` with the six/seven leaf modules above; family
    `__init__.py` re-exports all public names.
-2. `gnn/utils/testing_utils.py` becomes a shim re-exporting everything public
+2. `gnn/utils/testing_utils.py` becomes a facade re-exporting everything public
    (including `PROJECT_ROOT`, `SRC_DIR`, `TEST_DIR` — submodule-path-only names that
    `tests/__init__.py:47` depends on), emitting one `DeprecationWarning`.
 3. Repoint `_EXPORT_MAP`'s 34 `testing_utils` entries to the new leaf modules
@@ -419,7 +419,7 @@ Mechanics:
 
 Acceptance: full `uv run --extra dev pytest tests/ -q` green;
 `tests/utils/test_shared_helpers.py::test_testing_utils_delegates` green (it asserts
-the shim delegates); `tests/tests/test_infrastructure_exports.py` green (asserts every
+the facade delegates); `tests/tests/test_infrastructure_exports.py` green (asserts every
 `__all__` entry still resolves — the guard named in that test's docstring).
 
 ---
@@ -428,20 +428,20 @@ the shim delegates); `tests/tests/test_infrastructure_exports.py` green (asserts
 
 | # | Risk | Evidence | Mitigation |
 |---|---|---|---|
-| R1 | Name collision: a `gnn/utils/pipeline/` subpackage vs the pre-existing top-level `gnn.pipeline` package | `pipeline.py:11` already delegates to `gnn.pipeline.config` | Name the family `pipeline_orchestration/`; keep `pipeline.py` shim delegating to it |
+| R1 | Name collision: a `gnn/utils/pipeline/` subpackage vs the pre-existing top-level `gnn.pipeline` package | `pipeline.py:11` already delegates to `gnn.pipeline.config` | Name the family `pipeline_orchestration/`; keep `pipeline.py` facade delegating to it |
 | R2 | MCP dispatch import order: `mcp_dispatch.py` has 21 import sites and `mcp.py` imports `psutil` at module scope (`mcp.py:24`); if a new package `__init__` eagerly imports the server, the light-import invariant (I1/I2) breaks and every `import gnn.utils` pays for psutil | `__init__.py:11-14` documents this exact invariant; `structured_logging.py:24` same | MCP family moves last; `mcp/__init__.py` empty; server/dispatch are leaves; light-import regression test (Step 0) is the gate |
-| R3 | MCP tool registry/discovery breaks on path change | SC-8's dispatcher contract; `scripts/check_mcp_skills_health.py --strict` is the repo's probe for exactly this | No registry edits; old `utils/mcp.py` path stays as a warning shim; skills-health `--strict` in every MCP-adjacent gate |
+| R3 | MCP tool registry/discovery breaks on path change | SC-8's dispatcher contract; `scripts/check_mcp_skills_health.py --strict` is the repo's probe for exactly this | No registry edits; old `utils/mcp.py` path stays as a warning facade; skills-health `--strict` in every MCP-adjacent gate |
 | R4 | Logging config at import: moving `structured_logging` (module-level `LogAggregator` `:405`, `_correlation_context` threadlocal `:406`) and `visual_logging` into one package creates two logging singletons' init order dependency; `logging/logging_utils.py` (1,338 lines) also configures the pipeline logger | module-level state at `structured_logging.py:405-406` | Move observability modules one at a time, logging last within the family; keep correlation-context tests green per move; never let the new package `__init__` touch logging config |
-| R5 | Shim `import *` misses names or adds them twice (the `__all__` already double-lists 4 `log_step_*` names across logging/structured-logging sections) | `__init__.py:353-489` structure; 118 entries vs 113 unique | Shims enumerate explicit re-exports (§4.1 pattern imports `__all__` from the new module); golden-list assertions (I3) catch both drift and duplication |
+| R5 | Facade `import *` misses names or adds them twice (the `__all__` already double-lists 4 `log_step_*` names across logging/structured-logging sections) | `__init__.py:353-489` structure; 118 entries vs 113 unique | Facades enumerate explicit re-exports (§4.1 pattern imports `__all__` from the new module); golden-list assertions (I3) catch both drift and duplication |
 | R6 | Same-name export/module shadowing (the `performance_tracker` incident) | `__init__.py:253-255` documents it; wave-A rename fixed one instance | I6 (new): any module name must differ from every facade-exported name it defines; import-linter + the golden list enforce |
-| R7 | `tests/__init__.py` depends on submodule-path-only names (`PROJECT_ROOT`, `SRC_DIR`, `TEST_DIR`) that no facade export covers | `tests/__init__.py:47-60` | First extraction (Step 1) explicitly re-exports them from the shim; test helpers are in our control so the window can be short |
+| R7 | `tests/__init__.py` depends on submodule-path-only names (`PROJECT_ROOT`, `SRC_DIR`, `TEST_DIR`) that no facade export covers | `tests/__init__.py:47-60` | First extraction (Step 1) explicitly re-exports them from the facade; test helpers are in our control so the window can be short |
 
 ---
 
 ## 8. What remains after this design wave (named honestly)
 
 - The mechanical split itself (Steps 1-7): 7 PRs, each one family, each gated.
-- Residual-family assignment (§3.8) and the two owner decisions (shim window length,
+- Residual-family assignment (§3.8) and the two owner decisions (facade window length,
   `validate_gnn*` retirement).
 - `mypy`/`ruff` cleanliness is maintained per-step; this wave's only code-file touch is
   the `utils/__init__.py` docstring pointer below, which is comment-only.

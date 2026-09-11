@@ -60,7 +60,7 @@ logger = setup_step_logging("3_gnn", verbose=True)
 #### `setup_main_logging(log_dir: Optional[Path] = None, verbose: bool = False, log_format: str = "human") -> logging.Logger`
 **Description**: Set up logging for the main pipeline orchestrator. `log_dir` is the directory for log files; `log_format` selects console output style (`"human"` or `"json"`). Initializes `PipelineLogger`, sets verbosity, establishes the `"main"` correlation context, and returns the configured `GNN_Pipeline` logger.
 
-**Location**: `src/gnn/utils/logging/logging_utils.py:172` (re-exported by the `utils/logging_utils.py` shim).
+**Location**: `src/gnn/utils/logging/logging_utils.py:172` (re-exported by the `utils/logging_utils.py` facade).
 
 #### `log_step_start(logger, message)` / `log_step_success(logger, message)` / `log_step_error(logger, message)` / `log_step_warning(logger, message)`
 **Description**: Step lifecycle logging helpers (`utils/logging_utils.py`). `log_step_start` returns a correlation-aware context; the others log structured lifecycle events. `utils/structured_logging.py` additionally exposes `log_step_start(logger, step_name, **context)` and friends with richer metadata when a step needs it.
