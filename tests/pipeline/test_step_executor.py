@@ -32,6 +32,7 @@ PROJECT_ROOT = SRC
 LOGGER = logging.getLogger("test_step_executor")
 BASICS_DIR = PROJECT_ROOT / "input" / "gnn_files" / "basics"
 
+
 def _pipeline_args(output_dir: Path) -> PipelineArguments:
     """Build pipeline args pointing at the small basics fixture dir."""
     return PipelineArguments(target_dir=BASICS_DIR, output_dir=output_dir)

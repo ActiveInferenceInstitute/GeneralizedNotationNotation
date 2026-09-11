@@ -51,7 +51,9 @@ SWARM_FILE = GNN_FILES / "multiagent" / "stigmergic_swarm.md"
 COORDINATION_FILE = GNN_FILES / "multiagent" / "multi_agent_coordination.md"
 GRIDWORLD_FILE = GNN_FILES / "pomdp_gridworld" / "pomdp_gridworld_3x3.md"
 RXINFER_JULIA_PROJECT = str(PROJECT_ROOT / "src" / "gnn" / "execute" / "rxinfer")
-ACTINF_JULIA_PROJECT = str(PROJECT_ROOT / "src" / "gnn" / "execute" / "activeinference_jl")
+ACTINF_JULIA_PROJECT = str(
+    PROJECT_ROOT / "src" / "gnn" / "execute" / "activeinference_jl"
+)
 
 
 def _canonical_spec(gnn_file: Path) -> dict:
