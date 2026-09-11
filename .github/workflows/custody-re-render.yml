@@ -63,13 +63,11 @@ jobs:
           version: "0.12"
           enable-cache: true
 
-      - name: Install LaTeX (xelatex) and assert pandoc
+      - name: Install LaTeX (xelatex) and pandoc
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
-            texlive-xetex texlive-latex-extra texlive-fonts-recommended
-          # pandoc is preinstalled on ubuntu runner images; fail loudly if the
-          # image ever drops it rather than failing later inside the render.
+            texlive-xetex texlive-latex-extra texlive-fonts-recommended pandoc
           pandoc --version
 
       - name: Install dependencies (dev)
