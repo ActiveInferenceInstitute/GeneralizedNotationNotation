@@ -41,7 +41,7 @@
       "alt_text": "Horizontal bar chart on a logarithmic axis of repository-scale counts: pipeline steps, model families, registered backends, execution backends, MCP tools, source packages, test files, example models and documentation files. Each bar is annotated with its exact value; all values come from output/data/manuscript_variables.json.",
       "consumed_tokens": {
         "GNN_BACKEND_COUNT": "9",
-        "GNN_DOC_FILE_COUNT": "622",
+        "GNN_DOC_FILE_COUNT": "624",
         "GNN_EXAMPLE_COUNT": "30",
         "GNN_EXECUTABLE_BACKEND_COUNT": "8",
         "GNN_FAMILY_COUNT": "9",
@@ -54,7 +54,7 @@
       "filename": "gnn_repo_metrics.png",
       "generated_by": "scripts/manuscript_fig_repo_metrics.py",
       "label": "fig:repo_metrics",
-      "png_sha256": "c7e895886821b9ff9392bf3b3c52c1a47c4b2722dd50d7fd30b1067fca1784ab",
+      "png_sha256": "c9e8f8564b75852802f2ac0b2e5ff0a947bd90aaa59d94e994e8ebeda895a517",
       "source_sha256": {}
     },
     {
