@@ -1,9 +1,9 @@
 # TO-DO - GNN Pipeline Roadmap
 
-**Last Updated**: 2026-09-10 (SCOPE-2026-09-09 execution wave: MAJ-05/MAJ-06
-closed; SC-1..SC-45 execution-security, token-gate, test-estate, and packaging
-program landed — evidence in `SCOPE-2026-09-09.md` §Execution-2026-09-10;
-remaining residuals pinned in the "Remaining from SCOPE-2026-09-09" section)
+**Last Updated**: 2026-09-10 (SCOPE-2026-09-10 execution: 33 items closed via
+waves A/B/C — evidence in `SCOPE-2026-09-10.md` §Waves; residuals pinned in
+the "Remaining from SCOPE-2026-09-09" section below, rewritten to their true
+post-wave state)
 **Current Version**: 3.3.0
 **Next Target**: v4.0.0 (bounded autonomy, pipeline stage consolidation, multi-agent stigmergic topologies, and high-dimensional active inference)
 
@@ -303,54 +303,40 @@ git diff --check
 - Scope open items with concrete tasks, file paths, verification commands, and
   acceptance criteria so the next session can execute without re-deriving them.
 
-## Remaining from SCOPE-2026-09-09 (execution wave 2026-09-10)
+## Remaining from SCOPE-2026-09-09/10 (post-scope2 truth state)
 
-The SCOPE-2026-09-09 program executed on 2026-09-10 (evidence per item in
-`SCOPE-2026-09-09.md` §Execution-2026-09-10): SC-1+SC-2+SC-34 (execution
-security: MCP/GNNExecutor chokepoint gate, fail-closed security import,
-sandbox receipt, no raw-text codegen fallback, B601 reconciliation,
-`GNN_ALLOW_MISSING_DEPS` opt-in), SC-3+SC-20+SC-21+SC-23 (token-gate
-trustworthiness: unconditional variables regen, committed-checksum +
-figure-source-digest checks, unresolved-token scan, crossref-label and plural
-step-phrase enforcement, exclusion single-sourcing, dirty receipts), SC-4
-(`[dependency-groups] dev` + `default-groups`), SC-5 (Dockerfile
-`uv sync --frozen --extra dev` + `.dockerignore`), SC-7 (validate_gnn*
-one-name-per-semantic with deprecation aliases), SC-8 residual (sapf wrapper
-onto `run_tool_envelope`; per-module mcp presence contract test), SC-9
-(output/ curated-vs-volatile tracking boundary; decision note
-`docs/development/output_tracking.md`), SC-10/SC-40 (runner routes the real
-tree; `src/tests` fossils purged), SC-11 (CI action SHA pinning), SC-12
-(full-extras fail on app-code ImportError), SC-13 (just quality parity +
-`MCP_TOOL_FLOOR` single source), SC-14 (pre-commit ruff 0.15.12; dead
-linters deleted), SC-15 (one logging entry via `gnn.utils.logging_utils`),
-SC-16 (single `__version__`), SC-17 tiers 1-3 (PipelineError is an Exception;
-ConversionError dedup; rxinfer swallows converted), SC-18 (pipeline seams
-print→logger), SC-19 (dead scripts dispositioned under `scripts/experiments/`),
-SC-24/SC-35/SC-36 (docs/packaging drift; GFM slugger port; concurrency group +
-safe_output_stem seams), SC-25 (N/A — `utils/network_utils.py` does not exist
-on the post-#82 tree), SC-26 (DeprecationWarning/Pending/Future = errors;
-asyncio strict; maxfail single-sourced), SC-27 (grammar loader path fixed
-functional; payloads wheel-verified), SC-29 (16-skip inventory documented;
-empty-parametrize skip converted to loud drift check), SC-41 residual (bare
-`pytest.mark.skipif` token), SC-41-adjacent (schema_validator comment-initial
-section false positive fixed — all bundled examples validate), SC-42 (all
-in-package test files adopted/deleted; +37 collected), SC-43 (strict
-module-import loops; tautology asserts strengthened/deleted; −49 weak-assert
-sites), SC-44 (`ollama` + `env_heavy` markers; 1000s sleep trap shrunken),
-SC-45 (import-smoke 28-param suite; fixture clones deleted; stigmergic assert
-helper), SC-11/SC-28 (SHA-pinned actions, uv pinned, fep-lean main filter),
-SC-30-33 (`__all__: list[str]`, module-level regexes, subprocess timeouts,
-defusedxml hard import).
+The SCOPE-2026-09-09 program closed on PR #109; SCOPE-2026-09-10 executed on
+2026-09-10 (waves A/B/C, evidence per item in `SCOPE-2026-09-10.md`): the
+execution gate now covers the analysis cross-framework path, the
+`execute_rendered_simulators` registry path, and lean `.md` documents
+(S2-1..S2-3); `setup/mcp.py` uv installs validate package specs + repo
+containment (S2-4); the shared subprocess envelope carries gate→sandbox→
+timeout→capture with receipts on ALL paths (S2-5/SC-39-residual closed);
+Julia probing consolidated to `julia_setup.julia_executable()`; the s_t+1
+grammar is fixed and pinned (closed); the UserWarning blanket ignore is
+DELETED — zero UserWarning filters remain (SC-26-residual closed); SC-22
+residual closed (fence widening done, render-custody manifest +
+`scripts/z_record_manuscript_render_manifest.py` ritual, last step); SC-38
+design doc landed (`docs/development/utils_split_design.md`, mechanical
+split owner-deferred); mcp.py validation extracted to `mcp/validation.py`;
+main.py import-time chdir removed; 15 skipif gates → 12 `needs_*` markers,
+zero-skip allowlist empty; GEO-INFER paired interchange CI landed
+(GNN-04 slice, pin `.github/gnn-pair.json` @ GEO `c0115779`, local run exit 0
+with digests + deterministic replay); GNN-05 notation-driven metadata
+delivered (`src/gnn/export/notation_metadata.py`, `--geo-derive-metadata`,
+27 tests); V4 stage consolidation first slice (ADR 0001 +
+`--consolidated-steps` for steps 0/3/5).
 
 Still open (residuals, in rough order):
 
 | ID | Scope | Acceptance evidence |
 | --- | --- | --- |
-| SC-22-residual | Scheduled CI re-render job for manuscript artifacts, or a documented release-ritual digest check for `output/pdf/` + latex log. Fence-language widening for `tests/test_manuscript_published_commands.py` (only ``` ```bash ``` fences scanned). | A scheduled job (or documented ritual + digest check) detects a re-rendered-but-uncommitted PDF; shell/console/sh fences covered by a test. |
-| SC-38 | utils/ split by concern (XL, design-first): 46-module grab-bag, 118 re-exports, 71 importer files. Design pass first (public vs internal names), then deprecation-alias migration like SC-7. | Design doc + per-moved-module suite green. |
-| SC-39-residual | Execution-stack unification: sandbox prefix is wired into the Step 12 processor path only — `run_subprocess_envelope` (the GNNExecutor/MCP path) emits no `sandbox_disabled_receipt` and no sandbox prefixing. Julia availability probing still duplicated across 4 modules. | One envelope carries gate→sandbox→timeout→capture; receipt emitted on the MCP path; probe count per run measurable and reduced. |
-| SC-26-residual | UserWarning still ignored suite-wide (sklearn noise); per-module triage ratchet pending. | `pytest tests/ml_integration -q -W error::UserWarning` passes after triage. |
-| time_varying `s_t+1` | `GNNParser` cannot parse `s_t+1[...]` variable definitions (subscripted names with `+`); `input/gnn_files/discrete/time_varying_dynamics.md` fails semantic validation ("Undefined variable in connection target: s_t+1"). Either extend the parser's name grammar or fix the exemplar. | The exemplar validates at standard level; parser tests pin subscripted-name support. |
+| SC-22-hosted | The render-custody manifest + strict token gate run on every push/PR (local-gates CI), but no cron job re-renders a drifted PDF on a schedule; first hosted run of the new GEO interchange workflow also pending. | A scheduled/manual CI run confirms the custody chain on a fresh render; geo-infer-interchange.yml green on GitHub. |
+| SC-38-split | Mechanical utils/ split per `docs/development/utils_split_design.md` (7 steps, owner-deferred; first extraction target `testing_utils.py` → `gnn/utils/testing/`). | Per-moved-module suite green; facade shims emit the documented guidance. |
+| validate_gnn* retirement | All 7 aliases pinned by MAJ-05 tests + MCP audit surface; retirement needs an owner-decided deprecation window. | Coordinated change across `tests/test_validate_surface_aliases.py`, `src/gnn/mcp/audit_report.json`, docs. |
+| GNN-04-hosted | GEO paired interchange workflow needs its first hosted green run (local run exit 0 at GEO `c0115779`); fep-lean workflow likewise. | Both workflows green on GitHub at their pins. |
+| V4-STAGE next slices | `--consolidated-steps` covers steps 0/3/5 flat dirs; remaining: in-process per-step timeout/stdout capture, stem expansion beyond 7/8/11, parsed-model forwarding, parallel-tier support. | Each slice: artifact parity + receipt `execution_mode=consolidated`. |
+| V4-HD | High-dimensional active inference beyond Kronecker (pymdp/jax scaling sweep integration with the scaling-study harness). | Scaling sweep runs the factorized executor end-to-end (see `scripts/experiments/`). |
 
 ## GEO-INFER contract expansion
 
@@ -360,8 +346,8 @@ space and time semantics.
 
 | ID | Scope | Acceptance evidence |
 | --- | --- | --- |
-| GNN-04 | Pin paired repository revisions in cross-repository CI on the GNN side; the GEO side already hosts paired CI retaining both revisions plus categorical/H3/Gaussian/factored digests (`docs/development/geo_infer_2026_09.md`). **Delivered 2026-09-08 (fep_lean slice), re-ported 2026-09-10 onto the post-#82 tree:** `.github/workflows/fep-lean-paired-revision.yml` + pin `.github/fep-lean-pair.json` (fep_lean pinned at `3f3100e`), running the read-only fep_lean bridge surface (`bridge status`, `emit --check` finite + continuous) against this checkout; protocol documented in `docs/development/fep_lean_paired_revision.md`. **Still open:** paired categorical and H3 round trips (GEO interchange surface), a hosted run of the fep-lean workflow, and source/artifact digests for both revisions. | A GNN-side workflow completes paired categorical and H3 round trips and records source/artifact digests for both revisions; the fep-lean workflow has one green hosted run. |
-| GNN-05 | Notation-driven metadata discovery for GEO-INFER export: derive step seconds/units/space kind from the GNN notation instead of explicit user JSON. The explicit-CLI wiring and original-source provenance already landed (`src/gnn/7_export.py`, `src/gnn/export/processor.py`, `tests/export/test_export_geo_pipeline.py`, `tests/export/test_geo_infer_gaussian.py`). | Notation-derived metadata passes the same visible-failure and unchanged-five-format-default tests that pin the explicit path. |
+| GNN-04 | Pin paired repository revisions in cross-repository CI on the GNN side. **Delivered 2026-09-10:** fep_lean slice (workflow + pin @ `b7df553a`, paired re-pin PR ActiveInferenceInstitute/fep_lean#6) AND the GEO-INFER interchange slice (`.github/workflows/geo-infer-interchange.yml` + pin `.github/gnn-pair.json` @ GEO `c0115779`, runner `scripts/run_geo_interchange_checks.py` driving GEO's own cross-repo validator; categorical + H3 + Gaussian + factored digests with deterministic replay verified locally, receipt in `docs/development/geo_infer_2026_09.md`). **Still open:** first hosted green runs of both workflows. |
+| GNN-05 | **Delivered 2026-09-10** (`src/gnn/export/notation_metadata.py`): `--geo-derive-metadata` opt-in flag, derivation as last resolution fallback before the explicit-only raise, provenance recorded in artifact (`metadata_derivation`), explicit beats derived, visible failure without time hints; contract revised in `src/gnn/export/geo_infer_contract.md`; 27 tests in `tests/export/`. Units are never derived (no notation surface) — documented residual. | Same visible-failure + unchanged-five-format-default tests as the explicit path, all green (185 in tests/export). |
 
 ## Deep horizon wave 2 - tests + CI
 
