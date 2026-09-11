@@ -30,7 +30,6 @@ SIMPLE_MDP = REPO_ROOT / "input" / "gnn_files" / "discrete" / "simple_mdp.md"
 JULIA = shutil.which("julia")
 
 
-
 def _render_simple_mdp(tmp_path: Path) -> Path:
     """Render the small simple_mdp exemplar to a Julia script and return it."""
     assert SIMPLE_MDP.exists(), f"missing exemplar: {SIMPLE_MDP}"

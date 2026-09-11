@@ -165,9 +165,7 @@ def ollama_ready() -> bool:
 @functools.lru_cache(maxsize=1)
 def nonroot_posix_ready() -> bool:
     """Running on POSIX as a non-root user (permission-probe requirement)."""
-    return os.name == "posix" and (
-        not hasattr(os, "geteuid") or os.geteuid() != 0
-    )
+    return os.name == "posix" and (not hasattr(os, "geteuid") or os.geteuid() != 0)
 
 
 # Registered ``needs_*`` marker -> (availability probe, skip reason).

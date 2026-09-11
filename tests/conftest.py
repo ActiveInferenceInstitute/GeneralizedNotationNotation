@@ -54,9 +54,7 @@ def pytest_collection_modifyitems(config: Any, items: list) -> None:
     for item in items:
         if any(m.name == "slow" for m in item.iter_markers()):
             item.add_marker(pytest.mark.performance)
-        needs = {
-            name for name in TOOLCHAIN_MARKERS if item.get_closest_marker(name)
-        }
+        needs = {name for name in TOOLCHAIN_MARKERS if item.get_closest_marker(name)}
         if not needs:
             continue
         for name in needs:

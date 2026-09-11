@@ -144,8 +144,7 @@ def _seconds_from_value(
     if unit and unit not in _TIME_UNIT_TO_SECONDS:
         supported = sorted(name for name in _TIME_UNIT_TO_SECONDS if name)
         raise NotationMetadataError(
-            f"{context}: unsupported time unit {unit!r}; accepted units: "
-            f"{supported}"
+            f"{context}: unsupported time unit {unit!r}; accepted units: {supported}"
         )
     factor = _TIME_UNIT_TO_SECONDS.get(unit, 1.0)
     if unit:
@@ -234,9 +233,7 @@ def _time_index_record(
 ) -> dict[str, Any]:
     """Corroborate the time-index variable across notation sections."""
     variables = {
-        value.strip()
-        for key, value, _ in entries
-        if key in _TIME_INDEX_KEYS and value
+        value.strip() for key, value, _ in entries if key in _TIME_INDEX_KEYS and value
     }
     if len(variables) > 1:
         raise NotationMetadataError(

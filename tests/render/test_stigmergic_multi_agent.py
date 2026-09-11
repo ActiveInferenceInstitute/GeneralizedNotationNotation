@@ -76,7 +76,6 @@ def _render_activeinference_jl(gnn_file: Path, tmp_path: Path) -> Path:
     return script
 
 
-
 def _run_julia(
     script: Path, project: str, workdir: Path
 ) -> subprocess.CompletedProcess[str]:

@@ -35,9 +35,7 @@ def _validate_params(
         if "required" in schema:
             for required in schema["required"]:
                 if required not in params:
-                    raise MCPValidationError(
-                        f"Missing required parameter: {required}"
-                    )
+                    raise MCPValidationError(f"Missing required parameter: {required}")
         return
 
     if not isinstance(params, dict):

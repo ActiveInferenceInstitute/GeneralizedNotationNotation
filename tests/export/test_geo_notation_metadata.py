@@ -211,9 +211,7 @@ def test_derivation_fills_partial_explicit_gaussian_options(tmp_path: Path) -> N
     source_dir.mkdir()
     model = source_dir / GAUSSIAN.name
     model.write_text(GAUSSIAN.read_text())
-    options = {
-        model.name: {"model_type": "linear_gaussian", "units": GAUSSIAN_UNITS}
-    }
+    options = {model.name: {"model_type": "linear_gaussian", "units": GAUSSIAN_UNITS}}
     output_dir = tmp_path / "out"
     assert _run_geo_export(
         output_dir,
@@ -299,9 +297,9 @@ def test_invalid_declarations_fail_visibly(declaration: str, match: str) -> None
 def test_unit_interpretations(declaration: str, expected: float) -> None:
     from gnn.export.notation_metadata import derive_geo_metadata
 
-    options = derive_geo_metadata(
-        f"## Time\nDynamic\nDiscrete\n{declaration}\n"
-    )["options"]
+    options = derive_geo_metadata(f"## Time\nDynamic\nDiscrete\n{declaration}\n")[
+        "options"
+    ]
     assert options == {"step_seconds": expected}
 
 
@@ -360,7 +358,6 @@ def test_step7_adapter_derive_without_options_file(
     module = _load_step7_module()
     captured: dict[str, Any] = {}
 
-
     def fake_process_export(**kwargs: Any) -> bool:
         captured.update(kwargs)
         return True
@@ -380,7 +377,6 @@ def test_step7_adapter_derive_with_options_file(
 ) -> None:
     module = _load_step7_module()
     captured: dict[str, Any] = {}
-
 
     def fake_process_export_cli(**kwargs: Any) -> bool:
         captured.update(kwargs)
@@ -429,7 +425,6 @@ def test_step7_adapter_derive_with_explicit_seconds(
 ) -> None:
     module = _load_step7_module()
     captured: dict[str, Any] = {}
-
 
     def fake_process_export(**kwargs: Any) -> bool:
         captured.update(kwargs)

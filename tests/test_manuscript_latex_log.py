@@ -164,7 +164,6 @@ def test_the_log_carries_no_overfull_boxes() -> None:
     assert log_text.replace("\n", "").count("Overfull \\vbox") == 0
 
 
-
 # --- the render custody chain ------------------------------------------------
 
 
@@ -206,7 +205,6 @@ def test_a_missing_custody_manifest_is_a_failure_not_a_skip() -> None:
     """A checkout without the manifest cannot pass silently."""
     issues = custody_issues(Path("/nonexistent-checkout"))
     assert issues and "z_record_manuscript_render_manifest" in issues[0]
-
 
 
 def test_a_log_swapped_after_the_record_fails(tmp_path: Path) -> None:

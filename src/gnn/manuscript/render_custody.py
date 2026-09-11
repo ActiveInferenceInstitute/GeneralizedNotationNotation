@@ -103,9 +103,7 @@ def load_render_manifest(project_root: Path) -> dict:
     try:
         manifest = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, ValueError) as exc:
-        raise RuntimeError(
-            f"{_MANIFEST_REL.as_posix()} is unreadable: {exc}"
-        ) from exc
+        raise RuntimeError(f"{_MANIFEST_REL.as_posix()} is unreadable: {exc}") from exc
     if not isinstance(manifest, dict):
         raise RuntimeError(f"{_MANIFEST_REL.as_posix()} is not a JSON object")
     return manifest
@@ -180,8 +178,7 @@ def record_render_manifest(project_root: Path) -> dict:
         "receipt_counts_describe_commit": receipt_commit,
         "variables_sha256": token_checksum(strip_volatile_tokens(variables)),
         "render_artifacts_sha256": {
-            rel.as_posix(): _sha256(project_root / rel)
-            for rel in RENDERED_ARTIFACTS
+            rel.as_posix(): _sha256(project_root / rel) for rel in RENDERED_ARTIFACTS
         },
         "render_inputs_sha256": _render_inputs(project_root),
     }
@@ -272,7 +269,10 @@ def custody_issues(project_root: Path) -> list[str]:
                 "prose; rerun the SC-22 ritual"
             )
     for path in sorted((project_root / RENDER_INPUT_ROOT).rglob("*")):
-        if path.is_file() and path.relative_to(project_root).as_posix() not in recorded_inputs:
+        if (
+            path.is_file()
+            and path.relative_to(project_root).as_posix() not in recorded_inputs
+        ):
             issues.append(
                 f"{path.relative_to(project_root).as_posix()} is not recorded "
                 "in the custody manifest — re-record with: "

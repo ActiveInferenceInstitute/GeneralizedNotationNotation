@@ -28,7 +28,6 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 pytestmark = pytest.mark.ollama
 
 
-
 from gnn.llm.defaults import DEFAULT_OLLAMA_MODEL
 
 OLLAMA_TEST_MODEL = os.getenv(
