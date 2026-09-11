@@ -65,9 +65,9 @@ jobs:
 
       - name: Install LaTeX (xelatex) and pandoc
         run: |
-          sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
-            texlive-xetex texlive-latex-extra texlive-fonts-recommended pandoc
+            texlive-xetex texlive-latex-extra texlive-fonts-recommended \
+            lmodern pandoc
           pandoc --version
 
       - name: Install dependencies (dev)
