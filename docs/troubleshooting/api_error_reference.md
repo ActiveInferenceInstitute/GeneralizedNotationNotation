@@ -418,7 +418,7 @@ class ComputationWarning(GNNPerformanceWarning):
 ### Basic Error Handling
 
 ```python
-from gnn import parse_gnn_file, validate_gnn_file
+from gnn import parse_gnn_file, validate_gnn_source
 from gnn.types import GNSSyntaxError
 
 
@@ -426,7 +426,7 @@ def load_and_validate_model(file_path: str) -> dict:
     """Load and validate a GNN file with explicit error handling."""
     try:
         # Validate the file through the real exported validator.
-        result = validate_gnn_file(file_path)
+        result = validate_gnn_source(file_path)
         if not result["is_valid"]:
             raise GNSSyntaxError("\n".join(result["errors"]))
 
@@ -491,7 +491,7 @@ def run_with_retry(
 from contextlib import contextmanager
 import logging
 
-from gnn import validate_gnn_file
+from gnn import validate_gnn_source
 from gnn.types import GNSSyntaxError
 
 
@@ -514,7 +514,7 @@ def load_context(operation_name: str):
 
 # Usage
 with load_context("validation"):
-    result = validate_gnn_file("my_model.md")
+    result = validate_gnn_source("my_model.md")
     if not result["is_valid"]:
         raise GNSSyntaxError("\n".join(result["errors"]))
 ```

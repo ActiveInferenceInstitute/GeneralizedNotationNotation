@@ -8,7 +8,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from gnn.utils.safe_eval import safe_literal_eval
+from gnn.utils.runtime_safety.safe_eval import safe_literal_eval
 
 
 class TestSafeLiteralEval:

@@ -26,7 +26,7 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-from gnn.utils.framework_availability import is_framework_available
+from gnn.utils.runtime_safety.framework_availability import is_framework_available
 
 from .detection import (
     _resolve_render_output_dir,
@@ -160,7 +160,7 @@ def plan_execute(
           exception ``process_execute`` catches and converts to ``return
           False``; planners wanting the typed plan instead should catch it).
     """
-    from gnn.utils.validation_schemas import validate_frameworks_arg
+    from gnn.utils.runtime_safety.validation_schemas import validate_frameworks_arg
 
     frameworks = validate_frameworks_arg(frameworks, context="plan_execute")
     requested_frameworks = parse_frameworks_parameter(frameworks, logger)

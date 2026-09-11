@@ -25,7 +25,7 @@ def _is_complete_parameter(value_str: str) -> bool:
 
 def _parse_parameter_value(value_str: str) -> Any:
     """Parse parameter value."""
-    from gnn.utils.safe_eval import safe_literal_eval
+    from gnn.utils.runtime_safety.safe_eval import safe_literal_eval
 
     try:
         cleaned = value_str.strip()

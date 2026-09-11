@@ -343,7 +343,7 @@ def test_declared_h3_space_kind_flags_missing_ids() -> None:
 
 
 def test_step7_parser_accepts_derive_flag() -> None:
-    from gnn.utils.arg_parsing import ArgumentParser
+    from gnn.utils.arguments.arg_parsing import ArgumentParser
 
     parser = ArgumentParser.create_step_parser("7_export.py")
     parsed = parser.parse_args(["--geo-derive-metadata"])

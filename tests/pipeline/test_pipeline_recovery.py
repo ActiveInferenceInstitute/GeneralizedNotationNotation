@@ -216,7 +216,7 @@ class TestResourceManagementRecovery:
 
     def test_memory_limit_recovery(self, test_environment: Any) -> Any:
         """Test recovery from memory limit issues."""
-        from gnn.utils.resource_manager import with_resource_limits
+        from gnn.utils.runtime_safety.resource_manager import with_resource_limits
 
         @with_resource_limits(max_memory_mb=100)
         def memory_intensive_operation() -> Any:
@@ -229,7 +229,7 @@ class TestResourceManagementRecovery:
 
     def test_disk_space_recovery(self, test_environment: Any) -> Any:
         """Test recovery from disk space issues."""
-        from gnn.utils.resource_manager import check_disk_space
+        from gnn.utils.runtime_safety.resource_manager import check_disk_space
 
         # Real check: should succeed given temp dir has space; if not, skip gracefully
         try:

@@ -183,7 +183,7 @@ def run_pipeline(
             return results
 
         main = _main_module()
-        from gnn.utils.argument_utils import PipelineArguments
+        from gnn.utils.arguments.pipeline_arguments import PipelineArguments
 
         args = PipelineArguments(
             target_dir=resolved_target,
@@ -300,7 +300,7 @@ def execute_pipeline_step(
     start = datetime.now()
     try:
         main = _main_module()
-        from gnn.utils.argument_utils import PipelineArguments
+        from gnn.utils.arguments.pipeline_arguments import PipelineArguments
 
         args = PipelineArguments(
             target_dir=_path_from_sources(

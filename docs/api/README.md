@@ -65,7 +65,7 @@ API surfaces follow normal Python packaging and process boundaries: validate inp
 ### Core Parsing API (package `gnn`)
 - **GNNParsingSystem**, **GNNFormat**: Registry-backed multi-format I/O ([`src/gnn/parsers/system.py`](../../src/gnn/parsers/system.py))
 - **discover_gnn_files**, **parse_gnn_file**, **process_gnn_directory**, **process_gnn_multi_format**: Discovery and processing ([`src/gnn/__init__.py`](../../src/gnn/__init__.py))
-- **validate_gnn**, **ValidationLevel**: Validation entry points
+- **validate_gnn_syntax**, **validate_gnn_source**, **ValidationLevel**: Validation entry points (old names `validate_gnn` / `validate_gnn_file` warn as earlier names; removal in v4.0.0)
 - See [`src/gnn/SPEC.md`](../../src/gnn/SPEC.md) for format counts
 
 ### Pipeline API

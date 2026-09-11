@@ -166,7 +166,8 @@ def check_gnn_file_basic(file_path: Path) -> Dict[str, Any]:
 def validate_gnn_file(file_path: Path) -> Dict[str, Any]:
     """Old name for :func:`check_gnn_file_basic`; emits DeprecationWarning."""
     warnings.warn(
-        "validate_gnn_file is an old name; use check_gnn_file_basic instead.",
+        "validate_gnn_file is an old name; use check_gnn_file_basic instead. "
+        "It will be removed in v4.0.0.",
         DeprecationWarning,
         stacklevel=2,
     )
@@ -193,7 +194,8 @@ def check_gnn_directory_basic(
 def validate_gnn_directory(directory: Path, recursive: bool = False) -> Dict[str, Any]:
     """Old name for :func:`check_gnn_directory_basic`; emits DeprecationWarning."""
     warnings.warn(
-        "validate_gnn_directory is an old name; use check_gnn_directory_basic instead.",
+        "validate_gnn_directory is an old name; use "
+        "check_gnn_directory_basic instead. It will be removed in v4.0.0.",
         DeprecationWarning,
         stacklevel=2,
     )

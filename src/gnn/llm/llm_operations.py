@@ -458,7 +458,8 @@ def validate_gnn_with_llm(gnn_content: str) -> str:
 def validate_gnn(gnn_content: str) -> str:
     """Old name for :func:`validate_gnn_with_llm`; emits DeprecationWarning."""
     warnings.warn(
-        "validate_gnn is an old name; use validate_gnn_with_llm instead.",
+        "validate_gnn is an old name; use validate_gnn_with_llm instead. "
+        "It will be removed in v4.0.0.",
         DeprecationWarning,
         stacklevel=2,
     )

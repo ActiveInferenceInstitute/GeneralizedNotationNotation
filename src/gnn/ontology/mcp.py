@@ -10,7 +10,7 @@ from typing import Any, Dict, List, Union
 
 logger = logging.getLogger(__name__)
 
-from gnn.utils.mcp_dispatch import run_pipeline_step_mcp
+from gnn.utils.mcp.dispatch import run_pipeline_step_mcp
 
 from . import load_defined_ontology_terms, process_ontology, validate_ontology_terms
 

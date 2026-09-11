@@ -18,12 +18,12 @@ import logging
 import os
 import threading
 import time
-import urllib.parse
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from typing import Any, Dict, List, Optional
 
 from .jsonrpc import (
     INTERNAL_ERROR,
+    INVALID_REQUEST,
     jsonrpc_error,
     jsonrpc_result,
     serialize_response,
@@ -50,6 +50,12 @@ DEFAULT_SAFE_HTTP_RESOURCE_URIS: frozenset[str] = frozenset()
 _RATE_LIMIT_LOCK = threading.Lock()
 _RATE_LIMIT_WINDOW_SECONDS = 60.0
 _RATE_LIMIT_STATE: Dict[str, List[float]] = {}
+
+# Client-supplied ``Content-Length`` is untrusted input: a malformed value
+# must yield a protocol-valid 400-class JSON-RPC envelope (never an uncaught
+# ``ValueError`` aborting the connection), and a body above MAX_BODY_BYTES is
+# rejected with a 413-class envelope BEFORE any body bytes are read.
+MAX_BODY_BYTES = 10 * 1024 * 1024
 
 # Import MCP
 try:
@@ -267,8 +273,30 @@ class MCPHTTPHandler(BaseHTTPRequestHandler):
     def do_POST(self) -> Any:
         """Handle POST requests (JSON-RPC 2.0)."""
         self._notification = False
-        urllib.parse.urlparse(self.path)
-        content_length = int(self.headers.get("Content-Length", 0))
+        try:
+            content_length = int(self.headers.get("Content-Length", "0"))
+        except (TypeError, ValueError):
+            self._send_json_response(
+                400,
+                jsonrpc_error(
+                    None,
+                    INVALID_REQUEST,
+                    "Invalid Request: malformed Content-Length header",
+                ),
+            )
+            return
+        if content_length > MAX_BODY_BYTES:
+            # Reject before reading: an oversized body is never drained.
+            self._send_json_response(
+                413,
+                jsonrpc_error(
+                    None,
+                    INVALID_REQUEST,
+                    "Invalid Request: body exceeds MAX_BODY_BYTES "
+                    f"({MAX_BODY_BYTES} bytes)",
+                ),
+            )
+            return
         client_host = self.client_address[0] if self.client_address else None
         client_id = client_host or "unknown"
         if is_rate_limited(client_id):
@@ -424,8 +452,13 @@ class MCPHTTPHandler(BaseHTTPRequestHandler):
 
     @staticmethod
     def _serialize(data: Any) -> bytes:
-        """Serialize one outgoing HTTP body to protocol-valid JSON bytes."""
-        return serialize_response(data, ensure_ascii=True).encode("utf-8")
+        """Serialize one outgoing HTTP body to protocol-valid JSON bytes.
+
+        ``ensure_ascii`` stays at the shared ``serialize_response`` default
+        (``False``) so HTTP and stdio emit byte-identical UTF-8 for the same
+        envelope; compact separators match the stdio wire format.
+        """
+        return serialize_response(data, separators=(",", ":")).encode("utf-8")
 
     def _send_error(self, status_code: int, message: str) -> Any:
         """Send an HTTP error response."""

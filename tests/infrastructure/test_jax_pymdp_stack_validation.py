@@ -11,7 +11,7 @@ from pathlib import Path
 import pytest
 
 from gnn.setup.constants import PROJECT_ROOT, VENV_PYTHON
-from gnn.utils.jax_stack_validation import run_jax_stack_probe_subprocess
+from gnn.utils.runtime_safety.jax_stack_validation import run_jax_stack_probe_subprocess
 
 
 @pytest.mark.jax_stack

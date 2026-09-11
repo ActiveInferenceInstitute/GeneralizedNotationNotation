@@ -5,8 +5,9 @@ from typing import Any
 
 import pytest
 
-from gnn.utils.argument_utils import PipelineArguments, build_step_command_args
-from gnn.utils.pipeline_config_merge import apply_input_config_defaults
+from gnn.utils.arguments.arg_parsing import build_step_command_args
+from gnn.utils.arguments.pipeline_arguments import PipelineArguments
+from gnn.utils.arguments.pipeline_config_merge import apply_input_config_defaults
 
 
 def test_apply_yaml_sets_dev_when_cli_omits_flag() -> None:

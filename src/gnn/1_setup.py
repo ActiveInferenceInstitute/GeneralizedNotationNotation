@@ -20,7 +20,9 @@ from gnn.setup import (
     setup_uv_environment,
 )
 from gnn.setup.constants import SETUP_DEFAULT_PIPELINE_EXTRAS
-from gnn.utils.pipeline_template import create_standardized_pipeline_script
+from gnn.utils.pipeline_orchestration.pipeline_template import (
+    create_standardized_pipeline_script,
+)
 
 
 def setup_orchestrator(

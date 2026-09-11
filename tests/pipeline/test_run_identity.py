@@ -11,7 +11,7 @@ import pytest
 
 import gnn.main as orchestrator
 from gnn.api.pipeline_runner import PIPELINE_SUMMARY, read_pipeline_summary
-from gnn.utils.pipeline_arguments import PipelineArguments
+from gnn.utils.arguments.pipeline_arguments import PipelineArguments
 
 
 class RecordingVisualLogger:
@@ -61,7 +61,7 @@ def isolated_run(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> PipelineArg
     monkeypatch.setattr(orchestrator, "_write_final_pipeline_report", lambda *a: None)
     monkeypatch.setattr(orchestrator, "_read_input_config", lambda *a: {})
     monkeypatch.setattr(
-        "gnn.utils.argument_utils.build_step_command_args",
+        "gnn.utils.arguments.arg_parsing.build_step_command_args",
         lambda *a: [sys.executable, "-c", "import os; print(os.environ['GNN_RUN_ID'])"],
     )
     monkeypatch.delenv("GNN_RUN_ID", raising=False)
@@ -204,7 +204,7 @@ def test_parallel_children_receive_same_run_identity(
 
     monkeypatch.setattr(orchestrator, "_prepare_pipeline_context", context)
     monkeypatch.setattr(
-        "gnn.utils.pipeline_step_dependencies.PIPELINE_STEP_DEPENDENCIES",
+        "gnn.utils.pipeline_orchestration.pipeline_step_dependencies.PIPELINE_STEP_DEPENDENCIES",
         {0: [], 1: []},
     )
     assert orchestrator.main(isolated_run) == 0

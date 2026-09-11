@@ -162,7 +162,7 @@ sed -i '1s/^\xEF\xBB\xBF//' your_file.md
 
 ```python
 # Interactive dimension debugging using the real public API
-from gnn import parse_gnn_file, validate_gnn_file
+from gnn import parse_gnn_file, validate_gnn_source
 
 parsed = parse_gnn_file("your_file.md")
 print("Defined variables:")
@@ -170,7 +170,7 @@ for var in parsed.get("variables", []):
     print(f"  {var}")
 
 # The validator reports structure and dimension errors for the file.
-result = validate_gnn_file("your_file.md")
+result = validate_gnn_source("your_file.md")
 if not result["is_valid"]:
     for error in result["errors"]:
         print(f"ERROR: {error}")

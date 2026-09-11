@@ -14,7 +14,7 @@ from typing import Any, Dict, Optional
 
 logger = logging.getLogger(__name__)
 from gnn.api.path_utils import PathValidationError, resolve_repo_path
-from gnn.utils.mcp_dispatch import run_pipeline_step_mcp, run_tool_envelope
+from gnn.utils.mcp.dispatch import run_pipeline_step_mcp, run_tool_envelope
 
 from . import (
     analyze_gnn_file_with_llm,

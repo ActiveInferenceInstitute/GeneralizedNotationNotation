@@ -9,7 +9,7 @@ import pytest
 import gnn.cli as cli
 import gnn.main as orchestrator
 from gnn.pipeline.hasher import compute_run_hash, index_run
-from gnn.utils.pipeline_arguments import PipelineArguments
+from gnn.utils.arguments.pipeline_arguments import PipelineArguments
 
 
 def test_hash_binds_relative_path_and_is_relocation_stable(tmp_path: Path) -> None:

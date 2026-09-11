@@ -39,7 +39,10 @@ def parse_gnn_matrix_value(raw: Any, default: Any) -> Any:
         return np.array(raw, dtype=float)
     if isinstance(raw, str):
         try:
-            from gnn.utils.safe_eval import MATRIX_MAX_LEN, safe_literal_eval
+            from gnn.utils.runtime_safety.safe_eval import (
+                MATRIX_MAX_LEN,
+                safe_literal_eval,
+            )
 
             parsed = safe_literal_eval(raw, max_len=MATRIX_MAX_LEN)
             return np.array(parsed, dtype=float)

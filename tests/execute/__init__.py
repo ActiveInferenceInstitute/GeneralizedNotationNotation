@@ -1,1 +1,1 @@
-"""Test package mirroring src/execute/ layout."""
+"""Test package mirroring the src/gnn/execute/ layout."""

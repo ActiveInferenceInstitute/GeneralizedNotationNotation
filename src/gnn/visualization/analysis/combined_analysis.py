@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 import numpy as np
 
@@ -457,7 +457,11 @@ def _generate_generative_model_diagram(
 
 
 def generate_combined_visualizations(
-    gnn_files: List[Path], results_dir: Path, verbose: bool = False
+    gnn_files: List[Path],
+    results_dir: Path,
+    verbose: bool = False,
+    *,
+    parsed_models: Optional[Dict[str, Dict[str, Any]]] = None,
 ) -> List[str]:
     """Generate combined visualizations."""
     visualizations: List[str] = []
@@ -525,8 +529,13 @@ def generate_combined_visualizations(
         for gnn_file in gnn_files:
             with open(gnn_file, encoding="utf-8") as f:
                 content = f.read()
+            carrier_model = parsed_models.get(gnn_file.stem) if parsed_models else None
             file_parsed = load_visualization_model(
-                gnn_file, content, results_dir, verbose=verbose
+                gnn_file,
+                content,
+                results_dir,
+                verbose=verbose,
+                parsed_model=carrier_model,
             )
             file_stats.append(
                 {

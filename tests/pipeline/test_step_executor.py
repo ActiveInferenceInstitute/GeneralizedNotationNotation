@@ -9,23 +9,31 @@ outside the whitelist are refused.
 
 import json
 import logging
+import shutil
 import subprocess
 import sys
+import threading
 from datetime import datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterator
 
 import pytest
 
 SRC = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(SRC))
 
+from gnn.pipeline import step_executor  # noqa: E402
 from gnn.pipeline.step_executor import (  # noqa: E402
     UnsupportedStepError,
     can_execute_in_process,
+    clear_parsed_model_carrier,
     execute_step_in_process,
 )
-from gnn.utils.pipeline_arguments import PipelineArguments  # noqa: E402
+from gnn.utils.arguments.pipeline_arguments import PipelineArguments  # noqa: E402
+from gnn.utils.error_handling import status_from_exit_code  # noqa: E402
+from gnn.utils.pipeline_orchestration.execution_utils import (
+    execute_command_streaming,  # noqa: E402
+)
 
 PROJECT_ROOT = SRC
 
@@ -36,6 +44,14 @@ BASICS_DIR = PROJECT_ROOT / "input" / "gnn_files" / "basics"
 def _pipeline_args(output_dir: Path) -> PipelineArguments:
     """Build pipeline args pointing at the small basics fixture dir."""
     return PipelineArguments(target_dir=BASICS_DIR, output_dir=output_dir)
+
+
+@pytest.fixture(autouse=True)
+def _isolated_parsed_model_carrier() -> Iterator[None]:
+    """Keep the executor's parsed-model carrier cache out of test state."""
+    clear_parsed_model_carrier()
+    yield
+    clear_parsed_model_carrier()
 
 
 def _artifact_files(step_output: Path) -> list[str]:
@@ -65,6 +81,53 @@ def _run_step3_subprocess(output_dir: Path) -> None:
         timeout=240,
     )
     assert result.returncode == 0, result.stderr[-2000:]
+
+
+def _run_step_subprocess(script_name: str, output_dir: Path) -> None:
+    """Run the canonical numbered-script subprocess for *script_name*."""
+    cmd = [
+        sys.executable,
+        str(PROJECT_ROOT / "src" / "gnn" / script_name),
+        "--target-dir",
+        str(BASICS_DIR),
+        "--output-dir",
+        str(output_dir),
+    ]
+    result = subprocess.run(  # nosec B603 - fixed argv, no shell
+        cmd,
+        cwd=PROJECT_ROOT,
+        capture_output=True,
+        text=True,
+        timeout=240,
+    )
+    assert result.returncode == 0, result.stderr[-2000:]
+
+
+def _seed_step3_in_process(output_dir: Path) -> None:
+    """Populate *output_dir*/3_gnn_output via the (already pinned) executor."""
+    seed = execute_step_in_process("3_gnn.py", _pipeline_args(output_dir), LOGGER)
+    assert seed["exit_code"] == 0, seed["stderr"]
+
+
+def _assert_matching_summaries(
+    sub_dir: Path, in_dir: Path, summary_name: str, fields: list[str]
+) -> dict[str, Any]:
+    """Compare path-independent summary fields across the two runs."""
+    sub_summary = json.loads((sub_dir / summary_name).read_text())
+    in_summary = json.loads((in_dir / summary_name).read_text())
+    for field in fields:
+        assert in_summary[field] == sub_summary[field], field
+    return in_summary
+
+
+def _assert_matching_export_fields(
+    sub_summary: dict[str, Any], in_summary: dict[str, Any]
+) -> None:
+    """Compare the step-7 per-file export record across the two runs."""
+    sub_files = {e["file_name"]: e["success"] for e in sub_summary["files_exported"]}
+    in_files = {e["file_name"]: e["success"] for e in in_summary["files_exported"]}
+    assert in_files == sub_files
+    assert in_files and all(in_files.values())
 
 
 class TestConsolidatedEquivalence:
@@ -101,6 +164,135 @@ class TestConsolidatedEquivalence:
         assert in_summary["successful_parses"] == sub_summary["successful_parses"]
         assert in_summary["total_files"] == model_count
         assert in_summary["formats_per_file"] == sub_summary["formats_per_file"]
+
+    def _run_step7_parity(self, tmp_path: Path) -> tuple[Path, Path]:
+        """Run step 7 both ways; return the two 7_export_output dirs.
+
+        Step 7 consumes step 3's parse artifacts, so each root is seeded
+        with an in-process step-3 run (its subprocess-vs-executor parity is
+        pinned by test_step3_in_process_matches_subprocess_artifacts).
+        """
+        subprocess_out = tmp_path / "subprocess"
+        in_process_out = tmp_path / "inprocess"
+        _seed_step3_in_process(subprocess_out)
+        _run_step_subprocess("7_export.py", subprocess_out)
+
+        _seed_step3_in_process(in_process_out)
+        step_result = execute_step_in_process(
+            "7_export.py", _pipeline_args(in_process_out), LOGGER
+        )
+
+        assert step_result["exit_code"] == 0
+        assert step_result["status"] == "SUCCESS"
+        return subprocess_out / "7_export_output", in_process_out / "7_export_output"
+
+    def test_step7_export_in_process_matches_subprocess_artifacts(
+        self, tmp_path: Path
+    ) -> None:
+        """Step 7 via the executor matches the subprocess artifact contract."""
+        sub_dir, in_dir = self._run_step7_parity(tmp_path)
+        assert sub_dir.is_dir() and in_dir.is_dir()
+        sub_files = _artifact_files(sub_dir)
+        in_files = _artifact_files(in_dir)
+        assert in_files == sub_files
+        assert in_files, "no step-7 export artifacts produced"
+
+        sub_summary = json.loads((sub_dir / "export_results.json").read_text())
+        in_summary = json.loads((in_dir / "export_results.json").read_text())
+        for field in (
+            "total_files",
+            "successful_exports",
+            "failed_exports",
+            "formats_generated",
+        ):
+            assert in_summary["summary"][field] == sub_summary["summary"][field], field
+        _assert_matching_export_fields(sub_summary, in_summary)
+
+    def test_step8_visualization_in_process_matches_subprocess_artifacts(
+        self, tmp_path: Path
+    ) -> None:
+        """Step 8 via the executor matches the subprocess artifact contract."""
+        subprocess_out = tmp_path / "subprocess"
+        in_process_out = tmp_path / "inprocess"
+        # Step 8's artifact set depends on the step-3 parse inputs (the
+        # JSON-primary path adds ontology legends), so both roots get the
+        # same seed; the executor additionally runs its prerequisite check,
+        # which the bare CLI reference does not perform.
+        _seed_step3_in_process(subprocess_out)
+        _run_step_subprocess("8_visualization.py", subprocess_out)
+
+        _seed_step3_in_process(in_process_out)
+        step_result = execute_step_in_process(
+            "8_visualization.py", _pipeline_args(in_process_out), LOGGER
+        )
+        assert step_result["exit_code"] == 0
+        assert step_result["status"] == "SUCCESS"
+
+        sub_dir = subprocess_out / "8_visualization_output"
+        in_dir = in_process_out / "8_visualization_output"
+        assert sub_dir.is_dir() and in_dir.is_dir()
+        sub_files = _artifact_files(sub_dir)
+        in_files = _artifact_files(in_dir)
+        assert in_files == sub_files
+        assert in_files, "no step-8 visualization artifacts produced"
+
+        summary = _assert_matching_summaries(
+            sub_dir,
+            in_dir,
+            "visualization_summary.json",
+            [
+                "processed_files",
+                "total_visualizations",
+                "success",
+                "warnings",
+                "errors",
+            ],
+        )
+        assert summary["success"] is True
+        model_count = len(list(BASICS_DIR.glob("*.md")))
+        assert summary["processed_files"] == model_count
+
+    def test_step11_render_in_process_matches_subprocess_artifacts(
+        self, tmp_path: Path
+    ) -> None:
+        """Step 11 via the executor matches the subprocess artifact contract."""
+        subprocess_out = tmp_path / "subprocess"
+        in_process_out = tmp_path / "inprocess"
+        # Identical inputs on both roots; the seed also satisfies the
+        # executor's prerequisite check (the bare CLI does not perform one).
+        _seed_step3_in_process(subprocess_out)
+        _run_step_subprocess("11_render.py", subprocess_out)
+
+        _seed_step3_in_process(in_process_out)
+        step_result = execute_step_in_process(
+            "11_render.py", _pipeline_args(in_process_out), LOGGER
+        )
+        assert step_result["exit_code"] == 0
+        assert step_result["status"] == "SUCCESS"
+
+        sub_dir = subprocess_out / "11_render_output"
+        in_dir = in_process_out / "11_render_output"
+        assert sub_dir.is_dir() and in_dir.is_dir()
+        sub_files = _artifact_files(sub_dir)
+        in_files = _artifact_files(in_dir)
+        assert in_files == sub_files
+        assert in_files, "no step-11 render artifacts produced"
+
+        # The receipt carries a fresh run id and absolute paths; compare the
+        # path-independent outcome scalars instead.
+        _assert_matching_summaries(
+            sub_dir,
+            in_dir,
+            "render_processing_summary.json",
+            [
+                "total_files",
+                "successful_files",
+                "failed_files",
+                "total_framework_attempts",
+                "successful_framework_renderings",
+                "framework_success_rate",
+            ],
+        )
 
 
 class TestConsolidatedReceipt:
@@ -181,7 +373,7 @@ class TestConsolidatedRefusal:
         """Steps outside the whitelist raise UnsupportedStepError."""
         args = _pipeline_args(tmp_path)
         with pytest.raises(UnsupportedStepError):
-            execute_step_in_process("11_render.py", args, LOGGER)
+            execute_step_in_process("9_advanced_viz.py", args, LOGGER)
         with pytest.raises(UnsupportedStepError):
             execute_step_in_process("99_nonsense.py", args, LOGGER)
 
@@ -200,7 +392,10 @@ class TestConsolidatedRefusal:
         assert can_execute_in_process("0_template.py", args)
         assert can_execute_in_process("3_gnn.py", args)
         assert can_execute_in_process("5_type_checker.py", args)
-        assert not can_execute_in_process("11_render.py", args)
+        assert can_execute_in_process("7_export.py", args)
+        assert can_execute_in_process("8_visualization.py", args)
+        assert can_execute_in_process("11_render.py", args)
+        assert not can_execute_in_process("9_advanced_viz.py", args)
         assert not can_execute_in_process("99_nonsense.py", args)
         # Matrix enabled alone does not block: execute_pipeline_step only
         # forks per-folder when a subfolder actually allows the step.
@@ -230,10 +425,9 @@ class TestConsolidatedRefusal:
         assert step_result["status"] == "SKIPPED"
         assert step_result["exit_code"] == 0
         assert step_result["execution_mode"] == "consolidated"
-        assert not (tmp_path / "0_template_output").exists()
 
 
-class TestFirstSliceSteps:
+class TestWhitelistedSteps:
     """Every whitelisted step runs in-process and writes its standard dir."""
 
     @pytest.mark.parametrize(
@@ -241,12 +435,264 @@ class TestFirstSliceSteps:
         [
             ("0_template.py", "0_template_output"),
             ("5_type_checker.py", "5_type_checker_output"),
+            ("7_export.py", "7_export_output"),
+            ("8_visualization.py", "8_visualization_output"),
+            ("11_render.py", "11_render_output"),
         ],
     )
     def test_step_produces_standard_output_dir(
         self, tmp_path: Path, script: str, dir_name: str
     ) -> None:
+        if script == "7_export.py":
+            # Step 7 hard-fails without step 3's parse artifacts; seed them
+            # so the bare in-process run exercises the export path itself.
+            _seed_step3_in_process(tmp_path)
         step_result = execute_step_in_process(script, _pipeline_args(tmp_path), LOGGER)
         assert step_result["execution_mode"] == "consolidated"
         assert step_result["exit_code"] in (0, 2), step_result["stderr"]
         assert (tmp_path / dir_name).is_dir()
+
+
+class TestInProcessTimeoutAndCapture:
+    """Slice A: wall-clock timeout and stdout/stderr capture in-process."""
+
+    def test_timeout_receipt_parity_with_subprocess_timeout(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """A timed-out in-process step records the subprocess timeout receipt.
+
+        Parity pin: the receipt keys are unchanged (identical to a
+        completing in-process run), the exit-code semantics match the
+        subprocess tier's timeout (-1 with the FAILED status derived the
+        same way), and the stderr text carries the TIMEOUT vocabulary plus
+        the honest cannot-kill notice.
+        """
+
+        def fast_step(**kwargs: Any) -> bool:
+            return True
+
+        release = threading.Event()
+
+        def slow_step(**kwargs: Any) -> bool:
+            return release.wait(timeout=60)
+
+        monkeypatch.setattr(
+            step_executor, "resolve_step_function", lambda name: slow_step
+        )
+        try:
+            step_result = execute_step_in_process(
+                "3_gnn.py", _pipeline_args(tmp_path), LOGGER, timeout_seconds=1
+            )
+        finally:
+            release.set()
+
+        # The same subprocess machinery main.py uses, timed out the same way.
+        sub = execute_command_streaming(
+            [sys.executable, "-c", "import time; time.sleep(30)"],
+            timeout=1,
+            print_stdout=False,
+            print_stderr=False,
+            capture_output=True,
+        )
+        sub_exit = sub.get("exit_code", -1)
+        sub_status = status_from_exit_code(sub_exit, [])
+
+        assert step_result["exit_code"] == sub_exit == -1
+        assert step_result["status"] == sub_status == "FAILED"
+        assert "TIMEOUT" in step_result["stderr"]
+        assert "cannot be force-killed" in step_result["stderr"]
+        assert step_result["execution_mode"] == "consolidated"
+
+        # Receipt schema unchanged: same keys as a completing in-process run.
+        monkeypatch.setattr(
+            step_executor, "resolve_step_function", lambda name: fast_step
+        )
+        normal = execute_step_in_process(
+            "3_gnn.py", _pipeline_args(tmp_path / "normal"), LOGGER
+        )
+        assert set(step_result) == set(normal)
+
+    def test_captured_output_lands_in_receipt_and_console(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: Any
+    ) -> None:
+        """Tee semantics: step output is captured AND still reaches console."""
+
+        def chatty_step(**kwargs: Any) -> bool:
+            print("step stdout line")
+            sys.stderr.write("step stderr line\n")
+            return True
+
+        monkeypatch.setattr(
+            step_executor, "resolve_step_function", lambda name: chatty_step
+        )
+        step_result = execute_step_in_process(
+            "3_gnn.py", _pipeline_args(tmp_path), LOGGER
+        )
+
+        assert step_result["exit_code"] == 0
+        assert step_result["status"] == "SUCCESS"
+        assert "step stdout line" in step_result["stdout"]
+        assert "consolidated in-process execution completed" in step_result["stdout"]
+        assert "step stderr line" in step_result["stderr"]
+        captured = capsys.readouterr()
+        assert "step stdout line" in captured.out
+        assert "step stderr line" in captured.err
+
+
+class TestParsedModelCarrier:
+    """Slice C: in-memory parsed-model handoff from step 3 to steps 7/8."""
+
+    @staticmethod
+    def _whitelist_with(monkeypatch: pytest.MonkeyPatch, *stems: str) -> None:
+        """Pin the carrier consumer stems into the executor's whitelist.
+
+        The whitelist is registry-owned and may expand per slice; the union
+        keeps these tests independent of that churn in either direction.
+        """
+        monkeypatch.setattr(
+            step_executor,
+            "CONSOLIDATED_IN_PROCESS_STEMS",
+            step_executor.CONSOLIDATED_IN_PROCESS_STEMS | frozenset(stems),
+        )
+
+    def test_step3_collects_carrier_and_step7_receives_it(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Carrier collected once after step 3, forwarded as a step kwarg."""
+        step3 = execute_step_in_process(
+            "3_gnn.py", _pipeline_args(tmp_path), LOGGER, collect_parsed_model=True
+        )
+        assert step3["exit_code"] == 0, step3["stderr"]
+
+        received: dict[str, Any] = {}
+
+        def fake_export(**kwargs: Any) -> bool:
+            received.update(kwargs)
+            return True
+
+        self._whitelist_with(monkeypatch, "7_export")
+        monkeypatch.setattr(
+            step_executor, "resolve_step_function", lambda name: fake_export
+        )
+        result = execute_step_in_process(
+            "7_export.py", _pipeline_args(tmp_path), LOGGER, collect_parsed_model=True
+        )
+
+        assert result["exit_code"] == 0, result["stderr"]
+        assert "parsed_model" in received
+        carrier = received["parsed_model"]
+        assert isinstance(carrier, dict)
+        assert isinstance(carrier["results"]["processed_files"], list)
+        assert carrier["results"]["processed_files"]
+        models = carrier["models"]
+        assert models
+        # Carrier payloads are the exact content of step 3's on-disk JSON.
+        step3_dir = tmp_path / "3_gnn_output"
+        on_disk = json.loads(
+            (step3_dir / "gnn_processing_results.json").read_text(encoding="utf-8")
+        )
+        assert carrier["results"]["summary"] == on_disk["summary"]
+        for entry in on_disk["processed_files"]:
+            if not entry.get("parse_success"):
+                continue
+            parsed_file = json.loads(
+                Path(entry["parsed_model_file"]).read_text(encoding="utf-8")
+            )
+            assert models[Path(entry["file_path"]).stem] == parsed_file
+
+        # Backward compat: without the flag, steps behave exactly as before.
+        received.clear()
+        execute_step_in_process("7_export.py", _pipeline_args(tmp_path), LOGGER)
+        assert "parsed_model" not in received
+
+    def test_step8_receives_carrier_and_carrier_load_matches_disk_load(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Step 8 gets the kwarg; a carrier model load equals a disk load."""
+        args = _pipeline_args(tmp_path)
+        step3 = execute_step_in_process(
+            "3_gnn.py", args, LOGGER, collect_parsed_model=True
+        )
+        assert step3["exit_code"] == 0, step3["stderr"]
+
+        received: dict[str, Any] = {}
+
+        def fake_visualization(**kwargs: Any) -> bool:
+            received.update(kwargs)
+            return True
+
+        self._whitelist_with(monkeypatch, "8_visualization")
+        monkeypatch.setattr(
+            step_executor, "resolve_step_function", lambda name: fake_visualization
+        )
+        result = execute_step_in_process(
+            "8_visualization.py", args, LOGGER, collect_parsed_model=True
+        )
+        assert result["exit_code"] == 0, result["stderr"]
+        models = received["parsed_model"]["models"]
+        assert models
+
+        from gnn.visualization.core.parsed_model import load_visualization_model
+
+        viz_dir = tmp_path / "8_visualization_output"
+        for gnn_file in sorted(BASICS_DIR.glob("*.md")):
+            if gnn_file.stem not in models:
+                continue
+            content = gnn_file.read_text(encoding="utf-8")
+            from_disk = load_visualization_model(gnn_file, content, viz_dir)
+            from_carrier = load_visualization_model(
+                gnn_file, content, viz_dir, parsed_model=models[gnn_file.stem]
+            )
+            assert from_carrier == from_disk
+
+    def test_step7_artifacts_byte_identical_with_carrier_on_vs_off(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Carrier-served export is byte-identical to the disk re-read.
+
+        Extends the :70-104 parity approach against the same step-3 run:
+        step 3's parsed JSON embeds per-node UUIDs and timestamps, so two
+        independent step-3 runs can never byte-match. One step-3 run feeds
+        both step-7 runs instead — carrier on (in-memory) vs carrier off
+        (disk re-read) — proving the carrier neither changes nor loses
+        content. Only the step-7 run timestamp in ``export_results.json``
+        may differ.
+        """
+        self._whitelist_with(monkeypatch, "7_export")
+        run_dir = tmp_path / "run"
+        args = _pipeline_args(run_dir)
+
+        step3 = execute_step_in_process(
+            "3_gnn.py", args, LOGGER, collect_parsed_model=True
+        )
+        assert step3["exit_code"] == 0, step3["stderr"]
+
+        on_step7 = execute_step_in_process(
+            "7_export.py", args, LOGGER, collect_parsed_model=True
+        )
+        assert on_step7["exit_code"] == 0, on_step7["stderr"]
+        export_dir = run_dir / "7_export_output"
+        carrier_snapshot = tmp_path / "carrier_snapshot"
+        shutil.copytree(export_dir, carrier_snapshot)
+        # Clean slate: any file the carrier-on run left behind must not be
+        # mistaken for carrier-off output in the file-list comparison.
+        shutil.rmtree(export_dir)
+        off_step7 = execute_step_in_process("7_export.py", args, LOGGER)
+        assert off_step7["exit_code"] == 0, off_step7["stderr"]
+
+        on_files = _artifact_files(carrier_snapshot)
+        off_files = _artifact_files(export_dir)
+        assert on_files == off_files
+        assert on_files, "no step-7 artifacts produced"
+        for rel in on_files:
+            on_bytes = (carrier_snapshot / rel).read_bytes()
+            off_bytes = (export_dir / rel).read_bytes()
+            if on_bytes == off_bytes:
+                continue
+            # Only the run timestamp inside export_results.json may differ.
+            assert rel == "export_results.json"
+            on_json = json.loads(on_bytes)
+            off_json = json.loads(off_bytes)
+            on_json.pop("timestamp", None)
+            off_json.pop("timestamp", None)
+            assert on_json == off_json

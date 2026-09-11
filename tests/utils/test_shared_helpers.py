@@ -7,7 +7,7 @@ logic across src/gnn/utils/ was collapsed:
 - ``io_utils.verify_directory_writable`` — the one writable-probe behind
   ``gnn.utils.pipeline.validate_output_directory`` and
   ``gnn.utils.pipeline_validator.check_pipeline_readiness``
-- the canonical memory probe ``gnn.utils.resource_manager.get_memory_usage``
+- the canonical memory probe ``gnn.utils.runtime_safety.resource_manager.get_memory_usage``
   (with the ``testing_utils`` / ``visualization_optimizer`` aliases)
 - ``resource_manager.with_resource_limits`` exception-propagation semantics
 - the shared fallback-default table behind ``ArgumentParser``
@@ -31,13 +31,19 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from gnn.utils.arg_parsing import ArgumentParser, fallback_default_for
+from gnn.utils.arguments.arg_parsing import ArgumentParser, fallback_default_for
+from gnn.utils.arguments.step_config import StepConfiguration
 from gnn.utils.io_utils import verify_directory_writable
-from gnn.utils.mcp import is_sensitive_env_key, redact_environment
+from gnn.utils.mcp.server import is_sensitive_env_key, redact_environment
 from gnn.utils.pipeline import validate_output_directory
-from gnn.utils.pipeline_monitor import AlertLevel, PipelineMonitor
-from gnn.utils.resource_manager import get_memory_usage, with_resource_limits
-from gnn.utils.step_config import StepConfiguration
+from gnn.utils.pipeline_orchestration.pipeline_monitor import (
+    AlertLevel,
+    PipelineMonitor,
+)
+from gnn.utils.runtime_safety.resource_manager import (
+    get_memory_usage,
+    with_resource_limits,
+)
 
 
 def _make_readonly(path: Path) -> None:
@@ -99,7 +105,9 @@ class TestSharedProbeCallers:
             _restore_permissions(tmp_path)
 
     def test_readiness_ready_when_output_writable(self, tmp_path: Path) -> None:
-        from gnn.utils.pipeline_validator import check_pipeline_readiness
+        from gnn.utils.pipeline_orchestration.pipeline_validator import (
+            check_pipeline_readiness,
+        )
 
         args = SimpleNamespace(target_dir=tmp_path, output_dir=tmp_path / "out")
         result = check_pipeline_readiness([("2_tests.py", "tests")], args)
@@ -109,7 +117,9 @@ class TestSharedProbeCallers:
 
     @requires_write_permissions
     def test_readiness_blocks_when_output_unwritable(self, tmp_path: Path) -> None:
-        from gnn.utils.pipeline_validator import check_pipeline_readiness
+        from gnn.utils.pipeline_orchestration.pipeline_validator import (
+            check_pipeline_readiness,
+        )
 
         out_dir = tmp_path / "locked"
         out_dir.mkdir()
@@ -127,19 +137,43 @@ class TestCanonicalMemoryProbe:
     """One psutil-backed probe; the other modules re-export it."""
 
     def test_resource_manager_alias(self) -> None:
-        import gnn.utils.resource_manager as rm
+        import gnn.utils.runtime_safety.resource_manager as rm
 
         assert rm.get_memory_usage is rm.get_current_memory_usage
 
     def test_testing_utils_delegates(self) -> None:
-        import gnn.utils.resource_manager as rm
-        import gnn.utils.testing_utils as tu
+        import importlib
+        import sys
+
+        import gnn.utils.runtime_safety.resource_manager as rm
+
+        # Fresh import: the facade warns once per process at module exec, so
+        # drop any cached module to make the DeprecationWarning deterministic.
+        sys.modules.pop("gnn.utils.testing_utils", None)
+        with pytest.warns(DeprecationWarning):
+            tu = importlib.import_module("gnn.utils.testing_utils")
 
         assert tu.get_memory_usage is rm.get_memory_usage
+        # S2-33 Step 1: the old-path facade delegates to the testing/ package.
+        import gnn.utils.testing as family
+
+        assert tu.TestRunner is family.TestRunner
+        assert tu.get_test_args is family.get_test_args
+        assert tu.performance_tracker is family.performance_tracker
+        assert tu.PROJECT_ROOT is family.PROJECT_ROOT
+        assert tu.__all__ == [*family.__all__, "get_memory_usage"]
 
     def test_visualization_optimizer_delegates(self) -> None:
-        import gnn.utils.resource_manager as rm
-        import gnn.utils.visualization_optimizer as vo
+        import importlib
+        import sys
+
+        import gnn.utils.runtime_safety.resource_manager as rm
+
+        # Drop any cached module so the facade's DeprecationWarning fires
+        # deterministically (suite runs under error::DeprecationWarning).
+        sys.modules.pop("gnn.utils.visualization_optimizer", None)
+        with pytest.warns(DeprecationWarning):
+            vo = importlib.import_module("gnn.utils.visualization_optimizer")
 
         assert vo.get_memory_usage is rm.get_memory_usage
 

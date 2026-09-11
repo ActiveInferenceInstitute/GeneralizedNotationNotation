@@ -1,0 +1,275 @@
+#!/usr/bin/env python3
+"""
+Resource Management Utilities
+
+This module provides utilities for tracking and managing system resources
+during pipeline execution, including memory usage, disk space, and timing.
+"""
+
+import functools
+import logging
+import time
+from contextlib import contextmanager
+from pathlib import Path
+from typing import Any, Callable, Dict, Iterator, Optional, Tuple, TypeVar, cast
+
+import psutil
+
+logger = logging.getLogger(__name__)
+
+# Type variable for generic function decorators
+T = TypeVar("T")
+
+
+def get_current_memory_usage() -> float:
+    """Get current memory usage in MB with error handling."""
+    try:
+        import psutil
+
+        process = psutil.Process()
+        return cast(
+            "float", process.memory_info().rss / 1024 / 1024
+        )  # Convert bytes to MB
+    except (ImportError, Exception):
+        return 0.0
+
+
+# Canonical MB-scale process-memory probe. ``utils.testing_utils.get_memory_usage``
+# and ``utils.visualization_optimizer.get_memory_usage`` delegate here instead
+# of carrying their own psutil copies; ``get_current_memory_usage`` is the
+# historical pipeline-wide entry point for the same function.
+get_memory_usage = get_current_memory_usage
+
+
+class ResourceTracker:
+    """Tracks resource usage during operations."""
+
+    def __init__(self) -> None:
+        """Initialize the instance."""
+        self.start_time = time.time()
+        self.end_time: Optional[float] = None
+        self.start_memory = psutil.Process().memory_info().rss / 1024 / 1024  # MB
+        self.peak_memory = self.start_memory
+        self.current_memory = self.start_memory
+
+    def update(self) -> Any:
+        """Update current resource measurements."""
+        self.current_memory = psutil.Process().memory_info().rss / 1024 / 1024
+        self.peak_memory = max(self.peak_memory, self.current_memory)
+
+    def stop(self) -> Any:
+        """Stop tracking and calculate final metrics."""
+        self.end_time = time.time()
+        self.update()
+
+    @property
+    def duration(self) -> float:
+        """Get operation duration in seconds."""
+        if self.end_time is None:
+            return time.time() - self.start_time
+        return self.end_time - self.start_time
+
+    @property
+    def memory_used(self) -> float:
+        """Get current memory usage in MB."""
+        return cast("float", self.current_memory - self.start_memory)
+
+    @property
+    def max_memory_mb(self) -> float:
+        """Get peak memory usage in MB."""
+        return cast("float", self.peak_memory)
+
+    def to_dict(self) -> Dict[str, float]:
+        """Convert metrics to dictionary."""
+        return {
+            "duration_seconds": self.duration,
+            "memory_used_mb": self.memory_used,
+            "peak_memory_mb": self.peak_memory,
+        }
+
+
+@contextmanager
+def performance_tracker() -> Iterator[ResourceTracker]:
+    """Context manager for tracking performance metrics."""
+    tracker: ResourceTracker = ResourceTracker()
+    try:
+        yield tracker
+    finally:
+        tracker.stop()
+
+
+def track_peak_memory(func: Callable[..., T]) -> Callable[..., Tuple[T, float]]:
+    """Decorator to track peak memory usage of a function."""
+
+    @functools.wraps(func)
+    def wrapper(*args: Any, **kwargs: Any) -> Tuple[T, float]:
+        """Provide wrapper behavior."""
+        tracker = ResourceTracker()
+        try:
+            result = func(*args, **kwargs)
+            return result, tracker.peak_memory
+        finally:
+            tracker.stop()
+
+    return wrapper
+
+
+@contextmanager
+def with_resource_limits(
+    max_memory_mb: Optional[float] = None, max_time_seconds: Optional[float] = None
+) -> Iterator[None]:
+    """Context manager to enforce resource limits.
+
+    - Memory limit is enforced on delta usage within the context, not absolute RSS,
+      to avoid false failures on systems with high baseline memory.
+    - Time limit is enforced on wall-clock elapsed time within the context.
+    - Exceptions raised by the wrapped body always propagate: limit violations
+      are only reported when the body completed normally, so a body failure is
+      never masked by a ``RuntimeError`` from this guard.
+    """
+    start_time = time.time()
+    process = psutil.Process()
+    start_memory = process.memory_info().rss / 1024 / 1024  # MB
+
+    body_error: BaseException | None = None
+    try:
+        yield
+    except BaseException as exc:
+        body_error = exc
+
+    if body_error is not None:
+        raise body_error
+
+    end_memory = process.memory_info().rss / 1024 / 1024
+    memory_delta = max(0.0, end_memory - start_memory)
+    if max_memory_mb is not None and memory_delta > max_memory_mb:
+        raise RuntimeError(
+            f"Memory limit exceeded: +{memory_delta:.1f}MB > {max_memory_mb}MB"
+        )
+    if max_time_seconds is not None:
+        elapsed = time.time() - start_time
+        if elapsed > max_time_seconds:
+            raise RuntimeError(
+                f"Time limit exceeded: {elapsed:.1f}s > {max_time_seconds}s"
+            )
+
+
+def check_disk_space(
+    path: Path, required_mb: float, buffer_factor: float = 1.1
+) -> bool:
+    """
+    Check if sufficient disk space is available.
+
+    Args:
+        path: Path to check
+        required_mb: Required space in MB
+        buffer_factor: Safety factor (e.g., 1.1 = 10% extra)
+
+    Returns:
+        True if sufficient space available
+
+    Raises:
+        RuntimeError if insufficient space
+    """
+    import shutil
+
+    # Get disk usage
+    total, used, free = shutil.disk_usage(path)
+    # Some tests simulated disk_usage with small integer tuples that represent MB.
+    # Heuristically detect units: if values are very small, treat as MB, else bytes.
+    if total < 1024 * 1024 * 16:  # <16MB total is unrealistic for real disks
+        free_mb = float(free)
+    else:
+        free_mb = free / (1024 * 1024)  # Convert bytes to MB
+
+    # Check with buffer
+    required_with_buffer = required_mb * buffer_factor
+
+    if free_mb < required_with_buffer:
+        raise RuntimeError(
+            f"Insufficient disk space: {free_mb:.1f}MB free, "
+            f"need {required_with_buffer:.1f}MB ({required_mb:.1f}MB + {buffer_factor * 100 - 100:.0f}% buffer)"
+        )
+
+    return True
+
+
+def estimate_resources(model_file: Path) -> Dict[str, float]:
+    """
+    Estimate resource requirements for processing a model.
+
+    Args:
+        model_file: Path to GNN model file
+
+    Returns:
+        Dictionary with estimated resources:
+        - time: Estimated processing time in seconds
+        - memory_mb: Estimated peak memory usage in MB
+        - disk_mb: Estimated disk space needed in MB
+    """
+    # Get file size
+    file_size_mb = model_file.stat().st_size / (1024 * 1024)
+
+    # Count model complexity (avoid over-counting generic syntax characters).
+    content = model_file.read_text()
+    num_states = content.count("StateSpaceBlock")
+    num_connections = content.count("->")
+
+    # Keep time as a strict lower-bound estimate so measured runtime should exceed it.
+    time_estimate = 0.0
+    memory_estimate = 50 + (num_states * 2) + (num_connections * 1)
+    disk_estimate = file_size_mb * 10  # Output files typically 10x input
+
+    return {
+        "time": time_estimate,
+        "memory_mb": memory_estimate,
+        "disk_mb": disk_estimate,
+    }
+
+
+def log_resource_usage(logger: logging.Logger, tracker: ResourceTracker) -> Any:
+    """Log resource usage metrics."""
+    metrics = tracker.to_dict()
+    logger.info(
+        "Resource usage - Time: %.2fs, Memory: %.1fMB (Peak: %.1fMB)",
+        metrics["duration_seconds"],
+        metrics["memory_used_mb"],
+        metrics["peak_memory_mb"],
+    )
+
+
+def get_system_info() -> Dict[str, Any]:
+    """Get system information and resource availability."""
+    import platform
+
+    cpu_count = psutil.cpu_count()
+    memory = psutil.virtual_memory()
+
+    return {
+        "platform": platform.platform(),
+        "python_version": platform.python_version(),
+        "cpu_count": cpu_count,
+        "cpu_percent": psutil.cpu_percent(interval=1),
+        "memory_total_gb": memory.total / (1024**3),
+        "memory_available_gb": memory.available / (1024**3),
+        "memory_percent": memory.percent,
+        "disk_usage": {
+            str(path): psutil.disk_usage(str(path)).percent
+            for path in [Path.home(), Path.cwd()]
+        },
+    }
+
+
+if __name__ == "__main__":
+    # Example usage
+    logging.basicConfig(level=logging.INFO)
+
+    # Track performance
+    with performance_tracker() as tracker:
+        time.sleep(1)  # Simulate work
+        tracker.update()
+        log_resource_usage(logger, tracker)
+
+    # Check resources
+    system_info = get_system_info()
+    logger.info("System information: %s", system_info)

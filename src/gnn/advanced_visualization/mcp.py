@@ -10,7 +10,7 @@ from typing import Any, Dict
 logger = logging.getLogger(__name__)
 
 # Import utilities from the advanced_visualization module
-from gnn.utils.mcp_dispatch import run_pipeline_step_mcp
+from gnn.utils.mcp.dispatch import run_pipeline_step_mcp
 
 from . import D2_AVAILABLE, process_advanced_viz
 

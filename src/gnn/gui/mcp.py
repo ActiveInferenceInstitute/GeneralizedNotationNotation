@@ -10,7 +10,7 @@ from typing import Any, Dict, Optional
 logger = logging.getLogger(__name__)
 
 # Import utilities from the gui module
-from gnn.utils.mcp_dispatch import run_pipeline_step_mcp, run_tool_envelope
+from gnn.utils.mcp.dispatch import run_pipeline_step_mcp, run_tool_envelope
 
 from . import FEATURES, get_available_guis, process_gui
 

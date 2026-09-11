@@ -322,7 +322,7 @@ class TestErrorReportingAndDiagnostics:
     @pytest.mark.unit
     def test_dependency_validation_reporting(self) -> Any:
         """Test dependency validation reporting."""
-        from gnn.utils.dependency_validator import DependencyValidator
+        from gnn.utils.runtime_safety.dependency_validator import DependencyValidator
 
         validator = DependencyValidator()
         core_valid = validator.validate_dependency_group("core")

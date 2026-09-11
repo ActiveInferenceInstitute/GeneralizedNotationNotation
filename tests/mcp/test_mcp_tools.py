@@ -70,7 +70,7 @@ class TestMCPToolExecution:
     def test_utils_system_info_execution(self, test_mcp_tools: Any) -> None:
         """Test utils system info tool registration (lightweight test)."""
         try:
-            from gnn.utils.mcp import register_tools
+            from gnn.utils.mcp.server import register_tools
 
             register_tools(test_mcp_tools)
 

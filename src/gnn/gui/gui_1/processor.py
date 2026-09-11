@@ -9,7 +9,7 @@ import logging
 import time
 from pathlib import Path
 
-from gnn.utils.pipeline_template import (
+from gnn.utils.observability.structured_logging import (
     log_step_error,
     log_step_success,
 )

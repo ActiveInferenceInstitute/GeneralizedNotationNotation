@@ -11,7 +11,7 @@ from typing import Any, Dict, List
 
 logger = logging.getLogger(__name__)
 
-from gnn.utils.mcp_dispatch import run_tool_envelope
+from gnn.utils.mcp.dispatch import run_tool_envelope
 
 from . import get_module_info as _get_mod_info
 from . import process_gnn_to_audio

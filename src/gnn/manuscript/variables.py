@@ -25,7 +25,7 @@ Design contract
   (``scripts/check_manuscript_tokens.py``) and the figure build both FAIL on
   the sentinel — a manuscript whose every count names no commit is not
   publishable.
-  ``src/tests/`` is counted once, by the test tokens, and is excluded from the
+  ``tests/`` is counted once, by the test tokens, and is excluded from the
   source-file and LOC tokens.
 * **Deterministic.** No timestamps, no wall-clock, no randomness. Two runs over an
   unchanged commit produce byte-identical JSON.

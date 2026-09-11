@@ -35,7 +35,8 @@ class TestSetupModule:
         """main.py forwards --setup-core-only to 1_setup when set on pipeline args."""
         from pathlib import Path
 
-        from gnn.utils.argument_utils import PipelineArguments, build_step_command_args
+        from gnn.utils.arguments.arg_parsing import build_step_command_args
+        from gnn.utils.arguments.pipeline_arguments import PipelineArguments
 
         args = PipelineArguments()
         args.setup_core_only = True

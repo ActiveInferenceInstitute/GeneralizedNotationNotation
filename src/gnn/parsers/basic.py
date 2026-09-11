@@ -270,7 +270,8 @@ def validate_gnn_syntax_formal(content: str) -> Tuple[bool, List[str]]:
     Retained for compatibility; emits DeprecationWarning.
     """
     warnings.warn(
-        "validate_gnn_syntax_formal is an old name; use validate_gnn_syntax instead.",
+        "validate_gnn_syntax_formal is an old name; use validate_gnn_syntax "
+        "instead. It will be removed in v4.0.0.",
         DeprecationWarning,
         stacklevel=2,
     )
@@ -366,7 +367,8 @@ def validate_gnn(
 ) -> Tuple[bool, List[str]]:
     """Old name for :func:`validate_gnn_syntax`; emits DeprecationWarning."""
     warnings.warn(
-        "validate_gnn is an old name; use validate_gnn_syntax instead.",
+        "validate_gnn is an old name; use validate_gnn_syntax instead. "
+        "It will be removed in v4.0.0.",
         DeprecationWarning,
         stacklevel=2,
     )

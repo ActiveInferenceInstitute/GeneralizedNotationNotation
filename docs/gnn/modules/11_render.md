@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/gnn/11_render.py` (82 lines)
+**Orchestrator**: `src/gnn/11_render.py` (84 lines)
 **Implementation Layer**: `src/gnn/render/`
 
 ## Module Description

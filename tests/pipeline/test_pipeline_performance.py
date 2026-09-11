@@ -22,7 +22,7 @@ from typing import Any, cast
 import psutil
 import pytest
 
-from gnn.utils.testing_utils import performance_tracker
+from gnn.utils.testing import performance_tracker
 
 # Test markers
 pytestmark = [pytest.mark.pipeline, pytest.mark.performance]
@@ -289,7 +289,7 @@ class TestMemoryUsagePatterns:
         self, isolated_environment: Any, create_model_file: Any
     ) -> Any:
         """Test peak memory usage tracking."""
-        from gnn.utils.resource_manager import track_peak_memory
+        from gnn.utils.runtime_safety.resource_manager import track_peak_memory
 
         @track_peak_memory
         def memory_intensive_operation() -> Any:
@@ -397,7 +397,7 @@ class TestResourceScaling:
     ) -> Any:
         """Test resource estimation accuracy."""
         from gnn.pipeline.execution import run_pipeline
-        from gnn.utils.resource_manager import estimate_resources
+        from gnn.utils.runtime_safety.resource_manager import estimate_resources
 
         model_file = create_model_file("medium")
 

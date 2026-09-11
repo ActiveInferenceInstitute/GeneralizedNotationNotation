@@ -344,7 +344,8 @@ def validate_gnn_structure(
 ) -> Dict[str, Any]:
     """Old name for :func:`check_gnn_file_structure`; emits DeprecationWarning."""
     warnings.warn(
-        "validate_gnn_structure is an old name; use check_gnn_file_structure instead.",
+        "validate_gnn_structure is an old name; use check_gnn_file_structure "
+        "instead. It will be removed in v4.0.0.",
         DeprecationWarning,
         stacklevel=2,
     )

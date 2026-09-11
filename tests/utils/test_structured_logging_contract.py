@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 
-from gnn.utils.structured_logging import (
+from gnn.utils.observability.structured_logging import (
     LogContext,
     LogLevel,
     PerformanceMetrics,

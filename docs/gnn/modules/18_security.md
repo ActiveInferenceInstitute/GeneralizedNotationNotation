@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/gnn/18_security.py` (55 lines)
+**Orchestrator**: `src/gnn/18_security.py` (57 lines)
 **Implementation Layer**: `src/gnn/security/`
 
 ## Module Description

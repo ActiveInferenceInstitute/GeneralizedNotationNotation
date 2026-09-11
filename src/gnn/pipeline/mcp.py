@@ -125,7 +125,7 @@ def validate_pipeline_dependencies(mcp_instance_ref: Any) -> Dict[str, Any]:
         Dictionary containing dependency validation results.
     """
     try:
-        from gnn.utils.dependency_validator import (
+        from gnn.utils.runtime_safety.dependency_validator import (
             validate_pipeline_dependencies as validate_deps,
         )
 

@@ -29,7 +29,7 @@ _correlation_context = threading.local()
 
 # Import performance tracking from dedicated module.
 try:
-    from gnn.utils.performance_tracking import performance_tracker
+    from gnn.utils.observability.performance_tracking import performance_tracker
 except ImportError:
     from ..performance_tracking import performance_tracker
 

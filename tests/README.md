@@ -61,7 +61,7 @@ tests/
 ├── tests/                 # shared-plumbing regression tests (intentional)
 │
 ├── <module>/test_*.py     # per-module tests mirroring src/gnn/<module>/
-│   (38 maintained first-level subdirectories; 36 contain direct test files)
+│   (40 maintained first-level subdirectories; 38 contain direct test files)
 │
 └── test_*.py              # cross-cutting / meta-tests at root
     (coverage assessments, environment probes, runner self-tests,
@@ -187,7 +187,6 @@ All test files follow the pattern:
 
 #### Pipeline Module Tests
 
-- `pipeline/test_pipeline_overall.py` - Comprehensive pipeline module testing
 - `pipeline/test_pipeline_integration.py` - Pipeline integration tests
 - `pipeline/test_pipeline_orchestration.py` - Pipeline orchestration tests
 - `pipeline/test_pipeline_performance.py` - Pipeline performance tests

@@ -15,7 +15,7 @@ from typing import Any, Dict, List, Optional, Tuple, cast
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from gnn.utils.pipeline_template import (
+from gnn.utils.observability.structured_logging import (
     log_step_error,
     log_step_start,
     log_step_success,
@@ -554,30 +554,56 @@ def process_export(
     requested_formats = kwargs.get("formats") or list(_DEFAULT_FORMATS)
     geo_options = kwargs.get("geo_infer")
 
+    # Optional in-memory carrier (consolidated executor): step 3's parse
+    # artifacts collected once by gnn.pipeline.step_executor and forwarded
+    # as the ``parsed_model`` kwarg. An absent or malformed carrier leaves
+    # the on-disk path below unchanged.
+    carrier = kwargs.get("parsed_model")
+    carrier_results = None
+    carrier_models = None
+    if isinstance(carrier, dict):
+        raw_results = carrier.get("results")
+        if isinstance(raw_results, dict) and isinstance(
+            raw_results.get("processed_files"), list
+        ):
+            carrier_results = raw_results
+        raw_models = carrier.get("models")
+        if isinstance(raw_models, dict):
+            carrier_models = raw_models
+
     try:
-        # Load parsed GNN data from previous step (step 3). The consolidated
-        # helper walks up out of any ``*_output`` subdir, so the old
-        # name-prefix heuristic (6_/7_/8_ -> parent) is no longer needed.
-        from gnn.pipeline.config import resolve_step_output_dir
-
-        gnn_output_dir = resolve_step_output_dir("3_gnn", Path(output_dir))
-        gnn_results_file = gnn_output_dir / "gnn_processing_results.json"
-
-        if not gnn_results_file.exists():
-            logger.error(
-                f"GNN processing results not found at {gnn_results_file}. Run step 3 first."
+        if carrier_results is not None:
+            gnn_results = carrier_results
+            logger.info(
+                "Loaded %d parsed GNN files (consolidated in-memory carrier)",
+                len(gnn_results["processed_files"]),
             )
-            logger.error(f"Expected file location: {gnn_results_file}")
-            logger.error(f"GNN output directory: {gnn_output_dir}")
-            logger.error(f"GNN output directory exists: {gnn_output_dir.exists()}")
-            if gnn_output_dir.exists():
-                logger.error(f"Contents: {list(gnn_output_dir.iterdir())}")
-            return False
+        else:
+            # Load parsed GNN data from previous step (step 3). The consolidated
+            # helper walks up out of any ``*_output`` subdir, so the old
+            # name-prefix heuristic (6_/7_/8_ -> parent) is no longer needed.
+            from gnn.pipeline.config import resolve_step_output_dir
 
-        with open(gnn_results_file, "r") as f:
-            gnn_results = json.load(f)
+            gnn_output_dir = resolve_step_output_dir("3_gnn", Path(output_dir))
+            gnn_results_file = gnn_output_dir / "gnn_processing_results.json"
 
-        logger.info(f"Loaded {len(gnn_results['processed_files'])} parsed GNN files")
+            if not gnn_results_file.exists():
+                logger.error(
+                    f"GNN processing results not found at {gnn_results_file}. Run step 3 first."
+                )
+                logger.error(f"Expected file location: {gnn_results_file}")
+                logger.error(f"GNN output directory: {gnn_output_dir}")
+                logger.error(f"GNN output directory exists: {gnn_output_dir.exists()}")
+                if gnn_output_dir.exists():
+                    logger.error(f"Contents: {list(gnn_output_dir.iterdir())}")
+                return False
+
+            with open(gnn_results_file, "r") as f:
+                gnn_results = json.load(f)
+
+            logger.info(
+                f"Loaded {len(gnn_results['processed_files'])} parsed GNN files"
+            )
 
         # Export results
         export_results: dict[str, Any] = {
@@ -620,26 +646,38 @@ def process_export(
                 raise ValueError("Step 3 file_name must be a simple Markdown filename")
             logger.info(f"Exporting: {file_name}")
 
-            # Load the actual parsed GNN specification
-            parsed_model_file = file_result.get("parsed_model_file")
-            if parsed_model_file and Path(parsed_model_file).exists():
-                try:
-                    with open(parsed_model_file, "r") as f:
-                        actual_gnn_spec = json.load(f)
-                    logger.info(
-                        f"Loaded parsed GNN specification from {parsed_model_file}"
-                    )
-                    model_data = actual_gnn_spec
-                except Exception as e:
-                    logger.error(
-                        f"Failed to load parsed GNN spec from {parsed_model_file}: {e}"
+            # Load the actual parsed GNN specification — from the
+            # consolidated in-memory carrier when one was forwarded
+            # (identical bytes to the on-disk JSON; no re-read), else from
+            # disk exactly as before.
+            model_stem = Path(file_name).stem
+            if carrier_models is not None and model_stem in carrier_models:
+                model_data = carrier_models[model_stem]
+                logger.info(
+                    "Loaded parsed GNN specification for %s from the "
+                    "consolidated in-memory carrier",
+                    file_name,
+                )
+            else:
+                parsed_model_file = file_result.get("parsed_model_file")
+                if parsed_model_file and Path(parsed_model_file).exists():
+                    try:
+                        with open(parsed_model_file, "r") as f:
+                            actual_gnn_spec = json.load(f)
+                        logger.info(
+                            f"Loaded parsed GNN specification from {parsed_model_file}"
+                        )
+                        model_data = actual_gnn_spec
+                    except Exception as e:
+                        logger.error(
+                            f"Failed to load parsed GNN spec from {parsed_model_file}: {e}"
+                        )
+                        model_data = file_result
+                else:
+                    logger.warning(
+                        f"Parsed model file not found for {file_name}, using summary data"
                     )
                     model_data = file_result
-            else:
-                logger.warning(
-                    f"Parsed model file not found for {file_name}, using summary data"
-                )
-                model_data = file_result
 
             source = None
             source_error = None

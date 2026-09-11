@@ -18,11 +18,11 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from gnn.utils.path_conversion import (
+from gnn.utils.arguments.path_conversion import (
     convert_path_arguments,
     validate_and_convert_paths,
 )
-from gnn.utils.pipeline_arguments import PipelineArguments
+from gnn.utils.arguments.pipeline_arguments import PipelineArguments
 
 
 class TestConvertPathArguments:

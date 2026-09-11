@@ -24,10 +24,10 @@ from gnn.main import (  # noqa: E402
     select_pipeline_steps,
     step_number_from_script_name,
 )
-from gnn.utils.pipeline_step_dependencies import (  # noqa: E402
+from gnn.utils.pipeline_orchestration.pipeline_step_dependencies import (
     dependency_steps_for_step,
     resolve_step_dependencies,
-)
+)  # noqa: E402
 
 pytestmark = pytest.mark.unit
 

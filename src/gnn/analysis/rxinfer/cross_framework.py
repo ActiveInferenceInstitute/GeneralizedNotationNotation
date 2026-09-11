@@ -296,7 +296,7 @@ def _execute_pymdp(spec: dict[str, Any], fw_dir: Path) -> FrameworkRun:
     # The generated runner resolves the checkout from GNN_PROJECT_ROOT and
     # honours PYMDP_OUTPUT_DIR, so results land in fw_dir instead of
     # output/pymdp_simulations/<model>/ under the CWD. Both variables mirror
-    # what the Step-12 executor sets (src/execute/processor.py).
+    # what the Step-12 executor sets (src/gnn/execute/processor.py).
     env = os.environ.copy()
     env["GNN_PROJECT_ROOT"] = str(PROJECT_ROOT)
     env["PYMDP_OUTPUT_DIR"] = str(fw_dir)

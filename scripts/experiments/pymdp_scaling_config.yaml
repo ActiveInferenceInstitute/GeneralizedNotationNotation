@@ -1,0 +1,32 @@
+n_values:
+- 2
+- 4
+- 8
+- 16
+t_values:
+- 10
+- 100
+- 500
+- 1000
+a_signal: 0.85
+b_signal: 0.8
+timeout: 1200
+output_dir: input/gnn_files/pymdp_scaling_study
+pipeline_output_dir: output/pymdp_scaling_pipeline
+clear_outputs_before_run: true
+frameworks: pymdp
+strict_framework_success: true
+pipeline_steps: 3,11,12,17
+run_integration_on_failure: false
+max_n: 256
+max_file_size_mb: 100
+min_free_disk_mb: 200
+type_check: true
+skip_timeout_bounds_n: 16
+skip_timeout_bounds_t: 3000
+execution_workers: 1
+distributed: false
+backend: ray
+matplotlib_headless: true
+gnn_serialize_preset: minimal
+execution_benchmark_repeats: 1

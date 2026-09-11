@@ -119,6 +119,9 @@ def test_process_execute_returns_2_when_no_render_output(
         output_dir=output_dir,
         verbose=False,
         frameworks="all",
+        # Default flipped to True; this test pins the exit-2 contract for
+        # callers that opt out of the render-summary requirement.
+        require_render_summary=False,
     )
     # Per the new contract, "nothing to do" must be exit-code 2, not True.
     assert result == 2, f"Expected exit-code 2 for empty render output; got {result!r}"
@@ -146,6 +149,7 @@ def test_process_execute_records_local_worker_configuration(tmp_path: Path) -> N
         timeout=10,
         render_output_dir=render_out,
         execution_workers=2,
+        require_render_summary=False,
     )
 
     assert result is True
@@ -198,6 +202,7 @@ def test_process_execute_records_local_worker_pool_failure(
         timeout=10,
         render_output_dir=render_out,
         execution_workers=2,
+        require_render_summary=False,
     )
 
     assert result is False
@@ -277,6 +282,7 @@ def test_distributed_dispatch_failure_becomes_per_script_result(
         distributed=True,
         backend="ray",
         distributed_max_retries=4,
+        require_render_summary=False,
     )
 
     assert result is False

@@ -1,59 +1,21 @@
-"""
-Streamlined Argument Handling for GNN Processing Pipeline.
+"""Public entry facade for argument handling (S2-33 Step 2).
 
-Provides coherent argument parsing, validation, and passing across
-all pipeline steps with centralized configuration and type safety.
-
-This module is the public entry point for argument handling. All
-implementations live in focused submodules; this module re-exports the
-full public API so existing imports continue to work unchanged:
-
-- arg_definitions: ArgumentDefinition
-- pipeline_arguments: PipelineArguments
-- step_config: StepConfiguration
-- arg_parsing: ArgumentParser, StepAwareArgumentParser, parse helpers
-- path_conversion: path/argument normalization helpers
+``gnn.utils.argument_utils`` remains the single public entry point for the
+argument family, whose implementation now lives in the
+``gnn/utils/arguments/`` concern package (design §3.2). Import from
+``gnn.utils.arguments`` instead: this facade re-exports the family's full
+public surface, plus the historical ``logger`` re-export.
 """
 
-import logging
+import warnings
 
-from .arg_definitions import ArgumentDefinition
-from .arg_parsing import (
-    ArgumentParser,
-    StepAwareArgumentParser,
-    audit_step_contracts,
-    build_step_command_args,
-    get_pipeline_step_info,
-    parse_arguments,
-    parse_step_arguments,
-    parse_step_list,
-    validate_arguments,
+warnings.warn(
+    "gnn.utils.argument_utils is the earlier name; import gnn.utils.arguments instead",
+    DeprecationWarning,
+    stacklevel=2,
 )
-from .path_conversion import (
-    convert_path_arguments,
-    validate_and_convert_paths,
-    validate_pipeline_configuration,
-)
-from .pipeline_arguments import PipelineArguments
-from .step_config import StepConfiguration
+from gnn.utils.arguments import *  # noqa: E402,F401,F403 — intentional re-export
+from gnn.utils.arguments import __all__ as _family_all
+from gnn.utils.arguments.arg_parsing import logger  # noqa: E402,F401
 
-logger = logging.getLogger(__name__)
-
-__all__ = [
-    "ArgumentDefinition",
-    "ArgumentParser",
-    "PipelineArguments",
-    "StepAwareArgumentParser",
-    "StepConfiguration",
-    "audit_step_contracts",
-    "build_step_command_args",
-    "convert_path_arguments",
-    "get_pipeline_step_info",
-    "parse_arguments",
-    "parse_step_arguments",
-    "parse_step_list",
-    "validate_and_convert_paths",
-    "validate_arguments",
-    "validate_pipeline_configuration",
-    "logger",
-]
+__all__ = [*_family_all, "logger"]

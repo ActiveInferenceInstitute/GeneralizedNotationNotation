@@ -166,7 +166,7 @@ class TestDependencyValidationImprovements:
     @pytest.mark.unit
     def test_discopy_dependency_group(self) -> None:
         """Test that DisCoPy dependency group is properly defined."""
-        from gnn.utils.dependency_validator import DependencyValidator
+        from gnn.utils.runtime_safety.dependency_validator import DependencyValidator
 
         validator = DependencyValidator()
         assert "discopy" in validator.dependencies
@@ -180,7 +180,7 @@ class TestDependencyValidationImprovements:
     @pytest.mark.unit
     def test_pymdp_dependency_group(self) -> None:
         """Test that PyMDP dependency group is properly defined."""
-        from gnn.utils.dependency_validator import DependencyValidator
+        from gnn.utils.runtime_safety.dependency_validator import DependencyValidator
 
         validator = DependencyValidator()
         assert "pymdp" in validator.dependencies
@@ -195,7 +195,7 @@ class TestDependencyValidationImprovements:
     @pytest.mark.timeout(30)
     def test_improved_installation_instructions(self) -> None:
         """Test that installation instructions are provided for missing dependencies."""
-        from gnn.utils.dependency_validator import DependencyValidator
+        from gnn.utils.runtime_safety.dependency_validator import DependencyValidator
 
         validator = DependencyValidator()
         optional_groups: list[Any] = ["discopy", "pymdp", "rxinfer"]

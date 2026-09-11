@@ -125,7 +125,7 @@ def d2_cli_ready() -> bool:
 @functools.lru_cache(maxsize=1)
 def pymdp_stack_ready() -> bool:
     """JAX + inferactively-pymdp dev stack passes the integrity probe."""
-    from gnn.utils.jax_stack_validation import jax_pymdp_stack_ok
+    from gnn.utils.runtime_safety.jax_stack_validation import jax_pymdp_stack_ok
 
     return jax_pymdp_stack_ok()
 

@@ -11,7 +11,7 @@ from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
 
-from gnn.utils.mcp_dispatch import run_pipeline_step_mcp, run_tool_envelope
+from gnn.utils.mcp.dispatch import run_pipeline_step_mcp, run_tool_envelope
 
 from .generator import generate_website as _generate_website
 from .inspection import inspect_website, list_website_pages

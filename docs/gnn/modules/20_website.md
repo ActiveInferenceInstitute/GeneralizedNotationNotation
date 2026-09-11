@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/gnn/20_website.py` (64 lines)
+**Orchestrator**: `src/gnn/20_website.py` (66 lines)
 **Implementation Layer**: `src/gnn/website/`
 
 ## Module Description

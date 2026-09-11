@@ -10,7 +10,7 @@ from typing import Any, Dict
 logger = logging.getLogger(__name__)
 
 # Import utilities from the ml_integration module
-from gnn.utils.mcp_dispatch import run_pipeline_step_mcp, run_tool_envelope
+from gnn.utils.mcp.dispatch import run_pipeline_step_mcp, run_tool_envelope
 
 from . import FEATURES, check_ml_frameworks, process_ml_integration
 

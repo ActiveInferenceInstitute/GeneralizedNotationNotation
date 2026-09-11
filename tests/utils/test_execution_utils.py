@@ -11,7 +11,7 @@ from pathlib import Path
 
 import pytest
 
-from gnn.utils.execution_utils import execute_command_streaming
+from gnn.utils.pipeline_orchestration.execution_utils import execute_command_streaming
 
 PY = sys.executable
 

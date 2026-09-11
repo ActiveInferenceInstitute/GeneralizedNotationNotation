@@ -46,6 +46,14 @@ except ImportError:  # pragma: no cover
 
 logger = logging.getLogger(__name__)
 
+_LEVEL_RANKS: dict[ValidationLevel, int] = {
+    ValidationLevel.BASIC: 10,
+    ValidationLevel.STANDARD: 20,
+    ValidationLevel.STRICT: 30,
+    ValidationLevel.RESEARCH: 40,
+    ValidationLevel.ROUND_TRIP: 50,
+}
+
 
 class GNNValidator:
     """Enhanced validator for GNN files with comprehensive round-trip and cross-format support."""
@@ -95,29 +103,63 @@ class GNNValidator:
                 logger.warning(f"Could not initialize round-trip tester: {e}")
                 self.enable_round_trip_testing = False
 
-    def _level_rank(self, level: Union[ValidationLevel, str]) -> int:
-        """Map validation level to an integer rank for safe comparisons."""
-        mapping: dict[Any, Any] = {
-            ValidationLevel.BASIC: 10,
-            ValidationLevel.STANDARD: 20,
-            ValidationLevel.STRICT: 30,
-            ValidationLevel.RESEARCH: 40,
-            ValidationLevel.ROUND_TRIP: 50,
-        }
-        if isinstance(level, ValidationLevel):
-            return cast("int", mapping.get(level, 0))
+    def _resolve_level(self, level: str) -> ValidationLevel:
+        """Resolve a string validation level to its enum member.
+
+        Accepted forms:
+
+        - an enum value (``"basic"``, ``"standard"``, ``"strict"``,
+          ``"research"``, ``"round_trip"``)
+        - an enum name (``"BASIC"``, ``"STANDARD"``, ...), matched exactly
+          or after ``upper()`` (so ``"Standard"`` also resolves; note no
+          member has ``name == value``, so value lookup always wins first)
+
+        Anything else raises ``ValueError`` listing the accepted forms;
+        unknown levels never silently skip validation.
+        """
         try:
-            # allow passing a string
-            return cast("int", mapping.get(ValidationLevel(level), 0))
-        except (ValueError, TypeError):
-            logger.warning("Unknown validation level %r; defaulting rank to 0", level)
-            return 0
+            return ValidationLevel(level)
+        except ValueError:
+            pass
+        try:
+            return ValidationLevel[level.upper()]
+        except KeyError as e:
+            accepted = ", ".join(
+                f"{member.name!r} ({member.value!r})" for member in ValidationLevel
+            )
+            raise ValueError(
+                f"Unknown validation level {level!r}; accepted forms: {accepted}"
+            ) from e
+
+    def _level_rank(self, level: Union[ValidationLevel, str]) -> int:
+        """Map validation level to an integer rank for safe comparisons.
+
+        Accepts a ``ValidationLevel`` member, a string equal to an enum
+        value (e.g. ``"strict"``), or a string equal to an enum name
+        (e.g. ``"STRICT"``, case-insensitive); see :meth:`_resolve_level`
+        for the full accepted forms. Anything else raises ``ValueError``.
+        """
+        if isinstance(level, ValidationLevel):
+            return _LEVEL_RANKS.get(level, 0)
+        return _LEVEL_RANKS[self._resolve_level(level)]
 
     def validate_file(
         self,
         file_path: Union[str, Path],
-        validation_level: Optional[ValidationLevel] = None,
+        validation_level: Union[ValidationLevel, str, None] = None,
     ) -> ValidationResult:
+        """Enhanced validation with comprehensive testing capabilities."""
+        import time
+
+        start_time = time.time()
+
+        validation_level = validation_level or self.validation_level
+        # Resolve string levels before the broad exception handler below:
+        # an invalid level string must raise at the public API, not be
+        # downgraded to a generic validation error.
+        if isinstance(validation_level, str):
+            validation_level = self._resolve_level(validation_level)
+        file_path = Path(file_path)
         """Enhanced validation with comprehensive testing capabilities."""
         import time
 
@@ -799,7 +841,8 @@ def validate_gnn_file_comprehensive(file_path: Union[str, Path]) -> ValidationRe
 def validate_gnn_file(file_path: Union[str, Path]) -> ValidationResult:
     """Old name for :func:`validate_gnn_file_comprehensive`; emits DeprecationWarning."""
     warnings.warn(
-        "validate_gnn_file is an old name; use validate_gnn_file_comprehensive instead.",
+        "validate_gnn_file is an old name; use "
+        "validate_gnn_file_comprehensive instead. It will be removed in v4.0.0.",
         DeprecationWarning,
         stacklevel=2,
     )

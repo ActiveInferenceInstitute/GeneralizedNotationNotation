@@ -40,7 +40,9 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from gnn.export import process_export
 from gnn.export.options import process_export_cli
 from gnn.export.registry import DEFAULT_PIPELINE_FORMATS
-from gnn.utils.pipeline_template import create_standardized_pipeline_script
+from gnn.utils.pipeline_orchestration.pipeline_template import (
+    create_standardized_pipeline_script,
+)
 
 geo_arguments = {
     "geo_step_seconds": {

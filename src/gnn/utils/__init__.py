@@ -27,7 +27,8 @@ Source modules:
 - base_processor: Abstract base class for standardized step processors
 - venv_utils: Virtual environment path helpers
 - system_utils: System information gathering
-- testing_utils: Test runner, categories, stages, and coverage targets
+- testing: Test runner, categories, stages, and coverage targets (S2-33 concern
+  package; testing_utils.py remains as its deprecation facade)
 - pipeline: Pipeline utility exports
 - error_handling: Structured error handler, categories, and recovery strategies
 - structured_logging: Structured log emission with correlation context
@@ -38,17 +39,18 @@ from typing import TYPE_CHECKING, Any
 if TYPE_CHECKING:
     # Static re-export surface for type checkers: mirrors the pre-lazy eager
     # imports so mypy resolves names without executing submodules at runtime.
-    from .argument_utils import (
+    from .arguments.arg_parsing import (
         ArgumentParser,
-        PipelineArguments,
-        StepConfiguration,
         build_step_command_args,
         get_pipeline_step_info,
         parse_arguments,
+    )
+    from .arguments.path_conversion import (
         validate_and_convert_paths,
         validate_pipeline_configuration,
     )
-    from .base_processor import BaseProcessor, ProcessingResult, create_processor
+    from .arguments.pipeline_arguments import PipelineArguments
+    from .arguments.step_config import StepConfiguration
     from .config_loader import (
         GNNPipelineConfig,
         LLMConfig,
@@ -64,15 +66,6 @@ if TYPE_CHECKING:
         save_config,
         set_config_value,
         validate_config,
-    )
-    from .dependency_validator import (
-        DependencySpec,
-        DependencyValidator,
-        check_optional_dependencies,
-        get_dependency_status,
-        install_missing_dependencies,
-        validate_pipeline_dependencies,
-        validate_pipeline_dependencies_if_available,
     )
     from .error_handling import (
         ErrorCategory,
@@ -102,26 +95,12 @@ if TYPE_CHECKING:
         setup_main_logging,
         setup_step_logging,
     )
-    from .performance_tracking import (
+    from .observability.performance_tracking import (
         PerformanceTracker,
         performance_tracker,
         track_operation_standalone,
     )
-    from .pipeline import (
-        RecoveryArgumentParser,
-        execute_pipeline_step_template,
-        get_output_dir_for_script,
-        get_pipeline_utilities,
-        validate_output_directory,
-    )
-    from .pipeline_monitor import generate_pipeline_health_report
-    from .pipeline_template import create_standardized_pipeline_script
-    from .pipeline_validator import (
-        validate_pipeline_step_sequence,
-        validate_step_prerequisites,
-    )
-    from .resource_manager import get_current_memory_usage
-    from .structured_logging import (
+    from .observability.structured_logging import (
         StructuredLogger,
         get_pipeline_logger,
         log_pipeline_complete,
@@ -132,25 +111,62 @@ if TYPE_CHECKING:
         log_step_warning,
         set_correlation_context,
     )
+    from .pipeline import (
+        RecoveryArgumentParser,
+        execute_pipeline_step_template,
+        get_output_dir_for_script,
+        get_pipeline_utilities,
+        validate_output_directory,
+    )
+    from .pipeline_orchestration.base_processor import (
+        BaseProcessor,
+        ProcessingResult,
+        create_processor,
+    )
+    from .pipeline_orchestration.pipeline_monitor import (
+        generate_pipeline_health_report,
+    )
+    from .pipeline_orchestration.pipeline_template import (
+        create_standardized_pipeline_script,
+    )
+    from .pipeline_orchestration.pipeline_validator import (
+        validate_pipeline_step_sequence,
+        validate_step_prerequisites,
+    )
+    from .runtime_safety.dependency_validator import (
+        DependencySpec,
+        DependencyValidator,
+        check_optional_dependencies,
+        get_dependency_status,
+        install_missing_dependencies,
+        validate_pipeline_dependencies,
+        validate_pipeline_dependencies_if_available,
+    )
+    from .runtime_safety.resource_manager import get_current_memory_usage
     from .system_utils import get_system_info
-    from .testing_utils import (
+    from .testing.constants import (
         COVERAGE_TARGETS,
         TEST_CATEGORIES,
         TEST_CONFIG,
         TEST_STAGES,
-        CoverageTarget,
-        TestCategory,
-        TestResult,
-        TestRunner,
-        TestStage,
+    )
+    from .testing.environment import (
         cleanup_test_environment,
-        generate_test_report,
-        get_test_artifacts,
         get_test_configuration,
         get_test_coverage,
         get_test_dependencies,
-        get_test_duration,
         get_test_environment,
+        install_test_dependencies,
+        setup_test_environment,
+        validate_coverage_targets,
+        validate_test_configuration,
+        validate_test_dependencies,
+        validate_test_environment,
+    )
+    from .testing.reports import (
+        generate_test_report,
+        get_test_artifacts,
+        get_test_duration,
         get_test_logs,
         get_test_metadata,
         get_test_performance,
@@ -160,15 +176,16 @@ if TYPE_CHECKING:
         get_test_status,
         get_test_summary,
         get_test_timestamps,
-        install_test_dependencies,
+    )
+    from .testing.runner import (
+        CoverageTarget,
+        TestCategory,
+        TestResult,
+        TestRunner,
+        TestStage,
         run_test_category,
         run_test_stage,
         run_tests,
-        setup_test_environment,
-        validate_coverage_targets,
-        validate_test_configuration,
-        validate_test_dependencies,
-        validate_test_environment,
     )
     from .venv_utils import get_venv_python
 
@@ -190,19 +207,21 @@ UTILS_AVAILABLE = True
 # imports only that one submodule (``from importlib import import_module``
 # stays inside the function so importing ``utils`` itself stays light).
 _EXPORT_MAP: dict[str, str] = {
-    # argument_utils
-    "ArgumentParser": "argument_utils",
-    "PipelineArguments": "argument_utils",
-    "StepConfiguration": "argument_utils",
-    "build_step_command_args": "argument_utils",
-    "get_pipeline_step_info": "argument_utils",
-    "parse_arguments": "argument_utils",
-    "validate_and_convert_paths": "argument_utils",
-    "validate_pipeline_configuration": "argument_utils",
-    # base_processor
-    "BaseProcessor": "base_processor",
-    "ProcessingResult": "base_processor",
-    "create_processor": "base_processor",
+    # arguments (S2-33 Step 2: moved from the top-level argument modules into
+    # the arguments/ concern package; keys unchanged, values repointed)
+    "ArgumentParser": "arguments.arg_parsing",
+    "PipelineArguments": "arguments.pipeline_arguments",
+    "StepConfiguration": "arguments.step_config",
+    "build_step_command_args": "arguments.arg_parsing",
+    "get_pipeline_step_info": "arguments.arg_parsing",
+    "parse_arguments": "arguments.arg_parsing",
+    "validate_and_convert_paths": "arguments.path_conversion",
+    "validate_pipeline_configuration": "arguments.path_conversion",
+    # pipeline_orchestration (S2-33 Step 3: moved from the top-level pipeline
+    # modules; keys unchanged, values repointed)
+    "BaseProcessor": "pipeline_orchestration.base_processor",
+    "ProcessingResult": "pipeline_orchestration.base_processor",
+    "create_processor": "pipeline_orchestration.base_processor",
     # config_loader
     "GNNPipelineConfig": "config_loader",
     "LLMConfig": "config_loader",
@@ -218,14 +237,15 @@ _EXPORT_MAP: dict[str, str] = {
     "save_config": "config_loader",
     "set_config_value": "config_loader",
     "validate_config": "config_loader",
-    # dependency_validator
-    "DependencySpec": "dependency_validator",
-    "DependencyValidator": "dependency_validator",
-    "check_optional_dependencies": "dependency_validator",
-    "get_dependency_status": "dependency_validator",
-    "install_missing_dependencies": "dependency_validator",
-    "validate_pipeline_dependencies": "dependency_validator",
-    "validate_pipeline_dependencies_if_available": "dependency_validator",
+    # runtime_safety (S2-33 Step 4: moved from the top-level safety modules;
+    # keys unchanged, values repointed)
+    "DependencySpec": "runtime_safety.dependency_validator",
+    "DependencyValidator": "runtime_safety.dependency_validator",
+    "check_optional_dependencies": "runtime_safety.dependency_validator",
+    "get_dependency_status": "runtime_safety.dependency_validator",
+    "install_missing_dependencies": "runtime_safety.dependency_validator",
+    "validate_pipeline_dependencies": "runtime_safety.dependency_validator",
+    "validate_pipeline_dependencies_if_available": "runtime_safety.dependency_validator",
     # error_handling
     "ErrorCategory": "error_handling",
     "ExitCode": "error_handling",
@@ -245,18 +265,18 @@ _EXPORT_MAP: dict[str, str] = {
     "format_error_message": "error_recovery",
     "get_recovery_manager": "error_recovery",
     # logging_utils
-    "PipelineLogger": "logging_utils",
-    "get_performance_summary": "logging_utils",
-    "log_section_header": "logging_utils",
-    "setup_correlation_context": "logging_utils",
-    "setup_main_logging": "logging_utils",
-    "setup_step_logging": "logging_utils",
+    "PipelineLogger": "logging.logging_utils",
+    "get_performance_summary": "logging.logging_utils",
+    "log_section_header": "logging.logging_utils",
+    "setup_correlation_context": "logging.logging_utils",
+    "setup_main_logging": "logging.logging_utils",
+    "setup_step_logging": "logging.logging_utils",
     # performance_tracking (renamed from performance_tracker.py: the exported
     # object must not share its module's name, or any prior
     # 'import utils.performance_tracker' shadows the re-export with the module)
-    "PerformanceTracker": "performance_tracking",
-    "performance_tracker": "performance_tracking",
-    "track_operation_standalone": "performance_tracking",
+    "PerformanceTracker": "observability.performance_tracking",
+    "performance_tracker": "observability.performance_tracking",
+    "track_operation_standalone": "observability.performance_tracking",
     # pipeline
     "RecoveryArgumentParser": "pipeline",
     "execute_pipeline_step_template": "pipeline",
@@ -264,62 +284,65 @@ _EXPORT_MAP: dict[str, str] = {
     "get_pipeline_utilities": "pipeline",
     "validate_output_directory": "pipeline",
     # pipeline_monitor
-    "generate_pipeline_health_report": "pipeline_monitor",
+    "generate_pipeline_health_report": "pipeline_orchestration.pipeline_monitor",
     # pipeline_template
-    "create_standardized_pipeline_script": "pipeline_template",
+    "create_standardized_pipeline_script": "pipeline_orchestration.pipeline_template",
     # pipeline_validator
-    "validate_pipeline_step_sequence": "pipeline_validator",
-    "validate_step_prerequisites": "pipeline_validator",
+    "validate_pipeline_step_sequence": "pipeline_orchestration.pipeline_validator",
+    "validate_step_prerequisites": "pipeline_orchestration.pipeline_validator",
     # resource_manager
-    "get_current_memory_usage": "resource_manager",
-    # structured_logging
-    "StructuredLogger": "structured_logging",
-    "get_pipeline_logger": "structured_logging",
-    "log_pipeline_complete": "structured_logging",
-    "log_pipeline_start": "structured_logging",
-    "log_step_error": "structured_logging",
-    "log_step_start": "structured_logging",
-    "log_step_success": "structured_logging",
-    "log_step_warning": "structured_logging",
-    "set_correlation_context": "structured_logging",
+    "get_current_memory_usage": "runtime_safety.resource_manager",
+    # observability (S2-33 Step 5: moved from the top-level
+    # structured_logging/performance_tracking modules; keys unchanged,
+    # values repointed)
+    "StructuredLogger": "observability.structured_logging",
+    "get_pipeline_logger": "observability.structured_logging",
+    "log_pipeline_complete": "observability.structured_logging",
+    "log_pipeline_start": "observability.structured_logging",
+    "log_step_error": "observability.structured_logging",
+    "log_step_start": "observability.structured_logging",
+    "log_step_success": "observability.structured_logging",
+    "log_step_warning": "observability.structured_logging",
+    "set_correlation_context": "observability.structured_logging",
     # system_utils
     "get_system_info": "system_utils",
-    # testing_utils
-    "COVERAGE_TARGETS": "testing_utils",
-    "TEST_CATEGORIES": "testing_utils",
-    "TEST_CONFIG": "testing_utils",
-    "TEST_STAGES": "testing_utils",
-    "CoverageTarget": "testing_utils",
-    "TestCategory": "testing_utils",
-    "TestResult": "testing_utils",
-    "TestRunner": "testing_utils",
-    "TestStage": "testing_utils",
-    "cleanup_test_environment": "testing_utils",
-    "generate_test_report": "testing_utils",
-    "get_test_artifacts": "testing_utils",
-    "get_test_configuration": "testing_utils",
-    "get_test_coverage": "testing_utils",
-    "get_test_dependencies": "testing_utils",
-    "get_test_duration": "testing_utils",
-    "get_test_environment": "testing_utils",
-    "get_test_logs": "testing_utils",
-    "get_test_metadata": "testing_utils",
-    "get_test_performance": "testing_utils",
-    "get_test_progress": "testing_utils",
-    "get_test_results": "testing_utils",
-    "get_test_statistics": "testing_utils",
-    "get_test_status": "testing_utils",
-    "get_test_summary": "testing_utils",
-    "get_test_timestamps": "testing_utils",
-    "install_test_dependencies": "testing_utils",
-    "run_test_category": "testing_utils",
-    "run_test_stage": "testing_utils",
-    "run_tests": "testing_utils",
-    "setup_test_environment": "testing_utils",
-    "validate_coverage_targets": "testing_utils",
-    "validate_test_configuration": "testing_utils",
-    "validate_test_dependencies": "testing_utils",
-    "validate_test_environment": "testing_utils",
+    # testing (S2-33 Step 1: moved from testing_utils.py into the testing/
+    # concern package; keys unchanged, values repointed to the new leaves)
+    "COVERAGE_TARGETS": "testing.constants",
+    "TEST_CATEGORIES": "testing.constants",
+    "TEST_CONFIG": "testing.constants",
+    "TEST_STAGES": "testing.constants",
+    "CoverageTarget": "testing.runner",
+    "TestCategory": "testing.runner",
+    "TestResult": "testing.runner",
+    "TestRunner": "testing.runner",
+    "TestStage": "testing.runner",
+    "cleanup_test_environment": "testing.environment",
+    "generate_test_report": "testing.reports",
+    "get_test_artifacts": "testing.reports",
+    "get_test_configuration": "testing.environment",
+    "get_test_coverage": "testing.environment",
+    "get_test_dependencies": "testing.environment",
+    "get_test_duration": "testing.reports",
+    "get_test_environment": "testing.environment",
+    "get_test_logs": "testing.reports",
+    "get_test_metadata": "testing.reports",
+    "get_test_performance": "testing.reports",
+    "get_test_progress": "testing.reports",
+    "get_test_results": "testing.reports",
+    "get_test_statistics": "testing.reports",
+    "get_test_status": "testing.reports",
+    "get_test_summary": "testing.reports",
+    "get_test_timestamps": "testing.reports",
+    "install_test_dependencies": "testing.environment",
+    "run_test_category": "testing.runner",
+    "run_test_stage": "testing.runner",
+    "run_tests": "testing.runner",
+    "setup_test_environment": "testing.environment",
+    "validate_coverage_targets": "testing.environment",
+    "validate_test_configuration": "testing.environment",
+    "validate_test_dependencies": "testing.environment",
+    "validate_test_environment": "testing.environment",
     # venv_utils
     "get_venv_python": "venv_utils",
 }

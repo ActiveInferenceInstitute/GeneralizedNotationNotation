@@ -22,7 +22,11 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
-from gnn.utils.pipeline_template import log_step_error, log_step_start, log_step_success
+from gnn.utils.observability.structured_logging import (
+    log_step_error,
+    log_step_start,
+    log_step_success,
+)
 
 from .graph import build_system_graph, verify_references
 from .parsing import discover_gnn_files

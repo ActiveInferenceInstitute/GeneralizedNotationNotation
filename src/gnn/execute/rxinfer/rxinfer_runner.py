@@ -63,7 +63,10 @@ def execute_rxinfer_script(
     Args:
         script_path: Path to the RxInfer.jl script or TOML configuration.
         verbose: Whether to enable verbose output.
-        output_dir: Directory for execution logs (unused currently, reserved for consistency).
+        output_dir: Directory for execution evidence ({stem}_stdout.txt,
+            {stem}_stderr.txt, {stem}_execution_log.json). Defaults to the
+            script's own directory when omitted. Evidence is written on every
+            completed run — success, failure, and timeout alike.
         timeout: Execution timeout in seconds (default: 300).
 
     Returns:
@@ -100,8 +103,6 @@ def execute_rxinfer_script(
             f"--project={rxinfer_project}",
             str(script_path),
         ]
-        logger.debug(f"Running command: {' '.join(cmd)}")
-        envelope = run_subprocess_envelope(cmd, timeout=timeout)
     elif script_path.suffix.lower() == ".toml":
         # For TOML configuration files, we need a Julia script that can load and run them
         # This would typically be a standard RxInfer.jl script that takes a config file as input
@@ -116,40 +117,85 @@ def execute_rxinfer_script(
         # Same committed RxInfer project environment as the .jl branch —
         # the TOML runner needs `using RxInfer` to resolve packages.
         rxinfer_project = Path(__file__).parent.resolve()
-        toml_cmd: list[Any] = [
+        cmd = [
             "julia",
             "--startup-file=no",
             f"--project={rxinfer_project}",
             str(runner_script),
             str(script_path),
         ]
-        logger.debug(f"Running command: {' '.join(toml_cmd)}")
-        envelope = run_subprocess_envelope(toml_cmd, timeout=timeout)
     else:
         logger.error(f"Unsupported file type: {script_path.suffix}")
         return False
 
-    # Process the execution result
-    if envelope["error_type"] == "TimeoutExpired":
+    logger.debug(f"Running command: {' '.join(cmd)}")
+    envelope = run_subprocess_envelope(cmd, timeout=timeout)
+
+    # Process the execution result — every outcome below means the run
+    # completed (success, non-zero exit, or timeout), so persistence runs
+    # before returning.
+    success: bool = bool(envelope["success"])
+    error_type = envelope.get("error_type")
+
+    if error_type == "TimeoutExpired":
         logger.error(
             f"❌ Script execution timed out after {timeout}s: {script_path.name}"
         )
-        return False
-    if envelope["return_code"] == -1:
+    elif envelope["return_code"] == -1:
         logger.error(
             f"Error executing script {script_path.name}: {envelope.get('error', '')}"
         )
-        return False
-    if envelope["success"]:
+    elif success:
         logger.info(f"Script executed successfully: {script_path.name}")
         if verbose:
             logger.debug(f"Output from {script_path.name}:\n{envelope['stdout']}")
-        return True
-    logger.error(
-        f"Script execution failed with return code {envelope['return_code']}: {script_path.name}"
-    )
-    logger.error(f"Error output:\n{envelope['stderr']}")
-    return False
+    else:
+        logger.error(
+            f"Script execution failed with return code {envelope['return_code']}: {script_path.name}"
+        )
+        logger.error(f"Error output:\n{envelope['stderr']}")
+
+    # Persist execution evidence (E-1/J-1, mirrors jax_runner): reuse the
+    # envelope's captured streams rather than re-capturing. Best-effort —
+    # a persistence failure must never mask the run result.
+    import json as json_mod
+    import time as time_mod
+
+    log_dir = output_dir if output_dir else script_path.resolve().parent
+    try:
+        log_dir.mkdir(parents=True, exist_ok=True)
+
+        stdout_file = log_dir / f"{script_path.stem}_stdout.txt"
+        with open(stdout_file, "w") as f:
+            f.write(envelope["stdout"])
+
+        stderr_file = log_dir / f"{script_path.stem}_stderr.txt"
+        with open(stderr_file, "w") as f:
+            f.write(envelope["stderr"])
+
+        execution_log: dict[str, Any] = {
+            "script": str(script_path.resolve()),
+            "command": cmd,
+            "return_code": envelope["return_code"],
+            "success": success,
+            "elapsed_seconds": round(envelope["duration_seconds"], 2),
+            "timeout": timeout,
+            "timestamp": time_mod.strftime("%Y-%m-%d %H:%M:%S"),
+        }
+        if envelope.get("error"):
+            execution_log["error"] = envelope["error"]
+        if error_type:
+            execution_log["error_type"] = error_type
+
+        log_file = log_dir / f"{script_path.stem}_execution_log.json"
+        with open(log_file, "w") as f:
+            json_mod.dump(execution_log, f, indent=2)
+
+        logger.debug(f"Execution logs saved to: {log_dir}")
+    except Exception as log_err:
+        logger.warning(f"Could not save execution logs: {log_err}")
+
+    return success
 
 
 def run_rxinfer_scripts(

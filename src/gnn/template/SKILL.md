@@ -58,7 +58,7 @@ corr_id = generate_correlation_id()
 
 ```python
 # N_module.py — Thin orchestrator (<150 lines)
-from gnn.utils.pipeline_template import create_standardized_pipeline_script
+from gnn.utils.pipeline_orchestration.pipeline_template import create_standardized_pipeline_script
 
 run_script = create_standardized_pipeline_script(
     "N_module.py", process_func, "Description"

@@ -365,7 +365,7 @@ def main() -> int:
     from gnn.parsers.common import GNNFormat
     from gnn.processing.multi_format_processor import process_gnn_multi_format
     from gnn.processing.processor import parse_gnn_file
-    from gnn.utils.mcp_dispatch import run_pipeline_step_mcp
+    from gnn.utils.mcp.dispatch import run_pipeline_step_mcp
     from gnn.validation import process_validation
 
     # Full module-tool discovery (the same code path initialize() uses) so the

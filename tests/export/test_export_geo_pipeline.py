@@ -158,7 +158,7 @@ def test_geo_infer_without_step_seconds_fails_visibly_and_writes_nothing(
 
 
 def test_step7_parser_accepts_geo_flags() -> None:
-    from gnn.utils.arg_parsing import ArgumentParser
+    from gnn.utils.arguments.arg_parsing import ArgumentParser
 
     parser = ArgumentParser.create_step_parser("7_export.py")
     parsed = parser.parse_args(

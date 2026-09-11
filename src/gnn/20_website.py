@@ -36,7 +36,9 @@ from typing import cast
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from gnn.utils.pipeline_template import create_standardized_pipeline_script
+from gnn.utils.pipeline_orchestration.pipeline_template import (
+    create_standardized_pipeline_script,
+)
 
 # Hard import: website is a core module and must always be available.
 from gnn.website import process_website

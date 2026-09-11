@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/gnn/16_analysis.py` (69 lines)
+**Orchestrator**: `src/gnn/16_analysis.py` (71 lines)
 **Implementation Layer**: `src/gnn/analysis/`
 
 ## Module Description

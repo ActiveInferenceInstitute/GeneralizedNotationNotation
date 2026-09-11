@@ -6,7 +6,7 @@ installers) are deliberately NOT exercised.
 
 from __future__ import annotations
 
-from gnn.utils.dependency_validator import (
+from gnn.utils.runtime_safety.dependency_validator import (
     DependencySpec,
     DependencyValidator,
     check_optional_dependencies,

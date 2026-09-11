@@ -28,10 +28,14 @@ from .uv_management import (
 logger = logging.getLogger(__name__)
 
 try:
-    from gnn.utils.jax_stack_validation import run_jax_stack_probe_subprocess
+    from gnn.utils.runtime_safety.jax_stack_validation import (
+        run_jax_stack_probe_subprocess,
+    )
 except ImportError:
     try:
-        from gnn.utils.jax_stack_validation import run_jax_stack_probe_subprocess
+        from gnn.utils.runtime_safety.jax_stack_validation import (
+            run_jax_stack_probe_subprocess,
+        )
     except ImportError:
         run_jax_stack_probe_subprocess = cast(Any, None)
 

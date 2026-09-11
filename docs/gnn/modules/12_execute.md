@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/gnn/12_execute.py` (111 lines)
+**Orchestrator**: `src/gnn/12_execute.py` (113 lines)
 **Implementation Layer**: `src/gnn/execute/`
 
 ## Module Description

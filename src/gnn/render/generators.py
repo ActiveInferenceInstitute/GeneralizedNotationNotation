@@ -24,7 +24,7 @@ def _validate_or_return_empty(
     variant (capitalized) instead of ``model_name``.
     """
     try:
-        from gnn.utils.validation_schemas import validate_model_data
+        from gnn.utils.runtime_safety.validation_schemas import validate_model_data
 
         # Pass required_keys=() to defer to the generator's own .get() defaults.
         return validate_model_data(model_data, required_keys=(), context=context)
@@ -179,7 +179,10 @@ def _parse_matrix_literal_or_raise(matrix_data: Any, *, context: str) -> Any:
     """
     if not isinstance(matrix_data, str):
         return matrix_data
-    from gnn.utils.safe_eval import MATRIX_MAX_LEN, safe_literal_eval
+    from gnn.utils.runtime_safety.safe_eval import (
+        MATRIX_MAX_LEN,
+        safe_literal_eval,
+    )
 
     try:
         return safe_literal_eval(matrix_data.strip(), max_len=MATRIX_MAX_LEN)

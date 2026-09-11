@@ -14,7 +14,7 @@ from gnn.schemas.section_contract import (
     OPTIONAL_SECTIONS,
     REQUIRED_SECTIONS,
 )
-from gnn.utils.mcp_dispatch import run_pipeline_step_mcp, run_tool_envelope
+from gnn.utils.mcp.dispatch import run_pipeline_step_mcp, run_tool_envelope
 
 from . import process_validation
 from .semantic_validator import validate_content

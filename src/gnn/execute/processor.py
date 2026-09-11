@@ -80,10 +80,10 @@ logger = logging.getLogger(__name__)
 # so execute and render stay in sync. The import-check dict and predicate are
 # re-exported here via thin aliases to preserve any external callers that
 # previously imported them from execute.processor.
-from gnn.utils.framework_availability import (  # noqa: E402
-    FRAMEWORK_IMPORT_CHECK as _FRAMEWORK_IMPORT_CHECK,
+from gnn.utils.runtime_safety.framework_availability import (
+    FRAMEWORK_IMPORT_CHECK as _FRAMEWORK_IMPORT_CHECK,  # noqa: E402
 )
-from gnn.utils.framework_availability import (
+from gnn.utils.runtime_safety.framework_availability import (
     is_framework_available as _is_framework_available_by_name,
 )
 
@@ -534,7 +534,9 @@ def process_execute(
         # Phase 1.3: validate frameworks arg before parsing. Rejects non-string
         # input and fully-unknown framework lists early with a clear error.
         try:
-            from gnn.utils.validation_schemas import validate_frameworks_arg
+            from gnn.utils.runtime_safety.validation_schemas import (
+                validate_frameworks_arg,
+            )
 
             frameworks = validate_frameworks_arg(frameworks, context="process_execute")
         except ValueError as _verr:
@@ -553,7 +555,7 @@ def process_execute(
             1, int(kwargs.get("execution_benchmark_repeats", 1))
         )
         execution_summary_detail = bool(kwargs.get("execution_summary_detail", False))
-        require_render_summary = bool(kwargs.get("require_render_summary", False))
+        require_render_summary = bool(kwargs.get("require_render_summary", True))
 
         # Initialize execution results
         execution_results: dict[str, Any] = _init_execution_summary(

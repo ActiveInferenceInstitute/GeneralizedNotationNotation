@@ -71,9 +71,8 @@ def get_pipeline_utilities(step_name: str, verbose: bool = False) -> Tuple[Any, 
     Returns:
         Tuple of pipeline utilities
     """
+    from gnn.utils.arguments.arg_parsing import ArgumentParser
     from gnn.utils.logging_utils import setup_step_logging
-
-    from .argument_utils import ArgumentParser
 
     logger = setup_step_logging(step_name, verbose)
     return logger, ArgumentParser

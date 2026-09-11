@@ -12,7 +12,7 @@ from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
 
-from gnn.utils.mcp_dispatch import run_pipeline_step_mcp, run_tool_envelope
+from gnn.utils.mcp.dispatch import run_pipeline_step_mcp, run_tool_envelope
 
 from . import get_module_info as _get_mod_info
 from . import get_supported_formats, process_report

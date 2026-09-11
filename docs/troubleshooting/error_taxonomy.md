@@ -186,10 +186,10 @@ uv run python src/gnn/main.py --verbose \
 import pdb
 
 # Inspect model state with the real public API
-from gnn import parse_gnn_file, validate_gnn_file
+from gnn import parse_gnn_file, validate_gnn_source
 
 parsed = parse_gnn_file("problematic_model.md")
-result = validate_gnn_file("problematic_model.md")
+result = validate_gnn_source("problematic_model.md")
 print(f"Variables: {parsed.get('variables', [])}")
 if not result["is_valid"]:
     for error in result["errors"]:

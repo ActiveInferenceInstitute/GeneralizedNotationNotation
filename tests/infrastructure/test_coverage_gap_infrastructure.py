@@ -13,19 +13,20 @@ import logging
 from pathlib import Path
 from typing import Any
 
-# Import targets
-from gnn.utils.simulation_utils import DiagramAnalyzer, SimulationTracker
-from gnn.utils.timeout_manager import (
+from gnn.utils.observability.visualization_optimizer import (
+    DataSampler,
+    VisualizationCache,
+    VisualizationOptimizer,
+)
+from gnn.utils.runtime_safety.timeout_manager import (
     LLMTimeoutManager,
     ProcessTimeoutManager,
     TimeoutConfig,
     TimeoutManager,
 )
-from gnn.utils.visualization_optimizer import (
-    DataSampler,
-    VisualizationCache,
-    VisualizationOptimizer,
-)
+
+# Import targets
+from gnn.utils.simulation_utils import DiagramAnalyzer, SimulationTracker
 
 
 # 1. Tests for utils/timeout_manager.py

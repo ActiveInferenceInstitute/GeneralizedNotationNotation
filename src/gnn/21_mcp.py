@@ -38,7 +38,9 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 # Hard import: mcp is a core module and must always be available.
 from gnn.mcp import process_mcp
-from gnn.utils.pipeline_template import create_standardized_pipeline_script
+from gnn.utils.pipeline_orchestration.pipeline_template import (
+    create_standardized_pipeline_script,
+)
 
 run_script = create_standardized_pipeline_script(
     "21_mcp.py",

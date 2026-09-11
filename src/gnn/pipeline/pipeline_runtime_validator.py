@@ -21,7 +21,9 @@ from typing import Any, Dict, List
 
 # gnn.utils.* are same-package core imports; no path bootstrap or
 # degraded-mode scaffolding is needed for them.
-from gnn.utils.pipeline_dependencies import get_pipeline_dependency_manager
+from gnn.utils.pipeline_orchestration.pipeline_dependencies import (
+    get_pipeline_dependency_manager,
+)
 
 # Probe targets resolve against the installed ``gnn`` package root so the
 # checks are independent of the working directory and survive repo-layout

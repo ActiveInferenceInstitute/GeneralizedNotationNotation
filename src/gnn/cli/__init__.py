@@ -984,7 +984,7 @@ def _cmd_reproduce(args: argparse.Namespace) -> int:
     try:
         from gnn.main import _resolve_steps_to_execute
         from gnn.main import main as pipeline_main
-        from gnn.utils.argument_utils import PipelineArguments
+        from gnn.utils.arguments.pipeline_arguments import PipelineArguments
 
         # Reconstruct PipelineArguments
         # Some paths might need to be converted back to Path objects

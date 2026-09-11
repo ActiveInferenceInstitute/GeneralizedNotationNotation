@@ -20,7 +20,7 @@ class TestEnvironmentSetupIntegration:
     @pytest.mark.integration
     def test_environment_validates_before_pipeline(self) -> None:
         """Test environment validation runs before pipeline."""
-        from gnn.utils.testing_utils import validate_test_environment
+        from gnn.utils.testing import validate_test_environment
 
         result = validate_test_environment()
         # validate_test_environment returns (bool, list) tuple or bool

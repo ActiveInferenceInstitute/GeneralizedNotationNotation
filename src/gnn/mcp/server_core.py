@@ -13,6 +13,21 @@ from typing import Any, Callable, Dict, Optional
 
 logger = logging.getLogger("mcp")
 
+# ``tools/call`` results serialized larger than MAX_RESPONSE_BYTES are
+# truncated on a UTF-8 code-point boundary and a notice content item is
+# appended (the MCP tool-result schema stays valid) instead of failing the
+# whole call.
+MAX_RESPONSE_BYTES = 1024 * 1024
+
+
+def _truncate_utf8(text: str, limit: int) -> str:
+    """Truncate ``text`` to at most ``limit`` UTF-8 bytes on a code-point boundary."""
+    encoded = text.encode("utf-8")
+    if len(encoded) <= limit:
+        return text
+    return encoded[:limit].decode("utf-8", errors="ignore")
+
+
 # Import exceptions and shared envelope helpers
 from .exceptions import (
     MCPError,
@@ -128,11 +143,6 @@ class MCPServer:
             JSON-RPC response dictionary
         """
         try:
-            if not isinstance(request, dict):
-                return self._create_error_response(
-                    -32700, "Parse error", "Invalid JSON"
-                )
-
             if "jsonrpc" not in request or request["jsonrpc"] != "2.0":
                 return self._create_error_response(
                     -32600, "Invalid Request", "Missing or invalid jsonrpc field"
@@ -204,9 +214,23 @@ class MCPServer:
             raise MCPInvalidParamsError("Tool name is required")
 
         result = self.mcp.execute_tool(tool_name, tool_params)
-        return {
-            "content": [{"type": "text", "text": serialize_response(result, indent=2)}]
-        }
+        text = serialize_response(result, indent=2)
+        if len(text.encode("utf-8")) > MAX_RESPONSE_BYTES:
+            # Truncate-with-notice policy (see MAX_RESPONSE_BYTES): keep the
+            # MCP tool-result schema valid by appending a second notice
+            # content item rather than failing the whole call.
+            notice = (
+                "[truncated] tools/call result exceeded MAX_RESPONSE_BYTES "
+                f"({MAX_RESPONSE_BYTES} bytes); the serialized text was cut "
+                "to fit."
+            )
+            return {
+                "content": [
+                    {"type": "text", "text": _truncate_utf8(text, MAX_RESPONSE_BYTES)},
+                    {"type": "text", "text": notice},
+                ]
+            }
+        return {"content": [{"type": "text", "text": text}]}
 
     def _handle_resources_list(self, params: Dict[str, Any]) -> Dict[str, Any]:
         """Handle resources/list request."""

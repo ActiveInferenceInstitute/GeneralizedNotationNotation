@@ -43,6 +43,7 @@ from ..graph import (
     generate_variable_parameter_bipartite,
 )
 from ..matrix.extract import collect_visualization_matrices
+from ..matrix.visualizer import MatrixVisualizer
 
 logger = logging.getLogger(__name__)
 
@@ -105,6 +106,15 @@ def process_visualization(
     direct-call behavior.
     """
     log = logger or logging.getLogger("visualization")
+
+    # Optional in-memory carrier (consolidated executor): step 3's parsed
+    # models forwarded by gnn.pipeline.step_executor as the ``parsed_model``
+    # kwarg. Absent or malformed carriers leave the per-file disk loads
+    # unchanged.
+    carrier = kwargs.get("parsed_model")
+    parsed_models = carrier.get("models") if isinstance(carrier, dict) else None
+    if not isinstance(parsed_models, dict):
+        parsed_models = None
     try:
         log_step_start(log, "Processing visualizations")
 
@@ -128,7 +138,14 @@ def process_visualization(
         for gnn_file in gnn_files:
             try:
                 all_visualizations.extend(
-                    process_single_gnn_file(gnn_file, results_dir, verbose)
+                    process_single_gnn_file(
+                        gnn_file,
+                        results_dir,
+                        verbose,
+                        parsed_model=(
+                            parsed_models.get(gnn_file.stem) if parsed_models else None
+                        ),
+                    )
                 )
             except Exception as e:
                 message = f"Error processing {gnn_file}: {e}"
@@ -138,7 +155,9 @@ def process_visualization(
         if len(gnn_files) > 1:
             try:
                 all_visualizations.extend(
-                    generate_combined_visualizations(gnn_files, results_dir, verbose)
+                    generate_combined_visualizations(
+                        gnn_files, results_dir, verbose, parsed_models=parsed_models
+                    )
                 )
             except Exception as e:
                 message = f"Error generating combined visualizations: {e}"
@@ -266,11 +285,17 @@ def write_sampling_note(
 
 
 def process_single_gnn_file(
-    gnn_file: Path, results_dir: Path, verbose: bool = False
+    gnn_file: Path,
+    results_dir: Path,
+    verbose: bool = False,
+    *,
+    parsed_model: Optional[Dict[str, Any]] = None,
 ) -> List[str]:
-    """Process a single GNN file into per-model PNG/JSON/HTML artifacts."""
-    from ..matrix.visualizer import MatrixVisualizer
+    """Process a single GNN file into per-model PNG/JSON/HTML artifacts.
 
+    ``parsed_model`` (consolidated executor carrier) supplies the step-3
+    parsed payload in memory instead of re-reading ``{model}_parsed.json``.
+    """
     with open(gnn_file, encoding="utf-8") as f:
         content = f.read()
 
@@ -284,9 +309,10 @@ def process_single_gnn_file(
             print(f"Using cached visualizations for {model_name}")
         return cached
 
-    parsed_data = load_visualization_model(gnn_file, content, results_dir, verbose)
+    parsed_data = load_visualization_model(
+        gnn_file, content, results_dir, verbose, parsed_model=parsed_model
+    )
     write_stale_json_note_if_needed(parsed_data, model_dir, model_name, gnn_file)
-
     sampled = sample_parsed_data(parsed_data)
     if sampled and verbose:
         print(f"Large dataset detected for {model_name}, applying sampling")

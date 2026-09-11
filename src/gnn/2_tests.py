@@ -21,7 +21,9 @@ from typing import Any, cast
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from gnn.utils.pipeline_template import create_standardized_pipeline_script
+from gnn.utils.pipeline_orchestration.pipeline_template import (
+    create_standardized_pipeline_script,
+)
 
 
 def _test_runner_wrapper(

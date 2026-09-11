@@ -17,6 +17,7 @@ Key Features:
 
 import json
 import logging
+import os
 import queue
 import sys
 import threading
@@ -33,11 +34,18 @@ except ImportError:  # pragma: no cover - direct-script fallback
 
 from .jsonrpc import (
     INTERNAL_ERROR,
+    INVALID_REQUEST,
     jsonrpc_error,
     jsonrpc_result,
     serialize_response,
     validate_request,
 )
+
+# Bounded stdin framing: one line longer than MAX_LINE_BYTES is a protocol
+# violation — emit a JSON-RPC error envelope, report on stderr, and exit
+# cleanly (a length-unbounded byte stream cannot be resynced mid-frame).
+MAX_LINE_BYTES = 1024 * 1024
+_STDIO_READ_CHUNK_BYTES = 65536
 
 _NOTIFICATION = object()
 
@@ -134,12 +142,66 @@ class StdioServer:
             },
         }
 
+    def _readline_bounded(self) -> bytes | None:
+        """Read one newline-terminated line from stdin with a hard size cap.
+
+        Reads ``os.read(0, _STDIO_READ_CHUNK_BYTES)`` chunks until a newline
+        or EOF. Returns the line without its trailing newline, ``b""`` at
+        EOF, or ``None`` when the line exceeded ``MAX_LINE_BYTES`` (the
+        remainder is NOT drained; the caller terminates the server).
+        """
+        chunks: list[bytes] = []
+        total = 0
+        while True:
+            chunk = os.read(0, _STDIO_READ_CHUNK_BYTES)
+            if not chunk:
+                return b"".join(chunks)
+            newline = chunk.find(b"\n")
+            if newline != -1:
+                chunks.append(chunk[:newline])
+                break
+            chunks.append(chunk)
+            total += len(chunk)
+            if total > MAX_LINE_BYTES:
+                return None
+        line = b"".join(chunks)
+        return None if len(line) > MAX_LINE_BYTES else line
+
     def _reader_thread(self) -> Any:
         """Enhanced thread that reads JSON-RPC messages from stdin with connection monitoring."""
         try:
             while self.running:
                 try:
-                    line = sys.stdin.readline()
+                    line = self._readline_bounded()
+                    if line is None:
+                        # Oversized line: emit a protocol-valid envelope,
+                        # report on stderr, and terminate — the stdio stream
+                        # cannot be resynced mid-frame, matching the EOF
+                        # lifecycle (clean thread exit, server shutdown).
+                        logger.error(
+                            "stdin line exceeded MAX_LINE_BYTES (%d bytes)",
+                            MAX_LINE_BYTES,
+                        )
+                        try:
+                            self.response_queue.put(
+                                jsonrpc_error(
+                                    None,
+                                    INVALID_REQUEST,
+                                    "Invalid Request: stdin line exceeded "
+                                    f"{MAX_LINE_BYTES} bytes",
+                                ),
+                                timeout=1.0,
+                            )
+                        except queue.Full:
+                            logger.warning(
+                                "Response queue full, dropping error response"
+                            )
+                        sys.stderr.write(
+                            f"MCP stdio: input line exceeded {MAX_LINE_BYTES} "
+                            "bytes; terminating server.\n"
+                        )
+                        self.running = False
+                        break
                     if not line:
                         logger.info("End of input detected, stopping server")
                         self.running = False
@@ -162,7 +224,9 @@ class StdioServer:
                         self.request_queue.put(message, timeout=1.0)
 
                     except json.JSONDecodeError as e:
-                        logger.error(f"Invalid JSON message: {line.strip()} - {e}")
+                        logger.error(
+                            f"Invalid JSON message: {line.strip().decode('utf-8', 'replace')} - {e}"
+                        )
                         self._connection_errors += 1
 
                         # Send JSON-RPC parse error

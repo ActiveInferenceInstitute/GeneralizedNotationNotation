@@ -519,11 +519,11 @@ goal_weight_01>goal_level_0
 uv pip install jupyter ipywidgets
 
 # Run from the repository root
-from gnn import parse_gnn_file, validate_gnn_file
+from gnn import parse_gnn_file, validate_gnn_source
 
 # Load and process GNN model
 model = parse_gnn_file('my_model.md')
-validation_result = validate_gnn_file('my_model.md')
+validation_result = validate_gnn_source('my_model.md')
 
 # Interactive widgets for parameter tuning
 from ipywidgets import interact, FloatSlider
@@ -878,7 +878,7 @@ def profile_gnn_pipeline():
     
     # Your GNN workflow
     model = parse_gnn_file('large_model.md')
-    result = validate_gnn_file('large_model.md')
+    result = validate_gnn_source('large_model.md')
     
     pr.disable()
     pr.print_stats(sort='time')

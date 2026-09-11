@@ -40,7 +40,9 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 # Hard import: type_checker is a core module and must always be available.
 # ImportError here means the module is broken or missing — fail loudly.
 from gnn.type_checker import GNNTypeChecker
-from gnn.utils.pipeline_template import create_standardized_pipeline_script
+from gnn.utils.pipeline_orchestration.pipeline_template import (
+    create_standardized_pipeline_script,
+)
 
 
 def _type_check_dispatch(

@@ -353,15 +353,24 @@ def canonical_step_stem(step_alias: str) -> str:
 # Consolidated in-process execution (S2-11 / V4-STAGE)
 # ---------------------------------------------------------------------------
 CONSOLIDATED_IN_PROCESS_STEMS: frozenset[str] = frozenset(
-    {"0_template", "3_gnn", "5_type_checker"}
+    {
+        "0_template",
+        "3_gnn",
+        "5_type_checker",
+        "7_export",
+        "8_visualization",
+        "11_render",
+    }
 )
 """Canonical stems the opt-in consolidated executor runs in-process.
 
-First slice of the V4 stage-consolidation decision
-(``docs/decisions/0001-consolidated-pipeline-execution.md``): the numbered
-scripts stay the CLI surface; these steps additionally run in-process under
-``--consolidated-steps`` via ``gnn.pipeline.step_executor``. Extend this set
-as steps are proven equivalent — resolution always flows through
+The numbered scripts stay the CLI surface; these steps additionally run
+in-process under ``--consolidated-steps`` via ``gnn.pipeline.step_executor``.
+Slice 1 (ADR 0001, ``docs/decisions/0001-consolidated-pipeline-execution.md``)
+proved the equivalence contract on the discovery/schema steps; slice 2 adds
+the export/viz/render steps after an in-process-safety audit (no subprocess
+spawns, no cwd-relative writes in the step path). Extend this set as further
+steps are proven equivalent — resolution always flows through
 ``StepInfo.module_function``, never around it.
 """
 

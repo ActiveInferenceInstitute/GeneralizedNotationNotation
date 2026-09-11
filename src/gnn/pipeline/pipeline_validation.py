@@ -415,7 +415,7 @@ def generate_improvement_recommendations(report: Dict) -> List[str]:
             "🔧 **Next Steps:**",
             "   1. Run `python -m utils.argument_utils --validate` to check argument consistency",
             "   2. Run `python -m utils.dependency_validator` for dependency analysis",
-            "   3. Use `GNN_PIPELINE_VERBOSE=true python src/main.py` for detailed execution logs",
+            "   3. Use `GNN_PIPELINE_VERBOSE=true uv run python src/gnn/main.py` for detailed execution logs",
         ]
     )
 
@@ -427,7 +427,7 @@ def validate_argument_consistency() -> Dict[str, List[str]]:
     issues: dict[str, Any] = {"errors": [], "warnings": [], "inconsistencies": []}
 
     try:
-        from gnn.utils.argument_utils import ArgumentParser
+        from gnn.utils.arguments.arg_parsing import ArgumentParser
 
         STEP_ARGUMENTS = ArgumentParser.STEP_ARGUMENTS
 

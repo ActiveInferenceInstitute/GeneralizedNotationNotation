@@ -9,7 +9,6 @@ so they track the section contract rather than duplicating it.
 
 from __future__ import annotations
 
-import logging
 from pathlib import Path
 
 import pytest
@@ -92,12 +91,9 @@ class TestLevelRank:
     def test_string_level_is_resolved(self) -> None:
         assert self.validator._level_rank("strict") == 30
 
-    def test_unknown_level_ranks_zero_and_warns(
-        self, caplog: pytest.LogCaptureFixture
-    ) -> None:
-        with caplog.at_level(logging.WARNING, logger="gnn.schema_validator.validator"):
-            assert self.validator._level_rank("nonsense") == 0
-        assert any("Unknown validation level" in r.message for r in caplog.records)
+    def test_unknown_level_raises(self) -> None:
+        with pytest.raises(ValueError, match="Unknown validation level"):
+            self.validator._level_rank("nonsense")
 
 
 class TestValidatorConstruction:

@@ -380,7 +380,10 @@ def parse_gnn_matrix_string(matrix_str: str) -> np.ndarray:
     Returns:
         Numpy array representation of the matrix
     """
-    from gnn.utils.safe_eval import MATRIX_MAX_LEN, safe_literal_eval
+    from gnn.utils.runtime_safety.safe_eval import (
+        MATRIX_MAX_LEN,
+        safe_literal_eval,
+    )
 
     try:
         # Remove comments and extra whitespace
@@ -539,7 +542,8 @@ def check_gnn_pomdp_spec(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
 def validate_gnn_pomdp_structure(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
     """Old name for :func:`check_gnn_pomdp_spec`; emits DeprecationWarning."""
     warnings.warn(
-        "validate_gnn_pomdp_structure is an old name; use check_gnn_pomdp_spec instead.",
+        "validate_gnn_pomdp_structure is an old name; use "
+        "check_gnn_pomdp_spec instead. It will be removed in v4.0.0.",
         DeprecationWarning,
         stacklevel=2,
     )

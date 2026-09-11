@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from gnn.utils.pipeline_dependencies import (
+from gnn.utils.pipeline_orchestration.pipeline_dependencies import (
     get_pipeline_dependency_manager,
 )
 

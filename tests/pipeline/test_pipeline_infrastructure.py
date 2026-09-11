@@ -181,7 +181,7 @@ class TestUtilsPipelineMonitor:
     @pytest.mark.unit
     def test_monitor_imports(self) -> None:
         """Test that pipeline monitor can be imported."""
-        from gnn.utils import pipeline_monitor
+        from gnn.utils.pipeline_orchestration import pipeline_monitor
 
         assert hasattr(pipeline_monitor, "PipelineMonitor")
         assert hasattr(pipeline_monitor, "HealthStatus")
@@ -190,7 +190,7 @@ class TestUtilsPipelineMonitor:
     @pytest.mark.unit
     def test_pipeline_monitor_class(self) -> None:
         """Test PipelineMonitor class functionality."""
-        from gnn.utils.pipeline_monitor import PipelineMonitor
+        from gnn.utils.pipeline_orchestration.pipeline_monitor import PipelineMonitor
 
         monitor = PipelineMonitor()
         assert hasattr(monitor, "start_monitoring")
@@ -202,7 +202,7 @@ class TestUtilsPipelineMonitor:
     @pytest.mark.unit
     def test_monitor_step_execution(self) -> None:
         """Test step monitoring functionality."""
-        from gnn.utils.pipeline_monitor import PipelineMonitor
+        from gnn.utils.pipeline_orchestration.pipeline_monitor import PipelineMonitor
 
         monitor = PipelineMonitor()
         execution_id = monitor.record_step_start("test_step")
@@ -218,7 +218,7 @@ class TestUtilsResourceManager:
     @pytest.mark.unit
     def test_resource_manager_imports(self) -> None:
         """Test that resource manager can be imported."""
-        from gnn.utils import resource_manager
+        from gnn.utils.runtime_safety import resource_manager
 
         assert resource_manager is not None
         if hasattr(resource_manager, "ResourceManager"):
@@ -227,7 +227,10 @@ class TestUtilsResourceManager:
     @pytest.mark.unit
     def test_resource_manager_class(self) -> None:
         """Test resource management functions."""
-        from gnn.utils.resource_manager import get_current_memory_usage, get_system_info
+        from gnn.utils.runtime_safety.resource_manager import (
+            get_current_memory_usage,
+            get_system_info,
+        )
 
         memory = get_current_memory_usage()
         assert isinstance(memory, float)
@@ -240,7 +243,7 @@ class TestUtilsResourceManager:
     @pytest.mark.unit
     def test_resource_tracker(self) -> None:
         """Test ResourceTracker class functionality."""
-        from gnn.utils.resource_manager import ResourceTracker
+        from gnn.utils.runtime_safety.resource_manager import ResourceTracker
 
         tracker = ResourceTracker()
         assert hasattr(tracker, "duration")
@@ -275,8 +278,8 @@ class TestPipelineInfrastructureIntegration:
     @pytest.mark.integration
     def test_monitoring_and_resource_management_integration(self) -> None:
         """Test integration between monitoring and resource management."""
-        from gnn.utils.pipeline_monitor import PipelineMonitor
-        from gnn.utils.resource_manager import ResourceTracker
+        from gnn.utils.pipeline_orchestration.pipeline_monitor import PipelineMonitor
+        from gnn.utils.runtime_safety.resource_manager import ResourceTracker
 
         monitor = PipelineMonitor()
         tracker = ResourceTracker()
@@ -312,10 +315,15 @@ def test_pipeline_infrastructure_completeness() -> None:
             ["discovery", "pipeline_validation", "verify_pipeline"],
         ),
         (
-            "gnn.utils",
+            "gnn.utils.runtime_safety",
+            [
+                "resource_manager",
+            ],
+        ),
+        (
+            "gnn.utils.pipeline_orchestration",
             [
                 "pipeline_monitor",
-                "resource_manager",
             ],
         ),
     ]

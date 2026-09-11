@@ -130,7 +130,7 @@ class ParameterParsingMixin:
                     return matrix
 
             # Try to evaluate as Python literal (bounded against DoS).
-            from gnn.utils.safe_eval import safe_literal_eval
+            from gnn.utils.runtime_safety.safe_eval import safe_literal_eval
 
             return safe_literal_eval(value_str)
 

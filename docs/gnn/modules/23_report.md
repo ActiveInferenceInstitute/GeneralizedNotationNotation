@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/gnn/23_report.py` (55 lines)
+**Orchestrator**: `src/gnn/23_report.py` (57 lines)
 **Implementation Layer**: `src/gnn/report/`
 
 ## Module Description

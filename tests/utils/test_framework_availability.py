@@ -16,7 +16,7 @@ SRC = Path(__file__).resolve().parents[2]
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
-from gnn.utils.framework_availability import (  # noqa: E402
+from gnn.utils.runtime_safety.framework_availability import (  # noqa: E402
     FRAMEWORK_IMPORT_CHECK,
     FrameworkStatus,
     check_framework,
@@ -26,7 +26,9 @@ from gnn.utils.framework_availability import (  # noqa: E402
 
 @pytest.mark.parametrize("framework", list(FRAMEWORK_IMPORT_CHECK.keys()))
 def test_is_framework_available_matches_find_spec(framework: Any) -> Any:
-    from gnn.utils.framework_availability import FRAMEWORK_PROBE_STATEMENT
+    from gnn.utils.runtime_safety.framework_availability import (
+        FRAMEWORK_PROBE_STATEMENT,
+    )
 
     module_name, _ = FRAMEWORK_IMPORT_CHECK[framework]
     expected = importlib.util.find_spec(module_name) is not None

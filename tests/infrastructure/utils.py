@@ -15,7 +15,7 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, List
 
-from gnn.utils.testing_utils import TEST_DIR
+from gnn.utils.testing import TEST_DIR
 
 
 def check_test_dependencies(logger: logging.Logger) -> Dict[str, Any]:

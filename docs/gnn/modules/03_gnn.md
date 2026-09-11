@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/gnn/3_gnn.py` (32 lines)
+**Orchestrator**: `src/gnn/3_gnn.py` (34 lines)
 **Implementation Layer**: `src/gnn/`
 
 ## Module Description
@@ -231,7 +231,7 @@ success = process_gnn_multi_format(
 
 **Location**: `src/gnn/processing/processor.py`
 
-#### `validate_gnn_file(source: Any, *, is_content: bool = False) -> Dict[str, Any]`
+#### `validate_gnn_source(source: Any, *, is_content: bool = False) -> Dict[str, Any]`
 
 **Description**: Validate a GNN file path or content string. When `source` is
 an existing path and `is_content` is `False`, the file is read first;
@@ -246,12 +246,16 @@ otherwise `source` is treated as raw content.
 
 - `is_valid` (bool): Whether content is valid
 - `errors` (List[str]): List of validation errors
+The old name `validate_gnn_file` remains as an alias emitting
+`DeprecationWarning`; it will be removed in v4.0.0.
 
 **Location**: `src/gnn/__init__.py`
 
-#### `validate_gnn(file_path_or_content: str, validation_level: ValidationLevel = ValidationLevel.STANDARD, **kwargs) -> Tuple[bool, List[str]]`
+#### `validate_gnn_syntax(file_path_or_content: str | Path, validation_level: ValidationLevel = ValidationLevel.STANDARD, **kwargs) -> Tuple[bool, List[str]]`
 
-**Description**: Validate a GNN file or content string.
+**Description**: Validate a GNN file or content string. The old name
+`validate_gnn` remains as an alias emitting `DeprecationWarning`; it will
+be removed in v4.0.0.
 
 **Parameters**:
 
@@ -301,7 +305,7 @@ otherwise `source` is treated as raw content.
 
 #### `GNNFormalParser` (`parser.py`)
 
-**Description**: Formal / section-oriented parsing helpers used with `validate_gnn`, `parse_gnn_formal`, etc.
+**Description**: Formal / section-oriented parsing helpers used with `validate_gnn_syntax`, `parse_gnn_formal`, etc.
 
 #### `GNNParser` (two meanings)
 

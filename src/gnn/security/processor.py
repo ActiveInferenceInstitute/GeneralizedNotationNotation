@@ -26,7 +26,11 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Tuple, cast
 
-from gnn.utils.pipeline_template import log_step_error, log_step_start, log_step_success
+from gnn.utils.observability.structured_logging import (
+    log_step_error,
+    log_step_start,
+    log_step_success,
+)
 
 logger = logging.getLogger(__name__)
 

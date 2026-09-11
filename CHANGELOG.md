@@ -115,6 +115,35 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   (`counts_describe_commit`) pins the commit; the checksum covers the
   commit-stable counts.
 
+### Deprecated (2026-09-11 — validate_gnn* retirement window OPENED)
+
+- All 10 `validate_gnn*` old-name alias sites now document the removal
+  window in their `DeprecationWarning` message: every warning names its
+  canonical replacement and adds "It will be removed in v4.0.0." Warnings
+  emit at call time with `stacklevel=2` (package-root lazy exports resolve
+  through the alias wrappers, so there are no import-time warnings).
+  Mappings: `parsers.basic.validate_gnn` / `validate_gnn_syntax_formal` →
+  `validate_gnn_syntax`; `gnn.validate_gnn_file` → `validate_gnn_source`;
+  `validate_gnn_structure` → `check_gnn_file_structure`;
+  `validate_gnn_pomdp_structure` → `check_gnn_pomdp_spec`;
+  `schema_validator.validate_gnn_file` → `validate_gnn_file_comprehensive`;
+  `validation.simple.validate_gnn_file` / `validate_gnn_directory` →
+  `check_gnn_file_basic` / `check_gnn_directory_basic`;
+  `validate_gnn_cross_format_consistency` →
+  `check_cross_format_consistency`; `llm validate_gnn` →
+  `validate_gnn_with_llm`. Warning emission is pinned by
+  `test_alias_warnings_document_removal_window` in
+  `tests/test_validate_surface_aliases.py`.
+- Fixed the `scripts/validate_surface_manifest.json` canonical/old-name
+  inversion: `parsers/basic.py:validate_gnn` and
+  `__init__.py:validate_gnn_file` were mislisted as canonical; the code
+  and the MAJ-05 entry above confirm `validate_gnn_syntax` /
+  `validate_gnn_source` are canonical. MCP tool registry names
+  (`validate_gnn_content`, `validate_gnn_file`, `validate_gnn_files`)
+  remain unchanged contracts.
+- Retirement in v4.0.0 = delete the alias defs, their pins in
+  `tests/test_validate_surface_aliases.py`, and any registry entries.
+
 ### Changed
 
 

@@ -474,7 +474,10 @@ class GNNVisualizer:
         matrix_str = matrix_str.replace("[", "[").replace("]", "]")
 
         # Evaluate as Python expression
-        from gnn.utils.safe_eval import MATRIX_MAX_LEN, safe_literal_eval
+        from gnn.utils.runtime_safety.safe_eval import (
+            MATRIX_MAX_LEN,
+            safe_literal_eval,
+        )
 
         matrix_data = safe_literal_eval(matrix_str, max_len=MATRIX_MAX_LEN)
 

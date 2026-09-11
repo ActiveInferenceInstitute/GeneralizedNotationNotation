@@ -92,11 +92,10 @@ if __name__ == "__main__":
 from copy import copy
 from dataclasses import dataclass, fields
 
-from gnn.utils.argument_utils import (
-    ArgumentParser,
-    PipelineArguments,
-    StepConfiguration,
-)
+from gnn.utils.arguments.arg_parsing import ArgumentParser
+from gnn.utils.arguments.pipeline_arguments import PipelineArguments
+from gnn.utils.arguments.pipeline_config_merge import apply_input_config_defaults
+from gnn.utils.arguments.step_config import StepConfiguration
 from gnn.utils.error_handling import (
     is_critical_pipeline_step,
 )
@@ -119,14 +118,7 @@ from gnn.utils.logging_utils import (
     rotate_logs,
     setup_step_logging,
 )
-from gnn.utils.pipeline_config_merge import apply_input_config_defaults
-from gnn.utils.pipeline_step_dependencies import resolve_step_dependencies
-from gnn.utils.pipeline_validator import (
-    validate_pipeline_step_sequence,
-    validate_step_prerequisites,
-)
-from gnn.utils.resource_manager import get_current_memory_usage
-from gnn.utils.visual_logging import (
+from gnn.utils.observability.visual_logging import (
     VisualConfig,
     VisualLogger,
     create_visual_logger,
@@ -134,6 +126,14 @@ from gnn.utils.visual_logging import (
     print_pipeline_banner,
     print_step_summary,
 )
+from gnn.utils.pipeline_orchestration.pipeline_step_dependencies import (
+    resolve_step_dependencies,
+)
+from gnn.utils.pipeline_orchestration.pipeline_validator import (
+    validate_pipeline_step_sequence,
+    validate_step_prerequisites,
+)
+from gnn.utils.runtime_safety.resource_manager import get_current_memory_usage
 
 STRUCTURED_LOGGING_AVAILABLE = True
 PipelineStep = tuple[str, str]
@@ -456,6 +456,35 @@ def _load_pipeline_config(
     return full_config, config_pipeline_settings
 
 
+def _preflight_config_gate(
+    override_config: Optional[Dict[str, Any]], logger: logging.Logger
+) -> None:
+    """Fail startup on config errors before any pipeline step executes.
+
+    Runs the config-only preflight (``gnn.pipeline.preflight.validate_config``)
+    against the same on-disk ``input/config.yaml`` that ``_load_pipeline_config``
+    reads. Caller-supplied ``override_config`` bypasses the file contract and is
+    not re-validated here. A missing config file is reported by preflight as a
+    warning and stays tolerated.
+    """
+    if override_config is not None:
+        return
+    from gnn.pipeline.preflight import validate_config
+
+    report = validate_config(Path("input/config.yaml"))
+    # PreflightReport.checks_failed counts only severity=="error" issues
+    # (warnings — e.g. a missing config file — never fail the gate).
+    if report.checks_failed:
+        errors = [issue for issue in report.issues if issue.severity == "error"]
+        details = "; ".join(f"[{i.category}] {i.message}" for i in errors)
+        raise ValueError(
+            f"Preflight config validation failed with {report.checks_failed} "
+            f"error(s): {details}"
+        )
+    for issue in report.issues:
+        logger.warning(f"Preflight config: [{issue.category}] {issue.message}")
+
+
 def _resolve_steps_to_execute(
     args: PipelineArguments,
     config_pipeline_settings: dict[Any, Any],
@@ -576,6 +605,7 @@ def _prepare_pipeline_context(
         full_config, config_pipeline_settings = _load_pipeline_config(
             override_config, logger
         )
+        _preflight_config_gate(override_config, logger)
         apply_input_config_defaults(args, full_config, parsed)
 
         steps_to_execute = _resolve_steps_to_execute(
@@ -943,6 +973,40 @@ def _consolidated_step_selected(
     )
 
 
+def _execute_selected_step(
+    script_name: str,
+    args: PipelineArguments,
+    pipeline_summary: dict[str, Any],
+    logger: logging.Logger,
+) -> Dict[str, Any]:
+    """Dispatch one selected step to the consolidated executor or subprocess.
+
+    Shared by the serial loop and the parallel tier's worker submission so
+    ``--consolidated-steps`` applies to both execution tiers: whitelisted
+    steps run in-process, everything else keeps the canonical subprocess
+    path (mixed modes within one run are legal).
+    """
+    run_id = pipeline_summary.get("run_id")
+    pipeline_config = pipeline_summary.get("identity_config", {}).get("input_config")
+    if _consolidated_step_selected(script_name, args, pipeline_summary):
+        from gnn.pipeline.step_executor import execute_step_in_process
+
+        return execute_step_in_process(
+            script_name,
+            args,
+            logger,
+            run_id=run_id,
+            pipeline_config=pipeline_config,
+        )
+    return execute_pipeline_step(
+        script_name,
+        args,
+        logger,
+        run_id=run_id,
+        pipeline_config=pipeline_config,
+    )
+
+
 def _execute_pipeline_iteration(
     step_index: int,
     script_name: str,
@@ -974,29 +1038,9 @@ def _execute_pipeline_iteration(
     if script_name in ("23_report.py", "24_intelligent_analysis.py"):
         _write_preliminary_pipeline_summary(pipeline_summary, args.output_dir, logger)
 
-    step_result: dict[str, Any]
-    if _consolidated_step_selected(script_name, args, pipeline_summary):
-        from gnn.pipeline.step_executor import execute_step_in_process
-
-        step_result = execute_step_in_process(
-            script_name,
-            args,
-            logger,
-            run_id=pipeline_summary.get("run_id"),
-            pipeline_config=pipeline_summary.get("identity_config", {}).get(
-                "input_config"
-            ),
-        )
-    else:
-        step_result = execute_pipeline_step(
-            script_name,
-            args,
-            logger,
-            run_id=pipeline_summary.get("run_id"),
-            pipeline_config=pipeline_summary.get("identity_config", {}).get(
-                "input_config"
-            ),
-        )
+    step_result: dict[str, Any] = _execute_selected_step(
+        script_name, args, pipeline_summary, logger
+    )
     step_duration = time.time() - step_start_time
     step_end_datetime = datetime.now()
 
@@ -1343,7 +1387,9 @@ def _run_pipeline(
             from concurrent.futures import ThreadPoolExecutor
 
             from gnn.pipeline.dag import resolve_execution_order
-            from gnn.utils.pipeline_step_dependencies import PIPELINE_STEP_DEPENDENCIES
+            from gnn.utils.pipeline_orchestration.pipeline_step_dependencies import (
+                PIPELINE_STEP_DEPENDENCIES,
+            )
 
             deps_dict = {
                 step_num: list(deps)
@@ -1415,14 +1461,11 @@ def _run_pipeline(
                             tier_steps
                         ):
                             f = pool.submit(
-                                execute_pipeline_step,
+                                _execute_selected_step,
                                 script_name,
                                 args,
+                                pipeline_summary,
                                 logger,
-                                run_id=pipeline_summary.get("run_id"),
-                                pipeline_config=pipeline_summary.get(
-                                    "identity_config", {}
-                                ).get("input_config"),
                             )
                             futures.append(
                                 (
@@ -1577,8 +1620,10 @@ def execute_pipeline_step(
                             target_folders.append(item)
 
         from gnn.pipeline.step_timeouts import get_step_timeout
-        from gnn.utils.argument_utils import build_step_command_args
-        from gnn.utils.execution_utils import execute_command_streaming
+        from gnn.utils.arguments.arg_parsing import build_step_command_args
+        from gnn.utils.pipeline_orchestration.execution_utils import (
+            execute_command_streaming,
+        )
 
         # Prepare environment
         _env = os.environ.copy()

@@ -30,7 +30,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from gnn.pipeline.config import get_output_dir_for_script
-from gnn.utils.pipeline_validator import (
+from gnn.utils.pipeline_orchestration.pipeline_validator import (
     check_pipeline_readiness,
     validate_step_prerequisites,
 )

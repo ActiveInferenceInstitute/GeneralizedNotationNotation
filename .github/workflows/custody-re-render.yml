@@ -1,0 +1,128 @@
+name: Custody re-render
+
+# SC-22 residual: a scheduled/manual CI run confirms the custody chain on a
+# fresh render. The committed PDF evidence (output/pdf/_combined_manuscript.*)
+# is produced by the docxology/template render stage (see
+# manuscript/05_reproducibility.md §"Reproducible by command" and
+# scripts/z_record_manuscript_render_manifest.py's docstring): the render stage
+# lives in the template checkout, with this repository symlinked into it at
+# `projects/active/GeneralizedNotationNotation`. This workflow reproduces that
+# documented ritual (scripts/z_generate_manuscript_variables.py's docstring —
+# regenerate → rebuild figures → stage_03_render → record manifest) in CI and
+# then re-proves the whole chain against HEAD: the strict token gate, the
+# render-custody manifest record, and tests/test_manuscript_latex_log.py.
+#
+# Report-only: nothing is committed back. The rendered artifacts, the custody
+# manifest and the producer receipt are uploaded as run receipts, and a red
+# run is the drift signal — it means the committed chain no longer describes
+# HEAD (re-run the manual SC-22 ritual locally and commit, as today).
+#
+# The template checkout is taken at its default branch head, matching a
+# developer's sibling checkout; this run is what detects template drift.
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Daily 07:14 UTC — does not collide with the 04:28/06:00 crons.
+    - cron: "14 7 * * *"
+
+concurrency:
+  group: custody-re-render-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  custody-re-render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      UV_PYTHON: "3.12"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Check out the docxology/template render stage
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: docxology/template
+          path: template
+          persist-credentials: false
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v7.6.0
+        with:
+          # Pin uv to the Dockerfile bootstrap floor series (UV_VERSION=0.12.0).
+          version: "0.12"
+          enable-cache: true
+
+      - name: Install LaTeX (xelatex) and assert pandoc
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            texlive-xetex texlive-latex-extra texlive-fonts-recommended
+          # pandoc is preinstalled on ubuntu runner images; fail loudly if the
+          # image ever drops it rather than failing later inside the render.
+          pandoc --version
+
+      - name: Install dependencies (dev)
+        run: uv sync --frozen --extra dev
+
+      - name: Install template's locked runtime
+        run: uv sync --frozen --project template
+
+      - name: Symlink this checkout into the template at projects/active/
+        run: |
+          mkdir -p template/projects/active
+          ln -sfn "$GITHUB_WORKSPACE" \
+            "$GITHUB_WORKSPACE/template/projects/active/GeneralizedNotationNotation"
+
+      # SC-22 ritual step 2: the render pipeline verifies figures but does
+      # not rebuild them (infrastructure.rendering.pipeline's verify_figures).
+      - name: Rebuild manuscript figures
+        run: uv run --extra dev python -m scripts.manuscript_build_figures
+
+      # SC-22 ritual steps 3+1: the render launcher exports TEMPLATE_REPO_ROOT
+      # and re-invokes scripts/z_generate_manuscript_variables.py with this
+      # checkout's .venv (infrastructure.rendering._manuscript_source).
+      - name: Render the manuscript PDF (template stage_03_render)
+        working-directory: template
+        run: |
+          uv run --frozen python scripts/pipeline/stage_03_render.py \
+            --project GeneralizedNotationNotation
+
+      - name: Record render custody manifest
+        run: uv run --extra dev python scripts/z_record_manuscript_render_manifest.py
+
+      - name: Manuscript token audit (strict)
+        run: uv run --extra dev python scripts/check_manuscript_tokens.py --strict
+
+      - name: Render custody + LaTeX log evidence tests
+        run: uv run --extra dev python -m pytest tests/test_manuscript_latex_log.py -q -p no:cacheprovider
+
+      - name: Collect receipts
+        if: always()
+        run: |
+          mkdir receipts
+          git -C template rev-parse HEAD > receipts/template-revision.txt
+          cp output/data/manuscript_render_manifest.json receipts/
+          cp output/data/manuscript_variables.json receipts/
+          cp output/data/manuscript_variables_receipt.json receipts/
+          cp output/pdf/_combined_manuscript.log receipts/
+          cp output/pdf/_combined_manuscript.tex receipts/
+          cp output/pdf/_combined_manuscript.md receipts/
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
+        with:
+          name: custody-re-render-receipts
+          path: receipts/
+          if-no-files-found: error
+          retention-days: 14

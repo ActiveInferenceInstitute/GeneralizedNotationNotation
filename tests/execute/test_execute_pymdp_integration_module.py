@@ -31,7 +31,7 @@ sys.path.insert(0, str(project_root / "src"))
 
 from gnn.parsers.markdown_parser import MarkdownGNNParser
 from gnn.render.pymdp.pymdp_renderer import PyMDPRenderer
-from gnn.utils.jax_stack_validation import jax_pymdp_stack_ok
+from gnn.utils.runtime_safety.jax_stack_validation import jax_pymdp_stack_ok
 
 try:
     from gnn.execute.pymdp.pymdp_simulation import PyMDPSimulation

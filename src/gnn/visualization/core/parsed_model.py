@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 from ..parse.markdown import parse_gnn_content
 
@@ -74,6 +74,8 @@ def load_visualization_model(
     content: str,
     results_dir: Path,
     verbose: bool = False,
+    *,
+    parsed_model: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     """
     Build the visualization input dict.
@@ -82,10 +84,39 @@ def load_visualization_model(
     source file; otherwise parses markdown. When JSON exists but is older than the
     source, still loads JSON (JSON-primary) and sets ``_viz_meta.json_stale`` and
     expects the caller to write a warning note.
+
+    ``parsed_model`` (consolidated executor carrier) supplies the same
+    step-3 JSON payload in memory; when given, the on-disk JSON is not
+    re-read and staleness is still derived from the file mtimes, producing
+    a dict identical to a disk load.
     """
     model_name = gnn_file.stem
     gnn_out = resolve_gnn_step3_output_dir(results_dir)
     parsed_json = gnn_out / model_name / f"{model_name}_parsed.json"
+
+    if parsed_model is not None and isinstance(parsed_model, dict):
+        # Consolidated in-memory carrier: the executor already read
+        # ``{model}_parsed.json`` once; reuse those bytes. Staleness still
+        # comes from the on-disk mtimes so ``_viz_meta`` stays identical to
+        # a disk load.
+        try:
+            stale = parsed_json.stat().st_mtime < gnn_file.stat().st_mtime
+        except OSError as e:
+            logger.warning(
+                "Could not stat %s for staleness check: %s; assuming fresh",
+                parsed_json,
+                e,
+            )
+            stale = False
+        result = _dict_from_parsed_json(parsed_model, parsed_json, stale)
+        if verbose and stale:
+            logger.warning(
+                "Parsed JSON older than %s; re-run step 3 for fresh data. Using JSON anyway.",
+                gnn_file.name,
+            )
+        elif verbose:
+            logger.info("Visualization data loaded from %s", parsed_json)
+        return result
 
     if parsed_json.is_file():
         try:
@@ -123,7 +154,7 @@ def stale_json_note_text(gnn_file: Path, parsed_json: Path) -> str:
         f"Step-3 parsed JSON is older than the source GNN file.\n"
         f"Source: {gnn_file}\n"
         f"JSON:   {parsed_json}\n"
-        f"Re-run: python src/main.py --only-steps 3 --verbose\n"
+        f"Re-run: uv run python src/gnn/main.py --only-steps 3 --verbose\n"
     )
 
 

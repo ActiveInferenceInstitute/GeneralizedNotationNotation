@@ -78,7 +78,10 @@ def test_extract_pomdp_from_file_imports_and_extracts_with_heavy_deps_blocked() 
     sys.meta_path.insert(0, blocker)
     try:
         from gnn.extract.pomdp_extractor import extract_pomdp_from_file
-        from gnn.utils.safe_eval import MATRIX_MAX_LEN, safe_literal_eval
+        from gnn.utils.runtime_safety.safe_eval import (
+            MATRIX_MAX_LEN,
+            safe_literal_eval,
+        )
 
         assert MATRIX_MAX_LEN > 0
         assert safe_literal_eval("(1, 2)") == (1, 2)

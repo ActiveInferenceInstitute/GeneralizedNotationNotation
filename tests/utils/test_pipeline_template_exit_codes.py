@@ -25,7 +25,9 @@ from gnn.utils.error_handling import (  # noqa: E402
     pipeline_exit_code,
     status_from_exit_code,
 )
-from gnn.utils.pipeline_template import _coerce_exit_code  # noqa: E402
+from gnn.utils.pipeline_orchestration.pipeline_template import (
+    _coerce_exit_code,  # noqa: E402
+)
 
 
 @pytest.fixture

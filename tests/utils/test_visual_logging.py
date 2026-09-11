@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from gnn.utils.visual_logging import VisualConfig, VisualLogger
+from gnn.utils.observability.visual_logging import VisualConfig, VisualLogger
 
 
 def test_format_message_strips_status_icons_when_disabled() -> None:

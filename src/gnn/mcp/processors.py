@@ -488,7 +488,8 @@ def validate_gnn_cross_format_consistency(
     """Old name for :func:`check_cross_format_consistency`; emits DeprecationWarning."""
     warnings.warn(
         "validate_gnn_cross_format_consistency is an old name; "
-        "use check_cross_format_consistency instead.",
+        "use check_cross_format_consistency instead. "
+        "It will be removed in v4.0.0.",
         DeprecationWarning,
         stacklevel=2,
     )

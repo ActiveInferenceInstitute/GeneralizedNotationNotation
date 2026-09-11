@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import math
 
-from gnn.utils.pipeline_monitor import (
+from gnn.utils.pipeline_orchestration.pipeline_monitor import (
     HealthStatus,
     PipelineMonitor,
 )

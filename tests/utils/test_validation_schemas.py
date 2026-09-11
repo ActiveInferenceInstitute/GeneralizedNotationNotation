@@ -12,7 +12,7 @@ SRC = Path(__file__).resolve().parents[2]
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
-from gnn.utils.validation_schemas import (  # noqa: E402
+from gnn.utils.runtime_safety.validation_schemas import (  # noqa: E402
     FRAMEWORK_PRESETS,
     KNOWN_FRAMEWORKS,
     normalize_pomdp_columns,

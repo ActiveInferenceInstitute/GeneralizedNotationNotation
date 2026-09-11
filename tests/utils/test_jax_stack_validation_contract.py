@@ -6,7 +6,7 @@ dependencies) — deterministic and offline.
 
 from __future__ import annotations
 
-from gnn.utils.jax_stack_validation import (
+from gnn.utils.runtime_safety.jax_stack_validation import (
     jax_pymdp_stack_ok,
     verify_jax_pymdp_stack,
 )

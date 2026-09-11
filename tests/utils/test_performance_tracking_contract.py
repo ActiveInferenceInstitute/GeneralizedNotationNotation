@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import math
 
-from gnn.utils.performance_tracking import (
+from gnn.utils.observability.performance_tracking import (
     PerformanceTracker,
     get_performance_tracker,
 )

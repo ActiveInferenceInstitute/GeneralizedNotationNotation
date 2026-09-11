@@ -55,7 +55,10 @@ def safe_template_execution(logger: Any, correlation_id: str) -> Any:
                 ErrorSeverity,
             )
             from gnn.utils.logging_utils import set_correlation_context
-            from gnn.utils.resource_manager import ResourceTracker, get_system_info
+            from gnn.utils.runtime_safety.resource_manager import (
+                ResourceTracker,
+                get_system_info,
+            )
 
             error_manager = ErrorRecoveryManager(logger)
 

@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/gnn/17_integration.py` (55 lines)
+**Orchestrator**: `src/gnn/17_integration.py` (57 lines)
 **Implementation Layer**: `src/gnn/integration/`
 
 ## Module Description

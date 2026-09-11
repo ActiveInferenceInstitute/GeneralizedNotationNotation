@@ -381,7 +381,7 @@ class TestUtilsModule:
 
     def test_utils_classes_instantiation(self) -> None:
         """Test that utility classes can be instantiated."""
-        from gnn.utils.argument_utils import ArgumentParser
+        from gnn.utils.arguments.arg_parsing import ArgumentParser
 
         parser = ArgumentParser()
         assert isinstance(parser, ArgumentParser)

@@ -17,7 +17,9 @@ from typing import cast
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from gnn.advanced_visualization import VIZ_TYPE_CHOICES, process_advanced_viz
-from gnn.utils.pipeline_template import create_standardized_pipeline_script
+from gnn.utils.pipeline_orchestration.pipeline_template import (
+    create_standardized_pipeline_script,
+)
 
 run_script = create_standardized_pipeline_script(
     "9_advanced_viz.py",

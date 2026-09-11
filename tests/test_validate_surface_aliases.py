@@ -232,6 +232,82 @@ def test_aliases_match_canonical_on_invalid_input_and_warn_at_caller(
         assert caught[0].filename == __file__, name
 
 
+def test_alias_warnings_document_removal_window(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Deprecation window (opened 2026-09-11): every deprecated alias
+    message names its canonical replacement and documents removal in
+    v4.0.0."""
+    import gnn.llm.llm_operations as llo
+
+    monkeypatch.setattr(llo, "validate_gnn_with_llm", lambda content: content)
+
+    missing_file = tmp_path / "does-not-exist.md"
+    missing_dir = tmp_path / "does-not-exist-dir"
+    cases: list[tuple[str, Callable[[], Any], str]] = [
+        (
+            "parsers.validate_gnn_syntax_formal",
+            lambda: validate_gnn_syntax_formal("not a gnn file"),
+            "validate_gnn_syntax",
+        ),
+        (
+            "parsers.validate_gnn",
+            lambda: validate_gnn("not a gnn file"),
+            "validate_gnn_syntax",
+        ),
+        (
+            "package.validate_gnn_file",
+            lambda: gnn.validate_gnn_file("not a gnn file"),
+            "validate_gnn_source",
+        ),
+        (
+            "processor.validate_gnn_structure",
+            lambda: validate_gnn_structure(missing_file),
+            "check_gnn_file_structure",
+        ),
+        (
+            "pomdp.validate_gnn_pomdp_structure",
+            lambda: validate_gnn_pomdp_structure({"unexpected_key": True}),
+            "check_gnn_pomdp_spec",
+        ),
+        (
+            "simple.validate_gnn_file",
+            lambda: validate_gnn_file(missing_file),
+            "check_gnn_file_basic",
+        ),
+        (
+            "simple.validate_gnn_directory",
+            lambda: validate_gnn_directory(missing_dir),
+            "check_gnn_directory_basic",
+        ),
+        (
+            "schema.validate_gnn_file",
+            lambda: schema_validate_gnn_file(missing_file),
+            "validate_gnn_file_comprehensive",
+        ),
+        (
+            "mcp.validate_gnn_cross_format_consistency",
+            lambda: validate_gnn_cross_format_consistency(
+                missing_dir, tmp_path / "out-window"
+            ),
+            "check_cross_format_consistency",
+        ),
+        (
+            "llm.validate_gnn",
+            lambda: llo.validate_gnn("not a gnn file"),
+            "validate_gnn_with_llm",
+        ),
+    ]
+    for name, alias_call, canonical_name in cases:
+        with pytest.warns(
+            DeprecationWarning, match=rf"use {canonical_name} instead"
+        ) as caught:
+            alias_call()
+        message = str(caught[0].message)
+        assert "will be removed in v4.0.0" in message, name
+
+
 def test_package_root_syntax_formal_lazy_export_still_deprecated() -> None:
     with pytest.warns(DeprecationWarning) as caught:
         result = gnn.validate_gnn_syntax_formal("not a gnn file")
@@ -245,7 +321,7 @@ def test_pipeline_template_output_dir_reexport_warns(tmp_path: Path) -> None:
     """The legacy ``gnn.utils.pipeline_template`` re-export of the canonical
     ``gnn.pipeline.config.get_output_dir_for_script`` must warn and forward.
     """
-    import gnn.utils.pipeline_template as template
+    import gnn.utils.pipeline_orchestration.pipeline_template as template
 
     with pytest.warns(DeprecationWarning):
         legacy = template.get_output_dir_for_script  # noqa: B018

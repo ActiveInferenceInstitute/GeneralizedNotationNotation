@@ -166,7 +166,7 @@ def get_file_mtime(file_path):
 @functools.lru_cache(maxsize=128)
 def validate_gnn_with_cache(file_path: str, mtime: float):
     """Cache validation results with file modification time."""
-    return validate_gnn_file(file_path)
+    return validate_gnn_source(file_path)
 ```
 
 ### 2. Parallel Processing

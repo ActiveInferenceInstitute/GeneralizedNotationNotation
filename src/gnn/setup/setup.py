@@ -136,8 +136,8 @@ def perform_full_setup(
         else:
             logger.info(f"  source {VENV_DIR}/bin/activate")
         logger.info("\nTo run commands in the UV environment:")
-        logger.info("  uv run python src/main.py --help")
-        logger.info("  uv run --extra dev python -m pytest src/tests/")
+        logger.info("  uv run python src/gnn/main.py --help")
+        logger.info("  uv run --extra dev python -m pytest tests/")
         sys.stdout.flush()
         return 0
 

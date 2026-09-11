@@ -52,7 +52,7 @@ class TestVizTypeChoices:
         choices the real CLI parser enforces (``utils.ArgumentParser``), so
         every value the CLI accepts is one the processor routes on."""
         from gnn.advanced_visualization import VIZ_TYPE_CHOICES
-        from gnn.utils.arg_parsing import ArgumentParser as StepArgumentParser
+        from gnn.utils.arguments.arg_parsing import ArgumentParser as StepArgumentParser
 
         arg_def = StepArgumentParser.ARGUMENT_DEFINITIONS["viz_type"]
         assert arg_def.choices is not None

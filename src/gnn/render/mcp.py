@@ -11,7 +11,7 @@ from typing import Any, Dict, Optional
 
 logger = logging.getLogger(__name__)
 
-from gnn.utils.mcp_dispatch import run_pipeline_step_mcp
+from gnn.utils.mcp.dispatch import run_pipeline_step_mcp
 
 from . import process_render
 from .framework_registry import get_available_renderers, get_supported_frameworks

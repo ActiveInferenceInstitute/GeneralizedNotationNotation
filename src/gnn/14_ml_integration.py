@@ -37,7 +37,9 @@ from typing import cast
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from gnn.ml_integration import process_ml_integration
-from gnn.utils.pipeline_template import create_standardized_pipeline_script
+from gnn.utils.pipeline_orchestration.pipeline_template import (
+    create_standardized_pipeline_script,
+)
 
 run_script = create_standardized_pipeline_script(
     "14_ml_integration.py",

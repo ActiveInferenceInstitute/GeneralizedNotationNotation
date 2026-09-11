@@ -450,7 +450,7 @@ class TestEndToEndIntegration:
     def test_critical_script_set_comes_from_step_metadata(self) -> None:
         """Critical script behavior should be driven by StepConfiguration metadata."""
         from gnn.main import CRITICAL_SCRIPTS
-        from gnn.utils.argument_utils import StepConfiguration
+        from gnn.utils.arguments.step_config import StepConfiguration
 
         expected = {
             f"{step_name}.py"
@@ -681,7 +681,7 @@ class TestEndToEndIntegration:
     def test_parallel_pipeline_execution_flag(self, tmp_path: Path) -> None:
         """Test that --parallel flag executes pipeline successfully."""
         from gnn.main import main
-        from gnn.utils.pipeline_arguments import PipelineArguments
+        from gnn.utils.arguments.pipeline_arguments import PipelineArguments
 
         out_dir = tmp_path / "parallel_out"
         args = PipelineArguments(

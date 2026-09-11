@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import os
 
-from gnn.utils.mcp import (
+from gnn.utils.mcp.server import (
     SENSITIVE_ENV_KEY_MARKERS,
     get_environment_info,
     get_system_info,

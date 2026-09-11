@@ -508,9 +508,10 @@ def run_audit() -> List[str]:
             failures.append(
                 f"Autonomous proposal loop missing non-mutation marker: {required}"
             )
-    # The argparse surface (incl. ``--autonomous``) now lives in the focused
-    # arg_parsing module; ``argument_utils.py`` re-exports it for callers.
-    if "--autonomous" not in _read("src/gnn/utils/arg_parsing.py"):
+    # The argparse surface (incl. ``--autonomous``) lives in the canonical
+    # arguments package (S2-33 Step 2); ``gnn/utils/arg_parsing.py`` is its
+    # DeprecationWarning facade.
+    if "--autonomous" not in _read("src/gnn/utils/arguments/arg_parsing.py"):
         failures.append("Pipeline argument parser missing --autonomous")
 
     return failures

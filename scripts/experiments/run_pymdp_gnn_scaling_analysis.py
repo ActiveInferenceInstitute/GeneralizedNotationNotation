@@ -44,7 +44,7 @@ from pymdp_spec_generator import (  # type: ignore[import-not-found]
     generate_gnn_file,
 )
 
-from gnn.utils.visual_logging import create_visual_logger
+from gnn.utils.observability.visual_logging import create_visual_logger
 
 # Default sweep grid
 DEFAULT_N_VALUES = [2, 4, 8, 16]
@@ -857,22 +857,21 @@ def _run_factorized_sweep(args: argparse.Namespace) -> int:
     """Run the sparse Kronecker-factorized sweep (roadmap MAJ-02).
 
     Builds factor-separable models whose joint state space is the product of
-    per-factor sizes and executes them with the JAX mean-field active
-    inference path in ``execute.jax.kronecker_factorized`` — the joint is
-    never materialised. Also writes the equivalent multi-factor GNN spec
-    files (per-factor A/B/C/D) for provenance, and a JSON manifest with the
-    joint size, wall time and validation for every (factors, T) pair.
+    per-factor sizes and executes them through the Step 12 public entry
+    ``execute.jax.kronecker_executor.execute_kronecker_factorized`` — the
+    joint is never materialised, and each run writes the standard executor
+    artifacts (``simulation_data/simulation_results.json`` carrying the
+    ``jax_kronecker_factorized_v1`` schema plus ``kronecker_execution_summary.json``)
+    under ``<pipeline_output_dir>/pymdp_kronecker_pipeline/T<t>``. Also writes
+    the equivalent multi-factor GNN spec files (per-factor A/B/C/D) for
+    provenance, and a JSON manifest with the joint size, artifact paths, wall
+    time and validation for every (factors, T) pair.
 
     Returns 0 on success, 1 on failure.
     """
-    from pymdp_spec_generator import (
-        generate_factorized_gnn_file,  # type: ignore[import-not-found]
-    )
+    from pymdp_spec_generator import generate_factorized_gnn_file
 
-    from gnn.execute.jax.kronecker_factorized import (  # type: ignore[import-not-found]
-        build_generic_factor_model,
-        run_factorized_active_inference,
-    )
+    from gnn.execute.jax.kronecker_executor import execute_kronecker_factorized
 
     try:
         factor_sizes = [int(x.strip()) for x in args.factors.split(",")]
@@ -905,6 +904,12 @@ def _run_factorized_sweep(args: argparse.Namespace) -> int:
     manifest_path = pipeline_output_dir / "pymdp_kronecker_scaling_manifest.json"
     pipeline_output_dir.mkdir(parents=True, exist_ok=True)
 
+    def _rel(path: Path) -> str:
+        try:
+            return str(path.relative_to(PROJECT_ROOT))
+        except ValueError:
+            return str(path)
+
     runs: list[dict[str, object]] = []
     for t in t_values:
         spec_text = generate_factorized_gnn_file(factor_sizes, t)
@@ -912,29 +917,44 @@ def _run_factorized_sweep(args: argparse.Namespace) -> int:
         spec_path.parent.mkdir(parents=True, exist_ok=True)
         spec_path.write_text(spec_text, encoding="utf-8")
 
-        model = build_generic_factor_model(factor_sizes, t=t, seed=42)
+        run_output_dir = pipeline_output_dir / "pymdp_kronecker_pipeline" / f"T{t}"
         started = time.monotonic()
-        results = run_factorized_active_inference(model)
+        envelope = execute_kronecker_factorized(
+            {
+                "factor_sizes": factor_sizes,
+                "t": t,
+                "seed": 42,
+                "model_name": f"kronecker_N{joint_size}_T{t}",
+            },
+            run_output_dir,
+        )
         elapsed = time.monotonic() - started
-        try:
-            spec_file = str(spec_path.relative_to(PROJECT_ROOT))
-        except ValueError:
-            spec_file = str(spec_path)
+        simulation = envelope["simulation"]
+        all_valid = bool(simulation["validation"]["all_valid"])
         runs.append(
             {
                 "factor_sizes": factor_sizes,
                 "joint_state_space_size": joint_size,
                 "timesteps": t,
-                "spec_file": spec_file,
+                "spec_file": _rel(spec_path),
+                "output_dir": _rel(run_output_dir),
+                "simulation_results_file": _rel(
+                    run_output_dir / "simulation_data" / "simulation_results.json"
+                ),
+                "execution_summary_file": _rel(
+                    run_output_dir / "kronecker_execution_summary.json"
+                ),
                 "elapsed_seconds": round(elapsed, 4),
-                "validation_all_valid": results["validation"]["all_valid"],
-                "joint_materialized": results["model_parameters"]["joint_materialized"],
+                "validation_all_valid": all_valid,
+                "joint_materialized": simulation["model_parameters"][
+                    "joint_materialized"
+                ],
             }
         )
         logger.print_status(
-            f"N={joint_size} T={t}: {elapsed:.3f}s all_valid="
-            f"{results['validation']['all_valid']} (joint not materialised)",
-            "success" if results["validation"]["all_valid"] else "error",
+            f"N={joint_size} T={t}: {elapsed:.3f}s all_valid={all_valid} "
+            "(joint not materialised)",
+            "success" if all_valid else "error",
         )
 
     manifest = {
@@ -942,6 +962,7 @@ def _run_factorized_sweep(args: argparse.Namespace) -> int:
         "factor_sizes": factor_sizes,
         "joint_state_space_size": joint_size,
         "backend": "jax-mean-field",
+        "executor": "gnn.execute.jax.kronecker_executor.execute_kronecker_factorized",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "runs": runs,
     }

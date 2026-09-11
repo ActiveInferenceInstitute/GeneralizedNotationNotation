@@ -7,16 +7,21 @@ from typing import Any, cast
 
 import pytest
 
-from gnn.utils.argument_utils import (
+from gnn.utils.arguments.arg_parsing import (
     ArgumentParser,
-    PipelineArguments,
-    StepConfiguration,
     audit_step_contracts,
     build_step_command_args,
 )
+from gnn.utils.arguments.pipeline_arguments import PipelineArguments
+from gnn.utils.arguments.step_config import StepConfiguration
 from gnn.utils.error_handling import CRITICAL_STEP_NUMBERS
-from gnn.utils.pipeline_step_dependencies import resolve_step_dependencies
-from gnn.utils.pipeline_template import _create_fallback_parser, _parse_step_args
+from gnn.utils.pipeline_orchestration.pipeline_step_dependencies import (
+    resolve_step_dependencies,
+)
+from gnn.utils.pipeline_orchestration.pipeline_template import (
+    _create_fallback_parser,
+    _parse_step_args,
+)
 
 
 def test_step_specific_arguments_are_exposed() -> None:

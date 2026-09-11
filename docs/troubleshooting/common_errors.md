@@ -291,9 +291,9 @@ uv run python src/gnn/5_type_checker.py --target-dir your_model_directory
 
 ```python
 # Python validation script using the real exported validator
-from gnn import validate_gnn_file
+from gnn import validate_gnn_source
 
-result = validate_gnn_file("your_model.md")
+result = validate_gnn_source("your_model.md")
 if not result["is_valid"]:
     for error in result["errors"]:
         print(error)

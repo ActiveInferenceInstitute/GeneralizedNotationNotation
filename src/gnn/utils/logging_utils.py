@@ -9,6 +9,11 @@ import everything from this module.
 import logging
 from typing import Any, Dict, Optional, cast
 
+from gnn.utils.observability.performance_tracking import (
+    PerformanceTracker,
+    performance_tracker,
+)
+
 # Import the structured logging implementation.
 from .logging.logging_utils import (
     PipelineLogger as PipelineLogger,
@@ -55,7 +60,6 @@ from .logging.logging_utils import (
 from .logging.logging_utils import (
     setup_step_logging as setup_step_logging,
 )
-from .performance_tracking import PerformanceTracker, performance_tracker
 
 
 def log_step_error(

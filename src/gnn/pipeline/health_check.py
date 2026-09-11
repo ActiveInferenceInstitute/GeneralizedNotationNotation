@@ -41,6 +41,10 @@ except ImportError:
 
 PIPELINE_INTEGRATION = True
 
+# Numbered pipeline steps are 0-24 (see check_pipeline_structure); derive the
+# availability denominators from this count instead of hardcoding them.
+EXPECTED_STEP_COUNT = 25
+
 
 class EnhancedHealthChecker:
     """
@@ -295,7 +299,7 @@ class EnhancedHealthChecker:
 
         # Check for all numbered pipeline scripts (0-24)
         _expected_scripts: list[Any] = []
-        for step_num in range(25):  # 0-24
+        for step_num in range(EXPECTED_STEP_COUNT):  # 0-24
             # Check for both .py files and module directories
             script_path = src_dir / f"{step_num}_*.py"
             module_path = src_dir / f"{step_num}_*"
@@ -597,10 +601,10 @@ class EnhancedHealthChecker:
             f"\n{struct_icon} Pipeline Structure: {pipeline_struct.get('status', 'unknown').upper()}"
         )
         log(
-            f"   Scripts: {len(pipeline_struct.get('available_scripts', []))}/24 available"
+            f"   Scripts: {len(pipeline_struct.get('available_scripts', []))}/{EXPECTED_STEP_COUNT} available"
         )
         log(
-            f"   Modules: {len(pipeline_struct.get('available_modules', []))}/24 available"
+            f"   Modules: {len(pipeline_struct.get('available_modules', []))}/{EXPECTED_STEP_COUNT} available"
         )
 
         # Pipeline integration

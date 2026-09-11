@@ -12,7 +12,9 @@ from typing import Any, Callable, Dict
 
 import pytest
 
-from gnn.utils.pipeline_template import create_standardized_pipeline_script
+from gnn.utils.pipeline_orchestration.pipeline_template import (
+    create_standardized_pipeline_script,
+)
 
 
 @pytest.mark.unit

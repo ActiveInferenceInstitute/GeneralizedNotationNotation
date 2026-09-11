@@ -592,6 +592,7 @@ print(json.dumps({"status": "ok"}))
             frameworks="pymdp",
             timeout=5,
             render_output_dir=render_out,
+            require_render_summary=False,
         )
         summary_file = output_dir / "summaries" / "execution_summary.json"
         assert summary_file.is_file()
@@ -627,6 +628,7 @@ print(json.dumps({"status": "ok"}))
             timeout=5,
             render_output_dir=render_out,
             execution_summary_detail=True,
+            require_render_summary=False,
         )
         slim_path = output_dir / "summaries" / "execution_summary.json"
         detail_path = output_dir / "summaries" / "execution_summary_detail.json"

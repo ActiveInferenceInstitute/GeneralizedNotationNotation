@@ -7,6 +7,7 @@ resources, executes them with thread-safe caching and rate limiting, and
 exposes them to MCP-compatible clients via stdio or HTTP transport.
 """
 
+import copy
 import hashlib
 import importlib
 import json
@@ -756,13 +757,13 @@ class MCP:
                 raise MCPInvalidParamsError("Tool schema must be a dictionary")
 
             if name in self.tools:
-                # Check if this is a duplicate registration from the same module
-                self.tools[name]
-                # If it's from the same module/registration context, skip it silently
-                # If it's from a different source, log a warning but allow overwriting
-                # This reduces noise from multiple registration attempts
-                logger.debug(
-                    f"Tool '{name}' already registered, updating with new version"
+                # Explicit duplicate: warn and overwrite. Overwriting is
+                # back-compat (re-registration on module reload relies on
+                # last-write-wins, e.g. test_register_tool_overwrites), but
+                # the replacement is now visible instead of a silent
+                # debug-log no-op.
+                logger.warning(
+                    f"Tool '{name}' already registered; overwriting previous registration"
                 )
 
             # Convert older "parameters" list format into JSON schema if provided
@@ -1032,8 +1033,12 @@ class MCP:
                 tool.mark_used()
                 if cache_key and tool.cache_ttl is not None:
                     with self._result_cache_lock:
+                        # Deep-copy on store AND on hit (see _cache_get): a
+                        # cache entry must never alias the caller-visible
+                        # result, or a caller mutating its returned dict
+                        # would poison every subsequent cache hit.
                         self._result_cache[cache_key] = (
-                            result,
+                            copy.deepcopy(result),
                             time.time() + tool.cache_ttl,
                         )
             logger.debug(f"Tool {tool_name} executed successfully")
@@ -1156,7 +1161,11 @@ class MCP:
             raise MCPToolTimeoutError(tool_name, timeout) from exc
 
     def _cache_get(self, cache_key: str) -> Tuple[bool, Any]:
-        """Read a result-cache entry, returning (is_hit, value)."""
+        """Read a result-cache entry, returning (is_hit, value).
+
+        Values are deep-copied on store (execute_tool) and again on hit so a
+        caller mutating a returned result can never poison the cache.
+        """
         with self._result_cache_lock:
             entry = self._result_cache.get(cache_key)
             if entry is None:
@@ -1165,7 +1174,7 @@ class MCP:
             if expires_at < time.time():
                 self._result_cache.pop(cache_key, None)
                 return False, None
-            return True, result
+            return True, copy.deepcopy(result)
 
     def _check_rate_limit(self, tool_name: str, rate_limit: float) -> None:
         """Enforce a per-tool sliding-window rate limit.

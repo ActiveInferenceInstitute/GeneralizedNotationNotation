@@ -56,7 +56,10 @@ def _strip_comments_from_multiline_str(m_str: str) -> str:
 
 def _parse_matrix_string(matrix_str: str) -> Any:
     """Safely parses a string representation of a matrix after stripping comments."""
-    from gnn.utils.safe_eval import MATRIX_MAX_LEN, safe_literal_eval
+    from gnn.utils.runtime_safety.safe_eval import (
+        MATRIX_MAX_LEN,
+        safe_literal_eval,
+    )
 
     processed_str = _strip_comments_from_multiline_str(matrix_str)
     # After stripping comments, processed_str might be empty or just whitespace
@@ -156,7 +159,10 @@ def _parse_state_line(line: str) -> Optional[Dict[str, Any]]:
 
 def _parse_transition_line(line: str) -> Optional[Dict[str, Any]]:
     """Parse transition line."""
-    from gnn.utils.safe_eval import MATRIX_MAX_LEN, safe_literal_eval
+    from gnn.utils.runtime_safety.safe_eval import (
+        MATRIX_MAX_LEN,
+        safe_literal_eval,
+    )
 
     pattern = r"^\s*(.*?)\s*([-><]+|-)\s*(.*?)\s*(?::\s*(.*))?$"
     match = re.match(pattern, line.split("#")[0].strip())

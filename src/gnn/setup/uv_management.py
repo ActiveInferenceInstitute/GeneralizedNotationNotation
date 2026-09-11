@@ -65,10 +65,14 @@ def _atomic_json_write(path: Path, data: Dict[str, str]) -> None:
 
 
 try:
-    from gnn.utils.jax_stack_validation import run_jax_stack_probe_subprocess
+    from gnn.utils.runtime_safety.jax_stack_validation import (
+        run_jax_stack_probe_subprocess,
+    )
 except ImportError:
     try:
-        from gnn.utils.jax_stack_validation import run_jax_stack_probe_subprocess
+        from gnn.utils.runtime_safety.jax_stack_validation import (
+            run_jax_stack_probe_subprocess,
+        )
     except ImportError:
         run_jax_stack_probe_subprocess = cast(Any, None)
 

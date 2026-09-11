@@ -57,7 +57,7 @@ handed to `rxinfer_runner.jl` instead.
 **Parameters**:
 - `script_path`: Path to the rendered `.jl` script
 - `verbose`: Log the script's stdout on success
-- `output_dir`: Reserved for signature consistency (currently unused)
+- `output_dir`: Directory for execution evidence (`{stem}_stdout.txt`, `{stem}_stderr.txt`, `{stem}_execution_log.json`); defaults to the script's own directory
 - `timeout`: Subprocess timeout in seconds
 
 **Returns**: `True` on exit code 0, `False` on non-zero exit, timeout, missing or empty file.

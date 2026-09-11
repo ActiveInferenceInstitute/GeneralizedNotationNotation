@@ -59,7 +59,7 @@ import logging
 from pathlib import Path
 from typing import cast
 
-from gnn.utils.pipeline_template import (
+from gnn.utils.observability.structured_logging import (
     log_step_error,
     log_step_start,
 )

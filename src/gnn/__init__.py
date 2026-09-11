@@ -152,7 +152,8 @@ def validate_gnn_source(source: Any, *, is_content: bool = False) -> Any:
 def validate_gnn_file(source: Any, *, is_content: bool = False) -> Any:
     """Old name for :func:`validate_gnn_source`; emits DeprecationWarning."""
     warnings.warn(
-        "validate_gnn_file is an old name; use validate_gnn_source instead.",
+        "validate_gnn_file is an old name; use validate_gnn_source instead. "
+        "It will be removed in v4.0.0.",
         DeprecationWarning,
         stacklevel=2,
     )

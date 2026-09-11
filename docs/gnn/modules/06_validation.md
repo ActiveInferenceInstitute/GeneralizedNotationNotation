@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/gnn/6_validation.py` (51 lines)
+**Orchestrator**: `src/gnn/6_validation.py` (53 lines)
 **Implementation Layer**: `src/gnn/validation/`
 
 ## Module Description

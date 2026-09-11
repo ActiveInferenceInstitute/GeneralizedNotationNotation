@@ -144,7 +144,9 @@ class TestRunner:
             stderr_file = output_dir / "pytest_stderr.txt"
 
             # Execute command with streaming
-            from gnn.utils.execution_utils import execute_command_streaming
+            from gnn.utils.pipeline_orchestration.execution_utils import (
+                execute_command_streaming,
+            )
 
             result = execute_command_streaming(
                 cmd,

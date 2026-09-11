@@ -17,7 +17,9 @@ from typing import cast
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from gnn.intelligent_analysis import process_intelligent_analysis
-from gnn.utils.pipeline_template import create_standardized_pipeline_script
+from gnn.utils.pipeline_orchestration.pipeline_template import (
+    create_standardized_pipeline_script,
+)
 
 # Create the runnable script using the standardized template
 run_script = create_standardized_pipeline_script(

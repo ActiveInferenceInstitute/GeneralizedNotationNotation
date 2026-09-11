@@ -25,7 +25,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
-from gnn.utils.performance_tracking import PerformanceTracker
+from gnn.utils.observability.performance_tracking import PerformanceTracker
 
 # Availability flags, guarded imports, and the shared attempt/result types
 # all live in ._shared; this module only adds the Step 9 orchestration logic.

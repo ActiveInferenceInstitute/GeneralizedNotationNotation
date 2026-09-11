@@ -44,7 +44,11 @@ if str(SRC_DIR) not in sys.path:
 
 # Import the maintained shared test helpers from the gnn package
 # (the venv's editable install provides `gnn` regardless of sys.path).
-from gnn.utils.testing_utils import (
+# S2-33 Step 1: canonical home is gnn.utils.testing (testing_utils.py is the
+# deprecation facade — under this suite's error::DeprecationWarning ratchet
+# the facade path can only be imported inside pytest.warns).
+from gnn.utils.runtime_safety.resource_manager import get_memory_usage
+from gnn.utils.testing import (
     COVERAGE_TARGETS,
     PROJECT_ROOT,
     SRC_DIR,
@@ -62,7 +66,6 @@ from gnn.utils.testing_utils import (
     generate_html_report_file,
     generate_json_report_file,
     generate_markdown_report_file,
-    get_memory_usage,
     get_sample_pipeline_arguments,
     get_test_args,
     get_test_filesystem_structure,

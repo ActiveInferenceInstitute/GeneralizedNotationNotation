@@ -1528,7 +1528,10 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
         """
         import re
 
-        from gnn.utils.safe_eval import MATRIX_MAX_LEN, safe_literal_eval
+        from gnn.utils.runtime_safety.safe_eval import (
+            MATRIX_MAX_LEN,
+            safe_literal_eval,
+        )
 
         # Remove extra whitespace and newlines
         matrix_str = re.sub(r"\s+", " ", matrix_str.strip())

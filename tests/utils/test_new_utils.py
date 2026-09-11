@@ -68,7 +68,7 @@ class TestBaseProcessor:
 
     def test_base_processor_imports(self) -> None:
         """Test that base_processor module imports correctly."""
-        from gnn.utils.base_processor import (
+        from gnn.utils.pipeline_orchestration.base_processor import (
             BaseProcessor,
             ProcessingResult,
             create_processor,
@@ -80,7 +80,7 @@ class TestBaseProcessor:
 
     def test_processing_result_dataclass(self) -> None:
         """Test ProcessingResult dataclass."""
-        from gnn.utils.base_processor import ProcessingResult
+        from gnn.utils.pipeline_orchestration.base_processor import ProcessingResult
 
         result = ProcessingResult(success=True)
         assert result.success is True
@@ -91,7 +91,7 @@ class TestBaseProcessor:
 
     def test_processing_result_to_dict(self) -> None:
         """Test ProcessingResult to_dict method."""
-        from gnn.utils.base_processor import ProcessingResult
+        from gnn.utils.pipeline_orchestration.base_processor import ProcessingResult
 
         result = ProcessingResult(success=True, files_processed=5, files_failed=1)
         d = result.to_dict()
@@ -104,7 +104,7 @@ class TestBaseProcessor:
         """Test ProcessingResult save_to_json method."""
         import json
 
-        from gnn.utils.base_processor import ProcessingResult
+        from gnn.utils.pipeline_orchestration.base_processor import ProcessingResult
 
         result = ProcessingResult(success=True, files_processed=3)
         with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
@@ -120,7 +120,10 @@ class TestBaseProcessor:
 
     def test_create_processor_function(self) -> None:
         """Test create_processor factory function."""
-        from gnn.utils.base_processor import BaseProcessor, create_processor
+        from gnn.utils.pipeline_orchestration.base_processor import (
+            BaseProcessor,
+            create_processor,
+        )
 
         def simple_process(file_path: Any, output_dir: Any) -> bool:
             return True
@@ -131,7 +134,7 @@ class TestBaseProcessor:
 
     def test_base_processor_find_files(self) -> None:
         """Test BaseProcessor.find_files method."""
-        from gnn.utils.base_processor import create_processor
+        from gnn.utils.pipeline_orchestration.base_processor import create_processor
 
         def sample_process(file_path: Any, output_dir: Any) -> bool:
             return True

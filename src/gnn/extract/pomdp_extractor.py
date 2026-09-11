@@ -1373,7 +1373,10 @@ class POMDPExtractor:
         if "(" in value_str or "[" in value_str:
             try:
                 try:
-                    from gnn.utils.safe_eval import MATRIX_MAX_LEN, safe_literal_eval
+                    from gnn.utils.runtime_safety.safe_eval import (
+                        MATRIX_MAX_LEN,
+                        safe_literal_eval,
+                    )
                 except ImportError as e:
                     # Heavy pipeline not importable: eval-free path keeps
                     # working; a broken/suspicious safe_eval is a structured
