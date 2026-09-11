@@ -79,11 +79,13 @@ jobs:
 
       - name: Install pandoc-crossref v0.3.25 (pinned)
         run: |
-          # Matches the local ritual's /opt/homebrew pandoc-crossref v0.3.25.
-          # apt has no crossref package; pinned GitHub release binary.
-          curl -fsSL -o /tmp/cr.tar.gz \
-            https://github.com/lierdakil/pandoc-crossref/releases/download/v0.3.25/pandoc-crossref-Linux-X64.tar.gz
-          sudo tar -xzf /tmp/cr.tar.gz -C /usr/local/bin pandoc-crossref
+          # v0.3.25 matches the local ritual's pandoc-crossref; official
+          # Linux release asset is a tar.xz (no crossref package in apt).
+          curl -fsSL -o /tmp/cr.tar.xz \
+            https://github.com/lierdakil/pandoc-crossref/releases/download/v0.3.25/pandoc-crossref-Linux-X64.tar.xz
+          echo "2319816e3545ee78e44e4a97c2174c72eedf4b51d436b32721b48f43458eb0f6  /tmp/cr.tar.xz" | sha256sum --check -
+          mkdir -p /tmp/cr && tar -xJf /tmp/cr.tar.xz -C /tmp/cr
+          sudo install -m 0755 "$(find /tmp/cr -type f -name pandoc-crossref | head -1)" /usr/local/bin/pandoc-crossref
           pandoc-crossref --version
 
       - name: Install dependencies (dev)
