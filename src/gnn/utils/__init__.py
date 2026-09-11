@@ -3,10 +3,11 @@
 """
 GNN Pipeline Utilities Package
 
-Lazy PEP 562 re-export surface: 111 exported names aggregated from 17 source
+Lazy PEP 562 re-export surface: 113 exported names aggregated from 17 source
 modules. All pipeline steps import from this package for consistency. The
-surface area is intentionally wide; a future pass should split it by concern
-into sub-packages.
+surface area is intentionally wide; it is being split by concern into
+sub-packages — see docs/development/utils_split_design.md (S2-33/SC-38) for
+the package map and migration plan.
 
 Importing ``utils`` is intentionally LIGHT: no submodule executes at import
 time, so heavy module-scope dependencies (psutil via structured_logging /

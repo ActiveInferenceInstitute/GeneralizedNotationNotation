@@ -1,4 +1,9 @@
-"""Bounded metadata-file loading for the numbered export command."""
+"""Bounded metadata-file loading for the numbered export command.
+
+The loaded mapping flows to ``process_export`` as ``geo_infer_options``;
+``geo_derive_metadata`` and other flags pass through unchanged so the
+processor can fill missing fields from notation with recorded provenance.
+"""
 
 import json
 from pathlib import Path

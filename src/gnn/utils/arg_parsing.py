@@ -178,6 +178,16 @@ class ArgumentParser:
                     "without editing source files"
                 ),
             ),
+            "consolidated_steps": ArgumentDefinition(
+                flag="--consolidated-steps",
+                action="store_true",
+                help_text=(
+                    "Opt-in: run the whitelisted discovery/schema steps "
+                    "(0, 3, 5) in-process via the shared step executor "
+                    "instead of one subprocess per step "
+                    "(docs/decisions/0001-consolidated-pipeline-execution.md)"
+                ),
+            ),
             "skip_llm": ArgumentDefinition(
                 flag="--skip-llm",
                 action="store_true",
@@ -512,6 +522,14 @@ class ArgumentParser:
                 choices=["categorical", "h3"],
                 help_text="GEO-INFER export (step 7): space kind",
             ),
+            "geo_derive_metadata": ArgumentDefinition(
+                flag="--geo-derive-metadata",
+                action="store_true",
+                help_text=(
+                    "GEO-INFER export (step 7): derive missing metadata "
+                    "(step seconds) from explicit notation declarations"
+                ),
+            ),
         }
     )
 
@@ -586,6 +604,7 @@ class ArgumentParser:
                 "geo_step_seconds",
                 "geo_state_ids",
                 "geo_space_kind",
+                "geo_derive_metadata",
                 "formats",
                 "geo_infer_options_file",
             ],

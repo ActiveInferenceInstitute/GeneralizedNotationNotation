@@ -44,6 +44,9 @@ class PipelineArguments:
     only_steps: Optional[str] = None
     parallel: bool = False
     autonomous: bool = False
+    # V4-STAGE (S2-11): opt-in consolidated in-process execution
+    # (docs/decisions/0001-consolidated-pipeline-execution.md)
+    consolidated_steps: bool = False
 
     # Type checking options
     strict: bool = False

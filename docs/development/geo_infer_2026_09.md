@@ -31,12 +31,53 @@ checkout was preserved; integration uses an isolated topic worktree.
 - Gaussian filtering: analytic unequal dimensions and overflow/axis rejection
   verified independently in GEO Python 3.11 and 3.12.
 - Strict mypy and repository-wide Ruff checks run on the integrated tree.
-- Paired CI in GEO pins a reviewed GNN commit and retains both revisions and
-  categorical/H3/Gaussian/factored digests. Hosted results belong to the PR
-  checks; local success does not establish hosted success.
+- Paired CI runs in both directions: GEO-INFER pins a reviewed GNN commit, and
+  this repository pins GEO-INFER in return (see the paired interchange section
+  below). Hosted results belong to the PR checks; local success does not
+  establish hosted success.
 
 Fresh independent reviews reproduced and then verified fixes for double
 conditioning, covariance-overflow validation, contradictory source axes, output
 symlinks, duplicate metadata and factored numerical overflow. All completed
 capabilities have explicit bounded semantics; Gaussian control selection and
 large unbounded exact policy trees are not claimed.
+
+## GNN-side paired interchange (GNN-04)
+
+This repository now mirrors GEO-INFER's paired-revision mechanism on its side.
+No fep_lean file, workflow or pin is involved; the mirror covers only the
+GEO-INFER pair:
+
+- `.github/gnn-pair.json` records the companion revision: GEO-INFER main
+  `c0115779d05369c1ba63f5009f7de53e4bb3d3d5`, verified locally — the checks
+  script ran the full round trip against that checkout and exited 0 with
+  stable artifact digests (repeated runs reproduce identical digests). Note
+  the deliberate name reuse: GEO-INFER's own `.github/gnn-pair.json` pins
+  this repository, so each side names the other in a same-named file.
+- `.github/workflows/geo-infer-interchange.yml` validates the pin (known
+  slug, 40-hex revision), checks out GEO-INFER at exactly the pinned SHA into
+  `geo-infer/`, syncs independent locked runtimes (matrix Python 3.11/3.12
+  for the GEO environment; the GNN environment on 3.11 with the dev and
+  geo-infer extras; the same heavy-package exclusions GEO's own CI uses), and
+  runs `scripts/run_geo_interchange_checks.py`.
+- `scripts/run_geo_interchange_checks.py` refuses a checkout that is not at
+  the pinned revision, drives GEO's read-only
+  `GEO-INFER-TEST/validate_gnn_interchange.py` — export inside the GNN
+  environment, consume and deterministic replay inside the GEO environment,
+  covering the categorical gridworld, the seven-cell H3 stay/diffuse model,
+  the rectangular Gaussian and the explicit factored fixture — and writes a
+  receipt directory: both revisions, the pin, the validator's full JSON
+  trace, and `digest-manifest.json` cross-checking the per-artifact digests.
+  Exit codes are faithful: 0 green, 1 round-trip or receipt failure, 2 pin or
+  revision mismatch with nothing run.
+
+What the hosted job proves: the pinned GEO checkout and this GNN checkout
+still agree on the exchange contract at both matrix Pythons, with
+deterministic replay certified and per-artifact digests retained. A red run
+is the drift signal — one side moved since the pin was recorded — and the
+pair must be re-pinned together in the same change set, never by suppressing
+the check. What remains manual: local environment sync (the runner requires
+an explicitly provided, already-synced GEO checkout and GNN interpreter), the
+GEO-INFER side's own paired CI against its pin of this repository, and
+hosted confirmation of this new workflow's own first runs. Local success —
+including the local run recorded above — does not establish hosted success.

@@ -30,6 +30,7 @@ from .formatters import (
     export_to_python_pickle,
     export_to_xml_gnn,
 )
+from .notation_metadata import derive_geo_metadata
 from .registry import DEFAULT_PIPELINE_FORMATS, get_format_spec, resolve_format_writer
 
 # Canonical default format set for the pipeline path (``process_export``) and
@@ -92,6 +93,24 @@ def _pipeline_geo_options(geo_options: Dict[str, Any]) -> Dict[str, Any]:
             raise ValueError("geo_infer state_ids_path must point to a JSON array")
         options["state_ids"] = state_ids
     return options
+
+
+def _read_geo_source(source: Path | None) -> str:
+    """Read the bounded UTF-8 GNN source used by notation-derived metadata.
+
+    Raises:
+        ValueError: The source is not a file inside ``target_dir`` or exceeds
+            the four MiB bound.
+    """
+    from .geo_infer import MAX_SOURCE_BYTES
+
+    if source is None:
+        raise ValueError("GNN source must be a file inside target_dir")
+    with source.open("rb") as stream:
+        raw = stream.read(MAX_SOURCE_BYTES + 1)
+    if len(raw) > MAX_SOURCE_BYTES:
+        raise ValueError("GNN source exceeds four MiB")
+    return raw.decode("utf-8")
 
 
 def generate_exports(target_dir: Path, output_dir: Path, verbose: bool = False) -> bool:
@@ -507,6 +526,11 @@ def process_export(
             strict GEO-INFER export when ``"geo_infer"`` is in ``formats``.
         geo_infer_options: Optional explicit per-model GEO metadata mapping
             (source filenames to options), set by ``process_export_cli``.
+        geo_derive_metadata: When truthy, missing ``step_seconds`` (or the
+            whole options mapping) is derived from explicit notation
+            declarations as the last resolution fallback; explicit options
+            win per field and the derivation is recorded in the artifact's
+            ``provenance.metadata_derivation``.
 
     Returns:
         True if export succeeded, False otherwise
@@ -687,8 +711,6 @@ def process_export(
                         raise ValueError("Export file must remain inside output_dir")
                     export_data = model_data
                     if format_name == "geo_infer":
-                        from .geo_infer import MAX_SOURCE_BYTES
-
                         if source_error is not None:
                             raise ValueError(str(source_error)) from source_error
                         per_model = kwargs.get("geo_infer_options", {})
@@ -701,21 +723,42 @@ def process_export(
                             # Global CLI opt-in (--geo-* flags): a single
                             # ``geo_infer`` mapping applies to every model.
                             options = _pipeline_geo_options(geo_options)
+                        derive_requested = bool(kwargs.get("geo_derive_metadata"))
+                        geo_content: str | None = None
+                        if isinstance(options, dict):
+                            # Explicit metadata cannot claim derivation
+                            # provenance; strip any forged marker first.
+                            options = {
+                                key: value
+                                for key, value in options.items()
+                                if key != "metadata_derivation"
+                            }
+                        elif derive_requested:
+                            # Opt-in derivation is the last fallback before
+                            # the explicit-options requirement.
+                            geo_content = _read_geo_source(source)
+                            derived = derive_geo_metadata(geo_content)
+                            options = dict(derived["options"])
+                            options["metadata_derivation"] = derived[
+                                "metadata_derivation"
+                            ]
                         if not isinstance(options, dict):
                             raise ValueError(
                                 f"Explicit geo_infer_options required for {file_name}"
                             )
-                        if source is None:
-                            raise ValueError(
-                                "GNN source must be a file inside target_dir"
-                            )
-                        with source.open("rb") as stream:
-                            raw = stream.read(MAX_SOURCE_BYTES + 1)
-                        if len(raw) > MAX_SOURCE_BYTES:
-                            raise ValueError("GNN source exceeds four MiB")
+                        if "step_seconds" not in options and derive_requested:
+                            # Explicit fields win; derivation only fills gaps.
+                            geo_content = _read_geo_source(source)
+                            derived = derive_geo_metadata(geo_content)
+                            options = {**derived["options"], **options}
+                            options["metadata_derivation"] = derived[
+                                "metadata_derivation"
+                            ]
+                        if geo_content is None:
+                            geo_content = _read_geo_source(source)
                         export_data = dict(
                             model_data,
-                            raw_content=raw.decode("utf-8"),
+                            raw_content=geo_content,
                             geo_infer=dict(options),
                         )
                     success = writer(export_data, export_file)

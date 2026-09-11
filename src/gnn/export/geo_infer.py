@@ -153,7 +153,10 @@ def export_to_geo_infer(model_data: dict[str, Any], output_file: Path) -> bool:
     """Write an opt-in artifact from raw_content and explicit geo_infer options.
 
     Args:
-        model_data: Mapping with ``raw_content`` and ``geo_infer`` keyword options.
+        model_data: Mapping with ``raw_content`` and ``geo_infer`` keyword
+            options. Options may carry a ``metadata_derivation`` record; it is
+            produced only by the notation-derivation layer and is merged into
+            the artifact's ``provenance`` after validation.
         output_file: Destination JSON file. Its parent must already exist.
     Returns:
         True after a validated artifact has been written.
@@ -173,9 +176,18 @@ def export_to_geo_infer(model_data: dict[str, Any], output_file: Path) -> bool:
         )
     options = dict(options)
     model_type = options.pop("model_type", "categorical")
+    derivation = options.pop("metadata_derivation", None)
+    if derivation is not None and not isinstance(derivation, dict):
+        raise ValueError("metadata_derivation must be a mapping")
     if model_type == "linear_gaussian":
         from .geo_infer_gaussian import build_geo_infer_gaussian_artifact
 
+        rejected = sorted({"space_kind", "state_ids"} & set(options))
+        if rejected:
+            raise ValueError(
+                f"linear_gaussian export does not accept {rejected}; remove "
+                "the space options or the derived SpaceKind declaration"
+            )
         artifact = build_geo_infer_gaussian_artifact(
             model_data["raw_content"], **options
         )
@@ -183,6 +195,13 @@ def export_to_geo_infer(model_data: dict[str, Any], output_file: Path) -> bool:
         artifact = build_geo_infer_artifact(model_data["raw_content"], **options)
     else:
         raise ValueError(f"Unsupported geo_infer model_type: {model_type}")
+    if derivation is not None:
+        # Derivation provenance is attached after artifact validation; it is
+        # the only structural extension and only the derivation layer sets it.
+        artifact = dict(
+            artifact,
+            provenance={**artifact["provenance"], "metadata_derivation": derivation},
+        )
     output_file.write_text(
         json.dumps(artifact, sort_keys=True, separators=(",", ":"), allow_nan=False)
         + "\n",

@@ -899,6 +899,10 @@ def _record_step_result(
     if step_result["status"] == "SUCCESS" and has_warning:
         step_result["status"] = "SUCCESS_WITH_WARNINGS"
 
+    # Receipt: record which execution mode produced this step entry. The
+    # consolidated executor stamps "consolidated" on its own receipts.
+    step_result.setdefault("execution_mode", "subprocess")
+
     pipeline_summary["steps"].append(step_result)
     _update_performance_summary(
         pipeline_summary,
@@ -914,6 +918,28 @@ def _record_step_result(
         step_duration,
         progress_tracker,
         logger,
+    )
+
+
+def _consolidated_step_selected(
+    script_name: str,
+    args: PipelineArguments,
+    pipeline_summary: dict[str, Any],
+) -> bool:
+    """Decide the execution mode for one serial step under --consolidated-steps.
+
+    Strictly opt-in: when the flag is off, or the executor declines the step
+    (not in the consolidated whitelist, or testing-matrix folder dispatch is
+    active), the canonical subprocess path runs unchanged.
+    """
+    if not getattr(args, "consolidated_steps", False):
+        return False
+    from gnn.pipeline.step_executor import can_execute_in_process
+
+    return can_execute_in_process(
+        script_name,
+        args,
+        pipeline_config=pipeline_summary.get("identity_config", {}).get("input_config"),
     )
 
 
@@ -948,13 +974,29 @@ def _execute_pipeline_iteration(
     if script_name in ("23_report.py", "24_intelligent_analysis.py"):
         _write_preliminary_pipeline_summary(pipeline_summary, args.output_dir, logger)
 
-    step_result = execute_pipeline_step(
-        script_name,
-        args,
-        logger,
-        run_id=pipeline_summary.get("run_id"),
-        pipeline_config=pipeline_summary.get("identity_config", {}).get("input_config"),
-    )
+    step_result: dict[str, Any]
+    if _consolidated_step_selected(script_name, args, pipeline_summary):
+        from gnn.pipeline.step_executor import execute_step_in_process
+
+        step_result = execute_step_in_process(
+            script_name,
+            args,
+            logger,
+            run_id=pipeline_summary.get("run_id"),
+            pipeline_config=pipeline_summary.get("identity_config", {}).get(
+                "input_config"
+            ),
+        )
+    else:
+        step_result = execute_pipeline_step(
+            script_name,
+            args,
+            logger,
+            run_id=pipeline_summary.get("run_id"),
+            pipeline_config=pipeline_summary.get("identity_config", {}).get(
+                "input_config"
+            ),
+        )
     step_duration = time.time() - step_start_time
     step_end_datetime = datetime.now()
 

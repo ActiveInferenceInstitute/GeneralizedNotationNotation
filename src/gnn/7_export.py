@@ -59,6 +59,14 @@ geo_arguments = {
         "default": None,
         "help": "GEO-INFER export: space kind (categorical or h3)",
     },
+    "geo_derive_metadata": {
+        "action": "store_true",
+        "default": False,
+        "help": (
+            "GEO-INFER export: derive missing step seconds from explicit "
+            "notation declarations (TimeStep/StepSeconds/dt), with provenance"
+        ),
+    },
 }
 
 
@@ -66,12 +74,16 @@ def _export_with_geo(**kwargs: Any) -> bool:
     """Opt-in GEO-INFER export via the registered --geo-* CLI flags.
 
     Also routes the explicit per-model ``--geo-infer-options-file``
-    metadata flow to the export CLI adapter.
+    metadata flow to the export CLI adapter. ``--geo-derive-metadata``
+    opts into notation-derived metadata as the last resolution fallback;
+    explicit options always win per field.
     """
     step_seconds = kwargs.pop("geo_step_seconds", None)
     state_ids_path = kwargs.pop("geo_state_ids", None)
     space_kind = kwargs.pop("geo_space_kind", None)
     options_file = kwargs.pop("geo_infer_options_file", None)
+    derive = bool(kwargs.pop("geo_derive_metadata", False))
+    formats = kwargs.get("formats") or list(DEFAULT_PIPELINE_FORMATS)
     if step_seconds is None:
         if state_ids_path or space_kind:
             raise ValueError(
@@ -80,6 +92,13 @@ def _export_with_geo(**kwargs: Any) -> bool:
             )
         if options_file is not None:
             kwargs["geo_infer_options_file"] = options_file
+        elif not derive:
+            return process_export(**kwargs)
+        if derive:
+            kwargs["geo_derive_metadata"] = True
+            if "geo_infer" not in formats:
+                kwargs["formats"] = [*formats, "geo_infer"]
+        if options_file is not None:
             return process_export_cli(**kwargs)
         return process_export(**kwargs)
     kwargs["geo_infer"] = {
@@ -87,7 +106,8 @@ def _export_with_geo(**kwargs: Any) -> bool:
         "state_ids_path": state_ids_path,
         "space_kind": space_kind or "categorical",
     }
-    formats = kwargs.get("formats") or list(DEFAULT_PIPELINE_FORMATS)
+    if derive:
+        kwargs["geo_derive_metadata"] = True
     if "geo_infer" not in formats:
         kwargs["formats"] = [*formats, "geo_infer"]
     return process_export(**kwargs)
