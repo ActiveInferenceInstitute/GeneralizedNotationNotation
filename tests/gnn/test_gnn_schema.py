@@ -314,7 +314,8 @@ A={(1.0, 0.0), (0.5, 0.25, 0.25)}
         template = (
             Path(__file__).resolve().parents[2]
             / "src"
-            / "gnn" / "cli"
+            / "gnn"
+            / "cli"
             / "template_assets"
             / "pomdp_gridworld_3x3.md"
         )

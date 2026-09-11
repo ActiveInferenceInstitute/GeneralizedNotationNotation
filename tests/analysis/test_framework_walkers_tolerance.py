@@ -87,7 +87,9 @@ def test_json_payload_that_is_not_a_dict_is_tolerated(tmp_path: Path) -> None:
     the walker — the framework extraction contract is dict-shaped."""
     sim_data = tmp_path / "model" / "discopy" / "simulation_data"
     sim_data.mkdir(parents=True)
-    (sim_data / "circuit_analysis.json").write_text(json.dumps([1, 2, 3]), encoding="utf-8")
+    (sim_data / "circuit_analysis.json").write_text(
+        json.dumps([1, 2, 3]), encoding="utf-8"
+    )
     out = tmp_path / "viz"
 
     assert generate_discopy(tmp_path, out, verbose=False) == []

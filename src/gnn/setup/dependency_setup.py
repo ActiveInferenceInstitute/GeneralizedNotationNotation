@@ -6,7 +6,6 @@ optional package group installation, and project structure creation.
 """
 
 import logging
-import shutil
 import subprocess  # nosec B404
 from pathlib import Path
 from typing import Any, List, cast
@@ -113,8 +112,10 @@ def setup_julia_environment(verbose: bool = False) -> bool:
     """
     logger.info("🔧 Setting up Julia environment for GNN execution")
 
+    from gnn.execute.julia_setup import julia_executable
+
     try:
-        julia_path = shutil.which("julia")
+        julia_path = julia_executable()
         if not julia_path:
             logger.error("❌ Julia not found in PATH")
             logger.info("💡 Install Julia from: https://julialang.org/downloads/")
@@ -134,9 +135,15 @@ def setup_julia_environment(verbose: bool = False) -> bool:
             logger.info("✅ Julia is available, proceeding with setup")
 
         setup_scripts: list[Any] = [
-            PROJECT_ROOT / "src" / "execute" / "rxinfer" / "setup_environment.jl",
             PROJECT_ROOT
             / "src"
+            / "gnn"
+            / "execute"
+            / "rxinfer"
+            / "setup_environment.jl",
+            PROJECT_ROOT
+            / "src"
+            / "gnn"
             / "execute"
             / "activeinference_jl"
             / "setup_environment.jl",

@@ -472,34 +472,24 @@ Minimize free energy while maintaining preferred states.
         assert "no" in log_text and "files" in log_text or "warning" in log_text
 
 
+@pytest.mark.needs_ollama
 class TestOllamaIntegrationEnd2End:
-    """Optional checks against the real Ollama CLI (skip when not installed)."""
+    """Checks against the real Ollama CLI/daemon (gated by ``needs_ollama``;
+    see tests/helpers/toolchain_probes.py)."""
 
     def test_ollama_command_exists(self) -> Any:
         ollama_path = shutil.which("ollama")
-        if not ollama_path:
-            pytest.skip("ollama CLI not in PATH")
         assert ollama_path is not None
         assert Path(ollama_path).exists()
 
     def test_ollama_service_running(self) -> Any:
-        if shutil.which("ollama") is None:
-            pytest.skip("ollama CLI not in PATH")
-        try:
-            result = subprocess.run(  # nosec B607 B603
-                ["ollama", "list"],
-                capture_output=True,
-                text=True,
-                timeout=5,
-            )
-        except (FileNotFoundError, subprocess.TimeoutExpired) as e:
-            pytest.skip(f"ollama list failed: {e}")
-
-        if result.returncode != 0:
-            pytest.skip(
-                "Ollama CLI present but daemon not responding (ollama list failed)"
-            )
-        assert result.returncode == 0
+        result = subprocess.run(  # nosec B607 B603
+            ["ollama", "list"],
+            capture_output=True,
+            text=True,
+            timeout=5,
+        )
+        assert result.returncode == 0, result.stderr
 
 
 if __name__ == "__main__":

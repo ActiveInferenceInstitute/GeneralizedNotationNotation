@@ -19,12 +19,13 @@ import html
 import json
 import logging
 import os
-import shutil
 import subprocess  # nosec B404
 import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Literal
+
+from gnn.execute.julia_setup import julia_executable  # noqa: E402
 
 logger = logging.getLogger(__name__)
 
@@ -162,9 +163,39 @@ def _run_subprocess(
     cwd: Path,
     timeout: int,
     results_path: Path,
+    script_path: Path,
     env: dict[str, str] | None = None,
 ) -> FrameworkRun:
-    """Execute a rendered script and classify the outcome."""
+    """Execute a rendered script and classify the outcome.
+
+    Every rendered script passes the shared pre-execution security gate first
+    (same helper as the executor and Step-12 paths; fail closed when the
+    scanner cannot be imported). The gate helper is imported lazily because
+    ``gnn.execute`` pulls in the executor/runner stack that this analysis
+    module must not depend on at import time.
+    """
+    try:
+        from gnn.execute.security_gate import check_script_allowed
+    except ImportError as exc:
+        detail = f"pre-execution security gate unavailable ({exc}); refusing to execute"
+        logger.error("%s: %s", framework, detail)
+        return FrameworkRun(framework, "execution_failed", detail)
+
+    gate_verdict = check_script_allowed(script_path)
+    if gate_verdict["overridden"]:
+        logger.warning(
+            "GNN_ALLOW_UNSAFE_EXEC set: pre-execution security gate "
+            "bypassed for %s (trusted-local use only)",
+            script_path,
+        )
+    if not gate_verdict["ok"]:
+        detail = (
+            f"Pre-execution security gate blocked {script_path.name}: "
+            f"{gate_verdict['reason']}"
+        )
+        logger.error("%s: %s", framework, detail)
+        return FrameworkRun(framework, "execution_failed", detail)
+
     try:
         completed = subprocess.run(  # nosec B603
             command,
@@ -205,7 +236,7 @@ def _render(
 
 def _require_julia(framework: str) -> str | FrameworkRun:
     """Resolve the julia executable, or report the framework as unavailable."""
-    julia = shutil.which("julia")
+    julia = julia_executable()
     if julia is None:
         detail = "julia is not on PATH"
         logger.warning("%s unavailable: %s", framework, detail)
@@ -243,6 +274,7 @@ def _execute_rxinfer(spec: dict[str, Any], fw_dir: Path) -> FrameworkRun:
         cwd=fw_dir,
         timeout=JULIA_TIMEOUT_SECONDS,
         results_path=fw_dir / "simulation_results.json",
+        script_path=script_path,
     )
 
 
@@ -280,6 +312,7 @@ def _execute_pymdp(spec: dict[str, Any], fw_dir: Path) -> FrameworkRun:
         cwd=fw_dir,
         timeout=PYTHON_TIMEOUT_SECONDS,
         results_path=fw_dir / "simulation_results.json",
+        script_path=script_path,
         env=env,
     )
 
@@ -316,6 +349,7 @@ def _execute_activeinference_jl(spec: dict[str, Any], fw_dir: Path) -> Framework
         cwd=fw_dir,
         timeout=JULIA_TIMEOUT_SECONDS,
         results_path=fw_dir / "simulation_results.json",
+        script_path=script_path,
     )
 
 

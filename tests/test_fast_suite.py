@@ -98,18 +98,21 @@ class TestFastPipelineComponents:
     def test_utils_module_import(self) -> Any:
         """Test that utils module can be imported."""
         import gnn.utils as utils
+
         assert utils is not None, "Utils module should be importable"
 
     @pytest.mark.unit
     def test_pipeline_module_import(self) -> Any:
         """Test that pipeline module can be imported."""
         import gnn.pipeline as pipeline
+
         assert pipeline is not None, "Pipeline module should be importable"
 
     @pytest.mark.unit
     def test_type_checker_import(self) -> Any:
         """Test that type checker module can be imported."""
         import gnn.type_checker as type_checker
+
         assert type_checker is not None, "Type checker module should be importable"
 
 
@@ -120,6 +123,7 @@ class TestFastExport:
     def test_export_module_import(self) -> Any:
         """Test that export module can be imported."""
         import gnn.export as export
+
         assert export is not None, "Export module should be importable"
 
     @pytest.mark.unit
@@ -149,6 +153,7 @@ class TestFastVisualization:
     def test_visualization_module_import(self) -> Any:
         """Test that visualization module can be imported."""
         import gnn.visualization as visualization
+
         assert visualization is not None, "Visualization module should be importable"
 
 
@@ -159,6 +164,7 @@ class TestFastRender:
     def test_render_module_import(self) -> Any:
         """Test that render module can be imported."""
         import gnn.render as render
+
         assert render is not None, "Render module should be importable"
 
 
@@ -169,6 +175,7 @@ class TestFastExecute:
     def test_execute_module_import(self) -> Any:
         """Test that execute module can be imported."""
         import gnn.execute as execute
+
         assert execute is not None, "Execute module should be importable"
 
 
@@ -179,6 +186,7 @@ class TestFastLLM:
     def test_llm_module_import(self) -> Any:
         """Test that LLM module can be imported."""
         import gnn.llm as llm
+
         assert llm is not None, "LLM module should be importable"
 
 
@@ -189,6 +197,7 @@ class TestFastMCP:
     def test_mcp_module_import(self) -> Any:
         """Test that MCP module can be imported."""
         import gnn.mcp as mcp
+
         assert mcp is not None, "MCP module should be importable"
 
 
@@ -199,6 +208,7 @@ class TestFastOntology:
     def test_ontology_module_import(self) -> Any:
         """Test that ontology module can be imported."""
         import gnn.ontology as ontology
+
         assert ontology is not None, "Ontology module should be importable"
 
 
@@ -209,6 +219,7 @@ class TestFastSAPF:
     def test_sapf_module_import(self) -> Any:
         """Test that SAPF module can be imported."""
         import gnn.sapf as sapf
+
         assert sapf is not None, "SAPF module should be importable"
 
 
@@ -219,6 +230,7 @@ class TestFastWebsite:
     def test_website_module_import(self) -> Any:
         """Test that website module can be imported."""
         import gnn.website as website
+
         assert website is not None, "Website module should be importable"
 
 

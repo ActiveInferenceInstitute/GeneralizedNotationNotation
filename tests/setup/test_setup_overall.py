@@ -47,7 +47,6 @@ class TestSetupModule:
         )
         assert "--setup-core-only" in cmd
 
-
     def test_features_available(self) -> Any:
         """Test that FEATURES dict is properly populated."""
         from gnn.setup import FEATURES
@@ -110,7 +109,6 @@ class TestSetupModule:
         assert venv.name == "test_env"
         assert hasattr(venv, "create")
         assert hasattr(venv, "activate")
-
 
     def test_check_python_version(self) -> Any:
         """Test Python version check."""

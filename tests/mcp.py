@@ -10,8 +10,8 @@ from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
 
-# Import utilities from the test_utils public API
-from gnn.utils.test_utils import (
+# Import utilities from the testing_utils public API
+from gnn.utils.testing_utils import (
     run_all_tests,
     run_test_category,
 )

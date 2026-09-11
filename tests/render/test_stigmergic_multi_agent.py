@@ -17,14 +17,13 @@ exemplar:
   signal inference / action-conditioning when declared.
 
 Pure-Python structure tests run unconditionally; Julia parse and execution
-tests are gated exactly like the other live-backend gates in this suite.
+tests are gated by the ``needs_julia``/``needs_julia_env`` markers
+(tests/helpers/toolchain_probes.py), like the other live-backend gates.
 """
 
 from __future__ import annotations
 
-import functools
 import json
-import shutil
 import subprocess
 from collections.abc import Callable
 from pathlib import Path
@@ -51,8 +50,10 @@ GNN_FILES = PROJECT_ROOT / "input" / "gnn_files"
 SWARM_FILE = GNN_FILES / "multiagent" / "stigmergic_swarm.md"
 COORDINATION_FILE = GNN_FILES / "multiagent" / "multi_agent_coordination.md"
 GRIDWORLD_FILE = GNN_FILES / "pomdp_gridworld" / "pomdp_gridworld_3x3.md"
-RXINFER_JULIA_PROJECT = str(PROJECT_ROOT / "src" / "execute" / "rxinfer")
-ACTINF_JULIA_PROJECT = str(PROJECT_ROOT / "src" / "execute" / "activeinference_jl")
+RXINFER_JULIA_PROJECT = str(PROJECT_ROOT / "src" / "gnn" / "execute" / "rxinfer")
+ACTINF_JULIA_PROJECT = str(
+    PROJECT_ROOT / "src" / "gnn" / "execute" / "activeinference_jl"
+)
 
 
 def _canonical_spec(gnn_file: Path) -> dict:
@@ -75,36 +76,6 @@ def _render_activeinference_jl(gnn_file: Path, tmp_path: Path) -> Path:
     )
     assert ok, f"activeinference_jl render failed: {message}"
     return script
-
-
-@functools.lru_cache(maxsize=1)
-def _julia_backends_available() -> bool:
-    """Return True when the committed RxInfer Julia environment loads.
-
-    Mirrors the live-backend gate in the GridWorld cross-framework test: the
-    probe runs the exact ``using`` line the executed scripts need, converted
-    to a boolean so environment-gated tests can skip instead of fail.
-    """
-    if not shutil.which("julia"):
-        return False
-    cmd = [
-        "julia",
-        f"--project={RXINFER_JULIA_PROJECT}",
-        "--startup-file=no",
-        "-e",
-        'using RxInfer, JSON, Distributions, StatsBase; println("OK")',
-    ]
-    try:
-        result = subprocess.run(  # nosec B603 B607
-            cmd,
-            cwd=PROJECT_ROOT,
-            capture_output=True,
-            text=True,
-            timeout=120,
-        )
-    except (FileNotFoundError, subprocess.TimeoutExpired):
-        return False
-    return result.returncode == 0
 
 
 def _run_julia(
@@ -227,9 +198,7 @@ class TestRxInferStigmergicScript:
             "pomdp_model(A=A, B=B, D=D, u=model_actions, T=TIME_STEPS)" in text
         )  # one genuine inference per agent
 
-    def test_swarm_script_embeds_declared_env_coupling(
-        self, tmp_path: Path
-    ) -> None:
+    def test_swarm_script_embeds_declared_env_coupling(self, tmp_path: Path) -> None:
         text = _render_rxinfer(SWARM_FILE, tmp_path).read_text(encoding="utf-8")
         assert "env_signal" in text
         assert "const ENV_INITIAL = [0.0" in text
@@ -237,30 +206,19 @@ class TestRxInferStigmergicScript:
         assert "const SIGNAL_SEEK = 2.0" in text
 
     def test_coordination_script_stays_unconditioned(self, tmp_path: Path) -> None:
-        text = _render_rxinfer(COORDINATION_FILE, tmp_path).read_text(
-            encoding="utf-8"
-        )
+        text = _render_rxinfer(COORDINATION_FILE, tmp_path).read_text(encoding="utf-8")
         _assert_unconditioned_script(text)
 
-    def test_coordination_renders_native_without_env(
-        self, tmp_path: Path
-    ) -> None:
-        text = _render_rxinfer(COORDINATION_FILE, tmp_path).read_text(
-            encoding="utf-8"
-        )
+    def test_coordination_renders_native_without_env(self, tmp_path: Path) -> None:
+        text = _render_rxinfer(COORDINATION_FILE, tmp_path).read_text(encoding="utf-8")
         _assert_swarm_native_script(text)
         assert "const NUM_AGENTS = 2" in text
         assert "const NUM_STATES = 16" not in text
 
-    def test_flat_model_renders_through_flat_strategy(
-        self, tmp_path: Path
-    ) -> None:
+    def test_flat_model_renders_through_flat_strategy(self, tmp_path: Path) -> None:
         """A flat model must not pick up multi-agent scaffolding."""
-        text = _render_rxinfer(GRIDWORLD_FILE, tmp_path).read_text(
-            encoding="utf-8"
-        )
+        text = _render_rxinfer(GRIDWORLD_FILE, tmp_path).read_text(encoding="utf-8")
         _assert_flat_script(text)
-
 
 
 class TestActiveInferenceJlStigmergicScript:
@@ -274,9 +232,7 @@ class TestActiveInferenceJlStigmergicScript:
         assert "const NUM_AGENTS = 3" in text
         _assert_env_conditioned_script(text)
 
-    def test_coordination_renders_native_without_env(
-        self, tmp_path: Path
-    ) -> None:
+    def test_coordination_renders_native_without_env(self, tmp_path: Path) -> None:
         text = _render_activeinference_jl(COORDINATION_FILE, tmp_path).read_text(
             encoding="utf-8"
         )
@@ -291,7 +247,7 @@ class TestActiveInferenceJlStigmergicScript:
         _assert_flat_script(text)
 
 
-@pytest.mark.skipif(not shutil.which("julia"), reason="Julia not available")
+@pytest.mark.needs_julia
 class TestJuliaParse:
     """Both generated scripts must parse with Meta.parseall."""
 
@@ -358,6 +314,7 @@ class TestJuliaParse:
 
 @pytest.mark.integration
 @pytest.mark.slow
+@pytest.mark.needs_julia_env
 class TestJuliaExecution:
     """Live execution of the stigmergic swarm scripts (both backends)."""
 
@@ -398,8 +355,6 @@ class TestJuliaExecution:
         return results
 
     def test_rxinfer_swarm_executes(self, tmp_path: Path) -> None:
-        if not _julia_backends_available():
-            pytest.skip("Julia backend packages not installed; skipping live execution")
         script = _render_rxinfer(SWARM_FILE, tmp_path)
         result = _run_julia(script, RXINFER_JULIA_PROJECT, tmp_path)
         assert result.returncode == 0, (
@@ -412,8 +367,6 @@ class TestJuliaExecution:
         assert any(sum(step) > 0 for step in env_trace[1:])  # deposits accumulate
 
     def test_activeinference_jl_swarm_executes(self, tmp_path: Path) -> None:
-        if not _julia_backends_available():
-            pytest.skip("Julia backend packages not installed; skipping live execution")
         script = _render_activeinference_jl(SWARM_FILE, tmp_path)
         result = _run_julia(script, ACTINF_JULIA_PROJECT, tmp_path)
         assert result.returncode == 0, (

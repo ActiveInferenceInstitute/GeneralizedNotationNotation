@@ -47,11 +47,11 @@ class TestRealResourceLister:
         from gnn.mcp import initialize
 
         initialize(halt_on_missing_sdk=False, force_proceed_flag=True)
-        from gnn.mcp import mcp_instance
-
         # Wait for the documentation resource to register (discovery may
         # still be in flight after initialize returns).
         import time
+
+        from gnn.mcp import mcp_instance
 
         deadline = time.monotonic() + 5.0
         while time.monotonic() < deadline:
@@ -73,9 +73,9 @@ class TestHTTPResourceGateAgreesWithCapabilities:
         from gnn.mcp import initialize
 
         initialize(halt_on_missing_sdk=False, force_proceed_flag=True)
-        from gnn.mcp import mcp_instance
-
         import time
+
+        from gnn.mcp import mcp_instance
 
         deadline = time.monotonic() + 5.0
         while time.monotonic() < deadline:
@@ -99,9 +99,9 @@ class TestHTTPResourceGateAgreesWithCapabilities:
         from gnn.mcp import initialize
 
         initialize(halt_on_missing_sdk=False, force_proceed_flag=True)
-        from gnn.mcp import mcp_instance
-
         import time
+
+        from gnn.mcp import mcp_instance
 
         deadline = time.monotonic() + 5.0
         while time.monotonic() < deadline:

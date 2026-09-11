@@ -1,14 +1,12 @@
-"""Toolchain-guarded test for the Lean verification runner receipt flow.
+"""Toolchain-gated test for the Lean verification runner receipt flow.
 
-Skipped unless the fep_lean checkout resolves, ``lake`` is on PATH, and the
-bridge exposes the ``verify-document`` operation.
+Gated by the ``needs_lean`` marker: the fep_lean checkout must resolve,
+``lake`` must be on PATH, and the bridge must expose the
+``verify-document`` operation (probe in tests/helpers/toolchain_probes.py).
 """
 
 from __future__ import annotations
 
-import functools
-import shutil
-import subprocess
 from pathlib import Path
 
 import pytest
@@ -24,32 +22,7 @@ def _fep_lean_root() -> Path | None:
     return resolve_fep_lean_root()
 
 
-@functools.cache
-def _bridge_has_verify_document(root_str: str) -> bool:
-    try:
-        completed = subprocess.run(
-            ["uv", "run", "fep-lean", "bridge", "--help"],
-            cwd=root_str,
-            capture_output=True,
-            text=True,
-            timeout=120,
-            check=False,
-        )
-    except (OSError, subprocess.TimeoutExpired):
-        return False
-    return "verify-document" in completed.stdout
-
-
-LEAN_TOOLCHAIN_AVAILABLE = bool(
-    shutil.which("lake")
-    and (root := _fep_lean_root()) is not None
-    and _bridge_has_verify_document(str(root))
-)
-
-pytestmark = pytest.mark.skipif(
-    not LEAN_TOOLCHAIN_AVAILABLE,
-    reason="fep_lean toolchain or bridge verify-document op unavailable",
-)
+pytestmark = pytest.mark.needs_lean
 
 
 def test_lean_runner_receipt_status_ok(tmp_path: Path) -> None:

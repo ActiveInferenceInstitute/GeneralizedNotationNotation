@@ -150,9 +150,9 @@ def test_old_import_path_warns_and_reexports() -> None:
     with warnings.catch_warnings(record=True) as caught:
         warnings.simplefilter("always")
         compat = importlib.import_module("gnn.pipeline.pipeline_validator")
-    assert any(
-        issubclass(w.category, DeprecationWarning) for w in caught
-    ), "old import path must emit DeprecationWarning"
+    assert any(issubclass(w.category, DeprecationWarning) for w in caught), (
+        "old import path must emit DeprecationWarning"
+    )
     from gnn.pipeline.pipeline_runtime_validator import (
         PipelineValidator as Canonical,
     )

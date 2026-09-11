@@ -405,7 +405,9 @@ class TestEntryPointDelegation:
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
     ) -> None:
         """No summary anywhere: partial report, success exit, no crash."""
-        monkeypatch.setattr("gnn.intelligent_analysis.processor.time.sleep", lambda s: None)
+        monkeypatch.setattr(
+            "gnn.intelligent_analysis.processor.time.sleep", lambda s: None
+        )
         logger = logging.getLogger("test-partial")
 
         from gnn.intelligent_analysis.processor import process_intelligent_analysis

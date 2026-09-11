@@ -9,8 +9,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   && rm -rf /var/lib/apt/lists/*
 
 # Install uv — pinned version for reproducible builds (supply-chain hardening).
-# Floor matches pyproject's uv>=0.7.8 requirement; the installer default stays
-# current so `uv sync --frozen` can read uv.lock's newer lock format.
+# Pin matches the astral-sh/setup-uv version used in CI (0.12 series) so local
+# and CI environments resolve the same lockfile format.
 ARG UV_VERSION=0.12.0
 RUN curl -LsSf "https://astral.sh/uv/${UV_VERSION}/install.sh" | sh
 ENV PATH="/root/.local/bin:$PATH"

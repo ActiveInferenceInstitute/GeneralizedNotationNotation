@@ -659,14 +659,11 @@ class TestMatrixShapeParity:
             assert len(per_backend) >= 2
             assert len(set(per_backend.values())) == 1, (letter, per_backend)
 
-
     def test_julia_dimension_constants_extraction(self) -> None:
         from gnn.render.emitted_artifact_checks import julia_dimension_constants
 
         code = (
-            "const NUM_STATES = 3\n"
-            "const NUM_OBSERVATIONS = 16\n"
-            "const NUM_ACTIONS = 3\n"
+            "const NUM_STATES = 3\nconst NUM_OBSERVATIONS = 16\nconst NUM_ACTIONS = 3\n"
         )
         assert julia_dimension_constants(code) == {
             "NUM_STATES": 3,

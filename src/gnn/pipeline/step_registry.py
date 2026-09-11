@@ -349,6 +349,23 @@ def canonical_step_stem(step_alias: str) -> str:
     return CONSOLIDATED_STEP_ALIASES.get(step_alias, step_alias)
 
 
+# ---------------------------------------------------------------------------
+# Consolidated in-process execution (S2-11 / V4-STAGE)
+# ---------------------------------------------------------------------------
+CONSOLIDATED_IN_PROCESS_STEMS: frozenset[str] = frozenset(
+    {"0_template", "3_gnn", "5_type_checker"}
+)
+"""Canonical stems the opt-in consolidated executor runs in-process.
+
+First slice of the V4 stage-consolidation decision
+(``docs/decisions/0001-consolidated-pipeline-execution.md``): the numbered
+scripts stay the CLI surface; these steps additionally run in-process under
+``--consolidated-steps`` via ``gnn.pipeline.step_executor``. Extend this set
+as steps are proven equivalent — resolution always flows through
+``StepInfo.module_function``, never around it.
+"""
+
+
 def discover_steps() -> Dict[int, StepInfo]:
     """Return a dict mapping step number (from script_stem) to StepInfo."""
     return {int(s.script_stem.split("_")[0]): s for s in STEPS}

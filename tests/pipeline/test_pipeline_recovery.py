@@ -60,7 +60,6 @@ def sample_gnn_file(test_environment: Any) -> Any:
     return file_path
 
 
-
 class TestRecursionErrorRecovery:
     """Test suite for NumPy recursion error recovery."""
 

@@ -40,10 +40,10 @@ result = {"status": "success"}
 print("script ran")
 '''
 
-_UNFIXABLE_SCRIPT = '''\
+_UNFIXABLE_SCRIPT = """\
 def broken(:
     return 1
-'''
+"""
 
 
 @pytest.fixture
@@ -55,9 +55,7 @@ class TestValidateAndCleanReturnPath:
     """The cleaner returns the path to execute, not a bool."""
 
     @pytest.mark.unit
-    def test_valid_script_returns_original_path(
-        self, script_dir: Path
-    ) -> None:
+    def test_valid_script_returns_original_path(self, script_dir: Path) -> None:
         path = script_dir / "valid.py"
         path.write_text(_VALID_SCRIPT)
         original_bytes = path.read_bytes()

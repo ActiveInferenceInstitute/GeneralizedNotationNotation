@@ -60,6 +60,7 @@ class TestModuleStructure:
     def test_export_module_exports(self) -> None:
         """Test that export module exports expected functions."""
         import gnn.export as export
+
         assert hasattr(export, "get_supported_formats"), (
             "export should export get_supported_formats"
         )
@@ -68,6 +69,7 @@ class TestModuleStructure:
     def test_render_module_exports(self) -> None:
         """Test that render module exports expected functions."""
         import gnn.render as render
+
         assert hasattr(render, "process_render"), "render should export process_render"
         assert hasattr(render, "get_available_renderers"), (
             "render should export get_available_renderers"
@@ -88,6 +90,7 @@ class TestFeatureFlags:
     def test_render_features_dict(self) -> None:
         """Test render module has FEATURES dict."""
         import gnn.render as render
+
         assert hasattr(render, "FEATURES"), "render should have FEATURES"
         assert isinstance(render.FEATURES, dict), "FEATURES should be a dict"
 

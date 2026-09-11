@@ -13,16 +13,66 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 from gnn.llm.cache import LLMCache
 from gnn.llm.llm_processor import LLMProcessor, ProviderType, _merge_provider_configs
 from gnn.llm.processor import (
+    ModelNameValidationError,
     _classify_auth_error,
     _execute_prompt,
     _llm_file_sort_key,
+    _model_is_cached,
     _optional_positive_int,
     _prompt_fallback_text,
     _resolve_llm_budget_seconds,
     _resolve_llm_max_files,
+    _validate_model_name,
 )
 
 pytestmark = pytest.mark.unit
+
+
+class TestValidateModelName:
+    """Flag-injection guard: model names must never carry CLI metacharacters."""
+
+    @pytest.mark.parametrize(
+        "name",
+        [
+            "llama3",
+            "llama3:8b",
+            "gpt-oss:20b",
+            "myorg/codellama-34b:q4",
+        ],
+    )
+    def test_accepts_plain_identifiers(self, name: str) -> None:
+        assert _validate_model_name(name) == name
+
+    @pytest.mark.parametrize(
+        "name",
+        [
+            "-o rider",  # space + payload
+            "--help",  # leading dash = flag injection
+            "-e import os",  # flag + code
+            "llama3;rm -rf /",  # shell metacharacter
+            "llama3 && touch /tmp/pwned",
+            "llama3$(reboot)",
+            "llama3\n--modelfile",
+            "",  # empty
+            "   ",  # whitespace-only
+        ],
+    )
+    def test_rejects_injection_attempts(self, name: str) -> None:
+        with pytest.raises(ModelNameValidationError):
+            _validate_model_name(name)
+
+
+class TestModelIsCachedValidation:
+    def test_invalid_model_name_short_circuits_to_false(
+        self, caplog: pytest.LogCaptureFixture
+    ) -> None:
+        import logging
+
+        result = _model_is_cached("--pull ollama", logging.getLogger("llm.test"))
+        assert result is False
+        assert any(
+            "Rejected invalid model name" in rec.message for rec in caplog.records
+        )
 
 
 class TestClassifyAuthError:

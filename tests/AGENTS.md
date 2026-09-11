@@ -83,7 +83,7 @@ success = run_tests(
 
 #### `TestRunner`
 **Description**: Single-source pytest runner class: resource monitoring, subprocess execution, output parsing, and execution reports.
-**Defined in**: [`infrastructure/test_runner.py`](infrastructure/test_runner.py) — the canonical copy. [`runner.py`](runner.py) re-exports it so `from tests.runner import TestRunner` (used by `src/gnn/utils/test_utils.py`) keeps resolving to the same class. Do not define a second copy.
+**Defined in**: [`infrastructure/test_runner.py`](infrastructure/test_runner.py) — the canonical copy. [`runner.py`](runner.py) re-exports it so `from tests.runner import TestRunner` (used by `src/gnn/utils/testing_utils.py`) keeps resolving to the same class. Do not define a second copy.
 
 #### `run_fast_pipeline_tests(logger, output_dir, verbose=False) -> bool`
 **Description**: Run fast test suite for quick pipeline validation
@@ -171,7 +171,7 @@ errors = _extract_collection_errors(pytest_stdout, pytest_stderr)
 - `pytest-html` - HTML test reports
 
 ### Internal Dependencies
-- `gnn.utils.test_utils` - Shared test configuration and helpers (`gnn.utils.pipeline_template` backs the `2_tests.py` CLI wrapper)
+- `gnn.utils.testing_utils` - Shared test configuration and helpers (`gnn.utils.pipeline_template` backs the `2_tests.py` CLI wrapper)
 
 ---
 
@@ -179,7 +179,7 @@ errors = _extract_collection_errors(pytest_stdout, pytest_stderr)
 
 ### Test Settings
 ```python
-TEST_CONFIG = {  # src/gnn/utils/test_utils.py (abridged)
+TEST_CONFIG = {  # src/gnn/utils/testing_utils.py (abridged)
     "safe_mode": True,
     "verbose": False,
     "strict": False,
@@ -191,12 +191,11 @@ TEST_CONFIG = {  # src/gnn/utils/test_utils.py (abridged)
 
 ### Test Categories
 ```python
-TEST_CATEGORIES = {  # src/gnn/utils/test_utils.py - category -> description
+TEST_CATEGORIES = {  # src/gnn/utils/testing_utils.py - category -> description
     "fast": "Quick validation tests for core functionality",
     "standard": "Integration tests and moderate complexity",
     "slow": "Complex scenarios and benchmarks",
     "performance": "Resource usage and scalability tests",
-    "safe_to_fail": "Tests with graceful degradation",
     "unit": "Individual component tests",
     "integration": "Multi-component workflow tests",
     "mcp": "Model Context Protocol integration tests",
@@ -344,7 +343,7 @@ output/2_tests_output/
 - **Function**: `run_tests()`
 
 ### Imports From
-- `gnn.utils.test_utils` - Shared test configuration and helpers
+- `gnn.utils.testing_utils` - Shared test configuration and helpers
 
 ### Imported By
 - `2_tests.py` - Step 2 CLI wrapper (imports `run_tests` lazily)
@@ -404,7 +403,7 @@ flowchart TD
 - Re-exports the canonical `TestRunner` from `infrastructure/test_runner.py`
 - Re-exports the execution modes from `test_runner_modes.py` and `create_test_runner` from `test_runner_modular.py`
 
-**test_utils.py** (Shared Utilities):
+**testing_utils.py** (Shared Utilities):
 - Provides test fixtures and helper functions
 - Defines test categories and markers
 - Provides test data creation utilities

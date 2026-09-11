@@ -37,8 +37,8 @@ def test_run_tests_signature_matches_documented_contract() -> None:
 
 def test_step2_wrapper_exists_and_is_thin() -> None:
     """``src/2_tests.py`` must keep delegating to ``tests.run_tests``."""
-    source = (Path(__file__).resolve().parents[2] / "src" / "gnn" / "2_tests.py").read_text(
-        encoding="utf-8"
-    )
+    source = (
+        Path(__file__).resolve().parents[2] / "src" / "gnn" / "2_tests.py"
+    ).read_text(encoding="utf-8")
     assert "from tests import run_tests" in source
     assert "SKIP_TESTS_IN_PIPELINE" in source

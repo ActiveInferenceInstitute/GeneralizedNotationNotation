@@ -18,12 +18,14 @@ class TestWebsiteFeaturesAndConstants:
 
     def test_features_dict_exists(self) -> None:
         import gnn.website as website
+
         assert hasattr(website, "FEATURES")
         assert isinstance(website.FEATURES, dict)
         assert len(website.FEATURES) > 0
 
     def test_features_contains_expected_keys(self) -> None:
         import gnn.website as website
+
         for key in (
             "html",
             "embedding",
@@ -36,6 +38,7 @@ class TestWebsiteFeaturesAndConstants:
 
     def test_supported_file_types_dict(self) -> None:
         import gnn.website as website
+
         assert hasattr(website, "SUPPORTED_FILE_TYPES")
         assert isinstance(website.SUPPORTED_FILE_TYPES, dict)
         assert "html" in website.SUPPORTED_FILE_TYPES

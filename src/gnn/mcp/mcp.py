@@ -65,6 +65,7 @@ from .models import (
     MCPSDKStatus,
     MCPTool,
 )
+from .validation import _validate_params
 
 # Global SDK status instance
 _MCP_SDK_STATUS = MCPSDKStatus()
@@ -1416,7 +1417,11 @@ class MCP:
 
     def _validate_params(self, schema: Dict[str, Any], params: Dict[str, Any]) -> None:
         """
-        Enhanced parameter validation against schema with detailed error reporting.
+        Validate tool parameters against their JSON schema.
+
+        Thin delegating wrapper over the stateless validators in
+        ``gnn.mcp.validation`` (STR-2 phase 1 extraction); signature and
+        error behavior are unchanged for all call sites.
 
         Args:
             schema: JSON schema for validation
@@ -1425,247 +1430,7 @@ class MCP:
         Raises:
             MCPValidationError: If validation fails
         """
-        if not self._strict_validation:
-            # Basic validation only
-            if "required" in schema:
-                for required in schema["required"]:
-                    if required not in params:
-                        raise MCPValidationError(
-                            f"Missing required parameter: {required}"
-                        )
-            return
-
-        if not isinstance(params, dict):
-            raise MCPValidationError("Parameters must be a dictionary")
-
-        # Check required fields
-        if "required" in schema:
-            for required_field in schema["required"]:
-                if required_field not in params:
-                    raise MCPValidationError(
-                        f"Required parameter '{required_field}' is missing",
-                        field=required_field,
-                    )
-
-        # Validate properties
-        if "properties" in schema:
-            for field_name, field_schema in schema["properties"].items():
-                if field_name in params:
-                    field_value = params[field_name]
-                    self._validate_field(field_name, field_value, field_schema)
-
-        # Validate additional constraints
-        if "minProperties" in schema and len(params) < schema["minProperties"]:
-            raise MCPValidationError(
-                f"Too few properties: {len(params)} < {schema['minProperties']}"
-            )
-
-        if "maxProperties" in schema and len(params) > schema["maxProperties"]:
-            raise MCPValidationError(
-                f"Too many properties: {len(params)} > {schema['maxProperties']}"
-            )
-
-    def _validate_field(
-        self, field_name: str, field_value: Any, field_schema: Dict[str, Any]
-    ) -> None:
-        """
-        Validate a single field against its schema.
-
-        Args:
-            field_name: Name of the field
-            field_value: Value to validate
-            field_schema: Schema for the field
-
-        Raises:
-            MCPValidationError: If validation fails
-        """
-        field_type = field_schema.get("type")
-
-        # Type validation
-        if field_type == "string":
-            if not isinstance(field_value, str):
-                raise MCPValidationError(
-                    f"Parameter '{field_name}' must be a string",
-                    field=field_name,
-                    value=field_value,
-                )
-
-            # String-specific validations
-            if (
-                "minLength" in field_schema
-                and len(field_value) < field_schema["minLength"]
-            ):
-                raise MCPValidationError(
-                    f"Parameter '{field_name}' too short: {len(field_value)} < {field_schema['minLength']}",
-                    field=field_name,
-                    value=field_value,
-                )
-
-            if (
-                "maxLength" in field_schema
-                and len(field_value) > field_schema["maxLength"]
-            ):
-                raise MCPValidationError(
-                    f"Parameter '{field_name}' too long: {len(field_value)} > {field_schema['maxLength']}",
-                    field=field_name,
-                    value=field_value,
-                )
-
-            if "pattern" in field_schema:
-                import re
-
-                if not re.match(field_schema["pattern"], field_value):
-                    raise MCPValidationError(
-                        f"Parameter '{field_name}' does not match pattern: {field_schema['pattern']}",
-                        field=field_name,
-                        value=field_value,
-                    )
-
-            if "enum" in field_schema and field_value not in field_schema["enum"]:
-                raise MCPValidationError(
-                    f"Parameter '{field_name}' must be one of: {field_schema['enum']}",
-                    field=field_name,
-                    value=field_value,
-                )
-
-        elif field_type == "integer":
-            if isinstance(field_value, bool) or not isinstance(field_value, int):
-                raise MCPValidationError(
-                    f"Parameter '{field_name}' must be an integer",
-                    field=field_name,
-                    value=field_value,
-                )
-
-            # Integer-specific validations
-            if "minimum" in field_schema and field_value < field_schema["minimum"]:
-                raise MCPValidationError(
-                    f"Parameter '{field_name}' too small: {field_value} < {field_schema['minimum']}",
-                    field=field_name,
-                    value=field_value,
-                )
-
-            if "maximum" in field_schema and field_value > field_schema["maximum"]:
-                raise MCPValidationError(
-                    f"Parameter '{field_name}' too large: {field_value} > {field_schema['maximum']}",
-                    field=field_name,
-                    value=field_value,
-                )
-
-        elif field_type == "number":
-            if isinstance(field_value, bool) or not isinstance(
-                field_value, (int, float)
-            ):
-                raise MCPValidationError(
-                    f"Parameter '{field_name}' must be a number",
-                    field=field_name,
-                    value=field_value,
-                )
-
-            # Number-specific validations
-            if "minimum" in field_schema and field_value < field_schema["minimum"]:
-                raise MCPValidationError(
-                    f"Parameter '{field_name}' too small: {field_value} < {field_schema['minimum']}",
-                    field=field_name,
-                    value=field_value,
-                )
-
-            if "maximum" in field_schema and field_value > field_schema["maximum"]:
-                raise MCPValidationError(
-                    f"Parameter '{field_name}' too large: {field_value} > {field_schema['maximum']}",
-                    field=field_name,
-                    value=field_value,
-                )
-
-        elif field_type == "boolean":
-            if not isinstance(field_value, bool):
-                raise MCPValidationError(
-                    f"Parameter '{field_name}' must be a boolean",
-                    field=field_name,
-                    value=field_value,
-                )
-
-        elif field_type == "array":
-            if not isinstance(field_value, list):
-                raise MCPValidationError(
-                    f"Parameter '{field_name}' must be an array",
-                    field=field_name,
-                    value=field_value,
-                )
-
-            # Array-specific validations
-            if (
-                "minItems" in field_schema
-                and len(field_value) < field_schema["minItems"]
-            ):
-                raise MCPValidationError(
-                    f"Parameter '{field_name}' too few items: {len(field_value)} < {field_schema['minItems']}",
-                    field=field_name,
-                    value=field_value,
-                )
-
-            if (
-                "maxItems" in field_schema
-                and len(field_value) > field_schema["maxItems"]
-            ):
-                raise MCPValidationError(
-                    f"Parameter '{field_name}' too many items: {len(field_value)} > {field_schema['maxItems']}",
-                    field=field_name,
-                    value=field_value,
-                )
-
-            # Validate array items if schema provided
-            if "items" in field_schema:
-                for i, item in enumerate(field_value):
-                    try:
-                        self._validate_field(
-                            f"{field_name}[{i}]", item, field_schema["items"]
-                        )
-                    except MCPValidationError as e:
-                        raise MCPValidationError(
-                            f"Array item validation failed: {e}",
-                            field=field_name,
-                            value=field_value,
-                        ) from e
-
-        elif field_type == "object":
-            if not isinstance(field_value, dict):
-                raise MCPValidationError(
-                    f"Parameter '{field_name}' must be an object",
-                    field=field_name,
-                    value=field_value,
-                )
-
-            # Object-specific validations
-            if "properties" in field_schema:
-                for prop_name, prop_value in field_value.items():
-                    if prop_name in field_schema["properties"]:
-                        try:
-                            self._validate_field(
-                                f"{field_name}.{prop_name}",
-                                prop_value,
-                                field_schema["properties"][prop_name],
-                            )
-                        except MCPValidationError as e:
-                            raise MCPValidationError(
-                                f"Object property validation failed: {e}",
-                                field=field_name,
-                                value=field_value,
-                            ) from e
-
-            # Check for additional properties
-            if (
-                "additionalProperties" in field_schema
-                and field_schema["additionalProperties"] is False
-            ):
-                allowed_props = set(field_schema.get("properties", {}).keys())
-                actual_props = set(field_value.keys())
-                extra_props = actual_props - allowed_props
-                if extra_props:
-                    raise MCPValidationError(
-                        f"Parameter '{field_name}' has additional properties not allowed: {extra_props}",
-                        field=field_name,
-                        value=field_value,
-                    )
+        _validate_params(schema, params, strict=self._strict_validation)
 
     def _match_uri_template(self, template: str, uri: str) -> bool:
         """Check if URI matches template pattern."""

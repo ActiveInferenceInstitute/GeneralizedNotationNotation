@@ -8,7 +8,7 @@ logic across src/gnn/utils/ was collapsed:
   ``gnn.utils.pipeline.validate_output_directory`` and
   ``gnn.utils.pipeline_validator.check_pipeline_readiness``
 - the canonical memory probe ``gnn.utils.resource_manager.get_memory_usage``
-  (with the ``test_utils`` / ``visualization_optimizer`` aliases)
+  (with the ``testing_utils`` / ``visualization_optimizer`` aliases)
 - ``resource_manager.with_resource_limits`` exception-propagation semantics
 - the shared fallback-default table behind ``ArgumentParser``
 - ``StepConfiguration.validate_step_args`` injectable ``project_root``
@@ -21,7 +21,6 @@ All tests are deterministic, isolated, and network-free.
 from __future__ import annotations
 
 import argparse
-import os
 import stat
 import sys
 from pathlib import Path
@@ -50,10 +49,7 @@ def _restore_permissions(path: Path) -> None:
     path.chmod(path.stat().st_mode | stat.S_IWUSR)
 
 
-requires_write_permissions = pytest.mark.skipif(
-    os.name != "posix" or hasattr(os, "geteuid") and os.geteuid() == 0,
-    reason="permission-based probe tests need a non-root POSIX user",
-)
+requires_write_permissions = pytest.mark.needs_nonroot
 
 
 class TestVerifyDirectoryWritable:
@@ -135,9 +131,9 @@ class TestCanonicalMemoryProbe:
 
         assert rm.get_memory_usage is rm.get_current_memory_usage
 
-    def test_test_utils_delegates(self) -> None:
+    def test_testing_utils_delegates(self) -> None:
         import gnn.utils.resource_manager as rm
-        import gnn.utils.test_utils as tu
+        import gnn.utils.testing_utils as tu
 
         assert tu.get_memory_usage is rm.get_memory_usage
 

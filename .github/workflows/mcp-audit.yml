@@ -28,7 +28,9 @@ jobs:
           enable-cache: true
       - run: uv sync --frozen --extra dev
       # MCP_TOOL_FLOOR lives in tests/mcp/test_mcp_audit.py — single source of
-      # truth shared with ci.yml and the justfile mcp-audit gate.
+      # truth shared with the justfile mcp-count gate. This dedicated job is the
+      # sole MCP tool-count gate in CI: the duplicate step in ci.yml (removed,
+      # S2-23) ran the same assertion inline without artifact/receipt handling.
       - name: MCP tool count audit
         run: |
           uv run --extra dev python -c "from tests.mcp.test_mcp_audit import count_mcp_tools, MCP_TOOL_FLOOR; count = count_mcp_tools(); print(f'MCP tool count: {count}'); assert count >= MCP_TOOL_FLOOR, f'MCP tool count {count} is below the floor {MCP_TOOL_FLOOR}'; print('OK')"

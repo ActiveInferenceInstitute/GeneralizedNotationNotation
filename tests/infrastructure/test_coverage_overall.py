@@ -49,21 +49,25 @@ class TestCoverageOverall:
 
     def test_audio_imports(self) -> Any:
         import gnn.audio as audio
+
         assert hasattr(audio, "__all__")
         self._smoke_functions("audio", ["get_module_info"])
 
     def test_export_imports(self) -> Any:
         import gnn.export as export
+
         assert hasattr(export, "__all__")
         self._smoke_functions("export", ["get_module_info"])
 
     def test_visualization_imports(self) -> Any:
         import gnn.visualization as visualization
+
         assert hasattr(visualization, "__all__")
         self._smoke_functions("visualization", ["get_module_info"])
 
     def test_llm_imports(self) -> Any:
         import gnn.llm as llm
+
         assert hasattr(llm, "__version__")
         from gnn.llm import LLMAnalyzer, LLMProcessor
 

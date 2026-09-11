@@ -1218,6 +1218,7 @@ def execute_single_script(
                     timeout=timeout,
                     cwd=script_path.parent,
                     env=env,
+                    sandbox=False,
                 )
                 elapsed_rep = (datetime.now() - rep_start).total_seconds()
 

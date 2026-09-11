@@ -88,7 +88,8 @@ def test_progress_tracker_counts_statuses() -> None:
 
 def test_setup_standalone_logging_returns_named_logger(tmp_path: object) -> None:
     logger = setup_standalone_logging(
-        output_dir=tmp_path, logger_name="W2_Standalone"  # type: ignore[attr-defined]
+        output_dir=tmp_path,
+        logger_name="W2_Standalone",  # type: ignore[attr-defined]
     )
 
     assert isinstance(logger, logging.Logger)

@@ -27,7 +27,6 @@ class TestCoreDependencies:
     @pytest.mark.fast
     def test_pathlib_available(self) -> Any:
         """Test pathlib is available (stdlib)."""
-        from pathlib import Path
 
         p = Path(".")
         assert p.exists()
@@ -152,7 +151,6 @@ class TestDependencyVersions:
     @pytest.mark.fast
     def test_python_version(self) -> Any:
         """Test Python version meets requirements."""
-        import sys
 
         assert sys.version_info >= (3, 9)
 
@@ -174,7 +172,6 @@ class TestDependencyConflicts:
         """Test core imports don't conflict."""
         import json
         import logging
-        from pathlib import Path
 
         import numpy as np
 
@@ -229,7 +226,6 @@ class TestDependencyDiscovery:
     @pytest.mark.fast
     def test_pyproject_toml_exists(self) -> Any:
         """Test pyproject.toml dependency file exists (uv-managed)."""
-        from pathlib import Path
 
         pyproject = Path(__file__).parents[2] / "pyproject.toml"
         assert pyproject.exists(), (

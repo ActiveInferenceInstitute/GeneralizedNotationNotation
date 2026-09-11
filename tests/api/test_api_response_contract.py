@@ -173,9 +173,7 @@ def test_api_step_surface_is_registry_derived() -> None:
     from gnn.pipeline.step_registry import STEPS, get_llm_steps
 
     assert PIPELINE_STEP_COUNT == len(STEPS)
-    assert VALID_STEP_NUMBERS == {
-        int(s.script_stem.partition("_")[0]) for s in STEPS
-    }
+    assert VALID_STEP_NUMBERS == {int(s.script_stem.partition("_")[0]) for s in STEPS}
     assert MAX_PIPELINE_STEP == max(VALID_STEP_NUMBERS)
     assert LLM_STEP_NUMBERS == {
         int(s.script_stem.partition("_")[0]) for s in get_llm_steps()

@@ -204,7 +204,8 @@ def test_parallel_children_receive_same_run_identity(
 
     monkeypatch.setattr(orchestrator, "_prepare_pipeline_context", context)
     monkeypatch.setattr(
-        "gnn.utils.pipeline_step_dependencies.PIPELINE_STEP_DEPENDENCIES", {0: [], 1: []}
+        "gnn.utils.pipeline_step_dependencies.PIPELINE_STEP_DEPENDENCIES",
+        {0: [], 1: []},
     )
     assert orchestrator.main(isolated_run) == 0
     receipt = read_receipt(isolated_run)

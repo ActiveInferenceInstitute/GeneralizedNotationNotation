@@ -114,12 +114,14 @@ class TestIntelligentAnalysisModuleComprehensive:
     def test_module_version(self) -> Any:
         """Test module version is set correctly."""
         import gnn.intelligent_analysis as intelligent_analysis
+
         assert intelligent_analysis.__version__ == "3.3.0"
 
     @pytest.mark.unit
     def test_features_dict(self) -> Any:
         """Test FEATURES dictionary contains expected capabilities."""
         import gnn.intelligent_analysis as intelligent_analysis
+
         expected_features: list[Any] = [
             "pipeline_analysis",
             "failure_root_cause",
@@ -542,6 +544,7 @@ def test_module_completeness() -> Any:
     ]
     try:
         import gnn.intelligent_analysis as intelligent_analysis
+
         for component in required_components:
             assert hasattr(intelligent_analysis, component), (
                 f"Missing component: {component}"
@@ -573,7 +576,6 @@ class TestIntelligentAnalysisMCP:
         except Exception:
             raise AssertionError("gnn.intelligent_analysis.mcp not importable")
 
-
     def test_process_intelligent_analysis_mcp_nonexistent(self, tmp_path: Any) -> Any:
         mcp = self._import_mcp()
         result = mcp.process_intelligent_analysis_mcp(
@@ -600,7 +602,6 @@ class TestIntelligentAnalysisMCP:
 
 
 class TestIntelligentAnalysisAnalyzer:
-
     def test_analysis_context_instantiable(self) -> Any:
         from gnn.intelligent_analysis.analyzer import AnalysisContext
 

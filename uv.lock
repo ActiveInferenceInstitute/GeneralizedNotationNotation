@@ -1814,7 +1814,7 @@ requires-dist = [
     { name = "jupyterlab", marker = "extra == 'research'", specifier = ">=4.5.9" },
     { name = "librosa", marker = "extra == 'all'", specifier = ">=0.10.0" },
     { name = "librosa", marker = "extra == 'audio'", specifier = ">=0.10.0" },
-    { name = "matplotlib", specifier = ">=3.5.0" },
+    { name = "matplotlib", specifier = ">=3.9.0" },
     { name = "msgpack", specifier = ">=1.2.1" },
     { name = "multimethod", specifier = ">=1.11" },
     { name = "networkx", specifier = ">=2.6.0" },

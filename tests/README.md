@@ -61,7 +61,7 @@ tests/
 ├── tests/                 # shared-plumbing regression tests (intentional)
 │
 ├── <module>/test_*.py     # per-module tests mirroring src/gnn/<module>/
-│   (37 maintained first-level subdirectories; 35 contain direct test files)
+│   (38 maintained first-level subdirectories; 36 contain direct test files)
 │
 └── test_*.py              # cross-cutting / meta-tests at root
     (coverage assessments, environment probes, runner self-tests,
@@ -99,7 +99,7 @@ The test infrastructure follows the **thin orchestrator pattern**, where `2_test
 - Handles resource monitoring, timeouts, and error recovery
 - Generates comprehensive test reports
 
-**test_utils.py** (Shared Utilities):
+**testing_utils.py** (Shared Utilities):
 
 - Provides test fixtures and helper functions
 - Defines test categories, markers, and configuration
@@ -357,7 +357,7 @@ python src/gnn/2_tests.py --comprehensive --verbose
 
 ## Test Utilities
 
-### Shared Test Utilities (`src/gnn/utils/test_utils.py`)
+### Shared Test Utilities (`src/gnn/utils/testing_utils.py`)
 
 - `TEST_CATEGORIES` - Test category definitions
 - `TEST_STAGES` - Test execution stages
@@ -542,7 +542,7 @@ Example test file structure:
 
 import pytest
 from pathlib import Path
-from gnn.utils.test_utils import create_sample_gnn_content, assert_file_exists
+from gnn.utils.testing_utils import create_sample_gnn_content, assert_file_exists
 
 
 @pytest.mark.fast

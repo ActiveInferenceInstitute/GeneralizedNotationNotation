@@ -164,6 +164,7 @@ jobs:
           name: pytest-junit-full-extras-${{ matrix.python-version }}
           path: junit/full-extras-${{ matrix.python-version }}.xml
           if-no-files-found: warn
+          retention-days: 14
 
       - name: Notify on failure
         if: failure()

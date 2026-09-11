@@ -31,7 +31,10 @@ from .infrastructure.report_generator import flatten_pipeline_test_summary
 
 
 def _build_fast_pipeline_command(
-    has_xdist: bool, has_timeout: bool, timeout_value: str = "600", verbose: bool = False
+    has_xdist: bool,
+    has_timeout: bool,
+    timeout_value: str = "600",
+    verbose: bool = False,
 ) -> list[Any]:
     """Build the marker-based fast pytest command.
 

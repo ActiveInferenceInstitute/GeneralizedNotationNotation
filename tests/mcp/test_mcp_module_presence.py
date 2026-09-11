@@ -49,9 +49,7 @@ def test_every_top_level_package_has_mcp_entry_point_or_is_allowlisted() -> None
     packages = {
         d.name
         for d in SRC_GNN.iterdir()
-        if d.is_dir()
-        and not d.name.startswith("_")
-        and (d / "__init__.py").exists()
+        if d.is_dir() and not d.name.startswith("_") and (d / "__init__.py").exists()
     }
     offenders = sorted(
         name

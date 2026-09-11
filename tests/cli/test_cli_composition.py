@@ -160,7 +160,9 @@ class TestEnvelopeMeta:
     def test_validate_json_envelope_includes_command(
         self, capsys: pytest.CaptureFixture[str]
     ) -> None:
-        template = REPO / "src" / "gnn" / "cli" / "template_assets" / "actinf_pomdp_2state.md"
+        template = (
+            REPO / "src" / "gnn" / "cli" / "template_assets" / "actinf_pomdp_2state.md"
+        )
         assert cli.main(["validate", str(template), "--json"]) == 0
         envelope = json.loads(capsys.readouterr().out)
         assert envelope["meta"]["command"] == "validate"

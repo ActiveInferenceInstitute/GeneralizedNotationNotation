@@ -20,6 +20,7 @@ class TestReportModuleComprehensive:
     def test_report_module_imports(self) -> None:
         """Test that report module can be imported."""
         import gnn.report as report
+
         assert hasattr(report, "__version__")
         assert hasattr(report, "ReportGenerator")
         assert hasattr(report, "ReportFormatter")
@@ -138,6 +139,7 @@ def test_report_module_completeness() -> None:
     ]
     try:
         import gnn.report as report
+
         for component in required_components:
             assert hasattr(report, component), f"Missing component: {component}"
     except ImportError:

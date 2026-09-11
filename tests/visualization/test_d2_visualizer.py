@@ -20,6 +20,8 @@ import unittest
 from pathlib import Path
 from typing import Any
 
+import pytest
+
 # Uses real implementations per testing policy.
 
 # Add src to path for imports
@@ -49,7 +51,7 @@ class TestD2VisualizerImport(unittest.TestCase):
             D2_MODULE_AVAILABLE, "D2 visualizer module should be importable"
         )
 
-    @unittest.skipIf(not D2_MODULE_AVAILABLE, "D2 module not available")
+    @pytest.mark.needs_d2
     def test_d2_classes_available(self) -> None:
         """Test that D2 classes are available"""
         self.assertIsNotNone(D2Visualizer)
@@ -58,7 +60,7 @@ class TestD2VisualizerImport(unittest.TestCase):
         self.assertIsNotNone(process_gnn_file_with_d2)
 
 
-@unittest.skipIf(not D2_MODULE_AVAILABLE, "D2 module not available")
+@pytest.mark.needs_d2
 class TestD2VisualizerInitialization(unittest.TestCase):
     """Test D2Visualizer initialization and setup"""
 
@@ -83,7 +85,7 @@ class TestD2VisualizerInitialization(unittest.TestCase):
         self.assertIn(visualizer.d2_available, [True, False])
 
 
-@unittest.skipIf(not D2_MODULE_AVAILABLE, "D2 module not available")
+@pytest.mark.needs_d2
 class TestD2DiagramGeneration(unittest.TestCase):
     """Test D2 diagram generation methods"""
 
@@ -201,7 +203,7 @@ class TestD2DiagramGeneration(unittest.TestCase):
         self.assertIn("Cognitive Agent", spec.d2_content)
 
 
-@unittest.skipIf(not D2_MODULE_AVAILABLE, "D2 module not available")
+@pytest.mark.needs_d2
 class TestD2DiagramCompilation(unittest.TestCase):
     """Test D2 diagram compilation to output formats"""
 
@@ -259,7 +261,7 @@ class TestD2DiagramCompilation(unittest.TestCase):
 
         self.visualizer.d2_available = original_available
 
-    @unittest.skipIf(not D2Visualizer().d2_available, "D2 CLI not available")
+    @pytest.mark.needs_d2_cli
     def test_compile_d2_diagram_with_cli(self) -> None:
         """Test actual D2 compilation with CLI (if available)"""
         result = self.visualizer.compile_d2_diagram(
@@ -273,7 +275,7 @@ class TestD2DiagramCompilation(unittest.TestCase):
             self.assertTrue(result.d2_file.exists())
 
 
-@unittest.skipIf(not D2_MODULE_AVAILABLE, "D2 module not available")
+@pytest.mark.needs_d2
 class TestD2HelperMethods(unittest.TestCase):
     """Test D2 helper and utility methods"""
 
@@ -341,7 +343,7 @@ class TestD2HelperMethods(unittest.TestCase):
         self.assertFalse(self.visualizer._is_pomdp_model(non_pomdp_model))
 
 
-@unittest.skipIf(not D2_MODULE_AVAILABLE, "D2 module not available")
+@pytest.mark.needs_d2
 class TestD2EndToEndProcessing(unittest.TestCase):
     """Test end-to-end D2 processing workflows"""
 
@@ -381,7 +383,7 @@ class TestD2EndToEndProcessing(unittest.TestCase):
             self.assertIsInstance(result, D2GenerationResult)
             self.assertIsNotNone(result.diagram_name)
 
-    @unittest.skipIf(not D2Visualizer().d2_available, "D2 CLI not available")
+    @pytest.mark.needs_d2_cli
     def test_generated_diagrams_compile_when_d2_available(self) -> None:
         """The generated structure/POMDP diagrams actually compile with D2.
 
@@ -401,7 +403,7 @@ class TestD2EndToEndProcessing(unittest.TestCase):
             self.assertTrue(len(result.output_files) > 0)
 
 
-@unittest.skipIf(not D2_MODULE_AVAILABLE, "D2 module not available")
+@pytest.mark.needs_d2
 class TestD2ProcessorIntegration(unittest.TestCase):
     """Test D2 integration with advanced_visualization processor"""
 

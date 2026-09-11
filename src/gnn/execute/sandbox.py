@@ -177,6 +177,7 @@ def run_sandboxed(
         env=env,
         cwd=cwd,
         capture_output=capture_output,
+        sandbox=False,
     )
     envelope["return_code"] = outcome["return_code"]
     envelope["success"] = outcome["success"]

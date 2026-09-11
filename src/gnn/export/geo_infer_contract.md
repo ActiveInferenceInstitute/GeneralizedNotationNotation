@@ -11,15 +11,18 @@ Step 7 exports retain their existing behavior.
 
 Every object below has exactly the listed keys. Unknown keys or versions fail
 on the consumer. Top-level `schema_version` is `gnn-geo-infer/1`, `model_type`
-is `categorical`, and `model_name` is a nonempty string.
+is `categorical`, and `model_name` is a nonempty string. The single sanctioned
+extension is the optional `provenance.metadata_derivation` record attached by
+the notation-derivation layer (see *Notation-derived metadata* below); no
+other key may be added.
 
 | Object | Required keys and interpretation |
 | --- | --- |
 | dimensions | `states`, `observations`, `actions`: positive integers |
 | matrices | `A`, `B`, `C`, `D`, `E`: finite numeric arrays |
 | space | `kind`: `categorical` or `h3`; `state_ids`: unique strings in matrix state order |
-| time | `step_seconds`: positive seconds per B transition, explicitly supplied by the caller |
-| provenance | `producer`: nonempty label; `source_sha256`: lowercase SHA-256 of original UTF-8 source |
+| time | `step_seconds`: positive seconds per B transition, explicitly supplied by the caller or read from an explicit notation declaration with recorded provenance |
+| provenance | `producer`: nonempty label; `source_sha256`: lowercase SHA-256 of original UTF-8 source; optional `metadata_derivation`: structured record attached only by the notation-derivation layer |
 
 A axes are `[observation,state]`; B axes are `[next_state,current_state,action]`.
 C contains log preferences, D is the initial state prior, and E is the prior over
@@ -49,9 +52,11 @@ PYTHONPATH=src uv run --no-sync python -m gnn.export.geo_infer \
 ```
 
 For spatial states, add `--space-kind h3 --state-ids /path/to/ordered_cells.json`.
-The IDs file must contain a JSON list. The exporter never infers seconds or CRS
-from notation labels. Input source and IDs files are bounded to four MiB each;
-the dense matrix entry budget is 1,000,000.
+The IDs file must contain a JSON list. The exporter never guesses seconds or
+CRS: seconds come from the caller, or — when the caller passes
+`--geo-derive-metadata` — from explicit notation declarations recorded in
+provenance (see *Notation-derived metadata*). Input source and IDs files are
+bounded to four MiB each; the dense matrix entry budget is 1,000,000.
 
 ```python
 from pathlib import Path
@@ -139,6 +144,11 @@ For this fixture, `units.json` contains
 The three state coordinates, two observations and one control provide a
 non-square axis regression fixture.
 
+With `--geo-derive-metadata` / `geo_derive_metadata=True`, `step_seconds` may
+come from an explicit notation declaration (`TimeStep`, `StepSeconds` or `dt`)
+instead of the command line; explicit values win and the derivation is
+recorded in `provenance.metadata_derivation`.
+
 GEO's `GaussianGNNArtifact` loads the artifact. Its
 `run_gaussian_gnn_inference` accepts records with exactly `timestamp`,
 `observation` and `control`. Timestamps are aware and regularly spaced by
@@ -180,6 +190,9 @@ per-model options produce a failed format entry in `export_results.json`. A run
 with any model export failure returns `False`, even when another model succeeds.
 The default format set remains JSON, XML, GraphML, GEXF and pickle. No physical
 step, Gaussian units, or H3 identities are inferred from filenames or examples.
+A `metadata_derivation` key inside an explicit options mapping is stripped
+before export: only the notation-derivation layer may record derivation
+provenance, so explicit JSON cannot claim it.
 
 Gaussian Markdown uses one explicit `StateSpaceBlock` with continuous `x`, `y`
 and `u` coordinate declarations matching state, observation and control sizes.
@@ -196,6 +209,80 @@ preserve distinct models with equal basenames. Existing output-directory,
 artifact-file and manifest-file symlinks cannot redirect writes outside the
 requested output directory.
 
+## Notation-derived metadata (opt-in)
+
+GNN-05 revises the original "explicit only" rule: metadata may also be read
+from explicit declarations inside the GNN source itself, but only when the
+caller opts in, only for fields the explicit options leave unset, and always
+with the derivation recorded in the artifact. The concern behind the original
+rule was silent guessing; the revision keeps every value either
+caller-explicit or notation-explicit with provenance.
+
+Step 7 accepts `--geo-derive-metadata`; `process_export` accepts
+`geo_derive_metadata=True`. The resolution order per model is:
+
+1. per-model explicit options (`geo_infer_options`, keyed by the Step 3
+   manifest entry);
+2. the global CLI `geo_infer` mapping (`--geo-step-seconds` et al.);
+3. notation derivation (`gnn.export.notation_metadata.derive_geo_metadata`)
+   as the last fallback before the "explicit geo_infer_options required"
+   failure.
+
+Derivation is per field: explicit options always win. When explicit options
+carry `step_seconds`, nothing is derived and the artifact provenance stays
+clean. When explicit options lack `step_seconds` (for example a
+`linear_gaussian` entry that declares only `model_type` and `units`),
+derivation fills the missing field and `provenance.metadata_derivation`
+records both the derived value and the `explicit_overrides` it respected.
+
+Accepted declarations, all read from the bounded original source:
+
+| Field | Notation surface | Notes |
+| --- | --- | --- |
+| `step_seconds` | `## Time` entries `TimeStep=60s`, `StepSeconds=60`, `dt=0.5`; or `## ModelParameters` entry `dt: 0.1` | Bare numbers are read as seconds and the interpretation is recorded. Unit suffixes `s`/`ms`/`min`/`h`/`days` and a `TimeUnits=<unit>` companion key are accepted. |
+| `space_kind` | `## Time` entry `SpaceKind=categorical\|h3` | Absent declarations resolve to the categorical writer default, recorded as non-derived. `h3` still requires explicit `state_ids`; derivation never fabricates H3 cells. |
+| `units` | none | Never derived: the notation declares no per-coordinate unit surface. Supply units explicitly for `linear_gaussian` exports. |
+| time index | `Time=<var>` / `DiscreteTime=<var>`, the `StateSpaceBlock` declaration of `<var>`, and its `ActInfOntologyAnnotation` term | Corroboration only; recorded in provenance. |
+
+Derivation fails visibly instead of guessing: a `NotationMetadataError` (a
+`ValueError`) names every section and key searched when no time step is
+declared, rejects conflicting or ambiguous declarations (including a
+`## Time`/`## ModelParameters` disagreement), rejects a `Continuous` time
+declaration, and rejects nonpositive, unparseable or unsupported-unit values.
+No default `step_seconds` is ever substituted. Gaussian exports additionally
+keep their own `Discrete`-without-`Continuous` requirement.
+
+`provenance.metadata_derivation` is attached after artifact validation and is
+the only structural extension of either contract version:
+
+```json
+"provenance": {
+  "producer": "GNN strict POMDP extractor",
+  "source_sha256": "…",
+  "metadata_derivation": {
+    "step_seconds": {
+      "value": 60.0,
+      "derived": true,
+      "sources": [
+        {"section": "Time", "key": "timestep", "raw_value": "60s",
+         "interpretation": "60 s = 60 seconds"}
+      ]
+    },
+    "space_kind": {"value": "categorical", "derived": false,
+                   "source": "writer default"},
+    "units": {"derived": false, "reason": "…"},
+    "time_index": {"variable": "t",
+                   "state_space_declaration": "t[1,type=int]",
+                   "ontology_term": "Time"},
+    "discrete_time_declared": true
+  }
+}
+```
+
+Cross-repository consumers older than this revision reject unknown provenance
+sub-keys; paired-revision CI (GNN-04) must pin a GEO revision that accepts the
+extension before derivation is used against that consumer.
+
 ## Numbered Step 7 command
 
 After Step 3, select the interchange format and explicit metadata file:
@@ -205,6 +292,15 @@ PYTHONPATH=src uv run --extra dev --extra geo-infer python src/gnn/7_export.py \
   --target-dir input/gnn_files --output-dir output \
   --formats geo_infer --geo-infer-options-file geo-options.json
 ```
+
+With `--geo-derive-metadata`, a partial `geo-options.json` (for example
+`{"continuous_navigation.md": {"model_type": "linear_gaussian", "units":
+{"states": ["m", "m"], "observations": ["m", "m"], "controls": ["N", "N"]}}}`)
+lets the exporter fill `step_seconds` from the notation (`dt: 0.1`) and record
+the derivation in the artifact. Without the flag the behavior is unchanged.
+Passing the flag without any options file exports every model whose notation
+declares a step; models without declarations fail visibly with the searched
+keys listed.
 
 `geo-options.json` maps relative source paths to the same `geo_infer` options
 shown above. Duplicate JSON keys are rejected. Nested source directories retain

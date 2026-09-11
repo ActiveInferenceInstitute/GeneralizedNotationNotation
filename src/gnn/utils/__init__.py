@@ -3,10 +3,11 @@
 """
 GNN Pipeline Utilities Package
 
-Lazy PEP 562 re-export surface: 111 exported names aggregated from 17 source
+Lazy PEP 562 re-export surface: 113 exported names aggregated from 17 source
 modules. All pipeline steps import from this package for consistency. The
-surface area is intentionally wide; a future pass should split it by concern
-into sub-packages.
+surface area is intentionally wide; it is being split by concern into
+sub-packages — see docs/development/utils_split_design.md (S2-33/SC-38) for
+the package map and migration plan.
 
 Importing ``utils`` is intentionally LIGHT: no submodule executes at import
 time, so heavy module-scope dependencies (psutil via structured_logging /
@@ -14,7 +15,7 @@ resource_manager, matplotlib via simulation_utils) are only paid when an
 exported name is actually resolved through ``__getattr__``.
 
 Source modules:
-- logging_utils: Centralized, correlation-aware logging system
+- logging_utils: Re-export facade over utils/logging/logging_utils.py (centralized, correlation-aware logging system)
 - argument_utils: Streamlined argument parsing and validation
 - resource_manager: Memory and resource usage tracking
 - error_recovery: Error context, severity, and recovery management
@@ -23,11 +24,10 @@ Source modules:
 - dependency_validator: Comprehensive dependency validation
 - config_loader: YAML configuration loading and validation (active config system)
 - performance_tracking: Operation timing and performance metrics
-- step_logging: Minimal, always-importable logging functions (no external deps)
 - base_processor: Abstract base class for standardized step processors
 - venv_utils: Virtual environment path helpers
 - system_utils: System information gathering
-- test_utils: Test runner, categories, stages, and coverage targets
+- testing_utils: Test runner, categories, stages, and coverage targets
 - pipeline: Pipeline utility exports
 - error_handling: Structured error handler, categories, and recovery strategies
 - structured_logging: Structured log emission with correlation context
@@ -133,7 +133,7 @@ if TYPE_CHECKING:
         set_correlation_context,
     )
     from .system_utils import get_system_info
-    from .test_utils import (
+    from .testing_utils import (
         COVERAGE_TARGETS,
         TEST_CATEGORIES,
         TEST_CONFIG,
@@ -284,42 +284,42 @@ _EXPORT_MAP: dict[str, str] = {
     "set_correlation_context": "structured_logging",
     # system_utils
     "get_system_info": "system_utils",
-    # test_utils
-    "COVERAGE_TARGETS": "test_utils",
-    "TEST_CATEGORIES": "test_utils",
-    "TEST_CONFIG": "test_utils",
-    "TEST_STAGES": "test_utils",
-    "CoverageTarget": "test_utils",
-    "TestCategory": "test_utils",
-    "TestResult": "test_utils",
-    "TestRunner": "test_utils",
-    "TestStage": "test_utils",
-    "cleanup_test_environment": "test_utils",
-    "generate_test_report": "test_utils",
-    "get_test_artifacts": "test_utils",
-    "get_test_configuration": "test_utils",
-    "get_test_coverage": "test_utils",
-    "get_test_dependencies": "test_utils",
-    "get_test_duration": "test_utils",
-    "get_test_environment": "test_utils",
-    "get_test_logs": "test_utils",
-    "get_test_metadata": "test_utils",
-    "get_test_performance": "test_utils",
-    "get_test_progress": "test_utils",
-    "get_test_results": "test_utils",
-    "get_test_statistics": "test_utils",
-    "get_test_status": "test_utils",
-    "get_test_summary": "test_utils",
-    "get_test_timestamps": "test_utils",
-    "install_test_dependencies": "test_utils",
-    "run_test_category": "test_utils",
-    "run_test_stage": "test_utils",
-    "run_tests": "test_utils",
-    "setup_test_environment": "test_utils",
-    "validate_coverage_targets": "test_utils",
-    "validate_test_configuration": "test_utils",
-    "validate_test_dependencies": "test_utils",
-    "validate_test_environment": "test_utils",
+    # testing_utils
+    "COVERAGE_TARGETS": "testing_utils",
+    "TEST_CATEGORIES": "testing_utils",
+    "TEST_CONFIG": "testing_utils",
+    "TEST_STAGES": "testing_utils",
+    "CoverageTarget": "testing_utils",
+    "TestCategory": "testing_utils",
+    "TestResult": "testing_utils",
+    "TestRunner": "testing_utils",
+    "TestStage": "testing_utils",
+    "cleanup_test_environment": "testing_utils",
+    "generate_test_report": "testing_utils",
+    "get_test_artifacts": "testing_utils",
+    "get_test_configuration": "testing_utils",
+    "get_test_coverage": "testing_utils",
+    "get_test_dependencies": "testing_utils",
+    "get_test_duration": "testing_utils",
+    "get_test_environment": "testing_utils",
+    "get_test_logs": "testing_utils",
+    "get_test_metadata": "testing_utils",
+    "get_test_performance": "testing_utils",
+    "get_test_progress": "testing_utils",
+    "get_test_results": "testing_utils",
+    "get_test_statistics": "testing_utils",
+    "get_test_status": "testing_utils",
+    "get_test_summary": "testing_utils",
+    "get_test_timestamps": "testing_utils",
+    "install_test_dependencies": "testing_utils",
+    "run_test_category": "testing_utils",
+    "run_test_stage": "testing_utils",
+    "run_tests": "testing_utils",
+    "setup_test_environment": "testing_utils",
+    "validate_coverage_targets": "testing_utils",
+    "validate_test_configuration": "testing_utils",
+    "validate_test_dependencies": "testing_utils",
+    "validate_test_environment": "testing_utils",
     # venv_utils
     "get_venv_python": "venv_utils",
 }

@@ -17,6 +17,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 class TestPackageRootAPI:
     def test_readme_table_symbols_resolve(self) -> None:
         import gnn.visualization as visualization
+
         documented = [
             "process_visualization",
             "discover_visualization_files",
@@ -39,6 +40,7 @@ class TestPackageRootAPI:
 
     def test_new_pure_helpers_exported(self) -> None:
         import gnn.visualization as visualization
+
         for name in (
             "sample_parsed_data",
             "collect_visualization_matrices",
@@ -48,6 +50,7 @@ class TestPackageRootAPI:
 
     def test_all_exports_resolve(self) -> None:
         import gnn.visualization as visualization
+
         for name in visualization.__all__:
             assert hasattr(visualization, name), f"__all__ entry missing: {name}"
 

@@ -15,3 +15,6 @@ interchange, unequal axes, required metadata, source provenance and opt-in Step 
 
 `test_step7_geo_cli.py` runs the numbered Step 3/7 commands, verifies source
 provenance, and rejects missing or duplicate physical metadata.
+
+`test_geo_infer_pair_pin.py` defends the committed GEO-INFER pair pin
+(`.github/gnn-pair.json`) and the runner's pin/revision refusal contract.

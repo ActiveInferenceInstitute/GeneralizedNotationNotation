@@ -2,9 +2,9 @@
 """Inference error-path and training round-trip tests for ml_integration.
 
 Non-gated tests exercise :class:`ml_integration.InferenceError` on broken or
-missing classifier artifacts (sklearn-free). Gated tests
-(``pytest.importorskip("sklearn")``) run the full training round trip via
-``process_ml_integration`` and score the saved artifacts.
+missing classifier artifacts (sklearn-free). Gated tests (``needs_sklearn``
+marker; see tests/helpers/toolchain_probes.py) run the full training round
+trip via ``process_ml_integration`` and score the saved artifacts.
 """
 
 import pickle
@@ -119,8 +119,8 @@ def _train_family_fixture(tmp_path: Path) -> tuple[Path, Path, dict[str, Any]]:
     return target, out, _load_results(out)
 
 
+@pytest.mark.needs_sklearn
 def test_training_roundtrip_family_classification(tmp_path: Path) -> None:
-    pytest.importorskip("sklearn")
     from gnn.ml_integration import (
         NUMERIC_FEATURE_NAMES,
         extract_gnn_features,
@@ -158,8 +158,8 @@ def test_training_roundtrip_family_classification(tmp_path: Path) -> None:
         assert all(label in label_names for label in batch)
 
 
+@pytest.mark.needs_sklearn
 def test_complexity_fallback_classification(tmp_path: Path) -> None:
-    pytest.importorskip("sklearn")
     from gnn.ml_integration import process_ml_integration
 
     target = tmp_path / "target"
@@ -177,8 +177,8 @@ def test_complexity_fallback_classification(tmp_path: Path) -> None:
     assert (out / "gnn_random_forest.pkl").exists()
 
 
+@pytest.mark.needs_sklearn
 def test_insufficient_label_variation_skips_training(tmp_path: Path) -> None:
-    pytest.importorskip("sklearn")
     from gnn.ml_integration import process_ml_integration
 
     target = tmp_path / "target"
@@ -195,8 +195,8 @@ def test_insufficient_label_variation_skips_training(tmp_path: Path) -> None:
     assert not list(out.glob("gnn_*.pkl"))
 
 
+@pytest.mark.needs_sklearn
 def test_label_decode_out_of_range_raises(tmp_path: Path) -> None:
-    pytest.importorskip("sklearn")
     from gnn.ml_integration import InferenceError, predict_with_model
 
     _, out, _ = _train_family_fixture(tmp_path)
@@ -206,11 +206,11 @@ def test_label_decode_out_of_range_raises(tmp_path: Path) -> None:
 
 @pytest.mark.parametrize("kind", ["decision_tree", "random_forest"])
 @pytest.mark.parametrize("protocol", [4, 5])
+@pytest.mark.needs_sklearn
 def test_maintained_classifier_roundtrip(
     tmp_path: Path, kind: str, protocol: int
 ) -> None:
-    np = pytest.importorskip("numpy")
-    pytest.importorskip("sklearn")
+    import numpy as np
     from sklearn.ensemble import RandomForestClassifier
     from sklearn.tree import DecisionTreeClassifier
 
@@ -230,8 +230,8 @@ def test_maintained_classifier_roundtrip(
 
 
 @pytest.mark.parametrize("kind", ["decision_tree", "random_forest"])
+@pytest.mark.needs_sklearn
 def test_estimator_containing_reducer_never_executes(tmp_path: Path, kind: str) -> None:
-    pytest.importorskip("sklearn")
     from sklearn.ensemble import RandomForestClassifier
     from sklearn.tree import DecisionTreeClassifier
 
@@ -247,8 +247,8 @@ def test_estimator_containing_reducer_never_executes(tmp_path: Path, kind: str) 
         load_classifier(artifact)
 
 
+@pytest.mark.needs_sklearn
 def test_malformed_estimator_state_is_wrapped(tmp_path: Path) -> None:
-    pytest.importorskip("sklearn")
     # A permitted class with an invalid (integer) BUILD state must fail through
     # InferenceError even when the underlying error is not UnpicklingError.
     artifact = tmp_path / "invalid-state.pkl"

@@ -68,27 +68,15 @@ class XSDParser(BaseGNNParser):
 
     def _extract_embedded_json_data(self, content: str) -> Optional[Dict[str, Any]]:
         """Extract embedded JSON model data from schema comments."""
-        import json
-
-        # Look for JSON data in comments (different formats)
-        patterns: list[Any] = [
-            r"/\*\s*MODEL_DATA:\s*(\{.*?\})\s*\*/",  # /* MODEL_DATA: {...} */
-            r"<!--\s*MODEL_DATA:\s*(\{.*?\})\s*-->",  # <!-- MODEL_DATA: {...} -->
-            r"#\s*MODEL_DATA:\s*(\{.*?\})",  # # MODEL_DATA: {...}
-            r"//\s*MODEL_DATA:\s*(\{.*?\})",  # // MODEL_DATA: {...}
-        ]
-
-        for pattern in patterns:
-            match = re.search(pattern, content, re.DOTALL)
-            if match:
-                try:
-                    return cast("dict[str, Any] | None", json.loads(match.group(1)))
-                except json.JSONDecodeError as e:
-                    logger.debug(
-                        "Malformed JSON in embedded data, trying next pattern: %s", e
-                    )
-                    continue
-        return None
+        return extract_embedded_json_data(
+            content,
+            [
+                r"/\*\s*MODEL_DATA:\s*(\{.*?\})\s*\*/",  # /* MODEL_DATA: {...} */
+                r"<!--\s*MODEL_DATA:\s*(\{.*?\})\s*-->",  # <!-- MODEL_DATA: {...} -->
+                r"#\s*MODEL_DATA:\s*(\{.*?\})",  # # MODEL_DATA: {...}
+                r"//\s*MODEL_DATA:\s*(\{.*?\})",  # // MODEL_DATA: {...}
+            ],
+        )
 
     def _parse_from_embedded_data(
         self, data: Dict[str, Any], result: ParseResult
@@ -286,28 +274,16 @@ class ASN1Parser(BaseGNNParser):
 
     def _extract_embedded_json_data(self, content: str) -> Optional[Dict[str, Any]]:
         """Extract embedded JSON model data from schema comments."""
-        import json
-
-        # Look for JSON data in comments (different formats)
-        patterns: list[Any] = [
-            r"/\*\s*MODEL_DATA:\s*(\{.*?\})\s*\*/",  # /* MODEL_DATA: {...} */
-            r"<!--\s*MODEL_DATA:\s*(\{.*?\})\s*-->",  # <!-- MODEL_DATA: {...} -->
-            r"#\s*MODEL_DATA:\s*(\{.*?\})",  # # MODEL_DATA: {...}
-            r"//\s*MODEL_DATA:\s*(\{.*?\})",  # // MODEL_DATA: {...}
-            r"--\s*MODEL_DATA:\s*(\{.+\})",  # -- MODEL_DATA: {...} (ASN.1 style) - greedy match for long data
-        ]
-
-        for pattern in patterns:
-            match = re.search(pattern, content, re.DOTALL | re.MULTILINE)
-            if match:
-                try:
-                    return cast("dict[str, Any] | None", json.loads(match.group(1)))
-                except json.JSONDecodeError as e:
-                    logger.debug(
-                        "Malformed JSON in embedded data, trying next pattern: %s", e
-                    )
-                    continue
-        return None
+        return extract_embedded_json_data(
+            content,
+            [
+                r"/\*\s*MODEL_DATA:\s*(\{.*?\})\s*\*/",  # /* MODEL_DATA: {...} */
+                r"<!--\s*MODEL_DATA:\s*(\{.*?\})\s*-->",  # <!-- MODEL_DATA: {...} -->
+                r"#\s*MODEL_DATA:\s*(\{.*?\})",  # # MODEL_DATA: {...}
+                r"//\s*MODEL_DATA:\s*(\{.*?\})",  # // MODEL_DATA: {...}
+                r"--\s*MODEL_DATA:\s*(\{.+\})",  # -- MODEL_DATA: {...} (ASN.1 style) - greedy match for long data
+            ],
+        )
 
     def _parse_from_embedded_data(
         self, data: Dict[str, Any], result: ParseResult
@@ -510,27 +486,15 @@ class PKLParser(BaseGNNParser):
 
     def _extract_embedded_json_data(self, content: str) -> Optional[Dict[str, Any]]:
         """Extract embedded JSON model data from schema comments."""
-        import json
-
-        # Look for JSON data in comments (different formats)
-        patterns: list[Any] = [
-            r"/\*\s*MODEL_DATA:\s*(\{.*?\})\s*\*/",  # /* MODEL_DATA: {...} */
-            r"<!--\s*MODEL_DATA:\s*(\{.*?\})\s*-->",  # <!-- MODEL_DATA: {...} -->
-            r"#\s*MODEL_DATA:\s*(\{.*?\})",  # # MODEL_DATA: {...}
-            r"//\s*MODEL_DATA:\s*(\{.*?\})",  # // MODEL_DATA: {...}
-        ]
-
-        for pattern in patterns:
-            match = re.search(pattern, content, re.DOTALL)
-            if match:
-                try:
-                    return cast("dict[str, Any] | None", json.loads(match.group(1)))
-                except json.JSONDecodeError as e:
-                    logger.debug(
-                        "Malformed JSON in embedded data, trying next pattern: %s", e
-                    )
-                    continue
-        return None
+        return extract_embedded_json_data(
+            content,
+            [
+                r"/\*\s*MODEL_DATA:\s*(\{.*?\})\s*\*/",  # /* MODEL_DATA: {...} */
+                r"<!--\s*MODEL_DATA:\s*(\{.*?\})\s*-->",  # <!-- MODEL_DATA: {...} -->
+                r"#\s*MODEL_DATA:\s*(\{.*?\})",  # # MODEL_DATA: {...}
+                r"//\s*MODEL_DATA:\s*(\{.*?\})",  # // MODEL_DATA: {...}
+            ],
+        )
 
     def _parse_from_embedded_data(
         self, data: Dict[str, Any], result: ParseResult
@@ -867,7 +831,27 @@ class PKLParser(BaseGNNParser):
     def _eval_pkl_native(
         self, content: str, file_path: Optional[Path] = None
     ) -> Optional[Dict[str, Any]]:
-        """Evaluate PKL content natively using `pkl eval -f json` if CLI is installed."""
+        """Evaluate PKL content via the external ``pkl`` compiler (JSON output).
+
+        Security posture: this evaluates *untrusted* PKL source. There is no
+        Python ``eval`` here — the ``pkl`` binary is a full evaluation engine,
+        so a "restricted module namespace / builtins whitelist" does not
+        apply; the residual risk is documented instead. Mitigations in place:
+
+        - The external ``pkl`` binary (resolved by ``shutil.which``, never
+          attacker-controlled) is invoked as a fixed argv list — no shell.
+        - The call is bounded by a hard ``timeout=10``; a hostile document
+          that spins the evaluator is killed and the parse falls back to the
+          textual path (returns ``None``).
+        - Only the JSON result is parsed; a failure yields ``None``, never an
+          exception escaping to the caller.
+
+        Residual risk: PKL is a programmable language — a hostile document
+        may use ``read("file://...")``/``import``/``io`` to touch files within
+        the evaluator's privileges, or exhaust memory before the timeout.
+        Treat ``pkl``-parsed input as best-effort metadata only; do not run
+        this against untrusted sources in a privileged environment.
+        """
         pkl_bin = shutil.which("pkl")
         if not pkl_bin:
             return None
@@ -1390,19 +1374,12 @@ class ZNotationParser(BaseGNNParser):
 
     def _extract_embedded_json_data(self, content: str) -> Optional[Dict[str, Any]]:
         """Extract embedded JSON model data from Z notation comments."""
-        import json
-        import re
-
-        # Look for JSON data in % MODEL_DATA: {...} comments specifically for Z-notation
-        pattern = r"%\s*MODEL_DATA:\s*(\{.*\})"
-        match = re.search(pattern, content, re.DOTALL)
-        if match:
-            try:
-                json_data = match.group(1)
-                return cast("dict[str, Any] | None", json.loads(json_data))
-            except json.JSONDecodeError:
-                return None
-        return None
+        return extract_embedded_json_data(
+            content,
+            [
+                r"%\s*MODEL_DATA:\s*(\{.*\})",  # % MODEL_DATA: {...} (Z notation)
+            ],
+        )
 
     def _parse_from_embedded_data(
         self, embedded_data: Dict[str, Any], result: ParseResult

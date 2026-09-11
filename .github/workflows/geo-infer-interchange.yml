@@ -1,0 +1,116 @@
+name: Paired GEO-INFER interchange
+
+# GNN-side paired-revision CI (roadmap item GNN-04), mirroring GEO-INFER's
+# `.github/workflows/gnn-interchange.yml` mechanism exactly:
+#
+#   - the companion revision is recorded in a committed pin file
+#     (`.github/gnn-pair.json`, same format as GEO's pin of this repository),
+#   - the pin is validated (known repository slug, 40-hex revision),
+#   - GEO-INFER is checked out at exactly the pinned SHA,
+#   - both revisions plus the pin are retained as receipts together with the
+#     interchange digest manifest, and
+#   - GEO's read-only interchange validator drives the paired categorical,
+#     H3, Gaussian and factored round trips against this GNN checkout:
+#     export inside the GNN environment, consume + deterministic replay
+#     inside the GEO environment.
+#
+# Strictness mirrors GEO: the job is blocking. A red run is the drift
+# signal — one side moved since the pin was recorded — and the pair must be
+# re-pinned together (GNN-side re-pin here in the same PR that bumps this
+# file; GEO-INFER side bumps `.github/gnn-pair.json` there).
+#
+# What this proves and does NOT prove (evidence-plane discipline): the
+# workflow verifies that the pinned GEO-INFER checkout and this GNN checkout
+# still agree on the exchange contract and certifies deterministic replay
+# with per-artifact digests. It does NOT make any geographic claim about H3
+# cells (state IDs remain explicit labels), does not certify inference
+# accuracy beyond the validator's analytic checks, and does not replace
+# GEO's own paired CI on its side.
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: geo-infer-interchange-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  geo-infer-interchange:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: gnn
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Read pinned companion revision
+        id: pair
+        working-directory: gnn
+        run: |
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+          pair = json.loads(Path('.github/gnn-pair.json').read_text())
+          assert pair['repository'] == 'ActiveInferenceInstitute/GEO-INFER'
+          assert re.fullmatch('[0-9a-f]{40}', pair['revision'])
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write('revision=' + pair['revision'] + '\n')
+          PY
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: ActiveInferenceInstitute/GEO-INFER
+          ref: ${{ steps.pair.outputs.revision }}
+          path: geo-infer
+          persist-credentials: false
+      - name: Set up Python ${{ matrix.python }}
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install uv
+        uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v7.6.0
+        with:
+          # Pin uv to the Dockerfile bootstrap floor series (UV_VERSION=0.12.0).
+          version: "0.12"
+          enable-cache: true
+      - name: Record both checkouts before installing
+        run: |
+          mkdir receipts
+          git -C gnn rev-parse HEAD > receipts/gnn-revision.txt
+          git -C geo-infer rev-parse HEAD > receipts/geo-infer-revision.txt
+          cp gnn/.github/gnn-pair.json receipts/pair.json
+      - name: Install independent locked runtimes
+        env:
+          GEO_PYTHON: ${{ matrix.python }}
+        run: |
+          uv sync --project gnn --locked --python 3.11 --extra dev --extra geo-infer
+          uv sync --project geo-infer --locked --python "$GEO_PYTHON" \
+            --all-packages --all-extras \
+            --no-install-package cupy --no-install-package mayavi \
+            --no-install-package vaex --no-install-package vaex-core
+      - name: Paired categorical, H3, Gaussian and factored round trips
+        run: |
+          gnn/.venv/bin/python gnn/scripts/run_geo_interchange_checks.py \
+            --gnn-root "$PWD/gnn" \
+            --geo-root "$PWD/geo-infer" \
+            --gnn-python "$PWD/gnn/.venv/bin/python" \
+            --geo-python "$PWD/geo-infer/.venv/bin/python" \
+            --receipts-dir "$PWD/receipts"
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
+        with:
+          name: geo-infer-interchange-py${{ matrix.python }}
+          path: receipts/
+          if-no-files-found: error
+          retention-days: 14

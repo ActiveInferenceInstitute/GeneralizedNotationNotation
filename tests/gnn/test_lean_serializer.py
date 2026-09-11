@@ -82,7 +82,13 @@ def test_lean_serializer_emits_canonical_section_inventory() -> None:
     assert positions == sorted(positions), "sections out of canonical rank order"
 
     # Required kinds (GNN-E001) plus typed values for every section.
-    for kind in ("gnnSection", "gnnVersionAndFlags", "modelName", "stateSpaceBlock", "connections"):
+    for kind in (
+        "gnnSection",
+        "gnnVersionAndFlags",
+        "modelName",
+        "stateSpaceBlock",
+        "connections",
+    ):
         assert f"def _{kind} : GnnSection :=" in document
 
     # GnnParamEntry-shaped payloads with verbatim brace strings.
@@ -128,16 +134,18 @@ def test_lean_serializer_ontology_bindings_payload() -> None:
     match = re.search(r"-- MODEL_DATA: (\{.+\})", LeanSerializer().serialize(model))
     assert match is not None
     data = json.loads(match.group(1))
-    assert data["ontology_bindings"] == [
-        {"var_name": "A", "term": "LikelihoodMatrix"}
-    ]
+    assert data["ontology_bindings"] == [{"var_name": "A", "term": "LikelihoodMatrix"}]
 
 
 def test_lean_serializer_continuous_family_detection() -> None:
     model = _finite_fixture()
     model.variables.append(
-        Variable(name="H", var_type=VariableType.OBSERVATION, dimensions=[2, 2],
-                 data_type=DataType.FLOAT)
+        Variable(
+            name="H",
+            var_type=VariableType.OBSERVATION,
+            dimensions=[2, 2],
+            data_type=DataType.FLOAT,
+        )
     )
     document = LeanSerializer().serialize(model)
     match = re.search(r"-- MODEL_DATA: (\{.+\})", document)

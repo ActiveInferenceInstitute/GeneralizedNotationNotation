@@ -23,6 +23,7 @@ class TestPipelineModuleComprehensive:
     def test_pipeline_module_imports(self) -> Any:
         """Test that pipeline module can be imported."""
         import gnn.pipeline as pipeline
+
         assert hasattr(pipeline, "__version__")
         assert hasattr(pipeline, "PipelineOrchestrator")
         assert hasattr(pipeline, "PipelineStep")
@@ -141,6 +142,7 @@ def test_pipeline_module_completeness() -> Any:
     ]
     try:
         import gnn.pipeline as pipeline
+
         for component in required_components:
             assert hasattr(pipeline, component), f"Missing component: {component}"
     except ImportError:

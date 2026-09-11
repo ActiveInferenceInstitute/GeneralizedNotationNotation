@@ -79,8 +79,6 @@ def temp_dir() -> Any:
     shutil.rmtree(tmpdir)
 
 
-
-
 @pytest.fixture
 def sample_gnn_model() -> Any:
     """Create sample parsed GNN model."""
@@ -208,7 +206,9 @@ class TestModuleInfo:
         try:
             register_tools(instance)
             assert len(instance.tools) == 5
-            assert all(tool.module == "gnn.gui.oxdraw" for tool in instance.tools.values())
+            assert all(
+                tool.module == "gnn.gui.oxdraw" for tool in instance.tools.values()
+            )
             assert instance.execute_tool("oxdraw.get_info", {})["success"] is True
             result = instance.execute_tool(
                 "oxdraw.convert_to_mermaid",

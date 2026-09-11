@@ -17,7 +17,13 @@ import importlib
 # module-specific keys that the deleted per-module get_module_info tests
 # asserted on top of the universal version/description/features trio.
 MODULE_REGISTRY: dict[str, dict] = {
-    "gnn": {"extra_info_keys": ("available_validators", "available_parsers", "schema_formats")},
+    "gnn": {
+        "extra_info_keys": (
+            "available_validators",
+            "available_parsers",
+            "schema_formats",
+        )
+    },
     "gnn.type_checker": {},
     "gnn.export": {
         "extra_info_keys": (

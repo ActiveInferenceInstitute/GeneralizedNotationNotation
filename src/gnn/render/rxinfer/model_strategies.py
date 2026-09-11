@@ -163,8 +163,13 @@ class MultiAgentStrategy(_JointCompositionStrategy):
     renders natively through the stigmergic generator
     (``_strategies_multiagent``): one genuine ``pomdp_model`` inference per
     agent (no joint state-space expansion), followed by a post-hoc shared
-    ``env_signal`` affordance trace (deposit + decay). The trace does not
-    condition inference or actions. Specs without the
+    ``env_signal`` affordance trace (deposit + decay). The trace itself is
+    post hoc and does not feed back into inference, but when the spec also
+    declares the env-conditioned observation likelihood and latent signal
+    prior (MAJ-03), each agent infers a latent signal belief from its
+    observations and conditions its action selection on that inferred
+    latent (signal-seeking); the results metadata echoes
+    ``action_selection_conditioned``. Specs without the
     per-agent matrix structure keep the pre-strategy behavior — the
     extractor's composed joint POMDP through the flat generator — with
     per-agent beliefs recovered downstream from the ``state_factors`` echo

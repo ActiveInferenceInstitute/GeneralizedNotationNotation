@@ -11,7 +11,9 @@ from gnn.utils.venv_utils import get_venv_python
 def _make_venv(root: Path, style: str = "posix") -> Path:
     venv = root / ".venv"
     python = (
-        venv / "Scripts" / "python.exe" if style == "windows" else venv / "bin" / "python"
+        venv / "Scripts" / "python.exe"
+        if style == "windows"
+        else venv / "bin" / "python"
     )
     python.parent.mkdir(parents=True, exist_ok=True)
     python.write_text("#!/bin/sh\n", encoding="utf-8")

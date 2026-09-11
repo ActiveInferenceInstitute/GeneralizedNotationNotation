@@ -117,8 +117,12 @@ def test_the_build_declares_every_source_surface_it_stamps() -> None:
     tree = ast.parse(script)
     sources: dict[str, tuple[str, ...]] = {}
     for node in ast.walk(tree):
-        if isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name) \
-                and node.target.id == "_FIGURE_SOURCES" and node.value is not None:
+        if (
+            isinstance(node, ast.AnnAssign)
+            and isinstance(node.target, ast.Name)
+            and node.target.id == "_FIGURE_SOURCES"
+            and node.value is not None
+        ):
             sources = ast.literal_eval(node.value)
         if isinstance(node, ast.Assign) and any(
             isinstance(t, ast.Name) and t.id == "_FIGURE_SOURCES" for t in node.targets

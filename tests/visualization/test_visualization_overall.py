@@ -20,6 +20,7 @@ class TestVisualizationModuleComprehensive:
     def test_visualization_module_imports(self) -> Any:
         """Test that visualization module can be imported."""
         import gnn.visualization as visualization
+
         assert hasattr(visualization, "__version__")
         assert hasattr(visualization, "MatrixVisualizer")
         assert hasattr(visualization, "GNNVisualizer")
@@ -148,6 +149,7 @@ def test_visualization_module_completeness() -> Any:
     ]
     try:
         import gnn.visualization as visualization
+
         for component in required_components:
             assert hasattr(visualization, component), f"Missing component: {component}"
     except ImportError:

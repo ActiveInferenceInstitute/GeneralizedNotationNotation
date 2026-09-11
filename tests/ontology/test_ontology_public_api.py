@@ -20,6 +20,7 @@ class TestOntologyConstants:
 
     def test_features_dict(self) -> None:
         import gnn.ontology as ontology
+
         assert hasattr(ontology, "FEATURES")
         assert isinstance(ontology.FEATURES, dict)
         for key in (
@@ -33,6 +34,7 @@ class TestOntologyConstants:
 
     def test_version(self) -> None:
         import gnn.ontology as ontology
+
         assert hasattr(ontology, "__version__")
         assert isinstance(ontology.__version__, str)
 

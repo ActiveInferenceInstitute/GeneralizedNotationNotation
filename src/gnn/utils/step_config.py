@@ -148,6 +148,7 @@ class StepConfiguration:
                     "geo_step_seconds",
                     "geo_state_ids",
                     "geo_space_kind",
+                    "geo_derive_metadata",
                     "formats",
                     "geo_infer_options_file",
                 ],

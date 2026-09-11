@@ -184,9 +184,16 @@ class GNNExecutor:
             # covers every script GNNExecutor is about to run.
             if Path(model_path).suffix.lower() in _EXECUTABLE_SUFFIXES:
                 gate_verdict = check_script_allowed(Path(model_path))
+            elif execution_type == "lean" and Path(model_path).suffix.lower() == ".md":
+                # Lean dispatch executes .md documents through the fep-lean
+                # bridge (lean_runner.verify_document), so they are gate-
+                # checked: the shared helper scans their fenced code blocks
+                # with the same rendered-script verdict machinery.
+                gate_verdict = check_script_allowed(Path(model_path))
             else:
-                # Non-script model sources (e.g. .md) are not executed; the
-                # scanner only accepts executable scripts, so skip the gate.
+                # Model sources that this dispatch only parses as data (e.g.
+                # .md under pymdp/jax) are not executed here; the scanner only
+                # accepts executable scripts, so skip the gate.
                 gate_verdict = {"ok": True, "overridden": False, "blocked": []}
             if gate_verdict["overridden"]:
                 logger.warning(
@@ -1089,7 +1096,12 @@ def execute_script_safely(
             - ``stderr`` (str): Captured stderr (empty if ``capture_output`` is False).
             - ``duration_seconds`` (float): Wall-clock execution time.
             - ``error`` (str, optional): Populated on failure.
-            - ``error_type`` (str, optional): Exception class name on failure.
+            - ``error_type`` (str, optional): Exception class name on failure
+              (``"SecurityGateBlocked"`` when the pre-exec gate denies the
+              script; ``"SandboxUnavailable"`` when ``GNN_SANDBOX=require``
+              found no backend).
+            - ``sandbox_mode``/``sandboxed``: GNN_SANDBOX mode and whether the
+              command was actually wrapped (set by the shared envelope).
     """
     script = Path(script_path)
     if not script.exists():
@@ -1118,6 +1130,40 @@ def execute_script_safely(
             "error_type": "ValueError",
         }
 
+    # SEC-R2: the registry runners (pymdp/jax/numpyro/pytorch/discopy) funnel
+    # every rendered-script execution through this helper, so the
+    # pre-execution security gate applies here before anything runs.
+    gate_verdict = check_script_allowed(script)
+    if gate_verdict["overridden"]:
+        logger.warning(
+            "GNN_ALLOW_UNSAFE_EXEC set: pre-execution security gate "
+            "bypassed for %s (trusted-local use only)",
+            script,
+        )
+    if not gate_verdict["ok"]:
+        logger.error(
+            "Pre-execution security gate blocked %s: %s",
+            script,
+            gate_verdict["reason"],
+        )
+        return {
+            "success": False,
+            "script_path": str(script),
+            "return_code": -1,
+            "stdout": "",
+            "stderr": "",
+            "duration_seconds": 0.0,
+            "error": (
+                f"Pre-execution security gate blocked {script}: "
+                f"{gate_verdict['reason']}"
+            ),
+            "error_type": gate_verdict.get("error_type", "SecurityGateBlocked"),
+            "security_findings": gate_verdict["blocked"],
+        }
+
+    # Sandboxing (SEC-R2, Step-12 GNN_SANDBOX semantics) lives in the shared
+    # envelope: sandbox=True applies the prefix, emits the
+    # sandbox_disabled/active receipts, and refuses on require-without-backend.
     envelope = run_subprocess_envelope(
         [sys.executable, str(script)],
         timeout=timeout,

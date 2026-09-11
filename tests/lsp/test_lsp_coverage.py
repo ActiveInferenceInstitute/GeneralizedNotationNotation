@@ -17,6 +17,7 @@ if str(SRC) not in sys.path:
 
 def test_lsp_module_exports_expected_surface() -> Any:
     import gnn.lsp as lsp
+
     # Core expected names per src/lsp/__init__.py.
     assert hasattr(lsp, "create_server")
     assert hasattr(lsp, "start_server")
@@ -88,6 +89,7 @@ def test_create_server_returns_server_or_none_without_uncaught_error() -> Any:
     import time
 
     import gnn.lsp as lsp
+
     server: Any = None
     for attempt in range(3):
         try:

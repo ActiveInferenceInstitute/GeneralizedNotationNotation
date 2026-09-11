@@ -15,16 +15,16 @@ default:
 # Run tests with the same marker filter as CI, so local and CI
 # exercise the same surface; use test-stopfast or test-full for other scopes.
 test:
-    uv run pytest tests/ -q --tb=short -m "not pipeline and not mcp and not ollama and not env_heavy"
+    uv run pytest tests/ -q --tb=short -m "not pipeline and not mcp and not ollama and not env_heavy and not toolchain"
 
 # Run fast test suite, stop at first failure
 test-stopfast:
-    uv run pytest tests/ -q --tb=short -x -m "not pipeline and not mcp and not ollama and not env_heavy"
+    uv run pytest tests/ -q --tb=short -x -m "not pipeline and not mcp and not ollama and not env_heavy and not toolchain"
 
-# Run full test suite (excludes ollama + env-heavy via markers)
+# Run full test suite (excludes ollama + env-heavy + toolchain via markers)
 test-full:
     uv run pytest tests/ -q --tb=no \
-        -m "not ollama and not env_heavy"
+        -m "not ollama and not env_heavy and not toolchain"
 
 # Run tests for a specific module (e.g., just test-mod render)
 test-mod MODULE:
@@ -34,7 +34,7 @@ test-mod MODULE:
 # SC-44 replaced the per-file Ollama ignores with the `ollama` marker and
 # excludes env-heavy uv-sync tests).
 test-cov:
-    uv run pytest tests/ -m "not pipeline and not mcp and not ollama and not env_heavy" \
+    uv run pytest tests/ -m "not pipeline and not mcp and not ollama and not env_heavy and not toolchain" \
         --cov=gnn --cov-report=term-missing
 
 # Run the extras-unlock tests (same files the ci.yml `extras` job gates on);
@@ -51,11 +51,11 @@ test-extras:
 
 # Run ruff linter
 lint:
-    uv run ruff check src scripts
+    uv run ruff check src/gnn scripts
 
 # Run ruff linter with auto-fix
 lint-fix:
-    uv run ruff check src scripts --fix
+    uv run ruff check src/gnn scripts --fix
 
 # Format code with ruff
 format:

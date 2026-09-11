@@ -11,6 +11,15 @@ The finding itself, with the experiments that established it, is written up in
 Both artifacts these tests read are tracked, so they are asserted present rather
 than skipped over; ``.gitignore`` carries a named exception for the log.
 
+*Which render* they came from is pinned separately, by the render custody
+manifest (``output/data/manuscript_render_manifest.json``): the committed
+``.log``/``.tex``/``.md``, the hydrated sections under ``output/manuscript/``,
+and the token map must be artifacts of one render invocation, not three
+renders passing together. ``record_render_manifest`` writes that manifest as
+the last step of the SC-22 re-render ritual; ``custody_issues`` (shared with
+``scripts/z_record_manuscript_render_manifest.py``) checks the whole chain
+in the tests at the bottom of this module.
+
 Two facts these tests exist to protect:
 
 * TeX breaks its own log lines and will split the message mid-word, so
@@ -25,12 +34,21 @@ Two facts these tests exist to protect:
 
 from __future__ import annotations
 
+import json
 import re
+import sys
 from pathlib import Path
 
 import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(REPO_ROOT / "src"))
+
+from gnn.manuscript.render_custody import (  # noqa: E402
+    custody_issues,
+    record_render_manifest,
+)
+
 LOG_PATH = REPO_ROOT / "output" / "pdf" / "_combined_manuscript.log"
 TEX_PATH = REPO_ROOT / "output" / "pdf" / "_combined_manuscript.tex"
 
@@ -144,6 +162,80 @@ def test_the_log_carries_no_overfull_boxes() -> None:
     log_text, _ = _shipped()
     assert log_text.replace("\n", "").count("Overfull \\hbox") == 0
     assert log_text.replace("\n", "").count("Overfull \\vbox") == 0
+
+
+# --- the render custody chain ------------------------------------------------
+
+
+def _custody_fixture(tmp_path: Path) -> Path:
+    """A miniature committed tree: token map, receipt, hydrated prose, artifacts."""
+    root = tmp_path / "repo"
+    (root / "output" / "data").mkdir(parents=True)
+    (root / "output" / "manuscript").mkdir(parents=True)
+    (root / "output" / "pdf").mkdir(parents=True)
+    (root / "output" / "data" / "manuscript_variables.json").write_text(
+        json.dumps({"GNN_GIT_COMMIT": "abc1234", "GNN_STEP_COUNT": "25"}),
+        encoding="utf-8",
+    )
+    (root / "output" / "data" / "manuscript_variables_receipt.json").write_text(
+        json.dumps({"counts_describe_commit": "abc1234"}), encoding="utf-8"
+    )
+    (root / "output" / "manuscript" / "05_reproducibility.md").write_text(
+        "a 25-step pipeline\n", encoding="utf-8"
+    )
+    (root / "output" / "pdf" / "_combined_manuscript.md").write_text(
+        "a 25-step pipeline\n", encoding="utf-8"
+    )
+    (root / "output" / "pdf" / "_combined_manuscript.tex").write_text(
+        "a 25-step pipeline\n", encoding="utf-8"
+    )
+    (root / "output" / "pdf" / "_combined_manuscript.log").write_text(
+        "[1] [2] Output written on x.pdf (2 pages).\n", encoding="utf-8"
+    )
+    record_render_manifest(root)
+    return root
+
+
+def test_the_committed_pdf_evidence_is_the_render_the_manifest_records() -> None:
+    """Log, tex, md, hydrated prose, token map and receipt: one render's chain."""
+    assert custody_issues(REPO_ROOT) == []
+
+
+def test_a_missing_custody_manifest_is_a_failure_not_a_skip() -> None:
+    """A checkout without the manifest cannot pass silently."""
+    issues = custody_issues(Path("/nonexistent-checkout"))
+    assert issues and "z_record_manuscript_render_manifest" in issues[0]
+
+
+def test_a_log_swapped_after_the_record_fails(tmp_path: Path) -> None:
+    """Re-rendering and committing a new log without re-recording fails."""
+    root = _custody_fixture(tmp_path)
+    (root / "output" / "pdf" / "_combined_manuscript.log").write_text(
+        "[1] [2] [3] Output written on x.pdf (3 pages).\n", encoding="utf-8"
+    )
+    issues = custody_issues(root)
+    assert any("_combined_manuscript.log" in issue for issue in issues), issues
+
+
+def test_prose_edited_after_the_render_fails(tmp_path: Path) -> None:
+    """A hydrated section the committed PDF never saw fails the chain."""
+    root = _custody_fixture(tmp_path)
+    (root / "output" / "manuscript" / "05_reproducibility.md").write_text(
+        "a 26-step pipeline\n", encoding="utf-8"
+    )
+    issues = custody_issues(root)
+    assert any("05_reproducibility.md" in issue for issue in issues), issues
+
+
+def test_a_token_map_regenerated_after_the_render_fails(tmp_path: Path) -> None:
+    """The render is pinned to the token map the strict gate pins to HEAD."""
+    root = _custody_fixture(tmp_path)
+    (root / "output" / "data" / "manuscript_variables.json").write_text(
+        json.dumps({"GNN_GIT_COMMIT": "def5678", "GNN_STEP_COUNT": "26"}),
+        encoding="utf-8",
+    )
+    issues = custody_issues(root)
+    assert any("token map" in issue for issue in issues), issues
 
 
 if __name__ == "__main__":  # pragma: no cover - convenience

@@ -14,7 +14,6 @@ import pytest
 class TestAdvancedVisualizationModule:
     """Test suite for Advanced Visualization module functionality."""
 
-
     def test_visualization_functions(self) -> None:
         """Test visualization creation functions."""
         from gnn.advanced_visualization import (

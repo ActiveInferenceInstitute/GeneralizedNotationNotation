@@ -598,7 +598,8 @@ def create_rxinfer_visualizations(
             ax.set_xlabel("Time Step")
             ax.set_ylabel("Belief Probability")
             ax.set_title(f"RxInfer Belief Evolution - {model_name}", fontweight="bold")
-            ax.legend()
+            if ax.get_legend_handles_labels()[0]:
+                ax.legend()
             ax.grid(True, alpha=0.3)
 
             viz_file = output_dir / f"{model_name}_rxinfer_belief_evolution.png"

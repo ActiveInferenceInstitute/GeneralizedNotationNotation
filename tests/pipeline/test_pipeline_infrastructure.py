@@ -253,7 +253,6 @@ class TestUtilsResourceManager:
         assert "duration_seconds" in metrics
 
 
-
 class TestPipelineInfrastructureIntegration:
     """Test integration between pipeline infrastructure modules."""
 

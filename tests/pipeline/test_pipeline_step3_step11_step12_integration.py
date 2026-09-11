@@ -146,6 +146,7 @@ class TestStep12ExecutionHandshake:
     def test_execute_module_importable(self) -> Any:
         """execute module can be imported."""
         import gnn.execute as execute
+
         assert execute is not None
 
     def test_pymdp_executor_importable(self) -> Any:

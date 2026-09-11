@@ -30,7 +30,6 @@ TEST_CATEGORIES: dict[str, Any] = {
     "standard": "Integration tests and moderate complexity",
     "slow": "Complex scenarios and benchmarks",
     "performance": "Resource usage and scalability tests",
-    "safe_to_fail": "Tests with graceful degradation",
     "unit": "Individual component tests",
     "integration": "Multi-component workflow tests",
     "mcp": "Model Context Protocol integration tests",

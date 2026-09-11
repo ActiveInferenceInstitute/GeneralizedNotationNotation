@@ -34,7 +34,7 @@ def get_current_memory_usage() -> float:
         return 0.0
 
 
-# Canonical MB-scale process-memory probe. ``utils.test_utils.get_memory_usage``
+# Canonical MB-scale process-memory probe. ``utils.testing_utils.get_memory_usage``
 # and ``utils.visualization_optimizer.get_memory_usage`` delegate here instead
 # of carrying their own psutil copies; ``get_current_memory_usage`` is the
 # historical pipeline-wide entry point for the same function.

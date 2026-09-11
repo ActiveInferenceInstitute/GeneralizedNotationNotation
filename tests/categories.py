@@ -81,11 +81,7 @@ def _grow_routing_from_tree() -> None:
         routed.add(rel_path)
 
 
-
-
 class TestCategory(TypedDict, total=False):
-
-
     """Configuration for one modular test category.
 
     All keys are optional at the type level for backward compatibility with

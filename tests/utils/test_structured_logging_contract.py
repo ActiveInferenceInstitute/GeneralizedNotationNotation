@@ -39,7 +39,9 @@ def test_log_emits_message_at_requested_level(caplog: object) -> None:
     assert any("bad thing" in m for m in messages)
 
 
-def test_operation_context_restores_operation_and_tracks_duration(caplog: object) -> None:
+def test_operation_context_restores_operation_and_tracks_duration(
+    caplog: object,
+) -> None:
     logger = StructuredLogger("w2probe-op")
 
     with caplog.at_level(logging.DEBUG, logger="w2probe-op"):  # type: ignore[attr-defined]
@@ -70,7 +72,6 @@ def test_get_pipeline_logger_returns_configured_logger() -> None:
     pipeline_logger = get_pipeline_logger("w2probe-pipeline")
 
     assert isinstance(pipeline_logger, StructuredLogger)
-
 
 
 def test_all_log_levels_available() -> None:

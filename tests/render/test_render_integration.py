@@ -188,7 +188,6 @@ class TestRenderIntegration:
 class TestRenderOutputStructure:
     """Tests for render output directory structure."""
 
-
     @pytest.mark.unit
     def test_render_output_follows_conventions(
         self, safe_filesystem: Any, sample_gnn_spec: Any

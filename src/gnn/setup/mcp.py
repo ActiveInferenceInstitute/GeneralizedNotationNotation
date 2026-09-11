@@ -6,8 +6,63 @@ with support for UV-based environment management and modern Python packaging.
 """
 
 import logging
+import re
 from pathlib import Path
 from typing import Any, Dict, Optional
+
+from gnn.api.path_utils import PathValidationError, resolve_repo_path
+
+logger = logging.getLogger(__name__)
+
+# Client-supplied dependency specifications are validated before being passed
+# to ``uv``. Only a PEP 508 distribution name, optional extras, and an optional
+# version specifier are accepted: no shell metacharacters, no whitespace, no
+# leading dashes (flag injection), no URLs or local paths.
+_UV_PACKAGE_SPEC_PATTERN = re.compile(
+    r"""^[A-Za-z0-9][A-Za-z0-9._-]*            # PEP 508 distribution name
+        (?:\[[A-Za-z0-9][A-Za-z0-9,._-]*\])?   # optional extras list
+        (?:(?:==|!=|<=|>=|~=|<|>)[A-Za-z0-9_.!+*]+)?  # optional version specifier
+        $""",
+    re.VERBOSE,
+)
+_UV_EXTRAS_PATTERN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9,._-]*$")
+
+
+class PackageSpecValidationError(ValueError):
+    """Raised when a client-supplied package specification is rejected."""
+
+
+def _validate_uv_package_spec(package_name: str) -> str:
+    """Validate and normalize a client-supplied uv package specification.
+
+    Accepts a PEP 508 distribution name with optional extras and an optional
+    version specifier. Anything containing shell metacharacters, whitespace,
+    leading dashes, or URL/path syntax is rejected.
+    """
+    if not isinstance(package_name, str) or not package_name.strip():
+        raise PackageSpecValidationError("package name must be a non-empty string")
+    spec = package_name.strip()
+    if not _UV_PACKAGE_SPEC_PATTERN.match(spec):
+        raise PackageSpecValidationError(
+            f"rejected package specification {package_name!r}: must be a "
+            "PEP 508 package name with optional [extras] and an optional "
+            "version specifier (==, !=, <=, >=, ~=, <, >); no shell "
+            "metacharacters, whitespace, or flags allowed"
+        )
+    return spec
+
+
+def _validate_uv_extras(extras: Optional[str]) -> Optional[str]:
+    """Validate a client-supplied ``uv --extras`` value."""
+    if extras is None:
+        return None
+    if not isinstance(extras, str) or not _UV_EXTRAS_PATTERN.match(extras.strip()):
+        raise PackageSpecValidationError(
+            f"rejected extras {extras!r}: must be a comma-separated list of "
+            "alphanumeric extra names"
+        )
+    return extras.strip()
+
 
 logger = logging.getLogger(__name__)
 
@@ -167,7 +222,8 @@ def install_uv_dependency_mcp(
     Install a dependency using UV. Exposed via MCP.
 
     Args:
-        package_name: Name of the package to install.
+        package_name: Name of the package to install. Validated against a
+            strict PEP 508 name/specifier pattern before any subprocess runs.
         extras: Optional extras to install (e.g., "dev", "ml-ai").
 
     Returns:
@@ -176,9 +232,12 @@ def install_uv_dependency_mcp(
     try:
         import subprocess  # nosec B404
 
-        cmd: list[Any] = ["uv", "add", package_name]
-        if extras:
-            cmd.extend(["--extras", extras])
+        validated_package = _validate_uv_package_spec(package_name)
+        validated_extras = _validate_uv_extras(extras)
+
+        cmd: list[Any] = ["uv", "add", validated_package]
+        if validated_extras:
+            cmd.extend(["--extras", validated_extras])
 
         result = subprocess.run(  # nosec B603
             cmd,
@@ -190,18 +249,28 @@ def install_uv_dependency_mcp(
         if result.returncode == 0:
             return {
                 "success": True,
-                "package": package_name,
+                "package": validated_package,
                 "extras": extras,
                 "message": f"Successfully installed {package_name}",
             }
         else:
             return {
                 "success": False,
-                "package": package_name,
+                "package": validated_package,
                 "extras": extras,
                 "error": result.stderr,
-                "message": f"Failed to install {package_name}",
+                "message": f"Failed to install {validated_package}",
             }
+
+    except PackageSpecValidationError as e:
+        logger.warning(f"install_uv_dependency_mcp rejected input: {e}")
+        return {
+            "success": False,
+            "package": package_name,
+            "extras": extras,
+            "error": str(e),
+            "message": f"Invalid package specification: {package_name}",
+        }
 
     except subprocess.TimeoutExpired:
         return {
@@ -229,7 +298,8 @@ def sync_uv_dependencies_mcp(project_directory: str) -> Dict[str, Any]:
     Sync dependencies using UV. Exposed via MCP.
 
     Args:
-        project_directory: Path to the project directory.
+        project_directory: Path to the project directory. Resolved through
+            repo containment checks before use as the subprocess cwd.
 
     Returns:
         Dictionary with sync status.
@@ -237,7 +307,11 @@ def sync_uv_dependencies_mcp(project_directory: str) -> Dict[str, Any]:
     try:
         import subprocess  # nosec B404
 
-        project_root = Path(project_directory)
+        project_root = resolve_repo_path(
+            project_directory,
+            purpose="Project directory",
+            must_exist=True,
+        )
         result = subprocess.run(  # nosec B607 B603
             ["uv", "sync"],
             cwd=project_root,
@@ -260,6 +334,14 @@ def sync_uv_dependencies_mcp(project_directory: str) -> Dict[str, Any]:
                 "message": "Failed to sync dependencies",
             }
 
+    except PathValidationError as e:
+        logger.warning(f"sync_uv_dependencies_mcp rejected path: {e}")
+        return {
+            "success": False,
+            "project_directory": str(project_directory),
+            "error": str(e),
+            "message": f"Invalid project directory: {project_directory}",
+        }
     except subprocess.TimeoutExpired:
         return {
             "success": False,

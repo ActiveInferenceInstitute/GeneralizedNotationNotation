@@ -105,6 +105,7 @@ jobs:
           name: mcp-capabilities
           path: junit/mcp-capabilities.xml
           if-no-files-found: warn
+          retention-days: 14
 
       - name: Mypy type check
         if: matrix.python-version == '3.12'
@@ -129,7 +130,7 @@ jobs:
         id: pytest
         run: |
           mkdir -p junit
-          uv run --extra dev python -m pytest -m "not pipeline and not mcp and not ollama and not env_heavy" \
+          uv run --extra dev python -m pytest -m "not pipeline and not mcp and not ollama and not env_heavy and not toolchain" \
             --tb=short \
             -q \
             -n auto --dist worksteal \
@@ -143,6 +144,7 @@ jobs:
           name: pytest-junit-${{ matrix.python-version }}
           path: junit/pytest-${{ matrix.python-version }}.xml
           if-no-files-found: warn
+          retention-days: 14
 
       - name: Coverage report artifact
         if: always()
@@ -151,6 +153,7 @@ jobs:
           name: coverage-${{ matrix.python-version }}
           path: junit/coverage-${{ matrix.python-version }}.json
           if-no-files-found: warn
+          retention-days: 14
 
       - name: Test job summary
         if: always()
@@ -162,18 +165,6 @@ jobs:
             echo ""
             echo "JUnit XML is attached as artifact \`pytest-junit-${{ matrix.python-version }}\` when present."
           } >> "$GITHUB_STEP_SUMMARY"
-
-      - name: MCP tool count assertion
-        if: matrix.python-version == '3.12'
-        run: |
-          uv run --extra dev python - <<'PY'
-          from tests.mcp.test_mcp_audit import count_mcp_tools, MCP_TOOL_FLOOR
-
-          count = count_mcp_tools()
-          print(f"MCP tools: {count}")
-          assert count >= MCP_TOOL_FLOOR, f"MCP tool count regression: {count} < {MCP_TOOL_FLOOR}"
-          print("MCP tool count OK")
-          PY
 
       - name: v3 orchestration acceptance gate
         if: matrix.python-version == '3.12'
@@ -268,6 +259,7 @@ jobs:
           name: bandit-results
           path: bandit-results.sarif
           if-no-files-found: warn
+          retention-days: 14
 
       - name: Fail if Bandit reported issues
         if: steps.bandit.outcome == 'failure'

@@ -44,7 +44,7 @@ if str(SRC_DIR) not in sys.path:
 
 # Import the maintained shared test helpers from the gnn package
 # (the venv's editable install provides `gnn` regardless of sys.path).
-from gnn.utils.test_utils import (
+from gnn.utils.testing_utils import (
     COVERAGE_TARGETS,
     PROJECT_ROOT,
     SRC_DIR,

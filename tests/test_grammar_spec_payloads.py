@@ -12,9 +12,16 @@ SPECS = ["agda", "alloy", "coq", "isabelle", "lean", "maxima", "tla_plus", "z_no
 def _spec_path(name: str) -> Path:
     """Resolve a formal_specs payload the way an installed wheel consumer would."""
 
-    suffix = {"agda": ".agda", "alloy": ".als", "coq": ".v", "isabelle": ".thy",
-              "lean": ".lean", "maxima": ".mac", "tla_plus": ".tla",
-              "z_notation": ".zed"}[name]
+    suffix = {
+        "agda": ".agda",
+        "alloy": ".als",
+        "coq": ".v",
+        "isabelle": ".thy",
+        "lean": ".lean",
+        "maxima": ".mac",
+        "tla_plus": ".tla",
+        "z_notation": ".zed",
+    }[name]
     path = Path(gnn.formal_specs.__file__).with_name(name + suffix)
     assert path.exists(), f"shipped payload missing: {path}"
     return path
