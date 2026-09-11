@@ -8,45 +8,18 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 
-DEFAULT_SKIP_ALLOWLIST = {
-    "tests/llm/test_llm_ollama.py",
-    "tests/llm/test_llm_ollama_integration.py",
-    "tests/analysis/test_rxinfer_cross_framework.py",
-    "tests/pipeline/test_pomdp_gridworld_cross_framework.py",
-    "tests/render/test_rxinfer_viz_log_contract.py",
-    # Julia-live-backend gate: parse/execution tests skip when Julia or the
-    # committed RxInfer environment is unavailable (same contract as the
-    # GridWorld cross-framework and cross-framework-analysis files above).
-    "tests/render/test_stigmergic_multi_agent.py",
-    # Toolchain gates for backends outside the default lockfile: torch
-    # (``uv sync --extra torch``; torch>=2.13.0 resolves GHSA-rrmf-rvhw-rf47
-    # but stays out of the default lock) and cmdstanpy/CmdStan (``uv sync
-    # --extra stan`` + a compiled CmdStan). Rendering is always asserted;
-    # only the execution half skips when the toolchain is absent.
-    "tests/render/test_continuous_renderers.py",
-    "tests/execute/test_execute_stan.py",
-    # sklearn is an optional ``ml-ai`` extra; the inference round-trip tests
-    # skip when scikit-learn is not installed (all uses are deferred imports).
-    "tests/ml_integration/test_ml_integration_inference.py",
-    # Bare-form evasions closed 2026-09-08 (deep horizon wave 2): the token
-    # list below now also matches non-decorator ``pytest.mark.skip*`` and
-    # ``unittest.skip*`` usage, so these previously invisible skip sites are
-    # enumerated explicitly with their justifications.
-    # Lean toolchain gate: fep_lean bridge tests skip when the ``lake``
-    # binary/toolchain is unavailable (external toolchain, outside the lock).
-    "tests/execute/test_lean_runner.py",
-    # D2 module + ``d2`` system-binary gates (unittest.skipIf decorators).
-    "tests/visualization/test_d2_visualizer.py",
-    # Environment-integrity gates: skip rather than fail spuriously when the
-    # JAX + pymdp dev stack is broken (``jax_pymdp_stack_ok()``).
-    "tests/execute/test_execute_pymdp_simulation.py",
-    "tests/pipeline/test_pomdp_pipeline_integration.py",
-    # Permission probes: skip when running as root (the probe tests need a
-    # non-root POSIX user for permission-based assertions).
-    "tests/utils/test_shared_helpers.py",
-}
+# S2-17 (2026-09-10): the former 14-entry allowlist is empty. Every file-local
+# skipif/importorskip/unittest toolchain gate was migrated to registered
+# ``needs_*`` markers (see pytest.ini) resolved dynamically by
+# tests/conftest.py against tests/helpers/toolchain_probes.py. Any future
+# skip site needs a marker migration, not an allowlist entry.
+DEFAULT_SKIP_ALLOWLIST: set[str] = set()
 
 
+# The one sanctioned dynamic-skip mechanism lives OUTSIDE the scanned corpus:
+# tests/conftest.py applies ``pytest.mark.skip`` from the availability probes
+# in tests/helpers/toolchain_probes.py for ``needs_*``-marked tests. Test
+# files themselves must not contain any of the tokens below.
 FORBIDDEN_SKIP_TOKENS = (
     "pytest." + "skip(",
     "pytest." + "importorskip(",
@@ -79,6 +52,44 @@ def test_default_suite_does_not_reintroduce_skips_or_xfails() -> None:
                 violations.append(f"{relative_path}: contains {token}")
 
     assert not violations, "\n".join(violations)
+
+
+def _registered_marker_names() -> set[str]:
+    """Parse the ``markers =`` block of pytest.ini into marker names."""
+    names: set[str] = set()
+    in_markers = False
+    for line in (PROJECT_ROOT / "pytest.ini").read_text(encoding="utf-8").splitlines():
+        if line == "markers =":
+            in_markers = True
+            continue
+        if in_markers:
+            if not line.startswith("    "):
+                break
+            stripped = line.strip()
+            if not stripped or stripped.startswith("#"):
+                continue
+            names.add(stripped.split(":", 1)[0].strip())
+    return names
+
+
+def test_needs_markers_pair_with_probes_and_registration() -> None:
+    """Every ``needs_*`` marker is registered AND has a dynamic probe, and
+    every probe-backed marker is registered (``--strict-markers`` would fail
+    collection otherwise, but this pins the pytest.ini <-> probe mapping
+    against silent drift in either file)."""
+    from tests.helpers.toolchain_probes import TOOLCHAIN_MARKERS
+
+    registered_needs = {
+        name for name in _registered_marker_names() if name.startswith("needs_")
+    }
+    assert registered_needs == set(TOOLCHAIN_MARKERS), (
+        f"pytest.ini needs_* markers and TOOLCHAIN_MARKERS diverged: "
+        f"unprobed={sorted(registered_needs - set(TOOLCHAIN_MARKERS))} "
+        f"unregistered={sorted(set(TOOLCHAIN_MARKERS) - registered_needs)}"
+    )
+    for name, (probe, reason) in TOOLCHAIN_MARKERS.items():
+        assert callable(probe), f"{name}: probe is not callable"
+        assert reason.strip(), f"{name}: empty skip reason"
 
 
 def test_export_parse_gnn_content_reuses_canonical_gnn_parser() -> None:

@@ -42,7 +42,13 @@ from scripts.lib.manuscript_exclusions import (
     AUTHORING_GUIDE_FILENAMES as _SKIP_DOCS,  # noqa: E402
 )
 
-_BASH_BLOCK_RE = re.compile(r"```bash\n(.*?)```", re.DOTALL)
+# Executable command fences, however tagged. ``sh``/``shell`` are scanned
+# beside ``bash`` because a fence is executable by what a reader runs it as,
+# not by its tag. Plain ``` fences are NOT scanned: the manuscript's plain
+# fences carry LaTeX (``preamble.md``), not shell, and no ``console`` fence
+# exists — add a tag here only once a fence's content really is a runnable
+# command line (or reword the fence in the manuscript to a non-executable tag).
+_COMMAND_BLOCK_RE = re.compile(r"```(?:bash|shell|sh)\n(.*?)```", re.DOTALL)
 
 # The render stage is the docxology template's, run from the template root with
 # this repository symlinked in; it is not a file of this checkout. The manuscript
@@ -58,7 +64,7 @@ def _published_commands() -> list[tuple[str, str]]:
     for md in sorted(MANUSCRIPT.glob("*.md")):
         if md.name in _SKIP_DOCS:
             continue
-        for block in _BASH_BLOCK_RE.findall(md.read_text(encoding="utf-8")):
+        for block in _COMMAND_BLOCK_RE.findall(md.read_text(encoding="utf-8")):
             # Join the printed backslash-continuations into single commands.
             joined = block.replace("\\\n", " ")
             for line in joined.splitlines():

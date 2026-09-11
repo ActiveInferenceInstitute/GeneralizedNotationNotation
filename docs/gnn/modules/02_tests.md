@@ -199,7 +199,7 @@ errors = _extract_collection_errors(pytest_stdout, pytest_stderr)
 
 ### Test Settings
 
-Shared constants live in [`src/gnn/utils/test_utils.py`](../../../src/gnn/utils/test_utils.py), re-exported by `tests` (`__init__.py`):
+Shared constants live in [`src/gnn/utils/testing_utils.py`](../../../src/gnn/utils/testing_utils.py), re-exported by `tests` (`__init__.py`):
 
 ```python
 TEST_CATEGORIES = {
@@ -450,7 +450,7 @@ flowchart TD
 **tests/** (Plumbing-Contract Tests):
 - 26 tests across 5 files pinning runner modes, category routing, helpers, infrastructure exports, and the unified `TestRunner` — guard against accidental re-fragmentation of the runner architecture
 
-**src/gnn/utils/test_utils.py** (Shared Constants & Utilities):
+**src/gnn/utils/testing_utils.py** (Shared Constants & Utilities):
 - Defines `TEST_CATEGORIES`, `TEST_STAGES`, `TEST_CONFIG`, and test data/report utilities
 - Re-exported by `tests/__init__.py`; used by both test files and the runner
 

@@ -22,7 +22,7 @@ from gnn.pipeline.pipeline_container_plan import PINNED_PIPELINE_IMAGE
 VALIDATOR_COMMANDS = [
     "uv run --frozen --extra dev python scripts/check_capability_contracts.py --strict",
     "uv run --frozen --extra dev python docs/development/docs_audit.py --strict --check-anchors --no-write",
-    "PYTHONPATH=src uv run --frozen python -m pytest src/tests/pipeline/test_autonomous_contract.py -q",
+    "uv run --frozen --extra dev python -m pytest tests/pipeline/test_autonomous_contract.py -q",
 ]
 
 AUTONOMY_POLICY = {
@@ -76,7 +76,7 @@ def build_container_plan(
 ) -> Dict[str, Any]:
     """Build the auditable container plan for the autonomous review run.
 
-    Generates a hardened container plan executing ``src/main.py --autonomous``
+    Generates a hardened container plan executing ``src/gnn/main.py --autonomous``
     over ``target_dir``, runs the static security review over it, and attaches
     the review findings (plus computed digest) to the serialized payload so
     callers receive a self-contained, audited deployment plan.
@@ -99,7 +99,7 @@ def build_container_plan(
                 "image": image,
                 "command": [
                     "python",
-                    "src/main.py",
+                    "src/gnn/main.py",
                     "--autonomous",
                     "--target-dir",
                     str(target_dir),
@@ -195,6 +195,7 @@ def _build_candidate(index: int, path: Path, autonomous_dir: Path) -> Dict[str, 
             "and interpretability outputs before applying any model patch."
         ),
         "patch_artifact": str(autonomous_dir / f"{candidate_id}.gnn.patch"),
+        "patch_artifact_kind": "proposal_only",
         "review_gate": _review_gate(candidate_id),
         "rollback_descriptor": {
             "schema": "gnn_autonomous_rollback_v1",
@@ -208,7 +209,13 @@ def _build_candidate(index: int, path: Path, autonomous_dir: Path) -> Dict[str, 
 
 
 def _candidate_patch_text(candidate: Dict[str, Any]) -> str:
-    """Build a non-applied candidate GNN patch artifact."""
+    """Build the template-only, never-applied candidate GNN patch artifact.
+
+    The body is a fixed proposal header pointing reviewers at validation,
+    telemetry, matrix dimensions, and the human-review state. No source diff
+    is computed and nothing is applied: the artifact records intent for human
+    review only (see ``AUTONOMY_POLICY``).
+    """
     source_file = candidate["source_file"]
     return (
         f"diff --git a/{source_file} b/{source_file}\n"
@@ -377,6 +384,12 @@ def _source_summary(path: Path) -> Dict[str, Any]:
 
 
 def _review_gate(candidate_id: str) -> Dict[str, Any]:
+    """Build the stateless single-pass review gate for one candidate.
+
+    The gate is computed from static policy at build time: it reports the
+    required vs. current approval state and blocks application, but it does
+    not persist, observe, or track approval across runs.
+    """
     return {
         "schema": "gnn_autonomous_review_gate_v1",
         "candidate_id": candidate_id,

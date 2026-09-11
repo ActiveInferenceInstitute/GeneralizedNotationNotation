@@ -29,7 +29,6 @@ from __future__ import annotations
 import json
 import os
 import re
-import shutil
 import sys
 from pathlib import Path
 from typing import Any
@@ -51,27 +50,6 @@ from gnn.analysis.rxinfer.cross_framework import (
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 SIMPLE_MDP = PROJECT_ROOT / "input" / "gnn_files" / "discrete" / "simple_mdp.md"
-
-JULIA = shutil.which("julia")
-
-
-def _julia_projects_ready() -> bool:
-    """Julia on PATH is not enough: the committed project environments must be
-    instantiated (CI images ship julia without RxInfer/ActiveInference.jl)."""
-    if JULIA is None:
-        return False
-    import logging as _logging
-
-    from gnn.execute.processor import check_julia_dependencies
-
-    return bool(
-        check_julia_dependencies(
-            False, _logging.getLogger(__name__), ["rxinfer", "activeinference_jl"]
-        )
-    )
-
-
-JULIA_READY = _julia_projects_ready()
 
 
 def _results(beliefs: list[list[float]], *, all_valid: bool = True) -> dict:
@@ -349,14 +327,12 @@ def test_missing_gnn_file_raises(tmp_path: Path) -> None:
 
 
 # --- live end-to-end run ------------------------------------------------------
-# Requires Julia on PATH and executes live cross-framework comparison.
-# Julia's first-run precompile may take additional time, hence the explicit timeout.
+# Requires the committed RxInfer/ActiveInference Julia project environments
+# (``needs_julia_env`` marker; see tests/helpers/toolchain_probes.py). Julia's
+# first-run precompile may take additional time, hence the explicit timeout.
 
 
-@pytest.mark.skipif(
-    not JULIA_READY,
-    reason="julia or the committed Julia project packages are unavailable",
-)
+@pytest.mark.needs_julia_env
 @pytest.mark.timeout(900)
 def test_live_cross_framework_comparison(tmp_path: Path) -> None:
     """The full pipeline renders, runs, and compares the simple_mdp exemplar."""

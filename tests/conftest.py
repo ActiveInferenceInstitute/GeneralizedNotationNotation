@@ -8,6 +8,10 @@ specific fixtures. Removed:
   - Unused fixtures: full_pipeline_environment, simulate_failures,
     capture_logs, pipeline_arguments
   - RealRenderModule recovery fallback (in-tree imports always succeed)
+
+S2-17: ``pytest_collection_modifyitems`` also auto-tags ``toolchain`` on
+every ``needs_*`` item (default-suite deselection) and skips ``needs_*``
+items whose toolchain probe (``tests/helpers/toolchain_probes.py``) fails.
 """
 
 from __future__ import annotations
@@ -35,11 +39,40 @@ from tests.helpers.gnn_samples import (  # noqa: E402 - needs the alias above
 from tests.helpers.mcp_stubs import MCPTools  # noqa: E402 - needs the alias above
 
 
+@pytest.hookimpl(wrapper=True)
 def pytest_collection_modifyitems(config: Any, items: list) -> None:
-    """Tag slow tests with the performance marker for dashboarding."""
+    """Tag slow tests, auto-tag ``toolchain``, and gate ``needs_*`` items.
+
+    Runs as a hook wrapper: the pre-``yield`` phase runs before every other
+    implementation, so auto-applied markers are visible to ``-m`` deselection
+    (implemented by the core as a ``trylast`` hookimpl); the post-``yield``
+    phase runs after deselection, so availability probes below only fire for
+    tests that actually survive the default-suite filters.
+    """
+    from tests.helpers.toolchain_probes import MARKER_IMPLICATIONS, TOOLCHAIN_MARKERS
+
     for item in items:
         if any(m.name == "slow" for m in item.iter_markers()):
             item.add_marker(pytest.mark.performance)
+        needs = {
+            name for name in TOOLCHAIN_MARKERS if item.get_closest_marker(name)
+        }
+        if not needs:
+            continue
+        for name in needs:
+            implied = MARKER_IMPLICATIONS.get(name)
+            if implied is not None and not item.get_closest_marker(implied):
+                item.add_marker(getattr(pytest.mark, implied))
+        item.add_marker(pytest.mark.toolchain)
+
+    result = yield
+
+    # Post-deselection: only survivors reach the (cached) availability probes.
+    for item in items:
+        for name, (probe, reason) in TOOLCHAIN_MARKERS.items():
+            if item.get_closest_marker(name) and not probe():
+                item.add_marker(pytest.mark.skip(reason=f"{name}: {reason}"))
+    return result
 
 
 # -----------------------------------------------------------------------------

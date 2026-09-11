@@ -74,15 +74,20 @@ _run_environment_lock = RLock()
 SCRIPT_DIR = Path(__file__).parent  # src/
 PROJECT_ROOT = SCRIPT_DIR.parent.parent  # project root (two levels up from src/gnn/)
 
-# Change working directory to project root if not already there
-if Path.cwd() != PROJECT_ROOT:
-    os.chdir(PROJECT_ROOT)
-    logging.getLogger(__name__).info(
-        f"Changed working directory to project root: {PROJECT_ROOT}"
-    )
-
-# Add src to path for imports
-sys.path.insert(0, str(SCRIPT_DIR.parent))  # src/ on path so `import gnn` resolves
+# Script-entry side effects live inside the ``__main__`` guard below so that
+# ``import gnn.main`` stays side-effect free: no cwd change, no sys.path
+# mutation. Running ``python src/gnn/main.py`` still gets src/ on sys.path
+# (required before the ``gnn.*`` imports resolve) and starts from
+# PROJECT_ROOT so relative path defaults behave as documented.
+if __name__ == "__main__":
+    _src_dir = str(SCRIPT_DIR.parent)
+    if _src_dir not in sys.path:
+        sys.path.insert(0, _src_dir)
+    if Path.cwd() != PROJECT_ROOT:
+        os.chdir(PROJECT_ROOT)
+        logging.getLogger(__name__).info(
+            f"Changed working directory to project root: {PROJECT_ROOT}"
+        )
 
 from copy import copy
 from dataclasses import dataclass, fields

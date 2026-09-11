@@ -22,6 +22,11 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
+import pytest
+
+from gnn.analysis.pymdp.visualizer import PyMDPVisualizer
+from gnn.execute.pymdp.pymdp_simulation import PyMDPSimulation
+from gnn.execute.pymdp.pymdp_utils import convert_numpy_for_json, safe_json_dump
 
 
 # Pipeline imports
@@ -40,22 +45,7 @@ def cleanup_test_temp_dir(path: Path) -> None:
         pass
 
 
-try:
-    from gnn.analysis.pymdp.visualizer import PyMDPVisualizer
-    from gnn.execute.pymdp.pymdp_simulation import PyMDPSimulation
-    from gnn.execute.pymdp.pymdp_utils import convert_numpy_for_json, safe_json_dump
-    from gnn.utils.jax_stack_validation import jax_pymdp_stack_ok
-except ImportError:
-    from gnn.analysis.pymdp.visualizer import PyMDPVisualizer
-    from gnn.execute.pymdp.pymdp_simulation import PyMDPSimulation
-    from gnn.execute.pymdp.pymdp_utils import convert_numpy_for_json, safe_json_dump
-    from gnn.utils.jax_stack_validation import jax_pymdp_stack_ok
-
-
-@unittest.skipUnless(
-    jax_pymdp_stack_ok(),
-    "JAX + inferactively-pymdp>=1.0 required (uv sync --extra dev; use project interpreter)",
-)
+@pytest.mark.needs_pymdp
 class TestPyMDPSimulation(unittest.TestCase):
     """Test PyMDP simulation functionality with GNN integration."""
 

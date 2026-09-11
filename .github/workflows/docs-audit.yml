@@ -27,6 +27,7 @@ on:
     # Scheduled so external-link rot is caught without per-PR network flakiness.
     - cron: "0 6 * * 1"
 
+  workflow_dispatch:
 concurrency:
   group: docs-audit-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true

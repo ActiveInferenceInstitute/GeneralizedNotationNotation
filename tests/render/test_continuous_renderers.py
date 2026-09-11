@@ -2,7 +2,9 @@
 
 Builds the continuous ``gnn_spec`` by hand (the shape ``render.pomdp_processor``
 emits for ``model_kind == "continuous"``), renders each backend, and executes
-the generated scripts where the backend is importable.
+the generated scripts. Optional-backend execution is gated by the registered
+``needs_torch``/``needs_cmdstan`` markers (see tests/helpers/toolchain_probes.py),
+not by in-file skips.
 """
 
 from __future__ import annotations
@@ -100,18 +102,18 @@ def test_numpyro_continuous_renders_and_runs_nuts(tmp_path: Path) -> None:
     assert res["validation"]["mcmc_finite"] is True
 
 
+@pytest.mark.needs_torch
 def test_pytorch_continuous_renders(tmp_path: Path) -> None:
     ok, msg, arts = render_gnn_to_pytorch(_spec(True), tmp_path / "m_pytorch.py")
     assert ok, msg
     code = Path(arts[0]).read_text()
     assert "torch.distributions.MultivariateNormal" in code
     assert "GOAL_MEAN_RAW = [1.0, 0.0]" in code
-    torch = pytest.importorskip("torch")
-    assert torch is not None
     res = _run(Path(arts[0]), "PYTORCH_OUTPUT_DIR", tmp_path / "out")
     _assert_schema(res, "pytorch", True)
 
 
+@pytest.mark.needs_cmdstan
 def test_stan_continuous_program_and_driver(tmp_path: Path) -> None:
     ok, msg, arts = render_gnn_to_stan(_spec(True), tmp_path / "m_stan.py")
     assert ok, msg
@@ -119,11 +121,6 @@ def test_stan_continuous_program_and_driver(tmp_path: Path) -> None:
     assert program.suffix == ".stan" and driver.suffix == ".py"
     text = program.read_text()
     assert "multi_normal_lpdf" in text and "obs_noise_scale" in text
-    cmdstanpy = pytest.importorskip("cmdstanpy")
-    try:
-        cmdstanpy.cmdstan_path()
-    except Exception:
-        pytest.skip("CmdStan toolchain not installed")
     res = _run(driver, "STAN_OUTPUT_DIR", tmp_path / "out")
     _assert_schema(res, "stan", True)
     assert res["validation"]["rhat_ok"] is True

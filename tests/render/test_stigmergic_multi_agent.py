@@ -17,14 +17,13 @@ exemplar:
   signal inference / action-conditioning when declared.
 
 Pure-Python structure tests run unconditionally; Julia parse and execution
-tests are gated exactly like the other live-backend gates in this suite.
+tests are gated by the ``needs_julia``/``needs_julia_env`` markers
+(tests/helpers/toolchain_probes.py), like the other live-backend gates.
 """
 
 from __future__ import annotations
 
-import functools
 import json
-import shutil
 import subprocess
 from collections.abc import Callable
 from pathlib import Path
@@ -76,35 +75,6 @@ def _render_activeinference_jl(gnn_file: Path, tmp_path: Path) -> Path:
     assert ok, f"activeinference_jl render failed: {message}"
     return script
 
-
-@functools.lru_cache(maxsize=1)
-def _julia_backends_available() -> bool:
-    """Return True when the committed RxInfer Julia environment loads.
-
-    Mirrors the live-backend gate in the GridWorld cross-framework test: the
-    probe runs the exact ``using`` line the executed scripts need, converted
-    to a boolean so environment-gated tests can skip instead of fail.
-    """
-    if not shutil.which("julia"):
-        return False
-    cmd = [
-        "julia",
-        f"--project={RXINFER_JULIA_PROJECT}",
-        "--startup-file=no",
-        "-e",
-        'using RxInfer, JSON, Distributions, StatsBase; println("OK")',
-    ]
-    try:
-        result = subprocess.run(  # nosec B603 B607
-            cmd,
-            cwd=PROJECT_ROOT,
-            capture_output=True,
-            text=True,
-            timeout=120,
-        )
-    except (FileNotFoundError, subprocess.TimeoutExpired):
-        return False
-    return result.returncode == 0
 
 
 def _run_julia(
@@ -276,7 +246,7 @@ class TestActiveInferenceJlStigmergicScript:
         _assert_flat_script(text)
 
 
-@pytest.mark.skipif(not shutil.which("julia"), reason="Julia not available")
+@pytest.mark.needs_julia
 class TestJuliaParse:
     """Both generated scripts must parse with Meta.parseall."""
 
@@ -343,6 +313,7 @@ class TestJuliaParse:
 
 @pytest.mark.integration
 @pytest.mark.slow
+@pytest.mark.needs_julia_env
 class TestJuliaExecution:
     """Live execution of the stigmergic swarm scripts (both backends)."""
 
@@ -383,8 +354,6 @@ class TestJuliaExecution:
         return results
 
     def test_rxinfer_swarm_executes(self, tmp_path: Path) -> None:
-        if not _julia_backends_available():
-            pytest.skip("Julia backend packages not installed; skipping live execution")
         script = _render_rxinfer(SWARM_FILE, tmp_path)
         result = _run_julia(script, RXINFER_JULIA_PROJECT, tmp_path)
         assert result.returncode == 0, (
@@ -397,8 +366,6 @@ class TestJuliaExecution:
         assert any(sum(step) > 0 for step in env_trace[1:])  # deposits accumulate
 
     def test_activeinference_jl_swarm_executes(self, tmp_path: Path) -> None:
-        if not _julia_backends_available():
-            pytest.skip("Julia backend packages not installed; skipping live execution")
         script = _render_activeinference_jl(SWARM_FILE, tmp_path)
         result = _run_julia(script, ACTINF_JULIA_PROJECT, tmp_path)
         assert result.returncode == 0, (

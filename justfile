@@ -51,11 +51,11 @@ test-extras:
 
 # Run ruff linter
 lint:
-    uv run ruff check src scripts
+    uv run ruff check src/gnn scripts
 
 # Run ruff linter with auto-fix
 lint-fix:
-    uv run ruff check src scripts --fix
+    uv run ruff check src/gnn scripts --fix
 
 # Format code with ruff
 format:

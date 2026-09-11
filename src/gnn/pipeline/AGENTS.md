@@ -17,9 +17,9 @@ security review + rollback). These generate/validate **data only** — no contai
 executed. Acceptance: `scripts/run_v3_orchestration_acceptance.py --strict`. Reference:
 [`docs/pipeline/v3_orchestration.md`](../../../docs/pipeline/v3_orchestration.md).
 
-**Version**: 3.2.0
+**Version**: 3.2.1
 
-**Last Updated**: 2026-09-04
+**Last Updated**: 2026-09-10
 
 ---
 
@@ -43,6 +43,23 @@ executed. Acceptance: `scripts/run_v3_orchestration_acceptance.py --strict`. Ref
 - Execution plan generation
 - Performance tracking and optimization
 - Error recovery and retry mechanisms
+
+### Autonomous Proposal Surface
+
+`pipeline/autonomous.py` implements the bounded, proposal-only autonomy
+surface (`AUTONOMY_POLICY`, mode `proposal_only`). `collect_observation_streams`
+describes file-backed observation inputs, `build_container_plan` emits an
+audited, never-executed container plan for `src/gnn/main.py --autonomous`
+(static security review attached), and `run_autonomous_proposal_loop` writes
+candidate patch templates, evaluation reports, review gates, and an audit log
+under `output/autonomous/` without mutating source files. Patch artifacts are
+proposal templates only (`patch_artifact_kind: proposal_only`);
+review gates are stateless single-pass checks computed from static policy and
+do not track approval state across runs. Application always requires recorded
+human approval. The validator commands referenced by the review workflow live
+in `VALIDATOR_COMMANDS` (capability contracts, docs audit, and the
+`tests/pipeline/test_autonomous_contract.py` pytest suite). Entry point:
+`uv run --extra dev python src/gnn/main.py --autonomous`.
 
 ---
 

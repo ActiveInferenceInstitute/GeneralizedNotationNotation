@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from gnn.execute.stan import execute_stan_script, find_stan_scripts, is_stan_available
+from gnn.execute.stan import execute_stan_script, find_stan_scripts
 from gnn.render.stan.stan_renderer import render_gnn_to_stan
 
 DISCRETE_SPEC = {
@@ -85,9 +85,8 @@ def test_discrete_program_declares_forward_algorithm(tmp_path: Path) -> None:
     assert "B[u[t - 1]] * alpha" in text  # vectorised scaled forward recursion
 
 
+@pytest.mark.needs_cmdstan
 def test_stan_execution_end_to_end(tmp_path: Path) -> None:
-    if not is_stan_available():
-        pytest.skip("cmdstanpy/CmdStan not installed")
     ok, _, arts = render_gnn_to_stan(DISCRETE_SPEC, tmp_path / "m_stan.py")
     assert ok
     result = execute_stan_script(arts[0], tmp_path / "out", timeout=900)

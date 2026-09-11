@@ -101,7 +101,7 @@ src/module_name/
 
 - Tests go in `tests/<module>/test_*.py` (one subdirectory per module, e.g. `tests/gnn/`, `tests/render/`)
 - Run module-specific tests: `uv run pytest tests/gnn/ -v`
-- Check coverage: `uv run pytest --cov=src --cov-report=term-missing`
+- Check coverage: `uv run pytest --cov=src/gnn --cov-report=term-missing`
 - Aim for >80% test coverage on new code
 
 ### Documentation
@@ -124,7 +124,7 @@ just test-mod MODULE       # Test specific module
 
 # Or manually
 uv sync --frozen --extra dev
-uv run pytest -m "not pipeline and not mcp" --tb=short -q
+uv run pytest -m "not pipeline and not mcp and not ollama and not env_heavy and not toolchain" --tb=short -q
 uv run ruff check src/
 uv run python docs/development/docs_audit.py --strict
 ```

@@ -1,0 +1,27 @@
+{
+  "counts_describe_commit": "17991edfd",
+  "manifest_version": "gnn_render_manifest_v1",
+  "receipt_counts_describe_commit": "17991edfd",
+  "recorded_by": "uv run python scripts/z_record_manuscript_render_manifest.py",
+  "render_artifacts_sha256": {
+    "output/pdf/_combined_manuscript.log": "a208bb7ebff4dd1fe1d02dcd72d71cf33abadac9810cc04b1997d82179ba6ee9",
+    "output/pdf/_combined_manuscript.md": "67e3a1470a8ef1762c53a3b094540e38e1323d59c2c0d659f565d570301fc727",
+    "output/pdf/_combined_manuscript.tex": "2fb0101483cf24ed5ac42399384f9639705bcc6097c000e5f877cf5cd63b0c18"
+  },
+  "render_inputs_sha256": {
+    "output/manuscript/00_abstract.md": "db211d6da2433eacfa205757989719aef093c84944a068c495f10ced67fad970",
+    "output/manuscript/01_introduction.md": "c27c7e25429247bc43708877acd9e509135241cebbc2b223d77e08622cefaa70",
+    "output/manuscript/02_system_context.md": "a5651e5279d7ec60421733527bb8f75547c259ba9fbc8196251f4e33efff5718",
+    "output/manuscript/03_methods.md": "8b3511e0df7f03dbf97a7fca5b62a0fd73a6cb06f44dcc7ba4f9ba9603be3ad6",
+    "output/manuscript/04_artifacts_and_evidence.md": "361a078bba24b5ee7c2813932cea19395f3cb39ff34a0f2bb715a5d892607962",
+    "output/manuscript/05_reproducibility.md": "47baf3c4986294298bf3aceb53d44b86c4371e10648c7ce434098a4145776fa8",
+    "output/manuscript/06_limitations_and_next_steps.md": "434eac1fdf2632382ec5265ea0053e1350b3d2ddb9689cc191190acaaa325af5",
+    "output/manuscript/98_symbols_glossary.md": "83233bfa61ea149ca096e25e1c595739c3cef39b73043683f89e94a625472675",
+    "output/manuscript/99_references.md": "d56f5b71a1aa67d65286009bb354fb75d2c9895f4adf48ebce8d5c9d4a010efa",
+    "output/manuscript/S01_source_surface.md": "b5ebe11d69e021558e6bd4f3acaa0d72b62323d9ecb04b7d2a24398a70b0332f",
+    "output/manuscript/config.yaml": "3f5c18b232e4d423baf2d2107369141e3362e0bad99e5b6044d4dcddd3231bce",
+    "output/manuscript/preamble.md": "bea2bfb7fbd91b09526c29dda7f11c61cedffe9ba0ba219d2d5916bb8ab16ca9",
+    "output/manuscript/references.bib": "50d3dd12825dc1ca686d692d1c4ae5e15714075d567b74c084d2d17826065e69"
+  },
+  "variables_sha256": "622ec84283f805380a7dd0cd28a906cc9ef5b6e8ee81dee160eb8980513432b3"
+}

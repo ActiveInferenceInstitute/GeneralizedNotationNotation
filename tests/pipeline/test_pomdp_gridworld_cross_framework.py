@@ -3,7 +3,6 @@
 
 from __future__ import annotations
 
-import functools
 import json
 import shutil
 import subprocess  # nosec B404
@@ -90,26 +89,6 @@ def _assert_julia_packages() -> None:
     )
 
 
-@functools.lru_cache(maxsize=1)
-def _julia_backends_available() -> bool:
-    """Return True when the strict Julia backend gate passes.
-
-    This is the skip-probe counterpart to :func:`_assert_julia_packages`:
-    the assertion helper raises a descriptive ``AssertionError`` when Julia
-    or its optional backend packages (RxInfer, Distributions, ...) are
-    missing, while this helper converts that same condition into a boolean
-    so environment-gated strict tests can skip instead of fail. The result
-    is cached per-process (each pytest-xdist worker probes once).
-    """
-    if not shutil.which("julia"):
-        return False
-    try:
-        _assert_julia_packages()
-    except AssertionError:
-        return False
-    return True
-
-
 def _assert_julia_parse(script: Path) -> None:
     result = subprocess.run(  # nosec B603 B607
         [
@@ -180,7 +159,7 @@ def test_gridworld_extraction_uses_canonical_dimensions() -> None:
     )
 
 
-@pytest.mark.skipif(not shutil.which("julia"), reason="Julia not available")
+@pytest.mark.needs_julia
 @pytest.mark.integration
 def test_gridworld_render_helpers_use_canonical_framework_renderers(
     tmp_path: Path,
@@ -228,13 +207,8 @@ def test_gridworld_fixture_directory_renders_only_model_sources(
 @pytest.mark.pipeline
 @pytest.mark.integration
 @pytest.mark.slow
+@pytest.mark.needs_julia_env
 def test_gridworld_render_execute_analyze_visualize_strict(tmp_path: Path) -> None:
-    if not _julia_backends_available():
-        pytest.skip(
-            "Julia backend packages (RxInfer, Distributions, StatsBase) are not "
-            "installed in the committed src/execute/rxinfer environment; "
-            "skipping strict cross-framework execution"
-        )
     _assert_julia_packages()
 
     input_dir = tmp_path / "input" / "gnn_files" / "pomdp_gridworld"

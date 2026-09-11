@@ -127,12 +127,11 @@ def test_sync_uv_dependencies_mcp_rejects_out_of_repo_paths(
     assert "Invalid project directory" in result["message"]
 
 
+@pytest.mark.needs_pkl
 def test_pkl_eval_degrades_to_none_on_hostile_content() -> None:
     """S2-31: hostile pkl content must not raise; it degrades to None."""
     from gnn.parsers.schema_parser import PKLParser
 
-    if shutil.which("pkl") is None:
-        pytest.skip("pkl CLI not installed; native eval path not exercised")
     parser = PKLParser()
     hostile = (
         'amends "Pkl"; import "pkl:base" '

@@ -21,7 +21,6 @@ All tests are deterministic, isolated, and network-free.
 from __future__ import annotations
 
 import argparse
-import os
 import stat
 import sys
 from pathlib import Path
@@ -50,10 +49,7 @@ def _restore_permissions(path: Path) -> None:
     path.chmod(path.stat().st_mode | stat.S_IWUSR)
 
 
-requires_write_permissions = pytest.mark.skipif(
-    os.name != "posix" or hasattr(os, "geteuid") and os.geteuid() == 0,
-    reason="permission-based probe tests need a non-root POSIX user",
-)
+requires_write_permissions = pytest.mark.needs_nonroot
 
 
 class TestVerifyDirectoryWritable:
