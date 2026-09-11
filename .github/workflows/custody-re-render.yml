@@ -63,12 +63,28 @@ jobs:
           version: "0.12"
           enable-cache: true
 
-      - name: Install LaTeX (xelatex) and pandoc
+      # Toolchain parity with the local ritual: pandoc 3.11 + crossref
+      # v0.3.25 (the committed PDF evidence was rendered WITH pandoc-crossref
+      # — its absence in CI degraded the reproduction silently). texlive-
+      # bibtex-extra supplies bibtex/xelatex helpers texlive-latex-extra omits.
+      - name: Install pandoc (pinned via pandoc/actions)
+        uses: pandoc/actions/setup@86321b6dd4675f5014c611e05088e10d4939e09e # v1.1.1
+
+      - name: Install LaTeX (xelatex, bibtex) and fonts
         run: |
+          sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
-            texlive-xetex texlive-latex-extra texlive-fonts-recommended \
-            lmodern pandoc
-          pandoc --version
+            texlive-xetex texlive-latex-extra texlive-bibtex-extra \
+            texlive-fonts-recommended lmodern
+
+      - name: Install pandoc-crossref v0.3.25 (pinned)
+        run: |
+          # Matches the local ritual's /opt/homebrew pandoc-crossref v0.3.25.
+          # apt has no crossref package; pinned GitHub release binary.
+          curl -fsSL -o /tmp/cr.tar.gz \
+            https://github.com/lierdakil/pandoc-crossref/releases/download/v0.3.25/pandoc-crossref-Linux-X64.tar.gz
+          sudo tar -xzf /tmp/cr.tar.gz -C /usr/local/bin pandoc-crossref
+          pandoc-crossref --version
 
       - name: Install dependencies (dev)
         run: uv sync --frozen --extra dev
