@@ -1,9 +1,13 @@
 {
-  "counts_describe_commit": "4b4651619",
-  "dirty_path_count": 2,
+  "counts_describe_commit": "df842208b",
+  "dirty_path_count": 6,
   "dirty_paths": [
+    "SCOPE-2026-09-11.md",
+    "TO-DO.md",
+    "output/data/manuscript_render_manifest.json",
     "output/data/manuscript_variables.json",
-    "output/data/manuscript_variables_receipt.json"
+    "output/data/manuscript_variables_receipt.json",
+    "output/figures/figure_registry.json"
   ],
   "generator": "scripts/z_generate_manuscript_variables.py",
   "git_available": true,

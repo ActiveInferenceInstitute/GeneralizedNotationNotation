@@ -1,9 +1,13 @@
 # TO-DO - GNN Pipeline Roadmap
 
-**Last Updated**: 2026-09-10 (SCOPE-2026-09-10 execution: 33 items closed via
-waves A/B/C — evidence in `SCOPE-2026-09-10.md` §Waves; residuals pinned in
-the "Remaining from SCOPE-2026-09-09" section below, rewritten to their true
-post-wave state)
+**Last Updated**: 2026-09-11 (SCOPE-2026-09-11 campaign: the utils/ concern-
+package split Steps 0-6 executed (all seven families moved behind
+DeprecationWarning facades, `_EXPORT_MAP` keys frozen at 113), the four
+V4-STAGE consolidation slices landed, V4-HD scaling-sweep integration landed,
+MED-T4 test-estate coverage landed, the W2/MCP stale rows executed
+(W2-D4/D5/D6/D7/M4, MED-03b/04, MIN-01), validate_gnn* deprecation window
+OPENED (target v4.0.0), and the SC-22-hosted custody re-render cron workflow
+landed. Evidence in `SCOPE-2026-09-11.md` §Waves.)
 **Current Version**: 3.3.0
 **Next Target**: v4.0.0 (bounded autonomy, pipeline stage consolidation, multi-agent stigmergic topologies, and high-dimensional active inference)
 
@@ -305,52 +309,38 @@ git diff --check
 
 ## Remaining from SCOPE-2026-09-09/10 (post-scope2 truth state)
 
-The SCOPE-2026-09-09 program closed on PR #109; SCOPE-2026-09-10 executed on
-2026-09-10 (waves A/B/C, evidence per item in `SCOPE-2026-09-10.md`): the
-execution gate now covers the analysis cross-framework path, the
-`execute_rendered_simulators` registry path, and lean `.md` documents
-(S2-1..S2-3); `setup/mcp.py` uv installs validate package specs + repo
-containment (S2-4); the shared subprocess envelope carries gate→sandbox→
-timeout→capture with receipts on ALL paths (S2-5/SC-39-residual closed);
-Julia probing consolidated to `julia_setup.julia_executable()`; the s_t+1
-grammar is fixed and pinned (closed); the UserWarning blanket ignore is
-DELETED — zero UserWarning filters remain (SC-26-residual closed); SC-22
-residual closed (fence widening done, render-custody manifest +
-`scripts/z_record_manuscript_render_manifest.py` ritual, last step); SC-38
-design doc landed (`docs/development/utils_split_design.md`, mechanical
-split owner-deferred); mcp.py validation extracted to `mcp/validation.py`;
-main.py import-time chdir removed; 15 skipif gates → 12 `needs_*` markers,
-zero-skip allowlist empty; GEO-INFER paired interchange CI landed
-(GNN-04 slice, pin `.github/gnn-pair.json` @ GEO `c0115779`, local run exit 0
-with digests + deterministic replay); GNN-05 notation-driven metadata
-delivered (`src/gnn/export/notation_metadata.py`, `--geo-derive-metadata`,
-27 tests); V4 stage consolidation first slice (ADR 0001 +
-`--consolidated-steps` for steps 0/3/5).
+The SCOPE-2026-09-09 program closed on PR #109 and SCOPE-2026-09-10 executed
+on 2026-09-10 (waves A/B/C, evidence per item in `SCOPE-2026-09-10.md`).
+SCOPE-2026-09-11 executed on 2026-09-11: the utils/ concern-package split
+Steps 0-6 (testing/, arguments/, pipeline_orchestration/, runtime_safety/,
+observability/, mcp/ packages behind DeprecationWarning facades; lazy PEP 562
+family inits where eager variants created import cycles — observability/,
+runtime_safety/, mcp/), the four V4-STAGE consolidation slices (in-process
+timeout+tee capture, whitelist {0,3,5,7,8,11}, parsed-model carrier,
+parallel-tier dispatcher), V4-HD (`_run_factorized_sweep` routes through
+`execute_kronecker_factorized`), MED-T4 coverage (cross_format / types /
+type_systems / round-trip), the stale W2 rows (W2-D4 default flip, W2-D5
+preflight wiring, W2-D6 step-count, W2-D7 wiring tests, W2-M4 stale
+commands), MED-03b (rxinfer evidence persistence), MED-04 + MIN-01 (transport
+limits, cache copies, ensure_ascii parity), the validate_gnn* deprecation
+window, the `_level_rank` name-fallback fix, comment-polish, and the
+SC-22-hosted custody re-render cron
+(`.github/workflows/custody-re-render.yml`). GEO-INFER state: GNN-04 paired
+interchange CI (pin `.github/gnn-pair.json` @ GEO `c0115779`) and GNN-05
+notation-driven metadata (`src/gnn/export/notation_metadata.py`,
+`--geo-derive-metadata`, 27 tests) are DELIVERED; both paired workflows
+(fep-lean + GEO interchange) are green on hosted main
+(runs 34562055364 / 34562055373, 2026-09-11).
 
 Still open (residuals, in rough order):
 
 | ID | Scope | Acceptance evidence |
 | --- | --- | --- |
-| SC-22-hosted | The render-custody manifest + strict token gate run on every push/PR (local-gates CI), but no cron job re-renders a drifted PDF on a schedule; first hosted run of the new GEO interchange workflow also pending. | A scheduled/manual CI run confirms the custody chain on a fresh render; geo-infer-interchange.yml green on GitHub. |
-| SC-38-split | Mechanical utils/ split per `docs/development/utils_split_design.md` (7 steps, owner-deferred; first extraction target `testing_utils.py` → `gnn/utils/testing/`). | Per-moved-module suite green; facade shims emit the documented guidance. |
-| validate_gnn* retirement | All 7 aliases pinned by MAJ-05 tests + MCP audit surface; retirement needs an owner-decided deprecation window. | Coordinated change across `tests/test_validate_surface_aliases.py`, `src/gnn/mcp/audit_report.json`, docs. |
-| GNN-04-hosted | GEO paired interchange workflow needs its first hosted green run (local run exit 0 at GEO `c0115779`); fep-lean workflow likewise. | Both workflows green on GitHub at their pins. |
-| V4-STAGE next slices | `--consolidated-steps` covers steps 0/3/5 flat dirs; remaining: in-process per-step timeout/stdout capture, stem expansion beyond 7/8/11, parsed-model forwarding, parallel-tier support. | Each slice: artifact parity + receipt `execution_mode=consolidated`. |
-| V4-HD | High-dimensional active inference beyond Kronecker (pymdp/jax scaling sweep integration with the scaling-study harness). | Scaling sweep runs the factorized executor end-to-end (see `scripts/experiments/`). |
-| validation_level string-rank | `GNNValidator._level_rank` (schema_validator/validator.py:98-113) maps unknown string levels to rank 0 with only a warning, which silently SKIPS semantic validation — the `s_t+1` acceptance probe originally passed for the wrong reason. Prefer `ValidationLevel` enums in tests/docs. | `validate_file(..., validation_level=ValidationLevel.STANDARD)` is the documented form; a strict-mode or loud-warning fix is a small S item. |
-| comment-polish batch | Stale pre-rename comments (non-load-bearing): `cross_framework.py:299`, `framework_availability.py:5,31`, `validation_schemas.py:35`, `tests/execute/__init__.py:1`, cross_framework gate docstring :43 — cosmetic `src/execute` mentions. | grep `"src" / "execute"` in comments returns only retired-layout prose. |
+| SC-22-hosted | `custody-re-render.yml` (daily cron 07:14 UTC + workflow_dispatch) landed; first hosted green run + first scheduled fire pending. | `gh workflow run custody-re-render` green on GitHub; next cron run green. |
+| validate_gnn* retirement | Window OPENED 2026-09-11 (target v4.0.0, current 3.3.0): all 10 alias sites emit `DeprecationWarning` (`stacklevel=2`) naming the canonical replacement + "will be removed in v4.0.0"; manifest canonical/old-name inversion fixed; warning emission pinned in `tests/test_validate_surface_aliases.py`. | Retirement in v4.0.0 = delete the alias defs, their pins in `tests/test_validate_surface_aliases.py`, and any registry entries; migrate remaining src/doc callers first. |
+| SC-38 tail | The split's Steps 0-6 are DONE (six concern packages + facades + guardrails); remaining per design §3.8/§8: residual grab-bag assignment (`errors/`, `config_io/`, `system_env/`, `simulation_utils` — owner decision), facade deprecation-window end (delete old paths), and the deferred logging single-entry import-linter contract (blocked on the documented `base_processor.py` logging bypass). | Per-family move PRs green; `lint-imports` 2/2 contracts kept. |
+| V4-STAGE limits | Consolidated executor now covers stems {0,3,5,7,8,11} with timeout/tee/carrier on serial + parallel tiers; remaining limits recorded in ADR 0001: in-process steps cannot be force-killed, stem 9 excluded (D2 CLI shell-out), matplotlib caveat in thread-pool tier. | Each landed slice pinned by parity tests in `tests/pipeline/`. |
 | paired-repin discipline | The fep_lean source-pin seals GNN owner digests at pin time; ANY later owner-file edit re-drifts the pair (3 drift cycles documented on PR #110). Standing closeout ordering: all content edits → token ritual → bridge re-pin → fep_lean PR/merge → pair-pin bump as the FINAL commit, single push. | `fep-lean bridge status --gnn-root .` green at the pin; zero post-bump pushes. |
-
-## GEO-INFER contract expansion
-
-The delivered opt-in v1 format is specified in `src/gnn/export/geo_infer_contract.md`.
-Further work must preserve independently installable runtimes and explicit matrix,
-space and time semantics.
-
-| ID | Scope | Acceptance evidence |
-| --- | --- | --- |
-| GNN-04 | Pin paired repository revisions in cross-repository CI on the GNN side. **Delivered 2026-09-10:** fep_lean slice (workflow + pin @ `b7df553a`, paired re-pin PR ActiveInferenceInstitute/fep_lean#6) AND the GEO-INFER interchange slice (`.github/workflows/geo-infer-interchange.yml` + pin `.github/gnn-pair.json` @ GEO `c0115779`, runner `scripts/run_geo_interchange_checks.py` driving GEO's own cross-repo validator; categorical + H3 + Gaussian + factored digests with deterministic replay verified locally, receipt in `docs/development/geo_infer_2026_09.md`). **Still open:** first hosted green runs of both workflows. |
-| GNN-05 | **Delivered 2026-09-10** (`src/gnn/export/notation_metadata.py`): `--geo-derive-metadata` opt-in flag, derivation as last resolution fallback before the explicit-only raise, provenance recorded in artifact (`metadata_derivation`), explicit beats derived, visible failure without time hints; contract revised in `src/gnn/export/geo_infer_contract.md`; 27 tests in `tests/export/`. Units are never derived (no notation surface) — documented residual. | Same visible-failure + unchanged-five-format-default tests as the explicit path, all green (185 in tests/export). |
 
 ## Deep horizon wave 2 - tests + CI
 
@@ -371,9 +361,10 @@ alias error-parity + stacklevel pins (MED-T3), `pipeline_validation`
 coverage plus the `naming_violations` crash fix, load-hardened environment
 performance smoke, and the coverage floor raise 50 -> 60 (MAJ-T1).
 
-| ID | Scope | Acceptance evidence |
-| --- | --- | --- |
-| MED-T4 (remainder) | Unit tests for still-untested `src/gnn` subpackages, priority order: `schema_validator` (cross_format.py / syntax.py / validator.py beyond the alias tests), `types`, `type_systems`, and the `testing` round-trip package (`round_trip_comparison.py`, `round_trip_markdown_parser.py`, `round_trip_report.py`, all 0% today). Tests assert observable behavior, not implementation. | New test files per package; harness coverage_percent measurably higher than the 61.14 wave-2 result; suite green. |
+MED-T4 (remainder) LANDED 2026-09-11: `tests/schema_validator/test_cross_format.py`
+and `tests/types/` (38 tests) plus `tests/type_systems/test_init.py` and
+`tests/testing/test_round_trip_{comparison,markdown_parser,report}.py`
+(38 tests) cover the previously-0% surfaces; observable behavior only.
 
 Verification commands: `bash autoresearch.sh` (full harness), targeted
 `uv run --extra dev python -m pytest <file> -q`, `just lint`,
