@@ -135,9 +135,10 @@ def setup_julia_environment(verbose: bool = False) -> bool:
             logger.info("✅ Julia is available, proceeding with setup")
 
         setup_scripts: list[Any] = [
-            PROJECT_ROOT / "src" / "execute" / "rxinfer" / "setup_environment.jl",
+            PROJECT_ROOT / "src" / "gnn" / "execute" / "rxinfer" / "setup_environment.jl",
             PROJECT_ROOT
             / "src"
+            / "gnn"
             / "execute"
             / "activeinference_jl"
             / "setup_environment.jl",

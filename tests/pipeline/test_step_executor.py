@@ -32,11 +32,6 @@ PROJECT_ROOT = SRC
 LOGGER = logging.getLogger("test_step_executor")
 BASICS_DIR = PROJECT_ROOT / "input" / "gnn_files" / "basics"
 
-pytest_requires_basics = pytest.mark.skipif(
-    not BASICS_DIR.is_dir(), reason="input/gnn_files/basics fixture dir missing"
-)
-
-
 def _pipeline_args(output_dir: Path) -> PipelineArguments:
     """Build pipeline args pointing at the small basics fixture dir."""
     return PipelineArguments(target_dir=BASICS_DIR, output_dir=output_dir)
@@ -74,7 +69,6 @@ def _run_step3_subprocess(output_dir: Path) -> None:
 class TestConsolidatedEquivalence:
     """In-process mode produces the same downstream artifacts as subprocess."""
 
-    @pytest_requires_basics
     def test_step3_in_process_matches_subprocess_artifacts(
         self, tmp_path: Path
     ) -> None:
@@ -111,7 +105,6 @@ class TestConsolidatedEquivalence:
 class TestConsolidatedReceipt:
     """Receipt fields record which execution mode ran."""
 
-    @pytest_requires_basics
     def test_receipt_records_consolidated_mode(self, tmp_path: Path) -> None:
         """The executor stamps execution_mode="consolidated" on its receipt."""
         step_result = execute_step_in_process(
@@ -222,7 +215,6 @@ class TestConsolidatedRefusal:
             "3_gnn.py", dispatch_args, pipeline_config=matrix_config
         )
 
-    @pytest_requires_basics
     def test_global_steps_disabled_produces_skipped_receipt(
         self, tmp_path: Path
     ) -> None:
