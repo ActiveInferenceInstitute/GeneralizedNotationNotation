@@ -47,6 +47,7 @@ sys.path.insert(0, str(REPO_ROOT / "src"))
 from gnn.manuscript.render_custody import (  # noqa: E402
     custody_issues,
     record_render_manifest,
+    verify_fresh_render,
 )
 
 LOG_PATH = REPO_ROOT / "output" / "pdf" / "_combined_manuscript.log"
@@ -236,6 +237,52 @@ def test_a_token_map_regenerated_after_the_render_fails(tmp_path: Path) -> None:
     )
     issues = custody_issues(root)
     assert any("token map" in issue for issue in issues), issues
+
+
+def test_a_fresh_render_matching_the_manifest_has_no_issues(tmp_path: Path) -> None:
+    """Bytes straight from the fixture's render agree with the committed manifest."""
+    root = _custody_fixture(tmp_path)
+    assert verify_fresh_render(root) == []
+
+
+def test_an_artifact_swap_with_unchanged_prose_warns(tmp_path: Path) -> None:
+    """Artifact-only drift with the recorded inputs fully matching: toolchain."""
+    root = _custody_fixture(tmp_path)
+    (root / "output" / "pdf" / "_combined_manuscript.log").write_text(
+        "[1] [2] [3] Output written on x.pdf (3 pages).\n", encoding="utf-8"
+    )
+    issues = verify_fresh_render(root)
+    assert len(issues) == 1, issues
+    assert issues[0].startswith(
+        "[WARN] output/pdf/_combined_manuscript.log"
+    ), issues
+
+
+def test_an_artifact_swap_alongside_prose_drift_fails(tmp_path: Path) -> None:
+    """Artifact and input drift together: the committed chain is stale for HEAD."""
+    root = _custody_fixture(tmp_path)
+    (root / "output" / "manuscript" / "05_reproducibility.md").write_text(
+        "a 26-step pipeline\n", encoding="utf-8"
+    )
+    (root / "output" / "pdf" / "_combined_manuscript.md").write_text(
+        "a 26-step pipeline\n", encoding="utf-8"
+    )
+    issues = verify_fresh_render(root)
+    assert len(issues) == 1, issues
+    assert issues[0].startswith(
+        "[FAIL] output/pdf/_combined_manuscript.md"
+    ), issues
+
+
+def test_a_missing_artifact_fails(tmp_path: Path) -> None:
+    """A render that did not produce a committed artifact cannot be certified."""
+    root = _custody_fixture(tmp_path)
+    (root / "output" / "pdf" / "_combined_manuscript.log").unlink()
+    issues = verify_fresh_render(root)
+    assert len(issues) == 1, issues
+    assert issues[0].startswith(
+        "[FAIL] output/pdf/_combined_manuscript.log"
+    ), issues
 
 
 if __name__ == "__main__":  # pragma: no cover - convenience

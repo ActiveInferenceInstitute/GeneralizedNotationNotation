@@ -28,11 +28,21 @@ token checker).
 5. `select_cross_framework_family()` — family selection for the
    cross-framework coverage note.
 6. `token_checksum()` — integrity checksum over the emitted map.
+7. `record_render_manifest()` / `custody_issues()` / `verify_fresh_render()`
+   — render custody (`render_custody.py`): digest the committed render
+   artifacts + hydrated inputs into `output/data/manuscript_render_manifest.json`
+   after a render, audit the committed chain against it, and classify a
+   fresh render against the committed manifest (`[FAIL]` = artifact missing
+   or artifact+input joint drift → chain stale for HEAD; `[WARN]` =
+   artifact-only drift with inputs matching → toolchain variance).
 
 ## Module Structure
 
 - `__init__.py` — thin re-export surface (`__all__`).
 - `variables.py` — the implementation (snapshot counting, token emission).
+- `render_custody.py` — render custody manifest: record after a render,
+  audit the committed chain, verify a fresh render against the committed
+  manifest (SC-22).
 
 ## Dependencies
 
@@ -44,4 +54,5 @@ token checker).
 
 ```bash
 uv run --extra dev python -m pytest tests/main/test_manuscript_variables.py tests/main/test_manuscript_variables_api.py -q
+uv run --extra dev python -m pytest tests/test_manuscript_latex_log.py -q
 ```
