@@ -25,7 +25,7 @@ class TestErrorRecoveryFramework:
     @pytest.mark.unit
     def test_error_context_creation(self) -> Any:
         """Test ErrorContext dataclass creation and conversion."""
-        from gnn.utils.error_recovery import ErrorContext, ErrorSeverity
+        from gnn.utils.errors.error_recovery import ErrorContext, ErrorSeverity
 
         context = ErrorContext(
             operation="Test Operation",
@@ -51,7 +51,7 @@ class TestErrorRecoveryFramework:
     @pytest.mark.unit
     def test_error_recovery_manager_initialization(self) -> Any:
         """Test ErrorRecoveryManager initialization and setup."""
-        from gnn.utils.error_recovery import ErrorRecoveryManager
+        from gnn.utils.errors.error_recovery import ErrorRecoveryManager
 
         manager = ErrorRecoveryManager()
 
@@ -69,7 +69,7 @@ class TestErrorRecoveryFramework:
     @pytest.mark.unit
     def test_error_code_registry(self) -> Any:
         """Test error code registry contains expected codes."""
-        from gnn.utils.error_recovery import ErrorCodeRegistry
+        from gnn.utils.errors.error_recovery import ErrorCodeRegistry
 
         ErrorCodeRegistry.get_all_codes()
 
@@ -93,7 +93,7 @@ class TestErrorRecoveryFramework:
     @pytest.mark.unit
     def test_error_message_formatting(self) -> Any:
         """Test error message formatting."""
-        from gnn.utils.error_recovery import format_error_message
+        from gnn.utils.errors.error_recovery import format_error_message
 
         message = format_error_message(
             error_code="E001",
@@ -112,7 +112,7 @@ class TestErrorRecoveryFramework:
     @pytest.mark.unit
     def test_error_handling_with_severity_levels(self) -> Any:
         """Test error handling respects severity levels."""
-        from gnn.utils.error_recovery import (
+        from gnn.utils.errors.error_recovery import (
             ErrorContext,
             ErrorRecoveryManager,
             ErrorSeverity,
@@ -159,7 +159,7 @@ class TestErrorRecoveryFramework:
     @pytest.mark.unit
     def test_format_and_log_error_function(self) -> Any:
         """Test format_and_log_error convenience function."""
-        from gnn.utils.error_recovery import ErrorSeverity, format_and_log_error
+        from gnn.utils.errors.error_recovery import ErrorSeverity, format_and_log_error
 
         context = format_and_log_error(
             error_code="E101",
@@ -182,7 +182,7 @@ class TestErrorRecoveryStrategies:
     @pytest.mark.unit
     def test_import_error_recovery_suggestions(self) -> Any:
         """Test recovery suggestions for import errors."""
-        from gnn.utils.error_recovery import ErrorRecoveryManager
+        from gnn.utils.errors.error_recovery import ErrorRecoveryManager
 
         manager = ErrorRecoveryManager()
         strategies = manager.recovery_strategies["import"]
@@ -198,7 +198,7 @@ class TestErrorRecoveryStrategies:
     @pytest.mark.unit
     def test_file_error_recovery_suggestions(self) -> Any:
         """Test recovery suggestions for file errors."""
-        from gnn.utils.error_recovery import ErrorRecoveryManager
+        from gnn.utils.errors.error_recovery import ErrorRecoveryManager
 
         manager = ErrorRecoveryManager()
         strategies = manager.recovery_strategies["file"]
@@ -214,7 +214,7 @@ class TestErrorRecoveryStrategies:
     @pytest.mark.unit
     def test_resource_error_recovery_suggestions(self) -> Any:
         """Test recovery suggestions for resource errors."""
-        from gnn.utils.error_recovery import ErrorRecoveryManager
+        from gnn.utils.errors.error_recovery import ErrorRecoveryManager
 
         manager = ErrorRecoveryManager()
         strategies = manager.recovery_strategies["resource"]
@@ -230,7 +230,7 @@ class TestErrorRecoveryStrategies:
     @pytest.mark.unit
     def test_validation_error_recovery_suggestions(self) -> Any:
         """Test recovery suggestions for validation errors."""
-        from gnn.utils.error_recovery import ErrorRecoveryManager
+        from gnn.utils.errors.error_recovery import ErrorRecoveryManager
 
         manager = ErrorRecoveryManager()
         strategies = manager.recovery_strategies["validation"]
@@ -249,7 +249,7 @@ class TestErrorHandlingIntegration:
     @pytest.mark.unit
     def test_error_context_roundtrip(self) -> Any:
         """Test ErrorContext serialization and deserialization."""
-        from gnn.utils.error_recovery import ErrorContext, ErrorSeverity
+        from gnn.utils.errors.error_recovery import ErrorContext, ErrorSeverity
 
         original = ErrorContext(
             operation="Test Operation",
@@ -274,7 +274,7 @@ class TestErrorHandlingIntegration:
     @pytest.mark.unit
     def test_error_recovery_manager_is_singleton(self) -> Any:
         """Test that get_recovery_manager returns consistent instance."""
-        from gnn.utils.error_recovery import get_recovery_manager
+        from gnn.utils.errors.error_recovery import get_recovery_manager
 
         manager1 = get_recovery_manager()
         manager2 = get_recovery_manager()
@@ -285,7 +285,7 @@ class TestErrorHandlingIntegration:
 
 def test_error_recovery_documentation() -> Any:
     """Test that error recovery framework components exist and have docstrings."""
-    from gnn.utils.error_recovery import (
+    from gnn.utils.errors.error_recovery import (
         ErrorCodeRegistry,
         ErrorContext,
         ErrorRecoveryManager,

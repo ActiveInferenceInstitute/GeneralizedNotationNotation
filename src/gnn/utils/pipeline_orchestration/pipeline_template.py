@@ -12,7 +12,7 @@ import warnings
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
 
-from gnn.utils.error_handling import coerce_step_exit_code
+from gnn.utils.errors.error_handling import coerce_step_exit_code
 from gnn.utils.logging_utils import (
     setup_step_logging,
 )

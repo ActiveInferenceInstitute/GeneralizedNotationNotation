@@ -30,7 +30,7 @@ from gnn.pipeline.step_executor import (  # noqa: E402
     execute_step_in_process,
 )
 from gnn.utils.arguments.pipeline_arguments import PipelineArguments  # noqa: E402
-from gnn.utils.error_handling import status_from_exit_code  # noqa: E402
+from gnn.utils.errors.error_handling import status_from_exit_code  # noqa: E402
 from gnn.utils.pipeline_orchestration.execution_utils import (
     execute_command_streaming,  # noqa: E402
 )

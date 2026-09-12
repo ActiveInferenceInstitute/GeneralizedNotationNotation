@@ -243,7 +243,7 @@ class TestErrorReportingRecovery:
 
     def test_error_collection(self, test_environment: Any) -> Any:
         """Test error collection and reporting."""
-        from gnn.utils.error_recovery import ErrorReporter
+        from gnn.utils.errors.error_recovery import ErrorReporter
 
         reporter = ErrorReporter()
 

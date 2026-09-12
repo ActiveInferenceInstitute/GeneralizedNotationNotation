@@ -48,7 +48,7 @@ from gnn.pipeline.step_registry import (
 )
 from gnn.pipeline.step_timeouts import get_step_timeout
 from gnn.utils.arguments.step_config import StepConfiguration
-from gnn.utils.error_handling import coerce_step_exit_code, status_from_exit_code
+from gnn.utils.errors.error_handling import coerce_step_exit_code, status_from_exit_code
 from gnn.utils.observability.structured_logging import log_step_warning
 from gnn.utils.pipeline_orchestration.pipeline_validator import (
     validate_step_prerequisites,

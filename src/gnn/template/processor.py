@@ -49,7 +49,7 @@ def safe_template_execution(logger: Any, correlation_id: str) -> Any:
     try:
         # Try to import enhanced infrastructure
         try:
-            from gnn.utils.error_recovery import (
+            from gnn.utils.errors.error_recovery import (
                 ErrorContext,
                 ErrorRecoveryManager,
                 ErrorSeverity,
@@ -130,7 +130,7 @@ def demonstrate_utility_patterns(
     # Demonstrate structured error manager
     if context.get("error_manager"):
         try:
-            from gnn.utils.error_recovery import ErrorContext, ErrorSeverity
+            from gnn.utils.errors.error_recovery import ErrorContext, ErrorSeverity
 
             error_manager = context["error_manager"]
             test_error = "Demonstration error for pattern testing"

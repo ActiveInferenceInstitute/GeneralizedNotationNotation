@@ -15,7 +15,7 @@ from types import MappingProxyType
 from typing import Any, Dict, List, Mapping, Optional, TypedDict, cast
 
 from gnn.utils.config_loader import GNNPipelineConfig, load_config
-from gnn.utils.error_handling import is_critical_pipeline_step
+from gnn.utils.errors.error_handling import is_critical_pipeline_step
 
 from .arg_definitions import ArgumentDefinition
 from .pipeline_arguments import PipelineArguments

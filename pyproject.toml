@@ -529,6 +529,7 @@ forbidden_modules = [
     "gnn.utils.pipeline_orchestration",
     "gnn.utils.runtime_safety",
     "gnn.utils.observability",
+    "gnn.utils.errors",
     "gnn.utils.timeout_manager",
     "gnn.utils.validation_schemas",
     "gnn.utils.venv_utils",
@@ -540,7 +541,7 @@ forbidden_modules = [
 [[tool.importlinter.contracts]]
 name = "concern packages never import the gnn.utils facade"
 type = "forbidden"
-source_modules = ["gnn.utils.testing", "gnn.utils.arguments", "gnn.utils.pipeline_orchestration", "gnn.utils.runtime_safety", "gnn.utils.observability"]
+source_modules = ["gnn.utils.testing", "gnn.utils.arguments", "gnn.utils.pipeline_orchestration", "gnn.utils.runtime_safety", "gnn.utils.observability", "gnn.utils.errors"]
 forbidden_modules = ["gnn.utils"]
 
 # I5: the logging single-entry-point contract is a named residual — it cannot

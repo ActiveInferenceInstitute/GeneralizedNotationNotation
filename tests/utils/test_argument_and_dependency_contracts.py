@@ -14,7 +14,7 @@ from gnn.utils.arguments.arg_parsing import (
 )
 from gnn.utils.arguments.pipeline_arguments import PipelineArguments
 from gnn.utils.arguments.step_config import StepConfiguration
-from gnn.utils.error_handling import CRITICAL_STEP_NUMBERS
+from gnn.utils.errors.error_handling import CRITICAL_STEP_NUMBERS
 from gnn.utils.pipeline_orchestration.pipeline_step_dependencies import (
     resolve_step_dependencies,
 )

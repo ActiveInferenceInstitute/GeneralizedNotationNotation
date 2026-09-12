@@ -18,7 +18,9 @@ Source modules:
 - logging_utils: Re-export facade over utils/logging/logging_utils.py (centralized, correlation-aware logging system)
 - argument_utils: Streamlined argument parsing and validation
 - resource_manager: Memory and resource usage tracking
-- error_recovery: Error context, severity, and recovery management
+- error_recovery: Error context, severity, and recovery management (S2-33 Step 7
+  concern package errors/; the top-level error_*.py paths remain as deprecation
+  facades)
 - pipeline_monitor: Pipeline health reporting
 - pipeline_validator: Pre-execution prerequisite checker (step output validation)
 - dependency_validator: Comprehensive dependency validation
@@ -31,6 +33,8 @@ Source modules:
   package; testing_utils.py remains as its deprecation facade)
 - pipeline: Pipeline utility exports
 - error_handling: Structured error handler, categories, and recovery strategies
+  (S2-33 Step 7 concern package errors/; the top-level path remains as a
+  deprecation facade)
 - structured_logging: Structured log emission with correlation context
 """
 
@@ -67,7 +71,7 @@ if TYPE_CHECKING:
         set_config_value,
         validate_config,
     )
-    from .error_handling import (
+    from .errors.error_handling import (
         ErrorCategory,
         ExitCode,
         PipelineErrorHandler,
@@ -78,7 +82,7 @@ if TYPE_CHECKING:
         handle_network_error,
         handle_timeout_error,
     )
-    from .error_recovery import (
+    from .errors.error_recovery import (
         ErrorCodeRegistry,
         ErrorContext,
         ErrorRecoveryManager,
@@ -246,24 +250,24 @@ _EXPORT_MAP: dict[str, str] = {
     "install_missing_dependencies": "runtime_safety.dependency_validator",
     "validate_pipeline_dependencies": "runtime_safety.dependency_validator",
     "validate_pipeline_dependencies_if_available": "runtime_safety.dependency_validator",
-    # error_handling
-    "ErrorCategory": "error_handling",
-    "ExitCode": "error_handling",
-    "PipelineErrorHandler": "error_handling",
-    "PipelineErrorSeverity": "error_handling",
-    "RecoveryStrategy": "error_handling",
-    "generate_correlation_id": "error_handling",
-    "handle_file_system_error": "error_handling",
-    "handle_network_error": "error_handling",
-    "handle_timeout_error": "error_handling",
-    # error_recovery
-    "ErrorCodeRegistry": "error_recovery",
-    "ErrorContext": "error_recovery",
-    "ErrorRecoveryManager": "error_recovery",
-    "ErrorSeverity": "error_recovery",
-    "format_and_log_error": "error_recovery",
-    "format_error_message": "error_recovery",
-    "get_recovery_manager": "error_recovery",
+    # errors (S2-33 Step 7, family 3/3: moved from the top-level error modules
+    # into the errors/ concern package; keys unchanged, values repointed)
+    "ErrorCategory": "errors.error_handling",
+    "ExitCode": "errors.error_handling",
+    "PipelineErrorHandler": "errors.error_handling",
+    "PipelineErrorSeverity": "errors.error_handling",
+    "RecoveryStrategy": "errors.error_handling",
+    "generate_correlation_id": "errors.error_handling",
+    "handle_file_system_error": "errors.error_handling",
+    "handle_network_error": "errors.error_handling",
+    "handle_timeout_error": "errors.error_handling",
+    "ErrorCodeRegistry": "errors.error_recovery",
+    "ErrorContext": "errors.error_recovery",
+    "ErrorRecoveryManager": "errors.error_recovery",
+    "ErrorSeverity": "errors.error_recovery",
+    "format_and_log_error": "errors.error_recovery",
+    "format_error_message": "errors.error_recovery",
+    "get_recovery_manager": "errors.error_recovery",
     # logging_utils
     "PipelineLogger": "logging.logging_utils",
     "get_performance_summary": "logging.logging_utils",

@@ -437,7 +437,7 @@ class TestEndToEndIntegration:
     def test_step_exit_code_two_maps_to_warning_status(self) -> None:
         """Child exit code 2 should remain warning, not become failed."""
         from gnn.main import _status_from_step_exit_code
-        from gnn.utils.error_handling import status_from_exit_code
+        from gnn.utils.errors.error_handling import status_from_exit_code
 
         assert _status_from_step_exit_code(0) == "SUCCESS"
         assert _status_from_step_exit_code(0, ["dep warning"]) == (
