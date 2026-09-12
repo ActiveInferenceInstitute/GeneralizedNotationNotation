@@ -96,13 +96,13 @@ from gnn.utils.arguments.arg_parsing import ArgumentParser
 from gnn.utils.arguments.pipeline_arguments import PipelineArguments
 from gnn.utils.arguments.pipeline_config_merge import apply_input_config_defaults
 from gnn.utils.arguments.step_config import StepConfiguration
-from gnn.utils.error_handling import (
+from gnn.utils.errors.error_handling import (
     is_critical_pipeline_step,
 )
-from gnn.utils.error_handling import (
+from gnn.utils.errors.error_handling import (
     pipeline_exit_code as _shared_pipeline_exit_code,
 )
-from gnn.utils.error_handling import (
+from gnn.utils.errors.error_handling import (
     status_from_exit_code as _shared_status_from_exit_code,
 )
 
@@ -154,7 +154,7 @@ def _derive_critical_scripts() -> set[str]:
 
 
 # Metadata-driven cache used by the orchestrator hot path. The critical-step
-# contract lives in StepConfiguration and utils.error_handling; do not maintain
+# contract lives in StepConfiguration and utils.errors.error_handling; do not maintain
 # a second hand-written critical-step list here.
 CRITICAL_SCRIPTS: set[str] = _derive_critical_scripts()
 
@@ -1941,7 +1941,7 @@ def validate_pipeline_summary(summary: dict, logger: Any) -> None:
 # All pipeline utility functions have been moved to appropriate utils modules:
 # - validate_step_prerequisites, validate_pipeline_step_sequence → utils/pipeline_validator.py
 # - get_current_memory_usage → utils/resource_manager.py
-# - attempt_step_recovery and recovery functions → utils/error_recovery.py
+# - attempt_step_recovery and recovery functions → utils/errors/error_recovery.py
 # - generate_pipeline_health_report → utils/pipeline_monitor.py
 
 

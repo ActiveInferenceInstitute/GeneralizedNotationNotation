@@ -21,7 +21,7 @@ SRC = Path(__file__).resolve().parents[2]
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
-from gnn.utils.error_handling import (  # noqa: E402
+from gnn.utils.errors.error_handling import (  # noqa: E402
     pipeline_exit_code,
     status_from_exit_code,
 )
