@@ -23,6 +23,9 @@ Source modules:
 - pipeline_validator: Pre-execution prerequisite checker (step output validation)
 - dependency_validator: Comprehensive dependency validation
 - config_loader: YAML configuration loading and validation (active config system)
+  (S2-33 Step 7 concern package config_io/, together with io_utils,
+  code_metrics, and path_utils; the four top-level paths remain as deprecation
+  facades)
 - performance_tracking: Operation timing and performance metrics
 - base_processor: Abstract base class for standardized step processors
 - venv_utils: Virtual environment path helpers
@@ -51,7 +54,7 @@ if TYPE_CHECKING:
     )
     from .arguments.pipeline_arguments import PipelineArguments
     from .arguments.step_config import StepConfiguration
-    from .config_loader import (
+    from .config_io.config_loader import (
         GNNPipelineConfig,
         LLMConfig,
         ModelConfig,
@@ -222,21 +225,22 @@ _EXPORT_MAP: dict[str, str] = {
     "BaseProcessor": "pipeline_orchestration.base_processor",
     "ProcessingResult": "pipeline_orchestration.base_processor",
     "create_processor": "pipeline_orchestration.base_processor",
-    # config_loader
-    "GNNPipelineConfig": "config_loader",
-    "LLMConfig": "config_loader",
-    "ModelConfig": "config_loader",
-    "OntologyConfig": "config_loader",
-    "PipelineConfig": "config_loader",
-    "SAPFConfig": "config_loader",
-    "SetupConfig": "config_loader",
-    "TypeCheckerConfig": "config_loader",
-    "WebsiteConfig": "config_loader",
-    "get_config_value": "config_loader",
-    "load_config": "config_loader",
-    "save_config": "config_loader",
-    "set_config_value": "config_loader",
-    "validate_config": "config_loader",
+    # config_io (S2-33 Step 7, family 2/3: moved from the top-level config/IO
+    # modules; keys unchanged, values repointed)
+    "GNNPipelineConfig": "config_io.config_loader",
+    "LLMConfig": "config_io.config_loader",
+    "ModelConfig": "config_io.config_loader",
+    "OntologyConfig": "config_io.config_loader",
+    "PipelineConfig": "config_io.config_loader",
+    "SAPFConfig": "config_io.config_loader",
+    "SetupConfig": "config_io.config_loader",
+    "TypeCheckerConfig": "config_io.config_loader",
+    "WebsiteConfig": "config_io.config_loader",
+    "get_config_value": "config_io.config_loader",
+    "load_config": "config_io.config_loader",
+    "save_config": "config_io.config_loader",
+    "set_config_value": "config_io.config_loader",
+    "validate_config": "config_io.config_loader",
     # runtime_safety (S2-33 Step 4: moved from the top-level safety modules;
     # keys unchanged, values repointed)
     "DependencySpec": "runtime_safety.dependency_validator",

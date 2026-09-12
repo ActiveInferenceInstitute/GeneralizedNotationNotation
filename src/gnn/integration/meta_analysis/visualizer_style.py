@@ -16,7 +16,7 @@ _MPL_AVAILABLE = False
 try:
     import os
 
-    from gnn.utils.matplotlib_setup import apply_env_backend_if_set
+    from gnn.utils.system_env.matplotlib_setup import apply_env_backend_if_set
 
     apply_env_backend_if_set()
     import matplotlib

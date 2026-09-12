@@ -16,7 +16,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from gnn.utils.arguments.arg_parsing import parse_step_list
 from gnn.utils.logging_utils import PipelineLogger
-from gnn.utils.venv_utils import get_venv_python
+from gnn.utils.system_env.venv_utils import get_venv_python
 
 logger = logging.getLogger(__name__)
 
