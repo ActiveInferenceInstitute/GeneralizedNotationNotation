@@ -1,11 +1,11 @@
-"""Pins for ``utils/venv_utils.get_venv_python`` (previously untested)."""
+"""Pins for ``utils/system_env/venv_utils.get_venv_python`` (previously untested)."""
 
 from __future__ import annotations
 
 import sys
 from pathlib import Path
 
-from gnn.utils.venv_utils import get_venv_python
+from gnn.utils.system_env.venv_utils import get_venv_python
 
 
 def _make_venv(root: Path, style: str = "posix") -> Path:

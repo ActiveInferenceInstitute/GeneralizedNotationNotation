@@ -1,0 +1,58 @@
+"""Provides helper functions: get_system_info.
+
+Public functions: get_system_info
+"""
+
+import logging
+import os
+import sys
+from pathlib import Path
+from typing import Any
+
+# Import psutil with error handling to prevent recursion
+PSUTIL_AVAILABLE = False
+try:
+    import psutil
+
+    PSUTIL_AVAILABLE = True
+except (ImportError, RecursionError, RuntimeError):
+    PSUTIL_AVAILABLE = False
+
+from typing import Dict
+
+logger = logging.getLogger(__name__)
+
+
+def get_system_info() -> Dict[str, Any]:
+    """Gather comprehensive system information for pipeline tracking."""
+    try:
+        base_info: dict[str, Any] = {
+            "python_version": sys.version,
+            "platform": os.name,
+            "cpu_count": os.cpu_count(),
+            "working_directory": str(Path.cwd()),
+            "user": os.getenv("USER", "unknown"),
+        }
+
+        # Add psutil-dependent info if available
+        if PSUTIL_AVAILABLE:
+            base_info.update(
+                {
+                    "memory_total_gb": round(
+                        psutil.virtual_memory().total / (1024**3), 2
+                    ),
+                    "disk_free_gb": round(psutil.disk_usage(".").free / (1024**3), 2),
+                }
+            )
+        else:
+            base_info.update(
+                {
+                    "memory_total_gb": "unavailable (psutil not installed)",
+                    "disk_free_gb": "unavailable (psutil not installed)",
+                }
+            )
+
+        return base_info
+    except Exception as e:
+        logger.warning(f"Failed to gather complete system info: {e}")
+        return {"error": str(e)}

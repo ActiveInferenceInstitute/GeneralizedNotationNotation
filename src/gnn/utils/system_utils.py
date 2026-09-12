@@ -1,58 +1,19 @@
-"""Provides helper functions: get_system_info.
+"""Earlier name; implementation moved to
+``gnn/utils/system_env/system_utils.py`` (S2-33 Step 7, family 1/3)."""
 
-Public functions: get_system_info
-"""
+import warnings
 
-import logging
-import os
-import sys
-from pathlib import Path
-from typing import Any
+warnings.warn(
+    "gnn.utils.system_utils is the earlier name; import gnn.utils.system_env.system_utils instead",
+    DeprecationWarning,
+    stacklevel=2,
+)
+from gnn.utils.system_env.system_utils import (  # noqa: E402,F401
+    PSUTIL_AVAILABLE,
+    get_system_info,
+)
 
-# Import psutil with error handling to prevent recursion
-PSUTIL_AVAILABLE = False
-try:
-    import psutil
-
-    PSUTIL_AVAILABLE = True
-except (ImportError, RecursionError, RuntimeError):
-    PSUTIL_AVAILABLE = False
-
-from typing import Dict
-
-logger = logging.getLogger(__name__)
-
-
-def get_system_info() -> Dict[str, Any]:
-    """Gather comprehensive system information for pipeline tracking."""
-    try:
-        base_info: dict[str, Any] = {
-            "python_version": sys.version,
-            "platform": os.name,
-            "cpu_count": os.cpu_count(),
-            "working_directory": str(Path.cwd()),
-            "user": os.getenv("USER", "unknown"),
-        }
-
-        # Add psutil-dependent info if available
-        if PSUTIL_AVAILABLE:
-            base_info.update(
-                {
-                    "memory_total_gb": round(
-                        psutil.virtual_memory().total / (1024**3), 2
-                    ),
-                    "disk_free_gb": round(psutil.disk_usage(".").free / (1024**3), 2),
-                }
-            )
-        else:
-            base_info.update(
-                {
-                    "memory_total_gb": "unavailable (psutil not installed)",
-                    "disk_free_gb": "unavailable (psutil not installed)",
-                }
-            )
-
-        return base_info
-    except Exception as e:
-        logger.warning(f"Failed to gather complete system info: {e}")
-        return {"error": str(e)}
+__all__ = [
+    "PSUTIL_AVAILABLE",
+    "get_system_info",
+]

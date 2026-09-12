@@ -1,20 +1,17 @@
-"""Matplotlib backend setup for subprocess and headless pipelines.
+"""Earlier name; implementation moved to
+``gnn/utils/system_env/matplotlib_setup.py`` (S2-33 Step 7, family 1/3)."""
 
-Call ``apply_env_backend_if_set()`` immediately before ``import matplotlib.pyplot``
-when optional plotting modules load. If ``MPLBACKEND`` is set in the environment,
-matplotlib switches to that backend before pyplot initializes GUI state.
-"""
+import warnings
 
-from __future__ import annotations
+warnings.warn(
+    "gnn.utils.matplotlib_setup is the earlier name; import gnn.utils.system_env.matplotlib_setup instead",
+    DeprecationWarning,
+    stacklevel=2,
+)
+from gnn.utils.system_env.matplotlib_setup import (  # noqa: E402,F401
+    apply_env_backend_if_set,
+)
 
-import os
-
-
-def apply_env_backend_if_set() -> None:
-    """Invoke ``matplotlib.use`` only when ``MPLBACKEND`` is present."""
-    backend = os.environ.get("MPLBACKEND")
-    if not backend:
-        return
-    import matplotlib
-
-    matplotlib.use(backend)
+__all__ = [
+    "apply_env_backend_if_set",
+]

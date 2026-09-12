@@ -1,8 +1,8 @@
-"""Pins for ``utils/system_utils.get_system_info`` (previously untested)."""
+"""Pins for ``utils/system_env/system_utils.get_system_info`` (previously untested)."""
 
 from __future__ import annotations
 
-from gnn.utils.system_utils import PSUTIL_AVAILABLE, get_system_info
+from gnn.utils.system_env.system_utils import PSUTIL_AVAILABLE, get_system_info
 
 
 def test_get_system_info_returns_base_contract() -> None:
