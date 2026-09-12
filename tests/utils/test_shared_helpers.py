@@ -33,7 +33,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from gnn.utils.arguments.arg_parsing import ArgumentParser, fallback_default_for
 from gnn.utils.arguments.step_config import StepConfiguration
-from gnn.utils.io_utils import verify_directory_writable
+from gnn.utils.config_io.io_utils import verify_directory_writable
 from gnn.utils.mcp.server import is_sensitive_env_key, redact_environment
 from gnn.utils.pipeline import validate_output_directory
 from gnn.utils.pipeline_orchestration.pipeline_monitor import (

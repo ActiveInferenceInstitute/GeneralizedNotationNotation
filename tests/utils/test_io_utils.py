@@ -18,7 +18,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from gnn.utils.io_utils import (
+from gnn.utils.config_io.io_utils import (
     batch_read_files,
     batch_write_files,
     cleanup_temp_files,

@@ -44,7 +44,7 @@ if TYPE_CHECKING:
     )
     from .render.processor import get_available_renderers, render_gnn_spec
     from .types import ParsedGNN, ValidationLevel
-    from .utils.config_loader import GNNPipelineConfig, load_config
+    from .utils.config_io.config_loader import GNNPipelineConfig, load_config
 
 __version__ = "3.3.0"
 
@@ -99,8 +99,8 @@ _EXPORT_MAP: dict[str, str] = {
     "get_available_renderers": "render.processor",
     "generate_exports": "export.processor",
     "ModelRegistry": "model_registry.registry",
-    "GNNPipelineConfig": "utils.config_loader",
-    "load_config": "utils.config_loader",
+    "GNNPipelineConfig": "utils.config_io.config_loader",
+    "load_config": "utils.config_io.config_loader",
 }
 
 

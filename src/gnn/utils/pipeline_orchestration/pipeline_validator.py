@@ -15,7 +15,7 @@ import logging
 from pathlib import Path
 from typing import Any, Dict, List
 
-from gnn.utils.io_utils import verify_directory_writable
+from gnn.utils.config_io.io_utils import verify_directory_writable
 from gnn.utils.pipeline_orchestration.pipeline_step_dependencies import (
     dependency_scripts_for_script,
 )

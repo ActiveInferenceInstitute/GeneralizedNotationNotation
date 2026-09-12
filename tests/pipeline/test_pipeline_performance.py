@@ -310,7 +310,7 @@ class TestDiskIOPerformance:
 
     def test_file_write_performance(self, isolated_environment: Any) -> Any:
         """Test file write performance with different file sizes."""
-        from gnn.utils.io_utils import batch_write_files
+        from gnn.utils.config_io.io_utils import batch_write_files
 
         # Create test files with correct structure
         files_data = [

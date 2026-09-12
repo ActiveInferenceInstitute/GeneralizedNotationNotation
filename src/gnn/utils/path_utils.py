@@ -1,19 +1,17 @@
-"""Provides helper functions: get_relative_path_if_possible.
+"""Earlier name; implementation moved to
+``gnn/utils/config_io/path_utils.py`` (S2-33 Step 7, family 2/3)."""
 
-Public functions: get_relative_path_if_possible
-"""
+import warnings
 
-from pathlib import Path
-from typing import Optional
+warnings.warn(
+    "gnn.utils.path_utils is the earlier name; import gnn.utils.config_io.path_utils instead",
+    DeprecationWarning,
+    stacklevel=2,
+)
+from gnn.utils.config_io.path_utils import (  # noqa: E402,F401
+    get_relative_path_if_possible,
+)
 
-
-def get_relative_path_if_possible(
-    absolute_path_obj: Path, project_root: Optional[Path] = None
-) -> str:
-    """Returns a path string relative to project_root if provided and applicable, otherwise absolute."""
-    if project_root:
-        try:
-            return str(absolute_path_obj.relative_to(project_root))
-        except ValueError:
-            return str(absolute_path_obj)
-    return str(absolute_path_obj)
+__all__ = [
+    "get_relative_path_if_possible",
+]
