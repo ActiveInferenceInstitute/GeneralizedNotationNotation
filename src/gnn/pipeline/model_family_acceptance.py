@@ -352,7 +352,7 @@ def _pipeline_command(
 ) -> List[str]:
     command = [
         sys.executable,
-        "src/main.py",
+        str(REPO_ROOT / "src" / "gnn" / "main.py"),
         "--target-dir",
         str(target_dir),
         "--output-dir",
