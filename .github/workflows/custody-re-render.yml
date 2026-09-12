@@ -114,6 +114,16 @@ jobs:
           uv run --frozen python scripts/pipeline/stage_03_render.py \
             --project GeneralizedNotationNotation
 
+      # Fresh-vs-committed custody gate: compare the render this checkout
+      # just produced against the manifest as committed, BEFORE the record
+      # step overwrites it — the red run is the drift signal. [FAIL] means
+      # the committed chain is stale for HEAD (an artifact is missing, or
+      # artifacts and inputs both drifted — rerun the whole SC-22 ritual
+      # locally and commit); [WARN] is artifact-only drift with the
+      # recorded inputs fully matching, i.e. toolchain variance.
+      - name: Verify fresh render against committed custody manifest
+        run: uv run --extra dev python scripts/z_verify_fresh_render.py
+
       - name: Record render custody manifest
         run: uv run --extra dev python scripts/z_record_manuscript_render_manifest.py
 

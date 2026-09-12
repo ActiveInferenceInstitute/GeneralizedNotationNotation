@@ -56,6 +56,7 @@ __all__ = [
     "manifest_path",
     "record_render_manifest",
     "strip_volatile_tokens",
+    "verify_fresh_render",
 ]
 
 MANIFEST_VERSION = "gnn_render_manifest_v1"
@@ -190,6 +191,40 @@ def record_render_manifest(project_root: Path) -> dict:
     return manifest
 
 
+def _input_tree_issues(project_root: Path, manifest: dict) -> list[str]:
+    """One message per disagreement between the input tree and the manifest.
+
+    Shared by :func:`custody_issues` (which reports the messages verbatim)
+    and :func:`verify_fresh_render` (which reads an empty list as
+    "``render_inputs_sha256`` fully matches the tree on disk"): recorded
+    inputs that are gone or changed since the render the manifest
+    describes, and files in the tree the manifest does not record.
+    """
+    issues: list[str] = []
+    recorded_inputs: dict[str, str] = manifest.get("render_inputs_sha256", {})
+    for rel, digest in sorted(recorded_inputs.items()):
+        path = project_root / rel
+        if not path.is_file():
+            issues.append(f"{rel} is gone but the custody manifest records it")
+        elif _sha256(path) != digest:
+            issues.append(
+                f"{rel} changed after the render the custody manifest "
+                "describes — the committed PDF evidence is stale for this "
+                "prose; rerun the SC-22 ritual"
+            )
+    for path in sorted((project_root / RENDER_INPUT_ROOT).rglob("*")):
+        if (
+            path.is_file()
+            and path.relative_to(project_root).as_posix() not in recorded_inputs
+        ):
+            issues.append(
+                f"{path.relative_to(project_root).as_posix()} is not recorded "
+                "in the custody manifest — re-record with: "
+                f"{RECORD_COMMAND} (and rerun the ritual if it is new prose)"
+            )
+    return issues
+
+
 def custody_issues(project_root: Path) -> list[str]:
     """One message per disagreement between the committed chain and the manifest.
 
@@ -257,25 +292,70 @@ def custody_issues(project_root: Path) -> list[str]:
                 f"re-render and re-record: {RECORD_COMMAND}"
             )
 
-    recorded_inputs: dict[str, str] = manifest.get("render_inputs_sha256", {})
-    for rel, digest in sorted(recorded_inputs.items()):
+    issues.extend(_input_tree_issues(project_root, manifest))
+    return issues
+
+
+def verify_fresh_render(project_root: Path) -> list[str]:
+    """Classify the fresh render on disk against the committed custody manifest.
+
+    The SC-22 cron (``.github/workflows/custody-re-render.yml``) re-renders
+    at HEAD and then records a fresh manifest, but recording alone would
+    bless whatever it finds: this check runs BEFORE the record step and
+    compares the fresh bytes to the manifest as committed, so a red run
+    certifies the committed chain, not just render success. Per rendered
+    artifact:
+
+    * ``[FAIL]`` — the artifact is missing, or it drifted from the manifest
+      AND the recorded render inputs drifted too: the fresh render
+      disagrees with the committed chain in prose as well as bytes, so the
+      committed chain is stale for HEAD.
+    * ``[WARN]`` — the artifact drifted but ``render_inputs_sha256`` still
+      fully matches the tree: same inputs, different bytes, most likely
+      toolchain variance. The v1 manifest records no tool versions, so
+      input-match is the only v1-compatible discriminator; the committed
+      chain still describes this prose.
+
+    Read-only. Returns (does not raise) so the caller can print every
+    finding at once; a missing manifest is the first ``[FAIL]``.
+    """
+    try:
+        manifest = load_render_manifest(project_root)
+    except RuntimeError as exc:
+        return [f"[FAIL] {exc}"]
+
+    inputs_match = not _input_tree_issues(project_root, manifest)
+    recorded_artifacts: dict[str, str] = manifest.get("render_artifacts_sha256", {})
+    issues: list[str] = []
+    for rel in RENDERED_ARTIFACTS:
+        rel_posix = rel.as_posix()
         path = project_root / rel
+        recorded = recorded_artifacts.get(rel_posix)
         if not path.is_file():
-            issues.append(f"{rel} is gone but the custody manifest records it")
-        elif _sha256(path) != digest:
             issues.append(
-                f"{rel} changed after the render the custody manifest "
-                "describes — the committed PDF evidence is stale for this "
-                "prose; rerun the SC-22 ritual"
+                f"[FAIL] {rel_posix} is missing — the custody manifest "
+                "records it but the fresh render did not produce it"
             )
-    for path in sorted((project_root / RENDER_INPUT_ROOT).rglob("*")):
-        if (
-            path.is_file()
-            and path.relative_to(project_root).as_posix() not in recorded_inputs
-        ):
+        elif recorded is None:
             issues.append(
-                f"{path.relative_to(project_root).as_posix()} is not recorded "
-                "in the custody manifest — re-record with: "
-                f"{RECORD_COMMAND} (and rerun the ritual if it is new prose)"
+                f"[FAIL] {rel_posix} is not recorded in the custody "
+                f"manifest — re-record with: {RECORD_COMMAND}"
+            )
+        elif _sha256(path) == recorded:
+            continue
+        elif inputs_match:
+            issues.append(
+                f"[WARN] {rel_posix} differs from the committed custody "
+                "manifest but the render inputs match it exactly — same "
+                "inputs, different bytes, most likely toolchain variance "
+                "(the v1 manifest records no tool versions); the committed "
+                "chain still describes this prose"
+            )
+        else:
+            issues.append(
+                f"[FAIL] {rel_posix} drifted from the committed custody "
+                "manifest and the render inputs drifted too — the "
+                "committed chain is stale for HEAD; rerun the SC-22 ritual "
+                f"(re-record alone with {RECORD_COMMAND} cannot fix this)"
             )
     return issues
