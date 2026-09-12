@@ -197,8 +197,41 @@ window.normalizeTemplateMathJaxAria = function () {
 };
 window.MathJax.startup = Object.assign({}, window.MathJax.startup, {
   ready: function () {
+    var measuredWidth = document.documentElement.clientWidth;
+    var reflowQueued = false;
     window.MathJax.startup.defaultReady();
-    window.MathJax.startup.promise.then(window.normalizeTemplateMathJaxAria);
+    window.templateMathJaxReflowPromise = window.MathJax.startup.promise.then(
+      window.normalizeTemplateMathJaxAria
+    );
+    function reflowDisplayMath() {
+      if (reflowQueued || document.documentElement.clientWidth === measuredWidth) return;
+      reflowQueued = true;
+      window.templateMathJaxReflowPromise = window.templateMathJaxReflowPromise
+        .catch(function () { /* A later resize may retry a failed render. */ })
+        .then(async function () {
+          var width = document.documentElement.clientWidth;
+          try {
+            // MathJax 4 MathItem.STATE.METRICS = 110. The default RERENDER
+            // state retains old container metrics and cannot reflow on zoom.
+            await window.MathJax.startup.document.rerenderPromise(110);
+            window.normalizeTemplateMathJaxAria();
+            window.templateMathJaxReflowError = null;
+          } catch (error) {
+            window.templateMathJaxReflowError = String(error);
+            console.error("MathJax viewport reflow failed", error);
+            throw error;
+          } finally {
+            measuredWidth = width;
+            reflowQueued = false;
+          }
+        })
+        .then(reflowDisplayMath);
+      // Keep failure observable to callers without an unhandled rejection.
+      window.templateMathJaxReflowPromise.catch(function () {});
+    }
+    window.addEventListener("resize", reflowDisplayMath);
+    // Also cover a resize that happened during the initial asynchronous render.
+    window.templateMathJaxReflowPromise.then(reflowDisplayMath);
   }
 });
 </script>
@@ -564,6 +597,12 @@ mjx-container[display="true"] {
 }
 
 @media (min-width: 1000px) {
+  /* Wide figure links stay within the viewport but extend beyond the prose
+     column. Do not clip their labels at the narrower body boundary. */
+  body {
+    overflow-x: visible;
+  }
+
   .figure-full-size-link {
     left: 50%;
     max-width: none;
@@ -725,9 +764,9 @@ visualization, execution, and analysis.</figcaption>
 class="citation"
 data-cites="tbl:pipeline_steps">[@tbl:pipeline_steps]</span>; each row
 names a step and the transformation it owns within the 0–24 range.</p>
-<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable table: The pipeline steps, their thin orchestrator modules, and their purposes, read from src/STEP_INDEX.md ."><table id="tbl:pipeline_steps" data-responsive-table="true">
+<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable table: The pipeline steps, their thin orchestrator modules, and their purposes, read from src/gnn/STEP_INDEX.md ."><table id="tbl:pipeline_steps" data-responsive-table="true">
 <caption>The pipeline steps, their thin orchestrator modules, and their
-purposes, read from <code>src/STEP_INDEX.md</code>.</caption>
+purposes, read from <code>src/gnn/STEP_INDEX.md</code>.</caption>
 <colgroup>
 <col style="width: 40%" />
 <col style="width: 30%" />
@@ -870,7 +909,7 @@ purposes, read from <code>src/STEP_INDEX.md</code>.</caption>
 </table></div>
 <p>This staged design keeps the architecture modular. The implementation
 is organized into 44 source packages, one cluster of responsibilities
-per concern, and is documented across 618 documentation files so that
+per concern, and is documented across 624 documentation files so that
 each step’s contract, inputs, and outputs are specified independently of
 the others. New backends or analyses attach to the graph by declaring
 their dependencies rather than by editing a monolith, and the

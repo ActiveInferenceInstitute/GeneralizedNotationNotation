@@ -386,7 +386,7 @@ transformation it owns within the 0--24 range.
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3000}}@{}}
 \caption{The pipeline steps, their thin orchestrator modules, and their
 purposes, read from
-\protect\breaktt{src/STEP\_INDEX.md}.}\label{tbl:pipeline_steps}\tabularnewline
+\protect\breaktt{src/gnn/STEP\_INDEX.md}.}\label{tbl:pipeline_steps}\tabularnewline
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedleft
 Step
@@ -457,7 +457,7 @@ analysis \& executive reports \\
 \begin{frame}[fragile,allowframebreaks]{The Processing Pipeline}
 This staged design keeps the architecture modular. The implementation is
 organized into 44 source packages, one cluster of responsibilities per
-concern, and is documented across 618 documentation files so that each
+concern, and is documented across 624 documentation files so that each
 step's contract, inputs, and outputs are specified independently of the
 others. New backends or analyses attach to the graph by declaring their
 dependencies rather than by editing a monolith, and the deterministic

@@ -286,10 +286,10 @@ given below.
 \begin{frame}[fragile,allowframebreaks]{Rendering to Multiple Backends}
 \begin{longtable}[]{@{}lll@{}}
 \caption{Render targets in
-\protect\breaktt{src/render/framework\_registry.py}. The \emph{Executes}
-column is the registry's own \protect\breaktt{supports\_execution} flag:
-a render-only backend has no Step-12
-executor.}\label{tbl:backend_registry}\tabularnewline
+\protect\breaktt{src/gnn/render/framework\_registry.py}. The
+\emph{Executes} column is the registry's own
+\protect\breaktt{supports\_execution} flag: a render-only backend has no
+Step-12 executor.}\label{tbl:backend_registry}\tabularnewline
 \toprule\noalign{}
 Registry key & Backend & Executes \\
 \midrule\noalign{}
@@ -414,7 +414,7 @@ Auto-Injection}
 \protect\phantomsection\label{reproducibility-and-auto-injection}
 Every count reported in this manuscript is emitted by the producer
 \breaktt{scripts/z\_generate\_manuscript\_variables.py} from the
-repository state at commit 043d5b96d, not typed by hand. The producer
+repository state at commit d3c391a78, not typed by hand. The producer
 reads that commit's source surfaces directly --- the step modules, the
 source tree, the model-family manifest, and the framework registry ---
 together with the project's maintained ledgers, notably the Model

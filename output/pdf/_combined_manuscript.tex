@@ -575,7 +575,7 @@ transformation it owns within the 0--24 range.
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3000}}@{}}
 \caption{The pipeline steps, their thin orchestrator modules, and their
 purposes, read from
-\protect\breaktt{src/STEP\_INDEX.md}.}\label{tbl:pipeline_steps}\tabularnewline
+\protect\breaktt{src/gnn/STEP\_INDEX.md}.}\label{tbl:pipeline_steps}\tabularnewline
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedleft
 Step
@@ -644,7 +644,7 @@ analysis \& executive reports \\
 
 This staged design keeps the architecture modular. The implementation is
 organized into 44 source packages, one cluster of responsibilities per
-concern, and is documented across 618 documentation files so that each
+concern, and is documented across 624 documentation files so that each
 step's contract, inputs, and outputs are specified independently of the
 others. New backends or analyses attach to the graph by declaring their
 dependencies rather than by editing a monolith, and the deterministic
@@ -749,10 +749,10 @@ given below.
 
 \begin{longtable}[]{@{}lll@{}}
 \caption{Render targets in
-\protect\breaktt{src/render/framework\_registry.py}. The \emph{Executes}
-column is the registry's own \protect\breaktt{supports\_execution} flag:
-a render-only backend has no Step-12
-executor.}\label{tbl:backend_registry}\tabularnewline
+\protect\breaktt{src/gnn/render/framework\_registry.py}. The
+\emph{Executes} column is the registry's own
+\protect\breaktt{supports\_execution} flag: a render-only backend has no
+Step-12 executor.}\label{tbl:backend_registry}\tabularnewline
 \toprule\noalign{}
 Registry key & Backend & Executes \\
 \midrule\noalign{}
@@ -862,7 +862,7 @@ Auto-Injection}\label{reproducibility-and-auto-injection}
 
 Every count reported in this manuscript is emitted by the producer
 \breaktt{scripts/z\_generate\_manuscript\_variables.py} from the
-repository state at commit 043d5b96d, not typed by hand. The producer
+repository state at commit d3c391a78, not typed by hand. The producer
 reads that commit's source surfaces directly --- the step modules, the
 source tree, the model-family manifest, and the framework registry ---
 together with the project's maintained ledgers, notably the Model
@@ -888,7 +888,7 @@ the build if a section reintroduces a literal that a token already owns.
 This section reports what the project has actually produced and how each
 quantitative claim is grounded. Every number below is substituted at
 render time from the deterministic producer, which reads the repository
-state at commit 043d5b96d, so each figure here is regenerated from the
+state at commit d3c391a78, so each figure here is regenerated from the
 artifacts it describes rather than transcribed.
 
 \subsection{Model-Family Coverage}\label{model-family-coverage}
@@ -918,8 +918,8 @@ enumerated below.
 \caption{Model families declared in
 \protect\breaktt{input/model\_family\_manifest.json} and the frameworks
 each family targets. Capability splits in the Description column are
-generated from \protect\breaktt{src/render/framework\_registry.py}, not
-authored in the manifest.}\label{tbl:model_families}\tabularnewline
+generated from \protect\breaktt{src/gnn/render/framework\_registry.py},
+not authored in the manifest.}\label{tbl:model_families}\tabularnewline
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Family
@@ -1024,7 +1024,7 @@ contract exists to prevent.
 
 The repository's scale is itself evidence of the surface that the gates
 and pipeline cover, and it is reported in fig.~\ref{fig:repo_metrics}
-directly from the tracked files at commit 043d5b96d.
+directly from the tracked files at commit d3c391a78.
 
 \begin{figure}
 \centering
@@ -1034,14 +1034,13 @@ tool surface --- measured from the tracked files at the commit the
 producer stamps.}\label{fig:repo_metrics}
 \end{figure}
 
-The test suite comprises 373 test files containing 4155 test functions,
-exercising a source base of 589 Python files across 44 packages (195288
+The test suite comprises 450 test files containing 4808 test functions,
+exercising a source base of 672 Python files across 44 packages (196624
 lines of source). The Model Context Protocol surface --- which exposes
 GNN's capabilities to external agents and tools --- provides 141 tools
-across 32 modules. The pipeline itself runs as 25 steps (0--24), and
-1991 figure artifacts from the rendering of figures, models, and reports
-are committed under \texttt{output/}, of which 6 are the manuscript's
-own.
+across 32 modules. The pipeline itself runs as 25 steps (0--24), and 6
+figure artifacts from the rendering of figures, models, and reports are
+committed under \texttt{output/}, of which 6 are the manuscript's own.
 
 \subsection{Claim Discipline}\label{claim-discipline}
 
@@ -1208,9 +1207,9 @@ a missing copy degrades rather than failing the build.
 
 Because the variables file is regenerated before rendering, the counts
 in the rendered PDF track the repository state at the commit recorded in
-\breaktt{output/data/manuscript\_variables.json} (043d5b96d): a code
-change that alters, for example, the test inventory (373 test files,
-4155 test functions) propagates into the prose on the next regeneration
+\breaktt{output/data/manuscript\_variables.json} (d3c391a78): a code
+change that alters, for example, the test inventory (450 test files,
+4808 test functions) propagates into the prose on the next regeneration
 without any manual editing.
 
 \subsection{Reproducibility Contract}\label{reproducibility-contract}
@@ -1371,7 +1370,7 @@ separately so that the boundary between hand-written source and
 reproducible output stays explicit.
 
 The \texttt{src/} tree is the executable core of GNN. It is organized
-into 44 Python packages spanning 589 source files and roughly 195288
+into 44 Python packages spanning 672 source files and roughly 196624
 lines of code. Alongside these packages sit the 25 top-level step
 modules (0--24) that implement the numbered pipeline as thin
 orchestrators delegating into the packages, each module owning one stage
@@ -1403,14 +1402,14 @@ of reproduction commands keeps reported numbers bound to what the code
 actually computes.
 
 The \texttt{docs/} tree is the prose and reference surface, comprising
-618 files of specification, tutorial, and design documentation for the
+624 files of specification, tutorial, and design documentation for the
 GNN language and its Active Inference grounding \citep{gnn2023}. It is
 the place to verify that a manuscript statement about GNN syntax or
 semantics matches the documented language rather than a convenient
 paraphrase.
 
 The \texttt{output/} tree collects per-step pipeline artifacts: the data
-dumps, intermediate representations, validation reports, and the 1991
+dumps, intermediate representations, validation reports, and the 6
 figure artifacts committed under it. Everything here is disposable and
 reproducible from the surfaces above, so it should be read as evidence
 of a run rather than as authored source. Notably,

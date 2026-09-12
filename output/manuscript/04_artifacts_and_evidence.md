@@ -1,6 +1,6 @@
 # Artifacts and Evidence {#sec:artifacts_evidence}
 
-This section reports what the project has actually produced and how each quantitative claim is grounded. Every number below is substituted at render time from the deterministic producer, which reads the repository state at commit 043d5b96d, so each figure here is regenerated from the artifacts it describes rather than transcribed.
+This section reports what the project has actually produced and how each quantitative claim is grounded. Every number below is substituted at render time from the deterministic producer, which reads the repository state at commit d3c391a78, so each figure here is regenerated from the artifacts it describes rather than transcribed.
 
 ## Model-Family Coverage
 
@@ -17,7 +17,7 @@ GNN ships a curated corpus of model families that exercise the language across t
 | `structured` | pymdp | Structured factor graph and posterior fixtures. |
 | `gridworld` | pymdp, rxinfer, activeinference_jl | Gridworld POMDP fixture used for cross-framework acceptance checks. |
 | `scaling-study` | pymdp | PyMDP scaling-study fixtures, sampled conservatively for acceptance. |
-: Model families declared in `input/model_family_manifest.json` and the frameworks each family targets. Capability splits in the Description column are generated from `src/render/framework_registry.py`, not authored in the manifest. {#tbl:model_families}
+: Model families declared in `input/model_family_manifest.json` and the frameworks each family targets. Capability splits in the Description column are generated from `src/gnn/render/framework_registry.py`, not authored in the manifest. {#tbl:model_families}
 
 The family-by-framework structure is shown in @fig:family_matrix, which renders the coverage matrix directly from the family registry rather than from a hand-maintained table.
 
@@ -37,11 +37,11 @@ Both gates are stated here as commands you can run, not as asserted pass counts.
 
 ## Repository Scale
 
-The repository's scale is itself evidence of the surface that the gates and pipeline cover, and it is reported in @fig:repo_metrics directly from the tracked files at commit 043d5b96d.
+The repository's scale is itself evidence of the surface that the gates and pipeline cover, and it is reported in @fig:repo_metrics directly from the tracked files at commit d3c391a78.
 
 ![Repository-scale metrics — source packages, test files, and tool surface — measured from the tracked files at the commit the producer stamps.](../output/figures/gnn_repo_metrics.png){#fig:repo_metrics width=80%}
 
-The test suite comprises 373 test files containing 4155 test functions, exercising a source base of 589 Python files across 44 packages (195288 lines of source). The Model Context Protocol surface — which exposes GNN's capabilities to external agents and tools — provides 141 tools across 32 modules. The pipeline itself runs as 25 steps (0–24), and 1991 figure artifacts from the rendering of figures, models, and reports are committed under `output/`, of which 6 are the manuscript's own.
+The test suite comprises 450 test files containing 4808 test functions, exercising a source base of 672 Python files across 44 packages (196624 lines of source). The Model Context Protocol surface — which exposes GNN's capabilities to external agents and tools — provides 141 tools across 32 modules. The pipeline itself runs as 25 steps (0–24), and 6 figure artifacts from the rendering of figures, models, and reports are committed under `output/`, of which 6 are the manuscript's own.
 
 ## Claim Discipline
 

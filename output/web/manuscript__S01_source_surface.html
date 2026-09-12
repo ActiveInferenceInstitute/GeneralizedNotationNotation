@@ -532,6 +532,12 @@ mjx-container[display="true"] {
 }
 
 @media (min-width: 1000px) {
+  /* Wide figure links stay within the viewport but extend beyond the prose
+     column. Do not clip their labels at the narrower body boundary. */
+  body {
+    overflow-x: visible;
+  }
+
   .figure-full-size-link {
     left: 50%;
     max-width: none;
@@ -567,8 +573,8 @@ version control; the generated artifacts it produces are described
 separately so that the boundary between hand-written source and
 reproducible output stays explicit.</p>
 <p>The <code>src/</code> tree is the executable core of GNN. It is
-organized into 44 Python packages spanning 589 source files and roughly
-195288 lines of code. Alongside these packages sit the 25 top-level step
+organized into 44 Python packages spanning 672 source files and roughly
+196624 lines of code. Alongside these packages sit the 25 top-level step
 modules (0–24) that implement the numbered pipeline as thin
 orchestrators delegating into the packages, each module owning one stage
 of the progression from a parsed GNN text model through visualization,
@@ -596,16 +602,16 @@ values consumed throughout the manuscript. Treating these scripts as the
 source of reproduction commands keeps reported numbers bound to what the
 code actually computes.</p>
 <p>The <code>docs/</code> tree is the prose and reference surface,
-comprising 618 files of specification, tutorial, and design
+comprising 624 files of specification, tutorial, and design
 documentation for the GNN language and its Active Inference grounding
 [gnn2023]. It is the place to verify that a manuscript statement about
 GNN syntax or semantics matches the documented language rather than a
 convenient paraphrase.</p>
 <p>The <code>output/</code> tree collects per-step pipeline artifacts:
 the data dumps, intermediate representations, validation reports, and
-the 1991 figure artifacts committed under it. Everything here is
-disposable and reproducible from the surfaces above, so it should be
-read as evidence of a run rather than as authored source. Notably,
+the 6 figure artifacts committed under it. Everything here is disposable
+and reproducible from the surfaces above, so it should be read as
+evidence of a run rather than as authored source. Notably,
 <code>output/data/manuscript_variables.json</code> is where the
 manuscript’s substituted token values are materialized.</p>
 <h2 id="authored-source-versus-generated-output">Authored Source Versus

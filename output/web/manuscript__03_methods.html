@@ -532,6 +532,12 @@ mjx-container[display="true"] {
 }
 
 @media (min-width: 1000px) {
+  /* Wide figure links stay within the viewport but extend beyond the prose
+     column. Do not clip their labels at the narrower body boundary. */
+  body {
+    overflow-x: visible;
+  }
+
   .figure-full-size-link {
     left: 50%;
     max-width: none;
@@ -614,9 +620,9 @@ Each backend is addressed through a registry key that maps the abstract
 model onto that framework’s idioms for representing generative models
 and performing inference. The full mapping from registry key to backend
 is given below.</p>
-<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable table: Render targets in src/render/framework_registry.py . The Executes column is the registry’s own supports_execution fla…"><table id="tbl:backend_registry" data-responsive-table="true">
+<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable table: Render targets in src/gnn/render/framework_registry.py . The Executes column is the registry’s own supports_execution…"><table id="tbl:backend_registry" data-responsive-table="true">
 <caption>Render targets in
-<code>src/render/framework_registry.py</code>. The <em>Executes</em>
+<code>src/gnn/render/framework_registry.py</code>. The <em>Executes</em>
 column is the registry’s own <code>supports_execution</code> flag: a
 render-only backend has no Step-12 executor.</caption>
 <thead>
@@ -753,7 +759,7 @@ back to the step and model that produced it.</p>
 Auto-Injection</h2>
 <p>Every count reported in this manuscript is emitted by the producer
 <code>scripts/z_generate_manuscript_variables.py</code> from the
-repository state at commit 043d5b96d, not typed by hand. The producer
+repository state at commit d3c391a78, not typed by hand. The producer
 reads that commit’s source surfaces directly — the step modules, the
 source tree, the model-family manifest, and the framework registry —
 together with the project’s maintained ledgers, notably the Model

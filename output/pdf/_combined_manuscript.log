@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999998 (TeX Live 2026) (preloaded format=xelatex 2026.3.1)  6 SEP 2026 21:26
+This is XeTeX, Version 3.141592653-2.6-0.999998 (TeX Live 2026) (preloaded format=xelatex 2026.3.1)  11 SEP 2026 21:14
 entering extended mode
  %&-line parsing enabled.
 **_combined_manuscript.tex
@@ -1269,13 +1269,13 @@ File: ../figures/gnn_repo_metrics.png Graphic file (type bmp)
 <../figures/gnn_repo_metrics.png>
  [16] [17]
 [18]
-Underfull \hbox (badness 1019) in paragraph at lines 1209--1215
+Underfull \hbox (badness 1019) in paragraph at lines 1208--1214
 \TU/lmr/m/n/10 the repository state at the commit recorded in \TU/lmtt/m/n/10 o
 utput/data/manuscript_variables.json
  []
 
 
-Underfull \hbox (badness 3657) in paragraph at lines 1224--1228
+Underfull \hbox (badness 3657) in paragraph at lines 1223--1227
 []\TU/lmr/m/n/10 Keep generated outputs under \TU/lmtt/m/n/10 output/ \TU/lmr/m
 /n/10 and maintained manuscript source under
  []
@@ -1284,7 +1284,7 @@ Underfull \hbox (badness 3657) in paragraph at lines 1224--1228
 ignored: Infinite glue shrinkage found in box being split [24]
 ignored: In
 finite glue shrinkage found in box being split [25]
-Underfull \hbox (badness 1852) in paragraph at lines 1602--1616
+Underfull \hbox (badness 1852) in paragraph at lines 1601--1615
 \TU/lmtt/m/n/10 elihoodMatrix\TU/lmr/m/n/10 , \TU/lmtt/m/n/10 B=TransitionMatri
 x\TU/lmr/m/n/10 , \TU/lmtt/m/n/10 C=LogPreferenceVector\TU/lmr/m/n/10 , \TU/lmt
 t/m/n/10 D=PriorOverHiddenStates\TU/lmr/m/n/10 ,
@@ -1299,7 +1299,7 @@ L3 programming layer <2026-01-19>
 Here is how much of TeX's memory you used:
  23612 strings out of 469709
  429433 string characters out of 5466024
- 1044615 words of memory out of 5000000
+ 1044627 words of memory out of 5000000
  51949 multiletter control sequences out of 15000+600000
  630226 words of font info for 74 fonts, out of 8000000 for 9000
  319 hyphenation exceptions out of 8191

@@ -220,7 +220,7 @@
 This section reports what the project has actually produced and how each
 quantitative claim is grounded. Every number below is substituted at
 render time from the deterministic producer, which reads the repository
-state at commit 043d5b96d, so each figure here is regenerated from the
+state at commit d3c391a78, so each figure here is regenerated from the
 artifacts it describes rather than transcribed.
 \end{frame}
 
@@ -257,8 +257,8 @@ are enumerated below.
 \caption{Model families declared in
 \protect\breaktt{input/model\_family\_manifest.json} and the frameworks
 each family targets. Capability splits in the Description column are
-generated from \protect\breaktt{src/render/framework\_registry.py}, not
-authored in the manifest.}\label{tbl:model_families}\tabularnewline
+generated from \protect\breaktt{src/gnn/render/framework\_registry.py},
+not authored in the manifest.}\label{tbl:model_families}\tabularnewline
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Family
@@ -381,7 +381,7 @@ contract exists to prevent.
 \protect\phantomsection\label{repository-scale}
 The repository's scale is itself evidence of the surface that the gates
 and pipeline cover, and it is reported in fig.~\ref{fig:repo_metrics}
-directly from the tracked files at commit 043d5b96d.
+directly from the tracked files at commit d3c391a78.
 
 \end{frame}
 
@@ -397,14 +397,13 @@ producer stamps.}\label{fig:repo_metrics}
 \end{frame}
 
 \begin{frame}[fragile,allowframebreaks]{Repository Scale}
-The test suite comprises 373 test files containing 4155 test functions,
-exercising a source base of 589 Python files across 44 packages (195288
+The test suite comprises 450 test files containing 4808 test functions,
+exercising a source base of 672 Python files across 44 packages (196624
 lines of source). The Model Context Protocol surface --- which exposes
 GNN's capabilities to external agents and tools --- provides 141 tools
-across 32 modules. The pipeline itself runs as 25 steps (0--24), and
-1991 figure artifacts from the rendering of figures, models, and reports
-are committed under \texttt{output/}, of which 6 are the manuscript's
-own.
+across 32 modules. The pipeline itself runs as 25 steps (0--24), and 6
+figure artifacts from the rendering of figures, models, and reports are
+committed under \texttt{output/}, of which 6 are the manuscript's own.
 \end{frame}
 
 \begin{frame}[fragile,allowframebreaks]{Claim Discipline}

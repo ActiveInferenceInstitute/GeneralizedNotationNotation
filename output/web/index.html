@@ -284,8 +284,41 @@ window.normalizeTemplateMathJaxAria = function () {
 };
 window.MathJax.startup = Object.assign({}, window.MathJax.startup, {
   ready: function () {
+    var measuredWidth = document.documentElement.clientWidth;
+    var reflowQueued = false;
     window.MathJax.startup.defaultReady();
-    window.MathJax.startup.promise.then(window.normalizeTemplateMathJaxAria);
+    window.templateMathJaxReflowPromise = window.MathJax.startup.promise.then(
+      window.normalizeTemplateMathJaxAria
+    );
+    function reflowDisplayMath() {
+      if (reflowQueued || document.documentElement.clientWidth === measuredWidth) return;
+      reflowQueued = true;
+      window.templateMathJaxReflowPromise = window.templateMathJaxReflowPromise
+        .catch(function () { /* A later resize may retry a failed render. */ })
+        .then(async function () {
+          var width = document.documentElement.clientWidth;
+          try {
+            // MathJax 4 MathItem.STATE.METRICS = 110. The default RERENDER
+            // state retains old container metrics and cannot reflow on zoom.
+            await window.MathJax.startup.document.rerenderPromise(110);
+            window.normalizeTemplateMathJaxAria();
+            window.templateMathJaxReflowError = null;
+          } catch (error) {
+            window.templateMathJaxReflowError = String(error);
+            console.error("MathJax viewport reflow failed", error);
+            throw error;
+          } finally {
+            measuredWidth = width;
+            reflowQueued = false;
+          }
+        })
+        .then(reflowDisplayMath);
+      // Keep failure observable to callers without an unhandled rejection.
+      window.templateMathJaxReflowPromise.catch(function () {});
+    }
+    window.addEventListener("resize", reflowDisplayMath);
+    // Also cover a resize that happened during the initial asynchronous render.
+    window.templateMathJaxReflowPromise.then(reflowDisplayMath);
   }
 });
 </script>
@@ -651,6 +684,12 @@ mjx-container[display="true"] {
 }
 
 @media (min-width: 1000px) {
+  /* Wide figure links stay within the viewport but extend beyond the prose
+     column. Do not clip their labels at the narrower body boundary. */
+  body {
+    overflow-x: visible;
+  }
+
   .figure-full-size-link {
     left: 50%;
     max-width: none;
@@ -1119,9 +1158,10 @@ through visualization, execution, and analysis.</figcaption>
 <p>The per-step responsibilities are enumerated in tbl. <a
 href="#tbl:pipeline_steps">1</a>; each row names a step and the
 transformation it owns within the 0–24 range.</p>
-<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable table: Table 1: The pipeline steps, their thin orchestrator modules, and their purposes, read from src/STEP_INDEX.md ."><table id="tbl:pipeline_steps" data-responsive-table="true">
+<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable table: Table 1: The pipeline steps, their thin orchestrator modules, and their purposes, read from src/gnn/STEP_INDEX.md ."><table id="tbl:pipeline_steps" data-responsive-table="true">
 <caption>Table 1: The pipeline steps, their thin orchestrator modules,
-and their purposes, read from <code>src/STEP_INDEX.md</code>.</caption>
+and their purposes, read from
+<code>src/gnn/STEP_INDEX.md</code>.</caption>
 <colgroup>
 <col style="width: 40%" />
 <col style="width: 30%" />
@@ -1264,7 +1304,7 @@ and their purposes, read from <code>src/STEP_INDEX.md</code>.</caption>
 </table></div>
 <p>This staged design keeps the architecture modular. The implementation
 is organized into 44 source packages, one cluster of responsibilities
-per concern, and is documented across 618 documentation files so that
+per concern, and is documented across 624 documentation files so that
 each step’s contract, inputs, and outputs are specified independently of
 the others. New backends or analyses attach to the graph by declaring
 their dependencies rather than by editing a monolith, and the
@@ -1366,9 +1406,9 @@ backend is addressed through a registry key that maps the abstract model
 onto that framework’s idioms for representing generative models and
 performing inference. The full mapping from registry key to backend is
 given below.</p>
-<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable table: Table 2: Render targets in src/render/framework_registry.py . The Executes column is the registry’s own supports_exec…"><table id="tbl:backend_registry" data-responsive-table="true">
+<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable table: Table 2: Render targets in src/gnn/render/framework_registry.py . The Executes column is the registry’s own supports_…"><table id="tbl:backend_registry" data-responsive-table="true">
 <caption>Table 2: Render targets in
-<code>src/render/framework_registry.py</code>. The <em>Executes</em>
+<code>src/gnn/render/framework_registry.py</code>. The <em>Executes</em>
 column is the registry’s own <code>supports_execution</code> flag: a
 render-only backend has no Step-12 executor.</caption>
 <thead>
@@ -1517,7 +1557,7 @@ class="header-section-number">4.7</span> Reproducibility and
 Auto-Injection</h2>
 <p>Every count reported in this manuscript is emitted by the producer
 <code>scripts/z_generate_manuscript_variables.py</code> from the
-repository state at commit 043d5b96d, not typed by hand. The producer
+repository state at commit d3c391a78, not typed by hand. The producer
 reads that commit’s source surfaces directly — the step modules, the
 source tree, the model-family manifest, and the framework registry —
 together with the project’s maintained ledgers, notably the Model
@@ -1542,7 +1582,7 @@ class="header-section-number">5</span> Artifacts and Evidence</h1>
 <p>This section reports what the project has actually produced and how
 each quantitative claim is grounded. Every number below is substituted
 at render time from the deterministic producer, which reads the
-repository state at commit 043d5b96d, so each figure here is regenerated
+repository state at commit d3c391a78, so each figure here is regenerated
 from the artifacts it describes rather than transcribed.</p>
 <h2 data-number="5.1" id="model-family-coverage"><span
 class="header-section-number">5.1</span> Model-Family Coverage</h2>
@@ -1569,7 +1609,7 @@ enumerated below.</p>
 <caption>Table 3: Model families declared in
 <code>input/model_family_manifest.json</code> and the frameworks each
 family targets. Capability splits in the Description column are
-generated from <code>src/render/framework_registry.py</code>, not
+generated from <code>src/gnn/render/framework_registry.py</code>, not
 authored in the manifest.</caption>
 <colgroup>
 <col style="width: 33%" />
@@ -1699,7 +1739,7 @@ class="header-section-number">5.3</span> Repository Scale</h2>
 <p>The repository’s scale is itself evidence of the surface that the
 gates and pipeline cover, and it is reported in fig. <a
 href="#fig:repo_metrics">6</a> directly from the tracked files at commit
-043d5b96d.</p>
+d3c391a78.</p>
 <figure id="fig:repo_metrics">
 <a class="figure-full-size-link" href="../figures/gnn_repo_metrics.png" target="_blank" rel="noopener" aria-label="Open full-size Figure 6, Repository-scale metrics — source packages, test files"><img src="../figures/gnn_repo_metrics.png" style="width:80.0%"
 alt="Horizontal bar chart on a logarithmic axis of repository-scale counts: pipeline steps, model families, registered backends, execution backends, MCP tools, source packages, test files, example models and documentation files. Each bar is annotated with its exact value; all values come from output/data/manuscript_variables.json." /><span class="figure-full-size-label" aria-hidden="true">Open full-size figure</span></a>
@@ -1707,12 +1747,12 @@ alt="Horizontal bar chart on a logarithmic axis of repository-scale counts: pipe
 source packages, test files, and tool surface — measured from the
 tracked files at the commit the producer stamps.</figcaption>
 </figure>
-<p>The test suite comprises 373 test files containing 4155 test
-functions, exercising a source base of 589 Python files across 44
-packages (195288 lines of source). The Model Context Protocol surface —
+<p>The test suite comprises 450 test files containing 4808 test
+functions, exercising a source base of 672 Python files across 44
+packages (196624 lines of source). The Model Context Protocol surface —
 which exposes GNN’s capabilities to external agents and tools — provides
 141 tools across 32 modules. The pipeline itself runs as 25 steps
-(0–24), and 1991 figure artifacts from the rendering of figures, models,
+(0–24), and 6 figure artifacts from the rendering of figures, models,
 and reports are committed under <code>output/</code>, of which 6 are the
 manuscript’s own.</p>
 <h2 data-number="5.4" id="claim-discipline"><span
@@ -1840,8 +1880,8 @@ so a missing copy degrades rather than failing the build.</p>
 <p>Because the variables file is regenerated before rendering, the
 counts in the rendered PDF track the repository state at the commit
 recorded in <code>output/data/manuscript_variables.json</code>
-(043d5b96d): a code change that alters, for example, the test inventory
-(373 test files, 4155 test functions) propagates into the prose on the
+(d3c391a78): a code change that alters, for example, the test inventory
+(450 test files, 4808 test functions) propagates into the prose on the
 next regeneration without any manual editing.</p>
 <h2 data-number="6.4" id="reproducibility-contract"><span
 class="header-section-number">6.4</span> Reproducibility Contract</h2>
@@ -1994,8 +2034,8 @@ version control; the generated artifacts it produces are described
 separately so that the boundary between hand-written source and
 reproducible output stays explicit.</p>
 <p>The <code>src/</code> tree is the executable core of GNN. It is
-organized into 44 Python packages spanning 589 source files and roughly
-195288 lines of code. Alongside these packages sit the 25 top-level step
+organized into 44 Python packages spanning 672 source files and roughly
+196624 lines of code. Alongside these packages sit the 25 top-level step
 modules (0–24) that implement the numbered pipeline as thin
 orchestrators delegating into the packages, each module owning one stage
 of the progression from a parsed GNN text model through visualization,
@@ -2023,7 +2063,7 @@ values consumed throughout the manuscript. Treating these scripts as the
 source of reproduction commands keeps reported numbers bound to what the
 code actually computes.</p>
 <p>The <code>docs/</code> tree is the prose and reference surface,
-comprising 618 files of specification, tutorial, and design
+comprising 624 files of specification, tutorial, and design
 documentation for the GNN language and its Active Inference grounding
 <span class="citation" data-cites="gnn2023">(<a href="#ref-gnn2023"
 role="doc-biblioref">Smékal and Friedman 2023</a>)</span>. It is the
@@ -2032,9 +2072,9 @@ semantics matches the documented language rather than a convenient
 paraphrase.</p>
 <p>The <code>output/</code> tree collects per-step pipeline artifacts:
 the data dumps, intermediate representations, validation reports, and
-the 1991 figure artifacts committed under it. Everything here is
-disposable and reproducible from the surfaces above, so it should be
-read as evidence of a run rather than as authored source. Notably,
+the 6 figure artifacts committed under it. Everything here is disposable
+and reproducible from the surfaces above, so it should be read as
+evidence of a run rather than as authored source. Notably,
 <code>output/data/manuscript_variables.json</code> is where the
 manuscript’s substituted token values are materialized.</p>
 <h2 data-number="8.1" id="authored-source-versus-generated-output"><span
