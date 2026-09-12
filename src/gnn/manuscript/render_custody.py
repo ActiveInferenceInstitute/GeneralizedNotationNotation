@@ -38,7 +38,10 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
+import subprocess
 import sys
+from collections.abc import Callable
 from pathlib import Path
 
 if str(Path(__file__).resolve().parents[3]) not in sys.path:  # pragma: no cover
@@ -310,11 +313,19 @@ def verify_fresh_render(project_root: Path) -> list[str]:
       AND the recorded render inputs drifted too: the fresh render
       disagrees with the committed chain in prose as well as bytes, so the
       committed chain is stale for HEAD.
-    * ``[WARN]`` — the artifact drifted but ``render_inputs_sha256`` still
-      fully matches the tree: same inputs, different bytes, most likely
+    * ``[WARN]`` — the artifact drifted but the committed render inputs
+      still describe the tree: same inputs, different bytes, most likely
       toolchain variance. The v1 manifest records no tool versions, so
       input-match is the only v1-compatible discriminator; the committed
       chain still describes this prose.
+
+    Commit-relative stamps are normalized on both sides before digesting:
+    the producer abbreviates ``GNN_GIT_COMMIT`` with git's repo-size
+    heuristic, so a fresh CI clone stamps 7 chars where the recording
+    checkout stamped 9 — those stamps are content-equal, and only their
+    length differs. The committed side is re-derived from ``git show`` at
+    HEAD with the manifest's stamp masked; outside a git repo (the unit
+    fixtures) the stored raw digest is used when the text carries no stamp.
 
     Read-only. Returns (does not raise) so the caller can print every
     finding at once; a missing manifest is the first ``[FAIL]``.
@@ -323,6 +334,35 @@ def verify_fresh_render(project_root: Path) -> list[str]:
         manifest = load_render_manifest(project_root)
     except RuntimeError as exc:
         return [f"[FAIL] {exc}"]
+
+    stamp = manifest.get("counts_describe_commit") or ""
+    stamps = (stamp,) if stamp else ()
+
+    def _normalized(rel: Path) -> str | None:
+        path = project_root / rel
+        return _normalized_text_digest(path, stamps) if path.is_file() else None
+
+    def _committed_normalized(rel_posix: str, recorded: str | None) -> str | None:
+        """Digest of the artifact AS COMMITTED, at the fresh side's normalization.
+
+        With git, HEAD's bytes are re-digested at the fresh side's
+        normalization. Without git (the unit fixtures) the committed bytes
+        are unknowable once the disk file is mutated, so the STORED digest —
+        which is exactly what was committed — is the committed side; the
+        fresh side's stamp masking is a no-op there (fixture text carries no
+        hex runs), so raw-vs-normalized agree.
+        """
+        committed = _git_show(project_root, rel_posix)
+        if committed is not None:
+            return _normalized_text_digest_from_bytes(committed, stamps)
+        path = project_root / rel_posix
+        if (
+            stamps
+            and path.is_file()
+            and _text_contains_stamp(path.read_text(encoding="utf-8"), stamp)
+        ):
+            return _normalized_text_digest(path, stamps)
+        return recorded or (_sha256(path) if path.is_file() else None)
 
     inputs_match = not _input_tree_issues(project_root, manifest)
     recorded_artifacts: dict[str, str] = manifest.get("render_artifacts_sha256", {})
@@ -341,7 +381,7 @@ def verify_fresh_render(project_root: Path) -> list[str]:
                 f"[FAIL] {rel_posix} is not recorded in the custody "
                 f"manifest — re-record with: {RECORD_COMMAND}"
             )
-        elif _sha256(path) == recorded:
+        elif _committed_normalized(rel_posix, recorded) == _normalized(rel):
             continue
         elif inputs_match:
             issues.append(
@@ -359,3 +399,71 @@ def verify_fresh_render(project_root: Path) -> list[str]:
                 f"(re-record alone with {RECORD_COMMAND} cannot fix this)"
             )
     return issues
+
+
+def _text_contains_stamp(text: str, stamp: str) -> bool:
+    """Whether any hex run in ``text`` matches ``stamp`` at any abbreviation."""
+    return any(
+        token == stamp or token.startswith(stamp) or stamp.startswith(token)
+        for token in _COMMIT_HASH_RE.findall(text)
+    )
+
+
+def _git_show(project_root: Path, rel_posix: str) -> bytes | None:
+    """The file's bytes as committed at HEAD, or ``None`` outside git."""
+    try:
+        result = subprocess.run(
+            ["git", "-C", str(project_root), "show", f"HEAD:{rel_posix}"],
+            capture_output=True,
+            check=False,
+            timeout=30,
+        )
+    except (OSError, subprocess.SubprocessError):  # pragma: no cover - env
+        return None
+    if result.returncode != 0:
+        return None
+    return result.stdout
+
+
+def _normalized_text_digest(path: Path, stamps: tuple[str, ...]) -> str:
+    """sha256 of a text file with commit-relative stamps masked out.
+
+    The producer stamps ``GNN_GIT_COMMIT`` (a ``git rev-parse --short``
+    abbreviation) into the hydrated sections, and abbreviation length varies
+    with git's repo-size heuristic: the same commit abbreviates to 7 chars
+    in a shallow CI clone and 9 locally. Those stamps are the ONLY
+    commit-relative content in the hydrated inputs, so the fresh-vs-committed
+    comparison normalizes them before digesting — otherwise every cron run
+    at a HEAD abbreviating differently from the recording checkout is a
+    false joint-drift ``[FAIL]``. Any hex run matching one of ``stamps``
+    (or a stamp's prefix/suffix — same abbreviation, different length)
+    becomes a fixed placeholder; everything else digests verbatim.
+    """
+    return _normalized_text_digest_from_bytes(path.read_bytes(), stamps)
+
+
+def _normalized_text_digest_from_bytes(data: bytes, stamps: tuple[str, ...]) -> str:
+    """:func:`_normalized_text_digest` over in-memory bytes (git content)."""
+    if not stamps:
+        return hashlib.sha256(data).hexdigest()
+    text = data.decode("utf-8", "replace")
+    normalized = _COMMIT_HASH_RE.sub(_commit_replacer(stamps), text)
+    return hashlib.sha256(normalized.encode("utf-8")).hexdigest()
+
+
+def _commit_replacer(stamps: tuple[str, ...]) -> Callable[[re.Match[str]], str]:
+    """Build the replacer for :data:`_COMMIT_HASH_RE` over ``stamps``."""
+
+    def _repl(match: re.Match[str]) -> str:
+        token = match.group(0)
+        for stamp in stamps:
+            if stamp and (
+                token == stamp or token.startswith(stamp) or stamp.startswith(token)
+            ):
+                return "<commit>"
+        return token
+
+    return _repl
+
+
+_COMMIT_HASH_RE = re.compile(r"\b[0-9a-f]{7,40}\b")
