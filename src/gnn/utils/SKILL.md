@@ -28,11 +28,11 @@ python -c "from utils import get_current_memory_usage; print(get_current_memory_
 | Module | Key Exports | Purpose |
 | -------- | ------------ | --------- |
 | `logging_utils` / `structured_logging` | `setup_step_logging`, `PipelineLogger`, `log_step_*` | Structured logging |
-| `error_handling` / `error_recovery` | `ErrorRecoveryManager`, `PipelineErrorHandler`, `generate_correlation_id` | Error handling & recovery |
-| `config_loader` | `load_config`, `get_config_value`, `set_config_value`, `validate_config` | Pipeline configuration |
+| `errors.error_handling` / `errors.error_recovery` | `ErrorRecoveryManager`, `PipelineErrorHandler`, `generate_correlation_id` | Error handling & recovery |
+| `config_io.config_loader` | `load_config`, `get_config_value`, `set_config_value`, `validate_config` | Pipeline configuration |
 | `dependency_validator` | `DependencyValidator`, `validate_pipeline_dependencies`, `get_dependency_status` | Dependency management |
 | `performance_tracker` | `PerformanceTracker`, `track_operation_standalone` | Performance monitoring |
-| `io_utils` / `mcp` | `verify_directory_writable`, `redact_environment`, `is_sensitive_env_key` | Shared write-probe & env redaction |
+| `config_io.io_utils` / `mcp` | `verify_directory_writable`, `redact_environment`, `is_sensitive_env_key` | Shared write-probe & env redaction |
 
 ## API
 
@@ -55,7 +55,6 @@ from gnn.utils import (
     format_error_message,
     get_recovery_manager,
     # Configuration
-    config_loader,
     get_config_value,
     set_config_value,
     validate_config,
