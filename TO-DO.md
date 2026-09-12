@@ -1,13 +1,12 @@
 # TO-DO - GNN Pipeline Roadmap
 
-**Last Updated**: 2026-09-11 (SCOPE-2026-09-11 campaign: the utils/ concern-
-package split Steps 0-6 executed (all seven families moved behind
-DeprecationWarning facades, `_EXPORT_MAP` keys frozen at 113), the four
-V4-STAGE consolidation slices landed, V4-HD scaling-sweep integration landed,
-MED-T4 test-estate coverage landed, the W2/MCP stale rows executed
-(W2-D4/D5/D6/D7/M4, MED-03b/04, MIN-01), validate_gnn* deprecation window
-OPENED (target v4.0.0), and the SC-22-hosted custody re-render cron workflow
-landed. Evidence in `SCOPE-2026-09-11.md` §Waves.)
+**Last Updated**: 2026-09-12 (families + custody campaign: §5 Step 7 families
+errors/, config_io/, system_env/ extracted behind DeprecationWarning facades
+(`_EXPORT_MAP` keys frozen at 113), the SC-22 custody cron upgraded with
+fresh-vs-committed drift verification (`verify_fresh_render` FAIL/WARN), the
+custody toolchain pinned to full local fidelity (pandoc-crossref v0.3.25),
+SKILL.md/docs receipts repointed, and TO-DO stale-landed rows removed per the
+truth audit. Evidence in `SCOPE-2026-09-12.md` §Waves.)
 **Current Version**: 3.3.0
 **Next Target**: v4.0.0 (bounded autonomy, pipeline stage consolidation, multi-agent stigmergic topologies, and high-dimensional active inference)
 
@@ -336,11 +335,17 @@ Still open (residuals, in rough order):
 
 | ID | Scope | Acceptance evidence |
 | --- | --- | --- |
-| SC-22-hosted | `custody-re-render.yml` (daily cron 07:14 UTC + workflow_dispatch) landed; first hosted green run + first scheduled fire pending. | `gh workflow run custody-re-render` green on GitHub; next cron run green. |
 | validate_gnn* retirement | Window OPENED 2026-09-11 (target v4.0.0, current 3.3.0): all 10 alias sites emit `DeprecationWarning` (`stacklevel=2`) naming the canonical replacement + "will be removed in v4.0.0"; manifest canonical/old-name inversion fixed; warning emission pinned in `tests/test_validate_surface_aliases.py`. | Retirement in v4.0.0 = delete the alias defs, their pins in `tests/test_validate_surface_aliases.py`, and any registry entries; migrate remaining src/doc callers first. |
-| SC-38 tail | The split's Steps 0-6 are DONE (six concern packages + facades + guardrails); remaining per design §3.8/§8: residual grab-bag assignment (`errors/`, `config_io/`, `system_env/`, `simulation_utils` — owner decision), facade deprecation-window end (delete old paths), and the deferred logging single-entry import-linter contract (blocked on the documented `base_processor.py` logging bypass). | Per-family move PRs green; `lint-imports` 2/2 contracts kept. |
+| SC-38 tail (remainder) | Families `errors/`, `config_io/`, `system_env/` EXTRACTED 2026-09-12 (§5 Step 7; DeprecationWarning facades at old paths; `_EXPORT_MAP` values repointed, keys frozen at 113; consumers + tests migrated). Remaining per design §8: `simulation_utils` (deferred R4 — module-scope matplotlib), facade deprecation-window end (delete old paths, v4-gated), and the deferred logging single-entry import-linter contract (blocked on the documented `base_processor.py` logging bypass; fix = one-line repoint + one forbidden contract with two ignores). | `lint-imports` 2/2 contracts kept; migrated suites green (332 tests in `tests/utils`). |
 | V4-STAGE limits | Consolidated executor now covers stems {0,3,5,7,8,11} with timeout/tee/carrier on serial + parallel tiers; remaining limits recorded in ADR 0001: in-process steps cannot be force-killed, stem 9 excluded (D2 CLI shell-out), matplotlib caveat in thread-pool tier. | Each landed slice pinned by parity tests in `tests/pipeline/`. |
 | paired-repin discipline | The fep_lean source-pin seals GNN owner digests at pin time; ANY later owner-file edit re-drifts the pair (3 drift cycles documented on PR #110). Standing closeout ordering: all content edits → token ritual → bridge re-pin → fep_lean PR/merge → pair-pin bump as the FINAL commit, single push. | `fep-lean bridge status --gnn-root .` green at the pin; zero post-bump pushes. |
+
+Closed 2026-09-12 (families + custody campaign): SC-22-hosted — the custody
+cron is proven end-to-end at full fidelity (pandoc + pinned
+pandoc-crossref v0.3.25, zero `not on PATH` warnings; run 34660573491) AND
+now certifies the committed chain via `verify_fresh_render` FAIL/WARN
+semantics (`scripts/z_verify_fresh_render.py` runs between render and
+re-record; 4 new tests in `tests/test_manuscript_latex_log.py`).
 
 ## Deep horizon wave 2 - tests + CI
 
