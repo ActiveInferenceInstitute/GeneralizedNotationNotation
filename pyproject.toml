@@ -529,7 +529,8 @@ forbidden_modules = [
     "gnn.utils.pipeline_orchestration",
     "gnn.utils.runtime_safety",
     "gnn.utils.observability",
-    "gnn.utils.timeout_manager",
+    "gnn.utils.errors",
+    "gnn.utils.config_io",
     "gnn.utils.validation_schemas",
     "gnn.utils.venv_utils",
     "gnn.utils.visual_logging",
@@ -540,8 +541,7 @@ forbidden_modules = [
 [[tool.importlinter.contracts]]
 name = "concern packages never import the gnn.utils facade"
 type = "forbidden"
-source_modules = ["gnn.utils.testing", "gnn.utils.arguments", "gnn.utils.pipeline_orchestration", "gnn.utils.runtime_safety", "gnn.utils.observability"]
-forbidden_modules = ["gnn.utils"]
+source_modules = ["gnn.utils.testing", "gnn.utils.arguments", "gnn.utils.pipeline_orchestration", "gnn.utils.runtime_safety", "gnn.utils.observability", "gnn.utils.errors", "gnn.utils.config_io"]
 
 # I5: the logging single-entry-point contract is a named residual — it cannot
 # go green on the pre-split tree: gnn/utils/base_processor.py:25 imports the

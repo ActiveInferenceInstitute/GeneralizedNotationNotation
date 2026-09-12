@@ -15,7 +15,7 @@ import logging
 from pathlib import Path
 from typing import Any, List, Optional, Tuple
 
-from gnn.utils.io_utils import verify_directory_writable
+from gnn.utils.config_io.io_utils import verify_directory_writable
 
 logger = logging.getLogger(__name__)
 

@@ -1,10 +1,10 @@
-"""Pins for ``utils/code_metrics.count_code_metrics`` (previously untested)."""
+"""Pins for ``utils/config_io/code_metrics.count_code_metrics`` (previously untested)."""
 
 from __future__ import annotations
 
 from pathlib import Path
 
-from gnn.utils.code_metrics import count_code_metrics
+from gnn.utils.config_io.code_metrics import count_code_metrics
 
 
 def test_counts_python_structures(tmp_path: Path) -> None:

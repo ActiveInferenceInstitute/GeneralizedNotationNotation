@@ -6,7 +6,7 @@ This module provides specialized processing capabilities for injecting POMDP sta
 into various rendering implementations (PyMDP, RxInfer, ActiveInference.jl, etc.).
 
 Numeric/matrix helpers live in ``pomdp_math``; generic code-metrics counting
-lives in ``utils.code_metrics``.
+lives in ``utils.config_io.code_metrics``.
 """
 
 import importlib
@@ -20,7 +20,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Union, cas
 
 import numpy as np
 
-from gnn.utils.code_metrics import count_code_metrics
+from gnn.utils.config_io.code_metrics import count_code_metrics
 
 from .framework_registry import get_pomdp_framework_configs
 from .naming import safe_output_stem

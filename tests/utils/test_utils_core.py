@@ -10,16 +10,16 @@ import pytest
 # Import utility functions/classes
 try:
     from gnn.utils.arguments.arg_parsing import ArgumentParser
-    from gnn.utils.config_loader import GNNPipelineConfig, load_config
+    from gnn.utils.config_io.config_loader import GNNPipelineConfig, load_config
+    from gnn.utils.config_io.path_utils import get_relative_path_if_possible
     from gnn.utils.logging_utils import PipelineLogger, setup_step_logging
-    from gnn.utils.path_utils import get_relative_path_if_possible
 except ImportError:
     # Adjust for test context
     try:
         from gnn.utils.arguments.arg_parsing import ArgumentParser
-        from gnn.utils.config_loader import GNNPipelineConfig, load_config
+        from gnn.utils.config_io.config_loader import GNNPipelineConfig, load_config
+        from gnn.utils.config_io.path_utils import get_relative_path_if_possible
         from gnn.utils.logging_utils import PipelineLogger, setup_step_logging
-        from gnn.utils.path_utils import get_relative_path_if_possible
     except ImportError:
         pass
 
