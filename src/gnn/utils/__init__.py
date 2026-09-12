@@ -312,8 +312,10 @@ _EXPORT_MAP: dict[str, str] = {
     "log_step_success": "observability.structured_logging",
     "log_step_warning": "observability.structured_logging",
     "set_correlation_context": "observability.structured_logging",
-    # system_utils
-    "get_system_info": "system_utils",
+    # system_env (S2-33 Step 7, family 1/3: moved from the top-level
+    # system_utils.py/venv_utils.py into the system_env/ concern package;
+    # keys unchanged, values repointed)
+    "get_system_info": "system_env.system_utils",
     # testing (S2-33 Step 1: moved from testing_utils.py into the testing/
     # concern package; keys unchanged, values repointed to the new leaves)
     "COVERAGE_TARGETS": "testing.constants",
@@ -351,8 +353,8 @@ _EXPORT_MAP: dict[str, str] = {
     "validate_test_configuration": "testing.environment",
     "validate_test_dependencies": "testing.environment",
     "validate_test_environment": "testing.environment",
-    # venv_utils
-    "get_venv_python": "venv_utils",
+    # venv_utils → system_env (S2-33 Step 7, family 1/3)
+    "get_venv_python": "system_env.venv_utils",
 }
 
 
