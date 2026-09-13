@@ -435,9 +435,10 @@ def _normalized_text_digest(path: Path, stamps: tuple[str, ...]) -> str:
     commit-relative content in the hydrated inputs, so the fresh-vs-committed
     comparison normalizes them before digesting — otherwise every cron run
     at a HEAD abbreviating differently from the recording checkout is a
-    false joint-drift ``[FAIL]``. Any hex run matching one of ``stamps``
+    ``[FAIL]``. Any hex run matching one of ``stamps``
     (or a stamp's prefix/suffix — same abbreviation, different length)
-    becomes a fixed placeholder; everything else digests verbatim.
+    is replaced by a fixed sentinel token; all other content digests
+    verbatim.
     """
     return _normalized_text_digest_from_bytes(path.read_bytes(), stamps)
 
