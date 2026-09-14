@@ -493,7 +493,7 @@ def process_advanced_visualization_mcp(
 
 ```bash
 # Enable verbose logging
-python src/gnn/9_advanced_viz.py --target-dir input/ --verbose
+uv run python src/gnn/9_advanced_viz.py --target-dir input/ --verbose
 ```
 
 **Solutions**:

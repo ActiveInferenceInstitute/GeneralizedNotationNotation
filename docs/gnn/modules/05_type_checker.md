@@ -37,19 +37,19 @@ Step 5 is invoked through the standard pipeline orchestrator:
 
 ```bash
 # Run only step 5 against the sample corpus
-python src/gnn/main.py --only-steps 5 --verbose
+uv run python src/gnn/main.py --only-steps 5 --verbose
 
 # Strict mode: treat every warning as an error
-python src/gnn/main.py --only-steps 5 --strict
+uv run python src/gnn/main.py --only-steps 5 --strict
 
 # With resource estimation
-python src/gnn/main.py --only-steps 5 --estimate-resources
+uv run python src/gnn/main.py --only-steps 5 --estimate-resources
 ```
 
 Direct invocation (bypass orchestrator, useful for CI):
 
 ```bash
-python src/gnn/5_type_checker.py --target-dir input/gnn_files \
+uv run python src/gnn/5_type_checker.py --target-dir input/gnn_files \
                              --output-dir output \
                              --strict \
                              --estimate-resources

@@ -256,11 +256,11 @@ success = process_execute(
 ### Distributed Execution
 ```bash
 # Fan out rendered scripts / parameter sweeps across a local or remote Ray cluster
-python src/gnn/12_execute.py --target-dir output/11_render_output --output-dir output \
+uv run python src/gnn/12_execute.py --target-dir output/11_render_output --output-dir output \
   --distributed --execution-workers 4 --backend ray
 
 # Use Dask instead of Ray
-python src/gnn/12_execute.py --target-dir output/11_render_output --output-dir output \
+uv run python src/gnn/12_execute.py --target-dir output/11_render_output --output-dir output \
   --distributed --execution-workers 4 --backend dask
 ```
 
@@ -424,7 +424,7 @@ def run_simulation_tool(script_path: str, framework: str) -> Dict[str, Any]:
 **Solution**:
 - Uninstall wrong package: `uv pip uninstall pymdp`
 - Install correct package: `uv pip install inferactively-pymdp`
-- Or use setup module: `python src/gnn/1_setup.py --install-optional --optional-groups pymdp`
+- Or use setup module: `uv run python src/gnn/1_setup.py --install-optional --optional-groups pymdp`
 - The execute module automatically detects wrong package variants and provides clear error messages
 
 #### Issue 3: Execution timeout

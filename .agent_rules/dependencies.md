@@ -113,7 +113,7 @@ import optax  # optional
 
 If you encounter `ModuleNotFoundError: flax`, re-run Step 11:
 ```bash
-python src/gnn/11_render.py --target-dir input/gnn_files
+uv run python src/gnn/11_render.py --target-dir input/gnn_files
 ```
 
 ---

@@ -95,16 +95,16 @@ intelligent_analysis/
 
 ```bash
 # Full intelligent analysis
-python src/gnn/24_intelligent_analysis.py --verbose
+uv run python src/gnn/24_intelligent_analysis.py --verbose
 
 # Skip LLM analysis (rule-based only)
-python src/gnn/24_intelligent_analysis.py --skip-llm
+uv run python src/gnn/24_intelligent_analysis.py --skip-llm
 
 # Custom bottleneck threshold (seconds)
-python src/gnn/24_intelligent_analysis.py --bottleneck-threshold 30.0
+uv run python src/gnn/24_intelligent_analysis.py --bottleneck-threshold 30.0
 
 # Specific LLM model
-python src/gnn/24_intelligent_analysis.py --analysis-model "gpt-4"
+uv run python src/gnn/24_intelligent_analysis.py --analysis-model "gpt-4"
 ```
 
 ### Programmatic
@@ -550,7 +550,7 @@ The module implements a layered recovery approach:
 ### Test Files
 
 - `tests/intelligent_analysis/test_intelligent_analysis_overall.py` - Module-level tests
-- Test via full pipeline: `python src/gnn/main.py --only-steps 24 --verbose`
+- Test via full pipeline: `uv run python src/gnn/main.py --only-steps 24 --verbose`
 
 ### Required Test Fixtures
 

@@ -161,7 +161,7 @@ def module_action_mcp(mcp_instance_ref=None, **kwargs) -> Dict[str, Any]:
 def register_tools(mcp=None) -> None:
     """Register MCP tools with server."""
     if mcp is None:
-        from mcp.mcp import mcp_instance as mcp
+        from gnn.mcp import mcp_instance as mcp
 
     mcp.register_tool(
         "module_action",

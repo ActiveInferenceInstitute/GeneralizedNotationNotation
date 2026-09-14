@@ -148,8 +148,8 @@ In addition to the standard pipeline flags (`--target-dir`, `--output-dir`, `--v
 
 **Example**:
 ```bash
-python src/gnn/16_analysis.py --target-dir input/gnn_files --output-dir output --advanced-stats
-python src/gnn/16_analysis.py --target-dir input/gnn_files --output-dir output --no-animations
+uv run python src/gnn/16_analysis.py --target-dir input/gnn_files --output-dir output --advanced-stats
+uv run python src/gnn/16_analysis.py --target-dir input/gnn_files --output-dir output --no-animations
 ```
 
 #### `perform_statistical_analysis(file_path: Path, verbose: bool = False) -> Dict[str, Any]`

@@ -8,6 +8,58 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ## [Unreleased]
 
+### Changed (2026-09-14 — comprehensive sweep)
+
+- **Logging single-entry import-linter contract (SC-38 tail).**
+  `gnn/utils/pipeline_orchestration/base_processor.py` now imports logging
+  exclusively through the `gnn.utils.logging_utils` public facade (was the
+  internal `gnn.utils.logging.logging_utils` leaf); a third forbidden-import
+  contract enforces the single-entry rule with the two pre-split-tree edges
+  ignored (`lint-imports` 3/3 kept).
+- **mypy hardening.** `strict_equality` and `warn_unreachable` are now
+  enabled in `[tool.mypy]`; the 45 findings they surfaced across 32 files
+  were resolved (41 guard-preserving rebinds/annotation corrections, 3
+  justified dead-code deletions, 1 flag swap; zero new type-ignores).
+- **validate_gnn* caller migration.** Remaining deprecated-alias callers
+  migrated to canonical names across `src/gnn` (execute/pymdp re-export
+  cleanup) and maintained docs (`src/gnn/{AGENTS,README,SKILL,SPEC}.md`,
+  `parsers/`); zero live alias callers remain (v4-gated retirement).
+- **Docs-command hygiene.** 16 files under `.agent_rules/` and
+  `docs/gnn/modules/` migrated off pre-v3.3.0 wiring: `python -m src.mcp.cli`
+  → `uv run python -m gnn.mcp.cli`, `from mcp.mcp import` →
+  `from gnn.mcp import`, and bare `python src/gnn/…` runs →
+  `uv run python …` throughout.
+
+### Fixed (2026-09-14)
+
+- **Structural render specs (issue #111).** Blanket structural wrapper
+  specifications (no discrete A/B/C/D[/E] and no linear-Gaussian F/H/Q/R
+  blocks) are now classified as structural/non-renderable by
+  `render.pomdp_contract.detect_model_kind` instead of being forced through
+  the discrete POMDP render path and failing with cryptic errors; the
+  Step-11 render pipeline treats them as informational. Pinned in
+  `tests/render/`.
+- **Silent-degradation warnings.** PKL variable entries that fail to parse
+  now log a warning naming the entry before the documented `None` return;
+  `render/continuous_common.is_continuous_spec` narrows its except to the
+  real failure modes (`ImportError`, `ValueError`) and warns on
+  misclassification risks; `list_render_frameworks_mcp` failure branch
+  returns `success=False` with an additive `error` field (shape otherwise
+  unchanged); `get_render_module_info_mcp` registry failure no longer
+  masquerades as success (additive `error` field).
+- **Doc contract crash.** `pipeline/AGENTS.md` now documents
+  `set_pipeline_config(config: PipelineConfig)` matching the real signature
+  (the documented `Dict[str, Any]` contract raised `AttributeError`).
+- Stale `src/render/processor.py` path in the
+  `utils/runtime_safety/validation_schemas.py` docstring repointed to
+  `src/gnn/render/processor.py`.
+
+### Added (2026-09-14)
+
+- `tests/test_version_consistency.py`: pins the version single-source
+  invariant (exactly one `__version__` literal in `src/gnn`, equal to
+  `pyproject.toml`).
+
 ### Changed (2026-09-10 — SCOPE-2026-09-09 execution wave)
 
 - **Execution security (SC-1/SC-2/SC-34).** The remotely invocable MCP

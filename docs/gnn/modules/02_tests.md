@@ -12,12 +12,12 @@ This directory contains the comprehensive test suite for the GNN Processing Pipe
 
 
 ```bash
-python src/gnn/2_tests.py --fast-only --verbose
+uv run python src/gnn/2_tests.py --fast-only --verbose
 ```
 
 
 ```bash
-python src/gnn/2_tests.py --comprehensive --verbose
+uv run python src/gnn/2_tests.py --comprehensive --verbose
 ```
 
 ## Agent Identity & Capabilities

@@ -62,7 +62,7 @@ def function_name_mcp(mcp_instance_ref=None, **kwargs) -> Dict[str, Any]:
 def register_tools(mcp=None) -> None:
     """Register all MCP tools with the central server."""
     if mcp is None:
-        from mcp.mcp import mcp_instance as mcp
+        from gnn.mcp import mcp_instance as mcp
 
     mcp.register_tool(
         "tool_name",
@@ -144,14 +144,14 @@ def register_tools(mcp=None) -> None:
 
 ```bash
 # List all registered tools
-python -m src.mcp.cli list
+uv run python -m gnn.mcp.cli list
 
 # Call a tool
-python -m src.mcp.cli execute parse_gnn_content \
+uv run python -m gnn.mcp.cli execute parse_gnn_content \
   --params '{"content":"## GNNSection\nActInfPOMDP\n","format_hint":"markdown","enhanced_validation":true}'
 
 # Run MCP step to register all tools
-python src/gnn/21_mcp.py --target-dir input/gnn_files --output-dir output --verbose
+uv run python src/gnn/21_mcp.py --target-dir input/gnn_files --output-dir output --verbose
 ```
 
 ---

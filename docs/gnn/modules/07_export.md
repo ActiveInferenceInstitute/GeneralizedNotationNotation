@@ -381,7 +381,7 @@ output/7_export_output/
 
 ```bash
 # Enable verbose logging
-python src/gnn/7_export.py --target-dir input/ --verbose
+uv run python src/gnn/7_export.py --target-dir input/ --verbose
 ```
 
 **Solutions**:

@@ -626,7 +626,7 @@ See **`mcp.py`** `register_tools` for the authoritative list. Examples include:
 
 ```bash
 # Run with verbose logging
-python src/gnn/3_gnn.py --verbose
+uv run python src/gnn/3_gnn.py --verbose
 
 # Check output directory
 ls -la output/3_gnn_output/

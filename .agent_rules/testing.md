@@ -138,7 +138,7 @@ def test_optional_functionality(self):
 
 ```bash
 # Full suite via pipeline
-python src/gnn/2_tests.py --verbose
+uv run python src/gnn/2_tests.py --verbose
 
 # Individual file
 PYTHONPATH=src pytest tests/gnn/test_gnn_overall.py -v
@@ -147,7 +147,7 @@ PYTHONPATH=src pytest tests/gnn/test_gnn_overall.py -v
 PYTHONPATH=src pytest tests/gnn/test_gnn_overall.py::TestGNNComprehensive::test_imports -v
 
 # Fast tests only
-python src/gnn/2_tests.py --fast-only
+uv run python src/gnn/2_tests.py --fast-only
 
 # Coverage
 PYTHONPATH=src pytest --cov=src --cov-report=term-missing tests/

@@ -1,6 +1,6 @@
 # Troubleshooting Guide
 
-> **Quick health check**: `python src/gnn/main.py --verbose` | `python src/gnn/2_tests.py --fast-only`
+> **Quick health check**: `uv run python src/gnn/main.py --verbose` | `uv run python src/gnn/2_tests.py --fast-only`
 
 ## Expected Healthy Output
 
@@ -23,9 +23,9 @@ Peak memory: ~36MB | Total: ~2m53s
 | Error | Cause | Fix |
 |-------|-------|-----|
 | `ModuleNotFoundError: pymdp` | Optional dep absent | `uv pip install inferactively-pymdp` — or ignore (expected) |
-| `ModuleNotFoundError: flax` | Stale JAX code | Re-run `python src/gnn/11_render.py --target-dir input/gnn_files` |
+| `ModuleNotFoundError: flax` | Stale JAX code | Re-run `uv run python src/gnn/11_render.py --target-dir input/gnn_files` |
 | `ImportError: cannot import 'X'` | Version mismatch | `uv pip install -U -r requirements.txt` |
-| `ModuleNotFoundError: src.gnn` | Wrong import style | Use `sys.path.insert` + direct import, not `from src.gnn import…` |
+| `ModuleNotFoundError: src.gnn` | Wrong import style | Run scripts with `uv run python src/gnn/main.py --verbose` from the project root; the `gnn` package is installed in the uv environment — no `sys.path.insert` hacks |
 
 ### Julia / RxInfer Issues
 
@@ -96,20 +96,20 @@ grep -r "ERROR" output/*/  2>/dev/null | head -20
 ```bash
 # Clean and restart
 rm -rf output/*
-python src/gnn/main.py --verbose
+uv run python src/gnn/main.py --verbose
 
 # Rebuild environment
 rm -rf .venv
 uv venv && uv pip install -e .
 
 # Resume from checkpoint (skip completed steps)
-python src/gnn/main.py --skip-steps "0,1,2,3"
+uv run python src/gnn/main.py --skip-steps "0,1,2,3"
 
 # Run specific steps only
-python src/gnn/main.py --only-steps "11,12,13"
+uv run python src/gnn/main.py --only-steps "11,12,13"
 
 # Run a single step directly
-python src/gnn/3_gnn.py --target-dir input/gnn_files --output-dir output --verbose
+uv run python src/gnn/3_gnn.py --target-dir input/gnn_files --output-dir output --verbose
 ```
 
 ---

@@ -366,7 +366,7 @@ uv sync
 ls output/3_gnn_output/
 
 # Run visualization with verbose logging
-python src/gnn/8_visualization.py --verbose --target-dir input/gnn_files --output-dir output
+uv run python src/gnn/8_visualization.py --verbose --target-dir input/gnn_files --output-dir output
 ```
 
 **Common Causes**:
@@ -377,7 +377,7 @@ python src/gnn/8_visualization.py --verbose --target-dir input/gnn_files --outpu
 **Solution**:
 ```bash
 # Run complete pipeline in order
-python src/gnn/main.py --only-steps "3,8" --verbose
+uv run python src/gnn/main.py --only-steps "3,8" --verbose
 ```
 
 #### 6. Visualization Quality Issues
@@ -403,7 +403,7 @@ VISUALIZATION_CONFIG = {
 **Solution**:
 ```bash
 # Enable verbose mode for detailed progress
-python src/gnn/8_visualization.py --verbose --target-dir input/gnn_files
+uv run python src/gnn/8_visualization.py --verbose --target-dir input/gnn_files
 ```
 
 **Features**:
@@ -429,13 +429,13 @@ python src/gnn/8_visualization.py --verbose --target-dir input/gnn_files
 
 1. **Always run GNN processing (step 3) first**:
    ```bash
-   python src/gnn/3_gnn.py --target-dir input/gnn_files
-   python src/gnn/8_visualization.py --target-dir input/gnn_files
+   uv run python src/gnn/3_gnn.py --target-dir input/gnn_files
+   uv run python src/gnn/8_visualization.py --target-dir input/gnn_files
    ```
 
 2. **Use verbose mode for debugging**:
    ```bash
-   python src/gnn/8_visualization.py --verbose
+   uv run python src/gnn/8_visualization.py --verbose
    ```
 
 3. **Check output directory structure**:

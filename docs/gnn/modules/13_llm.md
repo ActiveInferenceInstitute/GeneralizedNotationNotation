@@ -426,7 +426,7 @@ ollama list
 export OLLAMA_MODEL=tinyllama
 
 # Or specify in command
-OLLAMA_MODEL=tinyllama python src/gnn/13_llm.py --target-dir input/gnn_files
+OLLAMA_MODEL=tinyllama uv run python src/gnn/13_llm.py --target-dir input/gnn_files
 ```
 
 **Automatic Selection**:
@@ -542,7 +542,7 @@ cat output/13_llm_output/llm_results.json | grep "selected_model"
    ollama serve
    
    # Terminal 2: Run pipeline
-   python src/gnn/main.py --only-steps "13" --verbose
+   uv run python src/gnn/main.py --only-steps "13" --verbose
    ```
 
 2. **Use Appropriate Model for Task**:
@@ -553,7 +553,7 @@ cat output/13_llm_output/llm_results.json | grep "selected_model"
 3. **Monitor Performance**:
    ```bash
    # Run with verbose logging
-   python src/gnn/13_llm.py --verbose --target-dir input/gnn_files
+   uv run python src/gnn/13_llm.py --verbose --target-dir input/gnn_files
    
    # Check timing in results
    cat output/13_llm_output/llm_results.json
