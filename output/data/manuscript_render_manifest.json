@@ -1,20 +1,20 @@
 {
-  "counts_describe_commit": "b1aabb8c3",
+  "counts_describe_commit": "589aa9bd5",
   "manifest_version": "gnn_render_manifest_v1",
-  "receipt_counts_describe_commit": "b1aabb8c3",
+  "receipt_counts_describe_commit": "589aa9bd5",
   "recorded_by": "uv run python scripts/z_record_manuscript_render_manifest.py",
   "render_artifacts_sha256": {
-    "output/pdf/_combined_manuscript.log": "51034677121b20e08dbeaf428fb0334dde6045bb62486bedc8d36d24e2be76db",
-    "output/pdf/_combined_manuscript.md": "96de35494e81dabbf315263afa5c46d6efbb2e83302f2c6bf8b25bcf0da73841",
-    "output/pdf/_combined_manuscript.tex": "ded3188dd8521a2bf7217cb6234c9abcd0f3086b8c4ea5dc847574c454d49e7e"
+    "output/pdf/_combined_manuscript.log": "64f67f6aac7b9842e26ec31e05c41ce4aaddf34b1914c1e8d26fee17faff78cb",
+    "output/pdf/_combined_manuscript.md": "8c2c2ffd6895d99f77db672797fa1614171ff1e98826bf686a33dd0594d29913",
+    "output/pdf/_combined_manuscript.tex": "7000c70d5c098a13e27a9378efbaea943f5b3fcc074fa7ae4a3234b0e611eae9"
   },
   "render_inputs_sha256": {
     "output/manuscript/00_abstract.md": "db211d6da2433eacfa205757989719aef093c84944a068c495f10ced67fad970",
     "output/manuscript/01_introduction.md": "c27c7e25429247bc43708877acd9e509135241cebbc2b223d77e08622cefaa70",
     "output/manuscript/02_system_context.md": "29d99755960ac309a0baf0dd0833629ea4f4e2523b8a79d990dbeaee0616dc03",
-    "output/manuscript/03_methods.md": "b22ac86e98bef39b3e9033784df37e104ae1c15d87d0c20f494755e3bf861705",
-    "output/manuscript/04_artifacts_and_evidence.md": "a0c16cd4d764baaf0d8109224a6a59bbbe273534d40cc5ed731d3dcbe5116b10",
-    "output/manuscript/05_reproducibility.md": "e2de1c98467ac5df4577b32a65346f27b97bca7f4b26f073a1ef30ec6a3ff953",
+    "output/manuscript/03_methods.md": "2a2d285f1a81e46c39f8f0835a852447e1881e8dbe0c29ce2ee7441c0935ce81",
+    "output/manuscript/04_artifacts_and_evidence.md": "5a803894f72bae13d4f1f242fc7bcb1adf96e4c5261933d335468975ce74343d",
+    "output/manuscript/05_reproducibility.md": "7756e9efe0edd009678d551ee610563ec62e7a475a80bc3aba3fc068b27307fb",
     "output/manuscript/06_limitations_and_next_steps.md": "434eac1fdf2632382ec5265ea0053e1350b3d2ddb9689cc191190acaaa325af5",
     "output/manuscript/98_symbols_glossary.md": "83233bfa61ea149ca096e25e1c595739c3cef39b73043683f89e94a625472675",
     "output/manuscript/99_references.md": "d56f5b71a1aa67d65286009bb354fb75d2c9895f4adf48ebce8d5c9d4a010efa",
