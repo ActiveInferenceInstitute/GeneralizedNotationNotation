@@ -1,24 +1,22 @@
-# fep_lean paired-revision protocol (GNN-04)
+# Cross-repo custody: the fep_lean and GEO-INFER pairing contracts (GNN-04)
 
-The GNN side hosts paired-revision CI for the fep_lean bridge pair, mirroring
+This is the canonical statement of GNN's cross-repo custody obligations. The
+GNN side hosts paired-revision CI for the fep_lean bridge pair, mirroring
 the mechanism GEO-INFER already runs for this repository: its
 `.github/workflows/gnn-interchange.yml` workflow with pin file
-`.github/gnn-pair.json`.
+`.github/gnn-pair.json`. The GEO-INFER direction (GEO-INFER pinning GNN) is
+covered in the mirror-image section below.
 
 ## What is pinned
 
-`.github/fep-lean-pair.json` records the reviewed companion revision:
+`.github/fep-lean-pair.json` records the reviewed companion revision — the
+fep_lean repository slug and a full 40-hex SHA of fep_lean main HEAD that the
+GNN-side contract was checked against. That file is the live source of truth
+for the current pin; read it directly. This doc deliberately quotes no SHA,
+so it cannot go stale the way a quoted pin does.
 
-```json
-{
-  "repository": "ActiveInferenceInstitute/fep_lean",
-  "revision": "3f3100edf358d1eec5c8c56b4750c4c122cb3c4c"
-}
-```
-
-The revision is a full 40-hex SHA of the fep_lean main HEAD that the GNN-side
-contract was checked against. The current pin (`3f3100e`) is the fep_lean main
-commit "docs: close the residual check-list parity gaps the review pool caught".
+In the mirror direction, GEO-INFER pins GNN from its own checkout via its
+`.github/gnn-pair.json` (see [GEO-INFER direction](#geo-infer-direction)).
 
 ## What runs
 
@@ -69,13 +67,34 @@ repositories; correspondence of notation is a documentation-level statement.
 Evidence planes stay distinct — a green paired run says "the two checkouts are
 in the state fep_lean reviewed", nothing about the truth of formal claims.
 
-## Note on the current pin
+## Closeout ordering (canonical)
 
-The pin at `3f3100e` predates fep_lean's docs restructure; the bridge surface
-reads source bytes, not docs, so a docs-only fep_lean change does not affect
-it. If both checkouts have genuinely drifted since the pin, the job reports
-`source_binding` failures listing the changed owner files — that output is the
-paired re-pin worklist.
+Any change touching files the bridge's source binding covers must close out in
+this exact order:
+
+1. **All content edits land first** — never after the ritual. Any later
+   owner-file edit re-drifts the pair.
+2. **Manuscript/token ritual** (when manuscript inputs changed): follow the
+   SC-22 ritual in the `scripts/z_generate_manuscript_variables.py` module
+   docstring — regenerate the token map → rebuild figures → run the template's
+   `stage_03_render` → record the render-custody manifest → commit the
+   regenerated `output/` artifacts.
+3. **fep_lean bridge re-pin**: bridge pin → emit `--refresh-digests` → emit
+   `--check` (finite + continuous) → PR → merge on the fep_lean side.
+4. **GNN pin bump as the FINAL commit**: bump `.github/fep-lean-pair.json` to
+   the new reviewed fep_lean revision in the final commit, then a single push.
+
+Ledger mentions of this discipline (e.g. the "paired-repin discipline" row in
+`TO-DO.md`) defer to this section.
+
+## GEO-INFER direction
+
+GEO-INFER pins GNN from its side via its `.github/gnn-pair.json`, and its
+paired interchange CI (`.github/workflows/gnn-interchange.yml` in the
+GEO-INFER checkout) checks out GNN at exactly that pinned revision. Bumping
+that pin is a reviewed companion-revision decision and follows the same
+re-pin discipline in mirror image: GNN content edits land first, then the
+GEO-INFER-side PR updates its pin to the new reviewed GNN revision.
 
 ## Related
 

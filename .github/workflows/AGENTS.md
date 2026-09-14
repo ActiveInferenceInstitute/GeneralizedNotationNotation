@@ -17,6 +17,7 @@ Defines behavior and guardrails for workflows in this directory. Human index of 
 | `codeql.yml` | Python CodeQL: `init` → `uv sync --frozen --extra dev` → `analyze`; skips doc-only paths on push/PR; weekly Monday 04:28 UTC cron + `workflow_dispatch`. |
 | `supply-chain-audit.yml` | Scheduled `pip-audit` on frozen exports (core + all extras, no dev); bash `set -euo pipefail`; job summary. |
 | `custody-re-render.yml` | Daily cron 07:14 UTC + `workflow_dispatch`; report-only (no commit back). Fresh manuscript render via the `docxology/template` checkout (symlinked at `projects/active/`): template `stage_03_render` → record render-custody manifest → strict token gate → `tests/test_manuscript_latex_log.py`; receipts + rendered evidence uploaded as artifact. |
+| `fep-lean-paired-revision.yml` | Paired-revision CI for the fep_lean bridge pair: validates `.github/fep-lean-pair.json`, checks out fep_lean at the pinned SHA, runs fep_lean's read-only bridge surface (status, emit `--check` finite/continuous) against this GNN checkout; blocking. Canonical custody ordering: [docs/development/fep_lean_paired_revision.md](../../docs/development/fep_lean_paired_revision.md). |
 
 ## Standards
 

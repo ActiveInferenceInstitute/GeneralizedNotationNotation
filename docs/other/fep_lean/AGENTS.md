@@ -19,7 +19,7 @@ On the fep_lean side, W2 source custody and Q5–Q7 concrete artifact proofs
 have current schema-2 native receipts. H2.7 acceptance opens only read-only
 H3.G0 eligibility. Current evidence and exact boundaries live in
 `../fep_lean/specs/gnn-bridge-w2-source-custody/WAVE2-REPORT.md`.
-The mirrored bridge contract is version 0.4.
+The mirrored bridge contract is version 0.6.
 
 ## Contents
 

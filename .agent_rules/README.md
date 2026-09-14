@@ -90,4 +90,4 @@ uv pip install -e .                   # Install deps
 
 ---
 
-**Pipeline Version**: 2.0.0 | **Steps**: 25 | **Tests**: use the command of record in the repository `README.md` for current collect/pass evidence | **MCP Tools**: verify with `tests/mcp/test_mcp_audit.py`
+**Pipeline Version**: 3.0.0 | **Steps**: 25 | **Tests**: use the command of record in the repository `README.md` for current collect/pass evidence | **MCP Tools**: verify with `tests/mcp/test_mcp_audit.py`

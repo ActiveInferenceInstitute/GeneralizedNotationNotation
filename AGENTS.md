@@ -107,7 +107,7 @@ graph TB
     style Processor fill:#fff3e0
 ```
 
-**Numbered Scripts** (`src/N_module.py`):
+**Numbered Scripts** (`src/gnn/N_module.py`):
 
 - Handle argument parsing via `utils.argument_utils.ArgumentParser`
 - Setup logging via `utils.logging.logging_utils.setup_step_logging`
@@ -125,7 +125,7 @@ graph TB
 ### Example Structure
 
 ```
-src/
+src/gnn/
 ├── 11_render.py              # Thin orchestrator (< 150 lines)
 ├── render/                   # Module implementation
 │   ├── __init__.py          # Public API exports
@@ -360,6 +360,10 @@ pytest --cov=src --cov-report=term-missing
 ```
 
 ---
+
+## Cross-repo custody (fep_lean, GEO-INFER)
+
+This repository shares custody pairs with two sibling repositories: fep_lean (bridge contract) and GEO-INFER (interchange contracts); each side pins the other via committed pin files plus paired CI. The one-line rule: **any edit to `src/gnn/**/*.py` (or `pyproject.toml`, `uv.lock`, `src/gnn/main.py`, `docs/gnn/gnn_syntax.md`, `src/gnn/pipeline/step_registry.py`) re-drifts the fep_lean custody pair** and must be closed out by the paired re-pin ritual. Canonical ordering and workflow details: [docs/development/fep_lean_paired_revision.md](docs/development/fep_lean_paired_revision.md).
 
 ## Agent Capabilities
 

@@ -32,7 +32,7 @@ this pipeline, and how GNN's own steps and methods can be formalized in Lean.
 Current status (2026-09-06): W2 source custody and the Q5 PyMDP, Q6 Julia
 embedded-input, and Q7 scalar-OU coefficient proofs have validated schema-2
 native receipts in `../fep_lean/specs/`. The
-[bridge contract mirror](bridge-contract.md) is version 0.5: the GNN-side
+[bridge contract mirror](bridge-contract.md) is version 0.6: the GNN-side
 Python package is canonically `gnn` (src-layout `src/gnn/`), the owner
 rosters are re-pinned to `src/gnn/**` paths, and the new `verify-document`
 bridge operation checks any emitted document against the `FEP.GnnDocument`

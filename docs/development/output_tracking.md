@@ -8,7 +8,7 @@ truth for the ignore rules is `.gitignore` (section *GENERATED ARTIFACT TREES*).
 
 | Path | Class | Evidence |
 |---|---|---|
-| `output/manuscript/` | CURATED | Manuscript gates read the sections/config (tests/test_manuscript_* suite) |
+| `output/manuscript/` | CURATED | Manuscript gates read the sections/config (tests/test_manuscript_* suite); this is the token-hydrated generated copy of `manuscript/` — edit `manuscript/` (see its `S01_source_surface.md` note), never this copy |
 | `output/pdf/` | CURATED | `tests/test_manuscript_latex_log.py` pins `.log`/`.aux`/`.bbl`/`.toc` evidence of the shipped PDF |
 | `output/figures/` | CURATED | `figure_registry.json` + the 6 PNGs it references; figure-freshness gate reads the registry |
 | `output/data/` | CURATED | `manuscript_variables.json` is the manuscript variable gate input (TokenGates regenerates it; stays tracked) |
