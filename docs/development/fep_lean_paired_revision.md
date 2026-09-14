@@ -79,6 +79,11 @@ this exact order:
    docstring — regenerate the token map → rebuild figures → run the template's
    `stage_03_render` → record the render-custody manifest → commit the
    regenerated `output/` artifacts.
+   Run the ritual only at the final content state and **never amend a commit
+   after recording**: the recorded manifest's `counts_describe_commit` cites
+   the commit it was produced at, and amending afterwards orphans that
+   reference (a phantom commit in published provenance) while the next
+   hydration computes different counts, re-drifting the chain.
 3. **fep_lean bridge re-pin**: bridge pin → emit `--refresh-digests` → emit
    `--check` (finite + continuous) → PR → merge on the fep_lean side.
 4. **GNN pin bump as the FINAL commit**: bump `.github/fep-lean-pair.json` to
