@@ -253,9 +253,59 @@ def test_an_artifact_swap_with_unchanged_prose_warns(tmp_path: Path) -> None:
     )
     issues = verify_fresh_render(root)
     assert len(issues) == 1, issues
-    assert issues[0].startswith(
-        "[WARN] output/pdf/_combined_manuscript.log"
-    ), issues
+    assert issues[0].startswith("[WARN] output/pdf/_combined_manuscript.log"), issues
+
+
+def test_a_re_render_at_a_new_commit_with_identical_prose_passes(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Re-rendering identical prose at a new commit is not custody drift.
+
+    Regression for the hosted false-[FAIL] (custody runs 34853088569 and
+    34862542718): the ritual records the manifest one commit before the
+    output commit exists, so CI's fresh render stamps the same prose with
+    ITS head while the committed chain carries the parent's stamp. Both
+    sides must mask both stamps — artifacts and inputs alike — or every
+    push after a ritual reads as joint drift.
+    """
+    root = tmp_path / "repo"
+    (root / "output" / "data").mkdir(parents=True)
+    (root / "output" / "manuscript").mkdir(parents=True)
+    (root / "output" / "pdf").mkdir(parents=True)
+    (root / "output" / "data" / "manuscript_variables.json").write_text(
+        json.dumps({"GNN_GIT_COMMIT": "abc1234", "GNN_STEP_COUNT": "25"}),
+        encoding="utf-8",
+    )
+    (root / "output" / "data" / "manuscript_variables_receipt.json").write_text(
+        json.dumps({"counts_describe_commit": "abc1234"}), encoding="utf-8"
+    )
+    parent = {
+        "output/manuscript/05_reproducibility.md": b"rendered at abc1234\n",
+        "output/pdf/_combined_manuscript.md": b"rendered at abc1234\n",
+        "output/pdf/_combined_manuscript.tex": b"rendered at abc1234\n",
+        "output/pdf/_combined_manuscript.log": b"[1] written at abc1234.\n",
+    }
+    for rel, data in parent.items():
+        (root / rel).write_bytes(data)
+    record_render_manifest(root)
+
+    child = {
+        "output/manuscript/05_reproducibility.md": b"rendered at bbb2222\n",
+        "output/pdf/_combined_manuscript.md": b"rendered at bbb2222\n",
+        "output/pdf/_combined_manuscript.tex": b"rendered at bbb2222\n",
+        "output/pdf/_combined_manuscript.log": b"[1] written at bbb2222.\n",
+    }
+    for rel, data in child.items():
+        (root / rel).write_bytes(data)
+    monkeypatch.setattr(
+        "gnn.manuscript.render_custody._git_show",
+        lambda _root, rel: parent[rel],
+    )
+    monkeypatch.setattr(
+        "gnn.manuscript.render_custody._head_stamp",
+        lambda _root: "bbb2222cafebabe0000000000000000000000000",
+    )
+    assert verify_fresh_render(root) == []
 
 
 def test_an_artifact_swap_alongside_prose_drift_fails(tmp_path: Path) -> None:
@@ -269,9 +319,7 @@ def test_an_artifact_swap_alongside_prose_drift_fails(tmp_path: Path) -> None:
     )
     issues = verify_fresh_render(root)
     assert len(issues) == 1, issues
-    assert issues[0].startswith(
-        "[FAIL] output/pdf/_combined_manuscript.md"
-    ), issues
+    assert issues[0].startswith("[FAIL] output/pdf/_combined_manuscript.md"), issues
 
 
 def test_a_missing_artifact_fails(tmp_path: Path) -> None:
@@ -280,9 +328,7 @@ def test_a_missing_artifact_fails(tmp_path: Path) -> None:
     (root / "output" / "pdf" / "_combined_manuscript.log").unlink()
     issues = verify_fresh_render(root)
     assert len(issues) == 1, issues
-    assert issues[0].startswith(
-        "[FAIL] output/pdf/_combined_manuscript.log"
-    ), issues
+    assert issues[0].startswith("[FAIL] output/pdf/_combined_manuscript.log"), issues
 
 
 if __name__ == "__main__":  # pragma: no cover - convenience

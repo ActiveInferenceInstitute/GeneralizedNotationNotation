@@ -194,7 +194,9 @@ def record_render_manifest(project_root: Path) -> dict:
     return manifest
 
 
-def _input_tree_issues(project_root: Path, manifest: dict) -> list[str]:
+def _input_tree_issues(
+    project_root: Path, manifest: dict, stamps: tuple[str, ...] = ()
+) -> list[str]:
     """One message per disagreement between the input tree and the manifest.
 
     Shared by :func:`custody_issues` (which reports the messages verbatim)
@@ -202,6 +204,17 @@ def _input_tree_issues(project_root: Path, manifest: dict) -> list[str]:
     "``render_inputs_sha256`` fully matches the tree on disk"): recorded
     inputs that are gone or changed since the render the manifest
     describes, and files in the tree the manifest does not record.
+
+    With ``stamps`` (the fresh-comparison mode), a recorded input is
+    "changed" only when its PROSE changed: both sides are digested with
+    commit-relative stamps masked, so a re-render at a new HEAD that
+    stamps the identical prose with the new commit is not drift. The
+    committed side is re-derived from ``git show`` at HEAD and masked;
+    without git (the unit fixtures) the stored raw digest stands in, and
+    fixture text carries no hex runs, so raw and masked agree. With
+    ``stamps`` empty (the committed-chain mode used by
+    :func:`custody_issues`) the comparison stays raw: the committed chain
+    must be byte-identical to the render the manifest recorded.
     """
     issues: list[str] = []
     recorded_inputs: dict[str, str] = manifest.get("render_inputs_sha256", {})
@@ -209,7 +222,9 @@ def _input_tree_issues(project_root: Path, manifest: dict) -> list[str]:
         path = project_root / rel
         if not path.is_file():
             issues.append(f"{rel} is gone but the custody manifest records it")
-        elif _sha256(path) != digest:
+        elif _committed_input_digest(project_root, rel, digest, stamps) != (
+            _normalized_text_digest(path, stamps) if stamps else _sha256(path)
+        ):
             issues.append(
                 f"{rel} changed after the render the custody manifest "
                 "describes — the committed PDF evidence is stale for this "
@@ -336,7 +351,7 @@ def verify_fresh_render(project_root: Path) -> list[str]:
         return [f"[FAIL] {exc}"]
 
     stamp = manifest.get("counts_describe_commit") or ""
-    stamps = (stamp,) if stamp else ()
+    stamps = tuple(dict.fromkeys(s for s in (stamp, _head_stamp(project_root)) if s))
 
     def _normalized(rel: Path) -> str | None:
         path = project_root / rel
@@ -364,7 +379,7 @@ def verify_fresh_render(project_root: Path) -> list[str]:
             return _normalized_text_digest(path, stamps)
         return recorded or (_sha256(path) if path.is_file() else None)
 
-    inputs_match = not _input_tree_issues(project_root, manifest)
+    inputs_match = not _input_tree_issues(project_root, manifest, stamps)
     recorded_artifacts: dict[str, str] = manifest.get("render_artifacts_sha256", {})
     issues: list[str] = []
     for rel in RENDERED_ARTIFACTS:
@@ -407,6 +422,51 @@ def _text_contains_stamp(text: str, stamp: str) -> bool:
         token == stamp or token.startswith(stamp) or stamp.startswith(token)
         for token in _COMMIT_HASH_RE.findall(text)
     )
+
+
+def _head_stamp(project_root: Path) -> str:
+    """The current HEAD's full sha, or ``""`` outside git.
+
+    Abbreviation-tolerant masking key: the fresh render stamps prose with
+    whatever length ``git rev-parse --short`` produced in THIS checkout
+    (7 in a shallow CI clone, 9 locally), and any hex prefix of the full
+    sha masks via the replacer's prefix rule.
+    """
+    try:
+        result = subprocess.run(
+            ["git", "-C", str(project_root), "rev-parse", "HEAD"],
+            capture_output=True,
+            check=False,
+            timeout=30,
+        )
+    except (OSError, subprocess.SubprocessError):  # pragma: no cover - env
+        return ""
+    if result.returncode != 0:
+        return ""
+    return result.stdout.decode("utf-8", "replace").strip()
+
+
+def _committed_input_digest(
+    project_root: Path, rel_posix: str, recorded: str, stamps: tuple[str, ...]
+) -> str:
+    """Digest of a render input AS COMMITTED, at the fresh normalization.
+
+    Mirrors the artifact-side rule: with git, HEAD's bytes are re-digested
+    with commit-relative stamps masked, so a re-render at a new HEAD that
+    stamps identical prose with the new commit is not input drift. Without
+    git (the unit fixtures) the stored raw digest stands in; fixture text
+    carries no hex runs, so raw and masked agree there.
+
+    Only meaningful with non-empty ``stamps`` (the fresh-comparison mode);
+    the committed-chain mode short-circuits on the recorded digest before
+    this helper is consulted.
+    """
+    if not stamps:
+        return recorded
+    committed = _git_show(project_root, rel_posix)
+    if committed is not None:
+        return _normalized_text_digest_from_bytes(committed, stamps)
+    return recorded
 
 
 def _git_show(project_root: Path, rel_posix: str) -> bytes | None:
