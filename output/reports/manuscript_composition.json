@@ -1,8 +1,8 @@
 {
   "algorithm": "web-renderer-combine-v1",
-  "binding_sha256": "b4ccd8ce8403563fff6eaa7f8ae5f044a6a6f49f611c2269454970545fe8b481",
+  "binding_sha256": "01e047a6b77a3767d497fd3c1477d030e4a623860ea3832ea3d613336085d928",
   "combined_path": "output/web/_combined_manuscript.md",
-  "combined_sha256": "8467a381774564aa1cd024a34a25662a02f121003f58275e953823c4f00e526b",
+  "combined_sha256": "4139f333bd7fbff8148d7114f7367373fd19ffcef4c82a0a4f9ef24cc81db5b3",
   "combined_size_bytes": 58186,
   "input_root_kind": "hydrated",
   "ordered_inputs": [
@@ -27,19 +27,19 @@
     {
       "ordinal": 4,
       "path": "output/manuscript/03_methods.md",
-      "sha256": "839138eb69f36127164562e175fb6810c5f854773ded4656da01e4e9547f1cd2",
+      "sha256": "f1b6ffefcf053385648360d597c820cc58c4783de507bd15c916bafbb432485b",
       "size_bytes": 9229
     },
     {
       "ordinal": 5,
       "path": "output/manuscript/04_artifacts_and_evidence.md",
-      "sha256": "ca8bcc83093d03bdcbcad8396c7625218707bf97fa285aa577f8a977d7514c3f",
+      "sha256": "460d772cc1666fac5968bc298e89f7798ffd2c6155a8e0da4204f89426763dbc",
       "size_bytes": 7700
     },
     {
       "ordinal": 6,
       "path": "output/manuscript/05_reproducibility.md",
-      "sha256": "bd3117365dd804cc8d5e6f6f72d2c3009c8e8dc39ea37570732d358a444f4f61",
+      "sha256": "5157fb01ec8ea99e862782f26a149803601c4ed544b780b0d82002aa71f676d0",
       "size_bytes": 5876
     },
     {
@@ -51,7 +51,7 @@
     {
       "ordinal": 8,
       "path": "output/manuscript/S01_source_surface.md",
-      "sha256": "ecb9d972c07fb22470d5018a26a6a25b0b5facec2e9a178b17ed0748a139b078",
+      "sha256": "49b4592652231381ee3a56615b80b5d7fe705057eb4254829fde1c79cfa1980d",
       "size_bytes": 4179
     },
     {
@@ -67,7 +67,7 @@
       "size_bytes": 234
     }
   ],
-  "ordered_inputs_sha256": "7e7eb61e60fec81bd4412d024c78aa87f0306319a7682bcf5f8bde7c7e872adc",
+  "ordered_inputs_sha256": "018a4c3ddfdd2b34959fc0716a88f7fe51629b55685ce5c8d370b9e86be72d9c",
   "project": "GeneralizedNotationNotation",
   "schema_version": "template-manuscript-composition-v1"
 }
