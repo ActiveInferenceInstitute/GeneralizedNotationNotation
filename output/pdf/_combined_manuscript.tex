@@ -862,7 +862,7 @@ Auto-Injection}\label{reproducibility-and-auto-injection}
 
 Every count reported in this manuscript is emitted by the producer
 \breaktt{scripts/z\_generate\_manuscript\_variables.py} from the
-repository state at commit d3c391a78, not typed by hand. The producer
+repository state at commit b1aabb8c3, not typed by hand. The producer
 reads that commit's source surfaces directly --- the step modules, the
 source tree, the model-family manifest, and the framework registry ---
 together with the project's maintained ledgers, notably the Model
@@ -888,7 +888,7 @@ the build if a section reintroduces a literal that a token already owns.
 This section reports what the project has actually produced and how each
 quantitative claim is grounded. Every number below is substituted at
 render time from the deterministic producer, which reads the repository
-state at commit d3c391a78, so each figure here is regenerated from the
+state at commit b1aabb8c3, so each figure here is regenerated from the
 artifacts it describes rather than transcribed.
 
 \subsection{Model-Family Coverage}\label{model-family-coverage}
@@ -1024,7 +1024,7 @@ contract exists to prevent.
 
 The repository's scale is itself evidence of the surface that the gates
 and pipeline cover, and it is reported in fig.~\ref{fig:repo_metrics}
-directly from the tracked files at commit d3c391a78.
+directly from the tracked files at commit b1aabb8c3.
 
 \begin{figure}
 \centering
@@ -1035,7 +1035,7 @@ producer stamps.}\label{fig:repo_metrics}
 \end{figure}
 
 The test suite comprises 450 test files containing 4808 test functions,
-exercising a source base of 672 Python files across 44 packages (196624
+exercising a source base of 672 Python files across 44 packages (196733
 lines of source). The Model Context Protocol surface --- which exposes
 GNN's capabilities to external agents and tools --- provides 141 tools
 across 32 modules. The pipeline itself runs as 25 steps (0--24), and 6
@@ -1207,7 +1207,7 @@ a missing copy degrades rather than failing the build.
 
 Because the variables file is regenerated before rendering, the counts
 in the rendered PDF track the repository state at the commit recorded in
-\breaktt{output/data/manuscript\_variables.json} (d3c391a78): a code
+\breaktt{output/data/manuscript\_variables.json} (b1aabb8c3): a code
 change that alters, for example, the test inventory (450 test files,
 4808 test functions) propagates into the prose on the next regeneration
 without any manual editing.
@@ -1370,7 +1370,7 @@ separately so that the boundary between hand-written source and
 reproducible output stays explicit.
 
 The \texttt{src/} tree is the executable core of GNN. It is organized
-into 44 Python packages spanning 672 source files and roughly 196624
+into 44 Python packages spanning 672 source files and roughly 196733
 lines of code. Alongside these packages sit the 25 top-level step
 modules (0--24) that implement the numbered pipeline as thin
 orchestrators delegating into the packages, each module owning one stage
