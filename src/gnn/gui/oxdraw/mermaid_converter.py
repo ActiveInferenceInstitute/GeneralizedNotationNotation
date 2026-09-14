@@ -202,13 +202,14 @@ def _generate_node_styles(variables: Dict[str, Any]) -> List[str]:
     }
 
     # Handle both dict and list formats
-    if isinstance(variables, dict):
-        for var_name, var_data in variables.items():
+    variables_obj: object = variables
+    if isinstance(variables_obj, dict):
+        for var_name, var_data in variables_obj.items():
             var_type = _classify_variable(var_name, var_data)
             if var_type in var_groups:
                 var_groups[var_type].append(var_name)
-    elif isinstance(variables, list):
-        for var in variables:
+    elif isinstance(variables_obj, list):
+        for var in variables_obj:
             if isinstance(var, dict):
                 var_name = var.get("name", "")
                 if var_name:

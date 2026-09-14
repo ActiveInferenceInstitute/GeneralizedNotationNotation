@@ -16,6 +16,7 @@ from gnn.render.naming import safe_output_stem
 
 from ._shared import (
     MATPLOTLIB_AVAILABLE,
+    NUMPY_AVAILABLE,
     SEABORN_AVAILABLE,
     VAR_TYPE_COLORS,
     VAR_TYPE_UNKNOWN_COLOR,
@@ -254,7 +255,7 @@ def _generate_interactive_dashboard(
             var_names = [v.get("name", f"v{i}") for i, v in enumerate(variables)]
             name_to_idx = {name: i for i, name in enumerate(var_names)}
 
-            if np is not None:
+            if NUMPY_AVAILABLE:
                 for conn in connections:
                     source_vars, target_vars = _conn_endpoints(conn)
                     for s in source_vars:

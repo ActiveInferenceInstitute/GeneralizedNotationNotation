@@ -310,19 +310,18 @@ class YAMLGNNParser(BaseGNNParser):
     ) -> Optional[Variable]:
         """Parse a single variable from YAML data."""
         try:
-            if isinstance(var_data, str):
+            data: Any = var_data
+            if isinstance(data, str):
                 # Simple string format: "name[dimensions],type"
-                return self._parse_variable_string(var_data)
+                return self._parse_variable_string(data)
 
-            elif isinstance(var_data, dict):
-                name = var_data.get("name", "")
-                var_type_str = var_data.get(
-                    "type", var_data.get("var_type", "hidden_state")
-                )
-                data_type_str = var_data.get("data_type", "continuous")
-                dimensions = var_data.get("dimensions", [])
-                description = var_data.get("description", "")
-                constraints = var_data.get("constraints", {})
+            elif isinstance(data, dict):
+                name = data.get("name", "")
+                var_type_str = data.get("type", data.get("var_type", "hidden_state"))
+                data_type_str = data.get("data_type", "continuous")
+                dimensions = data.get("dimensions", [])
+                description = data.get("description", "")
+                constraints = data.get("constraints", {})
 
                 # Convert string enums to enum values
                 try:

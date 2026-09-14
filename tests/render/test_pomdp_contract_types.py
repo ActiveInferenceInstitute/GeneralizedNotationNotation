@@ -32,12 +32,13 @@ def test_model_kind_enum_values() -> None:
     assert ModelKind.HIERARCHICAL.value == "hierarchical"
     assert ModelKind.MULTI_AGENT.value == "multi_agent"
     assert ModelKind.CONTINUOUS.value == "continuous"
+    assert ModelKind.STRUCTURAL.value == "structural"
     assert ModelKind.LEARNING.value == "learning"
 
 
 def test_model_kind_enum_count() -> None:
-    """ModelKind has exactly 6 members."""
-    assert len(list(ModelKind)) == 6
+    """ModelKind has exactly 7 members."""
+    assert len(list(ModelKind)) == 7
 
 
 def test_detect_model_kind_flat_default() -> None:

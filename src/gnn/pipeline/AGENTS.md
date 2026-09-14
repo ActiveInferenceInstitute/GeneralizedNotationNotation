@@ -87,13 +87,13 @@ config = get_pipeline_config()
 print(f"Steps: {config['steps']}")
 ```
 
-#### `set_pipeline_config(config: Dict[str, Any]) -> None`
+#### `set_pipeline_config(config: PipelineConfig) -> None`
 
-**Description**: Set pipeline configuration
+**Description**: Save a new pipeline configuration (see `pipeline/README.md`).
 
 **Parameters**:
 
-- `config` (Dict[str, Any]): Configuration dictionary to set
+- `config` (PipelineConfig): The pipeline configuration instance to save
 
 **Returns**: `None`
 

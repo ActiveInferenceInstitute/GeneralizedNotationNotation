@@ -47,10 +47,10 @@ def viz_var_type(var_info: "dict") -> str:
     Checks ``var_type``, ``type``, and ``node_type`` keys in order,
     returning ``"unknown"`` when none are present.
     """
-    if not isinstance(var_info, dict):
+    var_info_obj: object = var_info
+    if not isinstance(var_info_obj, dict):
         return "unknown"
-    return str(
-        var_info.get(
-            "var_type", var_info.get("type", var_info.get("node_type", "unknown"))
-        )
+    var_type = var_info_obj.get(
+        "var_type", var_info_obj.get("type", var_info_obj.get("node_type", "unknown"))
     )
+    return str(var_type)

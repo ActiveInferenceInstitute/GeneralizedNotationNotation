@@ -25,7 +25,7 @@ class Dispatcher:
         max_retries: int = 3,
     ) -> None:
         """Initialize connection to distributed cluster."""
-        self.backend = backend
+        self.backend: str = backend
         self.address = address
         self.num_cpus = num_cpus
         self.max_retries = max_retries
@@ -166,3 +166,5 @@ class Dispatcher:
                 for p in param_grid
             ]
             return cast("list[Any]", self.client.gather(futures))
+
+        return []

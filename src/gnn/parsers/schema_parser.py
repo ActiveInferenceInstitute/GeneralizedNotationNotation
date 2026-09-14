@@ -732,7 +732,11 @@ class PKLParser(BaseGNNParser):
                 description="PKL variable definition",
             )
             return variable
-        except Exception:
+        except Exception as e:
+            # The Variable construction is infallible for well-formed input;
+            # reaching here means a genuinely unexpected failure, so surface
+            # it before honouring the silent-skip (None) contract.
+            logger.warning("PKL variable entry %r could not be parsed: %s", key, e)
             return None
 
     def _infer_variable_type(self, name: str) -> VariableType:

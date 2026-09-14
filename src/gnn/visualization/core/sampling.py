@@ -32,9 +32,10 @@ def _filter_connections(
     from gnn.visualization.connection_format import normalize_connection_format
 
     for conn in connections:
-        if not isinstance(conn, dict):
+        conn_obj: object = conn
+        if not isinstance(conn_obj, dict):
             continue
-        normalized = normalize_connection_format(conn)
+        normalized = normalize_connection_format(conn_obj)
         sources = normalized.get("source_variables") or []
         targets = normalized.get("target_variables") or []
         if any(s in var_names for s in sources) and any(

@@ -24,7 +24,11 @@ from gnn.utils.config_io.code_metrics import count_code_metrics
 
 from .framework_registry import get_pomdp_framework_configs
 from .naming import safe_output_stem
-from .pomdp_contract import build_canonical_pomdp_spec
+from .pomdp_contract import (
+    ModelKind,
+    build_canonical_pomdp_spec,
+    detect_pomdp_space_model_kind,
+)
 from .pomdp_math import (
     _factor_action_counts,
     _is_kronecker_factorized_spec,
@@ -427,6 +431,24 @@ class POMDPRenderProcessor:
                     "warnings": warnings,
                 }
             return {"compatible": True, "reason": None, "warnings": warnings}
+
+        # Structural wrapper specs (e.g. Markov-blanket patterns) declare
+        # boundary structure only — no discrete A/B/C/D[/E] and no continuous
+        # F/H/Q/R parameterization. They are render-only / informational:
+        # reported unsupported like a categorical backend facing a continuous
+        # model, never forced through a discrete render that would fail on
+        # missing matrices.
+        if detect_pomdp_space_model_kind(pomdp_space) is ModelKind.STRUCTURAL:
+            return {
+                "compatible": False,
+                "unsupported": True,
+                "reason": (
+                    "structural-spec: no renderable form — declares boundary "
+                    "structure only (no discrete A/B/C/D[/E] and no "
+                    "continuous F/H/Q/R parameterization)"
+                ),
+                "warnings": warnings,
+            }
 
         # Check required matrices are present, allowing factored matrices when
         # they can be composed into a canonical execution contract.
@@ -904,6 +926,11 @@ class POMDPRenderProcessor:
                 pomdp_space, timesteps=timesteps, simulation_params=parsed_sim_params
             )
 
+        if detect_pomdp_space_model_kind(pomdp_space) is ModelKind.STRUCTURAL:
+            return self._structural_pomdp_to_gnn_spec(
+                pomdp_space, timesteps=timesteps, simulation_params=parsed_sim_params
+            )
+
         initial_parameterization, matrix_provenance, canonical_model_parameters = (
             self._build_canonical_initialparameterization(pomdp_space)
         )
@@ -1048,6 +1075,72 @@ class POMDPRenderProcessor:
             },
             "matrix_provenance": provenance,
             "canonical_pomdp_schema": "continuous_lgssm_v1",
+            "variables": [],
+            "connections": [],
+        }
+        for attr in ("state_variables", "observation_variables", "action_variables"):
+            values = getattr(pomdp_space, attr, None)
+            if values:
+                gnn_spec["variables"].extend(values)
+        if pomdp_space.connections:
+            gnn_spec["connections"] = [
+                {"source": c[0], "relation": c[1], "target": c[2]}
+                for c in pomdp_space.connections
+            ]
+        if pomdp_space.ontology_mapping:
+            gnn_spec["ontology_mapping"] = pomdp_space.ontology_mapping
+        return gnn_spec
+
+    def _structural_pomdp_to_gnn_spec(
+        self,
+        pomdp_space: "POMDPStateSpace",
+        *,
+        timesteps: Optional[int],
+        simulation_params: Dict[str, Any],
+    ) -> Dict[str, Any]:
+        """Spec for a structural wrapper: declared keys passed through verbatim.
+
+        A blanket pattern declares structure, not values — fabricating a
+        categorical A/B/C/D[/E] parameterization (or a continuous one) would
+        be a stand-in, so the raw InitialParameterization keys survive
+        unchanged and the spec is stamped ``model_kind: "structural"`` for
+        the render contract to report as render-only / informational.
+        """
+        raw_initial = dict(getattr(pomdp_space, "initial_parameterization", None) or {})
+        raw_model_parameters = dict(
+            getattr(pomdp_space, "model_parameters", None) or {}
+        )
+        model_parameters: dict[str, Any] = {
+            **raw_model_parameters,
+            "passive_model": getattr(pomdp_space, "passive_model", True),
+            "simulation_params": simulation_params,
+        }
+        if timesteps:
+            model_parameters["num_timesteps"] = int(timesteps)
+        gnn_spec: dict[str, Any] = {
+            "name": pomdp_space.model_name or "Structural_Model",
+            "model_name": pomdp_space.model_name or "Structural_Model",
+            "description": pomdp_space.model_annotation
+            or "Structural wrapper specification",
+            "gnn_section": getattr(pomdp_space, "gnn_section", None),
+            "model_kind": "structural",
+            "model_parameters": model_parameters,
+            "initialparameterization": raw_initial,
+            "structured_pomdp": {
+                "matrices": dict(getattr(pomdp_space, "matrices", None) or {}),
+                "matrix_provenance": dict(
+                    getattr(pomdp_space, "matrix_provenance", None) or {}
+                ),
+                "state_factors": getattr(pomdp_space, "state_factors", None) or [],
+                "observation_modalities": getattr(
+                    pomdp_space, "observation_modalities", None
+                )
+                or [],
+                "control_factors": getattr(pomdp_space, "control_factors", None)
+                or [],
+                "adapter_notes": getattr(pomdp_space, "adapter_notes", None) or [],
+            },
+            "canonical_pomdp_schema": "structural_spec_v1",
             "variables": [],
             "connections": [],
         }

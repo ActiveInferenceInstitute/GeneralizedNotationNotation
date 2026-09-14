@@ -107,7 +107,7 @@ def analyze_audio_characteristics_mcp(audio_file_path: str) -> Dict[str, Any]:
         Dictionary with audio characteristics and analysis metadata.
     """
     try:
-        result = analyze_audio_characteristics(
+        result: object = analyze_audio_characteristics(
             {"file_path": str(Path(audio_file_path))}
         )
         if isinstance(result, dict):
@@ -149,7 +149,7 @@ def validate_audio_content_mcp(audio_file_path: str) -> Dict[str, Any]:
         Dictionary with validation result, diagnostics, and any error details.
     """
     try:
-        result = validate_audio_content(str(audio_file_path))
+        result: object = validate_audio_content(str(audio_file_path))
         if isinstance(result, dict):
             return {"success": True, **result}
         return {"success": bool(result), "valid": bool(result)}

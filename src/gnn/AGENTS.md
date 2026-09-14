@@ -342,7 +342,7 @@ Parsers with semantically richer embedded handling keep their own implementation
 
 #### `GNNFormalParser` (`parsers/basic.py`)
 
-**Description**: Formal / section-oriented parsing helpers used with `validate_gnn`, `parse_gnn_formal`, etc.
+**Description**: Formal / section-oriented parsing helpers used with `validate_gnn_syntax`, `parse_gnn_formal`, etc.
 
 #### `GNNParser` (two meanings)
 

@@ -6,7 +6,7 @@ This module provides a standardized base class for all pipeline step processors,
 reducing code duplication and ensuring consistent patterns across the codebase.
 
 Usage:
-    from gnn.utils.base_processor import BaseProcessor, ProcessingResult
+    from gnn.utils.pipeline_orchestration.base_processor import BaseProcessor, ProcessingResult
 
     class MyProcessor(BaseProcessor):
         def process_single_file(self, file_path: Path, output_dir: Path, **kwargs) -> bool:
@@ -22,7 +22,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
 
-from gnn.utils.logging.logging_utils import (
+from gnn.utils.logging_utils import (
     log_step_error,
     log_step_start,
     log_step_success,

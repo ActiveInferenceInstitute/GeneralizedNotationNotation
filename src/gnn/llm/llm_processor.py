@@ -272,22 +272,26 @@ class LLMProcessor:
         config = self.provider_configs.get(provider_type.value, {})
 
         try:
-            if provider_type == ProviderType.OPENAI:
+            # Statically the enum chain below is exhaustive, but the fallback
+            # is a runtime guard against an annotated enum value that lies;
+            # compare through an untyped alias so both paths stay reachable.
+            provider_kind: object = provider_type
+            if provider_kind == ProviderType.OPENAI:
                 return cast(
                     "BaseLLMProvider | None",
                     get_openai_provider_class()(api_key=api_key, **config),
                 )
-            elif provider_type == ProviderType.OPENROUTER:
+            elif provider_kind == ProviderType.OPENROUTER:
                 return cast(
                     "BaseLLMProvider | None",
                     get_openrouter_provider_class()(api_key=api_key, **config),
                 )
-            elif provider_type == ProviderType.PERPLEXITY:
+            elif provider_kind == ProviderType.PERPLEXITY:
                 return cast(
                     "BaseLLMProvider | None",
                     get_perplexity_provider_class()(api_key=api_key, **config),
                 )
-            elif provider_type == ProviderType.OLLAMA:
+            elif provider_kind == ProviderType.OLLAMA:
                 # Ollama doesn't need an API key, just configuration
                 return cast(
                     "BaseLLMProvider | None", get_ollama_provider_class()(**config)

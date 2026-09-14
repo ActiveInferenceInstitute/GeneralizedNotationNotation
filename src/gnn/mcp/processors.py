@@ -99,7 +99,7 @@ def process_gnn_folder(
             "strict": VL.STRICT,
         }
         vl = _vl_map.get(validation_level.lower(), VL.STANDARD)
-        validator = GNNValidator(
+        validator: GNNValidator | None = GNNValidator(
             validation_level=vl,
             enable_round_trip_testing=enable_round_trip,
         )
@@ -236,7 +236,7 @@ def run_gnn_round_trip_tests(
     try:
         from gnn.schema_validator import GNNParser
 
-        parser = GNNParser(enhanced_validation=False)
+        parser: GNNParser | None = GNNParser(enhanced_validation=False)
     except Exception as exc:
         _log.warning(f"GNNParser unavailable ({exc}); using basic round-trip check")
         parser = cast(Any, None)
@@ -386,7 +386,7 @@ def check_cross_format_consistency(
     try:
         from gnn.schema_validator import CrossFormatValidator
 
-        validator = CrossFormatValidator(
+        validator: CrossFormatValidator | None = CrossFormatValidator(
             enable_round_trip_testing=False,
         )
     except Exception as exc:

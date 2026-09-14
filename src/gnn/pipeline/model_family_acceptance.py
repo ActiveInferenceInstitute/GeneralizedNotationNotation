@@ -197,7 +197,7 @@ def _normalize_acceptance_profile(
     profile = dict(DEFAULT_ACCEPTANCE_PROFILE)
     profile.update(defaults)
     profile.update(override)
-    unsupported_step_reasons_raw = profile.get("unsupported_step_reasons", {})
+    unsupported_step_reasons_raw: Any = profile.get("unsupported_step_reasons", {})
     if unsupported_step_reasons_raw is None:
         unsupported_step_reasons_raw = {}
     if not isinstance(unsupported_step_reasons_raw, dict):

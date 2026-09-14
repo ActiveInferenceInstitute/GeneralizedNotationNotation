@@ -30,16 +30,19 @@ class ModelKind(Enum):
     FACTORED — multiple independent hidden state factors.
     HIERARCHICAL — multi-level state hierarchy.
     MULTI_AGENT — multiple coordinated agents.
-    CONTINUOUS — continuous state/observation spaces.
+    STRUCTURAL — structural wrapper (no discrete or continuous
+    parameterization; render-only / informational).
     LEARNING — parameter learning (Dirichlet priors, etc.).
+    CONTINUOUS — continuous state/observation spaces.
     """
 
     FLAT = "flat"
     FACTORED = "factored"
     HIERARCHICAL = "hierarchical"
     MULTI_AGENT = "multi_agent"
-    CONTINUOUS = "continuous"
+    STRUCTURAL = "structural"
     LEARNING = "learning"
+    CONTINUOUS = "continuous"
 
 
 class InitialParameterization(TypedDict, total=False):
@@ -306,9 +309,16 @@ def detect_model_kind(gnn_spec: Dict[str, Any]) -> ModelKind:
     a ModelName or annotation must never change how a model renders.
 
     Precedence: MULTI_AGENT > HIERARCHICAL > CONTINUOUS > LEARNING >
-    FACTORED > FLAT (multi-agent and hierarchical files also have multiple
-    factors, so the more specific kinds are checked first).
+    FACTORED > STRUCTURAL > FLAT (multi-agent and hierarchical files also
+    have multiple factors, so the more specific kinds are checked first;
+    STRUCTURAL is the no-parameterization blanket case — only a spec with at
+    least one discrete A/B/C/D[/E] contract key falls through to FLAT).
     """
+    # An explicit structural stamp wins (mirrors is_continuous_spec's
+    # ``model_kind == "continuous"`` check): the producer already classified
+    # this spec — e.g. pomdp_processor's structural spec view.
+    if gnn_spec.get("model_kind") == "structural":
+        return ModelKind.STRUCTURAL
     initial = gnn_spec.get("initialparameterization") or gnn_spec.get(
         "initial_parameterization", {}
     )
@@ -365,7 +375,42 @@ def detect_model_kind(gnn_spec: Dict[str, Any]) -> ModelKind:
     if num_factors > 1:
         return ModelKind.FACTORED
 
+    # Structural: a blanket/wrapper spec declares boundary structure only —
+    # it carries no categorical A/B/C/D[/E] contract keys (and no continuous
+    # parameterization reached the checks above). Render-only / informational:
+    # never force it through the discrete render path.
+    if not any(
+        _is_active_inference_matrix_key(key) or _DIRICHLET_PRIOR_KEY.match(key)
+        for key in all_keys
+    ):
+        return ModelKind.STRUCTURAL
+
     return ModelKind.FLAT
+
+
+def detect_pomdp_space_model_kind(pomdp_space: Any) -> ModelKind:
+    """Classify an extracted POMDPStateSpace through the shared taxonomy.
+
+    Mirrors the extractor's own view (``initial_parameterization``,
+    ``matrices``, ``gnn_section``, ``model_parameters``) into the spec shape
+    ``detect_model_kind`` reads, so the render pipeline and direct spec
+    callers agree on one classification — in particular, a structural
+    blanket wrapper is STRUCTURAL, never a discrete POMDP.
+    """
+    return detect_model_kind(
+        {
+            "gnn_section": getattr(pomdp_space, "gnn_section", None),
+            "initialparameterization": getattr(
+                pomdp_space, "initial_parameterization", None
+            )
+            or {},
+            "model_parameters": getattr(pomdp_space, "model_parameters", None)
+            or {},
+            "structured_pomdp": {
+                "matrices": getattr(pomdp_space, "matrices", None) or {},
+            },
+        }
+    )
 
 
 def build_canonical_pomdp_spec(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:

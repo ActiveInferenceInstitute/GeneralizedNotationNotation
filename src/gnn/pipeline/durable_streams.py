@@ -331,8 +331,9 @@ def validate_stream_manifest(
     """
     problems: List[str] = []
     base = Path(base_dir)
+    kind: object = manifest.kind
 
-    if manifest.kind == StreamKind.FILE:
+    if kind == StreamKind.FILE:
         target = base / manifest.source
         if not target.exists():
             problems.append(f"source file does not exist: {target}")
@@ -343,7 +344,7 @@ def validate_stream_manifest(
                 f"checksum mismatch for {manifest.source}: "
                 f"expected {manifest.checksum}, got {actual}"
             )
-    elif manifest.kind == StreamKind.ARRAY:
+    elif kind == StreamKind.ARRAY:
         expected_elements = prod(manifest.shape) if manifest.shape else 0
         if manifest.n_elements != expected_elements:
             problems.append(

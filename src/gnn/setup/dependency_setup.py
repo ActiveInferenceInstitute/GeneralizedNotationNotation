@@ -52,11 +52,12 @@ def install_jax_and_test(verbose: bool = False) -> bool:
         logger.error("Venv Python not found, cannot test JAX stack")
         return False
 
-    if run_jax_stack_probe_subprocess is None:
+    probe_fn: Any = run_jax_stack_probe_subprocess
+    if probe_fn is None:
         logger.error("jax_stack_validation module not importable; cannot run JAX probe")
         return False
 
-    ok, out = run_jax_stack_probe_subprocess(VENV_PYTHON, PROJECT_ROOT)
+    ok, out = probe_fn(VENV_PYTHON, PROJECT_ROOT)
     if ok:
         logger.info("✅ JAX + Optax + Flax + pymdp stack validated in venv")
         if verbose and out:

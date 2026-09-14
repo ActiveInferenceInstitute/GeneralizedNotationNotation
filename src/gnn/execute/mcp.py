@@ -22,6 +22,7 @@ from . import (
     process_execute,
 )
 from .pymdp.execute_pymdp import execute_from_gnn_file as _pymdp_execute_from_gnn_file
+from .validator import ValidationResult
 
 _GNN_MODEL_SUFFIXES = {".md", ".json", ".yaml", ".yml"}
 
@@ -158,7 +159,7 @@ def execute_gnn_model_mcp(
             output_directory,
             purpose="Execution output directory",
         )
-        result = execute_simulation_from_gnn(
+        result: object = execute_simulation_from_gnn(
             gnn_path,
             output_path,
         )
@@ -201,16 +202,17 @@ def execute_pymdp_simulation_mcp(
             output_directory,
             purpose="PyMDP output directory",
         )
-        success, results = _pymdp_execute_from_gnn_file(
+        success, results_raw = _pymdp_execute_from_gnn_file(
             gnn_path,
             output_path,
             correlation_id="mcp",
         )
+        results_any: object = results_raw
         payload: Dict[str, Any] = {"success": bool(success)}
-        if isinstance(results, dict):
-            payload.update(results)
+        if isinstance(results_any, dict):
+            payload.update(results_any)
         else:
-            payload["result"] = results
+            payload["result"] = results_any
         return payload
     except Exception as e:
         logger.error(f"execute_pymdp_simulation_mcp error: {e}", exc_info=True)
@@ -231,7 +233,7 @@ def check_execute_dependencies_mcp() -> Dict[str, Any]:
     """
 
     def _build() -> Dict[str, Any]:
-        result = check_dependencies()
+        result: list[ValidationResult] | Dict[str, Any] = check_dependencies()
         if isinstance(result, dict):
             return {"success": True, **result}
         # ``check_dependencies`` returns ``List[ValidationResult]`` (dataclasses);

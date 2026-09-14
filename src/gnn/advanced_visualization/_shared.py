@@ -313,7 +313,8 @@ def validate_visualization_data(
     }
 
     try:
-        if not isinstance(model_data, dict):
+        model_data_obj: object = model_data
+        if not isinstance(model_data_obj, dict):
             validation_results["errors"].append("Model data is not a dictionary")
             validation_results["overall_valid"] = False
             return validation_results

@@ -23,7 +23,6 @@ from .pymdp_simulation import PyMDPSimulation  # noqa: F401 - re-exported
 from .pymdp_utils import (
     check_gnn_pomdp_spec,
     extract_gnn_dimensions,
-    validate_gnn_pomdp_structure,
 )
 
 logger = logging.getLogger(__name__)
@@ -137,5 +136,4 @@ __all__: list[Any] = [
     "batch_execute_pymdp",
     "PyMDPSimulation",
     "extract_gnn_dimensions",
-    "validate_gnn_pomdp_structure",
 ]

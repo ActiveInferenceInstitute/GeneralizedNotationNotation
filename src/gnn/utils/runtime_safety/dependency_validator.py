@@ -601,10 +601,6 @@ def validate_pipeline_dependencies_if_available(args: argparse.Namespace) -> boo
         logger.info("Dependency validation skipped (--skip-dependency-validation flag)")
         return True
 
-    if validate_pipeline_dependencies is None:
-        logger.info("Dependency validation skipped (validator not available)")
-        return True
-
     logger.info("=== DEPENDENCY VALIDATION ===")
 
     # Determine required steps based on what will run

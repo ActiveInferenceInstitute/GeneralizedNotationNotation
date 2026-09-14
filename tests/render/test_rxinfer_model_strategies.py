@@ -201,7 +201,13 @@ class TestStrategyDispatchAndCodegen:
         assert not isinstance(FactoredStrategy(), FlatStrategy)
 
     def test_every_kind_has_a_registered_strategy(self) -> None:
+        """Every renderable kind has a strategy. STRUCTURAL is deliberately
+        strategy-less: a wrapper spec is render-only / informational and must
+        be reported unsupported upstream, never rendered (see
+        test_structural_model_kind.py for the loud-rejection contract)."""
         for kind in ModelKind:
+            if kind is ModelKind.STRUCTURAL:
+                continue
             assert get_model_strategy(kind).kind is kind
 
     def test_multi_agent_script_stamps_true_kind_and_echoes_factors(self) -> None:

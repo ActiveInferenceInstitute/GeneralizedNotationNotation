@@ -105,11 +105,12 @@ class MCPTool:
         """Validate the tool schema and return any issues."""
         issues: list[Any] = []
 
-        if not isinstance(self.schema, dict):
+        schema_obj: object = self.schema
+        if not isinstance(schema_obj, dict):
             issues.append("Schema must be a dictionary")
             return issues
 
-        schema = self.schema
+        schema = schema_obj
         if "type" not in schema:
             issues.append("Schema missing 'type' field")
         elif schema["type"] != "object":

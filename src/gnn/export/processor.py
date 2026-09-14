@@ -227,7 +227,7 @@ def parse_gnn_content(content: str) -> Dict[str, Any]:
         parsed = parse_gnn_file("inline_export_input.md", content=content)
         raw_sections = parsed.get("sections", {}) if parsed.get("success") else {}
         raw_variables = parsed.get("variables", []) if parsed.get("success") else []
-        sections = _normalize_export_sections(raw_sections, content)
+        sections: object = _normalize_export_sections(raw_sections, content)
         variables = _normalize_export_variables(raw_variables, content)
         connections: list[Any] = []
         section_iterables: list[Any] = []
@@ -464,8 +464,9 @@ def export_gnn_model(
             formats = ["json", "xml", "pickle", "txt", "dsl"]
 
         # Normalize formats param if passed incorrectly as a single string.
-        if isinstance(formats, str):
-            formats = [formats]
+        formats_raw: object = formats
+        if isinstance(formats_raw, str):
+            formats = [formats_raw]
 
         results: dict[str, Any] = {"success": True, "exports": {}, "errors": []}
 

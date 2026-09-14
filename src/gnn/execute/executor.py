@@ -444,14 +444,15 @@ def execute_gnn_model(
     normalized_execution_type: str = "pymdp"
     normalized_options = options
 
-    if isinstance(execution_type, Path):
+    exec_type_obj: object = execution_type
+    if isinstance(exec_type_obj, Path):
         normalized_options = dict(options or {})
-        normalized_options.setdefault("output_dir", str(execution_type))
-    elif isinstance(execution_type, str):
-        normalized_execution_type = execution_type
+        normalized_options.setdefault("output_dir", str(exec_type_obj))
+    elif isinstance(exec_type_obj, str):
+        normalized_execution_type = exec_type_obj
     else:
         normalized_options = dict(options or {})
-        normalized_options.setdefault("output_dir", str(execution_type))
+        normalized_options.setdefault("output_dir", str(exec_type_obj))
 
     executor = GNNExecutor()
     result = executor.execute_gnn_model(

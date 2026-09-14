@@ -358,7 +358,7 @@ def create_model_matrix_heatmaps(param_path: Path, output_dir: Path) -> List[str
 
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    def parse_julia_matrix(s: str) -> Optional[np.ndarray]:
+    def parse_julia_matrix(s: object) -> Optional[np.ndarray]:
         """Parse Julia matrix string format: [a b; c d] or [a b c; d e f;;; ...]"""
         if not isinstance(s, str):
             return None
@@ -387,7 +387,7 @@ def create_model_matrix_heatmaps(param_path: Path, output_dir: Path) -> List[str
         except (ValueError, TypeError, IndexError):
             return None  # malformed Julia matrix string
 
-    def parse_julia_vector(s: str) -> Optional[np.ndarray]:
+    def parse_julia_vector(s: object) -> Optional[np.ndarray]:
         """Parse Julia vector string: [a, b, c]"""
         if not isinstance(s, str):
             return None

@@ -192,7 +192,7 @@ def execute_tool(args: Any) -> Any:
 
         tool = mcp_instance.tools[args.tool_name]
 
-        params: dict[Any, Any] = {}
+        params: Any = {}
         if args.params:
             try:
                 params = json.loads(args.params)

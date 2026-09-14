@@ -40,7 +40,8 @@ def validate_step_prerequisites(
 
     # Normalise skip_steps to a set of script names (e.g. {"13_llm.py"})
     _skipped: set[str] = set()
-    for s in skip_steps or []:
+    skip_items: list[Any] = list(skip_steps) if skip_steps else []
+    for s in skip_items:
         if isinstance(s, int):
             # Map step number -> script name pattern used in step_dependencies
             _skipped.add(f"{s}_")  # prefix match

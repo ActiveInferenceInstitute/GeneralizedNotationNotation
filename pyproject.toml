@@ -321,8 +321,8 @@ no_implicit_optional = true
 warn_redundant_casts = true
 warn_unused_ignores = true
 warn_no_return = true
-warn_unreachable = false
-strict_equality = false
+warn_unreachable = true
+strict_equality = true
 
 [[tool.mypy.overrides]]
 module = [
@@ -545,14 +545,20 @@ type = "forbidden"
 source_modules = ["gnn.utils.testing", "gnn.utils.arguments", "gnn.utils.pipeline_orchestration", "gnn.utils.runtime_safety", "gnn.utils.observability", "gnn.utils.errors", "gnn.utils.config_io"]
 forbidden_modules = ["gnn.utils"]
 
-# I5: the logging single-entry-point contract is a named residual — it cannot
-# go green on the pre-split tree: gnn/utils/base_processor.py:25 imports the
-# logging *implementation* leaf directly (from .logging.logging_utils import
-# log_step_*), bypassing the public ``logging_utils`` entry, and the entry
-# facade's own internal imports make plain forbidden contracts flag every
-# legitimate ``from .logging_utils import X`` transitively
-# (dependency_validator.py:18, pipeline.py:74, pipeline_template.py:16). All
-# four sites pre-date S2-33 and sit outside the Step-1 slice. Owner decision
-# needed: fix the base_processor bypass, then re-add the contract (with
-# ignore_imports for the facade's own gnn.utils.logging_utils ->
-# gnn.utils.logging.logging_utils edges so entry-facade consumers stay legal).
+# I5: the logging single-entry contract (SC-38). Every ``log_step_*`` /
+# ``setup_step_logging`` consumer imports through the public
+# ``gnn.utils.logging_utils`` entry; the implementation leaf
+# ``gnn.utils.logging.logging_utils`` is imported only by the entry facade
+# itself and by its own subpackage ``__init__`` (both pre-split tree), so
+# those two edges are ignored here.
+[[tool.importlinter.contracts]]
+name = "logging single entry: only gnn.utils.logging_utils (and the gnn.utils.logging package itself) may import the implementation leaf"
+type = "forbidden"
+source_modules = ["gnn"]
+forbidden_modules = ["gnn.utils.logging.logging_utils"]
+ignore_imports = [
+    # Entry facade re-exports the implementation leaf (pre-split tree).
+    "gnn.utils.logging_utils -> gnn.utils.logging.logging_utils",
+    # The logging subpackage __init__ imports its own leaf (pre-split tree).
+    "gnn.utils.logging -> gnn.utils.logging.logging_utils",
+]

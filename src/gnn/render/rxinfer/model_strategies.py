@@ -423,5 +423,16 @@ STRATEGY_REGISTRY: Dict[ModelKind, ModelStrategy] = {
 
 
 def get_model_strategy(model_kind: ModelKind) -> ModelStrategy:
-    """Return the registered strategy for a ``ModelKind``."""
+    """Return the registered strategy for a ``ModelKind``.
+
+    Structural wrapper specs have no render strategy: they declare boundary
+    structure only and must be reported unsupported upstream, never silently
+    rendered as a discrete stand-in.
+    """
+    if model_kind is ModelKind.STRUCTURAL:
+        raise ValueError(
+            "structural-spec: no renderable form — structural wrapper specs "
+            "declare boundary structure only (no discrete A/B/C/D[/E] and no "
+            "continuous F/H/Q/R parameterization)"
+        )
     return STRATEGY_REGISTRY[model_kind]

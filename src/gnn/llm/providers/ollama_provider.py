@@ -149,6 +149,9 @@ class OllamaProvider(BaseLLMProvider):
         try:
             import asyncio
 
+            # CLI path yields a plain dict; the Python client yields an
+            # untyped ChatResponse object, so keep both branches reachable.
+            response: Any
             if self._use_cli:
                 # Build prompt by joining message contents, preserving order
                 prompt = "\n\n".join(m.content for m in messages)

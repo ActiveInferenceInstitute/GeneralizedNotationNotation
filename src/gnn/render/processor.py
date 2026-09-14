@@ -1078,7 +1078,26 @@ def render_gnn_spec(
             "pytorch",
             "numpyro",
         }:
-            from .pomdp_contract import build_canonical_pomdp_spec
+            from .pomdp_contract import (
+                ModelKind,
+                build_canonical_pomdp_spec,
+                detect_model_kind,
+            )
+
+            # Structural wrapper specs (no discrete A/B/C/D[/E] and no
+            # continuous F/H/Q/R parameterization) are render-only /
+            # informational: never canonicalise them into a discrete POMDP
+            # render that would fail on missing matrices. Graph-backed targets
+            # (bnlearn, stan, discopy) render structure legitimately and are
+            # not gated here.
+            if detect_model_kind(gnn_spec_mapping) is ModelKind.STRUCTURAL:
+                return (
+                    False,
+                    "structural-spec: no renderable form — the spec declares "
+                    "boundary structure only (no discrete A/B/C/D[/E] and no "
+                    "continuous F/H/Q/R parameterization); informational wrapper",
+                    [],
+                )
 
             canonical_spec = build_canonical_pomdp_spec(
                 _normalize_initial_vectors(gnn_spec_mapping)
@@ -1194,7 +1213,20 @@ def render_gnn_spec(
                     render_gnn_to_jax,
                     render_gnn_to_jax_pomdp,
                 )
-                from .pomdp_contract import build_canonical_pomdp_spec
+                from .pomdp_contract import (
+                    ModelKind,
+                    build_canonical_pomdp_spec,
+                    detect_model_kind,
+                )
+
+                if detect_model_kind(gnn_spec_mapping) is ModelKind.STRUCTURAL:
+                    return (
+                        False,
+                        "structural-spec: no renderable form — the spec declares "
+                        "boundary structure only (no discrete A/B/C/D[/E] and no "
+                        "continuous F/H/Q/R parameterization); informational wrapper",
+                        [],
+                    )
 
                 output_file = output_dir / f"{output_stem}_jax.py"
                 canonical_spec = build_canonical_pomdp_spec(

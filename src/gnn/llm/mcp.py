@@ -250,7 +250,7 @@ def generate_llm_documentation_mcp(
                 exc,
             )
 
-        result = generate_documentation(file_analysis)
+        result: object = generate_documentation(file_analysis)
 
         if isinstance(result, dict):
             # Optionally write to disk if output_path was provided

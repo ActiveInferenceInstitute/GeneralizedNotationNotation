@@ -185,19 +185,20 @@ def render_gnn_to_rxinfer(
 
     try:
         # Validate input
-        if not isinstance(gnn_spec, dict):
+        spec_obj: object = gnn_spec
+        if not isinstance(spec_obj, dict):
             return False, "Invalid GNN specification: must be a dictionary", []
 
         renderer = RxInferRenderer(options)
 
         # Get model name safely
-        model_name = gnn_spec.get("name") or gnn_spec.get("model_name", "GNN_Model")
+        model_name = spec_obj.get("name") or spec_obj.get("model_name", "GNN_Model")
 
         # Generate simulation code directly from spec (using simplified working version)
         try:
             # Use the full generator with updated syntax
             rxinfer_code = renderer._generate_rxinfer_simulation_code(
-                gnn_spec, model_name
+                spec_obj, model_name
             )
         except Exception as gen_error:
             logger.error(f"Code generation failed: {gen_error}")

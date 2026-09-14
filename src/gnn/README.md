@@ -224,7 +224,7 @@ src/gnn/
 │
 ├── parsers/                       # Parser ecosystem (see SPEC.md for 23/22 counts)
 │   ├── system.py                  # PARSER_REGISTRY / SERIALIZER_REGISTRY, GNNParsingSystem
-│   ├── basic.py                   # Structural/formal parse surface (GNNFormalParser, validate_gnn)
+│   ├── basic.py                   # Structural/formal parse surface (GNNFormalParser, validate_gnn_syntax)
 │   ├── frontmatter.py             # YAML front-matter extraction
 │   ├── cache.py                   # ParseCache: section-level incremental parse cache
 │   ├── unified_parser.py / common.py  # Unified entry; GNNFormat enum, protocols, shared types

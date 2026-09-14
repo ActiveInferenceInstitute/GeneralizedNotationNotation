@@ -11,6 +11,7 @@ import matplotlib
 
 matplotlib.use("Agg")
 
+plt: Any
 try:
     import matplotlib.pyplot as plt
 

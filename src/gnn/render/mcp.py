@@ -208,6 +208,14 @@ def get_render_module_info_mcp() -> Dict[str, Any]:
     """
     Return metadata about the render module capabilities.
 
+    Shape:
+        ``{"success": bool, "module": str, "frameworks": [str, ...],
+        "input_formats": [str, ...], "output_formats": [str, ...],
+        "error": str}`` — ``error`` is present only on the failure branch,
+        which keeps the same ``frameworks`` key (empty list) and reports
+        ``success: False`` so a client can tell "registry broken" from
+        "no frameworks".
+
     Returns:
         Dictionary with version, supported frameworks, and supported input formats.
     """
@@ -215,8 +223,19 @@ def get_render_module_info_mcp() -> Dict[str, Any]:
         from . import get_supported_frameworks
 
         frameworks: list[str] = get_supported_frameworks()
-    except Exception:
-        frameworks = []
+    except Exception as e:
+        logger.error(
+            f"get_render_module_info_mcp: framework registry failure: {e}",
+            exc_info=True,
+        )
+        return {
+            "success": False,
+            "module": __package__,
+            "frameworks": [],
+            "error": f"framework registry failure: {e}",
+            "input_formats": ["markdown", "gnn"],
+            "output_formats": ["python", "julia", "julia_rxinfer"],
+        }
     return {
         "success": True,
         "module": __package__,

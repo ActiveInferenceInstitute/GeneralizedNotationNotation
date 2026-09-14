@@ -936,7 +936,8 @@ class MCP:
                     tool_name, [t for t, v in self.tools.items() if not v.requires_auth]
                 )
 
-        if not isinstance(params, dict):
+        params_raw: object = params
+        if not isinstance(params_raw, dict):
             with self._lock:
                 self._error_count += 1
                 self._performance_metrics.failed_requests += 1

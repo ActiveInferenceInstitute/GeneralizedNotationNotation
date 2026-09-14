@@ -14,7 +14,6 @@ import json
 import logging
 import os
 import re
-import signal
 import subprocess  # nosec B404
 import sys
 import threading
@@ -358,8 +357,6 @@ class _ModularTestRunner:
             initial_resources = self._monitor_resources_during_test()
             self.logger.info(f"Initial resource usage: {initial_resources}")
 
-            old_handler = None
-
             try:
                 env = os.environ.copy()
                 # Prepend project src/ to PYTHONPATH; never clobber existing paths so
@@ -544,11 +541,6 @@ class _ModularTestRunner:
                     except Exception as e:
                         self.logger.debug(f"Could not close stderr file: {e}")
 
-                if old_handler is not None:
-                    try:
-                        signal.signal(signal.SIGALRM, old_handler)
-                    except Exception as e:
-                        self.logger.debug(f"Could not restore signal handler: {e}")
 
                 execution_time = time.time() - category_start_time
                 self.logger.info(
@@ -613,11 +605,6 @@ class _ModularTestRunner:
                 }
 
             except subprocess.TimeoutExpired:
-                if old_handler is not None:
-                    try:
-                        signal.signal(signal.SIGALRM, old_handler)
-                    except Exception:
-                        pass
                 self.logger.error(
                     f"Test category '{category}' reached subprocess timeout"
                 )

@@ -5,7 +5,7 @@ Multi-format **parse** and **serialize** for GNN models: one `*_parser.py` / `*_
 ## Entry points
 
 - **`GNNParsingSystem`** in `system.py` — the registry-driven system: `parse_file`, `serialize`, format conversion.
-- **`gnn.parsers.basic`** — the structural/formal parse surface (`GNNFormalParser`, `parse_gnn_formal`, `validate_gnn`, `GNNFormatSpec`); its own `GNNParsingSystem` is reachable only as `gnn.parsers.basic.GNNParsingSystem` to avoid colliding with the registry-driven one.
+- **`gnn.parsers.basic`** — the structural/formal parse surface (`GNNFormalParser`, `parse_gnn_formal`, `validate_gnn_syntax`, `GNNFormatSpec`); its own `GNNParsingSystem` is reachable only as `gnn.parsers.basic.GNNParsingSystem` to avoid colliding with the registry-driven one.
 - **`frontmatter.py`** — `parse_frontmatter` / `has_frontmatter` for YAML frontmatter blocks.
 - **`cache.py`** — `ParseCache`, a thread-safe cache of parsed GNN files.
 - **`PARSER_REGISTRY`** / **`SERIALIZER_REGISTRY`** — map `GNNFormat` to concrete classes.

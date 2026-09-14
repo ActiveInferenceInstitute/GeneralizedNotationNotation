@@ -18,10 +18,13 @@ The generative model each generated script simulates and filters:
 
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 
 import numpy as np
+
+logger = logging.getLogger(__name__)
 
 REQUIRED_KEYS = ("F", "H", "Q", "R", "prior_mean", "prior_cov")
 
@@ -34,7 +37,16 @@ def is_continuous_spec(gnn_spec: Dict[str, Any]) -> bool:
         from gnn.render.pomdp_contract import ModelKind, detect_model_kind
 
         return detect_model_kind(gnn_spec) == ModelKind.CONTINUOUS
-    except Exception:
+    except (ImportError, ValueError) as e:
+        # detect_model_kind only raises ValueError (malformed
+        # initialparameterization) and the import itself can fail; log rather
+        # than silently misclassifying a continuous spec as discrete.
+        logger.warning(
+            "is_continuous_spec: model-kind detection failed for spec "
+            "(model_kind=%r): %s; treating as non-continuous",
+            gnn_spec.get("model_kind"),
+            e,
+        )
         return False
 
 

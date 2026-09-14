@@ -242,6 +242,19 @@ ActiveInference.jl, DisCoPy, bnlearn) return `{"unsupported": true, "status":
 "unsupported"}` for continuous models — counted under
 `unsupported_framework_renderings`, never as failures, never executed.
 
+`STRUCTURAL` specs (issue #111) declare boundary structure only — a
+Markov-blanket wrapper with neither discrete `A/B/C/D[/E]` nor continuous
+`F/H/Q/R` parameterization. They are render-only / informational: every
+framework reports `{"unsupported": true, "status": "unsupported"}` with the
+`structural-spec: no renderable form` reason, counted under
+`unsupported_framework_renderings` — never rendered, never a failure. In
+`render_gnn_spec`, targets that canonicalise to a discrete parameterization
+(`pymdp`, `rxinfer`, `activeinference_jl`, `pytorch`, `numpyro`,
+`jax`/`jax_pomdp`) reject a wrapper with the same `structural-spec` message
+instead of attempting a discrete render; graph-backed targets (`bnlearn`,
+`stan`, `discopy`) render the declared structure legitimately and are not
+gated.
+
 The supported framework inventory is defined in `src/gnn/render/framework_registry.py` and consumed by `health.py`, `__init__.py`, `processor.py`, `pomdp_processor.py`, and `mcp.py`.
 
 ## Usage Examples

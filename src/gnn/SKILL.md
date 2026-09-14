@@ -40,7 +40,7 @@ from gnn import (
     parse_gnn_file,
     process_gnn_directory,
     process_gnn_multi_format,
-    validate_gnn,
+    validate_gnn_syntax,
 )
 from gnn import GNNFormalParser
 

@@ -160,13 +160,6 @@ class GNNValidator:
         if isinstance(validation_level, str):
             validation_level = self._resolve_level(validation_level)
         file_path = Path(file_path)
-        """Enhanced validation with comprehensive testing capabilities."""
-        import time
-
-        start_time = time.time()
-
-        validation_level = validation_level or self.validation_level
-        file_path = Path(file_path)
 
         result = ValidationResult(
             is_valid=True,

@@ -13,7 +13,7 @@ import numpy as np
 logger = logging.getLogger(__name__)
 
 
-def _numpy_array_to_string(arr: np.ndarray, indent: Any = 0) -> str:
+def _numpy_array_to_string(arr: Optional[np.ndarray], indent: Any = 0) -> str:
     """Converts a NumPy array to a string representation for Python script.
     The `indent` parameter specifies the indentation for lines *after the first* if the array string is multi-line.
     """

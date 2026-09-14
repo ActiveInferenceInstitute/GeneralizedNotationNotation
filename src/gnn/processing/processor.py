@@ -384,14 +384,15 @@ def process_gnn_directory(
     # masking pipeline configuration errors. We accept both directories AND
     # single .md files because callers (tests, ad-hoc scripts) legitimately
     # use both — ``discover_gnn_files`` downstream handles each case.
-    if directory is None:
+    dir_arg: Optional[Union[str, Path]] = directory
+    if dir_arg is None:
         return {
             "status": "FAILED",
             "files": [],
             "processed_files": [],
             "error": "directory argument is None",
         }
-    _dir_path = Path(directory)
+    _dir_path = Path(dir_arg)
     if not _dir_path.exists():
         return {
             "status": "FAILED",

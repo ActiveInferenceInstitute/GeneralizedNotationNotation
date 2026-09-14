@@ -225,7 +225,7 @@ def _run_format_round_trip(
     format_name: str,
 ) -> dict[str, Any]:
     system = GNNParsingSystem(strict_validation=False)
-    source_result = system.parse_file(model_path)
+    source_result: Any = system.parse_file(model_path)
     if source_result.model is None:
         return {
             "format": format_name,

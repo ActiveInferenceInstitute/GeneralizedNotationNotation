@@ -46,12 +46,13 @@ def extract_matrix_data_from_parameters(
                 matrices[param_name] = matrix
         return matrices
     for param in parameters:
-        if not isinstance(param, dict):
+        param_obj: object = param
+        if not isinstance(param_obj, dict):
             continue
-        param_name = param.get("name", "")
+        param_name = param_obj.get("name", "")
         if not param_name:
             continue
-        param_value = param.get("value")
+        param_value = param_obj.get("value")
         if param_value is None:
             continue
         matrix = convert_to_matrix(param_value, param_name)
