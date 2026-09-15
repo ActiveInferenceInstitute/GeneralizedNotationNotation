@@ -24,7 +24,7 @@ Peak memory: ~36MB | Total: ~2m53s
 |-------|-------|-----|
 | `ModuleNotFoundError: pymdp` | Optional dep absent | `uv pip install inferactively-pymdp` — or ignore (expected) |
 | `ModuleNotFoundError: flax` | Stale JAX code | Re-run `uv run python src/gnn/11_render.py --target-dir input/gnn_files` |
-| `ImportError: cannot import 'X'` | Version mismatch | `uv pip install -U -r requirements.txt` |
+| `ImportError: cannot import 'X'` | Version mismatch | `uv sync --all-extras` (dependency surface: `pyproject.toml` + `uv.lock`) |
 | `ModuleNotFoundError: src.gnn` | Wrong import style | Run scripts with `uv run python src/gnn/main.py --verbose` from the project root; the `gnn` package is installed in the uv environment — no `sys.path.insert` hacks |
 
 ### Julia / RxInfer Issues

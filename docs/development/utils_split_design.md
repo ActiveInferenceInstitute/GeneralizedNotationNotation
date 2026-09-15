@@ -22,8 +22,8 @@ Measured 2026-09-10 on `improvements/2026-09-10-scope2` @ 94612fff8.
 - `_EXPORT_MAP`: **113 name → submodule entries across 17 source modules**
   (`__init__.py:191-324`). Resolved lazily via PEP 562 `__getattr__`
   (`__init__.py:327-344`); importing `utils` executes no submodule, so heavy
-  module-scope deps (psutil via `structured_logging`/`resource_manager`, matplotlib via
-  `simulation_utils`) are paid only on first attribute access.
+  module-scope deps (psutil via `structured_logging`/`resource_manager`) are
+  paid only on first attribute access.
 - `TYPE_CHECKING` block mirrors the map for mypy (`__init__.py:37-172`).
 - `__all__` has 118 entries: 113 unique names + `UTILS_AVAILABLE` + 4 names
   (`log_step_start/success/warning/error`) deliberately listed under both the
@@ -233,7 +233,7 @@ assignment is an owner decision during the mechanical wave:
 | `error_recovery.py` | 339 | see above |
 | `config_loader.py` | 426 | `config_io/` family with `io_utils.py` (310) — both are file/config I/O |
 | `io_utils.py` | 310 | see above |
-| `simulation_utils.py` | 355 | leave until the matplotlib import-time question resolves (R4); it is the only matplotlib-heavy module |
+| `simulation_utils.py` | 355 | REMOVED 2026-09-14 as dead code (R4 residue): zero non-test importers; its only consumer was the infrastructure coverage-gap test, now dropped. Not in `_EXPORT_MAP` (map still 113 keys). |
 | `code_metrics.py` | 56 | `config_io/` (counts generated files) |
 | `path_utils.py` | 19 | `config_io/` |
 | `system_utils.py` | 58 | `system_env/` with `venv_utils.py` (86), `matplotlib_setup.py` (20) |
@@ -375,8 +375,9 @@ registry coupling). "Gate" = commands that must be green before the next step.
   green; mcp-audit CI job green; all 21 `mcp_dispatch` import sites resolve through
   the facade.
 
-- **Step 7 — residual decision (owner).** `errors/`, `config_io/`, `system_env/`,
-  `simulation_utils` disposition per §3.8. Out of this design's committed scope.
+- **Step 7 — residual decision (owner).** `errors/`, `config_io/`, `system_env/`
+  disposition per §3.8; `simulation_utils` removed as dead code 2026-09-14
+  (R4 residue). Out of this design's committed scope.
 
 Deferred to the same later wave as SC-38 (owner decision, per the spec): ending the
 facade deprecation window (deleting old paths), and `validate_gnn*` alias retirement.

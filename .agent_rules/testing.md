@@ -1,6 +1,6 @@
 # Testing Framework
 
-> **Run tests**: `uv run pytest tests/ -v` or `PYTHONPATH=src pytest tests/ -v`
+> **Run tests**: `uv run pytest tests/ -v`
 
 ## Import Pattern ⚠️ CRITICAL
 
@@ -141,16 +141,16 @@ def test_optional_functionality(self):
 uv run python src/gnn/2_tests.py --verbose
 
 # Individual file
-PYTHONPATH=src pytest tests/gnn/test_gnn_overall.py -v
+uv run pytest tests/gnn/test_gnn_overall.py -v
 
 # Specific class/method
-PYTHONPATH=src pytest tests/gnn/test_gnn_overall.py::TestGNNComprehensive::test_imports -v
+uv run pytest tests/gnn/test_gnn_overall.py::TestGNNComprehensive::test_imports -v
 
 # Fast tests only
 uv run python src/gnn/2_tests.py --fast-only
 
 # Coverage
-PYTHONPATH=src pytest --cov=src --cov-report=term-missing tests/
+uv run pytest --cov=gnn --cov-report=term-missing tests/
 ```
 
 ---
