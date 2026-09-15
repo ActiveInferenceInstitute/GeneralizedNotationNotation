@@ -2,7 +2,7 @@
 
 The MCP responsibility split (MAJ-04 sibling-mixin extraction) moved method
 bodies into sibling modules. Those bodies read module globals such as
-``time``; tests swap ``gnn.mcp.mcp.time`` for a fake clock (see
+``time``; tests swap ``gnn.mcp.mcp.time`` for a stub clock (see
 ``tests/mcp/test_registry_internals.py``), so the binding must be resolved
 through the host module's namespace at call time — a plain ``import time``
 in a sibling module would freeze the stdlib module and silently miss the
@@ -21,7 +21,7 @@ class _MCPModuleRef:
     """Forward attribute access to a name currently bound in ``gnn.mcp.mcp``.
 
     Two-level resolution: first fetch the host module's *current* binding of
-    the referenced name (so patched seams like the fake test clock are
+    the referenced name (so patched seams like the stub test clock are
     honored), then fetch the requested attribute from that object. With no
     patch this resolves to the same object a plain import would have bound.
     """

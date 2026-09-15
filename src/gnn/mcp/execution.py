@@ -39,7 +39,7 @@ from .models import MCPPerformanceMetrics, MCPTool
 logger = logging.getLogger("mcp")
 
 # Late-bound clock: attribute access resolves through ``gnn.mcp.mcp`` so the
-# fake-clock swap in tests/mcp/test_registry_internals.py keeps working.
+# stub-clock swap in tests/mcp/test_registry_internals.py keeps working.
 time = _MCPModuleRef("time")
 
 # Bounded pool enforcing per-tool timeouts. A hung tool occupies one worker

@@ -25,7 +25,7 @@ from .models import MCPModuleInfo, MCPPerformanceMetrics, MCPResource, MCPTool
 logger = logging.getLogger("mcp")
 
 # Late-bound clock: attribute access resolves through ``gnn.mcp.mcp`` so the
-# fake-clock swap in tests/mcp/test_registry_internals.py keeps working.
+# stub-clock swap in tests/mcp/test_registry_internals.py keeps working.
 time = _MCPModuleRef("time")
 
 # Process-wide lock serializing module-body imports across the discovery
