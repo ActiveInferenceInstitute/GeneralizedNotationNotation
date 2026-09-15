@@ -34,17 +34,17 @@ Pipeline Steps:
 24. Intelligent analysis (24_intelligent_analysis.py)
 
 Usage:
-    uv run --extra dev uv run python src/gnn/main.py [options]
+    uv run --extra dev python src/gnn/main.py [options]
 
 Examples:
     # Run full pipeline
-    uv run --extra dev uv run python src/gnn/main.py --target-dir input/gnn_files --verbose
+    uv run --extra dev python src/gnn/main.py --target-dir input/gnn_files --verbose
 
     # Run specific steps only
-    uv run --extra dev uv run python src/gnn/main.py --only-steps "0,1,2,3" --verbose
+    uv run --extra dev python src/gnn/main.py --only-steps "0,1,2,3" --verbose
 
     # Skip certain steps
-    uv run --extra dev uv run python src/gnn/main.py --skip-steps "15,16" --verbose
+    uv run --extra dev python src/gnn/main.py --skip-steps "15,16" --verbose
 
 For complete usage information, see:
 - AGENTS.md: Repository conventions and the command of record
