@@ -519,7 +519,6 @@ forbidden_modules = [
     "gnn.utils.pipeline_validator",
     "gnn.utils.resource_manager",
     "gnn.utils.safe_eval",
-    "gnn.utils.simulation_utils",
     "gnn.utils.step_config",
     "gnn.utils.structured_logging",
     "gnn.utils.system_utils",

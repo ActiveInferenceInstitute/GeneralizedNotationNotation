@@ -13,7 +13,7 @@ Pipeline Flow:
     main.py → 5_type_checker.py (this script) → type_checker/ (modular implementation)
 
 How to run:
-  python src/gnn/5_type_checker.py --target-dir input/gnn_files --output-dir output --verbose
+  uv run python src/gnn/5_type_checker.py --target-dir input/gnn_files --output-dir output --verbose
   python src/gnn/main.py  # (runs as part of the pipeline)
 
 Expected outputs:

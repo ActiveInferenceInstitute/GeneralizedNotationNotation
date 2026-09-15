@@ -65,7 +65,6 @@ src/gnn/utils/
 │
 ├── # Specialized
 ├── mcp.py                           # MCP integration
-├── simulation_utils.py              # Simulation utilities
 ├── code_metrics.py                  # Code metrics collection
 └── logging/                         # Logging subpackage (see logging/README.md)
 ```

@@ -2,7 +2,7 @@
 
 Design §5 Step 0: ``import gnn.utils`` must not execute any submodule, so
 heavy module-scope dependencies (psutil via structured_logging /
-resource_manager, matplotlib via simulation_utils) stay deferred until an
+resource_manager) stay deferred until an
 exported name actually resolves through ``__getattr__``. The check runs in a
 subprocess because the pytest process itself imports psutil through the test
 stack before this test executes.

@@ -6,7 +6,7 @@ This step performs validation and quality assurance on GNN models,
 including semantic validation, performance profiling, and consistency checking.
 
 How to run:
-  python src/gnn/6_validation.py --target-dir input/gnn_files --output-dir output --verbose
+  uv run python src/gnn/6_validation.py --target-dir input/gnn_files --output-dir output --verbose
   python src/gnn/main.py  # (runs as part of the pipeline)
 
 Expected outputs:

@@ -3,9 +3,10 @@
 Infrastructure Coverage Gap Tests
 
 Addresses modules that historically had 0% coverage: timeout_manager,
-simulation_utils, visualization_optimizer. The
-``utils/recovery.py`` fallback was removed in Phase 6 as dead code —
-``setup_step_logging`` is covered in place via ``utils/logging/logging_utils``.
+visualization_optimizer. The ``utils/recovery.py`` fallback was removed in
+Phase 6 as dead code — ``setup_step_logging`` is covered in place via
+``utils/logging/logging_utils``. ``utils/simulation_utils.py`` was removed as
+dead code (R4 residue); its only importer was this file.
 """
 
 import asyncio
@@ -24,9 +25,6 @@ from gnn.utils.runtime_safety.timeout_manager import (
     TimeoutConfig,
     TimeoutManager,
 )
-
-# Import targets
-from gnn.utils.simulation_utils import DiagramAnalyzer, SimulationTracker
 
 
 # 1. Tests for utils/timeout_manager.py
@@ -67,25 +65,6 @@ class TestTimeoutManager:
     def test_process_timeout_manager(self) -> Any:
         manager = ProcessTimeoutManager()
         assert manager.default_config.base_timeout == 120.0
-
-
-# 4. Tests for utils/simulation_utils.py
-class TestSimulationUtils:
-    def test_simulation_tracker(self, tmp_path: Any) -> Any:
-        tracker = SimulationTracker("model_a", "pymdp", tmp_path)
-        tracker.log_step(0, [1, 0], [0], [1], 1.0)
-        assert len(tracker.data["traces"]["rewards"]) == 1
-
-        tracker.calculate_summary_stats()
-        assert tracker.data["summary_stats"]["total_reward"] == 1.0
-
-    def test_diagram_analyzer(self, tmp_path: Any) -> Any:
-        analyzer = DiagramAnalyzer("test_model", tmp_path)
-        analyzer.log_diagram("D1", "A", "B", {"prop": 1})
-        assert len(analyzer.analysis_data["diagrams"]) == 1
-
-        report_path = analyzer.generate_diagram_report()
-        assert report_path.exists()
 
 
 # 5. Tests for utils/visualization_optimizer.py

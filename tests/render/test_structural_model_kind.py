@@ -125,13 +125,17 @@ class TestStructuralClassification:
         (the exact condition behind issue #111); the render-side classifier
         must refine that to STRUCTURAL.
         """
-        pomdp = extract_pomdp_from_file(_write_wrapper(tmp_path), strict_validation=True)
+        pomdp = extract_pomdp_from_file(
+            _write_wrapper(tmp_path), strict_validation=True
+        )
         assert pomdp is not None
         assert detect_pomdp_space_model_kind(pomdp) is ModelKind.STRUCTURAL
 
     def test_structural_spec_view_round_trips(self, tmp_path: Path) -> None:
         """pomdp_to_gnn_spec emits a stamped structural view, no canonical A/B/C/D."""
-        pomdp = extract_pomdp_from_file(_write_wrapper(tmp_path), strict_validation=True)
+        pomdp = extract_pomdp_from_file(
+            _write_wrapper(tmp_path), strict_validation=True
+        )
         assert pomdp is not None
         spec = pomdp_to_gnn_spec(pomdp)
         assert spec["model_kind"] == "structural"
@@ -240,7 +244,9 @@ class TestStep11StructuralRenderPath:
 
     def test_pipeline_reports_unsupported_not_failed(self, tmp_path: Path) -> None:
         """Every framework is ``unsupported`` — none failed, none attempted."""
-        pomdp = extract_pomdp_from_file(_write_wrapper(tmp_path), strict_validation=True)
+        pomdp = extract_pomdp_from_file(
+            _write_wrapper(tmp_path), strict_validation=True
+        )
         assert pomdp is not None
         processor = POMDPRenderProcessor(tmp_path / "render_out")
         result = processor.process_pomdp_for_all_frameworks(pomdp)
@@ -265,7 +271,9 @@ class TestStep11StructuralRenderPath:
         self, tmp_path: Path
     ) -> None:
         """The public per-target entry says structural-spec, never cryptic."""
-        pomdp = extract_pomdp_from_file(_write_wrapper(tmp_path), strict_validation=True)
+        pomdp = extract_pomdp_from_file(
+            _write_wrapper(tmp_path), strict_validation=True
+        )
         assert pomdp is not None
         spec = pomdp_to_gnn_spec(pomdp)
         success, message, output_files = render_gnn_spec(
@@ -314,7 +322,9 @@ class TestStep11StructuralRenderPath:
         discrete parameterization; stan/bnlearn/discopy legitimately render a
         parameterization-free spec from its variables and connections.
         """
-        pomdp = extract_pomdp_from_file(_write_wrapper(tmp_path), strict_validation=True)
+        pomdp = extract_pomdp_from_file(
+            _write_wrapper(tmp_path), strict_validation=True
+        )
         assert pomdp is not None
         spec = pomdp_to_gnn_spec(pomdp)
         success, message, files = render_gnn_spec(spec, "stan", tmp_path / "stan_out")

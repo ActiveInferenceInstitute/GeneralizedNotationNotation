@@ -541,7 +541,6 @@ class _ModularTestRunner:
                     except Exception as e:
                         self.logger.debug(f"Could not close stderr file: {e}")
 
-
                 execution_time = time.time() - category_start_time
                 self.logger.info(
                     f"Test execution completed in {execution_time:.2f} seconds"

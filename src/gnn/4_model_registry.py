@@ -14,7 +14,7 @@ Pipeline Flow:
     main.py → 4_model_registry.py (this script) → model_registry/ (modular implementation)
 
 How to run:
-  python src/gnn/4_model_registry.py --target-dir input/gnn_files --output-dir output --verbose
+  uv run python src/gnn/4_model_registry.py --target-dir input/gnn_files --output-dir output --verbose
   python src/gnn/main.py  # (runs as part of the pipeline)
 
 Expected outputs:

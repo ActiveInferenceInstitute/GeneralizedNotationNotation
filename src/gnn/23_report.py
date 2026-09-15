@@ -13,7 +13,7 @@ Pipeline Flow:
     main.py → 23_report.py (this script) → report/ (modular implementation)
 
 How to run:
-  python src/gnn/23_report.py --target-dir input/gnn_files --output-dir output --verbose
+  uv run python src/gnn/23_report.py --target-dir input/gnn_files --output-dir output --verbose
   python src/gnn/main.py  # (runs as part of the pipeline)
 
 Expected outputs:

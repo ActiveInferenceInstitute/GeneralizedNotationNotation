@@ -21,13 +21,13 @@ Pipeline Flow:
 
 How to run:
   # Headless mode (pipeline default - generates artifacts only)
-  python src/gnn/22_gui.py --target-dir input/gnn_files --output-dir output --headless
+  uv run python src/gnn/22_gui.py --target-dir input/gnn_files --output-dir output --headless
 
   # Interactive mode (launch GUI servers)
-  python src/gnn/22_gui.py --target-dir input/gnn_files --output-dir output --interactive
+  uv run python src/gnn/22_gui.py --target-dir input/gnn_files --output-dir output --interactive
 
   # Specific GUI types
-  python src/gnn/22_gui.py --gui-types "gui_1,oxdraw" --interactive
+  uv run python src/gnn/22_gui.py --gui-types "gui_1,oxdraw" --interactive
 
   # As part of pipeline (automatically runs in headless mode)
   python src/gnn/main.py  # runs all steps including GUI in headless mode

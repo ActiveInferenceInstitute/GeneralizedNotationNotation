@@ -60,7 +60,9 @@ def _sole_version_literal() -> str:
     """Return the package's single ``__version__`` literal, or fail loudly."""
     literals = _version_literals()
     if len(literals) != 1:
-        rendered = ", ".join(f"{path}:{line} -> {value!r}" for path, line, value in literals)
+        rendered = ", ".join(
+            f"{path}:{line} -> {value!r}" for path, line, value in literals
+        )
         pytest.fail(
             f"expected exactly one __version__ string literal under "
             f"src/gnn/**/*.py, found {len(literals)}: {rendered or '(none)'}"
@@ -70,7 +72,9 @@ def _sole_version_literal() -> str:
 
 def test_exactly_one_version_literal_in_package() -> None:
     literals = _version_literals()
-    rendered = ", ".join(f"{path}:{line} -> {value!r}" for path, line, value in literals)
+    rendered = ", ".join(
+        f"{path}:{line} -> {value!r}" for path, line, value in literals
+    )
     assert len(literals) == 1, (
         f"expected exactly one __version__ string literal under "
         f"src/gnn/**/*.py, found {len(literals)}: {rendered or '(none)'}"

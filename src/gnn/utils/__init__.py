@@ -11,8 +11,8 @@ the package map and migration plan.
 
 Importing ``utils`` is intentionally LIGHT: no submodule executes at import
 time, so heavy module-scope dependencies (psutil via structured_logging /
-resource_manager, matplotlib via simulation_utils) are only paid when an
-exported name is actually resolved through ``__getattr__``.
+resource_manager) are only paid when an exported name is actually resolved
+through ``__getattr__``.
 
 Source modules:
 - logging_utils: Re-export facade over utils/logging/logging_utils.py (centralized, correlation-aware logging system)
