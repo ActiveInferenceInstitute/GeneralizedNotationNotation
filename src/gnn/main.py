@@ -34,17 +34,17 @@ Pipeline Steps:
 24. Intelligent analysis (24_intelligent_analysis.py)
 
 Usage:
-    uv run --extra dev python src/gnn/main.py [options]
+    uv run --extra dev uv run python src/gnn/main.py [options]
 
 Examples:
     # Run full pipeline
-    uv run --extra dev python src/gnn/main.py --target-dir input/gnn_files --verbose
+    uv run --extra dev uv run python src/gnn/main.py --target-dir input/gnn_files --verbose
 
     # Run specific steps only
-    uv run --extra dev python src/gnn/main.py --only-steps "0,1,2,3" --verbose
+    uv run --extra dev uv run python src/gnn/main.py --only-steps "0,1,2,3" --verbose
 
     # Skip certain steps
-    uv run --extra dev python src/gnn/main.py --skip-steps "15,16" --verbose
+    uv run --extra dev uv run python src/gnn/main.py --skip-steps "15,16" --verbose
 
 For complete usage information, see:
 - AGENTS.md: Repository conventions and the command of record
@@ -76,7 +76,7 @@ PROJECT_ROOT = SCRIPT_DIR.parent.parent  # project root (two levels up from src/
 
 # Script-entry side effects live inside the ``__main__`` guard below so that
 # ``import gnn.main`` stays side-effect free: no cwd change, no sys.path
-# mutation. Running ``python src/gnn/main.py`` still gets src/ on sys.path
+# mutation. Running ``uv run python src/gnn/main.py`` still gets src/ on sys.path
 # (required before the ``gnn.*`` imports resolve) and starts from
 # PROJECT_ROOT so relative path defaults behave as documented.
 if __name__ == "__main__":

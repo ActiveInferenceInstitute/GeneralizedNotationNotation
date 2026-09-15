@@ -11,7 +11,7 @@ Optional module — requires the [api] extra:
 Usage:
     python -m gnn.api.server
     # or via pipeline:
-    python src/gnn/main.py --only-steps 21  # MCP step also registers API tools
+    uv run python src/gnn/main.py --only-steps 21  # MCP step also registers API tools
 """
 
 from pathlib import Path

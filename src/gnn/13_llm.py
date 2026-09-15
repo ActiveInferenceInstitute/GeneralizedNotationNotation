@@ -14,7 +14,7 @@ Pipeline Flow:
 
 How to run:
   uv run python src/gnn/13_llm.py --target-dir input/gnn_files --output-dir output --verbose
-  python src/gnn/main.py  # (runs as part of the pipeline)
+  uv run python src/gnn/main.py  # (runs as part of the pipeline)
 
 Expected outputs:
   - LLM processing results in the specified output directory

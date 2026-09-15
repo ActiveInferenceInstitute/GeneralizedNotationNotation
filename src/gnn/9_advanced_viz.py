@@ -6,7 +6,7 @@ This step delegates advanced visualization processing to the module implementati
 
 How to run:
   uv run python src/gnn/9_advanced_viz.py --target-dir input/gnn_files --output-dir output --verbose
-  python src/gnn/main.py  # (runs as part of the pipeline)
+  uv run python src/gnn/main.py  # (runs as part of the pipeline)
 """
 
 import sys

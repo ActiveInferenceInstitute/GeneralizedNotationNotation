@@ -82,7 +82,7 @@ def build_pipeline_command(
     """Construct the GNN pipeline run command as an argv list.
 
     The shape mirrors the documented invocation:
-    ``python src/gnn/main.py --target-dir <dir> --output-dir <dir> [--skip-steps "n,m"]``.
+    ``uv run python src/gnn/main.py --target-dir <dir> --output-dir <dir> [--skip-steps "n,m"]``.
 
     Args:
         target_dir: Directory of GNN input files.

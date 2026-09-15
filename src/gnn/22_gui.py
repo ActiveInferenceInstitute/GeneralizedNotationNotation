@@ -30,7 +30,7 @@ How to run:
   uv run python src/gnn/22_gui.py --gui-types "gui_1,oxdraw" --interactive
 
   # As part of pipeline (automatically runs in headless mode)
-  python src/gnn/main.py  # runs all steps including GUI in headless mode
+  uv run python src/gnn/main.py  # runs all steps including GUI in headless mode
 
 Expected outputs:
   - GUI artifacts in output/22_gui_output/ (headless mode)

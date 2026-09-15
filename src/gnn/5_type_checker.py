@@ -14,7 +14,7 @@ Pipeline Flow:
 
 How to run:
   uv run python src/gnn/5_type_checker.py --target-dir input/gnn_files --output-dir output --verbose
-  python src/gnn/main.py  # (runs as part of the pipeline)
+  uv run python src/gnn/main.py  # (runs as part of the pipeline)
 
 Expected outputs:
   - Type checking results in the specified output directory
