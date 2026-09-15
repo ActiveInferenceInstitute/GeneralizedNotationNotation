@@ -28,7 +28,7 @@ from .models import (
 logger = logging.getLogger("mcp")
 
 # Late-bound clock: attribute access resolves through ``gnn.mcp.mcp`` so the
-# stub-clock swap in tests/mcp/test_registry_internals.py keeps working.
+# controlled-clock swap in tests/mcp/test_registry_internals.py keeps working.
 time = _MCPModuleRef("time")
 
 # Global SDK status instance
