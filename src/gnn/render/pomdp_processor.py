@@ -1136,8 +1136,7 @@ class POMDPRenderProcessor:
                     pomdp_space, "observation_modalities", None
                 )
                 or [],
-                "control_factors": getattr(pomdp_space, "control_factors", None)
-                or [],
+                "control_factors": getattr(pomdp_space, "control_factors", None) or [],
                 "adapter_notes": getattr(pomdp_space, "adapter_notes", None) or [],
             },
             "canonical_pomdp_schema": "structural_spec_v1",

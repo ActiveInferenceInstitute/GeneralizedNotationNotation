@@ -404,8 +404,7 @@ def detect_pomdp_space_model_kind(pomdp_space: Any) -> ModelKind:
                 pomdp_space, "initial_parameterization", None
             )
             or {},
-            "model_parameters": getattr(pomdp_space, "model_parameters", None)
-            or {},
+            "model_parameters": getattr(pomdp_space, "model_parameters", None) or {},
             "structured_pomdp": {
                 "matrices": getattr(pomdp_space, "matrices", None) or {},
             },
