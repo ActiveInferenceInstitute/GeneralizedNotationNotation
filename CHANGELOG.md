@@ -8,6 +8,36 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ## [Unreleased]
 
+### Changed (2026-09-15 — round-2 sweep)
+
+- **MCP god-class decomposed (MAJ-04 pattern).** `src/gnn/mcp/mcp.py`
+  (1898 lines) split into five responsibility mixins —
+  `discovery.py` (452), `registry.py` (292), `execution.py` (395),
+  `introspection.py` (331), `metrics.py` (275) — with the facade assembly +
+  module facade functions preserved (465 lines). All 44 moved members
+  byte-identical (AST-verified); import surface, `__all__`, and registered
+  tool names unchanged; facade-contract probe added;
+  `tests/mcp/` 417 passed.
+- **`utils/simulation_utils.py` removed as production-dead** (R4 residue
+  resolved by deletion, not extraction): zero non-test importers, zero
+  `_EXPORT_MAP` keys, module-scope matplotlib import gone;
+  `DiagramAnalyzer` deleted with it; pyproject import-linter
+  forbidden-modules entry dropped; the sole test importer cleaned up;
+  `utils_split_design.md` §3.8 marked REMOVED with rationale.
+- **Numbered-script docstring run commands migrated** to
+  `uv run python src/gnn/NN.py` (27 stale lines across the 25 numbered
+  scripts + 2 install-hint strings in
+  `execute/pymdp/package_detector.py`); `.agent_rules` residue retired
+  (nonexistent `requirements.txt` reference; `PYTHONPATH=src pytest`
+  invocations aligned with the justfile/pyproject convention).
+
+### Recorded (2026-09-15)
+
+- Remaining 1500–2000-line band (no >2000-line files): `main.py` 1949
+  (step-selection/config/summary/execution clusters), `extract/
+  pomdp_extractor.py` 1775, `execute/processor.py` 1543 — decomposition
+  surfaces identified, not yet scheduled.
+
 ### Changed (2026-09-14 — comprehensive sweep)
 
 - **Logging single-entry import-linter contract (SC-38 tail).**

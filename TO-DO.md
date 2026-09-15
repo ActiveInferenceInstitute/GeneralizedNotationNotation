@@ -1,17 +1,16 @@
 # TO-DO - GNN Pipeline Roadmap
 
-**Last Updated**: 2026-09-14 (comprehensive sweep: logging single-entry
-import-linter contract landed (`lint-imports` 3/3; `base_processor.py:25`
-repointed to the `gnn.utils.logging_utils` facade), remaining validate_gnn*
-src/doc callers migrated to canonical names (zero live callers; alias defs +
-v4-gated re-exports remain for the window), stale pre-v3.3.0 commands/imports
-retired from `.agent_rules/` + `docs/gnn/modules/` (16 files), silent-degradation
-warnings added (PKL variable parse, continuous-spec misclassification,
-render-module-info failure shape), mypy `strict_equality` + `warn_unreachable`
-flipped at 0 findings (671 files), version single-source pin test added, issue
-#111 structural-spec classification fixed, PR queue reconciled (#112 merged;
-#68/#100-#108 closed as superseded with evidence). Evidence in
-`SCOPE-2026-09-12.md` §Waves + CHANGELOG 2026-09-14.)
+**Last Updated**: 2026-09-15 (round-2 sweep: MCP god-class decomposed per
+the MAJ-04 pattern (`src/gnn/mcp/mcp.py` 1898 → 465 lines; five
+responsibility mixins — discovery/registry/execution/introspection/metrics —
+44/44 byte-identical member moves, facade + import surface + registered tool
+names unchanged, `tests/mcp/` 417 green); `utils/simulation_utils.py` REMOVED
+as production-dead (R4 resolved; zero non-test importers; matplotlib
+module-scope import gone; `_EXPORT_MAP` unchanged at 113), remaining
+1500–2000-line band recorded (main.py 1949, pomdp_extractor 1775,
+execute/processor 1543), numbered-script docstring run commands migrated to
+`uv run` (27 lines) + `.agent_rules` requirements.txt/PYTHONPATH residue
+retired. Evidence in CHANGELOG 2026-09-15.)
 **Current Version**: 3.3.0
 **Next Target**: v4.0.0 (bounded autonomy, pipeline stage consolidation, multi-agent stigmergic topologies, and high-dimensional active inference)
 
@@ -341,7 +340,7 @@ Still open (residuals, in rough order):
 | ID | Scope | Acceptance evidence |
 | --- | --- | --- |
 | validate_gnn* retirement | Window OPENED 2026-09-11 (target v4.0.0, current 3.3.0): all 10 alias sites emit `DeprecationWarning` (`stacklevel=2`) naming the canonical replacement + "will be removed in v4.0.0"; manifest canonical/old-name inversion fixed; warning emission pinned in `tests/test_validate_surface_aliases.py`. SRC/DOC CALLER MIGRATION COMPLETE 2026-09-14: zero live callers remain across src/gnn, scripts/, and maintained docs (audited against every alias name incl. package-root lazy exports). | Retirement in v4.0.0 = delete the alias defs, their pins in `tests/test_validate_surface_aliases.py`, and any registry entries (no remaining src/doc callers to migrate). |
-| SC-38 tail (remainder) | Families `errors/`, `config_io/`, `system_env/` EXTRACTED 2026-09-12 (§5 Step 7; DeprecationWarning facades at old paths; `_EXPORT_MAP` values repointed, keys frozen at 113; consumers + tests migrated). Logging single-entry contract LANDED 2026-09-14: `base_processor.py` repointed to the `gnn.utils.logging_utils` facade; third forbidden-import contract live (`lint-imports` 3/3, two documented pre-split-tree ignores). Remaining per design §8: `simulation_utils` (deferred R4 — module-scope matplotlib) and facade deprecation-window end (delete old paths, v4-gated). | `lint-imports` 3/3 contracts kept; migrated suites green (332 tests in `tests/utils`). |
+| SC-38 tail (remainder) | Families `errors/`, `config_io/`, `system_env/` EXTRACTED 2026-09-12 (§5 Step 7; DeprecationWarning facades at old paths; `_EXPORT_MAP` values repointed, keys frozen at 113; consumers + tests migrated). Logging single-entry contract LANDED 2026-09-14: `base_processor.py` repointed to the `gnn.utils.logging_utils` facade; third forbidden-import contract live (`lint-imports` 3/3, two documented pre-split-tree ignores). `simulation_utils` RESOLVED 2026-09-15 as production-dead removal (R4's extraction question mooted: zero non-test importers, zero `_EXPORT_MAP` keys; module + DiagramAnalyzer deleted, pyproject forbidden-modules entry dropped) — §3.8 table updated. Remaining per design §8: facade deprecation-window end only (delete old paths, v4-gated). | `lint-imports` 3/3 contracts kept; migrated suites green (332 tests in `tests/utils`). |
 | V4-STAGE limits | Consolidated executor now covers stems {0,3,5,7,8,11} with timeout/tee/carrier on serial + parallel tiers; remaining limits recorded in ADR 0001: in-process steps cannot be force-killed, stem 9 excluded (D2 CLI shell-out), matplotlib caveat in thread-pool tier. | Each landed slice pinned by parity tests in `tests/pipeline/`. |
 | paired-repin discipline | The fep_lean source-pin seals GNN owner digests at pin time; ANY later owner-file edit re-drifts the pair (3 drift cycles documented on PR #110). Standing closeout ordering: all content edits → token ritual → bridge re-pin → fep_lean PR/merge → pair-pin bump as the FINAL commit, single push. Canonical ordering: `docs/development/fep_lean_paired_revision.md`. | `fep-lean bridge status --gnn-root .` green at the pin; zero post-bump pushes. |
 
