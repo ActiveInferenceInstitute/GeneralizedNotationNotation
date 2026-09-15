@@ -1,16 +1,27 @@
 # TO-DO - GNN Pipeline Roadmap
 
-**Last Updated**: 2026-09-15 (round-2 sweep: MCP god-class decomposed per
-the MAJ-04 pattern (`src/gnn/mcp/mcp.py` 1898 → 465 lines; five
-responsibility mixins — discovery/registry/execution/introspection/metrics —
-44/44 byte-identical member moves, facade + import surface + registered tool
-names unchanged, `tests/mcp/` 417 green); `utils/simulation_utils.py` REMOVED
-as production-dead (R4 resolved; zero non-test importers; matplotlib
-module-scope import gone; `_EXPORT_MAP` unchanged at 113), remaining
-1500–2000-line band recorded (main.py 1949, pomdp_extractor 1775,
-execute/processor 1543), numbered-script docstring run commands migrated to
-`uv run` (27 lines) + `.agent_rules` requirements.txt/PYTHONPATH residue
-retired. Evidence in CHANGELOG 2026-09-15.)
+**Last Updated**: 2026-09-15 (round-2 sweep + scope pass: MCP god-class
+decomposed per the MAJ-04 pattern (`src/gnn/mcp/mcp.py` 1898 → 465 lines;
+five responsibility mixins — discovery/registry/execution/introspection/
+metrics — 44/44 byte-identical member moves, facade + import surface +
+registered tool names unchanged, `tests/mcp/` 417 green);
+`utils/simulation_utils.py` REMOVED as production-dead (R4 resolved; zero
+non-test importers; matplotlib module-scope import gone; `_EXPORT_MAP`
+unchanged at 113), remaining 1500–2000-line band recorded and re-verified
+by this pass (main.py 1949, pomdp_extractor 1775, execute/processor 1543),
+numbered-script docstring run commands migrated to `uv run` (27 lines) +
+`.agent_rules` requirements.txt/PYTHONPATH residue retired; scope pass:
+TO-DO truth pass (12 open rows cleared with fresh probes, 7
+residual rows re-verified) completed by the corrective scope agent — 8 more
+probe batches dispositioned MAJ-06 (landed: all 18 module `process_*_mcp`
+wrappers delegate through `run_pipeline_step_mcp`,
+`src/gnn/utils/mcp/dispatch.py`) and GNN-04 (pin current at
+`.github/gnn-pair.json` @ `c0115779`), confirmed the F401/F811 split /
+extras parity / dependency-floors rows RESOLVED-in-place, shrunk W2-M2 to
+pinning tests (both behavior halves verified landed), confirmed the W2-J1
+third site migrated, and wrote the `SCOPE-2026-09-15.md` spec
+(14 rows cleared, 7 open rows, 2 major / 3 medium / 2 minor improvements).
+Evidence in CHANGELOG 2026-09-15 and `SCOPE-2026-09-15.md`.)
 **Current Version**: 3.3.0
 **Next Target**: v4.0.0 (bounded autonomy, pipeline stage consolidation, multi-agent stigmergic topologies, and high-dimensional active inference)
 
@@ -22,6 +33,30 @@ env-conditioned action selection; probe:
 release receipt (tests, mypy, ruff, documentation audits) is in `CHANGELOG.md`
 §3.2.0.
 
+Scope pass 2026-09-15 (truth pass; per-item evidence in
+`SCOPE-2026-09-15.md` §Cleared-Item-Evidence): cleared W2-D1 (validator
+probes package-rooted and fail-loud on missing targets,
+`src/gnn/pipeline/pipeline_runtime_validator.py:68-85`), W2-D2 (ontology
+default resolves the packaged file,
+`src/gnn/utils/arguments/pipeline_arguments.py:13-15`; zero retired
+`src/ontology` strings in src/gnn), W2-D3 (zero legacy
+`gnn.utils.pipeline_template` imports; the numbered scripts import
+`gnn.utils.pipeline_orchestration.pipeline_template` directly), W2-D4
+(`src/gnn/execute/processor.py:558` defaults `require_render_summary=True`),
+W2-D5 (`src/gnn/main.py:459-485` `_preflight_config_gate`, wired at `:608`),
+W2-D7 (`tests/pipeline/test_main_wiring.py` exists; `test_pipeline_overall`
+façade checks deleted per the 2026-09-11 wave), W2-M1 (dead registry tokens
+absent; registry names `_export_with_geo`,
+`src/gnn/pipeline/step_registry.py:104-105,273-275`), W2-M3 (zero
+`src.cli`/`src.mcp`/stale-`PYTHONPATH=src`/retired `src/render/` strings in
+src/gnn), W2-M4 (the row's own acceptance grep returns zero), MED-03b
+(`src/gnn/execute/rxinfer/rxinfer_runner.py:66-69` evidence persistence),
+MED-04/MIN-01 (transport limits + hygiene, 2026-09-11 wave). W2-D6 landed
+only its strings half; W2-M2's second half was verified landed by the
+corrective pass (error-level parse log with path, dead `.py` branch gone)
+and the row is shrunk to pinning tests — both remain residuals in the
+pipeline-orchestration table, with W2-J1's third site confirmed migrated
+(`export/processor.py:585-588`).
 GNN-02 (linear-Gaussian F/control/H/Q/R export:
 `src/gnn/export/geo_infer_gaussian.py`, `tests/export/test_geo_infer_gaussian.py`,
 paired analytic verification in `docs/development/geo_infer_2026_09.md`) and
@@ -67,64 +102,39 @@ mechanical split.
 
 ## Open Scoped Roadmap
 
-Every item below is cold-startable: scope, files, verification, and acceptance
-are pinned.
-
-| ID | Scope | Acceptance evidence |
-| --- | --- | --- |
-
+Every open item below is cold-startable: scope, files, verification, and
+acceptance are pinned. The former top-level roadmap table was emptied by
+landings and is retired (2026-09-15 scope pass); open rows live in the
+territory tables below and in the 'Still open (residuals)' table near the
+end of this file.
 
 ### Smaller scoped cleanups (independent of the majors)
 
-- ruff F401/F811 policy ignore: RESOLVED 2026-09-07 - the global
-  `F401`/`F811` ignore entries are gone from pyproject; nine genuine
-  re-export surfaces (six MAJ-04 facades, `round_trip_availability`,
-  `visualizer_style`, `execute/processor.py`) and the `src/gnn/parsers/*`
-  guarded optional-backend probes hold documented per-file-ignores, and
-  66 genuinely dead imports were removed (57 src/gnn, 10 scripts, 9 F811
-  re-imports). `ruff --select F401,F811 src/gnn` now reports 0 findings;
-  `ruff check src/gnn scripts`, mypy, and the full suite stayed green
-  (4285 passed). Consumer safety: AST-resolved `from <module> import`
-  scan across src/gnn, tests, and scripts against every removed name.
-- Local/CI parity: tokens and skills-health are CI-wired via
-  `.github/workflows/local-gates.yml` (2026-09-07; `skills-health` also
-  needed a repo-root sys.path bootstrap). `just gridworld` remains
-  unwired deliberately - the committed `output/` tree currently fails
-  its contract and regeneration needs the Julia toolchains.
-  ml-ai/torch extras parity: RESOLVED 2026-09-08 - verified
-  `uv sync --extra dev --extra ml-ai --extra torch --frozen` resolves from
-  the lock and un-skips the 12 environment-skipped tests (11 sklearn
-  inference tests, 1 torch continuous-render test); all 22 tests in the two
-  affected files pass with the extras present (no latent failures behind the
-  skip). The local test-cov command should therefore run with
-  `--extra ml-ai --extra torch` appended. The Ollama-ignore half of this
-  item stays open-by-design: no local Ollama daemon exists, so
-  `test-cov`'s `--ignore=tests/llm/test_llm_ollama*.py` remains correct
-  locally while the CI coverage run exercises those tests where they
-  degrade gracefully without a daemon. Coverage selection parity on the
-  remaining axis: `just test-cov` now adopts CI's
-  `-m "not pipeline and not mcp"` deselect so both invocations apply the
-  same pipeline/mcp test policy (4326 collected locally; CI collects
-  4352 - the 26-test Ollama delta is the open-by-design asymmetry
-  recorded above).
-- Dependency floors: RAISED 2026-09-07 for numpy (>=2.0), pandas
-  (>=2.0), openai (>=2.0), pytest (>=8.0), mypy (>=1.0) - the lock
-  resolved identically (only requires-dist metadata moved; zero package
-  pins changed). Remaining cosmetic floors (networkx 2.6, plotly 5.15,
-  scipy 1.7, ...) can follow at the next deliberate lock refresh.
-- `gnn/utils/pipeline_validator.py` vs `gnn/pipeline/pipeline_validator.py`
-  near-name collision: RESOLVED 2026-09-08 — the lower-traffic runtime
-  integration tester renamed to
-  `gnn/pipeline/pipeline_runtime_validator.py` (compatibility module at the
-  old path emits `DeprecationWarning` and re-exports `PipelineValidator`/`main`;
-  contract pinned in `tests/pipeline/test_pipeline_runtime_validator.py`);
-  import-site grep has zero stragglers.
+- ruff F401/F811 policy split: RESOLVED 2026-09-07 — global ignores gone,
+  nine genuine re-export surfaces + the `src/gnn/parsers/*` guarded
+  optional-backend probes hold documented per-file-ignores, 66 genuinely
+  dead imports removed; `ruff --select F401,F811 src/gnn` reported 0 at the
+  time (receipt in CHANGELOG; not re-run within the 2026-09-15 probe
+  budget).
+- Local/CI parity: tokens and skills-health CI-wired 2026-09-07;
+  ml-ai/torch extras parity RESOLVED 2026-09-08 (`uv sync --extra dev
+  --extra ml-ai --extra torch --frozen` un-skips the 12 env-skipped tests;
+  all 22 affected tests pass with the extras present). Residuals,
+  open-by-design: local `test-cov` keeps
+  `--ignore=tests/llm/test_llm_ollama*.py` (no local daemon) while the CI
+  coverage run exercises those tests (26-test asymmetry, documented);
+  `just gridworld` stays unwired until Julia toolchains exist.
+- Dependency floors: RAISED 2026-09-07 for numpy (>=2.0), pandas (>=2.0),
+  openai (>=2.0), pytest (>=8.0), mypy (>=1.0). Residual: cosmetic floors
+  (networkx 2.6, plotly 5.15, scipy 1.7, ...) at the next deliberate lock
+  refresh.
+- `gnn/utils/pipeline_validator.py` near-name collision: RESOLVED
+  2026-09-08 — renamed to `gnn/pipeline/pipeline_runtime_validator.py`
+  (compat module at the old path emits `DeprecationWarning`; zero
+  import-site stragglers).
 - Stale singular module paths in maintained docs: RESOLVED 2026-09-08 —
-  all 21 occurrences (19 lines) of `src/gnn/parser.py`, `src/gnn/schema.py`,
-  and `src/gnn/schema_validator.py` re-pointed to their verified real homes
-  (`schema/parser.py`, `schema_validator/syntax.py`, `parsers/system.py`);
-  regression gate `scripts/check_doc_path_references.py` is CI-wired
-  (local-gates) and strict (cap 0).
+  21 occurrences repointed to their verified real homes; regression gate
+  `scripts/check_doc_path_references.py` is CI-wired and strict (cap 0).
 
 ## Deep horizon wave 2 - analysis + utils
 
@@ -145,26 +155,18 @@ surface registry-derived, whole-territory strict typing clean.
 
 ## Deep horizon wave 2 - pipeline orchestration
 
-Scouted 2026-09-08 against tip b73e467bf (six read-only scouts over
+Scoped 2026-09-08 against tip b73e467bf (six read-only scouts over
 `src/gnn/pipeline/`, the 25 numbered orchestrators, and pipeline-facing
-diagnostics). Import-surface retirement (v3.3.0) is clean; remaining defects
-are stale-path bugs, silent-swallow hardening gaps, and untested wiring
-surfaces.
+diagnostics). Rows W2-D1..D5, W2-D7, W2-M1, W2-M3, W2-M4 landed via the
+2026-09-11 wave and were re-verified against this tree by the 2026-09-15
+scope pass (per-item evidence in `SCOPE-2026-09-15.md`
+§Cleared-Item-Evidence); residuals below.
 
 | ID | Scope | Acceptance evidence |
 | --- | --- | --- |
-| W2-D1 | Medium: `src/gnn/pipeline/pipeline_runtime_validator.py:63-89` probes retired `src/render/...` paths (post-v3.3.0 they are `src/gnn/render/...`), so every renderer probe silently no-ops and the check validates nothing. Retarget probes to the real package paths via `importlib.util` source lookup; delete or fail-loud unreachable ones. | At least one probe reads an existing renderer file and one deliberate bad-path probe is covered by a test that fails when the path is missing; `uv run --extra dev python -m pytest tests/pipeline/test_pipeline_runtime_validator.py -q` green. |
-| W2-D2 | Medium: `src/gnn/utils/pipeline_arguments.py:138` defaults `--ontology-terms-file` to the retired `src/ontology/act_inf_ontology_terms.json` (real file lives at `src/gnn/ontology/`), so the default always misses at runtime. Point the default at the packaged file; migrate fixture strings in `src/gnn/utils/test_utils.py:445,531`. | Pipeline runs without `--ontology-terms-file` resolve the packaged file; fixture-updated tests pass; no other `src/ontology` string remains in src/. |
-| W2-D3 | Medium: `src/gnn/execute/executor.py:91` imports `get_output_dir_for_script` from the legacy `gnn.utils.pipeline_template` copy while `gnn.pipeline.config` is canonical. Cutover the import and add a module-level `DeprecationWarning` re-export shim on the legacy symbol (MAJ-05 pattern). | Same directory names for `12_execute.py` before/after; `gnn.utils.pipeline_template.get_output_dir_for_script` emits `DeprecationWarning`; zero internal non-test callers of the legacy symbol. |
-| W2-D4 | Medium: 11→12 handoff is silent when `render_processing_summary.json` is missing (`execute/processor.py:549` defaults `require_render_summary=False`). Flip the default to True with an explicit opt-out; verify the public POMDP GridWorld run still passes (render always precedes execute there). | Step 12 without a render summary fails exit 1 unless opted out; `just pipeline` / public-run receipts unaffected; targeted execute tests green. |
-| W2-D5 | Medium: preflight's cheap `validate_config` (`src/gnn/pipeline/preflight.py:165-184`) is never run by the pipeline itself - bad `pipeline.skip_steps` config is only caught if the user separately ran `gnn preflight`. Wire the config-only validation into `_prepare_pipeline_context` (`src/gnn/main.py`) before any step executes. | `pipeline.skip_steps: ["abc"]` in `input/config.yaml` fails the run fast with the preflight message before step 0; config-free runs unaffected; new wiring test green. |
-| W2-D6 | Medium: `health_check.py` error branches untested (version_issues :210-214, julia subprocess failure :274-286, incomplete structure :334-337, limited/partial integration :358-366, scoring tiers :388-449, recommendations :456-520, `main()` exit codes :655-700, verbose report). Add monkeypatched deterministic tests; fix stale header comment (:15-16) and the `/24 available` vs 25-step strings (:593,598,684). | +8-10 tests in `tests/pipeline/test_health_check.py`, all offline; full health-check file green; cosmetic strings consistent. |
-| W2-D7 | Medium: composition wiring untested - config-driven `only_steps`/`skip_steps` fallback, `skip_llm` auto-inject, `--autonomous` main() branch, serial/parallel loops with faked `execute_pipeline_step`, publish-gate failure → `_save_minimal_pipeline_summary`, mid-run crash receipt, `GNN_RUN_ID` env scope, `testing_matrix` global_steps skip + folder fan-out (all in `src/gnn/main.py`). Also delete worthless tests: `tests/pipeline/test_pipeline_overall.py` hasattr-façade checks and dict-replay step-numbering test. | Cheap (<10ms each) wiring tests assert real main.py decisions with faked executors; deleted tests' assertions replaced by behavior tests; orchestration subset green. |
-| W2-M1 | Minor: registry dead metadata - `StepInfo.additional_args_key` points at nonexistent `STEP_ADDITIONAL_ARGUMENTS` (step_registry.py:35); `default_recursive` field never consumed (scripts pass it directly to the template); stale stage-name comment (step_registry.py:33); registry `module_function` for 7_export documents inner `process_export` while the script registers wrapper `_export_with_geo` (rename the wrapper). | No `additional_args_key`/`STEP_ADDITIONAL_ARGUMENTS`/`default_recursive` references remain; `STANDARD_MODULE_FUNCTION_NAMES["7_export"]` matches the registered callable; step-registry tests green. |
-| W2-M2 | Minor: `config.py` hardening - unknown stems silently fall back to `<stem>_output` (config.py:193-211) so producer/consumer can diverge on typos; YAML parse failure logged at `debug` (config.py:50-59); unreachable `.py` branch (config.py:172-178). Add a warning naming the script on the recovery path, raise parse-failure logging to error with the path, remove the dead branch with a pinning unit test. | Unknown stem logs a visible warning; malformed config produces error-level log with path; `get_output_dir_for_script("7_export.py", ...)` still returns `7_export_output`; targeted tests green. |
-| W2-M3 | Minor: retired dotted-module references - `src/gnn/cli/SPEC.md:26` says `gnn = "src.cli:main"`, `src/gnn/mcp/README.md:362` documents `-m src.mcp.cli`; stale pre-v3.3.0 PYTHONPATH comment `src/gnn/execute/pymdp/pymdp_runner.py:137-139`; stale Julia project paths `src/gnn/render/health.py:63-64` (real envs under `src/gnn/execute/`); comment-only stub `register_tools` in `src/gnn/utils/test_utils.py:1003-1007`. | No `src.cli`/`src.mcp` dotted refs in src/gnn; documented stdio config resolves; stub deleted; mcp tool-count audit stays ≥140. |
-| W2-M4 | Minor: stale path prose in all 25 numbered-script docstrings + `main.py` usage examples (main.py:37-47) + manuscript prose strings (`src/gnn/manuscript/variables.py:12,686,698,746,760,834`). Mechanical: `python src/NN_*.py` → `uv run python src/gnn/NN_*.py`, `src/X/` → `gnn/X` package refs. | `grep -rn "python src/(main\\\\.py\|[0-9])"` over src/gnn returns zero; doc gates (`check_gnn_doc_patterns`, `check_maintained_doc_terms`, `check_repo_terminology`, `check_doc_path_references`) pass. |
-| W2-J1 | Major: three independent base-output-dir reconstruction heuristics (`export/processor.py:537-544` name-prefix heuristic, `analysis/framework_common.py:127-132` ImportError sibling fallback, `gui/runner.py:26-30` broad-except fallback) duplicate path logic with silent divergence risk. Consolidate into one `resolve_step_output_dir(step_stem, output_dir)` helper in `gnn.pipeline.config` with explicit nested-dir tests; migrate all call sites. | Single helper; all three call sites migrated with identical resolved paths for `output/`, `output/7_export_output/`, and arbitrary subdirs; unit tests pin nested inputs; full orchestration gate green. |
+| W2-D6 | Medium residual (strings half landed 2026-09-11; verified 2026-09-15: no `/24` remains in `src/gnn/pipeline/health_check.py`): error branches still untested — version_issues, julia subprocess failure, incomplete structure, limited/partial integration, scoring tiers, recommendations, `main()` exit codes, verbose report (branch map as scoped 2026-09-08); stale header comment :15-16 also unconfirmed. Add monkeypatched deterministic tests. | +8-10 offline tests in `tests/pipeline/test_health_check.py`, all monkeypatched; full health-check file green; cosmetic strings stay consistent. |
+| W2-M2 | Minor residual, scope shrunk 2026-09-15 (both behavior halves verified landed: unregistered stems warn loudly, `src/gnn/pipeline/config.py:210-217`; parse failure logs error-level with the path, `config.py:86-88`; the dead `.py` branch is gone — the loader dispatches `.yaml`/`.yml` vs JSON by suffix, `config.py:77-86`): only the pinning tests remain. | Pinning tests assert the error-level parse log naming the path, the unregistered-stem warning, and `get_output_dir_for_script("7_export.py", ...)` returning `7_export_output`. |
+| W2-J1 | Major residual: the shared `resolve_step_output_dir` helper exists and all three historical sites route through it (`src/gnn/analysis/framework_common.py:129`, `src/gnn/gui/runner.py:28`, `src/gnn/export/processor.py:585-588` — third-site migration confirmed 2026-09-15, the name-prefix heuristic is deleted with a pointer comment), but the two wrapper helpers keep divergent `except ImportError` fallbacks (`framework_common.py:130-131` → `output_dir.parent / "12_execute_output"`; `runner.py:29-30` → `output_dir` unchanged) — fold the fallback semantics into the helper and delete the divergent wrappers. | Single helper; all call sites resolve identical paths for `output/`, `output/7_export_output/`, and arbitrary subdirs; unit tests pin nested inputs; orchestration gate green. |
 
 Out-of-scope observations (recorded, not scoped): `PipelineContext`
 (`src/gnn/pipeline/context.py`) is dead weight - never instantiated by
@@ -175,15 +177,16 @@ in-memory propagation (steps 5/6/8/10/11/13 re-parse input; only 3→7 and
 main.py composition (feature gap, not a test gap). These need a design
 decision, not a mechanical fix.
 
-Scope evidence (verified 2026-09-08 against main, post-PR-#69): the
-coverage floor is `fail_under = 50` (pyproject.toml:397), so deleting the
-`test_pipeline_overall.py` hasattr-façade checks is coverage-safe and
-needs no replacement padding. `PipelineContext` removal surface is closed:
-10 files, all inside `src/gnn/pipeline/context.py`, its dedicated test
+Scope evidence (re-verified 2026-09-15): the coverage floor is
+`fail_under = 60` (raised 50 → 60, MAJ-T1, 2026-09-10), and
+`tests/pipeline/test_pipeline_overall.py` is deleted (W2-D7, 2026-09-11).
+`PipelineContext` remains production-unwired (context.py existence
+re-confirmed 2026-09-15): removal surface is closed —
+`src/gnn/pipeline/context.py`, its dedicated test
 `tests/pipeline/test_pipeline_context.py`, the re-export pair in
 `pipeline/__init__.py` (import + `__all__`), and two AGENTS.md doc lines
 (:148, :483) — zero production callers; removal is mechanical once the
-delete-vs-wire-in decision is made.
+delete-vs-wire-in decision is made (scoped as SCOPE-2026-09-15.md N-4).
 
 ## Deep horizon wave 2 - render backends
 
@@ -235,35 +238,24 @@ Completed rows (file:line evidence in PR descriptions):
 - MIN-03 ✓ (PR #73): envelope `input=` support; 141/141 schema-vs-signature
   audit
 
-Remainders (scoped, cold-startable):
+Remainders — ALL LANDED (receipts in SCOPE-2026-09-11.md §Wave 2 and
+CHANGELOG 2026-09-11; re-verified 2026-09-15):
 - MED-03a ✓ (PR #97): executor timeout alignment (60→3600/600), pymdp
   self-heal (.cleaned.py + discovery filter + 5 tests), lean temp-dir
   leak, rxinfer TOML --project=
-- MED-03b (OPEN): rxinfer execution evidence persistence — the runner
-  documents `output_dir` as "unused currently, reserved for consistency"
-  (`rxinfer_runner.py:66`); the caller passes nothing (`:201`); no
-  stdout/stderr/log files are written, unlike jax (`jax_runner.py:201-232`)
-  and pymdp (`pymdp_runner.py:120-127`). Fix: persist the envelope's
-  stdout/stderr next to the TOML/.jl target like jax does, and add an
-  execution log. Acceptance: rxinfer runner writes
-  `{output_dir}/{stem}_stdout.txt`, `{stem}_stderr.txt`,
-  `{stem}_execution_log.json` on every run (success and failure), pinned
-  by a test in tests/execute/.
-- MED-04: no request-size limits on HTTP/stdio
-- MIN-01: registry/transport hygiene (dead code, cache by-reference, ensure_ascii)
+- MED-03b ✓ (RxInferPersist): rxinfer execution evidence persistence —
+  `{stem}_stdout.txt` / `{stem}_stderr.txt` / `{stem}_execution_log.json`
+  written on every run (`src/gnn/execute/rxinfer/rxinfer_runner.py:66-69`,
+  `:168-170`, `:190-192`; documented in `execute/rxinfer/AGENTS.md:60`)
+- MED-04 ✓ + MIN-01 ✓ (MCPHygiene): HTTP body cap + 400/413 envelopes,
+  stdio bounded read, response-size policy; dead duplicate-registration
+  check and dead -32700 branch removed, cache deepcopy, ensure_ascii
+  parity
 
-| ID | Sev | Scope | Acceptance evidence |
-| --- | --- | --- | --- |
-| MAJ-08 | major | MCP transport serialization is strict on the wire, tolerant in the cache, and drops failures silently: tool results returning sets/bytes/datetime/numpy scalars crash the stdio writer thread (swallowed TypeError, client hangs forever — no request timeout exists) and abort the HTTP response; NaN/Inf floats emit bare `NaN`/`Infinity` tokens (invalid JSON, RFC 8259) on all three transports (`server_stdio.py:225-239`, `server_http.py:416-423`, `server_core.py:174-178`); cache-key dump uses `default=str` while wire dump is strict (`mcp.py:1030-1043`), so unserializable-param calls re-execute then fail at write time and distinct params can alias to one cache key; error-path data itself can be unserializable (`MCPValidationError.raw` stored verbatim, `exceptions.py:137-140`). Fix: one shared `serialize_response` helper (allow_nan=False, NaN/Inf sanitizer, default=str fallback) used by all transports and by error-envelope construction. | Transport-parametrized tests in `tests/mcp/`: a tool returning set/bytes/datetime/NaN yields a wire-valid -32603 envelope on stdio + HTTP + server_core (no hang, no abort); a set-shaped param yields a wire-valid -32602 error; cached and live results serialize identically. |
-| MAJ-09 | major | `MCPTool.timeout` is accepted at registration, advertised in capabilities, documented (`MCP_DOCUMENTATION.md:299,677`), and `StdioServer(request_timeout=30.0)` accepts the arg — but no execution path consults either: `execute_tool` runs `tool.func(**params)` synchronously (`mcp.py:977`), so a hung tool stalls the worker forever and queued requests never get any response. Fix: enforce tool timeout via the existing executor (`future.result(timeout=...)`) emitting a reserved JSON-RPC timeout code, or remove the field from capabilities. | A tool sleeping > timeout returns a timeout error envelope within timeout+ε on server_core and stdio; contract pinned by a test. |
-| MAJ-10 | major | Step-12 processor bypasses the canonical envelope: raw `subprocess.run` at `execute/processor.py:1167-1174` with hand-rolled timeout/OSError handling despite `subprocess_envelope.py:5-7` claiming universal coverage; exit-code vocabulary collides (-1 = timeout AND OSError AND never-started AND executor-unavailable; processor adds -2; lean renames the key to `returncode`, `lean_runner.py:109`); on timeout processor writes literal `stderr="Timeout"` discarding the partial output the envelope would keep (`processor.py:1193` vs `subprocess_envelope.py:85-86`). Fix: shared exit-code constants module (NEVER_STARTED/-1, INTERNAL_ERROR/-2) used by envelope + processor + lean; processor per-script execution calls `run_subprocess_envelope` and derives `error_type` from the envelope; `execute/sandbox.py:171` delegates its inline envelope re-implementation; `execute/julia_setup.py:123` setup run migrates. | Processor timeout test asserts partial stderr retained + `error_type == "TimeoutExpired"`; sandbox/julia_setup results envelope-shaped; full suite green; `determinism_checks` unchanged at 952. |
-| MED-01 | medium | Param-validation fidelity: with default non-strict validation, wrong/extra/missing kwargs surface as -32603 "Internal error" with raw `str(TypeError)` leaked to the client (`mcp.py:977`, `mcp.py:1004-1014`, `server_core.py:160-165`) instead of -32602 INVALID_PARAMS; `_validate_output` rejects a `None` return with -32602 (params were valid — wrong class of failure, `mcp.py:1592-1595`); non-strict mode silently skips all schema constraints while tools advertise them (`mcp.py:1318-1330`). | Tests: wrong/missing args → -32602 with tool name; unexpected exceptions redacted (generic message server-side, no `str(e)` on the wire); None-return documented distinct code; capabilities expose a validation-mode hint. |
-| MED-02 | medium | MCP resources: `list_available_resources` re-exported from `mcp/__init__.py:36-37` aliases `get_available_tools` — the public API returns TOOLS labeled resources (`SKILL.md:63-66` sends agents down this path); the real lister (`mcp.py:1953`) is not re-exported; HTTP capability filter matches `uri_template` while the read gate matches exact concrete URIs — no config exposes both for the only registered resource `gnn://documentation/{doc_name}` (`server_http.py:184-206` vs `:292-307`); README.md:259 maps resource retrieval errors to -32002 but not-found raises -32601 (`exceptions.py:64`); AGENTS.md:141-144 documents wrong `MCPResource` fields; docs/mcp/README.md:22-33 tree shows nonexistent `src/mcp/`; `npx_inspector.py:158-171` `get_resource` sends a URI as a JSON-RPC method ("This is a guess") and can never work. | Real `list_available_resources` re-exported and wired in SKILL.md; HTTP capability listing and read gate agree on `gnn://documentation/{doc_name}`; error-code table, resource fields, and module tree corrected; npx_inspector dead method deleted; `check_mcp_skills_health.py --strict` green. |
-| MED-03 | medium | Executor timeout/classification divergence: pymdp timeout hard-coded 600 not parameterizable (`pymdp_runner.py:153`) while `GNNExecutor` defaults pymdp to 60s (`executor.py:335`) and AGENTS.md:101 documents `execute_script_safely` default 3600 vs implemented 60 (`executor.py:1032`); rxinfer TOML branch runs julia without `--project=` (`rxinfer_runner.py:118`) so RxInfer may not resolve, and rxinfer persists zero execution evidence (no stdout/stderr/log files, unlike `jax_runner.py:201-232`); pymdp rewrites rendered scripts in place (destroys the Step-11 audit trail, `pymdp_runner.py:28-73`); lean leaks `mkdtemp("gnn-lean-verify-")` dirs (`lean_runner.py:80-83`) and classifies missing toolchain as failure while its README promises skip; rxinfer same skip/fail divergence (`rxinfer_runner.py:150-152` vs stan's structured `skipped:True+reason` shape, `stan_runner.py:87-95`). | `execute_pymdp_script_with_outputs(..., timeout=...)` plumbed through; executor default aligned to 3600 + doc matches; rxinfer TOML adds `--project` and persists artifacts; pymdp rendered file byte-identical post-run (cleaning to `.cleaned.py`); lean uses TemporaryDirectory; missing-toolchain runs return skipped records in stan's shape — all pinned by tests/execute tests. |
-| MED-04 | medium | No request-size limits: HTTP reads Content-Length unbounded (`server_http.py:249-252`), a garbage header raises uncaught ValueError aborting the connection without a response, stdio reads unbounded lines (`server_stdio.py:139`), and `tools/call` embeds `json.dumps(result, indent=2)` with no response-size policy (`server_core.py:178`). | Oversize-body and malformed-header tests return protocol-valid error envelopes (413/400-class), no traceback/abort; documented response-size policy for large matrix results. |
-| MIN-01 | minor | Registry/transport hygiene batch: dead duplicate-registration check in `MCP.register_tool` (`mcp.py:724-732` — a no-op read, duplicate names silently overwrite); dead -32700/non-dict branch in `server_core.handle_request` (`server_core.py:122-126`, unreachable) and -32602 message divergence from the shared helper (`server_core.py:99-113`); result cache stores results by reference so a mutating caller poisons future hits (`mcp.py:993-996`, `:958-961`); `ensure_ascii` differs per transport (stdio False `server_stdio.py:226`, HTTP True `server_http.py:423`) breaking golden-file equality; batch requests rejected -32600 without a documented single-request contract (`jsonrpc.py:24-33`). | Unit tests: cache-hit immutability, duplicate registration warning; unified serializer flags; contract sentence in `model_context_protocol.md`; ruff/mypy clean. |
-| MIN-02 | minor | Test-gap batch (highest-regression-risk untested behaviors): `requires_auth` tool gate (`mcp.py:891-899`), registry-level non-dict params (`mcp.py:901-912`), in-process result cache hit/TTL/uncacheable-params (fixtures always disable caching, `mcp.py:968-984`, `:1029-1033`), per-tool sliding-window rate limiter (`mcp.py:1058-1076`), output validation (`mcp.py:989-990`), envelope timeout partial-stdout retention (test asserts only error_type, `test_subprocess_envelope.py:42-49`), `audit_report.json tools_total` vs live registered count parity (`test_mcp_audit.py:546-548` checks only >= 50), `execute/validator.py` 610 lines with zero branch coverage. | Each listed behavior has a failing-on-regression test in `tests/mcp/test_mcp_functional.py` / `tests/execute/`; audit JSON parity test added. |
-| MIN-03 | minor | Envelope `input=` support + audit coverage: `run_subprocess_envelope` lacks stdin support, forcing raw bypasses in `llm/providers/ollama_provider.py:167`, `security/processor.py:1037`, `manuscript/variables.py:179`; `validate_tools.py` spot-checks only 14 of 141 registered tools' schema-vs-signature (`validate_tools.py:129`, `audit_report.json` spot_checks_ok: 14). | Envelope `input=` parameter with test (stdin-consuming child); audit regenerates `spot_checks_ok: 141, issues: []`. |
+The 10-row scoped table below was fully landed (PRs #65, #66, #70, #73,
+#76, #97) and is removed from this file per the Conventions; audit trail:
+CHANGELOG.md, git history, and the PR descriptions.
+
 
 ## v4.0.0 - Bounded Autonomy & Reviewed Self-Editing
 
@@ -272,9 +264,11 @@ The local bounded-autonomy surface emits proposal-only artifacts via
 events, and non-mutating security policy. No source edit, commit, container
 run, or cluster mutation is automatic.
 
-Concrete, cold-startable v4.0.0 work is scoped in the Open Scoped Roadmap
-table above; this section records the unscoped vision and the current
-proposal-only `--autonomous` surface.
+Concrete, cold-startable work is scoped in the open tables above (the
+W2-D6/M2/J1 residuals; the validate_gnn* / SC-38-tail / V4-STAGE /
+paired-repin rows in the 'Still open (residuals)' table) and in
+`SCOPE-2026-09-15.md` §Improvements; this section records the unscoped
+vision and the current proposal-only `--autonomous` surface.
 
 ---
 
@@ -378,3 +372,6 @@ and `tests/types/` (38 tests) plus `tests/type_systems/test_init.py` and
 Verification commands: `bash autoresearch.sh` (full harness), targeted
 `uv run --extra dev python -m pytest <file> -q`, `just lint`,
 `uv run --extra dev mypy src/gnn --show-error-codes`.
+
+Scope pass 2026-09-15 — per-item evidence in SCOPE-2026-09-15.md
+§Cleared-Item-Evidence.
