@@ -277,7 +277,7 @@ available to all framework analyzers):
   discovers current-schema `simulation_results.json` payloads; schema-gated
   frameworks must match `CURRENT_SIMULATION_SCHEMAS`, others accepted as-is.
 - `resolve_execution_dir(output_dir) -> Path` — resolves the Step 12 execution
-  output directory (prefers `pipeline.config`, falls back to `12_execute_output`).
+  output directory via the shared `pipeline.config.resolve_step_output_dir` helper (single fallback policy: caller-supplied directory on standalone use).
 - `load_execution_summary(execution_dir) -> tuple[Path, dict | None]` — prefers
   `summaries/execution_summary.json` then root; returns `None` on missing/unreadable.
 - `filter_paths_by_scope(path, framework, allowed_frameworks, allowed_model_names) -> bool`.

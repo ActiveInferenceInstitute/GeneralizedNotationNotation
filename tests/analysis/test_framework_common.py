@@ -6,8 +6,8 @@ Pins:
 - ``model_name_from_path`` infers the segment preceding a framework segment
 - ``framework_from_path`` returns the framework segment or None
 - ``iter_current_schema_results`` schema-gated discovery + path-inference
-- ``resolve_execution_dir`` falls back to ``12_execute_output`` when the
-  pipeline config package is not importable
+- ``resolve_execution_dir`` is a thin delegate of the shared pipeline helper
+  (same shared-root resolution) and fails loud when it is unimportable
 - ``load_execution_summary`` prefers ``summaries/`` then root, returns None on
   missing or unreadable
 - ``filter_paths_by_scope`` honors allowed_frameworks / allowed_model_names
@@ -171,19 +171,29 @@ class TestIterCurrentSchemaResults:
 
 class TestResolveExecutionDir:
     @pytest.mark.unit
-    def test_falls_back_to_execute_output(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
-        # Pipeline config not importable ⇒ sibling 12_execute_output fallback.
-        monkeypatch.setitem(sys.modules, "gnn.pipeline.config", None)
+    def test_delegates_to_shared_helper(self, tmp_path: Path) -> None:
+        # Unified seam: no private fallback — exactly the shared helper.
+        from gnn.pipeline.config import resolve_step_output_dir
+
         result = resolve_execution_dir(tmp_path)
-        assert result == tmp_path.parent / "12_execute_output"
+        assert result == Path(resolve_step_output_dir("12_execute", tmp_path))
+        assert result.name == "12_execute_output"
 
     @pytest.mark.unit
-    def test_uses_pipeline_layout_when_importable(self, tmp_path: Path) -> None:
-        result = resolve_execution_dir(tmp_path)
-        assert isinstance(result, Path)
-        assert result.name == "12_execute_output"
+    def test_climbs_to_shared_pipeline_root(self, tmp_path: Path) -> None:
+        nested = tmp_path / "7_export_output" / "results"
+        nested.mkdir(parents=True)
+        assert resolve_execution_dir(nested) == tmp_path / "12_execute_output"
+
+    @pytest.mark.unit
+    def test_unimportable_pipeline_fails_loud(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        # Broken environments surface the ImportError; the divergent
+        # sibling-reconstruction fallback was removed (SCOPE N-1).
+        monkeypatch.setitem(sys.modules, "gnn.pipeline.config", None)
+        with pytest.raises(ImportError):
+            resolve_execution_dir(tmp_path)
 
 
 class TestLoadExecutionSummary:

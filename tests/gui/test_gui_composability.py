@@ -175,14 +175,17 @@ class TestRunnerPlumbing:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_resolve_output_root_falls_back_without_pipeline(
+    def test_resolve_output_root_fails_loud_without_pipeline(
         self, isolated_temp_dir: Any, monkeypatch: pytest.MonkeyPatch
     ) -> None:
+        # Thin delegate (SCOPE N-1): an unimportable pipeline package is a
+        # broken environment and must surface, not silently recover.
         from gnn.gui.runner import resolve_output_root
 
         monkeypatch.setitem(sys.modules, "gnn.pipeline.config", None)
         out = isolated_temp_dir / "out"
-        assert resolve_output_root(out) == out
+        with pytest.raises(ImportError):
+            resolve_output_root(out)
 
     @pytest.mark.unit
     @pytest.mark.fast

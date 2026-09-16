@@ -119,16 +119,14 @@ def iter_current_schema_results(
 def resolve_execution_dir(output_dir: Path) -> Path:
     """Resolve the Step 12 execution output directory for a given output dir.
 
-    Delegates to ``pipeline.config.resolve_step_output_dir`` when the
-    pipeline package is importable; falls back to the sibling
-    ``12_execute_output`` directory for standalone module use.
+    Thin delegate to ``pipeline.config.resolve_step_output_dir``; the shared
+    fallback policy (standalone recovery = caller-supplied directory, fail
+    loud on an unimportable package) is documented there. This wrapper keeps
+    no private ``except ImportError`` fallback of its own.
     """
-    try:
-        from gnn.pipeline.config import resolve_step_output_dir
+    from gnn.pipeline.config import resolve_step_output_dir
 
-        return Path(resolve_step_output_dir("12_execute", output_dir))
-    except ImportError:
-        return Path(output_dir.parent) / "12_execute_output"
+    return Path(resolve_step_output_dir("12_execute", output_dir))
 
 
 def load_execution_summary(

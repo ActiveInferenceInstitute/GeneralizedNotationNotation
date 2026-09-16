@@ -156,8 +156,8 @@ total_files)`; `file_count` counts every discovered file while `files` is
 capped at `MAX_FILES_PER_SECTION` (20). Missing step directories are skipped.
 
 #### Shared internals
-- `gui/runner.py` — `resolve_output_root()` (pipeline-standard output-root
-  normalization with fallback), `load_first_markdown()` (prefer-pattern
+- `gui/runner.py` — `resolve_output_root()` (delegates to the shared
+  `pipeline.config.resolve_step_output_dir` helper; caller-supplied directory on standalone use), `load_first_markdown()` (prefer-pattern
   markdown discovery), `launch_gradio_in_thread()` (background Gradio launch);
   used by the gui_1/gui_2/gui_3 processors instead of duplicated logic.
 - `gui/backend.py` — `write_text_atomically()` joins `write_json_atomically()`

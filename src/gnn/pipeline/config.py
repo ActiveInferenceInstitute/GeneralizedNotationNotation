@@ -8,28 +8,18 @@ import logging
 from pathlib import Path
 from typing import Any, Dict, Optional, cast
 
+import yaml
+
 logger = logging.getLogger(__name__)
 
-# Make PyYAML optional to avoid hard failures during import time
-try:
-    import yaml
-
-    _YAML_AVAILABLE = True
-except ImportError:
-    yaml = cast(Any, None)
-    _YAML_AVAILABLE = False
-
-# Exception types for config parsing. yaml.YAMLError only exists when PyYAML
-# imported successfully; referencing yaml.YAMLError inside an except tuple
-# would raise AttributeError on the error path when it is absent.
-_YAML_PARSE_ERRORS: tuple[type[Exception], ...] = (
-    (yaml.YAMLError,) if _YAML_AVAILABLE else ()
-)
+# PyYAML is a core dependency (``pyyaml>=6.0`` in pyproject.toml). Import it
+# unconditionally so a broken environment fails loud at import time instead
+# of silently discarding the user's YAML configuration at load time.
 _CONFIG_PARSE_ERRORS: tuple[type[Exception], ...] = (
     json.JSONDecodeError,
     OSError,
     ValueError,
-    *_YAML_PARSE_ERRORS,
+    yaml.YAMLError,
 )
 
 # Canonical default paths used across the pipeline package (single source).
@@ -75,13 +65,7 @@ class PipelineConfig:
             try:
                 with open(self.config_path, "r") as f:
                     if self.config_path.suffix in (".yaml", ".yml"):
-                        if _YAML_AVAILABLE:
-                            return yaml.safe_load(f) or {}
-                        logger.warning(
-                            "PyYAML unavailable; ignoring config file %s",
-                            self.config_path,
-                        )
-                        return {}
+                        return yaml.safe_load(f) or {}
                     else:
                         return cast("dict[str, Any]", json.load(f))
             except _CONFIG_PARSE_ERRORS as e:
@@ -113,7 +97,7 @@ class PipelineConfig:
         """Save configuration to file."""
         try:
             with open(self.config_path, "w") as f:
-                if self.config_path.suffix in (".yaml", ".yml") and _YAML_AVAILABLE:
+                if self.config_path.suffix in (".yaml", ".yml"):
                     yaml.dump(self.config, f)
                 else:
                     json.dump(self.config, f, indent=2)
@@ -236,6 +220,14 @@ def resolve_step_output_dir(step_stem: str, output_dir: Path) -> Path:
     from ``output_dir`` directly. The shared ``_output`` parent is identified
     by name (the registry-derivable ``<stem>_output`` convention), so no
     caller-specific prefix list is needed.
+
+    Fallback policy: this helper is the single source of output-directory
+    resolution. Wrappers and callers delegate here unconditionally and must
+    not keep their own ``except ImportError`` fallbacks — an unimportable
+    ``gnn`` package is a broken environment and must fail loud. For
+    genuinely standalone use outside an importable ``gnn`` package, the
+    agreed recovery is to return the caller-supplied directory unchanged
+    (least surprising), never a reconstructed sibling path.
 
     Args:
         step_stem: Registry step stem, e.g. ``"3_gnn"`` or ``"12_execute"``.

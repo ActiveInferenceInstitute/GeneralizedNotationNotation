@@ -2,10 +2,14 @@
 
 from __future__ import annotations
 
+import importlib
 import json
+import logging
+import sys
 from pathlib import Path
 
 import pytest
+import yaml
 
 from gnn.pipeline.config import PipelineConfig, StepConfig, get_pipeline_config_dict
 
@@ -115,8 +119,6 @@ def test_get_output_dir_for_script_warns_on_unregistered_stem(
     A typo like ``5_typecheck.py`` must not silently make producer and
     consumer disagree about the output directory.
     """
-    import logging
-
     from gnn.pipeline.config import get_output_dir_for_script
 
     with caplog.at_level(logging.WARNING, logger="gnn.pipeline.config"):
@@ -133,15 +135,13 @@ def test_malformed_yaml_config_logs_error_and_degrades(
 ) -> None:
     """A malformed YAML config must log at error level, not debug, and fall
     back to an empty settings dict."""
-    import logging
-
     path = tmp_path / "config.yaml"
     path.write_text("pipeline: [unclosed\n  bad: : yaml\n")
     with caplog.at_level(logging.ERROR, logger="gnn.pipeline.config"):
         cfg = PipelineConfig(path)
     assert cfg.config == {}
     assert any(
-        "Could not parse config file" in rec.message
+        "Could not parse config file" in rec.message and str(path) in rec.message
         for rec in caplog.records
         if rec.levelno == logging.ERROR
     )
@@ -182,3 +182,78 @@ def test_resolve_step_output_dir_handles_deep_nesting(tmp_path: Path) -> None:
     # Walks up through 16_analysis_output (ends with _output, parent is
     # tmp_path = the pipeline root) -> resolves from tmp_path.
     assert resolve_step_output_dir("3_gnn", nested) == tmp_path / "3_gnn_output"
+
+
+def test_config_suffix_dispatch_yaml_yml_json(tmp_path: Path) -> None:
+    """``.yaml``/``.yml`` route through PyYAML; ``.json`` through json.
+
+    Identical payloads must load identically regardless of suffix.
+    """
+    payload = {"steps": {"3_gnn": {"timeout": 99}}}
+    paths = {
+        "yaml": tmp_path / "config.yaml",
+        "yml": tmp_path / "config.yml",
+        "json": tmp_path / "config.json",
+    }
+    paths["yaml"].write_text(yaml.safe_dump(payload))
+    paths["yml"].write_text(yaml.safe_dump(payload))
+    paths["json"].write_text(json.dumps(payload))
+
+    assert PipelineConfig(paths["yaml"]).config == payload
+    assert PipelineConfig(paths["yml"]).config == payload
+    assert PipelineConfig(paths["json"]).config == payload
+
+
+def test_broken_yaml_environment_fails_loud(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """PyYAML is a core dependency, so a broken/absent-yaml environment must
+    surface a clear ImportError at import time — never an empty-config
+    silent degradation of a user's YAML settings."""
+    import gnn.pipeline.config as config_module
+
+    monkeypatch.setitem(sys.modules, "yaml", None)
+    with pytest.raises(ImportError):
+        importlib.reload(config_module)
+    # Restore the real yaml module, then reload to restore config_module.
+    monkeypatch.undo()
+    importlib.reload(config_module)
+
+
+class TestResolveStepOutputDirCallSiteParity:
+    """All call sites route through ``resolve_step_output_dir`` (N-1 seam).
+
+    The analysis and gui wrappers are thin delegates: for the same caller
+    view they must resolve identically to the shared helper — same shared
+    pipeline root, no per-wrapper fallback logic.
+    """
+
+    @pytest.mark.parametrize(
+        ("view_parts", "shared_root_parts"),
+        [
+            (("output",), ("output",)),
+            (("output", "7_export_output"), ("output",)),
+            (("output", "arbitrary_subdir"), ("output", "arbitrary_subdir")),
+        ],
+    )
+    def test_both_call_sites_match_helper(
+        self,
+        tmp_path: Path,
+        view_parts: tuple[str, ...],
+        shared_root_parts: tuple[str, ...],
+    ) -> None:
+        from gnn.analysis.framework_common import resolve_execution_dir
+        from gnn.gui.runner import resolve_output_root
+        from gnn.pipeline.config import resolve_step_output_dir
+
+        view = tmp_path.joinpath(*view_parts)
+        shared_root = tmp_path.joinpath(*shared_root_parts)
+
+        exec_dir = resolve_execution_dir(view)
+        gui_root = resolve_output_root(view)
+
+        # Each wrapper is exactly the shared helper with its own step stem.
+        assert exec_dir == Path(resolve_step_output_dir("12_execute", view))
+        assert gui_root == Path(resolve_step_output_dir("22_gui", view))
+        # Same shared root through both call sites (identical resolution).
+        assert exec_dir.parent == gui_root.parent == shared_root

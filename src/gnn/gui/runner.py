@@ -18,16 +18,14 @@ _ORCHESTRATOR_SCRIPT = "22_gui.py"
 def resolve_output_root(output_dir: Path) -> Path:
     """Normalize ``output_dir`` to the pipeline-standard step output root.
 
-    Delegates to ``pipeline.config.resolve_step_output_dir`` when the
-    pipeline package is importable; returns the caller-supplied directory
-    for standalone GUI runner use outside the package.
+    Thin delegate to ``pipeline.config.resolve_step_output_dir``; the shared
+    fallback policy (standalone recovery = caller-supplied directory, fail
+    loud on an unimportable package) is documented there. This wrapper keeps
+    no private ``except ImportError`` fallback of its own.
     """
-    try:
-        from gnn.pipeline.config import resolve_step_output_dir
+    from gnn.pipeline.config import resolve_step_output_dir
 
-        return Path(resolve_step_output_dir("22_gui", output_dir))
-    except ImportError:
-        return Path(output_dir)
+    return Path(resolve_step_output_dir("22_gui", output_dir))
 
 
 def load_first_markdown(
