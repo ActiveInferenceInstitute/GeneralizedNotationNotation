@@ -14,7 +14,9 @@ gradio/anthropic/bokeh are not in any default extra).
 
 from __future__ import annotations
 
-from typing import Any
+import subprocess
+from pathlib import Path
+from typing import Any, cast
 
 import pytest
 
@@ -338,3 +340,294 @@ def test_main_exit_code_maps_rating_to_status(
     monkeypatch.setattr("sys.stdout", buf2)
     assert health_check_module.main() == 1
     assert _json.loads(buf2.getvalue())["health_score"]["rating"] == "fair"
+
+
+def test_optional_dependencies_julia_timeout_is_missing(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """A ``julia --version`` subprocess timeout lands julia in ``missing``
+    and the empty-dependency group degrades to ``unavailable``."""
+
+    def fake_run_timeout(cmd: Any, *args: Any, **kwargs: Any) -> Any:
+        raise subprocess.TimeoutExpired(cmd, timeout=10)
+
+    monkeypatch.setattr(health_check_module.subprocess, "run", fake_run_timeout)
+
+    results = EnhancedHealthChecker().check_optional_dependencies()
+
+    julia = results["julia"]
+    assert "julia" in julia["missing"]
+    assert julia["available"] == []
+    assert julia["status"] == "unavailable"
+
+
+def test_pipeline_structure_detects_scripts_and_module_dirs(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: "Path"
+) -> None:
+    """The structure check resolves both ``{step}_*.py`` scripts and
+    ``{step}_*/`` module directories; a full script set plus one module
+    directory reports ``complete`` with both buckets populated."""
+    src = tmp_path / "fake_src"
+    src.mkdir()
+    for step in range(25):
+        (src / f"{step}_step.py").write_text("")
+    (src / "main.py").write_text("")
+    (src / "__init__.py").write_text("")
+    (src / "5_model_dir").mkdir()
+
+    # check_pipeline_structure resolves src as Path(__file__).parent.parent,
+    # so the fake module file sits one level below the fake src root.
+    monkeypatch.setattr(
+        health_check_module, "__file__", str(src / "pipeline" / "health_check.py")
+    )
+
+    results = EnhancedHealthChecker().check_pipeline_structure()
+
+    assert results["status"] == "complete"
+    assert results["missing_scripts"] == []
+    numbered = [name for name in results["available_scripts"] if name[0].isdigit()]
+    assert len(numbered) == 25
+    assert {"main.py", "__init__.py"} <= set(results["available_scripts"])
+    assert results["available_modules"] == ["5_model_dir"]
+
+
+def test_pipeline_integration_partial_when_enhancer_probe_fails(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """A failure after config and validator probes succeed still flips
+    integration to ``partial`` but keeps the earlier probes' flags."""
+
+    class _BoomEnhancer:
+        def __init__(self, *args: Any, **kwargs: Any) -> None:
+            raise RuntimeError("enhancer probe failure")
+
+    monkeypatch.setattr(
+        health_check_module, "PipelineDiagnosticEnhancer", _BoomEnhancer
+    )
+
+    results = EnhancedHealthChecker().check_pipeline_integration()
+
+    assert results["integration_status"] == "partial"
+    assert results["config_available"] is True
+    assert results["validator_available"] is True
+    assert results["diagnostic_available"] is False
+
+
+def test_generate_recommendations_covers_error_branches() -> None:
+    """Recommendations are emitted for missing core deps (high), a critical
+    optional group being unavailable (medium), missing pipeline scripts
+    (high), and high memory usage (low); a fast run adds no performance
+    rec, and a clean report yields none."""
+    checker = EnhancedHealthChecker()
+
+    checker.results = {
+        "core_dependencies": {"missing": ["yaml >=6.0"]},
+        "optional_dependencies": {
+            "simulation": {
+                "status": "unavailable",
+                "critical": True,
+                "description": "Active inference simulation frameworks",
+            }
+        },
+        "pipeline_structure": {"missing_scripts": ["7_*.py"]},
+        "system_resources": {"memory": {"status": "high"}},
+        "execution_time": 0.5,
+    }
+    recommendations = checker._generate_recommendations()
+
+    by_title = {rec["title"]: rec for rec in recommendations}
+    assert by_title["Install Missing Core Dependencies"]["priority"] == "high"
+    assert "yaml" in by_title["Install Missing Core Dependencies"]["description"]
+    assert by_title["Install Simulation Support"]["priority"] == "medium"
+    assert by_title["Complete Pipeline Structure"]["category"] == "pipeline"
+    assert "7_*.py" in by_title["Complete Pipeline Structure"]["description"]
+    assert by_title["Monitor Memory Usage"]["priority"] == "low"
+    assert "Optimize Health Check Performance" not in by_title
+
+    checker.results = {
+        "core_dependencies": {"missing": [], "status": "healthy"},
+        "optional_dependencies": {
+            "simulation": {"status": "available", "critical": True}
+        },
+        "pipeline_structure": {"missing_scripts": []},
+        "system_resources": {"memory": {"status": "good"}},
+        "execution_time": 0.5,
+    }
+    assert checker._generate_recommendations() == []
+
+
+def test_calculate_overall_health_good_band_and_boundary() -> None:
+    """Partial integration with two optional groups lands in the ``good``
+    band; a fully healthy report with zero optional groups scores exactly
+    90.0 and rates ``excellent`` (the >=90 boundary is inclusive)."""
+    checker = EnhancedHealthChecker()
+
+    checker.results = {
+        "system_resources": {"status": "healthy"},
+        "core_dependencies": {"status": "healthy", "missing": []},
+        "pipeline_structure": {"status": "complete", "missing_scripts": []},
+        "pipeline_integration": {"integration_status": "partial"},
+        "optional_dependencies": {
+            "simulation": {"status": "available"},
+            "visualization": {"status": "available"},
+        },
+    }
+    score = checker._calculate_overall_health()
+    # 20 + 30 + 25 + 15*0.5 + 2*2 = 86.5
+    assert score["score"] == 86.5
+    assert score["rating"] == "good"
+
+    checker.results = {
+        "system_resources": {"status": "healthy"},
+        "core_dependencies": {"status": "healthy", "missing": []},
+        "pipeline_structure": {"status": "complete", "missing_scripts": []},
+        "pipeline_integration": {"integration_status": "full"},
+        "optional_dependencies": {},
+    }
+    score = checker._calculate_overall_health()
+    assert score["raw_score"] == 90
+    assert score["rating"] == "excellent"
+
+
+def test_main_good_rating_exits_zero_with_summary_output(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """main() returns 0 for a ``good`` rating and, without --json, prints
+    the brief CLI summary lines."""
+    import io
+    import sys
+
+    good_report = {
+        "health_score": {"rating": "good", "score": 86.5},
+        "core_dependencies": {"available": ["numpy"], "missing": []},
+        "pipeline_structure": {"available_scripts": ["0_step.py", "main.py"]},
+    }
+    monkeypatch.setattr(
+        health_check_module, "run_enhanced_health_check", lambda _v: good_report
+    )
+    monkeypatch.setattr(sys, "argv", ["health_check"])
+    buf = io.StringIO()
+    monkeypatch.setattr("sys.stdout", buf)
+
+    assert health_check_module.main() == 0
+    out = buf.getvalue()
+    assert "Health Score: 86.5/100 (good)" in out
+    assert "Core Dependencies: 1/1 available" in out
+    assert "Pipeline Scripts: 2/25 available" in out
+
+
+def test_main_output_file_writes_json_report(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: "Path"
+) -> None:
+    """--output-file serialises the full report to disk as JSON."""
+    import io
+    import json as _json
+    import sys
+
+    out_path = tmp_path / "health.json"
+    report = {
+        "health_score": {"rating": "good", "score": 86.5},
+        "core_dependencies": {"available": [], "missing": []},
+        "pipeline_structure": {"available_scripts": []},
+    }
+    monkeypatch.setattr(
+        health_check_module, "run_enhanced_health_check", lambda _v: report
+    )
+    monkeypatch.setattr(
+        sys, "argv", ["health_check", "--json", "--output-file", str(out_path)]
+    )
+    monkeypatch.setattr("sys.stdout", io.StringIO())
+
+    assert health_check_module.main() == 0
+    assert _json.loads(out_path.read_text())["health_score"]["rating"] == "good"
+
+
+def test_verbose_flag_controls_report_printing(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """run_enhanced_health_check only prints the enhanced report when
+    verbose is requested, and returns the check results either way."""
+
+    class _FakeChecker:
+        calls: "list[bool]" = []
+
+        def __init__(self, verbose: bool = False) -> None:
+            self.verbose = verbose
+
+        def run_enhanced_health_check(self) -> "dict[str, Any]":
+            return {"health_score": {"rating": "good", "score": 86.5}}
+
+        def print_enhanced_report(self) -> None:
+            _FakeChecker.calls.append(self.verbose)
+
+    monkeypatch.setattr(health_check_module, "EnhancedHealthChecker", _FakeChecker)
+    _FakeChecker.calls = []
+
+    quiet = run_enhanced_health_check()
+    verbose = run_enhanced_health_check(verbose=True)
+
+    assert quiet["health_score"]["rating"] == "good"
+    assert verbose["health_score"]["rating"] == "good"
+    assert _FakeChecker.calls == [True]
+
+
+def test_print_enhanced_report_logs_rating_and_recommendations() -> None:
+    """The verbose report surfaces the overall rating, per-check statuses,
+    and every recommendation title/action."""
+
+    class _Recorder:
+        def __init__(self) -> None:
+            self.infos: "list[str]" = []
+            self.warnings: "list[str]" = []
+
+        def info(self, msg: Any) -> None:
+            self.infos.append(str(msg))
+
+        def warning(self, msg: Any) -> None:
+            self.warnings.append(str(msg))
+
+    checker = EnhancedHealthChecker()
+    recorder = _Recorder()
+    checker.logger = cast(Any, recorder)
+    checker.results = {
+        "health_score": {"rating": "good", "score": 86.5},
+        "system_resources": {
+            "status": "healthy",
+            "cpu": {"cores": 4, "usage_percent": 10},
+            "memory": {"total_gb": 16.0, "usage_percent": 50},
+            "disk": {"free_gb": 100.0},
+            "network": {"status": "connected"},
+        },
+        "core_dependencies": {
+            "status": "healthy",
+            "available": [f"dep{i} 1.0" for i in range(6)],
+            "missing": [],
+            "total_checked": 6,
+        },
+        "optional_dependencies": {
+            "simulation": {"status": "available"},
+            "gui": {"status": "unavailable"},
+        },
+        "pipeline_structure": {"status": "complete", "available_scripts": []},
+        "pipeline_integration": {"integration_status": "full"},
+        "recommendations": [
+            {
+                "priority": "medium",
+                "category": "features",
+                "title": "Install Gui Support",
+                "description": "Interactive GUI",
+                "action": "Install required packages for gui functionality",
+            }
+        ],
+        "execution_time": 1.25,
+    }
+
+    checker.print_enhanced_report()
+
+    joined = "\n".join(recorder.infos)
+    assert "Overall Health: GOOD (86.5/100)" in joined
+    assert "Pipeline Integration: FULL" in joined
+    assert "Install Gui Support" in joined
+    assert "Install required packages for gui functionality" in joined
+    assert "completed in 1.25s" in joined
+    assert recorder.warnings == []
