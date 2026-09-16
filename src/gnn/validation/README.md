@@ -13,6 +13,7 @@ src/gnn/validation/
 ├── consistency_checker.py         # Consistency checking (naming, style, structure, references)
 ├── semantic_validator.py          # Semantic validation (structure, state space, connections, math)
 ├── simple.py                      # Dependency-free basic validator: marker/extension sniffing
+├── orientation.py                 # B-tensor orientation diagnostic (canonical vs textbook POMDP)
 ├── performance_profiler.py        # Performance profiling (complexity, memory, parallelization)
 ├── structure.py                   # Shared helpers (content extraction, cycle detection, score clamping)
 ├── workflow.py                    # Step-6 directory workflow (stage runner, receipts, accumulation)
@@ -118,14 +119,14 @@ flowchart LR
 
 #### `process_validation(target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs) -> bool`
 
-Main pipeline orchestrator (called by `src/gnn/6_validation.py`). Reads GNN results JSON from step 3, then runs all three validators on each parsed file.
+Main pipeline orchestrator (called by `src/gnn/6_validation.py`). Reads GNN results JSON from step 3, then runs the three validators plus the B-tensor orientation diagnostic on each parsed file.
 
-**kwargs:** `validation_level` (semantic depth: `basic`/`standard`/`strict`/`research`; default `standard`), `strict` (shorthand for `validation_level="strict"`, wired to the orchestrator's `--strict` flag). `logger`, `recursive`, and `profile` are accepted for the pipeline-template contract and do not alter behavior.
+**kwargs:** `validation_level` (semantic depth: `basic`/`standard`/`strict`/`research`; default `standard`), `strict` (shorthand for `validation_level="strict"`, wired to the orchestrator's `--strict` flag), `transpose_b` (opt-in canonical B-tensor transposition for the orientation stage; textbook row-stochastic tensors are transposed in memory and recorded in the receipt, default warnings-only). `logger`, `recursive`, and `profile` are accepted for the pipeline-template contract and do not alter behavior.
 
 **Workflow:**
 
 1. Loads `gnn_processing_results.json` from step 3 output directory
-2. For each parsed file, runs `process_semantic_validation()`, `profile_performance()`, and `check_consistency()`
+2. For each parsed file, runs `process_semantic_validation()`, `profile_performance()`, `check_consistency()`, and — when the `orientation` service is injected, as `process_validation` does by default — `check_b_orientation()` (B-tensor orientation diagnostic, warnings only)
 3. Calculates average scores and writes `validation_results.json` and `validation_summary.json`
 
 **Returns:** `bool` — `True` only when the current manifest contains at least one file and every current file succeeds. Semantic `valid: false`, parser failure, missing parsed artifacts, and operational recovery all fail the current pass. Historical successes cannot change this verdict.
@@ -313,7 +314,7 @@ The `process_validation()` orchestrator catches all exceptions per-file, logs er
 
 ## Testing
 
-Validation module tests are located in `tests/validation/` (`test_validation_overall.py`, `test_consistency_contract.py`, `test_validation_public_api.py`, `test_workflow_contracts.py`) and cover:
+Validation module tests are located in `tests/validation/` (`test_validation_overall.py`, `test_consistency_contract.py`, `test_validation_public_api.py`, `test_workflow_contracts.py`, `test_b_orientation.py`) and cover:
 
 - `process_semantic_validation()` with file path and dict inputs
 - `profile_performance()` with file path and dict inputs

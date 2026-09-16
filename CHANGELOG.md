@@ -8,6 +8,36 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ## [Unreleased]
 
+### Added (2026-09-16 — B-tensor orientation wave)
+
+- **B-tensor orientation diagnostic (step 6).** New validation module
+  `gnn.validation.orientation` classifies each transition tensor by its
+  per-action slice row/column margins against the canonical contract
+  (`B[next_state, previous_state, action]` = pymdp 1.0.0 `B[s',s,a]`,
+  column-stochastic slices; type checker tolerance `1e-6` shared with the
+  Step 5 `GNN-E002` checks). Textbook POMDP files (row-stochastic slices,
+  rows = previous state) produce a warning naming the tensor, state
+  factor, and flipped slice indices with the transpose fix; doubly
+  stochastic (orientation-ambiguous) tensors get an informational note;
+  non-stochastic tensors stay on the existing stochasticity error paths
+  (no double-reporting). The reading is inferred per action-axis position,
+  so action-outer canonical exemplars are never false-warned. Wired as the
+  optional fourth `orientation` stage (`StageServices.orientation`); zero
+  warnings on the gold corpus (`input/gnn_files/`, 9 ambiguity notes).
+- **`--transpose-b` canonical transposition option.** Opt-in flag on
+  `6_validation.py` (registered `ArgumentDefinition` + `STEP_ARGUMENTS` +
+  step config), `process_validation`/`validate_directory` kwargs, and the
+  `process_validation` MCP tool. Applies the canonical transposition in
+  memory with the same mapping as `extract.canonicalize_pomdp`
+  (`canonical[n][p][a] = stored[a][p][n]` for action-outer textbook
+  literals; 2-D rows↔cols) and records it per tensor in the receipt
+  (`transposed` / `previous_orientation` / `canonical_after_transpose`).
+  Default behavior stays warnings-only; source files are never modified.
+  Contract docs: `docs/gnn/gnn_syntax.md` (B-tensor orientation section),
+  validation module `AGENTS.md` diagnostic inventory, porting note in
+  `docs/gnn/modules/06_validation.md`. Tests:
+  `tests/validation/test_b_orientation.py`.
+
 ### Changed (2026-09-16 — bnlearn executor wave)
 
 - **bnlearn Step 12 executor (`42665eeb3`).** `src/gnn/execute/bnlearn/`

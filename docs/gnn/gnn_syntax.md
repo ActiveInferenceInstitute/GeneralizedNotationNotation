@@ -250,6 +250,54 @@ also have multiple factors, so the more specific kinds are tested first.
 `detect_model_kind` in
 [`src/gnn/render/pomdp_contract.py`](../../src/gnn/render/pomdp_contract.py).
 
+#### B-tensor orientation (canonical vs. textbook POMDP)
+
+The canonical transition tensor order is
+`B[next_state, previous_state, action]` (= pymdp 1.0.0 `B[s',s,a]`). Each
+**per-action slice is column-stochastic**: rows are *next states*, columns
+are *previous states*, and each column (one previous state) sums to 1 over
+next states. This matches the declared order in every canonical exemplar
+under `input/gnn_files/` (some store the action axis innermost, some
+outermost — the orientation contract is about the per-action slices, not
+where the action axis sits).
+
+Textbook POMDP literature frequently writes transition matrices the other
+way around: rows = previous state `s_t`, columns = next state `s_{t+1}`,
+each **row** summing to 1 (row-stochastic). A file imported in that
+layout is read *transposed* by every canonical consumer — each transition
+probability `P(next | prev)` is silently swapped for `P(prev | next)`,
+which changes the model's dynamics without any error.
+
+Step 6 (`src/gnn/6_validation.py`) therefore ships a default-on
+orientation diagnostic (module `gnn.validation.orientation`):
+
+| Per-action slices | Step 6 finding |
+|-------------------|----------------|
+| Column-stochastic (canonical) | silent |
+| Row-stochastic only (textbook) | **warning** naming the tensor, state factor, and flipped slice indices |
+| Doubly stochastic (rows *and* columns sum to 1) | informational note — orientation cannot be determined from the data |
+| Neither | silent here; the existing stochasticity error paths own it |
+
+Row margins use the type checker's stochasticity tolerance (`1e-6`), the
+same constant behind the Step 5 `GNN-E002` orientation checks.
+
+Fixing a flagged file means transposing each per-action slice
+(rows ↔ columns) and storing the action axis last, so slices become
+rows = next states, columns = previous states. To validate the fix
+without editing the file, run the step with the opt-in transposition:
+
+```bash
+uv run python src/gnn/6_validation.py --target-dir input/gnn_files --transpose-b
+```
+
+`--transpose-b` applies the canonical transposition in memory (the same
+mapping as `canonicalize_pomdp`: `canonical[n][p][a] = stored[a][p][n]`
+for action-outer textbook literals) and records it per tensor in the
+validation receipt (`transposed: true, previous_orientation:
+row_stochastic, canonical_after_transpose: true`). Source files are never
+modified. The same option is available on the `process_validation` MCP
+tool.
+
 ---
 
 ## 5  Comments

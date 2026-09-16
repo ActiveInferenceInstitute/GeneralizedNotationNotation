@@ -57,6 +57,24 @@ src/gnn/validation/
 - Cross-format validation
 - Quality metrics and compliance
 
+### Porting textbook POMDPs (B-tensor orientation)
+
+Step 6 runs a default-on **B-tensor orientation diagnostic**. GNN's
+canonical transition tensor order is `B[next_state, previous_state,
+action]` (= pymdp 1.0.0 `B[s',s,a]`) with **column-stochastic** per-action
+slices (rows = next states, columns = previous states, each column sums to
+1). Textbook POMDP sources frequently write transition matrices the other
+way (rows = previous state `s_t`, row-stochastic); imported verbatim, such
+a file is silently read transposed — every transition probability flips.
+The diagnostic warns on row-stochastic-only slices (naming the tensor,
+state factor, and flipped slice indices), notes orientation-ambiguous
+(doubly stochastic) tensors, and leaves non-stochastic tensors to the
+existing stochasticity error paths. The opt-in `--transpose-b` flag (CLI
+and `process_validation` MCP tool) validates the canonical transposition
+in memory and records it per tensor in the receipt. Full convention,
+severity table, and fix recipe:
+[gnn_syntax.md § B-tensor orientation](../gnn_syntax.md).
+
 ---
 
 ## API Reference
@@ -73,7 +91,8 @@ src/gnn/validation/
 - `logger` (Logger, optional): Logger instance (default: None)
 - `strict` (bool): Enable strict validation mode (default: False)
 - `profile` (bool): Enable performance profiling (default: False)
-- `**kwargs`: Additional validation options
+- `transpose_b` (bool): Opt-in canonical B-tensor transposition for the orientation stage — textbook (row-stochastic) transition tensors are transposed in memory and recorded in the receipt (default: orientation warnings only; source files are never modified)
+- `**kwargs`: Additional validation options (including `validation_level` and `run_id`)
 
 **Returns**: `True` if validation succeeded
 
@@ -113,6 +132,15 @@ success = process_validation(
 - `model_data` (Dict[str, Any]): Parsed GNN model data
 
 **Returns**: Dictionary with consistency results
+
+#### `check_b_orientation(model_data, transpose_b=False) -> Dict[str, Any]`
+**Description**: B-tensor orientation diagnostic (default-on Step 6 stage). Classifies each transition tensor by per-action slice row/column margins against the canonical contract and returns `{file_path, file_name, valid, warnings, notes, tensors, orientation_score}`.
+
+**Parameters**:
+- `model_data` (str | Path | Dict[str, Any]): GNN file path or parsed model data
+- `transpose_b` (bool): Opt-in canonical transposition recorded in the receipt
+
+**Returns**: Dictionary with orientation findings (see the B-tensor orientation section in [`gnn_syntax.md`](../gnn_syntax.md))
 
 ---
 
@@ -252,6 +280,7 @@ Model Content → Structure Validation → Semantic Validation → Performance P
 ### Test Files
 - `tests/validation/test_validation_overall.py` - Module-level validation tests
 - `tests/gnn/test_gnn_validation.py` - GNN validation-focused tests (shared)
+- `tests/validation/test_b_orientation.py` - B-tensor orientation diagnostic and `--transpose-b` transposition contract tests
 
 ### Test Coverage
 - Measure: `uv run --extra dev python -m pytest tests/validation/ --cov=validation --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).

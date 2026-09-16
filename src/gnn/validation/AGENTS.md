@@ -12,7 +12,7 @@
 
 **Version**: 3.2.0 (module `__version__` 1.7.0)
 
-**Last Updated**: 2026-09-04
+**Last Updated**: 2026-09-16
 
 ---
 
@@ -23,12 +23,12 @@ src/gnn/validation/
 ├── __init__.py             # Module exports and thin process_validation facade
 ├── consistency_checker.py  # Consistency checking (naming, style, structure, references)
 ├── semantic_validator.py   # Semantic validation (structure, state space, connections, math)
+├── orientation.py          # B-tensor orientation diagnostic (canonical vs textbook POMDP)
 ├── simple.py               # Dependency-free basic validator: marker/extension sniffing
 ├── performance_profiler.py # Performance profiling (complexity, memory, parallelization)
 ├── structure.py            # Shared helpers (content extraction, cycle detection, score clamping)
 ├── workflow.py             # Step-6 directory workflow (stage runner, receipts, accumulation)
 └── mcp.py                  # Model Context Protocol integration
-```
 
 ---
 
@@ -65,6 +65,10 @@ src/gnn/validation/
   - `validation_level` (str): Semantic validation depth (`basic`, `standard`, `strict`, `research`; default `standard`)
   - `strict` (bool): Shorthand raising `validation_level` to `strict` (wired to the orchestrator's `--strict` flag)
   - `run_id` (str): Stable identity for intentional cross-manifest accumulation (otherwise manifest run ID or timestamp)
+  - `transpose_b` (bool): Opt-in canonical B-tensor transposition for the
+    orientation stage — textbook (row-stochastic) transition tensors are
+    transposed in memory and recorded in the receipt (default warnings-only;
+    source files are never modified; receipt context records the flag)
   - `logger`, `recursive`, `profile` are accepted for the standardized pipeline-script contract and do not alter behavior
 
 **Returns**: `True` only for a nonempty current pass with every file successful; historical successes cannot mask current failure.
@@ -107,7 +111,26 @@ success = process_validation(
 **Description**: Validate raw GNN content text without file I/O (companion to `process_semantic_validation` for in-memory content). Same receipt shape with `file_path`/`file_name` = `"unknown"`.
 
 #### `validate_directory(target_dir, output_dir, services, ...) -> bool`
-**Description**: The workflow behind `process_validation` (in `workflow.py`). Takes injected `StageServices` (semantic/performance/consistency callables), so alternative pipelines can compose custom stage functions. Stage functions are bound from the package namespace by `process_validation`, keeping the test monkeypatch seam intact.
+**Description**: The workflow behind `process_validation` (in `workflow.py`). Takes injected `StageServices` (semantic/performance/consistency callables, plus the optional `orientation` B-tensor diagnostic callable), so alternative pipelines can compose custom stage functions. Stage functions are bound from the package namespace by `process_validation`, keeping the test monkeypatch seam intact. `orientation` defaults to `None` — pipelines that do not inject it skip the stage.
+
+### Diagnostic inventory (stage: `orientation`)
+
+`check_b_orientation(model_data, *, transpose_b=False)` (module `orientation.py`) classifies each `B` tensor by its per-action slice row/column margins against 1.0 (type checker tolerance `1e-6`, shared with the Step 5 `GNN-E002` checks):
+
+| Per-action slices | Receipt finding |
+|-------------------|-----------------|
+| Column-stochastic (canonical `B[next_state, previous_state, action]`) | silent; `orientation: canonical` |
+| Row-stochastic only (textbook POMDP layout) | **warning** naming the tensor, state factor, and flipped slice indices, with the transpose fix; `orientation: row_stochastic` |
+| Doubly stochastic (orientation-ambiguous) | informational note only; `orientation: ambiguous` |
+| Neither | silent; `orientation: non_stochastic` (existing stochasticity error paths own it) |
+
+With `transpose_b=True`, row-stochastic tensors are additionally transposed
+in memory to the canonical order (the same mapping as
+`extract.canonicalize_pomdp`) and the tensor record gains
+`transposed/previous_orientation/canonical_after_transpose` plus a note
+recording the transposition. Warnings are advisory: the stage is always
+`valid` unless it errors operationally. Corpus guarantee: zero warnings on
+the gold exemplars (`input/gnn_files/`).
 
 #### `profile_performance` error contract
 On failure it returns the same best-effort shape as the other stages: `{status: "error", file_path, file_name, error, metrics, warnings, performance_score: 0.0, recovery: True}`; success results carry `recovery: False`.
@@ -231,6 +254,7 @@ Model Content → Structure Validation → Semantic Validation → Performance P
 - `tests/validation/test_validation_public_api.py` - Public API surface tests
 - `tests/validation/test_reliability_validation.py` - Current verdict, replay, run/config identity, and parse-failure regressions
 - `tests/validation/test_workflow_contracts.py` - Step-6 workflow contract tests (kwargs, accumulation, DI, error contracts, cycle detection)
+- `tests/validation/test_b_orientation.py` - B-tensor orientation diagnostic and `--transpose-b` contract tests
 - `tests/gnn/test_gnn_validation.py` - GNN validation-focused tests (shared)
 
 ### Test Coverage
@@ -252,7 +276,7 @@ uv run --extra dev python -m pytest tests/test_validation*.py \
 
 ### Tools Registered
 Registered by `validation.mcp.register_tools(mcp_instance)` (4 tools):
-- `process_validation` - Run full validation pipeline on a directory
+- `process_validation` - Run full validation pipeline on a directory (optional `transpose_b` flag applies the canonical B-tensor transposition recorded in the receipt)
 - `validate_gnn_file` - Validate a single GNN file (structural checks plus the full semantic result under a `semantic` key)
 - `get_validation_report` - Read saved validation reports from a previous run
 - `check_schema_compliance` - Check a GNN model string against canonical schema requirements

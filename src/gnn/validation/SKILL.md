@@ -56,6 +56,7 @@ result = profile_performance(parsed_model)
 - `SemanticValidator` / `process_semantic_validation` / `validate_content` — Active Inference constraint validation
 - `PerformanceProfiler` / `profile_performance` — model performance analysis
 - `ConsistencyChecker` / `check_consistency` — cross-model coherence checks
+- `check_b_orientation` — B-tensor orientation diagnostic (canonical vs textbook POMDP layout; opt-in canonical transposition via `transpose_b`)
 - `process_validation` — main pipeline processing function
 - `validate_directory` / `StageServices` — composable directory workflow with injectable stage callables
 
