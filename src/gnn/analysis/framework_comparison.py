@@ -27,7 +27,7 @@ def _derive_framework_status(
     The status vocabulary mirrors Step 12's ``_update_framework_status``
     (``execute.processor``): ``failed`` beats ``success_with_skips`` beats
     ``success``; an all-skipped set is ``skipped``. Skipped records count as
-    skipped even when a legacy producer also set ``success`` truthiness.
+    skipped even when a producer also set ``success`` truthiness.
     """
     skipped = [d for d in details if bool(d.get("skipped"))]
     attempted = [d for d in details if not bool(d.get("skipped"))]
