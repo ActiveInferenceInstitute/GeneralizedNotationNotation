@@ -1,9 +1,9 @@
 {
   "algorithm": "web-renderer-combine-v1",
-  "binding_sha256": "873b9713b7db0b172362236cd2dc2814d7881e13038944d02b206ad3c7a38d9d",
+  "binding_sha256": "113526fc2fb9c3eb40ba1aa34cdb31b4d269e10f44486f62d265aa95fdc7addd",
   "combined_path": "output/web/_combined_manuscript.md",
-  "combined_sha256": "f6ffb66d2adf0cfab7431893b17cead3ae781c2e5cecc5adbcc252c4b20ee0a5",
-  "combined_size_bytes": 58186,
+  "combined_sha256": "0c8cc16d869b090a18a88c1c112b7f2e114c9bf7b0c1d57041002b8a12002cd1",
+  "combined_size_bytes": 58187,
   "input_root_kind": "hydrated",
   "ordered_inputs": [
     {
@@ -27,19 +27,19 @@
     {
       "ordinal": 4,
       "path": "output/manuscript/03_methods.md",
-      "sha256": "e192e991cf2d9b5da372379b7ef83d9d8da005c9226e38710fd1c53b14d52188",
+      "sha256": "a1de0ca1384f5a7d1ff885fd0c464c60b93b9b9f34a91cb7c81d57e0e2a38bd5",
       "size_bytes": 9229
     },
     {
       "ordinal": 5,
       "path": "output/manuscript/04_artifacts_and_evidence.md",
-      "sha256": "201c4808c3c02a65ddf067a50dcfa4d82473731e53df1d8938faa5851247b580",
+      "sha256": "3b58370d8bb13d3cdacf6b5faef764732a710ebd0100ede5bddc88cb5b3fc83e",
       "size_bytes": 7700
     },
     {
       "ordinal": 6,
       "path": "output/manuscript/05_reproducibility.md",
-      "sha256": "fcd95b9bfa13c78751c0645d37c505467cdf5d70f21497ea89658ca0b4c11888",
+      "sha256": "a897186dde66f2447253647c260700741d1dcdd3ea3fb4bad3abb621765a218e",
       "size_bytes": 5876
     },
     {
@@ -51,8 +51,8 @@
     {
       "ordinal": 8,
       "path": "output/manuscript/S01_source_surface.md",
-      "sha256": "934f98b53b4df23636f2d7e30bf0ed2ce9d1571f3c77e96ba73d1fb985ce99bb",
-      "size_bytes": 4179
+      "sha256": "06b5985825accaadef9d291b92e75f6f62d80194bd4fa50fc137f7341ed1c357",
+      "size_bytes": 4180
     },
     {
       "ordinal": 9,
@@ -67,7 +67,7 @@
       "size_bytes": 234
     }
   ],
-  "ordered_inputs_sha256": "7cbcd3fabf93e964665054ca40acadc9c5a64ee719cb7dcc9a59ddfabc2b5d90",
+  "ordered_inputs_sha256": "4f29de13a46b60386f49b2a01e9cd6c3b4c2a970fee161e94bd981f71c34efc8",
   "project": "GeneralizedNotationNotation",
   "schema_version": "template-manuscript-composition-v1"
 }
