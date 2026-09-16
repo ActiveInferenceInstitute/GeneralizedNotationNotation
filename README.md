@@ -191,7 +191,7 @@ graph LR
         
         B["📊 Graphical Models<br/>• Factor graphs<br/>• Network visualizations<br/>• Dependency diagrams<br/>• Interactive visualizations"]
         
-        C["⚙️ Executable Models<br/>• PyMDP simulations<br/>• RxInfer.jl implementations<br/>• ActiveInference.jl agents<br/>• JAX computations<br/>• DisCoPy diagrams<br/>• PyTorch inference<br/>• NumPyro probabilistic<br/>• Stan programs<br/>• bnlearn networks (render-only)"]
+        C["⚙️ Executable Models<br/>• PyMDP simulations<br/>• RxInfer.jl implementations<br/>• ActiveInference.jl agents<br/>• JAX computations<br/>• DisCoPy diagrams<br/>• PyTorch inference<br/>• NumPyro probabilistic<br/>• Stan programs<br/>• bnlearn networks"]
     end
     
     A -->|Parse & Extract| B
@@ -475,7 +475,7 @@ cannot. `render.pomdp_contract.detect_model_kind` classifies each file;
 
 | Model kind | Exemplar folders | Renders + executes on | Render status `unsupported` on |
 |---|---|---|---|
-| Discrete-state POMDP / HMM (categorical `A/B/C/D[/E]`; flat, factored, hierarchical, multi-agent, learning) | `basics/`, `discrete/`, `hierarchical/`, `learning/`, `multiagent/`, `pomdp_gridworld/`, `precision/`, `pymdp_scaling_study/`, `structured/` | PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan (bnlearn is render-only; no Step 12 executor) | — |
+| Discrete-state POMDP / HMM (categorical `A/B/C/D[/E]`; flat, factored, hierarchical, multi-agent, learning) | `basics/`, `discrete/`, `hierarchical/`, `learning/`, `multiagent/`, `pomdp_gridworld/`, `precision/`, `pymdp_scaling_study/`, `structured/` | PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, bnlearn | — |
 | Continuous-state linear-Gaussian (`F/H/Q/R`, `prior_mean/prior_cov`, optional closed-loop `goal_mean/control_gain`) | `continuous/` | JAX, NumPyro (+NUTS), PyTorch, Stan (Kalman marginal likelihood), RxInfer.jl (native LGSSM) — all via a Kalman filter with closed-loop control when declared | PyMDP, ActiveInference.jl, DisCoPy, bnlearn (categorical backends) |
 
 `unsupported` is a first-class render status: it is excluded from success rates,
@@ -489,13 +489,13 @@ files; the prose above does not carry numbers.
 development environment provisions every Step 12 backend, so no compatible model
 is ever `skipped` for a missing toolchain: Python backends via
 `uv sync --extra dev --extra torch --extra ml-ai --extra geo-infer --extra bnlearn`
-(torch ≥ 2.13.0, NumPyro, DisCoPy, pymdp, bnlearn + pgmpy for the render-only
+(torch ≥ 2.13.0, NumPyro, DisCoPy, pymdp, bnlearn + pgmpy for the
 categorical exports), Julia 1.12+ via juliaup/brew with the two pinned project
 environments instantiated from `src/gnn/execute/rxinfer/Project.toml`
 (RxInfer 5.5.0) and `src/gnn/execute/activeinference_jl/`, and CmdStan 2.39 via
 the release tarball (`~/.cmdstan`) with `cmdstanpy` from the dev extra.
 bnlearn renders for every categorical exemplar and its generated artifacts run
-against the installed package; it remains without a Step 12 executor by design.
+against the installed package (Step 12 executor: `src/gnn/execute/bnlearn/`).
 
 ### 📁 Directory Structure
 
@@ -680,7 +680,7 @@ The GNN framework is built around a modular architecture, where each pipeline st
 | `advanced_visualization` | 9 | Provides advanced, interactive and dashboard visualizations. | `plotly`, D3/HTML output, `matplotlib`, `networkx` |
 | `ontology` | 10 | Maps GNN concepts to Active Inference ontology terms. | Ontology Mapper, Knowledge Graph |
 | `render` | 11 | Renders GNN models into executable code for various backends. | Code Generators (PyMDP, RxInfer, JAX, ActInf.jl, PyTorch, NumPyro, Stan, DisCoPy, bnlearn) |
-| `execute` | 12 | Executes the rendered code using the specified backend. | PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan (cmdstanpy), and fep_lean (Lean 4) document verification via `src/gnn/execute/lean/` — bnlearn is render-only and has no executor |
+| `execute` | 12 | Executes the rendered code using the specified backend. | PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan (cmdstanpy), bnlearn (`src/gnn/execute/bnlearn/`), and fep_lean (Lean 4) document verification via `src/gnn/execute/lean/` |
 | `llm` | 13 | Integrates Large Language Models for analysis, generation, and insights. | Ollama (local default), OpenAI, OpenRouter, Perplexity |
 | `ml_integration` | 14 | Integrates with machine learning frameworks for advanced analysis. | `scikit-learn`, `tensorflow`, `pytorch` |
 | `audio` | 15 | Generates audio representations of GNN model dynamics. | `SAPF`, `Pedalboard`, Audio Synthesis Engines |

@@ -244,8 +244,8 @@ src/gnn/
 │   ├── processors.py              # Folder/round-trip/cross-format operations
 │   └── server_stdio.py / server_http.py / cli.py  # Transports and CLI
 │
-├── execute/                       # Step-12 executor framework: 9 families incl lean (execute/README.md)
-├── render/                        # Step-11 renderers: 9 targets, bnlearn render-only (render/README.md)
+├── execute/                       # Step-12 executor framework: 10 families incl lean, bnlearn (execute/README.md)
+├── render/                        # Step-11 renderers: 9 targets, all executed (render/README.md)
 ├── validation/                    # Step-6 model validation; simple.py recovery validator
 ├── report/                        # Report generation; processing_report.py
 ├── pipeline/                      # Step orchestration, config, hashing, preflight

@@ -23,9 +23,11 @@ The main pipeline loads `input/config.yaml` automatically. See the
 - Steps 0–10 discover, parse, validate, export, visualize, and annotate models.
 - Step 11 has 9 render targets: PyMDP, RxInfer.jl, ActiveInference.jl, JAX,
   DisCoPy, PyTorch, NumPyro, Stan, and bnlearn.
-- Step 12 has 9 executor families: PyMDP, JAX, DisCoPy, RxInfer.jl,
-  ActiveInference.jl, PyTorch, NumPyro, Lean, and Stan. bnlearn is render-only:
-  Step 11 renders bnlearn scripts, Step 12 never executes them. Stan runs the
+- Step 12 has 10 executor families: PyMDP, JAX, DisCoPy, RxInfer.jl,
+  ActiveInference.jl, PyTorch, NumPyro, Lean, Stan, and bnlearn
+  (`src/gnn/execute/bnlearn/`). bnlearn programs skip with an install hint
+  until their runtime is present (`uv sync --extra bnlearn`, or Rscript plus
+  the R `bnlearn` package for `.R` scripts). Stan runs the
   rendered cmdstanpy driver (`src/gnn/execute/stan/`); it needs
   `uv sync --extra stan` plus a CmdStan toolchain, otherwise it is reported
   skipped. Continuous (linear-Gaussian) exemplars execute on jax, numpyro,

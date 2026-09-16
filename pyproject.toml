@@ -156,9 +156,9 @@ scaling = [
     "ray>=2.0.0",  # distributed execution in execute/distributed.py
 ]
 
-# bnlearn backend (Step 11 render for categorical Bayesian-network exports):
-# pgmpy arrives transitively with its own pinned floors. Render-only — bnlearn
-# has no Step 12 executor (see FRAMEWORK_REGISTRY).
+# bnlearn backend (categorical Bayesian-network exports; executed by Step 12
+# via src/gnn/execute/bnlearn/):
+# pgmpy arrives transitively with its own pinned floors.
 bnlearn = [
     "bnlearn>=0.14.0",
 ]

@@ -87,7 +87,7 @@
 #### BNLearn (Python)
 - **Purpose**: Bayesian network / causal model backend
 - **Output**: Python scripts under `bnlearn/` when requested
-- **Continuous models**: `unsupported`; **render-only** — bnlearn has no Step 12 executor
+- **Continuous models**: `unsupported`; executed by Step 12 via `execute/bnlearn/` (skips with an install hint until `uv sync --extra bnlearn` provides the Python package, or R + the R `bnlearn` package for `.R` scripts)
 
 The canonical framework inventory lives in `framework_registry.py`; update that
 registry before changing public framework lists, MCP enums, or processor configs.

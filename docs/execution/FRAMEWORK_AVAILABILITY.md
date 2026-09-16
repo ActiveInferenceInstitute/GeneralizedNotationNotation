@@ -3,13 +3,16 @@
 GNN has two related framework inventories:
 
 - **Render registry** (`src/gnn/render/framework_registry.py`): 9 targets, including Stan.
-- **Step 12 executor** (`src/gnn/execute/processor.py`): 8 executable framework families —
-  every render target except bnlearn. Stan executes via the cmdstanpy driver
-  (`src/gnn/execute/stan/`) and is reported `skipped` when cmdstanpy/CmdStan is absent.
+- **Step 12 executor** (`src/gnn/execute/processor.py` + the per-framework runner
+  packages): 10 executable framework families — every render target (bnlearn via
+  `src/gnn/execute/bnlearn/`). Stan executes via the cmdstanpy driver
+  (`src/gnn/execute/stan/`) and is reported `skipped` when cmdstanpy/CmdStan is absent;
+  bnlearn programs are reported `skipped` with an install hint until their runtime is
+  present (`uv sync --extra bnlearn`, or Rscript plus the R `bnlearn` package for
+  `.R` scripts).
 
-PyTorch is a supported render/execute path and bnlearn is a supported render path;
-both are intentionally unavailable in the default lock because their dependency chain
-currently carries a known unpatched PyTorch security concern. Julia targets require
+PyTorch and bnlearn are supported render/execute paths; both are intentionally absent
+from the default lock (heavy optional runtimes). Julia targets require
 their committed project environments.
 
 ## Check availability
@@ -50,6 +53,17 @@ julia --startup-file=no --project=src/gnn/execute/rxinfer \
 julia --startup-file=no --project=src/gnn/execute/activeinference_jl \
   -e 'using ActiveInference; println("ActiveInference.jl available")'
 ```
+
+### Optional Python targets
+
+```bash
+uv run python -c "import torch; print('PyTorch available')"
+uv run python -c "import bnlearn; print('bnlearn available')"  # or: uv sync --extra bnlearn
+```
+
+For `.R` bnlearn scripts, the R lane needs `Rscript` plus the R `bnlearn`
+package (`install.packages('bnlearn')`); probe it with
+`Rscript -e 'library(bnlearn)'`.
 
 The matching `--project` is required. The executor uses the same project-specific
 environments when launching rendered scripts.

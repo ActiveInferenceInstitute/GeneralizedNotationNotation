@@ -208,7 +208,7 @@ GNN support is available for various IDEs:
 
 GNN tools integrate with several Active Inference frameworks:
 
-Step 11 renders to nine backends and Step 12 executes the eight executable ones (bnlearn is render-only). `uv run gnn health` reports which are importable in the current environment.
+Step 11 renders to nine backends and Step 12 executes all nine (bnlearn via `src/gnn/execute/bnlearn/`, skipping until its runtime is installed). `uv run gnn health` reports which are importable in the current environment.
 
 ```mermaid
 graph LR

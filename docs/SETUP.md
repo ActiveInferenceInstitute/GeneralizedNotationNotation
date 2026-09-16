@@ -112,12 +112,14 @@ comma-separated list. The same selection is available through `src/gnn/main.py`.
 
 ## Framework boundaries
 
-Step 11 has **9 render targets**. Step 12 executes **8 framework families** — every
-render target except bnlearn, which is render-only. Stan executes through the
+Step 11 has **9 render targets**. Step 12 executes **10 framework families** — every
+render target plus Lean. Stan executes through the
 cmdstanpy driver (`src/gnn/execute/stan/`) since v3.2.0; it needs `uv sync --extra stan`
-plus a CmdStan toolchain and is reported skipped when either is absent. PyTorch and
-bnlearn are intentionally unavailable in the default lock because of their transitive
-PyTorch security risk. The runtime reports skipped or unavailable frameworks rather
+plus a CmdStan toolchain and is reported skipped when either is absent. bnlearn
+executes through `src/gnn/execute/bnlearn/` and is reported skipped until its runtime
+is present (`uv sync --extra bnlearn`, or Rscript plus the R `bnlearn` package for
+`.R` scripts). PyTorch and bnlearn are intentionally not part of the default lock
+(heavy optional runtimes). The runtime reports skipped or unavailable frameworks rather
 than pretending that every target is installed.
 
 | Target | Language | Default environment status | Surface |
@@ -130,7 +132,7 @@ than pretending that every target is installed.
 | ActiveInference.jl | Julia | Committed project environment | Render + execute |
 | PyTorch | Python | Intentionally not locked | Render + execute when installed manually |
 | Stan | Stan | Optional extra (`uv sync --extra stan`) | Render + execute via cmdstanpy |
-| bnlearn | Python | Intentionally not locked | Render only |
+| bnlearn | Python | Optional extra (`uv sync --extra bnlearn`) | Render + execute |
 
 ### Python targets
 

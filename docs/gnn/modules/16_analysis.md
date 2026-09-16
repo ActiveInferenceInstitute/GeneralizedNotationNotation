@@ -66,6 +66,13 @@ The RxInfer analyzer (`src/gnn/analysis/rxinfer/`) is the deepest of these and i
 - Distribution analysis and correlation studies
 - **PyMDP Visualization** - belief evolution, state sequences, performance metrics plots
 - **Cross-framework comparison** - uses whatever execution (Step 12) produced. `_extract_simulation_metrics` (in `analyzer.py`) prefers `simulation_data/simulation_results.json` (and other canonical JSON) before `execution_logs/*_results.json`, so backends that write full traces to `simulation_data/` (e.g. RxInfer) are not masked by sparse structured logs. DisCoPy: inline `simulation_data.analysis` / `parameters` from structured logs populate `circuit_info`; if still missing, `simulation_data/circuit_info.json` is merged when present. bnlearn structured logs populate `model_parameters` when vector traces are absent. If every run for a framework was skipped (`skipped: true` in the execution summary), logs INFO instead of WARNING for bnlearn. Otherwise missing data is reported as "[framework] No simulation data found". Python backends are in core `uv sync`; Julia coverage needs Julia + packages installed, then re-run Step 12.
+- **Degraded comparison columns** - every framework entry in
+  `analyze_framework_outputs` carries an explicit `status` mirroring the Step 12
+  summary vocabulary (`success` | `success_with_skips` | `skipped` | `failed`;
+  `render_failed` for frameworks whose Step 11 render failed or whose render
+  receipt no longer matches), plus `skipped_count` / `failed_count` /
+  `status_reason` and matching status rows in the generated comparison report.
+  One framework's degradation never crashes the comparison.
 - **RxInfer analysis suite** - convergence diagnostics, per-factor belief recovery, per-model GIF animations with reproducibility manifests, an HTML dashboard, and cross-framework comparison. See [RxInfer Analysis](#rxinfer-analysis).
 
 ---

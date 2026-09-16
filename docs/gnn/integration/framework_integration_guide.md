@@ -37,7 +37,7 @@ cross-framework comparison step.
 
 ## Supported Frameworks
 
-Step 11 renders to 9 registered targets (see `src/gnn/render/AGENTS.md`). Step 12 executes 8 — every render target except bnlearn, which is render-only (Stan via the cmdstanpy driver `<stem>_stan.py`, executor `src/gnn/execute/stan/`; skipped when cmdstanpy/CmdStan is absent). PyTorch and bnlearn are registry-gated unless installed manually. Continuous (linear-Gaussian) models execute on jax, numpyro, pytorch, stan and rxinfer only; the four categorical backends (pymdp, activeinference_jl, discopy, bnlearn) return render status `unsupported` for them, recorded in `render_processing_summary.json` under `unsupported_framework_renderings` and never handed to Step 12:
+Step 11 renders to 9 registered targets (see `src/gnn/render/AGENTS.md`). Step 12 executes all 9 — bnlearn via `src/gnn/execute/bnlearn/` (its programs skip with an install hint until the `bnlearn` extra, or Rscript plus the R `bnlearn` package for `.R` scripts, is present; Stan via the cmdstanpy driver `<stem>_stan.py`, executor `src/gnn/execute/stan/`, skipped when cmdstanpy/CmdStan is absent). PyTorch and bnlearn are registry-gated unless installed manually. Continuous (linear-Gaussian) models execute on jax, numpyro, pytorch, stan and rxinfer only; the four categorical backends (pymdp, activeinference_jl, discopy, bnlearn) return render status `unsupported` for them, recorded in `render_processing_summary.json` under `unsupported_framework_renderings` and never handed to Step 12:
 
 | Framework | Per-framework guide |
 |-----------|----------------------|

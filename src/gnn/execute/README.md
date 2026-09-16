@@ -15,6 +15,7 @@ This module is responsible for running GNN models that have been rendered into f
 | **NumPyro** | Python | `numpyro/` | `*_numpyro.py` | ✅ Full support |
 | **Stan** | Python (cmdstanpy driver) | `stan/` | `*_stan.py` | ✅ Full support (requires `uv sync --extra stan` + CmdStan toolchain; skipped otherwise) |
 | **Lean 4** | Lean (fep_lean bridge) | `lean/` | `*.lean` + emitted `*.md` | ✅ Full support (requires the fep_lean checkout via `FEP_LEAN_ROOT`; skipped otherwise) |
+| **bnlearn** | Python (generator-backed; `.R` lane via Rscript) | `bnlearn/` | `*_bnlearn.py`, `*.R` | ✅ Full support (requires the `bnlearn` extra or R + R `bnlearn` package; skipped otherwise) |
 JAX, NumPyro, PyTorch, and DisCoPy are **core** dependencies (`uv sync`). If the environment is incomplete, their scripts report an explicit skipped status. Requested Julia frameworks require Julia plus their package set; in strict requested-framework runs, missing packages make Step 12 fail.
 
 ## Module Structure
@@ -32,11 +33,11 @@ src/gnn/execute/
 ├── rxinfer/                 # RxInfer.jl execution
 ├── activeinference_jl/      # ActiveInference.jl execution
 ├── jax/                     # JAX execution
-├── pytorch/                 # PyTorch execution
+├── stan/                    # Stan execution (cmdstanpy driver runner)
+├── bnlearn/                 # bnlearn execution (generator-backed programs; Python + R lanes)
 ├── numpyro/                 # NumPyro execution
 ├── discopy/                 # DisCoPy execution
 │   └── discopy_translator_module/
-├── stan/                    # Stan execution (cmdstanpy driver runner)
 ├── lean/                    # Lean verification via the fep_lean bridge
 └── mcp.py                   # MCP tool integration
 ```
@@ -180,8 +181,8 @@ configuration. Retrying a scope replaces its verdict and script set; counters,
 framework statuses, and aggregate status are recomputed. `current_invocation`
 retains the current call's verdict separately from the aggregate.
 
-Use the same `run_id` keyword or `GNN_RUN_ID` for folder invocations in one run.
 Absent that identity, standalone calls start a fresh receipt rather than adopt
-previous-run results. bnlearn has no Step 12 executor; installing it does not
-add one. Optional dependency absence is reported as skipped, and explicitly
+previous-run results. bnlearn executes through `execute/bnlearn/` and the
+shared pre-flight probe; without its runtime the scripts are reported
+skipped. Optional dependency absence is reported as skipped, and explicitly
 requested unavailable frameworks follow the strict execution policy.

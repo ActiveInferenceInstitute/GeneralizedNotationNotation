@@ -18,7 +18,7 @@ python src/gnn/12_execute.py --target-dir input/gnn_files --output-dir output --
 # Specific frameworks only
 python src/gnn/12_execute.py --frameworks "pymdp,jax" --verbose
 
-# Lite preset (PyMDP, JAX, DisCoPy, bnlearn; bnlearn scripts skip at pre-flight)
+# Lite preset (PyMDP, JAX, DisCoPy, bnlearn; bnlearn scripts skip without the bnlearn extra)
 python src/gnn/12_execute.py --frameworks "lite" --verbose
 ```
 
@@ -85,7 +85,7 @@ The execute processor follows this pipeline:
 
 | Preset | Frameworks | Use Case |
 | ------ | ---------- | -------- |
-| `all` | PyMDP, RxInfer, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan | Full execution (default) |
+| `all` | PyMDP, RxInfer, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, Lean, bnlearn | Full execution (default) |
 | `lite` | PyMDP, JAX, DisCoPy, bnlearn | Python-only, no Julia required |
 | `pymdp,jax` | PyMDP, JAX | Fast Python subset |
 
@@ -100,6 +100,9 @@ julia --startup-file=no --project=src/gnn/execute/rxinfer -e 'using Pkg; Pkg.ins
 
 # For Stan: cmdstanpy plus a CmdStan toolchain
 uv sync --extra stan
+
+# For bnlearn: Python bnlearn package (or R + the R bnlearn package for .R scripts)
+uv sync --extra bnlearn
 
 # For DisCoPy
 uv sync --extra graphs

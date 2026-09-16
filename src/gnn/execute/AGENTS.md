@@ -1,8 +1,7 @@
 # Execute Module - Agent Scaffolding
 
 ## Module Overview
-
-**Purpose**: Execute rendered simulation scripts across multiple frameworks (PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan). Per-folder `execution_summary.json` files are merged so the durable summary covers every input folder; frameworks a model's kind cannot use are reported `unsupported` by Step 11 and are never executed.
+**Purpose**: Execute rendered simulation scripts across multiple frameworks (PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, Lean, bnlearn). Per-folder `execution_summary.json` files are merged so the durable summary covers every input folder; frameworks a model's kind cannot use are reported `unsupported` by Step 11 and are never executed.
 
 **Pipeline Step**: Step 12: Execution (src/gnn/12_execute.py)
 
@@ -12,14 +11,14 @@
 
 **Version**: 3.2.0
 
-**Last Updated**: 2026-09-02
+**Last Updated**: 2026-09-16
 
 ---
 
 ## Core Functionality
 
 ### Primary Responsibilities
-1. Execute Python simulation scripts (PyMDP, JAX, DisCoPy, PyTorch, NumPyro, and the cmdstanpy driver for Stan). bnlearn names parse but there is no bnlearn executor; rendered bnlearn scripts skip at the Python pre-flight check (the module is intentionally absent)
+1. Execute Python simulation scripts (PyMDP, JAX, DisCoPy, PyTorch, NumPyro, the cmdstanpy driver for Stan, and the generator-backed bnlearn programs via `execute/bnlearn/`)
 2. Execute Julia simulation scripts (RxInfer.jl, ActiveInference.jl)
 3. Capture simulation results and logs
 4. Handle execution errors gracefully
@@ -27,7 +26,7 @@
 
 ### Key Capabilities
 - Multi-framework execution support
-- **Skip vs fail**: JAX, NumPyro, and DisCoPy are **core** dependencies (repair with `uv sync`); if the environment is incomplete, scripts are **skipped** (not run) and reported as "skipped" — they do not count as execution failures. PyTorch ships in the `torch` extra (`uv sync --extra torch`; torch>=2.13.0 resolves GHSA-rrmf-rvhw-rf47) — without it the PyTorch backend is reported skipped. Stan needs `uv sync --extra stan` plus a CmdStan toolchain. Julia backends still require a local Julia install.
+- **Skip vs fail**: JAX, NumPyro, and DisCoPy are **core** dependencies (repair with `uv sync`); if the environment is incomplete, scripts are **skipped** (not run) and reported as "skipped" — they do not count as execution failures. PyTorch ships in the `torch` extra (`uv sync --extra torch`; torch>=2.13.0 resolves GHSA-rrmf-rvhw-rf47) — without it the PyTorch backend is reported skipped. Stan needs `uv sync --extra stan` plus a CmdStan toolchain. bnlearn needs the `bnlearn` extra (`uv sync --extra bnlearn`) or, for `.R` scripts, Rscript plus the R `bnlearn` package — without it bnlearn scripts are reported skipped. Julia backends still require a local Julia install.
 - Graceful degradation when frameworks unavailable
 - Automatic PyMDP package detection (distinguishes correct vs wrong package variants)
 - Path collection with deduplication (prevents nested directory issues)
@@ -52,10 +51,7 @@
 - `target_dir` (Path): Directory containing rendered scripts (typically output from Step 11)
 - `output_dir` (Path): Output directory for execution results
 - `verbose` (bool): Enable verbose logging (default: False)
-- `frameworks` (str): Frameworks to execute ("all", "lite", or comma-separated list, default: "all")
-  - `"all"`: Execute all configured frameworks
-  - `"lite"`: Selects PyMDP, JAX, DisCoPy, and bnlearn (bnlearn scripts skip at pre-flight; see below)
-  - Comma-separated: `"pymdp,jax"` for specific frameworks
+  - `"lite"`: Selects PyMDP, JAX, DisCoPy, and bnlearn (bnlearn scripts skip at the shared pre-flight probe when the `bnlearn` extra is absent; see below)
 - `timeout` (int): Execution timeout per script in seconds (default: 3600)
 - `render_output_dir` (Optional[Path]): Explicit Step 11 output directory to search. This is the safest way to keep Step 12 scoped to an isolated pipeline run.
 - `execution_workers` (int): Number of rendered scripts to execute concurrently. `1` preserves serial execution; values above `1` use local process workers unless `distributed=True`.
@@ -117,7 +113,7 @@ if not result["success"]:
 
 
 #### `execute_rendered_simulators(target_dir: Path, output_dir: Path, logger: logging.Logger, recursive: bool = False, verbose: bool = False, **kwargs) -> bool`
-**Description**: Iterate over the `ExecutorFrameworkSpec` registry for every supported framework runner (PyMDP, RxInfer.jl, DisCoPy, ActiveInference.jl, JAX, NumPyro, PyTorch, Stan, Lean) and write a summary JSON + markdown report under ``output_dir / "12_execute_output" / "summaries" /``. Missing optional dependencies are recorded as ``"SKIPPED"`` instead of failures.
+**Description**: Iterate over the `ExecutorFrameworkSpec` registry for every supported framework runner (PyMDP, RxInfer.jl, DisCoPy, ActiveInference.jl, JAX, NumPyro, PyTorch, Lean) and write a summary JSON + markdown report under ``output_dir / "12_execute_output" / "summaries" /``. Stan and bnlearn run through the Step 12 script path (drivers with per-lane output env vars, `STAN_OUTPUT_DIR` / `BNLEARN_OUTPUT_DIR`) rather than registry runners. Missing optional dependencies are recorded as ``"SKIPPED"`` instead of failures.
 
 #### `plan_execute(target_dir: Path, output_dir: Path, frameworks: str = "all", **config) -> ExecutionPlan`
 **Description**: Dry-run Step 12 planner (``execute.planning``). Composes the same discovery / render-contract / dependency primitives as `process_execute` but runs **no scripts and no Julia package probing** — it answers "what would Step 12 do?" for preflight checks, CI gates, and interactive debugging. Returns a typed `ExecutionPlan` (``execute.types``) with `requested_frameworks`, `render_output_dir`, `render_contract_found`, `status` (`"ready"` | `"no_render_output"` | `"no_executable_scripts"` | `"invalid_frameworks"`), `total_scripts`, and per-script disposition lists (`would_execute`, `would_skip_dependency`, `unknown_framework_scripts`), plus `missing_render_scripts` and `render_failures`. Raises `ValueError` on an invalid `frameworks` argument (the same exception `process_execute` catches and converts to `return False`).
@@ -144,6 +140,7 @@ Framework availability is assessed at execution time by the processor rather tha
 
 - **`execute.pymdp.package_detector.detect_pymdp_installation()`** — Detect which PyMDP package variant is installed.
 - **`execute.pymdp.package_detector.validate_pymdp_for_execution()`** — Validate PyMDP is ready for execution.
+- **`execute.bnlearn.is_bnlearn_available()` / `execute.bnlearn.is_r_bnlearn_available()`** — bnlearn probes: the Python `bnlearn` module (shared `utils.framework_availability` mapping) and, for `.R` scripts, Rscript + the R `bnlearn` package. Rendered bnlearn scripts skip with the install hint when the lane's runtime is missing.
 - **MCP tool**: `check_execute_dependencies` — Exposes framework availability via MCP (see `execute/mcp.py`).
 
 #### PyMDP Package Detection Functions
@@ -177,13 +174,10 @@ elif not detection.get("correct_package"):
 
 ### Configuration Options
 
-#### Framework Selection
-- `frameworks` (str): `"all"` (the nine executors: PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, Lean — plus bnlearn, which is accepted by `parse_frameworks_parameter` but has no executor and always skips), `"lite"` (PyMDP, JAX, DisCoPy, bnlearn), or a comma-separated subset — parsed by `parse_frameworks_parameter` in `execute/processor.py`
-
 #### Execution Parameters
 - `timeout` (int): Execution timeout in seconds (default: `3600`)
 - `capture_output` (bool): Capture stdout/stderr (default: `True`)
-- `render_output_dir` (Path): Render output directory to search before default discovery
+- `frameworks` (str): `"all"` (the executors: PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, Lean, bnlearn — bnlearn via `execute/bnlearn/`, skipping with the install hint when its runtime is absent), `"lite"` (PyMDP, JAX, DisCoPy, bnlearn), or a comma-separated subset — parsed by `parse_frameworks_parameter` in `execute/processor.py`
 - `execution_workers` (int): Number of rendered scripts to execute concurrently. This parallelizes model/script runs, not timesteps within a single simulation.
 - `distributed` (bool): Route scripts through the distributed dispatcher instead of the local process pool
 - `backend` (str): Dispatcher backend, default `ray`

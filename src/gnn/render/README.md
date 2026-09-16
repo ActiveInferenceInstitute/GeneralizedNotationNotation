@@ -226,7 +226,7 @@ Backend-specific renderers live under:
 - `src/gnn/render/activeinference_jl/`
 - `src/gnn/render/jax/`
 - `src/gnn/render/discopy/`
-- additional maintained backends: `src/gnn/render/pytorch/`, `src/gnn/render/numpyro/`, `src/gnn/render/stan/` (runnable HMM / LGSSM programs plus cmdstanpy drivers), and generator-backed `bnlearn` (render-only; no Step 12 executor)
+- additional maintained backends: `src/gnn/render/pytorch/`, `src/gnn/render/numpyro/`, `src/gnn/render/stan/` (runnable HMM / LGSSM programs plus cmdstanpy drivers), and generator-backed `bnlearn` (executed by `src/gnn/execute/bnlearn/`; skips without its runtime)
 
 ### Model kinds
 
@@ -692,8 +692,10 @@ invocations belonging to one run. Only same-run, same-configuration records
 whose source and artifact bytes still match can be carried forward. Standalone
 calls without an explicit run ID get a fresh ID. Retrying a scope replaces its
 records, including removed inputs; history never contributes to current counts.
-The framework registry exposes `supports_execution`; this is false for bnlearn,
-which remains a render-only optional backend even if its package is installed.
+The framework registry exposes `supports_execution`; bnlearn's is true since
+`src/gnn/execute/bnlearn/` (Step 12 runs its programs through the shared
+script path, skipping with an install hint when the `bnlearn` extra is
+absent).
 
 
 `render_gnn_spec` accepts structured parser mappings and

@@ -83,9 +83,10 @@ uv run python -m json.tool \
   output/quickstart/00_pipeline_summary/pipeline_execution_summary.json
 ```
 
-Step 11 has nine render targets; Step 12 has eight executor families — every render
-target except bnlearn, which is render-only. PyTorch and bnlearn are not installed by
-the default lock; Stan needs `uv sync --extra stan` plus a CmdStan toolchain.
+Step 11 has nine render targets; Step 12 has ten executor families (all render
+targets plus Lean). PyTorch and bnlearn are not installed by
+the default lock; Stan needs `uv sync --extra stan` plus a CmdStan toolchain, and
+bnlearn needs `uv sync --extra bnlearn`.
 See [framework availability](execution/FRAMEWORK_AVAILABILITY.md).
 
 ## 5. Inspect generated artifacts
