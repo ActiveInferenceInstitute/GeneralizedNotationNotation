@@ -51,6 +51,8 @@
 - `target_dir` (Path): Directory containing rendered scripts (typically output from Step 11)
 - `output_dir` (Path): Output directory for execution results
 - `verbose` (bool): Enable verbose logging (default: False)
+- `frameworks` (str): Frameworks to execute ("all", "lite", or comma-separated list, default: "all")
+  - `"all"`: Execute all configured executors
   - `"lite"`: Selects PyMDP, JAX, DisCoPy, and bnlearn (bnlearn scripts skip at the shared pre-flight probe when the `bnlearn` extra is absent; see below)
 - `timeout` (int): Execution timeout per script in seconds (default: 3600)
 - `render_output_dir` (Optional[Path]): Explicit Step 11 output directory to search. This is the safest way to keep Step 12 scoped to an isolated pipeline run.
@@ -177,6 +179,7 @@ elif not detection.get("correct_package"):
 #### Execution Parameters
 - `timeout` (int): Execution timeout in seconds (default: `3600`)
 - `capture_output` (bool): Capture stdout/stderr (default: `True`)
+- `render_output_dir` (Path): Render output directory to search before default discovery
 - `frameworks` (str): `"all"` (the executors: PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, Lean, bnlearn — bnlearn via `execute/bnlearn/`, skipping with the install hint when its runtime is absent), `"lite"` (PyMDP, JAX, DisCoPy, bnlearn), or a comma-separated subset — parsed by `parse_frameworks_parameter` in `execute/processor.py`
 - `execution_workers` (int): Number of rendered scripts to execute concurrently. This parallelizes model/script runs, not timesteps within a single simulation.
 - `distributed` (bool): Route scripts through the distributed dispatcher instead of the local process pool

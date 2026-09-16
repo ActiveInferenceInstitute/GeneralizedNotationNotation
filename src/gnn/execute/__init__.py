@@ -17,7 +17,7 @@ FEATURES: dict[str, Any] = {
     "activeinference_jl_execution": True,
     "discopy_execution": True,
     "jax_execution": True,
-    "pytorch_execution": True,
+    "numpyro_execution": True,
     "bnlearn_execution": True,
     "validation": True,
     "mcp_integration": True,

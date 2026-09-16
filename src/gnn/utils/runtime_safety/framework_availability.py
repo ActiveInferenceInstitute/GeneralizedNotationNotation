@@ -35,7 +35,7 @@ FRAMEWORK_IMPORT_CHECK: Dict[str, Tuple[str, str]] = {
     "pytorch": ("torch", "uv sync"),
     "stan": ("cmdstanpy", "uv sync --extra stan"),
     "discopy": ("discopy", "uv sync"),
-    "bnlearn": ("bnlearn", "uv sync"),
+    "bnlearn": ("bnlearn", "uv sync --extra bnlearn"),
     "pymdp": ("pymdp", "uv sync"),
 }
 

@@ -163,14 +163,18 @@ def test_backend_count_matches_registry(
 def test_executable_backend_count_is_the_execution_subset(
     variables: dict[str, str], snapshot: RepositorySnapshot
 ) -> None:
-    """Only backends with ``supports_execution`` execute at Step 12.
+    """Backends with ``supports_execution`` are exactly the execution subset.
 
     ``GNN_BACKEND_COUNT`` is the registry size and must never label a sentence
-    or a figure bar about execution.
+    or a figure bar about execution. Since bnlearn gained
+    ``src/gnn/execute/bnlearn/``, every render-registry backend executes (Lean
+    is an execute-side bridge outside the registry), so the subset equals the
+    registry — the count must still derive from the registry flags, not a
+    constant.
     """
     executable = len(_registry_flags(snapshot, "supports_execution"))
     assert variables["GNN_EXECUTABLE_BACKEND_COUNT"] == str(executable)
-    assert int(variables["GNN_EXECUTABLE_BACKEND_COUNT"]) < int(
+    assert int(variables["GNN_EXECUTABLE_BACKEND_COUNT"]) == int(
         variables["GNN_BACKEND_COUNT"]
     )
     assert len(variables["GNN_EXECUTABLE_BACKEND_LIST"].split(", ")) == executable

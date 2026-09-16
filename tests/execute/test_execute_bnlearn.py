@@ -108,8 +108,7 @@ def test_script_language_derived_from_suffix(name: str, expected: str) -> None:
 
 def test_bnlearn_import_check_is_registered() -> None:
     """The shared probe maps bnlearn → the bnlearn module + install hint."""
-    assert FRAMEWORK_IMPORT_CHECK["bnlearn"] == ("bnlearn", "uv sync")
-
+    assert FRAMEWORK_IMPORT_CHECK["bnlearn"] == ("bnlearn", "uv sync --extra bnlearn")
 
 def test_python_probe_delegates_to_shared_availability(monkeypatch: Any) -> None:
     seen: Dict[str, Any] = {}
