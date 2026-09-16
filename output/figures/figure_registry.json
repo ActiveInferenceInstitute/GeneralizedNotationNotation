@@ -1,6 +1,29 @@
 {
   "figures": [
     {
+      "alt_text": "End-to-end summary panel of the GNN pipeline in seven left-to-right stage cards: a plain-text GNN document declaring A, B, C, D and E; parsing; validation and type checking with the B-tensor orientation check; code rendering to the registered backends; execution of the backends including the bnlearn lane; analysis; and cross-repository interchange with GEO-INFER and fep_lean. Step pills name the pipeline step behind each stage, a callout states the two newest capabilities, and a footer strip carries the producer's scale counts for steps, families, backends and MCP tools.",
+      "consumed_tokens": {
+        "GNN_BACKEND_COUNT": "9",
+        "GNN_EXECUTABLE_BACKEND_COUNT": "9",
+        "GNN_FAMILY_COUNT": "9",
+        "GNN_MCP_TOOL_COUNT": "141",
+        "GNN_STEP_ANALYSIS": "16",
+        "GNN_STEP_COUNT": "25",
+        "GNN_STEP_EXECUTE": "12",
+        "GNN_STEP_GNN": "3",
+        "GNN_STEP_RANGE": "0\u201324",
+        "GNN_STEP_RENDER": "11",
+        "GNN_STEP_TYPE_CHECKER": "5",
+        "GNN_STEP_VALIDATION": "6",
+        "GNN_VERSION": "3.3.0"
+      },
+      "filename": "gnn_graphical_abstract.png",
+      "generated_by": "scripts/manuscript_fig_graphical_abstract.py",
+      "label": "fig:graphical_abstract",
+      "png_sha256": "bef1196068162127c6733b1f910dd09e728cc96d816b551546ba0e9c37e1f074",
+      "source_sha256": {}
+    },
+    {
       "alt_text": "Directed acyclic graph of the numbered GNN pipeline steps. Nodes are the step modules in src/, arranged left to right from parsing and type checking, through validation, visualization, rendering and execution, to analysis, reporting and integration. Edges run from a step to every later step that consumes its artifacts, so each output can be traced back to the step that produced it.",
       "consumed_tokens": {},
       "filename": "gnn_pipeline_dag.png",
@@ -8,7 +31,7 @@
       "label": "fig:pipeline",
       "png_sha256": "3805819ac49834db359bf800862762436a7a4bb962f6170d835a7f3dd8b51e8e",
       "source_sha256": {
-        "src/gnn/STEP_INDEX.md": "aa82cb56dd1d05f21948924b5796b9c138e03d869ac517c7e3b30a8bcd9e79b1"
+        "src/gnn/STEP_INDEX.md": "a16a5fe42cde01c90ed057a067ab5466a498281da23a3c84bf0cf9b91ef660a6"
       }
     },
     {
@@ -20,7 +43,7 @@
       "png_sha256": "046d35916d0b0712ffead7c66b3f686bdb749870b9e6051417db407de144a22f",
       "source_sha256": {
         "input/model_family_manifest.json": "c72c7de61cde1ecdda4b8669a0539ee26bc15c83bbb5cfae9dece845f8cddda4",
-        "src/gnn/render/framework_registry.py": "576e44ea07a39cd04dd8ddf76f25c185b0a60394a4dcc50919e8e92acfb0a8e7"
+        "src/gnn/render/framework_registry.py": "a394ee7cfdec85f92a088b2ab59fcca2e3225aa5eefd3c63ecb6755f8e67b2ba"
       }
     },
     {
@@ -34,7 +57,7 @@
         "input/model_family_manifest.json": "c72c7de61cde1ecdda4b8669a0539ee26bc15c83bbb5cfae9dece845f8cddda4",
         "src/gnn/manuscript/variables.py": "5366e86ed4ad3fd5c1a188c62941eebf3da8438422644ca674b08cbb64d86b6d",
         "src/gnn/pipeline/cross_framework_reliability.py": "f541016765f8c2b843226c9127f011cc77a0e66cbad694e89853db59c6cd8101",
-        "src/gnn/render/framework_registry.py": "576e44ea07a39cd04dd8ddf76f25c185b0a60394a4dcc50919e8e92acfb0a8e7"
+        "src/gnn/render/framework_registry.py": "a394ee7cfdec85f92a088b2ab59fcca2e3225aa5eefd3c63ecb6755f8e67b2ba"
       }
     },
     {
@@ -43,18 +66,18 @@
         "GNN_BACKEND_COUNT": "9",
         "GNN_DOC_FILE_COUNT": "624",
         "GNN_EXAMPLE_COUNT": "30",
-        "GNN_EXECUTABLE_BACKEND_COUNT": "8",
+        "GNN_EXECUTABLE_BACKEND_COUNT": "9",
         "GNN_FAMILY_COUNT": "9",
         "GNN_MCP_TOOL_COUNT": "141",
         "GNN_SRC_PACKAGE_COUNT": "44",
         "GNN_STEP_COUNT": "25",
-        "GNN_TEST_FILE_COUNT": "452",
+        "GNN_TEST_FILE_COUNT": "455",
         "GNN_VERSION": "3.3.0"
       },
       "filename": "gnn_repo_metrics.png",
       "generated_by": "scripts/manuscript_fig_repo_metrics.py",
       "label": "fig:repo_metrics",
-      "png_sha256": "38c56235bd723d3b37de9f46a6569dca4fc31f0febaa75ed6ab3f43ba0c81875",
+      "png_sha256": "0ca48fe7ce509e2b4cde06368c0c681356a8f53fcf5204418d3e689148dbdb02",
       "source_sha256": {}
     },
     {

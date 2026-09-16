@@ -63,6 +63,20 @@ _Z_GENERATE = "z_generate_manuscript_variables.py"
 # needs the figure's content, not its title.
 _FIGURES = [
     (
+        "fig:graphical_abstract",
+        "manuscript_fig_graphical_abstract.py",
+        "gnn_graphical_abstract.png",
+        "End-to-end summary panel of the GNN pipeline in seven left-to-right stage "
+        "cards: a plain-text GNN document declaring A, B, C, D and E; parsing; "
+        "validation and type checking with the B-tensor orientation check; code "
+        "rendering to the registered backends; execution of the backends including "
+        "the bnlearn lane; analysis; and cross-repository interchange with "
+        "GEO-INFER and fep_lean. Step pills name the pipeline step behind each "
+        "stage, a callout states the two newest capabilities, and a footer strip "
+        "carries the producer's scale counts for steps, families, backends and "
+        "MCP tools.",
+    ),
+    (
         "fig:pipeline",
         "manuscript_fig_pipeline_dag.py",
         "gnn_pipeline_dag.png",
