@@ -8,6 +8,46 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ## [Unreleased]
 
+### Changed (2026-09-15 — SCOPE-2026-09-15 execution wave)
+
+- **N-1 + N-6 + N-7 (`d79c62756`).** `resolve_step_output_dir` now carries a
+  single documented fallback policy (caller-supplied directory on standalone
+  use); `analysis/framework_common.resolve_execution_dir` and
+  `gui/runner.resolve_output_root` are thin delegates and both divergent
+  `except ImportError` blocks are deleted, with call-site parity tests over
+  `output/`, `output/7_export_output/`, and arbitrary subdirs. PyYAML import
+  made unconditional (`pyyaml>=6.0` is core) — the `_YAML_AVAILABLE`
+  guarded branch that silently returned `{}` for user config is gone.
+  Config-behavior pins added (suffix dispatch, error-level parse log naming
+  the path, unregistered-stem warning). `tests/pipeline tests/analysis -q`
+  → 967 passed; `tests/gui/test_gui_composability.py` → 21 passed.
+- **N-5 (`5501ec7c1`).** health_check error-branch coverage: 10 new
+  monkeypatched offline tests (12 → 22) covering julia subprocess timeout,
+  partial integration via diagnostic-enhancer failure, scoring bands incl.
+  the 90.0 boundary, recommendations, `main()` exit codes 0/1/2,
+  `--output-file`, and verbose printing; the `:15-16` header comment settled
+  as accurate. W2-D6 residual closed.
+- **N-4 decision executed as delete (`c89452e00`).** The corrective census
+  falsified the scope pass's "closed surface" premise: `StepStatus` (not
+  `PipelineContext`) is the live coupling — `pipeline/schemas.py:10` and
+  `intelligent_analysis/processor.py:19` (production chain, step 24 + MCP)
+  imported it from `context.py`. `StepStatus` re-homed to
+  `pipeline/schemas.py` (its consumer), the dead `PipelineContext` +
+  `StepRecord` pair and `context.py` deleted (census-verified zero
+  production importers), the stale doc claims tombstoned.
+  `tests/pipeline tests/intelligent_analysis -q` → 666 passed; module
+  import smoke 28 passed.
+- **Committed-artifact refresh (`250b7879c`, `b53a74a8a`).** Manuscript
+  token map regenerated post-wave (commit sha, −247 src LOC / −1 src file
+  from the context deletion, −1 test file) and `gnn_repo_metrics.png`
+  re-rendered at the post-deletion counts (figure-freshness gate).
+- **Custody closeout.** fep_lean re-sealed after the wave's sealed-roster
+  changes (pin cycle #8, `2b51c3d`; both models emit `--check`
+  fail-on-warnings green) and the fep_lean source pin bumped as the final
+  commit (`7453551c7`); the GEO-INFER interchange pin bumped to GNN main
+  with the schema_version surface verified unchanged
+  (`gnn-geo-infer/{1,2,factored/1}` both sides).
+
 ### Changed (2026-09-15 — round-2 sweep)
 
 - **MCP god-class decomposed (MAJ-04 pattern).** `src/gnn/mcp/mcp.py`

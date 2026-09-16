@@ -20,8 +20,15 @@ wrappers delegate through `run_pipeline_step_mcp`,
 extras parity / dependency-floors rows RESOLVED-in-place, shrunk W2-M2 to
 pinning tests (both behavior halves verified landed), confirmed the W2-J1
 third site migrated, and wrote the `SCOPE-2026-09-15.md` spec
-(14 rows cleared, 7 open rows, 2 major / 3 medium / 2 minor improvements).
-Evidence in CHANGELOG 2026-09-15 and `SCOPE-2026-09-15.md`.)
+(14 rows cleared, 7 open rows, 2 major / 3 medium / 2 minor improvements);
+execution wave 2026-09-15: N-1 + N-6 + N-7 landed (`d79c62756`), N-5 landed
+(`5501ec7c1`), N-4 decision executed as delete with the StepStatus re-home
+(`c89452e00`; the census falsified the closed-surface premise — see the
+pipeline-orchestration section), manuscript token map + figures regenerated
+(`250b7879c`, `b53a74a8a`), fep_lean re-sealed (pin cycle #8, `2b51c3d`) and
+the pair bumped (`7453551c7`), GEO pin bumped (`d493253b` side; both
+interchange pins current). Evidence in CHANGELOG 2026-09-15 and
+`SCOPE-2026-09-15.md`.)
 **Current Version**: 3.3.0
 **Next Target**: v4.0.0 (bounded autonomy, pipeline stage consolidation, multi-agent stigmergic topologies, and high-dimensional active inference)
 
@@ -164,29 +171,31 @@ scope pass (per-item evidence in `SCOPE-2026-09-15.md`
 
 | ID | Scope | Acceptance evidence |
 | --- | --- | --- |
-| W2-D6 | Medium residual (strings half landed 2026-09-11; verified 2026-09-15: no `/24` remains in `src/gnn/pipeline/health_check.py`): error branches still untested — version_issues, julia subprocess failure, incomplete structure, limited/partial integration, scoring tiers, recommendations, `main()` exit codes, verbose report (branch map as scoped 2026-09-08); stale header comment :15-16 also unconfirmed. Add monkeypatched deterministic tests. | +8-10 offline tests in `tests/pipeline/test_health_check.py`, all monkeypatched; full health-check file green; cosmetic strings stay consistent. |
-| W2-M2 | Minor residual, scope shrunk 2026-09-15 (both behavior halves verified landed: unregistered stems warn loudly, `src/gnn/pipeline/config.py:210-217`; parse failure logs error-level with the path, `config.py:86-88`; the dead `.py` branch is gone — the loader dispatches `.yaml`/`.yml` vs JSON by suffix, `config.py:77-86`): only the pinning tests remain. | Pinning tests assert the error-level parse log naming the path, the unregistered-stem warning, and `get_output_dir_for_script("7_export.py", ...)` returning `7_export_output`. |
-| W2-J1 | Major residual: the shared `resolve_step_output_dir` helper exists and all three historical sites route through it (`src/gnn/analysis/framework_common.py:129`, `src/gnn/gui/runner.py:28`, `src/gnn/export/processor.py:585-588` — third-site migration confirmed 2026-09-15, the name-prefix heuristic is deleted with a pointer comment), but the two wrapper helpers keep divergent `except ImportError` fallbacks (`framework_common.py:130-131` → `output_dir.parent / "12_execute_output"`; `runner.py:29-30` → `output_dir` unchanged) — fold the fallback semantics into the helper and delete the divergent wrappers. | Single helper; all call sites resolve identical paths for `output/`, `output/7_export_output/`, and arbitrary subdirs; unit tests pin nested inputs; orchestration gate green. |
+| ~~W2-D6~~ | **LANDED 2026-09-15** (`5501ec7c1`): 10 new monkeypatched offline tests (12 → 22 total in `tests/pipeline/test_health_check.py`) cover all eight scoped branch areas — julia timeout, partial integration via enhancer failure, scoring bands incl. the 90.0 boundary, recommendations, `main()` exit codes 0/1/2 + `--output-file`, verbose printing; the `:15-16` header comment was settled as accurate, not stale. 22/22 green. | `uv run --extra dev python -m pytest tests/pipeline/test_health_check.py -q` → 22 passed. |
+| ~~W2-M2~~ | **LANDED 2026-09-15** (`d79c62756`): the three pinning tests added (`.yaml`/`.yml`/`.json` suffix dispatch parity, error-level parse-failure log naming the path strengthened, unregistered-stem warning pin verified). | `tests/pipeline -q -k "config or resolve or yaml or output_dir"` → 63 passed. |
+| ~~W2-J1~~ | **LANDED 2026-09-15** (`d79c62756`): one fallback policy in the helper (documented: caller-supplied directory on standalone use); both wrappers are now thin delegates (`framework_common.resolve_execution_dir`, `gui/runner.resolve_output_root`); both divergent `except ImportError` blocks deleted; call-site parity pinned over `output/`, `output/7_export_output/`, arbitrary subdirs; the GUI test that pinned the old fallback rewritten to the fail-loud contract. | `tests/pipeline tests/analysis -q` → 967 passed; `tests/gui/test_gui_composability.py` → 21 passed. |
 
-Out-of-scope observations (recorded, not scoped): `PipelineContext`
-(`src/gnn/pipeline/context.py`) is dead weight - never instantiated by
-main.py or any step; docs claim otherwise (context.py:3-5,
-pipeline/AGENTS.md:148). AGENTS.md "Data Dependencies" graph overstates
-in-memory propagation (steps 5/6/8/10/11/13 re-parse input; only 3→7 and
-11→12 consume artifacts). `run_session`/durable streams are not wired into
-main.py composition (feature gap, not a test gap). These need a design
-decision, not a mechanical fix.
+Out-of-scope observations (recorded, not scoped): ~~`PipelineContext`
+(`src/gnn/pipeline/context.py`) is dead weight~~ **RESOLVED 2026-09-15**
+(`c89452e00`, SCOPE-2026-09-15.md N-4, decision: delete): the corrective
+census falsified the "closed surface" premise — `StepStatus` was the live
+coupling (`pipeline/schemas.py:10`, `intelligent_analysis/processor.py:19`,
+production chain step 24) — so `StepStatus` was re-homed to
+`pipeline/schemas.py`, the dead `PipelineContext`/`StepRecord` pair and
+`context.py` were deleted (census-verified zero production importers), and
+the doc claims were tombstoned. AGENTS.md "Data Dependencies" graph still
+overstates in-memory propagation (steps 5/6/8/10/11/13 re-parse input; only
+3→7 and 11→12 consume artifacts). `run_session`/durable streams are not
+wired into main.py composition (feature gap, not a test gap). The remaining
+two need a design decision, not a mechanical fix.
 
 Scope evidence (re-verified 2026-09-15): the coverage floor is
 `fail_under = 60` (raised 50 → 60, MAJ-T1, 2026-09-10), and
 `tests/pipeline/test_pipeline_overall.py` is deleted (W2-D7, 2026-09-11).
-`PipelineContext` remains production-unwired (context.py existence
-re-confirmed 2026-09-15): removal surface is closed —
-`src/gnn/pipeline/context.py`, its dedicated test
-`tests/pipeline/test_pipeline_context.py`, the re-export pair in
-`pipeline/__init__.py` (import + `__all__`), and two AGENTS.md doc lines
-(:148, :483) — zero production callers; removal is mechanical once the
-delete-vs-wire-in decision is made (scoped as SCOPE-2026-09-15.md N-4).
+~~`PipelineContext` remains production-unwired... removal is mechanical once
+the delete-vs-wire-in decision is made~~ **EXECUTED 2026-09-15** (`c89452e00`,
+N-4): deleted with its test and exports; `StepStatus` re-homed to
+`pipeline/schemas.py`; see the observations note above.
 
 ## Deep horizon wave 2 - render backends
 
