@@ -104,6 +104,8 @@ def main() -> Path:
     family_count = vars_["GNN_FAMILY_COUNT"]
     step_range = vars_["GNN_STEP_RANGE"]
     step_count = vars_["GNN_STEP_COUNT"]
+    exec_count = vars_["GNN_EXECUTABLE_BACKEND_COUNT"]
+    exec_step = vars_["GNN_STEP_EXECUTE"]
 
     # Show a representative subset of backends on the executable node so the
     # text stays legible; full count comes from real data.
@@ -158,10 +160,10 @@ def main() -> Path:
         exec_xy,
         4.0,
         1.5,
-        f"3. Executable Cognitive Model\nsimulation code, {backend_count} backends\n{backend_preview}",
+        f"3. Executable Cognitive Model\n{exec_count}/{backend_count} backends run at Step {exec_step}\n{backend_preview}",
         facecolor="#b45309",
         edgecolor="#0f172a",
-        fontsize=10.5,
+        fontsize=10,
     )
 
     # Fan-out arrows from source to each target

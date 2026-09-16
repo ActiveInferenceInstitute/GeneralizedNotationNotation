@@ -107,14 +107,14 @@ def main() -> None:
     ]
     subtitle = f"cross-framework reference family: {family_name}" if family_name else ""
 
-    plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 10})
+    plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 11})
     n_rows = len(rows)
-    fig_h = 1.4 + 0.42 * n_rows
+    fig_h = 1.5 + 0.46 * n_rows
     fig, ax = plt.subplots(figsize=(10.5, fig_h))
     ax.axis("off")
     ax.set_title(
         "GNN Rendering Backend Registry" + (f"\n{subtitle}" if subtitle else ""),
-        fontsize=16,
+        fontsize=17,
         fontweight="bold",
         pad=18,
     )
@@ -127,8 +127,8 @@ def main() -> None:
         colWidths=[0.20, 0.22, 0.14, 0.18, 0.20],
     )
     table.auto_set_font_size(False)
-    table.set_fontsize(10)
-    table.scale(1.0, 1.55)
+    table.set_fontsize(11)
+    table.scale(1.0, 1.6)
 
     header_bg = "#1f3b57"
     cross_bg = "#fde9a8"
@@ -186,7 +186,7 @@ def main() -> None:
         caption,
         ha="center",
         va="bottom",
-        fontsize=8.5,
+        fontsize=9.5,
         color="#444444",
         linespacing=1.5,
     )

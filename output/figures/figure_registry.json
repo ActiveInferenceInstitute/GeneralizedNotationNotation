@@ -29,7 +29,7 @@
       "filename": "gnn_pipeline_dag.png",
       "generated_by": "scripts/manuscript_fig_pipeline_dag.py",
       "label": "fig:pipeline",
-      "png_sha256": "3805819ac49834db359bf800862762436a7a4bb962f6170d835a7f3dd8b51e8e",
+      "png_sha256": "f0678cd3b3615bc080acde3601dad812b4f9c666166ff92b2477db55d7d77700",
       "source_sha256": {
         "src/gnn/STEP_INDEX.md": "a16a5fe42cde01c90ed057a067ab5466a498281da23a3c84bf0cf9b91ef660a6"
       }
@@ -40,7 +40,7 @@
       "filename": "gnn_family_framework_matrix.png",
       "generated_by": "scripts/manuscript_fig_family_framework.py",
       "label": "fig:family_matrix",
-      "png_sha256": "046d35916d0b0712ffead7c66b3f686bdb749870b9e6051417db407de144a22f",
+      "png_sha256": "2a828ef221824aef88c7e21565ac765350fcfb828495a3337c9af0d3703eaa61",
       "source_sha256": {
         "input/model_family_manifest.json": "c72c7de61cde1ecdda4b8669a0539ee26bc15c83bbb5cfae9dece845f8cddda4",
         "src/gnn/render/framework_registry.py": "a394ee7cfdec85f92a088b2ab59fcca2e3225aa5eefd3c63ecb6755f8e67b2ba"
@@ -52,7 +52,7 @@
       "filename": "gnn_backend_capability_matrix.png",
       "generated_by": "scripts/manuscript_fig_backend_matrix.py",
       "label": "fig:backend_matrix",
-      "png_sha256": "e0cb1189e3f3dc29be77598c81a0365423e3c8ba6ac0c1c11b4be43eab664e00",
+      "png_sha256": "db31907a7c25857610b598af93d8845da9243830a865ddb0171ee9506301528e",
       "source_sha256": {
         "input/model_family_manifest.json": "c72c7de61cde1ecdda4b8669a0539ee26bc15c83bbb5cfae9dece845f8cddda4",
         "src/gnn/manuscript/variables.py": "5366e86ed4ad3fd5c1a188c62941eebf3da8438422644ca674b08cbb64d86b6d",
@@ -77,7 +77,7 @@
       "filename": "gnn_repo_metrics.png",
       "generated_by": "scripts/manuscript_fig_repo_metrics.py",
       "label": "fig:repo_metrics",
-      "png_sha256": "0ca48fe7ce509e2b4cde06368c0c681356a8f53fcf5204418d3e689148dbdb02",
+      "png_sha256": "dee786e198c6bd3bce071ff48c3a76299da02bc4c302d647110b329086a0da0b",
       "source_sha256": {}
     },
     {
@@ -85,14 +85,16 @@
       "consumed_tokens": {
         "GNN_BACKEND_COUNT": "9",
         "GNN_BACKEND_LIST": "PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, bnlearn",
+        "GNN_EXECUTABLE_BACKEND_COUNT": "9",
         "GNN_FAMILY_COUNT": "9",
         "GNN_STEP_COUNT": "25",
+        "GNN_STEP_EXECUTE": "12",
         "GNN_STEP_RANGE": "0\u201324"
       },
       "filename": "gnn_triple_play.png",
       "generated_by": "scripts/manuscript_fig_triple_play.py",
       "label": "fig:triple_play",
-      "png_sha256": "8af0e9175dd429c3a97dd757395471e2f43e4a5e6046bedcdb3918335ded7260",
+      "png_sha256": "faa3ef63b2b2fa2265707bbb6edfd0456bddd14ee82121b589d132733cb82812",
       "source_sha256": {}
     },
     {
@@ -101,7 +103,7 @@
       "filename": "gnn_orchestration.png",
       "generated_by": "scripts/manuscript_fig_orchestration.py",
       "label": "fig:orchestration",
-      "png_sha256": "e566646080033e8718b0c95dccb1e7d10494687fcf508adb57efea127adc8759",
+      "png_sha256": "03c05d31cb6af02f8ba9825f8e3b6c28768b7c2a63cafee5e8dc55f85c97fc92",
       "source_sha256": {}
     }
   ],

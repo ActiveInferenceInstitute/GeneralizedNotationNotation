@@ -68,15 +68,15 @@ def main() -> None:
     # Render top-to-bottom in declared order by reversing for the y-axis.
     y_positions = list(range(len(labels)))[::-1]
 
-    fig, ax = plt.subplots(figsize=(9, 5.5))
+    fig, ax = plt.subplots(figsize=(9, 5.4))
     bars = ax.barh(y_positions, values, color="#2c7fb8", edgecolor="#0f3d5c")
 
     ax.set_yticks(y_positions)
-    ax.set_yticklabels(labels, fontsize=11)
-    ax.set_xlabel("Count (log scale)", fontsize=11)
+    ax.set_yticklabels(labels, fontsize=12.5)
+    ax.set_xlabel("Count (log scale)", fontsize=12)
     ax.set_title(
         f"GeneralizedNotationNotation at a Glance (v{version})",
-        fontsize=14,
+        fontsize=16,
         fontweight="bold",
     )
 
@@ -92,7 +92,7 @@ def main() -> None:
             f"{value}",
             va="center",
             ha="left",
-            fontsize=11,
+            fontsize=12,
             fontweight="bold",
             color="#0f3d5c",
         )

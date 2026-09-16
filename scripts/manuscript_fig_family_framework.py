@@ -74,9 +74,10 @@ def main() -> Path:
             if key in decl:
                 matrix[r, c] = 1.0
 
-    fig_w = max(8.0, 1.05 * n_cols + 2.5)
-    fig_h = max(5.0, 0.62 * n_rows + 2.0)
-    fig, ax = plt.subplots(figsize=(fig_w, fig_h))
+    # Compact fixed canvas: at the manuscript's 85%-width embed this keeps
+    # tick labels near 7pt on the page instead of the ~4.8pt the old
+    # content-proportional canvas produced.
+    fig, ax = plt.subplots(figsize=(9.6, 6.1))
 
     cmap = plt.cm.colors.ListedColormap(["#f0f0f0", "#2a7a4f"])
     ax.imshow(matrix, cmap=cmap, vmin=0.0, vmax=1.0, aspect="auto")
@@ -84,9 +85,9 @@ def main() -> Path:
     ax.set_xticks(np.arange(n_cols))
     ax.set_yticks(np.arange(n_rows))
     ax.set_xticklabels(
-        [backend_names[k] for k in backends], rotation=45, ha="right", fontsize=10
+        [backend_names[k] for k in backends], rotation=45, ha="right", fontsize=11.5
     )
-    ax.set_yticklabels(family_labels, fontsize=10)
+    ax.set_yticklabels(family_labels, fontsize=11.5)
 
     ax.set_xticks(np.arange(-0.5, n_cols, 1), minor=True)
     ax.set_yticks(np.arange(-0.5, n_rows, 1), minor=True)
@@ -103,28 +104,40 @@ def main() -> Path:
                     ha="center",
                     va="center",
                     color="white",
-                    fontsize=12,
+                    fontsize=13,
                     fontweight="bold",
                 )
+        # Direct per-row labeling: how many backends each family declares.
+        ax.text(
+            n_cols - 0.25 + 0.75,
+            r,
+            f"{int(matrix[r].sum())}",
+            ha="left",
+            va="center",
+            fontsize=10.5,
+            color="#475569",
+        )
 
     covered = int(matrix.sum())
     total = n_rows * n_cols
-    ax.set_xlabel("Rendering Backend", fontsize=11)
-    ax.set_ylabel("Model Family", fontsize=11)
+
+    ax.set_xlabel("Rendering Backend", fontsize=12)
+    ax.set_ylabel("Model Family", fontsize=12)
     ax.set_title(
-        "Model Family × Rendering Backend Coverage", fontsize=13, fontweight="bold"
+        "Model Family × Rendering Backend Coverage", fontsize=15, fontweight="bold"
     )
     fig.text(
         0.5,
         0.005,
         f"Declared coverage cells: {covered} of {total} "
-        f"({n_rows} families × {n_cols} backends)",
+        f"({n_rows} families × {n_cols} backends); the right-hand count is "
+        "how many backends each family declares",
         ha="center",
-        fontsize=9,
+        fontsize=10,
         color="#555555",
     )
 
-    fig.tight_layout(rect=(0, 0.03, 1, 1))
+    fig.tight_layout(rect=(0, 0.035, 0.9, 1))
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(OUTPUT_PATH, dpi=200, bbox_inches="tight")
     plt.close(fig)

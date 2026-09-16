@@ -91,7 +91,7 @@ def draw_arrow(
 
 
 def main() -> Path:
-    fig, ax = plt.subplots(figsize=(12, 7.5))
+    fig, ax = plt.subplots(figsize=(11.5, 7.1))
     ax.set_xlim(0, 12)
     ax.set_ylim(0, 7.5)
     ax.axis("off")
@@ -115,7 +115,7 @@ def main() -> Path:
         "Safe-by-design boundary — data only, no live infrastructure mutation",
         ha="center",
         va="center",
-        fontsize=11,
+        fontsize=11.5,
         fontweight="bold",
         color="#0f766e",
         zorder=2,
@@ -157,7 +157,7 @@ def main() -> Path:
             title,
             facecolor=color,
             edgecolor="#0f172a",
-            fontsize=10,
+            fontsize=11,
         )
         draw_arrow(ax, (x, header_y - 0.7), (x, stage_top + stage_h / 2 + 0.08))
 
@@ -171,7 +171,7 @@ def main() -> Path:
                 stage,
                 facecolor="#475569",
                 edgecolor="#0f172a",
-                fontsize=10,
+                fontsize=10.5,
                 textcolor="white",
             )
             if i < len(stages) - 1:
@@ -197,7 +197,7 @@ def main() -> Path:
         "acceptance gate, and 3 new MCP tools — all data-only.",
         ha="center",
         va="center",
-        fontsize=10,
+        fontsize=10.5,
         style="italic",
         color="#334155",
     )

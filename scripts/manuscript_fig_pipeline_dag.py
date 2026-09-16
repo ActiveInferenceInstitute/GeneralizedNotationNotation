@@ -43,13 +43,13 @@ PHASE_COLORS: dict[str, str] = {
 }
 
 # Box geometry in data coordinates (half-width / half-height).
-BOX_HALF_W = 1.25
+BOX_HALF_W = 1.35
 BOX_HALF_H = 0.42
 
 # Characters that fit on one line at the base font; longer labels shrink so the
 # full module name always stays inside its box (e.g. ``advanced_visualization``).
-LABEL_FIT_CHARS = 18
-BASE_FONT = 8.0
+LABEL_FIT_CHARS = 16
+BASE_FONT = 10.0
 
 
 def parse_steps(text: str) -> dict[int, dict[str, str]]:
@@ -118,7 +118,7 @@ def compute_layout(
         layers.setdefault(depth[n], []).append(n)
 
     pos: dict[int, tuple[float, float]] = {}
-    x_gap, y_gap = 4.0, 1.25
+    x_gap, y_gap = 3.4, 1.3
     for layer, nodes in layers.items():
         ordered = sorted(nodes)
         offset = (len(ordered) - 1) / 2.0
@@ -171,7 +171,15 @@ def main() -> None:
 
     pos = compute_layout(g, steps)
 
-    fig, ax = plt.subplots(figsize=(22, 12))
+    # Canvas sized so one layout unit is ~0.52 figure inches: the boxes keep
+    # their aspect at any step count and a 10pt label stays legible when the
+    # figure is scaled into a 17cm text column (about 5pt on the page).
+    xs = [p[0] for p in pos.values()]
+    ys = [p[1] for p in pos.values()]
+    unit_in = 0.52
+    fig_w = (max(xs) - min(xs)) * unit_in + 2.6
+    fig_h = (max(ys) - min(ys)) * unit_in + 1.9
+    fig, ax = plt.subplots(figsize=(fig_w, fig_h))
 
     # --- edges first (under the boxes) ------------------------------------
     for a, b in edges:
@@ -206,21 +214,20 @@ def main() -> None:
     ax.set_ylim(min(ys) - BOX_HALF_H - 0.8, max(ys) + BOX_HALF_H + 1.0)
     ax.set_aspect("equal")
     ax.set_axis_off()
-
     legend_handles = [mpatches.Patch(color=c, label=p) for p, c in PHASE_COLORS.items()]
     ax.legend(
         handles=legend_handles,
         title="Phase",
         loc="upper right",
         frameon=True,
-        fontsize=11,
-        title_fontsize=12,
+        fontsize=10,
+        title_fontsize=10.5,
     )
 
     n_steps = len(steps)
     ax.set_title(
         "GNN 25-Step Processing Pipeline",
-        fontsize=22,
+        fontsize=20,
         fontweight="bold",
         pad=14,
     )
@@ -233,7 +240,7 @@ def main() -> None:
         transform=ax.transAxes,
         ha="center",
         va="top",
-        fontsize=11,
+        fontsize=10,
         color="#475569",
     )
 
