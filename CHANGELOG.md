@@ -8,6 +8,37 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ## [Unreleased]
 
+### Changed (2026-09-16 — bnlearn executor wave)
+
+- **bnlearn Step 12 executor (`42665eeb3`).** `src/gnn/execute/bnlearn/`
+  mirrors the Stan executor: a language-aware runner that derives the lane
+  from each emitted file (`.py` → Python `bnlearn` module via
+  `utils.framework_availability`; `.R` → Rscript + the R `bnlearn`
+  package), explicit success/failure/skipped records, timeout + shared
+  sandbox envelope semantics, and `BNLEARN_OUTPUT_DIR` wiring in
+  `_build_execution_environment`. `plan_execute` now classifies bnlearn as
+  a Python-probe framework (scripts report `skip_dependency` without the
+  runtime); `12_execute.py` picks bnlearn up with no new numbered-script
+  logic. The canonical registry flips bnlearn `supports_execution` →
+  `True`, and the two render tests pinning the old render-only contract
+  were updated to the new truth. 20 offline executor tests
+  (`tests/execute/test_execute_bnlearn.py`).
+- **Degraded comparison columns (`dd7c2e24d`).**
+  `analysis/framework_comparison.analyze_framework_outputs` gives every
+  framework an explicit status in the Step 12 summary vocabulary
+  (`failed` > `success_with_skips` > `success` > `skipped`), plus
+  skipped/failed counts and `status_reason`; frameworks appearing only in
+  `render_failures` degrade to a `render_failed` column instead of
+  vanishing; aggregate metrics and the markdown report carry the counts.
+  One framework's failure/skip/render failure never crashes the
+  comparison. 8 robustness tests
+  (`tests/analysis/test_framework_comparison_status.py`).
+- **Docs reconciliation (`b1ca5cf9d`).** All "bnlearn is render-only" /
+  "no Step 12 executor" claims updated across execute + render AGENTS /
+  README / SKILL / SPEC, repo README, STEP_INDEX, pyproject, and docs/
+  (pipeline, SETUP, quickstart, FRAMEWORK_AVAILABILITY, integration
+  guide, gnn_tools, modules pages).
+
 ### Changed (2026-09-15 — SCOPE-2026-09-15 execution wave)
 
 - **N-1 + N-6 + N-7 (`d79c62756`).** `resolve_step_output_dir` now carries a
