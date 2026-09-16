@@ -64,19 +64,17 @@ def test_render_empty_retry_clears_current_scope(tmp_path: Path) -> None:
     assert current["total_files"] == 0
 
 
-def test_bnlearn_capability_is_render_only() -> None:
+def test_bnlearn_capability_tracks_executor() -> None:
     from gnn.render.framework_registry import (
         FRAMEWORK_REGISTRY,
         get_available_renderers,
     )
 
-    assert FRAMEWORK_REGISTRY["bnlearn"]["supports_execution"] is False
-    assert get_available_renderers()["bnlearn"]["supports_execution"] is False
-    assert all(
-        spec["supports_execution"]
-        for name, spec in FRAMEWORK_REGISTRY.items()
-        if name != "bnlearn"
-    )
+    # bnlearn gained a Step 12 executor (src/gnn/execute/bnlearn/): every
+    # render target in the registry now supports execution.
+    assert FRAMEWORK_REGISTRY["bnlearn"]["supports_execution"] is True
+    assert get_available_renderers()["bnlearn"]["supports_execution"] is True
+    assert all(spec["supports_execution"] for spec in FRAMEWORK_REGISTRY.values())
 
 
 def test_identical_rerun_does_not_append_history(tmp_path: Path) -> None:

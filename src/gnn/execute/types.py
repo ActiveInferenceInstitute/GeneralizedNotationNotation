@@ -24,6 +24,7 @@ ExecutionFrameworkName = Literal[
     "pytorch",
     "numpyro",
     "stan",
+    "bnlearn",
 ]
 
 

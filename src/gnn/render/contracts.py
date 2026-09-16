@@ -16,7 +16,7 @@ committed corpus artifacts:
 - activeinference_jl: self-contained runner programs with the agent logic in
   emitted functions (no ``Agent(`` constructor call in the artifact).
 - bnlearn: generator-backed ``bn.make_DAG`` + ``bn.parameter_learning.fit``
-  programs (render-only).
+  programs (executed by ``src/gnn/execute/bnlearn/``).
 
 Validation surface: ``scripts/bench_render_backends.py`` (corpus x framework
 conformance benchmark) and ``tests/render/test_render_contracts.py`` (shape

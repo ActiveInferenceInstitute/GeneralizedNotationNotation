@@ -53,7 +53,8 @@ EXPECTED_AVAILABLE: set[str] = {
     "numpyro",
     "stan",
     # bnlearn joined when its dependency precondition was resolved by the
-    # ``bnlearn`` extra (render-only backend; no Step 12 executor).
+    # ``bnlearn`` extra; it gained a Step 12 executor in
+    # ``src/gnn/execute/bnlearn/`` (scripts skip without the extra).
     "bnlearn",
 }
 
@@ -289,6 +290,6 @@ class TestPomdpConfigTruthfulness:
             assert configs[name]["supports_execution"] is bool(
                 spec["supports_execution"]
             )
-        # bnlearn is render-only (no Step 12 executor) — the config must not
-        # contradict the registry spec.
-        assert configs["bnlearn"]["supports_execution"] is False
+        # bnlearn is executed by ``src/gnn/execute/bnlearn/`` — the config
+        # must not contradict the registry spec.
+        assert configs["bnlearn"]["supports_execution"] is True

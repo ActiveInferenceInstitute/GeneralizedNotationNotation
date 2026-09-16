@@ -940,6 +940,7 @@ def _build_execution_environment(
         "numpyro": "NUMPYRO_OUTPUT_DIR",
         "pytorch": "PYTORCH_OUTPUT_DIR",
         "stan": "STAN_OUTPUT_DIR",
+        "bnlearn": "BNLEARN_OUTPUT_DIR",
     }
     if context.framework in output_env_vars:
         simulation_data_dir.mkdir(parents=True, exist_ok=True)
