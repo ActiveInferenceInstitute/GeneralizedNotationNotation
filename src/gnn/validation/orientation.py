@@ -80,8 +80,7 @@ def _classify_slice(matrix: Matrix) -> str:
     """Classify one 2-D slice by its row/column margins against 1.0."""
     row_sums = [sum(row) for row in matrix]
     col_sums = [
-        sum(matrix[i][j] for i in range(len(matrix)))
-        for j in range(len(matrix[0]))
+        sum(matrix[i][j] for i in range(len(matrix))) for j in range(len(matrix[0]))
     ]
 
     def close_to_one(sums: list[float]) -> bool:
@@ -119,9 +118,7 @@ def _reading_kind(slice_classes: list[str]) -> str:
     return "other"
 
 
-def _candidate_readings(
-    values: Any, shape: list[int]
-) -> dict[str, list[Matrix]]:
+def _candidate_readings(values: Any, shape: list[int]) -> dict[str, list[Matrix]]:
     """Per-action slice matrices under each candidate action-axis position.
 
     ``inner``: canonical declaration order ``(next, prev, action)`` — slice
@@ -175,27 +172,20 @@ def transpose_b_to_canonical(values: list[Any], action_axis: str | None) -> list
     if action_axis == _AXIS_OUTER and len(shape) == 3:
         # (action, prev, next) -> (next, prev, action)
         return [
-            [
-                [values[a][p][n] for a in range(shape[0])]
-                for p in range(shape[1])
-            ]
+            [[values[a][p][n] for a in range(shape[0])] for p in range(shape[1])]
             for n in range(shape[2])
         ]
     if action_axis == _AXIS_INNER and len(shape) == 3:
         # (prev, next, action) -> (next, prev, action)
         return [
-            [
-                [values[p][n][a] for p in range(shape[0])]
-                for n in range(shape[1])
-            ]
+            [[values[p][n][a] for p in range(shape[0])] for n in range(shape[1])]
             for a in range(shape[2])
         ]
     if len(shape) == 2:
         # rows <-> columns
         return [[values[p][n] for p in range(shape[0])] for n in range(shape[1])]
     raise ValueError(
-        f"cannot transpose B literal with shape {shape} "
-        f"and action axis {action_axis!r}"
+        f"cannot transpose B literal with shape {shape} and action axis {action_axis!r}"
     )
 
 
@@ -253,12 +243,8 @@ def _scan_tensor(values: Any, dims: list[int], *, transpose_b: bool) -> dict[str
             return _AXIS_INNER
         return axis_pool[0]
 
-    canonical_axes = sorted(
-        axis for axis, kind in kinds.items() if kind == _CANONICAL
-    )
-    ambiguous_axes = sorted(
-        axis for axis, kind in kinds.items() if kind == _AMBIGUOUS
-    )
+    canonical_axes = sorted(axis for axis, kind in kinds.items() if kind == _CANONICAL)
+    ambiguous_axes = sorted(axis for axis, kind in kinds.items() if kind == _AMBIGUOUS)
     row_axes = sorted(axis for axis, kind in kinds.items() if kind == _ROW_STOCHASTIC)
 
     orientation = _NON_STOCHASTIC
@@ -299,16 +285,13 @@ def _scan_tensor(values: Any, dims: list[int], *, transpose_b: bool) -> dict[str
         tensor["transposed"] = True
         tensor["previous_orientation"] = _ROW_STOCHASTIC
         tensor["canonical_after_transpose"] = any(
-            _reading_kind([_classify_slice(matrix) for matrix in slices])
-            == _CANONICAL
+            _reading_kind([_classify_slice(matrix) for matrix in slices]) == _CANONICAL
             for slices in _candidate_readings(transposed, transposed_shape).values()
         )
     return tensor
 
 
-def scan_b_orientation(
-    content: str, *, transpose_b: bool = False
-) -> dict[str, Any]:
+def scan_b_orientation(content: str, *, transpose_b: bool = False) -> dict[str, Any]:
     """Run the B-orientation diagnostic over raw GNN content text.
 
     Returns a receipt with per-tensor orientation findings, warnings for

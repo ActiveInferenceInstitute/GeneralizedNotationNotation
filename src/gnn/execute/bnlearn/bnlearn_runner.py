@@ -121,7 +121,9 @@ def execute_bnlearn_script(
         if not is_bnlearn_available(python_executable):
             record["skipped"] = True
             record["reason"] = _PYTHON_SKIP_REASON
-            logger.info("Skipping bnlearn script (Python lane unavailable): %s", script.name)
+            logger.info(
+                "Skipping bnlearn script (Python lane unavailable): %s", script.name
+            )
             return record
         command: List[str] = [python_executable or sys.executable, str(script)]
     elif language == "r":
@@ -154,7 +156,9 @@ def execute_bnlearn_script(
         error_type = envelope.get("error_type")
         if error_type == "TimeoutExpired":
             record["error_type"] = "TimeoutExpired"
-            record["error"] = f"bnlearn script timed out after {timeout}s: {script.name}"
+            record["error"] = (
+                f"bnlearn script timed out after {timeout}s: {script.name}"
+            )
         else:
             record["error_type"] = error_type or "RuntimeError"
             record["error"] = envelope.get("error") or (

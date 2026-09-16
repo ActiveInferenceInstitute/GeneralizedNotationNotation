@@ -448,7 +448,9 @@ def main() -> Path:
         f"{mcp_count} MCP tools"
     )
     counts_fs = 10.5
-    while _text_width_in(fig, ax, counts, counts_fs) > _X_SPAN - 0.4 and counts_fs > 8.0:
+    while (
+        _text_width_in(fig, ax, counts, counts_fs) > _X_SPAN - 0.4 and counts_fs > 8.0
+    ):
         counts_fs -= 0.5
     counts_text = ax.text(
         _X_SPAN / 2,
