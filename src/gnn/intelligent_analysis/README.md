@@ -70,7 +70,7 @@ class StepAnalysis:
     step_number: int
     script_name: str
     description: str
-    status: StepStatus        # from pipeline.context
+    status: StepStatus        # from pipeline.schemas
     duration_seconds: float
     memory_mb: float
     exit_code: int

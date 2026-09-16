@@ -148,7 +148,7 @@ class StepAnalysis:
     step_number: int  # Pipeline step number (0-24)
     script_name: str  # Script filename (e.g., "3_gnn.py")
     description: str  # Human-readable step description
-    status: StepStatus  # pipeline.context step status ("SUCCESS", "FAILED", "WARNING", etc.)
+    status: StepStatus  # pipeline.schemas step status ("SUCCESS", "FAILED", "WARNING", etc.)
     duration_seconds: float  # Execution time in seconds
     memory_mb: float  # Peak memory usage in MB
     exit_code: int  # Process exit code

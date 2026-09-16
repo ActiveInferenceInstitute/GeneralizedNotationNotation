@@ -24,11 +24,8 @@ from gnn.pipeline import (
 )
 from gnn.pipeline._version import __version__  # noqa: E402
 from gnn.pipeline.config import (  # noqa: E402
-    DEFAULT_OUTPUT_DIR,
-    DEFAULT_TARGET_DIR,
     get_output_dir_for_script,
 )
-from gnn.pipeline.context import PipelineContext  # noqa: E402
 from gnn.pipeline.dag import (  # noqa: E402
     find_circular_dependencies,
     resolve_execution_order,
@@ -176,12 +173,6 @@ def test_get_pipeline_info_version_matches_package() -> None:
     info = get_pipeline_info()
     assert info["version"] == __version__
     assert info["steps"] == list(range(25))
-
-
-def test_context_defaults_use_shared_constants() -> None:
-    ctx = PipelineContext()
-    assert ctx.output_dir == Path(DEFAULT_OUTPUT_DIR)
-    assert ctx.target_dir == Path(DEFAULT_TARGET_DIR)
 
 
 def test_output_dir_for_script_contracts() -> None:

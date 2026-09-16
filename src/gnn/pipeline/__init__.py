@@ -20,7 +20,6 @@ from .config import (
     get_pipeline_config,
     set_pipeline_config,
 )
-from .context import PipelineContext, StepRecord, StepStatus  # noqa: F401
 from .execution import (
     StepExecutionResult,
     create_pipeline_config,
@@ -178,10 +177,6 @@ __all__: list[str] = [
     "resolve_step_numbers",
     "PipelineOrchestrator",
     "PipelineStep",
-    # Context
-    "PipelineContext",
-    "StepRecord",
-    "StepStatus",
     # Metadata
     "FEATURES",
     "__version__",

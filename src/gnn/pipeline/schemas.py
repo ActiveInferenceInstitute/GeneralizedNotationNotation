@@ -3,11 +3,11 @@
 
 import logging
 from datetime import datetime
-from typing import List, Optional
+from typing import List, Literal, Optional
 
 from pydantic import BaseModel, Field
 
-from gnn.pipeline.context import StepStatus
+StepStatus = Literal["PENDING", "SUCCESS", "FAILED", "WARNING", "SKIPPED", "UNKNOWN"]
 
 logger = logging.getLogger(__name__)
 

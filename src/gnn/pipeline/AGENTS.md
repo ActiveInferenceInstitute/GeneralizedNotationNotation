@@ -162,7 +162,7 @@ multi-line string for logging.
 
 ### Execution Planning
 
-**Execution planning** is handled inline by `main.py` using `PipelineContext` and `StepRecord` dataclasses from `pipeline/context.py`, not via a separate `pipeline_planner.py` module.
+**Execution planning** is handled inline by `main.py`, not via a separate `pipeline_planner.py` module. `PipelineContext` removed 2026-09-15 (N-4: delete) — production-dead; `StepStatus` re-homed to `pipeline/schemas.py`.
 
 **Example**:
 
@@ -497,9 +497,10 @@ Internal quality pass; every external entry point's behavior is preserved:
   the canonical `read_skip_steps` parser (bad values are a preflight error
   instead of a mid-run failure).
 - **Package surface**: `__all__` is fully typed and complete (adds
-  `PipelineContext`, `StepRecord`, `StepStatus`, `resolve_step_numbers`,
+  `resolve_step_numbers`,
   `get_module_info`, `validate_pipeline_step`, `discover_pipeline_steps`,
   `DEFAULT_TARGET_DIR`, `DEFAULT_OUTPUT_DIR`).
+- **PipelineContext** removed 2026-09-15 (N-4: delete) — production-dead; `StepStatus` re-homed to `pipeline.schemas`.
 
 ### Current Version: 3.2.0
 

@@ -16,7 +16,9 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List, Literal, Optional, Tuple
 
-from gnn.pipeline.context import StepStatus  # single authoritative definition
+from gnn.pipeline.schemas import (
+    StepStatus,
+)  # single authoritative definition (pipeline.schemas)
 from gnn.utils.observability.structured_logging import (
     log_step_error,
     log_step_start,
