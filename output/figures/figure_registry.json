@@ -55,7 +55,7 @@
       "png_sha256": "db31907a7c25857610b598af93d8845da9243830a865ddb0171ee9506301528e",
       "source_sha256": {
         "input/model_family_manifest.json": "c72c7de61cde1ecdda4b8669a0539ee26bc15c83bbb5cfae9dece845f8cddda4",
-        "src/gnn/manuscript/variables.py": "5366e86ed4ad3fd5c1a188c62941eebf3da8438422644ca674b08cbb64d86b6d",
+        "src/gnn/manuscript/variables.py": "f2d63b96c7c5c090610f72db87a9cc8c873dbc93ba5fa2dd96744dd391610d3e",
         "src/gnn/pipeline/cross_framework_reliability.py": "f541016765f8c2b843226c9127f011cc77a0e66cbad694e89853db59c6cd8101",
         "src/gnn/render/framework_registry.py": "a394ee7cfdec85f92a088b2ab59fcca2e3225aa5eefd3c63ecb6755f8e67b2ba"
       }
