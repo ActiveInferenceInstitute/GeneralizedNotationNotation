@@ -10,7 +10,7 @@ GNN ships a curated corpus of model families that exercise the language across t
 
 The family-by-framework structure is shown in @fig:family_matrix, which renders the coverage matrix directly from the family registry rather than from a hand-maintained table.
 
-![Model-family coverage across simulation frameworks, generated from the GNN family registry.](../output/figures/gnn_family_framework_matrix.png){#fig:family_matrix width=85%}
+![Model-family coverage across the registered rendering backends: one row per family from `input/model_family_manifest.json`, one column per backend from `src/gnn/render/framework_registry.py`, and a green cell wherever the family declares that backend in its `frameworks` field. The right-hand count states how many backends each family declares; the grid is deliberately sparse — most families declare a single backend, and only continuous, hierarchical, and gridworld declare several. Read it as declared intent, not as profiled outcomes: the gates described below supply the outcomes. The matrix is generated from the two registries at commit {{GNN_GIT_COMMIT}}.](../output/figures/gnn_family_framework_matrix.png){#fig:family_matrix width=85%}
 
 These families are not illustrative prose: they are the inputs over which the parser, the type checker, and the cross-framework code generators are exercised, and they are the substrate for the reliability gates described next.
 
@@ -28,7 +28,7 @@ Both gates are stated here as commands you can run, not as asserted pass counts.
 
 The repository's scale is itself evidence of the surface that the gates and pipeline cover, and it is reported in @fig:repo_metrics directly from the tracked files at commit {{GNN_GIT_COMMIT}}.
 
-![Repository-scale metrics — source packages, test files, and tool surface — measured from the tracked files at the commit the producer stamps.](../output/figures/gnn_repo_metrics.png){#fig:repo_metrics width=80%}
+![Repository-scale counts on a logarithmic axis: pipeline steps, model families, registered backends, execution backends, Model Context Protocol tools, source packages, test files, example models, and documentation files. Every bar is annotated with its exact value, and every value is a producer token read from `output/data/manuscript_variables.json` at commit {{GNN_GIT_COMMIT}} — the same token map that substitutes the prose counts, so the figure cannot disagree with the text without failing the figure-freshness suite. The two backend bars are deliberately distinct: *registered backends* ({{GNN_BACKEND_COUNT}}) counts render targets, *execution backends* ({{GNN_EXECUTABLE_BACKEND_COUNT}}) counts the subset that runs at Step {{GNN_STEP_EXECUTE}}. Read the chart as the scale of the surface the pipeline maintains, not as a quality measure.](../output/figures/gnn_repo_metrics.png){#fig:repo_metrics width=80%}
 
 The test suite comprises {{GNN_TEST_FILE_COUNT}} test files containing {{GNN_TEST_FUNCTION_COUNT}} test functions, exercising a source base of {{GNN_SRC_PY_FILE_COUNT}} Python files across {{GNN_SRC_PACKAGE_COUNT}} packages ({{GNN_SRC_LOC}} lines of source). The Model Context Protocol surface — which exposes GNN's capabilities to external agents and tools — provides {{GNN_MCP_TOOL_COUNT}} tools across {{GNN_MCP_MODULE_COUNT}} modules. The pipeline itself runs as {{GNN_STEP_COUNT}} steps ({{GNN_STEP_RANGE}}), and {{GNN_OUTPUT_FIGURE_COUNT}} figure artifacts from the rendering of figures, models, and reports are committed under `output/`, of which {{GNN_MANUSCRIPT_FIGURE_COUNT}} are the manuscript's own.
 

@@ -697,8 +697,12 @@ def _render_step_table(steps: list[tuple[int, str]], purposes: dict[int, str]) -
         rows.append(f"| {number} | `{script}` | {purpose} |")
     rows.append(
         _caption(
-            "The pipeline steps, their thin orchestrator modules, and their "
-            "purposes, read from `src/gnn/STEP_INDEX.md`.",
+            "The pipeline steps with the thin orchestrator module that owns "
+            "each and the one-line purpose parsed from the master table in "
+            "`src/gnn/STEP_INDEX.md`. Read the Step column against the arrows "
+            "of [@fig:pipeline]: each row's purpose is the transformation that "
+            "module owns, and the table is regenerated from the index at every "
+            "build, so it cannot drift from the code it describes.",
             "pipeline_steps",
         )
     )
@@ -755,10 +759,15 @@ def _render_family_table(families: list[dict], specs: dict[str, dict]) -> str:
         rows.append(f"| `{name}` | {frameworks} | {desc} |")
     rows.append(
         _caption(
-            "Model families declared in `input/model_family_manifest.json` and "
-            "the frameworks each family targets. Capability splits in the "
-            "Description column are generated from "
-            "`src/gnn/render/framework_registry.py`, not authored in the manifest.",
+            "Model families declared in `input/model_family_manifest.json` "
+            "with the simulation frameworks each family targets and a "
+            "generated description. The *Frameworks* column is the family's "
+            "declared targets, verbatim from the manifest; the capability "
+            "splits appended to some descriptions are generated from "
+            "`src/gnn/render/framework_registry.py` flags, not authored in the "
+            "manifest, so they cannot disagree with the registry. Read with "
+            "[@tbl:backend_registry] (what each backend is) and "
+            "[@fig:family_matrix] (the same coverage as a matrix).",
             "model_families",
         )
     )
@@ -768,13 +777,18 @@ def _render_family_table(families: list[dict], specs: dict[str, dict]) -> str:
 def _render_backend_table(backends: list[tuple[str, str, bool]]) -> str:
     """Render the backend registry markdown table."""
     rows = ["| Registry key | Backend | Executes |", "|---|---|---|"]
+    n_executes = sum(1 for _, _, executes in backends if executes)
     for key, name, executes in backends:
         rows.append(f"| `{key}` | {name} | {'yes' if executes else 'render-only'} |")
     rows.append(
         _caption(
-            "Render targets in `src/gnn/render/framework_registry.py`. The "
-            "*Executes* column is the registry's own `supports_execution` flag: "
-            "a render-only backend has no Step-12 executor.",
+            "Render targets declared in `src/gnn/render/framework_registry.py`, "
+            "one row per registry key in registry order. The *Executes* column "
+            "is the registry's own `supports_execution` flag: "
+            f"{n_executes} of {len(backends)} backends have a Step-12 executor, "
+            "and a `render-only` entry would mean generated code with no "
+            "Step-12 executor. Read this table against [@tbl:model_families], "
+            "which shows which families actually target each backend.",
             "backend_registry",
         )
     )

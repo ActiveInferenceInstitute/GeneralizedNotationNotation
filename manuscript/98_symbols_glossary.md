@@ -34,7 +34,7 @@ load-bearing sections a parser must recognize; they are catalogued in [@tbl:gnn_
 | `A-B` | Undirected (bidirectional) connection operator, e.g. `s-A` (a hidden state participates in the likelihood mapping). |
 | `A>B:label` / `A-B:label` | A v1.1 annotated edge; the trailing label documents the relation and is preserved but may be ignored for structural validation. |
 | `default=…` | A v1.1 declaration hint (`uniform`, `zeros`, `ones`, `eye`, `random`) supplying an initialization for a matrix or vector. |
-: GNN language constructs a conforming parser must recognize, with the meaning each carries. {#tbl:gnn_constructs}
+: The GNN language constructs a conforming parser must recognize, with the meaning each carries. The first six rows are the required sections that pin a model's identity, variables, and factor graph; the optional sections that follow carry parameterization, ontology bindings, timing, equations, and provenance. The three operator rows are the connection vocabulary the `Connections` section is written in — directed `A>B`, undirected `A-B`, and their labeled v1.1 forms — and `default=…` supplies initialization hints. Definitions follow the GNN syntax specification and the discrete POMDP exemplars under `input/gnn_files`, and the strict schema validator enforces section order and declaration grammar before any downstream step runs. {#tbl:gnn_constructs}
 
 ## Active Inference Symbols
 
@@ -58,7 +58,7 @@ symbol's role, so the glossary and the formal statement cannot drift apart.
 | `F` | Variational free energy, minimized during state inference to update beliefs from observations ([@eq:vfe]) [@friston2010]. |
 | `G` | Expected free energy per policy, minimized during policy inference to score candidate actions ([@eq:efe]) [@dacosta2020]. |
 | `t` | Discrete time step; the horizon $T$ bounds the product in [@eq:generative_model]. |
-: Active Inference symbols carried by a GNN specification, each bound to the equation in [@sec:system_context] that defines it. {#tbl:actinf_symbols}
+: The Active Inference symbols a GNN specification carries, each bound to the equation of [@sec:system_context] that fixes its role. Read `A`–`E` as the generative-model tensors (likelihood, controlled transitions, log-preferences, prior over initial states, habit prior), `s`, `o`, `π`, and `u` as the inference variables, and `F` and `G` as the two free-energy functionals minimized at [@eq:vfe] and [@eq:efe]. Use the table as a decoding key when reading a `StateSpaceBlock`: every declared matrix name should map to exactly one row here, and the `## ActInfOntologyAnnotation` bindings described below are what make that mapping machine-checkable downstream. {#tbl:actinf_symbols}
 
 ## Ontology Bindings and Implementations
 
