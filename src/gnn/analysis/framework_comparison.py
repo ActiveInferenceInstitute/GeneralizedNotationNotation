@@ -19,6 +19,63 @@ from typing import (
 import numpy as np
 
 
+def _derive_framework_status(
+    details: List[Dict[str, Any]],
+) -> tuple[str, Optional[str]]:
+    """Derive ``(status, reason)`` from one framework's execution details.
+
+    The status vocabulary mirrors Step 12's ``_update_framework_status``
+    (``execute.processor``): ``failed`` beats ``success_with_skips`` beats
+    ``success``; an all-skipped set is ``skipped``. Skipped records count as
+    skipped even when a legacy producer also set ``success`` truthiness.
+    """
+    skipped = [d for d in details if bool(d.get("skipped"))]
+    attempted = [d for d in details if not bool(d.get("skipped"))]
+    failed = [d for d in attempted if not bool(d.get("success"))]
+    succeeded = [d for d in attempted if bool(d.get("success"))]
+    if failed:
+        return "failed", str(failed[0].get("error") or "execution failed")
+    if succeeded and skipped:
+        return "success_with_skips", str(
+            skipped[0].get("error") or "dependency unavailable"
+        )
+    if succeeded:
+        return "success", None
+    if skipped:
+        return "skipped", str(skipped[0].get("error") or "dependency unavailable")
+    return "no_data", "no execution details recorded"
+
+
+def _render_failures_by_framework(
+    execution_summary: Dict[str, Any],
+) -> Dict[str, List[Dict[str, str]]]:
+    """Group Step 12 ``render_failures`` records by normalized framework.
+
+    Receipt-mismatch rows carry ``framework == "all"`` and are dropped:
+    they do not degrade any single framework's column.
+    """
+    failures_by_framework: Dict[str, List[Dict[str, str]]] = {}
+    for item in execution_summary.get("render_failures") or []:
+        if not isinstance(item, dict):
+            continue
+        framework = (
+            str(item.get("framework", ""))
+            .strip()
+            .lower()
+            .replace(".", "_")
+            .replace(" ", "_")
+        )
+        if not framework or framework == "all":
+            continue
+        failures_by_framework.setdefault(framework, []).append(
+            {
+                "file": str(item.get("file", "")),
+                "message": str(item.get("message", "")),
+            }
+        )
+    return failures_by_framework
+
+
 def analyze_framework_outputs(
     execution_output_dir: Path,
     logger: Optional[logging.Logger] = None,
@@ -77,8 +134,21 @@ def analyze_framework_outputs(
 
         # Extract metrics from each framework
         for framework, details in framework_data.items():
+            status, status_reason = _derive_framework_status(details)
             framework_results: dict[str, Any] = {
-                "success_count": sum(1 for d in details if d.get("success", False)),
+                "status": status,
+                "status_reason": status_reason,
+                "success_count": sum(
+                    1
+                    for d in details
+                    if not bool(d.get("skipped")) and bool(d.get("success"))
+                ),
+                "skipped_count": sum(1 for d in details if bool(d.get("skipped"))),
+                "failed_count": sum(
+                    1
+                    for d in details
+                    if not bool(d.get("skipped")) and not bool(d.get("success"))
+                ),
                 "total_count": len(details),
                 "execution_times": [d.get("execution_time", 0) for d in details],
                 "output_files": [d.get("output_file", "") for d in details],
@@ -94,6 +164,29 @@ def analyze_framework_outputs(
             framework_results.update(simulation_metrics)
 
             results["frameworks"][framework] = framework_results
+
+        # Frameworks whose render (Step 11) failed or whose render receipt no
+        # longer matches surface as explicit degraded columns instead of
+        # silently disappearing from the comparison.
+        for framework, failures in _render_failures_by_framework(
+            execution_summary
+        ).items():
+            if framework in results["frameworks"]:
+                results["frameworks"][framework]["render_failures"] = failures
+            else:
+                results["frameworks"][framework] = {
+                    "status": "render_failed",
+                    "status_reason": failures[0].get("message")
+                    or "render failed for this framework",
+                    "render_failures": failures,
+                    "success_count": 0,
+                    "skipped_count": 0,
+                    "failed_count": 0,
+                    "total_count": 0,
+                    "execution_times": [],
+                    "output_files": [],
+                    "implementation_dirs": [],
+                }
 
         # Perform cross-framework comparisons
         results["comparisons"] = _compare_framework_results(
@@ -694,6 +787,7 @@ def _compare_framework_results(
     # Compare data coverage — which frameworks produced which data
     for framework, data in framework_data.items():
         coverage: dict[str, Any] = {
+            "status": data.get("status"),
             "has_beliefs": bool(data.get("beliefs")),
             "has_actions": bool(data.get("actions")),
             "has_observations": bool(data.get("observations")),
@@ -790,6 +884,12 @@ def _calculate_aggregate_metrics(
         "total_successful": sum(
             data.get("success_count", 0) for data in framework_data.values()
         ),
+        "total_skipped": sum(
+            data.get("skipped_count", 0) for data in framework_data.values()
+        ),
+        "total_failed": sum(
+            data.get("failed_count", 0) for data in framework_data.values()
+        ),
         "total_executions": sum(
             data.get("total_count", 0) for data in framework_data.values()
         ),
@@ -845,6 +945,8 @@ def generate_framework_comparison_report(
             f"- Total Frameworks: {metrics.get('total_frameworks', 0)}",
             f"- Total Executions: {metrics.get('total_executions', 0)}",
             f"- Successful Executions: {metrics.get('total_successful', 0)}",
+            f"- Skipped Executions: {metrics.get('total_skipped', 0)}",
+            f"- Failed Executions: {metrics.get('total_failed', 0)}",
             f"- Overall Success Rate: {metrics.get('overall_success_rate', 0.0):.2%}",
             "",
         ]
@@ -857,14 +959,19 @@ def generate_framework_comparison_report(
         success_count = data.get("success_count", 0)
         total_count = data.get("total_count", 0)
         success_rate = (success_count / total_count * 100) if total_count > 0 else 0
+        status = data.get("status") or "no_data"
 
         report_lines.extend(
             [
                 f"### {framework.upper()}",
                 "",
+                f"- Status: {status}",
                 f"- Success Rate: {success_rate:.1f}% ({success_count}/{total_count})",
             ]
         )
+        status_reason = data.get("status_reason")
+        if status_reason:
+            report_lines.append(f"- Status Reason: {status_reason}")
 
         # Add execution time if available
         times = [t for t in data.get("execution_times", []) if t > 0]
