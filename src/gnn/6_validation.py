@@ -40,6 +40,15 @@ run_script = create_standardized_pipeline_script(
     additional_arguments={
         "strict": {"type": bool, "help": "Enable strict validation mode"},
         "profile": {"type": bool, "help": "Enable performance profiling"},
+        "transpose_b": {
+            "type": bool,
+            "help": (
+                "Opt-in canonical B-tensor transposition: textbook "
+                "(row-stochastic) transition tensors are transposed in "
+                "memory and recorded in the validation receipt "
+                "(default: warnings only)"
+            ),
+        },
     },
 )
 

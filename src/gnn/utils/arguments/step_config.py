@@ -130,12 +130,19 @@ class StepConfiguration:
             "6_validation": {
                 "critical": True,
                 "required_args": ["target_dir", "output_dir"],
-                "optional_args": ["recursive", "verbose", "strict", "profile"],
+                "optional_args": [
+                    "recursive",
+                    "verbose",
+                    "strict",
+                    "profile",
+                    "transpose_b",
+                ],
                 "defaults": {
                     "recursive": True,
                     "verbose": False,
                     "strict": False,
                     "profile": False,
+                    "transpose_b": False,
                 },
                 "description": "Validation & Quality Assurance",
             },

@@ -23,7 +23,10 @@ logger = logging.getLogger(__name__)
 
 
 def process_validation_mcp(
-    target_directory: str, output_directory: str, verbose: bool = False
+    target_directory: str,
+    output_directory: str,
+    verbose: bool = False,
+    transpose_b: bool = False,
 ) -> dict[str, Any]:
     """
     Run full GNN validation on files in a directory.
@@ -35,6 +38,10 @@ def process_validation_mcp(
         target_directory: Directory containing GNN files to validate
         output_directory: Directory to save validation reports
         verbose: Enable verbose logging
+        transpose_b: Opt-in canonical B-tensor transposition — textbook
+            (row-stochastic) transition tensors are transposed in memory and
+            the per-tensor transposition is recorded in the receipt
+            (default: orientation warnings only, source files untouched)
 
     Returns:
         Dictionary with success status and validation summary.
@@ -46,6 +53,7 @@ def process_validation_mcp(
         target_directory=target_directory,
         output_directory=output_directory,
         verbose=verbose,
+        extra_step_kwargs={"transpose_b": transpose_b},
         label="Validation",
     )
 

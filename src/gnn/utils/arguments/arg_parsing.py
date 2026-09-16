@@ -50,6 +50,7 @@ _FALLBACK_DEFAULTS: Mapping[str, Any] = MappingProxyType(
         "skip_llm": False,
         "simulate_error": False,
         "profile": False,
+        "transpose_b": False,
         "optional_groups": None,
         "viz_type": "all",
         "interactive": False,
@@ -201,6 +202,16 @@ class ArgumentParser:
                 flag="--profile",
                 action="store_true",
                 help_text="Enable performance profiling",
+            ),
+            "transpose_b": ArgumentDefinition(
+                flag="--transpose-b",
+                action="store_true",
+                help_text=(
+                    "Validation (step 6): opt-in canonical B-tensor "
+                    "transposition — textbook (row-stochastic) transition "
+                    "tensors are transposed in memory and recorded in the "
+                    "validation receipt (default: warnings only)"
+                ),
             ),
             "simulate_error": ArgumentDefinition(
                 flag="--simulate-error",
@@ -596,6 +607,7 @@ class ArgumentParser:
                 "verbose",
                 "strict",
                 "profile",
+                "transpose_b",
             ],
             "7_export.py": [
                 "target_dir",
