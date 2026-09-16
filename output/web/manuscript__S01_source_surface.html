@@ -573,8 +573,8 @@ version control; the generated artifacts it produces are described
 separately so that the boundary between hand-written source and
 reproducible output stays explicit.</p>
 <p>The <code>src/</code> tree is the executable core of GNN. It is
-organized into 44 Python packages spanning 676 source files and roughly
-196777 lines of code. Alongside these packages sit the 25 top-level step
+organized into 44 Python packages spanning 679 source files and roughly
+197628 lines of code. Alongside these packages sit the 25 top-level step
 modules (0–24) that implement the numbered pipeline as thin
 orchestrators delegating into the packages, each module owning one stage
 of the progression from a parsed GNN text model through visualization,
@@ -609,7 +609,7 @@ GNN syntax or semantics matches the documented language rather than a
 convenient paraphrase.</p>
 <p>The <code>output/</code> tree collects per-step pipeline artifacts:
 the data dumps, intermediate representations, validation reports, and
-the 6 figure artifacts committed under it. Everything here is disposable
+the 7 figure artifacts committed under it. Everything here is disposable
 and reproducible from the surfaces above, so it should be read as
 evidence of a run rather than as authored source. Notably,
 <code>output/data/manuscript_variables.json</code> is where the
@@ -627,7 +627,7 @@ data-cites="sec:reproducibility">[@sec:reproducibility]</span>: the
 smoke run for the per-step artifacts,
 <code>scripts/z_generate_manuscript_variables.py</code> for the token
 map and the hydrated sections,
-<code>scripts.manuscript_build_figures</code> for the 6 manuscript
+<code>scripts.manuscript_build_figures</code> for the 7 manuscript
 figures, and the template render stage for the PDF. Which values become
 tokens is not a matter of taste: any quantity the producer can derive
 from a source surface is a token,

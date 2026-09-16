@@ -252,7 +252,7 @@ available as a typed object, a normalized text form, and
 machine-readable serializations without any manual re-encoding.
 \end{frame}
 
-\begin{frame}[allowframebreaks]{Type Checking and Validation}
+\begin{frame}[fragile,allowframebreaks]{Type Checking and Validation}
 \protect\phantomsection\label{type-checking-and-validation}
 A model that parses is not yet a model that is well-formed. Steps 5 and
 6 apply type checking and validation to confirm that the state spaces,
@@ -261,7 +261,20 @@ are mutually consistent before any code is generated. This catches
 dimensional mismatches and malformed factor structures at the notation
 level, where the diagnostic is cheap and legible, rather than allowing
 them to surface as opaque runtime errors deep inside a numerical
-backend. Validation here is the gate that protects every later stage:
+backend. Validation also reads each declared \texttt{B} tensor through
+an orientation diagnostic: the canonical reading is column-stochastic,
+\texttt{B{[}next\_state{]}{[}previous\_state{]}{[}action{]}}, matching
+the pymdp convention (Heins et al. 2022) and the transition semantics
+fixed by eq.~3, and the check records every tensor's
+detected orientation in its receipt. A row-stochastic textbook literal
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]{Type Checking and Validation}
+--- the transpose of the canonical layout --- is flagged with the
+tensor, state factor, and flipped slice indices named, and the opt-in
+\texttt{-\/-transpose-b} flag maps such literals onto the canonical
+order at load time instead of failing them, recording the transposition
+per tensor. Validation here is the gate that protects every later stage:
 rendering, execution, and analysis all assume a model that has already
 been certified consistent.
 \end{frame}
@@ -285,11 +298,15 @@ given below.
 
 \begin{frame}[fragile,allowframebreaks]{Rendering to Multiple Backends}
 \begin{longtable}[]{@{}lll@{}}
-\caption{Render targets in
-\protect\breaktt{src/gnn/render/framework\_registry.py}. The
-\emph{Executes} column is the registry's own
-\protect\breaktt{supports\_execution} flag: a render-only backend has no
-Step-12 executor.}\label{tbl:backend_registry}\tabularnewline
+\caption{Render targets declared in
+\protect\breaktt{src/gnn/render/framework\_registry.py}, one row per
+registry key in registry order. The \emph{Executes} column is the
+registry's own \protect\breaktt{supports\_execution} flag: 9 of 9
+backends have a Step-12 executor, and a \protect\texttt{render-only}
+entry would mean generated code with no Step-12 executor. Read this
+table against tbl.~3, which shows which families
+actually target each
+backend.}\label{tbl:backend_registry}\tabularnewline
 \toprule\noalign{}
 Registry key & Backend & Executes \\
 \midrule\noalign{}
@@ -306,7 +323,7 @@ Registry key & Backend & Executes \\
 \texttt{pytorch} & PyTorch & yes \\
 \texttt{numpyro} & NumPyro & yes \\
 \texttt{stan} & Stan & yes \\
-\texttt{bnlearn} & bnlearn & render-only \\
+\texttt{bnlearn} & bnlearn & yes \\
 \bottomrule\noalign{}
 \end{longtable}
 
@@ -317,17 +334,28 @@ The registry surface of these backends --- registry key, display name,
 implementation language, and which of them the cross-framework gate
 compares --- is summarized in fig.~\ref{fig:backend_matrix}; the
 family-by-backend coverage itself is shown in
-fig.~5.
+fig.~6.
 
 \end{frame}
 
 \begin{frame}[fragile,allowframebreaks]{Rendering to Multiple Backends}
 \begin{figure}
 \centering
-\includegraphics[width=0.85\linewidth,height=0.40\textheight,keepaspectratio,alt={The GNN rendering backend registry: each registry key, its display name, and the cross-framework comparison targets, read directly from the framework registry.}]{../figures/gnn_backend_capability_matrix.png}
-\caption{The GNN rendering backend registry: each registry key, its
-display name, and the cross-framework comparison targets, read directly
-from the framework registry.}\label{fig:backend_matrix}
+\includegraphics[width=0.85\linewidth,height=0.40\textheight,keepaspectratio,alt={The GNN rendering backend registry as a table: one row per registered backend, with its registry key, display name, implementation language, whether a render-output subdirectory exists under src/gnn/render/, and its role in the cross-framework reference comparison. Amber rows are the backends the reliability gate profiles for the continuous family; the tan row (Stan) is declared by that family but sits outside the maintained set, so it is never profiled; a red Render-Subdir cell would mean a registry entry with no subdirectory. The table is read directly from src/gnn/render/framework\_registry.py and the model-family manifest at commit 0a12bb0b6, and its footer summarizes the row counts. Take-away: registration, render presence, and profiling status are three different claims, and the table keeps them apart.}]{../figures/gnn_backend_capability_matrix.png}
+\caption{The GNN rendering backend registry as a table: one row per
+registered backend, with its registry key, display name, implementation
+language, whether a render-output subdirectory exists under
+\protect\texttt{src/gnn/render/}, and its role in the cross-framework
+reference comparison. Amber rows are the backends the reliability gate
+profiles for the continuous family; the tan row (Stan) is declared by
+that family but sits outside the maintained set, so it is never
+profiled; a red Render-Subdir cell would mean a registry entry with no
+subdirectory. The table is read directly from
+\protect\breaktt{src/gnn/render/framework\_registry.py} and the
+model-family manifest at commit 0a12bb0b6, and its footer summarizes the
+row counts. Take-away: registration, render presence, and profiling
+status are three different claims, and the table keeps them
+apart.}\label{fig:backend_matrix}
 \end{figure}
 
 \end{frame}
@@ -347,19 +375,33 @@ faithfully, GNN records that boundary as an explicit unsupported status
 rather than treating all registered backends as equivalent.
 \end{frame}
 
-\begin{frame}[allowframebreaks]{Execution}
+\begin{frame}[fragile,allowframebreaks]{Execution}
 \protect\phantomsection\label{execution}
 Generated backend code is not left as a static artifact. The execution
 stage (step 12) runs the rendered models, driving the inference and
 behavior that the notation describes and producing concrete traces,
-beliefs, and outputs. This closes the loop from text to running
-cognitive model: the same specification that was type-checked and
-exported is now exercised numerically, so that claims about a model's
-behavior rest on having actually run it rather than on inspection of the
-source alone.
+beliefs, and outputs. All 9 registered backends --- PyMDP, RxInfer.jl,
+ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, bnlearn ---
+have an executor at this step. The bnlearn lane is generator-backed: it
+renders a runnable Python program from the same parsed model the other
+lanes consume, and it skips with a recorded status when the
+\texttt{bnlearn} package is absent, so a lean checkout degrades
+explicitly rather than failing; skipped and degraded backends are
+likewise recorded as explicit statuses in the cross-framework comparison
+rather than silently omitted. A separate execute-side bridge verifies
+rendered Lean documents against the fep\_lean bridge contract, which is
 \end{frame}
 
-\begin{frame}[allowframebreaks]{Long-Running Orchestration Contracts}
+\begin{frame}[fragile,allowframebreaks]{Execution}
+how the notation reaches a proof assistant without a render-registry
+entry. This closes the loop from text to running cognitive model: the
+same specification that was type-checked and exported is now exercised
+numerically, so that claims about a model's behavior rest on having
+actually run it rather than on inspection of the source alone.
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]{Long-Running Orchestration
+Contracts}
 \protect\phantomsection\label{long-running-orchestration-contracts}
 GNN 3.0.0 extended the pipeline with three safe-by-design orchestration
 contracts that let an extended run be observed, paused, resumed, and
@@ -376,7 +418,8 @@ hardened container plans together with an explicit static security
 review and a rollback descriptor, deliberately stopping short of
 \end{frame}
 
-\begin{frame}[allowframebreaks]{Long-Running Orchestration Contracts}
+\begin{frame}[fragile,allowframebreaks]{Long-Running Orchestration
+Contracts}
 touching any real cluster. Each contract only generates and validates
 data; none performs live mutation, and each is governed by a strict
 acceptance gate and exercised through dedicated Model Context Protocol
@@ -385,13 +428,25 @@ compose into one inspectable orchestration surface.
 
 \end{frame}
 
-\begin{frame}[allowframebreaks]{Long-Running Orchestration Contracts}
+\begin{frame}[fragile,allowframebreaks]{Long-Running Orchestration
+Contracts}
 \begin{figure}
 \centering
-\includegraphics[width=0.85\linewidth,height=0.40\textheight,keepaspectratio,alt={The GNN 3.0.0 long-running orchestration contracts: durable observation streams, resumable run sessions, and auditable container plans.}]{../figures/gnn_orchestration.png}
-\caption{The GNN 3.0.0 long-running orchestration contracts: durable
-observation streams, resumable run sessions, and auditable container
-plans.}\label{fig:orchestration}
+\includegraphics[width=0.85\linewidth,height=0.40\textheight,keepaspectratio,alt={The three safe-by-design orchestration contracts introduced in GNN 3.0.0, side by side inside the dashed boundary that states their shared invariant: generate and validate data only, never mutate live infrastructure. Each column names the contract's source module under src/gnn/pipeline/ and chains its stages top to bottom --- StreamManifest, ExecutionTrace, and replay for durable observation streams; checkpoint, resume, status, and safe cleanup for resumable run sessions; generate, static security review, and rollback for container plans. Arrows give the order the stages run in, and nothing exits the boundary. The panel is a fixed-layout drawing of the three contracts; the acceptance gates and the Model Context Protocol tools that exercise them are described in the text above. Take-away: long-running orchestration gains capability only as fast as it becomes inspectable.}]{../figures/gnn_orchestration.png}
+\caption{The three safe-by-design orchestration contracts introduced in
+GNN 3.0.0, side by side inside the dashed boundary that states their
+shared invariant: generate and validate data only, never mutate live
+infrastructure. Each column names the contract's source module under
+\protect\breaktt{src/gnn/pipeline/} and chains its stages top to bottom
+--- StreamManifest, ExecutionTrace, and replay for durable observation
+streams; checkpoint, resume, status, and safe cleanup for resumable run
+sessions; generate, static security review, and rollback for container
+plans. Arrows give the order the stages run in, and nothing exits the
+boundary. The panel is a fixed-layout drawing of the three contracts;
+the acceptance gates and the Model Context Protocol tools that exercise
+them are described in the text above. Take-away: long-running
+orchestration gains capability only as fast as it becomes
+inspectable.}\label{fig:orchestration}
 \end{figure}
 \end{frame}
 
@@ -414,7 +469,7 @@ Auto-Injection}
 \protect\phantomsection\label{reproducibility-and-auto-injection}
 Every count reported in this manuscript is emitted by the producer
 \breaktt{scripts/z\_generate\_manuscript\_variables.py} from the
-repository state at commit bae612cea, not typed by hand. The producer
+repository state at commit 0a12bb0b6, not typed by hand. The producer
 reads that commit's source surfaces directly --- the step modules, the
 source tree, the model-family manifest, and the framework registry ---
 together with the project's maintained ledgers, notably the Model

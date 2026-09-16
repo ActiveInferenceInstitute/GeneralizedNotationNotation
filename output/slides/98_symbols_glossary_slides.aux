@@ -20,7 +20,7 @@
     {1}{153.64493pt}\LT@entry
     {1}{153.64493pt}}
 \HyPL@Entry{3<</P(\376\377\0004)>>}
-\newlabel{tbl:gnn_constructs}{{1}{4}{GNN language constructs a conforming parser must recognize, with the meaning each carries}{tbl:gnn_constructs}{}}
+\newlabel{tbl:gnn_constructs}{{1}{4}{The GNN language constructs a conforming parser must recognize, with the meaning each carries. The first six rows are the required sections that pin a model's identity, variables, and factor graph; the optional sections that follow carry parameterization, ontology bindings, timing, equations, and provenance. The three operator rows are the connection vocabulary the \protect \texttt {Connections} section is written in --- directed \protect \texttt {A\textgreater {}B}, undirected \protect \texttt {A-B}, and their labeled v1.1 forms --- and \protect \texttt {default=…} supplies initialization hints. Definitions follow the GNN syntax specification and the discrete POMDP exemplars under \protect \texttt {input/gnn\_files}, and the strict schema validator enforces section order and declaration grammar before any downstream step runs}{tbl:gnn_constructs}{}}
 \@writefile{snm}{\beamer@slide {tbl:gnn_constructs}{4}}
 \@writefile{nav}{\headcommand {\slideentry {1}{0}{4}{4/4}{}{0}}}
 \@writefile{nav}{\headcommand {\beamer@framepages {4}{4}}}
@@ -36,7 +36,7 @@
     {1}{153.64493pt}\LT@entry
     {1}{153.64493pt}}
 \HyPL@Entry{6<</P(\376\377\0007)>>}
-\newlabel{tbl:actinf_symbols}{{2}{7}{Active Inference symbols carried by a GNN specification, each bound to the equation in sec.~3 that defines it}{tbl:actinf_symbols}{}}
+\newlabel{tbl:actinf_symbols}{{2}{7}{The Active Inference symbols a GNN specification carries, each bound to the equation of sec.~3 that fixes its role. Read \protect \texttt {A}--\protect \texttt {E} as the generative-model tensors (likelihood, controlled transitions, log-preferences, prior over initial states, habit prior), \protect \texttt {s}, \protect \texttt {o}, \protect \texttt {\texorpdfstring {\ensuremath {\pi }}{pi}}, and \protect \texttt {u} as the inference variables, and \protect \texttt {F} and \protect \texttt {G} as the two free-energy functionals minimized at eq.~6 and eq.~7. Use the table as a decoding key when reading a \protect \texttt {StateSpaceBlock}: every declared matrix name should map to exactly one row here, and the \protect \breaktt {\#\#\ ActInfOntologyAnnotation} bindings described below are what make that mapping machine-checkable downstream}{tbl:actinf_symbols}{}}
 \@writefile{snm}{\beamer@slide {tbl:actinf_symbols}{7}}
 \@writefile{nav}{\headcommand {\slideentry {1}{0}{6}{7/7}{}{0}}}
 \@writefile{nav}{\headcommand {\beamer@framepages {7}{7}}}

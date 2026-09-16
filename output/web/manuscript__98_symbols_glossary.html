@@ -645,9 +645,19 @@ enforces section order, declaration grammar, and connection syntax; the
 constructs below are the load-bearing sections a parser must recognize;
 they are catalogued in <span class="citation"
 data-cites="tbl:gnn_constructs">[@tbl:gnn_constructs]</span>.</p>
-<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable table: GNN language constructs a conforming parser must recognize, with the meaning each carries."><table id="tbl:gnn_constructs" data-responsive-table="true">
-<caption>GNN language constructs a conforming parser must recognize,
-with the meaning each carries.</caption>
+<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable table: The GNN language constructs a conforming parser must recognize, with the meaning each carries. The first six rows are…"><table id="tbl:gnn_constructs" data-responsive-table="true">
+<caption>The GNN language constructs a conforming parser must recognize,
+with the meaning each carries. The first six rows are the required
+sections that pin a model’s identity, variables, and factor graph; the
+optional sections that follow carry parameterization, ontology bindings,
+timing, equations, and provenance. The three operator rows are the
+connection vocabulary the <code>Connections</code> section is written in
+— directed <code>A&gt;B</code>, undirected <code>A-B</code>, and their
+labeled v1.1 forms — and <code>default=…</code> supplies initialization
+hints. Definitions follow the GNN syntax specification and the discrete
+POMDP exemplars under <code>input/gnn_files</code>, and the strict
+schema validator enforces section order and declaration grammar before
+any downstream step runs.</caption>
 <colgroup>
 <col style="width: 50%" />
 <col style="width: 50%" />
@@ -768,11 +778,21 @@ equation in <span class="citation"
 data-cites="sec:system_context">[@sec:system_context]</span> that fixes
 the symbol’s role, so the glossary and the formal statement cannot drift
 apart.</p>
-<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable table: Active Inference symbols carried by a GNN specification, each bound to the equation in [@sec:system_context] that def…"><table id="tbl:actinf_symbols" data-responsive-table="true">
-<caption>Active Inference symbols carried by a GNN specification, each
-bound to the equation in <span class="citation"
-data-cites="sec:system_context">[@sec:system_context]</span> that
-defines it.</caption>
+<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable table: The Active Inference symbols a GNN specification carries, each bound to the equation of [@sec:system_context] that fi…"><table id="tbl:actinf_symbols" data-responsive-table="true">
+<caption>The Active Inference symbols a GNN specification carries, each
+bound to the equation of <span class="citation"
+data-cites="sec:system_context">[@sec:system_context]</span> that fixes
+its role. Read <code>A</code>–<code>E</code> as the generative-model
+tensors (likelihood, controlled transitions, log-preferences, prior over
+initial states, habit prior), <code>s</code>, <code>o</code>,
+<code>π</code>, and <code>u</code> as the inference variables, and
+<code>F</code> and <code>G</code> as the two free-energy functionals
+minimized at <span class="citation" data-cites="eq:vfe">[@eq:vfe]</span>
+and <span class="citation" data-cites="eq:efe">[@eq:efe]</span>. Use the
+table as a decoding key when reading a <code>StateSpaceBlock</code>:
+every declared matrix name should map to exactly one row here, and the
+<code>## ActInfOntologyAnnotation</code> bindings described below are
+what make that mapping machine-checkable downstream.</caption>
 <colgroup>
 <col style="width: 50%" />
 <col style="width: 50%" />
@@ -867,10 +887,10 @@ downstream pipeline steps use for semantic analysis and validation. The
 same GNN specification feeds the project’s rendering backends —
 including the 9 registered targets (PyMDP, RxInfer.jl,
 ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, bnlearn), of
-which the 8 listed as executable (PyMDP, RxInfer.jl, ActiveInference.jl,
-JAX, DisCoPy, PyTorch, NumPyro, Stan) also run at Step 12 — so that a
-model written once in this notation can be parsed, visualized, and
-executed across the 25-step pipeline (0–24) without restating its
+which the 9 listed as executable (PyMDP, RxInfer.jl, ActiveInference.jl,
+JAX, DisCoPy, PyTorch, NumPyro, Stan, bnlearn) also run at Step 12 — so
+that a model written once in this notation can be parsed, visualized,
+and executed across the 25-step pipeline (0–24) without restating its
 mathematics [gnn2023; heins2022; defelice2021].</p>
 </main>
 </body>

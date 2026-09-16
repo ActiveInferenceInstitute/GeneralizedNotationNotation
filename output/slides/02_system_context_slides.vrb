@@ -1,9 +1,12 @@
-\frametitle{The Processing Pipeline}
-This staged design keeps the architecture modular. The implementation is
-organized into 44 source packages, one cluster of responsibilities per
-concern, and is documented across 624 documentation files so that each
-step's contract, inputs, and outputs are specified independently of the
-others. New backends or analyses attach to the graph by declaring their
-dependencies rather than by editing a monolith, and the deterministic
-step ordering means a model processed today yields the same artifacts
-when reprocessed tomorrow.
+\frametitle{The Triple Play}
+Each face is generated from the same source, so they cannot drift apart.
+The text is the contract a researcher reads and reviews; the
+visualizations expose the factor-graph structure for inspection and
+communication; and the executable rendering lets the identical model be
+simulated across inference frameworks, connecting the written
+specification to libraries such as pymdp for discrete Active Inference
+(Heins et al. 2022) and to the broader tooling ecosystem for
+compositional model representation (Felice et al. 2021). Because all
+three derive from one parsed document, GNN turns a model from a static
+artifact into a live object that can be read, seen, and run without
+re-encoding it for each purpose (Smith et al. 2022).

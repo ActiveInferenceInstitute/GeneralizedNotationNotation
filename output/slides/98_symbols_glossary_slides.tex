@@ -225,8 +225,19 @@ they are catalogued in tbl.~\ref{tbl:gnn_constructs}.
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}@{}}
-\caption{GNN language constructs a conforming parser must recognize,
-with the meaning each carries.}\label{tbl:gnn_constructs}\tabularnewline
+\caption{The GNN language constructs a conforming parser must recognize,
+with the meaning each carries. The first six rows are the required
+sections that pin a model's identity, variables, and factor graph; the
+optional sections that follow carry parameterization, ontology bindings,
+timing, equations, and provenance. The three operator rows are the
+connection vocabulary the \protect\texttt{Connections} section is
+written in --- directed \protect\texttt{A\textgreater{}B}, undirected
+\protect\texttt{A-B}, and their labeled v1.1 forms --- and
+\protect\texttt{default=…} supplies initialization hints. Definitions
+follow the GNN syntax specification and the discrete POMDP exemplars
+under \protect\texttt{input/gnn\_files}, and the strict schema validator
+enforces section order and declaration grammar before any downstream
+step runs.}\label{tbl:gnn_constructs}\tabularnewline
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Construct
@@ -308,9 +319,20 @@ glossary and the formal statement cannot drift apart.
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}@{}}
-\caption{Active Inference symbols carried by a GNN specification, each
-bound to the equation in sec.~3 that defines
-it.}\label{tbl:actinf_symbols}\tabularnewline
+\caption{The Active Inference symbols a GNN specification carries, each
+bound to the equation of sec.~3 that fixes its
+role. Read \protect\texttt{A}--\protect\texttt{E} as the
+generative-model tensors (likelihood, controlled transitions,
+log-preferences, prior over initial states, habit prior),
+\protect\texttt{s}, \protect\texttt{o}, \protect\texttt{\texorpdfstring{\ensuremath{\pi}}{pi}}, and
+\protect\texttt{u} as the inference variables, and \protect\texttt{F}
+and \protect\texttt{G} as the two free-energy functionals minimized at
+eq.~6 and eq.~7. Use the table as a decoding key
+when reading a \protect\texttt{StateSpaceBlock}: every declared matrix
+name should map to exactly one row here, and the
+\protect\breaktt{\#\#\ ActInfOntologyAnnotation} bindings described below
+are what make that mapping machine-checkable
+downstream.}\label{tbl:actinf_symbols}\tabularnewline
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Symbol
@@ -371,10 +393,10 @@ to a canonical term (\breaktt{A=LikelihoodMatrix},
 pipeline steps use for semantic analysis and validation. The same GNN
 specification feeds the project's rendering backends --- including the 9
 registered targets (PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy,
-PyTorch, NumPyro, Stan, bnlearn), of which the 8 listed as executable
+PyTorch, NumPyro, Stan, bnlearn), of which the 9 listed as executable
 (PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro,
-Stan) also run at Step 12 --- so that a model written once in this
-notation can be parsed, visualized, and executed across the 25-step
+Stan, bnlearn) also run at Step 12 --- so that a model written once in
+this notation can be parsed, visualized, and executed across the 25-step
 \end{frame}
 
 \begin{frame}[fragile,allowframebreaks]{Ontology Bindings and

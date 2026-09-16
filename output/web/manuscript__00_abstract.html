@@ -566,6 +566,33 @@ mjx-container[display="true"] {
 <a class="skip-link" href="#main-content">Skip to main content</a>
 <main id="main-content" tabindex="-1">
 <h1 id="sec:abstract">Abstract</h1>
+<figure id="fig:graphical_abstract">
+<a class="figure-full-size-link" href="../figures/gnn_graphical_abstract.png" target="_blank" rel="noopener" aria-label="Open full-size figure, The GeneralizedNotationNotation (GNN) pipeline at a glance, generated from the producer’s…"><img src="../figures/gnn_graphical_abstract.png" style="width:100.0%"
+alt="End-to-end summary panel of the GNN pipeline in seven left-to-right stage cards: a plain-text GNN document declaring A, B, C, D and E; parsing; validation and type checking with the B-tensor orientation check; code rendering to the registered backends; execution of the backends including the bnlearn lane; analysis; and cross-repository interchange with GEO-INFER and fep_lean. Step pills name the pipeline step behind each stage, a callout states the two newest capabilities, and a footer strip carries the producer&#x27;s scale counts for steps, families, backends and MCP tools." /><span class="figure-full-size-label" aria-hidden="true">Open full-size figure</span></a>
+<figcaption>The GeneralizedNotationNotation (GNN)
+pipeline at a glance, generated from the producer’s token map at commit
+0a12bb0b6. A plain-text specification — the <code>StateSpaceBlock</code>
+declaring the <code>A</code>, <code>B</code>, <code>C</code>,
+<code>D</code>, and <code>E</code> tensors of <span class="citation"
+data-cites="eq:generative_model">[@eq:generative_model]</span> through
+<span class="citation" data-cites="eq:policy">[@eq:policy]</span> — is
+parsed (Step 3), type-checked and validated (Steps 5–6), rendered as
+backend-specific code (Step 11), executed (Step 12), and analyzed (Step
+16), before artifacts flow into the cross-repository interchange checks
+against the pinned GEO-INFER and fep_lean pairs. Read the seven cards
+left to right: each header names the stage, each pill names the pipeline
+step (or the source role), and the body states what the stage produces.
+The validation stage includes the B-tensor orientation check — every
+<code>B</code> literal is read as column-stochastic
+<code>B[s', s, a]</code>, and <code>--transpose-b</code> maps
+row-stochastic textbook literals onto that canonical order — and the
+execution stage includes the bnlearn lane, which generates runnable
+Python from the same parsed model and skips with a recorded status when
+its runtime is absent. The footer states the scale the panel summarizes:
+25 pipeline steps, 9 model families, 9 registered render backends with
+all 9 executing at Step 12, and 141 Model Context Protocol
+tools.</figcaption>
+</figure>
 <p>Active Inference offers a unifying account of perception, learning,
 and action under the free energy principle [friston2010], yet the
 generative models at its core are still communicated ad hoc: scattered
@@ -589,11 +616,11 @@ durable observation streams, resumable run sessions, and auditable
 container plans that generate, validate, and replay data only, with no
 live infrastructure mutation. We describe the language, the pipeline
 architecture, and the validation that confirms specifications round-trip
-faithfully across formats and render across multiple simulation backends
-— with coverage gaps recorded as explicit profiled-unsupported statuses
-rather than silently omitted — establishing GNN as reproducible,
-interoperable infrastructure for communicating Active Inference
-models.</p>
+faithfully across formats and execute across multiple simulation
+backends — with coverage gaps recorded as explicit profiled-unsupported
+statuses rather than silently omitted — establishing GNN as
+reproducible, interoperable infrastructure for communicating Active
+Inference models.</p>
 </main>
 </body>
 </html>

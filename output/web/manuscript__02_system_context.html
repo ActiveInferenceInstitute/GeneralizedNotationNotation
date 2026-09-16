@@ -754,19 +754,36 @@ data-cites="fig:pipeline">[@fig:pipeline]</span>, which makes the whole
 flow inspectable: any artifact can be traced back to the step that
 produced it and forward to every step that depends on it.</p>
 <figure id="fig:pipeline">
-<a class="figure-full-size-link" href="../figures/gnn_pipeline_dag.png" target="_blank" rel="noopener" aria-label="Open full-size figure, The GNN processing pipeline as a directed acyclic graph of numbered steps, from parsing"><img src="../figures/gnn_pipeline_dag.png" style="width:90.0%"
+<a class="figure-full-size-link" href="../figures/gnn_pipeline_dag.png" target="_blank" rel="noopener" aria-label="Open full-size figure, The 25-step GNN processing pipeline as a directed acyclic graph, laid out left to right by…"><img src="../figures/gnn_pipeline_dag.png" style="width:90.0%"
 alt="Directed acyclic graph of the numbered GNN pipeline steps. Nodes are the step modules in src/, arranged left to right from parsing and type checking, through validation, visualization, rendering and execution, to analysis, reporting and integration. Edges run from a step to every later step that consumes its artifacts, so each output can be traced back to the step that produced it." /><span class="figure-full-size-label" aria-hidden="true">Open full-size figure</span></a>
-<figcaption>The GNN processing pipeline as a directed
-acyclic graph of numbered steps, from parsing and validation through
-visualization, execution, and analysis.</figcaption>
+<figcaption>The 25-step GNN processing pipeline as a
+directed acyclic graph, laid out left to right by topological layer and
+colored by execution phase (legend, upper right). Each node is the thin
+step orchestrator under <code>src/gnn/</code> named in <span
+class="citation"
+data-cites="tbl:pipeline_steps">[@tbl:pipeline_steps]</span>; each arrow
+is a hard data dependency parsed from the Data Dependency Graph block of
+<code>src/gnn/STEP_INDEX.md</code>, so any artifact can be traced back
+to the step that produced it. Parsing (Step 3) fans out to nearly every
+later step, and analysis (Step 16) collects enrichment from execution,
+visualization, and the LLM step. The figure is generated from
+<code>src/gnn/STEP_INDEX.md</code> at commit 0a12bb0b6; its footer
+restates the step count, the number of hard dependencies, and the layout
+rule.</figcaption>
 </figure>
 <p>The per-step responsibilities are enumerated in <span
 class="citation"
 data-cites="tbl:pipeline_steps">[@tbl:pipeline_steps]</span>; each row
 names a step and the transformation it owns within the 0–24 range.</p>
-<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable table: The pipeline steps, their thin orchestrator modules, and their purposes, read from src/gnn/STEP_INDEX.md ."><table id="tbl:pipeline_steps" data-responsive-table="true">
-<caption>The pipeline steps, their thin orchestrator modules, and their
-purposes, read from <code>src/gnn/STEP_INDEX.md</code>.</caption>
+<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable table: The pipeline steps with the thin orchestrator module that owns each and the one-line purpose parsed from the master t…"><table id="tbl:pipeline_steps" data-responsive-table="true">
+<caption>The pipeline steps with the thin orchestrator module that owns
+each and the one-line purpose parsed from the master table in
+<code>src/gnn/STEP_INDEX.md</code>. Read the Step column against the
+arrows of <span class="citation"
+data-cites="fig:pipeline">[@fig:pipeline]</span>: each row’s purpose is
+the transformation that module owns, and the table is regenerated from
+the index at every build, so it cannot drift from the code it
+describes.</caption>
 <colgroup>
 <col style="width: 40%" />
 <col style="width: 30%" />
@@ -926,11 +943,19 @@ class="citation" data-cites="fig:triple_play">@fig:triple_play</span>
 depicts these three faces and the shared specification at their
 center.</p>
 <figure id="fig:triple_play">
-<a class="figure-full-size-link" href="../figures/gnn_triple_play.png" target="_blank" rel="noopener" aria-label="Open full-size figure, The Triple Play: a single GNN specification rendered as readable text, as graphical…"><img src="../figures/gnn_triple_play.png" style="width:70.0%"
+<a class="figure-full-size-link" href="../figures/gnn_triple_play.png" target="_blank" rel="noopener" aria-label="Open full-size figure, The Triple Play: one GNN text specification"><img src="../figures/gnn_triple_play.png" style="width:70.0%"
 alt="The Triple Play as one central GNN specification with three projections radiating from it: the readable text form, graphical visualizations of state-space and factor structure, and executable model code. All three point back to the single specification at the center." /><span class="figure-full-size-label" aria-hidden="true">Open full-size figure</span></a>
-<figcaption>The Triple Play: a single GNN
-specification rendered as readable text, as graphical visualizations,
-and as an executable model.</figcaption>
+<figcaption>The Triple Play: one GNN text
+specification (left) and its three coordinated projections (right) — the
+human-readable text form, graphical model visualizations, and executable
+simulation code. All three arrows originate at the same source box
+because all three projections are generated from one parsed document,
+which is why they cannot drift apart; the executable node states that 9
+of 9 registered backends run at Step 12 and previews three of them by
+name. Counts are producer tokens at commit 0a12bb0b6, and the panel is
+generated by <code>scripts/manuscript_fig_triple_play.py</code>.
+Take-away: a model is authored once and then read, seen, and run from
+that single source.</figcaption>
 </figure>
 <p>Each face is generated from the same source, so they cannot drift
 apart. The text is the contract a researcher reads and reviews; the

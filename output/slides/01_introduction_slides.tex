@@ -265,7 +265,7 @@ diagram, the equations, and the running code are all generated from one
 parsed document rather than three artifacts that merely claim to
 describe the same model. The Triple Play turns a model from a
 description scattered across media into one specification with multiple
-faithful projections (see fig.~2).
+faithful projections (see fig.~3).
 \end{frame}
 
 \begin{frame}[allowframebreaks]{Contributions}
@@ -290,10 +290,10 @@ infrastructure that makes it usable in practice:
 \item
   \textbf{9 rendering backends} (PyMDP, RxInfer.jl, ActiveInference.jl,
   JAX, DisCoPy, PyTorch, NumPyro, Stan, bnlearn) that materialize a
-  single GNN specification as backend-specific model code, of which 8
+  single GNN specification as backend-specific model code, of which 9
   (PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch,
-  NumPyro, Stan) also execute at Step 12, realizing the executable arm
-  of the Triple Play.
+  NumPyro, Stan, bnlearn) also execute at Step 12, realizing the
+  executable arm of the Triple Play.
 \item
   \textbf{141 Model Context Protocol tools} that expose the pipeline's
   capabilities to agentic and programmatic clients, so the notation and
@@ -314,28 +314,31 @@ mechanism to evidence. sec.~3 states the notation
 and the generative model it denotes, writing the factorization, the four
 matrices, and the two free-energy objectives as explicit equations
 (eq.~1 through eq.~8); it presents
-the pipeline structure (fig.~1), the Triple Play
-(fig.~2), and the per-step responsibility table
+the pipeline structure (fig.~2), the Triple Play
+(fig.~3), and the per-step responsibility table
 (tbl.~1). sec.~4 follows a
 specification through the pipeline --- parsing, type checking,
 rendering, execution, and reporting --- and presents the backend
 registry (tbl.~2), the backend registry surface
-(fig.~3), and the long-running orchestration
-contracts (fig.~4).
+(fig.~4), and the long-running orchestration
+contracts (fig.~5).
 sec.~5 reports what the project has produced
 and how each number is grounded, with the model-family registry
 (tbl.~3), the family-by-framework coverage
-(fig.~5), and repository-scale metrics
+(fig.~6), and repository-scale metrics
 \end{frame}
 
 \begin{frame}[allowframebreaks]{Reader Orientation}
-(fig.~6). Claims of independent re-execution are
-addressed in sec.~6, the boundaries of the
-current system in sec.~7, the symbol and
-construct tables in sec.~9, and full source
-details in sec.~10. Read in this order, the manuscript
-moves from why a standard notation is needed, through how GNN realizes
-it, to the evidence that the standard holds.
+(fig.~7). fig.~1
+condenses this same arc --- specification, validation, rendering,
+execution, analysis, and interchange --- into the summary panel at the
+head of the manuscript. Claims of independent re-execution are addressed
+in sec.~6, the boundaries of the current system
+in sec.~7, the symbol and construct
+tables in sec.~9, and full source details in
+sec.~10. Read in this order, the manuscript moves from
+why a standard notation is needed, through how GNN realizes it, to the
+evidence that the standard holds.
 \end{frame}
 
 \end{document}

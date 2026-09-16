@@ -364,10 +364,20 @@ that produced it and forward to every step that depends on it.
 \begin{frame}[fragile,allowframebreaks]{The Processing Pipeline}
 \begin{figure}
 \centering
-\includegraphics[width=0.9\linewidth,height=0.40\textheight,keepaspectratio,alt={The GNN processing pipeline as a directed acyclic graph of numbered steps, from parsing and validation through visualization, execution, and analysis.}]{../figures/gnn_pipeline_dag.png}
-\caption{The GNN processing pipeline as a directed acyclic graph of
-numbered steps, from parsing and validation through visualization,
-execution, and analysis.}\label{fig:pipeline}
+\includegraphics[width=0.9\linewidth,height=0.40\textheight,keepaspectratio,alt={The 25-step GNN processing pipeline as a directed acyclic graph, laid out left to right by topological layer and colored by execution phase (legend, upper right). Each node is the thin step orchestrator under src/gnn/ named in tbl.~; each arrow is a hard data dependency parsed from the Data Dependency Graph block of src/gnn/STEP\_INDEX.md, so any artifact can be traced back to the step that produced it. Parsing (Step 3) fans out to nearly every later step, and analysis (Step 16) collects enrichment from execution, visualization, and the LLM step. The figure is generated from src/gnn/STEP\_INDEX.md at commit 0a12bb0b6; its footer restates the step count, the number of hard dependencies, and the layout rule.}]{../figures/gnn_pipeline_dag.png}
+\caption{The 25-step GNN processing pipeline as a directed acyclic
+graph, laid out left to right by topological layer and colored by
+execution phase (legend, upper right). Each node is the thin step
+orchestrator under \protect\texttt{src/gnn/} named in
+tbl.~\ref{tbl:pipeline_steps}; each arrow is a hard data dependency
+parsed from the Data Dependency Graph block of
+\protect\breaktt{src/gnn/STEP\_INDEX.md}, so any artifact can be traced
+back to the step that produced it. Parsing (Step 3) fans out to nearly
+every later step, and analysis (Step 16) collects enrichment from
+execution, visualization, and the LLM step. The figure is generated from
+\protect\breaktt{src/gnn/STEP\_INDEX.md} at commit 0a12bb0b6; its footer
+restates the step count, the number of hard dependencies, and the layout
+rule.}\label{fig:pipeline}
 \end{figure}
 
 \end{frame}
@@ -384,9 +394,13 @@ transformation it owns within the 0--24 range.
   >{\raggedleft\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.4000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3000}}@{}}
-\caption{The pipeline steps, their thin orchestrator modules, and their
-purposes, read from
-\protect\breaktt{src/gnn/STEP\_INDEX.md}.}\label{tbl:pipeline_steps}\tabularnewline
+\caption{The pipeline steps with the thin orchestrator module that owns
+each and the one-line purpose parsed from the master table in
+\protect\breaktt{src/gnn/STEP\_INDEX.md}. Read the Step column against
+the arrows of fig.~\ref{fig:pipeline}: each row's purpose is the
+transformation that module owns, and the table is regenerated from the
+index at every build, so it cannot drift from the code it
+describes.}\label{tbl:pipeline_steps}\tabularnewline
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedleft
 Step
@@ -465,7 +479,7 @@ step ordering means a model processed today yields the same artifacts
 when reprocessed tomorrow.
 \end{frame}
 
-\begin{frame}[allowframebreaks]{The Triple Play}
+\begin{frame}[fragile,allowframebreaks]{The Triple Play}
 \protect\phantomsection\label{the-triple-play}
 The reason for separating a single written language from a multi-stage
 pipeline is the design goal GNN calls the Triple Play: one model
@@ -478,18 +492,26 @@ specification at their center.
 
 \end{frame}
 
-\begin{frame}[allowframebreaks]{The Triple Play}
+\begin{frame}[fragile,allowframebreaks]{The Triple Play}
 \begin{figure}
 \centering
-\includegraphics[width=0.7\linewidth,height=0.40\textheight,keepaspectratio,alt={The Triple Play: a single GNN specification rendered as readable text, as graphical visualizations, and as an executable model.}]{../figures/gnn_triple_play.png}
-\caption{The Triple Play: a single GNN specification rendered as
-readable text, as graphical visualizations, and as an executable
-model.}\label{fig:triple_play}
+\includegraphics[width=0.7\linewidth,height=0.40\textheight,keepaspectratio,alt={The Triple Play: one GNN text specification (left) and its three coordinated projections (right) --- the human-readable text form, graphical model visualizations, and executable simulation code. All three arrows originate at the same source box because all three projections are generated from one parsed document, which is why they cannot drift apart; the executable node states that 9 of 9 registered backends run at Step 12 and previews three of them by name. Counts are producer tokens at commit 0a12bb0b6, and the panel is generated by scripts/manuscript\_fig\_triple\_play.py. Take-away: a model is authored once and then read, seen, and run from that single source.}]{../figures/gnn_triple_play.png}
+\caption{The Triple Play: one GNN text specification (left) and its
+three coordinated projections (right) --- the human-readable text form,
+graphical model visualizations, and executable simulation code. All
+three arrows originate at the same source box because all three
+projections are generated from one parsed document, which is why they
+cannot drift apart; the executable node states that 9 of 9 registered
+backends run at Step 12 and previews three of them by name. Counts are
+producer tokens at commit 0a12bb0b6, and the panel is generated by
+\protect\breaktt{scripts/manuscript\_fig\_triple\_play.py}. Take-away: a
+model is authored once and then read, seen, and run from that single
+source.}\label{fig:triple_play}
 \end{figure}
 
 \end{frame}
 
-\begin{frame}[allowframebreaks]{The Triple Play}
+\begin{frame}[fragile,allowframebreaks]{The Triple Play}
 Each face is generated from the same source, so they cannot drift apart.
 The text is the contract a researcher reads and reviews; the
 visualizations expose the factor-graph structure for inspection and

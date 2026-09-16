@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999998 (TeX Live 2026) (preloaded format=xelatex 2026.3.1)  16 SEP 2026 09:32
+This is XeTeX, Version 3.141592653-2.6-0.999998 (TeX Live 2026) (preloaded format=xelatex 2026.3.1)  16 SEP 2026 14:59
 entering extended mode
  %&-line parsing enabled.
 **_combined_manuscript.tex
@@ -1256,7 +1256,10 @@ File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 \openout4 = `_combined_manuscript.toc'.
 
 
-[1] [2] [3] [4] [5]
+[1]
+File: ../figures/gnn_graphical_abstract.png Graphic file (type bmp)
+<../figures/gnn_graphical_abstract.png>
+ [2] [3] [4] [5]
 File: ../figures/gnn_pipeline_dag.png Graphic file (type bmp)
 <../figures/gnn_pipeline_dag.png>
 
@@ -1266,17 +1269,17 @@ File: ../figures/gnn_triple_play.png Graphic file (type bmp)
  [7] [8]
 File: ../figures/gnn_backend_capability_matrix.png Graphic file (type bmp)
 <../figures/gnn_backend_capability_matrix.png>
- [9]
+ [9] [10]
 File: ../figures/gnn_orchestration.png Graphic file (type bmp)
 <../figures/gnn_orchestration.png>
- [10] [11]
+ [11]
 File: ../figures/gnn_family_framework_matrix.png Graphic file (type bmp)
 <../figures/gnn_family_framework_matrix.png>
- [12]
+ [12] [13]
 File: ../figures/gnn_repo_metrics.png Graphic file (type bmp)
 <../figures/gnn_repo_metrics.png>
- [13] [14] [15] [16] [17]
-[18] [19] [20] [21] (./_combined_manuscript.bbl) [22]
+ [14] [15] [16] [17]
+[18] [19] [20] [21] [22] (./_combined_manuscript.bbl) [23]
 (./_combined_manuscript.aux)
  ***********
 LaTeX2e <2025-11-01>
@@ -1284,12 +1287,12 @@ L3 programming layer <2026-01-19>
  ***********
  )
 Here is how much of TeX's memory you used:
- 23655 strings out of 469709
- 432114 string characters out of 5466024
- 1046927 words of memory out of 5000000
- 51984 multiletter control sequences out of 15000+600000
+ 23665 strings out of 469709
+ 432508 string characters out of 5466024
+ 1052085 words of memory out of 5000000
+ 51993 multiletter control sequences out of 15000+600000
  631293 words of font info for 77 fonts, out of 8000000 for 9000
  319 hyphenation exceptions out of 8191
- 90i,9n,114p,1017b,571s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 90i,9n,114p,1606b,571s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on _combined_manuscript.pdf (23 pages).
+Output written on _combined_manuscript.pdf (24 pages).

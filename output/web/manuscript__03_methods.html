@@ -602,9 +602,20 @@ relating them are mutually consistent before any code is generated. This
 catches dimensional mismatches and malformed factor structures at the
 notation level, where the diagnostic is cheap and legible, rather than
 allowing them to surface as opaque runtime errors deep inside a
-numerical backend. Validation here is the gate that protects every later
-stage: rendering, execution, and analysis all assume a model that has
-already been certified consistent.</p>
+numerical backend. Validation also reads each declared <code>B</code>
+tensor through an orientation diagnostic: the canonical reading is
+column-stochastic, <code>B[next_state][previous_state][action]</code>,
+matching the pymdp convention [heins2022] and the transition semantics
+fixed by <span class="citation"
+data-cites="eq:transition">[@eq:transition]</span>, and the check
+records every tensor’s detected orientation in its receipt. A
+row-stochastic textbook literal — the transpose of the canonical layout
+— is flagged with the tensor, state factor, and flipped slice indices
+named, and the opt-in <code>--transpose-b</code> flag maps such literals
+onto the canonical order at load time instead of failing them, recording
+the transposition per tensor. Validation here is the gate that protects
+every later stage: rendering, execution, and analysis all assume a model
+that has already been certified consistent.</p>
 <h2 id="rendering-to-multiple-backends">Rendering to Multiple
 Backends</h2>
 <p>The central act of the “Triple Play” is turning a validated
@@ -620,11 +631,15 @@ Each backend is addressed through a registry key that maps the abstract
 model onto that framework’s idioms for representing generative models
 and performing inference. The full mapping from registry key to backend
 is given below.</p>
-<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable table: Render targets in src/gnn/render/framework_registry.py . The Executes column is the registry’s own supports_execution…"><table id="tbl:backend_registry" data-responsive-table="true">
-<caption>Render targets in
-<code>src/gnn/render/framework_registry.py</code>. The <em>Executes</em>
-column is the registry’s own <code>supports_execution</code> flag: a
-render-only backend has no Step-12 executor.</caption>
+<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable table: Render targets declared in src/gnn/render/framework_registry.py , one row per registry key in registry order. The Exe…"><table id="tbl:backend_registry" data-responsive-table="true">
+<caption>Render targets declared in
+<code>src/gnn/render/framework_registry.py</code>, one row per registry
+key in registry order. The <em>Executes</em> column is the registry’s
+own <code>supports_execution</code> flag: 9 of 9 backends have a Step-12
+executor, and a <code>render-only</code> entry would mean generated code
+with no Step-12 executor. Read this table against <span class="citation"
+data-cites="tbl:model_families">[@tbl:model_families]</span>, which
+shows which families actually target each backend.</caption>
 <thead>
 <tr>
 <th>Registry key</th>
@@ -676,7 +691,7 @@ render-only backend has no Step-12 executor.</caption>
 <tr>
 <td><code>bnlearn</code></td>
 <td>bnlearn</td>
-<td>render-only</td>
+<td>yes</td>
 </tr>
 </tbody>
 </table></div>
@@ -687,12 +702,22 @@ data-cites="fig:backend_matrix">@fig:backend_matrix</span>; the
 family-by-backend coverage itself is shown in <span class="citation"
 data-cites="fig:family_matrix">@fig:family_matrix</span>.</p>
 <figure id="fig:backend_matrix">
-<a class="figure-full-size-link" href="../figures/gnn_backend_capability_matrix.png" target="_blank" rel="noopener" aria-label="Open full-size figure, The GNN rendering backend registry: each registry key, its display name"><img src="../figures/gnn_backend_capability_matrix.png"
+<a class="figure-full-size-link" href="../figures/gnn_backend_capability_matrix.png" target="_blank" rel="noopener" aria-label="Open full-size figure, The GNN rendering backend registry as a table: one row per registered backend, with its…"><img src="../figures/gnn_backend_capability_matrix.png"
 style="width:85.0%"
 alt="Table of the registered rendering backends, one row each, with columns for registry key, display name, implementation language, whether a render-output subdirectory exists under src/gnn/render/, and the backend&#x27;s role in the cross-framework reference comparison. Highlighted rows are the backends the reliability gate profiles; a backend the family declares but the gate never profiles is marked separately." /><span class="figure-full-size-label" aria-hidden="true">Open full-size figure</span></a>
-<figcaption>The GNN rendering backend registry: each
-registry key, its display name, and the cross-framework comparison
-targets, read directly from the framework registry.</figcaption>
+<figcaption>The GNN rendering backend registry as a
+table: one row per registered backend, with its registry key, display
+name, implementation language, whether a render-output subdirectory
+exists under <code>src/gnn/render/</code>, and its role in the
+cross-framework reference comparison. Amber rows are the backends the
+reliability gate profiles for the continuous family; the tan row (Stan)
+is declared by that family but sits outside the maintained set, so it is
+never profiled; a red Render-Subdir cell would mean a registry entry
+with no subdirectory. The table is read directly from
+<code>src/gnn/render/framework_registry.py</code> and the model-family
+manifest at commit 0a12bb0b6, and its footer summarizes the row counts.
+Take-away: registration, render presence, and profiling status are three
+different claims, and the table keeps them apart.</figcaption>
 </figure>
 <p>By generating code rather than asking authors to port models by hand,
 the method keeps a single source of truth in the notation while still
@@ -710,10 +735,21 @@ backends as equivalent.</p>
 <p>Generated backend code is not left as a static artifact. The
 execution stage (step 12) runs the rendered models, driving the
 inference and behavior that the notation describes and producing
-concrete traces, beliefs, and outputs. This closes the loop from text to
-running cognitive model: the same specification that was type-checked
-and exported is now exercised numerically, so that claims about a
-model’s behavior rest on having actually run it rather than on
+concrete traces, beliefs, and outputs. All 9 registered backends —
+PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro,
+Stan, bnlearn — have an executor at this step. The bnlearn lane is
+generator-backed: it renders a runnable Python program from the same
+parsed model the other lanes consume, and it skips with a recorded
+status when the <code>bnlearn</code> package is absent, so a lean
+checkout degrades explicitly rather than failing; skipped and degraded
+backends are likewise recorded as explicit statuses in the
+cross-framework comparison rather than silently omitted. A separate
+execute-side bridge verifies rendered Lean documents against the
+fep_lean bridge contract, which is how the notation reaches a proof
+assistant without a render-registry entry. This closes the loop from
+text to running cognitive model: the same specification that was
+type-checked and exported is now exercised numerically, so that claims
+about a model’s behavior rest on having actually run it rather than on
 inspection of the source alone.</p>
 <h2 id="long-running-orchestration-contracts">Long-Running Orchestration
 Contracts</h2>
@@ -737,11 +773,22 @@ tools. <span class="citation"
 data-cites="fig:orchestration">@fig:orchestration</span> shows how the
 three contracts compose into one inspectable orchestration surface.</p>
 <figure id="fig:orchestration">
-<a class="figure-full-size-link" href="../figures/gnn_orchestration.png" target="_blank" rel="noopener" aria-label="Open full-size figure, The GNN 3.0.0 long-running orchestration contracts: durable observation streams, resumable…"><img src="../figures/gnn_orchestration.png" style="width:85.0%"
+<a class="figure-full-size-link" href="../figures/gnn_orchestration.png" target="_blank" rel="noopener" aria-label="Open full-size figure, The three safe-by-design orchestration contracts introduced in GNN 3.0.0, side by side…"><img src="../figures/gnn_orchestration.png" style="width:85.0%"
 alt="The three long-running orchestration contracts side by side — durable observation streams, resumable run sessions, and auditable container plans — each shown with the artifacts it generates and validates, and each stopping short of any live mutation." /><span class="figure-full-size-label" aria-hidden="true">Open full-size figure</span></a>
-<figcaption>The GNN 3.0.0 long-running orchestration
-contracts: durable observation streams, resumable run sessions, and
-auditable container plans.</figcaption>
+<figcaption>The three safe-by-design orchestration
+contracts introduced in GNN 3.0.0, side by side inside the dashed
+boundary that states their shared invariant: generate and validate data
+only, never mutate live infrastructure. Each column names the contract’s
+source module under <code>src/gnn/pipeline/</code> and chains its stages
+top to bottom — StreamManifest, ExecutionTrace, and replay for durable
+observation streams; checkpoint, resume, status, and safe cleanup for
+resumable run sessions; generate, static security review, and rollback
+for container plans. Arrows give the order the stages run in, and
+nothing exits the boundary. The panel is a fixed-layout drawing of the
+three contracts; the acceptance gates and the Model Context Protocol
+tools that exercise them are described in the text above. Take-away:
+long-running orchestration gains capability only as fast as it becomes
+inspectable.</figcaption>
 </figure>
 <h2 id="analysis-visualization-and-reporting">Analysis, Visualization,
 and Reporting</h2>
@@ -759,7 +806,7 @@ back to the step and model that produced it.</p>
 Auto-Injection</h2>
 <p>Every count reported in this manuscript is emitted by the producer
 <code>scripts/z_generate_manuscript_variables.py</code> from the
-repository state at commit bae612cea, not typed by hand. The producer
+repository state at commit 0a12bb0b6, not typed by hand. The producer
 reads that commit’s source surfaces directly — the step modules, the
 source tree, the model-family manifest, and the framework registry —
 together with the project’s maintained ledgers, notably the Model
