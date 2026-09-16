@@ -33,16 +33,19 @@ StageFn = Callable[..., dict[str, Any]]
 
 @dataclass(frozen=True)
 class StageServices:
-    """Injected callables for the three best-effort validation stages.
+    """Injected callables for the best-effort validation stages.
 
     ``validation.process_validation`` binds these from its own module globals
     at call time, so tests (or alternative pipelines) can supply patched or
-    replacement stage functions without touching this module.
+    replacement stage functions without touching this module. ``orientation``
+    defaults to ``None`` — set it to run the B-tensor orientation diagnostic
+    as a fourth stage.
     """
 
     semantic: StageFn
     performance: StageFn
     consistency: StageFn
+    orientation: StageFn | None = None
 
 
 @dataclass(frozen=True)
@@ -54,6 +57,7 @@ class _StageSpec:
     noun: str  # recovery-mode fallback noun, e.g. "semantic validation"
     score_key: str  # per-stage score key, e.g. "semantic_score"
     wants_validation_level: bool = False
+    wants_transpose_b: bool = False
 
 
 _STAGE_SPECS: tuple[_StageSpec, ...] = (
@@ -75,6 +79,13 @@ _STAGE_SPECS: tuple[_StageSpec, ...] = (
         label="Consistency checking",
         noun="consistency checking",
         score_key="consistency_score",
+    ),
+    _StageSpec(
+        key="orientation",
+        label="B-orientation check",
+        noun="B-orientation check",
+        score_key="orientation_score",
+        wants_transpose_b=True,
     ),
 )
 
@@ -208,13 +219,16 @@ def _run_stage(
     file_validation_result: dict[str, Any],
     summary_scores: dict[str, list[Any]],
     validation_level: str,
+    transpose_b: bool,
     log: logging.Logger,
 ) -> None:
     """Run one best-effort stage, recording receipts, errors, and scores."""
     file_name = str(file_validation_result["file_name"])
-    stage_kwargs: dict[str, Any] = (
-        {"validation_level": validation_level} if spec.wants_validation_level else {}
-    )
+    stage_kwargs: dict[str, Any] = {}
+    if spec.wants_validation_level:
+        stage_kwargs["validation_level"] = validation_level
+    if spec.wants_transpose_b:
+        stage_kwargs["transpose_b"] = transpose_b
     try:
         result = stage_fn(model_data, **stage_kwargs)
         file_validation_result["validations"][spec.key] = result
@@ -246,6 +260,7 @@ def _validate_file(
     services: StageServices,
     validation_level: str,
     summary_scores: dict[str, list[Any]],
+    transpose_b: bool,
     log: logging.Logger,
 ) -> dict[str, Any]:
     """Run every validation stage on one parsed-model manifest entry."""
@@ -289,13 +304,17 @@ def _validate_file(
         }
 
     for spec in _STAGE_SPECS:
+        stage_fn = getattr(services, spec.key, None)
+        if stage_fn is None:
+            continue
         _run_stage(
             spec,
-            getattr(services, spec.key),
+            stage_fn,
             model_data,
             file_validation_result,
             summary_scores,
             validation_level,
+            transpose_b,
             log,
         )
 
@@ -304,11 +323,11 @@ def _validate_file(
 
 def _record_average_scores(summary: dict[str, Any]) -> None:
     """Store per-stage average scores when at least one score was recorded."""
-    for score_type in ["semantic", "performance", "consistency"]:
-        scores = summary["validation_scores"][score_type]
+    for spec in _STAGE_SPECS:
+        scores = summary["validation_scores"][spec.key]
         if scores:
             avg_score = sum(scores) / len(scores)
-            summary["validation_scores"][f"avg_{score_type}_score"] = avg_score
+            summary["validation_scores"][f"avg_{spec.key}_score"] = avg_score
 
 
 def _write_receipts(output_dir: Path, validation_results: dict[str, Any]) -> None:
@@ -362,13 +381,15 @@ def validate_directory(
     validation_level: str = "standard",
     log: logging.Logger | None = None,
     run_id: str | None = None,
+    transpose_b: bool = False,
 ) -> bool:
     """Validate every parsed GNN file listed in the step-3 manifest.
 
     Args:
         target_dir: Source directory recorded on the receipt (informational).
         output_dir: Directory that receives the validation receipts.
-        services: Injected stage callables (semantic/performance/consistency).
+        services: Injected stage callables (semantic/performance/consistency,
+            plus the optional ``orientation`` B-tensor diagnostic stage).
         verbose: Enable DEBUG-level logging on the resolved logger.
         validation_level: Semantic validation depth forwarded to the semantic
             stage ("basic", "standard", "strict", "research").
@@ -376,6 +397,10 @@ def validate_directory(
         run_id: Optional stable run identity for repeated subdirectory passes.
             Defaults to the manifest run_id, then its timestamp. Manifests
             with neither are unbound records scoped to the output directory.
+        transpose_b: Opt-in canonical B-tensor transposition for the
+            orientation stage: textbook (row-stochastic) tensors are
+            transposed in memory and the per-tensor transposition is
+            recorded in the receipt. Source files are never modified.
 
     Returns:
         True only for a nonempty current pass with every file successful.
@@ -406,6 +431,7 @@ def validate_directory(
             if run_id is not None
             else gnn_results.get("run_id", gnn_results.get("timestamp")),
             "validation_level": validation_level,
+            "transpose_b": transpose_b,
         }
         validation_results = _load_or_init_results(
             output_dir, Path(target_dir), active_logger, context
@@ -423,6 +449,7 @@ def validate_directory(
                     services,
                     validation_level,
                     {spec.key: [] for spec in _STAGE_SPECS},
+                    transpose_b,
                     active_logger,
                 )
             else:

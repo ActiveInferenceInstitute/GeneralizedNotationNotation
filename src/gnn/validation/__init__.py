@@ -15,10 +15,12 @@ FEATURES: dict[str, Any] = {
     "performance_profiling": True,
     "consistency_checking": True,
     "multi_model_validation": True,
+    "b_orientation_checks": True,
     "mcp_integration": True,
 }
 
 from .consistency_checker import ConsistencyChecker, check_consistency
+from .orientation import check_b_orientation
 from .performance_profiler import PerformanceProfiler, profile_performance
 from .semantic_validator import (
     SemanticValidator,
@@ -51,6 +53,11 @@ def process_validation(
               "strict" when True (wired to the orchestrator's --strict flag).
             - ``run_id`` (str): Stable identity for intentional accumulation
               across multiple step-3 manifests in one run.
+            - ``transpose_b`` (bool): Opt-in canonical B-tensor transposition
+              for the orientation stage; textbook (row-stochastic) transition
+              tensors are transposed in memory and the per-tensor
+              transposition is recorded in the receipt (default warnings-only;
+              source files are never modified).
             - ``logger``, ``recursive``, and ``profile`` are accepted for the
               standardized pipeline-script contract and do not alter behavior.
 
@@ -67,10 +74,12 @@ def process_validation(
             semantic=process_semantic_validation,
             performance=profile_performance,
             consistency=check_consistency,
+            orientation=check_b_orientation,
         ),
         verbose=verbose,
         validation_level=validation_level,
         run_id=kwargs.get("run_id"),
+        transpose_b=bool(kwargs.get("transpose_b", False)),
     )
 
 
@@ -81,8 +90,7 @@ __all__: list[str] = [
     "SemanticValidator",
     "SimpleValidator",
     "PerformanceProfiler",
-    "ConsistencyChecker",
-    "process_semantic_validation",
+    "check_b_orientation",
     "validate_content",
     "profile_performance",
     "check_consistency",
