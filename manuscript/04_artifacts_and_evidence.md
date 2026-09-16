@@ -24,6 +24,8 @@ The cross-framework reliability gate, `scripts/run_cross_framework_reliability.p
 
 Both gates are stated here as commands you can run, not as asserted pass counts. The manuscript deliberately does not quote a fixed number of passing checks: the authoritative, current result is whatever those scripts report when executed against the corpus, and binding a frozen count into prose would invite exactly the drift the auto-injection contract exists to prevent.
 
+A third interchange check extends the same discipline across repositories: `scripts/run_geo_interchange_checks.py` validates the committed pin in `.github/gnn-pair.json` against a selected GEO-INFER checkout and replays exported GNN artifacts — the tracked gridworld, a rectangular Gaussian, and an explicit factored fixture — inside the GEO environment, writing its receipts even on failure. Like the gates above it is stated as a command, not as a pass count, and its pinned pair (`ActiveInferenceInstitute/GEO-INFER` at a recorded revision) is what makes "interchange" a checkable claim rather than a promise.
+
 ## Repository Scale
 
 The repository's scale is itself evidence of the surface that the gates and pipeline cover, and it is reported in @fig:repo_metrics directly from the tracked files at commit {{GNN_GIT_COMMIT}}.
