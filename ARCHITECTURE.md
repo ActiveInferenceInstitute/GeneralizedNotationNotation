@@ -2,7 +2,7 @@
 
 This guide details the architecture of the Generalized Notation Notation (GNN) system. It complements `DOCS.md` and `docs/pipeline/README.md` with an implementation-oriented perspective for developers.
 
-**Last Updated**: 2026-09-07
+**Last Updated**: 2026-09-17
 **Version**: 3.3.0
 **Status**: Maintained
 **Pipeline Steps**: 25 (0-24)
@@ -159,7 +159,7 @@ A strict acceptance gate, `scripts/run_v3_orchestration_acceptance.py`, exercise
 
 Version 3.2.0 makes every exemplar under `input/gnn_files/` render *and* execute on every framework that can represent it, and flag the rest explicitly:
 
-- **Model kinds**: `src/gnn/render/pomdp_contract.py` (`detect_model_kind`) splits specs into discrete POMDP/HMM (categorical `A/B/C/D[/E]`) and continuous linear-Gaussian (`F/H/Q/R`, `prior_mean/prior_cov`, optional `goal_mean/control_gain`). Continuous blocks pass through the render processor verbatim.
+- **Model kinds**: `src/gnn/render/pomdp_contract.py` (`detect_model_kind`) classifies every spec: a discrete kind (flat, factored, hierarchical, multi-agent, learning, or the structural no-parameterization wrapper) over the categorical `A/B/C/D[/E]` contract, or the continuous linear-Gaussian kind (`F/H/Q/R`, `prior_mean/prior_cov`, optional closed-loop `goal_mean/control_gain`). Continuous blocks pass through the render processor verbatim.
 - **Framework capabilities**: `src/gnn/render/framework_registry.py` is the single declaration of the nine frameworks and carries `supports_continuous` per entry. Frameworks without continuous support (PyMDP, ActiveInference.jl, DisCoPy, bnlearn) return the `unsupported` render status for continuous models; it is counted separately in `render_processing_summary.json` and never reaches Step 12.
 - **Shared LGSSM generator**: `src/gnn/render/continuous_script.py` produces the online Kalman filter (Joseph-form update, closed-loop control) used by the JAX, NumPyro, PyTorch and Stan renderers; RxInfer.jl keeps its native continuous strategy.
 - **Stan execution**: `src/gnn/render/stan/stan_renderer.py` emits runnable HMM and LGSSM programs plus a cmdstanpy driver, and `src/gnn/execute/stan/` runs them (skipped, not failed, without `cmdstanpy`/CmdStan).

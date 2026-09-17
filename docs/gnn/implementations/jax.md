@@ -10,6 +10,11 @@
 The Generalized Notation Notation (GNN) pipeline translates theoretical model specifications into heavily optimized, compiled Python code natively utilizing the `jax` ecosystem. As the primary high-performance numerical computing target, JAX serves to evaluate Active Inference mechanics across enormous vector spaces at computational speeds orders of magnitude faster than baseline python execution.
 
 This document details the exact mechanisms through which a GNN JSON specification is extracted, built into a JAX pseudo-Agent node, evaluated continuously within an independent generative POMDP environment, and serialized into high-fidelity telemetry artifacts.
+**Registry capability** (`src/gnn/render/framework_registry.py`): JAX covers both
+model kinds — discrete categorical POMDP specs (A/B/C/D[/E]) and continuous
+linear-Gaussian state-space models (`supports_continuous: True`, dispatched by
+`detect_model_kind`) — and is fully executable (`supports_execution: True`):
+Step 12 runs each generated script via `src/gnn/execute/jax/jax_runner.py`.
 
 ## Architecture
 

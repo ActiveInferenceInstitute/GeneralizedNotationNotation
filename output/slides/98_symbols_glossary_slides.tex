@@ -203,12 +203,14 @@
 
 \begin{frame}[allowframebreaks]{Symbols and Glossary}
 This glossary defines the Generalized Notation Notation (GNN) language
-constructs used to specify Active Inference generative models, together
-with the canonical Active Inference symbols those constructs carry.
-Definitions follow the GNN syntax specification and the discrete POMDP
-exemplars distributed with the repository, and they align with the
-standard discrete-state-space formulation of Active Inference (Smékal
-and Friedman 2023; Da Costa et al. 2020; Parr et al. 2022).
+constructs used to specify generative models, together with the Active
+Inference symbols those constructs carry across the model kinds of
+sec.~3.2. Definitions follow the GNN syntax
+specification and the exemplar specifications distributed with the
+repository --- the discrete POMDP exemplars and the continuous
+linear-Gaussian exemplars alike --- and they align with the standard
+formulations of both kinds (Smékal and Friedman 2023; Da Costa et al.
+2020; Parr et al. 2022).
 \end{frame}
 
 \begin{frame}[fragile,allowframebreaks]{Language Constructs}
@@ -226,18 +228,24 @@ they are catalogued in tbl.~\ref{tbl:gnn_constructs}.
   >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}@{}}
 \caption{The GNN language constructs a conforming parser must recognize,
-with the meaning each carries. The first six rows are the required
-sections that pin a model's identity, variables, and factor graph; the
-optional sections that follow carry parameterization, ontology bindings,
-timing, equations, and provenance. The three operator rows are the
-connection vocabulary the \protect\texttt{Connections} section is
-written in --- directed \protect\texttt{A\textgreater{}B}, undirected
+with the meaning each carries. The first rows are the required sections
+that pin a model's identity, variables, and factor graph; the optional
+sections that follow carry parameterization, ontology bindings, timing,
+equations, and provenance. The operator rows are the connection
+vocabulary the \protect\texttt{Connections} section is written in ---
+directed \protect\texttt{A\textgreater{}B}, undirected
 \protect\texttt{A-B}, and their labeled v1.1 forms --- and
 \protect\texttt{default=…} supplies initialization hints. Definitions
-follow the GNN syntax specification and the discrete POMDP exemplars
+follow the GNN syntax specification and the exemplar specifications
 under \protect\texttt{input/gnn\_files}, and the strict schema validator
 enforces section order and declaration grammar before any downstream
-step runs.}\label{tbl:gnn_constructs}\tabularnewline
+step runs. The construct vocabulary is deliberately kind-agnostic: the
+same \protect\texttt{StateSpaceBlock}, \protect\texttt{Connections}, and
+operator syntax declare a discrete categorical model, a continuous
+linear-Gaussian model, or a composed multi-agent or hierarchical one ---
+what differs between kinds is which matrix names the block declares, as
+tbl.~\ref{tbl:actinf_symbols}
+details.}\label{tbl:gnn_constructs}\tabularnewline
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Construct
@@ -261,7 +269,8 @@ block (no spaces, e.g.~\texttt{ActInfPOMDP}). \\
 \texttt{\#\#\ ModelName} & Required human-readable title of the
 generative model. \\
 \breaktt{\#\#\ StateSpaceBlock} & Required block declaring every variable
-and matrix as \texttt{NAME{[}dim,\ …,\ type=…{]}}, one per line. \\
+and matrix as \texttt{NAME{[}dim,\ …,\ type=…{]}}, one per line --- the
+block whose declared vocabulary fixes the model's kind. \\
 \texttt{\#\#\ Connections} & Required edge list relating state-space
 variables, expressing the model's factor graph. \\
 \breaktt{\#\#\ ModelAnnotation} & Optional free-text description of the
@@ -289,7 +298,8 @@ dimensions are positive integers or named references, and a
 required. \\
 \texttt{A\textgreater{}B} & Directed (causal) connection operator: edge
 from \texttt{A} to \texttt{B}, e.g.~\texttt{D\textgreater{}s} (a prior
-conditions a hidden state). \\
+conditions a hidden state) or \texttt{F\textgreater{}x} (a transition
+matrix drives a continuous state). \\
 \texttt{A-B} & Undirected (bidirectional) connection operator,
 e.g.~\texttt{s-A} (a hidden state participates in the likelihood
 mapping). \\
@@ -303,35 +313,48 @@ an initialization for a matrix or vector. \\
 \end{longtable}
 \end{frame}
 
-\begin{frame}[fragile,allowframebreaks]{Active Inference Symbols}
-\protect\phantomsection\label{active-inference-symbols}
-The exemplar discrete POMDP agent declares the standard generative-model
-components of Active Inference over a discrete state space, mapping each
-GNN variable to its probabilistic meaning (Da Costa et al. 2020; Smith
-et al. 2022; Parr et al. 2022). Each row of
-tbl.~\ref{tbl:actinf_symbols} names the equation in
-sec.~3 that fixes the symbol's role, so the
-glossary and the formal statement cannot drift apart.
+\begin{frame}[fragile,allowframebreaks]{Symbols by Model Kind}
+\protect\phantomsection\label{symbols-by-model-kind}
+The exemplar specifications declare the generative-model components of
+Active Inference, mapping each GNN variable to its probabilistic meaning
+(Da Costa et al. 2020; Smith et al. 2022; Parr et al. 2022). Because the
+notation spans model kinds, the same letter can name different objects
+in different kinds --- most prominently \texttt{F}, which is the
+variational free energy of eq.~6 in the discrete kind and the
+state-transition matrix of eq.~9 in the continuous
+kind --- so each row of tbl.~\ref{tbl:actinf_symbols} names the kind its
+reading belongs to and the equation in sec.~3
+that fixes it, and the glossary and the formal statement cannot drift
+apart.
 
 \end{frame}
 
-\begin{frame}[fragile,allowframebreaks]{Active Inference Symbols}
+\begin{frame}[fragile,allowframebreaks]{Symbols by Model Kind}
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}
   >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.5000}}@{}}
-\caption{The Active Inference symbols a GNN specification carries, each
-bound to the equation of sec.~3 that fixes its
-role. Read \protect\texttt{A}--\protect\texttt{E} as the
-generative-model tensors (likelihood, controlled transitions,
-log-preferences, prior over initial states, habit prior),
-\protect\texttt{s}, \protect\texttt{o}, \protect\texttt{\texorpdfstring{\ensuremath{\pi}}{pi}}, and
-\protect\texttt{u} as the inference variables, and \protect\texttt{F}
-and \protect\texttt{G} as the two free-energy functionals minimized at
-eq.~6 and eq.~7. Use the table as a decoding key
-when reading a \protect\texttt{StateSpaceBlock}: every declared matrix
-name should map to exactly one row here, and the
-\protect\breaktt{\#\#\ ActInfOntologyAnnotation} bindings described below
-are what make that mapping machine-checkable
+\caption{The Active Inference symbols a GNN specification carries,
+scoped by model kind and bound to the equation of
+sec.~3 that fixes each role. Read the
+discrete-kind rows as the categorical generative-model tensors
+(likelihood, controlled transitions, log-preferences, prior over initial
+states, habit prior) with \protect\texttt{s}, \protect\texttt{o},
+\protect\texttt{\texorpdfstring{\ensuremath{\pi}}{pi}}, and \protect\texttt{u} as the inference variables
+and \protect\texttt{F} and \protect\texttt{G} as the two free-energy
+functionals minimized at eq.~6 and eq.~7; read the
+continuous-kind rows as the linear-Gaussian parameterization --- system
+matrices, covariances, Gaussian prior, and the optional closed-loop
+declarations of eq.~11. The rows where one letter
+carries two kind-scoped readings (\protect\texttt{F},
+\protect\texttt{u}, \protect\texttt{t}) are deliberate: the notation
+reuses a compact alphabet across kinds, and the declared matrix
+vocabulary of the \protect\texttt{StateSpaceBlock} --- not the letter
+alone --- is what fixes the reading, which is exactly what the kind
+classification of sec.~3.2 computes. Use the table as
+a decoding key when reading a \protect\texttt{StateSpaceBlock}: every
+declared matrix name should map to exactly one kind-scoped row here, and
+the \protect\breaktt{\#\#\ ActInfOntologyAnnotation} bindings described
+below are what make that mapping machine-checkable
 downstream.}\label{tbl:actinf_symbols}\tabularnewline
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
@@ -349,35 +372,59 @@ Meaning
 \end{minipage} \\
 \midrule\noalign{}
 \endhead
-\texttt{A} & Likelihood (observation) matrix encoding \(P(o \mid s)\),
-mapping hidden states to observation outcomes
-(eq.~2). \\
-\texttt{B} & Transition matrix encoding \(P(s' \mid s, u)\), mapping a
-previous state and action to the next state
-(eq.~3). \\
-\texttt{C} & Preference vector: log-preferences over observation
-outcomes that bias the agent toward preferred outcomes
+\texttt{A} & Discrete kind: likelihood (observation) matrix encoding
+\(P(o \mid s)\), a column-stochastic map from hidden states to
+observation outcomes (eq.~2). \\
+\texttt{B} & Discrete kind: transition tensor encoding
+\(P(s' \mid s, u)\), one column-stochastic slice per action in the
+canonical \texttt{B{[}next\_state{]}{[}previous\_state{]}{[}action{]}}
+order (eq.~3). \\
+\texttt{C} & Discrete kind: preference vector --- log-preferences over
+observation outcomes that bias the agent toward preferred outcomes
 (eq.~4). \\
-\texttt{D} & Prior vector over initial hidden states
+\texttt{D} & Discrete kind: prior vector over initial hidden states
 (eq.~5). \\
-\texttt{E} & Habit vector: an initial policy prior (baseline preference)
+\texttt{E} & Discrete kind: habit vector --- an initial policy prior
 over actions, entering the policy posterior (eq.~8). \\
-\texttt{s} & Current hidden-state distribution; \texttt{s\_prime}
-(\texttt{s\textquotesingle{}}) is the next hidden-state distribution. \\
-\texttt{o} & Current observation, an integer index over outcome
-modalities. \\
-\texttt{\texorpdfstring{\ensuremath{\pi}}{pi}} & Policy: a distribution over actions inferred from expected
-free energy (eq.~8). \\
-\texttt{u} & The selected (sampled) action, sampled from the policy
-posterior. \\
-\texttt{F} & Variational free energy, minimized during state inference
-to update beliefs from observations (eq.~6) (Friston
-2010). \\
-\texttt{G} & Expected free energy per policy, minimized during policy
-inference to score candidate actions (eq.~7) (Da Costa et al.
-2020). \\
+\texttt{s} & Discrete kind: current hidden-state distribution;
+\texttt{s\_prime} (\texttt{s\textquotesingle{}}) is the next
+hidden-state distribution. \\
+\texttt{o} & Discrete kind: current observation, an integer index over
+outcome modalities. \\
+\texttt{\texorpdfstring{\ensuremath{\pi}}{pi}} & Discrete kind: policy --- a distribution over actions
+inferred from expected free energy (eq.~8). \\
+\texttt{u} & Discrete kind: the selected (sampled) action, sampled from
+the policy posterior. Continuous kind: the control input added to the
+state each step (eq.~9). \\
+\texttt{F} & Discrete kind: variational free energy, minimized during
+state inference (eq.~6) (Friston 2010). Continuous kind: the
+state-transition matrix of the linear-Gaussian model
+(eq.~9). \\
+\texttt{G} & Discrete kind: expected free energy per policy, minimized
+during policy inference to score candidate actions (eq.~7)
+(Da Costa et al. 2020). \\
 \texttt{t} & Discrete time step; the horizon \(T\) bounds the product in
-eq.~1. \\
+eq.~1. Continuous kind: the time index of the
+state-space model. \\
+\texttt{H} & Continuous kind: observation matrix mapping the latent
+state to the observation (eq.~10). \\
+\texttt{Q} & Continuous kind: process-noise covariance of the state
+evolution (eq.~9). \\
+\texttt{R} & Continuous kind: observation-noise covariance of the
+readout (eq.~10). \\
+\texttt{x} & Continuous kind: the Gaussian latent state \(x_t\);
+\texttt{x{[}2,1,type=float{]}} in the navigation exemplar declares a
+two-dimensional position. \\
+\texttt{y} & Continuous kind: the continuous observation read out
+linearly from the state (eq.~10). \\
+\texttt{prior\_mean} & Continuous kind: prior mean \(\mu_0\) over the
+initial latent state (eq.~9). \\
+\texttt{prior\_cov} & Continuous kind: prior covariance \(\Sigma_0\)
+over the initial latent state (eq.~9). \\
+\texttt{goal\_mean} & Continuous kind: preferred state \(\mu^\star\) the
+closed-loop controller steers toward (eq.~11). \\
+\texttt{control\_gain} & Continuous kind: scalar proportional gain \(k\)
+on the belief error in the closed loop (eq.~11). \\
 \bottomrule\noalign{}
 \end{longtable}
 \end{frame}
@@ -386,23 +433,36 @@ eq.~1. \\
 Implementations}
 \protect\phantomsection\label{ontology-bindings-and-implementations}
 The \breaktt{\#\#\ ActInfOntologyAnnotation} section binds each variable
-to a canonical term (\breaktt{A=LikelihoodMatrix},
+to a canonical term --- \breaktt{A=LikelihoodMatrix},
 \breaktt{B=TransitionMatrix}, \breaktt{C=LogPreferenceVector},
 \breaktt{D=PriorOverHiddenStates}, \texttt{s=HiddenState},
-\texttt{o=Observation}, \texttt{\texorpdfstring{\ensuremath{\pi}}{pi}=PolicyVector}), which downstream
-pipeline steps use for semantic analysis and validation. The same GNN
-specification feeds the project's rendering backends --- including the 9
-registered targets (PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy,
-PyTorch, NumPyro, Stan, bnlearn), of which the 9 listed as executable
-(PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro,
-Stan, bnlearn) also run at Step 12 --- so that a model written once in
-this notation can be parsed, visualized, and executed across the 25-step
+\texttt{o=Observation}, \texttt{\texorpdfstring{\ensuremath{\pi}}{pi}=PolicyVector} in the discrete
+exemplars; \breaktt{F=StateTransitionMatrix},
+\breaktt{H=ObservationMatrix}, \breaktt{Q=ProcessNoiseCovariance},
+\breaktt{R=ObservationNoiseCovariance}, \breaktt{prior\_mean=PriorMean},
+\breaktt{prior\_cov=PriorCovariance}, \breaktt{goal\_mean=PreferredState},
+\breaktt{control\_gain=ControlGain}, \breaktt{x=ContinuousHiddenState},
+\breaktt{y=ContinuousObservation}, \texttt{u=ControlInput} in the
+continuous exemplars --- which downstream pipeline steps use for
+semantic analysis and validation. The bindings are per-kind by
 \end{frame}
 
 \begin{frame}[fragile,allowframebreaks]{Ontology Bindings and
 Implementations}
-pipeline (0--24) without restating its mathematics (Smékal and Friedman
-2023; Heins et al. 2022; Felice et al. 2021).
+construction: a continuous exemplar binds \texttt{F} to
+\breaktt{StateTransitionMatrix}, never to a free-energy term, so the
+ontology layer carries the same kind-scoped reading
+tbl.~\ref{tbl:actinf_symbols} fixes by hand. The same GNN specification
+feeds the project's rendering backends --- including the 9 registered
+targets (PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch,
+NumPyro, Stan, bnlearn), of which the 9 listed as executable (PyMDP,
+RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan,
+bnlearn) also run at Step 12 --- with per-kind reach recorded as
+explicit statuses (tbl.~4) --- so that a
+model written once in this notation can be parsed, visualized, and
+executed across the 25-step pipeline (0--24) without restating its
+mathematics (Smékal and Friedman 2023; Heins et al. 2022; Felice et al.
+2021).
 \end{frame}
 
 \end{document}

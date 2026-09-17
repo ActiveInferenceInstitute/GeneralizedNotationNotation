@@ -9,9 +9,17 @@ Design contract
 ---------------
 * **Nothing is hard-coded.** Every quantitative token is computed from a source
   surface in the repository (``pyproject.toml``, ``input/model_family_manifest.json``,
-  ``src/gnn/render/framework_registry.py``, ``src/mcp/audit_report.json``, ``src/gnn/STEP_INDEX.md``,
-  ``CHANGELOG.md``, and direct filesystem counts). If a source surface changes,
-  re-running this producer changes the manuscript.
+  ``src/gnn/render/framework_registry.py``, ``src/gnn/mcp/audit_report.json``,
+  ``src/gnn/STEP_INDEX.md``, ``CHANGELOG.md``, direct filesystem counts, and the
+  exemplar corpus under ``input/gnn_files/``). If a source surface changes,
+  re-running this producer changes the manuscript. The model-kind token set
+  treats those exemplars as either continuous linear-Gaussian specs (the
+  ``continuous/`` folder, which the corpus reserves for that kind — its specs
+  declare the ``F``/``H``/``Q``/``R`` parameterization) or discrete categorical
+  specs (every other exemplar folder), matching the binary
+  discrete-vs-continuous handling the render path applies to each model.
+  ``GNN_FRAMEWORK_TABLE``/``GNN_MODEL_KIND_TABLE`` render from the framework
+  registry's own capability flags.
 * **Counts describe one commit.** Every source surface is read from the git
   commit named by ``GNN_GIT_COMMIT`` (``HEAD``), not from the working tree: the
   file set comes from ``git ls-tree`` and the bytes come from ``git cat-file``
@@ -795,6 +803,123 @@ def _render_backend_table(backends: list[tuple[str, str, bool]]) -> str:
     return "\n".join(rows)
 
 
+def _render_framework_capability_table(specs: dict[str, dict]) -> str:
+    """Render the per-framework model-kind capability table.
+
+    Every cell is a registry flag, never prose: *Discrete render* is
+    ``pomdp_compatible``, *Continuous render* is ``supports_continuous``,
+    and *Executor status* is ``supports_execution`` (whether a Step-12
+    executor exists). An ``unsupported`` continuous cell is the renderer's
+    own status for continuous-state models — reported as unsupported, not
+    failed.
+    """
+    rows = [
+        "| Framework | Discrete render | Continuous render | Executor status |",
+        "|---|---|---|---|",
+    ]
+    for key, spec in specs.items():
+        name = str(spec.get("name", key))
+        discrete = "yes" if spec.get("pomdp_compatible") else "no"
+        continuous = "yes" if spec.get("supports_continuous") else "unsupported"
+        executor = "executor" if spec.get("supports_execution") else "render-only"
+        rows.append(f"| {name} | {discrete} | {continuous} | {executor} |")
+    rows.append(
+        _caption(
+            "Model kinds each render framework supports, read entirely from "
+            "the flags in `src/gnn/render/framework_registry.py` — the same "
+            "source as [@tbl:backend_registry]. A continuous cell of "
+            "`unsupported` is the renderer's own status for continuous-state "
+            "models; a render-only entry has no Step-12 executor. Read with "
+            "[@tbl:model_kinds], which groups the same flags by model kind.",
+            "framework_capability",
+        )
+    )
+    return "\n".join(rows)
+
+
+def _render_model_kind_table(specs: dict[str, dict]) -> str:
+    """Render the model-kind table the generalized manuscript is built around.
+
+    One row per model kind the pipeline represents and executes. The
+    Renderer(s)/Executor(s) cells are generated from the registry's
+    ``pomdp_compatible``/``supports_continuous``/``supports_execution``
+    flags. Multi-agent specs are discrete-state models whose per-agent
+    matrix keys canonicalize through the same discrete A/B/C/D render path
+    (``structured_pomdp['matrices']`` in ``pomdp_contract.py``), so that row
+    inherits the discrete row's registry-grounded coverage; the recursive
+    row is an execution mode with no notation or render target of its own.
+    """
+    rows = [
+        "| Model kind | Notation block | Exemplar folder | Renderer(s) | Executor(s) |",
+        "|---|---|---|---|---|",
+    ]
+    discrete_renderers: list[str] = []
+    discrete_executors: list[str] = []
+    continuous_renderers: list[str] = []
+    continuous_executors: list[str] = []
+    for key, spec in specs.items():
+        name = str(spec.get("name", key))
+        if spec.get("pomdp_compatible"):
+            discrete_renderers.append(name)
+            if spec.get("supports_execution"):
+                discrete_executors.append(name)
+        if spec.get("supports_continuous"):
+            continuous_renderers.append(name)
+            if spec.get("supports_execution"):
+                continuous_executors.append(name)
+
+    def _coverage_cell(names: list[str], universe: int) -> str:
+        if not names:
+            return "—"
+        if len(names) == universe:
+            return f"all {universe} registry frameworks"
+        return ", ".join(names)
+
+    n_frameworks = len(specs)
+    rows.extend(
+        [
+            (
+                f"| Discrete categorical | `A`/`B`/`C`/`D`[/`E`] "
+                f"(column-stochastic `B` slices) | "
+                f"`input/gnn_files/discrete/` "
+                f"| {_coverage_cell(discrete_renderers, n_frameworks)} "
+                f"| {_coverage_cell(discrete_executors, n_frameworks)} |"
+            ),
+            (
+                f"| Continuous linear-Gaussian | `F`/`H`/`Q`/`R` + "
+                f"priors (optional closed-loop pair) "
+                f"| `input/gnn_files/continuous/` "
+                f"| {_coverage_cell(continuous_renderers, n_frameworks)} "
+                f"| {_coverage_cell(continuous_executors, n_frameworks)} |"
+            ),
+            (
+                f"| Multi-agent | `nr_agents` + per-agent matrix keys "
+                f"(`A_agent1`, …) | `input/gnn_files/multiagent/` "
+                f"| {_coverage_cell(discrete_renderers, n_frameworks)} "
+                f"| {_coverage_cell(discrete_executors, n_frameworks)} |"
+            ),
+            ("| Recursive | — | `input/gnn_files/recursive/` | — | — |"),
+        ]
+    )
+    rows.append(
+        _caption(
+            "The model kinds the pipeline represents and executes, one row "
+            "per kind. Notation blocks are the parameterization each kind "
+            "declares; exemplar folders are the committed corpus under "
+            "`input/gnn_files/`. Renderer(s)/Executor(s) cells are generated "
+            "from the registry flags (see [@tbl:framework_capability]): the "
+            "two parameterization rows carry their own flag sets, and "
+            "multi-agent inherits the discrete row's coverage because its "
+            "per-agent matrix keys canonicalize through the same discrete "
+            "A/B/C/D render path; `recursive/` is "
+            "reserved for bounded `--autonomous` proposal-loop runs and "
+            "holds no committed models.",
+            "model_kinds",
+        )
+    )
+    return "\n".join(rows)
+
+
 def select_cross_framework_family(families: list[dict]) -> dict | None:
     """Return the manifest family used as the cross-framework reference.
 
@@ -909,6 +1034,8 @@ def generate_variables(project_root: Path) -> dict[str, str]:
     step_table = _render_step_table(steps, purposes)
     family_table = _render_family_table(families, specs)
     backend_table = _render_backend_table(backends)
+    framework_table = _render_framework_capability_table(specs)
+    model_kind_table = _render_model_kind_table(specs)
     (
         cross_family_name,
         cross_declared_keys,
@@ -943,6 +1070,13 @@ def generate_variables(project_root: Path) -> dict[str, str]:
     )
 
     example_models = _example_models(snapshot)
+    # Continuous exemplars are the model sources under the corpus's
+    # continuous/ folder — the folder input/gnn_files/INDEX.md reserves for
+    # the linear-Gaussian kind and the split the render path applies
+    # (continuous-state iff under continuous/). Discrete is the rest of the
+    # corpus, so the two exemplar counts partition GNN_EXAMPLE_COUNT.
+    continuous_exemplars = _models_under(snapshot, "input/gnn_files/continuous")
+    discrete_exemplars = len(example_models) - len(continuous_exemplars)
     corpus_dirs = sorted(
         {
             rel.parts[2]
@@ -998,6 +1132,10 @@ def generate_variables(project_root: Path) -> dict[str, str]:
         "GNN_ORCHESTRATION_VERSION": orchestration_version,
         # Pipeline structure
         "GNN_STEP_COUNT": str(len(steps)),
+        # The pipeline step modules (the src/gnn/N_*.py orchestrators
+        # GNN_STEP_TABLE enumerates) — the modules of the 25-step pipeline;
+        # NOT the importable subpackages, which GNN_SRC_PACKAGE_COUNT owns.
+        "GNN_MODULE_COUNT": str(len(steps)),
         "GNN_STEP_FIRST": str(steps[0][0]) if steps else "0",
         "GNN_STEP_LAST": str(steps[-1][0]) if steps else "0",
         "GNN_STEP_RANGE": f"{steps[0][0]}–{steps[-1][0]}" if steps else "0",
@@ -1009,17 +1147,30 @@ def generate_variables(project_root: Path) -> dict[str, str]:
         "GNN_DOC_FILE_COUNT": str(doc_file_count),
         # MCP
         "GNN_MCP_TOOL_COUNT": str(mcp["tools"]),
+        # Cross-repo manifest alias for the MCP audit ledger's tool count
+        # (same source as GNN_MCP_TOOL_COUNT, which stays canonical here).
+        "GNN_TOOL_COUNT": str(mcp["tools"]),
         "GNN_MCP_MODULE_COUNT": str(mcp["modules_total"]),
         "GNN_MCP_MODULE_LOADED": str(mcp["modules_loaded"]),
         "GNN_MCP_FILE_COUNT": str(mcp["files"]),
         # Tests
         "GNN_TEST_FILE_COUNT": str(test_file_count),
         "GNN_TEST_FUNCTION_COUNT": str(test_func_count),
+        # Cross-repo manifest alias for the static test-function census
+        # (same source as GNN_TEST_FUNCTION_COUNT). Pytest collection is
+        # deliberately not used: it is slow and imports the world.
+        "GNN_TEST_COUNT": str(test_func_count),
         # Model families / corpora
         "GNN_FAMILY_COUNT": str(len(families)),
         "GNN_FAMILY_LIST": ", ".join(family_names),
         "GNN_FAMILY_TABLE": family_table,
         "GNN_EXAMPLE_COUNT": str(len(example_models)),
+        # Model-kind exemplar counts: the corpus partitioned the way the
+        # render path classifies it — continuous linear-Gaussian specs under
+        # input/gnn_files/continuous/, every other exemplar discrete-state.
+        # The two always sum to GNN_EXAMPLE_COUNT.
+        "GNN_CONTINUOUS_EXEMPLAR_COUNT": str(len(continuous_exemplars)),
+        "GNN_DISCRETE_EXEMPLAR_COUNT": str(discrete_exemplars),
         # Directory census under input/gnn_files/ — NOT the same set as the
         # manifest families (some corpus dirs declare no family; some families
         # point outside input/gnn_files/). GNN_FAMILY_TARGET_DIR_COUNT is the
@@ -1046,6 +1197,12 @@ def generate_variables(project_root: Path) -> dict[str, str]:
         "GNN_BACKEND_COUNT": str(len(backends)),
         "GNN_BACKEND_LIST": ", ".join(backend_names),
         "GNN_BACKEND_TABLE": backend_table,
+        # Registry-flag capability matrix (discrete/continuous render and
+        # Step-12 executor status per framework) and the model-kind table the
+        # generalized manuscript is built around — both derived in
+        # _render_framework_capability_table/_render_model_kind_table.
+        "GNN_FRAMEWORK_TABLE": framework_table,
+        "GNN_MODEL_KIND_TABLE": model_kind_table,
         "GNN_EXECUTABLE_BACKEND_COUNT": str(len(executable_backends)),
         "GNN_EXECUTABLE_BACKEND_LIST": ", ".join(executable_backends),
         # MAINTAINED_FRAMEWORKS in src/gnn/pipeline/cross_framework_reliability.py —

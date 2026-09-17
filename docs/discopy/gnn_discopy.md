@@ -320,3 +320,19 @@ The renderer consumes parsed GNN model dictionaries and currently focuses on
 categorical diagram generation. It does not expose a `--discopy-gnn-input-dir`,
 `--include-d2`, or `12_discopy` pipeline step. For shared framework selection and
 output behavior, see the [framework integration guide](../gnn/integration/framework_integration_guide.md).
+
+**Model-kind coverage.** The DisCoPy render target is **discrete-only**: the
+translator draws categorical POMDP string diagrams — A/B/C/D/E boxes over
+discrete state counts — and has no linear-Gaussian diagram semantics, so
+continuous models are reported unsupported rather than drawn as a discrete
+stand-in (`supports_continuous: False` in
+`src/gnn/render/framework_registry.py`). The theoretical functorial and
+monoidal-stream semantics described earlier in this document are conceptual
+capabilities of DisCoPy itself, not capabilities the GNN pipeline currently
+exposes.
+
+**Execution status.** DisCoPy is executable (`supports_execution: True` in
+`src/gnn/render/framework_registry.py`): `src/gnn/execute/discopy/discopy_executor.py`
+runs Step 12 for this framework, validating and executing the rendered DisCoPy
+Python scripts (via `execute_discopy_script()`) together with the
+diagram-translation helpers in `gnn.execute.discopy_translator_module`.

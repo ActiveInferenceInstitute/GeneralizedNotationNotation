@@ -8,7 +8,9 @@
 
 This directory contains comprehensive documentation, resources, and implementation guides for integrating **SymPy** (Symbolic Mathematics Library) with GNN (Generalized Notation Notation). SymPy provides symbolic computation capabilities through the Model Context Protocol (MCP), enhancing mathematical processing for Active Inference model specification, validation, and analysis.
 
-**Status**: ✅ Production Ready  
+> **Scope note**: SymPy is integrated as an MCP tool surface (`src/gnn/mcp/sympy_mcp.py`, `sympy_mcp_client.py`), not as a render or execution framework. It is not an entry in `src/gnn/render/framework_registry.py`, has no Step 12 executor, and does no continuous linear-Gaussian rendering.
+
+**Status**: MCP tool integration implemented in `src/gnn/mcp/` (8 SymPy tools registered via Step 21); SymPy itself is not a render/execution framework  
 **Version**: 1.0
 
 ## Purpose
@@ -43,25 +45,30 @@ This module is organized as follows:
 
 ## Integration with Pipeline
 
-This documentation is integrated with the 25-step GNN processing pipeline:
+This documentation references the 25-step GNN processing pipeline as follows:
 
-### Core Processing (Steps 0-9)
+The implemented integration point is **Step 21 (MCP)**: SymPy MCP tool registration.
+Other touchpoints listed below are **proposals**, not implemented behavior:
+
+### Implemented
+
+- **Step 21 (MCP)**: SymPy MCP tool registration (`src/gnn/mcp/sympy_mcp.py`)
+
+### Proposed (not implemented)
+
 - **Step 3 (GNN)**: SymPy validation of equation sections
-- **Step 5 (Type Checker)**: Mathematical expression validation
-- **Step 6 (Validation)**: Expression simplification and canonicalization
+- **Step 5 (Type Checker)**: mathematical expression validation via SymPy
+- **Step 11 (Render)** / **Step 12 (Execute)**: no SymPy render target or executor exists
 
-### Simulation (Steps 10-16)
-- **Step 11 (Render)**: Symbolic computation for code generation
-- **Step 13 (LLM)**: SymPy MCP integration for LLM analysis
-- **Step 16 (Analysis)**: Mathematical validation and analysis
-
-### Integration (Steps 17-24)
-- **Step 21 (MCP)**: SymPy MCP tool registration
-- **Step 23 (Report)**: Mathematical documentation generation
 
 See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documentation.
 
-## Function Signatures and API
+## Function Signatures and API (proposed — not implemented)
+
+The signatures below are illustrative sketches of a pipeline-level validation API;
+the implemented surface is the eight `sympy_*` MCP tools in
+`src/gnn/mcp/sympy_mcp.py` (e.g. `sympy_validate_equation`,
+`sympy_validate_matrix`, `sympy_simplify_expression`, `sympy_get_latex`).
 
 ### Symbolic Computation Functions
 
@@ -125,6 +132,6 @@ All documentation in this module adheres to professional standards:
 
 ---
 
-**Status**: ✅ Production Ready  
+**Status**: MCP tool integration implemented in `src/gnn/mcp/` (8 SymPy tools registered via Step 21); SymPy itself is not a render/execution framework  
 **Compliance**: Professional documentation standards  
 **Maintenance**: Regular updates with new SymPy features and integration capabilities

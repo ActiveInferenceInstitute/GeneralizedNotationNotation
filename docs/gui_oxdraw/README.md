@@ -8,6 +8,8 @@
 
 This directory contains documentation, resources, and implementation guides for integrating **Oxdraw** with GNN (Generalized Notation Notation). Oxdraw serves as a visual interface for the GNN pipeline, enabling drag-and-drop creation of Active Inference graphical models with bidirectional text-visual synchronization.
 
+**Role**: oxdraw is a **GUI editor capability**, not a render or execution framework. It is not an entry in `src/gnn/render/framework_registry.py`, generates no simulation code, and has no Step 12 executor. In the live tree it lives at `src/gnn/gui/oxdraw/` as one of the GUI types (`gui_1`, `gui_2`, `gui_3`, `oxdraw`) exposed by the GUI stage (Step 22, `src/gnn/gui/`); it edits and validates GNN models, leaving rendering and execution to the downstream pipeline steps.
+
 **Status**: ✅ Production Ready  
 **Version**: 1.0
 
@@ -71,7 +73,7 @@ Oxdraw provides:
 - **Drag-and-Drop Interface**: Intuitive node-and-edge manipulation
 - **Bidirectional Synchronization**: Automatic translation between Mermaid diagrams and GNN plaintext
 - **Ontology Preservation**: Active Inference ontology assertions through comment-based metadata
-- **Full Pipeline Integration**: Integration with GNN validation, type-checking, and simulation rendering
+- **Full Pipeline Integration**: Saved GNN files feed the standard pipeline stages (validation, type-checking, and the downstream render/execute steps)
 
 ### Key Features
 - **Mermaid Integration**: Hybrid Mermaid-based architecture
@@ -83,17 +85,9 @@ Oxdraw provides:
 
 This documentation is integrated with the 25-step GNN processing pipeline:
 
-1. **Core Processing** (Steps 0-9): GNN parsing, validation, export
-   - Oxdraw visual edits translated to GNN files
-   - GNN files parsed and displayed visually
+1. **Model Construction** (before/alongside Steps 0-9): oxdraw visual edits are translated to GNN files, which then enter the standard pipeline at parsing (Step 3) like any other GNN specification
 
-2. **Simulation** (Steps 10-16): Model execution and analysis
-   - Visual model execution
-   - Results visualization
-
-3. **Integration** (Steps 17-24): System coordination and output
-   - Oxdraw results integrated into comprehensive outputs
-   - Visual documentation generation
+2. **GUI** (Step 22): oxdraw is available as the `oxdraw` GUI type from `src/gnn/gui/oxdraw/`; it constructs and edits models but does not execute them — rendering and simulation are handled by the dedicated downstream steps
 
 See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documentation.
 

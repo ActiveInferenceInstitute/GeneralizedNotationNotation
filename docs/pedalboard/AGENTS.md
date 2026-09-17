@@ -47,17 +47,10 @@ This module is organized as follows:
 
 This documentation is integrated with the 25-step GNN processing pipeline:
 
-### Core Processing (Steps 0-9)
-- **Step 3 (GNN)**: Pedalboard audio generation from parsed GNN models
-- **Step 7 (Export)**: Audio parameter mapping in export formats
-
 ### Simulation (Steps 10-16)
-- **Step 15 (Audio)**: Real-time sonification using Pedalboard
-- **Step 16 (Analysis)**: Audio-based model analysis
+- **Step 15 (Audio)**: Pedalboard is an optional audio backend in the sonification step (`src/gnn/audio/` probes it; `src/gnn/15_audio.py` accepts `--audio-backend pedalboard`; `src/gnn/STEP_INDEX.md` lists it as a Step 15 dependency alongside soundfile) — this is the only pipeline step that consumes Pedalboard, and it also runs audio analysis via `--full-analysis`
 
-### Integration (Steps 17-24)
-- **Step 20 (Website)**: Audio visualization integration
-- **Step 23 (Report)**: Audio analysis results in reports
+No other pipeline step (Steps 0-9, 16, 20, 23) consumes Pedalboard or audio output: Steps 3/7 are parsing/export only, and the analysis/website/report steps have no audio references.
 
 See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documentation.
 

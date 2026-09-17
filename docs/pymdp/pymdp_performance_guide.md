@@ -4,6 +4,10 @@
 > context of this repository's render/execute pipeline. The numbers are
 > representative, not binding — they reflect what you should expect on a
 > reasonably modern CPU. GPU figures depend on your CUDA/Metal stack.
+> Coverage: discrete categorical `A`/`B`/`C`/`D[/E]` models only — the
+> renderer does not support continuous linear-Gaussian models
+> (`supports_continuous=False`). Rendered scripts are executable at Step 12
+> via `src/gnn/execute/pymdp/`.
 
 ## Table of Contents
 

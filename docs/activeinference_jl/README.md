@@ -11,6 +11,19 @@ This directory contains documentation, resources, and implementation guides for 
 **Status**: ✅ Production Ready  
 **Version**: 1.0
 
+**Model kind coverage**: The ActiveInference.jl renderer supports **discrete
+categorical models only** — `A`/`B`/`C`/`D` (plus the optional `E` habit
+prior), with multi-modality and multi-factor POMDPs supported. Continuous
+linear-Gaussian models (`F`/`H`/`Q`/`R` system matrices or
+`prior_mean`/`prior_cov` parameterizations — the `CONTINUOUS` class from
+`detect_model_kind`) are **not supported** by this renderer
+(`supports_continuous=False` in `src/gnn/render/framework_registry.py`).
+
+**Execution status**: Rendered scripts are **executable**: Step 12 (execute)
+runs them via the `src/gnn/execute/activeinference_jl/` package
+(`activeinference_runner.py` + `activeinference_runner.jl`). ActiveInference.jl
+is not render-only.
+
 ## Quick Navigation
 
 ### This Directory
@@ -75,8 +88,8 @@ ActiveInference.jl leverages Julia's capabilities to provide:
 
 ### Key Features
 - **Complete Active Inference**: Full Active Inference agent implementation
-- **Hierarchical Temporal Models**: Support for multi-level temporal dynamics
-- **Comprehensive Belief Updating**: Variational message passing and belief propagation
+- **Multi-Factor Discrete Models**: Support for multi-factor (multi-level
+  state space) and multi-modality discrete categorical dynamics
 - **Julia Ecosystem Integration**: Seamless integration with Julia scientific computing stack
 
 ## Integration with Pipeline

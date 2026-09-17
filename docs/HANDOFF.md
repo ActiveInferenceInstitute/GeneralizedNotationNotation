@@ -217,7 +217,7 @@ uv sync --extra dev --frozen
 |-----------|---------|---------|---------|
 | uv | 0.12.0 | Package manager | System-wide |
 | Julia | 1.12.6 | Julia backends | Juliaup |
-| RxInfer.jl | 5.5.0 | Julia inference | Pkg.add() |
+| RxInfer.jl | 5.5.0 | Julia inference | Pkg.add() (superseded: use the committed env under `src/gnn/execute/rxinfer/` since v3.2.0) |
 | D2 CLI | 0.7.1 | Diagram generation | curl install |
 | Ollama | 0.32.0 | LLM inference | System |
 | smollm2:135m | 135M | LLM model | ollama pull |

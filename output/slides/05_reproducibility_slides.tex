@@ -278,6 +278,29 @@ the model-family acceptance gate given below: pointing
 11 corpus directories. All 9 registered family target directories lie
 inside that tree, so a single invocation reaches every registered
 family.
+
+The discrete family exercises the categorical kind end to end. The
+continuous linear-Gaussian kind smoke-runs the same way, and the
+contrast between the two runs is itself a check of the per-kind
+contract:
+
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]{Pipeline Smoke Run}
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{uv}\NormalTok{ run python src/gnn/main.py }\AttributeTok{{-}{-}target{-}dir}\NormalTok{ input/gnn\_files/continuous }\AttributeTok{{-}{-}output{-}dir}\NormalTok{ /tmp/gnn{-}smoke{-}continuous }\AttributeTok{{-}{-}skip{-}llm}
+\end{Highlighting}
+\end{Shaded}
+
+This parses the continuous specifications, and the render and execute
+steps fan them out to the continuous-capable backends --- where they
+render as linear-Gaussian models and run as filtering (and, for the
+closed-loop exemplar, belief-steering) programs --- while the
+categorical-only backends record explicit \texttt{unsupported} statuses
+rather than failures. A reader comparing the two receipts sees the kind
+taxonomy behaving as described in sec.~3: same
+pipeline, same steps, per-kind rendering and execution reach.
 \end{frame}
 
 \begin{frame}[fragile,allowframebreaks]{Validation Gates}
@@ -388,7 +411,7 @@ a missing copy degrades rather than failing the build.
 \begin{frame}[fragile,allowframebreaks]{Manuscript Reproducibility}
 Because the variables file is regenerated before rendering, the counts
 in the rendered PDF track the repository state at the commit recorded in
-\breaktt{output/data/manuscript\_variables.json} (a28701d0c): a code
+\breaktt{output/data/manuscript\_variables.json} (524b2e4af): a code
 change that alters, for example, the test inventory (456 test files,
 4890 test functions) propagates into the prose on the next regeneration
 without any manual editing.

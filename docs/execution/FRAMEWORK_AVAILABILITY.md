@@ -15,6 +15,29 @@ PyTorch and bnlearn are supported render/execute paths; both are intentionally a
 from the default lock (heavy optional runtimes). Julia targets require
 their committed project environments.
 
+## Model kinds and execution paths
+
+`render.pomdp_contract.detect_model_kind` classifies each model as either
+**discrete categorical** (A/B/C/D[/E]) or **continuous linear-Gaussian**
+(F/H/Q/R with `prior_mean`/`prior_cov`). The kind decides which backends
+apply:
+
+- **Discrete categorical** models execute on PyMDP, RxInfer.jl,
+  ActiveInference.jl, JAX (factorized Kronecker lane), NumPyro, PyTorch, and
+  DisCoPy. Stan executes discrete models as HMM programs via the cmdstanpy
+  driver (`src/gnn/execute/stan/`).
+- **Continuous linear-Gaussian** models render to native LGSSM programs via
+  `src/gnn/render/continuous_script.py` and execute on JAX, NumPyro, PyTorch,
+  Stan (LGSSM), and RxInfer.jl 5.5. Categorical backends that cannot express
+  them (PyMDP, ActiveInference.jl, DisCoPy, bnlearn) report an explicit
+  `unsupported` render status rather than failing silently.
+
+Step 12 executes whatever rendered scripts exist for the requested
+frameworks; it does not filter by model kind. When a framework produced only
+`unsupported` statuses for a continuous model, the per-framework execution
+summary simply has nothing to run — check the render summary before
+interpreting an empty result as an executor failure.
+
 ## Check availability
 
 Use the unified CLI before a run:
@@ -28,11 +51,13 @@ For a direct Python status report:
 
 ```bash
 PYTHONPATH=src uv run python - <<'PY'
-from execute import get_execution_health_status
+from gnn.execute import collect_doctor_report
 
-for name, info in get_execution_health_status().items():
-    state = "available" if info.get("available") else "unavailable"
-    print(f"{name}: {state} — {info.get('reason', '')}")
+report = collect_doctor_report()
+for name in report["frameworks_available"]:
+    print(f"{name}: available")
+for name in report["frameworks_missing"]:
+    print(f"{name}: unavailable")
 PY
 ```
 

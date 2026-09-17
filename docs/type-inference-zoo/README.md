@@ -8,6 +8,8 @@
 
 This directory contains documentation and resources for integrating the **Type Inference Zoo** with GNN (Generalized Notation Notation). The Type Inference Zoo is a comprehensive collection of type inference algorithms from modern programming language theory, providing implementations of classical and modern type inference approaches.
 
+**Role**: The Type Inference Zoo is **type-system reference material**, not a render or execution framework. It is not an entry in `src/gnn/render/framework_registry.py`, generates no simulation code, and has no Step 12 executor. In the live tree, the related sources are the Haskell and Scala type-system files under `src/gnn/type_systems/` (e.g. `haskell.hs`, `scala.scala`, `categorical.scala`); the Step 5 type checker (`src/gnn/type_checker/`) is the separate GNN-native implementation.
+
 **Status**: ✅ Production Ready  
 **Version**: 1.0
 
@@ -69,26 +71,17 @@ The Type Inference Zoo provides:
 
 ## Integration with GNN
 
-Type Inference Zoo integration enables:
+The Type Inference Zoo is reference material, not a wired-in pipeline component. It relates to GNN as follows:
 
-- **Advanced Type Checking**: Enhanced type inference for GNN models
-- **Type System Research**: Exploration of different type inference paradigms
-- **Validation Methods**: Multiple approaches to type validation
+- **Type System Research**: Exploration of different type inference paradigms (the `src/gnn/type_systems/` Haskell/Scala files are the in-tree counterpart; neither is imported by pipeline code)
+- **Validation Methods**: Candidate approaches for future type validation work — the current pipeline implementation is the GNN-native Step 5 type checker (`src/gnn/type_checker/`)
 - **Educational Applications**: Teaching type system concepts
 
 ## Integration with Pipeline
 
 This documentation is integrated with the 25-step GNN processing pipeline:
 
-1. **Core Processing** (Steps 0-9): GNN parsing, validation, export
-   - Type checking (Step 5) can leverage Type Inference Zoo algorithms
-   - Enhanced type inference capabilities
-
-2. **Simulation** (Steps 10-16): Model execution and analysis
-   - Type inference results inform execution strategies
-
-3. **Integration** (Steps 17-24): System coordination and output
-   - Type inference results integrated into comprehensive outputs
+1. **Type Checking** (Step 5): the GNN-native type checker (`src/gnn/type_checker/`) is the implementation in the pipeline; the Type Inference Zoo documents the algorithm landscape (Algorithm W, R, F, and successors) relevant to that context. The `src/gnn/type_systems/` Haskell/Scala files are reference material, not wired into any pipeline step.
 
 See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documentation.
 

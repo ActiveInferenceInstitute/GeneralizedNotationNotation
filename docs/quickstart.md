@@ -89,6 +89,12 @@ the default lock; Stan needs `uv sync --extra stan` plus a CmdStan toolchain, an
 bnlearn needs `uv sync --extra bnlearn`.
 See [framework availability](execution/FRAMEWORK_AVAILABILITY.md).
 
+Model kind matters for execution: the PyMDP preset above runs **discrete
+categorical** models. A **continuous linear-Gaussian** model (F/H/Q/R with
+`prior_mean`/`prior_cov`), such as `input/gnn_files/continuous/continuous_navigation.md`,
+renders to native LGSSM programs and executes on jax, numpyro, pytorch, stan, and
+rxinfer — categorical backends report it `unsupported`.
+
 ## 5. Inspect generated artifacts
 
 Every run writes below the directory passed with `--output-dir`. Typical locations

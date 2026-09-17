@@ -66,6 +66,7 @@ Same content as [Intermediate Path: Building and Integrating Models](#intermedia
 
 1. **Advanced Modeling**:
    - Dive into [Advanced Modeling Patterns](gnn/advanced/advanced_modeling_patterns.md).
+   - Run continuous linear-Gaussian models: [`input/gnn_files/continuous/`](../input/gnn_files/continuous/) on JAX, NumPyro, PyTorch, Stan, or RxInfer.jl (see [continuous LGSSM patterns](gnn/advanced/advanced_modeling_patterns.md#9-continuous-linear-gaussian-models)).
    - Learn multi-agent systems in [GNN Multiagent](gnn/advanced/gnn_multiagent.md).
 
 2. **Integrations**:
@@ -89,6 +90,7 @@ Same content as [Intermediate Path: Building and Integrating Models](#intermedia
 
 - [ ] Have you modified a POMDP template for a custom domain?
 - [ ] Can you run the same GNN model across two different frameworks (e.g., PyMDP and RxInfer)?
+- [ ] Have you run a continuous (`F`/`H`/`Q`/`R`) model from `input/gnn_files/continuous/` on a Gaussian-capable backend?
 - [ ] Do you understand how to use the MCP tools to query your model structure?
 
 ## Advanced Path: Research and Custom Extensions

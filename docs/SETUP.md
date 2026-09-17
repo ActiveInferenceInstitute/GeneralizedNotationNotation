@@ -100,6 +100,10 @@ The declared groups are visible in `pyproject.toml`:
 | `ml-ai` | SciPy, scikit-learn, and Transformers |
 | `research` | Jupyter, SymPy, Numba, and research utilities |
 | `scaling` | Dask, Distributed, and Ray |
+| `stan` | cmdstanpy driver for rendered Stan programs (needs a local CmdStan toolchain) |
+| `torch` | PyTorch backend |
+| `bnlearn` | bnlearn runtime for rendered `.py`/`.R` Bayesian network programs |
+| `geo-infer` | H3 geospatial indexing used by GEO-INFER integration surfaces |
 | `all` | The optional groups above combined as a manually maintained extra |
 
 Install a group directly with `uv sync --extra GROUP`; use `--all-extras` for all
@@ -133,6 +137,13 @@ than pretending that every target is installed.
 | PyTorch | Python | Intentionally not locked | Render + execute when installed manually |
 | Stan | Stan | Optional extra (`uv sync --extra stan`) | Render + execute via cmdstanpy |
 | bnlearn | Python | Optional extra (`uv sync --extra bnlearn`) | Render + execute |
+
+Model kind also matters: **discrete categorical** models (A/B/C/D[/E]) run on
+every backend above, while **continuous linear-Gaussian** models
+(F/H/Q/R + `prior_mean`/`prior_cov`) render to native LGSSM programs and
+execute only on JAX, NumPyro, PyTorch, Stan, and RxInfer.jl — the categorical
+backends report them `unsupported`. See
+[framework availability](execution/FRAMEWORK_AVAILABILITY.md).
 
 ### Python targets
 

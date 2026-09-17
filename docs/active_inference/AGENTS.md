@@ -89,6 +89,8 @@ Central documentation hub for all theoretical, computational, and implementation
 | RxInfer Runner | [`src/gnn/execute/rxinfer/`](../../src/gnn/execute/rxinfer/) | [implementation_rxinfer.md](implementation_rxinfer.md) |
 | ActiveInference.jl | [`src/gnn/execute/activeinference_jl/`](../../src/gnn/execute/activeinference_jl/) | [implementation_activeinference_jl.md](implementation_activeinference_jl.md) |
 
+Model-kind coverage: **PyMDP** and **ActiveInference.jl** are discrete-only (`supports_continuous=False`); **RxInfer** additionally covers continuous linear-Gaussian models (`supports_continuous=True`, F/H/Q/R parameterization). All three execute at pipeline Step 12 via their `src/gnn/execute/<framework>/` runners.
+
 ### Analysis Tools
 
 | Component | Source Path |

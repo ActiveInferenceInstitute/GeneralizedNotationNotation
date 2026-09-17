@@ -74,10 +74,12 @@ matrix_result = mcp_instance.execute_tool(
 
 ## Verification
 
-The integration has been successfully verified:
+Historical verification checklist (recorded against the then-current step
+numbering; MCP processing is **Step 21** (`21_mcp.py`) in the current 25-step
+pipeline):
 
 ✅ **MCP Tool Registration**: All 8 SymPy tools registered successfully  
-✅ **Pipeline Integration**: Works with `python3 src/gnn/main.py --only-steps 7`  
+✅ **Pipeline Integration**: the registration was verified through the MCP pipeline step  
 ✅ **Error Handling**: Graceful fallback when SymPy server unavailable  
 ✅ **Type Safety**: Proper type annotations and validation  
 ✅ **Documentation**: Comprehensive inline documentation and examples  
@@ -85,14 +87,15 @@ The integration has been successfully verified:
 ## Running MCP Integration Test
 
 ```bash
-# Run MCP pipeline step to verify integration
-python3 src/gnn/main.py --only-steps 7 --verbose
+# Run the current MCP pipeline step to verify integration
+python3 src/gnn/main.py --only-steps 21 --verbose
 
-# Check MCP integration report
-cat output/mcp_processing_step/7_mcp_integration_report.md | grep sympy
+# Check the registered tools
+cat output/registered_tools.json | grep sympy
 ```
 
-The integration report will show all SymPy tools with their schemas and descriptions.
+`registered_tools.json` (and `mcp_results.json`) are written directly into the
+output directory by the Step 21 MCP processing module.
 
 ## Setting Up SymPy MCP Server
 

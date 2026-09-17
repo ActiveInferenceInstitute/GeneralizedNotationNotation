@@ -571,27 +571,28 @@ mjx-container[display="true"] {
 alt="End-to-end summary panel of the GNN pipeline in seven left-to-right stage cards: a plain-text GNN document declaring A, B, C, D and E; parsing; validation and type checking with the B-tensor orientation check; code rendering to the registered backends; execution of the backends including the bnlearn lane; analysis; and cross-repository interchange with GEO-INFER and fep_lean. Step pills name the pipeline step behind each stage, a callout states the two newest capabilities, and a footer strip carries the producer&#x27;s scale counts for steps, families, backends and MCP tools." /><span class="figure-full-size-label" aria-hidden="true">Open full-size figure</span></a>
 <figcaption>The GeneralizedNotationNotation (GNN)
 pipeline at a glance, generated from the producer’s token map at commit
-a28701d0c. A plain-text specification — the <code>StateSpaceBlock</code>
-declaring the <code>A</code>, <code>B</code>, <code>C</code>,
-<code>D</code>, and <code>E</code> tensors of <span class="citation"
+524b2e4af. A plain-text specification — the <code>StateSpaceBlock</code>
+declaring the model’s tensors, <code>A</code>, <code>B</code>,
+<code>C</code>, <code>D</code>, and <code>E</code> for the discrete
+categorical kind of <span class="citation"
 data-cites="eq:generative_model">[@eq:generative_model]</span> through
-<span class="citation" data-cites="eq:policy">[@eq:policy]</span> — is
-parsed (Step 3), type-checked and validated (Steps 5–6), rendered as
-backend-specific code (Step 11), executed (Step 12), and analyzed (Step
-16), before artifacts flow into the cross-repository interchange checks
-against the pinned GEO-INFER and fep_lean pairs. Read the seven cards
-left to right: each header names the stage, each pill names the pipeline
-step (or the source role), and the body states what the stage produces.
-The validation stage includes the B-tensor orientation check — every
-<code>B</code> literal is read as column-stochastic
-<code>B[s', s, a]</code>, and <code>--transpose-b</code> maps
-row-stochastic textbook literals onto that canonical order — and the
-execution stage includes the bnlearn lane, which generates runnable
-Python from the same parsed model and skips with a recorded status when
-its runtime is absent. The footer states the scale the panel summarizes:
-25 pipeline steps, 9 model families, 9 registered render backends with
-all 9 executing at Step 12, and 142 Model Context Protocol
-tools.</figcaption>
+<span class="citation" data-cites="eq:policy">[@eq:policy]</span> and
+its own matrix vocabulary for the other model kinds — is parsed (Step
+3), type-checked and validated (Steps 5–6), rendered as backend-specific
+code (Step 11), executed (Step 12), and analyzed (Step 16), before
+artifacts flow into the cross-repository interchange checks against the
+pinned GEO-INFER and fep_lean pairs. Read the cards left to right: each
+header names the stage, each pill names the pipeline step (or the source
+role), and the body states what the stage produces. The validation stage
+includes the B-tensor orientation check — every discrete <code>B</code>
+literal is read as column-stochastic <code>B[s', s, a]</code>, and
+<code>--transpose-b</code> maps row-stochastic textbook literals onto
+that canonical order — and the execution stage includes the bnlearn
+lane, which generates runnable Python from the same parsed model and
+skips with a recorded status when its runtime is absent. The footer
+states the scale the panel summarizes: 25 pipeline steps, 9 model
+families, 9 registered render backends with all 9 executing at Step 12,
+and 142 Model Context Protocol tools.</figcaption>
 </figure>
 <p>Active Inference offers a unifying account of perception, learning,
 and action under the free energy principle [friston2010], yet the
@@ -604,23 +605,34 @@ GeneralizedNotationNotation (GNN) addresses this gap with a
 standardized, human- and machine-readable text language for specifying
 Active Inference generative models, paired with a 25-step processing
 pipeline that transforms a single specification into validation,
-visualization, simulation, and analysis artifacts [gnn2023]. GNN’s
-“Triple Play” treats each model as three coordinated views — a textual
-specification, graphical visualizations, and executable cognitive models
-— so that one source yields consistent outputs across modalities. The
-framework spans 9 model families and 9 registered rendering backends,
-with explicit gates for cross-format semantic fidelity and
-cross-framework reliability. GNN 3.0.0 layered safe-by-design
-long-running orchestration on top of this language and pipeline —
-durable observation streams, resumable run sessions, and auditable
-container plans that generate, validate, and replay data only, with no
-live infrastructure mutation. We describe the language, the pipeline
-architecture, and the validation that confirms specifications round-trip
-faithfully across formats and execute across multiple simulation
-backends — with coverage gaps recorded as explicit profiled-unsupported
-statuses rather than silently omitted — establishing GNN as
-reproducible, interoperable infrastructure for communicating Active
-Inference models.</p>
+visualization, simulation, and analysis artifacts [gnn2023]. A GNN file
+denotes a generative model, and the language lets that model take the
+several shapes the field actually uses: the notation blocks a file
+declares — categorical
+<code>A</code>/<code>B</code>/<code>C</code>/<code>D</code>[/<code>E</code>]
+tensors, linear-Gaussian system matrices
+<code>F</code>/<code>H</code>/<code>Q</code>/<code>R</code> with a
+Gaussian prior, per-agent and per-level compositions — fix its model
+kind, which the pipeline classifies structurally and carries through
+rendering and execution, recording explicitly which registered backends
+can render and run a model of each kind and which report it unsupported.
+GNN’s “Triple Play” treats each model as three coordinated views — a
+textual specification, graphical visualizations, and executable
+cognitive models — so that one source yields consistent outputs across
+modalities. The framework spans 30 exemplar specifications (27
+discrete-state and 3 continuous linear-Gaussian) across 9 model families
+and 9 registered rendering backends, with explicit gates for
+cross-format semantic fidelity and cross-framework reliability. GNN
+3.0.0 layered safe-by-design long-running orchestration on top of this
+language and pipeline — durable observation streams, resumable run
+sessions, and auditable container plans that generate, validate, and
+replay data only, with no live infrastructure mutation. We describe the
+language, the model kinds it denotes, the pipeline architecture, and the
+validation that confirms specifications round-trip faithfully across
+formats and execute across multiple simulation backends — with coverage
+gaps recorded as explicit profiled-unsupported statuses rather than
+silently omitted — establishing GNN as reproducible, interoperable
+infrastructure for communicating Active Inference models.</p>
 </main>
 </body>
 </html>

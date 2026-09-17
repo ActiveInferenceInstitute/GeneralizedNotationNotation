@@ -247,33 +247,48 @@ every registered backend today, and authors should consult the
 profiled-unsupported ledger that
 \breaktt{scripts/run\_model\_family\_acceptance.py} writes --- the
 command is given in sec.~6 --- before assuming a
-given family will round-trip through a given framework.
-
+given family will round-trip through a given framework. The per-kind
+shape of that matrix matters as much as its gaps: the categorical-only
+backends report the continuous linear-Gaussian kind \texttt{unsupported}
+by declared capability rather than by accident, the structural kind is
 \end{frame}
 
 \begin{frame}[fragile,allowframebreaks]{Current Limitations}
+render-only by design on every backend, and the recursive corpus is
+reserved for bounded autonomous runs and holds no committed models yet
+--- boundaries recorded where the kinds are defined
+(sec.~3.2) rather than discovered mid-run.
+
 A third limitation is one of scope rather than capability. The formal
-account in sec.~3 fixes the generative-model
-components \texttt{A}, \texttt{B}, \texttt{C}, \texttt{D} and \texttt{E}
-as given and defines only state inference (eq.~6) and policy
-inference (eq.~7). GNN can also express \emph{parameter}
-learning: a matrix may be declared as a latent variable with a Dirichlet
-prior, and the repository ships both a corpus model that does so
+account in sec.~3 fixes each kind's
+parameterization as given --- the categorical tensors \texttt{A},
+\texttt{B}, \texttt{C}, \texttt{D}, and \texttt{E} of the discrete kind
+and the system matrices, Gaussian prior, and optional control
+declarations of the linear-Gaussian kind --- and states only
+belief-level inference: state and policy inference for the categorical
+kind (eq.~6, eq.~7) and fixed-parameter filtering
+and control for the continuous kind. GNN can also express
+\emph{parameter} learning: a matrix may be declared as a latent variable
+with a Dirichlet prior, and the repository ships both a corpus model
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]{Current Limitations}
+that does so
 (\breaktt{input/gnn\_files/learning/dirichlet\_likelihood\_learning.md},
 which learns its likelihood matrix \texttt{A} from observations by joint
 variational message passing) and the renderer strategy that emits code
-for it (\breaktt{src/render/rxinfer/\_strategies\_learning.py}). That
+for it (\breaktt{src/gnn/render/rxinfer/\_strategies\_learning.py}). That
 corpus directory is registered in no manifest family --- the
 unregistered set is exactly \breaktt{input/gnn\_files/learning},
 \breaktt{input/gnn\_files/recursive} --- so parameter learning is
-\end{frame}
-
-\begin{frame}[fragile,allowframebreaks]{Current Limitations}
 exercised by neither the semantic-fidelity nor the cross-framework
 ledger and carries no figure or table in this manuscript. We state it
 here as implemented-but-out-of-scope rather than leave the omission to
 be inferred from the family tables.
 
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]{Current Limitations}
 Finally, several capabilities depend on optional dependencies that are
 not part of the minimal install. The simulation frameworks themselves,
 the audio sonification path, the LLM-enhanced analysis step, and the
@@ -284,9 +299,6 @@ This keeps the core parse-validate-export-visualize spine runnable in
 constrained environments, but it means a full 0--24 traversal of all 25
 steps reflects the optional surface that a particular machine has
 installed. We consider this an acceptable engineering trade for
-\end{frame}
-
-\begin{frame}[fragile,allowframebreaks]{Current Limitations}
 portability, but it is a limitation a reader should hold in mind when
 interpreting any single end-to-end run.
 \end{frame}
@@ -321,9 +333,9 @@ inspectable.
 \end{frame}
 
 \begin{frame}[allowframebreaks]{Next Steps}
-The next major target, v4.0.0, pushes toward bounded autonomy, and it is
-gated behind the 3.0.0 orchestration work for good reason. The intent is
-to promote today's proposal-only candidate-scoring machinery --- which
+The next major release pushes toward bounded autonomy, and it is gated
+behind the 3.0.0 orchestration work for good reason. The intent is to
+promote today's proposal-only candidate-scoring machinery --- which
 already ranks candidate patches using the existing validators,
 model-family ledgers, and interpretability reports --- toward
 \emph{reviewed self-editing of GNN files}. Crucially, the design keeps a
@@ -338,10 +350,15 @@ Parr et al. 2022): an agent should expand its license to act only in
 \end{frame}
 
 \begin{frame}[allowframebreaks]{Next Steps}
-proportion to the reviewability of what it does. The v4.0.0 items are
-not claimed as complete here; they are the recorded direction of travel,
-and each will be evidenced by its own gates when it lands, just as the
-3.0.0 contracts are evidenced by theirs today.
+proportion to the reviewability of what it does. The next-release items
+are not claimed as complete here; they are the recorded direction of
+travel, and each will be evidenced by its own gates when it lands, just
+as the 3.0.0 contracts are evidenced by theirs today. On the model-kind
+axis the same staging applies: extending native hierarchical rendering
+beyond the two-level strategies, broadening continuous reach across the
+remaining registered backends, and populating the reserved recursive
+corpus each arrive with their own gate evidence rather than by prose
+assertion.
 \end{frame}
 
 \end{document}

@@ -165,21 +165,23 @@ and LLM documentation for provider-specific behavior.
 ## Configuration validation
 
 There is no `main.py --validate-config`, `--show-config`, `--profile`, or generic
-dry-run command. Validate the YAML syntax and the values used by the runtime by
-loading the project configuration through the package:
+dry-run command. To check YAML syntax and the top-level sections that the runtime
+consumes, load the checked-in file directly:
 
 ```bash
 uv run python - <<'PY'
-from pathlib import Path
-import sys
+import yaml
 
-sys.path.insert(0, "src")
-from utils.config_loader import load_config
-
-config = load_config(Path("input/config.yaml"))
-print("Configuration loaded:", config.to_pipeline_arguments())
+config = yaml.safe_load(open("input/config.yaml"))
+print("Configuration sections:", sorted(config))
+print("pipeline:", config.get("pipeline"))
 PY
 ```
+
+The package loader in `gnn.utils.config_io.config_loader` additionally validates
+section values; note that its relative-path checks currently resolve against
+`src/` rather than the repository root, so run it only from a checkout where
+that matches your layout.
 
 For a non-mutating environment check, use:
 

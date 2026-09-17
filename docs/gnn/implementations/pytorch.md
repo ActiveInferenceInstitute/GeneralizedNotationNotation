@@ -10,6 +10,11 @@
 The PyTorch integration enables **neural Active Inference** from GNN specifications. Rather than implementing the classic categorical POMDP (as PyMDP does), the PyTorch renderer builds differentiable generative models where matrices A, B, C, D can be parameterised as learned neural modules.
 
 This enables a continuous learning trajectory: start with hand-specified GNN matrices, optionally replace them with learnable `nn.Parameter` tensors, and train end-to-end.
+**Registry capability** (`src/gnn/render/framework_registry.py`): PyTorch covers
+both model kinds — discrete categorical POMDP specs (A/B/C/D[/E]) and continuous
+linear-Gaussian state-space models (`supports_continuous: True`) — and is fully
+executable (`supports_execution: True`): Step 12 runs each generated script via
+`src/gnn/execute/pytorch/pytorch_runner.py`.
 
 ## Architecture
 

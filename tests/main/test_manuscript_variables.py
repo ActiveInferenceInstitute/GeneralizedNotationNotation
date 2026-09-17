@@ -290,6 +290,119 @@ def test_mcp_tool_count_matches_audit(
     assert variables["GNN_MCP_TOOL_COUNT"] == str(audit["tools_total"])
 
 
+def test_module_count_matches_step_modules(
+    variables: dict[str, str], snapshot: RepositorySnapshot
+) -> None:
+    step_modules = [
+        rel for rel in snapshot.glob("src/gnn", "[0-9]*_*.py") if len(rel.parts) == 3
+    ]
+    assert variables["GNN_MODULE_COUNT"] == str(len(step_modules))
+
+
+def test_tool_count_matches_audit(
+    variables: dict[str, str], snapshot: RepositorySnapshot
+) -> None:
+    audit = json.loads(snapshot.read_text("src/gnn/mcp/audit_report.json"))
+    assert variables["GNN_TOOL_COUNT"] == str(audit["tools_total"])
+
+
+def test_test_count_matches_static_census(
+    variables: dict[str, str], snapshot: RepositorySnapshot
+) -> None:
+    pattern = re.compile(r"^\s*(?:async\s+)?def (test_\w+)", re.MULTILINE)
+    test_files = snapshot.glob("tests", "test_*.py")
+    snapshot.prefetch(test_files)
+    census = sum(len(pattern.findall(snapshot.read_text(rel))) for rel in test_files)
+    assert variables["GNN_TEST_COUNT"] == str(census)
+    assert int(variables["GNN_TEST_COUNT"]) >= int(variables["GNN_TEST_FILE_COUNT"])
+
+
+def test_exemplar_counts_partition_the_corpus(
+    variables: dict[str, str], snapshot: RepositorySnapshot
+) -> None:
+    """The kind counts split GNN_EXAMPLE_COUNT on the continuous/ folder."""
+    non_model = {"INDEX.md", "AGENTS.md", "README.md"}
+    continuous = [
+        rel
+        for rel in snapshot.glob("input/gnn_files/continuous", "*.md")
+        if rel.name not in non_model
+        and not rel.name.endswith((".example.md", ".template.md"))
+    ]
+    assert variables["GNN_CONTINUOUS_EXEMPLAR_COUNT"] == str(len(continuous))
+    assert int(variables["GNN_DISCRETE_EXEMPLAR_COUNT"]) + int(
+        variables["GNN_CONTINUOUS_EXEMPLAR_COUNT"]
+    ) == int(variables["GNN_EXAMPLE_COUNT"])
+
+
+def test_framework_table_cells_track_registry_flags(
+    variables: dict[str, str], snapshot: RepositorySnapshot
+) -> None:
+    rows = [
+        ln
+        for ln in variables["GNN_FRAMEWORK_TABLE"].splitlines()
+        if ln.startswith("| ")
+    ]
+    assert rows[0] == (
+        "| Framework | Discrete render | Continuous render | Executor status |"
+    )
+    cells = [[c.strip() for c in ln.split("|")[1:-1]] for ln in rows[1:]]
+    specs = _registry_specs(snapshot)
+    assert [c[0] for c in cells] == [
+        str(spec.get("name", key)) for key, spec in specs.items()
+    ]
+    by_name = {c[0]: c[1:] for c in cells}
+    for key, spec in specs.items():
+        name = str(spec.get("name", key))
+        discrete, continuous, executor = by_name[name]
+        assert discrete == ("yes" if spec.get("pomdp_compatible") else "no")
+        assert continuous == (
+            "yes" if spec.get("supports_continuous") else "unsupported"
+        )
+        assert executor == (
+            "executor" if spec.get("supports_execution") else "render-only"
+        )
+    assert (
+        variables["GNN_FRAMEWORK_TABLE"]
+        .rstrip()
+        .endswith("{#tbl:framework_capability}")
+    )
+
+
+def test_model_kind_table_rows(
+    variables: dict[str, str], snapshot: RepositorySnapshot
+) -> None:
+    rows = [
+        ln
+        for ln in variables["GNN_MODEL_KIND_TABLE"].splitlines()
+        if ln.startswith("| ")
+    ]
+    assert rows[0] == (
+        "| Model kind | Notation block | Exemplar folder | Renderer(s) | Executor(s) |"
+    )
+    cells = [[c.strip() for c in ln.split("|")[1:-1]] for ln in rows[1:]]
+    by_kind = {c[0]: c[1:] for c in cells}
+    assert list(by_kind) == [
+        "Discrete categorical",
+        "Continuous linear-Gaussian",
+        "Multi-agent",
+        "Recursive",
+    ]
+    assert by_kind["Multi-agent"][2:] == by_kind["Discrete categorical"][2:]
+    assert by_kind["Discrete categorical"][1] == "`input/gnn_files/discrete/`"
+    assert by_kind["Continuous linear-Gaussian"][1] == "`input/gnn_files/continuous/`"
+    specs = _registry_specs(snapshot)
+    continuous_names = ", ".join(
+        str(spec.get("name", key))
+        for key, spec in specs.items()
+        if spec.get("supports_continuous")
+    )
+    assert by_kind["Continuous linear-Gaussian"][2] == continuous_names
+    assert by_kind["Continuous linear-Gaussian"][3] == continuous_names
+    assert by_kind["Multi-agent"][1] == "`input/gnn_files/multiagent/`"
+    assert by_kind["Recursive"][1] == "`input/gnn_files/recursive/`"
+    assert variables["GNN_MODEL_KIND_TABLE"].rstrip().endswith("{#tbl:model_kinds}")
+
+
 def test_counts_describe_the_stamped_commit_not_the_working_tree(
     variables: dict[str, str], snapshot: RepositorySnapshot
 ) -> None:
@@ -317,7 +430,13 @@ def test_counts_describe_the_stamped_commit_not_the_working_tree(
 
 
 def test_tables_are_multiline_markdown(variables: dict[str, str]) -> None:
-    for key in ("GNN_STEP_TABLE", "GNN_FAMILY_TABLE", "GNN_BACKEND_TABLE"):
+    for key in (
+        "GNN_STEP_TABLE",
+        "GNN_FAMILY_TABLE",
+        "GNN_BACKEND_TABLE",
+        "GNN_FRAMEWORK_TABLE",
+        "GNN_MODEL_KIND_TABLE",
+    ):
         assert "\n" in variables[key], f"{key} should be a multi-line markdown table"
         assert variables[key].lstrip().startswith("|"), f"{key} should be a pipe table"
 

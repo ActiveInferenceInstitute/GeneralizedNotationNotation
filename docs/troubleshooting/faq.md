@@ -425,14 +425,21 @@ python -c "import julia; julia.install()"
 
 **Approaches:**
 
-1. **Discretization**: Divide continuous space into bins
+1. **Native continuous linear-Gaussian models** (recommended when your
+   dynamics are linear-Gaussian): declare F/H/Q/R matrices with
+   `prior_mean`/`prior_cov` state factors. GNN renders these to JAX,
+   NumPyro, PyTorch, Stan (LGSSM), and RxInfer.jl programs and executes them
+   in Step 12. See `input/gnn_files/continuous/` for runnable exemplars such
+   as `continuous_navigation.md`.
+
+2. **Discretization**: Divide continuous space into bins
 
    ```gnn
    # Position discretized into 10 bins
    s_f0[10,1,type=int]  # Discrete position bins
    ```
 
-2. **Gaussian approximations**: Use mean and variance parameters
+3. **Gaussian approximations**: Use mean and variance parameters
 
    ```gnn
    # Continuous position with Gaussian beliefs
@@ -440,7 +447,7 @@ python -c "import julia; julia.install()"
    s_f0_var[1,type=float]     # Position variance
    ```
 
-3. **Particle filters**: Multiple discrete samples of continuous space
+4. **Particle filters**: Multiple discrete samples of continuous space
 
 ### How do I handle time-varying parameters?
 
@@ -838,17 +845,20 @@ Actual: Validation fails with error X
 
 **Good feature request example:**
 ```markdown
-**Feature Request: Continuous State Spaces**
+**Feature Request: Nonlinear State Dynamics**
 
 **Use Case**
-I need to model robot navigation with continuous position coordinates, 
-but current GNN only supports discrete states.
+I need to model robot navigation with continuous position coordinates where
+the dynamics are nonlinear. GNN supports continuous linear-Gaussian models
+(F/H/Q/R with `prior_mean`/`prior_cov`), but those dynamics are linear, so
+this model is out of scope today.
 
 **Proposed Solution** 
-Add support for Gaussian state factors with mean/variance parameters:
+Allow `##Equations` blocks to attach a nonlinear transition function to
+continuous state factors:
 ```gnn
-s_f0_mean[2,type=float]  # [x, y] position mean
-s_f0_cov[2,2,type=float] # Position covariance matrix
+s_f0[2,1,type=float]  # [x, y] position state
+f_f0: x_{t+1} = A x_t + g(x_t) + w_t  # nonlinear residual g(x)
 ```
 
 **Alternatives Considered**
@@ -857,7 +867,8 @@ s_f0_cov[2,2,type=float] # Position covariance matrix
 - External preprocessing (breaks GNN workflow)
 
 **Impact**
-Would enable robotics, control theory, and continuous optimization use cases.
+Would enable robotics, control theory, and nonlinear state-estimation use
+cases beyond the existing linear-Gaussian lane.
 
 ```
 

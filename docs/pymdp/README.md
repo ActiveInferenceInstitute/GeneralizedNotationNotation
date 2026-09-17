@@ -10,6 +10,23 @@ pymdp 1.0.0 is the **JAX-first rewrite** of the library. This repository
 uses the JAX-first API only (`Agent.infer_states(obs, empirical_prior=...)`,
 JAX arrays, and explicit PRNG keys).
 
+## Model Kind Coverage and Execution Status
+
+- The pymdp renderer supports **discrete categorical models only**:
+  `A`/`B`/`C`/`D` (plus the optional `E` habit/policy prior), with
+  multi-modality and multi-factor POMDPs supported. Continuous
+  linear-Gaussian models (`F`/`H`/`Q`/`R` system matrices or
+  `prior_mean`/`prior_cov` parameterizations — the `CONTINUOUS` class from
+  `detect_model_kind` in `src/gnn/render/pomdp_contract.py`) are **not
+  supported** by this renderer (`framework_registry` sets
+  `supports_continuous=False`).
+- Rendered scripts are **executable**: Step 12 (execute) runs them via the
+  `src/gnn/execute/pymdp/` package (`pymdp_runner.py`, rollout in
+  `simulation.py`). pymdp is never render-only.
+- Per pymdp 1.0.0 convention, `B` matrices are **column-stochastic** per
+  action slice (`(next_state, prev_state, action)` layout — see
+  [GNN B layout conversion](gnn_pymdp.md#gnn-b-layout-conversion)).
+
 ## Start Here
 
 - [`gnn_pymdp.md`](gnn_pymdp.md) — GNN → pymdp 1.0.0 integration contract

@@ -13,6 +13,10 @@ A guided, interactive layer over the existing tutorials:
 - Step-by-step model building with live syntax validation (Step 5 feedback).
 - Visual model construction and connection editing, exporting valid GNN files.
 - Framework comparison walkthroughs driven by the real Step 11/12 pipeline.
+- Coverage across model kinds: discrete categorical walkthroughs first
+  (`A`/`B`/`C`/`D`/`E`), then continuous linear-Gaussian ones
+  (`F`/`H`/`Q`/`R`, closed-loop `goal_mean`/`control_gain`) using the
+  [`input/gnn_files/continuous/`](../../input/gnn_files/continuous/) exemplars.
 - Skill checkpoints keyed to the [learning paths](../learning_paths.md).
 
 ## What exists today

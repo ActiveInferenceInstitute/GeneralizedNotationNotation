@@ -6,7 +6,13 @@
 
 ## Overview
 
-This document provides a systematic classification of all error types in the GNN (Generalized Notation Notation) system, enabling rapid diagnosis and resolution of issues.
+This document provides a systematic classification of error types in the GNN (Generalized Notation Notation) system, enabling rapid diagnosis and resolution of issues.
+
+> **Scope note**: the `SYN-`-style families below are a conceptual
+> classification for diagnosing failures. The pipeline does not emit these
+> codes itself; it reports structured validation issues and per-step exit
+> statuses in the run summaries. Use the categories here to reason about
+> failures, then match against the actual parser/executor messages.
 
 ## Error Classification System
 

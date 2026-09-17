@@ -145,13 +145,12 @@ logger = logging.getLogger(__name__)
 process_gnn_multi_format(Path("input/gnn_files"), Path("output"), logger)
 ```
 
-Full pipeline runs use `python src/gnn/main.py` (see [Pipeline docs](../gnn/operations/gnn_tools.md)).
+Full pipeline runs use `uv run python src/gnn/main.py` (see [Pipeline docs](../gnn/operations/gnn_tools.md)).
 
 ### Framework Integration
 
 ```python
-from render import PyMDPRenderer
-from render import render_gnn_to_pymdp, render_gnn_to_rxinfer
+from gnn.render import PyMDPRenderer, render_gnn_to_pymdp, render_gnn_to_rxinfer
 
 # Generate PyMDP code
 pymdp_renderer = PyMDPRenderer()

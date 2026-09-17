@@ -29,3 +29,15 @@ Paths under captured outputs, gridworld runs, multi-agent result trees, and simi
 ## Top-level inventory
 
 The canonical list of first-level folders under `docs/` is [expected_dirs.txt](expected_dirs.txt) (see [SPEC.md](SPEC.md)).
+
+## Change history
+
+- **2026-09-17 truth pass** (ops/pipeline slices): verified commands, paths, step
+  counts, and framework/model-kind coverage against the live tree across
+  `docs/{pipeline,execution,api,mcp,security,testing,troubleshooting,performance,
+  configuration,dependencies,deployment,releases,development,dev,templates}/` and
+  the top-level ops docs. Fixed stale snippets (`from execute import …` → `gnn.execute`,
+  `from utils.config_loader` → YAML direct-load, bare `python`/`gnn` invocations →
+  `uv run`), added continuous-linear-Gaussian execution-path framing, and corrected
+  counts (render 9 / execute 10 families incl. Lean, RxInfer 5.5.0 committed env).
+  No entries were removed; the audit workflow above remains the source of truth.

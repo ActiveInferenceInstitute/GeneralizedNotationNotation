@@ -10,6 +10,11 @@
 NumPyro provides a **probabilistic programming** backend for GNN models. Unlike PyMDP (which uses fixed-point belief updates) or JAX (which uses manual message-passing), NumPyro treats the generative model as a probabilistic program and uses **NUTS/MCMC** for posterior inference (SVI is planned; see NP-2 below).
 
 This unlocks uncertainty quantification beyond the classical Dirichlet-categorical parameterisation — GNN-specified matrices become priors over distributions, not point estimates.
+**Registry capability** (`src/gnn/render/framework_registry.py`): NumPyro covers
+both model kinds — discrete categorical POMDP specs (A/B/C/D[/E]) and continuous
+linear-Gaussian state-space models (`supports_continuous: True`) — and is fully
+executable (`supports_execution: True`): Step 12 runs each generated script via
+`src/gnn/execute/numpyro/numpyro_runner.py`.
 
 ## Architecture
 

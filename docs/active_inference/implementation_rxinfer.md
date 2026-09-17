@@ -16,6 +16,16 @@ The pipeline's canonical integration uses a committed Julia environment
 `DiscreteTransition` nodes) solved with `infer()` (`free_energy = true`),
 populating `variational_free_energy` with real values (previously `Float64[]`).
 
+RxInfer is the only one of the three Active Inference implementation frameworks (PyMDP, RxInfer, ActiveInference.jl) with continuous support (`supports_continuous=True`; the other registry backends with continuous support — JAX, PyTorch, NumPyro, Stan — are covered in their own docs). The discrete categorical POMDP path above is unaffected. When a GNN spec declares a continuous linear-Gaussian `initialparameterization` — F/H/Q/R system matrices plus `prior_mean`/`prior_cov` — [`src/gnn/render/rxinfer/_strategies_continuous.py`](../../src/gnn/render/rxinfer/_strategies_continuous.py) emits a native linear-Gaussian `@model` script (`continuous_pomdp_model`, precompiled in the pinned `GnnRxInferModels` package) instead of the categorical POMDP model:
+
+```julia
+x[1] ~ MvNormal(prior_mean, prior_cov)
+x[t] = F * x[t-1] + u[t-1] + N(0, Q)
+y[t] = H * x[t]           + N(0, R)
+```
+
+When `goal_mean`/`control_gain` are declared, the forward simulation closes the loop on beliefs with proportional control (`u[t] = gain * (goal - mu[t])`, `mu[t]` the online Kalman-filtered mean); otherwise `u` is zero and the dynamics run passively. The fully conjugate model is solved with the same `infer()` (`free_energy = true`) pipeline, and the renderer refuses to derive continuous parameters from discrete A/B/C/D stand-ins.
+
 **Status**: ✅ Production Ready  
 **Version**: 1.0
 

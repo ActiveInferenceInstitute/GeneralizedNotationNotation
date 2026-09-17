@@ -6,9 +6,9 @@ execute it through the 25-step pipeline. For syntax and file-structure rules see
 [normative syntax](../../docs/gnn/reference/gnn_syntax.md) and the tutorials in
 [docs/gnn/tutorials/](../../docs/gnn/tutorials/).
 
-**Counts (measured 2026-09-01):** 29 runnable `.md` spec files across 10 task
+**Counts (measured 2026-09-17):** 30 runnable `.md` spec files across 10 task
 folders (`INDEX.md`, `AGENTS.md` and `README.md` are non-spec scaffolds and are
-excluded by `gnn.discovery.is_model_source_path`). 26 are discrete-state
+excluded by `gnn.processing.discovery.is_model_source_path`). 27 are discrete-state
 POMDP/HMM models that render and execute on all nine frameworks; the 3 files
 under `continuous/` are continuous-state linear-Gaussian models that render and
 execute on JAX, NumPyro, PyTorch, Stan and RxInfer.jl and are reported as

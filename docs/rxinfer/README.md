@@ -84,6 +84,12 @@ This directory contains documentation, scripts, and resources for integrating GN
   an optional **online mode** (`inference_mode: online`) runs `infer()` per
   timestep with the filtered posterior driving action selection. If `infer()`
   fails, the script crashes (no fallback).
+- **Model-Kind Coverage**: Both discrete categorical POMDP specs (A/B/C/D[/E])
+  and continuous linear-Gaussian state-space models (`F`/`H`/`Q`/`R` +
+  `prior_mean`/`prior_cov` from InitialParameterization, with optional
+  closed-loop `goal_mean`/`control_gain`) are rendered and executed,
+  dispatched by detected ModelKind to per-kind generators in
+  `src/gnn/render/rxinfer/`
 - **Variational Message Passing**: Optimized inference algorithms over factor graphs
 - **Factor Graph Models**: Natural representation of Active Inference models
 - **Reproducible Execution**: A committed Julia environment
@@ -110,8 +116,9 @@ The pipeline validates end-to-end render and execution for every exemplar GNN
 model:
 
 #### Render (Step 11)
-- Discovers all 29 exemplar GNN files under `input/gnn_files/**` and emits an
-  executable `*_rxinfer.jl` script per model via `rxinfer_renderer.py`
+- Discovers all 30 exemplar GNN files under `input/gnn_files/**` (27 discrete +
+  3 continuous, census: `input/gnn_files/INDEX.md`) and emits an executable
+  `*_rxinfer.jl` script per model via `rxinfer_renderer.py`
 
 #### Execute (Step 12)
 - Runs each rendered `.jl` with
@@ -154,10 +161,11 @@ See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documenta
 ## Render → Execute → Log → Visualize lifecycle
 
 The RxInfer.jl lifecycle moves a GNN spec through four stages, producing distinct
-artifact types at each step. All 29 exemplar GNN files under `input/gnn_files/**`
-render to and execute under RxInfer.jl (29/29 render + execute), dispatched by
-detected ModelKind to native flat/hierarchical/factored/continuous/learning
-generators (multi-agent renders as the documented joint composition).
+artifact types at each step. All 30 exemplar GNN files under `input/gnn_files/**`
+(27 discrete + 3 continuous, census: `input/gnn_files/INDEX.md`) render to and
+execute under RxInfer.jl (30/30 render + execute), dispatched by detected
+ModelKind to native flat/hierarchical/factored/continuous/learning generators
+(multi-agent renders as the documented joint composition).
 
 ### 1. Render (Step 11)
 

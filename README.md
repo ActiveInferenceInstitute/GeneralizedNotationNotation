@@ -1,6 +1,6 @@
 # GeneralizedNotationNotation (GNN)
 
-**Last Updated**: 2026-09-07
+**Last Updated**: 2026-09-17
 
 <div align="center">
 
@@ -317,7 +317,7 @@ graph TB
         subgraph "🎯 Outputs (output/)"
             H[📊 Reports<br/>Type checking, analysis]
             I[🎨 Visualizations<br/>Graphs, matrices]
-            J[💻 Generated Code<br/>PyMDP, RxInfer, PyTorch, NumPyro]
+            J["💻 Generated Code<br/>PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, bnlearn"]
             K[🌐 Static Site<br/>HTML summaries]
         end
     end
@@ -412,6 +412,7 @@ graph TB
         StanExec[Stan Runner]
         PyTorchExec[PyTorch Runner]
         NumPyroExec[NumPyro Runner]
+        BnlearnExec[bnlearn Runner]
         LeanExec[Lean Runner]
     end
     
@@ -441,6 +442,7 @@ graph TB
     DisCoPy --> Executor
     Stan --> Executor
     PyTorch --> Executor
+    Bnlearn --> Executor
     NumPyro --> Executor
     
     Executor --> PyMDPExec
@@ -451,6 +453,7 @@ graph TB
     Executor --> StanExec
     Executor --> PyTorchExec
     Executor --> NumPyroExec
+    Executor --> BnlearnExec
     Executor --> LeanExec
     
     PyMDPExec --> Analyzer
@@ -461,6 +464,7 @@ graph TB
     StanExec --> Analyzer
     PyTorchExec --> Analyzer
     NumPyroExec --> Analyzer
+    BnlearnExec --> Analyzer
     LeanExec --> Analyzer
     
     Analyzer --> Results

@@ -1,0 +1,13 @@
+\frametitle{The GNN Approach}
+The defining commitment of GNN is what the project calls the Triple
+Play: a single text specification is the common origin for three
+coordinated renderings of the same model. The text form is the
+authoritative, editable description. From it, GNN produces graphical
+visualizations that expose the model's factor and dependency structure
+for inspection and communication. And from the same source it produces
+executable cognitive models that can actually be run, so that the
+diagram, the equations, and the running code are all generated from one
+parsed document rather than three artifacts that merely claim to
+describe the same model. The Triple Play turns a model from a
+description scattered across media into one specification with multiple
+faithful projections (see fig.~3).

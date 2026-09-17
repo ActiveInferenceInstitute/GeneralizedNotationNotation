@@ -13,6 +13,12 @@ This document provides agent scaffolding for the ActiveInference.jl documentatio
 
 Documentation for the Julia implementation of Active Inference algorithms and frameworks.
 
+**Coverage**: The GNN ActiveInference.jl renderer supports **discrete
+categorical models only** (`A`/`B`/`C`/`D[/E]`, multi-modality and
+multi-factor supported; continuous linear-Gaussian models are not supported —
+`supports_continuous=False`). Rendered scripts are **executable at Step 12**
+via `src/gnn/execute/activeinference_jl/`.
+
 ## Documentation Organization
 
 The ActiveInference.jl documentation system is part of the broader GNN (Generalized Notation Notation) pipeline and ecosystem.

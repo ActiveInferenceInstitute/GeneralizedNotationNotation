@@ -46,6 +46,7 @@ for the current render/execute split.
 - **NumPyro**: [implementation guide](gnn/implementations/numpyro.md)
 - **Stan**: [implementation guide](gnn/implementations/stan.md); executable in Step 12 via the cmdstanpy driver
 - **bnlearn**: [renderer inventory](../src/gnn/render/AGENTS.md); manually enabled and not in the default lock
+- **Lean**: proof verification via the fep_lean bridge (no render target; see [fep_lean docs](other/fep_lean/README.md))
 
 ## Operations network
 
@@ -58,7 +59,7 @@ for the current render/execute split.
 
 - Pipeline order: `src/gnn/pipeline/step_registry.py`
 - CLI options: `src/gnn/utils/arg_parsing.py` and `src/gnn/cli/__init__.py`
-- Automatic YAML path: `input/config.yaml` and `src/gnn/utils/config_loader.py`
+- Automatic YAML path: `input/config.yaml` and `src/gnn/utils/config_io/config_loader.py` (`src/gnn/utils/config_loader.py` is a deprecated shim)
 - Required GNN sections: `src/gnn/schema/parser.py`
 - Render inventory: `src/gnn/render/framework_registry.py`
 - Execute inventory: `src/gnn/execute/processor.py::parse_frameworks_parameter`

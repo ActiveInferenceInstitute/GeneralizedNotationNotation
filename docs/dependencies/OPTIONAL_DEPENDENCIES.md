@@ -6,13 +6,16 @@ This document provides a comprehensive guide to optional dependencies in the GNN
 
 | Framework | Status | Purpose | Install Command | Pipeline Step |
 |-----------|--------|---------|-----------------|---|
-| PyMDP | Core | POMDP agent simulation (pymdp 1.0.0) | `uv sync` | 12 (Execute) |
-| JAX + Flax | Core | JAX neural networks | `uv sync` | 12 (Execute) |
-| NumPyro | Core | Probabilistic programming | `uv sync` | 12 (Execute) |
-| DisCoPy | Core | Category theory / string diagrams | `uv sync` | 12 (Execute) |
-| RxInfer.jl | Optional (Julia) | Julia probabilistic inference | `julia --startup-file=no --project=src/gnn/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'` | 12 (Execute) |
-| ActiveInference.jl | Optional (Julia) | Julia Active Inference | `julia -e 'import Pkg; Pkg.add("ActiveInference")'` | 12 (Execute) |
-| PyTorch | Optional (manual) | Deep learning backend | `uv pip install torch` | 12 (Execute) |
+| PyMDP | Core | POMDP agent simulation (pymdp 1.0.0; discrete categorical models) | `uv sync` | 12 (Execute) |
+| JAX + Flax | Core | JAX neural networks; discrete factorized and continuous LGSSM programs | `uv sync` | 12 (Execute) |
+| NumPyro | Core | Probabilistic programming; discrete and continuous LGSSM | `uv sync` | 12 (Execute) |
+| DisCoPy | Core | Category theory / string diagrams (discrete categorical models) | `uv sync` | 12 (Execute) |
+| Stan | Optional | cmdstanpy driver for HMM (discrete) and LGSSM (continuous) programs | `uv sync --extra stan` + local CmdStan | 12 (Execute) |
+| RxInfer.jl | Optional (Julia) | Julia probabilistic inference (discrete + continuous LGSSM) | `julia --startup-file=no --project=src/gnn/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'` | 12 (Execute) |
+| ActiveInference.jl | Optional (Julia) | Julia Active Inference (discrete categorical models) | `julia --startup-file=no --project=src/gnn/execute/activeinference_jl -e 'using Pkg; Pkg.instantiate()'` | 12 (Execute) |
+| PyTorch | Optional | Deep learning backend; discrete factorized and continuous LGSSM | `uv sync --extra torch` | 12 (Execute) |
+| Lean | Optional | fep_lean bridge for proof-carrying model verification | sibling fep_lean checkout (see `docs/other/fep_lean/README.md`) | 12 (Execute) |
+| bnlearn | Optional | Bayesian network learning (render/execute; runtime optional) | `uv sync --extra bnlearn` | 12 (Execute) |
 | Plotly | Core | Interactive visualizations | `uv sync` | 8-9 (Visualization) |
 | GraphViz | Optional | Advanced graph layouts | `brew install graphviz` / `apt-get install graphviz` | 8-9 (Visualization) |
 
@@ -44,7 +47,7 @@ uv pip install inferactively-pymdp
 **Error if missing**:
 
 ```
-ERROR:src.execute.pymdp.executor:PyMDP import failed: No module named 'pymdp.agent'
+ERROR:gnn.execute.pymdp.executor:PyMDP import failed: No module named 'pymdp.agent'
 ```
 
 **Impact on pipeline**:
@@ -258,8 +261,8 @@ uv sync
 # Optional: Julia frameworks
 # RxInfer.jl — instantiate the committed env (no runtime Pkg.add)
 julia --startup-file=no --project=src/gnn/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'
-# ActiveInference.jl — see its own setup
-julia -e 'import Pkg; Pkg.add("ActiveInference")'
+# ActiveInference.jl — instantiate the committed env (no runtime Pkg.add)
+julia --startup-file=no --project=src/gnn/execute/activeinference_jl -e 'using Pkg; Pkg.instantiate()'
 ```
 
 **Result**:
@@ -284,8 +287,8 @@ uv sync --all-extras
 # Julia packages
 # RxInfer.jl — instantiate the committed env (no runtime Pkg.add)
 julia --startup-file=no --project=src/gnn/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'
-# ActiveInference.jl — see its own setup
-julia -e 'import Pkg; Pkg.add("ActiveInference")'
+# ActiveInference.jl — instantiate the committed env (no runtime Pkg.add)
+julia --startup-file=no --project=src/gnn/execute/activeinference_jl -e 'using Pkg; Pkg.instantiate()'
 
 # System dependencies
 # macOS:
@@ -327,7 +330,7 @@ which dot    # GraphViz installed?
 uv run python src/gnn/1_setup.py --verbose
 
 # Or check within Python
-python -c "
+uv run python -c "
 try:
     import pymdp
     print('PyMDP: Available')
@@ -364,7 +367,7 @@ grep -i "successfully loaded" output/21_mcp_output/*.log
 
 1. Install PyMDP through the core environment: `uv sync`
 2. Or use other frameworks: Execution continues with available frameworks
-3. Check installation: `python -c "import pymdp; print(pymdp.__version__)"`
+3. Check installation: `uv run python -c "import pymdp; print(pymdp.__version__)"`
 
 ### Issue: JAX simulations fail but rendering works
 
@@ -374,7 +377,7 @@ grep -i "successfully loaded" output/21_mcp_output/*.log
 
 1. Install Flax through the core environment: `uv sync`
 2. Or skip JAX simulations in Step 12 settings
-3. Check installation: `python -c "import flax; print(flax.__version__)"`
+3. Check installation: `uv run python -c "import flax; print(flax.__version__)"`
 
 ### Issue: RxInfer simulations skipped
 
@@ -394,7 +397,7 @@ grep -i "successfully loaded" output/21_mcp_output/*.log
 
 1. Install GraphViz (system): See installation steps above
 2. Install Plotly through the core environment: `uv sync`
-3. Run Step 9 with verbose: `python src/gnn/9_advanced_viz.py --verbose`
+3. Run Step 9 with verbose: `uv run python src/gnn/9_advanced_viz.py --verbose`
 
 ---
 
@@ -454,7 +457,11 @@ A: No. The pipeline works without them. Rendering always works; execution uses w
 A: No. The pipeline completes successfully with status SUCCESS_WITH_WARNINGS. Missing frameworks are skipped gracefully.
 
 **Q: How many frameworks do I need for success?**  
-A: Minimum 1. The success criteria: "60% or at least 1 framework succeeds" - so DisCoPy alone is enough.
+A: The Step 12 outcome contract classifies each run: any failed script marks the
+run `failed`; skipped optional frameworks yield `success_with_skips`; all
+executed scripts succeeding yields `success`. Explicit (non-preset) framework
+requests are strict — a failed or skipped requested framework fails the run.
+See `src/gnn/execute/processor.py::_classify_execute_outcome`.
 
 **Q: Can I install dependencies later?**  
 A: Yes. The pipeline detects available frameworks at execution time. Install a new framework and re-run Step 12.
@@ -496,5 +503,4 @@ If you encounter issues with optional dependencies:
 4. See [TROUBLESHOOTING.md](../troubleshooting/README.md) for more help
 
 ---
-
-**Status**: ✅ Current for Pipeline v3.0.0 (verified 2026-08-02 — framework statuses reflect `[project.dependencies]` in `pyproject.toml`)
+**Status**: ✅ Current for Pipeline v3.3.0 (verified 2026-09-17 — framework statuses reflect `[project.dependencies]` in `pyproject.toml`)

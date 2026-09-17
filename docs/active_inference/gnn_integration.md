@@ -53,6 +53,8 @@ This document describes how GNN (Generalized Notation Notation) integrates with 
 | **RxInfer** | [`src/gnn/execute/rxinfer/`](../../src/gnn/execute/rxinfer/) | Julia execution |
 | **ActiveInference.jl** | [`src/gnn/execute/activeinference_jl/`](../../src/gnn/execute/activeinference_jl/) | Julia execution |
 
+Model-kind coverage: **PyMDP** and **ActiveInference.jl** are discrete-only (`supports_continuous=False`); **RxInfer** additionally covers continuous linear-Gaussian models (`supports_continuous=True`, F/H/Q/R parameterization). All three execute at pipeline Step 12.
+
 ### Analysis
 
 | Tool | Path |
@@ -94,7 +96,7 @@ E[num_policies] = habit_prior                  // Policy prior
 
 ## Pipeline Integration
 
-### 24-Step Pipeline
+### 25-Step Pipeline
 
 | Step | Relevance to Active Inference |
 |------|------------------------------|

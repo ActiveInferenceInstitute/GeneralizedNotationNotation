@@ -47,6 +47,22 @@ A={(0.9,0.05,0.05), (0.05,0.9,0.05), (0.05,0.05,0.9)}
 
 ---
 
+## Model Kinds
+
+A GNN file denotes a generative model whose kind is declared by its notation
+blocks and classified by the pipeline (`render.pomdp_contract.detect_model_kind`):
+
+- **Discrete categorical** (POMDP/HMM): `A/B/C/D[/E]` blocks — the syntax shown above
+- **Continuous linear-Gaussian**: `F/H/Q/R` dynamics blocks with `prior_mean/prior_cov`,
+  optional closed-loop `goal_mean/control_gain`
+
+Continuous models render and execute on JAX, NumPyro, PyTorch, Stan, and
+RxInfer.jl; the categorical backends report `unsupported` for them. See the
+README section *"Model Kinds and Framework Support"* and the
+[GNN Syntax Reference](gnn/reference/gnn_syntax.md).
+
+---
+
 ## Directory Reference
 
 | Directory | Purpose |

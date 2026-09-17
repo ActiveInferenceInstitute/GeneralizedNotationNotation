@@ -8,7 +8,9 @@
 
 This directory contains Petri net representations of GNN (Generalized Notation Notation) models, enabling formal analysis of concurrent and distributed Active Inference processes. Petri nets provide a mathematical framework for modeling parallel computation, synchronization, and verification of system properties in Active Inference agents.
 
-**Status**: ✅ Production Ready  
+> **Scope note**: Petri nets / PNML are a *format and modeling-notes* capability, not a render or execution framework. PNML has a parser in the GNN format registry (`PNMLParser` in `src/gnn/parsers/xml_parser.py`, `GNNFormat.PNML`), but it is **parse-only** — there is no PNML serializer in `SERIALIZER_REGISTRY`, no PNML exporter in `src/gnn/export/`, no entry in `src/gnn/render/framework_registry.py`, and no Step 12 executor. The `.pnml`/`.xml` files here are example Petri net representations of Active Inference processes.
+
+**Status**: Documentation module — PNML samples and modeling notes (Petri nets are not a render/execution framework)  
 **Version**: 1.0
 
 ## Purpose
@@ -110,19 +112,17 @@ The Petri net representation supports verification of:
 
 ## Integration with Pipeline
 
-This documentation is integrated with the 25-step GNN processing pipeline:
+This documentation references the 25-step GNN processing pipeline as follows:
 
-1. **Core Processing** (Steps 0-9): GNN parsing, validation, export
-   - Petri net models can be generated from GNN specifications
-   - Validation includes Petri net structure verification
+Petri net support in the codebase today is **PNML parsing only**:
 
-2. **Simulation** (Steps 10-16): Model execution and analysis
-   - Petri net execution for concurrent process simulation
-   - Workflow analysis and verification
+1. **Parsing**: `PNMLParser` handles `GNNFormat.PNML` (`.pnml`) input in `src/gnn/parsers/`.
+   PNML has no serializer registry entry and is excluded from the default round-trip test list.
+2. **No export or render path**: `src/gnn/export/` does not emit PNML, and no pipeline
+   step generates Petri nets from GNN specifications or runs Petri net simulation.
+   The workflow/verification capabilities described above are modeling notes, not
+   implemented pipeline behavior.
 
-3. **Integration** (Steps 17-24): System coordination and output
-   - Petri net models exported as part of comprehensive outputs
-   - Formal verification results included in reports
 
 See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documentation.
 
@@ -195,6 +195,6 @@ All documentation in this module adheres to professional standards:
 
 ---
 
-**Status**: ✅ Production Ready  
+**Status**: Documentation module — PNML samples and modeling notes (PNML is parse-only in `src/gnn/parsers/`; no export, render, or execution support)  
 **Compliance**: Professional documentation standards  
 **Maintenance**: Regular updates with new Petri net features and verification capabilities

@@ -8,7 +8,9 @@
 
 This directory contains comprehensive documentation, resources, and implementation guides for integrating **SPM** (Statistical Parametric Mapping) with GNN (Generalized Notation Notation). SPM provides established statistical frameworks for neuroimaging analysis, enabling translation of neuroimaging insights into computational cognitive architectures.
 
-**Status**: ✅ Production Ready  
+> **Scope note**: SPM is documented here as a research/integration-notes capability. It is **not** a render or execution framework — it is not an entry in `src/gnn/render/framework_registry.py`, and no SPM code exists under `src/gnn/`. Pipeline references below describe where such integration *could* attach, not implemented behavior.
+
+**Status**: Documentation module — research/integration notes (no SPM implementation in `src/gnn/`)  
 **Version**: 1.0
 
 ## Purpose
@@ -43,24 +45,25 @@ This module is organized as follows:
 
 ## Integration with Pipeline
 
-This documentation is integrated with the 25-step GNN processing pipeline:
+This documentation references the 25-step GNN processing pipeline at the conceptual level:
 
-### Core Processing (Steps 0-9)
-- **Step 3 (GNN)**: SPM-informed GNN model specification
-- **Step 5 (Type Checker)**: Neuroimaging data validation
-- **Step 6 (Validation)**: SPM-based model validation
+The integration pathways below are **proposals**, not implemented behavior. No
+pipeline step invokes SPM today (no SPM code under `src/gnn/`; SPM is not in
+`framework_registry.py`, so there is no Step 11 render target and no Step 12
+executor for it):
 
-### Simulation (Steps 10-16)
-- **Step 11 (Render)**: SPM-calibrated code generation
-- **Step 12 (Execute)**: Cross-validation with neuroimaging data
-- **Step 16 (Analysis)**: SPM statistical analysis integration
+- **Step 3 (GNN)**: where SPM-informed model specification *could* attach
+- **Step 6 (Validation)**: where SPM-based statistical validation *could* attach
+- **Step 11 (Render)** / **Step 12 (Execute)**: no SPM target or executor exists
+- **Step 16 (Analysis)**: where SPM-style statistical analysis *could* integrate
 
-### Integration (Steps 17-24)
-- **Step 23 (Report)**: Neuroscientific validation and analysis results
 
 See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documentation.
 
-## Function Signatures and API
+## Function Signatures and API (proposed — not implemented)
+
+The signatures below are **illustrative sketches** of a future SPM bridge; no such
+functions exist anywhere in the codebase.
 
 ### Neuroimaging Analysis Functions
 
@@ -125,6 +128,6 @@ All documentation in this module adheres to professional standards:
 
 ---
 
-**Status**: ✅ Production Ready  
+**Status**: Documentation module — research/integration notes (no SPM implementation in `src/gnn/`)  
 **Compliance**: Professional documentation standards  
 **Maintenance**: Regular updates with new SPM features and integration capabilities

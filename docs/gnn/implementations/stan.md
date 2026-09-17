@@ -81,9 +81,11 @@ does not execute it.
 
 ## Verification
 
-All 29 exemplars render and execute under Stan on the reference machine
-(CmdStan 2.39): 26 discrete HMM programs (NUTS or MAP by budget) and 3
-continuous LGSSM programs, each with `validation.all_valid == true`. Tests:
-`tests/render/test_render_stan.py`, `tests/execute/test_execute_stan.py`,
+The exemplar census (`input/gnn_files/INDEX.md`, measured 2026-09-17) counts 30
+runnable specs: 27 discrete (rendered to HMM programs, NUTS or MAP by budget)
+and 3 continuous (rendered to LGSSM programs). Per-run render/execute outcomes
+and per-model validation flags live in the Step 11/12 summaries, not here.
+Tests: `tests/render/test_render_stan.py`,
+`tests/execute/test_execute_stan.py`,
 `tests/render/test_continuous_renderers.py` (compile/sample steps skip
 when CmdStan is absent).

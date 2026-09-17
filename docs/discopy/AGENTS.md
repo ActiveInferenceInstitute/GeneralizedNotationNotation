@@ -26,6 +26,10 @@ The DisCoPy Category Theory documentation system is part of the broader GNN (Gen
 ## Subsystems
 
 - **gnn_discopy.md**: DisCoPy integration and categorical diagram generation
+- **Coverage**: Discrete categorical POMDP string diagrams only — no continuous
+  linear-Gaussian support (`supports_continuous: False` in
+  `src/gnn/render/framework_registry.py`); rendered scripts are executed by
+  `src/gnn/execute/discopy/discopy_executor.py`
 
 ## Quick Navigation
 

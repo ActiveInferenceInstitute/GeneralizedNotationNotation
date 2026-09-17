@@ -605,24 +605,37 @@ should consult the profiled-unsupported ledger that
 <code>scripts/run_model_family_acceptance.py</code> writes — the command
 is given in <span class="citation"
 data-cites="sec:reproducibility">[@sec:reproducibility]</span> — before
-assuming a given family will round-trip through a given framework.</p>
+assuming a given family will round-trip through a given framework. The
+per-kind shape of that matrix matters as much as its gaps: the
+categorical-only backends report the continuous linear-Gaussian kind
+<code>unsupported</code> by declared capability rather than by accident,
+the structural kind is render-only by design on every backend, and the
+recursive corpus is reserved for bounded autonomous runs and holds no
+committed models yet — boundaries recorded where the kinds are defined
+(<span class="citation"
+data-cites="sec:model_kinds">[@sec:model_kinds]</span>) rather than
+discovered mid-run.</p>
 <p>A third limitation is one of scope rather than capability. The formal
 account in <span class="citation"
-data-cites="sec:system_context">[@sec:system_context]</span> fixes the
-generative-model components <code>A</code>, <code>B</code>,
-<code>C</code>, <code>D</code> and <code>E</code> as given and defines
-only state inference (<span class="citation"
-data-cites="eq:vfe">[@eq:vfe]</span>) and policy inference (<span
-class="citation" data-cites="eq:efe">[@eq:efe]</span>). GNN can also
-express <em>parameter</em> learning: a matrix may be declared as a
-latent variable with a Dirichlet prior, and the repository ships both a
-corpus model that does so
+data-cites="sec:system_context">[@sec:system_context]</span> fixes each
+kind’s parameterization as given — the categorical tensors
+<code>A</code>, <code>B</code>, <code>C</code>, <code>D</code>, and
+<code>E</code> of the discrete kind and the system matrices, Gaussian
+prior, and optional control declarations of the linear-Gaussian kind —
+and states only belief-level inference: state and policy inference for
+the categorical kind (<span class="citation"
+data-cites="eq:vfe">[@eq:vfe]</span>, <span class="citation"
+data-cites="eq:efe">[@eq:efe]</span>) and fixed-parameter filtering and
+control for the continuous kind. GNN can also express <em>parameter</em>
+learning: a matrix may be declared as a latent variable with a Dirichlet
+prior, and the repository ships both a corpus model that does so
 (<code>input/gnn_files/learning/dirichlet_likelihood_learning.md</code>,
 which learns its likelihood matrix <code>A</code> from observations by
 joint variational message passing) and the renderer strategy that emits
-code for it (<code>src/render/rxinfer/_strategies_learning.py</code>).
-That corpus directory is registered in no manifest family — the
-unregistered set is exactly <code>input/gnn_files/learning</code>,
+code for it
+(<code>src/gnn/render/rxinfer/_strategies_learning.py</code>). That
+corpus directory is registered in no manifest family — the unregistered
+set is exactly <code>input/gnn_files/learning</code>,
 <code>input/gnn_files/recursive</code> — so parameter learning is
 exercised by neither the semantic-fidelity nor the cross-framework
 ledger and carries no figure or table in this manuscript. We state it
@@ -662,9 +675,9 @@ them to the session-acceptance and run-manifest paths, and three new
 Model Context Protocol tools expose them. The unifying discipline across
 all three is that orchestration becomes more capable only as fast as it
 becomes more inspectable.</p>
-<p>The next major target, v4.0.0, pushes toward bounded autonomy, and it
-is gated behind the 3.0.0 orchestration work for good reason. The intent
-is to promote today’s proposal-only candidate-scoring machinery — which
+<p>The next major release pushes toward bounded autonomy, and it is
+gated behind the 3.0.0 orchestration work for good reason. The intent is
+to promote today’s proposal-only candidate-scoring machinery — which
 already ranks candidate patches using the existing validators,
 model-family ledgers, and interpretability reports — toward <em>reviewed
 self-editing of GNN files</em>. Crucially, the design keeps a human in
@@ -676,10 +689,14 @@ governs the rest of the system, in the lineage of active-inference
 accounts of self-organizing systems that act to minimize free energy
 under explicit generative models [friston2010; parr2022]: an agent
 should expand its license to act only in proportion to the reviewability
-of what it does. The v4.0.0 items are not claimed as complete here; they
-are the recorded direction of travel, and each will be evidenced by its
-own gates when it lands, just as the 3.0.0 contracts are evidenced by
-theirs today.</p>
+of what it does. The next-release items are not claimed as complete
+here; they are the recorded direction of travel, and each will be
+evidenced by its own gates when it lands, just as the 3.0.0 contracts
+are evidenced by theirs today. On the model-kind axis the same staging
+applies: extending native hierarchical rendering beyond the two-level
+strategies, broadening continuous reach across the remaining registered
+backends, and populating the reserved recursive corpus each arrive with
+their own gate evidence rather than by prose assertion.</p>
 </main>
 </body>
 </html>

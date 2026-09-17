@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999998 (TeX Live 2026) (preloaded format=xelatex 2026.3.1)  16 SEP 2026 23:55
+This is XeTeX, Version 3.141592653-2.6-0.999998 (TeX Live 2026) (preloaded format=xelatex 2026.3.1)  17 SEP 2026 10:20
 entering extended mode
  %&-line parsing enabled.
 **_combined_manuscript.tex
@@ -1265,40 +1265,44 @@ File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 [1]
 File: ../figures/gnn_graphical_abstract.png Graphic file (type bmp)
 <../figures/gnn_graphical_abstract.png>
- [2] [3] [4] [5]
+ [2] [3] [4] [5] [6] [7]
 File: ../figures/gnn_pipeline_dag.png Graphic file (type bmp)
 <../figures/gnn_pipeline_dag.png>
-
-ignored: Infinite glue shrinkage found in box being split [6]
+ [8]
+ignored: Infinite glue shrinkage found in box being split [9]
 File: ../figures/gnn_triple_play.png Graphic file (type bmp)
 <../figures/gnn_triple_play.png>
- [7] [8]
+ [10] [11]
 File: ../figures/gnn_backend_capability_matrix.png Graphic file (type bmp)
 <../figures/gnn_backend_capability_matrix.png>
- [9] [10]
+ [12] [13]
 File: ../figures/gnn_orchestration.png Graphic file (type bmp)
 <../figures/gnn_orchestration.png>
- [11]
+ [14] [15] [16]
+ignored: Infinite glue shrinkage found in box being split [17]
 File: ../figures/gnn_family_framework_matrix.png Graphic file (type bmp)
 <../figures/gnn_family_framework_matrix.png>
- [12] [13]
+
+[18]
 File: ../figures/gnn_repo_metrics.png Graphic file (type bmp)
 <../figures/gnn_repo_metrics.png>
- [14] [15] [16] [17]
-[18] [19] [20] [21] [22] (./_combined_manuscript.bbl) [23]
-(./_combined_manuscript.aux)
+ [19] [20] [21] [22] [23] [24] [25]
+ignored: Infinite glue shrinkage found in box being s
+plit [26]
+ignored: Infinite glue shrinkage found in box being split [27] [28]
+(./_combined_manuscript.bbl) [29] (./_combined_manuscript.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
  ***********
  )
 Here is how much of TeX's memory you used:
- 23718 strings out of 469709
- 434354 string characters out of 5466024
- 1051868 words of memory out of 5000000
- 52038 multiletter control sequences out of 15000+600000
+ 23739 strings out of 469709
+ 434672 string characters out of 5466024
+ 1056618 words of memory out of 5000000
+ 52059 multiletter control sequences out of 15000+600000
  631333 words of font info for 82 fonts, out of 8000000 for 9000
  319 hyphenation exceptions out of 8191
- 90i,9n,114p,1606b,571s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 90i,9n,114p,1708b,565s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on _combined_manuscript.pdf (24 pages).
+Output written on _combined_manuscript.pdf (30 pages).

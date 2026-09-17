@@ -4,7 +4,7 @@ This document defines the architectural integration pathways between the `bnlear
 
 ## Concept Overview
 
-Active Inference relies natively on Partially Observable Markov Decision Processes (POMDPs) modeled using Generative Graphical structures. `bnlearn` provides a robust Bayesian abstraction that integrates naturally into the GNN pipeline, acting as a mathematical bridge for structure learning and inference on simulated traces. By converting generalized notation payloads into `bnlearn` DAGs and DataFrames, the GNN ecosystem can conduct deep causal validations, parameter tracking, and interactive visualizations.
+Active Inference relies natively on Partially Observable Markov Decision Processes (POMDPs) modeled using Generative Graphical structures. `bnlearn` provides a robust Bayesian abstraction that integrates naturally into the GNN pipeline, acting as a mathematical bridge for structure learning and inference on simulated traces. It renders **discrete categorical Bayesian networks** (optional A/B/C/D/E matrices; multi-modality and multi-factor supported — continuous linear-Gaussian models are unsupported). By converting generalized notation payloads into `bnlearn` DAGs and DataFrames, the GNN ecosystem can conduct deep causal validations, parameter tracking, and interactive visualizations.
 
 ---
 
@@ -26,13 +26,14 @@ The network visualization framework in `bnlearn` complements GNN's Graph and Mat
 *   **Comparison tracking**: For models moving through registry tracking (Step 4), `bn.compare_networks()` provides visual diffs of active inference networks evolving across versions.
 
 ### Step 12: Simulation & Execute
-Active Inference execution engines (`pymdp`, `rxinfer`) inherently generate trajectory traces as they sample hidden state inferences over time.
-*   The raw simulation traces produced in `Step 12: Execute` act as the raw historical `DataFrame` fed into `bnlearn`. 
-*   This creates a powerful recursive loop where Bayesian structures are continuously updated utilizing real-time simulated outputs:
-    ```python
-    # After simulation yields a trajectory dataframe `df_sim`
-    learned_structure = bn.structure_learning.fit(df_sim, methodtype="hc", scoretype="bic")
-    ```
+
+`bnlearn` is itself an execution target, not render-only: rendered `bnlearn` scripts are run at Step 12 by the dedicated runner in [`src/gnn/execute/bnlearn/`](../../src/gnn/execute/bnlearn/) with output written under `BNLEARN_OUTPUT_DIR`; scripts skip when the `bnlearn` extra is absent (`utils.framework_availability`). Separately, the Active Inference execution engines (`pymdp`, `rxinfer`) generate trajectory traces as they sample hidden state inferences over time, and those raw simulation traces produced in `Step 12: Execute` act as the raw historical `DataFrame` fed into `bnlearn`.
+
+This creates a powerful recursive loop where Bayesian structures are continuously updated utilizing real-time simulated outputs:
+```python
+# After simulation yields a trajectory dataframe `df_sim`
+learned_structure = bn.structure_learning.fit(df_sim, methodtype="hc", scoretype="bic")
+```
 
 ### Step 16: Analysis
 In this step, advanced statistical analysis utilizes `bnlearn` specifically for **Causal Inference**:

@@ -7,7 +7,7 @@
 ## Overview
 
 > **🎯 Purpose**: Standardized starting points for GNN model development  
-> **📊 Total Templates**: 4 comprehensive templates (49KB documentation)  
+> **📊 Total Templates**: 4 comprehensive templates (~50KB documentation)
 > **✅ Coverage**: All major use cases (basic, POMDP, multi-agent, hierarchical)
 
 This directory contains template files for different types of GNN models, providing standardized starting points for model development.
@@ -38,7 +38,7 @@ This directory contains template files for different types of GNN models, provid
 > **📋 Metadata**: Complexity: Intermediate | Domain: Navigation, Perception | Features: Temporal, Stochastic  
 > **🎯 Learning Path**: Part of [Intermediate Path](../learning_paths.md#intermediate-path)
 
-**File**: `pomdp_template.md` (9.5KB, 240 lines)  
+**File**: `pomdp_template.md` (9.5KB, 239 lines)
 **Use Case**: Partially Observable Markov Decision Processes  
 **Features**:
 - Hidden states and observations
@@ -54,7 +54,7 @@ This directory contains template files for different types of GNN models, provid
 ### Multi-agent Template  
 > **📋 Metadata**: Complexity: Advanced | Domain: Multi-agent, Robotics | Features: Multimodal, Communication
 
-**File**: `multiagent_template.md` (17KB, 393 lines)  
+**File**: `multiagent_template.md` (17KB, 392 lines)
 **Use Case**: Multiple interacting agents  
 **Features**:
 - Agent-specific state spaces
@@ -70,7 +70,7 @@ This directory contains template files for different types of GNN models, provid
 ### Hierarchical Template
 > **📋 Metadata**: Complexity: Expert | Domain: Cognitive Architecture | Features: Hierarchical, Multi-scale
 
-**File**: `hierarchical_template.md` (19KB, 412 lines)  
+**File**: `hierarchical_template.md` (19KB, 411 lines)
 **Use Case**: Multi-level cognitive architectures  
 **Features**:
 - Multiple temporal scales
@@ -98,8 +98,8 @@ cp docs/templates/basic_gnn_template.md my_model.md
 ### Method 2: Template Library CLI
 ```bash
 # List and pull packaged templates via the gnn CLI
-gnn templates list
-gnn pull actinf-pomdp-2state --output-dir input/gnn_files/
+uv run gnn templates list
+uv run gnn pull actinf-pomdp-2state --output-dir input/gnn_files/
 ```
 
 **Cross-References**: [Pipeline Guide](../gnn/operations/gnn_tools.md) | [Configuration](../configuration/README.md)
@@ -264,6 +264,13 @@ Each template includes metadata for automatic categorization:
 | **POMDP** | ✅ Native | ✅ Full | ✅ Partial | PyMDP specializes in POMDP |
 | **Multi-agent** | ✅ Full | ✅ Native | ✅ Compositional | RxInfer excels at coordination |
 | **Hierarchical** | ✅ Partial | ✅ Full | ✅ Native | DisCoPy ideal for composition |
+
+The packaged templates above cover **discrete categorical** models. For
+**continuous linear-Gaussian** models (F/H/Q/R with `prior_mean`/`prior_cov`),
+start from the runnable exemplars under
+[`input/gnn_files/continuous/`](../../input/gnn_files/continuous/) — e.g.
+`continuous_navigation.md` — which render to JAX, NumPyro, PyTorch, Stan
+(LGSSM), and RxInfer.jl programs.
 
 **Cross-References**: 
 - *PyMDP Integration*: [PyMDP Guide](../pymdp/gnn_pymdp.md)

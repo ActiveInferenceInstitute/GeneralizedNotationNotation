@@ -1,8 +1,7 @@
 # Specification: Sympy
 
 ## Design Requirements
-This module (`sympy`) maps structural logic to the overall execution graph.
-It ensures that `Sympy` tasks resolve without runtime dependency loops.
+This is a documentation-only directory. SymPy is not a render or execution framework — it is not an entry in `src/gnn/render/framework_registry.py` and has no Step 12 executor. The implemented integration is the MCP tool surface in `src/gnn/mcp/sympy_mcp.py` and `sympy_mcp_client.py` (eight `sympy_*` tools, registered at Step 21).
 
 ## Components
 Expected available types: No specific classes exported.

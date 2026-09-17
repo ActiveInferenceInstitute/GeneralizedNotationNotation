@@ -15,12 +15,14 @@
 \headcommand {\beamer@framepages {6}{6}}
 \headcommand {\slideentry {1}{0}{6}{7/7}{}{0}}
 \headcommand {\beamer@framepages {7}{7}}
-\headcommand {\slideentry {1}{0}{7}{8/8}{}{0}}
-\headcommand {\beamer@framepages {8}{8}}
-\headcommand {\slideentry {1}{0}{8}{9/9}{}{0}}
+\headcommand {\slideentry {1}{0}{6}{7/8}{}{0}}
+\headcommand {\beamer@framepages {7}{8}}
+\headcommand {\slideentry {1}{0}{7}{9/9}{}{0}}
 \headcommand {\beamer@framepages {9}{9}}
-\headcommand {\beamer@partpages {1}{9}}
-\headcommand {\beamer@subsectionpages {1}{9}}
-\headcommand {\beamer@sectionpages {1}{9}}
-\headcommand {\beamer@documentpages {9}}
-\headcommand {\gdef \inserttotalframenumber {9}}
+\headcommand {\slideentry {1}{0}{8}{10/10}{}{0}}
+\headcommand {\beamer@framepages {10}{10}}
+\headcommand {\beamer@partpages {1}{10}}
+\headcommand {\beamer@subsectionpages {1}{10}}
+\headcommand {\beamer@sectionpages {1}{10}}
+\headcommand {\beamer@documentpages {10}}
+\headcommand {\gdef \inserttotalframenumber {10}}

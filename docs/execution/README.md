@@ -27,13 +27,18 @@ execution/
 
 ## Framework Support
 
-The execution subsystem provides support for multiple Active Inference simulation frameworks:
+The execution subsystem provides support for multiple Active Inference
+simulation frameworks across both model kinds (discrete categorical and
+continuous linear-Gaussian — see [FRAMEWORK_AVAILABILITY.md](FRAMEWORK_AVAILABILITY.md)):
 
-- **PyMDP**: Python Active Inference (primary)
-- **RxInfer.jl**: Julia Bayesian inference via genuine `@model` + `infer()` (committed `Project.toml` + `Manifest.toml` under `src/gnn/execute/rxinfer/` pin RxInfer 5.5.0; run with `julia --startup-file=no --project=src/gnn/execute/rxinfer <script>`, no runtime `Pkg.add`)
-- **ActiveInference.jl**: Complete Julia implementation
-- **DisCoPy**: Category theory and quantum computing
-- **JAX**: GPU-accelerated tensor operations
+- **PyMDP**: Python Active Inference (discrete models; primary)
+- **RxInfer.jl**: Julia Bayesian inference via genuine `@model` + `infer()` (committed `Project.toml` + `Manifest.toml` under `src/gnn/execute/rxinfer/` pin RxInfer 5.5.0; run with `julia --startup-file=no --project=src/gnn/execute/rxinfer <script>`, no runtime `Pkg.add`) — discrete and continuous LGSSM lanes
+- **ActiveInference.jl**: Complete Julia implementation (discrete models)
+- **DisCoPy**: Category theory and quantum computing (discrete models)
+- **JAX / NumPyro / PyTorch**: discrete factorized and continuous linear-Gaussian (LGSSM) programs
+- **Stan**: HMM (discrete) and LGSSM (continuous) programs via the cmdstanpy driver in `src/gnn/execute/stan/`
+- **Lean**: proof-carrying models via the fep_lean bridge
+- **bnlearn**: Bayesian network learning (render/execute; runtime optional)
 
 ## Integration
 

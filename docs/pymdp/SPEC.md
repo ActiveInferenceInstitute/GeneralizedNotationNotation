@@ -12,4 +12,8 @@ It ensures that `Pymdp` tasks resolve without runtime dependency loops.
 ## Interfaces
 - **Step 11 (Render)**: Generates JAX-optimized runner scripts.
 - **Step 12 (Execute)**: Invokes the PyMDP 1.0.0 Agent rollout loop.
+- **Model-Kind Coverage**: Discrete categorical A/B/C/D[/E] only — continuous
+  linear-Gaussian models are unsupported (`supports_continuous: False` in
+  `src/gnn/render/framework_registry.py`); rendered scripts execute at Step 12
+  (`supports_execution: True`).
 - **Scaling Orchestrator**: External driver for batch simulation and meta-analysis.

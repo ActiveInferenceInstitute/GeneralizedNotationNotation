@@ -4,6 +4,20 @@ This guide describes the integration contract implemented in this repository
 against the **JAX-first pymdp 1.0.0** release
 ([upstream](https://github.com/infer-actively/pymdp)).
 
+## Model Kind Coverage and Execution Status
+
+This integration supports **discrete categorical models only**:
+`A`/`B`/`C`/`D` (plus optional `E`), including multi-modality and
+multi-factor POMDPs. Continuous linear-Gaussian models (`F`/`H`/`Q`/`R`
+system matrices or `prior_mean`/`prior_cov` — the `CONTINUOUS` class from
+`detect_model_kind`) are **not supported** by this renderer
+(`supports_continuous=False` in `src/gnn/render/framework_registry.py`).
+
+Rendered scripts are **executable at Step 12 (execute)** via
+`src/gnn/execute/pymdp/` (`pymdp_runner.py`, with the canonical rollout in
+`simulation.py`). Per pymdp 1.0.0, `B` matrices are column-stochastic per
+action slice.
+
 ## What This Repository Implements
 
 - **Step 11 (render)** produces pymdp 1.0.0 runner scripts from parsed GNN

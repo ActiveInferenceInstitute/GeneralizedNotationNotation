@@ -73,27 +73,22 @@ result = asyncio.run(analyze_gnn_file(file_path))
 - Step 3 warnings
 
 #### Resolution
+The lightweight processor exists in the package — import it rather than
+reimplementing it:
+
 ```python
-# In src/gnn/__init__.py:
-def process_gnn_directory_lightweight(directory: Path) -> Dict[str, Any]:
-    """Lightweight GNN directory processing fallback."""
-    results = {}
-    for file in directory.glob("**/*.md"):
-        try:
-            results[str(file)] = {
-                "status": "processed",
-                "format": "markdown",
-                "size": file.stat().st_size,
-            }
-        except Exception as e:
-            results[str(file)] = {"status": "error", "error": str(e)}
-    return results
+from gnn import process_gnn_directory_lightweight
+
+results = process_gnn_directory_lightweight("input/gnn_files")
 ```
 
+If that import fails, your environment is out of sync: run `uv sync --extra dev`
+and check `uv run gnn health` before debugging further.
+
 #### Prevention
-- Implement lightweight processing in all critical modules
-- Add feature detection during setup
-- Document fallback mechanisms
+- Keep the `gnn` export list in `src/gnn/__init__.py` authoritative for the symbols above
+- Run the focused Step 3 tests after touching processing imports
+- Document any new fallback surface in the module AGENTS/README pair
 
 ### 4. JAX/TPU Initialization (Step 12 - Execute)
 
@@ -104,7 +99,8 @@ def process_gnn_directory_lightweight(directory: Path) -> Dict[str, Any]:
 
 #### Resolution
 ```python
-# In src/gnn/execute/jax_runner.py:
+# The executor sets the JAX platform per run (see src/gnn/execute/processor.py);
+# for ad-hoc work, fall back to CPU explicitly:
 def initialize_jax_devices():
     """Initialize JAX with graceful fallback."""
     try:
@@ -151,7 +147,7 @@ def initialize_jax_devices():
 
 ### 1. Logging and Diagnostics
 - Enable verbose logging: `--verbose`
-- Check step-specific logs in `output/logs/`
+- Check run logs in `output/00_pipeline_logs/`
 - Monitor system resources
 - Review pipeline execution summary
 

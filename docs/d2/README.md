@@ -8,6 +8,8 @@
 
 This directory contains documentation, resources, and implementation guides for integrating **D2** (Declarative Diagramming) with GNN (Generalized Notation Notation). D2 provides powerful declarative diagramming capabilities for creating professional visualizations of pipeline architecture, model structures, and data flows.
 
+**Role**: D2 is a **visualization capability**, not a render or execution framework. It is not an entry in the pipeline's framework registry (`src/gnn/render/framework_registry.py`), generates no simulation code, and has no Step 12 executor. D2 diagram generation ships with the advanced visualization module (`src/gnn/advanced_visualization/d2_visualizer.py`, used by Step 9), which converts GNN models to D2 specifications and compiles them to SVG/PNG/PDF via the external D2 CLI (probed as an optional tool in pipeline preflight).
+
 **Status**: ✅ Production Ready  
 **Version**: 1.0
 
@@ -78,17 +80,7 @@ D2 provides:
 
 This documentation is integrated with the 25-step GNN processing pipeline:
 
-1. **Core Processing** (Steps 0-9): GNN parsing, validation, export
-   - D2 diagrams generated for model structures
-   - Pipeline architecture visualization
-
-2. **Simulation** (Steps 10-16): Model execution and analysis
-   - D2 diagrams for execution flows
-   - Data flow visualizations
-
-3. **Integration** (Steps 17-24): System coordination and output
-   - D2 diagrams integrated into comprehensive outputs
-   - Professional visualization generation
+- **Advanced Visualization** (Step 9): D2 diagram generation is offered by the advanced visualization module — visualization types include `d2/diagrams` and `pipeline` (see `src/gnn/9_advanced_viz.py` and `src/gnn/advanced_visualization/d2_visualizer.py`). The external D2 CLI compiles the generated D2 specifications to SVG/PNG/PDF; if the CLI is absent, the step logs and skips D2 output rather than failing the pipeline.
 
 See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documentation.
 

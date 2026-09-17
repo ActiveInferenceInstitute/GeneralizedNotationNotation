@@ -1,5 +1,7 @@
 # Leveraging Apple's Pkl Configuration Language for Generalized Notation Notation (GNN)
 
+> **Scope note**: This is a strategy/proposal document. The implemented Pkl capability in the tree is the **PKL parse/serialize format** (`PKLParser`/`PKLSerializer` for `GNNFormat.PKL` in `src/gnn/parsers/`, exercised by Step 3 (`3_gnn.py`) multi-format serialization, with artifacts in `output/3_gnn_output/`). Pkl is **not** a render or execution framework — it is not an entry in `src/gnn/render/framework_registry.py` and has no Step 12 executor. The pipeline configurations and step labels below are proposals; step numbers have been aligned with the current 25-step pipeline.
+
 ## Executive Summary
 
 This document explores the strategic integration of Apple's Pkl (Pickle) configuration language with the Generalized Notation Notation (GNN) project, a text-based language for standardizing Active Inference generative models. By adopting Pkl's advanced configuration-as-code paradigm, GNN could significantly enhance its model specification capabilities, validation mechanisms, and multi-format output generation while maintaining scientific rigor and mathematical precision.
@@ -165,9 +167,9 @@ class ExperimentConfiguration {
 
 ## Integration with GNN's 25-Step Pipeline
 
-### Enhanced Pipeline Steps with Pkl Integration
+### Enhanced Pipeline Steps with Pkl Integration (proposed)
 
-#### **Step 1-2: Enhanced GNN Parsing and Setup**
+#### **Step 3: Enhanced GNN Parsing with Pkl**
 
 ```pkl
 class GNNProcessingConfig {
@@ -185,7 +187,7 @@ class GNNProcessingConfig {
 }
 ```
 
-#### **Step 4: Advanced Type Checking with Pkl Constraints**
+#### **Step 5: Advanced Type Checking with Pkl Constraints**
 
 ```pkl
 class GNNTypeChecker {
@@ -210,7 +212,7 @@ class GNNTypeChecker {
 }
 ```
 
-#### **Step 5: Multi-Format Export Enhancement**
+#### **Step 7: Multi-Format Export Enhancement**
 
 ```pkl
 class ExportConfiguration {
@@ -303,7 +305,7 @@ class RxInferConfig {
 }
 ```
 
-## LLM Integration Enhancement (Step 11)
+## LLM Integration Enhancement (Step 13)
 
 ### AI-Powered Configuration Generation
 
@@ -338,7 +340,7 @@ class LLMIntegrationConfig {
 }
 ```
 
-## Categorical Diagrams with Pkl (Steps 12-13)
+## Categorical Diagrams with Pkl (Step 11 Render)
 
 ### DisCoPy Integration Configuration
 

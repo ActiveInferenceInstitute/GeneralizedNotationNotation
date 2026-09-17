@@ -163,4 +163,6 @@ print("Dataframe Record:\n", query_2.df)
 - **Documentation Hub:** [Official Site](https://erdogant.github.io/bnlearn)
 - **Bug Reporting & Features:** [GitHub Tracker](https://github.com/erdogant/bnlearn/issues)
 
-This agentic module provides standard mapping for integrating `bnlearn` algorithms into GNN orchestration and verification pipelines.
+### GNN Pipeline Integration
+
+In the GNN ecosystem, `bnlearn` renders **discrete categorical Bayesian networks** (optional A/B/C/D/E matrices; multi-modality and multi-factor supported) and is **executable**, not render-only: rendered scripts run at pipeline Step 12 via [`src/gnn/execute/bnlearn/`](../../src/gnn/execute/bnlearn/) with output under `BNLEARN_OUTPUT_DIR`. Scripts skip when the `bnlearn` extra is absent (`utils.framework_availability`). Continuous linear-Gaussian models are unsupported (`supports_continuous=False` in `src/gnn/render/framework_registry.py`).

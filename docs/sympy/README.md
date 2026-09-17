@@ -8,7 +8,9 @@
 
 This directory contains documentation, resources, and implementation guides for integrating **SymPy** (Symbolic Mathematics Library) with GNN (Generalized Notation Notation). SymPy provides symbolic computation capabilities through the Model Context Protocol (MCP), enhancing mathematical processing for Active Inference model specification, validation, and analysis.
 
-**Status**: ✅ Production Ready  
+> **Scope note**: SymPy is a *symbolic-mathematics via MCP* capability, not a render or execution framework. It is not an entry in `src/gnn/render/framework_registry.py` (pymdp, rxinfer, activeinference_jl, jax, discopy, pytorch, numpyro, stan, bnlearn), has no Step 12 executor, and does no continuous linear-Gaussian rendering. The implemented integration lives in `src/gnn/mcp/sympy_mcp.py` and `src/gnn/mcp/sympy_mcp_client.py`.
+
+**Status**: MCP tool integration implemented in `src/gnn/mcp/` (8 SymPy tools registered via Step 21); SymPy itself is not a render/execution framework  
 **Version**: 1.0
 
 ## Quick Navigation
@@ -78,19 +80,14 @@ SymPy integration enables:
 
 ## Integration with Pipeline
 
-This documentation is integrated with the 25-step GNN processing pipeline:
+This documentation references the 25-step GNN processing pipeline as follows:
 
-1. **Core Processing** (Steps 0-9): GNN parsing, validation, export
-   - SymPy validation of equation sections
-   - Mathematical expression simplification
-
-2. **Simulation** (Steps 10-16): Model execution and analysis
-   - Symbolic computation for model analysis
-   - Mathematical validation
-
-3. **Integration** (Steps 17-24): System coordination and output
-   - SymPy results integrated into comprehensive outputs
-   - Mathematical documentation generation
+The implemented integration point is **Step 21 (MCP Processing, `21_mcp.py`)**: the
+eight `sympy_*` tools are registered through `src/gnn/mcp/sympy_mcp.py` and are
+discoverable by any MCP client. SymPy is also listed as an optional dependency of
+the `research` extras group. Other pipeline touchpoints mentioned in the guides
+below (equation validation inside Steps 3/5/6, symbolic render-time analysis) are
+**proposals**, not implemented behavior.
 
 See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documentation.
 
@@ -129,6 +126,6 @@ All documentation in this module adheres to professional standards:
 
 ---
 
-**Status**: ✅ Production Ready  
+**Status**: MCP tool integration implemented in `src/gnn/mcp/` (8 SymPy tools registered via Step 21); SymPy itself is not a render/execution framework  
 **Compliance**: Professional documentation standards  
 **Maintenance**: Regular updates with new SymPy features and integration capabilities

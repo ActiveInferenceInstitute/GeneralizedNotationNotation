@@ -26,7 +26,7 @@ Each functional module includes its own `mcp.py` file that registers domain-spec
 src/gnn/
 ├── mcp/               # Core MCP infrastructure (registry, transports)
 ├── export/mcp.py      # Export format tools
-├── gnn/mcp.py         # GNN parsing and validation tools (loaded via mcp/gnn_root.py)
+├── mcp/gnn_root.py    # Root GNN parsing, validation, and documentation tools
 ├── gui/mcp.py         # GUI tools (including oxdraw.* wrappers)
 ├── ontology/mcp.py    # Ontology processing tools
 ├── visualization/mcp.py # Visualization generation tools
@@ -95,7 +95,7 @@ result = mcp_instance.execute_tool(
 ```bash
 # Start MCP HTTP server
 GNN_MCP_TOKEN=local-dev-token \
-  python -m gnn.mcp.cli server --transport http --host 127.0.0.1 --port 8080
+  uv run python -m gnn.mcp.cli server --transport http --host 127.0.0.1 --port 8080
 
 # Execute an HTTP-safe tool through JSON-RPC
 curl -X POST http://127.0.0.1:8080/ \
@@ -107,17 +107,17 @@ curl -X POST http://127.0.0.1:8080/ \
 ### STDIO Server (for AI assistants)
 ```bash
 # Start STDIO server for AI assistant integration
-python -m gnn.mcp.cli server --transport stdio
+uv run python -m gnn.mcp.cli server --transport stdio
 ```
 
 ### Command Line Interface
 ```bash
 # List capabilities and inspect a tool
-python -m gnn.mcp.cli list
-python -m gnn.mcp.cli info parse_gnn_content
+uv run python -m gnn.mcp.cli list
+uv run python -m gnn.mcp.cli info parse_gnn_content
 
 # Execute a tool
-python -m gnn.mcp.cli execute parse_gnn_content \
+uv run python -m gnn.mcp.cli execute parse_gnn_content \
   --params '{"content":"## GNNSection\nActInfPOMDP\n","format_hint":"markdown","enhanced_validation":true}'
 ```
 
@@ -240,7 +240,7 @@ def register_tools(mcp_instance):
 
 3. **Test the tool**:
 ```bash
-python -m gnn.mcp.cli execute my_new_tool --params '{"param1":"test"}'
+uv run python -m gnn.mcp.cli execute my_new_tool --params '{"param1":"test"}'
 ```
 
 ### Tool Design Principles
@@ -278,10 +278,10 @@ python -m gnn.mcp.cli execute my_new_tool --params '{"param1":"test"}'
 
 ```bash
 # Run with verbose MCP logging
-python -m gnn.mcp.cli --verbose list
+uv run python -m gnn.mcp.cli --verbose list
 
 # Test tool with debugging
-python -m gnn.mcp.cli --verbose execute tool_name --params '{}'
+uv run python -m gnn.mcp.cli --verbose execute tool_name --params '{}'
 ```
 
 ## API Reference

@@ -1,7 +1,7 @@
 # Advanced GNN Modeling Patterns
 
-**Version**: v3.2.0 Engine (Bundle v2.0.0)  
-**Last Updated**: 2026-04-14  
+**Version**: v3.3.0 Engine (Bundle v2.0.0)  
+**Last Updated**: 2026-09-17  
 **Status**: Maintained
 **Scope**: Advanced GNN modeling patterns. See [framework implementations](../implementations/README.md) for current backend coverage.
 
@@ -1034,6 +1034,60 @@ DiscreteTime=t
 ModelTimeHorizon=30
 LanguageProcessingWindow=5
 ```
+
+---
+
+## 9. Continuous Linear-Gaussian Models
+
+Every pattern above is **discrete categorical**: states, observations, and
+actions live on small supports, and the parameterization declares
+`A`/`B`/`C`/`D`/`E` keys. GNN treats a second model kind as first-class: the
+**continuous linear-Gaussian state-space model (LGSSM)**. A spec that declares
+`F` (state transition), `H` (observation matrix), `Q`/`R` (process and
+observation noise covariances), and `prior_mean`/`prior_cov` (Gaussian prior)
+is classified as continuous and rendered natively on JAX, NumPyro, PyTorch,
+Stan, and RxInfer.jl. The categorical backends (PyMDP, ActiveInference.jl,
+DisCoPy, bnlearn) report such models `unsupported` — a status, not a failure.
+
+### Pattern: Passive Filtering (LGSSM)
+
+```text
+## StateSpaceBlock
+x[2,1,type=float]        # continuous latent state
+y[2,1,type=float]        # continuous observation
+F[2,2,type=float]        # state transition
+H[2,2,type=float]        # observation matrix
+Q[2,2,type=float]        # process-noise covariance
+R[2,2,type=float]        # observation-noise covariance
+prior_mean[2,type=float] # prior mean over the initial latent state
+prior_cov[2,2,type=float]# prior covariance over the initial latent state
+```
+
+Inference is Gaussian filtering/smoothing — no softmax perception, no policy
+enumeration. Runnable exemplars: `input/gnn_files/continuous/stochastic_dynamics.md`
+(minimal drift-plus-noise LGSSM) and `input/gnn_files/continuous/predictive_coding_agent.md`
+(passive predictive coding in generalized coordinates).
+
+### Pattern: Closed-Loop Control on Beliefs (LGSSM + goal)
+
+Adding `goal_mean` (preferred state) and a scalar `control_gain` closes the
+loop: a control input `u` is added to the state each step, steering the
+filtered posterior mean toward the goal,
+
+$$u_t = \text{control\_gain} \times (\text{goal\_mean} - \mu_t)$$
+
+with connections `goal_mean>u` and `control_gain>u`. Runnable exemplar:
+`input/gnn_files/continuous/continuous_navigation.md` — a 2D navigator whose
+controller pushes the position belief mean toward `goal_mean = (2.0, 2.0)`.
+
+When to reach for the continuous kind: the latent quantity is genuinely
+metric (position, angle, intensity, generalized coordinates of motion), the
+observation channel is a noisy linear readout, and dynamics are well
+approximated locally by a linear Gaussian map. For discrete choices on top of
+continuous latents, keep the hybrid decomposition explicit — declare the
+categorical layer with the standard `A`/`B`/`C`/`D`/`E` keys and treat the
+continuous layer as a separate model or submodel rather than mixing the two
+parameterization families in one block.
 
 ---
 

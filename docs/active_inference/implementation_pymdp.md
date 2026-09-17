@@ -8,6 +8,8 @@
 
 **PyMDP** is a Python library for discrete-state-space Active Inference. This document provides a reference guide linking to GNN source code and documentation.
 
+PyMDP is **discrete-only** (`supports_continuous=False` in `src/gnn/render/framework_registry.py` — no continuous linear-Gaussian support) and **executable**: rendered PyMDP scripts run at pipeline Step 12 via [`src/gnn/execute/pymdp/`](../../src/gnn/execute/pymdp/). Per the pymdp 1.0.0 convention, B matrices are column-stochastic.
+
 **Status**: ✅ Production Ready  
 **Version**: 1.0
 

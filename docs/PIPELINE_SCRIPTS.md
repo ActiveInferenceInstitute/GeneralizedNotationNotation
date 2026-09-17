@@ -2,7 +2,7 @@
 
 ## Overview
 
-All **25** numbered entrypoints **`src/N_*.py`** (steps **0–24**) follow the **thin orchestrator** pattern: parse CLI args, configure logging and output dirs, delegate to **`src/<module>/`**, return standard exit codes (0=success, 1=error, 2=success with warnings/skipped). Domain logic lives in modules, not in the numbered scripts.
+All **25** numbered entrypoints **`src/gnn/N_*.py`** (steps **0–24**) follow the **thin orchestrator** pattern: parse CLI args, configure logging and output dirs, delegate to **`src/gnn/<module>/`**, return standard exit codes (0=success, 1=error, 2=success with warnings/skipped). Domain logic lives in modules, not in the numbered scripts.
 
 **Authoritative step matrix** (timeouts, dependencies, recovery): [`src/gnn/STEP_INDEX.md`](../src/gnn/STEP_INDEX.md). **Canonical step registry** (single source of truth for all 25 steps): [`src/gnn/pipeline/step_registry.py`](../src/gnn/pipeline/step_registry.py). **Commands and test notes**: [`CLAUDE.md`](../CLAUDE.md).
 
@@ -70,7 +70,7 @@ uv run python src/gnn/main.py --skip-steps "14,18" --target-dir input/gnn_files 
 
 ## Module pattern
 
-Numbered scripts typically wrap a module entrypoint such as `process_<module>(target_dir, output_dir, logger, ...)` registered via `utils.pipeline_template.create_standardized_pipeline_script`. See any `src/N_*.py` and the matching [`src/<module>/AGENTS.md`](../src/gnn/AGENTS.md) for the public API.
+Numbered scripts typically wrap a module entrypoint such as `process_<module>(target_dir, output_dir, logger, ...)` registered via `gnn.utils.pipeline_orchestration.pipeline_template.create_standardized_pipeline_script`. See any `src/gnn/N_*.py` and the matching [`src/<module>/AGENTS.md`](../src/gnn/AGENTS.md) for the public API.
 
 ## Related documentation
 

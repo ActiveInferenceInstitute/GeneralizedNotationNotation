@@ -4,6 +4,8 @@
 > **Type**: Integration Analysis | **Audience**: Neuroscientists, AI Researchers, Developers  
 > **Cross-References**: [SPM Overview](spm.md) | [GNN Framework Guide](../gnn/integration/framework_integration_guide.md) | [Active Inference Integration](../gnn/advanced/gnn_llm_neurosymbolic_active_inference.md)
 
+> **Scope note**: This is a research/integration-analysis document. SPM is **not** a render or execution framework for GNN — it is not an entry in `src/gnn/render/framework_registry.py`, has no Step 12 executor, and no SPM implementation code exists under `src/gnn/`. The bridges, pipelines, and code snippets below are proposals and illustrative sketches, not shipped functionality.
+
 ## Executive Summary
 
 Statistical Parametric Mapping (SPM) and Generalized Notation Notation (GNN) represent complementary approaches to modeling brain function and cognition. SPM provides established statistical frameworks for neuroimaging analysis, while GNN offers formal specification languages for Active Inference generative models. Their integration creates a powerful ecosystem for brain-inspired AI development, enabling the translation of neuroimaging insights into computational cognitive architectures.

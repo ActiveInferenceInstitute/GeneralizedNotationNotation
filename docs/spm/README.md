@@ -8,7 +8,9 @@
 
 This directory contains documentation, resources, and implementation guides for integrating **SPM** (Statistical Parametric Mapping) with GNN (Generalized Notation Notation). SPM provides established statistical frameworks for neuroimaging analysis, enabling translation of neuroimaging insights into computational cognitive architectures.
 
-**Status**: ✅ Production Ready  
+> **Scope note**: SPM is a *research/integration-notes* capability documented here. It is **not** a render or execution framework — it does not appear in `src/gnn/render/framework_registry.py` (whose 9 render frameworks are pymdp, rxinfer, activeinference_jl, jax, discopy, pytorch, numpyro, stan, and bnlearn) — and there is no SPM implementation code under `src/gnn/`. The documents in this directory analyze how SPM results could inform GNN model specification and validation.
+
+**Status**: Documentation module — research/integration notes (no SPM implementation in `src/gnn/`)  
 **Version**: 1.0
 
 ## Quick Navigation
@@ -84,19 +86,13 @@ SPM integration enables:
 
 ## Integration with Pipeline
 
-This documentation is integrated with the 25-step GNN processing pipeline:
+This directory documents SPM at the *conceptual and research* level only. No pipeline
+step invokes SPM today: there is no SPM code under `src/gnn/`, no SPM render target
+in `framework_registry.py`, and no SPM Step 12 executor. The integration pathways
+described in [spm_gnn.md](spm_gnn.md) are proposals for how SPM analysis results
+(activation maps, DCM connectivity, temporal dynamics) could inform GNN model
+specification and validation.
 
-1. **Core Processing** (Steps 0-9): GNN parsing, validation, export
-   - SPM-informed GNN model specification
-   - Neuroimaging data integration
-
-2. **Simulation** (Steps 10-16): Model execution and analysis
-   - SPM-calibrated model execution
-   - Cross-validation with neuroimaging data
-
-3. **Integration** (Steps 17-24): System coordination and output
-   - SPM results integrated into comprehensive outputs
-   - Neuroscientific validation and analysis
 
 See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documentation.
 
@@ -135,6 +131,6 @@ All documentation in this module adheres to professional standards:
 
 ---
 
-**Status**: ✅ Production Ready  
+**Status**: Documentation module — research/integration notes (no SPM implementation in `src/gnn/`)  
 **Compliance**: Professional documentation standards  
 **Maintenance**: Regular updates with new SPM features and integration capabilities

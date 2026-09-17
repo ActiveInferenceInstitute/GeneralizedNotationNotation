@@ -1,7 +1,7 @@
 # About GNN
 
-**Version**: v3.2.0 Engine (Bundle v2.0.0)
-**Last Updated**: 2026-04-14
+**Version**: 3.3.0
+**Last Updated**: 2026-09-17
 **Status**: Maintained
 **Pipeline Steps**: 25
 
@@ -350,6 +350,7 @@ By providing a rigorous yet flexible notation, GNN fosters reproducible, accessi
 - **[JAX Integration](implementations/jax.md)**: High-performance vector-space compilation
 - **[ActiveInference.jl](implementations/activeinference_jl.md)**: Discrete-state Julia POMDP simulation
 - **[Stan Integration](implementations/stan.md)**: Statistical modeling and probabilistic programming
+- **[bnlearn Integration](../bnlearn/README.md)**: Bayesian network learning and causal-model export for discrete structures
 - **[CatColab Integration](../other/catcolab/catcolab_gnn.md)**: Categorical compositional modeling
 
 ### Pipeline and Tools

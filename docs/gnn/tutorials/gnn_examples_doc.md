@@ -1,7 +1,7 @@
 # GNN Examples and Model Progression
 
-**Version**: v3.2.0 Engine (Bundle v2.0.0)  
-**Last Updated**: 2026-04-15  
+**Version**: v3.3.0 Engine (Bundle v2.0.0)  
+**Last Updated**: 2026-09-17  
 **Status**: Maintained
 **Scope**: Maintained model examples. See [framework implementations](../implementations/README.md) and the repository test commands for current evidence.
 
@@ -516,9 +516,56 @@ pie
     "Flexible Policy" : 10
 ```
 
+## Continuous linear-Gaussian examples
+
+The progression above is deliberately **discrete**: every state, observation, and
+action lives on a small categorical support, and the parameterization keys are
+`A`/`B`/`C`/`D`/`E`. GNN is not limited to that kind. A model that declares a
+linear-Gaussian block instead — `F` (state transition), `H` (observation
+matrix), `Q`/`R` (process/observation noise covariances), and
+`prior_mean`/`prior_cov` — is classified as a **continuous** model and rendered
+natively on JAX, NumPyro, PyTorch, Stan, and RxInfer.jl. Categorical backends
+(PyMDP, ActiveInference.jl, DisCoPy, bnlearn) report such models `unsupported`
+(not failed).
+
+Three runnable continuous exemplars live in [`input/gnn_files/continuous/`](../../../input/gnn_files/continuous/):
+
+- **`predictive_coding_agent.md`** — passive filtering in generalized
+  coordinates (`mu`, `mu_dot`), no control input. The minimal continuous model
+  to read first.
+- **`stochastic_dynamics.md`** — the smallest LGSSM: linear drift plus noise.
+- **`continuous_navigation.md`** — **closed-loop control**: adds a control
+  input `u` steered by `goal_mean` and a scalar `control_gain`, so the
+  controller drives the filtered posterior mean toward the preferred state
+  each step (`u_t = control_gain * (goal_mean - mu_t)`).
+
+The state-space block of a continuous model looks like this (abridged from
+`continuous_navigation.md`):
+
+```
+## StateSpaceBlock
+x[2,1,type=float]        # continuous latent state
+y[2,1,type=float]        # continuous observation
+u[2,1,type=float]        # control input
+F[2,2,type=float]        # state transition
+H[2,2,type=float]        # observation matrix
+Q[2,2,type=float]        # process-noise covariance
+R[2,2,type=float]        # observation-noise covariance
+prior_mean[2,type=float] # prior mean over the initial latent state
+prior_cov[2,2,type=float]# prior covariance over the initial latent state
+goal_mean[2,type=float]  # preferred state (goal)
+control_gain[1,type=float] # scalar proportional gain
+```
+
+There is no softmax perception or policy enumeration here — inference is
+Gaussian filtering/smoothing, and (in the closed-loop case) proportional
+control on the belief mean. For advanced treatment (continuous state
+geometries alongside hierarchical and multi-agent patterns), see
+[Advanced Modeling Patterns](../advanced/advanced_modeling_patterns.md#9-continuous-linear-gaussian-models).
+
 ## Hierarchical examples
 
-For layered slow–fast models, pair this progression with the [hierarchical template](../../templates/hierarchical_template.md) and [temporal hierarchy patterns](../advanced/advanced_modeling_patterns.md#temporal-hierarchy).
+For layered slow–fast models, pair this progression with the [hierarchical template](../../templates/hierarchical_template.md) and [temporal hierarchy patterns](../advanced/advanced_modeling_patterns.md#pattern-temporal-hierarchies).
 
 ## Implementation Tips
 

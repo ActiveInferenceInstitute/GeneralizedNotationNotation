@@ -8,7 +8,9 @@
 
 This directory contains comprehensive documentation, resources, and implementation guides for integrating **Pkl** (Apple's Configuration Language) with GNN (Generalized Notation Notation). Pkl provides configuration-as-code capabilities with type safety, validation, and multi-format output generation, enhancing GNN model specification and management.
 
-**Status**: ✅ Production Ready  
+> **Scope note**: Apple Pkl is a *registered serialization format* (`GNNFormat.PKL`, `.pkl` — `PKLParser` in `src/gnn/parsers/schema_parser.py`, `PKLSerializer` in `src/gnn/parsers/pkl_serializer.py`), exercised by Step 3 (`3_gnn.py`) multi-format serialization, with artifacts written to `output/3_gnn_output/`. It is not a render or execution framework: no entry in `src/gnn/render/framework_registry.py`, no Step 11 render target, and no Step 12 executor. Distinct from this, the binary Python-pickle export in `src/gnn/export/` (Step 7) also uses a `.pkl` extension; per the format convention, `.pkl` defaults to textual Pkl DSL and binary pickle files should use `.pickle`.
+
+**Status**: Format support implemented in `src/gnn/parsers/` (PKL parser + serializer); Pkl is not a render/execution framework  
 **Version**: 1.0
 
 ## Purpose
@@ -43,24 +45,21 @@ This module is organized as follows:
 
 ## Integration with Pipeline
 
-This documentation is integrated with the 25-step GNN processing pipeline:
+This documentation references the 25-step GNN processing pipeline as follows:
 
-### Core Processing (Steps 0-9)
-- **Step 3 (GNN)**: Pkl configuration generation from parsed GNN models
-- **Step 5 (Type Checker)**: Type-safe model validation using Pkl
-- **Step 7 (Export)**: Multi-format output generation via Pkl
-
-### Simulation (Steps 10-16)
-- **Step 11 (Render)**: Pkl configuration for simulation environments
-- **Step 12 (Execute)**: Pkl-based configuration management
-
-### Integration (Steps 17-24)
-- **Step 17 (Integration)**: Pkl configuration coordination
-- **Step 23 (Report)**: Configuration validation results
+The implemented integration point is the **format registry**, exercised at
+**Step 3 (`3_gnn.py`) multi-format serialization** (artifacts in `output/3_gnn_output/`):
+`PKLParser` and `PKLSerializer` handle `GNNFormat.PKL`. There is no Pkl involvement
+in Steps 5, 11, 12, 17, or 23 — the touchpoints below are **proposals**, not
+implemented behavior.
 
 See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documentation.
 
-## Function Signatures and API
+## Function Signatures and API (proposed — not implemented)
+
+The signatures below are illustrative sketches; no such functions exist in the
+codebase. The implemented Pkl surface is `PKLParser`/`PKLSerializer` in
+`src/gnn/parsers/`.
 
 ### Configuration Management Functions
 
@@ -124,6 +123,6 @@ All documentation in this module adheres to professional standards:
 
 ---
 
-**Status**: ✅ Production Ready  
+**Status**: Format support implemented in `src/gnn/parsers/` (PKL parser + serializer at Step 3 serialization); Pkl is not a render/execution framework  
 **Compliance**: Professional documentation standards  
 **Maintenance**: Regular updates with new Pkl features and integration capabilities

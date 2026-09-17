@@ -8,7 +8,9 @@
 
 This directory contains documentation, resources, and implementation guides for integrating **Pkl** (Apple's Configuration Language) with GNN (Generalized Notation Notation). Pkl provides configuration-as-code capabilities with type safety, validation, and multi-format output generation, enhancing GNN model specification and management.
 
-**Status**: ✅ Production Ready  
+> **Scope note**: Apple Pkl is a *registered serialization format*, not a render or execution framework. The tree supports `GNNFormat.PKL` (`.pkl`) with `PKLParser` (`src/gnn/parsers/schema_parser.py`) and `PKLSerializer` (`src/gnn/parsers/pkl_serializer.py`), exercised by Step 3 (`3_gnn.py`) multi-format serialization (artifacts in `output/3_gnn_output/`). Pkl is **not** an entry in `src/gnn/render/framework_registry.py`, has no Step 12 executor, and does no continuous linear-Gaussian rendering. Note: `.pkl` is treated as textual Pkl DSL by default; binary Python pickle files use the `.pickle` extension (`GNNFormat.PICKLE`), and the Step 7 pickle export in `src/gnn/export/` is a separate capability that coincidentally also uses a `.pkl` extension.
+
+**Status**: Format support implemented in `src/gnn/parsers/` (PKL parser + serializer); Pkl is not a render/execution framework  
 **Version**: 1.0
 
 ## Quick Navigation
@@ -88,19 +90,16 @@ Pkl integration enables:
 
 ## Integration with Pipeline
 
-This documentation is integrated with the 25-step GNN processing pipeline:
+Pkl support in the codebase today is **parsing and serialization only**:
 
-1. **Core Processing** (Steps 0-9): GNN parsing, validation, export
-   - Pkl configuration generation from GNN models
-   - Type-safe model validation
+1. **Parsing**: `PKLParser` reads textual Pkl DSL input (`.pkl`, `GNNFormat.PKL`).
+2. **Serialization**: `PKLSerializer` writes GNN models to Pkl configuration syntax;
+   it is one of the 22 registered serializers, called from Step 3 (`3_gnn.py`),
+   producing artifacts in `output/3_gnn_output/`.
+3. **No render/execution path**: Pkl is not in `framework_registry.py` (no Step 11
+   render target) and has no Step 12 executor. The configuration-as-code workflows
+   described in [pkl_gnn.md](pkl_gnn.md) are proposals, not implemented behavior.
 
-2. **Simulation** (Steps 10-16): Model execution and analysis
-   - Pkl configuration for simulation environments
-   - Multi-format output generation
-
-3. **Integration** (Steps 17-24): System coordination and output
-   - Pkl results integrated into comprehensive outputs
-   - Configuration management and validation
 
 See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documentation.
 
@@ -139,6 +138,6 @@ All documentation in this module adheres to professional standards:
 
 ---
 
-**Status**: ✅ Production Ready  
+**Status**: Format support implemented in `src/gnn/parsers/` (PKL parser + serializer at Step 3 serialization); Pkl is not a render/execution framework  
 **Compliance**: Professional documentation standards  
 **Maintenance**: Regular updates with new Pkl features and integration capabilities

@@ -14,6 +14,22 @@ This style guide ensures consistency, quality, and accessibility across all GNN 
 
 Use **`uv run python`** from the **repository root** for `src/gnn/main.py` and `src/N_*.py` invocations (see [CLAUDE.md](../CLAUDE.md)). Avoid bare `python src/...` in new doc unless illustrating a non-uv environment.
 
+### Model kinds in examples
+
+GNN's dispatch layer recognizes several model kinds (discrete, linear-Gaussian,
+Dirichlet-learning, and per-level/per-agent families — see [GNN README](gnn/README.md)).
+The two headline render kinds referenced most often in examples are:
+
+- **Discrete categorical** (`A`/`B`/`C`/`D`/`E` keys, column-stochastic slices,
+  softmax perception) — the default in tutorials.
+- **Continuous linear-Gaussian** (`F`/`H`/`Q`/`R` + `prior_mean`/`prior_cov`,
+  optionally closed-loop `goal_mean`/`control_gain`) — renders on JAX, NumPyro,
+  PyTorch, Stan, and RxInfer.jl; categorical backends report it `unsupported`.
+
+When citing runnable examples, point at real files under `input/gnn_files/`
+([INDEX.md](INDEX.md) is the authoritative category list) and state the kind's
+framework support rather than implying every backend executes every model.
+
 ## 📝 **Writing Standards**
 
 ### **Voice and Tone**

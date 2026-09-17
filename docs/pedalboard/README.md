@@ -8,6 +8,8 @@
 
 This directory contains documentation, resources, and implementation guides for integrating **Pedalboard** (Spotify's Audio Processing Library) with GNN (Generalized Notation Notation). Pedalboard provides high-performance DSP capabilities, VST3/AU plugin ecosystem, and Python-native API for sophisticated audio representations and real-time sonification of Active Inference models.
 
+**Role**: Pedalboard is an **audio post-processing dependency**, not a render or execution framework. It is not an entry in `src/gnn/render/framework_registry.py`, generates no simulation code, and has no Step 12 executor. In the live tree it is an optional audio backend probed by `src/gnn/audio/__init__.py` and listed in `src/gnn/STEP_INDEX.md` as a Step 15 audio-sonification dependency (alongside soundfile); the Step 15 audio script accepts `--audio-backend` values including `pedalboard`.
+
 **Status**: 🛠️ Scaffold / Planned  
 **Version**: 1.0
 
@@ -81,8 +83,7 @@ Pedalboard integration enables:
 This documentation is integrated with the 25-step GNN processing pipeline:
 
 1. **Core Processing** (Steps 0-9): GNN parsing, validation, export
-   - Pedalboard audio generation from GNN models
-   - Audio parameter mapping
+   - No audio processing occurs in these steps; parsed models are simply prepared for downstream sonification
 
 2. **Simulation** (Steps 10-16): Model execution and analysis
    - Real-time sonification (Step 15: Audio)

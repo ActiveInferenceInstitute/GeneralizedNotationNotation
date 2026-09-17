@@ -66,8 +66,9 @@ domain.
 
 ### Validation
 
-All 29 exemplar GNN files under `input/gnn_files/**` render to and execute under
-RxInfer.jl (29/29). Step 6 validation now includes `inference_converged` and
+All 30 exemplar GNN files under `input/gnn_files/**` (27 discrete + 3
+continuous, census: `input/gnn_files/INDEX.md`) render to and execute under
+RxInfer.jl (30/30). Step 6 validation now includes `inference_converged` and
 `vfe_present`, confirming genuine convergence of the variational free energy.
 
 ## Retired TOML approach

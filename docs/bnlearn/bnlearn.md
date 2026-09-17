@@ -82,3 +82,7 @@ bn.plot(model, interactive=True)
 *   **Imputation**: `bn.knn_imputer()` to resolve missing fields securely prior to structural learning.
 
 For complete API routes, see the official [BNLearn’s Documentation](https://erdogant.github.io/bnlearn/pages/html/index.html).
+
+## 6. GNN Pipeline Integration
+
+In the GNN pipeline, `bnlearn` renders **discrete categorical Bayesian networks** (optional A/B/C/D/E matrices; multi-modality and multi-factor supported) and is **executable**, not render-only: rendered scripts run at Step 12 via [`src/gnn/execute/bnlearn/`](../../src/gnn/execute/bnlearn/) with output under `BNLEARN_OUTPUT_DIR`. Scripts skip when the `bnlearn` extra is absent (`utils.framework_availability`). Continuous linear-Gaussian models are unsupported (`supports_continuous=False` in `src/gnn/render/framework_registry.py`).

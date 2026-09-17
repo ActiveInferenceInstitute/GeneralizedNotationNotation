@@ -2,6 +2,19 @@
 
 **Status**: ✅ **COMPLETED** - Full pipeline integration achieved
 
+> **Scope note (updated for pymdp 1.0.0):** This summary describes the
+> original integration and preserves the historical reference-implementation
+> code samples below. The current contract lives in
+> [`gnn_pymdp.md`](../gnn_pymdp.md): under pymdp 1.0.0 the JAX-first API
+> replaced `utils.obj_array` / `infer_states(obs)` with batched
+> `list[jax.Array]` matrices and `infer_states(obs, empirical_prior=...)`,
+> and `B` matrices are column-stochastic per action slice. The renderer
+> covers **discrete categorical `A`/`B`/`C`/`D[/E]` models only**
+> (multi-modality and multi-factor supported); continuous linear-Gaussian
+> models are **not** supported (`supports_continuous=False`). Rendered
+> scripts are **executable at Step 12** via `src/gnn/execute/pymdp/`
+> (`pymdp_runner.py`, rollout in `simulation.py`).
+
 ## 🎯 **Integration Objectives**
 
 ✅ **Achieved**: Move PyMDP simulation from reference implementation to full pipeline integration

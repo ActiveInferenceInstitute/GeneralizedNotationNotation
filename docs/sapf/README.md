@@ -8,6 +8,8 @@
 
 This directory contains documentation, resources, and implementation guides for integrating **SAPF** (Sound As Pure Form) with GNN (Generalized Notation Notation). SAPF provides a concatenative programming paradigm for auditory representation and real-time sonification of Active Inference generative models.
 
+**Role**: SAPF is an **audio sonification capability** (Step 15), not a render or execution framework. It is not an entry in `src/gnn/render/framework_registry.py`, generates no simulation code, and has no Step 12 executor. In the live tree, `src/gnn/sapf/` provides the SAPF module and the Step 15 audio script (`src/gnn/15_audio.py`) accepts `--audio-backend` values including `sapf`; `src/gnn/STEP_INDEX.md` lists Step 15 as audio sonification (SAPF) with soundfile and pedalboard as dependencies.
+
 **Status**: ✅ Production Ready  
 **Version**: 1.0
 
@@ -87,8 +89,7 @@ SAPF integration enables:
 This documentation is integrated with the 25-step GNN processing pipeline:
 
 1. **Core Processing** (Steps 0-9): GNN parsing, validation, export
-   - SAPF audio generation from GNN models
-   - Audio parameter mapping
+   - No audio processing occurs in these steps; parsed models are simply prepared for downstream sonification
 
 2. **Simulation** (Steps 10-16): Model execution and analysis
    - Real-time sonification (Step 15: Audio)

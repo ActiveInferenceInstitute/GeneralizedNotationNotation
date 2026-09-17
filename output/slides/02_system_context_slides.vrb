@@ -1,12 +1,5 @@
 \frametitle{The Triple Play}
-Each face is generated from the same source, so they cannot drift apart.
-The text is the contract a researcher reads and reviews; the
-visualizations expose the factor-graph structure for inspection and
-communication; and the executable rendering lets the identical model be
-simulated across inference frameworks, connecting the written
-specification to libraries such as pymdp for discrete Active Inference
-(Heins et al. 2022) and to the broader tooling ecosystem for
-compositional model representation (Felice et al. 2021). Because all
-three derive from one parsed document, GNN turns a model from a static
-artifact into a live object that can be read, seen, and run without
-re-encoding it for each purpose (Smith et al. 2022).
+computed at parse time, so the diagram a reader sees, the notation a
+reviewer diffs, and the program a backend executes are all projections
+of one declared model kind rather than three loosely coupled guesses
+about what the file meant.

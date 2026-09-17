@@ -11,7 +11,9 @@ This directory contains documentation and resources for the petri_nets subsystem
 
 ## Purpose
 
-Petri net modeling and analysis for workflow specification
+Petri net modeling and analysis for workflow specification (documentation only)
+
+> **Scope note**: Petri nets are not a render or execution framework. The only Petri-net support in the tree is the parse-only `PNMLParser` (`GNNFormat.PNML` in `src/gnn/parsers/xml_parser.py`) — no PNML serializer in `SERIALIZER_REGISTRY`, no PNML exporter in `src/gnn/export/`, no entry in `src/gnn/render/framework_registry.py`, and no Step 12 executor. The `.pnml`/`.xml` files here are sample models.
 
 This subsystem is part of the broader GNN (Generalized Notation Notation) documentation ecosystem, integrated with the 25-step processing pipeline.
 
@@ -67,6 +69,6 @@ All documentation in this module adheres to professional standards:
 
 ---
 
-**Status**: ✅ Production Ready  
+**Status**: Documentation module — PNML samples and modeling notes (PNML is parse-only; no export, render, or execution support)  
 **Compliance**: Professional documentation standards  
 **Maintenance**: Regular updates with new features

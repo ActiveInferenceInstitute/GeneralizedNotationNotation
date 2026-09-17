@@ -14,7 +14,9 @@ oxdraw serves as a visual interface for the Generalized Notation Notation (GNN) 
 - Visual construction of POMDP architectures through intuitive node-and-edge manipulation
 - Automatic translation between Mermaid diagrams and GNN plaintext specifications
 - Preservation of Active Inference ontology assertions through comment-based metadata
-- Full integration with GNN validation, type-checking, and simulation rendering workflows
+- Saved GNN files feed the standard pipeline stages (validation, type-checking, and the downstream render/execute steps)
+
+**Scope note**: oxdraw is a GUI editor capability (`src/gnn/gui/oxdraw/`, one of the GUI types at the Step 22 GUI stage), not a render/execution framework — it is not an entry in `src/gnn/render/framework_registry.py`, generates no simulation code, and has no Step 12 executor.
 
 ---
 

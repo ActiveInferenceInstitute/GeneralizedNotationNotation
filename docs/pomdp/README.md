@@ -82,6 +82,17 @@ POMDP integration enables:
 - **Belief State Management**: Formal treatment of belief updating
 - **Optimal Control**: Theoretical framework for action selection
 
+### Model kinds in GNN
+
+The POMDP formalization above describes the **discrete** foundation: GNN
+discrete models declare `A`/`B`/`C`/`D`/`E` keys with column-stochastic
+slices. GNN also treats **continuous linear-Gaussian state-space models**
+(`F`/`H`/`Q`/`R` + `prior_mean`/`prior_cov`, optionally closed-loop
+`goal_mean`/`control_gain`) as first-class — Gaussian filtering replaces
+softmax perception, and belief-space control is realized directly as
+proportional feedback on the filtered mean (the theory of Chapter 12 of
+`pomdp_overall.md` maps onto the [continuous exemplars](../../input/gnn_files/continuous/)).
+
 ## Integration with Pipeline
 
 This documentation is integrated with the 25-step GNN processing pipeline:

@@ -12,6 +12,14 @@ uv run python src/gnn/main.py --target-dir input/gnn_files/discrete --output-dir
 
 This parses the discrete GNN files, runs visualization and rendering across the maintained backends, and writes all artifacts under the chosen output directory. The `--skip-llm` flag keeps the run hermetic and free of external API calls: the non-LLM steps all execute, the steps that would read the skipped LLM outputs record that as a warning, and the run exits 2 — the pipeline's documented warning code (0 success, 1 error, 2 warning) — rather than 0. To exercise every registered family rather than a single one, drive the manifest through the model-family acceptance gate given below: pointing `--target-dir` at `input/gnn_files` covers that tree's {{GNN_INPUT_FAMILY_DIR_COUNT}} corpus directories. {{GNN_TARGET_DIR_COVERAGE_NOTE}}
 
+The discrete family exercises the categorical kind end to end. The continuous linear-Gaussian kind smoke-runs the same way, and the contrast between the two runs is itself a check of the per-kind contract:
+
+```bash
+uv run python src/gnn/main.py --target-dir input/gnn_files/continuous --output-dir /tmp/gnn-smoke-continuous --skip-llm
+```
+
+This parses the continuous specifications, and the render and execute steps fan them out to the continuous-capable backends — where they render as linear-Gaussian models and run as filtering (and, for the closed-loop exemplar, belief-steering) programs — while the categorical-only backends record explicit `unsupported` statuses rather than failures. A reader comparing the two receipts sees the kind taxonomy behaving as described in [@sec:system_context]: same pipeline, same steps, per-kind rendering and execution reach.
+
 ## Validation Gates
 
 GNN's reproducibility guarantees rest on a small set of strict, deterministic gates that bind the manuscript's quantitative claims to recomputable ledgers. The model-family acceptance gate runs the maintained families declared in the manifest and fails on any regression:

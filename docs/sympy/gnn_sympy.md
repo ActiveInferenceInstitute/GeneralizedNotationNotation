@@ -1,5 +1,7 @@
 # GNN Integration with SymPy MCP: Symbolic Mathematics for Active Inference
 
+> **Scope note**: This is a strategy/proposal document. The implemented part of the SymPy integration is the MCP tool surface in `src/gnn/mcp/sympy_mcp.py` and `sympy_mcp_client.py` (8 `sympy_*` tools, registered at Step 21). SymPy is **not** a render or execution framework — it is not an entry in `src/gnn/render/framework_registry.py` and has no Step 12 executor. Code snippets below are proposed designs, not shipped code.
+
 ## Executive Summary
 
 The Generalized Notation Notation (GNN) project can significantly benefit from integrating with the SymPy Model Context Protocol (MCP) server to enhance its mathematical processing capabilities. This integration would provide robust symbolic mathematics support for Active Inference model specification, validation, and analysis, transforming GNN from a text-based notation system into a mathematically-aware computational framework.

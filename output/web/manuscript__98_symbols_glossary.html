@@ -632,12 +632,15 @@ mjx-container[display="true"] {
 <main id="main-content" tabindex="-1">
 <h1 id="sec:symbols_glossary">Symbols and Glossary</h1>
 <p>This glossary defines the Generalized Notation Notation (GNN)
-language constructs used to specify Active Inference generative models,
-together with the canonical Active Inference symbols those constructs
-carry. Definitions follow the GNN syntax specification and the discrete
-POMDP exemplars distributed with the repository, and they align with the
-standard discrete-state-space formulation of Active Inference [gnn2023;
-dacosta2020; parr2022].</p>
+language constructs used to specify generative models, together with the
+Active Inference symbols those constructs carry across the model kinds
+of <span class="citation"
+data-cites="sec:model_kinds">[@sec:model_kinds]</span>. Definitions
+follow the GNN syntax specification and the exemplar specifications
+distributed with the repository — the discrete POMDP exemplars and the
+continuous linear-Gaussian exemplars alike — and they align with the
+standard formulations of both kinds [gnn2023; dacosta2020;
+parr2022].</p>
 <h2 id="language-constructs">Language Constructs</h2>
 <p>A GNN file is an ordered, UTF-8 Markdown document whose level-2
 headers name required and optional sections. The strict schema validator
@@ -645,19 +648,26 @@ enforces section order, declaration grammar, and connection syntax; the
 constructs below are the load-bearing sections a parser must recognize;
 they are catalogued in <span class="citation"
 data-cites="tbl:gnn_constructs">[@tbl:gnn_constructs]</span>.</p>
-<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable table: The GNN language constructs a conforming parser must recognize, with the meaning each carries. The first six rows are…"><table id="tbl:gnn_constructs" data-responsive-table="true">
+<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable table: The GNN language constructs a conforming parser must recognize, with the meaning each carries. The first rows are the…"><table id="tbl:gnn_constructs" data-responsive-table="true">
 <caption>The GNN language constructs a conforming parser must recognize,
-with the meaning each carries. The first six rows are the required
-sections that pin a model’s identity, variables, and factor graph; the
-optional sections that follow carry parameterization, ontology bindings,
-timing, equations, and provenance. The three operator rows are the
-connection vocabulary the <code>Connections</code> section is written in
-— directed <code>A&gt;B</code>, undirected <code>A-B</code>, and their
-labeled v1.1 forms — and <code>default=…</code> supplies initialization
-hints. Definitions follow the GNN syntax specification and the discrete
-POMDP exemplars under <code>input/gnn_files</code>, and the strict
-schema validator enforces section order and declaration grammar before
-any downstream step runs.</caption>
+with the meaning each carries. The first rows are the required sections
+that pin a model’s identity, variables, and factor graph; the optional
+sections that follow carry parameterization, ontology bindings, timing,
+equations, and provenance. The operator rows are the connection
+vocabulary the <code>Connections</code> section is written in — directed
+<code>A&gt;B</code>, undirected <code>A-B</code>, and their labeled v1.1
+forms — and <code>default=…</code> supplies initialization hints.
+Definitions follow the GNN syntax specification and the exemplar
+specifications under <code>input/gnn_files</code>, and the strict schema
+validator enforces section order and declaration grammar before any
+downstream step runs. The construct vocabulary is deliberately
+kind-agnostic: the same <code>StateSpaceBlock</code>,
+<code>Connections</code>, and operator syntax declare a discrete
+categorical model, a continuous linear-Gaussian model, or a composed
+multi-agent or hierarchical one — what differs between kinds is which
+matrix names the block declares, as <span class="citation"
+data-cites="tbl:actinf_symbols">[@tbl:actinf_symbols]</span>
+details.</caption>
 <colgroup>
 <col style="width: 50%" />
 <col style="width: 50%" />
@@ -686,7 +696,8 @@ e.g. <code>ActInfPOMDP</code>).</td>
 <tr>
 <td><code>## StateSpaceBlock</code></td>
 <td>Required block declaring every variable and matrix as
-<code>NAME[dim, …, type=…]</code>, one per line.</td>
+<code>NAME[dim, …, type=…]</code>, one per line — the block whose
+declared vocabulary fixes the model’s kind.</td>
 </tr>
 <tr>
 <td><code>## Connections</code></td>
@@ -747,6 +758,7 @@ or named references, and a <code>type</code> (<code>float</code>,
 <td><code>A&gt;B</code></td>
 <td>Directed (causal) connection operator: edge from <code>A</code> to
 <code>B</code>, e.g. <code>D&gt;s</code> (a prior conditions a hidden
+state) or <code>F&gt;x</code> (a transition matrix drives a continuous
 state).</td>
 </tr>
 <tr>
@@ -768,31 +780,47 @@ initialization for a matrix or vector.</td>
 </tr>
 </tbody>
 </table></div>
-<h2 id="active-inference-symbols">Active Inference Symbols</h2>
-<p>The exemplar discrete POMDP agent declares the standard
-generative-model components of Active Inference over a discrete state
-space, mapping each GNN variable to its probabilistic meaning
-[dacosta2020; smith2022; parr2022]. Each row of <span class="citation"
+<h2 id="symbols-by-model-kind">Symbols by Model Kind</h2>
+<p>The exemplar specifications declare the generative-model components
+of Active Inference, mapping each GNN variable to its probabilistic
+meaning [dacosta2020; smith2022; parr2022]. Because the notation spans
+model kinds, the same letter can name different objects in different
+kinds — most prominently <code>F</code>, which is the variational free
+energy of <span class="citation" data-cites="eq:vfe">[@eq:vfe]</span> in
+the discrete kind and the state-transition matrix of <span
+class="citation" data-cites="eq:lgssm_state">[@eq:lgssm_state]</span> in
+the continuous kind — so each row of <span class="citation"
 data-cites="tbl:actinf_symbols">[@tbl:actinf_symbols]</span> names the
-equation in <span class="citation"
+kind its reading belongs to and the equation in <span class="citation"
 data-cites="sec:system_context">[@sec:system_context]</span> that fixes
-the symbol’s role, so the glossary and the formal statement cannot drift
-apart.</p>
-<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable table: The Active Inference symbols a GNN specification carries, each bound to the equation of [@sec:system_context] that fi…"><table id="tbl:actinf_symbols" data-responsive-table="true">
-<caption>The Active Inference symbols a GNN specification carries, each
-bound to the equation of <span class="citation"
+it, and the glossary and the formal statement cannot drift apart.</p>
+<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable table: The Active Inference symbols a GNN specification carries, scoped by model kind and bound to the equation of [@sec:sys…"><table id="tbl:actinf_symbols" data-responsive-table="true">
+<caption>The Active Inference symbols a GNN specification carries,
+scoped by model kind and bound to the equation of <span class="citation"
 data-cites="sec:system_context">[@sec:system_context]</span> that fixes
-its role. Read <code>A</code>–<code>E</code> as the generative-model
-tensors (likelihood, controlled transitions, log-preferences, prior over
-initial states, habit prior), <code>s</code>, <code>o</code>,
-<code>π</code>, and <code>u</code> as the inference variables, and
-<code>F</code> and <code>G</code> as the two free-energy functionals
-minimized at <span class="citation" data-cites="eq:vfe">[@eq:vfe]</span>
-and <span class="citation" data-cites="eq:efe">[@eq:efe]</span>. Use the
+each role. Read the discrete-kind rows as the categorical
+generative-model tensors (likelihood, controlled transitions,
+log-preferences, prior over initial states, habit prior) with
+<code>s</code>, <code>o</code>, <code>π</code>, and <code>u</code> as
+the inference variables and <code>F</code> and <code>G</code> as the two
+free-energy functionals minimized at <span class="citation"
+data-cites="eq:vfe">[@eq:vfe]</span> and <span class="citation"
+data-cites="eq:efe">[@eq:efe]</span>; read the continuous-kind rows as
+the linear-Gaussian parameterization — system matrices, covariances,
+Gaussian prior, and the optional closed-loop declarations of <span
+class="citation" data-cites="eq:closed_loop">[@eq:closed_loop]</span>.
+The rows where one letter carries two kind-scoped readings
+(<code>F</code>, <code>u</code>, <code>t</code>) are deliberate: the
+notation reuses a compact alphabet across kinds, and the declared matrix
+vocabulary of the <code>StateSpaceBlock</code> — not the letter alone —
+is what fixes the reading, which is exactly what the kind classification
+of <span class="citation"
+data-cites="sec:model_kinds">[@sec:model_kinds]</span> computes. Use the
 table as a decoding key when reading a <code>StateSpaceBlock</code>:
-every declared matrix name should map to exactly one row here, and the
-<code>## ActInfOntologyAnnotation</code> bindings described below are
-what make that mapping machine-checkable downstream.</caption>
+every declared matrix name should map to exactly one kind-scoped row
+here, and the <code>## ActInfOntologyAnnotation</code> bindings
+described below are what make that mapping machine-checkable
+downstream.</caption>
 <colgroup>
 <col style="width: 50%" />
 <col style="width: 50%" />
@@ -806,65 +834,74 @@ what make that mapping machine-checkable downstream.</caption>
 <tbody>
 <tr>
 <td><code>A</code></td>
-<td>Likelihood (observation) matrix encoding <span
-class="math inline">\(P(o \mid s)\)</span>, mapping hidden states to
-observation outcomes (<span class="citation"
+<td>Discrete kind: likelihood (observation) matrix encoding <span
+class="math inline">\(P(o \mid s)\)</span>, a column-stochastic map from
+hidden states to observation outcomes (<span class="citation"
 data-cites="eq:likelihood">[@eq:likelihood]</span>).</td>
 </tr>
 <tr>
 <td><code>B</code></td>
-<td>Transition matrix encoding <span class="math inline">\(P(s&#39; \mid
-s, u)\)</span>, mapping a previous state and action to the next state
-(<span class="citation"
+<td>Discrete kind: transition tensor encoding <span
+class="math inline">\(P(s&#39; \mid s, u)\)</span>, one
+column-stochastic slice per action in the canonical
+<code>B[next_state][previous_state][action]</code> order (<span
+class="citation"
 data-cites="eq:transition">[@eq:transition]</span>).</td>
 </tr>
 <tr>
 <td><code>C</code></td>
-<td>Preference vector: log-preferences over observation outcomes that
-bias the agent toward preferred outcomes (<span class="citation"
+<td>Discrete kind: preference vector — log-preferences over observation
+outcomes that bias the agent toward preferred outcomes (<span
+class="citation"
 data-cites="eq:preference">[@eq:preference]</span>).</td>
 </tr>
 <tr>
 <td><code>D</code></td>
-<td>Prior vector over initial hidden states (<span class="citation"
-data-cites="eq:prior">[@eq:prior]</span>).</td>
+<td>Discrete kind: prior vector over initial hidden states (<span
+class="citation" data-cites="eq:prior">[@eq:prior]</span>).</td>
 </tr>
 <tr>
 <td><code>E</code></td>
-<td>Habit vector: an initial policy prior (baseline preference) over
-actions, entering the policy posterior (<span class="citation"
+<td>Discrete kind: habit vector — an initial policy prior over actions,
+entering the policy posterior (<span class="citation"
 data-cites="eq:policy">[@eq:policy]</span>).</td>
 </tr>
 <tr>
 <td><code>s</code></td>
-<td>Current hidden-state distribution; <code>s_prime</code>
-(<code>s'</code>) is the next hidden-state distribution.</td>
+<td>Discrete kind: current hidden-state distribution;
+<code>s_prime</code> (<code>s'</code>) is the next hidden-state
+distribution.</td>
 </tr>
 <tr>
 <td><code>o</code></td>
-<td>Current observation, an integer index over outcome modalities.</td>
+<td>Discrete kind: current observation, an integer index over outcome
+modalities.</td>
 </tr>
 <tr>
 <td><code>π</code></td>
-<td>Policy: a distribution over actions inferred from expected free
-energy (<span class="citation"
+<td>Discrete kind: policy — a distribution over actions inferred from
+expected free energy (<span class="citation"
 data-cites="eq:policy">[@eq:policy]</span>).</td>
 </tr>
 <tr>
 <td><code>u</code></td>
-<td>The selected (sampled) action, sampled from the policy
-posterior.</td>
+<td>Discrete kind: the selected (sampled) action, sampled from the
+policy posterior. Continuous kind: the control input added to the state
+each step (<span class="citation"
+data-cites="eq:lgssm_state">[@eq:lgssm_state]</span>).</td>
 </tr>
 <tr>
 <td><code>F</code></td>
-<td>Variational free energy, minimized during state inference to update
-beliefs from observations (<span class="citation"
-data-cites="eq:vfe">[@eq:vfe]</span>) [friston2010].</td>
+<td>Discrete kind: variational free energy, minimized during state
+inference (<span class="citation" data-cites="eq:vfe">[@eq:vfe]</span>)
+[friston2010]. Continuous kind: the state-transition matrix of the
+linear-Gaussian model (<span class="citation"
+data-cites="eq:lgssm_state">[@eq:lgssm_state]</span>).</td>
 </tr>
 <tr>
 <td><code>G</code></td>
-<td>Expected free energy per policy, minimized during policy inference
-to score candidate actions (<span class="citation"
+<td>Discrete kind: expected free energy per policy, minimized during
+policy inference to score candidate actions (<span class="citation"
 data-cites="eq:efe">[@eq:efe]</span>) [dacosta2020].</td>
 </tr>
 <tr>
@@ -872,26 +909,102 @@ data-cites="eq:efe">[@eq:efe]</span>) [dacosta2020].</td>
 <td>Discrete time step; the horizon <span
 class="math inline">\(T\)</span> bounds the product in <span
 class="citation"
-data-cites="eq:generative_model">[@eq:generative_model]</span>.</td>
+data-cites="eq:generative_model">[@eq:generative_model]</span>.
+Continuous kind: the time index of the state-space model.</td>
+</tr>
+<tr>
+<td><code>H</code></td>
+<td>Continuous kind: observation matrix mapping the latent state to the
+observation (<span class="citation"
+data-cites="eq:lgssm_obs">[@eq:lgssm_obs]</span>).</td>
+</tr>
+<tr>
+<td><code>Q</code></td>
+<td>Continuous kind: process-noise covariance of the state evolution
+(<span class="citation"
+data-cites="eq:lgssm_state">[@eq:lgssm_state]</span>).</td>
+</tr>
+<tr>
+<td><code>R</code></td>
+<td>Continuous kind: observation-noise covariance of the readout (<span
+class="citation" data-cites="eq:lgssm_obs">[@eq:lgssm_obs]</span>).</td>
+</tr>
+<tr>
+<td><code>x</code></td>
+<td>Continuous kind: the Gaussian latent state <span
+class="math inline">\(x_t\)</span>; <code>x[2,1,type=float]</code> in
+the navigation exemplar declares a two-dimensional position.</td>
+</tr>
+<tr>
+<td><code>y</code></td>
+<td>Continuous kind: the continuous observation read out linearly from
+the state (<span class="citation"
+data-cites="eq:lgssm_obs">[@eq:lgssm_obs]</span>).</td>
+</tr>
+<tr>
+<td><code>prior_mean</code></td>
+<td>Continuous kind: prior mean <span
+class="math inline">\(\mu_0\)</span> over the initial latent state
+(<span class="citation"
+data-cites="eq:lgssm_state">[@eq:lgssm_state]</span>).</td>
+</tr>
+<tr>
+<td><code>prior_cov</code></td>
+<td>Continuous kind: prior covariance <span
+class="math inline">\(\Sigma_0\)</span> over the initial latent state
+(<span class="citation"
+data-cites="eq:lgssm_state">[@eq:lgssm_state]</span>).</td>
+</tr>
+<tr>
+<td><code>goal_mean</code></td>
+<td>Continuous kind: preferred state <span
+class="math inline">\(\mu^\star\)</span> the closed-loop controller
+steers toward (<span class="citation"
+data-cites="eq:closed_loop">[@eq:closed_loop]</span>).</td>
+</tr>
+<tr>
+<td><code>control_gain</code></td>
+<td>Continuous kind: scalar proportional gain <span
+class="math inline">\(k\)</span> on the belief error in the closed loop
+(<span class="citation"
+data-cites="eq:closed_loop">[@eq:closed_loop]</span>).</td>
 </tr>
 </tbody>
 </table></div>
 <h2 id="ontology-bindings-and-implementations">Ontology Bindings and
 Implementations</h2>
 <p>The <code>## ActInfOntologyAnnotation</code> section binds each
-variable to a canonical term (<code>A=LikelihoodMatrix</code>,
+variable to a canonical term — <code>A=LikelihoodMatrix</code>,
 <code>B=TransitionMatrix</code>, <code>C=LogPreferenceVector</code>,
 <code>D=PriorOverHiddenStates</code>, <code>s=HiddenState</code>,
-<code>o=Observation</code>, <code>π=PolicyVector</code>), which
-downstream pipeline steps use for semantic analysis and validation. The
-same GNN specification feeds the project’s rendering backends —
-including the 9 registered targets (PyMDP, RxInfer.jl,
+<code>o=Observation</code>, <code>π=PolicyVector</code> in the discrete
+exemplars; <code>F=StateTransitionMatrix</code>,
+<code>H=ObservationMatrix</code>, <code>Q=ProcessNoiseCovariance</code>,
+<code>R=ObservationNoiseCovariance</code>,
+<code>prior_mean=PriorMean</code>,
+<code>prior_cov=PriorCovariance</code>,
+<code>goal_mean=PreferredState</code>,
+<code>control_gain=ControlGain</code>,
+<code>x=ContinuousHiddenState</code>,
+<code>y=ContinuousObservation</code>, <code>u=ControlInput</code> in the
+continuous exemplars — which downstream pipeline steps use for semantic
+analysis and validation. The bindings are per-kind by construction: a
+continuous exemplar binds <code>F</code> to
+<code>StateTransitionMatrix</code>, never to a free-energy term, so the
+ontology layer carries the same kind-scoped reading <span
+class="citation"
+data-cites="tbl:actinf_symbols">[@tbl:actinf_symbols]</span> fixes by
+hand. The same GNN specification feeds the project’s rendering backends
+— including the 9 registered targets (PyMDP, RxInfer.jl,
 ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, bnlearn), of
 which the 9 listed as executable (PyMDP, RxInfer.jl, ActiveInference.jl,
-JAX, DisCoPy, PyTorch, NumPyro, Stan, bnlearn) also run at Step 12 — so
-that a model written once in this notation can be parsed, visualized,
-and executed across the 25-step pipeline (0–24) without restating its
-mathematics [gnn2023; heins2022; defelice2021].</p>
+JAX, DisCoPy, PyTorch, NumPyro, Stan, bnlearn) also run at Step 12 —
+with per-kind reach recorded as explicit statuses (<span
+class="citation"
+data-cites="tbl:framework_capability">[@tbl:framework_capability]</span>)
+— so that a model written once in this notation can be parsed,
+visualized, and executed across the 25-step pipeline (0–24) without
+restating its mathematics [gnn2023; heins2022; defelice2021].</p>
 </main>
 </body>
 </html>

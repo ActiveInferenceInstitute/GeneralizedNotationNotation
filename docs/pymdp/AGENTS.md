@@ -15,6 +15,9 @@ Documentation for the pymdp 1.0.0 (JAX-first) active inference framework
 integration with GNN. pymdp 1.0.0 replaces the pre-1.0 NumPy Agent surface with
 a JAX/equinox Agent that takes batched `list[jax.Array]` models and requires
 explicit PRNG key / empirical-prior carry-through.
+Coverage: discrete categorical A/B/C/D[/E] models only (`supports_continuous:
+False` in `src/gnn/render/framework_registry.py`); rendered scripts are
+executable at Step 12 via `src/gnn/execute/pymdp/` (`supports_execution: True`).
 
 ## Documentation Organization
 

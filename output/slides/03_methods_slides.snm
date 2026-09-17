@@ -1,10 +1,6 @@
-\beamer@slide {parsing-and-multi-format-export}{3}
-\beamer@slide {type-checking-and-validation}{5}
-\beamer@slide {rendering-to-multiple-backends}{7}
-\beamer@slide {tbl:backend_registry}{8}
-\beamer@slide {fig:backend_matrix}{10}
-\beamer@slide {execution}{12}
-\beamer@slide {long-running-orchestration-contracts}{14}
-\beamer@slide {fig:orchestration}{16}
-\beamer@slide {analysis-visualization-and-reporting}{17}
-\beamer@slide {reproducibility-and-auto-injection}{18}
+\beamer@slide {tbl:backend_registry}{13}
+\beamer@slide {tbl:framework_capability}{15}
+\beamer@slide {fig:backend_matrix}{17}
+\beamer@slide {rendering-by-model-kind}{18}
+\beamer@slide {executing-by-model-kind}{24}
+\beamer@slide {fig:orchestration}{31}

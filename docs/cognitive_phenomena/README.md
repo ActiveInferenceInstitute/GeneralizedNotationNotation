@@ -8,6 +8,8 @@
 
 This directory contains documentation and examples for modeling various cognitive phenomena using the Generalized Notation Notation (GNN) framework. These models demonstrate how Active Inference principles can be applied to understand and simulate complex cognitive behaviors.
 
+**Role**: cognitive_phenomena is a **research-area documentation module** (docs-only, per [SPEC.md](SPEC.md)); it is not a render or execution framework and is not an entry in `src/gnn/render/framework_registry.py`. It contains conceptual notes and example GNN models for cognitive phenomena, not pipeline components.
+
 > **🧠 Research Focus**: Bridging computational and cognitive neuroscience through Active Inference modeling  
 > **🎯 Applications**: Clinical research, educational technology, artificial intelligence  
 > **📊 Coverage**: 40+ cognitive phenomena with validated implementations

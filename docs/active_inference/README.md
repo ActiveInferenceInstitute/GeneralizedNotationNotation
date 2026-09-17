@@ -122,6 +122,8 @@ This documentation connects to the GNN source code:
 | RxInfer | [`src/gnn/execute/rxinfer/`](../../src/gnn/execute/rxinfer/) | Julia |
 | ActiveInference.jl | [`src/gnn/execute/activeinference_jl/`](../../src/gnn/execute/activeinference_jl/) | Julia |
 
+Model-kind coverage: **PyMDP** and **ActiveInference.jl** are discrete-only (`supports_continuous=False`); **RxInfer** additionally covers continuous linear-Gaussian models (`supports_continuous=True`, F/H/Q/R parameterization). All three execute at pipeline Step 12 via their `src/gnn/execute/<framework>/` runners.
+
 ### Analysis Tools
 
 | Tool | Path | Purpose |

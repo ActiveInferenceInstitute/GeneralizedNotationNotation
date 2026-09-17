@@ -584,8 +584,15 @@ to one of these step modules rather than to descriptive prose alone.</p>
 <p>The <code>input/</code> tree holds the model corpora that exercise
 the pipeline. Its <code>gnn_files/</code> subtree contains 11 corpus
 directories organized by model family, together totaling 30 example
-files. Every model file under <code>input/</code> lives in that subtree,
-so the 30-file count covers the whole tree. A
+files — 27 discrete-state specifications and 3 continuous
+linear-Gaussian specifications, the partition the manuscript’s
+model-kind accounting uses (<span class="citation"
+data-cites="sec:model_kinds">[@sec:model_kinds]</span>). The cold-start
+index <code>input/gnn_files/INDEX.md</code> catalogues every exemplar
+with its kind and task folder, and the <code>recursive/</code> directory
+is reserved for bounded <code>--autonomous</code> proposal-loop runs,
+holding no committed models. Every model file under <code>input/</code>
+lives in that subtree, so the 30-file count covers the whole tree. A
 <code>model_family_manifest.json</code> enumerates the 9 registered
 families and their target directories. This manifest is the
 authoritative registry that downstream steps and the manuscript variable
@@ -632,7 +639,7 @@ figures, and the template render stage for the PDF. Which values become
 tokens is not a matter of taste: any quantity the producer can derive
 from a source surface is a token,
 <code>scripts/check_manuscript_tokens.py</code> fails the build when a
-section hard-codes one instead, and the resulting 86-entry map is
+section hard-codes one instead, and the resulting 93-entry map is
 committed at <code>output/data/manuscript_variables.json</code> for
 audit. External references are resolved from
 <code>manuscript/references.bib</code>, which the same gate cross-checks

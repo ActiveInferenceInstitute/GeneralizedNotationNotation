@@ -13,6 +13,8 @@ This document provides agent scaffolding for the bnlearn framework documentation
 
 Documentation for the `bnlearn` Python package (https://github.com/erdogant/bnlearn) for causal discovery, parameter learning, inference, and sampling methods. It serves as a probabilistic graphical model abstraction layer for causal network generation, inference, and visualization.
 
+In the GNN pipeline, `bnlearn` renders **discrete categorical Bayesian networks** (optional A/B/C/D/E matrices; multi-modality and multi-factor supported) and is **executable**, not render-only: rendered scripts run at Step 12 via [`src/gnn/execute/bnlearn/`](../../src/gnn/execute/bnlearn/) with output under `BNLEARN_OUTPUT_DIR`. Scripts skip when the `bnlearn` extra is absent (`utils.framework_availability`). Continuous linear-Gaussian models are unsupported (`supports_continuous=False` in `src/gnn/render/framework_registry.py`).
+
 ## Documentation Organization
 
 The bnlearn Framework documentation system is part of the broader GNN (Generalized Notation Notation) pipeline and ecosystem.

@@ -34,7 +34,7 @@ This tree is part of the GNN documentation system; implementation lives in `src/
 
 ## Integration
 
-- **25 steps (0–24)**: thin orchestrators in `src/N_*.py`
+- **25 steps (0–24)**: thin orchestrators in `src/gnn/N_*.py`
 - **Routing**: `input/config.yaml` (`testing_matrix`)
 
 ## Standards

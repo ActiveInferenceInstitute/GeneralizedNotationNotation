@@ -77,17 +77,25 @@ The GNN (Generalized Notation Notation) project now includes complete integratio
 
 ### Pipeline Integration Test
 
+The historical verification run used the then-current MCP step number:
+
 ```bash
 python3 src/gnn/main.py --only-steps 7 --verbose
 ```
 
-**Result**: ✅ SUCCESS - All tools registered and discoverable
+In the current 25-step pipeline, MCP processing is **Step 21** (`21_mcp.py`),
+which registers the eight `sympy_*` tools via `src/gnn/mcp/discovery.py` and
+writes `mcp_results.json`, `registered_tools.json`, and
+`mcp_processing_summary.json` into the output directory. SymPy is not invoked
+anywhere else in the pipeline (the optional sympy/scipy declaration for
+`5_type_checker` in `pipeline_dependencies.py` is vestigial — the type checker
+never imports sympy).
 
 ### MCP Tool Discovery Test
 
 **Result**: ✅ All 8 SymPy tools appear in MCP integration report:
 
-- Located in: `output/mcp_processing_step/7_mcp_integration_report.md`
+- Located in: `output/mcp_results.json` and `output/registered_tools.json` (written by the Step 21 MCP processing module)
 - All tools properly documented with schemas and descriptions
 
 ### Dependency Management
@@ -113,7 +121,7 @@ result = mcp_instance.execute_tool(
 
 The SymPy tools are automatically available in:
 
-- Step 7: MCP Operations (`21_mcp.py`)
+- Step 21: MCP Processing (`21_mcp.py`)
 - All MCP-enabled pipeline components
 - External MCP clients connecting to GNN
 
@@ -222,7 +230,7 @@ The SymPy tools are automatically available in:
 **Test Coverage**:
 
 - ✅ MCP tool registration: 8/8 tools successfully registered
-- ✅ Pipeline integration: Successful execution in step 7
+- ✅ Pipeline integration: SymPy MCP tools registered at Step 21 (MCP processing)
 - ✅ Error handling: Graceful fallback when server unavailable
 
 **Dependencies Added**: 1

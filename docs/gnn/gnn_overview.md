@@ -1,7 +1,7 @@
 # GNN Overview
 
-**Version**: v3.2.0 Engine (Bundle v2.0.0)
-**Last Updated**: 2026-04-14
+**Version**: 3.3.0
+**Last Updated**: 2026-09-17
 **Status**: Maintained
 **Pipeline Steps**: 25
 
@@ -266,6 +266,8 @@ For more detailed information about specific aspects of GNN, refer to:
 - **[PyTorch Integration](implementations/pytorch.md)**: Neural active inference and deep learning
 - **[NumPyro Integration](implementations/numpyro.md)**: Continuous probabilistic programming via MCMC
 - **[JAX Integration](implementations/jax.md)**: High-performance vector-space compilation
+- **[Stan Integration](implementations/stan.md)**: Runnable HMM and linear-Gaussian programs via CmdStan
+- **[bnlearn Integration](../bnlearn/README.md)**: Bayesian network learning and causal-model export for discrete structures
 - **[ActiveInference.jl](implementations/activeinference_jl.md)**: Discrete-state Julia POMDP simulation
 
 ### Pipeline and Tools

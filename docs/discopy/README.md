@@ -76,6 +76,11 @@ DisCoPy integration enables:
 - **Mathematical Analysis**: Category theory-based model analysis
 - **Compositional Modeling**: Natural representation of model composition
 - **Quantum Applications**: Quantum computing and information processing
+- **Discrete-Only Coverage**: Renders categorical POMDP string diagrams
+  (A/B/C/D/E boxes over discrete state counts); continuous linear-Gaussian
+  models are unsupported and reported as such, not drawn as discrete stand-ins
+- **Executable**: Rendered DisCoPy scripts are validated and run by
+  `src/gnn/execute/discopy/discopy_executor.py` (Step 12)
 
 ## Integration with Pipeline
 

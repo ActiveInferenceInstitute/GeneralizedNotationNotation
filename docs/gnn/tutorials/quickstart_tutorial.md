@@ -1,7 +1,7 @@
 # GNN Quick Start Tutorial
 
-**Version**: v3.2.0 Engine (Bundle v2.0.0)  
-**Last Updated**: 2026-04-15  
+**Version**: v3.3.0 Engine (Bundle v2.0.0)  
+**Last Updated**: 2026-09-17  
 **Status**: Maintained  
 
 **Goal**: Create and run your first GNN model in 15 minutes, no prior Active Inference knowledge required.
@@ -335,8 +335,22 @@ Your agent:
 2. **Try examples**: Explore [more complex models](gnn_examples_doc.md)
 3. **Different domains**: Navigation → Perception → Decision making
 4. **Advanced features**: Multi-agent, learning, hierarchical models
+
 5. **Pipeline architecture**: See **[src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md)** for complete module documentation
 6. **Pipeline safety**: Read **[src/gnn/README.md](../../../src/gnn/README.md)** for architecture patterns
+
+### Beyond the discrete kind
+
+Everything in this tutorial is a **discrete categorical** model (`A`/`B`/`C`/`D`
+keys, column-stochastic matrices, softmax perception). GNN also treats
+**continuous linear-Gaussian** models (`F`/`H`/`Q`/`R` + `prior_mean`/`prior_cov`,
+optionally `goal_mean`/`control_gain` for closed-loop control) as first-class.
+Runnable exemplars live in [`input/gnn_files/continuous/`](../../../input/gnn_files/continuous/) —
+start with `continuous/stochastic_dynamics.md` (passive filtering) and
+`continuous/continuous_navigation.md` (belief-driven goal seeking). They render
+and execute on JAX, NumPyro, PyTorch, Stan, and RxInfer.jl; categorical
+backends (PyMDP, ActiveInference.jl, DisCoPy, bnlearn) report them
+`unsupported`, so pick `--frameworks` accordingly.
 
 ### Build Your Own Model
 
@@ -379,6 +393,13 @@ Your agent:
 - Check `C_m0`: Higher values should be at preferred states
 - Check `B_f0`: Ensure movement logic is correct
 - Try `ModelTimeHorizon=10` for longer planning
+
+### "unsupported framework" for a continuous model
+
+If your spec declares `F`/`H`/`Q`/`R` instead of `A`/`B`, it is a
+linear-Gaussian (continuous) model. PyMDP, ActiveInference.jl, DisCoPy, and
+bnlearn do not execute that kind — rerun with `--frameworks jax`, `numpyro`,
+`pytorch`, `stan`, or `rxinfer`. See [input/gnn_files/INDEX.md](../../../input/gnn_files/INDEX.md).
 
 ## 📚 Resources
 

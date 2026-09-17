@@ -25,11 +25,12 @@ The execution framework documentation system is part of the broader GNN (General
 
 ## Subsystems
 
-- **FRAMEWORK_AVAILABILITY.md**: Framework compatibility and installation status
-- **PyMDP Integration**: Python Active Inference framework
-- **RxInfer.jl Integration**: Julia Bayesian inference framework
-- **ActiveInference.jl**: Complete Active Inference implementation
-- **DisCoPy Integration**: Category theory and quantum computing
+- **FRAMEWORK_AVAILABILITY.md**: Framework compatibility, model-kind coverage (discrete categorical vs continuous linear-Gaussian), and installation status
+- **PyMDP Integration**: Python Active Inference framework (discrete models)
+- **RxInfer.jl Integration**: Julia Bayesian inference framework (discrete + continuous LGSSM)
+- **ActiveInference.jl**: Complete Active Inference implementation (discrete models)
+- **DisCoPy Integration**: Category theory and quantum computing (discrete models)
+- **JAX / NumPyro / PyTorch / Stan**: factorized and continuous linear-Gaussian program execution
 
 ## Quick Navigation
 

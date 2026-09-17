@@ -296,11 +296,15 @@ RxInfer.jl is a powerful Julia package for Bayesian inference on factor graphs u
 > `@model function pomdp_model(y, A, B, D, u, T)` using `Categorical` and
 > `DiscreteTransition` nodes and runs `infer()` with `free_energy = true`,
 > returning real posteriors and a genuine variational free energy trace.
+> Discrete categorical models use `pomdp_model`; continuous linear-Gaussian
+> models dispatch to a separate native `continuous_pomdp_model` script (see
+> [Continuous linear-Gaussian models](#continuous-linear-gaussian-models)).
 > Execution uses a committed Julia environment (`Project.toml` +
 > `Manifest.toml` pinning RxInfer 5.5.0 under `src/gnn/execute/rxinfer/`), invoked via
 > `julia --startup-file=no --project=src/gnn/execute/rxinfer <script>`.
 > `setup_environment.jl` uses `Pkg.activate()` + `Pkg.instantiate()` — there is no
-> runtime `Pkg.add`. All 29 exemplar GNN files render and execute successfully.
+> runtime `Pkg.add`. All 30 exemplar GNN files (27 discrete + 3 continuous,
+> census: `input/gnn_files/INDEX.md`) render and execute successfully.
 
 ## Getting started
 
@@ -313,6 +317,50 @@ See [GNN multi-agent](../gnn/advanced/gnn_multiagent.md) and the [multiagent tra
 ## POMDP models
 
 Partially observed settings map through GNN’s POMDP extraction to RxInfer factor graphs; see [GNN for Active Inference Models in RxInfer](#4-gnn-for-active-inference-models-in-rxinfer).
+
+## Continuous linear-Gaussian models
+
+RxInfer rendering covers **both** model kinds the GNN pipeline detects
+(`detect_model_kind` in `src/gnn/render/pomdp_contract.py`):
+
+- **Discrete categorical** POMDP/HMM specs (A/B/C/D[/E] matrices) — see the
+  translation sections above and [POMDP models](#pomdp-models).
+- **Continuous linear-Gaussian** state-space models — dispatched to
+  `ContinuousStrategy`, whose generator lives in
+  `src/gnn/render/rxinfer/_strategies_continuous.py`.
+
+A continuous spec must declare an authored continuous parameterization in its
+InitialParameterization: the LGSSM matrices `F`/`H`/`Q`/`R` plus the Gaussian
+prior `prior_mean`/`prior_cov`. If any of these is missing, rendering raises a
+`ValueError` naming the missing keys rather than fabricating them from the
+discrete A/B/C/D stand-in. When the spec also declares `goal_mean` +
+`control_gain`, the forward simulation closes the loop on beliefs
+(`u[t] = gain * (goal - mu[t])`, with `mu[t]` the online Kalman-filtered mean);
+otherwise the dynamics run passively.
+
+`_strategies_continuous.py` generates a standalone Julia script (`@model
+continuous_pomdp_model`, precompiled in the `GnnRxInferModels` package under
+`src/gnn/execute/rxinfer/src/`) that:
+
+1. Forward-simulates the declared LGSSM (`x[t] = F x[t-1] + u[t-1] + N(0, Q)`,
+   `y[t] = H x[t] + N(0, R)`) with an online Joseph-form Kalman filter, under
+   the fixed random seed from `model_parameters`.
+2. Runs genuine RxInfer `infer()` on the fully conjugate linear-Gaussian model
+   with `free_energy = true` — no constraints or initialization needed, and no
+   fallback: if `infer()` fails, the script crashes.
+3. Extracts per-timestep posterior means/covariances, scores them against the
+   simulated ground truth (`rmse_vs_true`), validates that the Bethe free
+   energy is finite (it is routinely negative for continuous models, so the
+   discrete generators' "VFE > 0" check does not apply), and writes
+   `simulation_results.json` in the `rxinfer_simulation_v1` schema. No EFE,
+   policy posterior, or discrete action trace is emitted — none is defined for
+   a linear-Gaussian model.
+
+**Execution status.** RxInfer is fully executable (`supports_execution: True`
+in `src/gnn/render/framework_registry.py`): `src/gnn/execute/rxinfer/` runs the
+rendered `.jl` scripts with the committed Julia environment (`Project.toml` +
+`Manifest.toml` pinning RxInfer 5.5.0), as described in the pipeline note at
+the top of this guide.
 
 ## Security considerations
 

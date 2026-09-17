@@ -225,18 +225,24 @@ to one of these step modules rather than to descriptive prose alone.
 The \texttt{input/} tree holds the model corpora that exercise the
 pipeline. Its \texttt{gnn\_files/} subtree contains 11 corpus
 directories organized by model family, together totaling 30 example
-files. Every model file under \texttt{input/} lives in that subtree, so
-the 30-file count covers the whole tree. A
+files --- 27 discrete-state specifications and 3 continuous
+linear-Gaussian specifications, the partition the manuscript's
+model-kind accounting uses (sec.~3.2). The cold-start
+index \breaktt{input/gnn\_files/INDEX.md} catalogues every exemplar with
+its kind and task folder, and the \texttt{recursive/} directory is
+reserved for bounded \texttt{-\/-autonomous} proposal-loop runs, holding
+no committed models. Every model file under \texttt{input/} lives in
+that subtree, so the 30-file count covers the whole tree. A
 \breaktt{model\_family\_manifest.json} enumerates the 9 registered
 families and their target directories. This manifest is the
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]{Supplemental Source Surface}
 authoritative registry that downstream steps and the manuscript variable
 producer read when they report family counts and cross-framework
 coverage; it should be consulted directly rather than inferred from
 directory listings.
 
-\end{frame}
-
-\begin{frame}[fragile,allowframebreaks]{Supplemental Source Surface}
 The \texttt{scripts/} tree contains the thin orchestrators that gate and
 reproduce the project. These include the acceptance scripts that confirm
 the pipeline runs end to end, the reliability gates that enforce
@@ -287,7 +293,7 @@ from a source surface is a token,
 
 \begin{frame}[fragile,allowframebreaks]{Authored Source Versus Generated
 Output}
-section hard-codes one instead, and the resulting 86-entry map is
+section hard-codes one instead, and the resulting 93-entry map is
 committed at \breaktt{output/data/manuscript\_variables.json} for audit.
 External references are resolved from
 \breaktt{manuscript/references.bib}, which the same gate cross-checks

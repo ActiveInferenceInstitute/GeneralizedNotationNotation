@@ -589,22 +589,33 @@ whichever fragment they happen to have.</p>
 structure of Active Inference work. The discipline depends on precisely
 specified state spaces, observation and transition tensors, prior
 preferences, and policy structures; small notational ambiguities
-propagate into materially different behaviour. Yet the community has
-lacked a notation that is simultaneously human-readable,
-machine-parseable, and faithful to the underlying mathematics.
-Generalized Notation Notation (GNN) was introduced to fill exactly that
-gap [gnn2023]: a standard, text-based way to write down an Active
-Inference generative model once, such that every downstream use derives
-from the same source of truth.</p>
+propagate into materially different behaviour. The heterogeneity of the
+models themselves compounds the problem: the field works in several
+model kinds at once — discrete categorical POMDPs over finite state
+spaces, continuous linear-Gaussian state-space models, multi-agent
+systems whose agents each carry their own generative vocabulary,
+hierarchical compositions layered over timescales — and each kind
+attracts its own notation, its own notebooks, and its own simulation
+stack. Yet the community has lacked a notation that is simultaneously
+human-readable, machine-parseable, and faithful to the underlying
+mathematics across those kinds. Generalized Notation Notation (GNN) was
+introduced to fill exactly that gap [gnn2023]: a standard, text-based
+way to write down an Active Inference generative model once, such that
+every downstream use derives from the same source of truth.</p>
 <h2 id="the-gnn-approach">The GNN Approach</h2>
 <p>GNN treats the model specification as a first-class artifact. A model
 is written in a plain-text language whose syntax captures the components
 an Active Inference modeller actually reasons about — state factors,
 observation modalities, the matrices that link them, control structure,
-and the temporal organization of the model. Because the specification is
-text, it lives comfortably in version control, diffs cleanly across
-revisions, and can be authored and reviewed by humans without
-specialized tooling.</p>
+and the temporal organization of the model — and whose declared matrix
+vocabulary fixes which kind of generative model the file denotes:
+categorical
+<code>A</code>/<code>B</code>/<code>C</code>/<code>D</code>[/<code>E</code>]
+tensors for a discrete state-space model, linear-Gaussian system
+matrices for a continuous one, per-agent and per-level compositions for
+structured variants. Because the specification is text, it lives
+comfortably in version control, diffs cleanly across revisions, and can
+be authored and reviewed by humans without specialized tooling.</p>
 <p>The defining commitment of GNN is what the project calls the Triple
 Play: a single text specification is the common origin for three
 coordinated renderings of the same model. The text form is the
@@ -625,6 +636,13 @@ infrastructure that makes it usable in practice:</p>
 <li><strong>A parseable, human-readable notation</strong> for Active
 Inference generative models, whose text form is authoritative and from
 which every other representation is derived.</li>
+<li><strong>A model-kind taxonomy with per-kind rendering and execution
+semantics</strong> — discrete categorical, continuous linear-Gaussian,
+multi-agent, hierarchical, learning, and structural kinds, classified
+structurally from the declared notation and rendered or
+recorded-unsupported per backend — so that what a specification can do
+on a given framework is a checkable property of the model’s kind, not a
+trial-and-error discovery.</li>
 <li><strong>A 25-step processing pipeline</strong> (0–24), whose stages
 are implemented across 44 source packages, that carries a specification
 from parsing and validation through visualization, rendering, and
@@ -649,23 +667,32 @@ pass rather than assertions that are merely made.</li>
 <p>The remainder of this manuscript is organized to move from language
 to mechanism to evidence. <span class="citation"
 data-cites="sec:system_context">[@sec:system_context]</span> states the
-notation and the generative model it denotes, writing the factorization,
-the four matrices, and the two free-energy objectives as explicit
-equations (<span class="citation"
+notation and the model kinds it denotes — the discrete categorical
+factorization, its four matrices, and its two free-energy objectives as
+explicit equations (<span class="citation"
 data-cites="eq:generative_model">[@eq:generative_model]</span> through
-<span class="citation" data-cites="eq:policy">[@eq:policy]</span>); it
-presents the pipeline structure (<span class="citation"
+<span class="citation" data-cites="eq:policy">[@eq:policy]</span>), the
+continuous linear-Gaussian state-space kind with its optional
+closed-loop control structure (<span class="citation"
+data-cites="eq:lgssm_state">[@eq:lgssm_state]</span> through <span
+class="citation" data-cites="eq:closed_loop">[@eq:closed_loop]</span>),
+and the multi-agent, hierarchical, learning, and structural compositions
+— and it presents the model-kind table (<span class="citation"
+data-cites="tbl:model_kinds">[@tbl:model_kinds]</span>), the pipeline
+structure (<span class="citation"
 data-cites="fig:pipeline">[@fig:pipeline]</span>), the Triple Play
 (<span class="citation"
 data-cites="fig:triple_play">[@fig:triple_play]</span>), and the
 per-step responsibility table (<span class="citation"
 data-cites="tbl:pipeline_steps">[@tbl:pipeline_steps]</span>). <span
 class="citation" data-cites="sec:methods">[@sec:methods]</span> follows
-a specification through the pipeline — parsing, type checking,
-rendering, execution, and reporting — and presents the backend registry
-(<span class="citation"
+a specification through the pipeline — parsing, kind-scoped type
+checking, rendering, execution, and reporting — and presents the backend
+registry (<span class="citation"
 data-cites="tbl:backend_registry">[@tbl:backend_registry]</span>), the
-backend registry surface (<span class="citation"
+per-kind framework capability matrix (<span class="citation"
+data-cites="tbl:framework_capability">[@tbl:framework_capability]</span>),
+the backend registry surface (<span class="citation"
 data-cites="fig:backend_matrix">[@fig:backend_matrix]</span>), and the
 long-running orchestration contracts (<span class="citation"
 data-cites="fig:orchestration">[@fig:orchestration]</span>). <span
@@ -692,8 +719,8 @@ data-cites="sec:symbols_glossary">[@sec:symbols_glossary]</span>, and
 full source details in <span class="citation"
 data-cites="sec:references">[@sec:references]</span>. Read in this
 order, the manuscript moves from why a standard notation is needed,
-through how GNN realizes it, to the evidence that the standard
-holds.</p>
+through how GNN realizes it across model kinds, to the evidence that the
+standard holds.</p>
 </main>
 </body>
 </html>
