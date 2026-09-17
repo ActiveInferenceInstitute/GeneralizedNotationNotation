@@ -4,6 +4,13 @@
 paper:
   title: "GeneralizedNotationNotation: A Text Language for Active Inference Models"
   subtitle: "A text language and modular processing pipeline for Active Inference generative models"
+  # The template's title-page cover slot points at the generated graphical
+  # abstract, so the cover page and the Abstract section carry one artifact.
+  # The alt text is a literal: a config token would reach the cover verbatim,
+  # and hard-coded counts are rejected by the token gate.
+  cover:
+    image: "output/figures/gnn_graphical_abstract.png"
+    alt: "Graphical abstract: one plain-text GNN specification flowing through parse, validate, render, execute, and analyze cards into cross-repository interchange checks against the pinned GEO-INFER and fep-lean pairs."
   version: "3.3.0"
   date: "2026-09-06"
 

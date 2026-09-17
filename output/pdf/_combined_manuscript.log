@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999998 (TeX Live 2026) (preloaded format=xelatex 2026.3.1)  16 SEP 2026 16:39
+This is XeTeX, Version 3.141592653-2.6-0.999998 (TeX Live 2026) (preloaded format=xelatex 2026.3.1)  16 SEP 2026 20:13
 entering extended mode
  %&-line parsing enabled.
 **_combined_manuscript.tex
@@ -1217,6 +1217,12 @@ Package caption Info: listings package is loaded.
 Package caption Info: End \AtBeginDocument code.
 Package hyperref Info: Link coloring ON on input line 267.
 \c@lstlisting=\count366
+Package microtype Info: Loading generic protrusion settings for font family
+(microtype)             `lmss' (encoding: TU).
+(microtype)             For optimal results, create family-specific settings.
+(microtype)             See the microtype manual for details.
+File: ../figures/gnn_graphical_abstract.png Graphic file (type bmp)
+<../figures/gnn_graphical_abstract.png>
  [1
 
 ] (./_combined_manuscript.toc
@@ -1287,11 +1293,11 @@ L3 programming layer <2026-01-19>
  ***********
  )
 Here is how much of TeX's memory you used:
- 23665 strings out of 469709
- 432508 string characters out of 5466024
- 1052085 words of memory out of 5000000
- 51993 multiletter control sequences out of 15000+600000
- 631293 words of font info for 77 fonts, out of 8000000 for 9000
+ 23718 strings out of 469709
+ 434354 string characters out of 5466024
+ 1051868 words of memory out of 5000000
+ 52038 multiletter control sequences out of 15000+600000
+ 631333 words of font info for 82 fonts, out of 8000000 for 9000
  319 hyphenation exceptions out of 8191
  90i,9n,114p,1606b,571s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
