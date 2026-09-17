@@ -197,6 +197,17 @@ the delete-vs-wire-in decision is made~~ **EXECUTED 2026-09-15** (`c89452e00`,
 N-4): deleted with its test and exports; `StepStatus` re-homed to
 `pipeline/schemas.py`; see the observations note above.
 
+Test hygiene (discovered 2026-09-17, open): `tests/test_manuscript_token_gate.py`
+regenerates `output/data/manuscript_variables{,_receipt}.json` against the
+REAL repo tree as a run side effect — a local combined pytest run then lets
+the rewritten map (describing the new HEAD) cross into a same-session
+custody assert in `test_manuscript_latex_log.py`, producing a false
+map-vs-manifest failure (and any subsequent `git add -A` sweeps the
+pollution into a commit; `9fc63b1db` needed the SC-22 rerun at `23bef35b5`
+to repair exactly this). Fix: the token-gate suite must regenerate into
+`tmp_path` copies (or restore HEAD state in a teardown), never the live
+committed paths.
+
 ## Deep horizon wave 2 - render backends
 
 Scoping for `src/gnn/render/**` (2026-09-08, deep-horizon session). RB-01
