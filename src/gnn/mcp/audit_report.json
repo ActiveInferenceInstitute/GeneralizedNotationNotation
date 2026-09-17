@@ -2,7 +2,7 @@
   "modules_total": 32,
   "modules_loaded": 32,
   "modules_errored": 0,
-  "tools_total": 141,
+  "tools_total": 142,
   "tools_list": [
     {
       "name": "analyze_audio_characteristics",
@@ -211,6 +211,14 @@
       "fn": "get_audio_module_info_mcp",
       "documented": true,
       "description": "Return version, feature flags, supported backends and formats of the GNN audio module."
+    },
+    {
+      "name": "get_doctor_report",
+      "module": "gnn.execute",
+      "category": "execute",
+      "fn": "get_doctor_report_mcp",
+      "documented": true,
+      "description": "Return one structured capability report: per-framework availability plus a Step 12 execution-readiness dry run (no scrip"
     },
     {
       "name": "get_environment_info",
@@ -490,7 +498,7 @@
       "category": "api",
       "fn": "gnn_submit_job_mcp",
       "documented": true,
-      "description": "Submit a GNN pipeline processing job."
+      "description": "Create a GNN pipeline job record. Jobs execute only via the API server (gnn serve / POST /api/v1/process); this tool doe"
     },
     {
       "name": "install_uv_dependency",
@@ -1135,7 +1143,7 @@
   ],
   "spot_checks_ok": 14,
   "spot_checks_err": 0,
-  "schema_checks_ok": 141,
+  "schema_checks_ok": 142,
   "schema_checks_err": 0,
   "logging_ok": 29,
   "logging_miss": 0,

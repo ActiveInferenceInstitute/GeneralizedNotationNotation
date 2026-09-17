@@ -8,6 +8,25 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ## [Unreleased]
 
+### Added (2026-09-16 — capability doctor wave)
+
+- **`gnn doctor`-style capability probe.** New execute module
+  `gnn.execute.doctor` (`collect_doctor_report`) composes the two scattered
+  readiness answers into one JSON-serializable report: per-framework
+  availability from the canonical
+  `gnn.utils.runtime_safety.framework_availability` records
+  (`FRAMEWORK_IMPORT_CHECK` / `check_framework`, with `probe_module`,
+  `missing_module`, `install_hint`, and Stan's `toolchain_probe`) plus the
+  shared Julia PATH gate for the Julia frameworks (reusing
+  `execute.planning`'s classification rather than duplicating it), and —
+  when a target/output directory pair is supplied (both or neither;
+  exactly one raises `ValueError`) — the full `plan_execute` Step 12
+  dry-run plan with an `execution_ready` classification. Strictly
+  offline: importability probes, one PATH lookup, directory reads. Exposed
+  as the MCP tool `get_doctor_report` via the `run_tool_envelope` dispatch
+  pattern (execute module now registers 6 domain tools; audit report
+  regenerated to 142). 15 offline tests (`tests/execute/test_doctor.py`).
+
 ### Added (2026-09-16 — B-tensor orientation wave)
 
 - **B-tensor orientation diagnostic (step 6).** New validation module

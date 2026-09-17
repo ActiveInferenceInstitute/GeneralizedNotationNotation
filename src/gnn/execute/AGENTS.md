@@ -136,6 +136,20 @@ print(plan["status"], plan["total_scripts"], len(plan["would_execute"]))
 #### `list_frameworks() -> list[dict]`
 **Description**: Introspect the executor framework registry (`execute.executor`). Returns one record per registered backend with `framework`, `result_key` (the `*_executions` summary key), `available` (whether the runner is currently importable), and `operation` (the dispatch operation name). Useful for CLI/MCP diagnostics and tests that want to assert the registry shape without importing the private `_framework_specs` helper.
 
+#### `collect_doctor_report(target_dir: Optional[Path] = None, output_dir: Optional[Path] = None, frameworks: str = "all") -> Dict[str, Any]`
+**Description**: One structured capability report (`execute.doctor`, MCP tool `get_doctor_report`). Composes per-framework availability — the canonical `utils.framework_availability` `FRAMEWORK_IMPORT_CHECK`/`check_framework` records plus the shared Julia PATH gate for the Julia frameworks (`rxinfer`, `activeinference_jl`, reusing `planning`'s classification) — with the `plan_execute` Step 12 dry-run when a `target_dir`/`output_dir` pair is supplied (both or neither; exactly one raises `ValueError`). Strictly offline: importability probes, one PATH lookup, directory reads; no scripts run and nothing is written. Returns `frameworks` (keyed records with `kind` `python_import` | `julia_toolchain`, `probe_module`, availability, `missing_module`/`install_hint` when unavailable, `toolchain_probe` for Stan), `julia`, `frameworks_available`/`frameworks_missing`, `execution` (the full plan or a `not_probed` record), and `execution_ready`. Invalid `frameworks` values raise the planner's `ValueError`; the MCP envelope converts it to the standard error shape.
+
+**Example**:
+```python
+from gnn.execute import collect_doctor_report
+
+report = collect_doctor_report(
+    target_dir=Path("input/gnn_files"),
+    output_dir=Path("output/12_execute_output"),
+)
+print(report["frameworks_missing"], report["execution_ready"])
+```
+
 #### Framework Health Checking
 
 Framework availability is assessed at execution time by the processor rather than a single standalone function. Key detection utilities:
@@ -144,6 +158,7 @@ Framework availability is assessed at execution time by the processor rather tha
 - **`execute.pymdp.package_detector.validate_pymdp_for_execution()`** — Validate PyMDP is ready for execution.
 - **`execute.bnlearn.is_bnlearn_available()` / `execute.bnlearn.is_r_bnlearn_available()`** — bnlearn probes: the Python `bnlearn` module (shared `utils.framework_availability` mapping) and, for `.R` scripts, Rscript + the R `bnlearn` package. Rendered bnlearn scripts skip with the install hint when the lane's runtime is missing.
 - **MCP tool**: `check_execute_dependencies` — Exposes framework availability via MCP (see `execute/mcp.py`).
+- **MCP tool**: `get_doctor_report` — Exposes the composed availability + Step 12 readiness report via the `run_tool_envelope` dispatch pattern (see `execute/mcp.py`, `execute/doctor.py`).
 
 #### PyMDP Package Detection Functions
 **Module**: `execute.pymdp.package_detector`

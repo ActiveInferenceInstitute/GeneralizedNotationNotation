@@ -21,6 +21,7 @@ from . import (
     execute_simulation_from_gnn,
     process_execute,
 )
+from .doctor import collect_doctor_report
 from .pymdp.execute_pymdp import execute_from_gnn_file as _pymdp_execute_from_gnn_file
 from .validator import ValidationResult
 
@@ -287,6 +288,38 @@ def get_execute_module_info_mcp() -> Dict[str, Any]:
     )
 
 
+def get_doctor_report_mcp(
+    target_directory: str | None = None,
+    output_directory: str | None = None,
+    frameworks: str = "all",
+) -> Dict[str, Any]:
+    """Return one structured capability report: frameworks + Step 12 readiness.
+
+    Composes per-framework availability (``FRAMEWORK_IMPORT_CHECK`` /
+    ``check_framework`` plus the Julia PATH gate) with the
+    ``plan_execute`` dry-run over an optional target/output directory
+    pair. Both directories must be supplied together to probe execution
+    readiness; omitting them reports framework availability only.
+
+    Returns:
+        Dictionary with ``success``, per-framework ``frameworks`` records,
+        ``julia`` availability, availability name lists, the ``execution``
+        plan section, and ``execution_ready``.
+    """
+
+    def _build() -> Dict[str, Any]:
+        return collect_doctor_report(
+            target_dir=target_directory,
+            output_dir=output_directory,
+            frameworks=frameworks,
+        )
+
+    return run_tool_envelope(
+        _build,
+        wrapper_name="get_doctor_report_mcp",
+        logger=logger,
+    )
+
 # ── MCP Registration ──────────────────────────────────────────────────────────
 
 
@@ -378,4 +411,31 @@ def register_tools(mcp_instance: Any) -> None:
         category="execute",
     )
 
-    logger.info("execute module MCP tools registered (5 real domain tools).")
+    mcp_instance.register_tool(
+        "get_doctor_report",
+        get_doctor_report_mcp,
+        {
+            "type": "object",
+            "properties": {
+                "target_directory": {
+                    "type": "string",
+                    "description": "Directory containing (or sibling to) the Step 11 render output",
+                },
+                "output_directory": {
+                    "type": "string",
+                    "description": "Execution output directory used to resolve the sibling render output",
+                },
+                "frameworks": {
+                    "type": "string",
+                    "description": '"all", "lite", or a comma-separated framework subset',
+                    "default": "all",
+                },
+            },
+            "required": [],
+        },
+        "Return one structured capability report: per-framework availability plus a Step 12 execution-readiness dry run (no scripts run).",
+        module=__package__,
+        category="execute",
+    )
+
+    logger.info("execute module MCP tools registered (6 real domain tools).")

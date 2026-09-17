@@ -43,6 +43,7 @@ FrameworkName = Literal[
 # All execute submodules are in-tree — their import must succeed or tests
 # catch it. Any ImportError here is a real bug, not a "missing optional dep"
 # situation, and should fail loudly.
+from .doctor import collect_doctor_report
 from .executor import (
     GNNExecutor,
     execute_gnn_model,
@@ -85,6 +86,7 @@ __all__: list[Any] = [
     # Introspection / planning
     "list_frameworks",
     "plan_execute",
+    "collect_doctor_report",
     "execute_pymdp_simulation_from_gnn",
     "execute_pymdp_simulation",
     "validate_pymdp_environment",

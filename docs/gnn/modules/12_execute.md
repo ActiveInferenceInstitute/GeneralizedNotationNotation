@@ -167,6 +167,16 @@ There is no `get_execution_health_status` function in `src/gnn/execute/`. Framew
 - `python_version` (str): Python version
 - `julia_version` (Optional[str]): Julia version if available
 
+#### Capability doctor
+**Function**: `collect_doctor_report(target_dir=None, output_dir=None, frameworks="all") -> Dict[str, Any]` (`execute.doctor`; MCP tool `get_doctor_report`). One structured offline probe composing per-framework availability (the canonical `utils.framework_availability` records plus the shared Julia PATH gate) with the `plan_execute` Step 12 dry-run when a target/output directory pair is supplied (both or neither — exactly one raises `ValueError`).
+
+**Returns**: `Dict[str, Any]` report with:
+- `frameworks` (dict): per-framework records keyed by name; `kind` is `python_import` (with `probe_module`, availability, and `missing_module`/`install_hint` when unavailable; `toolchain_probe` for Stan) or `julia_toolchain` (mirrors the `julia` section)
+- `julia` (dict): `available` plus the executable `path` when found
+- `frameworks_available` / `frameworks_missing` (list[str]): the partitioned name lists
+- `execution` (dict): the full `plan_execute` plan, or `{"status": "not_probed", ...}` when no directory pair was supplied
+- `execution_ready` (Optional[bool]): `plan["status"] == "ready"`; `None` when not probed
+
 #### PyMDP Package Detection Functions
 **Module**: `execute.pymdp.package_detector`
 
