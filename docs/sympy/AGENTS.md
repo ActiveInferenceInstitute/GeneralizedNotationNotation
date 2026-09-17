@@ -48,13 +48,13 @@ This module is organized as follows:
 This documentation references the 25-step GNN processing pipeline as follows:
 
 The implemented integration point is **Step 21 (MCP)**: SymPy MCP tool registration.
-Other touchpoints listed below are **proposals**, not implemented behavior:
+Other touchpoints listed below are **proposals**; no code realizes them yet:
 
 ### Implemented
 
 - **Step 21 (MCP)**: SymPy MCP tool registration (`src/gnn/mcp/sympy_mcp.py`)
 
-### Proposed (not implemented)
+### Proposed (no runtime)
 
 - **Step 3 (GNN)**: SymPy validation of equation sections
 - **Step 5 (Type Checker)**: mathematical expression validation via SymPy
@@ -63,7 +63,7 @@ Other touchpoints listed below are **proposals**, not implemented behavior:
 
 See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documentation.
 
-## Function Signatures and API (proposed — not implemented)
+## Function Signatures and API (proposed signatures only)
 
 The signatures below are illustrative sketches of a pipeline-level validation API;
 the implemented surface is the eight `sympy_*` MCP tools in

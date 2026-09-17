@@ -8,7 +8,7 @@
 
 This directory contains comprehensive documentation, resources, and implementation guides for integrating **SPM** (Statistical Parametric Mapping) with GNN (Generalized Notation Notation). SPM provides established statistical frameworks for neuroimaging analysis, enabling translation of neuroimaging insights into computational cognitive architectures.
 
-> **Scope note**: SPM is documented here as a research/integration-notes capability. It is **not** a render or execution framework — it is not an entry in `src/gnn/render/framework_registry.py`, and no SPM code exists under `src/gnn/`. Pipeline references below describe where such integration *could* attach, not implemented behavior.
+> **Scope note**: SPM is documented here as a research/integration-notes capability. It is **not** a render or execution framework — it is not an entry in `src/gnn/render/framework_registry.py`, and no SPM code exists under `src/gnn/`. Pipeline references below describe attachment points a future integration could take; nothing here is wired into the pipeline today.
 
 **Status**: Documentation module — research/integration notes (no SPM implementation in `src/gnn/`)  
 **Version**: 1.0
@@ -47,7 +47,7 @@ This module is organized as follows:
 
 This documentation references the 25-step GNN processing pipeline at the conceptual level:
 
-The integration pathways below are **proposals**, not implemented behavior. No
+The integration pathways below are **proposals**: no code realizes any of them today. No
 pipeline step invokes SPM today (no SPM code under `src/gnn/`; SPM is not in
 `framework_registry.py`, so there is no Step 11 render target and no Step 12
 executor for it):
@@ -60,7 +60,7 @@ executor for it):
 
 See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documentation.
 
-## Function Signatures and API (proposed — not implemented)
+## Function Signatures and API (proposed signatures only)
 
 The signatures below are **illustrative sketches** of a future SPM bridge; no such
 functions exist anywhere in the codebase.

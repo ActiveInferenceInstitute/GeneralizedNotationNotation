@@ -87,7 +87,7 @@ eight `sympy_*` tools are registered through `src/gnn/mcp/sympy_mcp.py` and are
 discoverable by any MCP client. SymPy is also listed as an optional dependency of
 the `research` extras group. Other pipeline touchpoints mentioned in the guides
 below (equation validation inside Steps 3/5/6, symbolic render-time analysis) are
-**proposals**, not implemented behavior.
+**proposals**; no code realizes them yet.
 
 See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documentation.
 

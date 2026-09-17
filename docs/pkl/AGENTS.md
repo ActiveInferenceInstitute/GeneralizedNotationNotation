@@ -55,7 +55,7 @@ implemented behavior.
 
 See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documentation.
 
-## Function Signatures and API (proposed — not implemented)
+## Function Signatures and API (proposed signatures only)
 
 The signatures below are illustrative sketches; no such functions exist in the
 codebase. The implemented Pkl surface is `PKLParser`/`PKLSerializer` in

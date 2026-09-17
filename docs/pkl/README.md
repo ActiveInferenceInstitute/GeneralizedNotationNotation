@@ -98,7 +98,7 @@ Pkl support in the codebase today is **parsing and serialization only**:
    producing artifacts in `output/3_gnn_output/`.
 3. **No render/execution path**: Pkl is not in `framework_registry.py` (no Step 11
    render target) and has no Step 12 executor. The configuration-as-code workflows
-   described in [pkl_gnn.md](pkl_gnn.md) are proposals, not implemented behavior.
+   described in [pkl_gnn.md](pkl_gnn.md) are proposals; no code realizes them yet.
 
 
 See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documentation.
