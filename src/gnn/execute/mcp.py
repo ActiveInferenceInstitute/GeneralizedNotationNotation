@@ -320,6 +320,7 @@ def get_doctor_report_mcp(
         logger=logger,
     )
 
+
 # ── MCP Registration ──────────────────────────────────────────────────────────
 
 
