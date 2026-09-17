@@ -203,7 +203,7 @@
 
 \begin{frame}[fragile,allowframebreaks]{Current Limitations}
 \protect\phantomsection\label{current-limitations}
-GNN 3.3.0 is a working system with deliberately scoped boundaries, and
+GNN 3.4.0 is a working system with deliberately scoped boundaries, and
 it is worth stating those boundaries plainly rather than implying
 broader completeness than the artifacts support. The reliability gates
 that underpin our confidence in the system --- the semantic-fidelity
@@ -305,13 +305,13 @@ interpreting any single end-to-end run.
 
 \begin{frame}[allowframebreaks]{Next Steps}
 \protect\phantomsection\label{next-steps}
-The roadmap is concrete and staged. The current release is GNN 3.3.0
-(``One Corpus'', 2026-09-06). It builds on the three safe-by-design
-orchestration contracts introduced in GNN 3.0.0, which generate and
-validate data only, with no live infrastructure mutation. The first is
-\emph{durable observation streams}: file- and array-backed stream
-manifests (content-checksummed) with replayable execution traces, so
-that an extended run can be observed, paused, and re-derived
+The roadmap is concrete and staged. The current release is GNN 3.4.0
+(``Model-Kind Truth'', 2026-09-17). It builds on the three
+safe-by-design orchestration contracts introduced in GNN 3.0.0, which
+generate and validate data only, with no live infrastructure mutation.
+The first is \emph{durable observation streams}: file- and array-backed
+stream manifests (content-checksummed) with replayable execution traces,
+so that an extended run can be observed, paused, and re-derived
 deterministically before any live sensor or device-backed stream is ever
 introduced. The second is \emph{resumable run sessions}: run-session
 manifests with atomic checkpoint/resume, status inspection, and
