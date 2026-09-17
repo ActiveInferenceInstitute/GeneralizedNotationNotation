@@ -115,7 +115,7 @@ class TestIntelligentAnalysisModuleComprehensive:
         """Test module version is set correctly."""
         import gnn.intelligent_analysis as intelligent_analysis
 
-        assert intelligent_analysis.__version__ == "3.3.0"
+        assert intelligent_analysis.__version__ == "3.4.0"
 
     @pytest.mark.unit
     def test_features_dict(self) -> Any:

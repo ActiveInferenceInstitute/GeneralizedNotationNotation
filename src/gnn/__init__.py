@@ -46,7 +46,7 @@ if TYPE_CHECKING:
     from .types import ParsedGNN, ValidationLevel
     from .utils.config_io.config_loader import GNNPipelineConfig, load_config
 
-__version__ = "3.3.0"
+__version__ = "3.4.0"
 
 # Ensure tests see MCP feature presence consistently
 FEATURES: dict[str, Any] = {

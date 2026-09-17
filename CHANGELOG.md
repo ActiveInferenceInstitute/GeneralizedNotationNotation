@@ -6,8 +6,37 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ---
 
-## [Unreleased]
+## [3.4.0] — 2026-09-17
 
+> **Model-Kind Truth.** The documentation and manuscript surfaces now describe
+> discrete, continuous, and multi-agent models as first-class kinds across the
+> ~110-doc corpus, and the manuscript is rebuilt around them with auto-injected
+> version/count tokens so no hard-coded numbers can drift. Alongside it: the
+> `gnn doctor` capability probe, the bnlearn Step 12 executor, Step-6
+> B-orientation diagnostics, and the cover-page graphical abstract.
+
+### Added (2026-09-16/17 — docs model-kind wave + token auto-injection)
+
+- **Package-wide docs model-kind generalization.** A discrete/continuous/
+  multi-agent truth pass over the ~110-file documentation corpus replaced
+  PyMDP-only framing with model-kind-aware language; the manuscript was
+  rewritten around model kinds with auto-injected tokens
+  (`GNN_VERSION`, `GNN_MODULE_COUNT`, `GNN_TOOL_COUNT`, `GNN_TEST_COUNT`),
+  exemplar-kind split, and framework+kind capability tables — zero hard-coded
+  counts remain.
+- **Snapshot-based token census.** The manuscript token generator
+  (`src/gnn/manuscript/variables.py`) is now snapshot-based: every injected
+  count derives from a committed-byte census of the live tree instead of
+  hand-maintained literals, so doc claims track the package at render time.
+
+### Added (2026-09-16 — release-facing capability surface)
+
+- **Cover-page graphical abstract.** The rendered manuscript opens with a
+  generated graphical abstract on the cover page.
+- **Continuous-navigation closed-loop exemplar.** A new exemplar exercises
+  the continuous model-kind end to end (render → execute → navigate loop).
+
+## [Unreleased]
 ### Added (2026-09-16 — capability doctor wave)
 
 - **`gnn doctor`-style capability probe.** New execute module
@@ -1771,7 +1800,8 @@ Completes the remaining RED_TEAM_REVIEW.md items from the 2026-08-14 wave.
 - pytest test suite with comprehensive coverage
 - MCP tool registration framework
 
-[Unreleased]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v3.3.0...HEAD
+[Unreleased]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v3.4.0...HEAD
+[3.4.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v3.3.0...v3.4.0
 [3.3.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v3.2.0...v3.3.0
 [3.2.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v3.1.0...v3.2.0
 [3.1.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v3.0.0...v3.1.0
