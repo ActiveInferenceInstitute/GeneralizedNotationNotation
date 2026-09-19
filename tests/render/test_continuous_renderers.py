@@ -18,13 +18,21 @@ from typing import Any, Dict, cast
 
 import pytest
 
+from gnn.extract.pomdp_extractor import extract_pomdp_from_file
 from gnn.render.continuous_common import extract_continuous_spec, is_continuous_spec
 from gnn.render.jax.jax_renderer import render_gnn_to_jax
 from gnn.render.numpyro.numpyro_renderer import render_gnn_to_numpyro
+from gnn.render.pomdp_processor import pomdp_to_gnn_spec
 from gnn.render.pytorch.pytorch_renderer import render_gnn_to_pytorch
 from gnn.render.stan.stan_renderer import render_gnn_to_stan
 
 T = 8
+
+REPO = Path(__file__).resolve().parents[2]
+CONTINUOUS_DIR = REPO / "input" / "gnn_files" / "continuous"
+NEW_EXEMPLAR_STEM = "damped_oscillator_bias"
+NEW_EXEMPLAR_FILE = CONTINUOUS_DIR / f"{NEW_EXEMPLAR_STEM}.md"
+NEW_EXEMPLAR_TIMESTEPS = 12
 
 
 def _spec(with_control: bool) -> Dict[str, Any]:
@@ -62,12 +70,19 @@ def _run(
     )
 
 
-def _assert_schema(res: Dict[str, Any], framework: str, with_control: bool) -> None:
+def _assert_schema(
+    res: Dict[str, Any],
+    framework: str,
+    with_control: bool,
+    dims: int = 2,
+    timesteps: int = T,
+) -> None:
     assert res["framework"] == framework
     assert res["model_kind"] == "continuous"
-    assert len(res["beliefs"]) == T and len(res["beliefs"][0]) == 2
-    assert len(res["posterior_cov"]) == T and len(res["posterior_cov"][0]) == 2
-    assert len(res["controls"]) == T
+    assert res["num_states"] == dims and res["num_observations"] == 2
+    assert len(res["beliefs"]) == timesteps and len(res["beliefs"][0]) == dims
+    assert len(res["posterior_cov"]) == timesteps and len(res["posterior_cov"][0]) == dims
+    assert len(res["controls"]) == timesteps
     assert res["actions"] == [] and res["observations"] == []
     assert res["validation"]["all_valid"] is True
     if with_control:
@@ -123,6 +138,90 @@ def test_stan_continuous_program_and_driver(tmp_path: Path) -> None:
     assert "multi_normal_lpdf" in text and "obs_noise_scale" in text
     res = _run(driver, "STAN_OUTPUT_DIR", tmp_path / "out")
     _assert_schema(res, "stan", True)
+    assert res["validation"]["rhat_ok"] is True
+
+
+def _rows(matrix: Any) -> list[list[float]]:
+    """Normalize parsed matrix rows (tuples from the GNN literal parser)."""
+    return [[float(v) for v in row] for row in matrix]
+
+
+def _file_spec() -> Dict[str, Any]:
+    """Spec for the new exemplar, built through the real file pipeline path."""
+    pomdp = extract_pomdp_from_file(NEW_EXEMPLAR_FILE, strict_validation=True)
+    assert pomdp is not None and pomdp.model_kind == "continuous"
+    assert pomdp.num_states == 3 and pomdp.num_observations == 2
+    assert pomdp.passive_model is True
+    spec = cast(Dict[str, Any], pomdp_to_gnn_spec(pomdp))
+    assert spec["model_kind"] == "continuous"
+    return spec
+
+
+def test_damped_oscillator_bias_file_spec_and_shapes() -> None:
+    """The new exemplar extracts with 3 states / 2 observations and exact matrices."""
+    spec = _file_spec()
+    initial = spec["initialparameterization"]
+    assert _rows(initial["F"]) == [[1.0, 0.1, 0.0], [-0.09, 0.99, 0.0], [0.0, 0.0, 0.95]]
+    assert _rows(initial["H"]) == [[1.0, 0.0, 1.0], [0.0, 1.0, 0.5]]
+    assert _rows(initial["Q"]) == [
+        [0.01, 0.002, 0.0],
+        [0.002, 0.01, 0.0],
+        [0.0, 0.0, 0.004],
+    ]
+    assert _rows(initial["R"]) == [[0.04, 0.008], [0.008, 0.06]]
+    assert [float(v) for v in initial["prior_mean"]] == [0.0, 0.0, 0.2]
+    assert _rows(initial["prior_cov"]) == [
+        [1.0, 0.2, 0.0],
+        [0.2, 1.0, 0.0],
+        [0.0, 0.0, 0.5],
+    ]
+    assert "A" not in initial
+    assert "goal_mean" not in initial and "control_gain" not in initial
+    cs = extract_continuous_spec(spec)
+    assert cs.n == 3 and cs.m == 2 and not cs.has_control
+    assert cs.num_timesteps == NEW_EXEMPLAR_TIMESTEPS
+    assert cs.dt == 0.1 and cs.random_seed == 43
+
+
+def test_damped_oscillator_bias_jax_renders_and_runs(tmp_path: Path) -> None:
+    ok, msg, arts = render_gnn_to_jax(_file_spec(), tmp_path / "damped_jax.py")
+    assert ok, msg
+    res = _run(Path(arts[0]), "GNN_OUTPUT_DIR", tmp_path / "out")
+    _assert_schema(res, "jax", False, dims=3, timesteps=NEW_EXEMPLAR_TIMESTEPS)
+    assert "jax_version" in res
+
+
+def test_damped_oscillator_bias_numpyro_renders_and_runs_nuts(tmp_path: Path) -> None:
+    ok, msg, arts = render_gnn_to_numpyro(_file_spec(), tmp_path / "damped_numpyro.py")
+    assert ok, msg
+    res = _run(Path(arts[0]), "NUMPYRO_OUTPUT_DIR", tmp_path / "out")
+    _assert_schema(res, "numpyro", False, dims=3, timesteps=NEW_EXEMPLAR_TIMESTEPS)
+    assert len(res["mcmc_posterior_means"]) == NEW_EXEMPLAR_TIMESTEPS
+    assert res["mcmc_r_hat_max"] < 1.2
+    assert res["validation"]["mcmc_finite"] is True
+
+
+@pytest.mark.needs_torch
+def test_damped_oscillator_bias_pytorch_renders(tmp_path: Path) -> None:
+    ok, msg, arts = render_gnn_to_pytorch(_file_spec(), tmp_path / "damped_pytorch.py")
+    assert ok, msg
+    code = Path(arts[0]).read_text()
+    assert "torch.distributions.MultivariateNormal" in code
+    assert "GOAL_MEAN_RAW = None" in code
+    res = _run(Path(arts[0]), "PYTORCH_OUTPUT_DIR", tmp_path / "out")
+    _assert_schema(res, "pytorch", False, dims=3, timesteps=NEW_EXEMPLAR_TIMESTEPS)
+
+
+@pytest.mark.needs_cmdstan
+def test_damped_oscillator_bias_stan_program_and_driver(tmp_path: Path) -> None:
+    ok, msg, arts = render_gnn_to_stan(_file_spec(), tmp_path / "damped_stan.py")
+    assert ok, msg
+    driver, program = Path(arts[0]), Path(arts[1])
+    assert program.suffix == ".stan" and driver.suffix == ".py"
+    text = program.read_text()
+    assert "multi_normal_lpdf" in text and "obs_noise_scale" in text
+    res = _run(driver, "STAN_OUTPUT_DIR", tmp_path / "out")
+    _assert_schema(res, "stan", False, dims=3, timesteps=NEW_EXEMPLAR_TIMESTEPS)
     assert res["validation"]["rhat_ok"] is True
 
 
