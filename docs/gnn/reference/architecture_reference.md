@@ -119,43 +119,43 @@ except Exception:
 
 ## Cross-Module Data Flow (Actual Files)
 
-### Step 3 → Step 5: Parsed Data Transfer
+### Step 3 → Steps 6/7/8/9: Parsed Data Transfer
 
 ```
-Input:  input/gnn_files/discrete/actinf_pomdp_agent.md
-Output: output/3_gnn_output/gnn_processing_results.json
+Producer: src/gnn/processing/multi_format_processor.py
+  Writes: output/3_gnn_output/gnn_processing_results.json
+          output/3_gnn_output/<model>/<model>_parsed.json
 
-Cross-reference in src/gnn/5_type_checker.py:
-├── gnn_output_dir = get_output_dir_for_script("3_gnn.py", Path(args.output_dir))
-├── gnn_results_file = gnn_nested_dir / "gnn_processing_results.json"  
-└── with open(gnn_results_file, "r") as f: gnn_results = json.load(f)
+Consumers (one per line):
+  src/gnn/validation/workflow.py               # loads the manifest, then each parsed_model_file
+  src/gnn/export/processor.py                  # loads the manifest and each parsed_model_file
+  src/gnn/visualization/core/parsed_model.py   # per-model parsed JSON; markdown re-parse fallback
+  src/gnn/advanced_visualization/processor.py  # manifest + parsed JSONs
 ```
 
-### Step 5 → Step 8: Type Data Transfer  
-
-```
-Type data flows from Step 5 analysis to Step 8 visualization:
-
-src/gnn/8_visualization.py:
-└── visualizer.py:generate_matrix_visualization()
-    ├── Reads: output/5_type_checker_output/type_check_results.json
-    ├── Extracts: type_analysis["dimension_analysis"]
-    └── Generates: matrix heatmaps based on dimensional analysis
-```
+Step 5 (type checker), Step 10 (ontology), and Step 11 (render) re-parse the target-dir
+GNN files directly (type_checker/checking/core.py `_discover_gnn_files`;
+ontology/processor.py; render/processor.py). The previously documented claims that
+5_type_checker.py reads gnn_processing_results.json and that 8_visualization.py reads
+5_type_checker_output are not true of the current code and have been removed.
 
 ### Step 11 → Step 12: Generated Code Execution
 
-```  
-Code generation to execution transfer:
-
+```
 src/gnn/11_render.py → output/11_render_output/
-├── actinf_pomdp_agent_rxinfer.jl    (Generated RxInfer code) 
-└── render_summary.json              (Generation metadata)
+├── <model>/ rendered framework scripts      (per-model output)
+└── render_processing_summary.json           (render manifest)
 
 src/gnn/12_execute.py:
-├── Discovers generated files in output/11_render_output/
-└── Captures: execution results, timing, memory usage
+├── Defaults its target dir to output/11_render_output
+└── Resolves scripts via the render manifest (src/gnn/execute/detection.py)
 ```
+
+### Step 12/16 → Step 20 and Steps 23/24: Aggregation
+
+- src/gnn/website/generator.py loads Step 16 analysis JSONs, the Step 12 execution summary, and Step 8/9 visualization assets.
+- src/gnn/report/analyzer.py reads output/00_pipeline_summary/pipeline_execution_summary.json and censuses all 25 step output dirs (viz catalog from steps 8/9/11/12/20).
+- src/gnn/intelligent_analysis/processor.py reads only pipeline_execution_summary.json.
 
 ## Module Structure Analysis (Real Locations)
 

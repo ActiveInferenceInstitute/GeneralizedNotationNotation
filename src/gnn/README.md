@@ -200,12 +200,10 @@ flowchart LR
     MultiFormat --> ParsingSystem
     Processor --> Parser
     
-    MultiFormat -->|Parsed Models| Step5
     MultiFormat -->|Parsed Models| Step6
     MultiFormat -->|Parsed Models| Step7
     MultiFormat -->|Parsed Models| Step8
-    MultiFormat -->|Parsed Models| Step10
-    MultiFormat -->|Parsed Models| Step11
+    MultiFormat -->|Parsed Models| Step9
 ```
 
 ## Module Structure
