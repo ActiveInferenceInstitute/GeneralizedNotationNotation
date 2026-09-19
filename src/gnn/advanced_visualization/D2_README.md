@@ -285,7 +285,9 @@ Main class for D2 diagram generation.
   - Generate Active Inference conceptual diagram
   
 - `compile_d2_diagram(spec, output_dir, formats=None)` → `D2GenerationResult`
-  - Compile D2 diagram to output formats
+  - Compile D2 diagram to output formats (each compile routes through the
+    shared subprocess envelope: wall-clock force-kill timeout, classified
+    timeout / exit / never-started failures)
   
 - `generate_all_diagrams_for_model(model_data, output_dir, formats=None)` → `List[D2GenerationResult]`
   - Generate all applicable diagrams for a model
