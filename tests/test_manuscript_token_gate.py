@@ -11,8 +11,12 @@ fixture versions must FAIL.
 
 from __future__ import annotations
 
+import hashlib
 import importlib.util
 import json
+import os
+import shutil
+import subprocess
 import sys
 from pathlib import Path
 
@@ -221,15 +225,101 @@ def test_the_dirty_tree_writes_a_machine_readable_receipt() -> None:
     assert without_git["working_tree_clean"] is False
 
 
-def test_the_receipt_lands_under_output_data_after_generation() -> None:
-    receipt = REPO_ROOT / "output" / "data" / "manuscript_variables_receipt.json"
-    assert receipt.is_file(), (
-        "output/data/manuscript_variables_receipt.json missing — run "
-        "python scripts/z_generate_manuscript_variables.py"
+_STUB = '''"""Canned producer double for the token-gate tests.
+
+The real ``gnn.manuscript`` producer introspects the live repository; these
+tests exercise the generator script's control flow, so the stub returns the
+fixed token map stored in the sibling ``variables.json``.
+"""
+
+from __future__ import annotations
+
+import json
+from collections.abc import Mapping
+from pathlib import Path
+
+
+def generate_variables(project_root: Path) -> dict[str, str]:
+    data = json.loads(
+        (Path(__file__).parent / "variables.json").read_text(encoding="utf-8")
     )
+    return dict(data)
+
+
+def sync_config_metadata(project_root: Path, variables: Mapping[str, str]) -> list[str]:
+    return []
+
+
+def sync_preamble_metadata(project_root: Path, variables: Mapping[str, str]) -> list[str]:
+    return []
+
+
+def save_variables(variables: Mapping[str, str], out_path: Path) -> Path:
+    out_path = Path(out_path)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(
+        json.dumps(variables, indent=2, sort_keys=True, ensure_ascii=False) + "\\n",
+        encoding="utf-8",
+    )
+    return out_path
+'''
+
+
+def _write_tmp_project(tmp_path: Path, variables: dict[str, str]) -> Path:
+    """Scaffold a minimal project root under *tmp_path* around the real script.
+
+    ``scripts/z_generate_manuscript_variables.py`` resolves every path it
+    writes from its own location (``_PROJECT_ROOT = Path(__file__).resolve()
+    .parents[1]``), so the real script is copied into the tmp project and the
+    producer package is replaced by the canned stub above. The generator's
+    writes — ``output/data/manuscript_variables{,_receipt}.json`` — land
+    under *tmp_path* and the committed artifacts are never touched.
+    """
+    scripts = tmp_path / "scripts"
+    scripts.mkdir()
+    shutil.copy2(
+        REPO_ROOT / "scripts" / "z_generate_manuscript_variables.py",
+        scripts / "z_generate_manuscript_variables.py",
+    )
+    package = tmp_path / "src" / "gnn" / "manuscript"
+    package.mkdir(parents=True)
+    (tmp_path / "src" / "gnn" / "__init__.py").write_text("", encoding="utf-8")
+    (package / "__init__.py").write_text(_STUB, encoding="utf-8")
+    (package / "variables.json").write_text(
+        json.dumps(variables, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    return tmp_path
+
+
+def test_the_receipt_lands_under_output_data_after_generation(tmp_path) -> None:
+    """SC-23: after generation the receipt lives at ``<root>/output/data/``.
+
+    The generation runs in a tmp project (``_write_tmp_project``) and the
+    assertions read the freshly written tmp copy, so a test run never
+    regenerates the committed ``output/data`` artifacts against the live
+    tree (the test-hygiene regression recorded in TO-DO.md, 2026-09-17).
+    """
+    project = _write_tmp_project(tmp_path, _PRODUCER)
+    env = dict(os.environ)
+    env.pop("TEMPLATE_REPO_ROOT", None)
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(project / "scripts" / "z_generate_manuscript_variables.py"),
+        ],
+        cwd=str(project),
+        env=env,
+        capture_output=True,
+        text=True,
+        timeout=120,
+    )
+    assert result.returncode == 0, result.stderr
+    receipt = project / "output" / "data" / "manuscript_variables_receipt.json"
+    assert receipt.is_file(), result.stderr
     payload = json.loads(receipt.read_text(encoding="utf-8"))
     assert payload["generator"] == "scripts/z_generate_manuscript_variables.py"
-    assert "counts_describe_commit" in payload
+    assert payload["counts_describe_commit"] == _PRODUCER["GNN_GIT_COMMIT"]
+    assert (project / "output" / "data" / "manuscript_variables.json").is_file()
 
 
 def test_the_render_invocation_contract_is_documented_in_repo() -> None:
@@ -264,8 +354,6 @@ def test_the_render_invocation_contract_is_documented_in_repo() -> None:
 
 def test_render_invocation_is_detected_by_the_template_root_env() -> None:
     """The documented mechanism: TEMPLATE_REPO_ROOT set ⇒ render-invoked."""
-    import os
-
     sentinel = "GNN_TEST_TEMPLATE_REPO_ROOT_SENTINEL"
     old = os.environ.get("TEMPLATE_REPO_ROOT")
     try:
@@ -278,35 +366,51 @@ def test_render_invocation_is_detected_by_the_template_root_env() -> None:
             os.environ["TEMPLATE_REPO_ROOT"] = old
 
 
-def test_the_render_invoked_mode_fails_without_the_injector() -> None:
+def test_the_render_invoked_mode_fails_without_the_injector(tmp_path) -> None:
     """SC-3-4: a render-invoked run that cannot hydrate exits non-zero.
 
     Standalone keeps its graceful exit; the render would ship an
-    unsubstituted manuscript, so it must fail instead.
+    unsubstituted manuscript, so it must fail instead. The generator writes
+    the variables map and receipt BEFORE the injector check, so against the
+    live tree every invocation rewrote the committed
+    ``output/data/manuscript_variables{,_receipt}.json`` (the hygiene
+    regression recorded in TO-DO.md, 2026-09-17). Here the run happens in a tmp
+    project: those writes land under tmp_path and a digest guard pins the
+    committed artifacts as byte-identical across the run.
     """
-    import os
-    import subprocess
+    project = _write_tmp_project(tmp_path, _PRODUCER)
 
-    old = os.environ.get("TEMPLATE_REPO_ROOT")
-    os.environ["TEMPLATE_REPO_ROOT"] = "/nonexistent-template-root"
-    try:
-        result = subprocess.run(
-            [
-                sys.executable,
-                str(REPO_ROOT / "scripts" / "z_generate_manuscript_variables.py"),
-            ],
-            cwd=str(REPO_ROOT),
-            capture_output=True,
-            text=True,
-            timeout=120,
+    def _digest(path: Path) -> str:
+        return (
+            hashlib.sha256(path.read_bytes()).hexdigest()
+            if path.is_file()
+            else "absent"
         )
-    finally:
-        if old is not None:
-            os.environ["TEMPLATE_REPO_ROOT"] = old
-        else:
-            os.environ.pop("TEMPLATE_REPO_ROOT", None)
+
+    committed = (
+        REPO_ROOT / "output" / "data" / "manuscript_variables.json",
+        REPO_ROOT / "output" / "data" / "manuscript_variables_receipt.json",
+    )
+    before = tuple(_digest(path) for path in committed)
+
+    env = dict(os.environ)
+    env["TEMPLATE_REPO_ROOT"] = "/nonexistent-template-root"
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(project / "scripts" / "z_generate_manuscript_variables.py"),
+        ],
+        cwd=str(project),
+        env=env,
+        capture_output=True,
+        text=True,
+        timeout=120,
+    )
     assert result.returncode == 1, result.stderr
     assert "render invocation could not load the template injector" in result.stderr
+    assert tuple(_digest(path) for path in committed) == before
+    assert (project / "output" / "data" / "manuscript_variables.json").is_file()
+    assert (project / "output" / "data" / "manuscript_variables_receipt.json").is_file()
 
 
 if __name__ == "__main__":  # pragma: no cover - convenience
