@@ -129,7 +129,6 @@ flowchart LR
     Processor --> Generator
     Processor --> Providers
     
-    Processor -->|LLM Insights| Step16
     Processor -->|LLM Summaries| Step20
     Processor -->|LLM Analysis| Step23
 ```

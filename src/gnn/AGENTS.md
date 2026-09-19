@@ -504,12 +504,12 @@ output/3_gnn_output/
 
 ### Imported By
 
-- `5_type_checker.py` - Uses parsed model data
-- `6_validation.py` - Uses validation results
-- `7_export.py` - Uses parsed models for export
-- `8_visualization.py` - Uses model structure for visualization
-- `10_ontology.py` - Uses ontology terms from models
-- `11_render.py` - Uses models for code generation
+- `5_type_checker.py` - Re-parses target-dir GNN files (no Step 3 artifact read)
+- `6_validation.py` - Loads `gnn_processing_results.json` + parsed models from `output/3_gnn_output/`
+- `7_export.py` - Loads the Step 3 manifest + parsed models from `output/3_gnn_output/`
+- `8_visualization.py` - Prefers `output/3_gnn_output/` parsed JSON; markdown re-parse fallback
+- `10_ontology.py` - Re-parses target-dir GNN files (no Step 3 artifact read)
+- `11_render.py` - Re-parses target-dir GNN files (no Step 3 artifact read)
 
 ### Data Flow
 
@@ -518,7 +518,7 @@ input/gnn_files/ (mixed extensions per multi_format_processor) → GNNParsingSys
                             ↓
                     Parsed Model JSON
                             ↓
-                  [Downstream Steps 5-23]
+                  [Consumers: Steps 6, 7, 8 (preferred), 9 — all other steps re-parse input]
 ```
 
 ---

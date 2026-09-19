@@ -107,10 +107,7 @@ flowchart LR
     Processor --> ConsistencyC
     
     Step3 -->|Parsed Models| Processor
-    Step5 -->|Type Info| Processor
     
-    Processor -->|Validation Results| Step7
-    Processor -->|Validation Results| Step8
 ```
 
 ## Core Components

@@ -278,11 +278,18 @@ src/gnn/11_render.py (thin orchestrator)
 
 ### Data Dependencies
 
-- Step 3 (GNN) → Step 5 (Type Checker): `parsed_*.json`
-- Step 5 (Type Checker) → Step 7 (Export): `type_check_results.json`  
-- Step 3 (GNN) → Step 8 (Visualization): `parsed_*.json`
-- Step 3 (GNN) → Step 11 (Render): `parsed_*.json`
-- Step 11 (Render) → Step 12 (Execute): generated framework code
+- Step 3 (GNN) → Step 6 (Validation): `gnn_processing_results.json` + `{model}_parsed.json`
+- Step 3 (GNN) → Step 7 (Export): `gnn_processing_results.json` + `{model}_parsed.json`
+- Step 3 (GNN) → Step 8 (Visualization): `{model}_parsed.json` preferred, with a markdown re-parse fallback
+- Step 3 (GNN) → Step 9 (Advanced Viz): manifest + `*_parsed.json`
+- Step 11 (Render) → Step 12 (Execute): rendered scripts + render manifest
+- Step 12 (Execute) → Step 16 (Analysis): execution results
+- Step 12 → Step 20 (Website): execution summary; Step 16 → Step 20: analysis JSONs
+- `00_pipeline_summary` → Steps 23 (Report) / 24 (Intelligent Analysis)
+
+Steps 5 (Type Checker), 10 (Ontology), 11 (Render), and 13 (LLM) re-parse the input
+GNN files from the target directory rather than consuming Step 3 artifacts; optional
+enrichments exist for 10 → 13 (`ontology_results.json`), 12 → 15/17, and 11 → 17.
 
 ### Schema Validation Chain
 

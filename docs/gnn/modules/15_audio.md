@@ -221,12 +221,12 @@ output/15_audio_output/
 ## Integration Points
 
 ### Pipeline Integration
-- **Input**: Receives GNN models from Step 3 (gnn processing)
-- **Output**: Generates audio files for Step 20 (website generation) and Step 23 (report generation)
-- **Dependencies**: Requires GNN parsing results from `3_gnn.py` output
+- **Input**: Re-parses GNN `.md` files from the target directory; optionally loads Step 12 execution telemetry from `12_execute_output/`
+- **Output**: Writes audio files and results JSON to `output/15_audio_output/`, included in Step 20 (website) and Step 23 (report) output-dir scans
+- **Dependencies**: No step artifacts required; optional Step 12 telemetry
 
 ### Module Dependencies
-- **gnn/**: Reads parsed GNN model data for sonification
+- **gnn/**: Reads raw GNN file content for sonification
 - **sapf/**: Uses SAPF module for structured audio generation
 - **export/**: Uses export formats for audio metadata
 
@@ -237,13 +237,13 @@ output/15_audio_output/
 
 ### Data Flow
 ```
-3_gnn.py (GNN parsing)
+input/gnn_files (re-parsed by 15_audio.py)
+  ↓
+12_execute_output/ execution telemetry [optional]
   ↓
 15_audio.py (Audio generation)
   ↓
-  ├→ 20_website.py (Audio embedding)
-  ├→ 23_report.py (Audio analysis)
-  └→ output/15_audio_output/ (Standalone audio files)
+  └→ output/15_audio_output/ (Standalone audio files; scanned by Steps 20 and 23)
 ```
 
 ---

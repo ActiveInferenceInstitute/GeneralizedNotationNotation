@@ -628,15 +628,15 @@ configs["ollama"]["default_max_tokens"] = 1024
 ## Integration Points
 
 ### Pipeline Integration
-- **Input**: Receives GNN models from Step 3 (gnn processing) and execution results from Step 12 (execute)
-- **Output**: Generates LLM analyses for Step 16 (analysis), Step 20 (website generation), and Step 23 (report generation)
-- **Dependencies**: Requires GNN parsing results from `3_gnn.py` output, optionally uses execution results from `12_execute.py`
+- **Input**: Re-parses GNN files from the target directory; optionally injects `10_ontology_output/ontology_results.json` when Step 10 has run
+- **Output**: Writes standalone analyses to `output/13_llm_output/`, consumed by Step 20 (website) and Step 23 (report) through their output-dir scans
+- **Dependencies**: No step artifacts required; optional read of Step 10's `ontology_results.json`
 
 ### Module Dependencies
-- **gnn/**: Reads parsed GNN model data for analysis
-- **execute/**: Optionally uses execution results for enhanced analysis
-- **analysis/**: Provides LLM insights for statistical analysis
-- **report/**: Provides LLM-generated summaries for reports
+- **gnn/**: GNN content is re-read from raw files for analysis
+- **ontology/**: Optionally injects `ontology_results.json` into prompts (Step 10 → Step 13)
+- **analysis/**: Step 16 does not read `13_llm_output`; the documented 'LLM insights → analysis' edge does not exist at runtime
+- **report/website**: Consume Step 13 outputs only via their uniform output-dir scans
 
 ### External Integration
 - **OpenAI API**: Cloud-based LLM analysis
@@ -645,16 +645,13 @@ configs["ollama"]["default_max_tokens"] = 1024
 
 ### Data Flow
 ```
-3_gnn.py (GNN parsing)
+input/gnn_files (re-parsed by 13_llm.py)
   ↓
-12_execute.py (Execution results) [optional]
+10_ontology_output/ontology_results.json [optional injection]
   ↓
 13_llm.py (LLM analysis)
   ↓
-  ├→ 16_analysis.py (Enhanced analysis)
-  ├→ 20_website.py (LLM summaries)
-  ├→ 23_report.py (Report generation)
-  └→ output/13_llm_output/ (Standalone analyses)
+  └→ output/13_llm_output/ (Standalone analyses; scanned by Steps 20 and 23)
 ```
 
 ---

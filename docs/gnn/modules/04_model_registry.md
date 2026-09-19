@@ -263,13 +263,13 @@ output/4_model_registry_output/
 
 ### Pipeline Integration
 
-- **Input**: Receives GNN files from Step 3 (gnn processing)
-- **Output**: Provides registry data for Step 5 (type checker), Step 6 (validation), and Step 23 (report generation)
-- **Dependencies**: Requires GNN parsing results from `3_gnn.py` output
+- **Input**: Re-globs and re-reads GNN files directly from the target directory (no Step 3 artifacts consumed)
+- **Output**: Writes registry JSON and per-model entries to `output/4_model_registry_output/` (plus its own `registry.json` self-state)
+- **Dependencies**: None on prior steps' outputs
 
 ### Module Dependencies
 
-- **gnn/**: Reads parsed GNN model data for registration
+- **gnn/**: Reads raw GNN file content for registration
 - **type_checker/**: Uses registry for model lookup
 - **validation/**: Uses registry for model validation
 - **report/**: Uses registry for model summaries
@@ -282,14 +282,11 @@ output/4_model_registry_output/
 ### Data Flow
 
 ```
-3_gnn.py (GNN parsing)
+input/gnn_files (re-globbed and re-read by 4_model_registry.py)
   ↓
 4_model_registry.py (Model registration)
   ↓
-  ├→ 5_type_checker.py (Model lookup)
-  ├→ 6_validation.py (Model validation)
-  ├→ 23_report.py (Registry summaries)
-  └→ output/4_model_registry_output/ (Registry database)
+  └→ output/4_model_registry_output/ (Registry database; no dedicated downstream consumer)
 ```
 
 ---
