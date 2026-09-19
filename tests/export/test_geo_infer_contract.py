@@ -114,3 +114,87 @@ def test_canonical_gridworld_has_no_spurious_dimension_warning(
     with caplog.at_level(logging.WARNING):
         build_geo_infer_artifact(SOURCE.read_text(), step_seconds=60)
     assert "B matrix dimensions" not in caplog.text
+
+
+_DOUBLY_STOCHASTIC_SLICES: list[list[list[float]]] = [
+    [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]],
+    [[0.0, 1.0, 0.0], [1.0, 0.0, 0.0], [0.0, 0.0, 1.0]],
+    [[0.0, 0.0, 1.0], [0.0, 1.0, 0.0], [1.0, 0.0, 0.0]],
+]
+_ROW_STOCHASTIC_SLICES: list[list[list[float]]] = [
+    [[0.8, 0.2, 0.0], [0.7, 0.3, 0.0], [0.0, 0.6, 0.4]],
+    [[0.1, 0.9, 0.0], [0.0, 0.4, 0.6], [0.3, 0.3, 0.4]],
+    [[0.6, 0.4, 0.0], [0.2, 0.2, 0.6], [0.5, 0.0, 0.5]],
+]
+_ACTINF_B_LITERAL = (
+    "B={\n"
+    "  ( (1.0,0.0,0.0), (0.0,1.0,0.0), (0.0,0.0,1.0) ),\n"
+    "  ( (0.0,1.0,0.0), (1.0,0.0,0.0), (0.0,0.0,1.0) ),\n"
+    "  ( (0.0,0.0,1.0), (0.0,1.0,0.0), (1.0,0.0,0.0) )\n"
+    "}"
+)
+
+
+def _b_literal(slices: list[list[list[float]]]) -> str:
+    body = ",\n".join(
+        "  ( "
+        + ", ".join("(" + ", ".join(f"{v:.1f}" for v in row) + ")" for row in slc)
+        + " )"
+        for slc in slices
+    )
+    return "B={\n" + body + "\n}"
+
+
+def _b_source(
+    tmp_path: Path,
+    name: str,
+    slices: list[list[list[float]]],
+    *,
+    declared_comment: str,
+) -> Path:
+    """actinf exemplar copy with test-owned B comments and literal."""
+    content = (
+        ROOT / "input" / "gnn_files" / "discrete" / "actinf_pomdp_agent.md"
+    ).read_text()
+    lines = content.splitlines(keepends=True)
+    out: list[str] = []
+    for line in lines:
+        if line.strip().startswith("# Transition matrix: B["):
+            out.append(declared_comment + "\n")
+            continue
+        out.append(line)
+    content = "".join(out).replace(_ACTINF_B_LITERAL, _b_literal(slices))
+    assert _b_literal(slices) in content, "B literal swap failed"
+    path = tmp_path / name
+    path.write_text(content)
+    return path
+
+
+def test_ambiguous_b_refused_even_when_canonical_order_is_declared(
+    tmp_path: Path,
+) -> None:
+    """Doubly-stochastic data is undecidable; prose cannot substitute."""
+    path = _b_source(
+        tmp_path,
+        "ambiguous_declared_canonical.md",
+        _DOUBLY_STOCHASTIC_SLICES,
+        declared_comment="# Transition matrix: B[next_state, previous_state, actions]",
+    )
+    with pytest.raises(ValueError, match="not decisive"):
+        build_geo_infer_artifact(path.read_text(), step_seconds=60)
+
+
+def test_noncanonical_storage_refused_despite_matching_declaration(
+    tmp_path: Path,
+) -> None:
+    """Consistent action-outer declaration is still not exportable: never reordered."""
+    path = _b_source(
+        tmp_path,
+        "action_outer_declared.md",
+        _ROW_STOCHASTIC_SLICES,
+        declared_comment="# Transition matrix: B[action, previous_state, next_state]",
+    )
+    with pytest.raises(
+        ValueError, match=r"detected \['action', 'previous_state', 'next_state'\]"
+    ):
+        build_geo_infer_artifact(path.read_text(), step_seconds=60)

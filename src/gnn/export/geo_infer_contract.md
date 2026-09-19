@@ -32,8 +32,10 @@ per state; E one per action. Matrices are not normalized, resized or substituted
 on export. All five must be explicit in `InitialParameterization`.
 
 Only one state factor, observation modality and control factor are accepted.
-Noncanonical or contradictory B axis provenance fails; users must explicitly
-resolve the source model. The general `canonicalize_pomdp` helper separately
+Noncanonical, contradictory or numerically unverifiable B axis provenance
+fails; doubly-stochastic (or otherwise ambiguous) data is never reordered on
+the strength of prose declarations alone, and users must explicitly resolve
+the source model. The general `canonicalize_pomdp` helper separately
 supports action-first B conversion and maintains its resulting orientation
 metadata, including repeated-call idempotence and unequal action/state counts.
 

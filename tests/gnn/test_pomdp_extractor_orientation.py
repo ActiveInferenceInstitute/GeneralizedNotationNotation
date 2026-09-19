@@ -144,7 +144,12 @@ def test_row_stochastic_only_with_contradictory_comments_flags_contradiction(
     spec, errors = _extract_collect(path, strict=True)
     assert spec is not None
     prov_b = _b_provenance(spec)
-    for key in ("declared_order", "detected_order", "canonical_order"):
+    for key in (
+        "declared_order",
+        "declared_order_explicit",
+        "detected_order",
+        "canonical_order",
+    ):
         assert key in prov_b, f"matrix_provenance['B'] missing {key}: {prov_b}"
     assert prov_b["contradiction"] is True
     assert len(errors) >= 1, "contradiction must surface as a structured error"
@@ -158,6 +163,25 @@ def test_doubly_stochastic_is_ambiguous_never_contradiction(tmp_path: Path) -> N
     prov_b = _b_provenance(spec)
     assert prov_b["contradiction"] is False
     assert errors == [], f"doubly-stochastic ambiguity must not error: {errors}"
+
+
+def test_declared_order_explicit_tracks_comment_presence(tmp_path: Path) -> None:
+    """declared_order_explicit separates parsed declarations from defaults."""
+    declared = _gnn_file(tmp_path, "b_declared.md", DOUBLY_STOCHASTIC_SLICES)
+    spec, _errors = _extract_collect(declared, strict=True)
+    prov_b = _b_provenance(spec)
+    assert prov_b["declared_order_explicit"] is True
+
+    unstated = _gnn_file(
+        tmp_path,
+        "b_unstated.md",
+        DOUBLY_STOCHASTIC_SLICES,
+        declared_comment="# Transition matrix for the context process",
+    )
+    spec_unstated, _errors_unstated = _extract_collect(unstated, strict=True)
+    prov_unstated = _b_provenance(spec_unstated)
+    assert prov_unstated["declared_order_explicit"] is False
+    assert prov_unstated["declared_order"] == prov_unstated["canonical_order"]
 
 
 def test_extraction_never_transposes_stored_b(tmp_path: Path) -> None:

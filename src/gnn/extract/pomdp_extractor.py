@@ -1242,6 +1242,7 @@ class POMDPExtractor:
 
         return {
             "declared_order": declared or list(CANONICAL_B_ORDER),
+            "declared_order_explicit": declared is not None,
             "claimed_slice_convention": claimed,
             "detected_order": detected,
             "canonical_order": list(CANONICAL_B_ORDER),

@@ -96,7 +96,23 @@ def build_geo_infer_artifact(
             or origin.get("detected_order")
             != ["next_state", "previous_state", "action"]
         ):
-            raise ValueError("B has contradictory axis conventions")
+            if origin.get("contradiction"):
+                detail = "contradicts the declared or claimed axis order"
+            elif origin.get("detected_order") is not None:
+                detail = f"detected {origin.get('detected_order')!r}"
+            else:
+                detail = (
+                    "data evidence is not decisive (doubly-stochastic or "
+                    "otherwise ambiguous) and prose declarations cannot "
+                    "substitute for evidence"
+                )
+            raise ValueError(
+                "B axis order could not be verified as next_state, "
+                f"previous_state, action ({detail}; declared="
+                f"{origin.get('declared_order')!r}, declared_explicit="
+                f"{bool(origin.get('declared_order_explicit'))}); B is never "
+                "reordered on export"
+            )
         matrix = np.asarray(values[name], dtype=float)
         if matrix.shape != shape or not np.all(np.isfinite(matrix)):
             raise ValueError(f"{name} requires finite values with shape {shape}")
