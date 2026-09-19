@@ -6,9 +6,9 @@ Provides REST endpoints for pipeline job management and tool invocation.
 Optional API-key authentication is available through ``GNN_API_KEY``.
 
 Run with:
-    python -m api.server
+    python -m gnn.api.server
     # or:
-    uvicorn api.server:app --host 0.0.0.0 --port 8000 --reload
+    uvicorn gnn.api.server:app --host 0.0.0.0 --port 8000 --reload
 """
 
 import logging
@@ -40,6 +40,7 @@ from gnn.api.models import (
     ToolRequest,
     ToolsResponse,
 )
+from gnn.api.parity import register_parity_routes
 from gnn.api.path_utils import (
     PathValidationError,
     resolve_repo_path,
@@ -90,6 +91,8 @@ def create_app() -> FastAPI:
     # authentication is disabled (e.g. localhost research use).
     _app.middleware("http")(rate_limit_middleware)
     install_exception_handlers(_app)
+    # CLI-parity surface: identical routes on both FastAPI factories.
+    register_parity_routes(_app)
 
     @_app.get("/api/v1/health", response_model=APIEnvelope, tags=["Meta"])
     async def health_check() -> APIEnvelope:
@@ -293,7 +296,9 @@ def run_server(host: str = "127.0.0.1", port: int = 8000, reload: bool = False) 
             "ensure network-level access control is in place",
             host,
         )
-    uvicorn.run("api.server:app", host=host, port=port, reload=reload, log_level="info")
+    uvicorn.run(
+        "gnn.api.server:app", host=host, port=port, reload=reload, log_level="info"
+    )
 
 
 if __name__ == "__main__":

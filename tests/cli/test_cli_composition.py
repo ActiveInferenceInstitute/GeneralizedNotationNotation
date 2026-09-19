@@ -251,17 +251,46 @@ class TestGuardInputFile:
 # cli.lsp — pure diagnostics + injectable transport loop
 # ---------------------------------------------------------------------------
 
+# Minimal fully-valid GNN document: all parse-level required sections, one
+# declared/connected variable pair, no parameterization to cross-check.
+_VALID_MINIMAL_GNN = (
+    "## GNNSection\n"
+    "ActInfPOMDP\n"
+    "\n"
+    "## GNNVersionAndFlags\n"
+    "GNN v1\n"
+    "\n"
+    "## ModelName\n"
+    "Minimal Model\n"
+    "\n"
+    "## StateSpaceBlock\n"
+    "s_f[2,1,type=float]\n"
+    "s_x[2,1,type=float]\n"
+    "\n"
+    "## Connections\n"
+    "s_f>s_x\n"
+    "\n"
+    "## Time\n"
+    "Dynamic\n"
+    "\n"
+    "## Footer\n"
+    "End.\n"
+)
+
 
 class TestLspDiagnoseText:
     """diagnose_text is pure: same input, same diagnostics, no I/O."""
 
     def test_unclosed_brace_flagged(self) -> None:
         diags = cli_lsp.diagnose_text("{ unclosed")
-        assert len(diags) == 1
         assert diags[0]["severity"] == 1
+        assert diags[0]["message"] == "Missing closing brace '}'"
+        # Schema validation runs alongside the brace check: a brace-only
+        # fragment is also missing every required GNN section.
+        assert any("Missing required section" in d["message"] for d in diags[1:])
 
     def test_clean_text_has_no_diagnostics(self) -> None:
-        assert cli_lsp.diagnose_text("balanced { and }") == []
+        assert cli_lsp.diagnose_text(_VALID_MINIMAL_GNN) == []
 
     def test_no_text_no_diagnostics(self) -> None:
         assert cli_lsp.diagnose_text("") == []

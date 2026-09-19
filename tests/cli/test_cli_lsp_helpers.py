@@ -93,8 +93,36 @@ class TestCLILSPHelpers:
 
     @pytest.mark.unit
     def test_publish_diagnostics_clean_text_silent(self, capsys: Any) -> None:
-        """Balanced braces should produce no diagnostics."""
-        cli_lsp.publish_diagnostics("file:///clean.md", "model { balanced }")
+        """A fully-valid GNN document should produce no diagnostics.
+
+        (Balanced braces alone are not enough anymore: diagnose_text now
+        delegates to gnn.schema, so non-GNN text is missing required
+        sections. See tests/cli/test_cli_lsp_completions.py.)
+        """
+        valid_gnn = (
+            "## GNNSection\n"
+            "ActInfPOMDP\n"
+            "\n"
+            "## GNNVersionAndFlags\n"
+            "GNN v1\n"
+            "\n"
+            "## ModelName\n"
+            "Minimal Model\n"
+            "\n"
+            "## StateSpaceBlock\n"
+            "s_f[2,1,type=float]\n"
+            "s_x[2,1,type=float]\n"
+            "\n"
+            "## Connections\n"
+            "s_f>s_x\n"
+            "\n"
+            "## Time\n"
+            "Dynamic\n"
+            "\n"
+            "## Footer\n"
+            "End.\n"
+        )
+        cli_lsp.publish_diagnostics("file:///clean.md", valid_gnn)
         captured = capsys.readouterr().out
         payload = json.loads(captured.split("\r\n\r\n", 1)[1])
         assert payload["params"]["diagnostics"] == []

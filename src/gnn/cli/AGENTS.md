@@ -29,7 +29,7 @@ The CLI module provides the `gnn` command-line tool — a unified interface to t
 - **Live development** via `gnn watch` (file monitoring with 250ms debounce)
 - **Dependency graphs** via `gnn graph` (Mermaid/text output)
 - **API server** via `gnn serve` (delegates to `api/app.py`)
-- **LSP server** via `gnn lsp` (delegates to `lsp/__init__.py`)
+- **LSP server** via `gnn lsp` (runs the hand-rolled `cli/lsp.py` JSON-RPC loop)
 
 ## File Structure
 
