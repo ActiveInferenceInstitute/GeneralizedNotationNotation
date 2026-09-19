@@ -26,7 +26,7 @@ FastAPI-based REST interface for the GNN processing pipeline. Enables headless p
 gnn serve --host 0.0.0.0 --port 8000
 
 # Direct
-python -m uvicorn api.app:app --host 0.0.0.0 --port 8000
+python -m uvicorn gnn.api.app:app --host 0.0.0.0 --port 8000
 ```
 
 ### Example Requests
@@ -51,7 +51,7 @@ curl -N http://localhost:8000/api/v1/runs/abc123/stream
 - **Entry point**: `api.app:start_server()` (called by `gnn serve`)
 - **Response contract**: JSON and SSE payloads use `{status,data,error,meta}`;
   the report download intentionally remains `text/markdown`
-- **Job/tool surface**: `api.server:app` provides `/api/v1/process`,
+- **Job/tool surface**: `gnn.api.server:app` provides `/api/v1/process`,
   `/api/v1/jobs`, and `/api/v1/tools` for explicit job and step management
 
 ## File Structure
