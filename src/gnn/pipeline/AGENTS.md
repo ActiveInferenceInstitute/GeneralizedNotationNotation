@@ -14,7 +14,9 @@
 manifests + replayable execution traces), `run_session.py` (resumable run sessions with atomic
 checkpoint/resume + path-safe cleanup), and `container_plan.py` (auditable container plans + static
 security review + rollback). These generate/validate **data only** — no container or cluster is
-executed. Acceptance: `scripts/run_v3_orchestration_acceptance.py --strict`. Reference:
+executed. Acceptance: `scripts/run_v3_orchestration_acceptance.py --strict`. `run_session_wiring.py`
+additionally wires run sessions + durable streams into the `gnn.main` composition (artifacts:
+`00_pipeline_summary/run_session.json` + `v3_run_manifest/`). Reference:
 [`docs/pipeline/v3_orchestration.md`](../../../docs/pipeline/v3_orchestration.md).
 
 **Version**: 3.2.1
