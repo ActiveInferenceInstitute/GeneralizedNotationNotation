@@ -81,11 +81,7 @@ flowchart LR
     Step4 --> Processor
     Processor --> Registry
     
-    Step3 -->|Parsed Models| Processor
     
-    Processor -->|Registry Data| Step5
-    Processor -->|Registry Data| Step6
-    Processor -->|Registry Data| Step11
 ```
 
 ## Core Components

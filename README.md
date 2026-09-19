@@ -627,44 +627,55 @@ flowchart LR
     subgraph "Input Stage"
         Input[GNN Files]
     end
-    
+
     subgraph "Processing Stage"
+        Step0[Step 0: Template]
         Step3[Step 3: GNN Parse]
+        Step4[Step 4: Model Registry]
         Step5[Step 5: Type Check]
         Step6[Step 6: Validation]
         Step7[Step 7: Export]
+        Step10[Step 10: Ontology]
     end
-    
+
     subgraph "Generation Stage"
         Step8[Step 8: Visualization]
+        Step9[Step 9: Advanced Viz]
         Step11[Step 11: Render]
         Step12[Step 12: Execute]
     end
-    
+
     subgraph "Analysis Stage"
         Step13[Step 13: LLM]
         Step16[Step 16: Analysis]
+        Step20[Step 20: Website]
         Step23[Step 23: Report]
     end
-    
-    Input --> Step3
-    Step3 --> Step5
-    Step3 --> Step6
-    Step3 --> Step7
-    Step3 --> Step8
-    Step3 --> Step11
-    
-    Step5 --> Step6
-    Step6 --> Step7
-    Step7 --> Step8
-    
-    Step11 --> Step12
-    Step12 --> Step13
-    Step12 --> Step16
-    
-    Step13 --> Step16
-    Step8 --> Step16
-    Step16 --> Step23
+
+    Input -->|"re-parse"| Step3
+    Input --> Step0
+    Input --> Step4
+    Input --> Step5
+    Input --> Step8
+    Input --> Step10
+    Input --> Step11
+    Input --> Step13
+    Input --> Step16
+
+    Step3 -->|"parsed artifacts"| Step6
+    Step3 -->|"parsed artifacts"| Step7
+    Step3 -->|"parsed artifacts"| Step9
+    Step3 -->|"parsed JSON preferred"| Step8
+
+    Step11 -->|"rendered scripts"| Step12
+    Step12 -->|"execution results"| Step16
+
+    Step12 -->|"execution summary"| Step20
+    Step16 -->|"analysis JSONs"| Step20
+
+    Step10 -.->|"ontology JSON"| Step13
+    SUM[output/00_pipeline_summary/pipeline_execution_summary.json]
+    SUM --> Step23
 ```
 
 ### 🧠 Modules & Agents

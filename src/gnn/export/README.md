@@ -115,8 +115,6 @@ flowchart LR
     
     Step3 -->|Parsed Models| Processor
     
-    Processor -->|Exported Data| Step8
-    Processor -->|Exported Data| Step11
 ```
 
 ## Core Components

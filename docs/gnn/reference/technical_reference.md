@@ -267,19 +267,27 @@ authoritative RxInfer payload schema is `rxinfer_simulation_v1`, documented in
 ### Data Flow Dependencies
 
 ```
-Step 3 (GNN) → parsed_*.json
-├── Step 5 (Type Checker) ← parsed_*.json
-├── Step 8 (Visualization) ← parsed_*.json  
-├── Step 11 (Render) ← parsed_*.json
-└── Step 7 (Export) ← parsed_*.json
+Step 3 (GNN) → output/3_gnn_output/ (manifest + per-model parsed JSON)
+├── Step 6 (Validation) ← manifest + parsed JSON
+├── Step 7 (Export) ← manifest + parsed JSON
+├── Step 8 (Visualization) ← parsed JSON (markdown re-parse fallback)
+└── Step 9 (Advanced Viz) ← manifest + parsed JSON
 
-Step 5 (Type Checker) → type_check_results.json
-├── Step 6 (Validation) ← type_check_results.json
-└── Step 23 (Report) ← type_check_results.json
+Step 11 (Render) → output/11_render_output/ (rendered scripts + manifest)
+└── Step 12 (Execute) ← rendered scripts + manifest
 
-Step 11 (Render) → generated framework code
-└── Step 12 (Execute) ← generated framework code
+Step 12 (Execute) → output/12_execute_output/
+└── Step 16 (Analysis) ← execution results; Step 20 (Website) ← execution summary
+
+Step 16 (Analysis) → output/16_analysis_output/
+└── Step 20 (Website) ← analysis JSONs
+
+output/00_pipeline_summary/pipeline_execution_summary.json
+├── Step 23 (Report) ← summary + census of all step output dirs
+└── Step 24 (Intelligent Analysis) ← summary only
 ```
+
+Steps 5, 10, 11, 13, and 14 re-parse the target-dir GNN files directly (no Step 3 artifacts); optional enrichments: 10 → 13, 12 → 15, 11/12 → 17.
 
 ### Module Cross-References
 
