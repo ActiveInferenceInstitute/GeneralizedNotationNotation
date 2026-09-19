@@ -51,7 +51,7 @@ ok, errors = validate_gnn_syntax(Path("input/gnn_files/model.md").read_text(enco
 | `GNNFormat` | Supported formats ([`SPEC.md`](../../src/gnn/SPEC.md)) |
 | `discover_gnn_files`, `parse_gnn_file`, `process_gnn_directory` | Discovery and lightweight processing |
 | `process_gnn_multi_format` | Step 3 multi-format output (**requires** `logging.Logger`) |
-| `validate_gnn_syntax`, `validate_gnn_source` | Validation (old names `validate_gnn`, `validate_gnn_file` warn as earlier names and will be removed in v4.0.0) |
+| `validate_gnn_syntax`, `validate_gnn_source` | Validation entry points |
 | `schema_validator.GNNParser` | Section-level parser for strict validation (submodule import) |
 
 ## Illustrative reference (verify in `src/`)

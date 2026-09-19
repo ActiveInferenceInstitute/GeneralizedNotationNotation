@@ -52,9 +52,6 @@ class TestModuleStructure:
         import gnn
 
         assert hasattr(gnn, "parse_gnn_file"), "gnn should export parse_gnn_file"
-        assert hasattr(gnn, "validate_gnn_structure"), (
-            "gnn should export validate_gnn_structure"
-        )
         assert hasattr(gnn, "__version__"), "gnn should have __version__"
 
     def test_export_module_exports(self) -> None:

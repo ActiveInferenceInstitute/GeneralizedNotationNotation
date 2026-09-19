@@ -10,7 +10,6 @@ the full pipeline stack or heavy module-scope dependencies (psutil,
 matplotlib). Names resolve through ``__getattr__`` on first access.
 """
 
-import warnings
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
@@ -24,9 +23,7 @@ if TYPE_CHECKING:
         ParsedGNNFormal,
         get_parse_tree_visualization,
         parse_gnn_formal,
-        validate_gnn,
         validate_gnn_syntax,
-        validate_gnn_syntax_formal,
     )
     from .parsers.common import GNNFormat
     from .parsers.system import GNNParsingSystem
@@ -40,7 +37,6 @@ if TYPE_CHECKING:
         parse_gnn_file,
         process_gnn_directory,
         process_gnn_directory_lightweight,
-        validate_gnn_structure,
     )
     from .render.processor import get_available_renderers, render_gnn_spec
     from .types import ParsedGNN, ValidationLevel
@@ -69,9 +65,7 @@ _EXPORT_MAP: dict[str, str] = {
     "ParsedGNNFormal": "parsers.basic",
     "get_parse_tree_visualization": "parsers.basic",
     "parse_gnn_formal": "parsers.basic",
-    "validate_gnn": "parsers.basic",
     "validate_gnn_syntax": "parsers.basic",
-    "validate_gnn_syntax_formal": "parsers.basic",
     # parsers.common
     "GNNFormat": "parsers.common",
     # parsers.system — canonical 23-format registry (23 parsers, 22 serializers;
@@ -85,7 +79,6 @@ _EXPORT_MAP: dict[str, str] = {
     "process_gnn_directory": "processing.processor",
     "process_gnn_directory_lightweight": "processing.processor",
     "check_gnn_file_structure": "processing.processor",
-    "validate_gnn_structure": "processing.processor",
     # types — canonical domain types
     "ParsedGNN": "types",
     "ValidationLevel": "types",
@@ -149,24 +142,12 @@ def validate_gnn_source(source: Any, *, is_content: bool = False) -> Any:
     return {"is_valid": is_valid, "errors": errors}
 
 
-def validate_gnn_file(source: Any, *, is_content: bool = False) -> Any:
-    """Old name for :func:`validate_gnn_source`; emits DeprecationWarning."""
-    warnings.warn(
-        "validate_gnn_file is an old name; use validate_gnn_source instead. "
-        "It will be removed in v4.0.0.",
-        DeprecationWarning,
-        stacklevel=2,
-    )
-    return validate_gnn_source(source, is_content=is_content)
-
-
 __all__: list[str] = [
     # Processor functions
     "process_gnn_directory_lightweight",
     "discover_gnn_files",
     "parse_gnn_file",
     "check_gnn_file_structure",
-    "validate_gnn_structure",
     "process_gnn_directory",
     "generate_gnn_report",
     "get_module_info",
@@ -180,14 +161,11 @@ __all__: list[str] = [
     "GNNFormalParser",
     "ParsedGNNFormal",
     "parse_gnn_formal",
-    "validate_gnn_syntax_formal",
     "get_parse_tree_visualization",
-    "validate_gnn",
     "validate_gnn_syntax",
     "__version__",
     "FEATURES",
     "validate_gnn_source",
-    "validate_gnn_file",
     # Cross-package programmatic entry points
     "run_pipeline",
     "GNNExecutor",

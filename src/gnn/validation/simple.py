@@ -8,7 +8,6 @@ when the full validation system encounters issues.
 """
 
 import logging
-import warnings
 from pathlib import Path
 from typing import Any, Dict, cast
 
@@ -163,17 +162,6 @@ def check_gnn_file_basic(file_path: Path) -> Dict[str, Any]:
     return validator.validate_file(file_path)
 
 
-def validate_gnn_file(file_path: Path) -> Dict[str, Any]:
-    """Old name for :func:`check_gnn_file_basic`; emits DeprecationWarning."""
-    warnings.warn(
-        "validate_gnn_file is an old name; use check_gnn_file_basic instead. "
-        "It will be removed in v4.0.0.",
-        DeprecationWarning,
-        stacklevel=2,
-    )
-    return check_gnn_file_basic(file_path)
-
-
 def check_gnn_directory_basic(
     directory: Path, recursive: bool = False
 ) -> Dict[str, Any]:
@@ -189,14 +177,3 @@ def check_gnn_directory_basic(
     """
     validator = SimpleValidator()
     return validator.validate_directory(directory, recursive)
-
-
-def validate_gnn_directory(directory: Path, recursive: bool = False) -> Dict[str, Any]:
-    """Old name for :func:`check_gnn_directory_basic`; emits DeprecationWarning."""
-    warnings.warn(
-        "validate_gnn_directory is an old name; use "
-        "check_gnn_directory_basic instead. It will be removed in v4.0.0.",
-        DeprecationWarning,
-        stacklevel=2,
-    )
-    return check_gnn_directory_basic(directory, recursive)

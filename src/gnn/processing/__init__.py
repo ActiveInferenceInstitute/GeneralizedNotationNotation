@@ -30,7 +30,6 @@ from gnn.processing.processor import (
     parse_gnn_file,
     process_gnn_directory,
     process_gnn_directory_lightweight,
-    validate_gnn_structure,
 )
 
 __all__ = [
@@ -51,5 +50,4 @@ __all__ = [
     "process_gnn_directory",
     "process_gnn_directory_lightweight",
     "process_gnn_multi_format",
-    "validate_gnn_structure",
 ]

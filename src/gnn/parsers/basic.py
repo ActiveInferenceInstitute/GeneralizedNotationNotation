@@ -3,7 +3,6 @@
 GNN parser module for GNN pipeline.
 """
 
-import warnings
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union, cast
 
@@ -264,20 +263,6 @@ def parse_gnn_formal(file_path: Union[str, Any]) -> Optional[_GNNParseAccumulato
     return GNNFormalParser().parse_file(file_path)
 
 
-def validate_gnn_syntax_formal(content: str) -> Tuple[bool, List[str]]:
-    """Old name for :func:`validate_gnn_syntax` at the STANDARD level.
-
-    Retained for compatibility; emits DeprecationWarning.
-    """
-    warnings.warn(
-        "validate_gnn_syntax_formal is an old name; use validate_gnn_syntax "
-        "instead. It will be removed in v4.0.0.",
-        DeprecationWarning,
-        stacklevel=2,
-    )
-    return validate_gnn_syntax(content)
-
-
 def get_parse_tree_visualization(content: str) -> str:
     """Return the formal parser's text outline for GNN content."""
     return GNNFormalParser().visualize_parse_tree(content)
@@ -358,23 +343,6 @@ def validate_gnn_syntax(
 
     except Exception as e:
         return False, [f"Validation error: {e}"]
-
-
-def validate_gnn(
-    file_path_or_content: Union[str, Path],
-    validation_level: ValidationLevel = ValidationLevel.STANDARD,
-    **kwargs: Any,
-) -> Tuple[bool, List[str]]:
-    """Old name for :func:`validate_gnn_syntax`; emits DeprecationWarning."""
-    warnings.warn(
-        "validate_gnn is an old name; use validate_gnn_syntax instead. "
-        "It will be removed in v4.0.0.",
-        DeprecationWarning,
-        stacklevel=2,
-    )
-    return validate_gnn_syntax(
-        file_path_or_content, validation_level=validation_level, **kwargs
-    )
 
 
 def _convert_parse_result_to_parsed_gnn(
