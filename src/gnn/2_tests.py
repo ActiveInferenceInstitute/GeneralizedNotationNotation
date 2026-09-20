@@ -32,6 +32,19 @@ def _test_runner_wrapper(
     """Wrapper to map standard pipeline args to run_tests."""
     import os
 
+    # Script-mode invocation (python src/gnn/2_tests.py) puts only src/gnn on
+    # sys.path; the tests package lives at the repository root. Resolve the
+    # delegation target before the skip switch so a broken harness is not
+    # silently skipped.
+    repo_root = Path(__file__).resolve().parents[2]
+    if str(repo_root) not in sys.path:
+        sys.path.insert(0, str(repo_root))
+    try:
+        from tests import run_tests
+    except Exception as e:
+        logger.error(f"Test harness import failed: {e}")
+        return False
+
     # Log environment overrides
     if os.getenv("SKIP_TESTS_IN_PIPELINE"):
         logger.info("⏭️ SKIP_TESTS_IN_PIPELINE set - tests will be skipped")
@@ -48,8 +61,6 @@ def _test_runner_wrapper(
     logger.info(f"📍 Output directory: {output_dir}")
 
     try:
-        from tests import run_tests
-
         success = run_tests(
             logger=logger,
             output_dir=output_dir,
