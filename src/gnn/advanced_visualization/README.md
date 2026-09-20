@@ -97,8 +97,6 @@ flowchart LR
     Processor --> Visualizer
     
     Step3 -->|Model Data| Processor
-    Step8 -->|Basic Visualizations| Processor
-    Step12 -->|Execution Results| Processor
     
     Processor -->|Advanced Visualizations| Step20
     Processor -->|Advanced Visualizations| Step23

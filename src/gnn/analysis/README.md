@@ -100,7 +100,6 @@ flowchart LR
     Processor --> Analyzer
     Processor --> PostSim
     
-    Step3 -->|Model Data| Processor
     Step12 -->|Execution Results| Processor
     Processor -->|Analysis Results| Step20
     Processor -->|Analysis Results| Step23

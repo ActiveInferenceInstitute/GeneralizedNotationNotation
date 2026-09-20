@@ -273,7 +273,7 @@ Pipeline Data Flow: {
 
   input -> processing -> generation -> analysis
 
-  processing.parse -> generation.render: "Parsed models"
+  # Step 11 re-parses input specs; step 3 parsed artifacts feed steps 6/7/8/9 (d2 comments start with #)
   generation.render -> generation.execute: "Generated code"
   generation.execute -> analysis: "Simulation results"
 }

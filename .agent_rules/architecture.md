@@ -88,17 +88,19 @@ if __name__ == "__main__":
 
 ## Data Dependency Graph
 
-```
-Step 3 (GNN Parse)
-  ├→ 5 (Type Check) → 6 (Validation)
-  ├→ 7 (Export) → 16 (Analysis)
-  ├→ 8 (Visualization) → 9 (Advanced Viz)
-  │                    → 20 (Website)
-  │                    → 23 (Report)
-  ├→ 10 (Ontology)
-  ├→ 11 (Render) → 12 (Execute) → 16 (Analysis)
-  └→ 13 (LLM) → 23 (Report)
-```
+Artifact-consuming edges (verified against each step's processor; consumer reads
+the producer's output directory):
+
+- Step 3 → 6, 7, 9 (`3_gnn_output` manifest + parsed JSON)
+- Step 3 → 8 (`*_parsed.json` preferred, markdown re-parse fallback)
+- Step 11 → 12 (rendered scripts + render manifest)
+- Step 12 → 16 (execution results); 12 → 20 and 16 → 20 (website aggregation)
+- `00_pipeline_summary/pipeline_execution_summary.json` → 23 and 24
+- Optional enrichment reads (only when present): 10 → 13, 12 → 15, 11 → 17, 12 → 17
+
+Steps 0, 4, 5, 10, 11, 13, 14, 15, 16, 17, 18, 19, 22 re-parse the input GNN
+files directly; steps 1, 2, 21 consume no pipeline data. Step 23 additionally
+censuses every `N_*_output` directory.
 
 **Automatic dependency resolution**: `--only-steps "11,12"` auto-includes step 3.
 
@@ -136,4 +138,4 @@ Step 3 (GNN Parse)
 
 ---
 
-**Last Updated**: 2026-05-20 | **Pipeline Version**: 1.6.0
+**Last Updated**: 2026-09-18 | **Pipeline Version**: 3.4.0
