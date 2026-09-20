@@ -86,9 +86,23 @@ capability:
 tokens:
     uv run python scripts/check_manuscript_tokens.py --strict
 
-# Run POMDP gridworld outputs check
+# Run the POMDP GridWorld pipeline end-to-end, then validate the output contract
+# (regenerates the volatile run tree from input/gnn_files/pomdp_gridworld;
+#  requires local Julia toolchains for the RxInfer/ActiveInference.jl proof)
 gridworld:
-    uv run python scripts/check_pomdp_gridworld_outputs.py
+    #!/usr/bin/env bash
+    set -euo pipefail
+    # Headless GR/Plots for the Julia scripts: without GKSwstype the GR
+    # backend may spawn a Qt window (gksqt) and block the run.
+    export GKSwstype=100
+    status=0
+    uv run python src/gnn/main.py --target-dir input/gnn_files/pomdp_gridworld --frameworks all --verbose || status=$?
+    # Thin-orchestrator exit contract: 0 = success, 2 = success with warnings.
+    if [[ $status -ne 0 && $status -ne 2 ]]; then
+        exit "$status"
+    fi
+    # The checker is the hard gate: exit 0 pass / 1 contract violation.
+    uv run python scripts/check_pomdp_gridworld_outputs.py output
 
 # Run the v3 orchestration acceptance gate (same command as CI)
 v3-acceptance:

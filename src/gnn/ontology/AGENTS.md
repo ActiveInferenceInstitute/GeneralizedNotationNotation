@@ -247,15 +247,14 @@ Lightweight JSON-based validation; runtime is dominated by file I/O.
 ## Integration Points
 
 ### Pipeline Integration
-- **Input**: Receives parsed GNN models from Step 3 (gnn processing)
-- **Output**: Generates ontology validation for Step 6 (validation), Step 11 (render), and Step 23 (report generation)
-- **Dependencies**: Requires GNN parsing results from `3_gnn.py` output
+- **Input**: Re-parses GNN `.md` files directly from the target directory (no Step 3 artifacts consumed)
+- **Output**: Writes `10_ontology_output/ontology_results.json` and per-file ontology reports
+- **Dependencies**: None on prior steps' outputs
 
 ### Module Dependencies
-- **gnn/**: Reads parsed GNN model data for term extraction
-- **validation/**: Provides ontology compliance for validation
-- **render/**: Uses ontology mappings for code generation
-- **report/**: Provides ontology compliance summaries
+- **gnn/**: Reads raw GNN file content for term extraction
+- **llm/**: Step 13 optionally injects `ontology_results.json` into its prompts
+- **report/website**: Include `10_ontology_output/` in their uniform output-dir scans
 
 ### External Integration
 - **Ontology File**: JSON-based ontology term definitions
@@ -263,14 +262,12 @@ Lightweight JSON-based validation; runtime is dominated by file I/O.
 
 ### Data Flow
 ```
-3_gnn.py (GNN parsing)
+input/gnn_files (re-parsed by 10_ontology.py)
   ↓
 10_ontology.py (Ontology processing)
   ↓
-  ├→ 6_validation.py (Ontology compliance)
-  ├→ 11_render.py (Term mapping)
-  ├→ 23_report.py (Ontology reports)
-  └→ output/10_ontology_output/ (Ontology results)
+  ├→ 13_llm.py (optional ontology injection)
+  └→ output/10_ontology_output/ (Ontology results; scanned by Steps 20 and 23)
 ```
 
 ---

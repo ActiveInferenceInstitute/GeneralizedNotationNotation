@@ -337,11 +337,13 @@ output/16_analysis_output/
 
 ### Imported By
 - `tests.test_analysis_integration.py` - Integration tests
-- `report.generator` - Report generation uses analysis results
+- `report.generator` - Scans `16_analysis_output` via the uniform all-steps census (no dedicated Step-16 data path)
 
 ### Data Flow
 ```
-GNN Files → Analysis → Statistical Reports → Model Comparisons → Optimization Recommendations
+input/gnn_files (re-parsed) + 12_execute_output (execution results) → Analysis → output/16_analysis_output/
+                                              ↓
+        Step 20 (website) loads analysis JSONs; Step 23 census-includes this dir
 ```
 
 ---

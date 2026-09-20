@@ -273,12 +273,12 @@ output/7_export_output/
 ### Pipeline Integration
 
 - **Input**: Receives parsed GNN models from Step 3 (gnn processing)
-- **Output**: Generates exports consumed by Step 8 (visualization), Step 11 (render), and Step 20 (website generation)
+- **Output**: Writes multi-format exports to `output/7_export_output/` (no dedicated downstream step consumer; included in the uniform output-dir scans of Steps 20, 22, and 23)
 - **Dependencies**: Requires GNN parsing results from `3_gnn.py` output
 
 ### Module Dependencies
 
-- **gnn/**: Reads parsed GNN model data for export
+- **gnn/**: Loads the Step 3 manifest + parsed models from `output/3_gnn_output/`
 - **visualization/**: Provides graph formats for visualization
 - **render/**: Provides model data for code generation
 - **website/**: Provides export data for website generation
@@ -292,14 +292,11 @@ output/7_export_output/
 ### Data Flow
 
 ```
-3_gnn.py (GNN parsing)
+output/3_gnn_output/ (Step 3 manifest + parsed models)
   ↓
 7_export.py (Multi-format export)
   ↓
-  ├→ 8_visualization.py (Graph visualization)
-  ├→ 11_render.py (Code generation)
-  ├→ 20_website.py (Website integration)
-  └→ output/7_export_output/ (Standalone exports)
+  └→ output/7_export_output/ (Standalone exports; no dedicated downstream step consumer)
 ```
 
 ---

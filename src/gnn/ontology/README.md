@@ -44,11 +44,8 @@ flowchart LR
     Step10 --> Processor
     Processor --> Utils
 
-    Step3 -->|Parsed Models| Processor
 
-    Processor -->|Ontology Mappings| Step11
     Processor -->|Ontology Terms| Step13
-    Processor -->|Ontology Analysis| Step16
 ```
 
 ## Core Components
