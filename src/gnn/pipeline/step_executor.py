@@ -20,11 +20,13 @@ values, ``target_dir``/``output_dir`` resolve to the standard numbered
 field, so ``main._record_step_result`` treats both modes identically.
 
 Limits (docs/decisions/0001-consolidated-pipeline-execution.md): testing-matrix
-folder dispatch stays on the subprocess path. The parallel tier runs
-consolidated steps on threads that share one process: steps 7/8 render with
-matplotlib (Agg) — thread-safe in-process, but concurrent consolidated runs of
-step 8 should expect shared matplotlib state (standing limit; no behavioral
-change attempted for matplotlib).
+folder dispatch stays on the subprocess path, and in-process steps still
+cannot be force-killed — a timed-out worker thread is abandoned (its receipt
+mirrors the subprocess tier's timeout shape), unlike subprocess mode. The
+parallel tier runs consolidated steps on threads that share one process:
+steps 7/8 render with matplotlib (Agg) — thread-safe in-process, but
+concurrent consolidated runs of step 8 should expect shared matplotlib state
+(standing limit; no behavioral change attempted for matplotlib).
 """
 
 from __future__ import annotations
