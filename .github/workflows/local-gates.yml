@@ -5,12 +5,12 @@ name: Local gates
 #   - just tokens       (manuscript token/citation integrity)
 #   - just skills-health (MCP tool + SKILL.md resolvability)
 #
-# Deliberately NOT wired here: `just gridworld`
-# (scripts/check_pomdp_gridworld_outputs.py) — the committed output/ tree
-# currently fails its contract (Step 3/11 + pymdp/rxinfer/activeinference_jl
-# timestep and B-shape checks fail as of 2026-09-07), and regenerating the
-# publication outputs requires the Julia toolchains. Re-wire it once the
-# output/ tree is regenerated and the check passes locally.
+# Deliberately NOT wired here: `just gridworld` — since 2026-09-19 the recipe
+# runs the full GridWorld pipeline end-to-end (local Julia toolchains) and
+# then validates `scripts/check_pomdp_gridworld_outputs.py output`. The
+# run-tree it validates is volatile by design
+# (docs/development/output_tracking.md): CI has no committed artifacts to
+# check, so this remains a local gate.
 
 on:
   push:

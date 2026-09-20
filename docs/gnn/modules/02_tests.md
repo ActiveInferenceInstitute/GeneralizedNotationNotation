@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/gnn/2_tests.py` (106 lines)
+**Orchestrator**: `src/gnn/2_tests.py` (117 lines)
 **Implementation Layer**: `tests/`
 
 ## Module Description
