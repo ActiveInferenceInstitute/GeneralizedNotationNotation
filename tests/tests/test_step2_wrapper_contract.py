@@ -42,3 +42,32 @@ def test_step2_wrapper_exists_and_is_thin() -> None:
     ).read_text(encoding="utf-8")
     assert "from tests import run_tests" in source
     assert "SKIP_TESTS_IN_PIPELINE" in source
+
+
+def test_step2_script_mode_resolves_tests_package(tmp_path: Path) -> None:
+    """Script-mode ``python src/gnn/2_tests.py`` must resolve the repo-root
+    ``tests`` package without PYTHONPATH crutches (regression: tests/ moved
+    out of src/ in the v3.3.0 reorg while the step only bootstrapped src/)."""
+    import os
+    import subprocess
+    import sys
+
+    repo_root = Path(__file__).resolve().parents[2]
+    env = {**os.environ, "SKIP_TESTS_IN_PIPELINE": "1"}
+    proc = subprocess.run(
+        [
+            sys.executable,
+            str(repo_root / "src" / "gnn" / "2_tests.py"),
+            "--target-dir",
+            str(tmp_path),
+            "--output-dir",
+            str(tmp_path),
+        ],
+        cwd=repo_root,
+        capture_output=True,
+        text=True,
+        timeout=120,
+        env=env,
+    )
+    assert proc.returncode == 0, proc.stdout + proc.stderr
+    assert "tests will be skipped" in proc.stdout + proc.stderr

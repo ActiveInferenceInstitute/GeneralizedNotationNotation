@@ -11,9 +11,9 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 DEFAULT_ONTOLOGY_TERMS_FILE = (
-    Path(__file__).resolve().parents[1] / "ontology" / "act_inf_ontology_terms.json"
+    Path(__file__).resolve().parents[2] / "ontology" / "act_inf_ontology_terms.json"
 )
-"""Ontology terms file packaged inside the ``gnn`` package."""
+"""Ontology terms file packaged inside the ``gnn`` package (src/gnn/ontology/)."""
 
 
 @dataclass
