@@ -65,7 +65,7 @@
       "consumed_tokens": {
         "GNN_BACKEND_COUNT": "9",
         "GNN_DOC_FILE_COUNT": "624",
-        "GNN_EXAMPLE_COUNT": "30",
+        "GNN_EXAMPLE_COUNT": "31",
         "GNN_EXECUTABLE_BACKEND_COUNT": "9",
         "GNN_FAMILY_COUNT": "9",
         "GNN_MCP_TOOL_COUNT": "142",
@@ -77,7 +77,7 @@
       "filename": "gnn_repo_metrics.png",
       "generated_by": "scripts/manuscript_fig_repo_metrics.py",
       "label": "fig:repo_metrics",
-      "png_sha256": "fac0e82aa0d65c267509a2081fd3207ada98e7a34044a6ac1308a9c269fbd11c",
+      "png_sha256": "18555cef8b00bdf63eaa9f3b4e2402f7a391c0a3e13902c7b34b01d8333e6dd0",
       "source_sha256": {}
     },
     {
