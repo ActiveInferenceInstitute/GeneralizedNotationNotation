@@ -51,7 +51,7 @@ type_checker/
 
 ## Input
 
-- Parsed GNN models from Step 3
+- GNN files re-parsed directly from the target directory (no Step 3 artifacts consumed)
 
 ## Output
 

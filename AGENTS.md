@@ -198,26 +198,77 @@ flowchart TD
 
 ### Data Dependencies
 
+Edges below describe **runtime data flow**, verified against each step's
+processor. Most steps re-parse the input GNN files directly; only the edges
+shown move artifacts between steps. Solid arrows are artifact reads the
+consumer performs on its primary path; dotted arrows are optional enrichments
+read only when the producer's output directory exists.
+
 ```mermaid
 graph TD
-    Step3[Step 3: GNN Parse] -->|Parsed Models| Step5[Step 5: Type Check]
-    Step3 -->|Parsed Models| Step6[Step 6: Validation]
-    Step3 -->|Parsed Models| Step7[Step 7: Export]
-    Step3 -->|Parsed Models| Step8[Step 8: Visualization]
-    Step3 -->|Parsed Models| Step10[Step 10: Ontology]
-    Step3 -->|Parsed Models| Step11[Step 11: Render]
-    Step3 -->|Parsed Models| Step13[Step 13: LLM]
-    
-    Step11 -->|Generated Code| Step12[Step 12: Execute]
-    Step12 -->|Execution Results| Step16[Step 16: Analysis]
-    
-    Step5 -->|Type Info| Step6
-    Step6 -->|Validation Results| Step7
-    Step7 -->|Exported Data| Step8
-    Step8 -->|Visualizations| Step16
-    Step13 -->|LLM Insights| Step16
-    Step16 -->|Analysis Results| Step23[Step 23: Report]
+    IN["input/ GNN files"]
+
+    IN -->|"glob + read"| S0["Step 0: Template"]
+    IN -->|"rglob + parse; producer of parsed artifacts"| S3["Step 3: GNN Parse"]
+    IN -->|"glob + read"| S4["Step 4: Model Registry"]
+    IN -->|"rglob + re-parse"| S5["Step 5: Type Check"]
+    IN -->|"rglob + re-parse"| S10["Step 10: Ontology"]
+    IN -->|"rglob + re-parse"| S11["Step 11: Render"]
+    IN -->|"rglob + re-parse"| S14["Step 14: ML Integration"]
+    IN -->|"glob + scan"| S18["Step 18: Security"]
+    IN -->|"rglob + re-parse"| S19["Step 19: Research"]
+    IN -->|"discover + read (Step 3 JSON preferred)"| S8["Step 8: Visualization"]
+    IN -->|"rglob + re-parse"| S13["Step 13: LLM"]
+    IN -->|"glob + re-parse"| S15["Step 15: Audio"]
+    IN -->|"rglob + re-parse"| S16["Step 16: Analysis"]
+    IN -->|"discover + re-parse"| S17["Step 17: Integration"]
+    IN -->|"markdown starter content"| S22["Step 22: GUI"]
+
+    S3 -->|"gnn_processing_results.json + *_parsed.json"| S6["Step 6: Validation"]
+    S3 -->|"gnn_processing_results.json + *_parsed.json"| S7["Step 7: Export"]
+    S3 -->|"*_parsed.json preferred; markdown fallback"| S8
+    S3 -->|"manifest + *_parsed.json"| S9["Step 9: Advanced Viz"]
+
+    S11 -->|"rendered scripts + render manifest"| S12["Step 12: Execute"]
+    S12 -->|"execution results"| S16
+
+    S10 -.->|"ontology_results.json (when present)"| S13
+    S12 -.->|"execution telemetry (when present)"| S15
+    S11 -.->|"render output dir (when present)"| S17
+    S12 -.->|"meta-analysis (when present)"| S17
+
+    S12 -->|"execution summary"| S20["Step 20: Website"]
+    S16 -->|"analysis JSONs"| S20
+
+    S23["Step 23: Report"]
+    S23 -.->|"census of all step output dirs; viz catalog from 8/9/11/12/20"| CENSUS["output/ (every N_*_output)"]
+
+    SUM["output/00_pipeline_summary/pipeline_execution_summary.json"]
+    SUM --> S23
+    SUM --> S24["Step 24: Intelligent Analysis"]
 ```
+
+| Step | Runtime input source |
+|------|----------------------|
+| 0, 4, 5, 10, 11, 14, 18, 19 | Re-parse `input/` GNN files from the target directory |
+| 1, 2, 21 | No pipeline data (environment setup, pytest run, module discovery) |
+| 3 | Parses `input/` and writes parsed artifacts to `output/3_gnn_output/` |
+| 6, 7, 9 | Read Step 3 artifacts from `output/3_gnn_output/` |
+| 8 | Step 3 `*_parsed.json` preferred; markdown re-parse fallback |
+| 12 | Step 11 rendered scripts + render manifest from `output/11_render_output/` |
+| 13 | Re-parses `input/`; optionally injects `10_ontology_output/ontology_results.json` |
+| 15 | Re-parses `input/`; optionally loads Step 12 execution telemetry |
+| 16 | Re-parses `input/` and reads Step 12 execution results |
+| 17 | Re-parses `input/`; optional meta-analysis over Step 11/12 outputs |
+| 20 | Step 16 analysis JSONs, Step 12 execution summary, Step 8/9 visualization assets |
+| 22 | Input markdown starter content; navigation census of step output dirs |
+| 23 | Census of all 25 step output dirs plus `pipeline_execution_summary.json` |
+| 24 | `output/00_pipeline_summary/pipeline_execution_summary.json` only |
+
+Step-orchestration prerequisites (used for `--only-steps` auto-inclusion) are
+declared separately in
+`src/gnn/utils/pipeline_orchestration/pipeline_step_dependencies.py` and are
+deliberately broader than this artifact graph.
 
 ---
 
