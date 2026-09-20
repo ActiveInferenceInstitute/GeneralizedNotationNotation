@@ -427,3 +427,50 @@ def test_safe_rendered_script_is_executed_not_blocked(tmp_path: Path) -> None:
     # script actually ran (the gate did not block it).
     assert run.status == "execution_failed"
     assert "not written" in run.detail
+
+
+# --- shared subprocess envelope migration (MAJ-07) ------------------------------
+
+
+def test_timeout_maps_to_execution_failed_with_exact_detail(tmp_path: Path) -> None:
+    """A run exceeding its wall-clock budget is execution_failed, never a raise."""
+    script = tmp_path / "model_pymdp.py"
+    script.write_text("import time\ntime.sleep(3)\n", encoding="utf-8")
+
+    run = _run_subprocess(
+        "pymdp",
+        [sys.executable, str(script)],
+        tmp_path,
+        1,
+        tmp_path / "simulation_results.json",
+        script_path=script,
+    )
+
+    assert run.status == "execution_failed"
+    assert run.detail == "execution exceeded 1s timeout"
+    assert run.results is None
+
+
+def test_failed_to_start_maps_to_execution_failed_not_crash(tmp_path: Path) -> None:
+    """A command vector whose binary does not exist is a per-framework failure.
+
+    Pins the sanctioned envelope delta: the spawn failure (OSError /
+    SandboxUnavailable) that used to propagate and crash the comparison now
+    arrives as ``return_code == NEVER_STARTED`` and is classified like any
+    other execution failure.
+    """
+    script = tmp_path / "model_pymdp.py"
+    script.write_text("print('never runs')\n", encoding="utf-8")
+
+    run = _run_subprocess(
+        "pymdp",
+        [str(tmp_path / "definitely-not-a-real-binary"), str(script)],
+        tmp_path,
+        60,
+        tmp_path / "simulation_results.json",
+        script_path=script,
+    )
+
+    assert run.status == "execution_failed"
+    assert run.detail.startswith("execution failed to start:")
+    assert run.results is None

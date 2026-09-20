@@ -19,13 +19,16 @@ import html
 import json
 import logging
 import os
-import subprocess  # nosec B404
 import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Literal
 
 from gnn.execute.julia_setup import julia_executable  # noqa: E402
+from gnn.execute.subprocess_envelope import (  # noqa: E402
+    NEVER_STARTED,
+    run_subprocess_envelope,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -173,6 +176,12 @@ def _run_subprocess(
     scanner cannot be imported). The gate helper is imported lazily because
     ``gnn.execute`` pulls in the executor/runner stack that this analysis
     module must not depend on at import time.
+
+    The execution itself runs through the shared subprocess envelope
+    (``gnn.execute.subprocess_envelope.run_subprocess_envelope``), the same
+    structured contract as every per-framework runner: timeout, exit code,
+    and spawn failures all arrive in one outcome mapping instead of
+    per-site exception handling.
     """
     try:
         from gnn.execute.security_gate import check_script_allowed
@@ -196,23 +205,24 @@ def _run_subprocess(
         logger.error("%s: %s", framework, detail)
         return FrameworkRun(framework, "execution_failed", detail)
 
-    try:
-        completed = subprocess.run(  # nosec B603
-            command,
-            cwd=str(cwd),
-            capture_output=True,
-            text=True,
-            check=False,
-            timeout=timeout,
-            env=env,
-        )
-    except subprocess.TimeoutExpired:
+    # SANCTIONED DELTA (envelope contract): a spawn failure (OSError,
+    # SandboxUnavailable refusal) previously propagated out of this
+    # function and crashed the whole comparison; the envelope returns
+    # ``return_code == NEVER_STARTED`` for it and we classify it as a
+    # per-framework execution failure instead.
+    envelope = run_subprocess_envelope(command, timeout=timeout, cwd=str(cwd), env=env)
+
+    if envelope.get("error_type") == "TimeoutExpired":
         detail = f"execution exceeded {timeout}s timeout"
+        logger.error("%s: %s", framework, detail)
+        return FrameworkRun(framework, "execution_failed", detail)
+    if envelope["return_code"] == NEVER_STARTED:
+        detail = f"execution failed to start: {envelope.get('error', '')}"
         logger.error("%s: %s", framework, detail)
         return FrameworkRun(framework, "execution_failed", detail)
 
     return _classify_exit(
-        framework, completed.returncode, completed.stderr, results_path
+        framework, envelope["return_code"], envelope["stderr"], results_path
     )
 
 

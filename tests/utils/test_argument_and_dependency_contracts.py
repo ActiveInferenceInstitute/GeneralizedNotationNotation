@@ -12,7 +12,10 @@ from gnn.utils.arguments.arg_parsing import (
     audit_step_contracts,
     build_step_command_args,
 )
-from gnn.utils.arguments.pipeline_arguments import PipelineArguments
+from gnn.utils.arguments.pipeline_arguments import (
+    DEFAULT_ONTOLOGY_TERMS_FILE,
+    PipelineArguments,
+)
 from gnn.utils.arguments.step_config import StepConfiguration
 from gnn.utils.errors.error_handling import CRITICAL_STEP_NUMBERS
 from gnn.utils.pipeline_orchestration.pipeline_step_dependencies import (
@@ -303,3 +306,12 @@ def test_only_steps_dependency_closure_is_recursive() -> None:
     assert resolve_step_dependencies([23]) == [3, 8, 13, 23]
     assert resolve_step_dependencies([17]) == list(range(3, 18))
     assert resolve_step_dependencies([24]) == list(range(25))
+
+
+def test_default_ontology_terms_file_resolves_to_bundled_vocabulary() -> None:
+    """The packaged default must hit src/gnn/ontology/, not the stale
+    arguments-subpackage-relative src/gnn/utils/ontology/ path."""
+    assert DEFAULT_ONTOLOGY_TERMS_FILE.parent.name == "ontology"
+    assert DEFAULT_ONTOLOGY_TERMS_FILE.name == "act_inf_ontology_terms.json"
+    assert DEFAULT_ONTOLOGY_TERMS_FILE.exists()
+    assert PipelineArguments().ontology_terms_file == DEFAULT_ONTOLOGY_TERMS_FILE

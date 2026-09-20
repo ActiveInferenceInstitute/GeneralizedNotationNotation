@@ -130,7 +130,14 @@ end of this file.
   open-by-design: local `test-cov` keeps
   `--ignore=tests/llm/test_llm_ollama*.py` (no local daemon) while the CI
   coverage run exercises those tests (26-test asymmetry, documented);
-  `just gridworld` stays unwired until Julia toolchains exist.
+  ~~`just gridworld` stays unwired until Julia toolchains exist.~~
+  REWIRED 2026-09-19: the recipe now runs the full 25-step pipeline on
+  `input/gnn_files/pomdp_gridworld` with `--frameworks all` (local Julia
+  1.12.7 + the committed RxInfer/ActiveInference envs) and validates the
+  result with `scripts/check_pomdp_gridworld_outputs.py output`. CI wiring
+  stays off by design: the run-tree is volatile
+  (docs/development/output_tracking.md), so CI has nothing committed to
+  check until that boundary changes.
 - Dependency floors: RAISED 2026-09-07 for numpy (>=2.0), pandas (>=2.0),
   openai (>=2.0), pytest (>=8.0), mypy (>=1.0). Residual: cosmetic floors
   (networkx 2.6, plotly 5.15, scipy 1.7, ...) at the next deliberate lock
