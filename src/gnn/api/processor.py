@@ -11,6 +11,7 @@ import asyncio
 import logging
 import os
 import re
+import shutil
 import signal
 import time
 import uuid
@@ -33,6 +34,20 @@ from gnn.pipeline.step_registry import STEPS
 
 # In-memory job store (cleared on restart — research tool, not production service)
 _JOBS: Dict[str, dict[str, Any]] = {}
+
+
+RUNS_STORE: Dict[str, dict[str, Any]] = {}
+
+# States a run record reaches and never leaves.
+_TERMINAL_RUN_STATES = frozenset({"completed", "failed", "cancelled"})
+
+
+class RunNotFoundError(Exception):
+    """No run record matches the requested run hash or prefix."""
+
+
+class RunAmbiguousError(Exception):
+    """The requested run-hash prefix matches more than one run record."""
 
 
 def _validate_step_numbers(
@@ -176,6 +191,106 @@ def cancel_job(job_id: str) -> bool:
     job["status"] = "cancelled"
     job["completed_at"] = datetime.now().isoformat()
     return True
+
+
+def _remove_run_artifacts(entry: dict[str, Any]) -> tuple[Optional[bool], str]:
+    """Remove a run's artifact directory, never raising.
+
+    A run that targeted the repository's own ``output`` tree keeps its
+    artifacts: that tree is shared working state, not disposable output.
+
+    Returns ``(artifacts_removed, artifacts_note)`` where the boolean is
+    ``True`` after a successful removal, ``False`` when nothing needed
+    removing (with the reason in the note), and ``None`` when artifact
+    removal was not requested.
+    """
+    request = entry.get("request") or {}
+    raw_output_dir = request.get("output_dir")
+    if not raw_output_dir:
+        return False, "no artifacts on disk"
+    output_dir = Path(str(raw_output_dir))
+    try:
+        resolved = output_dir.resolve()
+    except OSError as exc:
+        return False, f"could not resolve artifact directory: {exc}"
+    repo_output = (Path(__file__).resolve().parents[3] / "output").resolve()
+    if resolved == repo_output:
+        return False, "repository output tree retained"
+    if not resolved.exists():
+        return False, "no artifacts on disk"
+    try:
+        shutil.rmtree(resolved)
+    except Exception as exc:  # noqa: BLE001
+        return False, f"artifact removal failed: {exc}"
+    return True, ""
+
+
+def delete_run(
+    run_hash: str,
+    *,
+    runs_store: Optional[Dict[str, dict[str, Any]]] = None,
+    remove_artifacts: bool = True,
+    wait_timeout: float = 10.0,
+    poll_interval: float = 0.05,
+) -> dict[str, Any]:
+    """Delete a run record, cancelling it first when it is still active.
+
+    Resolves an exact run hash or a unique prefix, then — for queued or
+    running runs — cancels through the record's CancelToken and waits for
+    the executor to reach a terminal state (a queued run skips the wait:
+    its background task may not have started, and the executor tolerates a
+    vanished record). Artifacts are removed afterwards, the repository
+    output tree excepted, and the record is popped from the store.
+
+    Raises:
+        RunNotFoundError: No record matches the hash or prefix.
+        RunAmbiguousError: The prefix matches several records.
+        RuntimeError: A cancelled run did not reach a terminal state within
+            ``wait_timeout``; the record is left in place with its current
+            status.
+    """
+    store = RUNS_STORE if runs_store is None else runs_store
+    if run_hash in store:
+        key = run_hash
+    else:
+        matches = [known for known in store if known.startswith(run_hash)]
+        if len(matches) > 1:
+            raise RunAmbiguousError(f"Run hash prefix is ambiguous: {run_hash}")
+        if not matches:
+            raise RunNotFoundError(f"Run not found: {run_hash}")
+        key = matches[0]
+
+    entry = store[key]
+    cancelled = False
+    if entry["status"] in ("queued", "running"):
+        token = entry.get("cancel_token")
+        if token is not None:
+            token.cancel(reason="run deleted")
+            cancelled = True
+        if entry["status"] == "running":
+            deadline = time.monotonic() + wait_timeout
+            while entry["status"] not in _TERMINAL_RUN_STATES:
+                remaining = deadline - time.monotonic()
+                if remaining <= 0:
+                    raise RuntimeError(
+                        f"Run {key} did not reach a terminal state after "
+                        f"cancel; status: {entry['status']}"
+                    )
+                time.sleep(min(poll_interval, remaining))
+
+    artifacts_removed: Optional[bool] = None
+    artifacts_note = ""
+    if remove_artifacts:
+        artifacts_removed, artifacts_note = _remove_run_artifacts(entry)
+
+    store.pop(key, None)
+    return {
+        "deleted": key,
+        "existed": True,
+        "cancelled": cancelled,
+        "artifacts_removed": artifacts_removed,
+        "artifacts_note": artifacts_note,
+    }
 
 
 def list_jobs(limit: int = 50) -> List[dict[str, Any]]:

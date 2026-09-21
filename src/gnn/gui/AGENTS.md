@@ -209,7 +209,6 @@ capped at `MAX_FILES_PER_SECTION` (20). Missing step directories are skipped.
 ### Required Dependencies
 Installed by the `gui` extra in `pyproject.toml` (`uv sync --extra gui`):
 - `gradio` - Web-based GUI framework
-- `streamlit` - Bundled with the extra for GUI frontends
 
 Also used when present:
 - `pandas` - Data manipulation for matrix editing
@@ -263,7 +262,7 @@ result = gui_1(
     output_dir=Path("output/gui_1_output"),
     logger=logger,
     headless=False,
-    export_filename="constructed_model.md",
+    export_filename="constructed_model_gui1.md",
     open_browser=True,
 )
 ```
@@ -490,7 +489,7 @@ normal MCP keyword arguments.
 **Solution**: 
 - Check if port is already in use: `lsof -i :7860`
 - Use different port: `--port 7861`
-- Verify Gradio/Streamlit dependencies installed
+- Verify Gradio dependencies installed
 - Use `--headless` mode if GUI not needed
 
 #### Issue 2: Model export fails
@@ -532,7 +531,6 @@ normal MCP keyword arguments.
 
 ### External Resources
 - [Gradio Documentation](https://gradio.app/)
-- [Streamlit Documentation](https://streamlit.io/)
 
 ---
 

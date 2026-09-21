@@ -116,10 +116,9 @@ audio = [
     "pedalboard>=0.7.0",
 ]
 
-# GUI interfaces: Gradio/Streamlit frontends (step 22)
+# GUI interfaces: Gradio frontend (step 22)
 gui = [
     "gradio>=6.7.0",
-    "streamlit>=1.25.0",
 ]
 
 # Graph/categorical: system Graphviz bindings beyond core DisCoPy rendering
@@ -214,7 +213,6 @@ all = [
 
     # GUI and interactive interfaces
     "gradio>=6.7.0",
-    "streamlit>=1.25.0",
 
     # Research and scientific computing
     "bleach>=6.4.0",
@@ -386,7 +384,6 @@ module = [
     "sphinx.*",
     "sklearn.*",
     "soundfile.*",
-    "streamlit.*",
     "tensorflow.*",
     "torch.*",
     "numpyro.*",

@@ -18,7 +18,7 @@ import logging
 import os
 import threading
 import time
-from http.server import BaseHTTPRequestHandler, HTTPServer
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import Any, Dict, List, Optional
 
 from .jsonrpc import (
@@ -543,7 +543,7 @@ class MCPHTTPServer:
         """Initialize the instance."""
         self.host = host
         self.port = port
-        self.server: Optional[HTTPServer] = None
+        self.server: Optional[ThreadingHTTPServer] = None
         self.server_thread: Optional[threading.Thread] = None
         self.running = False
 
@@ -551,7 +551,7 @@ class MCPHTTPServer:
         """Start the HTTP server."""
         # Initialize MCP
         initialize()
-        self.server = HTTPServer((self.host, self.port), MCPHTTPHandler)
+        self.server = ThreadingHTTPServer((self.host, self.port), MCPHTTPHandler)
         self.running = True
         logger.info(f"Starting MCP HTTP server on {self.host}:{self.port}")
         self.server_thread = threading.Thread(target=self._server_thread)

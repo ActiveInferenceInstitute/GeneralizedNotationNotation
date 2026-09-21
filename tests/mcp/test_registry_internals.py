@@ -125,6 +125,7 @@ class TestResultCache:
             func=lambda: calls.append(1) or {"n": len(calls)},
             schema={},
             description="counts executions",
+            cacheable=True,
             cache_ttl=60.0,
         )
         first = registry.execute_tool("counting_tool", {})
@@ -144,6 +145,7 @@ class TestResultCache:
             func=lambda: calls.append(1) or {"n": len(calls)},
             schema={},
             description="counts executions",
+            cacheable=True,
             cache_ttl=0.05,
         )
         registry.execute_tool("expiring_tool", {})
@@ -164,6 +166,7 @@ class TestResultCache:
                 "properties": {"values": {"type": "array"}},
             },
             description="takes a set-shaped param",
+            cacheable=True,
             cache_ttl=60.0,
         )
         # A set is not JSON-serializable: the call must still succeed, simply

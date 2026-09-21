@@ -118,6 +118,7 @@ def get_gui_2_info() -> Dict[str, Any]:
         "export_format": "GNN Markdown (.md)",
         "interface_type": "visual-drag-drop",
         "template_base": "Active Inference POMDP",
+        "port": 7861,
     }
 
 

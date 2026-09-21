@@ -163,7 +163,8 @@ be added to :func:`mcp.mcp.initialize`.
 | `enable_caching` | `bool` | mode-derived | Toggle result-cache for tool invocations |
 | `enable_rate_limiting` | `bool` | mode-derived | Enforce per-tool RPS limits |
 | `strict_validation` | `bool` | mode-derived | Validate every call against its JSON schema |
-| `cache_ttl` | `float` (s) | `300.0` | Result-cache TTL |
+| `cache_ttl` | `float` (s) | `300.0` | Default TTL for result-cache entries; a tool is cached only when it registered `cacheable=True`, and its own `cache_ttl` overrides this default |
+| `tool_timeout` | `float` \| `None` | `None` | Default timeout (seconds) for tools that did not register their own timeout; `None` leaves those tools un-timed |
 | `modules_allowlist` | `list[str]` \| `None` | `None` | Restrict discovery to the named modules under `src/` |
 | `per_module_timeout` | `float` (s) | `30.0` | Max wall-clock per module during discovery |
 | `overall_timeout` | `float` (s) | `120.0` | Max wall-clock for parallel discovery |
@@ -396,26 +397,47 @@ schema = {
 
 ### Caching System
 
-The implementation includes intelligent caching:
+Result caching is opt-in per tool and gated by the server-wide toggle:
+
+- `enable_caching` (server) must be on (performance_mode "high", or an
+  explicit `initialize(enable_caching=True)`).
+- The tool must be registered with `cacheable=True` (default is `False`:
+  mutating or side-effectful tools are never cached unless they opt in).
+- The cache entry TTL is the tool's own `cache_ttl` when it registered one,
+  otherwise the server-wide `cache_ttl` default (`300.0` s, settable via
+  `initialize(cache_ttl=...)`).
 
 ```python
-# Register tool with caching
+# Register a tool that opts into result caching
 mcp_instance.register_tool(
     name="expensive_operation",
     func=expensive_function,
     schema=schema,
     description="An expensive operation with caching",
-    cache_ttl=3600.0,  # Cache for 1 hour
+    cacheable=True,       # opt in to the result cache
+    cache_ttl=3600.0,     # per-tool TTL overrides the server default
 )
 
-# Execute (will be cached)
+# Execute (executes the handler and stores the result)
 result1 = mcp_instance.execute_tool("expensive_operation", {"param": "value"})
 
-# Execute again (will use cache)
+# Execute again (same params served from the result cache until the entry expires)
 result2 = mcp_instance.execute_tool("expensive_operation", {"param": "value"})
 
 # Clear cache
 cache_stats = mcp_instance.clear_cache()
+```
+
+### Tool Timeouts
+
+Each tool may register its own `timeout` (seconds). A server-wide default for
+tools that did not register one is set via `initialize(tool_timeout=...)`;
+the default `None` means un-registered tools run without a time bound. When
+an effective timeout applies, the caller stops waiting at that bound and
+receives `MCPToolTimeoutError` (wire code -32008).
+
+```python
+initialize(tool_timeout=30.0)  # un-registered tools stop waiting at 30 s
 ```
 
 ### Rate Limiting

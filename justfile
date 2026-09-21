@@ -116,6 +116,10 @@ mcp-count:
 manifest OUT:
     uv run python scripts/emit_run_manifest.py {{ OUT }}
 
+# Run Step 22 GUI processing (default headless artifacts; e.g. just gui --interactive --gui-types gui_1)
+gui ARGS='':
+    uv run gnn gui {{ ARGS }}
+
 # Run maintained-doc terminology audit
 doc-terms:
     uv run python scripts/check_maintained_doc_terms.py --strict

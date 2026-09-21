@@ -108,6 +108,7 @@ class MCPRegistryMixin:
         requires_auth: bool = False,
         rate_limit: Optional[float] = None,
         cache_ttl: Optional[float] = None,
+        cacheable: bool = False,
         input_validation: bool = True,
         output_validation: bool = True,
         # Alternate metadata keywords accepted by module mcp files.
@@ -134,6 +135,8 @@ class MCPRegistryMixin:
             requires_auth: Whether the tool requires authentication
             rate_limit: Optional rate limit for the tool in requests per second
             cache_ttl: Optional cache TTL for the tool in seconds
+            cacheable: Whether the tool's results may be served from the
+                result cache
             input_validation: Whether to validate input parameters
             output_validation: Whether to validate output results
         """
@@ -215,6 +218,7 @@ class MCPRegistryMixin:
                 requires_auth=requires_auth,
                 rate_limit=rate_limit,
                 cache_ttl=cache_ttl,
+                cacheable=cacheable,
                 input_validation=input_validation,
                 output_validation=output_validation,
             )

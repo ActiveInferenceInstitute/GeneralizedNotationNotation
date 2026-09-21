@@ -24,18 +24,38 @@ def test_summary_rejects_malformed_root(tmp_path: Path, root: object) -> None:
 
 
 @pytest.mark.parametrize("state", ["queued", "running"])
-def test_delete_active_run_conflicts(
-    state: str, monkeypatch: pytest.MonkeyPatch
+def test_delete_active_run_cancels_and_removes_record(
+    state: str, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
+    """Deleting an active run cancels it through its token and pops it."""
+    from gnn.execute.subprocess_envelope import CancelToken
+
     module = importlib.import_module("gnn.api.app")
     monkeypatch.setenv("GNN_RATE_LIMIT", "0")
     monkeypatch.delenv("GNN_API_KEY", raising=False)
-    store = {"abc123": {"status": state}}
+    entry: dict = {"status": state, "request": {"output_dir": str(tmp_path / "out")}}
+
+    class _CancelMarksTerminal(CancelToken):
+        """Token whose cancel mirrors the executor's prompt terminal write."""
+
+        def __init__(self, target: dict) -> None:
+            super().__init__()
+            self._target = target
+
+        def cancel(self, reason: str | None = None) -> None:
+            super().cancel(reason)
+            self._target["status"] = "cancelled"
+            self._target["completed_at"] = "2026-01-01T00:00:00"
+
+    token = _CancelMarksTerminal(entry) if state == "running" else CancelToken()
+    entry["cancel_token"] = token
+    store = {"abc123": entry}
     app = module.create_app(runs_store=store)
     response = TestClient(app).delete("/api/v1/runs/abc123")
-    assert response.status_code == 409
-    assert response.json()["status"] == "error"
-    assert "abc123" in store
+    assert response.status_code == 200
+    assert response.json()["status"] == "success"
+    assert response.json()["data"]["cancelled"] is True
+    assert "abc123" not in store
 
 
 @pytest.mark.parametrize("exit_code", [0, 1, 2])

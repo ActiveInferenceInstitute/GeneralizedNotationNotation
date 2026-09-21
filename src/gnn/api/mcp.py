@@ -14,7 +14,16 @@ from pathlib import Path
 from typing import Any, Dict, List
 
 from .path_utils import PathValidationError
-from .processor import PIPELINE_STEPS, cancel_job, create_job, get_job, list_jobs
+from .processor import (
+    PIPELINE_STEPS,
+    RunAmbiguousError,
+    RunNotFoundError,
+    cancel_job,
+    create_job,
+    delete_run,
+    get_job,
+    list_jobs,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -91,6 +100,25 @@ def gnn_cancel_job_mcp(job_id: str) -> Dict[str, Any]:
     except Exception as e:
         logger.error(f"Failed to cancel job via MCP: {e}")
         return {"status": "error", "message": str(e)}
+
+
+def gnn_delete_run_mcp(run_hash: str) -> Dict[str, Any]:
+    """Delete a GNN pipeline run via MCP, cancelling it first when active."""
+    try:
+        result = delete_run(run_hash)
+    except RunNotFoundError as e:
+        logger.info(f"Run {run_hash} not found via MCP delete: {e}")
+        return {"status": "error", "message": f"Run {run_hash} not found."}
+    except RunAmbiguousError as e:
+        return {"status": "error", "message": f"Ambiguous run hash prefix: {e}"}
+    except Exception as e:
+        logger.error(f"Failed to delete run via MCP: {e}")
+        return {"status": "error", "message": str(e)}
+    return {
+        "status": "success",
+        "message": f"Run {result['deleted']} deleted successfully.",
+        **result,
+    }
 
 
 def gnn_list_jobs_mcp(limit: int = 50) -> Dict[str, Any]:
@@ -177,6 +205,21 @@ _MCP_TOOL_DEFINITIONS: tuple[Dict[str, Any], ...] = (
             "required": ["job_id"],
         },
         "description": "Cancel a GNN pipeline job.",
+    },
+    {
+        "name": "gnn_delete_run",
+        "handler": gnn_delete_run_mcp,
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "run_hash": {
+                    "type": "string",
+                    "description": "The run hash (or unique prefix) to delete",
+                }
+            },
+            "required": ["run_hash"],
+        },
+        "description": "Delete a pipeline run, cancelling it first when active.",
     },
     {
         "name": "gnn_list_jobs",
