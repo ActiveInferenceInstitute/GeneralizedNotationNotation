@@ -16,7 +16,7 @@ from ..backend import (
     write_json_atomically,
     write_text_atomically,
 )
-from ..runner import launch_gradio_in_thread
+from ..runner import launch_gradio_in_thread, resolve_output_root
 
 # Shared backend detection (same recovery semantics as GUI 1 / GUI 2).
 _GUI_STATUS = detect_gradio_backend()
@@ -51,9 +51,7 @@ def run_gui(
     """
 
     try:
-        output_root = (
-            output_dir.parent if output_dir.name.endswith("_output") else output_dir
-        )
+        output_root = resolve_output_root(output_dir)
         output_root.mkdir(parents=True, exist_ok=True)
 
         starter_path = output_root / export_filename

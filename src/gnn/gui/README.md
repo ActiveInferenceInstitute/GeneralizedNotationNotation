@@ -57,7 +57,7 @@ python src/gnn/22_gui.py --gui-types "gui_1,gui_2,gui_3,oxdraw" --target-dir inp
   - `constructed_model_gui1.md`: GUI 1 output - Form-based constructed GNN model
   - `visual_model_gui2.md`: GUI 2 output - Visual matrix editor GNN model
   - `visual_matrices.json`: GUI 2 output - Matrix data and visualizations
-  - `gui_status.json`: GUI execution status and backend information
+  - `gui_1_status.json` / `gui_2_status.json`: GUI execution status and backend information
   - `gui_processing_summary.json`: Overall processing summary with results from all GUIs
   - `navigation.html`: **Comprehensive HTML navigation page** linking to all pipeline outputs
 

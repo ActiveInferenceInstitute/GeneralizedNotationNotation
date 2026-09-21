@@ -42,9 +42,7 @@ class TestGui3PipelineKwargs:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_wrapper_tolerates_pipeline_kwargs(
-        self, isolated_temp_dir: Any
-    ) -> None:
+    def test_wrapper_tolerates_pipeline_kwargs(self, isolated_temp_dir: Any) -> None:
         """The exact kwargs the standardized runner forwards must not crash.
 
         Regression: the wrapper splatted ``**kwargs`` into the closed-signature
@@ -72,10 +70,10 @@ class TestGui3PipelineKwargs:
 
         assert result["success"] is True, f"gui_3 failed: {result.get('error')}"
         assert "error" not in result or result["error"] is None
-        # Headless artifacts land in output_root (= output_dir when the name
-        # does not end in "_output").
-        assert (output / "designed_model_gui_3.md").is_file()
-        assert (output / "design_analysis.json").is_file()
+        # Headless artifacts land in the resolved step output root
+        # (<output_dir>/22_gui_output when the name is not already the step dir).
+        assert (output / "22_gui_output" / "designed_model_gui_3.md").is_file()
+        assert (output / "22_gui_output" / "design_analysis.json").is_file()
 
     @pytest.mark.integration
     def test_headless_cli_exits_zero(self, isolated_temp_dir: Any) -> None:
@@ -115,12 +113,10 @@ class TestGui3PipelineKwargs:
             f"22_gui.py exited {proc.returncode}; output tail:\n"
             f"{(proc.stdout + proc.stderr)[-2000:]}"
         )
-        summary = json.loads(
-            (output / "gui_processing_summary.json").read_text()
-        )
+        summary = json.loads((output / "gui_processing_summary.json").read_text())
         assert summary["overall_success"] is True
         assert summary["results"]["gui_3"]["success"] is True
-        # gui_3 writes its headless artifacts to the output root
-        # (the parent of the *_output directory).
-        assert (output.parent / "designed_model_gui_3.md").is_file()
-        assert (output.parent / "design_analysis.json").is_file()
+        # gui_3 writes its headless artifacts to the resolved step output
+        # root, the same 22_gui_output directory it was handed.
+        assert (output / "designed_model_gui_3.md").is_file()
+        assert (output / "design_analysis.json").is_file()
