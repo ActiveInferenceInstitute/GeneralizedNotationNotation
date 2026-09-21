@@ -6,7 +6,7 @@ Provide Language Server Protocol support for GNN files, enabling real-time valid
 
 ## Requirements
 
-1. **Diagnostics**: Publish validation results on `textDocument/didOpen` and `textDocument/didSave`
+1. **Diagnostics**: Publish validation results on `textDocument/didOpen`, `textDocument/didChange`, and `textDocument/didSave`
 2. **Hover**: Return variable metadata (name, dimensions, type) on `textDocument/hover`
 3. **Graceful fallback**: Function without `pygls` — return `None` from `create_server()`
 4. **Validation parity**: Use same validation functions as `gnn.schema` (section validation, state-space parsing, connection parsing)
