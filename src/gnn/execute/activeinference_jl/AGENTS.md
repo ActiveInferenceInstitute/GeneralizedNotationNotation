@@ -70,6 +70,7 @@ success = run_activeinference_analysis(
 **Description**: Execute one rendered `.jl` script under the committed project. When
 `setup_environment` is `True`, `get_environment_status` is consulted first and
 `setup_julia_environment` runs if the environment needs it.
+The subprocess runs with the shared Julia environment: `GKSwstype=100` headless-GR default (a `GKSwstype` set in the caller's environment wins).
 
 **Returns**: `True` on exit code 0, `False` on failure or a missing script.
 

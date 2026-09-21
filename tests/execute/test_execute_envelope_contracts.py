@@ -7,7 +7,7 @@ no other test file exercises with a spy:
 - ``GNNExecutor`` dispatch defaults (``executor.py``): per-type command
   vectors and timeout fallbacks, plus envelope passthrough.
 - ``activeinference_runner``: script execution call shape
-  (JULIA_PROJECT env, timeout 600, cwd) and result mapping, plus the
+  (JULIA_PROJECT + GKSwstype=100 headless env, timeout 600, cwd) and result mapping, plus the
   package-validation probe (timeout 30).
 - ``stan_runner.execute_stan_script``: command/env/cwd/timeout and the
   result-dict mapping.
@@ -167,7 +167,9 @@ def test_activeinference_script_success_call_shape_and_mapping(
         str(script.resolve()),
     ]
     assert spy.calls[0]["kwargs"]["timeout"] == 600
-    assert spy.calls[0]["kwargs"]["env"] == {"JULIA_PROJECT": str(project_dir)}
+    env = spy.calls[0]["kwargs"]["env"]
+    assert env["JULIA_PROJECT"] == str(project_dir)
+    assert env["GKSwstype"] == "100"
     assert spy.calls[0]["kwargs"]["cwd"] == str(project_dir)
 
 
@@ -256,6 +258,7 @@ def test_activeinference_package_probe_uses_timeout_30(
     ]
     assert spy.calls[0]["kwargs"]["timeout"] == 30
     assert spy.calls[0]["kwargs"]["cwd"] == project_dir  # passed as Path
+    assert spy.calls[0]["kwargs"]["env"]["GKSwstype"] == "100"
 
 
 def test_activeinference_package_probe_failure_returns_false(
