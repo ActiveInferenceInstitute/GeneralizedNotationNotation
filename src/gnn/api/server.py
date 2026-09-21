@@ -6,9 +6,9 @@ Provides REST endpoints for pipeline job management and tool invocation.
 Optional API-key authentication is available through ``GNN_API_KEY``.
 
 Run with:
-    python -m api.server
+    python -m gnn.api.server
     # or:
-    uvicorn api.server:app --host 0.0.0.0 --port 8000 --reload
+    uvicorn gnn.api.server:app --host 127.0.0.1 --port 8000 --reload
 """
 
 import logging
@@ -48,7 +48,7 @@ from gnn.api.path_utils import (
 from gnn.api.rate_limit import rate_limit_middleware
 from gnn.api.responses import APIEnvelope, install_exception_handlers, success_envelope
 
-#: Module-scope ASGI instance (e.g. ``uvicorn api.server:app``). Built once from
+#: Module-scope ASGI instance (e.g. ``uvicorn gnn.api.server:app``). Built once from
 #: :func:`create_app` so tests and callers can also request isolated instances.
 app: FastAPI = None  # type: ignore[assignment]
 
@@ -293,7 +293,9 @@ def run_server(host: str = "127.0.0.1", port: int = 8000, reload: bool = False) 
             "ensure network-level access control is in place",
             host,
         )
-    uvicorn.run("api.server:app", host=host, port=port, reload=reload, log_level="info")
+    uvicorn.run(
+        "gnn.api.server:app", host=host, port=port, reload=reload, log_level="info"
+    )
 
 
 if __name__ == "__main__":
