@@ -403,11 +403,11 @@ flowchart TD
 - Re-exports the canonical `TestRunner` from `infrastructure/test_runner.py`
 - Re-exports the execution modes from `test_runner_modes.py` and `create_test_runner` from `test_runner_modular.py`
 
-**testing_utils.py** (Shared Utilities):
-- Provides test fixtures and helper functions
-- Defines test categories and markers
+**`gnn.utils.testing` package** (Shared Utilities):
+- Provides test fixtures and helper functions (`testing/` concern package: constants, environment, fixtures, reports, runner)
+- Defines test categories, stages, and coverage targets
 - Provides test data creation utilities
-- Used by both test files and runner
+- Used by both test files and the runner (the old top-level `testing_utils.py` facade was removed when the SC-38 window closed)
 
 **conftest.py** (Pytest Fixtures):
 - Defines pytest fixtures for all tests
