@@ -3,7 +3,7 @@
 Exercises the SAPF module MCP tool handlers.
 
 Exercises the handler functions in ``src/sapf/mcp.py`` that expose audio
-metadata, artifact inventory, and backend probing. The heavy audio-rendering
+metadata and artifact inventory. The heavy audio-rendering
 path is only exercised through its graceful failure mode (missing target).
 """
 
@@ -52,16 +52,6 @@ class TestSAPFMCPTools:
         result = sapf_mcp.list_audio_artifacts_mcp(str(missing))
         assert result["success"] is False
         assert "not found" in result["error"].lower()
-
-    @pytest.mark.unit
-    def test_check_audio_backends_shape(self) -> None:
-        """Backend probing should report availability per backend."""
-        result = sapf_mcp.check_audio_backends_mcp()
-        assert result["success"] is True
-        assert "backends" in result
-        assert result["backends"], "Expected at least one probed backend"
-        for metadata in result["backends"].values():
-            assert "available" in metadata
 
     @pytest.mark.unit
     def test_process_sapf_nonexistent_target(self, tmp_path: Any) -> None:

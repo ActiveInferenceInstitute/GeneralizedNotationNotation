@@ -38,6 +38,14 @@ subcommand (`src/gnn/cli/__init__.py`) and the website dashboard
 - `src/gnn/multimodel/dep_graph.py` — dependency graph dataclasses and rendering
 - `src/gnn/multimodel/__init__.py` — curated re-exports (`__all__`)
 
+## MCP Integration
+
+- `mcp.py` registers the `generate_dependency_graph` tool (category
+  `multimodel`): the `gnn graph` parity surface — `render_graph_from_file`
+  rendered as Mermaid or a text adjacency list, with typed errors for
+  missing files and unknown formats.
+- Tests: `tests/multimodel/test_multimodel_mcp_tools.py`.
+
 ## Dependencies
 
 - `gnn.parsers.frontmatter` — optional front-matter stripping in `split_models`
@@ -50,5 +58,5 @@ subcommand (`src/gnn/cli/__init__.py`) and the website dashboard
 ## Testing
 
 ```bash
-uv run --extra dev python -m pytest tests/gnn/test_gnn_multimodel.py tests/gnn/test_gnn_dep_graph.py -q
+uv run --extra dev python -m pytest tests/gnn/test_gnn_multimodel.py tests/gnn/test_gnn_dep_graph.py tests/multimodel/test_multimodel_mcp_tools.py -q
 ```

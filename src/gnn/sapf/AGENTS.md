@@ -272,10 +272,9 @@ uv run --extra dev python -m pytest tests/test_sapf*.py \
 - `process_sapf` - Generate SAPF audio from GNN Active Inference models using SuperCollider synthesis
 - `get_sapf_module_info` - Return metadata about the SAPF audio synthesis module (version, formats, capabilities)
 - `list_audio_artifacts` - List audio and SAPF script artifacts in an output directory
-- `check_audio_backends` - Check which audio generation backends (SuperCollider, Csound, sounddevice) are available
 
 ### Tool Registration
-Registrations live in `src/gnn/sapf/mcp.py` (`register_tools(mcp_instance)`; four tools, category `audio`).
+Registrations live in `src/gnn/sapf/mcp.py` (`register_tools(mcp_instance)`; three tools, category `audio`).
 
 ---
 

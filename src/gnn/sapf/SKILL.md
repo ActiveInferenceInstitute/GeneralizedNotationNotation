@@ -15,7 +15,6 @@ N/A
 
 This module registers tools with the GNN MCP server (see `mcp.py`):
 
-- `check_audio_backends`
 - `get_sapf_module_info`
 - `list_audio_artifacts`
 - `process_sapf`

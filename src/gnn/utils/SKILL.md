@@ -70,10 +70,13 @@ from gnn.utils import (
     performance_tracker,
     get_performance_summary,
     # Pipeline utilities
-    parse_arguments,
     validate_and_convert_paths,
-    get_output_dir_for_script,
     validate_output_directory,
+)
+
+# Canonical homes outside the facade import block
+from gnn.pipeline.config import get_output_dir_for_script
+from gnn.utils.pipeline_orchestration.base_processor import (
     BaseProcessor,
     ProcessingResult,
     create_processor,

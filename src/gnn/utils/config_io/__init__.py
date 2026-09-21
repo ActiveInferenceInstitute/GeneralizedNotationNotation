@@ -13,8 +13,6 @@ heavy dependency (contrast ``runtime_safety``, whose leaves carry psutil and
 therefore resolve lazily).
 
 Cross-family imports go through leaf modules, never through any facade (I5).
-The old top-level paths (``gnn/utils/config_loader.py`` etc.) are deprecation
-facades over this package.
 """
 
 from gnn.utils.config_io.code_metrics import count_code_metrics

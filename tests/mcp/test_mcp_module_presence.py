@@ -22,16 +22,17 @@ SRC_GNN = Path(__file__).resolve().parents[2] / "src" / "gnn"
 # Importable packages with deliberately no MCP surface: static Markdown
 # (documentation, manuscript), generated/checked-in data (grammars, schemas,
 # schema_validator, type_systems, types, formal_specs, gnn_examples-less
-# data trees), and non-pipeline support code (extract, multimodel, parsers,
-# processing, testing).
+# data trees), and non-pipeline support code (parsers, processing, testing).
+#
+# `extract` and `multimodel` previously sat here as support-code packages;
+# both now expose real MCP surfaces (extract_pomdp, generate_dependency_graph)
+# and live under auto-discovery instead.
 NO_MCP_MODULES = frozenset(
     {
         "documentation",
-        "extract",
         "formal_specs",
         "grammars",
         "manuscript",
-        "multimodel",
         "parsers",
         "processing",
         "schema",

@@ -16,7 +16,7 @@ from typing import Any, Optional
 logger = logging.getLogger(__name__)
 
 # --- Centralized matplotlib setup (shared via visualization._viz_compat) ---
-from gnn.visualization._viz_compat import MATPLOTLIB_AVAILABLE, np, plt, sns
+from gnn.visualization._viz_compat import MATPLOTLIB_AVAILABLE, np, plt
 
 patches: Any = None
 try:
@@ -25,6 +25,14 @@ try:
     patches = _patches
 except (ImportError, AttributeError) as e:
     logger.debug("matplotlib.patches not available: %s", e)
+
+
+def __getattr__(name: str) -> Any:
+    if name == "sns":
+        from gnn.visualization.compat.viz_compat import sns
+
+        return sns
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
 def safe_savefig(
@@ -67,6 +75,8 @@ def safe_savefig(
             logger.debug(f"plt.close() failed (non-fatal): {e}")
         return None
 
+
+sns: Any
 
 __all__: list[Any] = [
     "plt",

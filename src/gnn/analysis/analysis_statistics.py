@@ -5,12 +5,12 @@ Statistical helpers (per-element statistics, distributions, correlations) for GN
 Extracted from ``analysis.analyzer``.
 """
 
+import importlib.util
 import logging
 from typing import (
     Any,
     Dict,
     List,
-    cast,
 )
 
 import numpy as np
@@ -20,14 +20,31 @@ from .analysis_complexity import calculate_cyclomatic_complexity
 logger = logging.getLogger(__name__)
 
 
-# Import visualization libraries with error handling
-try:
-    import scipy.stats as stats
+SCIPY_AVAILABLE = importlib.util.find_spec("scipy") is not None
+_scipy_stats_loaded: bool = False
+_scipy_stats_module: Any = None
+stats: Any
 
-    SCIPY_AVAILABLE = True
-except ImportError:
-    SCIPY_AVAILABLE = False
-    stats = cast(Any, None)
+
+def get_scipy_stats() -> Any:
+    """Return the scipy.stats module, importing it on first call. Returns None
+    when scipy is not installed. Importing this module never imports scipy."""
+    global _scipy_stats_loaded, _scipy_stats_module
+    if not _scipy_stats_loaded:
+        try:
+            import scipy.stats as _stats
+
+            _scipy_stats_module = _stats
+        except ImportError:
+            logger.debug("scipy.stats not available")
+        _scipy_stats_loaded = True
+    return _scipy_stats_module
+
+
+def __getattr__(name: str) -> Any:
+    if name == "stats":
+        return get_scipy_stats()
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
 def calculate_variable_statistics(variables: List[Dict[str, Any]]) -> Dict[str, Any]:
@@ -84,6 +101,7 @@ def analyze_distributions(
     variables: List[Dict[str, Any]], connections: List[Dict[str, Any]]
 ) -> Dict[str, Any]:
     """Analyze distributions of model elements."""
+    stats = get_scipy_stats()
     analysis: dict[str, Any] = {
         "variable_distribution": {},
         "connection_distribution": {},

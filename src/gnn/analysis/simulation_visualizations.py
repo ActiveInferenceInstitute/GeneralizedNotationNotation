@@ -5,6 +5,7 @@ Simulation-result and cross-framework metric visualizations for GNN Step 16 anal
 Extracted from ``analysis.analyzer``.
 """
 
+import importlib.util
 import json
 import logging
 from datetime import datetime
@@ -14,10 +15,11 @@ from typing import (
     Dict,
     List,
     Optional,
-    cast,
 )
 
 import numpy as np
+
+from gnn.visualization.compat.viz_compat import get_sns
 
 from .viz_base import (
     MATPLOTLIB_AVAILABLE,
@@ -25,15 +27,17 @@ from .viz_base import (
 )
 
 logger = logging.getLogger(__name__)
+sns: Any
+
+SEABORN_AVAILABLE = importlib.util.find_spec("seaborn") is not None
 
 
-try:
-    import seaborn as sns
+def __getattr__(name: str) -> Any:
+    if name == "sns":
+        from gnn.visualization.compat.viz_compat import sns
 
-    SEABORN_AVAILABLE = True
-except ImportError:
-    sns = cast(Any, None)
-    SEABORN_AVAILABLE = False
+        return sns
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
 def generate_matrix_visualizations(
@@ -52,6 +56,7 @@ def generate_matrix_visualizations(
             matrix_name = matrix_info.get("name", f"matrix_{i}")
             plt.figure(figsize=(10, 8))
 
+            sns = get_sns()
             if SEABORN_AVAILABLE and sns is not None:
                 sns.heatmap(matrix_data, annot=matrix_data.size < 100, cmap="viridis")
             else:

@@ -2,7 +2,7 @@
 MCP integration for the SAPF (Sound and Probabilistic Freespace) / audio synthesis module.
 
 Exposes SAPF audio generation tools: audio synthesis from GNN models,
-backend discovery, audio status, and module metadata through MCP.
+audio status, and module metadata through MCP.
 """
 
 import logging
@@ -146,46 +146,6 @@ def list_audio_artifacts_mcp(output_directory: str) -> Dict[str, Any]:
     )
 
 
-def check_audio_backends_mcp() -> Dict[str, Any]:
-    """
-    Check which audio generation backends are available.
-
-    Returns:
-        Dictionary with backend names and availability flags.
-    """
-    try:
-        from gnn.audio import check_audio_backends
-
-        result = check_audio_backends()
-        return {"success": True, "backends": result}
-    except Exception as e:
-        # Recovery status check
-        backends: Dict[str, Dict[str, Any]] = {}
-        import shutil
-
-        backends["supercollider"] = {
-            "available": bool(shutil.which("sclang")),
-            "description": "SuperCollider language for SAPF",
-        }
-        backends["csound"] = {
-            "available": bool(shutil.which("csound")),
-            "description": "Csound synthesis engine",
-        }
-        try:
-            import sounddevice  # type: ignore[import-not-found]  # noqa: F401 — availability probe; binding intentionally unused
-
-            backends["sounddevice"] = {
-                "available": True,
-                "description": "Python sounddevice (playback)",
-            }
-        except ImportError:
-            backends["sounddevice"] = {
-                "available": False,
-                "description": "Python sounddevice (playback)",
-            }
-        return {"success": True, "backends": backends, "note": str(e) if e else ""}
-
-
 # ── MCP Registration ────────────────────────────────────────────────────────
 
 
@@ -242,13 +202,4 @@ def register_tools(mcp_instance: Any) -> None:
         category="audio",
     )
 
-    mcp_instance.register_tool(
-        "check_audio_backends",
-        check_audio_backends_mcp,
-        {},
-        "Check which audio generation backends (SuperCollider, Csound, sounddevice) are available.",
-        module=__package__,
-        category="audio",
-    )
-
-    logger.info("sapf module MCP tools registered (4 tools).")
+    logger.info("sapf module MCP tools registered (3 tools).")

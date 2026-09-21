@@ -506,6 +506,9 @@ Key tool groups:
 | validation | `validate_gnn_file`, `check_schema_compliance`, `get_validation_report` |
 | render | `render_gnn_to_format`, `list_render_frameworks` |
 | gnn | `parse_gnn_content`, `validate_gnn_content` |
+| extract | `extract_pomdp` |
+| multimodel | `generate_dependency_graph` |
+| template | `template.pull` |
 
 For the complete tool inventory, see **[modules/21_mcp.md](../modules/21_mcp.md)**.
 

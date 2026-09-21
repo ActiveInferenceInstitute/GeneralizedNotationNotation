@@ -6,11 +6,21 @@ processor.py, network_viz.py, and statistical_viz.py. Exists to
 avoid circular imports between processor and sub-modules.
 """
 
+import importlib.util
 import json
 import logging
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List, Optional, cast
+
+logger = logging.getLogger(__name__)
+
+_SNS_MODULE: Any = None
+_SNS_LOAD_FAILED: bool = False
+
+sns: Any
+
+FORCE_LAYOUT_SEED = 42
 
 __all__ = [
     "FORCE_LAYOUT_SEED",
@@ -37,7 +47,6 @@ __all__ = [
     "_MatrixVisualizer",
 ]
 
-FORCE_LAYOUT_SEED = 42
 LAYOUT_SEED = FORCE_LAYOUT_SEED
 LAYOUT_SPAN = 10.0
 LAYOUT_ITERATIONS = 50
@@ -86,16 +95,28 @@ try:
 
     MATPLOTLIB_AVAILABLE = True
 except ImportError:
-    MATPLOTLIB_AVAILABLE = False
     plt = cast(Any, None)
+SEABORN_AVAILABLE = importlib.util.find_spec("seaborn") is not None
 
-try:
-    import seaborn as sns
 
-    SEABORN_AVAILABLE = True
-except ImportError:
-    sns = cast(Any, None)
-    SEABORN_AVAILABLE = False
+def get_sns() -> Any:
+    """Return the seaborn module (loading it on first call), or ``None``."""
+    global _SNS_MODULE, _SNS_LOAD_FAILED
+    if _SNS_MODULE is None and not _SNS_LOAD_FAILED:
+        try:
+            import seaborn as _sns
+
+            _SNS_MODULE = _sns
+        except ImportError:
+            logger.debug("seaborn unavailable; seaborn-based plots will be skipped")
+            _SNS_LOAD_FAILED = True
+    return _SNS_MODULE
+
+
+def __getattr__(name: str) -> Any:
+    if name == "sns":
+        return get_sns()
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
 class _LazyMatrixVisualizer:
