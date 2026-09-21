@@ -5,20 +5,21 @@ Covers the CLI LSP helper handlers in ``src/cli/lsp.py``.
 Exercises the pure request/response handlers and the JSON-RPC framing helpers
 (write_message to stdout, read_message from stdin). These are lightweight and
 deterministic — no editor, network, or server loop involved.
-
 Test Coverage:
 - handle_initialize() capabilities advertisement
 - handle_hover() markdown hover payload shape
 - write_message() emits Content-Length-framed JSON to stdout
 - read_message() parses a real Content-Length-framed stdin message
 - publish_diagnostics() flags a missing closing brace / stays silent on clean text
+- start_lsp() dispatches canonical pygls server vs pygls-free fallback loop
 """
 
 import io
 import json
+import logging
 import sys
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 import pytest
 
@@ -126,3 +127,95 @@ class TestCLILSPHelpers:
         captured = capsys.readouterr().out
         payload = json.loads(captured.split("\r\n\r\n", 1)[1])
         assert payload["params"]["diagnostics"] == []
+
+
+class TestStartLspDispatch:
+    """start_lsp prefers the canonical pygls server, else the fallback loop."""
+
+    @staticmethod
+    def _session(
+        messages: list[dict[str, Any]],
+    ) -> tuple[Callable[[], Any], Callable[..., Any], list[Any]]:
+        """Build injected reader/writer over a fixed message list."""
+        written: list[Any] = []
+        inbox = iter(messages)
+
+        def reader(*args: Any) -> Any:
+            try:
+                return next(inbox)
+            except StopIteration:
+                return None
+
+        def writer(msg: Any, *args: Any) -> None:
+            written.append(msg)
+
+        return reader, writer, written
+
+    _INITIALIZE = {"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {}}
+
+    @pytest.mark.unit
+    def test_canonical_server_preferred_when_pygls_available(
+        self, monkeypatch: Any, caplog: Any
+    ) -> None:
+        """With pygls importable, start_lsp must drive the canonical server only."""
+        import gnn.lsp as lsp_server
+
+        if not lsp_server.PYGLS_AVAILABLE:
+            # pygls-absent environment: assert the graceful fallback contract
+            # instead of the canonical dispatch (zero-skip contract).
+            self._assert_fallback_contract(monkeypatch)
+            return
+
+        launched: list[int] = []
+
+        def recorder() -> None:
+            launched.append(1)
+
+        reader, writer, written = self._session([self._INITIALIZE])
+        monkeypatch.setattr(lsp_server, "start_server", recorder)
+        monkeypatch.setattr(cli_lsp, "read_message", reader)
+        monkeypatch.setattr(cli_lsp, "write_message", writer)
+
+        with caplog.at_level(logging.INFO):
+            cli_lsp.start_lsp(log_path=None)
+
+        assert launched == [1]
+        assert written == []
+
+    @pytest.mark.unit
+    def test_fallback_loop_when_pygls_unavailable(
+        self, monkeypatch: Any
+    ) -> None:
+        """Without pygls, start_lsp must serve the injected JSON-RPC loop."""
+        import gnn.lsp as lsp_server
+
+        launched: list[int] = []
+
+        def recorder() -> None:
+            launched.append(1)
+
+        reader, writer, written = self._session(
+            [self._INITIALIZE, None]
+        )
+        monkeypatch.setattr(lsp_server, "start_server", recorder)
+        monkeypatch.setattr(cli_lsp, "read_message", reader)
+        monkeypatch.setattr(cli_lsp, "write_message", writer)
+
+        original_flag = lsp_server.PYGLS_AVAILABLE
+        try:
+            lsp_server.PYGLS_AVAILABLE = False
+            cli_lsp.start_lsp(log_path=None)
+        finally:
+            lsp_server.PYGLS_AVAILABLE = original_flag
+
+        assert launched == []
+        assert len(written) == 1
+        assert written[0]["result"]["serverInfo"]["name"] == "gnn-lsp"
+
+    def _assert_fallback_contract(self, monkeypatch: Any) -> None:
+        """Graceful contract when pygls is absent: the fallback loop serves."""
+        reader, writer, written = self._session([self._INITIALIZE, None])
+        monkeypatch.setattr(cli_lsp, "read_message", reader)
+        monkeypatch.setattr(cli_lsp, "write_message", writer)
+        cli_lsp.start_lsp(log_path=None)
+        assert written[0]["result"]["serverInfo"]["name"] == "gnn-lsp"

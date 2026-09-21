@@ -1,9 +1,10 @@
 {
-  "counts_describe_commit": "44ae9af3c",
-  "dirty_path_count": 2,
+  "counts_describe_commit": "654fe1200",
+  "dirty_path_count": 3,
   "dirty_paths": [
     "output/data/manuscript_variables.json",
-    "output/data/manuscript_variables_receipt.json"
+    "output/data/manuscript_variables_receipt.json",
+    "tests/infrastructure/test_coverage_gap_infrastructure.py"
   ],
   "generator": "scripts/z_generate_manuscript_variables.py",
   "git_available": true,

@@ -6,12 +6,10 @@ canonical logger and correlation context; these leaves build on it.
 
 Lazy re-export note (PEP 562): unlike the other concern packages, this
 family's ``__init__`` resolves names lazily through ``__getattr__``. The
-eager variant created an import cycle: the logging entry
-(``gnn/utils/logging_utils.py``) eagerly imports ``performance_tracking``
-here, whose sibling ``visualization_optimizer`` imports
-``gnn.utils.runtime_safety.resource_manager``, whose eager family
-``__init__`` imports ``dependency_validator`` → back into the partial
-``logging_utils``. Lazy resolution keeps every public name importable while
+eager variant created an import cycle; the former visualization-optimizer
+leaf (removed 2026-09-21 as dead code) was the original cycle trigger via
+its import of ``gnn.utils.runtime_safety.resource_manager``. Lazy resolution
+keeps every public name importable while
 leaves only load on first attribute access (same contract the top-level
 ``gnn.utils`` facade implements; cycle reported by
 ``gnn.execute``'s import chain, fixed 2026-09-11).
@@ -25,8 +23,6 @@ Leaf inventory:
 - performance_tracking: ``PerformanceTracker``/``performance_tracker`` and
   the monitoring entry points (I6: the exported ``performance_tracker``
   object shares no module name)
-- visualization_optimizer: ``VisualizationOptimizer`` and the
-  sampling/caching/parallel-processing helpers
 - visual_logging: ``VisualLogger``/``VisualConfig`` and the accessible
   visual formatting helpers
 - structured_logging: structured log emission with correlation context
@@ -84,14 +80,6 @@ _LEAF_BY_NAME: dict[str, str] = {
     "print_pipeline_banner": "visual_logging",
     "print_step_summary": "visual_logging",
     "strip_visual_elements": "visual_logging",
-    # visualization_optimizer
-    "DataSampler": "visualization_optimizer",
-    "ParallelVisualizationProcessor": "visualization_optimizer",
-    "VisualizationCache": "visualization_optimizer",
-    "VisualizationOptimizer": "visualization_optimizer",
-    "get_visualization_optimizer": "visualization_optimizer",
-    "monitor_visualization_performance": "visualization_optimizer",
-    "optimize_visualization_processing": "visualization_optimizer",
 }
 
 

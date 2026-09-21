@@ -19,6 +19,8 @@ import logging
 from pathlib import Path
 from typing import Any, Dict, Optional
 
+from gnn.processing.processor import discover_gnn_files
+
 from .mermaid_converter import gnn_to_mermaid
 from .mermaid_parser import mermaid_to_gnn
 
@@ -124,6 +126,7 @@ def oxdraw_gui(
         if oxdraw_output.exists():
             outputs = [str(f) for f in oxdraw_output.glob("*.mmd")]
             outputs.extend([str(f) for f in oxdraw_output.glob("*.json")])
+            outputs.extend([str(f) for f in oxdraw_output.glob("*_from_mermaid.md")])
 
         duration = time.time() - start_time
 
@@ -131,7 +134,7 @@ def oxdraw_gui(
             "gui_type": "oxdraw",
             "success": success,
             "mode": mode,
-            "files_processed": len(list(Path(target_dir).glob("*.md"))),
+            "files_processed": len(discover_gnn_files(target_dir, recursive=True)),
             "outputs": outputs,
             "duration": duration,
             "output_dir": str(oxdraw_output),

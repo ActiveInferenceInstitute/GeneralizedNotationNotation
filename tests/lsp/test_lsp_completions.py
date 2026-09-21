@@ -375,3 +375,136 @@ class TestPyglsDiagnostics:
         server = _CapturingServer()
         _publish_diagnostics(server, "file:///v1.md", VALID_MINIMAL_GNN)
         assert server.published == [("file:///v1.md", [])]
+
+
+class TestPyglsDidChange:
+    """The didChange feature re-publishes diagnostics through the real dispatch path."""
+
+    @staticmethod
+    def _drive(gen: Any) -> Any:
+        """Consume a pygls builtin generator the way the JSON-RPC dispatcher
+        does: invoke each yielded (handler, args, kwargs) and send its result
+        back into the generator, so the full dispatch path runs end to end."""
+        try:
+            item = next(gen)
+            while True:
+                handler, args, kwargs = item
+                item = gen.send(handler(*args, **(kwargs or {})))
+        except StopIteration as stop:
+            return stop.value
+
+    @staticmethod
+    def _initialized_capturing_server(
+        monkeypatch: Any,
+    ) -> tuple[Any, list[tuple[str, list[Any]]]]:
+        """Real pygls server with an initialized workspace plus a capture list
+        wired in place of ``gnn.lsp._publish_to_server``."""
+        from lsprotocol.types import ClientCapabilities, InitializeParams
+
+        captured: list[tuple[str, list[Any]]] = []
+        monkeypatch.setattr(
+            "gnn.lsp._publish_to_server",
+            lambda server, uri, diagnostics: captured.append(
+                (uri, list(diagnostics))
+            ),
+        )
+        server = create_server()
+        assert server is not None
+        TestPyglsDidChange._drive(
+            server.protocol.lsp_initialize(
+                InitializeParams(capabilities=ClientCapabilities())
+            )
+        )
+        return server, captured
+
+    def test_did_change_feature_registered(self) -> None:
+        if _assert_pygls_graceful_when_absent():
+            return
+        from lsprotocol.types import TEXT_DOCUMENT_DID_CHANGE
+
+        fm = create_server().protocol.fm
+        assert TEXT_DOCUMENT_DID_CHANGE in fm.features
+
+    def test_did_change_republishes_diagnostics(self, monkeypatch: Any) -> None:
+        if _assert_pygls_graceful_when_absent():
+            return
+        from lsprotocol.types import (
+            DidChangeTextDocumentParams,
+            DidOpenTextDocumentParams,
+            TextDocumentContentChangeWholeDocument,
+            TextDocumentItem,
+            VersionedTextDocumentIdentifier,
+        )
+
+        server, captured = self._initialized_capturing_server(monkeypatch)
+        uri = "file:///did-change.md"
+        # didOpen puts the valid document in the workspace via the real builtin.
+        self._drive(
+            server.protocol.lsp_text_document__did_open(
+                DidOpenTextDocumentParams(
+                    text_document=TextDocumentItem(
+                        uri=uri,
+                        language_id="gnn",
+                        version=1,
+                        text=VALID_MINIMAL_GNN,
+                    )
+                )
+            )
+        )
+        captured.clear()  # isolate the didChange publish from the didOpen publish
+        self._drive(
+            server.protocol.lsp_text_document__did_change(
+                DidChangeTextDocumentParams(
+                    text_document=VersionedTextDocumentIdentifier(uri=uri, version=2),
+                    content_changes=[
+                        TextDocumentContentChangeWholeDocument(text=VALID_MINIMAL_GNN)
+                    ],
+                )
+            )
+        )
+        assert captured == [(uri, [])]
+
+    def test_did_change_reports_new_errors(self, monkeypatch: Any) -> None:
+        if _assert_pygls_graceful_when_absent():
+            return
+        from lsprotocol.types import (
+            DiagnosticSeverity,
+            DidChangeTextDocumentParams,
+            DidOpenTextDocumentParams,
+            TextDocumentContentChangeWholeDocument,
+            TextDocumentItem,
+            VersionedTextDocumentIdentifier,
+        )
+
+        server, captured = self._initialized_capturing_server(monkeypatch)
+        uri = "file:///did-change-broken.md"
+        self._drive(
+            server.protocol.lsp_text_document__did_open(
+                DidOpenTextDocumentParams(
+                    text_document=TextDocumentItem(
+                        uri=uri,
+                        language_id="gnn",
+                        version=1,
+                        text=VALID_MINIMAL_GNN,
+                    )
+                )
+            )
+        )
+        captured.clear()
+        # The edit replaces the whole document with the broken probe document.
+        self._drive(
+            server.protocol.lsp_text_document__did_change(
+                DidChangeTextDocumentParams(
+                    text_document=VersionedTextDocumentIdentifier(uri=uri, version=2),
+                    content_changes=[
+                        TextDocumentContentChangeWholeDocument(text=DIAGNOSTIC_PROBE_GNN)
+                    ],
+                )
+            )
+        )
+        assert captured and captured[0][0] == uri
+        diagnostics = captured[0][1]
+        assert diagnostics, "didChange published no diagnostics for the broken document"
+        errors = [d for d in diagnostics if d.severity == DiagnosticSeverity.Error]
+        assert errors, f"expected an error-severity diagnostic: {diagnostics}"
+        assert any("GNN-E002" in d.message for d in errors)

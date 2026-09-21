@@ -13,8 +13,8 @@ description: GNN Language Server Protocol integration. Use when starting editor 
 # Start the GNN Language Server via CLI
 gnn lsp
 
-# Or directly via Python module
-python -m gnn.lsp
+# Or directly via Python (equivalent to `gnn lsp`)
+python -c "from gnn.lsp import start_server; start_server()"
 ```
 
 ## Programmatic Usage

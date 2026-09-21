@@ -13,6 +13,7 @@ from typing import Any
 
 import pytest
 
+from gnn.gui.oxdraw.mermaid_converter import gnn_to_mermaid
 from gnn.gui.oxdraw.mermaid_parser import (
     _extract_edges,
     _extract_nodes,
@@ -396,6 +397,88 @@ class TestFullParsing:
 
         assert "connections" in gnn_model
         assert len(gnn_model["connections"]) > 0
+
+
+class TestRoundTripDescriptionPreservation:
+    """Round-trip conversion must not destroy real variable descriptions."""
+
+    def test_round_trip_preserves_variable_descriptions(self) -> None:
+        """Descriptions from metadata survive a GNN - mermaid - GNN round trip."""
+        model: dict[str, Any] = {
+            "model_name": "Desc Round Trip",
+            "version": "1.0",
+            "variables": {
+                "A": {
+                    "dimensions": [3, 3],
+                    "data_type": "categorical",
+                    "ontology_mapping": "LikelihoodMatrix",
+                    "description": "Action-observation likelihood",
+                },
+                "s": {
+                    "dimensions": [3, 1],
+                    "data_type": "float",
+                    "ontology_mapping": "HiddenState",
+                    "description": "Current hidden state",
+                },
+            },
+            "connections": [
+                {
+                    "source": "A",
+                    "target": "s",
+                    "symbol": ">",
+                    "connection_type": "generative",
+                }
+            ],
+            "parameters": {},
+        }
+
+        mmd = gnn_to_mermaid(model, include_metadata=True)
+        back = mermaid_to_gnn(mmd)
+
+        assert back["variables"]["A"]["description"] == "Action-observation likelihood"
+        assert back["variables"]["s"]["description"] == "Current hidden state"
+
+    def test_merge_variables_never_overwrites_existing_description(self) -> None:
+        """Visual label parts must not overwrite a metadata-provided description."""
+        metadata_vars: dict[str, Any] = {
+            "A": {
+                "dimensions": [3, 3],
+                "data_type": "categorical",
+                "description": "Original description",
+            }
+        }
+        visual_nodes: dict[str, Any] = {
+            "A": {
+                "shape": "[",
+                "label": "A<br/>3x3<br/>categorical",
+                "label_parts": ["A", "3x3", "categorical"],
+                "inferred_dimensions": [3, 3],
+                "inferred_type": "categorical",
+            }
+        }
+
+        merged = _merge_variables(metadata_vars, visual_nodes)
+
+        assert merged["A"]["description"] == "Original description"
+
+    def test_merge_variables_fills_absent_description(self) -> None:
+        """When no description exists, the label-part default fills it."""
+        metadata_vars: dict[str, Any] = {
+            "A": {"dimensions": [3, 3], "data_type": "categorical"}
+        }
+        visual_nodes: dict[str, Any] = {
+            "A": {
+                "shape": "[",
+                "label": "A<br/>3x3<br/>categorical",
+                "label_parts": ["A", "3x3", "categorical"],
+                "inferred_dimensions": [3, 3],
+                "inferred_type": "categorical",
+            }
+        }
+
+        merged = _merge_variables(metadata_vars, visual_nodes)
+
+        assert merged["A"]["description"] == "A"
 
 
 if __name__ == "__main__":

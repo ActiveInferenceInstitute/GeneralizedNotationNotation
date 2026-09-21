@@ -34,10 +34,10 @@ def get_current_memory_usage() -> float:
         return 0.0
 
 
-# Canonical MB-scale process-memory probe. The testing/perf and
-# observability/visualization_optimizer leaves import it for their own use;
-# ``get_current_memory_usage`` is the historical pipeline-wide entry point for
-# the same function.
+# Canonical MB-scale process-memory probe. The testing/perf leaf imports it
+# for its own use; gnn/main.py, pipeline/step_executor.py, and the top-level
+# utils facade import the same function directly as ``get_current_memory_usage``
+# (the historical pipeline-wide entry point).
 get_memory_usage = get_current_memory_usage
 
 
