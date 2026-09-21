@@ -7,21 +7,22 @@ Low-dependency visual design interface for Active Inference models
 from __future__ import annotations
 
 import logging
-import time
 from pathlib import Path
 from typing import Any
 
 from ..backend import (
     detect_gradio_backend,
+    wait_for_server_launch,
     write_json_atomically,
     write_text_atomically,
 )
-from ..runner import launch_gradio_in_thread, resolve_output_root
+from ..runner import launch_gradio_in_thread, load_first_markdown, resolve_output_root
 
 # Shared backend detection (same recovery semantics as GUI 1 / GUI 2).
 _GUI_STATUS = detect_gradio_backend()
 _GUI_BACKEND = _GUI_STATUS.name
 
+_GUI_BACKEND_REASON = _GUI_STATUS.reason
 _GUI3_PORT = 7862
 
 
@@ -29,7 +30,6 @@ def run_gui(
     target_dir: Path,
     output_dir: Path,
     logger: logging.Logger,
-    verbose: bool = False,
     headless: bool = False,
     export_filename: str = "designed_model_gui_3.md",
     open_browser: bool = False,
@@ -41,7 +41,6 @@ def run_gui(
         target_dir: Directory containing GNN files
         output_dir: Output directory for GUI results
         logger: Logger instance
-        verbose: Enable verbose logging
         headless: Run without launching the browser GUI
         export_filename: Filename for the exported model
         open_browser: Open browser automatically on launch
@@ -103,6 +102,34 @@ def run_gui(
             )
 
             logger.info(f"🎨 Design analysis saved to: {analysis_file}")
+
+            status_file = output_root / "design_studio_status.json"
+            write_json_atomically(
+                status_file,
+                {
+                    "gui_type": "design_studio",
+                    "backend": _GUI_BACKEND or "none",
+                    "launched": False,
+                    "export_file": str(starter_path),
+                    "status": "headless_mode"
+                    if _GUI_BACKEND
+                    else "static_headless_mode",
+                    "reason": "headless_requested"
+                    if _GUI_BACKEND
+                    else "gradio_not_available",
+                    "backend_reason": _GUI_BACKEND_REASON,
+                    "analysis_file": str(analysis_file),
+                    "recommendations": [
+                        "Run with --interactive to launch GUI server on port 7862"
+                    ]
+                    if _GUI_BACKEND
+                    else [
+                        "Install with: uv sync --extra gui",
+                        "Run with --interactive for full GUI experience",
+                    ],
+                },
+            )
+
             return True
 
         # Interactive mode - build the Design Studio GUI
@@ -118,22 +145,42 @@ def run_gui(
         logger.info(
             f"🌐 Launching GUI 3 on http://localhost:{_GUI3_PORT} (open_browser={open_browser})"
         )
-        launch_gradio_in_thread(demo, port=_GUI3_PORT, open_browser=open_browser)
-        time.sleep(3)
+        thread = launch_gradio_in_thread(
+            demo, port=_GUI3_PORT, open_browser=open_browser
+        )
+        status_file = output_root / "design_studio_status.json"
+        launch_failure = wait_for_server_launch(thread, _GUI3_PORT)
+        if launch_failure is not None:
+            write_json_atomically(
+                status_file,
+                {
+                    "gui_type": "design_studio",
+                    "backend": _GUI_BACKEND,
+                    "launched": False,
+                    "export_file": str(starter_path),
+                    "status": "launch_failed",
+                    "reason": launch_failure,
+                    "backend_reason": _GUI_BACKEND_REASON,
+                },
+            )
+            logger.error(f"GUI 3 launch verification failed: {launch_failure}")
+            return False
         logger.info(f"🎨 Design Studio is running on http://localhost:{_GUI3_PORT}")
         logger.info(
             "🔍 Features: Visual state space design, ontology editing, connection graphs, low-dependency approach"
         )
 
         # Save launch status
-        status_file = output_root / "design_studio_status.json"
         write_json_atomically(
             status_file,
             {
                 "gui_type": "design_studio",
-                "backend": "gradio",
+                "backend": _GUI_BACKEND,
                 "launched": True,
                 "export_file": str(starter_path),
+                "status": "interactive_mode",
+                "reason": "gradio_launched",
+                "backend_reason": _GUI_BACKEND_REASON,
                 "port": _GUI3_PORT,
                 "url": f"http://localhost:{_GUI3_PORT}",
                 "features": [
@@ -155,20 +202,13 @@ def run_gui(
 def _load_starter_content(target_dir: Path, logger: logging.Logger) -> str:
     """Load starter GNN content from target directory"""
 
-    # Look for the POMDP agent file specifically
-    pomdp_file = target_dir / "actinf_pomdp_agent.md"
-    if pomdp_file.exists():
-        logger.info(f"📖 Loading POMDP agent model: {pomdp_file}")
-        return pomdp_file.read_text()
-
-    # Recovery to any GNN file
-    gnn_files = list(target_dir.glob("*.md"))
-    if gnn_files:
-        logger.info(f"📖 Loading GNN file: {gnn_files[0]}")
-        return gnn_files[0].read_text()
-
-    # Default template if no files found
-    logger.warning("⚠️ No GNN files found, using default POMDP template")
+    content = load_first_markdown(
+        target_dir, prefer_patterns=("actinf_pomdp_agent.md",)
+    )
+    if content is not None:
+        logger.info(f"📖 Loaded starter GNN content from {target_dir}")
+        return content
+    logger.warning("⚠️ No readable GNN files found, using default POMDP template")
     return _get_default_pomdp_template()
 
 

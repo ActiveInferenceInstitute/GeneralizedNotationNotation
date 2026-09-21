@@ -6,7 +6,6 @@ Handles the main processing logic for the visual matrix editing interface.
 from __future__ import annotations
 
 import logging
-import time
 from pathlib import Path
 
 from gnn.utils.observability.structured_logging import (
@@ -16,6 +15,7 @@ from gnn.utils.observability.structured_logging import (
 
 from ..backend import (
     detect_gradio_backend,
+    wait_for_server_launch,
     write_json_atomically,
     write_text_atomically,
 )
@@ -110,6 +110,9 @@ def run_gui(
                     "status": "static_headless_mode"
                     if _GUI_BACKEND is None
                     else "headless_mode",
+                    "reason": "gradio_not_available"
+                    if _GUI_BACKEND is None
+                    else "headless_requested",
                     "backend_reason": _GUI_BACKEND_REASON,
                     "visual_data_file": str(vis_matrices_path),
                     "features": [
@@ -146,10 +149,29 @@ def run_gui(
         logger.info(
             f"🌐 Launching GUI 2 on http://localhost:{_GUI2_PORT} (open_browser={open_browser})"
         )
-        launch_gradio_in_thread(demo, port=_GUI2_PORT, open_browser=open_browser)
+        thread = launch_gradio_in_thread(
+            demo, port=_GUI2_PORT, open_browser=open_browser
+        )
 
-        # Give it a moment to start
-        time.sleep(3)
+        poll_reason = wait_for_server_launch(thread, _GUI2_PORT)
+        if poll_reason is not None:
+            write_json_atomically(
+                output_root / "gui_2_status.json",
+                {
+                    "backend": _GUI_BACKEND,
+                    "launched": False,
+                    "export_file": str(starter_path),
+                    "gui_type": "visual_matrix_editor",
+                    "status": "launch_failed",
+                    "reason": poll_reason,
+                    "backend_reason": _GUI_BACKEND_REASON,
+                },
+            )
+            log_step_error(
+                logger, f"GUI 2 launch verification failed: {poll_reason}"
+            )
+            return False
+
         logger.info(f"🎯 GUI 2 is running on http://localhost:{_GUI2_PORT}")
         logger.info(
             "🔍 Features: Real-time heatmaps, matrix editing, interactive dimension controls, live statistics"
@@ -163,6 +185,9 @@ def run_gui(
                 "launched": True,
                 "export_file": str(starter_path),
                 "gui_type": "visual_matrix_editor",
+                "status": "interactive_mode",
+                "reason": "gradio_launched",
+                "backend_reason": _GUI_BACKEND_REASON,
                 "port": _GUI2_PORT,
                 "url": f"http://localhost:{_GUI2_PORT}",
                 "features": [
@@ -174,7 +199,9 @@ def run_gui(
             },
         )
 
-        log_step_success(logger, "GUI 2 (Visual Matrix Editor) launched successfully")
+        log_step_success(
+            logger, "GUI 2 (Visual Matrix Editor) launched successfully"
+        )
         return True
 
     except Exception as e:

@@ -25,7 +25,8 @@ def gui_3(
         target_dir: Directory containing GNN files
         output_dir: Output directory for GUI results
         logger: Logger instance
-        **kwargs: Additional arguments (headless, verbose, etc.)
+        **kwargs: Extra pipeline kwargs (e.g. recursive, verbose) are
+            tolerated and ignored.
 
     Returns:
         Dict with success status and metadata
@@ -38,24 +39,23 @@ def gui_3(
         headless = kwargs.get("headless", False)
         export_filename = kwargs.get("export_filename", "designed_model_gui_3.md")
         open_browser = kwargs.get("open_browser", False)
-        verbose = kwargs.get("verbose", False)
 
+        from . import processor as gui_3_processor
         from .processor import run_gui as run_design_studio
 
-        result = run_design_studio(
+        success = run_design_studio(
             target_dir=target_dir,
             output_dir=output_dir,
             logger=logger,
-            verbose=verbose,
             headless=headless,
             export_filename=export_filename,
             open_browser=open_browser,
         )
 
-        return {
+        result: Dict[str, Any] = {
             "gui_type": "gui_3",
             "name": "State Space Design Studio",
-            "success": result,
+            "success": success,
             "features": [
                 "Visual state space designer",
                 "Ontology term editor",
@@ -63,9 +63,18 @@ def gui_3(
                 "Parameter tuning controls",
                 "Low-dependency HTML/CSS design",
             ],
-            "port": 7862,
-            "url": "http://localhost:7862",
         }
+
+        # Port/url only when the interactive server was actually launched.
+        if (
+            success is True
+            and not headless
+            and gui_3_processor._GUI_BACKEND is not None
+        ):
+            result["port"] = gui_3_processor._GUI3_PORT
+            result["url"] = f"http://localhost:{gui_3_processor._GUI3_PORT}"
+
+        return result
 
     except Exception as e:
         logger.error(f"❌ GUI 3 failed: {e}")
