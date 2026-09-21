@@ -85,6 +85,7 @@ a container, or a cluster:
 | `pipeline.session_acceptance` / `scripts/run_session_acceptance.py` | Runs model-family acceptance **family-by-family** wrapped in a `RunSession`, checkpointing after each family so an extended run is resumable (`--resume` skips already-DONE families). |
 | `pipeline.run_manifest` / `scripts/emit_run_manifest.py` | Walks a **completed** run's `output/` dir and emits a `StreamManifest` per artifact plus an `ExecutionTrace` from `pipeline_execution_summary.json`; `verify_run_manifests` re-validates (detects tampering). |
 | `pipeline.pipeline_container_plan` / `scripts/generate_pipeline_container_plan.py` | Reads `input/config.yaml` and generates a hardened, `security_review`-clean container plan for running the GNN pipeline (honoring `skip_steps`). |
+| `pipeline.run_session_wiring` (no CLI) | Wires run sessions + durable streams into the live `main.py` composition: every run checkpoints `00_pipeline_summary/run_session.json` per step and, at completion, emits + verifies `v3_run_manifest/`. All wiring degrades to logged warnings — it never changes the run's exit code. |
 
 ```bash
 # Emit durable manifests + a replayable trace from the latest completed run:
