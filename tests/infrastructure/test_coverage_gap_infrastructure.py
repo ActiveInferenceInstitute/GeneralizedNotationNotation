@@ -12,8 +12,6 @@ dead code (R4 residue); its only importer was this file.
 """
 
 import asyncio
-import logging
-from pathlib import Path
 from typing import Any
 
 from gnn.utils.runtime_safety.timeout_manager import (
