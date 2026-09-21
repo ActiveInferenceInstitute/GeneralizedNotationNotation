@@ -33,10 +33,23 @@ def gui_3(
     try:
         logger.info("🎨 Starting GUI 3: State Space Design Studio")
 
+        # Extract GUI 3 specific parameters (the pipeline forwards extra
+        # kwargs, e.g. recursive, that run_gui does not accept).
+        headless = kwargs.get("headless", False)
+        export_filename = kwargs.get("export_filename", "designed_model_gui_3.md")
+        open_browser = kwargs.get("open_browser", False)
+        verbose = kwargs.get("verbose", False)
+
         from .processor import run_gui as run_design_studio
 
         result = run_design_studio(
-            target_dir=target_dir, output_dir=output_dir, logger=logger, **kwargs
+            target_dir=target_dir,
+            output_dir=output_dir,
+            logger=logger,
+            verbose=verbose,
+            headless=headless,
+            export_filename=export_filename,
+            open_browser=open_browser,
         )
 
         return {
