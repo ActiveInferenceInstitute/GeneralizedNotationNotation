@@ -1,0 +1,734 @@
+{
+  "model_name": "NEST D04 Synthetic 2-State LGSSM",
+  "version": "1.0",
+  "annotation": "Passive linear-Gaussian state-space model (no control input) generating the\nsummary indices of the D02 MESSAGEix wrapper blanket over T coupling iterations.\n- Hidden state x = (decarb_rate_dev, demand_pressure), dimensionless deviations.\n- Observation y = (emissions_index, price_index, objective_index, demand_index): relative indices of total\n  emissions e, mean commodity price p, objective J and mean demand d against\n  fixed reference values (see the fixture JSON, `blanket.references`).\n- cap (emissions cap) is a declared exogenous schedule in the fixture, not a\n  variable of this model.\nDeliverable D04 (AII); pattern for D07 (3\u20135 states) and D14 (GNN \u2192 RxInfer render).",
+  "variables": [
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "1ca99d77-1b9d-4960-9c22-62d8496a1d6a",
+      "name": "x",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        1
+      ],
+      "data_type": "float",
+      "description": "hidden state (decarb_rate_dev, demand_pressure)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "ba71d248-1ab5-4d61-9acd-5597c6166b49",
+      "name": "y",
+      "var_type": "hidden_state",
+      "dimensions": [
+        4,
+        1
+      ],
+      "data_type": "float",
+      "description": "blanket summary indices",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "f21981d0-2124-46e7-ae32-37201c765942",
+      "name": "F",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        2
+      ],
+      "data_type": "float",
+      "description": "state transition",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "61a6d2aa-d12c-40b9-aaf8-2417cc6d0e66",
+      "name": "H",
+      "var_type": "hidden_state",
+      "dimensions": [
+        4,
+        2
+      ],
+      "data_type": "float",
+      "description": "observation matrix",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "bf92f6c3-e333-4538-b011-943dcbb479eb",
+      "name": "Q",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        2
+      ],
+      "data_type": "float",
+      "description": "process-noise covariance",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "91670a24-87f4-4b26-865c-431c97a56c5a",
+      "name": "R",
+      "var_type": "hidden_state",
+      "dimensions": [
+        4,
+        4
+      ],
+      "data_type": "float",
+      "description": "observation-noise covariance",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "d37835be-b31b-45b1-96d7-261441e1da15",
+      "name": "prior_mean",
+      "var_type": "prior_vector",
+      "dimensions": [
+        2
+      ],
+      "data_type": "float",
+      "description": "prior mean over x_1",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "7c3888d4-5e2e-4e3a-9908-401757af9a27",
+      "name": "prior_cov",
+      "var_type": "prior_vector",
+      "dimensions": [
+        2,
+        2
+      ],
+      "data_type": "float",
+      "description": "prior covariance over x_1",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "7314c669-d578-4ad9-95d4-6b4bb0d8386f",
+      "name": "t",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "integer",
+      "description": "coupling iteration",
+      "constraints": {}
+    }
+  ],
+  "connections": [
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "3f91315d-0335-431a-b724-81309dbba9ee",
+      "source_variables": [
+        "prior_mean"
+      ],
+      "target_variables": [
+        "x"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "64028758-cfc6-4305-bbc7-634345014f7b",
+      "source_variables": [
+        "F"
+      ],
+      "target_variables": [
+        "x"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "47e7d4b4-05b2-4e5d-9163-4722d8dfe977",
+      "source_variables": [
+        "x"
+      ],
+      "target_variables": [
+        "y"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "d36ece75-b7c4-4406-8cb2-a63ac3e67a4c",
+      "source_variables": [
+        "H"
+      ],
+      "target_variables": [
+        "y"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "cd434b73-300b-46e8-b263-3afa148fb36b",
+      "source_variables": [
+        "Q"
+      ],
+      "target_variables": [
+        "x"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "4fdc08c8-36dd-4938-ad46-583381d3b16d",
+      "source_variables": [
+        "R"
+      ],
+      "target_variables": [
+        "y"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    }
+  ],
+  "parameters": [
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "2a3eb26e-194c-41a8-922f-87f243930cdf",
+      "name": "F",
+      "value": [
+        [
+          0.85,
+          -0.1
+        ],
+        [
+          0.05,
+          0.9
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "ef26c7c5-80ab-4da5-8f9e-3630f59121d6",
+      "name": "H",
+      "value": [
+        [
+          -0.8,
+          0.5
+        ],
+        [
+          0.6,
+          0.4
+        ],
+        [
+          0.3,
+          0.7
+        ],
+        [
+          0.0,
+          1.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "df51b6bb-4f08-476b-a18a-0314ff27a89f",
+      "name": "Q",
+      "value": [
+        [
+          0.004,
+          0.0005
+        ],
+        [
+          0.0005,
+          0.006
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "756eec7a-ef9e-4bf1-a92a-477e467c52e1",
+      "name": "R",
+      "value": [
+        [
+          0.0025,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0036,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0016,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0009
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "fb4ef218-a13d-4c19-90a5-abdbb9df993e",
+      "name": "prior_mean",
+      "value": [
+        [
+          0.05,
+          0.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "1666285c-e28e-4677-b8e6-4f2f3a300e43",
+      "name": "prior_cov",
+      "value": [
+        [
+          0.02,
+          0.0
+        ],
+        [
+          0.0,
+          0.02
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "3bfd75b4-d144-4c9c-a0dc-a597bc81fe8d",
+      "name": "num_timesteps",
+      "value": 24,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "7187398c-4dce-40cf-b641-e90327701336",
+      "name": "random_seed",
+      "value": 20260910,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "837cb0d7-c9e0-4b7c-97c1-22e5153d7357",
+      "name": "num_states",
+      "value": 2,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "4164903e-777e-4c8b-9ba6-d917a0af259e",
+      "name": "num_observations",
+      "value": 4,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "45cf2224-eea1-4111-9e75-6297d01dc953",
+      "name": "num_regions",
+      "value": 1,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "505a78e2-4c1b-45c5-938b-4c6922431003",
+      "name": "num_commodities",
+      "value": 2,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "ecbef768-3ead-4dde-a39c-b17bc914ca9f",
+      "name": "num_time_slices",
+      "value": 12,
+      "type_hint": null,
+      "description": null
+    }
+  ],
+  "equations": [],
+  "time_specification": {
+    "node_type": "TimeSpecification",
+    "source_location": null,
+    "metadata": {},
+    "id": "1084f307-4147-499f-954c-7107574ddc00",
+    "time_type": "Dynamic",
+    "discretization": null,
+    "horizon": 24,
+    "step_size": null
+  },
+  "ontology_mappings": [
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "87091c7e-92dc-455d-8908-de4512f5f51a",
+      "variable_name": "F",
+      "ontology_term": "StateTransitionMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "50e42baf-5a20-425e-bcd8-d80110bc7815",
+      "variable_name": "H",
+      "ontology_term": "ObservationMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "03b45481-46ef-458b-bad0-edd59050579c",
+      "variable_name": "Q",
+      "ontology_term": "ProcessNoiseCovariance",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "06f9af46-92c7-49ed-8a71-12f559ad8b53",
+      "variable_name": "R",
+      "ontology_term": "ObservationNoiseCovariance",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "c8ba8822-d79c-4c65-bf2e-da6a2c604365",
+      "variable_name": "prior_mean",
+      "ontology_term": "PriorMean",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "9da06ebf-8395-488a-aefb-a438dd7857c4",
+      "variable_name": "prior_cov",
+      "ontology_term": "PriorCovariance",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "eef3709d-af9c-4b5f-abdd-807fb9a2488c",
+      "variable_name": "x",
+      "ontology_term": "ContinuousHiddenState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "a453d24a-3798-4ef4-9568-25bacc38c191",
+      "variable_name": "y",
+      "ontology_term": "ContinuousObservation",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "3a06ad94-5b65-4692-a750-0a164d2a3620",
+      "variable_name": "t",
+      "ontology_term": "Time",
+      "description": null
+    }
+  ],
+  "source_format": "markdown",
+  "created_at": "2026-09-11T18:29:39.518192",
+  "modified_at": "2026-09-11T18:29:39.518193",
+  "checksum": null,
+  "extensions": {
+    "gnn_section": "ActInfContinuous",
+    "footer": "NEST D04 synthetic fixture \u2014 AII (Holly Grimm), 2026-09. Generator: models/active_inference/rxinfer-bridge/src/nest_rxinfer_bridge/d04_fixture.py.",
+    "signature": "NEST AII Methods WG"
+  },
+  "raw_sections": {
+    "GNNSection": "ActInfContinuous",
+    "GNNVersionAndFlags": "GNN v1",
+    "ModelName": "NEST D04 Synthetic 2-State LGSSM",
+    "ModelAnnotation": "Passive linear-Gaussian state-space model (no control input) generating the\nsummary indices of the D02 MESSAGEix wrapper blanket over T coupling iterations.\n- Hidden state x = (decarb_rate_dev, demand_pressure), dimensionless deviations.\n- Observation y = (emissions_index, price_index, objective_index, demand_index): relative indices of total\n  emissions e, mean commodity price p, objective J and mean demand d against\n  fixed reference values (see the fixture JSON, `blanket.references`).\n- cap (emissions cap) is a declared exogenous schedule in the fixture, not a\n  variable of this model.\nDeliverable D04 (AII); pattern for D07 (3\u20135 states) and D14 (GNN \u2192 RxInfer render).",
+    "StateSpaceBlock": "# Continuous latent state\nx[2,1,type=float]        # hidden state (decarb_rate_dev, demand_pressure)\n# Continuous observation\ny[4,1,type=float]        # blanket summary indices\n# State transition matrix\nF[2,2,type=float]        # state transition\n# Observation matrix\nH[4,2,type=float]        # observation matrix\n# Process-noise covariance\nQ[2,2,type=float]        # process-noise covariance\n# Observation-noise covariance\nR[4,4,type=float]        # observation-noise covariance\n# Gaussian prior over the initial state\nprior_mean[2,type=float] # prior mean over x_1\nprior_cov[2,2,type=float] # prior covariance over x_1\n# Time index (coupling iteration)\nt[1,type=int]            # coupling iteration",
+    "Connections": "prior_mean>x\nF>x\nx>y\nH>y\nQ>x\nR>y",
+    "InitialParameterization": "# F: decarbonisation persists and is dampened by demand pressure; demand\n# pressure persists and is nudged up by decarbonisation (electrification).\nF={\n  (0.85, -0.1),\n  (0.05, 0.9)\n}\n\n# H: rows = (emissions_index, price_index, objective_index, demand_index); columns = (decarb_rate_dev, demand_pressure).\nH={\n  (-0.8, 0.5),\n  (0.6, 0.4),\n  (0.3, 0.7),\n  (0.0, 1.0)\n}\n\n# Q: process-noise covariance.\nQ={\n  (0.004, 0.0005),\n  (0.0005, 0.006)\n}\n\n# R: observation-noise covariance (sd 5 %, 6 %, 4 %, 3 % on the four indices).\nR={\n  (0.0025, 0.0, 0.0, 0.0),\n  (0.0, 0.0036, 0.0, 0.0),\n  (0.0, 0.0, 0.0016, 0.0),\n  (0.0, 0.0, 0.0, 0.0009)\n}\n\n# Gaussian prior over x_1.\nprior_mean={(0.05, 0.0)}\nprior_cov={\n  (0.02, 0.0),\n  (0.0, 0.02)\n}",
+    "Equations": "# Generative model (linear-Gaussian state-space):\n#   x_1 ~ N(prior_mean, prior_cov)\n#   x_t = F x_{t-1} + N(0, Q)      (passive: no control input)\n#   y_t = H x_t + N(0, R)\n# Embedding into the blanket (exact, see d04_fixture.json `blanket.summary_map`):\n#   e_t = e_ref (1 + y_t[1]);  p_t[c,s] = p_ref[c] profile_p[c,s] (1 + y_t[2]);\n#   J_t = J_ref (1 + y_t[3]);  d_t[c,s] = d_ref[c] profile_d[c,s] (1 + y_t[4]).",
+    "Time": "Time=t\nDynamic\nDiscrete\nModelTimeHorizon=24",
+    "ActInfOntologyAnnotation": "F=StateTransitionMatrix\nH=ObservationMatrix\nQ=ProcessNoiseCovariance\nR=ObservationNoiseCovariance\nprior_mean=PriorMean\nprior_cov=PriorCovariance\nx=ContinuousHiddenState\ny=ContinuousObservation\nt=Time",
+    "ModelParameters": "num_timesteps: 24\nrandom_seed: 20260910\nnum_states: 2\nnum_observations: 4\nnum_regions: 1\nnum_commodities: 2\nnum_time_slices: 12",
+    "Footer": "NEST D04 synthetic fixture \u2014 AII (Holly Grimm), 2026-09. Generator: models/active_inference/rxinfer-bridge/src/nest_rxinfer_bridge/d04_fixture.py.",
+    "Signature": "NEST AII Methods WG"
+  },
+  "initialparameterization": {
+    "F": [
+      [
+        0.85,
+        -0.1
+      ],
+      [
+        0.05,
+        0.9
+      ]
+    ],
+    "H": [
+      [
+        -0.8,
+        0.5
+      ],
+      [
+        0.6,
+        0.4
+      ],
+      [
+        0.3,
+        0.7
+      ],
+      [
+        0.0,
+        1.0
+      ]
+    ],
+    "Q": [
+      [
+        0.004,
+        0.0005
+      ],
+      [
+        0.0005,
+        0.006
+      ]
+    ],
+    "R": [
+      [
+        0.0025,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0036,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0016,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0009
+      ]
+    ],
+    "prior_mean": [
+      [
+        0.05,
+        0.0
+      ]
+    ],
+    "prior_cov": [
+      [
+        0.02,
+        0.0
+      ],
+      [
+        0.0,
+        0.02
+      ]
+    ],
+    "num_timesteps": 24,
+    "random_seed": 20260910,
+    "num_states": 2,
+    "num_observations": 4,
+    "num_regions": 1,
+    "num_commodities": 2,
+    "num_time_slices": 12
+  },
+  "model_parameters": {
+    "F": [
+      [
+        0.85,
+        -0.1
+      ],
+      [
+        0.05,
+        0.9
+      ]
+    ],
+    "H": [
+      [
+        -0.8,
+        0.5
+      ],
+      [
+        0.6,
+        0.4
+      ],
+      [
+        0.3,
+        0.7
+      ],
+      [
+        0.0,
+        1.0
+      ]
+    ],
+    "Q": [
+      [
+        0.004,
+        0.0005
+      ],
+      [
+        0.0005,
+        0.006
+      ]
+    ],
+    "R": [
+      [
+        0.0025,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0036,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0016,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0009
+      ]
+    ],
+    "prior_mean": [
+      [
+        0.05,
+        0.0
+      ]
+    ],
+    "prior_cov": [
+      [
+        0.02,
+        0.0
+      ],
+      [
+        0.0,
+        0.02
+      ]
+    ],
+    "num_timesteps": 24,
+    "random_seed": 20260910,
+    "num_states": 2,
+    "num_observations": 4,
+    "num_regions": 1,
+    "num_commodities": 2,
+    "num_time_slices": 12
+  }
+}

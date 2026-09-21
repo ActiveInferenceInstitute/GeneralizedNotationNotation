@@ -1,0 +1,379 @@
+{
+  "annotation": "Passive linear-Gaussian state-space model (no control input) generating the\nsummary indices of the D02 MESSAGEix wrapper blanket over T coupling iterations.\n- Hidden state x = (decarb_rate_dev, demand_pressure), dimensionless deviations.\n- Observation y = (emissions_index, price_index, objective_index, demand_index): relative indices of total\n  emissions e, mean commodity price p, objective J and mean demand d against\n  fixed reference values (see the fixture JSON, `blanket.references`).\n- cap (emissions cap) is a declared exogenous schedule in the fixture, not a\n  variable of this model.\nDeliverable D04 (AII); pattern for D07 (3–5 states) and D14 (GNN → RxInfer render).",
+  "checksum": null,
+  "connections": [
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "prior_mean"
+      ],
+      "target_variables": [
+        "x"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "F"
+      ],
+      "target_variables": [
+        "x"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "x"
+      ],
+      "target_variables": [
+        "y"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "H"
+      ],
+      "target_variables": [
+        "y"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "Q"
+      ],
+      "target_variables": [
+        "x"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "R"
+      ],
+      "target_variables": [
+        "y"
+      ],
+      "weight": null
+    }
+  ],
+  "created_at": "2026-09-11T18:29:39.518192",
+  "equations": [],
+  "extensions": {
+    "footer": "NEST D04 synthetic fixture — AII (Holly Grimm), 2026-09. Generator: models/active_inference/rxinfer-bridge/src/nest_rxinfer_bridge/d04_fixture.py.",
+    "gnn_section": "ActInfContinuous",
+    "signature": "NEST AII Methods WG"
+  },
+  "model_name": "NEST D04 Synthetic 2-State LGSSM",
+  "modified_at": "2026-09-11T18:29:39.518193",
+  "ontology_mappings": [
+    {
+      "description": null,
+      "ontology_term": "StateTransitionMatrix",
+      "variable_name": "F"
+    },
+    {
+      "description": null,
+      "ontology_term": "ObservationMatrix",
+      "variable_name": "H"
+    },
+    {
+      "description": null,
+      "ontology_term": "ProcessNoiseCovariance",
+      "variable_name": "Q"
+    },
+    {
+      "description": null,
+      "ontology_term": "ObservationNoiseCovariance",
+      "variable_name": "R"
+    },
+    {
+      "description": null,
+      "ontology_term": "PriorMean",
+      "variable_name": "prior_mean"
+    },
+    {
+      "description": null,
+      "ontology_term": "PriorCovariance",
+      "variable_name": "prior_cov"
+    },
+    {
+      "description": null,
+      "ontology_term": "ContinuousHiddenState",
+      "variable_name": "x"
+    },
+    {
+      "description": null,
+      "ontology_term": "ContinuousObservation",
+      "variable_name": "y"
+    },
+    {
+      "description": null,
+      "ontology_term": "Time",
+      "variable_name": "t"
+    }
+  ],
+  "parameters": [
+    {
+      "description": null,
+      "name": "F",
+      "type_hint": null,
+      "value": [
+        [
+          0.85,
+          -0.1
+        ],
+        [
+          0.05,
+          0.9
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "H",
+      "type_hint": null,
+      "value": [
+        [
+          -0.8,
+          0.5
+        ],
+        [
+          0.6,
+          0.4
+        ],
+        [
+          0.3,
+          0.7
+        ],
+        [
+          0.0,
+          1.0
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "Q",
+      "type_hint": null,
+      "value": [
+        [
+          0.004,
+          0.0005
+        ],
+        [
+          0.0005,
+          0.006
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "R",
+      "type_hint": null,
+      "value": [
+        [
+          0.0025,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0036,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0016,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0009
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "prior_mean",
+      "type_hint": null,
+      "value": [
+        [
+          0.05,
+          0.0
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "prior_cov",
+      "type_hint": null,
+      "value": [
+        [
+          0.02,
+          0.0
+        ],
+        [
+          0.0,
+          0.02
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "num_timesteps",
+      "type_hint": null,
+      "value": 24
+    },
+    {
+      "description": null,
+      "name": "random_seed",
+      "type_hint": null,
+      "value": 20260910
+    },
+    {
+      "description": null,
+      "name": "num_states",
+      "type_hint": null,
+      "value": 2
+    },
+    {
+      "description": null,
+      "name": "num_observations",
+      "type_hint": null,
+      "value": 4
+    },
+    {
+      "description": null,
+      "name": "num_regions",
+      "type_hint": null,
+      "value": 1
+    },
+    {
+      "description": null,
+      "name": "num_commodities",
+      "type_hint": null,
+      "value": 2
+    },
+    {
+      "description": null,
+      "name": "num_time_slices",
+      "type_hint": null,
+      "value": 12
+    }
+  ],
+  "time_specification": {
+    "discretization": null,
+    "horizon": 24,
+    "step_size": null,
+    "time_type": "Dynamic"
+  },
+  "variables": [
+    {
+      "data_type": "float",
+      "description": "hidden state (decarb_rate_dev, demand_pressure)",
+      "dimensions": [
+        2,
+        1
+      ],
+      "name": "x",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "blanket summary indices",
+      "dimensions": [
+        4,
+        1
+      ],
+      "name": "y",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "state transition",
+      "dimensions": [
+        2,
+        2
+      ],
+      "name": "F",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "observation matrix",
+      "dimensions": [
+        4,
+        2
+      ],
+      "name": "H",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "process-noise covariance",
+      "dimensions": [
+        2,
+        2
+      ],
+      "name": "Q",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "observation-noise covariance",
+      "dimensions": [
+        4,
+        4
+      ],
+      "name": "R",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "prior mean over x_1",
+      "dimensions": [
+        2
+      ],
+      "name": "prior_mean",
+      "var_type": "prior_vector"
+    },
+    {
+      "data_type": "float",
+      "description": "prior covariance over x_1",
+      "dimensions": [
+        2,
+        2
+      ],
+      "name": "prior_cov",
+      "var_type": "prior_vector"
+    },
+    {
+      "data_type": "integer",
+      "description": "coupling iteration",
+      "dimensions": [
+        1
+      ],
+      "name": "t",
+      "var_type": "hidden_state"
+    }
+  ],
+  "version": "1.0"
+}

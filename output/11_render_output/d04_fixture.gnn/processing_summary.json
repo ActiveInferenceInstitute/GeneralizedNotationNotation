@@ -1,0 +1,19 @@
+{
+  "timestamp": "2026-09-11T16:02:00.223886",
+  "source_file": "/tmp/gnn-render1/d04_fixture.gnn.md",
+  "model_name": "NEST D04 Synthetic 2-State LGSSM",
+  "pomdp_dimensions": {
+    "num_states": 2,
+    "num_observations": 4,
+    "num_actions": 0
+  },
+  "frameworks_requested": [
+    "rxinfer"
+  ],
+  "frameworks_processed": [
+    "rxinfer"
+  ],
+  "frameworks_failed": [],
+  "frameworks_unsupported": [],
+  "model_kind": "continuous"
+}

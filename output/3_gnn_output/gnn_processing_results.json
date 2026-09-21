@@ -1,10 +1,10 @@
 {
-  "timestamp": "2026-06-18T09:04:36.160044",
-  "source_directory": "input/gnn_files/pomdp_gridworld",
+  "timestamp": "2026-09-13T14:42:54.123796",
+  "source_directory": "/tmp/gnn-wrappers",
   "output_directory": "output/3_gnn_output",
   "processing_config": {
     "recursive": true,
-    "verbose": true,
+    "verbose": false,
     "serialize_preset": "full",
     "supported_formats": [
       "markdown",
@@ -81,128 +81,257 @@
   },
   "processed_files": [
     {
-      "file_name": "pomdp_gridworld_3x3.md",
-      "file_path": "input/gnn_files/pomdp_gridworld/pomdp_gridworld_3x3.md",
+      "file_name": "D03-sturm-wrapper.gnn.md",
+      "file_path": "/tmp/gnn-wrappers/D03-sturm-wrapper.gnn.md",
       "parse_success": true,
-      "parsed_model_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_parsed.json",
+      "parsed_model_file": "output/3_gnn_output/D03-sturm-wrapper.gnn/D03-sturm-wrapper.gnn_parsed.json",
       "source_format": "markdown",
       "model_info": {
-        "name": "POMDP GridWorld 3x3",
+        "name": "STURM Building-Stock Wrapper Blanket",
         "version": "1.0",
-        "variables_count": 12,
-        "connections_count": 11,
-        "parameters_count": 15,
-        "equations_count": 1
+        "variables_count": 6,
+        "connections_count": 6,
+        "parameters_count": 5,
+        "equations_count": 0
       },
       "generated_formats": {
         "markdown": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_markdown.md",
-          "file_size": 4462,
+          "output_file": "output/3_gnn_output/D03-sturm-wrapper.gnn/D03-sturm-wrapper.gnn_markdown.md",
+          "file_size": 3470,
           "success": true
         },
         "scala": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_scala.scala",
-          "file_size": 7698,
+          "output_file": "output/3_gnn_output/D03-sturm-wrapper.gnn/D03-sturm-wrapper.gnn_scala.scala",
+          "file_size": 5333,
           "success": true
         },
         "lean": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_lean.lean",
-          "file_size": 7849,
+          "output_file": "output/3_gnn_output/D03-sturm-wrapper.gnn/D03-sturm-wrapper.gnn_lean.lean",
+          "file_size": 8221,
           "success": true
         },
         "coq": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_coq.v",
-          "file_size": 7629,
+          "output_file": "output/3_gnn_output/D03-sturm-wrapper.gnn/D03-sturm-wrapper.gnn_coq.v",
+          "file_size": 8065,
           "success": true
         },
         "python": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_python.py",
-          "file_size": 14055,
+          "output_file": "output/3_gnn_output/D03-sturm-wrapper.gnn/D03-sturm-wrapper.gnn_python.py",
+          "file_size": 12892,
           "success": true
         },
         "bnf": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_bnf.bnf",
-          "file_size": 8028,
+          "output_file": "output/3_gnn_output/D03-sturm-wrapper.gnn/D03-sturm-wrapper.gnn_bnf.bnf",
+          "file_size": 8386,
           "success": true
         },
         "ebnf": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_ebnf.ebnf",
-          "file_size": 8028,
+          "output_file": "output/3_gnn_output/D03-sturm-wrapper.gnn/D03-sturm-wrapper.gnn_ebnf.ebnf",
+          "file_size": 8386,
           "success": true
         },
         "isabelle": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_isabelle.thy",
-          "file_size": 7666,
+          "output_file": "output/3_gnn_output/D03-sturm-wrapper.gnn/D03-sturm-wrapper.gnn_isabelle.thy",
+          "file_size": 8047,
           "success": true
         },
         "maxima": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_maxima.max",
-          "file_size": 11271,
+          "output_file": "output/3_gnn_output/D03-sturm-wrapper.gnn/D03-sturm-wrapper.gnn_maxima.max",
+          "file_size": 8189,
           "success": true
         },
         "xml": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_xml.xml",
-          "file_size": 14982,
+          "output_file": "output/3_gnn_output/D03-sturm-wrapper.gnn/D03-sturm-wrapper.gnn_xml.xml",
+          "file_size": 10383,
           "success": true
         },
         "json": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_json.json",
-          "file_size": 19739,
+          "output_file": "output/3_gnn_output/D03-sturm-wrapper.gnn/D03-sturm-wrapper.gnn_json.json",
+          "file_size": 7474,
           "success": true
         },
         "protobuf": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_protobuf.proto",
-          "file_size": 12652,
+          "output_file": "output/3_gnn_output/D03-sturm-wrapper.gnn/D03-sturm-wrapper.gnn_protobuf.proto",
+          "file_size": 9477,
           "success": true
         },
         "yaml": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_yaml.yaml",
-          "file_size": 11616,
+          "output_file": "output/3_gnn_output/D03-sturm-wrapper.gnn/D03-sturm-wrapper.gnn_yaml.yaml",
+          "file_size": 5719,
           "success": true
         },
         "xsd": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_xsd.xsd",
-          "file_size": 8575,
+          "output_file": "output/3_gnn_output/D03-sturm-wrapper.gnn/D03-sturm-wrapper.gnn_xsd.xsd",
+          "file_size": 8782,
           "success": true
         },
         "asn1": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_asn1.asn1",
-          "file_size": 10190,
+          "output_file": "output/3_gnn_output/D03-sturm-wrapper.gnn/D03-sturm-wrapper.gnn_asn1.asn1",
+          "file_size": 13183,
           "success": true
         },
         "pkl": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_pkl.pkl",
-          "file_size": 21234,
+          "output_file": "output/3_gnn_output/D03-sturm-wrapper.gnn/D03-sturm-wrapper.gnn_pkl.pkl",
+          "file_size": 14508,
           "success": true
         },
         "alloy": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_alloy.als",
-          "file_size": 13463,
+          "output_file": "output/3_gnn_output/D03-sturm-wrapper.gnn/D03-sturm-wrapper.gnn_alloy.als",
+          "file_size": 9835,
           "success": true
         },
         "z_notation": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_z_notation.z",
-          "file_size": 8159,
+          "output_file": "output/3_gnn_output/D03-sturm-wrapper.gnn/D03-sturm-wrapper.gnn_z_notation.z",
+          "file_size": 8497,
           "success": true
         },
         "tla_plus": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_tla_plus.tla",
-          "file_size": 7317,
+          "output_file": "output/3_gnn_output/D03-sturm-wrapper.gnn/D03-sturm-wrapper.gnn_tla_plus.tla",
+          "file_size": 5103,
           "success": true
         },
         "agda": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_agda.agda",
-          "file_size": 7325,
+          "output_file": "output/3_gnn_output/D03-sturm-wrapper.gnn/D03-sturm-wrapper.gnn_agda.agda",
+          "file_size": 5122,
           "success": true
         },
         "haskell": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_haskell.hs",
-          "file_size": 7768,
+          "output_file": "output/3_gnn_output/D03-sturm-wrapper.gnn/D03-sturm-wrapper.gnn_haskell.hs",
+          "file_size": 5349,
           "success": true
         },
         "pickle": {
-          "output_file": "output/3_gnn_output/pomdp_gridworld_3x3/pomdp_gridworld_3x3_pickle.pickle",
-          "file_size": 10192,
+          "output_file": "output/3_gnn_output/D03-sturm-wrapper.gnn/D03-sturm-wrapper.gnn_pickle.pickle",
+          "file_size": 5428,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "D02-messageix-wrapper.gnn.md",
+      "file_path": "/tmp/gnn-wrappers/D02-messageix-wrapper.gnn.md",
+      "parse_success": true,
+      "parsed_model_file": "output/3_gnn_output/D02-messageix-wrapper.gnn/D02-messageix-wrapper.gnn_parsed.json",
+      "source_format": "markdown",
+      "model_info": {
+        "name": "MESSAGEix National Wrapper Blanket",
+        "version": "1.0",
+        "variables_count": 9,
+        "connections_count": 9,
+        "parameters_count": 6,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "output/3_gnn_output/D02-messageix-wrapper.gnn/D02-messageix-wrapper.gnn_markdown.md",
+          "file_size": 3015,
+          "success": true
+        },
+        "scala": {
+          "output_file": "output/3_gnn_output/D02-messageix-wrapper.gnn/D02-messageix-wrapper.gnn_scala.scala",
+          "file_size": 5639,
+          "success": true
+        },
+        "lean": {
+          "output_file": "output/3_gnn_output/D02-messageix-wrapper.gnn/D02-messageix-wrapper.gnn_lean.lean",
+          "file_size": 7909,
+          "success": true
+        },
+        "coq": {
+          "output_file": "output/3_gnn_output/D02-messageix-wrapper.gnn/D02-messageix-wrapper.gnn_coq.v",
+          "file_size": 7716,
+          "success": true
+        },
+        "python": {
+          "output_file": "output/3_gnn_output/D02-messageix-wrapper.gnn/D02-messageix-wrapper.gnn_python.py",
+          "file_size": 12507,
+          "success": true
+        },
+        "bnf": {
+          "output_file": "output/3_gnn_output/D02-messageix-wrapper.gnn/D02-messageix-wrapper.gnn_bnf.bnf",
+          "file_size": 8017,
+          "success": true
+        },
+        "ebnf": {
+          "output_file": "output/3_gnn_output/D02-messageix-wrapper.gnn/D02-messageix-wrapper.gnn_ebnf.ebnf",
+          "file_size": 8017,
+          "success": true
+        },
+        "isabelle": {
+          "output_file": "output/3_gnn_output/D02-messageix-wrapper.gnn/D02-messageix-wrapper.gnn_isabelle.thy",
+          "file_size": 7720,
+          "success": true
+        },
+        "maxima": {
+          "output_file": "output/3_gnn_output/D02-messageix-wrapper.gnn/D02-messageix-wrapper.gnn_maxima.max",
+          "file_size": 7920,
+          "success": true
+        },
+        "xml": {
+          "output_file": "output/3_gnn_output/D02-messageix-wrapper.gnn/D02-messageix-wrapper.gnn_xml.xml",
+          "file_size": 10786,
+          "success": true
+        },
+        "json": {
+          "output_file": "output/3_gnn_output/D02-messageix-wrapper.gnn/D02-messageix-wrapper.gnn_json.json",
+          "file_size": 8395,
+          "success": true
+        },
+        "protobuf": {
+          "output_file": "output/3_gnn_output/D02-messageix-wrapper.gnn/D02-messageix-wrapper.gnn_protobuf.proto",
+          "file_size": 9310,
+          "success": true
+        },
+        "yaml": {
+          "output_file": "output/3_gnn_output/D02-messageix-wrapper.gnn/D02-messageix-wrapper.gnn_yaml.yaml",
+          "file_size": 6021,
+          "success": true
+        },
+        "xsd": {
+          "output_file": "output/3_gnn_output/D02-messageix-wrapper.gnn/D02-messageix-wrapper.gnn_xsd.xsd",
+          "file_size": 8544,
+          "success": true
+        },
+        "asn1": {
+          "output_file": "output/3_gnn_output/D02-messageix-wrapper.gnn/D02-messageix-wrapper.gnn_asn1.asn1",
+          "file_size": 12361,
+          "success": true
+        },
+        "pkl": {
+          "output_file": "output/3_gnn_output/D02-messageix-wrapper.gnn/D02-messageix-wrapper.gnn_pkl.pkl",
+          "file_size": 14760,
+          "success": true
+        },
+        "alloy": {
+          "output_file": "output/3_gnn_output/D02-messageix-wrapper.gnn/D02-messageix-wrapper.gnn_alloy.als",
+          "file_size": 9953,
+          "success": true
+        },
+        "z_notation": {
+          "output_file": "output/3_gnn_output/D02-messageix-wrapper.gnn/D02-messageix-wrapper.gnn_z_notation.z",
+          "file_size": 8207,
+          "success": true
+        },
+        "tla_plus": {
+          "output_file": "output/3_gnn_output/D02-messageix-wrapper.gnn/D02-messageix-wrapper.gnn_tla_plus.tla",
+          "file_size": 5329,
+          "success": true
+        },
+        "agda": {
+          "output_file": "output/3_gnn_output/D02-messageix-wrapper.gnn/D02-messageix-wrapper.gnn_agda.agda",
+          "file_size": 5343,
+          "success": true
+        },
+        "haskell": {
+          "output_file": "output/3_gnn_output/D02-messageix-wrapper.gnn/D02-messageix-wrapper.gnn_haskell.hs",
+          "file_size": 5680,
+          "success": true
+        },
+        "pickle": {
+          "output_file": "output/3_gnn_output/D02-messageix-wrapper.gnn/D02-messageix-wrapper.gnn_pickle.pickle",
+          "file_size": 5008,
           "success": true
         }
       },
@@ -211,12 +340,13 @@
     }
   ],
   "summary": {
-    "total_files": 1,
-    "successful_parses": 1,
+    "total_files": 2,
+    "successful_parses": 2,
     "failed_parses": 0,
-    "total_formats_generated": 22,
+    "total_formats_generated": 44,
     "formats_per_file": {
-      "pomdp_gridworld_3x3.md": 22
+      "D03-sturm-wrapper.gnn.md": 22,
+      "D02-messageix-wrapper.gnn.md": 22
     }
   }
 }

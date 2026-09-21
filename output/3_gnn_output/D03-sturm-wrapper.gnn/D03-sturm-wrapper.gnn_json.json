@@ -1,0 +1,217 @@
+{
+  "annotation": "Markov blanket for STURM as a coupled component in NEST Stage 1.\n\nBoundary scope: this blanket is drawn around MODEL ↔ NEST PLATFORM. STURM\nreceives energy prices by fuel type (downscaled from the national model) and\nreturns final energy demand by fuel; renovation and stock-turnover machinery\n(archetype shares, vintage survival, fuel switching) stays internal and is\nnever exchanged. This is the D02 mirror with sensory/active reversed on the\nprice/demand pair — D02's sensory d ↔ D03's active d, D02's active p ↔ D03's\nsensory p. There is NO counterpart to D02's cap: D02's cap is the HIERARCHY\nregime imposed constraint of PR #87 Q-13; STURM has no imposed constraint\ninput, so this blanket has no such sensory variable.\n\nSTURM assumption (labeled): STURM = MESSAGEix-Buildings (IIASA), IIASA\nconfirmation pending; residential building stock POC only (commercial\nexcluded). Catalog boundary record: catalog/models/sturm.yaml (prices in\nUSD/GJ by fuel; demand out PJ/yr; 5-year steps; ~60 regions).\n\nScope vs Q1 (Technical_Responses_Draft_v1): this file specifies the wrapper's\nmodel-level I/O blanket — Q1 functions #1–#3. Q1 function #4 (the Active\nInference latent-summary layer, via RxInfer) is deliberately NOT modeled here;\nthose latent states are the factor-graph deliverables (D04, D07), which will\nsit behind this blanket's internal side.\n\n- Sensory states: what crosses INTO the model — energy prices by fuel type (downscaled from the national model).\n- Active states: what crosses OUT — final energy demand by fuel (MESSAGEix-compatible). Renovation/stock-turnover rates are produced inside STURM and consumed by its own demand calculation; they are internal here, not exchanged.\n- Internal states: archetype stock shares, renovation/turnover flows, and the turnover state machinery — never exchanged.\n- Every exchanged variable carries the declared boundary fields (PR #80 §4 / PR #95): unit · convention · temporal support · spatial support. Prices carry the annualisation/downscaling convention of the national→STURM handoff; demand is MESSAGEix-compatible annual demand (STURM's native 5-year steps are internal; the 12 slices below are the coupling-iteration resolution, illustrative pending IIASA packaging). Spatial support follows the D05 memo (res-5 exchange via declared crosswalk).\n- This mirrors the D02 pattern file (MESSAGEix wrapper); D03 is its price/demand mirror.\n- Renderable form: structural blanket, no renderable form as authored — the step-11 renderer classifies it as a discrete POMDP and fails on the missing `A/B/C/D` (upstream: GeneralizedNotationNotation#111). The renderable instantiation of this blanket is the continuous-exemplar fixture block (`models/active_inference/rxinfer-bridge/fixtures/sturm/sturm_fixture.gnn.md`); until the upstream path exists, render the instantiation, not the wrapper.",
+  "checksum": null,
+  "connections": [
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "p"
+      ],
+      "target_variables": [
+        "u"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "u"
+      ],
+      "target_variables": [
+        "q"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "u"
+      ],
+      "target_variables": [
+        "r"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "q"
+      ],
+      "target_variables": [
+        "d"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "r"
+      ],
+      "target_variables": [
+        "d"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "d"
+      ],
+      "target_variables": [
+        "p"
+      ],
+      "weight": null
+    }
+  ],
+  "created_at": "2026-09-13T14:42:54.123890",
+  "equations": [],
+  "extensions": {
+    "footer": "NEST D03 draft — AII (Holly Grimm), 2026-09. Mirror of D02 (MESSAGEix wrapper); STURM assumption pending IIASA confirmation. Boundary-field semantics: packages/contracts/ + PR #95.",
+    "gnn_section": "SturmWrapper",
+    "signature": "NEST AII Methods WG"
+  },
+  "model_name": "STURM Building-Stock Wrapper Blanket",
+  "modified_at": "2026-09-13T14:42:54.123890",
+  "ontology_mappings": [
+    {
+      "description": null,
+      "ontology_term": "Observation",
+      "variable_name": "p"
+    },
+    {
+      "description": null,
+      "ontology_term": "Action",
+      "variable_name": "d"
+    },
+    {
+      "description": null,
+      "ontology_term": "HiddenState",
+      "variable_name": "q"
+    },
+    {
+      "description": null,
+      "ontology_term": "HiddenState",
+      "variable_name": "r"
+    },
+    {
+      "description": null,
+      "ontology_term": "HiddenState",
+      "variable_name": "u"
+    },
+    {
+      "description": null,
+      "ontology_term": "Time",
+      "variable_name": "t"
+    }
+  ],
+  "parameters": [
+    {
+      "description": null,
+      "name": "p",
+      "type_hint": null,
+      "value": [
+        [
+          0.0,
+          0.0
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "num_fuel_types",
+      "type_hint": null,
+      "value": 2
+    },
+    {
+      "description": null,
+      "name": "num_time_slices",
+      "type_hint": null,
+      "value": 12
+    },
+    {
+      "description": null,
+      "name": "num_archetypes",
+      "type_hint": null,
+      "value": 4
+    },
+    {
+      "description": null,
+      "name": "num_regions",
+      "type_hint": null,
+      "value": 1
+    }
+  ],
+  "time_specification": {
+    "discretization": "DiscreteTime",
+    "horizon": "Unbounded",
+    "step_size": null,
+    "time_type": "Dynamic"
+  },
+  "variables": [
+    {
+      "data_type": "float",
+      "description": "energy prices by fuel type [USD/GJ; annualisation/downscaling convention; temporal support: 12 slices — illustrative, pending IIASA packaging]",
+      "dimensions": [
+        2,
+        12
+      ],
+      "name": "p",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "final energy demand by fuel [PJ/yr; MESSAGEix-compatible]",
+      "dimensions": [
+        2,
+        12
+      ],
+      "name": "d",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "archetype stock shares [share; sums to 1]",
+      "dimensions": [
+        4
+      ],
+      "name": "q",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "renovation / turnover flows per archetype per slice [share/yr]",
+      "dimensions": [
+        4,
+        12
+      ],
+      "name": "r",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "internal turnover state summary (vintage survival, fuel-switching machinery)",
+      "dimensions": [
+        8,
+        1
+      ],
+      "name": "u",
+      "var_type": "action"
+    },
+    {
+      "data_type": "integer",
+      "description": "coupling iteration index",
+      "dimensions": [
+        1
+      ],
+      "name": "t",
+      "var_type": "hidden_state"
+    }
+  ],
+  "version": "1.0"
+}

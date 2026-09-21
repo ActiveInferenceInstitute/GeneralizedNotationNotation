@@ -1,0 +1,19 @@
+{
+  "timestamp": "2026-09-11T16:50:47.521176",
+  "source_file": "/tmp/gnn-target3/D03-sturm-wrapper.gnn.md",
+  "model_name": "STURM Building-Stock Wrapper Blanket",
+  "pomdp_dimensions": {
+    "num_states": 3,
+    "num_observations": 3,
+    "num_actions": 8
+  },
+  "frameworks_requested": [
+    "rxinfer"
+  ],
+  "frameworks_processed": [],
+  "frameworks_failed": [
+    "rxinfer"
+  ],
+  "frameworks_unsupported": [],
+  "model_kind": "discrete"
+}

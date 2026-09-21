@@ -1,0 +1,19 @@
+{
+  "timestamp": "2026-09-11T16:02:38.276042",
+  "source_file": "/tmp/gnn-render2/D02-messageix-wrapper.gnn.md",
+  "model_name": "MESSAGEix National Wrapper Blanket",
+  "pomdp_dimensions": {
+    "num_states": 8,
+    "num_observations": 3,
+    "num_actions": 3
+  },
+  "frameworks_requested": [
+    "rxinfer"
+  ],
+  "frameworks_processed": [],
+  "frameworks_failed": [
+    "rxinfer"
+  ],
+  "frameworks_unsupported": [],
+  "model_kind": "discrete"
+}

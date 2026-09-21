@@ -1,0 +1,249 @@
+annotation: "Passive linear-Gaussian state-space model (no control input) generating\
+  \ the\nsummary indices of the D03 STURM wrapper blanket over T coupling iterations.\n\
+  - Hidden state x = (renovation_rate_dev, price_pressure), dimensionless deviations.\n\
+  - Observation y = (price_index, demand_index, stock_index, turnover_index): relative\
+  \ indices of fuel prices p\n  (sensory, into STURM), final energy demand d (active,\
+  \ out of STURM), the\n  archetype stock aggregate and the turnover aggregate against\
+  \ fixed reference\n  values (see the fixture JSON, `blanket.references`).\n- q_agg/r_agg\
+  \ are internal aggregates carried in the fixture for posterior\n  checks only; they\
+  \ never cross the blanket.\n- There is NO counterpart to D02's cap: the cap is the\
+  \ Q-13 HIERARCHY imposed\n  constraint of the MESSAGEix side; STURM receives none.\n\
+  Deliverable D03 (AII); mirror of the D04 fixture under the D03 blanket."
+connections:
+- connection_type: directed
+  description: null
+  source_variables:
+  - F
+  target_variables:
+  - x
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - H
+  target_variables:
+  - y
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - Q
+  target_variables:
+  - x
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - R
+  target_variables:
+  - y
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - prior_mean
+  target_variables:
+  - x
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - x
+  target_variables:
+  - y
+  weight: null
+created_at: '2026-09-11T18:29:40.239418'
+equations: []
+model_name: NEST D03 Synthetic 2-State LGSSM
+modified_at: '2026-09-11T18:29:40.239419'
+ontology_mappings:
+- description: null
+  ontology_term: StateTransitionMatrix
+  variable_name: F
+- description: null
+  ontology_term: ObservationMatrix
+  variable_name: H
+- description: null
+  ontology_term: ProcessNoiseCovariance
+  variable_name: Q
+- description: null
+  ontology_term: ObservationNoiseCovariance
+  variable_name: R
+- description: null
+  ontology_term: PriorCovariance
+  variable_name: prior_cov
+- description: null
+  ontology_term: PriorMean
+  variable_name: prior_mean
+- description: null
+  ontology_term: Time
+  variable_name: t
+- description: null
+  ontology_term: ContinuousHiddenState
+  variable_name: x
+- description: null
+  ontology_term: ContinuousObservation
+  variable_name: y
+parameters:
+- description: null
+  name: F
+  type_hint: null
+  value:
+  - - 0.8
+    - -0.15
+  - - 0.05
+    - 0.9
+- description: null
+  name: H
+  type_hint: null
+  value:
+  - - -0.4
+    - 0.7
+  - - 0.5
+    - -0.3
+  - - 0.6
+    - 0.0
+  - - 0.8
+    - 0.0
+- description: null
+  name: Q
+  type_hint: null
+  value:
+  - - 0.0036
+    - -0.0003
+  - - -0.0003
+    - 0.0049
+- description: null
+  name: R
+  type_hint: null
+  value:
+  - - 0.0016
+    - 0.0
+    - 0.0
+    - 0.0
+  - - 0.0
+    - 0.0025
+    - 0.0
+    - 0.0
+  - - 0.0
+    - 0.0
+    - 0.0009
+    - 0.0
+  - - 0.0
+    - 0.0
+    - 0.0
+    - 0.0012
+- description: null
+  name: num_archetypes
+  type_hint: null
+  value: 4
+- description: null
+  name: num_fuel_types
+  type_hint: null
+  value: 2
+- description: null
+  name: num_observations
+  type_hint: null
+  value: 4
+- description: null
+  name: num_regions
+  type_hint: null
+  value: 1
+- description: null
+  name: num_states
+  type_hint: null
+  value: 2
+- description: null
+  name: num_time_slices
+  type_hint: null
+  value: 12
+- description: null
+  name: num_timesteps
+  type_hint: null
+  value: 24
+- description: null
+  name: prior_cov
+  type_hint: null
+  value:
+  - - 0.02
+    - 0.0
+  - - 0.0
+    - 0.02
+- description: null
+  name: prior_mean
+  type_hint: null
+  value:
+  - - 0.02
+    - 0.0
+- description: null
+  name: random_seed
+  type_hint: null
+  value: 20260911
+time_specification:
+  discretization: null
+  horizon: 24
+  step_size: null
+  time_type: Dynamic
+variables:
+- data_type: float
+  description: state transition
+  dimensions:
+  - 2
+  - 2
+  name: F
+  type: hidden_state
+- data_type: float
+  description: observation matrix
+  dimensions:
+  - 4
+  - 2
+  name: H
+  type: hidden_state
+- data_type: float
+  description: process-noise covariance
+  dimensions:
+  - 2
+  - 2
+  name: Q
+  type: hidden_state
+- data_type: float
+  description: observation-noise covariance
+  dimensions:
+  - 4
+  - 4
+  name: R
+  type: hidden_state
+- data_type: float
+  description: prior covariance over x_1
+  dimensions:
+  - 2
+  - 2
+  name: prior_cov
+  type: prior_vector
+- data_type: float
+  description: prior mean over x_1
+  dimensions:
+  - 2
+  name: prior_mean
+  type: prior_vector
+- data_type: integer
+  description: coupling iteration
+  dimensions:
+  - 1
+  name: t
+  type: hidden_state
+- data_type: float
+  description: hidden state (renovation_rate_dev, price_pressure)
+  dimensions:
+  - 2
+  - 1
+  name: x
+  type: hidden_state
+- data_type: float
+  description: exchanged-array summary indices
+  dimensions:
+  - 4
+  - 1
+  name: y
+  type: hidden_state
+version: '1.0'

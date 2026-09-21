@@ -1,20 +1,20 @@
 # GNN Rendering Results
 
-Generated: 2026-06-18T09:04:51.485882
+Generated: 2026-09-11T16:50:47.543026
 Processing Type: **POMDP-aware rendering**
 
 ## Summary
 
-- **Total Files**: 1
-- **Successfully Processed**: 1
-- **Failed**: 0
-- **Framework Renderings**: 9/9 (100.0% success rate)
+- **Total Files**: 5
+- **Successfully Processed**: 3
+- **Failed**: 2
+- **Framework Renderings**: 11/13 (84.6% success rate)
 
 ## Configuration
 
-- **Frameworks**: all
+- **Frameworks**: ['rxinfer']
 - **Strict Validation**: True
-- **Verbose**: True
+- **Verbose**: False
 - **POMDP Processing**: ✅ Available
 
 ## File Results
@@ -29,6 +29,12 @@ Processing Type: **POMDP-aware rendering**
   - ✅ numpyro: NumPyro script generated: output/11_render_output/pomdp_gridworld_3x3/numpyro/POMDP GridWorld 3x3_numpyro.py
   - ✅ stan: Stan model generated
   - ✅ bnlearn: bnlearn code generated
+- ✅ **d04_fixture.gnn.md** - Successfully processed
+  - ✅ rxinfer: Generated RxInfer.jl simulation script: output/11_render_output/d04_fixture.gnn/rxinfer/NEST_D04_Synthetic_2-State_LGSSM_rxinfer.jl
+- ❌ **D02-messageix-wrapper.gnn.md** - Unknown error
+- ✅ **sturm_fixture.gnn.md** - Successfully processed
+  - ✅ rxinfer: Generated RxInfer.jl simulation script: output/11_render_output/sturm_fixture.gnn/rxinfer/NEST_D03_Synthetic_2-State_LGSSM_rxinfer.jl
+- ❌ **D03-sturm-wrapper.gnn.md** - Unknown error
 
 
 ## Output Structure

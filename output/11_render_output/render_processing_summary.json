@@ -1,20 +1,34 @@
 {
-  "timestamp": "2026-06-18T09:04:51.485882",
+  "timestamp": "2026-09-11T16:50:47.543026",
   "processing_type": "POMDP-aware rendering",
-  "total_files": 1,
-  "successful_files": 1,
-  "failed_files": 0,
-  "total_framework_attempts": 9,
-  "successful_framework_renderings": 9,
-  "framework_success_rate": 100.0,
+  "total_files": 5,
+  "successful_files": 3,
+  "failed_files": 2,
+  "total_framework_attempts": 13,
+  "successful_framework_renderings": 11,
+  "framework_success_rate": 84.61538461538461,
   "configuration": {
-    "frameworks": "all",
+    "frameworks": [
+      "rxinfer"
+    ],
     "strict_validation": true,
     "strict_framework_success": true,
-    "verbose": true,
+    "verbose": false,
     "pomdp_processing_available": true
   },
-  "failed_framework_renderings": [],
+  "failed_framework_renderings": [
+    {
+      "file": "/tmp/gnn-render2/D02-messageix-wrapper.gnn.md",
+      "framework": "rxinfer",
+      "message": "POMDP not compatible with rxinfer: Missing required matrices: ['A', 'B', 'C', 'D']"
+    },
+    {
+      "file": "/tmp/gnn-target3/D03-sturm-wrapper.gnn.md",
+      "framework": "rxinfer",
+      "message": "POMDP not compatible with rxinfer: Missing required matrices: ['A', 'B', 'C', 'D']"
+    }
+  ],
+  "unsupported_framework_renderings": [],
   "file_results": {
     "input/gnn_files/pomdp_gridworld/pomdp_gridworld_3x3.md": {
       "overall_success": true,
@@ -160,6 +174,84 @@
       "summary_file": "output/11_render_output/pomdp_gridworld_3x3/processing_summary.json",
       "output_directory": "output/11_render_output/pomdp_gridworld_3x3",
       "base_output_dir": "output/11_render_output/pomdp_gridworld_3x3"
+    },
+    "/tmp/gnn-render1/d04_fixture.gnn.md": {
+      "overall_success": true,
+      "framework_results": {
+        "rxinfer": {
+          "success": true,
+          "message": "Generated RxInfer.jl simulation script: output/11_render_output/d04_fixture.gnn/rxinfer/NEST_D04_Synthetic_2-State_LGSSM_rxinfer.jl",
+          "output_files": [
+            "output/11_render_output/d04_fixture.gnn/rxinfer/NEST_D04_Synthetic_2-State_LGSSM_rxinfer.jl"
+          ],
+          "output_directory": "output/11_render_output/d04_fixture.gnn/rxinfer",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 376,
+            "total_lines": 471,
+            "functions": 12,
+            "classes": 0
+          }
+        }
+      },
+      "summary_file": "output/11_render_output/d04_fixture.gnn/processing_summary.json",
+      "output_directory": "output/11_render_output/d04_fixture.gnn",
+      "base_output_dir": "output/11_render_output/d04_fixture.gnn"
+    },
+    "/tmp/gnn-render2/D02-messageix-wrapper.gnn.md": {
+      "overall_success": false,
+      "framework_results": {
+        "rxinfer": {
+          "success": false,
+          "unsupported": false,
+          "status": "failed",
+          "message": "POMDP not compatible with rxinfer: Missing required matrices: ['A', 'B', 'C', 'D']",
+          "output_files": [],
+          "warnings": []
+        }
+      },
+      "summary_file": "output/11_render_output/D02-messageix-wrapper.gnn/processing_summary.json",
+      "output_directory": "output/11_render_output/D02-messageix-wrapper.gnn",
+      "base_output_dir": "output/11_render_output/D02-messageix-wrapper.gnn"
+    },
+    "/tmp/gnn-target3/sturm_fixture.gnn.md": {
+      "overall_success": true,
+      "framework_results": {
+        "rxinfer": {
+          "success": true,
+          "message": "Generated RxInfer.jl simulation script: output/11_render_output/sturm_fixture.gnn/rxinfer/NEST_D03_Synthetic_2-State_LGSSM_rxinfer.jl",
+          "output_files": [
+            "output/11_render_output/sturm_fixture.gnn/rxinfer/NEST_D03_Synthetic_2-State_LGSSM_rxinfer.jl"
+          ],
+          "output_directory": "output/11_render_output/sturm_fixture.gnn/rxinfer",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 376,
+            "total_lines": 471,
+            "functions": 12,
+            "classes": 0
+          }
+        }
+      },
+      "summary_file": "output/11_render_output/sturm_fixture.gnn/processing_summary.json",
+      "output_directory": "output/11_render_output/sturm_fixture.gnn",
+      "base_output_dir": "output/11_render_output/sturm_fixture.gnn"
+    },
+    "/tmp/gnn-target3/D03-sturm-wrapper.gnn.md": {
+      "overall_success": false,
+      "framework_results": {
+        "rxinfer": {
+          "success": false,
+          "unsupported": false,
+          "status": "failed",
+          "message": "POMDP not compatible with rxinfer: Missing required matrices: ['A', 'B', 'C', 'D']",
+          "output_files": [],
+          "warnings": []
+        }
+      },
+      "summary_file": "output/11_render_output/D03-sturm-wrapper.gnn/processing_summary.json",
+      "output_directory": "output/11_render_output/D03-sturm-wrapper.gnn",
+      "base_output_dir": "output/11_render_output/D03-sturm-wrapper.gnn"
     }
   }
 }

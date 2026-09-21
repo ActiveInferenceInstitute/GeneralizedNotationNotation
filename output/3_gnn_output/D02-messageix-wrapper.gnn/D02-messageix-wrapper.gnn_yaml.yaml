@@ -1,0 +1,241 @@
+annotation: 'Markov blanket for MESSAGEix as a coupled component in NEST Stage 1.
+
+
+  Boundary scope: this blanket is drawn around MODEL ↔ NEST PLATFORM. Of the
+
+  active states, only p crosses onward to the coupled model (STURM); e and J
+
+  are active toward the platform (gates, monitoring, convergence accounting)
+
+  and never reach STURM. cap arrives as an imposed constraint — the HIERARCHY
+
+  regime of PR #87 Q-13; the D03 (STURM) blanket has no counterpart input.
+
+
+  Scope vs Q1 (Technical_Responses_Draft_v1): this file specifies the wrapper''s
+
+  model-level I/O blanket — Q1 functions #1–#3. Q1 function #4 (the Active
+
+  Inference latent-summary layer: distilling raw outputs into belief variables
+
+  such as decarbonization rate, via RxInfer) is deliberately NOT modeled here;
+
+  those latent states are the factor-graph deliverables (D04, D07), which will
+
+  sit behind this blanket''s internal side.
+
+
+  - Sensory states: what crosses INTO the model — demand trajectories per commodity
+  (from the building-stock side) and policy constraints (emissions cap).
+
+  - Active states: what crosses OUT — commodity shadow prices (PRICE_COMMODITY duals),
+  total emissions, and objective value (see boundary scope above).
+
+  - Internal states: capacities, dispatch, and the LP solution machinery — never exchanged.
+
+  - Every exchanged variable carries the declared boundary fields (PR #80 §4 / PR
+  #95): unit · convention · temporal support · spatial support. Prices carry the engine''s
+  annualisation convention; demand carries its allocation basis. Spatial support follows
+  the D05 memo (res-5 exchange via declared crosswalk).
+
+  - This is the D02 pattern file; D03 (STURM wrapper) mirrors it with sensory/active
+  reversed on the price/demand pair.
+
+  - Renderable form: this wrapper is a *structural* blanket (it declares boundary
+  structure, not a generative parameterization), so the GNN step-11 renderer has no
+  renderable form of it as authored — it classifies the spec as a discrete POMDP and
+  fails on the missing `A/B/C/D` (upstream: GeneralizedNotationNotation#111). The
+  renderable instantiation of this blanket is the continuous-exemplar fixture block
+  (`models/active_inference/rxinfer-bridge/fixtures/d04/d04_fixture.gnn.md`), which
+  renders to RxInfer and executes; until the upstream path exists, render the instantiation,
+  not the wrapper.'
+connections:
+- connection_type: directed
+  description: null
+  source_variables:
+  - K
+  target_variables:
+  - p
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - cap
+  target_variables:
+  - s
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - d
+  target_variables:
+  - s
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - p
+  target_variables:
+  - d
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - s
+  target_variables:
+  - J
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - s
+  target_variables:
+  - K
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - s
+  target_variables:
+  - x
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - x
+  target_variables:
+  - e
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - x
+  target_variables:
+  - p
+  weight: null
+created_at: '2026-09-13T14:42:55.250383'
+equations: []
+model_name: MESSAGEix National Wrapper Blanket
+modified_at: '2026-09-13T14:42:55.250384'
+ontology_mappings:
+- description: null
+  ontology_term: Action
+  variable_name: J
+- description: null
+  ontology_term: HiddenState
+  variable_name: K
+- description: null
+  ontology_term: Observation
+  variable_name: cap
+- description: null
+  ontology_term: Observation
+  variable_name: d
+- description: null
+  ontology_term: Action
+  variable_name: e
+- description: null
+  ontology_term: Action
+  variable_name: p
+- description: null
+  ontology_term: HiddenState
+  variable_name: s
+- description: null
+  ontology_term: Time
+  variable_name: t
+- description: null
+  ontology_term: HiddenState
+  variable_name: x
+parameters:
+- description: null
+  name: cap
+  type_hint: null
+  value:
+  - - 200000.0
+- description: null
+  name: d
+  type_hint: null
+  value:
+  - - 0.0
+    - 0.0
+- description: null
+  name: num_commodities
+  type_hint: null
+  value: 2
+- description: null
+  name: num_regions
+  type_hint: null
+  value: 1
+- description: null
+  name: num_technologies
+  type_hint: null
+  value: 4
+- description: null
+  name: num_time_slices
+  type_hint: null
+  value: 12
+time_specification:
+  discretization: DiscreteTime
+  horizon: Unbounded
+  step_size: null
+  time_type: Dynamic
+variables:
+- data_type: float
+  description: objective value [USD; convention-laden]
+  dimensions:
+  - 1
+  name: J
+  type: hidden_state
+- data_type: float
+  description: installed capacity per technology [MW]
+  dimensions:
+  - 4
+  name: K
+  type: hidden_state
+- data_type: float
+  description: emissions cap [t CO2/yr; policy constraint]
+  dimensions:
+  - 1
+  name: cap
+  type: hidden_state
+- data_type: float
+  description: 'demand per commodity per time slice [GWh; basis-allocated; temporal
+    support: 12 slices]'
+  dimensions:
+  - 2
+  - 12
+  name: d
+  type: hidden_state
+- data_type: float
+  description: total emissions [t CO2/yr]
+  dimensions:
+  - 1
+  name: e
+  type: hidden_state
+- data_type: float
+  description: PRICE_COMMODITY duals [USD/MWh; carries annualisation convention]
+  dimensions:
+  - 2
+  - 12
+  name: p
+  type: hidden_state
+- data_type: float
+  description: internal solver state summary (basis, duals machinery)
+  dimensions:
+  - 8
+  - 1
+  name: s
+  type: hidden_state
+- data_type: integer
+  description: coupling iteration index
+  dimensions:
+  - 1
+  name: t
+  type: hidden_state
+- data_type: float
+  description: dispatch per technology per slice [MWh]
+  dimensions:
+  - 4
+  - 12
+  name: x
+  type: hidden_state
+version: '1.0'
