@@ -422,7 +422,8 @@ class TestProcessOxdraw:
         assert load_message["payload"]["mermaid_file"].endswith(
             f"{sample_gnn_file.stem}.mmd"
         )
-        assert "flowchart TD" in load_message["payload"]["mermaid"]
+        assert "mermaid" not in load_message["payload"]
+        assert Path(load_message["payload"]["mermaid_file"]).exists()
 
     def test_process_oxdraw_no_files(self, temp_dir: Any, capsys: Any) -> Any:
         """Test processing with no GNN files."""
@@ -439,6 +440,199 @@ class TestProcessOxdraw:
         )
 
         assert not success  # Should fail with no files
+
+
+class TestProcessOxdrawTruth:
+    """Truth contract for process_oxdraw results, summary, and phase gating."""
+
+    def _run(
+        self, sample_gnn_file: Any, temp_dir: Any, **kwargs: Any
+    ) -> tuple[bool, dict[str, Any]]:
+        """Run process_oxdraw headless and reload the results JSON."""
+        import logging
+
+        logger = logging.getLogger(__name__)
+        output_dir = temp_dir / "output"
+
+        success = process_oxdraw(
+            target_dir=sample_gnn_file.parent,
+            output_dir=output_dir,
+            logger=logger,
+            mode="headless",
+            launch_editor=False,
+            **kwargs,
+        )
+
+        results_file = output_dir / "oxdraw_processing_results.json"
+        with open(results_file) as f:
+            results = json.load(f)
+        return success, results
+
+    def test_phase3_converts_only_this_run_mermaid(
+        self, sample_gnn_file: Any, temp_dir: Any
+    ) -> Any:
+        """Phase 3 converts only the mermaid files this run produced."""
+        output_dir = temp_dir / "output"
+        output_dir.mkdir()
+        stale = output_dir / "stale_prior_run.mmd"
+        stale.write_text("flowchart TD\n    stale_node[stale]\n")
+
+        success, results = self._run(
+            sample_gnn_file, temp_dir, auto_convert=True, validate_on_save=True
+        )
+
+        assert len(results["mermaid_to_gnn_conversions"]) == 1
+        entry = results["mermaid_to_gnn_conversions"][0]
+        assert Path(entry["mermaid_file"]).name != "stale_prior_run.mmd"
+        assert not (output_dir / "stale_prior_run_from_mermaid.md").exists()
+        assert (output_dir / f"{sample_gnn_file.stem}_from_mermaid.md").exists()
+        assert success is True
+
+    def test_stale_mmd_never_resurrected_without_production(
+        self, sample_gnn_file: Any, temp_dir: Any
+    ) -> Any:
+        """Without auto_convert no stale .mmd is back-converted."""
+        output_dir = temp_dir / "output"
+        output_dir.mkdir()
+        stale = output_dir / "stale_prior_run.mmd"
+        stale.write_text("flowchart TD\n    stale_node[stale]\n")
+
+        success, results = self._run(
+            sample_gnn_file, temp_dir, auto_convert=False, validate_on_save=True
+        )
+
+        assert results["mermaid_to_gnn_conversions"] == []
+        assert list(output_dir.glob("*_from_mermaid.md")) == []
+        assert success is False
+        assert results["summary"]["unexpected_failures"] == 0
+
+    def test_validation_failure_surfaces_in_errors(
+        self, sample_gnn_file: Any, temp_dir: Any, monkeypatch: Any
+    ) -> Any:
+        """A mermaid file failing syntax validation lands in results errors."""
+        import gnn.gui.oxdraw.processor as processor_module
+
+        def fake_convert(
+            gnn_file: Any, mermaid_file: Any, *_args: Any, **_kwargs: Any
+        ) -> str:
+            path = Path(mermaid_file)
+            path.write_text("this is not a flowchart")
+            return "this is not a flowchart"
+
+        monkeypatch.setattr(
+            processor_module, "convert_gnn_file_to_mermaid", fake_convert
+        )
+
+        success, results = self._run(
+            sample_gnn_file, temp_dir, auto_convert=True, validate_on_save=True
+        )
+
+        assert any(e["phase"] == "mermaid_validation" for e in results["errors"])
+        assert success is False
+        assert results["summary"]["unexpected_failures"] >= 1
+
+    def test_back_conversion_failure_reflects_in_success(
+        self, sample_gnn_file: Any, temp_dir: Any, monkeypatch: Any
+    ) -> Any:
+        """A failing back-conversion marks the m2g entry and overall success."""
+        import gnn.gui.oxdraw.processor as processor_module
+
+        def failing_back(
+            mermaid_file: Any, *_args: Any, **_kwargs: Any
+        ) -> dict[str, Any]:
+            raise RuntimeError("back-conversion failed")
+
+        monkeypatch.setattr(
+            processor_module, "convert_mermaid_file_to_gnn", failing_back
+        )
+
+        success, results = self._run(
+            sample_gnn_file, temp_dir, auto_convert=True, validate_on_save=True
+        )
+
+        assert success is False
+        m2g_entries = results["mermaid_to_gnn_conversions"]
+        assert len(m2g_entries) == 1
+        assert m2g_entries[0]["success"] is False
+        assert any(e["phase"] == "mermaid_to_gnn" for e in results["errors"])
+        assert results["summary"]["mermaid_to_gnn_total"] == 1
+        assert results["summary"]["mermaid_to_gnn_success"] == 0
+
+    def test_summary_counts_present_on_clean_run(
+        self, sample_gnn_file: Any, temp_dir: Any
+    ) -> Any:
+        """A clean run reports the full summary block and discovered files."""
+        success, results = self._run(
+            sample_gnn_file, temp_dir, auto_convert=True, validate_on_save=True
+        )
+
+        assert set(results["summary"]) == {
+            "gnn_to_mermaid_success",
+            "gnn_to_mermaid_total",
+            "mermaid_to_gnn_success",
+            "mermaid_to_gnn_total",
+            "unexpected_failures",
+        }
+        assert results["summary"]["unexpected_failures"] == 0
+        assert results["files_processed"] == [str(sample_gnn_file)]
+        assert success is True
+
+
+class TestOxdrawGuiOutputs:
+    """oxdraw_gui result keys: recursive discovery count and output listing."""
+
+    EXEMPLAR = (
+        Path(__file__).resolve().parents[2] / "input/gnn_files/discrete/hmm_baseline.md"
+    )
+
+    @staticmethod
+    def _write_target(target: Path) -> None:
+        """Materialize the real exemplar at target root and nested/sub."""
+        exemplar_text = TestOxdrawGuiOutputs.EXEMPLAR.read_text()
+        target.mkdir(parents=True, exist_ok=True)
+        target.joinpath(TestOxdrawGuiOutputs.EXEMPLAR.name).write_text(exemplar_text)
+        nested_sub = target / "nested" / "sub"
+        nested_sub.mkdir(parents=True, exist_ok=True)
+        nested_sub.joinpath(TestOxdrawGuiOutputs.EXEMPLAR.name).write_text(
+            exemplar_text
+        )
+
+    def _run_oxdraw_gui(self, tmp_dir: Path, validate_on_save: bool) -> dict[str, Any]:
+        import logging
+
+        from gnn.gui.oxdraw import oxdraw_gui
+
+        target = tmp_dir / "input"
+        output = tmp_dir / "output"
+        self._write_target(target)
+
+        result = oxdraw_gui(
+            target_dir=target,
+            output_dir=output,
+            logger=logging.getLogger("test_oxdraw_integration"),
+            validate_on_save=validate_on_save,
+        )
+        assert isinstance(result, dict)
+        return result
+
+    def test_files_processed_is_recursive_discovery_count(self, tmp_path: Any) -> None:
+        """files_processed counts recursively discovered GNN files, not glob."""
+        from gnn.processing.processor import discover_gnn_files
+
+        result = self._run_oxdraw_gui(tmp_path, validate_on_save=False)
+
+        target = tmp_path / "input"
+        assert result["files_processed"] == len(
+            discover_gnn_files(target, recursive=True)
+        )
+        assert result["files_processed"] == 2
+
+    def test_outputs_include_from_mermaid_files(self, tmp_path: Any) -> None:
+        """Validated runs list back-converted *_from_mermaid.md outputs."""
+        result = self._run_oxdraw_gui(tmp_path, validate_on_save=True)
+
+        assert any(str(o).endswith("_from_mermaid.md") for o in result["outputs"])
+        assert result["success"] is True
 
 
 class TestOxdrawGuiModeKwarg:
