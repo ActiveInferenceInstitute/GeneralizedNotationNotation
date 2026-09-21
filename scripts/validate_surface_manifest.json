@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "description": "MAJ-05 canonical validate_gnn* surface. Keys are '<file-suffix>:<name>' with file-suffix relative to src/gnn. Old names emit DeprecationWarning and forward to their canonical target with identical behavior. MCP tool registry names (validate_gnn_content, validate_gnn_file, validate_gnn_files) are unchanged contracts.",
+  "description": "MAJ-05 canonical validate_gnn* surface. Keys are '<file-suffix>:<name>' with file-suffix relative to src/gnn. The former old-name aliases were removed in the v4.0.0 cycle; importing them raises AttributeError. MCP tool registry names (validate_gnn_content, validate_gnn_file, validate_gnn_files) are unchanged contracts.",
   "clusters": {
     "general_syntax_validation": ["parsers/basic.py:validate_gnn_syntax"],
     "file_content_convenience_dict": ["__init__.py:validate_gnn_source"],
@@ -39,16 +39,5 @@
     "validation/simple.py:check_gnn_directory_basic",
     "validation/simple.py:check_gnn_file_basic"
   ],
-  "old_names": {
-    "execute/pymdp/pymdp_utils.py:validate_gnn_pomdp_structure": "execute/pymdp/pymdp_utils.py:check_gnn_pomdp_spec",
-    "llm/llm_operations.py:validate_gnn": "llm/llm_operations.py:validate_gnn_with_llm",
-    "mcp/processors.py:validate_gnn_cross_format_consistency": "mcp/processors.py:check_cross_format_consistency",
-    "__init__.py:validate_gnn_file": "__init__.py:validate_gnn_source",
-    "parsers/basic.py:validate_gnn": "parsers/basic.py:validate_gnn_syntax",
-    "parsers/basic.py:validate_gnn_syntax_formal": "parsers/basic.py:validate_gnn_syntax",
-    "processing/processor.py:validate_gnn_structure": "processing/processor.py:check_gnn_file_structure",
-    "schema_validator/validator.py:validate_gnn_file": "schema_validator/validator.py:validate_gnn_file_comprehensive",
-    "validation/simple.py:validate_gnn_directory": "validation/simple.py:check_gnn_directory_basic",
-    "validation/simple.py:validate_gnn_file": "validation/simple.py:check_gnn_file_basic"
-  }
+  "old_names": {}
 }

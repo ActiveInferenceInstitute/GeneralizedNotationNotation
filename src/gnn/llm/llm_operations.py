@@ -12,7 +12,6 @@ and analysis.
 import asyncio
 import logging
 import os
-import warnings
 from typing import Any, Dict, List, Optional, cast
 
 # Import the LLM system directly to avoid circular imports
@@ -453,17 +452,6 @@ def enhance_gnn(gnn_content: str) -> str:
 def validate_gnn_with_llm(gnn_content: str) -> str:
     """Validate a GNN model with the LLM validation pipeline."""
     return _get_llm_ops().validate_gnn_with_llm(gnn_content)
-
-
-def validate_gnn(gnn_content: str) -> str:
-    """Old name for :func:`validate_gnn_with_llm`; emits DeprecationWarning."""
-    warnings.warn(
-        "validate_gnn is an old name; use validate_gnn_with_llm instead. "
-        "It will be removed in v4.0.0.",
-        DeprecationWarning,
-        stacklevel=2,
-    )
-    return validate_gnn_with_llm(gnn_content)
 
 
 if __name__ == "__main__":

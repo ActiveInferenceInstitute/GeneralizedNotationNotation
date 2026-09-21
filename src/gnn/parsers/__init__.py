@@ -52,8 +52,6 @@ from .basic import (
     ParsedGNNFormal,
     get_parse_tree_visualization,
     parse_gnn_formal,
-    validate_gnn,
-    validate_gnn_syntax_formal,
 )
 from .cache import ParseCache
 from .common import ASTNode, ValidationError, ValidationWarning
@@ -222,8 +220,6 @@ __all__: list[Any] = [
     "parse_frontmatter",
     "parse_gnn_file_structured",
     "parse_gnn_formal",
-    "validate_gnn",
-    "validate_gnn_syntax_formal",
     # Registries
     "PARSER_REGISTRY",
     "SERIALIZER_REGISTRY",

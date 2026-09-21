@@ -6,7 +6,6 @@ GNN processor module for GNN pipeline.
 import json
 import logging
 import re
-import warnings
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 from pathlib import Path
@@ -337,19 +336,6 @@ def check_gnn_file_structure(
             "warnings": [],
             "validation_timestamp": datetime.now().isoformat(),
         }
-
-
-def validate_gnn_structure(
-    file_path: Union[str, Path], content: Optional[str] = None
-) -> Dict[str, Any]:
-    """Old name for :func:`check_gnn_file_structure`; emits DeprecationWarning."""
-    warnings.warn(
-        "validate_gnn_structure is an old name; use check_gnn_file_structure "
-        "instead. It will be removed in v4.0.0.",
-        DeprecationWarning,
-        stacklevel=2,
-    )
-    return check_gnn_file_structure(file_path, content)
 
 
 def process_gnn_directory(

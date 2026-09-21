@@ -4,7 +4,6 @@
 import json
 import logging
 import pickle  # nosec B403
-import warnings
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
@@ -537,17 +536,6 @@ def check_gnn_pomdp_spec(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
         result["warnings"].append("No model name specified")
 
     return result
-
-
-def validate_gnn_pomdp_structure(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
-    """Old name for :func:`check_gnn_pomdp_spec`; emits DeprecationWarning."""
-    warnings.warn(
-        "validate_gnn_pomdp_structure is an old name; use "
-        "check_gnn_pomdp_spec instead. It will be removed in v4.0.0.",
-        DeprecationWarning,
-        stacklevel=2,
-    )
-    return check_gnn_pomdp_spec(gnn_spec)
 
 
 if __name__ == "__main__":

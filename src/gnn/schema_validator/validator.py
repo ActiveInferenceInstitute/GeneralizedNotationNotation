@@ -19,7 +19,6 @@ Enhanced Features:
 import logging
 import re
 import tempfile
-import warnings
 from pathlib import Path
 from typing import Any, Optional, Union, cast
 
@@ -829,14 +828,3 @@ def validate_gnn_file_comprehensive(file_path: Union[str, Path]) -> ValidationRe
     """Validate a GNN file with the full GNNValidator pipeline."""
     validator = GNNValidator()
     return validator.validate_file(file_path)
-
-
-def validate_gnn_file(file_path: Union[str, Path]) -> ValidationResult:
-    """Old name for :func:`validate_gnn_file_comprehensive`; emits DeprecationWarning."""
-    warnings.warn(
-        "validate_gnn_file is an old name; use "
-        "validate_gnn_file_comprehensive instead. It will be removed in v4.0.0.",
-        DeprecationWarning,
-        stacklevel=2,
-    )
-    return validate_gnn_file_comprehensive(file_path)

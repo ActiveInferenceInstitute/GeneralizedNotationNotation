@@ -152,16 +152,13 @@ class TestGNNModule:
     """Test the GNN module's exposed API."""
 
     def test_validate_gnn_function(self) -> None:
-        """Test the validate_gnn_syntax function and its deprecated alias."""
+        """Test the validate_gnn_syntax function."""
         # Test with invalid input — validate_gnn_syntax returns tuple(bool, list[str])
         result = gnn.validate_gnn_syntax("invalid content")
         assert isinstance(result, tuple), f"Expected tuple, got {type(result)}"
         is_valid, messages = result
         assert isinstance(is_valid, bool)
         assert isinstance(messages, list)
-        with pytest.warns(DeprecationWarning):
-            alias_result = gnn.validate_gnn("invalid content")
-        assert alias_result == result
 
     def test_feature_flags(self) -> None:
         """Test that feature flags are properly set."""
