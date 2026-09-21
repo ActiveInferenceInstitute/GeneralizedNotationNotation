@@ -11,62 +11,28 @@ src/gnn/utils/
 ├── README.md                        # This documentation
 ├── SPEC.md                          # Module specification
 │
-├── # Logging & Diagnostics
-├── logging_utils.py                 # Facade over structured logging (setup_step_logging, log_step_*)
-├── structured_logging.py            # Structured pipeline logging with correlation IDs
-├── visual_logging.py                # Visual log formatting
-│
-├── # Configuration & Arguments
-├── arg_definitions.py               # Shared STEP_ARGUMENTS/constants
-├── arg_parsing.py                   # ArgumentParser (parse_step_arguments, build_step_command_args)
-├── argument_utils.py                # Thin re-export module over the arg_* modules
-├── path_conversion.py               # validate_and_convert_paths
-├── step_config.py                   # StepConfiguration (shared step defaults)
-├── config_loader.py                 # YAML/JSON config loading (load_config, get/set_config_value)
-│
-├── # Pipeline Infrastructure
+├── logging_utils.py                 # Logging facade (setup_step_logging, log_step_*)
 ├── pipeline.py                      # Pipeline utilities (get_output_dir_for_script, ...)
-├── pipeline_template.py             # Standardized pipeline script templates
-├── pipeline_dependencies.py         # Step dependency management
-├── pipeline_monitor.py              # Pipeline health monitoring
-├── pipeline_validator.py            # Validation utilities
-├── pipeline_arguments.py            # Pipeline-level argument building
-├── pipeline_config_merge.py         # Configuration merging
-├── pipeline_step_dependencies.py    # Step dependency declarations
+├── mcp.py                           # MCP integration (canonical name; see mcp/ package)
 │
-├── # Dependency Management
-├── dependency_validator.py          # Dependency validation
-│
-├── # Error Handling & Recovery
-├── error_handling.py                # Error handling framework
-├── error_recovery.py                # ErrorRecoveryManager, ErrorContext
-│
-├── # Resource & Performance
-├── resource_manager.py              # Resource monitoring (get_current_memory_usage)
-├── performance_tracking.py           # PerformanceTracker, track_operation_standalone
-├── timeout_manager.py               # Timeout management
-├── visualization_optimizer.py       # Visualization optimization
-│
-├── # Testing & Validation
-├── testing_utils.py                 # Test runner and shared helpers (production)
-├── validation_schemas.py            # Shared validation schemas
-│
-├── # Utilities
-├── base_processor.py                # Base processor class
-├── execution_utils.py               # Execution helpers
-├── io_utils.py                      # I/O utilities
-├── path_utils.py                    # Path utilities
-├── safe_eval.py                     # Bounded literal evaluation for untrusted strings
-├── system_utils.py                  # System utilities
-├── venv_utils.py                    # Virtual environment helpers
-├── framework_availability.py        # Optional framework detection
-├── jax_stack_validation.py          # JAX/Optax/Flax/pymdp 1.x probe (step 1)
-├── matplotlib_setup.py              # Matplotlib backend configuration
-│
-├── # Specialized
-├── mcp.py                           # MCP integration
-├── code_metrics.py                  # Code metrics collection
-└── logging/                         # Logging subpackage (see logging/README.md)
+├── # Concern packages (S2-33/SC-38 split)
+├── logging/                         # Logging subpackage (see logging/README.md)
+├── arguments/                       # arg_definitions, arg_parsing, path_conversion,
+│                                    #   pipeline_arguments, pipeline_config_merge, step_config
+├── config_io/                       # config_loader, io_utils, path_utils, code_metrics
+├── errors/                          # error_handling, error_recovery
+├── observability/                   # structured_logging, performance_tracking,
+│                                    #   visual_logging, visualization_optimizer
+├── pipeline_orchestration/          # base_processor, execution_utils,
+│                                    #   pipeline_dependencies, pipeline_monitor,
+│                                    #   pipeline_validator, pipeline_template,
+│                                    #   pipeline_step_dependencies
+├── runtime_safety/                  # dependency_validator, framework_availability,
+│                                    #   jax_stack_validation, resource_manager, safe_eval,
+│                                    #   timeout_manager, validation_schemas
+├── system_env/                      # system_utils, venv_utils, matplotlib_setup
+├── testing/                         # Test runner, categories, stages, coverage targets
+└── mcp/                             # MCP dispatch (register_tools, redact_environment)
 ```
 
 ## Core Components
@@ -104,14 +70,14 @@ Sets up standardized logging for a pipeline step with correlation-ID tracking.
 Sets up logging for the main pipeline orchestrator.
 
 #### `log_step_start(logger, message)` / `log_step_success(logger, message)` / `log_step_error(logger, message)` / `log_step_warning(logger, message)`
-Step lifecycle logging helpers. `utils/structured_logging.py` provides richer variants (`log_step_start(logger, step_name, **context)`) with metadata support.
+Step lifecycle logging helpers. `observability/structured_logging.py` provides richer variants (`log_step_start(logger, step_name, **context)`) with metadata support.
 
 #### `get_performance_summary() -> Dict[str, Any]`
 Returns timing/memory metrics recorded by the structured logger.
 
 ### Argument Parsing
 
-#### `ArgumentParser` (`utils/arg_parsing.py`, re-exported via `utils/argument_utils.py`)
+#### `ArgumentParser` (`arguments/arg_parsing.py`, re-exported by the `arguments/` package)
 Standard argument parser with pipeline-wide support.
 
 #### `ArgumentParser.parse_step_arguments(step_name) -> argparse.Namespace`
@@ -120,7 +86,7 @@ Parses arguments for a specific pipeline step with recovery support. Standard ar
 #### `build_step_command_args(step_name, args) -> List[str]`
 Builds the command-line argument list for invoking a step script.
 
-#### `utils.arg_parsing.audit_step_contracts() -> Dict[str, Any]`
+#### `gnn.utils.arguments.arg_parsing.audit_step_contracts() -> Dict[str, Any]`
 Audits for drift between `STEP_ARGUMENTS`, `StepConfiguration`, parser defaults, and command-builder propagation. Exit codes are canonical: `0=success`, `1=error`, `2=success with warnings/skipped`.
 
 ### Pipeline Orchestration Utilities
@@ -143,12 +109,11 @@ Composability Notes for the full consolidation map):
 
 #### `verify_directory_writable(directory: Path, probe_name: str = ".write_probe") -> None`
 The one writable-directory probe (create temp file → atomic rename → cleanup), used by
-`utils.pipeline.validate_output_directory` and `utils.pipeline_validator.check_pipeline_readiness`.
+`gnn.utils.pipeline.validate_output_directory` and `gnn.utils.pipeline_orchestration.pipeline_validator.check_pipeline_readiness`.
 Raises `OSError` when the directory does not accept writes.
 
 #### `get_memory_usage() -> float`
-Canonical process-memory probe in MB (`utils.resource_manager`); `utils.testing_utils`
-and `utils.visualization_optimizer` re-export it.
+Canonical process-memory probe in MB (`gnn.utils.runtime_safety.resource_manager`).
 
 #### `redact_environment() -> dict[str, str]` (`utils.mcp`)
 Copy of `os.environ` with secret-carrying variable names removed
@@ -180,7 +145,7 @@ except Exception as e:
 ### Argument Parsing
 
 ```python
-from gnn.utils.argument_utils import ArgumentParser
+from gnn.utils.arguments import ArgumentParser
 
 args = ArgumentParser.parse_step_arguments("my_step")
 target_dir = args.target_dir
@@ -199,7 +164,7 @@ output_dir = get_output_dir_for_script("my_script.py", Path("output"))
 ### Memory Monitoring
 
 ```python
-from gnn.utils.resource_manager import get_current_memory_usage
+from gnn.utils.runtime_safety.resource_manager import get_current_memory_usage
 
 memory_before = get_current_memory_usage()
 # ... do some work ...
@@ -230,7 +195,7 @@ def process_my_module(target_dir: Path, output_dir: Path, verbose: bool = False,
 
 ## Error Handling
 
-`utils/error_recovery.py` provides `ErrorRecoveryManager(logger=None)` with `handle_error(context: ErrorContext) -> bool` and helpers such as `format_and_log_error(logger, error, context)`. Errors are described by `ErrorContext` objects (operation, severity, message, error_code, details).
+`errors/error_recovery.py` provides `ErrorRecoveryManager(logger=None)` with `handle_error(context: ErrorContext) -> bool` and helpers such as `format_and_log_error(logger, error, context)`. Errors are described by `ErrorContext` objects (operation, severity, message, error_code, details).
 
 ## Testing and Validation
 
@@ -246,7 +211,7 @@ Standard library plus `pyyaml` (config loading) and `psutil` (resource monitorin
 ## Troubleshooting
 
 - **No log output**: verify the `verbose` flag on `setup_step_logging` / `setup_main_logging` and that the logger is not filtered by an upstream handler.
-- **Argument parsing errors**: run the step with `--help` to see the argument definitions registered in `utils/arg_definitions.py`.
+- **Argument parsing errors**: run the step with `--help` to see the argument definitions registered in `arguments/arg_definitions.py`.
 - **Debug logging**: set the logger level to `DEBUG` (`logging.getLogger().setLevel(logging.DEBUG)`) or pass `verbose=True`.
 
 ## Summary

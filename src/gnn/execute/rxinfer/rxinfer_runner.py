@@ -13,6 +13,7 @@ from typing import Any, List, Optional, Union
 
 logger = logging.getLogger(__name__)
 
+from gnn.execute.julia_env import julia_subprocess_env
 from gnn.execute.julia_setup import is_julia_available
 from gnn.execute.subprocess_envelope import run_subprocess_envelope
 
@@ -68,6 +69,9 @@ def execute_rxinfer_script(
             script's own directory when omitted. Evidence is written on every
             completed run — success, failure, and timeout alike.
         timeout: Execution timeout in seconds (default: 300).
+        The subprocess runs with the shared Julia environment:
+        ``GKSwstype=100`` headless-GR default (a caller-set ``GKSwstype``
+        wins).
 
     Returns:
         bool: True if execution was successful, False otherwise.
@@ -129,7 +133,12 @@ def execute_rxinfer_script(
         return False
 
     logger.debug(f"Running command: {' '.join(cmd)}")
-    envelope = run_subprocess_envelope(cmd, timeout=timeout)
+    # Headless GR default (GKSwstype=100); a caller-set GKSwstype wins.
+    envelope = run_subprocess_envelope(
+        cmd,
+        timeout=timeout,
+        env=julia_subprocess_env(),
+    )
 
     # Process the execution result — every outcome below means the run
     # completed (success, non-zero exit, or timeout), so persistence runs

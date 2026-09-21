@@ -36,5 +36,5 @@ Subprocesses receive `BNLEARN_OUTPUT_DIR=<output_dir>` and run with
    (mirrors `STAN_OUTPUT_DIR`).
 3. `execute.planning` classifies bnlearn as a Python-probe framework so
    `plan_execute` reports `skip_dependency` for missing runtimes.
-4. `utils.framework_availability.FRAMEWORK_IMPORT_CHECK["bnlearn"]` drives the
+4. `gnn.utils.runtime_safety.framework_availability.FRAMEWORK_IMPORT_CHECK["bnlearn"]` drives the
    pre-flight skip in `execute_single_script` (pre-existing).

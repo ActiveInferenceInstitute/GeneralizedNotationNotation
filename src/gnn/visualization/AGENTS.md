@@ -141,7 +141,7 @@ package root as `compute_connection_statistics`.
 - `graphviz` - Graph layout and rendering
 
 ### Internal Dependencies
-- `utils.pipeline_template` - Pipeline utilities
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Pipeline utilities
 
 ---
 
@@ -239,7 +239,7 @@ output/8_visualization_output/
 - **Function**: `process_visualization()` ([core/process.py](core/process.py))
 
 ### Imports From
-- `utils.pipeline_template` - Pipeline utilities
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Pipeline utilities
 
 ### Imported By
 - `advanced_visualization` - Advanced visualization module
@@ -317,7 +317,7 @@ Registration lives in [`mcp.py`](mcp.py) via `register_tools(mcp_instance)` (GNN
 #### 2. Missing Visualization Dependencies
 **Symptom**: ImportError for matplotlib, networkx, or numpy
 
-**Solution**: These are core dependencies pinned in `pyproject.toml` (`matplotlib>=3.5.0`, `networkx>=2.6.0`, `numpy>=1.21.0`), so `uv sync` installs them:
+**Solution**: These are core dependencies pinned in `pyproject.toml` (`matplotlib>=3.9.0`, `networkx>=3.6.1`, `numpy>=2.0`), so `uv sync` installs them:
 ```bash
 uv sync
 ```

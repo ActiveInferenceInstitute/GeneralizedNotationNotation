@@ -929,7 +929,7 @@ The `_run_llm_analysis()` function is async because it uses the shared `llm.llm_
 
 - `src/gnn/main.py` - Pipeline orchestrator that generates the summary consumed by this module
 - `src/gnn/llm/llm_processor.py` - LLM processor used for AI-powered analysis
-- `src/gnn/utils/pipeline_template.py` - Logging utilities used throughout
+- `src/gnn/utils/pipeline_orchestration/pipeline_template.py` - Logging utilities used throughout
 
 ---
 

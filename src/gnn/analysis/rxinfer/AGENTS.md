@@ -64,6 +64,7 @@ anything else is `execution_failed` with the stderr tail logged at error
 level. PyMDP results are redirected into the per-framework directory via
 `PYMDP_OUTPUT_DIR`; both Julia backends run under their committed
 `--project` environments resolved relative to this file, not the CWD.
+Both Julia subprocesses run with the shared Julia environment (`GKSwstype=100` headless-GR default; a `GKSwstype` set in the caller's environment wins).
 
 ## Key Functions
 

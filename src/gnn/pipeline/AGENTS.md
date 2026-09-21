@@ -141,7 +141,7 @@ Return the ordered list of registered step script stems (derived from
 
 Topologically sort **step numbers** into parallel execution tiers (Kahn's
 algorithm with tier grouping). `step_dependencies` maps each step number to
-the step numbers it depends on (`utils.pipeline_step_dependencies.PIPELINE_STEP_DEPENDENCIES`
+the step numbers it depends on (`gnn.utils.pipeline_orchestration.pipeline_step_dependencies.PIPELINE_STEP_DEPENDENCIES`
 is the canonical dependency table). `total_steps` defaults to the registry
 step count. Circular dependencies are appended as a final tier unless
 `raise_on_circular=True`, which raises `ValueError`.
@@ -160,7 +160,7 @@ tool.
 Render DAG tiers (output of `resolve_execution_order`) as a human-readable
 multi-line string for logging.
 
-> **Note**: The functions `validate_step_prerequisites`, `validate_pipeline_step_sequence`, and `generate_execution_plan` referenced in earlier documentation versions do not exist as standalone functions. Prerequisite checking is handled by `pipeline/pipeline_validator.py` (an E2E runtime tester) and dependency ordering is in `pipeline/dag.py`.
+> **Note**: The functions `validate_step_prerequisites`, `validate_pipeline_step_sequence`, and `generate_execution_plan` referenced in earlier documentation versions do not exist as standalone functions. Prerequisite checking is handled by `pipeline/pipeline_runtime_validator.py` (an E2E runtime tester) and dependency ordering is in `pipeline/dag.py`.
 
 ### Execution Planning
 
@@ -230,9 +230,9 @@ progress is reported by the per-run `pipeline_execution_summary.json` instead.
 
 ### Internal Dependencies
 
-- `utils.argument_utils` - Argument parsing utilities
-- `utils.logging_utils` - Structured (JSON-L + text) logging helpers
-- `utils.pipeline_template` - Pipeline template utilities
+- `gnn.utils.arguments` - Argument parsing utilities
+- `gnn.utils.logging_utils` - Structured (JSON-L + text) logging helpers
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Pipeline template utilities
 
 ---
 
@@ -246,7 +246,7 @@ and restores the caller environment in `finally`. Canonical summaries retain
 `run_id` on success and failure; `run_hash` remains the stable input/config hash.
 Programmatic top-level calls serialize their environment scopes; parallel step
 execution uses explicit child environments. Other pipeline behavior is configured through
-`input/config.yaml` (loaded by `src/gnn/main.py` via `utils/arg_parsing.py`) and
+`input/config.yaml` (loaded by `src/gnn/main.py` via `gnn.utils.arguments.arg_parsing`) and
 CLI flags.
 
 ### Configuration Files
@@ -296,7 +296,7 @@ for step in discover_pipeline_steps():
 
 ```python
 from gnn.pipeline.dag import resolve_execution_order, find_circular_dependencies
-from gnn.utils.pipeline_step_dependencies import PIPELINE_STEP_DEPENDENCIES
+from gnn.utils.pipeline_orchestration.pipeline_step_dependencies import PIPELINE_STEP_DEPENDENCIES
 
 # Resolve tiers over the canonical dependency table
 tiers = resolve_execution_order(dict(PIPELINE_STEP_DEPENDENCIES))
@@ -313,7 +313,7 @@ assert find_circular_dependencies({0: [1], 1: []}) == set()
 ### Output Products
 
 - `pipeline_execution_summary.json` - Execution summary (written by `main.py` under `00_pipeline_summary/`)
-- `pipeline_health_report_<timestamp>.json` - Health monitoring report (written by `utils.pipeline_monitor`)
+- `pipeline_health_report_<timestamp>.json` - Health monitoring report (written by `gnn.utils.pipeline_orchestration.pipeline_monitor`)
 
 ### Output Directory Structure
 
@@ -375,9 +375,9 @@ output/
 
 ### Imports From
 
-- `utils.argument_utils` - Argument parsing
-- `utils.logging_utils` - Structured logging
-- `utils.pipeline_template` - Template utilities
+- `gnn.utils.arguments` - Argument parsing
+- `gnn.utils.logging_utils` - Structured logging
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Template utilities
 
 ### Imported By
 

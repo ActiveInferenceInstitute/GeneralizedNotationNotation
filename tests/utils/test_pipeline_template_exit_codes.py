@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Tests for the widened exit-code contract in gnn.utils.pipeline_template.
+"""Tests for the widened exit-code contract in gnn.utils.pipeline_orchestration.pipeline_template.
 
 Contract under test:
   canonical wording: 0=success, 1=error, 2=success with warnings/skipped
-  src/gnn/utils/pipeline_template.py::_coerce_exit_code delegates to shared helpers.
+  src/gnn/utils/pipeline_orchestration/pipeline_template.py::_coerce_exit_code delegates to shared helpers.
   bool  -> True→0, False→1
   int   -> passthrough (0, 1, 2, ...); 2 emits a warning log line
   other -> coerced via bool()

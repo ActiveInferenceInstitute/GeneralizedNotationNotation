@@ -383,7 +383,7 @@ document does not track timings.
 - **Function**: `process_gui()`
 
 ### Imports From
-- `utils.pipeline_template` - Standardized processing patterns
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Standardized processing patterns
 - `pipeline.config` - Configuration management
 
 ### Imported By

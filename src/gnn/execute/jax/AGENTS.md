@@ -254,7 +254,7 @@ with the `jax` framework selected.
 #### Issue 1: "JAX is not available"
 **Symptom**: `run_jax_scripts` returns `False` immediately
 **Cause**: `jax` not importable in the active environment
-**Solution**: `uv sync` (JAX is a core dependency); check `src/gnn/utils/jax_stack_validation.py`
+**Solution**: `uv sync` (JAX is a core dependency); check `src/gnn/utils/runtime_safety/jax_stack_validation.py`
 
 #### Issue 2: Platform not found
 **Symptom**: Script fails at start-up with an XLA platform error

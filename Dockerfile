@@ -33,7 +33,7 @@ COPY . /workspace
 # needed: the default-suite jax imports
 # (tests/render/test_jax_renderer.py:267 "hard project dep; explicit import per
 # zero-skip contract"; tests/pipeline/test_pomdp_pipeline_integration.py via
-# gnn.utils.jax_stack_validation) are satisfied by the core dependency itself,
+# gnn.utils.runtime_safety.jax_stack_validation) are satisfied by the core dependency itself,
 # and jax-importing tests beyond that are excluded by the CMD's marker filter.
 ENV UV_PROJECT_ENVIRONMENT="/opt/venv"
 ENV PATH="/opt/venv/bin:$PATH"

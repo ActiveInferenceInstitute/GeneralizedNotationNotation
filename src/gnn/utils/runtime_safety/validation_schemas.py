@@ -10,7 +10,7 @@ validate the same way.
 
 Typical usage::
 
-    from gnn.utils.validation_schemas import validate_model_data, validate_target_dir
+    from gnn.utils.runtime_safety.validation_schemas import validate_model_data, validate_target_dir
 
     def generate_pymdp_code(model_data, output_path=None):
         model_data = validate_model_data(model_data, context="generate_pymdp_code")
@@ -33,7 +33,7 @@ __all__: list[Any] = [
 
 
 # Keep in sync with src/gnn/execute/processor.py::parse_frameworks_parameter and
-# src/gnn/utils/framework_availability.py::FRAMEWORK_IMPORT_CHECK.
+# src/gnn/utils/runtime_safety/framework_availability.py::FRAMEWORK_IMPORT_CHECK.
 KNOWN_FRAMEWORKS = (
     "pymdp",
     "jax",

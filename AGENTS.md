@@ -109,7 +109,7 @@ graph TB
 
 **Numbered Scripts** (`src/gnn/N_module.py`):
 
-- Handle argument parsing via `utils.argument_utils.ArgumentParser`
+- Handle argument parsing via `gnn.utils.arguments.ArgumentParser`
 - Setup logging via `utils.logging.logging_utils.setup_step_logging`
 - Get output directories via `pipeline.config.get_output_dir_for_script`
 - Call module processing functions from `module/__init__.py`
@@ -307,7 +307,7 @@ deliberately broader than this artifact graph.
 - **Two model kinds**: `render.pomdp_contract.detect_model_kind` classifies each spec as discrete (categorical `A/B/C/D[/E]`) or continuous; the `input/gnn_files/continuous/` exemplars declare only the linear-Gaussian state-space block (`F/H/Q/R`, `prior_mean/prior_cov`, optional closed-loop `goal_mean/control_gain`) and are rendered verbatim, never canonicalised to A/B/C/D.
 - **`unsupported` render status**: frameworks whose `framework_registry.py` entry has `supports_continuous: False` (PyMDP, ActiveInference.jl, DisCoPy, bnlearn) return `status: unsupported` for continuous models; these are counted separately under `unsupported_framework_renderings` in `render_processing_summary.json`, excluded from success rates, and never executed by Step 12.
 - **Native continuous backends**: JAX, NumPyro (+NUTS), PyTorch and Stan share `render/continuous_script.py` (online Kalman filter, Joseph-form update, closed-loop control); RxInfer.jl uses its native LGSSM strategy.
-- **Stan is executable**: `render/stan/stan_renderer.py` emits an HMM (forward-algorithm marginalisation, Dirichlet priors centred on `A`) for discrete models and the Kalman marginal likelihood for continuous ones, as `<stem>_stan.stan` plus a `<stem>_stan.py` cmdstanpy driver; `src/gnn/execute/stan/` runs it and `utils.framework_availability` reports `skipped` when `cmdstanpy`/CmdStan is absent (`uv sync --extra stan`).
+- **Stan is executable**: `render/stan/stan_renderer.py` emits an HMM (forward-algorithm marginalisation, Dirichlet priors centred on `A`) for discrete models and the Kalman marginal likelihood for continuous ones, as `<stem>_stan.stan` plus a `<stem>_stan.py` cmdstanpy driver; `src/gnn/execute/stan/` runs it and `gnn.utils.runtime_safety.framework_availability` reports `skipped` when `cmdstanpy`/CmdStan is absent (`uv sync --extra stan`).
 - **Step 12 summary merge**: `execute/processor.py` (`_merge_prior_execution_summary`) folds the previous `execution_summary.json` into the current run so the durable summary covers every input folder, mirroring Step 11.
 - **Julia pre-exec gate**: a `julia` launcher without a working toolchain no longer blocks scripts; the probe degrades to the advisory regex sweep unless the parser itself reports a failure.
 - Live counts come from `output/11_render_output/render_processing_summary.json` and `output/12_execute_output/summaries/execution_summary.json`; see `CHANGELOG.md` §3.2.0 for the release receipt.

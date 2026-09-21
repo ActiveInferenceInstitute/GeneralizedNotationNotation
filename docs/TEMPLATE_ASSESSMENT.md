@@ -21,11 +21,11 @@ This document provides a comprehensive assessment of the enhanced `0_template.py
 ### Pipeline Infrastructure Analysis
 
 #### Available Utilities (Underutilized)
-- **Error Recovery System** (`utils.error_recovery`) - Intelligent error handling with auto-fix
-- **Resource Manager** (`utils.resource_manager`) - Memory and performance tracking
+- **Error Recovery System** (`gnn.utils.errors.error_recovery`) - Intelligent error handling with auto-fix
+- **Resource Manager** (`gnn.utils.runtime_safety.resource_manager`) - Memory and performance tracking
 - **Enhanced Logging** (`utils.logging_utils`) - Correlation-based structured logging
-- **Performance Tracker** (`utils.performance_tracking`) - Operation timing and metrics
-- **Enhanced Argument Parser** (`utils.argument_utils`) - Standardized argument handling
+- **Performance Tracker** (`gnn.utils.observability.performance_tracking`) - Operation timing and metrics
+- **Enhanced Argument Parser** (`gnn.utils.arguments`) - Standardized argument handling
 - **Pipeline Configuration** (`pipeline.config`) - Centralized configuration management
 
 #### Script categories (assessment-era snapshot)

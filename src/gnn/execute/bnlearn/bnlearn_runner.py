@@ -12,7 +12,7 @@ language is derived from each emitted file's suffix — ``.py`` runs under a
 Python interpreter with the ``bnlearn`` module, ``.R`` runs under Rscript
 with the R ``bnlearn`` package — never assumed. Missing runtimes produce an
 explicit ``skipped`` record (mirroring the Stan executor's
-skip-on-missing-toolchain semantics via ``utils.framework_availability``).
+skip-on-missing-toolchain semantics via ``gnn.utils.runtime_safety.framework_availability``).
 """
 
 from __future__ import annotations
@@ -41,7 +41,7 @@ _R_SKIP_REASON = "Rscript/R bnlearn package not available (install.packages('bnl
 def is_bnlearn_available(python_executable: Optional[str] = None) -> bool:
     """True when the Python ``bnlearn`` module is importable.
 
-    Delegates to the shared ``utils.framework_availability`` probe. With
+    Delegates to the shared ``gnn.utils.runtime_safety.framework_availability`` probe. With
     ``python_executable=None`` the check is a cheap in-process
     ``importlib.util.find_spec``; with an interpreter path it shells out so
     the answer reflects the target interpreter's environment.

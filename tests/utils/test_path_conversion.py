@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Edge-case tests for gnn.utils.path_conversion.
+"""Edge-case tests for gnn.utils.arguments.path_conversion.
 
-Covers the honest gnn.utils path-conversion helpers: string->Path coercion,
+Covers the gnn path-conversion helpers: string->Path coercion,
 None handling for critical path arguments, and the config validation entry
 point. This file pins real edge behaviour that had thin dedicated coverage.
 """
@@ -87,7 +87,7 @@ class TestValidateAndConvertPaths:
         """Non-critical optional path args (e.g. ontology_terms_file=None)
         are skipped without raising; their absence is only a debug note."""
         args = self._new_args(ontology_terms_file=None, pipeline_summary_file=None)
-        with caplog.at_level(logging.WARNING, logger="gnn.utils.argument_utils"):
+        with caplog.at_level(logging.WARNING, logger="utils.argument_utils"):
             validate_and_convert_paths(args, logging.getLogger("test"))
         # No critical path arg was None, so no exception.
         assert args.ontology_terms_file is None

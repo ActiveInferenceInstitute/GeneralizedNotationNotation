@@ -155,7 +155,7 @@ success = process_execute(
 - `output_files` (List[Path]): Generated output files
 
 #### Framework health
-There is no `get_execution_health_status` function in `src/gnn/execute/`. Framework availability is probed by `utils.framework_availability` and surfaced through the `gnn health` CLI; the fields below describe that report.
+There is no `get_execution_health_status` function in `src/gnn/execute/`. Framework availability is probed by `gnn.utils.runtime_safety.framework_availability` and surfaced through the `gnn health` CLI; the fields below describe that report.
 
 **Returns**: `Dict[str, Any]` - Health status dictionary with:
 - `pymdp_available` (bool): PyMDP availability
@@ -168,7 +168,7 @@ There is no `get_execution_health_status` function in `src/gnn/execute/`. Framew
 - `julia_version` (Optional[str]): Julia version if available
 
 #### Capability doctor
-**Function**: `collect_doctor_report(target_dir=None, output_dir=None, frameworks="all") -> Dict[str, Any]` (`execute.doctor`; MCP tool `get_doctor_report`). One structured offline probe composing per-framework availability (the canonical `utils.framework_availability` records plus the shared Julia PATH gate) with the `plan_execute` Step 12 dry-run when a target/output directory pair is supplied (both or neither — exactly one raises `ValueError`).
+**Function**: `collect_doctor_report(target_dir=None, output_dir=None, frameworks="all") -> Dict[str, Any]` (`execute.doctor`; MCP tool `get_doctor_report`). One structured offline probe composing per-framework availability (the canonical `gnn.utils.runtime_safety.framework_availability` records plus the shared Julia PATH gate) with the `plan_execute` Step 12 dry-run when a target/output directory pair is supplied (both or neither — exactly one raises `ValueError`).
 
 **Returns**: `Dict[str, Any]` report with:
 - `frameworks` (dict): per-framework records keyed by name; `kind` is `python_import` (with `probe_module`, availability, and `missing_module`/`install_hint` when unavailable; `toolchain_probe` for Stan) or `julia_toolchain` (mirrors the `julia` section)

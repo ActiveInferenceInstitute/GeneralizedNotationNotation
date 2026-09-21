@@ -251,7 +251,7 @@ The oxdraw integration module is **fully complete** with comprehensive implement
 # ✅ Confirmed working with:
 from gnn.processing.processor import parse_gnn_file, discover_gnn_files
 from ontology.processor import load_defined_ontology_terms, validate_annotations
-from utils.pipeline_template import create_standardized_pipeline_script
+from gnn.utils.pipeline_orchestration.pipeline_template import create_standardized_pipeline_script
 from pipeline.config import get_output_dir_for_script
 ```
 
@@ -331,7 +331,7 @@ from pipeline.config import get_output_dir_for_script
 ### Integration
 - [x] Works with gnn.processing.processor
 - [x] Works with ontology.processor
-- [x] Works with utils.pipeline_template
+- [x] Works with gnn.utils.pipeline_orchestration.pipeline_template
 - [x] Works with pipeline.config
 - [x] Follows GNN patterns
 - [x] Compatible with pipeline steps

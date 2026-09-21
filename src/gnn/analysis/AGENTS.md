@@ -126,7 +126,7 @@ Raises `RuntimeError` if metrics cannot be computed.
 - `seaborn` - Enhanced statistical plots (recovery: matplotlib)
 
 ### Internal Dependencies
-- `utils.pipeline_template` - Standardized pipeline processing patterns
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Standardized pipeline processing patterns
 - `pipeline.config` - Pipeline configuration management
 
 ---

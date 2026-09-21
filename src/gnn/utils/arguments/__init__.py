@@ -21,7 +21,8 @@ Leaf inventory:
 
 Cross-family imports go through leaf modules, never through any facade (I5).
 The old top-level paths (``gnn/utils/arg_parsing.py`` etc. and the
-``argument_utils.py`` entry facade) are deprecation facades over this package.
+``argument_utils.py`` entry facade) were removed with the SC-38 facade
+takedown; this package is their canonical home.
 """
 
 from gnn.utils.arguments.arg_definitions import ArgumentDefinition

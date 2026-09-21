@@ -1,7 +1,7 @@
 """
-Tests for gnn/utils/step_logging.py and gnn/utils/base_processor.py
+Tests for gnn.utils.logging.logging_utils and gnn.utils.pipeline_orchestration.base_processor
 
-These tests verify the new utility modules work correctly.
+These tests verify the utility modules work correctly.
 """
 
 import logging

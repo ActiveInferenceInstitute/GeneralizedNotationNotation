@@ -157,7 +157,7 @@ Markdown summary of a results receipt.
 - Julia interpreter - `Meta.parseall` syntax probe for `.jl` scripts in the pre-execution gate (advisory regex sweep without it)
 
 ### Internal Dependencies
-- `utils.pipeline_template` - Pipeline utilities
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Pipeline utilities
 
 ---
 
@@ -263,7 +263,7 @@ above the configured severity. Escape hatch: `GNN_ALLOW_UNSAFE_EXEC=1`.
 - **Function**: `process_security()`
 
 ### Imports From
-- `utils.pipeline_template` - Pipeline utilities
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Pipeline utilities
 
 ### Imported By
 - `src/gnn/execute/processor.py` - Imports `scan_script_for_execution` for the Step 12 pre-execution gate
