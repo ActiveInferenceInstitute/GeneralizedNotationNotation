@@ -139,9 +139,9 @@ end of this file.
   (docs/development/output_tracking.md), so CI has nothing committed to
   check until that boundary changes.
 - Dependency floors: RAISED 2026-09-07 for numpy (>=2.0), pandas (>=2.0),
-  openai (>=2.0), pytest (>=8.0), mypy (>=1.0). Residual: cosmetic floors
-  (networkx 2.6, plotly 5.15, scipy 1.7, ...) at the next deliberate lock
-  refresh.
+  openai (>=2.0), pytest (>=8.0), mypy (>=1.0). RAISED 2026-09-21 at the
+  deliberate lock refresh (PR #133): cosmetic floors networkx (>=3.6.1),
+  plotly (>=6.7.0), scipy (>=1.17.1) now match the tested lock versions.
 - `gnn/utils/pipeline_validator.py` near-name collision: RESOLVED
   2026-09-08 — renamed to `gnn/pipeline/pipeline_runtime_validator.py`
   (compat module at the old path emits `DeprecationWarning`; zero
