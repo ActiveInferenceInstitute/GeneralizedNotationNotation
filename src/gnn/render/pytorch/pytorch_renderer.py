@@ -279,6 +279,7 @@ def run_simulation():
     validation["all_valid"] = all(validation.values())
 
     results = {{
+        "schema_version": "pytorch_simulation_v1",
         "model_name": "{model_name}",
         "framework": "pytorch",
         "num_timesteps": T,

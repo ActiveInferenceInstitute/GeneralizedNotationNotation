@@ -24,22 +24,10 @@ FEATURES: dict[str, Any] = {
 }
 
 from pathlib import Path
-from typing import Any, Dict, List, Literal
+from typing import Any, Dict, List
 
-# Constrained type for supported execution framework names.
-FrameworkName = Literal[
-    "pymdp",
-    "rxinfer",
-    "jax",
-    "discopy",
-    "activeinference_jl",
-    "pytorch",
-    "numpyro",
-    "stan",
-    "lean",
-    "bnlearn",
-]
-
+# Constrained type for supported execution framework names — the canonical
+# Literal lives in ``execute.types``; re-exported here for the public name.
 # All execute submodules are in-tree — their import must succeed or tests
 # catch it. Any ImportError here is a real bug, not a "missing optional dep"
 # situation, and should fail loudly.
@@ -61,6 +49,10 @@ from .pymdp import (
     get_pymdp_health_status,
     validate_pymdp_environment,
 )
+
+# Constrained type for supported execution framework names — the canonical
+# Literal lives in ``execute.types``; re-exported here for the public name.
+from .types import ExecutionFrameworkName as FrameworkName
 from .validator import (
     check_dependencies,
     check_file_permissions,

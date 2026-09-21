@@ -3,7 +3,8 @@
 Data extraction functions for simulation output parsing.
 
 Extracts simulation data from both file-based outputs and stdout/stderr
-for all supported frameworks: PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy.
+for all supported frameworks: PyMDP, RxInfer.jl, ActiveInference.jl, JAX,
+DisCoPy, PyTorch, NumPyro, Stan, and bnlearn.
 """
 
 import json
@@ -411,6 +412,7 @@ def extract_pymdp_like_data_from_files(
                     with open(results_file, "r") as f:
                         results = json.load(f)
                     for key in (
+                        "schema_version",
                         "beliefs",
                         "actions",
                         "observations",

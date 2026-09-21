@@ -87,3 +87,26 @@ def test_malformed_result_file_is_skipped(tmp_path: Path) -> None:
     result = analyze_execution_results(tmp_path)
 
     assert result["framework_results"]["pymdp"]["result_count"] == 1
+
+
+def test_pytorch_schema_payload_routed_to_pytorch_extractor(tmp_path: Path) -> None:
+    """A pytorch schema payload is analyzed by the schema-aware extractor."""
+    payload: dict[str, Any] = {
+        "framework": "PyTorch",
+        "model_name": "Simple MDP Agent",
+        "schema_version": "pytorch_simulation_v1",
+        "beliefs": [[0.8, 0.2], [0.6, 0.4]],
+        "observations": [0, 1],
+        "actions": [1, 0],
+        "efe_history": [1.5, 1.2],
+    }
+    _write_results(tmp_path, [payload])
+
+    result = analyze_execution_results(tmp_path)
+
+    assert result["framework_results"]["pytorch"]["result_count"] == 1
+    analyses = result["framework_results"]["pytorch"]["analyses"]
+    assert any(
+        analysis.get("schema_version") == "pytorch_simulation_v1"
+        for analysis in analyses
+    )

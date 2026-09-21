@@ -3,7 +3,8 @@
 Post-Simulation Analysis Module
 
 This module provides generic post-simulation analysis methods that work across
-all frameworks (PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro).
+all frameworks (PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch,
+NumPyro, Stan, bnlearn).
 
 Implementation is split across sub-modules for maintainability:
 - trace_analysis: Framework-agnostic trace, free energy, policy, state analysis
@@ -29,6 +30,8 @@ __all__: list[Any] = [
     "extract_activeinference_jl_data",
     "extract_jax_data",
     "extract_jax_kronecker_data",
+    "extract_numpyro_data",
+    "extract_pytorch_data",
     "extract_discopy_data",
     # math_utils
     "compute_shannon_entropy",
@@ -68,7 +71,9 @@ from .framework_extractors import (
     extract_discopy_data,
     extract_jax_data,
     extract_jax_kronecker_data,
+    extract_numpyro_data,
     extract_pymdp_data,
+    extract_pytorch_data,
     extract_rxinfer_data,
 )
 
@@ -189,6 +194,10 @@ def analyze_execution_results(
                             extracted = extract_rxinfer_data(result)
                         elif framework == "activeinference_jl":
                             extracted = extract_activeinference_jl_data(result)
+                        elif framework == "pytorch":
+                            extracted = extract_pytorch_data(result)
+                        elif framework == "numpyro":
+                            extracted = extract_numpyro_data(result)
                         elif framework == "jax":
                             extracted = extract_jax_data(result)
                         elif framework == "discopy":
@@ -308,6 +317,10 @@ def analyze_execution_results(
                                     framework,
                                     model_name_for_analysis,
                                 )
+                                if extracted.get("schema_version"):
+                                    fe_analysis["schema_version"] = extracted[
+                                        "schema_version"
+                                    ]
                                 framework_analysis["analyses"].append(fe_analysis)
 
                             if extracted.get("traces"):

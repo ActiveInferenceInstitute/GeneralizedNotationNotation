@@ -6,6 +6,8 @@ from copy import deepcopy
 from types import MappingProxyType
 from typing import Any, Dict, Mapping, Optional, Tuple
 
+from gnn.frameworks import LITE_FRAMEWORKS
+
 FRAMEWORK_REGISTRY: Mapping[str, Dict[str, Any]] = MappingProxyType(
     {
         "pymdp": {
@@ -192,7 +194,7 @@ FRAMEWORK_REGISTRY: Mapping[str, Dict[str, Any]] = MappingProxyType(
                 "Exact Inference",
                 "Causal Discovery",
             ],
-            "function": "render_gnn_to_bnlearn",
+            "function": "generate_bnlearn_code",
             "output_format": "python",
             "pomdp_compatible": True,
             "requires_matrices": [],
@@ -298,9 +300,8 @@ def validate_framework_requested(framework: str) -> None:
 
 
 #: Frameworks served by the lightweight ``"lite"`` preset in
-#: ``processor.process_render`` (no Julia toolchain, no GPU stack). Kept in
-#: the canonical registry so downstream code has one source of truth.
-LITE_FRAMEWORKS: Tuple[str, ...] = ("pymdp", "jax", "discopy", "bnlearn")
+#: ``processor.process_render`` (no Julia toolchain, no GPU stack). Re-exported
+#: from the canonical name enumeration so the two cannot drift.
 
 
 def get_lite_frameworks() -> list[str]:

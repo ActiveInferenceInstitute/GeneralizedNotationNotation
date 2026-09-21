@@ -33,7 +33,9 @@ from gnn.analysis.post_simulation import (
     extract_activeinference_jl_data,
     extract_discopy_data,
     extract_jax_data,
+    extract_numpyro_data,
     extract_pymdp_data,
+    extract_pytorch_data,
     extract_rxinfer_data,
 )
 
@@ -561,3 +563,103 @@ class TestCompareFrameworkResults:
         """Should handle empty results dict."""
         comparison = compare_framework_results({}, "test_model")
         assert comparison["framework_count"] == 0
+
+
+class _SchemaPayloadMixin:
+    """Shared payload shape for the pytorch/numpyro runner schemas."""
+
+    schema_id: str
+
+    def _schema_payload(self) -> dict[str, Any]:
+        return {
+            "schema_version": self.schema_id,
+            "model_name": "backend_smoke",
+            "beliefs": [[0.7, 0.3], [0.4, 0.6]],
+            "actions": [0, 1],
+            "observations": [0, 1],
+            "efe_history": [1.5, 1.2],
+            "validation": {"all_valid": True},
+            "model_parameters": {"num_states": 2},
+        }
+
+
+class TestExtractPytorchData(_SchemaPayloadMixin):
+    """Test extract_pytorch_data (schema-aware, ungated acceptance)."""
+
+    schema_id = "pytorch_simulation_v1"
+
+    @pytest.mark.unit
+    def test_top_level_schema_payload(self) -> None:
+        """Top-level schema payload normalizes the flat arrays and EFE."""
+        data = extract_pytorch_data(self._schema_payload())
+        assert data["schema_version"] == self.schema_id
+        assert data["beliefs"] == [[0.7, 0.3], [0.4, 0.6]]
+        assert data["actions"] == [0, 1]
+        assert data["observations"] == [0, 1]
+        assert data["free_energy"] == [1.5, 1.2]
+        assert data["validation"] == {"all_valid": True}
+        assert data["model_parameters"] == {"num_states": 2}
+
+    @pytest.mark.unit
+    def test_nested_simulation_data_schema_payload(self) -> None:
+        """A nested simulation_data schema payload unwraps to the same fields."""
+        data = extract_pytorch_data({"simulation_data": self._schema_payload()})
+        assert data["schema_version"] == self.schema_id
+        assert data["free_energy"] == [1.5, 1.2]
+        assert data["beliefs"] == [[0.7, 0.3], [0.4, 0.6]]
+
+    @pytest.mark.unit
+    def test_schema_less_flat_payload_still_extracted(self) -> None:
+        """Schema-less flat payloads keep the ungated acceptance contract."""
+        data = extract_pytorch_data(
+            {"beliefs": [[0.5, 0.5]], "actions": [0], "observations": [1]}
+        )
+        assert data["schema_version"] is None
+        assert data["beliefs"] == [[0.5, 0.5]]
+        assert data["actions"] == [0]
+        assert data["observations"] == [1]
+
+    @pytest.mark.unit
+    def test_no_extraction_error_key(self) -> None:
+        """Heterogeneous payloads are accepted, never tagged with errors."""
+        data = extract_pytorch_data({})
+        assert isinstance(data, dict)
+        assert "extraction_error" not in data
+
+
+class TestExtractNumpyroData(_SchemaPayloadMixin):
+    """Test extract_numpyro_data (schema-aware, ungated acceptance)."""
+
+    schema_id = "numpyro_simulation_v1"
+
+    @pytest.mark.unit
+    def test_top_level_schema_payload(self) -> None:
+        """Top-level schema payload normalizes the flat arrays and EFE."""
+        data = extract_numpyro_data(self._schema_payload())
+        assert data["schema_version"] == self.schema_id
+        assert data["beliefs"] == [[0.7, 0.3], [0.4, 0.6]]
+        assert data["actions"] == [0, 1]
+        assert data["observations"] == [0, 1]
+        assert data["free_energy"] == [1.5, 1.2]
+
+    @pytest.mark.unit
+    def test_nested_simulation_data_schema_payload(self) -> None:
+        """A nested simulation_data schema payload unwraps to the same fields."""
+        data = extract_numpyro_data({"simulation_data": self._schema_payload()})
+        assert data["schema_version"] == self.schema_id
+        assert data["free_energy"] == [1.5, 1.2]
+
+    @pytest.mark.unit
+    def test_schema_less_flat_payload_still_extracted(self) -> None:
+        """Schema-less flat payloads keep the ungated acceptance contract."""
+        data = extract_numpyro_data({"beliefs": [[0.5, 0.5]], "actions": [0]})
+        assert data["schema_version"] is None
+        assert data["beliefs"] == [[0.5, 0.5]]
+        assert data["actions"] == [0]
+
+    @pytest.mark.unit
+    def test_no_extraction_error_key(self) -> None:
+        """Heterogeneous payloads are accepted, never tagged with errors."""
+        data = extract_numpyro_data({})
+        assert isinstance(data, dict)
+        assert "extraction_error" not in data

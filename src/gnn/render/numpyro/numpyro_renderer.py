@@ -265,6 +265,7 @@ def run_simulation(seed: int = 42):
     validation["all_valid"] = all(validation.values())
 
     results = {{
+        "schema_version": "numpyro_simulation_v1",
         "model_name": "{model_name}",
         "framework": "numpyro",
         "num_timesteps": T,

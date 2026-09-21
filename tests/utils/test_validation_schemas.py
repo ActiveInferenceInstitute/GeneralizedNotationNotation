@@ -131,6 +131,23 @@ def test_known_frameworks_contains_all_runners() -> Any:
     assert required.issubset(set(KNOWN_FRAMEWORKS))
 
 
+def test_validate_frameworks_arg_accepts_stan() -> Any:
+    """``stan`` is a canonical framework; validation must accept it."""
+    assert validate_frameworks_arg("stan") == "stan"
+
+
+def test_validate_frameworks_arg_accepts_lean() -> Any:
+    """``lean`` is a canonical execution backend; validation must accept it."""
+    assert validate_frameworks_arg("lean") == "lean"
+
+
+def test_known_frameworks_equals_canonical_all_frameworks() -> Any:
+    """``KNOWN_FRAMEWORKS`` derives from the canonical name enumeration."""
+    from gnn.frameworks import ALL_FRAMEWORKS
+
+    assert KNOWN_FRAMEWORKS == ALL_FRAMEWORKS
+
+
 # --- normalize_pomdp_columns ---------------------------------------------
 
 
