@@ -152,9 +152,7 @@ def run_gui(
                     "backend_reason": _GUI_BACKEND_REASON,
                 },
             )
-            log_step_error(
-                logger, f"GUI 1 launch verification failed: {poll_reason}"
-            )
+            log_step_error(logger, f"GUI 1 launch verification failed: {poll_reason}")
             return False
 
         logger.info(f"🎮 GUI 1 is running on http://localhost:{_GUI1_PORT}")

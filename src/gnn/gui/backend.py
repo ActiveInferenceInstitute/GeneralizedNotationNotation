@@ -83,7 +83,8 @@ def wait_for_server_launch(
             return f"server thread exited within {window} launch window"
         try:
             with urllib.request.urlopen(
-                f"http://127.0.0.1:{port}", timeout=0.5  # nosec B310
+                f"http://127.0.0.1:{port}",
+                timeout=0.5,  # nosec B310
             ) as response:
                 status = getattr(response, "status", None)
                 if status is not None and status < 500:
