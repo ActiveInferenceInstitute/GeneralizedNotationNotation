@@ -88,9 +88,16 @@ def oxdraw_gui(
 
     start_time = time.time()
 
-    # Determine mode - headless by default for pipeline integration
+    # Determine mode - headless by default for pipeline integration.
+    # mode must be popped out of kwargs: it is forwarded explicitly to
+    # process_oxdraw below, and a splatted duplicate raises TypeError.
+    raw_mode = kwargs.pop("mode", None)
     headless = kwargs.get("headless", True)
-    mode = kwargs.get("mode", "headless" if headless else "interactive")
+    mode = (
+        raw_mode
+        if isinstance(raw_mode, str)
+        else ("headless" if headless else "interactive")
+    )
 
     # Override headless if explicitly set to interactive
     if mode == "interactive":
