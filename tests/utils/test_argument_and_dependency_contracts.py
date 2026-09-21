@@ -62,11 +62,21 @@ def test_step_specific_arguments_are_exposed() -> None:
 
     step22 = ArgumentParser.parse_step_arguments(
         "22_gui.py",
-        ["--interactive", "--gui-types", "gui_1,oxdraw", "--open-browser"],
+        [
+            "--interactive",
+            "--gui-types",
+            "gui_1,oxdraw",
+            "--open-browser",
+            "--launch-editor",
+        ],
     )
     assert step22.interactive is True
     assert step22.gui_types == "gui_1,oxdraw"
     assert step22.open_browser is True
+    assert step22.launch_editor is True
+
+    step22_default = ArgumentParser.parse_step_arguments("22_gui.py", [])
+    assert step22_default.launch_editor is False
 
     step24 = ArgumentParser.parse_step_arguments(
         "24_intelligent_analysis.py",

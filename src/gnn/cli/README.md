@@ -28,6 +28,7 @@ Unified command-line interface for the GNN pipeline. Provides subcommands for ru
 | `gnn lsp` | Launch GNN Language Server (stdio) |
 | `gnn watch <dir>` | Monitor directory and live-reparse on file change |
 | `gnn graph <file>` | Generate dependency graph from multi-model files |
+| `gnn gui` | Run Step 22 GUI processing: headless artifacts or interactive GUI servers (--gui-types, --interactive) |
 
 Exit codes follow one contract: `0` is success, `1` is error, and `2` is a
 completed command with warnings, validation findings, or degraded readiness.
@@ -78,6 +79,7 @@ The CLI module is a thin dispatcher — each subcommand delegates to the corresp
 - `lsp` → `gnn.cli.lsp.start_lsp()`: canonical pygls server (`gnn.lsp`) when pygls is importable, pygls-free JSON-RPC fallback otherwise
 - `watch` → `gnn.cli.watcher.GNNWatcher()`
 - `graph` → `gnn.dep_graph.render_graph_from_file()`
+- `gui` → `gnn.gui.process_gui()` (lazy import; headless artifacts by default, interactive servers with `--interactive`)
 
 ## References
 

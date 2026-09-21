@@ -40,7 +40,7 @@ OPTIONAL_GROUPS: dict[str, Any] = {
     "api": "FastAPI/uvicorn server dependencies",
     "ml-ai": "Machine learning extensions (transformers, scipy, scikit-learn)",
     "audio": "Audio processing (librosa, soundfile, pedalboard, pydub)",
-    "gui": "GUI frameworks (gradio, streamlit)",
+    "gui": "GUI frameworks (gradio)",
     "graphs": "Graphviz bindings for graph rendering workflows",
     "research": "Research tools (jupyterlab, sympy, numba, cython)",
     "scaling": "Scaling (dask, distributed, ray)",

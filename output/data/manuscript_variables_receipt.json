@@ -1,9 +1,9 @@
 {
-  "counts_describe_commit": "d9cbe69c9",
+  "counts_describe_commit": "1f0a2de09",
   "dirty_path_count": 2,
   "dirty_paths": [
-    "output/data/manuscript_variables.json",
-    "output/data/manuscript_variables_receipt.json"
+    "docs/gnn/modules/22_gui.md",
+    "output/model_registry_api/model_registry.json"
   ],
   "generator": "scripts/z_generate_manuscript_variables.py",
   "git_available": true,

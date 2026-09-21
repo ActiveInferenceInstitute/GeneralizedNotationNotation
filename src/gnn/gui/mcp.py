@@ -32,7 +32,7 @@ def process_gui_mcp(
         output_directory: Directory to save GUI outputs
         verbose: Enable verbose output
         gui_types: Comma-separated list of GUI types to run (gui_1, gui_2, gui_3, oxdraw)
-        headless: Run in headless mode (no interactive servers)
+        headless: Run without interactive servers; interactive is derived as not headless
 
     Returns:
         Dictionary with operation status and results.
@@ -44,7 +44,7 @@ def process_gui_mcp(
         target_directory=target_directory,
         output_directory=output_directory,
         verbose=verbose,
-        extra_step_kwargs={"gui_types": gui_types, "headless": headless},
+        extra_step_kwargs={"gui_types": gui_types, "interactive": not headless},
         static_extras={
             "gui_types": gui_types.split(","),
             "mode": "headless" if headless else "interactive",

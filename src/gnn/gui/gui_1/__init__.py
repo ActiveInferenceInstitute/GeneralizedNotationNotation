@@ -112,6 +112,7 @@ def get_gui_1_info() -> Dict[str, Any]:
         "requirements": ["gradio"],
         "export_format": "GNN Markdown (.md)",
         "interface_type": "form-based",
+        "port": 7860,
     }
 
 
