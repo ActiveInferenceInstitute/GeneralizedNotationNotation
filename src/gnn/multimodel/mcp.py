@@ -59,7 +59,9 @@ def generate_dependency_graph_mcp(
             "graph": graph_str,
         }
 
-    return run_tool_envelope(_build, wrapper_name="generate_dependency_graph_mcp", logger=logger)
+    return run_tool_envelope(
+        _build, wrapper_name="generate_dependency_graph_mcp", logger=logger
+    )
 
 
 # ── MCP Registration ──────────────────────────────────────────────────────────

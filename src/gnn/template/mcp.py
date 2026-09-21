@@ -157,8 +157,7 @@ def register_tools(registry: Any) -> Any:
                 {
                     "name": "overwrite",
                     "description": (
-                        "Replace an existing destination with a different"
-                        " checksum"
+                        "Replace an existing destination with a different checksum"
                     ),
                     "type": "boolean",
                     "required": False,

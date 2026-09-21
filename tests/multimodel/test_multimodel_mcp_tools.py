@@ -63,8 +63,7 @@ class TestGenerateDependencyGraph:
     def test_happy_path_repo_exemplar(self) -> None:
         """A real repo GNN file renders a non-empty graph and echoes inputs."""
         exemplar = REPO_ROOT / "input/gnn_files/multiagent/multi_agent_coordination.md"
-        if not exemplar.is_file():
-            pytest.skip("repo exemplar not present")
+        assert exemplar.is_file(), f"repo exemplar missing: {exemplar}"
         result = multimodel_mcp.generate_dependency_graph_mcp(str(exemplar))
         assert result["success"] is True
         assert result["file_path"] == str(exemplar)
@@ -90,7 +89,9 @@ class TestGenerateDependencyGraph:
         """output_format 'text' renders the adjacency list and is echoed."""
         gnn = tmp_path / "two_models.md"
         gnn.write_text(MULTI_MODEL_GNN)
-        result = multimodel_mcp.generate_dependency_graph_mcp(str(gnn), output_format="text")
+        result = multimodel_mcp.generate_dependency_graph_mcp(
+            str(gnn), output_format="text"
+        )
         assert result["success"] is True
         assert result["format"] == "text"
         assert "Dependency Graph:" in result["graph"]
@@ -109,7 +110,9 @@ class TestGenerateDependencyGraph:
         """An unsupported output_format yields the format error."""
         gnn = tmp_path / "ok.md"
         gnn.write_text("## StateSpaceBlock\n- a[2,2,type=float]\n")
-        result = multimodel_mcp.generate_dependency_graph_mcp(str(gnn), output_format="dot")
+        result = multimodel_mcp.generate_dependency_graph_mcp(
+            str(gnn), output_format="dot"
+        )
         assert result["success"] is False
         assert "output_format must be 'mermaid' or 'text'" in result["error"]
 
