@@ -19,7 +19,6 @@ import json
 import logging
 import os
 import shutil
-import sys
 import tempfile
 from dataclasses import dataclass
 from datetime import datetime
@@ -610,28 +609,6 @@ def _write_atomic(dest: Path, content: str) -> None:
         raise
 
 
-def _load_live_mcp_tools() -> list[dict[str, str]]:
-    """Best-effort live MCP tool inventory; ``[]`` when unavailable."""
-    try:
-        src_dir = Path(__file__).resolve().parent.parent
-        if str(src_dir) not in sys.path:
-            sys.path.insert(0, str(src_dir))
-        from gnn.mcp.mcp import mcp_instance
-
-        return [
-            {
-                "name": name,
-                "module": getattr(tool, "module", ""),
-                "category": getattr(tool, "category", ""),
-                "desc": getattr(tool, "description", ""),
-            }
-            for name, tool in mcp_instance.tools.items()
-        ]
-    except Exception as e:  # MCP registry is optional for the website
-        logger.debug(f"MCP tools not loaded for website (optional): {e}")
-        return []
-
-
 def _collect_gnn_files(p_root: Path, input_dir: Path) -> tuple[list[Path], bool]:
     """Discover GNN source markdown files, preferring ``<root>/input/gnn_files``."""
     for search_dir in (p_root.parent / "input" / "gnn_files", input_dir):
@@ -692,6 +669,48 @@ def _load_execution_summary(p_root: Path) -> dict[str, Any]:
     return {}
 
 
+def _load_mcp_summary(p_root: Path) -> dict[str, Any]:
+    """Load the Step 21 MCP processing summary (absent or malformed → ``{}``)."""
+    candidate = p_root / "21_mcp_output" / "mcp_processing_summary.json"
+    if not candidate.exists():
+        return {}
+    try:
+        loaded = json.loads(candidate.read_text())
+    except Exception as e:
+        logger.debug(f"Skipped malformed MCP summary file: {e}")
+        return {}
+    return loaded if isinstance(loaded, dict) else {}
+
+
+def _load_registered_tools(p_root: Path) -> list[dict[str, str]]:
+    """Map ``registered_tools.json`` (step 21) to the page tool-card shape."""
+    candidate = p_root / "21_mcp_output" / "registered_tools.json"
+    if not candidate.exists():
+        logger.debug("No registered_tools.json found for website (step 21 optional)")
+        return []
+    try:
+        loaded = json.loads(candidate.read_text())
+    except Exception as e:
+        logger.debug(f"Skipped malformed registered tools file: {e}")
+        return []
+    if not isinstance(loaded, list):
+        logger.debug("registered_tools.json is not a list; ignoring it")
+        return []
+    cards: list[dict[str, str]] = []
+    for item in loaded:
+        if not isinstance(item, dict):
+            continue
+        cards.append(
+            {
+                "name": item.get("name", ""),
+                "module": item.get("module", ""),
+                "desc": item.get("description") or item.get("desc") or "",
+                "category": item.get("category", ""),
+            }
+        )
+    return cards
+
+
 def _collect_visualizations(
     viz_dirs: list[Path], assets_dir: Path
 ) -> list[dict[str, Any]]:
@@ -749,14 +768,14 @@ def collect_website_data(
     *,
     output_dir: Path | None = None,
     user_data: dict[str, Any] | None = None,
-    mcp_tools_provider: Callable[[], list[dict[str, str]]] | None = None,
 ) -> dict[str, Any]:
     """Aggregate every artifact the website pages render.
 
     Pure with respect to the repository state except for copying
-    visualization assets into ``assets_dir``. The MCP inventory comes from
-    ``mcp_tools_provider`` (default: best-effort live registry read), so
-    callers can inject a deterministic provider in tests.
+    visualization assets into ``assets_dir``. The MCP page data comes from
+    the step-21 artifacts: ``21_mcp_output/mcp_processing_summary.json`` for
+    the summary and ``registered_tools.json`` for the tool inventory, so the
+    site reflects what step 21 actually recorded.
     """
     p_root = Path(pipeline_output_root)
     data: dict[str, Any] = {
@@ -768,6 +787,7 @@ def collect_website_data(
         "visualizations": [],
         "reports": [],
         "mcp_tools": [],
+        "mcp_summary": {},
         "step_statuses": {},
         "exec_summary": {},
         "processed_files": 0,
@@ -800,27 +820,22 @@ def collect_website_data(
         )
     )
     data["reports"].extend(_collect_reports(p_root))
-    provider = mcp_tools_provider or _load_live_mcp_tools
-    data["mcp_tools"].extend(provider())
+    data["mcp_summary"] = _load_mcp_summary(p_root)
+    data["mcp_tools"] = _load_registered_tools(p_root)
     return data
 
 
 class WebsiteGenerator:
     """Generates a premium multi-page static HTML website from pipeline artifacts."""
 
-    def __init__(
-        self,
-        *,
-        mcp_tools_provider: Callable[[], list[dict[str, str]]] | None = None,
-    ) -> None:
+    def __init__(self) -> None:
         """Initialize the instance.
 
-        ``mcp_tools_provider`` supplies the MCP tool inventory shown on the
-        MCP page; defaults to a best-effort read of the live registry.
+        MCP page data is sourced from the step-21 artifacts in the pipeline
+        output root at generation time; no constructor configuration needed.
         """
         self.template_dir = Path(__file__).parent / "templates"
         self.static_dir = Path(__file__).parent / "static"
-        self._mcp_tools_provider = mcp_tools_provider
 
     # ── Public API ──────────────────────────────────────────────────────────
 
@@ -908,7 +923,6 @@ class WebsiteGenerator:
             assets_dir,
             output_dir=output_dir,
             user_data=user_data,
-            mcp_tools_provider=self._mcp_tools_provider,
         )
 
     # ── Page generators ─────────────────────────────────────────────────────
@@ -918,7 +932,7 @@ class WebsiteGenerator:
         n_ok = sum(1 for s in data["step_statuses"].values() if s == "ok")
         n_steps = len(PIPELINE_STEPS)
         n_files = data["processed_files"]
-        n_tools = len(data["mcp_tools"])
+        n_tools = int(data["mcp_summary"].get("tools_registered", 0))
 
         stats = f"""
 <div class="stats-row">
@@ -1120,34 +1134,82 @@ class WebsiteGenerator:
         return _page("Reports", "reports", body)
 
     def _page_mcp(self, data: dict) -> str:
-        """Render the MCP tools registry."""
-        tools = data["mcp_tools"]
-        if not tools:
-            by_mod_html = '<div class="card"><p>No MCP tools registered. Run step 21 (MCP Processing) to register tools.</p></div>'
+        """Render the MCP registry from the step-21 processing artifacts."""
+        summary: dict[str, Any] = data.get("mcp_summary") or {}
+        if not summary:
+            # Truthful empty state: step 21 produced nothing we can report.
+            inner = (
+                '<div class="card"><p>No MCP data recorded.</p>'
+                "<p>Step 21 (MCP Processing) did not run or wrote no MCP output "
+                "for this pipeline run.</p></div>"
+            )
+            n_tools = 0
         else:
-            # Group by module
-            by_mod: dict[str, list[dict[str, Any]]] = {}
-            for t in sorted(tools, key=lambda x: (x.get("module", ""), x["name"])):
-                mod = t.get("module") or "core"
-                by_mod.setdefault(mod, []).append(t)
+            n_tools = int(summary.get("tools_registered", 0) or 0)
+            status = str(summary.get("processing_status", "unknown"))
+            failed = status == "failed"
+            badge_cls = "badge-error" if failed else "badge-ok"
+            message = str(summary.get("message", ""))
+            timestamp = str(summary.get("timestamp", ""))
+            mcp_version = str(summary.get("mcp_version", ""))
+            n_modules = int(summary.get("registered_modules_count", 0) or 0)
+            n_resources = int(summary.get("resources_count", 0) or 0)
 
-            by_mod_html = ""
-            for mod, mod_tools in sorted(by_mod.items()):
-                cards_html = ""
-                for t in mod_tools:
-                    desc = t.get("desc") or ""
-                    cat = t.get("category") or ""
-                    cat_html = f" · {_esc(cat)}" if cat else ""
-                    desc_html = (
-                        f'<div class="tool-desc">{_esc(desc)}</div>' if desc else ""
-                    )
-                    cards_html += f"""
+            rows = (
+                f"<tr><td>Status</td><td>"
+                f'<span class="pill {badge_cls}">{_esc(status)}</span></td></tr>'
+                f"<tr><td>Timestamp</td><td>{_esc(timestamp)}</td></tr>"
+                f"<tr><td>MCP version</td><td>{_esc(mcp_version)}</td></tr>"
+                f"<tr><td>Registered modules</td><td>{n_modules}</td></tr>"
+                f"<tr><td>Resources</td><td>{n_resources}</td></tr>"
+            )
+            if failed and summary.get("error"):
+                rows += (
+                    "<tr><td>Error</td>"
+                    '<td style="color:var(--error)">'
+                    f"{_esc(str(summary['error']))}</td></tr>"
+                )
+
+            chips = "".join(
+                f'<span class="pill badge-pending" style="margin-left:6px">'
+                f"{_esc(str(m))}</span>"
+                for m in (summary.get("registered_modules") or [])
+            )
+            chips_html = f'<div style="margin:10px 0">{chips}</div>' if chips else ""
+
+            inner = f"""
+<div class="card">
+  <h3>MCP Processing Summary</h3>
+  <p>{_esc(message)}</p>
+  <div class="table-wrap" style="margin-top:8px">
+    <table><tbody>{rows}</tbody></table>
+  </div>
+  {chips_html}
+</div>"""
+
+            tools: list[dict[str, Any]] = data["mcp_tools"]
+            if tools:
+                by_mod: dict[str, list[dict[str, Any]]] = {}
+                for t in sorted(tools, key=lambda x: (x.get("module", ""), x["name"])):
+                    mod = t.get("module") or "core"
+                    by_mod.setdefault(mod, []).append(t)
+
+                for mod, mod_tools in sorted(by_mod.items()):
+                    cards_html = ""
+                    for t in mod_tools:
+                        desc = t.get("desc") or ""
+                        cat = t.get("category") or ""
+                        cat_html = f" · {_esc(cat)}" if cat else ""
+                        desc_html = (
+                            f'<div class="tool-desc">{_esc(desc)}</div>' if desc else ""
+                        )
+                        cards_html += f"""
 <div class="tool-card">
   <div class="tool-name">{_esc(t["name"])}</div>
   <div class="tool-mod">{_esc(mod)}{cat_html}</div>
   {desc_html}
 </div>"""
-                by_mod_html += f"""
+                    inner += f"""
 <div class="section">
   <div class="section-title">{_esc(mod)} <span class="pill badge-pending" style="margin-left:6px">{len(mod_tools)}</span></div>
   {cards_html}
@@ -1156,9 +1218,9 @@ class WebsiteGenerator:
         body = f"""
 <div class="page-header">
   <h1>🔧 MCP Tools Registry</h1>
-  <p class="subtitle">{len(tools)} tools registered across all modules via the Model Context Protocol</p>
+  <p class="subtitle">{n_tools} tools registered across all modules via the Model Context Protocol</p>
 </div>
-{by_mod_html}"""
+{inner}"""
         return _page("MCP Tools", "mcp", body)
 
 

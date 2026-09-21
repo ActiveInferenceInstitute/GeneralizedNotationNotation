@@ -79,8 +79,8 @@ success = process_website(
 
 Additional exports (see `__init__.py`): `WebsiteGenerator`, `WebsiteRenderer`, `generate_website`, `embed_text_file`, `embed_json_file`, `embed_html_file`, `get_module_info`, `get_supported_file_types`, `validate_website_config`, `render_dashboard` (re-exported from `dashboard.py`), `collect_website_data`, `get_pipeline_steps`, `PIPELINE_STEPS`, `StepInfo`, `inspect_website`, `list_website_pages`.
 
-#### `collect_website_data(pipeline_output_root, input_dir, assets_dir, *, output_dir=None, user_data=None, mcp_tools_provider=None) -> dict`
-**Description**: Pure aggregation of every artifact the pages render (GNN files, step statuses, analysis JSON, execution summary, visualization assets, reports, MCP inventory). `mcp_tools_provider` injects the MCP tool list; the default performs a best-effort live registry read. Callers can build the data once and render pages from it.
+#### `collect_website_data(pipeline_output_root, input_dir, assets_dir, *, output_dir=None, user_data=None) -> dict`
+**Description**: Pure aggregation of every artifact the pages render (GNN files, step statuses, analysis JSON, execution summary, visualization assets, reports, MCP page data). MCP page data is sourced from the step-21 artifacts — `21_mcp_output/mcp_processing_summary.json` for the summary and `21_mcp_output/registered_tools.json` for the tool inventory — so the site reflects what step 21 actually recorded and degrades to a truthful empty state when step 21 did not run. Callers can build the data once and render pages from it.
 
 #### `get_pipeline_steps() -> tuple[StepInfo, ...]`
 **Description**: Returns the immutable 25-step catalogue (`StepInfo(number, name, description)` with a `script_name` display property) used to render the dashboard and pipeline pages.

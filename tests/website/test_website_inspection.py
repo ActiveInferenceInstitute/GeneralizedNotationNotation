@@ -22,7 +22,7 @@ def _build_site(tmp_path: Any) -> Path:
     input_dir = tmp_path / "input"
     input_dir.mkdir()
     out: Path = tmp_path / "site"
-    result = WebsiteGenerator(mcp_tools_provider=list).generate_website(
+    result = WebsiteGenerator().generate_website(
         {
             "input_dir": str(input_dir),
             "output_dir": str(out),

@@ -110,9 +110,10 @@ All return `bool`:
 - `get_supported_file_types() -> list[str]` — flat list of extensions.
 - `validate_website_config(config: dict | str) -> bool | dict` — light
   validation helper (accepts a dict or a simple string for tests).
-- `collect_website_data(pipeline_output_root, input_dir, assets_dir, *, output_dir=None, user_data=None, mcp_tools_provider=None) -> dict`
-  — pure aggregation of all page inputs; inject `mcp_tools_provider` for a
-  deterministic MCP inventory (default: best-effort live registry read).
+- `collect_website_data(pipeline_output_root, input_dir, assets_dir, *, output_dir=None, user_data=None) -> dict`
+  — pure aggregation of all page inputs; MCP page data is sourced from the
+  step-21 artifacts (`21_mcp_output/mcp_processing_summary.json` and
+  `registered_tools.json`), degrading to a truthful empty state when absent.
 - `get_pipeline_steps() -> tuple[StepInfo, ...]` — the immutable 25-step
   catalogue (`StepInfo(number, name, description)` + `script_name` display
   property); `PIPELINE_STEPS` is the same tuple as a constant.
