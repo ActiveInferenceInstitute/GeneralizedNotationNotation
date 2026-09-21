@@ -16,7 +16,7 @@ surfaces this session hardens:
 4. dispatch   ``gnn.mcp.processor.handle_mcp_request`` JSON-RPC traffic
               (``tools/list`` plus ``tools/call validate_export_format`` in a
               positive and a negative variant) and
-              ``gnn.utils.mcp_dispatch.run_pipeline_step_mcp`` driving the real
+              ``gnn.utils.mcp.dispatch.run_pipeline_step_mcp`` driving the real
               ``gnn.validation.process_validation`` step.
 5. envelope   ``gnn.execute.subprocess_envelope.run_subprocess_envelope``
               spawning a trivial interpreter child with an enforced timeout,

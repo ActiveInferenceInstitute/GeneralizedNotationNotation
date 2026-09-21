@@ -150,7 +150,7 @@ result = instance.method1(arg)
 
 ### Internal Dependencies
 
-- `utils.pipeline_template` - [what functions/classes used]
+- `gnn.utils.pipeline_orchestration.pipeline_template` - [what functions/classes used]
 - `pipeline.config` - [what functions/classes used]
 
 ---
@@ -243,7 +243,7 @@ except Exception as e:
 ```python
 # Called from numbered script (thin orchestrator pattern)
 from [module] import process_[module]_standardized
-from utils.pipeline_template import setup_step_logging
+from gnn.utils.pipeline_orchestration.pipeline_template import setup_step_logging
 from pathlib import Path
 
 def main():

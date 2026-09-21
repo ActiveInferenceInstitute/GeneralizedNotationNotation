@@ -3,7 +3,7 @@
 
 Every step list in the codebase should derive from ``STEPS`` below.
 Add ONE entry here when adding a new pipeline step; all downstream lists
-(main.py, config.py, pipeline_template.py, justfile) update automatically.
+(main.py, config.py, pipeline_orchestration/pipeline_template.py, justfile) update automatically.
 
 Usage:
 

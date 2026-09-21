@@ -263,7 +263,7 @@ The shared contract is `canonical_pomdp_v1`, with B stored as `(next_state, prev
 
 ### Internal Dependencies
 - `gnn.parsers` - GNN parsing and validation
-- `utils.pipeline_template` - Pipeline utilities
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Pipeline utilities
 
 ---
 
@@ -388,7 +388,7 @@ Performance is tracked by the pipeline execution summaries and render summary JS
 
 ### Imports From
 - `gnn.parsers` - GNN parsing and validation
-- `utils.pipeline_template` - Pipeline utilities
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Pipeline utilities
 
 ### Imported By
 - `tests.test_render_*` - Render tests

@@ -145,7 +145,7 @@ On failure it returns the same best-effort shape as the other stages: `{status: 
 - `re` - Regular expressions for parsing
 
 ### Internal Dependencies
-- `utils.pipeline_template` - Pipeline utilities
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Pipeline utilities
 
 ---
 
@@ -233,7 +233,7 @@ output/6_validation_output/
 - **Function**: `process_validation()`
 
 ### Imports From
-- `utils.pipeline_template` - Pipeline utilities
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Pipeline utilities
 
 ### Imported By
 - `main.py` - Pipeline orchestration

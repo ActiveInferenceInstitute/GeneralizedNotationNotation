@@ -57,7 +57,7 @@ uv sync --extra dev
 uv run pytest
 # If JAX/pymdp tests skip or ``ModuleNotFoundError: jax`` during tests, another venv may own ``pytest``:
 # unset VIRTUAL_ENV or run ``PYTHONPATH=src .venv/bin/pytest tests/ …``
-# Package integrity probe: ``src/gnn/utils/jax_stack_validation.py`` (also Step 1 + CI).
+# Package integrity probe: ``src/gnn/utils/runtime_safety/jax_stack_validation.py`` (also Step 1 + CI).
 ```
 
 ## Architecture

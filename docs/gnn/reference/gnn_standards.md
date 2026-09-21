@@ -30,7 +30,7 @@ The GNN pipeline follows strict architectural patterns and standards:
 - **Type Hints**: All public functions must have complete type annotations
 - **Docstrings**: Google-style docstrings for all public classes and functions
 - **Imports**: Use relative imports within modules, absolute imports for cross-module references
-- **Logging**: Use `logging.getLogger(__name__)` with structured log messages via `utils.pipeline_template`
+- **Logging**: Use `logging.getLogger(__name__)` with structured log messages via `gnn.utils.pipeline_orchestration.pipeline_template`
 
 ### Module Structure
 

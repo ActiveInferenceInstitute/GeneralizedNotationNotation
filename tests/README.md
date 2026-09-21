@@ -99,12 +99,12 @@ The test infrastructure follows the **thin orchestrator pattern**, where `2_test
 - Handles resource monitoring, timeouts, and error recovery
 - Generates comprehensive test reports
 
-**testing_utils.py** (Shared Utilities):
+**`gnn.utils.testing` package** (Shared Utilities):
 
-- Provides test fixtures and helper functions
-- Defines test categories, markers, and configuration
+- Provides test fixtures and helper functions (`testing/` concern package: constants, environment, fixtures, reports, runner)
+- Defines test categories, stages, markers, and configuration
 - Provides test data creation utilities
-- Used by both test files and the runner
+- Used by both test files and the runner (the old top-level `testing_utils.py` facade was removed when the SC-38 window closed)
 
 **conftest.py** (Pytest Configuration):
 
@@ -356,7 +356,7 @@ python src/gnn/2_tests.py --comprehensive --verbose
 
 ## Test Utilities
 
-### Shared Test Utilities (`src/gnn/utils/testing_utils.py`)
+### Shared Test Utilities (`src/gnn/utils/testing/`)
 
 - `TEST_CATEGORIES` - Test category definitions
 - `TEST_STAGES` - Test execution stages
@@ -541,7 +541,7 @@ Example test file structure:
 
 import pytest
 from pathlib import Path
-from gnn.utils.testing_utils import create_sample_gnn_content, assert_file_exists
+from gnn.utils.testing import create_sample_gnn_content, assert_file_exists
 
 
 @pytest.mark.fast

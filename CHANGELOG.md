@@ -28,6 +28,26 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   blanket "B has contradictory axis conventions" message. Refusal semantics
   are unchanged: ambiguous orientation is never reordered on export.
 
+### Removed (2026-09-19 — validate_gnn* alias retirement)
+
+- **All 10 `validate_gnn*` old-name aliases deleted** (v4.0.0 cycle; the
+  deprecation window opened 2026-09-11 with zero remaining live callers):
+  `parsers.basic.validate_gnn` / `validate_gnn_syntax_formal` →
+  `validate_gnn_syntax`; package-root `validate_gnn_file` →
+  `validate_gnn_source`; `validation.simple.validate_gnn_file` /
+  `validate_gnn_directory` → `check_gnn_file_basic` /
+  `check_gnn_directory_basic`; `validate_gnn_structure` →
+  `check_gnn_file_structure`; `validate_gnn_pomdp_structure` →
+  `check_gnn_pomdp_spec`; `schema_validator.validate_gnn_file` →
+  `validate_gnn_file_comprehensive`; `validate_gnn_cross_format_consistency`
+  → `check_cross_format_consistency`; `llm.validate_gnn` →
+  `validate_gnn_with_llm`. Importing any retired name now raises
+  `AttributeError`; `test_retired_validate_gnn_aliases_are_gone` pins the
+  retirement. Package re-export wiring (imports, lazy-export map entries,
+  `__all__`) pruned and `scripts/validate_surface_manifest.json`
+  `old_names` emptied. MCP tool registry names (`validate_gnn_content`,
+  `validate_gnn_file`, `validate_gnn_files`) are unchanged contracts.
+
 ---
 
 ## [3.4.0] — 2026-09-17
@@ -59,27 +79,6 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   generated graphical abstract on the cover page.
 - **Continuous-navigation closed-loop exemplar.** A new exemplar exercises
   the continuous model-kind end to end (render → execute → navigate loop).
-
-## [Unreleased]
-### Removed (2026-09-19 — validate_gnn* alias retirement)
-
-- **All 10 `validate_gnn*` old-name aliases deleted** (v4.0.0 cycle; the
-  deprecation window opened 2026-09-11 with zero remaining live callers):
-  `parsers.basic.validate_gnn` / `validate_gnn_syntax_formal` →
-  `validate_gnn_syntax`; package-root `validate_gnn_file` →
-  `validate_gnn_source`; `validation.simple.validate_gnn_file` /
-  `validate_gnn_directory` → `check_gnn_file_basic` /
-  `check_gnn_directory_basic`; `validate_gnn_structure` →
-  `check_gnn_file_structure`; `validate_gnn_pomdp_structure` →
-  `check_gnn_pomdp_spec`; `schema_validator.validate_gnn_file` →
-  `validate_gnn_file_comprehensive`; `validate_gnn_cross_format_consistency`
-  → `check_cross_format_consistency`; `llm.validate_gnn` →
-  `validate_gnn_with_llm`. Importing any retired name now raises
-  `AttributeError`; `test_retired_validate_gnn_aliases_are_gone` pins the
-  retirement. Package re-export wiring (imports, lazy-export map entries,
-  `__all__`) pruned and `scripts/validate_surface_manifest.json`
-  `old_names` emptied. MCP tool registry names (`validate_gnn_content`,
-  `validate_gnn_file`, `validate_gnn_files`) are unchanged contracts.
 
 ### Added (2026-09-16 — capability doctor wave)
 

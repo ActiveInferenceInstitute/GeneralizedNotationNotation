@@ -212,7 +212,7 @@ setup-clean:
 
 # Validate the JAX + PyMDP stack
 validate-stack:
-    PYTHONPATH=src uv run python -c "from gnn.utils.jax_stack_validation import verify_jax_pymdp_stack; \
+    PYTHONPATH=src uv run python -c "from gnn.utils.runtime_safety.jax_stack_validation import verify_jax_pymdp_stack; \
         verify_jax_pymdp_stack(); print('✅ JAX + PyMDP stack OK')"
 
 # ─────────────────────────────────────────────

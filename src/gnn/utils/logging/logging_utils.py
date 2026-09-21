@@ -27,11 +27,8 @@ from typing import Any, Dict, Optional, cast
 # Thread-local storage for correlation context
 _correlation_context = threading.local()
 
-# Import performance tracking from dedicated module.
-try:
-    from gnn.utils.observability.performance_tracking import performance_tracker
-except ImportError:
-    from ..performance_tracking import performance_tracker
+# Import performance tracking from the observability concern package.
+from gnn.utils.observability.performance_tracking import performance_tracker
 
 
 class CorrelationFormatter(logging.Formatter):

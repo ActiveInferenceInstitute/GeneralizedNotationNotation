@@ -68,7 +68,7 @@ uv run python src/gnn/main.py --only-steps "3,11,12" --target-dir input/gnn_file
 ```
 
 Without `cmdstanpy` *and* a CmdStan toolchain, Step 12 marks Stan scripts as
-`skipped` with the install hint (`utils.framework_availability` probes
+`skipped` with the install hint (`gnn.utils.runtime_safety.framework_availability` probes
 `cmdstanpy.cmdstan_path()`); a missing toolchain is never recorded as a failed
 execution.
 

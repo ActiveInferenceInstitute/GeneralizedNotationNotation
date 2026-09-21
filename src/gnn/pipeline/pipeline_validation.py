@@ -7,7 +7,7 @@ config usage, argument naming, dependency cycles, and output naming conventions.
 Does NOT run the pipeline or check runtime behavior.
 
 See also:
-- utils/pipeline_validator.py: Pre-execution prerequisite checker (checks step outputs exist)
+- utils/pipeline_orchestration/pipeline_validator.py: Pre-execution prerequisite checker (checks step outputs exist)
 - pipeline/pipeline_runtime_validator.py: Runtime integration tester (runs pipeline via subprocess)
 
 Usage:
@@ -335,10 +335,10 @@ def generate_improvement_recommendations(report: Dict) -> List[str]:
                 f"🔴 **Critical**: Fix import errors in {error_modules} modules"
             )
             recommendations.append(
-                "   - Use the template in `src/utils/pipeline_template.py` as a reference"
+                "   - Use the template in `src/gnn/utils/pipeline_orchestration/pipeline_template.py` as a reference"
             )
             recommendations.append(
-                "   - Ensure all modules import from the centralized `utils` package"
+                "   - Ensure all modules import from the centralized `gnn.utils` package"
             )
 
         if warning_modules > 0:
@@ -413,8 +413,8 @@ def generate_improvement_recommendations(report: Dict) -> List[str]:
             "   5. Consider adding retry logic for network-dependent steps",
             "",
             "🔧 **Next Steps:**",
-            "   1. Run `python -m utils.argument_utils --validate` to check argument consistency",
-            "   2. Run `python -m utils.dependency_validator` for dependency analysis",
+            "   1. Run `python -m gnn.utils.arguments --validate` to check argument consistency",
+            "   2. Run `python -m gnn.utils.runtime_safety.dependency_validator` for dependency analysis",
             "   3. Use `GNN_PIPELINE_VERBOSE=true uv run python src/gnn/main.py` for detailed execution logs",
         ]
     )

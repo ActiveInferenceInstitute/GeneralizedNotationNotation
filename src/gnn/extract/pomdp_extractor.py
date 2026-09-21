@@ -9,7 +9,7 @@ with focus on Active Inference model structures.
 Dependency contract
 -------------------
 This module is stdlib-only at import time. The only non-stdlib-adjacent import
-(``utils.safe_eval`` for literal matrix evaluation) is performed lazily inside
+(``gnn.utils.runtime_safety.safe_eval`` for literal matrix evaluation) is performed lazily inside
 _parse_parameter_value; the heavy pipeline (numpy, jax, pymdp, renderers, ...)
 is NOT required. Headless consumers can use ``gnn.extract`` (CLI) or import
 ``gnn.extract.pomdp_extractor`` directly under a blocked-import environment.
@@ -1383,7 +1383,7 @@ class POMDPExtractor:
                     # working; a broken/suspicious safe_eval is a structured
                     # GNN-E006 fault, never a silent drop.
                     raise ImportError(
-                        f"utils.safe_eval unavailable ({e}); cannot safely "
+                        f"gnn.utils.runtime_safety.safe_eval unavailable ({e}); cannot safely "
                         "evaluate structured parameter literal"
                     ) from e
 

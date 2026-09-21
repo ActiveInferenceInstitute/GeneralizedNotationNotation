@@ -14,24 +14,24 @@ Provides shared utility functions, helper modules, and common infrastructure use
 ```bash
 # Utils is a shared library — not run directly but imported by all pipeline steps.
 # Validate pipeline dependencies
-python -c "from utils import validate_pipeline_dependencies; validate_pipeline_dependencies()"
+python -c "from gnn.utils import validate_pipeline_dependencies; validate_pipeline_dependencies()"
 
 # Check optional dependency status
-python -c "from utils import get_dependency_status; print(get_dependency_status())"
+python -c "from gnn.utils import get_dependency_status; print(get_dependency_status())"
 
 # Probe process memory (canonical MB-scale helper)
-python -c "from utils import get_current_memory_usage; print(get_current_memory_usage())"
+python -c "from gnn.utils import get_current_memory_usage; print(get_current_memory_usage())"
 ```
 
 ## Key Modules
 
 | Module | Key Exports | Purpose |
 | -------- | ------------ | --------- |
-| `logging_utils` / `structured_logging` | `setup_step_logging`, `PipelineLogger`, `log_step_*` | Structured logging |
+| `logging_utils` / `observability.structured_logging` | `setup_step_logging`, `PipelineLogger`, `log_step_*` | Structured logging |
 | `errors.error_handling` / `errors.error_recovery` | `ErrorRecoveryManager`, `PipelineErrorHandler`, `generate_correlation_id` | Error handling & recovery |
 | `config_io.config_loader` | `load_config`, `get_config_value`, `set_config_value`, `validate_config` | Pipeline configuration |
-| `dependency_validator` | `DependencyValidator`, `validate_pipeline_dependencies`, `get_dependency_status` | Dependency management |
-| `performance_tracker` | `PerformanceTracker`, `track_operation_standalone` | Performance monitoring |
+| `runtime_safety.dependency_validator` | `DependencyValidator`, `validate_pipeline_dependencies`, `get_dependency_status` | Dependency management |
+| `observability.performance_tracking` | `PerformanceTracker`, `track_operation_standalone` | Performance monitoring |
 | `config_io.io_utils` / `mcp` | `verify_directory_writable`, `redact_environment`, `is_sensitive_env_key` | Shared write-probe & env redaction |
 
 ## API

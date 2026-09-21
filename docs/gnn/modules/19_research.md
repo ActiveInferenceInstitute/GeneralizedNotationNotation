@@ -131,7 +131,7 @@ success = process_research(
 - `jupyter` - Interactive research notebooks
 
 ### Internal Dependencies
-- `utils.pipeline_template` - Pipeline utilities
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Pipeline utilities
 
 ---
 
@@ -246,7 +246,7 @@ output/19_research_output/
 - **Function**: `process_research()`
 
 ### Imports From
-- `utils.pipeline_template` - Pipeline utilities
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Pipeline utilities
 
 ### Imported By
 - Research-specific applications

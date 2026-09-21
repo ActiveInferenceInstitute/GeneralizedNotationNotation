@@ -27,7 +27,7 @@ The network visualization framework in `bnlearn` complements GNN's Graph and Mat
 
 ### Step 12: Simulation & Execute
 
-`bnlearn` is itself an execution target, not render-only: rendered `bnlearn` scripts are run at Step 12 by the dedicated runner in [`src/gnn/execute/bnlearn/`](../../src/gnn/execute/bnlearn/) with output written under `BNLEARN_OUTPUT_DIR`; scripts skip when the `bnlearn` extra is absent (`utils.framework_availability`). Separately, the Active Inference execution engines (`pymdp`, `rxinfer`) generate trajectory traces as they sample hidden state inferences over time, and those raw simulation traces produced in `Step 12: Execute` act as the raw historical `DataFrame` fed into `bnlearn`.
+`bnlearn` is itself an execution target, not render-only: rendered `bnlearn` scripts are run at Step 12 by the dedicated runner in [`src/gnn/execute/bnlearn/`](../../src/gnn/execute/bnlearn/) with output written under `BNLEARN_OUTPUT_DIR`; scripts skip when the `bnlearn` extra is absent (`gnn.utils.runtime_safety.framework_availability`). Separately, the Active Inference execution engines (`pymdp`, `rxinfer`) generate trajectory traces as they sample hidden state inferences over time, and those raw simulation traces produced in `Step 12: Execute` act as the raw historical `DataFrame` fed into `bnlearn`.
 
 This creates a powerful recursive loop where Bayesian structures are continuously updated utilizing real-time simulated outputs:
 ```python

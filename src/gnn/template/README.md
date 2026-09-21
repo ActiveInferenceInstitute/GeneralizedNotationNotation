@@ -168,7 +168,7 @@ def process_template_standardized_wrapper(
 
 def main():
     """Main template processing function."""
-    from gnn.utils.argument_utils import ArgumentParser
+    from gnn.utils.arguments import ArgumentParser
 
     args = ArgumentParser.parse_step_arguments("0_template.py")
     logger = setup_step_logging("template", args)

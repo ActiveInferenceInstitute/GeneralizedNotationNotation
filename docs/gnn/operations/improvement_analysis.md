@@ -94,7 +94,7 @@ except ImportError as e:
 
 #### Multiple Error Handling Systems
 
-**System A: PipelineErrorHandler** (`src/gnn/utils/error_handling.py:101`)
+**System A: PipelineErrorHandler** (`src/gnn/utils/errors/error_handling.py:117`)
 
 ```python
 class PipelineErrorHandler:
@@ -102,7 +102,7 @@ class PipelineErrorHandler:
         # Comprehensive error classification and recovery strategies
 ```
 
-**System B: StructuredLogger** (`src/gnn/utils/structured_logging.py:82`)  
+**System B: StructuredLogger** (`src/gnn/utils/observability/structured_logging.py:89`)  
 
 ```python
 class StructuredLogger:

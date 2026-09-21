@@ -54,7 +54,7 @@
 
 **Returns**: `bool` - True on success, False otherwise
 
-**Location**: `src/gnn/multi_format_processor.py`
+**Location**: `src/gnn/processing/multi_format_processor.py`
 
 **Example**:
 
@@ -230,7 +230,7 @@ first; otherwise `source` is treated as raw content.
 
 **Location**: `src/gnn/parsers/basic.py`
 
-### Headless Extraction (`extract.py`)
+### Headless Extraction (`gnn.extract`)
 
 #### `extract_to_json(path: Union[str, Path], *, strict_validation: bool = True, on_error: str = "lenient", compact: bool = False) -> str`
 
@@ -249,8 +249,8 @@ for a bare no-result extraction). `compact=True` emits compact JSON
 **Description**: CLI wrapper: `python -m gnn.extract FILE [--strict|--no-strict] [--compact]`.
 Prints the payload JSON (exit 0) or the error envelope (exit 1).
 
-**Location**: `src/gnn/extract.py` (stdlib-only at module scope; the extractor
-module is imported lazily inside the call path).
+**Location**: `src/gnn/extract/__init__.py` (stdlib-only at module scope; the
+extractor module is imported lazily inside the call path).
 
 ### Lazy package `__init__`
 
@@ -372,7 +372,7 @@ Parsers with semantically richer embedded handling keep their own implementation
 
 ### Internal Dependencies
 
-- `utils.pipeline_template` - Logging and pipeline utilities
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Logging and pipeline utilities
 - `pipeline.config` - Configuration management
 
 ---
@@ -496,7 +496,7 @@ output/3_gnn_output/
 
 ### Imports From
 
-- `utils.pipeline_template` - Standardized logging and error handling
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Standardized logging and error handling
 - `pipeline.config` - Output directory management
 
 ### Imported By
