@@ -51,10 +51,7 @@ class MCPDiscoveryMixin:
         modules: Dict[str, MCPModuleInfo]
         tools: Dict[str, MCPTool]
         resources: Dict[str, MCPResource]
-        _discovery_cache: Dict[str, Any]
-        _discovery_cache_lock: Any
         _executor: Optional[ThreadPoolExecutor]
-        _cache_timestamp: float
         _registration_lock: Any
         _registration_context: threading.local
         _performance_metrics: MCPPerformanceMetrics
@@ -82,7 +79,7 @@ class MCPDiscoveryMixin:
         Returns:
             bool: True if all modules loaded successfully, False otherwise.
         """
-        with self._discovery_cache_lock:
+        with self._lock:
             if self._modules_discovered and not force_refresh:
                 logger.debug(
                     "MCP modules already discovered. Skipping redundant discovery."
@@ -106,7 +103,6 @@ class MCPDiscoveryMixin:
                 self.modules.clear()
                 self.tools.clear()
                 self.resources.clear()
-                self._discovery_cache.clear()
 
         # Get list of directories to scan
         discovery_excluded_dirs: set[Any] = {"tests"}
@@ -243,7 +239,6 @@ class MCPDiscoveryMixin:
         )
 
         self._modules_discovered = True
-        self._cache_timestamp = time.time()
 
         return all_modules_loaded_successfully
 

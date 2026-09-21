@@ -212,6 +212,7 @@ def process_mcp(
             "enable_rate_limiting": ("enable_rate_limiting",),
             "strict_validation": ("strict_validation", "mcp_strict_validation"),
             "cache_ttl": ("cache_ttl", "mcp_cache_ttl"),
+            "tool_timeout": ("tool_timeout", "mcp_tool_timeout"),
             "force_refresh": ("force_refresh",),
         }
         for init_key, sources in alias_map.items():

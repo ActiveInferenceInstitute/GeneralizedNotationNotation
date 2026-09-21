@@ -343,6 +343,7 @@ class TestCacheImmutability:
             lambda: calls.append(1) or {"n": len(calls), "nested": {"k": "v"}},
             {"type": "object", "properties": {}},
             "cached result",
+            cacheable=True,
             cache_ttl=60.0,
         )
         return registry, calls

@@ -122,6 +122,7 @@ class MCP(
         enable_rate_limiting: bool = True,
         strict_validation: bool = False,
         max_workers: int = 4,
+        tool_timeout: Optional[float] = None,
     ) -> None:
         """Initialize the enhanced MCP server with configurable features."""
         self.tools: Dict[str, MCPTool] = {}
@@ -138,10 +139,7 @@ class MCP(
         self._tool_execution_times: Dict[str, List[float]] = defaultdict(list)
         self._last_activity = time.time()
 
-        self._discovery_cache: Dict[str, Any] = {}
-        self._cache_timestamp = 0.0
-        self._cache_ttl = 300.0  # 5 minutes
-        self._discovery_cache_lock = threading.Lock()
+        self._cache_ttl = 300.0  # 5 minutes; default TTL for cacheable tools
         self._registration_lock = threading.RLock()
 
         self._active_executions: Dict[str, int] = defaultdict(int)
@@ -180,6 +178,11 @@ class MCP(
         self._enable_caching = enable_caching
         self._enable_rate_limiting = enable_rate_limiting
         self._strict_validation = strict_validation
+        self._tool_timeout: Optional[float] = None
+        if tool_timeout is not None:
+            if tool_timeout <= 0:
+                raise ValueError("tool_timeout must be positive when set")
+            self._tool_timeout = float(tool_timeout)
 
         logger.info(
             f"Enhanced MCP server initialized (caching={enable_caching}, "
@@ -214,6 +217,7 @@ class MCP(
             "enable_rate_limiting": self._enable_rate_limiting,
             "strict_validation": self._strict_validation,
             "cache_ttl": self._cache_ttl,
+            "tool_timeout": self._tool_timeout,
             "max_workers": self._executor._max_workers if self._executor else 0,
             "modules_discovered": self._modules_discovered,
         }
@@ -325,6 +329,7 @@ def initialize(
     enable_rate_limiting: Optional[bool] = None,
     strict_validation: Optional[bool] = None,
     cache_ttl: Optional[float] = None,
+    tool_timeout: Optional[float] = None,
     force_refresh: bool = False,
 ) -> Tuple[MCP, bool, bool]:
     """
@@ -345,6 +350,9 @@ def initialize(
         enable_rate_limiting: Optional override for rate-limiting enablement.
         strict_validation: Optional override for strict schema validation.
         cache_ttl: Optional override for result-cache TTL (seconds).
+        tool_timeout: Optional server-wide default timeout (seconds) for tools
+            that did not register their own timeout. ``None`` leaves such
+            tools un-timed. Must be > 0 when set.
         force_refresh: If True, force re-discovery even if the singleton has
             already loaded modules in this process.
 
@@ -385,7 +393,10 @@ def initialize(
         mcp_instance._strict_validation = bool(strict_validation)
     if cache_ttl is not None:
         mcp_instance._cache_ttl = float(cache_ttl)
-
+    if tool_timeout is not None:
+        if tool_timeout <= 0:
+            raise ValueError("tool_timeout must be positive when set")
+        mcp_instance._tool_timeout = float(tool_timeout)
     all_modules_loaded = mcp_instance.discover_modules(
         force_refresh=force_refresh,
         modules_allowlist=modules_allowlist,

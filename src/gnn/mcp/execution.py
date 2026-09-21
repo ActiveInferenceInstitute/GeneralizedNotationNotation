@@ -45,7 +45,8 @@ time = _MCPModuleRef("time")
 # Bounded pool enforcing per-tool timeouts. A hung tool occupies one worker
 # until its (uncancellable) thread finishes; when the pool is exhausted,
 # further timed calls surface a timeout instead of hanging the caller — the
-# safe failure direction. Un-timed tools never touch this pool.
+# safe failure direction. Tools with no effective timeout (neither a
+# registered one nor a server default) never touch this pool.
 _TOOL_TIMEOUT_POOL_SIZE = 8
 
 
@@ -67,6 +68,8 @@ class MCPExecutionMixin:
         _tool_execution_times: Dict[str, List[float]]
         _result_cache: Dict[str, Tuple[Any, float]]
         _result_cache_lock: Any
+        _cache_ttl: float
+        _tool_timeout: Optional[float]
         _tool_timeout_executor: Optional[ThreadPoolExecutor]
         _rate_limit_lock: Any
         _rate_limit_timestamps: Dict[str, List[float]]
@@ -166,11 +169,17 @@ class MCPExecutionMixin:
                     )
                 raise
 
-        # Result cache: only for tools that opted in via cache_ttl, and only
-        # when caching is enabled for this server instance (performance_mode
-        # "low" disables it, so default pipeline runs never cache results).
+        # Result cache: only for tools that opted in via register_tool(
+        # cacheable=True), and only when caching is enabled for this server
+        # instance (performance_mode "low" disables it, so default pipeline
+        # runs never cache results). The entry TTL is the tool's own
+        # cache_ttl when it registered one, otherwise the server-wide
+        # _cache_ttl default set by initialize(cache_ttl=...).
         cache_key = ""
-        if self._enable_caching and tool.cache_ttl is not None:
+        effective_cache_ttl = None if tool.cache_ttl is None else float(tool.cache_ttl)
+        if self._enable_caching and tool.cacheable:
+            if effective_cache_ttl is None:
+                effective_cache_ttl = float(self._cache_ttl)
             cache_key = self._result_cache_key(tool_name, params)
             if cache_key:
                 cache_hit, cached_result = self._cache_get(cache_key)
@@ -195,16 +204,21 @@ class MCPExecutionMixin:
                 self._performance_metrics.concurrent_requests,
             )
 
-        # Synchronous execution. When the tool registered a timeout, the call
-        # runs on the dedicated timeout pool and the CALLER stops waiting at
-        # tool.timeout; Python threads cannot be killed, so the worker may
-        # keep running — only the caller's wait is bounded.
+        # Synchronous execution. When an effective timeout applies (the
+        # tool's registered timeout, else the server-wide _tool_timeout
+        # default), the call runs on the dedicated timeout pool and the
+        # CALLER stops waiting at that timeout; Python threads cannot be
+        # killed, so the worker may keep running — only the caller's wait
+        # is bounded.
         start_time = time.time()
         try:
             with self._track_performance(f"tool_execution_{tool_name}"):
-                if tool.timeout is not None:
+                effective_timeout = (
+                    tool.timeout if tool.timeout is not None else self._tool_timeout
+                )
+                if effective_timeout is not None:
                     result = self._execute_with_timeout(
-                        tool.func, tool_name, params, tool.timeout
+                        tool.func, tool_name, params, effective_timeout
                     )
                 else:
                     result = tool.func(**params)
@@ -219,7 +233,7 @@ class MCPExecutionMixin:
                 self._performance_metrics.update_execution_time(execution_time)
                 self._tool_execution_times[tool_name].append(execution_time)
                 tool.mark_used()
-                if cache_key and tool.cache_ttl is not None:
+                if cache_key and effective_cache_ttl is not None:
                     with self._result_cache_lock:
                         # Deep-copy on store AND on hit (see _cache_get): a
                         # cache entry must never alias the caller-visible
@@ -227,7 +241,7 @@ class MCPExecutionMixin:
                         # would poison every subsequent cache hit.
                         self._result_cache[cache_key] = (
                             copy.deepcopy(result),
-                            time.time() + tool.cache_ttl,
+                            time.time() + effective_cache_ttl,
                         )
             logger.debug(f"Tool {tool_name} executed successfully")
             return cast("dict[str, Any]", result)
