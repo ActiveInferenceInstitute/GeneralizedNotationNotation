@@ -130,7 +130,7 @@ Install with `uv sync --extra ml-ai`. Without it, the step degrades to feature-e
 - `inference.py` — artifact loading and prediction (`load_classifier`, `predict_with_model`, `predict_batch`, `InferenceError`)
 
 ### Internal Dependencies
-- `utils.pipeline_template` - Standardized pipeline processing
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Standardized pipeline processing
 - `pipeline.config` - Configuration management
 
 ---
@@ -218,7 +218,7 @@ In both degradation cases (sklearn missing AND fewer than 2 files), a `structura
 - **Function**: `process_ml_integration()`
 
 ### Imports From
-- `utils.pipeline_template` - Standardized processing patterns
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Standardized processing patterns
 - `pipeline.config` - Configuration management
 
 ### Imported By

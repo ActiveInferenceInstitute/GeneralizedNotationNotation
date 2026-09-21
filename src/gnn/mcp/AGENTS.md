@@ -174,7 +174,7 @@ on the live execution path.
 - `fastapi` - REST API framework (recovery: basic HTTP)
 
 ### Internal Dependencies
-- `utils.pipeline_template` - Standardized pipeline processing (processor.py)
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Standardized pipeline processing (processor.py)
 
 ---
 
@@ -302,7 +302,7 @@ output/21_mcp_output/
 - **Function**: `process_mcp()`
 
 ### Imports From
-- `utils.pipeline_template` - Standardized processing patterns (processor.py)
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Standardized processing patterns (processor.py)
 
 ### Imported By
 - `tests/mcp/test_mcp_overall.py`, `test_mcp_tools.py`, `test_mcp_functional.py`, `test_mcp_audit.py`, `test_mcp_http_auth.py`, `test_mcp_performance.py`, `test_mcp_standalone_modules.py`, `test_mcp_configurability.py` - MCP tests

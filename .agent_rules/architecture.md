@@ -63,7 +63,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from utils.pipeline_template import create_standardized_pipeline_script
+from gnn.utils.pipeline_orchestration.pipeline_template import create_standardized_pipeline_script
 from module_name import process_module
 
 run_script = create_standardized_pipeline_script(

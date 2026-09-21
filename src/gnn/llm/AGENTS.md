@@ -182,7 +182,7 @@ Local inference additionally requires the Ollama runtime (CLI/daemon from https:
 There is no Anthropic provider module; `ANTHROPIC_API_KEY` only influences the provider matrix and error attribution.
 
 ### Internal Dependencies
-- `utils.pipeline_template` - Logging utilities
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Logging utilities
 - `pipeline.config` - Configuration management
 - `llm.processor` - Core LLM logic
 

@@ -90,7 +90,7 @@ graph TD
   - `recreate_venv` (bool): Recreate virtual environment
   - `dev` (bool): If true, `uv sync --extra dev` (pytest stack, linters, etc.)
   - `install_all_extras` (bool): If true, `uv sync --all-extras` (every optional group in pyproject)
-  - `setup_core_only` (bool): If true, skips the post-install JAX/Optax/Flax/pymdp functional probe (`utils.jax_stack_validation`; Step 12 backends remain core deps)
+  - `setup_core_only` (bool): If true, skips the post-install JAX/Optax/Flax/pymdp functional probe (`gnn.utils.runtime_safety.jax_stack_validation`; Step 12 backends remain core deps)
   - `install_optional` (bool): Install optional dependencies
   - `optional_groups` (str): Comma-separated list of optional groups
 
@@ -107,7 +107,7 @@ graph TD
 - `dev`: Install development optional group (`--extra dev`)
 - `extras`: Additional package groups to install (each as `--extra`)
 - `install_all_extras`: If true, `uv sync --all-extras` (takes precedence over `dev`)
-- `skip_jax_test`: Skip the JAX stack probe (same probe as ``utils.jax_stack_validation.verify_jax_pymdp_stack``)
+- `skip_jax_test`: Skip the JAX stack probe (same probe as ``gnn.utils.runtime_safety.jax_stack_validation.verify_jax_pymdp_stack``)
 - `output_dir`: Output directory for setup logs
 
 **Returns**: `True` if setup succeeded
@@ -192,7 +192,7 @@ graph TD
 - None (UV handles all dependency management)
 
 ### Internal Dependencies
-- `utils.pipeline_template` - Pipeline utilities
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Pipeline utilities
 
 ---
 
@@ -348,7 +348,7 @@ output/1_setup_output/
 - **Function**: `setup_uv_environment()`
 
 ### Imports From
-- `utils.pipeline_template` - Pipeline utilities
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Pipeline utilities
 
 ### Imported By
 - `main.py` - Pipeline orchestration

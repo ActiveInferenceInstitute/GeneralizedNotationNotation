@@ -10,7 +10,7 @@ The GNN pipeline is a 25-step numbered-script contract: `main.py` selects and
 sequences `0_template.py` … `24_intelligent_analysis.py`, and
 `execute_pipeline_step` (`src/gnn/main.py`) launches **one subprocess per
 step**. Every numbered script is a thin orchestrator that parses CLI arguments
-(`gnn.utils.pipeline_template.create_standardized_pipeline_script`) and calls a
+(`gnn.utils.pipeline_orchestration.pipeline_template.create_standardized_pipeline_script`) and calls a
 single module function. `src/gnn/pipeline/step_registry.py` is the single
 source of truth for that contract: `STEPS` (stem, description,
 `module_function`), the derived lookup maps, and

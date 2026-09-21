@@ -22,8 +22,8 @@ Leaf inventory:
 - matplotlib_setup: ``apply_env_backend_if_set`` MPLBACKEND application before pyplot import
 
 Cross-family imports go through leaf modules, never through any facade (I5).
-The old top-level paths (``gnn/utils/system_utils.py`` etc.) are deprecation
-facades over this package.
+The old top-level paths (``gnn/utils/system_utils.py`` etc.) were removed
+with the SC-38 facade takedown; this package is their canonical home.
 """
 
 from gnn.utils.system_env.matplotlib_setup import apply_env_backend_if_set

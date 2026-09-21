@@ -126,7 +126,7 @@ success = process_ml_integration(
 - `optax` - JAX optimization (recovery: basic optimizers)
 
 ### Internal Dependencies
-- `utils.pipeline_template` - Standardized pipeline processing
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Standardized pipeline processing
 - `pipeline.config` - Configuration management
 
 ---
@@ -203,7 +203,7 @@ output/14_ml_integration_output/
 - **Function**: `process_ml_integration()`
 
 ### Imports From
-- `utils.pipeline_template` - Standardized processing patterns
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Standardized processing patterns
 - `pipeline.config` - Configuration management
 
 ### Imported By

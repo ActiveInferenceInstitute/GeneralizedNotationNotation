@@ -8,7 +8,6 @@ Copy this structure for consistent argument handling, logging, and error managem
 
 import argparse
 import logging
-import warnings
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
 
@@ -26,26 +25,6 @@ from gnn.utils.observability.structured_logging import (
 from gnn.utils.observability.structured_logging import (
     log_step_warning as log_step_warning,
 )
-
-
-def __getattr__(name: str) -> Any:
-    """Warn on the incidental ``get_output_dir_for_script`` re-export.
-
-    ``gnn.pipeline.config`` is the canonical home; the historical
-    ``gnn.utils.pipeline_template`` re-export now warns so internal callers
-    migrate (MAJ-05 migration pattern).
-    """
-    if name == "get_output_dir_for_script":
-        warnings.warn(
-            "gnn.utils.pipeline_template.get_output_dir_for_script is "
-            "superseded; import it from gnn.pipeline.config instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        # Lazy resolution via the helper keeps ``gnn.pipeline`` out of
-        # sys.modules when this module is merely imported.
-        return _get_output_dir_for_script
-    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
 def _get_output_dir_for_script(script_name: str, base_output_dir: Path) -> Path:

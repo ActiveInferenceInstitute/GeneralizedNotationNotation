@@ -139,7 +139,7 @@ def run_jax_stack_probe_subprocess(
         [
             str(venv_python),
             "-c",
-            "from gnn.utils.jax_stack_validation import verify_jax_pymdp_stack; verify_jax_pymdp_stack()",
+            "from gnn.utils.runtime_safety.jax_stack_validation import verify_jax_pymdp_stack; verify_jax_pymdp_stack()",
         ],
         cwd=project_root,
         capture_output=True,

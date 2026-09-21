@@ -212,7 +212,7 @@ success = process_gui(
 - `networkx` - Network graph visualization
 
 ### Internal Dependencies
-- `utils.pipeline_template` - Standardized pipeline processing
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Standardized pipeline processing
 - `pipeline.config` - Configuration management
 
 ---
@@ -402,7 +402,7 @@ The `navigation.html` file provides comprehensive navigation to all pipeline out
 - **Function**: `process_gui()`
 
 ### Imports From
-- `utils.pipeline_template` - Standardized processing patterns
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Standardized processing patterns
 - `pipeline.config` - Configuration management
 
 ### Imported By

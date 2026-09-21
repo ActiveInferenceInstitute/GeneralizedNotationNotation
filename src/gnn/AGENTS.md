@@ -372,7 +372,7 @@ Parsers with semantically richer embedded handling keep their own implementation
 
 ### Internal Dependencies
 
-- `utils.pipeline_template` - Logging and pipeline utilities
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Logging and pipeline utilities
 - `pipeline.config` - Configuration management
 
 ---
@@ -496,7 +496,7 @@ output/3_gnn_output/
 
 ### Imports From
 
-- `utils.pipeline_template` - Standardized logging and error handling
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Standardized logging and error handling
 - `pipeline.config` - Output directory management
 
 ### Imported By

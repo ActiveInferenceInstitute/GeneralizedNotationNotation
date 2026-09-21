@@ -838,7 +838,7 @@ bidirectional synchronization.
 """
 
 from pathlib import Path
-from utils.pipeline_template import (
+from gnn.utils.pipeline_orchestration.pipeline_template import (
     create_standardized_pipeline_script,
     log_step_start,
     log_step_success,

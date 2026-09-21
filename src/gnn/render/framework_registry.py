@@ -202,7 +202,7 @@ FRAMEWORK_REGISTRY: Mapping[str, Dict[str, Any]] = MappingProxyType(
             "available": True,
             # Executed by `src/gnn/execute/bnlearn/` (Step 12 script path,
             # `BNLEARN_OUTPUT_DIR`); scripts skip when the `bnlearn` extra is
-            # absent (`utils.framework_availability`).
+            # absent (`gnn.utils.runtime_safety.framework_availability`).
             "supports_execution": True,
             "supports_continuous": False,
             "unavailable_reason": None,

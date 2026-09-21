@@ -88,7 +88,7 @@ which registers the eight `sympy_*` tools via `src/gnn/mcp/discovery.py` and
 writes `mcp_results.json`, `registered_tools.json`, and
 `mcp_processing_summary.json` into the output directory. SymPy is not invoked
 anywhere else in the pipeline (the optional sympy/scipy declaration for
-`5_type_checker` in `pipeline_dependencies.py` is vestigial — the type checker
+`5_type_checker` in `pipeline_orchestration/pipeline_dependencies.py` is vestigial — the type checker
 never imports sympy).
 
 ### MCP Tool Discovery Test

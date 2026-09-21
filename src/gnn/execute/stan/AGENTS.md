@@ -24,7 +24,7 @@ driver. Step 12 discovers the driver like any other Python framework script
 
 ## Dependency gating
 
-`utils.framework_availability` maps `stan` → `cmdstanpy`. When it is not
+`gnn.utils.runtime_safety.framework_availability` maps `stan` → `cmdstanpy`. When it is not
 importable Step 12 marks the script **skipped** with the reason
 `uv sync --extra stan`. CmdStan itself is installed with
 `python -c "import cmdstanpy; cmdstanpy.install_cmdstan()"`.

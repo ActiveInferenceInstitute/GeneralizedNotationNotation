@@ -2029,10 +2029,10 @@ def validate_pipeline_summary(summary: dict, logger: Any) -> None:
 
 
 # All pipeline utility functions have been moved to appropriate utils modules:
-# - validate_step_prerequisites, validate_pipeline_step_sequence → utils/pipeline_validator.py
-# - get_current_memory_usage → utils/resource_manager.py
+# - validate_step_prerequisites, validate_pipeline_step_sequence → utils/pipeline_orchestration/pipeline_validator.py
+# - get_current_memory_usage → utils/runtime_safety/resource_manager.py
 # - attempt_step_recovery and recovery functions → utils/errors/error_recovery.py
-# - generate_pipeline_health_report → utils/pipeline_monitor.py
+# - generate_pipeline_health_report → utils/pipeline_orchestration/pipeline_monitor.py
 
 
 if __name__ == "__main__":

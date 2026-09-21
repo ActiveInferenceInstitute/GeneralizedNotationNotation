@@ -123,7 +123,7 @@
 - `pyaudio` - Real-time audio processing
 
 ### Internal Dependencies
-- `utils.pipeline_template` - Pipeline utilities
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Pipeline utilities
 
 ---
 
@@ -232,7 +232,7 @@ output/sapf/
 - **Function**: Audio generation integration
 
 ### Imports From
-- `utils.pipeline_template` - Pipeline utilities
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Pipeline utilities
 
 ### Imported By
 - Audio processing components

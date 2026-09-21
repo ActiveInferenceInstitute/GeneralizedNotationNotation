@@ -155,7 +155,7 @@ No other configuration keys are read; term suggestions come from Levenshtein-dis
 - `pathlib` - File operations
 
 ### Internal Dependencies
-- `utils.pipeline_template` - Logging utilities
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Logging utilities
 - `pipeline.config` - Configuration management
 - `ontology.processor` - Core processing logic
 

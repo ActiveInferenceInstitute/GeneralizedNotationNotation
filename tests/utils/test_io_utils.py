@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Edge-case tests for gnn.utils.io_utils (batch file helpers).
+"""Edge-case tests for gnn.utils.config_io.io_utils (batch file helpers).
 
-Covers the GNN shared file I/O helpers, one of the honestly-owned gnn.utils
-paths. These functions previously had effectively zero dedicated coverage;
+Covers the GNN shared file I/O helpers in the config_io package.
+These functions previously had effectively zero dedicated coverage;
 this file pins the real edge cases: text vs bytes vs serialized writes,
 atomic temp-file replacement, missing-input handling, and cleanup of
 already-absent temp paths.

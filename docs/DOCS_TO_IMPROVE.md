@@ -37,7 +37,7 @@ The canonical list of first-level folders under `docs/` is [expected_dirs.txt](e
   `docs/{pipeline,execution,api,mcp,security,testing,troubleshooting,performance,
   configuration,dependencies,deployment,releases,development,dev,templates}/` and
   the top-level ops docs. Fixed stale snippets (`from execute import …` → `gnn.execute`,
-  `from utils.config_loader` → YAML direct-load, bare `python`/`gnn` invocations →
+  `from gnn.utils.config_io.config_loader` → YAML direct-load, bare `python`/`gnn` invocations →
   `uv run`), added continuous-linear-Gaussian execution-path framing, and corrected
   counts (render 9 / execute 10 families incl. Lean, RxInfer 5.5.0 committed env).
   No entries were removed; the audit workflow above remains the source of truth.
