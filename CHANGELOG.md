@@ -4,6 +4,30 @@ All notable changes to the GNN Pipeline are documented in this file.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Versioning](https://semver.org/).
 
+
+## [Unreleased]
+
+### Added
+
+- **Consumer-conformance test suite** (`tests/export/test_geo_infer_consumer_compat.py`):
+  the three interchange emitters (`gnn.export.geo_infer`, `geo_infer_gaussian`,
+  `geo_infer_factored`) are pinned against the GEO-INFER consumer's validation
+  rules — exact key sets, byte-exact schema literals, matrix shapes,
+  axis-zero stochasticity (atol 1e-8), covariance definiteness, units, time
+  domain and provenance digests — with per-assertion citations to the pinned
+  consumer modules (`geo_infer_act.core.gnn_{contract,gaussian_contract,factored_contract}`).
+- `matrix_provenance["B"]["declared_order_explicit"]` records whether the B
+  axis order was explicitly declared in the source (vs defaulted to canonical),
+  separating parsed declarations from defaults in orientation provenance.
+
+### Changed
+
+- The `gnn-geo-infer/1` exporter's B-orientation refusal now reports the exact
+  evidence (contradiction, non-canonical detection, or non-decisive
+  doubly-stochastic data with the declared/defaults split) instead of the
+  blanket "B has contradictory axis conventions" message. Refusal semantics
+  are unchanged: ambiguous orientation is never reordered on export.
+
 ---
 
 ## [3.4.0] — 2026-09-17
