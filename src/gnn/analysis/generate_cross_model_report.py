@@ -3,7 +3,8 @@
 Cross-Model Comparison Report Generator
 
 Generates a unified markdown report summarising how each POMDP model performs
-across all frameworks (PyMDP, JAX, RxInfer, ActiveInference.jl, DisCoPy, PyTorch, NumPyro).
+across all frameworks (PyMDP, JAX, RxInfer, ActiveInference.jl, DisCoPy, PyTorch,
+NumPyro, Stan, bnlearn).
 
 Reads simulation_results.json files from 12_execute_output and
 post_simulation_analysis.json files from 16_analysis_output/cross_framework.

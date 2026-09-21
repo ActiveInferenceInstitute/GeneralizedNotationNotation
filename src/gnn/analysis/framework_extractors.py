@@ -2,7 +2,10 @@
 Framework-specific data extractors for post-simulation analysis.
 
 Provides extract_*_data() functions for PyMDP, RxInfer.jl, ActiveInference.jl,
-JAX, DisCoPy, PyTorch, and NumPyro execution results.
+JAX, DisCoPy, PyTorch, and NumPyro execution results. PyTorch and NumPyro are
+schema-aware (``*_simulation_v1`` dispatch) but ungated: heterogeneous payloads
+are accepted as-is. Stan and bnlearn execution results have no extractors and
+stay un-gated.
 
 Extracted from post_simulation.py for maintainability.
 """
@@ -15,6 +18,8 @@ from typing import Any, Dict, cast
 logger = logging.getLogger(__name__)
 
 CURRENT_SIMULATION_SCHEMAS = {
+    "pytorch": "pytorch_simulation_v1",
+    "numpyro": "numpyro_simulation_v1",
     "pymdp": "pymdp_simulation_v1",
     "rxinfer": "rxinfer_simulation_v1",
     "activeinference_jl": "activeinference_jl_simulation_v1",
@@ -621,6 +626,56 @@ def extract_discopy_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-# PyTorch and NumPyro use the same result schema as PyMDP.
-extract_pytorch_data = extract_pymdp_data
-extract_numpyro_data = extract_pymdp_data
+def _extract_schema_aware_data(
+    execution_result: Dict[str, Any], schema_id: str
+) -> Dict[str, Any]:
+    """Shared extractor for the pytorch and numpyro result schemas.
+
+    Dispatch order: a payload stamped with ``schema_id`` is used as-is; a
+    nested ``simulation_data`` dict carrying ``schema_id`` is unwrapped;
+    otherwise the implementation directory is probed for the current schema.
+    Schema-less payloads keep the ungated contract: a nested
+    ``simulation_data`` holding beliefs/actions/observations, or the
+    execution result itself, flows through the normaliser's top-level
+    fallback. The pytorch/numpyro runner schemas record expected free energy
+    under ``efe_history``, which is mapped onto ``expected_free_energy``
+    before normalisation.
+    """
+    payload: Dict[str, Any] | None = None
+    if execution_result.get("schema_version") == schema_id:
+        payload = execution_result
+    nested_payload = execution_result.get("simulation_data")
+    if (
+        payload is None
+        and isinstance(nested_payload, dict)
+        and nested_payload.get("schema_version") == schema_id
+    ):
+        payload = nested_payload
+    if payload is None and execution_result.get("implementation_directory"):
+        payload = _load_current_schema_from_impl_dir(
+            execution_result.get("implementation_directory"), schema_id
+        )
+    if payload is None:
+        schemaless = nested_payload if isinstance(nested_payload, dict) else {}
+        if any(key in schemaless for key in ("beliefs", "actions", "observations")):
+            payload = schemaless
+        else:
+            payload = execution_result
+    adapted = dict(payload)
+    if "efe_history" in adapted and "expected_free_energy" not in adapted:
+        adapted["expected_free_energy"] = adapted["efe_history"]
+    return _normalise_current_simulation_payload(adapted, fallback_top_level=True)
+
+
+def extract_pytorch_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
+    """Extract PyTorch results, dispatching on the result schema."""
+    return _extract_schema_aware_data(
+        execution_result, CURRENT_SIMULATION_SCHEMAS["pytorch"]
+    )
+
+
+def extract_numpyro_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
+    """Extract NumPyro results, dispatching on the result schema."""
+    return _extract_schema_aware_data(
+        execution_result, CURRENT_SIMULATION_SCHEMAS["numpyro"]
+    )

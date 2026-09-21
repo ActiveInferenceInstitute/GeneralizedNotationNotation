@@ -34,6 +34,9 @@ FRAMEWORK_DIR_NAMES: frozenset[str] = frozenset(
         "pymdp",
         "pytorch",
         "rxinfer",
+        # stan renders + executes (F12: its results were previously dropped by
+        # the path-inference helpers), but has no analyzer subpackage.
+        "stan",
     }
 )
 
@@ -49,6 +52,10 @@ CURRENT_SIMULATION_SCHEMAS: frozenset[str] = frozenset(
         "pymdp_simulation_v1",
         "rxinfer_simulation_v1",
         "activeinference_jl_simulation_v1",
+        # Ungated backends (pytorch/numpyro) also stamp these schema ids;
+        # their payloads are accepted with or without them.
+        "pytorch_simulation_v1",
+        "numpyro_simulation_v1",
     }
 )
 

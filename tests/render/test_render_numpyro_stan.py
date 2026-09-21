@@ -147,6 +147,19 @@ class TestNumPyroRenderer:
         code = output.read_text(encoding="utf-8")
         assert "42" in code, "Custom num_timesteps not reflected in output"
 
+    def test_numpyro_discrete_code_declares_simulation_schema(
+        self, tmp_path: Path
+    ) -> None:
+        """The generated discrete NumPyro script stamps numpyro_simulation_v1."""
+        from gnn.render.numpyro.numpyro_renderer import render_gnn_to_numpyro
+
+        output = tmp_path / "numpyro_schema.py"
+        success, message, _ = render_gnn_to_numpyro(_small_gnn_spec(), output)
+
+        assert success, message
+        code = output.read_text(encoding="utf-8")
+        assert "numpyro_simulation_v1" in code
+
 
 # ──────────────────────────────────────────────
 # Stan Renderer Tests

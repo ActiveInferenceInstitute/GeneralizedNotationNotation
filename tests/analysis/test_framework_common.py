@@ -169,6 +169,39 @@ class TestIterCurrentSchemaResults:
         assert iter_current_schema_results(tmp_path) == []
 
 
+class TestStanPathAttribution:
+    """Stan results must be attributed by the path-inference helpers.
+
+    Stan output previously fell through to ``unknown`` attribution because
+    ``stan`` was missing from ``FRAMEWORK_DIR_NAMES``.
+    """
+
+    @pytest.mark.unit
+    def test_framework_from_path_stan(self) -> None:
+        p = Path("/out/model_a/stan/simple_mdp_stan.py")
+        assert framework_from_path(p) == "stan"
+
+    @pytest.mark.unit
+    def test_model_name_from_path_stan(self) -> None:
+        p = Path("/out/model_a/stan/simulation_results.json")
+        assert model_name_from_path(p) == "model_a"
+
+    @pytest.mark.unit
+    def test_iter_current_schema_results_returns_stan_payload(
+        self, tmp_path: Path
+    ) -> None:
+        sim_dir = tmp_path / "model_a" / "stan" / "simulation_data"
+        sim_dir.mkdir(parents=True)
+        payload = {"schema_version": "stan_simulation_v1", "beliefs": [[0.5, 0.5]]}
+        (sim_dir / "simulation_results.json").write_text(
+            json.dumps(payload), encoding="utf-8"
+        )
+        results = iter_current_schema_results(tmp_path)
+        assert len(results) == 1
+        _path, loaded = results[0]
+        assert loaded == payload
+
+
 class TestResolveExecutionDir:
     @pytest.mark.unit
     def test_delegates_to_shared_helper(self, tmp_path: Path) -> None:
@@ -254,11 +287,14 @@ class TestFilterPathsByScope:
 
 class TestSchemaConstants:
     @pytest.mark.unit
-    def test_current_schemas_match_gated_frameworks(self) -> None:
-        # The three schema-gated frameworks each have a *_simulation_v1 schema.
+    def test_current_schemas_cover_gated_and_ungated_backends(self) -> None:
+        # Each schema-gated framework plus the ungated pytorch/numpyro
+        # backends has a *_simulation_v1 schema id in the accepted set.
         assert "pymdp_simulation_v1" in CURRENT_SIMULATION_SCHEMAS
         assert "rxinfer_simulation_v1" in CURRENT_SIMULATION_SCHEMAS
         assert "activeinference_jl_simulation_v1" in CURRENT_SIMULATION_SCHEMAS
+        assert "pytorch_simulation_v1" in CURRENT_SIMULATION_SCHEMAS
+        assert "numpyro_simulation_v1" in CURRENT_SIMULATION_SCHEMAS
 
     @pytest.mark.unit
     def test_gated_frameworks_subset(self) -> None:

@@ -14,6 +14,8 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+from gnn.frameworks import ALL_FRAMEWORKS, LITE_FRAMEWORKS
+
 from .types import ScriptExecutionContext
 
 logger = logging.getLogger(__name__)
@@ -77,45 +79,29 @@ def parse_frameworks_parameter(frameworks: str, logger: Any) -> List[str]:
         List of framework names to include
     """
     if not frameworks or frameworks.lower() == "all":
-        return [
-            "pymdp",
-            "jax",
-            "discopy",
-            "rxinfer",
-            "activeinference_jl",
-            "pytorch",
-            "numpyro",
-            "stan",
-            "bnlearn",
-        ]
+        return list(ALL_FRAMEWORKS)
 
     if frameworks.lower() == "lite":
-        return ["pymdp", "jax", "discopy", "bnlearn"]
+        return list(LITE_FRAMEWORKS)
 
-    # Parse comma-separated list
+    # Parse comma-separated list against the canonical enumeration. Inputs
+    # with no known framework are rejected upstream by
+    # ``validate_frameworks_arg`` (both callers pre-validate), so an empty
+    # result here is an honest no-match and is returned as-is.
     framework_list = [f.strip() for f in frameworks.split(",")]
-    valid_frameworks: list[Any] = [
-        "pymdp",
-        "jax",
-        "discopy",
-        "rxinfer",
-        "activeinference_jl",
-        "pytorch",
-        "numpyro",
-        "stan",
-        "bnlearn",
-    ]
+    valid_set = set(ALL_FRAMEWORKS)
 
     # Filter out invalid frameworks
-    valid_list = [f for f in framework_list if f in valid_frameworks]
+    valid_list = [f for f in framework_list if f in valid_set]
 
     if len(valid_list) != len(framework_list):
-        invalid = [f for f in framework_list if f not in valid_frameworks]
+        invalid = [f for f in framework_list if f not in valid_set]
         logger.warning(
-            f"Invalid frameworks specified: {invalid}. Valid options: {valid_frameworks}"
+            f"Invalid frameworks specified: {invalid}. "
+            f"Valid options: {list(ALL_FRAMEWORKS)}"
         )
 
-    return valid_list if valid_list else ["pymdp"]  # Default to pymdp if nothing valid
+    return valid_list
 
 
 def _resolve_render_output_dir(
