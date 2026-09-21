@@ -29,6 +29,7 @@ from .jsonrpc import (
     serialize_response,
     validate_request,
 )
+from .server_core import MCPServer, is_standard_method
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -341,7 +342,11 @@ class MCPHTTPHandler(BaseHTTPRequestHandler):
             )
             return
         try:
-            # Standard MCP methods
+            # Standard MCP (2024-11-05) protocol surface
+            if is_standard_method(method):
+                self._dispatch_standard_method(request, request_id, method, params)
+                return
+            # Standard MCP methods (direct dialect)
             if method in ("mcp.capabilities", "get_mcp_server_capabilities"):
                 result = get_http_capabilities()
                 self._send_jsonrpc_result(request_id, result)
@@ -398,9 +403,7 @@ class MCPHTTPHandler(BaseHTTPRequestHandler):
                 result = mcp_instance.execute_tool(method, params)
                 self._send_jsonrpc_result(request_id, result)
             else:
-                self._send_jsonrpc_error(
-                    request_id, -32601, f"Method not found: {method}"
-                )
+                self._dispatch_standard_method(request, request_id, method, params)
         except MCPError as mcpe:
             logger.error(f"MCPError in method {method}: {mcpe}")
             self._send_jsonrpc_error(
@@ -409,6 +412,50 @@ class MCPHTTPHandler(BaseHTTPRequestHandler):
         except Exception as e:
             logger.exception(f"Unhandled error in method {method}: {e}")
             self._send_jsonrpc_error(request_id, -32603, f"Internal error: {str(e)}")
+
+    def _dispatch_standard_method(
+        self,
+        request: Dict[str, Any],
+        request_id: Optional[str],
+        method: str,
+        params: Any,
+    ) -> Any:
+        """Dispatch a standard MCP (2024-11-05) method through the shared core."""
+        server = MCPServer(
+            mcp_instance=mcp_instance, capabilities_getter=get_http_capabilities
+        )
+        if isinstance(params, dict):
+            tool_name = params.get("name")
+            if (
+                method == "tools/call"
+                and isinstance(tool_name, str)
+                and not is_safe_http_tool(tool_name)
+            ):
+                self._send_jsonrpc_error(
+                    request_id,
+                    -32001,
+                    f"Tool not exposed over MCP HTTP by default: {tool_name}",
+                )
+                return
+            uri = params.get("uri")
+            if (
+                method == "resources/read"
+                and isinstance(uri, str)
+                and not is_safe_http_resource(uri)
+            ):
+                self._send_jsonrpc_error(
+                    request_id,
+                    -32002,
+                    f"Resource not exposed over MCP HTTP by default: {uri}",
+                )
+                return
+        response = server.handle_request(request)
+        if response is None:
+            self.send_response(204)
+            self.send_header("Content-Length", "0")
+            self.end_headers()
+        else:
+            self._send_json_response(200, response)
 
     def _send_jsonrpc_result(self, request_id: Optional[str], result: Any) -> Any:
         """Send a successful JSON-RPC response."""
