@@ -1,7 +1,7 @@
 {
-  "counts_describe_commit": "e11f71459",
+  "counts_describe_commit": "0ca8b3b7f",
   "manifest_version": "gnn_render_manifest_v1",
-  "receipt_counts_describe_commit": "e11f71459",
+  "receipt_counts_describe_commit": "0ca8b3b7f",
   "recorded_by": "uv run python scripts/z_record_manuscript_render_manifest.py",
   "render_artifacts_sha256": {
     "output/pdf/_combined_manuscript.log": "3fe5844fa2e527500749483b72f853d8f9fe5f6c35977d5a53e11d96e3374007",
@@ -23,5 +23,5 @@
     "output/manuscript/preamble.md": "bea2bfb7fbd91b09526c29dda7f11c61cedffe9ba0ba219d2d5916bb8ab16ca9",
     "output/manuscript/references.bib": "ed44f4594867a193123aaf03334e12c2f12e167584d42ac5bc6074c4bfec9f0d"
   },
-  "variables_sha256": "797822e2e480e02f23c665c880127f7f8e95f93873749677337f436130fc7ff7"
+  "variables_sha256": "5189cc75f26c42da223c3059b1a7a9e235f564855a005fe73c396bfca8e1a49d"
 }
