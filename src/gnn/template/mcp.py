@@ -122,6 +122,60 @@ def register_tools(registry: Any) -> Any:
             ],
         )
 
+        # Register template.pull tool
+        registry.register_tool(
+            name="template.pull",
+            description="Pull a maintained template into an output directory",
+            function=pull_template_mcp,
+            parameters=[
+                {
+                    "name": "name",
+                    "description": "Name of the maintained template to pull",
+                    "type": "string",
+                    "required": True,
+                },
+                {
+                    "name": "output_dir",
+                    "description": (
+                        "Directory to copy the template into, relative to the"
+                        " server working directory"
+                    ),
+                    "type": "string",
+                    "required": False,
+                    "default": "input/gnn_files",
+                },
+                {
+                    "name": "dry_run",
+                    "description": (
+                        "Report the copy plan without writing files"
+                        " (copy-safe MCP default)"
+                    ),
+                    "type": "boolean",
+                    "required": False,
+                    "default": True,
+                },
+                {
+                    "name": "overwrite",
+                    "description": (
+                        "Replace an existing destination with a different checksum"
+                    ),
+                    "type": "boolean",
+                    "required": False,
+                    "default": False,
+                },
+            ],
+            returns={
+                "type": "object",
+                "description": "Pull result with success flag and template metadata",
+            },
+            examples=[
+                {
+                    "description": "Dry-run pull of the gridworld template",
+                    "code": 'template.pull("pomdp-gridworld-3x3")',
+                }
+            ],
+        )
+
         logger.info("Successfully registered template MCP tools")
         return True
 
@@ -288,3 +342,46 @@ def get_template_info() -> Dict[str, Any]:
         "output_formats": ["processed files", "JSON reports"],
         "dependencies": [],
     }
+
+
+def pull_template_mcp(
+    name: str,
+    output_dir: str = "input/gnn_files",
+    dry_run: bool = True,
+    overwrite: bool = False,
+) -> Dict[str, Any]:
+    """
+    Pull a maintained template into ``output_dir``.
+
+    Thin MCP wrapper around :func:`gnn.cli.templates.pull_template`.
+
+    Args:
+        name: Name of the maintained template to pull.
+        output_dir: Directory to copy the template into, relative to the
+            server working directory (CLI parity default
+            ``input/gnn_files``).
+        dry_run: When True (the copy-safe MCP default) report the copy plan
+            without writing any files.
+        overwrite: When True, replace an existing destination with a
+            different checksum instead of failing.
+
+    Returns:
+        Dictionary with ``success`` set to True plus the pull result keys
+        (template, source, destination, sha256, dry_run, overwritten,
+        copied, message), or ``success`` set to False with an ``error``
+        message on failure.
+    """
+
+    def _build() -> Dict[str, Any]:
+        from gnn.cli.templates import pull_template as _pull_template
+
+        result = _pull_template(
+            name, Path(output_dir), dry_run=dry_run, overwrite=overwrite
+        )
+        return {"success": True, **result}
+
+    try:
+        return _build()
+    except (KeyError, FileExistsError, FileNotFoundError, OSError) as e:
+        logger.error(f"Failed to pull template {name}: {e}")
+        return {"success": False, "error": str(e)}

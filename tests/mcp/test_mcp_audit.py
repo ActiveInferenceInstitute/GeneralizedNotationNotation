@@ -110,6 +110,7 @@ class TestMCPModuleDiscovery:
         "cli",
         "doc",
         "execute",
+        "extract",
         "export",
         "gnn",
         "integration",
@@ -119,6 +120,7 @@ class TestMCPModuleDiscovery:
         "mcp",
         "ml_integration",
         "model_registry",
+        "multimodel",
         "ontology",
         "gui",
         "pipeline",
@@ -352,6 +354,12 @@ class TestMCPDomainTools:
         # pipeline
         "get_pipeline_steps",
         "get_pipeline_status",
+        # extract
+        "extract_pomdp",
+        # multimodel
+        "generate_dependency_graph",
+        # template
+        "template.pull",
         # nested GUI/oxdraw tools exposed by the parent GUI MCP module
         "oxdraw.convert_to_mermaid",
         "oxdraw.convert_from_mermaid",

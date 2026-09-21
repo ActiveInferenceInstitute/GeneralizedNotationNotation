@@ -43,6 +43,14 @@ src/gnn/extract/
 - `extract_pomdp_from_file` / `extract_pomdp_from_content` / `canonicalize_pomdp` — functional surface of the extractor module.
 - `OnErrorMode` (`"lenient" | "raise" | "collect"`) — structured error surfacing; parameter-parse failures are recorded in `matrix_provenance` in every mode.
 
+## MCP Integration
+
+- `mcp.py` registers the `extract_pomdp` tool (category `extract`): a thin
+  MCP wrapper over `extract_to_json` returning the versioned (1.0.0) POMDP
+  payload under `pomdp`, or the extractor error envelope with
+  `success: false`.
+- Tests: `tests/extract/test_extract_mcp_tools.py`.
+
 ---
 
 ## Cross-Repo Pin (do not move)
@@ -58,5 +66,5 @@ The fep_lean bridge `verify-document` operation imports `gnn.extract.pomdp_extra
 - The public surface is exactly `__all__ = ["extract_to_json", "main"]` in `__init__.py`; the extractor module's functions are importable by path.
 - Keep `pomdp_extractor.py` stdlib-only at module scope; heavy or pipeline imports must stay lazy inside call paths.
 - The JSON envelope schema version is `1.0.0`; additive keys only, no breaking changes to `status`/`error` shapes.
-- Tests: `tests/cli/test_cli_extract.py`, `tests/gnn/test_pomdp_extractor_continuous.py`, `tests/gnn/test_pomdp_extractor_counts.py`, `tests/gnn/test_pomdp_extractor_errors.py`, `tests/gnn/test_pomdp_extractor_isolation.py`, `tests/gnn/test_pomdp_extractor_orientation.py`.
+- Tests: `tests/cli/test_cli_extract.py`, `tests/gnn/test_pomdp_extractor_continuous.py`, `tests/gnn/test_pomdp_extractor_counts.py`, `tests/gnn/test_pomdp_extractor_errors.py`, `tests/gnn/test_pomdp_extractor_isolation.py`, `tests/gnn/test_pomdp_extractor_orientation.py`, `tests/extract/test_extract_mcp_tools.py`.
 - Maintain `README.md` alongside any surface change; the per-directory doc audit checks it.
