@@ -2,7 +2,8 @@
 Shared matplotlib/numpy/seaborn imports for visualization and analysis.
 
 Both visualization (step 8) and analysis (step 16) import from the package-root
-`visualization._viz_compat` facade, which re-exports this module.
+`visualization._viz_compat` facade, which re-exports this module. The seaborn
+module itself resolves lazily via `sns`/`get_sns()` on first access.
 """
 
 import logging
@@ -13,7 +14,6 @@ logger = logging.getLogger(__name__)
 MATPLOTLIB_AVAILABLE = False
 plt: Any = None
 np: Any = None
-sns: Any = None
 
 try:
     import numpy as _np
@@ -33,12 +33,29 @@ try:
 except (ImportError, RecursionError):
     logger.debug("matplotlib not available")
 
-try:
-    import seaborn as _sns
+_sns_loaded: bool = False
+_sns_module: Any = None
 
-    sns = _sns
-except ImportError as e:
-    logger.debug("seaborn not available: %s", e)
+
+def get_sns() -> Any:
+    """Return the seaborn module, importing it on first call. Returns None
+    when seaborn is not installed. Importing this module never imports seaborn."""
+    global _sns_loaded, _sns_module
+    if not _sns_loaded:
+        try:
+            import seaborn as _sns
+
+            _sns_module = _sns
+        except ImportError as e:
+            logger.debug("seaborn not available: %s", e)
+        _sns_loaded = True
+    return _sns_module
+
+
+def __getattr__(name: str) -> Any:
+    if name == "sns":
+        return get_sns()
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
 def viz_var_type(var_info: "dict") -> str:

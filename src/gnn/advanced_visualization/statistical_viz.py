@@ -19,9 +19,9 @@ from ._shared import (
     SEABORN_AVAILABLE,
     AdvancedVisualizationAttempt,
     _MatrixVisualizer,
+    get_sns,
     np,
     plt,
-    sns,
 )
 
 
@@ -211,6 +211,7 @@ def _generate_matrix_correlations(
         # Create heatmap
         plt.figure(figsize=(10, 8))
 
+        sns = get_sns()
         if SEABORN_AVAILABLE and sns:
             sns.heatmap(
                 correlation_matrix,
