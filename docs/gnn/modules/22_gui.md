@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/gnn/22_gui.py` (98 lines)
+**Orchestrator**: `src/gnn/22_gui.py` (103 lines)
 **Implementation Layer**: `src/gnn/gui/`
 
 ## Module Description
