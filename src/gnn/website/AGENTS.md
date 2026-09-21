@@ -92,7 +92,7 @@ Additional exports (see `__init__.py`): `WebsiteGenerator`, `WebsiteRenderer`, `
 
 ## Dependencies
 
-The website module is stdlib-only (`logging`, `pathlib`, `json`, `shutil`, `datetime`, `html`); no optional pip extra is required to import or run it. The Jinja2/Markdown/Bleach templating stack is not used — pages are built with inline CSS/HTML. (The orchestrator `src/gnn/20_website.py` pulls in `gnn.utils.pipeline_orchestration.pipeline_template`, a core utility.)
+The website module is stdlib-only plus one first-party import (`gnn.pipeline.step_registry`, the canonical step catalogue); no optional pip extra is required to import or run it. The `gnn.pipeline` package init adds ~50 ms of import time. The Jinja2/Markdown/Bleach templating stack is not used — pages are built with inline CSS/HTML. (The orchestrator `src/gnn/20_website.py` pulls in `gnn.utils.pipeline_orchestration.pipeline_template`, a core utility.)
 
 ---
 
