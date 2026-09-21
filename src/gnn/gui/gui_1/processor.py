@@ -6,7 +6,6 @@ Public functions: run_gui
 from __future__ import annotations
 
 import logging
-import time
 from pathlib import Path
 
 from gnn.utils.observability.structured_logging import (
@@ -16,6 +15,7 @@ from gnn.utils.observability.structured_logging import (
 
 from ..backend import (
     detect_gradio_backend,
+    wait_for_server_launch,
     write_json_atomically,
     write_text_atomically,
 )
@@ -134,10 +134,29 @@ def run_gui(
         logger.info(
             f"🌐 Launching GUI 1 on http://localhost:{_GUI1_PORT} (open_browser={open_browser})"
         )
-        launch_gradio_in_thread(demo, port=_GUI1_PORT, open_browser=open_browser)
+        thread = launch_gradio_in_thread(
+            demo, port=_GUI1_PORT, open_browser=open_browser
+        )
 
-        # Give it a moment to start and verify
-        time.sleep(3)
+        poll_reason = wait_for_server_launch(thread, _GUI1_PORT)
+        if poll_reason is not None:
+            write_json_atomically(
+                output_root / "gui_1_status.json",
+                {
+                    "backend": _GUI_BACKEND,
+                    "launched": False,
+                    "export_file": str(starter_path),
+                    "gui_type": "form_based_constructor",
+                    "status": "launch_failed",
+                    "reason": poll_reason,
+                    "backend_reason": _GUI_BACKEND_REASON,
+                },
+            )
+            log_step_error(
+                logger, f"GUI 1 launch verification failed: {poll_reason}"
+            )
+            return False
+
         logger.info(f"🎮 GUI 1 is running on http://localhost:{_GUI1_PORT}")
         logger.info(
             "🔍 Features: Component management, state space editing, live markdown sync"
@@ -151,6 +170,9 @@ def run_gui(
                 "launched": True,
                 "export_file": str(starter_path),
                 "gui_type": "form_based_constructor",
+                "status": "interactive_mode",
+                "reason": "gradio_launched",
+                "backend_reason": _GUI_BACKEND_REASON,
                 "port": _GUI1_PORT,
                 "url": f"http://localhost:{_GUI1_PORT}",
             },

@@ -19,6 +19,7 @@ import pytest
 
 from gnn.gui.gui_1.processor import run_gui as run_gui_1
 from gnn.gui.gui_2.processor import run_gui as run_gui_2
+from gnn.gui.gui_3.processor import run_gui as run_gui_3
 
 STEP_DIR_NAME = "22_gui_output"
 
@@ -70,3 +71,42 @@ class TestGuiStatusNamespacing:
         # the first GUI's payload must not be clobbered by the second.
         assert not (step_dir / "gui_status.json").exists()
         assert gui_1_status["gui_type"] != gui_2_status["gui_type"]
+
+    @pytest.mark.unit
+    @pytest.mark.fast
+    def test_gui3_status_joins_namespaced_root(
+        self, isolated_temp_dir: Any
+    ) -> None:
+        target = isolated_temp_dir / "input"
+        output = isolated_temp_dir / "output"
+        _write_target(target)
+
+        logger = logging.getLogger("test_gui_status_namespacing")
+
+        assert run_gui_1(
+            target_dir=target, output_dir=output, logger=logger, headless=True
+        )
+        assert run_gui_2(
+            target_dir=target, output_dir=output, logger=logger, headless=True
+        )
+        assert run_gui_3(
+            target_dir=target, output_dir=output, logger=logger, headless=True
+        )
+
+        step_dir = output / STEP_DIR_NAME
+
+        assert (step_dir / "gui_1_status.json").is_file()
+        assert (step_dir / "gui_2_status.json").is_file()
+        gui_3_status = json.loads(
+            (step_dir / "design_studio_status.json").read_text()
+        )
+
+        assert gui_3_status["gui_type"] == "design_studio"
+        assert gui_3_status["launched"] is False
+        assert gui_3_status["status"] in ("headless_mode", "static_headless_mode")
+        for key in ("status", "reason", "backend_reason"):
+            assert key in gui_3_status
+
+        # The three status filenames are mutually distinct; the bare shared
+        # name that used to clobber payloads must not exist.
+        assert not (step_dir / "gui_status.json").exists()
