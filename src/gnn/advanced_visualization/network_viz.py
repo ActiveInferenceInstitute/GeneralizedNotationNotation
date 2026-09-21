@@ -25,9 +25,9 @@ from ._shared import (
     _conn_endpoints,
     _generate_fallback_report,
     _MatrixVisualizer,
+    get_sns,
     np,
     plt,
-    sns,
     validate_visualization_data,
 )
 
@@ -413,6 +413,7 @@ def _generate_pomdp_transition_analysis(
             for action_idx in range(num_actions):
                 transition_slice = B_matrix[action_idx, :, :]
 
+                sns = get_sns()
                 if SEABORN_AVAILABLE and sns:
                     sns.heatmap(
                         transition_slice,
@@ -445,6 +446,7 @@ def _generate_pomdp_transition_analysis(
                 axes[action_idx].set_ylabel("Previous State")
         else:
             fig, ax = plt.subplots(figsize=(8, 6))
+            sns = get_sns()
             if SEABORN_AVAILABLE and sns:
                 sns.heatmap(B_matrix, annot=True, fmt=".2f", cmap="Blues", ax=ax)
             else:

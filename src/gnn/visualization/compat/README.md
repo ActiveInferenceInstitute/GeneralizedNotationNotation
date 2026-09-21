@@ -4,7 +4,7 @@ Safe dependency detection for optional visualization libraries (matplotlib, seab
 
 ## Files
 
-- `viz_compat.py` (40 lines) — Exports `MATPLOTLIB_AVAILABLE`, `plt`, `sns`, `np`
+- `viz_compat.py` — Exports `MATPLOTLIB_AVAILABLE`, `plt`, `sns`, `np`; `sns` resolves lazily via `get_sns()` on first access, so importing this module never imports seaborn.
 
 ## Usage
 
