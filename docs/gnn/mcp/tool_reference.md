@@ -4,7 +4,7 @@ Audit-backed quick reference for the GNN MCP server tool surface. Use `tests/mcp
 
 **Note:** The table below documents a representative subset of the tool
 surface, not the full live-registered set. The live MCP registry currently
-reports **141 tools across 32 modules** — see the generated
+reports **145 tools across 34 modules** — see the generated
 [`src/gnn/mcp/audit_report.json`](../../../src/gnn/mcp/audit_report.json) for the
 authoritative current count (regenerate with `uv run python src/gnn/mcp/validate_tools.py`).
 
@@ -17,7 +17,7 @@ authoritative current count (regenerate with `uv run python src/gnn/mcp/validate
 | analysis | `list_analysis_tools` | List available analysis capabilities |
 | analysis | `process_analysis` | Run statistical analysis on GNN files |
 | audio | `analyze_audio_characteristics` | Analyse characteristics of a GNN model for sonification |
-| audio | `check_audio_backends` | Check which audio backends are available (SAPF, Pedalboard, soundfile) |
+| audio | `check_audio_backends` | Check which audio generation backends are available (scipy, soundfile, pedalboard, wave) |
 | audio | `get_audio_generation_options` | List configurable audio generation options |
 | audio | `get_audio_module_info` | Return audio module version and capabilities |
 | audio | `process_audio` | Run GNN audio processing pipeline |
@@ -90,5 +90,8 @@ authoritative current count (regenerate with `uv run python src/gnn/mcp/validate
 | website | `get_website_status` | Get current website generation status |
 | website | `list_generated_website_pages` | List all generated website pages |
 | website | `process_website` | Generate static HTML website from pipeline output |
+| extract | `extract_pomdp` | Extract the POMDP state space from a GNN file as a versioned JSON payload |
+| multimodel | `generate_dependency_graph` | Render the inter-model dependency graph (Mermaid or text) |
+| template | `template.pull` | Pull a maintained template into an output directory (dry-run safe) |
 
 Use `tests/mcp/test_mcp_audit.py` for the current registered tool/resource contract. The audit verifies module discovery, callable tools, non-empty module/category metadata, canonical JSON schemas, and the parent GUI exposure of nested `oxdraw.*` tools.

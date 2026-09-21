@@ -1,8 +1,8 @@
 {
-  "modules_total": 32,
-  "modules_loaded": 32,
+  "modules_total": 34,
+  "modules_loaded": 34,
   "modules_errored": 0,
-  "tools_total": 142,
+  "tools_total": 145,
   "tools_list": [
     {
       "name": "analyze_audio_characteristics",
@@ -30,11 +30,11 @@
     },
     {
       "name": "check_audio_backends",
-      "module": "gnn.sapf",
+      "module": "gnn.audio",
       "category": "audio",
       "fn": "check_audio_backends_mcp",
       "documented": true,
-      "description": "Check which audio generation backends (SuperCollider, Csound, sounddevice) are available."
+      "description": "Check which audio generation backends (scipy, soundfile, pedalboard, wave) are available."
     },
     {
       "name": "check_execute_dependencies",
@@ -149,12 +149,28 @@
       "description": "Extract ActInfOntologyAnnotation variable-to-term mappings from GNN model content."
     },
     {
+      "name": "extract_pomdp",
+      "module": "gnn.extract",
+      "category": "extract",
+      "fn": "extract_pomdp_mcp",
+      "documented": true,
+      "description": "Extract the POMDP state space from a GNN specification file as a versioned JSON payload."
+    },
+    {
       "name": "find_project_gnn_files",
       "module": "gnn.setup",
       "category": "setup",
       "fn": "find_project_gnn_files_mcp",
       "documented": true,
       "description": "Finds all GNN (.md) files in a specified directory within the project."
+    },
+    {
+      "name": "generate_dependency_graph",
+      "module": "gnn.multimodel",
+      "category": "multimodel",
+      "fn": "generate_dependency_graph_mcp",
+      "documented": true,
+      "description": "Render the inter-model dependency graph of a GNN file as a Mermaid diagram or text adjacency list."
     },
     {
       "name": "generate_llm_documentation",
@@ -1045,6 +1061,14 @@
       "description": "Process a file using the template processor"
     },
     {
+      "name": "template.pull",
+      "module": "gnn.template",
+      "category": "template",
+      "fn": "pull_template_mcp",
+      "documented": true,
+      "description": "Pull a maintained template into an output directory"
+    },
+    {
       "name": "validate_audio_content",
       "module": "gnn.audio",
       "category": "audio",
@@ -1143,9 +1167,9 @@
   ],
   "spot_checks_ok": 14,
   "spot_checks_err": 0,
-  "schema_checks_ok": 142,
+  "schema_checks_ok": 145,
   "schema_checks_err": 0,
-  "logging_ok": 29,
+  "logging_ok": 31,
   "logging_miss": 0,
   "issues": []
 }
