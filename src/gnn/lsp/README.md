@@ -11,6 +11,7 @@ Minimal Language Server Protocol implementation for GNN files. Provides real-tim
 | Feature | LSP Method | Description |
 |---------|-----------|-------------|
 | **Diagnostics on open** | `textDocument/didOpen` | Validates sections, state-space, and connections |
+| **Diagnostics on edit** | `textDocument/didChange` | Re-publishes diagnostics as the document changes |
 | **Diagnostics on save** | `textDocument/didSave` | Re-validates after changes |
 | **Hover info** | `textDocument/hover` | Shows variable dimensions and type on hover |
 
@@ -42,8 +43,9 @@ Add to `.vscode/settings.json`:
 - **Hover**: Parses state-space to show variable metadata at cursor position
 - **Fallback**: Graceful degradation when `pygls` is not installed
 
-The `gnn lsp` CLI subcommand routes through `src/gnn/cli/lsp.py`; the pygls
-server itself lives in `gnn.lsp`.
+The `gnn lsp` CLI subcommand launches the canonical pygls server from
+`gnn.lsp` when pygls is importable; the pygls-free JSON-RPC server in
+`src/gnn/cli/lsp.py` is the fallback when pygls is not installed.
 
 ## File Structure
 

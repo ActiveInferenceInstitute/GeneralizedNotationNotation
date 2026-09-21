@@ -22,7 +22,7 @@ src/gnn/utils/
 ├── config_io/                       # config_loader, io_utils, path_utils, code_metrics
 ├── errors/                          # error_handling, error_recovery
 ├── observability/                   # structured_logging, performance_tracking,
-│                                    #   visual_logging, visualization_optimizer
+│                                    #   visual_logging
 ├── pipeline_orchestration/          # base_processor, execution_utils,
 │                                    #   pipeline_dependencies, pipeline_monitor,
 │                                    #   pipeline_validator, pipeline_template,

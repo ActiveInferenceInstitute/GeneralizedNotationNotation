@@ -39,7 +39,7 @@ from gnn.cli import main
 #   parse     → gnn.schema.parse_state_space()
 #   render    → render.processor
 #   health    → render.health.check_renderers()
-#   lsp       → lsp.start_server()
+#   lsp       → gnn.lsp.start_server() (canonical pygls server) with a cli.lsp pygls-free fallback
 ```
 
 ## Features
