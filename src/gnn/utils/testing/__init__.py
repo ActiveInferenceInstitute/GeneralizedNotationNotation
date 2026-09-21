@@ -6,8 +6,7 @@ Re-exports the family's public names as real objects (not lazy — design
 ``from gnn.utils.testing import TestRunner``. Import-weight note (I1): this
 package is NOT imported by ``import gnn.utils`` — the top-level facade stays
 lazy through its PEP 562 map (guarded by tests/tests/test_light_import.py).
-Importing this package eagerly imports every leaf, which is the same cost the
-old ``import gnn.utils.testing_utils`` paid.
+Importing this package eagerly imports every leaf.
 
 Leaf inventory:
 - constants: path anchors (PROJECT_ROOT/SRC_DIR/TEST_DIR) and the

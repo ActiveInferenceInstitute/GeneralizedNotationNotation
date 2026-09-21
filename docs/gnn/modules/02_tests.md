@@ -191,7 +191,7 @@ errors = _extract_collection_errors(pytest_stdout, pytest_stderr)
 - `pytest-html` - HTML test reports
 
 ### Internal Dependencies
-- `utils.pipeline_template` - Pipeline utilities
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Pipeline utilities
 
 ---
 
@@ -363,7 +363,7 @@ output/2_tests_output/
 - **Function**: `run_tests()`
 
 ### Imports From
-- `utils.pipeline_template` - Pipeline utilities
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Pipeline utilities
 
 ### Imported By
 - `main.py` - Pipeline orchestration

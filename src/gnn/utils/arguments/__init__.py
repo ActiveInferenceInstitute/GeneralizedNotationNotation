@@ -7,8 +7,7 @@ Re-exports the family's public names as real objects (not lazy — design
 ``from gnn.utils.arguments import parse_arguments``. Import-weight note (I1):
 this package is NOT imported by ``import gnn.utils`` — the top-level facade
 stays lazy through its PEP 562 map (guarded by tests/tests/test_light_import.py).
-Importing this package eagerly imports every leaf, which is the same cost the
-old ``import gnn.utils.arg_parsing`` paid.
+Importing this package eagerly imports every leaf.
 
 Leaf inventory:
 - arg_definitions: ``ArgumentDefinition`` and the argument contract table
@@ -20,8 +19,6 @@ Leaf inventory:
 - pipeline_config_merge: ``apply_input_config_defaults`` (YAML defaults)
 
 Cross-family imports go through leaf modules, never through any facade (I5).
-The old top-level paths (``gnn/utils/arg_parsing.py`` etc. and the
-``argument_utils.py`` entry facade) are deprecation facades over this package.
 """
 
 from gnn.utils.arguments.arg_definitions import ArgumentDefinition

@@ -2,8 +2,7 @@
 
 Concern-package home (S2-33 Step 7, family 3/3; design:
 [`../../../../docs/development/utils_split_design.md`](../../../../docs/development/utils_split_design.md)).
-The old top-level module paths under `gnn/utils/` remain as DeprecationWarning
-facades for the deprecation window — new code imports from this package.
+New code imports from this package.
 
 ## Leaves
 

@@ -183,7 +183,7 @@ correlation_id = generate_correlation_id()
 - `datetime` - Timestamp generation
 
 ### Internal Dependencies
-- `utils.pipeline_template` - Pipeline template utilities
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Pipeline utilities
 
 ---
 
@@ -289,7 +289,7 @@ output/0_template_output/
 - **Function**: `process_template_standardized()`
 
 ### Imports From
-- `utils.pipeline_template` - Pipeline utilities
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Pipeline utilities
 
 ### Imported By
 - `main.py` - Pipeline orchestration

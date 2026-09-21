@@ -178,7 +178,7 @@ success = process_mcp(
 - `fastapi` - REST API framework (recovery: basic HTTP)
 
 ### Internal Dependencies
-- `utils.pipeline_template` - Standardized pipeline processing
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Standardized pipeline processing
 - `pipeline.config` - Configuration management
 
 ---
@@ -276,7 +276,7 @@ output/21_mcp_output/
 - **Function**: `process_mcp()`
 
 ### Imports From
-- `utils.pipeline_template` - Standardized processing patterns
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Standardized processing patterns
 - `pipeline.config` - Configuration management
 
 ### Imported By

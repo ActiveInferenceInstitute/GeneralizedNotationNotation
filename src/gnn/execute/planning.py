@@ -12,7 +12,7 @@ references but cannot discover on disk.
 
 The planner is deliberately cheap and deterministic: it only does
 filesystem reads, a JSON contract load, and Python-side importability probes
-(``utils.framework_availability.is_framework_available``) plus a PATH-only
+(``gnn.utils.runtime_safety.framework_availability.is_framework_available``) plus a PATH-only
 Julia lookup (``execute.julia_setup.check_julia_availability``). It never
 shells out to ``julia --project=... -e 'using ...'`` (that is the expensive
 per-package probe used at run time by
@@ -45,7 +45,7 @@ logger = logging.getLogger(__name__)
 _JULIA_FRAMEWORKS = frozenset({"rxinfer", "activeinference_jl"})
 
 # Frameworks whose Python dependency importability is probed via the shared
-# ``utils.framework_availability`` helper (mirrors
+# ``gnn.utils.runtime_safety.framework_availability`` helper (mirrors
 # ``execute.processor._is_python_framework_dependency_available``).
 _PYTHON_FRAMEWORKS = frozenset(
     {"pymdp", "jax", "discopy", "pytorch", "numpyro", "stan", "bnlearn"}

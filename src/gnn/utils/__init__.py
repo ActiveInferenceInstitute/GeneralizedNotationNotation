@@ -19,25 +19,22 @@ Source modules:
 - argument_utils: Streamlined argument parsing and validation
 - resource_manager: Memory and resource usage tracking
 - error_recovery: Error context, severity, and recovery management (S2-33 Step 7
-  concern package errors/; the top-level error_*.py paths remain as deprecation
-  facades)
+  concern package errors/)
 - pipeline_monitor: Pipeline health reporting
 - pipeline_validator: Pre-execution prerequisite checker (step output validation)
 - dependency_validator: Comprehensive dependency validation
 - config_loader: YAML configuration loading and validation (active config system)
   (S2-33 Step 7 concern package config_io/, together with io_utils,
-  code_metrics, and path_utils; the four top-level paths remain as deprecation
-  facades)
+  code_metrics, and path_utils)
 - performance_tracking: Operation timing and performance metrics
 - base_processor: Abstract base class for standardized step processors
 - venv_utils: Virtual environment path helpers
 - system_utils: System information gathering
 - testing: Test runner, categories, stages, and coverage targets (S2-33 concern
-  package; testing_utils.py remains as its deprecation facade)
+  package)
 - pipeline: Pipeline utility exports
 - error_handling: Structured error handler, categories, and recovery strategies
-  (S2-33 Step 7 concern package errors/; the top-level path remains as a
-  deprecation facade)
+  (S2-33 Step 7 concern package errors/)
 - structured_logging: Structured log emission with correlation context
 """
 
@@ -150,7 +147,8 @@ if TYPE_CHECKING:
         validate_pipeline_dependencies_if_available,
     )
     from .runtime_safety.resource_manager import get_current_memory_usage
-    from .system_utils import get_system_info
+    from .system_env.system_utils import get_system_info
+    from .system_env.venv_utils import get_venv_python
     from .testing.constants import (
         COVERAGE_TARGETS,
         TEST_CATEGORIES,
@@ -194,7 +192,6 @@ if TYPE_CHECKING:
         run_test_stage,
         run_tests,
     )
-    from .venv_utils import get_venv_python
 
 from gnn import __version__
 

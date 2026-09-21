@@ -27,11 +27,11 @@ python -c "from utils import get_current_memory_usage; print(get_current_memory_
 
 | Module | Key Exports | Purpose |
 | -------- | ------------ | --------- |
-| `logging_utils` / `structured_logging` | `setup_step_logging`, `PipelineLogger`, `log_step_*` | Structured logging |
+| `logging_utils` / `observability.structured_logging` | `setup_step_logging`, `PipelineLogger`, `log_step_*` | Structured logging |
 | `errors.error_handling` / `errors.error_recovery` | `ErrorRecoveryManager`, `PipelineErrorHandler`, `generate_correlation_id` | Error handling & recovery |
 | `config_io.config_loader` | `load_config`, `get_config_value`, `set_config_value`, `validate_config` | Pipeline configuration |
-| `dependency_validator` | `DependencyValidator`, `validate_pipeline_dependencies`, `get_dependency_status` | Dependency management |
-| `performance_tracker` | `PerformanceTracker`, `track_operation_standalone` | Performance monitoring |
+| `runtime_safety.dependency_validator` | `DependencyValidator`, `validate_pipeline_dependencies`, `get_dependency_status` | Dependency management |
+| `observability.performance_tracking` | `PerformanceTracker`, `track_operation_standalone` | Performance monitoring |
 | `config_io.io_utils` / `mcp` | `verify_directory_writable`, `redact_environment`, `is_sensitive_env_key` | Shared write-probe & env redaction |
 
 ## API
@@ -70,10 +70,13 @@ from gnn.utils import (
     performance_tracker,
     get_performance_summary,
     # Pipeline utilities
-    parse_arguments,
     validate_and_convert_paths,
-    get_output_dir_for_script,
     validate_output_directory,
+)
+
+# Canonical homes outside the facade import block
+from gnn.pipeline.config import get_output_dir_for_script
+from gnn.utils.pipeline_orchestration.base_processor import (
     BaseProcessor,
     ProcessingResult,
     create_processor,

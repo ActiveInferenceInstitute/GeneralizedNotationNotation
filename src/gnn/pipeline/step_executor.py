@@ -11,7 +11,7 @@ surface asserted by ``tests/pipeline/test_step_registry.py`` — so the
 numbered scripts remain the single source of the step contract.
 
 Each call mirrors the argument contract of
-``gnn.utils.pipeline_template.create_standardized_pipeline_script``: the
+``gnn.utils.pipeline_orchestration.pipeline_template.create_standardized_pipeline_script``: the
 per-step CLI surface from ``StepConfiguration`` is forwarded as keyword
 values, ``target_dir``/``output_dir`` resolve to the standard numbered
 ``<stem>_output`` directory, and the return value coerces through the shared

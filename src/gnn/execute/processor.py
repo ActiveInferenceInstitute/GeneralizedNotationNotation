@@ -76,7 +76,7 @@ from .types import (
 
 logger = logging.getLogger(__name__)
 
-# Phase 2.3: framework-availability helpers moved to utils.framework_availability
+# Phase 2.3: framework-availability helpers moved to gnn.utils.runtime_safety.framework_availability
 # so execute and render stay in sync. The import-check dict and predicate are
 # re-exported here via thin aliases to preserve any external callers that
 # previously imported them from execute.processor.
@@ -93,7 +93,7 @@ def _is_python_framework_dependency_available(
 ) -> bool:
     """Return True if the framework's required Python module is importable.
 
-    Delegates to ``utils.framework_availability.is_framework_available``, passing
+    Delegates to ``gnn.utils.runtime_safety.framework_availability.is_framework_available``, passing
     ``executor`` so the check targets the subprocess-invoked interpreter rather
     than the caller's. Preserves the pre-Phase-2.3 call-site signature.
     """

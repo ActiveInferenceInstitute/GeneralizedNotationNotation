@@ -109,7 +109,7 @@ success = process_integration(
 - `requests` - HTTP communication (recovery: local only)
 
 ### Internal Dependencies
-- `utils.pipeline_template` - Standardized pipeline processing patterns
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Standardized pipeline processing patterns
 - `pipeline.config` - Pipeline configuration management
 
 ---
@@ -181,7 +181,7 @@ output/17_integration_output/
 - **Function**: `process_integration()`
 
 ### Imports From
-- `utils.pipeline_template` - Standardized processing patterns
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Standardized processing patterns
 - `pipeline.config` - Configuration management
 
 ### Imported By

@@ -10,7 +10,7 @@ This folder contains module-focused tests for shared helpers, pipeline templates
 - `test_error_recovery_framework.py` — error message formatting, recovery suggestions, and error-handling behavior.
 - `test_framework_availability.py` — framework availability probes verified against the real interpreter's `importlib.util.find_spec` results.
 - `test_io_utils.py` — edge cases for the shared file I/O helpers: text vs bytes vs serialized writes, atomic temp-file replacement, missing-input handling.
-- `test_new_utils.py` — `gnn/utils/step_logging.py` and `gnn/utils/base_processor.py` behavior.
+- `test_new_utils.py` — step-logging behavior (`gnn.utils.logging.logging_utils`) and `gnn.utils.pipeline_orchestration.base_processor` behavior.
 - `test_path_conversion.py` — string-to-`Path` coercion, `None` handling for critical path arguments, and config validation entry points.
 - `test_pipeline_config_merge.py` — merging `input/config.yaml` defaults into pipeline arguments and step-command construction.
 - `test_pipeline_template_exit_codes.py` — the widened exit-code contract (`0=success, 1=error, 2=success with warnings/skipped`).

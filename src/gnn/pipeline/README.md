@@ -220,7 +220,7 @@ status = get_pipeline_status()
 
 ```python
 from gnn.pipeline.dag import find_circular_dependencies, resolve_execution_order
-from gnn.utils.pipeline_step_dependencies import PIPELINE_STEP_DEPENDENCIES
+from gnn.utils.pipeline_orchestration.pipeline_step_dependencies import PIPELINE_STEP_DEPENDENCIES
 
 # Resolve tiers over the canonical dependency table
 tiers = resolve_execution_order(dict(PIPELINE_STEP_DEPENDENCIES))

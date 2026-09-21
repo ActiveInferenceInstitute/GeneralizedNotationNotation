@@ -1,4 +1,4 @@
-"""Contract tests for ``gnn.utils.mcp_dispatch``.
+"""Contract tests for ``gnn.utils.mcp.dispatch``.
 
 22 registered MCP tools route through :func:`run_tool_envelope` and 18
 pipeline wrappers through :func:`run_pipeline_step_mcp`; this module pins

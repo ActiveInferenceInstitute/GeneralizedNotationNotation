@@ -1,8 +1,7 @@
 # `gnn/utils/arguments/` — agent contract
 
 Concern-package home (S2-33 split; design: `docs/development/utils_split_design.md`).
-The old top-level module paths under `gnn/utils/` remain as DeprecationWarning
-facades for the deprecation window — new code imports from this package.
+New code imports from this package.
 
 ## Invariants
 

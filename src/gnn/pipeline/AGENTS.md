@@ -141,7 +141,7 @@ Return the ordered list of registered step script stems (derived from
 
 Topologically sort **step numbers** into parallel execution tiers (Kahn's
 algorithm with tier grouping). `step_dependencies` maps each step number to
-the step numbers it depends on (`utils.pipeline_step_dependencies.PIPELINE_STEP_DEPENDENCIES`
+the step numbers it depends on (`gnn.utils.pipeline_orchestration.pipeline_step_dependencies.PIPELINE_STEP_DEPENDENCIES`
 is the canonical dependency table). `total_steps` defaults to the registry
 step count. Circular dependencies are appended as a final tier unless
 `raise_on_circular=True`, which raises `ValueError`.
@@ -230,9 +230,9 @@ progress is reported by the per-run `pipeline_execution_summary.json` instead.
 
 ### Internal Dependencies
 
-- `utils.argument_utils` - Argument parsing utilities
+- `gnn.utils.arguments` - Argument parsing utilities
 - `utils.logging_utils` - Structured (JSON-L + text) logging helpers
-- `utils.pipeline_template` - Pipeline template utilities
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Pipeline template utilities
 
 ---
 
@@ -296,7 +296,7 @@ for step in discover_pipeline_steps():
 
 ```python
 from gnn.pipeline.dag import resolve_execution_order, find_circular_dependencies
-from gnn.utils.pipeline_step_dependencies import PIPELINE_STEP_DEPENDENCIES
+from gnn.utils.pipeline_orchestration.pipeline_step_dependencies import PIPELINE_STEP_DEPENDENCIES
 
 # Resolve tiers over the canonical dependency table
 tiers = resolve_execution_order(dict(PIPELINE_STEP_DEPENDENCIES))
@@ -313,7 +313,7 @@ assert find_circular_dependencies({0: [1], 1: []}) == set()
 ### Output Products
 
 - `pipeline_execution_summary.json` - Execution summary (written by `main.py` under `00_pipeline_summary/`)
-- `pipeline_health_report_<timestamp>.json` - Health monitoring report (written by `utils.pipeline_monitor`)
+- `pipeline_health_report_<timestamp>.json` - Health monitoring report (written by `gnn.utils.pipeline_orchestration.pipeline_monitor`)
 
 ### Output Directory Structure
 
@@ -375,9 +375,9 @@ output/
 
 ### Imports From
 
-- `utils.argument_utils` - Argument parsing
+- `gnn.utils.arguments` - Argument parsing
 - `utils.logging_utils` - Structured logging
-- `utils.pipeline_template` - Template utilities
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Template utilities
 
 ### Imported By
 

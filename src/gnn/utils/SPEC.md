@@ -6,8 +6,8 @@ The `utils` module provides standardized infrastructure for the GNN pipeline, in
 
 ## Core Components
 
-### 1. logging_utils.py / structured_logging.py
-Logging facade and structured pipeline logging with correlation tracking. The structured logger decorates lifecycle events with status markers in the log output.
+### 1. logging_utils.py + observability/structured_logging.py
+Logging facade (`logging_utils.py`) and structured pipeline logging with correlation tracking (`observability/structured_logging.py`). The structured logger decorates lifecycle events with status markers in the log output.
 
 **Functions (facade):**
 - `log_step_start(logger, msg)` - Log step start (rocket marker in structured output)
@@ -18,7 +18,7 @@ Logging facade and structured pipeline logging with correlation tracking. The st
 
 **Design:** Standard library only for the facade; recovery-safe.
 
-### 2. base_processor.py
+### 2. pipeline_orchestration/base_processor.py
 Abstract base class for standardized processing patterns.
 
 **Classes:**
@@ -28,13 +28,13 @@ Abstract base class for standardized processing patterns.
 **Factory:**
 - `create_processor(step_name, process_func)` - Wrap simple functions
 
-### 3. arg_parsing.py / arg_definitions.py / step_config.py
-Argument parsing and validation: `ArgumentParser.parse_step_arguments`, `build_step_command_args`, `audit_step_contracts`, shared `STEP_ARGUMENTS` and `StepConfiguration`. `argument_utils.py` re-exports these. Recovery defaults come from the shared `fallback_default_for` table (`_FALLBACK_DEFAULTS`); `StepConfiguration.validate_step_args` accepts an injectable `project_root`.
+### 3. arguments/ (arg_parsing, arg_definitions, step_config, ...)
+Argument parsing and validation: `ArgumentParser.parse_step_arguments`, `build_step_command_args`, `audit_step_contracts`, shared `STEP_ARGUMENTS` and `StepConfiguration`. Recovery defaults come from the shared `fallback_default_for` table (`_FALLBACK_DEFAULTS`); `StepConfiguration.validate_step_args` accepts an injectable `project_root`.
 
-### 4. config_loader.py
+### 4. config_io/config_loader.py
 Pipeline configuration management: `load_config`, `get_config_value`, `set_config_value`, `validate_config`.
 
-### 5. dependency_validator.py / performance_tracking.py
+### 5. runtime_safety/dependency_validator.py + observability/performance_tracking.py
 Dependency validation (`validate_pipeline_dependencies`, `check_optional_dependencies`, `get_dependency_status`) and performance tracking (`PerformanceTracker.track_operation`, `track_operation_standalone`).
 
 ## Import Patterns

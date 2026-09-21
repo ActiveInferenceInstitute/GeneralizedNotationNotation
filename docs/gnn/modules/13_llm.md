@@ -234,7 +234,7 @@ success = process_llm(
 - Note: there is no `anthropic` package dependency in use — no code in `src/gnn/llm/` imports `anthropic`; `ANTHROPIC_API_KEY` is only checked for presence in the provider matrix
 
 ### Internal Dependencies
-- `utils.pipeline_template` - Logging utilities
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Logging utilities
 - `pipeline.config` - Configuration management
 - `llm.processor` - Core LLM logic
 

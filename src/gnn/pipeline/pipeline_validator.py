@@ -2,7 +2,7 @@
 """Old import path for the pipeline runtime integration tester.
 
 This module was renamed to ``gnn.pipeline.pipeline_runtime_validator`` to
-disambiguate it from ``gnn.utils.pipeline_validator`` (the pre-execution
+disambiguate it from ``gnn.utils.pipeline_orchestration.pipeline_validator`` (the pre-execution
 prerequisite checker). The old import path still works: it emits a
 ``DeprecationWarning`` and re-exports the same symbols with identical
 behavior.

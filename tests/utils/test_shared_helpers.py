@@ -8,7 +8,7 @@ logic across src/gnn/utils/ was collapsed:
   ``gnn.utils.pipeline.validate_output_directory`` and
   ``gnn.utils.pipeline_validator.check_pipeline_readiness``
 - the canonical memory probe ``gnn.utils.runtime_safety.resource_manager.get_memory_usage``
-  (with the ``testing_utils`` / ``visualization_optimizer`` aliases)
+  (reused by ``gnn.utils.testing.perf`` and ``visualization_optimizer``)
 - ``resource_manager.with_resource_limits`` exception-propagation semantics
 - the shared fallback-default table behind ``ArgumentParser``
 - ``StepConfiguration.validate_step_args`` injectable ``project_root``
@@ -140,42 +140,6 @@ class TestCanonicalMemoryProbe:
         import gnn.utils.runtime_safety.resource_manager as rm
 
         assert rm.get_memory_usage is rm.get_current_memory_usage
-
-    def test_testing_utils_delegates(self) -> None:
-        import importlib
-        import sys
-
-        import gnn.utils.runtime_safety.resource_manager as rm
-
-        # Fresh import: the facade warns once per process at module exec, so
-        # drop any cached module to make the DeprecationWarning deterministic.
-        sys.modules.pop("gnn.utils.testing_utils", None)
-        with pytest.warns(DeprecationWarning):
-            tu = importlib.import_module("gnn.utils.testing_utils")
-
-        assert tu.get_memory_usage is rm.get_memory_usage
-        # S2-33 Step 1: the old-path facade delegates to the testing/ package.
-        import gnn.utils.testing as family
-
-        assert tu.TestRunner is family.TestRunner
-        assert tu.get_test_args is family.get_test_args
-        assert tu.performance_tracker is family.performance_tracker
-        assert tu.PROJECT_ROOT is family.PROJECT_ROOT
-        assert tu.__all__ == [*family.__all__, "get_memory_usage"]
-
-    def test_visualization_optimizer_delegates(self) -> None:
-        import importlib
-        import sys
-
-        import gnn.utils.runtime_safety.resource_manager as rm
-
-        # Drop any cached module so the facade's DeprecationWarning fires
-        # deterministically (suite runs under error::DeprecationWarning).
-        sys.modules.pop("gnn.utils.visualization_optimizer", None)
-        with pytest.warns(DeprecationWarning):
-            vo = importlib.import_module("gnn.utils.visualization_optimizer")
-
-        assert vo.get_memory_usage is rm.get_memory_usage
 
     def test_probe_returns_non_negative_float(self) -> None:
         value = get_memory_usage()

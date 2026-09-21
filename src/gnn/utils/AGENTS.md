@@ -33,7 +33,7 @@
 - Error handling and recovery mechanisms
 - Pipeline orchestration and coordination
 - Utility functions for common operations
-- `jax_stack_validation.py`: single probe for JAX, Optax, Flax, and pymdp 1.x (Step 1 setup, `validate_uv_setup`, CI, pytest)
+- `runtime_safety/jax_stack_validation.py`: single probe for JAX, Optax, Flax, and pymdp 1.x (Step 1 setup, `validate_uv_setup`, CI, pytest)
 
 ---
 
@@ -63,7 +63,7 @@ logger = setup_step_logging("3_gnn", verbose=True)
 **Location**: `src/gnn/utils/logging/logging_utils.py:172` (re-exported by the `utils/logging_utils.py` facade).
 
 #### `log_step_start(logger, message)` / `log_step_success(logger, message)` / `log_step_error(logger, message)` / `log_step_warning(logger, message)`
-**Description**: Step lifecycle logging helpers (`utils/logging_utils.py`). `log_step_start` returns a correlation-aware context; the others log structured lifecycle events. `utils/structured_logging.py` additionally exposes `log_step_start(logger, step_name, **context)` and friends with richer metadata when a step needs it.
+**Description**: Step lifecycle logging helpers (`utils/logging_utils.py`). `log_step_start` returns a correlation-aware context; the others log structured lifecycle events. `utils/observability/structured_logging.py` additionally exposes `log_step_start(logger, step_name, **context)` and friends with richer metadata when a step needs it.
 
 #### `get_performance_summary() -> Dict[str, Any]`
 **Description**: Get summary of performance metrics across all tracked operations
@@ -71,7 +71,7 @@ logger = setup_step_logging("3_gnn", verbose=True)
 **Returns**: `Dict[str, Any]` - Performance summary with timing, memory, and resource usage
 
 #### `setup_correlation_context(correlation_id: Optional[str] = None, step_name: Optional[str] = None)`
-**Description**: Set up correlation context for logging (delegates to `utils/structured_logging.py`)
+**Description**: Set up correlation context for logging (delegates to `utils/observability/structured_logging.py`)
 
 **Parameters**:
 - `correlation_id` (Optional[str]): Existing correlation ID or None to generate new
@@ -79,13 +79,13 @@ logger = setup_step_logging("3_gnn", verbose=True)
 
 ### Argument Parsing Functions
 
-> **Modularization note (2026-08-14)**: the former 2,263-line
-> `argument_utils.py` is now a thin re-export module over single-responsibility
-> modules — `arg_definitions` (shared `STEP_ARGUMENTS`/constants),
+> **Modularization note (2026-08-14)**: the argument utilities live as
+> single-responsibility modules in the `arguments/` family —
+> `arg_definitions` (shared `STEP_ARGUMENTS`/constants),
 > `arg_parsing` (the `ArgumentParser`), `path_conversion` (`validate_and_convert_paths`),
 > `pipeline_arguments` (command building), and `step_config` (`StepConfiguration`).
-> `safe_eval.safe_literal_eval` provides bounded, DoS-resistant literal evaluation
-> for untrusted GNN parameter strings (RED_TEAM V-03).
+> `runtime_safety.safe_eval.safe_literal_eval` provides bounded, DoS-resistant
+> literal evaluation for untrusted GNN parameter strings (RED_TEAM V-03).
 
 #### `ArgumentParser.parse_step_arguments(step_name: str) -> argparse.Namespace`
 **Description**: Parse arguments for a specific pipeline step with recovery support
@@ -114,7 +114,7 @@ logger = setup_step_logging("3_gnn", verbose=True)
 
 **Returns**: `List[str]` - Command-line argument list
 
-#### `utils.arg_parsing.audit_step_contracts(python_executable: Optional[str] = None, script_dir: Optional[Path] = None) -> List[Dict[str, Any]]`
+#### `utils.arguments.arg_parsing.audit_step_contracts(python_executable: Optional[str] = None, script_dir: Optional[Path] = None) -> List[Dict[str, Any]]`
 **Description**: Audit registered step contracts for drift between `STEP_ARGUMENTS`, `StepConfiguration`, parser defaults, and command-builder propagation.
 
 **Returns**: `List[Dict[str, Any]]` - Contract audit issues; each entry describes a per-step mismatch (empty list means no drift)
@@ -156,15 +156,15 @@ logger = setup_step_logging("3_gnn", verbose=True)
 **Returns**: `float` - Memory usage in megabytes (MB)
 
 #### `get_memory_usage() -> float`
-**Description**: Canonical MB-scale process-memory probe (alias of `get_current_memory_usage`). `utils.testing_utils.get_memory_usage` and `utils.visualization_optimizer.get_memory_usage` re-export it.
+**Description**: Canonical MB-scale process-memory probe (alias of `get_current_memory_usage`); its canonical home is `utils.runtime_safety.resource_manager`.
 
 ### Error Recovery Functions
 
 #### `ErrorRecoveryManager(logger=None).handle_error(context: ErrorContext) -> bool`
-**Description**: Handle an error through the registered recovery strategies (`utils/error_recovery.py`). Errors are constructed as `ErrorContext` objects (operation, severity, message, error_code, details).
+**Description**: Handle an error through the registered recovery strategies (`utils/errors/error_recovery.py`). Errors are constructed as `ErrorContext` objects (operation, severity, message, error_code, details).
 
 #### `format_and_log_error(error_code: str, operation: str, message: str, severity: ErrorSeverity = ErrorSeverity.ERROR, details: Optional[Dict[str, Any]] = None, suggestions: Optional[List[str]] = None, exception: Optional[Exception] = None) -> ErrorContext`
-**Description**: Build an `ErrorContext`, run it through the shared `ErrorRecoveryManager`, and return the context (`src/gnn/utils/error_recovery.py:252`).
+**Description**: Build an `ErrorContext`, run it through the shared `ErrorRecoveryManager`, and return the context (`src/gnn/utils/errors/error_recovery.py:252`).
 
 ### Configuration Functions
 
@@ -191,7 +191,7 @@ logger = setup_step_logging("3_gnn", verbose=True)
 **Description**: Context manager tracking operation timing; usage: `with tracker.track_operation("name", {...}):`
 
 #### `track_operation_standalone(operation: str, metadata: Optional[Dict[str, Any]] = None) -> ContextManager[None]`
-**Description**: `@contextmanager` that measures the duration of a `with` block and records it on the global `performance_tracker` via `record_timing(operation, duration, metadata)`. Usage: `with track_operation_standalone("name", {...}):`. Yields `None` (`src/gnn/utils/performance_tracking.py:151`).
+**Description**: `@contextmanager` that measures the duration of a `with` block and records it on the global `performance_tracker` via `record_timing(operation, duration, metadata)`. Usage: `with track_operation_standalone("name", {...}):`. Yields `None` (`src/gnn/utils/observability/performance_tracking.py:151`).
 
 
 ## Composability Notes
@@ -201,9 +201,9 @@ logger = setup_step_logging("3_gnn", verbose=True)
 Duplicated logic was collapsed onto one implementation each; every
 historical entry point remains valid:
 
-- **Writable-directory probe**: `utils.io_utils.verify_directory_writable(directory, probe_name=".write_probe") -> None` is the single create-rename-cleanup probe. `utils.pipeline.validate_output_directory` and `utils.pipeline_validator.check_pipeline_readiness` call it; both keep their own error messaging.
-- **Canonical memory probe**: `utils.resource_manager.get_memory_usage` (alias of `get_current_memory_usage`); `utils.testing_utils.get_memory_usage` and `utils.visualization_optimizer.get_memory_usage` delegate to it instead of carrying their own psutil copies.
-- **Step-argument fallback defaults**: `utils.arg_parsing.fallback_default_for(arg_name)` backed by the `_FALLBACK_DEFAULTS` mapping replaced two ~70-line if/elif ladders in `ArgumentParser.parse_step_arguments` and `ArgumentParser.create_default_namespace`. `create_default_namespace` now matches the registered contract for `advanced_stats` (`False`) and `simulation_params` (`"{}"`) where it previously fell through to `None`.
+- **Writable-directory probe**: `utils.config_io.io_utils.verify_directory_writable(directory, probe_name=".write_probe") -> None` is the single create-rename-cleanup probe. `utils.pipeline.validate_output_directory` and `utils.pipeline_orchestration.pipeline_validator.check_pipeline_readiness` call it; both keep their own error messaging.
+- **Canonical memory probe**: `utils.runtime_safety.resource_manager.get_memory_usage` (alias of `get_current_memory_usage`); the testing and visualization-optimizer consumers call it instead of carrying their own psutil copies.
+- **Step-argument fallback defaults**: `utils.arguments.arg_parsing.fallback_default_for(arg_name)` backed by the `_FALLBACK_DEFAULTS` mapping replaced two ~70-line if/elif ladders in `ArgumentParser.parse_step_arguments` and `ArgumentParser.create_default_namespace`. `create_default_namespace` now matches the registered contract for `advanced_stats` (`False`) and `simulation_params` (`"{}"`) where it previously fell through to `None`.
 - **Injectable project root**: `StepConfiguration.validate_step_args(step_name, args, project_root=None)` accepts an explicit project root for missing-input-path repair; when omitted, the caller-frame heuristic (long-standing default) applies (unchanged behavior for existing callers).
 - **`with_resource_limits`**: exceptions raised by the wrapped body always propagate; limit violations are only raised when the body completed normally (previously a `RuntimeError` raised from `finally` could mask a body failure).
 - **Environment redaction**: `utils.mcp.SENSITIVE_ENV_KEY_MARKERS`, `is_sensitive_env_key(key) -> bool`, and `redact_environment() -> dict[str, str]` centralize secret filtering used by `get_environment_info` (markers widened with `credential`, `passwd`, `auth`).
@@ -255,7 +255,7 @@ print(f"GNN output directory: {output_dir}")
 
 ### Pipeline Script Creation
 ```python
-from gnn.utils.pipeline_template import create_standardized_pipeline_script
+from gnn.utils.pipeline_orchestration.pipeline_template import create_standardized_pipeline_script
 
 run_script = create_standardized_pipeline_script(
     "3_gnn.py", process_gnn_files, "GNN file processing"
@@ -267,7 +267,7 @@ exit_code = run_script()
 
 ### Memory Monitoring
 ```python
-from gnn.utils.resource_manager import get_current_memory_usage
+from gnn.utils.runtime_safety.resource_manager import get_current_memory_usage
 
 memory_before = get_current_memory_usage()
 # ... do some work ...

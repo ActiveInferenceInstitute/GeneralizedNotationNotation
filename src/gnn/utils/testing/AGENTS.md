@@ -3,9 +3,7 @@
 Concern-package home for the test-harness family, extracted from
 `testing_utils.py` in S2-33 Step 1 (design:
 [`docs/development/utils_split_design.md`](../../../../docs/development/utils_split_design.md)
-§6). The old module path `gnn/utils/testing_utils.py` remains as a
-`DeprecationWarning` facade for the deprecation window; new code imports
-from this package.
+§6). New code imports from this package.
 
 ## Layout
 
@@ -38,4 +36,4 @@ from this package.
 - [`tests/tests/test_light_import.py`](../../../../tests/tests/test_light_import.py)
   asserts `import gnn.utils` stays light (no psutil/matplotlib).
 - [`tests/utils/test_shared_helpers.py`](../../../../tests/utils/test_shared_helpers.py)
-  pins the old-path facade's delegation.
+  pins the shared-helper behavior.

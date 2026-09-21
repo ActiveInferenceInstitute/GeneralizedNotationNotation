@@ -204,7 +204,7 @@ uv run python src/gnn/16_analysis.py --target-dir input/gnn_files --output-dir o
 - `seaborn` - Enhanced statistical plots (recovery: matplotlib)
 
 ### Internal Dependencies
-- `utils.pipeline_template` - Standardized pipeline processing patterns
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Standardized pipeline processing patterns
 - `pipeline.config` - Pipeline configuration management
 
 ---
@@ -332,7 +332,7 @@ output/16_analysis_output/
 - **Function**: `process_analysis()`
 
 ### Imports From
-- `utils.pipeline_template` - Standardized processing patterns
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Standardized processing patterns
 - `pipeline.config` - Configuration management
 
 ### Imported By

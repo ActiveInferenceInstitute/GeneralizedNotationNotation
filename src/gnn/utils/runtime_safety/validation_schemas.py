@@ -10,7 +10,7 @@ validate the same way.
 
 Typical usage::
 
-    from gnn.utils.validation_schemas import validate_model_data, validate_target_dir
+    from gnn.utils.runtime_safety.validation_schemas import validate_model_data, validate_target_dir
 
     def generate_pymdp_code(model_data, output_path=None):
         model_data = validate_model_data(model_data, context="generate_pymdp_code")
