@@ -159,9 +159,9 @@ class Dispatcher:
 
         On wait-timeout the outstanding futures are cancelled and reported
         as failed executions; completed results keep their submission order.
-        When dask.distributed is not importable (only possible for non-real
-        clients such as test fakes — a real dask client has dask installed
-        by definition) the pre-change unbounded gather applies.
+        When dask.distributed is not importable (only possible for
+        non-dask clients — a real dask client has dask installed by
+        definition) the pre-change unbounded gather applies.
         """
         try:
             from dask.distributed import wait as dask_wait
