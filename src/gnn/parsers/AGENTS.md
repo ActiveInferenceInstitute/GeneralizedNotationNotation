@@ -9,7 +9,6 @@ Multi-format I/O for GNN: **23** `GNNFormat` values, **23** parsers, **22** seri
 - **`GNNParsingSystem`** — the registry-driven system in **`system.py`**; instantiate and call `parse_file`, `serialize`, etc.
 - **`gnn.parsers.basic`** — structural/formal parse surface (`GNNFormalParser`, `parse_gnn_formal`, `validate_gnn_syntax`, `GNNFormatSpec`). Its same-named `GNNParsingSystem` is not re-exported from the package; use `gnn.parsers.basic.GNNParsingSystem` explicitly.
 - **`frontmatter.py`** — `parse_frontmatter` / `has_frontmatter`.
-- **`cache.py`** — `ParseCache`.
 - **`PARSER_REGISTRY` / `SERIALIZER_REGISTRY`** — maps `GNNFormat` to concrete classes.
 - **`GNNFormat`**, **`GNNParser`** (protocol) — **`common.py`**.
 
