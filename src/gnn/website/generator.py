@@ -18,6 +18,7 @@ from __future__ import annotations
 import json
 import logging
 import os
+import re
 import shutil
 import tempfile
 from dataclasses import dataclass
@@ -25,6 +26,8 @@ from datetime import datetime
 from html import escape
 from pathlib import Path
 from typing import Any, Callable, Dict, Optional
+
+from gnn.pipeline.step_registry import STEPS as _REGISTRY_STEPS
 
 logger = logging.getLogger(__name__)
 
@@ -526,41 +529,41 @@ class StepInfo:
         return f"{self.number}_{self.name.lower().replace(' ', '_')}.py"
 
 
-PIPELINE_STEPS: tuple[StepInfo, ...] = (
-    StepInfo(0, "Template", "Pipeline template and initialization"),
-    StepInfo(1, "Setup", "Environment setup and dependency install"),
-    StepInfo(2, "Tests", "Test suite execution (pytest)"),
-    StepInfo(
-        3,
-        "GNN Processing",
-        "GNN file discovery, parsing, and multi-format serialization",
-    ),
-    StepInfo(4, "Model Registry", "Model versioning and registry management"),
-    StepInfo(5, "Type Checking", "GNN type validation and resource estimation"),
-    StepInfo(6, "Validation", "Consistency and semantic quality checking"),
-    StepInfo(7, "Export", "Multi-format export (JSON, XML, GraphML, GEXF, Pickle)"),
-    StepInfo(8, "Visualization", "Graph and matrix visualization generation"),
-    StepInfo(9, "Advanced Viz", "Interactive and advanced visualization (Plotly, D3)"),
-    StepInfo(10, "Ontology", "Active Inference ontology processing and validation"),
-    StepInfo(11, "Rendering", "Code generation for simulation frameworks"),
-    StepInfo(12, "Execution", "Execute rendered simulation scripts"),
-    StepInfo(13, "LLM", "LLM-enhanced analysis and model interpretation"),
-    StepInfo(14, "ML Integration", "Machine learning integration and model training"),
-    StepInfo(15, "Audio", "Audio sonification generation (SAPF)"),
-    StepInfo(16, "Analysis", "Statistical analysis and cross-simulation aggregation"),
-    StepInfo(17, "Integration", "System integration and cross-module coordination"),
-    StepInfo(18, "Security", "Security validation and generated code scanning"),
-    StepInfo(19, "Research", "Research tools and literature references"),
-    StepInfo(20, "Website", "Static HTML website generation from pipeline artifacts"),
-    StepInfo(
-        21, "MCP Processing", "Model Context Protocol processing and tool registration"
-    ),
-    StepInfo(22, "GUI", "Interactive GNN constructor GUI"),
-    StepInfo(23, "Report", "Comprehensive analysis report generation"),
-    StepInfo(
-        24, "Intelligent Analysis", "AI-powered pipeline analysis and executive reports"
-    ),
-)
+# Acronym casing for stem suffixes that must not be title-cased
+# (``"mcp".title()`` would yield "Mcp", breaking the display name and the
+# ``script_name`` round-trip back to the real orchestrator script stem).
+_ACRONYM_DISPLAY: dict[str, str] = {
+    "gnn": "GNN",
+    "gui": "GUI",
+    "llm": "LLM",
+    "mcp": "MCP",
+    "ml": "ML",
+}
+
+
+def _display_name_from_stem_suffix(suffix: str) -> str:
+    """Display name for a registry stem suffix (``"advanced_viz"`` → ``"Advanced Viz"``)."""
+    return " ".join(
+        _ACRONYM_DISPLAY.get(word, word.title()) for word in suffix.split("_")
+    )
+
+
+def _steps_from_registry() -> tuple[StepInfo, ...]:
+    """Derive the site catalogue from the canonical ``step_registry.STEPS``."""
+    infos: list[StepInfo] = []
+    for registry_step in _REGISTRY_STEPS:
+        number_str, _, suffix = registry_step.script_stem.partition("_")
+        infos.append(
+            StepInfo(
+                number=int(number_str),
+                name=_display_name_from_stem_suffix(suffix),
+                description=registry_step.description,
+            )
+        )
+    return tuple(infos)
+
+
+PIPELINE_STEPS: tuple[StepInfo, ...] = _steps_from_registry()
 
 
 def get_pipeline_steps() -> tuple[StepInfo, ...]:
@@ -592,6 +595,25 @@ def _esc(value: Any) -> str:
     return escape(str(value))
 
 
+def _stat_int(value: Any, default: int = 0) -> int:
+    """Best-effort int for artifact-recorded stat values, falling back to ``default``.
+
+    Guard against ``null``/non-numeric JSON fields: an unusable stat must
+    render as the fallback instead of failing the whole page.
+    """
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return default
+
+
+def _truncate(text: str, limit: int) -> str:
+    """Cap ``text`` at ``limit`` chars with an explicit marker when truncated."""
+    if len(text) <= limit:
+        return text
+    return text[:limit] + "\n\n… [truncated]"
+
+
 def _write_atomic(dest: Path, content: str) -> None:
     """Write ``content`` to ``dest`` via a temp file and atomic rename."""
     tmp = tempfile.NamedTemporaryFile(
@@ -617,10 +639,80 @@ def _collect_gnn_files(p_root: Path, input_dir: Path) -> tuple[list[Path], bool]
     return [], False
 
 
+def _load_pipeline_summary(p_root: Path) -> dict[str, Any]:
+    """Load ``pipeline_execution_summary.json`` (absent or malformed → ``{}``)."""
+    for candidate in (
+        p_root / "00_pipeline_summary" / "pipeline_execution_summary.json",
+        p_root / "pipeline_execution_summary.json",
+    ):
+        if not candidate.exists():
+            continue
+        try:
+            loaded = json.loads(candidate.read_text(encoding="utf-8"))
+        except Exception as e:
+            logger.debug(f"Skipped malformed pipeline summary file: {e}")
+            return {}
+        return loaded if isinstance(loaded, dict) else {}
+    return {}
+
+
+def _normalize_website_step_status(raw: Any) -> str | None:
+    """Map a recorded pipeline step status to the site badge vocabulary.
+
+    Returns ``ok``/``skip``/``error``, or ``None`` for an empty/unusable
+    status (the step then stays ``pending``).
+    """
+    normalized = str(raw or "").strip().upper()
+    if not normalized:
+        return None
+    if "SKIP" in normalized:
+        return "skip"
+    if "SUCCESS" in normalized and "PARTIAL" not in normalized:
+        return "ok"
+    if normalized in ("PASS", "PASSED", "OK", "COMPLETED"):
+        return "ok"
+    return "error"
+
+
+def _step_statuses_from_summary(summary: dict[str, Any]) -> dict[int, str]:
+    """Per-step site statuses derived from the pipeline summary's ``steps`` list."""
+    statuses: dict[int, str] = {}
+    raw_steps = summary.get("steps")
+    if not isinstance(raw_steps, list):
+        return statuses
+    for raw_step in raw_steps:
+        if not isinstance(raw_step, dict):
+            continue
+        match = re.match(r"(?P<number>\d+)_", str(raw_step.get("script_name", "")))
+        if match:
+            step_number = int(match.group("number"))
+        elif isinstance(raw_step.get("step_number"), int):
+            step_number = int(raw_step["step_number"])
+        else:
+            continue
+        badge = _normalize_website_step_status(raw_step.get("status"))
+        if badge is not None:
+            statuses[step_number] = badge
+    return statuses
+
+
 def _collect_step_statuses(p_root: Path) -> dict[int, str]:
-    """Map each step number to ``ok``/``pending`` from numbered output dirs."""
+    """Map each step number to ``ok``/``skip``/``error``/``pending``.
+
+    Primary source is the durable ``pipeline_execution_summary.json`` written
+    by the orchestrator: a step whose output dir exists but whose recorded
+    status is ``FAILED`` or ``SKIPPED`` must not be advertised as complete.
+    Falls back to the numbered-output-dir heuristic only when the summary is
+    absent, malformed, or carries no parseable per-step records.
+    """
+    pending = {step.number: "pending" for step in PIPELINE_STEPS}
     if not p_root.exists():
-        return {step.number: "pending" for step in PIPELINE_STEPS}
+        return pending
+    summary = _load_pipeline_summary(p_root)
+    if summary:
+        from_summary = _step_statuses_from_summary(summary)
+        if from_summary:
+            return {**pending, **from_summary}
     dir_names = [d.name for d in p_root.iterdir() if d.is_dir()]
     statuses: dict[int, str] = {}
     for step in PIPELINE_STEPS:
@@ -647,26 +739,16 @@ def _collect_analysis_results(p_root: Path) -> list[Any]:
                 continue
             seen.add(jf.name)
             try:
-                results.append(json.loads(jf.read_text()))
+                loaded = json.loads(jf.read_text())
             except Exception as e:
                 logger.debug(f"Skipped malformed analysis file {jf.name}: {e}")
+                continue
+            if not isinstance(loaded, dict):
+                logger.debug(f"Skipped non-dict analysis file {jf.name}")
+                continue
+            results.append(loaded)
+
     return results
-
-
-def _load_execution_summary(p_root: Path) -> dict[str, Any]:
-    """Load the Step 12 execution summary (first existing candidate wins)."""
-    for candidate in (
-        p_root / "12_execute_output" / "summaries" / "execution_summary.json",
-        p_root / "12_execute_output" / "execution_summary.json",
-    ):
-        if candidate.exists():
-            try:
-                loaded: dict[str, Any] = json.loads(candidate.read_text())
-                return loaded
-            except Exception as e:
-                logger.debug(f"Skipped malformed execution summary file: {e}")
-                break
-    return {}
 
 
 def _load_mcp_summary(p_root: Path) -> dict[str, Any]:
@@ -714,14 +796,31 @@ def _load_registered_tools(p_root: Path) -> list[dict[str, str]]:
 def _collect_visualizations(
     viz_dirs: list[Path], assets_dir: Path
 ) -> list[dict[str, Any]]:
-    """Copy PNG/HTML visualization artifacts into ``assets_dir`` and describe them."""
+    """Copy PNG/HTML visualization artifacts into ``assets_dir`` and describe them.
+
+    Identical artifact filenames from different source directories must not
+    silently overwrite each other in the shared ``assets_dir``: later
+    collisions are copied under a ``<source-dir>__``-prefixed (or counter-
+    disambiguated) name so every artifact keeps its own gallery card.
+    """
     visualizations: list[dict[str, Any]] = []
+    used_names: set[str] = set()
     for viz_dir in viz_dirs:
         if not viz_dir.exists():
             continue
         for pattern, artifact_type in (("*.png", "image"), ("*.html", "html")):
             for artifact in viz_dir.rglob(pattern):
-                dest = assets_dir / artifact.name
+                dest_name = artifact.name
+                if dest_name.lower() in used_names:
+                    prefix = f"{viz_dir.name}__"
+                    dest_name = f"{prefix}{artifact.name}"
+                    stem, ext = os.path.splitext(dest_name)
+                    counter = 2
+                    while dest_name.lower() in used_names:
+                        dest_name = f"{stem}_{counter}{ext}"
+                        counter += 1
+                used_names.add(dest_name.lower())
+                dest = assets_dir / dest_name
                 try:
                     shutil.copy2(artifact, dest)
                 except Exception:
@@ -772,10 +871,13 @@ def collect_website_data(
     """Aggregate every artifact the website pages render.
 
     Pure with respect to the repository state except for copying
-    visualization assets into ``assets_dir``. The MCP page data comes from
-    the step-21 artifacts: ``21_mcp_output/mcp_processing_summary.json`` for
-    the summary and ``registered_tools.json`` for the tool inventory, so the
-    site reflects what step 21 actually recorded.
+    visualization assets into ``assets_dir``. Step statuses come from the
+    durable ``pipeline_execution_summary.json`` written by the orchestrator
+    (numbered-output-dir heuristic only as a fallback when the summary is
+    absent). The MCP page data comes from the step-21 artifacts:
+    ``21_mcp_output/mcp_processing_summary.json`` for the summary and
+    ``registered_tools.json`` for the tool inventory, so the site reflects
+    what steps actually recorded.
     """
     p_root = Path(pipeline_output_root)
     data: dict[str, Any] = {
@@ -789,7 +891,6 @@ def collect_website_data(
         "mcp_tools": [],
         "mcp_summary": {},
         "step_statuses": {},
-        "exec_summary": {},
         "processed_files": 0,
     }
     if user_data:
@@ -807,7 +908,6 @@ def collect_website_data(
         data["processed_files"] = len(data["gnn_files"])
     data["step_statuses"] = _collect_step_statuses(p_root)
     data["analysis"].extend(_collect_analysis_results(p_root))
-    data["exec_summary"] = _load_execution_summary(p_root)
     data["visualizations"].extend(
         _collect_visualizations(
             [
@@ -932,7 +1032,12 @@ class WebsiteGenerator:
         n_ok = sum(1 for s in data["step_statuses"].values() if s == "ok")
         n_steps = len(PIPELINE_STEPS)
         n_files = data["processed_files"]
-        n_tools = int(data["mcp_summary"].get("tools_registered", 0))
+        mcp_summary = data.get("mcp_summary")
+        n_tools = _stat_int(
+            mcp_summary.get("tools_registered", 0)
+            if isinstance(mcp_summary, dict)
+            else 0
+        )
 
         stats = f"""
 <div class="stats-row">
@@ -1019,7 +1124,9 @@ class WebsiteGenerator:
             content = ""
             for gf in data["gnn_files"]:
                 try:
-                    src = gf.read_text(encoding="utf-8", errors="replace")[:3000]
+                    src = _truncate(
+                        gf.read_text(encoding="utf-8", errors="replace"), 3000
+                    )
                     size = gf.stat().st_size
                 except Exception:
                     src, size = "(could not read)", 0
@@ -1114,9 +1221,9 @@ class WebsiteGenerator:
             for rep in data["reports"]:
                 try:
                     parsed = json.loads(rep["content"])
-                    pretty = json.dumps(parsed, indent=2)[:1500]
+                    pretty = _truncate(json.dumps(parsed, indent=2), 1500)
                 except Exception:
-                    pretty = rep["content"][:1500]
+                    pretty = _truncate(rep["content"], 1500)
                 name = _esc(rep["name"])
                 origin = _esc(rep["dir"])
                 size = _esc(rep["size"])
