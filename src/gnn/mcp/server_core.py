@@ -43,6 +43,33 @@ from .jsonrpc import (
 # Import core MCP class and helpers
 from .mcp import MCP, get_mcp_instance, initialize
 
+STANDARD_METHODS: frozenset[str] = frozenset(
+    {
+        "initialize",
+        "notifications/initialized",
+        "tools/list",
+        "tools/call",
+        "resources/list",
+        "resources/read",
+        "ping",
+        "shutdown",
+        "exit",
+    }
+)
+
+
+def is_standard_method(method: Any) -> bool:
+    """Return True when ``method`` belongs to the standard MCP (2024-11-05) surface.
+
+    This is the single source of truth for the standard surface: transports
+    consult it and route standard methods — and any method outside their
+    direct dialect — to :meth:`MCPServer.handle_request`. The direct dialect
+    entries (``mcp.capabilities``, ``get_mcp_server_capabilities``,
+    ``mcp.tool.execute``, ``mcp.resource.get``, direct tool-name calls) stay
+    transport-owned.
+    """
+    return isinstance(method, str) and method in STANDARD_METHODS
+
 
 class MCPServer:
     """
@@ -52,14 +79,24 @@ class MCPServer:
     MCP protocol requests and responses.
     """
 
-    def __init__(self, mcp_instance: Optional[MCP] = None) -> None:
+    def __init__(
+        self,
+        mcp_instance: Optional[MCP] = None,
+        capabilities_getter: Optional[Callable[[], Dict[str, Any]]] = None,
+    ) -> None:
         """
         Initialize the MCP server.
 
         Args:
             mcp_instance: MCP instance to use for tool execution
+            capabilities_getter: Optional override for the capabilities source
+                used by ``initialize``/``tools/list``/``resources/list``.
+                Transports with an exposure policy (e.g. the HTTP allowlists)
+                inject their filtered view; the default reads the bound
+                registry so the standard surface matches its direct dialect.
         """
         self.mcp = mcp_instance or get_mcp_instance()
+        self._capabilities_getter = capabilities_getter
         self.running = False
         self.request_handlers = {
             "tools/list": self._handle_tools_list,
@@ -68,6 +105,7 @@ class MCPServer:
             "resources/read": self._handle_resources_read,
             "initialize": self._handle_initialize,
             "notifications/initialized": self._handle_initialized,
+            "ping": self._handle_ping,
             "shutdown": self._handle_shutdown,
             "exit": self._handle_exit,
         }
@@ -193,7 +231,7 @@ class MCPServer:
         """Handle initialize request."""
         return {
             "protocolVersion": "2024-11-05",
-            "capabilities": self.mcp.get_capabilities(),
+            "capabilities": self._capabilities(),
             "serverInfo": {"name": "GNN MCP Server", "version": "1.0.0"},
         }
 
@@ -201,9 +239,19 @@ class MCPServer:
         """Handle initialized notification."""
         return {}
 
+    def _capabilities(self) -> Dict[str, Any]:
+        """Return the capabilities dict, honoring the transport getter if set."""
+        if self._capabilities_getter is not None:
+            return self._capabilities_getter()
+        return self.mcp.get_capabilities()
+
+    def _handle_ping(self, params: Dict[str, Any]) -> Dict[str, Any]:
+        """Handle ping request (MCP 2024-11-05: respond with an empty result)."""
+        return {}
+
     def _handle_tools_list(self, params: Dict[str, Any]) -> Dict[str, Any]:
         """Handle tools/list request."""
-        return {"tools": self.mcp.get_capabilities()["tools"]}
+        return {"tools": self._capabilities()["tools"]}
 
     def _handle_tools_call(self, params: Dict[str, Any]) -> Dict[str, Any]:
         """Handle tools/call request."""
@@ -234,7 +282,7 @@ class MCPServer:
 
     def _handle_resources_list(self, params: Dict[str, Any]) -> Dict[str, Any]:
         """Handle resources/list request."""
-        return {"resources": self.mcp.get_capabilities()["resources"]}
+        return {"resources": self._capabilities()["resources"]}
 
     def _handle_resources_read(self, params: Dict[str, Any]) -> Dict[str, Any]:
         """Handle resources/read request."""
