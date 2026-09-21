@@ -230,7 +230,7 @@ first; otherwise `source` is treated as raw content.
 
 **Location**: `src/gnn/parsers/basic.py`
 
-### Headless Extraction (`extract.py`)
+### Headless Extraction (`gnn.extract`)
 
 #### `extract_to_json(path: Union[str, Path], *, strict_validation: bool = True, on_error: str = "lenient", compact: bool = False) -> str`
 
