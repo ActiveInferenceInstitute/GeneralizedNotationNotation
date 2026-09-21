@@ -16,7 +16,7 @@ compat/
 
 - **`MATPLOTLIB_AVAILABLE`** — Boolean flag indicating matplotlib availability.
 - **`plt`** — `matplotlib.pyplot` or `None` if unavailable.
-- **`sns`** — `seaborn` or `None` if unavailable.
+- **`sns`** — Resolves to `seaborn` on first attribute access (or `None` if unavailable) via `get_sns()`; importing `viz_compat` itself never imports seaborn.
 - **`np`** — `numpy` (always available as a core dependency).
 - **`viz_var_type(var_info: dict) -> str`** — Extract variable type from a parsed variable dict. Checks `var_type`, `type`, and `node_type` keys in order, returning `"unknown"` when none are present. Canonical source — imported by `analysis/combined_analysis.py` and `graph/network_visualizations.py`.
 

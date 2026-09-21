@@ -10,12 +10,13 @@ Specialized support for 3D tensors like POMDP transition matrices.
 from __future__ import annotations
 
 import csv
+import importlib.util
 import json
 import logging
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union, cast
 
-from ..compat.viz_compat import MATPLOTLIB_AVAILABLE, np, plt, sns
+from ..compat.viz_compat import MATPLOTLIB_AVAILABLE, get_sns, np, plt
 from ..plotting.utils import safe_tight_layout
 from .extract import (
     convert_to_matrix,
@@ -28,7 +29,7 @@ from .threejs_template import _threejs_tensor_html
 logger = logging.getLogger(__name__)
 
 NUMPY_AVAILABLE = np is not None
-SEABORN_AVAILABLE = sns is not None
+SEABORN_AVAILABLE = importlib.util.find_spec("seaborn") is not None
 
 
 # Maximum figure dimension (inches) to prevent RendererAgg pixel overflow.
@@ -757,6 +758,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
         Returns:
             bool: True if analysis was generated successfully
         """
+        sns = get_sns()
         if output_path is None:
             base_dir = Path.cwd() / "output" / "2_tests_output"
             base_dir.mkdir(parents=True, exist_ok=True)
@@ -1287,6 +1289,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             # Sample large matrices for better visualization
             display_matrix = self._sample_matrix_for_display(matrix_data)
 
+            sns = get_sns()
             if SEABORN_AVAILABLE and display_matrix.size <= 100:
                 sns.heatmap(
                     display_matrix,
@@ -1345,6 +1348,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
 
             plt.figure(figsize=(10, 8))
 
+            sns = get_sns()
             if SEABORN_AVAILABLE and corr_matrix.size <= 100:
                 sns.heatmap(
                     corr_matrix,
@@ -1458,6 +1462,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
                 # Sample large matrices
                 display_matrix = self._sample_matrix_for_display(matrix)
 
+                sns = get_sns()
                 if SEABORN_AVAILABLE and display_matrix.size <= 100:
                     sns.heatmap(
                         display_matrix, ax=ax, cmap="viridis", cbar=False, square=True
