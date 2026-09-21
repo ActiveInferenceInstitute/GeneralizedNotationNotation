@@ -36,6 +36,7 @@
 - **`summaries/execution_summary.json`** (slim aggregate): Per-script rows omit bulk fields (`stdout`/`stderr` bodies, `simulation_data`); lengths and pointers remain. Consumers needing full detail pass **`execution_summary_detail=True`** / **`--execution-summary-detail`** to also write **`summaries/execution_summary_detail.json`**.
 - **`PipelineArguments` / main orchestrator**: Step 12 subprocess commands omit **`--backend`** unless **`distributed`** is true, and omit **`--execution-benchmark-repeats`** when the value is 1 (avoids implying benchmarking when repeats are disabled).
 - **PyMDP subprocess environment**: Defaults `TF_CPP_MIN_LOG_LEVEL=3` for the child process when unset (quieter captured stderr). Set **`GNN_JAX_PLATFORM`** (e.g. `cpu`) on the host to pin JAX device selection for PyMDP runs; when unset, JAX uses normal platform discovery.
+- **Julia subprocess environment**: every Julia subprocess GNN assembles carries `GKSwstype=100` (headless GR — Plots.jl renders without the `gksqt` Qt window, which hangs display-less hosts). A `GKSwstype` already set in the caller's environment wins. Shared helper: `execute.julia_env.julia_subprocess_env`; the Step 12 rendered-script env builder (`processor._build_execution_environment`) applies the same default for `julia` executors.
 - Configurable script-level concurrency: local process workers by default, or Ray/Dask when `distributed=True`
 
 ---

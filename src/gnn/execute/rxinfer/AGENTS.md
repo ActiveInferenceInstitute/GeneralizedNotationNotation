@@ -53,6 +53,7 @@ and defined in `rxinfer_runner.py`.
 **Description**: Run one rendered script with
 `julia --startup-file=no --project=<this directory> <script>`. `.toml` inputs are
 handed to `rxinfer_runner.jl` instead.
+The subprocess runs with the shared Julia environment: `GKSwstype=100` headless-GR default (a `GKSwstype` set in the caller's environment wins).
 
 **Parameters**:
 - `script_path`: Path to the rendered `.jl` script

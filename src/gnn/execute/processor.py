@@ -41,6 +41,8 @@ from .detection import (
     parse_frameworks_parameter,
 )
 from .julia_env import (
+    GKSWSTYPE_HEADLESS,
+    GKSWSTYPE_VAR,
     _build_script_execution_command,
     _julia_project_for_framework,
     check_julia_dependencies,
@@ -920,6 +922,11 @@ def _build_execution_environment(
     julia_project = _julia_project_for_framework(context.framework)
     if julia_project is not None:
         env.setdefault("JULIA_PROJECT", str(julia_project))
+    if context.executor == "julia":
+        # Headless GR default (see julia_env.julia_subprocess_env): rendered
+        # Julia scripts may plot via Plots.jl/GR, whose gksqt Qt window
+        # hangs display-less hosts. An explicitly set GKSwstype still wins.
+        env.setdefault(GKSWSTYPE_VAR, GKSWSTYPE_HEADLESS)
     if context.framework == "pymdp":
         env["PYTHONPATH"] = (
             str(context.script_path.parent) + os.pathsep + env.get("PYTHONPATH", "")

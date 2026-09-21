@@ -13,6 +13,7 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+from gnn.execute.julia_env import julia_subprocess_env
 from gnn.execute.subprocess_envelope import (  # nosec B404
     NEVER_STARTED,
     run_subprocess_envelope,
@@ -146,6 +147,7 @@ def run_julia_setup_script(
         cmd,
         cwd=setup_script.parent,
         timeout=300,  # 5 minute timeout for package installation
+        env=julia_subprocess_env(),
     )
 
     if outcome["stdout"]:

@@ -30,7 +30,7 @@ def _stub_runner(
     """Replace the subprocess invocation with a canned envelope; record calls."""
     calls: Dict[str, Any] = {"count": 0, "command": None}
 
-    def fake_run(cmd: list[str], timeout: Any = None) -> Dict[str, Any]:
+    def fake_run(cmd: list[str], timeout: Any = None, **kwargs: Any) -> Dict[str, Any]:
         calls["count"] += 1
         calls["command"] = cmd
         return dict(envelope)
