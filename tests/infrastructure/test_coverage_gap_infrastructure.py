@@ -2,8 +2,10 @@
 """
 Infrastructure Coverage Gap Tests
 
-Addresses modules that historically had 0% coverage: timeout_manager,
-visualization_optimizer. The ``utils/recovery.py`` fallback was removed in
+Addresses modules that historically had 0% coverage. The timeout_manager
+gap remains covered here; the visualization_optimizer gap module was
+removed as dead code (2026-09-21), so only timeout_manager coverage
+remains. The ``utils/recovery.py`` fallback was removed in
 Phase 6 as dead code — ``setup_step_logging`` is covered in place via
 ``utils/logging/logging_utils``. ``utils/simulation_utils.py`` was removed as
 dead code (R4 residue); its only importer was this file.
@@ -14,11 +16,6 @@ import logging
 from pathlib import Path
 from typing import Any
 
-from gnn.utils.observability.visualization_optimizer import (
-    DataSampler,
-    VisualizationCache,
-    VisualizationOptimizer,
-)
 from gnn.utils.runtime_safety.timeout_manager import (
     LLMTimeoutManager,
     ProcessTimeoutManager,
@@ -65,43 +62,3 @@ class TestTimeoutManager:
     def test_process_timeout_manager(self) -> Any:
         manager = ProcessTimeoutManager()
         assert manager.default_config.base_timeout == 120.0
-
-
-# 5. Tests for utils/visualization_optimizer.py
-class TestVisualizationOptimizer:
-    def test_visualization_cache(self, tmp_path: Any) -> Any:
-        cache_dir = tmp_path / "cache"
-        cache = VisualizationCache(cache_dir=cache_dir)
-        key = cache.get_cache_key("content", {"p": 1})
-
-        assert cache.is_cached(key) is False
-
-        test_file = tmp_path / "viz.png"
-        test_file.touch()
-        cache.cache_visualization(key, [str(test_file)])
-
-        assert cache.is_cached(key) is True
-        assert cache.get_cached_files(key) == [str(test_file)]
-
-    def test_data_sampler(self) -> Any:
-        sampler = DataSampler(max_nodes=10)
-        data: dict[str, Any] = {"nodes": [{"id": i} for i in range(20)]}
-
-        assert sampler.should_sample(data) is True
-        sampled = sampler.sample_data(data)
-        assert len(sampled["nodes"]) == 10
-        assert sampled["_sampling_applied"] is True
-
-    def test_optimizer_batch(self, tmp_path: Any) -> Any:
-        optimizer = VisualizationOptimizer(cache_dir=tmp_path / "cache")
-
-        def sample_proc(file_path: Any, **kwargs: Any) -> Any:
-            return {"success": True, "file": str(file_path)}
-
-        files = [tmp_path / f"file_{i}.md" for i in range(3)]
-        for f in files:
-            f.touch()
-
-        results = optimizer.optimize_batch_processing(files, tmp_path, sample_proc)
-        assert len(results["processed_files"]) == 3
-        assert results["optimization_stats"]["caching_enabled"] is True
