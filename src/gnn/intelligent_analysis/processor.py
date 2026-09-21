@@ -596,6 +596,7 @@ async def _run_llm_analysis(
     flags_by_type: Dict[str, List[StepAnalysis]],
     logger: logging.Logger,
     analysis_model: Optional[str] = None,
+    cache_dir: Optional[Path] = None,
 ) -> Tuple[str, str]:
     """
     Run LLM-powered analysis on pipeline context.
@@ -606,6 +607,7 @@ async def _run_llm_analysis(
         flags_by_type: Steps grouped by flag type
         logger: Logger instance
         analysis_model: Optional model tag (CLI ``--analysis-model``); else ``OLLAMA_MODEL``, else ``llm.defaults.DEFAULT_OLLAMA_MODEL``.
+        cache_dir: Optional directory for the content-addressed LLM response cache (LLMCache). None disables caching.
 
     Returns:
         Analysis markdown and its source (``llm`` or ``rule_based``).
@@ -627,6 +629,15 @@ async def _run_llm_analysis(
             _generate_rule_based_summary(context, step_analyses, flags_by_type),
             "rule_based",
         )
+
+    cache: Any = None
+    if cache_dir is not None:
+        try:
+            from gnn.llm.cache import LLMCache
+
+            cache = LLMCache(cache_dir=cache_dir)
+        except Exception as e:  # pragma: no cover - cache is best-effort
+            logger.debug(f"LLM analysis cache unavailable: {e}")
 
     # Construct comprehensive prompt
     status_emoji = (
@@ -710,6 +721,14 @@ Please provide analysis in EXACTLY this format:
 
         model_name = analysis_model or os.getenv("OLLAMA_MODEL") or DEFAULT_OLLAMA_MODEL
         messages: list[LLMMessage] = [LLMMessage(role="user", content=prompt)]
+
+        cache_content = json.dumps(context, sort_keys=True)
+        if cache is not None:
+            cached = cache.get(cache_content, model_name, prompt)
+            if cached is not None:
+                logger.info("⚡ Cache HIT for step-24 LLM analysis")
+                return cached, "llm"
+
         response = await processor.get_response(
             messages=messages, model_name=model_name, max_tokens=2500
         )
@@ -729,6 +748,9 @@ Please provide analysis in EXACTLY this format:
                 _generate_rule_based_summary(context, step_analyses, flags_by_type),
                 "rule_based",
             )
+
+        if cache is not None:
+            cache.put(cache_content, model_name, prompt, content)
 
         return content, "llm"
     except Exception as e:
@@ -1288,6 +1310,7 @@ def process_intelligent_analysis(
                     flags_by_type,
                     logger,
                     analysis_model=kwargs.get("analysis_model"),
+                    cache_dir=resolve_analysis_output_dir(output_dir) / ".cache",
                 )
             )
             logger.info("Analysis summary completed using %s evidence", analysis_source)
