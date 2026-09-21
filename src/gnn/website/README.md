@@ -43,21 +43,22 @@ flowchart LR
     subgraph "Inputs (numbered output dirs)"
         Step8[8_visualization_output]
         Step9[9_advanced_viz_output]
-        Step12[12_execute_output]
         Step16[16_analysis_output]
         Step23[23_report_output]
+        Summary[00_pipeline_summary]
     end
 
     Step8 --> Generator
     Step9 --> Generator
-    Step12 --> Generator
     Step16 --> Generator
     Step23 --> Generator
+    Summary --> Generator
 ```
 
-The site aggregates Step 8/9 visualizations, Step 12 execution summaries,
-Step 16 analysis JSON, and Step 23 reports discovered under the
-`pipeline_output_root` (defaults to `output_dir.parent`).
+The site aggregates Step 8/9 visualizations, Step 16 analysis JSON, and
+reports from every numbered output dir under the `pipeline_output_root`
+(defaults to `output_dir.parent`). Step statuses come from
+`00_pipeline_summary/pipeline_execution_summary.json`.
 
 ## API
 
@@ -111,12 +112,16 @@ All return `bool`:
 - `validate_website_config(config: dict | str) -> bool | dict` — light
   validation helper (accepts a dict or a simple string for tests).
 - `collect_website_data(pipeline_output_root, input_dir, assets_dir, *, output_dir=None, user_data=None) -> dict`
-  — pure aggregation of all page inputs; MCP page data is sourced from the
+  — pure aggregation of all page inputs; step statuses come from
+  `00_pipeline_summary/pipeline_execution_summary.json` (dir-existence
+  heuristic only as fallback); MCP page data is sourced from the
   step-21 artifacts (`21_mcp_output/mcp_processing_summary.json` and
   `registered_tools.json`), degrading to a truthful empty state when absent.
 - `get_pipeline_steps() -> tuple[StepInfo, ...]` — the immutable 25-step
-  catalogue (`StepInfo(number, name, description)` + `script_name` display
-  property); `PIPELINE_STEPS` is the same tuple as a constant.
+  catalogue derived from `gnn.pipeline.step_registry.STEPS`
+  (`StepInfo(number, name, description)` + `script_name` display property
+  matching the real orchestrator scripts); `PIPELINE_STEPS` is the same
+  tuple as a constant.
 - `inspect_website(directory) -> dict` / `list_website_pages(directory) -> dict`
   — page inventory, sizes, and key-page completeness of a generated site
   (`website.inspection.KEY_PAGES`). Shared implementation behind the

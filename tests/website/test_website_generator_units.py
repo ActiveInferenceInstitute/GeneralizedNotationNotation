@@ -108,12 +108,27 @@ class TestPipelineStepCatalogue:
         assert all(s.name and s.description for s in steps)
 
     @pytest.mark.unit
-    def test_step_script_names_match_display_convention(self) -> None:
+    def test_step_script_names_match_step_registry(self) -> None:
+        from gnn.pipeline.step_registry import STEPS as registry_steps
         from gnn.website import get_pipeline_steps
 
         steps = {s.number: s for s in get_pipeline_steps()}
-        assert steps[20].script_name == "20_website.py"
-        assert steps[3].script_name == "3_gnn_processing.py"
+        for registry_step in registry_steps:
+            number = int(registry_step.script_stem.split("_", 1)[0])
+            # Display names round-trip to the real orchestrator script stem.
+            assert steps[number].script_name == registry_step.script_name
+        assert steps[3].script_name == "3_gnn.py"
+        assert steps[21].script_name == "21_mcp.py"
+
+    @pytest.mark.unit
+    def test_catalogue_descriptions_come_from_step_registry(self) -> None:
+        from gnn.pipeline.step_registry import STEPS as registry_steps
+        from gnn.website import get_pipeline_steps
+
+        steps = {s.number: s for s in get_pipeline_steps()}
+        for registry_step in registry_steps:
+            number = int(registry_step.script_stem.split("_", 1)[0])
+            assert steps[number].description == registry_step.description
 
     @pytest.mark.unit
     def test_step_info_is_frozen(self) -> None:
@@ -156,6 +171,7 @@ class TestCollectWebsiteData:
         results.mkdir(parents=True)
         (results / "good.json").write_text('{"file_name": "a", "mean": "<b>&</b>"}')
         (out16 / "bad.json").write_text("{not json")
+        (out16 / "listy.json").write_text('["not", "a", "dict"]')
         step_dir = tmp_path / "07_export_output"
         step_dir.mkdir()
         for i in range(7):
@@ -167,9 +183,129 @@ class TestCollectWebsiteData:
         per_dir: dict[str, int] = {}
         for rep in data["reports"]:
             per_dir[rep["dir"]] = per_dir.get(rep["dir"], 0) + 1
-        assert per_dir == {"07_export_output": 5, "16_analysis_output": 2}
-        assert len(data["analysis"]) == 1  # malformed sibling skipped
+        assert per_dir == {"07_export_output": 5, "16_analysis_output": 3}
+        assert len(data["analysis"]) == 1  # malformed and non-dict siblings skipped
         assert data["analysis"][0]["mean"] == "<b>&</b>"  # raw data preserved
+
+
+class TestStepStatusTruthSource:
+    """Step statuses must come from pipeline_execution_summary.json records.
+
+    A step whose output dir exists but whose recorded status is FAILED or
+    SKIPPED must not be advertised as complete on the site.
+    """
+
+    @staticmethod
+    def _write_summary(tmp_path: Any, steps: list[dict[str, Any]]) -> None:
+        summary_dir = tmp_path / "00_pipeline_summary"
+        summary_dir.mkdir(exist_ok=True)
+        (summary_dir / "pipeline_execution_summary.json").write_text(
+            json.dumps({"overall_status": "SUCCESS", "steps": steps})
+        )
+
+    @pytest.mark.unit
+    def test_statuses_read_from_summary_records(self, tmp_path: Any) -> None:
+        from gnn.website import collect_website_data
+
+        input_dir = tmp_path / "input"
+        input_dir.mkdir()
+        (tmp_path / "03_gnn_output").mkdir()
+        (tmp_path / "12_execute_output").mkdir()
+        assets = tmp_path / "assets"
+        assets.mkdir()
+        self._write_summary(
+            tmp_path,
+            steps=[
+                {"script_name": "3_gnn.py", "status": "SUCCESS"},
+                {"script_name": "9_advanced_viz.py", "status": "SKIPPED"},
+                {"script_name": "12_execute.py", "status": "FAILED"},
+                {"script_name": "13_llm.py", "status": "SUCCESS_WITH_WARNINGS"},
+            ],
+        )
+
+        data = collect_website_data(tmp_path, input_dir, assets)
+
+        statuses = data["step_statuses"]
+        assert statuses[3] == "ok"
+        assert statuses[9] == "skip"  # summary record, not dir existence
+        assert statuses[12] == "error"  # dir exists, recorded FAILED → error
+        assert statuses[13] == "ok"
+        assert statuses[20] == "pending"  # absent from the summary
+
+    @pytest.mark.unit
+    def test_site_renders_truthful_step_badges(self, tmp_path: Any) -> None:
+        (tmp_path / "12_execute_output").mkdir()
+        (tmp_path / "9_advanced_viz_output").mkdir()
+        self._write_summary(
+            tmp_path,
+            steps=[
+                {"script_name": "12_execute.py", "status": "FAILED"},
+                {"script_name": "9_advanced_viz.py", "status": "SKIPPED"},
+            ],
+        )
+
+        site, result = _build_site(tmp_path)
+
+        assert result["success"] is True
+        index = (site / "index.html").read_text(encoding="utf-8")
+        assert "✗ Error" in index
+        assert "⊘ Skipped" in index
+        pipeline = (site / "pipeline.html").read_text(encoding="utf-8")
+        assert ">Error</span>" in pipeline
+        assert ">Skipped</span>" in pipeline
+
+    @pytest.mark.unit
+    def test_bare_summary_file_alongside_output_is_honored(self, tmp_path: Any) -> None:
+        from gnn.website import collect_website_data
+
+        input_dir = tmp_path / "input"
+        input_dir.mkdir()
+        assets = tmp_path / "assets"
+        assets.mkdir()
+        (tmp_path / "pipeline_execution_summary.json").write_text(
+            json.dumps({"steps": [{"script_name": "3_gnn.py", "status": "SUCCESS"}]})
+        )
+
+        data = collect_website_data(tmp_path, input_dir, assets)
+
+        assert data["step_statuses"][3] == "ok"
+        assert data["step_statuses"][5] == "pending"
+
+    @pytest.mark.unit
+    def test_malformed_summary_falls_back_to_dir_heuristic(self, tmp_path: Any) -> None:
+        from gnn.website import collect_website_data
+
+        input_dir = tmp_path / "input"
+        input_dir.mkdir()
+        assets = tmp_path / "assets"
+        assets.mkdir()
+        (tmp_path / "03_gnn_output").mkdir()
+        summary_dir = tmp_path / "00_pipeline_summary"
+        summary_dir.mkdir()
+        (summary_dir / "pipeline_execution_summary.json").write_text("{not json")
+
+        data = collect_website_data(tmp_path, input_dir, assets)
+
+        assert data["step_statuses"][3] == "ok"  # dir heuristic fallback
+        assert data["step_statuses"][20] == "pending"
+
+    @pytest.mark.unit
+    def test_summary_without_steps_list_falls_back_to_dir_heuristic(
+        self, tmp_path: Any
+    ) -> None:
+        from gnn.website import collect_website_data
+
+        input_dir = tmp_path / "input"
+        input_dir.mkdir()
+        assets = tmp_path / "assets"
+        assets.mkdir()
+        (tmp_path / "3_gnn_output").mkdir()
+        self._write_summary(tmp_path, steps=[])  # no parseable records
+
+        data = collect_website_data(tmp_path, input_dir, assets)
+
+        assert data["step_statuses"][3] == "ok"
+        assert data["step_statuses"][20] == "pending"
 
 
 class TestMcpArtifactSourcing:
@@ -374,20 +510,138 @@ class TestPageEscaping:
 
 class TestResilientPageWrites:
     @pytest.mark.unit
-    def test_one_bad_page_does_not_destroy_the_site(self, tmp_path: Any) -> None:
+    def test_non_dict_analysis_artifact_cannot_break_the_site(
+        self, tmp_path: Any
+    ) -> None:
         out16 = tmp_path / "16_analysis_output"
         out16.mkdir()
-        # Loads fine at collection time, crashes the analysis page renderer.
+        # A parseable-but-non-dict analysis JSON is skipped at collection
+        # time: the analysis page renders its truthful empty state instead
+        # of crashing, and no error is recorded.
         (out16 / "bad.json").write_text('["not", "a", "dict"]')
 
         site, result = _build_site(tmp_path)
 
-        assert result["success"] is False  # errors present
+        assert result["success"] is True
+        assert result["pages_created"] == 7
+        assert "analysis.html" in result["pages"]
+        assert (site / "index.html").exists()  # rest of the site intact
+        page = (site / "analysis.html").read_text(encoding="utf-8")
+        assert "No analysis results found" in page
+
+    @pytest.mark.unit
+    def test_render_failure_still_leaves_other_pages_intact(
+        self, tmp_path: Any
+    ) -> None:
+        # Report content that crashes page rendering must only cost the
+        # reports page, never the rest of the site.
+        from gnn.website import WebsiteGenerator, collect_website_data
+
+        step_dir = tmp_path / "07_export_output"
+        step_dir.mkdir()
+        (step_dir / "boom.json").write_text('{"k": "ok"}')
+        generator = WebsiteGenerator()
+        data = collect_website_data(
+            tmp_path, tmp_path / "input", tmp_path / "site" / "assets"
+        )
+        data["reports"].append(
+            {"name": "x.json", "dir": "07_export_output", "content": None, "size": 1}
+        )
+
+        result = generator.generate_website(
+            {
+                "input_dir": str(tmp_path / "input"),
+                "output_dir": str(tmp_path / "site"),
+                "pipeline_output_root": str(tmp_path),
+                "reports": data["reports"],
+            }
+        )
+
+        assert result["success"] is False
         assert result["pages_created"] == 6
-        assert "analysis.html" not in result["pages"]
-        assert any("Failed to render analysis.html" in e for e in result["errors"])
-        assert (site / "index.html").exists()  # rest of the site survived
-        assert not (site / "analysis.html").exists()
+        assert any("Failed to render reports.html" in e for e in result["errors"])
+        assert (tmp_path / "site" / "index.html").exists()
+
+    @pytest.mark.unit
+    def test_gallery_keeps_both_colliding_asset_names(self, tmp_path: Any) -> None:
+        from gnn.website import collect_website_data
+
+        input_dir = tmp_path / "input"
+        input_dir.mkdir()
+        v8 = tmp_path / "08_visualization_output" / "visualization_results"
+        v8.mkdir(parents=True)
+        v9 = tmp_path / "09_advanced_viz_output"
+        v9.mkdir()
+        (v8 / "graph.png").write_bytes(b"first")
+        (v9 / "graph.png").write_bytes(b"second")
+        (v9 / "graph.html").write_text("<p>interactive</p>")
+        assets = tmp_path / "site" / "assets"
+        assets.mkdir(parents=True)
+
+        data = collect_website_data(tmp_path, input_dir, assets)
+
+        paths = [v["path"] for v in data["visualizations"]]
+        assert len(paths) == 3
+        assert len(set(paths)) == 3  # no silent overwrite
+        assert (assets / "graph.png").read_bytes() == b"first"
+        assert (assets / "09_advanced_viz_output__graph.png").read_bytes() == b"second"
+        assert (assets / "graph.html").exists()
+
+    @pytest.mark.unit
+    def test_gallery_page_links_both_colliding_artifacts(self, tmp_path: Any) -> None:
+        v8 = tmp_path / "08_visualization_output" / "visualization_results"
+        v8.mkdir(parents=True)
+        v9 = tmp_path / "09_advanced_viz_output"
+        v9.mkdir()
+        (v8 / "graph.png").write_bytes(b"first")
+        (v9 / "graph.png").write_bytes(b"second")
+
+        site, result = _build_site(tmp_path)
+
+        assert result["success"] is True
+        page = (site / "visualization.html").read_text(encoding="utf-8")
+        assert 'src="assets/graph.png"' in page
+        assert 'src="assets/09_advanced_viz_output__graph.png"' in page
+
+    @pytest.mark.unit
+    def test_null_tools_registered_falls_back_to_zero(self, tmp_path: Any) -> None:
+        _write_mcp_artifacts(
+            tmp_path, summary={**_SUCCESS_SUMMARY, "tools_registered": None}
+        )
+
+        site, result = _build_site(tmp_path)
+
+        assert result["success"] is True
+        index = (site / "index.html").read_text(encoding="utf-8")
+        assert _mcp_tools_stat(index) == "0"
+
+    @pytest.mark.unit
+    def test_truncated_gnn_preview_carries_marker(self, tmp_path: Any) -> None:
+        input_dir = tmp_path / "input"
+        input_dir.mkdir()
+        (input_dir / "big.md").write_text("x" * 3100)
+        (input_dir / "small.md").write_text("tiny content")
+
+        site, result = _build_site(tmp_path)
+
+        assert result["success"] is True
+        page = (site / "gnn_files.html").read_text(encoding="utf-8")
+        assert page.count("… [truncated]") == 1  # only the oversized preview
+        assert "x" * 100 in page  # preview body still rendered
+
+    @pytest.mark.unit
+    def test_truncated_report_preview_carries_marker(self, tmp_path: Any) -> None:
+        step_dir = tmp_path / "07_export_output"
+        step_dir.mkdir()
+        (step_dir / "big.json").write_text(json.dumps({"k": "v" * 1600}))
+        (step_dir / "small.json").write_text('{"k": 1}')
+
+        site, result = _build_site(tmp_path)
+
+        assert result["success"] is True
+        page = (site / "reports.html").read_text(encoding="utf-8")
+        assert page.count("… [truncated]") == 1  # only the oversized preview
+        assert ": 1" in page  # small report body still rendered (escaped)
 
     @pytest.mark.unit
     def test_clean_run_reports_all_pages(self, tmp_path: Any) -> None:
