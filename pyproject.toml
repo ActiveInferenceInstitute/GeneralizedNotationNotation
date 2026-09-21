@@ -62,12 +62,18 @@ dependencies = [
     # GHSA-rrmf-rvhw-rf47, lifting the previous lock exclusion. The bnlearn
     # package remains omitted from the default lock because its pgmpy
     # dependency pulls torch transitively.
-    "jax[cpu]>=0.7.0,<0.11",  # upper bound keeps numpyro 0.20.x import-compatible
-    "jaxlib>=0.7.0,<0.11",
+    # Ceiling raised 0.11 -> 0.12 (2026-09-21) so the ngclearn extra can
+    # resolve: ngclearn>=3.2.2 requires jax>=0.11.1. Probe receipts:
+    # numpyro 0.22.0 + flax 0.12.x + equinox 0.13.x import on jax 0.11.2
+    # (py3.12) and jax 0.10.2 (py3.11). pymdp 1.0.4 pins jax<0.11.1, so the
+    # resolver forks pymdp to 1.0.3 (no jax upper bound) on the python>=3.12
+    # splits that carry ngclearn; py3.11 splits keep the unconstrained pick.
+    "jax[cpu]>=0.7.0,<0.12",
+    "jaxlib>=0.7.0,<0.12",
     "flax>=0.7.0",
     "optax>=0.1.0",
     "msgpack>=1.2.1",
-    "numpyro>=0.14",
+    "numpyro>=0.22",  # 0.22.0 carries the jax-0.11.x compat fix; 0.20.x breaks on jax>=0.11
     "discopy>=1.1.0",
     # Interactive visualization (Step 9 advanced viz Plotly dashboards; steps 8/16)
     "pandas>=2.0",
@@ -163,6 +169,18 @@ bnlearn = [
     "bnlearn>=0.14.0",
 ]
 
+# ngc-learn backend (continuous linear-Gaussian LGSSM render + Step 12
+# execution via src/gnn/execute/ngclearn/). ngclearn requires jax>=0.11.1,
+# which only publishes for Python>=3.12 — the extra is marker-gated to
+# py3.12+. On py3.11 the extra resolves empty and the backend is gated at
+# run time by the shared availability probe (skip, never fail), following
+# the bnlearn non-default-extra precedent. Probe receipts in the jax
+# dependency comment above.
+ngclearn = [
+    "ngclearn>=3.2.2; python_version >= '3.12'",
+    "ngcsimlib>=3.1.1; python_version >= '3.12'",
+]
+
 # All optional dependencies (install everything).
 # MAINTAINER NOTE: This list manually duplicates packages from the named
 # optional groups above (geo-infer, api, ml-ai, audio, gui, graphs, research,
@@ -214,6 +232,9 @@ all = [
 
     # Categorical Bayesian-network exports
     "bnlearn>=0.14.0",
+    # ngc-learn continuous backend (py3.12+ — see the ngclearn extra above)
+    "ngclearn>=3.2.2; python_version >= '3.12'",
+    "ngcsimlib>=3.1.1; python_version >= '3.12'",
 
 ]
 
@@ -343,6 +364,8 @@ module = [
     "matplotlib.*",
     "mpl_toolkits.*",
     "networkx.*",
+    "ngclearn.*",
+    "ngcsimlib.*",
     "openai.*",
     "ollama.*",
     "pandas.*",
