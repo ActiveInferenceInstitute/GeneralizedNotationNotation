@@ -26,6 +26,7 @@ SRC = Path(__file__).resolve().parents[2]
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
+from gnn.frameworks import ALL_FRAMEWORKS, LITE_FRAMEWORKS
 from gnn.render.framework_registry import (
     FRAMEWORK_REGISTRY,
     get_framework_availability,
@@ -57,6 +58,10 @@ EXPECTED_AVAILABLE: set[str] = {
     # ``src/gnn/execute/bnlearn/`` (scripts skip without the extra).
     "bnlearn",
 }
+
+
+# Canonical name enumeration (single source: ``gnn.frameworks``).
+CANONICAL_ALL_FRAMEWORKS: tuple[str, ...] = ALL_FRAMEWORKS
 
 
 # ── Helpers ────────────────────────────────────────────────────────────────
@@ -293,3 +298,44 @@ class TestPomdpConfigTruthfulness:
         # bnlearn is executed by ``src/gnn/execute/bnlearn/`` — the config
         # must not contradict the registry spec.
         assert configs["bnlearn"]["supports_execution"] is True
+
+
+class TestCanonicalConsistency:
+    """The registry stays in lockstep with ``gnn.frameworks.ALL_FRAMEWORKS``."""
+
+    def test_registry_order_matches_canonical_tuple(self) -> None:
+        """Registry keys, in order, are the canonical tuple minus ``lean``."""
+        assert tuple(FRAMEWORK_REGISTRY) == CANONICAL_ALL_FRAMEWORKS[:-1]
+
+    def test_registry_plus_lean_covers_canonical_set(self) -> None:
+        """Registry keys plus the execution-only ``lean`` backend = the full set."""
+        assert set(FRAMEWORK_REGISTRY) | {"lean"} == set(CANONICAL_ALL_FRAMEWORKS)
+
+    def test_supported_frameworks_match_canonical_render_order(self) -> None:
+        assert get_supported_frameworks() == list(CANONICAL_ALL_FRAMEWORKS[:-1])
+
+    def test_lite_frameworks_reexports_canonical_tuple(self) -> None:
+        """``LITE_FRAMEWORKS`` is a re-export, not a duplicate literal."""
+        from gnn.render.framework_registry import LITE_FRAMEWORKS as registry_lite
+
+        assert registry_lite is LITE_FRAMEWORKS
+        assert registry_lite == ("pymdp", "jax", "discopy", "bnlearn")
+
+    def test_bnlearn_registry_function_names_real_surface(self) -> None:
+        """The bnlearn ``function`` entry names its actual generator (not a
+        phantom symbol): the defect this row fixed."""
+        from gnn.render.generators import generate_bnlearn_code
+        from gnn.render.health import _RENDERERS
+
+        assert FRAMEWORK_REGISTRY["bnlearn"]["function"] == "generate_bnlearn_code"
+        # The health override maps bnlearn to the module that carries it.
+        assert _RENDERERS["bnlearn"] == "gnn.render.generators"
+        assert callable(generate_bnlearn_code)
+
+    def test_execution_framework_name_literal_matches_canonical(self) -> None:
+        """``ExecutionFrameworkName`` Literal equals the canonical tuple."""
+        from typing import get_args
+
+        from gnn.execute.types import ExecutionFrameworkName
+
+        assert get_args(ExecutionFrameworkName) == CANONICAL_ALL_FRAMEWORKS

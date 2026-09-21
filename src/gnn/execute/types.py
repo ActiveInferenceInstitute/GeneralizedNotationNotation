@@ -15,16 +15,20 @@ from typing import Dict, List, Literal, Optional, TypedDict, Union
 # ``.json``) listed in a render summary are not scripts.
 _EXECUTABLE_SUFFIXES = frozenset({".py", ".jl"})
 
+# Literal list mirrors ``gnn.frameworks.ALL_FRAMEWORKS`` (the runtime source).
+# mypy requires a literal list; cannot derive at runtime. Drift is guarded by
+# ``tests/render/test_framework_availability.py`` (TestCanonicalConsistency).
 ExecutionFrameworkName = Literal[
     "pymdp",
     "rxinfer",
+    "activeinference_jl",
     "jax",
     "discopy",
-    "activeinference_jl",
     "pytorch",
     "numpyro",
     "stan",
     "bnlearn",
+    "lean",
 ]
 
 

@@ -297,7 +297,8 @@ class ArgumentParser:
                 default="all",
                 help_text=(
                     "Frameworks to execute/render (all, lite, or comma-separated list: "
-                    "pymdp,rxinfer,activeinference_jl,jax,discopy,pytorch,numpyro,stan,bnlearn)"
+                    "pymdp,rxinfer,activeinference_jl,jax,discopy,pytorch,numpyro,"
+                    "stan,bnlearn,lean)"
                 ),
             ),
             "strict_framework_success": ArgumentDefinition(

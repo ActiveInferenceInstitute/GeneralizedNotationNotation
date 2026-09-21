@@ -17,6 +17,9 @@ CURRENT_VISUALIZATION_SCHEMAS = {
     "pymdp_simulation_v1",
     "rxinfer_simulation_v1",
     "activeinference_jl_simulation_v1",
+    # Ungated backends (pytorch/numpyro) also stamp these schema ids.
+    "pytorch_simulation_v1",
+    "numpyro_simulation_v1",
 }
 
 VISUALIZATION_FRAMEWORK_DIRS = {
@@ -28,20 +31,30 @@ VISUALIZATION_FRAMEWORK_DIRS = {
     "pytorch",
     "numpyro",
     "bnlearn",
+    # stan renders + executes; its results were previously attributed to
+    # "unknown" by _framework_from_path_or_payload.
+    "stan",
 }
 
 
 def _current_schema_visualization_data(data: Dict[str, Any]) -> Dict[str, Any]:
-    """Handle current schema visualization data for internal callers."""
+    """Map a current-schema payload into visualization fields.
+
+    By-factor / by-modality maps remain the primary source; the flat
+    top-level arrays (as written by the pytorch and numpyro runner schemas)
+    act as the fallback for each field.
+    """
     if data.get("schema_version") not in CURRENT_VISUALIZATION_SCHEMAS:
         return {}
     return {
-        "beliefs": (data.get("beliefs_by_factor", {}) or {}).get("joint_state", []),
+        "beliefs": (data.get("beliefs_by_factor", {}) or {}).get(
+            "joint_state", data.get("beliefs", [])
+        ),
         "actions": (data.get("actions_by_control_factor", {}) or {}).get(
-            "joint_action", []
+            "joint_action", data.get("actions", [])
         ),
         "observations": (data.get("observations_by_modality", {}) or {}).get(
-            "joint_observation", []
+            "joint_observation", data.get("observations", [])
         ),
         "expected_free_energy": data.get("expected_free_energy", []),
         "variational_free_energy": data.get("variational_free_energy", []),

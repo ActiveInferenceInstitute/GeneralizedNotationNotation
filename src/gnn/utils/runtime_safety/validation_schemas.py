@@ -22,6 +22,8 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, Dict, Iterable, Optional
 
+from gnn.frameworks import ALL_FRAMEWORKS, LITE_FRAMEWORKS
+
 __all__: list[Any] = [
     "validate_model_data",
     "validate_target_dir",
@@ -32,22 +34,17 @@ __all__: list[Any] = [
 ]
 
 
-# Keep in sync with src/gnn/execute/processor.py::parse_frameworks_parameter and
-# src/gnn/utils/runtime_safety/framework_availability.py::FRAMEWORK_IMPORT_CHECK.
-KNOWN_FRAMEWORKS = (
-    "pymdp",
-    "jax",
-    "discopy",
-    "rxinfer",
-    "activeinference_jl",
-    "pytorch",
-    "numpyro",
-    "bnlearn",
-)
+# ``KNOWN_FRAMEWORKS`` derives from the canonical name enumeration
+# (``gnn.frameworks.ALL_FRAMEWORKS``); it must never be re-listed here.
+# ``FRAMEWORK_IMPORT_CHECK`` in
+# ``src/gnn/utils/runtime_safety/framework_availability.py`` maps toolchain
+# probes per framework; ``KNOWN_FRAMEWORKS`` covers every name that mapping
+# can address, plus the execution-only ``lean`` backend.
+KNOWN_FRAMEWORKS: tuple[str, ...] = ALL_FRAMEWORKS
 
 FRAMEWORK_PRESETS: dict[str, Any] = {
-    "all": list(KNOWN_FRAMEWORKS),
-    "lite": ["pymdp", "jax", "discopy", "bnlearn"],
+    "all": list(ALL_FRAMEWORKS),
+    "lite": list(LITE_FRAMEWORKS),
 }
 
 

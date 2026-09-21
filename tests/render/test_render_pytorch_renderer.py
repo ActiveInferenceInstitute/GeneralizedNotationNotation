@@ -65,3 +65,16 @@ def test_render_success_policy_can_be_strict_about_framework_failures() -> None:
         )
         is False
     )
+
+
+def test_pytorch_discrete_code_declares_simulation_schema(tmp_path: Any) -> None:
+    """The generated discrete PyTorch script stamps pytorch_simulation_v1."""
+    from gnn.render.pytorch.pytorch_renderer import render_gnn_to_pytorch
+
+    output_path = tmp_path / "pytorch_schema.py"
+
+    success, message, _ = render_gnn_to_pytorch(_small_gnn_spec(), output_path)
+
+    assert success, message
+    generated = output_path.read_text(encoding="utf-8")
+    assert "pytorch_simulation_v1" in generated

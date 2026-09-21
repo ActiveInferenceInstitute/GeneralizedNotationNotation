@@ -123,6 +123,39 @@ println("{\\\"status\\\": \\\"success\\\", \\\"framework\\\": \\\"rxinfer\\\"}")
         assert len(frameworks) == 2
 
     @pytest.mark.fast
+    def test_parse_frameworks_parameter_stan(self) -> None:
+        """``stan`` is a canonical framework; parsing must keep it."""
+        logger = logging.getLogger("test")
+        assert parse_frameworks_parameter("stan", logger) == ["stan"]
+
+    @pytest.mark.fast
+    def test_parse_frameworks_parameter_lean_not_silently_filtered(self) -> None:
+        """``lean`` (executor-registry backend) must survive comma parsing."""
+        logger = logging.getLogger("test")
+        assert parse_frameworks_parameter("lean,pymdp", logger) == ["lean", "pymdp"]
+
+    @pytest.mark.fast
+    def test_parse_frameworks_parameter_bogus_returns_empty(self) -> None:
+        """No-match input is an honest empty list; callers pre-validate."""
+        logger = logging.getLogger("test")
+        assert parse_frameworks_parameter("bogus", logger) == []
+
+    @pytest.mark.fast
+    def test_plan_execute_accepts_stan(self, tmp_path: Any) -> None:
+        """The validate → parse chain accepts ``stan`` without aborting."""
+        from gnn.execute.planning import plan_execute
+
+        render_dir = tmp_path / "11_render_output"
+        render_dir.mkdir()
+        plan = plan_execute(
+            tmp_path,
+            tmp_path / "12_execute_output",
+            frameworks="stan",
+            render_output_dir=render_dir,
+        )
+        assert plan["requested_frameworks"] == ["stan"]
+
+    @pytest.mark.fast
     def test_determine_script_framework(self, safe_filesystem: Any) -> None:
         """Test framework detection from script path."""
         # Create directory structure
