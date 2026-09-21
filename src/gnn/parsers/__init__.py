@@ -53,7 +53,6 @@ from .basic import (
     get_parse_tree_visualization,
     parse_gnn_formal,
 )
-from .cache import ParseCache
 from .common import ASTNode, ValidationError, ValidationWarning
 from .converters import ConversionError, FormatConverter
 from .frontmatter import has_frontmatter, parse_frontmatter
@@ -156,7 +155,6 @@ __all__: list[Any] = [
     "GNNFormalParser",
     "GNNFormatSpec",
     "ASTNode",
-    "ParseCache",
     "ParsedGNNFormal",
     "ParseError",
     "GNNParser",

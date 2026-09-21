@@ -300,7 +300,6 @@ classes in this module.
 ## Performance Optimization
 
 - **Parallel Execution**: `execution_workers` controls script-level parallelism in Step 12; `PipelineConfig.parallel` covers orchestration
-- **Caching**: `gnn/parse_cache.py` caches parse results for reuse
 - **Incremental Processing**: matrix routing runs per-folder step lists from `input/config.yaml`
 
 ## Testing and Validation
