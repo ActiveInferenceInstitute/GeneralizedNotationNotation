@@ -129,6 +129,7 @@ class TestDispatchTable:
             "templates",
             "models",
             "pull",
+            "watch",
             "graph",
             "gui",
             "lsp",
@@ -412,6 +413,10 @@ class TestHandlerSignatures:
             from gnn.cli.watcher import GNNWatcher
 
             monkeypatch.setattr(GNNWatcher, "start", completed)
+        elif command == "gui":
+            import gnn.gui as gui_module
+
+            monkeypatch.setattr(gui_module, "process_gui", completed)
         elif command in {"health", "preflight"}:
             from gnn.pipeline import preflight
             from gnn.render import health
@@ -427,7 +432,7 @@ class TestHandlerSignatures:
         ns = argparse_namespace_for(command, missing_file=True)
         original_argv = sys.argv
         result = handler(ns)
-        if command in {"run", "serve", "lsp", "watch"}:
+        if command in {"run", "serve", "lsp", "watch", "gui"}:
             assert len(calls) == 1
         if command == "run":
             assert result == cli.EXIT_WARNING
@@ -479,5 +484,13 @@ def argparse_namespace_for(command: str, *, missing_file: bool) -> argparse.Name
         "lsp": {},
         "watch": {"dir": file_arg},
         "graph": {"file": file_arg, "format": "mermaid", "json": False},
+        "gui": {
+            "target_dir": "in",
+            "output_dir": "out",
+            "gui_types": "gui_1,gui_2",
+            "interactive": False,
+            "open_browser": False,
+            "launch_editor": False,
+        },
     }
     return argparse.Namespace(**common, **per_command[command])

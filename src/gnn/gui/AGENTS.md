@@ -262,7 +262,7 @@ result = gui_1(
     output_dir=Path("output/gui_1_output"),
     logger=logger,
     headless=False,
-    export_filename="constructed_model.md",
+    export_filename="constructed_model_gui1.md",
     open_browser=True,
 )
 ```

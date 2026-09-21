@@ -271,21 +271,21 @@ success = process_gui(
 
 ### Specific GUI (GUI 1)
 ```python
-from gui.gui_1 import gui_1
+from gnn.gui.gui_1 import gui_1
 
 result = gui_1(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/gui_1_output"),
     logger=logger,
     headless=False,
-    export_filename="constructed_model.md",
+    export_filename="constructed_model_gui1.md",
     open_browser=True,
 )
 ```
 
 ### GUI Information Query
 ```python
-from gui import get_available_guis
+from gnn.gui import get_available_guis
 
 guis = get_available_guis()
 for gui_name, info in guis.items():
