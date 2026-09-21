@@ -273,8 +273,10 @@ def _merge_variables(
                 else node_id,
             }
         else:
-            # Existing node - update description if changed
-            if node_data["label_parts"]:
+            # Existing node - only fill in a description when none exists;
+            # the converter emits label_parts[0] as the variable name, never
+            # a description, so overwriting would destroy real descriptions.
+            if node_data["label_parts"] and "description" not in merged[node_id]:
                 merged[node_id]["description"] = node_data["label_parts"][0]
 
     return merged

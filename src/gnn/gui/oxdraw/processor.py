@@ -21,6 +21,7 @@ from gnn.processing.processor import discover_gnn_files
 from ..backend import write_json_atomically
 from .mermaid_converter import convert_gnn_file_to_mermaid
 from .mermaid_parser import convert_mermaid_file_to_gnn
+from .utils import validate_mermaid_syntax
 
 
 def process_oxdraw(
@@ -80,7 +81,7 @@ def process_oxdraw(
     results: dict[str, Any] = {
         "mode": mode,
         "timestamp": _get_timestamp(),
-        "files_processed": [],
+        "files_processed": [str(f) for f in gnn_files],
         "gnn_to_mermaid_conversions": [],
         "mermaid_to_gnn_conversions": [],
         "websocket_bridge": {
@@ -116,6 +117,15 @@ def process_oxdraw(
                 )
 
                 logger.info(f"  ✅ Converted: {gnn_file.name} → {mermaid_file.name}")
+                is_valid, validation_errors = validate_mermaid_syntax(mermaid_content)
+                if not is_valid:
+                    results["errors"].append(
+                        {
+                            "file": str(mermaid_file),
+                            "phase": "mermaid_validation",
+                            "error": "; ".join(validation_errors),
+                        }
+                    )
 
             except Exception as e:
                 logger.error(f"  ❌ Conversion failed for {gnn_file.name}: {e}")
@@ -164,14 +174,20 @@ def process_oxdraw(
                 results["errors"].append({"phase": "editor_launch", "error": str(e)})
                 results["editor_launched"] = False
 
-    # Phase 3: Convert Mermaid files back to GNN (if any .mmd files exist)
-    mermaid_files = list(output_dir.glob("*.mmd"))
+    # Phase 3: Convert Mermaid files back to GNN (only files produced this run)
+    produced_mermaid_files = [
+        Path(c["mermaid_file"])
+        for c in results["gnn_to_mermaid_conversions"]
+        if c.get("success") and c.get("mermaid_file")
+    ]
 
-    if mermaid_files and validate_on_save:
+    if validate_on_save and produced_mermaid_files:
         logger.info("🔄 Phase 3: Converting Mermaid files back to GNN...")
 
-        for i, mermaid_file in enumerate(mermaid_files, 1):
-            logger.info(f"  [{i}/{len(mermaid_files)}] Processing: {mermaid_file.name}")
+        for i, mermaid_file in enumerate(produced_mermaid_files, 1):
+            logger.info(
+                f"  [{i}/{len(produced_mermaid_files)}] Processing: {mermaid_file.name}"
+            )
 
             try:
                 output_gnn_file = output_dir / f"{mermaid_file.stem}_from_mermaid.md"
@@ -221,15 +237,29 @@ def process_oxdraw(
             "gnn_file": conversion["gnn_file"],
             "mermaid_file": str(mermaid_file),
         }
-        try:
-            payload["mermaid"] = mermaid_file.read_text(encoding="utf-8")
-        except OSError as exc:
-            payload["load_warning"] = f"Unable to read Mermaid artifact: {exc}"
         successful_payloads.append(payload)
     results["websocket_bridge"]["messages"] = [
         json.loads(message.to_json())
         for message in build_initial_messages(successful_payloads)
     ]
+
+    # Summary
+    g2m_success_count = sum(
+        1 for c in results["gnn_to_mermaid_conversions"] if c["success"]
+    )
+    g2m_total_count = len(results["gnn_to_mermaid_conversions"])
+    m2g_success_count = sum(
+        1 for c in results["mermaid_to_gnn_conversions"] if c["success"]
+    )
+    m2g_total_count = len(results["mermaid_to_gnn_conversions"])
+
+    results["summary"] = {
+        "gnn_to_mermaid_success": g2m_success_count,
+        "gnn_to_mermaid_total": g2m_total_count,
+        "mermaid_to_gnn_success": m2g_success_count,
+        "mermaid_to_gnn_total": m2g_total_count,
+        "unexpected_failures": len(results["errors"]),
+    }
 
     # Save processing results (atomic to avoid torn artifacts on crash)
     results_file = output_dir / "oxdraw_processing_results.json"
@@ -237,26 +267,18 @@ def process_oxdraw(
 
     logger.info(f"📊 Processing results saved to: {results_file}")
 
-    # Summary
-    success_count = sum(
-        1 for c in results["gnn_to_mermaid_conversions"] if c["success"]
-    )
-    total_count = len(results["gnn_to_mermaid_conversions"])
-
     logger.info("✨ Summary:")
-    logger.info(f"   GNN → Mermaid: {success_count}/{total_count} successful")
+    logger.info(f"   GNN → Mermaid: {g2m_success_count}/{g2m_total_count} successful")
 
     if results["mermaid_to_gnn_conversions"]:
-        back_success = sum(
-            1 for c in results["mermaid_to_gnn_conversions"] if c["success"]
+        logger.info(
+            f"   Mermaid → GNN: {m2g_success_count}/{m2g_total_count} successful"
         )
-        back_total = len(results["mermaid_to_gnn_conversions"])
-        logger.info(f"   Mermaid → GNN: {back_success}/{back_total} successful")
 
     if results["errors"]:
         logger.warning(f"   Errors: {len(results['errors'])}")
 
-    return success_count > 0
+    return g2m_success_count > 0 and len(results["errors"]) == 0
 
 
 def check_oxdraw_installed() -> bool:

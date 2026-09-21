@@ -20,7 +20,7 @@ The LSP module implements a GNN Language Server using the Language Server Protoc
 
 ## Capabilities
 
-- **Diagnostic publishing**: Validates GNN sections, state-space variables, and connections on file open/save
+- **Diagnostic publishing**: Validates GNN sections, state-space variables, and connections on file open/edit/save
 - **Hover information**: Displays variable name, dimensions, type, and default values at cursor position
 - **Error extraction**: Maps parse errors to line numbers for inline display
 

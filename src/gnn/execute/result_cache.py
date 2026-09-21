@@ -6,10 +6,9 @@ Content-addressed on-disk caching for subprocess execution envelopes.
 Eliminates redundant re-execution of unchanged scripts when the cache is
 explicitly enabled (``GNN_EXEC_CACHE=1`` or an ``enabled=True`` instance).
 
-Mirrors LLMCache (src/gnn/llm/cache.py) and ParseCache
-(src/gnn/parsers/cache.py): sha256 NUL-joined key payload, JSON entries
-under ``<cache_dir>/<key>.json``, corrupt entry == miss, Lock-guarded
-counters, explicit ``invalidate() -> int``.
+Mirrors LLMCache (src/gnn/llm/cache.py): sha256 NUL-joined key payload, JSON entries
+under ``<cache_dir>/<key>.json``, corrupt entry == miss, Lock-guarded counters,
+explicit ``invalidate() -> int``.
 
 Cache key: sha256(interpreter + script hash + args + cwd + env + capture)
 Storage: output/12_execute_output/.cache/<key>.json (gitignored)
