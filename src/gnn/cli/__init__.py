@@ -442,7 +442,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     # ── gnn gui ──────────────────────────────────────────────────────────────
     gui_p = subparsers.add_parser(
-        "gui", help="Run Step 22 GUI processing (headless artifacts or interactive servers)"
+        "gui",
+        help="Run Step 22 GUI processing (headless artifacts or interactive servers)",
     )
     gui_p.add_argument(
         "--target-dir", "-t", default="input/gnn_files", help="Input directory"
