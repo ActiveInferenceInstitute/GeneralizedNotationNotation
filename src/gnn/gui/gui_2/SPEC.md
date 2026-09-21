@@ -24,4 +24,3 @@ Second-generation GNN constructor GUI: a Gradio web app for visual matrix editin
 
 - `ui.py` — Main UI layout and event handling
 - `matrix_editor.py` — Matrix editing grid logic
-- `ui_simple.py`, `ui_minimal.py` — Reduced-dependency UI variants

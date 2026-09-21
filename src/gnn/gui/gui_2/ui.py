@@ -33,6 +33,7 @@ from .matrix_editor import (
 )
 
 _MAX_EDITOR_DIMENSION = 64
+DEBOUNCE_SECONDS: float = 2.0
 
 
 def _table_rows(value: Any) -> List[List[Any]]:
@@ -1178,6 +1179,7 @@ def build_visual_gui(
                     d_plot,
                     stats_text,
                     gnn_text,
+                    "",
                 )
 
             except (ValueError, TypeError, KeyError, IndexError) as e:
@@ -1188,8 +1190,9 @@ def build_visual_gui(
                     gr.update(),
                     gr.update(),
                     gr.update(),
-                    f"Error updating: {e}",
                     gr.update(),
+                    gr.update(),
+                    f"❌ **Validation failed**: {e}",
                 )
 
         def reset_to_pomdp() -> Any:
@@ -1381,6 +1384,7 @@ def build_visual_gui(
         # Auto-update functionality
         def maybe_auto_update(
             auto_enabled: Any,
+            dirty: Any,
             state: Any,
             a_data: Any,
             b_data: Any,
@@ -1388,48 +1392,74 @@ def build_visual_gui(
             d_data: Any,
             b_slice: Any,
         ) -> Any:
-            """Auto-update visualizations if enabled"""
-            if auto_enabled:
-                return update_all_with_state(
-                    state, a_data, b_data, c_data, d_data, b_slice
+            """Regenerate visualizations on debounced timer ticks when enabled"""
+            if not (auto_enabled and dirty):
+                return (
+                    gr.update(),
+                    gr.update(),
+                    gr.update(),
+                    gr.update(),
+                    gr.update(),
+                    gr.update(),
+                    gr.update(),
+                    gr.update(),
+                    gr.update(),
                 )
             return (
-                gr.update(),
-                gr.update(),
-                gr.update(),
-                gr.update(),
-                gr.update(),
-                gr.update(),
-                gr.update(),
+                *update_all_with_state(state, a_data, b_data, c_data, d_data, b_slice),
+                False,
             )
 
-        # Connect auto-update to matrix changes
-        for matrix_input in [a_values, b_values, c_values, d_values]:
-            matrix_input.change(
-                maybe_auto_update,
-                inputs=[
-                    auto_update_checkbox,
-                    matrix_state,
-                    a_values,
-                    b_values,
-                    c_values,
-                    d_values,
-                    b_slice_selector,
-                ],
-                outputs=[
-                    matrix_state,
-                    matrix_a_plot,
-                    matrix_b_plot,
-                    c_plot,
-                    d_plot,
-                    stats_output,
-                    gnn_output,
-                ],
+        def manual_update(
+            state: Any,
+            a_data: Any,
+            b_data: Any,
+            c_data: Any,
+            d_data: Any,
+            b_slice: Any,
+        ) -> Any:
+            """Run a full regeneration and clear the debounce flag"""
+            return (
+                *update_all_with_state(state, a_data, b_data, c_data, d_data, b_slice),
+                False,
             )
+
+        # Debounced auto-update: dataframe edits only flip a dirty flag;
+        # the timer performs the heavy regeneration at most once per interval.
+        auto_dirty = gr.State(False)
+        regen_timer = gr.Timer(DEBOUNCE_SECONDS)
+
+        for matrix_input in [a_values, b_values, c_values, d_values]:
+            matrix_input.change(lambda: True, outputs=[auto_dirty])
+
+        regen_timer.tick(
+            maybe_auto_update,
+            inputs=[
+                auto_update_checkbox,
+                auto_dirty,
+                matrix_state,
+                a_values,
+                b_values,
+                c_values,
+                d_values,
+                b_slice_selector,
+            ],
+            outputs=[
+                matrix_state,
+                matrix_a_plot,
+                matrix_b_plot,
+                c_plot,
+                d_plot,
+                stats_output,
+                gnn_output,
+                validation_output,
+                auto_dirty,
+            ],
+        )
 
         # Manual update button
         manual_update_btn.click(
-            update_all_with_state,
+            manual_update,
             inputs=[
                 matrix_state,
                 a_values,
@@ -1446,6 +1476,8 @@ def build_visual_gui(
                 d_plot,
                 stats_output,
                 gnn_output,
+                validation_output,
+                auto_dirty,
             ],
         )
 
@@ -1506,6 +1538,7 @@ def build_visual_gui(
                 d_plot,
                 stats_output,
                 gnn_output,
+                validation_output,
             ],
         )
 
