@@ -25,11 +25,18 @@ from typing import Any, Dict, List, Optional
 
 import pytest
 
+from gnn.execute import executor as executor_module
 from gnn.execute.activeinference_jl import activeinference_runner
-from gnn.execute.executor import GNNExecutor
+from gnn.execute.executor import (
+    GNNExecutor,
+    clear_execution_cache,
+    execute_script_safely,
+)
+from gnn.execute.result_cache import ExecutionResultCache
 from gnn.execute.rxinfer import rxinfer_runner
-from gnn.execute.stan.stan_runner import execute_stan_script
 from gnn.execute.rxinfer.rxinfer_runner import execute_rxinfer_script
+from gnn.execute.stan.stan_runner import execute_stan_script
+from gnn.execute.subprocess_envelope import CancelToken
 
 
 def _envelope(**overrides: Any) -> Dict[str, Any]:
@@ -145,8 +152,7 @@ def test_activeinference_script_success_call_shape_and_mapping(
     script, project_dir = _activeinference_script(tmp_path)
     spy = _spy(
         monkeypatch,
-        "gnn.execute.activeinference_jl.activeinference_runner."
-        "run_subprocess_envelope",
+        "gnn.execute.activeinference_jl.activeinference_runner.run_subprocess_envelope",
         [_envelope(stdout="ran")],
     )
 
@@ -172,8 +178,7 @@ def test_activeinference_script_appends_output_dir_argument(
     out_dir = tmp_path / "results"
     spy = _spy(
         monkeypatch,
-        "gnn.execute.activeinference_jl.activeinference_runner."
-        "run_subprocess_envelope",
+        "gnn.execute.activeinference_jl.activeinference_runner.run_subprocess_envelope",
     )
 
     ok = activeinference_runner.execute_activeinference_script(
@@ -193,7 +198,10 @@ def test_activeinference_script_appends_output_dir_argument(
 @pytest.mark.parametrize(
     ("canned", "expected"),
     [
-        (_envelope(success=False, return_code=1, stderr="ERROR: package missing"), False),
+        (
+            _envelope(success=False, return_code=1, stderr="ERROR: package missing"),
+            False,
+        ),
         (_envelope(success=False, return_code=-1, error="spawn failed"), False),
         (
             _envelope(
@@ -215,8 +223,7 @@ def test_activeinference_script_failure_mappings(
     script, _ = _activeinference_script(tmp_path)
     spy = _spy(
         monkeypatch,
-        "gnn.execute.activeinference_jl.activeinference_runner."
-        "run_subprocess_envelope",
+        "gnn.execute.activeinference_jl.activeinference_runner.run_subprocess_envelope",
         [canned],
     )
 
@@ -235,8 +242,7 @@ def test_activeinference_package_probe_uses_timeout_30(
     project_dir.mkdir()
     spy = _spy(
         monkeypatch,
-        "gnn.execute.activeinference_jl.activeinference_runner."
-        "run_subprocess_envelope",
+        "gnn.execute.activeinference_jl.activeinference_runner.run_subprocess_envelope",
     )
 
     ok = activeinference_runner._validate_package(project_dir, "ActiveInference")
@@ -259,8 +265,7 @@ def test_activeinference_package_probe_failure_returns_false(
     project_dir.mkdir()
     _spy(
         monkeypatch,
-        "gnn.execute.activeinference_jl.activeinference_runner."
-        "run_subprocess_envelope",
+        "gnn.execute.activeinference_jl.activeinference_runner.run_subprocess_envelope",
         [_envelope(success=False, return_code=1)],
     )
 
@@ -376,3 +381,205 @@ def test_rxinfer_toml_config_missing_runner_script_refuses_without_subprocess(
     assert execute_rxinfer_script(config, output_dir=tmp_path / "logs") is False
     assert spy.calls == []
     assert calls.get("queried") is True
+
+
+# ── execute_script_safely + execution result cache ─────────────────────────
+
+
+def _isolate_shared_cache(
+    monkeypatch: pytest.MonkeyPatch, cache_dir: Path, *, enabled: Optional[bool] = None
+) -> None:
+    """Point the executor's shared cache at a tmp_path dir (never the repo)."""
+    monkeypatch.setattr(
+        executor_module,
+        "_EXECUTION_RESULT_CACHE",
+        ExecutionResultCache(cache_dir=cache_dir, enabled=enabled),
+    )
+
+
+def test_execute_script_safely_forwards_args_and_cancel_token(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    script = tmp_path / "m.py"
+    script.write_text("print('ok')\n")
+    _isolate_shared_cache(monkeypatch, tmp_path / "cache", enabled=False)
+    spy = _spy(
+        monkeypatch, "gnn.execute.executor.run_subprocess_envelope", [_envelope()]
+    )
+    token = CancelToken()
+
+    result = execute_script_safely(script, args=["--flag"], cancel_token=token)
+
+    assert spy.calls[0]["command"] == [sys.executable, str(script), "--flag"]
+    assert spy.calls[0]["kwargs"]["cancel_token"] is token
+    assert result["success"] is True
+    assert result["script_path"] == str(script)
+
+
+def test_execute_script_safely_cache_default_off_spawns_every_call(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.delenv("GNN_EXEC_CACHE", raising=False)
+    script = tmp_path / "m.py"
+    script.write_text("print('ok')\n")
+    cache_dir = tmp_path / "cache"
+    _isolate_shared_cache(monkeypatch, cache_dir)
+    spy = _spy(monkeypatch, "gnn.execute.executor.run_subprocess_envelope")
+
+    first = execute_script_safely(script)
+    second = execute_script_safely(script)
+
+    assert len(spy.calls) == 2
+    assert "cache_hit" not in first
+    assert "cache_hit" not in second
+    assert not cache_dir.exists()  # default-off never even creates the dir
+
+
+def test_execute_script_safely_env_enabled_cache_short_circuits_second_spawn(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setenv("GNN_EXEC_CACHE", "1")
+    script = tmp_path / "m.py"
+    script.write_text("print('ok')\n")
+    cache_dir = tmp_path / "cache"
+    _isolate_shared_cache(monkeypatch, cache_dir)
+    spy = _spy(
+        monkeypatch,
+        "gnn.execute.executor.run_subprocess_envelope",
+        [_envelope(stdout="first-run")],
+    )
+
+    first = execute_script_safely(script)
+    second = execute_script_safely(script)
+
+    assert len(spy.calls) == 1  # second call short-circuits before the spawn
+    assert "cache_hit" not in first
+    assert first["stdout"] == "first-run"
+    assert second["cache_hit"] is True
+    assert second["stdout"] == first["stdout"]
+    assert second["return_code"] == first["return_code"]
+    assert second["script_path"] == str(script)
+
+
+def test_execute_script_safely_cache_key_tracks_script_content(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setenv("GNN_EXEC_CACHE", "1")
+    script = tmp_path / "m.py"
+    script.write_text("print('v1')\n")
+    _isolate_shared_cache(monkeypatch, tmp_path / "cache")
+    spy = _spy(monkeypatch, "gnn.execute.executor.run_subprocess_envelope")
+
+    execute_script_safely(script)
+    script.write_text("print('v2')\n")
+    second = execute_script_safely(script)
+
+    assert len(spy.calls) == 2  # content edit → new key → spawns again
+    assert "cache_hit" not in second
+
+
+def test_execute_script_safely_failure_envelope_is_never_cached(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setenv("GNN_EXEC_CACHE", "1")
+    script = tmp_path / "m.py"
+    script.write_text("print('ok')\n")
+    cache_dir = tmp_path / "cache"
+    _isolate_shared_cache(monkeypatch, cache_dir)
+    canned_failure = _envelope(success=False, return_code=3, error="boom")
+    spy = _spy(
+        monkeypatch,
+        "gnn.execute.executor.run_subprocess_envelope",
+        [canned_failure, dict(canned_failure)],
+    )
+
+    first = execute_script_safely(script)
+    second = execute_script_safely(script)
+
+    assert len(spy.calls) == 2  # failure envelopes are never stored
+    assert first["success"] is False
+    assert second["success"] is False
+    assert "cache_hit" not in second
+    assert not cache_dir.exists()  # nothing stored → lazy mkdir never ran
+
+
+def test_clear_execution_cache_invalidates_shared_instance(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.delenv("GNN_EXEC_CACHE", raising=False)
+    script = tmp_path / "m.py"
+    script.write_text("print('ok')\n")
+    _isolate_shared_cache(monkeypatch, tmp_path / "cache", enabled=True)
+    spy = _spy(monkeypatch, "gnn.execute.executor.run_subprocess_envelope")
+
+    execute_script_safely(script)  # populates the shared cache (1 entry)
+    removed = clear_execution_cache()
+    third = execute_script_safely(script)
+
+    assert removed == 1
+    assert len(spy.calls) == 2  # spawn again after invalidation
+    assert "cache_hit" not in third
+
+
+@pytest.mark.parametrize(("config_timeout", "expected"), [(77, 77), (None, 600)])
+def test_run_simulation_passes_config_timeout_to_pymdp_dispatch(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    config_timeout: Optional[int],
+    expected: int,
+) -> None:
+    script = tmp_path / "m.py"
+    script.write_text("print('ok')\n")
+    spy = _spy(monkeypatch, "gnn.execute.executor.run_subprocess_envelope")
+    executor = GNNExecutor(
+        cache=ExecutionResultCache(cache_dir=tmp_path / "cache", enabled=False)
+    )
+    config: Dict[str, Any] = {"model_path": str(script), "execution_type": "pymdp"}
+    if config_timeout is not None:
+        config["timeout"] = config_timeout
+
+    result = executor.run_simulation(config)
+
+    assert spy.calls[0]["kwargs"]["timeout"] == expected
+    assert result["success"] is True
+
+
+def test_pymdp_dispatch_cache_hit_avoids_second_spawn(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    script = tmp_path / "m.py"
+    script.write_text("print('ok')\n")
+    executor = GNNExecutor(
+        cache=ExecutionResultCache(cache_dir=tmp_path / "cache", enabled=True)
+    )
+    spy = _spy(monkeypatch, "gnn.execute.executor.run_subprocess_envelope")
+
+    first = executor._execute_pymdp_script(str(script))
+    second = executor._execute_pymdp_script(str(script))
+
+    assert len(spy.calls) == 1
+    assert first["success"] is True
+    assert "cache_hit" not in first
+    assert second["cache_hit"] is True
+    assert second["stdout"] == first["stdout"]
+
+
+def test_pymdp_non_py_source_model_path_is_not_cached(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    model = tmp_path / "model.md"
+    model.write_text("# source model\n")
+    executor = GNNExecutor(
+        cache=ExecutionResultCache(cache_dir=tmp_path / "cache", enabled=True)
+    )
+    spy = _spy(monkeypatch, "gnn.execute.executor.run_subprocess_envelope")
+
+    first = executor._execute_pymdp_script(str(model))
+    second = executor._execute_pymdp_script(str(model))
+
+    assert spy.calls == []  # canned path never spawns, never caches
+    assert "treated as source model" in first["stdout"]
+    assert "treated as source model" in second["stdout"]
+    assert "cache_hit" not in first
+    assert "cache_hit" not in second
+    assert not (tmp_path / "cache").exists()
