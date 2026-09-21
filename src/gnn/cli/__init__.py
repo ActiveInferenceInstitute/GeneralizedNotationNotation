@@ -17,7 +17,7 @@ Provides:
   gnn models     — Query and inspect the model registry
   gnn pull       — Copy a maintained template into an input directory
   gnn watch      — Monitor a directory and live-reparse on change
-  gnn graph      — Generate a dependency graph from a multi-model file
+  gnn gui        — Run GUI processing (Step 22 artifacts or interactive servers)
   gnn lsp        — Launch Language Server
 
 Exit-code contract: 0 = success, 1 = error, 2 = completed with warnings.
@@ -76,6 +76,7 @@ COMMAND_HANDLERS: Final[dict[str, str]] = {
     "lsp": "_cmd_lsp",
     "watch": "_cmd_watch",
     "graph": "_cmd_graph",
+    "gui": "_cmd_gui",
 }
 
 #: Sorted subcommand names exposed by this CLI (drives ``--help`` parity
@@ -201,7 +202,7 @@ def _render_yaml(payload: dict[str, Any]) -> Optional[str]:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    """Construct the ``gnn`` argument parser with all 16 subcommands.
+    """Construct the ``gnn`` argument parser with all 17 subcommands.
 
     Pure construction — no parsing side effects — so programmatic callers
     can introspect flags and choices without dispatching.
@@ -437,6 +438,31 @@ def build_parser() -> argparse.ArgumentParser:
     )
     graph_p.add_argument(
         "--json", action="store_true", help="Output standard JSON envelope"
+    )
+
+    # ── gnn gui ──────────────────────────────────────────────────────────────
+    gui_p = subparsers.add_parser(
+        "gui", help="Run Step 22 GUI processing (headless artifacts or interactive servers)"
+    )
+    gui_p.add_argument(
+        "--target-dir", "-t", default="input/gnn_files", help="Input directory"
+    )
+    gui_p.add_argument("--output-dir", "-o", default="output", help="Output directory")
+    gui_p.add_argument(
+        "--gui-types",
+        default="gui_1,gui_2",
+        help="Comma-separated GUI types (gui_1, gui_2, gui_3, oxdraw)",
+    )
+    gui_p.add_argument(
+        "--interactive", action="store_true", help="Launch interactive GUI servers"
+    )
+    gui_p.add_argument(
+        "--open-browser", action="store_true", help="Open browser for interactive GUIs"
+    )
+    gui_p.add_argument(
+        "--launch-editor",
+        action="store_true",
+        help="Launch oxdraw editor (interactive oxdraw GUI type)",
     )
 
     # ── gnn lsp ──────────────────────────────────────────────────────────────
@@ -1291,6 +1317,26 @@ def _cmd_graph(args: argparse.Namespace) -> int:
             )
         return EXIT_ERROR
     return EXIT_SUCCESS
+
+
+def _cmd_gui(args: argparse.Namespace) -> int:
+    """Run Step 22 GUI processing (headless artifacts or interactive servers)."""
+    try:
+        from gnn.gui import process_gui
+
+        success = process_gui(
+            target_dir=Path(args.target_dir),
+            output_dir=Path(args.output_dir),
+            verbose=bool(getattr(args, "verbose", False)),
+            gui_types=args.gui_types,
+            interactive=args.interactive,
+            open_browser=args.open_browser,
+            launch_editor=args.launch_editor,
+        )
+    except ImportError as e:
+        logger.error("Could not import GUI module: %s", e)
+        return EXIT_ERROR
+    return EXIT_SUCCESS if success else EXIT_ERROR
 
 
 if __name__ == "__main__":

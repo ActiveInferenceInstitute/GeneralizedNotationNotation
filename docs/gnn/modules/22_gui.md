@@ -77,6 +77,7 @@ The GUI module provides **three distinct interactive interfaces** for constructi
 - `interactive` (bool, optional): Run GUIs in interactive mode (default: False)
 - `headless` (bool, optional): Run in headless mode - artifact generation only (default: True if not interactive)
 - `open_browser` (bool, optional): Automatically open browser for interactive GUIs (default: False)
+- `launch_editor` (bool, optional): Launch the oxdraw editor when the oxdraw GUI type runs in interactive mode (default: False)
 - `**kwargs`: Additional GUI-specific options
 
 **Returns**: `bool` - True if GUI processing succeeded, False otherwise

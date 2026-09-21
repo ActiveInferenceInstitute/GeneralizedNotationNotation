@@ -474,6 +474,12 @@ class ArgumentParser:
                 default=False,
                 help_text="Step 22: open browser for interactive GUIs",
             ),
+            "launch_editor": ArgumentDefinition(
+                flag="--launch-editor",
+                action="store_true",
+                default=False,
+                help_text="Step 22: launch the oxdraw editor (interactive oxdraw GUI type)",
+            ),
             "analysis_model": ArgumentDefinition(
                 flag="--analysis-model",
                 arg_type=str,
@@ -726,6 +732,7 @@ class ArgumentParser:
                 "interactive",
                 "gui_types",
                 "open_browser",
+                "launch_editor",
             ],
             "23_report.py": ["target_dir", "output_dir", "recursive", "verbose"],
             "24_intelligent_analysis.py": [

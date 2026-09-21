@@ -9,7 +9,7 @@
 **Version**: 3.2.0
 **Last Updated**: 2026-09-03
 
-The CLI module provides the `gnn` command-line tool — a unified interface to the entire GNN pipeline. It acts as a thin dispatcher, routing 16 subcommands to their respective module APIs. Public exits are `0` for success, `1` for errors, and `2` for completed commands with warnings or degraded readiness.
+The CLI module provides the `gnn` command-line tool — a unified interface to the entire GNN pipeline. It acts as a thin dispatcher, routing 17 subcommands to their respective module APIs. Public exits are `0` for success, `1` for errors, and `2` for completed commands with warnings or degraded readiness.
 
 ## Architecture
 
@@ -35,7 +35,7 @@ The CLI module provides the `gnn` command-line tool — a unified interface to t
 
 ```
 cli/
-├── __init__.py          # Main dispatcher and 16 subcommands
+├── __init__.py          # Main dispatcher and 17 subcommands
 ├── __main__.py          # `python -m gnn.cli` entry point
 ├── lsp.py               # GNN Language Server (stdio)
 ├── mcp.py               # MCP tool surface for CLI subcommands

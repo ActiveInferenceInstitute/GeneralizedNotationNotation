@@ -64,7 +64,7 @@ class TestBuildParser:
 
     def test_subcommands_sorted_and_complete(self) -> None:
         assert cli.SUBCOMMANDS == tuple(sorted(cli.SUBCOMMANDS))
-        assert len(cli.SUBCOMMANDS) == 16
+        assert len(cli.SUBCOMMANDS) == 17
 
     def test_extract_flags_introspectable(self) -> None:
         parser = cli.build_parser()
@@ -106,6 +106,7 @@ class TestDispatchTable:
             "lsp",
             "watch",
             "graph",
+            "gui",
         ],
     )
     def test_handler_attr_exists_and_is_callable(self, command: str) -> None:
@@ -128,8 +129,8 @@ class TestDispatchTable:
             "templates",
             "models",
             "pull",
-            "watch",
             "graph",
+            "gui",
             "lsp",
         }
         assert set(cli.COMMAND_HANDLERS) == expected

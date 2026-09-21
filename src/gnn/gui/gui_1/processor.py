@@ -44,7 +44,7 @@ def run_gui(
     logger: logging.Logger,
     verbose: bool = False,
     headless: bool = False,
-    export_filename: str = "constructed_model.md",
+    export_filename: str = "constructed_model_gui1.md",
     open_browser: bool = True,
 ) -> bool:
     """
