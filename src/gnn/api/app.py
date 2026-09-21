@@ -457,9 +457,12 @@ if FASTAPI_AVAILABLE:
             # A delete can race this coroutine: the delete path terminates
             # the subprocess while communicate() is still draining, and the
             # terminated process exits nonzero — which would otherwise
-            # re-report the run as failed. Check the token before any
-            # state write, mirroring processor.execute_job_async's race
-            # pattern.
+            # re-report the run as failed. Snapshot the flag and the reason
+            # before any state write, mirroring
+            # processor.execute_job_async's race pattern: a token that
+            # flips after the drain must not re-report a completed run.
+            was_cancelled = cancel_token is not None and cancel_token.cancelled
+            cancel_reason = cancel_token.reason if cancel_token is not None else None
             if process.returncode is None:
                 raise RuntimeError("Pipeline process ended without an exit code")
             exit_code = int(process.returncode)
@@ -473,7 +476,7 @@ if FASTAPI_AVAILABLE:
             )
             entry["current_step"] = None
 
-            if cancel_token is not None and cancel_token.cancelled:
+            if was_cancelled:
                 # The delete's terminal write: 'cancelled' with no
                 # fabricated error message, whatever partial output exists.
                 entry["status"] = "cancelled"
@@ -482,7 +485,7 @@ if FASTAPI_AVAILABLE:
                 entry["events"].append(
                     {
                         "type": "run_cancelled",
-                        "reason": cancel_token.reason or "run deleted",
+                        "reason": cancel_reason or "run deleted",
                         "timestamp": datetime.now().isoformat(),
                     }
                 )
