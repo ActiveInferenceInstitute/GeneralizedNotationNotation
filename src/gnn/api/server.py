@@ -40,6 +40,7 @@ from gnn.api.models import (
     ToolRequest,
     ToolsResponse,
 )
+from gnn.api.parity import register_parity_routes
 from gnn.api.path_utils import (
     PathValidationError,
     resolve_repo_path,
@@ -90,6 +91,8 @@ def create_app() -> FastAPI:
     # authentication is disabled (e.g. localhost research use).
     _app.middleware("http")(rate_limit_middleware)
     install_exception_handlers(_app)
+    # CLI-parity surface: identical routes on both FastAPI factories.
+    register_parity_routes(_app)
 
     @_app.get("/api/v1/health", response_model=APIEnvelope, tags=["Meta"])
     async def health_check() -> APIEnvelope:
