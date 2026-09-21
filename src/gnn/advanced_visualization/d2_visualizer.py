@@ -19,7 +19,6 @@ import logging
 import os
 import re
 import shutil
-import subprocess  # nosec B404
 import tempfile
 import time
 from dataclasses import dataclass, field
@@ -30,6 +29,11 @@ from typing import Any, Dict, List, Optional, cast
 D2_COMPILE_TIMEOUT_S = 30
 D2_MISSING_MESSAGE = "D2 CLI not available. Install from https://d2lang.com"
 VALID_D2_FORMATS = ("svg", "png", "pdf")
+
+
+def _resolve_d2_binary() -> Optional[str]:
+    """Resolve the ``d2`` CLI binary path from PATH (None when absent)."""
+    return shutil.which("d2")
 
 
 @dataclass
@@ -84,7 +88,7 @@ class D2Visualizer:
 
     def _check_d2_availability(self) -> bool:
         """Check if D2 CLI is available in system PATH"""
-        return shutil.which("d2") is not None
+        return _resolve_d2_binary() is not None
 
     def generate_model_structure_diagram(
         self, model_data: Dict[str, Any], output_name: Optional[str] = None
@@ -590,6 +594,11 @@ Active Inference Free Energy Principle: {
         """
         Compile D2 diagram specification to output formats.
 
+        Each format compiles through the shared subprocess envelope
+        (``run_subprocess_envelope``) with a wall-clock force-kill timeout;
+        failures classify into timeout / non-zero-exit / never-started
+        warnings.
+
         Args:
             spec: D2DiagramSpec to compile
             output_dir: Directory for output files
@@ -640,12 +649,25 @@ Active Inference Free Energy Principle: {
         output_files: list[Any] = []
         warnings: list[Any] = []
 
+        # Lazy import: pulling gnn.execute at module scope would drag its
+        # executor/processor/validator package onto this module's import
+        # chain; the envelope is only needed once compilation actually runs.
+        from gnn.execute.subprocess_envelope import run_subprocess_envelope
+
+        d2_binary = _resolve_d2_binary()
+        if d2_binary is None:
+            return D2GenerationResult(
+                success=False,
+                diagram_name=spec.name,
+                error_message=D2_MISSING_MESSAGE,
+            )
+
         # Compile to each format
         for fmt in formats:
             output_file = output_dir / f"{spec.name}.{fmt}"
 
             cmd: list[Any] = [
-                "d2",
+                d2_binary,
                 f"--layout={spec.layout_engine}",
                 f"--theme={spec.theme}",
                 f"--pad={spec.pad}",
@@ -659,25 +681,21 @@ Active Inference Free Energy Principle: {
 
             cmd.extend([str(d2_file), str(output_file)])
 
-            try:
-                result = subprocess.run(  # nosec B603
-                    cmd, capture_output=True, text=True, timeout=D2_COMPILE_TIMEOUT_S
-                )
-
-                if result.returncode == 0:
-                    output_files.append(output_file)
-                    self.logger.info(f"Generated {fmt}: {output_file}")
-                else:
-                    warning = f"Failed to generate {fmt}: {result.stderr}"
-                    warnings.append(warning)
-                    self.logger.warning(warning)
-
-            except subprocess.TimeoutExpired:
+            envelope = run_subprocess_envelope(cmd, timeout=D2_COMPILE_TIMEOUT_S)
+            if envelope["success"]:
+                output_files.append(output_file)
+                self.logger.info(f"Generated {fmt}: {output_file}")
+            elif envelope.get("error_type") == "TimeoutExpired":
                 warning = f"Timeout compiling to {fmt}"
                 warnings.append(warning)
                 self.logger.warning(warning)
-            except Exception as e:
-                warning = f"Error compiling to {fmt}: {e}"
+            else:
+                detail = (
+                    envelope.get("stderr")
+                    or envelope.get("error")
+                    or f"exit code {envelope.get('return_code')}"
+                )
+                warning = f"Failed to generate {fmt}: {detail}"
                 warnings.append(warning)
                 self.logger.warning(warning)
 

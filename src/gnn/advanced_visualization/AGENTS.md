@@ -192,7 +192,7 @@ Generate a narrower `viz_type` or use `interactive=False` to reduce work.
 
 - `plotly` - Interactive visualizations (recovery: static plots)
 - `seaborn` - Enhanced statistical plots (recovery: matplotlib)
-- **`d2` CLI** - D2 diagram compilation (recovery: skip D2 diagrams, log warning)
+- **`d2` CLI** - D2 diagram compilation through the shared run_subprocess_envelope (structured classification, wall-clock force-kill timeout; recovery: skip D2 diagrams, log warning)
 
 ---
 
@@ -415,7 +415,12 @@ in `_shared.py` and the package root:
   `check_visualization_capabilities` MCP tool so its docstring is honest.
 - `D2_COMPILE_TIMEOUT_S` / `D2_MISSING_MESSAGE` / `VALID_D2_FORMATS`
   (`d2_visualizer.py`) — named constants for the D2 compile timeout, the
-  missing-CLI message, and the validated output-format set (`svg`/`png`/`pdf`).
+  missing-CLI message, and the validated output-format set (`svg`/`png`/`pdf`);
+  d2 compiles route through the shared subprocess envelope
+  (`gnn.execute.subprocess_envelope`), imported lazily at the compile call site
+  so the `gnn.execute` package init never rides on the
+  `advanced_visualization` import chain, and a hung compile is force-killed at
+  `D2_COMPILE_TIMEOUT_S` and classified (`TimeoutExpired`).
 - `_theme.py` — shared CSS constants for the two HTML emitters
   (`BASE_CSS`, `FONT_STACK`, `BODY_GRADIENT`, `HEADER_H2_CSS`,
   `PARAMETER_NAME_CSS`, `STAT_LABEL_CSS`). Contains only rules that are

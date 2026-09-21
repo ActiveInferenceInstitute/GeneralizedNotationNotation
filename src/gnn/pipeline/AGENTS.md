@@ -562,3 +562,17 @@ The canonical pipeline step registry lives in [`step_registry.py`](step_registry
 - **Lookup:** `step_for_name("11_render")`, `step_for_stem("11_render")`.
 - **Filtering:** `get_core_steps()` → 24 steps, `get_llm_steps()` → 1 step.
 - **Adding a new step:** Add one `StepInfo(...)` to `STEPS` — all downstream consumers update automatically.
+
+## Consolidated In-Process Execution — `step_executor.py`
+
+[`step_executor.py`](step_executor.py) implements the opt-in consolidated
+execution selected by `main.py --consolidated-steps`: steps whitelisted in
+`step_registry.CONSOLIDATED_IN_PROCESS_STEMS` run inside the main process and
+return a receipt identical in shape to the subprocess mode. Limits and the
+thread-pool caveat are recorded in ADR 0001
+([docs/decisions/0001-consolidated-pipeline-execution.md](../../../docs/decisions/0001-consolidated-pipeline-execution.md)):
+testing-matrix folder dispatch stays on the subprocess path, and the parallel
+tier runs consolidated steps on threads that share one process — steps 7/8
+render with matplotlib (Agg), thread-safe in-process, but concurrent
+consolidated runs of step 8 should expect shared matplotlib state (no
+behavioral change attempted for matplotlib).
