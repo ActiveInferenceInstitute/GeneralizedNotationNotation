@@ -54,7 +54,7 @@
 
 **Returns**: `bool` - True on success, False otherwise
 
-**Location**: `src/gnn/multi_format_processor.py`
+**Location**: `src/gnn/processing/multi_format_processor.py`
 
 **Example**:
 
@@ -249,8 +249,8 @@ for a bare no-result extraction). `compact=True` emits compact JSON
 **Description**: CLI wrapper: `python -m gnn.extract FILE [--strict|--no-strict] [--compact]`.
 Prints the payload JSON (exit 0) or the error envelope (exit 1).
 
-**Location**: `src/gnn/extract.py` (stdlib-only at module scope; the extractor
-module is imported lazily inside the call path).
+**Location**: `src/gnn/extract/__init__.py` (stdlib-only at module scope; the
+extractor module is imported lazily inside the call path).
 
 ### Lazy package `__init__`
 

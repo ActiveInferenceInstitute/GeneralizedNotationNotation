@@ -19,7 +19,8 @@ wrappers delegate through `run_pipeline_step_mcp`,
 `.github/gnn-pair.json` @ `c0115779`), confirmed the F401/F811 split /
 extras parity / dependency-floors rows RESOLVED-in-place, shrunk W2-M2 to
 pinning tests (both behavior halves verified landed), confirmed the W2-J1
-third site migrated, and wrote the `SCOPE-2026-09-15.md` spec
+third site migrated — W2-D6, W2-M2 pinning tests, and W2-J1 all LANDED
+2026-09-15 (`5501ec7c1`, `d79c62756`) — and wrote the `SCOPE-2026-09-15.md` spec
 (14 rows cleared, 7 open rows, 2 major / 3 medium / 2 minor improvements);
 execution wave 2026-09-15: N-1 + N-6 + N-7 landed (`d79c62756`), N-5 landed
 (`5501ec7c1`), N-4 decision executed as delete with the StepStatus re-home
@@ -58,12 +59,9 @@ absent; registry names `_export_with_geo`,
 `src.cli`/`src.mcp`/stale-`PYTHONPATH=src`/retired `src/render/` strings in
 src/gnn), W2-M4 (the row's own acceptance grep returns zero), MED-03b
 (`src/gnn/execute/rxinfer/rxinfer_runner.py:66-69` evidence persistence),
-MED-04/MIN-01 (transport limits + hygiene, 2026-09-11 wave). W2-D6 landed
-only its strings half; W2-M2's second half was verified landed by the
-corrective pass (error-level parse log with path, dead `.py` branch gone)
-and the row is shrunk to pinning tests — both remain residuals in the
-pipeline-orchestration table, with W2-J1's third site confirmed migrated
-(`export/processor.py:585-588`).
+MED-04/MIN-01 (transport limits + hygiene, 2026-09-11 wave). W2-D6, W2-M2,
+and W2-J1 LANDED 2026-09-15 (`5501ec7c1` for W2-D6; `d79c62756` for W2-M2 +
+W2-J1) — receipts in the pipeline-orchestration table.
 GNN-02 (linear-Gaussian F/control/H/Q/R export:
 `src/gnn/export/geo_infer_gaussian.py`, `tests/export/test_geo_infer_gaussian.py`,
 paired analytic verification in `docs/development/geo_infer_2026_09.md`) and
@@ -106,6 +104,18 @@ contain zero subprocess code (verified); the duplication is execute-side
 methods vs the canonical `execute_script_safely` at `execute/executor.py:1089-1200`)
 and needs a behavior-preserving refactor with its own tests, not a
 mechanical split.
+
+validate_gnn* alias retirement closed 2026-09-19: all 10 `validate_gnn*`
+old-name aliases deleted in the v4.0.0 cycle (deprecation window opened
+2026-09-11 with zero remaining live callers). The four canonical def sites
+remain (`src/gnn/parsers/basic.py:271` `validate_gnn_syntax`,
+`src/gnn/llm/llm_operations.py:452` `validate_gnn_with_llm`,
+`src/gnn/__init__.py:123` `validate_gnn_source`,
+`src/gnn/schema_validator/validator.py:827`
+`validate_gnn_file_comprehensive`); MCP tool registry names are unchanged
+contracts; the inverted pin `test_retired_validate_gnn_aliases_are_gone`
+(`tests/test_validate_surface_aliases.py:43`) fails if any retired name is
+re-added. Audit trail: CHANGELOG 2026-09-19.
 
 ## Open Scoped Roadmap
 
@@ -190,11 +200,7 @@ coupling (`pipeline/schemas.py:10`, `intelligent_analysis/processor.py:19`,
 production chain step 24) — so `StepStatus` was re-homed to
 `pipeline/schemas.py`, the dead `PipelineContext`/`StepRecord` pair and
 `context.py` were deleted (census-verified zero production importers), and
-the doc claims were tombstoned. AGENTS.md "Data Dependencies" graph still
-overstates in-memory propagation (steps 5/6/8/10/11/13 re-parse input; only
-3→7 and 11→12 consume artifacts). `run_session`/durable streams are not
-wired into main.py composition (feature gap, not a test gap). The remaining
-two need a design decision, not a mechanical fix.
+the doc claims were tombstoned.
 
 Scope evidence (re-verified 2026-09-15): the coverage floor is
 `fail_under = 60` (raised 50 → 60, MAJ-T1, 2026-09-10), and
@@ -203,17 +209,6 @@ Scope evidence (re-verified 2026-09-15): the coverage floor is
 the delete-vs-wire-in decision is made~~ **EXECUTED 2026-09-15** (`c89452e00`,
 N-4): deleted with its test and exports; `StepStatus` re-homed to
 `pipeline/schemas.py`; see the observations note above.
-
-Test hygiene (discovered 2026-09-17, open): `tests/test_manuscript_token_gate.py`
-regenerates `output/data/manuscript_variables{,_receipt}.json` against the
-REAL repo tree as a run side effect — a local combined pytest run then lets
-the rewritten map (describing the new HEAD) cross into a same-session
-custody assert in `test_manuscript_latex_log.py`, producing a false
-map-vs-manifest failure (and any subsequent `git add -A` sweeps the
-pollution into a commit; `9fc63b1db` needed the SC-22 rerun at `23bef35b5`
-to repair exactly this). Fix: the token-gate suite must regenerate into
-`tmp_path` copies (or restore HEAD state in a teardown), never the live
-committed paths.
 
 ## Deep horizon wave 2 - render backends
 
@@ -292,8 +287,8 @@ events, and non-mutating security policy. No source edit, commit, container
 run, or cluster mutation is automatic.
 
 Concrete, cold-startable work is scoped in the open tables above (the
-W2-D6/M2/J1 residuals; the validate_gnn* / SC-38-tail / V4-STAGE /
-paired-repin rows in the 'Still open (residuals)' table) and in
+SC-38-tail / V4-STAGE / paired-repin rows in the 'Still open (residuals)'
+table) and in
 `SCOPE-2026-09-15.md` §Improvements; this section records the unscoped
 vision and the current proposal-only `--autonomous` surface.
 
@@ -304,11 +299,11 @@ vision and the current proposal-only `--autonomous` surface.
 Use `uv run` for roadmap verification checks:
 
 ```bash
-PYTHONPATH=src uv run python scripts/run_v3_orchestration_acceptance.py --strict
-PYTHONPATH=src uv run python scripts/emit_run_manifest.py output --out /tmp/gnn-v3-run-manifest
-PYTHONPATH=src uv run python scripts/generate_pipeline_container_plan.py --config input/config.yaml --out /tmp/gnn-v3-container-plan.json
-PYTHONPATH=src uv run python scripts/run_session_acceptance.py --manifest input/model_family_manifest.json --output-dir /tmp/gnn-v3-session-acceptance --session /tmp/gnn-v3-session.json --strict
-PYTHONPATH=src uv run python src/gnn/main.py --autonomous --target-dir input/gnn_files --output-dir /tmp/gnn-autonomous-smoke
+uv run python scripts/run_v3_orchestration_acceptance.py --strict
+uv run python scripts/emit_run_manifest.py output --out /tmp/gnn-v3-run-manifest
+uv run python scripts/generate_pipeline_container_plan.py --config input/config.yaml --out /tmp/gnn-v3-container-plan.json
+uv run python scripts/run_session_acceptance.py --manifest input/model_family_manifest.json --output-dir /tmp/gnn-v3-session-acceptance --session /tmp/gnn-v3-session.json --strict
+uv run python src/gnn/main.py --autonomous --target-dir input/gnn_files --output-dir /tmp/gnn-autonomous-smoke
 
 uv run python docs/development/docs_audit.py --strict --check-anchors --no-write
 uv run python scripts/check_gnn_doc_patterns.py --strict
@@ -360,7 +355,6 @@ Still open (residuals, in rough order):
 
 | ID | Scope | Acceptance evidence |
 | --- | --- | --- |
-| validate_gnn* retirement | Window OPENED 2026-09-11 (target v4.0.0, current 3.4.0): all 10 alias sites emit `DeprecationWarning` (`stacklevel=2`) naming the canonical replacement + "will be removed in v4.0.0"; manifest canonical/old-name inversion fixed; warning emission pinned in `tests/test_validate_surface_aliases.py`. SRC/DOC CALLER MIGRATION COMPLETE 2026-09-14: zero live callers remain across src/gnn, scripts/, and maintained docs (audited against every alias name incl. package-root lazy exports). | Retirement in v4.0.0 = delete the alias defs, their pins in `tests/test_validate_surface_aliases.py`, and any registry entries (no remaining src/doc callers to migrate). |
 | SC-38 tail (remainder) | Families `errors/`, `config_io/`, `system_env/` EXTRACTED 2026-09-12 (§5 Step 7; DeprecationWarning facades at old paths; `_EXPORT_MAP` values repointed, keys frozen at 113; consumers + tests migrated). Logging single-entry contract LANDED 2026-09-14: `base_processor.py` repointed to the `gnn.utils.logging_utils` facade; third forbidden-import contract live (`lint-imports` 3/3, two documented pre-split-tree ignores). `simulation_utils` RESOLVED 2026-09-15 as production-dead removal (R4's extraction question mooted: zero non-test importers, zero `_EXPORT_MAP` keys; module + DiagramAnalyzer deleted, pyproject forbidden-modules entry dropped) — §3.8 table updated. Remaining per design §8: facade deprecation-window end only (delete old paths, v4-gated). | `lint-imports` 3/3 contracts kept; migrated suites green (332 tests in `tests/utils`). |
 | V4-STAGE limits | Consolidated executor now covers stems {0,3,5,7,8,11} with timeout/tee/carrier on serial + parallel tiers. D2 CLI shell-out LANDED (ADR 0001 status log, 2026-09-19): step-9 d2 compiles route through the shared run_subprocess_envelope — force-killable with an explicit wall-clock timeout, failures classified (timeout / non-zero exit / never-started). Remaining limits: in-process steps cannot be force-killed (a timed-out worker thread is abandoned; its receipt mirrors the subprocess tier's timeout shape), and the matplotlib thread-pool caveat (parallel tier shares matplotlib state across concurrent consolidated step-8 runs; no behavioral change attempted). | Each landed slice pinned by parity tests in `tests/pipeline/`; the D2 shell-out is pinned by `tests/advanced_visualization/test_d2_envelope_shellout.py`. |
 | paired-repin discipline | The fep_lean source-pin seals GNN owner digests at pin time; ANY later owner-file edit re-drifts the pair (3 drift cycles documented on PR #110). Standing closeout ordering: all content edits → token ritual → bridge re-pin → fep_lean PR/merge → pair-pin bump as the FINAL commit, single push. Canonical ordering: `docs/development/fep_lean_paired_revision.md`. | `fep-lean bridge status --gnn-root .` green at the pin; zero post-bump pushes. |
