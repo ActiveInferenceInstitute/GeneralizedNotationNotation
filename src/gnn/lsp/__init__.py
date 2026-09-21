@@ -3,8 +3,9 @@
 GNN Language Server — Minimal LSP server for GNN file diagnostics.
 
 Provides:
-  - textDocument/didOpen + didSave → diagnostics (section validation, parse
-    errors, matrix-dimension cross-validation, unknown section headers)
+  - textDocument/didOpen + didChange + didSave → diagnostics (section
+    validation, parse errors, matrix-dimension cross-validation, unknown
+    section headers)
   - textDocument/hover → variable info (dimensions, type)
   - textDocument/completion → GNN vocabulary completions (shared pygls-free
     vocabulary module: gnn.lsp.completions)
@@ -19,6 +20,7 @@ from gnn.schemas.section_contract import CANONICAL_GNN_SECTIONS
 
 FEATURES: dict[str, Any] = {
     "diagnostics": True,
+    "did_change": True,
     "hover_info": True,
     "completion": True,
     "gnn_language_support": True,
@@ -36,6 +38,7 @@ logger = logging.getLogger(__name__)
 try:
     from lsprotocol.types import (
         TEXT_DOCUMENT_COMPLETION,
+        TEXT_DOCUMENT_DID_CHANGE,
         TEXT_DOCUMENT_DID_OPEN,
         TEXT_DOCUMENT_DID_SAVE,
         TEXT_DOCUMENT_HOVER,
@@ -44,6 +47,7 @@ try:
         CompletionParams,
         Diagnostic,
         DiagnosticSeverity,
+        DidChangeTextDocumentParams,
         DidOpenTextDocumentParams,
         DidSaveTextDocumentParams,
         Hover,
@@ -96,6 +100,16 @@ def create_server() -> Any:
     @server.feature(TEXT_DOCUMENT_DID_SAVE)
     def did_save(params: DidSaveTextDocumentParams) -> Any:
         """Re-publish diagnostics on save."""
+        doc = server.workspace.get_text_document(params.text_document.uri)
+        _publish_diagnostics(server, params.text_document.uri, doc.source)
+
+    @server.feature(TEXT_DOCUMENT_DID_CHANGE)
+    def did_change(params: DidChangeTextDocumentParams) -> Any:
+        """Republish diagnostics when the document changes.
+
+        pygls applies the content changes (full or incremental) to the workspace
+        document before dispatching this handler, so the stored source is current.
+        """
         doc = server.workspace.get_text_document(params.text_document.uri)
         _publish_diagnostics(server, params.text_document.uri, doc.source)
 

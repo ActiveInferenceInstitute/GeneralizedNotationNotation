@@ -1,14 +1,15 @@
 """GNN Language Server helpers for the ``gnn lsp`` subcommand.
 
 Pure JSON-RPC framing and request/response handlers plus the serve loop.
-Transport streams are injectable (``read_message``/``write_message``
+``start_lsp`` launches the canonical pygls server (``gnn.lsp.start_server``)
+when pygls is importable, else the pygls-free JSON-RPC serve loop described
+below. Transport streams are injectable (``read_message``/``write_message``
 default to ``sys.stdin``/``sys.stdout`` at call time), so every layer is
 testable without a real stdio session.
 
 ``textDocument/completion`` answers from the shared pygls-free vocabulary
 module ``gnn.lsp.completions``; ``diagnose_text`` delegates to ``gnn.schema``
-for the same diagnostics the pygls server publishes. Both paths are
-pygls-free, so the CLI server runs without pygls installed.
+for the same diagnostics the pygls server publishes.
 
 Public functions: read_message, write_message, handle_initialize,
 handle_hover, handle_completion, diagnose_text, publish_diagnostics,
@@ -286,14 +287,21 @@ def run_lsp_loop(
 
 
 def start_lsp(log_path: Optional[str] = "gnn-lsp.log") -> None:
-    """Start the Language Server Protocol loop on stdin/stdout.
+    """Start the Language Server Protocol server on stdin/stdout.
 
-    Logs to ``log_path`` (default ``gnn-lsp.log`` in the working directory)
-    so stdout stays a clean JSON-RPC transport; pass ``None`` to disable
-    file logging.
+    Launches the canonical pygls server (``gnn.lsp.start_server``, which
+    blocks on stdio until the session ends) when pygls is importable;
+    otherwise serves the pygls-free JSON-RPC loop. Logs to ``log_path``
+    (default ``gnn-lsp.log`` in the working directory) so stdout stays a
+    clean JSON-RPC transport; pass ``None`` to disable file logging.
     """
     if log_path is not None:
         logging.basicConfig(filename=log_path, level=logging.INFO)
     logger.info("Starting GNN LSP Server...")
-    run_lsp_loop(read_message, write_message)
+    import gnn.lsp as lsp_server
+
+    if lsp_server.PYGLS_AVAILABLE:
+        lsp_server.start_server()
+    else:
+        run_lsp_loop(read_message, write_message)
     logger.info("GNN LSP Server shutting down.")
