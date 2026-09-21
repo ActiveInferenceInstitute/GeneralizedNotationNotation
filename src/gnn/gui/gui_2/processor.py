@@ -41,7 +41,7 @@ def run_gui(
     logger: logging.Logger,
     verbose: bool = False,
     headless: bool = False,
-    export_filename: str = "visual_model.md",
+    export_filename: str = "visual_model_gui2.md",
     open_browser: bool = True,
 ) -> bool:
     """
@@ -167,9 +167,7 @@ def run_gui(
                     "backend_reason": _GUI_BACKEND_REASON,
                 },
             )
-            log_step_error(
-                logger, f"GUI 2 launch verification failed: {poll_reason}"
-            )
+            log_step_error(logger, f"GUI 2 launch verification failed: {poll_reason}")
             return False
 
         logger.info(f"🎯 GUI 2 is running on http://localhost:{_GUI2_PORT}")
@@ -199,9 +197,7 @@ def run_gui(
             },
         )
 
-        log_step_success(
-            logger, "GUI 2 (Visual Matrix Editor) launched successfully"
-        )
+        log_step_success(logger, "GUI 2 (Visual Matrix Editor) launched successfully")
         return True
 
     except Exception as e:

@@ -351,6 +351,7 @@ class StepConfiguration:
                     "interactive",
                     "gui_types",
                     "open_browser",
+                    "launch_editor",
                 ],
                 "defaults": {
                     "recursive": True,
@@ -359,6 +360,7 @@ class StepConfiguration:
                     "interactive": False,
                     "gui_types": "gui_1,gui_2",
                     "open_browser": False,
+                    "launch_editor": False,
                 },
                 "description": "Interactive GUI for Constructing/Editing GNN Models",
             },
