@@ -295,7 +295,7 @@ async def test_cancel_survives_communication_exception(
         job_mgr._JOBS.pop(job_id, None)
 
 
-@pytest.mark.skipif(os.name != "posix", reason="process-group kill is POSIX-only")
+@pytest.mark.needs_posix
 @pytest.mark.asyncio
 async def test_cancel_kills_grandchild_process_group(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
