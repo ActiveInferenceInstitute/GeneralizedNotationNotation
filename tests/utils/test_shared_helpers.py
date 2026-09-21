@@ -6,9 +6,8 @@ logic across src/gnn/utils/ was collapsed:
 
 - ``io_utils.verify_directory_writable`` — the one writable-probe behind
   ``gnn.utils.pipeline.validate_output_directory`` and
-  ``gnn.utils.pipeline_validator.check_pipeline_readiness``
+  ``gnn.utils.pipeline_orchestration.pipeline_validator.check_pipeline_readiness``
 - the canonical memory probe ``gnn.utils.runtime_safety.resource_manager.get_memory_usage``
-  (reused by ``gnn.utils.testing.perf`` and ``visualization_optimizer``)
 - ``resource_manager.with_resource_limits`` exception-propagation semantics
 - the shared fallback-default table behind ``ArgumentParser``
 - ``StepConfiguration.validate_step_args`` injectable ``project_root``

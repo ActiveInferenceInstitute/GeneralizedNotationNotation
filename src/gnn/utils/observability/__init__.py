@@ -33,6 +33,8 @@ Leaf inventory:
   (``log_step_*``, ``set_correlation_context``, ``StructuredLogger``)
 
 Cross-family imports go through leaf modules, never through any facade (I5).
+The old top-level paths were removed with the SC-38 facade takedown; this
+package is their canonical home.
 """
 
 from importlib import import_module

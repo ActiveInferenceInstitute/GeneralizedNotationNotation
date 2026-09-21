@@ -10,23 +10,29 @@ src/gnn/utils/
 ├── AGENTS.md                        # AI agent scaffolding documentation
 ├── README.md                        # This documentation
 ├── SPEC.md                          # Module specification
-├── SKILL.md                         # Capability API reference
 │
-├── logging_utils.py                 # Structured logging (setup_step_logging, log_step_*)
+├── logging_utils.py                 # Logging facade (setup_step_logging, log_step_*)
 ├── pipeline.py                      # Pipeline utilities (get_output_dir_for_script, ...)
-├── mcp.py                           # MCP integration
+├── mcp.py                           # MCP integration (canonical name; see mcp/ package)
 │
+├── # Concern packages (S2-33/SC-38 split)
 ├── logging/                         # Logging subpackage (see logging/README.md)
-│
-├── arguments/                       # Argument parsing & step configuration
-├── config_io/                       # Configuration, I/O, path & code-metric helpers
-├── errors/                          # Error handling & recovery
-├── mcp/                             # MCP dispatch & server integration
-├── observability/                   # Structured/visual logging, performance tracking
-├── pipeline_orchestration/          # Pipeline orchestration, templates & validation
-├── runtime_safety/                  # Dependency, resource, timeout & eval safety
-├── system_env/                      # System, venv & matplotlib environment helpers
-└── testing/                         # Test harness family (runner, fixtures, reports)
+├── arguments/                       # arg_definitions, arg_parsing, path_conversion,
+│                                    #   pipeline_arguments, pipeline_config_merge, step_config
+├── config_io/                       # config_loader, io_utils, path_utils, code_metrics
+├── errors/                          # error_handling, error_recovery
+├── observability/                   # structured_logging, performance_tracking,
+│                                    #   visual_logging, visualization_optimizer
+├── pipeline_orchestration/          # base_processor, execution_utils,
+│                                    #   pipeline_dependencies, pipeline_monitor,
+│                                    #   pipeline_validator, pipeline_template,
+│                                    #   pipeline_step_dependencies
+├── runtime_safety/                  # dependency_validator, framework_availability,
+│                                    #   jax_stack_validation, resource_manager, safe_eval,
+│                                    #   timeout_manager, validation_schemas
+├── system_env/                      # system_utils, venv_utils, matplotlib_setup
+├── testing/                         # Test runner, categories, stages, coverage targets
+└── mcp/                             # MCP dispatch (register_tools, redact_environment)
 ```
 
 ## Core Components
@@ -64,13 +70,14 @@ Sets up standardized logging for a pipeline step with correlation-ID tracking.
 Sets up logging for the main pipeline orchestrator.
 
 #### `log_step_start(logger, message)` / `log_step_success(logger, message)` / `log_step_error(logger, message)` / `log_step_warning(logger, message)`
-Step lifecycle logging helpers. `utils/observability/structured_logging.py` provides richer variants (`log_step_start(logger, step_name, **context)`) with metadata support.
+Step lifecycle logging helpers. `observability/structured_logging.py` provides richer variants (`log_step_start(logger, step_name, **context)`) with metadata support.
 
 #### `get_performance_summary() -> Dict[str, Any]`
 Returns timing/memory metrics recorded by the structured logger.
 
 ### Argument Parsing
-#### `ArgumentParser` (`utils/arguments/arg_parsing.py`)
+
+#### `ArgumentParser` (`arguments/arg_parsing.py`, re-exported by the `arguments/` package)
 Standard argument parser with pipeline-wide support.
 
 #### `ArgumentParser.parse_step_arguments(step_name) -> argparse.Namespace`
@@ -78,7 +85,8 @@ Parses arguments for a specific pipeline step with recovery support. Standard ar
 
 #### `build_step_command_args(step_name, args) -> List[str]`
 Builds the command-line argument list for invoking a step script.
-#### `utils.arguments.arg_parsing.audit_step_contracts() -> Dict[str, Any]`
+
+#### `gnn.utils.arguments.arg_parsing.audit_step_contracts() -> Dict[str, Any]`
 Audits for drift between `STEP_ARGUMENTS`, `StepConfiguration`, parser defaults, and command-builder propagation. Exit codes are canonical: `0=success`, `1=error`, `2=success with warnings/skipped`.
 
 ### Pipeline Orchestration Utilities
@@ -101,11 +109,11 @@ Composability Notes for the full consolidation map):
 
 #### `verify_directory_writable(directory: Path, probe_name: str = ".write_probe") -> None`
 The one writable-directory probe (create temp file → atomic rename → cleanup), used by
-`utils.pipeline.validate_output_directory` and
-`utils.pipeline_orchestration.pipeline_validator.check_pipeline_readiness`.
+`gnn.utils.pipeline.validate_output_directory` and `gnn.utils.pipeline_orchestration.pipeline_validator.check_pipeline_readiness`.
 Raises `OSError` when the directory does not accept writes.
+
 #### `get_memory_usage() -> float`
-Canonical process-memory probe in MB (`utils.runtime_safety.resource_manager`).
+Canonical process-memory probe in MB (`gnn.utils.runtime_safety.resource_manager`).
 
 #### `redact_environment() -> dict[str, str]` (`utils.mcp`)
 Copy of `os.environ` with secret-carrying variable names removed
@@ -187,7 +195,7 @@ def process_my_module(target_dir: Path, output_dir: Path, verbose: bool = False,
 
 ## Error Handling
 
-`utils/errors/error_recovery.py` provides `ErrorRecoveryManager(logger=None)` with `handle_error(context: ErrorContext) -> bool` and helpers such as `format_and_log_error(logger, error, context)`. Errors are described by `ErrorContext` objects (operation, severity, message, error_code, details).
+`errors/error_recovery.py` provides `ErrorRecoveryManager(logger=None)` with `handle_error(context: ErrorContext) -> bool` and helpers such as `format_and_log_error(logger, error, context)`. Errors are described by `ErrorContext` objects (operation, severity, message, error_code, details).
 
 ## Testing and Validation
 
@@ -203,7 +211,7 @@ Standard library plus `pyyaml` (config loading) and `psutil` (resource monitorin
 ## Troubleshooting
 
 - **No log output**: verify the `verbose` flag on `setup_step_logging` / `setup_main_logging` and that the logger is not filtered by an upstream handler.
-- **Argument parsing errors**: run the step with `--help` to see the argument definitions registered in `utils/arguments/arg_definitions.py`.
+- **Argument parsing errors**: run the step with `--help` to see the argument definitions registered in `arguments/arg_definitions.py`.
 - **Debug logging**: set the logger level to `DEBUG` (`logging.getLogger().setLevel(logging.DEBUG)`) or pass `verbose=True`.
 
 ## Summary

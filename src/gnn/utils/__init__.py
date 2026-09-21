@@ -3,39 +3,32 @@
 """
 GNN Pipeline Utilities Package
 
-Lazy PEP 562 re-export surface: 113 exported names aggregated from 17 source
-modules. All pipeline steps import from this package for consistency. The
-surface area is intentionally wide; it is being split by concern into
-sub-packages — see docs/development/utils_split_design.md (S2-33/SC-38) for
-the package map and migration plan.
+Lazy PEP 562 re-export surface: 113 exported names aggregated from the
+concern packages below. All pipeline steps import from this package for
+consistency. The surface area is intentionally wide; it was split by
+concern into sub-packages (S2-33/SC-38 — see
+docs/development/utils_split_design.md for the split design and history;
+the old top-level module paths were removed when the deprecation window
+closed).
 
 Importing ``utils`` is intentionally LIGHT: no submodule executes at import
-time, so heavy module-scope dependencies (psutil via structured_logging /
-resource_manager) are only paid when an exported name is actually resolved
-through ``__getattr__``.
+time, so heavy module-scope dependencies (e.g. psutil in
+runtime_safety.resource_manager) are only paid when an exported name is
+actually resolved through ``__getattr__``.
 
-Source modules:
-- logging_utils: Re-export facade over utils/logging/logging_utils.py (centralized, correlation-aware logging system)
-- argument_utils: Streamlined argument parsing and validation
-- resource_manager: Memory and resource usage tracking
-- error_recovery: Error context, severity, and recovery management (S2-33 Step 7
-  concern package errors/)
-- pipeline_monitor: Pipeline health reporting
-- pipeline_validator: Pre-execution prerequisite checker (step output validation)
-- dependency_validator: Comprehensive dependency validation
-- config_loader: YAML configuration loading and validation (active config system)
-  (S2-33 Step 7 concern package config_io/, together with io_utils,
-  code_metrics, and path_utils)
-- performance_tracking: Operation timing and performance metrics
-- base_processor: Abstract base class for standardized step processors
-- venv_utils: Virtual environment path helpers
-- system_utils: System information gathering
-- testing: Test runner, categories, stages, and coverage targets (S2-33 concern
-  package)
-- pipeline: Pipeline utility exports
-- error_handling: Structured error handler, categories, and recovery strategies
-  (S2-33 Step 7 concern package errors/)
-- structured_logging: Structured log emission with correlation context
+Concern packages (name homes):
+- arguments: argument parsing, step configuration, path conversion
+- config_io: YAML configuration loading/validation, batch file I/O, code metrics, path formatting
+- errors: error handling, recovery, and exit codes
+- logging: centralized, correlation-aware logging (public entry: the
+  ``gnn.utils.logging_utils`` facade)
+- observability: structured logging, performance tracking, visual logging
+- pipeline: pipeline utility exports (RecoveryArgumentParser, output-dir helpers)
+- pipeline_orchestration: base processor, health monitor, script template,
+  step validators, step dependencies
+- runtime_safety: dependency validation, resource limits, timeouts, safe eval
+- system_env: system info, venv paths, matplotlib backend setup
+- testing: test runner, categories, stages, coverage targets
 """
 
 from typing import TYPE_CHECKING, Any

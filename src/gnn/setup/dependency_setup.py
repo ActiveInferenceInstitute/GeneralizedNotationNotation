@@ -44,7 +44,7 @@ def install_jax_and_test(verbose: bool = False) -> bool:
     """
     Ensure JAX, Optax, Flax, and pymdp 1.x work in the project venv.
 
-    Runs :mod:`utils.jax_stack_validation` (JIT, vmap, XLA sync, Optax, Flax, pymdp Agent API).
+    Runs :mod:`gnn.utils.runtime_safety.jax_stack_validation` (JIT, vmap, XLA sync, Optax, Flax, pymdp Agent API).
     On failure, attempts ``uv sync`` with configured extras once, then re-probes.
     """
 

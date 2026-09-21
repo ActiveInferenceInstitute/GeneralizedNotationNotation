@@ -8,13 +8,40 @@ check. Extracted from ``execute.processor``.
 """
 
 import logging
+import os
 import subprocess  # nosec B404
 from pathlib import Path
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from .types import ScriptExecutionContext
 
 logger = logging.getLogger(__name__)
+
+GKSWSTYPE_VAR = "GKSwstype"
+
+#: GR workspace type that renders headlessly (no gksqt Qt window): rendered
+#: scripts may plot via Plots.jl/GR, and without it GR spawns the Qt window
+#: process, which hangs indefinitely on display-less hosts (CI, agents).
+GKSWSTYPE_HEADLESS = "100"
+
+
+def julia_subprocess_env(
+    overrides: Optional[Dict[str, str]] = None,
+) -> Dict[str, str]:
+    """Build the environment for one Julia subprocess.
+
+    Parent environment plus the headless GR default ``GKSwstype=100``:
+    forces Plots.jl/GR to render without the ``gksqt`` Qt window, which
+    hangs indefinitely on display-less hosts. A ``GKSwstype`` already
+    present in the caller's environment wins (explicit override).
+    ``overrides`` (e.g. ``{"JULIA_PROJECT": ...}``) apply last and win
+    over both.
+    """
+    env = dict(os.environ)
+    env.setdefault(GKSWSTYPE_VAR, GKSWSTYPE_HEADLESS)
+    if overrides:
+        env.update(overrides)
+    return env
 
 
 def _julia_project_for_framework(framework: str) -> Optional[Path]:
@@ -120,6 +147,7 @@ def check_julia_dependencies(
                 capture_output=True,
                 text=True,
                 timeout=120,
+                env=julia_subprocess_env(),
             )
 
             if result.returncode != 0:

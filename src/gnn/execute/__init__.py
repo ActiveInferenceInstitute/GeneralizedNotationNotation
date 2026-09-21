@@ -46,6 +46,7 @@ FrameworkName = Literal[
 from .doctor import collect_doctor_report
 from .executor import (
     GNNExecutor,
+    clear_execution_cache,
     execute_gnn_model,
     execute_script_safely,
     list_frameworks,
@@ -83,6 +84,7 @@ __all__: list[Any] = [
     "execute_gnn_model",
     "run_simulation",
     "execute_script_safely",
+    "clear_execution_cache",
     # Introspection / planning
     "list_frameworks",
     "plan_execute",

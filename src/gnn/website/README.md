@@ -168,7 +168,7 @@ python src/gnn/main.py --only-steps 20 --verbose
 Stdlib only (`logging`, `pathlib`, `json`, `shutil`, `datetime`, `html`).
 No optional pip extra is required to import or run this module — Jinja2,
 Markdown, and Bleach are **not** used. The orchestrator relies on the core
-`utils.pipeline_template` utility.
+`gnn.utils.pipeline_orchestration.pipeline_template` utility.
 
 ## MCP Tools
 

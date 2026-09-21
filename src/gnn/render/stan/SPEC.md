@@ -35,4 +35,4 @@ stan_nuts_param_budget` (default 1024) and otherwise run L-BFGS MAP
 (`jacobian=True`, validation key `map_converged` instead of `rhat_ok`);
 continuous models always sample NUTS. Writes `simulation_results.json`; exit 0 iff
 `validation.all_valid`. Missing `cmdstanpy` → exit 1 with an install hint
-(Step 12 skips before reaching this via `utils.framework_availability`).
+(Step 12 skips before reaching this via `gnn.utils.runtime_safety.framework_availability`).

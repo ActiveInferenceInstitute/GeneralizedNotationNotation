@@ -7,8 +7,7 @@ correctly. Tests end-to-end pipeline behavior. Does NOT analyze source code.
 
 See also:
 - pipeline/pipeline_validation.py: Static code analysis (checks import patterns, naming)
-- utils/pipeline_validator.py: Pre-execution prerequisite checker (checks step outputs exist)
-- pipeline/pipeline_validator.py: Old import path for this module (emits DeprecationWarning)
+- utils/pipeline_orchestration/pipeline_validator.py: Pre-execution prerequisite checker (checks step outputs exist)
 """
 
 import json
@@ -117,7 +116,9 @@ class PipelineValidator:
                 self.logger.error(f"❌ Probe target missing: {julia_renderer_path}")
 
             # Test pipeline dependency manager
-            dep_manager_path = package_root / "utils/pipeline_dependencies.py"
+            dep_manager_path = (
+                package_root / "utils/pipeline_orchestration/pipeline_dependencies.py"
+            )
             if dep_manager_path.exists():
                 fixes_validation["dependency_handling"] = True
                 self.logger.info("✅ Pipeline dependency manager created")

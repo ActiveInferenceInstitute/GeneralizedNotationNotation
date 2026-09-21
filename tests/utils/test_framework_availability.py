@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Tests for gnn.utils.runtime_safety.framework_availability.
+"""Tests for src/gnn/utils/runtime_safety/framework_availability.py.
 
 Every check is verified against the real interpreter's
 ``importlib.util.find_spec`` results.

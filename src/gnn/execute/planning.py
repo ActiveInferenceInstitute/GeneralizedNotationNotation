@@ -156,7 +156,7 @@ def plan_execute(
 
     Raises:
         ValueError: if ``frameworks`` is rejected by
-          ``utils.validation_schemas.validate_frameworks_arg`` (the same
+          ``gnn.utils.runtime_safety.validation_schemas.validate_frameworks_arg`` (the same
           exception ``process_execute`` catches and converts to ``return
           False``; planners wanting the typed plan instead should catch it).
     """

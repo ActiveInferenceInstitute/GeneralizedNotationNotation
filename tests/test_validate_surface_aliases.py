@@ -1,9 +1,9 @@
-"""v4.0.0 retirement pins: the retired ``validate_gnn*`` aliases are gone.
+"""v4.0.0 retirement pins: the deprecated ``validate_gnn*`` aliases are gone.
 
-The MAJ-05 window (opened 2026-09-11) closed in the v4.0.0 cycle: all ten
-old-name alias defs were deleted and their re-export wiring pruned. Every
-retired name must now be absent from its owning module — re-adding an alias
-(with or without a warning) must fail here.
+The MAJ-05 deprecation window (opened 2026-09-11) closed in the v4.0.0
+cycle: all ten old-name alias defs were deleted and their re-export wiring
+pruned. Every retired name must now be absent from its owning module —
+re-adding an alias (with or without a warning) must fail here.
 """
 
 from __future__ import annotations
@@ -11,7 +11,6 @@ from __future__ import annotations
 import importlib
 
 import pytest
-
 
 RETIRED_ALIASES: list[tuple[str, str]] = [
     # (owning module, retired name)

@@ -295,7 +295,7 @@ for conn in connections:
 ```python
 # src/gnn/main.py → src/gnn/pipeline/execution.py
 def execute_pipeline_step(script_name: str, args: PipelineArguments, logger):
-    cmd = build_step_command_args(  # src/gnn/utils/argument_utils.py:1657
+    cmd = build_step_command_args(  # src/gnn/utils/arguments/arg_parsing.py:991
         script_name.replace(".py", ""),
         args,  # target_dir, output_dir, verbose, ...
         python_executable,

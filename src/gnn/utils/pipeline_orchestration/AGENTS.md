@@ -1,7 +1,8 @@
 # `gnn/utils/pipeline_orchestration/` — agent contract
 
 Concern-package home (S2-33 split; design: `docs/development/utils_split_design.md`).
-New code imports from this package.
+The old top-level module paths under `gnn/utils/` were removed with the
+SC-38 facade takedown — import from this package.
 
 ## Invariants
 

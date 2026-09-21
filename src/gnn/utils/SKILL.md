@@ -14,13 +14,13 @@ Provides shared utility functions, helper modules, and common infrastructure use
 ```bash
 # Utils is a shared library — not run directly but imported by all pipeline steps.
 # Validate pipeline dependencies
-python -c "from utils import validate_pipeline_dependencies; validate_pipeline_dependencies()"
+python -c "from gnn.utils import validate_pipeline_dependencies; validate_pipeline_dependencies()"
 
 # Check optional dependency status
-python -c "from utils import get_dependency_status; print(get_dependency_status())"
+python -c "from gnn.utils import get_dependency_status; print(get_dependency_status())"
 
 # Probe process memory (canonical MB-scale helper)
-python -c "from utils import get_current_memory_usage; print(get_current_memory_usage())"
+python -c "from gnn.utils import get_current_memory_usage; print(get_current_memory_usage())"
 ```
 
 ## Key Modules

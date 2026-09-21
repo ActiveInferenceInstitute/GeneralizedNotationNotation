@@ -16,6 +16,8 @@ on first attribute access (same contract as the top-level ``gnn.utils``
 facade; fixed 2026-09-11).
 
 Cross-family imports go through leaf modules, never through any facade (I5).
+The old top-level paths (``gnn/utils/dependency_validator.py`` etc.) were
+removed with the SC-38 facade takedown; this package is their canonical home.
 """
 
 from importlib import import_module

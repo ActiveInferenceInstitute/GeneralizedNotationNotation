@@ -33,7 +33,7 @@ __all__: list[Any] = [
 
 
 # Keep in sync with src/gnn/execute/processor.py::parse_frameworks_parameter and
-# src/gnn/utils/framework_availability.py::FRAMEWORK_IMPORT_CHECK.
+# src/gnn/utils/runtime_safety/framework_availability.py::FRAMEWORK_IMPORT_CHECK.
 KNOWN_FRAMEWORKS = (
     "pymdp",
     "jax",

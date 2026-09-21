@@ -12,10 +12,11 @@ import sys
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union, cast
+from typing import Any, Dict, List, Optional, Sequence, Union, cast
 
+from .result_cache import ExecutionResultCache, cache_key_for_script
 from .security_gate import check_script_allowed
-from .subprocess_envelope import run_subprocess_envelope
+from .subprocess_envelope import CancelToken, run_subprocess_envelope
 from .types import _EXECUTABLE_SUFFIXES
 
 # Import execution functionality
@@ -94,6 +95,11 @@ from gnn.utils.logging_utils import (
 
 logger = logging.getLogger(__name__)
 
+# Shared execution result cache. Off by default (GNN_EXEC_CACHE opt-in);
+# GNNExecutor and execute_script_safely fall back to it when no explicit
+# cache instance is passed.
+_EXECUTION_RESULT_CACHE = ExecutionResultCache()
+
 FRAMEWORK_DIR_NAMES: tuple[str, ...] = (
     "pymdp",
     "rxinfer",
@@ -141,12 +147,18 @@ class GNNExecutor:
     Main executor for GNN model simulations and scripts.
     """
 
-    def __init__(self, output_dir: Optional[str] = None) -> None:
+    def __init__(
+        self,
+        output_dir: Optional[str] = None,
+        cache: Optional[ExecutionResultCache] = None,
+    ) -> None:
         """
         Initialize the GNN executor.
 
         Args:
             output_dir: Directory for execution outputs
+            cache: Execution result cache for subprocess dispatches
+                (None → shared module-level cache instance)
         """
         if output_dir:
             self.output_dir = Path(output_dir)
@@ -157,6 +169,7 @@ class GNNExecutor:
             )
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.execution_log: list[dict[str, Any]] = []
+        self._cache = cache if cache is not None else _EXECUTION_RESULT_CACHE
 
     def execute_gnn_model(
         self,
@@ -164,6 +177,7 @@ class GNNExecutor:
         execution_type: str = "pymdp",
         options: Optional[Dict[str, Any]] = None,
         timeout: Optional[int] = None,
+        cancel_token: Optional[CancelToken] = None,
     ) -> Dict[str, Any]:
         """
         Execute a GNN model with the specified execution type.
@@ -172,6 +186,8 @@ class GNNExecutor:
             model_path: Path to the GNN model or rendered script
             execution_type: Type of execution (pymdp, rxinfer, discopy, etc.)
             options: Additional execution options
+            cancel_token: Optional cooperative cancellation token threaded
+                into the subprocess dispatches (lean is not cancellable yet)
 
         Returns:
             Dictionary with execution results
@@ -218,19 +234,23 @@ class GNNExecutor:
 
             if execution_type == "pymdp":
                 result = self._execute_pymdp_script(
-                    model_path, options, timeout=timeout
+                    model_path, options, timeout=timeout, cancel_token=cancel_token
                 )
             elif execution_type == "rxinfer":
                 result = self._execute_rxinfer_config(
-                    model_path, options, timeout=timeout
+                    model_path, options, timeout=timeout, cancel_token=cancel_token
                 )
             elif execution_type == "discopy":
                 result = self._execute_discopy_diagram(
-                    model_path, options, timeout=timeout
+                    model_path, options, timeout=timeout, cancel_token=cancel_token
                 )
             elif execution_type == "jax":
-                result = self._execute_jax_script(model_path, options, timeout=timeout)
+                result = self._execute_jax_script(
+                    model_path, options, timeout=timeout, cancel_token=cancel_token
+                )
             elif execution_type == "lean":
+                # verify_document has no cancellation hook yet; threading a
+                # CancelToken through the fep-lean bridge is a follow-up.
                 result = self._execute_lean_verification(
                     model_path, options, timeout=timeout
                 )
@@ -287,7 +307,12 @@ class GNNExecutor:
                     "error": "No model path specified in simulation config",
                 }
 
-            return self.execute_gnn_model(model_path, execution_type, options)
+            return self.execute_gnn_model(
+                model_path,
+                execution_type,
+                options,
+                timeout=simulation_config.get("timeout"),
+            )
 
         except Exception as e:
             return {"success": False, "error": str(e), "error_type": type(e).__name__}
@@ -355,11 +380,38 @@ class GNNExecutor:
             timeout=opts.get("timeout") or timeout or 1800,
         )
 
+    def _dispatch_cache_lookup(
+        self, interpreter: str, content_path: Union[str, Path]
+    ) -> tuple[Optional[str], Optional[Dict[str, Any]]]:
+        """Consult the execution cache before one subprocess dispatch.
+
+        The key covers the exact argv ``[interpreter, content_path]``: the
+        interpreter and the hashed content of the script/config file, with
+        no cwd/env overrides and captured output (the dispatch defaults).
+
+        Returns:
+            (cache_key, cached_envelope); cache_key is None when the cache
+            is disabled, cached_envelope is None on miss.
+        """
+        if not self._cache.enabled:
+            return None, None
+        cache_key = cache_key_for_script(content_path, interpreter=interpreter)
+        return cache_key, self._cache.lookup(cache_key)
+
+    def _store_dispatch_envelope(
+        self, cache_key: Optional[str], envelope: Dict[str, Any]
+    ) -> None:
+        """Store a successful dispatch envelope under its cache key."""
+        if cache_key is not None and envelope.get("success"):
+            self._cache.store(cache_key, envelope)
+
     def _execute_pymdp_script(
         self,
         script_path: str,
         options: Optional[Dict[str, Any]] = None,
         timeout: Optional[int] = None,
+        *,
+        cancel_token: Optional[CancelToken] = None,
     ) -> Dict[str, Any]:
         """Execute a PyMDP script with graceful recovery for tests."""
         script = Path(script_path)
@@ -370,49 +422,87 @@ class GNNExecutor:
                 "stderr": "",
                 "return_code": 0,
             }
-        return run_subprocess_envelope(
-            [sys.executable, script_path], timeout=timeout or 600
+        cache_key, cached = self._dispatch_cache_lookup(sys.executable, script_path)
+        if cached is not None:
+            cached["cache_hit"] = True
+            return cached
+        envelope = run_subprocess_envelope(
+            [sys.executable, script_path],
+            timeout=timeout or 600,
+            cancel_token=cancel_token,
         )
+        self._store_dispatch_envelope(cache_key, envelope)
+        return envelope
 
     def _execute_rxinfer_config(
         self,
         config_path: str,
         options: Optional[Dict[str, Any]] = None,
         timeout: Optional[int] = None,
+        *,
+        cancel_token: Optional[CancelToken] = None,
     ) -> Dict[str, Any]:
         """Execute an RxInfer.jl configuration."""
         # This would typically involve calling Julia
-        return run_subprocess_envelope(
+        cache_key, cached = self._dispatch_cache_lookup("julia", config_path)
+        if cached is not None:
+            cached["cache_hit"] = True
+            return cached
+        envelope = run_subprocess_envelope(
             ["julia", config_path],  # nosec B607 B603
             timeout=timeout or 300,
+            cancel_token=cancel_token,
         )
+        self._store_dispatch_envelope(cache_key, envelope)
+        return envelope
 
     def _execute_discopy_diagram(
         self,
         diagram_path: str,
         options: Optional[Dict[str, Any]] = None,
         timeout: Optional[int] = None,
+        *,
+        cancel_token: Optional[CancelToken] = None,
     ) -> Dict[str, Any]:
         """Execute a DisCoPy diagram."""
-        return run_subprocess_envelope(
+        cache_key, cached = self._dispatch_cache_lookup(sys.executable, diagram_path)
+        if cached is not None:
+            cached["cache_hit"] = True
+            return cached
+        envelope = run_subprocess_envelope(
             [sys.executable, diagram_path],
             timeout=timeout or 300,
+            cancel_token=cancel_token,
         )
+        self._store_dispatch_envelope(cache_key, envelope)
+        return envelope
 
     def _execute_jax_script(
         self,
         script_path: str,
         options: Optional[Dict[str, Any]] = None,
         timeout: Optional[int] = None,
+        *,
+        cancel_token: Optional[CancelToken] = None,
     ) -> Dict[str, Any]:
         """Execute a JAX script."""
-        return run_subprocess_envelope(
+        cache_key, cached = self._dispatch_cache_lookup(sys.executable, script_path)
+        if cached is not None:
+            cached["cache_hit"] = True
+            return cached
+        envelope = run_subprocess_envelope(
             [sys.executable, script_path],
             timeout=timeout or 300,
+            cancel_token=cancel_token,
         )
+        self._store_dispatch_envelope(cache_key, envelope)
+        return envelope
 
     def execute_simulation_from_gnn(
-        self, gnn_file: Union[str, Path], output_dir: Optional[Union[str, Path]] = None
+        self,
+        gnn_file: Union[str, Path],
+        output_dir: Optional[Union[str, Path]] = None,
+        timeout: Optional[int] = None,
     ) -> Dict[str, Any]:
         """Execute a simulation from a GNN file path."""
         gnn_path = Path(gnn_file) if not isinstance(gnn_file, Path) else gnn_file
@@ -422,6 +512,8 @@ class GNNExecutor:
             "execution_type": "pymdp",
             "options": {"output_dir": str(out_dir)},
         }
+        if timeout is not None:
+            sim_cfg["timeout"] = timeout
         return self.run_simulation(sim_cfg)
 
 
@@ -1073,6 +1165,9 @@ def execute_script_safely(
     capture_output: bool = True,
     cwd: Optional[Union[str, Path]] = None,
     env: Optional[Dict[str, str]] = None,
+    args: Optional[Sequence[str]] = None,
+    cancel_token: Optional[CancelToken] = None,
+    cache: Optional[ExecutionResultCache] = None,
 ) -> Dict[str, Any]:
     """Execute a Python script via ``subprocess.run`` with a structured envelope.
 
@@ -1082,11 +1177,20 @@ def execute_script_safely(
 
     Args:
         script_path:    Path to the ``.py`` script to execute.
-        timeout:        Wall-clock timeout in seconds (default ``60``).
+        timeout:        Wall-clock timeout in seconds (default ``3600``).
         capture_output: If True, capture stdout/stderr; otherwise stream to the
                         parent process.
         cwd:            Working directory for the subprocess.
         env:            Environment variables override (merged into ``os.environ``).
+        args:           Extra command-line arguments passed to the script.
+        cancel_token:   Optional cooperative cancellation token; when cancelled
+                        mid-flight the run is group-killed and reported as
+                        ``error_type="Cancelled"``.
+        cache:          Execution result cache; None falls back to the shared
+                        module instance (active only when ``GNN_EXEC_CACHE`` is
+                        truthy or the instance was built with ``enabled=True``).
+                        Successful envelopes are cached; a cache hit short-
+                        circuits before the spawn and is flagged ``cache_hit``.
 
     Returns:
         Dict with keys:
@@ -1103,6 +1207,10 @@ def execute_script_safely(
               found no backend).
             - ``sandbox_mode``/``sandboxed``: GNN_SANDBOX mode and whether the
               command was actually wrapped (set by the shared envelope).
+            - ``cache_hit`` (bool, optional): True when the envelope was served
+              from the execution cache instead of a fresh spawn.
+            - ``cancelled`` (bool): True when the run was cancelled via the
+              cancel token (additive envelope key, False on every other path).
     """
     script = Path(script_path)
     if not script.exists():
@@ -1165,12 +1273,40 @@ def execute_script_safely(
     # Sandboxing (SEC-R2, Step-12 GNN_SANDBOX semantics) lives in the shared
     # envelope: sandbox=True applies the prefix, emits the
     # sandbox_disabled/active receipts, and refuses on require-without-backend.
+    script_args = list(args) if args is not None else []
+    effective_cache = cache if cache is not None else _EXECUTION_RESULT_CACHE
+    cache_key: Optional[str] = None
+    if effective_cache.enabled:
+        # Cache consult happens AFTER the security gate, so gate-blocked
+        # scripts can never be served from (or written into) the cache.
+        cache_key = cache_key_for_script(
+            script,
+            interpreter=sys.executable,
+            args=script_args,
+            cwd=str(cwd) if cwd is not None else None,
+            env_overrides=env,
+            capture_output=capture_output,
+        )
+        cached_envelope = effective_cache.lookup(cache_key)
+        if cached_envelope is not None:
+            cached_envelope["cache_hit"] = True
+            return cached_envelope
+
     envelope = run_subprocess_envelope(
-        [sys.executable, str(script)],
+        [sys.executable, str(script), *script_args],
         timeout=timeout,
         cwd=str(cwd) if cwd is not None else None,
         env=env,
         capture_output=capture_output,
+        cancel_token=cancel_token,
     )
     envelope["script_path"] = str(script)
+    # Failures, timeouts, and cancels are never stored.
+    if cache_key is not None and envelope["success"]:
+        effective_cache.store(cache_key, envelope)
     return envelope
+
+
+def clear_execution_cache() -> int:
+    """Invalidate the shared execution result cache; returns entries removed."""
+    return _EXECUTION_RESULT_CACHE.invalidate()

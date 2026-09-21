@@ -14,7 +14,7 @@ Parameter-source precedence (first non-empty wins):
     3. ``parameters``
 
 Array literals embedded as strings are parsed with
-``utils.safe_eval.safe_literal_eval`` (bounded), never ``eval``.
+``gnn.utils.runtime_safety.safe_eval.safe_literal_eval`` (bounded), never ``eval``.
 """
 
 from __future__ import annotations

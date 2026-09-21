@@ -24,6 +24,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Literal
 
+from gnn.execute.julia_env import julia_subprocess_env
 from gnn.execute.julia_setup import julia_executable  # noqa: E402
 from gnn.execute.subprocess_envelope import (  # noqa: E402
     NEVER_STARTED,
@@ -285,6 +286,7 @@ def _execute_rxinfer(spec: dict[str, Any], fw_dir: Path) -> FrameworkRun:
         timeout=JULIA_TIMEOUT_SECONDS,
         results_path=fw_dir / "simulation_results.json",
         script_path=script_path,
+        env=julia_subprocess_env(),
     )
 
 
@@ -360,6 +362,7 @@ def _execute_activeinference_jl(spec: dict[str, Any], fw_dir: Path) -> Framework
         timeout=JULIA_TIMEOUT_SECONDS,
         results_path=fw_dir / "simulation_results.json",
         script_path=script_path,
+        env=julia_subprocess_env(),
     )
 
 

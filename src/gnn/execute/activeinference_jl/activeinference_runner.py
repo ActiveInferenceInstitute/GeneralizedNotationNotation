@@ -22,6 +22,7 @@ from typing import Any, Dict, List, Optional, Union
 
 logger = logging.getLogger(__name__)
 
+from gnn.execute.julia_env import julia_subprocess_env
 from gnn.execute.julia_setup import is_julia_available
 from gnn.execute.subprocess_envelope import run_subprocess_envelope
 
@@ -68,7 +69,12 @@ def setup_julia_environment(
 
     # Shared canonical envelope (MAJ-10): timeout/OSError/non-zero all land
     # in one structured result, no per-site exception handling.
-    envelope = run_subprocess_envelope(cmd, timeout=1800, cwd=project_dir)
+    envelope = run_subprocess_envelope(
+        cmd,
+        timeout=1800,
+        cwd=project_dir,
+        env=julia_subprocess_env(),
+    )
     if envelope["success"]:
         logger.info("✅ Julia environment setup completed successfully")
         if verbose and envelope["stdout"].strip():
@@ -108,7 +114,12 @@ def _fallback_environment_setup(project_dir: Path) -> bool:
         "-e",
         "using Pkg; Pkg.instantiate()",
     ]
-    envelope = run_subprocess_envelope(instantiate_cmd, timeout=600, cwd=project_dir)
+    envelope = run_subprocess_envelope(
+        instantiate_cmd,
+        timeout=600,
+        cwd=project_dir,
+        env=julia_subprocess_env(),
+    )
 
     if envelope["success"]:
         logger.info("✅ Recovery environment setup completed")
@@ -158,7 +169,12 @@ def _validate_package(project_dir: Path, package_name: str) -> bool:
             "-e",
             f'using {package_name}; println("✅ {package_name} loaded")',
         ]
-        result = run_subprocess_envelope(cmd, timeout=30, cwd=project_dir)
+        result = run_subprocess_envelope(
+            cmd,
+            timeout=30,
+            cwd=project_dir,
+            env=julia_subprocess_env(),
+        )
         return bool(result["success"])
     except Exception:
         return False
@@ -277,12 +293,13 @@ def execute_activeinference_script(
 
     logger.debug(f"Running command: {' '.join(cmd)}")
 
-    # Execute the script (JULIA_PROJECT merged over the parent environment;
-    # 10 minute timeout for script execution)
+    # Headless Julia environment: GKSwstype=100 default (a caller-set
+    # GKSwstype wins) and JULIA_PROJECT merged over the parent
+    # environment; 10 minute timeout for script execution.
     envelope = run_subprocess_envelope(
         cmd,
         timeout=600,
-        env={"JULIA_PROJECT": str(project_dir)},
+        env=julia_subprocess_env({"JULIA_PROJECT": str(project_dir)}),
         cwd=str(project_dir),
     )
 

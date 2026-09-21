@@ -13,7 +13,7 @@ Pipeline orchestration, configuration, and execution utilities.
 - `pipeline_step_template.py` - Template for new steps
 
 ### Validation & Health
-- `pipeline_validator.py` / `pipeline_validation.py` - E2E pipeline validation
+- `pipeline_runtime_validator.py` / `pipeline_validation.py` - E2E pipeline validation
 - `health_check.py` - `run_enhanced_health_check`
 - `verify_pipeline.py` - Pipeline verification
 

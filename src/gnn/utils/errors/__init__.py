@@ -10,7 +10,8 @@ the public names as real objects, not lazily. Both leaves are stdlib-only
 (no module-scope psutil/matplotlib/logging-config side effects), so the
 eager variant carries none of the import-weight risk that forced
 ``runtime_safety``/``observability`` onto PEP 562 resolution. Importing this
-package eagerly imports both leaves. Importing ``gnn.utils`` never
+package eagerly imports both leaves — the same cost the old
+``import gnn.utils.error_handling`` paid. Importing ``gnn.utils`` never
 touches this package (the top-level facade stays lazy through its PEP 562
 map, guarded by tests/tests/test_light_import.py).
 
@@ -25,6 +26,9 @@ Leaf inventory:
   ``get_recovery_manager``)
 
 Cross-family imports go through leaf modules, never through any facade (I5).
+The old top-level paths (``gnn/utils/error_handling.py`` and
+``gnn/utils/error_recovery.py``) were removed with the SC-38 facade takedown;
+this package is their canonical home.
 """
 
 from gnn.utils.errors.error_handling import (

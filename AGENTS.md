@@ -110,7 +110,7 @@ graph TB
 **Numbered Scripts** (`src/gnn/N_module.py`):
 
 - Handle argument parsing via `gnn.utils.arguments.ArgumentParser`
-- Setup logging via `gnn.utils.logging.logging_utils.setup_step_logging`
+- Setup logging via `utils.logging.logging_utils.setup_step_logging`
 - Get output directories via `pipeline.config.get_output_dir_for_script`
 - Call module processing functions from `module/__init__.py`
 - Return standardized exit codes (0=success, 1=error, 2=warning)

@@ -183,7 +183,7 @@ correlation_id = generate_correlation_id()
 - `datetime` - Timestamp generation
 
 ### Internal Dependencies
-- `gnn.utils.pipeline_orchestration.pipeline_template` - Pipeline utilities
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Pipeline template utilities
 
 ---
 

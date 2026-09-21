@@ -5,7 +5,7 @@ GNN package. The repository has two related configuration paths:
 
 - `input/config.yaml` is the pipeline's project configuration file. `src/gnn/main.py`
   loads it automatically when it exists.
-- Command-line arguments are parsed by `src/gnn/utils/arg_parsing.py`. Explicit CLI
+- Command-line arguments are parsed by `src/gnn/utils/arguments/arg_parsing.py`. Explicit CLI
   values take precedence over setup and test defaults read from `input/config.yaml`.
 
 There is no supported project-root `config.yaml`, user-level `~/.gnn/config.yaml`,
@@ -199,5 +199,5 @@ When documentation or code changes the configuration contract, update this page,
 - [Pipeline guide](../pipeline/README.md)
 - [GNN syntax reference](../gnn/reference/gnn_syntax.md)
 - [Unified CLI](../../src/gnn/cli/README.md)
-- [Configuration loader](../../src/gnn/utils/config_loader.py)
-- [Main parser](../../src/gnn/utils/arg_parsing.py)
+- [Configuration loader](../../src/gnn/utils/config_io/config_loader.py)
+- [Main parser](../../src/gnn/utils/arguments/arg_parsing.py)

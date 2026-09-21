@@ -6,7 +6,8 @@ Re-exports the family's public names as real objects (not lazy — design
 §4.3.1). Import-weight note (I1): this package is NOT imported by
 ``import gnn.utils`` — the top-level facade stays lazy through its PEP 562
 map (guarded by tests/tests/test_light_import.py). Importing this package
-eagerly imports every leaf.
+eagerly imports every leaf, which is the same cost the old
+``import gnn.utils.pipeline_monitor`` paid.
 
 The package is deliberately NOT named ``pipeline/`` (risk R1: top-level
 ``gnn.pipeline`` already exists).
@@ -26,8 +27,9 @@ Leaf inventory:
 - execution_utils: ``execute_command_streaming``
 
 Cross-family imports go through leaf modules, never through any facade (I5).
-``gnn/utils/pipeline.py`` remains the self-declared compat entry and now
-delegates its argument imports here.
+The old top-level paths (``gnn/utils/pipeline_monitor.py`` etc.) were removed
+with the SC-38 facade takedown; ``gnn/utils/pipeline.py`` remains the
+self-declared compat entry and now delegates its argument imports here.
 """
 
 from gnn.utils.pipeline_orchestration.base_processor import (

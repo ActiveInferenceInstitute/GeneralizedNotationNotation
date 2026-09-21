@@ -160,7 +160,7 @@ tool.
 Render DAG tiers (output of `resolve_execution_order`) as a human-readable
 multi-line string for logging.
 
-> **Note**: The functions `validate_step_prerequisites`, `validate_pipeline_step_sequence`, and `generate_execution_plan` referenced in earlier documentation versions do not exist as standalone functions. Prerequisite checking is handled by `pipeline/pipeline_validator.py` (an E2E runtime tester) and dependency ordering is in `pipeline/dag.py`.
+> **Note**: The functions `validate_step_prerequisites`, `validate_pipeline_step_sequence`, and `generate_execution_plan` referenced in earlier documentation versions do not exist as standalone functions. Prerequisite checking is handled by `pipeline/pipeline_runtime_validator.py` (an E2E runtime tester) and dependency ordering is in `pipeline/dag.py`.
 
 ### Execution Planning
 
@@ -231,7 +231,7 @@ progress is reported by the per-run `pipeline_execution_summary.json` instead.
 ### Internal Dependencies
 
 - `gnn.utils.arguments` - Argument parsing utilities
-- `utils.logging_utils` - Structured (JSON-L + text) logging helpers
+- `gnn.utils.logging_utils` - Structured (JSON-L + text) logging helpers
 - `gnn.utils.pipeline_orchestration.pipeline_template` - Pipeline template utilities
 
 ---
@@ -246,7 +246,7 @@ and restores the caller environment in `finally`. Canonical summaries retain
 `run_id` on success and failure; `run_hash` remains the stable input/config hash.
 Programmatic top-level calls serialize their environment scopes; parallel step
 execution uses explicit child environments. Other pipeline behavior is configured through
-`input/config.yaml` (loaded by `src/gnn/main.py` via `utils/arg_parsing.py`) and
+`input/config.yaml` (loaded by `src/gnn/main.py` via `gnn.utils.arguments.arg_parsing`) and
 CLI flags.
 
 ### Configuration Files
@@ -376,7 +376,7 @@ output/
 ### Imports From
 
 - `gnn.utils.arguments` - Argument parsing
-- `utils.logging_utils` - Structured logging
+- `gnn.utils.logging_utils` - Structured logging
 - `gnn.utils.pipeline_orchestration.pipeline_template` - Template utilities
 
 ### Imported By

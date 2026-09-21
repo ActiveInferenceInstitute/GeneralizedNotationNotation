@@ -3,7 +3,8 @@
 Concern-package home for the test-harness family, extracted from
 `testing_utils.py` in S2-33 Step 1 (design:
 [`docs/development/utils_split_design.md`](../../../../docs/development/utils_split_design.md)
-§6). New code imports from this package.
+§6). The old module path `gnn/utils/testing_utils.py` was removed with the
+SC-38 facade takedown; new code imports from this package.
 
 ## Layout
 
@@ -36,4 +37,4 @@ Concern-package home for the test-harness family, extracted from
 - [`tests/tests/test_light_import.py`](../../../../tests/tests/test_light_import.py)
   asserts `import gnn.utils` stays light (no psutil/matplotlib).
 - [`tests/utils/test_shared_helpers.py`](../../../../tests/utils/test_shared_helpers.py)
-  pins the shared-helper behavior.
+  pins the concern-package delegation.

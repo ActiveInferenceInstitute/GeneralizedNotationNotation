@@ -1,7 +1,9 @@
 # `gnn/utils/config_io/` — agent contract
 
 Concern-package home (S2-33 split, Step 7 family 2/3; design:
-`docs/development/utils_split_design.md`). New code imports from this package.
+`docs/development/utils_split_design.md`). The old top-level module paths
+under `gnn/utils/` were removed with the SC-38 facade takedown — new code
+imports from this package.
 
 ## Invariants
 

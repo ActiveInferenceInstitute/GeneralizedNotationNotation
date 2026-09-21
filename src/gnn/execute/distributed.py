@@ -6,9 +6,45 @@ Includes robust retry semantics for node failure in external cloud instances.
 """
 
 import logging
+import os
 from typing import Any, Callable, Dict, List, Literal, Optional, cast
 
 logger = logging.getLogger(__name__)
+
+DEFAULT_WAIT_TIMEOUT_SECONDS = 7200
+WAIT_TIMEOUT_ENV = "GNN_DISTRIBUTED_WAIT_TIMEOUT"
+
+
+def _resolve_wait_timeout() -> int:
+    """Resolve the bounded distributed-wait timeout (seconds) from the env."""
+    raw = os.environ.get(WAIT_TIMEOUT_ENV)
+    if raw is None:
+        return DEFAULT_WAIT_TIMEOUT_SECONDS
+    try:
+        wait_timeout = int(raw)
+        if wait_timeout <= 0:
+            raise ValueError(raw)
+    except ValueError:
+        logger.warning(
+            "Invalid %s=%r; using default of %ss.",
+            WAIT_TIMEOUT_ENV,
+            raw,
+            DEFAULT_WAIT_TIMEOUT_SECONDS,
+        )
+        return DEFAULT_WAIT_TIMEOUT_SECONDS
+    return wait_timeout
+
+
+def _wait_timeout_failures(count: int, wait_timeout: int) -> List[Dict[str, Any]]:
+    """Failure records for executions that outlived the distributed wait window."""
+    error = (
+        "Execution did not finish within the distributed wait timeout "
+        f"({wait_timeout}s); raise {WAIT_TIMEOUT_ENV} if a longer window is needed"
+    )
+    return [
+        {"success": False, "error": error, "error_type": "DistributedWaitTimeout"}
+        for _ in range(count)
+    ]
 
 
 class Dispatcher:
@@ -93,6 +129,66 @@ class Dispatcher:
             except Exception as e:  # noqa: BLE001
                 logger.warning("Distributed backend shutdown failed: %s", e)
 
+    def _ray_get_bounded(self, futures: List[Any]) -> List[Any]:
+        """Collect Ray futures under a bounded wait.
+
+        On wait-timeout the outstanding remote tasks are cancelled
+        (recursive — they carry max_retries and would otherwise keep
+        executing) and each reported as a failed execution.
+        """
+        import ray
+
+        wait_timeout = _resolve_wait_timeout()
+        try:
+            return list(ray.get(futures, timeout=wait_timeout))
+        except ray.exceptions.GetTimeoutError:
+            logger.warning(
+                "Ray wait exceeded %ss; cancelling %d outstanding executions.",
+                wait_timeout,
+                len(futures),
+            )
+            for future in futures:
+                try:
+                    ray.cancel(future, recursive=True)
+                except Exception as e:  # noqa: BLE001
+                    logger.warning("Ray cancel failed: %s", e)
+            return list(_wait_timeout_failures(len(futures), wait_timeout))
+
+    def _dask_gather_bounded(self, futures: List[Any]) -> List[Dict[str, Any]]:
+        """Gather Dask futures under a bounded wait.
+
+        On wait-timeout the outstanding futures are cancelled and reported
+        as failed executions; completed results keep their submission order.
+        When dask.distributed is not importable (only possible for
+        non-dask clients — a real dask client has dask installed by
+        definition) the pre-change unbounded gather applies.
+        """
+        try:
+            from dask.distributed import wait as dask_wait
+        except ImportError:
+            dask_wait = None
+        if dask_wait is None:
+            return cast("list[dict[str, Any]]", self.client.gather(futures))
+        wait_timeout = _resolve_wait_timeout()
+        done, not_done = dask_wait(futures, timeout=wait_timeout)
+        if not not_done:
+            return cast("list[dict[str, Any]]", self.client.gather(futures))
+        logger.warning(
+            "Dask wait exceeded %ss; cancelling %d outstanding executions.",
+            wait_timeout,
+            len(not_done),
+        )
+        for future in not_done:
+            try:
+                future.cancel()
+            except Exception as e:  # noqa: BLE001
+                logger.warning("Dask cancel failed: %s", e)
+        gathered = dict(zip(done, self.client.gather(list(done))))
+        return [
+            gathered.get(fut, _wait_timeout_failures(1, wait_timeout)[0])
+            for fut in futures
+        ]
+
     def run_scripts_parallel(
         self, script_infos: List[Dict[str, Any]], execute_fn: Callable, **kwargs: Any
     ) -> List[Dict[str, Any]]:
@@ -119,7 +215,7 @@ class Dispatcher:
                 return execute_fn(script_info, **kwargs_dict)
 
             futures = [_remote_execute.remote(info, kwargs) for info in script_infos]
-            return cast("list[dict[str, Any]]", ray.get(futures))
+            return cast("list[dict[str, Any]]", self._ray_get_bounded(futures))
 
         elif self.backend == "dask":
             futures = [
@@ -131,7 +227,7 @@ class Dispatcher:
                 )
                 for info in script_infos
             ]
-            return cast("list[dict[str, Any]]", self.client.gather(futures))
+            return self._dask_gather_bounded(futures)
 
         return []
 
@@ -158,13 +254,13 @@ class Dispatcher:
                 return model_fn(**params)
 
             futures = [_remote_eval.remote(p) for p in param_grid]
-            return cast("list[Any]", ray.get(futures))
+            return self._ray_get_bounded(futures)
 
         elif self.backend == "dask":
             futures = [
                 self.client.submit(model_fn, retries=self.max_retries, **p)
                 for p in param_grid
             ]
-            return cast("list[Any]", self.client.gather(futures))
+            return cast("list[Any]", self._dask_gather_bounded(futures))
 
         return []

@@ -83,7 +83,7 @@ success = run_tests(
 
 #### `TestRunner`
 **Description**: Single-source pytest runner class: resource monitoring, subprocess execution, output parsing, and execution reports.
-**Defined in**: [`infrastructure/test_runner.py`](infrastructure/test_runner.py) — the canonical copy. [`runner.py`](runner.py) re-exports it so `from tests.runner import TestRunner` keeps resolving to the same class. Do not define a second copy.
+**Defined in**: [`infrastructure/test_runner.py`](infrastructure/test_runner.py) — the canonical copy. [`runner.py`](runner.py) re-exports it so `from tests.runner import TestRunner` (used by `src/gnn/utils/testing/`) keeps resolving to the same class. Do not define a second copy.
 
 #### `run_fast_pipeline_tests(logger, output_dir, verbose=False) -> bool`
 **Description**: Run fast test suite for quick pipeline validation
@@ -179,7 +179,7 @@ errors = _extract_collection_errors(pytest_stdout, pytest_stderr)
 
 ### Test Settings
 ```python
-TEST_CONFIG = {  # src/gnn/utils/testing/constants.py (abridged)
+TEST_CONFIG = {  # src/gnn/utils/testing/ (abridged)
     "safe_mode": True,
     "verbose": False,
     "strict": False,
@@ -191,7 +191,7 @@ TEST_CONFIG = {  # src/gnn/utils/testing/constants.py (abridged)
 
 ### Test Categories
 ```python
-TEST_CATEGORIES = {  # src/gnn/utils/testing/constants.py - category -> description
+TEST_CATEGORIES = {  # src/gnn/utils/testing/ - category -> description
     "fast": "Quick validation tests for core functionality",
     "standard": "Integration tests and moderate complexity",
     "slow": "Complex scenarios and benchmarks",
@@ -403,11 +403,11 @@ flowchart TD
 - Re-exports the canonical `TestRunner` from `infrastructure/test_runner.py`
 - Re-exports the execution modes from `test_runner_modes.py` and `create_test_runner` from `test_runner_modular.py`
 
-**testing/ family** (Shared Utilities):
-- Provides test fixtures and helper functions
-- Defines test categories and markers
+**`gnn.utils.testing` package** (Shared Utilities):
+- Provides test fixtures and helper functions (`testing/` concern package: constants, environment, fixtures, reports, runner)
+- Defines test categories, stages, and coverage targets
 - Provides test data creation utilities
-- Used by both test files and runner
+- Used by both test files and the runner (the old top-level `testing_utils.py` facade was removed when the SC-38 window closed)
 
 **conftest.py** (Pytest Fixtures):
 - Defines pytest fixtures for all tests

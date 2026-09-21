@@ -7,7 +7,7 @@ The `utils` module provides standardized infrastructure for the GNN pipeline, in
 ## Core Components
 
 ### 1. logging_utils.py + observability/structured_logging.py
-Logging facade (`logging_utils.py`) and structured pipeline logging with correlation tracking (`observability/structured_logging.py`). The structured logger decorates lifecycle events with status markers in the log output.
+Logging facade and structured pipeline logging with correlation tracking. The structured logger decorates lifecycle events with status markers in the log output.
 
 **Functions (facade):**
 - `log_step_start(logger, msg)` - Log step start (rocket marker in structured output)
@@ -28,7 +28,7 @@ Abstract base class for standardized processing patterns.
 **Factory:**
 - `create_processor(step_name, process_func)` - Wrap simple functions
 
-### 3. arguments/ (arg_parsing, arg_definitions, step_config, ...)
+### 3. arguments/ (arg_parsing.py, arg_definitions.py, step_config.py)
 Argument parsing and validation: `ArgumentParser.parse_step_arguments`, `build_step_command_args`, `audit_step_contracts`, shared `STEP_ARGUMENTS` and `StepConfiguration`. Recovery defaults come from the shared `fallback_default_for` table (`_FALLBACK_DEFAULTS`); `StepConfiguration.validate_step_args` accepts an injectable `project_root`.
 
 ### 4. config_io/config_loader.py
