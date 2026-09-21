@@ -69,6 +69,7 @@ _FRAMEWORK_REMEDIATIONS: dict[str, str] = {
     "discopy": "Add discopy: uv add discopy",
     "jax": "Add jax: uv add jax jaxlib",
     "pymdp": "Add pymdp: uv add pymdp",
+    "ngclearn": "Add ngclearn: uv sync --extra ngclearn",
 }
 
 

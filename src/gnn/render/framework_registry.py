@@ -31,6 +31,7 @@ FRAMEWORK_REGISTRY: Mapping[str, Dict[str, Any]] = MappingProxyType(
             "available": True,
             "supports_execution": True,
             "supports_continuous": False,
+            "continuous_only": False,
             "unavailable_reason": None,
         },
         "rxinfer": {
@@ -53,6 +54,7 @@ FRAMEWORK_REGISTRY: Mapping[str, Dict[str, Any]] = MappingProxyType(
             "available": True,
             "supports_execution": True,
             "supports_continuous": True,
+            "continuous_only": False,
             "unavailable_reason": None,
         },
         "activeinference_jl": {
@@ -75,6 +77,7 @@ FRAMEWORK_REGISTRY: Mapping[str, Dict[str, Any]] = MappingProxyType(
             "available": True,
             "supports_execution": True,
             "supports_continuous": False,
+            "continuous_only": False,
             "unavailable_reason": None,
         },
         "jax": {
@@ -97,6 +100,7 @@ FRAMEWORK_REGISTRY: Mapping[str, Dict[str, Any]] = MappingProxyType(
             "available": True,
             "supports_execution": True,
             "supports_continuous": True,
+            "continuous_only": False,
             "unavailable_reason": None,
         },
         "discopy": {
@@ -123,6 +127,7 @@ FRAMEWORK_REGISTRY: Mapping[str, Dict[str, Any]] = MappingProxyType(
             # reported unsupported rather than drawn as a discrete stand-in.
             "supports_execution": True,
             "supports_continuous": False,
+            "continuous_only": False,
             "unavailable_reason": None,
         },
         "pytorch": {
@@ -145,6 +150,7 @@ FRAMEWORK_REGISTRY: Mapping[str, Dict[str, Any]] = MappingProxyType(
             "available": True,
             "supports_execution": True,
             "supports_continuous": True,
+            "continuous_only": False,
             "unavailable_reason": None,
         },
         "numpyro": {
@@ -163,6 +169,7 @@ FRAMEWORK_REGISTRY: Mapping[str, Dict[str, Any]] = MappingProxyType(
             "available": True,
             "supports_execution": True,
             "supports_continuous": True,
+            "continuous_only": False,
             "unavailable_reason": None,
         },
         "stan": {
@@ -181,6 +188,7 @@ FRAMEWORK_REGISTRY: Mapping[str, Dict[str, Any]] = MappingProxyType(
             "available": True,
             "supports_execution": True,
             "supports_continuous": True,
+            "continuous_only": False,
             "unavailable_reason": None,
         },
         "bnlearn": {
@@ -207,6 +215,37 @@ FRAMEWORK_REGISTRY: Mapping[str, Dict[str, Any]] = MappingProxyType(
             # absent (`gnn.utils.runtime_safety.framework_availability`).
             "supports_execution": True,
             "supports_continuous": False,
+            "continuous_only": False,
+            "unavailable_reason": None,
+        },
+        "ngclearn": {
+            "name": "ngc-learn",
+            "description": "ngc-learn predictive-processing neural simulation backend",
+            "language": "Python",
+            "file_extension": ".py",
+            "supported_features": [
+                "Predictive Processing",
+                "Neuromorphic Simulation",
+                "JAX Backend",
+            ],
+            "function": "render_gnn_to_ngclearn",
+            "output_format": "python",
+            "pomdp_compatible": True,
+            "requires_matrices": [],
+            "optional_matrices": ["F", "H", "Q", "R", "prior_mean", "prior_cov"],
+            "supports_multi_modality": True,
+            "supports_multi_factor": True,
+            "available": True,
+            # Codegen-only renderer (pytorch precedent): the generated script
+            # imports ngclearn, never the renderer. Execution skips without
+            # the `ngclearn` extra (`uv sync --extra ngclearn`, py3.12 marker;
+            # `gnn.utils.runtime_safety.framework_availability`).
+            "supports_execution": True,
+            "supports_continuous": True,
+            # Continuous-only backend: no discrete A/B/C/D[/E] machinery
+            # exists in ngc-learn — discrete POMDPs are first-class
+            # unsupported (see pomdp_processor compatibility validation).
+            "continuous_only": True,
             "unavailable_reason": None,
         },
     }
@@ -253,6 +292,7 @@ def get_pomdp_framework_configs() -> Dict[str, Dict[str, Any]]:
             "supports_multi_factor": bool(spec["supports_multi_factor"]),
             "supports_execution": bool(spec.get("supports_execution", True)),
             "supports_continuous": bool(spec.get("supports_continuous", False)),
+            "continuous_only": bool(spec.get("continuous_only", False)),
             "name": spec["name"],
         }
         for name, spec in FRAMEWORK_REGISTRY.items()
