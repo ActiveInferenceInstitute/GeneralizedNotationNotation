@@ -168,6 +168,12 @@ def nonroot_posix_ready() -> bool:
     return os.name == "posix" and (not hasattr(os, "geteuid") or os.geteuid() != 0)
 
 
+@functools.lru_cache(maxsize=1)
+def posix_ready() -> bool:
+    """Running on a POSIX platform (process-group kill requirement)."""
+    return os.name == "posix"
+
+
 # Registered ``needs_*`` marker -> (availability probe, skip reason).
 # Every key MUST be registered in pytest.ini ``markers``; the pairing is
 # pinned by ``tests/test_zero_skip_contracts.py``.
@@ -205,6 +211,7 @@ TOOLCHAIN_MARKERS: dict[str, tuple[Callable[[], bool], str]] = {
         nonroot_posix_ready,
         "permission-based probe tests need a non-root POSIX user",
     ),
+    "needs_posix": (posix_ready, "POSIX platform required (process-group kill)"),
 }
 
 # A marker that implies a weaker sibling gets both markers auto-applied, so
