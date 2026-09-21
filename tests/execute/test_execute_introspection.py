@@ -26,6 +26,7 @@ EXPECTED_FRAMEWORKS = {
     "jax",
     "numpyro",
     "pytorch",
+    "ngclearn",
     "lean",
 }
 

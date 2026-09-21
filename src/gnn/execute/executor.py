@@ -77,6 +77,18 @@ except ImportError:
     run_pytorch_scripts = cast(Any, None)
 
 try:
+    from .ngclearn.ngclearn_runner import is_ngclearn_available, run_ngclearn_scripts
+
+    # Runtime probe (lean precedent): the runner module imports on every
+    # python split, but ngclearn itself is a marker-gated extra (py3.12+).
+    # The flag must reflect the importability probe so an absent runtime
+    # yields a SKIPPED record, never a runner failure.
+    NGCLEARN_AVAILABLE = is_ngclearn_available()
+except ImportError:
+    NGCLEARN_AVAILABLE = False
+    run_ngclearn_scripts = cast(Any, None)
+
+try:
     from .lean.lean_runner import lean_toolchain_available, run_lean_scripts
 
     LEAN_AVAILABLE = lean_toolchain_available()
@@ -108,6 +120,7 @@ FRAMEWORK_DIR_NAMES: tuple[str, ...] = (
     "jax",
     "numpyro",
     "pytorch",
+    "ngclearn",
     "lean",
 )
 
@@ -714,6 +727,26 @@ def _framework_specs() -> tuple[ExecutorFrameworkSpec, ...]:
             warning_log_prefix="PyTorch script execution failed",
         ),
         ExecutorFrameworkSpec(
+            framework_dir_key="ngclearn",
+            result_key="ngclearn_executions",
+            available=NGCLEARN_AVAILABLE,
+            runner=run_ngclearn_scripts,
+            operation_name="execute_ngclearn_scripts",
+            start_message="🚀 Executing ngc-learn scripts...",
+            success_message="ngc-learn scripts executed successfully",
+            failure_message="ngc-learn script execution failed",
+            unavailable_log=(
+                "ℹ️ ngc-learn framework not available - skipping ngc-learn execution "
+                "(install with: uv sync --extra ngclearn)"
+            ),
+            unavailable_message=(
+                "ngc-learn framework not installed "
+                "(optional dependency - install with: uv sync --extra ngclearn)"
+            ),
+            success_log="ngc-learn script execution completed",
+            warning_log_prefix="ngc-learn script execution failed",
+        ),
+        ExecutorFrameworkSpec(
             framework_dir_key="lean",
             result_key="lean_executions",
             available=LEAN_AVAILABLE,
@@ -1031,6 +1064,12 @@ def _write_execution_report(
             "PyTorch Executions",
             execution_results["pytorch_executions"],
             "PyTorch Scripts",
+        )
+        _write_framework_report_section(
+            f,
+            "ngc-learn Executions",
+            execution_results["ngclearn_executions"],
+            "ngc-learn Scripts",
         )
         _write_framework_report_section(
             f,
