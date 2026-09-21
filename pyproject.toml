@@ -34,7 +34,7 @@ dependencies = [
     # Core scientific computing (lightweight)
     "numpy>=2.0",
     "matplotlib>=3.9.0",  # 3.9.x is the first series compatible with numpy>=2.0
-    "networkx>=2.6.0",
+    "networkx>=3.6.1",
     "pyyaml>=6.0",
     # scipy and scikit-learn moved to ml-ai optional group (all uses are deferred imports)
     # System monitoring and utilities
@@ -71,7 +71,7 @@ dependencies = [
     "discopy>=1.1.0",
     # Interactive visualization (Step 9 advanced viz Plotly dashboards; steps 8/16)
     "pandas>=2.0",
-    "plotly>=5.15.0",
+    "plotly>=6.7.0",
     "seaborn>=0.12.0",
     "h5py>=3.8.0",
 ]
@@ -99,7 +99,7 @@ api = [
 # torch>=2.13.0 resolves GHSA-rrmf-rvhw-rf47.
 ml-ai = [
     "transformers>=5.10.0",  # GHSA-xrqw-3rrv-vx5w (save_pretrained path traversal)
-    "scipy>=1.7.0",
+    "scipy>=1.17.1",
     "scikit-learn>=1.0.0",
 ]
 
@@ -176,7 +176,7 @@ all = [
 
     # Machine Learning & AI
     "transformers>=5.10.0",  # GHSA-xrqw-3rrv-vx5w (save_pretrained path traversal)
-    "scipy>=1.7.0",
+    "scipy>=1.17.1",
     "scikit-learn>=1.0.0",
 
     # API server
