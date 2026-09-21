@@ -52,6 +52,7 @@ from gnn.api.pipeline_runner import (  # noqa: E402,I001
     read_pipeline_summary,
 )
 from gnn.api.rate_limit import rate_limit_middleware  # noqa: E402,I001
+from gnn.api.parity import register_parity_routes  # noqa: E402,I001
 from gnn.api.responses import APIEnvelope, install_exception_handlers, success_envelope
 
 # ── In-memory run store ──────────────────────────────────────────────────────────
@@ -76,7 +77,7 @@ if FASTAPI_AVAILABLE:
         _app = FastAPI(
             title="GNN Pipeline API",
             description="Pipeline-as-a-Service for Generalized Notation Notation",
-            version="3.2.0",
+            version=MODULE_VERSION,
             docs_url="/docs",
             redoc_url="/redoc",
         )
@@ -98,10 +99,12 @@ if FASTAPI_AVAILABLE:
         # when authentication is disabled (e.g. localhost research use).
         _app.middleware("http")(rate_limit_middleware)
         install_exception_handlers(_app)
+        # CLI-parity surface: identical routes on both FastAPI factories.
+        register_parity_routes(_app)
 
         # ── Endpoints ────────────────────────────────────────────────────────
 
-        @_app.get("/api/v1/health", response_model=APIEnvelope)
+        @_app.get("/api/v1/health", response_model=APIEnvelope, tags=["Meta"])
         async def health() -> APIEnvelope:
             """Health check with renderer availability."""
             response = RunHealthResponse(
@@ -113,7 +116,7 @@ if FASTAPI_AVAILABLE:
             )
             return success_envelope(response.model_dump(mode="json"), endpoint="health")
 
-        @_app.post("/api/v1/run", response_model=APIEnvelope)
+        @_app.post("/api/v1/run", response_model=APIEnvelope, tags=["Runs"])
         async def submit_run(
             request: RunRequest, background_tasks: BackgroundTasks
         ) -> APIEnvelope:
@@ -189,7 +192,7 @@ if FASTAPI_AVAILABLE:
                 deduplicated=False,
             )
 
-        @_app.get("/api/v1/runs/{run_hash}", response_model=APIEnvelope)
+        @_app.get("/api/v1/runs/{run_hash}", response_model=APIEnvelope, tags=["Runs"])
         async def get_run(run_hash: str) -> APIEnvelope:
             """Get status of a pipeline run."""
             entry = runs[_find_run_key(run_hash, runs)]
@@ -210,7 +213,7 @@ if FASTAPI_AVAILABLE:
                 run_hash=run_hash,
             )
 
-        @_app.get("/api/v1/runs/{run_hash}/report")
+        @_app.get("/api/v1/runs/{run_hash}/report", tags=["Runs"])
         async def get_report(run_hash: str) -> "PlainTextResponse":
             """Download PIPELINE_REPORT.md for a completed run."""
             entry = runs[_find_run_key(run_hash, runs)]
@@ -222,7 +225,9 @@ if FASTAPI_AVAILABLE:
                 report_path.read_text(encoding="utf-8"), media_type="text/markdown"
             )
 
-        @_app.delete("/api/v1/runs/{run_hash}", response_model=APIEnvelope)
+        @_app.delete(
+            "/api/v1/runs/{run_hash}", response_model=APIEnvelope, tags=["Runs"]
+        )
         async def delete_run(run_hash: str) -> APIEnvelope:
             """Remove a run record from the in-memory store (housekeeping).
 
@@ -242,7 +247,7 @@ if FASTAPI_AVAILABLE:
                 run_hash=key,
             )
 
-        @_app.get("/api/v1/runs/{run_hash}/stream")
+        @_app.get("/api/v1/runs/{run_hash}/stream", tags=["Runs"])
         async def stream_events(run_hash: str) -> "StreamingResponse":
             """Server-Sent Events stream for real-time pipeline progress."""
             entry = runs[_find_run_key(run_hash, runs)]
@@ -273,7 +278,7 @@ if FASTAPI_AVAILABLE:
                 headers={"Cache-Control": "no-cache", "Connection": "keep-alive"},
             )
 
-        @_app.get("/api/v1/runs", response_model=APIEnvelope)
+        @_app.get("/api/v1/runs", response_model=APIEnvelope, tags=["Runs"])
         async def list_runs() -> APIEnvelope:
             """List all known runs."""
             summary = {

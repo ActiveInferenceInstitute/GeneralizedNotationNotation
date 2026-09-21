@@ -3,8 +3,11 @@
 GNN Language Server — Minimal LSP server for GNN file diagnostics.
 
 Provides:
-  - textDocument/didOpen + didSave → diagnostics (section validation, parse errors)
+  - textDocument/didOpen + didSave → diagnostics (section validation, parse
+    errors, matrix-dimension cross-validation, unknown section headers)
   - textDocument/hover → variable info (dimensions, type)
+  - textDocument/completion → GNN vocabulary completions (shared pygls-free
+    vocabulary module: gnn.lsp.completions)
 
 Requires `pygls` package. Falls back gracefully when not installed.
 """
@@ -12,6 +15,7 @@ Requires `pygls` package. Falls back gracefully when not installed.
 from typing import Any, cast
 
 from gnn import __version__
+from gnn.schemas.section_contract import CANONICAL_GNN_SECTIONS
 
 FEATURES: dict[str, Any] = {
     "diagnostics": True,
@@ -31,9 +35,13 @@ logger = logging.getLogger(__name__)
 # Check for pygls availability
 try:
     from lsprotocol.types import (
+        TEXT_DOCUMENT_COMPLETION,
         TEXT_DOCUMENT_DID_OPEN,
         TEXT_DOCUMENT_DID_SAVE,
         TEXT_DOCUMENT_HOVER,
+        CompletionItem,
+        CompletionItemKind,
+        CompletionParams,
         Diagnostic,
         DiagnosticSeverity,
         DidOpenTextDocumentParams,
@@ -43,6 +51,7 @@ try:
         MarkupContent,
         MarkupKind,
         Position,
+        PublishDiagnosticsParams,
         Range,
     )
 
@@ -96,6 +105,12 @@ def create_server() -> Any:
         doc = server.workspace.get_text_document(params.text_document.uri)
         return _get_hover(doc.source, params.position)
 
+    @server.feature(TEXT_DOCUMENT_COMPLETION)
+    def completion(params: CompletionParams) -> Any:
+        """Offer GNN vocabulary completions at the cursor position."""
+        doc = server.workspace.get_text_document(params.text_document.uri)
+        return _get_completions(doc.source, params.position)
+
     return server
 
 
@@ -113,6 +128,7 @@ def _publish_diagnostics(server: Any, uri: str, content: str) -> None:
         from gnn.schema import (
             parse_connections,
             parse_state_space,
+            validate_matrix_dimensions,
             validate_required_sections,
         )
 
@@ -130,7 +146,7 @@ def _publish_diagnostics(server: Any, uri: str, content: str) -> None:
                     ),
                     message=str(err),
                     severity=DiagnosticSeverity.Error,
-                    source="gnn-lsp",
+                    source="gnn",
                 )
             )
 
@@ -146,7 +162,7 @@ def _publish_diagnostics(server: Any, uri: str, content: str) -> None:
                     ),
                     message=str(err),
                     severity=DiagnosticSeverity.Warning,
-                    source="gnn-lsp",
+                    source="gnn",
                 )
             )
 
@@ -164,7 +180,28 @@ def _publish_diagnostics(server: Any, uri: str, content: str) -> None:
                     ),
                     message=str(err),
                     severity=DiagnosticSeverity.Warning,
-                    source="gnn-lsp",
+                    source="gnn",
+                )
+            )
+
+        # Matrix-dimension cross-validation (GNN-E002 errors and GNN-W003
+        # undeclared-parameterization warnings, by the error's severity).
+        for err in validate_matrix_dimensions(content, variables, file_path=file_path):
+            line = _extract_line(err)
+            severity = (
+                DiagnosticSeverity.Warning
+                if getattr(err, "severity", "error") == "warning"
+                else DiagnosticSeverity.Error
+            )
+            diagnostics.append(
+                Diagnostic(
+                    range=Range(
+                        start=Position(line=max(0, line - 1), character=0),
+                        end=Position(line=max(0, line - 1), character=100),
+                    ),
+                    message=str(err),
+                    severity=severity,
+                    source="gnn",
                 )
             )
 
@@ -181,8 +218,43 @@ def _publish_diagnostics(server: Any, uri: str, content: str) -> None:
             )
         )
 
-    server.publish_diagnostics(uri, diagnostics)
+    # Unknown `## ` section headers — header normalization mirrors
+    # MarkdownGNNParser._split_into_sections (strip -> "## " -> [3:].strip()).
+    for line_no, raw_line in enumerate(content.splitlines(), start=1):
+        stripped = raw_line.strip()
+        if not stripped.startswith("## "):
+            continue
+        header = stripped[3:].strip()
+        if header in CANONICAL_GNN_SECTIONS:
+            continue
+        diagnostics.append(
+            Diagnostic(
+                range=Range(
+                    start=Position(line=line_no - 1, character=0),
+                    end=Position(line=line_no - 1, character=len(stripped)),
+                ),
+                message=f"Unknown section header '{header}'",
+                severity=DiagnosticSeverity.Warning,
+                source="gnn",
+            )
+        )
+
+    _publish_to_server(server, uri, diagnostics)
     logger.debug(f"Published {len(diagnostics)} diagnostics for {uri}")
+
+
+def _publish_to_server(server: Any, uri: str, diagnostics: List[Any]) -> None:
+    """Publish diagnostics across pygls generations.
+
+    pygls 1.x exposes ``publish_diagnostics(uri, diagnostics)``; pygls 2.x
+    renamed it to ``text_document_publish_diagnostics(PublishDiagnosticsParams)``
+    and removed the 1.x name, so probe for the 2.x API first.
+    """
+    publish_v2 = getattr(server, "text_document_publish_diagnostics", None)
+    if publish_v2 is not None:
+        publish_v2(PublishDiagnosticsParams(uri=uri, diagnostics=diagnostics))
+    else:
+        server.publish_diagnostics(uri, diagnostics)
 
 
 def _get_hover(content: str, position: Any) -> Optional[Any]:
@@ -227,6 +299,40 @@ def _get_hover(content: str, position: Any) -> Optional[Any]:
         logger.debug(f"Hover info unavailable: {e}")
 
     return None
+
+
+def _get_completions(content: str, position: Any) -> Optional[List[Any]]:
+    """Build completion items for the GNN vocabulary at a cursor position.
+
+    Thin adapter over the shared pygls-free vocabulary module
+    ``gnn.lsp.completions`` — the same source the CLI server serves.
+    """
+    if not PYGLS_AVAILABLE:
+        return None
+
+    try:
+        from gnn.lsp.completions import completion_context, context_completions
+
+        line_prefix, in_model_parameters, in_gnn_section = completion_context(
+            content, position.line, position.character
+        )
+        items = context_completions(
+            line_prefix,
+            in_model_parameters=in_model_parameters,
+            in_gnn_section=in_gnn_section,
+        )
+        return [
+            CompletionItem(
+                label=item["label"],
+                kind=CompletionItemKind(item["kind"]),
+                detail=item["detail"],
+                insert_text=item["insert_text"],
+            )
+            for item in items
+        ]
+    except (ImportError, ValueError, AttributeError) as e:
+        logger.debug(f"Completion info unavailable: {e}")
+        return None
 
 
 def _word_at_position(line: str, char: int) -> Optional[str]:
