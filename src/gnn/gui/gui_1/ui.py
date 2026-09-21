@@ -1,6 +1,6 @@
-"""Provides helper functions: _dimension_count, build_gui.
+"""Provides helper functions: _dimension_count, build_gui, parse_dims_csv.
 
-Public functions: _dimension_count, build_gui
+Public functions: _dimension_count, build_gui, parse_dims_csv
 """
 
 from __future__ import annotations
@@ -20,6 +20,7 @@ except Exception:
 from .markdown import (
     add_component_to_markdown,
     add_state_space_entry,
+    parse_components_from_markdown,
     parse_state_space_from_markdown,
     remove_component_from_markdown,
     remove_state_space_entry,
@@ -32,6 +33,33 @@ def _dimension_count(item: dict[str, object]) -> int:
     """Handle dimension count for internal callers."""
     dims = item.get("dims", [])
     return len(dims) if isinstance(dims, list) else 0
+
+
+def parse_dims_csv(raw: str) -> tuple[list[int], str | None]:
+    """Parse a comma-separated dimensions string into integers.
+
+    Returns ``(dims, None)`` on success. Empty or whitespace-only input yields
+    ``([], None)``. If any token is not a non-empty decimal integer, returns
+    ``([], message)`` where the message starts with "❌", repeats the raw
+    input verbatim, and names every offending token.
+    """
+    if not raw or not raw.strip():
+        return [], None
+    dims: list[int] = []
+    invalid: list[str] = []
+    for token in raw.split(","):
+        token = token.strip()
+        if token.isdecimal():
+            dims.append(int(token))
+        else:
+            invalid.append(token)
+    if invalid:
+        offenders = ", ".join(repr(t) for t in invalid)
+        message = (
+            f"❌ Invalid dimensions input: '{raw}' — invalid token(s): {offenders}"
+        )
+        return [], message
+    return dims, None
 
 
 def build_gui(
@@ -134,7 +162,7 @@ def build_gui(
                     save_button = gr.Button(
                         "💾 Save Markdown", variant="primary", scale=2
                     )
-                    gr.Button("📄 Export Model", variant="secondary")
+                    export_button = gr.Button("📄 Export Model", variant="secondary")
             with gr.Column(scale=2):
                 gr.Markdown("### 📝 Live GNN Markdown Editor")
                 markdown_editor = gr.Code(
@@ -148,7 +176,9 @@ def build_gui(
                 model_stats = gr.JSON(
                     label="📊 Model Statistics",
                     value={
-                        "components": 1,
+                        "components": len(
+                            parse_components_from_markdown(markdown_text)
+                        ),
                         "state_entries": len(initial_items),
                         "total_states": sum(
                             _dimension_count(item) for item in initial_items
@@ -160,65 +190,85 @@ def build_gui(
             """Handle split states for internal callers."""
             return [x.strip() for x in s.split(",") if x.strip()]
 
-        def add_component(md: str, name: str, ctype: str, states_csv: str) -> str:
+        def add_component(
+            md: str, name: str, ctype: str, states_csv: str
+        ) -> tuple[str, str]:
             """Provide add component behavior."""
-            return add_component_to_markdown(md, name, ctype, _split_states(states_csv))
+            try:
+                new_md = add_component_to_markdown(
+                    md, name, ctype, _split_states(states_csv)
+                )
+            except (ValueError, TypeError, KeyError, IndexError) as e:
+                return md, f"❌ {e}"
+            return new_md, ""
 
-        def replace_states(md: str, name: str, states_csv: str) -> str:
+        def replace_states(md: str, name: str, states_csv: str) -> tuple[str, str]:
             """Provide replace states behavior."""
-            return update_component_states(
-                md, name, _split_states(states_csv), mode="replace"
-            )
+            try:
+                new_md = update_component_states(
+                    md, name, _split_states(states_csv), mode="replace"
+                )
+            except (ValueError, TypeError, KeyError, IndexError) as e:
+                return md, f"❌ {e}"
+            return new_md, ""
 
-        def append_states(md: str, name: str, states_csv: str) -> str:
+        def append_states(md: str, name: str, states_csv: str) -> tuple[str, str]:
             """Provide append states behavior."""
-            return update_component_states(
-                md, name, _split_states(states_csv), mode="append"
-            )
+            try:
+                new_md = update_component_states(
+                    md, name, _split_states(states_csv), mode="append"
+                )
+            except (ValueError, TypeError, KeyError, IndexError) as e:
+                return md, f"❌ {e}"
+            return new_md, ""
 
-        def remove_component(md: str, name: str) -> str:
+        def remove_component(md: str, name: str) -> tuple[str, str]:
             """Provide remove component behavior."""
-            return remove_component_from_markdown(md, name)
+            try:
+                new_md = remove_component_from_markdown(md, name)
+            except (ValueError, TypeError, KeyError, IndexError) as e:
+                return md, f"❌ {e}"
+            return new_md, ""
 
         def save_md(md: str) -> Any:
             """Save md."""
-            with tempfile.NamedTemporaryFile(
-                mode="w", encoding="utf-8", dir=export_path.parent, delete=False
-            ) as tmp_f:
-                tmp_f.write(md)
-            os.replace(tmp_f.name, str(export_path))
-            if logger:
-                logger.info(f"📄 Model saved to {export_path}")
-            save_message = f"✅ **Saved Successfully**\n\nFile: `{export_path}`\nSize: {len(md)} characters"
-
-            # Calculate updated statistics
-            items = parse_state_space_from_markdown(md)
-            stats: dict[str, Any] = {
-                "components": len(
-                    [
-                        line
-                        for line in md.split("\n")
-                        if "name:" in line and "type:" in line
-                    ]
-                ),
-                "state_entries": len(items),
-                "total_states": sum(_dimension_count(item) for item in items),
-                "file_size_chars": len(md),
-                "last_saved": datetime.now().strftime("%H:%M:%S"),
-            }
-
-            return save_message, "🟢 **Status**: Model saved successfully", stats
+            try:
+                with tempfile.NamedTemporaryFile(
+                    mode="w", encoding="utf-8", dir=export_path.parent, delete=False
+                ) as tmp_f:
+                    tmp_f.write(md)
+                os.replace(tmp_f.name, str(export_path))
+                if logger:
+                    logger.info(f"📄 Model saved to {export_path}")
+                save_message = (
+                    f"✅ **Saved Successfully**\n\n"
+                    f"File: `{export_path}`\nSize: {len(md)} characters"
+                )
+                # Calculate updated statistics
+                items = parse_state_space_from_markdown(md)
+                stats: dict[str, Any] = {
+                    "components": len(parse_components_from_markdown(md)),
+                    "state_entries": len(items),
+                    "total_states": sum(_dimension_count(item) for item in items),
+                    "file_size_chars": len(md),
+                    "last_saved": datetime.now().strftime("%H:%M:%S"),
+                }
+            except (ValueError, TypeError, KeyError, IndexError) as e:
+                return gr.update(), gr.update(), gr.update(), f"❌ {e}"
+            return save_message, "🟢 **Status**: Model saved successfully", stats, ""
 
         # Status messages and save functionality
         save_status = gr.Markdown(
             "💾 **Ready to save**: Use the save button to export your model"
         )
 
+        validation_output = gr.Markdown("")
+
         # Component management event handlers
         add_button.click(
             add_component,
             inputs=[markdown_editor, component_name, component_type, state_list],
-            outputs=[markdown_editor],
+            outputs=[markdown_editor, validation_output],
         ).then(
             lambda: "🟡 **Status**: Component added - remember to save your changes",
             outputs=[status_display],
@@ -227,7 +277,7 @@ def build_gui(
         replace_states_button.click(
             replace_states,
             inputs=[markdown_editor, component_name, state_list],
-            outputs=[markdown_editor],
+            outputs=[markdown_editor, validation_output],
         ).then(
             lambda: "🟡 **Status**: States replaced - remember to save your changes",
             outputs=[status_display],
@@ -236,7 +286,7 @@ def build_gui(
         append_states_button.click(
             append_states,
             inputs=[markdown_editor, component_name, state_list],
-            outputs=[markdown_editor],
+            outputs=[markdown_editor, validation_output],
         ).then(
             lambda: "🟡 **Status**: States appended - remember to save your changes",
             outputs=[status_display],
@@ -245,7 +295,7 @@ def build_gui(
         remove_button.click(
             remove_component,
             inputs=[markdown_editor, component_name],
-            outputs=[markdown_editor],
+            outputs=[markdown_editor, validation_output],
         ).then(
             lambda: "🟡 **Status**: Component removed - remember to save your changes",
             outputs=[status_display],
@@ -255,7 +305,14 @@ def build_gui(
         save_button.click(
             save_md,
             inputs=[markdown_editor],
-            outputs=[save_status, status_display, model_stats],
+            outputs=[save_status, status_display, model_stats, validation_output],
+        )
+
+        # Export shares the same save path as the Save button
+        export_button.click(
+            save_md,
+            inputs=[markdown_editor],
+            outputs=[save_status, status_display, model_stats, validation_output],
         )
 
         # State Space actions
@@ -268,30 +325,49 @@ def build_gui(
             """Provide refresh states behavior."""
             return gr.update(choices=_compute_state_choices(md))
 
-        def add_state(md: str, name: str, dims_csv: str, typ: str, comment: str) -> Any:
+        def add_state(
+            md: str, name: str, dims_csv: str, typ: str, comment: str
+        ) -> tuple[str, str]:
             """Provide add state behavior."""
-            dims = [int(x.strip()) for x in dims_csv.split(",") if x.strip().isdigit()]
-            return add_state_space_entry(md, name, dims, typ or None, comment or None)
+            try:
+                dims, dims_error = parse_dims_csv(dims_csv)
+                if dims_error:
+                    return md, dims_error
+                new_md = add_state_space_entry(
+                    md, name, dims, typ or None, comment or None
+                )
+            except (ValueError, TypeError, KeyError, IndexError) as e:
+                return md, f"❌ {e}"
+            return new_md, ""
 
         def update_state(
             md: str, selected: str, name: str, dims_csv: str, typ: str, comment: str
-        ) -> Any:
+        ) -> tuple[str, str]:
             """Update state."""
-            dims = [int(x.strip()) for x in dims_csv.split(",") if x.strip().isdigit()]
-            return update_state_space_entry(
-                md,
-                selected or name,
-                name or (selected or ""),
-                dims,
-                typ or None,
-                comment or None,
-            )
+            try:
+                dims, dims_error = parse_dims_csv(dims_csv)
+                if dims_error:
+                    return md, dims_error
+                new_md = update_state_space_entry(
+                    md,
+                    selected or name,
+                    name or (selected or ""),
+                    dims,
+                    typ or None,
+                    comment or None,
+                )
+            except (ValueError, TypeError, KeyError, IndexError) as e:
+                return md, f"❌ {e}"
+            return new_md, ""
 
-        def remove_state(md: str, selected: str) -> Any:
+        def remove_state(md: str, selected: str) -> tuple[str, str]:
             """Provide remove state behavior."""
-            if not selected:
-                return md
-            return remove_state_space_entry(md, selected)
+            try:
+                if not selected:
+                    return md, ""
+                return remove_state_space_entry(md, selected), ""
+            except (ValueError, TypeError, KeyError, IndexError) as e:
+                return md, f"❌ {e}"
 
         st_refresh.click(
             refresh_states, inputs=[markdown_editor], outputs=[state_entries]
@@ -302,7 +378,7 @@ def build_gui(
         st_add.click(
             add_state,
             inputs=[markdown_editor, st_name, st_dims, st_type, st_comment],
-            outputs=[markdown_editor],
+            outputs=[markdown_editor, validation_output],
         )
         st_update.click(
             update_state,
@@ -314,12 +390,12 @@ def build_gui(
                 st_type,
                 st_comment,
             ],
-            outputs=[markdown_editor],
+            outputs=[markdown_editor, validation_output],
         )
         st_remove.click(
             remove_state,
             inputs=[markdown_editor, state_entries],
-            outputs=[markdown_editor],
+            outputs=[markdown_editor, validation_output],
         )
 
         def populate_fields(md: str, selected: str) -> Any:
@@ -346,20 +422,25 @@ def build_gui(
             md: str, selected: str, name: str, dims_csv: str, typ: str, comment: str
         ) -> Any:
             """Update state live."""
-            dims = [int(x.strip()) for x in dims_csv.split(",") if x.strip().isdigit()]
-            new_md = update_state_space_entry(
-                md,
-                selected or name,
-                name or (selected or ""),
-                dims,
-                typ or None,
-                comment or None,
-            )
-            choices = _compute_state_choices(new_md)
-            new_selected = name or (
-                selected if selected in choices else (choices[0] if choices else "")
-            )
-            return new_md, gr.update(choices=choices, value=new_selected)
+            try:
+                dims, dims_error = parse_dims_csv(dims_csv)
+                if dims_error:
+                    return md, gr.update(), dims_error
+                new_md = update_state_space_entry(
+                    md,
+                    selected or name,
+                    name or (selected or ""),
+                    dims,
+                    typ or None,
+                    comment or None,
+                )
+                choices = _compute_state_choices(new_md)
+                new_selected = name or (
+                    selected if selected in choices else (choices[0] if choices else "")
+                )
+            except (ValueError, TypeError, KeyError, IndexError) as e:
+                return md, gr.update(), f"❌ {e}"
+            return new_md, gr.update(choices=choices, value=new_selected), ""
 
         st_name.change(
             update_state_live,
@@ -371,7 +452,7 @@ def build_gui(
                 st_type,
                 st_comment,
             ],
-            outputs=[markdown_editor, state_entries],
+            outputs=[markdown_editor, state_entries, validation_output],
         )
         st_dims.change(
             update_state_live,
@@ -383,7 +464,7 @@ def build_gui(
                 st_type,
                 st_comment,
             ],
-            outputs=[markdown_editor, state_entries],
+            outputs=[markdown_editor, state_entries, validation_output],
         )
         st_type.change(
             update_state_live,
@@ -395,7 +476,7 @@ def build_gui(
                 st_type,
                 st_comment,
             ],
-            outputs=[markdown_editor, state_entries],
+            outputs=[markdown_editor, state_entries, validation_output],
         )
         st_comment.change(
             update_state_live,
@@ -407,7 +488,7 @@ def build_gui(
                 st_type,
                 st_comment,
             ],
-            outputs=[markdown_editor, state_entries],
+            outputs=[markdown_editor, state_entries, validation_output],
         )
 
     return demo

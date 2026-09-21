@@ -247,7 +247,7 @@ class TestRunnerPlumbing:
         assert not thread.is_alive()
         assert len(calls) == 1
         assert calls[0]["server_port"] == 7865
-        assert calls[0]["server_name"] == "0.0.0.0"  # nosec B104
+        assert calls[0]["server_name"] == "127.0.0.1"
         assert calls[0]["inbrowser"] is False
 
 

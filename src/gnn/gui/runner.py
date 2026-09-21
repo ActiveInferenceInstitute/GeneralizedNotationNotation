@@ -22,7 +22,7 @@ _LAUNCHED_SERVER_THREADS_LOCK = threading.Lock()
 
 
 def launch_gradio_in_thread(
-    demo: Any, *, port: int, open_browser: bool
+    demo: Any, *, port: int, open_browser: bool, server_name: str = "127.0.0.1"
 ) -> threading.Thread:
     """Launch a Gradio Blocks app on a daemon background thread.
 
@@ -36,7 +36,7 @@ def launch_gradio_in_thread(
         demo.launch(
             share=False,
             prevent_thread_lock=False,  # Let the thread block on the server
-            server_name="0.0.0.0",  # nosec B104
+            server_name=server_name,
             server_port=port,
             inbrowser=open_browser,
             show_error=True,
