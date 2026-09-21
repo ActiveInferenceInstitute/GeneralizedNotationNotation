@@ -156,7 +156,7 @@ gnn_model = convert_mermaid_file_to_gnn(
 ### Internal Dependencies
 
 - `gnn.processing.processor` - GNN file parsing and discovery
-- `utils.pipeline_template` - Standardized pipeline processing
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Standardized pipeline processing
 - `pipeline.config` - Configuration management
 
 ---
@@ -370,7 +370,7 @@ print(f"   Connections: {len(gnn_model['connections'])}")
 
 - `gnn.processing.processor` - GNN file parsing
 - `ontology.processor` - Ontology validation
-- `utils.pipeline_template` - Standardized processing
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Standardized processing
 
 ### Imported By
 

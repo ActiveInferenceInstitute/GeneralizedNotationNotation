@@ -27,8 +27,8 @@ Leaf inventory:
 - execution_utils: ``execute_command_streaming``
 
 Cross-family imports go through leaf modules, never through any facade (I5).
-The old top-level paths (``gnn/utils/pipeline_monitor.py`` etc.) are
-deprecation facades over this package; ``gnn/utils/pipeline.py`` remains the
+The old top-level paths (``gnn/utils/pipeline_monitor.py`` etc.) were removed
+with the SC-38 facade takedown; ``gnn/utils/pipeline.py`` remains the
 self-declared compat entry and now delegates its argument imports here.
 """
 

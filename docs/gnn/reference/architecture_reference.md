@@ -80,7 +80,7 @@ import sys
 from pathlib import Path
 
 # Thin orchestrator: delegates to module
-from utils.pipeline_template import create_standardized_pipeline_script
+from gnn.utils.pipeline_orchestration.pipeline_template import create_standardized_pipeline_script
 from visualization import process_visualization  # ← Core implementation
 
 run_script = create_standardized_pipeline_script(
@@ -295,7 +295,7 @@ for conn in connections:
 ```python
 # src/gnn/main.py → src/gnn/pipeline/execution.py
 def execute_pipeline_step(script_name: str, args: PipelineArguments, logger):
-    cmd = build_step_command_args(  # src/gnn/utils/argument_utils.py:1657
+    cmd = build_step_command_args(  # src/gnn/utils/arguments/arg_parsing.py:991
         script_name.replace(".py", ""),
         args,  # target_dir, output_dir, verbose, ...
         python_executable,
@@ -309,11 +309,11 @@ Each step is invoked as a subprocess and receives the common flags
 ### Standardized I/O and State Management
 
 Step scripts do not wire up logging or output paths by hand. They are built by
-`create_standardized_pipeline_script` (`src/gnn/utils/pipeline_template.py`), which
+`create_standardized_pipeline_script` (`src/gnn/utils/pipeline_orchestration/pipeline_template.py`), which
 supplies the logger and the resolved output directory:
 
 ```python
-from utils.pipeline_template import create_standardized_pipeline_script
+from gnn.utils.pipeline_orchestration.pipeline_template import create_standardized_pipeline_script
 
 run = create_standardized_pipeline_script(
     "3_gnn.py",

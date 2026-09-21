@@ -114,9 +114,10 @@ src/
 ├── ontology/                # Ontology processing
 │   ├── processor.py         # Core processing
 │   └── act_inf_ontology_terms.json # Ontology data
-├── utils/                   # Shared utilities
-│   ├── argument_utils.py    # CLI/pipeline argument model
-│   └── pipeline_template.py # Thin orchestrator wrapper
+├── utils/                   # Shared utilities (S2-33/SC-38 concern packages:
+│                            #   arguments/, config_io/, errors/, observability/,
+│                            #   pipeline_orchestration/, runtime_safety/,
+│                            #   system_env/, testing/, logging/, mcp/)
 └── tests/                   # pytest source files, mirrored by module
 ```
 
@@ -165,7 +166,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Setup logging for standalone
-    from utils.logging.logging_utils import setup_standalone_logging
+    from gnn.utils.logging.logging_utils import setup_standalone_logging
 
     setup_standalone_logging(
         level=logging.DEBUG if args.verbose else logging.INFO, logger_name=__name__

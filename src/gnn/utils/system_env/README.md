@@ -2,8 +2,8 @@
 
 Concern-package home (S2-33 Step 7, family 1/3; design:
 [`docs/development/utils_split_design.md`](../../../../docs/development/utils_split_design.md)).
-The old `gnn/utils/<module>.py` paths are DeprecationWarning facades — import
-from this package. Layout, invariants (frozen `_EXPORT_MAP` values, guarded
+The old `gnn/utils/<module>.py` paths were removed with the SC-38 facade
+takedown — import from this package. Layout, invariants (frozen `_EXPORT_MAP` values, guarded
 optional-dependency probes, eager family re-exports per §4.3.1), and gating
 tests are listed in [`AGENTS.md`](AGENTS.md).
 

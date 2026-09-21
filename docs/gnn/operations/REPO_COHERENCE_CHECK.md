@@ -217,7 +217,7 @@ def generate_matrix_heatmap(data):
 
 ```python
 # ✅ CORRECT: Thin orchestrator delegating to module
-from utils.pipeline_template import create_standardized_pipeline_script
+from gnn.utils.pipeline_orchestration.pipeline_template import create_standardized_pipeline_script
 from visualization import process_visualization
 
 run_script = create_standardized_pipeline_script(
@@ -247,22 +247,22 @@ if __name__ == "__main__":
 - [ ] **Path Management**: Uses `pathlib.Path` objects, not string paths
 - [ ] **Output Directory**: Uses `get_output_dir_for_script()` from `pipeline.config`
 - [ ] **Configuration**: Uses `get_pipeline_config()` for centralized configuration
-- [ ] **Visual Logging**: Uses `utils.visual_logging` for progress indicators and status messages
-- [ ] **Error Recovery**: Uses `utils.error_recovery` for graceful degradation
-- [ ] **Resource Management**: Uses `utils.resource_manager` for memory tracking
+- [ ] **Visual Logging**: Uses `gnn.utils.observability.visual_logging` for progress indicators and status messages
+- [ ] **Error Recovery**: Uses `gnn.utils.errors.error_recovery` for graceful degradation
+- [ ] **Resource Management**: Uses `gnn.utils.runtime_safety.resource_manager` for memory tracking
 
 #### Import Pattern Validation
 
 **Correct Import Pattern**:
 
 ```python
-from utils.pipeline_template import (
+from gnn.utils.pipeline_orchestration.pipeline_template import (
     setup_step_logging,
     log_step_start,
     log_step_success,
     log_step_error,
 )
-from utils.argument_utils import ArgumentParser
+from gnn.utils.arguments import ArgumentParser
 from pipeline.config import get_output_dir_for_script, get_pipeline_config
 ```
 
@@ -429,13 +429,13 @@ def process_with_error_handling(target_dir: Path, output_dir: Path) -> bool:
 - [ ] **Memory Management**: Large objects cleaned up when no longer needed
 - [ ] **Connection Management**: Network connections closed properly
 - [ ] **Context Managers**: Use `with` statements for resource management
-- [ ] **Memory Tracking**: Use `utils.resource_manager` for memory monitoring
+- [ ] **Memory Tracking**: Use `gnn.utils.runtime_safety.resource_manager` for memory monitoring
 
 #### Resource Management Pattern
 
 ```python
 from pathlib import Path
-from utils.resource_manager import get_current_memory_usage
+from gnn.utils.runtime_safety.resource_manager import get_current_memory_usage
 
 
 def process_with_resource_management(target_dir: Path) -> bool:
@@ -466,7 +466,7 @@ def process_with_resource_management(target_dir: Path) -> bool:
 #### P3.5 File Parsing Validation Checklist
 
 - [ ] **Timing**: Operations timed using `time.time()` or `time.perf_counter()`
-- [ ] **Memory Tracking**: Memory usage tracked using `utils.resource_manager`
+- [ ] **Memory Tracking**: Memory usage tracked using `gnn.utils.runtime_safety.resource_manager`
 - [ ] **Performance Logging**: Performance metrics logged appropriately
 - [ ] **Performance Reports**: Performance data included in output reports
 
@@ -673,7 +673,7 @@ Each AGENTS.md should include:
 - [Dependency 2]
 
 ### Internal Dependencies
-- `utils.pipeline_template` - Pipeline utilities
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Pipeline utilities
 
 ---
 
@@ -1075,7 +1075,7 @@ import numpy as np
 import pandas as pd
 
 # Local imports
-from utils.pipeline_template import setup_step_logging
+from gnn.utils.pipeline_orchestration.pipeline_template import setup_step_logging
 from pipeline.config import get_output_dir_for_script
 from module.processor import process_module
 ```
@@ -1325,7 +1325,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from utils.pipeline_template import (
+from gnn.utils.pipeline_orchestration.pipeline_template import (
     setup_step_logging,
     log_step_start,
     log_step_success,

@@ -145,7 +145,7 @@ None. HTML/Markdown generation is pure Python string templating.
 
 ### Internal Dependencies
 
-- `utils.pipeline_template` - Standardized pipeline processing
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Standardized pipeline processing
 - `pipeline.config` - Configuration management
 - Submodules: `analyzer.py` (pipeline data collection), `formatters.py` (HTML/Markdown section rendering), `generator.py` (report file writers), `pipeline_report.py` (per-step status/timing/artifact sections), `diff_report.py` (run-to-run comparison), `model_family.py`, `semantic_fidelity.py`, `cross_framework_reliability.py` (ledger markdown renderers)
 
@@ -258,7 +258,7 @@ output/23_report_output/
 
 ### Imports From
 
-- `utils.pipeline_template` - Standardized processing patterns
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Standardized processing patterns
 - `pipeline.config` - Configuration management
 
 ### Imported By

@@ -137,7 +137,7 @@ success = process_security(
 - `requests` - External security service integration
 
 ### Internal Dependencies
-- `utils.pipeline_template` - Pipeline utilities
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Pipeline utilities
 
 ---
 
@@ -310,7 +310,7 @@ output/18_security_output/
 - **Function**: `process_security()`
 
 ### Imports From
-- `utils.pipeline_template` - Pipeline utilities
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Pipeline utilities
 
 ### Imported By
 - All pipeline steps requiring security validation

@@ -356,7 +356,7 @@ python src/gnn/2_tests.py --comprehensive --verbose
 
 ## Test Utilities
 
-### Shared Test Utilities (`src/gnn/utils/testing_utils.py`)
+### Shared Test Utilities (`src/gnn/utils/testing/`)
 
 - `TEST_CATEGORIES` - Test category definitions
 - `TEST_STAGES` - Test execution stages
@@ -541,7 +541,7 @@ Example test file structure:
 
 import pytest
 from pathlib import Path
-from gnn.utils.testing_utils import create_sample_gnn_content, assert_file_exists
+from gnn.utils.testing import create_sample_gnn_content, assert_file_exists
 
 
 @pytest.mark.fast

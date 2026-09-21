@@ -11,7 +11,6 @@ src/gnn/pipeline/
 ├── AGENTS.md                      # Agent scaffolding documentation
 ├── config.py                      # Pipeline configuration management
 ├── pipeline_validation.py        # Pipeline validation utilities
-├── pipeline_validator.py         # Pipeline validator
 ├── pipeline_step_template.py    # Pipeline step template
 ├── health_check.py               # Pipeline health checker
 ├── diagnostic_enhancer.py        # Diagnostic enhancement
@@ -184,7 +183,7 @@ Renders DAG tiers as a human-readable multi-line string.
 The canonical `STEPS` list (25 `StepInfo` entries) with lookups `step_for_name`,
 `step_for_stem`, tag filters `get_core_steps()` / `get_llm_steps()`, and stage
 definitions in `STAGE_DEFINITIONS`. Step-level prerequisites are validated by
-`pipeline/pipeline_validator.py`; there are no `register_step` / `get_step_status`
+`gnn.utils.pipeline_orchestration.pipeline_validator`; there are no `register_step` / `get_step_status`
 / `reset_step` runtime registration APIs — steps are declared in `STEPS`.
 
 ## Usage Examples
@@ -220,7 +219,7 @@ status = get_pipeline_status()
 
 ```python
 from gnn.pipeline.dag import find_circular_dependencies, resolve_execution_order
-from gnn.utils.pipeline_step_dependencies import PIPELINE_STEP_DEPENDENCIES
+from gnn.utils.pipeline_orchestration.pipeline_step_dependencies import PIPELINE_STEP_DEPENDENCIES
 
 # Resolve tiers over the canonical dependency table
 tiers = resolve_execution_order(dict(PIPELINE_STEP_DEPENDENCIES))
@@ -287,7 +286,7 @@ Real configuration lives in `input/config.yaml` (testing matrix, `pipeline.skip_
 LLM settings) plus `PipelineConfig` defaults in `pipeline/config.py`
 (`timeout: 3600`, `retries: 3`, `parallel: True`). The illustrative dicts that
 previously appeared here are not literal schema — check `pipeline/config.py`
-and `utils/arg_parsing.py` for the accepted keys.
+and `gnn.utils.arguments.arg_parsing` for the accepted keys.
 
 ## Error Handling
 

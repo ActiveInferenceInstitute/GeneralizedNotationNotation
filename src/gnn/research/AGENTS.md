@@ -97,7 +97,7 @@ Standard library only (`json`, `logging`, `re`, `pathlib`) — imports are uncon
 - LLM provider (Ollama / OpenAI-compatible) - opportunistic LLM-powered hypothesis enrichment; skipped entirely without one
 
 ### Internal Dependencies
-- `utils.pipeline_template` - Pipeline utilities
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Pipeline utilities
 - `llm.llm_processor` - Optional LLM hypothesis generation
 
 ---
@@ -175,7 +175,7 @@ output/19_research_output/
 - **Function**: `process_research()`
 
 ### Imports From
-- `utils.pipeline_template` - Pipeline utilities
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Pipeline utilities
 
 ### Imported By
 - `tests/research/*` - Research tests

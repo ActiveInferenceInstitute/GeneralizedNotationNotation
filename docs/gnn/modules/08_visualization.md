@@ -125,7 +125,7 @@ success = process_visualization(
 - `graphviz` - Graph layout and rendering
 
 ### Internal Dependencies
-- `utils.pipeline_template` - Pipeline utilities
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Pipeline utilities
 
 ---
 
@@ -250,7 +250,7 @@ output/8_visualization_output/
 - **Function**: `process_visualization()` ([core/process.py](../../../src/gnn/visualization/core/process.py))
 
 ### Imports From
-- `utils.pipeline_template` - Pipeline utilities
+- `gnn.utils.pipeline_orchestration.pipeline_template` - Pipeline utilities
 
 ### Imported By
 - `advanced_visualization` - Advanced visualization module

@@ -8,7 +8,7 @@ Python program under `<model>/bnlearn/` (`import bnlearn as bn` +
 `bn.make_DAG` + `bn.parameter_learning.fit`). Step 12 discovers it like any
 other Python framework script (framework directory `bnlearn/`, output env var
 `BNLEARN_OUTPUT_DIR`) and runs it; the shared pre-flight probe
-(`utils.framework_availability`, mapping `bnlearn` → `bnlearn`) marks scripts
+(`gnn.utils.runtime_safety.framework_availability`, mapping `bnlearn` → `bnlearn`) marks scripts
 **skipped** when the module is absent.
 
 ## Language handling
@@ -33,7 +33,7 @@ The execution lane is derived from each emitted file's suffix, never assumed:
 
 ## Dependency gating
 
-`utils.framework_availability` maps `bnlearn` → `bnlearn`
+`gnn.utils.runtime_safety.framework_availability` maps `bnlearn` → `bnlearn`
 (`uv sync --extra bnlearn`). Python-lane scripts skip with that hint; R-lane
 scripts skip when Rscript or the R package is absent. Subprocess execution
 uses the shared `run_subprocess_envelope` (timeout + `GNN_SANDBOX` semantics,

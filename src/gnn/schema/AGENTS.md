@@ -41,7 +41,7 @@ the semantic-fidelity pipeline.
 
 - Stdlib only at module scope (`ast`, `logging`, `re`, `collections.abc`,
   `dataclasses`, `typing`) — headless-importable by design.
-- Lazy inside function bodies: `gnn.utils.safe_eval.safe_literal_eval`,
+- Lazy inside function bodies: `gnn.utils.runtime_safety.safe_eval.safe_literal_eval`,
   `jsonschema` (optional).
 
 ## Testing
