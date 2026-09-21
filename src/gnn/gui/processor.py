@@ -15,11 +15,13 @@ from __future__ import annotations
 
 import html
 import logging
+import time
 from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any, TypedDict
 
 from .backend import write_json_atomically, write_text_atomically
+from .runner import interactive_servers_running
 
 logger = logging.getLogger(__name__)
 
@@ -125,9 +127,10 @@ def process_gui(
         **kwargs: Additional processing options
             - logger: Optional caller-provided logger (honored when passed)
             - gui_types: List of GUI types to run (default: gui_1, gui_2)
-            - headless: Run in headless mode (default: True for pipeline)
-            - interactive: Launch interactive GUI servers (overrides headless)
-            - open_browser: Whether to open browser for interactive GUIs
+            - headless: Derived as ``not interactive`` — every non-interactive
+              run is headless (explicit ``headless=True`` stays headless).
+            - interactive: Launch interactive GUI servers and, once any is
+              live, keep the process serving until they stop (CLI behavior).
 
     Returns:
         Boolean indicating success of all GUI runs
@@ -145,17 +148,16 @@ def process_gui(
     if verbose:
         logger.setLevel(logging.DEBUG)
 
-    # Handle interactive vs headless mode
-    interactive = kwargs.get("interactive", False)
+    # Derive headless from interactive: interactive wins (launches servers);
+    # every other combination runs headless. The pipeline step config and the
+    # 22_gui CLI both default headless=False, so headless must be derived —
+    # a literal ``headless=False`` default would silently force interactive.
+    interactive = bool(kwargs.get("interactive", False))
+    kwargs["headless"] = not interactive
     if interactive:
-        kwargs["headless"] = False
         logger.info("🎮 Running in INTERACTIVE mode - will launch GUI servers")
     else:
-        kwargs["headless"] = kwargs.get("headless", True)
-        if kwargs["headless"]:
-            logger.info(
-                "📦 Running in HEADLESS mode - generating artifacts only (fast)"
-            )
+        logger.info("📦 Running in HEADLESS mode - generating artifacts only (fast)")
 
     # Determine which GUIs to run
     gui_types = normalize_gui_types(kwargs.get("gui_types"))
@@ -238,6 +240,21 @@ def process_gui(
 
         # Generate HTML navigation page for all outputs
         _generate_navigation_page(output_dir, logger)
+
+        # Keep the process alive while interactive servers are serving: the
+        # launcher threads are daemons, so without this gate ``--interactive``
+        # would exit right after the runner returns. Gated strictly on
+        # liveness, so gradio-less runs never block.
+        if interactive and interactive_servers_running():
+            logger.info(
+                "🖥️ Interactive GUI server(s) running - waiting for them to "
+                "stop (Ctrl+C to exit)"
+            )
+            try:
+                while interactive_servers_running():
+                    time.sleep(0.5)
+            except KeyboardInterrupt:
+                logger.info("Interactive session interrupted; shutting down")
 
         return overall_success
 
