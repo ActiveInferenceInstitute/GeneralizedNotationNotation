@@ -101,7 +101,7 @@ def run_gui(
 
             # Generate status artifact
             write_json_atomically(
-                output_root / "gui_status.json",
+                output_root / "gui_2_status.json",
                 {
                     "backend": _GUI_BACKEND or "none",
                     "launched": False,
@@ -157,7 +157,7 @@ def run_gui(
 
         # Record launch status
         write_json_atomically(
-            output_root / "gui_status.json",
+            output_root / "gui_2_status.json",
             {
                 "backend": _GUI_BACKEND,
                 "launched": True,

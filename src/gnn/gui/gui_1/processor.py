@@ -113,7 +113,7 @@ def run_gui(
                 ],
             }
 
-            write_json_atomically(output_root / "gui_status.json", fallback_status)
+            write_json_atomically(output_root / "gui_1_status.json", fallback_status)
 
             log_step_success(
                 logger,
@@ -145,7 +145,7 @@ def run_gui(
 
         # Record availability artifact
         write_json_atomically(
-            output_root / "gui_status.json",
+            output_root / "gui_1_status.json",
             {
                 "backend": _GUI_BACKEND,
                 "launched": True,

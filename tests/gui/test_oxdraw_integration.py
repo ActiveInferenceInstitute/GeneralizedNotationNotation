@@ -441,6 +441,87 @@ class TestProcessOxdraw:
         assert not success  # Should fail with no files
 
 
+class TestOxdrawGuiModeKwarg:
+    """oxdraw_gui accepts an explicit ``mode`` kwarg without TypeError.
+
+    Regression: oxdraw_gui splatted ``**kwargs`` into the closed-signature
+    ``process_oxdraw`` after passing ``mode=mode`` explicitly, so any caller
+    that forwarded ``mode`` raised
+    ``TypeError: process_oxdraw() got multiple values for keyword argument 'mode'``
+    and oxdraw_gui reported success=False.
+    """
+
+    EXEMPLAR = (
+        Path(__file__).resolve().parents[2] / "input/gnn_files/discrete/hmm_baseline.md"
+    )
+
+    @staticmethod
+    def _write_target(target: Path) -> None:
+        """Materialize one real exemplar as the step-22 target directory."""
+        target.mkdir(parents=True, exist_ok=True)
+        target.joinpath(TestOxdrawGuiModeKwarg.EXEMPLAR.name).write_text(
+            TestOxdrawGuiModeKwarg.EXEMPLAR.read_text()
+        )
+
+    def _run_oxdraw_gui(self, tmp_dir: Path, **kwargs: Any) -> dict[str, Any]:
+        import logging
+
+        from gnn.gui.oxdraw import oxdraw_gui
+
+        target = tmp_dir / "input"
+        output = tmp_dir / "output"
+        self._write_target(target)
+
+        result = oxdraw_gui(
+            target_dir=target,
+            output_dir=output,
+            logger=logging.getLogger("test_oxdraw_integration"),
+            verbose=False,
+            validate_on_save=False,
+            **kwargs,
+        )
+        assert isinstance(result, dict)
+        return result
+
+    @pytest.mark.unit
+    @pytest.mark.fast
+    def test_explicit_mode_kwarg_is_accepted(self, tmp_path: Any) -> None:
+        """Passing mode="headless" explicitly must not crash the wrapper."""
+        result = self._run_oxdraw_gui(tmp_path, mode="headless")
+
+        assert result["success"] is True, f"oxdraw_gui failed: {result.get('error')}"
+        assert result["mode"] == "headless"
+        mmd_files = list((tmp_path / "output" / "oxdraw_output").glob("*.mmd"))
+        assert mmd_files, "expected headless conversion to emit .mmd outputs"
+        assert all(p.is_file() for p in mmd_files)
+
+    @pytest.mark.unit
+    @pytest.mark.fast
+    def test_derived_mode_headless_default(self, tmp_path: Any) -> None:
+        """Without mode, headless=True (the pipeline default) derives "headless"."""
+        result = self._run_oxdraw_gui(tmp_path, headless=True)
+
+        assert result["success"] is True, f"oxdraw_gui failed: {result.get('error')}"
+        assert result["mode"] == "headless"
+
+    @pytest.mark.unit
+    @pytest.mark.fast
+    def test_derived_mode_interactive_when_headless_false(self, tmp_path: Any) -> None:
+        """Without mode, headless=False derives "interactive" without launching."""
+        result = self._run_oxdraw_gui(tmp_path, headless=False, launch_editor=False)
+
+        assert result["mode"] == "interactive"
+
+    @pytest.mark.unit
+    @pytest.mark.fast
+    def test_non_str_mode_is_derived(self, tmp_path: Any) -> None:
+        """A non-str mode (e.g. True) derives the mode instead of crashing."""
+        result = self._run_oxdraw_gui(tmp_path, mode=True)
+
+        assert result["success"] is True, f"oxdraw_gui failed: {result.get('error')}"
+        assert result["mode"] == "headless"
+
+
 class TestMetadataGeneration:
     """Test metadata generation utilities."""
 

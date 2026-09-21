@@ -287,7 +287,7 @@ for gui_name, info in guis.items():
 - `constructed_model_gui1.md` - Generated GNN model from GUI 1 (Form-based Constructor)
 - `visual_model_gui2.md` - Generated GNN model from GUI 2 (Visual Matrix Editor)
 - `visual_matrices.json` - Matrix data and visualizations from GUI 2
-- `gui_status.json` - GUI execution status and backend information
+- `gui_1_status.json` / `gui_2_status.json` - GUI execution status and backend information
 - `gui_processing_summary.json` - Overall GUI processing summary with results from all GUIs
 
 #### Navigation and Discovery
@@ -305,7 +305,8 @@ output/22_gui_output/
 ├── constructed_model_gui1.md          # GUI 1 output: Form-based constructed model
 ├── visual_model_gui2.md               # GUI 2 output: Visual matrix editor model
 ├── visual_matrices.json                # GUI 2 output: Matrix data and visualizations
-├── gui_status.json                     # GUI execution status and backend info
+├── gui_1_status.json                   # GUI 1 status and backend info
+├── gui_2_status.json                   # GUI 2 status and backend info
 ├── gui_processing_summary.json         # Overall processing summary
 └── navigation.html                     # HTML navigation to all pipeline outputs
 ```
@@ -461,7 +462,7 @@ uv run --extra dev python -m pytest tests/test_gui*.py \
   - `constructed_model_gui1.md` - GUI 1 form-based model construction
   - `visual_model_gui2.md` - GUI 2 visual matrix editor model
   - `visual_matrices.json` - GUI 2 matrix data and visualizations
-  - `gui_status.json` - GUI execution status and backend information
+  - `gui_1_status.json` / `gui_2_status.json` - GUI execution status and backend information
   - `gui_processing_summary.json` - Overall processing summary
   - `navigation.html` - Comprehensive navigation to all pipeline outputs
 
