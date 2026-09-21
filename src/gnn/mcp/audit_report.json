@@ -2,7 +2,7 @@
   "modules_total": 34,
   "modules_loaded": 34,
   "modules_errored": 0,
-  "tools_total": 145,
+  "tools_total": 146,
   "tools_list": [
     {
       "name": "analyze_audio_characteristics",
@@ -483,6 +483,14 @@
       "fn": "gnn_cancel_job_mcp",
       "documented": true,
       "description": "Cancel a GNN pipeline job."
+    },
+    {
+      "name": "gnn_delete_run",
+      "module": "gnn.api",
+      "category": "api",
+      "fn": "gnn_delete_run_mcp",
+      "documented": true,
+      "description": "Delete a pipeline run, cancelling it first when active."
     },
     {
       "name": "gnn_get_job_status",
@@ -1167,7 +1175,7 @@
   ],
   "spot_checks_ok": 14,
   "spot_checks_err": 0,
-  "schema_checks_ok": 145,
+  "schema_checks_ok": 146,
   "schema_checks_err": 0,
   "logging_ok": 31,
   "logging_miss": 0,

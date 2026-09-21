@@ -78,7 +78,8 @@ resources = list_available_resources()
 - `register_module_tools` — register a single named module.
 - `initialize` — check SDK + discover modules; exposes `performance_mode`,
   `enable_caching`, `enable_rate_limiting`, `strict_validation`, `cache_ttl`,
-  `modules_allowlist`, `per_module_timeout`, `overall_timeout`, `force_refresh`.
+  `tool_timeout`, `modules_allowlist`, `per_module_timeout`, `overall_timeout`,
+  `force_refresh`.
 - `process_mcp` — pipeline entry point (forwards overrides to `initialize`).
 - `get_available_tools`, `list_available_tools`, `list_available_resources`.
 - Error types: `MCPToolNotFoundError`, `MCPValidationError`, `MCPModuleLoadError`,
@@ -96,7 +97,8 @@ The `MCP` singleton honours these knobs, all propagated through
 | `enable_caching` | `bool` | from mode | Enable result cache |
 | `enable_rate_limiting` | `bool` | from mode | Enable per-tool rate limiting |
 | `strict_validation` | `bool` | from mode | Enforce JSON-schema validation of params |
-| `cache_ttl` | `float` (sec) | `300.0` | Result-cache TTL |
+| `cache_ttl` | `float` (sec) | `300.0` | Default TTL for result-cache entries (tools must register `cacheable=True`; a tool's own `cache_ttl` overrides this default) |
+| `tool_timeout` | `float` \| `None` | `None` | Default timeout (seconds) for tools that did not register one; `None` leaves those tools un-timed |
 | `modules_allowlist` | `list[str]` | `None` | Only load these modules under `src/` |
 | `per_module_timeout` | `float` | `30.0` | Max seconds per module during discovery |
 | `overall_timeout` | `float` | `120.0` | Wall-clock budget for parallel discovery |

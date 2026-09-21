@@ -90,6 +90,7 @@ class TestAPIMCPTools:
             "gnn_submit_job",
             "gnn_get_job_status",
             "gnn_cancel_job",
+            "gnn_delete_run",
             "gnn_list_jobs",
             "gnn_get_pipeline_tools",
         }
@@ -117,6 +118,7 @@ class TestAPIMCPTools:
                 "gnn_submit_job": {"target_dir": str(missing_target)},
                 "gnn_get_job_status": {"job_id": "missing"},
                 "gnn_cancel_job": {"job_id": "missing"},
+                "gnn_delete_run": {"run_hash": "missing"},
                 "gnn_list_jobs": {"limit": 1},
                 "gnn_get_pipeline_tools": {},
             }
