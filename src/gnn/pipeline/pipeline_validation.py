@@ -413,7 +413,7 @@ def generate_improvement_recommendations(report: Dict) -> List[str]:
             "   5. Consider adding retry logic for network-dependent steps",
             "",
             "🔧 **Next Steps:**",
-            "   1. Run `python -m gnn.utils.arguments --validate` to check argument consistency",
+            "   1. Run `gnn health` to check renderer & dependency status",
             "   2. Run `python -m gnn.utils.runtime_safety.dependency_validator` for dependency analysis",
             "   3. Use `GNN_PIPELINE_VERBOSE=true uv run python src/gnn/main.py` for detailed execution logs",
         ]

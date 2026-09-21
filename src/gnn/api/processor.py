@@ -11,6 +11,7 @@ import asyncio
 import logging
 import os
 import re
+import signal
 import time
 import uuid
 from datetime import datetime
@@ -125,6 +126,35 @@ def get_job(job_id: str) -> Optional[dict[str, Any]]:
     return serializable
 
 
+def _terminate_process_tree(proc: Any, job_id: str) -> None:
+    """Terminate a job subprocess together with its process group.
+
+    Jobs spawn the pipeline in its own session (``start_new_session``), so a
+    cancelled job can signal the whole group: rendered scripts that shell out
+    to grandchildren would otherwise survive a direct-child terminate. This
+    mirrors the process-group kill pattern in
+    ``gnn.utils.pipeline_orchestration.execution_utils`` and falls back to
+    the direct child on non-POSIX platforms or when the group is gone.
+    """
+    try:
+        if os.name == "posix":
+            os.killpg(os.getpgid(proc.pid), signal.SIGTERM)
+            logger.info(f"Signalled process group of job {job_id}")
+        else:
+            proc.terminate()
+            logger.info(f"Terminated subprocess for job {job_id}")
+    except (ProcessLookupError, PermissionError, AttributeError) as exc:
+        try:
+            proc.terminate()
+            logger.info(f"Terminated subprocess (direct child) for job {job_id}: {exc}")
+        except Exception as terminate_error:
+            logger.warning(
+                f"Could not terminate process for job {job_id}: {terminate_error}"
+            )
+    except Exception as exc:
+        logger.warning(f"Could not terminate process for job {job_id}: {exc}")
+
+
 def cancel_job(job_id: str) -> bool:
     """
     Cancel a running or pending job.
@@ -138,14 +168,10 @@ def cancel_job(job_id: str) -> bool:
     if job["status"] in ("completed", "failed", "cancelled"):
         return False
 
-    # Terminate subprocess if running
+    # Terminate the subprocess tree if running
     proc = job.get("process")
     if proc is not None:
-        try:
-            proc.terminate()
-            logger.info(f"Terminated subprocess for job {job_id}")
-        except Exception as e:
-            logger.warning(f"Could not terminate process for job {job_id}: {e}")
+        _terminate_process_tree(proc, job_id)
 
     job["status"] = "cancelled"
     job["completed_at"] = datetime.now().isoformat()
@@ -172,6 +198,12 @@ async def execute_job_async(job_id: str) -> None:
     job = _JOBS.get(job_id)
     if job is None:
         logger.error(f"Cannot execute unknown job: {job_id}")
+        return
+
+    if job["status"] in ("completed", "failed", "cancelled"):
+        # A cancel raced us before execution started; a cancelled job must
+        # never launch its pipeline.
+        logger.info(f"Skipping execution of job {job_id}: already {job['status']}")
         return
 
     job["status"] = "running"
@@ -202,13 +234,26 @@ async def execute_job_async(job_id: str) -> None:
             stderr=asyncio.subprocess.PIPE,
             cwd=str(repo_root),
             env={**os.environ, "GNN_RUN_ID": job_id},
+            # Own session/group so a cancel can signal the whole process
+            # tree (mirrors utils.pipeline_orchestration.execution_utils).
+            start_new_session=os.name == "posix",
         )
         job["process"] = proc
 
         stdout, stderr = await proc.communicate()
 
+        # A cancel can race this coroutine: cancel_job terminates the
+        # subprocess and writes the terminal 'cancelled' state while
+        # communicate() is still waiting, and a terminated process exits
+        # nonzero — which would otherwise re-report the job as 'failed'
+        # with a stderr error message. Snapshot the flag before any state
+        # write; there are no awaits below, so the check and the guarded
+        # writes are atomic on the single loop thread that mutates jobs.
+        was_cancelled = job["status"] == "cancelled"
+
         job["exit_code"] = proc.returncode
-        job["completed_at"] = datetime.now().isoformat()
+        if not was_cancelled:
+            job["completed_at"] = datetime.now().isoformat()
 
         # Populate per-step progress from the canonical summary the pipeline
         # writes; the single subprocess gives us no live per-step view, so
@@ -226,7 +271,11 @@ async def execute_job_async(job_id: str) -> None:
         job["steps_completed"] = progress["steps_completed"]
         job["steps_failed"] = progress["steps_failed"]
 
-        if pipeline_exit_succeeded(proc.returncode, strict=bool(job.get("strict"))):
+        if was_cancelled:
+            # Keep cancel_job's terminal write: 'cancelled' with no
+            # fabricated error message, whatever partial output exists.
+            logger.info(f"Job {job_id} was cancelled; keeping cancelled state")
+        elif pipeline_exit_succeeded(proc.returncode, strict=bool(job.get("strict"))):
             job["status"] = "completed"
             logger.info(f"Job {job_id} completed successfully")
         else:
@@ -239,6 +288,10 @@ async def execute_job_async(job_id: str) -> None:
             logger.error(f"Job {job_id} failed with exit code {proc.returncode}")
 
     except Exception as e:
+        if job["status"] == "cancelled":
+            # cancel_job won the race during the exception; keep its write.
+            logger.info(f"Job {job_id} was cancelled; ignoring exception: {e}")
+            return
         job["status"] = "failed"
         job["error_message"] = str(e)
         job["completed_at"] = datetime.now().isoformat()

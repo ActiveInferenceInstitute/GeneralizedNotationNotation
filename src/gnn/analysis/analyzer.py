@@ -41,7 +41,6 @@ from .analysis_statistics import (
     calculate_correlations,
     calculate_section_statistics,
     calculate_variable_statistics,
-    stats,
 )
 from .framework_comparison import (
     _calculate_aggregate_metrics,
@@ -55,7 +54,6 @@ from .simulation_visualizations import (
     SEABORN_AVAILABLE,
     generate_matrix_visualizations,
     parse_matrix_data,
-    sns,
     visualize_cross_framework_metrics,
     visualize_simulation_results,
 )

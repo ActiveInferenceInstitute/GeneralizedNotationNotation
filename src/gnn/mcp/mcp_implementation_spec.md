@@ -46,7 +46,7 @@ not silently succeed when no work has occurred.
 
 ## JSON-RPC Methods
 
-`MCPServer` supports:
+`MCPServer` supports the standard MCP (2024-11-05) surface:
 
 - `initialize`
 - `notifications/initialized`
@@ -54,8 +54,16 @@ not silently succeed when no work has occurred.
 - `tools/call`
 - `resources/list`
 - `resources/read`
+- `ping`
 - `shutdown`
 - `exit`
+
+Both transports (`server_stdio`, `server_http`) route methods on this
+standard surface — plus any method outside their direct dialect — through
+`MCPServer.handle_request`. `STANDARD_METHODS` in `server_core.py` is the
+single source of truth for the surface. The direct dialect
+(`mcp.capabilities`, `mcp.tool.execute`, `mcp.resource.get`, direct
+tool-name calls) keeps its exact transport-specific behavior.
 
 The server delegates tool execution to the bound `MCP` registry and returns
 structured JSON-RPC responses.

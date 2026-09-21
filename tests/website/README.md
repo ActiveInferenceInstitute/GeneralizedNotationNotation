@@ -7,7 +7,7 @@ This folder contains module-focused tests for static website generation and arti
 ## Test Files
 
 - `test_website_dashboard.py` — the self-contained HTML dashboard builder in `gnn/website/dashboard.py`.
-- `test_website_generator_units.py` — generator internals: the typed step catalogue, pure `collect_website_data` sourcing the MCP page from the step-21 artifacts (`mcp_processing_summary.json` + `registered_tools.json`) with truthful empty states, HTML escaping, resilient per-page writes, and the `website_results.json` manifest contract.
+- `test_website_generator_units.py` — generator internals: the step-registry-derived typed catalogue, step statuses sourced from `pipeline_execution_summary.json` with the dir-heuristic fallback, pure `collect_website_data` sourcing the MCP page from the step-21 artifacts (`mcp_processing_summary.json` + `registered_tools.json`) with truthful empty states, gallery asset-collision handling, truncation markers, HTML escaping, resilient per-page writes, and the `website_results.json` manifest contract.
 - `test_website_inspection.py` — `inspect_website` / `list_website_pages` contracts shared by the Python API and the MCP tools, on complete, partial, and missing websites.
 - `test_website_overall.py` — module-level aggregate contract for the website folder.
 - `test_website_public_api.py` — public API surface: `embed_*` functions, `generate_html_report`, `process_website`, `FEATURES`, `SUPPORTED_FILE_TYPES`, `get_supported_file_types`, and `generate_website`.
