@@ -40,6 +40,7 @@ from .jsonrpc import (
     serialize_response,
     validate_request,
 )
+from .server_core import MCPServer, is_standard_method
 
 # Bounded stdin framing: one line longer than MAX_LINE_BYTES is a protocol
 # violation — emit a JSON-RPC error envelope, report on stderr, and exit
@@ -370,6 +371,10 @@ class StdioServer:
             self._send_error(request_id, -32600, "Invalid Request: missing method")
             return
 
+        if is_standard_method(method):
+            self._dispatch_standard(message)
+            return
+
         try:
             # Standard MCP methods
             if method in ("mcp.capabilities", "get_mcp_server_capabilities"):
@@ -407,7 +412,9 @@ class StdioServer:
                 result = mcp_instance.execute_tool(method, params)
                 self._send_result(request_id, result)
             else:
-                self._send_error(request_id, -32601, f"Method not found: {method}")
+                # Not a dialect entry: route through the shared standard core
+                # (unknown methods surface as -32601 from server_core).
+                self._dispatch_standard(message)
         except MCPError as mcpe:
             logger.error(f"MCPError in method {method}: {mcpe}")
             self._send_error(
@@ -416,6 +423,18 @@ class StdioServer:
         except Exception as e:
             logger.exception(f"Unhandled error in method {method}: {e}")
             self._send_error(request_id, -32603, f"Internal error: {str(e)}")
+
+    def _dispatch_standard(self, message: Dict[str, Any]) -> None:
+        """Route a validated message through the shared standard MCP core.
+
+        ``MCPServer`` is constructed per call against the transport-owned
+        ``mcp_instance`` global so tests can rebind the registry seam. A
+        notification (no ``id``) executes and enqueues nothing; a request
+        enqueues its full JSON-RPC response envelope.
+        """
+        response = MCPServer(mcp_instance=mcp_instance).handle_request(message)
+        if response is not None:
+            self.response_queue.put(response)
 
     def _send_result(self, request_id: Any, result: Any) -> Any:
         """Send a successful JSON-RPC result response."""
