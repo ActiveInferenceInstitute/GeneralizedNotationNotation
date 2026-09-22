@@ -1,13 +1,8 @@
 {
-  "counts_describe_commit": "a902cfc21",
-  "dirty_path_count": 6,
+  "counts_describe_commit": "711fc22d0",
+  "dirty_path_count": 1,
   "dirty_paths": [
-    "ARCHITECTURE.md",
-    "CHANGELOG.md",
-    "output/data/manuscript_variables.json",
-    "output/data/manuscript_variables_receipt.json",
-    "pyproject.toml",
-    "uv.lock"
+    "manuscript/config.yaml"
   ],
   "generator": "scripts/z_generate_manuscript_variables.py",
   "git_available": true,
