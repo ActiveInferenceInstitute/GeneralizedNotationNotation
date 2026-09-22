@@ -75,8 +75,8 @@ Open a [GitHub Discussion](https://github.com/ActiveInferenceInstitute/Generaliz
 ### Architecture
 
 All pipeline modules follow the **thin orchestrator pattern**:
-- **Numbered scripts** (`src/N_module.py`): Handle CLI args, logging, and delegation only (<150 lines)
-- **Module directories** (`src/module/`): Contain all domain logic in `processor.py`, public API in `__init__.py`
+- **Numbered scripts** (`src/gnn/N_*.py`): Handle CLI args, logging, and delegation only (<150 lines)
+- **Module directories** (`src/gnn/<module>/`): Contain all domain logic in `processor.py`, public API in `__init__.py`
 
 ### Code Standards
 
@@ -90,7 +90,7 @@ All pipeline modules follow the **thin orchestrator pattern**:
 Every module must include:
 
 ```text
-src/module_name/
+src/gnn/<module>/
   __init__.py      # Public API
   processor.py     # Core logic
   AGENTS.md        # Module documentation

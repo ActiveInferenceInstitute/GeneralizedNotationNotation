@@ -76,7 +76,7 @@ success = process_mcp(
 #### `register_module_tools(module_name: Optional[str] = None) -> bool | List[Dict[str, Any]]`
 **Description**: Discover one (or all) pipeline modules and call their
 `register_tools(mcp_instance)` function against the global singleton. Each
-target module owns its tool definitions via `src/<module>/mcp.py`.
+target module owns its tool definitions via `src/gnn/<module>/mcp.py`.
 
 **Parameters**:
 - `module_name` (Optional[str]): Single module to register (e.g. `"gnn"`).
