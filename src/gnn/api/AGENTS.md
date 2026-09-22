@@ -47,6 +47,12 @@ The module exposes two independent FastAPI apps. The table above is the
 `POST /api/v1/run`, `GET /api/v1/runs`, `GET /api/v1/runs/{hash}`,
 `GET /api/v1/runs/{hash}/report` (Markdown), `GET /api/v1/runs/{hash}/stream`
 (SSE), and `GET /api/v1/health`. Both share the canonical `{status,data,error,meta}` JSON envelope.
+ADR 0049
+([docs/decisions/0049-dual-async-job-surfaces.md](../../../docs/decisions/0049-dual-async-job-surfaces.md))
+records this dual-surface split as deliberate: both factories are canonical
+for their consumer class, and coherence is enforced by the shared
+`processor` stores plus the per-factory route tables pinned in
+`tests/api/test_api_parity.py`.
 
 ## Installation
 
