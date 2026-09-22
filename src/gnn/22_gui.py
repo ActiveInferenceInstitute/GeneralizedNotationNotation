@@ -41,7 +41,7 @@ Expected outputs:
 
 If you encounter errors:
   - Check that Gradio is installed: uv pip install -e .[gui]
-  - Check that src/gui/ contains GUI modules
+  - Check that src/gnn/gui/ contains GUI modules
   - Check that the output directory is writable
   - For interactive mode, ensure ports 7860-7862, 5151 are available
   - Verify GUI dependencies (gradio, plotly, numpy, pandas)

@@ -84,7 +84,7 @@ with `uv sync --extra <group>` or together with `uv sync --all-extras`):
 
 ### 5. **gui** - Interactive GUI
 
-- **Packages**: `gradio`, `streamlit`
+- **Packages**: `gradio`
 - **Use case**: GUI interfaces for model construction (Step 22)
 - **Installation**: `uv sync --extra gui`
 
@@ -302,7 +302,7 @@ constraints. Notable floors as of 2026-09-02:
 - **GNN Pipeline Documentation**: See `README.md` and `ARCHITECTURE.md`
 
 **Last Updated**: 2026-09-02
-**Pipeline Version**: 3.2.0
+**Pipeline Version**: [pyproject.toml](pyproject.toml) (canonical)
 **Status**: Maintained (Linux & macOS)
 **Validation authority**: use the command of record and latest dated receipt in
 [`README.md`](README.md). Julia RxInfer execution uses the committed
