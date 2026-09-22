@@ -215,14 +215,12 @@ capped at `MAX_FILES_PER_SECTION` (20). Missing step directories are skipped.
 Installed by the `gui` extra in `pyproject.toml` (`uv sync --extra gui`):
 - `gradio` - Web-based GUI framework
 
-Also used when present:
-- `pandas` - Data manipulation for matrix editing
-- `numpy` - Numerical operations for visualizations
+Also used when present (verified imports: `gui_2/ui.py` imports `numpy` and `plotly`;
+nothing in `src/gnn/gui` imports pandas, matplotlib, or networkx):
+- `numpy` - Numerical operations for GUI 2 visualizations
 
 ### Optional Dependencies
-- `plotly` - Interactive visualizations (recovery: matplotlib)
-- `matplotlib` - Static plotting (recovery: basic HTML)
-- `networkx` - Network graph visualization
+- `plotly` - Interactive visualizations in GUI 2 (graceful degradation when absent)
 
 ---
 
