@@ -44,10 +44,14 @@ def gnn_submit_job_mcp(
 ) -> Dict[str, Any]:
     """Create a pending GNN pipeline job record via MCP.
 
-    Contract: this tool creates the job and returns immediately; it does
-    NOT start pipeline execution. Execution happens when the API server
-    processes the job (``gnn serve`` / POST /api/v1/process), which owns
-    the subprocess lifecycle.
+    Contract: this tool creates the job record and returns immediately; it
+    does NOT start pipeline execution, and no built-in watcher executes
+    externally created records. Execution happens only where the caller
+    also starts it: POST /api/v1/process or POST /api/v1/tools/{step} on
+    the job/tool API server (``gnn.api.server``), which create and execute
+    their own jobs, or a direct call to
+    ``gnn.api.processor.execute_job_async(job_id)``. ``gnn serve`` serves
+    the Runs surface (``gnn.api.app``) and never consumes these records.
     """
     try:
         job_id = create_job(
@@ -61,8 +65,9 @@ def gnn_submit_job_mcp(
             "status": "success",
             "job_id": job_id,
             "message": (
-                "Job created but not started: execution runs only via the "
-                "API server (gnn serve; POST /api/v1/process)."
+                "Job created but not started: execution runs only where a "
+                "caller also starts it (POST /api/v1/process on the API "
+                "server, gnn.api.server, or a direct execute_job_async call)."
             ),
         }
     except (PathValidationError, ValueError) as e:
@@ -172,9 +177,11 @@ _MCP_TOOL_DEFINITIONS: tuple[Dict[str, Any], ...] = (
             "required": ["target_dir"],
         },
         "description": (
-            "Create a GNN pipeline job record. Jobs execute only via the API "
-            "server (gnn serve / POST /api/v1/process); this tool does not "
-            "start execution."
+            "Create a GNN pipeline job record (pending; not executed). "
+            "Execution happens only via POST /api/v1/process or "
+            "POST /api/v1/tools/{step} on the job/tool API server "
+            "(gnn.api.server), or a direct execute_job_async call; "
+            "gnn serve (Runs surface) never consumes these records."
         ),
     },
     {

@@ -147,8 +147,11 @@ class TestAPIMCPTools:
 
     @pytest.mark.unit
     def test_submit_job_creates_pending_job_without_starting(self) -> None:
-        """The submit tool's documented contract: it creates the job record
-        and returns; execution happens only via the API server."""
+        """The submit tool's contract: it only creates the job record; no
+        execution is started and no watcher consumes the record. Execution
+        happens only via explicit caller start on the gnn.api.server routes
+        (POST /api/v1/process, POST /api/v1/tools/{step}) or a direct
+        execute_job_async call."""
         result = api_mcp.gnn_submit_job_mcp("input")
         assert result["status"] == "success"
         job_id = result["job_id"]
@@ -164,3 +167,4 @@ class TestAPIMCPTools:
             _JOBS.pop(job_id, None)
         assert "not started" in result["message"].lower()
         assert "api server" in result["message"].lower()
+        assert "gnn serve" not in result["message"].lower()
