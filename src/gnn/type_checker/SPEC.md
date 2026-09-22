@@ -1,6 +1,6 @@
 # Type Checker — Technical Specification
 
-**Version**: 1.7.0
+**Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 ## Purpose
 

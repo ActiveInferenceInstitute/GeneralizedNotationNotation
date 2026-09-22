@@ -654,7 +654,7 @@ any signature change.
 
 ## Version History
 
-### Current Version: 3.2.0
+### Current Version: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 **Features**:
 - Multi-provider LLM support (Ollama, OpenAI, OpenRouter, Perplexity)
@@ -690,7 +690,7 @@ any signature change.
 **Last Updated**: 2026-09-04
 **Maintainer**: GNN Pipeline Team
 **Status**: Production Ready
-**Version**: 3.2.0
+**Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 **Architecture Compliance**: Thin Orchestrator Pattern
 
 

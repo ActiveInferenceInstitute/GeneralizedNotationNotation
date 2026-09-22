@@ -1,6 +1,6 @@
 # PyMDP Renderer — Technical Specification
 
-**Version**: 1.6.0
+**Version**: [pyproject.toml](../../../../pyproject.toml) (canonical)
 
 ## Purpose
 

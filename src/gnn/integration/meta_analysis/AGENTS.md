@@ -118,4 +118,4 @@ results = run_meta_analysis(
 ---
 
 **Last Updated**: 2026-09-04
-**Version**: 1.8.0 (annotations modernized; stdlib-only modules unchanged otherwise)
+**Version**: [pyproject.toml](../../../../pyproject.toml) (canonical)

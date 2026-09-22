@@ -10,7 +10,7 @@
 
 **Status**: Production Ready
 
-**Version**: 3.2.0
+**Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 **Last Updated**: 2026-09-04
 
@@ -276,7 +276,7 @@ JSON input schema, module/category metadata, and explicit success/error results.
 **Last Updated**: 2026-09-04
 **Maintainer**: GNN Pipeline Team
 **Status**: Production Ready
-**Version**: 3.2.0
+**Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 **Architecture Compliance**: Thin Orchestrator Pattern
 
 

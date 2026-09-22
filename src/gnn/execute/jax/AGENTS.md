@@ -270,7 +270,7 @@ with the `jax` framework selected.
 
 ## Version History
 
-### Current Version: 3.2.0
+### Current Version: [pyproject.toml](../../../../pyproject.toml) (canonical)
 
 **Features**:
 - JAX script discovery and subprocess execution with platform/output-dir routing

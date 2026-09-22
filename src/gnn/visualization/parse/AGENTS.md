@@ -37,5 +37,5 @@ visualization.
 
 See [visualization/AGENTS.md](../AGENTS.md) for the overall visualization architecture.
 
-**Version**: 3.2.0
+**Version**: [pyproject.toml](../../../../pyproject.toml) (canonical)
 **Last Updated**: 2026-05-12

@@ -1,6 +1,6 @@
 # Cognitive Phenomena Documentation — Technical Specification
 
-**Version**: 3.2.0
+**Version**: [pyproject.toml](../../../../pyproject.toml) (canonical)
 
 ## Purpose
 

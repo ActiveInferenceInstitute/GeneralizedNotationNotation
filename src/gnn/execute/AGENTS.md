@@ -9,7 +9,7 @@
 
 **Status**: ✅ Production Ready
 
-**Version**: 3.2.0
+**Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 **Last Updated**: 2026-09-16
 
@@ -421,7 +421,7 @@ All five are registered by `register_tools()` in `src/gnn/execute/mcp.py`.
 
 ## Version History
 
-### Current Version: 3.2.0
+### Current Version: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 **Features**:
 - Multi-framework execution support
@@ -458,7 +458,7 @@ All five are registered by `register_tools()` in `src/gnn/execute/mcp.py`.
 **Last Updated**: 2026-09-02
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 3.2.0
+**Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 

@@ -10,7 +10,7 @@
 
 **Status**: Maintained
 
-**Version**: 3.2.0
+**Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 **Last Updated**: 2026-09-04
 
@@ -546,7 +546,7 @@ python src/gnn/9_advanced_viz.py --target-dir input/ --verbose
 
 ## Version History
 
-### Current Version: 3.2.0
+### Current Version: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 **Features**:
 
@@ -588,7 +588,7 @@ python src/gnn/9_advanced_viz.py --target-dir input/ --verbose
 **Last Updated**: 2026-09-04
 **Maintainer**: GNN Pipeline Team
 **Status**: Maintained
-**Version**: 3.2.0
+**Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 **Architecture Compliance**: Thin Orchestrator Pattern
 
 
