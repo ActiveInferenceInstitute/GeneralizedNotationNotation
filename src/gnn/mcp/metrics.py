@@ -51,8 +51,6 @@ class MCPMetricsMixin:
         _tool_execution_times: Dict[str, List[float]]
         _result_cache: Dict[str, Tuple[Any, float]]
         _result_cache_lock: Any
-        _discovery_cache: Dict[str, Any]
-        _discovery_cache_lock: Any
         _active_executions: Dict[str, int]
         _rate_limit_lock: Any
         _rate_limit_timestamps: Dict[str, List[float]]
@@ -176,13 +174,8 @@ class MCPMetricsMixin:
             cache_size_before = len(self._result_cache)
             self._result_cache.clear()
 
-        with self._discovery_cache_lock:
-            discovery_cache_size = len(self._discovery_cache)
-            self._discovery_cache.clear()
-
             return {
                 "result_cache_cleared": cache_size_before,
-                "discovery_cache_cleared": discovery_cache_size,
                 "timestamp": time.time(),
             }
 

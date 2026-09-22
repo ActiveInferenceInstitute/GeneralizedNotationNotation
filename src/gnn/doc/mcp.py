@@ -3,7 +3,7 @@ MCP Tools for Architecture Documentation Integration.
 
 The ``src/gnn/doc/`` tree is static Markdown documentation and exposes no
 callable tools. ``register_tools`` exists to satisfy the MCP auto-discovery
-contract (every top-level ``src/<module>/`` is expected to expose an
+contract (every top-level ``src/gnn/<module>/`` is expected to expose an
 ``mcp.py`` entry point).
 """
 

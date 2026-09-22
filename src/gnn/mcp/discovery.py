@@ -51,10 +51,7 @@ class MCPDiscoveryMixin:
         modules: Dict[str, MCPModuleInfo]
         tools: Dict[str, MCPTool]
         resources: Dict[str, MCPResource]
-        _discovery_cache: Dict[str, Any]
-        _discovery_cache_lock: Any
         _executor: Optional[ThreadPoolExecutor]
-        _cache_timestamp: float
         _registration_lock: Any
         _registration_context: threading.local
         _performance_metrics: MCPPerformanceMetrics
@@ -82,7 +79,7 @@ class MCPDiscoveryMixin:
         Returns:
             bool: True if all modules loaded successfully, False otherwise.
         """
-        with self._discovery_cache_lock:
+        with self._lock:
             if self._modules_discovered and not force_refresh:
                 logger.debug(
                     "MCP modules already discovered. Skipping redundant discovery."
@@ -106,7 +103,6 @@ class MCPDiscoveryMixin:
                 self.modules.clear()
                 self.tools.clear()
                 self.resources.clear()
-                self._discovery_cache.clear()
 
         # Get list of directories to scan
         discovery_excluded_dirs: set[Any] = {"tests"}
@@ -190,51 +186,14 @@ class MCPDiscoveryMixin:
         mcp_dir = Path(__file__).parent
         logger.debug(f"Discovering core MCP tools in {mcp_dir}")
 
-        # Load SymPy MCP integration (special case - located in mcp directory)
-        sympy_mcp_file = mcp_dir / "sympy_mcp.py"
-        if sympy_mcp_file.exists():
-            try:
-                # Import directly as gnn.mcp.sympy_mcp since it's in the mcp directory
-                import_start = time.time()
-                sympy_module = importlib.import_module("gnn.mcp.sympy_mcp")
-                import_time = time.time() - import_start
-
-                if hasattr(sympy_module, "register_tools") and callable(
-                    sympy_module.register_tools
-                ):
-                    tools_before = len(self.tools)
-                    with self._tool_registration_context(
-                        module="gnn.mcp.sympy_mcp", category="sympy_mcp"
-                    ):
-                        sympy_module.register_tools(self)
-                    tools_added = len(self.tools) - tools_before
-
-                    self.modules["sympy_mcp"] = MCPModuleInfo(
-                        name="gnn.mcp.sympy_mcp",
-                        path=sympy_mcp_file,
-                        tools_count=tools_added,
-                        status="loaded",
-                        load_time=import_time,
-                        last_updated=time.time(),
-                    )
-                    logger.debug(
-                        f"Loaded sympy_mcp: {tools_added} tools in {import_time:.3f}s"
-                    )
-                else:
-                    logger.warning("sympy_mcp module has no register_tools function")
-            except Exception as e:
-                logger.error(
-                    f"Failed to load core MCP module gnn.mcp.sympy_mcp: {str(e)}"
-                )
+        # Load the core tool modules that live inside the mcp package itself.
+        for file_name, module_key in (
+            ("sympy_mcp.py", "sympy_mcp"),
+            ("meta_mcp.py", "meta_mcp"),
+        ):
+            loaded = self._load_core_tools_module(mcp_dir, file_name, module_key)
+            if not loaded:
                 all_modules_loaded_successfully = False
-
-                self.modules["sympy_mcp"] = MCPModuleInfo(
-                    name="gnn.mcp.sympy_mcp",
-                    path=sympy_mcp_file,
-                    status="error",
-                    error_message=str(e),
-                    last_updated=time.time(),
-                )
 
         discovery_time = time.time() - discovery_start
         logger.info(
@@ -243,7 +202,6 @@ class MCPDiscoveryMixin:
         )
 
         self._modules_discovered = True
-        self._cache_timestamp = time.time()
 
         return all_modules_loaded_successfully
 
@@ -381,6 +339,65 @@ class MCPDiscoveryMixin:
                 last_updated=time.time(),
             )
             return False
+
+    def _load_core_tools_module(
+        self, mcp_dir: Path, file_name: str, module_key: str
+    ) -> bool:
+        """Load a core tool module that lives inside the mcp package itself.
+
+        These modules (``sympy_mcp``, ``meta_mcp``) are not discovered by the
+        per-directory scan above; they register their tools through the same
+        ``register_tools`` entry point but are imported directly as
+        ``gnn.mcp.<module_key>``. A missing file or a module without
+        ``register_tools`` is a silent no-op (returns ``True``); only an
+        exception during import or registration records a failure (returns
+        ``False`` with a ``status="error"`` entry).
+        """
+        module_file = mcp_dir / file_name
+        if not module_file.exists():
+            return True
+        try:
+            import_start = time.time()
+            core_module = importlib.import_module(f"gnn.mcp.{module_key}")
+            import_time = time.time() - import_start
+
+            if hasattr(core_module, "register_tools") and callable(
+                core_module.register_tools
+            ):
+                tools_before = len(self.tools)
+                with self._tool_registration_context(
+                    module=f"gnn.mcp.{module_key}", category=module_key
+                ):
+                    core_module.register_tools(self)
+                tools_added = len(self.tools) - tools_before
+
+                self.modules[module_key] = MCPModuleInfo(
+                    name=f"gnn.mcp.{module_key}",
+                    path=module_file,
+                    tools_count=tools_added,
+                    status="loaded",
+                    load_time=import_time,
+                    last_updated=time.time(),
+                )
+                logger.debug(
+                    f"Loaded {module_key}: {tools_added} tools in {import_time:.3f}s"
+                )
+            else:
+                logger.warning(f"{module_key} module has no register_tools function")
+        except Exception as e:
+            logger.error(
+                f"Failed to load core MCP module gnn.mcp.{module_key}: {str(e)}"
+            )
+
+            self.modules[module_key] = MCPModuleInfo(
+                name=f"gnn.mcp.{module_key}",
+                path=module_file,
+                status="error",
+                error_message=str(e),
+                last_updated=time.time(),
+            )
+            return False
+        return True
 
     @staticmethod
     def _configure_local_imports(root_dir: Path) -> None:

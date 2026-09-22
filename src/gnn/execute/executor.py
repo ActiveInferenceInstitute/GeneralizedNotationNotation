@@ -73,8 +73,19 @@ def _load_pytorch() -> tuple[bool, Any]:
 
     return True, run_pytorch_scripts
 
+def _load_ngclearn() -> tuple[bool, Any]:
+    from .ngclearn.ngclearn_runner import is_ngclearn_available, run_ngclearn_scripts
+
+    # ngclearn itself is a marker-gated extra (py3.12+); the probe inside the
+    # runner reports importability so an absent runtime yields a SKIPPED
+    # record, never a runner failure.
+    return is_ngclearn_available(), run_ngclearn_scripts
+
 
 def _load_lean() -> tuple[bool, Any]:
+    from .lean.lean_runner import lean_toolchain_available, run_lean_scripts
+
+    return lean_toolchain_available(), run_lean_scripts
     from .lean.lean_runner import lean_toolchain_available, run_lean_scripts
 
     return lean_toolchain_available(), run_lean_scripts
@@ -89,6 +100,7 @@ _RUNNER_LOADERS: dict[str, Callable[[], tuple[bool, Any]]] = {
     "numpyro": _load_numpyro,
     "pytorch": _load_pytorch,
     "lean": _load_lean,
+    "ngclearn": _load_ngclearn,
 }
 
 
@@ -129,6 +141,7 @@ FRAMEWORK_DIR_NAMES: tuple[str, ...] = (
     "jax",
     "numpyro",
     "pytorch",
+    "ngclearn",
     "lean",
 )
 
@@ -617,6 +630,7 @@ def _framework_specs() -> tuple[ExecutorFrameworkSpec, ...]:
     jax_state = _runner_state("jax")
     numpyro_state = _runner_state("numpyro")
     pytorch_state = _runner_state("pytorch")
+    ngclearn_state = _runner_state("ngclearn")
     lean_state = _runner_state("lean")
     return (
         ExecutorFrameworkSpec(
@@ -742,6 +756,26 @@ def _framework_specs() -> tuple[ExecutorFrameworkSpec, ...]:
             unavailable_message="PyTorch framework not installed (optional dependency)",
             success_log="PyTorch script execution completed",
             warning_log_prefix="PyTorch script execution failed",
+        ),
+        ExecutorFrameworkSpec(
+            framework_dir_key="ngclearn",
+            result_key="ngclearn_executions",
+            available=ngclearn_state.available,
+            runner=ngclearn_state.runner,
+            operation_name="execute_ngclearn_scripts",
+            start_message="🚀 Executing ngc-learn scripts...",
+            success_message="ngc-learn scripts executed successfully",
+            failure_message="ngc-learn script execution failed",
+            unavailable_log=(
+                "ℹ️ ngc-learn framework not available - skipping ngc-learn execution "
+                "(install with: uv sync --extra ngclearn)"
+            ),
+            unavailable_message=(
+                "ngc-learn framework not installed "
+                "(optional dependency - install with: uv sync --extra ngclearn)"
+            ),
+            success_log="ngc-learn script execution completed",
+            warning_log_prefix="ngc-learn script execution failed",
         ),
         ExecutorFrameworkSpec(
             framework_dir_key="lean",
@@ -1065,6 +1099,12 @@ def _write_execution_report(
             "PyTorch Executions",
             execution_results["pytorch_executions"],
             "PyTorch Scripts",
+        )
+        _write_framework_report_section(
+            f,
+            "ngc-learn Executions",
+            execution_results["ngclearn_executions"],
+            "ngc-learn Scripts",
         )
         _write_framework_report_section(
             f,

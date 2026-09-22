@@ -31,7 +31,7 @@
       "label": "fig:pipeline",
       "png_sha256": "f0678cd3b3615bc080acde3601dad812b4f9c666166ff92b2477db55d7d77700",
       "source_sha256": {
-        "src/gnn/STEP_INDEX.md": "a16a5fe42cde01c90ed057a067ab5466a498281da23a3c84bf0cf9b91ef660a6"
+        "src/gnn/STEP_INDEX.md": "e3f79eff5bf9c96de6072d8c4cfdd99945398009eb4529d4bc8d693de5a11e78"
       }
     },
     {
@@ -40,10 +40,10 @@
       "filename": "gnn_family_framework_matrix.png",
       "generated_by": "scripts/manuscript_fig_family_framework.py",
       "label": "fig:family_matrix",
-      "png_sha256": "2a828ef221824aef88c7e21565ac765350fcfb828495a3337c9af0d3703eaa61",
+      "png_sha256": "fc4fc856ea2bf7ec2a63534e5591c6343991112db0f4842c9540b9d52605e39e",
       "source_sha256": {
         "input/model_family_manifest.json": "c72c7de61cde1ecdda4b8669a0539ee26bc15c83bbb5cfae9dece845f8cddda4",
-        "src/gnn/render/framework_registry.py": "a4f55d4e7ed0bbb0f41b4ec6989ed4a8b2adf722f668dbf13bb4a98fbdc9d146"
+        "src/gnn/render/framework_registry.py": "a684eb1d49d8045b7e42621339465629d5fd4eba61da3cfe631ea43afe795a11"
       }
     },
     {
@@ -52,12 +52,12 @@
       "filename": "gnn_backend_capability_matrix.png",
       "generated_by": "scripts/manuscript_fig_backend_matrix.py",
       "label": "fig:backend_matrix",
-      "png_sha256": "db31907a7c25857610b598af93d8845da9243830a865ddb0171ee9506301528e",
+      "png_sha256": "6c2bca7bb620e4d71c685e652aa4a043aae8c57e31a14585734a6d76797f4cdf",
       "source_sha256": {
         "input/model_family_manifest.json": "c72c7de61cde1ecdda4b8669a0539ee26bc15c83bbb5cfae9dece845f8cddda4",
         "src/gnn/manuscript/variables.py": "ec4090eecb0f69e6fc533bb8222e51099aa39c25d5936c09669392ba39328f4b",
         "src/gnn/pipeline/cross_framework_reliability.py": "f541016765f8c2b843226c9127f011cc77a0e66cbad694e89853db59c6cd8101",
-        "src/gnn/render/framework_registry.py": "a4f55d4e7ed0bbb0f41b4ec6989ed4a8b2adf722f668dbf13bb4a98fbdc9d146"
+        "src/gnn/render/framework_registry.py": "a684eb1d49d8045b7e42621339465629d5fd4eba61da3cfe631ea43afe795a11"
       }
     },
     {

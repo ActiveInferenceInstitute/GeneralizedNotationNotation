@@ -6,6 +6,7 @@ Endpoints:
   POST /api/v1/run          — Submit a pipeline run
   GET  /api/v1/runs/{hash}  — Get run status and results
   GET  /api/v1/runs/{hash}/report — Download PIPELINE_REPORT.md
+  DELETE /api/v1/runs/{hash} — Cancel an active run, then delete it
   GET  /api/v1/runs/{hash}/stream — SSE progress stream
   GET  /api/v1/health       — Health check with renderer availability
   GET  /docs                — Auto-generated Swagger UI
@@ -36,7 +37,7 @@ _src_dir = str(Path(__file__).parent.parent)
 if _src_dir not in sys.path:
     sys.path.insert(0, _src_dir)
 
-from gnn.api import MODULE_VERSION  # noqa: E402,I001
+from gnn.api import DEFAULT_API_HOST, DEFAULT_API_PORT, MODULE_VERSION, processor  # noqa: E402,I001
 from gnn.api.auth import api_key_middleware, require_secure_bind
 from gnn.api.models import RunHealthResponse, RunRequest, RunStatus  # noqa: E402,I001
 from gnn.api.path_utils import (  # noqa: E402,I001
@@ -51,13 +52,15 @@ from gnn.api.pipeline_runner import (  # noqa: E402,I001
     pipeline_exit_succeeded,
     read_pipeline_summary,
 )
+from gnn.api.processor import RUNS_STORE as _runs  # noqa: E402,I001
 from gnn.api.rate_limit import rate_limit_middleware  # noqa: E402,I001
 from gnn.api.parity import register_parity_routes  # noqa: E402,I001
 from gnn.api.responses import APIEnvelope, install_exception_handlers, success_envelope
 
 # ── In-memory run store ──────────────────────────────────────────────────────────
-
-_runs: Dict[str, Dict[str, Any]] = {}
+#
+# The run records live in ``processor.RUNS_STORE``; ``_runs`` re-exports the
+# same dict so the module keeps its historical import surface.
 
 
 if FASTAPI_AVAILABLE:
@@ -178,6 +181,9 @@ if FASTAPI_AVAILABLE:
                 "errors": [],
                 "events": [],
             }
+            from gnn.execute.subprocess_envelope import CancelToken
+
+            run_entry["cancel_token"] = CancelToken()
             runs[run_hash] = run_entry
             background_tasks.add_task(
                 _execute_pipeline, run_hash, normalized_request, runs
@@ -229,22 +235,26 @@ if FASTAPI_AVAILABLE:
             "/api/v1/runs/{run_hash}", response_model=APIEnvelope, tags=["Runs"]
         )
         async def delete_run(run_hash: str) -> APIEnvelope:
-            """Remove a run record from the in-memory store (housekeeping).
+            """Delete a run record, cancelling it first when it is active.
 
-            Additive endpoint for clearing completed/failed runs from the
-            in-memory store without restarting the server. Unknown hashes
-            return 404; ambiguous prefixes return 409.
+            Active (queued/running) runs are cancelled through the run's
+            CancelToken before deletion; the executor observes the cancel
+            without spawning. Artifacts are removed unless the run targeted
+            the repository output tree. Unknown hashes return 404;
+            ambiguous prefixes return 409; a run that never reaches a
+            terminal state after cancellation returns 409 with its current
+            status.
             """
-            key = _find_run_key(run_hash, runs)
-            if runs[key]["status"] in {"queued", "running"}:
-                raise HTTPException(
-                    status_code=409, detail="Active runs cannot be deleted"
+            try:
+                result = await asyncio.to_thread(
+                    processor.delete_run, run_hash, runs_store=runs
                 )
-            removed = runs.pop(key, None)
+            except processor.RunNotFoundError as err:
+                raise HTTPException(status_code=404, detail=str(err)) from err
+            except (processor.RunAmbiguousError, RuntimeError) as err:
+                raise HTTPException(status_code=409, detail=str(err)) from err
             return success_envelope(
-                {"deleted": key, "existed": removed is not None},
-                endpoint="delete_run",
-                run_hash=key,
+                result, endpoint="delete_run", run_hash=result["deleted"]
             )
 
         @_app.get("/api/v1/runs/{run_hash}/stream", tags=["Runs"])
@@ -380,7 +390,26 @@ if FASTAPI_AVAILABLE:
         runs land in the same dict the endpoints read.
         """
         runs = runs_store if runs_store is not None else _runs
-        entry = runs[run_hash]
+        entry = runs.get(run_hash)
+        if entry is None:
+            # A delete raced the background task before it started; the
+            # record is gone, so there is nothing left to execute or report.
+            return None
+        cancel_token = entry.get("cancel_token")
+        if cancel_token is not None and cancel_token.cancelled:
+            # A delete cancelled this run before it spawned: zero-process
+            # cancel, mirroring the subprocess-envelope semantics.
+            entry["status"] = "cancelled"
+            entry["completed_at"] = datetime.now().isoformat()
+            entry["duration_seconds"] = 0.0
+            entry["events"].append(
+                {
+                    "type": "run_cancelled",
+                    "reason": cancel_token.reason or "cancelled before launch",
+                    "timestamp": datetime.now().isoformat(),
+                }
+            )
+            return None
         entry["status"] = "running"
         start = time.time()
         tracker = RunTracker(entry, run_hash)
@@ -407,9 +436,33 @@ if FASTAPI_AVAILABLE:
                 stderr=asyncio.subprocess.PIPE,
                 cwd=str(repo_root),
                 env={**os.environ, "GNN_RUN_ID": invocation_id},
+                # Own session/group so a delete-cancel can signal the whole
+                # process tree (mirrors processor.execute_job_async).
+                start_new_session=os.name == "posix",
             )
             entry["process_id"] = getattr(process, "pid", None)
-            _stdout, stderr = await process.communicate()
+            comm_task = asyncio.create_task(process.communicate())
+            while True:
+                done, _pending = await asyncio.wait({comm_task}, timeout=0.25)
+                if comm_task in done:
+                    break
+                if cancel_token is not None and cancel_token.cancelled:
+                    # A delete landed mid-flight: signal the process tree,
+                    # then drain the streams before reporting the outcome.
+                    processor._terminate_process_tree(process, run_hash)
+                    await comm_task
+                    break
+            _stdout, stderr = comm_task.result()
+
+            # A delete can race this coroutine: the delete path terminates
+            # the subprocess while communicate() is still draining, and the
+            # terminated process exits nonzero — which would otherwise
+            # re-report the run as failed. Snapshot the flag and the reason
+            # before any state write, mirroring
+            # processor.execute_job_async's race pattern: a token that
+            # flips after the drain must not re-report a completed run.
+            was_cancelled = cancel_token is not None and cancel_token.cancelled
+            cancel_reason = cancel_token.reason if cancel_token is not None else None
             if process.returncode is None:
                 raise RuntimeError("Pipeline process ended without an exit code")
             exit_code = int(process.returncode)
@@ -423,7 +476,20 @@ if FASTAPI_AVAILABLE:
             )
             entry["current_step"] = None
 
-            if pipeline_exit_succeeded(exit_code, strict=request.strict):
+            if was_cancelled:
+                # The delete's terminal write: 'cancelled' with no
+                # fabricated error message, whatever partial output exists.
+                entry["status"] = "cancelled"
+                entry["completed_at"] = datetime.now().isoformat()
+                entry["duration_seconds"] = round(time.time() - start, 2)
+                entry["events"].append(
+                    {
+                        "type": "run_cancelled",
+                        "reason": cancel_reason or "run deleted",
+                        "timestamp": datetime.now().isoformat(),
+                    }
+                )
+            elif pipeline_exit_succeeded(exit_code, strict=request.strict):
                 tracker.mark_completed(start)
                 if exit_code == 2:
                     entry["events"].append(
@@ -447,7 +513,14 @@ if FASTAPI_AVAILABLE:
                 )
 
         except Exception as e:
-            tracker.mark_failed(RuntimeError("Pipeline execution failed"), start)
+            if cancel_token is not None and cancel_token.cancelled:
+                # The delete won the race during the exception; keep the
+                # cancelled terminal state instead of reporting failure.
+                entry["status"] = "cancelled"
+                entry["completed_at"] = datetime.now().isoformat()
+                entry["duration_seconds"] = round(time.time() - start, 2)
+            else:
+                tracker.mark_failed(RuntimeError("Pipeline execution failed"), start)
             logger.exception("Pipeline run %s failed: %s", run_hash, e)
 
     def _load_pipeline_summary_events(
@@ -527,7 +600,7 @@ else:
         raise RuntimeError("FastAPI is required to create the API application")
 
 
-def start_server(host: str = "127.0.0.1", port: int = 8000) -> Any:
+def start_server(host: str = DEFAULT_API_HOST, port: int = DEFAULT_API_PORT) -> Any:
     """Start the API server."""
     if not FASTAPI_AVAILABLE:
         logger.error("Cannot start server: pip install fastapi uvicorn")

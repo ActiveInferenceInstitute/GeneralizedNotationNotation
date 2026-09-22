@@ -25,9 +25,7 @@ from gnn.utils.logging_utils import setup_step_logging
 logger = setup_step_logging("mcp_npx_inspector")
 
 # --- Configuration ---
-# Adjust these paths if your project structure is different
 GNN_PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
-MCP_CLI_PATH = GNN_PROJECT_ROOT / "src" / "mcp" / "cli.py"
 PYTHON_EXECUTABLE = sys.executable  # Use the same python interpreter
 
 # --- Helper Functions ---
@@ -68,7 +66,8 @@ class StdioMCPClient:
         self.server_stderr_queue: queue.Queue[str] = queue.Queue()
 
         self.stdout_thread = threading.Thread(
-            target=read_server_output, args=(self.process, self.server_stdout_queue)
+            target=read_server_output,
+            args=(self.process, self.server_stdout_queue, self.server_stderr_queue),
         )
         self.stderr_thread = threading.Thread(
             target=read_server_errors, args=(self.process, self.server_stderr_queue)
@@ -219,14 +218,14 @@ def main() -> None:
     """Provide main behavior."""
     parser = argparse.ArgumentParser(
         description="GNN MCP Inspector. Launches and interacts with a GNN MCP server.",
-        epilog=f'Example: python {sys.argv[0]} --server-cmd "python src/mcp/cli.py server --transport stdio" list-capabilities',
+        epilog=f'Example: python {sys.argv[0]} --server-cmd "{PYTHON_EXECUTABLE} -m gnn.mcp.cli server --transport stdio" list-capabilities',
     )
     parser.add_argument(
         "--server-cmd",
         help="Full command string to start the GNN MCP server. "
-        "Example: 'python src/mcp/cli.py server --transport stdio'. "
-        "If not provided, defaults to stdio server via configured MCP_CLI_PATH.",
-        default=f"{PYTHON_EXECUTABLE} {MCP_CLI_PATH} server --transport stdio",
+        "Example: 'python -m gnn.mcp.cli server --transport stdio'. "
+        "If not provided, defaults to the stdio server via `python -m gnn.mcp.cli`.",
+        default=f"{PYTHON_EXECUTABLE} -m gnn.mcp.cli server --transport stdio",
     )
     parser.add_argument(
         "--verbose",
@@ -250,7 +249,7 @@ def main() -> None:
     )
     exec_parser.add_argument(
         "tool_name",
-        help="The name of the tool to execute (e.g., meta.get_server_status).",
+        help="The name of the tool to execute (e.g., get_mcp_server_status).",
     )
     exec_parser.add_argument(
         "--params",
@@ -277,10 +276,16 @@ def main() -> None:
     else:  # Assuming it could be pre-split if not default
         server_cmd_list = server_cmd_str
 
+    # Sanity check: when the server command invokes a script file directly
+    # (python <script> ...), verify the script exists before launching.
+    # Module invocations (python -m gnn.mcp.cli ...) are resolved by the
+    # interpreter itself, so argv[1] == "-m" skips this guard.
     if (
-        not Path(server_cmd_list[1]).is_file()
+        len(server_cmd_list) > 1
         and server_cmd_list[0] == PYTHON_EXECUTABLE
-    ):  # Check if script path exists
+        and server_cmd_list[1] != "-m"
+        and not Path(server_cmd_list[1]).is_file()
+    ):
         logger.error(
             f"Inspector Error: MCP CLI script not found at {server_cmd_list[1]}",
         )

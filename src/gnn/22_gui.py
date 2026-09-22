@@ -85,6 +85,11 @@ run_script = create_standardized_pipeline_script(
             "default": False,
             "help": "Automatically open browser for interactive GUIs",
         },
+        "launch_editor": {
+            "action": "store_true",
+            "default": False,
+            "help": "Launch oxdraw editor (interactive oxdraw GUI type)",
+        },
     },
 )
 

@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/gnn/22_gui.py` (98 lines)
+**Orchestrator**: `src/gnn/22_gui.py` (103 lines)
 **Implementation Layer**: `src/gnn/gui/`
 
 ## Module Description
@@ -77,6 +77,7 @@ The GUI module provides **three distinct interactive interfaces** for constructi
 - `interactive` (bool, optional): Run GUIs in interactive mode (default: False)
 - `headless` (bool, optional): Run in headless mode - artifact generation only (default: True if not interactive)
 - `open_browser` (bool, optional): Automatically open browser for interactive GUIs (default: False)
+- `launch_editor` (bool, optional): Launch the oxdraw editor when the oxdraw GUI type runs in interactive mode (default: False)
 - `**kwargs`: Additional GUI-specific options
 
 **Returns**: `bool` - True if GUI processing succeeded, False otherwise
@@ -270,21 +271,21 @@ success = process_gui(
 
 ### Specific GUI (GUI 1)
 ```python
-from gui.gui_1 import gui_1
+from gnn.gui.gui_1 import gui_1
 
 result = gui_1(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/gui_1_output"),
     logger=logger,
     headless=False,
-    export_filename="constructed_model.md",
+    export_filename="constructed_model_gui1.md",
     open_browser=True,
 )
 ```
 
 ### GUI Information Query
 ```python
-from gui import get_available_guis
+from gnn.gui import get_available_guis
 
 guis = get_available_guis()
 for gui_name, info in guis.items():

@@ -39,6 +39,7 @@ class MCPTool:
     requires_auth: bool = False
     rate_limit: Optional[float] = None
     cache_ttl: Optional[float] = None
+    cacheable: bool = False
     input_validation: bool = True
     output_validation: bool = True
     created_at: float = field(default_factory=time.time)
@@ -61,6 +62,8 @@ class MCPTool:
             raise ValueError("Max concurrent must be at least 1")
         if self.rate_limit is not None and self.rate_limit <= 0:
             raise ValueError("Rate limit must be positive if specified")
+        if not isinstance(self.cacheable, bool):
+            raise ValueError("Cacheable must be a boolean")
         if self.cache_ttl is not None and self.cache_ttl <= 0:
             raise ValueError("Cache TTL must be positive if specified")
 

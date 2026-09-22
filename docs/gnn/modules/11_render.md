@@ -153,7 +153,7 @@ Continuous exemplars (`input/gnn_files/continuous/`) are **pure linear-Gaussian 
 
 **Example**:
 ```python
-from render import process_render
+from gnn.render import process_render
 from pathlib import Path
 
 success = process_render(
@@ -293,7 +293,7 @@ Configuration is primarily controlled by the Step 11 orchestrator (`src/gnn/11_r
 
 ### Basic Framework Rendering
 ```python
-from render import render_gnn_spec
+from gnn.render import render_gnn_spec
 
 # Render GNN to PyMDP
 success, message, files = render_gnn_spec(
@@ -306,7 +306,7 @@ success, message, files = render_gnn_spec(
 
 ### Multi-Framework Rendering
 ```python
-from render import render_gnn_spec
+from gnn.render import render_gnn_spec
 
 for framework in ["pymdp", "rxinfer", "activeinference_jl"]:
     success, message, files = render_gnn_spec(

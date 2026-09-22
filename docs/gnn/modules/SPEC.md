@@ -13,7 +13,7 @@ table mapping step → document → source module.
 ## Naming
 Files match the pipeline-script naming: `N_module.md` where N is the
 zero-indexed step number and `module` matches the source directory name
-(`src/<module>/`).
+(`src/gnn/<module>/`).
 
 ## Document Structure (canonical)
 Reference: [`13_llm.md`](13_llm.md) (most complete, ~720 lines).
@@ -26,12 +26,12 @@ Sections:
 6. Output Artifacts — files produced and their schemas
 7. Testing — test file locations + coverage expectations
 8. Troubleshooting — common symptoms + remediation
-9. Source References — links back to `src/<module>/`
+9. Source References — links back to `src/gnn/<module>/`
 
 ## Versioning
 Each step doc inherits the bundle version from [`../SPEC.md`](../SPEC.md).
 Document version must stay in sync with the module's `__version__` in
-`src/<module>/__init__.py`.
+`src/gnn/<module>/__init__.py`.
 
 ## Status
 Maintained. Hard-import steps (20, 21, 24) documented with that property

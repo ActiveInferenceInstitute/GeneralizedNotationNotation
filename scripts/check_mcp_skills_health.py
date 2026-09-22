@@ -173,6 +173,7 @@ _MCP_KNOBS = {
     "enable_rate_limiting",
     "strict_validation",
     "cache_ttl",
+    "tool_timeout",
     "modules_allowlist",
     "per_module_timeout",
     "overall_timeout",

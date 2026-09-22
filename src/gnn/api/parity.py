@@ -213,6 +213,43 @@ class ReportRequest(BaseModel):
     )
 
 
+class PullRequest(BaseModel):
+    """Request body for ``POST /api/v1/pull``.
+
+    Mirrors the CLI ``gnn pull`` arguments: the template is copied by
+    default, and ``dry_run=True`` returns the copy plan without writing.
+    """
+
+    name: str = Field(
+        min_length=1, description="Name of the maintained template to pull"
+    )
+    output_dir: Optional[str] = Field(
+        default=None,
+        description=(
+            "Repository-local directory to copy the template into "
+            "(defaults to input/gnn_files)"
+        ),
+    )
+    dry_run: bool = Field(
+        default=False,
+        description="Return the copy plan without writing any files",
+    )
+    overwrite: bool = Field(
+        default=False,
+        description="Replace an existing destination with a different checksum",
+    )
+
+    model_config: ClassVar[ConfigDict] = ConfigDict(
+        extra="forbid",
+        json_schema_extra={
+            "example": {
+                "name": "pomdp-gridworld-3x3",
+                "output_dir": "input/gnn_files",
+            }
+        },
+    )
+
+
 # ── Response models ──────────────────────────────────────────────────────────
 
 
@@ -332,6 +369,21 @@ class TemplateResponse(BaseModel):
     """Payload for ``GET /api/v1/templates/{name}``."""
 
     template: TemplateRecordModel
+
+
+class PullResponse(BaseModel):
+    """Payload for ``POST /api/v1/pull`` (CLI ``gnn pull`` parity)."""
+
+    template: str
+    source: str
+    destination: str
+    sha256: str
+    dry_run: bool
+    overwritten: bool
+    copied: bool
+    message: Optional[str] = None
+    existing_sha256: Optional[str] = None
+    exit_code: ParityExitCode
 
 
 class ModelsResponse(BaseModel):
@@ -874,6 +926,29 @@ def _model_registry(target_path: Path, query_ontology: Optional[str]) -> ModelsR
     )
 
 
+def _pull(
+    name: str,
+    output_dir: Path,
+    *,
+    dry_run: bool,
+    overwrite: bool,
+) -> PullResponse:
+    """Mirror ``gnn.cli.templates.pull_template`` collision-aware copy."""
+    from gnn.cli.templates import pull_template as pull_template_backend
+
+    try:
+        result = pull_template_backend(
+            name, output_dir, dry_run=dry_run, overwrite=overwrite
+        )
+    except KeyError as exc:
+        # Mirrors the templates show route: unknown template names are 404.
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except FileExistsError as exc:
+        # The message already suggests passing overwrite to replace it.
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+    return PullResponse(**result, exit_code=0)
+
+
 # ── Route registration (both FastAPI surfaces) ───────────────────────────────
 
 
@@ -976,6 +1051,24 @@ def register_parity_routes(app: FastAPI) -> None:
 
         response = _run_backend(_operate, command="templates")
         return success_envelope(response.model_dump(mode="json"), endpoint="templates")
+
+    @app.post("/api/v1/pull", response_model=APIEnvelope, tags=["Templates"])
+    def pull_gnn_template(request: PullRequest) -> APIEnvelope:
+        """Pull a maintained template into an output directory (CLI ``gnn pull`` parity)."""
+        output_dir = _resolve_client_path(
+            request.output_dir or "input/gnn_files",
+            purpose="Pull output directory",
+        )
+        response = _run_backend(
+            lambda: _pull(
+                request.name,
+                output_dir,
+                dry_run=request.dry_run,
+                overwrite=request.overwrite,
+            ),
+            command="pull",
+        )
+        return success_envelope(response.model_dump(mode="json"), endpoint="pull")
 
     @app.get("/api/v1/models", response_model=APIEnvelope, tags=["Models"])
     def list_models(

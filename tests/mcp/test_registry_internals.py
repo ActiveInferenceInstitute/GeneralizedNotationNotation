@@ -125,6 +125,7 @@ class TestResultCache:
             func=lambda: calls.append(1) or {"n": len(calls)},
             schema={},
             description="counts executions",
+            cacheable=True,
             cache_ttl=60.0,
         )
         first = registry.execute_tool("counting_tool", {})
@@ -144,6 +145,7 @@ class TestResultCache:
             func=lambda: calls.append(1) or {"n": len(calls)},
             schema={},
             description="counts executions",
+            cacheable=True,
             cache_ttl=0.05,
         )
         registry.execute_tool("expiring_tool", {})
@@ -164,6 +166,7 @@ class TestResultCache:
                 "properties": {"values": {"type": "array"}},
             },
             description="takes a set-shaped param",
+            cacheable=True,
             cache_ttl=60.0,
         )
         # A set is not JSON-serializable: the call must still succeed, simply
@@ -248,6 +251,16 @@ class TestAuditSurfaceParity:
             "live registry count drifted from audit_report.json — regenerate "
             "the audit (uv run python src/gnn/mcp/validate_tools.py) in the "
             "same PR that adds or removes tools"
+        )
+
+        assert "modules_list" in audit, (
+            "audit_report.json is missing modules_list — regenerate the audit "
+            "(uv run python src/gnn/mcp/validate_tools.py) in the same PR"
+        )
+        assert set(audit["modules_list"]) == set(mcp_instance.modules), (
+            "audit_report.json modules_list drifted from the live registry — "
+            "regenerate the audit (uv run python src/gnn/mcp/validate_tools.py) "
+            "in the same PR"
         )
 
 

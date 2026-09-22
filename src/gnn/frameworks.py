@@ -33,6 +33,7 @@ ALL_FRAMEWORKS: Final[tuple[str, ...]] = (
     "numpyro",
     "stan",
     "bnlearn",
+    "ngclearn",
     "lean",
 )
 

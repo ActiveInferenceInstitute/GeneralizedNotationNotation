@@ -97,6 +97,10 @@ Server introspection and diagnostic tools:
 - `get_mcp_module_info`: Detailed module information
 - `get_mcp_tool_categories`: Tools organized by category
 - `get_mcp_performance_metrics`: Performance statistics
+- `get_mcp_diagnostics`: Diagnostic information and health checks
+
+These meta tools are registered automatically during module discovery
+alongside the `sympy_mcp` tools (see `src/gnn/mcp/discovery.py`).
 
 ### 5. GNN Processors (`processors.py`)
 

@@ -51,7 +51,7 @@
 - `mcp_mode` (str, optional): Accepted via `**kwargs`; not consumed by `process_mcp` (default: `"tool_discovery"`)
 - `enable_tools` (bool, optional): Accepted via `**kwargs`; not consumed (default: True)
 - `transport` (str, optional): Accepted via `**kwargs`; not consumed (default: `"stdio"`)
-- `**kwargs`: Forwarded to `initialize()` — recognized keys include `performance_mode`, `enable_caching`, `enable_rate_limiting`, `strict_validation`, `cache_ttl`, `modules_allowlist` (aka `mcp_modules_allowlist`), `per_module_timeout` (aka `mcp_per_module_timeout`), `overall_timeout` (aka `mcp_overall_timeout`). See the Default Settings table.
+- `**kwargs`: Forwarded to `initialize()` — recognized keys include `performance_mode`, `enable_caching`, `enable_rate_limiting`, `strict_validation`, `cache_ttl`, `tool_timeout` (aka `mcp_tool_timeout`), `modules_allowlist` (aka `mcp_modules_allowlist`), `per_module_timeout` (aka `mcp_per_module_timeout`), `overall_timeout` (aka `mcp_overall_timeout`). See the Default Settings table.
 
 **Returns**: `bool` - True if MCP processing succeeded, False otherwise
 
@@ -76,7 +76,7 @@ success = process_mcp(
 #### `register_module_tools(module_name: Optional[str] = None) -> bool | List[Dict[str, Any]]`
 **Description**: Discover one (or all) pipeline modules and call their
 `register_tools(mcp_instance)` function against the global singleton. Each
-target module owns its tool definitions via `src/<module>/mcp.py`.
+target module owns its tool definitions via `src/gnn/<module>/mcp.py`.
 
 **Parameters**:
 - `module_name` (Optional[str]): Single module to register (e.g. `"gnn"`).
@@ -207,7 +207,8 @@ override applies):
 | `strict_validation` | `False` (from mode) | `initialize(strict_validation=...)` / `MCP(strict_validation=...)` |
 | `enable_caching` | `False` (from mode) | `initialize(enable_caching=...)` / `MCP(enable_caching=...)` |
 | `enable_rate_limiting` | `False` (from mode) | `initialize(enable_rate_limiting=...)` |
-| `cache_ttl` | `300.0` s | `initialize(cache_ttl=...)` |
+| `cache_ttl` | `300.0` s | `initialize(cache_ttl=...)` — default TTL for entries stored by result-cache-eligible tools |
+| `tool_timeout` | `None` (un-timed) | `initialize(tool_timeout=...)` — default timeout (seconds) for tools that did not register one; `None` leaves such tools un-timed |
 | `per_module_timeout` | `30.0` s | `initialize(per_module_timeout=...)` |
 | `overall_timeout` | `120.0` s | `initialize(overall_timeout=...)` |
 | `modules_allowlist` | `None` (all modules) | `initialize(modules_allowlist=...)` |
