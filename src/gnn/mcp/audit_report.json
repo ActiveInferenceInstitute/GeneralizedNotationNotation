@@ -1,8 +1,45 @@
 {
-  "modules_total": 34,
-  "modules_loaded": 34,
+  "modules_total": 35,
+  "modules_loaded": 35,
   "modules_errored": 0,
-  "tools_total": 146,
+  "tools_total": 156,
+  "modules_list": [
+    "advanced_visualization",
+    "analysis",
+    "api",
+    "audio",
+    "cli",
+    "doc",
+    "execute",
+    "export",
+    "extract",
+    "gnn",
+    "gui",
+    "integration",
+    "intelligent_analysis",
+    "llm",
+    "lsp",
+    "mcp",
+    "meta_mcp",
+    "ml_integration",
+    "model_registry",
+    "multimodel",
+    "ontology",
+    "pipeline",
+    "render",
+    "report",
+    "research",
+    "sapf",
+    "security",
+    "setup",
+    "sympy_mcp",
+    "template",
+    "type_checker",
+    "utils",
+    "validation",
+    "visualization",
+    "website"
+  ],
   "tools_list": [
     {
       "name": "analyze_audio_characteristics",
@@ -331,6 +368,70 @@
       "fn": "get_logging_info_tool",
       "documented": true,
       "description": "Get current logging configuration and status for all loggers."
+    },
+    {
+      "name": "get_mcp_diagnostics",
+      "module": "meta",
+      "category": "Diagnostics",
+      "fn": "get_mcp_diagnostics",
+      "documented": true,
+      "description": "Get comprehensive diagnostic information for troubleshooting and monitoring, including health checks and recommendations"
+    },
+    {
+      "name": "get_mcp_module_info",
+      "module": "meta",
+      "category": "Diagnostics",
+      "fn": "get_mcp_module_info",
+      "documented": true,
+      "description": "Get detailed information about a specific loaded module, including its tools and resources."
+    },
+    {
+      "name": "get_mcp_performance_metrics",
+      "module": "meta",
+      "category": "Performance",
+      "fn": "get_mcp_performance_metrics",
+      "documented": true,
+      "description": "Get performance metrics and statistics for the MCP server, including execution times and error rates."
+    },
+    {
+      "name": "get_mcp_server_auth_status",
+      "module": "meta",
+      "category": "Security",
+      "fn": "get_mcp_auth_status",
+      "documented": true,
+      "description": "Describes the current authentication mechanisms and security configuration of the MCP server."
+    },
+    {
+      "name": "get_mcp_server_capabilities",
+      "module": "meta",
+      "category": "Server Info",
+      "fn": "get_capabilities",
+      "documented": true,
+      "description": "Retrieves the full capabilities description of this MCP server, including all tools and resources."
+    },
+    {
+      "name": "get_mcp_server_encryption_status",
+      "module": "meta",
+      "category": "Security",
+      "fn": "get_mcp_encryption_status",
+      "documented": true,
+      "description": "Describes the current encryption status for server transport and data handling with security recommendations."
+    },
+    {
+      "name": "get_mcp_server_status",
+      "module": "meta",
+      "category": "Server Info",
+      "fn": "get_mcp_server_status",
+      "documented": true,
+      "description": "Provides comprehensive operational status of the MCP server, including uptime, modules, and performance metrics."
+    },
+    {
+      "name": "get_mcp_tool_categories",
+      "module": "meta",
+      "category": "Discovery",
+      "fn": "get_mcp_tool_categories",
+      "documented": true,
+      "description": "Get tools organized by category for easier discovery and navigation."
     },
     {
       "name": "get_ml_module_info",
@@ -1053,6 +1154,14 @@
       "description": "Get information about the template step"
     },
     {
+      "name": "template.list",
+      "module": "gnn.template",
+      "category": "template",
+      "fn": "list_templates_mcp",
+      "documented": true,
+      "description": "List maintained templates with checksums (CLI `gnn templates list` parity)"
+    },
+    {
       "name": "template.process_directory",
       "module": "gnn.template",
       "category": "template",
@@ -1075,6 +1184,14 @@
       "fn": "pull_template_mcp",
       "documented": true,
       "description": "Pull a maintained template into an output directory"
+    },
+    {
+      "name": "template.show",
+      "module": "gnn.template",
+      "category": "template",
+      "fn": "show_template_mcp",
+      "documented": true,
+      "description": "Show one maintained template record with checksum metadata (CLI `gnn templates show` parity)"
     },
     {
       "name": "validate_audio_content",
@@ -1173,9 +1290,10 @@
       "description": "Validate a single GNN file for syntax and type correctness."
     }
   ],
+  "duplicate_registrations": [],
   "spot_checks_ok": 14,
   "spot_checks_err": 0,
-  "schema_checks_ok": 146,
+  "schema_checks_ok": 156,
   "schema_checks_err": 0,
   "logging_ok": 31,
   "logging_miss": 0,
