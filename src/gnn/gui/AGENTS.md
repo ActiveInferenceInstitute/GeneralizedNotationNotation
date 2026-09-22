@@ -526,7 +526,7 @@ arguments. Registrations live in `src/gnn/gui/mcp.py`.
 
 ## Version History
 
-### Current Version: 3.2.0
+### Current Version: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 **Features**:
 - Multiple GUI implementations (GUI 1, GUI 2, GUI 3, oxdraw)

@@ -14,7 +14,7 @@ delegates its body to `multi_format_processor.process_gnn_multi_format`;
 
 **Status**: Production Ready
 
-**Version**: 3.2.0
+**Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 **Last Updated**: 2026-09-06
 

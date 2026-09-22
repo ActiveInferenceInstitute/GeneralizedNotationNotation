@@ -10,7 +10,7 @@
 
 **Status**: Maintained
 
-**Version**: 3.5.0
+**Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 **Last Updated**: 2026-09-22
 
@@ -591,7 +591,7 @@ across the viz graph (55661abc0, 2026-09-21).
 **Last Updated**: 2026-09-22
 **Maintainer**: GNN Pipeline Team
 **Status**: Maintained
-**Version**: 3.5.0
+**Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 **Architecture Compliance**: Thin Orchestrator Pattern
 
 

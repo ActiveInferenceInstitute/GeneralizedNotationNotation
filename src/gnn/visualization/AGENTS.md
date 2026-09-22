@@ -10,7 +10,7 @@
 
 **Status**: Production Ready
 
-**Version**: 3.2.0
+**Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 **Last Updated**: 2026-09-04
 
@@ -453,7 +453,7 @@ python src/gnn/8_visualization.py --verbose --target-dir input/gnn_files
   `generate_network_visualizations`, `generate_combined_analysis`, and the new pure
   helpers.
 
-### Current Version: 3.2.0
+### Current Version: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 **Features**:
 - Graph visualization generation
@@ -489,7 +489,7 @@ python src/gnn/8_visualization.py --verbose --target-dir input/gnn_files
 **Last Updated**: 2026-09-04
 **Maintainer**: GNN Pipeline Team
 **Status**: Production Ready
-**Version**: 3.2.0
+**Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 ---
 ## Documentation

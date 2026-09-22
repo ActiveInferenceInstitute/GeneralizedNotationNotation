@@ -10,7 +10,7 @@
 
 **Status**: Production Ready
 
-**Version**: 3.2.0 (package version; the module-level `__version__` in `__init__.py` is tracked independently)
+**Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 **Last Updated**: 2026-09-02
 
@@ -294,7 +294,7 @@ def register_tools(mcp_instance):
 
 ## Version History
 
-### Current Version: 3.2.0
+### Current Version: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 **Features**:
 - SAPF code generation
@@ -329,7 +329,7 @@ def register_tools(mcp_instance):
 **Last Updated**: 2026-09-02
 **Maintainer**: GNN Pipeline Team
 **Status**: Production Ready
-**Version**: 3.2.0
+**Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 **Architecture Compliance**: Thin Orchestrator Pattern
 
 

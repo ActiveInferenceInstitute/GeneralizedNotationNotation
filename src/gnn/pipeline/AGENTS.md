@@ -19,7 +19,7 @@ additionally wires run sessions + durable streams into the `gnn.main` compositio
 `00_pipeline_summary/run_session.json` + `v3_run_manifest/`). Reference:
 [`docs/pipeline/v3_orchestration.md`](../../../docs/pipeline/v3_orchestration.md).
 
-**Version**: 3.2.1
+**Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 **Last Updated**: 2026-09-10
 
@@ -504,7 +504,7 @@ Internal quality pass; every external entry point's behavior is preserved:
   `DEFAULT_TARGET_DIR`, `DEFAULT_OUTPUT_DIR`).
 - **PipelineContext** removed 2026-09-15 (N-4: delete) — production-dead; `StepStatus` re-homed to `pipeline.schemas`.
 
-### Current Version: 3.2.0
+### Current Version: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 **Features**:
 
@@ -542,7 +542,7 @@ Internal quality pass; every external entry point's behavior is preserved:
 **Last Updated**: 2026-09-04
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 3.2.0
+**Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 

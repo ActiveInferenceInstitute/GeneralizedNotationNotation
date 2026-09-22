@@ -48,7 +48,7 @@
 ### 📚 Initial Publication
 
 **Smékal, J., & Friedman, D. A. (2023)**. *Generalized Notation Notation for Active Inference Models*. Active Inference Journal.  
-**Version**: 3.4.0 ("Model-Kind Truth")
+**Version**: [pyproject.toml](pyproject.toml) (canonical)
 **Status**: Beta package with maintained validation gates (Active Inference Institute)
 
 **Toolchain**: The committed `uv.lock` is the dependency source of truth (`uv lock --check` and `uv sync --frozen` must pass); the Dockerfile constraint `uv>=0.7.8` is the minimum bootstrap floor. Ruff lint and MyPy gates are maintained clean on `src/`.

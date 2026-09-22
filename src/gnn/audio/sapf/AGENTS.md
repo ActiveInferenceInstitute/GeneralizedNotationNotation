@@ -215,7 +215,7 @@ from gnn.audio.sapf.module_info import register_tools
 
 ## Version History
 
-### Current Version: 3.2.0
+### Current Version: [pyproject.toml](../../../../pyproject.toml) (canonical)
 
 **Features**:
 - GNN -> SAPF code generation

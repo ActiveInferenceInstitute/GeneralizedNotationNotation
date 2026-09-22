@@ -7,7 +7,7 @@
 **Parent Module**: `gui/` (Interactive GNN Constructors)
 **Category**: Interactive Visualization / Model Construction
 **Status**: Production Ready
-**Version**: 3.2.0
+**Version**: [pyproject.toml](../../../../pyproject.toml) (canonical)
 **Last Updated**: 2026-04-16
 
 ---

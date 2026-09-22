@@ -1,6 +1,6 @@
 # ngc-learn Renderer — Technical Specification
 
-**Version**: 1.0.0
+**Version**: [pyproject.toml](../../../../pyproject.toml) (canonical)
 
 ## Purpose
 
