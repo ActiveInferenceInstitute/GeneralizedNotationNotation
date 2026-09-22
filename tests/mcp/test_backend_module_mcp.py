@@ -72,9 +72,7 @@ class TestBackendModuleRegistration:
         for name in registered:
             assert name in mcp_scoped.tools, f"missing tool: {name}"
 
-    def test_tool_module_metadata_matches_directory_name(
-        self, mcp_scoped: MCP
-    ) -> None:
+    def test_tool_module_metadata_matches_directory_name(self, mcp_scoped: MCP) -> None:
         """Each tool's module metadata must reflect its owning directory
         (defaulted through the discovery registration context)."""
         for mod_name, tools in EXPECTED_TOOLS.items():

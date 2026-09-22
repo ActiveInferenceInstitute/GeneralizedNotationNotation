@@ -93,9 +93,7 @@ def parse_gnn_syntax_mcp(file_path: str) -> Dict[str, Any]:
             "parameters": dict(parsed.parameters),
         }
 
-    return run_tool_envelope(
-        _build, wrapper_name="parse_gnn_syntax_mcp", logger=logger
-    )
+    return run_tool_envelope(_build, wrapper_name="parse_gnn_syntax_mcp", logger=logger)
 
 
 # ── MCP Registration ────────────────────────────────────────────────────────

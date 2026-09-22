@@ -166,9 +166,7 @@ def register_tools(mcp_instance: Any) -> None:
             },
             "required": ["directory"],
         },
-        description=(
-            "Discover GNN model files in a directory and return their paths."
-        ),
+        description=("Discover GNN model files in a directory and return their paths."),
         module=__package__,
         category="processing",
     )
