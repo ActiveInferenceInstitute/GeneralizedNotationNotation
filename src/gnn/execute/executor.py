@@ -87,9 +87,6 @@ def _load_lean() -> tuple[bool, Any]:
     from .lean.lean_runner import lean_toolchain_available, run_lean_scripts
 
     return lean_toolchain_available(), run_lean_scripts
-    from .lean.lean_runner import lean_toolchain_available, run_lean_scripts
-
-    return lean_toolchain_available(), run_lean_scripts
 
 
 _RUNNER_LOADERS: dict[str, Callable[[], tuple[bool, Any]]] = {
