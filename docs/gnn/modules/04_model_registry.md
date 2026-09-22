@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/gnn/4_model_registry.py` (66 lines)
+**Orchestrator**: `src/gnn/4_model_registry.py` (61 lines)
 **Implementation Layer**: `src/gnn/model_registry/`
 
 ## Module Description

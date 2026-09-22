@@ -1197,8 +1197,8 @@ def process_validation(
 #### Using Pipeline Validation Script
 
 ```bash
-# Run pipeline validation
-python -m pipeline.pipeline_validation
+# Run the pipeline runtime validator (E2E via subprocess)
+python -m gnn.pipeline.pipeline_runtime_validator
 
 # Run preflight checks
 python -m cli preflight
@@ -1266,7 +1266,7 @@ Provide:
 
 ### 13.1 Pipeline Validation Module
 
-**Location**: `src/gnn/pipeline/pipeline_validation.py`
+**Location**: `src/gnn/pipeline/pipeline_runtime_validator.py`
 
 **Capabilities**:
 
@@ -1281,7 +1281,7 @@ Provide:
 **Usage**:
 
 ```bash
-python -m pipeline.pipeline_validation
+python -m gnn.pipeline.pipeline_runtime_validator
 ```
 
 ### 13.2 Validation Module
@@ -1319,11 +1319,6 @@ python -m pipeline.pipeline_validation
 """
 Step N: [Module Name] (Thin Orchestrator)
 """
-
-import sys
-from pathlib import Path
-
-sys.path.insert(0, str(Path(__file__).parent))
 
 from gnn.utils.pipeline_orchestration.pipeline_template import (
     setup_step_logging,

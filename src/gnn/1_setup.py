@@ -8,12 +8,8 @@ details in `src/setup/README.md` so this numbered step stays orchestration-only.
 """
 
 import logging
-import sys
 from pathlib import Path
 from typing import Any, cast
-
-# Add src to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from gnn.setup import (
     setup_complete_environment,

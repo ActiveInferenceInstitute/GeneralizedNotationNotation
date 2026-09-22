@@ -29,12 +29,7 @@ If you encounter errors:
   - Verify mcp configuration and requirements
 """
 
-import sys
-from pathlib import Path
 from typing import cast
-
-# Add src to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent))
 
 # Hard import: mcp is a core module and must always be available.
 from gnn.mcp import process_mcp

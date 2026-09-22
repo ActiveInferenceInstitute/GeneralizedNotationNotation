@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/gnn/10_ontology.py` (59 lines)
+**Orchestrator**: `src/gnn/10_ontology.py` (55 lines)
 **Implementation Layer**: `src/gnn/ontology/`
 
 ## Module Description

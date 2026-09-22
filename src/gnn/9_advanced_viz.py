@@ -9,12 +9,7 @@ How to run:
   uv run python src/gnn/main.py  # (runs as part of the pipeline)
 """
 
-import sys
-from pathlib import Path
 from typing import cast
-
-# Add src to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from gnn.advanced_visualization import VIZ_TYPE_CHOICES, process_advanced_viz
 from gnn.utils.pipeline_orchestration.pipeline_template import (
