@@ -188,7 +188,7 @@ def record_render_manifest(project_root: Path) -> dict:
             "committed render artifacts missing: "
             f"{sorted(set(missing))} — run the template's stage_03_render "
             "before recording the custody manifest"
-    )
+        )
     sanitized = _sanitize_personal_paths(project_root)
 
     receipt_path = project_root / _RECEIPT_REL
