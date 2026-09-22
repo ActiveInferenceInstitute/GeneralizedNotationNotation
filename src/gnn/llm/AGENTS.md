@@ -567,13 +567,13 @@ configs["ollama"]["default_max_tokens"] = 1024
 ## Integration Points
 
 ### Pipeline Integration
-- **Input**: Re-parses GNN files from the target directory; optionally injects `10_ontology_output/ontology_results.json` when Step 10 has run
+- **Input**: Re-parses GNN files from the target directory; optionally injects `10_ontology_output/ontology_results.json` when Step 10 has run, and a compact cross-framework comparison summary when `{model}_comparison.html` exists under `12_execute_output/` (Step 12 → Step 13)
 - **Output**: Writes standalone analyses to `output/13_llm_output/`, consumed by Step 20 (website) and Step 23 (report) through their output-dir scans
-- **Dependencies**: No step artifacts required; optional read of Step 10's `ontology_results.json`
+- **Dependencies**: No step artifacts required; optional reads of Step 10's `ontology_results.json` and the Step 12 cross-framework comparison artifact
 
 ### Module Dependencies
 - **gnn/**: GNN content is re-read from raw files for analysis
-- **ontology/**: Optionally injects `ontology_results.json` into prompts (Step 10 → Step 13)
+- **execute/**: Optionally injects a compact cross-framework comparison status summary into prompts (Step 12 → Step 13)
 - **analysis/**: Step 16 does not read `13_llm_output`; the documented 'LLM insights → analysis' edge does not exist at runtime
 - **report/website**: Consume Step 13 outputs only via their uniform output-dir scans
 
@@ -586,6 +586,8 @@ configs["ollama"]["default_max_tokens"] = 1024
 input/gnn_files (re-parsed by 13_llm.py)
   ↓
 10_ontology_output/ontology_results.json [optional injection]
+  ↓
+12_execute_output/{model}_comparison.html [optional injection]
   ↓
 13_llm.py (LLM analysis)
   ↓

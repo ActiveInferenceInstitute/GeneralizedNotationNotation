@@ -2,7 +2,7 @@
   "modules_total": 36,
   "modules_loaded": 36,
   "modules_errored": 0,
-  "tools_total": 161,
+  "tools_total": 162,
   "modules_list": [
     "advanced_visualization",
     "analysis",
@@ -1059,6 +1059,14 @@
       "description": "Render a single GNN file to exactly one framework via render_gnn_spec."
     },
     {
+      "name": "run_cross_framework_comparison",
+      "module": "gnn.execute",
+      "category": "execute",
+      "fn": "run_cross_framework_comparison_mcp",
+      "documented": true,
+      "description": "Render one GNN model to every registered backend, execute each, and write a cross-framework comparison HTML page with per-framework status receipts."
+    },
+    {
       "name": "run_round_trip_tests",
       "module": "gnn.gnn",
       "category": "gnn",
@@ -1334,7 +1342,7 @@
   "duplicate_registrations": [],
   "spot_checks_ok": 14,
   "spot_checks_err": 0,
-  "schema_checks_ok": 161,
+  "schema_checks_ok": 162,
   "schema_checks_err": 0,
   "logging_ok": 32,
   "logging_miss": 0,

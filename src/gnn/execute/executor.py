@@ -89,6 +89,12 @@ def _load_lean() -> tuple[bool, Any]:
     return lean_toolchain_available(), run_lean_scripts
 
 
+def _load_stan() -> tuple[bool, Any]:
+    from .stan.stan_runner import is_stan_available, run_stan_scripts
+
+    return is_stan_available(), run_stan_scripts
+
+
 _RUNNER_LOADERS: dict[str, Callable[[], tuple[bool, Any]]] = {
     "pymdp": _load_pymdp,
     "rxinfer": _load_rxinfer,
@@ -99,6 +105,7 @@ _RUNNER_LOADERS: dict[str, Callable[[], tuple[bool, Any]]] = {
     "pytorch": _load_pytorch,
     "lean": _load_lean,
     "ngclearn": _load_ngclearn,
+    "stan": _load_stan,
 }
 
 
@@ -141,6 +148,8 @@ FRAMEWORK_DIR_NAMES: tuple[str, ...] = (
     "pytorch",
     "ngclearn",
     "lean",
+    "stan",
+    "bnlearn",
 )
 
 
@@ -286,6 +295,26 @@ class GNNExecutor:
                 result = self._execute_lean_verification(
                     model_path, options, timeout=timeout
                 )
+            elif execution_type == "activeinference_jl":
+                result = self._execute_activeinference_script(
+                    model_path, options, timeout=timeout, cancel_token=cancel_token
+                )
+            elif execution_type == "numpyro":
+                result = self._execute_numpyro_script(
+                    model_path, options, timeout=timeout, cancel_token=cancel_token
+                )
+            elif execution_type == "pytorch":
+                result = self._execute_pytorch_script(
+                    model_path, options, timeout=timeout, cancel_token=cancel_token
+                )
+            elif execution_type == "ngclearn":
+                result = self._execute_ngclearn_script(
+                    model_path, options, timeout=timeout, cancel_token=cancel_token
+                )
+            elif execution_type == "stan":
+                result = self._execute_stan_script(model_path, options, timeout=timeout)
+            elif execution_type == "bnlearn":
+                result = self._execute_bnlearn_script()
             else:
                 result = {
                     "success": False,
@@ -475,17 +504,24 @@ class GNNExecutor:
         *,
         cancel_token: Optional[CancelToken] = None,
     ) -> Dict[str, Any]:
-        """Execute an RxInfer.jl configuration."""
-        # This would typically involve calling Julia
+        """Execute an RxInfer.jl script or TOML config via the committed runner.
+
+        Both .jl and .toml inputs route through ``execute_rxinfer_script``
+        (the committed RxInfer.jl project environment); this dispatch
+        synthesizes its envelope from the runner's verdict and the evidence
+        sidecars it persists beside the script.
+        """
         cache_key, cached = self._dispatch_cache_lookup("julia", config_path)
         if cached is not None:
             cached["cache_hit"] = True
             return cached
-        envelope = run_subprocess_envelope(
-            ["julia", config_path],  # nosec B607 B603
-            timeout=timeout or 300,
-            cancel_token=cancel_token,
+        from .rxinfer.rxinfer_runner import execute_rxinfer_script
+
+        script = Path(config_path)
+        success = execute_rxinfer_script(
+            script, timeout=timeout or 300, cancel_token=cancel_token
         )
+        envelope = _synthesize_rxinfer_envelope(script, success)
         self._store_dispatch_envelope(cache_key, envelope)
         return envelope
 
@@ -530,6 +566,131 @@ class GNNExecutor:
         )
         self._store_dispatch_envelope(cache_key, envelope)
         return envelope
+
+    def _execute_python_script(
+        self,
+        script_path: str,
+        timeout: Optional[int] = None,
+        *,
+        cancel_token: Optional[CancelToken] = None,
+    ) -> Dict[str, Any]:
+        """Run one rendered Python framework script under ``sys.executable``.
+
+        Shared by the numpyro, pytorch, and ngclearn dispatches; mirrors the
+        JAX envelope contract.
+        """
+        cache_key, cached = self._dispatch_cache_lookup(sys.executable, script_path)
+        if cached is not None:
+            cached["cache_hit"] = True
+            return cached
+        envelope = run_subprocess_envelope(
+            [sys.executable, script_path],
+            timeout=timeout or 300,
+            cancel_token=cancel_token,
+        )
+        self._store_dispatch_envelope(cache_key, envelope)
+        return envelope
+
+    def _execute_numpyro_script(
+        self,
+        script_path: str,
+        options: Optional[Dict[str, Any]] = None,
+        timeout: Optional[int] = None,
+        *,
+        cancel_token: Optional[CancelToken] = None,
+    ) -> Dict[str, Any]:
+        """Execute a NumPyro script."""
+        return self._execute_python_script(
+            script_path, timeout, cancel_token=cancel_token
+        )
+
+    def _execute_pytorch_script(
+        self,
+        script_path: str,
+        options: Optional[Dict[str, Any]] = None,
+        timeout: Optional[int] = None,
+        *,
+        cancel_token: Optional[CancelToken] = None,
+    ) -> Dict[str, Any]:
+        """Execute a PyTorch script."""
+        return self._execute_python_script(
+            script_path, timeout, cancel_token=cancel_token
+        )
+
+    def _execute_ngclearn_script(
+        self,
+        script_path: str,
+        options: Optional[Dict[str, Any]] = None,
+        timeout: Optional[int] = None,
+        *,
+        cancel_token: Optional[CancelToken] = None,
+    ) -> Dict[str, Any]:
+        """Execute an ngc-learn script."""
+        return self._execute_python_script(
+            script_path, timeout, cancel_token=cancel_token
+        )
+
+    def _execute_activeinference_script(
+        self,
+        script_path: str,
+        options: Optional[Dict[str, Any]] = None,
+        timeout: Optional[int] = None,
+        *,
+        cancel_token: Optional[CancelToken] = None,
+    ) -> Dict[str, Any]:
+        """Execute a rendered ActiveInference.jl script."""
+        script = Path(script_path)
+        project_dir = Path(__file__).parent / "activeinference_jl"
+        cache_key, cached = self._dispatch_cache_lookup("julia", script_path)
+        if cached is not None:
+            cached["cache_hit"] = True
+            return cached
+        from .julia_env import julia_subprocess_env
+
+        env = julia_subprocess_env()
+        env.setdefault("JULIA_PROJECT", str(project_dir))
+        envelope = run_subprocess_envelope(
+            ["julia", f"--project={project_dir}", str(script)],  # nosec B607 B603
+            timeout=timeout or 600,
+            env=env,
+            cwd=str(script.parent),
+            cancel_token=cancel_token,
+        )
+        self._store_dispatch_envelope(cache_key, envelope)
+        return envelope
+
+    def _execute_stan_script(
+        self,
+        script_path: str,
+        options: Optional[Dict[str, Any]] = None,
+        timeout: Optional[int] = None,
+    ) -> Dict[str, Any]:
+        """Execute a rendered Stan driver; skip cleanly without cmdstanpy."""
+        state = _runner_state("stan")
+        if not state.available:
+            return {
+                "success": False,
+                "skipped": True,
+                "status": "skipped",
+                "error": "cmdstanpy/CmdStan not installed (uv sync --extra stan)",
+            }
+        from .stan.stan_runner import execute_stan_script
+
+        opts = options or {}
+        output_dir = opts.get("output_dir") or Path(script_path).parent
+        return execute_stan_script(script_path, output_dir, timeout=timeout or 1800)
+
+    def _execute_bnlearn_script(self) -> Dict[str, Any]:
+        """bnlearn is render-only: the executor registry never runs it."""
+        return {
+            "success": False,
+            "skipped": True,
+            "status": "skipped",
+            "error": (
+                "bnlearn is render-only; rendered bnlearn scripts execute via "
+                "the Step 12 script path (BNLEARN_OUTPUT_DIR) with dependency skips"
+            ),
+        }
 
     def execute_simulation_from_gnn(
         self,
@@ -619,6 +780,64 @@ def generate_execution_report(
     return executor.generate_execution_report(output_file)
 
 
+def _read_text_sidecar(path: Path) -> str:
+    """Read a persisted sidecar file, or return an empty string if absent."""
+    try:
+        return path.read_text()
+    except OSError:
+        return ""
+
+
+def _synthesize_rxinfer_envelope(script_path: Path, success: bool) -> Dict[str, Any]:
+    """Build a dispatch envelope from ``execute_rxinfer_script``'s verdict.
+
+    The committed runner persists ``{stem}_stdout.txt`` / ``{stem}_stderr.txt``
+    and an ``{stem}_execution_log.json`` beside the script; stdout/stderr are
+    read back from those sidecars and the elapsed time from the log when
+    present.
+    """
+    stem = script_path.stem
+    envelope: Dict[str, Any] = {
+        "success": bool(success),
+        "return_code": 0 if success else 1,
+        "stdout": _read_text_sidecar(script_path.parent / f"{stem}_stdout.txt"),
+        "stderr": _read_text_sidecar(script_path.parent / f"{stem}_stderr.txt"),
+    }
+    try:
+        log = json.loads(
+            _read_text_sidecar(script_path.parent / f"{stem}_execution_log.json")
+        )
+        envelope["elapsed_seconds"] = float(log["elapsed_seconds"])
+    except (ValueError, KeyError, TypeError):
+        pass
+    return envelope
+
+
+def _run_stan_registry(
+    rendered_simulators_dir: Path,
+    execution_output_dir: Path,
+    recursive_search: bool,  # noqa: ARG001 - uniform registry runner signature
+    verbose: bool,
+    timeout: Optional[int],
+) -> bool:
+    """Registry adapter mapping ``run_stan_scripts`` records to the bool contract.
+
+    ``run_stan_scripts`` already emits skip receipts (never FAILED) when
+    cmdstanpy is missing; the run succeeds when every record is a success
+    or a skip, including the empty-tree case.
+    """
+    from .stan.stan_runner import run_stan_scripts
+
+    records = run_stan_scripts(
+        render_output_dir=rendered_simulators_dir,
+        output_dir=execution_output_dir,
+        timeout=timeout or 1800,
+    )
+    return all(
+        bool(record.get("success")) or bool(record.get("skipped")) for record in records
+    )
+
+
 def _framework_specs() -> tuple[ExecutorFrameworkSpec, ...]:
     """Return framework specs with availability resolved via _runner_state."""
     pymdp_state = _runner_state("pymdp")
@@ -630,6 +849,7 @@ def _framework_specs() -> tuple[ExecutorFrameworkSpec, ...]:
     pytorch_state = _runner_state("pytorch")
     ngclearn_state = _runner_state("ngclearn")
     lean_state = _runner_state("lean")
+    stan_state = _runner_state("stan")
     return (
         ExecutorFrameworkSpec(
             framework_dir_key="pymdp",
@@ -793,6 +1013,47 @@ def _framework_specs() -> tuple[ExecutorFrameworkSpec, ...]:
             ),
             success_log="Lean document verification completed",
             warning_log_prefix="Lean verification failed",
+        ),
+        ExecutorFrameworkSpec(
+            framework_dir_key="stan",
+            result_key="stan_executions",
+            available=stan_state.available,
+            runner=_run_stan_registry,
+            operation_name="execute_stan_scripts",
+            start_message="🚀 Executing Stan drivers...",
+            success_message="Stan scripts executed successfully",
+            failure_message="Stan script execution failed",
+            unavailable_log=(
+                "ℹ️ Stan framework not available - skipping Stan execution "
+                "(install with: uv sync --extra stan)"
+            ),
+            unavailable_message=(
+                "Stan framework not installed "
+                "(cmdstanpy/CmdStan not installed (uv sync --extra stan))"
+            ),
+            success_log="Stan script execution completed",
+            warning_log_prefix="Stan script execution failed",
+        ),
+        ExecutorFrameworkSpec(
+            framework_dir_key="bnlearn",
+            result_key="bnlearn_executions",
+            available=False,
+            runner=None,
+            operation_name="execute_bnlearn_scripts",
+            start_message="🚀 Executing bnlearn scripts...",
+            success_message="bnlearn scripts executed successfully",
+            failure_message="bnlearn script execution failed",
+            unavailable_log=(
+                "ℹ️ bnlearn is render-only - skipping bnlearn execution "
+                "(rendered bnlearn scripts execute via the Step 12 script "
+                "path (BNLEARN_OUTPUT_DIR) with dependency skips)"
+            ),
+            unavailable_message=(
+                "bnlearn is render-only; rendered bnlearn scripts execute via "
+                "the Step 12 script path (BNLEARN_OUTPUT_DIR) with dependency skips"
+            ),
+            success_log="bnlearn script execution completed",
+            warning_log_prefix="bnlearn script execution failed",
         ),
     )
 
@@ -1109,6 +1370,18 @@ def _write_execution_report(
             "Lean verification",
             execution_results["lean_executions"],
             "Lean Documents",
+        )
+        _write_framework_report_section(
+            f,
+            "Stan Executions",
+            execution_results["stan_executions"],
+            "Stan Drivers",
+        )
+        _write_framework_report_section(
+            f,
+            "bnlearn Executions",
+            execution_results["bnlearn_executions"],
+            "bnlearn Scripts",
         )
 
         f.write("## Recommendations\n\n")

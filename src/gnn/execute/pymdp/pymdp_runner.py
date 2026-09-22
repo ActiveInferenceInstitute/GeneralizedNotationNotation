@@ -463,8 +463,9 @@ def run_pymdp_scripts(
         exec_output_dir, execution_results, success_count, failure_count, total_count
     )
 
-    # Consider the overall run successful if any scripts succeeded
-    return failure_count == 0 or success_count > 0
+    # Aligned with the other runners: any script failure fails the run;
+    # a render tree with no scripts stays a success.
+    return failure_count == 0
 
 
 def create_execution_report(

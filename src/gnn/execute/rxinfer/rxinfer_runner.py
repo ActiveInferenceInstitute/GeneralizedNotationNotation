@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 from gnn.execute.julia_env import julia_subprocess_env
 from gnn.execute.julia_setup import is_julia_available
 from gnn.execute.security_gate import check_script_allowed
-from gnn.execute.subprocess_envelope import run_subprocess_envelope
+from gnn.execute.subprocess_envelope import CancelToken, run_subprocess_envelope
 
 
 def find_rxinfer_scripts(
@@ -59,6 +59,8 @@ def execute_rxinfer_script(
     verbose: bool = False,
     output_dir: Optional[Path] = None,
     timeout: int = 300,
+    *,
+    cancel_token: Optional[CancelToken] = None,
 ) -> bool:
     """Execute a single RxInfer.jl script.
 
@@ -70,6 +72,8 @@ def execute_rxinfer_script(
             script's own directory when omitted. Evidence is written on every
             completed run — success, failure, and timeout alike.
         timeout: Execution timeout in seconds (default: 300).
+        cancel_token: Optional cooperative cancellation token threaded into
+            the subprocess envelope (aborts the Julia process on cancel).
         The subprocess runs with the shared Julia environment:
         ``GKSwstype=100`` headless-GR default (a caller-set ``GKSwstype``
         wins).
@@ -163,6 +167,7 @@ def execute_rxinfer_script(
         cmd,
         timeout=timeout,
         env=julia_subprocess_env(),
+        cancel_token=cancel_token,
     )
 
     # Process the execution result — every outcome below means the run

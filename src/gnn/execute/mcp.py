@@ -2,14 +2,14 @@
 MCP integration for the execute module.
 
 Exposes GNN execution tools: pipeline execution driver, single-model
-GNN execution, PyMDP simulation runner, dependency checker,
-and module introspection through MCP.
+GNN execution, PyMDP simulation runner, cross-framework comparison,
+dependency checker, and module introspection through MCP.
 """
 
 import dataclasses
 import logging
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -220,6 +220,69 @@ def execute_pymdp_simulation_mcp(
         return {"success": False, "error": str(e)}
 
 
+def run_cross_framework_comparison_mcp(
+    gnn_file_path: str,
+    output_directory: str,
+    timeout: Optional[int] = None,
+) -> Dict[str, Any]:
+    """
+    Render and compare one GNN model across every registered backend.
+
+    Delegates to ``analysis.rxinfer.cross_framework.compare_with_status``,
+    which renders the model to RxInfer.jl, PyMDP, ActiveInference.jl, JAX,
+    PyTorch, and NumPyro from one parsed spec, executes each backend, and
+    writes a self-contained HTML comparison page. Backends whose
+    dependencies are missing yield ``unavailable`` skip receipts — never
+    execution failures.
+
+    Args:
+        gnn_file_path: Path to the ``.md`` GNN model file.
+        output_directory: Directory receiving per-framework artifacts and
+            the comparison HTML.
+        timeout: Optional per-backend execution timeout in seconds.
+
+    Returns:
+        Dictionary with ``success``, the ``comparison_html`` path, and a
+        per-framework status breakdown (``frameworks`` list with
+        ``framework``, ``status``, ``detail`` records).
+    """
+    try:
+        gnn_path = _resolve_gnn_model_path(
+            gnn_file_path,
+            purpose="GNN model file",
+        )
+        output_path = _resolve_output_directory(
+            output_directory,
+            purpose="Cross-framework comparison output directory",
+        )
+
+        def _build() -> Dict[str, Any]:
+            from gnn.analysis.rxinfer.cross_framework import compare_with_status
+
+            html_path, runs = compare_with_status(gnn_path, output_path, timeout)
+            succeeded = sum(1 for run in runs if run.status == "success")
+            return {
+                "success": True,
+                "comparison_html": html_path,
+                "frameworks": [dataclasses.asdict(run) for run in runs],
+                "frameworks_succeeded": succeeded,
+                "frameworks_total": len(runs),
+                "message": (
+                    f"Cross-framework comparison: {succeeded}/{len(runs)} "
+                    "frameworks succeeded"
+                ),
+            }
+
+        return run_tool_envelope(
+            _build,
+            wrapper_name="run_cross_framework_comparison_mcp",
+            logger=logger,
+        )
+    except Exception as e:
+        logger.error(f"run_cross_framework_comparison_mcp error: {e}", exc_info=True)
+        return {"success": False, "error": str(e)}
+
+
 def check_execute_dependencies_mcp() -> Dict[str, Any]:
     """Check which execution backend dependencies are installed.
 
@@ -278,6 +341,8 @@ def get_execute_module_info_mcp() -> Dict[str, Any]:
                 "execute_pymdp_simulation",
                 "check_execute_dependencies",
                 "get_execute_module_info",
+                "get_doctor_report",
+                "run_cross_framework_comparison",
             ],
         }
 
@@ -395,6 +460,32 @@ def register_tools(mcp_instance: Any) -> None:
     )
 
     mcp_instance.register_tool(
+        "run_cross_framework_comparison",
+        run_cross_framework_comparison_mcp,
+        {
+            "type": "object",
+            "properties": {
+                "gnn_file_path": {
+                    "type": "string",
+                    "description": "Path to the GNN model file",
+                },
+                "output_directory": {
+                    "type": "string",
+                    "description": "Directory for per-framework artifacts and the comparison HTML",
+                },
+                "timeout": {
+                    "type": "integer",
+                    "description": "Optional per-backend execution timeout in seconds",
+                },
+            },
+            "required": ["gnn_file_path", "output_directory"],
+        },
+        "Render one GNN model to every registered backend, execute each, and write a cross-framework comparison HTML page with per-framework status receipts.",
+        module=__package__,
+        category="execute",
+    )
+
+    mcp_instance.register_tool(
         "check_execute_dependencies",
         check_execute_dependencies_mcp,
         {},
@@ -439,4 +530,4 @@ def register_tools(mcp_instance: Any) -> None:
         category="execute",
     )
 
-    logger.info("execute module MCP tools registered (6 real domain tools).")
+    logger.info("execute module MCP tools registered (7 real domain tools).")

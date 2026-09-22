@@ -80,6 +80,7 @@ def test_register_tools_emits_expected_set(registered_tools: Dict[str, Any]) -> 
         "check_execute_dependencies",
         "get_execute_module_info",
         "get_doctor_report",
+        "run_cross_framework_comparison",
     }
     assert set(registered_tools) == expected, (
         f"Unexpected execute MCP tool set: {sorted(registered_tools)}"

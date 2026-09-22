@@ -47,24 +47,40 @@ grouping and filtering.
 
 ### cross_framework.py
 
-Implements roadmap **A6**: renders one GNN file to RxInfer.jl, PyMDP, and
-ActiveInference.jl from a single parsed spec, executes each, and emits a
-self-contained HTML comparison.
+Implements roadmap **A6**: renders one GNN file to six backends — RxInfer.jl,
+PyMDP, ActiveInference.jl, JAX, PyTorch, and NumPyro — from a single parsed
+spec, executes each, and emits a self-contained HTML comparison.
 
-- `run_cross_framework_comparison(gnn_file, output_dir) -> str` — entry point;
-  raises `FileNotFoundError` for a missing GNN file.
+- `compare_with_status(gnn_file, output_dir) -> tuple[str, list[FrameworkRun]]`
+  — primary entry point; returns the HTML path plus one `FrameworkRun` per
+  registered backend in display order. Raises `FileNotFoundError` for a
+  missing GNN file.
+- `run_cross_framework_comparison(gnn_file, output_dir) -> str` —
+  convenience wrapper that discards the per-framework records.
 - `render_comparison_html(model_name, runs, output_path) -> str` — pure
   renderer over `FrameworkRun` records, unit-testable without Julia.
 - `FrameworkRun` — dataclass carrying `framework`, `status`
   (`success` / `validation_failed` / `render_failed` / `execution_failed` /
   `unavailable` / `invalid_results`), `detail`, and optional `results`.
 
+Skip-not-failed receipts: the three Python lanes (jax, pytorch, numpyro)
+probe dependency importability in-process before rendering, and the Julia
+lanes probe the `julia` binary on PATH — a missing dependency yields an
+`unavailable` record, never an execution failure. Two consumers build on the
+same outcome records: the execute-module MCP tool
+`run_cross_framework_comparison` (wraps `compare_with_status` and surfaces
+per-backend statuses) and the Step-13 LLM processor, which reads the
+comparison HTML plus the sibling per-framework `simulation_results.json`
+files to inject a compact cross-framework meta section into its prompt.
+
 Exit-code contract: only exit 0 with `simulation_results.json` is a clean
 success; exit 1 with results is kept and flagged as `validation_failed`;
 anything else is `execution_failed` with the stderr tail logged at error
-level. PyMDP results are redirected into the per-framework directory via
-`PYMDP_OUTPUT_DIR`; both Julia backends run under their committed
-`--project` environments resolved relative to this file, not the CWD.
+level. The Python backends redirect results into the per-framework directory
+via their output environment variables (`PYMDP_OUTPUT_DIR`,
+`GNN_OUTPUT_DIR`, `PYTORCH_OUTPUT_DIR`, `NUMPYRO_OUTPUT_DIR`); both Julia
+backends run under their committed `--project` environments resolved
+relative to this file, not the CWD.
 Both Julia subprocesses run with the shared Julia environment (`GKSwstype=100` headless-GR default; a `GKSwstype` set in the caller's environment wins).
 
 ## Key Functions

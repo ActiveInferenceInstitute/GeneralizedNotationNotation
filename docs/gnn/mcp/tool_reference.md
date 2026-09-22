@@ -2,7 +2,7 @@
 
 Audit-backed quick reference for the GNN MCP server tool surface. Use `tests/mcp/test_mcp_audit.py` and `src/gnn/mcp/validate_tools.py` for the current live count. For full per-domain documentation see **[../modules/21_mcp.md](../modules/21_mcp.md)**.
 
-**161 tools across 36 modules** — see the generated [`src/gnn/mcp/audit_report.json`](../../../src/gnn/mcp/audit_report.json) for the authoritative current count (regenerate with `uv run python src/gnn/mcp/validate_tools.py`).
+**162 tools across 36 modules** — see the generated [`src/gnn/mcp/audit_report.json`](../../../src/gnn/mcp/audit_report.json) for the authoritative current count (regenerate with `uv run python src/gnn/mcp/validate_tools.py`).
 
 ## Full Tool Table
 
@@ -39,6 +39,7 @@ Audit-backed quick reference for the GNN MCP server tool surface. Use `tests/mcp
 | execute | `get_doctor_report` | Return one structured capability report: per-framework availability plus a Step 12 execution-readiness dry run (no scripts run). |
 | execute | `get_execute_module_info` | Return version, feature flags, and API surface of the GNN execute module. |
 | execute | `process_execute` | Run trusted Step 11 rendered scripts listed in render_processing_summary.json. |
+| execute | `run_cross_framework_comparison` | Render one GNN model to every registered backend, execute each, and write a cross-framework comparison HTML page with per-framework status receipts. |
 | export | `export_single_gnn_file` | Export a single GNN file to one or more target formats. |
 | export | `list_export_formats` | List all supported GNN export formats and their descriptions. |
 | export | `process_export` | Export GNN models to all supported output formats (JSON, YAML, Python, Julia, etc.). |
