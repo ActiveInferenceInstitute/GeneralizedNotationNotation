@@ -57,6 +57,7 @@ python src/gnn/22_gui.py --gui-types "gui_1,gui_2,gui_3,oxdraw" --target-dir inp
   - `constructed_model_gui1.md`: GUI 1 output - Form-based constructed GNN model
   - `visual_model_gui2.md`: GUI 2 output - Visual matrix editor GNN model
   - `visual_matrices.json`: GUI 2 output - Matrix data and visualizations
+  - `gui_1_status.json` / `gui_2_status.json`: GUI execution status and backend information
   - `designed_model_gui_3.md` / `design_analysis.json` / `design_studio_status.json`: GUI 3 starter model, design analysis, and status
   - `oxdraw_output/`: oxdraw artifacts - `<stem>.mmd` Mermaid exports, `<stem>_from_mermaid.md` round-trip models, `oxdraw_processing_results.json` run results
   - `gui_processing_summary.json`: Overall processing summary with results from all GUIs
