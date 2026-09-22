@@ -1125,6 +1125,14 @@ def _cmd_serve(args: argparse.Namespace) -> int:
     """Start Pipeline-as-a-Service API (runs, jobs, or both surfaces)."""
     surface = str(getattr(args, "surface", "runs") or "runs")
     try:
+        from gnn.api.auth import require_secure_bind
+
+        if not require_secure_bind(args.host):
+            raise RuntimeError(
+                f"Refusing to bind API server to non-loopback address {args.host!r} "
+                "without authentication. Set GNN_API_KEY to enable API-key auth, "
+                "or GNN_ALLOW_INSECURE_BIND=1 to explicitly accept the risk."
+            )
         if surface == "jobs":
             from gnn.api.server import run_server
 
