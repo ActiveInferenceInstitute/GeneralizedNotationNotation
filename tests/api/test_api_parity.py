@@ -4,8 +4,12 @@
 Every behavioral test runs against BOTH FastAPI surfaces via the parametrized
 ``client`` fixture — ``gnn.api.app.create_app`` (the ``gnn serve`` surface)
 and ``gnn.api.server.create_app`` (the ``python -m gnn.api.server`` surface) —
-and a parity-presence test asserts the two surfaces register an identical set
-of parity routes.
+and the route-table tests pin each surface's FULL route table: the shared
+parity routes (``PARITY_ROUTES``), each factory's exclusive routes
+(``RUN_FACTORY_ROUTES`` / ``JOB_FACTORY_ROUTES``), and the framework meta
+routes (``META_ROUTES``). The parity set is additionally re-derived as the
+actual cross-factory intersection, so no route can drift in or out of either
+factory without failing a pinned assertion.
 
 Pinned exit-code → HTTP mapping (see the module docstring of
 ``src/gnn/api/parity.py``; mirrors the strict ``pipeline_exit_succeeded``
@@ -58,6 +62,38 @@ PARITY_ROUTES: Dict[str, Set[str]] = {
     "/api/v1/models": {"GET"},
     "/api/v1/preflight": {"POST"},
     "/api/v1/report": {"POST"},
+}
+
+
+#: Routes exclusive to the ``gnn.api.app.create_app`` run surface. Every other
+#: route on that factory must be in ``PARITY_ROUTES`` or ``META_ROUTES``.
+RUN_FACTORY_ROUTES: Dict[str, Set[str]] = {
+    "/api/v1/run": {"POST"},
+    "/api/v1/runs": {"GET"},
+    "/api/v1/runs/{run_hash}": {"GET", "DELETE"},
+    "/api/v1/runs/{run_hash}/report": {"GET"},
+    "/api/v1/runs/{run_hash}/stream": {"GET"},
+}
+
+#: Routes exclusive to the ``gnn.api.server.create_app`` job surface. Every
+#: other route on that factory must be in ``PARITY_ROUTES`` or ``META_ROUTES``.
+JOB_FACTORY_ROUTES: Dict[str, Set[str]] = {
+    "/api/v1/process": {"POST"},
+    "/api/v1/jobs": {"GET"},
+    "/api/v1/jobs/{job_id}": {"GET", "DELETE"},
+    "/api/v1/tools": {"GET"},
+    "/api/v1/tools/{step}": {"POST"},
+}
+
+#: Framework routes both factories mount (FastAPI/Starlette defaults). The
+#: docs/openapi routes expose GET+HEAD because Starlette adds HEAD to its
+#: built-ins; hand-registered APIRoutes expose only their declared methods.
+META_ROUTES: Dict[str, Set[str]] = {
+    "/api/v1/health": {"GET"},
+    "/openapi.json": {"GET", "HEAD"},
+    "/docs": {"GET", "HEAD"},
+    "/docs/oauth2-redirect": {"GET", "HEAD"},
+    "/redoc": {"GET", "HEAD"},
 }
 
 
@@ -120,6 +156,59 @@ def test_parity_routes_present_on_both_surfaces() -> None:
             ("gnn.api.server module app", module_app_table),
         ):
             assert table.get(path) == methods, f"{path} missing or wrong on {surface}"
+
+
+@pytest.mark.unit
+def test_factory_route_tables_match_pins() -> None:
+    """Each factory's FULL route table must equal its pinned composition.
+
+    Derived from the live ``_route_table`` of ``gnn.api.app.create_app`` and
+    ``gnn.api.server.create_app`` (plus the ``gnn.api.server`` module app):
+    run table == ``PARITY_ROUTES`` | ``RUN_FACTORY_ROUTES`` | ``META_ROUTES``,
+    job-factory table == ``PARITY_ROUTES`` | ``JOB_FACTORY_ROUTES`` |
+    ``META_ROUTES``, and the module app must match its own factory exactly.
+    Adding or removing ANY route on either factory without updating the
+    corresponding pin fails this test loudly — no hardcoded union list can
+    mask drift.
+    """
+    run_app_table = _route_table(create_run_app())
+    job_app_table = _route_table(create_job_app())
+    module_app_table = _route_table(server_module_app)
+    expected_run_table = {**PARITY_ROUTES, **RUN_FACTORY_ROUTES, **META_ROUTES}
+    expected_job_table = {**PARITY_ROUTES, **JOB_FACTORY_ROUTES, **META_ROUTES}
+    assert run_app_table == expected_run_table, (
+        f"run-factory route table drifted: "
+        f"unexpected={set(run_app_table) - set(expected_run_table)} "
+        f"missing={set(expected_run_table) - set(run_app_table)}"
+    )
+    assert job_app_table == expected_job_table, (
+        f"job-factory route table drifted: "
+        f"unexpected={set(job_app_table) - set(expected_job_table)} "
+        f"missing={set(expected_job_table) - set(job_app_table)}"
+    )
+    assert module_app_table == expected_job_table, (
+        f"module app drifted from its factory: "
+        f"unexpected={set(module_app_table) - set(expected_job_table)} "
+        f"missing={set(expected_job_table) - set(module_app_table)}"
+    )
+
+
+@pytest.mark.unit
+def test_parity_surface_is_the_real_cross_factory_intersection() -> None:
+    """PARITY_ROUTES must equal the actual intersection of both factories.
+
+    Computes ``shared`` from the REAL route tables of ``gnn.api.app`` and
+    ``gnn.api.server`` (path present on both surfaces) and asserts it equals
+    ``PARITY_ROUTES`` merged with ``META_ROUTES``. A route sneaking into both
+    factories (breaking surface exclusivity) or drifting out of one is caught
+    here even if the per-factory pins above were also updated.
+    """
+    run_app_table = _route_table(create_run_app())
+    job_app_table = _route_table(create_job_app())
+    shared = {
+        path: methods for path, methods in run_app_table.items() if path in job_app_table
+    }
+    assert shared == {**PARITY_ROUTES, **META_ROUTES}
 
 
 # ── POST /api/v1/validate ────────────────────────────────────────────────────
