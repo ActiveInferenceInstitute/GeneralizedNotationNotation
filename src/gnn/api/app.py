@@ -37,7 +37,7 @@ _src_dir = str(Path(__file__).parent.parent)
 if _src_dir not in sys.path:
     sys.path.insert(0, _src_dir)
 
-from gnn.api import MODULE_VERSION, processor  # noqa: E402,I001
+from gnn.api import DEFAULT_API_HOST, DEFAULT_API_PORT, MODULE_VERSION, processor  # noqa: E402,I001
 from gnn.api.auth import api_key_middleware, require_secure_bind
 from gnn.api.models import RunHealthResponse, RunRequest, RunStatus  # noqa: E402,I001
 from gnn.api.path_utils import (  # noqa: E402,I001
@@ -600,7 +600,7 @@ else:
         raise RuntimeError("FastAPI is required to create the API application")
 
 
-def start_server(host: str = "127.0.0.1", port: int = 8000) -> Any:
+def start_server(host: str = DEFAULT_API_HOST, port: int = DEFAULT_API_PORT) -> Any:
     """Start the API server."""
     if not FASTAPI_AVAILABLE:
         logger.error("Cannot start server: pip install fastapi uvicorn")

@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 Comprehensive MCP Tool Audit Script
 
@@ -10,20 +9,28 @@ Validates that every registered MCP tool is:
   5. Logged (register_tools call has logging.info in its source)
   6. Schema-honest (declared properties/required match the handler
      signature for EVERY registered tool, not a curated subset)
+  7. Uniquely registered (duplicate register_tool names during
+     initialize() are detected at audit time only; the registry's own
+     warn+overwrite behavior is untouched)
 
 Usage:
     cd /path/to/generalizednotationnotation
-    uv run python src/gnn/mcp/validate_tools.py
+    uv run python src/gnn/mcp/validate_tools.py [--markdown [PATH]]
+
+With --markdown (optionally pointing at a doc path) the MCP tool quick
+reference is fully regenerated from the live census after the audit.
 """
 
 from __future__ import annotations
 
+import argparse
 import inspect
 import json
 import logging
 import os
 import sys
 import tempfile
+import time
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -32,11 +39,163 @@ REPO_ROOT = Path(__file__).resolve().parents[3]
 SRC_ROOT = REPO_ROOT / "src"
 sys.path.insert(0, str(SRC_ROOT))
 
+TOOL_REFERENCE_PATH = REPO_ROOT / "docs" / "gnn" / "mcp" / "tool_reference.md"
+
+TOOL_REFERENCE_INTRO = (
+    "Audit-backed quick reference for the GNN MCP server tool surface. Use "
+    "`tests/mcp/test_mcp_audit.py` and `src/gnn/mcp/validate_tools.py` for "
+    "the current live count. For full per-domain documentation see "
+    "**[../modules/21_mcp.md](../modules/21_mcp.md)**."
+)
+
+TOOL_REFERENCE_CLOSING = (
+    "Use `tests/mcp/test_mcp_audit.py` for the current registered "
+    "tool/resource contract. The audit verifies module discovery, callable "
+    "tools, non-empty module/category metadata, canonical JSON schemas, and "
+    "the parent GUI exposure of nested `oxdraw.*` tools."
+)
+
+
+def _wait_for_census_stability(
+    m: Any,
+    poll_seconds: float = 0.2,
+    stable_seconds: float = 1.0,
+    deadline_seconds: float = 10.0,
+) -> None:
+    """Poll until the live tool/module counts stop changing.
+
+    Timed-out module futures keep registering via background worker threads
+    after ``initialize()`` returns; snapshotting too early would commit a
+    stale census. Polls in ``poll_seconds`` steps until both counts have
+    stayed unchanged for ``stable_seconds`` or ``deadline_seconds`` elapses.
+    """
+    last = (len(m.tools), len(m.modules))
+    stable_since = time.monotonic()
+    deadline = time.monotonic() + deadline_seconds
+    while time.monotonic() < deadline:
+        time.sleep(poll_seconds)
+        current = (len(m.tools), len(m.modules))
+        if current == last:
+            if time.monotonic() - stable_since >= stable_seconds:
+                break
+        else:
+            last = current
+            stable_since = time.monotonic()
+
+
 logger = logging.getLogger("mcp_audit")
 
 
-def main() -> int:
+class _DuplicateRegistrationTracker:
+    """Audit-time detector for duplicate ``register_tool`` names.
+
+    Wraps ``gnn.mcp.registry.MCPRegistryMixin.register_tool`` for the
+    duration of the audit's ``initialize()`` call and records every
+    registration of an already-seen tool name. The registry's own
+    warn+overwrite behavior is untouched; detection happens only here.
+    Callers MUST restore the original method in a ``finally``.
+    """
+
+    def __init__(self) -> None:
+        self.duplicates: list[str] = []
+        self._seen: set[str] = set()
+        self._owner: Any = None
+        self._original: Any = None
+
+    def install(self) -> None:
+        """Wrap the registry class method; pair with :meth:`restore`."""
+        from gnn.mcp import registry as registry_mod
+
+        tracker = self
+        owner: Any = registry_mod.MCPRegistryMixin
+        original = owner.register_tool
+
+        def tracking_register_tool(
+            registry_self: Any, *args: Any, **kwargs: Any
+        ) -> Any:
+            name = kwargs.get("name")
+            if name is None and args:
+                name = args[0]
+            if isinstance(name, str) and name:
+                if name in tracker._seen:
+                    tracker.duplicates.append(name)
+                else:
+                    tracker._seen.add(name)
+            return original(registry_self, *args, **kwargs)
+
+        self._owner = owner
+        self._original = original
+        owner.register_tool = tracking_register_tool
+
+    def restore(self) -> None:
+        """Unwrap the registry class method (idempotent)."""
+        if self._owner is not None and self._original is not None:
+            self._owner.register_tool = self._original
+            self._owner = None
+            self._original = None
+
+
+def write_tool_reference(census: dict[str, Any], doc_path: Path) -> None:
+    """Regenerate the MCP tool quick reference from a live audit census.
+
+    Pure function (dict to file) so it is unit-testable without MCP.
+    Emits one table row for EVERY tool in ``census["tools_list"]``.
+    """
+    tools_list: List[Dict[str, Any]] = census["tools_list"]
+    modules_list: List[str] = census["modules_list"]
+
+    rows: list[tuple[str, str, str]] = []
+    for entry in tools_list:
+        domain = (entry.get("module", "") or "").removeprefix("gnn.")
+        rows.append((domain, str(entry["name"]), str(entry.get("description", ""))))
+    rows.sort(key=lambda row: (row[0], row[1]))
+
+    lines: list[str] = [
+        "# GNN MCP Tool Quick Reference",
+        "",
+        TOOL_REFERENCE_INTRO,
+        "",
+        (
+            f"**{len(tools_list)} tools across {len(modules_list)} modules** — "
+            "see the generated "
+            "[`src/gnn/mcp/audit_report.json`](../../../src/gnn/mcp/audit_report.json) "
+            "for the authoritative current count (regenerate with "
+            "`uv run python src/gnn/mcp/validate_tools.py`)."
+        ),
+        "",
+        "## Full Tool Table",
+        "",
+        "| Domain | Tool | Description |",
+        "|--------|------|-------------|",
+    ]
+    for domain, name, description in rows:
+        cell = " ".join(description.split())
+        cell = cell.replace("|", "\\|")
+        lines.append(f"| {domain} | `{name}` | {cell} |")
+    lines.append("")
+    lines.append(TOOL_REFERENCE_CLOSING)
+
+    doc_path.parent.mkdir(parents=True, exist_ok=True)
+    doc_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def main(argv: list[str] | None = None) -> int:
     """Run the full audit. Returns exit code (0=pass, 1=failures found)."""
+    parser = argparse.ArgumentParser(
+        description="Audit the registered GNN MCP tool surface."
+    )
+    parser.add_argument(
+        "--markdown",
+        nargs="?",
+        const=str(TOOL_REFERENCE_PATH),
+        default=None,
+        metavar="PATH",
+        help=(
+            "Also regenerate the tool quick reference at PATH "
+            f"(default: {TOOL_REFERENCE_PATH})."
+        ),
+    )
+    parsed = parser.parse_args(argv if argv is not None else [])
 
     print("=" * 72)
     print("  GNN MCP TOOL AUDIT")
@@ -45,14 +204,26 @@ def main() -> int:
 
     # ── 1. Initialize MCP ────────────────────────────────────────────────────
     print("\n[1] Initializing MCP and discovering modules...")
+    tracker = _DuplicateRegistrationTracker()
     try:
         from gnn.mcp import initialize, mcp_instance
 
-        initialize(halt_on_missing_sdk=False, force_proceed_flag=True)
+        tracker.install()
+        try:
+            initialize(halt_on_missing_sdk=False, force_proceed_flag=True)
+        finally:
+            tracker.restore()
         m = mcp_instance
     except Exception as e:
         print(f"  FATAL: Could not initialize MCP: {e}")
         return 1
+
+    duplicate_names = sorted(set(tracker.duplicates))
+
+    # Background workers from timed-out module futures keep registering after
+    # initialize() returns; wait for the live census to stabilize before
+    # snapshotting counts (mirrors the contract in test_registry_internals).
+    _wait_for_census_stability(m)
 
     # ── 2. Module summary ────────────────────────────────────────────────────
     print(f"\n[2] Modules discovered: {len(m.modules)}")
@@ -70,6 +241,10 @@ def main() -> int:
     print(f"\n[3] Tool audit: {len(m.tools)} tools registered")
 
     issues: List[Dict[str, Any]] = []
+    # Duplicate registrations: audit-time-only detection recorded by the
+    # tracker wrapped around register_tool during initialize().
+    for name in duplicate_names:
+        issues.append({"tool": name, "issue": "duplicate registration"})
 
     for name, tool in sorted(m.tools.items()):
         func = getattr(tool, "func", None) or getattr(tool, "function", None)
@@ -238,6 +413,7 @@ def main() -> int:
     print("=" * 72)
     print(f"  Modules loaded       : {len(loaded):3d} / {len(m.modules)}")
     print(f"  Tools registered     : {len(m.tools):3d}")
+    print(f"  Duplicate names      : {len(duplicate_names):3d}")
     print(f"  Issues found         : {len(issues):3d}")
     print(f"  Spot-checks OK       : {call_ok:3d} / {call_ok + call_err}")
     print(f"  Schema checks OK     : {schema_ok:3d} / {schema_ok + schema_err}")
@@ -260,6 +436,7 @@ def main() -> int:
         "modules_loaded": len(loaded),
         "modules_errored": len(errored),
         "tools_total": len(m.tools),
+        "modules_list": sorted(m.modules),
         "tools_list": [
             {
                 "name": name,
@@ -275,6 +452,7 @@ def main() -> int:
             }
             for name, tool in sorted(m.tools.items())
         ],
+        "duplicate_registrations": duplicate_names,
         "spot_checks_ok": call_ok,
         "spot_checks_err": call_err,
         "schema_checks_ok": schema_ok,
@@ -291,6 +469,12 @@ def main() -> int:
     os.replace(tmp_f.name, str(out_path))
     print(f"\n  Full report saved → {out_path}")
 
+    if parsed.markdown is not None:
+        markdown_path = Path(parsed.markdown)
+        print(f"\n  Regenerating tool reference → {markdown_path}")
+        write_tool_reference(report, markdown_path)
+        print(f"  Tool reference saved → {markdown_path}")
+
     return 0 if not issues else 1
 
 
@@ -298,4 +482,4 @@ if __name__ == "__main__":
     logging.basicConfig(
         level=logging.WARNING, format="%(levelname)s %(name)s: %(message)s"
     )
-    sys.exit(main())
+    sys.exit(main(sys.argv[1:]))

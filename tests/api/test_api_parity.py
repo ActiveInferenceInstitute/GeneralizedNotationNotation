@@ -54,6 +54,7 @@ PARITY_ROUTES: Dict[str, Set[str]] = {
     "/api/v1/graph": {"POST"},
     "/api/v1/templates": {"GET"},
     "/api/v1/templates/{name}": {"GET"},
+    "/api/v1/pull": {"POST"},
     "/api/v1/models": {"GET"},
     "/api/v1/preflight": {"POST"},
     "/api/v1/report": {"POST"},
@@ -407,6 +408,107 @@ def test_templates_show_unknown_name_maps_to_404(client: TestClient) -> None:
     envelope = _assert_envelope(response.json(), status="error")
     assert envelope["error"]["code"] == "not_found"
     assert "Unknown template" in envelope["error"]["message"]
+
+
+
+# ── POST /api/v1/pull ────────────────────────────────────────────────────────
+
+
+def _first_template_name(client: TestClient) -> str:
+    """Fetch one real maintained template name from the list endpoint."""
+    response = client.get("/api/v1/templates")
+    envelope = _assert_envelope(response.json())
+    return envelope["data"]["templates"][0]["name"]
+
+
+@pytest.mark.unit
+def test_pull_dry_run_returns_plan_without_writing(client: TestClient) -> None:
+    """A dry-run pull reports the plan with a checksum and writes nothing."""
+    name = _first_template_name(client)
+    output_dir = "output/api_pull_test"
+    shutil.rmtree(Path(output_dir), ignore_errors=True)
+    try:
+        response = client.post(
+            "/api/v1/pull",
+            json={"name": name, "output_dir": output_dir, "dry_run": True},
+        )
+        assert response.status_code == 200
+        envelope = _assert_envelope(response.json())
+        data = envelope["data"]
+        assert data["dry_run"] is True
+        assert data["copied"] is False
+        assert len(data["sha256"]) == 64
+        assert not Path(data["destination"]).exists()
+    finally:
+        shutil.rmtree(Path(output_dir), ignore_errors=True)
+
+
+@pytest.mark.unit
+def test_pull_copies_template_file(client: TestClient) -> None:
+    """A real pull copies the template file into the output directory."""
+    name = _first_template_name(client)
+    output_dir = "output/api_pull_test"
+    shutil.rmtree(Path(output_dir), ignore_errors=True)
+    try:
+        response = client.post(
+            "/api/v1/pull",
+            json={"name": name, "output_dir": output_dir},
+        )
+        assert response.status_code == 200
+        envelope = _assert_envelope(response.json())
+        data = envelope["data"]
+        assert data["copied"] is True
+        assert Path(data["destination"]).is_file()
+    finally:
+        shutil.rmtree(Path(output_dir), ignore_errors=True)
+
+
+@pytest.mark.unit
+def test_pull_unknown_name_maps_to_404(client: TestClient) -> None:
+    """An unknown template name mirrors the CLI KeyError as 404."""
+    response = client.post(
+        "/api/v1/pull",
+        json={"name": "no-such-template-xyz", "output_dir": "output/api_pull_test"},
+    )
+    assert response.status_code == 404
+    envelope = _assert_envelope(response.json(), status="error")
+    assert "Unknown template" in envelope["error"]["message"]
+
+
+@pytest.mark.unit
+def test_pull_conflict_maps_to_409_then_overwrite_succeeds(
+    client: TestClient,
+) -> None:
+    """A differing destination maps to 409 until overwrite is requested."""
+    name = _first_template_name(client)
+    output_dir = "output/api_pull_test"
+    shutil.rmtree(Path(output_dir), ignore_errors=True)
+    try:
+        first = client.post(
+            "/api/v1/pull",
+            json={"name": name, "output_dir": output_dir},
+        )
+        assert first.status_code == 200
+        envelope = _assert_envelope(first.json())
+        destination = Path(envelope["data"]["destination"])
+        destination.write_bytes(b"different bytes")
+        conflict = client.post(
+            "/api/v1/pull",
+            json={"name": name, "output_dir": output_dir},
+        )
+        assert conflict.status_code == 409
+        conflict_envelope = _assert_envelope(conflict.json(), status="error")
+        assert "overwrite" in conflict_envelope["error"]["message"]
+        overwrite_response = client.post(
+            "/api/v1/pull",
+            json={"name": name, "output_dir": output_dir, "overwrite": True},
+        )
+        assert overwrite_response.status_code == 200
+        overwrite_envelope = _assert_envelope(overwrite_response.json())
+        assert overwrite_envelope["data"]["overwritten"] is True
+        assert overwrite_envelope["data"]["copied"] is True
+    finally:
+        shutil.rmtree(Path(output_dir), ignore_errors=True)
 
 
 # ── GET /api/v1/models ───────────────────────────────────────────────────────

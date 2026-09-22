@@ -16,7 +16,7 @@ Key Features:
 
 import logging
 import time
-from functools import partial
+from functools import partial, update_wrapper
 from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
@@ -451,7 +451,33 @@ def register_tools(mcp_instance: Any) -> Any:
     if not hasattr(mcp_instance, "_server_start_time"):
         mcp_instance._server_start_time = time.time()
 
-    # Register meta-tools
+    # Register meta-tools. Each handler is ``functools.partial`` over a
+    # module-level function; ``update_wrapper`` copies the underlying
+    # ``__name__`` onto the partial so every registered tool keeps a real,
+    # auditable backing-function name (the registry rejects anonymous
+    # handlers).
+    _status_partial = update_wrapper(
+        partial(get_mcp_server_status, mcp_instance), get_mcp_server_status
+    )
+    _auth_partial = update_wrapper(
+        partial(get_mcp_auth_status, mcp_instance), get_mcp_auth_status
+    )
+    _encryption_partial = update_wrapper(
+        partial(get_mcp_encryption_status, mcp_instance), get_mcp_encryption_status
+    )
+    _module_info_partial = update_wrapper(
+        partial(get_mcp_module_info, mcp_instance), get_mcp_module_info
+    )
+    _categories_partial = update_wrapper(
+        partial(get_mcp_tool_categories, mcp_instance), get_mcp_tool_categories
+    )
+    _performance_partial = update_wrapper(
+        partial(get_mcp_performance_metrics, mcp_instance), get_mcp_performance_metrics
+    )
+    _diagnostics_partial = update_wrapper(
+        partial(get_mcp_diagnostics, mcp_instance), get_mcp_diagnostics
+    )
+
     mcp_instance.register_tool(
         name="get_mcp_server_capabilities",
         func=mcp_instance.get_capabilities,
@@ -464,7 +490,7 @@ def register_tools(mcp_instance: Any) -> Any:
 
     mcp_instance.register_tool(
         name="get_mcp_server_status",
-        func=partial(get_mcp_server_status, mcp_instance),
+        func=_status_partial,
         schema={},
         description="Provides comprehensive operational status of the MCP server, including uptime, modules, and performance metrics.",
         module="meta",
@@ -474,7 +500,7 @@ def register_tools(mcp_instance: Any) -> Any:
 
     mcp_instance.register_tool(
         name="get_mcp_server_auth_status",
-        func=partial(get_mcp_auth_status, mcp_instance),
+        func=_auth_partial,
         schema={},
         description="Describes the current authentication mechanisms and security configuration of the MCP server.",
         module="meta",
@@ -484,7 +510,7 @@ def register_tools(mcp_instance: Any) -> Any:
 
     mcp_instance.register_tool(
         name="get_mcp_server_encryption_status",
-        func=partial(get_mcp_encryption_status, mcp_instance),
+        func=_encryption_partial,
         schema={},
         description="Describes the current encryption status for server transport and data handling with security recommendations.",
         module="meta",
@@ -494,7 +520,7 @@ def register_tools(mcp_instance: Any) -> Any:
 
     mcp_instance.register_tool(
         name="get_mcp_module_info",
-        func=partial(get_mcp_module_info, mcp_instance),
+        func=_module_info_partial,
         schema={
             "type": "object",
             "properties": {
@@ -513,7 +539,7 @@ def register_tools(mcp_instance: Any) -> Any:
 
     mcp_instance.register_tool(
         name="get_mcp_tool_categories",
-        func=partial(get_mcp_tool_categories, mcp_instance),
+        func=_categories_partial,
         schema={},
         description="Get tools organized by category for easier discovery and navigation.",
         module="meta",
@@ -523,7 +549,7 @@ def register_tools(mcp_instance: Any) -> Any:
 
     mcp_instance.register_tool(
         name="get_mcp_performance_metrics",
-        func=partial(get_mcp_performance_metrics, mcp_instance),
+        func=_performance_partial,
         schema={},
         description="Get performance metrics and statistics for the MCP server, including execution times and error rates.",
         module="meta",
@@ -533,7 +559,7 @@ def register_tools(mcp_instance: Any) -> Any:
 
     mcp_instance.register_tool(
         name="get_mcp_diagnostics",
-        func=partial(get_mcp_diagnostics, mcp_instance),
+        func=_diagnostics_partial,
         schema={},
         description="Get comprehensive diagnostic information for troubleshooting and monitoring, including health checks and recommendations.",
         module="meta",

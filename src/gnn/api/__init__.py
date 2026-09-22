@@ -23,6 +23,11 @@ MODULE_NAME = "api"
 MODULE_VERSION = "3.4.0"
 MODULE_DESCRIPTION = "FastAPI-based REST interface for the GNN processing pipeline"
 
+# Single source of truth for the server default bind address and the
+# MCP manifest endpoint advertised in register_mcp_tools().
+DEFAULT_API_HOST = "127.0.0.1"
+DEFAULT_API_PORT = 8000
+
 # API is optional — check for fastapi at import time
 try:
     import fastapi  # noqa: F401
@@ -38,7 +43,14 @@ FEATURES: dict[str, Any] = {
     "mcp_tool_registration": True,
 }
 
-__all__: list[str] = ["MODULE_NAME", "MODULE_VERSION", "FASTAPI_AVAILABLE", "FEATURES"]
+__all__: list[str] = [
+    "MODULE_NAME",
+    "MODULE_VERSION",
+    "DEFAULT_API_HOST",
+    "DEFAULT_API_PORT",
+    "FASTAPI_AVAILABLE",
+    "FEATURES",
+]
 
 
 def get_module_info() -> dict[str, Any]:

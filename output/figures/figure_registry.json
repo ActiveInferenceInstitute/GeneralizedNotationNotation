@@ -6,7 +6,7 @@
         "GNN_BACKEND_COUNT": "9",
         "GNN_EXECUTABLE_BACKEND_COUNT": "9",
         "GNN_FAMILY_COUNT": "9",
-        "GNN_MCP_TOOL_COUNT": "146",
+        "GNN_MCP_TOOL_COUNT": "156",
         "GNN_STEP_ANALYSIS": "16",
         "GNN_STEP_COUNT": "25",
         "GNN_STEP_EXECUTE": "12",
@@ -20,7 +20,7 @@
       "filename": "gnn_graphical_abstract.png",
       "generated_by": "scripts/manuscript_fig_graphical_abstract.py",
       "label": "fig:graphical_abstract",
-      "png_sha256": "9937f5cd82ae9ca51431e9ffca33ebbeca258e7475d97e663a73a89b2e2df76d",
+      "png_sha256": "7a23216a4f87986eb083f833085da57d5089d18fe0a83806fe6ca13a7acfb380",
       "source_sha256": {}
     },
     {
@@ -68,16 +68,16 @@
         "GNN_EXAMPLE_COUNT": "31",
         "GNN_EXECUTABLE_BACKEND_COUNT": "9",
         "GNN_FAMILY_COUNT": "9",
-        "GNN_MCP_TOOL_COUNT": "146",
+        "GNN_MCP_TOOL_COUNT": "156",
         "GNN_SRC_PACKAGE_COUNT": "44",
         "GNN_STEP_COUNT": "25",
-        "GNN_TEST_FILE_COUNT": "487",
+        "GNN_TEST_FILE_COUNT": "488",
         "GNN_VERSION": "3.4.0"
       },
       "filename": "gnn_repo_metrics.png",
       "generated_by": "scripts/manuscript_fig_repo_metrics.py",
       "label": "fig:repo_metrics",
-      "png_sha256": "18f0062bf5cd7728524b539c331ffb8e85a3f3f73eabb12dc95ef3809582ff55",
+      "png_sha256": "e3e1d3d1ab2c1194784df79e35a5a05b900527e8b08f93800532e234bb0e825a",
       "source_sha256": {}
     },
     {

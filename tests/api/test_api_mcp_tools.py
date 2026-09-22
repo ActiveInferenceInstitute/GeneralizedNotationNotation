@@ -25,6 +25,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
+from gnn.api import DEFAULT_API_HOST, DEFAULT_API_PORT
 from gnn.api import mcp as api_mcp
 
 
@@ -85,6 +86,10 @@ class TestAPIMCPTools:
         """The serialized manifest should match the live API tool surface."""
         manifest = api_mcp.register_mcp_tools()
         assert manifest["module"] == "api"
+        assert (
+            manifest["endpoint"]
+            == f"http://{DEFAULT_API_HOST}:{DEFAULT_API_PORT}/api/v1"
+        )
         names = {t["name"] for t in manifest["tools"]}
         assert names == {
             "gnn_submit_job",
