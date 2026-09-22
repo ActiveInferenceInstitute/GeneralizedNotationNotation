@@ -5,10 +5,8 @@ authors:
     given-names: "Daniel Ari"
     orcid: "0000-0001-6232-9096"
     affiliation: "Active Inference Institute"
-  - name: "The GeneralizedNotationNotation Community Contributors"
-    # This entry acknowledges all contributors. Individual contributors can be listed above if desired.
 
-title: "GeneralizedNotationNotation (GNN)"
+title: "Generalized_Notation_Notation (GNN)"
 version: 3.4.0 # Current stable release
 date-released: 2026-09-17
 doi: 10.5281/zenodo.22820299
