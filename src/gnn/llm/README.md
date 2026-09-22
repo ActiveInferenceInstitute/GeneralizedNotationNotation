@@ -272,7 +272,8 @@ graph TD
 ```
 
 The pipeline is implemented inside `llm/processor.py`: content preparation (with ontology
-injection from `10_ontology_output/`), provider selection via `LLMProcessor`, per-prompt
+injection from `10_ontology_output/` and a compact cross-framework comparison summary from
+`12_execute_output/{model}_comparison.html` when one exists), provider selection via `LLMProcessor`, per-prompt
 executions with cache lookups, and per-file markdown output.
 
 ## Integration with Pipeline

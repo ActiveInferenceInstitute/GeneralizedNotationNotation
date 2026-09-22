@@ -2,7 +2,7 @@
 
 Audit-backed quick reference for the GNN MCP server tool surface. Use `tests/mcp/test_mcp_audit.py` and `src/gnn/mcp/validate_tools.py` for the current live count. For full per-domain documentation see **[../modules/21_mcp.md](../modules/21_mcp.md)**.
 
-**156 tools across 35 modules** — see the generated [`src/gnn/mcp/audit_report.json`](../../../src/gnn/mcp/audit_report.json) for the authoritative current count (regenerate with `uv run python src/gnn/mcp/validate_tools.py`).
+**157 tools across 34 modules** — see the generated [`src/gnn/mcp/audit_report.json`](../../../src/gnn/mcp/audit_report.json) for the authoritative current count (regenerate with `uv run python src/gnn/mcp/validate_tools.py`).
 
 ## Full Tool Table
 
@@ -21,13 +21,16 @@ Audit-backed quick reference for the GNN MCP server tool surface. Use `tests/mcp
 | api | `gnn_get_job_status` | Retrieve the status of a GNN pipeline job. |
 | api | `gnn_get_pipeline_tools` | List available pipeline steps. |
 | api | `gnn_list_jobs` | List recent GNN pipeline jobs. |
-| api | `gnn_submit_job` | Create a GNN pipeline job record (pending; not executed). Execution happens only via POST /api/v1/process or POST /api/v1/tools/{step} on the job/tool API server (gnn.api.server), or a direct execute_job_async call; gnn serve (Runs surface) never consumes these records. |
+| api | `gnn_submit_job` | Create a GNN pipeline job record (pending; not executed). Execution happens only via POST /api/v1/process or POST /api/v |
 | audio | `analyze_audio_characteristics` | Analyse characteristics of a GNN-generated audio file (duration, RMS, spectral centroid, etc.). |
 | audio | `check_audio_backends` | Check which audio generation backends (scipy, soundfile, pedalboard, wave) are available. |
 | audio | `get_audio_generation_options` | Return all configurable audio generation options with defaults and valid ranges. |
 | audio | `get_audio_module_info` | Return version, feature flags, supported backends and formats of the GNN audio module. |
 | audio | `process_audio` | Run GNN audio processing pipeline: convert GNN models to audio files. |
 | audio | `validate_audio_content` | Validate a GNN-generated audio file: header, sample count, amplitude bounds. |
+| audio.sapf | `get_sapf_module_info` | Return metadata about the SAPF audio synthesis module (version, formats, capabilities). |
+| audio.sapf | `list_audio_artifacts` | List audio and SAPF script artifacts in an output directory. |
+| audio.sapf | `process_sapf` | Generate SAPF audio from GNN Active Inference models using SuperCollider synthesis. |
 | cli | `cli.health` | Return CLI module health and list of available subcommands |
 | cli | `cli.preflight` | Run pipeline preflight checks and return explicit readiness diagnostics |
 | execute | `check_execute_dependencies` | Check which execution backend dependencies (pymdp, numpy, scipy, jax) are installed. |
@@ -36,6 +39,7 @@ Audit-backed quick reference for the GNN MCP server tool surface. Use `tests/mcp
 | execute | `get_doctor_report` | Return one structured capability report: per-framework availability plus a Step 12 execution-readiness dry run (no scrip |
 | execute | `get_execute_module_info` | Return version, feature flags, and API surface of the GNN execute module. |
 | execute | `process_execute` | Run trusted Step 11 rendered scripts listed in render_processing_summary.json. |
+| execute | `run_cross_framework_comparison` | Render one GNN model to every registered backend, execute each, and write a cross-framework comparison HTML page with pe |
 | export | `export_single_gnn_file` | Export a single GNN file to one or more target formats. |
 | export | `list_export_formats` | List all supported GNN export formats and their descriptions. |
 | export | `process_export` | Export GNN models to all supported output formats (JSON, YAML, Python, Julia, etc.). |
@@ -123,9 +127,6 @@ Audit-backed quick reference for the GNN MCP server tool surface. Use `tests/mcp
 | research | `list_research_topics` | Return Active Inference and GNN research topic taxonomy. |
 | research | `process_research` | Run GNN research processing: generate experiment metadata and cross-references. |
 | research | `read_research_results` | Read and return research output files from a previous research processing run. |
-| sapf | `get_sapf_module_info` | Return metadata about the SAPF audio synthesis module (version, formats, capabilities). |
-| sapf | `list_audio_artifacts` | List audio and SAPF script artifacts in an output directory. |
-| sapf | `process_sapf` | Generate SAPF audio from GNN Active Inference models using SuperCollider synthesis. |
 | security | `get_security_report` | Read and return saved security scan reports from a previous security processing run. |
 | security | `list_security_checks` | Return the list of security checks performed (CVE scan, injection detection, path traversal, etc.). |
 | security | `process_security` | Run security scanning and compliance checks on GNN pipeline files. |

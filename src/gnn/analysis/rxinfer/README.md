@@ -44,16 +44,22 @@ self-contained HTML dashboard over a directory of GIFs + manifests.
 
 ### Cross-Framework Comparison (roadmap A6)
 
-`run_cross_framework_comparison(gnn_file, output_dir)` renders the same GNN
-model to RxInfer.jl, PyMDP, and ActiveInference.jl from one parsed spec, runs
-all three, and writes `<model>_comparison.html` into `output_dir` alongside a
-per-framework subdirectory of rendered scripts and raw results.
+`compare_with_status(gnn_file, output_dir)` renders the same GNN model to six
+backends — RxInfer.jl, PyMDP, ActiveInference.jl, JAX, PyTorch, and NumPyro —
+from one parsed spec, runs all six, and writes `<model>_comparison.html` into
+`output_dir` alongside a per-framework subdirectory of rendered scripts and
+raw results. It returns the HTML path plus one `FrameworkRun` record per
+backend, in display order;
+`run_cross_framework_comparison(gnn_file, output_dir)` is the convenience
+wrapper that returns just the path. The execute-module MCP tool
+`run_cross_framework_comparison` wraps this entry point, and the Step-13 LLM
+processor injects a compact per-backend status summary derived from the same
+artifacts.
 
-The page contains a metrics table — including a per-framework status row with
-the reason any framework did not succeed — and an animated belief-trajectory
-chart that overlays every framework's beliefs per hidden state over time,
-colour-coded, with play/pause and a step slider. The chart is a self-contained
-inline canvas script: no external assets, no network access.
+Backends whose dependencies are missing are skipped with an `unavailable`
+receipt — the Python lanes probe dependency importability before rendering,
+the Julia lanes probe for a `julia` binary — never reported as execution
+failures.
 
 ## Per-Exemplar Visualization Set
 
@@ -84,5 +90,5 @@ set preserves the fields defined by the `rxinfer_simulation_v1` schema.
 ## Verification
 
 ```bash
-uv run --extra dev python -m pytest tests/pipeline/test_pomdp_gridworld_cross_framework.py -q --tb=short
+uv run --extra dev python -m pytest tests/pipeline/test_pomdp_gridworld_cross_framework.py tests/pipeline/test_cross_framework_python_lanes.py tests/analysis/test_rxinfer_cross_framework.py -q --tb=short
 ```

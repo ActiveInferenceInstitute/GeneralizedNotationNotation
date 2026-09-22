@@ -35,6 +35,7 @@ from typing import Any
 
 import pytest
 
+import gnn.analysis.rxinfer.cross_framework as cross_framework
 from gnn.analysis.rxinfer.cross_framework import (
     ACTIVEINFERENCE_JULIA_PROJECT,
     FRAMEWORKS,
@@ -120,17 +121,20 @@ def test_julia_project_paths_resolve() -> None:
 
 
 def test_every_renderer_accepts_the_shared_spec(tmp_path: Path) -> None:
-    """All three renderers take the one parsed spec dict, not the GNN file path.
+    """All six renderers take the one parsed spec dict, not the GNN file path.
 
-    Guards the defect where PyMDP and ActiveInference.jl were handed a Path and
-    therefore always failed. No Julia and no subprocess: rendering only.
+    Guards the defect where PyMDP and ActiveInference.jl were handed a Path
+    and therefore always failed. No Julia and no subprocess: rendering only.
     """
     from gnn.extract.pomdp_extractor import extract_pomdp_from_file
     from gnn.render.activeinference_jl.activeinference_renderer import (
         render_gnn_to_activeinference_jl,
     )
+    from gnn.render.jax.jax_renderer import render_gnn_to_jax
+    from gnn.render.numpyro.numpyro_renderer import render_gnn_to_numpyro
     from gnn.render.pomdp_processor import pomdp_to_gnn_spec
     from gnn.render.pymdp.pymdp_renderer import render_gnn_to_pymdp
+    from gnn.render.pytorch.pytorch_renderer import render_gnn_to_pytorch
     from gnn.render.rxinfer.rxinfer_renderer import render_gnn_to_rxinfer
 
     assert SIMPLE_MDP.is_file(), f"missing exemplar: {SIMPLE_MDP}"
@@ -146,6 +150,9 @@ def test_every_renderer_accepts_the_shared_spec(tmp_path: Path) -> None:
             render_gnn_to_activeinference_jl,
             "model_activeinference.jl",
         ),
+        "jax": (render_gnn_to_jax, "model_jax.py"),
+        "pytorch": (render_gnn_to_pytorch, "model_pytorch.py"),
+        "numpyro": (render_gnn_to_numpyro, "model_numpyro.py"),
     }
     for framework, (renderer, filename) in renderers.items():
         script_path = tmp_path / filename
@@ -327,12 +334,15 @@ def test_missing_gnn_file_raises(tmp_path: Path) -> None:
         run_cross_framework_comparison(tmp_path / "nope.md", tmp_path / "out")
 
 
-def test_stub_runtime_drives_the_comparison_without_gnn_execute(tmp_path: Path) -> None:
-    """A caller-supplied stub runtime drives the full comparison without julia.
+def test_injected_runtime_drives_the_comparison_without_julia(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A caller-supplied runtime drives the full comparison without julia.
 
-    Pins the inversion end-to-end: the stub's julia probe reports both
-    julia frameworks unavailable, pymdp is classified through the recorded
-    fake envelope, and no julia environment is ever built.
+    Pins the inversion end-to-end: the injected runtime's julia probe
+    reports both julia frameworks unavailable, the dependency probe reports
+    the three probed Python lanes unavailable, pymdp is classified through
+    the recorded fake envelope, and no julia environment is ever built.
     """
     recorded: list[list[str]] = []
 
@@ -356,14 +366,22 @@ def test_stub_runtime_drives_the_comparison_without_gnn_execute(tmp_path: Path) 
         load_security_gate=lambda: lambda _script: {"ok": True, "overridden": False},
     )
 
+    # Deterministic regardless of the ambient environment: the dependency
+    # probe reports every probed Python lane missing, so those backends are
+    # skip receipts and never reach the subprocess envelope.
+    monkeypatch.setattr(cross_framework, "is_framework_available", lambda fw: False)
+
     html_path = Path(
         run_cross_framework_comparison(SIMPLE_MDP, tmp_path / "out", runtime=runtime)
     )
     text = html_path.read_text(encoding="utf-8")
 
-    assert "0/3 frameworks succeeded" in text
+    assert "0/6 frameworks succeeded" in text
     reasons = re.findall(r'<td class="reason">(.*?)</td>', text)
     assert reasons.count("julia is not on PATH") == 2
+    assert reasons.count("jax not installed (uv sync)") == 1
+    assert reasons.count("torch not installed (uv sync)") == 1
+    assert reasons.count("numpyro not installed (uv sync)") == 1
     assert "exit code 2" in text
     assert recorded == [
         [sys.executable, str(tmp_path / "out" / "pymdp" / "model_pymdp.py")]
