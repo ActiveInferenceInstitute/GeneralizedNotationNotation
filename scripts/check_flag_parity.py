@@ -34,7 +34,22 @@ Metrics (caps in ``scripts/flag_parity_caps.json``):
   a naive zero-phantom goal wrong today - the ratchet is the honest
   mechanic until those mentions are tightened or the tooling sections move
   to per-tool reference pages.
+
+Runner portability (batch-7 root-cause receipt): the wave-D phantom drift
+("141 on ubuntu CI vs 140 locally") was a measurement confound, not a
+varying parser. The full registered surface is a pure function of the
+working tree - ``ARGUMENT_DEFINITIONS``/``STEP_ARGUMENTS`` are static
+:class:`MappingProxyType` literals and ``create_main_parser`` is a plain
+loop over them - so no platform, extras, or Python-version input exists
+(every registered flag is identical on py3.10-3.14, bare interpreter or
+project venv, and CI logs confirm the same 79/204/141). The measured drift
+came from runs at different tree states/docs. Two guards keep the dynamic
+import deterministic anyway: (1) the import is pinned to ``ROOT/src`` via
+the module ``__file__`` so an installed ``gnn`` wheel can never shadow the
+working tree; (2) the AST half is path-scoped under ``ROOT``.
 - ``undocumented_registered``: registered flags with zero doc mentions.
+  Same runner-invariance applies: with the import pinned to the working
+  tree, the registered set cannot drift between runners.
 
 Over-cap failures name the offending doc files/tokens. After fixing docs,
 lower the cap in ``scripts/flag_parity_caps.json`` to the new measured value
@@ -207,16 +222,36 @@ def static_registered_flags(arg_def_names: set[str]) -> set[str]:
 
 
 def registered_flags() -> set[str]:
-    """Union of the dynamic main parser and the per-step recovery spellings."""
+    """Union of the dynamic main parser and the per-step recovery spellings.
+
+    The dynamic half intentionally imports the repo-local source tree, never
+    an installed ``gnn`` distribution: the import is pinned via
+    ``ArgumentParser.__file__`` and fails closed when it resolves outside
+    ``ROOT/src``. A runner with a non-editable ``gnn`` install (or a stale
+    wheel on ``sys.path``) would otherwise measure a different, stale flag
+    surface; the pin makes the measured set a pure function of the working
+    tree, so counts are identical across runners and Python versions.
+    """
     import sys
 
     sys.path.insert(0, str(ROOT / "src"))
     try:
+        from gnn.utils.arguments import arg_parsing
         from gnn.utils.arguments.arg_parsing import ArgumentParser
     except ImportError as exc:
         raise SystemExit(
             "check_flag_parity: cannot import gnn.utils.arguments.arg_parsing "
             f"({exc}) - the parser registry moved; update this gate."
+        ) from exc
+    parser_module = Path(getattr(arg_parsing, "__file__", "") or "")
+    try:
+        parser_module.relative_to(ROOT / "src")
+    except ValueError as exc:
+        raise SystemExit(
+            "check_flag_parity: imported the argument parser from "
+            f"{parser_module}, which is outside {ROOT / 'src'} - an installed "
+            "gnn package is shadowing the working tree. Measure the "
+            "repository's own parser, not a stale wheel."
         ) from exc
     parser = ArgumentParser.create_main_parser()
     flags: set[str] = set()
