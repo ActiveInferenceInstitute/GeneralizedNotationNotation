@@ -355,4 +355,3 @@ def verify_session_artifacts(
             if unit.artifact_hashes[rel] != live[rel]:
                 problems.append(f"unit {unit.unit_id!r}: checksum mismatch for {rel}")
     return problems
-

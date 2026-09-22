@@ -27,6 +27,7 @@ Public surface:
   - emit_run_manifests(run_output_dir, *, manifest_out=None) -> dict
   - verify_run_manifests(manifest_dir, run_output_dir) -> list[str]
 """
+
 import hashlib
 import json
 import re
@@ -144,9 +145,7 @@ def _discover_binary_artifacts(run_output_dir: Path) -> List[Path]:
         for path in child.rglob("*"):
             if path.is_file() and path.suffix.lower() in _BINARY_EXTENSIONS:
                 if not path.resolve().is_relative_to(run_output_dir.resolve()):
-                    raise ValueError(
-                        f"Artifact escapes run output directory: {path}"
-                    )
+                    raise ValueError(f"Artifact escapes run output directory: {path}")
                 artifacts.append(path)
     artifacts.sort(key=lambda p: p.relative_to(run_output_dir).as_posix())
     return artifacts
@@ -288,7 +287,6 @@ def _contained_file(base: Path, relative: Any) -> Path:
     ):
         raise ValueError(f"Artifact reference escapes its base: {relative!r}")
     return path
-
 
 
 def _write_file_stream_manifest(
@@ -601,9 +599,7 @@ def verify_run_manifests(
         problems.append("stream_count does not match manifest inventory")
     for entry in entries:
         try:
-            problems.extend(
-                _verify_index_entry(entry, mdir, run_dir, sources, files)
-            )
+            problems.extend(_verify_index_entry(entry, mdir, run_dir, sources, files))
         except (OSError, ValueError, TypeError, KeyError) as exc:
             problems.append(f"Invalid manifest entry: {exc}")
     if sources != actual_sources:
