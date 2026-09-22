@@ -26,7 +26,7 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Union
+from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Union
 
 from gnn.pipeline import run_session as rs
 from gnn.pipeline.config import get_output_dir_for_script
@@ -37,9 +37,13 @@ if TYPE_CHECKING:
 
 __all__ = [
     "close_run_session",
+    "close_run_session_guarded",
     "mark_units_running",
+    "mark_units_running_guarded",
     "open_run_session",
+    "open_run_session_guarded",
     "record_step_result",
+    "record_step_result_guarded",
     "run_session_path",
 ]
 
@@ -219,3 +223,89 @@ def close_run_session(
     finally:
         rs.checkpoint(session, run_session_path(output_dir))
     return session
+
+
+def open_run_session_guarded(
+    args: "PipelineArguments",
+    steps_to_execute: List[Any],
+    pipeline_summary: Dict[str, Any],
+    logger: logging.Logger,
+) -> Optional[RunSession]:
+    """Open a run session, degrading to ``None`` on any wiring failure.
+
+    Mirrors the caller-side guard contract: any exception raised while
+    opening or checkpointing the session downgrades to a logged warning and
+    never changes the run's exit code.
+    """
+    try:
+        session = open_run_session(args, steps_to_execute, pipeline_summary)
+        logger.info(
+            "Run session opened: %s (%d unit(s))",
+            session.session_id,
+            len(session.units),
+        )
+        return session
+    except Exception as open_err:
+        logger.warning(f"Run session open failed (continuing): {open_err}")
+        return None
+
+
+def mark_units_running_guarded(
+    session: Optional[RunSession],
+    script_names: Iterable[str],
+    args: "PipelineArguments",
+    logger: logging.Logger,
+) -> Optional[RunSession]:
+    """Mark the given units RUNNING, degrading to the unchanged session.
+
+    A ``None`` session passes through untouched (no session in this run);
+    any exception downgrades to a logged warning and the original session
+    is returned so the caller keeps its prior value.
+    """
+    if session is None:
+        return None
+    try:
+        return mark_units_running(session, script_names, args.output_dir)
+    except Exception as e:
+        logger.warning(f"Run session update failed (continuing): {e}")
+        return session
+
+
+def record_step_result_guarded(
+    session: Optional[RunSession],
+    script_name: str,
+    step_result: Dict[str, Any],
+    args: "PipelineArguments",
+    logger: logging.Logger,
+) -> Optional[RunSession]:
+    """Fold one finished step into the session, degrading on failure.
+
+    A ``None`` session passes through untouched; any exception downgrades
+    to a logged warning and the original session is returned.
+    """
+    if session is None:
+        return None
+    try:
+        return record_step_result(session, script_name, step_result, args.output_dir)
+    except Exception as e:
+        logger.warning(f"Run session update failed (continuing): {e}")
+        return session
+
+
+def close_run_session_guarded(
+    session: Optional[RunSession],
+    args: "PipelineArguments",
+    logger: logging.Logger,
+) -> Optional[RunSession]:
+    """Close the run session, degrading to the unchanged session on failure.
+
+    A ``None`` session passes through untouched; any exception downgrades
+    to a logged warning and the original session is returned.
+    """
+    if session is None:
+        return None
+    try:
+        return close_run_session(session, args.output_dir, logger)
+    except Exception as close_err:
+        logger.warning(f"Run session close failed (continuing): {close_err}")
+        return session

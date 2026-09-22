@@ -140,6 +140,12 @@ PipelineStep = tuple[str, str]
 
 # Derive PIPELINE_STEPS from the canonical step registry
 from gnn.pipeline.run_session import RunSession  # noqa: E402
+from gnn.pipeline.run_session_wiring import (  # noqa: E402
+    close_run_session_guarded,
+    mark_units_running_guarded,
+    open_run_session_guarded,
+    record_step_result_guarded,
+)
 from gnn.pipeline.step_registry import (
     PIPELINE_STEPS_TUPLE as PIPELINE_STEPS,  # noqa: E402
 )
@@ -1050,13 +1056,7 @@ def _execute_pipeline_iteration(
     if script_name in ("23_report.py", "24_intelligent_analysis.py"):
         _write_preliminary_pipeline_summary(pipeline_summary, args.output_dir, logger)
 
-    if session is not None:
-        try:
-            from gnn.pipeline.run_session_wiring import mark_units_running
-
-            session = mark_units_running(session, [script_name], args.output_dir)
-        except Exception as e:
-            logger.warning(f"Run session update failed (continuing): {e}")
+    session = mark_units_running_guarded(session, [script_name], args, logger)
 
     step_result: dict[str, Any] = _execute_selected_step(
         script_name, args, pipeline_summary, logger
@@ -1078,15 +1078,9 @@ def _execute_pipeline_iteration(
         logger,
     )
 
-    if session is not None:
-        try:
-            from gnn.pipeline.run_session_wiring import record_step_result
-
-            session = record_step_result(
-                session, script_name, step_result, args.output_dir
-            )
-        except Exception as e:
-            logger.warning(f"Run session update failed (continuing): {e}")
+    session = record_step_result_guarded(
+        session, script_name, step_result, args, logger
+    )
     return session
 
 
@@ -1403,18 +1397,9 @@ def _run_pipeline(
         )
         return 0
 
-    run_session: Optional[RunSession] = None
-    try:
-        from gnn.pipeline.run_session_wiring import open_run_session
-
-        run_session = open_run_session(args, steps_to_execute, pipeline_summary)
-        logger.info(
-            "Run session opened: %s (%d unit(s))",
-            run_session.session_id,
-            len(run_session.units),
-        )
-    except Exception as open_err:
-        logger.warning(f"Run session open failed (continuing): {open_err}")
+    run_session: Optional[RunSession] = open_run_session_guarded(
+        args, steps_to_execute, pipeline_summary, logger
+    )
 
     progress_tracker: Optional[PipelineProgressTracker] = None
     try:
@@ -1524,21 +1509,9 @@ def _run_pipeline(
                             )
                         current_step_counter += len(tier_steps)
 
-                        if run_session is not None:
-                            try:
-                                from gnn.pipeline.run_session_wiring import (
-                                    mark_units_running,
-                                )
-
-                                run_session = mark_units_running(
-                                    run_session,
-                                    [s[0] for s in tier_steps],
-                                    args.output_dir,
-                                )
-                            except Exception as e:
-                                logger.warning(
-                                    f"Run session update failed (continuing): {e}"
-                                )
+                        run_session = mark_units_running_guarded(
+                            run_session, [s[0] for s in tier_steps], args, logger
+                        )
 
                         for step_num, script_name, description, future in futures:
                             step_start_datetime = datetime.now()
@@ -1559,22 +1532,9 @@ def _run_pipeline(
                                 logger,
                             )
 
-                            if run_session is not None:
-                                try:
-                                    from gnn.pipeline.run_session_wiring import (
-                                        record_step_result,
-                                    )
-
-                                    run_session = record_step_result(
-                                        run_session,
-                                        script_name,
-                                        step_result,
-                                        args.output_dir,
-                                    )
-                                except Exception as e:
-                                    logger.warning(
-                                        f"Run session update failed (continuing): {e}"
-                                    )
+                            run_session = record_step_result_guarded(
+                                run_session, script_name, step_result, args, logger
+                            )
         else:
             for step_index, (script_name, description) in enumerate(steps_to_execute):
                 updated_session = _execute_pipeline_iteration(
@@ -1596,13 +1556,7 @@ def _run_pipeline(
         _write_pipeline_summary_outputs(
             args, config_pipeline_settings, pipeline_summary, logger
         )
-        if run_session is not None:
-            try:
-                from gnn.pipeline.run_session_wiring import close_run_session
-
-                run_session = close_run_session(run_session, args.output_dir, logger)
-            except Exception as close_err:
-                logger.warning(f"Run session close failed (continuing): {close_err}")
+        run_session = close_run_session_guarded(run_session, args, logger)
         _print_pipeline_completion(pipeline_summary, progress_tracker, logger)
         return _pipeline_exit_code(pipeline_summary["overall_status"])
 
