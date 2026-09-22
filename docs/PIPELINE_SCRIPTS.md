@@ -70,7 +70,7 @@ uv run python src/gnn/main.py --skip-steps "14,18" --target-dir input/gnn_files 
 
 ## Module pattern
 
-Numbered scripts typically wrap a module entrypoint such as `process_<module>(target_dir, output_dir, logger, ...)` registered via `gnn.utils.pipeline_orchestration.pipeline_template.create_standardized_pipeline_script`. See any `src/gnn/N_*.py` and the matching [`src/<module>/AGENTS.md`](../src/gnn/AGENTS.md) for the public API.
+Numbered scripts typically wrap a module entrypoint such as `process_<module>(target_dir, output_dir, logger, ...)` registered via `gnn.utils.pipeline_orchestration.pipeline_template.create_standardized_pipeline_script`. See any `src/gnn/N_*.py` and the matching [`src/gnn/<module>/AGENTS.md`](../src/gnn/AGENTS.md) for the public API.
 
 ## Related documentation
 
