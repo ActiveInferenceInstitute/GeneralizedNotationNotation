@@ -504,7 +504,7 @@ for error in errors:
 
 ## Version History
 
-### Current Version: 3.0.0
+### Current Version: 3.0.0 (per-module metadata; independent of the pipeline release in [pyproject.toml](../../../../pyproject.toml) (canonical))
 
 **Features**:
 

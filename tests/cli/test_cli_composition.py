@@ -30,6 +30,7 @@ from gnn.cli import lsp as cli_lsp
 
 REPO = Path(__file__).resolve().parents[2]
 ACTINF_EXEMPLAR = REPO / "input" / "gnn_files" / "discrete" / "actinf_pomdp_agent.md"
+SIMPLE_MDP_EXEMPLAR = REPO / "input" / "gnn_files" / "discrete" / "simple_mdp.md"
 
 
 def _subparser_map(
@@ -64,7 +65,7 @@ class TestBuildParser:
 
     def test_subcommands_sorted_and_complete(self) -> None:
         assert cli.SUBCOMMANDS == tuple(sorted(cli.SUBCOMMANDS))
-        assert len(cli.SUBCOMMANDS) == 17
+        assert len(cli.SUBCOMMANDS) == 18
 
     def test_extract_flags_introspectable(self) -> None:
         parser = cli.build_parser()
@@ -107,6 +108,7 @@ class TestDispatchTable:
             "watch",
             "graph",
             "gui",
+            "mcp",
         ],
     )
     def test_handler_attr_exists_and_is_callable(self, command: str) -> None:
@@ -133,6 +135,7 @@ class TestDispatchTable:
             "graph",
             "gui",
             "lsp",
+            "mcp",
         }
         assert set(cli.COMMAND_HANDLERS) == expected
 
@@ -417,6 +420,15 @@ class TestHandlerSignatures:
             import gnn.gui as gui_module
 
             monkeypatch.setattr(gui_module, "process_gui", completed)
+        elif command == "mcp":
+            import gnn.mcp as mcp_module
+
+            monkeypatch.setattr(mcp_module, "initialize", lambda: None)
+            monkeypatch.setattr(
+                mcp_module,
+                "get_mcp_instance",
+                lambda: _StubMcpInstance([]),
+            )
         elif command in {"health", "preflight"}:
             from gnn.pipeline import preflight
             from gnn.render import health
@@ -461,13 +473,18 @@ def argparse_namespace_for(command: str, *, missing_file: bool) -> argparse.Name
         },
         "validate": {"file": file_arg, "strict": False, "json": False},
         "parse": {"file": file_arg, "format": "json", "json": False},
-        "extract": {"file": file_arg, "strict": True, "compact": False},
-        "render": {"file": file_arg, "framework": "pymdp", "output": None},
+        "extract": {"file": file_arg, "strict": True, "compact": False, "json": False},
+        "render": {
+            "file": file_arg,
+            "framework": "pymdp",
+            "output": None,
+            "json": False,
+        },
         "report": {"output_dir": Path("/nonexistent_output"), "json": False},
         "reproduce": {"run_hash": "abc123def456", "history_dir": Path("no/such")},
         "preflight": {"config": None, "json": False},
         "health": {"strict": False, "json": False},
-        "serve": {"host": "127.0.0.1", "port": 8000},
+        "serve": {"host": "127.0.0.1", "port": 8000, "surface": "runs"},
         "templates": {"templates_command": None, "json": False},
         "models": {
             "target_dir": Path("input/gnn_files"),
@@ -492,5 +509,263 @@ def argparse_namespace_for(command: str, *, missing_file: bool) -> argparse.Name
             "open_browser": False,
             "launch_editor": False,
         },
+        "mcp": {"mcp_command": None, "json": False, "name": None},
     }
     return argparse.Namespace(**common, **per_command[command])
+
+
+class _StubMcpInstance:
+    """Minimal mirror of the real MCP instance's registry accessors."""
+
+    def __init__(self, tools: list[dict[str, Any]]) -> None:
+        self._tools = tools
+
+    def list_available_tools(
+        self, include_metadata: bool = True
+    ) -> list[dict[str, Any]]:
+        return list(self._tools)
+
+    def get_tool_info(self, tool_name: str) -> dict[str, Any] | None:
+        for tool in self._tools:
+            if tool["name"] == tool_name:
+                return dict(tool)
+        return None
+
+
+# ---------------------------------------------------------------------------
+# serve --surface — API surface selection and dispatch routing
+# ---------------------------------------------------------------------------
+
+
+class TestServeSurface:
+    """``serve`` routes the runs, jobs, and both API surfaces."""
+
+    def test_surface_choices_and_default(self) -> None:
+        parser = cli.build_parser()
+        serve_p = _subparser_map(parser)["serve"]
+        surface = next(a for a in serve_p._actions if a.dest == "surface")
+        assert surface.choices == ["runs", "jobs", "both"]
+        assert surface.default == "runs"
+
+    def test_runs_surface_calls_start_server(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        from gnn.api import app as api_app
+
+        calls: list[tuple[tuple[Any, ...], dict[str, Any]]] = []
+
+        def record(*args: Any, **kwargs: Any) -> None:
+            calls.append((args, kwargs))
+
+        monkeypatch.setattr(api_app, "start_server", record)
+        args = argparse.Namespace(
+            surface="runs", host="127.0.0.1", port=8000, verbose=False
+        )
+        assert cli._cmd_serve(args) == cli.EXIT_SUCCESS
+        assert calls == [((), {"host": "127.0.0.1", "port": 8000})]
+
+    def test_jobs_surface_calls_run_server(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        from gnn.api import server as api_server
+
+        calls: list[tuple[tuple[Any, ...], dict[str, Any]]] = []
+
+        def record(*args: Any, **kwargs: Any) -> None:
+            calls.append((args, kwargs))
+
+        monkeypatch.setattr(api_server, "run_server", record)
+        args = argparse.Namespace(
+            surface="jobs", host="127.0.0.1", port=8100, verbose=False
+        )
+        assert cli._cmd_serve(args) == cli.EXIT_SUCCESS
+        assert calls == [((), {"host": "127.0.0.1", "port": 8100})]
+
+    def test_both_surface_starts_jobs_on_port_plus_one(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        import uvicorn
+
+        from gnn.api import app as api_app
+        from gnn.api import server as api_server
+
+        start_calls: list[tuple[tuple[Any, ...], dict[str, Any]]] = []
+        job_configs: list[Any] = []
+
+        def record_start(*args: Any, **kwargs: Any) -> None:
+            start_calls.append((args, kwargs))
+
+        class _StubJobsServer:
+            def __init__(self, config: Any) -> None:
+                job_configs.append(config)
+
+            def run(self) -> None:
+                return None
+
+        monkeypatch.setattr(api_app, "start_server", record_start)
+        monkeypatch.setattr(api_server, "create_app", lambda: object())
+        monkeypatch.setattr(uvicorn, "Server", _StubJobsServer)
+        args = argparse.Namespace(
+            surface="both", host="127.0.0.1", port=8200, verbose=False
+        )
+        assert cli._cmd_serve(args) == cli.EXIT_SUCCESS
+        assert start_calls == [((), {"host": "127.0.0.1", "port": 8200})]
+        assert len(job_configs) == 1
+        assert job_configs[0].port == 8201
+        assert job_configs[0].host == "127.0.0.1"
+
+
+# ---------------------------------------------------------------------------
+# extract/render --json — standard CLI envelope output
+# ---------------------------------------------------------------------------
+
+
+class TestJsonEnvelopeFlags:
+    """``extract`` and ``render`` gain the standard --json envelope mode."""
+
+    def test_extract_and_render_json_flags_introspectable(self) -> None:
+        parser = cli.build_parser()
+        choices = _subparser_map(parser)
+        for name in ("extract", "render"):
+            option_strings = {
+                o for a in choices[name]._actions for o in a.option_strings
+            }
+            assert "--json" in option_strings
+
+    def test_extract_json_envelope_on_exemplar(self, capsys: Any) -> None:
+        assert SIMPLE_MDP_EXEMPLAR.is_file()
+        assert cli.main(["extract", str(SIMPLE_MDP_EXEMPLAR), "--json"]) == (
+            cli.EXIT_SUCCESS
+        )
+        envelope = json.loads(capsys.readouterr().out)
+        assert envelope["status"] == "success"
+        assert envelope["meta"]["command"] == "extract"
+        assert isinstance(envelope["data"], dict)
+
+    def test_render_json_envelope_with_output(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: Any
+    ) -> None:
+        import gnn.render as render_module
+
+        source = tmp_path / "model.md"
+        source.write_text("# GNN stub model\n", encoding="utf-8")
+        output = tmp_path / "rendered" / "model.py"
+
+        def fake_process_render(
+            *, target_dir: Path, output_dir: Path, **kwargs: Any
+        ) -> bool:
+            framework_dir = output_dir / "pymdp"
+            framework_dir.mkdir(parents=True, exist_ok=True)
+            (framework_dir / "model.py").write_text(
+                "# stub artifact\n", encoding="utf-8"
+            )
+            return True
+
+        monkeypatch.setattr(render_module, "process_render", fake_process_render)
+        assert (
+            cli.main(
+                [
+                    "render",
+                    str(source),
+                    "--framework",
+                    "pymdp",
+                    "--output",
+                    str(output),
+                    "--json",
+                ]
+            )
+            == cli.EXIT_SUCCESS
+        )
+        envelope = json.loads(capsys.readouterr().out)
+        assert envelope["status"] == "success"
+        assert envelope["meta"]["command"] == "render"
+        assert envelope["data"]["file"] == str(source)
+        assert envelope["data"]["framework"] == "pymdp"
+        assert envelope["data"]["output"] == str(output)
+        assert envelope["data"]["render_dir"]
+        assert envelope["data"]["artifact"] is not None
+
+    def test_render_json_error_envelope_on_missing_file(self, capsys: Any) -> None:
+        assert (
+            cli.main(["render", "/nonexistent/for-sure.md", "--json"]) == cli.EXIT_ERROR
+        )
+        envelope = json.loads(capsys.readouterr().out)
+        assert envelope["status"] == "error"
+        assert envelope["meta"]["command"] == "render"
+        assert envelope["error"]["code"] == "render_error"
+
+
+# ---------------------------------------------------------------------------
+# gnn mcp — tool-surface inspection over the lazy gnn.mcp bridge
+# ---------------------------------------------------------------------------
+
+
+class TestMcpSubcommand:
+    """``gnn mcp list|info`` wraps gnn.mcp registry access in the envelope."""
+
+    TOOLS: list[dict[str, Any]] = [
+        {
+            "name": "b.tool",
+            "module": "m_two",
+            "category": "cat_two",
+            "description": "second tool",
+            "version": "1.0.0",
+        },
+        {
+            "name": "a.tool",
+            "module": "m_one",
+            "category": "cat_one",
+            "description": "first tool",
+            "version": "1.0.0",
+        },
+    ]
+
+    def _install_stub(self, monkeypatch: pytest.MonkeyPatch) -> _StubMcpInstance:
+        import gnn.mcp as mcp_module
+
+        stub = _StubMcpInstance([dict(tool) for tool in self.TOOLS])
+        monkeypatch.setattr(mcp_module, "initialize", lambda: None)
+        monkeypatch.setattr(mcp_module, "get_mcp_instance", lambda: stub)
+        return stub
+
+    def test_mcp_list_json_envelope(
+        self, monkeypatch: pytest.MonkeyPatch, capsys: Any
+    ) -> None:
+        self._install_stub(monkeypatch)
+        assert cli.main(["mcp", "list", "--json"]) == cli.EXIT_SUCCESS
+        envelope = json.loads(capsys.readouterr().out)
+        assert envelope["status"] == "success"
+        assert envelope["meta"]["command"] == "mcp"
+        assert envelope["data"]["total"] == 2
+        assert [t["name"] for t in envelope["data"]["tools"]] == ["a.tool", "b.tool"]
+        assert envelope["data"]["tools"][0]["module"] == "m_one"
+        assert envelope["data"]["tools"][0]["category"] == "cat_one"
+
+    def test_mcp_info_json_envelope(
+        self, monkeypatch: pytest.MonkeyPatch, capsys: Any
+    ) -> None:
+        self._install_stub(monkeypatch)
+        assert cli.main(["mcp", "info", "a.tool", "--json"]) == cli.EXIT_SUCCESS
+        envelope = json.loads(capsys.readouterr().out)
+        assert envelope["status"] == "success"
+        assert envelope["meta"]["command"] == "mcp"
+        assert envelope["data"]["name"] == "a.tool"
+        assert envelope["data"]["module"] == "m_one"
+        assert envelope["data"]["category"] == "cat_one"
+
+    def test_mcp_info_unknown_tool_json_error_envelope(
+        self, monkeypatch: pytest.MonkeyPatch, capsys: Any
+    ) -> None:
+        self._install_stub(monkeypatch)
+        assert cli.main(["mcp", "info", "nope.tool", "--json"]) == cli.EXIT_ERROR
+        envelope = json.loads(capsys.readouterr().out)
+        assert envelope["status"] == "error"
+        assert envelope["meta"]["command"] == "mcp"
+        assert envelope["error"]["code"] == "unknown_tool"
+
+    def test_mcp_info_unknown_tool_human_mode_is_quiet(
+        self, monkeypatch: pytest.MonkeyPatch, capsys: Any
+    ) -> None:
+        self._install_stub(monkeypatch)
+        assert cli.main(["mcp", "info", "nope.tool"]) == cli.EXIT_ERROR
+        assert capsys.readouterr().out == ""

@@ -12,7 +12,6 @@ from gnn.processing.core_processor import (
     GNNProcessor,
     ProcessingContext,
     ProcessingPhase,
-    create_processor,
 )
 from gnn.processing.discovery import (
     NON_MODEL_MARKDOWN_FILENAMES,
@@ -41,7 +40,6 @@ __all__ = [
     "NON_MODEL_MARKDOWN_SUFFIXES",
     "ProcessingContext",
     "ProcessingPhase",
-    "create_processor",
     "discover_gnn_files",
     "generate_gnn_report",
     "get_module_info",

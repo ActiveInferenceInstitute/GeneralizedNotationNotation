@@ -2,7 +2,7 @@
 
 Audit-backed quick reference for the GNN MCP server tool surface. Use `tests/mcp/test_mcp_audit.py` and `src/gnn/mcp/validate_tools.py` for the current live count. For full per-domain documentation see **[../modules/21_mcp.md](../modules/21_mcp.md)**.
 
-**157 tools across 34 modules** — see the generated [`src/gnn/mcp/audit_report.json`](../../../src/gnn/mcp/audit_report.json) for the authoritative current count (regenerate with `uv run python src/gnn/mcp/validate_tools.py`).
+**162 tools across 36 modules** — see the generated [`src/gnn/mcp/audit_report.json`](../../../src/gnn/mcp/audit_report.json) for the authoritative current count (regenerate with `uv run python src/gnn/mcp/validate_tools.py`).
 
 ## Full Tool Table
 
@@ -21,7 +21,7 @@ Audit-backed quick reference for the GNN MCP server tool surface. Use `tests/mcp
 | api | `gnn_get_job_status` | Retrieve the status of a GNN pipeline job. |
 | api | `gnn_get_pipeline_tools` | List available pipeline steps. |
 | api | `gnn_list_jobs` | List recent GNN pipeline jobs. |
-| api | `gnn_submit_job` | Create a GNN pipeline job record (pending; not executed). Execution happens only via POST /api/v1/process or POST /api/v |
+| api | `gnn_submit_job` | Create a GNN pipeline job record (pending; not executed). Execution happens only via POST /api/v1/process or POST /api/v1/tools/{step} on the job/tool API server (gnn.api.server), or a direct execute_job_async call; gnn serve (Runs surface) never consumes these records. |
 | audio | `analyze_audio_characteristics` | Analyse characteristics of a GNN-generated audio file (duration, RMS, spectral centroid, etc.). |
 | audio | `check_audio_backends` | Check which audio generation backends (scipy, soundfile, pedalboard, wave) are available. |
 | audio | `get_audio_generation_options` | Return all configurable audio generation options with defaults and valid ranges. |
@@ -36,10 +36,10 @@ Audit-backed quick reference for the GNN MCP server tool surface. Use `tests/mcp
 | execute | `check_execute_dependencies` | Check which execution backend dependencies (pymdp, numpy, scipy, jax) are installed. |
 | execute | `execute_gnn_model` | Execute a single GNN model file via GNNExecutor (PyMDP default); timesteps come from the model's Time section. |
 | execute | `execute_pymdp_simulation` | Run a PyMDP Active Inference simulation from a GNN model (A/B/C/D matrices -> Agent -> perception-action loop). |
-| execute | `get_doctor_report` | Return one structured capability report: per-framework availability plus a Step 12 execution-readiness dry run (no scrip |
+| execute | `get_doctor_report` | Return one structured capability report: per-framework availability plus a Step 12 execution-readiness dry run (no scripts run). |
 | execute | `get_execute_module_info` | Return version, feature flags, and API surface of the GNN execute module. |
 | execute | `process_execute` | Run trusted Step 11 rendered scripts listed in render_processing_summary.json. |
-| execute | `run_cross_framework_comparison` | Render one GNN model to every registered backend, execute each, and write a cross-framework comparison HTML page with pe |
+| execute | `run_cross_framework_comparison` | Render one GNN model to every registered backend, execute each, and write a cross-framework comparison HTML page with per-framework status receipts. |
 | export | `export_single_gnn_file` | Export a single GNN file to one or more target formats. |
 | export | `list_export_formats` | List all supported GNN export formats and their descriptions. |
 | export | `process_export` | Export GNN models to all supported output formats (JSON, YAML, Python, Julia, etc.). |
@@ -85,7 +85,7 @@ Audit-backed quick reference for the GNN MCP server tool surface. Use `tests/mcp
 | mcp.sympy_mcp | `sympy_solve_equation` | Solve an equation algebraically for a specified variable |
 | mcp.sympy_mcp | `sympy_validate_equation` | Validate a mathematical equation using SymPy symbolic processing |
 | mcp.sympy_mcp | `sympy_validate_matrix` | Validate matrix properties including stochasticity constraints |
-| meta | `get_mcp_diagnostics` | Get comprehensive diagnostic information for troubleshooting and monitoring, including health checks and recommendations |
+| meta | `get_mcp_diagnostics` | Get comprehensive diagnostic information for troubleshooting and monitoring, including health checks and recommendations. |
 | meta | `get_mcp_module_info` | Get detailed information about a specific loaded module, including its tools and resources. |
 | meta | `get_mcp_performance_metrics` | Get performance metrics and statistics for the MCP server, including execution times and error rates. |
 | meta | `get_mcp_server_auth_status` | Describes the current authentication mechanisms and security configuration of the MCP server. |
@@ -109,10 +109,13 @@ Audit-backed quick reference for the GNN MCP server tool surface. Use `tests/mcp
 | pipeline | `get_pipeline_config_info` | Get detailed pipeline configuration information and settings. |
 | pipeline | `get_pipeline_status` | Get current pipeline execution status, recent logs, and execution statistics. |
 | pipeline | `get_pipeline_steps` | Get information about all available pipeline steps, their metadata, and dependencies. |
-| pipeline | `get_v3_orchestration_capabilities` | Describe the v3.0.0 long-running orchestration contracts: durable observation streams, resumable run sessions, and audit |
-| pipeline | `run_v3_container_security_review` | Run the auditable container-plan static security review on a hardened and an insecure example, proving the review flags |
-| pipeline | `run_v3_orchestration_self_check` | Run in-process checks of all three v3 orchestration contracts (stream manifest tamper detection, session status math, co |
+| pipeline | `get_v3_orchestration_capabilities` | Describe the v3.0.0 long-running orchestration contracts: durable observation streams, resumable run sessions, and auditable container plans (safe-by-design, no live mutation). |
+| pipeline | `run_v3_container_security_review` | Run the auditable container-plan static security review on a hardened and an insecure example, proving the review flags privileged/root/unpinned/secret findings. |
+| pipeline | `run_v3_orchestration_self_check` | Run in-process checks of all three v3 orchestration contracts (stream manifest tamper detection, session status math, container review) and report pass counts. |
 | pipeline | `validate_pipeline_dependencies` | Validate pipeline step dependencies and identify missing or circular dependencies. |
+| processing | `processing.check_gnn_file_structure` | Validate the structure of a GNN file with lightweight checks (empty/short content, missing sections, unmatched brackets). |
+| processing | `processing.discover_gnn_files` | Discover GNN model files in a directory and return their paths. |
+| processing | `processing.parse_gnn_file` | Parse a GNN file and extract basic structural information (sections, variables, counts). |
 | render | `get_render_module_info` | Return metadata about the render module: supported frameworks and input/output formats. |
 | render | `list_render_frameworks` | Return supported render framework names and availability (best effort). |
 | render | `process_render` | Render GNN models in a directory to all supported code frameworks. |
@@ -127,6 +130,8 @@ Audit-backed quick reference for the GNN MCP server tool surface. Use `tests/mcp
 | research | `list_research_topics` | Return Active Inference and GNN research topic taxonomy. |
 | research | `process_research` | Run GNN research processing: generate experiment metadata and cross-references. |
 | research | `read_research_results` | Read and return research output files from a previous research processing run. |
+| schema_validator | `schema_validator.parse_syntax` | Parse a GNN specification file with the regex-based syntax parser and return its structural summary. |
+| schema_validator | `schema_validator.validate_comprehensive` | Validate a GNN specification file with the full validator pipeline (schema, round-trip, and semantic checks). |
 | security | `get_security_report` | Read and return saved security scan reports from a previous security processing run. |
 | security | `list_security_checks` | Return the list of security checks performed (CVE scan, injection detection, path traversal, etc.). |
 | security | `process_security` | Run security scanning and compliance checks on GNN pipeline files. |

@@ -254,7 +254,7 @@ This submodule registers no MCP tools of its own. The parent module
 
 ## Version History
 
-### Current Version: 3.2.0
+### Current Version: [pyproject.toml](../../../../pyproject.toml) (canonical)
 
 **Features**:
 - RxInfer.jl script discovery and subprocess execution under the committed project

@@ -15,12 +15,13 @@ analysis/rxinfer/
 ├── dashboard.py         # Interactive HTML dashboard over the GIF batch (roadmap A5)
 ├── cross_framework.py   # Cross-framework comparison (roadmap A6)
 ├── README.md            # Human documentation
+├── SPEC.md              # Module specification
 └── AGENTS.md            # This file
 ```
 
 ### gif_animator.py
 
-`generate_gif_animation(results, output_path, ...)` renders the 2×3
+`generate_gif_animation(data, output_path, ...)` renders the 2×3
 publication-style (white) GIF: beliefs, states, Bayesian graph model,
 VFE, EFE-per-action heatmap (D6), and policy-posterior stackplot (D8).
 For multi-factor results (`model_parameters.state_factors` with >1
@@ -31,7 +32,7 @@ iterations, belief accuracy).
 
 ### dashboard.py
 
-`generate_dashboard(animations_dir, output_path)` builds a single
+`generate_dashboard(gif_dir, output_path)` builds a single
 self-contained HTML page over all GIFs + manifests with category
 grouping and filtering.
 
@@ -105,5 +106,5 @@ Both Julia subprocesses run with the shared Julia environment (`GKSwstype=100` h
 
 ---
 
-**Version:** 3.0.0
-**Last Updated:** 2026-01-23
+**Version:** 3.5.0
+**Last Updated:** 2026-09-22

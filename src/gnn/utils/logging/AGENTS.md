@@ -43,6 +43,6 @@ logging/
 - [Developer Guide](README.md)
 
 ---
-**Version**: 3.2.0
+**Version**: [pyproject.toml](../../../../pyproject.toml) (canonical)
 **Status**: Production Hardened  
 **Pipeline Integration**: Steps 0-24

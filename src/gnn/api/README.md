@@ -53,6 +53,11 @@ curl -N http://localhost:8000/api/v1/runs/abc123/stream
   the report download intentionally remains `text/markdown`
 - **Job/tool surface**: `gnn.api.server:app` provides `/api/v1/process`,
   `/api/v1/jobs`, and `/api/v1/tools` for explicit job and step management
+- **Shared parity surface**: both factories also register the 12-route
+  CLI-parity set via `gnn.api.parity.register_parity_routes`, including the
+  verify-only `POST /api/v1/reproduce` (resolves and verifies an indexed run
+  and returns the reconstructed configuration; execution is dispatched by
+  the caller)
 
 ## File Structure
 

@@ -10,7 +10,7 @@
 
 **Status**: ✅ Production Ready
 
-**Version**: 3.2.0
+**Version**: [pyproject.toml](../../pyproject.toml) (canonical)
 
 **Last Updated**: 2026-09-04
 
@@ -662,7 +662,7 @@ cat output/3_gnn_output/gnn_processing_summary.json | python -m json.tool
 
 ## Version History
 
-### Current Version: 3.2.0
+### Current Version: [pyproject.toml](../../pyproject.toml) (canonical)
 
 **Features**:
 

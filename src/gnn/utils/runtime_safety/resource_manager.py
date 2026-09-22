@@ -13,8 +13,6 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Any, Callable, Dict, Iterator, Optional, Tuple, TypeVar, cast
 
-import psutil
-
 logger = logging.getLogger(__name__)
 
 # Type variable for generic function decorators
@@ -48,14 +46,20 @@ class ResourceTracker:
         """Initialize the instance."""
         self.start_time = time.time()
         self.end_time: Optional[float] = None
-        self.start_memory = psutil.Process().memory_info().rss / 1024 / 1024  # MB
+        self.start_memory = get_current_memory_usage()
         self.peak_memory = self.start_memory
         self.current_memory = self.start_memory
 
     def update(self) -> Any:
         """Update current resource measurements."""
-        self.current_memory = psutil.Process().memory_info().rss / 1024 / 1024
-        self.peak_memory = max(self.peak_memory, self.current_memory)
+        try:
+            import psutil
+
+            self.current_memory = psutil.Process().memory_info().rss / 1024 / 1024
+            self.peak_memory = max(self.peak_memory, self.current_memory)
+        except ImportError:
+            # psutil unavailable: keep the last recorded readings.
+            pass
 
     def stop(self) -> Any:
         """Stop tracking and calculate final metrics."""
@@ -72,12 +76,12 @@ class ResourceTracker:
     @property
     def memory_used(self) -> float:
         """Get current memory usage in MB."""
-        return cast("float", self.current_memory - self.start_memory)
+        return self.current_memory - self.start_memory
 
     @property
     def max_memory_mb(self) -> float:
         """Get peak memory usage in MB."""
-        return cast("float", self.peak_memory)
+        return self.peak_memory
 
     def to_dict(self) -> Dict[str, float]:
         """Convert metrics to dictionary."""
@@ -128,8 +132,15 @@ def with_resource_limits(
       never masked by a ``RuntimeError`` from this guard.
     """
     start_time = time.time()
-    process = psutil.Process()
-    start_memory = process.memory_info().rss / 1024 / 1024  # MB
+    try:
+        import psutil
+
+        process = psutil.Process()
+        start_memory: Optional[float] = process.memory_info().rss / 1024 / 1024  # MB
+    except ImportError:
+        # psutil unavailable: memory limits cannot be enforced; timing still is.
+        process = None
+        start_memory = None
 
     body_error: BaseException | None = None
     try:
@@ -140,12 +151,13 @@ def with_resource_limits(
     if body_error is not None:
         raise body_error
 
-    end_memory = process.memory_info().rss / 1024 / 1024
-    memory_delta = max(0.0, end_memory - start_memory)
-    if max_memory_mb is not None and memory_delta > max_memory_mb:
-        raise RuntimeError(
-            f"Memory limit exceeded: +{memory_delta:.1f}MB > {max_memory_mb}MB"
-        )
+    if process is not None and start_memory is not None:
+        end_memory = process.memory_info().rss / 1024 / 1024
+        memory_delta = max(0.0, end_memory - start_memory)
+        if max_memory_mb is not None and memory_delta > max_memory_mb:
+            raise RuntimeError(
+                f"Memory limit exceeded: +{memory_delta:.1f}MB > {max_memory_mb}MB"
+            )
     if max_time_seconds is not None:
         elapsed = time.time() - start_time
         if elapsed > max_time_seconds:
@@ -242,21 +254,32 @@ def get_system_info() -> Dict[str, Any]:
     """Get system information and resource availability."""
     import platform
 
-    cpu_count = psutil.cpu_count()
-    memory = psutil.virtual_memory()
+    try:
+        import psutil
+
+        cpu_count = psutil.cpu_count()
+        cpu_percent = psutil.cpu_percent(interval=1)
+        memory = psutil.virtual_memory()
+        disk_usage = {
+            str(path): psutil.disk_usage(str(path)).percent
+            for path in [Path.home(), Path.cwd()]
+        }
+    except ImportError:
+        # psutil unavailable: report None metrics rather than failing.
+        cpu_count = None
+        cpu_percent = None
+        memory = None
+        disk_usage = {}
 
     return {
         "platform": platform.platform(),
         "python_version": platform.python_version(),
         "cpu_count": cpu_count,
-        "cpu_percent": psutil.cpu_percent(interval=1),
-        "memory_total_gb": memory.total / (1024**3),
-        "memory_available_gb": memory.available / (1024**3),
-        "memory_percent": memory.percent,
-        "disk_usage": {
-            str(path): psutil.disk_usage(str(path)).percent
-            for path in [Path.home(), Path.cwd()]
-        },
+        "cpu_percent": cpu_percent,
+        "memory_total_gb": memory.total / (1024**3) if memory else None,
+        "memory_available_gb": memory.available / (1024**3) if memory else None,
+        "memory_percent": memory.percent if memory else None,
+        "disk_usage": disk_usage,
     }
 
 

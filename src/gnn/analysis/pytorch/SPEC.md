@@ -1,6 +1,6 @@
 # PyTorch Analysis — Technical Specification
 
-**Version**: 1.6.0
+**Version**: [pyproject.toml](../../../../pyproject.toml) (canonical)
 
 ## Input Format
 

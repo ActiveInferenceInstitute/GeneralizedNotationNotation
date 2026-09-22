@@ -371,31 +371,39 @@ def register_tools(mcp_instance: Any) -> None:
 
     # Register tools
     mcp_instance.register_tool(
-        name="get_pipeline_steps",
-        function=get_pipeline_steps_tool,
-        schema={},
-        description="Get information about all available pipeline steps, their metadata, and dependencies.",
+        "get_pipeline_steps",
+        get_pipeline_steps_tool,
+        {"type": "object", "properties": {}},
+        "Get information about all available pipeline steps, their metadata, and dependencies.",
+        module=__package__,
+        category="pipeline",
     )
 
     mcp_instance.register_tool(
-        name="get_pipeline_status",
-        function=get_pipeline_status_tool,
-        schema={},
-        description="Get current pipeline execution status, recent logs, and execution statistics.",
+        "get_pipeline_status",
+        get_pipeline_status_tool,
+        {"type": "object", "properties": {}},
+        "Get current pipeline execution status, recent logs, and execution statistics.",
+        module=__package__,
+        category="pipeline",
     )
 
     mcp_instance.register_tool(
-        name="validate_pipeline_dependencies",
-        function=validate_pipeline_dependencies_tool,
-        schema={},
-        description="Validate pipeline step dependencies and identify missing or circular dependencies.",
+        "validate_pipeline_dependencies",
+        validate_pipeline_dependencies_tool,
+        {"type": "object", "properties": {}},
+        "Validate pipeline step dependencies and identify missing or circular dependencies.",
+        module=__package__,
+        category="pipeline",
     )
 
     mcp_instance.register_tool(
-        name="get_pipeline_config_info",
-        function=get_pipeline_config_info_tool,
-        schema={},
-        description="Get detailed pipeline configuration information and settings.",
+        "get_pipeline_config_info",
+        get_pipeline_config_info_tool,
+        {"type": "object", "properties": {}},
+        "Get detailed pipeline configuration information and settings.",
+        module=__package__,
+        category="pipeline",
     )
 
     # v3.0.0 long-running orchestration tools (safe-by-design: no live mutation).
@@ -412,25 +420,31 @@ def register_tools(mcp_instance: Any) -> None:
         return run_v3_orchestration_self_check()
 
     mcp_instance.register_tool(
-        name="get_v3_orchestration_capabilities",
-        function=get_v3_orchestration_capabilities_tool,
-        schema={},
-        description="Describe the v3.0.0 long-running orchestration contracts: durable observation "
+        "get_v3_orchestration_capabilities",
+        get_v3_orchestration_capabilities_tool,
+        {"type": "object", "properties": {}},
+        "Describe the v3.0.0 long-running orchestration contracts: durable observation "
         "streams, resumable run sessions, and auditable container plans (safe-by-design, no live mutation).",
+        module=__package__,
+        category="pipeline",
     )
     mcp_instance.register_tool(
-        name="run_v3_container_security_review",
-        function=run_v3_container_security_review_tool,
-        schema={},
-        description="Run the auditable container-plan static security review on a hardened and an "
+        "run_v3_container_security_review",
+        run_v3_container_security_review_tool,
+        {"type": "object", "properties": {}},
+        "Run the auditable container-plan static security review on a hardened and an "
         "insecure example, proving the review flags privileged/root/unpinned/secret findings.",
+        module=__package__,
+        category="pipeline",
     )
     mcp_instance.register_tool(
-        name="run_v3_orchestration_self_check",
-        function=run_v3_orchestration_self_check_tool,
-        schema={},
-        description="Run in-process checks of all three v3 orchestration contracts (stream manifest "
+        "run_v3_orchestration_self_check",
+        run_v3_orchestration_self_check_tool,
+        {"type": "object", "properties": {}},
+        "Run in-process checks of all three v3 orchestration contracts (stream manifest "
         "tamper detection, session status math, container review) and report pass counts.",
+        module=__package__,
+        category="pipeline",
     )
 
     logger.info("Successfully registered pipeline MCP tools")

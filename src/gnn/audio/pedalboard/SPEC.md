@@ -1,6 +1,6 @@
 # Pedalboard Audio Processing — Technical Specification
 
-**Version**: 3.2.0
+**Version**: [pyproject.toml](../../../../pyproject.toml) (canonical)
 
 **Status**: Planned. This directory is a documentation-only scaffold with no Python code (see [README.md](README.md)).
 

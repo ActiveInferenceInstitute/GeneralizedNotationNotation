@@ -34,9 +34,12 @@ from typing import Any, Callable, Dict, Iterator, List, Optional, Set
 import pytest
 from fastapi.testclient import TestClient
 
+import gnn.main as orchestrator
 from gnn.api.app import create_app as create_run_app
 from gnn.api.server import app as server_module_app
 from gnn.api.server import create_app as create_job_app
+from gnn.pipeline.hasher import index_run
+from gnn.utils.arguments.pipeline_arguments import PipelineArguments
 
 #: Committed exemplar with a full valid GNN model (11 variables, 10
 #: connections) — positive-case input for validate/parse/extract/render/graph.
@@ -62,6 +65,7 @@ PARITY_ROUTES: Dict[str, Set[str]] = {
     "/api/v1/models": {"GET"},
     "/api/v1/preflight": {"POST"},
     "/api/v1/report": {"POST"},
+    "/api/v1/reproduce": {"POST"},
 }
 
 
@@ -206,7 +210,9 @@ def test_parity_surface_is_the_real_cross_factory_intersection() -> None:
     run_app_table = _route_table(create_run_app())
     job_app_table = _route_table(create_job_app())
     shared = {
-        path: methods for path, methods in run_app_table.items() if path in job_app_table
+        path: methods
+        for path, methods in run_app_table.items()
+        if path in job_app_table
     }
     assert shared == {**PARITY_ROUTES, **META_ROUTES}
 
@@ -499,7 +505,6 @@ def test_templates_show_unknown_name_maps_to_404(client: TestClient) -> None:
     assert "Unknown template" in envelope["error"]["message"]
 
 
-
 # ── POST /api/v1/pull ────────────────────────────────────────────────────────
 
 
@@ -758,3 +763,121 @@ def test_report_missing_dir_maps_to_404(client: TestClient) -> None:
     assert response.status_code == 404
     envelope = _assert_envelope(response.json(), status="error")
     assert envelope["error"]["code"] == "not_found"
+
+
+# ── POST /api/v1/reproduce ───────────────────────────────────────────────────
+
+
+REPRODUCE_TEST_ROOT = Path("output/api_parity_reproduce_test")
+
+
+def _index_reproduce_fixture() -> Dict[str, Any]:
+    """Index one valid run under a repo-local scratch root (wave2 pattern)."""
+    shutil.rmtree(REPRODUCE_TEST_ROOT, ignore_errors=True)
+    source = REPRODUCE_TEST_ROOT / "input"
+    source.mkdir(parents=True)
+    (source / "model.md").write_text("model")
+    args = PipelineArguments(
+        target_dir=source, output_dir=REPRODUCE_TEST_ROOT / "output", only_steps="0"
+    )
+    summary = orchestrator._initialize_pipeline_summary(
+        args, [("0_template.py", "Template")], {}
+    )
+    index_run(
+        summary["run_hash"],
+        REPRODUCE_TEST_ROOT / "summary.json",
+        history_dir=REPRODUCE_TEST_ROOT / ".history",
+        config={
+            "args": args.to_dict(),
+            "pipeline": {},
+            "identity_config": summary["identity_config"],
+            "run_hash_schema": summary["run_hash_schema"],
+        },
+        file_hashes=summary["file_hashes"],
+    )
+    return {
+        "run_hash": summary["run_hash"],
+        "history_dir": str(REPRODUCE_TEST_ROOT / ".history"),
+        "selected_steps": list(summary["identity_config"]["selected_steps"]),
+    }
+
+
+@pytest.mark.unit
+def test_reproduce_happy_path_returns_verified_identity(
+    client: TestClient,
+) -> None:
+    """A matching indexed run resolves and verifies: 200 with its identity."""
+    fixture = _index_reproduce_fixture()
+    try:
+        response = client.post(
+            "/api/v1/reproduce",
+            json={
+                "run_hash": fixture["run_hash"],
+                "history_dir": fixture["history_dir"],
+            },
+        )
+        assert response.status_code == 200
+        envelope = _assert_envelope(response.json())
+        data = envelope["data"]
+        assert data["run_hash"] == fixture["run_hash"]
+        assert data["verified"] is True
+        assert data["problems"] == []
+        assert data["selected_steps"] == fixture["selected_steps"]
+        assert data["args"]["only_steps"] == "0"
+        assert data["input_config"]["pipeline"] == {}
+    finally:
+        shutil.rmtree(REPRODUCE_TEST_ROOT, ignore_errors=True)
+
+
+@pytest.mark.unit
+def test_reproduce_unknown_hash_maps_to_404(client: TestClient) -> None:
+    """An unknown run hash mirrors the CLI EXIT_ERROR as 404 not_found."""
+    fixture = _index_reproduce_fixture()
+    try:
+        response = client.post(
+            "/api/v1/reproduce",
+            json={
+                "run_hash": "deadbeef0000",
+                "history_dir": fixture["history_dir"],
+            },
+        )
+        assert response.status_code == 404
+        envelope = _assert_envelope(response.json(), status="error")
+        assert envelope["error"]["code"] == "not_found"
+        assert "not found" in envelope["error"]["message"]
+    finally:
+        shutil.rmtree(REPRODUCE_TEST_ROOT, ignore_errors=True)
+
+
+@pytest.mark.unit
+def test_reproduce_drifted_input_maps_to_400(client: TestClient) -> None:
+    """Rewriting an indexed input file surfaces the drift problem as 400."""
+    fixture = _index_reproduce_fixture()
+    try:
+        (REPRODUCE_TEST_ROOT / "input" / "model.md").write_text("changed")
+        response = client.post(
+            "/api/v1/reproduce",
+            json={
+                "run_hash": fixture["run_hash"],
+                "history_dir": fixture["history_dir"],
+            },
+        )
+        assert response.status_code == 400
+        envelope = _assert_envelope(response.json(), status="error")
+        assert envelope["error"]["code"] == "bad_request"
+        assert "Cannot reproduce run" in envelope["error"]["message"]
+        assert "differs from the indexed run" in envelope["error"]["message"]
+    finally:
+        shutil.rmtree(REPRODUCE_TEST_ROOT, ignore_errors=True)
+
+
+@pytest.mark.unit
+def test_reproduce_rejects_unknown_request_fields(client: TestClient) -> None:
+    """Request models forbid extra fields explicitly (no silent ignoring)."""
+    response = client.post(
+        "/api/v1/reproduce",
+        json={"run_hash": "abc123", "history_dir": None, "dry_run": False},
+    )
+    assert response.status_code == 422
+    envelope = _assert_envelope(response.json(), status="error")
+    assert envelope["error"]["code"] == "validation_error"

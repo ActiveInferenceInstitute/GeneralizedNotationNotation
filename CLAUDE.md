@@ -192,7 +192,7 @@ uv sync --extra dev                  # Development tools (pytest, ruff, mypy, ba
 uv sync --extra api                  # REST API server (FastAPI + uvicorn)
 uv sync --extra ml-ai                # transformers, scipy, scikit-learn (beyond core Step 12 backends)
 uv sync --extra audio                # Audio processing (librosa, soundfile, pedalboard)
-uv sync --extra gui                  # GUI interfaces (gradio, streamlit)
+uv sync --extra gui                  # GUI interfaces (gradio)
 uv sync --extra graphs               # System Graphviz bindings
 uv sync --extra research             # Notebooks / scientific computing for non-developer users
 uv sync --extra scaling              # Distributed execution (dask, distributed, ray)

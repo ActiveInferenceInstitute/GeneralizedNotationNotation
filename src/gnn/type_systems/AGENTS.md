@@ -26,4 +26,4 @@ type_systems/
 
 See [gnn/AGENTS.md](../AGENTS.md) for the overall GNN processing architecture.
 
-**Version**: 3.2.0
+**Version**: [pyproject.toml](../../../pyproject.toml) (canonical)

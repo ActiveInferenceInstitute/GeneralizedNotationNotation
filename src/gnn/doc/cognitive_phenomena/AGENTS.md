@@ -17,4 +17,4 @@ Provides theoretical background and references for GNN model designers working w
 
 See [docs/AGENTS.md](../AGENTS.md) for the overall documentation architecture.
 
-**Version**: 3.2.0
+**Version**: [pyproject.toml](../../../../pyproject.toml) (canonical)

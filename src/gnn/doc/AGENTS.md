@@ -6,7 +6,7 @@
 **Pipeline Step**: Infrastructure module (not a numbered step)
 **Category**: Infrastructure / Documentation
 **Status**: ✅ Production Ready
-**Version**: 3.2.0
+**Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 **Last Updated**: 2026-04-16
 
 ## Purpose

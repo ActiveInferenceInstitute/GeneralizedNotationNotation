@@ -14,7 +14,7 @@ delegates its body to `multi_format_processor.process_gnn_multi_format`;
 
 **Status**: Production Ready
 
-**Version**: 3.2.0
+**Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 **Last Updated**: 2026-09-06
 
@@ -31,7 +31,10 @@ Four concerns, one package:
    `generate_gnn_report`, `get_module_info`.
 2. `core_processor.py` — `GNNProcessor` five-phase orchestration engine:
    `ProcessingPhase.DISCOVERY → VALIDATION → ROUND_TRIP → CROSS_FORMAT →
-   REPORTING` over a `ProcessingContext`; `create_processor` is the factory.
+   REPORTING` over a `ProcessingContext`; constructed directly as
+   `GNNProcessor(logger)`. Its module-level `process_gnn_directory` /
+   `process_gnn_directory_lightweight` wrappers are recovery entry points
+   distinct from the canonical `processor.py` functions (see README).
    Round-trip uses `gnn.schema_validator.CrossFormatValidator`; reporting
    uses `gnn.report.processing_report.ReportGenerator`.
 3. `multi_format_processor.py` — `process_gnn_multi_format`: discovers,
@@ -45,7 +48,7 @@ Four concerns, one package:
 
 ## Agent Guidance
 
-- Import the public surface from `gnn.processing` (see `__all__`, 17 names),
+- Import the public surface from `gnn.processing` (see `__all__`, 16 names),
   not from the submodules, except for genuinely internal use within the
   package.
 - The root package facade re-exports the `processor.py` surface and

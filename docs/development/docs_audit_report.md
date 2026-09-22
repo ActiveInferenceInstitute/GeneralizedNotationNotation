@@ -8,7 +8,7 @@ None found (scoped scan).
 
 ## Suspicious markdown anchors (optional --check-anchors)
 
-Not run (pass `--check-anchors` to validate `#fragments` against heading slugs).
+None found.
 
 ## AGENTS.md referencing sibling SPEC.md
 
@@ -33,6 +33,22 @@ None.
 ## Directories with README.md but no AGENTS.md (src, doc, .github, repo root)
 
 None.
+
+## SECURITY.md supported-versions rows
+
+None.
+
+## src/ module directories missing SPEC.md
+
+None.
+
+## Prose references to the removed src/<module>/ layout
+
+None found.
+
+## Version claims contradicting pyproject.toml
+
+None found.
 
 ## docs/**/AGENTS.md structure (Overview/Purpose)
 

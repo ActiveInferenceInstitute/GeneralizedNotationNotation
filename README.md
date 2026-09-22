@@ -48,7 +48,7 @@
 ### 📚 Initial Publication
 
 **Smékal, J., & Friedman, D. A. (2023)**. *Generalized Notation Notation for Active Inference Models*. Active Inference Journal.  
-**Version**: 3.4.0 ("Model-Kind Truth")
+**Version**: [pyproject.toml](pyproject.toml) (canonical)
 **Status**: Beta package with maintained validation gates (Active Inference Institute)
 
 **Toolchain**: The committed `uv.lock` is the dependency source of truth (`uv lock --check` and `uv sync --frozen` must pass); the Dockerfile constraint `uv>=0.7.8` is the minimum bootstrap floor. Ruff lint and MyPy gates are maintained clean on `src/`.
@@ -836,6 +836,25 @@ Both print the POMDP extractor's payload as JSON, stamped with
 an `extraction_schema_version`, existing payload keys are not removed or
 renamed — new keys may appear, so consumers can parse the output without
 re-reading the source.
+
+The CLI can also wrap the same payload in the standard CLI JSON envelope
+(`status`/`data`/`error`/`meta`): pass `--json` to `gnn extract`, and use
+plain `--json` on `gnn render` to wrap render results the same way. Machine
+consumers choose between the extractor's raw payload and the envelope without
+re-reading the source.
+
+### CLI serve surfaces and MCP inspection
+
+`gnn serve` selects which FastAPI surface to start with `--surface`:
+`runs` (default, the pipeline-runs API), `jobs` (the job/tool API), or `both`
+(the jobs surface on port+1 in a daemon thread while runs blocks on the main
+thread) — e.g. `gnn serve --surface jobs`. From the CLI you can also inspect
+the registered MCP tool surface: `gnn mcp list` prints one line per tool (add
+`--json` for the standard envelope) and `gnn mcp info <tool>` shows a single
+tool's registry record.
+The standalone machine-readable MCP entry point stays
+`python -m gnn.mcp.cli --format json`, which prints exactly one pure JSON
+document on stdout.
 
 ### ✅ Type Checker and Resource Estimator
 

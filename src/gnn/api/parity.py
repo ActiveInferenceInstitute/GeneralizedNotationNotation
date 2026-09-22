@@ -28,7 +28,8 @@ outcome is a SUCCESS envelope carrying ``data.exit_code == 2``, never a
 Handlers are plain ``def`` (FastAPI executes them in its worker threadpool)
 because every parity command performs blocking in-process backend work.
 POST operation endpoints and GET ``/api/v1/models`` carry ``data.exit_code``;
-the template GETs are informational and omit it.
+the verify-only ``POST /api/v1/reproduce`` (no CLI process is run) and the
+informational template GETs omit it.
 """
 
 import json
@@ -258,6 +259,36 @@ class PullRequest(BaseModel):
     )
 
 
+class ReproduceRequest(BaseModel):
+    """Request body for ``POST /api/v1/reproduce``.
+
+    Mirrors the CLI ``gnn reproduce`` arguments. Verify-only: the endpoint
+    resolves and verifies the indexed run and returns the reconstructed
+    configuration; it never executes the pipeline.
+    """
+
+    run_hash: str = Field(
+        min_length=1, description="Run hash (full value or unique prefix)"
+    )
+    history_dir: Optional[str] = Field(
+        default=None,
+        description=(
+            "Repository-local directory containing index.json "
+            "(defaults to output/00_pipeline_summary/.history)"
+        ),
+    )
+
+    model_config: ClassVar[ConfigDict] = ConfigDict(
+        extra="forbid",
+        json_schema_extra={
+            "example": {
+                "run_hash": "a1b2c3d4e5f6",
+                "history_dir": "output/00_pipeline_summary/.history",
+            }
+        },
+    )
+
+
 # ── Response models ──────────────────────────────────────────────────────────
 
 
@@ -392,6 +423,22 @@ class PullResponse(BaseModel):
     message: Optional[str] = None
     existing_sha256: Optional[str] = None
     exit_code: ParityExitCode
+
+
+class ReproduceResponse(BaseModel):
+    """Payload for ``POST /api/v1/reproduce`` (CLI ``gnn reproduce`` parity).
+
+    Verify-only: the reconstructed run configuration is returned for the
+    caller to dispatch (the CLI re-executes locally; the API run surface
+    starts the run via ``POST /api/v1/run``).
+    """
+
+    run_hash: str
+    verified: bool
+    problems: List[str] = Field(default_factory=list)
+    args: Dict[str, Any]
+    selected_steps: List[str]
+    input_config: Dict[str, Any]
 
 
 class ModelsResponse(BaseModel):
@@ -778,6 +825,34 @@ def _pull(
     return PullResponse(**result, exit_code=0)
 
 
+def _reproduce(run_hash: str, history_dir: Path) -> ReproduceResponse:
+    """Mirror ``gnn.cli._cmd_reproduce`` verify-only resolution and checks."""
+    from gnn.pipeline.hasher import lookup_run, verify_indexed_run
+
+    entry = lookup_run(run_hash, history_dir)
+    if entry is None:
+        # Mirrors the CLI's EXIT_ERROR outcome for unknown run hashes.
+        raise HTTPException(status_code=404, detail=f"Run hash not found: {run_hash}")
+
+    def _operate() -> ReproduceResponse:
+        problems = verify_indexed_run(entry)
+        if problems:
+            # Mirrors the CLI's EXIT_ERROR outcome for drifted runs.
+            raise ValueError("Cannot reproduce run: " + "; ".join(problems))
+        config = entry["config"]
+        identity = config["identity_config"]
+        return ReproduceResponse(
+            run_hash=run_hash,
+            verified=True,
+            problems=[],
+            args=dict(config["args"]),
+            selected_steps=list(identity["selected_steps"]),
+            input_config=dict(identity["input_config"]),
+        )
+
+    return _run_backend(_operate, command="reproduce")
+
+
 # ── Route registration (both FastAPI surfaces) ───────────────────────────────
 
 
@@ -933,6 +1008,26 @@ def register_parity_routes(app: FastAPI) -> None:
             command="report",
         )
         return success_envelope(response.model_dump(mode="json"), endpoint="report")
+
+    @app.post("/api/v1/reproduce", response_model=APIEnvelope, tags=["Reproduce"])
+    def reproduce_run(request: ReproduceRequest) -> APIEnvelope:
+        """Resolve and verify an indexed run (CLI ``gnn reproduce`` parity).
+
+        Verify-only: resolves the run entry in the indexed history, verifies
+        its source and configuration identity, and returns the reconstructed
+        run configuration. Execution is dispatched by the caller — the CLI
+        ``gnn reproduce`` re-executes locally; on the API surfaces start the
+        reconstructed run via ``POST /api/v1/run`` on the runs surface.
+        """
+        history_dir = _resolve_client_path(
+            request.history_dir or "output/00_pipeline_summary/.history",
+            purpose="Run history directory",
+        )
+        response = _run_backend(
+            lambda: _reproduce(request.run_hash, history_dir),
+            command="reproduce",
+        )
+        return success_envelope(response.model_dump(mode="json"), endpoint="reproduce")
 
 
 __all__ = ["register_parity_routes"]

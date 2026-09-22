@@ -15,7 +15,7 @@ subcommand (`src/gnn/cli/__init__.py`) and the website dashboard
 
 **Status**: Production Ready
 
-**Version**: 3.2.0 (package version; the module-level `__version__` in `__init__.py` is tracked independently)
+**Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 ---
 

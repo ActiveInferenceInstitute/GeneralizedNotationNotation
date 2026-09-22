@@ -6,7 +6,7 @@
 **Pipeline Step**: Infrastructure module (not a numbered step)
 **Category**: Infrastructure / API
 **Status**: Production Ready
-**Version**: 3.2.0
+**Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 **Last Updated**: 2026-04-16
 
 The `api` module provides a FastAPI-based REST interface for the GNN processing pipeline.
@@ -53,6 +53,13 @@ records this dual-surface split as deliberate: both factories are canonical
 for their consumer class, and coherence is enforced by the shared
 `processor` stores plus the per-factory route tables pinned in
 `tests/api/test_api_parity.py`.
+
+Beyond those exclusive routes, both factories share the 12-route CLI-parity
+surface from `gnn.api.parity.register_parity_routes` (`/api/v1/validate`,
+`/parse`, `/extract`, `/render`, `/graph`, `/templates`, `/pull`, `/models`,
+`/preflight`, `/report`, and the verify-only `/api/v1/reproduce` — which
+resolves and verifies an indexed run and returns the reconstructed
+configuration without executing it).
 
 ## Installation
 

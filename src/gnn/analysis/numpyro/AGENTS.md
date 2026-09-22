@@ -27,4 +27,4 @@ numpyro/
 
 See [analysis/AGENTS.md](../AGENTS.md) for the overall analysis architecture.
 
-**Version**: 3.2.0
+**Version**: [pyproject.toml](../../../../pyproject.toml) (canonical)

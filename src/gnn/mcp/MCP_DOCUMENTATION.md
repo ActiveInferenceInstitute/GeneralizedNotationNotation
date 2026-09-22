@@ -256,6 +256,21 @@ python -m gnn.mcp.cli execute get_gnn_files --params '{"target_dir": "doc", "rec
 ```bash
 python -m gnn.mcp.cli status --format json
 ```
+#### JSON stdout contract (`--format json`)
+
+With `--format json`, each `python -m gnn.mcp.cli` command writes exactly one
+pure JSON machine document to stdout — no human text, emoji, or log frames.
+Routine log chatter is suppressed from stdout in this mode; `--verbose` is a
+human-mode concern. On failure, the CLI prints a single error document to
+stdout and exits with a nonzero code:
+
+```json
+{"error": {"operation": "getting tool info", "message": "Tool 'x' not found"}}
+```
+
+Note the sibling contract: the `gnn mcp` subcommand of the main `gnn` CLI
+emits the standard CLI envelope (via its `--json` flag) instead of this raw
+machine payload.
 
 ## API Reference
 
