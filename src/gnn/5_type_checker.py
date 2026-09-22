@@ -30,12 +30,8 @@ If you encounter errors:
 """
 
 import logging
-import sys
 from pathlib import Path
 from typing import Any, cast
-
-# Add src to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent))
 
 # Hard import: type_checker is a core module and must always be available.
 # ImportError here means the module is broken or missing — fail loudly.

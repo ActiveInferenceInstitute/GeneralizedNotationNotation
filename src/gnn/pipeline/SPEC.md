@@ -10,10 +10,10 @@ Pipeline orchestration, configuration, and execution utilities.
 ### Execution & Ordering
 - `execution.py` - `run_pipeline`, `execute_pipeline_step(s)`, `get_pipeline_status`
 - `dag.py` - `resolve_execution_order`, `visualize_dag`
-- `pipeline_step_template.py` - Template for new steps
+- `step_executor.py` - Opt-in consolidated in-process step execution (ADR 0001)
 
 ### Validation & Health
-- `pipeline_runtime_validator.py` / `pipeline_validation.py` - E2E pipeline validation
+- `pipeline_runtime_validator.py` - E2E pipeline validation
 - `health_check.py` - `run_enhanced_health_check`
 - `verify_pipeline.py` - Pipeline verification
 

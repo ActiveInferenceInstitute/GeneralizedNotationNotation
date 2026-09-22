@@ -71,7 +71,6 @@ from gnn.utils import (
     get_performance_summary,
     # Pipeline utilities
     validate_and_convert_paths,
-    validate_output_directory,
 )
 
 # Canonical homes outside the facade import block

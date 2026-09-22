@@ -1,16 +1,19 @@
-"""Continuous (linear-Gaussian) branch of the JAX / NumPyro / PyTorch / Stan renderers.
-
+"""Continuous (linear-Gaussian) branch of the JAX / NumPyro / PyTorch / Stan /
+ngc-learn renderers.
 Builds the continuous ``gnn_spec`` by hand (the shape ``render.pomdp_processor``
 emits for ``model_kind == "continuous"``), renders each backend, and executes
-the generated scripts. Optional-backend execution is gated by the registered
-``needs_torch``/``needs_cmdstan`` markers (see tests/helpers/toolchain_probes.py),
-not by in-file skips.
+the generated scripts — except ngclearn, which is render-only here: the
+generated script is compiled but never executed (ngclearn is marker-gated to
+py3.12 and absent from the dev venv). Optional-backend execution is gated by
+the registered ``needs_torch``/``needs_cmdstan`` markers (see
+tests/helpers/toolchain_probes.py), not by in-file skips.
 """
 
 from __future__ import annotations
 
 import json
 import os
+import py_compile
 import subprocess
 import sys
 from pathlib import Path
@@ -21,6 +24,7 @@ import pytest
 from gnn.extract.pomdp_extractor import extract_pomdp_from_file
 from gnn.render.continuous_common import extract_continuous_spec, is_continuous_spec
 from gnn.render.jax.jax_renderer import render_gnn_to_jax
+from gnn.render.ngclearn.ngclearn_renderer import render_gnn_to_ngclearn
 from gnn.render.numpyro.numpyro_renderer import render_gnn_to_numpyro
 from gnn.render.pomdp_processor import pomdp_to_gnn_spec
 from gnn.render.pytorch.pytorch_renderer import render_gnn_to_pytorch
@@ -228,6 +232,27 @@ def test_damped_oscillator_bias_stan_program_and_driver(tmp_path: Path) -> None:
     res = _run(driver, "STAN_OUTPUT_DIR", tmp_path / "out")
     _assert_schema(res, "stan", False, dims=3, timesteps=NEW_EXEMPLAR_TIMESTEPS)
     assert res["validation"]["rhat_ok"] is True
+
+
+
+def test_ngclearn_continuous_renders_codegen_only(tmp_path: Path) -> None:
+    """ngclearn renders without importing ngclearn (marker-gated to py3.12 and
+    absent from the dev venv), so the script is compiled but not executed."""
+    ok, msg, arts = render_gnn_to_ngclearn(_spec(True), tmp_path / "m_ngclearn.py")
+    assert ok, msg
+    script = Path(arts[0]).read_text()
+    assert 'FRAMEWORK = "ngclearn"' in script
+    assert "OUTPUT_ENV = 'NGCLEARN_OUTPUT_DIR'" in script
+    assert "def kalman_step" in script
+    py_compile.compile(arts[0], doraise=True)
+
+
+def test_damped_oscillator_bias_ngclearn_renders_codegen_only(tmp_path: Path) -> None:
+    ok, msg, arts = render_gnn_to_ngclearn(
+        _file_spec(), tmp_path / "damped_ngclearn.py"
+    )
+    assert ok, msg
+    py_compile.compile(arts[0], doraise=True)
 
 
 def test_discrete_regression_still_renders(tmp_path: Path) -> None:

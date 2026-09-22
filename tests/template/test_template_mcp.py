@@ -30,7 +30,7 @@ def test_get_template_info_reports_capabilities() -> None:
     assert info["version"] == "1.0.0"
 
 
-def test_register_tools_registers_four_tools() -> None:
+def test_register_tools_registers_six_tools() -> None:
     registry = _FakeRegistry()
     result = mcp.register_tools(registry)
     assert result is True
@@ -40,6 +40,8 @@ def test_register_tools_registers_four_tools() -> None:
         "template.process_directory",
         "template.get_info",
         "template.pull",
+        "template.list",
+        "template.show",
     ]
 
 

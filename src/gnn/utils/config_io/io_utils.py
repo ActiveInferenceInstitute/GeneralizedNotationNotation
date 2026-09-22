@@ -281,8 +281,7 @@ def verify_directory_writable(
     """Prove that *directory* accepts writes via a create-rename-cleanup probe.
 
     Single source of truth for the "is this output directory writable?" check
-    used by ``gnn.utils.pipeline.validate_output_directory`` and
-    ``gnn.utils.pipeline_orchestration.pipeline_validator.check_pipeline_readiness``.
+    used by ``gnn.utils.pipeline_orchestration.pipeline_validator.check_pipeline_readiness``.
 
     The probe writes ``"test"`` into a ``NamedTemporaryFile`` inside
     *directory*, atomically renames it to ``directory / probe_name``, then

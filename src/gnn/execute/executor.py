@@ -5,6 +5,7 @@ This module provides the main execution functionality for GNN models,
 including script execution, simulation management, and result collection.
 """
 
+import functools
 import json
 import logging
 import subprocess  # nosec B404
@@ -12,77 +13,109 @@ import sys
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence, Union, cast
+from typing import Any, Callable, Dict, List, Optional, Sequence, Union, cast
 
 from .result_cache import ExecutionResultCache, cache_key_for_script
 from .security_gate import check_script_allowed
 from .subprocess_envelope import CancelToken, run_subprocess_envelope
-from .types import _EXECUTABLE_SUFFIXES
+from .types import _EXECUTABLE_SUFFIXES, DEFAULT_RUNNER_TIMEOUT_SECONDS
 
-# Import execution functionality
-try:
+
+# Lazy runner registry: each backend's runner imports only when a spec is
+# resolved or a runner is invoked, keeping module import free of heavy
+# optional dependencies (jax, torch, discopy, ...).
+@dataclass(frozen=True)
+class _RunnerState:
+    """Availability verdict plus runner callable for one backend."""
+
+    available: bool
+    runner: Any
+
+
+def _load_pymdp() -> tuple[bool, Any]:
     from .pymdp.pymdp_runner import run_pymdp_scripts
 
-    PYMDP_AVAILABLE = True
-except ImportError:
-    PYMDP_AVAILABLE = False
-    run_pymdp_scripts = cast(Any, None)
+    return True, run_pymdp_scripts
 
-try:
+
+def _load_rxinfer() -> tuple[bool, Any]:
     from .rxinfer.rxinfer_runner import run_rxinfer_scripts
 
-    RXINFER_AVAILABLE = True
-except ImportError:
-    RXINFER_AVAILABLE = False
-    run_rxinfer_scripts = cast(Any, None)
+    return True, run_rxinfer_scripts
 
-try:
+
+def _load_discopy() -> tuple[bool, Any]:
     from .discopy.discopy_executor import run_discopy_analysis
 
-    DISCOPY_AVAILABLE = True
-except ImportError:
-    DISCOPY_AVAILABLE = False
-    run_discopy_analysis = cast(Any, None)
+    return True, run_discopy_analysis
 
-try:
+
+def _load_activeinference() -> tuple[bool, Any]:
     from .activeinference_jl.activeinference_runner import run_activeinference_analysis
 
-    ACTIVEINFERENCE_AVAILABLE = True
-except ImportError:
-    ACTIVEINFERENCE_AVAILABLE = False
-    run_activeinference_analysis = cast(Any, None)
+    return True, run_activeinference_analysis
 
-try:
+
+def _load_jax() -> tuple[bool, Any]:
     from .jax.jax_runner import run_jax_scripts
 
-    JAX_AVAILABLE = True
-except ImportError:
-    JAX_AVAILABLE = False
-    run_jax_scripts = cast(Any, None)
+    return True, run_jax_scripts
 
-try:
+
+def _load_numpyro() -> tuple[bool, Any]:
     from .numpyro.numpyro_runner import run_numpyro_scripts
 
-    NUMPYRO_AVAILABLE = True
-except ImportError:
-    NUMPYRO_AVAILABLE = False
-    run_numpyro_scripts = cast(Any, None)
+    return True, run_numpyro_scripts
 
-try:
+
+def _load_pytorch() -> tuple[bool, Any]:
     from .pytorch.pytorch_runner import run_pytorch_scripts
 
-    PYTORCH_AVAILABLE = True
-except ImportError:
-    PYTORCH_AVAILABLE = False
-    run_pytorch_scripts = cast(Any, None)
+    return True, run_pytorch_scripts
 
-try:
+def _load_ngclearn() -> tuple[bool, Any]:
+    from .ngclearn.ngclearn_runner import is_ngclearn_available, run_ngclearn_scripts
+
+    # ngclearn itself is a marker-gated extra (py3.12+); the probe inside the
+    # runner reports importability so an absent runtime yields a SKIPPED
+    # record, never a runner failure.
+    return is_ngclearn_available(), run_ngclearn_scripts
+
+
+def _load_lean() -> tuple[bool, Any]:
     from .lean.lean_runner import lean_toolchain_available, run_lean_scripts
 
-    LEAN_AVAILABLE = lean_toolchain_available()
-except ImportError:
-    LEAN_AVAILABLE = False
-    run_lean_scripts = cast(Any, None)
+    return lean_toolchain_available(), run_lean_scripts
+    from .lean.lean_runner import lean_toolchain_available, run_lean_scripts
+
+    return lean_toolchain_available(), run_lean_scripts
+
+
+_RUNNER_LOADERS: dict[str, Callable[[], tuple[bool, Any]]] = {
+    "pymdp": _load_pymdp,
+    "rxinfer": _load_rxinfer,
+    "discopy": _load_discopy,
+    "activeinference_jl": _load_activeinference,
+    "jax": _load_jax,
+    "numpyro": _load_numpyro,
+    "pytorch": _load_pytorch,
+    "lean": _load_lean,
+    "ngclearn": _load_ngclearn,
+}
+
+
+@functools.cache
+def _runner_state(framework_dir_key: str) -> _RunnerState:
+    """Resolve one backend's availability and runner, cached per key."""
+    loader = _RUNNER_LOADERS.get(framework_dir_key)
+    if loader is None:
+        return _RunnerState(False, None)
+    try:
+        available, runner = loader()
+    except ImportError:
+        return _RunnerState(False, None)
+    return _RunnerState(available, runner)
+
 
 from gnn.pipeline.config import get_output_dir_for_script
 from gnn.utils import performance_tracker
@@ -108,6 +141,7 @@ FRAMEWORK_DIR_NAMES: tuple[str, ...] = (
     "jax",
     "numpyro",
     "pytorch",
+    "ngclearn",
     "lean",
 )
 
@@ -366,7 +400,8 @@ class GNNExecutor:
         timeout: Optional[int] = None,
     ) -> Dict[str, Any]:
         """Verify one document via the fep_lean bridge (contract v0.6)."""
-        if not LEAN_AVAILABLE or run_lean_scripts is None:
+        state = _runner_state("lean")
+        if not state.available or state.runner is None:
             return {"success": False, "error": "fep_lean unavailable"}
 
         from .lean.lean_runner import verify_document
@@ -428,7 +463,7 @@ class GNNExecutor:
             return cached
         envelope = run_subprocess_envelope(
             [sys.executable, script_path],
-            timeout=timeout or 600,
+            timeout=timeout if timeout is not None else DEFAULT_RUNNER_TIMEOUT_SECONDS,
             cancel_token=cancel_token,
         )
         self._store_dispatch_envelope(cache_key, envelope)
@@ -587,13 +622,22 @@ def generate_execution_report(
 
 
 def _framework_specs() -> tuple[ExecutorFrameworkSpec, ...]:
-    """Return framework specs using current module-level availability flags."""
+    """Return framework specs with availability resolved via _runner_state."""
+    pymdp_state = _runner_state("pymdp")
+    rxinfer_state = _runner_state("rxinfer")
+    discopy_state = _runner_state("discopy")
+    activeinference_state = _runner_state("activeinference_jl")
+    jax_state = _runner_state("jax")
+    numpyro_state = _runner_state("numpyro")
+    pytorch_state = _runner_state("pytorch")
+    ngclearn_state = _runner_state("ngclearn")
+    lean_state = _runner_state("lean")
     return (
         ExecutorFrameworkSpec(
             framework_dir_key="pymdp",
             result_key="pymdp_executions",
-            available=PYMDP_AVAILABLE,
-            runner=run_pymdp_scripts,
+            available=pymdp_state.available,
+            runner=pymdp_state.runner,
             operation_name="execute_pymdp_scripts",
             start_message="🚀 Executing PyMDP scripts...",
             success_message="PyMDP scripts executed successfully",
@@ -609,8 +653,8 @@ def _framework_specs() -> tuple[ExecutorFrameworkSpec, ...]:
         ExecutorFrameworkSpec(
             framework_dir_key="rxinfer",
             result_key="rxinfer_executions",
-            available=RXINFER_AVAILABLE,
-            runner=run_rxinfer_scripts,
+            available=rxinfer_state.available,
+            runner=rxinfer_state.runner,
             operation_name="execute_rxinfer_scripts",
             start_message="🚀 Executing RxInfer scripts...",
             success_message="RxInfer scripts executed successfully",
@@ -628,8 +672,8 @@ def _framework_specs() -> tuple[ExecutorFrameworkSpec, ...]:
         ExecutorFrameworkSpec(
             framework_dir_key="discopy",
             result_key="discopy_executions",
-            available=DISCOPY_AVAILABLE,
-            runner=run_discopy_analysis,
+            available=discopy_state.available,
+            runner=discopy_state.runner,
             operation_name="execute_discopy_analysis",
             start_message="🚀 Executing DisCoPy analysis...",
             success_message="DisCoPy analysis completed successfully",
@@ -645,8 +689,8 @@ def _framework_specs() -> tuple[ExecutorFrameworkSpec, ...]:
         ExecutorFrameworkSpec(
             framework_dir_key="activeinference_jl",
             result_key="activeinference_executions",
-            available=ACTIVEINFERENCE_AVAILABLE,
-            runner=run_activeinference_analysis,
+            available=activeinference_state.available,
+            runner=activeinference_state.runner,
             operation_name="execute_activeinference_analysis",
             start_message="🚀 Executing ActiveInference.jl analysis...",
             success_message="ActiveInference.jl analysis completed successfully",
@@ -665,8 +709,8 @@ def _framework_specs() -> tuple[ExecutorFrameworkSpec, ...]:
         ExecutorFrameworkSpec(
             framework_dir_key="jax",
             result_key="jax_executions",
-            available=JAX_AVAILABLE,
-            runner=run_jax_scripts,
+            available=jax_state.available,
+            runner=jax_state.runner,
             operation_name="execute_jax_scripts",
             start_message="🚀 Executing JAX scripts...",
             success_message="JAX scripts executed successfully",
@@ -682,8 +726,8 @@ def _framework_specs() -> tuple[ExecutorFrameworkSpec, ...]:
         ExecutorFrameworkSpec(
             framework_dir_key="numpyro",
             result_key="numpyro_executions",
-            available=NUMPYRO_AVAILABLE,
-            runner=run_numpyro_scripts,
+            available=numpyro_state.available,
+            runner=numpyro_state.runner,
             operation_name="execute_numpyro_scripts",
             start_message="🚀 Executing NumPyro scripts...",
             success_message="NumPyro scripts executed successfully",
@@ -699,8 +743,8 @@ def _framework_specs() -> tuple[ExecutorFrameworkSpec, ...]:
         ExecutorFrameworkSpec(
             framework_dir_key="pytorch",
             result_key="pytorch_executions",
-            available=PYTORCH_AVAILABLE,
-            runner=run_pytorch_scripts,
+            available=pytorch_state.available,
+            runner=pytorch_state.runner,
             operation_name="execute_pytorch_scripts",
             start_message="🚀 Executing PyTorch scripts...",
             success_message="PyTorch scripts executed successfully",
@@ -714,10 +758,30 @@ def _framework_specs() -> tuple[ExecutorFrameworkSpec, ...]:
             warning_log_prefix="PyTorch script execution failed",
         ),
         ExecutorFrameworkSpec(
+            framework_dir_key="ngclearn",
+            result_key="ngclearn_executions",
+            available=ngclearn_state.available,
+            runner=ngclearn_state.runner,
+            operation_name="execute_ngclearn_scripts",
+            start_message="🚀 Executing ngc-learn scripts...",
+            success_message="ngc-learn scripts executed successfully",
+            failure_message="ngc-learn script execution failed",
+            unavailable_log=(
+                "ℹ️ ngc-learn framework not available - skipping ngc-learn execution "
+                "(install with: uv sync --extra ngclearn)"
+            ),
+            unavailable_message=(
+                "ngc-learn framework not installed "
+                "(optional dependency - install with: uv sync --extra ngclearn)"
+            ),
+            success_log="ngc-learn script execution completed",
+            warning_log_prefix="ngc-learn script execution failed",
+        ),
+        ExecutorFrameworkSpec(
             framework_dir_key="lean",
             result_key="lean_executions",
-            available=LEAN_AVAILABLE,
-            runner=run_lean_scripts,
+            available=lean_state.available,
+            runner=lean_state.runner,
             operation_name="execute_lean_verification",
             start_message="🚀 Verifying documents with fep_lean (Lean 4)...",
             success_message="Lean verification completed successfully",
@@ -875,6 +939,7 @@ def _execute_framework_spec(
     logger: logging.Logger,
     recursive: bool,
     verbose: bool,
+    timeout: Optional[int] = None,
 ) -> None:
     """Execute one framework runner and record its status."""
     output_dir = framework_dirs[spec.framework_dir_key]
@@ -896,6 +961,7 @@ def _execute_framework_spec(
                 execution_output_dir=output_dir,
                 recursive_search=recursive,
                 verbose=verbose,
+                timeout=timeout,
             )
 
             if success:
@@ -923,6 +989,7 @@ def _execute_configured_frameworks(
     logger: logging.Logger,
     recursive: bool,
     verbose: bool,
+    timeout: Optional[int] = None,
 ) -> None:
     """Execute every supported framework according to current availability."""
     for spec in _framework_specs():
@@ -934,6 +1001,7 @@ def _execute_configured_frameworks(
             logger,
             recursive,
             verbose,
+            timeout,
         )
 
 
@@ -1034,6 +1102,12 @@ def _write_execution_report(
         )
         _write_framework_report_section(
             f,
+            "ngc-learn Executions",
+            execution_results["ngclearn_executions"],
+            "ngc-learn Scripts",
+        )
+        _write_framework_report_section(
+            f,
             "Lean verification",
             execution_results["lean_executions"],
             "Lean Documents",
@@ -1128,6 +1202,7 @@ def execute_rendered_simulators(
     Returns:
         True if execution succeeded, False otherwise
     """
+    timeout: Optional[int] = kwargs.pop("timeout", None)
     log_step_start(
         logger,
         "Executing rendered simulator scripts with framework-specific organization",
@@ -1150,6 +1225,7 @@ def execute_rendered_simulators(
             logger,
             recursive,
             verbose,
+            timeout,
         )
         _write_execution_artifacts(execution_output_dir, execution_results)
         return _log_execution_outcome(execution_results, logger)

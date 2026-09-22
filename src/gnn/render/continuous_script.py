@@ -1,11 +1,15 @@
 """Generate standalone continuous (linear-Gaussian) simulation scripts.
 
-One generator, three Python backends (``jax``, ``numpyro``, ``pytorch``). The
-generated script simulates the LGSSM declared by the GNN file, runs an online
-Kalman filter (closed-loop proportional control when the spec declares
-``goal_mean``/``control_gain``), and writes ``simulation_results.json`` with
-the continuous result schema documented in :mod:`render.continuous_common`.
+One generator, four Python backends (``jax``, ``numpyro``, ``pytorch``, and
+``ngclearn``). The generated script simulates the LGSSM declared by the GNN
+file, runs an online Kalman filter (closed-loop proportional control when the
+spec declares ``goal_mean``/``control_gain``), and writes
+``simulation_results.json`` with the continuous result schema documented in
+:mod:`render.continuous_common`.
 The NumPyro backend additionally fits the same generative model with NUTS.
+The ngc-learn backend emits the same JAX Kalman numerics behind an
+``ngclearn`` import guard: code generation only — executing the script
+requires the ``ngclearn`` extra.
 """
 
 from __future__ import annotations
@@ -18,6 +22,7 @@ _OUTPUT_ENV = {
     "jax": "GNN_OUTPUT_DIR",
     "numpyro": "NUMPYRO_OUTPUT_DIR",
     "pytorch": "PYTORCH_OUTPUT_DIR",
+    "ngclearn": "NGCLEARN_OUTPUT_DIR",
 }
 
 _BACKEND_HEADER: Dict[str, str] = {
@@ -106,6 +111,18 @@ except ImportError:
 
 FRAMEWORK = "numpyro"
 FRAMEWORK_VERSION = {"jax_version": jax.__version__, "numpyro_version": numpyro.__version__}""",
+)
+
+_BACKEND_HEADER["ngclearn"] = _BACKEND_HEADER["jax"].replace(
+    'FRAMEWORK = "jax"\nFRAMEWORK_VERSION = {"jax_version": jax.__version__}',
+    """try:
+    import ngclearn
+except ImportError:
+    print("ERROR: ngc-learn not installed. Install with: uv sync --extra ngclearn")
+    sys.exit(1)
+
+FRAMEWORK = "ngclearn"
+FRAMEWORK_VERSION = {"ngclearn_version": ngclearn.__version__, "jax_version": jax.__version__}""",
 )
 
 _NUMPYRO_INFERENCE = '''
@@ -292,7 +309,7 @@ PRIOR_COV_RAW = {lits["prior_cov"]}
 GOAL_MEAN_RAW = {lits["goal_mean"]}
 CONTROL_GAIN = {lits["control_gain"]}
 '''
-    if backend in ("jax", "numpyro"):
+    if backend in ("jax", "numpyro", "ngclearn"):
         header += "\nfrom jax import config as _jax_config\n_jax_config.update('jax_enable_x64', True)\n"
     parts = [header, _BACKEND_HEADER[backend]]
     if backend == "numpyro":

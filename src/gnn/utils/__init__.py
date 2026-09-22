@@ -3,7 +3,7 @@
 """
 GNN Pipeline Utilities Package
 
-Lazy PEP 562 re-export surface: 113 exported names aggregated from the
+Lazy PEP 562 re-export surface: 108 exported names aggregated from the
 concern packages below. All pipeline steps import from this package for
 consistency. The surface area is intentionally wide; it was split by
 concern into sub-packages (S2-33/SC-38 — see
@@ -23,7 +23,6 @@ Concern packages (name homes):
 - logging: centralized, correlation-aware logging (public entry: the
   ``gnn.utils.logging_utils`` facade)
 - observability: structured logging, performance tracking, visual logging
-- pipeline: pipeline utility exports (RecoveryArgumentParser, output-dir helpers)
 - pipeline_orchestration: base processor, health monitor, script template,
   step validators, step dependencies
 - runtime_safety: dependency validation, resource limits, timeouts, safe eval
@@ -107,13 +106,6 @@ if TYPE_CHECKING:
         log_step_success,
         log_step_warning,
         set_correlation_context,
-    )
-    from .pipeline import (
-        RecoveryArgumentParser,
-        execute_pipeline_step_template,
-        get_output_dir_for_script,
-        get_pipeline_utilities,
-        validate_output_directory,
     )
     from .pipeline_orchestration.base_processor import (
         BaseProcessor,
@@ -275,12 +267,6 @@ _EXPORT_MAP: dict[str, str] = {
     "PerformanceTracker": "observability.performance_tracking",
     "performance_tracker": "observability.performance_tracking",
     "track_operation_standalone": "observability.performance_tracking",
-    # pipeline
-    "RecoveryArgumentParser": "pipeline",
-    "execute_pipeline_step_template": "pipeline",
-    "get_output_dir_for_script": "pipeline",
-    "get_pipeline_utilities": "pipeline",
-    "validate_output_directory": "pipeline",
     # pipeline_monitor
     "generate_pipeline_health_report": "pipeline_orchestration.pipeline_monitor",
     # pipeline_template
@@ -442,12 +428,6 @@ __all__: list[Any] = [
     # Environment utilities
     "get_venv_python",
     "get_system_info",
-    # Pipeline utilities
-    "RecoveryArgumentParser",
-    "get_pipeline_utilities",
-    "validate_output_directory",
-    "get_output_dir_for_script",
-    "execute_pipeline_step_template",
     # Error handling utilities
     "PipelineErrorHandler",
     "PipelineErrorSeverity",

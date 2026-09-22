@@ -258,6 +258,9 @@ def test_execute_r_script_runs_under_rscript(tmp_path: Path, monkeypatch: Any) -
     spy = _EnvelopeSpy()
     monkeypatch.setattr(bnlearn_runner, "run_subprocess_envelope", spy)
     monkeypatch.setattr(bnlearn_runner, "is_r_bnlearn_available", lambda r="Rscript": True)
+    # The pre-exec gate's file-type policy denies the R lane; the operator
+    # override is the documented path for exercising the spawn itself.
+    monkeypatch.setenv("GNN_ALLOW_UNSAFE_EXEC", "1")
 
     record = execute_bnlearn_script(script, tmp_path / "exec", rscript_executable="myR")
 
@@ -286,6 +289,7 @@ def test_run_bnlearn_scripts_mixed_lanes(tmp_path: Path, monkeypatch: Any) -> No
         bnlearn_runner, "is_bnlearn_available", lambda executor=None: False
     )
     monkeypatch.setattr(bnlearn_runner, "is_r_bnlearn_available", lambda r="Rscript": True)
+    monkeypatch.setenv("GNN_ALLOW_UNSAFE_EXEC", "1")
 
     records = run_bnlearn_scripts(tmp_path, tmp_path / "exec")
 

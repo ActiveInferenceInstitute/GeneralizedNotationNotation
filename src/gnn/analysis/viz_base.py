@@ -15,8 +15,8 @@ from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
-# --- Centralized matplotlib setup (shared via visualization._viz_compat) ---
-from gnn.visualization._viz_compat import MATPLOTLIB_AVAILABLE, np, plt
+# --- Centralized matplotlib setup (shared via visualization.compat.viz_compat) ---
+from gnn.visualization.compat.viz_compat import MATPLOTLIB_AVAILABLE, np, plt
 
 patches: Any = None
 try:

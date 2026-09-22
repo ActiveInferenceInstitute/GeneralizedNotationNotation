@@ -1,5 +1,9 @@
 {
+<<<<<<< HEAD
   "counts_describe_commit": "d2b0092c9",
+=======
+  "counts_describe_commit": "5e471c588",
+>>>>>>> origin/main
   "dirty_path_count": 2,
   "dirty_paths": [
     "output/data/manuscript_variables.json",

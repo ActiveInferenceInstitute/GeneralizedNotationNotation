@@ -130,7 +130,11 @@ logger = setup_step_logging("3_gnn", verbose=True)
 
 ### Pipeline Utilities
 
+The pipeline utility functions live in their canonical home, `gnn.pipeline`
+(not in this facade):
+
 #### `get_output_dir_for_script(script_name: str, base_output_dir: Optional[Path] = None) -> Path`
+**Location**: `gnn.pipeline.config` (re-exported by `gnn.pipeline`)
 **Description**: Get standardized output directory for a pipeline script
 
 **Parameters**:
@@ -138,15 +142,6 @@ logger = setup_step_logging("3_gnn", verbose=True)
 - `base_output_dir` (Optional[Path]): Base output directory (default: Path("output"))
 
 **Returns**: `Path` - Output directory path (e.g., "output/3_gnn_output/")
-
-#### `validate_output_directory(output_dir: Path, step_name: str) -> bool`
-**Description**: Validate the output directory for a pipeline step
-
-**Parameters**:
-- `output_dir` (Path): Output directory path
-- `step_name` (str): Name of the pipeline step
-
-**Returns**: `bool` - True if directory is valid/created, False otherwise
 
 ### Resource Management Functions
 
@@ -201,7 +196,7 @@ logger = setup_step_logging("3_gnn", verbose=True)
 Duplicated logic was collapsed onto one implementation each; the old
 top-level paths were removed with the SC-38 facade takedown:
 
-- **Writable-directory probe**: `gnn.utils.config_io.io_utils.verify_directory_writable(directory, probe_name=".write_probe") -> None` is the single create-rename-cleanup probe. `gnn.utils.pipeline.validate_output_directory` and `gnn.utils.pipeline_orchestration.pipeline_validator.check_pipeline_readiness` call it; both keep their own error messaging.
+- **Writable-directory probe**: `gnn.utils.config_io.io_utils.verify_directory_writable(directory, probe_name=".write_probe") -> None` is the single create-rename-cleanup probe. `gnn.utils.pipeline_orchestration.pipeline_validator.check_pipeline_readiness` calls it and keeps its own error messaging.
 - **Canonical memory probe**: `gnn.utils.runtime_safety.resource_manager.get_memory_usage` (alias of `get_current_memory_usage`).
 - **Step-argument fallback defaults**: `gnn.utils.arguments.arg_parsing.fallback_default_for(arg_name)` backed by the `_FALLBACK_DEFAULTS` mapping replaced two ~70-line if/elif ladders in `ArgumentParser.parse_step_arguments` and `ArgumentParser.create_default_namespace`. `create_default_namespace` now matches the registered contract for `advanced_stats` (`False`) and `simulation_params` (`"{}"`) where it previously fell through to `None`.
 - **Injectable project root**: `StepConfiguration.validate_step_args(step_name, args, project_root=None)` accepts an explicit project root for missing-input-path repair; when omitted, the caller-frame heuristic (long-standing default) applies (unchanged behavior for existing callers).
@@ -247,7 +242,7 @@ logger.info("Starting GNN processing")
 
 ### Output Directory Management
 ```python
-from gnn.utils.pipeline import get_output_dir_for_script
+from gnn.pipeline import get_output_dir_for_script
 
 output_dir = get_output_dir_for_script("3_gnn.py", Path("output"))
 print(f"GNN output directory: {output_dir}")

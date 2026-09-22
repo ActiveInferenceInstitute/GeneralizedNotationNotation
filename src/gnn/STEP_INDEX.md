@@ -1,6 +1,6 @@
 # GNN Pipeline Step Index
 
-**Version**: 3.2.0 · **Last Updated**: 2026-09-02 · **Total Steps**: 25 (0–24)
+**Version**: [pyproject.toml](../../pyproject.toml) (canonical · 3.4.0) · **Last Updated**: 2026-09-21 · **Total Steps**: 25 (0–24)
 
 ---
 

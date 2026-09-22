@@ -24,6 +24,7 @@ from . import (
     process_audio,
     validate_audio_content,
 )
+from .sapf.mcp import register_tools as register_sapf_tools
 
 # ── Domain tools ─────────────────────────────────────────────────────────────
 
@@ -250,4 +251,6 @@ def register_tools(mcp_instance: Any) -> None:
         category="audio",
     )
 
-    logger.info("audio module MCP tools registered (6 tools).")
+    register_sapf_tools(mcp_instance)
+
+    logger.info("audio module MCP tools registered (9 tools: 6 audio + 3 sapf).")

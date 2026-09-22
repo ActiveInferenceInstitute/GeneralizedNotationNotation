@@ -15,6 +15,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
+from gnn.execute.types import DEFAULT_RUNNER_TIMEOUT_SECONDS
+
 logger = logging.getLogger(__name__)
 
 
@@ -86,7 +88,7 @@ def execute_pymdp_script_with_outputs(
     script_path: Path,
     output_dir: Path,
     verbose: bool = False,
-    timeout: int = 600,
+    timeout: int = DEFAULT_RUNNER_TIMEOUT_SECONDS,
 ) -> Dict[str, Any]:
     """
     Execute a single PyMDP script with comprehensive output capture and analysis.
@@ -363,7 +365,7 @@ def run_pymdp_scripts(
     execution_output_dir: Optional[Union[str, Path]] = None,
     recursive_search: bool = True,
     verbose: bool = False,
-    timeout: int = 600,
+    timeout: int = DEFAULT_RUNNER_TIMEOUT_SECONDS,
 ) -> bool:
     """
     Find and run PyMDP scripts on rendered models with comprehensive output generation.

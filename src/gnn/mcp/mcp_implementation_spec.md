@@ -39,7 +39,7 @@ not silently succeed when no work has occurred.
 
 1. `initialize(...)` obtains the shared registry.
 2. The registry applies performance and validation options.
-3. `MCP.discover_modules(...)` locates `src/<module>/mcp.py` files.
+3. `MCP.discover_modules(...)` locates `src/gnn/<module>/mcp.py` files.
 4. Each module's `register_tools` function is executed with timeout controls.
 5. The registry records `MCPModuleInfo` for success and error states.
 6. Initialization returns `(mcp_instance, sdk_found, all_modules_loaded)`.

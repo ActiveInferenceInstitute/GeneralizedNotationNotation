@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/gnn/19_research.py` (57 lines)
+**Orchestrator**: `src/gnn/19_research.py` (52 lines)
 **Implementation Layer**: `src/gnn/research/`
 
 ## Module Description

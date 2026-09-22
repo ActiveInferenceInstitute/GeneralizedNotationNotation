@@ -9,12 +9,7 @@ analyzes failures or performance bottlenecks, and generates an executive report.
 This script uses the intelligent_analysis module for all processing logic.
 """
 
-import sys
-from pathlib import Path
 from typing import cast
-
-# Add src to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from gnn.intelligent_analysis import process_intelligent_analysis
 from gnn.utils.pipeline_orchestration.pipeline_template import (

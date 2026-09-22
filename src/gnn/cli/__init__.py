@@ -1009,8 +1009,8 @@ def _cmd_reproduce(args: argparse.Namespace) -> int:
     run_args_dict = dict(config.get("args", {}))
 
     try:
-        from gnn.main import _resolve_steps_to_execute
         from gnn.main import main as pipeline_main
+        from gnn.main import resolve_steps_to_execute
         from gnn.utils.arguments.pipeline_arguments import PipelineArguments
 
         # Reconstruct PipelineArguments
@@ -1021,9 +1021,7 @@ def _cmd_reproduce(args: argparse.Namespace) -> int:
             run_args_dict["output_dir"] = Path(run_args_dict["output_dir"])
 
         reproduced_args = PipelineArguments(**run_args_dict)
-        selected = _resolve_steps_to_execute(
-            reproduced_args, config["pipeline"], logger
-        )
+        selected = resolve_steps_to_execute(reproduced_args, config["pipeline"], logger)
         if [step[0] for step in selected] != config["identity_config"][
             "selected_steps"
         ]:

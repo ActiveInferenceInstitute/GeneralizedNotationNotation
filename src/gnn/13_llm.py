@@ -29,12 +29,7 @@ If you encounter errors:
   - Verify LLM configuration and requirements
 """
 
-import sys
-from pathlib import Path
 from typing import cast
-
-# Add src to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from gnn.llm import process_llm
 from gnn.utils.pipeline_orchestration.pipeline_template import (

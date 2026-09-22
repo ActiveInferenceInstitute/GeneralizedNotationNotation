@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/gnn/24_intelligent_analysis.py` (55 lines)
+**Orchestrator**: `src/gnn/24_intelligent_analysis.py` (50 lines)
 **Implementation Layer**: `src/gnn/intelligent_analysis/`
 
 ## Module Description

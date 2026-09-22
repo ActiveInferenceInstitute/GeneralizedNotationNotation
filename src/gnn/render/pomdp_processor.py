@@ -154,6 +154,16 @@ RENDERER_ROUTES: Dict[str, RendererRoute] = {
         result_mode="artifacts",
         artifacts_mode="returned",
     ),
+    "ngclearn": RendererRoute(
+        module=".ngclearn.ngclearn_renderer",
+        function="render_gnn_to_ngclearn",
+        suffix="_ngclearn.py",
+        label="ngc-learn",
+        validate=True,
+        options_mode="kwargs",
+        result_mode="artifacts",
+        artifacts_mode="returned",
+    ),
 }
 
 
@@ -446,6 +456,21 @@ class POMDPRenderProcessor:
                     "structural-spec: no renderable form — declares boundary "
                     "structure only (no discrete A/B/C/D[/E] and no "
                     "continuous F/H/Q/R parameterization)"
+                ),
+                "warnings": warnings,
+            }
+
+        # Continuous-only backends (registry ``continuous_only``) declare no
+        # discrete A/B/C/D[/E] machinery: a discrete POMDP is first-class
+        # unsupported for them — never recorded as a failed render, and never
+        # forced through a renderer that would refuse it anyway.
+        if config.get("continuous_only", False):
+            return {
+                "compatible": False,
+                "unsupported": True,
+                "reason": (
+                    f"discrete POMDP: {config.get('name', framework)} "
+                    "supports continuous linear-Gaussian models only"
                 ),
                 "warnings": warnings,
             }

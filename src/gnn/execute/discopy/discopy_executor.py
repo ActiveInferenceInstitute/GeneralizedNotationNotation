@@ -373,6 +373,7 @@ def run_discopy_analysis(
     execution_output_dir: Optional[Union[str, Path]] = None,
     recursive_search: bool = True,
     verbose: bool = False,
+    timeout: Optional[int] = None,
 ) -> bool:
     """
     Find and analyze all DisCoPy outputs in the designated directory.
@@ -382,6 +383,12 @@ def run_discopy_analysis(
         execution_output_dir: Specific directory for DisCoPy execution outputs (optional)
         recursive_search: Whether to search recursively for outputs
         verbose: Whether to enable verbose output
+        timeout: Optional per-script execution timeout in seconds. The
+            analysis lane spawns no subprocesses (diagram validation and
+            output analysis only); this parameter is accepted so every
+            registry runner shares one invocation contract. The
+            script-execution lane (``execute_discopy_script``) keeps its
+            own 300 s default.
 
     Returns:
         bool: True if analysis completed successfully, False if any failed

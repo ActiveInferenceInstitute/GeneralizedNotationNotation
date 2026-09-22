@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/gnn/15_audio.py` (83 lines)
+**Orchestrator**: `src/gnn/15_audio.py` (78 lines)
 **Implementation Layer**: `src/gnn/audio/`
 
 ## Module Description
@@ -133,7 +133,7 @@ src/gnn/audio/
 
 ### Basic Usage
 ```python
-from audio import process_audio
+from gnn.audio import process_audio
 
 success = process_audio(
     target_dir=Path("input/gnn_files"),
@@ -145,7 +145,7 @@ success = process_audio(
 
 ### Generate Specific Audio
 ```python
-from audio import generate_audio_from_gnn
+from gnn.audio import generate_audio_from_gnn
 from gnn import load_parsed_model
 
 model = load_parsed_model("actinf_pomdp_agent.md")

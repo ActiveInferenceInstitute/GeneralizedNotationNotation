@@ -176,7 +176,56 @@ def register_tools(registry: Any) -> Any:
             ],
         )
 
-        logger.info("Successfully registered template MCP tools")
+        # Register template.list tool
+        registry.register_tool(
+            name="template.list",
+            description=(
+                "List maintained templates with checksums"
+                " (CLI `gnn templates list` parity)"
+            ),
+            function=list_templates_mcp,
+            parameters=[],
+            returns={
+                "type": "object",
+                "description": "Template records with a success flag and total count",
+            },
+            examples=[
+                {
+                    "description": "List maintained templates",
+                    "code": "template.list()",
+                }
+            ],
+        )
+
+        # Register template.show tool
+        registry.register_tool(
+            name="template.show",
+            description=(
+                "Show one maintained template record with checksum metadata"
+                " (CLI `gnn templates show` parity)"
+            ),
+            function=show_template_mcp,
+            parameters=[
+                {
+                    "name": "name",
+                    "description": "Name of the maintained template to show",
+                    "type": "string",
+                    "required": True,
+                },
+            ],
+            returns={
+                "type": "object",
+                "description": "Single template record with a success flag",
+            },
+            examples=[
+                {
+                    "description": "Show the gridworld template record",
+                    "code": 'template.show("pomdp-gridworld-3x3")',
+                }
+            ],
+        )
+
+        logger.info("Successfully registered 6 template MCP tools")
         return True
 
     except Exception as e:
@@ -384,4 +433,57 @@ def pull_template_mcp(
         return _build()
     except (KeyError, FileExistsError, FileNotFoundError, OSError) as e:
         logger.error(f"Failed to pull template {name}: {e}")
+        return {"success": False, "error": str(e)}
+
+
+def list_templates_mcp() -> Dict[str, Any]:
+    """
+    List maintained templates with checksums.
+
+    Thin MCP wrapper around :func:`gnn.cli.templates.list_templates`.
+
+    Returns:
+        Dictionary with ``success`` set to True plus the template records
+        (``templates``) and their ``total`` count, or ``success`` set to
+        False with an ``error`` message on failure.
+    """
+
+    def _build() -> Dict[str, Any]:
+        from gnn.cli.templates import list_templates as _list_templates
+
+        records = _list_templates()
+        return {"success": True, "templates": records, "total": len(records)}
+
+    try:
+        return _build()
+    except Exception as e:
+        logger.error(f"Failed to list templates: {e}")
+        return {"success": False, "error": str(e)}
+
+
+def show_template_mcp(name: str) -> Dict[str, Any]:
+    """
+    Show one maintained template record with checksum metadata.
+
+    Thin MCP wrapper around :func:`gnn.cli.templates.show_template`.
+
+    Args:
+        name: Name of the maintained template to show. The CLI parity
+            error message lists the available templates when unknown.
+
+    Returns:
+        Dictionary with ``success`` set to True plus the ``template``
+        record, or ``success`` set to False with an ``error`` message
+        on failure.
+    """
+
+    def _build() -> Dict[str, Any]:
+        from gnn.cli.templates import show_template as _show_template
+
+        return {"success": True, "template": _show_template(name)}
+
+    try:
+        return _build()
+    except KeyError as e:
+        logger.error(f"Failed to show template {name}: {e}")
         return {"success": False, "error": str(e)}

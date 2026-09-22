@@ -6,7 +6,7 @@ This directory serves as a dynamically synchronized documentation index for the 
 **Status**: Synced to Python Source
 
 ## Reconciled Agent Maps
-Every document located inside this folder (`00_template.md` through `24_intelligent_analysis.md`) is aligned with its respective `src/<module>/AGENTS.md` counterpart (e.g. `00_template.md` ↔ `src/gnn/template/AGENTS.md`), ensuring LLM Context layers learn current module parameters.
+Every document located inside this folder (`00_template.md` through `24_intelligent_analysis.md`) is aligned with its respective `src/gnn/<module>/AGENTS.md` counterpart (e.g. `00_template.md` ↔ `src/gnn/template/AGENTS.md`), ensuring LLM Context layers learn current module parameters.
 
 ## Contained Indices
 

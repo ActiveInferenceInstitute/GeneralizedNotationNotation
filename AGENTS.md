@@ -59,7 +59,7 @@ New to this repo as an agent? In order:
 - **[api/](src/gnn/api/AGENTS.md)** - REST API (FastAPI)
 - **[cli/](src/gnn/cli/AGENTS.md)** - `gnn` CLI entry point
 - **[lsp/](src/gnn/lsp/AGENTS.md)** - Language Server Protocol support
-- **[sapf/](src/gnn/sapf/AGENTS.md)** - SAPF public entry point (implementation in `src/gnn/audio/sapf/`)
+- **[audio/sapf/](src/gnn/audio/sapf/AGENTS.md)** - SAPF audio submodule (canonical home; registered via `src/gnn/audio/mcp.py`)
 - **[docs/](src/gnn/doc/AGENTS.md)** - In-repo technical documentation subtree
 
 ### v3.0.0 Long-Running Orchestration Modules (`src/gnn/pipeline/`)
@@ -115,7 +115,7 @@ graph TB
 - Call module processing functions from `module/__init__.py`
 - Return standardized exit codes (0=success, 1=error, 2=warning)
 
-**Module Implementation** (`src/module/`):
+**Module Implementation** (`src/gnn/<module>/`):
 
 - Contains all domain logic in `processor.py` and subdirectories
 - Provides public API via `__init__.py` exports

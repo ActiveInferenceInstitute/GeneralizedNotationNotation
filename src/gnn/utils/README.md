@@ -12,7 +12,6 @@ src/gnn/utils/
 ├── SPEC.md                          # Module specification
 │
 ├── logging_utils.py                 # Logging facade (setup_step_logging, log_step_*)
-├── pipeline.py                      # Pipeline utilities (get_output_dir_for_script, ...)
 ├── mcp.py                           # MCP integration (canonical name; see mcp/ package)
 │
 ├── # Concern packages (S2-33/SC-38 split)
@@ -91,7 +90,11 @@ Audits for drift between `STEP_ARGUMENTS`, `StepConfiguration`, parser defaults,
 
 ### Pipeline Orchestration Utilities
 
+The per-step output-directory helper lives in its canonical home,
+`gnn.pipeline` (not in this facade):
+
 #### `get_output_dir_for_script(script_name: str, base_output_dir: Optional[Path] = None) -> Path`
+**Location**: `gnn.pipeline.config` (re-exported by `gnn.pipeline`)
 Gets the standardized per-step output directory (e.g. `"3_gnn.py"` → `output/3_gnn_output/`).
 
 ### Configuration
@@ -109,7 +112,7 @@ Composability Notes for the full consolidation map):
 
 #### `verify_directory_writable(directory: Path, probe_name: str = ".write_probe") -> None`
 The one writable-directory probe (create temp file → atomic rename → cleanup), used by
-`gnn.utils.pipeline.validate_output_directory` and `gnn.utils.pipeline_orchestration.pipeline_validator.check_pipeline_readiness`.
+`gnn.utils.pipeline_orchestration.pipeline_validator.check_pipeline_readiness`.
 Raises `OSError` when the directory does not accept writes.
 
 #### `get_memory_usage() -> float`
@@ -156,7 +159,7 @@ verbose = args.verbose
 ### Pipeline Orchestration
 
 ```python
-from gnn.utils.pipeline import get_output_dir_for_script
+from gnn.pipeline import get_output_dir_for_script
 
 output_dir = get_output_dir_for_script("my_script.py", Path("output"))
 ```

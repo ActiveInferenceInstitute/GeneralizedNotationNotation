@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/gnn/13_llm.py` (57 lines)
+**Orchestrator**: `src/gnn/13_llm.py` (52 lines)
 **Implementation Layer**: `src/gnn/llm/`
 
 ## Module Description

@@ -1,1 +1,1 @@
-"""Test package mirroring src/sapf/ (top-level SAPF public entry point)."""
+"""Test package for the canonical SAPF module (src/gnn/audio/sapf/)."""

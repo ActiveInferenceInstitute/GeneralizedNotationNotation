@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/gnn/6_validation.py` (62 lines)
+**Orchestrator**: `src/gnn/6_validation.py` (57 lines)
 **Implementation Layer**: `src/gnn/validation/`
 
 ## Module Description
@@ -12,14 +12,20 @@ This module provides comprehensive validation capabilities for GNN models, inclu
 
 ```
 src/gnn/validation/
-├── __init__.py                    # Module initialization, exports, and process_validation orchestrator
-├── README.md                      # This documentation
 ├── AGENTS.md                      # Agent scaffolding documentation
+├── README.md                      # This documentation
+├── SKILL.md                       # Agent skill manifest (gnn-validation usage guide)
 ├── SPEC.md                        # Module specification
+├── __init__.py                    # Module initialization, exports, and process_validation orchestrator
 ├── consistency_checker.py         # Consistency checking (naming, style, structure, references)
-├── semantic_validator.py          # Semantic validation (structure, state space, connections, math)
+├── mcp.py                         # Model Context Protocol integration
+├── orientation.py                 # B-tensor orientation diagnostic (canonical B[s',s,a] column-stochastic contract, transpose verification)
 ├── performance_profiler.py        # Performance profiling (complexity, memory, parallelization)
-└── mcp.py                         # Model Context Protocol integration
+├── semantic_validator.py          # Semantic validation (structure, state space, connections, math)
+├── simple.py                      # Simplified dependency-free validator used as a recovery path when the full validation system cannot run
+├── structure.py                   # Shared model-content and graph utilities (content extraction, score clamping, Tarjan cycle detection)
+└── workflow.py                    # Directory-level validation workflow behind process_validation (loads the parsed-model manifest, runs the three stages, persists validation_results.json / validation_summary.json)
+```
 
 ## Agent Identity & Capabilities
 
@@ -37,7 +43,7 @@ src/gnn/validation/
 
 **Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
-**Last Updated**: 2026-01-21
+**Last Updated**: 2026-09-21
 
 ---
 
@@ -98,7 +104,7 @@ severity table, and fix recipe:
 
 **Example**:
 ```python
-from validation import process_validation
+from gnn.validation import process_validation
 
 success = process_validation(
     target_dir=Path("input/gnn_files"),
@@ -173,7 +179,7 @@ VALIDATION_CONFIG = {
 
 ### Basic Validation
 ```python
-from validation import process_validation
+from gnn.validation import process_validation
 
 success = process_validation(
     target_dir="input/gnn_files", output_dir="output/6_validation_output"
@@ -182,7 +188,7 @@ success = process_validation(
 
 ### Semantic Validation and Consistency
 ```python
-from validation import process_semantic_validation, check_consistency
+from gnn.validation import process_semantic_validation, check_consistency
 
 semantic = process_semantic_validation("model.gnn")
 consistency = check_consistency("model.gnn")
@@ -190,15 +196,16 @@ consistency = check_consistency("model.gnn")
 
 ### Performance Profiling
 ```python
-from validation import profile_performance
+from gnn.validation import profile_performance
 
 profile = profile_performance("model.gnn")
 ```
 
 The exported surface is listed in `src/gnn/validation/__init__.py` (`__all__`):
-`process_validation`, `process_semantic_validation`, `profile_performance`,
-`check_consistency` plus the `SemanticValidator`, `PerformanceProfiler` and
-`ConsistencyChecker` classes.
+`process_validation`, `check_consistency`, `profile_performance`,
+`check_b_orientation`, `validate_content`, `validate_directory` plus the
+`SemanticValidator`, `SimpleValidator`, `PerformanceProfiler` and
+`StageServices` classes.
 
 ---
 

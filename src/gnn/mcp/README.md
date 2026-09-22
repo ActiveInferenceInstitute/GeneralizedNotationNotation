@@ -97,6 +97,10 @@ Server introspection and diagnostic tools:
 - `get_mcp_module_info`: Detailed module information
 - `get_mcp_tool_categories`: Tools organized by category
 - `get_mcp_performance_metrics`: Performance statistics
+- `get_mcp_diagnostics`: Diagnostic information and health checks
+
+These meta tools are registered automatically during module discovery
+alongside the `sympy_mcp` tools (see `src/gnn/mcp/discovery.py`).
 
 ### 5. GNN Processors (`processors.py`)
 
@@ -149,7 +153,7 @@ Implementation lives at `src/gnn/mcp/processors.py`; validators come from `gnn.s
 - Report aggregation
 - Interactive elements
 
-### SAPF (`src/gnn/sapf/mcp.py`)
+### SAPF (`src/gnn/audio/sapf/mcp.py`, registered via `src/gnn/audio/mcp.py`)
 - Audio generation and sonification
 - Model sonification
 - Real-time audio processing

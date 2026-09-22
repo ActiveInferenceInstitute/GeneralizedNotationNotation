@@ -955,7 +955,8 @@ The rendered files are organized in implementation-specific subfolders:
 │   ├── pytorch/            # PyTorch simulations
 │   ├── numpyro/            # NumPyro simulations
 │   ├── stan/               # Stan models
-│   └── bnlearn/            # Bayesian network scripts
+│   ├── bnlearn/            # Bayesian network scripts
+│   └── ngclearn/           # ngc-learn simulations
 └── render_processing_summary.json  # Detailed results
 ```
 
@@ -1003,6 +1004,11 @@ def _render_continuous_target(
         "pytorch": ("pytorch.pytorch_renderer", "render_gnn_to_pytorch", "_pytorch.py"),
         "rxinfer": ("rxinfer.rxinfer_renderer", "render_gnn_to_rxinfer", "_rxinfer.jl"),
         "stan": ("stan.stan_renderer", "render_gnn_to_stan", "_stan.py"),
+        "ngclearn": (
+            "ngclearn.ngclearn_renderer",
+            "render_gnn_to_ngclearn",
+            "_ngclearn.py",
+        ),
     }
     if target not in targets:
         return False, f"Continuous models are unsupported for target: {target}", []

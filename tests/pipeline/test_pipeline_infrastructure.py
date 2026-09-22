@@ -3,14 +3,15 @@ Comprehensive tests for pipeline infrastructure modules with 0% coverage.
 
 This module provides comprehensive testing for:
 - pipeline.discovery
-- pipeline.pipeline_step_template
-- pipeline.pipeline_validation
+- pipeline.step_registry
+- pipeline.step_executor
 - pipeline.verify_pipeline
 - utils.pipeline_monitor
 - utils.resource_manager
 - utils.script_validator
 """
 
+import argparse
 from pathlib import Path
 from typing import Any
 
@@ -71,76 +72,97 @@ class TestPipelineDiscovery:
             assert isinstance(scripts, list)
 
 
-class TestPipelineStepTemplate:
-    """Test pipeline.pipeline_step_template module."""
+class TestStepRegistry:
+    """Test gnn.pipeline.step_registry — the single source of step truth."""
 
     @pytest.mark.unit
-    def test_step_template_imports(self) -> None:
-        """Test that step template can be imported."""
-        from gnn.pipeline import pipeline_step_template
+    def test_registry_imports(self) -> None:
+        """Test that the canonical step registry can be imported."""
+        from gnn.pipeline import step_registry
 
-        assert hasattr(pipeline_step_template, "validate_step_requirements")
-        assert hasattr(pipeline_step_template, "process_single_file")
-        assert hasattr(pipeline_step_template, "main")
-        assert callable(pipeline_step_template.validate_step_requirements)
-        assert callable(pipeline_step_template.process_single_file)
-        assert callable(pipeline_step_template.main)
-
-    @pytest.mark.unit
-    def test_validate_step_requirements(self) -> None:
-        """Test validate_step_requirements function."""
-        from gnn.pipeline.pipeline_step_template import validate_step_requirements
-
-        result = validate_step_requirements()
-        assert isinstance(result, bool)
+        assert hasattr(step_registry, "STEPS")
+        assert hasattr(step_registry, "step_for_name")
+        assert hasattr(step_registry, "canonical_step_stem")
+        assert callable(step_registry.step_for_name)
+        assert callable(step_registry.canonical_step_stem)
 
     @pytest.mark.unit
-    def test_process_single_file(self, isolated_temp_dir: Any) -> None:
-        """Test process_single_file function."""
-        from gnn.pipeline.pipeline_step_template import process_single_file
+    def test_registry_lookup_by_name_and_stem(self) -> None:
+        """Script-name and stem lookups resolve to the same StepInfo."""
+        from gnn.pipeline.step_registry import step_for_name, step_for_stem
 
-        input_file = isolated_temp_dir / "test_input.md"
-        input_file.write_text("# Test GNN File\n\nSample content")
-        output_dir = isolated_temp_dir / "output"
-        output_dir.mkdir()
-        options: dict[str, Any] = {"verbose": False}
-        result = process_single_file(input_file, output_dir, options)
-        assert isinstance(result, bool)
-
-
-class TestPipelineValidation:
-    """Test pipeline.pipeline_validation module."""
+        by_name = step_for_name("3_gnn.py")
+        by_stem = step_for_stem("3_gnn")
+        assert by_name is not None
+        assert by_name is by_stem
+        assert by_name.script_stem == "3_gnn"
 
     @pytest.mark.unit
-    def test_validation_imports(self) -> None:
-        """Test that pipeline validation can be imported."""
-        from gnn.pipeline import pipeline_validation
+    def test_registry_unknown_step_is_none(self) -> None:
+        """Unknown scripts resolve to None instead of raising."""
+        from gnn.pipeline.step_registry import step_for_name
 
-        assert hasattr(pipeline_validation, "validate_module_imports")
-        assert hasattr(pipeline_validation, "validate_dependency_cycles")
-        assert hasattr(pipeline_validation, "generate_validation_report")
-        assert callable(pipeline_validation.validate_module_imports)
-        assert callable(pipeline_validation.validate_dependency_cycles)
-        assert callable(pipeline_validation.generate_validation_report)
+        assert step_for_name("99_not_a_step.py") is None
 
     @pytest.mark.unit
-    def test_validate_module_imports(self, project_root: Any) -> None:
-        """Test validate_module_imports function."""
-        from gnn.pipeline.pipeline_validation import validate_module_imports
+    def test_registry_consolidated_alias_resolution(self) -> None:
+        """Consolidated aliases resolve once to canonical, registry-known stems."""
+        from gnn.pipeline.step_registry import (
+            CONSOLIDATED_STEP_ALIASES,
+            canonical_step_stem,
+            step_for_stem,
+        )
 
-        sample_module = project_root / "src" / "gnn" / "3_gnn.py"
-        if sample_module.exists():
-            result = validate_module_imports(sample_module)
-            assert isinstance(result, dict)
+        for alias in CONSOLIDATED_STEP_ALIASES:
+            canonical = canonical_step_stem(alias)
+            assert canonical not in CONSOLIDATED_STEP_ALIASES
+            assert step_for_stem(canonical) is not None
+
+
+class TestStepExecutor:
+    """Test gnn.pipeline.step_executor — consolidated in-process execution."""
+
+    @staticmethod
+    def _args() -> argparse.Namespace:
+        return argparse.Namespace(
+            target_dir=".", output_dir="output", recursive=False, verbose=False
+        )
 
     @pytest.mark.unit
-    def test_validate_dependency_cycles(self) -> None:
-        """Test validate_dependency_cycles function."""
-        from gnn.pipeline.pipeline_validation import validate_dependency_cycles
+    def test_executor_imports(self) -> None:
+        """Test that the consolidated executor can be imported."""
+        from gnn.pipeline import step_executor
 
-        result = validate_dependency_cycles()
-        assert isinstance(result, dict)
-        assert "has_cycles" in result or "cycles" in result or "status" in result
+        assert hasattr(step_executor, "execute_step_in_process")
+        assert hasattr(step_executor, "can_execute_in_process")
+        assert hasattr(step_executor, "resolve_step_function")
+        assert callable(step_executor.execute_step_in_process)
+        assert callable(step_executor.can_execute_in_process)
+
+    @pytest.mark.unit
+    def test_executor_refuses_steps_outside_whitelist(self) -> None:
+        """Steps outside CONSOLIDATED_IN_PROCESS_STEMS raise UnsupportedStepError."""
+        import logging
+
+        from gnn.pipeline.step_executor import (
+            UnsupportedStepError,
+            execute_step_in_process,
+        )
+
+        with pytest.raises(UnsupportedStepError):
+            execute_step_in_process(
+                "99_not_a_step.py", self._args(), logging.getLogger("test")
+            )
+
+    @pytest.mark.unit
+    def test_executor_gate_agrees_with_registry_whitelist(self) -> None:
+        """can_execute_in_process is True exactly for whitelisted stems."""
+        from gnn.pipeline.step_executor import can_execute_in_process
+        from gnn.pipeline.step_registry import CONSOLIDATED_IN_PROCESS_STEMS
+
+        for stem in sorted(CONSOLIDATED_IN_PROCESS_STEMS):
+            assert can_execute_in_process(stem, self._args()) is True
+        assert can_execute_in_process("99_not_a_step", self._args()) is False
 
 
 class TestVerifyPipeline:
@@ -260,10 +282,10 @@ class TestPipelineInfrastructureIntegration:
     """Test integration between pipeline infrastructure modules."""
 
     @pytest.mark.integration
-    def test_discovery_and_validation_integration(self, project_root: Any) -> None:
-        """Test integration between discovery and validation."""
+    def test_discovery_and_registry_integration(self, project_root: Any) -> None:
+        """Discovered scripts resolve through the canonical step registry."""
         from gnn.pipeline.discovery import get_pipeline_scripts
-        from gnn.pipeline.pipeline_validation import validate_module_imports
+        from gnn.pipeline.step_registry import step_for_name
 
         src_dir = project_root / "src" / "gnn"
         scripts = get_pipeline_scripts(src_dir)
@@ -271,9 +293,8 @@ class TestPipelineInfrastructureIntegration:
         if scripts:
             first_script = scripts[0]["path"]
             assert isinstance(first_script, Path)
-            if first_script.exists():
-                validation = validate_module_imports(first_script)
-                assert isinstance(validation, dict)
+            step = step_for_name(first_script.name)
+            assert step is not None
 
     @pytest.mark.integration
     def test_monitoring_and_resource_management_integration(self) -> None:
@@ -312,7 +333,7 @@ def test_pipeline_infrastructure_completeness() -> None:
     expected_modules: list[Any] = [
         (
             "gnn.pipeline",
-            ["discovery", "pipeline_validation", "verify_pipeline"],
+            ["discovery", "step_registry", "verify_pipeline"],
         ),
         (
             "gnn.utils.runtime_safety",

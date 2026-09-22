@@ -48,12 +48,7 @@ If you encounter errors:
   - For oxdraw: Install with `cargo install oxdraw` (optional for headless mode)
 """
 
-import sys
-from pathlib import Path
 from typing import cast
-
-# Add src to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from gnn.gui import process_gui
 from gnn.utils.pipeline_orchestration.pipeline_template import (

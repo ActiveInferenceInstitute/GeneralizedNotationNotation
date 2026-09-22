@@ -5,7 +5,6 @@ Pins the single-source-of-truth implementations introduced when duplicated
 logic across src/gnn/utils/ was collapsed:
 
 - ``io_utils.verify_directory_writable`` — the one writable-probe behind
-  ``gnn.utils.pipeline.validate_output_directory`` and
   ``gnn.utils.pipeline_orchestration.pipeline_validator.check_pipeline_readiness``
 - the canonical memory probe ``gnn.utils.runtime_safety.resource_manager.get_memory_usage``
 - ``resource_manager.with_resource_limits`` exception-propagation semantics
@@ -34,7 +33,6 @@ from gnn.utils.arguments.arg_parsing import ArgumentParser, fallback_default_for
 from gnn.utils.arguments.step_config import StepConfiguration
 from gnn.utils.config_io.io_utils import verify_directory_writable
 from gnn.utils.mcp.server import is_sensitive_env_key, redact_environment
-from gnn.utils.pipeline import validate_output_directory
 from gnn.utils.pipeline_orchestration.pipeline_monitor import (
     AlertLevel,
     PipelineMonitor,
@@ -89,19 +87,7 @@ class TestVerifyDirectoryWritable:
 
 
 class TestSharedProbeCallers:
-    """Both former probe copies must behave identically through the helper."""
-
-    def test_validate_output_directory_happy_path(self, tmp_path: Path) -> None:
-        assert validate_output_directory(tmp_path, "3_gnn") is True
-        assert list(tmp_path.iterdir()) == []
-
-    @requires_write_permissions
-    def test_validate_output_directory_readonly_false(self, tmp_path: Path) -> None:
-        _make_readonly(tmp_path)
-        try:
-            assert validate_output_directory(tmp_path, "3_gnn") is False
-        finally:
-            _restore_permissions(tmp_path)
+    """The remaining former probe copy must behave identically through the helper."""
 
     def test_readiness_ready_when_output_writable(self, tmp_path: Path) -> None:
         from gnn.utils.pipeline_orchestration.pipeline_validator import (

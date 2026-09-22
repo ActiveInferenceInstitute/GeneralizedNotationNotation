@@ -19,7 +19,7 @@ import pytest
 
 import gnn.execute.executor as executor_module
 from gnn.execute import execute_script_safely
-from gnn.execute.executor import GNNExecutor, execute_rendered_simulators
+from gnn.execute.executor import GNNExecutor, _RunnerState, execute_rendered_simulators
 
 # Would touch a marker file (proving execution) before the dangerous call the
 # scanner must catch. Blocked-before-start keeps the marker absent.
@@ -125,7 +125,11 @@ def test_plain_gnn_md_is_not_gate_blocked_for_lean(
         "model.md",
         "## GNNSection\n\n```gnn\n### State\nS: {0.5, 0.5}\n```\n",
     )
-    monkeypatch.setattr(executor_module, "LEAN_AVAILABLE", False)
+    monkeypatch.setattr(
+        executor_module,
+        "_runner_state",
+        lambda key: _RunnerState(available=False, runner=None),
+    )
 
     result = GNNExecutor(output_dir=str(tmp_path / "out")).execute_gnn_model(
         str(doc), "lean"

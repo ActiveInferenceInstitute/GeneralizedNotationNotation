@@ -6,7 +6,6 @@ Role: Runs the GNN pipeline via subprocess and validates that outputs are produc
 correctly. Tests end-to-end pipeline behavior. Does NOT analyze source code.
 
 See also:
-- pipeline/pipeline_validation.py: Static code analysis (checks import patterns, naming)
 - utils/pipeline_orchestration/pipeline_validator.py: Pre-execution prerequisite checker (checks step outputs exist)
 """
 
@@ -473,8 +472,7 @@ class PipelineValidator:
     ) -> Path:
         """Save validation report to file."""
         if output_path is None:
-            output_path = Path("output/pipeline_validation_report.json")
-
+            output_path = Path("output/pipeline_runtime_validator_report.json")
         output_path.parent.mkdir(parents=True, exist_ok=True)
 
         with open(output_path, "w") as f:

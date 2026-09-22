@@ -366,7 +366,7 @@ resources:
   
 # Health and monitoring for containers
 health:
-  check_command: "python -c 'import src.main; print(\"OK\")'"
+  check_command: "python -c 'import gnn.main; print(\"OK\")'"
   check_interval: 30
   check_timeout: 10
   

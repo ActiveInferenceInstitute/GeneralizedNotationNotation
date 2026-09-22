@@ -15,6 +15,13 @@ from typing import Dict, List, Literal, Optional, TypedDict, Union
 # ``.json``) listed in a render summary are not scripts.
 _EXECUTABLE_SUFFIXES = frozenset({".py", ".jl"})
 
+# Shared default wall-clock timeout (seconds) for rendered-script execution.
+# Runners whose historical default differs (rxinfer/jax/numpyro/pytorch/discopy
+# 300, bnlearn 1800, lean 1800) keep their own values; this constant replaces
+# the literal 600 defaults (pymdp, activeinference_jl) and the executor
+# dispatch helpers.
+DEFAULT_RUNNER_TIMEOUT_SECONDS: int = 600
+
 # Literal list mirrors ``gnn.frameworks.ALL_FRAMEWORKS`` (the runtime source).
 # mypy requires a literal list; cannot derive at runtime. Drift is guarded by
 # ``tests/render/test_framework_availability.py`` (TestCanonicalConsistency).
@@ -28,6 +35,7 @@ ExecutionFrameworkName = Literal[
     "numpyro",
     "stan",
     "bnlearn",
+    "ngclearn",
     "lean",
 ]
 

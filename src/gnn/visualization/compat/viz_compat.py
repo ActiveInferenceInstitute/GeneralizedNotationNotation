@@ -1,9 +1,10 @@
 """
 Shared matplotlib/numpy/seaborn imports for visualization and analysis.
 
-Both visualization (step 8) and analysis (step 16) import from the package-root
-`visualization._viz_compat` facade, which re-exports this module. The seaborn
-module itself resolves lazily via `sns`/`get_sns()` on first access.
+Both visualization (step 8) and analysis (step 16) import from this module
+directly; it is the single implementation home for the shared plotting
+imports. The seaborn module itself resolves lazily via `sns`/`get_sns()`
+on first access.
 """
 
 import logging

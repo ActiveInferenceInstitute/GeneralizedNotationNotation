@@ -1,20 +1,24 @@
 """
-MCP integration for the SAPF (Sound and Probabilistic Freespace) / audio synthesis module.
+MCP integration for the SAPF (Sound As Pure Form) audio synthesis submodule.
 
 Exposes SAPF audio generation tools: audio synthesis from GNN models,
-audio status, and module metadata through MCP.
+audio artifact inventory, and module metadata through MCP. Discovered by the
+MCP server through the parent ``gnn.audio.mcp`` registration hook
+(``MCP.discover_modules`` scans only top-level ``src/gnn/*/mcp.py`` files).
 """
+
+from __future__ import annotations
 
 import logging
 from pathlib import Path
 from typing import Any, Dict, List
 
-logger = logging.getLogger(__name__)
-
 from gnn.utils.mcp.dispatch import run_tool_envelope
 
 from . import get_module_info as _get_mod_info
 from . import process_gnn_to_audio
+
+logger = logging.getLogger(__name__)
 
 
 def process_sapf_mcp(
