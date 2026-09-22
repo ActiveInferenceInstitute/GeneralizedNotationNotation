@@ -9,6 +9,7 @@ from gnn.execute.executor import (
     ExecutorFrameworkSpec,
     GNNExecutor,
     _framework_specs,
+    _RunnerState,
     list_frameworks,
 )
 
@@ -39,6 +40,10 @@ def test_executor_lean_unavailable_message(monkeypatch: pytest.MonkeyPatch) -> N
 
     assert resolve_fep_lean_root() is None
 
-    monkeypatch.setattr(executor_module, "LEAN_AVAILABLE", False)
+    monkeypatch.setattr(
+        executor_module,
+        "_runner_state",
+        lambda key: _RunnerState(available=False, runner=None),
+    )
     result = GNNExecutor()._execute_lean_verification("model.md")
     assert result == {"success": False, "error": "fep_lean unavailable"}
