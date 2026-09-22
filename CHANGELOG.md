@@ -5,6 +5,233 @@ All notable changes to the GNN Pipeline are documented in this file.
 Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Versioning](https://semver.org/).
 
 
+## [3.5.0] - 2026-09-22
+
+> **Surface Truth & Integration.** The website, MCP, API, and GUI surfaces now
+> report what the pipeline actually recorded: step-20 statuses come from the
+> execution summary, GUI launches are HTTP-verified instead of assumed, MCP
+> clients speak the standard 2024-11-05 protocol in both transports, and the
+> backends contract collapses onto one canonical framework tuple. Alongside:
+> three new MCP tools (registry 142→146), `gnn gui` on the CLI, LLM cache
+> wiring for step 24, didChange-aware LSP diagnostics, and full runs-delete
+> control on the API.
+
+### Added (2026-09-19/21 — interchange hardening, MCP expansion, GUI integration)
+
+- **Consumer-conformance test suite** (`tests/export/test_geo_infer_consumer_compat.py`):
+  the three interchange emitters (`gnn.export.geo_infer`, `geo_infer_gaussian`,
+  `geo_infer_factored`) are pinned against the GEO-INFER consumer's validation
+  rules — exact key sets, byte-exact schema literals, matrix shapes,
+  axis-zero stochasticity (atol 1e-8), covariance definiteness, units, time
+  domain and provenance digests — with per-assertion citations to the pinned
+  consumer modules (`geo_infer_act.core.gnn_{contract,gaussian_contract,factored_contract}`).
+- `matrix_provenance["B"]["declared_order_explicit"]` records whether the B
+  axis order was explicitly declared in the source (vs defaulted to canonical),
+  separating parsed declarations from defaults in orientation provenance.
+- **MCP standard-protocol dispatch (#137).** `server_core.MCPServer` is now the
+  single source of truth for the standard 2024-11-05 surface (`initialize`,
+  `notifications/initialized`, `tools/list`, `tools/call`, `resources/list`,
+  `resources/read`, `ping`, `shutdown`, `exit`), and both transports
+  (`server_stdio`, `server_http`) route standard methods through it — modern
+  MCP clients (Claude Desktop, official SDKs, MCP Inspector) complete the
+  standard handshake. The direct dialect stays byte-identical and the tool
+  registry is unchanged at 142 tools; HTTP exposure allowlists and bearer
+  auth/rate limiting apply to the standard surface too.
+- **Three new MCP tools (#141).** `extract_pomdp` (headless, stdlib-only POMDP
+  extraction, previously reachable only via CLI and API), `generate_dependency_graph`
+  (`gnn graph` parity: Mermaid or text adjacency list), and `template.pull`
+  (`gnn pull` parity, copy-safe dry-run default, checksum-collision refusal);
+  the registry grows 142 → 145 tools across 34 modules, audit report regenerated.
+- **LLM cache wiring for step 24 (#143).** `_run_llm_analysis` accepts an
+  optional `cache_dir` and reuses step 13's content-addressed `LLMCache`
+  (sha256 over summary context + model + prompt): only reports that pass the
+  report-contract gate are stored, cache hits return `(cached, "llm")`, and
+  `process_intelligent_analysis` persists under
+  `output/24_intelligent_analysis_output/.cache`.
+- **LSP didChange diagnostics (#145).** The pygls server registers
+  `textDocument/didChange` and republishes diagnostics from the workspace
+  document on every edit (full or incremental), so diagnostics track in-editor
+  edits instead of only open/save.
+- **PyTorch/NumPyro simulation schema emit (#147).** The discrete
+  pytorch/numpyro runners stamp `pytorch_simulation_v1` / `numpyro_simulation_v1`
+  on their results (mirroring the pymdp/rxinfer/activeinference_jl emit
+  contract); real schema-aware extractors replace the earlier unrouted
+  pymdp-shaped aliases, `analyze_execution_results` dispatches to them, and
+  the export/viz simulation-schema maps carry the new ids.
+- **API runs-delete contract + MCP phase 2 (#149).** `DELETE /api/v1/runs/{run_hash}`
+  upgrades from housekeeping-only to the full contract: active runs are
+  cancelled through the `CancelToken` surface (pre-spawn guard, 0.25 s poll
+  loop, process-group termination so grandchildren die with the pipeline), then
+  artifacts are removed and the record popped (unknown hash 404, ambiguous
+  prefix 409, cancel-wait timeout 409 with live status; the repo's tracked
+  `output` tree is guarded by equality and never deleted by an HTTP call). New
+  MCP parity tool `gnn_delete_run` shares `processor.delete_run` with the
+  endpoint; server-side `tool_timeout` knob, per-tool `cacheable` opt-in for
+  the MCP result cache, and `ThreadingHTTPServer` concurrency (HTTP requests
+  no longer serialize behind one accept loop). Registry 145 → 146 tools.
+- **`gnn gui` CLI subcommand + `--launch-editor` (#150).** The interactive
+  stack is reachable from the CLI (`gnn gui [--gui-types …] [--headless/--interactive]`,
+  `just gui` recipe), the oxdraw editor path is launchable from the step-22 CLI
+  via the new flag, `get_available_guis()` entries carry `port`, the step-20
+  website cross-links the GUI navigation hub, and `streamlit` leaves the gui
+  extra.
+
+### Changed (2026-09-19/21 — surface honesty, backends contract, import cost)
+
+- The `gnn-geo-infer/1` exporter's B-orientation refusal now reports the exact
+  evidence (contradiction, non-canonical detection, or non-decisive
+  doubly-stochastic data with the declared/defaults split) instead of the
+  blanket "B has contradictory axis conventions" message. Refusal semantics
+  are unchanged: ambiguous orientation is never reordered on export.
+- **Website step-20 truth batch (#136).** Step statuses are read from
+  `pipeline_execution_summary.json` (a recorded SKIP/FAILED step is no longer
+  advertised "✓ Complete"; directory heuristics remain only as a fallback), the
+  step catalogue derives from `step_registry.STEPS` with round-tripped real
+  script names (`3_gnn.py`, `21_mcp.py`, …), the collected-but-never-rendered
+  execution-summary field is deleted, non-dict step-16 JSON and unusable index
+  stats no longer crash the analysis/index pages, gallery asset collisions are
+  deduplicated so both artifacts survive, and oversized file/report previews
+  carry an explicit `… [truncated]` marker.
+- **Lazy seaborn/scipy.stats imports (#139).** `gnn.visualization`,
+  `gnn.advanced_visualization`, `gnn.analysis`, and `gnn.llm` no longer pay the
+  seaborn+pandas+scipy.stats+IPython import tree at module load (seaborn and
+  `scipy.stats` resolve lazily behind `get_sns()`/`get_scipy_stats()` with the
+  existing guards unchanged). Warm import time drops ~30% for
+  `gnn.visualization` and ~27% for `gnn.advanced_visualization`; the residual
+  import graph contains zero seaborn/scipy/pandas/IPython lines.
+- **One canonical framework tuple (#147).** New leaf module `gnn.frameworks`
+  holds `ALL_FRAMEWORKS` (registry keys + `lean`) and `LITE_FRAMEWORKS`;
+  `KNOWN_FRAMEWORKS`, `FRAMEWORK_PRESETS`, `parse_frameworks_parameter`, both
+  `execute` Literals, and the two divergent `--frameworks` help strings now
+  derive from it, ending the divergent-list family. `FRAMEWORK_REGISTRY` stays
+  the canonical render inventory with its key order pinned to the canonical
+  tuple; capability-scoped subsets remain intentional, pinned explicit lists.
+- **Truthful GUI launch verification + unified status schema (#148).** The
+  unconditional `time.sleep(3)` + "GUI is running" claim in gui_1/gui_2/gui_3
+  is replaced by a bounded poll on the runner thread's liveness plus an HTTP
+  probe of `http://127.0.0.1:<port>`; launch failure writes `launched: false` +
+  a failure `reason` into the status artifact and aggregates to
+  `gui_processing_summary.json` `overall_success: false`. Status artifacts carry
+  one common-key schema in both headless and interactive payloads (`port`/`url`
+  only on verified interactive launches).
+
+### Fixed
+
+- **Cancelled API jobs keep their terminal state (#138).** `cancel_job` no
+  longer loses the race against `execute_job_async`'s unconditional terminal
+  overwrite — a mid-flight cancel stays `cancelled` (no fabricated
+  `error_message`, `completed_at` not rewritten, partial output preserved), a
+  cancel between job creation and task start no longer launches the pipeline,
+  and cancellation terminates the whole process group
+  (`start_new_session=True` + `os.killpg`), which also un-hangs `communicate()`
+  for pipe-inheriting grandchildren.
+- **Residual utils-facade window closed (#140).** The `gnn.utils.mcp`
+  earlier-name machinery (`__getattr__` alias dispatch) is deleted with
+  `register_tools` remaining the live auto-discovery entry; false
+  "old top-level paths are facades" docstrings in `config_io`/`testing` are
+  corrected; `utils/SKILL.md` import paths are repointed to the real modules;
+  and the pipeline validation Next-Steps advice now points at the executable
+  `gnn health` CLI instead of a module with no `__main__`.
+- **`check_audio_backends` duplicate registration (#141).** The tool was
+  registered by both `audio/mcp.py` (canonical) and `sapf/mcp.py` under a
+  last-write-wins registry, so the serving implementation depended on
+  alphabetical module discovery order; sapf's duplicate registration and
+  implementation are removed and the name now deterministically maps to
+  `gnn.audio`.
+- **Step-22 headless default + GUI wrapper batch (#142).** `process_gui` now
+  derives `headless = not interactive` (a run with neither flag no longer took
+  the interactive path and hung the pipeline on non-daemon Gradio threads);
+  launched servers are daemon threads with `interactive_servers_running()`
+  gating and `--interactive` keep-alive; gui_3 uses the shared output-root
+  resolver so its artifacts land in `output/22_gui_output/` and join
+  `navigation.html`; status files are namespaced (`gui_1_status.json` /
+  `gui_2_status.json` — the second run no longer silently clobbers the first);
+  and `oxdraw_gui` no longer raises `TypeError: got multiple values for
+  keyword argument 'mode'` when a caller passes `mode=`.
+- **oxdraw truth + fidelity (#144).** GNN→Mermaid→GNN round-trips preserve
+  variable descriptions; phase 3 back-converts only files produced this run
+  so stale `.mmd` artifacts are never resurrected; `process_oxdraw` success
+  and `summary` counts are honest; websocket payloads carry artifact paths
+  instead of embedded Mermaid text; `files_processed` reports the recursive
+  discovery count; outputs include the back-converted `*_from_mermaid.md`
+  artifacts; five dead helpers are deleted and `validate_mermaid_syntax` is
+  wired into the convert path.
+- **gui_1/gui_2 UX + dead-code cutover (#146).** Malformed dims CSV input
+  produces a visible validation message naming the offending tokens instead of
+  silently becoming `[3, 4]`; gui_1's Export Model button is wired to the same
+  save path as Save; all nine mutating callbacks in gui_1 surface `❌` errors
+  in a validation pane; gui_2 routes validation errors to the validation pane
+  and debounces auto-update via `gr.Timer` (2 s); the zero-caller
+  `ui_minimal.py` / `ui_simple.py` variants are deleted; component counts
+  reuse `parse_components_from_markdown`.
+- **Backends contract fixes (#147).** `--frameworks stan` no longer aborts;
+  `parse_frameworks_parameter` no longer silently filters `lean`; stan
+  `simulation_results.json` files are attributed to stan instead of "unknown";
+  and the bnlearn registry entry points at the real render surface.
+- **gui_3 loader + wrapper cleanup (#148).** `_load_starter_content` delegates
+  to the shared guarded loader (`runner.load_first_markdown`) — a non-UTF-8
+  starter can no longer crash the processor; the gui_3 wrapper emits
+  `port`/`url` only when interactive and verified-launched; the unused
+  `run_gui(verbose=...)` parameter is dropped; gui_3's headless branch now
+  also writes the namespaced `design_studio_status.json`.
+- **MCP headless derives interactive + export defaults (#150).**
+  `process_gui_mcp` passes `interactive=not headless` — an MCP caller passing
+  `headless=False` now really gets interactive servers; `run_gui` export
+  defaults for gui_1/gui_2 are aligned with the wrapper defaults and every
+  doc's output listing.
+
+### Removed
+
+- **All 10 `validate_gnn*` old-name aliases deleted** (2026-09-19; the
+  earlier-name window opened 2026-09-11 with zero remaining live callers):
+  `parsers.basic.validate_gnn` / `validate_gnn_syntax_formal` →
+  `validate_gnn_syntax`; package-root `validate_gnn_file` →
+  `validate_gnn_source`; `validation.simple.validate_gnn_file` /
+  `validate_gnn_directory` → `check_gnn_file_basic` /
+  `check_gnn_directory_basic`; `validate_gnn_structure` →
+  `check_gnn_file_structure`; `validate_gnn_pomdp_structure` →
+  `check_gnn_pomdp_spec`; `schema_validator.validate_gnn_file` →
+  `validate_gnn_file_comprehensive`; `validate_gnn_cross_format_consistency`
+  → `check_cross_format_consistency`; `llm.validate_gnn` →
+  `validate_gnn_with_llm`. Importing any retired name now raises
+  `AttributeError`; `test_retired_validate_gnn_aliases_are_gone` pins the
+  retirement. MCP tool registry names (`validate_gnn_content`,
+  `validate_gnn_file`, `validate_gnn_files`) are unchanged contracts.
+- **Dead caches deleted (#143).** `ParseCache` (zero production consumers) and
+  `VisualizationOptimizer`/`VisualizationCache` (zero production callers) are
+  deleted whole; the observability lazy map keeps its 41 live entries and the
+  frozen 113-key utils export map is untouched.
+- **Streamlit removed from extras (#150).** Dropped from the `gui` and `all`
+  extras and the mypy ignore list; doc mentions removed and `uv.lock`
+  regenerated with the orphaned transitive dependencies pruned.
+
+### Security
+
+- **GUI servers bind loopback by default (#146).** `launch_gradio_in_thread`
+  defaults to `server_name="127.0.0.1"` with an opt-in host parameter, so
+  interactive Gradio servers no longer listen on all interfaces unless a host
+  is explicitly requested.
+
+## GitHub release blurb (draft)
+
+## GNN v3.5.0 — Surface Truth & Integration
+
+This release makes the package's outward surfaces honest and connected. The
+website dashboard reads step statuses from the recorded pipeline execution
+summary instead of guessing from directories; MCP clients speak the standard
+2024-11-05 protocol in both transports, with three new tools (`extract_pomdp`,
+`generate_dependency_graph`, `template.pull`) and a `gnn_delete_run` parity
+tool. `DELETE /api/v1/runs/{run_hash}` now gives the API full run control —
+proper cancellation with process-group teardown, artifact removal, and honest
+status on timeout. The GUI estate got a truth pass: launches are verified over
+HTTP instead of assumed, status artifacts share one schema, gui_1/gui_2/gui_3
+and oxdraw gained dozens of UX and round-trip fidelity fixes, and a new
+`gnn gui` subcommand puts the interactive stack on the CLI. Under the hood,
+one canonical framework tuple drives every framework list (fixing the
+`--frameworks stan` abort and silent `lean` filtering), step 24 gains
+content-addressed LLM response caching, LSP diagnostics track in-editor
+edits, and visualization imports got ~30% faster by making seaborn/scipy load
+lazily.
 ## [Unreleased]
 
 ### Added
