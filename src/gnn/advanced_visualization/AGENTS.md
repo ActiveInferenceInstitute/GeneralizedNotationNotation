@@ -10,11 +10,7 @@
 
 **Status**: Maintained
 
-<<<<<<< HEAD
 **Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
-=======
-**Version**: 3.5.0
->>>>>>> origin/main
 
 **Last Updated**: 2026-09-22
 
