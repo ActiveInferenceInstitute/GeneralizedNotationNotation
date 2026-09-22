@@ -33,7 +33,6 @@ the template GETs are informational and omit it.
 
 import json
 import logging
-import os
 import shutil
 import tempfile
 from pathlib import Path
@@ -42,7 +41,6 @@ from typing import (
     Callable,
     ClassVar,
     Dict,
-    FrozenSet,
     List,
     Literal,
     Optional,
@@ -58,6 +56,16 @@ from gnn.api.path_utils import (
     resolve_repo_path,
 )
 from gnn.api.responses import APIEnvelope, success_envelope
+from gnn.cli.commands import (
+    EXTRACT_DEFECT_EMPTY_SKELETON,
+    EXTRACT_DEFECT_ERROR_STATUS,
+    build_parse_payload,
+    extract_payload_defect,
+    find_render_artifact,
+    preflight_severities,
+    publish_pipeline_report,
+    run_validation_checks,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -508,37 +516,14 @@ def _require_input_dir(path_value: str, *, purpose: str) -> Path:
 
 def _validate_gnn(gnn_file: Path, *, strict: bool) -> ValidateResponse:
     """Mirror ``gnn.cli._cmd_validate`` section/state-space/matrix checks."""
-    from gnn.schema import (
-        GNNParseError,
-        parse_connections,
-        parse_state_space,
-        validate_matrix_dimensions,
-        validate_required_sections,
-    )
-    from gnn.validation import validate_content
-
     content = gnn_file.read_text(encoding="utf-8")
     file_name = str(gnn_file)
 
-    errors: List[GNNParseError] = []
-    errors.extend(validate_required_sections(content, file_path=file_name))
-    variables, variable_errors = parse_state_space(content, file_path=file_name)
-    errors.extend(variable_errors)
-    connections, connection_errors = parse_connections(
-        content,
-        known_variables={variable.name for variable in variables},
-        file_path=file_name,
-    )
-    errors.extend(connection_errors)
-    errors.extend(validate_matrix_dimensions(content, variables, file_path=file_name))
-
-    semantic = validate_content(content)
-    known_messages = {error.message for error in errors}
-    errors.extend(
-        GNNParseError(code="GNN-SEMANTIC", message=message, file=file_name)
-        for message in semantic["errors"]
-        if message not in known_messages
-    )
+    outcome = run_validation_checks(content, file_name)
+    errors = outcome.errors
+    variables = outcome.variables
+    connections = outcome.connections
+    semantic = outcome.semantic
 
     issues = [
         ParityIssue(
@@ -572,102 +557,27 @@ def _parse_gnn(
     gnn_file: Path, output_format: ParseOutputFormat
 ) -> "ParseResponse | ParseSummary":
     """Mirror ``gnn.cli._cmd_parse`` parsing, frontmatter, and POMDP probes."""
-    from gnn.schema import parse_connections, parse_state_space
-
-    content = gnn_file.read_text(encoding="utf-8")
+    result, parse_errors = build_parse_payload(gnn_file)
     file_name = str(gnn_file)
 
-    variables, variable_errors = parse_state_space(content, file_path=file_name)
-    connections, connection_errors = parse_connections(
-        content,
-        known_variables={variable.name for variable in variables},
-        file_path=file_name,
-    )
-    parse_errors = [*variable_errors, *connection_errors]
-
-    metadata: Dict[str, Any] = {}
-    try:
-        from gnn.parsers.frontmatter import parse_frontmatter
-
-        metadata, _ = parse_frontmatter(content)
-    except ImportError as exc:
-        logger.debug("Frontmatter parsing not available: %s", exc)
-
-    # POMDP extraction is best-effort, exactly like the CLI: non-POMDP files
-    # or extraction failures omit the "pomdp" key and add a warning note.
-    pomdp_note: Optional[str] = None
-    pomdp_data: Optional[Dict[str, Any]] = None
-    if not variables:
-        pomdp_note = "File declares no StateSpaceBlock variables; 'pomdp' key omitted"
-    else:
-        try:
-            from gnn.extract.pomdp_extractor import extract_pomdp_from_file
-
-            pomdp_result = extract_pomdp_from_file(gnn_file, strict_validation=False)
-            # on_error="lenient" (default) returns Optional[POMDPStateSpace];
-            # "collect" returns (spec, errors) — tolerate both shapes.
-            pomdp_space = (
-                pomdp_result[0] if isinstance(pomdp_result, tuple) else pomdp_result
-            )
-            if pomdp_space is None:
-                pomdp_note = "File does not parse as a POMDP; 'pomdp' key omitted"
-            else:
-                pomdp_data = pomdp_space.to_dict()
-        except Exception as exc:
-            logger.debug("POMDP extraction unavailable: %s", exc)
-            pomdp_note = f"POMDP extraction unavailable: {exc}"
-
-    warnings_list = [str(error) for error in parse_errors]
-    if pomdp_note is not None:
-        warnings_list.append(pomdp_note)
-
-    serialized_errors = [
-        ParityIssue(
-            code=error.code, message=error.message, line=error.line, file=error.file
-        )
-        for error in parse_errors
-    ]
+    metadata: Dict[str, Any] = result["metadata"]
+    variables_payload: List[Dict[str, Any]] = result["variables"]
+    connections_payload: List[Dict[str, Any]] = result["connections"]
+    warnings_list: List[str] = result["warnings"]
     exit_code: ParityExitCode = 2 if parse_errors else 0
 
     if output_format == "summary":
         return ParseSummary(
             file=file_name,
-            variables_count=len(variables),
-            connections_count=len(connections),
+            variables_count=len(variables_payload),
+            connections_count=len(connections_payload),
             metadata_keys=sorted(str(key) for key in metadata),
             exit_code=exit_code,
         )
 
-    # CLI-shaped result dict; the yaml output is rendered from it verbatim.
-    variables_payload: List[Dict[str, Any]] = [
-        {
-            "name": variable.name,
-            "dimensions": variable.dimensions,
-            "dtype": variable.dtype,
-            "default": variable.default,
-        }
-        for variable in variables
+    serialized_errors = [
+        ParityIssue(**error_dict) for error_dict in result["errors"]
     ]
-    connections_payload: List[Dict[str, Any]] = [
-        {
-            "source": connection.source,
-            "target": connection.target,
-            "directed": connection.directed,
-            "label": connection.label,
-            "line": connection.line,
-        }
-        for connection in connections
-    ]
-    result: Dict[str, Any] = {
-        "file": file_name,
-        "metadata": metadata,
-        "variables": variables_payload,
-        "connections": connections_payload,
-        "warnings": warnings_list,
-        "errors": [issue.model_dump(mode="json") for issue in serialized_errors],
-    }
-    if pomdp_data is not None:
-        result["pomdp"] = pomdp_data
 
     yaml_text: Optional[str] = None
     if output_format == "yaml":
@@ -690,7 +600,7 @@ def _parse_gnn(
         warnings=warnings_list,
         errors=serialized_errors,
         exit_code=exit_code,
-        pomdp=pomdp_data,
+        pomdp=result.get("pomdp"),
         yaml=yaml_text,
     )
 
@@ -712,16 +622,13 @@ def _extract_gnn(gnn_file: Path, *, strict: bool, compact: bool) -> ExtractRespo
             status_code=400,
             detail="extract produced a non-object payload",
         )
-    if payload_obj.get("status") == "error":
+    defect = extract_payload_defect(payload_obj)
+    if defect == EXTRACT_DEFECT_ERROR_STATUS:
         raise HTTPException(
             status_code=400,
             detail={"message": "extraction failed", "payload": payload_obj},
         )
-    if (
-        not payload_obj.get("state_variables")
-        and not payload_obj.get("matrices")
-        and payload_obj.get("model_name") is None
-    ):
+    if defect == EXTRACT_DEFECT_EMPTY_SKELETON:
         # Lenient extraction fabricates a default skeleton for files with no
         # GNN state-space content at all; surface that as an error like the CLI.
         raise HTTPException(
@@ -736,73 +643,6 @@ def _extract_gnn(gnn_file: Path, *, strict: bool, compact: bool) -> ExtractRespo
         pomdp=payload_obj,
         payload_json=payload if compact else None,
     )
-
-
-_RENDER_ARTIFACT_SUFFIXES: Dict[str, FrozenSet[str]] = {
-    "pymdp": frozenset({".py"}),
-    "jax": frozenset({".py"}),
-    "numpyro": frozenset({".py"}),
-    "pytorch": frozenset({".py"}),
-    "discopy": frozenset({".py"}),
-    "bnlearn": frozenset({".py"}),
-    "rxinfer": frozenset({".jl", ".toml"}),
-    "activeinference_jl": frozenset({".jl"}),
-    "stan": frozenset({".stan"}),
-}
-
-_RENDER_EXCLUDED_FILES: FrozenSet[str] = frozenset(
-    {"README.md", "processing_summary.json", "render_processing_summary.json"}
-)
-
-
-def _is_render_artifact(path: Path, framework: str) -> bool:
-    """Return whether ``path`` is a candidate artifact for ``framework``."""
-    suffixes = _RENDER_ARTIFACT_SUFFIXES.get(framework, frozenset())
-    return (
-        path.is_file()
-        and (not suffixes or path.suffix in suffixes)
-        and path.name not in _RENDER_EXCLUDED_FILES
-    )
-
-
-def _find_render_artifact(render_dir: Path, framework: str) -> Optional[Path]:
-    """Locate the primary artifact of a single-framework render.
-
-    Mirrors the CLI ``gnn render`` artifact discovery: prefer outputs declared
-    in the render processing summary, then fall back to a framework-scoped
-    recursive scan. Returns ``None`` when nothing was produced (reported as
-    ``artifact: null`` rather than guessed).
-    """
-    summary_path = render_dir / "render_processing_summary.json"
-    if summary_path.exists():
-        try:
-            summary = json.loads(summary_path.read_text(encoding="utf-8"))
-            for result in summary.get("file_results", {}).values():
-                framework_result = result.get("framework_results", {}).get(framework)
-                if framework_result:
-                    for item in framework_result.get("output_files", []):
-                        candidate = Path(item)
-                        if candidate.exists() and _is_render_artifact(
-                            candidate, framework
-                        ):
-                            return candidate
-                for item in result.get("generated_files", []):
-                    candidate = Path(item)
-                    if (
-                        candidate.exists()
-                        and framework in str(candidate)
-                        and _is_render_artifact(candidate, framework)
-                    ):
-                        return candidate
-        except (json.JSONDecodeError, OSError, TypeError):
-            logger.debug("Could not parse render summary at %s", summary_path)
-
-    candidates = sorted(
-        path
-        for path in render_dir.rglob("*")
-        if framework in str(path.parent) and _is_render_artifact(path, framework)
-    )
-    return candidates[0] if candidates else None
 
 
 def _render_gnn(gnn_file: Path, framework: str, output_dir: Path) -> RenderResponse:
@@ -826,7 +666,7 @@ def _render_gnn(gnn_file: Path, framework: str, output_dir: Path) -> RenderRespo
             status_code=400,
             detail=f"Render failed for {gnn_file} using framework {framework}",
         )
-    artifact = _find_render_artifact(output_dir, framework)
+    artifact = find_render_artifact(output_dir, framework)
     return RenderResponse(
         file=str(gnn_file),
         framework=framework,
@@ -863,7 +703,8 @@ def _preflight(config_path: Optional[Path]) -> PreflightResponse:
         )
         for issue in report.issues
     ]
-    if any(issue.severity == "error" for issue in issues):
+    has_errors, has_warnings = preflight_severities(report)
+    if has_errors:
         # Pinned mapping: preflight errors (CLI exit 1) become a 400 carrying
         # the issues in error.details.
         raise HTTPException(
@@ -873,9 +714,7 @@ def _preflight(config_path: Optional[Path]) -> PreflightResponse:
                 "issues": [issue.model_dump(mode="json") for issue in issues],
             },
         )
-    exit_code: ParityExitCode = (
-        2 if any(issue.severity == "warning" for issue in issues) else 0
-    )
+    exit_code: ParityExitCode = 2 if has_warnings else 0
     return PreflightResponse(
         checks_passed=report.checks_passed,
         checks_failed=report.checks_failed,
@@ -887,15 +726,7 @@ def _preflight(config_path: Optional[Path]) -> PreflightResponse:
 
 def _report(output_dir: Path) -> ReportResponse:
     """Mirror ``gnn.cli._cmd_report`` atomic PIPELINE_REPORT.md publish."""
-    from gnn.report.pipeline_report import generate_pipeline_report
-
-    report = generate_pipeline_report(output_dir)
-    report_path = output_dir / "PIPELINE_REPORT.md"
-    with tempfile.NamedTemporaryFile(
-        mode="w", encoding="utf-8", dir=report_path.parent, delete=False
-    ) as tmp_file:
-        tmp_file.write(report)
-    os.replace(tmp_file.name, str(report_path))
+    report, report_path = publish_pipeline_report(output_dir)
     return ReportResponse(
         output_dir=str(output_dir),
         report_path=str(report_path),

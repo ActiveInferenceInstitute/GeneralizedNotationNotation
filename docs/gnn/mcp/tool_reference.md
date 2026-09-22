@@ -21,7 +21,7 @@ Audit-backed quick reference for the GNN MCP server tool surface. Use `tests/mcp
 | api | `gnn_get_job_status` | Retrieve the status of a GNN pipeline job. |
 | api | `gnn_get_pipeline_tools` | List available pipeline steps. |
 | api | `gnn_list_jobs` | List recent GNN pipeline jobs. |
-| api | `gnn_submit_job` | Create a GNN pipeline job record. Jobs execute only via the API server (gnn serve / POST /api/v1/process); this tool doe |
+| api | `gnn_submit_job` | Create a GNN pipeline job record (pending; not executed). Execution happens only via POST /api/v1/process or POST /api/v1/tools/{step} on the job/tool API server (gnn.api.server), or a direct execute_job_async call; gnn serve (Runs surface) never consumes these records. |
 | audio | `analyze_audio_characteristics` | Analyse characteristics of a GNN-generated audio file (duration, RMS, spectral centroid, etc.). |
 | audio | `check_audio_backends` | Check which audio generation backends (scipy, soundfile, pedalboard, wave) are available. |
 | audio | `get_audio_generation_options` | Return all configurable audio generation options with defaults and valid ranges. |

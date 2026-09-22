@@ -19,5 +19,12 @@ Current records:
   doctrine (`docs/standards/composability.md`); the tool surface stays
   unadopted absent a consumer-demand receipt (five-seam census /
   COMP-001, COMP-002).
+- `0049-dual-async-job-surfaces.md` — documents the dual async-job
+  surfaces as canonical, each for its consumer class (`gnn.api.app` run UX
+  behind `gnn serve`, `gnn.api.server` job/step management API); coherence
+  contract is the shared `processor` stores, identical parity route
+  registration, and per-factory route tables pinned in
+  `tests/api/test_api_parity.py`; motivated by the integration-surface
+  census (F3).
 
 New ADRs must be listed here.

@@ -1,6 +1,6 @@
 {
-  "modules_total": 35,
-  "modules_loaded": 35,
+  "modules_total": 34,
+  "modules_loaded": 34,
   "modules_errored": 0,
   "tools_total": 156,
   "modules_list": [
@@ -29,7 +29,6 @@
     "render",
     "report",
     "research",
-    "sapf",
     "security",
     "setup",
     "sympy_mcp",
@@ -491,7 +490,7 @@
     },
     {
       "name": "get_sapf_module_info",
-      "module": "gnn.sapf",
+      "module": "gnn.audio.sapf",
       "category": "audio",
       "fn": "get_sapf_module_info_mcp",
       "documented": true,
@@ -623,7 +622,7 @@
       "category": "api",
       "fn": "gnn_submit_job_mcp",
       "documented": true,
-      "description": "Create a GNN pipeline job record. Jobs execute only via the API server (gnn serve / POST /api/v1/process); this tool doe"
+      "description": "Create a GNN pipeline job record (pending; not executed). Execution happens only via POST /api/v1/process or POST /api/v"
     },
     {
       "name": "install_uv_dependency",
@@ -643,7 +642,7 @@
     },
     {
       "name": "list_audio_artifacts",
-      "module": "gnn.sapf",
+      "module": "gnn.audio.sapf",
       "category": "audio",
       "fn": "list_audio_artifacts_mcp",
       "documented": true,
@@ -963,7 +962,7 @@
     },
     {
       "name": "process_sapf",
-      "module": "gnn.sapf",
+      "module": "gnn.audio.sapf",
       "category": "audio",
       "fn": "process_sapf_mcp",
       "documented": true,
@@ -1295,7 +1294,7 @@
   "spot_checks_err": 0,
   "schema_checks_ok": 156,
   "schema_checks_err": 0,
-  "logging_ok": 31,
+  "logging_ok": 30,
   "logging_miss": 0,
   "issues": []
 }
