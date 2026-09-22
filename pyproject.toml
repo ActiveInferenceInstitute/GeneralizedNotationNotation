@@ -70,7 +70,12 @@ dependencies = [
     # splits that carry ngclearn; py3.11 splits keep the unconstrained pick.
     "jax[cpu]>=0.7.0,<0.12",
     "jaxlib>=0.7.0,<0.12",
-    "flax>=0.7.0",
+    # flax 0.12.6 calls jax.core.get_opaque_trace_state (removed in jax 0.11.0),
+    # so the py>=3.12 splits (which resolve jax 0.11.2 for ngclearn) need
+    # flax>=0.12.9 (first release compatible with jax 0.11.x); py3.11 splits
+    # keep jax 0.9.2 and stay on flax <0.12.7.
+    "flax>=0.7.0,<0.12.7; python_full_version < '3.12'",
+    "flax>=0.12.9; python_full_version >= '3.12'",
     "optax>=0.1.0",
     "msgpack>=1.2.1",
     "numpyro>=0.22",  # 0.22.0 carries the jax-0.11.x compat fix; 0.20.x breaks on jax>=0.11
