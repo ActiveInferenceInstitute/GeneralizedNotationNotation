@@ -24,12 +24,43 @@ Re-exported from `gnn.processing` (see `__init__.py`):
   `process_gnn_directory_lightweight`, `generate_gnn_report`,
   `get_module_info`
 - Orchestration (`core_processor.py`): `GNNProcessor`, `ProcessingContext`,
-  `ProcessingPhase`, `create_processor`, plus the module-level
-  `process_gnn_directory` / `process_gnn_directory_lightweight` entry points
+  `ProcessingPhase`, plus the module-level `process_gnn_directory` /
+  `process_gnn_directory_lightweight` entry points (see
+  [Core-Processor Wrappers](#core-processor-wrappers-distinct-from-the-canonical-surface)
+  for how they differ from the canonical `processor.py` functions)
 - Multi-format (`multi_format_processor.py`): `process_gnn_multi_format`
 - Discovery (`discovery.py`): `is_model_source_path`, `FileDiscoveryStrategy`,
   `DiscoveryResult`, `NON_MODEL_MARKDOWN_FILENAMES`,
   `NON_MODEL_MARKDOWN_SUFFIXES`
+
+## Core-Processor Wrappers (distinct from the canonical surface)
+
+`core_processor.py` defines module-level `process_gnn_directory` and
+`process_gnn_directory_lightweight` that intentionally differ from the
+canonical `processor.py` functions of the same names (the ones the root
+package re-exports through `_EXPORT_MAP`):
+
+- `core_processor.process_gnn_directory` drives the five-phase
+  `GNNProcessor` engine and — if the engine raises — falls back to a raw
+  `_scan_files_lightweight` glob scan, always returning `status="SUCCESS"`
+  with a `processing_mode` of `"full"` or `"lightweight"` plus a
+  `valid_files` key, and writes `gnn_core_results.json`. The canonical
+  `processor.process_gnn_directory` never invokes the engine: it parses
+  each discovered file, returns `FAILED` for missing paths (Phase 1.3
+  validation), and writes `gnn_processing_results.json`.
+- `core_processor.process_gnn_directory_lightweight` is a pure
+  `**/*.md` glob scan (single-`.md` paths accepted) returning a
+  `{path: {status, format, size}}` mapping with the recursion flag
+  ignored, writing `gnn_core_lightweight_results.json`. The canonical
+  `processor.process_gnn_directory_lightweight` parses each file and
+  returns an aggregate result dict with `parsed_files` /
+  `validation_results`.
+
+These recovery semantics are pinned by `tests/pipeline/test_pipeline_recovery.py`
+(engine-failure fallback and lightweight scan), `tests/pipeline/test_pipeline_functionality.py`
+(engine path), and `tests/infrastructure/test_coverage_overall.py`
+(lightweight callable). Consumers wanting the canonical surface should
+import from `gnn` or `gnn.processing`.
 
 ## Usage
 
@@ -39,7 +70,6 @@ from pathlib import Path
 from gnn.processing import (
     GNNProcessor,
     ProcessingContext,
-    create_processor,
     is_model_source_path,
     parse_gnn_file,
     process_gnn_multi_format,
@@ -57,7 +87,7 @@ results = process_gnn_directory_lightweight(
 )
 
 # Five-phase orchestration engine
-processor = create_processor()  # or GNNProcessor(logger)
+processor = GNNProcessor()  # optional logger argument
 ok = processor.process(
     ProcessingContext(
         target_dir=Path("input"),
@@ -86,8 +116,8 @@ entry point through the lazy `_EXPORT_MAP` in `src/gnn/__init__.py`:
 `gnn.check_gnn_file_structure`, `gnn.generate_gnn_report`,
 `gnn.get_module_info`, and `gnn.process_gnn_multi_format` all resolve to
 `processing.processor` / `processing.multi_format_processor`. Import the
-orchestration engine (`GNNProcessor`, `create_processor`) and the discovery
-predicates from `gnn.processing` directly.
+orchestration engine (`GNNProcessor`) and the discovery predicates from
+`gnn.processing` directly.
 
 ## Pipeline Wiring
 
