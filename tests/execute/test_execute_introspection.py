@@ -28,6 +28,8 @@ EXPECTED_FRAMEWORKS = {
     "pytorch",
     "ngclearn",
     "lean",
+    "stan",
+    "bnlearn",
 }
 
 

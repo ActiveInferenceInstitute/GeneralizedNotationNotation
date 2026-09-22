@@ -30,6 +30,8 @@ EXPECTED_FRAMEWORK_KEYS: set[Any] = {
     "pytorch_executions",
     "ngclearn_executions",
     "lean_executions",
+    "stan_executions",
+    "bnlearn_executions",
 }
 
 
