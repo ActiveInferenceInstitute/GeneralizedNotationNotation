@@ -16,7 +16,7 @@ warns about the detected orientation and offers an opt-in canonical
 transposition (``--transpose-b``) recorded per tensor in the receipt.
 
 The stochasticity tolerance is the type checker's
-``_STOCHASTICITY_TOLERANCE`` (the same constant behind the Step 5
+``STOCHASTICITY_TOLERANCE`` (the same constant behind the Step 5
 ``[GNN-E002]`` orientation checks); this module never re-derives it.
 Slices that are neither row- nor column-stochastic stay silent here —
 the existing stochasticity error paths own that failure.
@@ -30,11 +30,11 @@ from collections.abc import Mapping
 from pathlib import Path
 from typing import Any, TypeAlias
 
-from gnn.type_checker.checking.dimensions import (
-    _STOCHASTICITY_TOLERANCE,
-    _numeric_matrix,
+from gnn.type_checker.checking import (
+    STOCHASTICITY_TOLERANCE,
     extract_b_matrix_evidence,
     extract_gnn_dimensions,
+    numeric_matrix,
 )
 
 from .structure import clamp01, display_file_name, extract_content_from_dict
@@ -84,7 +84,7 @@ def _classify_slice(matrix: Matrix) -> str:
     ]
 
     def close_to_one(sums: list[float]) -> bool:
-        return all(abs(total - 1.0) <= _STOCHASTICITY_TOLERANCE for total in sums)
+        return all(abs(total - 1.0) <= STOCHASTICITY_TOLERANCE for total in sums)
 
     row_ok = close_to_one(row_sums)
     col_ok = close_to_one(col_sums)
@@ -129,7 +129,7 @@ def _candidate_readings(values: Any, shape: list[int]) -> dict[str, list[Matrix]
     rectangular numeric matrices are omitted.
     """
     if len(shape) == 2:
-        matrix = _numeric_matrix(values)
+        matrix = numeric_matrix(values)
         if matrix is None:
             return {}
         return {_AXIS_INNER: [matrix]}
@@ -139,7 +139,7 @@ def _candidate_readings(values: Any, shape: list[int]) -> dict[str, list[Matrix]
     inner: MatrixStack = []
     for a in range(shape[2]):
         rows = [[values[n][p][a] for p in range(shape[1])] for n in range(shape[0])]
-        matrix = _numeric_matrix(rows)
+        matrix = numeric_matrix(rows)
         if matrix is None:
             inner = []
             break
@@ -148,7 +148,7 @@ def _candidate_readings(values: Any, shape: list[int]) -> dict[str, list[Matrix]
         readings[_AXIS_INNER] = inner
     outer: MatrixStack = []
     for element in values:
-        matrix = _numeric_matrix(element)
+        matrix = numeric_matrix(element)
         if matrix is None:
             outer = []
             break
