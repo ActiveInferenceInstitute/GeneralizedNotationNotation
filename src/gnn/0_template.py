@@ -30,12 +30,7 @@ If you encounter errors:
   - Verify template configuration and pattern setup
 """
 
-import sys
-from pathlib import Path
 from typing import cast
-
-# Add src to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from gnn.template import process_template_standardized
 from gnn.utils.pipeline_orchestration.pipeline_template import (

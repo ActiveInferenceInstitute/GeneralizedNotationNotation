@@ -23,12 +23,8 @@ If you encounter errors:
   - Verify ontology configuration and term mapping setup
 """
 
-import sys
 from pathlib import Path
 from typing import cast
-
-# Add src to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent))
 
 # Hard import: ontology is a core module and must always be available.
 from gnn.ontology import process_ontology

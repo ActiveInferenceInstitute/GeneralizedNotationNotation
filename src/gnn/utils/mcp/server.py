@@ -279,7 +279,7 @@ def validate_dependencies(mcp_instance_ref: Any) -> Dict[str, Any]:
         )
 
         # Validate pipeline dependencies
-        pipeline_validation = validate_pipeline_dependencies()
+        dependency_validation = validate_pipeline_dependencies()
 
         # Check for common Python packages
         required_packages: list[Any] = [
@@ -305,7 +305,7 @@ def validate_dependencies(mcp_instance_ref: Any) -> Dict[str, Any]:
 
         return {
             "success": True,
-            "pipeline_validation": pipeline_validation,
+            "dependency_validation": dependency_validation,
             "package_status": package_status,
             "missing_packages": [
                 pkg for pkg, status in package_status.items() if status == "missing"

@@ -2,14 +2,26 @@
 """
 SAPF module info for GNN Processing Pipeline.
 
-This module provides module introspection helpers: get_module_info() and
-get_audio_generation_options() for advertising SAPF capabilities.
+This module is the single home for SAPF module metadata: FEATURES,
+get_module_info(), and get_audio_generation_options(). The package
+``__init__.py`` re-exports them; no other module redefines them.
 """
 
 import logging
 from typing import Any, Dict
 
+from gnn import __version__
+
 logger = logging.getLogger(__name__)
+
+# Feature availability flags (single source; re-exported by ``__init__.py``)
+FEATURES: Dict[str, bool] = {
+    "gnn_to_sapf_conversion": True,
+    "audio_generation": True,
+    "sapf_validation": True,
+    "synthetic_audio": True,
+    "mcp_integration": True,
+}
 
 
 def get_module_info() -> Dict[str, Any]:
@@ -20,15 +32,9 @@ def get_module_info() -> Dict[str, Any]:
         Dictionary with module information
     """
     return {
-        "version": "1.1.3",
+        "version": __version__,
         "description": "SAPF audio generation from GNN models",
-        "features": {
-            "gnn_to_sapf_conversion": True,
-            "audio_generation": True,
-            "sapf_validation": True,
-            "synthetic_audio": True,
-            "mcp_integration": True,
-        },
+        "features": dict(FEATURES),
         "sapf_capabilities": [
             "GNN to SAPF conversion",
             "Audio generation from SAPF",

@@ -9,9 +9,11 @@ from typing import Any
 
 from .core import GNNTypeChecker, ResourceEstimate, estimate_file_resources
 from .dimensions import (
+    STOCHASTICITY_TOLERANCE,
     extract_b_matrix_evidence,
     extract_gnn_dimensions,
     extract_gnn_dimensions_with_diagnostics,
+    numeric_matrix,
     parse_state_variables,
     validate_dimension_compatibility,
 )
@@ -36,6 +38,7 @@ __all__: list[Any] = [
     "CANONICAL_GNN_SECTIONS",
     "GNNTypeChecker",
     "ResourceEstimate",
+    "STOCHASTICITY_TOLERANCE",
     "VALID_TYPES",
     "ValidationSummary",
     "check_type_consistency",
@@ -48,6 +51,7 @@ __all__: list[Any] = [
     "extract_markdown_section",
     "extract_types_from_content",
     "get_validation_rules",
+    "numeric_matrix",
     "parse_resource_connections",
     "parse_state_variables",
     "section_presence",

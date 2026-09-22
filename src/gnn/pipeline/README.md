@@ -10,8 +10,7 @@ src/gnn/pipeline/
 ├── README.md                      # This documentation
 ├── AGENTS.md                      # Agent scaffolding documentation
 ├── config.py                      # Pipeline configuration management
-├── pipeline_validation.py        # Pipeline validation utilities
-├── pipeline_step_template.py    # Pipeline step template
+├── step_executor.py                # Consolidated in-process step execution (ADR 0001)
 ├── health_check.py               # Pipeline health checker
 ├── diagnostic_enhancer.py        # Diagnostic enhancement
 ├── execution.py                   # Pipeline execution

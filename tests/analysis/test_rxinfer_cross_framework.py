@@ -40,6 +40,7 @@ from gnn.analysis.rxinfer.cross_framework import (
     FRAMEWORKS,
     RXINFER_JULIA_PROJECT,
     FrameworkRun,
+    FrameworkRuntime,
     _chart_payload,
     _classify_exit,
     _run_subprocess,
@@ -324,6 +325,49 @@ def test_missing_gnn_file_raises(tmp_path: Path) -> None:
     """A missing GNN file is a loud FileNotFoundError, not an empty string."""
     with pytest.raises(FileNotFoundError):
         run_cross_framework_comparison(tmp_path / "nope.md", tmp_path / "out")
+
+
+def test_stub_runtime_drives_the_comparison_without_gnn_execute(tmp_path: Path) -> None:
+    """A caller-supplied stub runtime drives the full comparison without julia.
+
+    Pins the inversion end-to-end: the stub's julia probe reports both
+    julia frameworks unavailable, pymdp is classified through the recorded
+    fake envelope, and no julia environment is ever built.
+    """
+    recorded: list[list[str]] = []
+
+    def fake_envelope(command: list[str], **_: Any) -> dict[str, Any]:
+        recorded.append(list(command))
+        return {
+            "success": False,
+            "return_code": 2,
+            "stdout": "",
+            "stderr": "boom",
+            "error_type": None,
+        }
+
+    def no_julia_env() -> dict[str, str]:
+        raise AssertionError("julia env must not be built while julia is unavailable")
+
+    runtime = FrameworkRuntime(
+        julia_executable=lambda: None,
+        julia_subprocess_env=no_julia_env,
+        run_envelope=fake_envelope,
+        load_security_gate=lambda: lambda _script: {"ok": True, "overridden": False},
+    )
+
+    html_path = Path(
+        run_cross_framework_comparison(SIMPLE_MDP, tmp_path / "out", runtime=runtime)
+    )
+    text = html_path.read_text(encoding="utf-8")
+
+    assert "0/3 frameworks succeeded" in text
+    reasons = re.findall(r'<td class="reason">(.*?)</td>', text)
+    assert reasons.count("julia is not on PATH") == 2
+    assert "exit code 2" in text
+    assert recorded == [
+        [sys.executable, str(tmp_path / "out" / "pymdp" / "model_pymdp.py")]
+    ]
 
 
 # --- live end-to-end run ------------------------------------------------------

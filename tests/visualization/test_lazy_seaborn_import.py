@@ -65,7 +65,6 @@ def test_import_does_not_load_scipy_stats() -> None:
     [
         ("from gnn.visualization.compat.viz_compat import sns", "sns"),
         ("from gnn.visualization.compat import sns", "sns"),
-        ("from gnn.visualization._viz_compat import sns", "sns"),
         ("from gnn.analysis.viz_base import sns", "sns"),
         ("from gnn.analysis.simulation_visualizations import sns", "sns"),
         ("from gnn.analysis.analysis_statistics import stats", "stats"),

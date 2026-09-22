@@ -486,7 +486,7 @@ def _preflight_config_gate(
         logger.warning(f"Preflight config: [{issue.category}] {issue.message}")
 
 
-def _resolve_steps_to_execute(
+def resolve_steps_to_execute(
     args: PipelineArguments,
     config_pipeline_settings: dict[Any, Any],
     logger: logging.Logger,
@@ -609,7 +609,7 @@ def _prepare_pipeline_context(
         _preflight_config_gate(override_config, logger)
         apply_input_config_defaults(args, full_config, parsed)
 
-        steps_to_execute = _resolve_steps_to_execute(
+        steps_to_execute = resolve_steps_to_execute(
             args, config_pipeline_settings, logger
         )
         pipeline_summary = _initialize_pipeline_summary(

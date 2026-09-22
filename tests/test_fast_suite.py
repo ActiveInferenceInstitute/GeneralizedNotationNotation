@@ -218,7 +218,7 @@ class TestFastSAPF:
     @pytest.mark.unit
     def test_sapf_module_import(self) -> Any:
         """Test that SAPF module can be imported."""
-        import gnn.sapf as sapf
+        import gnn.audio.sapf as sapf
 
         assert sapf is not None, "SAPF module should be importable"
 

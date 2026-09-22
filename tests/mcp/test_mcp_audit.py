@@ -127,7 +127,6 @@ class TestMCPModuleDiscovery:
         "render",
         "report",
         "research",
-        "sapf",
         "security",
         "setup",
         "sympy_mcp",

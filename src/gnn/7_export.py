@@ -30,12 +30,7 @@ If you encounter errors:
   - Verify export configuration and format requirements
 """
 
-import sys
-from pathlib import Path
 from typing import Any, cast
-
-# Add src to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from gnn.export import process_export
 from gnn.export.options import process_export_cli

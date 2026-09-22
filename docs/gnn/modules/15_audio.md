@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/gnn/15_audio.py` (83 lines)
+**Orchestrator**: `src/gnn/15_audio.py` (78 lines)
 **Implementation Layer**: `src/gnn/audio/`
 
 ## Module Description

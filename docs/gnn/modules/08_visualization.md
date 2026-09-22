@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/gnn/8_visualization.py` (60 lines)
+**Orchestrator**: `src/gnn/8_visualization.py` (55 lines)
 **Implementation Layer**: `src/gnn/visualization/`
 
 ## Module Description

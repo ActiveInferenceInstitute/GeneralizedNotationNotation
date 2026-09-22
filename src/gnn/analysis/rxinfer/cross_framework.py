@@ -24,12 +24,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Literal, Optional
 
-from gnn.execute.julia_env import julia_subprocess_env
-from gnn.execute.julia_setup import julia_executable  # noqa: E402
-from gnn.execute.subprocess_envelope import (  # noqa: E402
-    NEVER_STARTED,
-    run_subprocess_envelope,
-)
+from gnn.utils.julia_runtime import FrameworkRuntime, default_julia_runtime
 
 logger = logging.getLogger(__name__)
 
@@ -55,6 +50,7 @@ STDERR_HEAD_LINES = 8
 STDERR_TAIL_LINES = 12
 STDERR_FLAGGED_LINES = 3
 _ERROR_MARKERS = ("ERROR", "Error:", "Traceback", "Exception")
+
 
 RunStatus = Literal[
     "success",
@@ -169,23 +165,26 @@ def _run_subprocess(
     results_path: Path,
     script_path: Path,
     env: dict[str, str] | None = None,
+    runtime: FrameworkRuntime | None = None,
 ) -> FrameworkRun:
     """Execute a rendered script and classify the outcome.
 
-    Every rendered script passes the shared pre-execution security gate first
-    (same helper as the executor and Step-12 paths; fail closed when the
-    scanner cannot be imported). The gate helper is imported lazily because
-    ``gnn.execute`` pulls in the executor/runner stack that this analysis
-    module must not depend on at import time.
+    Every rendered script passes the shared pre-execution security gate
+    first (same helper as the executor and Step-12 paths; fail closed when
+    the scanner cannot be imported). The gate and the subprocess envelope
+    arrive through :class:`FrameworkRuntime`; ``None`` resolves the stock
+    runtime from ``gnn.execute`` — this analysis module must not depend on
+    the executor/runner stack at import time.
 
-    The execution itself runs through the shared subprocess envelope
-    (``gnn.execute.subprocess_envelope.run_subprocess_envelope``), the same
-    structured contract as every per-framework runner: timeout, exit code,
-    and spawn failures all arrive in one outcome mapping instead of
+    The execution itself runs through the shared subprocess envelope, the
+    same structured contract as every per-framework runner: timeout, exit
+    code, and spawn failures all arrive in one outcome mapping instead of
     per-site exception handling.
     """
+    if runtime is None:
+        runtime = default_julia_runtime()
     try:
-        from gnn.execute.security_gate import check_script_allowed
+        check_script_allowed = runtime.load_security_gate()
     except ImportError as exc:
         detail = f"pre-execution security gate unavailable ({exc}); refusing to execute"
         logger.error("%s: %s", framework, detail)
@@ -209,15 +208,15 @@ def _run_subprocess(
     # SANCTIONED DELTA (envelope contract): a spawn failure (OSError,
     # SandboxUnavailable refusal) previously propagated out of this
     # function and crashed the whole comparison; the envelope returns
-    # ``return_code == NEVER_STARTED`` for it and we classify it as a
-    # per-framework execution failure instead.
-    envelope = run_subprocess_envelope(command, timeout=timeout, cwd=str(cwd), env=env)
+    # ``return_code == runtime.never_started`` for it and we classify it as
+    # a per-framework execution failure instead.
+    envelope = runtime.run_envelope(command, timeout=timeout, cwd=str(cwd), env=env)
 
     if envelope.get("error_type") == "TimeoutExpired":
         detail = f"execution exceeded {timeout}s timeout"
         logger.error("%s: %s", framework, detail)
         return FrameworkRun(framework, "execution_failed", detail)
-    if envelope["return_code"] == NEVER_STARTED:
+    if envelope["return_code"] == runtime.never_started:
         detail = f"execution failed to start: {envelope.get('error', '')}"
         logger.error("%s: %s", framework, detail)
         return FrameworkRun(framework, "execution_failed", detail)
@@ -245,9 +244,9 @@ def _render(
     return None
 
 
-def _require_julia(framework: str) -> str | FrameworkRun:
+def _require_julia(framework: str, runtime: FrameworkRuntime) -> str | FrameworkRun:
     """Resolve the julia executable, or report the framework as unavailable."""
-    julia = julia_executable()
+    julia = runtime.julia_executable()
     if julia is None:
         detail = "julia is not on PATH"
         logger.warning("%s unavailable: %s", framework, detail)
@@ -267,7 +266,7 @@ def _execute_rxinfer(
         logger.warning("%s unavailable: %s", framework, detail)
         return FrameworkRun(framework, "unavailable", detail)
 
-    julia = _require_julia(framework)
+    julia = _require_julia(framework, runtime)
     if isinstance(julia, FrameworkRun):
         return julia
 
@@ -288,7 +287,8 @@ def _execute_rxinfer(
         timeout=JULIA_TIMEOUT_SECONDS if timeout is None else timeout,
         results_path=fw_dir / "simulation_results.json",
         script_path=script_path,
-        env=julia_subprocess_env(),
+        env=runtime.julia_subprocess_env(),
+        runtime=runtime,
     )
 
 
@@ -330,6 +330,7 @@ def _execute_pymdp(
         results_path=fw_dir / "simulation_results.json",
         script_path=script_path,
         env=env,
+        runtime=runtime,
     )
 
 
@@ -347,7 +348,7 @@ def _execute_activeinference_jl(
         logger.warning("%s unavailable: %s", framework, detail)
         return FrameworkRun(framework, "unavailable", detail)
 
-    julia = _require_julia(framework)
+    julia = _require_julia(framework, runtime)
     if isinstance(julia, FrameworkRun):
         return julia
 
@@ -368,7 +369,8 @@ def _execute_activeinference_jl(
         timeout=JULIA_TIMEOUT_SECONDS if timeout is None else timeout,
         results_path=fw_dir / "simulation_results.json",
         script_path=script_path,
-        env=julia_subprocess_env(),
+        env=runtime.julia_subprocess_env(),
+        runtime=runtime,
     )
 
 
@@ -712,6 +714,9 @@ def run_cross_framework_comparison(
     if not gnn_file.is_file():
         raise FileNotFoundError(f"GNN file not found: {gnn_file}")
 
+    if runtime is None:
+        runtime = default_julia_runtime()
+
     from gnn.extract.pomdp_extractor import extract_pomdp_from_file
     from gnn.render.pomdp_processor import pomdp_to_gnn_spec
 
@@ -745,6 +750,7 @@ def run_cross_framework_comparison(
 
 __all__ = [
     "FrameworkRun",
+    "FrameworkRuntime",
     "render_comparison_html",
     "run_cross_framework_comparison",
 ]

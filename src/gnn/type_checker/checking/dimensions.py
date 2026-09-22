@@ -221,7 +221,7 @@ _COL_PREV_CONVENTION = re.compile(
 _COL_ACTION_CONVENTION = re.compile(
     r"columns?\s+(?:are|index)\s+(?:the\s+)?actions?\b", re.IGNORECASE
 )
-_STOCHASTICITY_TOLERANCE = 1e-6
+STOCHASTICITY_TOLERANCE = 1e-6
 
 
 def _declaration_orientation(comment: str) -> str | None:
@@ -266,7 +266,7 @@ def _comment_orientation(comment: str) -> str | None:
     return None
 
 
-def _numeric_matrix(rows: Any) -> list[list[float]] | None:
+def numeric_matrix(rows: Any) -> list[list[float]] | None:
     """Return a rectangular float matrix, or None when the literal is not one."""
     if not isinstance(rows, list) or not rows:
         return None
@@ -290,7 +290,7 @@ def _numeric_matrix(rows: Any) -> list[list[float]] | None:
 
 def _all_close_one(sums: list[float]) -> bool:
     """Return True when every sum is within tolerance of 1.0."""
-    return all(abs(total - 1.0) <= _STOCHASTICITY_TOLERANCE for total in sums)
+    return all(abs(total - 1.0) <= STOCHASTICITY_TOLERANCE for total in sums)
 
 
 def _b_orientation_verdict(values: Any) -> str:
@@ -318,7 +318,7 @@ def _b_orientation_verdict(values: Any) -> str:
 
     matrices: list[list[list[float]]] = []
     for raw_slice in raw_slices:
-        matrix = _numeric_matrix(raw_slice)
+        matrix = numeric_matrix(raw_slice)
         if matrix is None:
             return "invalid"
         matrices.append(matrix)

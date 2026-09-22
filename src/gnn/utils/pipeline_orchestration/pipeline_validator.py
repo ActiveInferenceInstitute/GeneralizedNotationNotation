@@ -7,7 +7,6 @@ Validates step sequencing and prerequisite satisfaction at execution time.
 Does NOT analyze source code and does NOT run the pipeline itself.
 
 See also:
-- pipeline/pipeline_validation.py: Static code analysis (checks import patterns, naming)
 - pipeline/pipeline_runtime_validator.py: Runtime integration tester (runs pipeline via subprocess)
 """
 

@@ -160,7 +160,7 @@ tool.
 Render DAG tiers (output of `resolve_execution_order`) as a human-readable
 multi-line string for logging.
 
-> **Note**: The functions `validate_step_prerequisites`, `validate_pipeline_step_sequence`, and `generate_execution_plan` referenced in earlier documentation versions do not exist as standalone functions. Prerequisite checking is handled by `pipeline/pipeline_runtime_validator.py` (an E2E runtime tester) and dependency ordering is in `pipeline/dag.py`.
+> **Note**: `validate_step_prerequisites` and `validate_pipeline_step_sequence` live in `gnn.utils.pipeline_orchestration.pipeline_validator` (prerequisite/output checking at execution time); `generate_execution_plan` from earlier documentation versions does not exist. Dependency ordering is in `pipeline/dag.py`, and E2E runtime testing is `pipeline/pipeline_runtime_validator.py`.
 
 ### Execution Planning
 
@@ -576,3 +576,32 @@ tier runs consolidated steps on threads that share one process — steps 7/8
 render with matplotlib (Agg), thread-safe in-process, but concurrent
 consolidated runs of step 8 should expect shared matplotlib state (no
 behavioral change attempted for matplotlib).
+
+## Adding a New Pipeline Step
+
+The old copy-and-customize step-template module is deleted
+(COMP-009); new steps follow the numbered-thin-orchestrator contract that
+`step_registry.py` and `step_executor.py` enforce:
+
+1. **Register the step**: add one `StepInfo(...)` entry to `STEPS` in
+   [`step_registry.py`](step_registry.py) — script stem, number, module
+   function name, tags, and stage. Every downstream consumer (DAG ordering,
+   discovery, output-dir mapping, the consolidated executor) derives from
+   the registry; never maintain a second step list.
+2. **Implement the thin orchestrator**: create `src/gnn/<N>_<name>.py`
+   exposing the registered `module_function` — resolved by
+   `step_executor.resolve_step_function` via `import gnn.<stem>` — with the
+   standard argument surface (`--target-dir`, `--output-dir`, `--verbose`,
+   `--recursive` plus step-specific args from `StepConfiguration`) and
+   per-step output directories from
+   `gnn.pipeline.config.get_output_dir_for_script`.
+3. **In-process eligibility**: only steps proven equivalent run under
+   `--consolidated-steps`; extend `CONSOLIDATED_IN_PROCESS_STEMS` only
+   after an in-process-safety audit (no subprocess spawns, no
+   cwd-relative writes). Limits and the thread-pool caveat are recorded in
+   ADR 0001
+   ([docs/decisions/0001-consolidated-pipeline-execution.md](../../../docs/decisions/0001-consolidated-pipeline-execution.md)).
+4. **Shared utilities**: logging goes through the single public entry
+   `gnn.utils.logging_utils`; argument parsing through
+   `gnn.utils.arguments` (`ArgumentParser`, `StepConfiguration`); the
+   output-directory helper is `gnn.pipeline.get_output_dir_for_script`.

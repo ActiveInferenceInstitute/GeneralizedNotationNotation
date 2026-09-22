@@ -31,12 +31,7 @@ If you encounter errors:
   - Verify model registry configuration and requirements
 """
 
-import sys
-from pathlib import Path
 from typing import cast
-
-# Add src to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from gnn.model_registry import process_model_registry
 from gnn.utils.pipeline_orchestration.pipeline_template import (

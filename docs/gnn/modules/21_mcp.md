@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/gnn/21_mcp.py` (58 lines)
+**Orchestrator**: `src/gnn/21_mcp.py` (53 lines)
 **Implementation Layer**: `src/gnn/mcp/`
 
 ## Module Description
