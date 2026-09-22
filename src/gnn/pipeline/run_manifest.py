@@ -9,17 +9,24 @@ cluster. All file IO is local and atomic (delegated to ``durable_streams``).
 For a finished run's output directory it produces:
   - one :class:`StreamManifest` per produced JSON artifact under the
     ``N_*_output/`` step directories (content-addressed, replayable);
+  - one :class:`StreamManifest` per produced binary artifact (``.png``,
+    ``.gif``, ``.npy``, ``.csv``) under those same step directories;
   - one :class:`ExecutionTrace` reconstructed from
     ``00_pipeline_summary/pipeline_execution_summary.json`` (one event per step
     record, in run order), or — if that summary is absent — from the sorted set
     of existing ``N_*_output/`` step directories;
   - an index JSON listing every emitted artifact.
 
+Binary artifacts are recorded ADDITIVELY: the JSON inventory keys
+(``manifests``/``stream_count``) keep their existing semantics and content,
+and binary records live under the new ``binary_artifacts``/``binary_count``
+index keys. Consumers must read the new keys additively and never repurpose
+existing ones (see the B5-class consumer announce in the wave PR body).
+
 Public surface:
   - emit_run_manifests(run_output_dir, *, manifest_out=None) -> dict
   - verify_run_manifests(manifest_dir, run_output_dir) -> list[str]
 """
-
 import hashlib
 import json
 import re
@@ -96,6 +103,51 @@ def _discover_artifacts(run_output_dir: Path) -> List[Path]:
                         f"Artifact escapes run output directory: {json_path}"
                     )
                 artifacts.append(json_path)
+    artifacts.sort(key=lambda p: p.relative_to(run_output_dir).as_posix())
+    return artifacts
+
+
+#: Binary artifact suffixes recorded by :func:`emit_run_manifests` (Perf#5).
+#: Extending this set is additive: new kinds appear only under the
+#: ``binary_artifacts`` index key and never touch the JSON inventory.
+_BINARY_EXTENSIONS: frozenset[str] = frozenset({".png", ".gif", ".npy", ".csv"})
+
+#: Logical dtype label recorded in each binary artifact's StreamManifest.
+#: ``uint8`` for raw-byte containers (png/gif/npy), ``text`` for csv.
+_BINARY_DTYPE: Dict[str, str] = {
+    ".png": "uint8",
+    ".gif": "uint8",
+    ".npy": "uint8",
+    ".csv": "text",
+}
+
+
+def _discover_binary_artifacts(run_output_dir: Path) -> List[Path]:
+    """Return sorted binary artifact paths under the run's ``N_*_output/`` dirs.
+
+    Mirrors :func:`_discover_artifacts` exactly, but collects files whose
+    extension is in :data:`_BINARY_EXTENSIONS` instead of ``*.json``. The
+    result is sorted by POSIX relative path for deterministic ordering.
+
+    Args:
+        run_output_dir: The completed run's output directory.
+
+    Returns:
+        A deterministically sorted list of absolute binary artifact paths.
+    """
+    artifacts: List[Path] = []
+    for child in run_output_dir.iterdir():
+        if not child.is_dir():
+            continue
+        if not _STEP_DIR_RE.match(child.name):
+            continue
+        for path in child.rglob("*"):
+            if path.is_file() and path.suffix.lower() in _BINARY_EXTENSIONS:
+                if not path.resolve().is_relative_to(run_output_dir.resolve()):
+                    raise ValueError(
+                        f"Artifact escapes run output directory: {path}"
+                    )
+                artifacts.append(path)
     artifacts.sort(key=lambda p: p.relative_to(run_output_dir).as_posix())
     return artifacts
 
@@ -238,6 +290,61 @@ def _contained_file(base: Path, relative: Any) -> Path:
     return path
 
 
+
+def _write_file_stream_manifest(
+    artifact: Path,
+    run_dir: Path,
+    manifest_dir: Path,
+    dtype: str,
+    written_filenames: set[str],
+) -> Dict[str, str]:
+    """Checksum one artifact into a StreamManifest and write its manifest file.
+
+    Shared by the JSON and binary inventory sections: both record FILE-kind
+    manifests over raw bytes. Returns the index entry for the artifact.
+
+    Args:
+        artifact: Absolute artifact path under ``run_dir``.
+        run_dir: The run output directory the artifact lives in.
+        manifest_dir: Destination directory for the emitted manifest.
+        dtype: Logical dtype label recorded in the manifest.
+        written_filenames: Shared set of already-written manifest filenames
+            (defense in depth against non-injective stream ids).
+
+    Returns:
+        The index entry dict with ``stream_id`` / ``source`` /
+        ``manifest_file`` keys.
+
+    Raises:
+        ValueError: If the derived manifest filename would collide with one
+            already written (stream id is not injective).
+    """
+    rel = artifact.relative_to(run_dir)
+    stream_id = _stable_stream_id(rel)
+    manifest = StreamManifest.from_file(
+        stream_id=stream_id,
+        path=artifact,
+        source=rel.as_posix(),
+        dtype=dtype,
+        created_by="run_manifest",
+    )
+    manifest_filename = f"{stream_id}.manifest.json"
+    # Defense in depth: a non-injective id would let one artifact's manifest
+    # silently overwrite another's, leaving its bytes unbound. Refuse to.
+    if manifest_filename in written_filenames:
+        raise ValueError(
+            f"manifest filename collision for {rel.as_posix()!r}: {manifest_filename} "
+            "already written (stream_id is not injective)"
+        )
+    written_filenames.add(manifest_filename)
+    write_stream_manifest(manifest, manifest_dir / manifest_filename)
+    return {
+        "stream_id": stream_id,
+        "source": rel.as_posix(),
+        "manifest_file": manifest_filename,
+    }
+
+
 def emit_run_manifests(
     run_output_dir: Union[str, Path],
     *,
@@ -245,13 +352,20 @@ def emit_run_manifests(
 ) -> Dict[str, Any]:
     """Emit durable v3 manifests + a trace for a COMPLETED pipeline run.
 
-    Walks ``run_output_dir`` for produced JSON artifacts (under the
-    ``N_*_output/`` step dirs), builds a content-addressed
-    :class:`StreamManifest` for each, reconstructs an :class:`ExecutionTrace`
-    from the run summary (or, if absent, from the existing step directories),
-    and writes everything plus an index JSON into ``manifest_out``.
+    Walks ``run_output_dir`` for produced JSON artifacts and binary artifacts
+    (``.png``/``.gif``/``.npy``/``.csv``, under the ``N_*_output/`` step
+    dirs), builds a content-addressed :class:`StreamManifest` for each,
+    reconstructs an :class:`ExecutionTrace` from the run summary (or, if
+    absent, from the existing step directories), and writes everything plus
+    an index JSON into ``manifest_out``.
 
     This function reads on-disk data only. It does not execute anything.
+
+    The index schema is additive: JSON records keep the ``manifests`` /
+    ``stream_count`` keys with their existing meaning; binary records are
+    written under the new ``binary_artifacts`` / ``binary_count`` keys
+    (``schema_version`` ``"3.2"``). Consumers must read the new keys
+    additively and never repurpose existing ones.
 
     Args:
         run_output_dir: The output directory of a completed run.
@@ -263,6 +377,7 @@ def emit_run_manifests(
 
             {
                 "stream_count": int,
+                "binary_count": int,
                 "trace_event_count": int,
                 "trace_integrity_ok": bool,
                 "manifest_dir": str,
@@ -297,31 +412,26 @@ def emit_run_manifests(
     manifest_entries: List[Dict[str, str]] = []
     written_filenames: set[str] = set()
     for artifact in artifacts:
-        rel = artifact.relative_to(run_dir)
-        stream_id = _stable_stream_id(rel)
-        manifest = StreamManifest.from_file(
-            stream_id=stream_id,
-            path=artifact,
-            source=rel.as_posix(),
-            created_by="run_manifest",
-        )
-        manifest_filename = f"{stream_id}.manifest.json"
-        # Defense in depth: a non-injective id would let one artifact's manifest
-        # silently overwrite another's, leaving its bytes unbound. Refuse to.
-        if manifest_filename in written_filenames:
-            raise ValueError(
-                f"manifest filename collision for {rel.as_posix()!r}: {manifest_filename} "
-                "already written (stream_id is not injective)"
-            )
-        written_filenames.add(manifest_filename)
-        write_stream_manifest(manifest, manifest_dir / manifest_filename)
         manifest_entries.append(
-            {
-                "stream_id": stream_id,
-                "source": rel.as_posix(),
-                "manifest_file": manifest_filename,
-            }
+            _write_file_stream_manifest(
+                artifact, run_dir, manifest_dir, "uint8", written_filenames
+            )
         )
+
+    # 1b. Build a StreamManifest per produced binary artifact — additive
+    # (Perf#5): binary records live under the new index keys and never
+    # touch the JSON inventory.
+    binary_entries: List[Dict[str, str]] = []
+    for artifact in _discover_binary_artifacts(run_dir):
+        entry = _write_file_stream_manifest(
+            artifact,
+            run_dir,
+            manifest_dir,
+            _BINARY_DTYPE.get(artifact.suffix.lower(), "uint8"),
+            written_filenames,
+        )
+        entry["format"] = artifact.suffix.lower().lstrip(".")
+        binary_entries.append(entry)
 
     # 2. Reconstruct the execution trace from the summary, else from step dirs.
     trace_id = f"run::{run_dir.name}"
@@ -340,13 +450,15 @@ def emit_run_manifests(
     # 3. Write an index JSON listing every emitted artifact.
     index = {
         "run_output_dir": str(run_dir),
-        "schema_version": "3.1",
+        "schema_version": "3.2",
         "provenance": provenance,
         "trace_file": trace_filename,
         "trace_event_count": len(trace.events),
         "trace_integrity_ok": trace_integrity_ok,
         "stream_count": len(manifest_entries),
         "manifests": manifest_entries,
+        "binary_count": len(binary_entries),
+        "binary_artifacts": binary_entries,
     }
     index_text = json.dumps(index, indent=2, sort_keys=True, ensure_ascii=False)
     _write_index(manifest_dir / "index.json", index_text)
@@ -354,6 +466,7 @@ def emit_run_manifests(
     return {
         "stream_count": len(manifest_entries),
         "trace_event_count": len(trace.events),
+        "binary_count": len(binary_entries),
         "trace_integrity_ok": trace_integrity_ok,
         "manifest_dir": str(manifest_dir),
     }
@@ -371,6 +484,65 @@ def _write_index(path: Path, text: str) -> None:
     atomic_write_text(path, text)
 
 
+def _verify_index_entry(
+    entry: Any,
+    mdir: Path,
+    run_dir: Path,
+    sources: set[str],
+    files: set[str],
+) -> List[str]:
+    """Validate one index inventory entry against its manifest file.
+
+    Shared by the JSON and binary inventory loops. Raises on
+    identity/containment defects (the caller maps those to problem strings)
+    and returns the per-manifest validation problems (e.g. checksum
+    mismatches) already prefixed with the stream id.
+
+    Args:
+        entry: The raw index entry (must be an object with ``source``,
+            ``manifest_file``, and ``stream_id``).
+        mdir: The manifest directory the entry's manifest file lives in.
+        run_dir: The run output directory the source artifact lives in.
+        sources: Running set of seen sources (duplicates are rejected).
+        files: Running set of seen manifest filenames (duplicates rejected).
+
+    Returns:
+        The manifest's validation problems (empty when it re-validates).
+
+    Raises:
+        ValueError: On any identity, containment, or duplicate defect.
+        OSError: If the manifest file cannot be read.
+    """
+    if not isinstance(entry, dict):
+        raise ValueError("Manifest index entry must be an object")
+    source = entry.get("source")
+    if not isinstance(source, str):
+        raise ValueError("Manifest source must be a relative path string")
+    source_path = _contained_file(run_dir, source)
+    filename = entry.get("manifest_file")
+    if not isinstance(filename, str):
+        raise ValueError("Manifest file must be a relative path string")
+    manifest_path = _contained_file(mdir, filename)
+    if source in sources or filename in files:
+        raise ValueError("Duplicate source or manifest file in index")
+    sources.add(source)
+    files.add(filename)
+    manifest = read_stream_manifest(manifest_path)
+    expected_id = _stable_stream_id(source_path.relative_to(run_dir))
+    if (
+        entry.get("stream_id") != expected_id
+        or manifest.stream_id != expected_id
+        or manifest.source != source
+    ):
+        raise ValueError("Manifest source/stream identity differs from index")
+    if manifest.kind.value != "FILE":
+        raise ValueError("Run artifacts require file-backed manifests")
+    return [
+        f"{manifest.stream_id}: {problem}"
+        for problem in validate_stream_manifest(manifest, run_dir)
+    ]
+
+
 def verify_run_manifests(
     manifest_dir: Union[str, Path], run_output_dir: Union[str, Path]
 ) -> List[str]:
@@ -383,6 +555,11 @@ def verify_run_manifests(
     summary (or step dirs) and its replay digest is compared to the stored trace,
     so tampering the summary (e.g. flipping a step status) or relabeling a stored
     event surfaces as a digest mismatch — not just structurally-clean but stale.
+
+    Binary records (schema 3.2) are re-validated the same way under the
+    additive ``binary_artifacts`` inventory. A legacy ``"3.1"`` index that
+    predates binary records is still accepted, but binary artifacts present
+    on disk are then reported as unrecorded rather than silently ignored.
 
     Args:
         manifest_dir: Directory previously written by :func:`emit_run_manifests`.
@@ -398,15 +575,19 @@ def verify_run_manifests(
         index = json.loads((mdir / "index.json").read_text(encoding="utf-8"))
         if not isinstance(index, dict) or not isinstance(index.get("manifests"), list):
             return ["index.json must contain a manifests list"]
-        if index.get("schema_version") != "3.1":
+        if index.get("schema_version") not in ("3.1", "3.2"):
             problems.append(
-                "Index lacks supported complete inventory/provenance schema 3.1"
+                "Index lacks supported complete inventory/provenance schema 3.1/3.2"
             )
         if index.get("provenance") != _run_provenance(run_dir):
             problems.append("Run provenance differs from the indexed summary")
         actual_sources = {
             path.relative_to(run_dir).as_posix()
             for path in _discover_artifacts(run_dir)
+        }
+        actual_binary_sources = {
+            path.relative_to(run_dir).as_posix()
+            for path in _discover_binary_artifacts(run_dir)
         }
     except (OSError, ValueError, TypeError) as exc:
         return [f"Cannot read run manifest inventory/provenance: {exc}"]
@@ -420,32 +601,9 @@ def verify_run_manifests(
         problems.append("stream_count does not match manifest inventory")
     for entry in entries:
         try:
-            if not isinstance(entry, dict):
-                raise ValueError("Manifest index entry must be an object")
-            source = entry.get("source")
-            if not isinstance(source, str):
-                raise ValueError("Manifest source must be a relative path string")
-            source_path = _contained_file(run_dir, source)
-            filename = entry.get("manifest_file")
-            if not isinstance(filename, str):
-                raise ValueError("Manifest file must be a relative path string")
-            manifest_path = _contained_file(mdir, filename)
-            if source in sources or filename in files:
-                raise ValueError("Duplicate source or manifest file in index")
-            sources.add(source)
-            files.add(filename)
-            manifest = read_stream_manifest(manifest_path)
-            expected_id = _stable_stream_id(source_path.relative_to(run_dir))
-            if (
-                entry.get("stream_id") != expected_id
-                or manifest.stream_id != expected_id
-                or manifest.source != source
-            ):
-                raise ValueError("Manifest source/stream identity differs from index")
-            if manifest.kind.value != "FILE":
-                raise ValueError("Run artifacts require file-backed manifests")
-            for problem in validate_stream_manifest(manifest, run_dir):
-                problems.append(f"{manifest.stream_id}: {problem}")
+            problems.extend(
+                _verify_index_entry(entry, mdir, run_dir, sources, files)
+            )
         except (OSError, ValueError, TypeError, KeyError) as exc:
             problems.append(f"Invalid manifest entry: {exc}")
     if sources != actual_sources:
@@ -453,6 +611,36 @@ def verify_run_manifests(
             f"Artifact inventory differs: missing={sorted(actual_sources - sources)}, "
             f"unexpected={sorted(sources - actual_sources)}"
         )
+
+    binary_entries = index.get("binary_artifacts")
+    if binary_entries is None and actual_binary_sources:
+        problems.append(
+            "Binary artifacts not recorded in the index: "
+            f"missing={sorted(actual_binary_sources)}"
+        )
+    if isinstance(binary_entries, list):
+        binary_sources: set[str] = set()
+        binary_files: set[str] = set()
+        binary_count = index.get("binary_count")
+        if type(binary_count) is not int or binary_count != len(binary_entries):
+            problems.append("binary_count does not match binary manifest inventory")
+        for entry in binary_entries:
+            try:
+                problems.extend(
+                    _verify_index_entry(
+                        entry, mdir, run_dir, binary_sources, binary_files
+                    )
+                )
+            except (OSError, ValueError, TypeError, KeyError) as exc:
+                problems.append(f"Invalid binary manifest entry: {exc}")
+        if binary_sources != actual_binary_sources:
+            problems.append(
+                "Binary artifact inventory differs: "
+                f"missing={sorted(actual_binary_sources - binary_sources)}, "
+                f"unexpected={sorted(binary_sources - actual_binary_sources)}"
+            )
+    elif binary_entries is not None:
+        problems.append("index.json binary_artifacts must be a list when present")
 
     try:
         trace_path = _contained_file(mdir, index.get("trace_file"))

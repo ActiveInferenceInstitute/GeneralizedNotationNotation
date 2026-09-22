@@ -72,6 +72,8 @@ PYTHONPATH=src uv run python -m pytest \
 PYTHONPATH=src uv run python scripts/run_v3_orchestration_acceptance.py --strict
 # Demonstrate the gate is fail-closed:
 PYTHONPATH=src uv run python scripts/run_v3_orchestration_acceptance.py --inject-defect  # exits non-zero
+# Exporter determinism receipt (runs the export pipeline twice over a corpus and fails closed on byte differences):
+PYTHONPATH=src uv run python scripts/run_exporter_determinism_receipt.py --target-dir <export-output-dir> --receipts-dir <receipts-output-dir>
 ```
 
 ## Live integration (additive — does not modify the 25-step path)
@@ -82,8 +84,8 @@ a container, or a cluster:
 
 | Module / CLI | What it does |
 |---|---|
-| `pipeline.session_acceptance` / `scripts/run_session_acceptance.py` | Runs model-family acceptance **family-by-family** wrapped in a `RunSession`, checkpointing after each family so an extended run is resumable (`--resume` skips already-DONE families). |
-| `pipeline.run_manifest` / `scripts/emit_run_manifest.py` | Walks a **completed** run's `output/` dir and emits a `StreamManifest` per artifact plus an `ExecutionTrace` from `pipeline_execution_summary.json`; `verify_run_manifests` re-validates (detects tampering). |
+| `pipeline.session_acceptance` / `scripts/run_session_acceptance.py` | Runs model-family acceptance **family-by-family** wrapped in a `RunSession`, checkpointing after each family so an extended run is resumable (`--resume` skips already-DONE families). `verify_session_artifacts(session, output_dir)` joins each unit's recorded `artifact_hashes` inventory against the on-disk artifacts (Perf#6) — detecting deletion/tampering/post-checkpoint additions; units without a recorded inventory are outside the join. |
+| `pipeline.run_manifest` / `scripts/emit_run_manifest.py` | Walks a **completed** run's `output/` dir and emits a `StreamManifest` per artifact plus an `ExecutionTrace` from `pipeline_execution_summary.json`; emission also records binary artifacts (`.png`/`.gif`/`.npy`/`.csv`) under additive index keys `binary_artifacts`/`binary_count` (`schema_version` `3.2`; the JSON inventory keys keep their previous semantics); `verify_run_manifests` re-validates both inventories (accepting legacy 3.1 indexes) and detects tampering. |
 | `pipeline.pipeline_container_plan` / `scripts/generate_pipeline_container_plan.py` | Reads `input/config.yaml` and generates a hardened, `security_review`-clean container plan for running the GNN pipeline (honoring `skip_steps`). |
 | `pipeline.run_session_wiring` (no CLI) | Wires run sessions + durable streams into the live `main.py` composition: every run checkpoints `00_pipeline_summary/run_session.json` per step and, at completion, emits + verifies `v3_run_manifest/`. All wiring degrades to logged warnings — it never changes the run's exit code. |
 
