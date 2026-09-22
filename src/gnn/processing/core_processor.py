@@ -350,8 +350,3 @@ def process_gnn_directory_lightweight(
             logger.debug("Could not write lightweight processing summary: %s", e)
     return result
 
-
-# Factory function for easy processor creation
-def create_processor(logger: Optional[logging.Logger] = None) -> GNNProcessor:
-    """Create a configured GNN processor."""
-    return GNNProcessor(logger)
