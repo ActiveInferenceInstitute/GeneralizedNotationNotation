@@ -12,7 +12,7 @@
 
 **Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
-**Last Updated**: 2026-09-04
+**Last Updated**: 2026-09-22
 
 ---
 
@@ -121,7 +121,7 @@ success = embed_image(
 - `mcp.html` - MCP tools registry across all modules
 - `website_results.json` - generation manifest with `success`, `pages_created`, `pages` (written filenames), `errors`, `warnings`, `generated_at` (written by `process_website`)
 
-`assets/` is created under the output dir; `static/` is copied only if a `static/` directory ships beside the module.
+`assets/` is created under the output dir.
 
 ### Output Directory Structure
 ```
@@ -185,6 +185,7 @@ Pipeline Artifacts → Content Extraction → Template Processing → Asset Embe
 - `tests/website/test_website_dashboard.py` - Dashboard tests
 - `tests/website/test_website_generator_units.py` - Catalogue, data collection, escaping, page-resilience, manifest tests
 - `tests/website/test_website_inspection.py` - `inspect_website` / `list_website_pages` tests
+- `tests/website/test_website_gui_crosslinks.py` - GUI cross-link tests
 ### Test Coverage
 Measure on demand:
 
@@ -242,7 +243,7 @@ The module-info inventory and `register_tools()` use these same five names.
 
 ## Version History
 
-Module `__version__` is `1.7.0` (`__init__.py`); the pipeline/repo release is `3.2.0`. No formal changelog is maintained in this file.
+Module `__version__` is re-exported from `gnn` (`__init__.py`); the pipeline/repo release is `3.5.0`. No formal changelog is maintained in this file.
 
 ---
 ## References

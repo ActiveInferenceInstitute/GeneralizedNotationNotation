@@ -10,9 +10,13 @@
 
 **Status**: Maintained
 
+<<<<<<< HEAD
 **Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
+=======
+**Version**: 3.5.0
+>>>>>>> origin/main
 
-**Last Updated**: 2026-09-04
+**Last Updated**: 2026-09-22
 
 ---
 
@@ -448,15 +452,14 @@ as **literal text** in the footer because the closing HTML chunk was a plain
 `except Exception` in `generate_dashboard` swallowed the resulting `NameError`,
 so dashboard generation silently returned `None` 100% of the time. The fix
 imports `datetime` and prefixes the footer chunk with `f`. Regression test:
-`test_dashboard_timestamp_renders` in
-`test_advanced_visualization_public_api_refactor.py`.
+`TestDashboardTimestampRenders.test_footer_contains_rendered_timestamp` in
+`test_advanced_visualization_public_api_refactor.py` (lines 116-117).
 
 ### Test Categories
 
 - Unit: module imports, instantiation, basic API surface
 - Integration: data extraction, end-to-end visualization generation
 - Error handling: missing dependencies, malformed content, degraded paths
-- Performance: execution time / resource usage smoke tests
 
 ---
 ## MCP Integration
@@ -546,7 +549,11 @@ python src/gnn/9_advanced_viz.py --target-dir input/ --verbose
 
 ## Version History
 
-### Current Version: [pyproject.toml](../../../pyproject.toml) (canonical)
+### Current Version: 3.5.0 (per-module metadata; independent of the pipeline release in [pyproject.toml](../../../pyproject.toml) (canonical))
+Tracks the package version (`pyproject.toml`). Documented-surface changes since
+the 3.2.0 marker (2026-09-04): D2 compiles route through the shared subprocess
+envelope (b97d0ebb6, 2026-09-19) and seaborn/scipy.stats imports became lazy
+across the viz graph (55661abc0, 2026-09-21).
 
 **Features**:
 
@@ -585,7 +592,7 @@ python src/gnn/9_advanced_viz.py --target-dir input/ --verbose
 
 ---
 
-**Last Updated**: 2026-09-04
+**Last Updated**: 2026-09-22
 **Maintainer**: GNN Pipeline Team
 **Status**: Maintained
 **Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
