@@ -10,4 +10,6 @@ Each report contains:
 
 ## JSON Schema
 
-Results files use `{format, passed, total, mismatches: [{field, expected, actual}]}` structure.
+Results files use `{total_tests, successful_tests, failed_tests, success_rate}`
+(export shape in `test_round_trip.py`; counts from `ComprehensiveTestReport`
+in `round_trip_results.py`).

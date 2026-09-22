@@ -9,7 +9,7 @@
 This directory documents Step 9 advanced visualization within the GNN (Generalized Notation Notation) ecosystem. The maintained contract is artifact generation: statistical plots, POMDP-specific panels, network metrics, optional Plotly/HTML dashboards, and optional D2 diagrams.
 
 **Status**: Maintained
-**Version**: 1.0
+**Version**: 1.0 (docs-page revision marker, matching sibling `docs/<module>/README.md` files; the package version is tracked separately in `pyproject.toml` — currently 3.5.0, see `src/gnn/advanced_visualization/AGENTS.md`)
 
 ## Quick Navigation
 
@@ -126,3 +126,4 @@ All documentation in this module adheres to professional standards:
 **Status**: Maintained
 **Compliance**: Professional documentation standards  
 **Maintenance**: Keep claims tied to implemented Step 9 outputs and dependency fallbacks
+**Last Updated**: 2026-09-22
