@@ -55,10 +55,25 @@ def _get_mcp() -> Any:
     return mcp_instance, MCPError
 
 
+def _emit_json_machine(payload: Any) -> None:
+    """Emit exactly one pure JSON machine document to stdout (json mode)."""
+    print(json.dumps(payload, indent=2, default=str))
+
+
+def _emit_json_error(operation: str, message: str) -> None:
+    """Emit the standardized JSON error document to stdout (json mode)."""
+    _emit_json_machine({"error": {"operation": operation, "message": message}})
+
+
 def _cli_error(
     operation: str, e: Exception, args: Any, suggestions: bool = False
 ) -> None:
-    """Shared CLI error handler — logs, optionally prints traceback and suggestions, exits 1."""
+    """Shared CLI error handler — json mode prints one error document; human mode logs, then exits 1."""
+    if getattr(args, "format", None) == "json":
+        # json stdout contract: exactly one machine document (the error
+        # document) on stdout with a nonzero exit code; no emoji, no log frames.
+        _emit_json_error(operation, str(e))
+        raise SystemExit(1)
     logger.error(f"Error {operation}: {e}")
     if getattr(args, "verbose", False):
         import traceback
@@ -82,10 +97,8 @@ def list_capabilities(args: Any) -> Any:
         capabilities = mcp_instance.get_capabilities()
 
         if args.format == "json":
-            # Primary payload output — using logger.info for "Zero raw print" compliance
-            # In JSON mode, we might want to avoid the log header if outputting results
-            # but the policy is "all use logging".
-            logger.info(json.dumps(capabilities, indent=2))
+            # json stdout contract: exactly one machine document on stdout.
+            _emit_json_machine(capabilities)
             return
 
         # Enhanced human-readable format
@@ -183,6 +196,10 @@ def execute_tool(args: Any) -> Any:
         mcp_instance, MCPError = _get_mcp()
 
         if args.tool_name not in mcp_instance.tools:
+            if args.format == "json":
+                # json stdout contract: failure as one error document, exit 1.
+                _emit_json_error("executing tool", f"Tool '{args.tool_name}' not found")
+                raise SystemExit(1)
             available_tools = list(mcp_instance.tools.keys())
             logger.error(f"Tool '{args.tool_name}' not found")
             logger.info("Available tools:")
@@ -197,11 +214,20 @@ def execute_tool(args: Any) -> Any:
             try:
                 params = json.loads(args.params)
             except json.JSONDecodeError as e:
+                if args.format == "json":
+                    _emit_json_error("executing tool", f"Invalid JSON parameters: {e}")
+                    raise SystemExit(1) from e
                 logger.error(f"Invalid JSON parameters: {e}")
                 logger.info('Expected format: --params \'{"key": "value"}\'')
                 raise SystemExit(1) from e
 
         if not isinstance(params, dict):
+            if args.format == "json":
+                _emit_json_error(
+                    "executing tool",
+                    f"Parameters must be a JSON object, got {type(params)}",
+                )
+                raise SystemExit(1)
             logger.error(f"Parameters must be a JSON object, got {type(params)}")
             raise SystemExit(1)
 
@@ -210,6 +236,12 @@ def execute_tool(args: Any) -> Any:
                 required = tool.schema.get("required", [])
                 for req in required:
                     if req not in params:
+                        if args.format == "json":
+                            _emit_json_error(
+                                "executing tool",
+                                f"Missing required parameter '{req}'",
+                            )
+                            raise SystemExit(1)
                         logger.error(f"Missing required parameter '{req}'")
                         logger.info(f"Required parameters: {required}")
                         raise SystemExit(1)
@@ -228,7 +260,7 @@ def execute_tool(args: Any) -> Any:
         execution_time = time.time() - start_time
 
         if args.format == "json":
-            logger.info(json.dumps(result, indent=2))
+            _emit_json_machine(result)
         else:
             logger.info(f"\n✅ Tool executed successfully in {execution_time:.3f}s")
             logger.info("📊 Result:")
@@ -250,6 +282,9 @@ def execute_tool(args: Any) -> Any:
                     logger.debug(f"Could not retrieve tool stats: {e}")
 
     except MCPError as e:
+        if args.format == "json":
+            _emit_json_error("executing tool", str(e))
+            raise SystemExit(1) from e
         logger.error(f"MCP Error: {e}")
         if args.verbose:
             logger.error(f"Error Code: {e.code}")
@@ -267,13 +302,16 @@ def get_resource(args: Any) -> Any:
         result = mcp_instance.get_resource(args.uri)
 
         if args.format == "json":
-            logger.info(json.dumps(result, indent=2))
+            _emit_json_machine(result)
         else:
             # Human-readable format
             logger.info(f"Resource '{args.uri}' retrieved successfully:")
             logger.info(json.dumps(result, indent=2))
 
     except MCPError as e:
+        if args.format == "json":
+            _emit_json_error("retrieving resource", str(e))
+            raise SystemExit(1) from e
         logger.error(f"MCP Error: {e}")
         raise SystemExit(1) from e
     except Exception as e:
@@ -288,7 +326,7 @@ def get_server_status(args: Any) -> Any:
         status = mcp_instance.get_server_status()
 
         if args.format == "json":
-            logger.info(json.dumps(status, indent=2))
+            _emit_json_machine(status)
         else:
             # Human-readable format
             logger.info("=== GNN MCP Server Status ===\n")
@@ -321,6 +359,12 @@ def get_tool_info(args: Any) -> Any:
 
         tool_info = mcp_instance.tools.get(args.tool_name)
         if not tool_info:
+            if args.format == "json":
+                # json stdout contract: failure as one error document, exit 1.
+                _emit_json_error(
+                    "getting tool info", f"Tool '{args.tool_name}' not found"
+                )
+                raise SystemExit(1)
             available_tools = list(mcp_instance.tools.keys())
             logger.error(f"Tool '{args.tool_name}' not found")
             logger.info("Available tools:")
@@ -342,7 +386,7 @@ def get_tool_info(args: Any) -> Any:
             }
 
         if args.format == "json":
-            logger.info(json.dumps(detailed_info, indent=2))
+            _emit_json_machine(detailed_info)
         else:
             # Enhanced human-readable format
             logger.info(f"🔍 Tool Information: {detailed_info['name']}")
@@ -406,9 +450,11 @@ def get_diagnostics(args: Any) -> Any:
                 "recommendations": [],
             }
             overall_health = "unknown"
+            # Keep the json payload defined even on the recovery path.
+            result = {"diagnostics": diagnostics, "overall_health": overall_health}
 
         if args.format == "json":
-            logger.info(json.dumps(result, indent=2))
+            _emit_json_machine(result)
             return
 
         # Enhanced human-readable format
@@ -580,6 +626,21 @@ def main() -> Any:
     # Note: we might need a dedicated --log-format flag if they should be independent
     global logger
     logger = setup_step_logging("mcp.cli", verbose=args.verbose, log_format=log_format)
+
+    if args.format == "json":
+        # json stdout contract: stdout must carry exactly one JSON machine
+        # document. PipelineLogger writes log frames to sys.stdout, so in json
+        # mode the effective level is raised for this one-shot CLI process so
+        # routine info/debug chatter cannot reach stdout; errors surface as
+        # the {'error': {...}} document with exit 1. --verbose is a human-mode
+        # concern and is ignored for stdout purity in json mode.
+        # PipelineLogger pins handler levels/verbosity and installs its
+        # StreamHandler(sys.stdout) on the root logger (the step logger itself
+        # carries no handlers), so gate the root handlers too.
+        for lg in (logger, logging.getLogger()):
+            lg.setLevel(logging.ERROR)
+        for handler in logging.getLogger().handlers + logger.handlers:
+            handler.setLevel(logging.ERROR)
 
     if not hasattr(args, "func"):
         parser.print_help()
