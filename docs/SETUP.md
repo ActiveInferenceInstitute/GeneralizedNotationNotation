@@ -44,8 +44,8 @@ Optional system tools:
 ### 1. Clone and enter the repository
 
 ```bash
-git clone https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation.git
-cd GeneralizedNotationNotation
+git clone https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation.git
+cd Generalized_Notation_Notation
 ```
 
 ### 2. Install the project environment

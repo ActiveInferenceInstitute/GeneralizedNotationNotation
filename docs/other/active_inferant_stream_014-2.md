@@ -10,7 +10,7 @@
 - **Presenter:** Daniel Friedman, Active Inference Institute  
 - **Date:** June 8, 2025
 - **Watch Live:** https://www.youtube.com/live/Y3-FMoaEZYE
-- **GitHub Repository:** [GeneralizedNotationNotation](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation)
+- **GitHub Repository:** [GeneralizedNotationNotation](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation)
 - **RxInfer Project Page:** [Multi-agent Trajectory Planning](https://coda.io/d/RxInfer-jl-Active-Inference-Institute_ddtS-XZ4BJb/Multi-agent-Trajectory-Planning_sutlGFZ9)
 
 ---

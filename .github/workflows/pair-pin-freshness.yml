@@ -68,10 +68,10 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Check out GEO-INFER default branch with full history
+      - name: Check out GEO_INFER default branch with full history
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          repository: ActiveInferenceInstitute/GEO-INFER
+          repository: ActiveInferenceInstitute/GEO_INFER
           path: geo-infer
           fetch-depth: 0
           persist-credentials: false

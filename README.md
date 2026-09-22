@@ -997,8 +997,8 @@ python --version  # Must be >= 3.11 and < 3.15
 **2️⃣ Clone Repository**
 
 ```bash
-git clone https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation.git
-cd GeneralizedNotationNotation
+git clone https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation.git
+cd Generalized_Notation_Notation
 ```
 
 **3️⃣ Setup Environment**
@@ -1107,7 +1107,7 @@ rm -rf output/*
 
 - 📖 **Documentation**: See [Documentation](#-documentation) section below
 - 🐛 **Known Issues**: Check [troubleshooting guide](./docs/troubleshooting/)
-- 💬 **Community**: Open an issue on [GitHub](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/issues)
+- 💬 **Community**: Open an issue on [GitHub](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/issues)
 - 🚀 **Quick Fix**: Try `python src/gnn/main.py --only-steps 2 --dev` first
 
 ---
@@ -1316,8 +1316,8 @@ GNN is an evolving standard, and **contributions are welcome**! Here's how you c
 
 ### 🎯 Ways to Contribute
 
-- 🐛 **Report Issues**: Found a bug? [Open an issue](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/issues)
-- 💡 **Suggest Features**: Have ideas? [Start a discussion](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions)  
+- 🐛 **Report Issues**: Found a bug? [Open an issue](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/issues)
+- 💡 **Suggest Features**: Have ideas? [Start a discussion](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/discussions)  
 - 📝 **Improve Documentation**: Help make our docs better
 - 🧪 **Add Examples**: Share your GNN models
 - 🔧 **Code Contributions**: Submit pull requests
@@ -1339,13 +1339,13 @@ Please read our [Code of Conduct](./CODE_OF_CONDUCT.md) to understand the standa
 ### 📞 Getting Help
 
 - 📖 **Documentation**: Check the [docs](./docs/) first
-- 💬 **Discussions**: Use [GitHub Discussions](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions)
-- 🐛 **Issues**: For bugs, use [GitHub Issues](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/issues)
+- 💬 **Discussions**: Use [GitHub Discussions](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/discussions)
+- 🐛 **Issues**: For bugs, use [GitHub Issues](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/issues)
 - 📧 **Contact**: Reach out to the maintainers
 
 ### 🙌 Recognition
 
-All contributors will be recognized in our [contributors list](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/graphs/contributors) and release notes.
+All contributors will be recognized in our [contributors list](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/graphs/contributors) and release notes.
 
 ---
 

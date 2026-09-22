@@ -65,8 +65,8 @@ rm -rf output/*
 
 ```bash
 # Clone and setup
-git clone https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation.git
-cd GeneralizedNotationNotation
+git clone https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation.git
+cd Generalized_Notation_Notation
 python src/gnn/main.py --only-steps 2 --dev
 ```
 
@@ -79,7 +79,7 @@ python src/gnn/main.py --target-dir input/gnn_files/discrete --verbose
 
 ## GitHub Issues
 
-For bug reports, feature requests, or specific questions that are not covered by the documentation, the primary place to seek support is through [GitHub Issues](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/issues).
+For bug reports, feature requests, or specific questions that are not covered by the documentation, the primary place to seek support is through [GitHub Issues](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/issues).
 
 - **Search Existing Issues**: Before creating a new issue, please search existing open and closed issues to see if your question has already been addressed.
 - **Bug Reports**: If you are reporting a bug, please provide:
@@ -95,14 +95,14 @@ For bug reports, feature requests, or specific questions that are not covered by
 Join the wider Active Inference community for discussions, questions, and collaboration related to GNN and Active Inference in general:
 
 - **Active Inference Institute Community**: Visit the [Active Inference Institute website](https://activeinference.institute/) for links to community platforms such as Discord, forums, or mailing lists where GNN might be discussed.
-- **GitHub Discussions**: Use [GitHub Discussions](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions) for community discussions and questions.
+- **GitHub Discussions**: Use [GitHub Discussions](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/discussions) for community discussions and questions.
 - **Discord Community**: Join the [Active Inference Discord](https://discord.activeinference.institute/) for real-time discussions.
 
 ## Direct Contact (for specific inquiries)
 
 For matters not suitable for public forums or GitHub issues (e.g., sensitive inquiries), you may try to reach out to the project maintainers. However, for general support and technical questions, public channels are preferred as they benefit the entire community.
 
-- Refer to the project maintainers listed on the [GitHub repository page](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation).
+- Refer to the project maintainers listed on the [GitHub repository page](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation).
 - For security-related issues, see [SECURITY.md](./SECURITY.md) for proper reporting procedures.
 
 ## Commercial Support

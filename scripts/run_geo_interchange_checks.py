@@ -47,7 +47,7 @@ from typing import Any, NoReturn
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
-EXPECTED_GEO_REPOSITORY = "ActiveInferenceInstitute/GEO-INFER"
+EXPECTED_GEO_REPOSITORY = "ActiveInferenceInstitute/GEO_INFER"
 VALIDATOR_RELATIVE = "GEO-INFER-TEST/validate_gnn_interchange.py"
 
 _DIGEST_KEYS = (

@@ -50,11 +50,11 @@ This metadata is critical when GNN files explode due to large Markov blanket mat
 
 ```bash
 onefilellm \
-  https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation \
+  https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation \
   ./local/sim_pymdp.ipynb \
   https://zenodo.org/records/7803328 \
   --crawl-max-depth 2 \
-  --alias-add gnn_spec "https://raw.githubusercontent.com/ActiveInferenceInstitute/GeneralizedNotationNotation/main/docs/gnn/reference/{0}.md" \
+  --alias-add gnn_spec "https://raw.githubusercontent.com/ActiveInferenceInstitute/Generalized_Notation_Notation/main/docs/gnn/reference/{0}.md" \
   gnn_spec GNN_Specification
 ```
 
@@ -132,7 +132,7 @@ By piping all three through OneFileLLM, a modeler can hand a single prompt to an
 Create reusable shorthand for spec modules:
 
 ```bash
-onefilellm --alias-add gnnsec "https://raw.githubusercontent.com/ActiveInferenceInstitute/GeneralizedNotationNotation/main/docs/gnn/reference/{0}.md"
+onefilellm --alias-add gnnsec "https://raw.githubusercontent.com/ActiveInferenceInstitute/Generalized_Notation_Notation/main/docs/gnn/reference/{0}.md"
 onefilellm gnnsec State_Space gnnsec Likelihood_Matrix gnnsec Policy_Prior
 ```
 
@@ -155,7 +155,7 @@ export GITHUB_TOKEN="ghp_xxx"    # increases GitHub rate limits
 ```
 
 ```bash
-git clone https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation
+git clone https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation
 ```
 
 ### 2. Compose a Research Prompt
@@ -163,7 +163,7 @@ git clone https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotatio
 ```bash
 onefilellm \
   ./GeneralizedNotationNotation/examples/foraging_simple.gnn.md \
-  https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/wiki \
+  https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/wiki \
   --crawl-max-depth 1 --crawl-include-pattern ".*\\.svg$" \
   ./notes/my_hypotheses.txt
 ```
@@ -246,7 +246,7 @@ With a single command pair—`onefilellm` → `llm`—researchers can now move f
 [1] <https://github.com/jimmc414/onefilellm>
 [2] <https://github.com/jimmc414/onefilellm>
 [3] <https://zenodo.org/record/7803328>
-[4] <https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation>
+[4] <https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation>
 [5] <https://github.com/jimmc414/1filellm/blob/main/requirements.txt>
 [6] <https://web.archive.org/web/20250720013748/https://hub.athina.ai/top-5-open-source-scraping-and-ingestion-tools/>
 [7] <https://github.com/jimmc414/onefilellm>
@@ -254,7 +254,7 @@ With a single command pair—`onefilellm` → `llm`—researchers can now move f
 [9] <https://zenodo.org/records/7803328>
 [10] <https://www.youtube.com/watch?v=L0kFneuINsg>
 [11] <https://liquidbrain.net/blog/onefilellm-terminal-script/>
-[12] <https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/>
+[12] <https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/>
 [13] <https://www.aisharenet.com/en/onefilellm/>
 [15] <https://microsoft.github.io/genaiscript/reference/scripts/model-aliases/>
 [16] <https://github.com/jimmc414/onefilellm/wiki>

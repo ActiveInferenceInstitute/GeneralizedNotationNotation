@@ -19,11 +19,11 @@
             "name": "Generalized Notation Notation (GNN)",
             "description": "A standardized text-based language for specifying active inference generative models, with a multi-stage validation, visualization, and code-generation pipeline. GNN improves clarity, reproducibility, and interoperability across active inference projects by providing a single canonical format for model specification, automatic type checking, multi-backend rendering (PyMDP, RxInfer, JAX, PyTorch, NumPyro, Stan, DisCoPy, ActiveInference.jl), and structured documentation generation.",
             "webpageUrl": {
-                "url": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation",
+                "url": "https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation",
                 "wellKnown": ""
             },
             "repositoryUrl": {
-                "url": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation",
+                "url": "https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation",
                 "wellKnown": ""
             },
             "licenses": [

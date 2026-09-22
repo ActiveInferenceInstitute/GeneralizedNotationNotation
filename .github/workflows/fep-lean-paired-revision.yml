@@ -1,6 +1,6 @@
-name: Paired fep_lean revision
+name: Paired fep_formal revision
 
-# GNN-side paired-revision CI (roadmap item GNN-04), mirroring GEO-INFER's
+# GNN-side paired-revision CI (roadmap item GNN-04), mirroring GEO_INFER's
 # `.github/workflows/gnn-interchange.yml` mechanism exactly:
 #
 #   - the companion revision is recorded in a committed pin file
@@ -8,16 +8,16 @@ name: Paired fep_lean revision
 #   - the pin is validated (known repository slug, 40-hex revision),
 #   - the companion is checked out at exactly the pinned SHA,
 #   - both revisions plus the pin are retained as receipts, and
-#   - the read-only fep_lean bridge surface runs against this checkout.
+#   - the read-only fep_formal bridge surface runs against this checkout.
 #
 # Strictness mirrors GEO: the job is blocking (strict-with-paired-bumps).
 # A red run is the drift-detection signal, not a harness failure: it means one
 # side changed since the pin was recorded and the pair must be re-pinned
-# together (GNN-side re-pin here in the same PR that bumps this file; fep_lean
+# together (GNN-side re-pin here in the same PR that bumps this file; fep_formal
 # side per its FEP-EVIDENCE-CURRENT policy).
 #
 # What this proves and does NOT prove (evidence-plane discipline): the workflow
-# verifies that the pinned fep_lean checkout and this GNN checkout still agree
+# verifies that the pinned fep_formal checkout and this GNN checkout still agree
 # on the bridge's source binding and emit digests (drift detection). It does
 # NOT verify any Lean theorem or promote any Lean proof claim — notation
 # mapping states symbol correspondence only.
@@ -58,14 +58,14 @@ jobs:
           import json, os, re
           from pathlib import Path
           pair = json.loads(Path('.github/fep-lean-pair.json').read_text())
-          assert pair['repository'] == 'ActiveInferenceInstitute/fep_lean'
+          assert pair['repository'] == 'ActiveInferenceInstitute/fep_formal'
           assert re.fullmatch('[0-9a-f]{40}', pair['revision'])
           with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
               output.write('revision=' + pair['revision'] + '\n')
           PY
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          repository: ActiveInferenceInstitute/fep_lean
+          repository: ActiveInferenceInstitute/fep_formal
           ref: ${{ steps.pair.outputs.revision }}
           path: fep-lean
           persist-credentials: false
@@ -92,7 +92,7 @@ jobs:
           uv sync --project fep-lean --locked --python "$FEP_PYTHON"
       # Read-only bridge surface only: `status` and `emit --check` inspect
       # source bytes and emitted-document digests and never write to either
-      # checkout (verified against src/fep_lean/bridge/cli.py at the pin).
+      # checkout (verified against src/fep_formal/bridge/cli.py at the pin).
       - name: Bridge status against this checkout
         run: |
           uv run --project fep-lean fep-lean bridge status \

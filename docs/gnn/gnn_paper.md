@@ -297,7 +297,7 @@ Biology Philosophy 36, 30 (2021) <https://doi.org/10.1007/s10539-021-09807-0>
 9. Active Inference Institute: Active Inference Ontology. (2022)
 <https://doi.org/10.5281/zenodo.7430333>
 10. Active Inference Institute: Generalized Notation Notation (GNN) Github
-repo: github.com/ActiveInferenceInstitute/GeneralizedNotationNotation
+repo: github.com/ActiveInferenceInstitute/Generalized_Notation_Notation
 <https://doi.org/10.5281/zenodo.7803314>
 11. Active Inference Institute: Generalized Notation Notation (GNN) Coda:
 <https://coda.io/@active-inference-institute/generalized-notation-notation>

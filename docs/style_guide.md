@@ -185,7 +185,7 @@ uv run python src/gnn/main.py --only-steps "3,5,11,12"
 
 ```markdown
 [Active Inference Institute](https://activeinference.org)
-[GitHub Repository](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation)
+[GitHub Repository](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation)
 ```
 
 **Reference Citations**:
@@ -376,7 +376,7 @@ print(f"Model has {len(model.state_space)} state variables")
 ```
 
 Try it yourself:
-[Run in Colab](https://colab.research.google.com/) | [Edit on GitHub](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation)
+[Run in Colab](https://colab.research.google.com/) | [Edit on GitHub](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation)
 
 ```
 

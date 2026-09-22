@@ -658,7 +658,7 @@ def _start_pipeline_run(
     """Print start banners, wire progress tracking, and validate the step sequence."""
     print_pipeline_banner(
         "Generalized Notation Notation (GNN)",
-        "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation | Active Inference Institute",
+        "https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation | Active Inference Institute",
     )
     print_pipeline_banner(
         "🚀 GNN Processing Pipeline",

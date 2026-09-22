@@ -25,7 +25,7 @@ publication:
   doi: "10.5281/zenodo.7803313"
   version_doi: "10.5281/zenodo.22820299"
   version_record: "https://zenodo.org/records/22820299"
-  github_repository: "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation"
+  github_repository: "https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation"
   year: "2026"
   transmission_bookends:
     enabled: false

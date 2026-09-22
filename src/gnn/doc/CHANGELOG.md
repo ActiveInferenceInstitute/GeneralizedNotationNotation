@@ -138,8 +138,8 @@ When adding new documentation:
 
 ## 📫 Documentation Feedback
 
-- **Issues**: [GitHub Issues](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions)
+- **Issues**: [GitHub Issues](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/discussions)
 - **Documentation**: See [docs/SUPPORT.md](../../../docs/SUPPORT.md)
 
 ---

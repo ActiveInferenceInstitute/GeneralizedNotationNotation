@@ -2111,19 +2111,19 @@ Completes the remaining RED_TEAM_REVIEW.md items from the 2026-08-14 wave.
 - pytest test suite with comprehensive coverage
 - MCP tool registration framework
 
-[Unreleased]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v3.4.0...HEAD
-[3.4.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v3.3.0...v3.4.0
-[3.3.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v3.2.0...v3.3.0
-[3.2.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v3.1.0...v3.2.0
-[3.1.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v3.0.0...v3.1.0
-[2.0.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v1.9.0...v2.0.0
-[1.9.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v1.8.0...v1.9.0
-[1.8.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v1.6.0...v1.8.0
-[1.6.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v1.3.0...v1.6.0
-[1.3.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v1.2.0...v1.3.0
-[1.2.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/releases
-[1.1.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/releases
-[1.0.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/releases
+[Unreleased]: https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/compare/v3.4.0...HEAD
+[3.4.0]: https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/compare/v3.3.0...v3.4.0
+[3.3.0]: https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/compare/v3.2.0...v3.3.0
+[3.2.0]: https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/compare/v3.1.0...v3.2.0
+[3.1.0]: https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/compare/v3.0.0...v3.1.0
+[2.0.0]: https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/compare/v1.9.0...v2.0.0
+[1.9.0]: https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/compare/v1.8.0...v1.9.0
+[1.8.0]: https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/compare/v1.6.0...v1.8.0
+[1.6.0]: https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/compare/v1.3.0...v1.6.0
+[1.3.0]: https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/compare/v1.2.0...v1.3.0
+[1.2.0]: https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases
+[1.1.0]: https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases
+[1.0.0]: https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases
 
 ## GEO-INFER interchange expansion (2026-09-05)
 
