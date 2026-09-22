@@ -935,8 +935,6 @@ class WebsiteGenerator:
         MCP page data is sourced from the step-21 artifacts in the pipeline
         output root at generation time; no constructor configuration needed.
         """
-        self.template_dir = Path(__file__).parent / "templates"
-        self.static_dir = Path(__file__).parent / "static"
 
     # ── Public API ──────────────────────────────────────────────────────────
 
@@ -990,12 +988,6 @@ class WebsiteGenerator:
                     result["pages"].append(filename)
                 except Exception as e:
                     result["errors"].append(f"Failed to write {filename}: {e}")
-
-            # Copy static assets if available
-            if self.static_dir.exists():
-                shutil.copytree(
-                    self.static_dir, output_dir / "static", dirs_exist_ok=True
-                )
 
         except Exception as e:
             result["errors"].append(str(e))
