@@ -148,7 +148,7 @@ end
     e_xray ~ DiscreteTransition(xray, EYE_xray)
 end
 
-# --- Learning variant (Dirichlet prior placeholders for CPT learning) ---
+# --- Learning variant (Dirichlet priors for CPT learning) ---
 # Replace fixed data-arg probabilities with latent Dirichlet priors so
 # RxInfer can learn the CPTs from evidence (pass --learn). Priors use a
 # plain Dirichlet; parented CPTs use DirichletCollection (independent
