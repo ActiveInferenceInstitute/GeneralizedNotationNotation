@@ -3,10 +3,10 @@
     {
       "alt_text": "End-to-end summary panel of the GNN pipeline in seven left-to-right stage cards: a plain-text GNN document declaring A, B, C, D and E; parsing; validation and type checking with the B-tensor orientation check; code rendering to the registered backends; execution of the backends including the bnlearn lane; analysis; and cross-repository interchange with GEO-INFER and fep_lean. Step pills name the pipeline step behind each stage, a callout states the two newest capabilities, and a footer strip carries the producer's scale counts for steps, families, backends and MCP tools.",
       "consumed_tokens": {
-        "GNN_BACKEND_COUNT": "9",
-        "GNN_EXECUTABLE_BACKEND_COUNT": "9",
+        "GNN_BACKEND_COUNT": "10",
+        "GNN_EXECUTABLE_BACKEND_COUNT": "10",
         "GNN_FAMILY_COUNT": "9",
-        "GNN_MCP_TOOL_COUNT": "145",
+        "GNN_MCP_TOOL_COUNT": "156",
         "GNN_STEP_ANALYSIS": "16",
         "GNN_STEP_COUNT": "25",
         "GNN_STEP_EXECUTE": "12",
@@ -20,7 +20,7 @@
       "filename": "gnn_graphical_abstract.png",
       "generated_by": "scripts/manuscript_fig_graphical_abstract.py",
       "label": "fig:graphical_abstract",
-      "png_sha256": "102c643f4998a9d2bbaf15e90b1c32510d91f5e38c14b5a3ad631bb04f0284ef",
+      "png_sha256": "13a203ba494e00aef67352a37ab9721e2a0c5f555c73c2b63c17525cb0c24565",
       "source_sha256": {}
     },
     {
@@ -63,29 +63,29 @@
     {
       "alt_text": "Horizontal bar chart on a logarithmic axis of repository-scale counts: pipeline steps, model families, registered backends, execution backends, MCP tools, source packages, test files, example models and documentation files. Each bar is annotated with its exact value; all values come from output/data/manuscript_variables.json.",
       "consumed_tokens": {
-        "GNN_BACKEND_COUNT": "9",
+        "GNN_BACKEND_COUNT": "10",
         "GNN_DOC_FILE_COUNT": "624",
         "GNN_EXAMPLE_COUNT": "31",
-        "GNN_EXECUTABLE_BACKEND_COUNT": "9",
+        "GNN_EXECUTABLE_BACKEND_COUNT": "10",
         "GNN_FAMILY_COUNT": "9",
-        "GNN_MCP_TOOL_COUNT": "145",
+        "GNN_MCP_TOOL_COUNT": "156",
         "GNN_SRC_PACKAGE_COUNT": "44",
         "GNN_STEP_COUNT": "25",
-        "GNN_TEST_FILE_COUNT": "483",
+        "GNN_TEST_FILE_COUNT": "494",
         "GNN_VERSION": "3.4.0"
       },
       "filename": "gnn_repo_metrics.png",
       "generated_by": "scripts/manuscript_fig_repo_metrics.py",
       "label": "fig:repo_metrics",
-      "png_sha256": "ce0c5e266e47c2fee4365b062bb945d444f293d5cbf1be56508d3da28070e461",
+      "png_sha256": "6e77811176a6fd50f2ef847a53a8c24022649bb96c04b061c18536a3aa557802",
       "source_sha256": {}
     },
     {
       "alt_text": "The Triple Play as one central GNN specification with three projections radiating from it: the readable text form, graphical visualizations of state-space and factor structure, and executable model code. All three point back to the single specification at the center.",
       "consumed_tokens": {
-        "GNN_BACKEND_COUNT": "9",
-        "GNN_BACKEND_LIST": "PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, bnlearn",
-        "GNN_EXECUTABLE_BACKEND_COUNT": "9",
+        "GNN_BACKEND_COUNT": "10",
+        "GNN_BACKEND_LIST": "PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, bnlearn, ngc-learn",
+        "GNN_EXECUTABLE_BACKEND_COUNT": "10",
         "GNN_FAMILY_COUNT": "9",
         "GNN_STEP_COUNT": "25",
         "GNN_STEP_EXECUTE": "12",
@@ -94,7 +94,7 @@
       "filename": "gnn_triple_play.png",
       "generated_by": "scripts/manuscript_fig_triple_play.py",
       "label": "fig:triple_play",
-      "png_sha256": "faa3ef63b2b2fa2265707bbb6edfd0456bddd14ee82121b589d132733cb82812",
+      "png_sha256": "227a6ca786d89ac94b365190ce4e2eec5b1e8b4ca94b81bec0b4e129d1fa8d36",
       "source_sha256": {}
     },
     {
