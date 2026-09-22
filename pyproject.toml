@@ -331,7 +331,11 @@ constraint-dependencies = [
 packages = ["src/gnn"]
 
 [tool.mypy]
-python_version = "3.11"
+# numpy 2.4.x stubs use the `type` statement (py3.12+ syntax) and the lock
+# resolves numpy 2.4.4 on the py>=3.12 legs; pinning 3.11 made the CI 3.12
+# mypy leg fail parsing those stubs. "3.12" covers every supported leg (floor
+# is 3.11 — mypy accepts target-version above the interpreter floor).
+python_version = "3.12"
 mypy_path = "src"
 explicit_package_bases = true
 exclude = "(^src/gnn/output/|^.venv/)"
