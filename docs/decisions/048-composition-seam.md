@@ -10,7 +10,7 @@
 
 **Provenance.** The five-seam doctrine — orchestrator→module processor,
 pipeline.config output-dir/registry, the `gnn.utils` PEP 562 facade, kernel
-packages, registries — originates in the HumOS monorepo, where it is paired
+packages, registries — originates in the parent platform monorepo, where it is paired
 with a tool-level composition surface (`compose`, `pipe`, `find_tools`,
 `lift`) and its own composition-seam record. GNN imported the doctrine as an
 aspirational standard; until this record, neither the doctrine nor the tool
@@ -38,7 +38,7 @@ it, no code, no tests, no callers).
 
 **Weighing land vs supersede:**
 
-- **Land case.** The doctrine already exists in HumOS, so landing the
+- **Land case.** The doctrine already exists in parent workspace, so landing the
   functions would keep one mental model across the repository family; a
   shared composition vocabulary could eventually serve MCP tool
   composition and cross-repo reuse.
@@ -76,13 +76,13 @@ and must land implementation, tests, and documentation in one slice.
 - One composition story: every contributor reads the five-seam standard and
   ADR 0001 instead of choosing between two mechanisms.
 - No speculative surface: nothing is landed without a consumer.
-- The HumOS doctrine import is preserved where it is true here (the seams)
+- The parent-monorepo doctrine import is preserved where it is true here (the seams)
   and explicitly delimited where it is not (the tool surface).
 
 **Negative / accepted limitations**
 
 - Cross-repo doctrine continuity is carried by documentation, not shared
-  code: a contributor arriving from HumOS must be told that the tool
+  code: a contributor arriving from parent workspace must be told that the tool
   surface is not part of GNN.
 - If a genuine consumer appears later, building the tool surface then costs
   more than building it now would have. Accepted: the census shows no such

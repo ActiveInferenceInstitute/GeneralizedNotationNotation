@@ -1,6 +1,6 @@
 # REPORT — D-analyz: GNN documentation accuracy fixes (DOC-ONLY)
 
-Repo: /home/trim/Documents/Git/HumOS/projects/outside_of_hum/GeneralizedNotationNotation
+Repo: <repo-root>
 Type: Documentation-only edits (no source code, tests, config, or dependencies touched).
 Commits: none (changes left uncommitted, per HARD RULE).
 

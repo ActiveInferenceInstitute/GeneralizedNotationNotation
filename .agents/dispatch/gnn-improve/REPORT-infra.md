@@ -1,7 +1,7 @@
 # REPORT-infra.md — Infrastructure & Utils Scope
 
 Dispatch: `.agents/dispatch/gnn-improve/mission-infra.md`
-Repo: `/home/trim/Documents/Git/HumOS/projects/outside_of_hum/GeneralizedNotationNotation`
+Repo: `<repo-root>`
 Branch: `main` (all changes LEFT uncommitted per HARD RULE)
 
 ## Summary

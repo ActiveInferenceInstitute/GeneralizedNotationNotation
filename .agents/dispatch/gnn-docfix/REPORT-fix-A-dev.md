@@ -1,6 +1,6 @@
 # REPORT — fix-A-dev: GNN documentation accuracy fixes (DOC-ONLY)
 
-Repo: /home/trim/Documents/Git/HumOS/projects/outside_of_hum/GeneralizedNotationNotation
+Repo: <repo-root>
 
 ## Summary
 Applied all 12 documentation fixes from the charter. Changes are **documentation-only**

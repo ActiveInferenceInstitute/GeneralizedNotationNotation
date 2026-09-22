@@ -1,6 +1,6 @@
 # gnn-render — GNN documentation-vs-code audit (REPORT-ONLY)
 
-Repo: /home/trim/Documents/Git/HumOS/projects/outside_of_hum/GeneralizedNotationNotation
+Repo: <repo-root>
 
 ## Scope (REPORT-ONLY — DO NOT EDIT, STAGE, OR COMMIT ANY FILE)
 This is a verication pass. You will WRITE ONLY your report file. Do NOT modify,
@@ -51,7 +51,7 @@ invocation against the current tree.
 
 ## Report
 Write a concise evidence-first report to:
-/home/trim/Documents/Git/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.agents/dispatch/gnn-docaudit/REPORT-gnn-render.md
+<repo-root>/.agents/dispatch/gnn-docaudit/REPORT-gnn-render.md
 Format: for each finding, one line: `<file>:<line> | <severity> | <finding>` then
 a one-line suggested fix. If a region is clean, say so. Anchor claims with real
 `ls`/`grep`/`git ls-files` output, not descriptions. Reply with only the absolute

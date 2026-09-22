@@ -1,6 +1,6 @@
 # REPORT — fix-E-gui: GNN documentation accuracy fixes (DOC-ONLY)
 
-Repo: /home/trim/Documents/Git/HumOS/projects/outside_of_hum/GeneralizedNotationNotation
+Repo: <repo-root>
 Charter: .agents/dispatch/gnn-docfix/fix-E-gui.md
 Date: 2026-08-24
 Scope: Documentation-only edits to `.md` files. No source, test, config, or dependency changes.

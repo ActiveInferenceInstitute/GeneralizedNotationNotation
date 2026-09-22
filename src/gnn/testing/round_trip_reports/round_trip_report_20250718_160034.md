@@ -1,6 +1,6 @@
 # GNN Round-Trip Testing Report
 **Generated:** 2025-07-18 16:00:34
-**Reference File:** `/home/trim/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md`
+**Reference File:** `~/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md`
 
 ## Summary
 - **Total Tests:** 20

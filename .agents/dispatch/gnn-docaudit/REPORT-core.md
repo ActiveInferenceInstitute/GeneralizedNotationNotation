@@ -1,6 +1,6 @@
 # REPORT-core — Index/Region docs-vs-code audit (REPORT-ONLY)
 
-Repo: `/home/trim/Documents/Git/HumOS/projects/outside_of_hum/GeneralizedNotationNotation`
+Repo: `<repo-root>`
 Region audited: root docs (README.md, AGENTS.md, ARCHITECTURE.md, DOCS.md, SETUP_GUIDE.md, SPEC.md, SKILL.md, CONTRIBUTING.md, CLAUDE.md) + `doc/pipeline/`, `doc/execution/`, `doc/deployment/`, `doc/configuration/`, `doc/development/` (incl. `doc/PIPELINE_SCRIPTS.md`).
 
 Verification method: `git ls-files` for tracked paths; grep for `^(def|class)` / import-resolution in `src/`; `justfile` recipe listing; `sed` of `pyproject.toml` optional groups; `input/config.yaml` key inspection. All findings below are anchored to the current tree.

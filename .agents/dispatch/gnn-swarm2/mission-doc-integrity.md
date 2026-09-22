@@ -1,6 +1,6 @@
 # Doc-Integrity — GNN swarm-2 scope
 
-Repo: /home/trim/Documents/Git/HumOS/projects/outside_of_hum/GeneralizedNotationNotation
+Repo: <repo-root>
 YOU OWN these paths ONLY (disjoint scope — no other agent touches them):
 - doc/troubleshooting/  (add pages only under this tree)
 - doc/quickstart.md, doc/START_HERE.md, doc/INDEX.md, doc/CROSS_REFERENCE_INDEX.md

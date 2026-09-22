@@ -1,6 +1,6 @@
 # REPORT — gnn-render (GNN documentation-vs-code audit)
 
-Repo: /home/trim/Documents/Git/HumOS/projects/outside_of_hum/GeneralizedNotationNotation
+Repo: <repo-root>
 Scope: REPORT-ONLY. No files edited/staged/committed. Only this report written.
 Regions audited: doc/gnn/ (language, syntax, integration, implementations, modules, operations, reference, testing, mcp), doc/rxinfer/, doc/activeinference_jl/, doc/pymdp/, doc/execution/FRAMEWORK_*, doc/discopy/, doc/bnlearn/, doc/d2/, doc/pomdp/, doc/templates/
 

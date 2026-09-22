@@ -1,6 +1,6 @@
 # TypeChecker-Validation — GNN swarm-2 scope
 
-Repo: /home/trim/Documents/Git/HumOS/projects/outside_of_hum/GeneralizedNotationNotation
+Repo: <repo-root>
 YOU OWN these paths ONLY (disjoint scope — no other agent touches them):
 - src/gnn/type_checker/  (type checking + resource estimation)
 - src/gnn/validation/  (advanced validation + consistency checking)
