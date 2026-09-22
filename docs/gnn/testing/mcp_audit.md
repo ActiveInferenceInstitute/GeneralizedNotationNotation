@@ -2,7 +2,7 @@
 
 How `tests/mcp/test_mcp_audit.py` validates the MCP tool registry.
 
-**Last Updated**: 2026-04-15  
+**Last Updated**: 2026-09-22  
 **Source**: [`tests/mcp/test_mcp_audit.py`](../../../tests/mcp/test_mcp_audit.py)
 
 ## Fixture Design
@@ -142,6 +142,10 @@ PYTHONPATH=src python src/gnn/mcp/validate_tools.py
 ## Why Convergence Polling, Not `time.sleep()`
 
 The MCP server registers modules synchronously but reverts to background threads for modules that time out. A fixed `time.sleep()` can still race if the machine is under load. The polling loop stops as soon as the count stops growing, so it is both faster on idle machines and more robust under load.
+
+## Tool-Surface Scope: LSP Visibility
+
+The audit machinery covers the MCP tool surface only. Grepping the parity tests and docs for LSP at HEAD finds `lsp` exclusively as a name: it appears in `EXPECTED_MODULES`, in `ZERO_TOOL_MODULES = ("doc", "lsp")`, and in the committed ledger's `modules_list` (`src/gnn/mcp/audit_report.json`, 35 modules / 156 tools), never as a covered surface. The reason is structural: IDE clients drive the LSP server out-of-band over stdio, not through the MCP server, so `src/gnn/lsp/mcp.py` implements `register_tools` as a documented no-op and the generated quick-reference table [`mcp/tool_reference.md`](../mcp/tool_reference.md) (written by `uv run python src/gnn/mcp/validate_tools.py --markdown`) has no `lsp` row to gain. The actual LSP surface — the pygls server built by `create_server()` in [`src/gnn/lsp/__init__.py`](../../../src/gnn/lsp/__init__.py) (open/save/change diagnostics, hover, completions) — carries its own unit tests under `tests/lsp/`, but no committed capabilities manifest and no parity gate pins that feature set the way `tests/mcp/test_registry_internals.py::TestAuditSurfaceParity` pins the MCP tool count to the ledger. Closing that gap would mean either exposing LSP functionality as MCP tools (so the existing audit ledger covers it) or mirroring the ledger pattern LSP-side: a regenerate-on-change capabilities manifest plus a test comparing it to the live `create_server()` registration.
 
 ## See Also
 
