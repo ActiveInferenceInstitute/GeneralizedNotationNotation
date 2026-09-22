@@ -209,6 +209,11 @@ def _generate_matrix_correlations(
         correlation_matrix = np.nan_to_num(correlation_matrix, nan=0.0)
 
         # Create heatmap
+        # seaborn's center= normalization routes through Colormap.set_bad(),
+        # which matplotlib raises as PendingDeprecationWarning under the
+        # SC-26 ratchet (pytest filterwarnings=error). vmin/vmax without
+        # center keeps the diverging "coolwarm" scale at ±1 without the
+        # masked-normalization path (confirmed seaborn 0.13.2, 2026-09-22).
         plt.figure(figsize=(10, 8))
 
         sns = get_sns()
@@ -220,7 +225,6 @@ def _generate_matrix_correlations(
                 xticklabels=matrix_names,
                 yticklabels=matrix_names,
                 cmap="coolwarm",
-                center=0,
                 vmin=-1,
                 vmax=1,
             )
