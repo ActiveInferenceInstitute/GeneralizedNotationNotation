@@ -13,14 +13,14 @@ Unified command-line interface for the GNN pipeline. Provides subcommands for ru
 | `gnn run` | Execute the full 25-step pipeline |
 | `gnn validate <file>` | Validate a GNN file (sections, state-space, connections, dimensions) |
 | `gnn parse <file>` | Parse a GNN file and output JSON/YAML/summary |
-| `gnn extract <file>` | Extract the POMDP state space as structured JSON (`--strict`/`--no-strict`, `--compact`) |
-| `gnn render <file>` | Render a GNN file to a specific framework (pymdp, rxinfer, jax, etc.) |
+| `gnn extract <file>` | Extract the POMDP state space as structured JSON (`--strict`/`--no-strict`, `--compact`, `--json` standard envelope) |
+| `gnn render <file>` | Render a GNN file to a specific framework (pymdp, rxinfer, jax, etc.); `--json` emits the standard envelope |
 | `gnn report` | Generate pipeline report from existing outputs |
 | `gnn reproduce <hash>` | Re-run from a previous run hash (content-addressable) |
 | `gnn preflight` | Run environment & config checks |
 | `gnn health` | Show renderer generator-module availability and environment preflight status |
 | `gnn health --strict` | Exit nonzero when environment preflight reports errors |
-| `gnn serve` | Start Pipeline-as-a-Service API (FastAPI) |
+| `gnn serve` | Start Pipeline-as-a-Service API (FastAPI); the `surface` option selects `runs` (default), `jobs`, or `both` (jobs on port+1) |
 | `gnn templates list` | List maintained local GNN templates with checksums |
 | `gnn templates show <name>` | Show one maintained template record |
 | `gnn models list` | Query the local model registry |
@@ -29,6 +29,8 @@ Unified command-line interface for the GNN pipeline. Provides subcommands for ru
 | `gnn watch <dir>` | Monitor directory and live-reparse on file change |
 | `gnn graph <file>` | Generate dependency graph from multi-model files |
 | `gnn gui` | Run Step 22 GUI processing: headless artifacts or interactive GUI servers (--gui-types, --interactive) |
+| `gnn mcp list` | List registered MCP tools (`--json` for the standard envelope) |
+| `gnn mcp info <name>` | Show one MCP tool's registry record |
 
 Exit codes follow one contract: `0` is success, `1` is error, and `2` is a
 completed command with warnings, validation findings, or degraded readiness.
@@ -49,6 +51,9 @@ gnn parse input/gnn_files/discrete/actinf_pomdp_agent.md
 gnn extract input/gnn_files/discrete/actinf_pomdp_agent.md
 gnn extract input/gnn_files/discrete/actinf_pomdp_agent.md --no-strict --compact
 
+# Extract wrapped in the standard CLI JSON envelope
+gnn extract input/gnn_files/discrete/actinf_pomdp_agent.md --json
+
 # Check environment
 gnn preflight
 gnn health
@@ -58,6 +63,13 @@ gnn health --strict
 gnn templates list
 gnn templates show pomdp-gridworld-3x3
 gnn pull pomdp-gridworld-3x3 --output-dir /tmp/gnn-pull --dry-run
+
+# Start the API (surface: runs | jobs | both; both runs the jobs surface on port+1)
+gnn serve
+
+# Inspect the MCP tool surface
+gnn mcp list
+gnn mcp info cli.health
 ```
 
 ## Architecture
@@ -73,13 +85,14 @@ The CLI module is a thin dispatcher — each subcommand delegates to the corresp
 - `reproduce` → `pipeline.hasher.lookup_run()` + `main.main(override_args=...)`
 - `preflight` → `pipeline.preflight.run_preflight()`
 - `health` → `render.health.check_renderers()` + `pipeline.preflight.check_environment()`
-- `serve` → `api.app.start_server()`
+- `serve` → `api.app.start_server()` (surface `runs`), `api.server.run_server()` (surface `jobs`), or `both` (jobs via `uvicorn.Server` on port+1 while runs blocks on the main thread)
 - `templates` / `pull` → `cli.templates` maintained template index, checksum, and copy helpers
 - `models` → `model_registry.registry.ModelRegistry`
 - `lsp` → `gnn.cli.lsp.start_lsp()`: canonical pygls server (`gnn.lsp`) when pygls is importable, pygls-free JSON-RPC fallback otherwise
 - `watch` → `gnn.cli.watcher.GNNWatcher()`
 - `graph` → `gnn.dep_graph.render_graph_from_file()`
 - `gui` → `gnn.gui.process_gui()` (lazy import; headless artifacts by default, interactive servers with `--interactive`)
+- `mcp` → `gnn.mcp.initialize()` plus registry access (`list_available_tools`, `get_tool_info`), lazily imported
 
 ## References
 

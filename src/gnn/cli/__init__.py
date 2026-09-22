@@ -18,6 +18,7 @@ Provides:
   gnn pull       — Copy a maintained template into an input directory
   gnn watch      — Monitor a directory and live-reparse on change
   gnn gui        — Run GUI processing (Step 22 artifacts or interactive servers)
+  gnn mcp        — Inspect the MCP tool surface
   gnn lsp        — Launch Language Server
 
 Exit-code contract: 0 = success, 1 = error, 2 = completed with warnings.
@@ -86,6 +87,7 @@ COMMAND_HANDLERS: Final[dict[str, str]] = {
     "watch": "_cmd_watch",
     "graph": "_cmd_graph",
     "gui": "_cmd_gui",
+    "mcp": "_cmd_mcp",
 }
 
 #: Sorted subcommand names exposed by this CLI (drives ``--help`` parity
@@ -211,7 +213,7 @@ def _render_yaml(payload: dict[str, Any]) -> Optional[str]:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    """Construct the ``gnn`` argument parser with all 17 subcommands.
+    """Construct the ``gnn`` argument parser with all 18 subcommands.
 
     Pure construction — no parsing side effects — so programmatic callers
     can introspect flags and choices without dispatching.
@@ -289,6 +291,9 @@ def build_parser() -> argparse.ArgumentParser:
     extract_p.add_argument(
         "--compact", action="store_true", help="Emit compact (single-line) JSON"
     )
+    extract_p.add_argument(
+        "--json", action="store_true", help="Output standard JSON envelope"
+    )
     # ── gnn render ───────────────────────────────────────────────────────────
     render_p = subparsers.add_parser(
         "render", help="Render a GNN file to framework code"
@@ -312,6 +317,9 @@ def build_parser() -> argparse.ArgumentParser:
         help="Target framework",
     )
     render_p.add_argument("--output", "-o", type=Path, help="Output file path")
+    render_p.add_argument(
+        "--json", action="store_true", help="Output standard JSON envelope"
+    )
 
     # ── gnn report ───────────────────────────────────────────────────────────
     report_p = subparsers.add_parser("report", help="Generate pipeline report")
@@ -360,6 +368,12 @@ def build_parser() -> argparse.ArgumentParser:
     serve_p = subparsers.add_parser("serve", help="Start Pipeline-as-a-Service API")
     serve_p.add_argument("--host", default="127.0.0.1", help="Bind host")
     serve_p.add_argument("--port", type=_tcp_port, default=8000, help="Bind port")
+    serve_p.add_argument(
+        "--surface",
+        choices=["runs", "jobs", "both"],
+        default="runs",
+        help="API surface to start: runs (gnn.api.app), jobs (gnn.api.server), or both",
+    )
 
     # ── gnn templates ───────────────────────────────────────────────────────
     templates_p = subparsers.add_parser("templates", help="Inspect template library")
@@ -475,6 +489,22 @@ def build_parser() -> argparse.ArgumentParser:
         help="Launch oxdraw editor (interactive oxdraw GUI type)",
     )
 
+    # ── gnn mcp ──────────────────────────────────────────────────────────────
+    mcp_p = subparsers.add_parser("mcp", help="Inspect the MCP tool surface")
+    mcp_sub = mcp_p.add_subparsers(dest="mcp_command", help="MCP commands")
+    mcp_list_p = mcp_sub.add_parser("list", help="List registered MCP tools")
+    mcp_list_p.add_argument(
+        "--json", action="store_true", help="Output standard JSON envelope"
+    )
+    mcp_info_p = mcp_sub.add_parser("info", help="Inspect one MCP tool")
+    mcp_info_p.add_argument("name", help="Registered MCP tool name")
+    mcp_info_p.add_argument(
+        "--json", action="store_true", help="Output standard JSON envelope"
+    )
+    mcp_p.add_argument(
+        "--json", action="store_true", help="Output standard JSON envelope"
+    )
+
     # ── gnn lsp ──────────────────────────────────────────────────────────────
     subparsers.add_parser("lsp", help="Launch GNN Language Server")
 
@@ -484,6 +514,7 @@ def build_parser() -> argparse.ArgumentParser:
         *subparsers.choices.values(),
         *templates_sub.choices.values(),
         *models_sub.choices.values(),
+        *mcp_sub.choices.values(),
     ]:
         command_parser.add_argument(
             "--verbose",
@@ -693,20 +724,41 @@ def _cmd_parse(args: argparse.Namespace) -> int:
 
 def _cmd_extract(args: argparse.Namespace) -> int:
     """Extract the POMDP state space from a GNN file and print JSON."""
+    is_json = getattr(args, "json", False)
     file_name = str(args.file)
     if not args.file.is_file():
         logger.error("GNN file not found or not a regular file: %s", file_name)
-        _print_extract_error(
-            "GNN-CLI-001",
-            f"GNN file not found or not a regular file: {file_name}",
-        )
+        if is_json:
+            _print_envelope(
+                "error",
+                error={
+                    "code": "GNN-CLI-001",
+                    "message": f"GNN file not found or not a regular file: {file_name}",
+                },
+                command="extract",
+            )
+        else:
+            _print_extract_error(
+                "GNN-CLI-001",
+                f"GNN file not found or not a regular file: {file_name}",
+            )
         return EXIT_ERROR
 
     try:
         from gnn.extract import extract_to_json
     except ImportError as exc:
         logger.error("POMDP extractor unavailable: %s", exc)
-        _print_extract_error("GNN-CLI-002", f"extractor unavailable: {exc}")
+        if is_json:
+            _print_envelope(
+                "error",
+                error={
+                    "code": "GNN-CLI-002",
+                    "message": f"extractor unavailable: {exc}",
+                },
+                command="extract",
+            )
+        else:
+            _print_extract_error("GNN-CLI-002", f"extractor unavailable: {exc}")
         return EXIT_ERROR
 
     try:
@@ -715,32 +767,85 @@ def _cmd_extract(args: argparse.Namespace) -> int:
         )
     except Exception as exc:  # contract is non-raising; guard anyway
         logger.error("POMDP extraction failed: %s", exc)
-        _print_extract_error("GNN-CLI-003", f"extraction failed: {exc}")
+        if is_json:
+            _print_envelope(
+                "error",
+                error={
+                    "code": "GNN-CLI-003",
+                    "message": f"extraction failed: {exc}",
+                },
+                command="extract",
+            )
+        else:
+            _print_extract_error("GNN-CLI-003", f"extraction failed: {exc}")
         return EXIT_ERROR
 
     try:
         payload_obj: Any = json.loads(payload)
     except (TypeError, ValueError):
         payload_obj = None
+    if is_json and payload_obj is None:
+        logger.error("Extractor output was not valid JSON: %s", file_name)
+        _print_envelope(
+            "error",
+            error={
+                "code": "extract_error",
+                "message": "extractor output was not valid JSON",
+            },
+            command="extract",
+        )
+        return EXIT_ERROR
     defect = extract_payload_defect(payload_obj)
     if defect == EXTRACT_DEFECT_ERROR_STATUS:
-        print(payload)
+        if is_json:
+            detail = payload_obj.get("error") if isinstance(payload_obj, dict) else None
+            code = "extract_error"
+            message = "extraction payload reported error status"
+            if isinstance(detail, dict):
+                code = str(detail.get("code", code))
+                message = str(detail.get("message", message))
+            _print_envelope(
+                "error",
+                error={"code": code, "message": message},
+                command="extract",
+            )
+        else:
+            print(payload)
         return EXIT_ERROR
     if defect == EXTRACT_DEFECT_EMPTY_SKELETON:
         # Lenient extraction fabricates a default skeleton for files with
         # no GNN state-space content at all; surface that as an error.
-        _print_extract_error(
-            "GNN-E000", f"no POMDP state-space content found in {file_name}"
-        )
+        message = f"no POMDP state-space content found in {file_name}"
+        if is_json:
+            _print_envelope(
+                "error",
+                error={"code": "GNN-E000", "message": message},
+                command="extract",
+            )
+        else:
+            _print_extract_error("GNN-E000", message)
         return EXIT_ERROR
-    print(payload)
+    if is_json:
+        _print_envelope("success", data=payload_obj, command="extract")
+    else:
+        print(payload)
     return EXIT_SUCCESS
 
 
 def _cmd_render(args: argparse.Namespace) -> int:
     """Render a GNN file to framework code."""
+    is_json = getattr(args, "json", False)
     if not args.file.is_file():
         logger.error("GNN file not found or not a regular file: %s", args.file)
+        if is_json:
+            _print_envelope(
+                "error",
+                error={
+                    "code": "render_error",
+                    "message": f"GNN file not found or not a regular file: {args.file}",
+                },
+                command="render",
+            )
         return EXIT_ERROR
 
     from gnn.render import process_render
@@ -770,25 +875,57 @@ def _cmd_render(args: argparse.Namespace) -> int:
             logger.error(
                 "Render failed for %s using framework %s", args.file, framework
             )
+            if is_json:
+                _print_envelope(
+                    "error",
+                    error={
+                        "code": "render_error",
+                        "message": (
+                            f"Render failed for {args.file} using framework {framework}"
+                        ),
+                    },
+                    command="render",
+                )
             return EXIT_ERROR
 
-        if not args.output:
-            print(f"Rendered {args.file} → {framework}: {render_dir}")
-            return EXIT_SUCCESS
+        artifact: Optional[Path] = None
+        if args.output:
+            artifact = find_render_artifact(render_dir, framework)
+            if artifact is None:
+                logger.error(
+                    "Render completed but no %s artifact was found in %s",
+                    framework,
+                    render_dir,
+                )
+                if is_json:
+                    _print_envelope(
+                        "error",
+                        error={
+                            "code": "render_error",
+                            "message": (
+                                f"Render completed but no {framework} artifact "
+                                f"was found in {render_dir}"
+                            ),
+                        },
+                        command="render",
+                    )
+                return EXIT_ERROR
+            args.output.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(artifact, args.output)
 
-        artifact = find_render_artifact(render_dir, framework)
-        if artifact is None:
-            logger.error(
-                "Render completed but no %s artifact was found in %s",
-                framework,
-                render_dir,
-            )
-            return EXIT_ERROR
-
-        args.output.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(artifact, args.output)
-        print(f"Rendered {args.file} → {framework}: {args.output}")
-        return EXIT_SUCCESS
+        info: dict[str, Any] = {
+            "file": str(args.file),
+            "framework": framework,
+            "output": str(args.output) if args.output is not None else None,
+            "render_dir": str(render_dir),
+            "artifact": str(artifact) if artifact is not None else None,
+        }
+        if is_json:
+            _print_envelope("success", data=info, command="render")
+        else:
+            destination = args.output if args.output is not None else render_dir
+            print(f"Rendered {args.file} → {framework}: {destination}")
+    return EXIT_SUCCESS
 
 
 def _cmd_report(args: argparse.Namespace) -> int:
@@ -985,11 +1122,33 @@ def _cmd_health(args: argparse.Namespace) -> int:
 
 
 def _cmd_serve(args: argparse.Namespace) -> int:
-    """Start Pipeline-as-a-Service API."""
+    """Start Pipeline-as-a-Service API (runs, jobs, or both surfaces)."""
+    surface = str(getattr(args, "surface", "runs") or "runs")
     try:
-        from gnn.api.app import start_server
+        if surface == "jobs":
+            from gnn.api.server import run_server
 
-        start_server(host=args.host, port=args.port)
+            run_server(host=args.host, port=args.port)
+        else:
+            if surface == "both":
+                import threading
+
+                import uvicorn
+
+                from gnn.api.server import create_app
+
+                jobs_server = uvicorn.Server(
+                    uvicorn.Config(
+                        create_app(),
+                        host=args.host,
+                        port=args.port + 1,
+                        log_level="info",
+                    )
+                )
+                threading.Thread(target=jobs_server.run, daemon=True).start()
+            from gnn.api.app import start_server
+
+            start_server(host=args.host, port=args.port)
     except ImportError:
         print("❌ FastAPI not installed. Run: uv sync --extra api")
         return EXIT_ERROR
@@ -1165,6 +1324,77 @@ def _cmd_gui(args: argparse.Namespace) -> int:
         logger.error("Could not import GUI module: %s", e)
         return EXIT_ERROR
     return EXIT_SUCCESS if success else EXIT_ERROR
+
+
+def _cmd_mcp(args: argparse.Namespace) -> int:
+    """Inspect the MCP tool surface (list tools or show one tool)."""
+    is_json = getattr(args, "json", False)
+    try:
+        from gnn.mcp import get_mcp_instance, initialize
+
+        initialize()
+        instance = get_mcp_instance()
+    except ImportError as exc:
+        logger.error("MCP tool surface unavailable: %s", exc)
+        if is_json:
+            _print_envelope(
+                "error",
+                error={"code": "mcp_unavailable", "message": str(exc)},
+                command="mcp",
+            )
+        return EXIT_ERROR
+
+    if getattr(args, "mcp_command", None) == "info":
+        tool_info = instance.get_tool_info(str(args.name))
+        if tool_info is None:
+            message = f"Unknown MCP tool: {args.name}"
+            logger.error("%s", message)
+            if is_json:
+                _print_envelope(
+                    "error",
+                    error={"code": "unknown_tool", "message": message},
+                    command="mcp",
+                )
+            return EXIT_ERROR
+        if is_json:
+            _print_envelope("success", data=tool_info, command="mcp")
+        else:
+            logger.info(
+                "%s — %s (%s)",
+                tool_info.get("name", ""),
+                tool_info.get("module", ""),
+                tool_info.get("category", ""),
+            )
+            logger.info("%s", tool_info.get("description", ""))
+        return EXIT_SUCCESS
+
+    listed: list[dict[str, Any]] = []
+    for entry in instance.list_available_tools():
+        if isinstance(entry, dict):
+            listed.append(
+                {
+                    "name": str(entry.get("name", "")),
+                    "module": str(entry.get("module", "")),
+                    "category": str(entry.get("category", "")),
+                    "description": str(entry.get("description", "")),
+                }
+            )
+        else:
+            listed.append(
+                {"name": str(entry), "module": "", "category": "", "description": ""}
+            )
+    listed.sort(key=lambda tool: str(tool["name"]))
+    if is_json:
+        _print_envelope(
+            "success",
+            data={"tools": listed, "total": len(listed)},
+            command="mcp",
+        )
+    else:
+        for tool in listed:
+            logger.info("%s — %s (%s)", tool["name"], tool["module"], tool["category"])
+        logger.info("Total: %d tools", len(listed))
+    return EXIT_SUCCESS
 
 
 if __name__ == "__main__":
