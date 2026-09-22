@@ -189,8 +189,13 @@ def run_pytorch_scripts(
     recursive_search: bool = True,
     verbose: bool = False,
     device: Optional[str] = None,
+    timeout: Optional[int] = None,
 ) -> bool:
-    """Find and run PyTorch scripts on rendered models."""
+    """Find and run PyTorch scripts on rendered models.
+
+    ``timeout`` optionally overrides the per-script execution timeout;
+    when omitted each script runs with its historical 300 s default.
+    """
     if not is_pytorch_available():
         logger.error("PyTorch is not available, cannot execute PyTorch scripts")
         return False
@@ -209,9 +214,11 @@ def run_pytorch_scripts(
 
     success_count = 0
     failure_count = 0
+
+    script_timeout = timeout if timeout is not None else 300
     for script in scripts:
         out = Path(execution_output_dir) / script.stem if execution_output_dir else None
-        if execute_pytorch_script(script, verbose, device, out):
+        if execute_pytorch_script(script, verbose, device, out, timeout=script_timeout):
             success_count += 1
         else:
             failure_count += 1

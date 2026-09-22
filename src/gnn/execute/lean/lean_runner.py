@@ -14,7 +14,7 @@ import logging
 import os
 import tempfile
 from pathlib import Path
-from typing import Any, Union
+from typing import Any, Optional, Union
 
 from gnn.execute.subprocess_envelope import (
     NEVER_STARTED,
@@ -172,6 +172,7 @@ def run_lean_scripts(
     execution_output_dir: Union[str, Path] | None = None,
     recursive_search: bool = True,
     verbose: bool = False,
+    timeout: Optional[int] = None,
 ) -> bool:
     """Verify every emitted Lean/GNN document under the target directory.
 
@@ -179,6 +180,8 @@ def run_lean_scripts(
     discovered document verifies (or when there is nothing to verify),
     ``False`` when the fep_lean checkout is unavailable or any document
     fails. Per-document receipts are written under ``execution_output_dir``.
+    When ``timeout`` is given it overrides the per-document ceiling;
+    ``None`` keeps ``verify_document``'s default.
     """
     if resolve_fep_lean_root() is None:
         logger.info(
@@ -201,7 +204,11 @@ def run_lean_scripts(
 
     all_ok = True
     for document in documents:
-        record = verify_document(document, output_dir / f"{document.stem}-receipt.json")
+        receipt_path = output_dir / f"{document.stem}-receipt.json"
+        if timeout is not None:
+            record = verify_document(document, receipt_path, timeout=timeout)
+        else:
+            record = verify_document(document, receipt_path)
         ok = bool(record.get("success"))
         all_ok = all_ok and ok
         status_icon = "✅" if ok else "❌"

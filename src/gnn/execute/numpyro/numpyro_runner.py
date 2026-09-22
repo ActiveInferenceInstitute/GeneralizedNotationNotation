@@ -174,8 +174,13 @@ def run_numpyro_scripts(
     execution_output_dir: Optional[Union[str, Path]] = None,
     recursive_search: bool = True,
     verbose: bool = False,
+    timeout: Optional[int] = None,
 ) -> bool:
-    """Find and run NumPyro scripts on rendered models."""
+    """Find and run NumPyro scripts on rendered models.
+
+    ``timeout`` optionally overrides the per-script execution timeout;
+    when omitted each script runs with its historical 300 s default.
+    """
     if not is_numpyro_available():
         logger.error("NumPyro not available, cannot execute NumPyro scripts")
         return False
@@ -194,9 +199,11 @@ def run_numpyro_scripts(
 
     success_count = 0
     failure_count = 0
+
+    script_timeout = timeout if timeout is not None else 300
     for script in scripts:
         out = Path(execution_output_dir) / script.stem if execution_output_dir else None
-        if execute_numpyro_script(script, verbose, out):
+        if execute_numpyro_script(script, verbose, out, timeout=script_timeout):
             success_count += 1
         else:
             failure_count += 1

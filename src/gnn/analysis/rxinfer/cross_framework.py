@@ -22,7 +22,7 @@ import os
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Literal
+from typing import Any, Literal, Optional
 
 from gnn.execute.julia_env import julia_subprocess_env
 from gnn.execute.julia_setup import julia_executable  # noqa: E402
@@ -255,7 +255,9 @@ def _require_julia(framework: str) -> str | FrameworkRun:
     return julia
 
 
-def _execute_rxinfer(spec: dict[str, Any], fw_dir: Path) -> FrameworkRun:
+def _execute_rxinfer(
+    spec: dict[str, Any], fw_dir: Path, timeout: Optional[int] = None
+) -> FrameworkRun:
     """Render and run the RxInfer.jl backend inside its committed Julia project."""
     framework = "rxinfer"
     try:
@@ -283,14 +285,16 @@ def _execute_rxinfer(spec: dict[str, Any], fw_dir: Path) -> FrameworkRun:
             str(script_path),
         ],
         cwd=fw_dir,
-        timeout=JULIA_TIMEOUT_SECONDS,
+        timeout=JULIA_TIMEOUT_SECONDS if timeout is None else timeout,
         results_path=fw_dir / "simulation_results.json",
         script_path=script_path,
         env=julia_subprocess_env(),
     )
 
 
-def _execute_pymdp(spec: dict[str, Any], fw_dir: Path) -> FrameworkRun:
+def _execute_pymdp(
+    spec: dict[str, Any], fw_dir: Path, timeout: Optional[int] = None
+) -> FrameworkRun:
     """Render and run the PyMDP backend with results redirected into ``fw_dir``."""
     framework = "pymdp"
     try:
@@ -322,14 +326,16 @@ def _execute_pymdp(spec: dict[str, Any], fw_dir: Path) -> FrameworkRun:
         framework,
         [sys.executable, str(script_path)],
         cwd=fw_dir,
-        timeout=PYTHON_TIMEOUT_SECONDS,
+        timeout=PYTHON_TIMEOUT_SECONDS if timeout is None else timeout,
         results_path=fw_dir / "simulation_results.json",
         script_path=script_path,
         env=env,
     )
 
 
-def _execute_activeinference_jl(spec: dict[str, Any], fw_dir: Path) -> FrameworkRun:
+def _execute_activeinference_jl(
+    spec: dict[str, Any], fw_dir: Path, timeout: Optional[int] = None
+) -> FrameworkRun:
     """Render and run the ActiveInference.jl backend in its Julia project."""
     framework = "activeinference_jl"
     try:
@@ -359,7 +365,7 @@ def _execute_activeinference_jl(spec: dict[str, Any], fw_dir: Path) -> Framework
             str(script_path),
         ],
         cwd=fw_dir,
-        timeout=JULIA_TIMEOUT_SECONDS,
+        timeout=JULIA_TIMEOUT_SECONDS if timeout is None else timeout,
         results_path=fw_dir / "simulation_results.json",
         script_path=script_path,
         env=julia_subprocess_env(),
@@ -374,13 +380,13 @@ _EXECUTORS = {
 
 
 def _execute_framework(
-    spec: dict[str, Any], framework: str, fw_dir: Path
+    spec: dict[str, Any], framework: str, fw_dir: Path, timeout: Optional[int] = None
 ) -> FrameworkRun:
     """Render and execute one framework from an already-parsed GNN spec."""
     if framework not in _EXECUTORS:
         raise ValueError(f"Unknown framework: {framework}")
     fw_dir.mkdir(parents=True, exist_ok=True)
-    return _EXECUTORS[framework](spec, fw_dir)
+    return _EXECUTORS[framework](spec, fw_dir, timeout)
 
 
 def _belief_rows(results: dict[str, Any]) -> list[list[float]]:
@@ -682,12 +688,18 @@ def render_comparison_html(
     return str(output_path)
 
 
-def run_cross_framework_comparison(gnn_file: Path, output_dir: Path) -> str:
+def run_cross_framework_comparison(
+    gnn_file: Path, output_dir: Path, timeout: Optional[int] = None
+) -> str:
     """Render, execute, and compare one GNN model across all three frameworks.
 
     Args:
         gnn_file: Path to the GNN specification file.
         output_dir: Directory receiving per-framework artifacts and the HTML.
+        timeout: Optional per-framework execution timeout in seconds; each
+            backend falls back to its module default (JULIA_TIMEOUT_SECONDS
+            for the Julia lanes, PYTHON_TIMEOUT_SECONDS for PyMDP) when
+            omitted.
 
     Returns:
         Path to the generated comparison HTML, as a string.
@@ -712,7 +724,7 @@ def run_cross_framework_comparison(gnn_file: Path, output_dir: Path) -> str:
     output_dir.mkdir(parents=True, exist_ok=True)
 
     runs = [
-        _execute_framework(spec, framework, output_dir / framework)
+        _execute_framework(spec, framework, output_dir / framework, timeout)
         for framework in FRAMEWORKS
     ]
 
