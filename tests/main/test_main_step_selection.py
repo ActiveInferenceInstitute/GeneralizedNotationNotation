@@ -3,7 +3,7 @@
 Pins the pure selection contract (``select_pipeline_steps`` /
 ``parse_step_list_strict``), the lenient ``parse_step_list`` back-compat
 contract, the script-name step extractor, and the fail-fast error paths of
-``_resolve_steps_to_execute``.
+``resolve_steps_to_execute``.
 """
 
 from __future__ import annotations
@@ -151,7 +151,7 @@ def test_step_number_extraction() -> None:
 
 
 # ---------------------------------------------------------------------------
-# _resolve_steps_to_execute (adapter: logging + fail-fast error paths)
+# resolve_steps_to_execute (adapter: logging + fail-fast error paths)
 # ---------------------------------------------------------------------------
 
 
@@ -165,9 +165,9 @@ def _resolve(
     config: dict | None = None,
     logger: logging.Logger | None = None,
 ) -> list:
-    from gnn.main import _resolve_steps_to_execute
+    from gnn.main import resolve_steps_to_execute
 
-    return _resolve_steps_to_execute(
+    return resolve_steps_to_execute(
         _make_args(only_steps, skip_steps),  # type: ignore[arg-type]
         config or {},
         logger or logging.getLogger("test_resolver"),

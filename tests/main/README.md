@@ -8,7 +8,7 @@ Pytest coverage for the `gnn` entry surfaces (`src/gnn/main.py`,
 - `test_main_step_selection.py`: the pure step-selection core
   (`select_pipeline_steps`, `StepSelection`), strict vs. lenient step-list
   parsing, `step_number_from_script_name`, and the fail-fast +
-  log-preserving behavior of `_resolve_steps_to_execute`.
+  log-preserving behavior of `resolve_steps_to_execute`.
 - `test_manuscript_build_figures.py`: regression contract for
   `scripts/manuscript_build_figures.py` — the
   `(label, generator, expected PNG, alt text)` table is the single source for
