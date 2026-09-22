@@ -39,7 +39,6 @@ def test_registered_flags_are_a_pure_function_of_the_tree() -> None:
     must produce the identical flag set — this is the runner-parity
     guarantee (the wave-D 141-vs-140 phantom drift was a tree-state
     confound, not a varying parser)."""
-    gate = _load_gate()
     probe = (
         "import sys; sys.path.insert(0, r'{scripts}'); "
         "import check_flag_parity as g; "

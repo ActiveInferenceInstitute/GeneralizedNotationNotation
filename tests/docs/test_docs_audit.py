@@ -100,16 +100,19 @@ def audit_mod(tmp_path: Path) -> Any:
     mod.REPO_ROOT = original_root
 
 
-def test_spec_coverage_flags_module_without_spec(audit_mod: Any, tmp_path: Path) -> None:
+def test_spec_coverage_flags_module_without_spec(
+    audit_mod: Any, tmp_path: Path
+) -> None:
     module = tmp_path / "src" / "gnn" / "widget"
     module.mkdir(parents=True)
     (module / "core.py").write_text("x = 1\n", encoding="utf-8")
 
     missing = audit_mod.audit_src_spec_coverage()
 
-    assert (Path("src/gnn/widget"), "module directory has .py files but no SPEC.md") in [
-        (rel, msg) for rel, msg in missing
-    ]
+    assert (
+        Path("src/gnn/widget"),
+        "module directory has .py files but no SPEC.md",
+    ) in [(rel, msg) for rel, msg in missing]
 
 
 def test_spec_coverage_passes_when_spec_present(audit_mod: Any, tmp_path: Path) -> None:
@@ -145,7 +148,9 @@ def test_prose_pattern_flags_removed_layout_path(
     issues = audit_mod.audit_prose_src_patterns([doc])
 
     flagged = {reason for _, _, reason in issues}
-    assert any("src/gui/" in r and "not the canonical src/gnn/ surface" in r for r in flagged)
+    assert any(
+        "src/gui/" in r and "not the canonical src/gnn/ surface" in r for r in flagged
+    )
     assert any("src.main" in r for r in flagged)
     assert len(issues) == 2
 
@@ -205,7 +210,9 @@ def test_version_claims_enforce_bare_version_only_in_package_scope(
     assert docs_issues == []  # docs/** bare Version is a revision axis
 
 
-def test_version_claims_pass_canonical_and_current(audit_mod: Any, tmp_path: Path) -> None:
+def test_version_claims_pass_canonical_and_current(
+    audit_mod: Any, tmp_path: Path
+) -> None:
     _seed_pyproject(tmp_path, "3.5.0")
     doc = tmp_path / "AGENTS.md"
     doc.write_text(
@@ -242,9 +249,19 @@ def test_format_strict_issue_detail_lists_bc17_sections() -> None:
         readme_no_agents=[],
         doc_agents_structure=[],
         security_version_issues=[],
-        spec_coverage_issues=[(Path("src/gnn/widget"), "module directory has .py files but no SPEC.md")],
-        prose_src_issues=[(Path("docs/n.md"), 3, "prose import 'src.main' is not the canonical gnn.* surface")],
-        version_claim_issues=[(Path("AGENTS.md"), 632, "3.3.0", "version claim != pyproject 3.5.0")],
+        spec_coverage_issues=[
+            (Path("src/gnn/widget"), "module directory has .py files but no SPEC.md")
+        ],
+        prose_src_issues=[
+            (
+                Path("docs/n.md"),
+                3,
+                "prose import 'src.main' is not the canonical gnn.* surface",
+            )
+        ],
+        version_claim_issues=[
+            (Path("AGENTS.md"), 632, "3.3.0", "version claim != pyproject 3.5.0")
+        ],
     )
     assert "src/ dirs missing SPEC.md" in detail
     assert "src/gnn/widget" in detail
