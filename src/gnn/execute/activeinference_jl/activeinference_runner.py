@@ -497,9 +497,7 @@ def run_activeinference_analysis(
 
     logger.info(f"Executing {len(script_files)} ActiveInference.jl scripts...")
 
-    script_timeout = (
-        DEFAULT_RUNNER_TIMEOUT_SECONDS if timeout is None else timeout
-    )
+    script_timeout = DEFAULT_RUNNER_TIMEOUT_SECONDS if timeout is None else timeout
     for i, script_path in enumerate(script_files, 1):
         logger.info(f"[{i}/{len(script_files)}] Executing: {script_path.name}")
 

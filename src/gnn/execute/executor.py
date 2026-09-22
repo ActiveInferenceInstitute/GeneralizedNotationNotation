@@ -104,6 +104,7 @@ def _runner_state(framework_dir_key: str) -> _RunnerState:
         return _RunnerState(False, None)
     return _RunnerState(available, runner)
 
+
 from gnn.pipeline.config import get_output_dir_for_script
 from gnn.utils import performance_tracker
 from gnn.utils.logging_utils import (
