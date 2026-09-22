@@ -9,7 +9,7 @@
 **Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 **Last Updated**: 2026-09-03
 
-The CLI module provides the `gnn` command-line tool — a unified interface to the entire GNN pipeline. It acts as a thin dispatcher, routing 17 subcommands to their respective module APIs. Public exits are `0` for success, `1` for errors, and `2` for completed commands with warnings or degraded readiness.
+The CLI module provides the `gnn` command-line tool — a unified interface to the entire GNN pipeline. It acts as a thin dispatcher, routing 18 subcommands to their respective module APIs. Public exits are `0` for success, `1` for errors, and `2` for completed commands with warnings or degraded readiness.
 
 ## Architecture
 
@@ -28,14 +28,15 @@ The CLI module provides the `gnn` command-line tool — a unified interface to t
 - **Environment checks** via `gnn preflight` and `gnn health`
 - **Live development** via `gnn watch` (file monitoring with 250ms debounce)
 - **Dependency graphs** via `gnn graph` (Mermaid/text output)
-- **API server** via `gnn serve` (delegates to `api/app.py`)
+- **API server** via `gnn serve --surface` (`runs` → `api/app.py`, `jobs` → `api/server.py`, `both` starts the jobs surface on port+1 in a daemon thread)
+- **MCP surface inspection** via `gnn mcp list` / `gnn mcp info <tool>` (lazy `gnn.mcp` registry bridge; `--json` emits the standard envelope)
 - **LSP server** via `gnn lsp` (canonical `gnn.lsp` pygls server when pygls is importable; `cli/lsp.py` JSON-RPC fallback)
 
 ## File Structure
 
 ```
 cli/
-├── __init__.py          # Main dispatcher and 17 subcommands
+├── __init__.py          # Main dispatcher and 18 subcommands
 ├── __main__.py          # `python -m gnn.cli` entry point
 ├── commands.py          # Shared command semantics (dispatcher + API parity)
 ├── lsp.py               # GNN Language Server (stdio)
