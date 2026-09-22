@@ -20,7 +20,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 PIN_FILE = ROOT / ".github/gnn-pair.json"
 RUNNER = ROOT / "scripts/run_geo_interchange_checks.py"
-EXPECTED_REPOSITORY = "ActiveInferenceInstitute/GEO-INFER"
+EXPECTED_REPOSITORY = "ActiveInferenceInstitute/GEO_INFER"
 
 
 def _read_pin() -> dict[str, str]:

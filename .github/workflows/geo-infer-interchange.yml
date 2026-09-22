@@ -1,12 +1,12 @@
-name: Paired GEO-INFER interchange
+name: Paired GEO_INFER interchange
 
-# GNN-side paired-revision CI (roadmap item GNN-04), mirroring GEO-INFER's
+# GNN-side paired-revision CI (roadmap item GNN-04), mirroring GEO_INFER's
 # `.github/workflows/gnn-interchange.yml` mechanism exactly:
 #
 #   - the companion revision is recorded in a committed pin file
 #     (`.github/gnn-pair.json`, same format as GEO's pin of this repository),
 #   - the pin is validated (known repository slug, 40-hex revision),
-#   - GEO-INFER is checked out at exactly the pinned SHA,
+#   - GEO_INFER is checked out at exactly the pinned SHA,
 #   - both revisions plus the pin are retained as receipts together with the
 #     interchange digest manifest, and
 #   - GEO's read-only interchange validator drives the paired categorical,
@@ -17,10 +17,10 @@ name: Paired GEO-INFER interchange
 # Strictness mirrors GEO: the job is blocking. A red run is the drift
 # signal — one side moved since the pin was recorded — and the pair must be
 # re-pinned together (GNN-side re-pin here in the same PR that bumps this
-# file; GEO-INFER side bumps `.github/gnn-pair.json` there).
+# file; GEO_INFER side bumps `.github/gnn-pair.json` there).
 #
 # What this proves and does NOT prove (evidence-plane discipline): the
-# workflow verifies that the pinned GEO-INFER checkout and this GNN checkout
+# workflow verifies that the pinned GEO_INFER checkout and this GNN checkout
 # still agree on the exchange contract and certifies deterministic replay
 # with per-artifact digests. It does NOT make any geographic claim about H3
 # cells (state IDs remain explicit labels), does not certify inference
@@ -63,14 +63,14 @@ jobs:
           import json, os, re
           from pathlib import Path
           pair = json.loads(Path('.github/gnn-pair.json').read_text())
-          assert pair['repository'] == 'ActiveInferenceInstitute/GEO-INFER'
+          assert pair['repository'] == 'ActiveInferenceInstitute/GEO_INFER'
           assert re.fullmatch('[0-9a-f]{40}', pair['revision'])
           with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
               output.write('revision=' + pair['revision'] + '\n')
           PY
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          repository: ActiveInferenceInstitute/GEO-INFER
+          repository: ActiveInferenceInstitute/GEO_INFER
           ref: ${{ steps.pair.outputs.revision }}
           path: geo-infer
           persist-credentials: false
