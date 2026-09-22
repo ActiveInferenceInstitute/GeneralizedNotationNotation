@@ -1083,7 +1083,7 @@ def emit_rxinfer_jl(spec: GraphSpec, model_name: str = "gnn_bayesnet") -> str:
 
     The script contains one ``@model`` function with one
     ``Categorical``/``DiscreteTransition`` factor per CPT (Dirichlet
-    placeholders in a learning variant), a fail-closed GraphSpec loader,
+    priors in a learning variant), a fail-closed GraphSpec loader,
     evidence conditioning via per-variable observation interfaces
     (``e_<key> ~ DiscreteTransition(<key>, EYE_<key>)``): every latent stays
     free (its marginal is returned); observed ``e_<key>`` interfaces are
@@ -1333,7 +1333,7 @@ def emit_rxinfer_jl(spec: GraphSpec, model_name: str = "gnn_bayesnet") -> str:
     lines.append("end")
     lines.append("")
 
-    # --- learning variant (Dirichlet placeholders) ------------------------
+    # --- learning variant (Dirichlet priors) ------------------------------
     parented = [key for key in order if parent_map[key]]
     learn_args = []
     for key in order:
@@ -1341,7 +1341,7 @@ def emit_rxinfer_jl(spec: GraphSpec, model_name: str = "gnn_bayesnet") -> str:
             ("alpha_p_" if not parent_map[key] else "alpha_A_") + idents[key]
         )
     lines.append(
-        "# --- Learning variant (Dirichlet prior placeholders for CPT learning) ---"
+        "# --- Learning variant (Dirichlet priors for CPT learning) ---"
     )
     lines.append(
         "# Replace fixed data-arg probabilities with latent Dirichlet priors so"
