@@ -575,9 +575,7 @@ def _parse_gnn(
             exit_code=exit_code,
         )
 
-    serialized_errors = [
-        ParityIssue(**error_dict) for error_dict in result["errors"]
-    ]
+    serialized_errors = [ParityIssue(**error_dict) for error_dict in result["errors"]]
 
     yaml_text: Optional[str] = None
     if output_format == "yaml":
