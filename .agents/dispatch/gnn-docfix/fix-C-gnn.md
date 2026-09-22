@@ -1,6 +1,6 @@
 # C-gnn — GNN documentation accuracy fixes (SAFE DOC-ONLY EDITS)
 
-Repo: /home/trim/Documents/Git/HumOS/projects/outside_of_hum/GeneralizedNotationNotation
+Repo: <repo-root>
 
 ## Mission
 Apply the documentation corrections listed below. These are SAFE, DOCUMENTATION-ONLY
@@ -39,5 +39,5 @@ After editing, run:
 - uv run --extra dev python scripts/check_gnn_doc_patterns.py --strict
 
 ## Report
-Write a concise report to /home/trim/Documents/Git/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.agents/dispatch/gnn-docfix/REPORT-fix-C-gnn.md listing each file you changed and the specific
+Write a concise report to <repo-root>/.agents/dispatch/gnn-docfix/REPORT-fix-C-gnn.md listing each file you changed and the specific
 edit(s) applied. Reply with only the absolute path to your report.

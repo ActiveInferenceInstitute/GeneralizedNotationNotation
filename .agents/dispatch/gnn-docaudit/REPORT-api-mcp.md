@@ -1,6 +1,6 @@
 # REPORT — api-mcp (GNN documentation-vs-code audit, REPORT-ONLY)
 
-Repo: `/home/trim/Documents/Git/HumOS/projects/outside_of_hum/GeneralizedNotationNotation`
+Repo: `<repo-root>`
 Region: `doc/api/`, `doc/mcp/`, `doc/lsp/`, `doc/llm/`, `doc/security/`
 Source authority: `src/gnn/api/`, `src/gnn/mcp/`, `src/gnn/lsp/`, `src/gnn/llm/`, `src/gnn/security/`
 Date: 2026-08-24

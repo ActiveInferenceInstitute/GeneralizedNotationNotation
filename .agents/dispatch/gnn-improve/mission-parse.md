@@ -1,7 +1,7 @@
 # Parse & Core-Authoring Scope — mission-parse.md
 
 You own these paths and ONLY these paths within the repo rooted at
-/home/trim/Documents/Git/HumOS/projects/outside_of_hum/GeneralizedNotationNotation:
+<repo-root>:
 
 OWNS:
 - src/gnn/  (GNN file discovery, parsing, multi-format serialization)
@@ -51,6 +51,6 @@ unfinished.
 
 ## Finish
 Write a concise report to:
-`/home/trim/Documents/Git/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.agents/dispatch/gnn-improve/REPORT-parse.md`
+`<repo-root>/.agents/dispatch/gnn-improve/REPORT-parse.md`
 Summarize exactly what you changed (files + nature), tests added/passing, and
 ruff/mypy scoped results. Reply with only the absolute path to your report.

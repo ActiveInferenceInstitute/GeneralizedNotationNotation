@@ -94,7 +94,7 @@ def test_runner_refuses_checkout_that_is_not_at_the_pinned_revision(
 @pytest.mark.parametrize(
     "broken",
     [
-        {"repository": "hum-lab/geo-infer", "revision": "a" * 40},
+        {"repository": "example-org/geo-infer", "revision": "a" * 40},
         {"repository": EXPECTED_REPOSITORY, "revision": "short"},
         {"repository": EXPECTED_REPOSITORY, "revision": "z" * 40},
         {"repository": EXPECTED_REPOSITORY},

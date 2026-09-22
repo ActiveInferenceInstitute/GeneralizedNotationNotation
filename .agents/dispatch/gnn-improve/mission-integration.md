@@ -1,7 +1,7 @@
 # Integration, MCP, API, CLI, GUI, Website Scope — mission-integration.md
 
 You own these paths ONLY within the GNN repo at
-`/home/trim/Documents/Git/HumOS/projects/outside_of_hum/GeneralizedNotationNotation`:
+`<repo-root>`:
 
 - src/gnn/integration/
 - src/gnn/mcp/  (Model Context Protocol tools)
@@ -36,6 +36,6 @@ HARD RULE: leave ALL changes uncommitted; no commit/push/stage.
 
 ## Finish
 Write a concise report to
-/home/trim/Documents/Git/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.agents/dispatch/gnn-improve/REPORT-integration.md
+<repo-root>/.agents/dispatch/gnn-improve/REPORT-integration.md
 files changed, fixes, tests added, scoped verification. Reply with only
 the report's absolute path.

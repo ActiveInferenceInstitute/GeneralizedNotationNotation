@@ -1,7 +1,7 @@
 # Research, LLM, Audio, ML, Security, Report, Ontology, Intelligent-Analysis Scope — mission-science.md
 
 You own these paths ONLY within the GNN repo at
-`/home/trim/Documents/Git/HumOS/projects/outside_of_hum/GeneralizedNotationNotation`:
+`<repo-root>`:
 
 - src/gnn/ontology/
 - src/gnn/llm/  (LLM-enhanced analysis; Ollama default `smollm2:135m-instruct-q4_K_S`)
@@ -37,5 +37,5 @@ HARD RULE: leave ALL changes uncommitted; no commit/push/stage.
 
 ## Finish
 Write a concise report to
-`/home/trim/Documents/Git/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.agents/dispatch/gnn-improve/REPORT-science.md`
+`<repo-root>/.agents/dispatch/gnn-improve/REPORT-science.md`
 Reply with only the report's absolute path.

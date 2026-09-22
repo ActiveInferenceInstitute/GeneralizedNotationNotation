@@ -1,6 +1,6 @@
 # GUI-Audio-Integration — GNN swarm-2 scope
 
-Repo: /home/trim/Documents/Git/HumOS/projects/outside_of_hum/GeneralizedNotationNotation
+Repo: <repo-root>
 YOU OWN these paths ONLY (disjoint scope — no other agent touches them):
 - src/gnn/gui/gui_2/  (ui.py + helpers)
 - src/gnn/gui/gui_3/  (ui_designer.py)

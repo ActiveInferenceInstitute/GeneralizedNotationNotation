@@ -1,6 +1,6 @@
 # REPORT — fix-B-api (GNN documentation accuracy, DOC-ONLY)
 
-Repo: /home/trim/Documents/Git/HumOS/projects/outside_of_hum/GeneralizedNotationNotation
+Repo: <repo-root>
 Date: 2026-08-24
 
 All fixes from .agents/dispatch/gnn-docfix/fix-B-api.md applied. Documentation-only edits;

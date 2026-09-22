@@ -1,7 +1,7 @@
 # Infrastructure & Utils Scope (setup, template, tests infra, doc, pipeline) — mission-infra.md
 
 You own these paths ONLY within the GNN repo at
-`/home/trim/Documents/Git/HumOS/projects/outside_of_hum/GeneralizedNotationNotation`:
+`<repo-root>`:
 
 - src/gnn/setup/
 - src/gnn/template/
@@ -47,6 +47,6 @@ HARD RULE: leave ALL changes uncommitted; no commit/push.
 
 ## Finish
 Write a concise report to
-`/home/trim/Documents/Git/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.agents/dispatch/gnn-improve/REPORT-infra.md`
+`<repo-root>/.agents/dispatch/gnn-improve/REPORT-infra.md`
 Summarize files changed, docs fixed, acceptance-gate results. Reply with
 only that report's absolute path.

@@ -1,7 +1,7 @@
 # Render & Execute Scope — mission-render-execute.md
 
 You own one of these paths ONLY within the GNN repo at
-`/home/trim/Documents/Git/HumOS/projects/outside_of_hum/GeneralizedNotationNotation`:
+`<repo-root>`:
 
 - src/gnn/render/   (code generation for PyMDP, RxInfer.jl, JAX, NumPyro, Stan,
   PyTorch, ActiveInference.jl, DisCoPy, bnlearn + stigmergic multi-agent)
@@ -45,7 +45,7 @@ agents own disjoint paths; if you see new files you don't own, leave them.
 
 ## Finish
 Write a concise report to
-`/home/trim/Documents/Git/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.agents/dispatch/gnn-improve/REPORT-render-execute.md`
+`<repo-root>/.agents/dispatch/gnn-improve/REPORT-render-execute.md`
 files changed, what you fixed/completed (incl. whether the stigmergic
 residual is closed and how it's tested), scoped verification results.
 Reply with only the absolute path to your report.

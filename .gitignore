@@ -438,3 +438,6 @@ pytest-junit-*/
 mcp_audit_report.json
 /tests/mcp_audit_report.json
 /tests/mcp/mcp_audit_report.json
+
+# Local agent-context note (never shipped)
+CONTEXT.md

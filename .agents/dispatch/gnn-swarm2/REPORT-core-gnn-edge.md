@@ -1,6 +1,6 @@
 # REPORT — Core-GNN-EdgeModules (gnn-swarm-2 scope)
 
-Repo: /home/trim/Documents/Git/HumOS/projects/outside_of_hum/GeneralizedNotationNotation
+Repo: <repo-root>
 
 ## Summary
 Added real, regression-pinning test coverage for the four reachable GNN modules
