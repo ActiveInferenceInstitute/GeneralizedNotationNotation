@@ -1,0 +1,333 @@
+{
+  "format": "dafjev.bayesnet/1",
+  "variables": [
+    {
+      "key": "asia",
+      "description": "Recently visited Asia?",
+      "states": [
+        "false",
+        "true"
+      ]
+    },
+    {
+      "key": "dysp",
+      "description": "Has dyspnoea (shortness of breath)?",
+      "states": [
+        "false",
+        "true"
+      ]
+    },
+    {
+      "key": "smoke",
+      "description": "Is a smoker?",
+      "states": [
+        "false",
+        "true"
+      ]
+    },
+    {
+      "key": "tub",
+      "description": "Has tuberculosis?",
+      "states": [
+        "false",
+        "true"
+      ]
+    },
+    {
+      "key": "lung",
+      "description": "Has lung cancer?",
+      "states": [
+        "false",
+        "true"
+      ]
+    },
+    {
+      "key": "bronc",
+      "description": "Has bronchitis?",
+      "states": [
+        "false",
+        "true"
+      ]
+    },
+    {
+      "key": "either",
+      "description": "Has tuberculosis or lung cancer?",
+      "states": [
+        "false",
+        "true"
+      ]
+    },
+    {
+      "key": "xray",
+      "description": "Abnormal X-ray result?",
+      "states": [
+        "false",
+        "true"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "parent": "either",
+      "child": "dysp"
+    },
+    {
+      "parent": "bronc",
+      "child": "dysp"
+    },
+    {
+      "parent": "either",
+      "child": "xray"
+    },
+    {
+      "parent": "asia",
+      "child": "tub"
+    },
+    {
+      "parent": "smoke",
+      "child": "lung"
+    },
+    {
+      "parent": "smoke",
+      "child": "bronc"
+    },
+    {
+      "parent": "lung",
+      "child": "either"
+    },
+    {
+      "parent": "tub",
+      "child": "either"
+    }
+  ],
+  "cpts": {
+    "asia": {
+      "child": "asia",
+      "parents": [],
+      "rows": [
+        {
+          "assignment": {},
+          "probabilities": [
+            0.99,
+            0.01
+          ]
+        }
+      ]
+    },
+    "dysp": {
+      "child": "dysp",
+      "parents": [
+        "either",
+        "bronc"
+      ],
+      "rows": [
+        {
+          "assignment": {
+            "either": "false",
+            "bronc": "false"
+          },
+          "probabilities": [
+            0.9,
+            0.1
+          ]
+        },
+        {
+          "assignment": {
+            "either": "false",
+            "bronc": "true"
+          },
+          "probabilities": [
+            0.2,
+            0.8
+          ]
+        },
+        {
+          "assignment": {
+            "either": "true",
+            "bronc": "false"
+          },
+          "probabilities": [
+            0.3,
+            0.7
+          ]
+        },
+        {
+          "assignment": {
+            "either": "true",
+            "bronc": "true"
+          },
+          "probabilities": [
+            0.1,
+            0.9
+          ]
+        }
+      ]
+    },
+    "smoke": {
+      "child": "smoke",
+      "parents": [],
+      "rows": [
+        {
+          "assignment": {},
+          "probabilities": [
+            0.5,
+            0.5
+          ]
+        }
+      ]
+    },
+    "tub": {
+      "child": "tub",
+      "parents": [
+        "asia"
+      ],
+      "rows": [
+        {
+          "assignment": {
+            "asia": "false"
+          },
+          "probabilities": [
+            0.99,
+            0.01
+          ]
+        },
+        {
+          "assignment": {
+            "asia": "true"
+          },
+          "probabilities": [
+            0.95,
+            0.05
+          ]
+        }
+      ]
+    },
+    "lung": {
+      "child": "lung",
+      "parents": [
+        "smoke"
+      ],
+      "rows": [
+        {
+          "assignment": {
+            "smoke": "false"
+          },
+          "probabilities": [
+            0.99,
+            0.01
+          ]
+        },
+        {
+          "assignment": {
+            "smoke": "true"
+          },
+          "probabilities": [
+            0.9,
+            0.1
+          ]
+        }
+      ]
+    },
+    "bronc": {
+      "child": "bronc",
+      "parents": [
+        "smoke"
+      ],
+      "rows": [
+        {
+          "assignment": {
+            "smoke": "false"
+          },
+          "probabilities": [
+            0.7,
+            0.3
+          ]
+        },
+        {
+          "assignment": {
+            "smoke": "true"
+          },
+          "probabilities": [
+            0.4,
+            0.6
+          ]
+        }
+      ]
+    },
+    "either": {
+      "child": "either",
+      "parents": [
+        "lung",
+        "tub"
+      ],
+      "rows": [
+        {
+          "assignment": {
+            "lung": "false",
+            "tub": "false"
+          },
+          "probabilities": [
+            1.0,
+            0.0
+          ]
+        },
+        {
+          "assignment": {
+            "lung": "false",
+            "tub": "true"
+          },
+          "probabilities": [
+            0.0,
+            1.0
+          ]
+        },
+        {
+          "assignment": {
+            "lung": "true",
+            "tub": "false"
+          },
+          "probabilities": [
+            0.0,
+            1.0
+          ]
+        },
+        {
+          "assignment": {
+            "lung": "true",
+            "tub": "true"
+          },
+          "probabilities": [
+            0.0,
+            1.0
+          ]
+        }
+      ]
+    },
+    "xray": {
+      "child": "xray",
+      "parents": [
+        "either"
+      ],
+      "rows": [
+        {
+          "assignment": {
+            "either": "false"
+          },
+          "probabilities": [
+            0.95,
+            0.05
+          ]
+        },
+        {
+          "assignment": {
+            "either": "true"
+          },
+          "probabilities": [
+            0.02,
+            0.98
+          ]
+        }
+      ]
+    }
+  }
+}
