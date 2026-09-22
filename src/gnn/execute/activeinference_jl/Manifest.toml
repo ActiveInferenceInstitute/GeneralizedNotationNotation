@@ -2,7 +2,7 @@
 
 julia_version = "1.12.7"
 manifest_format = "2.0"
-project_hash = "c5872a4df673138830a2532dc2cc15b729650d11"
+project_hash = "eef525991a8bfe651cdf94829701cbaa62662028"
 
 [[deps.ADTypes]]
 deps = ["PrecompileTools"]
@@ -753,6 +753,12 @@ deps = ["Artifacts", "JLLWrappers", "JpegTurbo_jll", "Libdl", "Zlib_jll"]
 git-tree-sha1 = "38044a04637976140074d0b0621c1edf0eb531fd"
 uuid = "61579ee1-b43e-5ca0-a5da-69d92c66a64b"
 version = "9.55.1+0"
+
+[[deps.GnnActiveInferenceModels]]
+deps = ["ActiveInference", "Distributions", "JSON", "StatsBase"]
+path = "."
+uuid = "76683eb8-5332-4d85-b3e7-153a065e45eb"
+version = "1.0.0"
 
 [[deps.Graphs]]
 deps = ["ArnoldiMethod", "DataStructures", "Distributed", "Inflate", "LinearAlgebra", "Random", "SharedArrays", "SimpleTraits", "SparseArrays", "Statistics"]

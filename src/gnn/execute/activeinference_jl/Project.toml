@@ -1,3 +1,8 @@
+name = "GnnActiveInferenceModels"
+uuid = "76683eb8-5332-4d85-b3e7-153a065e45eb"
+authors = ["GNN Pipeline"]
+version = "1.0.0"
+
 [deps]
 ActiveInference = "688b0e7a-0122-4325-8669-5ff08899a59e"
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
@@ -8,8 +13,10 @@ StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 ActiveInference = "0.1"
 # Distributions >= 0.25.126 changed `@check_args`; DistributionsAD 0.6.58's
 # ReverseDiff extension (pulled in via ActionModels) fails to precompile
-# against it on Julia 1.12. Pin below that until DistributionsAD releases a fix.
+# against it on Julia 1.12. Re-checked 2026-09-22: DistributionsAD.jl is
+# archived at 0.6.58 with no fix released (github.com/TuringLang/DistributionsAD.jl);
+# keep the pin.
 Distributions = "0.25.100 - 0.25.125"
 JSON = "1.7"
 StatsBase = "0.34"
-julia = "1.8"
+julia = "1.10"
