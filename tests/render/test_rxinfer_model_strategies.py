@@ -40,12 +40,13 @@ from gnn.render.rxinfer.rxinfer_renderer import render_gnn_to_rxinfer
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 GNN_FILES = PROJECT_ROOT / "input" / "gnn_files"
 
-EXEMPLAR_COUNT = 31
+EXEMPLAR_COUNT = 32
 
 # The intended kind for every non-flat exemplar; everything else is FLAT.
 EXPECTED_NON_FLAT = {
     "continuous/continuous_navigation.md": ModelKind.CONTINUOUS,
     "continuous/damped_oscillator_bias.md": ModelKind.CONTINUOUS,
+    "continuous/ngclearn_lgssm.md": ModelKind.CONTINUOUS,
     "continuous/predictive_coding_agent.md": ModelKind.CONTINUOUS,
     "continuous/stochastic_dynamics.md": ModelKind.CONTINUOUS,
     "hierarchical/hierarchical_pomdp.md": ModelKind.HIERARCHICAL,
