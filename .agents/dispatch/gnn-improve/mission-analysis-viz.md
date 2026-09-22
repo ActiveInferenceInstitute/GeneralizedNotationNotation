@@ -1,7 +1,7 @@
 # Analysis & Visualization Scope — mission-analysis-viz.md
 
 You own these paths ONLY within the GNN repo at
-`/home/trim/Documents/Git/HumOS/projects/outside_of_hum/GeneralizedNotationNotation`:
+`<repo-root>`:
 
 - src/gnn/analysis/  (statistical analysis + analyzer + visualizations)
 - src/gnn/visualization/  (matrix/graph visualization)
@@ -34,6 +34,6 @@ HARD RULE: leave ALL changes uncommitted; no commit/push/stage.
 
 ## Finish
 Write a concise report to
-`/home/trim/Documents/Git/HumOS/projects/outside_of_hum/GeneralizedNotationNotation/.agents/dispatch/gnn-improve/REPORT-analysis-viz.md`
+`<repo-root>/.agents/dispatch/gnn-improve/REPORT-analysis-viz.md`
 files changed, bugs fixed, tests added, scoped verification results.
 Reply with only the absolute path to your report.

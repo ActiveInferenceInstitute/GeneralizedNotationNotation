@@ -1,6 +1,6 @@
 # Analysis-FrameworkRenderers — GNN swarm-2 scope
 
-Repo: /home/trim/Documents/Git/HumOS/projects/outside_of_hum/GeneralizedNotationNotation
+Repo: <repo-root>
 YOU OWN these paths ONLY (disjoint scope — no other agent touches them):
 - src/gnn/analysis/numpyro/  (analyzer + init)
 - src/gnn/analysis/pytorch/  (analyzer + init)

@@ -1,7 +1,7 @@
 # Integration, MCP, API, CLI, GUI, and Website Report
 
 Dispatch: `.agents/dispatch/gnn-improve/mission-integration.md`  
-Repository: `/home/trim/Documents/Git/HumOS/projects/outside_of_hum/GeneralizedNotationNotation`
+Repository: `<repo-root>`
 
 ## Outcome
 

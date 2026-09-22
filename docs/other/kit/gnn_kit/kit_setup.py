@@ -4,7 +4,7 @@
 from kit import Repository
 
 # Load a local repository
-repo = Repository("/home/trim/Documents/GitHub/GeneralizedNotationNotation")
+repo = Repository("~/Documents/GitHub/GeneralizedNotationNotation")
 
 # Load a remote public GitHub repo
 # repo = Repository("https://github.com/owner/repo")

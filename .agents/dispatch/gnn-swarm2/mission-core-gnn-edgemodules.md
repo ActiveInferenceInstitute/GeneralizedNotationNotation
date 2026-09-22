@@ -1,6 +1,6 @@
 # Core-GNN-EdgeModules — GNN swarm-2 scope
 
-Repo: /home/trim/Documents/Git/HumOS/projects/outside_of_hum/GeneralizedNotationNotation
+Repo: <repo-root>
 YOU OWN these paths ONLY (disjoint scope — no other agent touches them):
 - src/gnn/watcher.py  (GNNWatcher — CLI watch mode)
 - src/gnn/dep_graph.py  (render_graph_from_file — CLI + website dashboard)

@@ -21,7 +21,7 @@ Changed implementation/test files: 15 files, 829 insertions, 338 deletions. All 
 
 ## Verification
 
-- `python -m ruff check src/gnn/render src/gnn/execute`: unavailable in the active external interpreter (`/home/trim/.gauss_src/venv/bin/python: No module named ruff`).
+- `python -m ruff check src/gnn/render src/gnn/execute`: unavailable in the active external interpreter (`~/.gauss_src/venv/bin/python: No module named ruff`).
 - `python -m ruff format --check src/gnn/render src/gnn/execute`: unavailable for the same interpreter reason.
 - Project-environment equivalents: `uv run ruff check src/gnn/render src/gnn/execute` passed (`All checks passed!`); `uv run ruff format --check src/gnn/render src/gnn/execute` passed (`86 files already formatted`).
 - `uv run pytest tests/render tests/execute -q --tb=no -x`: **496 passed in 407.52s**.
