@@ -133,7 +133,7 @@ def _parse_step_args(
 ) -> argparse.Namespace:
     """Try the enhanced argument parser; fall back to the recovery parser on any failure."""
     try:
-        from gnn.utils import ArgumentParser
+        from gnn.utils.arguments.arg_parsing import ArgumentParser
 
         unsupported_extra_args = [
             name

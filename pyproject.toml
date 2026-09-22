@@ -480,29 +480,37 @@ exclude_type_checking_imports = true
 # I1/I2: the ``gnn.utils`` facade stays light — it must not import any of its
 # own submodules statically. Resolving re-exports happens at runtime through
 # the PEP 562 ``__getattr__`` import map only.
+# ``as_packages = false`` is load-bearing: with the default True, the
+# forbidden contract skips any (source, forbidden) pair where one module is
+# an ancestor of the other (importlinter ForbiddenContract overlap skip), and
+# every facade-submodule pair is exactly that — the contract would never be
+# able to fail. With False, the source is the exact ``gnn.utils`` module and
+# the ``gnn.utils.*`` wildcard expands to every concrete submodule.
 [[tool.importlinter.contracts]]
 name = "utils facade stays lazy: no static submodule imports"
 type = "forbidden"
+as_packages = false
 source_modules = ["gnn.utils"]
-forbidden_modules = [
-    "gnn.utils.logging",
-    "gnn.utils.logging_utils",
-    "gnn.utils.mcp",
-    "gnn.utils.pipeline",
-    "gnn.utils.testing",
-    "gnn.utils.arguments",
-    "gnn.utils.pipeline_orchestration",
-    "gnn.utils.runtime_safety",
-    "gnn.utils.observability",
-    "gnn.utils.errors",
-    "gnn.utils.config_io",
-]
+forbidden_modules = ["gnn.utils.*"]
 
 # I5: concern packages must not import the facade (kills accidental cycles).
+# Same overlap-skip rationale: every concern package is a descendant of
+# ``gnn.utils``, so the default package semantics would skip every pair.
+# Sources list each concern package (its own ``__init__``) AND its
+# ``.*``-wildcard expansion (its leaf modules) as exact modules.
 [[tool.importlinter.contracts]]
 name = "concern packages never import the gnn.utils facade"
 type = "forbidden"
-source_modules = ["gnn.utils.testing", "gnn.utils.arguments", "gnn.utils.pipeline_orchestration", "gnn.utils.runtime_safety", "gnn.utils.observability", "gnn.utils.errors", "gnn.utils.config_io"]
+as_packages = false
+source_modules = [
+    "gnn.utils.testing", "gnn.utils.testing.*",
+    "gnn.utils.arguments", "gnn.utils.arguments.*",
+    "gnn.utils.pipeline_orchestration", "gnn.utils.pipeline_orchestration.*",
+    "gnn.utils.runtime_safety", "gnn.utils.runtime_safety.*",
+    "gnn.utils.observability", "gnn.utils.observability.*",
+    "gnn.utils.errors",
+    "gnn.utils.config_io",
+]
 forbidden_modules = ["gnn.utils"]
 
 # I5: the logging single-entry contract (SC-38). Every ``log_step_*`` /
@@ -510,11 +518,14 @@ forbidden_modules = ["gnn.utils"]
 # ``gnn.utils.logging_utils`` entry; the implementation leaf
 # ``gnn.utils.logging.logging_utils`` is imported only by the entry facade
 # itself and by its own subpackage ``__init__`` (both pre-split tree), so
-# those two edges are ignored here.
+# those two edges are ignored here. The ``gnn.*`` wildcard expands to every
+# concrete gnn module, so each (source, forbidden) pair is a real edge check;
+# the default ``as_packages = True`` listing form (source ``gnn``) would be
+# overlap-skipped for every pair because the leaf lives inside ``gnn``.
 [[tool.importlinter.contracts]]
 name = "logging single entry: only gnn.utils.logging_utils (and the gnn.utils.logging package itself) may import the implementation leaf"
 type = "forbidden"
-source_modules = ["gnn"]
+source_modules = ["gnn.*"]
 forbidden_modules = ["gnn.utils.logging.logging_utils"]
 ignore_imports = [
     # Entry facade re-exports the implementation leaf (pre-split tree).
