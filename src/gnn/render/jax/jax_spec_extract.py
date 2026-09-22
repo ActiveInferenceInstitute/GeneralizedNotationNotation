@@ -780,7 +780,7 @@ def _create_improved_default_matrix(
                 # For A matrix, try to create observation model with extracted values
                 shape = default_matrix.shape
                 new_matrix = np.zeros(shape)
-                for i, val in enumerate(float_numbers[: np.prod(shape)]):
+                for i, val in enumerate(float_numbers[: int(np.prod(shape))]):
                     row = i // shape[1]
                     col = i % shape[1]
                     if row < shape[0] and col < shape[1]:
@@ -796,7 +796,7 @@ def _create_improved_default_matrix(
                 # For B matrix, create transition model with extracted values
                 shape = default_matrix.shape
                 new_matrix = np.zeros(shape)
-                for i, val in enumerate(float_numbers[: np.prod(shape)]):
+                for i, val in enumerate(float_numbers[: int(np.prod(shape))]):
                     # Map linear index to 3D coordinates
                     idx_2d = i % (shape[0] * shape[1])
                     action = i // (shape[0] * shape[1])

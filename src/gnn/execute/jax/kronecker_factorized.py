@@ -247,7 +247,7 @@ def _softmax(values: np.ndarray) -> np.ndarray:
     total = np.sum(weights)
     if not np.isfinite(total) or total <= 0:
         raise ValueError("softmax input has invalid mass")
-    return weights / total
+    return np.asarray(weights / total)
 
 
 def _normalize(values: np.ndarray) -> np.ndarray:
@@ -255,7 +255,7 @@ def _normalize(values: np.ndarray) -> np.ndarray:
     total = np.sum(vector)
     if not np.isfinite(total) or total <= 0:
         raise ValueError("probability vector has invalid mass")
-    return vector / total
+    return np.asarray(vector / total)
 
 
 def per_factor_efe(

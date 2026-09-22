@@ -16,6 +16,7 @@ try:
     from gnn.utils.system_env.matplotlib_setup import apply_env_backend_if_set
 
     apply_env_backend_if_set()
+    import matplotlib
     import matplotlib.pyplot as plt
     import numpy as np
 
@@ -78,7 +79,9 @@ def generate_type_validity_mosaic(
                 status_grid[r, c] = 2  # Invalid
 
         fig, ax = plt.subplots(figsize=(max(6, cols * 1.5), max(4, rows * 1.5)))
-        cmap = plt.cm.get_cmap("RdYlGn_r", 3)  # Red(2), Yellow(1), Green(0)
+        cmap = matplotlib.colormaps["RdYlGn_r"].resampled(
+            3
+        )  # Red(2), Yellow(1), Green(0)
         cmap.set_bad(color="white")
 
         ax.imshow(status_grid, cmap=cmap, vmin=0, vmax=2)
@@ -312,7 +315,7 @@ def generate_type_category_pie_chart(
 
         fig, ax = plt.subplots(figsize=(8, 8))
         # Use a diverse colormap
-        cmap = plt.cm.get_cmap("tab20", len(labels))
+        cmap = matplotlib.colormaps["tab20"].resampled(len(labels))
         colors = [tuple(color) for color in cmap(np.linspace(0, 1, len(labels)))]
 
         # Plot pie
