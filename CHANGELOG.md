@@ -30,6 +30,41 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   `src/gnn/render/ngclearn/` and `src/gnn/execute/ngclearn/`;
   `.agent_rules/render_frameworks.md` refreshed to the full registry inventory.
 
+### Added (2026-09-22 — backends contract residual, BC-08)
+
+- **Executor registry closes to eleven backends.** `FRAMEWORK_DIR_NAMES` and
+  the `ExecutorFrameworkSpec` registry gain Stan (availability-gated via the
+  cmdstanpy + CmdStan probe, skip-not-fail receipts) and bnlearn (render-only
+  verdict: the registry records `SKIPPED` and never executes it; rendered
+  bnlearn scripts keep running through the Step 12 script path). The
+  `execute_gnn_model` dispatch covers all eleven execution types, and the
+  markdown execution report writes Stan and bnlearn sections.
+- **RxInfer dispatch route.** `GNNExecutor._execute_rxinfer_config` executes
+  `.jl` scripts and `_config.toml` inputs through
+  `gnn.execute.rxinfer.execute_rxinfer_script` (committed `--project`
+  environment, security gate, evidence sidecars) instead of a raw
+  `julia <path>` spawn; a cooperative `CancelToken` threads into the
+  subprocess.
+- **PyMDP success semantics aligned.** `pymdp_runner.run_pymdp_scripts` now
+  succeeds only when `failure_count == 0`, matching the other runners — mixed
+  failures fail the lane instead of counting as partial success.
+- **Cross-framework comparison extended and wired.**
+  `compare_with_status` renders one spec to six backends (RxInfer.jl, PyMDP,
+  ActiveInference.jl, JAX, PyTorch, NumPyro) with per-backend dependency
+  probes that record `unavailable` skip receipts; exposed as the MCP tool
+  `run_cross_framework_comparison` (census 156 → 157 tools), and Step 13
+  injects a compact comparison status summary into LLM prompt context when
+  the artifact exists.
+- **Julia environment hygiene.** Both committed Julia projects carry real
+  generated package UUIDs with matching package source files, one shared
+  `julia = "1.10"` compat floor, and manifests regenerated with Julia 1.12.7;
+  the ActiveInference `Distributions` pin is re-checked and kept (archived
+  DistributionsAD.jl has shipped no ReverseDiff-extension fix).
+- **Manifest triage.** The continuous model family in
+  `input/model_family_manifest.json` now names `ngclearn` (frameworks list and
+  the `ngclearn_lgssm.md` representative file), matching the landed
+  ngc-learn LGSSM exemplar.
+
 ### Added (2026-09-19/21 — interchange hardening, MCP expansion, GUI integration)
 
 - **Consumer-conformance test suite** (`tests/export/test_geo_infer_consumer_compat.py`):

@@ -20,6 +20,7 @@ This module is responsible for running GNN models that have been rendered into f
 | **PyTorch** | Python | `pytorch/` | `*_pytorch.py` | ✅ Full support |
 | **NumPyro** | Python | `numpyro/` | `*_numpyro.py` | ✅ Full support |
 | **Stan** | Python driver (cmdstanpy) | `stan/` | `*_stan.py` | ✅ (skipped when cmdstanpy/CmdStan absent) |
+| **ngc-learn** | Python | `ngclearn/` | `*_ngclearn.py` | ✅ (skipped without the py3.12 marker-gated `ngclearn` extra) |
 | **bnlearn** | Python (generator-backed; `.R` lane via Rscript) | `bnlearn/` | `*_bnlearn.py`, `*.R` | ✅ (skipped when the `bnlearn` extra / R bnlearn runtime is absent; executor `src/gnn/execute/bnlearn/`) |
 
 JAX, NumPyro and DisCoPy are **core** dependencies (`uv sync`); PyTorch needs the `torch` extra (`uv sync --extra torch`; torch>=2.13.0 resolves GHSA-rrmf-rvhw-rf47), bnlearn needs the `bnlearn` extra (`uv sync --extra bnlearn`), and Stan needs `uv sync --extra stan` plus a CmdStan toolchain. If the environment is incomplete, the affected scripts are **skipped** (not failed). Julia frameworks require Julia installed.
@@ -80,6 +81,16 @@ Both Julia backends run against **committed** environments checked into the repo
 | RxInfer.jl | `src/gnn/execute/rxinfer/` | The `GnnRxInferModels` package — RxInfer 5.5.0 plus Distributions, JSON, Plots, StatsBase, PrecompileTools. Precompiles the `pomdp`, `continuous`, `hierarchical`, `factored`, and `learning` models loudly: a precompile failure surfaces rather than being swallowed. |
 | ActiveInference.jl | `src/gnn/execute/activeinference_jl/` | A deliberately **minimal** environment — ActiveInference 0.1.2, Distributions, JSON, StatsBase, and nothing else. |
 
+Environment hygiene (2026-09-22 re-check): both projects share one Julia
+compatibility floor (`julia = "1.10"`), both committed `Manifest.toml` files
+were regenerated with Julia 1.12.7, and both projects carry real generated
+package UUIDs with a matching package source file (`src/GnnRxInferModels.jl`,
+`src/GnnActiveInferenceModels.jl`) that `Pkg.instantiate()` precompiles. The
+ActiveInference environment keeps its `Distributions = "0.25.100 - 0.25.125"`
+compat pin: the archived DistributionsAD.jl repository has shipped no release
+fixing the ReverseDiff-extension precompile break against Distributions >=
+0.25.127 (re-checked 2026-09-22).
+
 ### `JULIA_PROJECT` defaulting
 
 `_build_execution_environment` (`src/gnn/execute/processor.py`) sets `JULIA_PROJECT` to the committed environment matching the script's framework, using `setdefault` — **an explicitly exported `JULIA_PROJECT` still wins**. This is what lets `using GnnRxInferModels` / `using ActiveInference` resolve without an ambient environment, including under test runners whose temporary depot may not exist.
@@ -93,6 +104,46 @@ A backend whose dependency is absent produces a **skipped** result (`skipped: tr
 ### Exit-code contract
 
 Rendered RxInfer scripts end with `return results["validation"]["all_valid"] ? 0 : 1`. The validation block — belief validity, normalisation, action range, and for continuous models VFE finiteness — therefore **drives the process exit code**, so inference that runs to completion but produces invalid posteriors is surfaced as a failed script rather than a silent success. The results payload is still written either way, so a failing run remains diagnosable.
+
+## Backend Contract (Registry and Dispatch)
+
+The `GNNExecutor` registry (`src/gnn/execute/executor.py`) carries one
+`ExecutorFrameworkSpec` per backend — PyMDP, RxInfer.jl, DisCoPy,
+ActiveInference.jl, JAX, NumPyro, PyTorch, ngc-learn, Lean, Stan, and bnlearn —
+and the `execute_gnn_model` dispatch accepts all eleven execution types.
+
+- **Stan** runs as an availability-gated registry runner: `is_stan_available()`
+  probes `cmdstanpy` plus the CmdStan toolchain, and an unavailable toolchain
+  produces a `"SKIPPED"` record with the `uv sync --extra stan` hint — never a
+  failure.
+- **bnlearn** carries a render-only verdict: the registry never executes it and
+  records `"SKIPPED"` with that reason. Rendered bnlearn scripts continue to
+  execute through the Step 12 script path (`BNLEARN_OUTPUT_DIR`), where the
+  shared pre-flight probe applies.
+- **RxInfer dispatch route**: `GNNExecutor._execute_rxinfer_config` executes
+  both `.jl` scripts and `_config.toml` inputs through
+  `gnn.execute.rxinfer.execute_rxinfer_script` — the committed `--project`
+  environment, the security gate, and the `{stem}_stdout.txt` /
+  `{stem}_stderr.txt` / `{stem}_execution_log.json` evidence sidecars — and
+  synthesizes the dispatch envelope from the runner verdict and those
+  sidecars. A cooperative `CancelToken` is threaded into the subprocess.
+- **Cross-framework comparison** (`src/gnn/analysis/rxinfer/cross_framework.py`):
+  `compare_with_status(gnn_file, output_dir, timeout, runtime)` renders one
+  parsed spec to six backends — RxInfer.jl, PyMDP, ActiveInference.jl, JAX,
+  PyTorch, NumPyro — executes each, and writes a self-contained comparison
+  HTML plus per-framework status records. A backend whose dependency is
+  missing records an `unavailable` status with the install hint (a skip
+  receipt, never a failure) before any render is attempted. Exposed as the
+  MCP tool `run_cross_framework_comparison`; Step 13 (LLM) injects a compact
+  status summary of a prior comparison into its prompt context when the
+  comparison artifact exists in the Step 12 output tree.
+- **PyMDP success semantics** align with the other runners in
+  `pymdp_runner.run_pymdp_scripts`: the run succeeds only when every executed
+  script succeeds (`failure_count == 0`); a render tree with no scripts stays a
+  success. Mixed-failure runs therefore fail the registry lane instead of
+  counting as partial success.
+- The markdown execution report (`summaries/execution_report.md`) writes one
+  subsection per backend, including the Stan and bnlearn receipts.
 
 ---
 
@@ -377,6 +428,8 @@ Per-run duration, memory, and per-script outcomes are recorded in `execution_sum
 - `execute_pymdp_simulation` - Execute one PyMDP simulation script
 - `check_execute_dependencies` - Report framework/runtime availability
 - `get_execute_module_info` - Module metadata
+- `get_doctor_report` - Composed availability + Step 12 readiness report
+- `run_cross_framework_comparison` - Render, execute, and compare one model across six backends; returns the comparison HTML path and per-framework statuses
 
 ### Tool Endpoints
 ```python
