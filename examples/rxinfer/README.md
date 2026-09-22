@@ -86,3 +86,81 @@ scheduler — an upstream limitation reproduced independently of this bridge.
 Resolving it requires an upstream fix or an explicit meta/`@constraints`
 recipe once RxInfer documents one.
 
+<!--
+  daf-jev docs campaign, lane E4 draft (2026-09-22).
+  Orchestrator: append this fragment to examples/rxinfer/README.md on
+  feat/rxinfer-bridge (after the "Smoke status (2026-09-22, real runs)"
+  section) and fold via PR #165.
+  In-repo links are relative (repo root two levels up). Cross-repo links
+  into docxology/daf-jev are absolute GitHub URLs: those artifacts are
+  committed on daf-jev main @ 04f5c71, so the blob URLs resolve.
+-->
+
+## End-to-end pipeline (daf-jev → GraphSpec → RxInfer.jl)
+
+The committed example files are the midpoint of a two-repo pipeline:
+[daf-jev](https://github.com/docxology/daf-jev) elicits a Bayes net from a
+language model in two batched asks, exchanges it as GraphSpec
+(`dafjev.bayesnet/1`), this repo's
+[`gnn.rxinfer_bridge`](../../src/gnn/rxinfer_bridge.py) emits an RxInfer.jl
+`@model`, Julia computes marginals, and the posteriors feed back into
+Jev evidence queries and calibration.
+
+```mermaid
+flowchart LR
+    A["daf-jev elicitation"] --> B["GraphSpec dafjev.bayesnet/1"]
+    B --> C["GNN rxinfer_bridge"]
+    C --> D["RxInfer.jl marginals"]
+    D --> E["Jev re-ask"]
+```
+
+**1. Elicit (daf-jev repo).** In a daf-jev checkout:
+
+```bash
+uv sync --extra figures
+uv run python scripts/bayes_experiment.py --provider openrouter --propose-structure
+```
+
+`--propose-structure` is one batched ask over all variable pairs
+([`propose_structure`](https://github.com/docxology/daf-jev/blob/main/src/daf_jev/graphical_elicitation.py));
+CPTs for the reference edges are a second batched ask
+([`elicit_cpts`](https://github.com/docxology/daf-jev/blob/main/src/daf_jev/graphical_elicitation.py)).
+The run writes five artifacts to `output/experiments/asia/` (committed on
+daf-jev main; absolute blob URLs because cross-repo relative paths do not
+render as links):
+
+| Artifact | What it is |
+|---|---|
+| [asia_graphspec.json](https://github.com/docxology/daf-jev/blob/main/output/experiments/asia/asia_graphspec.json) | The elicited net as GraphSpec (`dafjev.bayesnet/1`) — the input this repo's bridge loads. |
+| [network.png](https://github.com/docxology/daf-jev/blob/main/output/experiments/asia/network.png) | Layered layout of the net. |
+| [posterior_trajectory.png](https://github.com/docxology/daf-jev/blob/main/output/experiments/asia/posterior_trajectory.png) | Grouped P(true) bars across the evidence walkthrough. |
+| [mermaid.txt](https://github.com/docxology/daf-jev/blob/main/output/experiments/asia/mermaid.txt) | `graph TD` source of the net the experiment used (reference edges). |
+| [receipts.json](https://github.com/docxology/daf-jev/blob/main/output/experiments/asia/receipts.json) | Live receipt: provider, model, proposed edges, elicited CPTs, posterior trajectory. |
+
+**2. Emit (this repo).** Place the emitted GraphSpec at
+`examples/rxinfer/asia_graphspec.json`;
+[`emit_rxinfer_jl`](../../src/gnn/rxinfer_bridge.py) produces the `@model`
+source — the committed
+[`asia_model.jl`](asia_model.jl) is the deterministic emitter output, and
+the golden test
+[`tests/gnn/test_rxinfer_bridge.py::test_emit_golden_matches_example_file`](../../tests/gnn/test_rxinfer_bridge.py)
+regenerates it byte-identically. Landing vehicle for the bridge: [PR
+#165](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/pull/165).
+
+**3. Infer.**
+
+```bash
+julia --project=examples/rxinfer examples/rxinfer/asia_model.jl \
+    examples/rxinfer/asia_graphspec.json \
+    [--evidence key=state ...] [--out FILE] [--learn]
+```
+
+Single-parent structures run end-to-end with exact posteriors on RxInfer
+5.5.0 and 5.5.2; nets combining multi-parent `DiscreteTransition` nodes
+with the observation-interface layer stall inside RxInfer 5.5.x's VMP
+scheduler — see [Smoke status](#smoke-status-2026-09-22-real-runs) above
+for the verified matrix.
+
+**4. Feed back.** `--out FILE` writes the `dafjev.bayesnet-posteriors/1`
+sidecar (evidence + marginals) — the downstream seam: the posteriors feed
+re-asking Jev evidence queries and calibration on the daf-jev side.
