@@ -448,7 +448,7 @@ def main(argv: list[str] | None = None) -> int:
                     "?",
                 ),
                 "documented": bool((getattr(tool, "description", "") or "").strip()),
-                "description": (getattr(tool, "description", "") or "").strip()[:120],
+                "description": (getattr(tool, "description", "") or "").strip()[:300],
             }
             for name, tool in sorted(m.tools.items())
         ],
