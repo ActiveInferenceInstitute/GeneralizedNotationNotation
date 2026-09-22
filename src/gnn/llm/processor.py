@@ -57,6 +57,68 @@ def _get_llm_config() -> dict:
         return {}
 
 
+_CROSS_FRAMEWORK_EXECUTE_DIR = "12_execute_output"
+_MAX_COMPARISON_MATCHES = 5
+_MAX_FRAMEWORK_RESULT_FILES = 8
+
+
+def _collect_cross_framework_summary(
+    output_dir: Path, model_stem: str
+) -> dict[str, Any] | None:
+    """Collect a light cross-framework comparison summary for one model.
+
+    Scans the Step 12 execute output tree next to ``output_dir`` for a prior
+    cross-framework comparison HTML and the sibling per-framework
+    ``simulation_results.json`` files, reading only their light identity
+    fields (``framework`` and ``validation``). Never executes anything; the
+    scan is bounded to a flat directory walk plus per-framework subdirs.
+
+    Returns ``None`` when no comparison artifact exists (quiet absence),
+    ``{}`` when an artifact exists but cannot be read (one warning logged),
+    or ``{"model", "comparison_html", "frameworks"}`` on success.
+    """
+    execute_root = output_dir.parent / _CROSS_FRAMEWORK_EXECUTE_DIR
+    if not execute_root.is_dir():
+        return None
+    candidates = sorted(execute_root.glob(f"{model_stem}_comparison.html"))
+    candidates += sorted(execute_root.glob(f"*/{model_stem}_comparison.html"))
+    candidates = candidates[:_MAX_COMPARISON_MATCHES]
+    if not candidates:
+        logger.debug("No cross-framework comparison HTML found for %s", model_stem)
+        return None
+    comparison_html = candidates[0]
+    frameworks: list[dict[str, str]] = []
+    for results_path in sorted(
+        comparison_html.parent.glob("*/simulation_results.json")
+    )[:_MAX_FRAMEWORK_RESULT_FILES]:
+        try:
+            payload = json.loads(results_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            logger.warning(
+                "Could not read cross-framework results %s: %s", results_path, exc
+            )
+            return {}
+        validation = payload.get("validation")
+        if isinstance(validation, dict) and validation.get("all_valid") is True:
+            status = "success"
+        elif isinstance(validation, dict):
+            status = "validation_failed"
+        else:
+            status = "unknown"
+        frameworks.append(
+            {
+                "framework": str(payload.get("framework", results_path.parent.name)),
+                "status": status,
+            }
+        )
+    relative = comparison_html.relative_to(output_dir.parent)
+    return {
+        "model": model_stem,
+        "comparison_html": relative.as_posix(),
+        "frameworks": frameworks,
+    }
+
+
 _OLLAMA_MODEL_NAME_PATTERN = re.compile(
     r"""^[A-Za-z0-9][A-Za-z0-9._-]*      # model base name (no leading dash/space)
         (?:/[A-Za-z0-9][A-Za-z0-9._-]*)? # optional namespace
@@ -781,6 +843,25 @@ async def _process_llm_async(
                                     f"Could not inject ontology metadata: {oe}"
                                 )
                         # --- END ONTOLOGY INJECTION ---
+                        # --- BEGIN CROSS-FRAMEWORK INJECTION ---
+                        try:
+                            comparison_meta = _collect_cross_framework_summary(
+                                output_dir, gnn_file.stem
+                            )
+                        except Exception as comparison_error:
+                            logger.warning(
+                                f"Could not collect cross-framework metadata: {comparison_error}"
+                            )
+                            comparison_meta = None
+                        if comparison_meta:
+                            gnn_content += (
+                                "\n\n--- INJECTED CROSS-FRAMEWORK COMPARISON META ---\n"
+                                f"{json.dumps(comparison_meta, indent=2)}\n"
+                            )
+                            logger.info(
+                                "🔬 Injected cross-framework comparison context into LLM prompt."
+                            )
+                        # --- END CROSS-FRAMEWORK INJECTION ---
                         # Build custom prompt sequence including user-requested prompts
                         prompt_sequence: list[Any] = [
                             PromptType.SUMMARIZE_CONTENT,

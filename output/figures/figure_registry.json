@@ -6,7 +6,7 @@
         "GNN_BACKEND_COUNT": "10",
         "GNN_EXECUTABLE_BACKEND_COUNT": "10",
         "GNN_FAMILY_COUNT": "9",
-        "GNN_MCP_TOOL_COUNT": "156",
+        "GNN_MCP_TOOL_COUNT": "162",
         "GNN_STEP_ANALYSIS": "16",
         "GNN_STEP_COUNT": "25",
         "GNN_STEP_EXECUTE": "12",
@@ -20,7 +20,7 @@
       "filename": "gnn_graphical_abstract.png",
       "generated_by": "scripts/manuscript_fig_graphical_abstract.py",
       "label": "fig:graphical_abstract",
-      "png_sha256": "95eb36dc982dedcd20e1f0351605475e12c263875b2929895ce8a2556464fe80",
+      "png_sha256": "284456a09d3c0aec4c02b8b5db27e048dd4b4fdb0eeafe2ff08baa0a5e08a432",
       "source_sha256": {}
     },
     {
@@ -31,7 +31,7 @@
       "label": "fig:pipeline",
       "png_sha256": "f0678cd3b3615bc080acde3601dad812b4f9c666166ff92b2477db55d7d77700",
       "source_sha256": {
-        "src/gnn/STEP_INDEX.md": "586366c61aa3a00dfa7ac7b2b7783d3b259f48c47a63535767d71cd7ba0339d3"
+        "src/gnn/STEP_INDEX.md": "438e756bf409d9af2e7623b0deb9258080814b9746def1c8d01aa742dc4145e4"
       }
     },
     {
@@ -40,9 +40,9 @@
       "filename": "gnn_family_framework_matrix.png",
       "generated_by": "scripts/manuscript_fig_family_framework.py",
       "label": "fig:family_matrix",
-      "png_sha256": "fc4fc856ea2bf7ec2a63534e5591c6343991112db0f4842c9540b9d52605e39e",
+      "png_sha256": "6212ba731ff843c576c1b2068cdaa3b7586cd29decc17db0adab33578734e0a9",
       "source_sha256": {
-        "input/model_family_manifest.json": "c72c7de61cde1ecdda4b8669a0539ee26bc15c83bbb5cfae9dece845f8cddda4",
+        "input/model_family_manifest.json": "d2761feea73771f84f2bcc94e215e7042960c1c28d9ecbff8b069377b2fc26cf",
         "src/gnn/render/framework_registry.py": "a684eb1d49d8045b7e42621339465629d5fd4eba61da3cfe631ea43afe795a11"
       }
     },
@@ -52,9 +52,9 @@
       "filename": "gnn_backend_capability_matrix.png",
       "generated_by": "scripts/manuscript_fig_backend_matrix.py",
       "label": "fig:backend_matrix",
-      "png_sha256": "6c2bca7bb620e4d71c685e652aa4a043aae8c57e31a14585734a6d76797f4cdf",
+      "png_sha256": "ddcc1fc854d7d16ca9c8c2949450e6cfd3d0cd99c3b278726a6f496c828ce86e",
       "source_sha256": {
-        "input/model_family_manifest.json": "c72c7de61cde1ecdda4b8669a0539ee26bc15c83bbb5cfae9dece845f8cddda4",
+        "input/model_family_manifest.json": "d2761feea73771f84f2bcc94e215e7042960c1c28d9ecbff8b069377b2fc26cf",
         "src/gnn/manuscript/variables.py": "ec4090eecb0f69e6fc533bb8222e51099aa39c25d5936c09669392ba39328f4b",
         "src/gnn/pipeline/cross_framework_reliability.py": "f541016765f8c2b843226c9127f011cc77a0e66cbad694e89853db59c6cd8101",
         "src/gnn/render/framework_registry.py": "a684eb1d49d8045b7e42621339465629d5fd4eba61da3cfe631ea43afe795a11"
@@ -64,20 +64,20 @@
       "alt_text": "Horizontal bar chart on a logarithmic axis of repository-scale counts: pipeline steps, model families, registered backends, execution backends, MCP tools, source packages, test files, example models and documentation files. Each bar is annotated with its exact value; all values come from output/data/manuscript_variables.json.",
       "consumed_tokens": {
         "GNN_BACKEND_COUNT": "10",
-        "GNN_DOC_FILE_COUNT": "629",
+        "GNN_DOC_FILE_COUNT": "630",
         "GNN_EXAMPLE_COUNT": "32",
         "GNN_EXECUTABLE_BACKEND_COUNT": "10",
         "GNN_FAMILY_COUNT": "9",
-        "GNN_MCP_TOOL_COUNT": "156",
+        "GNN_MCP_TOOL_COUNT": "162",
         "GNN_SRC_PACKAGE_COUNT": "43",
         "GNN_STEP_COUNT": "25",
-        "GNN_TEST_FILE_COUNT": "494",
+        "GNN_TEST_FILE_COUNT": "503",
         "GNN_VERSION": "3.5.0"
       },
       "filename": "gnn_repo_metrics.png",
       "generated_by": "scripts/manuscript_fig_repo_metrics.py",
       "label": "fig:repo_metrics",
-      "png_sha256": "c015761cc1e704bee962ebf8ee338235059d1c8d8e157711532d97c3d982796f",
+      "png_sha256": "18f4954b22fc76f1d8d361c13f753232fdf98a24cdd58429082c6ad9a25a9171",
       "source_sha256": {}
     },
     {

@@ -10,7 +10,7 @@
 
 **Status**: Production Ready
 
-**Version**: 3.2.0
+**Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 **Last Updated**: 2026-09-04
 
@@ -246,7 +246,7 @@ uv run --extra dev python -m pytest tests/research/ \
 
 ## Version History
 
-### Current Version: 1.7.0 (module `__init__.py`), pipeline release 3.2.0
+### Current Version: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 **Features**:
 - Rule-based hypothesis generation
@@ -278,7 +278,7 @@ uv run --extra dev python -m pytest tests/research/ \
 **Last Updated**: 2026-09-04
 **Maintainer**: GNN Pipeline Team
 **Status**: Production Ready
-**Version**: 3.2.0
+**Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 **Architecture Compliance**: Thin Orchestrator Pattern
 
 ---

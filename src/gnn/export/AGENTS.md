@@ -10,7 +10,7 @@
 
 **Status**: Production Ready
 
-**Version**: 3.2.0
+**Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 **Last Updated**: 2026-09-04
 
@@ -322,7 +322,7 @@ python src/gnn/7_export.py --target-dir input/ --verbose
 
 ## Version History
 
-### Current Version: 3.2.0
+### Current Version: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 **Features**:
 
@@ -361,7 +361,7 @@ python src/gnn/7_export.py --target-dir input/ --verbose
 **Last Updated**: 2026-04-16
 **Maintainer**: GNN Pipeline Team
 **Status**: Production Ready
-**Version**: 3.2.0
+**Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 **Architecture Compliance**: 100% Thin Orchestrator Pattern
 
 

@@ -10,7 +10,7 @@
 
 **Status**: Production Ready
 
-**Version**: 3.2.0
+**Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 **Last Updated**: 2026-09-02
 
@@ -897,7 +897,7 @@ The `_run_llm_analysis()` function is async because it uses the shared `llm.llm_
 
 ## Version History
 
-### Current Version: 1.6.0 (module `__init__.py`), pipeline release 3.2.0
+### Current Version: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 **Features**:
 
@@ -936,7 +936,7 @@ The `_run_llm_analysis()` function is async because it uses the shared `llm.llm_
 **Last Updated**: 2026-09-02
 **Maintainer**: GNN Pipeline Team
 **Status**: Production Ready
-**Version**: 3.2.0
+**Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 **Architecture Compliance**: Thin Orchestrator Pattern
 
 ---

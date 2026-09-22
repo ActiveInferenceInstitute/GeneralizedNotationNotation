@@ -1,6 +1,6 @@
 # RxInfer Execution — Technical Specification
 
-**Version**: 3.2.0
+**Version**: [pyproject.toml](../../../../pyproject.toml) (canonical)
 
 ## Execution Model
 

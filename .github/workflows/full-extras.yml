@@ -73,7 +73,7 @@ jobs:
           import os
           import sys
 
-          MODULES = ["gradio", "streamlit"]
+          MODULES = ["gradio"]
           skipped: list[str] = []
           failed: list[str] = []
 

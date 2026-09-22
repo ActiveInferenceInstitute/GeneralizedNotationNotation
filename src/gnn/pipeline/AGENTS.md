@@ -16,10 +16,16 @@ checkpoint/resume + path-safe cleanup), and `container_plan.py` (auditable conta
 security review + rollback). These generate/validate **data only** — no container or cluster is
 executed. Acceptance: `scripts/run_v3_orchestration_acceptance.py --strict`. `run_session_wiring.py`
 additionally wires run sessions + durable streams into the `gnn.main` composition (artifacts:
-`00_pipeline_summary/run_session.json` + `v3_run_manifest/`). Reference:
+`00_pipeline_summary/run_session.json` + `v3_run_manifest/`). `run_manifest.py` emission also records
+binary artifacts (`.png`/`.gif`/`.npy`/`.csv`) as additive index keys (`schema_version` `3.2`); consumers
+must read new keys additively — the JSON inventory keys keep their prior semantics, and
+`verify_run_manifests` accepts legacy 3.1 indexes. `session_acceptance.py` provides
+`verify_session_artifacts(session, output_dir)`, which joins each unit's recorded `artifact_hashes`
+inventory against the on-disk artifacts (units without a recorded inventory are outside the join).
+Reference:
 [`docs/pipeline/v3_orchestration.md`](../../../docs/pipeline/v3_orchestration.md).
 
-**Version**: 3.2.1
+**Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 **Last Updated**: 2026-09-10
 
@@ -504,7 +510,7 @@ Internal quality pass; every external entry point's behavior is preserved:
   `DEFAULT_TARGET_DIR`, `DEFAULT_OUTPUT_DIR`).
 - **PipelineContext** removed 2026-09-15 (N-4: delete) — production-dead; `StepStatus` re-homed to `pipeline.schemas`.
 
-### Current Version: 3.2.0
+### Current Version: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 **Features**:
 
@@ -542,7 +548,7 @@ Internal quality pass; every external entry point's behavior is preserved:
 **Last Updated**: 2026-09-04
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 3.2.0
+**Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 

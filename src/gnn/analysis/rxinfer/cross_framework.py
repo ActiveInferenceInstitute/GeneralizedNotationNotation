@@ -1,16 +1,19 @@
 #!/usr/bin/env python3
 """Cross-framework comparison for GNN simulation results (roadmap A6).
 
-Renders one GNN file to RxInfer.jl, PyMDP, and ActiveInference.jl from a
-single parsed spec, executes each, and produces a self-contained HTML page
-with a metrics table and an animated belief-trajectory comparison overlaying
+Renders one GNN file to six backends — RxInfer.jl, PyMDP,
+ActiveInference.jl, JAX, PyTorch, and NumPyro — from a single parsed spec,
+executes each, and produces a self-contained HTML page with a metrics
+table and an animated belief-trajectory comparison overlaying
 every framework that produced results.
 
 Failure is never silent: each framework yields a :class:`FrameworkRun` whose
 ``status`` and ``detail`` record exactly why it did not succeed, and those
-reasons are surfaced in the HTML. Only narrow, expected exceptions are caught
-(missing optional backend, subprocess timeout, malformed results JSON);
-anything else propagates.
+reasons are surfaced in the HTML. Missing Python dependencies (jax, torch,
+numpyro) are probed before rendering and surface as ``unavailable`` receipts,
+so a backend is skipped rather than executed into a crash. Only narrow,
+expected exceptions are caught (missing optional backend, subprocess timeout,
+malformed results JSON); anything else propagates.
 """
 
 from __future__ import annotations
@@ -25,6 +28,10 @@ from pathlib import Path
 from typing import Any, Literal, Optional
 
 from gnn.utils.julia_runtime import FrameworkRuntime, default_julia_runtime
+from gnn.utils.runtime_safety.framework_availability import (
+    FRAMEWORK_IMPORT_CHECK,
+    is_framework_available,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -36,12 +43,22 @@ ACTIVEINFERENCE_JULIA_PROJECT = (
     SRC_ROOT / "src" / "gnn" / "execute" / "activeinference_jl"
 )
 
-FRAMEWORKS = ("rxinfer", "pymdp", "activeinference_jl")
+FRAMEWORKS = (
+    "rxinfer",
+    "pymdp",
+    "activeinference_jl",
+    "jax",
+    "pytorch",
+    "numpyro",
+)
 
 FRAMEWORK_COLORS = {
     "rxinfer": "#1f77b4",
     "pymdp": "#d62728",
     "activeinference_jl": "#2ca02c",
+    "jax": "#9467bd",
+    "pytorch": "#ff7f0e",
+    "numpyro": "#8c564b",
 }
 
 JULIA_TIMEOUT_SECONDS = 1200
@@ -254,6 +271,62 @@ def _require_julia(framework: str, runtime: FrameworkRuntime) -> str | Framework
     return julia
 
 
+def _execute_python_lane(
+    framework: str,
+    render_fn: Any,
+    spec: dict[str, Any],
+    fw_dir: Path,
+    timeout: Optional[int],
+    runtime: FrameworkRuntime,
+    output_env_var: str,
+    extra_env: dict[str, str] | None = None,
+    *,
+    probe_availability: bool = True,
+) -> FrameworkRun:
+    """Shared body for the Python backends: probe, render, redirect, execute.
+
+    The rendered script runs under ``sys.executable`` with the framework's
+    output environment variable pointed at ``fw_dir`` so results land beside
+    the rendered script (the same contract the Step-12 executor sets in
+    ``src/gnn/execute/processor.py``). When ``probe_availability`` is set, a
+    missing dependency yields an ``unavailable`` receipt before any rendering
+    happens — a skip, never an execution failure.
+    """
+    if probe_availability and not is_framework_available(framework):
+        module_name, hint = FRAMEWORK_IMPORT_CHECK.get(
+            framework, (framework, "uv sync")
+        )
+        detail = f"{module_name} not installed ({hint})"
+        logger.warning("%s unavailable: %s", framework, detail)
+        return FrameworkRun(framework, "unavailable", detail)
+
+    script_path = fw_dir / f"model_{framework}.py"
+    failure = _render(framework, render_fn, spec, script_path)
+    if failure is not None:
+        return failure
+
+    env = os.environ.copy()
+    env[output_env_var] = str(fw_dir)
+    if extra_env:
+        env.update(extra_env)
+    env["PYTHONPATH"] = os.pathsep.join(
+        part
+        for part in (str(PROJECT_ROOT), str(SRC_ROOT), env.get("PYTHONPATH", ""))
+        if part
+    )
+
+    return _run_subprocess(
+        framework,
+        [sys.executable, str(script_path)],
+        cwd=fw_dir,
+        timeout=PYTHON_TIMEOUT_SECONDS if timeout is None else timeout,
+        results_path=fw_dir / "simulation_results.json",
+        script_path=script_path,
+        env=env,
+        runtime=runtime,
+    )
+
+
 def _execute_rxinfer(
     spec: dict[str, Any],
     fw_dir: Path,
@@ -314,33 +387,20 @@ def _execute_pymdp(
         logger.warning("%s unavailable: %s", framework, detail)
         return FrameworkRun(framework, "unavailable", detail)
 
-    script_path = fw_dir / "model_pymdp.py"
-    failure = _render(framework, render_gnn_to_pymdp, spec, script_path)
-    if failure is not None:
-        return failure
-
     # The generated runner resolves the checkout from GNN_PROJECT_ROOT and
     # honours PYMDP_OUTPUT_DIR, so results land in fw_dir instead of
     # output/pymdp_simulations/<model>/ under the CWD. Both variables mirror
     # what the Step-12 executor sets (src/gnn/execute/processor.py).
-    env = os.environ.copy()
-    env["GNN_PROJECT_ROOT"] = str(PROJECT_ROOT)
-    env["PYMDP_OUTPUT_DIR"] = str(fw_dir)
-    env["PYTHONPATH"] = os.pathsep.join(
-        part
-        for part in (str(PROJECT_ROOT), str(SRC_ROOT), env.get("PYTHONPATH", ""))
-        if part
-    )
-
-    return _run_subprocess(
+    return _execute_python_lane(
         framework,
-        [sys.executable, str(script_path)],
-        cwd=fw_dir,
-        timeout=PYTHON_TIMEOUT_SECONDS if timeout is None else timeout,
-        results_path=fw_dir / "simulation_results.json",
-        script_path=script_path,
-        env=env,
-        runtime=runtime,
+        render_gnn_to_pymdp,
+        spec,
+        fw_dir,
+        timeout,
+        runtime,
+        "PYMDP_OUTPUT_DIR",
+        extra_env={"GNN_PROJECT_ROOT": str(PROJECT_ROOT)},
+        probe_availability=False,
     )
 
 
@@ -389,10 +449,88 @@ def _execute_activeinference_jl(
     )
 
 
+def _execute_jax(
+    spec: dict[str, Any],
+    fw_dir: Path,
+    timeout: Optional[int] = None,
+    runtime: FrameworkRuntime | None = None,
+) -> FrameworkRun:
+    """Render and run the JAX backend with results redirected into ``fw_dir``."""
+    if runtime is None:
+        runtime = default_julia_runtime()
+    try:
+        from gnn.render.jax.jax_renderer import render_gnn_to_jax
+    except ImportError as exc:
+        detail = f"render.jax is not importable: {exc}"
+        logger.warning("%s unavailable: %s", "jax", detail)
+        return FrameworkRun("jax", "unavailable", detail)
+
+    return _execute_python_lane(
+        "jax", render_gnn_to_jax, spec, fw_dir, timeout, runtime, "GNN_OUTPUT_DIR"
+    )
+
+
+def _execute_pytorch(
+    spec: dict[str, Any],
+    fw_dir: Path,
+    timeout: Optional[int] = None,
+    runtime: FrameworkRuntime | None = None,
+) -> FrameworkRun:
+    """Render and run the PyTorch backend with results redirected into ``fw_dir``."""
+    if runtime is None:
+        runtime = default_julia_runtime()
+    try:
+        from gnn.render.pytorch.pytorch_renderer import render_gnn_to_pytorch
+    except ImportError as exc:
+        detail = f"render.pytorch is not importable: {exc}"
+        logger.warning("%s unavailable: %s", "pytorch", detail)
+        return FrameworkRun("pytorch", "unavailable", detail)
+
+    return _execute_python_lane(
+        "pytorch",
+        render_gnn_to_pytorch,
+        spec,
+        fw_dir,
+        timeout,
+        runtime,
+        "PYTORCH_OUTPUT_DIR",
+    )
+
+
+def _execute_numpyro(
+    spec: dict[str, Any],
+    fw_dir: Path,
+    timeout: Optional[int] = None,
+    runtime: FrameworkRuntime | None = None,
+) -> FrameworkRun:
+    """Render and run the NumPyro backend with results redirected into ``fw_dir``."""
+    if runtime is None:
+        runtime = default_julia_runtime()
+    try:
+        from gnn.render.numpyro.numpyro_renderer import render_gnn_to_numpyro
+    except ImportError as exc:
+        detail = f"render.numpyro is not importable: {exc}"
+        logger.warning("%s unavailable: %s", "numpyro", detail)
+        return FrameworkRun("numpyro", "unavailable", detail)
+
+    return _execute_python_lane(
+        "numpyro",
+        render_gnn_to_numpyro,
+        spec,
+        fw_dir,
+        timeout,
+        runtime,
+        "NUMPYRO_OUTPUT_DIR",
+    )
+
+
 _EXECUTORS = {
     "rxinfer": _execute_rxinfer,
     "pymdp": _execute_pymdp,
     "activeinference_jl": _execute_activeinference_jl,
+    "jax": _execute_jax,
+    "pytorch": _execute_pytorch,
+    "numpyro": _execute_numpyro,
 }
 
 
@@ -709,24 +847,27 @@ def render_comparison_html(
     return str(output_path)
 
 
-def run_cross_framework_comparison(
+def compare_with_status(
     gnn_file: Path,
     output_dir: Path,
     timeout: Optional[int] = None,
     runtime: FrameworkRuntime | None = None,
-) -> str:
-    """Render, execute, and compare one GNN model across all three frameworks.
+) -> tuple[str, list[FrameworkRun]]:
+    """Render, execute, and compare one GNN model, exposing per-framework outcomes.
 
     Args:
         gnn_file: Path to the GNN specification file.
         output_dir: Directory receiving per-framework artifacts and the HTML.
         timeout: Optional per-framework execution timeout in seconds; each
             backend falls back to its module default (JULIA_TIMEOUT_SECONDS
-            for the Julia lanes, PYTHON_TIMEOUT_SECONDS for PyMDP) when
-            omitted.
+            for the Julia lanes, PYTHON_TIMEOUT_SECONDS for the Python
+            lanes) when omitted.
+        runtime: Optional subprocess runtime override (tests inject a
+            recording runtime here).
 
     Returns:
-        Path to the generated comparison HTML, as a string.
+        Tuple of the generated comparison HTML path (string) and one
+        :class:`FrameworkRun` per registered framework, in display order.
 
     Raises:
         FileNotFoundError: The GNN file does not exist.
@@ -765,14 +906,39 @@ def run_cross_framework_comparison(
                 run.detail,
             )
 
-    return render_comparison_html(
+    html_path = render_comparison_html(
         gnn_file.stem, runs, output_dir / f"{gnn_file.stem}_comparison.html"
     )
+    return html_path, runs
+
+
+def run_cross_framework_comparison(
+    gnn_file: Path,
+    output_dir: Path,
+    timeout: Optional[int] = None,
+    runtime: FrameworkRuntime | None = None,
+) -> str:
+    """Render, execute, and compare one GNN model across all six backends.
+
+    Discards the per-framework outcome records; use
+    :func:`compare_with_status` when callers need the run statuses (the
+    execute-module MCP tool does).
+
+    Returns:
+        Path to the generated comparison HTML, as a string.
+
+    Raises:
+        FileNotFoundError: The GNN file does not exist.
+        ValueError: The GNN file yielded no POMDP state space.
+    """
+    html_path, _runs = compare_with_status(gnn_file, output_dir, timeout, runtime)
+    return html_path
 
 
 __all__ = [
     "FrameworkRun",
     "FrameworkRuntime",
+    "compare_with_status",
     "render_comparison_html",
     "run_cross_framework_comparison",
 ]

@@ -262,14 +262,14 @@ oxdraw: 5151); processing defaults (`gui_types`, derived headless mode) live in
 
 - **Script**: `src/gnn/22_gui.py` (Step 22, 98 lines) via
   `create_standardized_pipeline_script`
-- **CLI**: `gnn gui` subcommand (src/gnn/cli/__init__.py:444-466, handler
-  `_cmd_gui` at :1321-1333) and the `just gui` recipe (justfile:139-141)
+- **CLI**: `gnn gui` subcommand (src/gnn/cli/__init__.py:467-487, handler
+  `_cmd_gui` at :1317-1334) and the `just gui` recipe (justfile:139-141)
 - **MCP**: `process_gui` tool registered by `src/gnn/gui/mcp.py`
 
 ### Imported By
 
 - `src/gnn/22_gui.py:53` — pipeline step orchestrator (`from gnn.gui import process_gui`)
-- `src/gnn/cli/__init__.py:1324` — `gnn gui` CLI handler (lazy import)
+- `src/gnn/cli/__init__.py:1317` — `gnn gui` CLI handler (lazy import)
 - `tests/gui/*` — module test suite
 
 `main.py` does not import `gui`; its only step-22 reference is the prose step listing

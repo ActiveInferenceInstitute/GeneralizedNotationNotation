@@ -28,4 +28,4 @@ numpyro/
 
 See [execute/AGENTS.md](../AGENTS.md) for the overall execution architecture.
 
-**Version**: 3.2.0
+**Version**: [pyproject.toml](../../../../pyproject.toml) (canonical)

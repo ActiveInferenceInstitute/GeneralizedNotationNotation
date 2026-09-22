@@ -10,7 +10,7 @@
 
 **Status**: Production Ready
 
-**Version**: 3.2.0
+**Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 **Last Updated**: 2026-09-04
 
@@ -317,7 +317,7 @@ unchanged. Exports: `FlatPayloadSpec`, `compute_flat_payload_metrics` (pure),
 
 ## Version History
 
-### Current Version: 3.2.0 (2026-09-04)
+### Current Version: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 **Features**:
 - Statistical analysis
@@ -357,7 +357,7 @@ unchanged. Exports: `FlatPayloadSpec`, `compute_flat_payload_metrics` (pure),
 **Last Updated**: 2026-09-04
 **Maintainer**: GNN Pipeline Team
 **Status**: Production Ready
-**Version**: 3.2.0
+**Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 **Architecture Compliance**: 100% Thin Orchestrator Pattern
 
 

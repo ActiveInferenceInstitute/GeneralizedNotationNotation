@@ -8,18 +8,18 @@ The processing concern for GNN files: corpus discovery, a lightweight parse/vali
 - `processor.py` - `discover_gnn_files`, `parse_gnn_file`, `check_gnn_file_structure`, `process_gnn_directory` / `process_gnn_directory_lightweight`, `generate_gnn_report`, `get_module_info`
 
 ### Orchestration
-- `core_processor.py` - `GNNProcessor`: five-phase engine (`ProcessingPhase`: DISCOVERY → VALIDATION → ROUND_TRIP → CROSS_FORMAT → REPORTING) over `ProcessingContext`; `create_processor` factory plus module-level `process_gnn_directory` / `process_gnn_directory_lightweight` entry points
+- `core_processor.py` - `GNNProcessor`: five-phase engine (`ProcessingPhase`: DISCOVERY → VALIDATION → ROUND_TRIP → CROSS_FORMAT → REPORTING) over `ProcessingContext`; plus module-level `process_gnn_directory` / `process_gnn_directory_lightweight` recovery wrappers (distinct semantics from the canonical `processor.py` functions — see README "Core-Processor Wrappers")
 
 ### Multi-Format
 - `multi_format_processor.py` - `process_gnn_multi_format(target_dir, output_dir, logger, ...)`: step-3 discovery, parsing, and multi-format serialization orchestrator (`full` / `minimal` serialize presets via `_formats_for_serialize_preset`)
 
 ### Discovery
 - `discovery.py` - `is_model_source_path` corpus filter, `FileDiscoveryStrategy` content-aware discovery, `DiscoveryResult`, `NON_MODEL_MARKDOWN_FILENAMES`, `NON_MODEL_MARKDOWN_SUFFIXES`
-- `__init__.py` - Curated public surface (`__all__`, seventeen names)
+- `__init__.py` - Curated public surface (`__all__`, sixteen names)
 
 ## Invariants
 - Numbered step scripts stay thin: `src/gnn/3_gnn.py` wraps `process_gnn_multi_format` with `create_standardized_pipeline_script`; the step body lives here.
-- The root package lazily re-exports the lightweight surface and `process_gnn_multi_format` through `_EXPORT_MAP` in `src/gnn/__init__.py`; the orchestration engine (`GNNProcessor`, `create_processor`) and discovery predicates must be imported from `gnn.processing` directly.
+- The root package lazily re-exports the lightweight surface and `process_gnn_multi_format` through `_EXPORT_MAP` in `src/gnn/__init__.py`; the orchestration engine (`GNNProcessor`) and discovery predicates must be imported from `gnn.processing` directly.
 - `gnn.manuscript.variables` mirrors the non-model markdown rules rather than importing them; `test_producer_model_census_matches_pipeline_discovery` pins the two definitions equal.
 - Discovery filtering is filename-based: `is_model_source_path` excludes the known non-model markdown names and the `.example.md` / `.template.md` suffixes.
 
@@ -34,7 +34,6 @@ from gnn.processing import (
     ProcessingContext,
     ProcessingPhase,
     check_gnn_file_structure,
-    create_processor,
     discover_gnn_files,
     generate_gnn_report,
     get_module_info,

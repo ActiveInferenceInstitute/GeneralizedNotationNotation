@@ -1,8 +1,8 @@
 {
-  "modules_total": 34,
-  "modules_loaded": 34,
+  "modules_total": 36,
+  "modules_loaded": 36,
   "modules_errored": 0,
-  "tools_total": 156,
+  "tools_total": 162,
   "modules_list": [
     "advanced_visualization",
     "analysis",
@@ -26,9 +26,11 @@
     "multimodel",
     "ontology",
     "pipeline",
+    "processing",
     "render",
     "report",
     "research",
+    "schema_validator",
     "security",
     "setup",
     "sympy_mcp",
@@ -270,7 +272,7 @@
       "category": "execute",
       "fn": "get_doctor_report_mcp",
       "documented": true,
-      "description": "Return one structured capability report: per-framework availability plus a Step 12 execution-readiness dry run (no scrip"
+      "description": "Return one structured capability report: per-framework availability plus a Step 12 execution-readiness dry run (no scripts run)."
     },
     {
       "name": "get_environment_info",
@@ -374,7 +376,7 @@
       "category": "Diagnostics",
       "fn": "get_mcp_diagnostics",
       "documented": true,
-      "description": "Get comprehensive diagnostic information for troubleshooting and monitoring, including health checks and recommendations"
+      "description": "Get comprehensive diagnostic information for troubleshooting and monitoring, including health checks and recommendations."
     },
     {
       "name": "get_mcp_module_info",
@@ -534,7 +536,7 @@
       "category": "pipeline",
       "fn": "get_v3_orchestration_capabilities_tool",
       "documented": true,
-      "description": "Describe the v3.0.0 long-running orchestration contracts: durable observation streams, resumable run sessions, and audit"
+      "description": "Describe the v3.0.0 long-running orchestration contracts: durable observation streams, resumable run sessions, and auditable container plans (safe-by-design, no live mutation)."
     },
     {
       "name": "get_validation_report",
@@ -622,7 +624,7 @@
       "category": "api",
       "fn": "gnn_submit_job_mcp",
       "documented": true,
-      "description": "Create a GNN pipeline job record (pending; not executed). Execution happens only via POST /api/v1/process or POST /api/v"
+      "description": "Create a GNN pipeline job record (pending; not executed). Execution happens only via POST /api/v1/process or POST /api/v1/tools/{step} on the job/tool API server (gnn.api.server), or a direct execute_job_async call; gnn serve (Runs surface) never consumes these records."
     },
     {
       "name": "install_uv_dependency",
@@ -1001,6 +1003,30 @@
       "description": "Generate a premium 7-page static HTML website from GNN pipeline artifacts."
     },
     {
+      "name": "processing.check_gnn_file_structure",
+      "module": "gnn.processing",
+      "category": "processing",
+      "fn": "check_gnn_file_structure_mcp",
+      "documented": true,
+      "description": "Validate the structure of a GNN file with lightweight checks (empty/short content, missing sections, unmatched brackets)."
+    },
+    {
+      "name": "processing.discover_gnn_files",
+      "module": "gnn.processing",
+      "category": "processing",
+      "fn": "discover_gnn_files_mcp",
+      "documented": true,
+      "description": "Discover GNN model files in a directory and return their paths."
+    },
+    {
+      "name": "processing.parse_gnn_file",
+      "module": "gnn.processing",
+      "category": "processing",
+      "fn": "parse_gnn_file_mcp",
+      "documented": true,
+      "description": "Parse a GNN file and extract basic structural information (sections, variables, counts)."
+    },
+    {
       "name": "read_report",
       "module": "gnn.report",
       "category": "report",
@@ -1033,6 +1059,14 @@
       "description": "Render a single GNN file to exactly one framework via render_gnn_spec."
     },
     {
+      "name": "run_cross_framework_comparison",
+      "module": "gnn.execute",
+      "category": "execute",
+      "fn": "run_cross_framework_comparison_mcp",
+      "documented": true,
+      "description": "Render one GNN model to every registered backend, execute each, and write a cross-framework comparison HTML page with per-framework status receipts."
+    },
+    {
       "name": "run_round_trip_tests",
       "module": "gnn.gnn",
       "category": "gnn",
@@ -1046,7 +1080,7 @@
       "category": "pipeline",
       "fn": "run_v3_container_security_review_tool",
       "documented": true,
-      "description": "Run the auditable container-plan static security review on a hardened and an insecure example, proving the review flags "
+      "description": "Run the auditable container-plan static security review on a hardened and an insecure example, proving the review flags privileged/root/unpinned/secret findings."
     },
     {
       "name": "run_v3_orchestration_self_check",
@@ -1054,7 +1088,7 @@
       "category": "pipeline",
       "fn": "run_v3_orchestration_self_check_tool",
       "documented": true,
-      "description": "Run in-process checks of all three v3 orchestration contracts (stream manifest tamper detection, session status math, co"
+      "description": "Run in-process checks of all three v3 orchestration contracts (stream manifest tamper detection, session status math, container review) and report pass counts."
     },
     {
       "name": "scan_gnn_file",
@@ -1063,6 +1097,22 @@
       "fn": "scan_gnn_file_mcp",
       "documented": true,
       "description": "Perform a lightweight security scan of a single GNN file for injection patterns."
+    },
+    {
+      "name": "schema_validator.parse_syntax",
+      "module": "gnn.schema_validator",
+      "category": "schema_validator",
+      "fn": "parse_gnn_syntax_mcp",
+      "documented": true,
+      "description": "Parse a GNN specification file with the regex-based syntax parser and return its structural summary."
+    },
+    {
+      "name": "schema_validator.validate_comprehensive",
+      "module": "gnn.schema_validator",
+      "category": "schema_validator",
+      "fn": "validate_gnn_comprehensive_mcp",
+      "documented": true,
+      "description": "Validate a GNN specification file with the full validator pipeline (schema, round-trip, and semantic checks)."
     },
     {
       "name": "setup_uv_project_structure",
@@ -1292,9 +1342,9 @@
   "duplicate_registrations": [],
   "spot_checks_ok": 14,
   "spot_checks_err": 0,
-  "schema_checks_ok": 156,
+  "schema_checks_ok": 162,
   "schema_checks_err": 0,
-  "logging_ok": 30,
+  "logging_ok": 32,
   "logging_miss": 0,
   "issues": []
 }

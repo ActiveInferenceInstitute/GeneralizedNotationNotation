@@ -16,6 +16,10 @@ The API module is a FastAPI-driven server acting as the RESTful presentation lay
    - `/api/v1/run` and `/api/v1/runs/{hash}`: Run submission and polling.
    - `/api/v1/process` and `/api/v1/jobs/{id}`: Explicit job submission and polling.
    - `/api/v1/tools`: Pipeline-step discovery and invocation.
+   - Shared parity surface (both factories): CLI-mirror endpoints via
+     `gnn.api.parity.register_parity_routes`, including the verify-only
+     `/api/v1/reproduce` (resolve and verify an indexed run; execution is
+     dispatched by the caller).
 4. **Response contract**: JSON responses and SSE data payloads have the exact
    top-level shape `{status, data, error, meta}`. Validation and unexpected
    failures use the same shape; the report download is native Markdown.

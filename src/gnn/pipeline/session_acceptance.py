@@ -17,6 +17,10 @@ The session work units are the family names. Each family is processed in its
 own single-family acceptance run; the unit is marked ``DONE`` on a passing
 ledger and ``FAILED`` on an exception or a failed ledger. Checkpoint writes are
 atomic (handled by :func:`pipeline.run_session.checkpoint`).
+
+verify_session_artifacts joins a session checkpoint's recorded per-unit
+artifact inventories against the on-disk artifacts (Perf#6): recorded files
+must exist with matching digests and the directory inventory must be complete.
 """
 
 from __future__ import annotations
@@ -24,7 +28,7 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional
+from typing import Any, Dict, Iterable, List, Optional, Union
 
 from gnn.pipeline.hasher import runtime_config_identity
 from gnn.pipeline.model_family_acceptance import (
@@ -38,6 +42,7 @@ from gnn.pipeline.model_family_acceptance import (
 from gnn.pipeline.run_session import (
     RunSession,
     UnitStatus,
+    WorkUnit,
     checkpoint,
     load_session,
     mark,
@@ -93,12 +98,17 @@ def _family_identity(
     }
 
 
-def _artifact_hashes(directory: Path, session_path: Path) -> Dict[str, str]:
-    """Snapshot the complete output inventory, excluding the checkpoint itself."""
+def _artifact_hashes(directory: Path, exclude_path: Optional[Path]) -> Dict[str, str]:
+    """Snapshot the complete output inventory, excluding ``exclude_path``.
+
+    ``exclude_path`` (typically the session checkpoint itself) is compared by
+    resolved path; ``None`` excludes nothing.
+    """
+    exclude = exclude_path.resolve() if exclude_path is not None else None
     return {
         path.relative_to(directory).as_posix(): _file_digest(path)
         for path in sorted(directory.rglob("*"))
-        if path.is_file() and path.resolve() != session_path.resolve()
+        if path.is_file() and (exclude is None or path.resolve() != exclude)
     }
 
 
@@ -257,3 +267,91 @@ def run_session_acceptance(
         "status": status_report(session),
         "ledgers": ledgers,
     }
+
+
+def _resolve_artifact_dir(unit: WorkUnit, output_dir: Path) -> Optional[Path]:
+    """Resolve a unit's artifact directory from its recorded refs.
+
+    Refs recorded by :func:`run_session_acceptance` are absolute family
+    output paths; relative refs are resolved under ``output_dir``. The first
+    ref that resolves to an existing directory wins.
+
+    Args:
+        unit: The work unit whose ``artifact_refs`` to resolve.
+        output_dir: Base directory for relative refs.
+
+    Returns:
+        The existing artifact directory, or ``None`` when no ref resolves.
+    """
+    for ref in unit.artifact_refs:
+        candidate = Path(ref)
+        if not candidate.is_absolute():
+            candidate = output_dir / candidate
+        if candidate.is_dir():
+            return candidate
+    return None
+
+
+def verify_session_artifacts(
+    session: Union[str, Path, RunSession],
+    output_dir: Union[str, Path],
+    *,
+    session_file: Optional[Union[str, Path]] = None,
+) -> List[str]:
+    """Join a session checkpoint's artifact inventory against live artifacts.
+
+    Perf#6 durability join: for every unit that RECORDS an artifact inventory
+    (``artifact_hashes``), re-hash the unit's artifact directory on disk and
+    compare — recorded files must exist with matching sha256 digests, and
+    every file under the directory must be recorded. Detects deletion,
+    tampering, and post-checkpoint additions.
+
+    Units without a recorded inventory (e.g. step-session units that
+    reference output dirs without hashing them, or ``SKIPPED`` units) are
+    outside the join: they record no claim for this function to verify.
+
+    Args:
+        session: A session checkpoint path (loads it) or a :class:`RunSession`.
+        output_dir: Base directory under which relative ``artifact_refs``
+            resolve; absolute refs are used as-is.
+        session_file: Path of the session checkpoint to exclude from the
+            on-disk inventory when ``session`` is passed as an instance.
+            Defaults to ``session`` itself when it is a path.
+
+    Returns:
+        A list of human-readable problems. Empty means the join re-validates.
+    """
+    loaded: RunSession
+    exclude_path: Optional[Path]
+    if isinstance(session, (str, Path)):
+        loaded = load_session(session)
+        exclude_path = Path(session)
+    else:
+        loaded = session
+        exclude_path = Path(session_file) if session_file is not None else None
+    output_dir = Path(output_dir)
+
+    problems: List[str] = []
+    for unit in loaded.units:
+        if unit.status == UnitStatus.SKIPPED or not unit.artifact_hashes:
+            continue
+        directory = _resolve_artifact_dir(unit, output_dir)
+        if directory is None:
+            problems.append(
+                f"unit {unit.unit_id!r}: artifact directory not found "
+                f"(refs={unit.artifact_refs})"
+            )
+            continue
+        live = _artifact_hashes(directory, exclude_path)
+        for rel in sorted(set(unit.artifact_hashes) - set(live)):
+            problems.append(
+                f"unit {unit.unit_id!r}: recorded artifact missing on disk: {rel}"
+            )
+        for rel in sorted(set(live) - set(unit.artifact_hashes)):
+            problems.append(
+                f"unit {unit.unit_id!r}: unrecorded artifact on disk: {rel}"
+            )
+        for rel in sorted(set(unit.artifact_hashes) & set(live)):
+            if unit.artifact_hashes[rel] != live[rel]:
+                problems.append(f"unit {unit.unit_id!r}: checksum mismatch for {rel}")
+    return problems

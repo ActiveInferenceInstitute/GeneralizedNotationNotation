@@ -7,6 +7,12 @@ Exercises the three v3.0.0 contracts end to end and fails closed:
   2. Resumable long-running sessions (pipeline.run_session)
   3. Auditable container plans     (pipeline.container_plan)
 
+Two additional durability surfaces are exercised additively against the
+same fixtures:
+
+  4. Run-manifest binary artifact records (pipeline.run_manifest)
+  5. Session-artifact durability join     (pipeline.session_acceptance)
+
 For each contract the gate runs POSITIVE checks (the happy path must succeed) and
 NEGATIVE CONTROLS (a deliberately corrupted input MUST be caught). If any positive
 check fails, or any negative control fails to fire, the gate exits non-zero — so a
@@ -24,6 +30,8 @@ path (used to evidence fail-closed behavior in the v3 long-running orchestration
 from __future__ import annotations
 
 import argparse
+import hashlib
+import json
 import sys
 import tempfile
 from pathlib import Path
@@ -37,7 +45,9 @@ import numpy as np  # noqa: E402
 
 from gnn.pipeline import container_plan as cp  # noqa: E402
 from gnn.pipeline import durable_streams as ds  # noqa: E402
+from gnn.pipeline import run_manifest as rm  # noqa: E402
 from gnn.pipeline import run_session as rs  # noqa: E402
+from gnn.pipeline import session_acceptance as sa  # noqa: E402
 
 
 class _Gate:
@@ -57,6 +67,12 @@ class _Gate:
             print(line)
         print(f"\n{passed}/{len(self.checks)} checks passed")
         return 0 if passed == len(self.checks) else 1
+
+
+def _sha256(path: Path) -> str:
+    """Hash a file's bytes with sha256 (streaming, constant memory)."""
+    with path.open("rb") as handle:
+        return hashlib.file_digest(handle, "sha256").hexdigest()
 
 
 def _check_streams(g: _Gate, workdir: Path, inject_defect: bool) -> None:
@@ -180,6 +196,157 @@ def _check_session(g: _Gate, workdir: Path) -> None:
     )
 
 
+def _check_run_artifacts(g: _Gate, workdir: Path) -> None:
+    """Exercise run-manifest binary artifact records (Perf#5, additive 3.2)."""
+    run_dir = workdir / "output"
+    gnn = run_dir / "3_gnn_output"
+    gnn.mkdir(parents=True)
+    (gnn / "gnn_processing_summary.json").write_text(
+        json.dumps({"models": 2, "status": "ok"}, indent=2),
+        encoding="utf-8",
+    )
+    (gnn / "format_statistics.json").write_text(
+        json.dumps({"markdown": 5}, indent=2),
+        encoding="utf-8",
+    )
+    graph_path = gnn / "graph.png"
+    graph_bytes = b"\x89PNG\r\n\x1a\n" + b"graph-pixels" * 4
+    graph_path.write_bytes(graph_bytes)
+    gif_path = gnn / "anim.gif"
+    gif_bytes = b"GIF89a" + b"frames" * 3
+    gif_path.write_bytes(gif_bytes)
+
+    execute = run_dir / "12_execute_output"
+    execute.mkdir(parents=True)
+    (execute / "execute_summary.json").write_text(
+        json.dumps({"executed": True}, indent=2),
+        encoding="utf-8",
+    )
+    np.save(execute / "beliefs.npy", np.arange(6, dtype=np.float64))
+    (execute / "trace.csv").write_text("step,action\n3,parse\n", encoding="utf-8")
+
+    summary = {
+        "run_hash": "deadbeef",
+        "overall_status": "SUCCESS",
+        "steps": [
+            {"step_number": 3, "script_name": "3_gnn.py", "status": "SUCCESS"},
+            {"step_number": 12, "script_name": "12_execute.py", "status": "SUCCESS"},
+        ],
+    }
+    summary_dir = run_dir / "00_pipeline_summary"
+    summary_dir.mkdir()
+    (summary_dir / "pipeline_execution_summary.json").write_text(
+        json.dumps(summary, indent=2),
+        encoding="utf-8",
+    )
+
+    emit = rm.emit_run_manifests(run_dir)
+    index = json.loads(
+        (Path(emit["manifest_dir"]) / "index.json").read_text(encoding="utf-8")
+    )
+    g.expect(
+        "run_artifacts: schema 3.2 with binary inventory",
+        index.get("schema_version") == "3.2"
+        and emit["binary_count"] == 4
+        and emit["stream_count"] >= 3,
+        f"schema={index.get('schema_version')!r} "
+        f"binary_count={emit['binary_count']} stream_count={emit['stream_count']}",
+    )
+    manifest_dir = Path(emit["manifest_dir"])
+    g.expect(
+        "run_artifacts: verify clean",
+        rm.verify_run_manifests(manifest_dir, run_dir) == [],
+    )
+
+    # NEGATIVE control: tamper a binary artifact after emission.
+    graph_path.write_bytes(graph_bytes + b"TAMPERED")
+    tampered = rm.verify_run_manifests(manifest_dir, run_dir)
+    g.expect(
+        "run_artifacts: NEGATIVE control fires on binary tamper",
+        bool(tampered) and any("checksum mismatch" in p for p in tampered),
+        f"problems={tampered}",
+    )
+    graph_path.write_bytes(graph_bytes)
+    g.expect(
+        "run_artifacts: verify clean after restore",
+        rm.verify_run_manifests(manifest_dir, run_dir) == [],
+    )
+
+    # NEGATIVE control: delete a binary artifact after emission.
+    gif_path.unlink()
+    deleted = rm.verify_run_manifests(manifest_dir, run_dir)
+    g.expect(
+        "run_artifacts: NEGATIVE control fires on deleted binary",
+        any("Binary artifact inventory differs" in p for p in deleted),
+        f"problems={deleted}",
+    )
+    gif_path.write_bytes(gif_bytes)
+
+    # Determinism: two fresh emissions agree on counts and trace replay digest.
+    out_a = workdir / "manifests-a"
+    out_b = workdir / "manifests-b"
+    emit_a = rm.emit_run_manifests(run_dir, manifest_out=out_a)
+    emit_b = rm.emit_run_manifests(run_dir, manifest_out=out_b)
+    g.expect(
+        "run_artifacts: emission deterministic",
+        emit_a["stream_count"] == emit_b["stream_count"]
+        and emit_a["binary_count"] == emit_b["binary_count"]
+        and ds.replay_trace(ds.read_trace(out_a / "execution_trace.json"))
+        == ds.replay_trace(ds.read_trace(out_b / "execution_trace.json")),
+    )
+
+
+def _check_session_artifacts(g: _Gate, workdir: Path) -> None:
+    """Exercise the session-artifact durability join (Perf#6)."""
+    family_dir = workdir / "families" / "basics"
+    (family_dir / "artifacts").mkdir(parents=True)
+    (family_dir / "ledger.json").write_text(
+        json.dumps({"family": "basics", "ledger": 1}, indent=2),
+        encoding="utf-8",
+    )
+    sim_path = family_dir / "artifacts" / "sim.json"
+    sim_bytes = json.dumps({"sim": "ok"}, indent=2).encode("utf-8")
+    sim_path.write_bytes(sim_bytes)
+
+    session = rs.start_session("accept-join", ["basics"], created_by="acceptance")
+    session = rs.mark(
+        session, "basics", rs.UnitStatus.DONE, artifact_refs=[str(family_dir)]
+    )
+    for unit in session.units:
+        if unit.unit_id == "basics":
+            unit.artifact_hashes = {
+                path.relative_to(family_dir).as_posix(): _sha256(path)
+                for path in sorted(family_dir.rglob("*"))
+                if path.is_file()
+            }
+    spath = rs.checkpoint(session, workdir / "session_join.json")
+    g.expect(
+        "session join: verify clean",
+        sa.verify_session_artifacts(spath, workdir) == [],
+    )
+
+    # NEGATIVE control: tamper a recorded artifact after checkpointing.
+    sim_path.write_bytes(sim_bytes + b"TAMPERED")
+    tampered = sa.verify_session_artifacts(spath, workdir)
+    g.expect(
+        "session join: NEGATIVE control fires on artifact tamper",
+        any("checksum mismatch" in p for p in tampered),
+        f"problems={tampered}",
+    )
+    sim_path.write_bytes(sim_bytes)
+
+    # NEGATIVE control: add an unrecorded file after checkpointing.
+    extra_path = family_dir / "artifacts" / "extra.json"
+    extra_path.write_text(json.dumps({"unrecorded": True}), encoding="utf-8")
+    unrecorded = sa.verify_session_artifacts(spath, workdir)
+    g.expect(
+        "session join: NEGATIVE control fires on unrecorded artifact",
+        any("unrecorded artifact on disk" in p for p in unrecorded),
+        f"problems={unrecorded}",
+    )
+    extra_path.unlink()
+
+
 def _check_container(g: _Gate) -> None:
     plan = cp.generate_container_plan(
         "gnn-pipeline",
@@ -265,6 +432,8 @@ def main() -> int:
         workdir = Path(tmp)
         _check_streams(g, workdir, args.inject_defect)
         _check_session(g, workdir)
+        _check_run_artifacts(g, workdir)
+        _check_session_artifacts(g, workdir)
         _check_container(g)
     code = g.report()
     print(

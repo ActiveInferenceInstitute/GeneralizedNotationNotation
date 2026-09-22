@@ -99,19 +99,41 @@ def test_pymdp_dispatch_runs_python_with_default_timeout_600(
     assert result == canned
 
 
-def test_rxinfer_dispatch_runs_julia_on_config_with_default_timeout_300(
+def test_rxinfer_dispatch_routes_config_through_committed_runner_timeout_300(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
+    """TOML configs execute via execute_rxinfer_script, not a raw julia spawn."""
     config = tmp_path / "m_config.toml"
     config.write_text("[model]\n")
-    canned = _envelope()
-    spy = _spy(monkeypatch, "gnn.execute.executor.run_subprocess_envelope", [canned])
+    canned = _envelope(stdout="sim done")
+    spy = _spy(
+        monkeypatch,
+        "gnn.execute.rxinfer.rxinfer_runner.run_subprocess_envelope",
+        [canned],
+    )
 
     result = GNNExecutor()._execute_rxinfer_config(str(config))
 
-    assert spy.calls[0]["command"] == ["julia", str(config)]
+    runner_project = Path(rxinfer_runner.__file__).parent.resolve()
+    assert spy.calls[0]["command"] == [
+        "julia",
+        "--startup-file=no",
+        f"--project={runner_project}",
+        str(runner_project / "rxinfer_runner.jl"),
+        str(config),
+    ]
     assert spy.calls[0]["kwargs"]["timeout"] == 300
-    assert result == canned
+    # The dispatch synthesizes its envelope from the runner verdict plus the
+    # evidence sidecars the runner persists beside the script.
+    assert result == {
+        "success": True,
+        "return_code": 0,
+        "stdout": "sim done",
+        "stderr": "",
+        "elapsed_seconds": 0.01,
+    }
+    assert (tmp_path / "m_config_stdout.txt").read_text() == "sim done"
+    assert (tmp_path / "m_config_stderr.txt").read_text() == ""
 
 
 @pytest.mark.parametrize("execution_type", ["discopy", "jax"])

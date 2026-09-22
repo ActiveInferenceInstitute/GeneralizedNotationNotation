@@ -343,7 +343,7 @@ Registered by `src/gnn/ontology/mcp.py` `register_tools(mcp_instance)` (4 tools)
 
 ## Version History
 
-### Current Version: 3.2.0
+### Current Version: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 **Features**:
 - Ontology term extraction
@@ -378,7 +378,7 @@ Registered by `src/gnn/ontology/mcp.py` `register_tools(mcp_instance)` (4 tools)
 **Last Updated**: 2026-09-02
 **Maintainer**: GNN Pipeline Team
 **Status**: Production Ready
-**Version**: 3.2.0
+**Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 
 

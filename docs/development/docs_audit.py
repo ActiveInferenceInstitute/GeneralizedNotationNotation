@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Markdown documentation audit: relative links, AGENTS→SPEC footers, src/doc coverage,
-AGENTS↔README pairing.
+AGENTS↔README pairing, SPEC coverage, prose layout drift, stale version claims.
 
 Run from repository root:
   uv run --extra dev python docs/development/docs_audit.py
@@ -305,6 +305,267 @@ def audit_agents_spec() -> list[tuple[Path, str]]:
 
 VERSION_RE = re.compile(r'^version\s*=\s*"([^"]+)"', re.MULTILINE)
 
+# Prose-only references to the removed "src/<module>/" layout. The canonical
+# surface since v3.3.0 is ``src/gnn/<module>/`` (or ``gnn.<module>``); bare
+# ``src/<module>`` and dotted ``src.<module>`` spellings are stale residue of
+# the pre-3.3.0 tree. Excluded from matching: comments, fenced code blocks,
+# and inline code spans — same treatment as the link/anchor audits.
+PROSE_SRC_PATH_RE = re.compile(r"(?<![\w./-])src/[a-zA-Z_][\w-]*/")
+PROSE_SRC_IMPORT_RE = re.compile(
+    r"(?<![\w./])src\.[a-zA-Z_][\w.]*(?:\.[a-zA-Z_][\w]*)*"
+)
+PROSE_ALLOWED_SRC_PATHS = frozenset(
+    {
+        "src/gnn/",
+        "src/tests/",
+        "src/scripts/",
+    }
+)
+
+# "### Current Version: X" / "Current Version: X" claims in module AGENTS.md
+# files. The product version lives in pyproject.toml; per-tool metadata (the
+# external oxdraw CLI version) is out of scope for this check.
+CURRENT_VERSION_CLAIM_RE = re.compile(
+    r"(?im)^\s*(?:#+\s*)?current version\s*[:=]\s*(\S+)"
+)
+
+# Claims already in canonical deferred form are exempt: any version claim
+# that references pyproject.toml (the canonical source) instead of a number.
+CANONICAL_REF_RE = re.compile(r"pyproject\.toml")
+
+# Per-module metadata: a "Current Version:" block that explicitly states it
+# is module-level (independent of the pipeline release) is exempt — the
+# claim documents the module/tool, not the pipeline.
+PER_MODULE_VERSION_RE = re.compile(
+    r"(?i)module|per-module|independent of the pipeline|external tool"
+)
+
+# Version claims in docs: either the explicit "Version" line or bare
+# "Pipeline Version: X" footers. Only enforced where a module/page states its
+# own version, to avoid flagging legitimate historical release notes.
+STALE_VERSION_CLAIM_RE = re.compile(
+    r"(?im)^(?:\*\*)?\s*(?:pipeline )?version(?:\*\*)?\s*[:=]\s*\[?(\d+\.\d+\.\d+)\]?"
+)
+
+
+def audit_src_spec_coverage() -> list[tuple[Path, str]]:
+    """Every module directory under src/gnn/ with .py files must have SPEC.md.
+
+    The AGENTS.md/README.md pairing checks already cover agent-facing docs;
+    SPEC.md is the interface contract of a module (public API, data flow) and
+    is required for the same module set. ``src/gnn`` itself counts as a module
+    directory (it carries AGENTS.md/README.md/SPEC.md at its root).
+    """
+    missing: list[tuple[Path, str]] = []
+    for d in sorted((REPO_ROOT / "src" / "gnn").iterdir()):
+        if not d.is_dir():
+            continue
+        rel_dir = d.relative_to(REPO_ROOT)
+        if rel_dir.parts[0] in SKIP_PARTS or any(
+            p in SKIP_PARTS for p in rel_dir.parts
+        ):
+            continue
+        if not any(d.glob("*.py")):
+            continue
+        if not (d / "SPEC.md").is_file():
+            missing.append((rel_dir, "module directory has .py files but no SPEC.md"))
+    return missing
+
+
+def _strip_code_and_links(md: str) -> str:
+    """Remove fenced blocks, inline code spans, and markdown link targets so
+    the prose pattern scans only see free text. Line structure is preserved
+    exactly like ``_strip_code`` (fenced blocks become empty lines) so
+    line numbers reported by these audits match the raw file."""
+    no_blocks = FENCED_CODE_RE.sub(
+        lambda m: "\n".join("" for _ in m.group(0).splitlines()), md
+    )
+    return INLINE_CODE_RE.sub(lambda m: " " * len(m.group(0)), no_blocks)
+
+
+# Named repo-root docs inside the maintained set (package-version label
+# scope: a bare "Version:" here claims the pipeline release).
+MAINTAINED_ROOT_DOC_FILES = (
+    "AGENTS.md",
+    "README.md",
+    "ARCHITECTURE.md",
+    "TO-DO.md",
+    "SETUP_GUIDE.md",
+    "CLAUDE.md",
+    "SKILL.md",
+)
+
+# Historical release-note files — exempt from stale-version/prose checks.
+MAINTAINED_HISTORICAL_FILES = frozenset({"CHANGELOG.md", "VERSION_MAP.md"})
+
+# Vendored/third-party source-quote trees whose md files quote upstream code
+# (e.g. ActiveInference.jl sources with their own ``src/`` layout). Quoted
+# code is exempt from the prose-pattern scan.
+MAINTAINED_VENDORED_PREFIXES = (
+    "docs/other/",
+    "docs/activeinference_jl/",
+    "docs/development/fleet-logs/",
+)
+
+
+def maintained_doc_files() -> list[Path]:
+    """The maintained-doc scope for the claim-style checks (prose patterns,
+    version claims): repo-root navigation docs + docs/** + src/gnn/** minus
+    historical/vendored trees. Broader repo-wide scans (agent dispatch
+    reports, private-agent trees) are out of scope — they are not
+    maintained documentation."""
+    keep: list[Path] = []
+    for name in MAINTAINED_ROOT_DOC_FILES:
+        p = REPO_ROOT / name
+        if p.is_file():
+            keep.append(p)
+    for base in ("docs", "src/gnn"):
+        base_dir = REPO_ROOT / base
+        if base_dir.is_dir():
+            for p in sorted(base_dir.rglob("*.md")):
+                keep.append(p)
+    out: list[Path] = []
+    for p in keep:
+        try:
+            rel = p.relative_to(REPO_ROOT)
+        except ValueError:
+            continue
+        if any(part in SKIP_PARTS for part in rel.parts):
+            continue
+        if any(
+            str(rel).startswith(prefix) or str(rel) == prefix.rstrip("/")
+            for prefix in MAINTAINED_VENDORED_PREFIXES
+        ):
+            continue
+        if rel.name in MAINTAINED_HISTORICAL_FILES:
+            continue
+        out.append(p)
+    return sorted(set(out))
+
+
+def audit_prose_src_patterns(files: list[Path]) -> list[tuple[Path, int, str]]:
+    """Flag prose references to the removed ``src/<module>/`` layout.
+
+    Two stale spellings are flagged in visible prose (code spans and fenced
+    blocks are exempt — they quote rather than assert):
+
+    - ``src/<module>/…`` path spellings (e.g. ``src/gui/AGENTS.md``), which
+      must read ``src/gnn/<module>/…`` since v3.3.0. ``src/gnn/`` itself is
+      the canonical surface and never matches.
+    - ``src.<module>`` import spellings (e.g. ``import src.main``), which
+      fail at import time — the canonical package root is ``gnn.``.
+    """
+    issues: list[tuple[Path, int, str]] = []
+    for path in files:
+        try:
+            text = path.read_text(encoding="utf-8")
+        except OSError:
+            continue
+        rel = path.relative_to(REPO_ROOT)
+        for lineno, line in enumerate(
+            _strip_code_and_links(text).splitlines(), start=1
+        ):
+            for match in PROSE_SRC_PATH_RE.finditer(line):
+                span = match.group(0)
+                if span.rstrip("/") + "/" in PROSE_ALLOWED_SRC_PATHS:
+                    continue
+                issues.append(
+                    (
+                        rel,
+                        lineno,
+                        f"prose path '{span}' is not the canonical src/gnn/ surface",
+                    )
+                )
+            for match in PROSE_SRC_IMPORT_RE.finditer(line):
+                issues.append(
+                    (
+                        rel,
+                        lineno,
+                        f"prose import '{match.group(0)}' is not the canonical gnn.* surface",
+                    )
+                )
+    return issues
+
+
+def audit_version_claims(files: list[Path]) -> list[tuple[Path, int, str, str]]:
+    """Flag version claims that contradict the canonical pyproject version.
+
+    The product version lives in ``pyproject.toml``; docs may reference it
+    rather than hard-coding a number. Two claim shapes are enforced, with a
+    version-axis split:
+
+    - **Pipeline-version axes** (everywhere in the maintained set):
+      ``Pipeline Version: X`` labels and ``Current Version: X`` module
+      metadata blocks claim the *pipeline release* and must match
+      pyproject.toml. ``[canonical · X]`` STEP_INDEX-style references are
+      exempt (they already defer to pyproject).
+    - **Bare ``Version: X``** lines: enforced only in ``src/gnn/**`` and the
+      named repo-root files, where they can only mean the package version
+      (``**Version**: 3.3.0`` page headers). Under ``docs/**`` they are
+      treated as per-page revision axes (document revision counters, cited
+      paper versions, per-tool metadata) and are exempt; a bare revision
+      number there does not claim the pipeline release.
+
+    Historical files (CHANGELOG/VERSION_MAP) and vendored quote trees are
+    excluded from the maintained set entirely.
+    """
+    pyproject = REPO_ROOT / "pyproject.toml"
+    version_match = VERSION_RE.search(pyproject.read_text(encoding="utf-8"))
+    if not version_match:
+        return [(Path("pyproject.toml"), 0, "", "cannot read project version")]
+    canonical = version_match.group(1)
+
+    package_label_scope: list[Path] = [REPO_ROOT / "src" / "gnn"]
+    package_label_scope.extend(REPO_ROOT / name for name in MAINTAINED_ROOT_DOC_FILES)
+
+    issues: list[tuple[Path, int, str, str]] = []
+    for path in files:
+        text = path.read_text(encoding="utf-8", errors="replace")
+        rel = path.relative_to(REPO_ROOT)
+        path_resolved = path.resolve()
+        enforce_bare_version = any(
+            path_resolved.is_relative_to(root) for root in package_label_scope
+        )
+        for lineno, line in enumerate(
+            _strip_code_and_links(text).splitlines(), start=1
+        ):
+            stale_match = STALE_VERSION_CLAIM_RE.search(line)
+            if (
+                stale_match
+                and stale_match.group(1) != canonical
+                and not CANONICAL_REF_RE.search(line)
+            ):
+                is_pipeline_label = (
+                    stale_match.group(0)
+                    .lstrip("*")
+                    .startswith(("pipeline", "Pipeline"))
+                )
+                if is_pipeline_label or enforce_bare_version:
+                    issues.append(
+                        (
+                            rel,
+                            lineno,
+                            stale_match.group(1),
+                            f"version claim != pyproject {canonical}",
+                        )
+                    )
+            current_match = CURRENT_VERSION_CLAIM_RE.search(line)
+            if (
+                current_match
+                and current_match.group(1) != canonical
+                and not CANONICAL_REF_RE.search(line)
+                and not PER_MODULE_VERSION_RE.search(line)
+            ):
+                issues.append(
+                    (
+                        rel,
+                        lineno,
+                        current_match.group(1),
+                        f"'Current Version' claim != pyproject {canonical} (pipeline-versioned modules only)",
+                    )
+                )
+    return issues
+
 
 def audit_security_supported_version() -> list[str]:
     """SECURITY.md supported-versions table must carry a row for the version
@@ -314,7 +575,7 @@ def audit_security_supported_version() -> list[str]:
     security = REPO_ROOT / "SECURITY.md"
     m = VERSION_RE.search(pyproject.read_text(encoding="utf-8", errors="replace"))
     if not m:
-        return ["pyproject.toml: no `version = \"…\"` declaration found"]
+        return ['pyproject.toml: no `version = "…"` declaration found']
     version = m.group(1)
     row = f"| {version}"
     if row not in security.read_text(encoding="utf-8", errors="replace"):
@@ -538,6 +799,9 @@ def format_strict_issue_detail(
     readme_no_agents: list[Path],
     doc_agents_structure: list[tuple[Path, str]],
     security_version_issues: list[str],
+    spec_coverage_issues: list[tuple[Path, str]],
+    prose_src_issues: list[tuple[Path, int, str]],
+    version_claim_issues: list[tuple[Path, int, str, str]],
 ) -> str:
     """Human-readable listing for terminal fix loops (stderr)."""
     chunks: list[str] = []
@@ -607,6 +871,25 @@ def format_strict_issue_detail(
         for msg in security_version_issues:
             chunks.append(f"  `{msg}`\n")
 
+    if spec_coverage_issues:
+        chunks.append(f"## src/ dirs missing SPEC.md ({len(spec_coverage_issues)})\n")
+        for rel, msg in sorted(spec_coverage_issues, key=lambda x: str(x[0])):
+            chunks.append(f"  `{rel}`  → {msg}\n")
+
+    if prose_src_issues:
+        chunks.append(f"## Prose src/<module>/ pattern ({len(prose_src_issues)})\n")
+        for rel, lineno, reason in sorted(
+            prose_src_issues, key=lambda x: (str(x[0]), x[1])
+        ):
+            chunks.append(f"  {rel}:{lineno}  → {reason}\n")
+
+    if version_claim_issues:
+        chunks.append(f"## Stale version claims ({len(version_claim_issues)})\n")
+        for rel, lineno, claimed, reason in sorted(
+            version_claim_issues, key=lambda x: (str(x[0]), x[1])
+        ):
+            chunks.append(f"  {rel}:{lineno}  `{claimed}`  → {reason}\n")
+
     chunks.append("\nTip: full tables also in docs/development/docs_audit_report.md\n")
     return "".join(chunks)
 
@@ -675,6 +958,10 @@ def main() -> int:
     readme_no_agents = audit_readme_without_agents()
     doc_agents_structure = audit_doc_agents_structure()
     security_version_issues = audit_security_supported_version()
+    spec_coverage_issues = audit_src_spec_coverage()
+    maintained_files = maintained_doc_files()
+    prose_src_issues = audit_prose_src_patterns(maintained_files)
+    version_claim_issues = audit_version_claims(maintained_files)
 
     report_path = args.report_path
     if not report_path.is_absolute():
@@ -791,7 +1078,7 @@ def main() -> int:
     lines.extend(
         [
             "",
-            "## docs/**/AGENTS.md structure (Overview/Purpose)",
+            "## SECURITY.md supported-versions rows",
             "",
         ]
     )
@@ -803,6 +1090,51 @@ def main() -> int:
     lines.extend(
         [
             "",
+            "## src/ module directories missing SPEC.md",
+            "",
+        ]
+    )
+    if not spec_coverage_issues:
+        lines.append("None.")
+    else:
+        for rel, msg in spec_coverage_issues:
+            lines.append(f"- `{rel}`: {msg}")
+    lines.extend(
+        [
+            "",
+            "## Prose references to the removed src/<module>/ layout",
+            "",
+        ]
+    )
+    if not prose_src_issues:
+        lines.append("None found.")
+    else:
+        lines.append("| Source | Line | Issue |")
+        lines.append("|--------|------|-------|")
+        for rel, lineno, reason in sorted(
+            prose_src_issues, key=lambda x: (str(x[0]), x[1])
+        ):
+            lines.append(f"| `{rel}` | {lineno} | {reason} |")
+    lines.extend(
+        [
+            "",
+            "## Version claims contradicting pyproject.toml",
+            "",
+        ]
+    )
+    if not version_claim_issues:
+        lines.append("None found.")
+    else:
+        lines.append("| Source | Line | Claimed | Issue |")
+        lines.append("|--------|------|---------|-------|")
+        for rel, lineno, claimed, reason in sorted(
+            version_claim_issues, key=lambda x: (str(x[0]), x[1])
+        ):
+            lines.append(f"| `{rel}` | {lineno} | {claimed} | {reason} |")
+    lines.extend(
+        [
+            "",
+            "## docs/**/AGENTS.md structure (Overview/Purpose)",
             "",
         ]
     )
@@ -832,6 +1164,9 @@ def main() -> int:
     print(f"README without AGENTS: {len(readme_no_agents)}")
     print(f"doc AGENTS structure: {len(doc_agents_structure)}")
     print(f"SECURITY.md version row: {len(security_version_issues)}")
+    print(f"src dirs missing SPEC.md: {len(spec_coverage_issues)}")
+    print(f"prose src/<module> pattern: {len(prose_src_issues)}")
+    print(f"stale version claims: {len(version_claim_issues)}")
     total_issues = (
         len(link_issues)
         + len(spec_issues)
@@ -842,6 +1177,9 @@ def main() -> int:
         + len(readme_no_agents)
         + len(doc_agents_structure)
         + len(security_version_issues)
+        + len(spec_coverage_issues)
+        + len(prose_src_issues)
+        + len(version_claim_issues)
         + (len(anchor_issues) if args.check_anchors else 0)
     )
     if args.strict and total_issues > 0:
@@ -860,6 +1198,9 @@ def main() -> int:
                     readme_no_agents=readme_no_agents,
                     doc_agents_structure=doc_agents_structure,
                     security_version_issues=security_version_issues,
+                    spec_coverage_issues=spec_coverage_issues,
+                    prose_src_issues=prose_src_issues,
+                    version_claim_issues=version_claim_issues,
                 ),
                 file=sys.stderr,
                 end="",

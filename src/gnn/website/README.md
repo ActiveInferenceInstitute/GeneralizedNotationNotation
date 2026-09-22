@@ -18,9 +18,9 @@ src/gnn/website/
 └── mcp.py             # MCP tool registration (5 tools)
 ```
 
-No `templates/` or `static/` directory ships in the module; pages are built
-with inline CSS/HTML. `WebsiteGenerator.__init__` references `templates/` and
-`static/` paths defensively but only copies `static/` if it exists.
+No `templates/` or `static/` directory ships in the module and the generator
+references neither: pages are built with inline CSS/HTML and written directly
+to the output directory.
 
 ### Pipeline Integration
 
