@@ -331,8 +331,8 @@ constraint-dependencies = [
 packages = ["src/gnn"]
 
 [tool.mypy]
-# numpy 2.4.x stubs require a 3.12 mypy target; the 3.11 target rejected
-# them on the CI mypy leg.
+# numpy 2.4.x pyi requires a 3.12 mypy target (the 3.11 target failed on
+# the CI leg).
 python_version = "3.12"
 mypy_path = "src"
 explicit_package_bases = true
