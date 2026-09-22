@@ -230,6 +230,7 @@ def find_executable_scripts(
         "numpyro": "numpyro",
         "stan": "stan",
         "bnlearn": "bnlearn",
+        "ngclearn": "ngclearn",
     }
 
     # Normalise the base directory for consistent framework detection and

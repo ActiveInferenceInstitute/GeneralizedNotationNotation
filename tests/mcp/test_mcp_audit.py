@@ -132,6 +132,7 @@ class TestMCPModuleDiscovery:
         "sympy_mcp",
         "template",
         "type_checker",
+        "meta_mcp",
         "utils",
         "validation",
         "visualization",

@@ -4,15 +4,15 @@
 
 **Purpose**: Syntax-level GNN validation — regex parsing, multi-level schema/semantic validation, and cross-format consistency checking
 
-**Pipeline Step**: Step 2: Parse (2_parse.py) and Step 6: Validation (6_validation.py) both consume this module's surface
+**Pipeline Step**: Step 21 MCP tooling (`21_mcp.py` → `mcp/processors.py`, `mcp/gnn_root.py`) and Steps 8–9 Visualization (`8_visualization.py` / `9_advanced_viz.py` → `visualization/analysis/combined_analysis.py`) consume this module's surface; the `gnn.processing` core (`core_processor.py`) also imports `CrossFormatValidator`
 
 **Category**: Validation / Parsing
 
 **Status**: Production Ready
 
-**Version**: 3.2.0
+**Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
-**Last Updated**: 2026-09-06
+**Last Updated**: 2026-09-21
 
 ---
 

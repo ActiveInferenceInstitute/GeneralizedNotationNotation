@@ -2,7 +2,7 @@
 
 **Hub**: [README.md](README.md).
 
-> **Historical note**: This file records an **early assessment** of template and infrastructure patterns. **Current behavior**: every numbered script **`src/N_*.py`** (steps **0–24**) is a thin orchestrator delegating to **`src/<module>/`**; see [CLAUDE.md](../CLAUDE.md), [src/gnn/STEP_INDEX.md](../src/gnn/STEP_INDEX.md), and [src/gnn/template/README.md](../src/gnn/template/README.md). Sections below retain the original wording for context; they are not an up-to-date status report on each module.
+> **Historical note**: This file records an **early assessment** of template and infrastructure patterns. **Current behavior**: every numbered script **`src/gnn/N_*.py`** (steps **0–24**) is a thin orchestrator delegating to **`src/gnn/<module>/`**; see [CLAUDE.md](../CLAUDE.md), [src/gnn/STEP_INDEX.md](../src/gnn/STEP_INDEX.md), and [src/gnn/template/README.md](../src/gnn/template/README.md). Sections below retain the original wording for context; they are not an up-to-date status report on each module.
 
 ## Overview
 

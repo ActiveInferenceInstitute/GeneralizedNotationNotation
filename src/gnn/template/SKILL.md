@@ -66,7 +66,7 @@ run_script = create_standardized_pipeline_script(
 ```
 
 - Orchestrators handle ONLY: arg parsing, logging, output dirs, delegation
-- ALL domain logic lives in `src/module/processor.py`
+- ALL domain logic lives in `src/gnn/<module>/processor.py`
 - Exit codes: 0=success, 1=error, 2=success with warnings/skipped
 
 
