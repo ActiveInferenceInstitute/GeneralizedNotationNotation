@@ -27,7 +27,7 @@ except ImportError as e:
         "Install with: uv sync --extra api"
     ) from e
 
-from gnn.api import MODULE_VERSION
+from gnn.api import DEFAULT_API_HOST, DEFAULT_API_PORT, MODULE_VERSION
 from gnn.api import processor as job_mgr
 from gnn.api.auth import api_key_middleware, require_secure_bind
 from gnn.api.models import (
@@ -282,7 +282,9 @@ def create_app() -> FastAPI:
 app = create_app()
 
 
-def run_server(host: str = "127.0.0.1", port: int = 8000, reload: bool = False) -> Any:
+def run_server(
+    host: str = DEFAULT_API_HOST, port: int = DEFAULT_API_PORT, reload: bool = False
+) -> Any:
     """Start the API server."""
     if not require_secure_bind(host):
         raise RuntimeError(
@@ -305,8 +307,8 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(description="GNN Pipeline API Server")
-    parser.add_argument("--host", default="127.0.0.1")
-    parser.add_argument("--port", type=int, default=8000)
+    parser.add_argument("--host", default=DEFAULT_API_HOST)
+    parser.add_argument("--port", type=int, default=DEFAULT_API_PORT)
     parser.add_argument(
         "--reload", action="store_true", help="Auto-reload on code changes"
     )
