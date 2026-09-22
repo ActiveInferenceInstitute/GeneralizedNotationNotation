@@ -37,6 +37,7 @@ FRAMEWORK_IMPORT_CHECK: Dict[str, Tuple[str, str]] = {
     "discopy": ("discopy", "uv sync"),
     "bnlearn": ("bnlearn", "uv sync --extra bnlearn"),
     "pymdp": ("pymdp", "uv sync"),
+    "ngclearn": ("ngclearn", "uv sync --extra ngclearn"),
 }
 
 # Frameworks whose Python module alone is not enough: the probe must also

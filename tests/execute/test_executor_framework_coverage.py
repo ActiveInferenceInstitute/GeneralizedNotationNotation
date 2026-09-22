@@ -28,6 +28,7 @@ EXPECTED_FRAMEWORK_KEYS: set[Any] = {
     "jax_executions",
     "numpyro_executions",
     "pytorch_executions",
+    "ngclearn_executions",
     "lean_executions",
 }
 

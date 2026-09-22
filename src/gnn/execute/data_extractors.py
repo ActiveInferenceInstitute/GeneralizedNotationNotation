@@ -4,7 +4,7 @@ Data extraction functions for simulation output parsing.
 
 Extracts simulation data from both file-based outputs and stdout/stderr
 for all supported frameworks: PyMDP, RxInfer.jl, ActiveInference.jl, JAX,
-DisCoPy, PyTorch, NumPyro, Stan, and bnlearn.
+DisCoPy, PyTorch, NumPyro, ngc-learn, Stan, and bnlearn.
 """
 
 import json
@@ -189,6 +189,13 @@ def collect_execution_outputs(
             if pytorch_out.exists():
                 found_files.extend(pytorch_out.rglob("*.json"))
                 found_files.extend(pytorch_out.rglob("*.csv"))
+        elif framework == "ngclearn":
+            # ngc-learn writes simulation_results.json under NGCLEARN_OUTPUT_DIR (default: script cwd)
+            found_files.extend(script_dir.glob("simulation_results.json"))
+            ngclearn_out = script_dir / "ngclearn_outputs"
+            if ngclearn_out.exists():
+                found_files.extend(ngclearn_out.rglob("*.json"))
+                found_files.extend(ngclearn_out.rglob("*.csv"))
 
         if not found_files:
             found_files.extend(script_dir.rglob("*.png"))
@@ -335,6 +342,10 @@ def extract_simulation_data_from_files(
         elif framework == "pytorch":
             enhanced_data = extract_pymdp_like_data_from_files(
                 output_dir, logger, "pytorch"
+            )
+        elif framework == "ngclearn":
+            enhanced_data = extract_pymdp_like_data_from_files(
+                output_dir, logger, "ngclearn"
             )
 
     except Exception as e:
