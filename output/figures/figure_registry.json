@@ -31,7 +31,7 @@
       "label": "fig:pipeline",
       "png_sha256": "f0678cd3b3615bc080acde3601dad812b4f9c666166ff92b2477db55d7d77700",
       "source_sha256": {
-        "src/gnn/STEP_INDEX.md": "586366c61aa3a00dfa7ac7b2b7783d3b259f48c47a63535767d71cd7ba0339d3"
+        "src/gnn/STEP_INDEX.md": "438e756bf409d9af2e7623b0deb9258080814b9746def1c8d01aa742dc4145e4"
       }
     },
     {
@@ -71,13 +71,13 @@
         "GNN_MCP_TOOL_COUNT": "156",
         "GNN_SRC_PACKAGE_COUNT": "43",
         "GNN_STEP_COUNT": "25",
-        "GNN_TEST_FILE_COUNT": "494",
+        "GNN_TEST_FILE_COUNT": "495",
         "GNN_VERSION": "3.5.0"
       },
       "filename": "gnn_repo_metrics.png",
       "generated_by": "scripts/manuscript_fig_repo_metrics.py",
       "label": "fig:repo_metrics",
-      "png_sha256": "c015761cc1e704bee962ebf8ee338235059d1c8d8e157711532d97c3d982796f",
+      "png_sha256": "893e94d98c7f2db8c3c310413b3194ab972a7172e3e809c67ef1894990d4a03c",
       "source_sha256": {}
     },
     {
