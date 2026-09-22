@@ -115,7 +115,7 @@ graph TB
 - Call module processing functions from `module/__init__.py`
 - Return standardized exit codes (0=success, 1=error, 2=warning)
 
-**Module Implementation** (`src/module/`):
+**Module Implementation** (`src/gnn/<module>/`):
 
 - Contains all domain logic in `processor.py` and subdirectories
 - Provides public API via `__init__.py` exports

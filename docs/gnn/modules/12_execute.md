@@ -44,7 +44,7 @@ Continuous (linear-Gaussian) models reach Step 12 only for the backends that ren
 
 **Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
-**Last Updated**: 2026-08-07
+**Last Updated**: 2026-09-21
 
 ---
 
@@ -112,20 +112,23 @@ Rendered RxInfer scripts end with `return results["validation"]["all_valid"] ? 0
   - `"all"`: PyMDP, JAX, DisCoPy, RxInfer.jl, ActiveInference.jl, PyTorch, NumPyro, Stan, bnlearn
   - `"lite"`: the Python-only subset — PyMDP, JAX, DisCoPy, bnlearn (no Julia)
   - Comma-separated: `"pymdp,jax"` for specific frameworks; names outside the valid set are filtered out
-- `simulation_engine` (str): Engine to use ("auto", "pymdp", "rxinfer", etc., default: "auto")
-- `validate_only` (bool): Only validate scripts, don't execute (default: False)
+- `render_output_dir` (str | Path): Explicit path to the Step 11 render output directory (default: filesystem heuristics via `_resolve_render_output_dir`, CLI: `--render-output-dir`). An explicit value is used verbatim even when nonexistent or empty (execution then records `skipped_reason: no_render_output`); the heuristic candidates — the sibling `11_render_output` of this step's output base, `target_dir` itself when it names a render output directory, then common pipeline/test locations — must exist and be non-empty to be selected.
+- `execution_benchmark_repeats` (int): Sequential benchmark repeats per rendered script; when >1 the summary reports the median duration (default: 1, CLI: `--execution-benchmark-repeats`)
+- `execution_summary_detail` (bool): Also write `summaries/execution_summary_detail.json` with full per-script payloads; the aggregate `execution_summary.json` stays slim (default: False, CLI: `--execution-summary-detail`)
+- `require_render_summary` (bool): Enforce the Step 11 render summary contract: when `render_processing_summary.json` is missing or invalid (or the render output directory is unavailable), no scripts execute and the result records `missing_render_summary` (default: True; with False, scripts are discovered from the filesystem instead)
+- `run_id` (str, optional): Correlates this invocation with the folder-scoped render summary contract and is recorded in the execution summary (default: None)
+- `distributed_max_retries` (int): Retries for distributed script/parameter-sweep dispatch, used only when `distributed` is True (default: 3)
 - `timeout` (int): Execution timeout per script in seconds (default: 3600, CLI: `--timeout`)
 - `distributed` (bool): Run scripts and parameter sweeps in parallel across a Ray/Dask cluster (default: False, CLI: `--distributed`)
 - `execution_workers` (int): Number of local or distributed workers for rendered script execution (default: 1, CLI: `--execution-workers`)
 - `backend` (str): Backend for distributed execution, `"ray"` or `"dask"` (default: `"ray"`, CLI: `--backend {ray,dask}`)
-- `parallel` (bool): Execute scripts in parallel (default: False)
 - `**kwargs`: Additional framework-specific options
 
 **Returns**: `bool` - True if execution succeeded, False otherwise
 
 **Example**:
 ```python
-from execute import process_execute
+from gnn.execute import process_execute
 from pathlib import Path
 import logging
 
@@ -190,7 +193,7 @@ There is no `get_execution_health_status` function in `src/gnn/execute/`. Framew
 
 **Usage**:
 ```python
-from execute.pymdp.package_detector import (
+from gnn.execute.pymdp.package_detector import (
     detect_pymdp_installation,
     is_correct_pymdp_package,
 )
@@ -208,30 +211,13 @@ elif not detection.get("correct_package"):
 
 ### Configuration Options
 
-#### Simulation Engine Selection
-- `simulation_engine` (str): Engine to use for execution (default: `"auto"`)
-  - `"auto"`: Automatically select best available engine
-  - `"pymdp"`: Use PyMDP for Python simulations
-  - `"rxinfer"`: Use RxInfer.jl for Julia simulations
-  - `"activeinference_jl"`: Use ActiveInference.jl
-  - `"jax"`: Use JAX framework
-  - `"discopy"`: Use DisCoPy for categorical diagrams
-
 #### Execution Parameters
 - `timeout` (int): Execution timeout in seconds (default: `3600`)
-- `validate_only` (bool): Only validate scripts, don't execute (default: `False`)
-- `capture_output` (bool): Capture stdout/stderr (default: `True`)
-- `parallel_execution` (bool): Execute scripts in parallel (default: `False`)
 
 #### Distributed Execution
 - `distributed` (bool, CLI: `--distributed`): Run scripts and model parameter sweeps in parallel across a Ray/Dask cluster (default: `False`)
 - `execution_workers` (int, CLI: `--execution-workers`): Number of local or distributed workers for rendered script execution (default: `1`)
 - `backend` (str, CLI: `--backend {ray,dask}`): Backend to use for distributed execution (default: `"ray"`); implemented by `src/gnn/execute/distributed.py`'s `Dispatcher` class
-
-#### Framework-Specific Configuration
-- `julia_path` (str): Path to Julia executable (default: auto-detect)
-- `python_env` (str): Python environment to use (default: current environment)
-- `jax_device` (str): JAX device to use (default: `"cpu"`, options: `"cpu"`, `"gpu"`)
 
 ---
 
@@ -254,12 +240,11 @@ elif not detection.get("correct_package"):
 
 ### Basic Usage
 ```python
-from execute import process_execute
+from gnn.execute import process_execute
 
 success = process_execute(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/12_execute_output"),
-    simulation_engine="auto",
 )
 ```
 
@@ -486,7 +471,7 @@ See [pyproject.toml](../../../pyproject.toml).
 
 ---
 
-**Last Updated**: 2026-08-07
+**Last Updated**: 2026-09-21
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
 **Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)

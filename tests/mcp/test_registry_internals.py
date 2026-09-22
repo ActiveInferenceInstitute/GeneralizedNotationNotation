@@ -253,6 +253,16 @@ class TestAuditSurfaceParity:
             "same PR that adds or removes tools"
         )
 
+        assert "modules_list" in audit, (
+            "audit_report.json is missing modules_list — regenerate the audit "
+            "(uv run python src/gnn/mcp/validate_tools.py) in the same PR"
+        )
+        assert set(audit["modules_list"]) == set(mcp_instance.modules), (
+            "audit_report.json modules_list drifted from the live registry — "
+            "regenerate the audit (uv run python src/gnn/mcp/validate_tools.py) "
+            "in the same PR"
+        )
+
 
 class TestExecutionErrorMetrics:
     """Tool failures must be observable through the metrics surface."""

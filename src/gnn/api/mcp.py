@@ -29,6 +29,7 @@ logger = logging.getLogger(__name__)
 
 # Basic module metadata (version re-exported from the canonical package constant)
 from gnn import __version__ as __version__
+from gnn.api import DEFAULT_API_HOST, DEFAULT_API_PORT
 
 __description__ = "API module MCP integration for GNN pipeline job management."
 __dependencies__: list[str] = []
@@ -277,7 +278,7 @@ def register_mcp_tools() -> Dict[str, Any]:
     return {
         "module": "api",
         "tools": MCP_TOOLS,
-        "endpoint": "http://localhost:8000/api/v1",
+        "endpoint": f"http://{DEFAULT_API_HOST}:{DEFAULT_API_PORT}/api/v1",
         "version": "1.0.0",
     }
 

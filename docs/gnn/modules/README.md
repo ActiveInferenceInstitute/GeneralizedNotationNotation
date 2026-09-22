@@ -18,8 +18,8 @@ The GNN Pipeline strictly aligns all modules utilizing the "Thin Orchestrator" p
 
 ```mermaid
 graph TD
-    Main[src/gnn/main.py] --> StepX[src/X_module.py]
-    StepX --> API[src/module/processor.py]
-    API --> Tools[src/module/AGENTS.md]
+    Main[src/gnn/main.py] --> StepX[src/gnn/X_module.py]
+    StepX --> API["src/gnn/<module>/processor.py"]
+    API --> Tools["src/gnn/<module>/AGENTS.md"]
     Tools -.->|Auto-Reconciled| Docs[docs/gnn/modules/X_module.md]
 ```

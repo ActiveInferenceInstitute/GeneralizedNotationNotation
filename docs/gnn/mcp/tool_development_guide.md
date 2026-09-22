@@ -20,7 +20,7 @@ All GNN MCP tools follow six non-negotiable constraints enforced by `test_mcp_au
 Every pipeline module that exposes MCP tools has this layout:
 
 ```
-src/<module>/
+src/gnn/<module>/
 ├── __init__.py            ← module exports
 ├── mcp.py                 ← MCP tool registration (YOU EDIT THIS)
 ├── processor.py           ← core implementation
@@ -162,7 +162,7 @@ If your new tools follow the canonical pattern above, the audit will pass automa
 
 If you are adding a **brand-new** pipeline module (e.g., step 25+):
 
-1. Create `src/<module>/mcp.py` following the pattern above
+1. Create `src/gnn/<module>/mcp.py` following the pattern above
 2. No manual registration step is needed: `MCP.discover_modules()` in
    `src/gnn/mcp/mcp.py` dynamically scans the `src/` directory at runtime for
    any subdirectory containing an `mcp.py` file and loads it automatically

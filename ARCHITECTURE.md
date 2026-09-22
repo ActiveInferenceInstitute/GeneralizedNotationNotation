@@ -2,8 +2,8 @@
 
 This guide details the architecture of the Generalized Notation Notation (GNN) system. It complements `DOCS.md` and `docs/pipeline/README.md` with an implementation-oriented perspective for developers.
 
-**Last Updated**: 2026-09-17
-**Version**: 3.3.0
+**Last Updated**: 2026-09-21
+**Version**: [pyproject.toml](pyproject.toml) (canonical · 3.4.0)
 **Status**: Maintained
 **Pipeline Steps**: 25 (0-24)
 
@@ -375,8 +375,8 @@ Each agent implements comprehensive performance monitoring:
 
 ---
 
-**Architecture Version**: 3.3.0
-**Last Updated**: 2026-09-07
+**Architecture Version**: [pyproject.toml](pyproject.toml) (canonical · 3.4.0)
+**Last Updated**: 2026-09-21
 **Status**: Maintained
 **Compliance**: Thin orchestrator pattern
 **Latest Validation**: See current test and pipeline runs

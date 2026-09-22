@@ -45,8 +45,8 @@ uv sync && uv run python src/gnn/main.py --target-dir input/gnn_files --verbose
 Every pipeline step follows the same pattern:
 
 ```text
-src/N_module.py          → Thin orchestrator (<150 lines): CLI args, logging, delegation
-src/module/              → Module directory: all domain logic
+src/gnn/N_*.py           → Thin orchestrator (<150 lines): CLI args, logging, delegation
+src/gnn/<module>/        → Module directory: all domain logic
   ├── __init__.py        → Public API exports
   ├── processor.py       → Core processing logic
   ├── mcp.py             → MCP tool registration (if applicable)
@@ -107,7 +107,7 @@ python src/gnn/12_execute.py --frameworks "all" --verbose
 
 ## Module Skills
 
-Each `src/module/` directory contains its own `SKILL.md` with module-specific instructions. See `src/gnn/AGENTS.md` for the complete module registry.
+Most `src/gnn/<module>/` directories contain their own `SKILL.md` with module-specific instructions. See `src/gnn/AGENTS.md` for the complete module registry.
 
 ## Testing
 

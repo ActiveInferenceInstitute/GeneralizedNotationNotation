@@ -104,6 +104,7 @@ output/model_family_acceptance/
 # Contract-test scratch written by tests/api/test_api_endpoints.py
 output/api_contract_test/
 output/job_contract_test/
+output/api_pull_test/
 
 # Timestamped or run-specific documentation execution outputs are regenerated
 # from examples; curated docs and source examples remain tracked outside these
