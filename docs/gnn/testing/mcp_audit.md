@@ -12,9 +12,9 @@ The module-scoped fixture calls `initialize()` and then **convergence-polls** un
 ```python
 @pytest.fixture(scope="module")
 def mcp_initialized():
-    from mcp import initialize, mcp_instance
+    from gnn.mcp import initialize, mcp_instance
 
-    initialize(halt_on_missing_sdk=False, force_proceed_flag=True)
+    initialize(halt_on_missing_sdk=False, force_proceed_flag=True, force_refresh=True)
 
     # Wait up to 5 s for background registration threads to finish
     prev_count = -1
@@ -36,7 +36,7 @@ The audit file contains six test classes (`TestMCPModuleDiscovery`, `TestMCPTool
 
 ### `TestMCPModuleDiscovery`
 
-32 expected modules × 2 parametrized checks = **64 tests**
+34 expected modules × 2 parametrized checks = **68 tests**
 
 ```python
 EXPECTED_MODULES = (
@@ -47,6 +47,7 @@ EXPECTED_MODULES = (
     "cli",
     "doc",
     "execute",
+    "extract",
     "export",
     "gnn",
     "integration",
@@ -56,18 +57,19 @@ EXPECTED_MODULES = (
     "mcp",
     "ml_integration",
     "model_registry",
+    "multimodel",
     "ontology",
     "gui",
     "pipeline",
     "render",
     "report",
     "research",
-    "sapf",
     "security",
     "setup",
     "sympy_mcp",
     "template",
     "type_checker",
+    "meta_mcp",
     "utils",
     "validation",
     "visualization",
@@ -145,7 +147,7 @@ The MCP server registers modules synchronously but reverts to background threads
 
 ## Tool-Surface Scope: LSP Visibility
 
-The audit machinery covers the MCP tool surface only. Grepping the parity tests and docs for LSP at HEAD finds `lsp` exclusively as a name: it appears in `EXPECTED_MODULES`, in `ZERO_TOOL_MODULES = ("doc", "lsp")`, and in the committed ledger's `modules_list` (`src/gnn/mcp/audit_report.json`, 35 modules / 156 tools), never as a covered surface. The reason is structural: IDE clients drive the LSP server out-of-band over stdio, not through the MCP server, so `src/gnn/lsp/mcp.py` implements `register_tools` as a documented no-op and the generated quick-reference table [`mcp/tool_reference.md`](../mcp/tool_reference.md) (written by `uv run python src/gnn/mcp/validate_tools.py --markdown`) has no `lsp` row to gain. The actual LSP surface — the pygls server built by `create_server()` in [`src/gnn/lsp/__init__.py`](../../../src/gnn/lsp/__init__.py) (open/save/change diagnostics, hover, completions) — carries its own unit tests under `tests/lsp/`, but no committed capabilities manifest and no parity gate pins that feature set the way `tests/mcp/test_registry_internals.py::TestAuditSurfaceParity` pins the MCP tool count to the ledger. Closing that gap would mean either exposing LSP functionality as MCP tools (so the existing audit ledger covers it) or mirroring the ledger pattern LSP-side: a regenerate-on-change capabilities manifest plus a test comparing it to the live `create_server()` registration.
+The audit machinery covers the MCP tool surface only. Grepping the parity tests and docs for LSP at HEAD finds `lsp` exclusively as a name: it appears in `EXPECTED_MODULES`, in `ZERO_TOOL_MODULES = ("doc", "lsp")`, and in the committed ledger's `modules_list` (`src/gnn/mcp/audit_report.json`, 35 modules / 156 tools), never as a covered surface. The reason is structural: IDE clients drive the LSP server out-of-band over stdio, not through the MCP server, so `src/gnn/lsp/mcp.py` implements `register_tools` as a documented no-op and the generated quick-reference table [`mcp/tool_reference.md`](../mcp/tool_reference.md) (written by `uv run python src/gnn/mcp/validate_tools.py --markdown`) has no `lsp` row to gain. The repo's other parity machineries agree: the API route-parity test `tests/api/test_api_parity.py` pins its `PARITY_ROUTES` set with no LSP route, and the `gnn lsp` subcommand registers no flags, leaving `scripts/check_flag_parity.py` nothing to pin. The actual LSP surface — the pygls server built by `create_server()` in [`src/gnn/lsp/__init__.py`](../../../src/gnn/lsp/__init__.py) (open/save/change diagnostics, hover, completions) — carries its own unit tests under `tests/lsp/`, but no committed capabilities manifest and no parity gate pins that feature set the way `tests/mcp/test_registry_internals.py::TestAuditSurfaceParity` pins the MCP tool count to the ledger. Closing that gap would mean either exposing LSP functionality as MCP tools (so the existing audit ledger covers it) or adding a surface contract analogous to `PARITY_ROUTES` — a regenerate-on-change manifest pinning the handler set and advertised capabilities, checked against the live `create_server()` registration.
 
 ## See Also
 
