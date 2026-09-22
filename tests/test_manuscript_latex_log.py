@@ -165,6 +165,14 @@ def test_the_log_carries_no_overfull_boxes() -> None:
     assert log_text.replace("\n", "").count("Overfull \\vbox") == 0
 
 
+def test_the_log_carries_no_personal_machine_paths() -> None:
+    """Home-directory prefixes from the render host must never ship."""
+
+    log_text, _ = _shipped()
+    assert "/Users/" not in log_text
+    assert "/home/" not in log_text
+
+
 # --- the render custody chain ------------------------------------------------
 
 

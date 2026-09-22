@@ -79,6 +79,35 @@ RENDERED_ARTIFACTS = (
 )
 
 
+_HOME_PREFIX_RES = (
+    re.compile(rb"/Users/[A-Za-z0-9_.-]+/"),
+    re.compile(rb"/home/[A-Za-z0-9_.-]+/"),
+)
+
+
+def _sanitize_personal_paths(project_root: Path) -> list[str]:
+    """Rewrite personal home prefixes out of the committed render evidence.
+
+    LaTeX/pandoc logs and sources embed absolute machine paths (e.g.
+    ``/Users/<user>/Library/texmf/...``) from the render host; the evidence
+    is tracked, so sanitize in place before the manifest digests it — the
+    certified bytes are then always the shipped bytes. Idempotent.
+    """
+    changed: list[str] = []
+    for rel in RENDERED_ARTIFACTS:
+        path = project_root / rel
+        if not path.is_file():
+            continue
+        data = path.read_bytes()
+        clean = data
+        for pattern in _HOME_PREFIX_RES:
+            clean = pattern.sub(b"~/", clean)
+        if clean != data:
+            path.write_bytes(clean)
+            changed.append(rel.as_posix())
+    return changed
+
+
 def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
@@ -159,7 +188,8 @@ def record_render_manifest(project_root: Path) -> dict:
             "committed render artifacts missing: "
             f"{sorted(set(missing))} — run the template's stage_03_render "
             "before recording the custody manifest"
-        )
+    )
+    sanitized = _sanitize_personal_paths(project_root)
 
     receipt_path = project_root / _RECEIPT_REL
     receipt_commit: str | None = None
@@ -174,6 +204,11 @@ def record_render_manifest(project_root: Path) -> dict:
                 "scripts/z_generate_manuscript_variables.py so the receipt "
                 "and the map describe the same commit"
             )
+    if sanitized:
+        print(
+            "[render-custody] sanitized personal home prefixes out of: "
+            f"{', '.join(sanitized)}"
+        )
 
     manifest = {
         "manifest_version": MANIFEST_VERSION,
