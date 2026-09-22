@@ -21,33 +21,38 @@ def register_tools(registry: Any) -> Any:
         registry: The MCP tool registry
     """
     try:
+        # Generic namespaced tools
         # Register process_file tool
         registry.register_tool(
-            "template.process_file",
-            process_file,
-            {
-                "type": "object",
-                "properties": {
-                    "file_path": {
-                        "type": "string",
-                        "description": "Path to the file to process",
-                    },
-                    "output_dir": {
-                        "type": "string",
-                        "description": "Output directory for processed files",
-                        "default": "output/template",
-                    },
-                    "options": {
-                        "type": "object",
-                        "description": "Processing options",
-                        "default": {},
-                    },
+            name="template.process_file",
+            description="Process a file using the template processor",
+            function=process_file,
+            parameters=[
+                {
+                    "name": "file_path",
+                    "description": "Path to the file to process",
+                    "type": "string",
+                    "required": True,
                 },
-                "required": ["file_path"],
+                {
+                    "name": "output_dir",
+                    "description": "Output directory for processed files",
+                    "type": "string",
+                    "required": False,
+                    "default": "output/template",
+                },
+                {
+                    "name": "options",
+                    "description": "Processing options",
+                    "type": "object",
+                    "required": False,
+                    "default": {},
+                },
+            ],
+            returns={
+                "type": "object",
+                "description": "Processing result with status and output paths",
             },
-            "Process a file using the template processor",
-            module=__package__,
-            category="template",
             examples=[
                 {
                     "description": "Process a markdown file",
@@ -58,36 +63,42 @@ def register_tools(registry: Any) -> Any:
 
         # Register process_directory tool
         registry.register_tool(
-            "template.process_directory",
-            process_directory,
-            {
-                "type": "object",
-                "properties": {
-                    "directory_path": {
-                        "type": "string",
-                        "description": "Path to the directory to process",
-                    },
-                    "recursive": {
-                        "type": "boolean",
-                        "description": "Whether to process files recursively",
-                        "default": False,
-                    },
-                    "output_dir": {
-                        "type": "string",
-                        "description": "Output directory for processed files",
-                        "default": "output/template",
-                    },
-                    "options": {
-                        "type": "object",
-                        "description": "Processing options",
-                        "default": {},
-                    },
+            name="template.process_directory",
+            description="Process all files in a directory using the template processor",
+            function=process_directory,
+            parameters=[
+                {
+                    "name": "directory_path",
+                    "description": "Path to the directory to process",
+                    "type": "string",
+                    "required": True,
                 },
-                "required": ["directory_path"],
+                {
+                    "name": "recursive",
+                    "description": "Whether to process files recursively",
+                    "type": "boolean",
+                    "required": False,
+                    "default": False,
+                },
+                {
+                    "name": "output_dir",
+                    "description": "Output directory for processed files",
+                    "type": "string",
+                    "required": False,
+                    "default": "output/template",
+                },
+                {
+                    "name": "options",
+                    "description": "Processing options",
+                    "type": "object",
+                    "required": False,
+                    "default": {},
+                },
+            ],
+            returns={
+                "type": "object",
+                "description": "Processing result with status and summary statistics",
             },
-            "Process all files in a directory using the template processor",
-            module=__package__,
-            category="template",
             examples=[
                 {
                     "description": "Process all files in a directory recursively",
@@ -98,12 +109,11 @@ def register_tools(registry: Any) -> Any:
 
         # Register get_template_info tool
         registry.register_tool(
-            "template.get_info",
-            get_template_info,
-            {},
-            "Get information about the template step",
-            module=__package__,
-            category="template",
+            name="template.get_info",
+            description="Get information about the template step",
+            function=get_template_info,
+            parameters=[],
+            returns={"type": "object", "description": "Template step information"},
             examples=[
                 {
                     "description": "Get template step information",
@@ -114,44 +124,50 @@ def register_tools(registry: Any) -> Any:
 
         # Register template.pull tool
         registry.register_tool(
-            "template.pull",
-            pull_template_mcp,
-            {
-                "type": "object",
-                "properties": {
-                    "name": {
-                        "type": "string",
-                        "description": "Name of the maintained template to pull",
-                    },
-                    "output_dir": {
-                        "type": "string",
-                        "description": (
-                            "Directory to copy the template into, relative to the"
-                            " server working directory"
-                        ),
-                        "default": "input/gnn_files",
-                    },
-                    "dry_run": {
-                        "type": "boolean",
-                        "description": (
-                            "Report the copy plan without writing files"
-                            " (copy-safe MCP default)"
-                        ),
-                        "default": True,
-                    },
-                    "overwrite": {
-                        "type": "boolean",
-                        "description": (
-                            "Replace an existing destination with a different checksum"
-                        ),
-                        "default": False,
-                    },
+            name="template.pull",
+            description="Pull a maintained template into an output directory",
+            function=pull_template_mcp,
+            parameters=[
+                {
+                    "name": "name",
+                    "description": "Name of the maintained template to pull",
+                    "type": "string",
+                    "required": True,
                 },
-                "required": ["name"],
+                {
+                    "name": "output_dir",
+                    "description": (
+                        "Directory to copy the template into, relative to the"
+                        " server working directory"
+                    ),
+                    "type": "string",
+                    "required": False,
+                    "default": "input/gnn_files",
+                },
+                {
+                    "name": "dry_run",
+                    "description": (
+                        "Report the copy plan without writing files"
+                        " (copy-safe MCP default)"
+                    ),
+                    "type": "boolean",
+                    "required": False,
+                    "default": True,
+                },
+                {
+                    "name": "overwrite",
+                    "description": (
+                        "Replace an existing destination with a different checksum"
+                    ),
+                    "type": "boolean",
+                    "required": False,
+                    "default": False,
+                },
+            ],
+            returns={
+                "type": "object",
+                "description": "Pull result with success flag and template metadata",
             },
-            "Pull a maintained template into an output directory",
-            module=__package__,
-            category="template",
             examples=[
                 {
                     "description": "Dry-run pull of the gridworld template",
@@ -162,12 +178,17 @@ def register_tools(registry: Any) -> Any:
 
         # Register template.list tool
         registry.register_tool(
-            "template.list",
-            list_templates_mcp,
-            {},
-            "List maintained templates with checksums (CLI `gnn templates list` parity)",
-            module=__package__,
-            category="template",
+            name="template.list",
+            description=(
+                "List maintained templates with checksums"
+                " (CLI `gnn templates list` parity)"
+            ),
+            function=list_templates_mcp,
+            parameters=[],
+            returns={
+                "type": "object",
+                "description": "Template records with a success flag and total count",
+            },
             examples=[
                 {
                     "description": "List maintained templates",
@@ -178,22 +199,24 @@ def register_tools(registry: Any) -> Any:
 
         # Register template.show tool
         registry.register_tool(
-            "template.show",
-            show_template_mcp,
-            {
-                "type": "object",
-                "properties": {
-                    "name": {
-                        "type": "string",
-                        "description": "Name of the maintained template to show",
-                    },
+            name="template.show",
+            description=(
+                "Show one maintained template record with checksum metadata"
+                " (CLI `gnn templates show` parity)"
+            ),
+            function=show_template_mcp,
+            parameters=[
+                {
+                    "name": "name",
+                    "description": "Name of the maintained template to show",
+                    "type": "string",
+                    "required": True,
                 },
-                "required": ["name"],
+            ],
+            returns={
+                "type": "object",
+                "description": "Single template record with a success flag",
             },
-            "Show one maintained template record with checksum metadata"
-            " (CLI `gnn templates show` parity)",
-            module=__package__,
-            category="template",
             examples=[
                 {
                     "description": "Show the gridworld template record",
