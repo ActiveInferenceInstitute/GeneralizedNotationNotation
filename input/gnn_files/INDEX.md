@@ -6,14 +6,15 @@ execute it through the 25-step pipeline. For syntax and file-structure rules see
 [normative syntax](../../docs/gnn/reference/gnn_syntax.md) and the tutorials in
 [docs/gnn/tutorials/](../../docs/gnn/tutorials/).
 
-**Counts (measured 2026-09-18):** 31 runnable `.md` spec files across 10 task
+**Counts (measured 2026-09-22):** 32 runnable `.md` spec files across 10 task
 folders (`INDEX.md`, `AGENTS.md` and `README.md` are non-spec scaffolds and are
 excluded by `gnn.processing.discovery.is_model_source_path`). 27 are discrete-state
-POMDP/HMM models that render and execute on all nine frameworks; the 4 files
-under `continuous/` are continuous-state linear-Gaussian models that render and
-execute on JAX, NumPyro, PyTorch, Stan and RxInfer.jl and are reported as
-`unsupported` (not failed) on the categorical backends PyMDP,
-ActiveInference.jl, DisCoPy and bnlearn. Live counts come from
+POMDP/HMM models that render and execute on the nine categorical-capable
+frameworks and are reported as `unsupported` (not failed) on ngc-learn
+(continuous-only backend); the 5 files under `continuous/` are continuous-state
+linear-Gaussian models that render and execute on JAX, NumPyro, PyTorch, Stan,
+RxInfer.jl and ngc-learn and are reported as `unsupported` (not failed) on
+PyMDP, ActiveInference.jl, DisCoPy and bnlearn. Live counts come from
 `output/11_render_output/render_processing_summary.json`.
 
 ## Choosing an example
@@ -24,7 +25,7 @@ ActiveInference.jl, DisCoPy and bnlearn. Live counts come from
 | Run a minimal discrete-state agent | `discrete/simple_mdp.md` → `discrete/tmaze_epistemic.md` |
 | See a canonical full Active Inference agent | `discrete/actinf_pomdp_agent.md` |
 | Compare render targets / scaling | `pymdp_scaling_study/pymdp_scaling_N4_T100.md` (then N8…N64) |
-| Continuous-state (linear-Gaussian) models — passive filtering | `continuous/damped_oscillator_bias.md`, `continuous/predictive_coding_agent.md`, `continuous/stochastic_dynamics.md` |
+| Continuous-state (linear-Gaussian) models — passive filtering | `continuous/damped_oscillator_bias.md`, `continuous/ngclearn_lgssm.md`, `continuous/predictive_coding_agent.md`, `continuous/stochastic_dynamics.md` |
 | Continuous-state closed-loop control on beliefs | `continuous/continuous_navigation.md` |
 | Multi-agent & stigmergy (v3+ features) | `multiagent/stigmergic_swarm.md` |
 | Hierarchical / deep temporal models | `hierarchical/hierarchical_pomdp.md` |
@@ -41,6 +42,7 @@ ActiveInference.jl, DisCoPy and bnlearn. Live counts come from
 ### continuous/
 - [continuous_navigation.md](continuous/continuous_navigation.md)
 - [damped_oscillator_bias.md](continuous/damped_oscillator_bias.md)
+- [ngclearn_lgssm.md](continuous/ngclearn_lgssm.md) — passive 2-state damped-rotation linear-Gaussian model; the ngc-learn (ngclearn) backend exemplar of the continuous family
 - [predictive_coding_agent.md](continuous/predictive_coding_agent.md)
 - [stochastic_dynamics.md](continuous/stochastic_dynamics.md)
 
