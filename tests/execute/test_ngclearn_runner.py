@@ -231,18 +231,10 @@ def test_executor_reports_ngclearn_skipped_when_unavailable(
     still reports success. Every other backend is pinned unavailable too so
     the all-skip summary is host-independent."""
     _write_render_script(tmp_path, "model_a", "a_ngclearn.py")
-    for flag in (
-        "PYMDP_AVAILABLE",
-        "RXINFER_AVAILABLE",
-        "DISCOPY_AVAILABLE",
-        "ACTIVEINFERENCE_AVAILABLE",
-        "JAX_AVAILABLE",
-        "NUMPYRO_AVAILABLE",
-        "PYTORCH_AVAILABLE",
-        "NGCLEARN_AVAILABLE",
-        "LEAN_AVAILABLE",
-    ):
-        monkeypatch.setattr(executor_module, flag, False)
+    def _all_unavailable(framework_dir_key: str) -> executor_module._RunnerState:
+        return executor_module._RunnerState(False, None)
+
+    monkeypatch.setattr(executor_module, "_runner_state", _all_unavailable)
     output_dir = tmp_path / "out"
     logger = logging.getLogger("test_ngclearn_runner")
 

@@ -255,10 +255,15 @@ def _require_julia(framework: str, runtime: FrameworkRuntime) -> str | Framework
 
 
 def _execute_rxinfer(
-    spec: dict[str, Any], fw_dir: Path, timeout: Optional[int] = None
+    spec: dict[str, Any],
+    fw_dir: Path,
+    timeout: Optional[int] = None,
+    runtime: FrameworkRuntime | None = None,
 ) -> FrameworkRun:
     """Render and run the RxInfer.jl backend inside its committed Julia project."""
     framework = "rxinfer"
+    if runtime is None:
+        runtime = default_julia_runtime()
     try:
         from gnn.render.rxinfer.rxinfer_renderer import render_gnn_to_rxinfer
     except ImportError as exc:
@@ -293,10 +298,15 @@ def _execute_rxinfer(
 
 
 def _execute_pymdp(
-    spec: dict[str, Any], fw_dir: Path, timeout: Optional[int] = None
+    spec: dict[str, Any],
+    fw_dir: Path,
+    timeout: Optional[int] = None,
+    runtime: FrameworkRuntime | None = None,
 ) -> FrameworkRun:
     """Render and run the PyMDP backend with results redirected into ``fw_dir``."""
     framework = "pymdp"
+    if runtime is None:
+        runtime = default_julia_runtime()
     try:
         from gnn.render.pymdp.pymdp_renderer import render_gnn_to_pymdp
     except ImportError as exc:
@@ -335,10 +345,15 @@ def _execute_pymdp(
 
 
 def _execute_activeinference_jl(
-    spec: dict[str, Any], fw_dir: Path, timeout: Optional[int] = None
+    spec: dict[str, Any],
+    fw_dir: Path,
+    timeout: Optional[int] = None,
+    runtime: FrameworkRuntime | None = None,
 ) -> FrameworkRun:
     """Render and run the ActiveInference.jl backend in its Julia project."""
     framework = "activeinference_jl"
+    if runtime is None:
+        runtime = default_julia_runtime()
     try:
         from gnn.render.activeinference_jl.activeinference_renderer import (
             render_gnn_to_activeinference_jl,
@@ -382,13 +397,17 @@ _EXECUTORS = {
 
 
 def _execute_framework(
-    spec: dict[str, Any], framework: str, fw_dir: Path, timeout: Optional[int] = None
+    spec: dict[str, Any],
+    framework: str,
+    fw_dir: Path,
+    timeout: Optional[int] = None,
+    runtime: FrameworkRuntime | None = None,
 ) -> FrameworkRun:
     """Render and execute one framework from an already-parsed GNN spec."""
     if framework not in _EXECUTORS:
         raise ValueError(f"Unknown framework: {framework}")
     fw_dir.mkdir(parents=True, exist_ok=True)
-    return _EXECUTORS[framework](spec, fw_dir, timeout)
+    return _EXECUTORS[framework](spec, fw_dir, timeout, runtime)
 
 
 def _belief_rows(results: dict[str, Any]) -> list[list[float]]:
@@ -691,7 +710,10 @@ def render_comparison_html(
 
 
 def run_cross_framework_comparison(
-    gnn_file: Path, output_dir: Path, timeout: Optional[int] = None
+    gnn_file: Path,
+    output_dir: Path,
+    timeout: Optional[int] = None,
+    runtime: FrameworkRuntime | None = None,
 ) -> str:
     """Render, execute, and compare one GNN model across all three frameworks.
 
@@ -729,7 +751,7 @@ def run_cross_framework_comparison(
     output_dir.mkdir(parents=True, exist_ok=True)
 
     runs = [
-        _execute_framework(spec, framework, output_dir / framework, timeout)
+        _execute_framework(spec, framework, output_dir / framework, timeout, runtime)
         for framework in FRAMEWORKS
     ]
 
