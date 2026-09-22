@@ -849,8 +849,9 @@ re-reading the source.
 `runs` (default, the pipeline-runs API), `jobs` (the job/tool API), or `both`
 (the jobs surface on port+1 in a daemon thread while runs blocks on the main
 thread) — e.g. `gnn serve --surface jobs`. From the CLI you can also inspect
-`gnn mcp list` prints one line per tool (add `--json` for the standard
-envelope) and `gnn mcp info <tool>` shows a single tool's registry record.
+the registered MCP tool surface: `gnn mcp list` prints one line per tool (add
+`--json` for the standard envelope) and `gnn mcp info <tool>` shows a single
+tool's registry record.
 The standalone machine-readable MCP entry point stays
 `python -m gnn.mcp.cli --format json`, which prints exactly one pure JSON
 document on stdout.
