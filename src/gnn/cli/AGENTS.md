@@ -37,6 +37,7 @@ The CLI module provides the `gnn` command-line tool — a unified interface to t
 cli/
 ├── __init__.py          # Main dispatcher and 17 subcommands
 ├── __main__.py          # `python -m gnn.cli` entry point
+├── commands.py          # Shared command semantics (dispatcher + API parity)
 ├── lsp.py               # GNN Language Server (stdio)
 ├── mcp.py               # MCP tool surface for CLI subcommands
 ├── templates.py         # Maintained template index and copy helpers

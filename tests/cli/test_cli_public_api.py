@@ -2,7 +2,8 @@
 
 Covers: get_module_info, FEATURES, __version__, _cmd_run, _cmd_parse,
 _cmd_render (with missing file), _cmd_report, _cmd_preflight, _cmd_serve,
-_cmd_lsp, _cmd_watch, _cmd_graph, _cmd_templates, _cmd_pull, _find_render_artifact.
+_cmd_lsp, _cmd_watch, _cmd_graph, _cmd_templates, _cmd_pull, and
+``gnn.cli.commands.find_render_artifact``.
 """
 
 import argparse
@@ -239,44 +240,44 @@ class TestCmdHandlers:
 
 
 class TestFindRenderArtifact:
-    """Test _find_render_artifact helper."""
+    """Test find_render_artifact helper."""
 
     def test_empty_dir_returns_none(self, tmp_path: Path) -> None:
-        from gnn.cli import _find_render_artifact
+        from gnn.cli.commands import find_render_artifact
 
-        result = _find_render_artifact(tmp_path, "pymdp")
+        result = find_render_artifact(tmp_path, "pymdp")
         assert result is None
 
     def test_finds_py_file(self, tmp_path: Path) -> None:
-        from gnn.cli import _find_render_artifact
+        from gnn.cli.commands import find_render_artifact
 
         output = tmp_path / "pymdp" / "model.py"
         output.parent.mkdir(parents=True)
         output.write_text("code")
-        result = _find_render_artifact(tmp_path, "pymdp")
+        result = find_render_artifact(tmp_path, "pymdp")
         assert result == output
 
     def test_finds_toml_for_rxinfer(self, tmp_path: Path) -> None:
-        from gnn.cli import _find_render_artifact
+        from gnn.cli.commands import find_render_artifact
 
         output = tmp_path / "rxinfer" / "model.toml"
         output.parent.mkdir(parents=True)
         output.write_text("config")
-        result = _find_render_artifact(tmp_path, "rxinfer")
+        result = find_render_artifact(tmp_path, "rxinfer")
         assert result == output
 
     def test_skips_known_non_artifact_files(self, tmp_path: Path) -> None:
-        from gnn.cli import _find_render_artifact
+        from gnn.cli.commands import find_render_artifact
 
         (tmp_path / "README.md").write_text("readme")
         (tmp_path / "processing_summary.json").write_text("{}")
-        result = _find_render_artifact(tmp_path, "pymdp")
+        result = find_render_artifact(tmp_path, "pymdp")
         assert result is None
 
     def test_finds_from_summary_json(self, tmp_path: Path) -> None:
         import json
 
-        from gnn.cli import _find_render_artifact
+        from gnn.cli.commands import find_render_artifact
 
         summary = tmp_path / "render_processing_summary.json"
         output_file = tmp_path / "pymdp" / "model.py"
@@ -295,5 +296,5 @@ class TestFindRenderArtifact:
                 }
             )
         )
-        result = _find_render_artifact(tmp_path, "pymdp")
+        result = find_render_artifact(tmp_path, "pymdp")
         assert result == output_file
