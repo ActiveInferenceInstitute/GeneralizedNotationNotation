@@ -210,8 +210,9 @@ def main() -> int:
     usage = [entry for entry in entries if entry["status"] == "usage"]
     operational = [entry for entry in entries if entry["status"] == "operational"]
 
+    exit_two = bool(stale or usage)
     receipt = {
-        "result": "stale" if stale else ("operational" if operational else "fresh"),
+        "result": "stale" if exit_two else ("operational" if operational else "fresh"),
         "stale_count": len(stale),
         "checked": len(entries),
         "checks": entries,

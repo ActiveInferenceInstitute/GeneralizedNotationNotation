@@ -21,6 +21,11 @@ name: Pair pin freshness
 # The check is git-only (stdlib + git), so the runner's system python3 is
 # used deliberately and the job needs no Python setup step.
 #
+# Scheduled freshness checks are watchdogs, not redundant per-ref
+# executions: `cancel-in-progress: false` keeps a manual dispatch from
+# cancelling the nightly signal mid-run (deliberate deviation from the
+# SPEC's aggressive cancellation default).
+#
 # What this proves and does NOT prove (evidence-plane discipline): a green
 # run proves the pins still name commits inside each companion default
 # branch's history. It does NOT prove the pinned checkouts still agree with
