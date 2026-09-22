@@ -21,8 +21,17 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from gnn.pipeline.run_session import UnitStatus, load_session  # noqa: E402
-from gnn.pipeline.session_acceptance import run_session_acceptance  # noqa: E402
+from gnn.pipeline.run_session import (  # noqa: E402
+    UnitStatus,
+    WorkUnit,
+    load_session,
+    mark,
+    start_session,
+)
+from gnn.pipeline.session_acceptance import (  # noqa: E402
+    run_session_acceptance,
+    verify_session_artifacts,
+)
 
 MANIFEST = Path("input/model_family_manifest.json")
 PRESENT_STEPS = (3, 5, 6, 11, 12, 15, 16, 23)
@@ -211,3 +220,130 @@ def test_resume_with_family_not_in_session_raises(tmp_path: Path) -> None:
             runner=_passing_runner,
             resume=True,
         )
+
+
+def _run_three_family_session(tmp_path: Path) -> Path:
+    """Run a complete three-family session with the passing runner and return
+    the session checkpoint path."""
+    session_path = tmp_path / "session.json"
+    run_session_acceptance(
+        MANIFEST,
+        tmp_path / "out",
+        session_path,
+        family_names=["basics", "discrete", "continuous"],
+        runner=_passing_runner,
+    )
+    return session_path
+
+
+def test_verify_session_artifacts_clean_after_run(tmp_path: Path) -> None:
+    """Perf#6 join: a completed session's recorded inventories re-validate
+    clean against the live artifact directories."""
+    session_path = _run_three_family_session(tmp_path)
+    output_dir = tmp_path / "out"
+
+    assert verify_session_artifacts(session_path, output_dir) == []
+
+
+def test_verify_session_artifacts_detects_tamper(tmp_path: Path) -> None:
+    """NEGATIVE: rewriting a recorded artifact after the checkpoint fires a
+    checksum mismatch naming the artifact's relative path."""
+    session_path = _run_three_family_session(tmp_path)
+    output_dir = tmp_path / "out"
+    recorded = load_session(session_path).units[0].artifact_hashes
+    relative = next(iter(recorded))
+    target = output_dir / "basics" / relative
+    target.write_bytes(target.read_bytes() + b"\nTAMPERED")
+
+    problems = verify_session_artifacts(session_path, output_dir)
+    assert problems, "expected the join to report the tampered artifact"
+    assert any("checksum mismatch for" in p for p in problems), problems
+    assert any(relative in p for p in problems), problems
+
+
+def test_verify_session_artifacts_detects_missing(tmp_path: Path) -> None:
+    """NEGATIVE: deleting a recorded artifact after the checkpoint fires a
+    missing-on-disk problem."""
+    session_path = _run_three_family_session(tmp_path)
+    output_dir = tmp_path / "out"
+    recorded = load_session(session_path).units[0].artifact_hashes
+    relative = next(iter(recorded))
+    (output_dir / "basics" / relative).unlink()
+
+    problems = verify_session_artifacts(session_path, output_dir)
+    assert problems, "expected the join to report the deleted artifact"
+    assert any(
+        "recorded artifact missing on disk" in p for p in problems
+    ), problems
+
+
+def test_verify_session_artifacts_detects_unrecorded(tmp_path: Path) -> None:
+    """NEGATIVE: adding a file under a family output dir after the checkpoint
+    fires an unrecorded-artifact problem."""
+    session_path = _run_three_family_session(tmp_path)
+    output_dir = tmp_path / "out"
+    (output_dir / "discrete" / "late_addition.json").write_text(
+        "{}", encoding="utf-8"
+    )
+
+    problems = verify_session_artifacts(session_path, output_dir)
+    assert problems, "expected the join to report the unrecorded file"
+    assert any(
+        "unrecorded artifact on disk" in p for p in problems
+    ), problems
+
+
+def test_verify_session_artifacts_accepts_session_instance(tmp_path: Path) -> None:
+    """An in-memory RunSession instance is accepted; when a path is passed as
+    ``session_file`` the checkpoint is excluded from the on-disk inventory."""
+    session_path = _run_three_family_session(tmp_path)
+    output_dir = tmp_path / "out"
+    session = load_session(session_path)
+
+    assert (
+        verify_session_artifacts(session, output_dir, session_file=session_path)
+        == []
+    )
+    # The checkpoint lives outside every family dir, so even without an
+    # explicit exclusion it never enters the on-disk inventory.
+    assert verify_session_artifacts(session, output_dir) == []
+
+
+def test_verify_session_artifacts_skips_empty_inventory(tmp_path: Path) -> None:
+    """Units that record no artifact_hashes inventory are outside the join: no
+    problems even though the referenced directory holds files on disk."""
+    output_dir = tmp_path / "out"
+    family_dir = output_dir / "family_a"
+    family_dir.mkdir(parents=True)
+    (family_dir / "artifact.json").write_text("{}", encoding="utf-8")
+
+    session = start_session("empty-inventory", ["family_a"], created_by="test")
+    session = mark(
+        session, "family_a", UnitStatus.DONE, artifact_refs=[str(family_dir)]
+    )
+
+    assert verify_session_artifacts(session, output_dir) == []
+
+
+def test_verify_session_artifacts_reports_unresolvable_dir(tmp_path: Path) -> None:
+    """NEGATIVE: a unit with a recorded inventory whose artifact refs resolve
+    nowhere reports the unresolvable directory instead of skipping it."""
+    session = start_session(
+        "ghost",
+        [
+            WorkUnit(
+                unit_id="ghost_family",
+                artifact_hashes={"artifact.json": "0" * 64},
+            )
+        ],
+        created_by="test",
+    )
+    session = mark(
+        session, "ghost_family", UnitStatus.DONE, artifact_refs=["ghost_family"]
+    )
+
+    problems = verify_session_artifacts(session, tmp_path)
+    assert problems, "expected the join to report the unresolvable directory"
+    assert any(
+        "artifact directory not found" in p for p in problems
+    ), problems

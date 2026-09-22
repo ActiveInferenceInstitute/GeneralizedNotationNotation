@@ -16,7 +16,13 @@ checkpoint/resume + path-safe cleanup), and `container_plan.py` (auditable conta
 security review + rollback). These generate/validate **data only** — no container or cluster is
 executed. Acceptance: `scripts/run_v3_orchestration_acceptance.py --strict`. `run_session_wiring.py`
 additionally wires run sessions + durable streams into the `gnn.main` composition (artifacts:
-`00_pipeline_summary/run_session.json` + `v3_run_manifest/`). Reference:
+`00_pipeline_summary/run_session.json` + `v3_run_manifest/`). `run_manifest.py` emission also records
+binary artifacts (`.png`/`.gif`/`.npy`/`.csv`) as additive index keys (`schema_version` `3.2`); consumers
+must read new keys additively — the JSON inventory keys keep their prior semantics, and
+`verify_run_manifests` accepts legacy 3.1 indexes. `session_acceptance.py` provides
+`verify_session_artifacts(session, output_dir)`, which joins each unit's recorded `artifact_hashes`
+inventory against the on-disk artifacts (units without a recorded inventory are outside the join).
+Reference:
 [`docs/pipeline/v3_orchestration.md`](../../../docs/pipeline/v3_orchestration.md).
 
 **Version**: [pyproject.toml](../../../pyproject.toml) (canonical)

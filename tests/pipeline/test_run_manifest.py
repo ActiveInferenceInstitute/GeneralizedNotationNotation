@@ -14,9 +14,15 @@ import sys
 from pathlib import Path
 from typing import Any, Dict
 
+import numpy as np
+
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from gnn.pipeline.durable_streams import read_trace, replay_trace
+from gnn.pipeline.durable_streams import (
+    read_stream_manifest,
+    read_trace,
+    replay_trace,
+)
 from gnn.pipeline.run_manifest import emit_run_manifests, verify_run_manifests
 
 
@@ -214,3 +220,205 @@ def test_negative_tampered_summary_breaks_trace_binding(tmp_path: Path) -> None:
 
     problems = verify_run_manifests(out, run_dir)
     assert any("re-derived from the live run summary" in p for p in problems)
+
+
+def _build_fake_run_with_binaries(root: Path) -> Path:
+    """Create the fake run plus binary artifacts covering all four formats.
+
+    Calls ``_build_fake_run`` then adds ``graph.png`` / ``anim.gif`` under
+    ``3_gnn_output`` and a real ``beliefs.npy`` (numpy) / ``trace.csv`` under
+    ``12_execute_output``, so the binary-artifact inventory (Perf#5) has one
+    png, gif, npy, and csv to record.
+    """
+    run_dir = _build_fake_run(root)
+    gnn = run_dir / "3_gnn_output"
+    (gnn / "graph.png").write_bytes(b"\x89PNG\r\n\x1a\n" + b"fake-png-data")
+    (gnn / "anim.gif").write_bytes(b"GIF89a" + b"fake")
+    execute = run_dir / "12_execute_output"
+    execute.mkdir()
+    np.save(execute / "beliefs.npy", np.arange(6, dtype=np.float64))
+    (execute / "trace.csv").write_text("t,belief\n0,0.5\n", encoding="utf-8")
+    return run_dir
+
+
+def test_binary_artifacts_recorded_additively(tmp_path: Path) -> None:
+    """emit_run_manifests records binaries additively: the JSON inventory and
+    stream_count keep their exact meaning, one FILE manifest per binary is
+    written, and verification re-validates clean."""
+    run_dir = _build_fake_run_with_binaries(tmp_path)
+    result = emit_run_manifests(run_dir)
+    manifest_dir = Path(result["manifest_dir"])
+
+    index = json.loads((manifest_dir / "index.json").read_text(encoding="utf-8"))
+    assert index["schema_version"] == "3.2"
+    # The JSON inventory is untouched: still exactly the 3 JSON artifacts.
+    assert index["stream_count"] == 3
+    assert index["binary_count"] == 4
+    assert result["binary_count"] == 4
+
+    binary_artifacts = index["binary_artifacts"]
+    assert {entry["source"] for entry in binary_artifacts} == {
+        "3_gnn_output/anim.gif",
+        "3_gnn_output/graph.png",
+        "12_execute_output/beliefs.npy",
+        "12_execute_output/trace.csv",
+    }
+    assert {entry["format"] for entry in binary_artifacts} == {
+        "png",
+        "gif",
+        "npy",
+        "csv",
+    }
+    for entry in binary_artifacts:
+        assert (manifest_dir / entry["manifest_file"]).is_file()
+
+    # Dtype labels: raw-byte containers (png/gif/npy) are uint8; csv is text.
+    dtype_by_format = {
+        entry["format"]: read_stream_manifest(
+            manifest_dir / entry["manifest_file"]
+        ).dtype
+        for entry in binary_artifacts
+    }
+    assert dtype_by_format == {
+        "png": "uint8",
+        "gif": "uint8",
+        "npy": "uint8",
+        "csv": "text",
+    }
+
+    assert verify_run_manifests(manifest_dir, run_dir) == []
+
+
+def test_negative_tampered_binary_is_detected(tmp_path: Path) -> None:
+    """NEGATIVE: rewriting a binary artifact after emission fires a checksum
+    mismatch naming the binary's relative source path."""
+    run_dir = _build_fake_run_with_binaries(tmp_path)
+    result = emit_run_manifests(run_dir)
+    manifest_dir = Path(result["manifest_dir"])
+
+    # Sanity: clean before tampering.
+    assert verify_run_manifests(manifest_dir, run_dir) == []
+
+    (run_dir / "3_gnn_output" / "graph.png").write_bytes(
+        b"\x89PNG\r\n\x1a\n" + b"tampered-png-data"
+    )
+
+    problems = verify_run_manifests(manifest_dir, run_dir)
+    assert problems, "expected verification to report the tampered binary"
+    assert any(
+        "checksum mismatch for 3_gnn_output/graph.png" in p for p in problems
+    ), problems
+
+
+def test_negative_deleted_binary_is_detected(tmp_path: Path) -> None:
+    """NEGATIVE: deleting a binary artifact after emission fires both the
+    missing-source error and the binary inventory difference."""
+    run_dir = _build_fake_run_with_binaries(tmp_path)
+    result = emit_run_manifests(run_dir)
+    manifest_dir = Path(result["manifest_dir"])
+
+    (run_dir / "12_execute_output" / "trace.csv").unlink()
+
+    problems = verify_run_manifests(manifest_dir, run_dir)
+    assert problems, "deleting a binary should produce manifest problems"
+    assert any("source file does not exist" in p for p in problems), problems
+    assert any(
+        "Binary artifact inventory differs" in p for p in problems
+    ), problems
+
+
+def test_legacy_3_1_index_still_verifies_without_binaries(tmp_path: Path) -> None:
+    """A legacy ``"3.1"`` index (binary keys stripped) still re-validates clean
+    when the run contains no binary artifacts."""
+    run_dir = _build_fake_run(tmp_path)
+    result = emit_run_manifests(run_dir)
+    manifest_dir = Path(result["manifest_dir"])
+
+    index_path = manifest_dir / "index.json"
+    index = json.loads(index_path.read_text(encoding="utf-8"))
+    index["schema_version"] = "3.1"
+    index.pop("binary_count")
+    index.pop("binary_artifacts")
+    index_path.write_text(
+        json.dumps(index, indent=2, sort_keys=True, ensure_ascii=False),
+        encoding="utf-8",
+    )
+
+    assert verify_run_manifests(manifest_dir, run_dir) == []
+
+
+def test_legacy_3_1_index_reports_unrecorded_binaries(tmp_path: Path) -> None:
+    """A legacy ``"3.1"`` index with binary artifacts on disk reports them as
+    unrecorded rather than silently ignoring them."""
+    run_dir = _build_fake_run(tmp_path)
+    result = emit_run_manifests(run_dir)
+    manifest_dir = Path(result["manifest_dir"])
+
+    index_path = manifest_dir / "index.json"
+    index = json.loads(index_path.read_text(encoding="utf-8"))
+    index["schema_version"] = "3.1"
+    index.pop("binary_count")
+    index.pop("binary_artifacts")
+    index_path.write_text(
+        json.dumps(index, indent=2, sort_keys=True, ensure_ascii=False),
+        encoding="utf-8",
+    )
+
+    # A binary lands on disk after the legacy downgrade.
+    (run_dir / "3_gnn_output" / "late.png").write_bytes(b"\x89PNG\r\n\x1a\nlate")
+
+    problems = verify_run_manifests(manifest_dir, run_dir)
+    assert any(
+        "Binary artifacts not recorded in the index" in p for p in problems
+    ), problems
+
+
+def test_binary_count_mismatch_detected(tmp_path: Path) -> None:
+    """NEGATIVE: hand-editing binary_count in the index breaks verification."""
+    run_dir = _build_fake_run_with_binaries(tmp_path)
+    result = emit_run_manifests(run_dir)
+    manifest_dir = Path(result["manifest_dir"])
+
+    index_path = manifest_dir / "index.json"
+    index = json.loads(index_path.read_text(encoding="utf-8"))
+    index["binary_count"] = 99
+    index_path.write_text(
+        json.dumps(index, indent=2, sort_keys=True, ensure_ascii=False),
+        encoding="utf-8",
+    )
+
+    problems = verify_run_manifests(manifest_dir, run_dir)
+    assert any(
+        "binary_count does not match binary manifest inventory" in p
+        for p in problems
+    ), problems
+
+
+def test_emit_determinism_with_binaries(tmp_path: Path) -> None:
+    """Emitting over two separate copies of the same fake run is deterministic:
+    equal counts, identical binary stream ids/sources, identical trace digests."""
+    run_a = _build_fake_run_with_binaries(tmp_path / "a")
+    run_b = _build_fake_run_with_binaries(tmp_path / "b")
+    out_a = tmp_path / "manifests_a"
+    out_b = tmp_path / "manifests_b"
+    result_a = emit_run_manifests(run_a, manifest_out=out_a)
+    result_b = emit_run_manifests(run_b, manifest_out=out_b)
+
+    assert result_a["stream_count"] == result_b["stream_count"]
+    assert result_a["binary_count"] == result_b["binary_count"]
+
+    index_a = json.loads((out_a / "index.json").read_text(encoding="utf-8"))
+    index_b = json.loads((out_b / "index.json").read_text(encoding="utf-8"))
+    streams_a = {
+        (entry["stream_id"], entry["source"])
+        for entry in index_a["binary_artifacts"]
+    }
+    streams_b = {
+        (entry["stream_id"], entry["source"])
+        for entry in index_b["binary_artifacts"]
+    }
+    assert streams_a == streams_b
+
+    trace_a = read_trace(out_a / "execution_trace.json")
+    trace_b = read_trace(out_b / "execution_trace.json")
+    assert replay_trace(trace_a) == replay_trace(trace_b)
