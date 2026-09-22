@@ -479,6 +479,33 @@ lazily.
   `from gnn.mcp import`, and bare `python src/gnn/…` runs →
   `uv run python …` throughout.
 
+### Fixed (2026-09-22 — release stabilization chain)
+
+- **Version-literal reconciliation.** `gnn.__version__`, `api.MODULE_VERSION`,
+  the version-consistency tests, and `src/gnn/STEP_INDEX.md`/`ARCHITECTURE.md`
+  now carry 3.5.0 (the initial release commit left four files on 3.4.0).
+- **cross_framework runtime threading (#155 interplay).** The three executor
+  lanes (`_execute_rxinfer`/`_execute_pymdp`/`_execute_activeinference_jl`)
+  and the public `run_cross_framework_comparison` accept an optional
+  `FrameworkRuntime` alongside the new `timeout` parameter, restoring the
+  stub-runtime injection contract the timeout conversion had dropped.
+- **flax marker-gated per Python version.** flax 0.12.6 calls
+  `jax.core.get_opaque_trace_state` (removed in jax 0.11.0); the py>=3.12
+  splits resolve jax 0.11.2 (ngclearn), so those splits now pin
+  `flax>=0.12.9` while py3.11 splits keep `<0.12.7` on jax 0.9.2.
+- **mypy target 3.12.** numpy 2.4.x type stubs use the `type` statement; the
+  prior 3.11 target failed the CI mypy leg on those stubs.
+- **Executor lazy-loader reconciliation.** ngclearn joins
+  `_RUNNER_LOADERS` via `_load_ngclearn()` and an `ngclearn_state` lookup,
+  keeping the lazy-import architecture while carrying the ngclearn spec row;
+  three py3.12-fork mypy errors fixed (`int(np.prod)` slice cast,
+  `matplotlib.colormaps` registry access, `np.asarray` division returns).
+- **seaborn `center=` set_bad path (#3.5.0 matrix correlations).**
+  seaborn 0.13.2's `center=` normalization routes through
+  `Colormap.set_bad()`, which the SC-26 warning ratchet raises as
+  PendingDeprecationWarning on matplotlib 3.13; the correlation heatmap now
+  uses the ±1 `vmin`/`vmax` diverging scale without the masked path.
+
 ### Fixed (2026-09-14)
 
 - **Structural render specs (issue #111).** Blanket structural wrapper
