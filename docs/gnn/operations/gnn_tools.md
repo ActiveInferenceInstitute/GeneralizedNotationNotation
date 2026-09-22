@@ -313,9 +313,9 @@ uv run python src/gnn/main.py --target-dir input/gnn_files --verbose
 
 ### Community
 
-- [GitHub Repository](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation)
-- [GitHub Discussions](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions)
-- [Issue Tracker](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/issues)
+- [GitHub Repository](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation)
+- [GitHub Discussions](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/discussions)
+- [Issue Tracker](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/issues)
 
 ## Step 4 GNN type checker
 
@@ -352,7 +352,7 @@ timeline
 ## References
 
 1. Smékal, J., & Friedman, D. A. (2023). Generalized Notation Notation for Active Inference Models. Active Inference Institute. <https://doi.org/10.5281/zenodo.7803328>
-2. Active Inference Institute: [Generalized Notation Notation (GNN) GitHub Repository](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation)
+2. Active Inference Institute: [Generalized Notation Notation (GNN) GitHub Repository](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation)
 3. Smith, R., Friston, K.J., & Whyte, C.J. (2022). A step-by-step tutorial on active inference and its application to empirical data. Journal of Mathematical Psychology, 107, 102632.
 
 ## GNN Processing Pipeline (`src/gnn/main.py`)

@@ -29,8 +29,8 @@ A simple navigation agent that learns to find a goal location in a 2x2 grid worl
 
 ```bash
 # Clone the repository
-git clone https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation.git
-cd GeneralizedNotationNotation
+git clone https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation.git
+cd Generalized_Notation_Notation
 
 # Install UV package manager (if not already installed)
 curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -356,7 +356,7 @@ backends (PyMDP, ActiveInference.jl, DisCoPy, bnlearn) report them
 
 1. **Start with the template**: Use [`templates/basic_gnn_template.md`](../../templates/basic_gnn_template.md)
 2. **Model your domain**: What states, observations, actions make sense?
-3. **Get help**: Check [FAQ](../README.md) and [community discussions](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions)
+3. **Get help**: Check [FAQ](../README.md) and [community discussions](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/discussions)
 4. **Process with pipeline**: Use `src/gnn/main.py` to run complete workflow
 
 ## 🧠 Key Concepts You've Learned
@@ -412,7 +412,7 @@ bnlearn do not execute that kind — rerun with `--frameworks jax`, `numpyro`,
   - [FAQ](../README.md)
   - [Error guide](../../troubleshooting/error_taxonomy.md)
   - [Support](../../SUPPORT.md)
-- **Community**: [GitHub Discussions](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions)
+- **Community**: [GitHub Discussions](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/discussions)
 
 ---
 

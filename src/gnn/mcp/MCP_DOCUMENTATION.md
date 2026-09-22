@@ -209,7 +209,7 @@ module discovery.
 ```bash
 # Clone the repository
 git clone <repository-url>
-cd GeneralizedNotationNotation
+cd Generalized_Notation_Notation
 
 # Install dependencies using UV (recommended)
 uv sync

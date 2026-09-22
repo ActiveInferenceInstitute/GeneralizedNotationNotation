@@ -91,7 +91,7 @@ The GNN team and community take all security vulnerabilities seriously. We appre
 **GitHub Security:**
 
 - **Platform**: [GitHub Security Advisories](https://docs.github.com/en/code-security/security-advisories/guidance-on-reporting-and-writing/privately-reporting-a-security-vulnerability)
-- **Repository**: [GeneralizedNotationNotation](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/security/advisories)
+- **Repository**: [GeneralizedNotationNotation](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/security/advisories)
 - **Benefits**: Automated coordination with dependency maintainers
 
 > **⚠️ Important**: Please do not report security vulnerabilities through public GitHub issues.

@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/schemas/gnn-v1.json",
+  "$id": "https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/schemas/gnn-v1.json",
   "title": "Generalized Notation Notation (GNN) Schema",
   "description": "JSON Schema for validating GNN (Generalized Notation Notation) model files in Active Inference format",
   "version": "1.0",

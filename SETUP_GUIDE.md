@@ -15,8 +15,8 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation.git
-cd GeneralizedNotationNotation
+git clone https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation.git
+cd Generalized_Notation_Notation
 
 # Run basic setup
 uv run python src/gnn/1_setup.py --verbose

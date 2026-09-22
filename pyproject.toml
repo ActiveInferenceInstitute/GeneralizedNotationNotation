@@ -299,10 +299,10 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation"
-Documentation = "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/tree/main/docs"
-Repository = "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation.git"
-Issues = "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/issues"
+Homepage = "https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation"
+Documentation = "https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/tree/main/docs"
+Repository = "https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation.git"
+Issues = "https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/issues"
 
 [project.scripts]
 gnn = "gnn.cli:main"

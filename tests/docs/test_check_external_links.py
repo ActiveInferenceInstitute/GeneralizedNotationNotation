@@ -61,7 +61,7 @@ class TestNormalizeUrl:
         assert checker._normalize_url(url) == url
 
     def test_noop_on_clean_url(self, checker: Any) -> None:
-        url = "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation"
+        url = "https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation"
         assert checker._normalize_url(url) == url
 
 
@@ -124,5 +124,5 @@ class TestShouldSkipUrl:
 
     def test_real_url_not_skipped(self, checker: Any) -> None:
         assert not checker._should_skip_url(
-            "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation"
+            "https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation"
         )

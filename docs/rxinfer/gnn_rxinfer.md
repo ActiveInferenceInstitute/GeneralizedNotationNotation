@@ -273,7 +273,7 @@ This synergy would streamline the workflow from theoretical model design to prac
 ## 7. References
 
 *   Smékal, J., & Friedman, D. A. (2023). Generalized Notation Notation for Active Inference Models. *Active Inference Journal*. [https://doi.org/10.5281/zenodo.7803328](https://doi.org/10.5281/zenodo.7803328)
-*   The GeneralizedNotationNotation Project: [https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation)
+*   The GeneralizedNotationNotation Project: [https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation)
 *   RxInfer.jl Documentation: [https://reactivebayes.github.io/RxInfer.jl/stable/](https://reactivebayes.github.io/RxInfer.jl/stable/)
 *   Bagaev, D., de Vries, B., & van de Laar, T. (2023). RxInfer: A Julia package for reactive real-time Bayesian inference. *Journal of Open Source Software*, 8(92), 5161. [https://doi.org/10.21105/joss.05161](https://doi.org/10.21105/joss.05161)
 *   Relevant RxInfer documentation pages:
@@ -1115,4 +1115,4 @@ For RxInfer-specific issues:
 1. Check the [RxInfer.jl GitHub Issues](https://github.com/biaslab/RxInfer.jl/issues)
 2. Review [ReactiveMP examples](https://github.com/biaslab/ReactiveMP.jl)
 3. Consult the [GNN troubleshooting guide](../troubleshooting/README.md)
-4. Post questions in [GNN Discussions](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions) 
+4. Post questions in [GNN Discussions](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/discussions) 

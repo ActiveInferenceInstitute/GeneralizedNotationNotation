@@ -283,7 +283,7 @@ As we advance toward increasingly sophisticated AI systems, the **mathematical r
 [16] https://arxiv.org/pdf/2412.14741.pdf
 [17] https://researchers.mq.edu.au/en/publications/designing-explainable-artificial-intelligence-withactive-inferenc
 [18] https://arxiv.org/pdf/2306.04025.pdf
-[19] https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/
+[19] https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/
 [20] https://www.nature.com/articles/s41467-023-40141-z
 [21] https://www.sciencedirect.com/science/article/pii/S037015732300203X
 [22] https://smythos.com/developers/agent-development/cognitive-agent-architectures/
@@ -324,11 +324,11 @@ As we advance toward increasingly sophisticated AI systems, the **mathematical r
 [60] https://www.tandfonline.com/doi/full/10.1080/10447318.2025.2474465?src=
 [61] https://news.ycombinator.com/item?id=40648960
 [62] https://dl.acm.org/doi/fullHtml/10.1145/3629296.3629336
-[63] https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation
-[64] https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/blob/main/docs/gnn/gnn_overview.md
-[65] https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/blob/main/docs/gnn/reference/gnn_syntax.md
-[66] https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/blob/main/docs/gnn/about_gnn.md
-[67] https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/blob/main/docs/gnn/reference/gnn_file_structure_doc.md
+[63] https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation
+[64] https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/blob/main/docs/gnn/gnn_overview.md
+[65] https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/blob/main/docs/gnn/reference/gnn_syntax.md
+[66] https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/blob/main/docs/gnn/about_gnn.md
+[67] https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/blob/main/docs/gnn/reference/gnn_file_structure_doc.md
 [68] http://www-formal.stanford.edu/jmc/ailogic.pdf
 [69] http://arxiv.org/pdf/2405.04550.pdf
 [70] https://plato.stanford.edu/entries/logic-ai/

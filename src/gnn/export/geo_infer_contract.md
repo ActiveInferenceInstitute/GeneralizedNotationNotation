@@ -99,7 +99,7 @@ closed by those contracts, GNN-05 records the Step 7 CLI wiring, and GNN-04
 ## Verified companion implementation
 
 The paired GEO implementation is
-[`e028aa90`](https://github.com/ActiveInferenceInstitute/GEO-INFER/commit/e028aa9060e05f765762224499f5e2c714cf25a3).
+[`e028aa90`](https://github.com/ActiveInferenceInstitute/GEO_INFER/commit/e028aa9060e05f765762224499f5e2c714cf25a3).
 Its receipt records identical categorical/H3 artifacts and complete traces across
 GEO Python 3.11 and 3.12, with GNN running separately on Python 3.11. Main-branch
 integration and CI revision pairing remain the explicitly scoped GNN-04/GNN-06

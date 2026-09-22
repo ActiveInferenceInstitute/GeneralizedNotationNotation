@@ -14,8 +14,8 @@ Thank you for your interest in contributing to GNN! This project benefits from c
 
 ```bash
 # Fork and clone the repository
-git clone https://github.com/<your-username>/GeneralizedNotationNotation.git
-cd GeneralizedNotationNotation
+git clone https://github.com/<your-username>/Generalized_Notation_Notation.git
+cd Generalized_Notation_Notation
 
 # Install dependencies
 uv sync --extra dev
@@ -33,7 +33,7 @@ See [SETUP_GUIDE.md](SETUP_GUIDE.md) for detailed installation instructions incl
 
 ### Reporting Bugs
 
-1. Search [existing issues](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/issues) first.
+1. Search [existing issues](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/issues) first.
 2. If no existing issue matches, open a new one with:
    - A clear, descriptive title
    - Steps to reproduce
@@ -42,7 +42,7 @@ See [SETUP_GUIDE.md](SETUP_GUIDE.md) for detailed installation instructions incl
 
 ### Suggesting Features
 
-Open a [GitHub Discussion](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions) or issue describing:
+Open a [GitHub Discussion](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/discussions) or issue describing:
 - The problem the feature would solve
 - Your proposed approach
 - Any relevant examples or references
@@ -158,10 +158,10 @@ Please review and follow our [Code of Conduct](CODE_OF_CONDUCT.md). We are commi
 
 ## Recognition
 
-Contributors are recognized in [release notes](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/releases), the [CHANGELOG](CHANGELOG.md), and the [contributors graph](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/graphs/contributors).
+Contributors are recognized in [release notes](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases), the [CHANGELOG](CHANGELOG.md), and the [contributors graph](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/graphs/contributors).
 
 ## Questions?
 
 - Check the [documentation](docs/)
-- Open a [GitHub Discussion](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions)
+- Open a [GitHub Discussion](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/discussions)
 - See [SUPPORT.md](SUPPORT.md) for additional help channels

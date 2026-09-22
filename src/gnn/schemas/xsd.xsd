@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           targetNamespace="https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/schemas/gnn-v1"
-           xmlns:gnn="https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/schemas/gnn-v1"
+           targetNamespace="https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/schemas/gnn-v1"
+           xmlns:gnn="https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/schemas/gnn-v1"
            elementFormDefault="qualified">
 
   <!-- 

@@ -239,9 +239,9 @@ Visualization and export docs: [integration/gnn_visualization.md](../docs/gnn/in
 
 | Link | Use |
 |------|-----|
-| [Issues](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/issues) | Bugs and tracked work |
-| [Discussions](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions) | Ideas and Q&A |
-| [Contributors](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/graphs/contributors) | Contribution history |
+| [Issues](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/issues) | Bugs and tracked work |
+| [Discussions](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/discussions) | Ideas and Q&A |
+| [Contributors](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/graphs/contributors) | Contribution history |
 
 Publication reference and DOI appear in the root [README.md](../README.md) (Overview).
 

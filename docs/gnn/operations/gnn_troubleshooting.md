@@ -160,4 +160,4 @@ If you encounter an issue not listed here:
 
 1. Check the **[Technical Reference](../reference/technical_reference.md)** for detailed data flow.
 2. Review **[GNN Standards](../reference/gnn_standards.md)** for compliance.
-3. Open an issue on the [GitHub Repository](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation) with your GNN file and the error log.
+3. Open an issue on the [GitHub Repository](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation) with your GNN file and the error log.

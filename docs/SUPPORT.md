@@ -10,12 +10,12 @@ For help with **Generalized Notation Notation (GNN)**, please refer to the follo
 - [Searchable Index](gnn/README.md)
 
 ## Issues
-If you encounter bugs, please report them on our [GitHub Issue Tracker](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/issues).
+If you encounter bugs, please report them on our [GitHub Issue Tracker](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/issues).
 
 ## Community
 Join the discussion:
 - [Active Inference Institute Discord](https://discord.gg/activeinference)
-- [GitHub Discussions](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions)
+- [GitHub Discussions](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/discussions)
 
 ## Security
 For security-related issues, please review the [Security Guide](security/README.md) or contact the maintainers directly.

@@ -7,7 +7,7 @@
 - **Presenter:** Daniel Friedman, Active Inference Institute  
 - **Date:** June 23, 2025
 - **Watch Live:** https://www.youtube.com/live/L0kFneuINsg
-- **GitHub Repository:** [GeneralizedNotationNotation](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation)
+- **GitHub Repository:** [GeneralizedNotationNotation](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation)
 - **Support the work:** Get involved in this project and/or [Donate](https://donate.activeinference.institute)
 
 ---

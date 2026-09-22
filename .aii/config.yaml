@@ -2,9 +2,9 @@
 meta:
   updated: '2026-06-30'
 repo:
-  name: GeneralizedNotationNotation
-  slug: generalizednotationnotation
-  full_name: ActiveInferenceInstitute/GeneralizedNotationNotation
+  name: Generalized_Notation_Notation
+  slug: generalized_notation_notation
+  full_name: ActiveInferenceInstitute/Generalized_Notation_Notation
   description: '[🚀 Quick Start](#-quick-start) • [📖 Documentation](#-documentation)
     • [🎯 Examples](#-examples) • [🛠️ Tools](#%EF%B8%8F-tools-and-utilities) • [🤝 Contributing](#-contributing)'
 institute:
@@ -19,7 +19,7 @@ ecosystem:
   - repo: ActiveInferenceInstitute/Active_Inference_Ontology
     note: Uses Active Inference Ontology terms.
   links:
-    github: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation
+    github: https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation
     website: https://www.activeinference.org
 artifacts:
 - path: README.md

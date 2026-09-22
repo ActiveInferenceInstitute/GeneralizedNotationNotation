@@ -211,7 +211,7 @@ The convergence of these fields represents not just a technical advancement, but
 [13] https://arxiv.org/abs/2107.05438
 [14] https://zenodo.org/record/7803328
 [15] https://zenodo.org/records/7803328
-[16] https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/
+[16] https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/
 [17] https://www.geeksforgeeks.org/deep-learning/variational-inference-in-bayesian-neural-networks/
 [18] https://arxiv.org/abs/2411.05034
 [20] https://publish.obsidian.md/active-inference/knowledge_base/cognitive/active_inference
@@ -283,8 +283,8 @@ The convergence of these fields represents not just a technical advancement, but
 [90] https://cs224d.stanford.edu/reports/OshriBarak.pdf
 [91] https://openreview.net/forum?id=0bS3M8COYS
 [92] https://core.ac.uk/download/79545253.pdf
-[94] https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/blob/main/docs/gnn/reference/gnn_syntax.md
-[95] https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/tree/main/src
-[96] https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/tree/main/src/gnn
-[97] https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/blob/main/src/gnn/gnn_examples/actinf_pomdp_agent.md
+[94] https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/blob/main/docs/gnn/reference/gnn_syntax.md
+[95] https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/tree/main/src
+[96] https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/tree/main/src/gnn
+[97] https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/blob/main/src/gnn/gnn_examples/actinf_pomdp_agent.md
 [98] https://doi.org/10.5281/zenodo.7803328

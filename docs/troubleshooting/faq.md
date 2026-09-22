@@ -42,8 +42,8 @@ The GNN toolkit is included in this repository:
 
 ```bash
 # Clone the repository
-git clone https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation.git
-cd GeneralizedNotationNotation
+git clone https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation.git
+cd Generalized_Notation_Notation
 
 # Install dependencies using UV (recommended)
 uv sync
@@ -310,8 +310,8 @@ See [Performance Guide](performance.md) for optimization strategies.
 
 ```bash
 # Clone and set up development environment
-git clone https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation.git
-cd GeneralizedNotationNotation
+git clone https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation.git
+cd Generalized_Notation_Notation
 
 # Install UV if not already installed
 curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -978,8 +978,8 @@ def chunked_simulation(agents, total_steps, chunk_size=100):
 
 ### Community Support
 
-- **GitHub Discussions**: [Community Q&A](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions)
-- **GitHub Issues**: [Bug reports and feature requests](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/issues)
+- **GitHub Discussions**: [Community Q&A](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/discussions)
+- **GitHub Issues**: [Bug reports and feature requests](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/issues)
 - **Active Inference Institute**: [Broader community](https://www.activeinference.org/)
 
 ### Getting Deeper Help

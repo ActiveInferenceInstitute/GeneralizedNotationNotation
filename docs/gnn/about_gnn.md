@@ -299,7 +299,7 @@ To work with GNN, several tools and approaches can be used:
 - **Simulation**: The model structure can be translated to executable code
 - **Verification**: GNN files can be validated against the specification
 - **Performance Benchmarking**: Automate model scaling studies using the [PyMDP Scaling Orchestrator](../../scripts/experiments/run_pymdp_gnn_scaling_analysis.py)
-- **GNN Repository**: Access examples and tools at the [GNN GitHub repository](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation)
+- **GNN Repository**: Access examples and tools at the [GNN GitHub repository](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation)
 - **Active Inference Ontology**: Map variables to standardized terms using the [Active Inference Ontology](https://doi.org/10.5281/zenodo.7430333)
 
 ## Contributing to GNN
@@ -368,7 +368,7 @@ By providing a rigorous yet flexible notation, GNN fosters reproducible, accessi
 ## References
 
 1. Smékal, J., & Friedman, D. A. (2023). Generalized Notation Notation for Active Inference Models. Active Inference Institute. <https://doi.org/10.5281/zenodo.7803328>
-2. Active Inference Institute: Generalized Notation Notation (GNN) Github repo: <https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation>
+2. Active Inference Institute: Generalized Notation Notation (GNN) Github repo: <https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation>
 3. Active Inference Institute: Generalized Notation Notation (GNN) Coda: <https://coda.io/@active-inference-institute/generalized-notation-notation>
 4. Smith, R., Friston, K.J., & Whyte, C.J. (2022). A step-by-step tutorial on active inference and its application to empirical data. Journal of Mathematical Psychology, 107, 102632.
 5. Friston, K. J., Parr, T., & de Vries, B. (2017). The graphical brain: belief propagation and active inference. Network Neuroscience, 1(4), 381-414.

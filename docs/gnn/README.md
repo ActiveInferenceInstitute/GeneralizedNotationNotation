@@ -204,9 +204,9 @@ the per-kind rendering strategies are documented in
 
 **External Links:**
 
-- [GitHub Repository](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation)
+- [GitHub Repository](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation)
 - [Active Inference Institute](https://activeinference.org)
-- [Community Discussions](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions)
+- [Community Discussions](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/discussions)
 
 ## 📝 Documentation Standards
 

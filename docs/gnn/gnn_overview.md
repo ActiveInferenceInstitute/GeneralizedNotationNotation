@@ -285,5 +285,5 @@ For more detailed information about specific aspects of GNN, refer to:
 ## References
 
 1. Smékal, J., & Friedman, D. A. (2023). Generalized Notation Notation for Active Inference Models. Active Inference Institute. <https://doi.org/10.5281/zenodo.7803328>
-2. Active Inference Institute: Generalized Notation Notation (GNN) Github repo: <https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation>
+2. Active Inference Institute: Generalized Notation Notation (GNN) Github repo: <https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation>
 3. Friston, K. J., Parr, T., & de Vries, B. (2017). The graphical brain: belief propagation and active inference. Network Neuroscience, 1(4), 381-414.

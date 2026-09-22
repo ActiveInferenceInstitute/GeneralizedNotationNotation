@@ -39,8 +39,8 @@ Source: [docs_audit.py](docs_audit.py), [rewrite_gnn_doc_links.py](rewrite_gnn_d
 ### Environment Setup
 ```bash
 # Clone repository
-git clone https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation.git
-cd GeneralizedNotationNotation
+git clone https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation.git
+cd Generalized_Notation_Notation
 
 # Run setup (Step 1: env + dependencies; use --dev for dev extras)
 uv run python src/gnn/main.py --only-steps 1 --dev

@@ -6,7 +6,7 @@ schema_info:
   title: "Generalized Notation Notation (GNN) Schema"
   version: "1.0"
   description: "Schema for validating GNN model files in Active Inference format"
-  specification_url: "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation"
+  specification_url: "https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation"
   license: "MIT"
 
 # Required sections in GNN files (order matters)
