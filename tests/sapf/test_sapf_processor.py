@@ -1,8 +1,7 @@
-"""Tests for the ``sapf`` top-level re-export package.
+"""Tests for the canonical ``audio.sapf`` module surface.
 
-Phase 6: the public entry point was simplified to unconditionally delegate to
-``audio.sapf``. FEATURES and get_module_info now pass through the real
-module's shape directly — these tests verify the delegation is wired up.
+The top-level SAPF alias package was removed (one home = ``src/gnn/audio/sapf/``).
+These tests pin the canonical module's metadata and re-export surface directly.
 """
 
 import sys
@@ -11,27 +10,30 @@ from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-import gnn.sapf as sapf
+import gnn.audio.sapf as sapf
 
 
 def test_sapf_import() -> None:
-    """The top-level ``sapf`` import must succeed."""
+    """The canonical ``gnn.audio.sapf`` import must succeed."""
     assert sapf is not None
 
 
 def test_sapf_metadata() -> None:
-    """``sapf`` re-exports ``__version__`` and ``FEATURES`` from the audio subsystem."""
+    """``audio.sapf`` exposes ``__version__`` and the single-source ``FEATURES`` dict."""
     assert hasattr(sapf, "__version__")
     assert hasattr(sapf, "FEATURES")
     assert isinstance(sapf.FEATURES, dict)
-    # Actual key inventory comes from audio.sapf (the real implementation).
+    # FEATURES is defined once, in module_info, and re-exported here.
+    from gnn.audio.sapf.module_info import FEATURES as _features_source
+
+    assert sapf.FEATURES is _features_source
     assert "gnn_to_sapf_conversion" in sapf.FEATURES
     assert "audio_generation" in sapf.FEATURES
     assert "sapf_validation" in sapf.FEATURES
 
 
 def test_sapf_exported_functions() -> None:
-    """The public entry point re-exports every public function from audio.sapf."""
+    """The canonical module exports every public processing function."""
     expected_funcs: list[Any] = [
         "convert_gnn_to_sapf",
         "generate_sapf_audio",
@@ -47,7 +49,7 @@ def test_sapf_exported_functions() -> None:
 
 
 def test_sapf_get_module_info() -> None:
-    """get_module_info delegates to audio.sapf and returns expected shape."""
+    """get_module_info returns the expected metadata shape."""
     info = sapf.get_module_info()
     assert isinstance(info, dict)
     assert "version" in info
@@ -55,12 +57,3 @@ def test_sapf_get_module_info() -> None:
     assert "supported_formats" in info
     formats_upper = [str(f).upper() for f in info["supported_formats"]]
     assert "SAPF" in formats_upper
-
-
-def test_sapf_delegates_to_audio_sapf_for_metadata() -> None:
-    """Phase 6: verify the public entry point keeps a live reference to audio.sapf rather
-    than maintaining its own duplicate metadata."""
-    from gnn.audio import sapf as audio_sapf_direct
-
-    # The exported FEATURES must be the same object as audio.sapf's.
-    assert sapf.FEATURES is audio_sapf_direct.FEATURES

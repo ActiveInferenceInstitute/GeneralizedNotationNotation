@@ -7,11 +7,7 @@ enabling auditory exploration and debugging of Active Inference generative model
 
 from typing import Any
 
-# Module metadata
-# Package version (re-exported): 1.1.3 here was an earlier module-version stamp,
-# not a SAPF language/protocol version -- the module docs (README/SPEC/AGENTS)
-# never define a SAPF language version, and module_info.py mirrors this value
-# as *module* metadata.
+# Package version: re-exported from the gnn package (single version source).
 from gnn import __version__
 
 from .audio_generators import (
@@ -21,8 +17,13 @@ from .audio_generators import (
     mix_audio_channels,
 )
 
-# Import module introspection helpers
-from .module_info import get_audio_generation_options, get_module_info, register_tools
+# Import module introspection helpers + single-source module metadata
+from .module_info import (
+    FEATURES,
+    get_audio_generation_options,
+    get_module_info,
+    register_tools,
+)
 
 # Import processor functions
 from .processor import (
@@ -41,16 +42,8 @@ from .sapf_gnn_processor import (
 __author__ = "Active Inference Institute"
 __description__ = "SAPF audio generation from GNN models"
 
-# Feature availability flags
-FEATURES: dict[str, Any] = {
-    "gnn_to_sapf_conversion": True,
-    "audio_generation": True,
-    "sapf_validation": True,
-    "synthetic_audio": True,
-    "mcp_integration": True,
-}
-
 # Main API functions
+
 __all__: list[Any] = [
     # Core SAPF processing
     "SAPFGNNProcessor",

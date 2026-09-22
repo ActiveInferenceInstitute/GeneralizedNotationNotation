@@ -23,7 +23,7 @@
 - Deterministic GNN -> SAPF code generation keyed by model complexity and name
 - Oscillator / LFO / envelope synthesis in NumPy with a stdlib WAV writer
 - Waveform and spectrum analysis PNG alongside each WAV
-- Re-exported unchanged by the top-level `src/gnn/sapf/` package
+- Single canonical home for SAPF (the former top-level alias package was removed)
 
 ---
 
@@ -147,7 +147,7 @@ if not result["success"]:
 - **Main Script**: `15_audio.py`
 
 ### Imported By
-- `sapf/__init__.py` (top-level package) - re-exports these functions verbatim
+- `gnn.audio` package (parent) - re-exports the module's public functions
 - `tests/sapf/` and `tests/audio/test_audio_sapf.py`
 
 ### Data Flow
@@ -176,8 +176,9 @@ uv run --extra dev python -m pytest tests/sapf/ tests/audio/test_audio_sapf.py \
 ## MCP Integration
 
 ### Tools Registered
-See `src/gnn/audio/sapf/module_info.py` (`register_tools`) for the live tool inventory;
-the top-level `src/gnn/sapf/mcp.py` registers the pipeline-facing tools.
+Tool registration lives in `src/gnn/audio/sapf/mcp.py` (three tools, category
+`audio`), wired through the parent hook `src/gnn/audio/mcp.py` (`register_tools`),
+which the MCP server's top-level `src/gnn/*/mcp.py` discovery scans.
 
 ### Tool Endpoints
 ```python

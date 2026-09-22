@@ -1,8 +1,8 @@
 # SAPF Tests
 
-Pytest coverage for `src/gnn/sapf/`.
+Pytest coverage for `src/gnn/audio/sapf/`.
 
-This folder contains module-focused tests for the SAPF public entry point and processor behavior.
+This folder contains module-focused tests for the SAPF module surface and processor behavior.
 
 Run:
 

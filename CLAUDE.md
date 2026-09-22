@@ -79,7 +79,7 @@ All 25 pipeline steps follow a consistent pattern:
 
 **Hard imports** (steps 20, 21, 24): The website, mcp, and intelligent_analysis step scripts use direct (non-try/except) imports because these modules are pipeline-required and must always be present. All three document this with an inline `# Hard import: X is a core module` comment. Other steps report dependency import problems through explicit warning/error statuses.
 
-**`src/gnn/sapf/` module**: This is a public SAPF entry point, not a numbered pipeline step. It exports functions from `audio.sapf` so that SAPF callers use one canonical implementation. The SAPF implementation lives in `src/gnn/audio/sapf/`.
+**SAPF submodule (`src/gnn/audio/sapf/`)**: The single SAPF home, nested under the audio module (Step 15). Its tools register through `src/gnn/audio/mcp.py`.
 
 **Research module (Step 19)**: Uses rule-based static analysis and does not require an external LLM. Its `FEATURES` metadata describes available capabilities rather than partial implementation status.
 

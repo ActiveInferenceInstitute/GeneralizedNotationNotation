@@ -46,7 +46,7 @@ This module is organized as follows:
 This documentation is integrated with the 25-step GNN processing pipeline:
 
 ### Simulation (Steps 10-16)
-- **Step 15 (Audio)**: SAPF is the audio sonification backend (`src/gnn/sapf/`; `src/gnn/15_audio.py` accepts `--audio-backend sapf`) — this is the only pipeline step that consumes SAPF, and it also runs audio analysis via `--full-analysis`
+- **Step 15 (Audio)**: SAPF is the audio sonification backend (`src/gnn/audio/sapf/`; `src/gnn/15_audio.py` accepts `--audio-backend sapf`) — this is the only pipeline step that consumes SAPF, and it also runs audio analysis via `--full-analysis`
 
 No other pipeline step (Steps 0-9, 16, 20, 23) consumes SAPF or audio output: Steps 3/7 are parsing/export only, and the analysis/website/report steps have no audio references.
 

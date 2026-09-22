@@ -15,7 +15,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from gnn.sapf import mcp as sapf_mcp
+from gnn.audio.sapf import mcp as sapf_mcp
 
 
 class TestSAPFMCPTools:

@@ -149,7 +149,7 @@ Implementation lives at `src/gnn/mcp/processors.py`; validators come from `gnn.s
 - Report aggregation
 - Interactive elements
 
-### SAPF (`src/gnn/sapf/mcp.py`)
+### SAPF (`src/gnn/audio/sapf/mcp.py`, registered via `src/gnn/audio/mcp.py`)
 - Audio generation and sonification
 - Model sonification
 - Real-time audio processing

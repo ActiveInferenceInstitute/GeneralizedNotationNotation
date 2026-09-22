@@ -1,6 +1,6 @@
 {
-  "modules_total": 34,
-  "modules_loaded": 34,
+  "modules_total": 33,
+  "modules_loaded": 33,
   "modules_errored": 0,
   "tools_total": 146,
   "tools_list": [
@@ -390,7 +390,7 @@
     },
     {
       "name": "get_sapf_module_info",
-      "module": "gnn.sapf",
+      "module": "gnn.audio.sapf",
       "category": "audio",
       "fn": "get_sapf_module_info_mcp",
       "documented": true,
@@ -542,7 +542,7 @@
     },
     {
       "name": "list_audio_artifacts",
-      "module": "gnn.sapf",
+      "module": "gnn.audio.sapf",
       "category": "audio",
       "fn": "list_audio_artifacts_mcp",
       "documented": true,
@@ -862,7 +862,7 @@
     },
     {
       "name": "process_sapf",
-      "module": "gnn.sapf",
+      "module": "gnn.audio.sapf",
       "category": "audio",
       "fn": "process_sapf_mcp",
       "documented": true,
@@ -1177,7 +1177,7 @@
   "spot_checks_err": 0,
   "schema_checks_ok": 146,
   "schema_checks_err": 0,
-  "logging_ok": 31,
+  "logging_ok": 30,
   "logging_miss": 0,
   "issues": []
 }
