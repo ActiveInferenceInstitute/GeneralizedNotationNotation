@@ -1,7 +1,7 @@
 """
 UI for GUI 2: Visual Matrix Editor
 
-Provides a visual drag-and-drop interface for editing matrix structures
+Provides an interactive tabbed interface for editing matrix structures
 and real-time GNN markdown generation.
 """
 

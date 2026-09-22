@@ -13,15 +13,15 @@ This module provides the primary form-based GUI functionality for the Generalize
 You can launch this GUI directly via the pipeline's GUI orchestrator:
 ```bash
 # General invocation
-python src/gnn/22_gui.py --gui-types gui_1 --target-dir input/gnn_files/ --output-dir output/22_gui_output/
+uv run python src/gnn/22_gui.py --gui-types gui_1 --target-dir input/gnn_files/ --output-dir output/22_gui_output/ --interactive
 
 # Headless setup
-python src/gnn/22_gui.py --gui-types gui_1 --headless
+uv run python src/gnn/22_gui.py --gui-types gui_1 --headless
 ```
 
 ## Internal Architecture
 - **`__init__.py`**: Public module registry pointing to execution entry points.
 - **`ui.py`**: Gradio interface layouts and event endpoint bindings.
 - **`processor.py`**: Intermediary logic connecting interface behaviors to core GNN parsing structures.
-- **`markdown.py`**: AST-like string synchronization logic ensuring robust read/writing without corrupting manual edits.
-- **`mcp.py`**: Model Context Protocol registration (for AI agents using remote operations).
+- **`markdown.py`**: Text synchronization helpers that add, update, remove, and parse component blocks and state-space entries without corrupting manual edits.
+- **`mcp.py`**: Optional Model Context Protocol registration — `register_gui_tools()` delegates tool registration to the parent `gui` module (`register_module_tools("gui")`); the submodule defines no tools of its own.

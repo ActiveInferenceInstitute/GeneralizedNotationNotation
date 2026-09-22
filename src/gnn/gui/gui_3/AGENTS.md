@@ -44,9 +44,9 @@
 
 **Description**: Main entry point called by the GUI module aggregator. Delegates to `run_gui()`.
 
-#### `run_gui(target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs) -> Dict[str, Any]`
+#### `run_gui(target_dir: Path, output_dir: Path, logger: logging.Logger, headless: bool = False, export_filename: str = "designed_model_gui_3.md", open_browser: bool = False) -> bool`
 
-**Description**: Launch the State Space Design Studio GUI. Loads starter GNN content from `target_dir`, builds and launches the Gradio interface.
+**Description**: Launch the State Space Design Studio GUI. Loads starter GNN content from `target_dir`, writes headless artifacts (starter model, `design_analysis.json`, `design_studio_status.json`) or builds and launches the Gradio interface on port 7862.
 
 #### `build_design_studio(markdown_text: str, export_path: Path, logger: logging.Logger) -> gr.Blocks`
 
@@ -80,8 +80,8 @@ gui/gui_3/
 
 ## Dependencies
 
-- **Required**: `pathlib`, `json`
-- **Optional**: `gradio` (recovery: headless mode with log-only output)
+- **Required**: `pathlib`, `logging`, `typing` (stdlib)
+- **Optional**: `gradio` (recovery: headless mode writing static artifacts)
 
 ---
 

@@ -19,7 +19,7 @@
 ### Primary Responsibilities
 
 1. **Interactive Model Editing**: Renders generalized model components (matrices, states, observations, connections) into editable form fields.
-2. **State Space Validation**: Dynamically checks dimension bounds and state space configurations.
+2. **State Space Validation**: Validates dimension entries as comma-separated integers (`parse_dims_csv` in `ui.py`); invalid entries surface an inline error message in the validation output pane.
 3. **Live Markdown Synchronization**: Two-pane interface synchronizing web changes directly to the target `.md` file representation.
 
 ### Key Capabilities
@@ -69,8 +69,8 @@ This module provides specialized agent capabilities for visual construction:
 - `pathlib` - Filesystem resolution.
 
 ### Internal Dependencies
-- `gui.gui_1.markdown` - Bi-directional text synchronization algorithms.
-- `gui.gui_1.processor` - Controller logic coordinating Gradio and standard logic.
+- `gnn.gui.gui_1.markdown` - Text synchronization helpers.
+- `gnn.gui.gui_1.processor` - Controller logic coordinating Gradio and standard logic.
 
 ---
 
@@ -78,7 +78,7 @@ This module provides specialized agent capabilities for visual construction:
 
 ### Default Settings
 
-```python
+```
 # Headless defaults
 headless = False
 export_filename = "constructed_model_gui1.md"
@@ -90,8 +90,8 @@ open_browser = True
 ## Error Handling
 
 ### Recovery Strategies
-- **Parse Failures**: If standard GNN parsing fails mid-edit, the text window relies on a "last known good state" buffer, presenting errors directly in the Gradio console output pane.
-- **Dependency Missing**: Raises standard Python `ImportError` gracefully captured by `22_gui.py` fallback logs.
+- **Parse Failures**: If a parsing or validation operation fails mid-edit, the editor content is kept as-is and the error is reported in the `validation_output` pane beneath the editor; no rollback or buffered state mechanism exists.
+- **Dependency Missing**: A missing `gradio` is detected at import time (`detect_gradio_backend` in `../backend.py`); GUI 1 then degrades to headless artifact generation instead of raising, and logs `uv sync --extra gui` as the remediation.
 
 ---
 
@@ -102,5 +102,5 @@ open_browser = True
 2. Register the Gradio inputs in `ui.py`.
 3. Add to the `__all__` exported registry in `__init__.py`.
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-22
 **Architecture Compliance**: 100% Thin Orchestrator Pattern

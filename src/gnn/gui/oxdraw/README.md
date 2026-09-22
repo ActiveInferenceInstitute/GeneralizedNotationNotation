@@ -202,12 +202,12 @@ Launch interactive oxdraw editor.
 
 ```bash
 # Run all oxdraw tests
-uv run --extra dev python -m pytest tests/test_*oxdraw*.py tests/test_mermaid*.py -v
+uv run --extra dev python -m pytest tests/gui/test_oxdraw_integration.py tests/visualization/test_mermaid_converter.py tests/visualization/test_mermaid_parser.py -v
 ```
 
 ## Examples
 
-See `docs/oxdraw/gnn_oxdraw.md` for comprehensive examples including:
+See `docs/gui_oxdraw/gnn_oxdraw.md` for comprehensive examples including:
 - Converting `actinf_pomdp_agent.md` to Mermaid
 - Visual editing workflows
 - Round-trip validation

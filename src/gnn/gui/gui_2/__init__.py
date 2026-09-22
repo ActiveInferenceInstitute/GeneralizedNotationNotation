@@ -1,9 +1,9 @@
 """
 GUI 2: Visual Matrix Editor for GNN Models
 
-This is a click-and-drag visual interface for editing GNN models with:
+This is an interactive visual interface for editing GNN models with:
 - Visual matrix representation and editing
-- Drag-and-drop state space modification
+- Tabbed matrix and vector editing with dimension controls
 - Real-time GNN markdown generation
 - POMDP template-based initialization
 """

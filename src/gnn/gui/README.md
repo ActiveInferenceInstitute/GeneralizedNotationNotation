@@ -44,7 +44,7 @@ python src/gnn/22_gui.py --gui-types gui_3 --target-dir input/gnn_files --output
 python src/gnn/22_gui.py --gui-types "gui_1,gui_2,gui_3,oxdraw" --target-dir input/gnn_files --output-dir output --headless --verbose
 ```
 
-- With dependencies available, local web UIs launch (in-browser). Otherwise, headless artifacts are generated.
+- Headless artifact generation is the default; pass `--interactive` to launch local web UIs (requires Gradio).
 
 ## Headless Mode
 - If GUIs cannot be launched (or headless=True):
@@ -58,6 +58,8 @@ python src/gnn/22_gui.py --gui-types "gui_1,gui_2,gui_3,oxdraw" --target-dir inp
   - `visual_model_gui2.md`: GUI 2 output - Visual matrix editor GNN model
   - `visual_matrices.json`: GUI 2 output - Matrix data and visualizations
   - `gui_1_status.json` / `gui_2_status.json`: GUI execution status and backend information
+  - `designed_model_gui_3.md` / `design_analysis.json` / `design_studio_status.json`: GUI 3 starter model, design analysis, and status
+  - `oxdraw_output/`: oxdraw artifacts - `<stem>.mmd` Mermaid exports, `<stem>_from_mermaid.md` round-trip models, `oxdraw_processing_results.json` run results
   - `gui_processing_summary.json`: Overall processing summary with results from all GUIs
   - `navigation.html`: **Comprehensive HTML navigation page** linking to all pipeline outputs
 
@@ -122,11 +124,9 @@ process_gui(
   target_dir: Path,
   output_dir: Path,
   verbose: bool = False,
-  gui_types: List[str] = ['gui_1', 'gui_2'],  # Which GUIs to run
-  headless: bool = False,
-  open_browser: bool = True,
   logger: Optional[Logger] = None,  # honored when passed
-  **kwargs
+  **kwargs,  # gui_types (default "gui_1,gui_2"), interactive, open_browser,
+             # launch_editor; headless is derived as `not interactive`
 ) -> bool
 ```
 - Orchestrates execution of multiple GUI implementations
@@ -185,6 +185,7 @@ uv sync --extra gui
 ## Notes
 - Degrades gracefully if Gradio is not installed (headless artifact generation).
 - Designed for modularity: logic isolated in `markdown.py`, UI wiring in `ui.py`, thin orchestration in `processor.py`.
+- `websocket_bridge.py` defines local-only WebSocket message contracts for reactive GUI synchronization (`tests/gui/test_websocket_bridge.py` covers the contract).
 
 
 ---

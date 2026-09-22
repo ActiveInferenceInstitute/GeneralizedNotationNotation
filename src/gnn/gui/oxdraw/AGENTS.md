@@ -151,37 +151,32 @@ gnn_model = convert_mermaid_file_to_gnn(
 ### Optional Dependencies
 
 - `oxdraw` (Rust CLI) - Interactive visual editor (recovery: headless mode only)
-- `ontology.processor` - Ontology validation (recovery: skip validation)
+- `gnn.ontology.processor` - Ontology validation (lazy import; recovery: skip validation)
 
 ### Internal Dependencies
 
-- `gnn.processing.processor` - GNN file parsing and discovery
-- `gnn.utils.pipeline_orchestration.pipeline_template` - Standardized pipeline processing
-- `pipeline.config` - Configuration management
+- `gnn.processing.processor` - GNN file discovery and parsing (`discover_gnn_files`, `parse_gnn_file`)
+- `gnn.gui.websocket_bridge` - Initial websocket message contract
+- `gnn.gui.backend` - Atomic JSON output writing
 
 ---
 
 ## Configuration
 
-### Environment Variables
-
-- `OXDRAW_DEFAULT_PORT` - Default port for oxdraw server (default: 5151)
-- `OXDRAW_DEFAULT_HOST` - Default host address (default: 127.0.0.1)
-- `OXDRAW_MODE` - Default processing mode (default: headless)
-
-### Default Settings
+The module defines no dedicated environment variables or settings constant.
+Defaults come from `process_oxdraw` parameter values:
 
 ```python
-DEFAULT_OXDRAW_SETTINGS = {
-    "mode": "headless",
-    "port": 5151,
-    "host": "127.0.0.1",
-    "auto_convert": True,
-    "validate_on_save": True,
-    "include_metadata": True,
-    "include_styling": True,
-}
+# process_oxdraw defaults
+mode = "headless"        # "interactive" or "headless"
+auto_convert = True      # convert GNN files to Mermaid automatically
+validate_on_save = True  # validate Mermaid -> GNN conversions
+launch_editor = False    # launch oxdraw editor (interactive mode only)
+port = 5151              # oxdraw server port
+host = "127.0.0.1"       # oxdraw server host
 ```
+
+`gnn_to_mermaid` defaults: `include_metadata=True`, `include_styling=True`.
 
 ---
 
@@ -296,7 +291,7 @@ subprocess.run(
 ### Output Directory Structure
 
 ```
-output/22_gui_output/oxdraw/
+output/22_gui_output/oxdraw_output/
 ├── actinf_pomdp_agent.mmd
 ├── actinf_pomdp_agent_from_mermaid.md
 ├── model2.mmd
@@ -368,14 +363,15 @@ print(f"   Connections: {len(gnn_model['connections'])}")
 
 ### Imports From
 
-- `gnn.processing.processor` - GNN file parsing
-- `ontology.processor` - Ontology validation
-- `gnn.utils.pipeline_orchestration.pipeline_template` - Standardized processing
+- `gnn.processing.processor` - GNN file discovery and parsing
+- `gnn.ontology.processor` - Ontology validation (lazy import)
+- `gnn.gui.websocket_bridge` - Websocket message contract
+- `gnn.gui.backend` - Atomic output writing
 
 ### Imported By
 
 - `gui.__init__.py` - GUI module aggregator
-- `tests.test_oxdraw_integration.py` - Integration tests
+- `tests/gui/test_oxdraw_integration.py` - Integration tests
 - `main.py` - Pipeline orchestration via GUI module
 
 ### Data Flow
@@ -437,10 +433,11 @@ uv run --extra dev python -m pytest tests/gui/test_oxdraw_integration.py \
 ### Tool Endpoints
 
 ```python
-@mcp_tool("oxdraw.convert_to_mermaid")
-def convert_to_mermaid_tool(gnn_file_path: str, output_path: str = None):
-    """Convert GNN file to Mermaid format"""
-    return convert_gnn_file_to_mermaid(Path(gnn_file_path), Path(output_path))
+# mcp.py registers the five oxdraw.* tools via the universal protocol:
+from gnn.gui.oxdraw.mcp import register_mcp_tools, register_tools
+
+register_tools(mcp_instance)  # calls register_mcp_tools() and registers
+                              # each tool's name, handler, schema, description
 ```
 
 ---
@@ -535,8 +532,8 @@ for error in errors:
 
 ### Related Documentation
 
-- [oxdraw Technical Overview](./README.md)
-- [GNN-oxdraw Integration Guide](./README.md)
+- [oxdraw Technical Overview](../../../../docs/gui_oxdraw/oxdraw.md)
+- [GNN-oxdraw Integration Guide](../../../../docs/gui_oxdraw/gnn_oxdraw.md)
 - [GNN Parser](../../../../docs/gnn/AGENTS.md)
 - [Ontology Module](../../ontology/AGENTS.md)
 
@@ -551,3 +548,4 @@ for error in errors:
 **Last Updated**: 2026-09-02
 **Maintainer**: GNN Pipeline Team
 **Status**: Ready for Testing
+
