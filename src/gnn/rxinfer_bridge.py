@@ -1340,9 +1340,7 @@ def emit_rxinfer_jl(spec: GraphSpec, model_name: str = "gnn_bayesnet") -> str:
         learn_args.append(
             ("alpha_p_" if not parent_map[key] else "alpha_A_") + idents[key]
         )
-    lines.append(
-        "# --- Learning variant (Dirichlet priors for CPT learning) ---"
-    )
+    lines.append("# --- Learning variant (Dirichlet priors for CPT learning) ---")
     lines.append(
         "# Replace fixed data-arg probabilities with latent Dirichlet priors so"
     )
