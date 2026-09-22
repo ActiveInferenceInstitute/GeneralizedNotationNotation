@@ -11,7 +11,7 @@ Interactive Gradio-based design studio for building Active Inference models visu
 python src/gnn/22_gui.py --target-dir input/gnn_files --output-dir output --gui-types gui_3 --verbose
 
 # Launch standalone
-python -c "from gui.gui_3 import gui_3; from pathlib import Path; import logging; gui_3(Path('input/gnn_files'), Path('output/22_gui_output'), logging.getLogger())"
+python -c "from gnn.gui.gui_3 import gui_3; from pathlib import Path; import logging; gui_3(Path('input/gnn_files'), Path('output/22_gui_output'), logging.getLogger())"
 ```
 
 ## Architecture
@@ -37,7 +37,7 @@ gui_3/
 ## Dependencies
 
 - **Optional**: `gradio` — Gradio-based web UI framework
-- **Fallback**: Headless mode with log-only output when Gradio unavailable
+- **Fallback**: Headless mode writing static artifacts (starter model, design analysis, status JSON) when Gradio unavailable
 
 ## References
 

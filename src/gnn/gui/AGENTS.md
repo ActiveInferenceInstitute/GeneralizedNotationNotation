@@ -10,7 +10,7 @@
 
 **Status**: Production Ready
 
-**Version**: 3.2.0
+**Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
 **Last Updated**: 2026-09-04
 
@@ -90,16 +90,18 @@ success = process_gui(
 - `output_dir` (Path): Output directory for GUI 1
 - `logger` (logging.Logger): Logger instance
 - `verbose` (bool, optional): Enable verbose logging (default: False)
-- `headless` (bool, optional): Run in headless mode (default: True)
+- `headless` (bool, optional): Run in headless mode (wrapper default: False — a standalone `gui_1()` call launches interactive servers; the pipeline always passes `headless=True` because `process_gui` derives `headless = not interactive`)
 - `export_filename` (str, optional): Output filename for constructed model (default: "constructed_model_gui1.md")
-- `open_browser` (bool, optional): Open browser for interactive mode (default: False)
-- `port` (int, optional): Port for web server (default: 7860)
+- `open_browser` (bool, optional): Open browser for interactive mode (wrapper default: True; the `22_gui.py` CLI `--open-browser` flag defaults to False)
 
 **Returns**: `Dict[str, Any]` - GUI 1 execution results with:
+- `gui_type` (str): `"gui_1"`
+- `description` (str): Human-readable implementation summary
 - `success` (bool): Whether GUI execution succeeded
-- `output_file` (Path): Path to generated GNN model
-- `status` (str): Execution status
-- `url` (Optional[str]): Web UI URL if interactive
+- `output_file` (Optional[str]): Path to the generated model on success, else `None`
+- `backend` (str): Detected Gradio backend, `"headless"` in headless runs, `"none"`/`"error"` when unavailable
+- `backend_reason` (str): Backend detection explanation
+- `features` (list[str]): Capability summary
 
 #### `gui_2(target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs) -> Dict[str, Any]`
 **Description**: Visual Matrix Editor with drag-and-drop interface (GUI 2). Matrix heatmaps and POMDP template support.
@@ -162,6 +164,9 @@ capped at `MAX_FILES_PER_SECTION` (20). Missing step directories are skipped.
   used by the gui_1/gui_2/gui_3 processors instead of duplicated logic.
 - `gui/backend.py` — `write_text_atomically()` joins `write_json_atomically()`
   as the atomic artifact writers (temp file + `os.replace`).
+- `gui/websocket_bridge.py` — local-only WebSocket message contracts for reactive
+  GUI synchronization (`GUIWebSocketMessage`, `GUI_WEBSOCKET_MESSAGE_TYPES`);
+  covered by `tests/gui/test_websocket_bridge.py`.
 - `process_gui(**kwargs)` now honors a caller-provided `logger=` kwarg
   (documented in the API table above); without it the module logger is used.
 - `navigation.html` escapes file names/paths with `html.escape`, so artifacts
@@ -248,8 +253,8 @@ success = process_gui(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/22_gui_output"),
     logger=logger,
-    gui_mode="all",
-    interactive_mode=True,
+    gui_types="gui_1,gui_2,gui_3,oxdraw",
+    interactive=True,
 )
 ```
 
@@ -286,8 +291,12 @@ for gui_name, info in guis.items():
 - `constructed_model_gui1.md` - Generated GNN model from GUI 1 (Form-based Constructor)
 - `visual_model_gui2.md` - Generated GNN model from GUI 2 (Visual Matrix Editor)
 - `visual_matrices.json` - Matrix data and visualizations from GUI 2
+- `designed_model_gui_3.md` / `design_analysis.json` / `design_studio_status.json` - GUI 3 starter model, design analysis, and status
+- `<stem>.mmd`, `<stem>_from_mermaid.md`, `oxdraw_processing_results.json` - oxdraw Mermaid exports, round-trip models, and run results (written under `oxdraw_output/`)
 - `gui_1_status.json` / `gui_2_status.json` - GUI execution status and backend information
 - `gui_processing_summary.json` - Overall GUI processing summary with results from all GUIs
+
+The oxdraw integration verification receipt lives at `docs/gui_oxdraw/VERIFICATION.md`.
 
 #### Navigation and Discovery
 - `navigation.html` - **Comprehensive HTML navigation page** that provides:
@@ -306,6 +315,10 @@ output/22_gui_output/
 ├── visual_matrices.json                # GUI 2 output: Matrix data and visualizations
 ├── gui_1_status.json                   # GUI 1 status and backend info
 ├── gui_2_status.json                   # GUI 2 status and backend info
+├── designed_model_gui_3.md            # GUI 3 output: starter/designed model
+├── design_analysis.json                # GUI 3 design analysis
+├── design_studio_status.json           # GUI 3 status and backend info
+├── oxdraw_output/                      # oxdraw artifacts (.mmd exports, *_from_mermaid.md round-trips, oxdraw_processing_results.json)
 ├── gui_processing_summary.json         # Overall processing summary
 └── navigation.html                     # HTML navigation to all pipeline outputs
 ```
@@ -318,7 +331,6 @@ The `navigation.html` file provides comprehensive navigation to all pipeline out
 2. **Output Sections**: Organized by all 25 pipeline steps:
    - Template (0_template_output)
    - Setup (1_setup_output)
-   - Tests (2_tests_output)
    - GNN Processing (3_gnn_output)
    - Model Registry (4_model_registry_output)
    - Type Checker (5_type_checker_output)
@@ -387,8 +399,9 @@ document does not track timings.
 - `pipeline.config` - Configuration management
 
 ### Imported By
-- `tests/gui/test_gui_overall.py` - GUI module tests
-- `main.py` - Pipeline orchestration
+- `src/gnn/22_gui.py` - Step 22 orchestrator (`from gnn.gui import process_gui`)
+- `src/gnn/cli/__init__.py` - `gnn gui` CLI command (`_cmd_gui`)
+- `tests/gui/*` - GUI test suite
 
 ### Data Flow
 ```
@@ -400,15 +413,27 @@ GNN Files → GUI Construction → Visual Editing → Model Validation → GNN E
 ## Testing
 
 ### Test Files
-- `tests/gui/test_gui_functionality.py` - GUI functionality tests
-- `tests/gui/test_oxdraw_integration.py` - oxdraw integration tests
+The `tests/gui/` suite currently holds 14 test modules:
+
+- `test_gui3_loader_and_wrapper.py`, `test_gui3_pipeline_kwargs.py` - GUI 3 loader/wrapper and pipeline kwargs
+- `test_gui_callback_bindings.py` - interactive callback binding regressions
+- `test_gui_composability.py` - composability helpers
+- `test_gui_functionality.py` - GUI functionality tests
+- `test_gui_info_ports_and_defaults.py` - info dicts, ports, and defaults
+- `test_gui_launch_verification.py` - interactive launch verification
+- `test_gui_mcp_interactive.py` - MCP surface in interactive mode
+- `test_gui_model_logic.py` - model logic
+- `test_gui_overall.py` - overall module behavior
+- `test_gui_status_namespacing.py` - per-GUI status file namespacing
+- `test_oxdraw_integration.py` - oxdraw integration tests
+- `test_step22_headless_default.py` - step-22 headless default
+- `test_websocket_bridge.py` - websocket bridge contracts
 
 ### Test Coverage
 Measure on demand:
 
 ```bash
-uv run --extra dev python -m pytest tests/test_gui*.py \
-    --cov=src/gnn/gui --cov-report=term-missing
+uv run --extra dev python -m pytest tests/gui/ --cov=gnn.gui --cov-report=term-missing
 ```
 ### Key Test Scenarios
 1. GUI startup and shutdown in headless mode
@@ -431,14 +456,24 @@ uv run --extra dev python -m pytest tests/test_gui*.py \
 - `oxdraw.check_installation` - Check the oxdraw runtime
 - `oxdraw.get_info` - Return oxdraw metadata
 
+Parent GUI registration wraps the five oxdraw handlers so both the parent discovery
+path and a direct `gui.oxdraw.mcp.register_tools()` call accept normal MCP keyword
+arguments. Registrations live in `src/gnn/gui/mcp.py`.
+
 ---
 
 ## Recent Improvements
 
-### GUI Timeout Fix (September 2025)
-- GUIs no longer launch interactive servers in pipeline mode; headless artifact
-  generation is the default, with an explicit interactive opt-in for live servers.
-
+### Step-22 headless default and the 600s step-timeout wall
+- Pipeline step 22 runs under the per-step timeout registry `pipeline/step_timeouts.py`
+  (`"22_gui.py": 600`, `step_timeouts.py:26`; overridable via `GNN_STEP_TIMEOUT_22` and
+  `GNN_STEP_TIMEOUT_SCALE`, documented in `src/gnn/pipeline/README.md`).
+- Interactive GUI servers never exit on their own (`process_gui` keeps the process alive
+  while servers run), so an in-pipeline `--interactive` run burns the full 600s budget
+  before the step is killed.
+- The headless default (PR #142) derives `headless = not interactive`, so pipeline runs
+  produce artifacts and return immediately; regression: `tests/gui/test_step22_headless_default.py`.
+- Use `--interactive` only for standalone sessions outside a pipeline run.
 ---
 
 ## Recent Enhancements (January 5, 2026)
@@ -464,18 +499,6 @@ uv run --extra dev python -m pytest tests/test_gui*.py \
   - `gui_1_status.json` / `gui_2_status.json` - GUI execution status and backend information
   - `gui_processing_summary.json` - Overall processing summary
   - `navigation.html` - Comprehensive navigation to all pipeline outputs
-
----
-
-## MCP Integration
-
-The canonical eight-tool inventory is listed in the MCP Integration section
-above. Parent GUI registration wraps the five oxdraw handlers so both the
-parent discovery path and direct `gui.oxdraw.mcp.register_tools()` path accept
-normal MCP keyword arguments.
-
-### MCP File Location
-- `src/gnn/gui/mcp.py` - MCP tool registrations
 
 ---
 
@@ -534,9 +557,9 @@ normal MCP keyword arguments.
 
 ---
 
-**Last Updated**: 2026-09-04
+**Last Updated**: 2026-09-22
 **Status**: Production Ready
-**Version**: 3.2.0
+**Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 **Architecture Compliance**: Thin Orchestrator Pattern
 
 

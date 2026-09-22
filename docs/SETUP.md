@@ -95,7 +95,7 @@ The declared groups are visible in `pyproject.toml`:
 | `dev` | Tests, coverage, linting, typing, docs, and development tools |
 | `api` | FastAPI and Uvicorn |
 | `audio` | Librosa, SoundFile, and Pedalboard |
-| `gui` | Gradio and Streamlit |
+| `gui` | Gradio |
 | `graphs` | Python Graphviz bindings |
 | `ml-ai` | SciPy, scikit-learn, and Transformers |
 | `research` | Jupyter, SymPy, Numba, and research utilities |

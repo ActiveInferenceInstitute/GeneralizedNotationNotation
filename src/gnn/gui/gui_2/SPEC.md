@@ -10,7 +10,7 @@ Second-generation GNN constructor GUI: a Gradio web app for visual matrix editin
 
 - Interactive DataFrame matrix editing with +/- dimension controls
 - Matrix heatmaps and vector bar charts (Plotly when available)
-- Drag-and-drop model construction
+- Tabbed matrix/vector editing (A, B, C, D) with live regeneration of the GNN markdown
 - Real-time validation feedback
 - POMDP template-based initialization
 
@@ -23,4 +23,5 @@ Second-generation GNN constructor GUI: a Gradio web app for visual matrix editin
 ## Architecture
 
 - `ui.py` — Main UI layout and event handling
-- `matrix_editor.py` — Matrix editing grid logic
+- `matrix_editor.py` — Matrix parsing, serialization, and validation helpers
+- `processor.py` — Pipeline entry point, headless artifacts, and server launch

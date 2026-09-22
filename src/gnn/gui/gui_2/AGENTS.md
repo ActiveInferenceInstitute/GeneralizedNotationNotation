@@ -2,7 +2,7 @@
 
 ## Module Overview
 
-**Purpose**: Provides an advanced, click-and-drag visual interface specifically tuned for direct manipulation of Active Inference vectors, tensors, and connection mapping.
+**Purpose**: Provides an advanced, interactive visual interface for direct manipulation of Active Inference vectors, tensors, and connection mapping.
 
 **Pipeline Step**: Step 22: GUI Processing (22_gui.py)
 
@@ -19,14 +19,14 @@
 ### Primary Responsibilities
 
 1. **Visual Matrix Representation**: Renders parameter spaces (like the A, B matrices) as interactive Plotly heatmaps and grids.
-2. **Drag-and-Drop Editing**: Facilitates hierarchical restructuring by dragging visual state items into valid domains.
+2. **Tabbed Matrix Editing**: Organizes A, B, C, and D parameter editors into tabs with +/- dimension controls, heatmap previews, and value-preserving resize.
 3. **Template Initialization**: Bootstraps blank interfaces with structurally-sound Active Inference Discrete POMDP priors (e.g. valid probability distributions).
 
 ### Key Capabilities
 
-- Interactive heatmaps displaying precision parameters and parameter biases.
-- Integrated validations to ensure matrices sum to 1.0 where required by the ontology.
-- Real-time serialization directly bypassing intermediate strings.
+- Interactive Plotly heatmaps for matrix values and bar charts for vectors.
+- Integrated validation via `validate_visual_matrix_dimensions`: finite values, declared shapes, and cross-matrix dimension consistency (A rows vs C, A columns vs D, B rows/columns vs D).
+- Real-time regeneration of the GNN markdown from edited tables via `update_gnn_from_matrix`.
 
 ---
 
@@ -36,20 +36,21 @@
 
 #### `gui_2(target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs) -> Dict[str, Any]`
 
-**Description**: The primary entry-point mapping variables from `22_gui.py` into the physical web server execution environment.
+**Description**: The primary entry point invoked by the pipeline's Step 22 GUI processing; routes parameters (headless, export_filename, open_browser) into `run_gui` and returns a result dict with status, backend, and output file path.
 
 **Parameters**:
-- `target_dir` (Path): Path representing where template models reside.
-- `output_dir` (Path): Target export path.
+- `target_dir` (Path): Directory containing GNN files to load (prefers POMDP templates).
+- `output_dir` (Path): Output directory for results.
 - `logger` (logging.Logger): Unified pipeline logger.
+- `**kwargs`: Optional settings — `headless`, `export_filename` (default `visual_model_gui2.md`), `open_browser`, `verbose`.
 
 ---
 
 ## Dependencies
 
-- **gradio**: Web socket orchestration.
-- **plotly**: Visual heatmapping and advanced graph displays.
-- **numpy**: Matrix representation tracking before GNN dumping.
+- **gradio**: Web server UI framework (required for interactive mode).
+- **plotly**: Interactive heatmaps and vector charts (optional; matrix/vector data grids remain fully usable without it).
+- **numpy**: Matrix array handling for plot construction.
 
 ---
 

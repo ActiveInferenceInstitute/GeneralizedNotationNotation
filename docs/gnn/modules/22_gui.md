@@ -7,554 +7,370 @@
 
 ## Module Description
 
-The GUI module provides **three distinct interactive interfaces** for constructing and editing GNN models:
+Step 22 is a thin orchestrator: `src/gnn/22_gui.py` (98 lines) builds a standardized
+pipeline script with `create_standardized_pipeline_script` and delegates all work to
+`process_gui()` in `src/gnn/gui/`. The implementation layer provides four GUI
+implementations that each generate artifacts headlessly (the pipeline default) or
+launch an interactive server when explicitly requested:
 
-- Interactive two-pane editor for GNN models
-- Left panel (Controls):
-  - Components tab: add/remove components, set type (observation/hidden/action/policy), and manage states
-  - State Space tab: live list of state-space entries with name, dimensions, type; add/update/remove entries
-- Right panel: synchronized plaintext GNN markdown editor
-- Edits are immediately reflected in the markdown
-- **Access:** http://localhost:7860
+- **gui_1 — Form-based Interactive GNN Constructor** (port 7860): two-pane editor with
+  component management and state-space editing on the left and a synchronized live GNN
+  markdown editor on the right.
+- **gui_2 — Visual Matrix Editor** (port 7861): real-time matrix/vector heatmap plots,
+  editable value tables, and +/- dimension controls with live GNN regeneration.
+- **gui_3 — State Space Design Studio** (port 7862): low-dependency visual state-space
+  designer with ontology term editing, connection graphs, and parameter tuning.
+- **oxdraw — Visual diagram-as-code interface** (port 5151): bidirectional
+  GNN ↔ Mermaid conversion with an optional external `oxdraw` editor launch.
 
-- Visual drag-and-drop matrix editing interface
-- Interactive heatmaps and plots for matrix visualization
-- Real-time GNN markdown generation from visual edits
-- POMDP template-based initialization
-
-## Agent Identity & Capabilities
-
-# GUI Module - Agent Scaffolding
-
-## Module Overview
-
-**Purpose**: Interactive graphical user interfaces for visual GNN model construction and editing with multiple specialized implementations
-
-**Pipeline Step**: Step 22: GUI (Interactive GNN Constructor) (22_gui.py)
-
-**Category**: Interactive Visualization / Model Construction
-
-**Status**: ✅ Production Ready
-
-**Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
-
-**Last Updated**: 2026-01-21
-
----
+The same stack is reachable standalone via the `gnn gui` CLI subcommand and via the
+MCP tools listed under MCP Integration below.
 
 ## Core Functionality
 
-### Primary Responsibilities
-1. Provide multiple GUI implementations for GNN model construction
-2. Enable visual editing of model components and state spaces
-3. Generate interactive visualizations for model exploration
-4. Support real-time model validation and feedback
-5. Export constructed models to GNN format
+### `process_gui()` behavior
 
-### Key Capabilities
-- Form-based interactive GNN constructor (GUI 1)
-- Visual matrix editor with drag-and-drop (GUI 2)
-- State space design studio (GUI 3)
-- Real-time model validation and error checking
-- Interactive matrix heatmaps and network visualizations
-- Component management and state space editing
+Defined in `src/gnn/gui/processor.py` (`process_gui`, lines 114-263):
 
----
+- **Headless is derived, not defaulted**: `headless = not interactive`
+  (processor.py:151-156). Every non-interactive run is headless (artifact generation
+  only); a literal `headless=False` default would silently force interactive runs.
+- **Caller-provided logger honored**: a `logging.Logger` passed via `logger` kwarg is
+  used directly; otherwise the `gui.processor` module logger is used
+  (processor.py:143-149).
+- **Selected GUIs run in order**: `gui_types` is normalized by `normalize_gui_types()`
+  (default `gui_1,gui_2`; accepts `gui_1`, `gui_2`, `gui_3`, `oxdraw`), each selected
+  GUI runs, and per-GUI result dicts are aggregated; any failure marks the overall run
+  unsuccessful.
+- **Artifacts**: `_save_processing_summary()` writes `gui_processing_summary.json`;
+  `_generate_navigation_page()` writes `navigation.html`.
+- **Interactive keep-alive**: in interactive mode the function blocks in a loop while
+  `interactive_servers_running()` (from `gui/runner.py`) reports live Gradio server
+  threads, until they stop or Ctrl+C (processor.py:244-257). Server threads are daemon
+  threads launched by `launch_gradio_in_thread()`.
+
+### GUI implementations and ports
+
+| Type | Port | Interface | Output root |
+|------|------|-----------|-------------|
+| `gui_1` | 7860 | Form-based constructor (Components + State Space tabs, live markdown editor) | resolved step output root |
+| `gui_2` | 7861 | Visual matrix editor (heatmap plots, editable value tables, +/- dimension controls) | resolved step output root |
+| `gui_3` | 7862 | State space design studio (SVG diagrams, ontology terms, connection graphs) | resolved step output root |
+| `oxdraw` | 5151 | GNN ↔ Mermaid conversion with optional external editor | `oxdraw_output/` subdirectory |
+
+Ports are assigned in code: `gui_1/__init__.py` (7860), `gui_2/__init__.py` (7861),
+`gui_3/__init__.py` (7862), `oxdraw/__init__.py` (5151). `gui_1`/`gui_2`/`gui_3`
+normalize their output directory through `resolve_output_root()`
+(`gui/runner.py`), which delegates to the shared
+`gnn.pipeline.config.resolve_step_output_dir` helper (pipeline/config.py:205-237).
+
+### Backend detection and graceful degradation
+
+`detect_gradio_backend()` (`gui/backend.py:31-40`) probes Gradio availability once at
+import. Without Gradio (no `gui` extra installed) every GUI produces static headless
+artifacts and returns success instead of failing the pipeline; with Gradio installed
+and `--interactive` set, servers launch on daemon threads and
+`wait_for_server_launch()` (backend.py:62-98) verifies each launch with a bounded
+HTTP probe.
+
+### Timeout interaction
+
+Step-22 runs under a **600-second cap** pinned in
+`src/gnn/pipeline/step_timeouts.py` (`STEP_TIMEOUTS["22_gui.py"] = 600`, line 26;
+`DEFAULT_TIMEOUT = 180` applies to steps without a pin). The cap is enforced in both
+execution tiers — subprocess (src/gnn/main.py:1712-1726) and in-process
+(src/gnn/pipeline/step_executor.py:507-513) — through `get_step_timeout()`
+(step_timeouts.py:34-62). `GNN_STEP_TIMEOUT_22` (absolute) and
+`GNN_STEP_TIMEOUT_SCALE` (multiplier) are the documented overrides
+(step_timeouts.py:1-8); see [pipeline/README.md](../../../src/gnn/pipeline/README.md)
+for the knob documentation. Interactive GUI servers never exit on their own, and the
+keep-alive loop (processor.py:244-257) holds the process while any server is live, so
+an `--interactive` run inside a pipeline consumes the whole step budget and is killed
+at the wall. The headless default (PR #142: `headless = not interactive`,
+processor.py:151-156; regression test
+`tests/gui/test_step22_headless_default.py`; CHANGELOG entry "Step-22 headless
+default + GUI wrapper batch (#142)") keeps pipeline runs artifact-only;
+`--interactive` is a standalone opt-in that blocks until servers stop by design.
+
+### Performance
+
+Headless artifact generation completes in seconds; interactive GUI startup and memory
+footprint depend on the GUI backend and host. Measure on your own hardware; this
+document does not track timings.
 
 ## API Reference
 
-### Public Functions
+All public surface is importable from the package root (`gnn.*` is the only canonical
+import surface):
 
-#### `process_gui(target_dir: Path, output_dir: Path, verbose: bool = False, logger: Optional[logging.Logger] = None, **kwargs) -> bool`
-**Description**: Main GUI processing function called by orchestrator (22_gui.py). Runs all available GUI implementations.
-
-**Parameters**:
-- `target_dir` (Path): Directory containing GNN files
-- `output_dir` (Path): Output directory for GUI results
-- `verbose` (bool): Enable verbose logging (default: False)
-- `logger` (Optional[logging.Logger]): Logger instance for progress reporting (default: None)
-- `gui_types` (str, optional): Comma-separated list of GUI types ("gui_1", "gui_2", "gui_3", "oxdraw") (default: "gui_1,gui_2")
-- `interactive` (bool, optional): Run GUIs in interactive mode (default: False)
-- `headless` (bool, optional): Run in headless mode - artifact generation only (default: True if not interactive)
-- `open_browser` (bool, optional): Automatically open browser for interactive GUIs (default: False)
-- `launch_editor` (bool, optional): Launch the oxdraw editor when the oxdraw GUI type runs in interactive mode (default: False)
-- `**kwargs`: Additional GUI-specific options
-
-**Returns**: `bool` - True if GUI processing succeeded, False otherwise
-
-**Example**:
 ```python
-from gui import process_gui
+from gnn.gui import process_gui, get_available_guis, normalize_gui_types
+```
+
+### `process_gui(target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs) -> bool`
+
+Main processing function called by the orchestrator (22_gui.py), the `gnn gui` CLI
+subcommand, and MCP.
+
+**kwargs**:
+
+- `logger` (logging.Logger, optional): caller-provided logger, honored when passed
+- `gui_types` (str, optional): comma-separated list — `gui_1`, `gui_2`, `gui_3`,
+  `oxdraw` (default `"gui_1,gui_2"`)
+- `interactive` (bool, optional): launch interactive GUI servers (default False)
+- `headless` (bool, optional): derived as `not interactive` — explicit
+  `headless=True` stays headless; do not pass `headless=False` expecting servers
+- `open_browser` (bool, optional): open the browser for interactive GUIs
+  (default False)
+- `launch_editor` (bool, optional): launch the external oxdraw editor when the
+  `oxdraw` GUI type runs interactively (default False)
+
+**Returns**: `bool` — True when every selected GUI succeeded.
+
+```python
 from pathlib import Path
 import logging
+from gnn.gui import process_gui
 
 logger = logging.getLogger(__name__)
-# Headless mode (pipeline default)
-success = process_gui(
+
+# Headless (pipeline default): artifacts only
+process_gui(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/22_gui_output"),
     logger=logger,
     verbose=True,
-    headless=True,
 )
 
-# Interactive mode
-success = process_gui(
+# Interactive opt-in: launches servers and blocks until they stop
+process_gui(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/22_gui_output"),
-    logger=logger,
-    interactive=True,
     gui_types="gui_1,oxdraw",
+    interactive=True,
     open_browser=True,
 )
 ```
 
-#### `gui_1(target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs) -> Dict[str, Any]`
-**Description**: Form-based Interactive GNN Constructor (GUI 1). Two-pane editor with component management.
+### Module-level API (`src/gnn/gui/__init__.py`)
 
-**Parameters**:
-- `target_dir` (Path): Input directory
-- `output_dir` (Path): Output directory for GUI 1
-- `logger` (logging.Logger): Logger instance
-- `verbose` (bool, optional): Enable verbose logging (default: False)
-- `headless` (bool, optional): Run in headless mode (default: True)
-- `export_filename` (str, optional): Output filename for constructed model (default: "constructed_model_gui1.md")
-- `open_browser` (bool, optional): Open browser for interactive mode (default: False)
-- `port` (int, optional): Port for web server (default: 7860)
+`__all__` exports: `process_gui`, `gui_1`, `gui_2`, `gui_3`, `oxdraw_gui`,
+`get_available_guis`, `get_gui_1_info`, `get_gui_2_info`, `get_gui_3_info`,
+`get_oxdraw_info`, `generate_html_navigation`, `normalize_gui_types`,
+`summarize_gui_results`, `collect_pipeline_outputs`, `DEFAULT_GUI_TYPES`,
+`MAX_FILES_PER_SECTION`, `PIPELINE_OUTPUT_SECTIONS`, plus the GUI 1 markdown
+utilities (`add_component_to_markdown`, `update_component_states`,
+`remove_component_from_markdown`, `parse_components_from_markdown`,
+`parse_state_space_from_markdown`, `add_state_space_entry`,
+`update_state_space_entry`, `remove_state_space_entry`).
+`get_module_info()` is also defined at package level and returns module metadata
+(name, version, description, feature flags) for MCP discovery.
 
-**Returns**: `Dict[str, Any]` - GUI 1 execution results with:
-- `success` (bool): Whether GUI execution succeeded
-- `output_file` (Path): Path to generated GNN model
-- `status` (str): Execution status
-- `url` (Optional[str]): Web UI URL if interactive
+- `get_available_guis() -> dict[str, dict]`: name → info mapping (description, port,
+  category, features) for all four GUI types.
+- `normalize_gui_types(value: str | Sequence[str] | None) -> list[str]`: parses a
+  comma-separated string, a sequence, or `None` (the `gui_1,gui_2` default); blank
+  entries are dropped.
+- `summarize_gui_results(results) -> GUISummary`: aggregates per-GUI result dicts into
+  `{total, succeeded, failed, failed_guis, overall_success}`.
+- `generate_html_navigation(pipeline_output_dir, output_dir, logger) -> bool`: renders
+  `navigation.html` from discovered pipeline outputs (called automatically by
+  `process_gui()`).
+- `collect_pipeline_outputs(...)`: discovery helper backing the navigation page.
 
-#### `gui_2(target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs) -> Dict[str, Any]`
-**Description**: Visual Matrix Editor with drag-and-drop interface (GUI 2). Matrix heatmaps and POMDP template support.
+### Per-GUI entry points
 
-**Parameters**:
-- `target_dir` (Path): Input directory
-- `output_dir` (Path): Output directory for GUI 2
-- `logger` (logging.Logger): Logger instance
-- `verbose` (bool): Enable verbose logging
-- `headless` (bool): Run in headless mode
-- `export_filename` (str): Output filename for visual model
-- `open_browser` (bool): Open browser for interactive mode
+Each wrapper takes `(target_dir: Path, output_dir: Path, logger: logging.Logger,
+**kwargs)` and returns a result dict with `success`, per-GUI metadata, and — only on
+a verified interactive launch — `port` and `url`.
 
-**Returns**: Dictionary with GUI 2 execution results
-
-#### `get_available_guis() -> Dict[str, Dict]`
-**Description**: Get information about all available GUI implementations
-
-**Returns**: Dictionary with GUI information including names, descriptions, and ports
-
-#### `generate_html_navigation(pipeline_output_dir, output_dir, logger) -> bool`
-**Description**: Generate HTML navigation page that links to all pipeline output types
-
-**Parameters**:
-- `pipeline_output_dir` (Path): Directory containing all pipeline outputs (typically output/)
-- `output_dir` (Path): GUI output directory where navigation.html will be created
-- `logger` (Logger): Logger instance for progress reporting
-
-**Returns**: `True` if navigation page generated successfully, `False` otherwise
-
-**Features**:
-- Scans all 25 pipeline output directories
-- Discovers files by type (JSON, MD, PNG, SVG, HTML, etc.)
-- Generates organized HTML navigation with file metadata
-- Provides links to all pipeline artifacts
-- Includes summary statistics and integration with comprehensive reports
-
----
-
-## GUI Implementations
-
-### GUI 1: Form-based Constructor
-**Port**: `:7860`
-**Focus**: Step-by-step model building with component management
-**Features**:
-- Interactive two-pane editor (components + markdown)
-- Component management (observation/hidden/action/policy variables)
-- State space entry management with live validation
-- Synchronized plaintext GNN markdown editor
-- Real-time model validation and error feedback
-
-### GUI 2: Visual Matrix Editor
-**Port**: `:7861`
-**Focus**: Real-time matrix heatmaps and interactive editing
-**Features**:
-- Interactive DataFrame editing with +/- dimension controls
-- Vector bar chart displays for C & D vectors
-- Live matrix statistics (min, max, mean, sum)
-- Auto-update functionality and matrix validation
-- Drag-and-drop matrix manipulation
-
-### GUI 3: State Space Design Studio
-**Port**: `:7862`
-**Focus**: Visual state space architecture design
-**Features**:
-- Visual state space architecture designer with SVG diagrams
-- Ontology term editor for Active Inference concept mapping
-- Interactive connection graph interface (D>s, s-A, A-o format)
-- Parameter tuning controls (states, observations, actions, horizons)
-- Real-time GNN export and preview with low-dependency approach
-
----
-
-## Dependencies
-
-### Required Dependencies
-- `gradio` - Web-based GUI framework
-- `pandas` - Data manipulation for matrix editing
-- `numpy` - Numerical operations for visualizations
-
-### Optional Dependencies
-- `plotly` - Interactive visualizations (recovery: matplotlib)
-- `matplotlib` - Static plotting (recovery: basic HTML)
-- `networkx` - Network graph visualization
-
-### Internal Dependencies
-- `gnn.utils.pipeline_orchestration.pipeline_template` - Standardized pipeline processing
-- `pipeline.config` - Configuration management
-
----
-
-## Configuration
-
-### Environment Variables
-- `GUI_DEFAULT_PORT` - Default port for GUI servers (7860)
-- `GUI_HEADLESS_MODE` - Run GUIs in headless mode by default
-- `GUI_BROWSER_AUTO_OPEN` - Automatically open browser for interactive GUIs
-
-### Configuration Files
-- `gui_config.yaml` - GUI-specific settings and themes
-
-### Default Settings
-```python
-DEFAULT_GUI_SETTINGS = {
-    "gui_1": {
-        "port": 7860,
-        "theme": "default",
-        "auto_save": True,
-        "validation_enabled": True,
-    },
-    "gui_2": {
-        "port": 7861,
-        "heatmap_colormap": "viridis",
-        "matrix_precision": 3,
-        "auto_update": True,
-    },
-    "gui_3": {
-        "port": 7862,
-        "diagram_style": "modern",
-        "ontology_integration": True,
-        "export_format": "markdown",
-    },
-}
-```
-
----
-
-## Usage Examples
-
-### Basic Usage (All GUIs)
-```python
-from gui import process_gui
-
-success = process_gui(
-    target_dir=Path("input/gnn_files"),
-    output_dir=Path("output/22_gui_output"),
-    logger=logger,
-    gui_mode="all",
-    interactive_mode=True,
-)
-```
-
-### Specific GUI (GUI 1)
-```python
-from gnn.gui.gui_1 import gui_1
-
-result = gui_1(
-    target_dir=Path("input/gnn_files"),
-    output_dir=Path("output/gui_1_output"),
-    logger=logger,
-    headless=False,
-    export_filename="constructed_model_gui1.md",
-    open_browser=True,
-)
-```
-
-### GUI Information Query
-```python
-from gnn.gui import get_available_guis
-
-guis = get_available_guis()
-for gui_name, info in guis.items():
-    print(f"{gui_name}: {info['description']} (Port: {info['port']})")
-```
-
----
+| Function | Extra kwargs | Defaults |
+|----------|--------------|----------|
+| `gui_1` | `headless`, `export_filename="constructed_model_gui1.md"`, `open_browser=True`, `verbose` | standalone default interactive (`headless=False`); pipeline runs are headless via the `process_gui` derivation |
+| `gui_2` | `headless`, `export_filename="visual_model_gui2.md"`, `open_browser=True`, `verbose` | prefers `*pomdp*.md` inputs, falls back to a POMDP starter template |
+| `gui_3` | `headless`, `export_filename="designed_model_gui_3.md"`, `open_browser=False` | tolerates and ignores extra pipeline kwargs |
+| `oxdraw_gui` | `headless` (default True), `mode` ("interactive"/"headless"), `launch_editor`, `port=5151`, `host="127.0.0.1"`, `auto_convert`, `validate_on_save`, `verbose` | writes into `oxdraw_output/` subdirectory |
 
 ## Output Specification
 
-### Output Products
+Artifacts are written under `output/22_gui_output/` (per-GUI runners resolve their
+output root through `resolve_output_root()`; oxdraw nests one level deeper):
 
-#### GUI-Specific Outputs
-- `constructed_model_gui1.md` - Generated GNN model from GUI 1 (Form-based Constructor)
-- `visual_model_gui2.md` - Generated GNN model from GUI 2 (Visual Matrix Editor)
-- `visual_matrices.json` - Matrix data and visualizations from GUI 2
-- `gui_status.json` - GUI execution status and backend information
-- `gui_processing_summary.json` - Overall GUI processing summary with results from all GUIs
-
-#### Navigation and Discovery
-- `navigation.html` - **Comprehensive HTML navigation page** that provides:
-  - Links to all pipeline output files across all 25 steps
-  - Organized by pipeline step with file counts and metadata
-  - File type filtering and search capabilities
-  - Direct links to visualizations, reports, execution results, and all artifacts
-  - Summary statistics of pipeline outputs
-  - Links to comprehensive reports
-
-### Output Directory Structure
 ```
 output/22_gui_output/
-├── constructed_model_gui1.md          # GUI 1 output: Form-based constructed model
-├── visual_model_gui2.md               # GUI 2 output: Visual matrix editor model
-├── visual_matrices.json                # GUI 2 output: Matrix data and visualizations
-├── gui_status.json                     # GUI execution status and backend info
-├── gui_processing_summary.json         # Overall processing summary
-└── navigation.html                     # HTML navigation to all pipeline outputs
+├── constructed_model_gui1.md     # gui_1 export (starter template with headless marker)
+├── gui_1_status.json             # gui_1 status (namespaced)
+├── visual_model_gui2.md          # gui_2 export (POMDP starter or loaded model)
+├── visual_matrices.json          # gui_2 matrix data snapshot
+├── gui_2_status.json             # gui_2 status (namespaced)
+├── designed_model_gui_3.md       # gui_3 export (design-studio starter model)
+├── design_analysis.json          # gui_3 design analysis
+├── design_studio_status.json     # gui_3 status
+├── gui_processing_summary.json   # aggregate: kwargs, gui_types, per-GUI results, overall_success
+├── navigation.html               # HTML navigation over all pipeline outputs
+└── oxdraw_output/
+    ├── <model>.mmd               # GNN → Mermaid conversion (one per input file)
+    ├── <model>_from_mermaid.md   # Mermaid → GNN round-trip (validate_on_save)
+    └── oxdraw_processing_results.json
 ```
 
-### Navigation.html Features
+Every artifact name above is constructed in code: `constructed_model_gui1.md`
+(gui_1/processor.py:47), `gui_1_status.json` (gui_1/processor.py:116),
+`visual_model_gui2.md` (gui_2/processor.py:44), `visual_matrices.json`
+(gui_2/processor.py:99), `gui_2_status.json` (gui_2/processor.py:104),
+`designed_model_gui_3.md` (gui_3/__init__.py:40), `design_analysis.json`
+(gui_3/processor.py:81), `design_studio_status.json` (gui_3/processor.py:106),
+`gui_processing_summary.json` (processor.py:276), `navigation.html`
+(processor.py:333), `oxdraw_output/` (oxdraw/__init__.py:111), `<stem>.mmd`
+(oxdraw/processor.py:107), `<stem>_from_mermaid.md` (oxdraw/processor.py:193),
+`oxdraw_processing_results.json` (oxdraw/processor.py:265). Status JSONs share one
+common-key schema (`backend`, `launched`, `export_file`, `gui_type`, `status`,
+`reason`, `backend_reason`); `port`/`url` appear only on verified interactive
+launches.
 
-The `navigation.html` file provides comprehensive navigation to all pipeline outputs:
+### navigation.html
 
-1. **Pipeline Overview**: Summary statistics showing total pipeline steps and files
-2. **Output Sections**: Organized by all 25 pipeline steps:
-   - Template (0_template_output)
-   - Setup (1_setup_output)
-   - Tests (2_tests_output)
-   - GNN Processing (3_gnn_output)
-   - Model Registry (4_model_registry_output)
-   - Type Checker (5_type_checker_output)
-   - Validation (6_validation_output)
-   - Export (7_export_output)
-   - Visualization (8_visualization_output)
-   - Advanced Visualization (9_advanced_viz_output)
-   - Ontology (10_ontology_output)
-   - Render (11_render_output)
-   - Execute (12_execute_output)
-   - LLM (13_llm_output)
-   - ML Integration (14_ml_integration_output)
-   - Audio (15_audio_output)
-   - Analysis (16_analysis_output)
-   - Integration (17_integration_output)
-   - Security (18_security_output)
-   - Research (19_research_output)
-   - Website (20_website_output)
-   - MCP (21_mcp_output)
-   - GUI (22_gui_output)
-   - Report (23_report_output)
-   - Intelligent Analysis (24_intelligent_analysis_output)
+Generated by `_generate_navigation_page()` from `collect_pipeline_outputs()`
+discovery over `PIPELINE_OUTPUT_SECTIONS` (25 pipeline steps, processor.py:46-76).
+Each section reports the full discovered `file_count` while listing at most
+`MAX_FILES_PER_SECTION = 20` files (processor.py:41-43); file names and paths are
+HTML-escaped at render time.
 
-3. **File Information**: For each file, displays:
-   - File name with clickable link
-   - File type/extension
-   - File size in MB
-   - Relative path for navigation
+## Dependencies
 
-4. **Integration**: Links to comprehensive report at `23_report_output/comprehensive_analysis_report.html`
+- `gradio>=6.7.0` — the only package in the `gui` extra (pyproject.toml:124-127).
+  Without it, all GUIs degrade to static headless artifacts.
+- `numpy` and `plotly` are imported by `gui_2/ui.py` for interactive heatmap/vector
+  plots; both ship in the core pipeline dependencies (pyproject.toml:35, 85).
+- `pandas`, `matplotlib`, and `networkx` are core pipeline dependencies but are not
+  imported anywhere in `src/gnn/gui`.
+- External `oxdraw` CLI (`cargo install oxdraw`) is optional and only needed for
+  interactive editor launches.
 
----
+## Configuration
 
-## Performance Characteristics
-
-### Latest Execution
-- **Duration**: ~1-2 seconds in headless mode, ~10-30 seconds for interactive GUI startup
-- **Memory**: <10MB for headless mode, ~150-250MB for interactive GUIs
-- **Status**: ✅ Ready (Fixed - headless mode default for pipeline)
-
-### Expected Performance
-- **Interactive Mode**: ~10-30s startup time per GUI
-- **Headless Mode**: ~2-5s for artifact generation
-- **Memory**: ~50-100MB for headless, ~150-250MB for interactive
-
----
-
-## Error Handling
-
-### Graceful Degradation
-- **No gradio**: Recovery to HTML-based interfaces
-- **No plotly**: Use matplotlib for visualizations
-- **Browser unavailable**: Generate static artifacts only
-
-### Error Categories
-1. **Dependency Errors**: Missing GUI framework dependencies
-2. **Port Conflicts**: GUI server port already in use
-3. **Browser Errors**: Unable to launch interactive interface
-4. **File System Errors**: Unable to write output files
-
----
+No environment variables or configuration files are dedicated to this module. GUI
+behavior is configured through `process_gui()` kwargs (`gui_types`, `interactive`,
+`headless`, `open_browser`, `launch_editor`) and `input/config.yaml` pipeline
+settings. Per-GUI ports are assigned in code (GUI 1: 7860, GUI 2: 7861, GUI 3: 7862,
+oxdraw: 5151); processing defaults (`gui_types`, derived headless mode) live in
+`process_gui()`.
 
 ## Integration Points
 
 ### Orchestrated By
-- **Script**: `22_gui.py` (Step 22)
-- **Function**: `process_gui()`
 
-### Imports From
-- `gnn.utils.pipeline_orchestration.pipeline_template` - Standardized processing patterns
-- `pipeline.config` - Configuration management
+- **Script**: `src/gnn/22_gui.py` (Step 22, 98 lines) via
+  `create_standardized_pipeline_script`
+- **CLI**: `gnn gui` subcommand (src/gnn/cli/__init__.py:444-466, handler
+  `_cmd_gui` at :1321-1333) and the `just gui` recipe (justfile:139-141)
+- **MCP**: `process_gui` tool registered by `src/gnn/gui/mcp.py`
 
 ### Imported By
-- `tests/gui/test_gui_overall.py` - GUI module tests
-- `main.py` - Pipeline orchestration
+
+- `src/gnn/22_gui.py:53` — pipeline step orchestrator (`from gnn.gui import process_gui`)
+- `src/gnn/cli/__init__.py:1324` — `gnn gui` CLI handler (lazy import)
+- `tests/gui/*` — module test suite
+
+`main.py` does not import `gui`; its only step-22 reference is the prose step listing
+at src/gnn/main.py:32. The step-20 website cross-links the GUI navigation hub.
+
+### Imports From
+
+- `gnn.utils.pipeline_orchestration.pipeline_template.create_standardized_pipeline_script`
+  — standardized pipeline script construction (22_gui.py:54-56)
+- `gnn.pipeline.config.resolve_step_output_dir` — shared output-root resolution
+  (gui/runner.py:89-91)
 
 ### Data Flow
+
 ```
-GNN Files → GUI Construction → Visual Editing → Model Validation → GNN Export → Pipeline Integration
+input/gnn_files → per-GUI headless artifacts + status JSONs → gui_processing_summary.json + navigation.html → step-20 website (cross-links the GUI navigation hub)
 ```
 
----
+Step 22 depends on Step 3 (parsed GNN files) per the pipeline dependency graph.
 
 ## Testing
 
 ### Test Files
-- `tests/gui/test_gui_functionality.py` - GUI functionality tests
-- `tests/gui/test_oxdraw_integration.py` - oxdraw integration tests
+
+`tests/gui/` contains 14 test modules:
+
+- `test_gui3_loader_and_wrapper.py`
+- `test_gui3_pipeline_kwargs.py`
+- `test_gui_callback_bindings.py`
+- `test_gui_composability.py`
+- `test_gui_functionality.py`
+- `test_gui_info_ports_and_defaults.py`
+- `test_gui_launch_verification.py`
+- `test_gui_mcp_interactive.py`
+- `test_gui_model_logic.py`
+- `test_gui_overall.py`
+- `test_gui_status_namespacing.py`
+- `test_oxdraw_integration.py`
+- `test_step22_headless_default.py`
+- `test_websocket_bridge.py`
 
 ### Test Coverage
-- Measure: `uv run --extra dev python -m pytest tests/gui/ --cov=gui --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
+
+Run:
+
+```bash
+uv run --extra dev python -m pytest tests/gui/ -q
+```
+
+Measure coverage (do not treat any percentage in this document as canonical):
+
+```bash
+uv run --extra dev python -m pytest tests/gui/ --cov=gnn.gui --cov-report=term-missing
+```
 
 ### Key Test Scenarios
-1. GUI startup and shutdown in headless mode
-2. Component creation and editing workflows
-3. Matrix manipulation and validation
-4. Model export and format validation
-5. Error handling with missing dependencies
 
----
+1. Headless-default regression: `process_gui` with neither flag stays artifact-only
+   (`test_step22_headless_default.py`)
+2. Namespaced status artifacts and common-key schema
+   (`test_gui_status_namespacing.py`)
+3. Launch verification and keep-alive gating (`test_gui_launch_verification.py`)
+4. oxdraw round-trip conversion and integration (`test_oxdraw_integration.py`)
+5. WebSocket bridge message contracts (`test_websocket_bridge.py`)
+6. MCP interactive derivation (`test_gui_mcp_interactive.py`)
 
 ## MCP Integration
 
 ### Tools Registered
 
-Registered in `register_tools` (`src/gnn/gui/mcp.py`):
+`register_tools()` in `src/gnn/gui/mcp.py` registers **8 domain tools**:
 
-- `process_gui` - Run Step 22 (headless by default)
-- `list_available_guis` - List GUI implementations and ports
-- `get_gui_module_info` - Module metadata
-- oxdraw tools registered dynamically from `src/gnn/gui/oxdraw/` tool definitions
-
----
-
-## Recent Improvements (September 30, 2025)
-
-### GUI Timeout Fix
-- **Problem**: GUI module was timing out in pipeline execution (600s timeout)
-- **Root Cause**: GUIs were launching interactive servers with blocking threads even in pipeline mode
-- **Solution**: 
-  - Implemented proper headless mode that defaults to True when run from pipeline
-  - Headless mode generates artifacts only (no server launch, no blocking)
-  - Added `--interactive` flag to explicitly enable GUI servers when needed
-  - Separated GUI kwargs to avoid parameter conflicts with logger
-- **Result**: GUI step now completes in ~1.28s (vs 600s timeout), 99.8% improvement
-
-### Performance Improvements
-- Headless mode execution: < 2 seconds (down from 600s timeout)
-- Memory usage in headless mode: < 10MB (down from 150-250MB)
-- Pipeline integration: No blocking, no timeouts
-- Interactive mode still fully functional when explicitly requested
-
----
-
-## Recent Enhancements (January 5, 2026)
-
-### HTML Navigation Generation
-- **Added**: `generate_html_navigation()` function to create comprehensive navigation page
-- **Features**:
-  - Scans all 25 pipeline output directories automatically
-  - Discovers and catalogs all output files by type
-  - Generates organized HTML with file metadata (type, size, path)
-  - Provides direct links to all pipeline artifacts
-  - Includes summary statistics and integration with comprehensive reports
-- **Output**: `navigation.html` file in GUI output directory
-- **Integration**: Automatically generated during `process_gui()` execution
-- **Access**: Open `output/22_gui_output/navigation.html` in web browser for full pipeline navigation
-
-### Output File Discovery
-- **Enhanced**: All output files are now properly discovered and documented
-- **Files Generated**:
-  - `constructed_model_gui1.md` - GUI 1 form-based model construction
-  - `visual_model_gui2.md` - GUI 2 visual matrix editor model
-  - `visual_matrices.json` - GUI 2 matrix data and visualizations
-  - `gui_status.json` - GUI execution status and backend information
-  - `gui_processing_summary.json` - Overall processing summary
-  - `navigation.html` - Comprehensive navigation to all pipeline outputs
-
----
-
-## Troubleshooting
-
-### Common Issues
-
-#### Issue 1: GUI fails to launch
-**Symptom**: GUI server doesn't start or browser doesn't open
-**Cause**: Port already in use or dependencies missing
-**Solution**:
-- Check if port is already in use: `lsof -i :7860`
-- Use different port: `--port 7861`
-- Verify Gradio dependencies installed
-- Use `--headless` mode if GUI not needed
-
-#### Issue 2: Model export fails
-**Symptom**: GUI completes but model file not generated
-**Cause**: Export function errors or file permissions
-**Solution**:
-- Check output directory permissions
-- Verify export filename is valid
-- Review export function logs
-- Ensure GNN format validation passes
-
----
-
-## Version History
-
-### Current module status
-
-**Features**:
-- Multiple GUI implementations (GUI 1, GUI 2, GUI 3, oxdraw)
-- Interactive model construction
-- Real-time validation
-- Model export to GNN format
-
-**Known Issues**:
-- None currently
-
-### Roadmap
-- **Next Version**: Enhanced visual editing
-- **Future**: Collaborative editing
-
----
+- `process_gui` — run Step 22 (schema default headless: True; the handler passes
+  `interactive=not headless`, so an MCP caller passing `headless=False` gets
+  interactive servers)
+- `list_available_guis` — list GUI implementations and ports
+- `get_gui_module_info` — module metadata
+- `oxdraw.convert_to_mermaid`, `oxdraw.convert_from_mermaid`,
+  `oxdraw.launch_editor`, `oxdraw.check_installation`, `oxdraw.get_info` — five
+  oxdraw tools registered via `gnn/gui/oxdraw/mcp.py` `register_mcp_tools()`
 
 ## References
 
 ### Related Documentation
+
 - [Pipeline Overview](../../../README.md)
 - [Architecture Guide](../../../ARCHITECTURE.md)
-- [GUI Guide](../../../docs/gui_oxdraw/)
+- [Pipeline step timeouts](../../../src/gnn/pipeline/README.md) — the
+  `GNN_STEP_TIMEOUT_{N}` / `GNN_STEP_TIMEOUT_SCALE` knobs referenced above
+- [oxdraw verification receipt](../../../docs/gui_oxdraw/VERIFICATION.md) — the
+  maintained verification report for the oxdraw integration
 
 ### External Resources
+
 - [Gradio Documentation](https://gradio.app/)
 
 ---
 
-**Last Updated**: 2026-01-21
-**Maintainer**: GNN Pipeline Team
-**Status**: ✅ Production Ready
+**Last Updated**: 2026-09-22
+**Status**: Production Ready
 **Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
-**Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
-
 
 ---
 ## Documentation
