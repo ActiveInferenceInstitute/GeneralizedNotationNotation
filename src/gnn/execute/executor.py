@@ -692,7 +692,6 @@ class GNNExecutor:
             ),
         }
 
-
     def execute_simulation_from_gnn(
         self,
         gnn_file: Union[str, Path],
@@ -835,8 +834,7 @@ def _run_stan_registry(
         timeout=timeout or 1800,
     )
     return all(
-        bool(record.get("success")) or bool(record.get("skipped"))
-        for record in records
+        bool(record.get("success")) or bool(record.get("skipped")) for record in records
     )
 
 
