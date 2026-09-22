@@ -4,6 +4,11 @@ name: Local gates
 # into no workflow (found in the 2026-09-07 local/CI parity audit):
 #   - just tokens       (manuscript token/citation integrity)
 #   - just skills-health (MCP tool + SKILL.md resolvability)
+#   - just import-linter (import boundary contracts)
+#   - just thin-orchestrators (numbered orchestrator line caps)
+#   - just flag-parity (CLI flags vs maintained-doc mentions)
+#   - just dep-hygiene (optional-dependency consumers + stale mypy overrides)
+#   - just validate-surface (validate_gnn* public surface audit)
 #
 # Deliberately NOT wired here: `just gridworld` — since 2026-09-19 the recipe
 # runs the full GridWorld pipeline end-to-end (local Julia toolchains) and
@@ -56,6 +61,21 @@ jobs:
 
       - name: MCP + skills resolvability health gate
         run: uv run --extra dev python scripts/check_mcp_skills_health.py --strict
+
+      - name: Import-linter boundaries
+        run: uv run --extra dev lint-imports
+
+      - name: Thin orchestrator line cap
+        run: uv run --extra dev python scripts/check_thin_orchestrators.py
+
+      - name: CLI flag parity
+        run: uv run --extra dev python scripts/check_flag_parity.py
+
+      - name: Dependency hygiene
+        run: uv run --extra dev python scripts/check_dep_hygiene.py
+
+      - name: Validate surface audit
+        run: uv run --extra dev python scripts/audit_validate_surface.py
 
       - name: Doc path reference gate
         run: uv run --extra dev python scripts/check_doc_path_references.py

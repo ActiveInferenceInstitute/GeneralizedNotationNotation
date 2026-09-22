@@ -74,6 +74,26 @@ typecheck:
 security:
     uv run bandit -r src/gnn -c pyproject.toml -q --severity-level medium --confidence-level medium
 
+# Check import-linter boundary contracts (three contracts in pyproject.toml)
+import-linter:
+    uv run lint-imports
+
+# Enforce the numbered thin-orchestrator line caps (150 hard + ratchet)
+thin-orchestrators:
+    uv run python scripts/check_thin_orchestrators.py
+
+# Check argparse-registered flags against maintained-doc mentions (ratcheted)
+flag-parity:
+    uv run python scripts/check_flag_parity.py
+
+# Check optional-dependency consumers and stale mypy overrides (ratcheted)
+dep-hygiene:
+    uv run python scripts/check_dep_hygiene.py
+
+# Audit the validate_gnn* public surface against its manifest
+validate-surface:
+    uv run python scripts/audit_validate_surface.py
+
 # Run MCP + skills resolvability health gate
 skills-health:
     uv run --extra dev python scripts/check_mcp_skills_health.py --strict
@@ -133,7 +153,7 @@ doc-patterns:
     uv run python scripts/check_gnn_doc_patterns.py --strict
 
 # Run fast quality gates without the full pytest suite
-quality: format-check lint terminology doc-terms audit doc-contracts doc-patterns typecheck security capability skills-health tokens v3-acceptance mcp-count
+quality: format-check lint import-linter thin-orchestrators flag-parity dep-hygiene validate-surface terminology doc-terms audit doc-contracts doc-patterns typecheck security capability skills-health tokens v3-acceptance mcp-count
 
 # Run focused PyMDP/POMDP behavior checks
 test-pymdp-focused:

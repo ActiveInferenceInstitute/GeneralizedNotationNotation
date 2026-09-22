@@ -83,6 +83,26 @@ jobs:
         if: matrix.python-version == '3.12'
         run: uv run --extra dev python scripts/check_gnn_doc_patterns.py --strict
 
+      - name: Import-linter boundaries
+        if: matrix.python-version == '3.12'
+        run: uv run --extra dev lint-imports
+
+      - name: Thin orchestrator line cap
+        if: matrix.python-version == '3.12'
+        run: uv run --extra dev python scripts/check_thin_orchestrators.py
+
+      - name: CLI flag parity
+        if: matrix.python-version == '3.12'
+        run: uv run --extra dev python scripts/check_flag_parity.py
+
+      - name: Dependency hygiene
+        if: matrix.python-version == '3.12'
+        run: uv run --extra dev python scripts/check_dep_hygiene.py
+
+      - name: Validate surface audit
+        if: matrix.python-version == '3.12'
+        run: uv run --extra dev python scripts/audit_validate_surface.py
+
       - name: Capability contracts
         if: matrix.python-version == '3.12'
         run: uv run --extra dev python scripts/check_capability_contracts.py --strict
