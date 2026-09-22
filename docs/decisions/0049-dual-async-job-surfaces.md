@@ -16,8 +16,8 @@ one of them vestigial, or are both canonical for different consumers?
 
 - **Runs surface — `gnn.api.app`** ([src/gnn/api/app.py](../../src/gnn/api/app.py)),
   the app behind `gnn serve`
-  (`src/gnn/cli/__init__.py:1158` dispatches `_cmd_serve`, which imports and
-  starts `gnn.api.app.start_server` at `src/gnn/cli/__init__.py:1161-1163`).
+  (`src/gnn/cli/__init__.py:1124` dispatches `_cmd_serve`, which imports and
+  starts `gnn.api.app.start_server` at `src/gnn/cli/__init__.py:1149-1150`).
   A run is content-hash addressed: `POST /api/v1/run`
   (`src/gnn/api/app.py:122`) computes `compute_run_hash`
   (`src/gnn/api/app.py:127`) over the request and deduplicates against
@@ -62,9 +62,13 @@ at `src/gnn/api/processor.py:252`)).
 
 **Shared infrastructure — both factories:**
 
-- register the identical 11-route parity set via `register_parity_routes`
-  (`src/gnn/api/parity.py:955`, wired at `src/gnn/api/app.py:106` and
-  `src/gnn/api/server.py:95`);
+- register the identical 12-route parity set via `register_parity_routes`
+  (`src/gnn/api/parity.py:859`, wired at `src/gnn/api/app.py:106` and
+  `src/gnn/api/server.py:95`), including the verify-only
+  `POST /api/v1/reproduce` (resolves and verifies an indexed run and
+  returns the reconstructed configuration; execution is dispatched by the
+  caller — the CLI re-executes locally, the runs surface starts it via
+  `POST /api/v1/run`);
 - use the canonical `{status, data, error, meta}` envelope
   (`src/gnn/api/responses.py:32`, `:51`, `:61`) with the same installed
   exception handlers (`src/gnn/api/responses.py:115`);
@@ -142,10 +146,10 @@ from merging the models:
 - [src/gnn/api/processor.py](../../src/gnn/api/processor.py) — both stores
   and executors (`_JOBS:36`, `RUNS_STORE:39`, `create_job:64`,
   `execute_job_async:304`, `delete_run:228`)
-- [src/gnn/api/parity.py](../../src/gnn/api/parity.py) `:955`;
+- [src/gnn/api/parity.py](../../src/gnn/api/parity.py) `:859`;
   [src/gnn/api/responses.py](../../src/gnn/api/responses.py) `:32`;
   [src/gnn/api/mcp.py](../../src/gnn/api/mcp.py) `:38`
-- `src/gnn/cli/__init__.py:1158` — `gnn serve` dispatches to
+- `src/gnn/cli/__init__.py:1124` — `gnn serve` dispatches to
   `gnn.api.app.start_server`
 - [tests/api/test_api_parity.py](../../tests/api/test_api_parity.py) `:53`
   — pinned route tables
