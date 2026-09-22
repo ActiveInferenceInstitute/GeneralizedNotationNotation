@@ -23,28 +23,26 @@ def register_tools(registry: Any) -> bool:
     try:
         # Register register_model tool
         registry.register_tool(
-            name="model_registry.register_model",
-            description="Register a model in the model registry",
-            function=register_model,
-            parameters=[
-                {
-                    "name": "model_path",
-                    "description": "Path to the model file",
-                    "type": "string",
-                    "required": True,
-                },
-                {
-                    "name": "registry_path",
-                    "description": "Path to the registry file",
-                    "type": "string",
-                    "required": False,
-                    "default": "output/model_registry/model_registry.json",
-                },
-            ],
-            returns={
+            "model_registry.register_model",
+            register_model,
+            {
                 "type": "object",
-                "description": "Registration result with model ID and status",
+                "properties": {
+                    "model_path": {
+                        "type": "string",
+                        "description": "Path to the model file",
+                    },
+                    "registry_path": {
+                        "type": "string",
+                        "description": "Path to the registry file",
+                        "default": "output/model_registry/model_registry.json",
+                    },
+                },
+                "required": ["model_path"],
             },
+            "Register a model in the model registry",
+            module=__package__,
+            category="model_registry",
             examples=[
                 {
                     "description": "Register a model",
@@ -55,28 +53,26 @@ def register_tools(registry: Any) -> bool:
 
         # Register get_model tool
         registry.register_tool(
-            name="model_registry.get_model",
-            description="Get a model from the registry by ID",
-            function=get_model,
-            parameters=[
-                {
-                    "name": "model_id",
-                    "description": "Model ID",
-                    "type": "string",
-                    "required": True,
-                },
-                {
-                    "name": "registry_path",
-                    "description": "Path to the registry file",
-                    "type": "string",
-                    "required": False,
-                    "default": "output/model_registry/model_registry.json",
-                },
-            ],
-            returns={
+            "model_registry.get_model",
+            get_model,
+            {
                 "type": "object",
-                "description": "Model entry with metadata and versions",
+                "properties": {
+                    "model_id": {
+                        "type": "string",
+                        "description": "Model ID",
+                    },
+                    "registry_path": {
+                        "type": "string",
+                        "description": "Path to the registry file",
+                        "default": "output/model_registry/model_registry.json",
+                    },
+                },
+                "required": ["model_id"],
             },
+            "Get a model from the registry by ID",
+            module=__package__,
+            category="model_registry",
             examples=[
                 {
                     "description": "Get a model by ID",
@@ -87,25 +83,26 @@ def register_tools(registry: Any) -> bool:
 
         # Register search_models tool
         registry.register_tool(
-            name="model_registry.search_models",
-            description="Search models in the registry by name, description, or tags",
-            function=search_models,
-            parameters=[
-                {
-                    "name": "query",
-                    "description": "Search query",
-                    "type": "string",
-                    "required": True,
+            "model_registry.search_models",
+            search_models,
+            {
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string",
+                        "description": "Search query",
+                    },
+                    "registry_path": {
+                        "type": "string",
+                        "description": "Path to the registry file",
+                        "default": "output/model_registry/model_registry.json",
+                    },
                 },
-                {
-                    "name": "registry_path",
-                    "description": "Path to the registry file",
-                    "type": "string",
-                    "required": False,
-                    "default": "output/model_registry/model_registry.json",
-                },
-            ],
-            returns={"type": "array", "description": "List of matching model entries"},
+                "required": ["query"],
+            },
+            "Search models in the registry by name, description, or tags",
+            module=__package__,
+            category="model_registry",
             examples=[
                 {
                     "description": "Search models",
@@ -116,19 +113,21 @@ def register_tools(registry: Any) -> bool:
 
         # Register list_models tool
         registry.register_tool(
-            name="model_registry.list_models",
-            description="List all models in the registry",
-            function=list_models,
-            parameters=[
-                {
-                    "name": "registry_path",
-                    "description": "Path to the registry file",
-                    "type": "string",
-                    "required": False,
-                    "default": "output/model_registry/model_registry.json",
-                }
-            ],
-            returns={"type": "array", "description": "List of all model entries"},
+            "model_registry.list_models",
+            list_models,
+            {
+                "type": "object",
+                "properties": {
+                    "registry_path": {
+                        "type": "string",
+                        "description": "Path to the registry file",
+                        "default": "output/model_registry/model_registry.json",
+                    },
+                },
+            },
+            "List all models in the registry",
+            module=__package__,
+            category="model_registry",
             examples=[
                 {
                     "description": "List all models",
