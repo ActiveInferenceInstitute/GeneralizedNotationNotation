@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 
 from gnn.execute.julia_env import julia_subprocess_env
 from gnn.execute.julia_setup import is_julia_available
+from gnn.execute.security_gate import check_script_allowed
 from gnn.execute.subprocess_envelope import run_subprocess_envelope
 
 
@@ -107,6 +108,8 @@ def execute_rxinfer_script(
             f"--project={rxinfer_project}",
             str(script_path),
         ]
+        # The spawned program for this branch is the rendered script itself.
+        program_to_gate = script_path
     elif script_path.suffix.lower() == ".toml":
         # For TOML configuration files, we need a Julia script that can load and run them
         # This would typically be a standard RxInfer.jl script that takes a config file as input
@@ -117,6 +120,9 @@ def execute_rxinfer_script(
             logger.error(f"RxInfer.jl runner script not found: {runner_script}")
             logger.error("Cannot execute TOML configuration without a runner script")
             return False
+        # TOML configs are gate-exempt argv data for the committed runner;
+        # the scanned program on this branch is rxinfer_runner.jl itself.
+        program_to_gate = runner_script
 
         # Same committed RxInfer project environment as the .jl branch —
         # the TOML runner needs `using RxInfer` to resolve packages.
@@ -130,6 +136,25 @@ def execute_rxinfer_script(
         ]
     else:
         logger.error(f"Unsupported file type: {script_path.suffix}")
+        return False
+    # Shared pre-execution security gate (fail closed; GNN_ALLOW_UNSAFE_EXEC
+    # is the only operator opt-out), applied to the program this command
+    # spawns: the rendered script for .jl inputs, the committed
+    # rxinfer_runner.jl for TOML configs (whose config file is argv data,
+    # not the scanned program).
+    gate_verdict = check_script_allowed(program_to_gate)
+    if gate_verdict["overridden"]:
+        logger.warning(
+            "GNN_ALLOW_UNSAFE_EXEC set: pre-execution security gate "
+            "bypassed for %s (trusted-local use only)",
+            program_to_gate,
+        )
+    if not gate_verdict["ok"]:
+        logger.error(
+            "Pre-execution security gate blocked %s: %s",
+            program_to_gate,
+            gate_verdict["reason"],
+        )
         return False
 
     logger.debug(f"Running command: {' '.join(cmd)}")
@@ -212,6 +237,7 @@ def run_rxinfer_scripts(
     execution_output_dir: Optional[Union[str, Path]] = None,
     recursive_search: bool = True,
     verbose: bool = False,
+    timeout: Optional[int] = None,
 ) -> bool:
     """
     Find and run all RxInfer.jl scripts in the designated directory.
@@ -221,6 +247,8 @@ def run_rxinfer_scripts(
         execution_output_dir: Specific directory for RxInfer execution outputs (optional)
         recursive_search: Whether to search recursively for scripts
         verbose: Whether to enable verbose output
+        timeout: Optional per-script execution timeout in seconds; each
+            script runs with its historical 300 s default when omitted.
 
     Returns:
         bool: True if all scripts executed successfully, False if any failed
@@ -248,12 +276,14 @@ def run_rxinfer_scripts(
         logger.info("No RxInfer.jl scripts found")
         return True  # Not an error, just nothing to do
 
+    script_timeout = timeout if timeout is not None else 300
+
     # Execute each script
     success_count = 0
     failure_count = 0
 
     for script_file in script_files:
-        if execute_rxinfer_script(script_file, verbose):
+        if execute_rxinfer_script(script_file, verbose, timeout=script_timeout):
             success_count += 1
         else:
             failure_count += 1

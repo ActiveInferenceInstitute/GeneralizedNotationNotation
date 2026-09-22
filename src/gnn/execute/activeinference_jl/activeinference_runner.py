@@ -24,7 +24,9 @@ logger = logging.getLogger(__name__)
 
 from gnn.execute.julia_env import julia_subprocess_env
 from gnn.execute.julia_setup import is_julia_available
+from gnn.execute.security_gate import check_script_allowed
 from gnn.execute.subprocess_envelope import run_subprocess_envelope
+from gnn.execute.types import DEFAULT_RUNNER_TIMEOUT_SECONDS
 
 
 def setup_julia_environment(
@@ -233,6 +235,7 @@ def execute_activeinference_script(
     verbose: bool = False,
     output_dir: Optional[Path] = None,
     setup_environment: bool = True,
+    timeout: int = DEFAULT_RUNNER_TIMEOUT_SECONDS,
 ) -> bool:
     """
     Execute a single ActiveInference.jl script with enhanced environmental setup.
@@ -242,12 +245,30 @@ def execute_activeinference_script(
         verbose: Whether to enable verbose output
         output_dir: Optional output directory for results
         setup_environment: Whether to setup/validate environment before execution
+        timeout: Script execution timeout in seconds (default 600).
 
     Returns:
         bool: True if execution was successful, False otherwise
     """
     if not script_path.exists():
         logger.error(f"Script file not found: {script_path}")
+        return False
+    # Shared pre-execution security gate (fail closed; GNN_ALLOW_UNSAFE_EXEC
+    # is the only operator opt-out). Runs before any environment probe or
+    # subprocess spawn.
+    gate_verdict = check_script_allowed(script_path)
+    if gate_verdict["overridden"]:
+        logger.warning(
+            "GNN_ALLOW_UNSAFE_EXEC set: pre-execution security gate "
+            "bypassed for %s (trusted-local use only)",
+            script_path,
+        )
+    if not gate_verdict["ok"]:
+        logger.error(
+            "Pre-execution security gate blocked %s: %s",
+            script_path,
+            gate_verdict["reason"],
+        )
         return False
 
     logger.info(f"Executing ActiveInference.jl script: {script_path}")
@@ -295,10 +316,11 @@ def execute_activeinference_script(
 
     # Headless Julia environment: GKSwstype=100 default (a caller-set
     # GKSwstype wins) and JULIA_PROJECT merged over the parent
-    # environment; 10 minute timeout for script execution.
+    # environment; the script timeout is the ``timeout`` parameter
+    # (default 600 s).
     envelope = run_subprocess_envelope(
         cmd,
-        timeout=600,
+        timeout=timeout,
         env=julia_subprocess_env({"JULIA_PROJECT": str(project_dir)}),
         cwd=str(project_dir),
     )
@@ -402,6 +424,7 @@ def run_activeinference_analysis(
     recursive_search: bool = True,
     verbose: bool = False,
     force_setup: bool = False,
+    timeout: Optional[int] = None,
 ) -> bool:
     """
     Find and run ActiveInference.jl analysis scripts on rendered models with robust environment setup.
@@ -412,6 +435,9 @@ def run_activeinference_analysis(
         recursive_search: Whether to search recursively for scripts
         verbose: Whether to enable verbose output
         force_setup: Whether to force environment reinstallation
+        timeout: Optional per-script execution timeout in seconds; each
+            script runs with DEFAULT_RUNNER_TIMEOUT_SECONDS (600) when
+            omitted.
 
     Returns:
         bool: True if analysis completed successfully, False if any failed
@@ -471,6 +497,9 @@ def run_activeinference_analysis(
 
     logger.info(f"Executing {len(script_files)} ActiveInference.jl scripts...")
 
+    script_timeout = (
+        DEFAULT_RUNNER_TIMEOUT_SECONDS if timeout is None else timeout
+    )
     for i, script_path in enumerate(script_files, 1):
         logger.info(f"[{i}/{len(script_files)}] Executing: {script_path.name}")
 
@@ -483,6 +512,7 @@ def run_activeinference_analysis(
             verbose=verbose,
             output_dir=script_output_dir,
             setup_environment=False,  # Already done above
+            timeout=script_timeout,
         ):
             successful_scripts.append(script_path)
         else:

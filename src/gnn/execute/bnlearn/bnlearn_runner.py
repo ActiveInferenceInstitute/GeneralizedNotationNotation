@@ -23,6 +23,7 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
+from gnn.execute.security_gate import check_script_allowed
 from gnn.execute.subprocess_envelope import run_subprocess_envelope
 from gnn.utils.runtime_safety.framework_availability import is_framework_available
 
@@ -116,6 +117,26 @@ def execute_bnlearn_script(
         # bnlearn programs are not required to write it.
         "results_file": str(out_dir / "simulation_results.json"),
     }
+
+    # Shared pre-execution security gate (fail closed; GNN_ALLOW_UNSAFE_EXEC
+    # is the only operator opt-out). Runs before any lane probe, command
+    # construction, or subprocess spawn.
+    gate_verdict = check_script_allowed(script)
+    if gate_verdict["overridden"]:
+        logger.warning(
+            "GNN_ALLOW_UNSAFE_EXEC set: pre-execution security gate "
+            "bypassed for %s (trusted-local use only)",
+            script,
+        )
+    if not gate_verdict["ok"]:
+        record["error_type"] = gate_verdict.get("error_type", "SecurityGateBlocked")
+        record["security_findings"] = gate_verdict["blocked"]
+        record["error"] = (
+            f"Pre-execution security gate blocked {script_path}: "
+            f"{gate_verdict['reason']}"
+        )
+        logger.error(record["error"])
+        return record
 
     if language == "python":
         if not is_bnlearn_available(python_executable):

@@ -240,8 +240,13 @@ def run_jax_scripts(
     recursive_search: bool = True,
     verbose: bool = False,
     device: Optional[str] = None,
+    timeout: Optional[int] = None,
 ) -> bool:
-    """Find and run JAX scripts on rendered models."""
+    """Find and run JAX scripts on rendered models.
+
+    ``timeout`` optionally overrides the per-script execution timeout;
+    when omitted each script runs with its historical 300 s default.
+    """
     if not is_jax_available():
         logger.error("JAX is not available, cannot execute JAX scripts")
         return False
@@ -260,8 +265,10 @@ def run_jax_scripts(
         return True  # Consider this success if no scripts to run
     success_count = 0
     failure_count = 0
+
+    script_timeout = timeout if timeout is not None else 300
     for script_file in script_files:
-        if execute_jax_script(script_file, verbose, device):
+        if execute_jax_script(script_file, verbose, device, timeout=script_timeout):
             success_count += 1
         else:
             failure_count += 1
