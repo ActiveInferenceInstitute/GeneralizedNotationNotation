@@ -1,0 +1,96 @@
+name: Pair pin freshness
+
+# Nightly freshness gate for the two committed pair pins (BC-12,
+# scope-comp-consumers section 5.3): each pinned companion revision must
+# remain ancestor-or-equal of the companion repository's default-branch
+# HEAD.
+#
+# The paired-revision workflows (`fep-lean-paired-revision.yml`,
+# `geo-infer-interchange.yml`) check out the companions at their *pinned*
+# revisions and prove the bridge/interchange surfaces still agree with this
+# checkout; they cannot notice that a companion default branch has moved
+# ahead of its pin. This gate closes exactly that gap:
+#
+#   - both pair files are validated (slug + 40-hex revision),
+#   - each companion is checked out at its default branch with full
+#     history (`fetch-depth: 0`) so ancestry is decidable,
+#   - scripts/check_pair_pin_freshness.py asserts ancestor-or-equal and
+#     exits 2 ("re-pin required"), naming the stale pair file, the pinned
+#     revision and the companion tip; a fresh run exits 0 with a summary.
+#
+# The check is git-only (stdlib + git), so the runner's system python3 is
+# used deliberately and the job needs no Python setup step.
+#
+# What this proves and does NOT prove (evidence-plane discipline): a green
+# run proves the pins still name commits inside each companion default
+# branch's history. It does NOT prove the pinned checkouts still agree with
+# this repository on any surface — that remains the paired workflows' job.
+# The optional "at most N commits behind" lag bound from section 5.3 is
+# intentionally not enforced here: the measured lag is reported in the
+# summary and receipts, but ancestor-or-equal is the contract.
+
+on:
+  schedule:
+    # Nightly, offset from the other scheduled jobs (custody-re-render
+    # runs daily at 07:14 UTC).
+    - cron: "23 5 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: pair-pin-freshness-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  pair-pin-freshness:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: gnn
+          persist-credentials: false
+
+      - name: Check out fep_lean default branch with full history
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: ActiveInferenceInstitute/fep_lean
+          path: fep-lean
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Check out GEO-INFER default branch with full history
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: ActiveInferenceInstitute/GEO-INFER
+          path: geo-infer
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Record both checkouts and the committed pins
+        run: |
+          mkdir receipts
+          git -C gnn rev-parse HEAD > receipts/gnn-revision.txt
+          git -C fep-lean rev-parse HEAD > receipts/fep-lean-revision.txt
+          git -C geo-infer rev-parse HEAD > receipts/geo-infer-revision.txt
+          cp gnn/.github/fep-lean-pair.json receipts/fep-lean-pair.json
+          cp gnn/.github/gnn-pair.json receipts/gnn-pair.json
+
+      - name: Assert pair pins are ancestor-or-equal of companion default branches
+        run: |
+          python3 gnn/scripts/check_pair_pin_freshness.py \
+            --check gnn/.github/fep-lean-pair.json fep-lean \
+            --check gnn/.github/gnn-pair.json geo-infer \
+            --receipts-dir receipts
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
+        with:
+          name: pair-pin-freshness
+          path: receipts/
+          if-no-files-found: error
+          retention-days: 14
