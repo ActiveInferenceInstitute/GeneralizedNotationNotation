@@ -488,7 +488,6 @@ forbidden_modules = [
     "gnn.utils.logging",
     "gnn.utils.logging_utils",
     "gnn.utils.mcp",
-    "gnn.utils.pipeline",
     "gnn.utils.testing",
     "gnn.utils.arguments",
     "gnn.utils.pipeline_orchestration",

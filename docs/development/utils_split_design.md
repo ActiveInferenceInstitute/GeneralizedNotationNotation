@@ -270,8 +270,8 @@ SC-7 established the pattern in this repo: "rename to unambiguous names with
    ```
 
    Precedents in-tree: `utils/logging_utils.py` (public-entry facade over
-   `utils/logging/logging_utils.py`) and `utils/pipeline.py` (thin-delegate compat
-   entry with lazy imports).
+   `utils/logging/logging_utils.py`; `utils/pipeline.py` was a thin-delegate
+   compat entry with lazy imports until the W4 COMP-006 cutover deleted it).
 3. **Repoint the facade** in the same PR: `_EXPORT_MAP` values change (e.g.
    `"TestRunner": "testing_utils"` → `"TestRunner": "testing.runners"`); the
    `TYPE_CHECKING` block mirrors the same imports. Keys never change.

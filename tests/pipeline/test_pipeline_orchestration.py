@@ -188,7 +188,7 @@ class TestPipelineStateManagement:
         assert module_info is not None
 
     @pytest.mark.fast
-    def test_pipeline_validation(self) -> Any:
+    def test_pipeline_config_validation(self) -> Any:
         """Test pipeline configuration validation."""
         from gnn.pipeline import create_pipeline_config, validate_pipeline_config
 

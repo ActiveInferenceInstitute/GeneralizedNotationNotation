@@ -63,11 +63,14 @@ def test_check_test_dependencies_reports_pytest() -> None:
     assert "psutil" in deps
 
 
-# I3 (S2-33 Step 0): the 113 ``gnn.utils._EXPORT_MAP`` keys are a frozen
+# I3 (S2-33 Step 0): the ``gnn.utils._EXPORT_MAP`` keys are a frozen
 # public surface. The concern-package split repoints map *values* to new leaf
 # modules; keys may never be removed (that breaks external
 # ``from gnn.utils import X`` consumers) or added (surface growth needs an
-# owner decision). This literal is checked in precisely so a failing
+# owner decision). W4 COMP-006 removed the five former ``gnn.utils.pipeline``
+# facade names (recovery-arg parsing, template execution, output-dir,
+# utilities-tuple, and output-directory validation helpers): their canonical
+# home is ``gnn.pipeline``. This literal is checked in precisely so a failing
 # assertion cannot be made green without a deliberate, reviewable edit.
 GOLDEN_EXPORT_MAP_KEYS: frozenset[str] = frozenset(
     {
@@ -94,7 +97,6 @@ GOLDEN_EXPORT_MAP_KEYS: frozenset[str] = frozenset(
         "PipelineErrorSeverity",
         "PipelineLogger",
         "ProcessingResult",
-        "RecoveryArgumentParser",
         "RecoveryStrategy",
         "SAPFConfig",
         "SetupConfig",
@@ -114,7 +116,6 @@ GOLDEN_EXPORT_MAP_KEYS: frozenset[str] = frozenset(
         "cleanup_test_environment",
         "create_processor",
         "create_standardized_pipeline_script",
-        "execute_pipeline_step_template",
         "format_and_log_error",
         "format_error_message",
         "generate_correlation_id",
@@ -123,11 +124,9 @@ GOLDEN_EXPORT_MAP_KEYS: frozenset[str] = frozenset(
         "get_config_value",
         "get_current_memory_usage",
         "get_dependency_status",
-        "get_output_dir_for_script",
         "get_performance_summary",
         "get_pipeline_logger",
         "get_pipeline_step_info",
-        "get_pipeline_utilities",
         "get_recovery_manager",
         "get_system_info",
         "get_test_artifacts",
@@ -175,7 +174,6 @@ GOLDEN_EXPORT_MAP_KEYS: frozenset[str] = frozenset(
         "validate_and_convert_paths",
         "validate_config",
         "validate_coverage_targets",
-        "validate_output_directory",
         "validate_pipeline_configuration",
         "validate_pipeline_dependencies",
         "validate_pipeline_dependencies_if_available",
@@ -189,18 +187,19 @@ GOLDEN_EXPORT_MAP_KEYS: frozenset[str] = frozenset(
 
 
 def test_export_map_surface_is_frozen() -> None:
-    """``_EXPORT_MAP`` stays exactly the checked-in 113-key golden surface.
+    """``_EXPORT_MAP`` stays exactly the checked-in 108-key golden surface.
 
     S2-33 I3: prose counts drifted before (the recurring 111-vs-113 drift);
     the key set itself is now asserted instead of restated in prose. Removals
     break external ``from gnn.utils import X`` consumers; additions are
-    surface growth that needs an owner decision.
+    surface growth that needs an owner sign-off (the W4 COMP-006 cutover
+    removed the five former ``gnn.utils.pipeline`` facade names).
     """
     from gnn.utils import _EXPORT_MAP
     from gnn.utils import __all__ as export_names
 
     keys = set(_EXPORT_MAP)
-    assert len(_EXPORT_MAP) == 113
+    assert len(_EXPORT_MAP) == 108
     missing = GOLDEN_EXPORT_MAP_KEYS - keys
     assert not missing, (
         f"_EXPORT_MAP keys removed from the frozen surface: {sorted(missing)}"
@@ -210,7 +209,7 @@ def test_export_map_surface_is_frozen() -> None:
         f"_EXPORT_MAP keys added (surface growth needs owner sign-off): {sorted(added)}"
     )
     # The unique ``__all__`` names stay pinned to the same golden surface:
-    # 118 entries = the 113 map keys + UTILS_AVAILABLE, with the four
+    # 113 entries = the 108 map keys + UTILS_AVAILABLE, with the four
     # log_step_* names deliberately double-listed across the logging and
     # structured-logging sections.
     assert set(export_names) - {"UTILS_AVAILABLE"} == keys
