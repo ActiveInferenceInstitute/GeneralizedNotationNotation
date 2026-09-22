@@ -227,6 +227,7 @@ Backend-specific renderers live under:
 - `src/gnn/render/jax/`
 - `src/gnn/render/discopy/`
 - additional maintained backends: `src/gnn/render/pytorch/`, `src/gnn/render/numpyro/`, `src/gnn/render/stan/` (runnable HMM / LGSSM programs plus cmdstanpy drivers), and generator-backed `bnlearn` (executed by `src/gnn/execute/bnlearn/`; skips without its runtime)
+- `src/gnn/render/ngclearn/` — codegen-only 4th Python backend of the shared continuous generator (`render/continuous_script.py`); run-time extra `ngclearn`, py3.12 marker-gated
 
 ### Model kinds
 
@@ -235,7 +236,7 @@ Backend-specific renderers live under:
 `A/B/C/D[/E]` before rendering. `CONTINUOUS` specs (`F/H/Q/R`,
 `prior_mean/prior_cov`, optional `goal_mean/control_gain`) bypass
 canonicalisation: `render/continuous_common.py` validates the block and
-`render/continuous_script.py` generates the JAX / NumPyro / PyTorch Kalman-filter
+`render/continuous_script.py` generates the JAX / NumPyro / PyTorch / ngc-learn Kalman-filter
 scripts; Stan and RxInfer.jl have their own continuous programs. Frameworks
 whose registry entry has `supports_continuous: false` (PyMDP,
 ActiveInference.jl, DisCoPy, bnlearn) return `{"unsupported": true, "status":

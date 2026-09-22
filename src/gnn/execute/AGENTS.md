@@ -1,7 +1,7 @@
 # Execute Module - Agent Scaffolding
 
 ## Module Overview
-**Purpose**: Execute rendered simulation scripts across multiple frameworks (PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, Lean, bnlearn). Per-folder `execution_summary.json` files are merged so the durable summary covers every input folder; frameworks a model's kind cannot use are reported `unsupported` by Step 11 and are never executed.
+**Purpose**: Execute rendered simulation scripts across multiple frameworks (PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, Lean, bnlearn, ngc-learn). Per-folder `execution_summary.json` files are merged so the durable summary covers every input folder; frameworks a model's kind cannot use are reported `unsupported` by Step 11 and are never executed.
 
 **Pipeline Step**: Step 12: Execution (src/gnn/12_execute.py)
 
@@ -26,7 +26,7 @@
 
 ### Key Capabilities
 - Multi-framework execution support
-- **Skip vs fail**: JAX, NumPyro, and DisCoPy are **core** dependencies (repair with `uv sync`); if the environment is incomplete, scripts are **skipped** (not run) and reported as "skipped" — they do not count as execution failures. PyTorch ships in the `torch` extra (`uv sync --extra torch`; torch>=2.13.0 resolves GHSA-rrmf-rvhw-rf47) — without it the PyTorch backend is reported skipped. Stan needs `uv sync --extra stan` plus a CmdStan toolchain. bnlearn needs the `bnlearn` extra (`uv sync --extra bnlearn`) or, for `.R` scripts, Rscript plus the R `bnlearn` package — without it bnlearn scripts are reported skipped. Julia backends still require a local Julia install.
+- **Skip vs fail**: JAX, NumPyro, and DisCoPy are **core** dependencies (repair with `uv sync`); if the environment is incomplete, scripts are **skipped** (not run) and reported as "skipped" — they do not count as execution failures. PyTorch ships in the `torch` extra (`uv sync --extra torch`; torch>=2.13.0 resolves GHSA-rrmf-rvhw-rf47) — without it the PyTorch backend is reported skipped. Stan needs `uv sync --extra stan` plus a CmdStan toolchain. bnlearn needs the `bnlearn` extra (`uv sync --extra bnlearn`) or, for `.R` scripts, Rscript plus the R `bnlearn` package — without it bnlearn scripts are reported skipped. The ngc-learn runtime is the py3.12 marker-gated `ngclearn` extra (`uv sync --extra ngclearn`) — without it ngclearn scripts are reported skipped with an install hint, never failed. Julia backends still require a local Julia install.
 - Graceful degradation when frameworks unavailable
 - Automatic PyMDP package detection (distinguishes correct vs wrong package variants)
 - Path collection with deduplication (prevents nested directory issues)
@@ -158,6 +158,7 @@ Framework availability is assessed at execution time by the processor rather tha
 - **`execute.pymdp.package_detector.detect_pymdp_installation()`** — Detect which PyMDP package variant is installed.
 - **`execute.pymdp.package_detector.validate_pymdp_for_execution()`** — Validate PyMDP is ready for execution.
 - **`execute.bnlearn.is_bnlearn_available()` / `execute.bnlearn.is_r_bnlearn_available()`** — bnlearn probes: the Python `bnlearn` module (shared `gnn.utils.runtime_safety.framework_availability` mapping) and, for `.R` scripts, Rscript + the R `bnlearn` package. Rendered bnlearn scripts skip with the install hint when the lane's runtime is missing.
+- **`execute.ngclearn.ngclearn_runner.is_ngclearn_available()`** — ngclearn probe (shared `gnn.utils.runtime_safety.framework_availability` `FRAMEWORK_IMPORT_CHECK` row): `jax`, `ngclearn`, and `ngcsimlib` importability for the py3.12 marker-gated `ngclearn` extra. Rendered ngc-learn scripts skip with the install hint (`Add ngclearn: uv sync --extra ngclearn`) when the runtime is missing.
 - **MCP tool**: `check_execute_dependencies` — Exposes framework availability via MCP (see `execute/mcp.py`).
 - **MCP tool**: `get_doctor_report` — Exposes the composed availability + Step 12 readiness report via the `run_tool_envelope` dispatch pattern (see `execute/mcp.py`, `execute/doctor.py`).
 

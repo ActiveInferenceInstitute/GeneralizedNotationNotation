@@ -16,6 +16,20 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 > wiring for step 24, didChange-aware LSP diagnostics, and full runs-delete
 > control on the API.
 
+### Added (2026-09-22 — ngc-learn T2 exemplar and docs)
+
+- **ngc-learn LGSSM exemplar.** `input/gnn_files/continuous/ngclearn_lgssm.md`
+  joins the continuous corpus as its fifth continuous exemplar — a passive
+  damped-rotation linear-Gaussian model exercising the ngc-learn render/execute
+  path; the `INDEX.md` counts sentence, the Choosing table, and the
+  `continuous/` list are updated for it.
+- **ngc-learn documentation surface.** Registry rows and sections across
+  `src/gnn/render/AGENTS.md`, `src/gnn/render/README.md`,
+  `src/gnn/execute/AGENTS.md`, `docs/gnn/modules/11_render.md`, and
+  `docs/gnn/modules/12_execute.md`; new per-backend `SPEC.md` files for
+  `src/gnn/render/ngclearn/` and `src/gnn/execute/ngclearn/`;
+  `.agent_rules/render_frameworks.md` refreshed to the full registry inventory.
+
 ### Added (2026-09-19/21 — interchange hardening, MCP expansion, GUI integration)
 
 - **Consumer-conformance test suite** (`tests/export/test_geo_infer_consumer_compat.py`):

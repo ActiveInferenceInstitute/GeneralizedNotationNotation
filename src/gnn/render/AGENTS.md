@@ -89,6 +89,11 @@
 - **Output**: Python scripts under `bnlearn/` when requested
 - **Continuous models**: `unsupported`; executed by Step 12 via `execute/bnlearn/` (skips with an install hint until `uv sync --extra bnlearn` provides the Python package, or R + the R `bnlearn` package for `.R` scripts)
 
+#### ngc-learn (Python)
+- **Purpose**: Predictive-processing neural simulation backend
+- **Output**: `<model>_ngclearn.py` scripts under `ngclearn/` when requested
+- **Continuous models**: native — LGSSM via the shared `render/continuous_script.py` generator (Kalman numerics byte-identical to the JAX backend); codegen-only — the emitted script imports `ngclearn`, never the renderer; executed by Step 12 via `execute/ngclearn/`, skipping with an install hint until `uv sync --extra ngclearn` (py3.12 marker-gated extra)
+
 The canonical framework inventory lives in `framework_registry.py`; update that
 registry before changing public framework lists, MCP enums, or processor configs.
 

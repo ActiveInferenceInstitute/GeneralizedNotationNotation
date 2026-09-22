@@ -5,13 +5,28 @@
 
 ## Supported Frameworks
 
-| Framework | Language | Deps | Status |
-|-----------|----------|------|--------|
-| **PyMDP** | Python | `inferactively-pymdp` | Optional |
-| **JAX** | Python | `jax`, `jaxlib`, `optax` (no Flax) | Recommended |
-| **RxInfer.jl** | Julia | Julia + RxInfer | Optional |
-| **ActiveInference.jl** | Julia | Julia + ActiveInference | Optional |
-| **DisCoPy** | Python | `discopy` | Optional |
+| Framework | Language | Continuous | Step 12 Execution | Runtime Gating |
+|----------------------|--------|--------------------------|-------------------|---------------------------------|
+| **PyMDP** | Python | Unsupported | Yes | none |
+| **RxInfer.jl** | Julia | Native | Yes | none |
+| **ActiveInference.jl** | Julia | Unsupported | Yes | none |
+| **JAX** | Python | Native | Yes | none |
+| **DisCoPy** | Python | Unsupported | Yes | none |
+| **PyTorch** | Python | Native | Yes | `torch` extra |
+| **NumPyro** | Python | Native | Yes | none |
+| **Stan** | Stan | Native | Yes | `uv sync --extra stan` |
+| **bnlearn** | Python | Unsupported | Yes | `bnlearn` extra |
+| **ngc-learn** | Python | Native (continuous-only) | Yes | `ngclearn` extra (py3.12 marker) |
+
+All ten rows trace to `FRAMEWORK_REGISTRY` in
+`src/gnn/render/framework_registry.py`: Continuous is `supports_continuous`,
+Step 12 Execution is `supports_execution`, and runtime gating mirrors the
+`FRAMEWORK_IMPORT_CHECK` probes in
+`gnn.utils.runtime_safety.framework_availability` (backends listed `none` ship
+in the default environment). ngc-learn is continuous-only
+(`continuous_only: true`): discrete POMDP models are refused at Step 11. The
+execution-only `lean` backend (`gnn.frameworks.ALL_FRAMEWORKS`, no render
+entry) runs via the executor registry-runner path.
 
 **Execution selection** (Step 12): run the requested frameworks and report explicit skipped or failed statuses when a requested backend is unavailable or fails.
 
@@ -144,4 +159,4 @@ output/11_render_output/
 
 ---
 
-**Last Updated**: 2026-05-20 | **Status**: Maintained Standard
+**Last Updated**: 2026-09-22 | **Status**: Maintained Standard
