@@ -17,7 +17,7 @@ one of them vestigial, or are both canonical for different consumers?
 - **Runs surface — `gnn.api.app`** ([src/gnn/api/app.py](../../src/gnn/api/app.py)),
   the app behind `gnn serve`
   (`src/gnn/cli/__init__.py:1124` dispatches `_cmd_serve`, which imports and
-  starts `gnn.api.app.start_server` at `src/gnn/cli/__init__.py:1149-1150`).
+  starts `gnn.api.app.start_server` at `src/gnn/cli/__init__.py:1157-1159`).
   A run is content-hash addressed: `POST /api/v1/run`
   (`src/gnn/api/app.py:122`) computes `compute_run_hash`
   (`src/gnn/api/app.py:127`) over the request and deduplicates against

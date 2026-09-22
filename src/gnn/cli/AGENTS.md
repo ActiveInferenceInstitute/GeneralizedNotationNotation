@@ -28,7 +28,7 @@ The CLI module provides the `gnn` command-line tool — a unified interface to t
 - **Environment checks** via `gnn preflight` and `gnn health`
 - **Live development** via `gnn watch` (file monitoring with 250ms debounce)
 - **Dependency graphs** via `gnn graph` (Mermaid/text output)
-- **API server** via `gnn serve` (surface `runs` → `api/app.py`, `jobs` → `api/server.py`, `both` starts the jobs surface on port+1 in a daemon thread)
+- **API server** via `gnn serve --surface` (`runs` → `api/app.py`, `jobs` → `api/server.py`, `both` starts the jobs surface on port+1 in a daemon thread)
 - **MCP surface inspection** via `gnn mcp list` / `gnn mcp info <tool>` (lazy `gnn.mcp` registry bridge; `--json` emits the standard envelope)
 - **LSP server** via `gnn lsp` (canonical `gnn.lsp` pygls server when pygls is importable; `cli/lsp.py` JSON-RPC fallback)
 
