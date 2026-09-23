@@ -31,6 +31,19 @@ which emits plain `\ref`. Reinstating it means guarding it AND converting the
 \usepackage{hyperref}
 \usepackage{natbib}
 
+% Theorem-like environments and listings are REQUIRED by the template render
+% checker (`_pdf_combined_preamble.py` reports "Preamble is missing
+% declarations required by manuscript content" without them; the Custody
+% re-render cron has been red on every tip since 2026-09-22 for exactly this).
+% `listings` and `\newtheorem` both ship with base TeX Live, so no
+% `\IfFileExists` guard is needed. Remark and Example share the theorem
+% counter per the template's canonical defaults.
+\usepackage{listings}
+\lstset{basicstyle=\ttfamily\small,breaklines=true,columns=fullflexible}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
 % Contents listing: article.cls prefixes every \l@section entry with
 % \addvspace{1.0em}, which across ten sections costs about ten lines and pushed
 % the ~40-entry listing one line past page 2 — leaving a third sheet carrying a
