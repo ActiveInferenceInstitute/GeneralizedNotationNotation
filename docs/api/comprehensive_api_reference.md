@@ -1,20 +1,20 @@
 # GNN Comprehensive API Reference
 
-> **📋 Document Metadata**  
-> **Type**: API Reference | **Audience**: Developers & Integrators | **Complexity**: Intermediate-Advanced  
+> **📋 Document Metadata** \
+> **Type**: API Reference | **Audience**: Developers & Integrators | **Complexity**: Intermediate-Advanced \
 > **Cross-References**: [Pipeline Architecture](../gnn/operations/gnn_tools.md) | [Framework Integration](../gnn/integration/framework_integration_guide.md)
 
 This comprehensive reference documents programmatic integration with the GeneralizedNotationNotation (GNN) system.
 
-> **Accuracy**  
-> **Authoritative `gnn` exports:** [`src/gnn/__init__.py`](../../src/gnn/__init__.py). **Format counts / registries:** [`src/gnn/SPEC.md`](../../src/gnn/SPEC.md).  
-> Sections **below this box** that show modules such as `gnn.parsing.GNNParser`, `GNNModel`, `Pipeline`, or `Visualizer` are **illustrative sketches** unless you confirm the same names in `src/`.
+> **Verification status** \
+> **Authoritative `gnn` exports:** [`src/gnn/__init__.py`](../../src/gnn/__init__.py). **Format counts / registries:** [`src/gnn/SPEC.md`](../../src/gnn/SPEC.md). \
+> Every import path, class, and signature in this document is **probe-verified against `src/`** (2026-09-23): each `from gnn...` import below executes against the installed package, and every documented class exists at the stated path.
 
 ## API map
 
 1. **Package `gnn` (Step 3)** — file discovery, parsing, validation, multi-format serialization under [`src/gnn/`](../../src/gnn/).
 2. **Pipeline CLI** — `uv run python src/gnn/main.py`, numbered `src/gnn/N_*.py` scripts.
-3. **Render / execute / viz / LLM / MCP** — see [`src/gnn/AGENTS.md`](../../src/gnn/AGENTS.md) and module-level `AGENTS.md` files under `src/`.
+3. **Render / execute / viz / LLM / MCP** — under `src/gnn/render/`, `src/gnn/execute/`, `src/gnn/visualization/`, `src/gnn/llm/`, `src/gnn/mcp/`; each module's `AGENTS.md` describes its surface (see [`src/gnn/AGENTS.md`](../../src/gnn/AGENTS.md)).
 
 ### Quick start (current `gnn` exports)
 
@@ -54,675 +54,295 @@ ok, errors = validate_gnn_syntax(Path("input/gnn_files/model.md").read_text(enco
 | `validate_gnn_syntax`, `validate_gnn_source` | Validation entry points |
 | `schema_validator.GNNParser` | Section-level parser for strict validation (submodule import) |
 
-## Illustrative reference (verify in `src/`)
+## Parsing API (Step 3)
 
-The remainder of this file retains older narrative examples. **Do not import** `gnn.parsing.GNNParser`, `GNNModel`, `Pipeline`, or `Visualizer` unless listed in [`src/gnn/__init__.py`](../../src/gnn/__init__.py) or the relevant `src/` module.
+### **📄 GNNParsingSystem**
 
-### **📊 GNNModel Class**
-
-Structured representation of parsed GNN models.
+Registry-backed parse/serialize entry point ([`src/gnn/parsers/system.py`](../../src/gnn/parsers/system.py)).
 
 ```python
-from gnn.model import GNNModel, StateSpace, Connections, Parameters
+from gnn import GNNParsingSystem, GNNFormat
 
+system = GNNParsingSystem()
 
-class GNNModel:
-    """Structured representation of a GNN model."""
+# Supported input/serialization formats
+print(system.get_supported_formats())
 
-    def __init__(self, name: str):
-        self.name = name
-        self.annotation = ""
-        self.state_space = StateSpace()
-        self.connections = Connections()
-        self.parameters = Parameters()
-        self.equations = []
-        self.time_config = {}
-        self.ontology_annotations = {}
-        self.metadata = {}
-
-    @property
-    def complexity_score(self) -> float:
-        """Compute model complexity score."""
-        return self._calculate_complexity()
-
-    @property
-    def state_dimensions(self) -> Dict[str, Tuple[int, ...]]:
-        """Get dimensions of all state variables."""
-        return {
-            var.name: var.dimensions
-            for var in self.state_space.variables
-            if var.name.startswith("s_")
-        }
-
-    @property
-    def observation_dimensions(self) -> Dict[str, Tuple[int, ...]]:
-        """Get dimensions of all observation variables."""
-        return {
-            var.name: var.dimensions
-            for var in self.state_space.variables
-            if var.name.startswith("o_")
-        }
-
-    def get_matrix(self, matrix_name: str) -> np.ndarray:
-        """Get parameter matrix by name."""
-        return self.parameters.get(matrix_name)
-
-    def set_matrix(self, matrix_name: str, matrix: np.ndarray):
-        """Set parameter matrix."""
-        self.parameters.set(matrix_name, matrix)
-
-    def to_dict(self) -> dict:
-        """Convert model to dictionary representation."""
-        return {
-            "name": self.name,
-            "annotation": self.annotation,
-            "state_space": self.state_space.to_dict(),
-            "connections": self.connections.to_dict(),
-            "parameters": self.parameters.to_dict(),
-            "equations": self.equations,
-            "time_config": self.time_config,
-            "ontology_annotations": self.ontology_annotations,
-            "metadata": self.metadata,
-        }
-
-    @classmethod
-    def from_dict(cls, data: dict) -> "GNNModel":
-        """Create model from dictionary representation."""
-        model = cls(data["name"])
-        model.annotation = data.get("annotation", "")
-        model.state_space = StateSpace.from_dict(data["state_space"])
-        model.connections = Connections.from_dict(data["connections"])
-        model.parameters = Parameters.from_dict(data["parameters"])
-        model.equations = data.get("equations", [])
-        model.time_config = data.get("time_config", {})
-        model.ontology_annotations = data.get("ontology_annotations", {})
-        model.metadata = data.get("metadata", {})
-        return model
-
-
-# Usage examples:
-model = parser.parse_file("navigation_agent.md")
-
-# Access model properties
-print(f"Model: {model.name}")
-print(f"Complexity: {model.complexity_score}")
-print(f"States: {model.state_dimensions}")
-print(f"Observations: {model.observation_dimensions}")
-
-# Access matrices
-A_matrix = model.get_matrix("A_m0")
-print(f"A matrix shape: {A_matrix.shape}")
-
-# Modify matrices
-model.set_matrix("C_m0", np.array([0.0, 1.0]))
-
-# Serialize/deserialize
-model_dict = model.to_dict()
-model_restored = GNNModel.from_dict(model_dict)
+# Parse a file (format_hint optional — auto-detection otherwise)
+result = system.parse_file("input/gnn_files/model.md", format_hint=GNNFormat.MARKDOWN)
+if result.success:
+    model = result.model
+    print(result.source_file, result.parse_time)
 ```
 
-## ⚙️ Pipeline API
+Methods: `parse_file(file_path, format_hint=None)`, `parse_string`, `convert`, `convert_file`, `serialize`, `serialize_to_file`, `get_supported_formats`, `get_available_parsers`, `get_available_serializers`.
 
-### **🚀 Pipeline Class**
+`parse_file` returns a `ParseResult` with fields `model`, `success`, `errors`, `warnings`, `parse_time`, `source_file`, `validation_result`, and `metadata`.
 
-High-level pipeline execution interface.
+### **✅ Validation**
 
 ```python
-from gnn.pipeline import Pipeline, PipelineConfig, StepResult
+from pathlib import Path
+from gnn import validate_gnn_syntax, validate_gnn_source
+from gnn.types import ValidationLevel
 
+# Accepts a file path or raw content
+ok, errors = validate_gnn_syntax(Path("input/gnn_files/model.md").read_text(encoding="utf-8"))
+ok, errors = validate_gnn_syntax("input/gnn_files/model.md", validation_level=ValidationLevel.STANDARD)
+```
 
-class Pipeline:
-    """GNN processing pipeline orchestrator."""
+- `validate_gnn_syntax(file_path_or_content, validation_level=ValidationLevel.STANDARD) -> (bool, List[str])`
+- `validate_gnn_source(source, *, is_content=False)`
+- Section-level parser for strict validation: `from gnn.schema_validator import GNNParser` (`GNNParser(enhanced_validation=True)`).
 
-    def __init__(self, config: PipelineConfig = None):
-        """
-        Initialize pipeline.
+## Pipeline API
 
-        Args:
-            config: Pipeline configuration options
-        """
+### **⚙️ Configuration**
 
-    def process(
-        self, model: GNNModel, steps: List[int] = None, output_dir: str = None, **kwargs
-    ) -> PipelineResult:
-        """
-        Process model through pipeline steps.
+```python
+from gnn.pipeline import PipelineConfig
+from gnn.pipeline.config import (
+    get_pipeline_config,
+    get_pipeline_config_dict,
+    get_output_dir_for_script,
+)
 
-        Args:
-            model: GNN model to process
-            steps: List of step numbers to execute (default: all)
-            output_dir: Output directory for results
-            **kwargs: Additional step-specific parameters
+config = PipelineConfig()  # defaults; accepts an optional config_path
+```
 
-        Returns:
-            PipelineResult: Results from all executed steps
-        """
+- `PipelineConfig(config_path=None)` — pipeline-level configuration ([`src/gnn/pipeline/config.py`](../../src/gnn/pipeline/config.py)).
+- `get_pipeline_config()`, `get_pipeline_config_dict()`, `get_output_dir_for_script(...)` — read/write the process-wide pipeline configuration and per-step output directories.
 
-    def process_batch(
-        self,
-        models: List[GNNModel],
-        steps: List[int] = None,
-        parallel: bool = True,
-        max_workers: int = None,
-    ) -> List[PipelineResult]:
-        """
-        Process multiple models in batch.
+### **🚀 PipelineOrchestrator**
 
-        Args:
-            models: List of models to process
-            steps: Steps to execute
-            parallel: Whether to use parallel processing
-            max_workers: Maximum number of worker processes
+Programmatic execution of pipeline steps.
 
-        Returns:
-            List[PipelineResult]: Results for each model
-        """
+```python
+from gnn.pipeline import PipelineOrchestrator, run_pipeline
 
-    def get_step_info(self, step_number: int) -> StepInfo:
-        """Get information about a specific pipeline step."""
-
-    def list_available_steps(self) -> List[StepInfo]:
-        """List all available pipeline steps."""
-
-
-# Usage examples:
-from gnn.pipeline import Pipeline, PipelineConfig
-
-# Create pipeline with custom configuration
-config = PipelineConfig(
-    parallel=True,
-    max_workers=4,
-    cache_enabled=True,
-    output_format=["json", "xml"],
+orchestrator = PipelineOrchestrator(
+    target_dir="input/gnn_files",
+    output_dir="output",
+    steps=[3, 5, 8, 11, 12],  # subset of steps 0-24
     verbose=True,
 )
-pipeline = Pipeline(config)
-
-# Process single model
-model = parser.parse_file("agent.md")
-result = pipeline.process(model, steps=[1, 4, 6, 9])
-
-# Process multiple models in parallel
-models = parser.parse_directory("examples/")
-results = pipeline.process_batch(models, parallel=True)
-
-# Check results
-for result in results:
-    if result.success:
-        print(f"✅ {result.model_name}: {result.execution_time:.2f}s")
-    else:
-        print(f"❌ {result.model_name}: {result.error}")
+orchestrator.run()  # also: execute_pipeline(...), get_pipeline_steps()
 ```
 
-### **📊 Individual Step APIs**
-
-Direct access to individual pipeline steps.
+Functional form:
 
 ```python
-# Step 1: GNN Parsing
-from gnn.steps import GNNParsingStep
-
-parser_step = GNNParsingStep()
-parse_result = parser_step.execute("model.md")
-
-# Step 4: Type Checking
-from gnn.steps import TypeCheckingStep
-
-checker = TypeCheckingStep(strict_mode=True)
-check_result = checker.execute(model)
-
-# Step 6: Visualization
-from gnn.steps import VisualizationStep
-
-visualizer = VisualizationStep(output_format="png")
-viz_result = visualizer.execute(model, output_dir="./output/")
-
-# Step 9: Code Rendering
-from gnn.steps import RenderingStep
-
-renderer = RenderingStep(target_framework="pymdp")
-render_result = renderer.execute(model, template_dir="./templates/")
+summary = run_pipeline(target_dir="input/gnn_files", output_dir="output", steps="all")
 ```
 
-## 🔧 Framework Integration API
+CLI equivalent (numbered scripts are thin orchestrators, e.g. `src/gnn/3_gnn.py`):
 
-### **🐍 PyMDP Integration**
+```bash
+uv run python src/gnn/main.py --target-dir input/gnn_files --only-steps "3,5,8,11,12"
+```
+
+## Framework rendering API (Step 11)
+
+### **🧩 Multi-framework renderers**
 
 ```python
-from render.pymdp import render_gnn_to_pymdp
-
-# Generate executable PyMDP code from a validated structured POMDP spec.
-output_path = render_gnn_to_pymdp(
-    gnn_spec=model,
-    output_dir="./output/pymdp",
-    model_name=model.name,
+from pathlib import Path
+from gnn.render import (
+    render_gnn_to_pymdp,
+    render_gnn_to_rxinfer,
+    render_gnn_to_discopy,
+    render_gnn_spec,
 )
 
-# Execute generated scripts through Step 12 / execute.process_execute.
-print(f"Generated PyMDP script: {output_path}")
+ok, message, artifacts = render_gnn_to_pymdp(gnn_spec, Path("output/11_render_output/pymdp/model.py"))
+ok, message, artifacts = render_gnn_to_rxinfer(gnn_spec, Path("output/11_render_output/rxinfer/model.jl"))
+ok, message, artifacts = render_gnn_spec(gnn_spec, target="pymdp", output_directory="output/11_render_output")
 ```
 
-### **🔢 RxInfer.jl Integration**
+- Every `render_gnn_to_*(gnn_spec, output_path, options=None)` returns `Tuple[bool, str, List[str]]` (success, message, written artifacts).
+- Frameworks: `render_gnn_to_pymdp`, `render_gnn_to_rxinfer`, `render_gnn_to_discopy`, `render_gnn_to_numpyro`, `render_gnn_to_pytorch`, `render_gnn_to_activeinference_jl`, `render_stan`; code-generator helpers `generate_pymdp_code`, `generate_rxinfer_code`, `generate_discopy_code`, `generate_activeinference_jl_code`.
+- `render_gnn_spec(gnn_spec, target, output_directory, options=None)` dispatches on `target` and accepts either a parsed model or a spec dict.
+- Class-based renderers: `PyMDPRenderer(options=None)`, `JAXRenderer(options=None)`, and the `POMDPRenderProcessor` pipeline processor; `process_render` / `process_pomdp_for_frameworks` are the Step 11 entry points.
+- Backend support matrix: [`src/gnn/render/framework_registry.py`](../../src/gnn/render/framework_registry.py) (per-framework support flags, including continuous-model support); `get_supported_frameworks()` and `get_available_renderers()` summarize it.
+
+### **🐍 PyMDP**
 
 ```python
-from gnn.frameworks.rxinfer import RxInferConverter, JuliaRunner
+from pathlib import Path
+from gnn.render import render_gnn_to_pymdp
 
-
-class RxInferConverter:
-    """Convert GNN models to RxInfer.jl code."""
-
-    def convert_model(self, model: GNNModel) -> str:
-        """
-        Convert to RxInfer.jl model code.
-
-        Args:
-            model: GNN model to convert
-
-        Returns:
-            str: Julia/RxInfer code
-        """
-
-    def generate_inference_script(self, model: GNNModel, data_file: str = None) -> str:
-        """Generate complete inference script."""
-
-
-# Usage example:
-converter = RxInferConverter()
-julia_code = converter.convert_model(model)
-
-# Execute Julia code
-runner = JuliaRunner()
-results = runner.execute_inference(julia_code, data="observations.csv")
+ok, message, artifacts = render_gnn_to_pymdp(
+    gnn_spec,
+    Path("output/11_render_output/pymdp/agent.py"),
+)
 ```
 
-### **🎨 DisCoPy Integration**
+### **🔢 RxInfer.jl**
 
 ```python
-from gnn.frameworks.discopy import DisCoPyConverter, CategoryDiagram
+from pathlib import Path
+from gnn.render import render_gnn_to_rxinfer
 
-
-class DisCoPyConverter:
-    """Convert GNN models to categorical diagrams."""
-
-    def convert_model(self, model: GNNModel) -> CategoryDiagram:
-        """Convert to DisCoPy categorical diagram."""
-
-    def evaluate_with_jax(
-        self, diagram: CategoryDiagram, backend: str = "jax"
-    ) -> np.ndarray:
-        """Evaluate diagram with JAX backend."""
-
-
-# Usage example:
-converter = DisCoPyConverter()
-diagram = converter.convert_model(model)
-result = converter.evaluate_with_jax(diagram)
+ok, message, artifacts = render_gnn_to_rxinfer(
+    gnn_spec,
+    Path("output/11_render_output/rxinfer/agent.jl"),
+)
 ```
 
-## 📊 Visualization API
+The RxInfer strategies live under [`src/gnn/render/rxinfer/`](../../src/gnn/render/rxinfer/) (`_strategies*.py`, exposed as `gnn.render.rxinfer.model_strategies`).
 
-### **🎨 Visualizer Class**
+### **🎨 DisCoPy**
 
 ```python
-from gnn.visualization import Visualizer, VisualizationConfig
+from pathlib import Path
+from gnn.render import render_gnn_to_discopy
 
-
-class Visualizer:
-    """GNN model visualization generator."""
-
-    def __init__(self, config: VisualizationConfig = None):
-        """Initialize visualizer with configuration."""
-
-    def create_network_diagram(
-        self, model: GNNModel, layout: str = "spring", output_file: str = None
-    ) -> Figure:
-        """
-        Create network diagram of model structure.
-
-        Args:
-            model: GNN model to visualize
-            layout: 'spring', 'circular', 'hierarchical', 'force'
-            output_file: Optional file to save diagram
-
-        Returns:
-            Figure: Matplotlib figure object
-        """
-
-    def create_matrix_heatmaps(
-        self, model: GNNModel, matrices: List[str] = None
-    ) -> Dict[str, Figure]:
-        """Create heatmap visualizations of parameter matrices."""
-
-    def create_belief_landscape(self, model: GNNModel, beliefs: np.ndarray) -> Figure:
-        """Create 3D visualization of belief landscapes."""
-
-    def create_interactive_explorer(self, model: GNNModel) -> str:
-        """Create interactive HTML model explorer."""
-
-
-# Usage examples:
-viz = Visualizer()
-
-# Create network diagram
-network_fig = viz.create_network_diagram(model, layout="hierarchical")
-network_fig.savefig("model_network.png", dpi=300)
-
-# Create matrix heatmaps
-heatmaps = viz.create_matrix_heatmaps(model, matrices=["A_m0", "B_f0"])
-for name, fig in heatmaps.items():
-    fig.savefig(f"{name}_heatmap.png")
-
-# Create interactive explorer
-explorer_html = viz.create_interactive_explorer(model)
-with open("model_explorer.html", "w") as f:
-    f.write(explorer_html)
+ok, message, artifacts = render_gnn_to_discopy(
+    gnn_spec,
+    Path("output/11_render_output/discopy/agent.py"),
+)
 ```
 
-## 🤖 LLM Integration API
+## Execution API (Step 12)
 
-### **🧠 LLMAnalyzer Class**
+### **🚀 Execute rendered simulations**
 
 ```python
-from gnn.llm import LLMAnalyzer, AnalysisConfig
+from gnn.execute import GNNExecutor, execute_gnn_model
 
-
-class LLMAnalyzer:
-    """AI-enhanced model analysis using language models."""
-
-    def __init__(
-        self, provider: str = "openai", model: str = "gpt-4", api_key: str = None
-    ):
-        """
-        Initialize LLM analyzer.
-
-        Args:
-            provider: 'openai', 'anthropic', 'local'
-            model: Model name/identifier
-            api_key: API key for external providers
-        """
-
-    def analyze_model_structure(self, model: GNNModel) -> AnalysisReport:
-        """
-        Analyze model structure and suggest improvements.
-
-        Args:
-            model: GNN model to analyze
-
-        Returns:
-            AnalysisReport: Detailed analysis with suggestions
-        """
-
-    def explain_model(self, model: GNNModel, audience: str = "general") -> str:
-        """
-        Generate natural language explanation of model.
-
-        Args:
-            model: GNN model to explain
-            audience: 'general', 'technical', 'academic'
-
-        Returns:
-            str: Natural language explanation
-        """
-
-    def suggest_optimizations(self, model: GNNModel) -> List[Optimization]:
-        """Suggest performance and design optimizations."""
-
-    def generate_research_questions(self, model: GNNModel) -> List[str]:
-        """Generate research questions based on model."""
-
-
-# Usage examples:
-analyzer = LLMAnalyzer(provider="openai", model="gpt-4")
-
-# Analyze model structure
-analysis = analyzer.analyze_model_structure(model)
-print(f"Complexity Score: {analysis.complexity_score}")
-print(f"Suggestions: {analysis.optimization_suggestions}")
-
-# Generate explanation
-explanation = analyzer.explain_model(model, audience="general")
-print(f"Model Explanation:\n{explanation}")
-
-# Get optimization suggestions
-optimizations = analyzer.suggest_optimizations(model)
-for opt in optimizations:
-    print(f"🎯 {opt.type}: {opt.description}")
-    print(f"   Expected improvement: {opt.expected_improvement}")
+result = execute_gnn_model(
+    "output/11_render_output/pymdp/agent.py",
+    execution_type="pymdp",
+)
 ```
 
-## 📡 MCP API
+- `execute_gnn_model(model_path, execution_type="pymdp", options=None) -> Dict[str, Any]`.
+- `GNNExecutor(output_dir=None, cache=None)` — executor object with result caching; `clear_execution_cache()` resets it.
+- Per-framework executors live under [`src/gnn/execute/`](../../src/gnn/execute/) (`pymdp`, `rxinfer`, `jax`, `pytorch`, `numpyro`, `stan`, `discopy`, `activeinference_jl`, `ngclearn`, `lean`, `bnlearn`); `execute_simulation_from_gnn` and `execute_pymdp_simulation` are the targeted entry points.
+- Diagnostics: `check_dependencies()`, `collect_doctor_report()`.
 
-### **🔌 MCP Integration**
+## Visualization API (Step 8)
+
+### **🎨 Visualizers**
 
 ```python
-from gnn.mcp import MCPServer, GNNTool
+from pathlib import Path
+from gnn.visualization import (
+    GNNVisualizer,
+    generate_matrix_visualizations,
+    generate_network_visualizations,
+)
 
+viz = GNNVisualizer(output_dir="output/8_visualization_output")
+diagram = viz.create_network_diagram(graph_data)   # graph structure -> figure data
+html = viz.visualize_file("input/gnn_files/model.md")  # full per-model visualization set
 
-class MCPServer:
-    """Model Context Protocol server for GNN integration."""
+artifacts = generate_matrix_visualizations(parsed_data, Path("output/8_visualization_output"), "model")
+artifacts = generate_network_visualizations(parsed_data, Path("output/8_visualization_output"), "model")
+```
 
-    def __init__(self, name: str = "GNN-MCP-Server"):
-        """Initialize MCP server."""
+- `GNNVisualizer(output_dir=None, project_root=None)`; methods include `create_network_diagram(graph_data=None)` and `visualize_file(file_path) -> str`.
+- `MatrixVisualizer`, `OntologyVisualizer`, and `gnn.visualization.backends` for backend selection.
+- Batch entry point: `generate_visualizations(logger, target_dir, output_dir, recursive=False, verbose=False) -> bool` (**requires** `logging.Logger`).
 
-    def register_tool(self, tool: GNNTool):
-        """Register a GNN tool with MCP."""
+## LLM API (Step 13)
 
-    def start_server(self, port: int = 8080):
-        """Start MCP server on specified port."""
+### **🧠 LLM analysis**
 
+```python
+from gnn.llm import (
+    LLMAnalyzer,
+    LLMConfig,
+    analyze_gnn_model,
+    DEFAULT_OLLAMA_MODEL,
+    get_available_providers,
+)
 
-# Register GNN tools with MCP
+print(DEFAULT_OLLAMA_MODEL)  # "smollm2:135m-instruct-q4_K_S" (Ollama)
+
+config = LLMConfig(model=DEFAULT_OLLAMA_MODEL)
+analyzer = LLMAnalyzer()
+insights = analyzer.analyze_content(content)
+summary = analyze_gnn_model(content)
+```
+
+- `LLMConfig(model=None, max_tokens=None, temperature=None, ...)` — generation parameters.
+- `LLMAnalyzer` exposes `analyze_content` and `extract_insights`; the module-level `analyze_gnn_model(model_content) -> Dict[str, Any]` and `analyze_gnn_file_with_llm` wrap model analysis.
+- Processors: `LLMProcessor`, `UnifiedLLMProcessor`; `create_processor_from_env` / `initialize_global_processor` configure processors from the environment.
+- `get_available_providers()` lists provider backends.
+
+## MCP API (Step 21)
+
+### **🔌 MCP tools**
+
+```python
+from gnn.mcp import MCPServer
+
 server = MCPServer()
-
-
-@server.tool("parse_gnn_model")
-def parse_gnn_model(filepath: str) -> dict:
-    """Parse GNN model and return structured representation."""
-    result = GNNParsingSystem(strict_validation=False).parse_file(filepath)
-    return {
-        "success": result.success,
-        "source_file": result.source_file,
-        "errors": result.errors,
-        "warnings": result.warnings,
-        "model_name": getattr(result.model, "model_name", None),
-    }
-
-
-@server.tool("visualize_model")
-def visualize_model(model_data: dict, viz_type: str) -> str:
-    """Create model visualization."""
-    model = GNNModel.from_dict(model_data)
-    viz = Visualizer()
-
-    if viz_type == "network":
-        fig = viz.create_network_diagram(model)
-        return save_figure_to_base64(fig)
-    elif viz_type == "interactive":
-        return viz.create_interactive_explorer(model)
-
-
-# Start MCP server
-server.start_server(port=8080)
+server.register_tool(
+    name="parse_gnn_model",
+    func=parse_gnn_model,  # your callable
+    schema={
+        "type": "object",
+        "properties": {"filepath": {"type": "string"}},
+        "required": ["filepath"],
+    },
+    description="Parse a GNN model file",
+)
+server.start()  # -> bool; server.stop() to shut down
 ```
 
-## ⚡ Performance API
+- `MCPServer.register_tool(name, func, schema, description) -> bool`; `MCPServer(mcp_instance=None, capabilities_getter=None)`.
+- Tool container: `MCPTool(name, func, schema, description, ...)`; registry: `MCPRegistry`.
+- Convenience: `create_mcp_server() -> MCPServer`, `get_mcp_instance()`, `handle_mcp_request(request)`; tool discovery via `list_available_tools()`, `get_available_tools()`.
+- HTTP and stdio server entry points live under [`src/gnn/mcp/`](../../src/gnn/mcp/AGENTS.md).
 
-### **📊 Performance Monitor**
-
-```python
-from gnn.performance import PerformanceMonitor, BenchmarkSuite
-
-
-class PerformanceMonitor:
-    """Real-time performance monitoring for GNN operations."""
-
-    def __init__(self):
-        """Initialize performance monitor."""
-
-    def start_monitoring(self):
-        """Start continuous performance monitoring."""
-
-    def measure_operation(self, operation_name: str):
-        """Decorator for measuring operation performance."""
-
-        def decorator(func):
-            def wrapper(*args, **kwargs):
-                with self.measure(operation_name):
-                    return func(*args, **kwargs)
-
-            return wrapper
-
-        return decorator
-
-    def get_metrics(self, operation: str = None) -> PerformanceMetrics:
-        """Get performance metrics for operations."""
-
-    def generate_report(self, output_file: str = None) -> str:
-        """Generate performance report."""
-
-
-# Usage examples:
-monitor = PerformanceMonitor()
-monitor.start_monitoring()
-
-
-@monitor.measure_operation("model_parsing")
-def parse_model(filepath):
-    # Illustrative — use gnn.GNNParsingSystem or parse_gnn_file
-    return filepath
-
-
-# Get performance metrics
-metrics = monitor.get_metrics("model_parsing")
-print(f"Average time: {metrics.avg_time:.3f}s")
-print(f"Memory usage: {metrics.avg_memory:.1f}MB")
-
-# Generate report
-report = monitor.generate_report("performance_report.html")
-```
-
-## 🔧 Configuration API
-
-### **⚙️ Configuration Management**
+## Complete integration example
 
 ```python
-from gnn.config import ConfigManager, GNNConfig
+"""Parse -> validate -> run steps -> render -> visualize -> LLM-summarize."""
+from pathlib import Path
 
+from gnn import GNNParsingSystem, discover_gnn_files, validate_gnn_syntax
+from gnn.llm import analyze_gnn_model
+from gnn.pipeline import PipelineOrchestrator
+from gnn.render import render_gnn_spec
+from gnn.visualization import GNNVisualizer
 
-class ConfigManager:
-    """Centralized configuration management for GNN system."""
+# 1. Discover and validate input models
+paths = discover_gnn_files(Path("input/gnn_files"))
+ok, errors = validate_gnn_syntax(paths[0])
 
-    def __init__(self, config_file: str = None):
-        """Load configuration from file or defaults."""
+# 2. Run pipeline steps programmatically
+#    (CLI equivalent: uv run python src/gnn/main.py --target-dir input/gnn_files --only-steps "3,5,8,11,12")
+orchestrator = PipelineOrchestrator(target_dir="input/gnn_files", output_dir="output", steps=[3, 5, 8, 11, 12])
+orchestrator.run()
 
-    def get_config(self, section: str = None) -> GNNConfig:
-        """Get configuration section or full config."""
+# 3. Render a parsed model to a framework target.
+#    Render targets require the model's InitialParameterization section to define A/B/C/D.
+model_path = Path("input/gnn_files/discrete/actinf_pomdp_agent.md")
+spec = GNNParsingSystem().parse_file(model_path).model
+ok, message, artifacts = render_gnn_spec(spec, target="pymdp", output_directory="output/11_render_output")
 
-    def set_config(self, section: str, key: str, value: Any):
-        """Set configuration value."""
+# 4. Visualize the model
+viz = GNNVisualizer(output_dir="output/8_visualization_output")
+viz.visualize_file(str(model_path))
 
-    def save_config(self, output_file: str = None):
-        """Save current configuration to file."""
-
-
-# Configuration example:
-config_manager = ConfigManager("gnn_config.yaml")
-
-# Get parsing configuration
-parse_config = config_manager.get_config("parsing")
-# Illustrative — no GNNParser(config=...) in package root; use GNNParsingSystem / validate_gnn_syntax
-
-# Modify pipeline configuration
-config_manager.set_config("pipeline", "parallel", True)
-config_manager.set_config("pipeline", "max_workers", 8)
-config_manager.save_config()
-```
-
-## 🎯 Complete Integration Example
-
-```python
-"""
-Complete example showing full GNN API integration
-for building a custom Active Inference research workflow.
-"""
-
-from gnn import GNNParsingSystem  # illustrative workflow — verify other symbols in src/
-
-
-class ActiveInferenceWorkflow:
-    """Complete Active Inference research workflow."""
-
-    def __init__(self):
-        # Initialize components (illustrative — Pipeline/Visualizer/LLMAnalyzer may differ in src/)
-        self.parser = GNNParsingSystem()
-        self.pipeline = Pipeline()
-        self.visualizer = Visualizer()
-        self.llm_analyzer = LLMAnalyzer()
-        self.pymdp_renderer = render_gnn_to_pymdp
-        self.monitor = PerformanceMonitor()
-
-    def process_research_model(self, model_file: str) -> ResearchReport:
-        """Process a model through complete research workflow."""
-
-        # 1. Parse and validate model
-        model = self.parser.parse_file(model_file)
-
-        # 2. Run basic pipeline steps
-        pipeline_result = self.pipeline.process(
-            model,
-            steps=[1, 4, 6, 9],  # Parse, validate, visualize, render
-            output_dir=f"./output/{model.name}/",
-        )
-
-        # 3. Generate PyMDP implementation
-        pymdp_script = self.pymdp_renderer(
-            model, output_dir=f"./output/{model.name}/pymdp"
-        )
-
-        # 4. Create visualizations
-        network_fig = self.visualizer.create_network_diagram(model)
-        heatmaps = self.visualizer.create_matrix_heatmaps(model)
-
-        # 5. AI analysis
-        analysis = self.llm_analyzer.analyze_model_structure(model)
-        explanation = self.llm_analyzer.explain_model(model, "academic")
-        research_questions = self.llm_analyzer.generate_research_questions(model)
-
-        # 6. Performance benchmarking
-        performance = self.monitor.get_metrics()
-
-        # 7. Compile research report
-        return ResearchReport(
-            model=model,
-            pipeline_results=pipeline_result,
-            pymdp_agent=pymdp_agent,
-            visualizations={"network": network_fig, "heatmaps": heatmaps},
-            ai_analysis=analysis,
-            explanation=explanation,
-            research_questions=research_questions,
-            performance_metrics=performance,
-        )
-
-
-# Usage
-workflow = ActiveInferenceWorkflow()
-report = workflow.process_research_model("cognitive_navigation_model.md")
-
-# Access results
-print(f"✅ Model: {report.model.name}")
-print(f"📊 Complexity: {report.ai_analysis.complexity_score}")
-print(f"🎯 Research Questions: {len(report.research_questions)}")
-print(f"⚡ Processing Time: {report.performance_metrics.total_time:.2f}s")
+# 5. Summarize with the default local LLM
+summary = analyze_gnn_model(model_path.read_text(encoding="utf-8"))
+print(summary)
 ```
 
 ---
 
-**🔌 API Integration**: This comprehensive API enables seamless integration of GNN capabilities into research workflows, production systems, and custom applications.
-
-**📚 Documentation**: All APIs include comprehensive docstrings, type hints, and usage examples for immediate productivity.
+**🔌 API Integration**: These surfaces mirror the pipeline's 25 steps — use the CLI for end-to-end runs and the APIs above to embed GNN processing in your own workflows.
 
 ---
 
-**Status**: Production- **Start Here**: [Overview](../../README.md)
+**Status**: ✅ Production Ready \
+**Compliance**: Professional documentation standards \
+**Maintenance**: Regular updates with new API features and capabilities
+
+- **Start Here**: [Overview](../../README.md)
 - **Examples**: [Model Examples](../../docs/gnn/tutorials/gnn_examples_doc.md)
 - **Development**: [Contribution Guide](../../CONTRIBUTING.md)
