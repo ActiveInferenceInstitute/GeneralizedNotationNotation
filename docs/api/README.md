@@ -6,7 +6,7 @@
 
 ## Overview
 
-This directory contains API-oriented documentation for the GNN (Generalized Notation Notation) codebase. **Authoritative Python exports** for the `gnn` package are in [`src/gnn/__init__.py`](../../src/gnn/__init__.py). [`comprehensive_api_reference.md`](comprehensive_api_reference.md) includes illustrative narrative below the accuracy box—confirm symbol names in `src/` before importing.
+This directory contains API-oriented documentation for the GNN (Generalized Notation Notation) codebase. **Authoritative Python exports** for the `gnn` package are in [`src/gnn/__init__.py`](../../src/gnn/__init__.py). [`comprehensive_api_reference.md`](comprehensive_api_reference.md) documents probe-verified import paths and classes for the `gnn` package.
 
 **Status**: ✅ Production Ready  
 **Version**: 1.0
