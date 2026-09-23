@@ -1071,6 +1071,21 @@ def render_gnn_spec(
         output_stem = _safe_output_stem(requested_stem)
 
         from .continuous_common import is_continuous_spec
+        from .pomdp_contract import (
+            ModelKind,
+            detect_model_kinds,
+            unsupported_composition_reason,
+        )
+
+        # A composed spec declares more than one render family (e.g. a
+        # linear-Gaussian F/H/Q/R block alongside nr_agents > 1). Rendering
+        # the single-winner kind would silently drop the other family, so the
+        # composed set is refused with an explicit unsupported-composition
+        # receipt — the same unsupported accounting structural wrappers get —
+        # for every target.
+        kinds = detect_model_kinds(gnn_spec_mapping)
+        if ModelKind.CONTINUOUS in kinds and len(kinds) > 1:
+            return (False, unsupported_composition_reason(kinds), [])
 
         if is_continuous_spec(gnn_spec_mapping):
             return _render_continuous_target(

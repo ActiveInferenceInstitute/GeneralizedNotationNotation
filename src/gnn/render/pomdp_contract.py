@@ -298,27 +298,51 @@ def _structured_matrix_keys(gnn_spec: Dict[str, Any]) -> List[str]:
     return [str(key) for key in matrices]
 
 
-def detect_model_kind(gnn_spec: Dict[str, Any]) -> ModelKind:
-    """Detect the model structure from a GNN spec — structurally.
+_KIND_PRECEDENCE: Tuple[ModelKind, ...] = (
+    ModelKind.MULTI_AGENT,
+    ModelKind.HIERARCHICAL,
+    ModelKind.CONTINUOUS,
+    ModelKind.LEARNING,
+    ModelKind.FACTORED,
+    ModelKind.STRUCTURAL,
+    ModelKind.FLAT,
+)
+
+
+def detect_model_kinds(gnn_spec: Dict[str, Any]) -> frozenset[ModelKind]:
+    """Detect the full composed model-kind set from a GNN spec — structurally.
+
+    The composed counterpart of :func:`detect_model_kind`: every typed-field
+    predicate is evaluated independently and ALL matching kinds are returned,
+    so a spec that declares both a linear-Gaussian parameterization and
+    multiple agents classifies as ``{CONTINUOUS, MULTI_AGENT}`` instead of
+    silently collapsing to the first match of the precedence chain. Dispatch
+    consumers render a single family at most; a non-singleton set therefore
+    means the spec's families must be refused with an explicit
+    unsupported-composition receipt (or rendered on every matching family)
+    rather than silently rendered as the winner alone.
 
     Detection reads ONLY typed fields: the ``gnn_section`` value (the raw
     ``## GNNSection`` header, propagated by the extractor), declared matrix
     key patterns in ``structured_pomdp['matrices']``, explicit agent counts,
     and explicit ``model_parameters`` keys. Free-text scanning of the spec
-    (the old ``str(gnn_spec)`` substring soup) is deliberately gone: prose in
-    a ModelName or annotation must never change how a model renders.
+    is deliberately gone: prose in a ModelName or annotation must never
+    change how a model renders.
 
-    Precedence: MULTI_AGENT > HIERARCHICAL > CONTINUOUS > LEARNING >
-    FACTORED > STRUCTURAL > FLAT (multi-agent and hierarchical files also
-    have multiple factors, so the more specific kinds are checked first;
-    STRUCTURAL is the no-parameterization blanket case — only a spec with at
-    least one discrete A/B/C/D[/E] contract key falls through to FLAT).
+    Semantics shared with :func:`detect_model_kind`:
+
+    - an explicit ``model_kind == "structural"`` stamp is the producer's
+      authoritative classification and returns ``{STRUCTURAL}``;
+    - when no family predicate matches, the set is ``{FLAT}`` for a spec
+      with at least one discrete ``A/B/C/D[/E]`` contract key, else
+      ``{STRUCTURAL}`` (the no-parameterization blanket case).
     """
     # An explicit structural stamp wins (mirrors is_continuous_spec's
-    # ``model_kind == "continuous"`` check): the producer already classified
-    # this spec — e.g. pomdp_processor's structural spec view.
+    # ``model_kind == "continuous"`` check for the producer-classified case):
+    # the producer already classified this spec — e.g. pomdp_processor's
+    # structural spec view — so do not second-guess it with predicates.
     if gnn_spec.get("model_kind") == "structural":
-        return ModelKind.STRUCTURAL
+        return frozenset({ModelKind.STRUCTURAL})
     initial = gnn_spec.get("initialparameterization") or gnn_spec.get(
         "initial_parameterization", {}
     )
@@ -334,6 +358,8 @@ def detect_model_kind(gnn_spec: Dict[str, Any]) -> ModelKind:
     if not isinstance(model_params, dict):
         model_params = {}
 
+    kinds: set[ModelKind] = set()
+
     # Multi-agent: an explicit agent count > 1 or per-agent matrix keys.
     nr_agents = initial.get("nr_agents", model_params.get("nr_agents", 1))
     try:
@@ -341,30 +367,29 @@ def detect_model_kind(gnn_spec: Dict[str, Any]) -> ModelKind:
     except (TypeError, ValueError):
         nr_agents = 1
     if nr_agents > 1 or any(_AGENT_MATRIX_KEY.match(key) for key in all_keys):
-        return ModelKind.MULTI_AGENT
+        kinds.add(ModelKind.MULTI_AGENT)
 
     # Hierarchical: declared section or per-level matrix keys.
     if "hierarchical" in section or any(
         _LEVEL_MATRIX_KEY.match(key) for key in all_keys
     ):
-        return ModelKind.HIERARCHICAL
+        kinds.add(ModelKind.HIERARCHICAL)
 
     # Continuous: declared section or an explicit continuous
     # parameterization (F/H/Q/R system matrices or a Gaussian prior).
-    if "continuous" in section:
-        return ModelKind.CONTINUOUS
-    if _CONTINUOUS_PARAM_KEYS.issubset(set(initial_keys)) or {
-        "prior_mean",
-        "prior_cov",
-    }.issubset(set(initial_keys)):
-        return ModelKind.CONTINUOUS
+    if (
+        "continuous" in section
+        or _CONTINUOUS_PARAM_KEYS.issubset(set(initial_keys))
+        or {"prior_mean", "prior_cov"}.issubset(set(initial_keys))
+    ):
+        kinds.add(ModelKind.CONTINUOUS)
 
     # Learning: declared section or explicit Dirichlet prior parameter keys
     # (a prose mention of "Dirichlet" in an annotation must not reroute).
     if "learning" in section or any(
         _DIRICHLET_PRIOR_KEY.match(key) for key in initial_keys
     ):
-        return ModelKind.LEARNING
+        kinds.add(ModelKind.LEARNING)
 
     # Factored: explicit num_factors declaration.
     num_factors = model_params.get("num_factors", 1)
@@ -373,19 +398,67 @@ def detect_model_kind(gnn_spec: Dict[str, Any]) -> ModelKind:
     except (TypeError, ValueError):
         num_factors = 1
     if num_factors > 1:
-        return ModelKind.FACTORED
+        kinds.add(ModelKind.FACTORED)
 
-    # Structural: a blanket/wrapper spec declares boundary structure only —
-    # it carries no categorical A/B/C/D[/E] contract keys (and no continuous
-    # parameterization reached the checks above). Render-only / informational:
-    # never force it through the discrete render path.
-    if not any(
-        _is_active_inference_matrix_key(key) or _DIRICHLET_PRIOR_KEY.match(key)
-        for key in all_keys
-    ):
-        return ModelKind.STRUCTURAL
+    if not kinds:
+        # No family predicate matched: STRUCTURAL is the blanket/wrapper case
+        # (declares boundary structure only — no categorical A/B/C/D[/E]
+        # contract key); a spec with at least one contract key falls through
+        # to FLAT. Render-only / informational: structural wrappers are never
+        # forced through the discrete render path.
+        if any(
+            _is_active_inference_matrix_key(key) or _DIRICHLET_PRIOR_KEY.match(key)
+            for key in all_keys
+        ):
+            kinds.add(ModelKind.FLAT)
+        else:
+            kinds.add(ModelKind.STRUCTURAL)
 
-    return ModelKind.FLAT
+    return frozenset(kinds)
+
+
+def detect_model_kind(gnn_spec: Dict[str, Any]) -> ModelKind:
+    """Single-winner kind: the max-precedence member of detect_model_kinds.
+
+    Backward-compatible classification used by per-kind dispatch
+    (precedence MULTI_AGENT > HIERARCHICAL > CONTINUOUS > LEARNING >
+    FACTORED > STRUCTURAL > FLAT). A composed spec — e.g. continuous
+    F/H/Q/R parameters plus ``nr_agents > 1`` — classifies to its most
+    specific kind here and to the full set under :func:`detect_model_kinds`;
+    dispatch consumers must consult the kind set so a composed spec is
+    refused or rendered on every matching family, never silently rendered
+    as the winner alone.
+    """
+    kinds = detect_model_kinds(gnn_spec)
+    for kind in _KIND_PRECEDENCE:
+        if kind in kinds:
+            return kind
+    raise AssertionError(  # pragma: no cover - kinds is never empty
+        f"model-kind detection returned an empty kind set: {kinds}"
+    )
+
+
+def unsupported_composition_reason(kinds: frozenset[ModelKind]) -> str:
+    """Receipt reason for a composed spec that no backend renders whole.
+
+    The single stable ``unsupported-composition:`` prefix is the grep anchor
+    for dispatch receipts: the spec declares the linear-Gaussian family
+    alongside other families, so rendering the single winner would silently
+    drop the rest.
+    """
+    others = [
+        kind.value
+        for kind in _KIND_PRECEDENCE
+        if kind in kinds and kind is not ModelKind.CONTINUOUS
+    ]
+    return (
+        "unsupported-composition: "
+        + " × ".join(["continuous", *others])
+        + " — the spec declares the linear-Gaussian (F/H/Q/R) family "
+        "alongside additional model families; no framework renders the "
+        "composition whole, so it is refused rather than silently rendered "
+        "as one family with the other dropped"
+    )
 
 
 def detect_pomdp_space_model_kind(pomdp_space: Any) -> ModelKind:
@@ -398,6 +471,29 @@ def detect_pomdp_space_model_kind(pomdp_space: Any) -> ModelKind:
     blanket wrapper is STRUCTURAL, never a discrete POMDP.
     """
     return detect_model_kind(
+        {
+            "gnn_section": getattr(pomdp_space, "gnn_section", None),
+            "initialparameterization": getattr(
+                pomdp_space, "initial_parameterization", None
+            )
+            or {},
+            "model_parameters": getattr(pomdp_space, "model_parameters", None) or {},
+            "structured_pomdp": {
+                "matrices": getattr(pomdp_space, "matrices", None) or {},
+            },
+        }
+    )
+
+
+def detect_pomdp_space_model_kinds(pomdp_space: Any) -> frozenset[ModelKind]:
+    """Composed kind set for an extracted POMDPStateSpace.
+
+    Mirrors the extractor's own view into the spec shape
+    :func:`detect_model_kinds` reads, so the render pipeline can refuse
+    compositions (e.g. continuous × multi-agent) with an explicit receipt
+    instead of silently rendering the single-winner family.
+    """
+    return detect_model_kinds(
         {
             "gnn_section": getattr(pomdp_space, "gnn_section", None),
             "initialparameterization": getattr(

@@ -40,7 +40,7 @@ from gnn.render.rxinfer.rxinfer_renderer import render_gnn_to_rxinfer
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 GNN_FILES = PROJECT_ROOT / "input" / "gnn_files"
 
-EXEMPLAR_COUNT = 32
+EXEMPLAR_COUNT = 33
 
 # The intended kind for every non-flat exemplar; everything else is FLAT.
 EXPECTED_NON_FLAT = {
@@ -48,6 +48,7 @@ EXPECTED_NON_FLAT = {
     "continuous/damped_oscillator_bias.md": ModelKind.CONTINUOUS,
     "continuous/ngclearn_lgssm.md": ModelKind.CONTINUOUS,
     "continuous/predictive_coding_agent.md": ModelKind.CONTINUOUS,
+    "continuous/multi_agent_lgssm.md": ModelKind.MULTI_AGENT,
     "continuous/stochastic_dynamics.md": ModelKind.CONTINUOUS,
     "hierarchical/hierarchical_pomdp.md": ModelKind.HIERARCHICAL,
     "hierarchical/temporal_hierarchy.md": ModelKind.HIERARCHICAL,
@@ -98,9 +99,12 @@ class TestExemplarKindTaxonomy:
     def test_all_exemplars_render(self, tmp_path: Path) -> None:
         """The full-corpus render contract, through the public renderer entry.
 
-        Every kind now renders — natively for flat / hierarchical two-level /
+        Every plain kind renders — natively for flat / hierarchical two-level /
         factored / continuous / learning, and via the documented joint
-        composition for multi-agent and 3+-level hierarchical.
+        composition for multi-agent and 3+-level hierarchical. The one
+        composed spec (continuous × multi-agent) is receipted
+        ``unsupported-composition`` instead of silently rendered as the
+        single-winner family.
         """
         failures = []
         for gnn_file in _exemplar_files():
@@ -108,6 +112,13 @@ class TestExemplarKindTaxonomy:
             assert pomdp is not None, f"extraction failed for {gnn_file}"
             spec = pomdp_to_gnn_spec(pomdp)
             script = tmp_path / f"{gnn_file.stem}_rxinfer.jl"
+            rel = str(gnn_file.relative_to(GNN_FILES))
+            if rel == "continuous/multi_agent_lgssm.md":
+                success, message, _warnings = render_gnn_to_rxinfer(spec, script)
+                assert not success
+                assert "unsupported-composition" in message
+                assert not script.exists()
+                continue
             success, message, _warnings = render_gnn_to_rxinfer(spec, script)
             if not success:
                 failures.append(f"{gnn_file.name}: {message}")
