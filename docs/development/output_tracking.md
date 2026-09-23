@@ -26,6 +26,15 @@ truth for the ignore rules is `.gitignore` (section *GENERATED ARTIFACT TREES*).
 
 | `output/api_contract_test/`, `output/job_contract_test/` | VOLATILE | Contract-test scratch written by `tests/api/test_api_endpoints.py` (:179, :234) |
 
+CI note (2026-09-23, OB-1 decision): GitHub CI is now allowed to EMIT the
+volatile step outputs in the runner workspace for the gridworld boundary
+check (`.github/workflows/gridworld.yml`): the workflow regenerates the
+volatile run tree from `input/gnn_files/pomdp_gridworld` in the runner
+workspace and hard-gates on it via `scripts/check_pomdp_gridworld_outputs.py`.
+The git-tracked curated/volatile boundary itself is unchanged — nothing new
+is committed from CI; only `output/00_pipeline_summary/pipeline_execution_summary.json`
+is uploaded as a run receipt (not committed).
+
 ## Rationale
 
 Volatile step outputs were 6.6k+ tracked files that tests and pipeline runs
