@@ -12,6 +12,16 @@ accurate — no paragraph needed). Full program: `SCOPE-2026-09-23.md`.)
 **Next Target**: v4.0.0 (bounded autonomy, pipeline stage consolidation,
 multi-agent stigmergic topologies, high-dimensional active inference)
 
+## v4.0.0 - Bounded Autonomy & Reviewed Self-Editing
+
+The local bounded-autonomy surface emits proposal-only artifacts via
+`--autonomous`: candidate scores, review gates, rollback descriptors, audit
+events, and non-mutating security policy. No source edit, commit, container
+run, or cluster mutation is automatic. The concrete v4.0.0 work is the
+scoped program below plus `SCOPE-2026-09-23.md`; this section records the
+unscoped vision and the current proposal-only surface.
+
+
 ## Open scoped work
 
 Every open item is cold-startable: scope, files, verification, and
