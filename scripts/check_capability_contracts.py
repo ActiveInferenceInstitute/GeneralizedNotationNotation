@@ -147,6 +147,11 @@ def run_audit() -> List[str]:
         and "**Next Target**: v3.0.0" not in todo_text
     ):
         failures.append("TO-DO.md: v2.0.0 release must set v3.0.0 as next target")
+    if (
+        "**Current Version**: 3.5.0" in todo_text
+        and "**Next Target**: v4.0.0" not in todo_text
+    ):
+        failures.append("TO-DO.md: v3.5.0 release must set v4.0.0 as next target")
 
     readme_tests = _read("tests/README.md")
     maintained_dirs, direct_test_dirs = _maintained_test_directory_counts()
@@ -275,7 +280,6 @@ def run_audit() -> List[str]:
             failures.append(f"TO-DO.md: acceptance path does not exist: {path}")
 
     roadmap_sections = _split_todo_sections(todo_text)
-    early_versions = ("v1.8.0", "v1.9.0", "v2.0.0", "v3.0.0")
     autonomy_patterns = (
         "Self-Modifying",
         "self-editing",
@@ -283,8 +287,9 @@ def run_audit() -> List[str]:
         "rewrite their own",
         "autonomous ecology",
     )
-    for version in early_versions:
-        section = roadmap_sections.get(version, "")
+    for version, section in roadmap_sections.items():
+        if version == "v4.0.0":
+            continue
         for pattern in autonomy_patterns:
             if pattern.lower() in section.lower():
                 failures.append(
@@ -318,6 +323,42 @@ def run_audit() -> List[str]:
     ):
         if not _exists(required):
             failures.append(f"v2.0 reliability contract missing: {required}")
+    for required in ('"gui": "_cmd_gui"', "def _cmd_gui"):
+        if required not in cli_text:
+            failures.append(
+                f"src/gnn/cli/__init__.py: missing v3.5.0 gui command contract {required}"
+            )
+
+    for required in (
+        "scripts/check_flag_parity.py",
+        "scripts/flag_parity_caps.json",
+    ):
+        if not _exists(required):
+            failures.append(f"v3.5.0 flag-parity contract missing: {required}")
+
+    executor_text = _read("src/gnn/execute/executor.py")
+    framework_names = re.search(
+        r"FRAMEWORK_DIR_NAMES: tuple\[str, \.\.\.\] = \((?P<names>[^)]*)\)",
+        executor_text,
+    )
+    if framework_names is None:
+        failures.append(
+            "src/gnn/execute/executor.py: "
+            "FRAMEWORK_DIR_NAMES registry declaration missing"
+        )
+    else:
+        backend_names = re.findall(r'"([^"]+)"', framework_names.group("names"))
+        if len(backend_names) != 11:
+            failures.append(
+                "src/gnn/execute/executor.py: "
+                "FRAMEWORK_DIR_NAMES must close to eleven backends"
+            )
+        for required in ("stan", "bnlearn"):
+            if required not in backend_names:
+                failures.append(
+                    "src/gnn/execute/executor.py: "
+                    f"FRAMEWORK_DIR_NAMES missing v3.5.0 backend {required}"
+                )
 
     if "pymdp,rxinfer,activeinference_jl" not in _read(
         "input/model_family_manifest.json"
