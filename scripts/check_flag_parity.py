@@ -196,12 +196,12 @@ def static_registered_flags(arg_def_names: set[str]) -> set[str]:
         except SyntaxError:
             continue
         module_dicts: dict[str, list[tuple[str, str | None]]] = {}
-        for node in tree.body:
-            if not (isinstance(node, ast.Assign) and isinstance(node.value, ast.Dict)):
+        for stmt in tree.body:
+            if not (isinstance(stmt, ast.Assign) and isinstance(stmt.value, ast.Dict)):
                 continue
-            target = next((t for t in node.targets if isinstance(t, ast.Name)), None)
+            target = next((t for t in stmt.targets if isinstance(t, ast.Name)), None)
             if target is not None:
-                module_dicts[target.id] = _literal_dict_flags(node.value)
+                module_dicts[target.id] = _literal_dict_flags(stmt.value)
         for node in ast.walk(tree):
             if not isinstance(node, ast.Call):
                 continue
@@ -257,8 +257,45 @@ def registered_flags() -> set[str]:
     flags: set[str] = set()
     for action in parser._actions:  # noqa: SLF001 - argparse's own registry
         flags.update(action.option_strings)
+    flags |= cli_parser_flags()
     flags -= {"-h", "--help"}
     return flags | static_registered_flags(set(ArgumentParser.ARGUMENT_DEFINITIONS))
+
+
+def cli_parser_flags() -> set[str]:
+    """Flags registered by the real ``gnn`` CLI, including subcommands.
+
+    ``create_main_parser`` is the flat pipeline-arguments parser; the user-
+    facing command surface lives in :func:`gnn.cli.build_parser` (serve,
+    mcp, health, templates, ... with their own subparsers). Both surfaces
+    are real registered spellings; docs may cite either.
+    """
+    import sys
+
+    sys.path.insert(0, str(ROOT / "src"))
+    try:
+        from gnn.cli import build_parser
+    except ImportError as exc:
+        raise SystemExit(
+            "check_flag_parity: cannot import gnn.cli.build_parser "
+            f"({exc}) - the CLI surface moved; update this gate."
+        ) from exc
+
+    flags: set[str] = set()
+
+    def _walk(parser: "argparse.ArgumentParser", seen: set[int]) -> None:
+        if id(parser) in seen:
+            return
+        seen.add(id(parser))
+        for action in parser._actions:  # noqa: SL001 - argparse's own registry
+            flags.update(action.option_strings)
+            choices = getattr(action, "choices", None)
+            if isinstance(choices, dict):
+                for sub in choices.values():
+                    _walk(sub, seen)
+
+    _walk(build_parser(), set())
+    return flags - {"-h", "--help"}
 
 
 def report_metric(metric: str, cap: int, measured: int) -> bool:

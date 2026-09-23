@@ -555,7 +555,7 @@ def verify_run_manifests(
     event surfaces as a digest mismatch — not just structurally-clean but stale.
 
     Binary records (schema 3.2) are re-validated the same way under the
-    additive ``binary_artifacts`` inventory. A legacy ``"3.1"`` index that
+    additive ``binary_artifacts`` inventory. An older ``"3.1"`` index that
     predates binary records is still accepted, but binary artifacts present
     on disk are then reported as unrecorded rather than silently ignored.
 
