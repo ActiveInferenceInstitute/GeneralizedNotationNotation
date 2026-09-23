@@ -63,10 +63,11 @@ Use `uv run` for roadmap verification checks:
 uv run python scripts/run_v3_orchestration_acceptance.py --strict
 uv run python scripts/emit_run_manifest.py output --out /tmp/gnn-v3-run-manifest
 uv run python scripts/generate_pipeline_container_plan.py --config input/config.yaml --out /tmp/gnn-v3-container-plan.json
-
-uv run python docs/development/docs_audit.py --strict --check-anchors --no-write
 uv run python scripts/run_session_acceptance.py --manifest input/model_family_manifest.json --output-dir /tmp/gnn-v3-session-acceptance --session /tmp/gnn-v3-session.json --strict
 uv run python src/gnn/main.py --autonomous --target-dir input/gnn_files --output-dir /tmp/gnn-autonomous-smoke
+
+uv run python docs/development/docs_audit.py --strict --check-anchors --no-write
+uv run python scripts/check_gnn_doc_patterns.py --strict
 uv run python scripts/check_maintained_doc_terms.py --strict
 uv run python scripts/check_repo_terminology.py --strict
 uv run python scripts/check_doc_path_references.py
