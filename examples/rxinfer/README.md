@@ -164,3 +164,30 @@ for the verified matrix.
 **4. Feed back.** `--out FILE` writes the `dafjev.bayesnet-posteriors/1`
 sidecar (evidence + marginals) — the downstream seam: the posteriors feed
 re-asking Jev evidence queries and calibration on the daf-jev side.
+
+## Downstream round-trip (marginals JSON → daf-jev)
+
+The printed block is machine-parseable. `parse_marginals` reads the exact
+`Posteriors (marginal P(key)):` format the emitted script prints (lines
+like `  key: state=0.692308  ...`, two-space separator) into
+`{key: {state: p}}`, skipping headers, evidence lines, and other output;
+malformed numbers fail closed with the offending line named.
+`write_marginals` serializes that mapping as a `gnn.marginals/1` sidecar
+JSON (`format` + `marginals` + `source_model`) — the artifact daf-jev
+consumes for calibration and follow-up evidence queries (the Jev re-ask
+leg):
+
+```python
+from gnn.rxinfer_bridge import parse_marginals, write_marginals
+
+marginals = parse_marginals(stdout_text)
+write_marginals(marginals, "asia_marginals.json", source_model="asia_model")
+```
+
+The `within` leg stays RESERVED as documented: the optional GraphSpec
+`jev_factors` field is preserved verbatim by the loader and ignored by the
+emitted script; any use must be coordinated across both repos in one wave
+(see the [`gnn.rxinfer_bridge`](../../src/gnn/rxinfer_bridge.py) module
+docstring). Golden parse coverage lives in
+[`tests/gnn/test_rxinfer_bridge.py`](../../tests/gnn/test_rxinfer_bridge.py).
+
