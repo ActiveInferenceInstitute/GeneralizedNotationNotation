@@ -22,6 +22,7 @@ import tempfile
 # Make "tests.*" an importable alias for the tests/ directory so that
 # tests which do `from tests.conftest import X` continue to resolve.
 import types as _types
+from contextlib import contextmanager
 from pathlib import Path
 from typing import Any, Dict, Generator, cast
 
@@ -207,32 +208,39 @@ def sample_gnn_files(safe_filesystem: Any) -> Dict[str, Path]:
     return files
 
 
-@pytest.fixture
-def test_data_dir() -> Generator[Path, None, None]:
-    """Directory containing a sample GNN file at samples/actinf_pomdp_agent.md."""
+@contextmanager
+def _sample_gnn_markdown_file(relative: str) -> Generator[Path, None, None]:
+    """Yield an on-disk canonical sample GNN file at ``relative`` under a fresh tempdir, cleaning up on exit."""
     base = Path(tempfile.mkdtemp())
-    sample = base / "samples" / "actinf_pomdp_agent.md"
-    write_sample_gnn_markdown(sample)
-    try:
-        yield sample.parent
-    finally:
-        import shutil
-
-        shutil.rmtree(base, ignore_errors=True)
-
-
-@pytest.fixture
-def sample_gnn_file() -> Generator[Path, None, None]:
-    """Path to a single on-disk sample GNN markdown file."""
-    tmp = Path(tempfile.mkdtemp())
-    path = tmp / "actinf_pomdp_agent.md"
+    path = base / relative
     write_sample_gnn_markdown(path)
     try:
         yield path
     finally:
         import shutil
 
-        shutil.rmtree(tmp, ignore_errors=True)
+        shutil.rmtree(base, ignore_errors=True)
+
+
+# Both fixtures below exist because the pipeline exposes the same canonical
+# sample content in two nesting shapes (a samples/ subdirectory vs. a bare
+# file), consumed by different modules. They stay separate fixtures because
+# merging them into one parameterized fixture would rename what ~20 existing
+# consumers request.
+
+
+@pytest.fixture
+def test_data_dir() -> Generator[Path, None, None]:
+    """Directory containing a sample GNN file at samples/actinf_pomdp_agent.md."""
+    with _sample_gnn_markdown_file("samples/actinf_pomdp_agent.md") as path:
+        yield path.parent
+
+
+@pytest.fixture
+def sample_gnn_file() -> Generator[Path, None, None]:
+    """Path to a single on-disk sample GNN markdown file."""
+    with _sample_gnn_markdown_file("actinf_pomdp_agent.md") as path:
+        yield path
 
 
 @pytest.fixture

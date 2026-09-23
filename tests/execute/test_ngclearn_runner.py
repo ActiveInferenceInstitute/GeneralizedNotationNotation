@@ -36,6 +36,7 @@ from gnn.utils.runtime_safety.framework_availability import (  # noqa: E402
     FRAMEWORK_IMPORT_CHECK,
 )
 
+
 def _write_render_script(
     root: Path, model: str = "m", name: str = "m_ngclearn.py"
 ) -> Path:

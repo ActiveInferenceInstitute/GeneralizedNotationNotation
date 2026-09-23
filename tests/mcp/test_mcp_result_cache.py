@@ -10,28 +10,13 @@ that default. Expiry uses the same controlled clock as
 
 from __future__ import annotations
 
-import time
-
 import pytest
 
 pytestmark = pytest.mark.mcp
 
 import gnn.mcp.mcp as mcp_module
 from gnn.mcp.mcp import MCP
-
-
-class _FakeMCPTime:
-    """Injectable clock standing in for ``gnn.mcp.mcp.time``."""
-
-    def __init__(self) -> None:
-        self._offset = 0.0
-
-    def advance(self, seconds: float) -> None:
-        """Move the observable clock forward without real delay."""
-        self._offset += seconds
-
-    def time(self) -> float:
-        return time.time() + self._offset
+from tests.helpers import FakeMCPTime
 
 
 class TestCacheableOptIn:
@@ -82,8 +67,10 @@ class TestServerDefaultTTL:
     """The server-wide _cache_ttl knob is honored as the default entry TTL."""
 
     @pytest.mark.unit
-    def test_entry_expires_after_server_ttl(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        fake_time = _FakeMCPTime()
+    def test_entry_expires_after_server_ttl(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        fake_time = FakeMCPTime()
         monkeypatch.setattr(mcp_module, "time", fake_time)
         registry = MCP(enable_caching=True, enable_rate_limiting=False)
         registry._cache_ttl = 50.0
@@ -109,7 +96,7 @@ class TestServerDefaultTTL:
     def test_per_tool_cache_ttl_overrides_server_default(
         self, monkeypatch: pytest.MonkeyPatch
     ) -> None:
-        fake_time = _FakeMCPTime()
+        fake_time = FakeMCPTime()
         monkeypatch.setattr(mcp_module, "time", fake_time)
         registry = MCP(enable_caching=True, enable_rate_limiting=False)
         registry._cache_ttl = 50.0

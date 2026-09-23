@@ -25,31 +25,18 @@ from gnn.mcp.exceptions import (
     MCPToolNotFoundError,
 )
 from gnn.mcp.mcp import MCP
+from tests.helpers import FakeMCPTime
+from tests.helpers.mcp_census import (
+    CENSUS_SOURCE,
+    EXPECTED_MCP_MODULES,
+    EXPECTED_MCP_TOOLS,
+)
 
 
 def _registry(**kwargs: Any) -> MCP:
     defaults: dict[str, Any] = {"enable_caching": False, "enable_rate_limiting": False}
     defaults.update(kwargs)
     return MCP(**defaults)
-
-
-class _FakeMCPTime:
-    """Injectable clock standing in for ``gnn.mcp.mcp.time``.
-
-    The registry reads ``time.time()`` for cache expiry and the sliding-window
-    rate limiter. Swapping the module attribute lets tests advance wall-clock
-    time instantly instead of sleeping — no production seam required.
-    """
-
-    def __init__(self) -> None:
-        self._offset = 0.0
-
-    def advance(self, seconds: float) -> None:
-        """Move the observable clock forward without real delay."""
-        self._offset += seconds
-
-    def time(self) -> float:
-        return time.time() + self._offset
 
 
 class TestRequiresAuthGate:
@@ -136,7 +123,7 @@ class TestResultCache:
 
     @pytest.mark.unit
     def test_ttl_expiry_recomputes(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        fake_time = _FakeMCPTime()
+        fake_time = FakeMCPTime()
         monkeypatch.setattr(mcp_module, "time", fake_time)
         registry = _registry(enable_caching=True)
         calls: list[int] = []
@@ -200,7 +187,7 @@ class TestPerToolRateLimiter:
     def test_window_recovery_allows_calls_again(
         self, monkeypatch: pytest.MonkeyPatch
     ) -> None:
-        fake_time = _FakeMCPTime()
+        fake_time = FakeMCPTime()
         monkeypatch.setattr(mcp_module, "time", fake_time)
         registry = _registry(enable_rate_limiting=True)
         registry.register_tool(
@@ -229,7 +216,9 @@ class TestAuditSurfaceParity:
 
         from gnn.mcp import initialize
 
-        initialize(halt_on_missing_sdk=False, force_proceed_flag=True)
+        initialize(
+            halt_on_missing_sdk=False, force_proceed_flag=True, force_refresh=True
+        )
         from gnn.mcp import mcp_instance
 
         # Timed-out modules keep registering via background recovery; poll
@@ -261,6 +250,24 @@ class TestAuditSurfaceParity:
             "audit_report.json modules_list drifted from the live registry — "
             "regenerate the audit (uv run python src/gnn/mcp/validate_tools.py) "
             "in the same PR"
+        )
+
+    @pytest.mark.unit
+    def test_audit_report_counts_match_exact_pin(self) -> None:
+        audit = json.loads(
+            (Path(__file__).resolve().parents[2] / CENSUS_SOURCE).read_text(
+                encoding="utf-8"
+            )
+        )
+        assert audit["tools_total"] == EXPECTED_MCP_TOOLS, (
+            f"MCP tool census drifted: {CENSUS_SOURCE} says {audit['tools_total']}, "
+            f"pin expects {EXPECTED_MCP_TOOLS} — regenerate the audit and update "
+            f"tests/helpers/mcp_census.py in the same PR that adds or removes tools"
+        )
+        assert audit["modules_total"] == EXPECTED_MCP_MODULES, (
+            f"MCP module census drifted: {CENSUS_SOURCE} says {audit['modules_total']}, "
+            f"pin expects {EXPECTED_MCP_MODULES} — regenerate the audit and update "
+            f"tests/helpers/mcp_census.py in the same PR that adds or removes modules"
         )
 
 
