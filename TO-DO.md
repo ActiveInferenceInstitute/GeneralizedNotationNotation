@@ -41,8 +41,6 @@ file). Summary:
 | M-09/M-10/M-11/M-12/M-14 | medium | Test-structure + execution-route normalization (7 unmirrored dirs, src-shipped tests, lean CancelToken, MCP pymdp gate bypass, bnlearn seam) | SCOPE §Medium |
 | ARCH-3 | minor | Promote exact MCP tool-count pin (162/36) from audit_report.json | tests/mcp/test_registry_internals.py |
 
-Open-by-design (user decision required): OB-1 gridworld CI wiring
-(output-boundary decision); OB-2 ollama coverage asymmetry.
 
 Cross-repo (fep_lean coordinator territory, NOT GNN waves): X-1
 owner-roster shrink; X-2 one-transaction `repin` bridge operation.
@@ -65,8 +63,6 @@ Use `uv run` for roadmap verification checks:
 uv run python scripts/run_v3_orchestration_acceptance.py --strict
 uv run python scripts/emit_run_manifest.py output --out /tmp/gnn-v3-run-manifest
 uv run python scripts/generate_pipeline_container_plan.py --config input/config.yaml --out /tmp/gnn-v3-container-plan.json
-uv run python scripts/run_session_acceptance.py --manifest input/model_family_manifest.json --output-dir /tmp/gnn-v3-session-acceptance --session /tmp/gnn-v3-session.json --strict
-uv run python src/gnn/main.py --autonomous --target-dir input/gnn_files --output-dir /tmp/gnn-autonomous-smoke
 
 uv run python docs/development/docs_audit.py --strict --check-anchors --no-write
 uv run python scripts/check_gnn_doc_patterns.py --strict
