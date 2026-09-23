@@ -1623,6 +1623,7 @@ def emit_rxinfer_jl(spec: GraphSpec, model_name: str = "gnn_bayesnet") -> str:
     lines.append("")
     return "\n".join(lines)
 
+
 # ---------------------------------------------------------------------------
 # Downstream round-trip: printed marginals -> gnn.marginals/1 JSON
 # ---------------------------------------------------------------------------
