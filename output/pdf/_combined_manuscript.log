@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999998 (TeX Live 2026) (preloaded format=xelatex 2026.3.1)  17 SEP 2026 15:09
+This is XeTeX, Version 3.141592653-2.6-0.999998 (TeX Live 2026) (preloaded format=xelatex 2026.3.1)  23 SEP 2026 09:45
 entering extended mode
  %&-line parsing enabled.
 **_combined_manuscript.tex
@@ -1273,9 +1273,10 @@ ignored: Infinite glue shrinkage found in box being split [9]
 File: ../figures/gnn_triple_play.png Graphic file (type bmp)
 <../figures/gnn_triple_play.png>
  [10] [11]
+ignored: Infinite glue shrinkage found in box being split [12]
 File: ../figures/gnn_backend_capability_matrix.png Graphic file (type bmp)
 <../figures/gnn_backend_capability_matrix.png>
- [12] [13]
+ [13]
 File: ../figures/gnn_orchestration.png Graphic file (type bmp)
 <../figures/gnn_orchestration.png>
  [14] [15] [16]
@@ -1299,10 +1300,10 @@ L3 programming layer <2026-01-19>
 Here is how much of TeX's memory you used:
  23739 strings out of 469709
  434672 string characters out of 5466024
- 1056618 words of memory out of 5000000
+ 1056637 words of memory out of 5000000
  52059 multiletter control sequences out of 15000+600000
  631333 words of font info for 82 fonts, out of 8000000 for 9000
  319 hyphenation exceptions out of 8191
- 90i,9n,114p,1708b,565s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 90i,9n,114p,1710b,565s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
 Output written on _combined_manuscript.pdf (30 pages).
