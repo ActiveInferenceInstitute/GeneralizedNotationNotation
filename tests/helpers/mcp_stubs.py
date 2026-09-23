@@ -7,6 +7,7 @@ implementation; the conftest ``test_mcp_tools`` fixture returns an instance.
 
 from __future__ import annotations
 
+import time
 from typing import Any, Callable
 
 
@@ -55,4 +56,23 @@ class MCPTools:
         return function(**kwargs)
 
 
-__all__ = ["MCPTools"]
+class FakeMCPTime:
+    """Injectable clock standing in for ``gnn.mcp.mcp.time``.
+
+    The registry reads ``time.time()`` for cache expiry and the sliding-window
+    rate limiter. Swapping the module attribute lets tests advance wall-clock
+    time instantly instead of sleeping — no production seam required.
+    """
+
+    def __init__(self) -> None:
+        self._offset = 0.0
+
+    def advance(self, seconds: float) -> None:
+        """Move the observable clock forward without real delay."""
+        self._offset += seconds
+
+    def time(self) -> float:
+        return time.time() + self._offset
+
+
+__all__ = ["FakeMCPTime", "MCPTools"]

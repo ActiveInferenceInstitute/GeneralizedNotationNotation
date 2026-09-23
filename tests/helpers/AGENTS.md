@@ -13,7 +13,8 @@ helpers/
 ├── __init__.py            # Re-exports every public symbol below
 ├── script_loader.py       # load_module_from_path(): importlib loader for standalone scripts
 ├── gnn_samples.py         # SAMPLE_GNN_CONTENT + write_sample_gnn_markdown()
-├── mcp_stubs.py           # MCPTools: in-memory MCP registry test double
+├── mcp_stubs.py           # MCPTools: in-memory MCP registry test double; FakeMCPTime: injectable clock stub
+├── mcp_census.py          # exact MCP census pin (EXPECTED_MCP_TOOLS / EXPECTED_MCP_MODULES / CENSUS_SOURCE)
 ├── render_recovery.py     # render_gnn_files(): recovery-friendly bulk render
 └── (path helpers in __init__.py for test_data/)
 ```
@@ -24,6 +25,8 @@ helpers/
 - `SAMPLE_GNN_CONTENT` — canonical minimal POMDP GNN markdown (single source for the conftest `sample_gnn_*` fixtures)
 - `write_sample_gnn_markdown(target)` — write the ontology-annotated sample markdown (creates parents)
 - `MCPTools` — in-memory MCP registry test double (`register_tool` / `register_resource` / `execute_tool`); the conftest `test_mcp_tools` fixture returns an instance
+- `FakeMCPTime` — injectable clock standing in for `gnn.mcp.mcp.time`; `advance(seconds)` moves the observable clock forward instantly (cache expiry, sliding-window rate limiter) instead of sleeping
+- `EXPECTED_MCP_TOOLS` / `EXPECTED_MCP_MODULES` / `CENSUS_SOURCE` — exact MCP census pin from `mcp_census.py`, read from the committed `src/gnn/mcp/audit_report.json`; regenerate the audit and update the constants in the same PR that adds or removes tools/modules
 - `get_test_data_dir()` / `get_sample_gnn_model()` / `load_sample_gnn_spec()` — path helpers for `tests/test_data/`
 - `render_gnn_files()` — render every GNN file in a directory, capturing per-file results for recovery tests
 
@@ -31,6 +34,9 @@ helpers/
 
 ```python
 from tests.helpers import (
+    EXPECTED_MCP_MODULES,
+    EXPECTED_MCP_TOOLS,
+    FakeMCPTime,
     MCPTools,
     SAMPLE_GNN_CONTENT,
     get_sample_gnn_model,

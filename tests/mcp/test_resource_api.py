@@ -24,6 +24,11 @@ from gnn.mcp.server_http import (
     get_safe_http_resource_uris,
     is_safe_http_resource,
 )
+from tests.helpers.mcp_census import (
+    CENSUS_SOURCE,
+    EXPECTED_MCP_MODULES,
+    EXPECTED_MCP_TOOLS,
+)
 
 
 class TestRealResourceLister:
@@ -150,8 +155,36 @@ class TestToolCountGateStaysGreen:
             .Path(__file__)
             .resolve()
             .parents[2]
-            .joinpath("src/gnn/mcp/audit_report.json")
+            .joinpath(CENSUS_SOURCE)
             .read_text(encoding="utf-8")
         )
-        assert audit["tools_total"] >= 140
+        assert audit["tools_total"] == EXPECTED_MCP_TOOLS, (
+            f"MCP tool census drifted: {CENSUS_SOURCE} says {audit['tools_total']}, "
+            f"pin expects {EXPECTED_MCP_TOOLS} — regenerate the audit and update "
+            f"tests/helpers/mcp_census.py in the same PR that adds or removes tools"
+        )
         assert audit.get("schema_checks_ok", 0) == audit["tools_total"]
+
+    @pytest.mark.unit
+    def test_module_count_matches_audit(self) -> None:
+        audit = json.loads(
+            __import__("pathlib")
+            .Path(__file__)
+            .resolve()
+            .parents[2]
+            .joinpath(CENSUS_SOURCE)
+            .read_text(encoding="utf-8")
+        )
+        assert audit["modules_total"] == EXPECTED_MCP_MODULES, (
+            f"MCP module census drifted: {CENSUS_SOURCE} says {audit['modules_total']}, "
+            f"pin expects {EXPECTED_MCP_MODULES} — regenerate the audit and update "
+            f"tests/helpers/mcp_census.py in the same PR that adds or removes modules"
+        )
+        assert audit["modules_errored"] == 0, (
+            f"{CENSUS_SOURCE} recorded errored modules — regenerate the audit and "
+            f"investigate in the same PR"
+        )
+        assert audit["modules_loaded"] == audit["modules_total"], (
+            f"{CENSUS_SOURCE} module counts disagree (loaded vs total) — regenerate "
+            f"the audit and update tests/helpers/mcp_census.py in the same PR"
+        )

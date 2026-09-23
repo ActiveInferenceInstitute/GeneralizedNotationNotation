@@ -6,6 +6,7 @@ Provides reusable, typed helpers for test execution:
 - ``script_loader``  — load standalone scripts by path (importlib boilerplate)
 - ``gnn_samples``    — canonical sample GNN markdown content
 - ``mcp_stubs``      — in-memory MCP registry test double (``MCPTools``)
+- ``mcp_census``     — exact MCP census pin (``EXPECTED_MCP_TOOLS`` / ``EXPECTED_MCP_MODULES``)
 - ``render_recovery``— recovery-friendly bulk render for resilience tests
 - path helpers + sample-model loader for ``test_data/``
 """
@@ -14,7 +15,8 @@ from pathlib import Path
 from typing import Any, Dict
 
 from .gnn_samples import SAMPLE_GNN_CONTENT, write_sample_gnn_markdown
-from .mcp_stubs import MCPTools
+from .mcp_census import CENSUS_SOURCE, EXPECTED_MCP_MODULES, EXPECTED_MCP_TOOLS
+from .mcp_stubs import FakeMCPTime, MCPTools
 from .render_recovery import render_gnn_files
 from .script_loader import load_module_from_path
 
@@ -59,7 +61,11 @@ def load_sample_gnn_spec() -> Dict[str, Any]:
 
 __all__: list[str] = [
     "SAMPLE_GNN_CONTENT",
+    "EXPECTED_MCP_TOOLS",
+    "EXPECTED_MCP_MODULES",
+    "CENSUS_SOURCE",
     "MCPTools",
+    "FakeMCPTime",
     "load_module_from_path",
     "write_sample_gnn_markdown",
     "render_gnn_files",
