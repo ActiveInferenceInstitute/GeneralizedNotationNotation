@@ -1,7 +1,7 @@
 # GNN Paper: Generalized Notation Notation
 
-**Version**: 3.3.0
-**Last Updated**: 2026-09-17
+**Version**: 3.5.0
+**Last Updated**: 2026-09-23
 **Status**: Maintained
 **Scope**: GNN language, pipeline, and renderer architecture. See [implementations/README.md](implementations/README.md) and the repository test commands for current inventory and evidence.
 

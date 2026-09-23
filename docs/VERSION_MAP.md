@@ -1,10 +1,11 @@
 # GNN Version Map
 
 One-stop map of what changed at each release and where the authoritative record
-lives. Current version: **3.4.0** (see `pyproject.toml`, `CHANGELOG.md`).
+lives. Current version: **3.5.0** (see `pyproject.toml`, `CHANGELOG.md`).
 
 | Version | Date | Theme | Primary record |
 | --- | --- | --- | --- |
+| 3.5.0 | 2026-09-22 | Surface Truth & Integration: website step-20 statuses read from the recorded execution summary, standard MCP 2024-11-05 protocol in both transports, three new MCP tools (registry 142→146), `gnn gui` CLI subcommand, full API runs-delete contract with cancellation, one canonical framework tuple, step-24 LLM cache, didChange-aware LSP diagnostics, ngc-learn LGSSM exemplar + render/execute lane | [CHANGELOG §3.5.0](../CHANGELOG.md) |
 | 3.4.0 | 2026-09-17 | Model-Kind Truth: docs+manuscript generalization to discrete/continuous/multi-agent kinds (~110 docs), snapshot-based token auto-injection (`GNN_VERSION`/`GNN_MODULE_COUNT`/`GNN_TOOL_COUNT`/`GNN_TEST_COUNT`), `gnn doctor` capability probe + MCP `get_doctor_report`, bnlearn Step 12 executor, Step-6 B-orientation diagnostics + `--transpose-b`, cover-page graphical abstract | [CHANGELOG §3.4.0](../CHANGELOG.md) |
 | 3.3.0 | 2026-09-06 | One Corpus: input corpus closure (former top-level fixture dirs folded into `gnn_files/`), manuscript remediation reconciled onto the `src/gnn/` layout (Rule-8 path-claims gate, preamble PDF-metadata ownership, relocated manuscript gates), `gnn.*` as the single canonical import surface | [CHANGELOG §3.3.0](../CHANGELOG.md) |
 | 3.2.0 | 2026-09-02 | Exemplar Gold Standard: pure continuous (linear-Gaussian) exemplars with native JAX/NumPyro/PyTorch/Stan/RxInfer.jl backends, `unsupported` render status for categorical backends, runnable Stan HMM/LGSSM programs + cmdstanpy executor, Step 12 per-folder summary merge, Julia pre-exec gate fix | [CHANGELOG §3.2.0](../CHANGELOG.md) |

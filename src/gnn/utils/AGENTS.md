@@ -351,7 +351,7 @@ uv run --extra dev python -m pytest tests/utils/ \
 ## MCP Integration
 
 ### Tools Registered
-Registered by `src/gnn/utils/mcp.py`:
+Registered by the `gnn.utils.mcp` package (`src/gnn/utils/mcp/`):
 - `get_system_info` - Platform, Python, and memory information
 - `get_environment_info` - Environment and dependency overview
 - `get_logging_info` - Logging configuration

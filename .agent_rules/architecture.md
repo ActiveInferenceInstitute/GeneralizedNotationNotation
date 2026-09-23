@@ -138,4 +138,4 @@ censuses every `N_*_output` directory.
 
 ---
 
-**Last Updated**: 2026-09-18 | **Pipeline Version**: 3.4.0
+**Last Updated**: 2026-09-23 | **Pipeline Version**: 3.5.0

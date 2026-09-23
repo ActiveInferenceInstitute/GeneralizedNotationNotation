@@ -163,7 +163,7 @@ Implementation lives at `src/gnn/mcp/processors.py`; validators come from `gnn.s
 - Execution monitoring
 - Configuration management
 
-### Utils (`src/gnn/utils/mcp.py`)
+### Utils (`src/gnn/utils/mcp/`)
 - System diagnostics
 - File operations
 - Environment validation
