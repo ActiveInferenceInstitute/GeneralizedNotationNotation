@@ -73,7 +73,7 @@ try:
 except ImportError:
     PYGLS_AVAILABLE = False
     logger.debug(
-        "pygls not installed — LSP server unavailable. Install with: pip install pygls"
+        "pygls not installed — LSP server unavailable. Install with: uv sync --group dev"
     )
 
 

@@ -10,11 +10,9 @@ src/gnn/audio/sapf/
 ├── README.md                      # This documentation
 ├── AGENTS.md                      # Agent scaffolding
 ├── processor.py                   # GNN -> SAPF code -> WAV wrapper (process_gnn_to_audio)
-├── generator.py                   # Directory-level generate_sapf_audio helper
 ├── module_info.py                 # get_module_info / get_audio_generation_options / register_tools
 ├── sapf_gnn_processor.py         # SAPFGNNProcessor: GNN sections -> SAPF code
-├── audio_generators.py           # SyntheticAudioGenerator and oscillator helpers
-└── utils.py                       # Small shared helpers
+└── audio_generators.py           # SyntheticAudioGenerator and oscillator helpers
 ```
 
 ## SAPF Audio Generation Pipeline
