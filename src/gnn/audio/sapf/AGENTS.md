@@ -72,9 +72,6 @@
 - `numpy` - Synthesis and array handling
 - `matplotlib` - Imported unconditionally by `audio_generators.py` for the analysis PNG
 
-### Internal Dependencies
-- `pipeline` / `utils` - Used by `generator.py` (`generate_sapf_audio(target_dir, output_dir, logger, ...)`) for directory-level runs
-
 ---
 
 ## Usage Examples

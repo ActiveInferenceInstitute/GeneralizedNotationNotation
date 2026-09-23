@@ -18,11 +18,9 @@ src/gnn/audio/
 └── sapf/                          # SAPF (Sound As Pure Form) sub-package
     ├── __init__.py               # SAPF module initialization
     ├── audio_generators.py       # SyntheticAudioGenerator and oscillator helpers
-    ├── generator.py              # Directory-level SAPF generation helper
     ├── module_info.py            # get_module_info / register_tools
     ├── processor.py              # GNN -> SAPF code -> WAV wrapper
-    ├── sapf_gnn_processor.py     # SAPFGNNProcessor: GNN sections -> SAPF code
-    └── utils.py                  # Small shared helpers
+    └── sapf_gnn_processor.py     # SAPFGNNProcessor: GNN sections -> SAPF code
 ```
 
 ## Core Components
