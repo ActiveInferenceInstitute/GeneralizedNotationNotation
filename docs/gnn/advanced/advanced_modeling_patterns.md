@@ -1,7 +1,7 @@
 # Advanced GNN Modeling Patterns
 
-**Version**: v3.3.0 Engine (Bundle v2.0.0)  
-**Last Updated**: 2026-09-17  
+**Version**: v3.5.0 Engine (Bundle v2.0.0)
+**Last Updated**: 2026-09-23
 **Status**: Maintained
 **Scope**: Advanced GNN modeling patterns. See [framework implementations](../implementations/README.md) for current backend coverage.
 
