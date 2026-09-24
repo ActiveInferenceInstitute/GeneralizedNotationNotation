@@ -444,9 +444,7 @@ def _write_performance_dashboard(
 ) -> None:
     """Render the D3 performance dashboard when the template is available."""
     try:
-        template_path = (
-            Path(__file__).parent / "performance_dashboard.template.html"
-        )
+        template_path = Path(__file__).parent / "performance_dashboard.template.html"
         if template_path.exists():
             template_content = template_path.read_text()
             json_payload = json.dumps(pipeline_summary)
@@ -575,13 +573,19 @@ def _write_pipeline_summary_outputs(
                 file_hashes=pipeline_summary.get("file_hashes"),
             )
 
-        _late_main("_write_performance_dashboard")(summary_path, pipeline_summary, logger)
-        _late_main("_write_final_pipeline_report")(args.output_dir, summary_path, logger)
+        _late_main("_write_performance_dashboard")(
+            summary_path, pipeline_summary, logger
+        )
+        _late_main("_write_final_pipeline_report")(
+            args.output_dir, summary_path, logger
+        )
         _log_pipeline_summary_counts(pipeline_summary, logger)
     except Exception as e:
         logger.error(f"Failed to save pipeline summary: {e}")
         pipeline_summary["overall_status"] = "FAILED"
-        _late_main("_save_minimal_pipeline_summary")(summary_path, pipeline_summary, e, logger)
+        _late_main("_save_minimal_pipeline_summary")(
+            summary_path, pipeline_summary, e, logger
+        )
 
 
 def _print_pipeline_completion(
