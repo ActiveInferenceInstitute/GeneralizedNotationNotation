@@ -19,9 +19,11 @@ custom ``--report-path`` is provided.
 from __future__ import annotations
 
 import argparse
+import ast
 import logging
 import re
 import sys
+from collections.abc import Sequence
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -346,6 +348,182 @@ PER_MODULE_VERSION_RE = re.compile(
 STALE_VERSION_CLAIM_RE = re.compile(
     r"(?im)^(?:\*\*)?\s*(?:pipeline )?version(?:\*\*)?\s*[:=]\s*\[?(\d+\.\d+\.\d+)\]?"
 )
+
+# Render-engine count claims: footer/status metadata lines ("**Renderers**:
+# 9 backends") and prose phrases bound to the framework registry ("the nine
+# computational engines declared in ``framework_registry.py``", "single
+# declaration of the nine frameworks", "Supports nine backends: ...") name
+# the maintained renderer inventory declared by
+# ``src/gnn/render/framework_registry.py``. The count is judged against the
+# live registry (parsed via ``ast``, never imported) so the claim cannot
+# drift when a backend is added.
+ENGINE_COUNT_WORDS: dict[str, int] = {
+    "one": 1,
+    "two": 2,
+    "three": 3,
+    "four": 4,
+    "five": 5,
+    "six": 6,
+    "seven": 7,
+    "eight": 8,
+    "nine": 9,
+    "ten": 10,
+    "eleven": 11,
+    "twelve": 12,
+    "thirteen": 13,
+    "fourteen": 14,
+    "fifteen": 15,
+    "sixteen": 16,
+    "seventeen": 17,
+    "eighteen": 18,
+    "nineteen": 19,
+    "twenty": 20,
+}
+
+_ENGINE_COUNT_NUM = "|".join(ENGINE_COUNT_WORDS) + r"|\d{1,2}"
+
+# "9 backends" / "nine frameworks" / "ten computational engines". A count
+# directly preceded by "other" ("reports it alongside the other nine
+# backends" — implies the total, not a claim of it) or by "Step N" ("Step 12
+# backends remain core deps" — a step number, not a count) is not a claim.
+ENGINE_COUNT_RE = re.compile(
+    rf"(?i)\b(?:(?P<idiom>other|step\s+\d{{1,2}})\s+)?"
+    rf"(?P<count>{_ENGINE_COUNT_NUM})\s+"
+    r"(?P<noun>(?:computational\s+|rendering\s+)?(?:engines|frameworks|backends))\b"
+)
+
+# Footer/status metadata lines: the count may sit anywhere after the label.
+ENGINE_COUNT_FOOTER_LABEL_RE = re.compile(r"(?i)\*{0,2}renderers?\*{0,2}\s*:\s*")
+
+# Prose phrases that bind a count to the full maintained renderer inventory.
+# Partial-surface phrasings ("renders one parsed spec to six backends —
+# RxInfer.jl, ..." for the cross-framework comparison tool, "the dispatch
+# covers all eleven backends" for the Step-12 execution axis) deliberately
+# do not bind and are never judged against the render registry.
+ENGINE_COUNT_PROSE_BINDING_RE = re.compile(
+    r"(?i)declaration of the\b|declared in\b|registered in\b|wired under\b"
+    r"|supports\b|renders?\s+to\b|code (?:generation|rendering) for\b"
+)
+
+
+def engine_count_scan_files() -> list[Path]:
+    """Files scanned for render-engine count claims: the maintained-doc set
+    plus the root ``SPEC.md``. The root ecosystem spec states the engine
+    inventory ("the N computational engines declared in
+    ``framework_registry.py``") but is not in ``MAINTAINED_ROOT_DOC_FILES``
+    (whose bare-``Version`` enforcement is deliberately not extended here),
+    so it is added to this check's scan set explicitly."""
+    return maintained_doc_files() + [REPO_ROOT / "SPEC.md"]
+
+
+def _framework_registry_count() -> int | None:
+    """Number of frameworks declared by ``FRAMEWORK_REGISTRY``.
+
+    Parsed with :mod:`ast` from the registry source so the audit stays
+    dependency-free; ``None`` when the registry cannot be read or the
+    assignment cannot be located (the audit then reports that directly
+    instead of silently skipping the check).
+    """
+    path = REPO_ROOT / "src" / "gnn" / "render" / "framework_registry.py"
+    try:
+        tree = ast.parse(path.read_text(encoding="utf-8"))
+    except (OSError, SyntaxError, ValueError):
+        return None
+    for node in ast.walk(tree):
+        value = None
+        if (
+            isinstance(node, ast.AnnAssign)
+            and getattr(node.target, "id", None) == "FRAMEWORK_REGISTRY"
+        ):
+            value = node.value
+        elif isinstance(node, ast.Assign) and any(
+            getattr(t, "id", None) == "FRAMEWORK_REGISTRY" for t in node.targets
+        ):
+            value = node.value
+        if value is None:
+            continue
+        if isinstance(value, ast.Call) and value.args:
+            value = value.args[0]
+        if isinstance(value, ast.Dict):
+            return len(value.keys)
+    return None
+
+
+def audit_engine_count_claims(
+    files: list[Path],
+) -> list[tuple[Path, int, str, str]]:
+    """Flag render-engine count claims that contradict the framework registry.
+
+    Two claim shapes are enforced against ``len(FRAMEWORK_REGISTRY)``:
+
+    - **Footer/status lines**: ``**Renderers**: N backends`` metadata lines
+      in module/domain README footers. The count is searched after the
+      ``Renderers:`` label so sibling counts on the same line (``Modules``,
+      ``Pipeline steps``) are never picked up.
+    - **Registry-bound prose**: a count phrase on a line that also binds it
+      to the full renderer inventory (``declared in …registry``,
+      ``single declaration of the N frameworks``, ``wired under``,
+      ``Supports N backends``, ``renders to N backends``, ``Code
+      generation/rendering for``). Subset claims ("renders one parsed spec
+      to six backends") and execution-axis totals ("the dispatch covers all
+      eleven backends") do not bind and are exempt by construction.
+
+    ``other N`` / ``Step N`` idioms adjacent to a count are never claims.
+    """
+    registry_count = _framework_registry_count()
+    if registry_count is None:
+        return [
+            (
+                Path("src/gnn/render/framework_registry.py"),
+                0,
+                "",
+                "cannot parse FRAMEWORK_REGISTRY",
+            )
+        ]
+
+    issues: list[tuple[Path, int, str, str]] = []
+
+    def _claim(count_text: str, noun: str) -> bool:
+        claimed = ENGINE_COUNT_WORDS.get(count_text.lower())
+        claimed = claimed if claimed is not None else int(count_text)
+        return claimed != registry_count
+
+    def _reason(count_text: str) -> str:
+        return (
+            f"render-engine count claim != framework_registry "
+            f"({registry_count} frameworks)"
+        )
+
+    for path in files:
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        rel = path.relative_to(REPO_ROOT)
+        for lineno, line in enumerate(
+            _strip_code_and_links(text).splitlines(), start=1
+        ):
+            footer = ENGINE_COUNT_FOOTER_LABEL_RE.search(line)
+            matches = list(ENGINE_COUNT_RE.finditer(line))
+            if footer is not None:
+                matches = [m for m in matches if m.start() >= footer.end()]
+            else:
+                if not ENGINE_COUNT_PROSE_BINDING_RE.search(line):
+                    continue
+            for match in matches:
+                if match.group("idiom"):
+                    continue
+                count_text = match.group("count")
+                if _claim(count_text, match.group("noun")):
+                    issues.append(
+                        (
+                            rel,
+                            lineno,
+                            count_text,
+                            _reason(count_text),
+                        )
+                    )
+    return issues
 
 
 def audit_src_spec_coverage() -> list[tuple[Path, str]]:
@@ -802,6 +980,7 @@ def format_strict_issue_detail(
     spec_coverage_issues: list[tuple[Path, str]],
     prose_src_issues: list[tuple[Path, int, str]],
     version_claim_issues: list[tuple[Path, int, str, str]],
+    engine_count_issues: Sequence[tuple[Path, int, str, str]] = (),
 ) -> str:
     """Human-readable listing for terminal fix loops (stderr)."""
     chunks: list[str] = []
@@ -890,6 +1069,13 @@ def format_strict_issue_detail(
         ):
             chunks.append(f"  {rel}:{lineno}  `{claimed}`  → {reason}\n")
 
+    if engine_count_issues:
+        chunks.append(f"## Render-engine count claims ({len(engine_count_issues)})\n")
+        for rel, lineno, claimed, reason in sorted(
+            engine_count_issues, key=lambda x: (str(x[0]), x[1])
+        ):
+            chunks.append(f"  {rel}:{lineno}  `{claimed}`  → {reason}\n")
+
     chunks.append("\nTip: full tables also in docs/development/docs_audit_report.md\n")
     return "".join(chunks)
 
@@ -962,6 +1148,7 @@ def main() -> int:
     maintained_files = maintained_doc_files()
     prose_src_issues = audit_prose_src_patterns(maintained_files)
     version_claim_issues = audit_version_claims(maintained_files)
+    engine_count_issues = audit_engine_count_claims(engine_count_scan_files())
 
     report_path = args.report_path
     if not report_path.is_absolute():
@@ -1134,6 +1321,22 @@ def main() -> int:
     lines.extend(
         [
             "",
+            "## Render-engine count claims contradicting framework_registry",
+            "",
+        ]
+    )
+    if not engine_count_issues:
+        lines.append("None found.")
+    else:
+        lines.append("| Source | Line | Claimed | Issue |")
+        lines.append("|--------|------|---------|-------|")
+        for rel, lineno, claimed, reason in sorted(
+            engine_count_issues, key=lambda x: (str(x[0]), x[1])
+        ):
+            lines.append(f"| `{rel}` | {lineno} | {claimed} | {reason} |")
+    lines.extend(
+        [
+            "",
             "## docs/**/AGENTS.md structure (Overview/Purpose)",
             "",
         ]
@@ -1167,6 +1370,7 @@ def main() -> int:
     print(f"src dirs missing SPEC.md: {len(spec_coverage_issues)}")
     print(f"prose src/<module> pattern: {len(prose_src_issues)}")
     print(f"stale version claims: {len(version_claim_issues)}")
+    print(f"engine count claims: {len(engine_count_issues)}")
     total_issues = (
         len(link_issues)
         + len(spec_issues)
@@ -1180,6 +1384,7 @@ def main() -> int:
         + len(spec_coverage_issues)
         + len(prose_src_issues)
         + len(version_claim_issues)
+        + len(engine_count_issues)
         + (len(anchor_issues) if args.check_anchors else 0)
     )
     if args.strict and total_issues > 0:
@@ -1201,6 +1406,7 @@ def main() -> int:
                     spec_coverage_issues=spec_coverage_issues,
                     prose_src_issues=prose_src_issues,
                     version_claim_issues=version_claim_issues,
+                    engine_count_issues=engine_count_issues,
                 ),
                 file=sys.stderr,
                 end="",
