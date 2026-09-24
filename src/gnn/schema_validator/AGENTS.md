@@ -19,14 +19,23 @@
 ## Module Structure
 
 Three concerns, one package (split in 3.2.0 from a former single-file
-validator module plus a standalone cross-format module):
+validator module plus a standalone cross-format module; the two large
+modules were decomposed into mixin submodules in 2026-09):
 
 1. `syntax.py` — `GNNParser`: regex-based parsing of GNN source text into a
-   `ParsedGNN` structure. No validation policy; parsing only.
+   `ParsedGNN` structure. No validation policy; parsing only. Facade keeps
+   the orchestrator methods (`parse_file`, `parse_content`) and
+   `ROUND_TRIP_AVAILABLE`; the section parsers live in `section_parsers.py`
+   and format/binary detection in `format_detection.py` (both mixed into
+   `GNNParser`).
 2. `validator.py` — `GNNValidator` + `validate_gnn_file_comprehensive`: schema validation
    against `schemas/json.json`, semantic checks, optional round-trip testing
    (via `gnn.parsers`), and binary/pickle validation. Imports `GNNParser`
-   from `.syntax`.
+   from `.syntax`. Facade keeps `__init__`, `validate_file`, and the entry
+   point; the checks live in mixin submodules: `validation_levels.py`
+   (level resolution), `structural_checks.py` (format/structure gates),
+   `round_trip_checks.py` (round-trip + cross-format), `semantic_checks.py`
+   (semantic/mathematical checks).
 3. `cross_format.py` — `CrossFormatValidator`,
    `validate_cross_format_consistency`, `validate_schema_consistency`:
    consistency checks across the rendered output formats.
