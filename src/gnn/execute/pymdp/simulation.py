@@ -379,6 +379,108 @@ def _build_pymdp_agent(
 # ---------------------------------------------------------------------------
 
 
+def pymdp_kind_refusal(gnn_spec: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    """
+    Classify a GNN spec against PyMDP's categorical-only backend contract.
+
+    PyMDP renders only discrete POMDPs with categorical A/B/C/D[/E]
+    matrices. Specs that declare the linear-Gaussian (F/H/Q/R) family —
+    alone or composed with other families — must be refused here with an
+    explicit structured receipt instead of failing later inside the matrix
+    normalisation path (or silently after a partial rollout).
+
+    Detection mirrors the render-side doctrine in
+    ``gnn.render.pomdp_contract``: kind sets are composed (every declared
+    family is reported), and the refusal reason for a composed spec comes
+    from ``unsupported_composition_reason`` so receipts share the single
+    stable ``unsupported-composition:`` grep anchor.
+
+    Parameters
+    ----------
+    gnn_spec : dict
+        Either an in-memory spec (``initialparameterization`` /
+        ``initial_parameterization`` present) or a lightweight parse
+        receipt carrying ``file_path`` for late extraction.
+
+    Returns
+    -------
+    dict or None
+        ``None`` when the spec is not refusable (discrete/other
+        singletons, or not classifiable at all — the engine's existing
+        matrix checks fail loud downstream). Otherwise a receipt:
+
+        - Continuous family composed with others →
+          ``{"success": False, "unsupported": True, "status": "unsupported",
+          "reason": unsupported_composition_reason(kinds),
+          "model_kinds": sorted kind names}``.
+        - Singleton continuous → same shape with a
+          ``continuous-spec:`` reason.
+        - Extraction failure on a ``file_path`` receipt →
+          ``{"success": False, "unsupported": False, "status": "failed",
+          "reason": "pymdp-kind-gate: extraction failed (<codes>)"}``.
+
+    Notes
+    -----
+    Imports are lazy to keep module import light. Only the
+    extraction-failure path yields a structured ``failed`` receipt;
+    unexpected detection errors (e.g. ``ValueError`` from
+    ``detect_model_kinds`` on a malformed mapping) propagate, matching
+    the render side's fail-loud doctrine.
+    """
+    from gnn.render.pomdp_contract import (
+        ModelKind,
+        detect_model_kinds,
+        detect_pomdp_space_model_kinds,
+        unsupported_composition_reason,
+    )
+
+    initial = gnn_spec.get("initialparameterization") or gnn_spec.get(
+        "initial_parameterization"
+    )
+    if isinstance(initial, dict) and initial:
+        kinds = detect_model_kinds(gnn_spec)
+    else:
+        file_path = gnn_spec.get("file_path")
+        if not file_path:
+            return None
+        from gnn.extract.pomdp_extractor import extract_pomdp_from_file
+
+        space, errors = extract_pomdp_from_file(
+            file_path, strict_validation=False, on_error="collect"
+        )
+        if space is None:
+            codes = "; ".join(f"{e.code}: {e.message}" for e in errors) or "unknown"
+            return {
+                "success": False,
+                "unsupported": False,
+                "status": "failed",
+                "reason": f"pymdp-kind-gate: extraction failed ({codes})",
+            }
+        kinds = detect_pomdp_space_model_kinds(space)
+
+    if ModelKind.CONTINUOUS in kinds and len(kinds) > 1:
+        return {
+            "success": False,
+            "unsupported": True,
+            "status": "unsupported",
+            "reason": unsupported_composition_reason(kinds),
+            "model_kinds": sorted(k.value for k in kinds),
+        }
+    if kinds == frozenset({ModelKind.CONTINUOUS}):
+        return {
+            "success": False,
+            "unsupported": True,
+            "status": "unsupported",
+            "reason": (
+                "continuous-spec: PyMDP requires categorical A/B/C/D[/E] "
+                "matrices; continuous linear-Gaussian models render to a "
+                "native continuous backend instead"
+            ),
+            "model_kinds": sorted(k.value for k in kinds),
+        }
+    return None
+
+
 def run_pymdp_simulation(
     gnn_spec: Dict[str, Any],
     output_dir: Path,
@@ -406,6 +508,13 @@ def run_pymdp_simulation(
         ``true_states``, ``simulation_trace``, ``validation``, ``metrics``,
         ``model_parameters``, ``framework == "PyMDP"``.
     """
+    # Categorical-backend doctrine: PyMDP renders only discrete POMDPs, so
+    # refuse continuous/composed specs here — before importing pymdp — with
+    # an explicit receipt instead of a downstream matrix failure.
+    gate = pymdp_kind_refusal(gnn_spec)
+    if gate is not None:
+        return False, gate
+
     try:
         _, _, jnp, jr = _require_pymdp_1()
     except ImportError as e:
@@ -527,7 +636,8 @@ def run_pymdp_simulation(
     actions: List[int] = []
     beliefs: List[List[float]] = []
     efe_history: List[List[float]] = []
-    vfe_history: List[float] = []
+    vfe_history: List[Optional[float]] = []
+    vfe_unavailable: List[int] = []
     policy_posterior_history: List[List[float]] = []
 
     empirical_prior = agent.D
@@ -553,8 +663,14 @@ def run_pymdp_simulation(
 
         try:
             vfe_history.append(float(np.asarray(info["vfe"]).mean()))
-        except Exception:  # noqa: BLE001 - informational only
-            vfe_history.append(0.0)
+        except Exception as e:  # noqa: BLE001 - informational only
+            vfe_history.append(None)
+            vfe_unavailable.append(t)
+            logger.warning(
+                "VFE extraction failed at timestep %d; recorded as unavailable: %s",
+                t,
+                e,
+            )
 
         q_pi, neg_efe = agent.infer_policies(qs)
         # q_pi / neg_efe shape: (batch, num_policies)
@@ -597,6 +713,7 @@ def run_pymdp_simulation(
         "success": True,
         "framework": "PyMDP",
         "pymdp_version": pymdp_version,
+        "vfe_unavailable_timesteps": vfe_unavailable,
         "backend": "jax",
         "model_name": model_name,
         "num_timesteps": num_timesteps,

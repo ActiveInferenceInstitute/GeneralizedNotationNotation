@@ -18,7 +18,11 @@ LOGGER = logging.getLogger(__name__)
 @pytest.mark.parametrize("root", [None, [], "invalid", 1])
 def test_render_contract_rejects_invalid_root(tmp_path: Path, root: object) -> None:
     (tmp_path / "render_processing_summary.json").write_text(json.dumps(root))
-    assert _load_render_summary_contract(tmp_path, ["pymdp"], LOGGER) == (None, [])
+    assert _load_render_summary_contract(tmp_path, ["pymdp"], LOGGER) == (
+        None,
+        [],
+        [],
+    )
 
 
 def receipt(source: Path, script: Path, run_id: str, *, success: bool = True) -> dict:
@@ -97,7 +101,9 @@ def test_render_contract_rejects_changed_bytes(tmp_path: Path, changed: str) -> 
     }
     (tmp_path / "render_processing_summary.json").write_text(json.dumps(summary))
     (source if changed == "source" else script).write_text("changed")
-    allowed, failures = _load_render_summary_contract(tmp_path, ["pymdp"], LOGGER)
+    allowed, failures, _unsup = _load_render_summary_contract(
+        tmp_path, ["pymdp"], LOGGER
+    )
     assert allowed == set()
     assert failures
 
@@ -171,3 +177,32 @@ def test_execution_atomic_writer_emits_current_receipt(tmp_path: Path) -> None:
     assert "stdout" not in slim["execution_details"][0]
     assert detail["execution_details"][0]["stdout"] == "full text"
     assert result["execution_details"][0]["stdout"] == "full text"
+
+
+def test_render_contract_surfaces_unsupported_receipts(tmp_path: Path) -> None:
+    summary = {
+        "file_results": {
+            "input/cont.md": {
+                "framework_results": {
+                    "pymdp": {
+                        "unsupported": True,
+                        "success": False,
+                        "message": "continuous-state model",
+                    }
+                }
+            }
+        }
+    }
+    (tmp_path / "render_processing_summary.json").write_text(json.dumps(summary))
+    allowed, failures, unsupported = _load_render_summary_contract(
+        tmp_path, ["pymdp"], LOGGER
+    )
+    assert allowed == set()
+    assert failures == []
+    assert len(unsupported) == 1
+    receipt_row = unsupported[0]
+    assert set(receipt_row) == {"file", "framework", "reason", "status"}
+    assert receipt_row["file"] == "input/cont.md"
+    assert receipt_row["framework"] == "pymdp"
+    assert receipt_row["reason"] == "continuous-state model"
+    assert receipt_row["status"] == "unsupported"

@@ -1,9 +1,10 @@
 """Simple JSON/XML round-trip tests for GNN serializers.
 
-Adopted from ``src/gnn/testing/simple_round_trip_test.py`` (a
-never-collected print-only script returning bools with zero assertions).
-Converted to real pytest tests: serialize a minimal model, parse it back,
-and assert fidelity.
+Historical note: an earlier standalone script at
+``src/gnn/testing/simple_round_trip_test.py`` — print-only, boolean-returning,
+zero assertions, never collected by pytest — was retired 2026-09-24 in favor
+of these real pytest tests: serialize a minimal model, parse it back, and
+assert fidelity.
 """
 
 import json

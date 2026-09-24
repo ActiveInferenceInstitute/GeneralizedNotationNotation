@@ -73,6 +73,9 @@ class ExecutionPlan(TypedDict):
     Keys are populated progressively; every key is optional so partial plans
     (for example when the render output directory is missing) remain
     representable without ``None``-sentinel gymnastics.
+
+    ``unsupported_render_receipts`` carries receipts for frameworks the
+    renderer declared unable to represent the model — refused, not failed.
     """
 
     requested_frameworks: List[str]
@@ -87,3 +90,4 @@ class ExecutionPlan(TypedDict):
     unknown_framework_scripts: List[Dict[str, str]]
     missing_render_scripts: List[str]
     render_failures: List[Dict[str, str]]
+    unsupported_render_receipts: List[Dict[str, str]]
