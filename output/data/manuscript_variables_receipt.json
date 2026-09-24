@@ -1,9 +1,10 @@
 {
-  "counts_describe_commit": "07db21aee",
-  "dirty_path_count": 2,
+  "counts_describe_commit": "3fa3b1db4",
+  "dirty_path_count": 3,
   "dirty_paths": [
     "output/data/manuscript_variables.json",
-    "output/data/manuscript_variables_receipt.json"
+    "output/data/manuscript_variables_receipt.json",
+    "output/model_registry_api/model_registry.json"
   ],
   "generator": "scripts/z_generate_manuscript_variables.py",
   "git_available": true,
