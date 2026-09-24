@@ -9,7 +9,7 @@ Canonical numbers (enum size, serializer count, round-trip scope) are defined in
 
 - **`GNNFormat`**: 23 values (`parsers/common.py`).
 - **Serializers**: 22 registered (`parsers/system.py`); **PNML** is parse-only in the registry sense (no dedicated serializer entry).
-- **Round-trip tests**: [`testing/test_round_trip.py`](testing/test_round_trip.py) exercises **markdown** plus **20** target formats (21 entries total). **EBNF** and **PNML** are outside the default round-trip list.
+- **Round-trip tests**: pytest cases in [`tests/testing/test_round_trip.py`](../../tests/testing/test_round_trip.py), driven by the `gnn/testing/round_trip_tester.py` runner, exercise **markdown** plus **20** target formats (21 entries total). **EBNF** and **PNML** are outside the default round-trip list.
 
 For the reference model used in tests, those **21** formats achieve **100%** round-trip success in that suite.
 
@@ -305,7 +305,7 @@ print(f"Errors: {len(result.errors)}")
 
 ### Suite status
 
-For the reference model and the formats listed in [`testing/test_round_trip.py`](testing/test_round_trip.py), the suite reports **100%** round-trip success. See **[SPEC.md](SPEC.md)** for how that relates to all 23 enum formats (PNML/EBNF not in the default list).
+For the reference model and the formats listed in [`round_trip_config.py`](testing/round_trip_config.py), the suite reports **100%** round-trip success. See **[SPEC.md](SPEC.md)** for how that relates to all 23 enum formats (PNML/EBNF not in the default list).
 
 ### Embedded Data Architecture
 
@@ -329,7 +329,7 @@ The system uses embedded data in format-specific comments to preserve model sema
 ### Usage
 
 ```python
-from gnn.testing.test_round_trip import GNNRoundTripTester
+from gnn.testing.round_trip_tester import GNNRoundTripTester
 
 tester = GNNRoundTripTester()
 report = tester.run_comprehensive_tests()
@@ -393,10 +393,10 @@ print(f"Performance: {result.performance_metrics}")
 
 ### Testing Infrastructure
 
-The `testing/test_round_trip.py` module provides comprehensive testing:
+The `gnn/testing/round_trip_tester.py` module provides comprehensive testing:
 
 ```python
-from gnn.testing.test_round_trip import GNNRoundTripTester
+from gnn.testing.round_trip_tester import GNNRoundTripTester
 
 tester = GNNRoundTripTester()
 report = tester.run_comprehensive_tests()
@@ -520,7 +520,7 @@ Content-based format detection (no filename hint needed) is available via
 ### Benchmarks
 
 - **File Processing**: 50+ files/second with full validation
-- **Round-Trip Testing**: 21 formats (see `testing/test_round_trip.py`); timing varies per model — treat any fixed duration as a spot measurement, not a constant
+- **Round-Trip Testing**: 21 formats (see `testing/round_trip_config.py`); timing varies per model — treat any fixed duration as a spot measurement, not a constant
 - **Cross-Format Validation**: Sub-second consistency checks
 - **Memory Usage**: <100MB for complex multi-format models
 

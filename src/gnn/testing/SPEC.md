@@ -2,9 +2,10 @@
 
 ## Role
 
-- **`test_round_trip.py`** — `GNNRoundTripTester`; round-trip harness (default **21** format strings in config; see **[../SPEC.md](../SPEC.md)**).
-- **`test_comprehensive.py`**, **`test_integration.py`**, **`test_xml_parser_only.py`**, **`simple_round_trip_test.py`** — focused tests.
-- **`performance_benchmarks.py`**, **`round_trip_strategy.py`** — benchmarks / helpers.
+- **`round_trip_tester.py`** — `GNNRoundTripTester`; round-trip harness (default **21** format strings in config; see **[../SPEC.md](../SPEC.md)**). Pytest coverage lives under `tests/testing/`.
+- **`round_trip_config.py`**, **`round_trip_results.py`**, **`round_trip_comparison.py`**, **`round_trip_report.py`**, **`round_trip_markdown_parser.py`**, **`round_trip_availability.py`**, **`round_trip_strategy.py`** — harness configuration / results / mixins / availability probe / strategy.
+- **`simple_round_trip_test.py`** — standalone JSON round-trip script (not a pytest module).
+- **`performance_benchmarks.py`** — benchmarks helper (exercised by `tests/testing/`).
 - **`round_trip_reports/`** — optional output directory for reports.
 
 ## Requirements
@@ -14,7 +15,7 @@
 ## Running
 
 ```bash
-uv run --extra dev python -m pytest src/gnn/testing/ -q
+uv run --extra dev python -m pytest tests/testing/ -q
 uv run --extra dev python -m pytest tests/test_gnn*.py -q
 ```
 

@@ -25,7 +25,7 @@ See **[README.md](README.md)** for focus and how to invoke each tool.
 
 Where the same surface syntax exists in the pipeline (e.g. Lean, Coq, Agda, TLA+, Alloy, Z, Maxima, BNF family), [`../parsers/`](../parsers/) provides **parse/serialize** for interchange. **Isabelle** and other files here are primarily **manual** verification artifacts.
 
-Round-trip **automation** is defined by [`../testing/test_round_trip.py`](../testing/test_round_trip.py) and **[../SPEC.md](../SPEC.md)** — not by “all eight files round-trip at 100%” as a blanket statement.
+Round-trip **automation** is defined by [`../testing/round_trip_config.py`](../testing/round_trip_config.py) (default `test_formats` list; runner in `../testing/round_trip_tester.py`) and **[../SPEC.md](../SPEC.md)** — not by “all eight files round-trip at 100%” as a blanket statement.
 
 SC-27 decision (2026-09-10): kept as **reference payloads, decorative at runtime** — no code in `src/`, `scripts/`, or `tests/` imports or reads these files; the only loader is `tests/test_grammar_spec_payloads.py` asserting they ship and are non-empty. They ship in the wheel via the `src/gnn` package include.
 

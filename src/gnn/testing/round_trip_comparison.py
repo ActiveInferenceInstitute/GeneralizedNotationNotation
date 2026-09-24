@@ -2,7 +2,7 @@
 """
 Model comparison mixin for the GNN round-trip test suite.
 
-Extracted from ``testing.test_round_trip``.
+Extracted from the former ``testing.test_round_trip`` monolith.
 """
 
 from __future__ import annotations

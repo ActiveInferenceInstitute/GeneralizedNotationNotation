@@ -13,9 +13,9 @@ These definitions are the single source of truth for cross-references in READMEs
 | **`GNNFormat` enum** | **23** | All supported formats, defined in `parsers/common.py`. |
 | **Parsers registered** | **23** | `PARSER_REGISTRY` in `parsers/system.py` — one parser class per format. |
 | **Serializers registered** | **22** | `SERIALIZER_REGISTRY` in `parsers/system.py` — **PNML** has a parser but no dedicated serializer (parse-focused / XML-related). |
-| **Round-trip test list** | **21** strings in `testing/test_round_trip.py` `FORMAT_TEST_CONFIG['test_formats']` | Includes `markdown` plus **20** other formats. **EBNF** and **PNML** are not in this list (PNML round-trip disabled in config). |
+| **Round-trip test list** | **21** strings in `testing/round_trip_config.py` `FORMAT_TEST_CONFIG['test_formats']` | Includes `markdown` plus **20** other formats. **EBNF** and **PNML** are not in this list (PNML round-trip disabled in config). |
 
-When a document says “100% round-trip,” it refers to the **formats exercised by** `test_round_trip.py`, not necessarily every enum value.
+When a document says “100% round-trip,” it refers to the **formats exercised by** the `round_trip_config.py` default list (pytest cases in `tests/testing/test_round_trip.py`), not necessarily every enum value.
 
 ## File discovery (two strategies)
 
@@ -65,7 +65,7 @@ from gnn import (
     discover_gnn_files,  # File discovery
     parse_gnn_file,  # Single-file parsing
     check_gnn_file_structure,  # Structure validation
-    validate_gnn_syntax,  # Full validation (file or content)
+    validate_gnn_syntax,  # Formal validation via schema_validator (file or content)
     process_gnn_directory,  # Directory processing
     generate_gnn_report,  # Report generation
     GNNParsingSystem,  # Parser registry

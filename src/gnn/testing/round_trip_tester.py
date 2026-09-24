@@ -1,40 +1,27 @@
+#!/usr/bin/env python3
 """
-Comprehensive Round-Trip Testing for GNN Format Conversion
+Production round-trip tester for GNN format conversion.
 
-This test suite ensures 100% confidence in reading and writing GNN models
-across all supported formats by:
-1. Reading the reference actinf_pomdp_agent.md model
-2. Converting it to all supported formats
-3. Reading back each converted format
-4. Verifying complete semantic equivalence and data integrity
+``GNNRoundTripTester`` exercises parse -> serialize -> parse conversions
+across the configured GNN formats and reports semantic preservation.
+Configuration, result dataclasses, the serializer availability probe, the
+direct markdown parser, model comparison, and report generation live in
+the ``round_trip_*`` sibling modules.
 
-Author: AI Assistant
-Date: 2025-01-17
-License: MIT
-
-Mechanical split facade: configuration, result dataclasses, the
-serializer availability probe, the direct markdown parser, model
-comparison, and report generation live in ``round_trip_*`` sibling
-modules; every previously module-level name is re-exported here so
-consumer import paths are unchanged.
+Extracted from the former ``testing.test_round_trip`` monolith so the
+tester is importable as production code (``schema_validator``'s
+``GNNValidator`` wires it for comprehensive validation) while the pytest
+test cases live under ``tests/testing/``.
 """
 
-import hashlib
-import json
 import logging
 import os
-import re
-import sys
 import tempfile
-import unittest
-from dataclasses import dataclass, field
-from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, cast
+from typing import Any, List, Optional, cast
 
 from .round_trip_availability import (
     CROSS_FORMAT_AVAILABLE,
-    GNN_AVAILABLE,
     AlloySerializer,
     ASN1Serializer,
     BinarySerializer,
@@ -58,15 +45,11 @@ from .round_trip_availability import (
     ProtobufSerializer,
     PythonSerializer,
     ScalaSerializer,
-    ValidationResult,
     Variable,
     XMLSerializer,
     XSDSerializer,
     YAMLSerializer,
     ZNotationSerializer,
-    current_file_dir,
-    src_path,
-    validate_cross_format_consistency,
 )
 from .round_trip_comparison import RoundTripComparisonMixin
 from .round_trip_config import (
@@ -77,9 +60,7 @@ from .round_trip_config import (
     REFERENCE_CONFIG,
     TEST_BEHAVIOR_CONFIG,
 )
-from .round_trip_markdown_parser import (
-    _DirectMarkdownParser,
-)
+from .round_trip_markdown_parser import _DirectMarkdownParser
 from .round_trip_report import RoundTripReportMixin
 from .round_trip_results import (
     ComprehensiveTestReport,
@@ -100,8 +81,6 @@ logging.basicConfig(
     else "%(message)s",
 )
 
-# Add the src directory to the Python path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 
 logger = logging.getLogger(__name__)
 
@@ -1166,106 +1145,3 @@ class GNNRoundTripTester(RoundTripComparisonMixin, RoundTripReportMixin):
             GNNFormat.Z_NOTATION: "zed",
         }
         return cast("str", extensions.get(format, "txt"))
-
-
-if __name__ == "__main__":
-    if not GNN_AVAILABLE:
-        print(
-            "\n❌ GNN module not available. Please ensure the GNN package is properly installed."
-        )
-        sys.exit(1)
-
-    # Print configuration summary
-    print("GNN Round-Trip Testing Configuration:")
-    if FORMAT_TEST_CONFIG["test_all_formats"]:
-        enabled_categories = [
-            cat
-            for cat, enabled in FORMAT_TEST_CONFIG["test_categories"].items()
-            if enabled
-        ]
-        print(f"  Mode: Test all formats (categories: {', '.join(enabled_categories)})")
-    else:
-        print(
-            f"  Mode: Selective testing ({len(FORMAT_TEST_CONFIG['test_formats'])} formats)"
-        )
-        print(f"  Selected formats: {', '.join(FORMAT_TEST_CONFIG['test_formats'])}")
-
-    print(f"  Detailed output: {LOGGING_CONFIG['enable_detailed_output']}")
-    print(f"  Strict validation: {TEST_BEHAVIOR_CONFIG['strict_validation']}")
-    print(f"  Fail fast: {TEST_BEHAVIOR_CONFIG['fail_fast']}")
-    print()
-
-    # Run comprehensive tests
-    tester = GNNRoundTripTester()
-
-    try:
-        report = tester.run_comprehensive_tests()
-
-        # Generate and save report if configured
-        if OUTPUT_CONFIG["generate_detailed_report"]:
-            output_dir = Path(__file__).parent / "round_trip_reports"
-            output_dir.mkdir(exist_ok=True)
-
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            report_file = output_dir / f"round_trip_report_{timestamp}.md"
-
-            if LOGGING_CONFIG["enable_detailed_output"]:
-                print("\n📄 Generating detailed report...")
-
-            report_content = tester.generate_report(report, report_file)
-
-            if LOGGING_CONFIG["enable_detailed_output"]:
-                print(f"   ✓ Report saved to: {report_file}")
-            else:
-                print(f"Report saved to: {report_file}")
-
-        # Export JSON results if configured
-        if OUTPUT_CONFIG["export_json_results"]:
-            json_file = output_dir / f"round_trip_results_{timestamp}.json"
-            import json
-
-            with open(json_file, "w") as f:
-                json.dump(
-                    report.to_dict()
-                    if hasattr(report, "to_dict")
-                    else {
-                        "total_tests": report.total_tests,
-                        "successful_tests": report.successful_tests,
-                        "failed_tests": report.failed_tests,
-                        "success_rate": report.get_success_rate(),
-                    },
-                    f,
-                    indent=2,
-                )
-
-            if LOGGING_CONFIG["enable_detailed_output"]:
-                print(f"   ✓ JSON results saved to: {json_file}")
-
-        # Exit with appropriate code
-        exit_code = 0 if report.get_success_rate() == 100.0 else 1
-
-        if exit_code == 0:
-            if LOGGING_CONFIG["enable_detailed_output"]:
-                print("\n✅ SUCCESS: All round-trip tests passed!")
-            else:
-                print("✅ All tests passed!")
-        else:
-            if LOGGING_CONFIG["enable_detailed_output"]:
-                print(
-                    "\n❌ FAILURE: Some tests failed. Check the details above and the report file."
-                )
-            else:
-                print(f"❌ {report.failed_tests}/{report.total_tests} tests failed.")
-
-        sys.exit(exit_code)
-
-    except KeyboardInterrupt:
-        print("\n\n⚠️  Tests interrupted by user.")
-        sys.exit(1)
-    except Exception as e:
-        print(f"\n❌ CRITICAL ERROR: {e}")
-        import traceback
-
-        print("Traceback:")
-        traceback.print_exc()
-        sys.exit(1)

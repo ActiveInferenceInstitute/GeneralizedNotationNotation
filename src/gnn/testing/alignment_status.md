@@ -12,7 +12,7 @@ Canonical **format counts** (23 enum, 22 serializers, round-trip scope): see **[
 
 ## Round-trip testing (default suite)
 
-The suite in [`test_round_trip.py`](test_round_trip.py) uses **21** format strings in `FORMAT_TEST_CONFIG['test_formats']`: **`markdown`** plus **20** conversion targets. For the reference model, that suite reports **100%** success.
+The suite in [`round_trip_tester.py`](round_trip_tester.py) uses **21** format strings in `FORMAT_TEST_CONFIG['test_formats']`: **`markdown`** plus **20** conversion targets. For the reference model, that suite reports **100%** success.
 
 **Not in the default round-trip list:** **`ebnf`** (same `GrammarSerializer` path as **BNF**; not separately exercised), **`pnml`** (disabled in config; PNML remains **parse**-focused in `parsers/system.py`).
 
@@ -51,7 +51,7 @@ Serializers embed a JSON snapshot of the model in comments or equivalent so pars
 | `parsers/*_parser.py`, `*_serializer.py` | Per-format I/O |
 | `schemas/` | JSON, YAML, XSD, Proto, ASN.1, PKL definitions |
 | `grammars/` | BNF / EBNF grammars |
-| `testing/test_round_trip.py` | Round-trip harness |
+| `testing/round_trip_tester.py` | Round-trip harness |
 | `gnn_examples/` | Reference Markdown models |
 | `formal_specs/` | Standalone formal artifacts (Isabelle, Lean, Coq, etc.) |
 

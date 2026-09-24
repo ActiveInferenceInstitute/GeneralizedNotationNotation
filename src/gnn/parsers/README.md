@@ -34,7 +34,7 @@ artifacts or bound memory and CPU use.
 1. Extend **`GNNFormat`** in `common.py` if needed.
 2. Implement parser and (unless parse-only) serializer classes.
 3. Register in **`PARSER_REGISTRY`** and **`SERIALIZER_REGISTRY`** in **`system.py`**.
-4. Add tests under `tests/` and extend `src/gnn/testing/test_round_trip.py` if the format should join the default round-trip list.
+4. Add tests under `tests/` and extend `tests/testing/test_round_trip.py` (participation configured in `src/gnn/testing/round_trip_config.py`) if the format should join the default round-trip list.
 
 ## Tests
 

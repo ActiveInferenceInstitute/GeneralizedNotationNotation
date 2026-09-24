@@ -3,6 +3,7 @@
 GNN parser module for GNN pipeline.
 """
 
+import tempfile
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union, cast
 
@@ -228,7 +229,7 @@ class GNNFormalParser:
         return parsed
 
     def validate_syntax(self, content: str) -> Tuple[bool, List[str]]:
-        """Validate GNN content with the built-in structural checks."""
+        """Validate GNN content via the formal schema_validator pipeline."""
         return validate_gnn_syntax(content, ValidationLevel.STANDARD)
 
     def visualize_parse_tree(self, content: str) -> str:
@@ -270,79 +271,106 @@ def get_parse_tree_visualization(content: str) -> str:
 
 def validate_gnn_syntax(
     file_path_or_content: Union[str, Path],
-    validation_level: ValidationLevel = ValidationLevel.STANDARD,
+    validation_level: Union[ValidationLevel, str, None] = ValidationLevel.STANDARD,
     **kwargs: Any,
 ) -> Tuple[bool, List[str]]:
     """
-    Validate a GNN file or content.
+    Validate GNN markdown text via the formal schema_validator pipeline.
+
+    Delegates to ``GNNValidator.validate_file`` (``gnn.schema_validator``);
+    returned messages are the formal validator's errors (for example
+    ``"Required section missing: ModelName"``). The former in-function regex
+    heuristics are removed: there is one validation path. Validity means the
+    formal validator's normative markdown gate — every required section
+    (``gnn.schemas.section_contract.REQUIRED_SECTIONS``) present with
+    substantive body content — a deliberate tightening over the legacy
+    heuristic that accepted any document with one header, one variable,
+    and one connection. The validator's level ladder applies unchanged at
+    every level: even BASIC now runs the required-section structure checks,
+    where the legacy body was a no-op below STANDARD.
 
     Args:
-        file_path_or_content: Path to GNN file or content string
-        validation_level: Level of validation to perform
-        **kwargs: Additional validation options
+        file_path_or_content: Path to an existing GNN file, or GNN content
+            as a string. An input is treated as a file path only when
+            ``Path(...).exists()`` is true; a path probe that raises (for
+            example a content string longer than ``PATH_MAX``) selects
+            content mode. Both modes validate the same bytes identically:
+            the bytes are staged as a temporary markdown document and run
+            through the same formal pipeline, so a given document yields
+            the same verdict whether passed by path or as content. Content
+            is validated as a GNN markdown document; JSON/XML/YAML model
+            files should be validated with
+            ``gnn.schema_validator.validate_gnn_file_comprehensive``,
+            which honors the file extension.
+        validation_level: ``ValidationLevel`` member, an accepted level
+            string (enum value or name, e.g. ``"strict"`` or ``"STRICT"``),
+            or ``None`` to use the validator's default level (STANDARD).
+            Unknown level strings raise ``ValueError`` instead of silently
+            skipping validation.
+        **kwargs: Accepted for backward compatibility; no options are
+            defined and they are ignored.
 
     Returns:
-        Tuple of (is_valid, list_of_errors)
+        Tuple of (is_valid, formal_validator_errors). The second element is
+        the formal pipeline's error list — empty exactly when the document
+        is valid. Validator warnings and suggestions are not part of this
+        contract.
+
+    Long inputs are never truncated; validation cost is linear in the
+    input size (a ~2 MB document validates in well under a second). The
+    legacy implementation crashed on such content: its path probe raised
+    ``ENAMETOOLONG`` and its broad handler turned that into a bogus
+    ``"Validation error: ..."`` tuple; the probe now routes such input
+    to content mode.
     """
-    try:
-        # Determine if input is file path or content
-        if (
-            isinstance(file_path_or_content, (str, Path))
-            and Path(file_path_or_content).exists()
-        ):
-            # It's a file path
-            file_path = Path(file_path_or_content)
-            with open(file_path, "r") as f:
-                content = f.read()
-        else:
-            # It's content
-            content = str(file_path_or_content)
+    # Function-local import: gnn.schema_validator.syntax imports gnn.parsers
+    # at module level, and gnn.parsers imports this module; a module-level
+    # import here would be an import cycle.
+    from gnn.schema_validator.validator import GNNValidator
 
-        errors: list[Any] = []
+    del kwargs  # accepted for backward compatibility; unused
 
-        # Basic validation
-        if not content.strip():
-            errors.append("Content is empty")
-            return False, errors
+    source_path: Optional[Path] = None
+    if (
+        isinstance(file_path_or_content, (str, Path))
+        and str(file_path_or_content)  # "" resolves to the CWD; always content
+    ):
+        try:
+            path_exists = Path(file_path_or_content).exists()
+        except (OSError, ValueError):
+            # pathlib's exists() propagates OSError for errnos it does not
+            # ignore (e.g. ENAMETOOLONG for very long strings); such input
+            # can only be content, never a usable path.
+            path_exists = False
+        if path_exists:
+            source_path = Path(file_path_or_content)
 
-        # Structure validation (STANDARD level; also a prerequisite for STRICT)
-        needs_structure_check = validation_level in (
-            ValidationLevel.STANDARD,
-            ValidationLevel.STRICT,
-        )
-        if needs_structure_check:
-            import re
+    validator = GNNValidator()
 
-            sections = re.findall(r"^#+\s+(.+)$", content, re.MULTILINE)
-            if not sections:
-                errors.append("No sections found (use # headers)")
+    if source_path is not None:
+        try:
+            content = source_path.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError):
+            # Undecodable bytes (pickle/binary) and unreadable paths go
+            # through the validator's file path, which applies its own
+            # binary-format and error handling.
+            result = validator.validate_file(
+                source_path, validation_level=validation_level
+            )
+            return result.is_valid, list(result.errors)
+    else:
+        content = str(file_path_or_content)
 
-            variables = re.findall(r"(\w+)\s*[:=]", content)
-            if not variables:
-                errors.append("No variables found")
+    # Stage both modes identically so path and content inputs of the same
+    # bytes always produce the same verdict. surrogatepass keeps staging
+    # lossless for strings with lone surrogates; the validator's strict
+    # read then reports them as an encoding error rather than crashing.
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        staged = Path(tmp_dir) / "content.md"
+        staged.write_text(content, encoding="utf-8", errors="surrogatepass")
+        result = validator.validate_file(staged, validation_level=validation_level)
 
-            connections = re.findall(r"(\w+)\s*[->→]\s*(\w+)", content)
-            if not connections:
-                errors.append("No connections found")
-
-        # Strict validation (explicitly extends structure checks above)
-        if validation_level == ValidationLevel.STRICT:
-            # Check for balanced braces
-            if content.count("{") != content.count("}"):
-                errors.append("Unmatched braces")
-
-            # Check for balanced brackets
-            if content.count("[") != content.count("]"):
-                errors.append("Unmatched brackets")
-
-            # Check for minimum content length
-            if len(content) < 50:
-                errors.append("Content too short for valid GNN")
-
-        return len(errors) == 0, errors
-
-    except Exception as e:
-        return False, [f"Validation error: {e}"]
+    return result.is_valid, list(result.errors)
 
 
 def _convert_parse_result_to_parsed_gnn(

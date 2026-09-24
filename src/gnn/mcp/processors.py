@@ -51,6 +51,13 @@ def process_gnn_folder(
     Returns:
         True if processing completed (with or without warnings), False on
         unrecoverable error.
+
+    Receipts: the summary carries ``validator_mode`` (``"full"`` when
+    ``GNNValidator`` ran, ``"lightweight"`` when it was unavailable and only
+    a section-presence check ran), ``degraded`` (true iff lightweight) and,
+    when degraded, ``validator_error`` with the failure reason. Per-file
+    results carry ``validator_mode`` too, so a lightweight result is never
+    indistinguishable from full validation.
     """
     _log = logger or logging.getLogger(__name__)
 
@@ -88,6 +95,7 @@ def process_gnn_folder(
     success_count = 0
     fail_count = 0
 
+    validator_error: str | None = None
     try:
         from gnn.schema_validator import GNNValidator
         from gnn.schema_validator import ValidationLevel as VL
@@ -102,10 +110,15 @@ def process_gnn_folder(
             validation_level=vl,
             enable_round_trip_testing=enable_round_trip,
         )
+        validator_mode = "full"
         _log.debug(f"Using GNNValidator with level={vl.value}")
     except Exception as exc:
+        # Degraded mode is a visible receipt, not a silent downgrade: the
+        # summary and every per-file result below carry validator_mode.
         _log.warning(f"GNNValidator unavailable ({exc}); using lightweight validation")
         validator = cast(Any, None)
+        validator_mode = "lightweight"
+        validator_error = str(exc)
 
     for gnn_file in gnn_files:
         file_result: Dict[str, Any] = {"file": str(gnn_file)}
@@ -118,13 +131,21 @@ def process_gnn_folder(
                         "errors": vr.errors,
                         "warnings": vr.warnings,
                         "validation_level": vr.validation_level.value,
+                        "validator_mode": "full",
                     }
                 )
             else:
                 # Lightweight: check file is readable and has ## ModelName
                 text = gnn_file.read_text(encoding="utf-8", errors="replace")
                 is_valid = "## ModelName" in text or "## GNNVersionAndFlags" in text
-                file_result.update({"valid": is_valid, "errors": [], "warnings": []})
+                file_result.update(
+                    {
+                        "valid": is_valid,
+                        "errors": [],
+                        "warnings": [],
+                        "validator_mode": "lightweight",
+                    }
+                )
 
             if file_result["valid"]:
                 success_count += 1
@@ -145,6 +166,8 @@ def process_gnn_folder(
         "status": "completed",
         "target_dir": str(target_dir),
         "validation_level": validation_level,
+        "validator_mode": validator_mode,
+        "degraded": validator_mode == "lightweight",
         "recursive": recursive,
         "enable_round_trip": enable_round_trip,
         "files_found": len(gnn_files),
@@ -153,6 +176,8 @@ def process_gnn_folder(
         "duration_seconds": round(duration, 3),
         "results": results,
     }
+    if validator_error is not None:
+        summary["validator_error"] = validator_error
     _save_summary(output_dir, summary)
 
     _log.info(
@@ -193,6 +218,10 @@ def run_gnn_round_trip_tests(
 
     Returns:
         True if all tested files pass the round-trip, False otherwise.
+
+    Receipts: the round_trip_results.json summary carries ``parser_mode``
+    (``"full"``/``"lightweight"``), ``degraded`` and, when degraded,
+    ``parser_error``; per-file results carry ``parser_mode`` too.
     """
     _log = logger or logging.getLogger(__name__)
 
@@ -232,19 +261,26 @@ def run_gnn_round_trip_tests(
     results: List[Dict[str, Any]] = []
     overall_pass = True
 
+    parser_error: str | None = None
     try:
         from gnn.schema_validator import GNNParser
 
         parser: GNNParser | None = GNNParser(enhanced_validation=False)
+        parser_mode = "full"
     except Exception as exc:
+        # Degraded mode is a visible receipt: parser_mode/degraded land in
+        # the summary and per-file results below.
         _log.warning(f"GNNParser unavailable ({exc}); using basic round-trip check")
         parser = cast(Any, None)
+        parser_mode = "lightweight"
+        parser_error = str(exc)
 
     for gnn_file in files_to_test:
         file_result: Dict[str, Any] = {
             "file": str(gnn_file),
             "formats_tested": supported_formats,
             "format_results": {},
+            "parser_mode": parser_mode,
         }
         try:
             original_text = gnn_file.read_text(encoding="utf-8", errors="replace")
@@ -301,20 +337,21 @@ def run_gnn_round_trip_tests(
         if all(v.get("pass", False) for v in r.get("format_results", {}).values())
     )
 
-    _save_summary(
-        output_dir,
-        {
-            "status": "completed",
-            "target_dir": str(target_dir),
-            "files_tested": len(results),
-            "passed": passed,
-            "failed": len(results) - passed,
-            "formats_tested": supported_formats,
-            "duration_seconds": round(duration, 3),
-            "results": results,
-        },
-        filename="round_trip_results.json",
-    )
+    round_trip_summary: dict[str, Any] = {
+        "status": "completed",
+        "target_dir": str(target_dir),
+        "files_tested": len(results),
+        "passed": passed,
+        "failed": len(results) - passed,
+        "formats_tested": supported_formats,
+        "parser_mode": parser_mode,
+        "degraded": parser_mode == "lightweight",
+        "duration_seconds": round(duration, 3),
+        "results": results,
+    }
+    if parser_error is not None:
+        round_trip_summary["parser_error"] = parser_error
+    _save_summary(output_dir, round_trip_summary, filename="round_trip_results.json")
 
     _log.info(
         f"Round-trip tests complete: {passed}/{len(results)} passed in {duration:.2f}s"
@@ -351,6 +388,11 @@ def check_cross_format_consistency(
 
     Returns:
         True if all files are cross-format consistent, False otherwise.
+
+    Receipts: the cross_format_results.json summary carries
+    ``validator_mode`` (``"full"``/``"lightweight"``), ``degraded`` and,
+    when degraded, ``validator_error``; per-file results carry
+    ``validator_mode``.
     """
     _log = logger or logging.getLogger(__name__)
 
@@ -382,17 +424,23 @@ def check_cross_format_consistency(
         )
         return True
 
+    validator_error: str | None = None
     try:
         from gnn.schema_validator import CrossFormatValidator
 
         validator: CrossFormatValidator | None = CrossFormatValidator(
             enable_round_trip_testing=False,
         )
+        validator_mode = "full"
     except Exception as exc:
+        # Degraded mode is a visible receipt: validator_mode/degraded land
+        # in the summary and per-file results below.
         _log.warning(
             f"CrossFormatValidator unavailable ({exc}); using basic consistency check"
         )
         validator = cast(Any, None)
+        validator_mode = "lightweight"
+        validator_error = str(exc)
 
     overall_consistent = True
     results: List[Dict[str, Any]] = []
@@ -413,6 +461,7 @@ def check_cross_format_consistency(
                         "formats_tested": cfr.schema_formats,
                         "inconsistencies": cfr.inconsistencies,
                         "warnings": cfr.warnings,
+                        "validator_mode": "full",
                     }
                 )
                 if not cfr.is_consistent:
@@ -429,6 +478,7 @@ def check_cross_format_consistency(
                         if is_consistent
                         else ["Missing ## ModelName section"],
                         "warnings": [],
+                        "validator_mode": "lightweight",
                     }
                 )
                 if not is_consistent:
@@ -454,19 +504,22 @@ def check_cross_format_consistency(
     duration = time.time() - start_time
     consistent_count = sum(1 for r in results if r.get("consistent", False))
 
+    cross_format_summary: dict[str, Any] = {
+        "status": "completed",
+        "target_dir": str(target_dir),
+        "files_tested": len(results),
+        "consistent": consistent_count,
+        "inconsistent": len(results) - consistent_count,
+        "include_binary": include_binary,
+        "validator_mode": validator_mode,
+        "degraded": validator_mode == "lightweight",
+        "duration_seconds": round(duration, 3),
+        "results": results,
+    }
+    if validator_error is not None:
+        cross_format_summary["validator_error"] = validator_error
     _save_summary(
-        output_dir,
-        {
-            "status": "completed",
-            "target_dir": str(target_dir),
-            "files_tested": len(results),
-            "consistent": consistent_count,
-            "inconsistent": len(results) - consistent_count,
-            "include_binary": include_binary,
-            "duration_seconds": round(duration, 3),
-            "results": results,
-        },
-        filename="cross_format_results.json",
+        output_dir, cross_format_summary, filename="cross_format_results.json"
     )
 
     _log.info(

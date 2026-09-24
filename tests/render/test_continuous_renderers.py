@@ -281,3 +281,14 @@ def test_discrete_regression_still_renders(tmp_path: Path) -> None:
     ):
         ok, msg, _ = fn(spec, tmp_path / name)
         assert ok, f"{name}: {msg}"
+
+
+def test_is_continuous_spec_fails_loud_on_malformed_spec() -> None:
+    """BC-02c: unclassifiable specs raise instead of degrading to discrete."""
+    malformed = {
+        "name": "Broken",
+        "model_name": "Broken",
+        "initialparameterization": "not-a-mapping",
+    }
+    with pytest.raises(ValueError, match="initialparameterization must be a mapping"):
+        is_continuous_spec(malformed)

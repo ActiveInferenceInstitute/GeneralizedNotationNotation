@@ -116,7 +116,7 @@ from .system import (
 )
 from .temporal_serializer import TemporalSerializer
 from .unified_parser import UnifiedGNNParser
-from .validators import GNNValidator
+from .validators import InternalModelValidator
 
 
 def parse_gnn_file_structured(
@@ -209,7 +209,7 @@ __all__: list[Any] = [
     # Utilities
     "FormatConverter",
     "ConversionError",
-    "GNNValidator",
+    "InternalModelValidator",
     "ValidationError",
     "ValidationWarning",
     "convert_gnn_format",

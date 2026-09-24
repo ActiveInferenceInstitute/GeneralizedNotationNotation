@@ -60,7 +60,7 @@ class RoundTripTestStrategy:
     def _initialize_tester(self) -> Any:
         """Initialize round-trip testing components."""
         try:
-            from .test_round_trip import GNNRoundTripTester
+            from .round_trip_tester import GNNRoundTripTester
 
             self.round_trip_tester = GNNRoundTripTester()
             logger.debug("Round-trip tester initialized")

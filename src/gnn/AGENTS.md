@@ -217,14 +217,25 @@ first; otherwise `source` is treated as raw content.
 
 #### `validate_gnn_syntax(file_path_or_content: str, validation_level: ValidationLevel = ValidationLevel.STANDARD, **kwargs) -> Tuple[bool, List[str]]`
 
-**Description**: Validate a GNN file or content string.
+**Description**: Validate a GNN file or content string via the formal
+`schema_validator` pipeline (delegates to `GNNValidator.validate_file`;
+returned errors are the formal validator's messages, e.g.
+`"Required section missing: ModelName"`). An existing path and the same
+bytes passed as a content string validate identically; content is
+validated as GNN markdown text. Validity means the formal validator's
+normative markdown gate (every required section with substantive body
+content) — a deliberate tightening over the legacy regex heuristic; the
+formal level ladder applies at every level (BASIC included).
 
 
 **Parameters**:
 
 - `file_path_or_content` (str): Path to a GNN file or GNN content string
-- `validation_level` (ValidationLevel): Level of validation to perform (default: STANDARD)
-- `**kwargs`: Additional validation options
+- `validation_level` (ValidationLevel): Level of validation to perform
+  (default: STANDARD); also accepts level strings (`"strict"`,
+  `"STRICT"`) and `None` (the validator's default level, STANDARD).
+  Unknown level strings raise `ValueError`.
+- `**kwargs`: Accepted for backward compatibility; ignored.
 
 **Returns**: `Tuple[bool, List[str]]` - Tuple of (is_valid, list_of_errors)
 
@@ -609,7 +620,7 @@ See **`mcp.py`** `register_tools` for the authoritative list. Examples include:
 1. Add a value to **`GNNFormat`** in `src/gnn/parsers/common.py` (if it is a new format id).
 2. Implement **`src/gnn/parsers/<name>_parser.py`** and, unless parse-only, **`src/gnn/parsers/<name>_serializer.py`**.
 3. Register classes in **`PARSER_REGISTRY`** and, when applicable, **`SERIALIZER_REGISTRY`** in **`src/gnn/parsers/system.py`**.
-4. Add tests under `tests/` and extend **`src/gnn/testing/test_round_trip.py`** if the format should join the default round-trip list.
+4. Add tests under `tests/` and extend **`tests/testing/test_round_trip.py`** (participation configured in **`src/gnn/testing/round_trip_config.py`**) if the format should join the default round-trip list.
 5. Update **[SPEC.md](SPEC.md)** if canonical counts change.
 
 ### Code Style
@@ -621,7 +632,7 @@ See **`mcp.py`** `register_tools` for the authoritative list. Examples include:
 
 ### Testing Requirements
 
-- New serializers need tests; round-trip tests should cover any format claimed in **[SPEC.md](SPEC.md)** / `test_round_trip.py` config.
+- New serializers need tests; round-trip tests should cover any format claimed in **[SPEC.md](SPEC.md)** / `round_trip_config.py` config.
 
 ---
 

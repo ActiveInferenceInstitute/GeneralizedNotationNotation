@@ -11,5 +11,4 @@ Each report contains:
 ## JSON Schema
 
 Results files use `{total_tests, successful_tests, failed_tests, success_rate}`
-(export shape in `test_round_trip.py`; counts from `ComprehensiveTestReport`
-in `round_trip_results.py`).
+(shape of the `ComprehensiveTestReport` export in `round_trip_results.py`).
