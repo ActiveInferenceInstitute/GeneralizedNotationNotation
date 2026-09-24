@@ -109,7 +109,7 @@ def _write_results_manifest(website_dir: Path, result: dict[str, Any]) -> None:
             json.dumps(manifest, indent=2), encoding="utf-8"
         )
     except Exception as e:
-        logger.debug(f"Could not write results file (optional): {e}")
+        logger.warning("Could not write results file (optional): %s", e)
 
 
 def _write_embed_page(
@@ -147,7 +147,7 @@ def _write_embed_page(
         output_file.write_text(page, encoding="utf-8")
         return True
     except Exception as e:
-        logger.debug(f"Operation failed: {e}")
+        logger.warning("Failed to write embed page %s: %s", output_file, e)
         return False
 
 
@@ -217,7 +217,7 @@ def generate_html_report(content: str, output_file: Path) -> bool:
         return True
 
     except Exception as e:
-        logger.debug(f"Operation failed: {e}")
+        logger.warning("Failed to generate HTML report at %s: %s", output_file, e)
         return False
 
 
@@ -238,7 +238,9 @@ def embed_image(image_path: Path, output_file: Path) -> bool:
         )
 
     except Exception as e:
-        logger.debug(f"Operation failed: {e}")
+        logger.warning(
+            "Failed to embed image %s into %s: %s", image_path, output_file, e
+        )
         return False
 
 
@@ -259,7 +261,9 @@ def embed_markdown_file(md_path: Path, output_file: Path) -> bool:
         return _write_embed_page("Markdown Content", body, output_file)
 
     except Exception as e:
-        logger.debug(f"Operation failed: {e}")
+        logger.warning(
+            "Failed to embed markdown file %s into %s: %s", md_path, output_file, e
+        )
         return False
 
 
@@ -275,7 +279,9 @@ def embed_text_file(text_path: Path, output_file: Path) -> bool:
         return _write_embed_page("Text Content", body, output_file)
 
     except Exception as e:
-        logger.debug(f"Operation failed: {e}")
+        logger.warning(
+            "Failed to embed text file %s into %s: %s", text_path, output_file, e
+        )
         return False
 
 
@@ -297,7 +303,9 @@ def embed_json_file(json_path: Path, output_file: Path) -> bool:
         )
 
     except Exception as e:
-        logger.debug(f"Operation failed: {e}")
+        logger.warning(
+            "Failed to embed JSON file %s into %s: %s", json_path, output_file, e
+        )
         return False
 
 
@@ -324,7 +332,9 @@ def embed_html_file(html_path: Path, output_file: Path) -> bool:
         )
 
     except Exception as e:
-        logger.debug(f"Operation failed: {e}")
+        logger.warning(
+            "Failed to embed HTML file %s into %s: %s", html_path, output_file, e
+        )
         return False
 
 

@@ -69,7 +69,7 @@ def test_render_summary_contract_treats_stan_program_as_companion(
         }
     }
     (render_dir / "render_processing_summary.json").write_text(json.dumps(summary))
-    allowed, failures = _load_render_summary_contract(
+    allowed, failures, _unsup = _load_render_summary_contract(
         render_dir, ["stan", "pymdp"], logging.getLogger("t"), target_dir=None
     )
     assert allowed == {Path(arts[0]).resolve()}

@@ -187,3 +187,14 @@ def test_plan_execute_unsupported_framework_omitted_from_contract(
     assert plan["total_scripts"] == 0
     # Unsupported is not a failure either.
     assert plan["render_failures"] == []
+    # Unsupported surfaces as a receipt (not a failure, not an execution
+    # candidate). The fixture carries no message/reason, so the loader falls
+    # back to the canonical renderer-refusal reason.
+    assert plan["unsupported_render_receipts"] == [
+        {
+            "file": str(tmp_path / "cont.md"),
+            "framework": "pymdp",
+            "reason": "renderer declared this framework unsupported for this model",
+            "status": "unsupported",
+        }
+    ]
