@@ -13,6 +13,8 @@ import shutil
 import subprocess
 import sys
 import threading
+import time
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Iterator
@@ -22,6 +24,7 @@ import pytest
 SRC = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(SRC))
 
+from gnn.execute.subprocess_envelope import CancelToken  # noqa: E402
 from gnn.pipeline import step_executor  # noqa: E402
 from gnn.pipeline.step_executor import (  # noqa: E402
     UnsupportedStepError,
@@ -465,7 +468,8 @@ class TestInProcessTimeoutAndCapture:
         completing in-process run), the exit-code semantics match the
         subprocess tier's timeout (-1 with the FAILED status derived the
         same way), and the stderr text carries the TIMEOUT vocabulary plus
-        the honest cannot-kill notice.
+        the honest cancellation notice (this seeded step never reaches a
+        safe point, so it records the abandoned-daemon variant).
         """
 
         def fast_step(**kwargs: Any) -> bool:
@@ -479,6 +483,7 @@ class TestInProcessTimeoutAndCapture:
         monkeypatch.setattr(
             step_executor, "resolve_step_function", lambda name: slow_step
         )
+        monkeypatch.setattr(step_executor, "_CANCEL_GRACE_SECONDS", 0.2)
         try:
             step_result = execute_step_in_process(
                 "3_gnn.py", _pipeline_args(tmp_path), LOGGER, timeout_seconds=1
@@ -500,7 +505,12 @@ class TestInProcessTimeoutAndCapture:
         assert step_result["exit_code"] == sub_exit == -1
         assert step_result["status"] == sub_status == "FAILED"
         assert "TIMEOUT" in step_result["stderr"]
-        assert "cannot be force-killed" in step_result["stderr"]
+        # BC-13: the honest notice states the abandonment (the seeded step
+        # never reaches a cancellation safe point), and the receipt carries
+        # the additive force_killed flag.
+        assert "abandoned" in step_result["stderr"]
+        assert "daemon" in step_result["stderr"]
+        assert step_result["force_killed"] is True
         assert step_result["execution_mode"] == "consolidated"
 
         # Receipt schema unchanged: same keys as a completing in-process run.
@@ -511,6 +521,7 @@ class TestInProcessTimeoutAndCapture:
             "3_gnn.py", _pipeline_args(tmp_path / "normal"), LOGGER
         )
         assert set(step_result) == set(normal)
+        assert normal["force_killed"] is False
 
     def test_captured_output_lands_in_receipt_and_console(
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: Any
@@ -537,6 +548,219 @@ class TestInProcessTimeoutAndCapture:
         captured = capsys.readouterr()
         assert "step stdout line" in captured.out
         assert "step stderr line" in captured.err
+
+
+class TestInProcessForceKill:
+    """BC-13: cooperative token kill path, force_killed receipt, no wedge."""
+
+    def test_token_injected_only_when_declared(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """The cancel token rides as a kwarg only for steps that declare it."""
+        seen: dict[str, Any] = {}
+        received: list[Any] = []
+
+        def tokenless_step(**kwargs: Any) -> bool:
+            seen.update(kwargs)
+            return True
+
+        def token_aware_step(cancel_token: Any = None, **kwargs: Any) -> bool:
+            received.append(cancel_token)
+            return True
+
+        monkeypatch.setattr(
+            step_executor, "resolve_step_function", lambda name: tokenless_step
+        )
+        receipt = execute_step_in_process("3_gnn.py", _pipeline_args(tmp_path), LOGGER)
+        assert receipt["exit_code"] == 0
+        assert receipt["force_killed"] is False
+        assert "cancel_token" not in seen
+
+        monkeypatch.setattr(
+            step_executor, "resolve_step_function", lambda name: token_aware_step
+        )
+        execute_step_in_process("3_gnn.py", _pipeline_args(tmp_path / "aware"), LOGGER)
+        # The executor binds the token to the declared parameter itself.
+        assert len(received) == 1
+        assert isinstance(received[0], CancelToken)
+
+    def test_cooperative_hang_stops_promptly_with_force_killed_receipt(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """A token-aware hanging step stops at its safe point; receipt says so."""
+        done = threading.Event()
+
+        def hanging_step(cancel_token: Any = None, **kwargs: Any) -> bool:
+            assert cancel_token is not None
+            while not cancel_token.cancelled:
+                time.sleep(0.01)
+            done.set()
+            return False
+
+        monkeypatch.setattr(
+            step_executor, "resolve_step_function", lambda name: hanging_step
+        )
+        started = time.monotonic()
+        step_result = execute_step_in_process(
+            "3_gnn.py", _pipeline_args(tmp_path), LOGGER, timeout_seconds=1
+        )
+        elapsed = time.monotonic() - started
+
+        assert step_result["exit_code"] == -1
+        assert step_result["status"] == "FAILED"
+        assert step_result["force_killed"] is True
+        assert "TIMEOUT" in step_result["stderr"]
+        assert "cancel token" in step_result["stderr"]
+        assert "abandoned" not in step_result["stderr"]
+        assert done.wait(timeout=5), "step thread did not terminate promptly"
+        assert elapsed < 5  # returned near the deadline, not after the hang
+
+    def test_noncooperating_hang_is_abandoned_without_wedging(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """A step reaching no safe point is abandoned; the executor moves on."""
+        release = threading.Event()
+
+        def stubborn_step(**kwargs: Any) -> bool:
+            release.wait(timeout=120)
+            return True
+
+        monkeypatch.setattr(
+            step_executor, "resolve_step_function", lambda name: stubborn_step
+        )
+        monkeypatch.setattr(step_executor, "_CANCEL_GRACE_SECONDS", 0.2)
+        started = time.monotonic()
+        try:
+            step_result = execute_step_in_process(
+                "3_gnn.py", _pipeline_args(tmp_path), LOGGER, timeout_seconds=1
+            )
+        finally:
+            release.set()
+        elapsed = time.monotonic() - started
+
+        assert step_result["exit_code"] == -1
+        assert step_result["force_killed"] is True
+        assert "abandoned" in step_result["stderr"]
+        assert "daemon" in step_result["stderr"]
+        assert elapsed < 1 + 0.2 + 5
+
+        # A subsequent step still runs: the executor is not wedged.
+        def fast_step(**kwargs: Any) -> bool:
+            return True
+
+        monkeypatch.setattr(
+            step_executor, "resolve_step_function", lambda name: fast_step
+        )
+        follow = execute_step_in_process(
+            "3_gnn.py", _pipeline_args(tmp_path / "after"), LOGGER
+        )
+        assert follow["exit_code"] == 0
+        assert follow["force_killed"] is False
+
+    def test_timeout_marks_partial_artifacts_without_deleting(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Timed-out artifacts are marked by a sentinel, never deleted."""
+
+        def writing_hang(
+            output_dir: Any = None, cancel_token: Any = None, **kwargs: Any
+        ) -> bool:
+            out = Path(str(output_dir))
+            out.mkdir(parents=True, exist_ok=True)
+            (out / "partial_artifact.txt").write_text("mid-write", encoding="utf-8")
+            assert cancel_token is not None
+            while not cancel_token.cancelled:
+                time.sleep(0.01)
+            return False
+
+        monkeypatch.setattr(
+            step_executor, "resolve_step_function", lambda name: writing_hang
+        )
+        step_result = execute_step_in_process(
+            "3_gnn.py", _pipeline_args(tmp_path), LOGGER, timeout_seconds=1
+        )
+        assert step_result["force_killed"] is True
+
+        step_output = tmp_path / "3_gnn_output"
+        artifact = step_output / "partial_artifact.txt"
+        marker = step_output / ".gnn_step_timed_out"
+        assert artifact.is_file()
+        assert artifact.read_text(encoding="utf-8") == "mid-write"
+        payload = json.loads(marker.read_text(encoding="utf-8"))
+        assert payload["step"] == "3_gnn"
+        assert payload["force_killed"] is True
+        assert "partial_artifact.txt" in payload["possibly_partial"]
+
+        # A later successful run of the same step re-authors the directory.
+        def fast_step(**kwargs: Any) -> bool:
+            return True
+
+        monkeypatch.setattr(
+            step_executor, "resolve_step_function", lambda name: fast_step
+        )
+        follow = execute_step_in_process("3_gnn.py", _pipeline_args(tmp_path), LOGGER)
+        assert follow["exit_code"] == 0
+        assert not marker.exists()
+
+    def test_parallel_worker_slot_released_after_hang(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """The worker slot frees at deadline+grace even for a stubborn step."""
+        release = threading.Event()
+
+        def stubborn_step(**kwargs: Any) -> bool:
+            release.wait(timeout=120)
+            return True
+
+        monkeypatch.setattr(
+            step_executor, "resolve_step_function", lambda name: stubborn_step
+        )
+        monkeypatch.setattr(step_executor, "_CANCEL_GRACE_SECONDS", 0.2)
+        with ThreadPoolExecutor(max_workers=1) as pool:
+            future = pool.submit(
+                execute_step_in_process,
+                "3_gnn.py",
+                _pipeline_args(tmp_path),
+                LOGGER,
+                timeout_seconds=1,
+            )
+            try:
+                # A wedged slot would surface here as a future TimeoutError.
+                step_result = future.result(timeout=10)
+            finally:
+                release.set()
+        assert step_result["force_killed"] is True
+
+    def test_receipt_schema_additive_over_subprocess_tier(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """force_killed is additive: consolidated keys = subprocess keys + 2."""
+
+        def fast_step(**kwargs: Any) -> bool:
+            return True
+
+        monkeypatch.setattr(
+            step_executor, "resolve_step_function", lambda name: fast_step
+        )
+        receipt = execute_step_in_process("3_gnn.py", _pipeline_args(tmp_path), LOGGER)
+        # execute_pipeline_step's step_result shape (main.py), the tier this
+        # receipt must stay compatible with.
+        subprocess_keys = frozenset(
+            {
+                "status",
+                "stdout",
+                "stderr",
+                "memory_usage_mb",
+                "peak_memory_mb",
+                "memory_delta_mb",
+                "exit_code",
+                "retry_count",
+                "prerequisite_check",
+                "dependency_warnings",
+            }
+        )
+        assert set(receipt) - subprocess_keys == {"execution_mode", "force_killed"}
+        assert receipt["force_killed"] is False
 
 
 class TestParsedModelCarrier:

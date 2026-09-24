@@ -20,19 +20,23 @@ values, ``target_dir``/``output_dir`` resolve to the standard numbered
 field, so ``main._record_step_result`` treats both modes identically.
 
 Limits (docs/decisions/0001-consolidated-pipeline-execution.md): testing-matrix
-folder dispatch stays on the subprocess path, and in-process steps still
-cannot be force-killed — a timed-out worker thread is abandoned (its receipt
-mirrors the subprocess tier's timeout shape), unlike subprocess mode. The
-parallel tier runs consolidated steps on threads that share one process:
-steps 7/8 render with matplotlib (Agg) — thread-safe in-process, but
-concurrent consolidated runs of step 8 should expect shared matplotlib state
-(standing limit; no behavioral change attempted for matplotlib).
+folder dispatch stays on the subprocess path. Timeout containment is
+cooperative (BC-13): the worker thread is a daemon and observes a
+:class:`~gnn.execute.subprocess_envelope.CancelToken` at its safe points —
+the capture tees raise at the step's next console write once the wall-clock
+budget fires, and a thread that reaches no safe point is abandoned after a
+bounded grace window without blocking interpreter exit. The parallel tier
+runs consolidated steps on threads that share one process: steps 7/8 render
+with matplotlib (Agg) — thread-safe in-process, but concurrent consolidated
+runs of step 8 should expect shared matplotlib state (standing limit; no
+behavioral change attempted for matplotlib).
 """
 
 from __future__ import annotations
 
 import contextlib
 import importlib
+import inspect
 import io
 import json
 import logging
@@ -40,8 +44,7 @@ import os
 import sys
 import threading
 import time
-from concurrent.futures import ThreadPoolExecutor
-from concurrent.futures import TimeoutError as FutureTimeoutError
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Dict, Generator, Optional, TextIO, Tuple, cast
 
@@ -82,6 +85,21 @@ class UnsupportedStepError(ValueError):
 # ---------------------------------------------------------------------------
 # Console capture: tee stdout/stderr into the receipt (console still streams)
 # ---------------------------------------------------------------------------
+class _StepCancelled(BaseException):
+    """Unwinds a timed-out step at its next console write (BC-13).
+
+    Deliberately a :class:`BaseException` subclass: the timeout receipt owns
+    the failure shape, and the interrupt must not be swallowed by a step's
+    broad ``except Exception`` handlers — it propagates like
+    ``KeyboardInterrupt``. The executor discards it; the thread exiting is
+    the point.
+    """
+
+    def __init__(self, reason: str) -> None:
+        super().__init__(reason)
+        self.reason = reason
+
+
 class _ConsoleStreamTee:
     """Thread-scoped console tee used while a consolidated step runs.
 
@@ -105,13 +123,23 @@ class _ConsoleStreamTee:
         target = saved if saved is not None else getattr(sys, self._attr)
         return cast("TextIO", target)
 
-    def open_for_thread(self, sink: Any) -> None:
-        """Route the calling thread's writes into *sink* (plus console)."""
+    def open_for_thread(
+        self, sink: Any, cancel_gate: Optional[Callable[[], None]] = None
+    ) -> None:
+        """Route the calling thread's writes into *sink* (plus console).
+
+        *cancel_gate* (BC-13) is consulted before every write from this
+        thread and raises :class:`_StepCancelled` once the step's wall-clock
+        budget has fired — the step terminates at its next print/log
+        boundary with no module change.
+        """
         self._local.sink = sink
+        self._local.cancel_gate = cancel_gate
 
     def close_for_thread(self) -> None:
         """Stop capturing the calling thread's writes."""
         self._local.sink = None
+        self._local.cancel_gate = None
 
     def install(self) -> None:
         with self._lock:
@@ -129,6 +157,9 @@ class _ConsoleStreamTee:
                 self._saved = None
 
     def write(self, text: str) -> int:
+        gate = getattr(self._local, "cancel_gate", None)
+        if gate is not None:
+            gate()
         sink = getattr(self._local, "sink", None)
         if sink is not None:
             try:
@@ -158,6 +189,123 @@ def _console_capture_window() -> Generator[None, None, None]:
     finally:
         _STDERR_CAPTURE.uninstall()
         _STDOUT_CAPTURE.uninstall()
+
+
+# ---------------------------------------------------------------------------
+# Cooperative force-kill (BC-13): token seam + console-write gate + daemon
+# ---------------------------------------------------------------------------
+#: Step module functions receive a ``cancel_token`` kwarg only when their
+#: signature declares one (the same opt-in shape as the parsed-model carrier).
+_CANCEL_TOKEN_PARAM = "cancel_token"
+
+#: Seconds the executor waits after cancelling a step's token for the worker
+#: thread to reach a safe point before it abandons it (daemon; cannot block
+#: interpreter exit).
+_CANCEL_GRACE_SECONDS = 2.0
+
+#: Sentinel written into a timed-out step's output dir (artifacts are marked,
+#: never deleted); a later successful run of the same step removes it.
+_TIMEOUT_MARKER_NAME = ".gnn_step_timed_out"
+
+#: Cap on the per-file candidate list recorded in the timeout marker.
+_TIMEOUT_MARKER_CANDIDATE_CAP = 200
+
+
+def _new_cancel_token() -> Any:
+    """Create the step's cooperative cancel token (BC-13).
+
+    The type is the subprocess envelope's :class:`CancelToken` — one
+    cancellation vocabulary across the repo, mirroring
+    ``run_subprocess_envelope``'s token. Imported lazily: a module-level
+    import would couple the pipeline import chain to the ``gnn.execute``
+    package init (the same coupling ADR 0001's D2 slice avoids for
+    ``advanced_visualization``).
+    """
+    from gnn.execute.subprocess_envelope import CancelToken  # lazy: heavy init
+
+    return CancelToken()
+
+
+def _accepts_cancel_token(function: Callable[..., Any]) -> bool:
+    """True when the resolved step function declares a ``cancel_token`` param."""
+    try:
+        return _CANCEL_TOKEN_PARAM in inspect.signature(function).parameters
+    except (TypeError, ValueError):  # pragma: no cover - exotic callables
+        return False
+
+
+def _mark_timed_out_artifacts(
+    step_output_dir: Path,
+    stem: str,
+    *,
+    timeout_seconds: int,
+    started: float,
+    logger: logging.Logger,
+) -> None:
+    """Mark (never delete) artifacts written while a timed-out step ran.
+
+    The sentinel names the step, the deadline, and every file under the
+    step's output dir whose mtime postdates the step's start — candidates
+    for mid-write truncation by the cancelled/abandoned thread. Downstream
+    consumers treat a marked directory as suspect; a later successful run of
+    the same step re-authors the artifacts and removes the sentinel.
+    """
+    if not step_output_dir.is_dir():
+        # The step never created its output dir: nothing was written, so
+        # there is nothing to mark (and no directory to hold a sentinel).
+        return
+    candidates: list[str] = []
+    truncated = False
+    try:
+        for path in sorted(step_output_dir.rglob("*")):
+            try:
+                if not path.is_file() or path.name == _TIMEOUT_MARKER_NAME:
+                    continue
+                mtime = path.stat().st_mtime
+            except OSError:
+                continue
+            if mtime >= started:
+                if len(candidates) >= _TIMEOUT_MARKER_CANDIDATE_CAP:
+                    truncated = True
+                    break
+                candidates.append(path.relative_to(step_output_dir).as_posix())
+    except OSError as error:
+        logger.warning("Timeout marker: could not scan %s: %s", step_output_dir, error)
+    payload = {
+        "step": stem,
+        "force_killed": True,
+        "timeout_seconds": timeout_seconds,
+        "timed_out_at": datetime.now(timezone.utc).isoformat(),
+        "possibly_partial": candidates,
+        "possibly_partial_truncated": truncated,
+        "note": (
+            "Artifacts in this directory may be partial: the step exceeded "
+            "its wall-clock timeout and its worker was cancelled/abandoned. "
+            "Files listed under possibly_partial were written during the "
+            "timed-out run. Re-run the step to re-author them."
+        ),
+    }
+    try:
+        (step_output_dir / _TIMEOUT_MARKER_NAME).write_text(
+            json.dumps(payload, indent=2) + "\n", encoding="utf-8"
+        )
+    except OSError as error:
+        logger.warning(
+            "Timeout marker: could not write %s in %s: %s",
+            _TIMEOUT_MARKER_NAME,
+            step_output_dir,
+            error,
+        )
+
+
+def _clear_stale_timeout_marker(step_output_dir: Path, logger: logging.Logger) -> None:
+    """Remove a stale timeout sentinel after this step re-authored its dir."""
+    marker = step_output_dir / _TIMEOUT_MARKER_NAME
+    try:
+        if marker.is_file():
+            marker.unlink()
+    except OSError as error:
+        logger.warning("Could not remove stale timeout marker %s: %s", marker, error)
 
 
 # ---------------------------------------------------------------------------
@@ -409,14 +557,22 @@ def execute_step_in_process(
     Raises :class:`UnsupportedStepError` for steps outside the consolidated
     whitelist or under testing-matrix folder dispatch.
 
-    The step runs on a worker thread with a wall-clock timeout sourced from
-    ``gnn.pipeline.step_timeouts`` — the same knob as the subprocess tier —
-    and its ``print()``/``sys.stdout``/``sys.stderr`` output is tee'd to the
-    console and captured into the receipt's ``stdout``/``stderr`` fields.
-    A timeout records the subprocess tier's timeout receipt semantics (exit
-    code -1, FAILED status, partial captured streams) with the receipt
-    schema unchanged; an in-process step cannot be force-killed, which the
-    receipt's stderr text states honestly.
+    The step runs on a daemon worker thread with a wall-clock timeout sourced
+    from ``gnn.pipeline.step_timeouts`` — the same knob as the subprocess
+    tier (``GNN_STEP_TIMEOUT_{N}`` / ``GNN_STEP_TIMEOUT_SCALE`` env overrides
+    included) — and its ``print()``/``sys.stdout``/``sys.stderr`` output is
+    tee'd to the console and captured into the receipt's ``stdout``/``stderr``
+    fields. A timeout records the subprocess tier's timeout receipt semantics
+    (exit code -1, FAILED status, partial captured streams) plus the additive
+    ``force_killed`` field (``False`` on clean completion, ``True`` when the
+    deadline fired). On timeout the executor cancels the step's cooperative
+    :class:`~gnn.execute.subprocess_envelope.CancelToken` — injected as a
+    ``cancel_token`` kwarg when the step function declares one, and enforced
+    at the step's console-write safe points by the capture tee — then, after
+    a bounded grace window, abandons any thread that reached no safe point
+    (the daemon worker cannot block interpreter exit). Timed-out artifacts
+    are marked, never deleted: a ``.gnn_step_timed_out`` sentinel lands in
+    the step's output directory, removed by a later successful run.
 
     With ``collect_parsed_model=True`` the executor participates in the
     parsed-model carrier: a successful in-process step 3 is read from disk
@@ -453,6 +609,7 @@ def execute_step_in_process(
             "prerequisite_check": True,
             "dependency_warnings": [],
             "execution_mode": "consolidated",
+            "force_killed": False,
         }
 
     function = resolve_step_function(script_name)
@@ -471,6 +628,7 @@ def execute_step_in_process(
         "prerequisite_check": True,
         "dependency_warnings": [],
         "execution_mode": "consolidated",
+        "force_killed": False,
     }
 
     # Prerequisite validation mirrors execute_pipeline_step: record the
@@ -503,6 +661,14 @@ def execute_step_in_process(
         if carrier is not None:
             call_kwargs["parsed_model"] = carrier
 
+    cancel_token = _new_cancel_token()
+    if _accepts_cancel_token(function):
+        # BC-13: token-aware steps receive the token and terminate promptly
+        # at their safe points once it fires. Steps that do not declare the
+        # parameter keep today's behavior (the tee's console-write gate and
+        # the daemon worker still contain the timeout).
+        call_kwargs[_CANCEL_TOKEN_PARAM] = cancel_token
+
     if timeout_seconds is None:
         # Same budget knob as the subprocess tier (main.py): the per-step
         # STEP_TIMEOUTS value with the GNN_STEP_TIMEOUT_{N} /
@@ -515,10 +681,16 @@ def execute_step_in_process(
     call_started = time.time()
     captured_stdout = io.StringIO()
     captured_stderr = io.StringIO()
+    holder: Dict[str, Any] = {}
+
+    def _step_cancel_gate() -> None:
+        """Kill surface: raise at the step's next console write once cancelled."""
+        if cancel_token.cancelled:
+            raise _StepCancelled(cancel_token.reason or "step timed out")
 
     def _invoke() -> Tuple[Any, Optional[BaseException]]:
-        _STDOUT_CAPTURE.open_for_thread(captured_stdout)
-        _STDERR_CAPTURE.open_for_thread(captured_stderr)
+        _STDOUT_CAPTURE.open_for_thread(captured_stdout, cancel_gate=_step_cancel_gate)
+        _STDERR_CAPTURE.open_for_thread(captured_stderr, cancel_gate=_step_cancel_gate)
         try:
             with _console_capture_window():
                 return function(**call_kwargs), None
@@ -528,55 +700,98 @@ def execute_step_in_process(
             _STDERR_CAPTURE.close_for_thread()
             _STDOUT_CAPTURE.close_for_thread()
 
-    worker_pool = ThreadPoolExecutor(
-        max_workers=1, thread_name_prefix=f"gnn-consolidated-{stem}"
-    )
-    try:
-        future = worker_pool.submit(_invoke)
+    def _run_step() -> None:
         try:
-            result, error = future.result(timeout=timeout_seconds)
-        except FutureTimeoutError:
-            # Mirror the subprocess tier's timeout receipt
-            # (execute_command_streaming -> execute_pipeline_step): exit
-            # code -1, FAILED status, partial captured streams, unchanged
-            # receipt schema. In-process steps cannot be force-killed; that
-            # limit is stated in the stderr text.
-            future.cancel()  # best effort: running steps cannot be cancelled
-            end_memory = get_current_memory_usage()
-            step_result["exit_code"] = -1
-            step_result["status"] = status_from_exit_code(
-                step_result["exit_code"], step_result["dependency_warnings"]
+            holder["payload"] = _invoke()
+        except BaseException as error:  # pragma: no cover - _invoke is total
+            holder["payload"] = (None, error)
+
+    # Daemon worker (BC-13): an abandoned step thread can no longer block
+    # interpreter exit — the replaced ThreadPoolExecutor threads were
+    # non-daemon, so a hung step delayed process exit indefinitely.
+    worker = threading.Thread(
+        target=_run_step, name=f"gnn-consolidated-{stem}", daemon=True
+    )
+    worker.start()
+    worker.join(timeout_seconds)
+    if worker.is_alive():
+        # The wall-clock budget fired. Mirror the subprocess tier's timeout
+        # receipt (execute_command_streaming -> execute_pipeline_step): exit
+        # code -1, FAILED status, partial captured streams, schema plus the
+        # additive force_killed field. Cancel the step's token first: a
+        # token-aware step unwinds at its safe points, and the tee gate
+        # raises at the step's next console write; a thread that reaches no
+        # safe point within the grace window is abandoned (daemon).
+        cancel_token.cancel(
+            reason=(
+                f"{step.script_name} exceeded its {timeout_seconds}s wall-clock timeout"
             )
-            step_result["stdout"] = captured_stdout.getvalue()
-            timeout_notice = (
-                f"Consolidated in-process execution of {step.script_name} "
-                f"exceeded its {timeout_seconds}s wall-clock timeout "
-                f"(TIMEOUT; recorded as FAILED with exit code -1). "
-                "In-process steps cannot be force-killed: the step thread "
-                "keeps running and any further output is discarded from "
-                "this receipt."
+        )
+        worker.join(_CANCEL_GRACE_SECONDS)
+        thread_stopped = not worker.is_alive()
+        end_memory = get_current_memory_usage()
+        step_result["exit_code"] = -1
+        step_result["status"] = status_from_exit_code(
+            step_result["exit_code"], step_result["dependency_warnings"]
+        )
+        step_result["stdout"] = captured_stdout.getvalue()
+        timeout_notice = (
+            f"Consolidated in-process execution of {step.script_name} "
+            f"exceeded its {timeout_seconds}s wall-clock timeout "
+            "(TIMEOUT; recorded as FAILED with exit code -1). "
+        )
+        if thread_stopped:
+            timeout_notice += (
+                "The step thread stopped via the cooperative cancel token "
+                "(consolidated steps observe it at their safe points; the "
+                "console-write path enforces it) and was joined. Its "
+                "post-deadline output is discarded from this receipt."
             )
-            partial_stderr = captured_stderr.getvalue()
-            step_result["stderr"] = (
-                partial_stderr
-                + ("\n" if partial_stderr else "")
-                + timeout_notice
-                + "\n"
+        else:
+            timeout_notice += (
+                "The step thread did not reach a cancellation safe point "
+                f"within the {_CANCEL_GRACE_SECONDS:g}s grace window and was "
+                "abandoned: the worker runs as a daemon thread, so it cannot "
+                "block interpreter exit, but its in-flight work was not "
+                "interrupted mid-flight and any further output is discarded "
+                "from this receipt."
             )
-            step_result["memory_usage_mb"] = end_memory
-            step_result["peak_memory_mb"] = max(start_memory, end_memory)
-            step_result["memory_delta_mb"] = end_memory - start_memory
-            logger.error(
-                "Consolidated in-process execution of %s timed out after "
-                "%ss; reported as FAILED (exit code -1). The step thread "
-                "was not cancelled (in-process steps cannot be "
-                "force-killed).",
-                step.script_name,
-                timeout_seconds,
-            )
-            return step_result
-    finally:
-        worker_pool.shutdown(wait=False)
+        partial_stderr = captured_stderr.getvalue()
+        step_result["stderr"] = (
+            partial_stderr + ("\n" if partial_stderr else "") + timeout_notice + "\n"
+        )
+        step_result["memory_usage_mb"] = end_memory
+        step_result["peak_memory_mb"] = max(start_memory, end_memory)
+        step_result["memory_delta_mb"] = end_memory - start_memory
+        step_result["force_killed"] = True
+        _mark_timed_out_artifacts(
+            step_output_dir,
+            stem,
+            timeout_seconds=timeout_seconds,
+            started=call_started,
+            logger=logger,
+        )
+        logger.error(
+            "Consolidated in-process execution of %s timed out after %ss "
+            "(force_killed=true): %s.",
+            step.script_name,
+            timeout_seconds,
+            (
+                "the step thread stopped via the cancel token and was joined"
+                if thread_stopped
+                else "the step thread was abandoned as a daemon (no "
+                "cancellation safe point reached within the grace window)"
+            ),
+        )
+        return step_result
+
+    payload = holder.get("payload")
+    if payload is None:  # pragma: no cover - _invoke is total
+        payload = (
+            None,
+            RuntimeError("consolidated step worker died without a result"),
+        )
+    result, error = cast("Tuple[Any, Optional[BaseException]]", payload)
 
     if error is not None:
         logger.error(
@@ -610,6 +825,10 @@ def execute_step_in_process(
     step_result["memory_usage_mb"] = end_memory
     step_result["peak_memory_mb"] = max(start_memory, end_memory)
     step_result["memory_delta_mb"] = end_memory - start_memory
+    if step_result["status"] in ("SUCCESS", "SUCCESS_WITH_WARNINGS"):
+        # This run re-authored the step's artifacts: a timeout sentinel from
+        # an earlier run of the same step into the same directory is stale.
+        _clear_stale_timeout_marker(step_output_dir, logger)
 
     if stem == "3_gnn":
         _refresh_parsed_model_carrier(
