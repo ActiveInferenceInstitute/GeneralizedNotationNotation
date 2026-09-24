@@ -79,14 +79,39 @@ def test_process_render_counts_unsupported_separately(tmp_path: Path) -> None:
     assert summary["total_files"] == len(FILES)
     assert summary["successful_files"] == len(FILES)
     assert summary["failed_framework_renderings"] == []
+    # Composed exemplars (e.g. multi_agent_lgssm: {continuous, multi_agent})
+    # intentionally receive an unsupported-composition receipt from EVERY
+    # framework — no renderer handles the whole composition yet. The census
+    # below counts only PURE continuous files (singleton kind); composed
+    # files must still be explicit receipts, never failed renders.
+    from gnn.render.pomdp_contract import detect_pomdp_space_model_kinds
+
+    composed_stems = {
+        p.stem
+        for p in FILES
+        if len(
+            detect_pomdp_space_model_kinds(
+                extract_pomdp_from_file(p, strict_validation=False)
+            )
+        )
+        > 1
+    }
     unsupported = {
-        (u["framework"]) for u in summary["unsupported_framework_renderings"]
+        u["framework"]
+        for u in summary["unsupported_framework_renderings"]
+        if Path(u["file"]).stem not in composed_stems
     }
     assert unsupported == {"pymdp", "activeinference_jl", "discopy"}
-    for res in summary["file_results"].values():
+    for stem, res in summary["file_results"].items():
         statuses = {
             fw: r.get("status", "ok") for fw, r in res["framework_results"].items()
         }
+        if Path(stem).stem in composed_stems:
+            assert all(
+                r.get("unsupported") or r.get("success")
+                for r in res["framework_results"].values()
+            )
+            continue
         assert all(
             r["success"]
             for fw, r in res["framework_results"].items()

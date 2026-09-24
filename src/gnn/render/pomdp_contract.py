@@ -420,7 +420,7 @@ def detect_model_kinds(gnn_spec: Dict[str, Any]) -> frozenset[ModelKind]:
 def detect_model_kind(gnn_spec: Dict[str, Any]) -> ModelKind:
     """Single-winner kind: the max-precedence member of detect_model_kinds.
 
-    Backward-compatible classification used by per-kind dispatch
+    Stable classification used by per-kind dispatch
     (precedence MULTI_AGENT > HIERARCHICAL > CONTINUOUS > LEARNING >
     FACTORED > STRUCTURAL > FLAT). A composed spec — e.g. continuous
     F/H/Q/R parameters plus ``nr_agents > 1`` — classifies to its most
