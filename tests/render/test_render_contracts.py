@@ -466,7 +466,7 @@ class TestFailureMessageActionability:
     def test_generator_write_failure_propagates_cause(self, tmp_path: Path) -> None:
         """Generator exceptions must reach callers (receipt messages), not be
         swallowed behind a print-and-empty-string sentinel."""
-        from gnn.render.generators import generate_bnlearn_code
+        from gnn.render.bnlearn import generate_bnlearn_code
 
         target = tmp_path / "out"
         target.mkdir()

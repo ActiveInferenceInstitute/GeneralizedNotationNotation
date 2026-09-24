@@ -1356,7 +1356,7 @@ class POMDPRenderProcessor:
     ) -> Dict[str, Any]:
         """Call bnlearn renderer."""
         try:
-            from .generators import generate_bnlearn_code
+            from .bnlearn import generate_bnlearn_code
 
             model_name = gnn_spec.get("name", "pomdp_model")
             output_file = output_dir / f"{_safe_output_stem(model_name)}_bnlearn.py"
