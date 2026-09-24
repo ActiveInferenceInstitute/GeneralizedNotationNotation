@@ -94,12 +94,15 @@ class GNNParserValidationResult:
             return f"Validation failed with {len(self.errors)} errors and {len(self.warnings)} warnings"
 
 
-class GNNValidator:
-    """Comprehensive validator for GNN models."""
+class InternalModelValidator:
+    """Validates a parsed ``GNNInternalRepresentation`` — the parser's internal
+    model — across structure, variables, connections, parameters, semantic
+    consistency, and Active Inference constraints.
+    """
 
     def __init__(self, strict: bool = True) -> None:
         """
-        Initialize the GNN validator.
+        Initialize the internal model validator.
 
         Args:
             strict: Whether to perform strict validation (warnings become errors)
@@ -108,10 +111,10 @@ class GNNValidator:
 
     def validate(self, model: GNNInternalRepresentation) -> GNNParserValidationResult:
         """
-        Validate a GNN model comprehensively.
+        Validate an internal GNN model representation comprehensively.
 
         Args:
-            model: GNN model to validate
+            model: Parser-internal GNN model to validate
 
         Returns:
             GNNParserValidationResult with all issues found

@@ -59,7 +59,7 @@ from .temporal_serializer import AgdaSerializer, TLASerializer
 
 # Import all parser modules
 from .unified_parser import GNNFormat, ParseResult
-from .validators import GNNValidator
+from .validators import InternalModelValidator
 from .xml_parser import PNMLParser, XMLGNNParser
 from .xml_serializer import XMLSerializer
 from .xsd_serializer import XSDSerializer
@@ -142,7 +142,7 @@ class GNNParsingSystem:
         self.parsers: Dict[GNNFormat, GNNParser] = {}
         self.serializers: Dict[GNNFormat, Any] = {}
         self.converter = FormatConverter()
-        self.validator = GNNValidator()
+        self.validator = InternalModelValidator()
 
         self._initialize_parsers()
         self._initialize_serializers()

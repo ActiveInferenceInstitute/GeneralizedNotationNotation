@@ -17,7 +17,7 @@ Multi-format I/O for GNN: **23** `GNNFormat` values, **23** parsers, **22** seri
 1. Extend **`GNNFormat`** in `common.py` if needed.
 2. Implement parser (and serializer unless parse-only) classes.
 3. Register in **`PARSER_REGISTRY`** and, if applicable, **`SERIALIZER_REGISTRY`** in **`system.py`**.
-4. Add tests under `tests/` and extend `src/gnn/testing/test_round_trip.py` if the format should participate in round-trip.
+4. Add tests under `tests/` and extend `tests/testing/test_round_trip.py` (participation configured in `src/gnn/testing/round_trip_config.py`) if the format should participate in round-trip.
 
 ## Tests
 
