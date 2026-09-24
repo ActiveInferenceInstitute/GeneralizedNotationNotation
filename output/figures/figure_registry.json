@@ -20,7 +20,7 @@
       "filename": "gnn_graphical_abstract.png",
       "generated_by": "scripts/manuscript_fig_graphical_abstract.py",
       "label": "fig:graphical_abstract",
-      "png_sha256": "284456a09d3c0aec4c02b8b5db27e048dd4b4fdb0eeafe2ff08baa0a5e08a432",
+      "png_sha256": "6a0657c4a588e66357c0825e1b22de7c45c9685129b5c8269de97bc74fb5f3c0",
       "source_sha256": {}
     },
     {
@@ -29,7 +29,7 @@
       "filename": "gnn_pipeline_dag.png",
       "generated_by": "scripts/manuscript_fig_pipeline_dag.py",
       "label": "fig:pipeline",
-      "png_sha256": "f0678cd3b3615bc080acde3601dad812b4f9c666166ff92b2477db55d7d77700",
+      "png_sha256": "160c8064d2c8ea653639bcf9dc99327196f03c6070d5b5d51ed126ffb34536f4",
       "source_sha256": {
         "src/gnn/STEP_INDEX.md": "438e756bf409d9af2e7623b0deb9258080814b9746def1c8d01aa742dc4145e4"
       }
@@ -40,7 +40,7 @@
       "filename": "gnn_family_framework_matrix.png",
       "generated_by": "scripts/manuscript_fig_family_framework.py",
       "label": "fig:family_matrix",
-      "png_sha256": "6212ba731ff843c576c1b2068cdaa3b7586cd29decc17db0adab33578734e0a9",
+      "png_sha256": "10afb75fac37b20dffbc537b2573aa09584788fd536ffdc8360d87e36fe9b217",
       "source_sha256": {
         "input/model_family_manifest.json": "d2761feea73771f84f2bcc94e215e7042960c1c28d9ecbff8b069377b2fc26cf",
         "src/gnn/render/framework_registry.py": "a684eb1d49d8045b7e42621339465629d5fd4eba61da3cfe631ea43afe795a11"
@@ -52,7 +52,7 @@
       "filename": "gnn_backend_capability_matrix.png",
       "generated_by": "scripts/manuscript_fig_backend_matrix.py",
       "label": "fig:backend_matrix",
-      "png_sha256": "ddcc1fc854d7d16ca9c8c2949450e6cfd3d0cd99c3b278726a6f496c828ce86e",
+      "png_sha256": "fe8a78e455a93b0e2fdb24c027a953d81d1c8590d62f5b8a5554b472d81bb599",
       "source_sha256": {
         "input/model_family_manifest.json": "d2761feea73771f84f2bcc94e215e7042960c1c28d9ecbff8b069377b2fc26cf",
         "src/gnn/manuscript/variables.py": "ec4090eecb0f69e6fc533bb8222e51099aa39c25d5936c09669392ba39328f4b",
@@ -71,13 +71,13 @@
         "GNN_MCP_TOOL_COUNT": "162",
         "GNN_SRC_PACKAGE_COUNT": "43",
         "GNN_STEP_COUNT": "25",
-        "GNN_TEST_FILE_COUNT": "509",
+        "GNN_TEST_FILE_COUNT": "512",
         "GNN_VERSION": "3.5.0"
       },
       "filename": "gnn_repo_metrics.png",
       "generated_by": "scripts/manuscript_fig_repo_metrics.py",
       "label": "fig:repo_metrics",
-      "png_sha256": "7ed69e3f083eecd646d2ec93102bb5eea8ecacdb6e119838b39f79bc900abd2c",
+      "png_sha256": "9f95dca5ece05783b811ed63d6aba535277a1e987efb5530c30a206d754b2d7b",
       "source_sha256": {}
     },
     {
@@ -94,7 +94,7 @@
       "filename": "gnn_triple_play.png",
       "generated_by": "scripts/manuscript_fig_triple_play.py",
       "label": "fig:triple_play",
-      "png_sha256": "227a6ca786d89ac94b365190ce4e2eec5b1e8b4ca94b81bec0b4e129d1fa8d36",
+      "png_sha256": "2a385743196d2616906e0b777e9a188164d2058fcc0380139229ad8c63645636",
       "source_sha256": {}
     },
     {
@@ -103,7 +103,7 @@
       "filename": "gnn_orchestration.png",
       "generated_by": "scripts/manuscript_fig_orchestration.py",
       "label": "fig:orchestration",
-      "png_sha256": "03c05d31cb6af02f8ba9825f8e3b6c28768b7c2a63cafee5e8dc55f85c97fc92",
+      "png_sha256": "c59fb5dfe42e9e1a0a73c95a410da4a7d3b215c33f0dd6e5da7c913331f90005",
       "source_sha256": {}
     }
   ],
