@@ -24,16 +24,16 @@ def _generate_jax_combined_code(
         unsupported_composition_reason,
     )
 
-    # The combined generator is a Flax placeholder with no LGSSM semantics:
+    # The combined generator is a Flax stand-in with no LGSSM semantics:
     # continuous-family specs must never be rendered through the Dense
-    # placeholder layers below — they are refused here and rendered by
+    # stand-in layers below — they are refused here and rendered by
     # render.continuous_script (via render_gnn_to_jax) instead.
     kinds = detect_model_kinds(gnn_spec)
     if ModelKind.CONTINUOUS in kinds and len(kinds) > 1:
         raise ValueError(unsupported_composition_reason(kinds))
     if ModelKind.CONTINUOUS in kinds:
         raise ValueError(
-            "continuous-spec: the combined generator is a Flax placeholder "
+            "continuous-spec: the combined generator is a Flax stand-in "
             "without LGSSM semantics; render continuous specs via "
             "render_gnn_to_jax"
         )
@@ -89,7 +89,7 @@ class __GNN_MODEL_NAME__Combined(nn.Module):
                                                  (self.num_agents, self.num_agents))
         
         # Continuous state parameters
-        # NOT LGSSM semantics: these Dense layers are a Flax placeholder for
+        # NOT LGSSM semantics: these Dense layers are a Flax stand-in for
         # "continuous" dimension bookkeeping only. Continuous-family specs
         # (flat or composed) are refused upstream in
         # _generate_jax_combined_code and rendered by render.continuous_script

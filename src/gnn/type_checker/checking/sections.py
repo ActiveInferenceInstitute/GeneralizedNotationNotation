@@ -192,9 +192,9 @@ class TimeSpecKind(Enum):
       explicit schedule (``B_regime`` + ``b_regime_schedule``), selecting
       one of a finite set of transition tensors per timestep.
 
-    A ``Hierarchical`` ``## Time`` declaration is a legacy taxonomy label
+    A ``Hierarchical`` ``## Time`` declaration is an earlier taxonomy label
     (deep temporal hierarchy), orthogonal to these three kinds: the typed
-    API classifies the *time variation of the dynamics*, while the legacy
+    API classifies the *time variation of the dynamics*, while the
     :func:`classify_time_spec` string keeps returning ``"Hierarchical"``
     for backward compatibility.
     """
@@ -204,7 +204,7 @@ class TimeSpecKind(Enum):
     REGIME_SWITCHED = "RegimeSwitched"
 
 
-# Legacy string projection consumed by existing callers (the checker's
+# Earlier string projection consumed by existing callers (the checker's
 # ``model_type`` field and the estimator's ``time_spec``): both dynamic
 # kinds project to ``"Dynamic"`` so their serialized output is unchanged.
 _LEGACY_TIME_SPEC_STRINGS: dict[TimeSpecKind, str] = {
@@ -237,8 +237,8 @@ def classify_time_spec_kind(content: str) -> TimeSpecKind:
 def classify_time_spec(content: str) -> str:
     """Classify a GNN spec's ``## Time`` section into Static/Dynamic/Hierarchical.
 
-    Backward-compatible string projection of :func:`classify_time_spec_kind`:
-    ``TimeVarying`` and ``RegimeSwitched`` both project to the legacy
+    Stable string projection of :func:`classify_time_spec_kind`:
+    ``TimeVarying`` and ``RegimeSwitched`` both project to the earlier-name
     ``"Dynamic"`` string so existing callers (the checker's ``model_type``
     field, the estimator's ``time_spec``, and their tests) keep their exact
     contract. Reads only the canonical ``## Time`` block so a stray ``t``
