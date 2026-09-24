@@ -1,13 +1,14 @@
 # TO-DO - GNN Pipeline Roadmap
 
-**Last Updated**: 2026-09-23 (full reconcile: closed-work prose purged per
-the Conventions — audit trail lives in `CHANGELOG.md` and git history;
-batch-7 PRs #165-#171, the double fep_formal re-seal `5de75c6`→`3aabf31`
-with pair bump `966a5b196`, and the custody-re-render preamble fix
-`cbee91e02` all landed and swept green. Dispositions verified at
-`cbee91e02`: BC-01 RESOLVED (ADR 048 = SUPERSEDE), BC-16 LANDED, SC-38
-tail LANDED, BC-15 verified-clean (`src/gnn/lsp/SPEC.md:12` parity claim
-accurate — no paragraph needed). Full program: `SCOPE-2026-09-23.md`.)
+**Last Updated**: 2026-09-24 (truth-pass per the wave-5 census at
+`ac8abd3a2`: landed rows struck — Minor batch MI-1..MI-16 (#173-#176),
+BC-02a/BC-02c + ARCH-1, BC-02b, BC-13, ARCH-3, and
+M-04/M-05/M-06/M-07/M-08/M-10/M-13; GEN-1/2 landed (#183, #179-#182).
+M-01 re-counted to the tracked band set: 11 after #188 folded
+`main.py` (a raw >1200-line sweep counts 17). Open rows re-scoped:
+M-03 (doctrine long tail), M-09 (mirror-or-exempt), M-11/M-12/M-14,
+BC-14 (conditional). Audit trail: `CHANGELOG.md` and git history.
+Full program: `SCOPE-2026-09-23.md`.)
 **Current Version**: 3.5.0
 **Next Target**: v4.0.0 (bounded autonomy, pipeline stage consolidation,
 multi-agent stigmergic topologies, high-dimensional active inference)
@@ -30,16 +31,12 @@ file). Summary:
 
 | ID | Class | Scope | Acceptance anchor |
 | --- | --- | --- | --- |
-| Minor batch (MI-1..MI-16) | minor | 16 × S: stale 3.4.0/3.3.0 stamps (VERSION_MAP, .agent_rules, OPTIONAL_DEPENDENCIES, README bullet, CHANGELOG link defs, docs/gnn corpus), dead API-reference paths (MI-7), dead sapf files (MI-9/10), pip→uv message, test-stub/fixture dedup, shadow-file doc cites | SCOPE-2026-09-23 §Minor |
-| BC-02a (+BC-02c, ARCH-1 orphan test) | major | Collapse `validate_gnn_syntax` regex dual path → formal parser delegation; silent-fallback triad; adopt `src/gnn/testing/test_round_trip.py` into tests/ | parsers/basic.py:271-345 vs schema_validator; SCOPE §Major |
-| BC-02b | medium | Rename the second live `GNNValidator` (parsers/validators.py:97) | one class + parity tests |
-| BC-13 (M-02) | medium | V4-STAGE in-process force-kill: subprocess-worker or cooperative CancelToken; `force_killed` receipt field; parity tests | pipeline/step_executor.py:536-577; ADR 0001 |
-| BC-14 | minor | `utils/pipeline_orchestration/pipeline_template.py` I5 fallback chain — conditional on lint-imports going red (currently 3 kept / 0 broken); M-06 receipts work is the unconditional core | SCOPE §Medium M-06 |
-| M-01 | medium | Oversized band: 10 files >1200 lines (main.py 1993 … render/processor >1283); decompose one file per wave, parity-gated | SCOPE §Medium M-01 |
-| GEN-1..GEN-4 | major | v4.0.0 generalization: continuous executor contract; composed kind detection; factored/hybrid/multi-agent continuous; non-stationary F_t/regime semantics | SCOPE §Major |
-| M-03/M-04/M-05/M-07/M-08 | medium | Silent-fallback hotspots (syntax.py:268 tuple, website/renderer ×7, pymdp VFE 0.0, envelope elapsed) | SCOPE §Medium |
-| M-09/M-10/M-11/M-12/M-14 | medium | Test-structure + execution-route normalization (7 unmirrored dirs, src-shipped tests, lean CancelToken, MCP pymdp gate bypass, bnlearn seam) | SCOPE §Medium |
-| ARCH-3 | minor | Promote exact MCP tool-count pin (162/36) from audit_report.json | tests/mcp/test_registry_internals.py |
+| BC-14 | minor | `utils/pipeline_orchestration/pipeline_template.py` I5 fallback chain — conditional on lint-imports going red (currently 3 kept / 0 broken) | SCOPE §Medium M-06 |
+| M-01 | medium | Oversized band: 11 tracked band files (SCOPE M-01 set + new crossers) after #188 folded `main.py` (largest `rxinfer_bridge.py` 1801 … `render/processor.py` 1329; new crossers `execute/processor.py` 1577, `website/generator.py` 1379); a raw >1200-line sweep counts 17 at `9fb81279e` — 6 extras sit outside the tracked set (`gui/gui_2/ui.py` 1545, `parsers/schema_parser.py` 1534, `utils/arguments/arg_parsing.py` 1498, `intelligent_analysis/processor.py` 1409, `utils/logging/logging_utils.py` 1335, `security/processor.py` 1235) pending a band-program decision; decompose one file per wave, parity-gated | SCOPE §Medium M-01 |
+| GEN-3/GEN-4 | major | v4.0.0 generalization remainder: factored/hybrid/multi-agent continuous; non-stationary F_t/regime semantics (GEN-1/2 landed: #183, #179-#182) | SCOPE §Major |
+| M-03 | medium | `except Exception` long tail: 304+ remaining sites, all spot-checked sites log + structured receipts; hotspot fixes landed — remaining work is doctrine + optional ratchet, no mass rewrite | SCOPE §Medium M-03 |
+| M-09 | medium | Mirror-or-exempt for the 7 unmirrored test dirs; `tests/parsers` + `tests/processing` mirrors dispatched in a parallel lane; near-empty src dirs (`documentation`, `grammars`, `schemas`, `schema`, `formal_specs`, `type_systems`) exemptable | SCOPE §Medium M-09 |
+| M-11/M-12/M-14 | medium | Execution-route normalization: lean CancelToken holdout (cross-repo fep lane); MCP pymdp gated-envelope bypass (rides the GEN-3/4 fold); bnlearn seam → `render/bnlearn/` package per the ngclearn pattern, rewire `framework_registry.py:205` + `health.py:56-58` | SCOPE §Medium |
 
 
 Cross-repo (fep_lean coordinator territory, NOT GNN waves): X-1
