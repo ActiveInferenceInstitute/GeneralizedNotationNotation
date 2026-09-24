@@ -38,8 +38,8 @@ def test_model_kind_enum_values() -> None:
 
 
 def test_model_kind_enum_count() -> None:
-    """ModelKind has exactly 8 members."""
-    assert len(list(ModelKind)) == 8
+    """ModelKind has exactly 9 members."""
+    assert len(list(ModelKind)) == 9
 
 
 def test_detect_model_kind_flat_default() -> None:

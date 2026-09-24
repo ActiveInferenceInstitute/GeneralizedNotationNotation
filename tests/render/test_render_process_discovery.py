@@ -4,10 +4,11 @@ Verifies the recursive-discovery fix in ``src/render/processor.py``:
 
 1. ``process_render(..., recursive=True)`` (the default) walks nested exemplar
    folders (discrete/, basics/, continuous/, pomdp_gridworld/, ...) and renders
-   every exemplar GNN spec to RxInfer.jl — 35 exemplar ``*.md`` files are all
-   discovered; the 32 plain ones render, and the composed trio is receipted
-   instead: continuous × multi-agent and hybrid (``unsupported-composition``)
-   plus the factored-continuous LGSSM (``unsupported-factored-continuous``).
+   every exemplar GNN spec to RxInfer.jl — 36 exemplar ``*.md`` files are all
+   discovered; the 31 plain ones render, and the five receipted exemplars are
+   never rendered: the composed trio (continuous × multi-agent, hybrid,
+   factored-continuous LGSSM) plus the two non-stationary discrete specs
+   (``unsupported-nonstationary``).
 2. Passing ``recursive=False`` via kwargs reverts to a top-level-only glob, so
    no nested files are found and ``process_render`` returns exit code ``2``.
 
@@ -25,11 +26,11 @@ from gnn.render.processor import process_render
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 EXEMPLAR_DIR = REPO_ROOT / "input" / "gnn_files"
-EXPECTED_EXEMPLAR_COUNT = 35
-# Plain exemplars that still render to RxInfer.jl; the three composed
-# exemplars (continuous × multi-agent, hybrid, factored-continuous) are
-# receipted, never rendered.
-EXPECTED_RENDERED_COUNT = 32
+EXPECTED_EXEMPLAR_COUNT = 36
+# Plain exemplars that still render to RxInfer.jl; the five receipted
+# exemplars (composed trio + the two non-stationary discrete specs) are
+# never rendered.
+EXPECTED_RENDERED_COUNT = 31
 
 
 def _count_exemplar_md_files() -> int:
@@ -69,12 +70,14 @@ def test_process_render_recursive_discovers_and_renders_all_exemplars(
     assert summary["total_framework_attempts"] == EXPECTED_RENDERED_COUNT
     assert summary["successful_framework_renderings"] == EXPECTED_RENDERED_COUNT
 
-    # (3) The three composed exemplars are receipted on RxInfer — never
+    # (3) The five receipted exemplars are receipted on RxInfer — never
     # rendered as one family or rendered flat.
     expected_receipts = {
         "multi_agent_lgssm": "unsupported-composition",
         "hybrid_discrete_continuous": "unsupported-composition",
         "factored_continuous_lgssm": "unsupported-factored-continuous",
+        "time_varying_dynamics": "unsupported-nonstationary",
+        "regime_switched_dynamics": "unsupported-nonstationary",
     }
     for stem, prefix in expected_receipts.items():
         entries = [
