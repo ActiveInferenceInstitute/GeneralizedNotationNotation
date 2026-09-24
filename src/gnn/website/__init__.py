@@ -8,12 +8,12 @@ from typing import Any
 
 from gnn import __version__
 
+from .collection import collect_website_data
 from .dashboard import render_dashboard
 from .generator import (
     PIPELINE_STEPS,
     StepInfo,
     WebsiteGenerator,
-    collect_website_data,
     generate_website,
     get_pipeline_steps,
 )
