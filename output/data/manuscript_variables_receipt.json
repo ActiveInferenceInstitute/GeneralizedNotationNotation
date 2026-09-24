@@ -1,11 +1,9 @@
 {
-  "counts_describe_commit": "f8d243392",
-  "dirty_path_count": 4,
+  "counts_describe_commit": "9c899013e",
+  "dirty_path_count": 2,
   "dirty_paths": [
     "output/data/manuscript_variables.json",
-    "output/data/manuscript_variables_receipt.json",
-    "src/gnn/render/pomdp_contract.py",
-    "tests/gnn/test_pomdp_extractor_continuous.py"
+    "output/data/manuscript_variables_receipt.json"
   ],
   "generator": "scripts/z_generate_manuscript_variables.py",
   "git_available": true,
