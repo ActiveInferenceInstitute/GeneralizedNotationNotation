@@ -3,7 +3,7 @@
 **Version**: v3.2.0 Engine (Bundle v2.0.0)  
 **Last Updated**: 2026-04-14  
 **Status**: ✅ Production Ready  
-**Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends wired under `src/gnn/render/` (8 with dedicated guides in this directory, plus `bnlearn`) · **Tests**: see [../../../README.md](../../../README.md)
+**Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 10 backends wired under `src/gnn/render/` (8 with dedicated guides in this directory, plus `bnlearn` and `ngclearn`) · **Tests**: see [../../../README.md](../../../README.md)
 
 This directory contains documentation and references for the Implementations domain of Generalized Notation Notation (GNN).
 

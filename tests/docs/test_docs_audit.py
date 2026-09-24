@@ -236,6 +236,132 @@ def test_version_claims_pass_matching_current_version(
     assert audit_mod.audit_version_claims([doc]) == []
 
 
+def _seed_framework_registry(tmp_path: Path, count: int) -> None:
+    registry = tmp_path / "src" / "gnn" / "render" / "framework_registry.py"
+    registry.parent.mkdir(parents=True, exist_ok=True)
+    entries = "\n".join(f'    "fw{i}": {{"name": "Fw{i}"}},' for i in range(count))
+    registry.write_text(
+        "FRAMEWORK_REGISTRY = {\n" + entries + "\n}\n", encoding="utf-8"
+    )
+
+
+def test_engine_count_flags_stale_footer(audit_mod: Any, tmp_path: Path) -> None:
+    _seed_framework_registry(tmp_path, 3)
+    doc = tmp_path / "docs" / "note.md"
+    doc.parent.mkdir(parents=True)
+    doc.write_text(
+        "**Modules**: 7 · **Renderers**: 4 backends (see [x](x))\n",
+        encoding="utf-8",
+    )
+
+    issues = audit_mod.audit_engine_count_claims([doc])
+
+    assert len(issues) == 1
+    assert issues[0][0] == Path("docs/note.md")
+    assert issues[0][2] == "4"
+    assert "framework_registry" in issues[0][3]
+
+
+def test_engine_count_passes_matching_footer(audit_mod: Any, tmp_path: Path) -> None:
+    _seed_framework_registry(tmp_path, 3)
+    doc = tmp_path / "docs" / "note.md"
+    doc.parent.mkdir(parents=True)
+    doc.write_text("**Renderers**: 3 backends (see [x](x))\n", encoding="utf-8")
+
+    assert audit_mod.audit_engine_count_claims([doc]) == []
+
+
+def test_engine_count_flags_registry_bound_prose(
+    audit_mod: Any, tmp_path: Path
+) -> None:
+    _seed_framework_registry(tmp_path, 3)
+    doc = tmp_path / "SPEC.md"
+    doc.write_text(
+        "the four computational engines declared in x: A, B\n"
+        "single declaration of the four frameworks\n"
+        "Supports five backends: A, B\n",
+        encoding="utf-8",
+    )
+
+    issues = audit_mod.audit_engine_count_claims([doc])
+
+    assert [i[2] for i in issues] == ["four", "four", "five"]
+
+
+def test_engine_count_passes_subset_and_idiom_phrases(
+    audit_mod: Any, tmp_path: Path
+) -> None:
+    _seed_framework_registry(tmp_path, 3)
+    doc = tmp_path / "docs" / "note.md"
+    doc.parent.mkdir(parents=True)
+    doc.write_text(
+        "reports it alongside the other two backends\n"
+        "Step 12 backends remain core deps\n"
+        "renders one parsed spec to four backends — A, B\n"
+        "the dispatch covers all five backends\n",
+        encoding="utf-8",
+    )
+
+    assert audit_mod.audit_engine_count_claims([doc]) == []
+
+
+def test_engine_count_covers_root_spec(audit_mod: Any, tmp_path: Path) -> None:
+    _seed_framework_registry(tmp_path, 3)
+    spec = tmp_path / "SPEC.md"
+    spec.write_text(
+        "the four computational engines declared in x: A, B\n", encoding="utf-8"
+    )
+
+    assert spec in audit_mod.engine_count_scan_files()
+    issues = audit_mod.audit_engine_count_claims([spec])
+
+    assert len(issues) == 1
+    assert issues[0][2] == "four"
+
+
+def test_engine_count_reports_unreadable_registry(
+    audit_mod: Any, tmp_path: Path
+) -> None:
+    doc = tmp_path / "docs" / "note.md"
+    doc.parent.mkdir(parents=True)
+    doc.write_text("**Renderers**: 4 backends\n", encoding="utf-8")
+
+    issues = audit_mod.audit_engine_count_claims([doc])
+
+    assert len(issues) == 1
+    assert issues[0][3] == "cannot parse FRAMEWORK_REGISTRY"
+
+
+def test_format_strict_issue_detail_lists_engine_count_claims() -> None:
+    detail = _load_docs_audit().format_strict_issue_detail(
+        link_issues=[],
+        anchor_issues=[],
+        anchor_checked=True,
+        spec_issues=[],
+        coverage=[],
+        doc_missing_agents=[],
+        doc_missing_readme=[],
+        agents_no_readme=[],
+        readme_no_agents=[],
+        doc_agents_structure=[],
+        security_version_issues=[],
+        spec_coverage_issues=[],
+        prose_src_issues=[],
+        version_claim_issues=[],
+        engine_count_issues=[
+            (
+                Path("docs/note.md"),
+                3,
+                "9",
+                "render-engine count claim != framework_registry (10 frameworks)",
+            ),
+        ],
+    )
+
+    assert "Render-engine count claims (1)" in detail
+    assert "docs/note.md:3" in detail
+
+
 def test_format_strict_issue_detail_lists_bc17_sections() -> None:
     detail = _load_docs_audit().format_strict_issue_detail(
         link_issues=[],
