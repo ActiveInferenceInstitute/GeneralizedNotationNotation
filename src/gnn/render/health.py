@@ -50,12 +50,8 @@ class RendererStatus:
 
 
 # Renderer import paths derived from the canonical framework inventory.
-_RENDERER_MODULE_OVERRIDES: dict[str, str] = {
-    "bnlearn": "gnn.render.generators",
-}
 _RENDERERS: dict[str, Any] = {
-    name: _RENDERER_MODULE_OVERRIDES.get(name, f"gnn.render.{name}")
-    for name in get_supported_frameworks()
+    name: f"gnn.render.{name}" for name in get_supported_frameworks()
 }
 
 _FRAMEWORK_REMEDIATIONS: dict[str, str] = {

@@ -1,7 +1,7 @@
 # bnlearn Executor
 
 Step 12 execution support for the generator-backed bnlearn render target
-(``src/gnn/render/generators.py::generate_bnlearn_code``).
+(``src/gnn/render/bnlearn/bnlearn_renderer.py::generate_bnlearn_code``).
 
 ## What it runs
 

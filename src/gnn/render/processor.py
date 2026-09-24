@@ -821,11 +821,8 @@ def _process_single_gnn_file_basic(
     """
     try:
         # Import basic generators
-        from .generators import (
-            generate_bnlearn_code,
-            generate_discopy_code,
-            generate_pymdp_code,
-        )
+        from .bnlearn import generate_bnlearn_code
+        from .generators import generate_discopy_code, generate_pymdp_code
 
         # Create basic model data from filename
         model_data: dict[str, Any] = {
@@ -1049,10 +1046,10 @@ def render_gnn_spec(
         output_dir = Path(output_directory)
         output_dir.mkdir(parents=True, exist_ok=True)
 
-        # Generator-based renderers: target → (generator_name, file_suffix)
+        # Generator-based renderers: target → (module, generator_name, file_suffix)
         _GENERATOR_TARGETS: dict[str, Any] = {
-            "discopy": ("generate_discopy_code", "_discopy.py"),
-            "bnlearn": ("generate_bnlearn_code", "_bnlearn.py"),
+            "discopy": (".generators", "generate_discopy_code", "_discopy.py"),
+            "bnlearn": (".bnlearn", "generate_bnlearn_code", "_bnlearn.py"),
         }
 
         target_lower = target.lower()
@@ -1188,10 +1185,10 @@ def render_gnn_spec(
             return (True, msg, artifacts) if success else (False, msg, [])
 
         if target_lower in _GENERATOR_TARGETS:
-            gen_name, suffix = _GENERATOR_TARGETS[target_lower]
-            from . import generators
+            gen_module_name, gen_name, suffix = _GENERATOR_TARGETS[target_lower]
+            from importlib import import_module
 
-            generate_fn = getattr(generators, gen_name)
+            generate_fn = getattr(import_module(gen_module_name, __package__), gen_name)
             code = generate_fn(gnn_spec)
             output_file = output_dir / f"{output_stem}{suffix}"
             if code:
