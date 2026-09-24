@@ -13,7 +13,7 @@ from typing import Any
 
 import pytest
 
-pytestmark = pytest.mark.fast
+pytestmark = [pytest.mark.fast, pytest.mark.needs_pymdp]
 
 from gnn.execute.pymdp.pymdp_simulation import PyMDPSimulation
 
@@ -24,9 +24,7 @@ class TestVFEReceiptState:
 
     @pytest.fixture
     def sim(self) -> PyMDPSimulation:
-        """Demo model with a real pymdp 1.0.0 agent (skip if absent)."""
-        pytest.importorskip("pymdp")
-        pytest.importorskip("jax")
+        """Demo model with a real pymdp 1.0.0 agent (suite gated by needs_pymdp marker)."""
         return PyMDPSimulation(gnn_config={}, allow_demo_spec=True)
 
     def test_failed_extraction_yields_null_padding_and_receipt(
