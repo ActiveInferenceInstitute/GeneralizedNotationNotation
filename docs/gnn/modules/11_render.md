@@ -78,6 +78,16 @@ graph TD
 
 `detect_model_kind` (`src/gnn/render/pomdp_contract.py`) classifies each spec **structurally** — from the `GNNSection` value, per-level / per-agent matrix key patterns, explicit `nr_agents` / `num_factors`, `F`/`H`/`Q`/`R` keys, and `dirichlet_[A-E]` keys. There is no free-text scanning, and a non-mapping `InitialParameterization` raises `ValueError` rather than being guessed at.
 
+Composed specs — a linear-Gaussian block declared alongside multi-agent (or
+hierarchical / learning / factored) structure — classify under several kinds
+at once: `detect_model_kinds` (same module) returns the full kind set, e.g.
+`{CONTINUOUS, MULTI_AGENT}` for `input/gnn_files/continuous/multi_agent_lgssm.md`,
+while `detect_model_kind` remains the max-precedence single winner. A
+composed set is never rendered as the winner family alone: the render step
+reports every framework `unsupported-composition` (counted under
+`unsupported_framework_renderings`, never a failure) rather than silently
+dropping the other family.
+
 The canonical renderer (`rxinfer_renderer.py`) then dispatches to a per-kind strategy in `src/gnn/render/rxinfer/model_strategies.py`. Each strategy emits a genuine Julia script running `infer()`; each raises `ValueError` naming the missing parameterization when a spec reaches it without the matrices its `@model` requires.
 
 | ModelKind | Strategy | Generated model |
@@ -95,7 +105,7 @@ The canonical renderer (`rxinfer_renderer.py`) then dispatches to a per-kind str
 
 **Conventions baked into generated scripts.** `B` is ordered `(next_state, previous_state, action)` — the scripts embed `const B_TENSOR_ORDER = "next_state_previous_state_action"`. In the results payload, `true_states[t]` is the state that *emitted* observation `t`, so it is timing-aligned with `beliefs[t]`.
 
-Continuous exemplars (`input/gnn_files/continuous/`) are **pure linear-Gaussian models** — `F`/`H`/`Q`/`R`, `prior_mean`/`prior_cov`, optional closed-loop `goal_mean`/`control_gain` — with no discrete stand-in. `detect_model_kind` routes them as `CONTINUOUS`: RxInfer.jl (native LGSSM strategy), JAX, NumPyro, PyTorch, ngc-learn (shared Kalman-filter generator in `render/continuous_script.py`) and Stan (Kalman marginal-likelihood program) render and execute them; PyMDP, ActiveInference.jl, DisCoPy and bnlearn return the render status `unsupported` (counted separately from failures, never executed). Continuous results echo `state_factors` and `observation_modalities` as empty because a linear-Gaussian model has no categorical factors.
+Continuous exemplars (`input/gnn_files/continuous/`) are linear-Gaussian models — `F`/`H`/`Q`/`R`, `prior_mean`/`prior_cov`, optional closed-loop `goal_mean`/`control_gain` — with no discrete stand-in. `detect_model_kind` routes them as `CONTINUOUS`: RxInfer.jl (native LGSSM strategy), JAX, NumPyro, PyTorch, ngc-learn (shared Kalman-filter generator in `render/continuous_script.py`) and Stan (Kalman marginal-likelihood program) render and execute them; PyMDP, ActiveInference.jl, DisCoPy and bnlearn return the render status `unsupported` (counted separately from failures, never executed). Continuous results echo `state_factors` and `observation_modalities` as empty because a linear-Gaussian model has no categorical factors. The one composed exception is `multi_agent_lgssm.md`, which additionally declares `nr_agents: 2`: `detect_model_kinds` returns `{CONTINUOUS, MULTI_AGENT}` and every framework reports the `unsupported-composition` status (refused, never rendered as one family) until per-agent continuous rendering lands.
 
 #### ActiveInference.jl (Julia)
 - **Purpose**: Active Inference framework implementation

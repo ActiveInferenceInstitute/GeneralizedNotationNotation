@@ -6,16 +6,19 @@ execute it through the 25-step pipeline. For syntax and file-structure rules see
 [normative syntax](../../docs/gnn/reference/gnn_syntax.md) and the tutorials in
 [docs/gnn/tutorials/](../../docs/gnn/tutorials/).
 
-**Counts (measured 2026-09-22):** 32 runnable `.md` spec files across 10 task
+**Counts (measured 2026-09-23):** 33 runnable `.md` spec files across 10 task
 folders (`INDEX.md`, `AGENTS.md` and `README.md` are non-spec scaffolds and are
 excluded by `gnn.processing.discovery.is_model_source_path`). 27 are discrete-state
 POMDP/HMM models that render and execute on the nine categorical-capable
 frameworks and are reported as `unsupported` (not failed) on ngc-learn
-(continuous-only backend); the 5 files under `continuous/` are continuous-state
-linear-Gaussian models that render and execute on JAX, NumPyro, PyTorch, Stan,
-RxInfer.jl and ngc-learn and are reported as `unsupported` (not failed) on
-PyMDP, ActiveInference.jl, DisCoPy and bnlearn. Live counts come from
-`output/11_render_output/render_processing_summary.json`.
+(continuous-only backend); 5 of the 6 files under `continuous/` are pure
+continuous-state linear-Gaussian models that render and execute on JAX,
+NumPyro, PyTorch, Stan, RxInfer.jl and ngc-learn and are reported as
+`unsupported` (not failed) on PyMDP, ActiveInference.jl, DisCoPy and bnlearn;
+the remaining one, `multi_agent_lgssm.md`, is a composed continuous × multi-agent
+spec that every framework reports as `unsupported-composition` (not failed,
+never rendered) until per-agent continuous rendering lands. Live counts come
+from `output/11_render_output/render_processing_summary.json`.
 
 ## Choosing an example
 
@@ -27,6 +30,7 @@ PyMDP, ActiveInference.jl, DisCoPy and bnlearn. Live counts come from
 | Compare render targets / scaling | `pymdp_scaling_study/pymdp_scaling_N4_T100.md` (then N8…N64) |
 | Continuous-state (linear-Gaussian) models — passive filtering | `continuous/damped_oscillator_bias.md`, `continuous/ngclearn_lgssm.md`, `continuous/predictive_coding_agent.md`, `continuous/stochastic_dynamics.md` |
 | Continuous-state closed-loop control on beliefs | `continuous/continuous_navigation.md` |
+| Composed kind set (continuous × multi-agent) | `continuous/multi_agent_lgssm.md` |
 | Multi-agent & stigmergy (v3+ features) | `multiagent/stigmergic_swarm.md` |
 | Hierarchical / deep temporal models | `hierarchical/hierarchical_pomdp.md` |
 | Parameter learning | `learning/dirichlet_likelihood_learning.md` |
@@ -41,7 +45,7 @@ PyMDP, ActiveInference.jl, DisCoPy and bnlearn. Live counts come from
 
 ### continuous/
 - [continuous_navigation.md](continuous/continuous_navigation.md)
-- [damped_oscillator_bias.md](continuous/damped_oscillator_bias.md)
+- [multi_agent_lgssm.md](continuous/multi_agent_lgssm.md) — composed continuous × multi-agent exemplar (`nr_agents: 2` declared alongside the `F`/`H`/`Q`/`R` block); `detect_model_kinds` returns `{CONTINUOUS, MULTI_AGENT}` and every framework receipts it `unsupported-composition` rather than rendering one family
 - [ngclearn_lgssm.md](continuous/ngclearn_lgssm.md) — passive 2-state damped-rotation linear-Gaussian model; the ngc-learn (ngclearn) backend exemplar of the continuous family
 - [predictive_coding_agent.md](continuous/predictive_coding_agent.md)
 - [stochastic_dynamics.md](continuous/stochastic_dynamics.md)

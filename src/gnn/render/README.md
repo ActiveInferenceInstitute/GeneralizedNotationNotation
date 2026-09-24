@@ -256,6 +256,19 @@ instead of attempting a discrete render; graph-backed targets (`bnlearn`,
 `stan`, `discopy`) render the declared structure legitimately and are not
 gated.
 
+Composed specs declare more than one render family — e.g. a linear-Gaussian
+`F/H/Q/R` block declared alongside `nr_agents > 1`.
+`render.pomdp_contract.detect_model_kinds` returns the full composed kind set
+(`{CONTINUOUS, MULTI_AGENT}` for that spec) while `detect_model_kind` keeps
+returning the max-precedence single winner for per-kind dispatch. No backend
+renders a composition whole: the render step reports every framework
+`{"unsupported": true, "status": "unsupported"}` with the
+`unsupported-composition:` reason — the same unsupported accounting
+structural wrappers get, counted under `unsupported_framework_renderings`
+and never a failure — rather than silently rendering the winner family with
+the other dropped. The composed exemplar is
+`input/gnn_files/continuous/multi_agent_lgssm.md`.
+
 The supported framework inventory is defined in `src/gnn/render/framework_registry.py` and consumed by `health.py`, `__init__.py`, `processor.py`, `pomdp_processor.py`, and `mcp.py`.
 
 ## Usage Examples

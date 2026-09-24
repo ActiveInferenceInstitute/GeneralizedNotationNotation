@@ -28,6 +28,8 @@ from .pomdp_contract import (
     ModelKind,
     build_canonical_pomdp_spec,
     detect_pomdp_space_model_kind,
+    detect_pomdp_space_model_kinds,
+    unsupported_composition_reason,
 )
 from .pomdp_math import (
     _factor_action_counts,
@@ -416,6 +418,21 @@ class POMDPRenderProcessor:
         """
         config = self.framework_configs[framework]
         warnings: list[Any] = []
+
+        # A composed spec declares more than one render family (e.g. a
+        # linear-Gaussian F/H/Q/R block alongside nr_agents > 1). Rendering
+        # the single-winner kind would silently drop the other family, so
+        # every framework refuses a composed continuous spec with an explicit
+        # unsupported-composition receipt — the same unsupported accounting
+        # structural wrappers get, never a silent wrong-family render.
+        kinds = detect_pomdp_space_model_kinds(pomdp_space)
+        if ModelKind.CONTINUOUS in kinds and len(kinds) > 1:
+            return {
+                "compatible": False,
+                "unsupported": True,
+                "reason": unsupported_composition_reason(kinds),
+                "warnings": warnings,
+            }
 
         if getattr(pomdp_space, "model_kind", "discrete") == "continuous":
             if not config.get("supports_continuous", False):
