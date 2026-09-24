@@ -7,7 +7,7 @@
 
 GNN framework integration is handled by **Steps 11 and 12** of the processing pipeline:
 
-- **`src/gnn/11_render.py`** → Code generation for PyMDP, RxInfer.jl, ActiveInference.jl, DisCoPy, JAX, PyTorch, NumPyro, Stan, bnlearn
+- **`src/gnn/11_render.py`** → Code generation for PyMDP, RxInfer.jl, ActiveInference.jl, DisCoPy, JAX, PyTorch, NumPyro, Stan, bnlearn, ngclearn
   - See: **[src/gnn/render/AGENTS.md](../../../src/gnn/render/AGENTS.md)** for rendering module details
 - **`src/gnn/12_execute.py`** → Execution of rendered simulation scripts
   - See: **[src/gnn/execute/AGENTS.md](../../../src/gnn/execute/AGENTS.md)** for execution module details
@@ -231,6 +231,6 @@ one animated GIF per model accompanied by a `.manifest.json` reproducibility sid
 ---
 
 **Integration Guide Version**: 3.2.0
-**Render targets**: PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, bnlearn
+**Render targets**: PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, bnlearn, ngclearn
 **Step 12 executors**: PyMDP, JAX, DisCoPy, RxInfer.jl, ActiveInference.jl, PyTorch, NumPyro, Stan, bnlearn
 **Status**: Maintained

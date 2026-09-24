@@ -140,7 +140,7 @@ The GNN pipeline is composed of **25 specialized modules**, each acting as an ag
 | **8** | **[Viz](src/gnn/visualization/)** | Static visualization of matrices and network logic. | [🤖 Agent](src/gnn/visualization/AGENTS.md) • [📝 Code](src/gnn/8_visualization.py) |
 | **9** | **[Adv. Viz](src/gnn/advanced_visualization/)** | Interactive diagrams and complex visual analysis. | [🤖 Agent](src/gnn/advanced_visualization/AGENTS.md) • [📝 Code](src/gnn/9_advanced_viz.py) |
 | **10** | **[Ontology](src/gnn/ontology/)** | Semantic mapping to Active Inference definitions. | [🤖 Agent](src/gnn/ontology/AGENTS.md) • [📝 Code](src/gnn/10_ontology.py) |
-| **11** | **[Render](src/gnn/render/)** | Code generation for PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, bnlearn (`render/framework_registry.py`) | [🤖 Agent](src/gnn/render/AGENTS.md) • [📝 Code](src/gnn/11_render.py) |
+| **11** | **[Render](src/gnn/render/)** | Code generation for PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan, bnlearn, ngclearn (`render/framework_registry.py`) | [🤖 Agent](src/gnn/render/AGENTS.md) • [📝 Code](src/gnn/11_render.py) |
 | **12** | **[Execute](src/gnn/execute/)** | Simulation runner and runtime management. | [🤖 Agent](src/gnn/execute/AGENTS.md) • [📝 Code](src/gnn/12_execute.py) |
 | **13** | **[LLM](src/gnn/llm/)** | Neurosymbolic analysis and text generation. | [🤖 Agent](src/gnn/llm/AGENTS.md) • [📝 Code](src/gnn/13_llm.py) |
 | **14** | **[ML](src/gnn/ml_integration/)** | Integration with external ML frameworks. | [🤖 Agent](src/gnn/ml_integration/AGENTS.md) • [📝 Code](src/gnn/14_ml_integration.py) |
@@ -696,7 +696,7 @@ The GNN framework is built around a modular architecture, where each pipeline st
 | `visualization` | 8 | Generates graphical representations of GNN models. | `matplotlib`, `plotly`, `graphviz` |
 | `advanced_visualization` | 9 | Provides advanced, interactive and dashboard visualizations. | `plotly`, D3/HTML output, `matplotlib`, `networkx` |
 | `ontology` | 10 | Maps GNN concepts to Active Inference ontology terms. | Ontology Mapper, Knowledge Graph |
-| `render` | 11 | Renders GNN models into executable code for various backends. | Code Generators (PyMDP, RxInfer, JAX, ActInf.jl, PyTorch, NumPyro, Stan, DisCoPy, bnlearn) |
+| `render` | 11 | Renders GNN models into executable code for various backends. | Code Generators (PyMDP, RxInfer, JAX, ActInf.jl, PyTorch, NumPyro, Stan, DisCoPy, bnlearn, ngclearn) |
 | `execute` | 12 | Executes the rendered code using the specified backend. | PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro, Stan (cmdstanpy), bnlearn (`src/gnn/execute/bnlearn/`), and fep_lean (Lean 4) document verification via `src/gnn/execute/lean/` |
 | `llm` | 13 | Integrates Large Language Models for analysis, generation, and insights. | Ollama (local default), OpenAI, OpenRouter, Perplexity |
 | `ml_integration` | 14 | Integrates with machine learning frameworks for advanced analysis. | `scikit-learn`, `tensorflow`, `pytorch` |
