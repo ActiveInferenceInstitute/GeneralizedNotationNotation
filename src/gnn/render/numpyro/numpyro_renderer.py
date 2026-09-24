@@ -50,6 +50,18 @@ def render_gnn_to_numpyro(
             # Continuous-state (linear-Gaussian) branch: Kalman filter + NUTS
             # on the same generative model. No A/B/C/D exist on this path.
             from gnn.render.continuous_script import generate_continuous_script
+            from gnn.render.pomdp_contract import ModelKind, detect_model_kinds
+
+            if detect_model_kinds(gnn_spec) == frozenset(
+                {ModelKind.FACTORED, ModelKind.CONTINUOUS}
+            ):
+                return (
+                    False,
+                    "unsupported-factored-continuous: numpyro renders the flat "
+                    "linear-Gaussian family only; per-factor compositions are "
+                    "refused rather than silently rendered flat",
+                    [],
+                )
 
             code = generate_continuous_script(
                 extract_continuous_spec(gnn_spec), "numpyro"

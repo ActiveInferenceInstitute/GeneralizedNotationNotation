@@ -52,6 +52,18 @@ def render_gnn_to_ngclearn(
     try:
         if not is_continuous_spec(gnn_spec):
             return False, _DISCRETE_MESSAGE, []
+        from gnn.render.pomdp_contract import ModelKind, detect_model_kinds
+
+        if detect_model_kinds(gnn_spec) == frozenset(
+            {ModelKind.FACTORED, ModelKind.CONTINUOUS}
+        ):
+            return (
+                False,
+                "unsupported-factored-continuous: ngclearn renders the flat "
+                "linear-Gaussian family only; per-factor compositions are "
+                "refused rather than silently rendered flat",
+                [],
+            )
         spec = extract_continuous_spec(gnn_spec)
         code = generate_continuous_script(spec, "ngclearn")
         output_file = atomic_write_text(Path(output_path), code)

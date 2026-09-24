@@ -428,13 +428,33 @@ class POMDPRenderProcessor:
         # unsupported-composition receipt — the same unsupported accounting
         # structural wrappers get, never a silent wrong-family render.
         kinds = detect_pomdp_space_model_kinds(pomdp_space)
-        if ModelKind.CONTINUOUS in kinds and len(kinds) > 1:
+        factored_continuous = kinds == frozenset(
+            {ModelKind.FACTORED, ModelKind.CONTINUOUS}
+        )
+        if ModelKind.CONTINUOUS in kinds and len(kinds) > 1 and not factored_continuous:
             return {
                 "compatible": False,
                 "unsupported": True,
                 "reason": unsupported_composition_reason(kinds),
                 "warnings": warnings,
             }
+        if factored_continuous:
+            # Per-factor LGSSM composition: JAX renders it through the
+            # factored per-factor path; every other framework is refused
+            # rather than silently rendered as one flat LGSSM.
+            if framework != "jax":
+                return {
+                    "compatible": False,
+                    "unsupported": True,
+                    "reason": (
+                        "unsupported-factored-continuous: "
+                        f"{config.get('name', framework)} renders the flat "
+                        "linear-Gaussian family only; per-factor compositions "
+                        "are refused rather than silently rendered flat"
+                    ),
+                    "warnings": warnings,
+                }
+            return {"compatible": True, "reason": None, "warnings": warnings}
 
         # A nonstationary spec declares time-indexed (B_t) or regime-switched
         # (B_regime + b_regime_schedule) transitions. Only pymdp executes

@@ -266,7 +266,10 @@ renders a composition whole: the render step reports every framework
 `unsupported-composition:` reason — the same unsupported accounting
 structural wrappers get, counted under `unsupported_framework_renderings`
 and never a failure — rather than silently rendering the winner family with
-the other dropped. The composed exemplar is
+the other dropped. The one exception is the composed `{FACTORED, CONTINUOUS}`
+set: it renders on JAX as per-factor linear-Gaussian blocks
+(`render.continuous_script`), while every other composition stays refused.
+The composed exemplar is
 `input/gnn_files/continuous/multi_agent_lgssm.md`.
 
 The supported framework inventory is defined in `src/gnn/render/framework_registry.py` and consumed by `health.py`, `__init__.py`, `processor.py`, `pomdp_processor.py`, and `mcp.py`.

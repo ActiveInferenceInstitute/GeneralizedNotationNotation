@@ -43,6 +43,18 @@ def render_gnn_to_pytorch(
         # Continuous-state (LGSSM) branch: no A/B/C/D exist on this path, so
         # it must never reach the discrete extractors below.
         if _is_continuous_spec(gnn_spec):
+            from gnn.render.pomdp_contract import ModelKind, detect_model_kinds
+
+            if detect_model_kinds(gnn_spec) == frozenset(
+                {ModelKind.FACTORED, ModelKind.CONTINUOUS}
+            ):
+                return (
+                    False,
+                    "unsupported-factored-continuous: pytorch renders the flat "
+                    "linear-Gaussian family only; per-factor compositions are "
+                    "refused rather than silently rendered flat",
+                    [],
+                )
             return _render_continuous(gnn_spec, Path(output_path), options, model_name)
 
         # Extract matrices

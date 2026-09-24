@@ -84,6 +84,38 @@ def _composed_spec() -> dict:
     }
 
 
+def _hybrid_spec(prior_only: bool = False) -> dict:
+    """Discrete A-E contract keys alongside the linear-Gaussian family."""
+    initial: dict = {
+        "A": [[0.8, 0.2], [0.1, 0.9]],
+        "B": [[[1.0, 0.0], [0.0, 1.0]]],
+        "C": [1.0, 0.0],
+        "D": [0.5, 0.5],
+    }
+    if prior_only:
+        initial["prior_mean"] = [0.0, 0.0]
+        initial["prior_cov"] = [[0.5, 0.0], [0.0, 0.5]]
+    else:
+        initial.update(_LGSSM_BLOCK)
+    return {"initialparameterization": initial}
+
+
+def _hybrid_multi_agent_spec() -> dict:
+    """A linear-Gaussian block declared under per-agent discrete keys."""
+    initial = dict(_LGSSM_BLOCK)
+    initial["A_agent1"] = [[0.8], [0.2]]
+    initial["A_agent2"] = [[0.7], [0.3]]
+    return {"initialparameterization": initial}
+
+
+def _factored_continuous_spec() -> dict:
+    """``num_factors > 1`` declared alongside the flat Gaussian family."""
+    return {
+        "initialparameterization": dict(_LGSSM_BLOCK),
+        "model_parameters": {"num_factors": 2},
+    }
+
+
 class TestKindSets:
     """detect_model_kinds returns the full set; plain specs stay singleton."""
 
@@ -96,6 +128,11 @@ class TestKindSets:
         winner = detect_model_kind(spec)
         assert kinds == frozenset({winner})
         assert winner.value == kind_name
+
+    def test_plain_specs_never_classify_hybrid(self) -> None:
+        """HYBRID needs explicit discrete+continuous keys; no plain spec mixes."""
+        for kind_name, spec in _PLAIN_KIND_SPECS.items():
+            assert ModelKind.HYBRID not in detect_model_kinds(spec), kind_name
 
     def test_composed_spec_detects_both_kinds(self) -> None:
         """F/H/Q/R + nr_agents in model_parameters classifies as both."""
@@ -139,6 +176,53 @@ class TestKindSets:
             detect_model_kinds({"initialparameterization": ["A", "B"]})
 
 
+class TestHybridDetection:
+    """HYBRID is the discrete+continuous family mix, keyed explicitly."""
+
+    def test_hybrid_kinds(self) -> None:
+        """Discrete A-E keys alongside F/H/Q/R classify as the family mix."""
+        spec = _hybrid_spec()
+        assert detect_model_kinds(spec) == {
+            ModelKind.HYBRID,
+            ModelKind.CONTINUOUS,
+        }
+        assert detect_model_kind(spec) is ModelKind.HYBRID
+
+    def test_hybrid_prior_pair_branch(self) -> None:
+        """The Gaussian-prior pair satisfies the predicate without F/H/Q/R."""
+        spec = _hybrid_spec(prior_only=True)
+        assert detect_model_kinds(spec) == {
+            ModelKind.HYBRID,
+            ModelKind.CONTINUOUS,
+        }
+        assert detect_model_kind(spec) is ModelKind.HYBRID
+
+    def test_hybrid_with_multi_agent_keeps_multi_agent_winner(self) -> None:
+        """The max-precedence winner is MULTI_AGENT, not HYBRID."""
+        spec = _hybrid_multi_agent_spec()
+        assert detect_model_kinds(spec) == {
+            ModelKind.MULTI_AGENT,
+            ModelKind.HYBRID,
+            ModelKind.CONTINUOUS,
+        }
+        assert detect_model_kind(spec) is ModelKind.MULTI_AGENT
+
+    def test_flat_continuous_never_classifies_hybrid(self) -> None:
+        """F/H/Q/R alone (no A-E contract key) stays the plain continuous kind."""
+        spec = {"initialparameterization": dict(_LGSSM_BLOCK)}
+        assert detect_model_kinds(spec) == frozenset({ModelKind.CONTINUOUS})
+        assert detect_model_kind(spec) is ModelKind.CONTINUOUS
+
+    def test_factored_continuous_kinds(self) -> None:
+        """num_factors > 1 alongside the Gaussian family is {FACTORED, CONTINUOUS}."""
+        spec = _factored_continuous_spec()
+        assert detect_model_kinds(spec) == {
+            ModelKind.FACTORED,
+            ModelKind.CONTINUOUS,
+        }
+        assert detect_model_kind(spec) is ModelKind.CONTINUOUS
+
+
 class TestComposedExemplar:
     """The composed exemplar classifies as {CONTINUOUS, MULTI_AGENT}."""
 
@@ -162,13 +246,24 @@ class TestComposedExemplar:
         assert detect_model_kind(spec) is ModelKind.MULTI_AGENT
 
     def test_corpus_has_no_other_composed_spec(self) -> None:
-        """No existing exemplar silently declares two families.
+        """Exactly three composed exemplars are sanctioned, none silent.
 
-        The unsupported-composition receipts change behavior only for
-        composed specs; every plain exemplar must keep a singleton kind set.
+        The composed receipts change behavior only for the sanctioned composed
+        exemplars — continuous × multi-agent, the factored-continuous LGSSM
+        ({FACTORED, CONTINUOUS}) and the hybrid ({HYBRID, CONTINUOUS}) — every
+        plain exemplar must keep a singleton kind set.
         """
         from gnn.processing.discovery import is_model_source_path
 
+        expected_composed = {
+            COMPOSED_REL: frozenset({ModelKind.CONTINUOUS, ModelKind.MULTI_AGENT}),
+            "continuous/factored_continuous_lgssm.md": frozenset(
+                {ModelKind.FACTORED, ModelKind.CONTINUOUS}
+            ),
+            "continuous/hybrid_discrete_continuous.md": frozenset(
+                {ModelKind.HYBRID, ModelKind.CONTINUOUS}
+            ),
+        }
         mismatches: list[str] = []
         for gnn_file in sorted(GNN_FILES.rglob("*.md")):
             if not is_model_source_path(gnn_file):
@@ -177,9 +272,14 @@ class TestComposedExemplar:
             assert pomdp is not None, f"extraction failed for {gnn_file}"
             kinds = detect_pomdp_space_model_kinds(pomdp)
             rel = str(gnn_file.relative_to(GNN_FILES))
-            if rel == COMPOSED_REL:
-                continue
-            if len(kinds) != 1:
+            if rel in expected_composed:
+                if kinds != expected_composed[rel]:
+                    mismatches.append(
+                        f"{rel}: expected "
+                        f"{sorted(k.value for k in expected_composed[rel])}, "
+                        f"got {sorted(k.value for k in kinds)}"
+                    )
+            elif len(kinds) != 1:
                 mismatches.append(f"{rel}: kind set {sorted(k.value for k in kinds)}")
         assert not mismatches, "unexpected composed kinds:\n" + "\n".join(mismatches)
 
@@ -239,7 +339,7 @@ class TestDispatchHonesty:
         assert files and "unsupported-composition" not in message
 
     def test_process_render_receipts_the_composition(self, tmp_path: Path) -> None:
-        """Step 11 over the continuous folder: 5 render, 1 receipted."""
+        """Step 11 over the continuous folder: 5 render, 3 receipted."""
         result = process_render(
             target_dir=GNN_FILES / "continuous",
             output_dir=tmp_path / "11_render_output",
@@ -252,17 +352,24 @@ class TestDispatchHonesty:
                 tmp_path / "11_render_output" / "render_processing_summary.json"
             ).read_text(encoding="utf-8")
         )
-        assert summary["total_files"] == 6
-        assert summary["successful_files"] == 6
+        assert summary["total_files"] == 8
+        assert summary["successful_files"] == 8
         assert summary["successful_framework_renderings"] == 5
-        composed = [
-            entry
-            for entry in summary["unsupported_framework_renderings"]
-            if "multi_agent_lgssm" in entry["file"]
-        ]
-        assert len(composed) == 1
-        assert composed[0]["framework"] == "rxinfer"
-        assert "unsupported-composition" in composed[0]["message"]
+        expected_receipts = {
+            "multi_agent_lgssm": "unsupported-composition",
+            # The factored exemplar is receipted by the pomdp_processor
+            # validation gate before rxinfer's own composed refusal.
+            "factored_continuous_lgssm": "unsupported-factored-continuous",
+            "hybrid_discrete_continuous": "unsupported-composition",
+        }
+        receipts = summary["unsupported_framework_renderings"]
+        for stem, prefix in expected_receipts.items():
+            entries = [entry for entry in receipts if stem in entry["file"]]
+            assert len(entries) == 1, stem
+            assert entries[0]["framework"] == "rxinfer"
+            assert prefix in entries[0]["message"], stem
         rendered_jl = list((tmp_path / "11_render_output").rglob("*.jl"))
         assert len(rendered_jl) == 5
-        assert not any("multi_agent_lgssm" in path.name for path in rendered_jl)
+        assert not any(
+            stem in path.name for stem in expected_receipts for path in rendered_jl
+        )

@@ -58,6 +58,18 @@ def render_gnn_to_stan(
         )
 
         if is_continuous_spec(gnn_spec):
+            from gnn.render.pomdp_contract import ModelKind, detect_model_kinds
+
+            if detect_model_kinds(gnn_spec) == frozenset(
+                {ModelKind.FACTORED, ModelKind.CONTINUOUS}
+            ):
+                return (
+                    False,
+                    "unsupported-factored-continuous: stan renders the flat "
+                    "linear-Gaussian family only; per-factor compositions are "
+                    "refused rather than silently rendered flat",
+                    [],
+                )
             spec = extract_continuous_spec(gnn_spec)
             program = _continuous_program()
             driver = _continuous_driver(spec, stan_path.name)

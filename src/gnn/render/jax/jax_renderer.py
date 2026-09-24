@@ -60,12 +60,35 @@ def render_gnn_to_jax(
     @Web: https://github.com/google/jax
     @Web: https://flax.readthedocs.io
     """
-    from gnn.render.continuous_common import extract_continuous_spec, is_continuous_spec
+    from gnn.render.continuous_common import (
+        extract_continuous_spec,
+        extract_factored_continuous_spec,
+        is_continuous_spec,
+    )
 
     if is_continuous_spec(gnn_spec):
         # Continuous-state (linear-Gaussian) branch: no A/B/C/D exist, so the
         # discrete extractors below must never run on this path.
-        from gnn.render.continuous_script import generate_continuous_script
+        from gnn.render.continuous_script import (
+            generate_continuous_script,
+            generate_factored_continuous_script,
+        )
+        from gnn.render.pomdp_contract import ModelKind, detect_model_kinds
+
+        if detect_model_kinds(gnn_spec) == frozenset(
+            {ModelKind.FACTORED, ModelKind.CONTINUOUS}
+        ):
+            # Per-factor LGSSM path: independent per-factor blocks rendered by
+            # the factored generator; the flat extractor must never see them.
+            return _render_to_path(
+                lambda spec, _opts: generate_factored_continuous_script(
+                    extract_factored_continuous_spec(spec), "jax"
+                ),
+                "JAX factored-continuous LGSSM (per-factor)",
+                gnn_spec,
+                output_path,
+                options,
+            )
 
         return _render_to_path(
             lambda spec, _opts: generate_continuous_script(
