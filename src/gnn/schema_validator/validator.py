@@ -51,7 +51,6 @@ class GNNValidator(
     RoundTripChecksMixin,
     SemanticChecksMixin,
 ):
-
     def __init__(
         self,
         schema_path: Optional[Path] = None,
