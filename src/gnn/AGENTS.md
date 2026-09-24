@@ -224,7 +224,7 @@ returned errors are the formal validator's messages, e.g.
 bytes passed as a content string validate identically; content is
 validated as GNN markdown text. Validity means the formal validator's
 normative markdown gate (every required section with substantive body
-content) — a deliberate tightening over the legacy regex heuristic; the
+content) — a deliberate tightening over the earlier regex heuristic; the
 formal level ladder applies at every level (BASIC included).
 
 
@@ -235,7 +235,7 @@ formal level ladder applies at every level (BASIC included).
   (default: STANDARD); also accepts level strings (`"strict"`,
   `"STRICT"`) and `None` (the validator's default level, STANDARD).
   Unknown level strings raise `ValueError`.
-- `**kwargs`: Accepted for backward compatibility; ignored.
+- `**kwargs`: Ignored (present for call-site compatibility only).
 
 **Returns**: `Tuple[bool, List[str]]` - Tuple of (is_valid, list_of_errors)
 

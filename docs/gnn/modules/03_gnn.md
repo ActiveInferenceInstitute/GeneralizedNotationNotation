@@ -257,7 +257,7 @@ otherwise `source` is treated as raw content.
 
 - `file_path_or_content` (str): Path to a GNN file or GNN content string — an input is treated as a file path only when it exists on disk; otherwise it is validated as content
 - `validation_level` (ValidationLevel | str | None): Level of validation to perform (default: STANDARD); also accepts level strings (`"strict"` / `"STRICT"`) or `None` for the validator default; unknown level strings raise `ValueError`
-- `**kwargs`: Accepted for backward compatibility; no options are defined and they are ignored
+- `**kwargs`: Ignored (present for call-site compatibility; no options are defined)
 
 **Returns**: `Tuple[bool, List[str]]` - Tuple of (is_valid, list_of_errors) — the errors are the formal validator's, empty exactly when the document is valid
 
