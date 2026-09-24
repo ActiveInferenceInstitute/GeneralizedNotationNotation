@@ -12,7 +12,7 @@
 
 **Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
-**Last Updated**: 2026-09-02
+**Last Updated**: 2026-09-24
 
 ---
 
@@ -933,7 +933,7 @@ The `_run_llm_analysis()` function is async because it uses the shared `llm.llm_
 
 ---
 
-**Last Updated**: 2026-09-02
+**Last Updated**: 2026-09-24
 **Maintainer**: GNN Pipeline Team
 **Status**: Production Ready
 **Version**: [pyproject.toml](../../../pyproject.toml) (canonical)

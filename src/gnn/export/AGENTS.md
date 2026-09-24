@@ -12,7 +12,7 @@
 
 **Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
-**Last Updated**: 2026-09-04
+**Last Updated**: 2026-09-24
 
 ---
 
@@ -358,7 +358,7 @@ python src/gnn/7_export.py --target-dir input/ --verbose
 
 ---
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-24
 **Maintainer**: GNN Pipeline Team
 **Status**: Production Ready
 **Version**: [pyproject.toml](../../../pyproject.toml) (canonical)

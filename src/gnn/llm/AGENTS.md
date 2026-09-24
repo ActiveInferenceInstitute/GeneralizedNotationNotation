@@ -10,7 +10,7 @@
 
 **Status**: Production Ready
 
-**Last Updated**: 2026-09-04
+**Last Updated**: 2026-09-24
 
 
 ---
@@ -689,7 +689,7 @@ any signature change.
 
 ---
 
-**Last Updated**: 2026-09-04
+**Last Updated**: 2026-09-24
 **Maintainer**: GNN Pipeline Team
 **Status**: Production Ready
 **Version**: [pyproject.toml](../../../pyproject.toml) (canonical)

@@ -7,7 +7,7 @@
 **Category**: Infrastructure / API
 **Status**: Production Ready
 **Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-24
 
 The `api` module provides a FastAPI-based REST interface for the GNN processing pipeline.
 It enables programmatic pipeline invocation, job management, and tool discovery without

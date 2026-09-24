@@ -33,4 +33,4 @@ graph/
 See [visualization/AGENTS.md](../AGENTS.md) for the overall visualization architecture.
 
 **Version**: [pyproject.toml](../../../../pyproject.toml) (canonical)
-**Last Updated**: 2026-09-04
+**Last Updated**: 2026-09-24

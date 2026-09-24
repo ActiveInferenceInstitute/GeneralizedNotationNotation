@@ -12,7 +12,7 @@
 
 **Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
-**Last Updated**: 2026-09-04
+**Last Updated**: 2026-09-24
 
 ---
 
@@ -398,7 +398,7 @@ Module `__version__` is `3.2.0` (`__init__.py`), matching the unified pipeline v
 
 ---
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-24
 **Maintainer**: GNN Pipeline Team
 **Status**: Production Ready
 **Architecture Compliance**: Thin Orchestrator Pattern (delegates to `mcp.processor.process_mcp` → `MCP.discover_modules`)

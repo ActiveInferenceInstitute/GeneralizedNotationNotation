@@ -161,5 +161,5 @@ GNN spec → render_gnn_to_discopy → <output>.py → execute.discopy runs scri
 - [Render Module](../AGENTS.md)
 - [DisCoPy documentation](https://discopy.readthedocs.io/)
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-24
 **Status**: Active

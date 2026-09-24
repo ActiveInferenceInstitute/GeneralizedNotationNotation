@@ -8,7 +8,7 @@
 **Category**: Interactive Visualization / Model Construction
 **Status**: Production Ready
 **Version**: [pyproject.toml](../../../../pyproject.toml) (canonical)
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-09-24
 
 ---
 

@@ -117,5 +117,5 @@ results = run_meta_analysis(
 
 ---
 
-**Last Updated**: 2026-09-04
+**Last Updated**: 2026-09-24
 **Version**: [pyproject.toml](../../../../pyproject.toml) (canonical)

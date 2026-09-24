@@ -18,6 +18,15 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
+# Footer-staleness ratchet for src/gnn: bold colon-outside stamps only
+# (`**Last Updated**: <token>`; colon-inside `**Last Updated:**` is a different
+# convention and not part of this check). ISO stamps must be >= the ratchet;
+# a non-ISO token is itself a violation. One known month-format stamp is
+# exempted by repo-relative path.
+FOOTER_STAMP = re.compile(r"\*\*Last Updated\*\*: (\S+)")
+FOOTER_RATCHET = "2026-09-10"
+KNOWN_OUTSTANDING = {"src/gnn/doc/QUICK_REFERENCE.md"}
+
 # (regex, description) — tune as docs evolve
 PATTERNS: list[tuple[re.Pattern[str], str]] = [
     (
@@ -80,6 +89,35 @@ def scan(paths: list[Path]) -> list[tuple[Path, int, str, str]]:
     return violations
 
 
+def footer_violations(root: Path) -> list[tuple[Path, int, str, str]]:
+    """Staleness for src/gnn bold colon-outside footer stamps only."""
+    violations: list[tuple[Path, int, str, str]] = []
+    for md in sorted((root / "src" / "gnn").rglob("*.md")):
+        if "node_modules" in md.parts or ".git" in md.parts:
+            continue
+        if str(md.relative_to(root)) in KNOWN_OUTSTANDING:
+            continue
+        try:
+            text = md.read_text(encoding="utf-8")
+        except OSError:
+            continue
+        for i, line in enumerate(text.splitlines(), start=1):
+            m = FOOTER_STAMP.search(line)
+            if not m:
+                continue
+            token = m.group(1)
+            iso = re.fullmatch(r"20\d{2}-\d{2}-\d{2}", token)
+            if iso is None:
+                violations.append(
+                    (md, i, line.strip(), "non-ISO footer stamp (want YYYY-MM-DD >= ratchet)")
+                )
+            elif token < FOOTER_RATCHET:
+                violations.append(
+                    (md, i, line.strip(), f"footer stamp predates ratchet {FOOTER_RATCHET}")
+                )
+    return violations
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -91,6 +129,7 @@ def main() -> int:
 
     targets = [ROOT / "docs", ROOT / "src" / "gnn"]
     violations = scan(targets)
+    violations += footer_violations(ROOT)
 
     if not violations:
         print(

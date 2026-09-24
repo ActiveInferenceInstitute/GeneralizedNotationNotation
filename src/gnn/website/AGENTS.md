@@ -258,7 +258,7 @@ Module `__version__` is re-exported from `gnn` (`__init__.py`); the pipeline/rep
 
 ---
 
-**Last Updated**: 2026-09-04
+**Last Updated**: 2026-09-24
 **Maintainer**: GNN Pipeline Team
 **Status**: Production Ready
 **Version**: [pyproject.toml](../../../pyproject.toml) (canonical)

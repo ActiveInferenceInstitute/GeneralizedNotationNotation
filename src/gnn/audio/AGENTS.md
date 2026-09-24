@@ -12,7 +12,7 @@
 
 **Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
-**Last Updated**: 2026-09-02
+**Last Updated**: 2026-09-24
 
 ---
 
@@ -326,7 +326,7 @@ def register_tools(mcp_instance):
 
 ---
 
-**Last Updated**: 2026-09-02
+**Last Updated**: 2026-09-24
 **Maintainer**: GNN Pipeline Team
 **Status**: Production Ready
 **Version**: [pyproject.toml](../../../pyproject.toml) (canonical)

@@ -12,7 +12,7 @@
 
 **Version**: re-exports canonical package `__version__` (SC-16)
 
-**Last Updated**: 2026-09-04
+**Last Updated**: 2026-09-24
 
 ---
 
@@ -375,7 +375,7 @@ Registered by `src/gnn/ontology/mcp.py` `register_tools(mcp_instance)` (4 tools)
 
 ---
 
-**Last Updated**: 2026-09-02
+**Last Updated**: 2026-09-24
 **Maintainer**: GNN Pipeline Team
 **Status**: Production Ready
 **Version**: [pyproject.toml](../../../pyproject.toml) (canonical)

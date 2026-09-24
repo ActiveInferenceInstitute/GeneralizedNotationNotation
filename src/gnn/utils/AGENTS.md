@@ -12,7 +12,7 @@
 
 **Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
-**Last Updated**: 2026-09-04
+**Last Updated**: 2026-09-24
 
 ---
 
@@ -417,7 +417,7 @@ There is no `utils.get_performance_metrics` tool.
 
 ---
 
-**Last Updated**: 2026-09-04
+**Last Updated**: 2026-09-24
 **Maintainer**: GNN Pipeline Team
 **Status**: Production Ready
 **Version**: [pyproject.toml](../../../pyproject.toml) (canonical)

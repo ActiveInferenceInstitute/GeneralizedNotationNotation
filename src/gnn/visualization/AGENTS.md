@@ -12,7 +12,7 @@
 
 **Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
-**Last Updated**: 2026-09-04
+**Last Updated**: 2026-09-24
 
 ---
 
@@ -486,7 +486,7 @@ python src/gnn/8_visualization.py --verbose --target-dir input/gnn_files
 
 ---
 
-**Last Updated**: 2026-09-04
+**Last Updated**: 2026-09-24
 **Maintainer**: GNN Pipeline Team
 **Status**: Production Ready
 **Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
