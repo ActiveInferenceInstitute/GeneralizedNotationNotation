@@ -238,7 +238,9 @@ def embed_image(image_path: Path, output_file: Path) -> bool:
         )
 
     except Exception as e:
-        logger.warning("Failed to embed image %s into %s: %s", image_path, output_file, e)
+        logger.warning(
+            "Failed to embed image %s into %s: %s", image_path, output_file, e
+        )
         return False
 
 
@@ -259,7 +261,9 @@ def embed_markdown_file(md_path: Path, output_file: Path) -> bool:
         return _write_embed_page("Markdown Content", body, output_file)
 
     except Exception as e:
-        logger.warning("Failed to embed markdown file %s into %s: %s", md_path, output_file, e)
+        logger.warning(
+            "Failed to embed markdown file %s into %s: %s", md_path, output_file, e
+        )
         return False
 
 
@@ -275,7 +279,9 @@ def embed_text_file(text_path: Path, output_file: Path) -> bool:
         return _write_embed_page("Text Content", body, output_file)
 
     except Exception as e:
-        logger.warning("Failed to embed text file %s into %s: %s", text_path, output_file, e)
+        logger.warning(
+            "Failed to embed text file %s into %s: %s", text_path, output_file, e
+        )
         return False
 
 
@@ -297,7 +303,9 @@ def embed_json_file(json_path: Path, output_file: Path) -> bool:
         )
 
     except Exception as e:
-        logger.warning("Failed to embed JSON file %s into %s: %s", json_path, output_file, e)
+        logger.warning(
+            "Failed to embed JSON file %s into %s: %s", json_path, output_file, e
+        )
         return False
 
 
@@ -324,7 +332,9 @@ def embed_html_file(html_path: Path, output_file: Path) -> bool:
         )
 
     except Exception as e:
-        logger.warning("Failed to embed HTML file %s into %s: %s", html_path, output_file, e)
+        logger.warning(
+            "Failed to embed HTML file %s into %s: %s", html_path, output_file, e
+        )
         return False
 
 
