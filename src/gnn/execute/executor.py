@@ -332,6 +332,9 @@ class GNNExecutor:
             except Exception as e:
                 logger.debug("Device discovery failed; falling back to cpu: %s", e)
                 result.setdefault("execution_device", "cpu")
+                result["execution_device_fallback"] = (
+                    f"cpu: device discovery failed ({e})"
+                )
 
             # Log execution
             self.execution_log.append(result)
@@ -809,7 +812,10 @@ def _synthesize_rxinfer_envelope(script_path: Path, success: bool) -> Dict[str, 
         )
         envelope["elapsed_seconds"] = float(log["elapsed_seconds"])
     except (ValueError, KeyError, TypeError):
-        pass
+        envelope["elapsed_seconds"] = None
+        envelope["elapsed_seconds_note"] = (
+            "rxinfer execution log sidecar missing or unparseable"
+        )
     return envelope
 
 

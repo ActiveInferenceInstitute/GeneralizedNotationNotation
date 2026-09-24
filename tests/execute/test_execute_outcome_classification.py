@@ -28,6 +28,7 @@ def _classify(**kw: Any) -> ExecutionOutcome:
         "failed": 0,
         "skipped": 0,
         "render_failures": [],
+        "unsupported_receipts": [],
         "missing_render_scripts": [],
         "missing_render_summary": None,
         "strict_requested_frameworks": False,
@@ -161,3 +162,75 @@ def test_attempted_excludes_skipped() -> None:
     assert outcome.attempted == 8
     assert outcome.outcome is False
     assert outcome.reason == "script_execution_failure"
+
+
+def test_unsupported_receipts_only_non_strict_skips() -> None:
+    outcome = _classify(
+        unsupported_receipts=[
+            {
+                "file": "cont.md",
+                "framework": "pymdp",
+                "reason": "r",
+                "status": "unsupported",
+            }
+        ]
+    )
+    assert outcome.outcome == 2
+    assert outcome.status == "skipped"
+    assert outcome.reason == "unsupported_render_refusals"
+    assert outcome.exit_code == 2
+
+
+def test_unsupported_receipts_only_strict_fails() -> None:
+    outcome = _classify(
+        strict_requested_frameworks=True,
+        unsupported_receipts=[
+            {
+                "file": "cont.md",
+                "framework": "pymdp",
+                "reason": "r",
+                "status": "unsupported",
+            }
+        ],
+    )
+    assert outcome.outcome is False
+    assert outcome.status == "failed"
+    assert outcome.reason == "unsupported_render_refusals"
+    assert outcome.exit_code == 1
+
+
+def test_unsupported_receipts_with_render_failures_keeps_old_reason() -> None:
+    outcome = _classify(
+        render_failures=[{"file": "a.md", "framework": "pymdp", "message": "boom"}],
+        unsupported_receipts=[
+            {
+                "file": "cont.md",
+                "framework": "pymdp",
+                "reason": "r",
+                "status": "unsupported",
+            }
+        ],
+    )
+    assert outcome.outcome == 2
+    assert outcome.status == "skipped"
+    assert outcome.reason == "no_executable_scripts"
+    assert outcome.exit_code == 2
+
+
+def test_scripts_present_with_receipts_still_clean_success() -> None:
+    outcome = _classify(
+        total_found=3,
+        successful=3,
+        unsupported_receipts=[
+            {
+                "file": "cont.md",
+                "framework": "pymdp",
+                "reason": "r",
+                "status": "unsupported",
+            }
+        ],
+    )
+    assert outcome.outcome is True
+    assert outcome.status == "success"
+    assert outcome.reason == "all_scripts_succeeded"
+    assert outcome.exit_code == 0
