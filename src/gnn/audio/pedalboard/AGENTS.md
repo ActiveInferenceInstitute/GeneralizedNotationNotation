@@ -62,6 +62,6 @@ When implementing this module:
 
 ---
 
-**Last Updated**: 2026-09-02
+**Last Updated**: 2026-09-24
 **Maintainer**: Audio Processing Team
 **Status**: Planned (documentation-only scaffold)

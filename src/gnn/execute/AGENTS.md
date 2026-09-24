@@ -455,7 +455,7 @@ All five are registered by `register_tools()` in `src/gnn/execute/mcp.py`.
 
 ---
 
-**Last Updated**: 2026-09-02
+**Last Updated**: 2026-09-24
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
 **Version**: [pyproject.toml](../../../pyproject.toml) (canonical)

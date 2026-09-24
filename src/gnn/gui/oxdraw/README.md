@@ -265,6 +265,6 @@ MIT License - See main repository LICENSE file
 ---
 
 **Version**: [pyproject.toml](../../../../pyproject.toml) (canonical)
-**Last Updated**: 2026-09-02
+**Last Updated**: 2026-09-24
 **Status**: Ready for Testing
 

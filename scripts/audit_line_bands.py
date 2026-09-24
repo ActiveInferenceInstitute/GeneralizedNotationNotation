@@ -16,7 +16,7 @@ reads only, no network, no subprocess.
 
 Standalone tool, intentionally not wired into the gate runners (justfile /
 local-gates.yml / ci.yml hardcode their gate lists, and the tree currently
-holds ~20 files over the 1200-line band, so a wired hard gate would be red
+held 17 raw .py files over 1200 lines at the 2026-09-24 census sweep (HEAD 9fb81279e: 11 tracked M-01 + 6 extras), so a wired hard gate would be red
 on landing). Run it directly; ``--json`` gives machine-readable output for
 other tooling:
 

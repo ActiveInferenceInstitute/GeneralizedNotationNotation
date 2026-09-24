@@ -7,7 +7,7 @@
 **Category**: Infrastructure / Development Tools
 **Status**: ✅ Production Ready
 **Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
-**Last Updated**: 2026-09-03
+**Last Updated**: 2026-09-24
 
 The CLI module provides the `gnn` command-line tool — a unified interface to the entire GNN pipeline. It acts as a thin dispatcher, routing 18 subcommands to their respective module APIs. Public exits are `0` for success, `1` for errors, and `2` for completed commands with warnings or degraded readiness.
 
