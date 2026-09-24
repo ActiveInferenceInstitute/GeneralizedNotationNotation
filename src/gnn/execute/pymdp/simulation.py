@@ -636,7 +636,8 @@ def run_pymdp_simulation(
     actions: List[int] = []
     beliefs: List[List[float]] = []
     efe_history: List[List[float]] = []
-    vfe_history: List[float] = []
+    vfe_history: List[Optional[float]] = []
+    vfe_unavailable: List[int] = []
     policy_posterior_history: List[List[float]] = []
 
     empirical_prior = agent.D
@@ -662,8 +663,14 @@ def run_pymdp_simulation(
 
         try:
             vfe_history.append(float(np.asarray(info["vfe"]).mean()))
-        except Exception:  # noqa: BLE001 - informational only
-            vfe_history.append(0.0)
+        except Exception as e:  # noqa: BLE001 - informational only
+            vfe_history.append(None)
+            vfe_unavailable.append(t)
+            logger.warning(
+                "VFE extraction failed at timestep %d; recorded as unavailable: %s",
+                t,
+                e,
+            )
 
         q_pi, neg_efe = agent.infer_policies(qs)
         # q_pi / neg_efe shape: (batch, num_policies)
@@ -706,6 +713,7 @@ def run_pymdp_simulation(
         "success": True,
         "framework": "PyMDP",
         "pymdp_version": pymdp_version,
+        "vfe_unavailable_timesteps": vfe_unavailable,
         "backend": "jax",
         "model_name": model_name,
         "num_timesteps": num_timesteps,
