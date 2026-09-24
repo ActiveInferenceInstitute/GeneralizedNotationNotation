@@ -235,7 +235,7 @@ formal level ladder applies at every level (BASIC included).
   (default: STANDARD); also accepts level strings (`"strict"`,
   `"STRICT"`) and `None` (the validator's default level, STANDARD).
   Unknown level strings raise `ValueError`.
-- `**kwargs`: Accepted for backward compatibility; ignored.
+- `**kwargs`: Ignored (present for call-site compatibility only).
 
 **Returns**: `Tuple[bool, List[str]]` - Tuple of (is_valid, list_of_errors)
 
