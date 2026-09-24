@@ -998,6 +998,35 @@ def _render_continuous_target(
     """Route validated continuous models without imposing discrete matrices."""
     from importlib import import_module
 
+    from .pomdp_contract import ModelKind, detect_model_kinds
+
+    kinds = detect_model_kinds(spec)
+    if kinds == frozenset({ModelKind.FACTORED, ModelKind.CONTINUOUS}):
+        # Per-factor LGSSM path: JAX renders the factored family through the
+        # per-factor generator; every other target is refused rather than
+        # silently flattened to one flat LGSSM.
+        if target != "jax":
+            return (
+                False,
+                f"unsupported-factored-continuous: {target} renders the flat "
+                "linear-Gaussian family only; per-factor F_f/H_f/Q_f/R_f "
+                "compositions are refused rather than silently rendered flat",
+                [],
+            )
+        from .continuous_common import extract_factored_continuous_spec
+        from .continuous_script import generate_factored_continuous_script
+
+        factored = extract_factored_continuous_spec(spec)
+        code = generate_factored_continuous_script(factored, "jax")
+        output_file = output_dir / f"{stem}_jax.py"
+        with open(output_file, "w") as handle:
+            handle.write(code)
+        return (
+            True,
+            "JAX factored-continuous LGSSM (per-factor)",
+            [str(output_file)],
+        )
+
     targets = {
         "jax": ("jax.jax_renderer", "render_gnn_to_jax", "_jax.py"),
         "numpyro": ("numpyro.numpyro_renderer", "render_gnn_to_numpyro", "_numpyro.py"),
@@ -1082,9 +1111,15 @@ def render_gnn_spec(
         # the single-winner kind would silently drop the other family, so the
         # composed set is refused with an explicit unsupported-composition
         # receipt — the same unsupported accounting structural wrappers get —
-        # for every target.
+        # for every target. The factored-continuous 2-set
+        # ({FACTORED, CONTINUOUS}) is the one exception: JAX renders it via
+        # the per-factor factored path; every other target emits an
+        # unsupported-factored-continuous refusal instead.
         kinds = detect_model_kinds(gnn_spec_mapping)
-        if ModelKind.CONTINUOUS in kinds and len(kinds) > 1:
+        factored_continuous = kinds == frozenset(
+            {ModelKind.FACTORED, ModelKind.CONTINUOUS}
+        )
+        if ModelKind.CONTINUOUS in kinds and len(kinds) > 1 and not factored_continuous:
             return (False, unsupported_composition_reason(kinds), [])
 
         if is_continuous_spec(gnn_spec_mapping):

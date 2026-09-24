@@ -854,12 +854,23 @@ class POMDPExtractor:
 
     CONTINUOUS_REQUIRED_KEYS = ("F", "H", "Q", "R", "prior_mean", "prior_cov")
     CONTINUOUS_OPTIONAL_KEYS = ("goal_mean", "control_gain")
+    # Per-factor LGSSM keys (Kronecker ^([ABCD])_f(\d+)$ analogue), consumed
+    # by render.continuous_common.extract_factored_continuous_spec.
+    _FACTOR_CONTINUOUS_KEY = re.compile(
+        r"^(F|H|Q|R|prior_mean|prior_cov|goal_mean|control_gain)_f(\d+)$"
+    )
 
     def _is_continuous_model(
         self, gnn_section: Optional[str], initial_params: Dict[str, Any]
     ) -> bool:
-        """Continuous when the section says so or the full LGSSM block is declared."""
+        """Continuous when the section says so or a linear-Gaussian block is declared.
+
+        A per-factor linear-Gaussian block classifies continuous with or
+        without the section, matching the render contract's factored path.
+        """
         if gnn_section and "continuous" in gnn_section.lower():
+            return True
+        if any(self._FACTOR_CONTINUOUS_KEY.match(key) for key in initial_params):
             return True
         return all(key in initial_params for key in ("F", "H", "Q", "R"))
 
@@ -870,6 +881,46 @@ class POMDPExtractor:
         model_parameters: Dict[str, Any],
     ) -> Tuple[int, int, int, Optional[int]]:
         """Dimensions of a linear-Gaussian model: n from F, m from H."""
+        # Per-factor block (F_fN/H_fN/...): the joint dimensions come from
+        # factor 1. Per-factor shape validation lives in
+        # render.continuous_common.extract_factored_continuous_spec, so the
+        # plain per-key shape loop below is deliberately skipped here. When
+        # plain F/H/Q/R are all present too, the plain block wins and the
+        # plain path below runs unchanged.
+        factor_keys = [
+            key for key in initial_params if self._FACTOR_CONTINUOUS_KEY.match(key)
+        ]
+        if (
+            factor_keys
+            and "F_f1" in initial_params
+            and not all(k in initial_params for k in ("F", "H", "Q", "R"))
+        ):
+            f_shape = self._nested_shape(initial_params["F_f1"])
+            if len(f_shape) != 2 or f_shape[0] != f_shape[1]:
+                raise ValueError(f"F_f1 must be a square matrix, got shape {f_shape}")
+            h_shape = self._nested_shape(initial_params["H_f1"])
+            if len(h_shape) != 2 or h_shape[1] != f_shape[0]:
+                raise ValueError(
+                    f"H_f1 must have shape [m, n] with n={f_shape[0]}, got {h_shape}"
+                )
+            num_states, num_observations = f_shape[0], h_shape[0]
+            self._dimension_sources = {
+                "num_states": "per_factor_block",
+                "num_observations": "per_factor_block",
+                "num_actions": "default",
+                "num_timesteps": "default",
+            }
+            # One continuous control channel when a control variable is declared.
+            num_actions = 1 if state_space_info.get("action_variables") else 0
+            num_timesteps: Optional[int] = None
+            raw_t = model_parameters.get("num_timesteps")
+            if raw_t is not None:
+                try:
+                    num_timesteps = int(raw_t)
+                    self._dimension_sources["num_timesteps"] = "ModelParameters"
+                except (TypeError, ValueError):
+                    num_timesteps = None
+            return num_states, num_observations, num_actions, num_timesteps
         missing = [k for k in self.CONTINUOUS_REQUIRED_KEYS if k not in initial_params]
         if missing:
             raise ValueError(
@@ -920,6 +971,16 @@ class POMDPExtractor:
                 value = params[key]
                 if key == "control_gain":
                     # scalar declared as {(v)} parses to [v]
+                    if isinstance(value, (list, tuple)):
+                        while isinstance(value, (list, tuple)) and len(value) == 1:
+                            value = value[0]
+                    value = float(value)
+                out[key] = value
+        for key in params:
+            if self._FACTOR_CONTINUOUS_KEY.match(key):
+                value = params[key]
+                if key.startswith("control_gain_f"):
+                    # scalar declared as {(v)} parses to [v] (per-factor twin)
                     if isinstance(value, (list, tuple)):
                         while isinstance(value, (list, tuple)) and len(value) == 1:
                             value = value[0]

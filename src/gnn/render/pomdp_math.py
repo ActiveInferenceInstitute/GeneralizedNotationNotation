@@ -28,6 +28,10 @@ def _is_kronecker_factorized_spec(pomdp_space: "POMDPStateSpace") -> bool:
     *product* of the per-factor action counts and the joint model is the
     Kronecker composition; for the latter, one joint action index is shared
     across all factors.
+    Kronecker factoring is discrete-B only — it composes categorical
+    per-factor A/B/C/D matrices and never applies to the per-factor
+    continuous LGSSM path (``F_fN``/``H_fN``/``Q_fN``/``R_fN``), which
+    renders independent linear-Gaussian blocks (``render.continuous_script``).
     """
     matrices = getattr(pomdp_space, "matrices", None) or {}
     b_factor_keys = [key for key in matrices if re.match(r"^B_f\d+$", str(key))]

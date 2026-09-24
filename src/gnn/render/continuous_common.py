@@ -158,6 +158,176 @@ def literal_block(spec: ContinuousSpec) -> Dict[str, str]:
     }
 
 
+@dataclass
+class FactorContinuousSpec:
+    """Validated numeric view of one per-factor LGSSM block (``_fN`` keys)."""
+
+    index: int
+    F: np.ndarray
+    H: np.ndarray
+    Q: np.ndarray
+    R: np.ndarray
+    prior_mean: np.ndarray
+    prior_cov: np.ndarray
+    goal_mean: Optional[np.ndarray]
+    control_gain: Optional[float]
+
+    @property
+    def n(self) -> int:
+        return int(self.F.shape[0])
+
+    @property
+    def m(self) -> int:
+        return int(self.H.shape[0])
+
+    @property
+    def has_control(self) -> bool:
+        return self.goal_mean is not None and self.control_gain is not None
+
+
+@dataclass
+class FactoredContinuousSpec:
+    """Validated numeric view of a factored-continuous spec (per-factor LGSSMs)."""
+
+    model_name: str
+    factors: List[FactorContinuousSpec]
+    num_timesteps: int
+    dt: float
+    random_seed: int
+
+    @property
+    def num_factors(self) -> int:
+        return len(self.factors)
+
+
+def extract_factored_continuous_spec(
+    gnn_spec: Dict[str, Any],
+) -> FactoredContinuousSpec:
+    """Parse and shape-check a factored-continuous parameter block (``_fN`` keys)."""
+    # Subscripted-key convention mirrors the Kronecker factored regex
+    # ^([ABCD])_f(\d+)$: one F/H/Q/R + prior block per factor (1-indexed,
+    # contiguous), with optional goal_mean_fN + control_gain_fN (both-or-neither).
+    initial = gnn_spec.get("initialparameterization") or gnn_spec.get(
+        "initial_parameterization"
+    )
+    if not isinstance(initial, dict):
+        raise ValueError(
+            "factored-continuous spec requires an initialparameterization mapping"
+        )
+    params = gnn_spec.get("model_parameters") or {}
+    num_factors = int(params.get("num_factors", 0))
+    if num_factors < 2:
+        raise ValueError(
+            f"factored-continuous spec requires num_factors >= 2 in model_parameters, "
+            f"got {num_factors}"
+        )
+
+    # Collect every missing subscripted key across all factors so one receipt
+    # names the whole gap instead of failing factor by factor.
+    missing = [
+        f"{name}_f{factor}"
+        for factor in range(1, num_factors + 1)
+        for name in REQUIRED_KEYS
+        if f"{name}_f{factor}" not in initial
+    ]
+    if missing:
+        raise ValueError(f"factored-continuous spec is missing {missing}")
+
+    factors: List[FactorContinuousSpec] = []
+    for factor in range(1, num_factors + 1):
+        F = np.asarray(initial[f"F_f{factor}"], dtype=float)
+        H = np.asarray(initial[f"H_f{factor}"], dtype=float)
+        Q = np.asarray(initial[f"Q_f{factor}"], dtype=float)
+        R = np.asarray(initial[f"R_f{factor}"], dtype=float)
+        prior_mean = np.asarray(initial[f"prior_mean_f{factor}"], dtype=float).reshape(
+            -1
+        )
+        prior_cov = np.asarray(initial[f"prior_cov_f{factor}"], dtype=float)
+        n = F.shape[0]
+        if F.shape != (n, n):
+            raise ValueError(f"F_f{factor} must be square, got {F.shape}")
+        m = H.shape[0]
+        if H.shape != (m, n):
+            raise ValueError(f"H_f{factor} must be [m, n]={m, n}, got {H.shape}")
+        if Q.shape != (n, n) or R.shape != (m, m) or prior_cov.shape != (n, n):
+            raise ValueError(
+                f"covariance shapes mismatch on factor {factor}: Q_f{factor}{Q.shape} "
+                f"R_f{factor}{R.shape} prior_cov_f{factor}{prior_cov.shape}"
+            )
+        if prior_mean.shape != (n,):
+            raise ValueError(
+                f"prior_mean_f{factor} must have {n} entries, got {prior_mean.shape}"
+            )
+
+        has_goal = f"goal_mean_f{factor}" in initial
+        has_gain = f"control_gain_f{factor}" in initial
+        if has_goal != has_gain:
+            raise ValueError(
+                f"goal_mean_f{factor} and control_gain_f{factor} must be "
+                "declared together (both-or-neither)"
+            )
+        goal_mean: Optional[np.ndarray] = None
+        control_gain: Optional[float] = None
+        if has_goal:
+            goal_mean = np.asarray(
+                initial[f"goal_mean_f{factor}"], dtype=float
+            ).reshape(-1)
+            if goal_mean.shape != (n,):
+                raise ValueError(
+                    f"goal_mean_f{factor} must have {n} entries, got {goal_mean.shape}"
+                )
+            control_gain = _scalar(initial[f"control_gain_f{factor}"])
+
+        factors.append(
+            FactorContinuousSpec(
+                index=factor,
+                F=F,
+                H=H,
+                Q=Q,
+                R=R,
+                prior_mean=prior_mean,
+                prior_cov=prior_cov,
+                goal_mean=goal_mean,
+                control_gain=control_gain,
+            )
+        )
+
+    num_timesteps = int(params.get("num_timesteps", 20))
+    dt = float(params.get("dt", 1.0))
+    seed = int(params.get("random_seed", params.get("seed", 42)))
+    name = str(
+        gnn_spec.get("model_name")
+        or gnn_spec.get("name")
+        or "factored_continuous_model"
+    )
+    return FactoredContinuousSpec(
+        model_name=name,
+        factors=factors,
+        num_timesteps=num_timesteps,
+        dt=dt,
+        random_seed=seed,
+    )
+
+
+def literal_block_factored(spec: FactoredContinuousSpec) -> Dict[str, str]:
+    """Literals for every per-factor ``_fN`` key, ready to splice into a template."""
+    lits: Dict[str, str] = {}
+    for factor in spec.factors:
+        suffix = f"f{factor.index}"
+        lits[f"F_{suffix}"] = py_literal(factor.F)
+        lits[f"H_{suffix}"] = py_literal(factor.H)
+        lits[f"Q_{suffix}"] = py_literal(factor.Q)
+        lits[f"R_{suffix}"] = py_literal(factor.R)
+        lits[f"prior_mean_{suffix}"] = py_literal(factor.prior_mean)
+        lits[f"prior_cov_{suffix}"] = py_literal(factor.prior_cov)
+        # Optional closed-loop control pair: omit None entries entirely.
+        if factor.goal_mean is not None:
+            lits[f"goal_mean_{suffix}"] = py_literal(factor.goal_mean)
+        if factor.control_gain is not None:
+            lits[f"control_gain_{suffix}"] = repr(float(factor.control_gain))
+    return lits
+
+
 RESULT_KEYS: List[str] = [
     "model_name",
     "framework",

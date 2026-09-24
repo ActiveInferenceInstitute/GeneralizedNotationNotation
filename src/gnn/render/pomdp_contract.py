@@ -30,6 +30,9 @@ class ModelKind(Enum):
     FACTORED — multiple independent hidden state factors.
     HIERARCHICAL — multi-level state hierarchy.
     MULTI_AGENT — multiple coordinated agents.
+    HYBRID — discrete and continuous families declared together
+    (explicit A/B/C/D[/E] keys AND an F/H/Q/R or Gaussian-prior block);
+    no backend renders the mix whole.
     STRUCTURAL — structural wrapper (no discrete or continuous
     parameterization; render-only / informational).
     LEARNING — parameter learning (Dirichlet priors, etc.).
@@ -40,6 +43,7 @@ class ModelKind(Enum):
     FACTORED = "factored"
     HIERARCHICAL = "hierarchical"
     MULTI_AGENT = "multi_agent"
+    HYBRID = "hybrid"
     STRUCTURAL = "structural"
     LEARNING = "learning"
     CONTINUOUS = "continuous"
@@ -280,6 +284,9 @@ _AGENT_MATRIX_KEY = re.compile(r"^[ABCDE]_agent\d+", re.IGNORECASE)
 _LEVEL_MATRIX_KEY = re.compile(r"^[ABCDE]_level\d+", re.IGNORECASE)
 _DIRICHLET_PRIOR_KEY = re.compile(r"^dirichlet_[ABCDE]$", re.IGNORECASE)
 _CONTINUOUS_PARAM_KEYS = frozenset({"F", "H", "Q", "R"})
+_FACTOR_CONTINUOUS_KEY = re.compile(
+    r"^(F|H|Q|R|prior_mean|prior_cov)_f\d+$", re.IGNORECASE
+)
 
 
 def _structured_matrix_keys(gnn_spec: Dict[str, Any]) -> List[str]:
@@ -300,6 +307,7 @@ def _structured_matrix_keys(gnn_spec: Dict[str, Any]) -> List[str]:
 
 _KIND_PRECEDENCE: Tuple[ModelKind, ...] = (
     ModelKind.MULTI_AGENT,
+    ModelKind.HYBRID,
     ModelKind.HIERARCHICAL,
     ModelKind.CONTINUOUS,
     ModelKind.LEARNING,
@@ -321,6 +329,10 @@ def detect_model_kinds(gnn_spec: Dict[str, Any]) -> frozenset[ModelKind]:
     means the spec's families must be refused with an explicit
     unsupported-composition receipt (or rendered on every matching family)
     rather than silently rendered as the winner alone.
+    ``HYBRID`` is the discrete+continuous family-mix case (explicit
+    A/B/C/D[/E] contract keys declared alongside an F/H/Q/R or
+    Gaussian-prior block); it is a composition like any other, so dispatch
+    refuses it via the unsupported-composition receipt.
 
     Detection reads ONLY typed fields: the ``gnn_section`` value (the raw
     ``## GNNSection`` header, propagated by the extractor), declared matrix
@@ -369,6 +381,18 @@ def detect_model_kinds(gnn_spec: Dict[str, Any]) -> frozenset[ModelKind]:
     if nr_agents > 1 or any(_AGENT_MATRIX_KEY.match(key) for key in all_keys):
         kinds.add(ModelKind.MULTI_AGENT)
 
+    # Hybrid: discrete A/B/C/D[/E] contract keys declared alongside an
+    # explicit linear-Gaussian parameterization (F/H/Q/R or a Gaussian
+    # prior) — a family mix no backend renders whole, refused at dispatch
+    # with an unsupported-composition receipt. The contract-key predicate
+    # matches discrete A–E keys only, so a flat continuous spec
+    # (F/H/Q/R with no A–E key) never classifies hybrid.
+    if any(_is_active_inference_matrix_key(key) for key in all_keys) and (
+        _CONTINUOUS_PARAM_KEYS.issubset(set(initial_keys))
+        or {"prior_mean", "prior_cov"}.issubset(set(initial_keys))
+    ):
+        kinds.add(ModelKind.HYBRID)
+
     # Hierarchical: declared section or per-level matrix keys.
     if "hierarchical" in section or any(
         _LEVEL_MATRIX_KEY.match(key) for key in all_keys
@@ -381,6 +405,11 @@ def detect_model_kinds(gnn_spec: Dict[str, Any]) -> frozenset[ModelKind]:
         "continuous" in section
         or _CONTINUOUS_PARAM_KEYS.issubset(set(initial_keys))
         or {"prior_mean", "prior_cov"}.issubset(set(initial_keys))
+        # Per-factor continuous keys from a factored LGSSM (F_fN/H_fN/...)
+        # satisfy the CONTINUOUS family the same way flat F/H/Q/R do —
+        # without this, a per-factor spec classifies {FACTORED} only and
+        # the generic discrete path demands static A/B/C/D keys.
+        or any(_FACTOR_CONTINUOUS_KEY.fullmatch(str(key)) for key in initial_keys)
     ):
         kinds.add(ModelKind.CONTINUOUS)
 
@@ -421,8 +450,9 @@ def detect_model_kind(gnn_spec: Dict[str, Any]) -> ModelKind:
     """Single-winner kind: the max-precedence member of detect_model_kinds.
 
     Stable classification used by per-kind dispatch
-    (precedence MULTI_AGENT > HIERARCHICAL > CONTINUOUS > LEARNING >
-    FACTORED > STRUCTURAL > FLAT). A composed spec — e.g. continuous
+    (precedence MULTI_AGENT > HYBRID > HIERARCHICAL > CONTINUOUS >
+    LEARNING > FACTORED > STRUCTURAL > FLAT). A composed spec — e.g.
+    continuous
     F/H/Q/R parameters plus ``nr_agents > 1`` — classifies to its most
     specific kind here and to the full set under :func:`detect_model_kinds`;
     dispatch consumers must consult the kind set so a composed spec is

@@ -16,7 +16,12 @@ from __future__ import annotations
 
 from typing import Dict
 
-from gnn.render.continuous_common import ContinuousSpec, literal_block
+from gnn.render.continuous_common import (
+    ContinuousSpec,
+    FactoredContinuousSpec,
+    literal_block,
+    literal_block_factored,
+)
 
 _OUTPUT_ENV = {
     "jax": "GNN_OUTPUT_DIR",
@@ -264,6 +269,129 @@ if __name__ == "__main__":
 """
 
 
+_FACTORED_BODY_HEAD = '''
+
+def kalman_step(mu, P, y_t, F, H, Q, R, u_prev, first):
+    """One predict/update step; numerics identical to the flat LGSSM path."""
+    if first:
+        mu_pred, P_pred = mu, P
+    else:
+        mu_pred = F @ mu + u_prev
+        P_pred = F @ P @ F.T + Q
+    S = H @ P_pred @ H.T + R
+    K = solve(S.T, (P_pred @ H.T).T).T  # P_pred H^T S^{-1}
+    innovation = y_t - H @ mu_pred
+    mu_new = mu_pred + K @ innovation
+    I_KH = eye(P_pred.shape[0]) - K @ H
+    P_new = I_KH @ P_pred @ I_KH.T + K @ R @ K.T  # Joseph form (stays PSD)
+    return mu_new, P_new
+
+
+def simulate_factor(f_index, F, H, Q, R, prior_mean, prior_cov, goal, gain):
+    """Simulate and Kalman-filter one factor's independent LGSSM."""
+    n_f, m_f = F.shape[0], H.shape[0]
+
+    zero_u = arr([0.0] * n_f)
+    true_states, observations, beliefs, covs, controls = [], [], [], [], []
+
+    x = mvn_sample(prior_mean, prior_cov)
+    y = H @ x + mvn_sample(arr([0.0] * m_f), R)
+    mu, P = kalman_step(prior_mean, prior_cov, y, F, H, Q, R, zero_u, True)
+    u = gain * (goal - mu) if goal is not None else zero_u
+    for buf, val in ((true_states, x), (observations, y), (beliefs, mu), (covs, P), (controls, u)):
+        buf.append(to_list(val))
+
+    for _t in range(1, NUM_TIMESTEPS):
+        x = F @ x + u + mvn_sample(arr([0.0] * n_f), Q)
+        y = H @ x + mvn_sample(arr([0.0] * m_f), R)
+        mu, P = kalman_step(mu, P, y, F, H, Q, R, u, False)
+        u = gain * (goal - mu) if goal is not None else zero_u
+        for buf, val in ((true_states, x), (observations, y), (beliefs, mu), (covs, P), (controls, u)):
+            buf.append(to_list(val))
+
+    beliefs_np = np.asarray(beliefs)
+    truth_np = np.asarray(true_states)
+    rmse = float(np.sqrt(np.mean((beliefs_np - truth_np) ** 2)))
+    record = {
+        "factor_index": f_index,
+        "num_states": n_f,
+        "num_observations": m_f,
+        "beliefs": beliefs,
+        "posterior_cov": covs,
+        "true_states_continuous": true_states,
+        "observations_continuous": observations,
+        "controls": controls,
+        "control_mode": "closed_loop_proportional" if goal is not None else "passive",
+        "rmse_vs_true": rmse,
+    }
+    psd = all(is_psd(arr(c)) for c in covs)
+    return record, psd, beliefs_np, controls
+
+
+def run_simulation():
+    start = time.time()
+    factors = []
+    means_finite, psd_all, controls_finite = True, True, True
+    for _f in range(NUM_FACTORS):
+        F, H = arr(F_FACTORS[_f]), arr(H_FACTORS[_f])
+        Q, R = arr(Q_FACTORS[_f]), arr(R_FACTORS[_f])
+        prior_mean, prior_cov = arr(PRIOR_MEAN_FACTORS[_f]), arr(PRIOR_COV_FACTORS[_f])
+        goal = arr(GOAL_FACTORS[_f]) if GOAL_FACTORS[_f] is not None else None
+        gain = GAIN_FACTORS[_f]
+        record, psd, beliefs_np, controls = simulate_factor(
+            _f + 1, F, H, Q, R, prior_mean, prior_cov, goal, gain
+        )
+        factors.append(record)
+        psd_all = psd_all and psd
+        means_finite = means_finite and bool(np.all(np.isfinite(beliefs_np)))
+        controls_finite = controls_finite and bool(np.all(np.isfinite(controls)))
+
+    rmse_aggregate = float(np.mean([factor["rmse_vs_true"] for factor in factors]))
+    validation = {
+        "means_finite": means_finite,
+        "posterior_cov_psd": psd_all,
+        "rmse_finite": bool(np.isfinite(rmse_aggregate)),
+        "controls_finite": controls_finite,
+    }
+    results = {
+        "model_name": MODEL_NAME,
+        "framework": FRAMEWORK,
+        "model_kind": "factored_continuous",
+        "num_timesteps": NUM_TIMESTEPS,
+        "num_factors": NUM_FACTORS,
+        "factors": factors,
+        "rmse_vs_true_aggregate": rmse_aggregate,
+        # Discrete-schema slots stay empty: nothing categorical is defined here.
+        "observations": [],
+        "actions": [],
+        "efe_history": [],
+    }
+'''
+
+
+_FACTORED_BODY_TAIL = """
+    validation["all_valid"] = all(validation.values())
+    results["validation"] = validation
+    results["execution_time_seconds"] = round(time.time() - start, 4)
+    results.update(FRAMEWORK_VERSION)
+
+    output_dir = Path(os.environ.get(OUTPUT_ENV, "."))
+    output_dir.mkdir(parents=True, exist_ok=True)
+    out = output_dir / "simulation_results.json"
+    with open(out, "w") as f:
+        json.dump(results, f, indent=2)
+    print(f"{FRAMEWORK} factored-continuous LGSSM simulation complete: {NUM_FACTORS} per-factor LGSSMs, {NUM_TIMESTEPS} steps, rmse_vs_true_aggregate={rmse_aggregate:.4f}")
+    print(f"Results saved to: {out}")
+    print(f"Validation: {validation}")
+    return results
+
+
+if __name__ == "__main__":
+    res = run_simulation()
+    sys.exit(0 if res["validation"]["all_valid"] else 1)
+"""
+
+
 def generate_continuous_script(spec: ContinuousSpec, backend: str) -> str:
     """Return the full standalone script for ``backend``."""
     if backend not in _BACKEND_HEADER:
@@ -318,4 +446,74 @@ CONTROL_GAIN = {lits["control_gain"]}
     if backend == "numpyro":
         parts.append(_NUMPYRO_RESULTS)
     parts.append(_BODY_TAIL)
+    return "".join(parts)
+
+
+def generate_factored_continuous_script(
+    spec: FactoredContinuousSpec, backend: str
+) -> str:
+    """Return the standalone per-factor LGSSM script (``jax`` backend only)."""
+    if backend != "jax":
+        raise ValueError(
+            f"unsupported factored-continuous backend: {backend} (jax only)"
+        )
+    lits = literal_block_factored(spec)
+    factor_indices = range(1, spec.num_factors + 1)
+    f_list = ", ".join(lits[f"F_f{i}"] for i in factor_indices)
+    h_list = ", ".join(lits[f"H_f{i}"] for i in factor_indices)
+    q_list = ", ".join(lits[f"Q_f{i}"] for i in factor_indices)
+    r_list = ", ".join(lits[f"R_f{i}"] for i in factor_indices)
+    pm_list = ", ".join(lits[f"prior_mean_f{i}"] for i in factor_indices)
+    pc_list = ", ".join(lits[f"prior_cov_f{i}"] for i in factor_indices)
+    goal_list = ", ".join(lits.get(f"goal_mean_f{i}", "None") for i in factor_indices)
+    gain_list = ", ".join(
+        lits.get(f"control_gain_f{i}", "None") for i in factor_indices
+    )
+    control_desc = (
+        "closed-loop per factor: u_f,t = gain_f * (goal_f - mu_f,t)"
+        if all(f.has_control for f in spec.factors)
+        else "mixed closed-loop/passive per factor"
+        if any(f.has_control for f in spec.factors)
+        else "passive (u_f,t = 0)"
+    )
+    header = rf'''#!/usr/bin/env python3
+"""
+{backend} factored-continuous (per-factor LGSSM) simulation: {spec.model_name}
+
+Auto-generated by the GNN pipeline — {backend} renderer, factored-continuous branch.
+{spec.num_factors} independent linear-Gaussian state-space blocks (one per factor,
+mirroring the ``^([ABCD])_f(\\d+)$`` key convention). Each factor runs the flat
+continuous numerics on its own subscripted parameters:
+    x_f1 ~ N(prior_mean_f, prior_cov_f)
+    x_ft = F_f x_f,t-1 + u_f,t-1 + N(0, Q_f)
+    y_ft = H_f x_ft + N(0, R_f)
+Control: {control_desc}
+Inference: per-factor online Kalman filter (Joseph-form covariance update).
+"""
+import json
+import os
+import sys
+import time
+from pathlib import Path
+
+import numpy as np
+
+MODEL_NAME = {spec.model_name!r}
+RANDOM_SEED = {spec.random_seed}
+NUM_TIMESTEPS = {spec.num_timesteps}
+DT = {spec.dt}
+NUM_FACTORS = {spec.num_factors}
+OUTPUT_ENV = {_OUTPUT_ENV["jax"]!r}
+
+F_FACTORS = [{f_list}]
+H_FACTORS = [{h_list}]
+Q_FACTORS = [{q_list}]
+R_FACTORS = [{r_list}]
+PRIOR_MEAN_FACTORS = [{pm_list}]
+PRIOR_COV_FACTORS = [{pc_list}]
+GOAL_FACTORS = [{goal_list}]
+GAIN_FACTORS = [{gain_list}]
+'''
+    header += "\nfrom jax import config as _jax_config\n_jax_config.update('jax_enable_x64', True)\n"
+    parts = [header, _BACKEND_HEADER["jax"], _FACTORED_BODY_HEAD, _FACTORED_BODY_TAIL]
     return "".join(parts)

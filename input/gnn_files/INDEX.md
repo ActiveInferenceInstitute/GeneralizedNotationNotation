@@ -31,6 +31,8 @@ from `output/11_render_output/render_processing_summary.json`.
 | Continuous-state (linear-Gaussian) models — passive filtering | `continuous/damped_oscillator_bias.md`, `continuous/ngclearn_lgssm.md`, `continuous/predictive_coding_agent.md`, `continuous/stochastic_dynamics.md` |
 | Continuous-state closed-loop control on beliefs | `continuous/continuous_navigation.md` |
 | Composed kind set (continuous × multi-agent) | `continuous/multi_agent_lgssm.md` |
+| Factored continuous (independent per-factor LGSSM) | `continuous/factored_continuous_lgssm.md` |
+| Hybrid kind (discrete POMDP + continuous block) | `continuous/hybrid_discrete_continuous.md` |
 | Multi-agent & stigmergy (v3+ features) | `multiagent/stigmergic_swarm.md` |
 | Hierarchical / deep temporal models | `hierarchical/hierarchical_pomdp.md` |
 | Parameter learning | `learning/dirichlet_likelihood_learning.md` |
@@ -45,6 +47,8 @@ from `output/11_render_output/render_processing_summary.json`.
 
 ### continuous/
 - [continuous_navigation.md](continuous/continuous_navigation.md)
+- [factored_continuous_lgssm.md](continuous/factored_continuous_lgssm.md) — composed factored × continuous exemplar (two independent 2-dim `F_fN`/`H_fN`/`Q_fN`/`R_fN` factors, `num_factors: 2`); `detect_model_kinds` returns `{FACTORED, CONTINUOUS}` and the JAX backend renders one native LGSSM block per factor while every other continuous backend receipts it `unsupported-factored-continuous` rather than flattening the factors
+- [hybrid_discrete_continuous.md](continuous/hybrid_discrete_continuous.md) — composed hybrid × continuous exemplar (a minimal 2-state POMDP declared alongside a passive `F`/`H`/`Q`/`R` block); `detect_model_kinds` returns `{HYBRID, CONTINUOUS}` and every framework receipts it `unsupported-composition` (continuous × hybrid) rather than rendering one family
 - [multi_agent_lgssm.md](continuous/multi_agent_lgssm.md) — composed continuous × multi-agent exemplar (`nr_agents: 2` declared alongside the `F`/`H`/`Q`/`R` block); `detect_model_kinds` returns `{CONTINUOUS, MULTI_AGENT}` and every framework receipts it `unsupported-composition` rather than rendering one family
 - [ngclearn_lgssm.md](continuous/ngclearn_lgssm.md) — passive 2-state damped-rotation linear-Gaussian model; the ngc-learn (ngclearn) backend exemplar of the continuous family
 - [predictive_coding_agent.md](continuous/predictive_coding_agent.md)
