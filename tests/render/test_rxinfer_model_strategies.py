@@ -40,7 +40,7 @@ from gnn.render.rxinfer.rxinfer_renderer import render_gnn_to_rxinfer
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 GNN_FILES = PROJECT_ROOT / "input" / "gnn_files"
 
-EXEMPLAR_COUNT = 33
+EXEMPLAR_COUNT = 36
 
 # The intended kind for every non-flat exemplar; everything else is FLAT.
 EXPECTED_NON_FLAT = {
@@ -50,6 +50,10 @@ EXPECTED_NON_FLAT = {
     "continuous/predictive_coding_agent.md": ModelKind.CONTINUOUS,
     "continuous/multi_agent_lgssm.md": ModelKind.MULTI_AGENT,
     "continuous/stochastic_dynamics.md": ModelKind.CONTINUOUS,
+    "continuous/factored_continuous_lgssm.md": ModelKind.CONTINUOUS,
+    "continuous/hybrid_discrete_continuous.md": ModelKind.HYBRID,
+    "discrete/time_varying_dynamics.md": ModelKind.NONSTATIONARY,
+    "discrete/regime_switched_dynamics.md": ModelKind.NONSTATIONARY,
     "hierarchical/hierarchical_pomdp.md": ModelKind.HIERARCHICAL,
     "hierarchical/temporal_hierarchy.md": ModelKind.HIERARCHICAL,
     "learning/dirichlet_likelihood_learning.md": ModelKind.LEARNING,
@@ -74,9 +78,13 @@ def _canonical_spec(gnn_file: Path) -> dict:
     pomdp = extract_pomdp_from_file(gnn_file, strict_validation=True)
     assert pomdp is not None, f"extraction failed for {gnn_file}"
     spec = pomdp_to_gnn_spec(pomdp)
-    if spec.get("model_kind") == "continuous":
-        # Linear-Gaussian specs carry F/H/Q/R, never A/B/C/D; the renderer
-        # dispatches them without canonicalisation.
+    initial = spec.get("initialparameterization") or {}
+    has_static_contract = all(key in initial for key in ("A", "B", "C", "D"))
+    if spec.get("model_kind") == "continuous" or not has_static_contract:
+        # Continuous specs carry F/H/Q/R and never A/B/C/D; factored
+        # per-factor and non-stationary B_t/B_regime specs likewise lack a
+        # static B — canonicalisation would demand one and drop the family
+        # keys, so kind detection runs on the raw spec instead.
         return spec
     return build_canonical_pomdp_spec(spec)
 
@@ -113,10 +121,17 @@ class TestExemplarKindTaxonomy:
             spec = pomdp_to_gnn_spec(pomdp)
             script = tmp_path / f"{gnn_file.stem}_rxinfer.jl"
             rel = str(gnn_file.relative_to(GNN_FILES))
-            if rel == "continuous/multi_agent_lgssm.md":
+            receipted = {
+                "continuous/multi_agent_lgssm.md": "unsupported-composition",
+                "continuous/hybrid_discrete_continuous.md": ("unsupported-composition"),
+                "continuous/factored_continuous_lgssm.md": ("unsupported-composition"),
+                "discrete/time_varying_dynamics.md": ("unsupported-nonstationary"),
+                "discrete/regime_switched_dynamics.md": ("unsupported-nonstationary"),
+            }
+            if rel in receipted:
                 success, message, _warnings = render_gnn_to_rxinfer(spec, script)
                 assert not success
-                assert "unsupported-composition" in message
+                assert receipted[rel] in message
                 assert not script.exists()
                 continue
             success, message, _warnings = render_gnn_to_rxinfer(spec, script)
@@ -192,6 +207,22 @@ class TestStructuralDetection:
         initial = dict(self._BASE_INITIAL)
         initial.update({"F": [[1.0]], "H": [[1.0]], "Q": [[0.1]], "R": [[0.1]]})
         spec = {"initialparameterization": initial, "model_parameters": {}}
+        # Discrete A-E contract keys + a flat Gaussian parameterization is
+        # the HYBRID family mix: refused at dispatch with an
+        # unsupported-composition receipt, never silently rendered as one
+        # family with the other dropped.
+        assert detect_model_kind(spec) == ModelKind.HYBRID
+
+    def test_pure_continuous_parameterization_detects_continuous(self) -> None:
+        spec = {
+            "initialparameterization": {
+                "F": [[1.0]],
+                "H": [[1.0]],
+                "Q": [[0.1]],
+                "R": [[0.1]],
+            },
+            "model_parameters": {},
+        }
         assert detect_model_kind(spec) == ModelKind.CONTINUOUS
 
 
@@ -214,14 +245,23 @@ class TestStrategyDispatchAndCodegen:
         assert not isinstance(FactoredStrategy(), FlatStrategy)
 
     def test_every_kind_has_a_registered_strategy(self) -> None:
-        """Every renderable kind has a strategy. STRUCTURAL is deliberately
-        strategy-less: a wrapper spec is render-only / informational and must
-        be reported unsupported upstream, never rendered (see
-        test_structural_model_kind.py for the loud-rejection contract)."""
+        """Every renderable kind has a strategy. STRUCTURAL, HYBRID and
+        NONSTATIONARY are deliberately strategy-less: a wrapper spec is
+        render-only / informational, and hybrid / non-stationary family
+        mixes are refused with receipts upstream
+        (``unsupported-composition`` / ``unsupported-nonstationary``) —
+        never silently rendered as one family with the other dropped."""
+        strategy_less = {
+            ModelKind.STRUCTURAL,
+            ModelKind.HYBRID,
+            ModelKind.NONSTATIONARY,
+        }
         for kind in ModelKind:
-            if kind is ModelKind.STRUCTURAL:
-                continue
-            assert get_model_strategy(kind).kind is kind
+            if kind in strategy_less:
+                with pytest.raises((KeyError, ValueError)):
+                    get_model_strategy(kind)
+            else:
+                assert get_model_strategy(kind).kind is kind
 
     def test_multi_agent_script_stamps_true_kind_and_echoes_factors(self) -> None:
         gnn_file = GNN_FILES / "multiagent" / "multi_agent_coordination.md"
