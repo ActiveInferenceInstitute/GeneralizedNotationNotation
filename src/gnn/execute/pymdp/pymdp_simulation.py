@@ -456,8 +456,14 @@ class PyMDPSimulation:
         efe_vec = np.asarray(neg_efe[0], dtype=np.float64).flatten()
         try:
             vfe = float(np.asarray(info["vfe"]).mean())
-        except Exception:  # noqa: BLE001
-            vfe = 0.0
+        except Exception as e:  # noqa: BLE001
+            vfe = None
+            self.logger.warning(
+                "VFE extraction failed at timestep %d; recorded as unavailable "
+                "(null in trace, excluded from vfe_history): %s",
+                t,
+                e,
+            )
 
         next_probs = _normalise_prob_vector(self.B_np[:, current_state, action_idx])
         next_state = int(np_rng.choice(self.num_states, p=next_probs))
@@ -564,7 +570,14 @@ class PyMDPSimulation:
             for step in self.simulation_trace
         ]
         vfe_history = [
-            float(step["variational_free_energy"]) for step in self.simulation_trace
+            float(step["variational_free_energy"])
+            for step in self.simulation_trace
+            if step["variational_free_energy"] is not None
+        ]
+        vfe_unavailable = [
+            int(step["timestep"])
+            for step in self.simulation_trace
+            if step["variational_free_energy"] is None
         ]
         policy_posterior = [
             np.asarray(step["policy_probs"], dtype=np.float64).flatten().tolist()
@@ -588,6 +601,7 @@ class PyMDPSimulation:
             "schema_version": "pymdp_simulation_v1",
             "framework": "PyMDP",
             "model_name": self.model_name,
+            "vfe_unavailable_timesteps": vfe_unavailable,
             "execution_metadata": {
                 "accelerator_type": accelerator_type,
                 "vectorization": "jax" if "jax" in sys.modules else "numpy",
