@@ -61,12 +61,27 @@ tests/
 ├── tests/                 # shared-plumbing regression tests (intentional)
 │
 ├── <module>/test_*.py     # per-module tests mirroring src/gnn/<module>/
-│   (43 maintained first-level subdirectories; 41 contain direct test files)
+│   (45 maintained first-level subdirectories; 43 contain direct test files)
 │
 └── test_*.py              # cross-cutting / meta-tests at root
     (coverage assessments, environment probes, runner self-tests,
     test_core_modules, test_fast_suite, etc.)
 ```
+
+### Mirror coverage
+
+| Directory | Exempt rationale |
+|-----------|------------------|
+| `doc` | mirrored as `tests/docs/` (name variant, not an exemption) |
+| `documentation` | `__init__`-only package, `.md` references ship as data files |
+| `formal_specs` | `__init__`-only package, payload consumed by `tests/test_grammar_spec_payloads.py` |
+| `grammars` | `__init__`-only package, `.bnf`/`.ebnf` payloads exercised by `tests/test_grammar_spec_payloads.py` |
+| `gnn_examples` | example-data directory (single `.md` exemplar), no importable surface |
+| `manuscript` | public surface exercised by `tests/main/test_manuscript_variables*.py` + root `tests/test_manuscript_*.py` |
+| `schema` | exercised by `tests/gnn/test_gnn_schema.py` (`GNNParseError`, `parse_state_space`) |
+| `schemas` | section_contract pinned by `tests/gnn/test_section_contract.py`, remaining artifacts non-Python |
+
+New mirrors exercise only the pinned entry points (markdown parse path, registry presence, frontmatter utilities; discovery, lightweight/parse/structure-check surfaces) — the 23-format parser registry and five-phase `GNNProcessor` orchestration remain beyond the minimal mirrors.
 
 ### What lives where
 
