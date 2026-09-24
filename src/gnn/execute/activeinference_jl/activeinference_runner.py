@@ -178,7 +178,8 @@ def _validate_package(project_dir: Path, package_name: str) -> bool:
             env=julia_subprocess_env(),
         )
         return bool(result["success"])
-    except Exception:
+    except Exception as exc:
+        logger.debug("Julia env probe failed: %s", exc)
         return False
 
 

@@ -176,7 +176,14 @@ def _resolve_dirs(
     try:
         normalized_step = step_name if not step_name.endswith(".py") else step_name[:-3]
         step_output_dir = _get_output_dir_for_script(normalized_step, output_dir)
-    except Exception:
+    except Exception as e:
+        logging.warning(
+            "Step %s: per-step output-dir resolution failed (%s); "
+            "degraded to shared output root %s",
+            step_name,
+            e,
+            output_dir,
+        )
         step_output_dir = output_dir
 
     return target_dir, step_output_dir

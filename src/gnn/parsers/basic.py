@@ -283,11 +283,11 @@ def validate_gnn_syntax(
     heuristics are removed: there is one validation path. Validity means the
     formal validator's normative markdown gate — every required section
     (``gnn.schemas.section_contract.REQUIRED_SECTIONS``) present with
-    substantive body content — a deliberate tightening over the legacy
+    substantive body content — a deliberate tightening over the earlier
     heuristic that accepted any document with one header, one variable,
     and one connection. The validator's level ladder applies unchanged at
     every level: even BASIC now runs the required-section structure checks,
-    where the legacy body was a no-op below STANDARD.
+    where the previous body was a no-op below STANDARD.
 
     Args:
         file_path_or_content: Path to an existing GNN file, or GNN content
@@ -318,7 +318,7 @@ def validate_gnn_syntax(
 
     Long inputs are never truncated; validation cost is linear in the
     input size (a ~2 MB document validates in well under a second). The
-    legacy implementation crashed on such content: its path probe raised
+    previous implementation crashed on such content: its path probe raised
     ``ENAMETOOLONG`` and its broad handler turned that into a bogus
     ``"Validation error: ..."`` tuple; the probe now routes such input
     to content mode.

@@ -102,12 +102,12 @@ ok, errors = validate_gnn_syntax("input/gnn_files/model.md", validation_level=Va
   which honors the file extension. `validation_level` also accepts level
   strings (`"strict"`, `"STRICT"`) and `None` (the validator's default
   level, STANDARD); unknown level strings raise `ValueError`. Long
-  inputs are never truncated and validate in linear time (the legacy
+  inputs are never truncated and validate in linear time (the previous
   implementation crashed on long content strings with `ENAMETOOLONG`
   from its path probe and reported a bogus error tuple; such input now
   selects content mode). Validity is the formal validator's normative
   markdown gate — every required section with substantive body content
-  — a deliberate tightening over the legacy regex heuristic; the formal
+  — a deliberate tightening over the earlier regex heuristic; the formal
   level ladder applies at every level (BASIC included).
 - `validate_gnn_source(source, *, is_content=False)`
 - Section-level parser for strict validation: `from gnn.schema_validator import GNNParser` (`GNNParser(enhanced_validation=True)`).

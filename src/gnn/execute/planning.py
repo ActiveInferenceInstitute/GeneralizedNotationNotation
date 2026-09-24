@@ -178,6 +178,7 @@ def plan_execute(
         "unknown_framework_scripts": [],
         "missing_render_scripts": [],
         "render_failures": [],
+        "unsupported_render_receipts": [],
     }
 
     render_output_dir = _resolve_render_output_dir(
@@ -198,7 +199,11 @@ def plan_execute(
     scope_target: Optional[Path] = (
         target_dir if render_output_dir != target_dir else None
     )
-    allowed_render_scripts, render_failures = _load_render_summary_contract(
+    (
+        allowed_render_scripts,
+        render_failures,
+        unsupported_receipts,
+    ) = _load_render_summary_contract(
         render_output_dir,
         requested_frameworks,
         logger,
@@ -206,6 +211,7 @@ def plan_execute(
     )
     plan["render_contract_found"] = allowed_render_scripts is not None
     plan["render_failures"] = list(render_failures)
+    plan["unsupported_render_receipts"] = list(unsupported_receipts)
 
     if allowed_render_scripts is None and not render_output_dir.exists():
         # Defensive: contract missing and directory gone between checks.

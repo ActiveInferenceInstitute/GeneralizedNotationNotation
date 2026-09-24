@@ -29,21 +29,48 @@ def _load_rxinfer_execution_metadata_sidecar(script_path: Path) -> Dict[str, Any
         script_path.with_name(f"{script_path.stem}_metadata.json"),
     ]
     seen: set[Path] = set()
+    probe: Dict[str, Any] = {}
     for metadata_path in candidates:
         if metadata_path in seen or not metadata_path.exists():
             continue
         seen.add(metadata_path)
         try:
             data = json.loads(metadata_path.read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError):
+        except (OSError, json.JSONDecodeError) as exc:
+            probe = {
+                "metadata_probe": "unreadable",
+                "probe_source": str(metadata_path),
+                "probe_reason": str(exc),
+            }
             continue
         if not isinstance(data, dict):
+            probe = {
+                "metadata_probe": "not_a_mapping",
+                "probe_source": str(metadata_path),
+                "probe_reason": f"JSON top-level value is {type(data).__name__}",
+            }
             continue
         if data.get("schema") != "gnn_rxinfer_execution_metadata_v1":
+            probe = {
+                "metadata_probe": "schema_mismatch",
+                "probe_source": str(metadata_path),
+                "probe_reason": f"schema is {data.get('schema')!r}, expected "
+                "'gnn_rxinfer_execution_metadata_v1'",
+            }
             continue
         if data.get("script_sha256") != _sha256_file(script_path):
+            probe = {
+                "metadata_probe": "sha_mismatch",
+                "probe_source": str(metadata_path),
+                "probe_reason": "sidecar script_sha256 does not match script",
+            }
             continue
         if "agent_count" not in data and "topology" not in data:
+            probe = {
+                "metadata_probe": "missing_topology_fields",
+                "probe_source": str(metadata_path),
+                "probe_reason": "sidecar has neither agent_count nor topology",
+            }
             continue
         topology = data.get("topology")
         if not isinstance(topology, dict):
@@ -56,7 +83,7 @@ def _load_rxinfer_execution_metadata_sidecar(script_path: Path) -> Dict[str, Any
         )
         data["metadata_verification"] = "script_sha256_match"
         return data
-    return {}
+    return probe if seen else {}
 
 
 def _load_rxinfer_execution_metadata_from_script(script_path: Path) -> Dict[str, Any]:
@@ -64,17 +91,35 @@ def _load_rxinfer_execution_metadata_from_script(script_path: Path) -> Dict[str,
     if not script_path.exists():
         return {}
     sidecar_metadata = _load_rxinfer_execution_metadata_sidecar(script_path)
-    if sidecar_metadata:
+    sidecar_probe: Dict[str, Any] = {}
+    if sidecar_metadata and "metadata_probe" not in sidecar_metadata:
         return sidecar_metadata
+    if "metadata_probe" in sidecar_metadata:
+        # Sidecars that parse but fail validation (wrong/stale schema, sha
+        # mismatch after a re-render, non-mapping, missing fields) are
+        # benign: the render step rewrites them alongside the script, so a
+        # leftover mismatch carries no signal for this script and must be
+        # ignored exactly like an absent sidecar. Only a sidecar that
+        # cannot be read at all (corrupt JSON / I/O failure) surfaces a
+        # probe receipt here; the low-level sidecar loader keeps probes
+        # for every failure class.
+        if sidecar_metadata["metadata_probe"] == "unreadable":
+            sidecar_probe = sidecar_metadata
     toml_candidates = [script_path.with_suffix(".toml")]
     seen_toml: set[Path] = set()
+    toml_probe: Dict[str, Any] = {}
     for toml_path in toml_candidates:
         if toml_path in seen_toml or not toml_path.exists():
             continue
         seen_toml.add(toml_path)
         try:
             data = tomllib.loads(toml_path.read_text(encoding="utf-8"))
-        except (OSError, tomllib.TOMLDecodeError):
+        except (OSError, tomllib.TOMLDecodeError) as exc:
+            toml_probe = {
+                "metadata_probe": "unreadable",
+                "probe_source": str(toml_path),
+                "probe_reason": str(exc),
+            }
             continue
         agents = data.get("agents", [])
         model = data.get("model", {})
@@ -107,7 +152,9 @@ def _load_rxinfer_execution_metadata_from_script(script_path: Path) -> Dict[str,
             "metadata_provenance": "rxinfer_toml_sidecar",
             "metadata_verification": "exact_stem_toml",
         }
-    return {}
+    if sidecar_probe:
+        return sidecar_probe
+    return toml_probe
 
 
 def _sha256_file(path: Path) -> str:
@@ -125,8 +172,16 @@ def _load_render_summary_contract(
     logger: logging.Logger,
     target_dir: Optional[Path] = None,
     run_id: Optional[str] = None,
-) -> Tuple[Optional[set[Path]], List[Dict[str, str]]]:
+) -> Tuple[Optional[set[Path]], List[Dict[str, str]], List[Dict[str, str]]]:
     """Load the latest Step 11 render contract for script filtering and failures.
+
+    Returns a 3-tuple ``(allowed_scripts, render_failures, unsupported_receipts)``:
+
+    * ``allowed_scripts`` — executable scripts permitted by the contract
+      (``None`` when the contract is missing or unreadable).
+    * ``render_failures`` — identity-verification / render-failure receipts.
+    * ``unsupported_receipts`` — receipts for frameworks the renderer declared
+      cannot represent the model (nothing failed; there is nothing to execute).
 
     ``target_dir`` (when provided) scopes the contract to the current pipeline
     invocation. The pipeline runs Step 12 once per top-level input folder, so a
@@ -136,16 +191,16 @@ def _load_render_summary_contract(
     """
     summary_file = render_output_dir / "render_processing_summary.json"
     if not summary_file.exists():
-        return None, []
+        return None, [], []
 
     try:
         summary = json.loads(summary_file.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
         logger.warning("Could not read render summary %s: %s", summary_file, exc)
-        return None, []
+        return None, [], []
 
     if not isinstance(summary, dict):
-        return None, []
+        return None, [], []
 
     expected_run = run_id or os.environ.get("GNN_RUN_ID")
     receipt_identity = summary.get("receipt_identity")
@@ -153,13 +208,17 @@ def _load_render_summary_contract(
         not isinstance(receipt_identity, dict)
         or receipt_identity.get("run_id") != expected_run
     ):
-        return set(), [
-            {
-                "file": str(summary_file),
-                "framework": "all",
-                "message": "Render receipt belongs to a different run",
-            }
-        ]
+        return (
+            set(),
+            [
+                {
+                    "file": str(summary_file),
+                    "framework": "all",
+                    "message": "Render receipt belongs to a different run",
+                }
+            ],
+            [],
+        )
 
     def _in_scope(source_file: str) -> bool:
         if target_dir is None:
@@ -172,9 +231,10 @@ def _load_render_summary_contract(
     requested = set(requested_frameworks)
     allowed_scripts: set[Path] = set()
     render_failures: List[Dict[str, str]] = []
+    unsupported_receipts: List[Dict[str, str]] = []
     file_results = summary.get("file_results")
     if not isinstance(file_results, dict):
-        return None, []
+        return None, [], []
 
     for source_file, file_result in file_results.items():
         if not _in_scope(source_file):
@@ -233,7 +293,20 @@ def _load_render_summary_contract(
             if framework_result.get("unsupported"):
                 # The renderer declared this framework cannot represent the
                 # model (categorical backend, continuous model): nothing to
-                # execute and nothing failed.
+                # execute and nothing failed. Surface a receipt instead of
+                # silently dropping the reason.
+                unsupported_receipts.append(
+                    {
+                        "file": str(source_file),
+                        "framework": str(framework),
+                        "reason": str(
+                            framework_result.get("message")
+                            or framework_result.get("reason")
+                            or "renderer declared this framework unsupported for this model"
+                        ),
+                        "status": "unsupported",
+                    }
+                )
                 continue
             if framework_result.get("success"):
                 for output_file in framework_result.get("output_files") or []:
@@ -252,7 +325,7 @@ def _load_render_summary_contract(
                     }
                 )
 
-    return allowed_scripts, render_failures
+    return allowed_scripts, render_failures, unsupported_receipts
 
 
 def _summarize_collected_outputs(coll: Any) -> Any:
@@ -462,7 +535,13 @@ def _merge_prior_execution_summary(
                     for d in record.get("execution_details", [])
                 ):
                     continue
-            except OSError:
+            except OSError as e:
+                logger.debug(
+                    "Prior invocation %s excluded from merge: identity probe "
+                    "failed: %s",
+                    old_scope,
+                    e,
+                )
                 continue
             invocations[old_scope] = record
     invocations[scope] = current

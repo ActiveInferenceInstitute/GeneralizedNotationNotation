@@ -410,12 +410,14 @@ def _classify_execute_outcome(
     missing_render_scripts: List[str],
     missing_render_summary: Optional[str],
     strict_requested_frameworks: bool,
+    unsupported_receipts: Optional[List[Dict[str, str]]] = None,
 ) -> ExecutionOutcome:
     """Classify a finished Step 12 run into its outcome contract.
 
     Pure function of the run counters: the durable summary and the API result
     are derived from the same classification, so they can never disagree.
     """
+    unsupported_receipts = list(unsupported_receipts or [])
     attempted = total_found - skipped
     if missing_render_summary:
         outcome: Union[bool, int] = False
@@ -432,7 +434,10 @@ def _classify_execute_outcome(
     elif total_found == 0:
         outcome = False if strict_requested_frameworks else 2
         status = "failed" if strict_requested_frameworks else "skipped"
-        reason = "no_executable_scripts"
+        if unsupported_receipts and not render_failures:
+            reason = "unsupported_render_refusals"
+        else:
+            reason = "no_executable_scripts"
     elif strict_requested_frameworks and (failed > 0 or skipped > 0):
         outcome = False
         status = "failed"
@@ -610,7 +615,11 @@ def process_execute(
                 if render_output_dir is not None and render_output_dir != target_dir
                 else None
             )
-            allowed_render_scripts, render_failures = _load_render_summary_contract(
+            (
+                allowed_render_scripts,
+                render_failures,
+                unsupported_render_receipts,
+            ) = _load_render_summary_contract(
                 render_output_dir,
                 requested_frameworks,
                 logger,
@@ -618,6 +627,9 @@ def process_execute(
                 run_id=kwargs.get("run_id"),
             )
             execution_results["render_failures"] = render_failures
+            execution_results["unsupported_render_receipts"] = (
+                unsupported_render_receipts
+            )
 
             if allowed_render_scripts is None and require_render_summary:
                 log_step_warning(
@@ -807,6 +819,9 @@ def process_execute(
             missing_render_scripts=missing_render_scripts,
             missing_render_summary=missing_render_summary,
             strict_requested_frameworks=strict_requested_frameworks,
+            unsupported_receipts=execution_results.get(
+                "unsupported_render_receipts", []
+            ),
         )
         outcome = classification.outcome
         status = classification.status
@@ -848,6 +863,16 @@ def process_execute(
             )
         elif reason == "no_executable_scripts":
             log_step_warning(logger, "No executable scripts found to run")
+        elif reason == "unsupported_render_refusals":
+            render_refusals = execution_results.get("unsupported_render_receipts", [])
+            refusal_preview = "; ".join(
+                f"{item['file']}:{item['framework']}" for item in render_refusals[:5]
+            )
+            log_step_warning(
+                logger,
+                f"No executable scripts: renderer refused {len(render_refusals)} "
+                f"framework rendering(s) as unsupported: {refusal_preview}",
+            )
         elif reason == "requested_framework_execution_incomplete":
             log_step_error(
                 logger,
