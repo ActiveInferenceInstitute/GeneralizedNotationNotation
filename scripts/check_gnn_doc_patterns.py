@@ -109,11 +109,21 @@ def footer_violations(root: Path) -> list[tuple[Path, int, str, str]]:
             iso = re.fullmatch(r"20\d{2}-\d{2}-\d{2}", token)
             if iso is None:
                 violations.append(
-                    (md, i, line.strip(), "non-ISO footer stamp (want YYYY-MM-DD >= ratchet)")
+                    (
+                        md,
+                        i,
+                        line.strip(),
+                        "non-ISO footer stamp (want YYYY-MM-DD >= ratchet)",
+                    )
                 )
             elif token < FOOTER_RATCHET:
                 violations.append(
-                    (md, i, line.strip(), f"footer stamp predates ratchet {FOOTER_RATCHET}")
+                    (
+                        md,
+                        i,
+                        line.strip(),
+                        f"footer stamp predates ratchet {FOOTER_RATCHET}",
+                    )
                 )
     return violations
 
