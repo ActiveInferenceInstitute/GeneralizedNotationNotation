@@ -15,12 +15,16 @@ trivially testable.
 
 from __future__ import annotations
 
+from enum import Enum
 from typing import Any
 
 from gnn.schemas.section_contract import CANONICAL_GNN_SECTIONS
 
 __all__ = [
     "CANONICAL_GNN_SECTIONS",
+    "TimeSpecKind",
+    "classify_time_spec",
+    "classify_time_spec_kind",
     "connection_group",
     "detect_time_dynamics",
     "extract_markdown_section",
@@ -155,30 +159,97 @@ def detect_time_dynamics(content: str) -> bool:
 
     Reads only the canonical ``## Time`` block so a stray ``t`` in prose or
     a variable name cannot flip a static model to dynamic. Recognises
-    ``dynamic``, ``continuous-time``, and ``time-varying`` declarations.
+    ``dynamic``, ``continuous-time``, ``time-varying``, and ``regime``
+    declarations — a regime-switched schedule selects between finite
+    transition tensors per timestep, which is nonstationary and therefore
+    dynamic.
     """
     time_text = extract_markdown_section(content, "Time").lower()
     if not time_text:
         return False
     return any(
         marker in time_text
-        for marker in ("dynamic", "continuous-time", "time-varying", "continuous_time")
+        for marker in (
+            "dynamic",
+            "continuous-time",
+            "continuous_time",
+            "time-varying",
+            "time_varying",
+            "regime",
+        )
     )
+
+
+class TimeSpecKind(Enum):
+    """Typed classification of a GNN spec's ``## Time`` section.
+
+    Three kinds, pinned by the nonstationary-semantics contract:
+
+    - ``STATIC`` — no time-variation marker; one transition tensor.
+    - ``TIME_VARYING`` — dynamics indexed by time (a ``B_t`` tensor with a
+      time axis; parameters evolve over the planning horizon).
+    - ``REGIME_SWITCHED`` — dynamics indexed by a discrete regime with an
+      explicit schedule (``B_regime`` + ``b_regime_schedule``), selecting
+      one of a finite set of transition tensors per timestep.
+
+    A ``Hierarchical`` ``## Time`` declaration is a legacy taxonomy label
+    (deep temporal hierarchy), orthogonal to these three kinds: the typed
+    API classifies the *time variation of the dynamics*, while the legacy
+    :func:`classify_time_spec` string keeps returning ``"Hierarchical"``
+    for backward compatibility.
+    """
+
+    STATIC = "Static"
+    TIME_VARYING = "TimeVarying"
+    REGIME_SWITCHED = "RegimeSwitched"
+
+
+# Legacy string projection consumed by existing callers (the checker's
+# ``model_type`` field and the estimator's ``time_spec``): both dynamic
+# kinds project to ``"Dynamic"`` so their serialized output is unchanged.
+_LEGACY_TIME_SPEC_STRINGS: dict[TimeSpecKind, str] = {
+    TimeSpecKind.STATIC: "Static",
+    TimeSpecKind.TIME_VARYING: "Dynamic",
+    TimeSpecKind.REGIME_SWITCHED: "Dynamic",
+}
+
+
+def classify_time_spec_kind(content: str) -> TimeSpecKind:
+    """Classify a GNN spec's ``## Time`` section into the typed kinds.
+
+    Reads only the canonical ``## Time`` block (same scoping rule as
+    :func:`detect_time_dynamics`). A regime marker wins over the plain
+    dynamic markers — a schedule selecting between finite regimes is the
+    more specific contract. Specs with no time-variation marker are
+    ``STATIC``; the ``Hierarchical`` label is orthogonal (see
+    :class:`TimeSpecKind`).
+    """
+    time_text = extract_markdown_section(content, "Time").lower()
+    if not time_text:
+        return TimeSpecKind.STATIC
+    if "regime" in time_text:
+        return TimeSpecKind.REGIME_SWITCHED
+    if detect_time_dynamics(content):
+        return TimeSpecKind.TIME_VARYING
+    return TimeSpecKind.STATIC
 
 
 def classify_time_spec(content: str) -> str:
     """Classify a GNN spec's ``## Time`` section into Static/Dynamic/Hierarchical.
 
-    Reads only the canonical ``## Time`` block so a stray ``t`` in prose or
-    a variable name cannot flip a static model to Dynamic. Hierarchical
-    wins over Dynamic when both markers appear. The Dynamic determination
-    delegates to :func:`detect_time_dynamics` so both share one marker set
-    (``dynamic``, ``continuous-time``, ``continuous_time``, ``time-varying``)
-    and can never disagree for the same content.
+    Backward-compatible string projection of :func:`classify_time_spec_kind`:
+    ``TimeVarying`` and ``RegimeSwitched`` both project to the legacy
+    ``"Dynamic"`` string so existing callers (the checker's ``model_type``
+    field, the estimator's ``time_spec``, and their tests) keep their exact
+    contract. Reads only the canonical ``## Time`` block so a stray ``t``
+    in prose or a variable name cannot flip a static model to Dynamic.
+    Hierarchical wins over Dynamic when both markers appear. The Dynamic
+    determination delegates to :func:`detect_time_dynamics` so both share
+    one marker set (``dynamic``, ``continuous-time``, ``continuous_time``,
+    ``time-varying``, ``regime``) and can never disagree for the same
+    content.
     """
     time_text = extract_markdown_section(content, "Time").lower()
     if "hierarchical" in time_text:
         return "Hierarchical"
-    if detect_time_dynamics(content):
-        return "Dynamic"
-    return "Static"
+    return _LEGACY_TIME_SPEC_STRINGS[classify_time_spec_kind(content)]

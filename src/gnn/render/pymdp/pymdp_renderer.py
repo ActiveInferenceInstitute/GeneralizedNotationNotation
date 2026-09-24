@@ -304,6 +304,18 @@ class PyMDPRenderer:
         init_params = gnn_spec.get("initialparameterization") or gnn_spec.get(
             "initial_parameterization", {}
         )
+        nonstationary_keys = [
+            str(key) for key in init_params if str(key).startswith(("B_t", "B_regime"))
+        ]
+        is_nonstationary = bool(nonstationary_keys)
+        if is_nonstationary and self.mode == "standalone":
+            raise ValueError(
+                "unsupported-nonstationary: the standalone pymdp runner builds "
+                "a single static Agent and cannot express time-indexed (B_t) "
+                "or regime-switched (B_regime) transitions; render with the "
+                "default pipeline mode, whose runner delegates to "
+                "run_pymdp_simulation's per-step switching rollout"
+            )
 
         num_obs, num_states, num_actions = _extract_dimensions(gnn_spec, init_params)
 
@@ -321,7 +333,7 @@ class PyMDPRenderer:
                 ("C", C_vector),
                 ("D", D_vector),
             )
-            if val is None
+            if val is None and not (label == "B" and is_nonstationary)
         ]
         if missing:
             raise ValueError(
