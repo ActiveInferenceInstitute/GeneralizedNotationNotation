@@ -256,7 +256,9 @@ class TestRendererHealthModulePaths:
     Regression pin: the health check used to build ``render.{name}`` module
     paths, but no top-level ``render`` package exists (the installed package
     is ``gnn``), so the CLI ``gnn health`` and API ``/api/v1/health`` surfaces
-    reported every renderer unavailable.
+    reported every renderer unavailable. Module paths are now derived uniformly
+    as ``gnn.render.{name}``; each renderer (bnlearn included, via its
+    dedicated package) imports from that direct path.
     """
 
     def test_every_status_module_path_imports(self) -> None:
@@ -272,10 +274,22 @@ class TestRendererHealthModulePaths:
             assert status.module_path.startswith("gnn.render.")
             importlib.import_module(status.module_path)
 
-    def test_bnlearn_override_points_at_generators(self) -> None:
+    def test_all_renderer_module_paths_follow_package_convention(self) -> None:
+        """Every renderer module path is the uniform ``gnn.render.{name}``
+        derivation — no per-framework overrides. Pins bnlearn's dedicated
+        package parity with its peers.
+        """
         from gnn.render.health import _RENDERERS
 
-        assert _RENDERERS["bnlearn"] == "gnn.render.generators"
+        for name in get_supported_frameworks():
+            assert _RENDERERS[name] == f"gnn.render.{name}", (
+                f"{name}: expected gnn.render.{name}, got {_RENDERERS[name]}"
+            )
+
+    def test_bnlearn_module_path_is_dedicated_package(self) -> None:
+        from gnn.render.health import _RENDERERS
+
+        assert _RENDERERS["bnlearn"] == "gnn.render.bnlearn"
 
 
 class TestPomdpConfigTruthfulness:
@@ -324,12 +338,12 @@ class TestCanonicalConsistency:
     def test_bnlearn_registry_function_names_real_surface(self) -> None:
         """The bnlearn ``function`` entry names its actual generator (not a
         phantom symbol): the defect this row fixed."""
-        from gnn.render.generators import generate_bnlearn_code
+        from gnn.render.bnlearn import generate_bnlearn_code
         from gnn.render.health import _RENDERERS
 
         assert FRAMEWORK_REGISTRY["bnlearn"]["function"] == "generate_bnlearn_code"
-        # The health override maps bnlearn to the module that carries it.
-        assert _RENDERERS["bnlearn"] == "gnn.render.generators"
+        # The default module-path derivation resolves bnlearn's dedicated package.
+        assert _RENDERERS["bnlearn"] == "gnn.render.bnlearn"
         assert callable(generate_bnlearn_code)
 
     def test_execution_framework_name_literal_matches_canonical(self) -> None:
