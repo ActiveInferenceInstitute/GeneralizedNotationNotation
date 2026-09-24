@@ -326,8 +326,8 @@ def _normalise_nonstationary_b_tensor(
 
     Each slice is canonical ``(next_state, previous_state, action)`` with
     columns summing to one. A 2-D/3-D tensor is promoted to a single-step
-    stack (same orientation rules as the static B canonicaliser), so a
-    legacy 3-D ``B_t`` keeps its pre-nonstationary static meaning.
+    stack (same orientation rules as the static B canonicaliser), so the
+    earlier 3-D ``B_t`` keeps its pre-nonstationary static meaning.
     """
     raw = np.asarray(value, dtype=np.float64)
     if raw.ndim == 2:
