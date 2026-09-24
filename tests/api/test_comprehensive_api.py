@@ -148,17 +148,63 @@ except ImportError:
     PIPELINE_AVAILABLE = False
 
 
+_MINIMAL_VALID_GNN = """\
+## GNNSection
+GNN
+
+## GNNVersionAndFlags
+GNN v1
+
+## ModelName
+minimal_valid_model
+
+## ModelAnnotation
+A minimal well-formed GNN document used by the API contract tests.
+
+## StateSpaceBlock
+s1[state:2]
+
+## Connections
+s1->s1
+
+## InitialParameterization
+s1.state: mean=0.0
+
+## Time
+Model time: dt=1.0
+
+## Footer
+Minimal contract-test model
+"""
+
+
 class TestGNNModule:
     """Test the GNN module's exposed API."""
 
     def test_validate_gnn_function(self) -> None:
-        """Test the validate_gnn_syntax function."""
-        # Test with invalid input — validate_gnn_syntax returns tuple(bool, list[str])
-        result = gnn.validate_gnn_syntax("invalid content")
-        assert isinstance(result, tuple), f"Expected tuple, got {type(result)}"
-        is_valid, messages = result
+        """validate_gnn_syntax keeps the (bool, list[str]) contract for garbage input."""
+        is_valid, messages = gnn.validate_gnn_syntax("invalid content")
         assert isinstance(is_valid, bool)
         assert isinstance(messages, list)
+        # Garbage must be rejected with informative formal-parser messages.
+        assert is_valid is False
+        assert messages
+        assert all(isinstance(message, str) and message for message in messages)
+
+    def test_validate_gnn_syntax_valid_document(self) -> None:
+        """A well-formed GNN document validates to (True, [])."""
+        is_valid, messages = gnn.validate_gnn_syntax(_MINIMAL_VALID_GNN)
+        assert (is_valid, messages) == (True, [])
+
+    def test_validate_gnn_syntax_path_content_identity(self, tmp_path: Path) -> None:
+        """The same bytes yield identical verdicts via file path and content string."""
+        documents = (_MINIMAL_VALID_GNN, "## GNNSection\nnonparse garbage")
+        for document in documents:
+            document_path = tmp_path / "document.md"
+            document_path.write_text(document, encoding="utf-8")
+            via_path = gnn.validate_gnn_syntax(document_path)
+            via_content = gnn.validate_gnn_syntax(document)
+            assert via_path == via_content
 
     def test_feature_flags(self) -> None:
         """Test that feature flags are properly set."""

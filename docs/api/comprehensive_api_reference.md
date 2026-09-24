@@ -92,6 +92,23 @@ ok, errors = validate_gnn_syntax("input/gnn_files/model.md", validation_level=Va
 ```
 
 - `validate_gnn_syntax(file_path_or_content, validation_level=ValidationLevel.STANDARD) -> (bool, List[str])`
+  — delegates to the formal `schema_validator` pipeline
+  (`GNNValidator.validate_file`), so returned messages are the formal
+  validator's errors (e.g. `"Required section missing: ModelName"`).
+  An existing file path and the same bytes passed as a content string
+  produce identical verdicts (both are staged and validated through the
+  same pipeline). Content is validated as GNN markdown text — for
+  JSON/XML/YAML model files use `validate_gnn_file_comprehensive`,
+  which honors the file extension. `validation_level` also accepts level
+  strings (`"strict"`, `"STRICT"`) and `None` (the validator's default
+  level, STANDARD); unknown level strings raise `ValueError`. Long
+  inputs are never truncated and validate in linear time (the legacy
+  implementation crashed on long content strings with `ENAMETOOLONG`
+  from its path probe and reported a bogus error tuple; such input now
+  selects content mode). Validity is the formal validator's normative
+  markdown gate — every required section with substantive body content
+  — a deliberate tightening over the legacy regex heuristic; the formal
+  level ladder applies at every level (BASIC included).
 - `validate_gnn_source(source, *, is_content=False)`
 - Section-level parser for strict validation: `from gnn.schema_validator import GNNParser` (`GNNParser(enhanced_validation=True)`).
 
