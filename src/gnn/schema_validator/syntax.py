@@ -257,19 +257,72 @@ class GNNParser:
     def parse_content(
         self, content: str, source_name: str = "<string>", format_hint: str = "markdown"
     ) -> ParsedGNN:
-        """Enhanced content parsing with format-specific handling."""
-        # Use multi-format parsing system if available
+        """Parse content with format-specific handling and visible degradation.
+
+        Behaviour by ``format_hint``:
+
+        * ``"markdown"`` — parsed directly by the built-in markdown parser.
+        * unknown hint (not a :class:`GNNFormat` value) — raises
+          :class:`ValueError`; silently re-parsing a mistyped hint as
+          markdown hides the caller's error.
+        * known hint whose parser fails or reports ``success=False`` —
+          recovers to markdown parsing, but the returned
+          :class:`ParsedGNN` carries ``metadata["parse_degraded"]``
+          (reason, requested_format, fallback) and a warning is logged,
+          so the degraded result is distinguishable from an honest parse
+          of the requested format.
+        """
         if self.parsing_system and format_hint != "markdown":
             try:
                 format_enum = GNNFormat(format_hint)
-                result = self.parsing_system.parse_string(content, format_enum)
-                if result.success:
-                    return self._convert_parse_result_to_parsed_gnn(result, format_hint)
-            except (ValueError, Exception) as e:
-                logger.warning(f"Multi-format parsing failed for {format_hint}: {e}")
+            except ValueError as exc:
+                supported = ", ".join(f.value for f in GNNFormat)
+                raise ValueError(
+                    f"Unknown format_hint {format_hint!r} for parse_content "
+                    f"(supported: {supported})"
+                ) from exc
 
-        # Recovery to markdown parsing
+            try:
+                result = self.parsing_system.parse_string(content, format_enum)
+            except Exception as exc:
+                # GNNParsingSystem.parse_string wraps parser failures in
+                # ParseError and raises ValueError for unregistered formats;
+                # both mean the requested format cannot handle this content.
+                return self._degraded_markdown_fallback(
+                    content,
+                    source_name,
+                    format_hint,
+                    f"{type(exc).__name__}: {exc}",
+                )
+            if result.success:
+                return self._convert_parse_result_to_parsed_gnn(result, format_hint)
+            return self._degraded_markdown_fallback(
+                content,
+                source_name,
+                format_hint,
+                "; ".join(result.errors) or "format parser reported success=False",
+            )
+
         return self._parse_markdown_content(content, source_name)
+
+    def _degraded_markdown_fallback(
+        self, content: str, source_name: str, format_hint: str, reason: str
+    ) -> ParsedGNN:
+        """Recover to markdown parsing, marking the result visibly degraded."""
+        logger.warning(
+            "parse_content: %s parsing failed for %s (%s); falling back to "
+            "markdown parsing — result is degraded",
+            format_hint,
+            source_name,
+            reason,
+        )
+        parsed = self._parse_markdown_content(content, source_name)
+        parsed.metadata["parse_degraded"] = {
+            "reason": reason,
+            "requested_format": format_hint,
+            "fallback": "markdown",
+        }
+        return parsed
 
     def _convert_parse_result_to_parsed_gnn(
         self, result: Any, source_format: str
