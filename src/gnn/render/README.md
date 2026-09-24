@@ -12,7 +12,7 @@ This module provides **POMDP-aware code generation** for GNN models. It translat
 
 ## POMDP Processing Pipeline
 
-<!-- 5 of 9 renderers shown; the full renderer set lives in framework_registry.py -->
+<!-- 5 of 10 renderers shown; the full renderer set lives in framework_registry.py -->
 ```mermaid
 graph TD
     GNN[GNN File] --> Extract[POMDP Extraction]
@@ -36,7 +36,7 @@ graph TD
 
 ### Framework Rendering Architecture
 
-<!-- 5 of 9 renderers shown; the full renderer set lives in framework_registry.py -->
+<!-- 5 of 10 renderers shown; the full renderer set lives in framework_registry.py -->
 
 ```mermaid
 graph TB

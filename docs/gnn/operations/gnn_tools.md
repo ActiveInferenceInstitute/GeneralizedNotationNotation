@@ -208,7 +208,7 @@ GNN support is available for various IDEs:
 
 GNN tools integrate with several Active Inference frameworks:
 
-Step 11 renders to nine backends and Step 12 executes all nine (bnlearn via `src/gnn/execute/bnlearn/`, skipping until its runtime is installed). `uv run gnn health` reports which are importable in the current environment.
+Step 11 renders to ten backends and Step 12 executes all ten (bnlearn via `src/gnn/execute/bnlearn/`, ngc-learn via `src/gnn/execute/ngclearn/`, skipping until their runtimes are installed). `uv run gnn health` reports which are importable in the current environment.
 
 ```mermaid
 graph LR
@@ -222,17 +222,18 @@ graph LR
     RENDER --> PYTORCH[PyTorch]
     RENDER --> NUMPYRO[NumPyro]
     RENDER --> STAN[Stan]
+    RENDER --> NGCLEARN[ngc-learn]
 
     classDef tool fill:#f96,stroke:#333,stroke-width:2px;
     classDef framework fill:#9cf,stroke:#333,stroke-width:1px;
 
     class GNN,RENDER tool;
-    class PYMDP,RXINFER,AIFJL,JAX,DISCOPY,BNLEARN,PYTORCH,NUMPYRO,STAN framework;
+    class PYMDP,RXINFER,AIFJL,JAX,DISCOPY,BNLEARN,PYTORCH,NUMPYRO,STAN,NGCLEARN framework;
 ```
 
 | Language | Backends |
 |---|---|
-| Python | PyMDP, JAX, DisCoPy, bnlearn, PyTorch, NumPyro |
+| Python | PyMDP, JAX, DisCoPy, bnlearn, PyTorch, NumPyro, ngc-learn |
 | Julia | RxInfer.jl, ActiveInference.jl |
 | Stan | Stan |
 
