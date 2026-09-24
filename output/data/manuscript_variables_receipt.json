@@ -1,7 +1,8 @@
 {
-  "counts_describe_commit": "9eda4fd0a",
-  "dirty_path_count": 2,
+  "counts_describe_commit": "c7697b076",
+  "dirty_path_count": 3,
   "dirty_paths": [
+    "output/data/manuscript_render_manifest.json",
     "output/data/manuscript_variables.json",
     "output/data/manuscript_variables_receipt.json"
   ],
