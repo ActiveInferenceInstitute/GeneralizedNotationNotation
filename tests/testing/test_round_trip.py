@@ -1,22 +1,24 @@
 """Round-trip test-system tests for GNN format conversion.
 
-Adopted from the ``TestGNNRoundTrip`` class in
-``src/gnn/testing/test_round_trip.py`` (never collected under pytest's
-``testpaths=tests``). The tester itself (``GNNRoundTripTester``) remains a
-production helper in ``src/gnn/testing`` — it is exercised here through its
-public API. Skip guards from the source file are preserved verbatim.
+Adopted from the ``TestGNNRoundTrip`` class in the former
+``src/gnn/testing/test_round_trip.py`` monolith (never collected under
+pytest's ``testpaths=tests``). The tester itself (``GNNRoundTripTester``)
+is production code in ``gnn.testing.round_trip_tester`` — it is exercised
+here through its public API. Skip guards from the source file are
+preserved verbatim.
 """
 
 import sys
 import unittest
 from typing import Any
 
-# The ``test_round_trip`` facade sets ``sys.setrecursionlimit(100)`` at
-# import time (a process-global side effect); restore the interpreter
-# default immediately after import so later tests are unaffected.
+# Historical note: the former ``test_round_trip`` facade once set
+# ``sys.setrecursionlimit(100)`` at import time (a process-global side
+# effect); it was removed at 31b3e03e0, and the guard below now simply
+# preserves the interpreter default after the tester imports.
 _prev_recursion_limit = sys.getrecursionlimit()
 from gnn.testing.round_trip_availability import GNN_AVAILABLE, GNNFormat
-from gnn.testing.test_round_trip import GNNRoundTripTester
+from gnn.testing.round_trip_tester import GNNRoundTripTester
 
 sys.setrecursionlimit(max(_prev_recursion_limit, 1000))
 

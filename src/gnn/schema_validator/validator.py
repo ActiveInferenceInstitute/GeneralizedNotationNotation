@@ -94,7 +94,7 @@ class GNNValidator:
         # Initialize round-trip tester if enabled
         if self.enable_round_trip_testing:
             try:
-                from gnn.testing.test_round_trip import GNNRoundTripTester
+                from gnn.testing.round_trip_tester import GNNRoundTripTester
 
                 self.round_trip_tester = GNNRoundTripTester()
                 logger.info("Round-trip testing enabled for comprehensive validation")

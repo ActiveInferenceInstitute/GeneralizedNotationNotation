@@ -2,7 +2,7 @@
 
 ## Scope
 
-[`test_round_trip.py`](test_round_trip.py) exercises **parse → serialize → parse** for a reference Markdown model and compares semantic content. Canonical counts (**23** enum formats, **22** serializers, round-trip list): **[../SPEC.md](../SPEC.md)**.
+[`round_trip_tester.py`](round_trip_tester.py) exercises **parse → serialize → parse** for a reference Markdown model and compares semantic content. Canonical counts (**23** enum formats, **22** serializers, round-trip list): **[../SPEC.md](../SPEC.md)**.
 
 **Default `test_formats`:** **21** strings — **`markdown`** plus **20** conversion targets. **`ebnf`** and **`pnml`** are not in that list (`pnml` commented out; **EBNF** shares the BNF / `GrammarSerializer` path).
 
@@ -14,7 +14,7 @@ For the reference file and default configuration, the suite targets **100%** pas
 
 ## Configuration
 
-Edit `FORMAT_TEST_CONFIG` and `REFERENCE_CONFIG` at the top of [`test_round_trip.py`](test_round_trip.py):
+Edit `FORMAT_TEST_CONFIG` and `REFERENCE_CONFIG` in [`round_trip_config.py`](round_trip_config.py):
 
 - `test_formats` — which formats to exercise (must stay consistent with docs when you change it).
 - `reference_file` — default `input/gnn_files/actinf_pomdp_agent.md` (relative to repo root).
@@ -29,16 +29,18 @@ Serializers embed JSON model snapshots in comments (or equivalent) so the second
 
 ```bash
 # From repo root (example)
-uv run python -m pytest src/gnn/testing/test_round_trip.py -q
+uv run --extra dev python -m pytest tests/testing/ -q
 ```
 
-Or run the module’s main block if defined for your workflow (see file docstring).
+The former `test_round_trip.py` main-block runner (standalone report/JSON
+export) was retired with the test-file split; use the pytest suite or
+instantiate `GNNRoundTripTester` directly from `round_trip_tester.py`.
 
 ## Historical note
 
-Round-trip pass rates for the reference model were improved in stages (early 2025); the current default list and embedded-data approach are the maintained baseline. Treat performance and checksum lines in old notes as **non-authoritative** unless reproduced with the same `test_round_trip.py` revision and machine.
+Round-trip pass rates for the reference model were improved in stages (early 2025); the current default list and embedded-data approach are the maintained baseline. Treat performance and checksum lines in old notes as **non-authoritative** unless reproduced with the same harness revision and machine.
 
 ---
 
-**Maintained with:** `src/gnn/testing/test_round_trip.py`  
+**Maintained with:** `src/gnn/testing/round_trip_tester.py` + `tests/testing/`
 **See also:** [`alignment_status.md`](alignment_status.md), [`../SPEC.md`](../SPEC.md)

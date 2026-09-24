@@ -484,7 +484,6 @@ ignore = [
 "src/gnn/render/discopy/translator.py" = ["F401"]
 "src/gnn/integration/meta_analysis/visualizer.py" = ["F401"]
 "src/gnn/integration/meta_analysis/visualizer_style.py" = ["F401"]
-"src/gnn/testing/test_round_trip.py" = ["F401"]
 "src/gnn/testing/round_trip_availability.py" = ["F401"]
 "src/gnn/execute/processor.py" = ["F401"]
 

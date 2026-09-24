@@ -18,7 +18,7 @@ See **[README.md](README.md)** for Unicode, comment, and Active Inference variab
 ## Relationship to the rest of `gnn/`
 
 - **Canonical format counts** (23 parsers, 22 serializers, round-trip scope): **[../SPEC.md](../SPEC.md)**.
-- **Default round-trip list** in [`../testing/test_round_trip.py`](../testing/test_round_trip.py) includes **BNF**; **EBNF** uses the same serializer machinery but is not a separate row in the default `test_formats` list (see SPEC).
+- **Default round-trip list** in [`../testing/round_trip_config.py`](../testing/round_trip_config.py) includes **BNF**; **EBNF** uses the same serializer machinery but is not a separate row in the default `test_formats` list (see SPEC).
 - **Schemas** ([`../schemas/`](../schemas/)) and **documentation** ([`../documentation/`](../documentation/)) complement these grammars for validation and human-readable structure rules.
 
 ## Tests

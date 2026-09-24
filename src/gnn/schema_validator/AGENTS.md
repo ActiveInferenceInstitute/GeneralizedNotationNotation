@@ -48,6 +48,6 @@ re-exports them for convenience.
 uv run pytest tests/gnn/test_gnn_validation.py tests/gnn/test_gnn_cross_format_validator.py -q
 ```
 
-Round-trip consumers: `src/gnn/testing/test_round_trip.py`,
-`src/gnn/testing/test_integration.py`; pipeline error scenarios:
+Round-trip consumers: `src/gnn/testing/round_trip_tester.py` (runner) and
+`tests/testing/test_round_trip.py` (pytest cases); pipeline error scenarios:
 `tests/pipeline/test_pipeline_error_scenarios.py`.
