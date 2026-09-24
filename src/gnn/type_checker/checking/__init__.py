@@ -26,6 +26,9 @@ from .rules import (
 )
 from .sections import (
     CANONICAL_GNN_SECTIONS,
+    TimeSpecKind,
+    classify_time_spec,
+    classify_time_spec_kind,
     connection_group,
     detect_time_dynamics,
     extract_markdown_section,
@@ -39,9 +42,12 @@ __all__: list[Any] = [
     "GNNTypeChecker",
     "ResourceEstimate",
     "STOCHASTICITY_TOLERANCE",
+    "TimeSpecKind",
     "VALID_TYPES",
     "ValidationSummary",
     "check_type_consistency",
+    "classify_time_spec",
+    "classify_time_spec_kind",
     "connection_group",
     "detect_time_dynamics",
     "estimate_file_resources",

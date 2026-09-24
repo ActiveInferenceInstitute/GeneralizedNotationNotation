@@ -1075,6 +1075,7 @@ def render_gnn_spec(
             ModelKind,
             detect_model_kinds,
             unsupported_composition_reason,
+            unsupported_nonstationary_reason,
         )
 
         # A composed spec declares more than one render family (e.g. a
@@ -1086,6 +1087,13 @@ def render_gnn_spec(
         kinds = detect_model_kinds(gnn_spec_mapping)
         if ModelKind.CONTINUOUS in kinds and len(kinds) > 1:
             return (False, unsupported_composition_reason(kinds), [])
+        # A nonstationary spec declares time-indexed (B_t) or regime-switched
+        # (B_regime + schedule) transitions. Only the pymdp backend executes
+        # the switching semantics; every other target renders one static
+        # transition tensor, so it is refused with an explicit receipt
+        # instead of silently rendering static dynamics.
+        if ModelKind.NONSTATIONARY in kinds and target_lower != "pymdp":
+            return (False, unsupported_nonstationary_reason(kinds), [])
 
         if is_continuous_spec(gnn_spec_mapping):
             return _render_continuous_target(
@@ -1120,9 +1128,16 @@ def render_gnn_spec(
                     [],
                 )
 
-            canonical_spec = build_canonical_pomdp_spec(
-                _normalize_initial_vectors(gnn_spec_mapping)
-            )
+            if ModelKind.NONSTATIONARY in kinds:
+                # Raw mapping passthrough: the nonstationary executor
+                # consumes B_t/B_regime plus the schedule directly, and
+                # build_canonical_pomdp_spec would drop the ^[ABCDE]_ keys
+                # and demand a static B that does not exist.
+                canonical_spec = gnn_spec_mapping
+            else:
+                canonical_spec = build_canonical_pomdp_spec(
+                    _normalize_initial_vectors(gnn_spec_mapping)
+                )
             if target_lower == "pymdp":
                 from .pymdp.pymdp_renderer import render_gnn_to_pymdp
 

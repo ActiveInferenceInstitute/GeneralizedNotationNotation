@@ -28,6 +28,7 @@ from gnn.render.pomdp_contract import (
     detect_model_kind,
     detect_model_kinds,
     unsupported_composition_reason,
+    unsupported_nonstationary_reason,
 )
 from gnn.render.rxinfer.model_strategies import get_model_strategy
 
@@ -146,6 +147,11 @@ class RxInferRenderer:
         kinds = detect_model_kinds(gnn_spec)
         if ModelKind.CONTINUOUS in kinds and len(kinds) > 1:
             raise ValueError(unsupported_composition_reason(kinds))
+        if ModelKind.NONSTATIONARY in kinds:
+            # A B_t/B_regime parameterization cannot be expressed as one
+            # static @model transition; refuse with the explicit receipt
+            # instead of silently rendering static dynamics.
+            raise ValueError(unsupported_nonstationary_reason(kinds))
         if detect_model_kind(gnn_spec) == ModelKind.CONTINUOUS:
             # Linear-Gaussian models carry F/H/Q/R + prior, never A/B/C/D;
             # canonicalising would demand categorical matrices that do not
