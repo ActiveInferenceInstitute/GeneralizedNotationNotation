@@ -10,12 +10,18 @@ single-file module (parser half → `syntax.py`, validation half →
 
 ```
 src/gnn/schema_validator/
-├── __init__.py        # Curated public surface (__all__)
-├── syntax.py          # GNNParser: regex-based GNN source parser → ParsedGNN
-├── validator.py       # GNNValidator + validate_gnn_file_comprehensive: schema, round-trip, semantic checks
-├── cross_format.py    # CrossFormatValidator: cross-format consistency validation
-├── README.md          # This documentation
-└── AGENTS.md          # Agent scaffolding documentation
+├── __init__.py             # Curated public surface (__all__)
+├── syntax.py               # GNNParser facade: parse_file/parse_content + ROUND_TRIP_AVAILABLE
+├── format_detection.py     # FormatDetectionMixin: extension/content/binary format detection
+├── section_parsers.py      # SectionParsersMixin: per-section regex parsers
+├── validator.py            # GNNValidator facade: validate_file + validate_gnn_file_comprehensive
+├── validation_levels.py    # LevelResolverMixin: level resolution and rank comparison
+├── structural_checks.py    # StructuralChecksMixin: format/structure/strict/research gates
+├── round_trip_checks.py    # RoundTripChecksMixin: round-trip + cross-format validation
+├── semantic_checks.py      # SemanticChecksMixin: semantic/mathematical checks
+├── cross_format.py         # CrossFormatValidator: cross-format consistency validation
+├── README.md               # This documentation
+└── AGENTS.md               # Agent scaffolding documentation
 ```
 
 ## Usage
