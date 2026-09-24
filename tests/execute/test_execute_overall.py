@@ -272,15 +272,19 @@ println("{\\\"status\\\": \\\"success\\\", \\\"framework\\\": \\\"rxinfer\\\"}")
 
         logger = logging.getLogger("test")
 
-        scoped, _ = execute_processor._load_render_summary_contract(
-            render_dir, ["pymdp"], logger, target_dir=Path("input/gnn_files/basics")
+        scoped, _unused_failures, _unsup = (
+            execute_processor._load_render_summary_contract(
+                render_dir, ["pymdp"], logger, target_dir=Path("input/gnn_files/basics")
+            )
         )
         assert scoped is not None
         scoped_paths = {p.name for p in scoped}
         assert scoped_paths == {"run.py"}
 
-        global_, _ = execute_processor._load_render_summary_contract(
-            render_dir, ["pymdp"], logger, target_dir=Path("input/gnn_files")
+        global_, _unused_failures, _unsup = (
+            execute_processor._load_render_summary_contract(
+                render_dir, ["pymdp"], logger, target_dir=Path("input/gnn_files")
+            )
         )
         assert global_ is not None
         assert len(global_) == 2
