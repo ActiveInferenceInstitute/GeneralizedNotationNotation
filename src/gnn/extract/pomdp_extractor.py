@@ -952,7 +952,7 @@ class POMDPExtractor:
                 raise ValueError(f"{key} has shape {shape}, expected {expected}")
         # One continuous control channel when a control variable is declared.
         num_actions = 1 if state_space_info.get("action_variables") else 0
-        num_timesteps: Optional[int] = None
+        num_timesteps = None
         raw_t = model_parameters.get("num_timesteps")
         if raw_t is not None:
             try:
