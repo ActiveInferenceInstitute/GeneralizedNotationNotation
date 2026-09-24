@@ -117,7 +117,6 @@ def test_cli_main_rejects_unknown_target(
 @pytest.mark.parametrize(
     "generator_name",
     [
-        "generate_bnlearn_code",
         "generate_pymdp_code",
         "generate_discopy_code",
         "generate_activeinference_jl_code",
@@ -141,7 +140,6 @@ def test_generators_reject_none_model_data(generator_name: Any) -> Any:
 @pytest.mark.parametrize(
     "generator_name",
     [
-        "generate_bnlearn_code",
         "generate_pymdp_code",
         "generate_discopy_code",
     ],
@@ -155,27 +153,44 @@ def test_generators_reject_non_dict_model_data(generator_name: Any) -> Any:
     assert result == ""
 
 
+def test_bnlearn_generator_rejects_invalid_model_data() -> Any:
+    """Same Phase 1.3 contract as the sibling generators: the validate_model_data
+    guard returns "" (empty string = no code emitted) instead of crashing deep
+    inside the template.
+    """
+    from gnn.render import bnlearn
+
+    fn = bnlearn.generate_bnlearn_code
+    result_none = fn(None)
+    assert result_none == "", (
+        f"generate_bnlearn_code(None) should return empty string, got {type(result_none)}"
+    )
+    # A string isn't a dict — validator rejects before the generator tries to .get()
+    result_non_dict = fn("not-a-dict")
+    assert result_non_dict == ""
+
+
 def test_generator_accepts_minimal_valid_model_data() -> Any:
     """Smoke test: with the required key present, a generator should not error out
     at the validation stage (it may still have downstream issues, but validation
     itself must pass).
     """
-    from gnn.render import generators
+    from gnn.render.bnlearn import generate_bnlearn_code
 
     # bnlearn is the lightest — doesn't import external packages at generation time
-    result = generators.generate_bnlearn_code({"model_name": "TestModel"})
+    result = generate_bnlearn_code({"model_name": "TestModel"})
     # Should produce SOMETHING (the emitted code string), not "".
     assert isinstance(result, str)
     assert len(result) > 100, "Generator with valid input should emit nontrivial code"
 
 
 def test_bnlearn_generator_keeps_model_metadata_inside_literals() -> None:
-    from gnn.render import generators
+    from gnn.render.bnlearn import generate_bnlearn_code
 
     model_name = (
         'Injected";\n__import__("pathlib").Path("/tmp/gnn-pwned").write_text("x")\n#'
     )
-    code = generators.generate_bnlearn_code(
+    code = generate_bnlearn_code(
         {
             "model_name": model_name,
             "source_file": 'source"; __import__("os").system("id") #.md',

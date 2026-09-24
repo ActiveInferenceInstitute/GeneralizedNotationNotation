@@ -13,6 +13,7 @@ import importlib
 import itertools
 import json
 import logging
+import re
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -30,6 +31,7 @@ from .pomdp_contract import (
     detect_pomdp_space_model_kind,
     detect_pomdp_space_model_kinds,
     unsupported_composition_reason,
+    unsupported_nonstationary_reason,
 )
 from .pomdp_math import (
     _factor_action_counts,
@@ -454,6 +456,20 @@ class POMDPRenderProcessor:
                 }
             return {"compatible": True, "reason": None, "warnings": warnings}
 
+        # A nonstationary spec declares time-indexed (B_t) or regime-switched
+        # (B_regime + b_regime_schedule) transitions. Only pymdp executes
+        # the switching semantics (per-step Agent rebuild); every other
+        # framework renders one static transition tensor and is refused
+        # with an explicit receipt instead of silently rendering static
+        # dynamics.
+        if ModelKind.NONSTATIONARY in kinds and framework != "pymdp":
+            return {
+                "compatible": False,
+                "unsupported": True,
+                "reason": unsupported_nonstationary_reason(kinds),
+                "warnings": warnings,
+            }
+
         if getattr(pomdp_space, "model_kind", "discrete") == "continuous":
             if not config.get("supports_continuous", False):
                 return {
@@ -527,7 +543,18 @@ class POMDPRenderProcessor:
                 "warnings": warnings,
             }
 
-        if framework == "pymdp":
+        if framework == "pymdp" and ModelKind.NONSTATIONARY in kinds:
+            if not self._nonstationary_b_declared(pomdp_space):
+                # The time variation sits in A/C/D/E parameterization, not in
+                # a B_t/B_regime transition: pymdp has no executor route for
+                # it and would roll the model out as a static B.
+                return {
+                    "compatible": False,
+                    "unsupported": True,
+                    "reason": unsupported_nonstationary_reason(kinds),
+                    "warnings": warnings,
+                }
+        elif framework == "pymdp":
             try:
                 self._build_canonical_initialparameterization(pomdp_space)
             except ValueError as exc:
@@ -570,6 +597,14 @@ class POMDPRenderProcessor:
         if len(time_keys) == 1:
             return time_keys[0]
         return None
+
+    def _nonstationary_b_declared(self, pomdp_space: "POMDPStateSpace") -> bool:
+        """Return whether the space declares a pymdp-executable nonstationary
+        transition: a ``B_t`` / ``B_regime`` key (optional numeric suffix)."""
+        matrices = getattr(pomdp_space, "matrices", None) or {}
+        return any(
+            re.match(r"^B_(t|regime)\d*$", str(key), re.IGNORECASE) for key in matrices
+        )
 
     def _build_canonical_initialparameterization(
         self,
@@ -992,6 +1027,10 @@ class POMDPRenderProcessor:
             return self._structural_pomdp_to_gnn_spec(
                 pomdp_space, timesteps=timesteps, simulation_params=parsed_sim_params
             )
+        if detect_pomdp_space_model_kind(pomdp_space) is ModelKind.NONSTATIONARY:
+            return self._nonstationary_pomdp_to_gnn_spec(
+                pomdp_space, timesteps=timesteps, simulation_params=parsed_sim_params
+            )
 
         initial_parameterization, matrix_provenance, canonical_model_parameters = (
             self._build_canonical_initialparameterization(pomdp_space)
@@ -1137,6 +1176,106 @@ class POMDPRenderProcessor:
             },
             "matrix_provenance": provenance,
             "canonical_pomdp_schema": "continuous_lgssm_v1",
+            "variables": [],
+            "connections": [],
+        }
+        for attr in ("state_variables", "observation_variables", "action_variables"):
+            values = getattr(pomdp_space, attr, None)
+            if values:
+                gnn_spec["variables"].extend(values)
+        if pomdp_space.connections:
+            gnn_spec["connections"] = [
+                {"source": c[0], "relation": c[1], "target": c[2]}
+                for c in pomdp_space.connections
+            ]
+        if pomdp_space.ontology_mapping:
+            gnn_spec["ontology_mapping"] = pomdp_space.ontology_mapping
+        return gnn_spec
+
+    def _nonstationary_pomdp_to_gnn_spec(
+        self,
+        pomdp_space: "POMDPStateSpace",
+        *,
+        timesteps: Optional[int],
+        simulation_params: Any,
+    ) -> Dict[str, Any]:
+        """Spec for a nonstationary model: A/C/D[/E] plus raw B_t/B_regime.
+
+        No static canonical B is built — projecting a time-indexed or
+        regime-switched tensor to one static B would silently drop the
+        switching semantics. The declared time tensor (and the schedule in
+        model_parameters) passes through verbatim;
+        ``run_pymdp_simulation`` resolves the per-step transition from it
+        and refuses a ``B_regime`` declared without ``b_regime_schedule``.
+        """
+        matrices = dict(getattr(pomdp_space, "matrices", None) or {})
+        raw_initial = getattr(pomdp_space, "initial_parameterization", None) or {}
+        raw_model_parameters = dict(
+            getattr(pomdp_space, "model_parameters", None) or {}
+        )
+        initial: Dict[str, Any] = {}
+        provenance: Dict[str, Dict[str, Any]] = {}
+        for key, value in sorted(matrices.items()):
+            if key in {"A", "B", "C", "D", "E"} or key.startswith(("B_t", "B_regime")):
+                initial[key] = value
+                shape = list(np.asarray(value).shape)
+                if key.startswith(("B_t", "B_regime")):
+                    provenance[key] = {
+                        "source": "nonstationary_raw_passthrough",
+                        "source_key": key,
+                        "shape": shape,
+                        "derived": False,
+                        "reason": (
+                            "Nonstationary transition tensor passes through "
+                            "verbatim; run_pymdp_simulation resolves the "
+                            "per-step transition"
+                        ),
+                    }
+                else:
+                    provenance[key] = {
+                        "source": "InitialParameterization",
+                        "shape": shape,
+                        "derived": False,
+                    }
+        preserved = {
+            key: value
+            for key, value in raw_initial.items()
+            if key not in matrices and key not in initial
+        }
+        initial = {**initial, **preserved}
+        model_parameters: dict[str, Any] = {
+            **raw_model_parameters,
+            "num_hidden_states": pomdp_space.num_states,
+            "num_states": pomdp_space.num_states,
+            "num_obs": pomdp_space.num_observations,
+            "num_observations": pomdp_space.num_observations,
+            "num_actions": pomdp_space.num_actions,
+            "passive_model": getattr(pomdp_space, "passive_model", False),
+            "simulation_params": simulation_params,
+        }
+        if timesteps:
+            model_parameters["num_timesteps"] = int(timesteps)
+        gnn_spec: dict[str, Any] = {
+            "name": pomdp_space.model_name or "Nonstationary_Model",
+            "model_name": pomdp_space.model_name or "Nonstationary_Model",
+            "description": pomdp_space.model_annotation or "Nonstationary POMDP model",
+            "gnn_section": getattr(pomdp_space, "gnn_section", None),
+            "model_parameters": model_parameters,
+            "initialparameterization": initial,
+            "initial_parameterization": initial,
+            "structured_pomdp": {
+                "matrices": matrices,
+                "matrix_provenance": provenance,
+                "state_factors": getattr(pomdp_space, "state_factors", None) or [],
+                "observation_modalities": getattr(
+                    pomdp_space, "observation_modalities", None
+                )
+                or [],
+                "control_factors": getattr(pomdp_space, "control_factors", None) or [],
+                "adapter_notes": getattr(pomdp_space, "adapter_notes", None) or [],
+            },
+            "matrix_provenance": provenance,
+            "canonical_pomdp_schema": "nonstationary_raw_v1",
             "variables": [],
             "connections": [],
         }
@@ -1376,7 +1515,7 @@ class POMDPRenderProcessor:
     ) -> Dict[str, Any]:
         """Call bnlearn renderer."""
         try:
-            from .generators import generate_bnlearn_code
+            from .bnlearn import generate_bnlearn_code
 
             model_name = gnn_spec.get("name", "pomdp_model")
             output_file = output_dir / f"{_safe_output_stem(model_name)}_bnlearn.py"
@@ -1449,8 +1588,19 @@ class POMDPRenderProcessor:
         missing_required: list[Any] = []
         required_matrices = cast(list[str], config["requires_matrices"])
         for required_matrix in required_matrices:
-            if required_matrix not in initial_params:
-                missing_required.append(required_matrix)
+            if required_matrix in initial_params:
+                continue
+            if required_matrix == "B" and any(
+                re.fullmatch(r"B_(t|regime)\d*", key, re.IGNORECASE)
+                for key in initial_params
+            ):
+                # A NONSTATIONARY spec's time-varying (B_t) or regime-switched
+                # (B_regime) transition tensor satisfies the required B: pymdp
+                # is the only framework that reaches this validator for such
+                # specs (others are refused upstream), and its raw-passthrough
+                # contract consumes B_t/B_regime directly.
+                continue
+            missing_required.append(required_matrix)
 
         if missing_required:
             return {

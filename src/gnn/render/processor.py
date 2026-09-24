@@ -821,11 +821,8 @@ def _process_single_gnn_file_basic(
     """
     try:
         # Import basic generators
-        from .generators import (
-            generate_bnlearn_code,
-            generate_discopy_code,
-            generate_pymdp_code,
-        )
+        from .bnlearn import generate_bnlearn_code
+        from .generators import generate_discopy_code, generate_pymdp_code
 
         # Create basic model data from filename
         model_data: dict[str, Any] = {
@@ -1078,10 +1075,10 @@ def render_gnn_spec(
         output_dir = Path(output_directory)
         output_dir.mkdir(parents=True, exist_ok=True)
 
-        # Generator-based renderers: target → (generator_name, file_suffix)
+        # Generator-based renderers: target → (module, generator_name, file_suffix)
         _GENERATOR_TARGETS: dict[str, Any] = {
-            "discopy": ("generate_discopy_code", "_discopy.py"),
-            "bnlearn": ("generate_bnlearn_code", "_bnlearn.py"),
+            "discopy": (".generators", "generate_discopy_code", "_discopy.py"),
+            "bnlearn": (".bnlearn", "generate_bnlearn_code", "_bnlearn.py"),
         }
 
         target_lower = target.lower()
@@ -1104,6 +1101,7 @@ def render_gnn_spec(
             ModelKind,
             detect_model_kinds,
             unsupported_composition_reason,
+            unsupported_nonstationary_reason,
         )
 
         # A composed spec declares more than one render family (e.g. a
@@ -1121,6 +1119,13 @@ def render_gnn_spec(
         )
         if ModelKind.CONTINUOUS in kinds and len(kinds) > 1 and not factored_continuous:
             return (False, unsupported_composition_reason(kinds), [])
+        # A nonstationary spec declares time-indexed (B_t) or regime-switched
+        # (B_regime + schedule) transitions. Only the pymdp backend executes
+        # the switching semantics; every other target renders one static
+        # transition tensor, so it is refused with an explicit receipt
+        # instead of silently rendering static dynamics.
+        if ModelKind.NONSTATIONARY in kinds and target_lower != "pymdp":
+            return (False, unsupported_nonstationary_reason(kinds), [])
 
         if is_continuous_spec(gnn_spec_mapping):
             return _render_continuous_target(
@@ -1155,9 +1160,16 @@ def render_gnn_spec(
                     [],
                 )
 
-            canonical_spec = build_canonical_pomdp_spec(
-                _normalize_initial_vectors(gnn_spec_mapping)
-            )
+            if ModelKind.NONSTATIONARY in kinds:
+                # Raw mapping passthrough: the nonstationary executor
+                # consumes B_t/B_regime plus the schedule directly, and
+                # build_canonical_pomdp_spec would drop the ^[ABCDE]_ keys
+                # and demand a static B that does not exist.
+                canonical_spec = gnn_spec_mapping
+            else:
+                canonical_spec = build_canonical_pomdp_spec(
+                    _normalize_initial_vectors(gnn_spec_mapping)
+                )
             if target_lower == "pymdp":
                 from .pymdp.pymdp_renderer import render_gnn_to_pymdp
 
@@ -1208,10 +1220,10 @@ def render_gnn_spec(
             return (True, msg, artifacts) if success else (False, msg, [])
 
         if target_lower in _GENERATOR_TARGETS:
-            gen_name, suffix = _GENERATOR_TARGETS[target_lower]
-            from . import generators
+            gen_module_name, gen_name, suffix = _GENERATOR_TARGETS[target_lower]
+            from importlib import import_module
 
-            generate_fn = getattr(generators, gen_name)
+            generate_fn = getattr(import_module(gen_module_name, __package__), gen_name)
             code = generate_fn(gnn_spec)
             output_file = output_dir / f"{output_stem}{suffix}"
             if code:

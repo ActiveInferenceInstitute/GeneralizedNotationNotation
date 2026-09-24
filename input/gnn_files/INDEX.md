@@ -6,19 +6,27 @@ execute it through the 25-step pipeline. For syntax and file-structure rules see
 [normative syntax](../../docs/gnn/reference/gnn_syntax.md) and the tutorials in
 [docs/gnn/tutorials/](../../docs/gnn/tutorials/).
 
-**Counts (measured 2026-09-23):** 33 runnable `.md` spec files across 10 task
+**Counts (measured 2026-09-24):** 36 runnable `.md` spec files across 10 task
 folders (`INDEX.md`, `AGENTS.md` and `README.md` are non-spec scaffolds and are
-excluded by `gnn.processing.discovery.is_model_source_path`). 27 are discrete-state
+excluded by `gnn.processing.discovery.is_model_source_path`). 28 are discrete-state
 POMDP/HMM models that render and execute on the nine categorical-capable
 frameworks and are reported as `unsupported` (not failed) on ngc-learn
-(continuous-only backend); 5 of the 6 files under `continuous/` are pure
+(continuous-only backend); the two non-stationary discrete specs
+(`time_varying_dynamics.md`, `regime_switched_dynamics.md`) are the exception —
+pymdp renders and executes their switching semantics while every other
+categorical framework receipts them `unsupported-nonstationary` (not failed);
+5 of the 8 files under `continuous/` are pure
 continuous-state linear-Gaussian models that render and execute on JAX,
 NumPyro, PyTorch, Stan, RxInfer.jl and ngc-learn and are reported as
 `unsupported` (not failed) on PyMDP, ActiveInference.jl, DisCoPy and bnlearn;
-the remaining one, `multi_agent_lgssm.md`, is a composed continuous × multi-agent
-spec that every framework reports as `unsupported-composition` (not failed,
-never rendered) until per-agent continuous rendering lands. Live counts come
-from `output/11_render_output/render_processing_summary.json`.
+the remaining three are composed specs that are receipted rather than rendered:
+`multi_agent_lgssm.md` (continuous × multi-agent, `unsupported-composition`
+until per-agent continuous rendering lands), `factored_continuous_lgssm.md`
+(independent per-factor LGSSM — jax renders it, every other continuous backend
+receipts `unsupported-factored-continuous`), and `hybrid_discrete_continuous.md`
+(discrete POMDP alongside a continuous block, `unsupported-composition:
+continuous × hybrid`) — all not failed, never silently rendered. Live counts
+come from `output/11_render_output/render_processing_summary.json`.
 
 ## Choosing an example
 
@@ -33,6 +41,7 @@ from `output/11_render_output/render_processing_summary.json`.
 | Composed kind set (continuous × multi-agent) | `continuous/multi_agent_lgssm.md` |
 | Factored continuous (independent per-factor LGSSM) | `continuous/factored_continuous_lgssm.md` |
 | Hybrid kind (discrete POMDP + continuous block) | `continuous/hybrid_discrete_continuous.md` |
+| Non-stationary dynamics (`B_t` phases / regime switching) | `discrete/time_varying_dynamics.md`, `discrete/regime_switched_dynamics.md` |
 | Multi-agent & stigmergy (v3+ features) | `multiagent/stigmergic_swarm.md` |
 | Hierarchical / deep temporal models | `hierarchical/hierarchical_pomdp.md` |
 | Parameter learning | `learning/dirichlet_likelihood_learning.md` |
@@ -61,8 +70,9 @@ from `output/11_render_output/render_processing_summary.json`.
 - [hmm_baseline.md](discrete/hmm_baseline.md)
 - [markov_chain.md](discrete/markov_chain.md)
 - [multi_armed_bandit.md](discrete/multi_armed_bandit.md)
+- [regime_switched_dynamics.md](discrete/regime_switched_dynamics.md) — regime-switched transitions (`B_regime` + `b_regime_schedule`); the switching exemplar of the NONSTATIONARY kind — pymdp applies the declared schedule per step, every other categorical framework receipts `unsupported-nonstationary`
 - [simple_mdp.md](discrete/simple_mdp.md)
-- [time_varying_dynamics.md](discrete/time_varying_dynamics.md)
+- [time_varying_dynamics.md](discrete/time_varying_dynamics.md) — non-stationary time-indexed `B_t` phases (NONSTATIONARY kind; pymdp runs the phase sequence per step, hold-last beyond the declared span)
 - [tmaze_epistemic.md](discrete/tmaze_epistemic.md)
 - [two_state_bistable.md](discrete/two_state_bistable.md)
 

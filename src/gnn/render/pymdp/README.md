@@ -24,8 +24,12 @@ No additional public function is exported by this package.
 - Input is a parsed GNN dictionary expected by the render pipeline.
 - Required execution matrices are explicit: `A`, `B`, `C`, and `D`.
   Factored models are composed into a joint PyMDP contract with matrix
-  provenance, and a declared `B_t` tensor is projected to canonical
-  `(next_state, previous_state, action)` `B` with provenance.
+  provenance. A nonstationary transition declaration (`B_t` time-indexed
+  or `B_regime` + `b_regime_schedule`) is exempt from the static-`B`
+  requirement: the raw tensor passes through verbatim into the embedded
+  spec and `run_pymdp_simulation` rebuilds the Agent per scheduled step;
+  `mode: "standalone"` refuses such specs with an
+  `unsupported-nonstationary:` receipt.
 - Output is a Python script file at the target `output_path`.
 - Return tuple structure is:
   - `success: bool`

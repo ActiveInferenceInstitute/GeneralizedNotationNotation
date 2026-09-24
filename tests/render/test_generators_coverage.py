@@ -7,12 +7,12 @@ from typing import Any
 
 import pytest
 
+from gnn.render.bnlearn import generate_bnlearn_code
 from gnn.render.generators import (
     _matrix_to_julia,
     _sanitize_identifier,
     _to_pascal_case,
     generate_activeinference_jl_code,
-    generate_bnlearn_code,
     generate_discopy_code,
     generate_pymdp_code,
     generate_rxinfer_code,

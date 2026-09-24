@@ -85,6 +85,8 @@
 - **Continuous models**: native (LGSSM programs)
 
 #### BNLearn (Python)
+**Module**: `src/gnn/render/bnlearn/bnlearn_renderer.py` (re-exported via `gnn.render.bnlearn`).
+
 - **Purpose**: Bayesian network / causal model backend
 - **Output**: Python scripts under `bnlearn/` when requested
 - **Continuous models**: `unsupported`; executed by Step 12 via `execute/bnlearn/` (skips with an install hint until `uv sync --extra bnlearn` provides the Python package, or R + the R `bnlearn` package for `.R` scripts)

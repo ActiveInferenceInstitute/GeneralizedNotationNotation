@@ -18,7 +18,7 @@ This directory contains documentation and references for the Implementations dom
 - **[DisCoPy](discopy.md)**: Categorical string diagrams enabling advanced symmetry representations and compositional verification semantics for Multi-Agent Topologies (`discopy`).
 - **[Stan](stan.md)**: Runnable HMM forward-algorithm programs (Dirichlet-prior A_est, NUTS or L-BFGS MAP) for discrete models and Kalman marginal-likelihood programs for continuous linear-Gaussian models, each with a cmdstanpy driver executed by Step 12 (`src/gnn/execute/stan/`).
 
-`bnlearn` (Bayesian network structure/parameter learning) is also a wired `src/gnn/render/` backend (see `generate_bnlearn_code` in `src/gnn/render/generators.py`) but does not yet have a dedicated guide in this directory.
+`bnlearn` (Bayesian network structure/parameter learning) is also a wired `src/gnn/render/` backend (see `generate_bnlearn_code` in `src/gnn/render/bnlearn/bnlearn_renderer.py`) but does not yet have a dedicated guide in this directory.
 
 ### Related integration (not a render backend)
 

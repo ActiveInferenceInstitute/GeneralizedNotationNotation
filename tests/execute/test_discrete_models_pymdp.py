@@ -36,6 +36,7 @@ DISCRETE_MODELS: list[Any] = [
     "hmm_baseline.md",
     "markov_chain.md",
     "multi_armed_bandit.md",
+    "regime_switched_dynamics.md",
     "simple_mdp.md",
     "time_varying_dynamics.md",
     "tmaze_epistemic.md",
@@ -131,8 +132,9 @@ def test_tmaze_factored_matrices_are_preserved_and_composed() -> None:
     assert spec["matrix_provenance"]["A"]["source_keys"] == ["A_loc", "A_rew"]
 
 
-def test_time_varying_b_tensor_projects_to_pymdp_b_with_provenance() -> None:
-    """A declared B_t tensor is the transition model for PyMDP's static B contract."""
+def test_time_varying_b_tensor_passes_through_nonstationary() -> None:
+    """A declared 4-D B_t is a nonstationary transition model, passed through
+    raw (no static-B projection) for the per-step pymdp rebuild route."""
     from gnn.extract.pomdp_extractor import extract_pomdp_from_file
     from gnn.render.pomdp_processor import POMDPRenderProcessor
 
@@ -146,11 +148,10 @@ def test_time_varying_b_tensor_projects_to_pymdp_b_with_provenance() -> None:
 
     spec = POMDPRenderProcessor(DISCRETE_DIR)._pomdp_to_gnn_spec(pomdp, timesteps=10)
     init = spec["initialparameterization"]
-    assert np.asarray(init["B"]).shape == (3, 3, 2)
-    assert (
-        spec["matrix_provenance"]["B"]["source"] == "time_indexed_transition_projection"
-    )
-    assert spec["matrix_provenance"]["B"]["source_key"] == "B_t"
+    assert np.asarray(init["B_t"]).shape == (4, 3, 3, 2)
+    assert "B" not in init
+    assert spec["matrix_provenance"]["B_t"]["source"] == "nonstationary_raw_passthrough"
+    assert spec["matrix_provenance"]["B_t"]["source_key"] == "B_t"
 
 
 # ---------------------------------------------------------------------------

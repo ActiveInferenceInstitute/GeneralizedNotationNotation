@@ -37,6 +37,11 @@ class ModelKind(Enum):
     parameterization; render-only / informational).
     LEARNING — parameter learning (Dirichlet priors, etc.).
     CONTINUOUS — continuous state/observation spaces.
+    NONSTATIONARY — time-indexed (B_t) or regime-switched (B_regime +
+    schedule) transitions. Precedence note: a time-varying discrete model
+    is NONSTATIONARY, not STRUCTURAL — it keeps its discrete A/B/C/D[/E]
+    machinery and dispatches to the switching-capable route; STRUCTURAL
+    remains the no-parameterization blanket case.
     """
 
     FLAT = "flat"
@@ -47,6 +52,7 @@ class ModelKind(Enum):
     STRUCTURAL = "structural"
     LEARNING = "learning"
     CONTINUOUS = "continuous"
+    NONSTATIONARY = "nonstationary"
 
 
 class InitialParameterization(TypedDict, total=False):
@@ -289,6 +295,13 @@ _FACTOR_CONTINUOUS_KEY = re.compile(
 )
 
 
+_TIME_INDEXED_MATRIX_KEY = re.compile(r"^[ABCDE]_t\d*$", re.IGNORECASE)
+_REGIME_SWITCHED_MATRIX_KEY = re.compile(r"^[ABCDE]_regime\d*$", re.IGNORECASE)
+_NONSTATIONARY_SCHEDULE_KEYS = frozenset(
+    {"b_regime_schedule", "regime_schedule", "b_schedule", "b_t_schedule"}
+)
+
+
 def _structured_matrix_keys(gnn_spec: Dict[str, Any]) -> List[str]:
     """Return raw (pre-composition) matrix key names from the spec.
 
@@ -310,6 +323,7 @@ _KIND_PRECEDENCE: Tuple[ModelKind, ...] = (
     ModelKind.HYBRID,
     ModelKind.HIERARCHICAL,
     ModelKind.CONTINUOUS,
+    ModelKind.NONSTATIONARY,
     ModelKind.LEARNING,
     ModelKind.FACTORED,
     ModelKind.STRUCTURAL,
@@ -413,6 +427,21 @@ def detect_model_kinds(gnn_spec: Dict[str, Any]) -> frozenset[ModelKind]:
     ):
         kinds.add(ModelKind.CONTINUOUS)
 
+    # Nonstationary: time-indexed (B_t) or regime-switched (B_regime)
+    # transition keys, an explicit schedule parameter, or a declared
+    # nonstationary GNN section. Precedence note: a time-varying discrete
+    # model is NONSTATIONARY, not STRUCTURAL — it keeps its discrete
+    # A/B/C/D[/E] machinery and dispatches to the switching-capable
+    # route (pymdp), while STRUCTURAL stays the no-parameterization
+    # blanket case.
+    if (
+        "nonstationary" in section
+        or any(_TIME_INDEXED_MATRIX_KEY.match(key) for key in all_keys)
+        or any(_REGIME_SWITCHED_MATRIX_KEY.match(key) for key in all_keys)
+        or any(key in model_params for key in _NONSTATIONARY_SCHEDULE_KEYS)
+    ):
+        kinds.add(ModelKind.NONSTATIONARY)
+
     # Learning: declared section or explicit Dirichlet prior parameter keys
     # (a prose mention of "Dirichlet" in an annotation must not reroute).
     if "learning" in section or any(
@@ -451,6 +480,7 @@ def detect_model_kind(gnn_spec: Dict[str, Any]) -> ModelKind:
 
     Stable classification used by per-kind dispatch
     (precedence MULTI_AGENT > HYBRID > HIERARCHICAL > CONTINUOUS >
+    NONSTATIONARY >
     LEARNING > FACTORED > STRUCTURAL > FLAT). A composed spec — e.g.
     continuous
     F/H/Q/R parameters plus ``nr_agents > 1`` — classifies to its most
@@ -488,6 +518,31 @@ def unsupported_composition_reason(kinds: frozenset[ModelKind]) -> str:
         "alongside additional model families; no framework renders the "
         "composition whole, so it is refused rather than silently rendered "
         "as one family with the other dropped"
+    )
+
+
+def unsupported_nonstationary_reason(kinds: frozenset[ModelKind]) -> str:
+    """Receipt reason for a nonstationary spec a backend cannot express.
+
+    The single stable ``unsupported-nonstationary:`` prefix is the grep
+    anchor for dispatch receipts: the spec declares time-indexed or
+    regime-switched transitions, and a backend that renders one static
+    transition tensor would silently drop the time variation instead of
+    refusing.
+    """
+    others = [
+        kind.value
+        for kind in _KIND_PRECEDENCE
+        if kind in kinds and kind is not ModelKind.NONSTATIONARY
+    ]
+    return (
+        "unsupported-nonstationary: "
+        + " × ".join(["nonstationary", *others])
+        + " — the spec declares time-indexed (B_t) or regime-switched "
+        "(B_regime + b_regime_schedule) transitions; this backend renders "
+        "a single static transition tensor and cannot express time "
+        "variation, so it is refused rather than silently rendered with "
+        "static dynamics"
     )
 
 
