@@ -3,7 +3,7 @@
 ## Purpose
 
 Execute the bnlearn artifacts produced by the generator-backed Step 11 renderer
-(`gnn.render.generators.generate_bnlearn_code`). Each rendered model ships a
+(`gnn.render.bnlearn.generate_bnlearn_code`). Each rendered model ships a
 Python program under `<model>/bnlearn/` (`import bnlearn as bn` +
 `bn.make_DAG` + `bn.parameter_learning.fit`). Step 12 discovers it like any
 other Python framework script (framework directory `bnlearn/`, output env var

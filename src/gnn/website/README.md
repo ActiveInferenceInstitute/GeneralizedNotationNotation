@@ -12,6 +12,7 @@ src/gnn/website/
 ├── __init__.py        # Public exports (see API below)
 ├── processor.py       # Thin facade re-exporting renderer.process_website
 ├── renderer.py        # process_website + embed_* helpers + get_module_info
+├── collection.py      # collect_website_data + private artifact collectors
 ├── generator.py       # WebsiteGenerator / generate_website (7-page site)
 ├── dashboard.py       # render_dashboard — standalone interactive dashboard
 ├── inspection.py      # inspect_website / list_website_pages (pure site queries)

@@ -8,6 +8,7 @@ The `src/gnn/website/` module generates static HTML websites from pipeline artif
 
 - `20_website.py`: Thin orchestrator binding `website.processor.process_website()`
 - `processor.py`: Thin facade re-exporting `renderer.process_website`
+- `collection.py`: Pipeline-artifact collectors behind `collect_website_data` (GNN files, step statuses, analysis, visualization assets, reports, MCP page data)
 - `generator.py`: Core HTML/CSS generation engine producing the 7-page site
 - `renderer.py`: `process_website`, embedding helpers, and module info
 - `dashboard.py`: Standalone interactive dashboard (`render_dashboard`); loads Mermaid from CDN

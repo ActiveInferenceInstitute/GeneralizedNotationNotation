@@ -821,11 +821,8 @@ def _process_single_gnn_file_basic(
     """
     try:
         # Import basic generators
-        from .generators import (
-            generate_bnlearn_code,
-            generate_discopy_code,
-            generate_pymdp_code,
-        )
+        from .bnlearn import generate_bnlearn_code
+        from .generators import generate_discopy_code, generate_pymdp_code
 
         # Create basic model data from filename
         model_data: dict[str, Any] = {
@@ -998,6 +995,35 @@ def _render_continuous_target(
     """Route validated continuous models without imposing discrete matrices."""
     from importlib import import_module
 
+    from .pomdp_contract import ModelKind, detect_model_kinds
+
+    kinds = detect_model_kinds(spec)
+    if kinds == frozenset({ModelKind.FACTORED, ModelKind.CONTINUOUS}):
+        # Per-factor LGSSM path: JAX renders the factored family through the
+        # per-factor generator; every other target is refused rather than
+        # silently flattened to one flat LGSSM.
+        if target != "jax":
+            return (
+                False,
+                f"unsupported-factored-continuous: {target} renders the flat "
+                "linear-Gaussian family only; per-factor F_f/H_f/Q_f/R_f "
+                "compositions are refused rather than silently rendered flat",
+                [],
+            )
+        from .continuous_common import extract_factored_continuous_spec
+        from .continuous_script import generate_factored_continuous_script
+
+        factored = extract_factored_continuous_spec(spec)
+        code = generate_factored_continuous_script(factored, "jax")
+        output_file = output_dir / f"{stem}_jax.py"
+        with open(output_file, "w") as handle:
+            handle.write(code)
+        return (
+            True,
+            "JAX factored-continuous LGSSM (per-factor)",
+            [str(output_file)],
+        )
+
     targets = {
         "jax": ("jax.jax_renderer", "render_gnn_to_jax", "_jax.py"),
         "numpyro": ("numpyro.numpyro_renderer", "render_gnn_to_numpyro", "_numpyro.py"),
@@ -1049,10 +1075,10 @@ def render_gnn_spec(
         output_dir = Path(output_directory)
         output_dir.mkdir(parents=True, exist_ok=True)
 
-        # Generator-based renderers: target → (generator_name, file_suffix)
+        # Generator-based renderers: target → (module, generator_name, file_suffix)
         _GENERATOR_TARGETS: dict[str, Any] = {
-            "discopy": ("generate_discopy_code", "_discopy.py"),
-            "bnlearn": ("generate_bnlearn_code", "_bnlearn.py"),
+            "discopy": (".generators", "generate_discopy_code", "_discopy.py"),
+            "bnlearn": (".bnlearn", "generate_bnlearn_code", "_bnlearn.py"),
         }
 
         target_lower = target.lower()
@@ -1075,6 +1101,7 @@ def render_gnn_spec(
             ModelKind,
             detect_model_kinds,
             unsupported_composition_reason,
+            unsupported_nonstationary_reason,
         )
 
         # A composed spec declares more than one render family (e.g. a
@@ -1082,10 +1109,23 @@ def render_gnn_spec(
         # the single-winner kind would silently drop the other family, so the
         # composed set is refused with an explicit unsupported-composition
         # receipt — the same unsupported accounting structural wrappers get —
-        # for every target.
+        # for every target. The factored-continuous 2-set
+        # ({FACTORED, CONTINUOUS}) is the one exception: JAX renders it via
+        # the per-factor factored path; every other target emits an
+        # unsupported-factored-continuous refusal instead.
         kinds = detect_model_kinds(gnn_spec_mapping)
-        if ModelKind.CONTINUOUS in kinds and len(kinds) > 1:
+        factored_continuous = kinds == frozenset(
+            {ModelKind.FACTORED, ModelKind.CONTINUOUS}
+        )
+        if ModelKind.CONTINUOUS in kinds and len(kinds) > 1 and not factored_continuous:
             return (False, unsupported_composition_reason(kinds), [])
+        # A nonstationary spec declares time-indexed (B_t) or regime-switched
+        # (B_regime + schedule) transitions. Only the pymdp backend executes
+        # the switching semantics; every other target renders one static
+        # transition tensor, so it is refused with an explicit receipt
+        # instead of silently rendering static dynamics.
+        if ModelKind.NONSTATIONARY in kinds and target_lower != "pymdp":
+            return (False, unsupported_nonstationary_reason(kinds), [])
 
         if is_continuous_spec(gnn_spec_mapping):
             return _render_continuous_target(
@@ -1120,9 +1160,16 @@ def render_gnn_spec(
                     [],
                 )
 
-            canonical_spec = build_canonical_pomdp_spec(
-                _normalize_initial_vectors(gnn_spec_mapping)
-            )
+            if ModelKind.NONSTATIONARY in kinds:
+                # Raw mapping passthrough: the nonstationary executor
+                # consumes B_t/B_regime plus the schedule directly, and
+                # build_canonical_pomdp_spec would drop the ^[ABCDE]_ keys
+                # and demand a static B that does not exist.
+                canonical_spec = gnn_spec_mapping
+            else:
+                canonical_spec = build_canonical_pomdp_spec(
+                    _normalize_initial_vectors(gnn_spec_mapping)
+                )
             if target_lower == "pymdp":
                 from .pymdp.pymdp_renderer import render_gnn_to_pymdp
 
@@ -1173,10 +1220,10 @@ def render_gnn_spec(
             return (True, msg, artifacts) if success else (False, msg, [])
 
         if target_lower in _GENERATOR_TARGETS:
-            gen_name, suffix = _GENERATOR_TARGETS[target_lower]
-            from . import generators
+            gen_module_name, gen_name, suffix = _GENERATOR_TARGETS[target_lower]
+            from importlib import import_module
 
-            generate_fn = getattr(generators, gen_name)
+            generate_fn = getattr(import_module(gen_module_name, __package__), gen_name)
             code = generate_fn(gnn_spec)
             output_file = output_dir / f"{output_stem}{suffix}"
             if code:

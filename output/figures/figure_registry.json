@@ -52,7 +52,7 @@
       "filename": "gnn_backend_capability_matrix.png",
       "generated_by": "scripts/manuscript_fig_backend_matrix.py",
       "label": "fig:backend_matrix",
-      "png_sha256": "ddcc1fc854d7d16ca9c8c2949450e6cfd3d0cd99c3b278726a6f496c828ce86e",
+      "png_sha256": "5ea0ef69881a6afb2fcac189e325ffc9e0a573d5dec051a848756c60d0285f9c",
       "source_sha256": {
         "input/model_family_manifest.json": "d2761feea73771f84f2bcc94e215e7042960c1c28d9ecbff8b069377b2fc26cf",
         "src/gnn/manuscript/variables.py": "ec4090eecb0f69e6fc533bb8222e51099aa39c25d5936c09669392ba39328f4b",
@@ -65,19 +65,19 @@
       "consumed_tokens": {
         "GNN_BACKEND_COUNT": "10",
         "GNN_DOC_FILE_COUNT": "630",
-        "GNN_EXAMPLE_COUNT": "33",
+        "GNN_EXAMPLE_COUNT": "36",
         "GNN_EXECUTABLE_BACKEND_COUNT": "10",
         "GNN_FAMILY_COUNT": "9",
         "GNN_MCP_TOOL_COUNT": "162",
         "GNN_SRC_PACKAGE_COUNT": "43",
         "GNN_STEP_COUNT": "25",
-        "GNN_TEST_FILE_COUNT": "512",
+        "GNN_TEST_FILE_COUNT": "518",
         "GNN_VERSION": "3.5.0"
       },
       "filename": "gnn_repo_metrics.png",
       "generated_by": "scripts/manuscript_fig_repo_metrics.py",
       "label": "fig:repo_metrics",
-      "png_sha256": "f4bf58736ee7c079d098ee384f1d557e990199bfce2913633cfbb2ef46350e78",
+      "png_sha256": "65c34ef31c108ce28e9eed4b278689f5d1922d95ae8ed10f948ef8dc6f52a4b1",
       "source_sha256": {}
     },
     {

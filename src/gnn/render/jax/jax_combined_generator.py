@@ -18,6 +18,25 @@ def _generate_jax_combined_code(
     gnn_spec: Dict[str, Any], options: Optional[Dict[str, Any]]
 ) -> str:
     """Generate JAX code for hierarchical/multi-agent/continuous models."""
+    from gnn.render.pomdp_contract import (
+        ModelKind,
+        detect_model_kinds,
+        unsupported_composition_reason,
+    )
+
+    # The combined generator is a Flax stand-in with no LGSSM semantics:
+    # continuous-family specs must never be rendered through the Dense
+    # stand-in layers below — they are refused here and rendered by
+    # render.continuous_script (via render_gnn_to_jax) instead.
+    kinds = detect_model_kinds(gnn_spec)
+    if ModelKind.CONTINUOUS in kinds and len(kinds) > 1:
+        raise ValueError(unsupported_composition_reason(kinds))
+    if ModelKind.CONTINUOUS in kinds:
+        raise ValueError(
+            "continuous-spec: the combined generator is a Flax stand-in "
+            "without LGSSM semantics; render continuous specs via "
+            "render_gnn_to_jax"
+        )
 
     model_name = _jax_model_name(gnn_spec, "CombinedModel")
 
@@ -70,6 +89,11 @@ class __GNN_MODEL_NAME__Combined(nn.Module):
                                                  (self.num_agents, self.num_agents))
         
         # Continuous state parameters
+        # NOT LGSSM semantics: these Dense layers are a Flax stand-in for
+        # "continuous" dimension bookkeeping only. Continuous-family specs
+        # (flat or composed) are refused upstream in
+        # _generate_jax_combined_code and rendered by render.continuous_script
+        # instead.
         if self.continuous_dimensions > 0:
             self.continuous_encoder = nn.Dense(self.continuous_dimensions)
             self.continuous_decoder = nn.Dense(self.continuous_dimensions)

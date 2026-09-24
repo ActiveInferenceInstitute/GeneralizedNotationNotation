@@ -25,6 +25,7 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence, Tuple
 
@@ -275,6 +276,176 @@ def _canonicalise_E(
     return _normalise_prob_vector(vec)
 
 
+def _find_nonstationary_b_key(init_params: Dict[str, Any]) -> Optional[str]:
+    """Return the declared nonstationary transition key, if any.
+
+    ``B_t`` (time-indexed) or ``B_regime`` (regime-switched), optionally
+    with a numeric suffix. Presence of such a key routes the rollout to
+    the per-step rebuild semantics instead of the static canonical B.
+    """
+    for key in init_params:
+        name = str(key)
+        if re.match(r"^B_(t|regime)\d*$", name, re.IGNORECASE):
+            return name
+    return None
+
+
+def _parse_schedule_parameter(value: Any) -> Optional[List[int]]:
+    """Parse a schedule parameter: a list of ints or a comma-separated string."""
+    if isinstance(value, str):
+        parts = [part.strip() for part in value.split(",") if part.strip()]
+        try:
+            return [int(part) for part in parts]
+        except ValueError:
+            return None
+    if isinstance(value, (list, tuple)):
+        try:
+            return [int(item) for item in value]
+        except (TypeError, ValueError):
+            return None
+    return None
+
+
+def _resolve_regime_schedule(model_params: Dict[str, Any]) -> Optional[List[int]]:
+    """Resolve the declared regime→timestep schedule from model parameters."""
+    for key in ("b_regime_schedule", "regime_schedule", "b_schedule", "b_t_schedule"):
+        schedule = _parse_schedule_parameter(model_params.get(key))
+        if schedule:
+            return schedule
+    return None
+
+
+def _normalise_nonstationary_b_tensor(
+    value: Any,
+    *,
+    num_states: int,
+    num_actions: int,
+    name: str,
+) -> np.ndarray:
+    """Return a ``(steps, next, previous, action)`` transition stack.
+
+    Each slice is canonical ``(next_state, previous_state, action)`` with
+    columns summing to one. A 2-D/3-D tensor is promoted to a single-step
+    stack (same orientation rules as the static B canonicaliser), so the
+    earlier 3-D ``B_t`` keeps its pre-nonstationary static meaning.
+    """
+    raw = np.asarray(value, dtype=np.float64)
+    if raw.ndim == 2:
+        raw = raw[:, :, np.newaxis]
+    if raw.ndim == 3:
+        if (
+            raw.shape[0] == num_actions
+            and raw.shape[1] == raw.shape[2] == num_states
+            and raw.shape[0] != raw.shape[2]
+        ):
+            raw = raw.transpose(1, 2, 0)
+        raw = raw[np.newaxis, ...]
+    if raw.ndim != 4:
+        raise ValueError(f"{name} must be 2-D, 3-D, or 4-D, got shape {raw.shape}")
+    if raw.shape[1] != num_states or raw.shape[2] != num_states:
+        raise ValueError(
+            f"{name} slices must be ({num_states}, {num_states}, ...), got {raw.shape}"
+        )
+    if raw.shape[3] not in {1, num_actions}:
+        raise ValueError(
+            f"{name} action dimension must be 1 or {num_actions}, got {raw.shape}"
+        )
+    tensor = raw.copy()
+    for step in range(tensor.shape[0]):
+        for action in range(tensor.shape[3]):
+            tensor[step, :, :, action] = _normalise_columns(tensor[step, :, :, action])
+    return tensor
+
+
+def _build_nonstationary_b_steps(
+    b_tensor: np.ndarray,
+    *,
+    key: str,
+    model_params: Dict[str, Any],
+    num_timesteps: int,
+) -> Tuple[List[np.ndarray], Dict[str, Any]]:
+    """Resolve per-step transition tensors from a nonstationary declaration.
+
+    - ``B_t`` (time-indexed): step ``t`` uses slice ``min(t, T-1)``; beyond
+      the declared span the last phase is held (documented hold-last
+      semantics, recorded as ``schedule_truncated``).
+    - ``B_regime`` (regime-switched): step ``t`` uses the regime named by
+      ``b_regime_schedule[min(t, len(schedule) - 1)]``; the schedule
+      likewise holds its last entry beyond the declared span.
+    """
+    horizon = max(1, num_timesteps)
+    if "regime" in key.lower():
+        schedule = _resolve_regime_schedule(model_params)
+        if not schedule:
+            raise ValueError(
+                f"{key} requires a b_regime_schedule parameter (one regime "
+                "index per timestep) in ModelParameters"
+            )
+        max_regime = b_tensor.shape[0] - 1
+        if min(schedule) < 0 or max(schedule) > max_regime:
+            raise ValueError(
+                f"b_regime_schedule references a regime outside 0..{max_regime}"
+            )
+        steps = [b_tensor[schedule[min(t, len(schedule) - 1)]] for t in range(horizon)]
+        meta = {
+            "kind": "regime_switched",
+            "transition_key": key,
+            "declared_span": int(b_tensor.shape[0]),
+            "horizon": horizon,
+            "schedule": schedule,
+            "schedule_truncated": horizon > len(schedule),
+        }
+        return steps, meta
+    steps = [b_tensor[min(t, b_tensor.shape[0] - 1)] for t in range(horizon)]
+    meta = {
+        "kind": "time_varying",
+        "transition_key": key,
+        "declared_span": int(b_tensor.shape[0]),
+        "horizon": horizon,
+        "schedule": None,
+        "schedule_truncated": horizon > b_tensor.shape[0],
+    }
+    return steps, meta
+
+
+def _rebuild_nonstationary_agent(
+    *,
+    A_np: np.ndarray,
+    B_step: np.ndarray,
+    C_np: np.ndarray,
+    empirical_prior: Any,
+    E_np: Optional[np.ndarray],
+    batch_size: int,
+    policy_len: int,
+    gamma: float,
+    alpha: float,
+) -> Any:
+    """Rebuild the pymdp Agent for one scheduled transition tensor.
+
+    Per-step rebuild semantics: a nonstationary rollout constructs a fresh
+    Agent each timestep with the scheduled B so pymdp's internal state is
+    always consistent with the active transition. The running empirical
+    prior (the previous ``update_empirical_prior`` output) carries over as
+    D; batch rows share the prior, matching the broadcast construction of
+    the static route.
+    """
+    prior_np = np.asarray(empirical_prior, dtype=np.float64)
+    if prior_np.ndim > 1:
+        prior_np = prior_np[0]
+    D_np = _normalise_prob_vector(prior_np.reshape(-1))
+    return _build_pymdp_agent(
+        A_np=A_np,
+        B_np=B_step,
+        C_np=C_np,
+        D_np=D_np,
+        E_np=E_np,
+        batch_size=batch_size,
+        policy_len=policy_len,
+        gamma=gamma,
+        alpha=alpha,
+    )
+
+
 # ---------------------------------------------------------------------------
 # pymdp 1.0.0 (JAX-first) import + Agent construction
 # ---------------------------------------------------------------------------
@@ -439,6 +610,7 @@ def pymdp_kind_refusal(gnn_spec: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     )
     if isinstance(initial, dict) and initial:
         kinds = detect_model_kinds(gnn_spec)
+        declared_keys = [str(key) for key in initial]
     else:
         file_path = gnn_spec.get("file_path")
         if not file_path:
@@ -457,6 +629,13 @@ def pymdp_kind_refusal(gnn_spec: Dict[str, Any]) -> Optional[Dict[str, Any]]:
                 "reason": f"pymdp-kind-gate: extraction failed ({codes})",
             }
         kinds = detect_pomdp_space_model_kinds(space)
+        declared_keys = [
+            str(key)
+            for key in {
+                **(getattr(space, "initial_parameterization", None) or {}),
+                **(getattr(space, "matrices", None) or {}),
+            }
+        ]
 
     if ModelKind.CONTINUOUS in kinds and len(kinds) > 1:
         return {
@@ -478,6 +657,27 @@ def pymdp_kind_refusal(gnn_spec: Dict[str, Any]) -> Optional[Dict[str, Any]]:
             ),
             "model_kinds": sorted(k.value for k in kinds),
         }
+    if ModelKind.NONSTATIONARY in kinds and not any(
+        re.match(r"^B_(t|regime)\d*$", key, re.IGNORECASE) for key in declared_keys
+    ):
+        # Time-indexed A/C/D/E parameterization with a static B would roll
+        # out as a fully static model: pymdp has no executor route for it,
+        # so receipt it instead of silently rendering static dynamics.
+        return {
+            "success": False,
+            "unsupported": True,
+            "status": "unsupported",
+            "reason": (
+                "unsupported-nonstationary: pymdp executes B_t/B_regime "
+                "transitions with a per-step Agent rebuild; this spec's "
+                "time variation sits in A/C/D/E parameterization, which "
+                "has no executor route"
+            ),
+            "model_kinds": sorted(k.value for k in kinds),
+        }
+    # NONSTATIONARY is deliberately not refused here: run_pymdp_simulation
+    # executes the B_t/B_regime switching semantics (per-step Agent
+    # rebuild), so a nonstationary kind set is a supported pymdp route.
     return None
 
 
@@ -539,7 +739,13 @@ def run_pymdp_simulation(
     )
     model_params = gnn_spec.get("model_parameters", {}) or {}
     required_matrices: list[Any] = ["A", "B", "C", "D"]
-    missing_matrices = [name for name in required_matrices if name not in init_params]
+    nonstationary_key = _find_nonstationary_b_key(init_params)
+    missing_matrices = [
+        name
+        for name in required_matrices
+        if name not in init_params
+        and not (name == "B" and nonstationary_key is not None)
+    ]
     if missing_matrices:
         return False, {
             "success": False,
@@ -582,6 +788,26 @@ def run_pymdp_simulation(
 
     num_actions = max(1, int(model_params.get("num_actions", num_actions_guess)))
 
+    b_steps: Optional[List[np.ndarray]] = None
+    nonstationary_meta: Optional[Dict[str, Any]] = None
+    num_timesteps = int(model_params.get("num_timesteps", 20))
+    if nonstationary_key is not None:
+        b_tensor = _normalise_nonstationary_b_tensor(
+            init_params[nonstationary_key],
+            num_states=num_states,
+            num_actions=num_actions,
+            name=nonstationary_key,
+        )
+        b_steps, nonstationary_meta = _build_nonstationary_b_steps(
+            b_tensor,
+            key=nonstationary_key,
+            model_params=model_params,
+            num_timesteps=num_timesteps,
+        )
+        # The initial Agent/transition uses the first scheduled step; the
+        # rollout loop rebuilds the Agent for every scheduled step.
+        b_raw = b_steps[0]
+
     B_np = _canonicalise_B(
         b_raw,
         num_states,
@@ -595,7 +821,6 @@ def run_pymdp_simulation(
     D_np = _canonicalise_D(init_params.get("D"), num_states)
     E_np = _canonicalise_E(init_params.get("E"), expected_policies=num_actions)
 
-    num_timesteps = int(model_params.get("num_timesteps", 20))
     batch_size = int(model_params.get("batch_size", 1))
     policy_len = int(model_params.get("policy_len", 1))
     gamma = float(model_params.get("gamma", 16.0))
@@ -643,6 +868,25 @@ def run_pymdp_simulation(
     empirical_prior = agent.D
 
     for t in range(num_timesteps):
+        if b_steps is not None:
+            # Per-step rebuild semantics: a fresh pymdp Agent is constructed
+            # for the scheduled transition tensor so pymdp's internal state
+            # is always consistent with the active B; the running empirical
+            # prior carries over as D (batch rows share the prior, matching
+            # the broadcast construction used for the static route).
+            step_b = b_steps[min(t, len(b_steps) - 1)]
+            agent = _rebuild_nonstationary_agent(
+                A_np=A_np,
+                B_step=step_b,
+                C_np=C_np,
+                empirical_prior=empirical_prior,
+                E_np=E_np,
+                batch_size=batch_size,
+                policy_len=policy_len,
+                gamma=gamma,
+                alpha=alpha,
+            )
+            B_np = step_b
         # Environment: sample observation from A given true state
         obs_probs = A_np[:, true_state]
         obs_idx = int(np_rng.choice(num_obs, p=_normalise_prob_vector(obs_probs)))
@@ -778,6 +1022,16 @@ def run_pymdp_simulation(
         and results["validation"]["actions_in_range"]
         and results["validation"]["pymdp_version_ge_1_0_0"]
     )
+
+    if nonstationary_meta is not None:
+        distinct_transitions = {
+            tuple(np.round(step, 9).ravel().tolist()) for step in b_steps or []
+        }
+        results["nonstationary"] = {
+            **nonstationary_meta,
+            "distinct_transitions": len(distinct_transitions),
+        }
+        results["validation"]["nonstationary_schedule_applied"] = True
 
     output_dir.mkdir(parents=True, exist_ok=True)
     results_file = output_dir / "simulation_results.json"

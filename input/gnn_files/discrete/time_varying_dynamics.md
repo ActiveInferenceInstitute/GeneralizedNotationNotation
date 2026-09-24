@@ -19,27 +19,31 @@ Time-Varying Transition Dynamics Agent
 
 ## ModelAnnotation
 
-A POMDP agent operating in a non-stationary environment. The key feature
-is that the transition matrix `B` is indexed by time (`B_t`), capturing
-dynamics that evolve across the planning horizon — e.g., shifting wind
+A POMDP agent operating in a non-stationary environment. The transition
+model `B_t` is indexed by time: a 4-D tensor whose leading axis enumerates
+declared transition phases over the planning horizon — e.g., shifting wind
 patterns for a sailing agent, or changing opponent strategy in a
 sequential game.
 
 - 3 hidden states, 3 observations, 2 actions
-- B_t: 3D transition tensor per timestep (shape: next_state × current_state × action)
-- Agent must adapt belief updates each step to the current B_t
-- Exercises time-varying matrix handling in renderers
+- B_t: 4-D time-indexed tensor (declared phases × next_state × current_state × action)
+- Four declared phases; timesteps beyond the declared span hold the last
+  phase (documented hold-last semantics, recorded in execution results)
+- The pymdp executor applies the phase sequence with a per-step Agent
+  rebuild; renderers that cannot express time variation receipt the spec
+  `unsupported-nonstationary` instead of rendering a static B
 
 This sample pushes the language extensions around time-indexed tensors
 and tests downstream code generation when matrix literals are
-timestep-dependent.
+timestep-dependent. The regime-switched companion exemplar is
+`regime_switched_dynamics.md`.
 
 ## StateSpaceBlock
 
 # Generative model with time-varying dynamics
 
 A[3,3,type=float]         # Observation model (time-invariant)
-B_t[3,3,2,type=float]     # Transition model, indexed by time t
+B_t[4,3,3,2,type=float]   # Transition model: 4 phases × (next × prev × action), indexed by t
 C[3,1,type=float]         # Preference vector
 D[3,1,type=float]         # Initial state prior
 
@@ -72,23 +76,30 @@ A={
   (0.05, 0.10, 0.85)
 }
 
-# B_t for t=0: exploration-biased dynamics
+# B_t: four declared transition phases (t=0 exploration-biased, t=1
+# exploitation, t=2 reversed drift, t=3 quiescent). Timesteps beyond the
+# declared span hold the last phase (documented hold-last semantics).
 
 B_t={
   (
-    (0.6, 0.1),
-    (0.3, 0.1),
-    (0.1, 0.8)
+    ((0.6, 0.1), (0.3, 0.1), (0.1, 0.8)),
+    ((0.3, 0.1), (0.6, 0.6), (0.1, 0.3)),
+    ((0.1, 0.8), (0.1, 0.1), (0.8, 0.1))
   ),
   (
-    (0.3, 0.1),
-    (0.6, 0.6),
-    (0.1, 0.3)
+    ((0.2, 0.1), (0.1, 0.1), (0.1, 0.1)),
+    ((0.2, 0.1), (0.2, 0.1), (0.1, 0.1)),
+    ((0.6, 0.8), (0.7, 0.8), (0.8, 0.8))
   ),
   (
-    (0.1, 0.8),
-    (0.1, 0.3),
-    (0.8, 0.1)
+    ((0.1, 0.2), (0.1, 0.2), (0.1, 0.2)),
+    ((0.8, 0.2), (0.7, 0.2), (0.2, 0.2)),
+    ((0.1, 0.6), (0.2, 0.6), (0.7, 0.6))
+  ),
+  (
+    ((0.34, 0.34), (0.34, 0.34), (0.34, 0.34)),
+    ((0.33, 0.33), (0.33, 0.33), (0.33, 0.33)),
+    ((0.33, 0.33), (0.33, 0.33), (0.33, 0.33))
   )
 }
 
@@ -134,8 +145,9 @@ num_timesteps: 10
 
 ## Footer
 
-Time-Varying Transition Dynamics Agent v1.0 — demonstrates non-stationary
-B_t tensor in a 3-state POMDP. Tests time-indexed matrix handling.
+Time-Varying Transition Dynamics Agent v1.0 — demonstrates a non-stationary
+time-indexed B_t tensor (4 declared phases) in a 3-state POMDP. Tests
+per-phase transition handling and hold-last scheduling in the executor.
 
 ## Signature
 

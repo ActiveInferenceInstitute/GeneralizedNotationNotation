@@ -25,13 +25,30 @@ def test_continuous_exemplar_extracts_lgssm(path: Path) -> None:
     assert pomdp.model_kind == "continuous"
     assert pomdp.A_matrix is None and pomdp.B_matrix is None
     assert pomdp.matrices is not None
-    for key in ("F", "H", "Q", "R", "prior_mean", "prior_cov"):
-        assert key in pomdp.matrices, key
-    assert pomdp.num_states == len(pomdp.matrices["F"])
-    assert pomdp.num_observations == len(pomdp.matrices["H"])
+    if path.stem == "factored_continuous_lgssm":
+        # Per-factor LGSSM block: every per-factor key is collected, the
+        # optional goal/control pair on factor 1 included; joint dimensions
+        # come from factor 1.
+        for suffix in ("1", "2"):
+            for prefix in ("F", "H", "Q", "R", "prior_mean", "prior_cov"):
+                assert f"{prefix}_f{suffix}" in pomdp.matrices
+        assert "goal_mean_f1" in pomdp.matrices
+        assert "control_gain_f1" in pomdp.matrices
+        assert pomdp.num_states == len(pomdp.matrices["F_f1"])
+        assert pomdp.num_observations == len(pomdp.matrices["H_f1"])
+    else:
+        for key in ("F", "H", "Q", "R", "prior_mean", "prior_cov"):
+            assert key in pomdp.matrices, key
+        assert pomdp.num_states == len(pomdp.matrices["F"])
+        assert pomdp.num_observations == len(pomdp.matrices["H"])
     spec = pomdp_to_gnn_spec(pomdp)
     assert spec["model_kind"] == "continuous"
-    assert "A" not in spec["initialparameterization"]
+    if path.stem == "hybrid_discrete_continuous":
+        # The discrete family survives extraction verbatim; the refusal
+        # happens at dispatch, never in extraction.
+        assert "A" in spec["initialparameterization"]
+    else:
+        assert "A" not in spec["initialparameterization"]
 
 
 def test_navigation_is_closed_loop_others_passive() -> None:
@@ -46,13 +63,26 @@ def test_navigation_is_closed_loop_others_passive() -> None:
 
 
 def test_unsupported_frameworks_are_flagged_not_failed(tmp_path: Path) -> None:
-    pomdp = extract_pomdp_from_file(FILES[0], strict_validation=True)
+    # Pin the pure passive exemplar by name: alphabetical ordering must not
+    # decide which spec the discrete-only receipt is asserted against.
+    pomdp = extract_pomdp_from_file(
+        CONTINUOUS_DIR / "stochastic_dynamics.md", strict_validation=True
+    )
     assert pomdp is not None
     proc = POMDPRenderProcessor(tmp_path)
     for fw in sorted(UNSUPPORTED):
         result = proc._process_single_framework(pomdp, fw)
         assert result["unsupported"] is True and result["status"] == "unsupported"
         assert "supports discrete POMDPs only" in result["message"]
+        assert result["output_files"] == []
+    factored = extract_pomdp_from_file(
+        CONTINUOUS_DIR / "factored_continuous_lgssm.md", strict_validation=True
+    )
+    assert factored is not None
+    for fw in sorted(UNSUPPORTED):
+        result = proc._process_single_framework(factored, fw)
+        assert result["unsupported"] is True and result["status"] == "unsupported"
+        assert "unsupported-factored-continuous" in result["message"]
         assert result["output_files"] == []
 
 

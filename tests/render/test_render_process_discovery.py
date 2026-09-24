@@ -4,9 +4,11 @@ Verifies the recursive-discovery fix in ``src/render/processor.py``:
 
 1. ``process_render(..., recursive=True)`` (the default) walks nested exemplar
    folders (discrete/, basics/, continuous/, pomdp_gridworld/, ...) and renders
-   every exemplar GNN spec to RxInfer.jl — 33 exemplar ``*.md`` files are all
-   discovered; the 32 plain ones render, and the composed continuous ×
-   multi-agent exemplar is receipted ``unsupported-composition`` instead.
+   every exemplar GNN spec to RxInfer.jl — 36 exemplar ``*.md`` files are all
+   discovered; the 31 plain ones render, and the five receipted exemplars are
+   never rendered: the composed trio (continuous × multi-agent, hybrid,
+   factored-continuous LGSSM) plus the two non-stationary discrete specs
+   (``unsupported-nonstationary``).
 2. Passing ``recursive=False`` via kwargs reverts to a top-level-only glob, so
    no nested files are found and ``process_render`` returns exit code ``2``.
 
@@ -24,10 +26,11 @@ from gnn.render.processor import process_render
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 EXEMPLAR_DIR = REPO_ROOT / "input" / "gnn_files"
-EXPECTED_EXEMPLAR_COUNT = 33
-# Plain exemplars that still render to RxInfer.jl; the one composed
-# continuous × multi-agent spec is receipted, never rendered.
-EXPECTED_RENDERED_COUNT = 32
+EXPECTED_EXEMPLAR_COUNT = 36
+# Plain exemplars that still render to RxInfer.jl; the five receipted
+# exemplars (composed trio + the two non-stationary discrete specs) are
+# never rendered.
+EXPECTED_RENDERED_COUNT = 31
 
 
 def _count_exemplar_md_files() -> int:
@@ -67,21 +70,31 @@ def test_process_render_recursive_discovers_and_renders_all_exemplars(
     assert summary["total_framework_attempts"] == EXPECTED_RENDERED_COUNT
     assert summary["successful_framework_renderings"] == EXPECTED_RENDERED_COUNT
 
-    # (3) The composed continuous × multi-agent exemplar is receipted as
-    # unsupported-composition on RxInfer — never rendered as one family.
-    composed_receipts = [
-        entry
-        for entry in summary["unsupported_framework_renderings"]
-        if "multi_agent_lgssm" in entry["file"]
-    ]
-    assert len(composed_receipts) == 1
-    assert composed_receipts[0]["framework"] == "rxinfer"
-    assert "unsupported-composition" in composed_receipts[0]["message"]
+    # (3) The five receipted exemplars are receipted on RxInfer — never
+    # rendered as one family or rendered flat.
+    expected_receipts = {
+        "multi_agent_lgssm": "unsupported-composition",
+        "hybrid_discrete_continuous": "unsupported-composition",
+        "factored_continuous_lgssm": "unsupported-factored-continuous",
+        "time_varying_dynamics": "unsupported-nonstationary",
+        "regime_switched_dynamics": "unsupported-nonstationary",
+    }
+    for stem, prefix in expected_receipts.items():
+        entries = [
+            entry
+            for entry in summary["unsupported_framework_renderings"]
+            if stem in entry["file"]
+        ]
+        assert len(entries) == 1, stem
+        assert entries[0]["framework"] == "rxinfer"
+        assert prefix in entries[0]["message"], stem
 
     # Each plain rendered exemplar produces exactly one RxInfer.jl artifact.
     rendered_jl = list(output_dir.rglob("*.jl"))
     assert len(rendered_jl) == EXPECTED_RENDERED_COUNT
-    assert not any("multi_agent_lgssm" in path.name for path in rendered_jl)
+    assert not any(
+        stem in path.name for stem in expected_receipts for path in rendered_jl
+    )
 
 
 def test_process_render_recursive_false_skips_nested_files(tmp_path: Path) -> None:

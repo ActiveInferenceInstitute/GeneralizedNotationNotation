@@ -30,19 +30,29 @@ class ModelKind(Enum):
     FACTORED — multiple independent hidden state factors.
     HIERARCHICAL — multi-level state hierarchy.
     MULTI_AGENT — multiple coordinated agents.
+    HYBRID — discrete and continuous families declared together
+    (explicit A/B/C/D[/E] keys AND an F/H/Q/R or Gaussian-prior block);
+    no backend renders the mix whole.
     STRUCTURAL — structural wrapper (no discrete or continuous
     parameterization; render-only / informational).
     LEARNING — parameter learning (Dirichlet priors, etc.).
     CONTINUOUS — continuous state/observation spaces.
+    NONSTATIONARY — time-indexed (B_t) or regime-switched (B_regime +
+    schedule) transitions. Precedence note: a time-varying discrete model
+    is NONSTATIONARY, not STRUCTURAL — it keeps its discrete A/B/C/D[/E]
+    machinery and dispatches to the switching-capable route; STRUCTURAL
+    remains the no-parameterization blanket case.
     """
 
     FLAT = "flat"
     FACTORED = "factored"
     HIERARCHICAL = "hierarchical"
     MULTI_AGENT = "multi_agent"
+    HYBRID = "hybrid"
     STRUCTURAL = "structural"
     LEARNING = "learning"
     CONTINUOUS = "continuous"
+    NONSTATIONARY = "nonstationary"
 
 
 class InitialParameterization(TypedDict, total=False):
@@ -280,6 +290,16 @@ _AGENT_MATRIX_KEY = re.compile(r"^[ABCDE]_agent\d+", re.IGNORECASE)
 _LEVEL_MATRIX_KEY = re.compile(r"^[ABCDE]_level\d+", re.IGNORECASE)
 _DIRICHLET_PRIOR_KEY = re.compile(r"^dirichlet_[ABCDE]$", re.IGNORECASE)
 _CONTINUOUS_PARAM_KEYS = frozenset({"F", "H", "Q", "R"})
+_FACTOR_CONTINUOUS_KEY = re.compile(
+    r"^(F|H|Q|R|prior_mean|prior_cov)_f\d+$", re.IGNORECASE
+)
+
+
+_TIME_INDEXED_MATRIX_KEY = re.compile(r"^[ABCDE]_t\d*$", re.IGNORECASE)
+_REGIME_SWITCHED_MATRIX_KEY = re.compile(r"^[ABCDE]_regime\d*$", re.IGNORECASE)
+_NONSTATIONARY_SCHEDULE_KEYS = frozenset(
+    {"b_regime_schedule", "regime_schedule", "b_schedule", "b_t_schedule"}
+)
 
 
 def _structured_matrix_keys(gnn_spec: Dict[str, Any]) -> List[str]:
@@ -300,8 +320,10 @@ def _structured_matrix_keys(gnn_spec: Dict[str, Any]) -> List[str]:
 
 _KIND_PRECEDENCE: Tuple[ModelKind, ...] = (
     ModelKind.MULTI_AGENT,
+    ModelKind.HYBRID,
     ModelKind.HIERARCHICAL,
     ModelKind.CONTINUOUS,
+    ModelKind.NONSTATIONARY,
     ModelKind.LEARNING,
     ModelKind.FACTORED,
     ModelKind.STRUCTURAL,
@@ -321,6 +343,10 @@ def detect_model_kinds(gnn_spec: Dict[str, Any]) -> frozenset[ModelKind]:
     means the spec's families must be refused with an explicit
     unsupported-composition receipt (or rendered on every matching family)
     rather than silently rendered as the winner alone.
+    ``HYBRID`` is the discrete+continuous family-mix case (explicit
+    A/B/C/D[/E] contract keys declared alongside an F/H/Q/R or
+    Gaussian-prior block); it is a composition like any other, so dispatch
+    refuses it via the unsupported-composition receipt.
 
     Detection reads ONLY typed fields: the ``gnn_section`` value (the raw
     ``## GNNSection`` header, propagated by the extractor), declared matrix
@@ -369,6 +395,18 @@ def detect_model_kinds(gnn_spec: Dict[str, Any]) -> frozenset[ModelKind]:
     if nr_agents > 1 or any(_AGENT_MATRIX_KEY.match(key) for key in all_keys):
         kinds.add(ModelKind.MULTI_AGENT)
 
+    # Hybrid: discrete A/B/C/D[/E] contract keys declared alongside an
+    # explicit linear-Gaussian parameterization (F/H/Q/R or a Gaussian
+    # prior) — a family mix no backend renders whole, refused at dispatch
+    # with an unsupported-composition receipt. The contract-key predicate
+    # matches discrete A–E keys only, so a flat continuous spec
+    # (F/H/Q/R with no A–E key) never classifies hybrid.
+    if any(_is_active_inference_matrix_key(key) for key in all_keys) and (
+        _CONTINUOUS_PARAM_KEYS.issubset(set(initial_keys))
+        or {"prior_mean", "prior_cov"}.issubset(set(initial_keys))
+    ):
+        kinds.add(ModelKind.HYBRID)
+
     # Hierarchical: declared section or per-level matrix keys.
     if "hierarchical" in section or any(
         _LEVEL_MATRIX_KEY.match(key) for key in all_keys
@@ -381,8 +419,28 @@ def detect_model_kinds(gnn_spec: Dict[str, Any]) -> frozenset[ModelKind]:
         "continuous" in section
         or _CONTINUOUS_PARAM_KEYS.issubset(set(initial_keys))
         or {"prior_mean", "prior_cov"}.issubset(set(initial_keys))
+        # Per-factor continuous keys from a factored LGSSM (F_fN/H_fN/...)
+        # satisfy the CONTINUOUS family the same way flat F/H/Q/R do —
+        # without this, a per-factor spec classifies {FACTORED} only and
+        # the generic discrete path demands static A/B/C/D keys.
+        or any(_FACTOR_CONTINUOUS_KEY.fullmatch(str(key)) for key in initial_keys)
     ):
         kinds.add(ModelKind.CONTINUOUS)
+
+    # Nonstationary: time-indexed (B_t) or regime-switched (B_regime)
+    # transition keys, an explicit schedule parameter, or a declared
+    # nonstationary GNN section. Precedence note: a time-varying discrete
+    # model is NONSTATIONARY, not STRUCTURAL — it keeps its discrete
+    # A/B/C/D[/E] machinery and dispatches to the switching-capable
+    # route (pymdp), while STRUCTURAL stays the no-parameterization
+    # blanket case.
+    if (
+        "nonstationary" in section
+        or any(_TIME_INDEXED_MATRIX_KEY.match(key) for key in all_keys)
+        or any(_REGIME_SWITCHED_MATRIX_KEY.match(key) for key in all_keys)
+        or any(key in model_params for key in _NONSTATIONARY_SCHEDULE_KEYS)
+    ):
+        kinds.add(ModelKind.NONSTATIONARY)
 
     # Learning: declared section or explicit Dirichlet prior parameter keys
     # (a prose mention of "Dirichlet" in an annotation must not reroute).
@@ -421,8 +479,10 @@ def detect_model_kind(gnn_spec: Dict[str, Any]) -> ModelKind:
     """Single-winner kind: the max-precedence member of detect_model_kinds.
 
     Stable classification used by per-kind dispatch
-    (precedence MULTI_AGENT > HIERARCHICAL > CONTINUOUS > LEARNING >
-    FACTORED > STRUCTURAL > FLAT). A composed spec — e.g. continuous
+    (precedence MULTI_AGENT > HYBRID > HIERARCHICAL > CONTINUOUS >
+    NONSTATIONARY >
+    LEARNING > FACTORED > STRUCTURAL > FLAT). A composed spec — e.g.
+    continuous
     F/H/Q/R parameters plus ``nr_agents > 1`` — classifies to its most
     specific kind here and to the full set under :func:`detect_model_kinds`;
     dispatch consumers must consult the kind set so a composed spec is
@@ -458,6 +518,31 @@ def unsupported_composition_reason(kinds: frozenset[ModelKind]) -> str:
         "alongside additional model families; no framework renders the "
         "composition whole, so it is refused rather than silently rendered "
         "as one family with the other dropped"
+    )
+
+
+def unsupported_nonstationary_reason(kinds: frozenset[ModelKind]) -> str:
+    """Receipt reason for a nonstationary spec a backend cannot express.
+
+    The single stable ``unsupported-nonstationary:`` prefix is the grep
+    anchor for dispatch receipts: the spec declares time-indexed or
+    regime-switched transitions, and a backend that renders one static
+    transition tensor would silently drop the time variation instead of
+    refusing.
+    """
+    others = [
+        kind.value
+        for kind in _KIND_PRECEDENCE
+        if kind in kinds and kind is not ModelKind.NONSTATIONARY
+    ]
+    return (
+        "unsupported-nonstationary: "
+        + " × ".join(["nonstationary", *others])
+        + " — the spec declares time-indexed (B_t) or regime-switched "
+        "(B_regime + b_regime_schedule) transitions; this backend renders "
+        "a single static transition tensor and cannot express time "
+        "variation, so it is refused rather than silently rendered with "
+        "static dynamics"
     )
 
 
