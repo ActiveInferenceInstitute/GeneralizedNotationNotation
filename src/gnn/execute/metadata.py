@@ -95,7 +95,16 @@ def _load_rxinfer_execution_metadata_from_script(script_path: Path) -> Dict[str,
     if sidecar_metadata and "metadata_probe" not in sidecar_metadata:
         return sidecar_metadata
     if "metadata_probe" in sidecar_metadata:
-        sidecar_probe = sidecar_metadata
+        # Sidecars that parse but fail validation (wrong/stale schema, sha
+        # mismatch after a re-render, non-mapping, missing fields) are
+        # benign: the render step rewrites them alongside the script, so a
+        # leftover mismatch carries no signal for this script and must be
+        # ignored exactly like an absent sidecar. Only a sidecar that
+        # cannot be read at all (corrupt JSON / I/O failure) surfaces a
+        # probe receipt here; the low-level sidecar loader keeps probes
+        # for every failure class.
+        if sidecar_metadata["metadata_probe"] == "unreadable":
+            sidecar_probe = sidecar_metadata
     toml_candidates = [script_path.with_suffix(".toml")]
     seen_toml: set[Path] = set()
     toml_probe: Dict[str, Any] = {}

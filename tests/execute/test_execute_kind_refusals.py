@@ -118,7 +118,12 @@ def test_lightweight_parse_receipt_plain_continuous_exemplar() -> None:
             singleton_path = candidate
             break
     if singleton_path is None:
-        pytest.skip("no singleton-continuous exemplar in input/gnn_files/continuous")
+        # Zero-skip contract (tests/test_zero_skip_contracts.py) bans
+        # pytest.skip: the exemplar corpus is committed, so a miss means
+        # the corpus contract broke and must fail loudly.
+        raise AssertionError(
+            "no singleton-continuous exemplar in input/gnn_files/continuous"
+        )
     receipt: dict[str, Any] = {"success": True, "file_path": str(singleton_path)}
     gate = pymdp_kind_refusal(receipt)
     assert gate is not None
