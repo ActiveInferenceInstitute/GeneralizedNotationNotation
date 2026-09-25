@@ -45,6 +45,7 @@ from .analyzer import (
     run_performance_benchmarks,
     visualize_cross_framework_metrics,
 )
+from .complexity import estimate_model_complexity, to_json_text
 from .post_simulation import (
     analyze_active_inference_metrics,
     analyze_execution_results,
@@ -151,6 +152,9 @@ __all__: list[Any] = [
     "generate_cross_framework_comparison",
     "plot_belief_evolution",
     "animate_belief_evolution",
+    # Wave-8 static complexity estimator (pure-stdlib subpackage)
+    "estimate_model_complexity",
+    "to_json_text",
 ]
 
 
