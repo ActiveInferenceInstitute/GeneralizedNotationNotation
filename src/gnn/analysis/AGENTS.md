@@ -46,6 +46,14 @@
   schemas emit belief GIFs, 3x3 state trajectory GIFs, a cross-framework
   trajectory GIF, and `cross_framework/gridworld_analysis_manifest.json`.
 
+- **Static complexity estimation (`complexity/` subpackage, wave 8)** — pure-stdlib,
+  execution-free per-backend bounds: `gnn.analysis.complexity.estimate_model_complexity`
+  emits the `gnn.complexity_estimate/v1` receipt (structure stats, model kinds,
+  `per_backend` rows in fixed `BACKEND_ORDER` with `applicable` flags);
+  see [complexity/AGENTS.md](complexity/AGENTS.md) and
+  [complexity/README.md](complexity/README.md). Distinct from the legacy
+  per-file complexity metrics (`calculate_complexity_metrics`, cyclomatic/cognitive/structural).
+
 ---
 
 ## API Reference
