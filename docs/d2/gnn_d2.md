@@ -412,18 +412,14 @@ Export Format Ecosystem: {
 
 ### 1. Pipeline-Generated D2 Files
 
-The GNN pipeline can automatically generate D2 diagrams as part of its visualization step:
+The pipeline generates D2 diagrams in the advanced-visualization step (step 9):
 
 ```bash
 # Generate D2 diagrams for GNN models
-uv run python src/gnn/8_visualization.py --target-dir input/gnn_files --verbose
+uv run python src/gnn/9_advanced_viz.py --target-dir input/gnn_files --viz-type d2 --verbose
 
-# Output includes .d2 files alongside traditional visualizations
-output/8_visualization_output/
-├── model_diagrams.d2
-├── pipeline_flow.d2
-├── framework_mapping.d2
-└── concept_diagrams.d2
+# D2 sources and rendered images land under
+output/9_advanced_viz_output/d2_diagrams/
 ```
 
 ### 2. Watch Mode for Interactive Development
@@ -669,51 +665,33 @@ Framework Comparison: {
 
 ## Integration with GNN Pipeline Steps
 
-### Step 8-9: Visualization Enhancement
+### Step 9: Advanced Visualization Integration
 
-Integrate D2 diagram generation into the existing visualization steps:
+D2 diagram generation runs in pipeline step 9 (`src/gnn/9_advanced_viz.py`). `src/gnn/advanced_visualization/processor.py` routes `--viz-type d2`, `diagrams`, or `pipeline` (and `all`) to the D2 generators:
 
-```python
-# In src/gnn/visualization/processor.py
-def generate_d2_diagrams(model_data, output_dir):
-    """Generate D2 diagrams for GNN models"""
-    
-    # Generate model structure diagram
-    model_d2 = create_model_structure_d2(model_data)
-    d2_file = output_dir / f"{model_data['name']}_structure.d2"
-    d2_file.write_text(model_d2)
-    
-    # Generate pipeline flow diagram
-    flow_d2 = create_pipeline_flow_d2()
-    flow_file = output_dir / "pipeline_flow.d2"
-    flow_file.write_text(flow_d2)
-    
-    # Compile D2 to SVG
-    run_d2_compilation(output_dir)
-    
-    return [d2_file, flow_file]
+```bash
+uv run python src/gnn/9_advanced_viz.py --target-dir input/gnn_files --viz-type d2 --verbose
+
+# Output layout
+output/9_advanced_viz_output/
+└── d2_diagrams/
+    ├── <model>/                 # <model>_structure.d2, <model>_pomdp.d2 (+ .svg/.png)
+    └── pipeline/                # gnn_pipeline_flow.d2, framework_integration.d2 (+ .svg/.png)
 ```
 
-### Step 20: Website Generation Integration
+Programmatic entry points: `D2Visualizer.generate_all_diagrams_for_model(model_data, output_dir)` for the per-model diagrams, and `process_gnn_file_with_d2(gnn_file, output_dir)`, which loads the Step 3 parsed JSON (`<model>/<model>_parsed.json`, default directory `output/3_gnn_output`) or parses the GNN file directly, then generates all applicable diagrams.
 
-Include D2-generated diagrams in the static website generation:
+### D2 Renderer Capability Summary
 
-```python
-# In src/gnn/website/generator.py
-def include_d2_diagrams(site_config, output_dir):
-    """Include D2-generated diagrams in website"""
-    
-    # Find all .d2 files in visualization outputs
-    d2_files = find_d2_files("output/8_visualization_output")
-    
-    # Compile to SVG for web embedding
-    for d2_file in d2_files:
-        svg_file = compile_d2_to_svg(d2_file, theme="web_friendly")
-        copy_to_website(svg_file, site_config)
-    
-    # Generate diagram index page
-    create_diagram_gallery(d2_files, site_config)
-```
+`D2Visualizer` (`src/gnn/advanced_visualization/d2_visualizer.py`) builds five diagram types from GNN model data and compiles them with the `d2` CLI:
+
+- **Model structure** — state-space variables (shapes derived from Active Inference annotations and variable dimensions), model connections with typed arrows, and an ontology-mapping block.
+- **POMDP structure** — generative-model matrices with dimensions and an inference-engine block; generated only for POMDP-like models (POMDP variables or Active Inference annotations present).
+- **Pipeline flow** — input, core processing, code-generation, and analysis stages, with optional framework execution stages (`include_frameworks=True`).
+- **Framework mapping** — GNN specification → code generation → simulation execution for PyMDP, RxInfer.jl, ActiveInference.jl, DisCoPy, and JAX.
+- **Active Inference concepts** — a fixed free-energy-principle diagram.
+
+Each diagram is written as a `<name>.d2` source file and compiled to `svg`, `png`, or `pdf` (unrecognized formats are dropped; `svg`/`png` are the fallback) using `d2 --layout=elk --theme=1 --pad=20`, plus optional `--dark-theme` and `--sketch` flags. Compilation runs through the shared subprocess envelope with a 30-second timeout; per-format failures surface as warnings. The `d2` CLI must be on `PATH`.
 
 ## Performance and Scalability
 
@@ -803,7 +781,7 @@ Include D2 diagrams in AGENTS.md documentation files:
 Below is a visual representation of the GNN pipeline architecture:
 
 > [!NOTE]
-> Pipeline Architecture diagram to be generated.
+> Pipeline Architecture diagram rendered with the D2 CLI.
 > `diagrams/pipeline/architecture.svg`
 
 
@@ -853,5 +831,5 @@ The combination of GNN's formal model specifications with D2's professional diag
 ---
 
 **D2 Version**: 0.6.0  
-**GNN Pipeline Version**: 1.1.1  
-**Integration Status**: ✅ Ready for Implementation
+**GNN Pipeline Version**: 3.5.0  
+**Integration Status**: ✅ Implemented (`d2` CLI required on `PATH`)

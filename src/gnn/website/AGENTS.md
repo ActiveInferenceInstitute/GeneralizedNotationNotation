@@ -168,7 +168,7 @@ Each of the seven pages is rendered and written independently (atomic temp-file 
 
 ### Imported By
 - `main.py` - Pipeline orchestration
-- `tests/website/test_website_overall.py`, `test_website_public_api.py`, `test_website_dashboard.py` - Website tests
+- `tests/website/` test suite - Website tests (`tests/website/test_website_*.py`)
 
 ### Data Flow
 ```
@@ -183,6 +183,7 @@ Pipeline Artifacts → Content Extraction → Template Processing → Asset Embe
 - `tests/website/test_website_overall.py` - Module-level tests
 - `tests/website/test_website_public_api.py` - Public API surface tests
 - `tests/website/test_website_dashboard.py` - Dashboard tests
+- `tests/website/test_website_collection.py` - Import-stability and behavior pins for the `gnn.website.collection` collection seam
 - `tests/website/test_website_generator_units.py` - Catalogue, data collection, escaping, page-resilience, manifest tests
 - `tests/website/test_website_inspection.py` - `inspect_website` / `list_website_pages` tests
 - `tests/website/test_website_gui_crosslinks.py` - GUI cross-link tests

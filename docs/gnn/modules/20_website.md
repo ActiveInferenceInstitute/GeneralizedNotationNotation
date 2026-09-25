@@ -13,13 +13,14 @@ This module provides comprehensive static HTML website generation capabilities f
 ```
 src/gnn/website/
 ├── __init__.py                     # Module initialization and exports
-├── README.md                       # This documentation
-├── generator.py                    # WebsiteGenerator / generate_website: core multi-page site generation
+├── README.md                       # Module documentation
+├── collection.py                   # collect_website_data: aggregates page inputs, copies visualization assets
+├── generator.py                    # WebsiteGenerator / generate_website: builds the seven site pages
 ├── renderer.py                     # WebsiteRenderer, process_website, and HTML/asset embedding helpers
-├── dashboard.py                    # render_dashboard: self-contained single-file HTML pipeline dashboard
+├── dashboard.py                    # render_dashboard: standalone single-file HTML dashboard page
+├── inspection.py                   # inspect_website / list_website_pages: site inventory queries
 ├── processor.py                    # Thin facade re-exporting process_website from renderer.py
 └── mcp.py                          # Model Context Protocol integration
-```
 
 ## Agent Identity & Capabilities
 
@@ -55,7 +56,7 @@ src/gnn/website/
 - Interactive documentation and reports
 - Cross-linked content organization
 - Publication-ready HTML output
-- Asset management and optimization
+- Asset management
 
 ---
 
@@ -63,25 +64,21 @@ src/gnn/website/
 
 ### Public Functions
 
-#### `process_website(target_dir: Path, output_dir: Path, verbose: bool = False, logger: Optional[logging.Logger] = None, **kwargs) -> bool`
-**Description**: Main website generation function called by orchestrator (20_website.py). Generates static HTML website from pipeline artifacts.
+#### `process_website(target_dir: Path, output_dir: Path, verbose: bool = False, pipeline_output_root: Optional[Path] = None, **kwargs) -> bool`
+**Description**: Main website generation function called by orchestrator (20_website.py). Generates a seven-page static HTML website from pipeline artifacts and writes `website_results.json`.
 
 **Parameters**:
 - `target_dir` (Path): Directory containing pipeline artifacts
 - `output_dir` (Path): Output directory for website files
 - `verbose` (bool): Enable verbose logging (default: False)
-- `logger` (Optional[logging.Logger]): Logger instance (default: None)
-- `website_html_filename` (str, optional): Output HTML filename (default: "gnn_pipeline_summary_website.html")
-- `include_visualizations` (bool, optional): Include visualization pages (default: True)
-- `include_reports` (bool, optional): Include report pages (default: True)
-- `include_analysis` (bool, optional): Include analysis pages (default: True)
-- `**kwargs`: Additional website generation options
+- `pipeline_output_root` (Optional[Path]): Root of numbered pipeline output dirs (default: `output_dir.parent`)
+- `**kwargs`: Additional website generation options; `website_html_filename` from the orchestrator CLI is accepted and ignored
 
 **Returns**: `bool` - True if website generation succeeded, False otherwise
 
 **Example**:
 ```python
-from website import process_website
+from gnn.website import process_website
 from pathlib import Path
 import logging
 
@@ -89,32 +86,27 @@ logger = logging.getLogger(__name__)
 success = process_website(
     target_dir=Path("output"),
     output_dir=Path("output/20_website_output"),
-    logger=logger,
     verbose=True,
-    website_html_filename="custom_summary.html",
 )
 ```
 
-#### `generate_html_report(content: Union[str, Dict[str, Any]], title: str = "Report") -> str`
-**Description**: Generate HTML report from content (markdown or structured data).
+#### `generate_html_report(content: str, output_file: Path) -> bool`
+**Description**: Write an HTML report file wrapping the given content with default styling.
 
 **Parameters**:
-- `content` (Union[str, Dict[str, Any]]): Content to convert to HTML (markdown string or structured dict)
-- `title` (str): Report title (default: "Report")
+- `content` (str): Content to embed as the report body
+- `output_file` (Path): Path of the HTML file to write
 
-**Returns**: `str` - HTML string with formatted report
+**Returns**: `bool` - True if the report file was written, False otherwise
 
-#### `embed_image(image_path: Path, output_file: Path, alt_text: str = "") -> bool`
-**Description**: Embed image in HTML output file.
+#### `embed_image(image_path: Path, output_file: Path) -> bool`
+**Description**: Write an HTML page referencing the given image file (path reference, not base64).
 
 **Parameters**:
 - `image_path` (Path): Path to image file
-- `output_file` (Path): Output HTML file to embed image in
-- `alt_text` (str): Alternative text for image (default: "")
+- `output_file` (Path): Output HTML file referencing the image
 
-**Returns**: `bool` - True if embedding succeeded, False otherwise
-
-**Returns**: `True` if embedding succeeded
+**Returns**: `bool` - True if the page was written, False otherwise
 
 #### `embed_markdown_file(md_path, output_file) -> bool`
 **Description**: Embed markdown file in HTML output
@@ -130,38 +122,24 @@ success = process_website(
 ## Dependencies
 
 ### Required Dependencies
-- `pathlib` - Path manipulation
-- `jinja2` - HTML templating
+Stdlib only: `logging`, `pathlib`, `json`, `shutil`, `datetime`, `html`.
 
 ### Optional Dependencies
-- `markdown` - Markdown to HTML conversion
-- `bleach` - HTML sanitization
+None — the module imports no third-party packages: pages are built with inline CSS/HTML written directly to the output directory, with no templating engine.
 
 ### Internal Dependencies
 - `gnn.utils.pipeline_orchestration.pipeline_template` - Pipeline utilities
-
 ---
 
 ## Configuration
 
-### Website Settings
-```python
-WEBSITE_CONFIG = {
-    "template": "default",
-    "theme": "modern",
-    "include_navigation": True,
-    "generate_sitemap": True,
-    "optimize_assets": True,
-}
-```
+Generation requires no configuration: `WebsiteGenerator` accepts no settings and always builds the same seven site pages. The only config surface is the validation helper:
 
-### Content Settings
 ```python
-CONTENT_CONFIG = {
-    "include_pipeline_summary": True,
-    "include_visualizations": True,
-    "include_reports": True,
-    "include_raw_data": False,
+# Keys checked by validate_website_config (renderer.py)
+{
+    "output_dir": "output/20_website_output",  # required
+    "input_dir": "output",                     # optional
 }
 ```
 
@@ -171,26 +149,26 @@ CONTENT_CONFIG = {
 
 ### Basic Website Generation
 ```python
-from website import process_website
+from gnn.website import process_website
 
 success = process_website(target_dir="output/", output_dir="output/20_website_output")
 ```
 
 ### HTML Report Generation
 ```python
-from website import generate_html_report
+from gnn.website import generate_html_report
+from pathlib import Path
 
-html_content = generate_html_report(markdown_content)
-with open("report.html", "w") as f:
-    f.write(html_content)
+generate_html_report(markdown_content, Path("report.html"))
 ```
 
 ### Asset Embedding
 ```python
-from website import embed_image
+from gnn.website import embed_image
+from pathlib import Path
 
 success = embed_image(
-    image_path="visualizations/network.png", output_file="website/index.html"
+    image_path=Path("visualizations/network.png"), output_file=Path("website/index.html")
 )
 ```
 
@@ -200,23 +178,22 @@ success = embed_image(
 
 ### Output Products
 - `index.html` - Main website page
-- `*.html` - Individual report pages
-- `assets/` - Static assets and resources
-- `sitemap.xml` - Website sitemap
-- `website_summary.json` - Website generation summary
+- `pipeline.html`, `gnn_files.html`, `analysis.html`, `visualization.html`, `reports.html`, `mcp.html` - The remaining six of the seven site pages
+- `assets/` - Visualization PNG/HTML artifacts copied flat into this directory
+- `website_results.json` - Generation manifest (success, pages_created, pages, errors, warnings, generated_at)
 
 ### Output Directory Structure
 ```
 output/20_website_output/
 ├── index.html
-├── pipeline_summary.html
-├── visualizations.html
+├── pipeline.html
+├── gnn_files.html
+├── analysis.html
+├── visualization.html
 ├── reports.html
-├── assets/
-│   ├── css/
-│   ├── js/
-│   └── images/
-└── website_summary.json
+├── mcp.html
+├── website_results.json
+└── assets/            # visualization artifacts, written flat
 ```
 
 ---
@@ -231,7 +208,6 @@ output/20_website_output/
 ### Expected Performance
 - **Basic Generation**: 1-2 seconds
 - **Full Website**: 3-5 seconds
-- **Asset Optimization**: 1-3 seconds
 - **Content Processing**: 2-4 seconds
 
 ---
@@ -239,16 +215,16 @@ output/20_website_output/
 ## Error Handling
 
 ### Website Errors
-1. **Template Errors**: Template rendering failures
+1. **Page Rendering Errors**: Failure building one of the seven pages
 2. **Content Errors**: Content processing failures
-3. **Asset Errors**: Asset embedding failures
+3. **Asset Errors**: Asset copy failures
 4. **File I/O**: File system operation failures
 
 ### Recovery Strategies
-- **Template Recovery**: Use default templates
+- **Per-Page Isolation**: Each page is rendered and written independently; a failing page is recorded in `errors` while the remaining pages stay intact
 - **Content Simplification**: Simplify content processing
 - **Asset Skip**: Skip problematic assets
-- **Error Documentation**: Generate error reports
+- **Error Documentation**: Errors are recorded in `website_results.json`
 
 ---
 
@@ -263,11 +239,11 @@ output/20_website_output/
 
 ### Imported By
 - `main.py` - Pipeline orchestration
-- `tests.test_website_*` - Website tests
+- `tests/website/` - Website tests
 
 ### Data Flow
 ```
-Pipeline Artifacts → Content Extraction → Template Processing → Asset Embedding → Website Generation
+Pipeline Artifacts → Data Collection → Page Rendering → Asset Copying → Website Output
 ```
 
 ---
@@ -278,7 +254,7 @@ Pipeline Artifacts → Content Extraction → Template Processing → Asset Embe
 - `tests/website/test_website_overall.py` - Module-level tests
 
 ### Test Coverage
-- Measure: `uv run --extra dev python -m pytest tests/website/ --cov=website --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
+- Measure: `uv run --extra dev python -m pytest tests/website/ --cov=src/gnn/website --cov-report=term-missing` (do not treat fixed percentages in this doc as canonical).
 
 ### Key Test Scenarios
 1. Website generation from pipeline artifacts
@@ -312,12 +288,11 @@ Registered in `register_tools` (`src/gnn/website/mcp.py`):
 
 #### Issue 1: Website generation fails
 **Symptom**: HTML files not generated or incomplete  
-**Cause**: Missing pipeline artifacts or template issues  
+**Cause**: Missing pipeline artifacts or failed prior steps  
 **Solution**: 
 - Verify previous pipeline steps completed successfully
 - Check that required artifacts exist in output directories
 - Use `--verbose` flag for detailed generation logs
-- Review website template structure
 
 #### Issue 2: Embedded content missing
 **Symptom**: Website generated but images or markdown not embedded  

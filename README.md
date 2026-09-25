@@ -918,7 +918,7 @@ python src/gnn/main.py --only-steps 8 --target-dir path/to/gnn_models/
 
 ### 🎮 Interactive GUI Interfaces
 
-GNN provides **three distinct interactive GUI interfaces** for visual model construction and editing (pipeline step 22).
+GNN provides **four distinct interactive GUI interfaces** for visual model construction and editing (pipeline step 22).
 
 #### 🎯 GUI Overview
 
@@ -982,7 +982,9 @@ output/22_gui_output/               # all GUI backends write to this one folder
 ├── visual_matrices.json            # GUI 2: matrix payloads
 ├── designed_model_gui_3.md         # GUI 3: design studio export
 ├── design_analysis.json            # GUI 3: design analysis
-├── gui_status.json
+├── gui_1_status.json               # GUI 1: launch/backend status
+├── gui_2_status.json               # GUI 2: launch/backend status
+├── design_studio_status.json       # GUI 3: launch/backend status
 ├── navigation.html
 └── gui_processing_summary.json
 ```
