@@ -1,7 +1,8 @@
 {
-  "counts_describe_commit": "3238187bf",
-  "dirty_path_count": 2,
+  "counts_describe_commit": "394400b7d",
+  "dirty_path_count": 3,
   "dirty_paths": [
+    "TO-DO.md",
     "output/data/manuscript_variables.json",
     "output/data/manuscript_variables_receipt.json"
   ],
