@@ -18,6 +18,7 @@ from typing import Any, Optional, Union
 
 from gnn.execute.subprocess_envelope import (
     NEVER_STARTED,
+    CancelToken,
     run_subprocess_envelope,
 )
 
@@ -58,11 +59,14 @@ def verify_document(
     fail_on_warnings: bool = True,
     gnn_root: Union[str, Path] | None = None,
     timeout: int = _VERIFY_TIMEOUT_SECONDS,
+    cancel_token: CancelToken | None = None,
 ) -> dict[str, Any]:
     """Verify one emitted document via ``fep-lean bridge verify-document``.
 
     Returns a record with ``success`` plus either the parsed receipt or an
-    ``error`` message captured from the bridge CLI (fail-closed).
+    ``error`` message captured from the bridge CLI (fail-closed). A fired
+    ``cancel_token`` cancels the dispatch cooperatively inside the
+    subprocess envelope (pre-spawn or mid-flight).
     """
     root = resolve_fep_lean_root()
     if root is None:
@@ -95,6 +99,7 @@ def verify_document(
             model,
             fail_on_warnings,
             timeout,
+            cancel_token=cancel_token,
         )
     finally:
         if _temp_dir is not None:
@@ -108,6 +113,7 @@ def _verify_document_impl(
     model: str,
     fail_on_warnings: bool,
     timeout: int,
+    cancel_token: CancelToken | None,
 ) -> dict[str, Any]:
     command = [
         "uv",
@@ -133,12 +139,20 @@ def _verify_document_impl(
         "command": command,
     }
     envelope = run_subprocess_envelope(
-        command, timeout=timeout, cwd=str(_lean_cwd(gnn_root_path))
+        command,
+        timeout=timeout,
+        cwd=str(_lean_cwd(gnn_root_path)),
+        cancel_token=cancel_token,
     )
     # Canonical ``return_code`` key (MAJ-10); ``returncode`` kept for
     # existing consumers of the lean record.
     record["return_code"] = envelope["return_code"]
     record["returncode"] = envelope["return_code"]
+    if envelope.get("cancelled"):
+        # Cooperative cancel (pre-spawn or mid-flight): surface it so
+        # callers can distinguish cancellation from a bridge failure.
+        record["cancelled"] = True
+        record["error_type"] = envelope.get("error_type", "Cancelled")
     if envelope["success"]:
         record["success"] = True
         if receipt_path.is_file():
@@ -173,6 +187,8 @@ def run_lean_scripts(
     recursive_search: bool = True,
     verbose: bool = False,
     timeout: Optional[int] = None,
+    *,
+    cancel_token: CancelToken | None = None,
 ) -> bool:
     """Verify every emitted Lean/GNN document under the target directory.
 
@@ -181,7 +197,9 @@ def run_lean_scripts(
     ``False`` when the fep_lean checkout is unavailable or any document
     fails. Per-document receipts are written under ``execution_output_dir``.
     When ``timeout`` is given it overrides the per-document ceiling;
-    ``None`` keeps ``verify_document``'s default.
+    ``None`` keeps ``verify_document``'s default. ``cancel_token`` threads
+    into every per-document call; the envelope owns the cooperative checks
+    (pre-spawn and mid-flight).
     """
     if resolve_fep_lean_root() is None:
         logger.info(
@@ -206,9 +224,11 @@ def run_lean_scripts(
     for document in documents:
         receipt_path = output_dir / f"{document.stem}-receipt.json"
         if timeout is not None:
-            record = verify_document(document, receipt_path, timeout=timeout)
+            record = verify_document(
+                document, receipt_path, timeout=timeout, cancel_token=cancel_token
+            )
         else:
-            record = verify_document(document, receipt_path)
+            record = verify_document(document, receipt_path, cancel_token=cancel_token)
         ok = bool(record.get("success"))
         all_ok = all_ok and ok
         status_icon = "✅" if ok else "❌"

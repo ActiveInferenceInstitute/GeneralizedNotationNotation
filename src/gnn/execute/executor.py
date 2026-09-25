@@ -228,7 +228,10 @@ class GNNExecutor:
             execution_type: Type of execution (pymdp, rxinfer, discopy, etc.)
             options: Additional execution options
             cancel_token: Optional cooperative cancellation token threaded
-                into the subprocess dispatches (lean is not cancellable yet)
+                into every subprocess dispatch, lean included — the token
+                fires pre-spawn and mid-flight via the shared envelope; the
+                fep-lean bridge process itself has no in-process
+                cooperative-cancel protocol yet (held fep-side substance)
 
         Returns:
             Dictionary with execution results
@@ -290,10 +293,13 @@ class GNNExecutor:
                     model_path, options, timeout=timeout, cancel_token=cancel_token
                 )
             elif execution_type == "lean":
-                # verify_document has no cancellation hook yet; threading a
-                # CancelToken through the fep-lean bridge is a follow-up.
+                # Cancellable GNN-side: the token rides into the fep-lean
+                # bridge dispatch through the shared envelope (pre-spawn and
+                # mid-flight cooperative checks). The bridge process itself
+                # has no in-process cooperative protocol yet — that is the
+                # held fep-side substance.
                 result = self._execute_lean_verification(
-                    model_path, options, timeout=timeout
+                    model_path, options, timeout=timeout, cancel_token=cancel_token
                 )
             elif execution_type == "activeinference_jl":
                 result = self._execute_activeinference_script(
@@ -428,8 +434,15 @@ class GNNExecutor:
         model_path: str,
         options: Optional[Dict[str, Any]] = None,
         timeout: Optional[int] = None,
+        *,
+        cancel_token: Optional[CancelToken] = None,
     ) -> Dict[str, Any]:
-        """Verify one document via the fep_lean bridge (contract v0.6)."""
+        """Verify one document via the fep_lean bridge (contract v0.6).
+
+        ``cancel_token`` forwards into the envelope-backed dispatch; a fired
+        token cancels the run pre-spawn or mid-flight GNN-side (the fep-lean
+        bridge process itself has no in-process cooperative protocol).
+        """
         state = _runner_state("lean")
         if not state.available or state.runner is None:
             return {"success": False, "error": "fep_lean unavailable"}
@@ -443,6 +456,7 @@ class GNNExecutor:
             model=opts.get("model", "finite"),
             fail_on_warnings=bool(opts.get("fail_on_warnings", True)),
             timeout=opts.get("timeout") or timeout or 1800,
+            cancel_token=cancel_token,
         )
 
     def _dispatch_cache_lookup(
