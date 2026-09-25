@@ -1,12 +1,19 @@
 # TO-DO - GNN Pipeline Roadmap
 
-**Last Updated**: 2026-09-24 (truth-pass per the wave-5 census at
-`ac8abd3a2`: landed rows struck — Minor batch MI-1..MI-16 (#173-#176),
-BC-02a/BC-02c + ARCH-1, BC-02b, BC-13, ARCH-3, and
-M-04/M-05/M-06/M-07/M-08/M-10/M-13; GEN-1/2 landed (#183, #179-#182).
-M-01 re-counted to the tracked band set: 11 after #188 folded
-`main.py` (a raw >1200-line sweep counts 17). Open rows re-scoped:
-M-03 (doctrine long tail), M-09 (mirror-or-exempt), M-11/M-12/M-14,
+**Last Updated**: 2026-09-25 (truth-pass per the wave-6 folds at
+`394400b7d`: landed rows struck — M-03 doctrine + except-Exception
+ratchet landed (#203: `docs/standards/exceptions.md` + AST-pinned
+`check_gnn_doc_patterns.py` ratchet at baseline 1183); M-12 MCP pymdp
+gated-envelope bypass landed (#200: `run_subprocess_envelope` route +
+deterministic zero-skip sandbox-refusal test); M-01 band targets
+`cli/__init__.py` 1431→181 (#202), `manuscript/variables.py` 1430→562
+(#201), `extract/pomdp_extractor.py` 1837→655 (#204). GEN-1/2 landed
+earlier (#183, #179-#182). M-11 lean-cancel: GNN-side CancelToken
+threading staged (lane t-0044); the fep-side bridge substance is held
+pending the sibling fep lane (custody cycle #27 closes it). Remaining
+open rows: M-01 (band remainder: `executor.py` 1665 next,
+`render/pomdp_processor.py` and `render/processor.py` queued),
+M-09 (mirror-or-exempt), M-14 (bnlearn seam), M-11 (fep-side held),
 BC-14 (conditional). Audit trail: `CHANGELOG.md` and git history.
 Full program: `SCOPE-2026-09-23.md`.)
 **Current Version**: 3.5.0
@@ -32,11 +39,11 @@ file). Summary:
 | ID | Class | Scope | Acceptance anchor |
 | --- | --- | --- | --- |
 | BC-14 | minor | `utils/pipeline_orchestration/pipeline_template.py` I5 fallback chain — conditional on lint-imports going red (currently 3 kept / 0 broken) | SCOPE §Medium M-06 |
-| M-01 | medium | Oversized band: 11 tracked band files (SCOPE M-01 set + new crossers) after #188 folded `main.py` (largest `rxinfer_bridge.py` 1801 … `render/processor.py` 1329; new crossers `execute/processor.py` 1577, `website/generator.py` 1379); a raw >1200-line sweep counts 17 at `9fb81279e` — 6 extras sit outside the tracked set (`gui/gui_2/ui.py` 1545, `parsers/schema_parser.py` 1534, `utils/arguments/arg_parsing.py` 1498, `intelligent_analysis/processor.py` 1409, `utils/logging/logging_utils.py` 1335, `security/processor.py` 1235) pending a band-program decision; decompose one file per wave, parity-gated | SCOPE §Medium M-01 |
-| GEN-3/GEN-4 | major | v4.0.0 generalization remainder: factored/hybrid/multi-agent continuous; non-stationary F_t/regime semantics (GEN-1/2 landed: #183, #179-#182) | SCOPE §Major |
-| M-03 | medium | `except Exception` long tail: 304+ remaining sites, all spot-checked sites log + structured receipts; hotspot fixes landed — remaining work is doctrine + optional ratchet, no mass rewrite | SCOPE §Medium M-03 |
+| M-01 | medium | Oversized band remainder: wave-6 folded `cli/__init__.py` 1431→181 (#202), `manuscript/variables.py` 1430→562 (#201), `extract/pomdp_extractor.py` 1837→655 (#204); next `execute/executor.py` 1665 (one file per wave), then `render/pomdp_processor.py` and `render/processor.py`; raw-extras set unchanged, pending a band-program decision; parity-gated | SCOPE §Medium M-01 |
+| GEN remainder | major | Multi-agent continuous topologies (GEN-1 #183, GEN-2 #179-#182, GEN-3 factored/hybrid #193, GEN-4 non-stationary #192 all landed); partial stigmergic multi-agent support exists (`tests/render/test_stigmergic_multi_agent.py`) | SCOPE §Major |
 | M-09 | medium | Mirror-or-exempt for the 7 unmirrored test dirs; `tests/parsers` + `tests/processing` mirrors dispatched in a parallel lane; near-empty src dirs (`documentation`, `grammars`, `schemas`, `schema`, `formal_specs`, `type_systems`) exemptable | SCOPE §Medium M-09 |
-| M-11/M-12/M-14 | medium | Execution-route normalization: lean CancelToken holdout (cross-repo fep lane); MCP pymdp gated-envelope bypass (rides the GEN-3/4 fold); bnlearn seam → `render/bnlearn/` package per the ngclearn pattern, rewire `framework_registry.py:205` + `health.py:56-58` | SCOPE §Medium |
+| M-14 | medium | bnlearn seam → `render/bnlearn/` package per the ngclearn pattern, rewire `framework_registry.py:205` + `health.py:56-58` | SCOPE §Medium |
+| M-11 | medium | lean CancelToken: GNN-side threading staged (lane t-0044: executor.py lean branch + `lean_runner.verify_document` → `run_subprocess_envelope(cancel_token=...)` — real behavior change: the envelope implements process-level cancellation, the pymdp route is the pattern); fep-side in-bridge cooperative semantics HELD for the sibling fep lane; custody cycle #27 re-seals at close | SCOPE §Medium |
 
 
 Cross-repo (fep_lean coordinator territory, NOT GNN waves): X-1
