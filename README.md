@@ -846,10 +846,14 @@ re-reading the source.
 
 ### CLI serve surfaces and MCP inspection
 
-`gnn serve` selects which FastAPI surface to start with `--surface`:
+`gnn serve` selects which surface to start with `--surface`:
 `runs` (default, the pipeline-runs API), `jobs` (the job/tool API), or `both`
 (the jobs surface on port+1 in a daemon thread while runs blocks on the main
-thread) — e.g. `gnn serve --surface jobs`. From the CLI you can also inspect
+thread) — e.g. `gnn serve --surface jobs` — or `website`, which serves the
+generated pipeline output tree (`20_website_output/`, `22_gui_output/`,
+`00_pipeline_summary/`) over loopback HTTP on port 8090 by default; `--root`
+overrides the output root and `--live-reload` injects a reload poller into
+served HTML pages. From the CLI you can also inspect
 the registered MCP tool surface: `gnn mcp list` prints one line per tool (add
 `--json` for the standard envelope) and `gnn mcp info <tool>` shows a single
 tool's registry record.

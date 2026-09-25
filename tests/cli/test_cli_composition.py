@@ -538,13 +538,13 @@ class _StubMcpInstance:
 
 
 class TestServeSurface:
-    """``serve`` routes the runs, jobs, and both API surfaces."""
+    """``serve`` routes the runs, jobs, and both API surfaces, plus website."""
 
     def test_surface_choices_and_default(self) -> None:
         parser = cli.build_parser()
         serve_p = _subparser_map(parser)["serve"]
         surface = next(a for a in serve_p._actions if a.dest == "surface")
-        assert surface.choices == ["runs", "jobs", "both"]
+        assert surface.choices == ["runs", "jobs", "both", "website"]
         assert surface.default == "runs"
 
     def test_runs_surface_calls_start_server(

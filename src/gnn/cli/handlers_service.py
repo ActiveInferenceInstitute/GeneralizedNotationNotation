@@ -20,8 +20,47 @@ logger = logging.getLogger(__name__)
 
 
 def _cmd_serve(args: argparse.Namespace) -> int:
-    """Start Pipeline-as-a-Service API (runs, jobs, or both surfaces)."""
+    """Start long-running services (API surfaces or the generated website)."""
     surface = str(getattr(args, "surface", "runs") or "runs")
+    if surface == "website":
+        from gnn.pipeline.config import DEFAULT_OUTPUT_DIR
+        from gnn.website.serve import (
+            DEFAULT_WEBSITE_PORT,
+            WebsiteServerError,
+            serve_website,
+        )
+
+        root = (
+            Path(args.root)
+            if getattr(args, "root", None)
+            else Path(DEFAULT_OUTPUT_DIR)
+        )
+        port = args.port if args.port is not None else DEFAULT_WEBSITE_PORT
+        try:
+            serve_website(
+                root,
+                port=port,
+                open_browser=False,
+                live_reload=bool(getattr(args, "live_reload", False)),
+                host=args.host,
+            )
+        except (WebsiteServerError, OSError) as exc:
+            print(f"❌ Could not start website server: {exc}")
+            return EXIT_ERROR
+        return EXIT_SUCCESS
+    website_only = [
+        name
+        for name, value in (
+            ("live-reload", bool(getattr(args, "live_reload", False))),
+            ("root", getattr(args, "root", None)),
+        )
+        if value
+    ]
+    if website_only:
+        flags = ", ".join(f"--{name}" for name in website_only)
+        print(f"❌ {flags} only valid with --surface website")
+        return EXIT_ERROR
+    port = args.port if args.port is not None else 8000
     try:
         from gnn.api.auth import require_secure_bind
 
@@ -34,7 +73,7 @@ def _cmd_serve(args: argparse.Namespace) -> int:
         if surface == "jobs":
             from gnn.api.server import run_server
 
-            run_server(host=args.host, port=args.port)
+            run_server(host=args.host, port=port)
         else:
             if surface == "both":
                 import threading
@@ -47,14 +86,14 @@ def _cmd_serve(args: argparse.Namespace) -> int:
                     uvicorn.Config(
                         create_app(),
                         host=args.host,
-                        port=args.port + 1,
+                        port=port + 1,
                         log_level="info",
                     )
                 )
                 threading.Thread(target=jobs_server.run, daemon=True).start()
             from gnn.api.app import start_server
 
-            start_server(host=args.host, port=args.port)
+            start_server(host=args.host, port=port)
     except ImportError:
         print("❌ FastAPI not installed. Run: uv sync --extra api")
         return EXIT_ERROR

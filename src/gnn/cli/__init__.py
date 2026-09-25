@@ -12,7 +12,7 @@ Provides:
   gnn reproduce  — Re-run from a previous run hash
   gnn preflight  — Run environment & config checks
   gnn health     — Show renderer & dependency status
-  gnn serve      — Start Pipeline-as-a-Service API
+  gnn serve      — Start long-running services (API surfaces or website)
   gnn templates  — Inspect maintained GNN templates
   gnn models     — Query and inspect the model registry
   gnn pull       — Copy a maintained template into an input directory
