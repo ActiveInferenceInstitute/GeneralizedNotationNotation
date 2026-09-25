@@ -62,7 +62,7 @@ _INVALID_DEFAULT_TIMEOUTS_WARNED: set[str] = set()
 # null keys when not (execute/validator.py optional-import precedent).
 try:
     import psutil as _psutil_module
-except Exception:  # pragma: no cover - psutil is core; belt-and-braces
+except ImportError:  # pragma: no cover - psutil is core; belt-and-braces
     _psutil_module = cast(Any, None)
 
 
@@ -258,19 +258,19 @@ class _ChildRssSampler:
         try:
             root = psutil.Process(self._pid)
             rss = float(root.memory_info().rss)
-        except Exception:  # noqa: BLE001 — vanished (NoSuchProcess/zombie)/access
+        except (psutil.Error, OSError):  # vanished (NoSuchProcess/zombie)/access
             # The tree vanished between polls (or psutil lost access): stop
             # sampling; an already-observed peak survives.
             self._stopped = True
             return
         try:
             children = root.children(recursive=True)
-        except Exception:  # noqa: BLE001 — tree raced a teardown mid-poll
+        except (psutil.Error, OSError):  # tree raced a teardown mid-poll
             children = []
         for child in children:
             try:
                 rss += float(child.memory_info().rss)
-            except Exception:  # noqa: BLE001 — grandchild exited mid-poll
+            except (psutil.Error, OSError):  # grandchild exited mid-poll
                 continue
         self._peak_rss_bytes = max(self._peak_rss_bytes, rss)
         self._samples += 1
