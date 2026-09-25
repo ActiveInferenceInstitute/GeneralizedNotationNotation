@@ -63,7 +63,7 @@ def test_v350_executor_registry_contract_fires(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     """Dropping a backend from FRAMEWORK_DIR_NAMES must fail the v3.5.0 pin."""
-    executor_text = check_capability_contracts._read("src/gnn/execute/executor.py")
+    executor_text = check_capability_contracts._read("src/gnn/execute/executor_specs.py")
     match = re.search(
         r"FRAMEWORK_DIR_NAMES: tuple\[str, \.\.\.\] = \((?P<names>[^)]*)\)",
         executor_text,
@@ -78,7 +78,7 @@ def test_v350_executor_registry_contract_fires(
         rebuilt += f'    "{name}",\n'
     rebuilt += ")"
     narrowed = executor_text.replace(match.group(0), rebuilt, 1)
-    _patched_read(monkeypatch, {"src/gnn/execute/executor.py": narrowed})
+    _patched_read(monkeypatch, {"src/gnn/execute/executor_specs.py": narrowed})
 
     failures = run_audit()
     assert any(
