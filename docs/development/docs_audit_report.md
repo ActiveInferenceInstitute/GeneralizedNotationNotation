@@ -50,6 +50,10 @@ None found.
 
 None found.
 
+## Render-engine count claims contradicting framework_registry
+
+None found.
+
 ## docs/**/AGENTS.md structure (Overview/Purpose)
 
 None.
