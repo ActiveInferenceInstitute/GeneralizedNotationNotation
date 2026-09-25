@@ -80,17 +80,17 @@
 
 Non-numeric horizon (`"Unbounded"` or symbolic): exact-factorized and LGSSM bounds degrade to their per-step form and the asymptotic string says `horizon Unbounded: no numeric total bound`. Sampling bounds are horizon-agnostic (reported per sample). `bnlearn` is the render-only registry-gated backend (`render/framework_registry.py` bnlearn entry).
 
-**Honesty rule**: every asymptotic is labeled `[ESTIMATE]`; drivers carry only computed numbers (horizon, state-space totals/max, joint continuous dim, max factor arity, declared agent count, declared regime tensor count, edge/variable counts). Nothing is invented; the receipt is an argument, not a measurement.
+**Honesty rule**: every asymptotic is labeled `[ESTIMATE]`; drivers carry only computed numbers (horizon, state-space totals/max, joint continuous dim, max factor arity, declared agent count, declared regime tensor count, edge/variable counts). The agent count mirrors multi-agent kind detection: explicit `nr_agents` then `num_agents` (initialparameterization first, then model_parameters), else the highest per-agent matrix index (`A_agent2` -> 2); 1 when no agent evidence exists. Nothing is invented; the receipt is an argument, not a measurement.
 
 ---
 
 ## Conventions
 - Pure stdlib (math, hashlib, json, re, pathlib, dataclasses) + existing GNN modules only; no jax/pymdp/executor imports.
 - Deterministic: sorted kind keys, fixed backend order, stable JSON.
-- Tests: `tests/analysis/test_complexity_estimator.py` (pure-unit, deterministic, zero-skip; committed exemplars MUST fail — not skip — if missing).
+- Tests: `tests/analysis/complexity/test_complexity_estimator.py` (pure-unit, deterministic, zero-skip; committed exemplars are asserted to exist, so a missing exemplar FAILS — it never passes vacuously).
 
 ## Verification
-Run `uv run --extra dev python -m pytest tests/analysis/test_complexity_estimator.py -q`.
+Run `uv run --extra dev python -m pytest tests/analysis/complexity/test_complexity_estimator.py -q`.
 
 ## Custody note
 New `src/gnn/**/*.py` files drift the fep_lean source-pin by existing (owner roster rejects additions); expected — the coordinator re-seals at fold. No action in this lane.

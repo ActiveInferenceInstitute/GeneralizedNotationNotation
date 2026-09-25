@@ -47,6 +47,10 @@ _REGIME_VARIABLE = re.compile(r"^B_regime\d*$", re.IGNORECASE)
 #: Square linear-Gaussian system-matrix declarations (``[d, d]``).
 _LGSSM_SYSTEM_MATRIX_NAMES = frozenset({"F", "H", "Q", "R"})
 
+#: Per-agent matrix declarations (``A_agent2``) — the agent evidence
+#: ``detect_model_kinds`` also accepts when ``nr_agents`` is undeclared.
+_AGENT_MATRIX_KEY = re.compile(r"^[ABCDE]_agent(\d+)$", re.IGNORECASE)
+
 
 def estimate_model_complexity(
     model_or_path: GNNInternalRepresentation | str | Path,
@@ -102,7 +106,7 @@ def estimate_model_complexity(
         },
         "structure": structure,
         "model_kinds": kinds,
-        "per_backend": _per_backend_rows(kinds, dims),
+        "per_backend": _per_backend_rows(set(kinds), dims),
         "estimator_version": ESTIMATOR_VERSION,
     }
 
@@ -305,18 +309,36 @@ def _regime_count(
 
 
 def _agent_count(spec: dict[str, Any]) -> int:
-    """Declared agent count (``nr_agents``), mirroring kind detection."""
-    model_parameters = spec.get("model_parameters")
-    if not isinstance(model_parameters, dict):
-        model_parameters = {}
+    """Declared agent count, mirroring multi-agent kind detection.
+
+    Priority: an explicit ``nr_agents`` then ``num_agents`` declaration
+    (``initialparameterization`` first, then ``model_parameters`` — the
+    parser mirrors matrix/parameter keys into both). When neither is
+    declared, the count derives from per-agent matrix keys (``A_agent2``
+    -> agent 2 declared -> count 2), the same evidence
+    ``detect_model_kinds`` uses to classify ``multi_agent``. 1 when no
+    agent evidence exists — single-agent models stay 1.
+    """
     initial = spec.get("initialparameterization")
     if not isinstance(initial, dict):
         initial = {}
-    raw = initial.get("nr_agents", model_parameters.get("nr_agents", 1))
-    try:
-        return int(raw)
-    except (TypeError, ValueError):
-        return 1
+    model_parameters = spec.get("model_parameters")
+    if not isinstance(model_parameters, dict):
+        model_parameters = {}
+    for source in (initial, model_parameters):
+        for key in ("nr_agents", "num_agents"):
+            try:
+                value = int(source[key])
+            except (KeyError, TypeError, ValueError):
+                continue
+            if value > 0:
+                return value
+    agents: list[int] = []
+    for key in initial:
+        agent_match = _AGENT_MATRIX_KEY.match(str(key))
+        if agent_match is not None:
+            agents.append(int(agent_match.group(1)))
+    return max(agents) if agents else 1
 
 
 def _per_backend_rows(
