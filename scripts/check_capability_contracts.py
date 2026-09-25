@@ -344,27 +344,27 @@ def run_audit() -> List[str]:
         if not _exists(required):
             failures.append(f"v3.5.0 flag-parity contract missing: {required}")
 
-    executor_text = _read("src/gnn/execute/executor.py")
+    executor_text = _read("src/gnn/execute/executor_specs.py")
     framework_names = re.search(
         r"FRAMEWORK_DIR_NAMES: tuple\[str, \.\.\.\] = \((?P<names>[^)]*)\)",
         executor_text,
     )
     if framework_names is None:
         failures.append(
-            "src/gnn/execute/executor.py: "
+            "src/gnn/execute/executor_specs.py: "
             "FRAMEWORK_DIR_NAMES registry declaration missing"
         )
     else:
         backend_names = re.findall(r'"([^"]+)"', framework_names.group("names"))
         if len(backend_names) != 11:
             failures.append(
-                "src/gnn/execute/executor.py: "
+                "src/gnn/execute/executor_specs.py: "
                 "FRAMEWORK_DIR_NAMES must close to eleven backends"
             )
         for required in ("stan", "bnlearn"):
             if required not in backend_names:
                 failures.append(
-                    "src/gnn/execute/executor.py: "
+                    "src/gnn/execute/executor_specs.py: "
                     f"FRAMEWORK_DIR_NAMES missing v3.5.0 backend {required}"
                 )
 
