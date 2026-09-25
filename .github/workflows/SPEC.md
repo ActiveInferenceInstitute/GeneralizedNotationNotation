@@ -20,7 +20,7 @@ The module defines strict automation routines via YAML configuration:
 6. **`supply-chain-audit.yml`**: A weekly scheduled audit explicitly exporting headless `uv` lockfiles and executing `pip-audit` via OSV vulnerability tracking.
 7. **`mcp-audit.yml`**: A fast MCP tool-count regression gate (≥ 140 registered tools) on push/PR to `main`.
 8. **`full-extras.yml`**: A weekly scheduled matrix validating optional dependency groups (audio, GUI, research, scaling) and running the full pytest suite under `--all-extras`.
-9. **`pair-pin-freshness.yml`**: A nightly watchdog asserting each committed pair pin (fep_lean, GEO-INFER) stays ancestor-or-equal of its companion default-branch HEAD, exiting 2 with a "re-pin required" diagnosis naming the stale pair file, the pinned revision and the companion tip.
+9. **`pair-pin-freshness.yml`**: A nightly watchdog asserting each committed pair pin (fep_lean, GEO_INFER) stays ancestor-or-equal of its companion default-branch HEAD, exiting 2 with a "re-pin required" diagnosis naming the stale pair file, the pinned revision and the companion tip.
 
 ## Technical Rules
 - **Syntax**: 100% strict adherence to GitHub Actions YAML schemas.

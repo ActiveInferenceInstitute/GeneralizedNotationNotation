@@ -58,7 +58,7 @@ See the [framework integration guide](gnn/integration/framework_integration_guid
 and [framework implementations](gnn/implementations/README.md). For the Lean 4 frontier, see the
 [fep_lean bridge program](other/fep_lean/README.md) (contract v0.6; canonical
 contract in the sibling checkout).
-For spatial active inference, see the [GEO-INFER interchange](other/geo_infer/README.md)
+For spatial active inference, see the [GEO_INFER interchange](other/geo_infer/README.md)
 (contracts `gnn-geo-infer/1|2|factored/1`; canonical interchange docs in the sibling checkout).
 
 ## Current implementation map

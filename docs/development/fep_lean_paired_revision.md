@@ -1,10 +1,10 @@
-# Cross-repo custody: the fep_lean and GEO-INFER pairing contracts (GNN-04)
+# Cross-repo custody: the fep_lean and GEO_INFER pairing contracts (GNN-04)
 
 This is the canonical statement of GNN's cross-repo custody obligations. The
 GNN side hosts paired-revision CI for the fep_lean bridge pair, mirroring
-the mechanism GEO-INFER already runs for this repository: its
+the mechanism GEO_INFER already runs for this repository: its
 `.github/workflows/gnn-interchange.yml` workflow with pin file
-`.github/gnn-pair.json`. The GEO-INFER direction (GEO-INFER pinning GNN) is
+`.github/gnn-pair.json`. The GEO_INFER direction (GEO_INFER pinning GNN) is
 covered in the mirror-image section below.
 
 ## What is pinned
@@ -15,8 +15,8 @@ GNN-side contract was checked against. That file is the live source of truth
 for the current pin; read it directly. This doc deliberately quotes no SHA,
 so it cannot go stale the way a quoted pin does.
 
-In the mirror direction, GEO-INFER pins GNN from its own checkout via its
-`.github/gnn-pair.json` (see [GEO-INFER direction](#geo-infer-direction)).
+In the mirror direction, GEO_INFER pins GNN from its own checkout via its
+`.github/gnn-pair.json` (see [GEO_INFER direction](#geo_infer-direction)).
 
 ## What runs
 
@@ -92,16 +92,16 @@ this exact order:
 Ledger mentions of this discipline (e.g. the "paired-repin discipline" row in
 `TO-DO.md`) defer to this section.
 
-## GEO-INFER direction
+## GEO_INFER direction
 
-GEO-INFER pins GNN from its side via its `.github/gnn-pair.json`, and its
+GEO_INFER pins GNN from its side via its `.github/gnn-pair.json`, and its
 paired interchange CI (`.github/workflows/gnn-interchange.yml` in the
-GEO-INFER checkout) checks out GNN at exactly that pinned revision. Bumping
+GEO_INFER checkout) checks out GNN at exactly that pinned revision. Bumping
 that pin is a reviewed companion-revision decision and follows the same
 re-pin discipline in mirror image: GNN content edits land first, then the
-GEO-INFER-side PR updates its pin to the new reviewed GNN revision.
+GEO_INFER-side PR updates its pin to the new reviewed GNN revision.
 
 ## Related
 
-- [GEO-INFER paired interchange (GNN-side docs)](geo_infer_2026_09.md)
+- [GEO_INFER paired interchange (GNN-side docs)](geo_infer_2026_09.md)
 - fep_lean bridge contract (GNN-side docs): `docs/other/fep_lean/bridge-contract.md`

@@ -75,7 +75,7 @@ src/gnn/export/
 - `output_dir` (Path): Output directory for exports
 - `verbose` (bool): Enable verbose logging (default: False)
 - `**kwargs`: Additional processing options, including `formats` and an
-  optional opt-in `geo_infer` mapping that enables the strict GEO-INFER
+  optional opt-in `geo_infer` mapping that enables the strict GEO_INFER
   export (see Configuration).
 
 **Returns**: `True` if all exports succeeded
@@ -135,7 +135,7 @@ success = process_export(
 Passing `geo_infer={"step_seconds": ..., "state_ids_path": ..., "space_kind": ...}`
 to `process_export` (or passing the Step 7 CLI flags `--geo-step-seconds`,
 `--geo-state-ids`, `--geo-space-kind`, registered in the shared step-argument
-registry) requests the strict GEO-INFER artifact
+registry) requests the strict GEO_INFER artifact
 (`{model}_geo_infer.geo-infer.json`) in addition to the requested formats.
 Rules:
 

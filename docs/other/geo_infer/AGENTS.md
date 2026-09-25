@@ -8,8 +8,8 @@ Updated**: 2026-09-06
 ## Purpose
 
 Document, for GNN-side readers and agents, the artifact-level interchange
-with the sibling spatial active-inference monorepo `GEO-INFER`: how GNN
-models are exported as versioned JSON artifacts, and how GEO-INFER consumes
+with the sibling spatial active-inference monorepo `GEO_INFER`: how GNN
+models are exported as versioned JSON artifacts, and how GEO_INFER consumes
 and validates them. This folder is the GNN-side mirror of the canonical
 interchange documentation at `../GEO-INFER/GEO-INFER-ACT/docs/gnn_interchange.md`
 (cross-repo references are inline code paths, never markdown links). The
@@ -29,9 +29,9 @@ sibling is a foreign git repository: never commit into it from GNN tooling.
 - Normative format docs: `src/gnn/export/geo_infer_contract.md` and
   `src/gnn/export/geo_infer_factored_contract.md`.
 - Export entry point: `uv run python -m gnn.export.geo_infer ...`.
-- Consumer boundary (GEO-INFER side): `geo_infer_act.core.gnn_contract`
+- Consumer boundary (GEO_INFER side): `geo_infer_act.core.gnn_contract`
   (`GNNArtifact`, `run_gnn_inference`).
-- Validation harness (GEO-INFER side):
+- Validation harness (GEO_INFER side):
   `GEO-INFER-TEST/validate_gnn_interchange.py`.
 
 ## Version facts
@@ -39,7 +39,7 @@ sibling is a foreign git repository: never commit into it from GNN tooling.
 - Contracts: `gnn-geo-infer/1` (categorical), `gnn-geo-infer/2` (Gaussian
   `F`/`G`/`H`/`Q`/`R`), `gnn-geo-infer/factored/1` (factored).
 - Integration is artifact-level only: separate environments, JSON artifacts
-  with SHA-256 provenance, no cross-checkout imports (the GEO-INFER contract
+  with SHA-256 provenance, no cross-checkout imports (the GEO_INFER contract
   forbids it).
 - H3 support is optional (`--extra geo-infer`).
 
