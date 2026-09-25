@@ -10,7 +10,7 @@
 
 **Status**: New (wave 8, lane W8-A)
 
-**Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
+**Version**: [pyproject.toml](../../../../pyproject.toml) (canonical)
 
 **Last Updated**: 2026-09-25
 
