@@ -143,9 +143,7 @@ def _validate_content(text: str) -> dict[str, Any] | None:
     return GNNTypeChecker().validate_content(text)
 
 
-def _structure_stats(
-    model: GNNInternalRepresentation, text: str
-) -> dict[str, Any]:
+def _structure_stats(model: GNNInternalRepresentation, text: str) -> dict[str, Any]:
     """Structural statistics from the parse object + type-checker layer."""
     connections = model.connections
     variables = model.variables
@@ -176,7 +174,9 @@ def _structure_stats(
         "discrete_var_count": discrete_var_count,
         "continuous_var_count": continuous_var_count,
         "time": {
-            "time_type": time_specification.time_type if time_specification else "Static",
+            "time_type": time_specification.time_type
+            if time_specification
+            else "Static",
             "discretization": (time_specification.discretization or "")
             if time_specification
             else "",
@@ -356,9 +356,7 @@ def _per_backend_rows(
         variants = [
             entry for entry in bounds.BACKEND_BOUNDS if entry.framework == framework
         ]
-        matched = [
-            entry for entry in variants if entry.applicable(kind_set, dims)
-        ]
+        matched = [entry for entry in variants if entry.applicable(kind_set, dims)]
         chosen = matched[0] if matched else variants[0]
         rows.append(
             {
