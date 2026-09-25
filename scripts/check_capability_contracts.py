@@ -100,10 +100,11 @@ def run_audit() -> List[str]:
             )
 
     cli_text = _read("src/gnn/cli/__init__.py")
+    cli_parser_text = _read("src/gnn/cli/parser.py")
     for command in ('add_parser("templates"', 'add_parser("show"', 'add_parser("pull"'):
-        if command not in cli_text:
+        if command not in cli_parser_text:
             failures.append(
-                f"src/gnn/cli/__init__.py: missing CLI command contract {command}"
+                f"src/gnn/cli/parser.py: missing CLI command contract {command}"
             )
     if not _exists("src/gnn/cli/templates.py"):
         failures.append(
@@ -323,11 +324,18 @@ def run_audit() -> List[str]:
     ):
         if not _exists(required):
             failures.append(f"v2.0 reliability contract missing: {required}")
-    for required in ('"gui": "_cmd_gui"', "def _cmd_gui"):
-        if required not in cli_text:
-            failures.append(
-                f"src/gnn/cli/__init__.py: missing v3.5.0 gui command contract {required}"
-            )
+    gui_table_contract = '"gui": "_cmd_gui"'
+    if gui_table_contract not in cli_text:
+        failures.append(
+            "src/gnn/cli/__init__.py: "
+            f"missing v3.5.0 gui command contract {gui_table_contract}"
+        )
+    cli_gui_handler_text = _read("src/gnn/cli/handlers_service.py")
+    if "def _cmd_gui" not in cli_gui_handler_text:
+        failures.append(
+            "src/gnn/cli/handlers_service.py: "
+            "missing v3.5.0 gui command contract def _cmd_gui"
+        )
 
     for required in (
         "scripts/check_flag_parity.py",
