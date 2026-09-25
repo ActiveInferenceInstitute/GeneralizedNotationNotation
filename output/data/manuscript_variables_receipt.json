@@ -1,8 +1,7 @@
 {
-  "counts_describe_commit": "cddb98719",
-  "dirty_path_count": 3,
+  "counts_describe_commit": "211cabeb1",
+  "dirty_path_count": 2,
   "dirty_paths": [
-    "TO-DO.md",
     "output/data/manuscript_variables.json",
     "output/data/manuscript_variables_receipt.json"
   ],
