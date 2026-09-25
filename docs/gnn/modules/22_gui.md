@@ -58,8 +58,10 @@ Defined in `src/gnn/gui/processor.py` (`process_gui`, lines 114-263):
 | `gui_3` | 7862 | State space design studio (SVG diagrams, ontology terms, connection graphs) | resolved step output root |
 | `oxdraw` | 5151 | GNN ↔ Mermaid conversion with optional external editor | `oxdraw_output/` subdirectory |
 
-Ports are assigned in code: `gui_1/__init__.py` (7860), `gui_2/__init__.py` (7861),
-`gui_3/__init__.py` (7862), `oxdraw/__init__.py` (5151). `gui_1`/`gui_2`/`gui_3`
+Each GUI's port is defined in its own `processor.py` (`gui_1/processor.py`,
+`gui_2/processor.py`, `gui_3/processor.py`, `oxdraw/processor.py`) and advertised
+through the `get_gui_1_info()`/`get_gui_2_info()`/`get_gui_3_info()`/`get_oxdraw_info()`
+metadata re-exported from `gnn.gui`. `gui_1`/`gui_2`/`gui_3`
 normalize their output directory through `resolve_output_root()`
 (`gui/runner.py`), which delegates to the shared
 `gnn.pipeline.config.resolve_step_output_dir` helper (pipeline/config.py:205-237).
