@@ -1,4 +1,4 @@
-# GNN Example: GEO-INFER Geospatial Framework
+# GNN Example: GEO_INFER Geospatial Framework
 # Format: Markdown representation of a Geospatial Inference Framework using Active Inference formalism
 # Version: 1.0
 # This file is machine-readable and represents a generative model for geospatial inference
@@ -10,7 +10,7 @@ GeoInferFramework
 GNN v1
 
 ## ModelName
-GEO-INFER: Geospatial Inference Framework v1.0
+GEO_INFER: Geospatial Inference Framework v1.0
 
 ## ModelAnnotation
 This model represents a comprehensive geospatial inference framework built on Active Inference principles.
@@ -274,11 +274,11 @@ spatial_precision: 1.0  # Precision over space
 ethical_weight: 1.0  # Weight for ethical considerations
 
 ## Footer
-GEO-INFER: Geospatial Inference Framework v1.0 - End of Specification
+GEO_INFER: Geospatial Inference Framework v1.0 - End of Specification
 
 ## Signature
 Creator: AI Assistant
 Date: 2024-07-26
 Status: Example for demonstration of geospatial inference modeling in the GNN framework.
-Implementation: Based on the GEO-INFER package structure with modules for precision agriculture, urban resilience, conservation, and disaster management.
+Implementation: Based on the GEO_INFER package structure with modules for precision agriculture, urban resilience, conservation, and disaster management.
 Technology Stack: Python ecosystem (NumPy, Pandas, GeoPandas, PyTorch, TensorFlow), PostgreSQL/PostGIS, TimescaleDB, MinIO, Redis, FastAPI, ReactJS, Docker, Kubernetes. 

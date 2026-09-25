@@ -7,17 +7,17 @@
 
 ## Overview
 
-GEO-INFER is the Active Inference Institute's spatial active-inference
+GEO_INFER is the Active Inference Institute's spatial active-inference
 monorepo: 47 modules covering geography, topology, environmental sensing,
 and cognitive modeling over spatially indexed data. The sibling checkouts
 live at `../GEO-INFER` (paths in this folder that start with `../GEO-INFER/`
 are written as inline code on purpose: each repository validates its own
-links, so cross-repo references are never markdown links). The integration
+links, so cross-repo references are never markdown links) (local clones may carry the earlier GEO-INFER dirname; git remotes are canonical). The integration
 is **artifact-level only**: the two projects run in separate environments and
 exchange versioned JSON artifacts with SHA-256 provenance; neither checkout
 imports the other, and their contract forbids cross-checkout imports.
 
-The relevant modules on the GEO-INFER side are:
+The relevant modules on the GEO_INFER side are:
 
 - **SPACE** — H3 spatial topology and the state-id space artifacts bind to.
 - **TIME** — observation scheduling for spatially distributed observations.
@@ -28,7 +28,7 @@ The relevant modules on the GEO-INFER side are:
 
 ## Contracts
 
-Three versioned artifact contracts connect the pipeline to GEO-INFER. The
+Three versioned artifact contracts connect the pipeline to GEO_INFER. The
 normative format documentation is `src/gnn/export/geo_infer_contract.md`;
 the factored variant has its own normative doc,
 `src/gnn/export/geo_infer_factored_contract.md`.
@@ -59,7 +59,7 @@ with `uv sync --extra geo-infer` first.
 ## Validating interchange
 
 The validation harness lives in the GEO-INFER-TEST module of the sibling
-checkout. Run it from the GEO-INFER checkout, pointing it at this repo:
+checkout. Run it from the GEO_INFER checkout, pointing it at this repo:
 
 ```
 cd ../GEO-INFER && uv run python GEO-INFER-TEST/validate_gnn_interchange.py --gnn-repo ../GeneralizedNotationNotation --gnn-python ../GeneralizedNotationNotation/.venv/bin/python
@@ -74,11 +74,11 @@ requirements.
 fep_lean verifies the well-formedness of GNN **source documents** in Lean 4,
 upstream of export (see [docs/other/fep_lean/](../fep_lean/README.md));
 explicitly, `fep-lean bridge verify-document` consumes GNN Markdown via
-`gnn.extract.pomdp_extractor` and cannot validate GEO-INFER's interchange
+`gnn.extract.pomdp_extractor` and cannot validate GEO_INFER's interchange
 artifact JSON (a different format, validated by `GNNArtifact`); the Lean
 gate applies to the notation before export, not to the artifacts after it,
-GEO-INFER consumes the **exported artifacts** downstream. No Lean toolchain
-is involved anywhere in the GEO-INFER interchange.
+GEO_INFER consumes the **exported artifacts** downstream. No Lean toolchain
+is involved anywhere in the GEO_INFER interchange.
 
 ## Related documentation
 

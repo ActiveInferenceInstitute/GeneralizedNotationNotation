@@ -103,7 +103,7 @@ The declared groups are visible in `pyproject.toml`:
 | `stan` | cmdstanpy driver for rendered Stan programs (needs a local CmdStan toolchain) |
 | `torch` | PyTorch backend |
 | `bnlearn` | bnlearn runtime for rendered `.py`/`.R` Bayesian network programs |
-| `geo-infer` | H3 geospatial indexing used by GEO-INFER integration surfaces |
+| `geo-infer` | H3 geospatial indexing used by GEO_INFER integration surfaces |
 | `all` | The optional groups above combined as a manually maintained extra |
 
 Install a group directly with `uv sync --extra GROUP`; use `--all-extras` for all

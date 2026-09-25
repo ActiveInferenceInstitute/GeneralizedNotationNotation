@@ -157,7 +157,7 @@ repositories consume exactly these five declared surfaces:
    `provenance.source_sha256` (`src/gnn/export/geo_infer.py:163`); the
    three-variant dispatch lives in `export_to_geo_infer`
    (`src/gnn/export/geo_infer.py:168-213`). Consumer:
-   `GEO-INFER-TEST/validate_gnn_interchange.py` in the GEO-INFER checkout,
+   `GEO-INFER-TEST/validate_gnn_interchange.py` in the GEO_INFER checkout,
    driven GNN-side by `scripts/run_geo_interchange_checks.py`.
 2. **Runtime-bridge surface** — `gnn.extract.pomdp_extractor`
    (`extract_pomdp_from_file` at
@@ -189,7 +189,7 @@ Each check proves one thing and nothing more:
 - The bridge status proves custody: that the pinned companion revision and
   this checkout agree on source binding digests and the syntax surface.
 - The interchange checks prove deterministic replay of exported artifacts
-  inside the GEO-INFER environment.
+  inside the GEO_INFER environment.
 - None of them prove Lean theorems or the truth of any notation-mapping or
   geographic claim. Evidence planes stay distinct; a green paired run says
   "the two checkouts are in the state the companion reviewed" and nothing
@@ -203,7 +203,7 @@ ordering in
 [docs/development/fep_lean_paired_revision.md](../development/fep_lean_paired_revision.md)
 — all content edits land first (the manuscript/token ritual runs at the
 final content state when manuscript inputs changed), then the fep_lean-side
-bridge re-pin, then the GNN pin bump as the final commit; the GEO-INFER
+bridge re-pin, then the GNN pin bump as the final commit; the GEO_INFER
 direction is the mirror image.
 
 Edits outside surfaces 1-5 must not force sibling re-pinning. The known
