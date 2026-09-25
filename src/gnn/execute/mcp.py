@@ -7,7 +7,10 @@ dependency checker, and module introspection through MCP.
 """
 
 import dataclasses
+import json
 import logging
+import os
+import sys
 from pathlib import Path
 from typing import Any, Dict, Optional
 
@@ -22,7 +25,7 @@ from . import (
     process_execute,
 )
 from .doctor import collect_doctor_report
-from .pymdp.execute_pymdp import execute_from_gnn_file as _pymdp_execute_from_gnn_file
+from .subprocess_envelope import run_subprocess_envelope
 from .validator import ValidationResult
 
 _GNN_MODEL_SUFFIXES = {".md", ".json", ".yaml", ".yml"}
@@ -174,6 +177,76 @@ def execute_gnn_model_mcp(
         return {"success": False, "error": str(e)}
 
 
+def _pymdp_child_environment() -> Dict[str, str]:
+    """Environment overlay for the gated PyMDP child process.
+
+    Mirrors the step-12 PyMDP script environment: the project root is
+    prepended to ``PYTHONPATH`` so ``-m gnn.execute.pymdp.mcp_child``
+    resolves regardless of how the parent imported ``gnn``, the project
+    root is exported, and JAX/TF log noise is muted unless the operator
+    already set values.
+    """
+    import gnn
+
+    project_root = Path(gnn.__file__).resolve().parent.parent
+    env = os.environ.copy()
+    env["PYTHONPATH"] = str(project_root) + os.pathsep + env.get("PYTHONPATH", "")
+    env["GNN_PROJECT_ROOT"] = str(project_root)
+    env.setdefault("TF_CPP_MIN_LOG_LEVEL", "3")
+    jax_platform = os.environ.get("GNN_JAX_PLATFORM")
+    if jax_platform and str(jax_platform).strip():
+        env["JAX_PLATFORM_NAME"] = str(jax_platform).strip()
+    return env
+
+
+def _pymdp_child_payload(envelope: Dict[str, Any]) -> Dict[str, Any]:
+    """Translate a child-run envelope into the tool's result payload.
+
+    Successful runs merge the simulator's results dict at the top level,
+    matching the tool's historical contract; every failure carries the
+    envelope's structured receipt (``error_type``, ``return_code``,
+    captured streams) so MCP callers can classify the outcome.
+    """
+    if envelope.get("success"):
+        for line in reversed(envelope.get("stdout", "").splitlines()):
+            line = line.strip()
+            if not line.startswith("{"):
+                continue
+            try:
+                data = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if isinstance(data, dict) and "success" in data:
+                payload: Dict[str, Any] = {"success": bool(data["success"])}
+                results = data.get("results")
+                if isinstance(results, dict):
+                    payload.update(results)
+                else:
+                    payload["result"] = results
+                return payload
+        return {
+            "success": False,
+            "error": (
+                "PyMDP child reported success but produced an unreadable result line"
+            ),
+            "stdout": envelope.get("stdout", ""),
+            "stderr": envelope.get("stderr", ""),
+        }
+    payload = {
+        "success": False,
+        "error": envelope.get("error")
+        or f"PyMDP child exited with code {envelope.get('return_code')}",
+        "return_code": envelope.get("return_code"),
+        "stdout": envelope.get("stdout", ""),
+        "stderr": envelope.get("stderr", ""),
+    }
+    if envelope.get("error_type"):
+        payload["error_type"] = envelope["error_type"]
+    if envelope.get("cancelled"):
+        payload["cancelled"] = True
+    return payload
+
+
 def execute_pymdp_simulation_mcp(
     gnn_file_path: str,
     output_directory: str,
@@ -181,10 +254,17 @@ def execute_pymdp_simulation_mcp(
     """
     Run a PyMDP Active Inference simulation from a GNN model file.
 
-    Parses the GNN file into a spec dict, then calls
-    ``execute.pymdp.execute_pymdp.execute_from_gnn_file``, which converts the
-    spec to pymdp matrices (A, B, C, D), instantiates a pymdp ``Agent``, and
-    runs the perception-action loop for the timesteps declared in the model.
+    Routes the simulation through the shared gated subprocess envelope
+    (``run_subprocess_envelope``) — the same gate every other execute
+    backend honors — by running ``gnn.execute.pymdp.mcp_child`` in a
+    fresh process: the ``GNN_SANDBOX`` prefix semantics apply, the run
+    is bounded by the envelope's wall-clock default, and failures come
+    back as structured receipts (``error_type``, ``return_code``,
+    captured streams) instead of an unbounded in-process run. The child
+    calls ``execute.pymdp.execute_pymdp.execute_from_gnn_file``, which
+    converts the spec to pymdp matrices (A, B, C, D), instantiates a
+    pymdp ``Agent``, and runs the perception-action loop for the
+    timesteps declared in the model.
 
     Args:
         gnn_file_path: Path to the GNN model file.
@@ -193,6 +273,10 @@ def execute_pymdp_simulation_mcp(
     Returns:
         Dictionary with success flag and the simulator's results dict merged
         at the top level (keys like ``timesteps_run``, ``output_files``, etc.).
+        Gate refusals (for example ``GNN_SANDBOX=require`` with no sandbox
+        backend installed) return ``success: False`` with
+        ``error_type: "SandboxUnavailable"`` and ``return_code: -1`` — the
+        model is never executed.
     """
     try:
         gnn_path = _resolve_gnn_model_path(
@@ -203,18 +287,18 @@ def execute_pymdp_simulation_mcp(
             output_directory,
             purpose="PyMDP output directory",
         )
-        success, results_raw = _pymdp_execute_from_gnn_file(
-            gnn_path,
-            output_path,
-            correlation_id="mcp",
+        envelope = run_subprocess_envelope(
+            [
+                sys.executable,
+                "-m",
+                "gnn.execute.pymdp.mcp_child",
+                str(gnn_path),
+                str(output_path),
+            ],
+            env=_pymdp_child_environment(),
+            timeout=None,
         )
-        results_any: object = results_raw
-        payload: Dict[str, Any] = {"success": bool(success)}
-        if isinstance(results_any, dict):
-            payload.update(results_any)
-        else:
-            payload["result"] = results_any
-        return payload
+        return _pymdp_child_payload(envelope)
     except Exception as e:
         logger.error(f"execute_pymdp_simulation_mcp error: {e}", exc_info=True)
         return {"success": False, "error": str(e)}
