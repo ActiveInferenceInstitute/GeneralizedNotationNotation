@@ -22,10 +22,12 @@ from gnn.manuscript.variables import (
     _capability_clause,
     _registry_specs,
     _render_family_table,
+    config_metadata_drift,
     generate_variables,
     preamble_metadata_drift,
     save_variables,
     select_cross_framework_family,
+    sync_config_metadata,
     sync_preamble_metadata,
 )
 
@@ -489,3 +491,40 @@ def test_sync_preamble_metadata_repairs_drift(
     assert any(c.startswith("pdfsubject:") for c in changes)
     assert preamble_metadata_drift(tmp_path, variables) == []
     assert sync_preamble_metadata(tmp_path, variables) == []
+
+
+def test_config_title_page_metadata_is_written_not_typed(
+    variables: dict[str, str],
+) -> None:
+    """config.yaml's title-page version/date must equal the tokens that own them.
+
+    config.yaml is never token-substituted (the injector only processes
+    ``manuscript/*.md``), so the producer must write these fields or the PDF
+    title page silently keeps a stale version/date.
+    """
+    assert config_metadata_drift(_PROJECT_ROOT, variables) == []
+
+    config = (_PROJECT_ROOT / "manuscript" / "config.yaml").read_text(encoding="utf-8")
+    assert f'version: "{variables["GNN_VERSION"]}"' in config
+    assert f'date: "{variables["GNN_RELEASE_DATE"]}"' in config
+
+
+def test_sync_config_metadata_repairs_drift(
+    tmp_path: Path, variables: dict[str, str]
+) -> None:
+    """A hand-edited title-page value is rewritten from the token; drift reports it."""
+    manuscript = tmp_path / "manuscript"
+    manuscript.mkdir()
+    source = (_PROJECT_ROOT / "manuscript" / "config.yaml").read_text(encoding="utf-8")
+    stale = source.replace(
+        f'version: "{variables["GNN_VERSION"]}"', 'version: "stale version"'
+    )
+    assert stale != source
+    (manuscript / "config.yaml").write_text(stale, encoding="utf-8")
+
+    assert config_metadata_drift(tmp_path, variables) != []
+    changes = sync_config_metadata(tmp_path, variables)
+    assert any(c.startswith("version:") for c in changes)
+    assert config_metadata_drift(tmp_path, variables) == []
+    assert sync_config_metadata(tmp_path, variables) == []
+    assert (manuscript / "config.yaml").read_text(encoding="utf-8") == source

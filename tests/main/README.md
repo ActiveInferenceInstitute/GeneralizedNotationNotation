@@ -1,7 +1,8 @@
 # Main Tests
 
 Pytest coverage for the `gnn` entry surfaces (`src/gnn/main.py`,
-`src/gnn/manuscript/variables.py`) owned by the main-suite fleet worker.
+`src/gnn/manuscript/variables.py`, `src/gnn/manuscript/render_custody.py`)
+owned by the main-suite fleet worker.
 
 ## What is covered
 
@@ -14,6 +15,12 @@ Pytest coverage for the `gnn` entry surfaces (`src/gnn/main.py`,
   `(label, generator, expected PNG, alt text)` table is the single source for
   figure registration, `output/figures/figure_registry.json`, manuscript
   figure references, and alt-text presence.
+- `test_manuscript_render_custody.py`: fail-closed reader contracts for
+  `gnn.manuscript.render_custody` — `load_render_manifest` raises with the
+  regen command for missing manifests and rejects corrupt/non-object JSON;
+  the manifest lives at `output/data/manuscript_render_manifest.json`;
+  `strip_volatile_tokens` drops only `GNN_GIT_COMMIT` from the checksum
+  input.
 - `test_manuscript_variables.py`: producer-drift regression suite for
   `gnn.manuscript.generate_variables` — every assertion recomputes
   the expected value from the live repository and compares it against the
