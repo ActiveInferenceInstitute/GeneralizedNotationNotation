@@ -12,18 +12,13 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+from .pages import page_filenames
+
 logger = logging.getLogger(__name__)
 
 #: Pages a complete website build produces, in pipeline order.
-KEY_PAGES: tuple[str, ...] = (
-    "index.html",
-    "pipeline.html",
-    "gnn_files.html",
-    "analysis.html",
-    "visualization.html",
-    "reports.html",
-    "mcp.html",
-)
+#: Derived from the one site page catalogue (``gnn.website.pages.SITE_PAGES``).
+KEY_PAGES: tuple[str, ...] = page_filenames()
 
 
 def inspect_website(website_directory: str | Path) -> dict[str, Any]:

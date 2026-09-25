@@ -152,8 +152,9 @@ Aggregate per-GUI result mappings into a typed `GUISummary` TypedDict
 counts as failed when its `success` key is missing or falsy. Exported from `gui`.
 
 #### `collect_pipeline_outputs(pipeline_output_dir: Path, max_files_per_section: int = MAX_FILES_PER_SECTION) -> tuple[list[dict], int]`
-Discover pipeline artifacts grouped by step output directory (the 25-step
-table is the `PIPELINE_OUTPUT_SECTIONS` constant). Returns `(sections,
+Discover pipeline artifacts grouped by step output directory (the step
+table is the registry-derived `PIPELINE_OUTPUT_SECTIONS` constant, built
+from `gnn.pipeline.step_registry.STEPS`). Returns `(sections,
 total_files)`; `file_count` counts every discovered file while `files` is
 capped at `MAX_FILES_PER_SECTION` (20). Missing step directories are skipped.
 

@@ -15,6 +15,7 @@ src/gnn/website/
 ├── __init__.py                     # Module initialization and exports
 ├── README.md                       # This documentation
 ├── generator.py                    # WebsiteGenerator / generate_website: core multi-page site generation
+├── pages.py                        # One site page catalogue (SITE_PAGES): single source for page inventories
 ├── renderer.py                     # WebsiteRenderer, process_website, and HTML/asset embedding helpers
 ├── dashboard.py                    # render_dashboard: self-contained single-file HTML pipeline dashboard
 ├── processor.py                    # Thin facade re-exporting process_website from renderer.py

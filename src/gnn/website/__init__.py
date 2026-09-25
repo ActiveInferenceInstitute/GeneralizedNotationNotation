@@ -18,6 +18,7 @@ from .generator import (
     get_pipeline_steps,
 )
 from .inspection import inspect_website, list_website_pages
+from .pages import SITE_PAGES, is_valid_page, page_count, page_names
 from .renderer import (
     WebsiteRenderer,
     embed_html_file,
@@ -72,5 +73,9 @@ __all__: list[Any] = [
     "StepInfo",
     "inspect_website",
     "list_website_pages",
+    "page_count",
+    "page_names",
+    "is_valid_page",
+    "SITE_PAGES",
     "__version__",
 ]

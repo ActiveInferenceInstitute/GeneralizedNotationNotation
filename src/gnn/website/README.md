@@ -125,8 +125,13 @@ All return `bool`:
   tuple as a constant.
 - `inspect_website(directory) -> dict` / `list_website_pages(directory) -> dict`
   — page inventory, sizes, and key-page completeness of a generated site
-  (`website.inspection.KEY_PAGES`). Shared implementation behind the
+  (`website.inspection.KEY_PAGES`, derived from the one page catalogue
+  `website.pages.SITE_PAGES`). Shared implementation behind the
   `get_website_status` / `list_generated_website_pages` MCP tools.
+- `SITE_PAGES` / `page_names()` / `is_valid_page(name)` / `page_count()` (from
+  `pages.py`) — the one frozen, ordered catalogue of the site's pages
+  (`PageSpec(name, title, builder, description, icon)` + `filename`); the
+  builders map, sidebar navigation, and `KEY_PAGES` all derive from it.
 
 ### `render_dashboard(results_dir, output_path, summary_path=None) -> ...`
 
