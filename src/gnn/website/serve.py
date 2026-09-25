@@ -252,7 +252,7 @@ class WebsiteServer:
             )
         try:
             self._server.serve_forever()
-        except Exception:
+        except OSError:
             logger.exception("Website server thread failed")
 
     @staticmethod
