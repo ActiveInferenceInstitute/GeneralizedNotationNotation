@@ -100,7 +100,17 @@ def test_command_is_argument_vector_not_shell(tmp_path: Path) -> None:
 
 @pytest.mark.parametrize(
     "missing_key",
-    ["success", "return_code", "stdout", "stderr", "duration_seconds", "cancelled"],
+    [
+        "success",
+        "return_code",
+        "stdout",
+        "stderr",
+        "duration_seconds",
+        "cancelled",
+        "child_peak_rss_mb",
+        "rss_sample_interval_seconds",
+        "rss_samples_count",
+    ],
 )
 def test_envelope_always_carries_core_keys(missing_key: str) -> None:
     ok = run_subprocess_envelope([PYTHON, "-c", "pass"])
@@ -328,3 +338,41 @@ def test_timeout_kills_whole_process_group_including_grandchildren(
     assert result["error_type"] == "TimeoutExpired"
     time.sleep(3.5)  # the grandchild would write the sentinel at ~3s if orphaned
     assert not sentinel.exists(), "grandchild survived the timeout group-kill"
+
+
+RSS_KEYS = ("child_peak_rss_mb", "rss_sample_interval_seconds", "rss_samples_count")
+
+
+def test_child_peak_rss_sampled_on_poll_cadence() -> None:
+    """W8-B: a live child reports peak tree RSS sampled on the poll cadence."""
+    result = run_subprocess_envelope([PYTHON, "-c", "import time; time.sleep(0.4)"])
+    assert result["success"] is True, result.get("error")
+    assert result["child_peak_rss_mb"] is not None
+    assert result["child_peak_rss_mb"] > 0
+    assert result["rss_samples_count"] > 0
+    assert result["rss_sample_interval_seconds"] == 0.25
+
+
+def test_child_rss_keys_null_when_psutil_handle_missing(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """A psutil failure degrades to explicit null keys; envelope shape holds."""
+    monkeypatch.setattr("gnn.execute.subprocess_envelope._psutil_module", None)
+    result = run_subprocess_envelope([PYTHON, "-c", "import time; time.sleep(0.4)"])
+    assert result["success"] is True
+    assert result["child_peak_rss_mb"] is None
+    assert result["rss_samples_count"] == 0
+    assert result["rss_sample_interval_seconds"] == 0.25
+
+
+@pytest.mark.parametrize("rss_key", RSS_KEYS)
+def test_child_rss_keys_present_on_every_envelope_path(rss_key: str) -> None:
+    """Additive contract: the three keys exist (never absent) on the success,
+    spawn-failure, and pre-spawn-cancel envelopes; values may be null."""
+    ok = run_subprocess_envelope([PYTHON, "-c", "import time; time.sleep(0.2)"])
+    bad = run_subprocess_envelope(["definitely-not-a-real-binary-xyz"])
+    token = CancelToken()
+    token.cancel(reason="pre-spawn")
+    cancelled = run_subprocess_envelope([PYTHON, "-c", "pass"], cancel_token=token)
+    for envelope in (ok, bad, cancelled):
+        assert rss_key in envelope

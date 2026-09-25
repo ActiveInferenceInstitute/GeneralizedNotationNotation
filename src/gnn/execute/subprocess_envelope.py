@@ -35,7 +35,7 @@ import subprocess
 import threading
 import time
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union, cast
 
 logger = logging.getLogger(__name__)
 
@@ -55,6 +55,15 @@ _POLL_INTERVAL_SECONDS = 0.25
 
 # Invalid ``GNN_EXECUTE_DEFAULT_TIMEOUT`` values that already warned (warn-once).
 _INVALID_DEFAULT_TIMEOUTS_WARNED: set[str] = set()
+
+
+# psutil is a core dependency, but the envelope's result contract must not
+# depend on it: sample the child tree when importable, degrade to explicit
+# null keys when not (execute/validator.py optional-import precedent).
+try:
+    import psutil as _psutil_module
+except Exception:  # pragma: no cover - psutil is core; belt-and-braces
+    _psutil_module = cast(Any, None)
 
 
 class CancelToken:
@@ -217,6 +226,68 @@ def _mark_cancelled(envelope: Dict[str, Any], reason: Optional[str]) -> None:
     envelope["return_code"] = NEVER_STARTED
 
 
+class _ChildRssSampler:
+    """Best-effort peak-RSS sampler for the envelope's child process tree.
+
+    One :meth:`sample` per poll slice sums ``memory_info().rss`` over the
+    direct child (``pid``) and its recursive descendants, tracking the
+    observed maximum. Every failure mode degrades without touching the
+    envelope contract: a missing psutil module disables sampling entirely;
+    a vanished root process (``NoSuchProcess``/zombie) or access error stops
+    further sampling while keeping an already-observed peak; a grandchild
+    that exits mid-poll is skipped for that sample. Sampling rides the
+    envelope's existing poll cadence (``_POLL_INTERVAL_SECONDS``) — no new
+    control flow, no extra wake-ups.
+
+    macOS note: psutil RSS counts shared pages, so the sum estimates
+    resident footprint rather than exact peak; receipts must never claim
+    exact peak memory from these keys.
+    """
+
+    def __init__(self, pid: int) -> None:
+        self._pid = pid
+        self._peak_rss_bytes = 0.0
+        self._samples = 0
+        self._stopped = False
+
+    def sample(self) -> None:
+        """Take one poll-slice sample; never raises."""
+        psutil = _psutil_module
+        if psutil is None or self._stopped:
+            return
+        try:
+            root = psutil.Process(self._pid)
+            rss = float(root.memory_info().rss)
+        except Exception:  # noqa: BLE001 — vanished (NoSuchProcess/zombie)/access
+            # The tree vanished between polls (or psutil lost access): stop
+            # sampling; an already-observed peak survives.
+            self._stopped = True
+            return
+        try:
+            children = root.children(recursive=True)
+        except Exception:  # noqa: BLE001 — tree raced a teardown mid-poll
+            children = []
+        for child in children:
+            try:
+                rss += float(child.memory_info().rss)
+            except Exception:  # noqa: BLE001 — grandchild exited mid-poll
+                continue
+        self._peak_rss_bytes = max(self._peak_rss_bytes, rss)
+        self._samples += 1
+
+    @property
+    def peak_rss_mb(self) -> Optional[float]:
+        """Observed peak MB (2dp), or None when no sample ever succeeded."""
+        if self._samples == 0:
+            return None
+        return round(self._peak_rss_bytes / (1024 * 1024), 2)
+
+    @property
+    def samples(self) -> int:
+        """Number of successful samples taken for this run."""
+        return self._samples
+
+
 def run_subprocess_envelope(
     command: List[str],
     *,
@@ -267,6 +338,17 @@ def run_subprocess_envelope(
             - ``duration_seconds`` (float): Wall-clock execution time.
             - ``cancelled`` (bool): Always present; True iff the run was
               cancelled via ``cancel_token`` (pre-spawn or mid-flight).
+            - ``child_peak_rss_mb`` (float, optional): Peak summed RSS (MB,
+              rounded to 2dp) across the child and its recursive
+              descendants, sampled on the poll cadence. ``None`` when
+              unmeasurable (psutil unavailable, or the process vanished
+              before the first sample). psutil RSS counts shared pages, so
+              this is an estimate of resident footprint, never an exact
+              peak; receipts must not claim exact peak memory.
+            - ``rss_sample_interval_seconds`` (float): The sampling cadence,
+              equal to the poll interval (0.25s).
+            - ``rss_samples_count`` (int): Successful samples taken; 0 when
+              unmeasured.
             - ``sandbox_mode`` (str): Effective ``GNN_SANDBOX`` mode
               (``"off"`` when ``sandbox=False``).
             - ``sandboxed`` (bool): True iff the command was actually
@@ -299,6 +381,9 @@ def run_subprocess_envelope(
         "stdout": "",
         "stderr": "",
         "duration_seconds": 0.0,
+        "child_peak_rss_mb": None,
+        "rss_sample_interval_seconds": _POLL_INTERVAL_SECONDS,
+        "rss_samples_count": 0,
         "cancelled": False,
         "sandbox_mode": "off",
         "sandboxed": False,
@@ -373,6 +458,7 @@ def run_subprocess_envelope(
     stderr_bytes: Optional[bytes] = None
     timed_out = False
     proc: Optional[subprocess.Popen[Any]] = None
+    rss_sampler: Optional[_ChildRssSampler] = None
     try:
         if cancel_token is not None and cancel_token.cancelled:
             # Pre-spawn cancel: identical envelope, no process is spawned.
@@ -388,6 +474,8 @@ def run_subprocess_envelope(
             env=merged_env,
             **_spawn_kwargs(),
         )
+        rss_sampler = _ChildRssSampler(proc.pid)
+        rss_sampler.sample()  # immediate post-spawn footprint, pre-poll
         while True:
             try:
                 stdout_bytes, stderr_bytes = proc.communicate(
@@ -399,6 +487,7 @@ def run_subprocess_envelope(
                 break  # process exited; final streams collected
             except subprocess.TimeoutExpired:
                 stdin_payload = None  # input was sent on the first call only
+                rss_sampler.sample()
                 if cancel_token is not None and cancel_token.cancelled:
                     _kill_process_group(proc)
                     stdout_bytes, stderr_bytes = proc.communicate()
@@ -423,6 +512,9 @@ def run_subprocess_envelope(
         envelope["error_type"] = type(exc).__name__
     finally:
         envelope["duration_seconds"] = time.time() - start
+        if rss_sampler is not None:
+            envelope["child_peak_rss_mb"] = rss_sampler.peak_rss_mb
+            envelope["rss_samples_count"] = rss_sampler.samples
 
     if timed_out:
         envelope["error"] = f"Execution timed out after {resolved_timeout}s"
