@@ -77,7 +77,7 @@ success = process_website(
 
 **Returns**: `bool` - True if embedding succeeded, False otherwise
 
-Additional exports (see `__init__.py`): `WebsiteGenerator`, `WebsiteRenderer`, `generate_website`, `embed_text_file`, `embed_json_file`, `embed_html_file`, `get_module_info`, `get_supported_file_types`, `validate_website_config`, `render_dashboard` (re-exported from `dashboard.py`), `collect_website_data`, `get_pipeline_steps`, `PIPELINE_STEPS`, `StepInfo`, `inspect_website`, `list_website_pages`.
+Additional exports (see `__init__.py`): `WebsiteGenerator`, `WebsiteRenderer`, `generate_website`, `embed_text_file`, `embed_json_file`, `embed_html_file`, `get_module_info`, `get_supported_file_types`, `validate_website_config`, `render_dashboard` (re-exported from `dashboard.py`), `collect_website_data`, `get_pipeline_steps`, `PIPELINE_STEPS`, `StepInfo`, `inspect_website`, `list_website_pages`, and the page catalogue from `pages.py` (`SITE_PAGES`, `page_names`, `is_valid_page`, `page_count`; `PageSpec`/`page_filenames` importable from `gnn.website.pages`).
 
 #### `collect_website_data(pipeline_output_root, input_dir, assets_dir, *, output_dir=None, user_data=None) -> dict`
 **Description**: Pure aggregation of every artifact the pages render (GNN files, step statuses, analysis JSON, visualization assets, reports, MCP page data). Step statuses come from the durable `output/00_pipeline_summary/pipeline_execution_summary.json` (per-step `status` records; a step whose output dir exists but whose recorded status is FAILED/SKIPPED is not advertised complete), falling back to the numbered-output-dir heuristic only when the summary is absent. MCP page data is sourced from the step-21 artifacts — `21_mcp_output/mcp_processing_summary.json` for the summary and `21_mcp_output/registered_tools.json` for the tool inventory — so the site reflects what step 21 actually recorded and degrades to a truthful empty state when step 21 did not run.
@@ -86,7 +86,10 @@ Additional exports (see `__init__.py`): `WebsiteGenerator`, `WebsiteRenderer`, `
 **Description**: Returns the immutable 25-step catalogue derived from `gnn.pipeline.step_registry.STEPS` (`StepInfo(number, name, description)` with a `script_name` display property that matches the real orchestrator scripts) used to render the dashboard and pipeline pages.
 
 #### `inspect_website(directory) -> dict` / `list_website_pages(directory) -> dict`
-**Description**: Pure filesystem queries over a generated site (page inventory, sizes, key-page completeness; per-page size/mtime listing). `website.inspection.KEY_PAGES` lists the seven canonical pages. These are the shared implementation behind the `get_website_status` and `list_generated_website_pages` MCP tools.
+**Description**: Pure filesystem queries over a generated site (page inventory, sizes, key-page completeness; per-page size/mtime listing). `website.inspection.KEY_PAGES` lists the seven canonical pages, derived from the one page catalogue (`website.pages.SITE_PAGES` — see below). These are the shared implementation behind the `get_website_status` and `list_generated_website_pages` MCP tools.
+
+#### `pages.py` — the one site page catalogue
+`SITE_PAGES` is the frozen, ordered `PageSpec(name, title, builder, description, icon)` tuple of the site's pages (the fixed furniture: index, pipeline, gnn_files, analysis, visualization, reports, mcp). Every page inventory derives from it: the generator's builders map and sidebar navigation, `inspection.KEY_PAGES` (filenames), the module-info page list (`mcp.py`), and the package-level `page_count()` receipt hook. Pipeline-step facts in the catalogue are registry-derived (`gnn.pipeline.step_registry.STEPS` — the same source as the step catalogue), so a new pipeline step does not desync derived text.
 
 ---
 

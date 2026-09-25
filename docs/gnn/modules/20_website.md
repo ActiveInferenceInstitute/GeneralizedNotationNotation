@@ -15,7 +15,8 @@ src/gnn/website/
 ├── __init__.py                     # Module initialization and exports
 ├── README.md                       # Module documentation
 ├── collection.py                   # collect_website_data: aggregates page inputs, copies visualization assets
-├── generator.py                    # WebsiteGenerator / generate_website: builds the seven site pages
+├── generator.py                    # WebsiteGenerator / generate_website: builds the seven site pages (from SITE_PAGES)
+├── pages.py                        # One site page catalogue (SITE_PAGES): single source for page inventories
 ├── renderer.py                     # WebsiteRenderer, process_website, and HTML/asset embedding helpers
 ├── dashboard.py                    # render_dashboard: standalone single-file HTML dashboard page
 ├── inspection.py                   # inspect_website / list_website_pages: site inventory queries

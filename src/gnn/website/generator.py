@@ -27,6 +27,8 @@ from typing import Any, Callable, Dict, Optional
 
 from gnn.pipeline.step_registry import STEPS as _REGISTRY_STEPS
 
+from .pages import SITE_PAGES
+
 logger = logging.getLogger(__name__)
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -465,13 +467,7 @@ def _page(title: str, active: str, body: str, *, nav_extra: str = "") -> str:
     """Wrap body in the shared page shell with sidebar and nav."""
     ts = datetime.now().strftime("%Y-%m-%d %H:%M")
     nav_items: list[tuple[str, str, str, str]] = [
-        ("🏠", "Dashboard", "index.html", "index"),
-        ("⚡", "Pipeline", "pipeline.html", "pipeline"),
-        ("📂", "GNN Files", "gnn_files.html", "gnn_files"),
-        ("📊", "Analysis", "analysis.html", "analysis"),
-        ("🖼️", "Visualizations", "visualization.html", "visualization"),
-        ("📋", "Reports", "reports.html", "reports"),
-        ("🔧", "MCP Tools", "mcp.html", "mcp"),
+        (page.icon, page.title, page.filename, page.name) for page in SITE_PAGES
     ]
     nav_html = ""
     for icon, label, href, key in nav_items:
@@ -640,6 +636,9 @@ class WebsiteGenerator:
         """
 
     # ── Public API ──────────────────────────────────────────────────────────
+    def _page_builders(self) -> dict[str, Callable[[dict], str]]:
+        """Filename → page-builder mapping, derived from ``SITE_PAGES``."""
+        return {page.filename: getattr(self, page.builder) for page in SITE_PAGES}
 
     def generate_website(self, website_data: dict) -> dict:
         """Generate the complete static website.
@@ -670,15 +669,7 @@ class WebsiteGenerator:
                 p_root, input_dir, output_dir, assets_dir, website_data
             )
 
-            builders: dict[str, Callable[[dict], str]] = {
-                "index.html": self._page_index,
-                "pipeline.html": self._page_pipeline,
-                "gnn_files.html": self._page_gnn_files,
-                "analysis.html": self._page_analysis,
-                "visualization.html": self._page_visualization,
-                "reports.html": self._page_reports,
-                "mcp.html": self._page_mcp,
-            }
+            builders = self._page_builders()
             for filename, build_page in builders.items():
                 try:
                     page_html = build_page(data)

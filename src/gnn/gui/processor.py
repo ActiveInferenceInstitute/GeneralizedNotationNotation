@@ -16,9 +16,11 @@ from __future__ import annotations
 import html
 import logging
 import time
-from collections.abc import Mapping, Sequence
+from collections.abc import Iterable, Mapping, Sequence
 from pathlib import Path
 from typing import Any, TypedDict
+
+from gnn.pipeline.step_registry import STEPS, StepInfo
 
 from .backend import write_json_atomically, write_text_atomically
 from .runner import interactive_servers_running
@@ -42,37 +44,94 @@ DEFAULT_GUI_TYPES: tuple[str, ...] = ("gui_1", "gui_2")
 # reports the full number of discovered files; only the listing is capped.
 MAX_FILES_PER_SECTION = 20
 
-# (display name, output directory, glob patterns) for every pipeline step.
+# (display name, output directory, glob patterns) for every pipeline step,
+# derived from the canonical step registry (``gnn.pipeline.step_registry`` —
+# the same source the website catalogue uses).
+
+#: Display-name fixes for stems whose title-cased form differs from the
+#: established navigation labels.
+_SECTION_TITLE_OVERRIDES: dict[str, str] = {
+    "gnn": "GNN Processing",
+    "advanced_viz": "Advanced Visualization",
+}
+
+#: Per-step glob patterns, keyed by registry stem; stems without an entry
+#: fall back to :data:`_DEFAULT_SECTION_PATTERNS`.
+_SECTION_PATTERNS: dict[str, tuple[str, ...]] = {
+    "0_template": ("*.json", "*.md"),
+    "1_setup": ("*.json",),
+    "2_tests": ("*.txt", "*.json"),
+    "3_gnn": ("*.json", "*.md", "*.pkl"),
+    "4_model_registry": ("*.json",),
+    "5_type_checker": ("*.json", "*.md"),
+    "6_validation": ("*.json",),
+    "7_export": ("*.json", "*.xml", "*.pkl"),
+    "8_visualization": ("*.png", "*.svg", "*.csv", "*.json"),
+    "9_advanced_viz": ("*.png", "*.json"),
+    "10_ontology": ("*.json",),
+    "11_render": ("*.py", "*.jl", "*.md", "*.json", "*.png"),
+    "12_execute": ("*.txt", "*.json", "*.md", "*.png"),
+    "13_llm": ("*.md", "*.json"),
+    "14_ml_integration": ("*.json",),
+    "15_audio": ("*.json", "*.wav"),
+    "16_analysis": ("*.json",),
+    "17_integration": ("*.json",),
+    "18_security": ("*.json",),
+    "19_research": ("*.json",),
+    "20_website": ("*.html", "*.json"),
+    "21_mcp": ("*.json",),
+    "22_gui": ("*.md", "*.json"),
+    "23_report": ("*.html", "*.md", "*.json"),
+    "24_intelligent_analysis": ("*.json", "*.md", "*.html"),
+}
+
+_DEFAULT_SECTION_PATTERNS: tuple[str, ...] = ("*.json", "*.md")
+
+# Acronym casing for stem words that must not be title-cased (mirrors the
+# website generator's registry-stem display logic; ``"llm".title()`` would
+# yield "Llm", breaking the established labels).
+_ACRONYM_DISPLAY: dict[str, str] = {
+    "gnn": "GNN",
+    "gui": "GUI",
+    "llm": "LLM",
+    "mcp": "MCP",
+    "ml": "ML",
+}
+
+
+def _display_name_from_stem(stem: str) -> str:
+    """Display name for a registry stem (``"9_advanced_viz"`` → ``"Advanced Viz"``)."""
+    suffix = stem.partition("_")[2]
+    return " ".join(
+        _ACRONYM_DISPLAY.get(word, word.title()) for word in suffix.split("_")
+    )
+
+
+def derive_pipeline_output_sections(
+    steps: Iterable[StepInfo],
+) -> tuple[tuple[str, str, tuple[str, ...]], ...]:
+    """Derive ``(display name, output dir, glob patterns)`` sections from registry steps.
+
+    A step added to ``gnn.pipeline.step_registry.STEPS`` flows through here
+    automatically: its output dir is the registry ``output_dir_name``, its
+    display name is the title-cased stem suffix (unless overridden), and its
+    patterns default to :data:`_DEFAULT_SECTION_PATTERNS`.
+    """
+    return tuple(
+        (
+            _SECTION_TITLE_OVERRIDES.get(
+                step.script_stem.partition("_")[2],
+                _display_name_from_stem(step.script_stem),
+            ),
+            step.output_dir_name,
+            _SECTION_PATTERNS.get(step.script_stem, _DEFAULT_SECTION_PATTERNS),
+        )
+        for step in steps
+    )
+
+
 PIPELINE_OUTPUT_SECTIONS: tuple[tuple[str, str, tuple[str, ...]], ...] = (
-    ("Template", "0_template_output", ("*.json", "*.md")),
-    ("Setup", "1_setup_output", ("*.json",)),
-    ("Tests", "2_tests_output", ("*.txt", "*.json")),
-    ("GNN Processing", "3_gnn_output", ("*.json", "*.md", "*.pkl")),
-    ("Model Registry", "4_model_registry_output", ("*.json",)),
-    ("Type Checker", "5_type_checker_output", ("*.json", "*.md")),
-    ("Validation", "6_validation_output", ("*.json",)),
-    ("Export", "7_export_output", ("*.json", "*.xml", "*.pkl")),
-    ("Visualization", "8_visualization_output", ("*.png", "*.svg", "*.csv", "*.json")),
-    ("Advanced Visualization", "9_advanced_viz_output", ("*.png", "*.json")),
-    ("Ontology", "10_ontology_output", ("*.json",)),
-    ("Render", "11_render_output", ("*.py", "*.jl", "*.md", "*.json", "*.png")),
-    ("Execute", "12_execute_output", ("*.txt", "*.json", "*.md", "*.png")),
-    ("LLM", "13_llm_output", ("*.md", "*.json")),
-    ("ML Integration", "14_ml_integration_output", ("*.json",)),
-    ("Audio", "15_audio_output", ("*.json", "*.wav")),
-    ("Analysis", "16_analysis_output", ("*.json",)),
-    ("Integration", "17_integration_output", ("*.json",)),
-    ("Security", "18_security_output", ("*.json",)),
-    ("Research", "19_research_output", ("*.json",)),
-    ("Website", "20_website_output", ("*.html", "*.json")),
-    ("MCP", "21_mcp_output", ("*.json",)),
-    ("GUI", "22_gui_output", ("*.md", "*.json")),
-    ("Report", "23_report_output", ("*.html", "*.md", "*.json")),
-    (
-        "Intelligent Analysis",
-        "24_intelligent_analysis_output",
-        ("*.json", "*.md", "*.html"),
-    ),
+    derive_pipeline_output_sections(STEPS)
 )
 
 

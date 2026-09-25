@@ -16,6 +16,25 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 > wiring for step 24, didChange-aware LSP diagnostics, and full runs-delete
 > control on the API.
 
+### Added (2026-09-25 — single site page catalogue)
+
+- **One page catalogue for the website.** `src/gnn/website/pages.py` defines
+  `SITE_PAGES`, the frozen ordered `PageSpec(name, title, builder, description,
+  icon)` tuple of the site's seven pages. The generator's builders map and
+  sidebar navigation, `inspection.KEY_PAGES`, and the module-info page list
+  all derive from it — the three former independently-drifting hardcoded
+  inventories are now impossible to desync by construction — and the stable
+  `page_count()` hook pins receipts for downstream dashboard lanes.
+  Pipeline-step facts in the catalogue stay registry-derived via
+  `gnn.pipeline.step_registry.STEPS` (the same source as the step catalogue).
+- **GUI navigation step table registry-derived.**
+  `gui.processor.PIPELINE_OUTPUT_SECTIONS` is built by
+  `derive_pipeline_output_sections()` from `gnn.pipeline.step_registry.STEPS`
+  (output dirs are the registry `output_dir_name`; the two established
+  display labels that differ from stem title-casing are kept via a 2-entry
+  override map), so a new pipeline step extends the navigation automatically;
+  tests pin the reproduced 25-entry table byte-for-byte.
+
 ### Added (2026-09-22 — ngc-learn T2 exemplar and docs)
 
 - **ngc-learn LGSSM exemplar.** `input/gnn_files/continuous/ngclearn_lgssm.md`

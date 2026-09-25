@@ -15,7 +15,17 @@ from gnn.utils.mcp.dispatch import run_pipeline_step_mcp, run_tool_envelope
 
 from .generator import generate_website as _generate_website
 from .inspection import inspect_website, list_website_pages
+from .pages import SITE_PAGES
 from .renderer import process_website
+
+#: MCP tool names this module registers, in registration order.
+MCP_TOOL_NAMES: tuple[str, ...] = (
+    "process_website",
+    "build_website_from_pipeline_output",
+    "get_website_status",
+    "list_generated_website_pages",
+    "get_website_module_info",
+)
 
 
 def process_website_mcp(
@@ -146,22 +156,8 @@ def get_website_module_info_mcp() -> Dict[str, Any]:
             "version": __version__,
             "features": FEATURES,
             "supported_file_types": SUPPORTED_FILE_TYPES,
-            "pages": [
-                "index",
-                "pipeline",
-                "gnn_files",
-                "analysis",
-                "visualization",
-                "reports",
-                "mcp",
-            ],
-            "mcp_tools": [
-                "process_website",
-                "build_website_from_pipeline_output",
-                "get_website_status",
-                "list_generated_website_pages",
-                "get_website_module_info",
-            ],
+            "pages": [page.name for page in SITE_PAGES],
+            "mcp_tools": list(MCP_TOOL_NAMES),
         }
 
     return run_tool_envelope(
