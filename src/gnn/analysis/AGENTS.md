@@ -51,8 +51,9 @@
   emits the `gnn.complexity_estimate/v1` receipt (structure stats, model kinds,
   `per_backend` rows in fixed `BACKEND_ORDER` with `applicable` flags);
   see [complexity/AGENTS.md](complexity/AGENTS.md) and
-  [complexity/README.md](complexity/README.md). Distinct from the legacy
-  per-file complexity metrics (`calculate_complexity_metrics`, cyclomatic/cognitive/structural).
+  [complexity/README.md](complexity/README.md). Distinct from the per-file
+  complexity metrics (`calculate_complexity_metrics`, cyclomatic/cognitive/structural),
+  which operate on source files rather than parsed models.
 
 ---
 
