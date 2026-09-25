@@ -16,6 +16,46 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 > wiring for step 24, didChange-aware LSP diagnostics, and full runs-delete
 > control on the API.
 
+### Added (2026-09-25 — wired dashboard + MCP artifact tools)
+
+- **The generated index page now renders the rich pipeline dashboard.**
+  `website/generator.py` `_page_index` reads the canonical
+  `00_pipeline_summary/pipeline_execution_summary.json` (summary path of
+  record) and renders the repaired dashboard's data in the site index:
+  the normalized-uppercase `overall_status` badge, the `end_time` +
+  `total_duration_seconds` header, a per-step artifact browser derived
+  only from the step registry (`STEPS` `output_dir_name`) plus the
+  filesystem — never the summary's per-step `output_dir` records — and
+  per-step memory receipts (`memory_usage_mb` / `peak_memory_mb` /
+  `memory_delta_mb` plus the `performance_summary.peak_memory_mb`
+  aggregate), all with graceful null/empty degradation when a run wrote
+  no summary. The site stays fully self-contained: zero external
+  http(s) resource references.
+- **The dead standalone dashboard module is folded and deleted.**
+  `website/dashboard.py` (`render_dashboard`, the CDN-loaded-Mermaid
+  page) is removed; the site package no longer re-exports it and its
+  dashboard tests were replaced by index-fold tests
+  (`tests/website/test_website_index_dashboard.py`).
+- **Two new MCP tools.** `list_step_artifacts` (pipeline module;
+  optional `step_number` filter) returns a registry-complete per-step
+  artifact inventory (`exists`, `file_count`, `total_size_bytes`,
+  `files` capped at 20 with a `truncated` flag) from the pipeline
+  config's output root; `get_website_page` (website module; required
+  `website_directory` + `page_name`, `max_chars` default 20000) returns
+  one catalogue page's HTML via the shared pure implementation
+  `read_website_page` in `website/inspection.py` (beside
+  `inspect_website` / `list_website_pages`), with a capped content read
+  and a `"\n\n… [truncated]"` marker. Website MCP tools 5→6
+  (`get_website_page` appended last).
+- **`get_pipeline_status` now carries `memory_receipts`**: the recorded
+  aggregate `peak_memory_mb` plus per-step
+  `memory_usage_mb`/`peak_memory_mb`/`memory_delta_mb`, degrading
+  gracefully to `null`/empty when no execution summary exists.
+- **All page counts derive from the catalogue.** The website MCP
+  `process_website` description is built from `page_count()` and the
+  registration log line from `len(MCP_TOOL_NAMES)` — no `3`/`7`/`8`
+  page-count literals remain in the website module.
+
 ### Added (2026-09-25 — single site page catalogue)
 
 - **One page catalogue for the website.** `src/gnn/website/pages.py` defines

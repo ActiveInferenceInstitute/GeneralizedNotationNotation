@@ -9,7 +9,6 @@ from typing import Any
 from gnn import __version__
 
 from .collection import collect_website_data
-from .dashboard import render_dashboard
 from .generator import (
     PIPELINE_STEPS,
     StepInfo,
@@ -66,7 +65,6 @@ __all__: list[Any] = [
     "get_module_info",
     "get_supported_file_types",
     "validate_website_config",
-    "render_dashboard",
     "collect_website_data",
     "get_pipeline_steps",
     "PIPELINE_STEPS",

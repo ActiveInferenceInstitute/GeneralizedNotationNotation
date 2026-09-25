@@ -313,5 +313,6 @@ def collect_website_data(
     )
     data["reports"].extend(_collect_reports(p_root))
     data["mcp_summary"] = _load_mcp_summary(p_root)
+    data["pipeline_summary"] = _load_pipeline_summary(p_root)
     data["mcp_tools"] = _load_registered_tools(p_root)
     return data

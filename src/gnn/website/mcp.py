@@ -14,8 +14,8 @@ logger = logging.getLogger(__name__)
 from gnn.utils.mcp.dispatch import run_pipeline_step_mcp, run_tool_envelope
 
 from .generator import generate_website as _generate_website
-from .inspection import inspect_website, list_website_pages
-from .pages import SITE_PAGES
+from .inspection import inspect_website, list_website_pages, read_website_page
+from .pages import SITE_PAGES, page_count
 from .renderer import process_website
 
 #: MCP tool names this module registers, in registration order.
@@ -25,6 +25,7 @@ MCP_TOOL_NAMES: tuple[str, ...] = (
     "get_website_status",
     "list_generated_website_pages",
     "get_website_module_info",
+    "get_website_page",
 )
 
 
@@ -115,8 +116,9 @@ def get_website_status_mcp(website_directory: str) -> Dict[str, Any]:
     """
     Inspect an existing generated website directory.
 
-    Returns the list of HTML pages found, total size, and whether key pages
-    (index.html, pipeline.html, mcp.html) are present.
+    Returns the list of HTML pages found, total size, and whether the key
+    pages are present. Key pages derive from the one page catalogue
+    (``gnn.website.pages.SITE_PAGES``).
 
     Args:
         website_directory: Path to a previously generated website directory
@@ -138,6 +140,23 @@ def list_generated_pages_mcp(website_directory: str) -> Dict[str, Any]:
         Dictionary with page list, sizes, and last-modified timestamps.
     """
     return list_website_pages(website_directory)
+
+
+def get_website_page_mcp(
+    website_directory: str, page_name: str, max_chars: int = 20000
+) -> Dict[str, Any]:
+    """
+    Read one generated website page's HTML content.
+
+    Args:
+        website_directory: Path to a previously generated website directory
+        page_name: Page key from the one site catalogue (e.g. "index")
+        max_chars: Cap on returned content characters
+
+    Returns:
+        Dictionary with success status, page metadata, and content.
+    """
+    return read_website_page(website_directory, page_name, max_chars=max_chars)
 
 
 def get_website_module_info_mcp() -> Dict[str, Any]:
@@ -173,8 +192,6 @@ def get_website_module_info_mcp() -> Dict[str, Any]:
 def register_tools(mcp_instance: Any) -> None:
     """Register all website module tools with the MCP server."""
 
-    # Generic introspection tools (namespaced)
-    # Domain-specific tools
     mcp_instance.register_tool(
         "process_website",
         process_website_mcp,
@@ -197,7 +214,7 @@ def register_tools(mcp_instance: Any) -> None:
             },
             "required": ["target_directory", "output_directory"],
         },
-        "Generate a premium 7-page static HTML website from GNN pipeline artifacts.",
+        f"Generate a premium {page_count()}-page static HTML website from GNN pipeline artifacts.",
         module=__package__,
         category="website",
     )
@@ -274,4 +291,32 @@ def register_tools(mcp_instance: Any) -> None:
         category="website",
     )
 
-    logger.info("website module MCP tools registered (5 tools).")
+    mcp_instance.register_tool(
+        "get_website_page",
+        get_website_page_mcp,
+        {
+            "type": "object",
+            "properties": {
+                "website_directory": {
+                    "type": "string",
+                    "description": "Path to a previously generated website directory",
+                },
+                "page_name": {
+                    "type": "string",
+                    "description": 'Page key from the site catalogue (e.g. "index")',
+                },
+                "max_chars": {
+                    "type": "integer",
+                    "description": "Cap on returned content characters",
+                    "default": 20000,
+                },
+            },
+            "required": ["website_directory", "page_name"],
+        },
+        "Read one generated website page's HTML content by catalogue page key, "
+        "with a character cap for large pages.",
+        module=__package__,
+        category="website",
+    )
+
+    logger.info(f"website module MCP tools registered ({len(MCP_TOOL_NAMES)} tools).")

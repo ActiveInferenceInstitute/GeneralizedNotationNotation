@@ -2,7 +2,7 @@
   "modules_total": 36,
   "modules_loaded": 36,
   "modules_errored": 0,
-  "tools_total": 162,
+  "tools_total": 164,
   "modules_list": [
     "advanced_visualization",
     "analysis",
@@ -571,6 +571,14 @@
       "description": "Return metadata about the website module: version, supported file types, and available MCP tools."
     },
     {
+      "name": "get_website_page",
+      "module": "gnn.website",
+      "category": "website",
+      "fn": "get_website_page_mcp",
+      "documented": true,
+      "description": "Read one generated website page's HTML content by catalogue page key, with a character cap for large pages."
+    },
+    {
       "name": "get_website_status",
       "module": "gnn.website",
       "category": "website",
@@ -729,6 +737,14 @@
       "fn": "list_standard_ontology_terms_mcp",
       "documented": true,
       "description": "Return the canonical list of Active Inference Ontology (ActInfO) terms and descriptions."
+    },
+    {
+      "name": "list_step_artifacts",
+      "module": "gnn.pipeline",
+      "category": "pipeline",
+      "fn": "list_step_artifacts_tool",
+      "documented": true,
+      "description": "List the files each pipeline step wrote under the pipeline output root (registry-complete, per-step file cap, optional step number filter)."
     },
     {
       "name": "list_supported_integrations",
@@ -1342,7 +1358,7 @@
   "duplicate_registrations": [],
   "spot_checks_ok": 14,
   "spot_checks_err": 0,
-  "schema_checks_ok": 162,
+  "schema_checks_ok": 164,
   "schema_checks_err": 0,
   "logging_ok": 32,
   "logging_miss": 0,

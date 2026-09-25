@@ -37,7 +37,6 @@ logger = logging.getLogger(__name__)
 
 _CSS = """
 /* ── GNN Pipeline Premium Design System ── */
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
   --bg-gradient: radial-gradient(circle at top right, #1b1e32, #07090f 80%);
@@ -64,7 +63,7 @@ _CSS = """
 html { scroll-behavior: smooth; }
 
 body {
-  font-family: 'Outfit', 'Inter', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   background: #07090f;
   background-image: var(--bg-gradient);
   background-attachment: fixed;
@@ -285,6 +284,57 @@ body {
   background: rgba(255,255,255,0.05); color: var(--text-2); border: 1px solid var(--border);
   animation: pulse 2s infinite ease-in-out; 
 }
+.badge-warning { background: rgba(227,179,65,0.15); color: var(--warning); border: 1px solid rgba(227,179,65,0.3); }
+
+/* ── Dashboard index (pipeline run) ── */
+.dash-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 40px;
+}
+.dash-meta__item {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.dash-meta__label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.dash-meta__value {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-1);
+  font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+}
+.dash-art {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  margin-bottom: 12px;
+}
+.dash-art__head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.dash-art__name { font-size: 14px; font-weight: 600; color: var(--text-1); }
+.dash-art__count { font-size: 11px; color: var(--text-3); margin-left: auto; }
+.dash-art__body { margin-top: 10px; }
+.dash-files { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.dash-files li {
+  font-size: 12px;
+  color: var(--text-2);
+  font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+}
+.dash-files li::before { content: '📄 '; }
+.dash-more { font-size: 11px; color: var(--text-3); margin: 6px 0 0; }
+.dash-empty { font-size: 12px; color: var(--text-3); font-style: italic; margin: 0; }
 
 /* ── Table (Glass) ── */
 .table-wrap { 
@@ -318,7 +368,7 @@ tr:hover td { background: rgba(255,255,255,0.03); }
 
 /* ── Code ── */
 pre, code {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
   font-size: 13px;
 }
 pre {
@@ -406,7 +456,7 @@ code { color: var(--accent-2); }
   transition: background 0.2s;
 }
 .tool-card:hover { background: rgba(255,255,255,0.05); }
-.tool-card .tool-name { font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--accent-2); font-weight: 600; }
+.tool-card .tool-name { font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace; font-size: 14px; color: var(--accent-2); font-weight: 600; }
 .tool-card .tool-mod  { font-size: 11px; color: var(--text-3); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.1em; }
 .tool-card .tool-desc { font-size: 13px; color: var(--text-2); margin-top: 8px; line-height: 1.6; font-weight: 300; }
 
@@ -522,6 +572,11 @@ class StepInfo:
         """Conventional display name of the numbered orchestrator script."""
         return f"{self.number}_{self.name.lower().replace(' ', '_')}.py"
 
+    @property
+    def output_dir_name(self) -> str:
+        """Standard output subdirectory, mirroring the step registry (``11_render_output``)."""
+        return f"{self.number}_{self.name.lower().replace(' ', '_')}_output"
+
 
 # Acronym casing for stem suffixes that must not be title-cased
 # (``"mcp".title()`` would yield "Mcp", breaking the display name and the
@@ -584,6 +639,14 @@ _PIPELINE_BADGE_LABEL: dict[str, str] = {
 }
 
 
+_OVERALL_BADGE_CLASS: dict[str, str] = {
+    "SUCCESS": "badge-ok",
+    "SUCCESS_WITH_WARNINGS": "badge-warning",
+    "PARTIAL_SUCCESS": "badge-warning",
+    "FAILED": "badge-error",
+}
+
+
 def _esc(value: Any) -> str:
     """HTML-escape any value for safe interpolation into page markup."""
     return escape(str(value))
@@ -606,6 +669,67 @@ def _truncate(text: str, limit: int) -> str:
     if len(text) <= limit:
         return text
     return text[:limit] + "\n\n… [truncated]"
+
+
+def _fmt_secs(value: Any) -> str:
+    """Format a duration in seconds (``—`` when absent or unusable)."""
+    try:
+        seconds = float(value)
+    except (TypeError, ValueError):
+        return "—"
+    if seconds < 0:
+        return "—"
+    if seconds < 60:
+        return f"{seconds:.1f}s"
+    minutes, seconds = divmod(seconds, 60)
+    if minutes < 60:
+        return f"{int(minutes)}m {seconds:04.1f}s"
+    hours, minutes = divmod(int(minutes), 60)
+    return f"{hours}h {minutes:02d}m"
+
+
+def _fmt_mb(value: Any) -> str:
+    """Format a megabyte figure (``—`` when absent or unusable)."""
+    try:
+        megabytes = float(value)
+    except (TypeError, ValueError):
+        return "—"
+    return f"{megabytes:.1f} MB"
+
+
+def _overall_badge(status: Any) -> str:
+    """Badge fragment for the canonical summary's overall status.
+
+    Case-tolerant normalization: SUCCESS → ok tier, SUCCESS_WITH_WARNINGS /
+    PARTIAL_SUCCESS → warning tier, FAILED → error tier, and anything
+    unknown (including an absent summary) → the truthful pending tier.
+    """
+    normalized = str(status or "").strip().upper() or "PENDING"
+    badge_cls = _OVERALL_BADGE_CLASS.get(normalized, "badge-pending")
+    return f'<span class="step-badge {badge_cls}">{_esc(normalized)}</span>'
+
+
+def _step_dir_stats(
+    step: StepInfo, p_root: Path, cap: int = 10
+) -> tuple[bool, int, int, list[str], bool]:
+    """Filesystem facts for one registry step's output directory.
+
+    Registry + filesystem only — per-step ``output_dir`` summary fields are
+    never consulted. Returns ``(exists, file_count, total_bytes, preview,
+    truncated)`` where ``preview`` holds up to ``cap`` sorted relative names.
+    """
+    directory = p_root / step.output_dir_name
+    if not directory.is_dir():
+        return False, 0, 0, [], False
+    files = sorted(p for p in directory.rglob("*") if p.is_file())
+    preview = [f.relative_to(directory).as_posix() for f in files[:cap]]
+    return (
+        True,
+        len(files),
+        sum(f.stat().st_size for f in files),
+        preview,
+        len(files) > cap,
+    )
 
 
 def _write_atomic(dest: Path, content: str) -> None:
@@ -766,16 +890,143 @@ class WebsiteGenerator:
   <span class="step-badge {badge_cls}">{badge_label}</span>
 </div>"""
 
+        # Pipeline run header — canonical execution summary only; every value
+        # degrades to the truthful pending/"—" state when the summary is absent.
+        summary = data.get("pipeline_summary")
+        if not isinstance(summary, dict):
+            summary = {}
+        performance = summary.get("performance_summary")
+        if not isinstance(performance, dict):
+            performance = {}
+        run_header = f"""
+<div class="section">
+  <div class="section-title">Pipeline Run</div>
+  <div class="dash-meta">
+    <div class="dash-meta__item">
+      <span class="dash-meta__label">Overall status</span>
+      {_overall_badge(summary.get("overall_status"))}
+    </div>
+    <div class="dash-meta__item">
+      <span class="dash-meta__label">Finished</span>
+      <span class="dash-meta__value">{_esc(summary.get("end_time") or "—")}</span>
+    </div>
+    <div class="dash-meta__item">
+      <span class="dash-meta__label">Duration</span>
+      <span class="dash-meta__value">{_fmt_secs(summary.get("total_duration_seconds"))}</span>
+    </div>
+    <div class="dash-meta__item">
+      <span class="dash-meta__label">Peak memory</span>
+      <span class="dash-meta__value">{_fmt_mb(performance.get("peak_memory_mb"))}</span>
+    </div>
+  </div>
+</div>"""
+
+        # Memory receipts — rows joined to the step grid by step number.
+        summary_steps: dict[int, dict[str, Any]] = {}
+        raw_steps = summary.get("steps")
+        if isinstance(raw_steps, list):
+            for raw in raw_steps:
+                if isinstance(raw, dict) and isinstance(raw.get("step_number"), int):
+                    summary_steps[raw["step_number"]] = raw
+        if summary_steps:
+            registry_names = {step.number: step.name for step in PIPELINE_STEPS}
+            mem_rows = ""
+            for number in sorted(set(registry_names) | set(summary_steps)):
+                record = summary_steps.get(number)
+                name = (
+                    (record.get("description") if record else "")
+                    or registry_names.get(number)
+                    or f"step {number:02d}"
+                )
+                mem_rows += f"""<tr>
+  <td><code>{number:02d}</code></td>
+  <td>{_esc(name)}</td>
+  <td>{_fmt_mb(record.get("memory_usage_mb") if record else None)}</td>
+  <td>{_fmt_mb(record.get("peak_memory_mb") if record else None)}</td>
+  <td>{_fmt_mb(record.get("memory_delta_mb") if record else None)}</td>
+</tr>"""
+            memory = f"""
+<div class="section">
+  <div class="section-title">Memory Receipts</div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>#</th><th>Step</th><th>Usage</th><th>Peak</th><th>Δ</th></tr></thead>
+      <tbody>{mem_rows}</tbody>
+    </table>
+  </div>
+</div>"""
+        else:
+            memory = """
+<div class="section">
+  <div class="section-title">Memory Receipts</div>
+  <div class="card"><p>No memory receipts recorded.</p>
+  <p>The pipeline execution summary did not run or recorded no per-step memory data for this pipeline run.</p></div>
+</div>"""
+
+        # Artifact browser — registry + filesystem only; the summary's
+        # per-step ``output_dir`` fields are never consulted. Missing
+        # directories render as an explicit empty state instead of being
+        # dropped.
+        p_root = data.get("p_root")
+        if p_root is None:
+            artifacts = """
+<div class="section">
+  <div class="section-title">Artifacts</div>
+  <div class="card"><p>No pipeline output root available.</p></div>
+</div>"""
+        else:
+            art_cards = ""
+            for step in PIPELINE_STEPS:
+                exists, count, size, names, truncated = _step_dir_stats(step, p_root)
+                if not exists:
+                    count_label, body_html = (
+                        "not produced",
+                        '<p class="dash-empty">Not produced — no output directory on disk.</p>',
+                    )
+                elif not names:
+                    count_label, body_html = (
+                        f"{count} files · {size} bytes",
+                        '<p class="dash-empty">Output directory exists but holds no files.</p>',
+                    )
+                else:
+                    count_label = (
+                        f"{count} file{'s' if count != 1 else ''} · {size} bytes"
+                    )
+                    items = "".join(f"<li>{_esc(name)}</li>" for name in names)
+                    more = (
+                        f'<p class="dash-more">…+{count - len(names)} more</p>'
+                        if truncated
+                        else ""
+                    )
+                    body_html = f'<ul class="dash-files">{items}</ul>{more}'
+                art_cards += f"""
+<div class="dash-art">
+  <div class="dash-art__head">
+    <span class="pill badge-pending">STEP {step.number:02d}</span>
+    <span class="dash-art__name">{_esc(step.name)}</span>
+    <span class="dash-art__count">{_esc(count_label)}</span>
+  </div>
+  <div class="dash-art__body">{body_html}</div>
+</div>"""
+            artifacts = f"""
+<div class="section">
+  <div class="section-title">Artifacts</div>
+  {art_cards}
+</div>"""
+
         body = f"""
 <div class="page-header">
   <h1>GNN Pipeline Dashboard</h1>
   <p class="subtitle">Results overview — generated {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}</p>
 </div>
 {stats}
+{run_header}
 <div class="section">
   <div class="section-title">Pipeline Steps</div>
   <div class="step-grid">{cards}</div>
-</div>"""
+</div>
+{memory}
+{artifacts}"""
         return _page("Dashboard", "index", body)
 
     def _page_pipeline(self, data: dict) -> str:

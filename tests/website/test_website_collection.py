@@ -68,3 +68,50 @@ class TestCollectionBehavior:
         assert len(data["step_statuses"]) == 25
         assert data["processed_files"] == 0
         assert data["gui_navigation"] is False
+
+
+class TestPipelineSummaryKey:
+    """``collect_website_data`` exposes the loaded execution summary."""
+
+    def test_pipeline_summary_empty_when_summary_absent(self, tmp_path: Any) -> None:
+        from gnn.website import WebsiteGenerator
+
+        input_dir = tmp_path / "input"
+        input_dir.mkdir()
+        generator = WebsiteGenerator()
+        data = generator._collect_all_data(
+            tmp_path,
+            input_dir,
+            tmp_path / "site",
+            tmp_path / "site" / "assets",
+            {},
+        )
+        assert data["pipeline_summary"] == {}
+
+    def test_pipeline_summary_canonical_dict_when_present(self, tmp_path: Any) -> None:
+        import json
+
+        from gnn.website import WebsiteGenerator
+
+        summary_dir = tmp_path / "00_pipeline_summary"
+        summary_dir.mkdir()
+        canonical = {
+            "overall_status": "FAILED",
+            "end_time": "2026-09-25T12:00:00",
+            "total_duration_seconds": 12.5,
+            "steps": [],
+        }
+        (summary_dir / "pipeline_execution_summary.json").write_text(
+            json.dumps(canonical), encoding="utf-8"
+        )
+        input_dir = tmp_path / "input"
+        input_dir.mkdir()
+        generator = WebsiteGenerator()
+        data = generator._collect_all_data(
+            tmp_path,
+            input_dir,
+            tmp_path / "site",
+            tmp_path / "site" / "assets",
+            {},
+        )
+        assert data["pipeline_summary"] == canonical

@@ -18,8 +18,7 @@ src/gnn/website/
 ├── generator.py                    # WebsiteGenerator / generate_website: builds the seven site pages (from SITE_PAGES)
 ├── pages.py                        # One site page catalogue (SITE_PAGES): single source for page inventories
 ├── renderer.py                     # WebsiteRenderer, process_website, and HTML/asset embedding helpers
-├── dashboard.py                    # render_dashboard: standalone single-file HTML dashboard page
-├── inspection.py                   # inspect_website / list_website_pages: site inventory queries
+├── inspection.py                   # inspect_website / list_website_pages / read_website_page: site inventory + page-read queries
 ├── processor.py                    # Thin facade re-exporting process_website from renderer.py
 └── mcp.py                          # Model Context Protocol integration
 
@@ -276,6 +275,7 @@ Registered in `register_tools` (`src/gnn/website/mcp.py`):
 - `get_website_status` - Read website generation status
 - `list_generated_website_pages` - List pages in a generated site
 - `get_website_module_info` - Module metadata
+- `get_website_page` - Read one page's HTML content by catalogue page key (capped read)
 
 ### MCP File Location
 - `src/gnn/website/mcp.py` - MCP tool registrations

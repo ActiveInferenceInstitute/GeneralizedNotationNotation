@@ -77,16 +77,16 @@ success = process_website(
 
 **Returns**: `bool` - True if embedding succeeded, False otherwise
 
-Additional exports (see `__init__.py`): `WebsiteGenerator`, `WebsiteRenderer`, `generate_website`, `embed_text_file`, `embed_json_file`, `embed_html_file`, `get_module_info`, `get_supported_file_types`, `validate_website_config`, `render_dashboard` (re-exported from `dashboard.py`), `collect_website_data`, `get_pipeline_steps`, `PIPELINE_STEPS`, `StepInfo`, `inspect_website`, `list_website_pages`, and the page catalogue from `pages.py` (`SITE_PAGES`, `page_names`, `is_valid_page`, `page_count`; `PageSpec`/`page_filenames` importable from `gnn.website.pages`).
+Additional exports (see `__init__.py`): `WebsiteGenerator`, `WebsiteRenderer`, `generate_website`, `embed_text_file`, `embed_json_file`, `embed_html_file`, `get_module_info`, `get_supported_file_types`, `validate_website_config`, `collect_website_data`, `get_pipeline_steps`, `PIPELINE_STEPS`, `StepInfo`, `inspect_website`, `list_website_pages`, and the page catalogue from `pages.py` (`SITE_PAGES`, `page_names`, `is_valid_page`, `page_count`; `PageSpec`/`page_filenames` importable from `gnn.website.pages`).
 
 #### `collect_website_data(pipeline_output_root, input_dir, assets_dir, *, output_dir=None, user_data=None) -> dict`
 **Description**: Pure aggregation of every artifact the pages render (GNN files, step statuses, analysis JSON, visualization assets, reports, MCP page data). Step statuses come from the durable `output/00_pipeline_summary/pipeline_execution_summary.json` (per-step `status` records; a step whose output dir exists but whose recorded status is FAILED/SKIPPED is not advertised complete), falling back to the numbered-output-dir heuristic only when the summary is absent. MCP page data is sourced from the step-21 artifacts — `21_mcp_output/mcp_processing_summary.json` for the summary and `21_mcp_output/registered_tools.json` for the tool inventory — so the site reflects what step 21 actually recorded and degrades to a truthful empty state when step 21 did not run.
 
 #### `get_pipeline_steps() -> tuple[StepInfo, ...]`
-**Description**: Returns the immutable 25-step catalogue derived from `gnn.pipeline.step_registry.STEPS` (`StepInfo(number, name, description)` with a `script_name` display property that matches the real orchestrator scripts) used to render the dashboard and pipeline pages.
+**Description**: Returns the immutable 25-step catalogue derived from `gnn.pipeline.step_registry.STEPS` (`StepInfo(number, name, description)` with a `script_name` display property that matches the real orchestrator scripts) used to render the index and pipeline pages.
 
-#### `inspect_website(directory) -> dict` / `list_website_pages(directory) -> dict`
-**Description**: Pure filesystem queries over a generated site (page inventory, sizes, key-page completeness; per-page size/mtime listing). `website.inspection.KEY_PAGES` lists the seven canonical pages, derived from the one page catalogue (`website.pages.SITE_PAGES` — see below). These are the shared implementation behind the `get_website_status` and `list_generated_website_pages` MCP tools.
+#### `inspect_website(directory) -> dict` / `list_website_pages(directory) -> dict` / `read_website_page(directory, page_name, max_chars=20000) -> dict`
+**Description**: Pure filesystem queries over a generated site (page inventory, sizes, key-page completeness; per-page size/mtime listing). `website.inspection.KEY_PAGES` lists the seven canonical pages, derived from the one page catalogue (`website.pages.SITE_PAGES` — see below). These are the shared implementation behind the `get_website_status` and `list_generated_website_pages` MCP tools. `read_website_page` in the same module caps one catalogue page's HTML read at `max_chars` characters (explicit `"\n\n… [truncated]"` marker when capped; graceful `success: False` + `error` for an unknown page key, a missing directory, or a missing page file) and is the shared implementation behind the `get_website_page` MCP tool.
 
 #### `pages.py` — the one site page catalogue
 `SITE_PAGES` is the frozen, ordered `PageSpec(name, title, builder, description, icon)` tuple of the site's pages (the fixed furniture: index, pipeline, gnn_files, analysis, visualization, reports, mcp). Every page inventory derives from it: the generator's builders map and sidebar navigation, `inspection.KEY_PAGES` (filenames), the module-info page list (`mcp.py`), and the package-level `page_count()` receipt hook. Pipeline-step facts in the catalogue are registry-derived (`gnn.pipeline.step_registry.STEPS` — the same source as the step catalogue), so a new pipeline step does not desync derived text.
@@ -185,7 +185,8 @@ Pipeline Artifacts → Content Extraction → Template Processing → Asset Embe
 ### Test Files
 - `tests/website/test_website_overall.py` - Module-level tests
 - `tests/website/test_website_public_api.py` - Public API surface tests
-- `tests/website/test_website_dashboard.py` - Dashboard tests
+- `tests/website/test_website_index_dashboard.py` - Rich dashboard data folded into the generated index page (summary badge/meta, artifact browser, memory receipts, truthful empty state, no external resources)
+- `tests/website/test_website_mcp_page.py` - `get_website_page` MCP tool / `read_website_page` shared page-read contract
 - `tests/website/test_website_collection.py` - Import-stability and behavior pins for the `gnn.website.collection` collection seam
 - `tests/website/test_website_generator_units.py` - Catalogue, data collection, escaping, page-resilience, manifest tests
 - `tests/website/test_website_inspection.py` - `inspect_website` / `list_website_pages` tests
@@ -213,8 +214,9 @@ uv run --extra dev python -m pytest tests/website/ \
 - `get_website_status` - Inspect completeness of an existing generated site
 - `list_generated_website_pages` - List generated HTML pages and metadata
 - `get_website_module_info` - Return website features and the live MCP inventory
+- `get_website_page` - Read one generated site page's HTML content by catalogue page key (`max_chars`-capped, shared impl `read_website_page`)
 
-The module-info inventory and `register_tools()` use these same five names.
+The module-info inventory and `register_tools()` use these same six names.
 
 ### MCP File Location
 - `src/gnn/website/mcp.py` - MCP tool registrations

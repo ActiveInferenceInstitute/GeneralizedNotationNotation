@@ -316,6 +316,7 @@ class TestMCPDomainTools:
         "build_website_from_pipeline_output",
         "get_website_status",
         "list_generated_website_pages",
+        "get_website_page",
         # sapf
         "process_sapf",
         "list_audio_artifacts",
@@ -356,6 +357,7 @@ class TestMCPDomainTools:
         # pipeline
         "get_pipeline_steps",
         "get_pipeline_status",
+        "list_step_artifacts",
         # extract
         "extract_pomdp",
         # multimodel
@@ -430,6 +432,7 @@ class TestMCPToolExecution:
         "get_visualization_options",
         "get_report_module_info",
         "get_sapf_module_info",
+        "list_step_artifacts",
     )
 
     @pytest.mark.parametrize("tool_name", ZERO_ARG_TOOLS)
