@@ -1,9 +1,15 @@
 {
-  "counts_describe_commit": "a5e3ea47f",
-  "dirty_path_count": 2,
+  "counts_describe_commit": "a4e5ebada",
+  "dirty_path_count": 8,
   "dirty_paths": [
     "output/data/manuscript_variables.json",
-    "output/data/manuscript_variables_receipt.json"
+    "output/data/manuscript_variables_receipt.json",
+    "src/gnn/manuscript/AGENTS.md",
+    "src/gnn/manuscript/__init__.py",
+    "src/gnn/manuscript/snapshot.py",
+    "src/gnn/manuscript/sources.py",
+    "src/gnn/manuscript/tables.py",
+    "src/gnn/manuscript/variables.py"
   ],
   "generator": "scripts/z_generate_manuscript_variables.py",
   "git_available": true,
