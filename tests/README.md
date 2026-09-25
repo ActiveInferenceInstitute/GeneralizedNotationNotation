@@ -72,7 +72,7 @@ tests/
 
 | Directory | Exempt rationale |
 |-----------|------------------|
-| `doc` | mirrored as `tests/docs/` (name variant, not an exemption) |
+| `doc` | static Markdown subtree; only code is a `__version__` re-export and a no-op `register_tools` MCP stub — `tests/docs/` audits repo `docs/` tooling, not this package |
 | `documentation` | `__init__`-only package, `.md` references ship as data files |
 | `formal_specs` | `__init__`-only package, payload consumed by `tests/test_grammar_spec_payloads.py` |
 | `grammars` | `__init__`-only package, `.bnf`/`.ebnf` payloads exercised by `tests/test_grammar_spec_payloads.py` |
