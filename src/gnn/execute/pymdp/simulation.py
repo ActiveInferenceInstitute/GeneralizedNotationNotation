@@ -31,6 +31,8 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 import numpy as np
 
+from gnn.utils.runtime_safety.resource_manager import get_current_memory_usage
+
 logger = logging.getLogger(__name__)
 
 EFE_CONVENTION_PYMDP = (
@@ -707,6 +709,9 @@ def run_pymdp_simulation(
         keys include ``observations``, ``actions``, ``beliefs``,
         ``true_states``, ``simulation_trace``, ``validation``, ``metrics``,
         ``model_parameters``, ``framework == "PyMDP"``.
+        plus the in-process memory trio ``memory_usage_mb`` /
+        ``peak_memory_mb`` / ``memory_delta_mb`` (self-RSS via psutil, same
+        semantics as the pipeline step executor).
     """
     # Categorical-backend doctrine: PyMDP renders only discrete POMDPs, so
     # refuse continuous/composed specs here — before importing pymdp — with
@@ -867,6 +872,10 @@ def run_pymdp_simulation(
 
     empirical_prior = agent.D
 
+    # In-process resource measurement (pipeline step_executor naming trio):
+    # self-RSS sampled before/after the rollout; psutil, best-effort.
+    rollout_start_memory_mb = get_current_memory_usage()
+
     for t in range(num_timesteps):
         if b_steps is not None:
             # Per-step rebuild semantics: a fresh pymdp Agent is constructed
@@ -947,6 +956,7 @@ def run_pymdp_simulation(
             true_state,
         )
 
+    rollout_end_memory_mb = get_current_memory_usage()
     # ---------------------------------------------------------------------
     # Assemble results (pymdp_simulation_v1 schema consumed by analysis).
     # ---------------------------------------------------------------------
@@ -997,6 +1007,9 @@ def run_pymdp_simulation(
             "alpha": alpha,
         },
         "matrix_provenance": gnn_spec.get("matrix_provenance", {}),
+        "memory_usage_mb": rollout_end_memory_mb,
+        "peak_memory_mb": max(rollout_start_memory_mb, rollout_end_memory_mb),
+        "memory_delta_mb": rollout_end_memory_mb - rollout_start_memory_mb,
         "runtime_metadata": {
             "output_dir": str(output_dir),
             "random_seed": seed,

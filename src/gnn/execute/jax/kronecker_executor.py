@@ -26,6 +26,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
+from gnn.utils.runtime_safety.resource_manager import get_current_memory_usage
+
 __all__ = [
     "execute_kronecker_factorized",
     "run_kronecker_factorized_execution",
@@ -91,7 +93,9 @@ def run_kronecker_factorized_execution(
     Returns:
         The execution envelope dict: ``success``, ``schema_version``,
         ``execution_time``, ``output_files``, ``simulation`` (the full schema
-        dict written to disk), and ``summary``.
+        dict written to disk), ``summary``, and the in-process memory trio
+        (``memory_usage_mb`` / ``peak_memory_mb`` / ``memory_delta_mb``;
+        self-RSS via psutil, same semantics as the pipeline step executor).
     """
     from gnn.execute.jax.kronecker_factorized import run_factorized_active_inference
 
@@ -100,9 +104,16 @@ def run_kronecker_factorized_execution(
     simulation_dir = out / "simulation_data"
     simulation_dir.mkdir(parents=True, exist_ok=True)
 
+    start_memory_mb = get_current_memory_usage()
     started = time.time()
     simulation: Dict[str, Any] = run_factorized_active_inference(model)
     elapsed = time.time() - started
+    end_memory_mb = get_current_memory_usage()
+    memory_trio = {
+        "memory_usage_mb": end_memory_mb,
+        "peak_memory_mb": max(start_memory_mb, end_memory_mb),
+        "memory_delta_mb": end_memory_mb - start_memory_mb,
+    }
 
     simulation.setdefault("schema_version", _KRONECKER_SCHEMA_VERSION)
 
@@ -129,6 +140,7 @@ def run_kronecker_factorized_execution(
         "num_timesteps": simulation.get("num_timesteps"),
         "all_valid": bool(simulation.get("validation", {}).get("all_valid", False)),
         "execution_time_seconds": round(elapsed, 4),
+        **memory_trio,
         "written_at": datetime.now().isoformat(),
         "simulation_results_relative": str(results_file.relative_to(out)),
     }
@@ -139,6 +151,7 @@ def run_kronecker_factorized_execution(
         "success": bool(simulation.get("success", False)),
         "schema_version": _KRONECKER_SCHEMA_VERSION,
         "execution_time": elapsed,
+        **memory_trio,
         "output_files": [str(results_file), str(summary_file)],
         "simulation": simulation,
         "summary": summary,

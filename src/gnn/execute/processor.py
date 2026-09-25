@@ -9,6 +9,7 @@ import copy
 import json
 import logging
 import os
+import platform
 import subprocess  # nosec B404
 import sys
 from concurrent.futures import ProcessPoolExecutor
@@ -1031,6 +1032,28 @@ def _sandbox_command_prefix(mode: str) -> tuple[list[str], Optional[str]]:
     return list(spec.prefix), None
 
 
+def _backend_version_from_runner_metadata(
+    runner_metadata: Dict[str, Any],
+) -> Optional[str]:
+    """Best-effort backend version string from runner-provided metadata.
+
+    Runners stamp their own version keys into ``execution_metadata`` (the
+    ``pymdp_version`` rollout receipt, the Julia ``julia_version`` probe);
+    mirror the first known key as ``backend_version`` for the structured
+    receipt, falling back to any other ``*_version`` string the runner
+    provided, else ``None``.
+    """
+    for key in ("pymdp_version", "julia_version", "rxinfer_version"):
+        value = runner_metadata.get(key)
+        if isinstance(value, str) and value:
+            return value
+    for key in sorted(runner_metadata):
+        value = runner_metadata[key]
+        if key.endswith("_version") and isinstance(value, str) and value:
+            return value
+    return None
+
+
 def execute_single_script(
     script_info: Dict[str, Any],
     results_dir: Path,
@@ -1407,10 +1430,14 @@ def execute_single_script(
             "execution_metadata": {
                 "executor": executor,
                 "accelerator_type": accelerator_type,
+                "python_version": platform.python_version(),
                 "stdout_length": len(result.stdout),
                 "stderr_length": len(result.stderr),
                 "output_directory": str(impl_specific_dir.parent),
                 **exec_result.get("execution_metadata", {}),
+                "backend_version": _backend_version_from_runner_metadata(
+                    exec_result.get("execution_metadata") or {}
+                ),
             },
         }
         for bench_key in (
