@@ -2,7 +2,7 @@
 
 Audit-backed quick reference for the GNN MCP server tool surface. Use `tests/mcp/test_mcp_audit.py` and `src/gnn/mcp/validate_tools.py` for the current live count. For full per-domain documentation see **[../modules/21_mcp.md](../modules/21_mcp.md)**.
 
-**162 tools across 36 modules** — see the generated [`src/gnn/mcp/audit_report.json`](../../../src/gnn/mcp/audit_report.json) for the authoritative current count (regenerate with `uv run python src/gnn/mcp/validate_tools.py`).
+**164 tools across 36 modules** — see the generated [`src/gnn/mcp/audit_report.json`](../../../src/gnn/mcp/audit_report.json) for the authoritative current count (regenerate with `uv run python src/gnn/mcp/validate_tools.py`).
 
 ## Full Tool Table
 
@@ -110,6 +110,7 @@ Audit-backed quick reference for the GNN MCP server tool surface. Use `tests/mcp
 | pipeline | `get_pipeline_status` | Get current pipeline execution status, recent logs, and execution statistics. |
 | pipeline | `get_pipeline_steps` | Get information about all available pipeline steps, their metadata, and dependencies. |
 | pipeline | `get_v3_orchestration_capabilities` | Describe the v3.0.0 long-running orchestration contracts: durable observation streams, resumable run sessions, and auditable container plans (safe-by-design, no live mutation). |
+| pipeline | `list_step_artifacts` | List the files each pipeline step wrote under the pipeline output root (registry-complete, per-step file cap, optional step number filter). |
 | pipeline | `run_v3_container_security_review` | Run the auditable container-plan static security review on a hardened and an insecure example, proving the review flags privileged/root/unpinned/secret findings. |
 | pipeline | `run_v3_orchestration_self_check` | Run in-process checks of all three v3 orchestration contracts (stream manifest tamper detection, session status math, container review) and report pass counts. |
 | pipeline | `validate_pipeline_dependencies` | Validate pipeline step dependencies and identify missing or circular dependencies. |
@@ -167,6 +168,7 @@ Audit-backed quick reference for the GNN MCP server tool surface. Use `tests/mcp
 | visualization | `process_visualization` | Generate static PNGs/SVGs for all GNN models (state-space, connection matrix, parameters). |
 | website | `build_website_from_pipeline_output` | Build the full GNN website by auto-discovering all pipeline artifacts from numbered output directories. |
 | website | `get_website_module_info` | Return metadata about the website module: version, supported file types, and available MCP tools. |
+| website | `get_website_page` | Read one generated website page's HTML content by catalogue page key, with a character cap for large pages. |
 | website | `get_website_status` | Inspect an existing generated website: list pages, sizes, and check completeness of key pages. |
 | website | `list_generated_website_pages` | List all HTML pages in a generated website directory with sizes and timestamps. |
 | website | `process_website` | Generate a premium 7-page static HTML website from GNN pipeline artifacts. |

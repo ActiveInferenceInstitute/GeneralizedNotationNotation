@@ -201,6 +201,7 @@ class TestWebsiteMCP:
             "get_website_status",
             "list_generated_website_pages",
             "get_website_module_info",
+            "get_website_page",
         ]
 
     def test_get_website_status_mcp_nonexistent(self, tmp_path: Any) -> Any:

@@ -439,7 +439,8 @@ uv run --extra dev python -m pytest tests/pipeline/ --cov=src/gnn/pipeline --cov
 Registered by `register_tools()` in `pipeline/mcp.py`:
 
 - `get_pipeline_steps` - Step metadata and dependencies
-- `get_pipeline_status` - Current execution status, recent logs, statistics
+- `get_pipeline_status` - Current execution status, recent logs, statistics; includes `memory_receipts` (aggregate + per-step `memory_usage_mb`/`peak_memory_mb`/`memory_delta_mb`) when a summary exists
+- `list_step_artifacts` - Registry-aware per-step artifact browser data (`exists`, `file_count`, `total_size_bytes`, up to 20 `files` with a `truncated` flag); optional `step_number`
 - `validate_pipeline_dependencies` - Missing or circular dependency check
 - `get_pipeline_config_info` - Detailed configuration information
 - `get_v3_orchestration_capabilities`, `run_v3_container_security_review`, `run_v3_orchestration_self_check` - v3.0.0 safe-by-design orchestration tools (data only, no live mutation)

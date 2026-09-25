@@ -4,7 +4,7 @@ Some tests in this directory call ``gnn.mcp.mcp.initialize()`` on the
 module-global singleton with a ``modules_allowlist`` (e.g. the result-cache
 TTL-knob test, the backend-module tests). That call latches the shared
 singleton's ``_modules_discovered`` flag while registering only the
-allowlisted subset (~28 of the 162 census tools). Any later test that
+allowlisted subset (~28 of the census tools). Any later test that
 reaches the global registry without ``force_refresh=True`` then sees the
 degraded 28-tool registry — an order-dependent failure class first caught
 by the ARCH-3 census work (``test_meta_tools_registration`` fails after the
@@ -14,7 +14,7 @@ This fixture snapshots the global singleton before each test and restores
 it after, so singleton mutations cannot leak across test boundaries. It is
 test-side only: production registration semantics are unchanged, and the
 census pins in ``tests/helpers/mcp_census.py`` still assert the exact
-162-tool audit (ARCH-3 untouched).
+tool audit (ARCH-3 untouched).
 """
 
 from __future__ import annotations

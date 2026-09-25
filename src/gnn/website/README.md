@@ -14,9 +14,8 @@ src/gnn/website/
 ├── renderer.py        # process_website + embed_* helpers + get_module_info
 ├── collection.py      # collect_website_data + private artifact collectors
 ├── generator.py       # WebsiteGenerator / generate_website (7-page site)
-├── dashboard.py       # render_dashboard — standalone interactive dashboard
 ├── inspection.py      # inspect_website / list_website_pages (pure site queries)
-└── mcp.py             # MCP tool registration (5 tools)
+└── mcp.py             # MCP tool registration (6 tools)
 ```
 
 No `templates/` or `static/` directory ships in the module and the generator
@@ -123,21 +122,15 @@ All return `bool`:
   (`StepInfo(number, name, description)` + `script_name` display property
   matching the real orchestrator scripts); `PIPELINE_STEPS` is the same
   tuple as a constant.
-- `inspect_website(directory) -> dict` / `list_website_pages(directory) -> dict`
-  — page inventory, sizes, and key-page completeness of a generated site
-  (`website.inspection.KEY_PAGES`, derived from the one page catalogue
-  `website.pages.SITE_PAGES`). Shared implementation behind the
-  `get_website_status` / `list_generated_website_pages` MCP tools.
+- `read_website_page(directory, page_name, max_chars=20000) -> dict`
+  — capped read of one catalogue page's HTML from a generated site
+  (`"\n\n… [truncated]"` marker when capped; graceful `success: False` +
+  `error` for an unknown page key, a missing directory, or a missing page
+  file). Shared implementation behind the `get_website_page` MCP tool.
 - `SITE_PAGES` / `page_names()` / `is_valid_page(name)` / `page_count()` (from
   `pages.py`) — the one frozen, ordered catalogue of the site's pages
   (`PageSpec(name, title, builder, description, icon)` + `filename`); the
   builders map, sidebar navigation, and `KEY_PAGES` all derive from it.
-
-### `render_dashboard(results_dir, output_path, summary_path=None) -> ...`
-
-`dashboard.py` renders a standalone interactive dashboard HTML page. Note:
-this page loads Mermaid from a CDN (`cdn.jsdelivr.net`), so unlike the main
-site it is not fully offline-self-contained.
 
 ## Output
 
@@ -190,6 +183,7 @@ Registered in `mcp.py` (`register_tools`):
 - `get_website_status`
 - `list_generated_website_pages`
 - `get_website_module_info`
+- `get_website_page`
 
 ## Testing
 
@@ -198,8 +192,10 @@ uv run --extra dev python -m pytest tests/website/ \
     --cov=src/gnn/website --cov-report=term-missing
 ```
 Test files: `test_website_overall.py`, `test_website_public_api.py`,
-`test_website_dashboard.py`, `test_website_generator_units.py`,
-`test_website_inspection.py`.
+`test_website_pages.py`, `test_website_index_dashboard.py`,
+`test_website_generator_units.py`, `test_website_collection.py`,
+`test_website_inspection.py`, `test_website_mcp_page.py`,
+`test_website_gui_crosslinks.py`.
 
 ## Troubleshooting
 

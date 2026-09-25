@@ -60,6 +60,10 @@ def get_pipeline_status(mcp_instance_ref: Any) -> Dict[str, Any]:
     """
     Get current pipeline execution status and statistics.
 
+    The result carries ``memory_receipts``: the summary's recorded peak
+    memory plus per-step memory usage/peak/delta receipts (values are
+    ``None`` when the execution summary does not record them).
+
     Returns:
         Dictionary containing pipeline status information.
     """
@@ -103,17 +107,115 @@ def get_pipeline_status(mcp_instance_ref: Any) -> Dict[str, Any]:
                         "modified": time.ctime(log_file.stat().st_mtime),
                     }
                 )
+        # Memory receipts derived from the execution summary (additive;
+        # absent/unusable summary fields degrade to None / empty list).
+        memory_receipts: dict[str, Any] = {"peak_memory_mb": None, "steps": []}
+        if isinstance(summary, dict):
+            performance_summary = summary.get("performance_summary")
+            if isinstance(performance_summary, dict):
+                memory_receipts["peak_memory_mb"] = performance_summary.get(
+                    "peak_memory_mb"
+                )
+            summary_steps = summary.get("steps")
+            if isinstance(summary_steps, list):
+                for step_entry in summary_steps:
+                    if not isinstance(step_entry, dict):
+                        continue
+                    memory_receipts["steps"].append(
+                        {
+                            "step_number": step_entry.get("step_number"),
+                            "description": step_entry.get("description"),
+                            "memory_usage_mb": step_entry.get("memory_usage_mb"),
+                            "peak_memory_mb": step_entry.get("peak_memory_mb"),
+                            "memory_delta_mb": step_entry.get("memory_delta_mb"),
+                        }
+                    )
 
         return {
             "success": True,
             "pipeline_config": config,
             "execution_summary": summary,
+            "memory_receipts": memory_receipts,
             "recent_logs": recent_logs,
             "output_directory": str(output_dir),
             "output_directory_exists": output_dir.exists(),
         }
     except Exception as e:
         logger.error(f"Error getting pipeline status: {e}")
+        return {"success": False, "error": str(e)}
+
+
+def list_step_artifacts_mcp(step_number: int | None = None) -> Dict[str, Any]:
+    """
+    List the artifacts each pipeline step wrote under the pipeline output root.
+
+    Registry-complete: every step in the canonical step registry is reported,
+    with ``exists`` False (and zero counts) when its output directory is
+    absent. Per-step file listings are capped at 20 entries with a
+    ``truncated`` flag.
+
+    Args:
+        step_number: Optional step number filter (the numeric prefix of the
+            step's script stem, e.g. 3 for ``3_gnn``).
+
+    Returns:
+        Dictionary with ``steps`` (one inventory per registry step),
+        ``steps_count``, and ``steps_with_artifacts`` (steps whose output
+        directory exists and holds at least one file).
+    """
+    try:
+        from .config import get_pipeline_config
+        from .step_registry import STEPS
+
+        config = get_pipeline_config()
+        output_root = Path(config.get("output_dir", "output"))
+
+        steps_out: list[dict[str, Any]] = []
+        for step in STEPS:
+            number = int(step.script_stem.split("_")[0])
+            if step_number is not None and number != step_number:
+                continue
+            step_dir = output_root / step.output_dir_name
+            entry: dict[str, Any] = {
+                "step_number": number,
+                "name": step.script_stem,
+                "script_stem": step.script_stem,
+                "description": step.description,
+                "output_dir": str(step_dir),
+                "exists": step_dir.exists(),
+                "file_count": 0,
+                "total_size_bytes": 0,
+                "files": [],
+                "truncated": False,
+            }
+            if entry["exists"]:
+                step_files = sorted(
+                    (p for p in step_dir.rglob("*") if p.is_file()),
+                    key=lambda p: str(p.relative_to(step_dir)),
+                )
+                entry["file_count"] = len(step_files)
+                entry["total_size_bytes"] = sum(p.stat().st_size for p in step_files)
+                entry["files"] = [
+                    {
+                        "name": str(p.relative_to(step_dir)),
+                        "size_bytes": p.stat().st_size,
+                    }
+                    for p in step_files[:20]
+                ]
+                entry["truncated"] = len(step_files) > 20
+            steps_out.append(entry)
+
+        return {
+            "success": True,
+            "output_root": str(output_root),
+            "steps": steps_out,
+            "steps_count": len(steps_out),
+            "steps_with_artifacts": sum(
+                1 for entry in steps_out if entry["file_count"] > 0
+            ),
+        }
+    except Exception as e:
+        logger.error(f"Error listing step artifacts: {e}")
         return {"success": False, "error": str(e)}
 
 
@@ -361,6 +463,10 @@ def register_tools(mcp_instance: Any) -> None:
         """Return pipeline status tool."""
         return get_pipeline_status(mcp_instance)
 
+    def list_step_artifacts_tool(step_number: int | None = None) -> Any:
+        """Return step artifacts listing tool (optional registry number filter)."""
+        return list_step_artifacts_mcp(step_number=step_number)
+
     def validate_pipeline_dependencies_tool() -> Any:
         """Validate pipeline dependencies tool."""
         return validate_pipeline_dependencies(mcp_instance)
@@ -384,6 +490,26 @@ def register_tools(mcp_instance: Any) -> None:
         get_pipeline_status_tool,
         {"type": "object", "properties": {}},
         "Get current pipeline execution status, recent logs, and execution statistics.",
+        module=__package__,
+        category="pipeline",
+    )
+
+    mcp_instance.register_tool(
+        "list_step_artifacts",
+        list_step_artifacts_tool,
+        {
+            "type": "object",
+            "properties": {
+                "step_number": {
+                    "type": "integer",
+                    "description": (
+                        "Optional step number filter (e.g. 3 for the 3_gnn step)."
+                    ),
+                },
+            },
+        },
+        "List the files each pipeline step wrote under the pipeline output root "
+        "(registry-complete, per-step file cap, optional step number filter).",
         module=__package__,
         category="pipeline",
     )
