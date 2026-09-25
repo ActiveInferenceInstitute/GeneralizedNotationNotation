@@ -40,10 +40,10 @@ file). Summary:
 | --- | --- | --- | --- |
 | BC-14 | minor | `utils/pipeline_orchestration/pipeline_template.py` I5 fallback chain — conditional on lint-imports going red (currently 3 kept / 0 broken) | SCOPE §Medium M-06 |
 | M-01 | medium | Oversized band remainder: wave-6 folded `cli/__init__.py` 1431→181 (#202), `manuscript/variables.py` 1430→562 (#201), `extract/pomdp_extractor.py` 1837→655 (#204); next `execute/executor.py` 1665 (one file per wave), then `render/pomdp_processor.py` and `render/processor.py`; raw-extras set unchanged, pending a band-program decision; parity-gated | SCOPE §Medium M-01 |
-| GEN-3/GEN-4 | major | v4.0.0 generalization remainder: factored/hybrid/multi-agent continuous; non-stationary F_t/regime semantics (GEN-1/2 landed: #183, #179-#182) | SCOPE §Major |
+| GEN remainder | major | Multi-agent continuous topologies (GEN-1 #183, GEN-2 #179-#182, GEN-3 factored/hybrid #193, GEN-4 non-stationary #192 all landed); partial stigmergic multi-agent support exists (`tests/render/test_stigmergic_multi_agent.py`) | SCOPE §Major |
 | M-09 | medium | Mirror-or-exempt for the 7 unmirrored test dirs; `tests/parsers` + `tests/processing` mirrors dispatched in a parallel lane; near-empty src dirs (`documentation`, `grammars`, `schemas`, `schema`, `formal_specs`, `type_systems`) exemptable | SCOPE §Medium M-09 |
 | M-14 | medium | bnlearn seam → `render/bnlearn/` package per the ngclearn pattern, rewire `framework_registry.py:205` + `health.py:56-58` | SCOPE §Medium |
-| M-11 | medium | lean CancelToken: GNN-side threading staged (lane t-0044: executor.py lean branch + `lean_runner.verify_document` → `run_subprocess_envelope(cancel_token=...)`); fep-side bridge substance HELD for the sibling fep lane; custody cycle #27 re-seals at close | SCOPE §Medium |
+| M-11 | medium | lean CancelToken: GNN-side threading staged (lane t-0044: executor.py lean branch + `lean_runner.verify_document` → `run_subprocess_envelope(cancel_token=...)` — real behavior change: the envelope implements process-level cancellation, the pymdp route is the pattern); fep-side in-bridge cooperative semantics HELD for the sibling fep lane; custody cycle #27 re-seals at close | SCOPE §Medium |
 
 
 Cross-repo (fep_lean coordinator territory, NOT GNN waves): X-1
