@@ -1,0 +1,180 @@
+#!/usr/bin/env python3
+"""
+Long-running service subcommand handlers: serve, watch, lsp, gui, and mcp.
+
+Each handler receives the parsed argparse namespace and returns a process
+exit code per the CLI contract (0 success, 1 error, 2 warnings). Extracted
+from ``cli.__init__``.
+"""
+
+from __future__ import annotations
+
+import argparse
+import logging
+from pathlib import Path
+from typing import Any
+
+from .helpers import EXIT_ERROR, EXIT_SUCCESS, _print_envelope
+
+logger = logging.getLogger(__name__)
+
+
+def _cmd_serve(args: argparse.Namespace) -> int:
+    """Start Pipeline-as-a-Service API (runs, jobs, or both surfaces)."""
+    surface = str(getattr(args, "surface", "runs") or "runs")
+    try:
+        from gnn.api.auth import require_secure_bind
+
+        if not require_secure_bind(args.host):
+            raise RuntimeError(
+                f"Refusing to bind API server to non-loopback address {args.host!r} "
+                "without authentication. Set GNN_API_KEY to enable API-key auth, "
+                "or GNN_ALLOW_INSECURE_BIND=1 to explicitly accept the risk."
+            )
+        if surface == "jobs":
+            from gnn.api.server import run_server
+
+            run_server(host=args.host, port=args.port)
+        else:
+            if surface == "both":
+                import threading
+
+                import uvicorn
+
+                from gnn.api.server import create_app
+
+                jobs_server = uvicorn.Server(
+                    uvicorn.Config(
+                        create_app(),
+                        host=args.host,
+                        port=args.port + 1,
+                        log_level="info",
+                    )
+                )
+                threading.Thread(target=jobs_server.run, daemon=True).start()
+            from gnn.api.app import start_server
+
+            start_server(host=args.host, port=args.port)
+    except ImportError:
+        print("❌ FastAPI not installed. Run: uv sync --extra api")
+        return EXIT_ERROR
+    except (OSError, RuntimeError) as exc:
+        logger.error("Could not start API server: %s", exc)
+        return EXIT_ERROR
+    return EXIT_SUCCESS
+
+
+def _cmd_lsp(args: argparse.Namespace) -> int:
+    """Launch GNN Language Server."""
+    try:
+        from gnn.cli.lsp import start_lsp
+
+        start_lsp()
+    except ImportError as e:
+        print(f"❌ Could not start LSP server: {e}")
+        return EXIT_ERROR
+    return EXIT_SUCCESS
+
+
+def _cmd_watch(args: argparse.Namespace) -> int:
+    """Monitor directory and live-reparse on change."""
+    try:
+        from gnn.cli.watcher import GNNWatcher
+
+        watcher = GNNWatcher(watch_dir=args.dir)
+        watcher.start()
+    except ImportError as e:
+        logger.error(f"Could not import watcher: {e}")
+        return EXIT_ERROR
+    return EXIT_SUCCESS
+
+
+def _cmd_gui(args: argparse.Namespace) -> int:
+    """Run Step 22 GUI processing (headless artifacts or interactive servers)."""
+    try:
+        from gnn.gui import process_gui
+
+        success = process_gui(
+            target_dir=Path(args.target_dir),
+            output_dir=Path(args.output_dir),
+            verbose=bool(getattr(args, "verbose", False)),
+            gui_types=args.gui_types,
+            interactive=args.interactive,
+            open_browser=args.open_browser,
+            launch_editor=args.launch_editor,
+        )
+    except ImportError as e:
+        logger.error("Could not import GUI module: %s", e)
+        return EXIT_ERROR
+    return EXIT_SUCCESS if success else EXIT_ERROR
+
+
+def _cmd_mcp(args: argparse.Namespace) -> int:
+    """Inspect the MCP tool surface (list tools or show one tool)."""
+    is_json = getattr(args, "json", False)
+    try:
+        from gnn.mcp import get_mcp_instance, initialize
+
+        initialize()
+        instance = get_mcp_instance()
+    except ImportError as exc:
+        logger.error("MCP tool surface unavailable: %s", exc)
+        if is_json:
+            _print_envelope(
+                "error",
+                error={"code": "mcp_unavailable", "message": str(exc)},
+                command="mcp",
+            )
+        return EXIT_ERROR
+
+    if getattr(args, "mcp_command", None) == "info":
+        tool_info = instance.get_tool_info(str(args.name))
+        if tool_info is None:
+            message = f"Unknown MCP tool: {args.name}"
+            logger.error("%s", message)
+            if is_json:
+                _print_envelope(
+                    "error",
+                    error={"code": "unknown_tool", "message": message},
+                    command="mcp",
+                )
+            return EXIT_ERROR
+        if is_json:
+            _print_envelope("success", data=tool_info, command="mcp")
+        else:
+            logger.info(
+                "%s — %s (%s)",
+                tool_info.get("name", ""),
+                tool_info.get("module", ""),
+                tool_info.get("category", ""),
+            )
+            logger.info("%s", tool_info.get("description", ""))
+        return EXIT_SUCCESS
+
+    listed: list[dict[str, Any]] = []
+    for entry in instance.list_available_tools():
+        if isinstance(entry, dict):
+            listed.append(
+                {
+                    "name": str(entry.get("name", "")),
+                    "module": str(entry.get("module", "")),
+                    "category": str(entry.get("category", "")),
+                    "description": str(entry.get("description", "")),
+                }
+            )
+        else:
+            listed.append(
+                {"name": str(entry), "module": "", "category": "", "description": ""}
+            )
+    listed.sort(key=lambda tool: str(tool["name"]))
+    if is_json:
+        _print_envelope(
+            "success",
+            data={"tools": listed, "total": len(listed)},
+            command="mcp",
+        )
+    else:
+        for tool in listed:
+            logger.info("%s — %s (%s)", tool["name"], tool["module"], tool["category"])
+        logger.info("Total: %d tools", len(listed))
+    return EXIT_SUCCESS
