@@ -39,7 +39,17 @@ token checker).
 ## Module Structure
 
 - `__init__.py` — thin re-export surface (`__all__`).
-- `variables.py` — the implementation (snapshot counting, token emission).
+- `variables.py` — public entry point: token-map assembly
+  (`generate_variables`), the producer-owned config/preamble metadata
+  writers, and the JSON round-trip helpers; re-exports the full public
+  surface so every consumer import path is unchanged.
+- `snapshot.py` — `RepositorySnapshot`: the git `ls-tree`/`cat-file` view
+  of one commit that every count reads through.
+- `sources.py` — per-surface census/derivation: steps, source counts, the
+  framework registry, the MCP audit ledger, model families, the exemplar
+  corpus, release metadata, and the generated coverage sentences.
+- `tables.py` — multi-line token renderers (step/family/backend/capability
+  tables) and cross-framework family selection.
 - `render_custody.py` — render custody manifest: record after a render,
   audit the committed chain, verify a fresh render against the committed
   manifest (SC-22).
