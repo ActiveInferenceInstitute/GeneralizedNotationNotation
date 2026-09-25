@@ -5,3 +5,5 @@ Normative repository standards. See
 [composability.md](composability.md) for the five-seam composability
 standard (decision record:
 [ADR 048](../decisions/048-composition-seam.md)).
+[exceptions.md](exceptions.md) covers the `except Exception` doctrine and its
+occurrence-count ratchet.

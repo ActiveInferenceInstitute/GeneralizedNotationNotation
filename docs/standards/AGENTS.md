@@ -12,6 +12,11 @@ authoring time, and stays in sync with the gates that enforce it.
 - [composability.md](composability.md) — the five-seam composability
   standard: the five de-facto seams, tracked exceptions, the declared
   cross-repo consumer surfaces, and enforcement.
+- [exceptions.md](exceptions.md) — the exception doctrine: when
+  `except Exception` is acceptable, the mandatory log + structured-receipt
+  obligations, the review checklist, and the occurrence-count ratchet
+  (baseline-pinned fail-on-growth probe in
+  [scripts/check_gnn_doc_patterns.py](../../scripts/check_gnn_doc_patterns.py)).
 
 ## Conventions
 

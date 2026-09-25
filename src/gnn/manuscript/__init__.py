@@ -3,7 +3,9 @@
 Deterministic ``{{...}}`` token production for the manuscript: reads the
 repository snapshot at the current commit, emits
 ``output/data/manuscript_variables.json``, and hydrates the manuscript
-sources. Implementation lives in :mod:`gnn.manuscript.variables`.
+sources. Implementation lives in :mod:`gnn.manuscript.variables` — the
+public entry point, backed by the ``snapshot``/``sources``/``tables``
+sibling modules.
 """
 
 from gnn.manuscript.variables import (
