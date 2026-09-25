@@ -20,7 +20,7 @@ Unified command-line interface for the GNN pipeline. Provides subcommands for ru
 | `gnn preflight` | Run environment & config checks |
 | `gnn health` | Show renderer generator-module availability and environment preflight status |
 | `gnn health --strict` | Exit nonzero when environment preflight reports errors |
-| `gnn serve --surface jobs` | Start Pipeline-as-a-Service API (FastAPI); `--surface` selects `runs` (default), `jobs`, or `both` (jobs on port+1) |
+| `gnn serve --surface jobs` | Start long-running services; `--surface` selects `runs` (default), `jobs`, `both` (jobs on port+1), or `website` (static server, port 8090) |
 | `gnn templates list` | List maintained local GNN templates with checksums |
 | `gnn templates show <name>` | Show one maintained template record |
 | `gnn models list` | Query the local model registry |
@@ -64,7 +64,7 @@ gnn templates list
 gnn templates show pomdp-gridworld-3x3
 gnn pull pomdp-gridworld-3x3 --output-dir /tmp/gnn-pull --dry-run
 
-# Start the API: gnn serve [--surface runs|jobs|both]; both runs the jobs surface on port+1
+# Start the API: gnn serve [--surface runs|jobs|both|website]; both runs the jobs surface on port+1
 gnn serve --surface jobs
 
 # Inspect the MCP tool surface

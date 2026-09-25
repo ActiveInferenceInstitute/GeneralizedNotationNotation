@@ -190,14 +190,36 @@ def build_parser() -> argparse.ArgumentParser:
     )
 
     # ── gnn serve ────────────────────────────────────────────────────────────
-    serve_p = subparsers.add_parser("serve", help="Start Pipeline-as-a-Service API")
+    serve_p = subparsers.add_parser(
+        "serve",
+        help="Start long-running services (API surfaces or the generated website)",
+    )
     serve_p.add_argument("--host", default="127.0.0.1", help="Bind host")
-    serve_p.add_argument("--port", type=_tcp_port, default=8000, help="Bind port")
+    serve_p.add_argument(
+        "--port",
+        type=_tcp_port,
+        default=None,
+        help="Bind port (default: 8000 for API surfaces, 8090 for the website surface)",
+    )
     serve_p.add_argument(
         "--surface",
-        choices=["runs", "jobs", "both"],
+        choices=["runs", "jobs", "both", "website"],
         default="runs",
-        help="API surface to start: runs (gnn.api.app), jobs (gnn.api.server), or both",
+        help=(
+            "Surface to start: runs (gnn.api.app), jobs (gnn.api.server), both "
+            "(jobs on port+1), or website (static server over the generated "
+            "pipeline output tree)"
+        ),
+    )
+    serve_p.add_argument(
+        "--root",
+        default=None,
+        help="Website output root directory (default: ./output)",
+    )
+    serve_p.add_argument(
+        "--live-reload",
+        action="store_true",
+        help="Inject a live-reload poller into served HTML pages",
     )
 
     # ── gnn templates ───────────────────────────────────────────────────────
