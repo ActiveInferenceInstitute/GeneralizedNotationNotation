@@ -13,7 +13,7 @@ src/gnn/website/
 ├── processor.py       # Thin facade re-exporting renderer.process_website
 ├── renderer.py        # process_website + embed_* helpers + get_module_info
 ├── collection.py      # collect_website_data + private artifact collectors
-├── generator.py       # WebsiteGenerator / generate_website (7-page site)
+├── generator.py       # WebsiteGenerator / generate_website (7-page site + per-model pages + search index)
 ├── inspection.py      # inspect_website / list_website_pages (pure site queries)
 └── mcp.py             # MCP tool registration (6 tools)
 ```
@@ -85,13 +85,18 @@ through `**kwargs`; it is accepted and not used by the generator.
 ### `generate_website(logger, input_dir, output_dir, *, pipeline_output_root=None) -> dict`
 
 Module-level convenience in `generator.py`. Returns a result dict
-`{success, pages_created, errors, warnings}`. Raises nothing — failures are
+`{success, pages_created, errors, warnings}` (plus `model_pages_created` /
+`model_pages` when per-model pages were generated). Raises nothing — failures are
 reported in `errors`.
 
 ### `WebsiteGenerator`
 
 Class backing `generate_website`. `generate_website(website_data)` builds the
-seven pages listed under Output. `create_pages(output_dir, data)` is an
+seven pages listed under Output, one detail page per parsed model under
+`model/<slug>.html` — the model's FULL source (no truncation; the
+3000-character cap stays only on the aggregate GNN Files listing rows) with
+variables/edges tables and embedded visualization assets — plus
+`search-index.json`. `create_pages(output_dir, data)` is an
 alternate entry point that performs the same build.
 
 ### Embedding helpers (`renderer.py`)
@@ -134,22 +139,28 @@ All return `bool`:
 
 ## Output
 
-`generate_website` writes seven HTML pages plus `website_results.json`
+`generate_website` writes the seven HTML pages plus one detail page per parsed
+model under `model/<slug>.html` and `search-index.json`, then `website_results.json`
 (keys: `success`, `pages_created`, `pages`, `errors`, `warnings`,
-`generated_at`). Pages are written independently and atomically: one bad
-page is recorded in `errors` while the rest of the site stays intact, and
-`success` is `True` only when no errors occurred. All pipeline-derived
-values are HTML-escaped:
+`generated_at`, plus `model_pages_created` and `model_pages` — site-root-relative
+filenames — for the per-model pages). Every generated page (site pages and
+model pages) carries a breadcrumb nav (`Home › <section>`; model pages:
+`Home › GNN Files › <Model Name>`; index: a single `Home` crumb). Pages are
+written independently and atomically: one bad page is recorded in `errors`
+while the rest of the site stays intact, and `success` is `True` only when no
+errors occurred. All pipeline-derived values are HTML-escaped:
 
 ```
 output/20_website_output/
 ├── index.html          # Pipeline dashboard with step cards
 ├── pipeline.html       # Full 25-step pipeline status table
-├── gnn_files.html      # GNN source file browser
+├── gnn_files.html      # GNN source file browser + client-side search box
 ├── analysis.html       # Analysis and complexity metrics
 ├── visualization.html  # Gallery of generated visualizations
 ├── reports.html        # JSON/text report viewer
 ├── mcp.html            # MCP tools registry across all modules
+├── model/              # One detail page per parsed model (model/<slug>.html; full source, no truncation)
+├── search-index.json   # Client-side search index (title/url/snippet per emitted page)
 ├── website_results.json
 └── assets/
 ```
@@ -195,7 +206,7 @@ Test files: `test_website_overall.py`, `test_website_public_api.py`,
 `test_website_pages.py`, `test_website_index_dashboard.py`,
 `test_website_generator_units.py`, `test_website_collection.py`,
 `test_website_inspection.py`, `test_website_mcp_page.py`,
-`test_website_gui_crosslinks.py`.
+`test_website_gui_crosslinks.py`, `test_website_model_pages.py`.
 
 ## Troubleshooting
 

@@ -3,7 +3,8 @@
 Website generator module for GNN pipeline.
 
 Generates a full-featured, premium, dark-mode static HTML website
-from GNN pipeline artifacts. Produces 7+ pages:
+from GNN pipeline artifacts. Produces the seven site pages, one page per
+parsed GNN model, and a client-side search index:
   - index.html         — Pipeline dashboard with step cards
   - pipeline.html      — Full 25-step pipeline status table
   - gnn_files.html     — GNN source file browser
@@ -11,6 +12,9 @@ from GNN pipeline artifacts. Produces 7+ pages:
   - visualization.html — Gallery of all generated visualizations
   - reports.html       — JSON/text report viewer
   - mcp.html           — MCP tools registry across all modules
+  - model/<slug>.html  — one page per parsed GNN source model
+  - search-index.json  — client-side search index (also inlined on the
+                         gnn_files page because fetch() fails on file://)
 """
 
 from __future__ import annotations
@@ -18,6 +22,7 @@ from __future__ import annotations
 import json
 import logging
 import os
+import re
 import tempfile
 from dataclasses import dataclass
 from datetime import datetime
@@ -502,6 +507,41 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
   backdrop-filter: blur(12px);
 }
 
+/* ── Breadcrumbs ── */
+.breadcrumbs { margin-bottom: 24px; }
+.breadcrumbs ol {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  font-size: 12px;
+}
+.breadcrumbs li { color: var(--text-3); }
+.breadcrumbs a { color: var(--text-2); text-decoration: none; }
+.breadcrumbs a:hover { color: var(--accent-2); text-decoration: underline; }
+.breadcrumbs li[aria-current='page'] { color: var(--text-1); font-weight: 600; }
+
+/* ── Site search (client-side filter over the inline search index) ── */
+.site-search { margin-bottom: 32px; }
+#gnn-site-search {
+  width: 100%;
+  max-width: 420px;
+  padding: 10px 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-1);
+  font-size: 14px;
+}
+#gnn-site-search::placeholder { color: var(--text-3); }
+#gnn-search-results { margin: 8px 0 0; padding: 0 0 0 4px; list-style: none; }
+#gnn-search-results li { padding: 4px 0; font-size: 13px; color: var(--text-2); }
+#gnn-search-results a { color: var(--accent-2); text-decoration: none; }
+#gnn-search-results a:hover { text-decoration: underline; }
+.gnn-search-snippet { color: var(--text-3); font-size: 12px; margin-left: 6px; }
+
 /* ── Responsive ── */
 @media (max-width: 768px) {
   .sidebar { position: fixed; transform: translateX(-100%); z-index: 100; transition: transform 0.3s; }
@@ -513,16 +553,103 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
 """
 
 
-def _page(title: str, active: str, body: str, *, nav_extra: str = "") -> str:
-    """Wrap body in the shared page shell with sidebar and nav."""
+_SEARCH_JS = """(function () {
+  'use strict';
+  var dataEl = document.getElementById('gnn-search-data');
+  var input = document.getElementById('gnn-site-search');
+  var list = document.getElementById('gnn-search-results');
+  if (!dataEl || !input || !list) { return; }
+  var pages = [];
+  try { pages = (JSON.parse(dataEl.textContent) || {}).pages || []; }
+  catch (err) { return; }
+  function render(matches) {
+    list.textContent = '';
+    if (matches.length === 0) {
+      var empty = document.createElement('li');
+      empty.className = 'gnn-search-empty';
+      empty.textContent = 'No matching pages.';
+      list.appendChild(empty);
+      return;
+    }
+    matches.forEach(function (page) {
+      var li = document.createElement('li');
+      var a = document.createElement('a');
+      a.href = page.url;
+      a.textContent = page.title;
+      li.appendChild(a);
+      var snippet = document.createElement('span');
+      snippet.className = 'gnn-search-snippet';
+      snippet.textContent = page.snippet;
+      li.appendChild(snippet);
+      list.appendChild(li);
+    });
+  }
+  input.addEventListener('input', function () {
+    var query = input.value.trim().toLowerCase();
+    if (!query) {
+      list.hidden = true;
+      list.textContent = '';
+      return;
+    }
+    var matches = [];
+    for (var i = 0; i < pages.length; i++) {
+      var page = pages[i];
+      var haystack = (page.title + ' ' + page.url + ' ' + page.snippet).toLowerCase();
+      if (haystack.indexOf(query) !== -1) { matches.push(page); }
+    }
+    list.hidden = false;
+    render(matches);
+  });
+})();"""
+
+
+def _page(
+    title: str,
+    active: str,
+    body: str,
+    *,
+    nav_extra: str = "",
+    depth: int = 0,
+    breadcrumbs: Optional[list[tuple[Optional[str], str]]] = None,
+) -> str:
+    """Wrap body in the shared page shell with sidebar, nav, and breadcrumbs.
+
+    ``depth`` is the page's directory depth below the site root (0 for the
+    seven root pages, 1 for ``model/<slug>.html`` pages) so every emitted
+    href stays relative and file://-safe. ``breadcrumbs`` is an ordered
+    list of ``(site-root-relative href or None, label)`` crumbs — ``None``
+    marks the current page; when omitted it derives from ``title``.
+    """
     ts = datetime.now().strftime("%Y-%m-%d %H:%M")
+    root = "../" * depth
     nav_items: list[tuple[str, str, str, str]] = [
         (page.icon, page.title, page.filename, page.name) for page in SITE_PAGES
     ]
     nav_html = ""
     for icon, label, href, key in nav_items:
         cls = "nav-link active" if key == active else "nav-link"
-        nav_html += f'<a href="{href}" class="{cls}"><span class="icon">{icon}</span>{label}</a>\n'
+        nav_html += (
+            f'<a href="{root}{href}" class="{cls}">'
+            f'<span class="icon">{icon}</span>{label}</a>\n'
+        )
+
+    if breadcrumbs is None:
+        breadcrumbs = (
+            [(None, "Home")]
+            if active == "index"
+            else [("index.html", "Home"), (None, title)]
+        )
+    crumb_html = ""
+    for crumb_href, crumb_label in breadcrumbs:
+        if crumb_href is None:
+            crumb_html += f'<li aria-current="page">{_esc(crumb_label)}</li>'
+        else:
+            crumb_html += (
+                f'<li><a href="{root}{_esc(crumb_href)}">{_esc(crumb_label)}</a></li>'
+            )
+    breadcrumb_nav = (
+        f'<nav class="breadcrumbs" aria-label="Breadcrumb"><ol>{crumb_html}</ol></nav>'
+    )
 
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -548,6 +675,7 @@ def _page(title: str, active: str, body: str, *, nav_extra: str = "") -> str:
     </nav>
   </aside>
   <main class="main">
+    {breadcrumb_nav}
     {body}
   </main>
 </body>
@@ -650,6 +778,103 @@ _OVERALL_BADGE_CLASS: dict[str, str] = {
 def _esc(value: Any) -> str:
     """HTML-escape any value for safe interpolation into page markup."""
     return escape(str(value))
+
+
+def _model_slug(name: str) -> str:
+    """Deterministic file slug for a model name (``model`` when empty)."""
+    slug = re.sub(r"[^a-z0-9]+", "-", str(name).lower()).strip("-")
+    return slug or "model"
+
+
+def _ensure_model_slugs(models: list[dict[str, Any]]) -> None:
+    """Assign unique ``model/<slug>.html`` slugs to parsed models, in order.
+
+    One slug map shared by the per-model pages, the listing deep links, and
+    the search index: the first claimant keeps the bare slug, later
+    duplicates get ``-2``, ``-3``, … Claim order is the deterministic
+    collection order (sorted GNN filenames); pre-assigned slugs win.
+    """
+    used: set[str] = {m["slug"] for m in models if m.get("slug")}
+    for model in models:
+        if model.get("slug"):
+            continue
+        base = _model_slug(str(model.get("name") or ""))
+        slug = base
+        counter = 2
+        while slug in used:
+            slug = f"{base}-{counter}"
+            counter += 1
+        used.add(slug)
+        model["slug"] = slug
+
+
+def _artifact_matches_model(artifact_title: str, model_slug: str) -> bool:
+    """True when a collected visualization artifact belongs to a model.
+
+    Step-8/9 artifacts are named ``{model}_{what}``, so the artifact stem
+    slugifies to a string starting with the model's slug (equal when the
+    artifact carries no suffix, e.g. ``graph.png`` for a single-model run).
+    """
+    stem_slug = _model_slug(artifact_title)
+    return stem_slug == model_slug or stem_slug.startswith(model_slug + "-")
+
+
+def _model_snippet(model: dict[str, Any]) -> str:
+    """Plain-text snippet (≤200 chars, angle-bracket free) for a model page."""
+    text = re.sub(r"[<>]", "", " ".join(str(model.get("annotation") or "").split()))
+    if not text:
+        text = (
+            f"Model page — {len(model.get('variables') or [])} variables, "
+            f"{len(model.get('edges') or [])} edges — source "
+            f"{model.get('source_name') or 'unknown'}"
+        )
+    if len(text) > 200:
+        text = text[:199] + "…"
+    return text
+
+
+def _attach_model_viz_assets(data: dict) -> None:
+    """Attach matching collected image assets to each parsed model."""
+    visuals = data.get("visualizations") or []
+    for model in data.get("models") or []:
+        slug = model.get("slug") or _model_slug(str(model.get("name") or ""))
+        model["images"] = [
+            v["path"]
+            for v in visuals
+            if v.get("type") == "image"
+            and _artifact_matches_model(str(v.get("title") or ""), str(slug))
+        ]
+
+
+def _build_search_pages(data: dict) -> list[dict[str, str]]:
+    """Search-index entries covering the site pages plus every model page."""
+    pages = [
+        {"title": page.title, "url": page.filename, "snippet": page.description}
+        for page in SITE_PAGES
+    ]
+    for model in data.get("models") or []:
+        slug = model.get("slug") or _model_slug(str(model.get("name") or ""))
+        pages.append(
+            {
+                "title": str(model.get("name") or model.get("source_name") or "Model"),
+                "url": f"model/{slug}.html",
+                "snippet": _model_snippet(model),
+            }
+        )
+    return pages
+
+
+def _build_search_data(data: dict) -> dict[str, Any]:
+    """Full search-index payload: ``generated`` date plus page entries.
+
+    The standalone ``search-index.json`` serves consumers that can fetch it
+    (an HTTP server); on ``file://`` fetch() fails, so the gnn_files page
+    also inlines this same payload and uses the inline copy at runtime.
+    """
+    return {
+        "generated": datetime.now().date().isoformat(),
+        "pages": _build_search_pages(data),
+    }
 
 
 def _stat_int(value: Any, default: int = 0) -> int:
@@ -775,6 +1000,8 @@ class WebsiteGenerator:
             "success": True,
             "pages_created": 0,
             "pages": [],
+            "model_pages_created": 0,
+            "model_pages": [],
             "errors": [],
             "warnings": [],
         }
@@ -793,6 +1020,14 @@ class WebsiteGenerator:
                 p_root, input_dir, output_dir, assets_dir, website_data
             )
 
+            # One shared slug map for the per-model pages, the listing deep
+            # links, and the search index: assigned once, in collection
+            # order (sorted GNN filenames), before any page renders.
+            models = data.get("models") or []
+            _ensure_model_slugs(models)
+            _attach_model_viz_assets(data)
+            data["search_data"] = _build_search_data(data)
+
             builders = self._page_builders()
             for filename, build_page in builders.items():
                 try:
@@ -806,6 +1041,42 @@ class WebsiteGenerator:
                     result["pages"].append(filename)
                 except Exception as e:
                     result["errors"].append(f"Failed to write {filename}: {e}")
+
+            # Per-model pages (C2): written under model/ and bookkept under
+            # the model_* keys only — pages/pages_created stay pinned to the
+            # seven site pages.
+            if models:
+                model_dir = output_dir / "model"
+                model_dir.mkdir(exist_ok=True)
+                for model in models:
+                    slug = str(model["slug"])
+                    model_filename = f"model/{slug}.html"
+                    try:
+                        page_html = self._page_model(model)
+                    except Exception as e:
+                        result["errors"].append(
+                            f"Failed to render {model_filename}: {e}"
+                        )
+                        continue
+                    try:
+                        _write_atomic(model_dir / f"{slug}.html", page_html)
+                        result["model_pages_created"] += 1
+                        result["model_pages"].append(model_filename)
+                    except Exception as e:
+                        result["errors"].append(
+                            f"Failed to write {model_filename}: {e}"
+                        )
+
+            # Client-side search index (C3): standalone JSON at the site
+            # root; the listing page inlines the same payload (see
+            # _search_html) because fetch() fails on file://.
+            try:
+                _write_atomic(
+                    output_dir / "search-index.json",
+                    json.dumps(data["search_data"], indent=2),
+                )
+            except Exception as e:
+                result["errors"].append(f"Failed to write search-index.json: {e}")
 
         except Exception as e:
             result["errors"].append(str(e))
@@ -1057,7 +1328,12 @@ class WebsiteGenerator:
         return _page("Pipeline", "pipeline", body)
 
     def _page_gnn_files(self, data: dict) -> str:
-        """Render the GNN source file browser."""
+        """Render the GNN source file browser.
+
+        Aggregate rows keep the 3000-char preview cap; the model rows, the
+        per-model deep links, and the client-side search box are backed by
+        the ``model/<slug>.html`` pages and the inline search payload.
+        """
         if not data["gnn_files"]:
             content = '<div class="card"><p>No GNN source files found.</p></div>'
         else:
@@ -1080,8 +1356,173 @@ class WebsiteGenerator:
   <h1>📂 GNN Source Files</h1>
   <p class="subtitle">{len(data["gnn_files"])} models discovered</p>
 </div>
-<div class="section">{content}</div>"""
+{self._search_html(data)}
+{self._model_rows_html(data)}
+<div class="section">{content}</div>
+<script>{_SEARCH_JS}</script>"""
         return _page("GNN Files", "gnn_files", body)
+
+    # ── Per-model pages and client-side search ──────────────────────────────
+
+    def _search_html(self, data: dict) -> str:
+        """Search box fed by the inline search-index payload (file://-safe).
+
+        The inline payload is the standalone ``search-index.json`` content
+        with ``</`` escaped as ``<\\/``; fetch() fails on file://, so the
+        vanilla filter below reads this inline copy instead.
+        """
+        search_data = data.get("search_data")
+        if search_data is None:
+            search_data = _build_search_data(data)
+        payload = json.dumps(search_data, indent=2).replace("</", "<\\/")
+        return f"""
+<div class="section site-search">
+  <input id="gnn-site-search" type="search">
+  <ul id="gnn-search-results" hidden></ul>
+  <script type="application/json" id="gnn-search-data">{payload}</script>
+</div>"""
+
+    def _model_rows_html(self, data: dict) -> str:
+        """Model rows deep-linking every parsed model page (``model/<slug>.html``)."""
+        models = data.get("models") or []
+        if not models:
+            return ""
+        _ensure_model_slugs(models)  # no-op when generate_website pre-assigned
+        rows = ""
+        for model in models:
+            slug = str(model["slug"])
+            rows += f"""<tr id="model-{_esc(slug)}">
+  <td><a href="model/{_esc(slug)}.html" style="color:var(--accent-2)">{_esc(model.get("name") or slug)}</a></td>
+  <td><code>{_esc(model.get("source_name") or "")}</code></td>
+  <td>{len(model.get("variables") or [])}</td>
+  <td>{len(model.get("edges") or [])}</td>
+</tr>"""
+        return f"""
+<div class="section">
+  <div class="section-title">Models</div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Model</th><th>Source</th><th>Variables</th><th>Edges</th></tr></thead>
+      <tbody>{rows}</tbody>
+    </table>
+  </div>
+</div>"""
+
+    def _page_model(self, model: dict) -> str:
+        """Render one per-model page (written at ``model/<slug>.html``, depth 1)."""
+        slug = str(model.get("slug") or _model_slug(str(model.get("name") or "")))
+        name = str(model.get("name") or slug)
+        body = f"""
+<div class="page-header">
+  <h1>{_esc(name)}</h1>
+  <p class="subtitle">Source: <a href="../gnn_files.html#model-{_esc(slug)}" style="color:var(--accent-2)">{_esc(model.get("source_name") or slug)}</a> · {len(model.get("variables") or [])} variables · {len(model.get("edges") or [])} edges</p>
+</div>
+{self._model_variables_table(model)}
+{self._model_edges_table(model)}
+{self._model_images_html(model)}
+<div class="section">
+  <div class="section-title">Full GNN Source</div>
+  {self._model_source_html(model)}
+</div>"""
+        return _page(
+            _esc(name),
+            "gnn_files",
+            body,
+            depth=1,
+            breadcrumbs=[
+                ("index.html", "Home"),
+                ("gnn_files.html", "GNN Files"),
+                (None, name),
+            ],
+        )
+
+    @staticmethod
+    def _model_source_html(model: dict) -> str:
+        """Full (never truncated) source text in the listing's details/pre style."""
+        source = model.get("source")
+        try:
+            text = Path(str(source)).read_text(encoding="utf-8", errors="replace")
+            size = Path(str(source)).stat().st_size
+        except Exception:
+            text, size = "(could not read source file)", 0
+        return f"""
+<details>
+  <summary>{_esc(model.get("source_name") or "Full GNN source")} <span class="pill badge-pending" style="margin-left:8px">{size} bytes</span></summary>
+  <div class="details-body"><pre>{_esc(text)}</pre></div>
+</details>"""
+
+    @staticmethod
+    def _model_variables_table(model: dict) -> str:
+        """Variables table from the parsed model (explicit None row when empty)."""
+        rows = ""
+        for var in model.get("variables") or []:
+            dims = ", ".join(str(d) for d in (var.get("dimensions") or [])) or "—"
+            rows += f"""<tr>
+  <td><code>{_esc(var.get("name") or "")}</code></td>
+  <td>{_esc(var.get("type") or "")}</td>
+  <td><code>{_esc(dims)}</code></td>
+  <td>{_esc(var.get("data_type") or "")}</td>
+  <td>{_esc(var.get("description") or "")}</td>
+</tr>"""
+        if not rows:
+            rows = '<tr><td colspan="5">None</td></tr>'
+        return f"""
+<div class="section">
+  <div class="section-title">Variables</div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Name</th><th>Type</th><th>Dimensions</th><th>Data type</th><th>Description</th></tr></thead>
+      <tbody>{rows}</tbody>
+    </table>
+  </div>
+</div>"""
+
+    @staticmethod
+    def _model_edges_table(model: dict) -> str:
+        """Edges table from the parsed model (explicit None row when empty)."""
+        rows = ""
+        for edge in model.get("edges") or []:
+            rows += f"""<tr>
+  <td>{_esc(", ".join(edge.get("sources") or []) or "—")}</td>
+  <td>{_esc(", ".join(edge.get("targets") or []) or "—")}</td>
+  <td>{_esc(edge.get("type") or "")}</td>
+  <td>{_esc(edge.get("annotation") or "")}</td>
+</tr>"""
+        if not rows:
+            rows = '<tr><td colspan="4">None</td></tr>'
+        return f"""
+<div class="section">
+  <div class="section-title">Edges</div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Source</th><th>Target</th><th>Type</th><th>Annotation</th></tr></thead>
+      <tbody>{rows}</tbody>
+    </table>
+  </div>
+</div>"""
+
+    @staticmethod
+    def _model_images_html(model: dict) -> str:
+        """Collected image assets for this model, at the depth-correct assets/ path."""
+        images = model.get("images") or []
+        if not images:
+            return ""
+        cards = ""
+        for image in images:
+            stem = Path(str(image)).stem
+            cards += f"""
+<div class="viz-card">
+  <img src="../assets/{_esc(image)}" alt="{_esc(stem)}" loading="lazy">
+  <div class="viz-info">
+    <div class="viz-title">{_esc(stem)}</div>
+    <div class="viz-desc">Visualization artifact</div>
+  </div>
+</div>"""
+        return f"""
+<div class="section">
+  <div class="section-title">Visualizations</div>
+  <div class="viz-grid">{cards}</div>
+</div>"""
 
     def _page_analysis(self, data: dict) -> str:
         """Render the analysis metrics page."""

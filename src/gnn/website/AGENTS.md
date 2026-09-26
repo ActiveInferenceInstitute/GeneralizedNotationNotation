@@ -12,7 +12,7 @@
 
 **Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
-**Last Updated**: 2026-09-22
+**Last Updated**: 2026-09-25
 
 ---
 
@@ -114,15 +114,19 @@ success = embed_image(
 ## Output Specification
 
 ### Output Products
-`generate_website` (in `generator.py`) writes seven pages plus a results manifest:
+`generate_website` (in `generator.py`) writes the seven site pages, one per-model detail page per parsed model, `search-index.json`, and a results manifest:
 - `index.html` - Pipeline dashboard with step cards
 - `pipeline.html` - Full 25-step pipeline status table
-- `gnn_files.html` - GNN source file browser
+- `gnn_files.html` - GNN source file browser with a client-side search box (search-index payload inlined + vanilla-JS filter; `fetch()` fails on `file://`)
 - `analysis.html` - Analysis and complexity metrics
 - `visualization.html` - Gallery of generated visualizations
 - `reports.html` - JSON/text report viewer
 - `mcp.html` - MCP tools registry across all modules
-- `website_results.json` - generation manifest with `success`, `pages_created`, `pages` (written filenames), `errors`, `warnings`, `generated_at` (written by `process_website`)
+- `model/<slug>.html` - One detail page per parsed model (slug = lowercased name, non-`[a-z0-9]` → `-`, collapsed, stripped; empty → `model`; first claimant keeps the slug, duplicates get `-2`, `-3`, …): model-name `h1`, a source link back to the model's GNN Files listing row, variables/edges tables, embedded visualization assets, and the model's FULL GNN source (no truncation — the 3000-character cap stays only on the aggregate GNN Files listing rows)
+- `search-index.json` - `{"generated", "pages": [{"title", "url", "snippet"}]}` covering the 7 site pages plus all model pages (≤200-char snippets, site-root-relative URLs)
+- `website_results.json` - generation manifest with `success`, `pages_created`, `pages` (written filenames), `errors`, `warnings`, `generated_at`, plus `model_pages_created` and `model_pages` (site-root-relative per-model filenames; the 7-page `SITE_PAGES` catalogue and `pages`/`pages_created` pins are unchanged)
+
+Every generated page — the seven site pages and every model page — emits a breadcrumb nav in the page shell (`Home › <section>`; model pages: `Home › GNN Files › <Model Name>`; index: a single `Home` crumb) with relative, depth-correct hrefs.
 
 `assets/` is created under the output dir.
 
@@ -136,6 +140,8 @@ output/20_website_output/
 ├── visualization.html
 ├── reports.html
 ├── mcp.html
+├── model/              # One detail page per parsed model (model/<slug>.html)
+├── search-index.json
 ├── website_results.json
 └── assets/
 ```
@@ -191,6 +197,8 @@ Pipeline Artifacts → Content Extraction → Template Processing → Asset Embe
 - `tests/website/test_website_generator_units.py` - Catalogue, data collection, escaping, page-resilience, manifest tests
 - `tests/website/test_website_inspection.py` - `inspect_website` / `list_website_pages` tests
 - `tests/website/test_website_gui_crosslinks.py` - GUI cross-link tests
+- `tests/website/test_website_model_pages.py` - Per-model detail pages, breadcrumbs, search-index, and slug-collision tests
+
 ### Test Coverage
 Measure on demand:
 
@@ -264,7 +272,7 @@ Module `__version__` is re-exported from `gnn` (`__init__.py`); the pipeline/rep
 
 ---
 
-**Last Updated**: 2026-09-24
+**Last Updated**: 2026-09-25
 **Maintainer**: GNN Pipeline Team
 **Status**: Production Ready
 **Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
