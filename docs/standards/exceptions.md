@@ -7,7 +7,7 @@
   the [repository TO-DO](../../TO-DO.md) M-03 row: 304+ files carry broad
   handlers; spot-checked sites log and emit structured receipts) plus the
   file:line exemplars below, all re-verified in this tree at authoring time.
-- **Baseline:** 1183 occurrences across 657 `.py` files under `src/gnn/`
+- **Baseline:** 1182 occurrences across 657 `.py` files under `src/gnn/`
   (counted by
   [`scripts/check_gnn_doc_patterns.py`](../../scripts/check_gnn_doc_patterns.py)
   `EXCEPT_EXCEPTION_BASELINE`). Historical: 1183 at the wave-6 base;
@@ -22,6 +22,10 @@
   (`src/gnn/analysis/complexity/benchmark.py` — best-effort probe over
   optional third-party stacks; a typed set would crash receipt construction
   on exotic probe failures).
+  2026-09-25 (W8-R4 fold): tightened to 1182 after narrowing the
+  site-render batch guards to typed sets (render ->
+  `(ValueError, TypeError, KeyError, IndexError)`, writes -> `OSError`,
+  model-parse skip -> `(ParseError, ValueError, OSError)`).
 
 ## Purpose
 

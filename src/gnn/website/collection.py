@@ -17,6 +17,8 @@ import shutil
 from pathlib import Path
 from typing import Any
 
+from gnn.parsers.common import ParseError
+
 from .generator import PIPELINE_STEPS
 
 logger = logging.getLogger(__name__)
@@ -49,7 +51,7 @@ def _collect_parsed_models(gnn_files: list[Path]) -> list[dict[str, Any]]:
     for source in gnn_files:
         try:
             parsed = parser.parse_file(str(source))
-        except Exception as e:
+        except (ParseError, ValueError, OSError) as e:
             logger.debug(f"Skipped unreadable GNN file {source.name}: {e}")
             continue
         if not parsed.success:

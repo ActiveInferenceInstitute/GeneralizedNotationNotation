@@ -1032,14 +1032,14 @@ class WebsiteGenerator:
             for filename, build_page in builders.items():
                 try:
                     page_html = build_page(data)
-                except Exception as e:
+                except (ValueError, TypeError, KeyError, IndexError) as e:
                     result["errors"].append(f"Failed to render {filename}: {e}")
                     continue
                 try:
                     _write_atomic(output_dir / filename, page_html)
                     result["pages_created"] += 1
                     result["pages"].append(filename)
-                except Exception as e:
+                except OSError as e:
                     result["errors"].append(f"Failed to write {filename}: {e}")
 
             # Per-model pages (C2): written under model/ and bookkept under
@@ -1053,7 +1053,7 @@ class WebsiteGenerator:
                     model_filename = f"model/{slug}.html"
                     try:
                         page_html = self._page_model(model)
-                    except Exception as e:
+                    except (ValueError, TypeError, KeyError, IndexError) as e:
                         result["errors"].append(
                             f"Failed to render {model_filename}: {e}"
                         )
@@ -1062,7 +1062,7 @@ class WebsiteGenerator:
                         _write_atomic(model_dir / f"{slug}.html", page_html)
                         result["model_pages_created"] += 1
                         result["model_pages"].append(model_filename)
-                    except Exception as e:
+                    except OSError as e:
                         result["errors"].append(
                             f"Failed to write {model_filename}: {e}"
                         )
@@ -1075,7 +1075,7 @@ class WebsiteGenerator:
                     output_dir / "search-index.json",
                     json.dumps(data["search_data"], indent=2),
                 )
-            except Exception as e:
+            except OSError as e:
                 result["errors"].append(f"Failed to write search-index.json: {e}")
 
         except Exception as e:

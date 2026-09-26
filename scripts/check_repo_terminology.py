@@ -83,7 +83,7 @@ PATTERNS: list[tuple[re.Pattern[str], str]] = [
     (re.compile(r"\bstub(s)?\b", re.IGNORECASE), "incomplete-surface wording"),
     (re.compile(r"\bfake(s)?\b", re.IGNORECASE), "test-double wording"),
     (re.compile(r"\blegacy\b", re.IGNORECASE), "stale-version wording"),
-    (re.compile(r"placeholder", re.IGNORECASE), "incomplete-surface wording"),
+    (re.compile(r"(?<!::)placeholder", re.IGNORECASE), "incomplete-surface wording"),
     (re.compile(r"\bplaceholder API\b", re.IGNORECASE), "incomplete-surface API"),
     (re.compile(r"\bfake default\b", re.IGNORECASE), "invented-default wording"),
     (re.compile(r"\bfallback agent\b", re.IGNORECASE), "stale fallback wording"),
