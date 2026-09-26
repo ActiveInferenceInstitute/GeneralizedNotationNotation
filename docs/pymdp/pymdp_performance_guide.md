@@ -144,7 +144,7 @@ Dense B tensors in PyMDP models grow as **O(n³)** in both memory and disk space
 - **N=256**: ~500 MiB specification file.
 - **N=512**: ~4 GiB specification file.
 
-The orchestrator enforces strict **Resource Gates** to prevent disk exhaustion. Configuration is managed via `scripts/pymdp_scaling_config.yaml`.
+The orchestrator enforces strict **Resource Gates** to prevent disk exhaustion. Configuration is managed via `scripts/experiments/pymdp_scaling_config.yaml`.
 
 ### Sparse Kronecker-Factorized Sweep (MAJ-02)
 

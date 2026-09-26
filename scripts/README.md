@@ -9,7 +9,7 @@ The `scripts/` directory is the repository's hub for standalone maintenance, lin
 - `check_doc_contracts.py`: A strict contract check for enforced quickstart sections, current CLI spellings, `input/config.yaml`, and the 9-render-target / 10-executor-framework split (including the `src/gnn/execute/bnlearn/` executor path). CI-wired with `--strict`.
 - `check_maintained_doc_terms.py`: A maintained-document terminology audit that catches retired PyMDP surface references and stale policy phrases while skipping generated and archive Markdown.
 - `check_mcp_skills_health.py`: Executes every registered MCP tool (schema-minimal arguments, no crashes) and verifies every `src/<module>/SKILL.md` API import, Key Export, MCP-tool claim, and Key Command resolves against the live codebase. Informational gate.
-- `scripts/experiments/run_pymdp_gnn_scaling_analysis.py`: A thin orchestrator that programmatically generates configured GNN specs and triggers the main pipeline to conduct a PyMDP scaling study. It uses `pymdp_scaling_config.yaml` for central configuration.
+- `scripts/experiments/run_pymdp_gnn_scaling_analysis.py`: A thin orchestrator that programmatically generates configured GNN specs and triggers the main pipeline to conduct a PyMDP scaling study. It uses `scripts/experiments/pymdp_scaling_config.yaml` for central configuration.
 
 ## Execution
 Tools are designed to be executed via `uv run`:
@@ -43,7 +43,7 @@ That gate is conceptually aligned with **Pipeline Step 5** (type checker) storag
 Relative paths are resolved from the repository root. By default the orchestrator writes generated specs to `input/gnn_files/pymdp_scaling_study` and uses an isolated pipeline output directory at `output/pymdp_scaling_pipeline`.
 
 ## Configuration
-The orchestrator is driven by `scripts/pymdp_scaling_config.yaml`. Key safety fields include:
+The orchestrator is driven by `scripts/experiments/pymdp_scaling_config.yaml`. Key safety fields include:
 - `max_n`: Skips state counts above this value to prevent exponential disk use.
 - `max_file_size_mb`: Caps individual specification file size.
 - `min_free_disk_mb`: Aborts if the target volume is near capacity.
