@@ -7,8 +7,10 @@
   the [repository TO-DO](../../TO-DO.md) M-03 row: 304+ files carry broad
   handlers; spot-checked sites log and emit structured receipts) plus the
   file:line exemplars below, all re-verified in this tree at authoring time.
-- **Baseline:** 1183 occurrences across 657 `.py` files under `src/gnn/` at the
-  wave-6 base (counted by
+- **Baseline:** 1182 occurrences across 657 `.py` files under `src/gnn/` at the
+  wave-8 dashboard fold (two MCP guards narrowed to precise types at the
+  W8-R3 fold — `inspect_website` to `OSError`, `get_pipeline_steps` to
+  `(ImportError, AttributeError)`; counted by
   [`scripts/check_gnn_doc_patterns.py`](../../scripts/check_gnn_doc_patterns.py)).
 
 ## Purpose

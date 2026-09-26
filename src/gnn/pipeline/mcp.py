@@ -51,7 +51,7 @@ def get_pipeline_steps(mcp_instance_ref: Any) -> Dict[str, Any]:
             "steps": steps_info,
             "pipeline_config": get_pipeline_config(),
         }
-    except Exception as e:
+    except (ImportError, AttributeError) as e:
         logger.error(f"Error getting pipeline steps: {e}")
         return {"success": False, "error": str(e)}
 

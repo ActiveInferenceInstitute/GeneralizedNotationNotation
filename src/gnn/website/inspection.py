@@ -58,7 +58,7 @@ def inspect_website(website_directory: str | Path) -> dict[str, Any]:
             "completeness": completeness,
             "all_key_pages_present": all(completeness.values()),
         }
-    except Exception as e:
+    except OSError as e:
         logger.error(f"inspect_website error: {e}", exc_info=True)
         return {"success": False, "error": str(e)}
 
