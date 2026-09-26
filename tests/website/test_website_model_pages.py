@@ -507,7 +507,6 @@ class TestInspectionAndManifest:
                 verbose=False,
                 logger=logging.getLogger("t"),
                 recursive=False,
-                website_html_filename="ignored.html",
             )
             is True
         )
@@ -535,12 +534,32 @@ class TestDeepLinksAndHygiene:
             assert os.path.exists(os.path.join(str(site), href)), href
 
     @pytest.mark.unit
-    def test_new_artifacts_carry_no_http_references(self, tmp_path: Any) -> None:
+    def test_new_artifacts_carry_no_external_resource_references(
+        self, tmp_path: Any
+    ) -> None:
+        """Offline-true: no page fetches any external resource.
+
+        Checked as resource references (src/href pointing at http(s), CSS
+        ``@import``/``url()``) across EVERY emitted page — the seven site
+        pages, all model pages, and ``search-index.json``. The schema.org
+        context IRI inside the per-page JSON-LD is a vocabulary identifier,
+        never dereferenced, so it must not trip this pin.
+        """
         site, _ = _build_multi_model_site(tmp_path)
 
-        for rel in _EXPECTED_MODEL_PAGES:
-            html = (site / rel).read_text(encoding="utf-8")
-            assert "http://" not in html and "https://" not in html, rel
+        pages = sorted(site.rglob("*.html"))
+        assert {p.name for p in pages} >= set(_SITE_PAGE_FILENAMES)
+        for page in pages:
+            html = page.read_text(encoding="utf-8")
+            for attribute in ("src", "href"):
+                for match in re.findall(
+                    rf'{attribute}\s*=\s*"[^"]*"', html
+                ):
+                    assert not match.lower().startswith(
+                        f'{attribute}="http'
+                    ), (page.name, match)
+            assert "@import" not in html, page.name
+            assert not re.search(r"url\(\s*[\"']?https?://", html), page.name
 
         index_text = (site / "search-index.json").read_text(encoding="utf-8")
         assert "http://" not in index_text and "https://" not in index_text
@@ -551,3 +570,31 @@ class TestDeepLinksAndHygiene:
         scripts = "\n".join(_inline_scripts(listing))
         for snippet in (payload, scripts):
             assert "http://" not in snippet and "https://" not in snippet
+
+    @pytest.mark.unit
+    def test_every_page_carries_meta_description_and_jsonld(
+        self, tmp_path: Any
+    ) -> None:
+        site, _ = _build_multi_model_site(tmp_path)
+        pages = sorted(site.rglob("*.html"))
+        assert {p.name for p in pages} >= set(_SITE_PAGE_FILENAMES)
+        for page in pages:
+            html = page.read_text(encoding="utf-8")
+            assert '<meta name="description" content="GNN Pipeline Results' in (
+                html
+            ), page.name
+            match = re.search(
+                r'<script type="application/ld\+json">(.*?)</script>',
+                html,
+                re.DOTALL,
+            )
+            assert match, page.name
+            payload = json.loads(match.group(1))
+            assert payload["@context"] == "https://schema.org"
+            assert payload["@type"] == "WebPage"
+            assert payload["name"].endswith("— GNN Pipeline")
+            assert payload["description"].startswith("GNN Pipeline Results")
+            assert payload["isPartOf"] == {
+                "@type": "WebSite",
+                "name": "GNN Pipeline Results",
+            }

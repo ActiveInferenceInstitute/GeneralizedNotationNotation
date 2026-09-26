@@ -325,3 +325,16 @@ def test_default_ontology_terms_file_resolves_to_bundled_vocabulary() -> None:
     assert DEFAULT_ONTOLOGY_TERMS_FILE.name == "act_inf_ontology_terms.json"
     assert DEFAULT_ONTOLOGY_TERMS_FILE.exists()
     assert PipelineArguments().ontology_terms_file == DEFAULT_ONTOLOGY_TERMS_FILE
+
+
+def test_removed_website_html_filename_flag_is_rejected() -> None:
+    """The dead ``--website-html-filename`` knob (accepted-and-ignored
+    through four duplicated defaults) was removed end-to-end in v3.5.0:
+    the step parser must reject it and the defaults namespace must not
+    carry the field."""
+    with pytest.raises(SystemExit):
+        ArgumentParser.parse_step_arguments(
+            "20_website.py", ["--website-html-filename", "out.html"]
+        )
+    defaults = ArgumentParser.parse_step_arguments("20_website.py", [])
+    assert not hasattr(defaults, "website_html_filename")

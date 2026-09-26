@@ -104,8 +104,14 @@ class WebsiteRenderer:
 
 
 def _write_results_manifest(website_dir: Path, result: dict[str, Any]) -> None:
-    """Persist ``website_results.json`` summarizing a generation run."""
+    """Persist ``website_results.json`` summarizing a generation run.
+
+    Written atomically (temp file + rename, the same helper the pages use)
+    so a crash mid-write can never leave a truncated manifest.
+    """
     try:
+        from .generator import _write_atomic
+
         manifest = {
             "success": bool(result.get("success", False)),
             "pages_created": int(result.get("pages_created", 0)),
@@ -116,8 +122,8 @@ def _write_results_manifest(website_dir: Path, result: dict[str, Any]) -> None:
             "warnings": list(result.get("warnings", [])),
             "generated_at": datetime.now().isoformat(timespec="seconds"),
         }
-        (website_dir / "website_results.json").write_text(
-            json.dumps(manifest, indent=2), encoding="utf-8"
+        _write_atomic(
+            website_dir / "website_results.json", json.dumps(manifest, indent=2)
         )
     except Exception as e:
         logger.warning("Could not write results file (optional): %s", e)
@@ -208,6 +214,9 @@ def process_website(
             logger.error("Website generation failed")
             for error in result["errors"]:
                 logger.error(f"Error: {error}")
+        if verbose:
+            logger.info("Site pages: %s", ", ".join(result.get("pages") or []))
+            logger.info("Model pages: %s", ", ".join(result.get("model_pages") or []))
 
         return cast("bool", result["success"])
 

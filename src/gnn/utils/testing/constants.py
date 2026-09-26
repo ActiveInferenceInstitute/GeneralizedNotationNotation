@@ -76,7 +76,6 @@ TEST_CONFIG: dict[str, Any] = {
     "enable_cross_format": True,
     "llm_tasks": "all",
     "llm_timeout": 360,
-    "website_html_filename": "gnn_pipeline_summary_website.html",
     "recreate_venv": False,
     "dev": False,
     "duration": 30.0,

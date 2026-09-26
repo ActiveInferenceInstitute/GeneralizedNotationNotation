@@ -46,7 +46,9 @@
 - `output_dir` (Path): Output directory for website files
 - `verbose` (bool): Enable verbose logging (default: False)
 - `pipeline_output_root` (Path | None): Root of numbered pipeline output dirs; defaults to `output_dir.parent`
-- `**kwargs`: Additional website generation options (e.g. `website_html_filename` from the orchestrator, accepted and ignored)
+- `**kwargs`: Additional website generation options (absorbed silently; the
+  former `website_html_filename` orchestrator knob was removed end-to-end in
+  v3.5.0 as dead)
 
 **Returns**: `bool` - True if website generation succeeded, False otherwise
 
@@ -124,13 +126,13 @@ success = embed_image(
 - `index.html` - Pipeline dashboard with step cards
 - `pipeline.html` - Full 25-step pipeline status table
 - `gnn_files.html` - GNN source file browser with a client-side search box (search-index payload inlined + vanilla-JS filter; `fetch()` fails on `file://`)
-- `analysis.html` - Analysis and complexity metrics
+- `analysis.html` - Statistical analysis results
 - `visualization.html` - Gallery of generated visualizations
 - `reports.html` - JSON/text report viewer
 - `mcp.html` - MCP tools registry across all modules
 - `model/<slug>.html` - One detail page per parsed model (slug = lowercased name, non-`[a-z0-9]` → `-`, collapsed, stripped; empty → `model`; first claimant keeps the slug, duplicates get `-2`, `-3`, …): model-name `h1`, a source link back to the model's GNN Files listing row, variables/edges tables, embedded visualization assets, and the model's FULL GNN source (no truncation — the 3000-character cap stays only on the aggregate GNN Files listing rows)
 - `search-index.json` - `{"generated", "pages": [{"title", "url", "snippet"}]}` covering the 7 site pages plus all model pages (≤200-char snippets, site-root-relative URLs)
-- `website_results.json` - generation manifest with `success`, `pages_created`, `pages` (written filenames), `errors`, `warnings`, `generated_at`, plus `model_pages_created` and `model_pages` (site-root-relative per-model filenames; the 7-page `SITE_PAGES` catalogue and `pages`/`pages_created` pins are unchanged)
+- `website_results.json` - generation manifest with `success`, `pages_created`, `pages` (written filenames), `errors`, `warnings` (populated when artifacts are skipped, e.g. a visualization asset whose copy failed), `generated_at`, plus `model_pages_created` and `model_pages` (site-root-relative per-model filenames; the 7-page `SITE_PAGES` catalogue and `pages`/`pages_created` pins are unchanged); written atomically (temp file + rename, same helper as the pages)
 
 Every generated page — the seven site pages and every model page — emits a breadcrumb nav in the page shell (`Home › <section>`; model pages: `Home › GNN Files › <Model Name>`; index: a single `Home` crumb) with relative, depth-correct hrefs.
 

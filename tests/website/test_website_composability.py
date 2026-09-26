@@ -81,7 +81,7 @@ class TestWebsiteDataFromDict:
             "gnn_files",
             "models",
             "analysis",
-            "complexity",
+            "warnings",
             "visualizations",
             "reports",
             "mcp_tools",

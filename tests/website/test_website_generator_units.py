@@ -668,7 +668,6 @@ class TestProcessWebsiteManifest:
             verbose=False,
             logger=logging.getLogger("t"),
             recursive=False,
-            website_html_filename="ignored.html",
         )
         assert result is True
 
@@ -692,6 +691,50 @@ class TestProcessWebsiteManifest:
         from gnn.website import process_website
 
         assert process_website(tmp_path / "nope", tmp_path / "out") is False
+
+    @pytest.mark.unit
+    def test_manifest_write_is_atomic(
+        self, tmp_path: Any, monkeypatch: Any
+    ) -> None:
+        """The results manifest is written via temp file + rename: a crash
+        mid-write leaves any pre-existing ``website_results.json``
+        byte-identical, leaves no temp residue, and generation still
+        succeeds (the manifest write is best-effort)."""
+        import gnn.website.generator as generator_module
+        from gnn.website import process_website
+
+        target = tmp_path / "input"
+        target.mkdir()
+        out = tmp_path / "out"
+        out.mkdir()
+        manifest_path = out / "website_results.json"
+        manifest_path.write_text("PRE-EXISTING", encoding="utf-8")
+
+        real_replace = generator_module.os.replace
+
+        def crash_on_manifest(src: Any, dst: Any) -> None:
+            if Path(str(dst)).name == "website_results.json":
+                raise OSError("simulated crash mid-rename")
+            real_replace(src, dst)
+
+        monkeypatch.setattr(generator_module.os, "replace", crash_on_manifest)
+
+        assert process_website(
+            target_dir=target, output_dir=out, logger=logging.getLogger("t")
+        ) is True
+        assert manifest_path.read_text(encoding="utf-8") == "PRE-EXISTING"
+        assert {p.name for p in out.iterdir()} == {
+            "index.html",
+            "pipeline.html",
+            "gnn_files.html",
+            "analysis.html",
+            "visualization.html",
+            "reports.html",
+            "mcp.html",
+            "search-index.json",
+            "website_results.json",
+            "assets",
+        }
 
 
 class TestEmbedEscaping:

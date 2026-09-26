@@ -79,8 +79,8 @@ success = process_website(
 )
 ```
 
-The orchestrator (`src/gnn/20_website.py`) also passes `--website-html-filename`
-through `**kwargs`; it is accepted and not used by the generator.
+The result manifest (`website_results.json`) is written atomically with the
+same temp-file-plus-rename helper the pages use.
 
 ### `generate_website(logger, input_dir, output_dir, *, pipeline_output_root=None) -> dict`
 
@@ -173,7 +173,7 @@ output/20_website_output/
 ├── index.html          # Pipeline dashboard with step cards
 ├── pipeline.html       # Full 25-step pipeline status table
 ├── gnn_files.html      # GNN source file browser + client-side search box
-├── analysis.html       # Analysis and complexity metrics
+├── analysis.html       # Statistical analysis results
 ├── visualization.html  # Gallery of generated visualizations
 ├── reports.html        # JSON/text report viewer
 ├── mcp.html            # MCP tools registry across all modules
@@ -193,8 +193,6 @@ python src/gnn/20_website.py --target-dir input/gnn_files --output-dir output --
 python src/gnn/main.py --only-steps 20 --verbose
 ```
 
-`src/gnn/20_website.py` adds `--website-html-filename` (default
-`gnn_pipeline_summary_website.html`); it is forwarded through `**kwargs`.
 
 ## Dependencies
 

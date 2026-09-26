@@ -8,7 +8,7 @@ parsed GNN model, and a client-side search index:
   - index.html         — Pipeline dashboard with step cards
   - pipeline.html      — Full 25-step pipeline status table
   - gnn_files.html     — GNN source file browser
-  - analysis.html      — Analysis and complexity metrics
+  - analysis.html      — Statistical analysis results
   - visualization.html — Gallery of all generated visualizations
   - reports.html       — JSON/text report viewer
   - mcp.html           — MCP tools registry across all modules
@@ -611,7 +611,6 @@ def _page(
     active: str,
     body: str,
     *,
-    nav_extra: str = "",
     depth: int = 0,
     breadcrumbs: Optional[list[tuple[Optional[str], str]]] = None,
 ) -> str:
@@ -654,13 +653,30 @@ def _page(
         f'<nav class="breadcrumbs" aria-label="Breadcrumb"><ol>{crumb_html}</ol></nav>'
     )
 
+    description = f"GNN Pipeline Results — {title}"
+    # Offline-true structured data: the schema.org context IRI is a
+    # vocabulary identifier, never dereferenced at runtime — no external
+    # resource is fetched. ``<`` is escaped so payload strings can never
+    # close the script element.
+    jsonld = json.dumps(
+        {
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "name": f"{title} — GNN Pipeline",
+            "description": description,
+            "isPartOf": {"@type": "WebSite", "name": "GNN Pipeline Results"},
+        },
+        ensure_ascii=False,
+    ).replace("<", "\\u003c")
+
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="GNN Pipeline Results — {title}">
+  <meta name="description" content="{description}">
   <title>{title} — GNN Pipeline</title>
+  <script type="application/ld+json">{jsonld}</script>
   <style>{_CSS}</style>
 </head>
 <body>
@@ -674,7 +690,6 @@ def _page(
         <div class="nav-label">Navigation</div>
         {nav_html}
       </div>
-      {nav_extra}
     </nav>
   </aside>
   <main class="main">
@@ -982,6 +997,12 @@ class WebsiteGenerator:
             _ensure_model_slugs(models)
             _attach_model_viz_assets(data)
             data["search_data"] = _build_search_data(data)
+            # Collection warnings (e.g. visualization artifacts skipped
+            # because their copy failed) surface in the result manifest
+            # instead of dying inside the collectors.
+            _collected_warnings = data.get("warnings")
+            if isinstance(_collected_warnings, list):
+                result["warnings"].extend(str(w) for w in _collected_warnings)
 
             builders = self._page_builders()
             for filename, build_page in builders.items():
@@ -1503,7 +1524,7 @@ class WebsiteGenerator:
         body = f"""
 <div class="page-header">
   <h1>📊 Analysis</h1>
-  <p class="subtitle">Statistical analysis and complexity metrics</p>
+  <p class="subtitle">Statistical analysis results</p>
 </div>
 <div class="section">{inner}</div>"""
         return _page("Analysis", "analysis", body)

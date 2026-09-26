@@ -39,7 +39,6 @@ _FALLBACK_DEFAULTS: Mapping[str, Any] = MappingProxyType(
         "estimate_resources": True,
         "llm_timeout": 360,
         "llm_tasks": "all",
-        "website_html_filename": "gnn_pipeline_summary_website.html",
         "recreate_venv": False,
         "dev": False,
         "setup_core_only": False,
@@ -254,10 +253,6 @@ class ArgumentParser:
                 flag="--llm-timeout",
                 arg_type=int,
                 help_text="Timeout for LLM processing in seconds",
-            ),
-            "website_html_filename": ArgumentDefinition(
-                flag="--website-html-filename",
-                help_text="Filename for generated HTML website",
             ),
             "performance_mode": ArgumentDefinition(
                 flag="--performance-mode",
@@ -709,7 +704,6 @@ class ArgumentParser:
                 "output_dir",
                 "recursive",
                 "verbose",
-                "website_html_filename",
             ],
             "21_mcp.py": [
                 "target_dir",
@@ -1360,9 +1354,6 @@ def parse_arguments() -> PipelineArguments:
         "--pipeline-summary-file", type=Path, help="Path to save pipeline summary"
     )
     parser.add_argument(
-        "--website-html-filename", help="Filename for generated HTML website"
-    )
-    parser.add_argument(
         "--duration", type=float, help="Audio duration in seconds for audio generation"
     )
     parser.add_argument(
@@ -1476,8 +1467,6 @@ def parse_arguments() -> PipelineArguments:
         pipeline_args.llm_timeout = args.llm_timeout
     if args.pipeline_summary_file is not None:
         pipeline_args.pipeline_summary_file = args.pipeline_summary_file
-    if args.website_html_filename is not None:
-        pipeline_args.website_html_filename = args.website_html_filename
     if args.duration is not None:
         pipeline_args.duration = args.duration
     if args.recreate_venv:

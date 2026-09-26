@@ -313,12 +313,8 @@ class StepConfiguration:
             "20_website": {
                 "critical": False,
                 "required_args": ["target_dir", "output_dir"],
-                "optional_args": ["recursive", "verbose", "website_html_filename"],
-                "defaults": {
-                    "recursive": True,
-                    "verbose": False,
-                    "website_html_filename": "gnn_pipeline_summary_website.html",
-                },
+                "optional_args": ["recursive", "verbose"],
+                "defaults": {"recursive": True, "verbose": False},
                 "description": "HTML Website Generation",
             },
             "21_mcp": {

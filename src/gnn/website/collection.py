@@ -29,7 +29,6 @@ PURE_DICT_KEYS: frozenset[str] = frozenset(
         "gnn_files",
         "models",
         "analysis",
-        "complexity",
         "visualizations",
         "reports",
         "mcp_tools",
@@ -64,7 +63,7 @@ def website_data_from_dict(
         "gnn_files": [],
         "models": [],
         "analysis": [],
-        "complexity": [],
+        "warnings": [],
         "visualizations": [],
         "reports": [],
         "mcp_tools": [],
@@ -314,15 +313,21 @@ def _load_registered_tools(p_root: Path) -> list[dict[str, str]]:
 
 def _collect_visualizations(
     viz_dirs: list[Path], assets_dir: Path
-) -> list[dict[str, Any]]:
+) -> tuple[list[dict[str, Any]], list[str]]:
     """Copy PNG/HTML visualization artifacts into ``assets_dir`` and describe them.
 
     Identical artifact filenames from different source directories must not
     silently overwrite each other in the shared ``assets_dir``: later
     collisions are copied under a ``<source-dir>__``-prefixed (or counter-
     disambiguated) name so every artifact keeps its own gallery card.
+
+    An artifact whose copy fails is skipped (never linked from the site):
+    the caller gets ``(visualizations, warnings)`` with a message per
+    skipped artifact instead of a gallery card whose ``assets/`` href
+    would dangle.
     """
     visualizations: list[dict[str, Any]] = []
+    warnings: list[str] = []
     used_names: set[str] = set()
     for viz_dir in viz_dirs:
         if not viz_dir.exists():
@@ -338,21 +343,23 @@ def _collect_visualizations(
                     while dest_name.lower() in used_names:
                         dest_name = f"{stem}_{counter}{ext}"
                         counter += 1
-                used_names.add(dest_name.lower())
                 dest = assets_dir / dest_name
                 try:
                     shutil.copy2(artifact, dest)
-                except Exception:
-                    dest = artifact
+                except OSError as e:
+                    warnings.append(
+                        f"Skipped visualization {artifact.name} (copy failed: {e})"
+                    )
+                    continue
+                used_names.add(dest_name.lower())
                 visualizations.append(
                     {
                         "title": artifact.stem,
                         "path": dest.name,
                         "type": artifact_type,
-                        "abs": dest,
                     }
                 )
-    return visualizations
+    return visualizations, warnings
 
 
 def _collect_reports(p_root: Path) -> list[dict[str, Any]]:
@@ -405,7 +412,7 @@ def collect_website_data(
         "gnn_files": [],
         "models": [],
         "analysis": [],
-        "complexity": [],
+        "warnings": [],
         "visualizations": [],
         "reports": [],
         "mcp_tools": [],
@@ -430,17 +437,17 @@ def collect_website_data(
     data["models"].extend(_collect_parsed_models(data["gnn_files"]))
     data["step_statuses"] = _collect_step_statuses(p_root)
     data["analysis"].extend(_collect_analysis_results(p_root))
-    data["visualizations"].extend(
-        _collect_visualizations(
-            [
-                p_root / "08_visualization_output" / "visualization_results",
-                p_root / "8_visualization_output" / "visualization_results",
-                p_root / "09_advanced_viz_output",
-                p_root / "9_advanced_viz_output",
-            ],
-            assets_dir,
-        )
+    viz_entries, viz_warnings = _collect_visualizations(
+        [
+            p_root / "08_visualization_output" / "visualization_results",
+            p_root / "8_visualization_output" / "visualization_results",
+            p_root / "09_advanced_viz_output",
+            p_root / "9_advanced_viz_output",
+        ],
+        assets_dir,
     )
+    data["visualizations"].extend(viz_entries)
+    data["warnings"].extend(viz_warnings)
     data["reports"].extend(_collect_reports(p_root))
     data["mcp_summary"] = _load_mcp_summary(p_root)
     data["pipeline_summary"] = _load_pipeline_summary(p_root)
