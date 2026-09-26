@@ -861,6 +861,37 @@ The standalone machine-readable MCP entry point stays
 `python -m gnn.mcp.cli --format json`, which prints exactly one pure JSON
 document on stdout.
 
+### ⏱️ Complexity bounds and benchmarking
+
+Two CLI subcommands close the loop between static estimates and measured
+performance:
+
+```bash
+# Static per-backend complexity BOUNDS for one model (no execution)
+gnn complexity input/gnn_files/discrete/tmaze_epistemic.md
+
+# Empirical benchmark over a corpus dir (K repeats per rendered script)
+gnn benchmark input/gnn_files --frameworks pymdp,rxinfer --repeats 3
+```
+
+`gnn complexity <model|dir>` prints one `[ESTIMATE]`-labeled BOUNDS row per
+backend plus the `gnn.complexity_estimate/v1` receipt as stable sorted-key
+JSON (`--json` wraps it in the standard CLI envelope; `--output PATH` writes
+the receipt file). It never executes anything — estimates are arguments over
+declared structure, not measurements.
+
+`gnn benchmark <dir> [--frameworks ...] [--repeats K]` runs the fixed corpus
+through the existing Step 11 render + Step 12 execution envelope
+(`--frameworks` comma-separated, default `all`; `--repeats` int, default 3)
+and writes two receipts under `output/cross_framework/` (override with
+`--output-dir`): `complexity_benchmark.json`
+(`gnn.complexity_benchmark/v1`, per-run rows with the K-repeat timing trio,
+child peak RSS, and the receipt-level environment block) and
+`complexity_calibration.json` (`gnn.complexity_calibration/v1`, the
+static-vs-measured join on `(source_sha256, framework)` with a factual
+`calibration_note` per row). Unavailable backends are recorded
+`available: false`, never skipped silently; unmeasured fields stay `null`.
+
 ### ✅ Type Checker and Resource Estimator
 
 The **GNN Type Checker** (pipeline step 5) helps validate GNN files and estimates computational resources.

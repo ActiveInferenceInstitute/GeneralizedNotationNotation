@@ -7,9 +7,9 @@
 **Category**: Infrastructure / Development Tools
 **Status**: ✅ Production Ready
 **Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
-**Last Updated**: 2026-09-24
+**Last Updated**: 2026-09-25
 
-The CLI module provides the `gnn` command-line tool — a unified interface to the entire GNN pipeline. It acts as a thin dispatcher, routing 18 subcommands to their respective module APIs. Public exits are `0` for success, `1` for errors, and `2` for completed commands with warnings or degraded readiness.
+The CLI module provides the `gnn` command-line tool — a unified interface to the entire GNN pipeline. It acts as a thin dispatcher, routing 20 subcommands to their respective module APIs. Public exits are `0` for success, `1` for errors, and `2` for completed commands with warnings or degraded readiness.
 
 ## Architecture
 
@@ -25,6 +25,8 @@ The CLI module provides the `gnn` command-line tool — a unified interface to t
 - **Code generation** via `gnn render` (PyMDP, RxInfer, ActiveInference.jl, JAX, NumPyro, Stan, PyTorch, DisCoPy, bnlearn)
 - **POMDP extraction** via `gnn extract` (structured JSON of the POMDP state space, with graceful degradation when the extractor is unavailable)
 - **Run reproduction** via `gnn reproduce` using content-addressable hashing
+- **Static complexity bounds** via `gnn complexity <model|dir>` — one `[ESTIMATE]`-labeled BOUNDS row per backend as a terminal table plus the `gnn.complexity_estimate/v1` receipt as stable sorted-key JSON (`--json` standard envelope; `--output PATH` writes the receipt file). No execution, no measurement — estimates are arguments over declared structure, never numbers.
+- **Empirical benchmark + calibration** via `gnn benchmark <dir> --frameworks ... --repeats K` — corpus harness through the existing execution envelope (`--frameworks` comma-separated, default `all`; `--repeats` int, default 3; `--json` envelope; `--output-dir` default `output/cross_framework`). Writes `complexity_benchmark.json` (`gnn.complexity_benchmark/v1`, per-run rows with K-rep timing and the environment block) and `complexity_calibration.json` (`gnn.complexity_calibration/v1`, static-vs-measured join on `(source_sha256, framework)` with a factual `calibration_note` per row). Unavailable backends are recorded `available: false`, never skipped silently.
 - **Environment checks** via `gnn preflight` and `gnn health`
 - **Live development** via `gnn watch` (file monitoring with 250ms debounce)
 - **Dependency graphs** via `gnn graph` (Mermaid/text output)
@@ -48,6 +50,7 @@ cli/
 ├── handlers_ops.py      # report/reproduce/preflight/health handlers
 ├── handlers_service.py  # serve/watch/lsp/gui/mcp handlers
 ├── handlers_library.py  # templates/models/pull handlers
+├── handlers_complexity.py # complexity/benchmark handlers
 ├── template_index.json  # Externalized template metadata
 ├── template_assets/     # Packaged GNN template files
 ├── AGENTS.md            # This file

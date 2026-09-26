@@ -15,6 +15,8 @@ Provides:
   gnn serve      — Start long-running services (API surfaces or website)
   gnn templates  — Inspect maintained GNN templates
   gnn models     — Query and inspect the model registry
+  gnn complexity — Static per-backend complexity bounds
+  gnn benchmark  — Empirical cross-framework complexity benchmark
   gnn pull       — Copy a maintained template into an input directory
   gnn watch      — Monitor a directory and live-reparse on change
   gnn gui        — Run GUI processing (Step 22 artifacts or interactive servers)
@@ -31,6 +33,10 @@ import sys
 from typing import Any, Final, List, Optional, cast
 
 from gnn import __version__
+from gnn.cli.handlers_complexity import (
+    _cmd_benchmark,
+    _cmd_complexity,
+)
 from gnn.cli.handlers_library import (
     _cmd_models,
     _cmd_pull,
@@ -109,6 +115,8 @@ COMMAND_HANDLERS: Final[dict[str, str]] = {
     "graph": "_cmd_graph",
     "gui": "_cmd_gui",
     "mcp": "_cmd_mcp",
+    "benchmark": "_cmd_benchmark",
+    "complexity": "_cmd_complexity",
 }
 
 

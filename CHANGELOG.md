@@ -75,6 +75,31 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   override map), so a new pipeline step extends the navigation automatically;
   tests pin the reproduced 25-entry table byte-for-byte.
 
+### Added (2026-09-25 — complexity benchmark harness + CLI subcommands)
+
+- **Empirical complexity benchmark harness.**
+  `scripts/run_complexity_benchmark.py` runs a fixed six-exemplar corpus
+  through the existing Step 11 render step and the Step 12 execution envelope
+  with K benchmark repeats (default 3), and writes two receipts under
+  `output/cross_framework/`: `complexity_benchmark.json`
+  (`gnn.complexity_benchmark/v1` — measurement rows per (model, framework)
+  with the K-repeat timing trio, child peak RSS, and the receipt-level
+  environment block) and `complexity_calibration.json`
+  (`gnn.complexity_calibration/v1` — the same rows joined with the static
+  `gnn.complexity_estimate/v1` bounds on `(source_sha256, framework)`, one
+  factual `calibration_note` per row). Honesty rules: nulls where unmeasured,
+  unavailable backends recorded `available: false` (never skipped silently),
+  and no performance claim without repeats + environment.
+- **`gnn complexity` / `gnn benchmark` CLI subcommands.** `gnn complexity
+  <model|dir>` emits the static per-backend BOUNDS receipt (terminal table +
+  stable sorted-key JSON; `--json` envelope, `--output PATH`), and
+  `gnn benchmark <dir> --frameworks ... --repeats K` drives the harness
+  (comma-separated frameworks, default `all`; repeats default 3; receipts
+  under `output/cross_framework/`). Handlers live in
+  `gnn.cli.handlers_complexity` (`_cmd_complexity` / `_cmd_benchmark`), and
+  unit tests pin the receipt schemas, join keys, and CLI wiring without
+  running any framework.
+
 ### Added (2026-09-22 — ngc-learn T2 exemplar and docs)
 
 - **ngc-learn LGSSM exemplar.** `input/gnn_files/continuous/ngclearn_lgssm.md`

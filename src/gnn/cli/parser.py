@@ -2,7 +2,7 @@
 """
 Argument parser construction for the GNN ``gnn`` command.
 
-``build_parser`` assembles all 18 subcommands with their flags and choices;
+``build_parser`` assembles all 20 subcommands with their flags and choices;
 the argparse type parsers validate step numbers and TCP ports. Extracted
 from ``cli.__init__``.
 """
@@ -38,7 +38,7 @@ def _tcp_port(value: str) -> int:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    """Construct the ``gnn`` argument parser with all 18 subcommands.
+    """Construct the ``gnn`` argument parser with all 20 subcommands.
 
     Pure construction — no parsing side effects — so programmatic callers
     can introspect flags and choices without dispatching.
@@ -354,6 +354,48 @@ def build_parser() -> argparse.ArgumentParser:
 
     # ── gnn lsp ──────────────────────────────────────────────────────────────
     subparsers.add_parser("lsp", help="Launch GNN Language Server")
+
+    # ── gnn complexity ───────────────────────────────────────────────────────
+    complexity_p = subparsers.add_parser(
+        "complexity", help="Static per-backend complexity bounds for GNN models"
+    )
+    complexity_p.add_argument(
+        "path", type=Path, help="GNN model file or directory of models"
+    )
+    complexity_p.add_argument(
+        "--json", action="store_true", help="Output standard JSON envelope"
+    )
+    complexity_p.add_argument(
+        "--output", type=Path, help="Write the receipt JSON to this file"
+    )
+
+    # ── gnn benchmark ────────────────────────────────────────────────────────
+    benchmark_p = subparsers.add_parser(
+        "benchmark", help="Empirical cross-framework complexity benchmark"
+    )
+    benchmark_p.add_argument(
+        "target_dir", type=Path, help="Directory containing the corpus to benchmark"
+    )
+    benchmark_p.add_argument(
+        "--frameworks",
+        default="all",
+        help="Comma-separated frameworks to benchmark (default: all)",
+    )
+    benchmark_p.add_argument(
+        "--repeats",
+        type=int,
+        default=3,
+        help="Execution benchmark repeats per backend",
+    )
+    benchmark_p.add_argument(
+        "--json", action="store_true", help="Output standard JSON envelope"
+    )
+    benchmark_p.add_argument(
+        "--output-dir",
+        type=Path,
+        default=Path("output/cross_framework"),
+        help="Directory for benchmark and calibration receipts",
+    )
 
     # Accept global verbosity after the selected command too, matching the
     # ordering used by the public CLI examples.
