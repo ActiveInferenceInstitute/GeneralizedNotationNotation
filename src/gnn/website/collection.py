@@ -19,9 +19,73 @@ from typing import Any
 
 from gnn.parsers.common import ParseError
 
-from .generator import PIPELINE_STEPS
+from .steps import PIPELINE_STEPS
 
 logger = logging.getLogger(__name__)
+
+# Caller-supplied datasets that fully replace disk collection in pure-dict mode.
+PURE_DICT_KEYS: frozenset[str] = frozenset(
+    {
+        "gnn_files",
+        "models",
+        "analysis",
+        "complexity",
+        "visualizations",
+        "reports",
+        "mcp_tools",
+        "mcp_summary",
+        "pipeline_summary",
+        "step_statuses",
+        "processed_files",
+        "gui_navigation",
+    }
+)
+
+
+def website_data_from_dict(
+    user_data: dict[str, Any],
+    *,
+    output_dir: Path | str | None = None,
+) -> dict[str, Any]:
+    """Build the generator's data dict from a caller-supplied dict (NO disk access).
+
+    Pure-dict mode: the caller supplies the datasets; nothing is collected
+    from disk. Keys absent from ``user_data`` take the exact empty defaults
+    the filesystem collectors produce (empty lists/``{}``/all-pending
+    statuses, ``p_root=None`` → the pages' truthful no-root empty state).
+    Keys other than the known dataset keys are preserved verbatim (e.g.
+    ``search_data``). ``output_dir`` normalizes like
+    ``collect_website_data`` does; ``p_root``/``output_dir`` caller values
+    are kept when provided.
+    """
+    data: dict[str, Any] = {
+        "p_root": None,
+        "output_dir": Path(output_dir) if output_dir is not None else None,
+        "gnn_files": [],
+        "models": [],
+        "analysis": [],
+        "complexity": [],
+        "visualizations": [],
+        "reports": [],
+        "mcp_tools": [],
+        "mcp_summary": {},
+        "pipeline_summary": {},
+        "step_statuses": {step.number: "pending" for step in PIPELINE_STEPS},
+        "processed_files": 0,
+        "gui_navigation": False,
+    }
+    if user_data:
+        data.update(
+            {
+                k: v
+                for k, v in user_data.items()
+                if k not in ("output_dir", "input_dir", "pipeline_output_root")
+            }
+        )
+        root = user_data.get("pipeline_output_root")
+        if root is not None:
+            data["p_root"] = Path(root)
+    return data
 
 
 def _collect_gnn_files(p_root: Path, input_dir: Path) -> tuple[list[Path], bool]:

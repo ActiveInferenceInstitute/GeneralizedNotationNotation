@@ -24,15 +24,18 @@ import logging
 import os
 import re
 import tempfile
-from dataclasses import dataclass
 from datetime import datetime
 from html import escape
 from pathlib import Path
 from typing import Any, Callable, Dict, Optional
 
-from gnn.pipeline.step_registry import STEPS as _REGISTRY_STEPS
-
-from .pages import SITE_PAGES
+from gnn.website.collection import collect_website_data, website_data_from_dict
+from gnn.website.pages import SITE_PAGES
+from gnn.website.steps import (  # noqa: F401  (re-export)
+    PIPELINE_STEPS,
+    StepInfo,
+    get_pipeline_steps,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -682,72 +685,6 @@ def _page(
 </html>"""
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-#  Pipeline step catalogue
-# ─────────────────────────────────────────────────────────────────────────────
-
-
-@dataclass(frozen=True)
-class StepInfo:
-    """One pipeline step in the static 25-step site catalogue."""
-
-    number: int
-    name: str
-    description: str
-
-    @property
-    def script_name(self) -> str:
-        """Conventional display name of the numbered orchestrator script."""
-        return f"{self.number}_{self.name.lower().replace(' ', '_')}.py"
-
-    @property
-    def output_dir_name(self) -> str:
-        """Standard output subdirectory, mirroring the step registry (``11_render_output``)."""
-        return f"{self.number}_{self.name.lower().replace(' ', '_')}_output"
-
-
-# Acronym casing for stem suffixes that must not be title-cased
-# (``"mcp".title()`` would yield "Mcp", breaking the display name and the
-# ``script_name`` round-trip back to the real orchestrator script stem).
-_ACRONYM_DISPLAY: dict[str, str] = {
-    "gnn": "GNN",
-    "gui": "GUI",
-    "llm": "LLM",
-    "mcp": "MCP",
-    "ml": "ML",
-}
-
-
-def _display_name_from_stem_suffix(suffix: str) -> str:
-    """Display name for a registry stem suffix (``"advanced_viz"`` → ``"Advanced Viz"``)."""
-    return " ".join(
-        _ACRONYM_DISPLAY.get(word, word.title()) for word in suffix.split("_")
-    )
-
-
-def _steps_from_registry() -> tuple[StepInfo, ...]:
-    """Derive the site catalogue from the canonical ``step_registry.STEPS``."""
-    infos: list[StepInfo] = []
-    for registry_step in _REGISTRY_STEPS:
-        number_str, _, suffix = registry_step.script_stem.partition("_")
-        infos.append(
-            StepInfo(
-                number=int(number_str),
-                name=_display_name_from_stem_suffix(suffix),
-                description=registry_step.description,
-            )
-        )
-    return tuple(infos)
-
-
-PIPELINE_STEPS: tuple[StepInfo, ...] = _steps_from_registry()
-
-
-def get_pipeline_steps() -> tuple[StepInfo, ...]:
-    """Return the immutable 25-step catalogue rendered across the site."""
-    return PIPELINE_STEPS
-
-
 # Shared status-badge styling: single source of truth for the index and
 # pipeline pages (previously duplicated inline in each page builder).
 _BADGE_CLASS: dict[str, str] = {
@@ -989,12 +926,17 @@ class WebsiteGenerator:
         """Filename → page-builder mapping, derived from ``SITE_PAGES``."""
         return {page.filename: getattr(self, page.builder) for page in SITE_PAGES}
 
-    def generate_website(self, website_data: dict) -> dict:
+    def generate_website(self, website_data: dict, *, filesystem: bool = True) -> dict:
         """Generate the complete static website.
 
         Each page is rendered and written independently: a failure on one
         page records an error and leaves the remaining pages intact, and the
         overall ``success`` flag is ``True`` only when no errors occurred.
+
+        Pure-dict mode (``filesystem=False``): no disk collectors run — the
+        data dict is built from ``website_data`` itself via
+        ``website_data_from_dict`` (missing datasets take the collectors'
+        empty defaults; the only filesystem work is writing the site).
         """
         result: dict[str, Any] = {
             "success": True,
@@ -1009,16 +951,29 @@ class WebsiteGenerator:
             output_dir = Path(
                 website_data.get("output_dir", "output/20_website_output")
             )
-            input_dir = Path(website_data.get("input_dir", "output"))
-            p_root = Path(website_data.get("pipeline_output_root", str(input_dir)))
 
-            output_dir.mkdir(parents=True, exist_ok=True)
-            assets_dir = output_dir / "assets"
-            assets_dir.mkdir(exist_ok=True)
-
-            data = self._collect_all_data(
-                p_root, input_dir, output_dir, assets_dir, website_data
-            )
+            if filesystem:
+                input_dir = Path(website_data.get("input_dir", "output"))
+                p_root = Path(website_data.get("pipeline_output_root", str(input_dir)))
+                output_dir.mkdir(parents=True, exist_ok=True)
+                assets_dir = output_dir / "assets"
+                assets_dir.mkdir(exist_ok=True)
+                data = self._collect_all_data(
+                    p_root, input_dir, output_dir, assets_dir, website_data
+                )
+            else:
+                # Pure-dict mode writes only where the caller explicitly
+                # aims it: without an explicit ``output_dir`` the default
+                # would silently target the repository's ``output/`` tree.
+                if "output_dir" not in website_data:
+                    raise ValueError(
+                        "filesystem=False requires an explicit 'output_dir' "
+                        "in website_data"
+                    )
+                output_dir.mkdir(parents=True, exist_ok=True)
+                assets_dir = output_dir / "assets"
+                assets_dir.mkdir(exist_ok=True)
+                data = website_data_from_dict(website_data, output_dir=str(output_dir))
 
             # One shared slug map for the per-model pages, the listing deep
             # links, and the search index: assigned once, in collection
@@ -1099,7 +1054,6 @@ class WebsiteGenerator:
         user_data: dict,
     ) -> dict:
         """Collect all data (delegates to the pure ``collect_website_data``)."""
-        from gnn.website.collection import collect_website_data
 
         return collect_website_data(
             p_root,
