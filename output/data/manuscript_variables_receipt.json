@@ -1,8 +1,7 @@
 {
-  "counts_describe_commit": "3baa44670",
-  "dirty_path_count": 3,
+  "counts_describe_commit": "4e7d23d1c",
+  "dirty_path_count": 2,
   "dirty_paths": [
-    "docs/standards/exceptions.md",
     "output/data/manuscript_variables.json",
     "output/data/manuscript_variables_receipt.json"
   ],
