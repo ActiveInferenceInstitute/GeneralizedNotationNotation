@@ -25,7 +25,6 @@ def get_test_args() -> Dict[str, Any]:
         "enable_cross_format": True,
         "llm_tasks": "all",
         "llm_timeout": 360,
-        "website_html_filename": "gnn_pipeline_summary_website.html",
         "recreate_venv": False,
         "dev": False,
         "duration": 30.0,
@@ -57,7 +56,6 @@ def get_sample_pipeline_arguments() -> Dict[str, Any]:
         "pipeline_summary_file": "output/00_pipeline_summary/pipeline_execution_summary.json",
         "llm_tasks": "all",
         "llm_timeout": 360,
-        "website_html_filename": "gnn_pipeline_summary_website.html",
         "recreate_venv": False,
         "dev": False,
         "duration": 30.0,
@@ -145,8 +143,6 @@ llm:
   tasks: "all"
   timeout: 360
 
-website:
-  html_filename: "gnn_pipeline_summary_website.html"
 
 setup:
   recreate_venv: false

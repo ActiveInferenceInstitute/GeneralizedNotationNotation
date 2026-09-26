@@ -82,7 +82,7 @@ SITE_PAGES: tuple[PageSpec, ...] = (
         name="analysis",
         title="Analysis",
         builder="_page_analysis",
-        description="Analysis and complexity metrics from step 16 artifacts.",
+        description="Statistical analysis results from step 16 artifacts.",
         icon="📊",
     ),
     PageSpec(

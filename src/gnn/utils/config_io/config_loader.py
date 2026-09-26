@@ -94,13 +94,6 @@ class LLMConfig:
 
 
 @dataclass
-class WebsiteConfig:
-    """Configuration for website generation."""
-
-    html_filename: str = "gnn_pipeline_summary_website.html"
-
-
-@dataclass
 class SetupConfig:
     """Configuration for setup step."""
 
@@ -132,7 +125,6 @@ class GNNPipelineConfig:
     type_checker: TypeCheckerConfig = field(default_factory=TypeCheckerConfig)
     ontology: OntologyConfig = field(default_factory=OntologyConfig)
     llm: LLMConfig = field(default_factory=LLMConfig)
-    website: WebsiteConfig = field(default_factory=WebsiteConfig)
     setup: SetupConfig = field(default_factory=SetupConfig)
     sapf: SAPFConfig = field(default_factory=SAPFConfig)
     models: ModelConfig = field(default_factory=ModelConfig)
@@ -211,13 +203,6 @@ class GNNPipelineConfig:
             config.llm.tasks = llm_data.get("tasks", "all")
             config.llm.timeout = llm_data.get("timeout", 360)
 
-        # Load website configuration
-        if "website" in config_data:
-            website_data = config_data["website"]
-            config.website.html_filename = website_data.get(
-                "html_filename", "gnn_pipeline_summary_website.html"
-            )
-
         # Load setup configuration
         if "setup" in config_data:
             setup_data = config_data["setup"]
@@ -263,7 +248,6 @@ class GNNPipelineConfig:
             "ontology_terms_file": self.ontology.terms_file,
             "llm_tasks": self.llm.tasks,
             "llm_timeout": self.llm.timeout,
-            "website_html_filename": self.website.html_filename,
             "recreate_venv": self.setup.recreate_venv,
             "dev": self.setup.dev,
             "install_all_extras": self.setup.install_all_extras,

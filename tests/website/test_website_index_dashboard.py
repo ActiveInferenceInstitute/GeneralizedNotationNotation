@@ -158,5 +158,16 @@ class TestIndexDashboardFold:
 
         assert result["success"] is True
         html = index.read_text(encoding="utf-8")
-        assert "http://" not in html
-        assert "https://" not in html
+        # ld+json @context is a vocabulary IDENTIFIER (never fetched), not a
+        # remote resource; assert no fetched external refs by stripping the
+        # JSON-LD blocks before the raw-URL grep.
+        import re as _re
+
+        fetched_surface = _re.sub(
+            r'<script type="application/ld\+json">.*?</script>',
+            "",
+            html,
+            flags=_re.DOTALL,
+        )
+        assert "http://" not in fetched_surface
+        assert "https://" not in fetched_surface

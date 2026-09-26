@@ -805,7 +805,6 @@ python src/gnn/main.py --help
 - `--llm-tasks LIST`: Comma-separated LLM tasks
 - `--llm-timeout`: LLM processing timeout
 - `--pipeline-summary-file FILE`: Pipeline summary report path
-- `--website-html-filename NAME`: Generated HTML website filename
 - `--duration`: Audio duration for audio generation (default: 30.0)
 - `--audio-backend`: Audio backend to use (auto, sapf, pedalboard, default: auto)
 - `--recreate-uv-env`: Recreate UV environment

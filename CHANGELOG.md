@@ -45,6 +45,36 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   `get_supported_file_types()` / `get_module_info()` derive from it — no
   duplicated extension list remains.
 
+### Changed (2026-09-26 — website dead-seam cleanup + offline truth)
+
+- **Six dead website seams resolved (wire-or-remove).**
+  `nav_extra` (never passed by any `_page` caller) is removed from the page
+  shell; the never-populated, never-read `complexity` dataset key is removed
+  from both collectors and `PURE_DICT_KEYS`; the visualization copy fallback
+  no longer links an uncopied artifact — an asset whose copy fails is
+  skipped with a warning instead of a dangling `assets/` href; the
+  never-used `verbose` parameter of `process_website` now logs the
+  site/model page inventory when set; and the `website_html_filename`
+  orchestrator knob — accepted-and-ignored through four duplicated
+  defaults — is removed end-to-end (CLI argument, `ArgumentDefinition`,
+  per-script arg list, `PipelineArguments` field, step-config entries, the
+  config-only `WebsiteConfig` schema class and its `website:` YAML section,
+  and testing fixtures/constants). Passing `--website-html-filename` now
+  fails with an argparse error.
+- **`website_results.json` `warnings` are live.**
+  Collection failures (skipped visualization artifacts) flow from
+  `collect_website_data` into `result["warnings"]`, the results manifest,
+  and the MCP tool passthrough, instead of always being `[]`.
+- **The site is offline-true and self-describing.**
+  Every page embeds schema.org JSON-LD (`WebPage` name/description/
+  isPartOf — the `https://schema.org` context IRI is a vocabulary
+  identifier, never dereferenced at runtime) plus a
+  `<meta name="description">`; the CSS font stack is system fonts (no
+  external font `@import` remains anywhere in the generated site).
+- **`website_results.json` is written atomically** with the same
+  temp-file-plus-rename helper the pages use, so a crash mid-write can no
+  longer leave a truncated manifest.
+
 ### Added (2026-09-25 — wired dashboard + MCP artifact tools)
 
 - **The generated index page now renders the rich pipeline dashboard.**

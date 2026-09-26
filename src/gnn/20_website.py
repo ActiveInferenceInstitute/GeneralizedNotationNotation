@@ -42,13 +42,6 @@ run_script = create_standardized_pipeline_script(
     "20_website.py",
     process_website,
     "Website generation for GNN models",
-    additional_arguments={
-        "website_html_filename": {
-            "type": str,
-            "default": "gnn_pipeline_summary_website.html",
-            "help": "Output HTML filename",
-        }
-    },
 )
 
 

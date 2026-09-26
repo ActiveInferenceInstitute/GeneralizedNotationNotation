@@ -110,7 +110,6 @@ GOLDEN_EXPORT_MAP_KEYS: frozenset[str] = frozenset(
         "TestRunner",
         "TestStage",
         "TypeCheckerConfig",
-        "WebsiteConfig",
         "build_step_command_args",
         "check_optional_dependencies",
         "cleanup_test_environment",
@@ -199,7 +198,7 @@ def test_export_map_surface_is_frozen() -> None:
     from gnn.utils import __all__ as export_names
 
     keys = set(_EXPORT_MAP)
-    assert len(_EXPORT_MAP) == 108
+    assert len(_EXPORT_MAP) == len(GOLDEN_EXPORT_MAP_KEYS)
     missing = GOLDEN_EXPORT_MAP_KEYS - keys
     assert not missing, (
         f"_EXPORT_MAP keys removed from the frozen surface: {sorted(missing)}"

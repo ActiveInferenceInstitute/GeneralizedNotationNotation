@@ -64,9 +64,6 @@ class PipelineArguments:
     llm_tasks: str = "all"
     llm_timeout: int = 360
 
-    # Website generation
-    website_html_filename: str = "gnn_pipeline_summary_website.html"
-
     # Setup options
     recreate_venv: bool = False  # Virtual environment recreation flag
     dev: bool = False
