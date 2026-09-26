@@ -97,7 +97,11 @@ def _cmd_complexity(args: argparse.Namespace) -> int:
 
     try:
         receipts = _estimate_path_receipts(path)
-    except (ValueError, TypeError, OSError) as exc:  # estimator contract: parse/type/path errors
+    except (
+        ValueError,
+        TypeError,
+        OSError,
+    ) as exc:  # estimator contract: parse/type/path errors
         message = f"static complexity estimation failed for {path}: {exc}"
         logger.error("%s", message)
         if is_json:
@@ -167,7 +171,11 @@ def _cmd_benchmark(args: argparse.Namespace) -> int:
             frameworks=str(args.frameworks),
             repeats=int(args.repeats),
         )
-    except (OSError, RuntimeError, ValueError) as exc:  # harness contract: fs/exec/schema errors
+    except (
+        OSError,
+        RuntimeError,
+        ValueError,
+    ) as exc:  # harness contract: fs/exec/schema errors
         message = f"complexity benchmark failed: {exc}"
         logger.error("%s", message)
         if is_json:
