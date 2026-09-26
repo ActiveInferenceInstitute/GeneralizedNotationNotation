@@ -1,8 +1,7 @@
 {
-  "counts_describe_commit": "d622ea965",
-  "dirty_path_count": 3,
+  "counts_describe_commit": "b4a1cd3cd",
+  "dirty_path_count": 2,
   "dirty_paths": [
-    "docs/development/docs_audit.py",
     "output/data/manuscript_variables.json",
     "output/data/manuscript_variables_receipt.json"
   ],
