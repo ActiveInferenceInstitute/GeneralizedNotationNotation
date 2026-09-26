@@ -65,7 +65,7 @@ class TestBuildParser:
 
     def test_subcommands_sorted_and_complete(self) -> None:
         assert cli.SUBCOMMANDS == tuple(sorted(cli.SUBCOMMANDS))
-        assert len(cli.SUBCOMMANDS) == 18
+        assert len(cli.SUBCOMMANDS) == 20
 
     def test_extract_flags_introspectable(self) -> None:
         parser = cli.build_parser()
@@ -132,10 +132,12 @@ class TestDispatchTable:
             "models",
             "pull",
             "watch",
+            "mcp",
             "graph",
             "gui",
             "lsp",
-            "mcp",
+            "complexity",
+            "benchmark",
         }
         assert set(cli.COMMAND_HANDLERS) == expected
 
@@ -510,6 +512,14 @@ def argparse_namespace_for(command: str, *, missing_file: bool) -> argparse.Name
             "launch_editor": False,
         },
         "mcp": {"mcp_command": None, "json": False, "name": None},
+        "complexity": {"path": file_arg, "json": False},
+        "benchmark": {
+            "target_dir": Path("/nonexistent/for-sure-dir"),
+            "output_dir": Path("out"),
+            "frameworks": "all",
+            "repeats": 1,
+            "json": False,
+        },
     }
     return argparse.Namespace(**common, **per_command[command])
 

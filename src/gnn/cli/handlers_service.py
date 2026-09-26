@@ -31,9 +31,7 @@ def _cmd_serve(args: argparse.Namespace) -> int:
         )
 
         root = (
-            Path(args.root)
-            if getattr(args, "root", None)
-            else Path(DEFAULT_OUTPUT_DIR)
+            Path(args.root) if getattr(args, "root", None) else Path(DEFAULT_OUTPUT_DIR)
         )
         port = args.port if args.port is not None else DEFAULT_WEBSITE_PORT
         try:

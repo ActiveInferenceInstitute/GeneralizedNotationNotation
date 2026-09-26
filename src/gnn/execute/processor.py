@@ -1280,6 +1280,26 @@ def execute_single_script(
                     sandbox=False,
                 )
                 elapsed_rep = (datetime.now() - rep_start).total_seconds()
+                # Surface the envelope's measurement keys into the per-script
+                # result (previously dropped on this path): peak child RSS is
+                # a max over reps; sample counts accumulate; cancel is sticky.
+                rss_peak_rep = envelope.get("child_peak_rss_mb")
+                if rss_peak_rep is not None:
+                    prior_peak = exec_result.get("child_peak_rss_mb")
+                    exec_result["child_peak_rss_mb"] = (
+                        rss_peak_rep
+                        if prior_peak is None
+                        else max(prior_peak, rss_peak_rep)
+                    )
+                    exec_result["rss_sample_interval_seconds"] = envelope.get(
+                        "rss_sample_interval_seconds"
+                    )
+                    exec_result["rss_samples_count"] = (
+                        exec_result.get("rss_samples_count") or 0
+                    ) + (envelope.get("rss_samples_count") or 0)
+                exec_result["cancelled"] = bool(
+                    exec_result.get("cancelled", False) or envelope.get("cancelled")
+                )
 
                 if envelope.get("error_type") == "TimeoutExpired":
                     exec_result["execution_time"] = elapsed_rep
