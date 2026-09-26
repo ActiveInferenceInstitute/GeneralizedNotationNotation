@@ -24,4 +24,4 @@ Core tools include:
 - Scaling runs must treat Step 17 integration as dependent on complete execution by default. For `pipeline_steps: 3,11,12,17`, run `3,11,12` first and run `17` only if that phase succeeds.
 - Scaling runs may opt into partial integration with `run_integration_on_failure: true`, but this mode must be explicit because it can create reports from incomplete Step 12 outputs.
 - Scaling runs must write `pymdp_scaling_run_manifest.json` under `pipeline_output_dir` with effective configuration, resolved paths, planned grid cells, skipped cells, and phase statuses.
-- Resource gate failures must provide machine-readable details. Prefer `scripts/pymdp_scaling_last_resource_gate.json`; if the disk is full, print compact one-line `resource_gate` JSON to stderr.
+- Resource gate failures must provide machine-readable details. Prefer `scripts/experiments/pymdp_scaling_last_resource_gate.json`; if the disk is full, print compact one-line `resource_gate` JSON to stderr.

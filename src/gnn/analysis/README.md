@@ -15,6 +15,8 @@ src/gnn/analysis/
 ├── framework_extractors.py        # Per-framework result extraction
 ├── math_utils.py                  # Math/statistics helpers
 ├── visualizations.py / viz_base.py # Plotting helpers
+├── viz_plots.py                   # Per-model execution-output plots
+├── viz_dashboard.py               # Cross-framework dashboards
 ├── interpretability.py            # Interpretability summaries
 ├── generate_cross_model_report.py # Cross-model report generation
 ├── mcp.py                         # Model Context Protocol integration
@@ -262,6 +264,48 @@ Generates comprehensive analysis summary.
 - Risk assessment
 - Improvement suggestions
 
+### Post-Simulation Data Extraction
+
+[`framework_extractors.py`](framework_extractors.py) turns each Step 12 execution result into a uniform analysis payload (beliefs, states, observations, actions, free energy, policy, validation) through per-framework `extract_*_data(execution_result)` helpers. `analyze_execution_results` dispatches on the framework name (post_simulation.py:188-206).
+
+| Extractor | Framework | Behavior |
+|-----------|-----------|----------|
+| `extract_pymdp_data` | pymdp | Strict `pymdp_simulation_v1`; sets `extraction_error` when the payload is missing or from a different schema |
+| `extract_rxinfer_data` | rxinfer | Normalizes `rxinfer_simulation_v1` payloads; older results fall back to collected files (`efe_history` becomes `free_energy`) |
+| `extract_activeinference_jl_data` | activeinference_jl | Normalizer first; falls back to `simulation_results.csv` (or JSON) under the implementation directory |
+| `extract_jax_data` | jax | `jax_kronecker_factorized_v1` runs use per-factor extraction (`extract_jax_kronecker_data`); everything else follows the pymdp-compatible path |
+| `extract_discopy_data` | discopy | Reads `discopy_execution_report.json`; reports validated diagrams and execution counts |
+| `extract_pytorch_data` / `extract_numpyro_data` | pytorch / numpyro | Schema-aware (`*_simulation_v1`) but ungated; schema-less payloads flow through as-is |
+
+`extract_jax_kronecker_data` returns per-factor traces plus the per-step total expected free energy (summed across factors); the joint state space is reported but never materialized.
+
+### Execution Visualizations
+
+[`viz_plots.py`](viz_plots.py) and [`viz_dashboard.py`](viz_dashboard.py) render the Step 16 execution artifacts as matplotlib PNGs, saved through `viz_base.safe_savefig`.
+
+[`visualize_all_framework_outputs`](viz_plots.py) scans Step 12 output for `*_results.json` and `*simulation_results.json`, merges entries per framework/model, and produces:
+
+- Per framework (written under `<output parent>/<framework>/`): `{model}_{framework}_free_energy.png`, `{model}_{framework}_vfe_vs_efe.png`, `{model}_{framework}_observations.png`. Belief-heatmap and action plots are left to the per-framework analyzers to avoid duplicates.
+- Cross-framework (when two or more frameworks have data): `cross_framework_comparison.png`, `efe_convergence_comparison.png`, `confidence_comparison.png`, `framework_radar.png`, plus the GridWorld animation suite when animations are enabled.
+
+`generate_unified_framework_dashboard(framework_data, output_dir, model_name=...)` writes `unified_dashboard/` under the cross-framework directory: `unified_belief_comparison.png` (belief trajectories across frameworks), `unified_action_efe_comparison.png` (action distributions, EFE evolution, metrics table), and `unified_entropy_comparison.png` (belief-entropy trajectories and box plots).
+
+Chart helpers callable directly:
+
+| Function | Produces |
+|----------|----------|
+| [`generate_belief_heatmaps`](viz_plots.py) | Heatmap + per-state trajectories (needs two or more timesteps) |
+| [`generate_action_analysis`](viz_plots.py) | Action histogram, sequence, transition matrix |
+| [`generate_free_energy_plots`](viz_plots.py) | Evolution with min-EFE overlay, distribution, per-step change, convergence check |
+| [`generate_vfe_vs_efe_plot`](viz_plots.py) | Dual-axis VFE vs expected free energy |
+| [`generate_observation_analysis`](viz_plots.py) | Observation frequency + sequence |
+| [`generate_cross_framework_comparison`](viz_dashboard.py) | Execution time, steps, success-rate bars per framework |
+| [`generate_efe_convergence_comparison`](viz_dashboard.py) | EFE trajectories + running mean (needs two or more frameworks) |
+| [`generate_confidence_comparison`](viz_dashboard.py) | Belief confidence + uncertainty panels (needs two or more frameworks) |
+| [`generate_framework_radar`](viz_dashboard.py) | Capability radar built from `execution_summary.json` |
+
+`visualize_all_framework_outputs`, `generate_cross_framework_comparison`, and the scalar builders `generate_belief_heatmaps` / `generate_action_analysis` / `generate_free_energy_plots` / `generate_observation_analysis` are re-exported from `gnn.analysis`; the unified dashboard and the remaining comparison helpers are importable from `gnn.analysis.viz_dashboard` / `gnn.analysis.viz_plots` directly.
+
 ## Usage Examples
 
 ### Basic Statistical Analysis
@@ -418,8 +462,9 @@ output/16_analysis_output/
 ├── analysis_results.json          # Full step results
 ├── analysis_summary.md            # Human-readable summary
 ├── cross_model_comparison_report.md
-├── {model}_post_simulation_analysis.json
-└── comprehensive_visualizations/  # Plot and GIF artifacts
+├── comprehensive_visualizations/  # Plot and GIF artifacts
+├── <framework>/                   # {model}_{framework}_free_energy.png, _vfe_vs_efe.png, _observations.png
+└── cross_framework/               # {model}_post_simulation_analysis.json, comparison charts, unified_dashboard/
 ```
 
 ## Analysis Metrics
@@ -462,6 +507,8 @@ output/16_analysis_output/
 
 - `perform_statistical_analysis`, `calculate_complexity_metrics`, and `run_performance_benchmarks` raise `RuntimeError` on failure.
 - `process_analysis` collects per-file errors in `results["errors"]` and continues; missing execution data for post-simulation analysis logs a warning and is skipped.
+- `extract_*_data` helpers (`framework_extractors.py`) never raise for absent data: PyMDP reports `extraction_error` in the returned dict; other frameworks return empty lists.
+- Plot helpers (`generate_*` in `viz_plots.py`) raise `ValueError` on empty input; `generate_cross_framework_comparison` raises `ValueError` when nothing was aggregated, while `generate_efe_convergence_comparison`, `generate_confidence_comparison`, and `generate_framework_radar` return `[]` when fewer than two frameworks have data.
 - There is no `AnalysisError` exception type and no separate `validate_gnn_content` entry point.
 
 ## Performance Considerations

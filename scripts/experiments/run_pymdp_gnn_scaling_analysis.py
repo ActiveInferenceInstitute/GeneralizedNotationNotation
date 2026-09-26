@@ -3,7 +3,7 @@
 Thin orchestrator for PyMDP GNN Scaling Analysis.
 
 This script end-to-end manages the PyMDP scaling study by:
-1. Loading defaults from a plaintext config file (scripts/pymdp_scaling_config.yaml).
+1. Loading defaults from a plaintext config file (scripts/experiments/pymdp_scaling_config.yaml, located next to this runner).
 2. Generating stochastic (non-trivial) GNN specifications across an N×T parameter grid.
 3. Clearing previous generated files by default (configurable).
 4. Invoking the core GNN pipeline (src/gnn/main.py) to parse, render, execute, and analyze them.
@@ -68,7 +68,8 @@ DEFAULT_MATPLOTLIB_HEADLESS = True
 DEFAULT_GNN_SERIALIZE_PRESET = "minimal"
 DEFAULT_EXECUTION_BENCHMARK_REPEATS = 1
 
-CONFIG_FILE = Path(__file__).parent / "pymdp_scaling_config.yaml"
+# Canonical sweep config lives next to the runner; never repoint to scripts/pymdp_scaling_config.yaml.
+CONFIG_FILE = Path(__file__).resolve().parent / "pymdp_scaling_config.yaml"
 
 # Margin added to total estimated spec bytes before comparing to free space (post-mkdir check).
 MARGIN_BYTES = 50 * 1024 * 1024

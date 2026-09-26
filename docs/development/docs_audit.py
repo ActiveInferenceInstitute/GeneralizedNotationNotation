@@ -36,6 +36,7 @@ SKIP_PARTS = frozenset(
         "__pycache__",
         ".git",
         ".myp",
+        ".herdr-project",  # herdr lane runtime dirs (synced briefs, reports)
         "dist",
         "build",
         ".eggs",
