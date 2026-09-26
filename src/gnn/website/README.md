@@ -127,6 +127,24 @@ All return `bool`:
   (`StepInfo(number, name, description)` + `script_name` display property
   matching the real orchestrator scripts); `PIPELINE_STEPS` is the same
   tuple as a constant.
+- `steps.py` — the leaf step-catalogue module: `StepInfo` (frozen
+  `number`/`name`/`description` dataclass + `script_name`/`output_dir_name`
+  display properties), `PIPELINE_STEPS` (the 25-step tuple derived from
+  `gnn.pipeline.step_registry.STEPS`), and `get_pipeline_steps()` live
+  there; `generator.py` re-exports all three (the `gnn.website` package
+  contract is unchanged) while `collection.py` imports the leaf directly —
+  the `collection → steps` cycle direction that broke the former
+  generator↔collection import cycle.
+- `website_data_from_dict(user_data, *, output_dir=None) -> dict` — the
+  pure, dict-driven composition seam: builds the full generator data dict
+  from a plain user dict with NO disk access (missing keys take the
+  collectors' exact empty defaults, extra keys preserved verbatim;
+  `PURE_DICT_KEYS` is the known-dataset key set). Pair with
+  `WebsiteGenerator.generate_website(website_data, *, filesystem=False)`,
+  which skips `_collect_all_data` and renders purely from the caller dict;
+  the default `filesystem=True` path and the module-level
+  `generate_website(logger, input_dir, output_dir)` convenience are
+  unchanged.
 - `read_website_page(directory, page_name, max_chars=20000) -> dict`
   — capped read of one catalogue page's HTML from a generated site
   (`"\n\n… [truncated]"` marker when capped; graceful `success: False` +

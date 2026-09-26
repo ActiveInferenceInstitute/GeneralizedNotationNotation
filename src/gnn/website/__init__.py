@@ -8,7 +8,11 @@ from typing import Any
 
 from gnn import __version__
 
-from .collection import collect_website_data
+from .collection import (
+    PURE_DICT_KEYS,
+    collect_website_data,
+    website_data_from_dict,
+)
 from .generator import (
     PIPELINE_STEPS,
     StepInfo,
@@ -19,6 +23,7 @@ from .generator import (
 from .inspection import inspect_website, list_website_pages
 from .pages import SITE_PAGES, is_valid_page, page_count, page_names
 from .renderer import (
+    SUPPORTED_FILE_TYPES,
     WebsiteRenderer,
     embed_html_file,
     embed_image,
@@ -42,18 +47,11 @@ FEATURES: dict[str, Any] = {
     "dark_mode": True,
     "premium_design": True,
 }
-SUPPORTED_FILE_TYPES: dict[str, Any] = {
-    "html": ["html", "htm", "css", "js"],
-    "text": ["md", "markdown", "txt", "rst"],
-    "markdown": ["md", "markdown"],
-    "json": ["json"],
-    "data": ["json", "yaml", "yml", "csv"],
-    "images": ["png", "jpg", "jpeg", "gif", "svg"],
-}
 
 __all__: list[Any] = [
     "WebsiteGenerator",
     "WebsiteRenderer",
+    "SUPPORTED_FILE_TYPES",
     "generate_website",
     "process_website",
     "generate_html_report",
@@ -66,6 +64,8 @@ __all__: list[Any] = [
     "get_supported_file_types",
     "validate_website_config",
     "collect_website_data",
+    "website_data_from_dict",
+    "PURE_DICT_KEYS",
     "get_pipeline_steps",
     "PIPELINE_STEPS",
     "StepInfo",

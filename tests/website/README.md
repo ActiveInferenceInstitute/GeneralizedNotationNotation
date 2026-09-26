@@ -12,6 +12,8 @@ This folder contains module-focused tests for static website generation and arti
 - `test_website_inspection.py` — `inspect_website` / `list_website_pages` contracts shared by the Python API and the MCP tools, on complete, partial, and missing websites.
 - `test_website_overall.py` — module-level aggregate contract for the website folder.
 - `test_website_public_api.py` — public API surface: `embed_*` functions, `generate_html_report`, `process_website`, `FEATURES`, `SUPPORTED_FILE_TYPES`, `get_supported_file_types`, and `generate_website`.
+- `test_website_steps.py` — the static step catalogue in `gnn/website/steps.py`: `StepInfo` fields/frozen dataclass behavior, the derived `script_name`/`output_dir_name` round-trips to the registry, display-name derivation, and the package re-exports (2026-09-26).
+- `test_website_composability.py` — the dict-driven composability seams (2026-09-26): the `collection → steps` cycle direction (source-level pins + one `PIPELINE_STEPS` object across collection/generator/package), the pure no-filesystem `website_data_from_dict` defaults/merge contract and `generate_website(filesystem=False)` zero-collector generation, and the `SUPPORTED_FILE_TYPES` single-source pin (`renderer.py` definition, `__init__` re-export, derived inventories).
 
 Run:
 

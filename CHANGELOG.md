@@ -16,6 +16,35 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 > wiring for step 24, didChange-aware LSP diagnostics, and full runs-delete
 > control on the API.
 
+### Changed (2026-09-26 — composable dict-driven website API)
+
+- **The step catalogue gets a leaf module.**
+  `src/gnn/website/steps.py` now owns `StepInfo` (frozen
+  `number`/`name`/`description` dataclass with `script_name`/
+  `output_dir_name` display properties), `PIPELINE_STEPS` (the immutable
+  25-step tuple derived from `gnn.pipeline.step_registry.STEPS`), and
+  `get_pipeline_steps()`. `generator.py` re-exports all three, so the
+  `gnn.website` package contract is unchanged (`get_pipeline_steps()`
+  returns the same tuple object), and `collection.py` imports the leaf
+  directly — `collection → steps`, never `collection → generator` — the
+  cycle direction that broke the former generator↔collection import cycle.
+- **A pure, dict-driven composition seam.**
+  `collection.website_data_from_dict(user_data, *, output_dir=None) -> dict`
+  builds the full generator data dict from a plain user dict with zero disk
+  access — missing keys take the collectors' exact empty defaults, extra
+  keys are preserved verbatim (`PURE_DICT_KEYS` is the known-dataset key
+  set) — and `WebsiteGenerator.generate_website(website_data, *,
+  filesystem=False)` skips `_collect_all_data` and renders purely from the
+  caller dict. The default `filesystem=True` path and the module-level
+  `generate_website(logger, input_dir, output_dir)` convenience are
+  unchanged, so callers can now compose and render a site entirely from
+  plain dicts.
+- **`SUPPORTED_FILE_TYPES` is single-source.**
+  Its definition moved to `renderer.py` (beside the embed helpers it
+  describes), `gnn.website` re-exports it from there unchanged, and
+  `get_supported_file_types()` / `get_module_info()` derive from it — no
+  duplicated extension list remains.
+
 ### Added (2026-09-25 — wired dashboard + MCP artifact tools)
 
 - **The generated index page now renders the rich pipeline dashboard.**

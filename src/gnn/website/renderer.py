@@ -13,6 +13,15 @@ from pathlib import Path
 from typing import Any, Dict, List, cast
 
 logger = logging.getLogger(__name__)
+SUPPORTED_FILE_TYPES: Dict[str, Any] = {
+    # Supported file types expected by tests
+    "html": ["html", "htm", "css", "js"],
+    "text": ["md", "markdown", "txt", "rst"],
+    "markdown": ["md", "markdown"],
+    "json": ["json"],
+    "data": ["json", "yaml", "yml", "csv"],
+    "images": ["png", "jpg", "jpeg", "gif", "svg"],
+}
 
 
 class WebsiteRenderer:
@@ -357,21 +366,9 @@ def get_module_info() -> Dict[str, Any]:
             "HTML file embedding",
         ],
         "supported_formats": ["HTML", "CSS", "Markdown", "Text", "JSON", "Images"],
-        "supported_file_types": [
-            ".html",
-            ".htm",
-            ".md",
-            ".txt",
-            ".json",
-            ".yaml",
-            ".yml",
-            ".csv",
-            ".png",
-            ".jpg",
-            ".jpeg",
-            ".gif",
-            ".svg",
-        ],
+        "supported_file_types": sorted(
+            {f".{ext}" for exts in SUPPORTED_FILE_TYPES.values() for ext in exts}
+        ),
         "embedding_capabilities": {
             "images": True,
             "markdown": True,
@@ -388,29 +385,9 @@ def get_supported_file_types() -> List[str]:
     Tests expect this function to return a list (not a dict) and to include
     common types like 'html', 'css', 'js', and 'json'.
     """
-    return [
-        # Text/Markdown
-        "txt",
-        "md",
-        "markdown",
-        "rst",
-        # Data formats
-        "json",
-        "yaml",
-        "yml",
-        "csv",
-        # Images
-        "png",
-        "jpg",
-        "jpeg",
-        "gif",
-        "svg",
-        # Web assets
-        "html",
-        "htm",
-        "css",
-        "js",
-    ]
+    return list(
+        dict.fromkeys(ext for exts in SUPPORTED_FILE_TYPES.values() for ext in exts)
+    )
 
 
 def validate_website_config(config: Dict[str, Any] | str) -> bool | Dict[str, Any]:
