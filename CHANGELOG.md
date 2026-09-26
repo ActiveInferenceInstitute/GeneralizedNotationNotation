@@ -380,6 +380,31 @@ lazily.
   axis order was explicitly declared in the source (vs defaulted to canonical),
   separating parsed declarations from defaults in orientation provenance.
 
+### Added (2026-09-25 — website per-model pages, breadcrumbs, client-side search)
+
+- **Per-model detail pages, breadcrumbs, and client-side search ship with the
+  Step-20 website.** The generator emits one detail page per parsed model at
+  `model/<slug>.html` (slug = lowercased name, every character outside
+  `[a-z0-9]` collapsed to `-` and stripped, empty → `model`; deterministic
+  collection order; first claimant keeps the slug, later duplicates get
+  `-2`, `-3`, …). Each model page carries a model-name `h1`, a source link
+  back to the model's row on the `gnn_files` listing, variables/edges tables,
+  embedded visualization assets, and the model's FULL GNN source — no
+  truncation (the 3000-character cap remains only on the aggregate listing
+  rows). Every generated page — the seven site pages and every model page —
+  emits a breadcrumb nav in the page shell (`Home › <section>`; model pages:
+  `Home › GNN Files › <Model Name>`; index: a single `Home` crumb) with
+  relative, depth-correct hrefs. The manifest gains `model_pages_created`
+  and `model_pages` under new keys; the 7-page `SITE_PAGES` catalogue and
+  the existing `pages`/`pages_created` pins are untouched. The generator
+  also writes `search-index.json` (title/url/snippet per emitted page,
+  ≤200-char plain-text snippets) covering site and model pages, and the
+  `gnn_files` listing page gets a search box with an inline
+  `<script type="application/json">` copy of the index plus a small
+  vanilla-JS filter — the payload is inlined because `fetch()` fails on
+  `file://`. Documented in `docs/gnn/modules/20_website.md`; pinned by
+  `tests/website/test_website_model_pages.py`.
+
 ### Changed
 
 - The `gnn-geo-infer/1` exporter's B-orientation refusal now reports the exact

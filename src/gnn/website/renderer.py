@@ -101,6 +101,8 @@ def _write_results_manifest(website_dir: Path, result: dict[str, Any]) -> None:
             "success": bool(result.get("success", False)),
             "pages_created": int(result.get("pages_created", 0)),
             "pages": list(result.get("pages", [])),
+            "model_pages_created": int(result.get("model_pages_created", 0)),
+            "model_pages": list(result.get("model_pages", [])),
             "errors": list(result.get("errors", [])),
             "warnings": list(result.get("warnings", [])),
             "generated_at": datetime.now().isoformat(timespec="seconds"),

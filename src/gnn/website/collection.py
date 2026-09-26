@@ -30,6 +30,68 @@ def _collect_gnn_files(p_root: Path, input_dir: Path) -> tuple[list[Path], bool]
     return [], False
 
 
+def _collect_parsed_models(gnn_files: list[Path]) -> list[dict[str, Any]]:
+    """Parse each discovered GNN source file into per-model page data.
+
+    Uses the reference markdown parser (``gnn.parsers.markdown_parser``);
+    variables/edges keep the parsed shapes the model pages tabulate. Files
+    that cannot be parsed are skipped (debug-logged) — a model page exists
+    only for a successfully parsed model. The returned order matches the
+    caller's ``gnn_files`` order (sorted by filename), which fixes the
+    downstream slug claim order deterministically.
+    """
+    if not gnn_files:
+        return []
+    from gnn.parsers.markdown_parser import MarkdownGNNParser
+
+    parser = MarkdownGNNParser()
+    models: list[dict[str, Any]] = []
+    for source in gnn_files:
+        try:
+            parsed = parser.parse_file(str(source))
+        except Exception as e:
+            logger.debug(f"Skipped unreadable GNN file {source.name}: {e}")
+            continue
+        if not parsed.success:
+            logger.debug(f"Skipped unparseable GNN file {source.name}: {parsed.errors}")
+            continue
+        parsed_model = parsed.model
+        models.append(
+            {
+                "name": str(parsed_model.model_name),
+                "source": source,
+                "source_name": source.name,
+                "annotation": str(parsed_model.annotation or "").strip(),
+                "variables": [
+                    {
+                        "name": var.name,
+                        "type": getattr(var.var_type, "value", str(var.var_type)),
+                        "dimensions": list(var.dimensions),
+                        "data_type": getattr(
+                            var.data_type, "value", str(var.data_type)
+                        ),
+                        "description": var.description or "",
+                    }
+                    for var in parsed_model.variables
+                ],
+                "edges": [
+                    {
+                        "sources": list(conn.source_variables),
+                        "targets": list(conn.target_variables),
+                        "type": getattr(
+                            conn.connection_type,
+                            "value",
+                            str(conn.connection_type),
+                        ),
+                        "annotation": conn.annotation or conn.description or "",
+                    }
+                    for conn in parsed_model.connections
+                ],
+            }
+        )
+    return models
+
+
 def _load_pipeline_summary(p_root: Path) -> dict[str, Any]:
     """Load ``pipeline_execution_summary.json`` (absent or malformed → ``{}``)."""
     for candidate in (
@@ -275,6 +337,7 @@ def collect_website_data(
         "p_root": p_root,
         "output_dir": Path(output_dir) if output_dir is not None else None,
         "gnn_files": [],
+        "models": [],
         "analysis": [],
         "complexity": [],
         "visualizations": [],
@@ -298,6 +361,7 @@ def collect_website_data(
     data["gnn_files"].extend(discovered)
     if found_source:
         data["processed_files"] = len(data["gnn_files"])
+    data["models"].extend(_collect_parsed_models(data["gnn_files"]))
     data["step_statuses"] = _collect_step_statuses(p_root)
     data["analysis"].extend(_collect_analysis_results(p_root))
     data["visualizations"].extend(

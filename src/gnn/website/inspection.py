@@ -47,12 +47,19 @@ def inspect_website(website_directory: str | Path) -> dict[str, Any]:
         assets = list(assets_dir.glob("*")) if assets_dir.exists() else []
         completeness = {page: (wdir / page).exists() for page in KEY_PAGES}
         total_size = sum(f.stat().st_size for f in pages if f.exists())
+        model_dir = wdir / "model"
+        model_pages = (
+            sorted(p.relative_to(wdir).as_posix() for p in model_dir.rglob("*.html"))
+            if model_dir.is_dir()
+            else []
+        )
 
         return {
             "success": True,
             "directory": str(wdir),
             "pages": [p.name for p in pages],
             "pages_count": len(pages),
+            "model_pages": model_pages,
             "assets_count": len(assets),
             "total_size_bytes": total_size,
             "completeness": completeness,

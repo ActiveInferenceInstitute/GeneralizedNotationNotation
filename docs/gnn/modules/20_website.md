@@ -15,7 +15,7 @@ src/gnn/website/
 ├── __init__.py                     # Module initialization and exports
 ├── README.md                       # Module documentation
 ├── collection.py                   # collect_website_data: aggregates page inputs, copies visualization assets
-├── generator.py                    # WebsiteGenerator / generate_website: builds the seven site pages (from SITE_PAGES)
+├── generator.py                    # WebsiteGenerator / generate_website: builds the seven site pages (from SITE_PAGES) plus per-model pages under model/ and search-index.json
 ├── pages.py                        # One site page catalogue (SITE_PAGES): single source for page inventories
 ├── renderer.py                     # WebsiteRenderer, process_website, and HTML/asset embedding helpers
 ├── inspection.py                   # inspect_website / list_website_pages / read_website_page: site inventory + page-read queries
@@ -65,7 +65,7 @@ src/gnn/website/
 ### Public Functions
 
 #### `process_website(target_dir: Path, output_dir: Path, verbose: bool = False, pipeline_output_root: Optional[Path] = None, **kwargs) -> bool`
-**Description**: Main website generation function called by orchestrator (20_website.py). Generates a seven-page static HTML website from pipeline artifacts and writes `website_results.json`.
+**Description**: Main website generation function called by orchestrator (20_website.py). Generates a seven-page static HTML website from pipeline artifacts plus one per-model detail page per parsed model under `model/` and `search-index.json`, and writes `website_results.json`.
 
 **Parameters**:
 - `target_dir` (Path): Directory containing pipeline artifacts
@@ -133,7 +133,7 @@ None — the module imports no third-party packages: pages are built with inline
 
 ## Configuration
 
-Generation requires no configuration: `WebsiteGenerator` accepts no settings and always builds the same seven site pages. The only config surface is the validation helper:
+Generation requires no configuration: `WebsiteGenerator` accepts no settings and always builds the same seven site pages, plus one generated detail page per parsed model under `model/` and `search-index.json` (site pages carry breadcrumb navs; model pages render the full source). The only config surface is the validation helper:
 
 ```python
 # Keys checked by validate_website_config (renderer.py)
@@ -179,8 +179,12 @@ success = embed_image(
 ### Output Products
 - `index.html` - Main website page
 - `pipeline.html`, `gnn_files.html`, `analysis.html`, `visualization.html`, `reports.html`, `mcp.html` - The remaining six of the seven site pages
+- `model/<slug>.html` - One detail page per parsed model: model-name `h1`, a source link back to the model's GNN Files listing row, variables/edges tables, embedded visualization assets, and the model's FULL GNN source (no truncation — the 3000-character cap applies only to the aggregate GNN Files listing rows)
+- `search-index.json` - Client-side search index (`{"generated", "pages": [{"title", "url", "snippet"}]}`, ≤200-char snippets) covering the 7 site pages plus all model pages
 - `assets/` - Visualization PNG/HTML artifacts copied flat into this directory
-- `website_results.json` - Generation manifest (success, pages_created, pages, errors, warnings, generated_at)
+- `website_results.json` - Generation manifest (success, pages_created, pages, errors, warnings, generated_at, plus model_pages_created and model_pages for the per-model pages)
+
+Every generated page — the seven site pages and every model page — emits a breadcrumb nav in the page shell (`Home › <section>`; model pages: `Home › GNN Files › <Model Name>`; index: a single `Home` crumb). The GNN Files listing page carries a client-side search box driven by an inline copy of `search-index.json` (the payload is inlined because `fetch()` fails on `file://`).
 
 ### Output Directory Structure
 ```
@@ -192,6 +196,8 @@ output/20_website_output/
 ├── visualization.html
 ├── reports.html
 ├── mcp.html
+├── model/            # one detail page per parsed model (model/<slug>.html)
+├── search-index.json
 ├── website_results.json
 └── assets/            # visualization artifacts, written flat
 ```
@@ -215,7 +221,7 @@ output/20_website_output/
 ## Error Handling
 
 ### Website Errors
-1. **Page Rendering Errors**: Failure building one of the seven pages
+1. **Page Rendering Errors**: Failure building one of the seven site pages (or one of the per-model detail pages)
 2. **Content Errors**: Content processing failures
 3. **Asset Errors**: Asset copy failures
 4. **File I/O**: File system operation failures
