@@ -7,13 +7,21 @@
   the [repository TO-DO](../../TO-DO.md) M-03 row: 304+ files carry broad
   handlers; spot-checked sites log and emit structured receipts) plus the
   file:line exemplars below, all re-verified in this tree at authoring time.
-- **Baseline:** 1182 occurrences across 657 `.py` files under `src/gnn/`
+- **Baseline:** 1183 occurrences across 657 `.py` files under `src/gnn/`
   (counted by
   [`scripts/check_gnn_doc_patterns.py`](../../scripts/check_gnn_doc_patterns.py)
   `EXCEPT_EXCEPTION_BASELINE`). Historical: 1183 at the wave-6 base;
   **tightened to 1182 on 2026-09-25** when the W8-R3 fold narrowed two new
   MCP guards to typed exceptions (`inspect_website` -> `OSError`;
-  `get_pipeline_steps` -> `(ImportError, AttributeError)`).
+  `get_pipeline_steps` -> `(ImportError, AttributeError)`). 2026-09-25 (W8-CD
+  fold): tightened again to 1183 after narrowing two new CLI guards
+  (`_cmd_complexity` -> `(ValueError, TypeError, OSError)`;
+  `_cmd_benchmark` -> `(OSError, RuntimeError, ValueError)`), then re-raised
+  +1 for the one sanctioned new broad site: the benchmark harness's
+  accelerator-detect environment probe
+  (`src/gnn/analysis/complexity/benchmark.py` — best-effort probe over
+  optional third-party stacks; a typed set would crash receipt construction
+  on exotic probe failures).
 
 ## Purpose
 
