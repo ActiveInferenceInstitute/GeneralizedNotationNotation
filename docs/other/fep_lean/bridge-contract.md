@@ -224,7 +224,7 @@ Horizon 2 terminal acceptance combines the exact mandatory native-test roster,
 unchanged native-source snapshots, the explicitly enabled Fin4 supplement,
 independent typed scalar/Fin4 numerical witnesses, retained predecessor
 contracts, and three distinct source-bound Lean, domain, and skeptical reviews.
-The validator under `fep_lean/specs/horizon-2-smooth-stochastic/readiness/`
+The validator under `fep_lean/specs/done/horizon-2-smooth-stochastic/readiness/`
 rejects absent, stale, malformed, or incomplete evidence.
 
 An accepted terminal record opens only read-only H3.G0 eligibility review.
