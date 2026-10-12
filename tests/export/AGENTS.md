@@ -18,3 +18,8 @@ containment, partial failures, default-format compatibility and CLI output.
 
 `test_step7_geo_cli.py` runs the numbered Step 3/7 commands, verifies source
 provenance, and rejects missing or duplicate physical metadata.
+
+`test_geo_infer_cascadia.py` exports the real H3 Cascadia river-homing source
+in `cascadia/` (byte copies of the GEO-INFER-ACT example fixtures), compares
+it with the golden artifact through the API and the CLI, and checks B-axis
+evidence, exact dyadic literals, H3 locality and notation-declared metadata.

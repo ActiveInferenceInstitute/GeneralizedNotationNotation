@@ -20,6 +20,7 @@ sibling is a foreign git repository: never commit into it from GNN tooling.
 | File | Role |
 | --- | --- |
 | [README.md](README.md) | Reader-facing entry point: contracts, export command, validation harness |
+| [cascadia_river_homing.md](cascadia_river_homing.md) | Worked H3 example: the Cascadia GNN source, exporter checks and fixtures |
 
 ## Key paths (post-reorg)
 

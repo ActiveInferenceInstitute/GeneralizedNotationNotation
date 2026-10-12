@@ -56,6 +56,15 @@ This is the post-reorganization module path (`python -m gnn.export.geo_infer`).
 The `--space-kind h3` option requires the optional H3 dependency: install
 with `uv sync --extra geo-infer` first.
 
+## Worked example: Cascadia river homing
+
+[Cascadia river homing](cascadia_river_homing.md) is a real H3 model: 26
+resolution-8 cells traced from measured NHDPlus HR lower Smith River flow
+lines, exact dyadic A–E, and a natal-stream homing task. Its GNN source and
+golden artifact are fixtures of `tests/export/test_geo_infer_cascadia.py`,
+which re-exports them byte for byte and rejects a transposed transition
+literal.
+
 ## Validating interchange
 
 The validation harness lives in the GEO-INFER-TEST module of the sibling
