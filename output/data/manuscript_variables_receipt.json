@@ -1,11 +1,11 @@
 {
-  "counts_describe_commit": "91b583c56",
+  "counts_describe_commit": "d20b76a54",
   "dirty_path_count": 5,
   "dirty_paths": [
+    "output/data/manuscript_render_manifest.json",
     "output/data/manuscript_variables.json",
     "output/data/manuscript_variables_receipt.json",
     "output/figures/figure_registry.json",
-    "output/figures/gnn_graphical_abstract.png",
     "output/figures/gnn_repo_metrics.png"
   ],
   "generator": "scripts/z_generate_manuscript_variables.py",
