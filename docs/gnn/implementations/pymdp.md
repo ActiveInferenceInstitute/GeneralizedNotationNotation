@@ -1,7 +1,7 @@
 # PyMDP Framework Implementation
 
 > **GNN Integration Layer**: Python  
-> **Framework Base**: `inferactively-pymdp>=1.0.0`  
+> **Framework Base**: `inferactively-pymdp` 1.0.4 (1.0.3 on Python 3.12+, where flax and ngclearn need `jax>=0.11.1`)  
 > **Simulation Architecture**: Structured POMDP execution  
 > **Documentation Version**: 2.0.0
 

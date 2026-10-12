@@ -7,6 +7,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ## [Unreleased]
 
+### Dependencies
+
+- `inferactively-pymdp` is locked at 1.0.4 on Python 3.11 (from 1.0.0). pymdp
+  1.0.4 caps `jax<0.11.1` pending a numpyro fix, so the Python 3.12+ splits,
+  which need `jax>=0.11.1` for flax 0.12.9+ and ngclearn, resolve 1.0.3. The
+  requirement is declared per split in `pyproject.toml`.
+
 ## [4.1.0] - 2026-10-08
 
 > **Public contracts and native boundaries.**

@@ -17,7 +17,7 @@ cue (12 outcomes) and chooses hold, downstream, upstream or turn.
 
 GEO-INFER renders the model as GNN v1 Markdown, this repository's strict
 exporter turns it into a `gnn-geo-infer/1` artifact, and the artifact is
-consumed twice: by GEO-INFER-ACT's `run_gnn_inference` (pymdp 1.0.3) and by a
+consumed twice: by GEO-INFER-ACT's `run_gnn_inference` (pymdp 1.0.4) and by a
 Lean 4 instance in the fep_lean checkout. The canonical documentation is
 `../GEO-INFER/GEO-INFER-ACT/docs/cascadia_river_homing.md` in the sibling
 checkout (inline path, not a link: each repository validates its own links).

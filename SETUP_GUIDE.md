@@ -280,9 +280,9 @@ constraints. Notable floors as of 2026-09-02:
 
 ### Core Dependencies
 
-- Python: 3.11+ (`>=3.11,<3.14`)
-- `inferactively-pymdp>=1.0.0` (JAX-first rewrite)
-- `jax[cpu]>=0.7.0,<0.11`, `jaxlib>=0.7.0,<0.11` (upper bound keeps NumPyro 0.20.x import-compatible), `flax`, `optax`, `numpyro>=0.14`
+- Python: 3.11+ (`>=3.11,<3.15`)
+- `inferactively-pymdp` 1.0.4 on Python 3.11 and 1.0.3 on 3.12+ (JAX-first rewrite; 1.0.4 caps `jax<0.11.1`)
+- `jax[cpu]>=0.7.0,<0.12`, `jaxlib>=0.7.0,<0.12`, `flax`, `optax`, `numpyro>=0.22` (0.22 carries the jax 0.11 compatibility fix)
 - numpy, matplotlib, networkx, pyyaml, pandas, plotly, seaborn, h5py
 
 ### Optional Dependencies

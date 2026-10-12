@@ -81,7 +81,7 @@ keys. `run_gnn_inference` accepts records containing `timestamp` and an integer
 conditions once; the selected action produces the next prior through B. TIME
 requires UTC-convertible aware timestamps and fixed intervals, rejecting gaps,
 reversals and duplicates. Default execution budget: 10,000 steps. Zero-likelihood
-observations fail. E reaches real pymdp 1.0.3 policy inference.
+observations fail. E reaches real pymdp 1.0.4 policy inference.
 
 Artifact digests use sorted compact Python JSON, UTF-8, without a trailing
 newline; source digests identify bytes and do not authenticate the producer.
