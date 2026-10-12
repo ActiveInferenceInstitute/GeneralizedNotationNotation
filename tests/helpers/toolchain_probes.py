@@ -111,6 +111,12 @@ def sklearn_ready() -> bool:
 
 
 @functools.lru_cache(maxsize=1)
+def h3_ready() -> bool:
+    """h3 is importable (``uv sync --extra geo-infer``) for H3 identifier checks."""
+    return _module_available("h3")
+
+
+@functools.lru_cache(maxsize=1)
 def distributed_ready() -> bool:
     """dask.distributed is importable (``uv sync --extra scaling``)."""
     return _module_available("distributed")
@@ -232,6 +238,7 @@ TOOLCHAIN_MARKERS: dict[str, tuple[Callable[[], bool], str]] = {
         "dask.distributed is not installed (uv sync --extra scaling)",
     ),
     "needs_cpomdp": (cpomdp_ready, "cpomdp is not installed (uv sync --extra cpomdp)"),
+    "needs_h3": (h3_ready, "h3 is not installed (uv sync --extra geo-infer)"),
     "needs_thrml": (
         thrml_ready,
         "THRML is not installed or its API is incompatible (uv sync --extra thrml)",

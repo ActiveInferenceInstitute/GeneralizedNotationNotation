@@ -17,7 +17,6 @@ from decimal import Decimal
 from fractions import Fraction
 from pathlib import Path
 
-import h3
 import pytest
 
 from gnn.export.geo_infer import build_geo_infer_artifact
@@ -41,6 +40,7 @@ def _export(text: str | None = None) -> dict:
     )
 
 
+@pytest.mark.needs_h3
 def test_export_reproduces_the_golden_artifact() -> None:
     artifact = _export()
     golden = json.loads(GOLDEN.read_text(encoding="utf-8"))
@@ -52,6 +52,7 @@ def test_export_reproduces_the_golden_artifact() -> None:
     )
 
 
+@pytest.mark.needs_h3
 def test_cli_h3_export_matches_the_golden_artifact(tmp_path: Path) -> None:
     output = tmp_path / "cascadia.geo-infer.json"
     subprocess.run(
@@ -76,6 +77,7 @@ def test_cli_h3_export_matches_the_golden_artifact(tmp_path: Path) -> None:
     assert output.read_bytes() == GOLDEN.read_bytes()
 
 
+@pytest.mark.needs_h3
 def test_b_axis_order_is_detected_from_the_data() -> None:
     model = extract_pomdp_from_content(
         SOURCE.read_text(encoding="utf-8"),
@@ -89,6 +91,7 @@ def test_b_axis_order_is_detected_from_the_data() -> None:
     assert origin["derived"] is False
 
 
+@pytest.mark.needs_h3
 def test_transposed_transition_literal_is_rejected() -> None:
     golden = json.loads(GOLDEN.read_text(encoding="utf-8"))["matrices"]["B"]
     n = len(golden)
@@ -120,7 +123,10 @@ def test_every_probability_literal_is_an_exact_small_dyadic() -> None:
             )
 
 
+@pytest.mark.needs_h3
 def test_transitions_only_stay_or_move_to_h3_neighbors() -> None:
+    import h3
+
     artifact = _export()
     ids = artifact["space"]["state_ids"]
     B = artifact["matrices"]["B"]
@@ -143,6 +149,7 @@ def test_notation_declares_its_own_time_step_and_space_kind() -> None:
     assert record["time_index"]["variable"] == "t"
 
 
+@pytest.mark.needs_h3
 def test_noncanonical_h3_identifier_is_rejected() -> None:
     ids = json.loads(STATE_IDS.read_text(encoding="utf-8"))
     ids[0] = ids[0].upper()
