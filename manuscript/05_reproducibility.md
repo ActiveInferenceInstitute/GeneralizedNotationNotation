@@ -63,7 +63,7 @@ That command recomputes the {{...}} tokens, persists them to `output/data/manusc
 uv run python -m scripts.manuscript_build_figures
 ```
 
-The hydrated sources are then rendered to PDF by the docxology template's render stage. That stage lives in a separate checkout, with this repository symlinked into it at `projects/active/GeneralizedNotationNotation`; run from the template root:
+The hydrated sources are then rendered to PDF by the docxology template's render stage. That stage lives in a separate checkout of the template, with this repository checked out inside it as a real directory at `projects/active/GeneralizedNotationNotation` (the template's analysis-read custody refuses a symlinked project); run from the template root:
 
 ```bash
 uv run --frozen python scripts/pipeline/stage_03_render.py \

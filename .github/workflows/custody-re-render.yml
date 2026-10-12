@@ -5,8 +5,10 @@ name: Custody re-render
 # is produced by the docxology/template render stage (see
 # manuscript/05_reproducibility.md §"Reproducible by command" and
 # scripts/z_record_manuscript_render_manifest.py's docstring): the render stage
-# lives in the template checkout, with this repository symlinked into it at
-# `projects/active/GeneralizedNotationNotation`. This workflow reproduces that
+# lives in the template checkout, with this repository checked out inside it
+# as a real directory at `projects/active/GeneralizedNotationNotation` (the
+# template's analysis-read custody refuses a symlinked project, and its web
+# renderer rejects relative links into `projects/`). This workflow reproduces that
 # documented ritual (scripts/z_generate_manuscript_variables.py's docstring —
 # regenerate → rebuild figures → stage_03_render → record manifest) in CI and
 # then re-proves the whole chain against HEAD: the strict token gate, the
@@ -39,16 +41,23 @@ jobs:
     timeout-minutes: 40
     env:
       UV_PYTHON: "3.12"
+    defaults:
+      run:
+        # Every repository step runs in this checkout, which lives inside the
+        # template exactly where the render stage expects a project.
+        working-directory: template/projects/active/GeneralizedNotationNotation
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-
       - name: Check out the docxology/template render stage
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: docxology/template
           path: template
+          persist-credentials: false
+
+      - name: Check out this repository inside the template at projects/active/
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: template/projects/active/GeneralizedNotationNotation
           persist-credentials: false
 
       - name: Set up Python 3.12
@@ -92,13 +101,8 @@ jobs:
         run: uv sync --frozen --extra dev
 
       - name: Install template's locked runtime
-        run: uv sync --frozen --project template
-
-      - name: Symlink this checkout into the template at projects/active/
-        run: |
-          mkdir -p template/projects/active
-          ln -sfn "$GITHUB_WORKSPACE" \
-            "$GITHUB_WORKSPACE/template/projects/active/GeneralizedNotationNotation"
+        working-directory: template
+        run: uv sync --frozen
 
       # SC-22 ritual step 2: the render pipeline verifies figures but does
       # not rebuild them (infrastructure.rendering.pipeline's verify_figures).
@@ -136,14 +140,15 @@ jobs:
       - name: Collect receipts
         if: always()
         run: |
-          mkdir receipts
-          git -C template rev-parse HEAD > receipts/template-revision.txt
-          cp output/data/manuscript_render_manifest.json receipts/
-          cp output/data/manuscript_variables.json receipts/
-          cp output/data/manuscript_variables_receipt.json receipts/
-          cp output/pdf/_combined_manuscript.log receipts/
-          cp output/pdf/_combined_manuscript.tex receipts/
-          cp output/pdf/_combined_manuscript.md receipts/
+          receipts="$GITHUB_WORKSPACE/receipts"
+          mkdir -p "$receipts"
+          git -C "$GITHUB_WORKSPACE/template" rev-parse HEAD > "$receipts/template-revision.txt"
+          cp output/data/manuscript_render_manifest.json "$receipts/"
+          cp output/data/manuscript_variables.json "$receipts/"
+          cp output/data/manuscript_variables_receipt.json "$receipts/"
+          cp output/pdf/_combined_manuscript.log "$receipts/"
+          cp output/pdf/_combined_manuscript.tex "$receipts/"
+          cp output/pdf/_combined_manuscript.md "$receipts/"
 
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: always()

@@ -405,9 +405,10 @@ manuscript's own figures are rebuilt from the same token map:
 \end{Shaded}
 
 The hydrated sources are then rendered to PDF by the docxology
-template's render stage. That stage lives in a separate checkout, with
-this repository symlinked into it at
-\breaktt{projects/active/GeneralizedNotationNotation}; run from the
+template's render stage. That stage lives in a separate checkout of the
+template, with this repository checked out inside it as a real directory
+at \breaktt{projects/active/GeneralizedNotationNotation} (the template's
+analysis-read custody refuses a symlinked project); run from the
 template root:
 
 \end{frame}
@@ -430,7 +431,7 @@ a missing copy degrades rather than failing the build.
 \begin{frame}[fragile,allowframebreaks]{Manuscript Reproducibility}
 Because the variables file is regenerated before rendering, the counts
 in the rendered PDF track the repository state at the commit recorded in
-\breaktt{output/data/manuscript\_variables.json} (d20b76a54): a code
+\breaktt{output/data/manuscript\_variables.json} (609a35f3d): a code
 change that alters, for example, the test inventory (651 test files,
 6694 test functions) propagates into the prose on the next regeneration
 without any manual editing.

@@ -63,7 +63,7 @@ That command recomputes the {{...}} tokens, persists them to `output/data/manusc
 uv run python -m scripts.manuscript_build_figures
 ```
 
-The hydrated sources are then rendered to PDF by the docxology template's render stage. That stage lives in a separate checkout, with this repository symlinked into it at `projects/active/GeneralizedNotationNotation`; run from the template root:
+The hydrated sources are then rendered to PDF by the docxology template's render stage. That stage lives in a separate checkout of the template, with this repository checked out inside it as a real directory at `projects/active/GeneralizedNotationNotation` (the template's analysis-read custody refuses a symlinked project); run from the template root:
 
 ```bash
 uv run --frozen python scripts/pipeline/stage_03_render.py \
@@ -72,7 +72,7 @@ uv run --frozen python scripts/pipeline/stage_03_render.py \
 
 The render needs a LaTeX installation providing the packages listed in `manuscript/preamble.md` plus `seqsplit`; the template guards `seqsplit` with `\IfFileExists`, so a missing copy degrades rather than failing the build.
 
-Because the variables file is regenerated before rendering, the counts in the rendered PDF track the repository state at the commit recorded in `output/data/manuscript_variables.json` (d20b76a54): a code change that alters, for example, the test inventory (651 test files, 6694 test functions) propagates into the prose on the next regeneration without any manual editing.
+Because the variables file is regenerated before rendering, the counts in the rendered PDF track the repository state at the commit recorded in `output/data/manuscript_variables.json` (609a35f3d): a code change that alters, for example, the test inventory (651 test files, 6694 test functions) propagates into the prose on the next regeneration without any manual editing.
 
 ## Reproducibility Contract
 
