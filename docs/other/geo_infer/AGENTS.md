@@ -3,7 +3,7 @@
 ## Overview
 
 **Status**: active documentation program (draft) | **Version**: 0.1 | **Last
-Updated**: 2026-09-06
+Updated**: 2026-10-12
 
 ## Purpose
 
@@ -62,4 +62,4 @@ sibling is a foreign git repository: never commit into it from GNN tooling.
 ---
 
 **Status**: active | **Maintenance**: update together with the export
-modules under `src/gnn/export/` | **Last Updated**: 2026-09-06
+modules under `src/gnn/export/` | **Last Updated**: 2026-10-12

@@ -3,12 +3,12 @@
 > **Document Metadata**
 > **Type**: External project documentation (research archive) | **Audience**: Researchers, Developers | **Complexity**: Advanced
 > **Cross-References**: [AGENTS.md](AGENTS.md) | [Main documentation](../../README.md)
-> **Last Updated**: 2026-09-06 | **Version**: 0.1
+> **Last Updated**: 2026-10-12 | **Version**: 0.1
 
 ## Overview
 
 GEO_INFER is the Active Inference Institute's spatial active-inference
-monorepo: 47 modules covering geography, topology, environmental sensing,
+monorepo covering geography, topology, environmental sensing,
 and cognitive modeling over spatially indexed data. The sibling checkouts
 live at `../GEO_INFER` (paths in this folder that start with `../GEO_INFER/`
 are written as inline code on purpose: each repository validates its own
