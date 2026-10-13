@@ -26,14 +26,41 @@ In the mirror direction, GEO_INFER pins GNN from its own checkout via its
 2. Checks out fep_lean at exactly the pinned SHA.
 3. Records both checkout revisions plus the pin file as receipts, retained as
    workflow artifacts (`if: always()`, mirroring GEO's receipt semantics).
-4. Runs fep_lean's **read-only** bridge surface against this GNN checkout:
+4. Installs each Python 3.11/3.12 row once with `uv sync --frozen`, explicit
+   `UV_PYTHON` and `UV_PROJECT_ENVIRONMENT`. Every subsequent invocation uses
+   the workflow's frozen, no-sync uv command and explicit matrix Python.
+   Unqualified `uv run` can select the companion's local `.python-version`
+   and replace the installed environment; the matrix label alone is not
+   execution evidence.
+5. Runs fep_lean's **read-only** bridge surface against this GNN checkout:
 
-   - `uv run fep-lean bridge status --gnn-root <gnn checkout>`
-   - `uv run fep-lean bridge emit --check --model finite --gnn-root <gnn>`
-   - `uv run fep-lean bridge emit --check --model continuous --gnn-root <gnn>`
+   - `fep-lean bridge status --gnn-root <gnn checkout>`
+   - `fep-lean bridge emit --check --model finite --gnn-root <gnn>`
+   - `fep-lean bridge emit --check --model continuous --gnn-root <gnn>`
 
    `status` and `emit --check` never write: they compare source bytes and
    emitted-document digests only.
+
+The workflow-local [runtime runner](../../.github/fep_paired_runtime.py)
+calls the installed `fep_lean.cli.main` in the inspected Python process.
+It records the requested and actual major/minor, full interpreter version,
+executable and prefix, virtual-environment inode, interpreter/link identity,
+`pyvenv.cfg`, both source revisions, lock hashes and tracked-file hashes.
+The installed baseline must remain identical before and after each command.
+All prior successful receipts and bridge-output digests are checked at the
+next stage and again at the final stage; missing, changed, failed or
+mislabelled evidence fails closed. Imports must come from the pinned FEP
+source tree. JSON bridge outputs and additive failure receipts are retained
+without replacing earlier evidence. `native_claim_ready` stays `false`.
+
+The [focused controls](../../.github/test_fep_paired_runtime.py) run real
+subprocesses, virtual environments and temporary Git repositories, retaining
+their fixture paths. They reject wrong interpreters/environments, replacement
+or modified environments, source revision/byte drift, changes during execution,
+nonzero CLI exits, missing/wrong receipts and changed output bytes. The fixture
+CLI checks the custody mechanism; the subsequent hosted stages execute the
+actual pinned bridge. Run the controls with Python 3.11 or 3.12 and place
+`TMPDIR` on the storage volume being qualified.
 
 Strictness mirrors GEO: the job is blocking. A red run is the drift signal —
 the pair must be re-pinned together, not the check suppressed.
