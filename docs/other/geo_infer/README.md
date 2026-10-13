@@ -58,6 +58,9 @@ with `uv sync --extra geo-infer` first.
 
 ## Worked example: Cascadia river homing
 
+[Agent/process pairs](model_pairs.md) explain how two separately reproduced
+GNN artifacts support actual model-mismatch experiments in GEO-INFER-ACT.
+
 [Cascadia river homing](cascadia_river_homing.md) is a real H3 model: 26
 resolution-8 cells traced from measured NHDPlus HR lower Smith River flow
 lines, exact dyadic A–E, and a natal-stream homing task. Its GNN source and
@@ -96,6 +99,9 @@ statements bound to those bytes. The generic interchange validator does not
 run Lean, and successful export does not inherit that slice's receipt.
 
 ## Related documentation
+
+- [Experiment qualification](experiment_qualification.md) — real producer
+  reproduction for each retained Cascadia condition, with failure controls.
 
 - [fep_lean bridge program](../fep_lean/README.md) — upstream document
   well-formedness verification

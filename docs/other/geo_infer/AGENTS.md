@@ -24,6 +24,10 @@ sibling is a foreign git repository: never commit into it from GNN tooling.
 
 ## Key paths (post-reorg)
 
+For separate agent/process experiments, read [model_pairs.md](model_pairs.md).
+Reproduce both exports independently and keep semantic index alignment distinct
+from equal dimensions. Consumer execution changes belong to GEO-INFER-ACT.
+
 - Producers: `src/gnn/export/geo_infer.py` (categorical),
   `src/gnn/export/geo_infer_gaussian.py` (Gaussian),
   `src/gnn/export/geo_infer_factored.py` (factored).
@@ -48,6 +52,15 @@ sibling is a foreign git repository: never commit into it from GNN tooling.
   fixtures or native Lean receipts to variant claims.
 
 ## Editing rules
+
+- `qualify_export.py` is a thin worked-example client of the existing producer.
+  Keep it read-only on inputs and create-only on optional receipts. Run
+  `uv run python -m pytest docs/other/geo_infer/test_qualify_export.py -q --no-cov`
+  after changing it. Its reproduction result never implies native Lean proof.
+  New receipts bind producer-source bytes and use schema
+  `gnn/cascadia-export-qualification/2`; `--check-receipt` is read-only and
+  fails on qualifier, source-roster or artifact drift. Boolean/numeric aliases
+  must not pass canonical artifact comparison.
 
 - Keep all links relative and verify targets exist; the repository-wide
   documentation audit (`uv run python
