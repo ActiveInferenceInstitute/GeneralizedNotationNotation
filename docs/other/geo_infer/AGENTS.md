@@ -11,7 +11,7 @@ Document, for GNN-side readers and agents, the artifact-level interchange
 with the sibling spatial active-inference monorepo `GEO_INFER`: how GNN
 models are exported as versioned JSON artifacts, and how GEO_INFER consumes
 and validates them. This folder is the GNN-side mirror of the canonical
-interchange documentation at `../GEO-INFER/GEO-INFER-ACT/docs/gnn_interchange.md`
+interchange documentation at `../GEO_INFER/GEO-INFER-ACT/docs/gnn_interchange.md`
 (cross-repo references are inline code paths, never markdown links). The
 sibling is a foreign git repository: never commit into it from GNN tooling.
 
@@ -43,6 +43,9 @@ sibling is a foreign git repository: never commit into it from GNN tooling.
   with SHA-256 provenance, no cross-checkout imports (the GEO_INFER contract
   forbids it).
 - H3 support is optional (`--extra geo-infer`).
+- The Cascadia seed study emits variant artifacts into its own output edition;
+  retain source/state order/export custody and never promote reference golden
+  fixtures or native Lean receipts to variant claims.
 
 ## Editing rules
 

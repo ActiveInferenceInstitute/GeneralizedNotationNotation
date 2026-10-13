@@ -19,7 +19,7 @@ GEO-INFER renders the model as GNN v1 Markdown, this repository's strict
 exporter turns it into a `gnn-geo-infer/1` artifact, and the artifact is
 consumed twice: by GEO-INFER-ACT's `run_gnn_inference` (pymdp 1.0.4) and by a
 Lean 4 instance in the fep_lean checkout. The canonical documentation is
-`../GEO-INFER/GEO-INFER-ACT/docs/cascadia_river_homing.md` in the sibling
+`../GEO_INFER/GEO-INFER-ACT/docs/cascadia_river_homing.md` in the sibling
 checkout (inline path, not a link: each repository validates its own links).
 
 ## What this repository checks
@@ -71,3 +71,33 @@ Its export record stores this repository's revision, the interpreter and
 - **State identity outside the matrices.** H3 cells are passed with
   `--state-ids` in matrix order; the source annotation documents that order
   but the exporter never infers cells from prose.
+
+## Assumption studies and proof custody
+
+GEO-INFER's `examples/cascadia/cascadia_study.py` exports a separate exact
+source and artifact for each of `reference`, `uniform_habit` and
+`uninformative_odor`, then replays a declared process-seed grid. Run it in the
+GEO-INFER environment with this checkout's interpreter supplied explicitly:
+
+```bash
+cd ../GEO_INFER
+uv run python GEO-INFER-ACT/examples/cascadia/cascadia_study.py \
+  --gnn-repo ../Generalized_Notation_Notation \
+  --gnn-python ../Generalized_Notation_Notation/.venv/bin/python \
+  --output GEO-INFER-ACT/examples/outputs/cascadia_seed_study_new
+```
+
+Every condition keeps the source, H3 order, domain, emitted artifact and
+exporter's revision. The study checks matrix equality against the exact
+compiler and never refreshes this repository's reference golden fixtures.
+Seed outcomes retain null arrivals for runs that have not reached home by
+the last recorded state. Study qualification concerns runtime replay and
+numerical invariants; it does not confer Lean verification.
+
+Changing E preserves A/B/D but changes policy priors. Removing odor
+information changes A and may change the exact first update; the reference
+57/128 evidence and 18/19 posterior must not be copied into that condition's
+claims. Export success establishes the interchange artifact, not those
+theorems. A new fep_formal instance and source-bound native receipt are
+required for variant proof claims. The canonical reference artifact and its
+existing proof remain a separate edition.

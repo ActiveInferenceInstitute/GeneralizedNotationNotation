@@ -10,7 +10,7 @@
 GEO_INFER is the Active Inference Institute's spatial active-inference
 monorepo: 47 modules covering geography, topology, environmental sensing,
 and cognitive modeling over spatially indexed data. The sibling checkouts
-live at `../GEO-INFER` (paths in this folder that start with `../GEO-INFER/`
+live at `../GEO_INFER` (paths in this folder that start with `../GEO_INFER/`
 are written as inline code on purpose: each repository validates its own
 links, so cross-repo references are never markdown links) (local clones may carry the earlier GEO-INFER dirname; git remotes are canonical). The integration
 is **artifact-level only**: the two projects run in separate environments and
@@ -71,7 +71,10 @@ The validation harness lives in the GEO-INFER-TEST module of the sibling
 checkout. Run it from the GEO_INFER checkout, pointing it at this repo:
 
 ```
-cd ../GEO-INFER && uv run python GEO-INFER-TEST/validate_gnn_interchange.py --gnn-repo ../GeneralizedNotationNotation --gnn-python ../GeneralizedNotationNotation/.venv/bin/python
+cd ../GEO_INFER
+uv run python GEO-INFER-TEST/validate_gnn_interchange.py \
+  --gnn-repo ../Generalized_Notation_Notation \
+  --gnn-python ../Generalized_Notation_Notation/.venv/bin/python
 ```
 
 The harness re-exports known exemplars with this repo's interpreter and
@@ -85,9 +88,12 @@ upstream of export (see [docs/other/fep_lean/](../fep_lean/README.md));
 explicitly, `fep-lean bridge verify-document` consumes GNN Markdown via
 `gnn.extract.pomdp_extractor` and cannot validate GEO_INFER's interchange
 artifact JSON (a different format, validated by `GNNArtifact`); the Lean
-gate applies to the notation before export, not to the artifacts after it,
-GEO_INFER consumes the **exported artifacts** downstream. No Lean toolchain
-is involved anywhere in the GEO_INFER interchange.
+gate applies to the notation before export. GEO_INFER consumes the **exported
+artifacts** downstream with a Python contract validator. Separately, the
+Cascadia artifact-proof slice in fep_formal reads frozen exported tables and
+compiles a named finite Lean instance; its receipt proves only the exact
+statements bound to those bytes. The generic interchange validator does not
+run Lean, and successful export does not inherit that slice's receipt.
 
 ## Related documentation
 
@@ -97,4 +103,4 @@ is involved anywhere in the GEO_INFER interchange.
 - [docs/other archive](../README.md) — this folder's parent
 
 The canonical interchange documentation lives in the sibling checkout at
-`../GEO-INFER/GEO-INFER-ACT/docs/gnn_interchange.md`.
+`../GEO_INFER/GEO-INFER-ACT/docs/gnn_interchange.md`.
