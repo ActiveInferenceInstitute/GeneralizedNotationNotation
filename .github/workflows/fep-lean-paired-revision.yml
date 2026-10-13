@@ -44,6 +44,9 @@ jobs:
       fail-fast: false
       matrix:
         python: ["3.11", "3.12"]
+    env:
+      UV_PYTHON: ${{ matrix.python }}
+      UV_PROJECT_ENVIRONMENT: ${{ github.workspace }}/fep-lean/.venv
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -85,29 +88,29 @@ jobs:
           git -C gnn rev-parse HEAD > receipts/gnn-revision.txt
           git -C fep-lean rev-parse HEAD > receipts/fep-lean-revision.txt
           cp gnn/.github/fep-lean-pair.json receipts/pair.json
-      - name: Install independent locked runtimes
-        env:
-          FEP_PYTHON: ${{ matrix.python }}
+      - name: Runtime custody negative controls
+        run: python gnn/.github/test_fep_paired_runtime.py -v
+      - name: Install independent frozen runtime
         run: |
-          uv sync --project fep-lean --locked --python "$FEP_PYTHON"
+          uv --version > receipts/uv-version.txt
+          uv sync --project fep-lean --frozen --python "$UV_PYTHON"
       # Read-only bridge surface only: `status` and `emit --check` inspect
       # source bytes and emitted-document digests and never write to either
       # checkout (verified against src/fep_formal/bridge/cli.py at the pin).
-      - name: Bridge status against this checkout
+      - name: Bound runtime status and finite/continuous bridge checks
         run: |
-          uv run --project fep-lean fep-lean bridge status \
-            --gnn-root "$GITHUB_WORKSPACE/gnn" \
-            > receipts/bridge-status-py${{ matrix.python }}.json
-      - name: Bridge emit check (finite model)
-        run: |
-          uv run --project fep-lean fep-lean bridge emit --check --model finite \
-            --gnn-root "$GITHUB_WORKSPACE/gnn" \
-            > receipts/bridge-emit-finite-py${{ matrix.python }}.json
-      - name: Bridge emit check (continuous model)
-        run: |
-          uv run --project fep-lean fep-lean bridge emit --check --model continuous \
-            --gnn-root "$GITHUB_WORKSPACE/gnn" \
-            > receipts/bridge-emit-continuous-py${{ matrix.python }}.json
+          set -euo pipefail
+          for stage in installed status finite continuous final; do
+            uv run --project fep-lean --frozen --no-sync --python "$UV_PYTHON" \
+              python gnn/.github/fep_paired_runtime.py "$stage" \
+              --expected-python "$UV_PYTHON" \
+              --environment "$UV_PROJECT_ENVIRONMENT" \
+              --gnn-root "$GITHUB_WORKSPACE/gnn" \
+              --gnn-revision "${{ github.event.pull_request.head.sha || github.sha }}" \
+              --fep-root "$GITHUB_WORKSPACE/fep-lean" \
+              --fep-revision "${{ steps.pair.outputs.revision }}" \
+              --receipts "$GITHUB_WORKSPACE/receipts"
+          done
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: always()
         with:

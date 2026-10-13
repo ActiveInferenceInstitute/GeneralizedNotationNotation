@@ -1,0 +1,244 @@
+"""Run the read-only FEP bridge in the inspected matrix interpreter.
+
+Receipts bind live source bytes, installed environment identity and actual CLI
+execution. They are workflow custody evidence, never native Lean evidence.
+"""
+
+from __future__ import annotations
+
+import argparse
+import contextlib
+import hashlib
+import json
+import os
+import subprocess
+import sys
+from pathlib import Path
+from typing import Any
+
+STAGES = ("installed", "status", "finite", "continuous", "final")
+
+
+def digest(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def read(path: Path) -> dict[str, Any]:
+    value = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(value, dict):
+        raise ValueError(f"non-object receipt: {path}")
+    return value
+
+
+def write(path: Path, value: dict[str, Any]) -> None:
+    # Never replace a prior success, partial result or failed receipt.
+    with path.open("x", encoding="utf-8") as stream:
+        json.dump(value, stream, indent=2, allow_nan=False)
+        stream.write("\n")
+
+
+def file_identity(path: Path) -> dict[str, Any]:
+    stat = path.lstat()
+    return {
+        "device": stat.st_dev,
+        "inode": stat.st_ino,
+        "size": stat.st_size,
+        "mtime_ns": stat.st_mtime_ns,
+        "link": os.readlink(path) if path.is_symlink() else None,
+        "sha256": digest(path),
+    }
+
+
+def runtime(expected: str, environment: Path) -> dict[str, Any]:
+    actual = f"{sys.version_info.major}.{sys.version_info.minor}"
+    if actual != expected:
+        raise ValueError(f"interpreter mismatch: requested {expected}, actual {actual}")
+    executable = Path(sys.executable).absolute()  # Preserve the venv symlink.
+    if Path(sys.prefix).resolve() != environment.resolve():
+        raise ValueError(f"virtual environment mismatch: {sys.prefix}")
+    if executable.parent.parent.resolve() != environment.resolve():
+        raise ValueError(f"executable outside installed environment: {executable}")
+    stat = environment.stat()
+    return {
+        "requested_python": expected,
+        "actual_python": actual,
+        "version": sys.version,
+        "executable": str(executable),
+        "prefix": sys.prefix,
+        "base_prefix": sys.base_prefix,
+        "environment_device": stat.st_dev,
+        "environment_inode": stat.st_ino,
+        "executable_identity": file_identity(executable),
+        "base_executable_identity": file_identity(executable.resolve()),
+        "pyvenv_cfg_identity": file_identity(environment / "pyvenv.cfg"),
+    }
+
+
+def source(root: Path, expected_revision: str) -> dict[str, Any]:
+    command = ["git", "-c", "core.fsmonitor=false", "-C", str(root)]
+    revision = subprocess.check_output(
+        command + ["rev-parse", "HEAD"], text=True
+    ).strip()
+    if revision != expected_revision:
+        raise ValueError(f"source revision mismatch: {root}: {revision}")
+    subprocess.run(
+        command + ["diff", "--quiet", "--no-ext-diff", "HEAD", "--"], check=True
+    )
+    names = subprocess.check_output(command + ["ls-files", "-z"]).split(b"\0")
+    tree = hashlib.sha256()
+    for name in sorted(filter(None, names)):
+        path = root / os.fsdecode(name)
+        content = (
+            os.fsencode(os.readlink(path)) if path.is_symlink() else path.read_bytes()
+        )
+        tree.update(name + b"\0" + hashlib.sha256(content).digest())
+    return {
+        "root": str(root),
+        "revision": revision,
+        "tracked_tree_sha256": tree.hexdigest(),
+        "lock_sha256": digest(root / "uv.lock"),
+    }
+
+
+def custody(args: argparse.Namespace) -> dict[str, Any]:
+    pin = read(args.gnn_root / ".github/fep-lean-pair.json")
+    if pin != {
+        "repository": "ActiveInferenceInstitute/fep_formal",
+        "revision": args.fep_revision,
+    }:
+        raise ValueError("companion pin does not match requested source")
+    return {
+        "runtime": runtime(args.expected_python, args.environment),
+        "gnn": source(args.gnn_root, args.gnn_revision),
+        "fep": source(args.fep_root, args.fep_revision),
+        "pin": pin,
+    }
+
+
+def bridge_command(fep: str, gnn: str, stage: str) -> list[str]:
+    operation = (
+        ["status"] if stage == "status" else ["emit", "--check", "--model", stage]
+    )
+    return ["--project-root", fep, "bridge", *operation, "--gnn-root", gnn]
+
+
+def accepted(path: Path, stage: str, baseline: dict[str, Any]) -> dict[str, Any]:
+    result = read(path)
+    if (
+        result.get("stage") != stage
+        or result.get("status") != "ok"
+        or result.get("native_claim_ready") is not False
+        or result.get("before") != baseline
+        or result.get("after") != baseline
+    ):
+        raise ValueError(f"missing or incompatible successful runtime receipt: {path}")
+    if stage in ("status", "finite", "continuous"):
+        if (
+            result.get("exit_code") != 0
+            or result.get("cli_source")
+            != str(Path(baseline["fep"]["root"]) / "src/fep_lean/cli.py")
+            or result.get("command")
+            != bridge_command(baseline["fep"]["root"], baseline["gnn"]["root"], stage)
+        ):
+            raise ValueError("wrong command or installed CLI receipt")
+        output = path.parent / f"bridge-{stage}.json"
+        payload = read(output)
+        if (
+            digest(output) != result.get("output_sha256")
+            or payload.get("status") != "ok"
+        ):
+            raise ValueError(f"bridge output changed or failed: {output}")
+        if stage == "status" and payload.get("native_claim_ready") is not False:
+            raise ValueError("bridge status cannot promote a native claim")
+        if stage != "status" and (
+            payload.get("model") != stage or payload.get("read_only") is not True
+        ):
+            raise ValueError("incorrect emit-check output")
+    return result
+
+
+def execute(args: argparse.Namespace) -> None:
+    receipt: dict[str, Any] = {
+        "stage": args.stage,
+        "status": "error",
+        "native_claim_ready": False,
+    }
+    path = args.receipts / f"runtime-{args.stage}.json"
+    try:
+        before = custody(args)
+        receipt["before"] = before
+        if args.stage == "installed":
+            receipt["uv_version"] = subprocess.check_output(
+                ["uv", "--version"], text=True
+            ).strip()
+        else:
+            baseline = read(args.receipts / "runtime-installed.json")["before"]
+            if before != baseline:
+                raise ValueError(
+                    "installed interpreter, environment or source identity changed"
+                )
+            for stage in STAGES[: STAGES.index(args.stage)]:
+                accepted(args.receipts / f"runtime-{stage}.json", stage, baseline)
+            if args.stage != "final":
+                from fep_lean import cli
+
+                module = Path(cli.__file__).resolve()
+                if not module.is_relative_to(args.fep_root / "src/fep_lean"):
+                    raise ValueError(f"installed CLI source mismatch: {module}")
+                command = bridge_command(
+                    str(args.fep_root), str(args.gnn_root), args.stage
+                )
+                output = args.receipts / f"bridge-{args.stage}.json"
+                with (
+                    output.open("x", encoding="utf-8") as stream,
+                    contextlib.redirect_stdout(stream),
+                ):
+                    code = cli.main(command)
+                receipt.update(
+                    cli_source=str(module),
+                    command=command,
+                    exit_code=code,
+                    output_sha256=digest(output),
+                )
+                if code != 0:
+                    raise ValueError(f"bridge {args.stage} exited {code}")
+        receipt["after"] = custody(args)
+        if receipt["after"] != before:
+            raise ValueError("runtime or source changed during bridge execution")
+        receipt["status"] = "ok"
+        write(path, receipt)
+        accepted(path, args.stage, before)
+    except Exception as exc:
+        receipt.update(status="error", error=f"{type(exc).__name__}: {exc}")
+        # Preserve any already-written receipt too; failures are additional evidence.
+        write(args.receipts / f"runtime-{args.stage}-failed.json", receipt)
+        raise
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("stage", choices=STAGES)
+    parser.add_argument("--expected-python", choices=("3.11", "3.12"), required=True)
+    for flag in ("environment", "gnn-root", "fep-root", "receipts"):
+        parser.add_argument(f"--{flag}", type=Path, required=True)
+    parser.add_argument("--gnn-revision", required=True)
+    parser.add_argument("--fep-revision", required=True)
+    args = parser.parse_args()
+    for name in ("environment", "gnn_root", "fep_root", "receipts"):
+        setattr(args, name, getattr(args, name).resolve())
+    try:
+        execute(args)
+    except (
+        OSError,
+        ValueError,
+        KeyError,
+        TypeError,
+        subprocess.SubprocessError,
+    ) as exc:
+        print(f"paired runtime rejected: {exc}", file=sys.stderr)
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
