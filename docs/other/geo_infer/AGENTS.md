@@ -21,6 +21,7 @@ sibling is a foreign git repository: never commit into it from GNN tooling.
 | --- | --- |
 | [README.md](README.md) | Reader-facing entry point: contracts, export command, validation harness |
 | [cascadia_river_homing.md](cascadia_river_homing.md) | Worked H3 example: the Cascadia GNN source, exporter checks and fixtures |
+| [california_monitoring.md](california_monitoring.md) | Factored indicator sensors, producer qualification and statewide consumer boundaries |
 
 ## Key paths (post-reorg)
 
@@ -54,6 +55,11 @@ qualify every selected source before attributing a matrix input to its notation.
   fixtures or native Lean receipts to variant claims.
 
 ## Editing rules
+
+- `qualify_factored.py` invokes the actual factored producer. Preserve bounded
+  source/artifact reads, distinct JSON fields and create-only generation.
+  Reproduction never repairs drift. Run
+  `uv run pytest docs/other/geo_infer/test_qualify_factored.py tests/export/test_geo_infer_factored.py -q --no-cov`.
 
 - `qualify_export.py` is a thin worked-example client of the existing producer.
   Keep it read-only on inputs and create-only on optional receipts. Run

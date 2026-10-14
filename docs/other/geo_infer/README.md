@@ -28,6 +28,13 @@ The relevant modules on the GEO_INFER side are:
 
 ## Contracts
 
+[California monitoring](california_monitoring.md) connects three explicit
+factored sensor models with PLACE's real historical indicators, ACT's exact
+local evaluation and constrained allocation, and SPACE's statewide H3 methods.
+`qualify_factored.py` independently reproduces each exported artifact; its
+read-only check rejects source, tensor, clock and provenance drift.
+
+
 Three versioned artifact contracts connect the pipeline to GEO_INFER. The
 normative format documentation is `src/gnn/export/geo_infer_contract.md`;
 the factored variant has its own normative doc,
