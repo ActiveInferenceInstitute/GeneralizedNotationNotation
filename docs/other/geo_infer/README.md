@@ -61,6 +61,9 @@ with `uv sync --extra geo-infer` first.
 [Agent/process pairs](model_pairs.md) explain how two separately reproduced
 GNN artifacts support actual model-mismatch experiments in GEO-INFER-ACT.
 
+[Configured model matrices](model_matrices.md) explain registry custody,
+independent qualification of each selected export and raw/canonical identities.
+
 [Cascadia river homing](cascadia_river_homing.md) is a real H3 model: 26
 resolution-8 cells traced from measured NHDPlus HR lower Smith River flow
 lines, exact dyadic A–E, and a natal-stream homing task. Its GNN source and

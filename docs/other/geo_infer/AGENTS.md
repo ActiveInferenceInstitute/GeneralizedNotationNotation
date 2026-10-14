@@ -27,6 +27,8 @@ sibling is a foreign git repository: never commit into it from GNN tooling.
 For separate agent/process experiments, read [model_pairs.md](model_pairs.md).
 Reproduce both exports independently and keep semantic index alignment distinct
 from equal dimensions. Consumer execution changes belong to GEO-INFER-ACT.
+For configured registries, follow [model_matrices.md](model_matrices.md) and
+qualify every selected source before attributing a matrix input to its notation.
 
 - Producers: `src/gnn/export/geo_infer.py` (categorical),
   `src/gnn/export/geo_infer_gaussian.py` (Gaussian),
