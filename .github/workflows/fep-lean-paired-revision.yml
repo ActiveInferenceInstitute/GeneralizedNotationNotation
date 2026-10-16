@@ -79,8 +79,9 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
         with:
-          # Match exact uv 0.13.1 in uv.toml and the Docker bootstrap.
-          version: "0.13.1"
+          # Match the independently pinned FEP project requirement. This job
+          # installs only FEP; GNN is a read-only source/contract checkout.
+          version: "0.13.0"
           enable-cache: true
       - name: Record both checkouts before installing
         run: |

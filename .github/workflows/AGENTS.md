@@ -58,3 +58,7 @@ verifies it before building, and retains actual source/wheel/lock identities.
 The installed-platform workflow also retains a Linux/amd64 Docker build and
 non-root Python 3.14 CLI/runtime checks. Keep its narrower container scope
 separate from the five installed-wheel lanes and full native coverage.
+
+The FEP paired job uses uv 0.13.0 to honor its companion project
+requirement; it never installs GNN. GNN-owned installs use uv 0.13.1.
+Supply-chain audit resolution uses supported Python 3.14.
