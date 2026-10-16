@@ -101,7 +101,7 @@ jobs:
             --no-install-package vaex --no-install-package vaex-core
       - name: Cascadia export qualification controls
         working-directory: gnn
-        run: uv run --locked python -m pytest docs/other/geo_infer/test_qualify_export.py -q --no-cov
+        run: uv run --frozen --no-sync --python 3.11 python -m pytest docs/other/geo_infer/test_qualify_export.py -q --no-cov
       - name: Paired categorical, H3, Gaussian and factored round trips
         run: |
           gnn/.venv/bin/python gnn/scripts/run_geo_interchange_checks.py \

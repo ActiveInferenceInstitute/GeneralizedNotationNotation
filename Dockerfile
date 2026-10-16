@@ -17,10 +17,9 @@ RUN test "$UV_VERSION" = "0.13.1" && \
       https://github.com/astral-sh/uv/releases/download/0.13.1/uv-installer.sh \
       --output /tmp/uv-installer.sh && \
     echo '7c482d409673a53f4d9bd34ae95c9166be3b8d89ca82f27dd7bca3cab457afff  /tmp/uv-installer.sh' | sha256sum --check - && \
-    sh /tmp/uv-installer.sh && \
-    /root/.local/bin/uv --version | awk '{print $2}' | grep -Fx 0.13.1 && \
+    UV_INSTALL_DIR=/usr/local/bin UV_NO_MODIFY_PATH=1 sh /tmp/uv-installer.sh && \
+    /usr/local/bin/uv --version | awk '{print $2}' | grep -Fx 0.13.1 && \
     rm /tmp/uv-installer.sh
-ENV PATH="/root/.local/bin:$PATH"
 
 # Create non-root user for runtime security
 RUN groupadd --gid 1000 gnn && \

@@ -6,10 +6,12 @@ Tests Python version, path configuration, and interpreter settings.
 """
 
 import sys
+import tomllib
 from pathlib import Path
 from typing import Any
 
 import pytest
+from packaging.specifiers import SpecifierSet
 
 # Add src to path for imports
 
@@ -20,17 +22,16 @@ class TestPythonVersion:
     @pytest.mark.fast
     def test_python_version_minimum(self) -> Any:
         """Test Python version meets minimum requirements."""
-        # GNN requires Python 3.9+
-        assert sys.version_info >= (3, 9), f"Python 3.9+ required, got {sys.version}"
+        assert sys.version_info >= (3, 11), f"Python 3.11+ required, got {sys.version}"
 
     @pytest.mark.fast
     def test_python_version_compatible(self) -> Any:
         """Test Python version is in compatible range."""
-        # Should work with Python 3.9 - 3.13
-        major, minor = sys.version_info[:2]
-
-        assert major == 3
-        assert 9 <= minor <= 13
+        metadata = tomllib.loads(
+            (Path(__file__).parents[2] / "pyproject.toml").read_text()
+        )
+        required = SpecifierSet(metadata["project"]["requires-python"])
+        assert ".".join(map(str, sys.version_info[:3])) in required
 
     @pytest.mark.fast
     def test_python_implementation(self) -> Any:

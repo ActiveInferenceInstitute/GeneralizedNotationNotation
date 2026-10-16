@@ -497,3 +497,8 @@ uv run --extra dev mypy src --show-error-codes
 - Integration tests for new pipeline steps
 - Performance tests for computationally intensive features
 - Regression tests for bug fixes 
+
+The [2026-10-16 native corpus receipt](native_corpus_acceptance_20261016.json)
+records all 38 tracked examples and 12 requested frameworks at the reviewed
+source epoch. Local process, numerical, installed-wheel and publication claims
+retain their separate scopes.

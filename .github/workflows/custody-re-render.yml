@@ -113,6 +113,7 @@ jobs:
       # and re-invokes scripts/z_generate_manuscript_variables.py with this
       # checkout's .venv (infrastructure.rendering._manuscript_source).
       - name: Render the manuscript PDF (template stage_03_render)
+        id: render
         working-directory: template
         run: |
           uv run --frozen python scripts/pipeline/stage_03_render.py \
@@ -143,6 +144,17 @@ jobs:
           receipts="$GITHUB_WORKSPACE/receipts"
           mkdir -p "$receipts"
           git -C "$GITHUB_WORKSPACE/template" rev-parse HEAD > "$receipts/template-revision.txt"
+          git rev-parse HEAD > "$receipts/gnn-revision.txt"
+          printf '%s\n' '${{ steps.render.outcome }}' > "$receipts/render-outcome.txt"
+          # Preserve actual render outputs even when strict comparison correctly
+          # rejects a stale committed chain. Renewal still requires verification,
+          # a normal artifact commit and the unchanged strict repository gates.
+          mkdir -p "$receipts/render-output"
+          for directory in data figures manuscript pdf; do
+            if [ -d "output/$directory" ]; then
+              cp -R "output/$directory" "$receipts/render-output/"
+            fi
+          done
           cp output/data/manuscript_render_manifest.json "$receipts/"
           cp output/data/manuscript_variables.json "$receipts/"
           cp output/data/manuscript_variables_receipt.json "$receipts/"

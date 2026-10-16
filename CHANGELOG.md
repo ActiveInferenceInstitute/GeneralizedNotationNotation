@@ -9,6 +9,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ### Fixed
 
+- Python 3.14 CLI parser color discovery preserves closed caller streams and
+  the existing error contract. Runtime checks follow the declared Python range.
+- GEO qualification controls retain the explicitly installed H3 environment;
+  manuscript audit receipts preserve full fresh outputs for verified renewal.
 - Type checking accepts the lowercase `categorical` spelling used by the tracked
   multiagent coordination model, retaining its source type and dimensional checks.
 - bnlearn now compiles complete stationary finite A/B/D models into native
