@@ -67,7 +67,7 @@ def source_payload(model: dict[str, Any]) -> dict[str, Any]:
         )
     authored = dict(initial)
     # C has no role in a fixed-action Bayesian filtering question. A neutral
-    # placeholder admits the shared shape validator without inventing a policy.
+    # neutral vector admits the shared shape validator without inventing a policy.
     if "C" not in initial:
         initial["C"] = np.zeros(np.asarray(initial["A"]).shape[0]).tolist()
     canonical = build_canonical_pomdp_spec(

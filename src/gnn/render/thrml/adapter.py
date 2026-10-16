@@ -378,7 +378,7 @@ def build_thrml_payload(
         canonical_input = spec
         if "C" not in raw and len(nested_shape(raw.get("B", []))) == 2:
             # A passive HMM has no policy preferences to optimize. Retain the
-            # authored parameters separately and label this unused placeholder.
+            # authored parameters separately and label this unused neutral vector.
             canonical_input = {
                 **spec,
                 "initialparameterization": {**raw, "C": [0.0] * shape[0]},
