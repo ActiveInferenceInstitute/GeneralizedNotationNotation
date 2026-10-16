@@ -1,5 +1,13 @@
 # Workflows Agent Guide
 
+The local default and primary ordinary test matrix now include Python 3.14,
+with exact uv 0.13.1. The named h5py/HDF5 host exception and removal checks are
+in root README.md. General docs/local/MCP/security jobs select 3.14; coupled
+3.12 required statuses and native/paired/manuscript/GUI rosters remain explicit
+compatibility or evidence profiles. Existing acceptance receipts retain their
+original source, runtime and tool identities; this configuration change does
+not renew those receipts.
+
 ## Purpose
 
 Defines behavior and guardrails for workflows in this directory. Human index of all `.github/` automation: [../README.md](../README.md).
@@ -28,7 +36,7 @@ Defines behavior and guardrails for workflows in this directory. Human index of 
 ## Standards
 
 - Pin every third-party action to a full commit SHA with the version as a trailing comment (e.g. `uses: actions/checkout@<sha> # v7.0.1`) for supply-chain hardening; Dependabot reads the version comment. Resolve SHAs with `git ls-remote` — never guess.
-- Pin `astral-sh/setup-uv` steps with `version: "0.12"` (the Dockerfile `UV_VERSION` bootstrap floor minor series).
+- Pin `astral-sh/setup-uv` steps with `version: "0.13.1"` (the exact Dockerfile/uv.toml requirement).
 - Use explicit `timeout-minutes`.
 - Apply least-privilege `permissions` globally and per job.
 - Use deterministic dependency operations (`uv sync --frozen`, `uv export --frozen`).
@@ -40,7 +48,7 @@ pipeline receipts intact when changing scheduling. The `test (3.12)` aggregate
 runs with `always()` and rejects failed, cancelled, skipped or missing lane
 results; moving validation into parallel jobs must preserve this coupling.
 
-CI sets `UV_PYTHON` to the test matrix version (and 3.12 for security and
+CI sets `UV_PYTHON` to the test matrix version (and 3.14 for security and
 documentation jobs), overriding the local `.python-version` pin. XML export
 validation uses `defusedxml` and rejects entity declarations.
 
