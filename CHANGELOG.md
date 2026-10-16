@@ -7,6 +7,48 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ## [Unreleased]
 
+### Fixed
+
+- Type checking accepts the lowercase `categorical` spelling used by the tracked
+  multiagent coordination model, retaining its source type and dimensional checks.
+- bnlearn now compiles complete stationary finite A/B/D models into native
+  fixed-action filters, retaining source CPTs, canonical provenance and identities.
+  Independent asymmetric native witnesses compare every posterior. Metadata-only
+  synthetic demonstrations are explicitly labelled; unsupported compositions refuse.
+- Public generator dispatch consumes the rehydrated specification rather than
+  lightweight parser metadata, preserving bnlearn source parameters and generator metadata.
+- bnlearn analysis retains T-1 transition actions separately from timestep policy
+  actions, preserves conditional-filter semantics and rejects misaligned indices.
+- Advanced transition plots paginate every action on bounded canvases and avoid
+  dense per-cell annotations; page manifests make complete action coverage auditable.
+- Batch matrix visualizations skip scalar metadata and still discover real matrices
+  when the earlier parameter/variable stages contain only scalars.
+- Copied PyMDP runners can use an installed GNN package outside a checkout.
+- Model-specific execution views filter summary pointers along with files,
+  preventing cross-model analysis and repeated whole-corpus visualization passes.
+- Step 12 resolves backend output paths before changing child working directories,
+  preventing nested render-folder outputs and THRML artifact validation failures.
+  PyMDP receives the same explicit owned simulation-data destination.
+- Passive THRML models may omit unused preferences; derived neutral vectors retain
+  provenance and consistent pre-allocation/runtime admission accounting.
+
+- Replaced the legacy DisCoPy log-only smoke test with assertions for actual
+  tensor translation and explicit dependency refusal, using isolated test paths.
+
+- MCP system diagnostics preserve platform, memory and disk information when the
+  optional CPU-frequency probe is unavailable, reporting its error separately.
+
+- Pipeline step subprocesses retain the invoking Python interpreter and working
+  directory, preserving relative artifact ownership for external workspaces and
+  preventing an editable checkout's `.venv` from replacing the selected runtime.
+- Step 13 retains incomplete provider replies without completion/cache credit;
+  native completion requires a `stop` receipt. Completion-policy checkpoint
+  bindings and request-cache version 3 prevent reuse of older text-only success.
+- Direct cpomdp options share typed public admission, refusing unknown keys,
+  coercions and nulls before writing. Search control flags require booleans.
+- External-link auditing scans `docs/`, retains prose after fenced examples,
+  and uses parsed hostnames for local IPv6 and host-exemption checks.
+
 ### Dependencies
 
 - `inferactively-pymdp` is locked at 1.0.4 on Python 3.11 (from 1.0.0). pymdp

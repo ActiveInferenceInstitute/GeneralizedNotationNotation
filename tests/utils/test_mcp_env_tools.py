@@ -3,6 +3,9 @@
 from __future__ import annotations
 
 import os
+from types import SimpleNamespace
+
+import pytest
 
 from gnn.utils.mcp.server import (
     SENSITIVE_ENV_KEY_MARKERS,
@@ -59,3 +62,47 @@ def test_get_environment_info_redacts_secrets(monkeypatch: object) -> None:
 
     env_view = str(info)
     assert "s3cret" not in env_view
+
+
+@pytest.mark.parametrize(
+    "error",
+    [
+        SystemError("unsupported CPU frequency"),
+        OSError("probe denied"),
+        NotImplementedError("frequency unavailable"),
+    ],
+)
+def test_optional_frequency_failure_keeps_other_system_diagnostics(monkeypatch, error):
+    from gnn.utils.mcp import server
+
+    def unavailable():
+        raise error
+
+    monkeypatch.setattr(server.psutil, "cpu_freq", unavailable)
+    monkeypatch.setattr(server.psutil, "cpu_percent", lambda **_: 0.0)
+    info = get_system_info(object())
+    assert info["success"]
+    assert info["cpu"]["frequency"] is None
+    assert info["cpu"]["frequency_error"] == str(error)
+    assert info["system"]["python_version"]
+    assert info["memory"]["total"] > 0
+    assert info["disk"]["total"] > 0
+
+
+def test_frequency_is_sampled_once(monkeypatch):
+    from gnn.utils.mcp import server
+
+    calls = []
+    values = {"current": 2000.0, "min": 0.0, "max": 3000.0}
+
+    def sample():
+        calls.append(True)
+        assert len(calls) == 1
+        return SimpleNamespace(_asdict=lambda: values)
+
+    monkeypatch.setattr(server.psutil, "cpu_freq", sample)
+    monkeypatch.setattr(server.psutil, "cpu_percent", lambda **_: 0.0)
+    info = get_system_info(object())
+    assert info["success"] and info["cpu"]["frequency"] == values
+    assert "frequency_error" not in info["cpu"]
+    assert len(calls) == 1

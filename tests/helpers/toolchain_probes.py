@@ -239,6 +239,10 @@ TOOLCHAIN_MARKERS: dict[str, tuple[Callable[[], bool], str]] = {
     ),
     "needs_cpomdp": (cpomdp_ready, "cpomdp is not installed (uv sync --extra cpomdp)"),
     "needs_h3": (h3_ready, "h3 is not installed (uv sync --extra geo-infer)"),
+    "needs_bnlearn": (
+        lambda: _module_available("bnlearn") and _module_available("pgmpy"),
+        "bnlearn/pgmpy are not installed (uv sync --extra bnlearn)",
+    ),
     "needs_thrml": (
         thrml_ready,
         "THRML is not installed or its API is incompatible (uv sync --extra thrml)",

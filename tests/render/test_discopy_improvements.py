@@ -1,155 +1,59 @@
-#!/usr/bin/env python3
-"""
-Test script for DisCoPy translator improvements.
+"""DisCoPy diagnostics and explicit missing-dependency behavior.
 
-This script tests the new error handling and setup reporting functionality
-when DisCoPy and JAX dependencies are not available.
+These are pytest assertions: import or translation failures must not be reduced
+to a returned Boolean, which pytest would accept regardless of its value.
 """
 
-import logging
-import sys
 from pathlib import Path
-from typing import Any
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+import pytest
+
+from gnn.render.discopy import file_translation
+from gnn.render.discopy.translator import (
+    check_discopy_availability,
+    create_discopy_error_report,
+    generate_setup_report,
+    gnn_file_to_discopy_diagram,
+    gnn_file_to_discopy_matrix_diagram,
 )
-logger = logging.getLogger(__name__)
 
 
-def test_discopy_improvements() -> Any:
-    """Test the improved DisCoPy translator functionality."""
-
-    # Import the translator module
-    try:
-        from gnn.render.discopy.translator import (
-            DISCOPY_MATRIX_MODULE_AVAILABLE,
-            JAX_AVAILABLE,
-            JAX_CORE_AVAILABLE,
-            TENSOR_COMPONENTS_AVAILABLE,
-            TY_AVAILABLE,
-            check_discopy_availability,
-            create_discopy_error_report,
-            generate_setup_report,
-            initialize_discopy_components,
-        )
-
-        logger.info("Successfully imported translator module")
-    except ImportError as e:
-        logger.error(f"Failed to import translator module: {e}")
-        return False
-
-    # Test 1: Check availability
-    logger.info("=== Testing Availability Check ===")
+def test_discopy_improvements(tmp_path: Path) -> None:
     availability = check_discopy_availability()
-    logger.info(f"Availability status: {availability}")
-
-    # Test 2: Generate setup report
-    logger.info("=== Testing Setup Report Generation ===")
+    assert availability and all(
+        isinstance(value, bool) for value in availability.values()
+    )
+    assert availability["tensor_components"]
     setup_report = generate_setup_report()
-    logger.info("Setup report generated successfully")
-    logger.debug(f"Setup report preview: {setup_report[:200]}...")
+    assert "DisCoPy" in setup_report and "JAX" in setup_report
 
-    # Test 3: Create error report
-    logger.info("=== Testing Error Report Generation ===")
-    test_gnn_file = Path("test_model.md")
-    error_report = create_discopy_error_report(test_gnn_file, "unavailable")
-    logger.info("Error report created successfully")
-    logger.info(f"Error report keys: {list(error_report.keys())}")
-
-    # Test 4: Test main functions with unavailable dependencies
-    logger.info("=== Testing Main Functions ===")
-
-    # Create a test GNN file
-    test_gnn_content = """
-## ModelName
-Test Model
-
-## StateSpaceBlock
-A[2]
-B[3]
-
-## Connections
-A > B
-"""
-
-    test_file = Path("test_discopy_model.md")
-    with open(test_file, "w") as f:
-        f.write(test_gnn_content)
-
-    try:
-        # Test diagram creation (should fail gracefully)
-        from gnn.render.discopy.translator import gnn_file_to_discopy_diagram
-
-        result = gnn_file_to_discopy_diagram(test_file, verbose=True)
-        if result is None:
-            logger.info(
-                "✓ Diagram creation correctly returned None when dependencies unavailable"
-            )
-        else:
-            logger.warning(
-                "⚠ Diagram creation returned result when dependencies should be unavailable"
-            )
-
-    except Exception as e:
-        logger.error(f"✗ Diagram creation failed with exception: {e}")
-
-    try:
-        # Test matrix diagram creation (should fail gracefully)
-        from gnn.render.discopy.translator import gnn_file_to_discopy_matrix_diagram
-
-        result = gnn_file_to_discopy_matrix_diagram(test_file, verbose=True)
-        if result is None:
-            logger.info(
-                "✓ Matrix diagram creation correctly returned None when dependencies unavailable"
-            )
-        else:
-            logger.warning(
-                "⚠ Matrix diagram creation returned result when dependencies should be unavailable"
-            )
-
-    except Exception as e:
-        logger.error(f"✗ Matrix diagram creation failed with exception: {e}")
-
-    # Clean up
-    test_file.unlink(missing_ok=True)
-
-    # Test 5: Check global variables
-    logger.info("=== Testing Global Variables ===")
-    from gnn.render.discopy.translator import Box, Dim, jax
-
-    # These should be None when dependencies are not available
-    if Dim is None:
-        logger.info("✓ Dim is None (expected when DisCoPy not available)")
-    else:
-        logger.warning("⚠ Dim is not None (unexpected)")
-
-    if Box is None:
-        logger.info("✓ Box is None (expected when DisCoPy not available)")
-    else:
-        logger.warning("⚠ Box is not None (unexpected)")
-
-    if jax is None:
-        logger.info("✓ jax is None (expected when JAX not available)")
-    else:
-        logger.warning("⚠ jax is not None (unexpected)")
-
-    logger.info("=== Test Summary ===")
-    logger.info(f"TENSOR_COMPONENTS_AVAILABLE: {TENSOR_COMPONENTS_AVAILABLE}")
-    logger.info(f"TY_AVAILABLE: {TY_AVAILABLE}")
-    logger.info(f"JAX_CORE_AVAILABLE: {JAX_CORE_AVAILABLE}")
-    logger.info(f"DISCOPY_MATRIX_MODULE_AVAILABLE: {DISCOPY_MATRIX_MODULE_AVAILABLE}")
-    logger.info(f"JAX_AVAILABLE: {JAX_AVAILABLE}")
-
-    return True
+    source = tmp_path / "model.md"
+    source.write_text(
+        "## ModelName\nTest Model\n\n## StateSpaceBlock\nA[2]\nB[3]\n\n## Connections\nA > B\n",
+        encoding="utf-8",
+    )
+    report = create_discopy_error_report(source, "unavailable")
+    assert report["success"] is False
+    assert report["error_type"] == "unavailable"
+    assert report["gnn_file"] == str(source)
+    assert report["setup_instructions"] == setup_report
+    diagram = gnn_file_to_discopy_diagram(source)
+    assert diagram is not None
+    assert len(diagram.boxes) == 1
+    assert source.read_text(encoding="utf-8").endswith("A > B\n")
+    assert list(tmp_path.iterdir()) == [source]
 
 
-if __name__ == "__main__":
-    success = test_discopy_improvements()
-    if success:
-        logger.info("✅ All tests passed - DisCoPy improvements working correctly")
-        sys.exit(0)
-    else:
-        logger.error("❌ Some tests failed - DisCoPy improvements need attention")
-        sys.exit(1)
+@pytest.mark.parametrize("matrix", [False, True])
+def test_file_translation_refuses_missing_components(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, matrix: bool
+) -> None:
+    source = tmp_path / "model.md"
+    source.write_text("## ModelName\nUnavailable\n", encoding="utf-8")
+    flag = "JAX_AVAILABLE" if matrix else "TENSOR_COMPONENTS_AVAILABLE"
+    monkeypatch.setattr(file_translation, flag, False)
+    translator = (
+        gnn_file_to_discopy_matrix_diagram if matrix else gnn_file_to_discopy_diagram
+    )
+    assert translator(source) is None
+    assert list(tmp_path.iterdir()) == [source]

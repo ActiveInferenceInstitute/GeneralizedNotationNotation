@@ -128,3 +128,34 @@ class TestShouldSkipUrl:
         assert not checker._should_skip_url(
             "https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation"
         )
+
+
+class TestCollection:
+    def test_maintained_docs_root(self, checker: Any) -> None:
+        assert checker.ROOT / "docs" in checker.MAINTAINED_ROOTS
+
+    @pytest.mark.parametrize("fence", ["```", "~~~", "````"])
+    def test_links_after_fenced_examples_are_retained(
+        self, checker: Any, tmp_path: Path, monkeypatch: Any, fence: str
+    ) -> None:
+        doc = tmp_path / "guide.md"
+        doc.write_text(
+            f"https://before.org/page\n{fence}python\n"
+            f"https://configuration.org/example\n{fence}\n"
+            "https://after.org/page\n",
+            encoding="utf-8",
+        )
+        monkeypatch.setattr(checker, "ROOT", tmp_path)
+        monkeypatch.setattr(checker, "MAINTAINED_ROOTS", [doc])
+        assert checker.collect() == {
+            "https://before.org/page": ["guide.md"],
+            "https://after.org/page": ["guide.md"],
+        }
+
+    def test_ipv6_localhost_is_skipped(self, checker: Any) -> None:
+        assert checker._should_skip_url("http://[::1]:8000/health")
+
+    def test_host_matching_uses_hostname(self, checker: Any) -> None:
+        assert checker._host_allowed("https://DOI.ORG:443/x", ["doi.org"])
+        assert not checker._host_allowed("https://doi.org@untrusted.org/x", ["doi.org"])
+        assert not checker._host_allowed("https://notdoi.org/x", ["doi.org"])

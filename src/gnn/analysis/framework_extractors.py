@@ -4,8 +4,8 @@ Framework-specific data extractors for post-simulation analysis.
 Provides extract_*_data() functions for PyMDP, RxInfer.jl, ActiveInference.jl,
 JAX, DisCoPy, PyTorch, and NumPyro execution results. PyTorch and NumPyro are
 schema-aware (``*_simulation_v1`` dispatch) but ungated: heterogeneous payloads
-are accepted as-is. Stan and bnlearn execution results have no extractors and
-stay un-gated.
+are accepted as-is. bnlearn uses its source-bound fixed-action filtering contract; metadata-only
+smoke demonstrations receive no posterior credit. Stan retains its native schema.
 
 Extracted from post_simulation.py for maintainability.
 """
@@ -679,3 +679,49 @@ def extract_numpyro_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
     return _extract_schema_aware_data(
         execution_result, CURRENT_SIMULATION_SCHEMAS["numpyro"]
     )
+
+
+def extract_bnlearn_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
+    """Extract source-bound fixed-action filtering, preserving transition timing.
+
+    Synthetic compatibility demonstrations carry no posterior analysis credit.
+    """
+    schema = "bnlearn_fixed_action_filter_v1"
+    payload = (
+        execution_result if execution_result.get("schema_version") == schema else None
+    )
+    nested = execution_result.get("simulation_data")
+    if (
+        payload is None
+        and isinstance(nested, dict)
+        and nested.get("schema_version") == schema
+    ):
+        payload = nested
+    if payload is None:
+        payload = _load_current_schema_from_impl_dir(
+            execution_result.get("implementation_directory"), schema
+        )
+    if payload is None:
+        return {
+            "backend_smoke_only": True,
+            "beliefs": [],
+            "actions": [],
+            "observations": [],
+        }
+    from gnn.analysis.result_adapter import structured_result_data
+
+    payload = structured_result_data(payload)
+    extracted = _normalise_current_simulation_payload(payload)
+    for key in (
+        "transition_actions",
+        "action_semantics",
+        "inference_mode",
+        "control_mode",
+        "scientific_limits",
+        "source_identity",
+        "model_contract_sha256",
+        "source_parameter_fidelity",
+    ):
+        if key in payload:
+            extracted[key] = payload[key]
+    return extracted

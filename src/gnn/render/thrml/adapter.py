@@ -115,6 +115,7 @@ def _admission(
     *,
     synthetic: bool,
     parameters: dict[str, Any] | None = None,
+    additional_retained_entries: int = 0,
 ) -> dict[str, Any]:
     if not 1 <= states <= MAX_CATEGORIES or not 1 <= observations <= MAX_CATEGORIES:
         raise ValueError("THRML category admission limit exceeded")
@@ -127,7 +128,7 @@ def _admission(
     ) * timesteps
     if synthetic:
         updates += (schedule["burn_in"] + schedule["thin"]) * 2 * timesteps
-    retained = _retained_matrix_entries(parameters)
+    retained = _retained_matrix_entries(parameters) + additional_retained_entries
     estimated = (
         64 * entries
         + 64 * retained
@@ -197,7 +198,18 @@ def _component_admission(
         raise UnsupportedTHRMLModel(
             "three-dimensional B requires explicit source tensor orientation"
         )
-    return _admission(shape[1], shape[0], schedule, synthetic=synthetic, parameters=raw)
+    return _admission(
+        shape[1],
+        shape[0],
+        schedule,
+        synthetic=synthetic,
+        parameters=raw,
+        # The runtime retains the explicitly derived neutral C for passive
+        # models. Count it before allocation so serialized admission agrees.
+        additional_retained_entries=shape[0]
+        if "C" not in raw and len(b_shape) == 2
+        else 0,
+    )
 
 
 def _matrices(spec: dict[str, Any]) -> dict[str, Any]:
@@ -305,7 +317,7 @@ def build_thrml_payload(
             raise UnsupportedTHRMLModel(
                 "multi-agent models require native independent groups or a bound canonical joint composition"
             )
-        if canonical_joint or all(key in matrices for key in ("A", "B", "C", "D")):
+        if canonical_joint or all(key in matrices for key in ("A", "B", "D")):
             if not canonical_joint and any(
                 re.match(r"^[ABCDE]_", str(key)) for key in matrices
             ):
@@ -363,7 +375,24 @@ def build_thrml_payload(
             raise ValueError("THRML requires a two-dimensional canonical likelihood")
         requested_observations = _component_option(options, "observations", name, names)
         admission = admissions[name]
-        canonical = build_canonical_pomdp_spec(spec)
+        canonical_input = spec
+        if "C" not in raw and len(nested_shape(raw.get("B", []))) == 2:
+            # A passive HMM has no policy preferences to optimize. Retain the
+            # authored parameters separately and label this unused placeholder.
+            canonical_input = {
+                **spec,
+                "initialparameterization": {**raw, "C": [0.0] * shape[0]},
+                "matrix_provenance": {
+                    **(spec.get("matrix_provenance") or {}),
+                    "C": {
+                        "source": "passive_model_adapter",
+                        "derived": True,
+                        "shape": [shape[0]],
+                        "reason": "neutral unused preferences for passive fixed-action inference",
+                    },
+                },
+            }
+        canonical = build_canonical_pomdp_spec(canonical_input)
         initial = canonical["initialparameterization"]
         for key in ("A", "B", "D"):
             values = np.asarray(initial[key], dtype=np.float64)

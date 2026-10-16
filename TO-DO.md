@@ -1,6 +1,6 @@
 # TO-DO — GNN next steps
 
-Updated 2026-10-08.
+Updated 2026-10-16.
 Current software version is **4.1.0**. Its [GitHub release](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.1.0) records exact tag, source, checks and artifacts; version metadata alone does not establish acceptance.
 Every checkbox below is remaining work. Remove accepted bounded work while
 retaining its evidence in [CHANGELOG.md](CHANGELOG.md), release receipts and Git
@@ -28,6 +28,15 @@ Accept the native coverage and installed matrices independently. Released THRML
 verification and exact-version archival depend on external availability; design
 S1/E4 contracts before implementing their related major extensions.
 
+The [remaining roadmap contracts](docs/development/remaining_roadmap_contracts.md)
+specify the next bounded units for all seven items. The 2026-10-16 review adds
+terminal-stop LLM completion admission and consistent direct cpomdp options;
+these corrections do not complete S1 or E3. The THRML upstream issue is closed,
+but the inspected latest PyPI release remains 0.1.4, so S3 stays blocked on
+released compatibility. Full source-preserving multi-request processing,
+independent semantic extraction and coupled/native extension acceptance remain
+required.
+
 ## Minor work
 
 - [ ] **S3 — verify a released THRML structural-zero fix (P1).**
@@ -46,7 +55,14 @@ S1/E4 contracts before implementing their related major extensions.
   version metadata and directly downloaded artifact hash parity. A PyPI delivery
   is a separate publication task with an identified package owner/destination,
   accepted wheel/sdist, installation verification and credential ownership.
-  Depends on archive-provider availability and the selected release artifacts.
+  The [v4.1.0 source archive](https://zenodo.org/records/23245091) resolves
+  at version DOI `10.5281/zenodo.23245091`. On 2026-10-16, its 3,289 source blobs
+  matched tagged Git bytes; the archived manuscript matched the public release.
+  Public wheel/sdist/manuscript downloads also matched published SHA-256 sums.
+  Remaining: archive the separate wheel, sdist and distribution checksums with
+  the version record, then verify their public downloads and complete inventory.
+  The current Zenodo source archive contains none of those distribution files;
+  completing that operation requires archive-owner access.
 
 ## Major work
 
@@ -95,7 +111,10 @@ S1/E4 contracts before implementing their related major extensions.
   compatible numerical comparisons, counterexamples/refusals for mismatched
   semantics and source-bound formal/native/runtime evidence. Keep Lean theorem
   statements, generated-runner execution and bridge custody distinct; universal
-  equivalence requires an actual proof. Coordinate changed FEP/GEO owners through
+  equivalence requires an actual proof. **E4-BN1** now has stationary finite A/B/D CPT compilation and independent
+  native fixed-action filtering witnesses. Composition, causal discovery and
+  policy optimization remain outside that narrow contract; runtime success
+  alone cannot establish those translations. Coordinate changed FEP/GEO owners through
   the paired-revision procedure rather than relabelling older receipts.
 
 ## Verification and execution rules

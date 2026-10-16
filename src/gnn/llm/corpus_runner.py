@@ -146,6 +146,7 @@ async def run_corpus(
             "max_tokens_ceiling": 512,
             "temperature": 0.2,
             "input_policy": "complete_context_v1",
+            "completion_policy": "terminal_stop_v1",
         },
         "endpoint_sha256": endpoint_sha256,
         "models": identities,

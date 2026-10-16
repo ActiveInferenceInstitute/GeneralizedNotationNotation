@@ -250,3 +250,8 @@ scientific validator and execution-ID/script-SHA binding. It keeps native result
 in the current implementation directory rather than collecting historical files
 from render directories. `GNNExecutor.execute_gnn_model(..., execution_type="thrml")`
 uses the maintained supervised runner.
+
+Backend output environment paths are absolute, resolved from the caller’s
+output root before child working-directory changes. PyMDP receives
+`PYMDP_OUTPUT_DIR`; THRML receives its implementation root and writes the
+validated `simulation_data/simulation_results.json` beneath it.

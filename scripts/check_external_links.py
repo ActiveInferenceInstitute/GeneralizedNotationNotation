@@ -42,7 +42,7 @@ ROOT = Path(__file__).resolve().parents[1]
 MAINTAINED_ROOTS = [
     ROOT / ".agent_rules",
     ROOT / ".github",
-    ROOT / "doc",
+    ROOT / "docs",
     ROOT / "input",
     ROOT / "manuscript",
     ROOT / "scripts",
@@ -119,8 +119,10 @@ def _is_generated(path: Path) -> bool:
 
 
 def _should_skip_url(url: str) -> bool:
-    host = url.split("/", 3)[2].lower() if "//" in url else ""
-    host = host.split(":")[0].split("@")[-1]
+    try:
+        host = urlparse(url).hostname or ""
+    except ValueError:
+        return True
     if host in SKIP_HOSTS:
         return True
     if host == "example.com" or host.endswith(".example.com"):
@@ -170,7 +172,7 @@ def collect() -> dict[str, list[str]]:
             # strip them before URL extraction to avoid false 404s.
             if path.suffix == ".md":
                 text = re.sub(
-                    r"^(```|~~~).*?^\1.*$",
+                    r"^(`{3,}|~{3,})[^\n]*\n.*?^[ \t]*\1[ \t]*$",
                     "",
                     text,
                     flags=re.MULTILINE | re.DOTALL,
@@ -210,8 +212,13 @@ BOT_BLOCKED = {"401", "403", "429", "999"}
 
 def _host_allowed(url: str, allow_hosts: list[str]) -> bool:
     """Whether ``url``'s host matches an allow-listed host or its subdomain."""
-    netloc = urlparse(url).netloc
-    return any(netloc == h or netloc.endswith("." + h) for h in allow_hosts)
+    try:
+        host = urlparse(url).hostname or ""
+    except ValueError:
+        return False
+    return any(
+        host == h.lower() or host.endswith("." + h.lower()) for h in allow_hosts if h
+    )
 
 
 def _bot_blocked_codes(

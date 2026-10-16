@@ -252,3 +252,7 @@ This module is part of the GeneralizedNotationNotation project. See the main rep
 - **[AGENTS](AGENTS.md)**: Agentic Workflows
 - **[SPEC](SPEC.md)**: Architectural Specification
 - **[SKILL](SKILL.md)**: Capability API
+
+Batch matrix discovery keeps vectors and arrays, while scalar counts, seeds and
+precisions remain metadata. Scalar-only parameters do not hide matrix fallback
+data. Direct scalar plotting remains available.

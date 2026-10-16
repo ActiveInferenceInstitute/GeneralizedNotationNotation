@@ -52,6 +52,7 @@ _PIPELINE_RUNNER_TEMPLATE = '''#!/usr/bin/env python3
 {module_docstring_literal}
 from __future__ import annotations
 
+import importlib.util
 import json
 import logging
 import os
@@ -65,13 +66,13 @@ if sys.path and sys.path[0] and sys.path[0].endswith("pymdp"):
     sys.path.pop(0)
 
 # ---------------------------------------------------------------------------
-# Repository root resolution (prefer GNN_PROJECT_ROOT; else walk upwards)
+# Prefer an explicit checkout, then installed GNN, then an ancestor checkout
 # ---------------------------------------------------------------------------
 _gnn_root = os.environ.get("GNN_PROJECT_ROOT")
 if _gnn_root:
     _repo = Path(_gnn_root).resolve()
     sys.path.insert(0, str(_repo / "src"))
-else:
+elif importlib.util.find_spec("gnn") is None:
     _cur = Path(__file__).resolve().parent
     _found = None
     for _ in range(24):

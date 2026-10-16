@@ -32,7 +32,7 @@ class RendererRoute:
     suffix: str
     label: str
     validate: bool
-    options_mode: Literal["kwargs", "timesteps", "kwargs_or_none"]
+    options_mode: Literal["kwargs", "timesteps", "kwargs_or_none", "backend_options"]
     result_mode: Literal["warnings", "artifacts"]
     artifacts_mode: Literal["primary_plus_metadata", "primary", "returned"]
 
@@ -124,7 +124,7 @@ RENDERER_ROUTES: Dict[str, RendererRoute] = {
         suffix="_cpomdp.py",
         label="cpomdp (experimental)",
         validate=False,
-        options_mode="kwargs",
+        options_mode="backend_options",
         result_mode="artifacts",
         artifacts_mode="returned",
     ),

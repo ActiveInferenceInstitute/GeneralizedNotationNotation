@@ -62,6 +62,7 @@ from .post_simulation import (
     compute_shannon_entropy,
     compute_variational_free_energy,
     extract_activeinference_jl_data,
+    extract_bnlearn_data,
     extract_discopy_data,
     extract_jax_data,
     extract_jax_kronecker_data,
@@ -134,6 +135,7 @@ __all__: list[Any] = [
     "extract_activeinference_jl_data",
     "extract_jax_data",
     "extract_jax_kronecker_data",
+    "extract_bnlearn_data",
     "extract_discopy_data",
     "analyze_execution_results",
     # Active Inference-specific statistical methods

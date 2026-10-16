@@ -352,10 +352,9 @@ def render_gnn_spec(
             generate_fn = getattr(
                 import_module(gen_module_name, "gnn.render"), gen_name
             )
-            code = generate_fn(gnn_spec)
             output_file = output_dir / f"{output_stem}{suffix}"
+            code = generate_fn(gnn_spec_mapping, output_path=output_file)
             if code:
-                output_file.write_text(code)
                 files.append(str(output_file))
 
         elif target_lower == "stan":

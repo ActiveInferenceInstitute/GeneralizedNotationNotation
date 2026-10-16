@@ -685,3 +685,179 @@ def test_top_level_deadline_fails_honestly_and_restores_environment(
     assert receipt["stop_reason"] == "total_timeout"
     assert os.environ["GNN_RUN_ID"] == "caller-run"
     assert "GNN_RUN_CONTEXT_FILE" not in os.environ
+
+
+def test_module_pipeline_from_external_workspace_keeps_relative_artifact_ownership(
+    tmp_path: Path,
+) -> None:
+    import shutil
+    import subprocess
+
+    workspace = tmp_path / "caller_workspace"
+    source = workspace / "input" / "models" / "model.md"
+    source.parent.mkdir(parents=True)
+    repo = Path(__file__).resolve().parents[2]
+    shutil.copy2(repo / "input/gnn_files/discrete/two_state_bistable.md", source)
+    (workspace / "input" / "config.yaml").write_text(
+        "testing_matrix:\n  enabled: false\npipeline:\n  timeout:\n    total: 45\n"
+    )
+    environment = dict(os.environ)
+    environment.pop("GNN_RUN_CONTEXT_FILE", None)
+    environment.pop("GNN_RUN_ID", None)
+    child = subprocess.run(
+        [
+            sys.executable,
+            "-P",
+            "-m",
+            "gnn.main",
+            "--target-dir",
+            "input/models",
+            "--output-dir",
+            "results",
+            "--only-steps",
+            "3,6,7",
+        ],
+        cwd=workspace,
+        env=environment,
+        capture_output=True,
+        text=True,
+        timeout=60,
+    )
+    assert child.returncode == 0, child.stdout + child.stderr
+    output = workspace / "results"
+    summary = json.loads(
+        (output / "00_pipeline_summary/pipeline_execution_summary.json").read_text()
+    )
+    assert summary["overall_status"] in {"SUCCESS", "SUCCESS_WITH_WARNINGS"}
+    assert all(step["artifacts"] for step in summary["steps"])
+    assert (output / "3_gnn_output/gnn_processing_results.json").exists()
+    assert (output / "6_validation_output/validation_results.json").exists()
+    assert (output / "7_export_output").exists()
+
+
+def test_model_execution_view_filters_summary_pointers_as_well_as_files(
+    tmp_path, monkeypatch
+):
+    from gnn.analysis.pymdp.analyzer import _discover_pymdp_result_files
+    from gnn.pipeline.artifact_ownership import execution_view
+
+    context = _context(tmp_path)
+    _activate(context, monkeypatch)
+    root = Path(context.output_root)
+    execution = root / "12_execute_output"
+    before = snapshot_files(execution)
+    details = []
+    for model in context.models:
+        implementation = execution / model.artifact_stem / "pymdp"
+        simulation = implementation / "simulation_data"
+        simulation.mkdir(parents=True)
+        (simulation / "case_simulation_results.json").write_text(
+            json.dumps(
+                {
+                    "framework": "pymdp",
+                    "schema_version": "pymdp_simulation_v1",
+                    "model_name": model.artifact_stem,
+                }
+            )
+        )
+        details.append(
+            {
+                "framework": "pymdp",
+                "model_name": model.artifact_stem,
+                "implementation_directory": str(implementation),
+                "success": True,
+            }
+        )
+    summary = execution / "summaries/execution_summary.json"
+    summary.parent.mkdir()
+    summary.write_text(
+        json.dumps(
+            {
+                "run_id": context.run_id,
+                "execution_details": details,
+                "total_scripts_found": 2,
+                "successful_executions": 2,
+            }
+        )
+    )
+    original = summary.read_bytes()
+    current = root / "00_pipeline_summary/current_summary.json"
+    current.parent.mkdir(exist_ok=True)
+    current.write_text(
+        json.dumps(
+            {
+                "run_id": context.run_id,
+                "steps": [{"artifacts": changed_artifacts(execution, root, before)}],
+            }
+        )
+    )
+    selected = context.models[0].artifact_stem
+    view = execution_view(execution, {selected})
+    projected = json.loads((view / "summaries/execution_summary.json").read_text())
+    assert [row["model_name"] for row in projected["execution_details"]] == [selected]
+    assert projected["successful_executions"] == projected["total_scripts_found"] == 1
+    assert projected["attempted_scripts"] == 1 and projected["success_rate"] == 100
+    assert projected["framework_status"]["pymdp"]["executions"] == 1
+    assert (
+        projected["_selection_view"]["source_receipt_sha256"]
+        == hashlib.sha256(original).hexdigest()
+    )
+    assert Path(
+        projected["execution_details"][0]["implementation_directory"]
+    ).is_relative_to(view.resolve())
+    discovered = _discover_pymdp_result_files(view)
+    assert len(discovered) == 1 and selected in discovered[0].parts
+    assert summary.read_bytes() == original
+
+
+def test_skipped_only_execution_view_never_claims_framework_success(
+    tmp_path, monkeypatch
+):
+    from gnn.pipeline.artifact_ownership import execution_view
+
+    context = _context(tmp_path)
+    _activate(context, monkeypatch)
+    root = Path(context.output_root)
+    execution = root / "12_execute_output"
+    summary = execution / "summaries/execution_summary.json"
+    summary.parent.mkdir(parents=True)
+    model = context.models[0].artifact_stem
+    summary.write_text(
+        json.dumps(
+            {
+                "execution_details": [
+                    {
+                        "model_name": model,
+                        "framework": "pymdp",
+                        "success": False,
+                        "skipped": True,
+                    }
+                ]
+            }
+        )
+    )
+    current = root / "00_pipeline_summary/current_summary.json"
+    current.parent.mkdir(exist_ok=True)
+    current.write_text(
+        json.dumps(
+            {
+                "run_id": context.run_id,
+                "steps": [
+                    {
+                        "artifacts": [
+                            {
+                                "path": summary.relative_to(root).as_posix(),
+                                "sha256": hashlib.sha256(
+                                    summary.read_bytes()
+                                ).hexdigest(),
+                            }
+                        ]
+                    }
+                ],
+            }
+        )
+    )
+    view = execution_view(execution, {model})
+    selected = json.loads((view / "summaries/execution_summary.json").read_text())
+    assert selected["success"] is False and selected["status"] == "skipped"
+    assert selected["framework_status"]["pymdp"]["status"] == "skipped"

@@ -65,6 +65,31 @@ def _check_declared_timesteps(data: dict[str, Any], actual: int) -> None:
 
 
 def _check_bound_series(view: dict[str, Any], actual: int) -> None:
+    transitions = view.get("transition_actions")
+    if transitions is not None:
+        if not isinstance(transitions, (list, tuple)) or len(transitions) != actual - 1:
+            raise ValueError(
+                "transition_actions must align with transitions between posterior timesteps"
+            )
+        controls = (view.get("model_parameters") or {}).get("num_actions")
+        if controls is not None and (
+            isinstance(controls, bool)
+            or not isinstance(controls, (int, np.integer))
+            or controls <= 0
+        ):
+            raise ValueError(
+                "num_actions must be a positive integer for transition actions"
+            )
+        if any(
+            isinstance(action, bool)
+            or not isinstance(action, (int, np.integer))
+            or action < 0
+            or (controls is not None and action >= controls)
+            for action in transitions
+        ):
+            raise ValueError(
+                "transition_actions must contain valid integer action indices"
+            )
     for key in (
         "actions",
         "observations",

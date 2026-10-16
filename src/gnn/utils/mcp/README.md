@@ -4,3 +4,8 @@ Concern-package home (S2-33 split). The old `gnn/utils/<module>.py` paths were
 removed with the SC-38 facade takedown — import from this package. Layout, invariants
 (frozen `_EXPORT_MAP` values, lazy loading), and gating tests are listed in
 [`AGENTS.md`](AGENTS.md).
+
+`get_system_info` reports CPU frequency when the platform supports it. An
+unavailable or failed frequency probe leaves `cpu.frequency` null and adds
+`cpu.frequency_error`, while retaining the available platform, memory, CPU-count
+and disk diagnostics.

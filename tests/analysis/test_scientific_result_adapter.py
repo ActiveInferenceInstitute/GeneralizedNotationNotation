@@ -112,3 +112,44 @@ def test_structured_extraction_retains_extension_scientific_fields() -> None:
 def test_flat_categorical_declared_timesteps_are_not_truncated(timesteps) -> None:
     with pytest.raises(ValueError, match="num_timesteps"):
         result_views({"beliefs": [[0.2, 0.8]], "num_timesteps": timesteps})
+
+
+@pytest.mark.parametrize("actions", [[1, 0], [False], [0.0], [-1], [2]])
+def test_transition_indices_must_bind_actual_posterior_transitions(actions):
+    source = {
+        "beliefs": [[0.8, 0.2], [0.3, 0.7]],
+        "num_timesteps": 2,
+        "model_parameters": {"num_actions": 2},
+        "transition_actions": actions,
+    }
+    with pytest.raises(ValueError, match="transition_actions"):
+        result_views(source)
+
+
+def test_bnlearn_extraction_keeps_fixed_actions_separate_from_policy_actions():
+    from gnn.analysis.framework_extractors import extract_bnlearn_data
+
+    payload = {
+        "schema_version": "bnlearn_fixed_action_filter_v1",
+        "beliefs": [[0.8, 0.2], [0.3, 0.7]],
+        "num_timesteps": 2,
+        "observations": [1, 0],
+        "transition_actions": [1],
+        "action_semantics": "transition_into_next_state",
+        "inference_mode": "exact_categorical_filtering",
+        "control_mode": "fixed_transition_actions",
+        "source_parameter_fidelity": True,
+        "model_parameters": {"num_actions": 2},
+    }
+    result = extract_bnlearn_data({"simulation_data": payload})
+    assert result["transition_actions"] == [1]
+    assert result["actions"] == []
+    assert result["beliefs"] == payload["beliefs"]
+    assert result["free_energy"] == [] and result["policy"] == []
+    assert result["inference_mode"] == "exact_categorical_filtering"
+    assert (
+        extract_bnlearn_data(
+            {"metadata": {"inference_contract": "synthetic_backend_smoke_v1"}}
+        )["beliefs"]
+        == []
+    )

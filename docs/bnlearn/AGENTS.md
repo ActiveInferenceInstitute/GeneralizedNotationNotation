@@ -13,7 +13,7 @@ This document provides agent scaffolding for the bnlearn framework documentation
 
 Documentation for the `bnlearn` Python package (https://github.com/erdogant/bnlearn) for causal discovery, parameter learning, inference, and sampling methods. It serves as a probabilistic graphical model abstraction layer for causal network generation, inference, and visualization.
 
-In the GNN pipeline, `bnlearn` renders **discrete categorical Bayesian networks** (optional A/B/C/D/E matrices; multi-modality and multi-factor supported) and is **executable**, not render-only: rendered scripts run at Step 12 via [`src/gnn/execute/bnlearn/`](../../src/gnn/execute/bnlearn/) with output under `BNLEARN_OUTPUT_DIR`. Scripts skip when the `bnlearn` extra is absent (`gnn.utils.runtime_safety.framework_availability`). Continuous linear-Gaussian models are unsupported (`supports_continuous=False` in `src/gnn/render/framework_registry.py`).
+In GNN, the `bnlearn` generator compiles complete stationary finite A/B/D models into native exact fixed-action filters: rendered scripts run at Step 12 via [`src/gnn/execute/bnlearn/`](../../src/gnn/execute/bnlearn/) with output under `BNLEARN_OUTPUT_DIR`. Scripts skip when the `bnlearn` extra is absent (`gnn.utils.runtime_safety.framework_availability`). Continuous linear-Gaussian models are unsupported (`supports_continuous=False` in `src/gnn/render/framework_registry.py`).
 
 ## Documentation Organization
 
@@ -52,3 +52,10 @@ All documentation in this subsystem follows the professional standards establish
 **Status**: ✅ Production Ready  
 **Compliance**: Professional documentation standards  
 **Maintenance**: Regular updates with new features
+
+The source compiler retains authored and canonical CPTs, source timesteps,
+normalization provenance and model/script identities. Independent native tests
+check complete posterior sequences. C/E policy optimization, causal discovery
+and component composition remain outside this filtering contract. Metadata-only
+compatibility calls still emit a labelled synthetic demonstration. See the
+[renderer contract](../../src/gnn/render/bnlearn/README.md).

@@ -66,3 +66,62 @@ def test_successful_exit_without_artifact_is_unsuccessful(
     script.write_text("print('finished without result')")
     result = _execute(script, tmp_path / "out")
     assert not result["success"] and "native result" in result["error"]
+
+
+def test_relative_output_root_survives_child_working_directory(
+    tmp_path, protocol_ready, monkeypatch
+):
+    monkeypatch.chdir(tmp_path)
+    folder = tmp_path / "render/stable_model/thrml"
+    folder.mkdir(parents=True)
+    script = write_protocol_script(folder / "relative_thrml.py")
+    result = _execute(script, Path("out"))
+    assert result["success"], result
+    assert (
+        tmp_path / "out/stable_model/thrml/simulation_data/simulation_results.json"
+    ).is_file()
+    assert not (folder / "out").exists()
+    assert Path(result["implementation_directory"]).is_absolute()
+    assert Path(result["structured_result_file"]).is_absolute()
+
+
+@pytest.mark.parametrize(
+    "framework, variable",
+    [
+        ("pymdp", "PYMDP_OUTPUT_DIR"),
+        ("jax", "GNN_OUTPUT_DIR"),
+        ("numpyro", "NUMPYRO_OUTPUT_DIR"),
+        ("pytorch", "PYTORCH_OUTPUT_DIR"),
+        ("stan", "STAN_OUTPUT_DIR"),
+        ("bnlearn", "BNLEARN_OUTPUT_DIR"),
+        ("ngclearn", "NGCLEARN_OUTPUT_DIR"),
+        ("cpomdp", "CPOMDP_OUTPUT_DIR"),
+        ("thrml", "THRML_OUTPUT_DIR"),
+    ],
+)
+def test_all_backend_output_environments_are_absolute(
+    tmp_path, monkeypatch, framework, variable
+):
+    from gnn.execute.types import ScriptExecutionContext
+
+    monkeypatch.chdir(tmp_path)
+    context = ScriptExecutionContext(
+        tmp_path / "render/case.py", "case.py", framework, "stable_model", "python"
+    )
+    env = processor._build_execution_environment(context, Path("out"))
+    expected = tmp_path / "out/stable_model" / framework
+    if framework != "thrml":
+        expected /= "simulation_data"
+    assert Path(env[variable]) == expected
+    assert expected.is_absolute()
+
+
+def test_pymdp_environment_preserves_explicit_checkout_override(tmp_path, monkeypatch):
+    from gnn.execute.types import ScriptExecutionContext
+
+    monkeypatch.setenv("GNN_PROJECT_ROOT", str(tmp_path / "explicit-checkout"))
+    context = ScriptExecutionContext(
+        tmp_path / "case.py", "case.py", "pymdp", "model", "python"
+    )
+    env = processor._build_execution_environment(context, tmp_path / "out")
+    assert env["GNN_PROJECT_ROOT"] == str(tmp_path / "explicit-checkout")

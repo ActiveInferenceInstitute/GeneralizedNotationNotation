@@ -5,7 +5,11 @@ import importlib
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, cast
 
-from gnn.render.admission import validate_model_render_options, validate_render_options
+from gnn.render.admission import (
+    render_options_schema,
+    validate_model_render_options,
+    validate_render_options,
+)
 
 from ._routes import RENDERER_ROUTES, RendererRoute, _safe_output_stem
 from ._support import _POMDPProcessorSupportMixin
@@ -85,13 +89,21 @@ class _RendererDispatchMixin(_POMDPProcessorSupportMixin):
                 dict(kwargs) if framework == "thrml" else {**kwargs, **selected_options}
             )
 
-            if route.options_mode == "timesteps":
+            if route.options_mode == "backend_options":
+                # Pipeline kwargs include logger/discovery controls. Only the
+                # backend's declared options belong in its strict direct API.
+                renderer_options: Any = {
+                    key: resolved_kwargs[key]
+                    for key in render_options_schema(framework)["properties"]
+                    if key in resolved_kwargs
+                }
+            elif route.options_mode == "timesteps":
                 # Build options dict with timesteps if available
                 options: dict[Any, Any] = {}
                 model_params = gnn_spec.get("model_parameters", {})
                 if "num_timesteps" in model_params:
                     options["num_timesteps"] = model_params["num_timesteps"]
-                renderer_options: Any = {**options, **resolved_kwargs} or None
+                renderer_options = {**options, **resolved_kwargs} or None
             elif route.options_mode == "kwargs_or_none":
                 renderer_options = resolved_kwargs or None
             else:
@@ -212,6 +224,14 @@ class _RendererDispatchMixin(_POMDPProcessorSupportMixin):
             return {
                 "success": False,
                 "message": f"bnlearn generator not available: {e}",
+                "artifacts": [],
+            }
+
+        except ValueError as exc:
+            return {
+                "success": False,
+                "unsupported": str(exc).startswith("unsupported-bnlearn:"),
+                "message": str(exc),
                 "artifacts": [],
             }
 

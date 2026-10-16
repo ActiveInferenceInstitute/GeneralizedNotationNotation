@@ -7,6 +7,13 @@
 ## Overview
 This guide provides information for developers contributing to the GNN project, including code organization, development workflows, and architecture patterns.
 
+### Remaining roadmap contracts
+
+[Implementation boundaries and acceptance cases](remaining_roadmap_contracts.md)
+cover long-context processing, independent semantic witnesses, coupled continuous
+agents, THRML/cpomdp extensions and exact-version archival. They preserve the
+seven open workstreams in [TO-DO](../../TO-DO.md).
+
 ### Documentation audit tooling
 
 From the repository root:

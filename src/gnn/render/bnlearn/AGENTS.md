@@ -2,7 +2,7 @@
 
 ## Module Overview
 
-**Purpose**: Render parsed GNN/POMDP specifications to **standalone bnlearn scripts** (Bayesian-network structure/parameter learning plus exact inference).
+**Purpose**: Emit source-bound stationary finite-model filtering programs, with a separately labelled metadata-only synthetic demonstration. See [README.md](README.md) for the scientific contract.
 
 **Parent**: `src/gnn/render/` (Step 11: Render)
 
@@ -24,7 +24,7 @@ From `src/gnn/render/bnlearn/__init__.py`:
 
 ## Implementation notes
 
-`bnlearn_renderer.py` is codegen-only: the renderer never imports `bnlearn` — the generated script does (`import bnlearn as bn` + `bn.make_DAG` + `bn.parameter_learning.fit` + `bn.inference.fit`). Validation and literal-formatting helpers are shared with the other codegen generators via `render.generators`.
+`bnlearn_renderer.py` delegates complete finite-model CPT compilation to `source_program.py`. Preserve authored parameters, axes, timesteps and source identity; reject unsupported components. Native tests must compare against independent forward filtering. The renderer is codegen-only: the renderer never imports `bnlearn` — the generated script does (`import bnlearn as bn` + `bn.make_DAG` + `bn.parameter_learning.fit` + `bn.inference.fit`). Validation and literal-formatting helpers are shared with the other codegen generators via `render.generators`.
 
 ---
 
@@ -42,4 +42,4 @@ Preferred tests:
 - formatting/syntax validation: the generated script compiles (`py_compile`) — no bnlearn import happens at render or test time
 - integration: Step 11 produces `bnlearn/<model>_bnlearn.py` for graph-backed specs
 
-End-to-end execution tests should live under `tests/` and be resilient to optional dependency availability.
+End-to-end execution tests should live under `tests/` and declare optional dependency availability through `needs_bnlearn`.

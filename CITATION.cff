@@ -11,7 +11,8 @@ version: 4.1.0
 date-released: 2026-10-08
 # Manuscript authored epoch: 2026-10-02.
 # Project concept DOI. Exact 4.0.1 source archive: 10.5281/zenodo.23222085.
-# The 4.1.0 version/distribution archive remains pending.
+# Exact 4.1.0 source archive: 10.5281/zenodo.23245091.
+# Archival of the separate 4.1.0 wheel, sdist and checksums remains pending.
 doi: 10.5281/zenodo.7803313
 
 abstract: |

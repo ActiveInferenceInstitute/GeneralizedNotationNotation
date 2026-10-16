@@ -31,3 +31,8 @@ Specs without `goal_mean`/`control_gain` render as passive trackers with no cont
 The renderer imports nothing from cpomdp. The generated script needs `cpomdp` and `jax` (`uv sync --extra cpomdp`).
 
 See [AGENTS.md](AGENTS.md) for the design notes.
+
+Direct Python rendering uses the same typed option admission as the shared CLI,
+REST and MCP surfaces. Unknown keys, explicit nulls, numeric strings and
+noncanonical control modes refuse before replacing the destination. Search
+admission also requires an actual Boolean control flag.

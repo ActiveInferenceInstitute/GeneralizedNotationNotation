@@ -88,6 +88,15 @@ Package exports (`from gnn.llm import ...`): `LLMAnalyzer`, `AnalysisType`,
 `BaseLLMProvider`, `DEFAULT_OLLAMA_MODEL`, `get_available_providers`,
 `load_api_keys_from_env` — see `__init__.py` `__all__` for the complete list.
 
+Native prompt completion requires a provider `stop` finish reason. Replies stopped
+by a token limit, content filter or tool request retain their text and an
+`incomplete` outcome, and stay in `unfinished_work`. They are neither cached nor
+checkpointed as complete. Cache request version 3 and the checkpoint's
+`terminal_stop_v1` completion policy prevent older text-only completion records
+from satisfying this contract. In-memory provider injections may omit a finish
+reason for compatibility; they do not establish native acceptance. Source-context
+overflow still refuses; source-preserving multi-request work remains under S1.
+
 ### Module Integration Flow
 
 ```mermaid

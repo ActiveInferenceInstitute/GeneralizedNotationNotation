@@ -88,6 +88,9 @@ def _build_execution_environment(
 ) -> Dict[str, str]:
     """Build environment variables for a rendered-script subprocess."""
     env = os.environ.copy()
+    # The child runs from its rendered-script directory. Resolve ownership
+    # paths in the caller before transferring them through environment vars.
+    results_dir = Path(results_dir).resolve()
     # Julia frameworks: default JULIA_PROJECT to the committed framework
     # environment so `using GnnRxInferModels` / `using ActiveInference`
     # resolve without an ambient env (e.g. a /tmp test env that may not
@@ -105,8 +108,11 @@ def _build_execution_environment(
             str(context.script_path.parent) + os.pathsep + env.get("PYTHONPATH", "")
         )
         proc_path = Path(__file__).resolve()
-        repo_root = proc_path.parent.parent.parent.parent
-        env["GNN_PROJECT_ROOT"] = str(repo_root)
+        repo_root = proc_path.parents[4]
+        if (repo_root / "pyproject.toml").is_file() and (
+            repo_root / "src/gnn"
+        ).resolve() == proc_path.parents[2]:
+            env.setdefault("GNN_PROJECT_ROOT", str(repo_root))
         env.setdefault("TF_CPP_MIN_LOG_LEVEL", "3")
         jax_platform = os.environ.get("GNN_JAX_PLATFORM")
         if jax_platform and str(jax_platform).strip():
@@ -116,6 +122,7 @@ def _build_execution_environment(
         results_dir / context.model_name / context.framework / "simulation_data"
     )
     output_env_vars = {
+        "pymdp": "PYMDP_OUTPUT_DIR",
         "jax": "GNN_OUTPUT_DIR",
         "numpyro": "NUMPYRO_OUTPUT_DIR",
         "pytorch": "PYTORCH_OUTPUT_DIR",
@@ -229,6 +236,7 @@ def execute_single_script(
     Returns:
         Dictionary with execution results
     """
+    results_dir = Path(results_dir).resolve()
     context = _build_script_execution_context(script_info)
     script_path = context.script_path
     executor = context.executor

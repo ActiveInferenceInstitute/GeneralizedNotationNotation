@@ -70,3 +70,16 @@ class TestCollectVisualizationMatrices:
         matrices = collect_visualization_matrices(parsed)
         assert list(matrices) == ["P"]
         assert isinstance(matrices["P"], np.ndarray)
+
+
+def test_scalar_metadata_does_not_generate_heatmaps_or_hide_actual_matrices():
+    parsed = {
+        "parameters": {"num_actions": 2, "seed": 42, "precision": 1.5},
+        "variables": [{"name": "count", "value": 5}],
+        "matrices": [{"name": "A", "data": [[1.0]]}, {"name": "count", "data": 9}],
+    }
+    collected = collect_visualization_matrices(parsed)
+    assert list(collected) == ["A"]
+    assert collected["A"].shape == (1, 1)
+    parsed["parameters"]["D"] = [1.0]
+    assert list(collect_visualization_matrices(parsed)) == ["D"]

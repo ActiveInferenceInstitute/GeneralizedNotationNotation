@@ -78,17 +78,24 @@ def collect_visualization_matrices(parsed_data: Dict[str, Any]) -> Dict[str, Any
     Returns an ordered ``{name: np.ndarray}`` mapping (possibly empty).
     """
     parameters = parsed_data.get("parameters") or []
-    matrices = extract_matrix_data_from_parameters(parameters)
+    # Scalars (counts, seeds, precisions) remain model metadata. They should not
+    # create 1x1 heatmaps or prevent fallback to actual declared matrix data.
+    matrices = {
+        name: value
+        for name, value in extract_matrix_data_from_parameters(parameters).items()
+        if value.ndim > 0
+    }
     if not matrices:
         matrices = extract_matrix_data_from_parameters(
             parsed_data.get("variables") or []
         )
+        matrices = {name: value for name, value in matrices.items() if value.ndim > 0}
     if not matrices:
         for m_info in parsed_data.get("matrices") or []:
             if not isinstance(m_info, dict) or "data" not in m_info:
                 continue
             m_name = m_info.get("name", f"matrix_{len(matrices)}")
             m_data = convert_to_matrix(m_info.get("data"), m_name)
-            if m_data is not None:
+            if m_data is not None and m_data.ndim > 0:
                 matrices[m_name] = m_data
     return matrices
