@@ -1,5 +1,13 @@
 # GitHub workflows
 
+The local default and primary ordinary test matrix now include Python 3.14,
+with exact uv 0.13.1. The named h5py/HDF5 host exception and removal checks are
+in root README.md. General docs/local/MCP/security jobs select 3.14; coupled
+3.12 required statuses and native/paired/manuscript/GUI rosters remain explicit
+compatibility or evidence profiles. Existing acceptance receipts retain their
+original source, runtime and tool identities; this configuration change does
+not renew those receipts.
+
 YAML workflows for CI, MCP tool-count audit, weekly all-extras suite, documentation audit, workflow lint, dependency review, CodeQL, and scheduled supply-chain checks. Parent hub (Dependabot + full index): [../README.md](../README.md). Agent guide: [AGENTS.md](AGENTS.md).
 
 ## Workflow files
@@ -58,7 +66,7 @@ actionlint .github/workflows/*.yml
 
 Run from repo root (paths relative to root).
 
-CI sets `UV_PYTHON` to the test matrix version (and 3.12 for security and
+CI sets `UV_PYTHON` to the test matrix version (and 3.14 for security and
 documentation jobs), overriding the local `.python-version` pin. XML export
 validation uses `defusedxml` and rejects entity declarations.
 

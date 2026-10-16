@@ -1,5 +1,13 @@
 # Specification: Workflows
 
+The local default and primary ordinary test matrix now include Python 3.14,
+with exact uv 0.13.1. The named h5py/HDF5 host exception and removal checks are
+in root README.md. General docs/local/MCP/security jobs select 3.14; coupled
+3.12 required statuses and native/paired/manuscript/GUI rosters remain explicit
+compatibility or evidence profiles. Existing acceptance receipts retain their
+original source, runtime and tool identities; this configuration change does
+not renew those receipts.
+
 ## Design Requirements
 The `workflows` directory serves as the execution layer for the GNN repository's Continuous Integration and Continuous Deployment (CI/CD) pipeline. Its primary design requirement is to enforce real-implementation test coverage, maintain repository stability, and ensure code quality via automated execution graphs triggered by GitHub events.
 

@@ -81,8 +81,8 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
         with:
-          # Pin uv to the Dockerfile bootstrap floor series (UV_VERSION=0.12.0).
-          version: "0.12"
+          # Match exact uv 0.13.1 in uv.toml and the Docker bootstrap.
+          version: "0.13.1"
           enable-cache: true
       - name: Record both checkouts before installing
         run: |

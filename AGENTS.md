@@ -468,6 +468,15 @@ pytest --cov=src --cov-report=term-missing
 
 ---
 
+## Runtime defaults
+
+Select the latest stable CPython unless a named dependency or evidence profile
+requires an older runtime. The current frozen default uses Python 3.14 with
+exact uv 0.13.1; the h5py/HDF5 host requirement and removal checks are documented
+in README.md under Runtime defaults and required profiles. Preserve protected
+producer metadata/locks and existing compatibility/native/paired rosters.
+`uv.toml` mirrors all configurable uv settings from the protected pyproject.
+
 ## Cross-repo custody (fep_lean, GEO-INFER)
 
 This repository shares custody pairs with two sibling repositories: fep_lean (bridge contract) and GEO-INFER (interchange contracts); each side pins the other via committed pin files plus paired CI. The one-line rule: **any edit to `src/gnn/**/*.py` (or `pyproject.toml`, `uv.lock`, `src/gnn/main.py`, `docs/gnn/gnn_syntax.md`, `src/gnn/pipeline/step_registry.py`) re-drifts the fep_lean custody pair** and must be closed out by the paired re-pin ritual. Canonical ordering and workflow details: [docs/development/fep_lean_paired_revision.md](docs/development/fep_lean_paired_revision.md).
