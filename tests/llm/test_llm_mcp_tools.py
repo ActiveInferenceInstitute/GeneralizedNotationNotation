@@ -163,3 +163,44 @@ class TestProcessLLMMCP:
         )
         assert result["success"] is True
         assert captured["verbose"] is True
+
+
+def test_mcp_local_override_uses_configured_model(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("OLLAMA_MODEL", "local-capable:exact")
+    captured = {}
+
+    def analyze(path: Path, ollama_model: str | None = None) -> dict:
+        captured["model"] = ollama_model
+        return {"llm_summary_status": "unavailable"}
+
+    monkeypatch.setattr("gnn.llm.mcp.analyze_gnn_file_with_llm", analyze)
+    result = analyze_gnn_with_llm_mcp(str(SAMPLE_GNN), provider="ollama")
+    assert captured["model"] == "local-capable:exact"
+    assert result["success"] is False
+
+
+def test_mcp_inventory_reports_http_configuration_not_sdk_readiness(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("OLLAMA_HOST", "http://127.0.0.1:23001")
+    monkeypatch.setenv("OLLAMA_DISABLED", "true")
+    ollama = get_llm_providers_mcp()["providers"]["ollama"]
+    assert ollama["available"] is True
+    assert ollama["configured"] is False
+    assert ollama["base_url"] == "http://127.0.0.1:23001"
+    assert ollama["readiness"] == "not_probed"
+
+
+@pytest.mark.asyncio
+async def test_mcp_resolves_async_analyzer_in_running_loop(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    async def analyze(path: Path, ollama_model: str | None = None) -> dict:
+        return {"llm_summary_status": "available", "llm_summary": "awaited"}
+
+    monkeypatch.setattr("gnn.llm.mcp.analyze_gnn_file_with_llm", analyze)
+    result = analyze_gnn_with_llm_mcp(str(SAMPLE_GNN), provider="ollama")
+    assert result["success"] is True
+    assert result["llm_summary"] == "awaited"

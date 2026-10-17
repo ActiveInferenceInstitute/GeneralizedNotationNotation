@@ -8,7 +8,9 @@ through MCP.
 
 from __future__ import annotations
 
+import inspect
 import logging
+import os
 from pathlib import Path
 from typing import Any, Dict, Optional
 
@@ -22,6 +24,7 @@ from . import (
     process_llm,
 )
 from .defaults import DEFAULT_OLLAMA_MODEL
+from .sync_bridge import run_async
 
 _GNN_MODEL_SUFFIXES = {".md", ".json", ".yaml", ".yml"}
 _ANALYSIS_TYPES = ("comprehensive", "summary", "complexity", "connections")
@@ -140,6 +143,11 @@ def analyze_gnn_with_llm_mcp(
         Dictionary with success flag, analysis type, and LLM output.
     """
     try:
+        if provider not in (None, "ollama"):
+            return {
+                "success": False,
+                "error": "This tool supports explicit Ollama or default routing; use LLMProcessor for other explicit providers",
+            }
         if analysis_type not in _ANALYSIS_TYPES:
             return {
                 "success": False,
@@ -155,20 +163,26 @@ def analyze_gnn_with_llm_mcp(
         # Honor the provider override where the analyzer supports it: "ollama"
         # pins the pipeline's default local tag for the summary call; other
         # names use the standard multi-provider routing.
-        ollama_model = DEFAULT_OLLAMA_MODEL if provider == "ollama" else None
+        ollama_model = (
+            (os.getenv("OLLAMA_MODEL") or DEFAULT_OLLAMA_MODEL)
+            if provider == "ollama"
+            else None
+        )
         result = analyze_gnn_file_with_llm(gnn_path, ollama_model=ollama_model)
+        if inspect.iscoroutine(result):
+            result = run_async(result)
         if isinstance(result, dict):
             return {
-                "success": True,
+                "success": result.get("llm_summary_status") != "unavailable",
                 "analysis_type": analysis_type,
                 "provider": provider,
                 **result,
             }
         return {
-            "success": True,
+            "success": False,
             "analysis_type": analysis_type,
             "provider": provider,
-            "analysis": str(result),
+            "error": "LLM analyzer did not return an analysis dictionary",
         }
     except Exception as e:
         logger.error(f"analyze_gnn_with_llm_mcp error: {e}", exc_info=True)
@@ -267,7 +281,7 @@ def generate_llm_documentation_mcp(
                     out.write_text(
                         _json.dumps(result, indent=2, default=str), encoding="utf-8"
                     )
-            return {"success": True, **result}
+            return {"success": True, "analysis_source": "structural", **result}
         return {"success": True, "documentation": str(result)}
     except Exception as e:
         logger.error(f"generate_llm_documentation_mcp error: {e}", exc_info=True)
@@ -297,7 +311,8 @@ def get_llm_providers_mcp() -> Dict[str, Any]:
         }
         # Anthropic
         providers["anthropic"] = {
-            "available": importlib.util.find_spec("anthropic") is not None,
+            "available": False,
+            "implemented": False,
             "configured": bool(os.getenv("ANTHROPIC_API_KEY")),
         }
         # OpenRouter and Perplexity ride the openai client library, so their
@@ -311,14 +326,20 @@ def get_llm_providers_mcp() -> Dict[str, Any]:
             "configured": bool(os.getenv("PERPLEXITY_API_KEY")),
         }
         # Ollama (local)
+        from .provider_identity import resolved_endpoint
+        from .providers.base_provider import ProviderType
+
+        ollama_endpoint, _ = resolved_endpoint(ProviderType.OLLAMA)
         providers["ollama"] = {
-            "available": importlib.util.find_spec("ollama") is not None,
-            "configured": bool(os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")),
-            "base_url": os.getenv("OLLAMA_BASE_URL", "http://localhost:11434"),
+            "available": True,  # Maintained HTTP transport uses the standard library.
+            "configured": os.getenv("OLLAMA_DISABLED", "").lower() not in {"1", "true"},
+            "base_url": ollama_endpoint,
+            "readiness": "not_probed",  # Configuration is not live inference evidence.
         }
         # Google Gemini
         providers["google"] = {
-            "available": importlib.util.find_spec("google.generativeai") is not None,
+            "available": False,
+            "implemented": False,
             "configured": bool(os.getenv("GOOGLE_API_KEY")),
         }
 
@@ -446,7 +467,8 @@ def register_tools(mcp_instance: Any) -> None:
                     },
                     "provider": {
                         "type": "string",
-                        "description": "LLM provider override (openai, anthropic, ollama, google)",
+                        "enum": ["ollama"],
+                        "description": "Explicit local Ollama, or null for default routing",
                         "nullable": True,
                     },
                 },
