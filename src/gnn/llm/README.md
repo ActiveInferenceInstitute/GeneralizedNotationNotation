@@ -42,8 +42,11 @@ success = process_llm(
 )
 ```
 
-`LLMProcessor` provides async `get_response`, `analyze_gnn`, provider lookup and
-cleanup. Explicit `provider_type=ProviderType.OLLAMA` stays pinned on failure.
+`gnn.llm.UnifiedLLMProcessor` provides async `get_response`, `analyze_gnn`,
+provider lookup and cleanup; the same class is named `LLMProcessor` inside
+`gnn.llm.llm_processor`. The package-level `gnn.llm.LLMProcessor` and
+`LLMAnalyzer` are deterministic structural compatibility facades.
+Explicit `provider_type=ProviderType.OLLAMA` stays pinned on failure.
 Generic convenience calls without a model resolve the selected provider's
 model. `LLMOperations.summarize_gnn(..., ollama_model=...)` pins the local tag;
 unfinished summaries return an error rather than appearing complete.

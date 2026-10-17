@@ -81,9 +81,13 @@ structural results.
 For Python, call `gnn.llm.process_llm` with `provider="ollama"`, `model=...`,
 `max_tokens=4096`, `source_chunk_bytes=65536`, and
 `llm_config={"ollama_options": {"num_ctx": 131072, "seed": 42}}`.
-Use `LLMProcessor.get_response` with `provider_type=ProviderType.OLLAMA` for a
-pinned single request; its `LLMResponse` includes completion reason, usage and
-native transport metadata. Generic convenience calls without a model use the
+Use `gnn.llm.UnifiedLLMProcessor.get_response` with
+`provider_type=ProviderType.OLLAMA` for a pinned single request; its `LLMResponse`
+includes completion reason, usage and native transport metadata. This processor
+is also named `LLMProcessor` in `gnn.llm.llm_processor`; the package-level
+`gnn.llm.LLMProcessor` is a separate structural compatibility facade. See the
+[native request example](../../src/gnn/llm/providers/README.md).
+Generic convenience calls without a model use the
 selected provider's default, rather than sending a cloud model name to Ollama.
 
 ## Context, completion and evidence
@@ -179,6 +183,6 @@ managed store. `just llm-local-setup` installs the frozen dev profile once; run
 commands use frozen, no-sync Python 3.14. Ollama remains an explicit optional
 service. MCP documentation generation is labeled structural, and single-file
 MCP analysis supports explicit Ollama or default routing. Other explicit
-providers are available through `LLMProcessor`, rather than silently ignored
+providers are available through `UnifiedLLMProcessor`, rather than silently ignored
 provider names in the MCP wrapper. Sync entrypoints also work inside an active
 event loop through an owned loop bridge.

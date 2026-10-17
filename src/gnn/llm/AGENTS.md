@@ -108,6 +108,11 @@ are not reported as successful LLM analysis. Step 24 validates its complete
 report topology and terminal response, otherwise labels its report `rule_based`.
 Its cache binds endpoint/context/seed and full request policy.
 
+The asynchronous native class is `gnn.llm.UnifiedLLMProcessor`, aliased from
+`gnn.llm.llm_processor.LLMProcessor`. Package-level `gnn.llm.LLMProcessor` and
+`LLMAnalyzer` are structural compatibility facades. Keep their evidence boundary
+explicit in examples and use the native class for provider requests.
+
 ## Testing
 
 Offline: `uv run --frozen --no-sync python -m pytest tests/llm -m 'not ollama' -q`.
