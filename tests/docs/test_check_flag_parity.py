@@ -71,6 +71,9 @@ def test_static_scan_covers_every_orchestrator_step() -> None:
     assert "--target-dir" in dynamic
     assert "--output-dir" in dynamic
     assert "--verbose" in dynamic
+    # The published bnlearn runner owns these registrations inside its emitted
+    # program, rather than in the surrounding compiler module's Python AST.
+    assert {"--observations-json", "--transition-actions-json"} <= dynamic
     # and the union equals dynamic | static by construction
     static = gate.static_registered_flags(set(ArgumentParser.ARGUMENT_DEFINITIONS))
     assert gate.registered_flags() == dynamic | static
