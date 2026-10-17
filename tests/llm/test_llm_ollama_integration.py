@@ -246,8 +246,11 @@ class TestLLMProcessing:
     """Opt-in native acceptance must establish completion, not merely files."""
 
     @pytest.mark.needs_ollama
-    @pytest.mark.timeout(300)
-    def test_native_corpus_completion_and_resume(self, tmp_path: Path) -> None:
+    @pytest.mark.timeout(600)
+    @pytest.mark.parametrize("batch_prompts", [False, True])
+    def test_native_corpus_completion_and_resume(
+        self, tmp_path: Path, batch_prompts: bool
+    ) -> None:
         from gnn.llm.defaults import DEFAULT_OLLAMA_MODEL
 
         model = (
@@ -268,7 +271,9 @@ class TestLLMProcessing:
             model=model,
             max_tokens=4096,
             custom_prompts=[],
-            max_prompt_timeout=45,
+            max_prompt_timeout=180,
+            response_words=160,
+            batch_prompts=batch_prompts,
         )
         assert process_llm(target, output, **options)
         result = json.loads((output / "llm_results.json").read_text())
