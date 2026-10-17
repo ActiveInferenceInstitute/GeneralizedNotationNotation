@@ -57,7 +57,13 @@ partial responses and failed probes. Do not count structural output as native
 inference, fragment coverage as joint interpretation, or cached resume as a new
 provider request. Deduplicate bundled response usage by `request_sha256`.
 
-See [module contracts](AGENTS.md), [outputs and APIs](README.md), and
-[MCP registrations](mcp.py). MCP analysis honors the configured local tag;
-documentation generation is structural. Explicit MCP provider selection supports
-Ollama; other explicit adapters use the asynchronous provider processor.
+## MCP Tools
+
+The module registers `process_llm`, `analyze_gnn_with_llm`,
+`generate_llm_documentation`, `get_llm_module_info`, and `get_llm_providers`.
+MCP analysis honors the configured local tag; documentation generation is
+structural. Explicit MCP provider selection supports Ollama; other explicit
+adapters use the asynchronous provider processor.
+
+See [MCP registrations](mcp.py), [module contracts](AGENTS.md), and
+[outputs and APIs](README.md).

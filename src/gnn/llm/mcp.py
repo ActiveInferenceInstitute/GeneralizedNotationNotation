@@ -135,9 +135,9 @@ def analyze_gnn_with_llm_mcp(
     Args:
         gnn_file_path: Path to the GNN `.md` model file.
         analysis_type: One of "comprehensive", "summary", "complexity", "connections".
-        provider: Optional provider override; "ollama" pins the default
-            local tag for the summary call, any other value uses the
-            standard multi-provider routing.
+        provider: Optional override; "ollama" pins the configured local
+            tag for the summary call. None uses default routing;
+            other explicit values are rejected.
 
     Returns:
         Dictionary with success flag, analysis type, and LLM output.
@@ -189,17 +189,45 @@ def analyze_gnn_with_llm_mcp(
         return {"success": False, "error": str(e)}
 
 
+def _format_structural_documentation(result: Dict[str, Any], format: str) -> str:
+    """Render every structural section as the requested human-readable format."""
+    overview = str(result.get("model_overview", "")).strip()
+    if format == "text":
+        import re
+
+        overview = re.sub(r"(?m)^#{1,6}\s+", "", overview).replace("**", "")
+    sections = [overview]
+    for title, key in (
+        ("Variables", "variable_documentation"),
+        ("Connections", "connection_documentation"),
+        ("Usage Examples", "usage_examples"),
+    ):
+        sections.append(f"### {title}" if format == "markdown" else title)
+        for item in result.get(key, []):
+            label = item.get("name") or item.get("title") or item.get("connection")
+            sections.append(f"- {label}: {item.get('description', '')}")
+            if item.get("definition"):
+                sections.append(str(item["definition"]))
+            if item.get("code"):
+                sections.append(
+                    f"```text\n{item['code']}\n```"
+                    if format == "markdown"
+                    else str(item["code"])
+                )
+    return "\n\n".join(sections).strip() + "\n"
+
+
 def generate_llm_documentation_mcp(
     gnn_file_path: str,
     output_path: Optional[str] = None,
     format: str = "markdown",
 ) -> Dict[str, Any]:
     """
-    Generate human-readable documentation for a GNN model using an LLM.
+    Generate deterministic structural documentation for a GNN model.
 
-    Produces: title, abstract, StateSpace description, parameter tables,
-    mathematical formulations, and usage examples — formatted as Markdown
-    or plain text.
+    Produces a model overview, extracted variable and connection descriptions,
+    and generated usage examples, formatted as Markdown or plain text.
+    This operation does not call an LLM provider.
 
     Args:
         gnn_file_path: Path to the GNN `.md` model file.
@@ -210,6 +238,8 @@ def generate_llm_documentation_mcp(
         Dictionary with success flag and generated documentation string.
     """
     try:
+        if format not in ("markdown", "text"):
+            raise ValueError("format must be 'markdown' or 'text'")
         # Read the GNN file and build a lightweight analysis dict
         # that matches the signature of generate_documentation(file_analysis).
         gnn_path = _resolve_gnn_model_path(
@@ -271,16 +301,9 @@ def generate_llm_documentation_mcp(
             if resolved_output_path:
                 out = resolved_output_path
                 out.parent.mkdir(parents=True, exist_ok=True)
-                if format == "text":
-                    out.write_text(
-                        result.get("model_overview", str(result)), encoding="utf-8"
-                    )
-                else:
-                    import json as _json
-
-                    out.write_text(
-                        _json.dumps(result, indent=2, default=str), encoding="utf-8"
-                    )
+                out.write_text(
+                    _format_structural_documentation(result, format), encoding="utf-8"
+                )
             return {"success": True, "analysis_source": "structural", **result}
         return {"success": True, "documentation": str(result)}
     except Exception as e:
@@ -499,7 +522,7 @@ def register_tools(mcp_instance: Any) -> None:
                 },
                 "required": ["gnn_file_path"],
             },
-            "Generate human-readable Markdown documentation for a GNN model using an LLM.",
+            "Generate Markdown or text documentation from deterministic GNN structural analysis.",
         ),
         (
             "get_llm_providers",
