@@ -662,6 +662,7 @@ def test_frozen_empty_generation_options_do_not_inherit_later_environment(
     assert OllamaProvider(generation_options={}).generation_options == {}
 
 
+@pytest.mark.timeout(300)
 def test_model_digest_change_refuses_resume_and_invalidates_cache(
     daemon: Callable[..., Any], tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -676,8 +677,12 @@ def test_model_digest_change_refuses_resume_and_invalidates_cache(
         "## GNNSection\nActInfPOMDP\n## ModelName\nDigest control\n"
     )
     output = tmp_path / "output"
-    options = dict(provider="ollama", model=MODEL, custom_prompts=[], llm_timeout=30)
-    assert process_llm(target, output, **options)
+    # This tests digest custody, not startup speed: coverage instruments each
+    # isolated request process, and six cold imports can exceed 30 seconds.
+    options = dict(provider="ollama", model=MODEL, custom_prompts=[], llm_timeout=120)
+    assert process_llm(target, output, **options), (
+        output / "llm_results.json"
+    ).read_text()
     assert len(received) == 6
     inventory["models"][0]["digest"] = "b" * 64
     assert not process_llm(target, output, resume=True, **options)
@@ -686,7 +691,9 @@ def test_model_digest_change_refuses_resume_and_invalidates_cache(
     assert len(refused["unfinished_work"]) == 6
     assert "runtime/model digest" in refused["errors"][0]["error"]
     assert len(received) == 6
-    assert process_llm(target, output, **options)
+    assert process_llm(target, output, **options), (
+        output / "llm_results.json"
+    ).read_text()
     assert len(received) == 12
 
 
