@@ -18,9 +18,10 @@ def main() -> int:
     parser.add_argument("--model", default="gemma3:12b")
     parser.add_argument("--context-tokens", type=int, default=131072)
     parser.add_argument("--source-chunk-bytes", type=int, default=65536)
-    parser.add_argument("--max-tokens", type=int, default=4096)
-    parser.add_argument("--prompt-timeout", type=float, default=180)
-    parser.add_argument("--response-words", type=int, default=160)
+    parser.add_argument("--max-tokens", type=int, default=8192)
+    parser.add_argument("--prompt-timeout", type=float, default=240)
+    parser.add_argument("--response-words", type=int, default=60)
+    parser.add_argument("--answer-max-chars", type=int, default=1000)
     parser.add_argument("--no-batch-prompts", action="store_true")
     parser.add_argument("--llm-timeout", type=float, default=None)
     parser.add_argument("--resume", action="store_true")
@@ -41,6 +42,7 @@ def main() -> int:
         resume=args.resume,
         batch_prompts=not args.no_batch_prompts,
         response_words=args.response_words,
+        answer_max_chars=args.answer_max_chars,
     )
     logging.info("Local corpus receipt: %s", args.output_dir / "llm_results.json")
     return 0 if success else 1

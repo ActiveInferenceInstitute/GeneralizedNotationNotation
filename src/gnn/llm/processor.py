@@ -26,7 +26,7 @@ logger = logging.getLogger("llm")
 
 from gnn.pipeline.config import get_pipeline_config
 
-from .prompt_batch import parse_answers, response_schema
+from .prompt_batch import AnswerLimitReached, parse_answers, response_schema
 
 
 def _get_llm_config() -> dict:
@@ -491,6 +491,7 @@ async def _execute_prompt(
     generation_options: dict[str, Any] | None = None,
     runtime_identity: dict[str, Any] | None = None,
     output_fields: list[str] | None = None,
+    answer_max_chars: int | None = None,
 ) -> str:
     """Run one LLM prompt with cache lookup, timeout, and auth fail-fast.
 
@@ -525,11 +526,17 @@ async def _execute_prompt(
 
     if provider_type and provider_type.value in failed_auth_providers:
         return _prompt_fallback_text(label, custom)
-    response_format = response_schema(output_fields) if output_fields else None
+    response_format = (
+        response_schema(output_fields, max_chars=answer_max_chars)
+        if output_fields
+        else None
+    )
     request_definition = json.dumps(
         {
             "schema_version": 4,
-            "completion_policy": "terminal_stop_v1",
+            "completion_policy": "terminal_stop_and_answer_margin_v2"
+            if output_fields and answer_max_chars is not None
+            else "terminal_stop_v1",
             "provider": provider_type.value if provider_type else "default",
             "model": model_name,
             "messages": [
@@ -551,7 +558,7 @@ async def _execute_prompt(
     request_sha256 = hashlib.sha256(request_definition.encode("utf-8")).hexdigest()
     if cached and output_fields:
         try:
-            parse_answers(cached, output_fields)
+            parse_answers(cached, output_fields, max_chars=answer_max_chars)
         except (ValueError, TypeError):
             cached = None
     if isinstance(cached, str) and cached.strip():
@@ -642,12 +649,16 @@ async def _execute_prompt(
             return content
         if output_fields:
             try:
-                parse_answers(content, output_fields)
-            except (ValueError, TypeError):
+                parse_answers(content, output_fields, max_chars=answer_max_chars)
+            except (ValueError, TypeError) as exc:
                 if outcomes is not None:
                     outcomes[label] = {
-                        "status": "failed",
-                        "reason": "Native batch did not return all required answers",
+                        "status": "incomplete"
+                        if isinstance(exc, AnswerLimitReached)
+                        else "failed",
+                        "reason": "Native batch reached an answer character boundary"
+                        if isinstance(exc, AnswerLimitReached)
+                        else "Native batch did not return all required answers",
                         "finish_reason": finish_reason,
                     }
                 return content

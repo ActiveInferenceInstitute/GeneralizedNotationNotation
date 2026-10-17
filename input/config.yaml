@@ -161,6 +161,9 @@ llm:
   # Optional byte-preserving fragment analysis; null requests whole sources.
   source_chunk_bytes: null
 
+  # Optional JSON string boundary for named bundles; boundary hits stay unfinished.
+  answer_max_chars: null
+
   # Optional native Ollama context and deterministic seed, e.g. num_ctx: 65536.
   ollama_options: {}
 

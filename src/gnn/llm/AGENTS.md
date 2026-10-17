@@ -136,7 +136,7 @@ boolean return types. See [tests](../../../tests/llm/AGENTS.md).
 
 `just llm-local-setup` creates `.venv/local_llm/` with frozen Python 3.14; run recipes
 preserve the existing native environment. The Mac driver uses a 131,072-token
-context, 65,536-byte source parts, 4,096 output tokens, 180-second request budget
+context, 65,536-byte source parts, 8,192 output tokens, 240-second request budget
 and concise answers. Summary requests still precede the bundled additional
 tasks. Every task answer is required; strict JSON schema and parser validation
 reject incomplete, duplicate, missing or extra fields before cache admission.
@@ -146,3 +146,12 @@ logical task/part answers. `batch_prompts` defaults False outside the driver.
 proves scientific quality. Both settings, response schema and full batch prompt
 definitions bind checkpoints. Cache record version 2 verifies response digests
 and identity and writes atomically.
+
+Named bundle limits: `answer_max_chars` / `GNN_LLM_ANSWER_MAX_CHARS` is an optional
+positive integer, bound into schema, caches and checkpoints. The Mac profile
+uses 1,000 characters and a 60-word style target. Native schema decoding enforces
+the boundary; the parser also rejects boundary hits (not just overflow), because
+forced string closure cannot prove a complete answer. Keep these responses
+unavailable to completed checkpoints and caches even with terminal `stop`.
+Scope and brevity constraints in the system message override task-template
+verbosity; task-template symbols are illustrative, not source declarations.

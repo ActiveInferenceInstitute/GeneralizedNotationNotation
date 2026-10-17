@@ -722,12 +722,12 @@ def test_stream_cannot_hide_nonterminal_finish_reason(
         asyncio.run(consume())
 
 
-@pytest.mark.parametrize("valid", [True, False])
+@pytest.mark.parametrize("case", ["complete", "missing", "boundary", "overflow"])
 def test_bundled_prompts_submit_source_once_and_require_all_answers(
     daemon: Callable[..., Any],
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
-    valid: bool,
+    case: str,
 ) -> None:
     from gnn.llm import process_llm
 
@@ -742,8 +742,11 @@ def test_bundled_prompts_submit_source_once_and_require_all_answers(
         "runtime_behavior",
     ]
     answers = {label: f"answer for {label}" for label in labels}
-    if not valid:
+    valid = case == "complete"
+    if case == "missing":
         answers.pop(labels[-1])
+    elif case in ("boundary", "overflow"):
+        answers[labels[0]] = "x" * (128 if case == "boundary" else 129)
     host, received, _ = daemon(
         response=_response(message={"content": json.dumps(answers)})
     )
@@ -753,18 +756,36 @@ def test_bundled_prompts_submit_source_once_and_require_all_answers(
     source = "## GNNSection\nActInfPOMDP\n## ModelName\nUniqueBatchSource\n"
     (target / "model.md").write_text(source)
     output = tmp_path / "output"
-    options = dict(provider="ollama", model=MODEL, batch_prompts=True, llm_timeout=30)
+    options = dict(
+        provider="ollama",
+        model=MODEL,
+        batch_prompts=True,
+        llm_timeout=30,
+        answer_max_chars=128,
+    )
     assert process_llm(target, output, **options) is valid
     assert len(received) == 2
     payload = received[1]["body"]
     assert payload["messages"][1]["content"].count(source) == 1
     assert set(payload["format"]["required"]) == set(labels)
+    assert all(p["maxLength"] == 128 for p in payload["format"]["properties"].values())
     result = json.loads((output / "llm_results.json").read_text())
     assert result["coverage"]["prompts_completed"] == (9 if valid else 1)
     assert result["coverage"]["source_parts_completed"] == (9 if valid else 1)
     if valid:
         assert process_llm(target, output, resume=True, **options)
         assert len(received) == 2
+        assert not process_llm(
+            target, output, resume=True, **{**options, "answer_max_chars": 129}
+        )
+        assert len(received) == 2
     else:
         assert len(result["unfinished_work"]) == 8
         assert result["cache_stats"]["writes"] == 1
+        if case in ("boundary", "overflow"):
+            assert (
+                result["analysis_results"][0]["prompt_outcomes"]["explain_model"][
+                    "status"
+                ]
+                == "incomplete"
+            )

@@ -269,11 +269,12 @@ class TestLLMProcessing:
         options = dict(
             provider="ollama",
             model=model,
-            max_tokens=4096,
+            max_tokens=8192,
             custom_prompts=[],
-            max_prompt_timeout=180,
-            response_words=160,
+            max_prompt_timeout=240,
+            response_words=60,
             batch_prompts=batch_prompts,
+            answer_max_chars=1000,
         )
         assert process_llm(target, output, **options)
         result = json.loads((output / "llm_results.json").read_text())

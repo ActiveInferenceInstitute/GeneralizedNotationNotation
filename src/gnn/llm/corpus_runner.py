@@ -136,6 +136,18 @@ async def run_corpus(
         or response_words <= 0
     ):
         raise ValueError("response_words must be a positive integer or null")
+    answer_max_chars = kwargs.get(
+        "answer_max_chars",
+        os.getenv("GNN_LLM_ANSWER_MAX_CHARS") or config.get("answer_max_chars"),
+    )
+    if isinstance(answer_max_chars, str) and answer_max_chars.isdecimal():
+        answer_max_chars = int(answer_max_chars)
+    if answer_max_chars is not None and (
+        isinstance(answer_max_chars, bool)
+        or not isinstance(answer_max_chars, int)
+        or answer_max_chars <= 0
+    ):
+        raise ValueError("answer_max_chars must be a positive integer or null")
     generation_options = (
         ollama_generation_options(config.get("ollama_options"))
         if provider == ProviderType.OLLAMA
@@ -209,10 +221,12 @@ async def run_corpus(
             "max_tokens": token_limit,
             "source_chunk_bytes": chunk_bytes,
             "part_max_tokens_ceiling": 1024,
+            "fragment_scope_policy": "system_scoped_source_parts_v2",
             "generation_options": generation_options,
             "batch_prompts": batching,
-            "batch_policy": "named_answers_v1",
+            "batch_policy": "named_answers_v2",
             "response_words": response_words,
+            "answer_max_chars": answer_max_chars,
             "temperature": 0.2,
             "input_policy": "complete_context_v1",
             "completion_policy": "terminal_stop_v1",
@@ -223,7 +237,9 @@ async def run_corpus(
         "model": model,
         "prompts": labels,
         "custom_prompts": custom,
-        "batch_response_schema": response_schema(labels[1:]) if batching else None,
+        "batch_response_schema": response_schema(labels[1:], max_chars=answer_max_chars)
+        if batching
+        else None,
         "batch_prompt_definitions": [
             hashlib.sha256(
                 json.dumps(
@@ -236,7 +252,10 @@ async def run_corpus(
                         )
                         if len(plans[path]) > 1
                         else "This request contains the complete source.",
-                        words=120 if len(plans[path]) > 1 else response_words or 160,
+                        words=min(response_words or 160, 120)
+                        if len(plans[path]) > 1
+                        else response_words or 160,
+                        max_chars=answer_max_chars,
                     ),
                     sort_keys=True,
                 ).encode()
@@ -249,7 +268,12 @@ async def run_corpus(
         "source_parts": [[part.receipt() for part in plans[path]] for path in paths],
         "multipart_instructions": [
             [
-                multipart_instruction(part, index, len(plans[path]))
+                multipart_instruction(
+                    part,
+                    index,
+                    len(plans[path]),
+                    word_limit=min(response_words or 120, 120),
+                )
                 for index, part in enumerate(plans[path])
             ]
             for path in paths
@@ -482,9 +506,21 @@ async def run_corpus(
                             else cfg.get("max_tokens", 2048)
                         )
                         if len(parts) > 1:
-                            prompt = (
-                                multipart_instruction(part, index, len(parts)) + prompt
+                            scope = multipart_instruction(
+                                part,
+                                index,
+                                len(parts),
+                                word_limit=min(response_words or 120, 120),
                             )
+                            prompt = scope + prompt
+                            cfg = {
+                                **cfg,
+                                "system_message": cfg["system_message"]
+                                + "\n\n"
+                                + scope
+                                + "Symbols in task descriptions are illustrative, "
+                                "not source declarations. Report missing context explicitly.",
+                            }
                             tokens = min(tokens, 1024)
                         if response_words is not None:
                             prompt += f"\n\nComplete all requested topics concisely in at most {min(response_words, 120) if len(parts) > 1 else response_words} words."
@@ -500,7 +536,10 @@ async def run_corpus(
                                 )
                                 if len(parts) > 1
                                 else "This request contains the complete source.",
-                                words=120 if len(parts) > 1 else response_words or 160,
+                                words=min(response_words or 160, 120)
+                                if len(parts) > 1
+                                else response_words or 160,
+                                max_chars=answer_max_chars,
                             )
                             prompt = cfg["user_prompt"]
                             tokens = token_limit or 4096
@@ -529,6 +568,7 @@ async def run_corpus(
                             generation_options=generation_options,
                             runtime_identity=runtime_identity,
                             output_fields=output_fields,
+                            answer_max_chars=answer_max_chars,
                             remaining_budget=remaining,
                         )
                         outcome = analysis["part_outcomes"][part_key]
@@ -543,7 +583,9 @@ async def run_corpus(
                                 batch_dir / f"part_{index + 1:04d}.txt", text
                             )
                             answers = (
-                                parse_answers(text, output_fields)
+                                parse_answers(
+                                    text, output_fields, max_chars=answer_max_chars
+                                )
                                 if outcome["status"] == "success"
                                 else {}
                             )

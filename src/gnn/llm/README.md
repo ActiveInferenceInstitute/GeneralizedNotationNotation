@@ -17,7 +17,7 @@ just llm-local --output-dir output/local_llm --resume
 ```
 
 The explicit local profile selects Gemma 3 12B, 131,072 context tokens,
-4,096 response tokens and byte-preserving source partitions. It runs all
+8,192 response tokens and byte-preserving source partitions. It runs all
 selected model sources and all nine default prompts. The ordinary pipeline
 retains the lightweight `smollm2:135m-instruct-q4_K_S` default and whole-source
 mode. Use `--skip-llm` for a pipeline without optional LLM calls.
@@ -36,8 +36,12 @@ success = process_llm(
     Path("output/local_llm"),
     provider="ollama",
     model="gemma3:12b",
-    max_tokens=4096,
+    max_tokens=8192,
     source_chunk_bytes=65536,
+    max_prompt_timeout=240,
+    batch_prompts=True,
+    response_words=60,
+    answer_max_chars=1000,
     llm_config={"ollama_options": {"num_ctx": 131072, "seed": 42}},
 )
 ```
@@ -135,8 +139,14 @@ prompt coverage/resume. See [maintenance contracts](AGENTS.md) and
 - [SKILL](SKILL.md): capability API
 
 The Mac driver uses concise named-answer bundles after the summary round, with
-a 180-second explicit request budget. All required answers must validate before
+a 240-second explicit request budget. All required answers must validate before
 completion. Shared request identities distinguish task answers from provider
 calls. `--no-batch-prompts` disables bundling. The dedicated `.venv/local_llm/` profile
 uses frozen Python 3.14 and preserves other native environments. See the runbook
 for context admission measurements and optional Qwen3-Coder provisioning.
+
+The explicit Mac bundle profile targets 60 words per answer and supplies a
+1,000-character schema boundary. A response at that boundary is unfinished,
+including a valid JSON object with `stop`; admission requires every answer below
+the limit. `answer_max_chars` / `GNN_LLM_ANSWER_MAX_CHARS` is optional outside the
+Mac profile. No client-side text slicing satisfies completion.

@@ -23,7 +23,7 @@ GNN requires a verified stable Ollama runtime >=0.35.0 for the maintained
 whole-context controls. The small default tag supports inexpensive transport
 smoke checks. A larger instruction model is preferable for detailed reports.
 The explicit Mac profile uses [Gemma 3 12B](https://ollama.com/library/gemma3:12b),
-131,072 context tokens and a 4,096-token response budget. Measure memory and
+131,072 context tokens and an 8,192-token response budget. Measure memory and
 latency on the actual host; available system memory alone does not prove GPU
 use. `ollama ps` reports processor allocation and effective context.
 
@@ -49,7 +49,7 @@ just llm-local --output-dir output/local_llm --resume
 Without `just`, set `UV_PROJECT_ENVIRONMENT=.venv/local_llm` and run `uv sync --frozen --extra dev --python 3.14`, then `uv run --frozen --no-sync --python 3.14 python scripts/run_local_llm.py`.
 The driver accepts `--model`, `--target-dir`, `--output-dir`, `--context-tokens`,
 `--source-chunk-bytes`, `--max-tokens`, `--prompt-timeout`, `--llm-timeout`, and
-`--response-words`, `--no-batch-prompts`, and `--resume`. It never starts a daemon, downloads weights, samples files, or
+`--response-words`, `--answer-max-chars`, `--no-batch-prompts`, and `--resume`. It never starts a daemon, downloads weights, samples files, or
 changes the selected model. Provisioning is an explicit separate operation.
 Failures exit nonzero and retain coverage, partial text and checkpoints.
 
@@ -63,11 +63,13 @@ export DEFAULT_PROVIDER=ollama
 export OLLAMA_MODEL=gemma3:12b
 export OLLAMA_NUM_CTX=131072
 export OLLAMA_SEED=42
-export GNN_LLM_MAX_TOKENS=4096
+export GNN_LLM_MAX_TOKENS=8192
 export GNN_LLM_CHUNK_BYTES=65536
-export GNN_LLM_PROMPT_TIMEOUT=180
+export GNN_LLM_PROMPT_TIMEOUT=240
 export GNN_LLM_BATCH_PROMPTS=1
-export GNN_LLM_RESPONSE_WORDS=160
+export GNN_LLM_RESPONSE_WORDS=60
+export GNN_LLM_ANSWER_MAX_CHARS=1000
+export OLLAMA_TIMEOUT=240
 UV_PROJECT_ENVIRONMENT=.venv/local_llm uv run --frozen --no-sync --python 3.14 python src/gnn/main.py --only-steps '13,23,24' --verbose
 ```
 
@@ -79,7 +81,8 @@ provider after failure. Single-file MCP analysis with `provider="ollama"` honors
 structural results.
 
 For Python, call `gnn.llm.process_llm` with `provider="ollama"`, `model=...`,
-`max_tokens=4096`, `source_chunk_bytes=65536`, and
+`max_tokens=8192`, `source_chunk_bytes=65536`, `max_prompt_timeout=240`,
+`batch_prompts=True`, `response_words=60`, `answer_max_chars=1000`, and
 `llm_config={"ollama_options": {"num_ctx": 131072, "seed": 42}}`.
 Use `gnn.llm.UnifiedLLMProcessor.get_response` with
 `provider_type=ProviderType.OLLAMA` for a pinned single request; its `LLMResponse`
@@ -163,8 +166,7 @@ completion. Native batch text is retained alongside per-task answers. Shared
 request groups separately from task/part answers, and deduplicate native usage
 by that identity. `--no-batch-prompts` restores independent requests.
 
-The Mac profile explicitly uses a 180-second request budget and concise answer
-targets (160 words, or 120 per fragment). The ordinary pipeline keeps its
+The Mac profile explicitly uses a 240-second request budget and a 60-word answer target. The ordinary pipeline keeps its
 45-second default and template response lengths. Large numeric source fragments
 can tokenize almost one token per byte; source-byte size is not a token count.
 A measured 64 KiB fragment needed 67,132 tokens and was correctly refused by a
@@ -186,3 +188,15 @@ MCP analysis supports explicit Ollama or default routing. Other explicit
 providers are available through `UnifiedLLMProcessor`, rather than silently ignored
 provider names in the MCP wrapper. Sync entrypoints also work inside an active
 event loop through an owned loop bridge.
+
+The native JSON schema constrains each named string when `answer_max_chars` is
+configured. Answers reaching that boundary remain unfinished even if the provider
+reports `stop`; neither the application nor the cache clips text to manufacture
+completion. The word target leaves space below the native boundary for complete
+sentences. The Mac profile uses 60 words, a 1,000-character boundary, 8,192
+response tokens and a 240-second request allowance. A former 4,096-token bundle
+ran out of output space on a dense N64 fragment; the failed raw response remains
+negative evidence. The revised fragment probe returned all eight answers below
+the boundary with terminal completion. Complete-corpus acceptance still requires
+every selected source and task. Changed schemas, limits or prompt definitions
+require a new matching checkpoint; earlier runs are not silently adopted.
