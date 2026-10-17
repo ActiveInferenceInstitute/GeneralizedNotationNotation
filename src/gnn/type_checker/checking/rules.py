@@ -28,6 +28,7 @@ VALID_TYPES: list[str] = [
     "observation",
     "belief",
     "Categorical",
+    "categorical",
     "Dirichlet",
     "Gaussian",
     "Continuous",

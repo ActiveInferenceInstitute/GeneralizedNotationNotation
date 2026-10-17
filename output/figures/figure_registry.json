@@ -20,7 +20,7 @@
       "filename": "gnn_graphical_abstract.png",
       "generated_by": "scripts/manuscript_fig_graphical_abstract.py",
       "label": "fig:graphical_abstract",
-      "png_sha256": "76405b8645b5c33edf724381eb5120e1a4214bd637016e10b92e0658bb618e21",
+      "png_sha256": "632cc08b2b536325359af99469973a38418b56eaaec025a285090b7f881acf3e",
       "source_sha256": {}
     },
     {
@@ -29,7 +29,7 @@
       "filename": "gnn_pipeline_dag.png",
       "generated_by": "scripts/manuscript_fig_pipeline_dag.py",
       "label": "fig:pipeline",
-      "png_sha256": "85b47b83d13209d9fdd07382e108cbd37f3a535c8e583ac3e7e946ffb4811982",
+      "png_sha256": "96eebc402bed14eaf6211fbb7cd077f507f231252d7ccb112e472b57acc24824",
       "source_sha256": {
         "src/gnn/STEP_INDEX.md": "83870c7e82ab792def54510a7707e2b24561919580eda26f274ae4ac6a77acab"
       }
@@ -40,10 +40,10 @@
       "filename": "gnn_family_framework_matrix.png",
       "generated_by": "scripts/manuscript_fig_family_framework.py",
       "label": "fig:family_matrix",
-      "png_sha256": "5f5a87bcc8f8293951120042f0b9f87f6e799fd709109e7010c8c3fdda996caa",
+      "png_sha256": "0d16072f46643702a2bc7fe393b9468da60682f89a9847eeb2a045d0240ef777",
       "source_sha256": {
         "input/model_family_manifest.json": "41adbb30ab861d094823b69669656081bbcb603c7203bd30335555e2f60b9e3c",
-        "src/gnn/render/framework_registry.py": "b58528bf54801e369b5463412ffeb4be2ee394178b0a683763c40e8eb863aade"
+        "src/gnn/render/framework_registry.py": "baab0f951725f7034af16b17d237513713a203cd222e271b1c912ffdb1dd6033"
       }
     },
     {
@@ -52,32 +52,32 @@
       "filename": "gnn_backend_capability_matrix.png",
       "generated_by": "scripts/manuscript_fig_backend_matrix.py",
       "label": "fig:backend_matrix",
-      "png_sha256": "e0813ffc2a58af9dfd95bbcce9ecc0e57feffc3240b24d74baeadbe80ad0c55a",
+      "png_sha256": "0e40ef34948fb35e54ab02e1ab8a725c62e23de284325b448154655e7b6f7e18",
       "source_sha256": {
         "input/model_family_manifest.json": "41adbb30ab861d094823b69669656081bbcb603c7203bd30335555e2f60b9e3c",
         "src/gnn/manuscript/variables.py": "f0770f854a60ccabb86ac034b87646044200974ac0940426a3667851b3827a1d",
         "src/gnn/pipeline/cross_framework_reliability.py": "f541016765f8c2b843226c9127f011cc77a0e66cbad694e89853db59c6cd8101",
-        "src/gnn/render/framework_registry.py": "b58528bf54801e369b5463412ffeb4be2ee394178b0a683763c40e8eb863aade"
+        "src/gnn/render/framework_registry.py": "baab0f951725f7034af16b17d237513713a203cd222e271b1c912ffdb1dd6033"
       }
     },
     {
       "alt_text": "Horizontal bar chart on a logarithmic axis of repository-scale counts: pipeline steps, model families, registered backends, render-target adapters, MCP tools, source packages, test files, example models and documentation files. Each bar is annotated with its exact value; all values come from output/data/manuscript_variables.json.",
       "consumed_tokens": {
         "GNN_BACKEND_COUNT": "12",
-        "GNN_DOC_FILE_COUNT": "645",
+        "GNN_DOC_FILE_COUNT": "646",
         "GNN_EXAMPLE_COUNT": "38",
         "GNN_EXECUTABLE_BACKEND_COUNT": "12",
         "GNN_FAMILY_COUNT": "9",
         "GNN_MCP_TOOL_COUNT": "164",
         "GNN_SRC_PACKAGE_COUNT": "44",
         "GNN_STEP_COUNT": "25",
-        "GNN_TEST_FILE_COUNT": "651",
+        "GNN_TEST_FILE_COUNT": "652",
         "GNN_VERSION": "4.1.0"
       },
       "filename": "gnn_repo_metrics.png",
       "generated_by": "scripts/manuscript_fig_repo_metrics.py",
       "label": "fig:repo_metrics",
-      "png_sha256": "8114adbf6f83201e570115d33462d584d9ab3e1bbd640fa78f35589aafc0ddbd",
+      "png_sha256": "e0a4d493fea4d4aa96618ce447c4a66e367b545d47de4f4c352737c525e64e76",
       "source_sha256": {}
     },
     {
@@ -94,7 +94,7 @@
       "filename": "gnn_triple_play.png",
       "generated_by": "scripts/manuscript_fig_triple_play.py",
       "label": "fig:triple_play",
-      "png_sha256": "c06e827bf73cb239850890016ef13c0be27b7c94796d2ccda93dadb806a9ff3a",
+      "png_sha256": "05c2a0fe6046957ce086e982e71a61d500a2f8a4d8ab0b7a73a33fee335c33e2",
       "source_sha256": {}
     },
     {
@@ -103,7 +103,7 @@
       "filename": "gnn_orchestration.png",
       "generated_by": "scripts/manuscript_fig_orchestration.py",
       "label": "fig:orchestration",
-      "png_sha256": "c59fb5dfe42e9e1a0a73c95a410da4a7d3b215c33f0dd6e5da7c913331f90005",
+      "png_sha256": "85138e1a0e120cd4b103a2d83c45b5d072959e6c4c17ba7ef8263e5d9d3505e3",
       "source_sha256": {}
     }
   ],

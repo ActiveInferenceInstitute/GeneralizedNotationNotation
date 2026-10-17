@@ -593,3 +593,85 @@ def test_last_cache_publication_cannot_make_exhausted_corpus_success(
     results = json.loads((output / "llm_results.json").read_text())
     assert results["status"] == "timed_out"
     assert results["coverage"]["prompts_completed"] == 17
+
+
+@pytest.mark.parametrize("finish_reason", ["length", "content_filter", "tool_calls"])
+def test_incomplete_replies_are_retained_but_not_completed_or_cached(
+    corpus: Any, monkeypatch: pytest.MonkeyPatch, finish_reason: str
+) -> None:
+    root, output, events = corpus
+
+    class PartialProcessor:
+        async def initialize(self) -> bool:
+            return True
+
+        async def get_response(self, **kwargs: Any) -> LLMResponse:
+            events.append("partial_request")
+            return LLMResponse(
+                "partial text",
+                "configured:exact",
+                "ollama",
+                finish_reason=finish_reason,
+            )
+
+        async def close(self) -> None:
+            pass
+
+    monkeypatch.setattr(api, "LLMProcessor", lambda **_: PartialProcessor())
+    options = {"llm_config": {"model": "configured:exact"}, "custom_prompts": []}
+    for resume in (False, True):
+        events.clear()
+        assert not api.process_llm(root, output, resume=resume, **options)
+        result = json.loads((output / "llm_results.json").read_text())
+        assert result["coverage"]["structural_completed"] == 3
+        assert result["coverage"]["prompts_completed"] == 0
+        assert len(result["unfinished_work"]) == 18
+        assert events.count("partial_request") == 18
+        assert (
+            json.loads((output / "llm_checkpoint.json").read_text())["completed"] == {}
+        )
+        assert not list((output / ".cache").rglob("*.json"))
+        for row in result["analysis_results"]:
+            assert set(row["llm_prompt_outputs"].values()) == {"partial text"}
+            assert all(
+                outcome["status"] == "incomplete"
+                and outcome["finish_reason"] == finish_reason
+                for outcome in row["prompt_outcomes"].values()
+            )
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("finish_reason", [None, "length", "stop"])
+async def test_isolated_completion_requires_provider_stop_receipt(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, finish_reason: Any
+) -> None:
+    from gnn.llm import request_worker
+
+    async def response(**_: Any) -> LLMResponse:
+        return LLMResponse(
+            "text", "configured:exact", "ollama", finish_reason=finish_reason
+        )
+
+    monkeypatch.setattr(request_worker, "isolated_request", response)
+    outcomes: dict[str, Any] = {}
+    await api._execute_prompt(
+        api._LIVE_PROCESSOR_CLASS(),
+        api.LLMCache(cache_dir=tmp_path / "cache"),
+        cache_content="source",
+        model_name="configured:exact",
+        messages=[],
+        prompt_text="summarize",
+        label="summary",
+        custom=False,
+        max_tokens=10,
+        max_prompt_timeout=5,
+        failed_auth_providers=set(),
+        auth_errors=[],
+        outcomes=outcomes,
+        provider_type=api.ProviderType.OLLAMA,
+        isolated=True,
+    )
+    assert outcomes["summary"]["status"] == (
+        "success" if finish_reason == "stop" else "incomplete"
+    )
+    assert bool(list((tmp_path / "cache").glob("*.json"))) == (finish_reason == "stop")

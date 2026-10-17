@@ -29,6 +29,8 @@ def admit_search(
     This is an estimate of algorithm allocation, excluding runtime/JIT overhead.
     A process watchdog remains authoritative for execution containment.
     """
+    if not isinstance(controlled, bool):
+        raise ValueError("controlled must be a boolean")
     for name, value in (
         ("n", n),
         ("m", m),

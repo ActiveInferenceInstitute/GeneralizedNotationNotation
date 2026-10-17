@@ -32,6 +32,7 @@ __all__: list[Any] = [
     "extract_jax_kronecker_data",
     "extract_numpyro_data",
     "extract_pytorch_data",
+    "extract_bnlearn_data",
     "extract_discopy_data",
     # math_utils
     "compute_shannon_entropy",
@@ -68,6 +69,7 @@ logger = logging.getLogger(__name__)
 # Re-export from framework_extractors
 from .framework_extractors import (
     extract_activeinference_jl_data,
+    extract_bnlearn_data,
     extract_discopy_data,
     extract_jax_data,
     extract_jax_kronecker_data,
@@ -200,6 +202,8 @@ def analyze_execution_results(
                             extracted = extract_numpyro_data(result)
                         elif framework == "jax":
                             extracted = extract_jax_data(result)
+                        elif framework == "bnlearn":
+                            extracted = extract_bnlearn_data(result)
                         elif framework == "discopy":
                             extracted = extract_discopy_data(result)
                         else:
@@ -208,7 +212,7 @@ def analyze_execution_results(
                         # Non-PyMDP frameworks still have heterogeneous outputs.
                         # PyMDP is strict and handled by extract_pymdp_data().
                         if (
-                            framework != "pymdp"
+                            framework not in {"pymdp", "bnlearn"}
                             and isinstance(extracted, dict)
                             and not extracted.get("beliefs")
                             and not extracted.get("observations")

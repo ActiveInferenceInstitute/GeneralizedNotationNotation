@@ -146,5 +146,132 @@ def execution_view(execution_dir: Path, model_stems: set[str]) -> Path:
             continue
         destination = view / inside
         destination.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(root / relative, destination)
+        source = root / relative
+        if inside.parts[0] == "summaries" and source.suffix == ".json":
+            payload = json.loads(source.read_text(encoding="utf-8"))
+            if isinstance(payload, dict) and isinstance(
+                payload.get("execution_details"), list
+            ):
+                # Pointer-following analyzers must see the same selection as
+                # directory walkers. The source receipt remains immutable.
+                details = [
+                    entry
+                    for entry in payload["execution_details"]
+                    if isinstance(entry, dict)
+                    and entry.get("model_name") in model_stems
+                ]
+                for entry in details:
+                    for key in (
+                        "implementation_directory",
+                        "structured_result_file",
+                        "output_file",
+                        "native_result_file",
+                    ):
+                        value = entry.get(key)
+                        if not isinstance(value, str):
+                            continue
+                        candidate = Path(value)
+                        if not candidate.is_absolute():
+                            candidate = Path.cwd() / candidate
+                        try:
+                            projected_path = candidate.resolve().relative_to(
+                                execution_dir.resolve()
+                            )
+                        except (OSError, ValueError):
+                            continue
+                        if (
+                            projected_path.parts
+                            and projected_path.parts[0] in model_stems
+                        ):
+                            entry[key] = str((view / projected_path).resolve())
+                payload["execution_details"] = details
+                for key in ("total_scripts_found", "total_scripts"):
+                    if key in payload:
+                        payload[key] = len(details)
+                for key, predicate in (
+                    (
+                        "successful_executions",
+                        lambda entry: entry.get("success") and not entry.get("skipped"),
+                    ),
+                    (
+                        "failed_executions",
+                        lambda entry: (
+                            not entry.get("success") and not entry.get("skipped")
+                        ),
+                    ),
+                    ("skipped_executions", lambda entry: entry.get("skipped")),
+                ):
+                    if key in payload:
+                        payload[key] = sum(bool(predicate(entry)) for entry in details)
+                successes = sum(
+                    bool(entry.get("success")) and not entry.get("skipped", False)
+                    for entry in details
+                )
+                skips = sum(bool(entry.get("skipped")) for entry in details)
+                failures = len(details) - successes - skips
+                attempted = len(details) - skips
+                payload.update(
+                    attempted_scripts=attempted,
+                    success_rate=round(100 * successes / attempted, 2)
+                    if attempted
+                    else 0.0,
+                    success=bool(attempted) and not failures,
+                    status="failed"
+                    if failures
+                    else "success"
+                    if attempted
+                    else "skipped",
+                    exit_code=1 if failures else 0 if attempted else 2,
+                )
+                payload["framework_status"] = {}
+                for framework in sorted(
+                    {entry.get("framework", "unknown") for entry in details}
+                ):
+                    rows = [
+                        entry
+                        for entry in details
+                        if entry.get("framework", "unknown") == framework
+                    ]
+                    failed = sum(
+                        not entry.get("success") and not entry.get("skipped")
+                        for entry in rows
+                    )
+                    payload["framework_status"][framework] = {
+                        "executions": len(rows),
+                        "successful": sum(
+                            bool(entry.get("success"))
+                            and not entry.get("skipped", False)
+                            for entry in rows
+                        ),
+                        "failed": failed,
+                        "skipped": sum(bool(entry.get("skipped")) for entry in rows),
+                        "status": "failed"
+                        if failed
+                        else "skipped"
+                        if all(row.get("skipped") for row in rows)
+                        else "success",
+                    }
+                selected_ids = {
+                    model.model_id
+                    for model in context.models
+                    if model.artifact_stem in model_stems
+                }
+                if isinstance(payload.get("model_selection"), list):
+                    payload["model_selection"] = [
+                        model
+                        for model in payload["model_selection"]
+                        if isinstance(model, dict)
+                        and (
+                            model.get("artifact_stem") in model_stems
+                            or model.get("model_id") in selected_ids
+                        )
+                    ]
+                payload["_selection_view"] = {
+                    "model_stems": sorted(model_stems),
+                    "source_receipt_sha256": file_sha256(source),
+                    "claim": "derived analysis selection; original execution receipt is unchanged",
+                }
+                destination.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+                continue
+        shutil.copy2(source, destination)
     return view

@@ -19,6 +19,9 @@ Registered surface = the union of
   recovery parser, which registers each key verbatim as ``--{key}`` or under
   an explicit nested ``"flag"`` override; those spellings are added here.
   Module-level dict variables are resolved within the same file.
+- first-party gate/runtime argparse registrations, including the bnlearn
+  compiler's literal native program. These are parsed as source data without
+  importing or executing the generated inference program.
 
 Doc surface = maintained Markdown (``README.md`` + ``docs/**/*.md`` +
 ``src/gnn/**/*.md``) with the same exclusions as
@@ -278,14 +281,39 @@ def registered_flags() -> set[str]:
     flags -= {"-h", "--help"}
     # Maintained first-party gates and generated-script runtimes have their own
     # CLIs. Read their actual argparse registrations without executing them.
-    for relative in (
-        "scripts/check_manuscript_tokens.py",
-        "scripts/check_hydrated_prose.py",
-        "scripts/run_comprehensive_native_coverage.py",
-        "src/gnn/render/thrml/runtime.py",
-        "src/gnn/analysis/performance_benchmark.py",
+    for relative, program_literal in (
+        ("scripts/check_manuscript_tokens.py", None),
+        ("scripts/check_hydrated_prose.py", None),
+        ("scripts/run_comprehensive_native_coverage.py", None),
+        ("src/gnn/render/thrml/runtime.py", None),
+        ("src/gnn/analysis/performance_benchmark.py", None),
+        ("src/gnn/render/bnlearn/source_program.py", "_PROGRAM"),
     ):
-        for node in ast.walk(ast.parse((ROOT / relative).read_text(encoding="utf-8"))):
+        tree = ast.parse((ROOT / relative).read_text(encoding="utf-8"))
+        if program_literal is not None:
+            program = next(
+                (
+                    stmt.value
+                    for stmt in tree.body
+                    if isinstance(stmt, ast.Assign)
+                    and any(
+                        isinstance(target, ast.Name) and target.id == program_literal
+                        for target in stmt.targets
+                    )
+                ),
+                None,
+            )
+            if not isinstance(program, ast.Constant) or not isinstance(
+                program.value, str
+            ):
+                raise SystemExit(
+                    f"check_flag_parity: {relative} no longer defines literal "
+                    f"{program_literal}; update generated CLI discovery."
+                )
+            # Parse compiler-owned source data without executing its imports,
+            # model payload, inference, or file operations.
+            tree = ast.parse(program.value)
+        for node in ast.walk(tree):
             if (
                 isinstance(node, ast.Call)
                 and isinstance(node.func, ast.Attribute)

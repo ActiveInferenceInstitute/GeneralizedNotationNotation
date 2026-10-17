@@ -330,8 +330,9 @@ def test_saved_pymdp_default_name_and_existing_output_override_contract(
 
 
 @pytest.mark.parametrize("mode", ["pipeline", "standalone"])
+@pytest.mark.parametrize("explicit_checkout", [True, False])
 def test_saved_pymdp_native_import_retains_safe_metadata_without_invoking_main(
-    tmp_path, mode
+    tmp_path, mode, explicit_checkout
 ):
     import gnn
 
@@ -343,7 +344,9 @@ def test_saved_pymdp_native_import_retains_safe_metadata_without_invoking_main(
     assert render_gnn_to_pymdp(spec, path, {"mode": mode})[0]
     checkout = Path(gnn.__file__).resolve().parents[2]
     env = os.environ.copy()
-    env["GNN_PROJECT_ROOT"] = str(checkout)
+    env.pop("GNN_PROJECT_ROOT", None)
+    if explicit_checkout:
+        env["GNN_PROJECT_ROOT"] = str(checkout)
     command = (
         "import json,runpy,sys; from pathlib import Path; import gnn; "
         "namespace=runpy.run_path(sys.argv[1],run_name='native_metadata_only'); "

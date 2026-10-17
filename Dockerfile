@@ -1,5 +1,5 @@
 # Dockerfile — linux/amd64 test image
-FROM --platform=$BUILDPLATFORM python:3.11-slim
+FROM --platform=$BUILDPLATFORM python:3.14-slim
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -9,11 +9,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   && rm -rf /var/lib/apt/lists/*
 
 # Install uv — pinned version for reproducible builds (supply-chain hardening).
-# Pin matches the astral-sh/setup-uv version used in CI (0.12 series) so local
-# and CI environments resolve the same lockfile format.
-ARG UV_VERSION=0.12.0
-RUN curl -LsSf "https://astral.sh/uv/${UV_VERSION}/install.sh" | sh
-ENV PATH="/root/.local/bin:$PATH"
+# Pin matches exact uv 0.13.1 in CI and uv.toml. The default runtime uses the
+# documented h5py/HDF5 profile exception; this image needs separate qualification.
+ARG UV_VERSION=0.13.1
+RUN test "$UV_VERSION" = "0.13.1" && \
+    curl --proto '=https' --tlsv1.2 --fail --location --silent --show-error \
+      https://github.com/astral-sh/uv/releases/download/0.13.1/uv-installer.sh \
+      --output /tmp/uv-installer.sh && \
+    echo '7c482d409673a53f4d9bd34ae95c9166be3b8d89ca82f27dd7bca3cab457afff  /tmp/uv-installer.sh' | sha256sum --check - && \
+    UV_INSTALL_DIR=/usr/local/bin UV_NO_MODIFY_PATH=1 sh /tmp/uv-installer.sh && \
+    /usr/local/bin/uv --version | awk '{print $2}' | grep -Fx 0.13.1 && \
+    rm /tmp/uv-installer.sh
 
 # Create non-root user for runtime security
 RUN groupadd --gid 1000 gnn && \

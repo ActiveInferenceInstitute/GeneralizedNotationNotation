@@ -1070,6 +1070,34 @@ If you use [uv](https://github.com/astral-sh/uv) (`uv sync` / `uv run`), prefer 
 
 **New to GNN?** Choose your learning path:
 
+### Runtime defaults and required profiles
+
+The profile observations below come from earlier uv 0.13.0 development notes.
+They have not been revalidated for uv 0.13.1 and do not qualify this draft.
+Fresh locked installs and the declared gates are required before acceptance.
+
+Use the latest stable CPython by default (currently 3.15) and exact uv 0.13.1.
+This checkout selects the latest 3.14 patch for its frozen core plus default
+`dev` group: an isolated 3.14 install and focused parser/PyMDP tests passed.
+The same frozen dependency export on 3.15 reached h5py 3.16.0's source build
+and failed because native HDF5 (`libhdf5.dylib`) was unavailable on this macOS
+host. JAXlib 0.11.2 itself installed on 3.15; it is not the reason for this
+exception. The protected producer range `>=3.11,<3.15` and lock stay unchanged.
+`uv.toml` copies the existing configurable security constraints before adding
+the exact uv requirement. The project-only default `dev` group remains read
+from the unchanged producer metadata.
+
+To remove the exception, provision/review native HDF5 and remaining build
+prerequisites, qualify the exact default dependency profile on 3.15, and
+review any producer-range change through the documented paired re-pin ritual.
+Then run the selected source/native gates before changing the default pin.
+Python 3.11/3.12/3.13 tests and the coupled `test (3.12)` required status remain
+compatibility lanes. The exact native coverage, paired-revision, manuscript,
+GridWorld and all-extras/GUI profiles retain their declared runtimes and evidence
+contracts. This bounded default-profile check does not establish all-extras,
+GUI, Docker, hosted, paired, or scientific publication acceptance.
+Explicit `UV_PYTHON` selects a named compatibility/profile runtime.
+
 ### 🎯 **Choose Your Journey**
 
 - **⚡ Quick Start**: Validate and run a maintained model → [Quick Start Guide](docs/quickstart.md#gnn-quick-start-guide)

@@ -1,0 +1,1001 @@
+{
+  "schema": "gnn_native_corpus_acceptance_v1",
+  "source_epoch_commit": "2df8ea136",
+  "source_epoch_full_commit": "2df8ea1365a285d54e02e5fc3c0ece69ca66e7af",
+  "scope": "Local source-tree headless acceptance, not hosted main or release acceptance. Later runtime-profile and CLI changes have separate checks.",
+  "pipeline": {
+    "run_id": "bee5bd670be347f589b26110da9511ad",
+    "overall_status": "SUCCESS_WITH_WARNINGS",
+    "steps": [
+      {
+        "script": "0_template.py",
+        "status": "SUCCESS",
+        "duration_seconds": 0.444538083000225
+      },
+      {
+        "script": "3_gnn.py",
+        "status": "SUCCESS",
+        "duration_seconds": 6.532081750000543
+      },
+      {
+        "script": "4_model_registry.py",
+        "status": "SUCCESS",
+        "duration_seconds": 0.09859837499971036
+      },
+      {
+        "script": "5_type_checker.py",
+        "status": "SUCCESS_WITH_WARNINGS",
+        "duration_seconds": 3.953493083000467
+      },
+      {
+        "script": "6_validation.py",
+        "status": "SUCCESS",
+        "duration_seconds": 1.2245691250000164
+      },
+      {
+        "script": "7_export.py",
+        "status": "SUCCESS",
+        "duration_seconds": 1.335010124999826
+      },
+      {
+        "script": "8_visualization.py",
+        "status": "SUCCESS",
+        "duration_seconds": 141.42987512499985
+      },
+      {
+        "script": "9_advanced_viz.py",
+        "status": "SUCCESS_WITH_WARNINGS",
+        "duration_seconds": 75.95153216700055
+      },
+      {
+        "script": "10_ontology.py",
+        "status": "SUCCESS",
+        "duration_seconds": 0.6511015409996617
+      },
+      {
+        "script": "11_render.py",
+        "status": "SUCCESS",
+        "duration_seconds": 29.792942750000293
+      },
+      {
+        "script": "12_execute.py",
+        "status": "SUCCESS",
+        "duration_seconds": 421.81066533299963
+      },
+      {
+        "script": "14_ml_integration.py",
+        "status": "SUCCESS",
+        "duration_seconds": 1.1296703329999218
+      },
+      {
+        "script": "15_audio.py",
+        "status": "SUCCESS",
+        "duration_seconds": 4.722174291000556
+      },
+      {
+        "script": "16_analysis.py",
+        "status": "SUCCESS_WITH_WARNINGS",
+        "duration_seconds": 835.8142097500004
+      },
+      {
+        "script": "17_integration.py",
+        "status": "SUCCESS",
+        "duration_seconds": 5.155598333000853
+      },
+      {
+        "script": "18_security.py",
+        "status": "SUCCESS",
+        "duration_seconds": 0.5614305829994919
+      },
+      {
+        "script": "19_research.py",
+        "status": "SUCCESS",
+        "duration_seconds": 0.35454841699993267
+      },
+      {
+        "script": "20_website.py",
+        "status": "SUCCESS",
+        "duration_seconds": 96.26901195800019
+      },
+      {
+        "script": "21_mcp.py",
+        "status": "SUCCESS",
+        "duration_seconds": 2.201063124999564
+      },
+      {
+        "script": "23_report.py",
+        "status": "SUCCESS",
+        "duration_seconds": 4.339626416000101
+      },
+      {
+        "script": "24_intelligent_analysis.py",
+        "status": "SUCCESS",
+        "duration_seconds": 0.29962799999975687
+      }
+    ],
+    "execution_success": true,
+    "executed": 259,
+    "failed": 0,
+    "skipped": 0,
+    "evidence_integrity": {
+      "status": "verified",
+      "source_count": 38
+    }
+  },
+  "corpus": {
+    "tracked_models": 38,
+    "frameworks": 12,
+    "attempted_pairs": 456,
+    "counts": {
+      "activeinference_jl": {
+        "unsupported": 14,
+        "passed": 24
+      },
+      "bnlearn": {
+        "unsupported": 19,
+        "passed": 19
+      },
+      "cpomdp": {
+        "unsupported": 33,
+        "passed": 5
+      },
+      "discopy": {
+        "unsupported": 14,
+        "passed": 24
+      },
+      "jax": {
+        "unsupported": 4,
+        "passed": 34
+      },
+      "ngclearn": {
+        "unsupported": 33,
+        "passed": 5
+      },
+      "numpyro": {
+        "unsupported": 9,
+        "passed": 29
+      },
+      "pymdp": {
+        "unsupported": 12,
+        "passed": 26
+      },
+      "pytorch": {
+        "unsupported": 9,
+        "passed": 29
+      },
+      "rxinfer": {
+        "unsupported": 8,
+        "passed": 30
+      },
+      "stan": {
+        "unsupported": 9,
+        "passed": 29
+      },
+      "thrml": {
+        "unsupported": 33,
+        "passed": 5
+      }
+    },
+    "models_with_inference_execution": 36,
+    "models_without_inference_execution": [
+      "continuous/hybrid_discrete_continuous.md",
+      "continuous/multi_agent_lgssm.md"
+    ],
+    "model_sources_unchanged": true
+  },
+  "models": {
+    "continuous/hybrid_discrete_continuous.md": {
+      "source_sha256": "5b85c395560099d3f3eb4a6da7bb42d1b45ae1367fb9ae4e30c663ae3a69518e",
+      "inference_frameworks": [],
+      "diagram_frameworks": [],
+      "unsupported_frameworks": [
+        "pymdp",
+        "rxinfer",
+        "activeinference_jl",
+        "jax",
+        "discopy",
+        "pytorch",
+        "numpyro",
+        "stan",
+        "bnlearn",
+        "ngclearn",
+        "cpomdp",
+        "thrml"
+      ]
+    },
+    "basics/static_perception.md": {
+      "source_sha256": "1ddd0fbde8155e2083d586a368503278373f26f6aae11dd4a2b4adfdf5ea7b8c",
+      "inference_frameworks": [
+        "pymdp",
+        "rxinfer",
+        "activeinference_jl",
+        "jax",
+        "pytorch",
+        "numpyro",
+        "stan",
+        "bnlearn",
+        "thrml"
+      ],
+      "diagram_frameworks": [
+        "discopy"
+      ],
+      "unsupported_frameworks": [
+        "ngclearn",
+        "cpomdp"
+      ]
+    },
+    "pymdp_scaling_study/pymdp_scaling_N8_T100.md": {
+      "source_sha256": "4640bdecdddc37207ee29e369371b133be507c98b29220e583c8ea660a88dc85",
+      "inference_frameworks": [
+        "pymdp",
+        "rxinfer",
+        "activeinference_jl",
+        "jax",
+        "pytorch",
+        "numpyro",
+        "stan",
+        "bnlearn"
+      ],
+      "diagram_frameworks": [
+        "discopy"
+      ],
+      "unsupported_frameworks": [
+        "ngclearn",
+        "cpomdp",
+        "thrml"
+      ]
+    },
+    "discrete/simple_mdp.md": {
+      "source_sha256": "e0d5c9850aca787b8fd8345e0b6f095e625ec2e49fa189afe806e93c5b66dc26",
+      "inference_frameworks": [
+        "pymdp",
+        "rxinfer",
+        "activeinference_jl",
+        "jax",
+        "pytorch",
+        "numpyro",
+        "stan",
+        "bnlearn"
+      ],
+      "diagram_frameworks": [
+        "discopy"
+      ],
+      "unsupported_frameworks": [
+        "ngclearn",
+        "cpomdp",
+        "thrml"
+      ]
+    },
+    "discrete/multi_armed_bandit.md": {
+      "source_sha256": "58682f353d2f5aef7ca62bbc1171c17c6f3eb5d7b502f76a284f443b59458ec2",
+      "inference_frameworks": [
+        "pymdp",
+        "rxinfer",
+        "activeinference_jl",
+        "jax",
+        "pytorch",
+        "numpyro",
+        "stan",
+        "bnlearn"
+      ],
+      "diagram_frameworks": [
+        "discopy"
+      ],
+      "unsupported_frameworks": [
+        "ngclearn",
+        "cpomdp",
+        "thrml"
+      ]
+    },
+    "pymdp_scaling_study/pymdp_scaling_N16_T100.md": {
+      "source_sha256": "be14c234950f63ce8722072e4748022a3bb484de129f349f2e4d86b9c9346317",
+      "inference_frameworks": [
+        "pymdp",
+        "rxinfer",
+        "activeinference_jl",
+        "jax",
+        "pytorch",
+        "numpyro",
+        "stan",
+        "bnlearn"
+      ],
+      "diagram_frameworks": [
+        "discopy"
+      ],
+      "unsupported_frameworks": [
+        "ngclearn",
+        "cpomdp",
+        "thrml"
+      ]
+    },
+    "pymdp_scaling_study/pymdp_scaling_N64_T100.md": {
+      "source_sha256": "21b3a74a7b5a6443f0e4bd0c333f2dfa0ce9fcf2e3e1c35c0981f334d41b2d86",
+      "inference_frameworks": [
+        "pymdp",
+        "rxinfer",
+        "activeinference_jl",
+        "jax",
+        "pytorch",
+        "numpyro",
+        "stan",
+        "bnlearn"
+      ],
+      "diagram_frameworks": [
+        "discopy"
+      ],
+      "unsupported_frameworks": [
+        "ngclearn",
+        "cpomdp",
+        "thrml"
+      ]
+    },
+    "discrete/deep_planning_horizon.md": {
+      "source_sha256": "e8b373d391621f25c2f26f9a15e0d8d470f01b028ce83d129e1a08bdf8ad3e3b",
+      "inference_frameworks": [
+        "pymdp",
+        "rxinfer",
+        "activeinference_jl",
+        "jax",
+        "pytorch",
+        "numpyro",
+        "stan",
+        "bnlearn"
+      ],
+      "diagram_frameworks": [
+        "discopy"
+      ],
+      "unsupported_frameworks": [
+        "ngclearn",
+        "cpomdp",
+        "thrml"
+      ]
+    },
+    "discrete/actinf_pomdp_agent.md": {
+      "source_sha256": "ea58f38a031aab36ebf44078ebcdcc2a2ca5594a32c9a8ed92e0f09d61f579bf",
+      "inference_frameworks": [
+        "pymdp",
+        "rxinfer",
+        "activeinference_jl",
+        "jax",
+        "pytorch",
+        "numpyro",
+        "stan",
+        "bnlearn"
+      ],
+      "diagram_frameworks": [
+        "discopy"
+      ],
+      "unsupported_frameworks": [
+        "ngclearn",
+        "cpomdp",
+        "thrml"
+      ]
+    },
+    "discrete/regime_switched_dynamics.md": {
+      "source_sha256": "a3f4e8fa3c4eff0b443bad2bbb112177ef5ef41cab247a7bf57b8b446cae177f",
+      "inference_frameworks": [
+        "pymdp"
+      ],
+      "diagram_frameworks": [],
+      "unsupported_frameworks": [
+        "rxinfer",
+        "activeinference_jl",
+        "jax",
+        "discopy",
+        "pytorch",
+        "numpyro",
+        "stan",
+        "bnlearn",
+        "ngclearn",
+        "cpomdp",
+        "thrml"
+      ]
+    },
+    "continuous/predictive_coding_agent.md": {
+      "source_sha256": "ea2fb8829b862837038139620d090a83bbfe1953943547bf487e3b69af510344",
+      "inference_frameworks": [
+        "rxinfer",
+        "jax",
+        "pytorch",
+        "numpyro",
+        "stan",
+        "ngclearn",
+        "cpomdp"
+      ],
+      "diagram_frameworks": [],
+      "unsupported_frameworks": [
+        "pymdp",
+        "activeinference_jl",
+        "discopy",
+        "bnlearn",
+        "thrml"
+      ]
+    },
+    "multiagent/multi_agent_coordination_acceptance.md": {
+      "source_sha256": "7521f0651ac9d7f86c34294cd5fe00dfc7c5d096b518aa8127dfed072b90e052",
+      "inference_frameworks": [
+        "pymdp",
+        "rxinfer",
+        "activeinference_jl",
+        "jax",
+        "pytorch",
+        "numpyro",
+        "stan"
+      ],
+      "diagram_frameworks": [
+        "discopy"
+      ],
+      "unsupported_frameworks": [
+        "bnlearn",
+        "ngclearn",
+        "cpomdp",
+        "thrml"
+      ]
+    },
+    "discrete/hmm_baseline.md": {
+      "source_sha256": "56e062dee9ab62b8da3aca87647d05285610199befa85c340c87fee1e1784d3b",
+      "inference_frameworks": [
+        "pymdp",
+        "rxinfer",
+        "activeinference_jl",
+        "jax",
+        "pytorch",
+        "numpyro",
+        "stan",
+        "bnlearn",
+        "thrml"
+      ],
+      "diagram_frameworks": [
+        "discopy"
+      ],
+      "unsupported_frameworks": [
+        "ngclearn",
+        "cpomdp"
+      ]
+    },
+    "learning/dirichlet_likelihood_learning.md": {
+      "source_sha256": "787db452dacc43987ef374864eb968032cf147029d1042774fafedfb59c571ec",
+      "inference_frameworks": [
+        "pymdp",
+        "rxinfer",
+        "activeinference_jl",
+        "jax",
+        "pytorch",
+        "numpyro",
+        "stan"
+      ],
+      "diagram_frameworks": [
+        "discopy"
+      ],
+      "unsupported_frameworks": [
+        "bnlearn",
+        "ngclearn",
+        "cpomdp",
+        "thrml"
+      ]
+    },
+    "discrete/bnlearn_causal_model.md": {
+      "source_sha256": "d108293a713435c668aec0bea48bb880f760ed5bd803e61347911e02fc36d067",
+      "inference_frameworks": [
+        "pymdp",
+        "rxinfer",
+        "activeinference_jl",
+        "jax",
+        "pytorch",
+        "numpyro",
+        "stan",
+        "bnlearn"
+      ],
+      "diagram_frameworks": [
+        "discopy"
+      ],
+      "unsupported_frameworks": [
+        "ngclearn",
+        "cpomdp",
+        "thrml"
+      ]
+    },
+    "discrete/time_varying_dynamics.md": {
+      "source_sha256": "8afa7dc5a9112a93281b7e087e98e3e4685d24f03581224f48d923c28bb33994",
+      "inference_frameworks": [
+        "pymdp"
+      ],
+      "diagram_frameworks": [],
+      "unsupported_frameworks": [
+        "rxinfer",
+        "activeinference_jl",
+        "jax",
+        "discopy",
+        "pytorch",
+        "numpyro",
+        "stan",
+        "bnlearn",
+        "ngclearn",
+        "cpomdp",
+        "thrml"
+      ]
+    },
+    "hierarchical/temporal_hierarchy.md": {
+      "source_sha256": "a447e60370b25b54fbf48f9d2570f93080bb639941729b22f132896d6b8f2790",
+      "inference_frameworks": [
+        "jax"
+      ],
+      "diagram_frameworks": [],
+      "unsupported_frameworks": [
+        "pymdp",
+        "rxinfer",
+        "activeinference_jl",
+        "discopy",
+        "pytorch",
+        "numpyro",
+        "stan",
+        "bnlearn",
+        "ngclearn",
+        "cpomdp",
+        "thrml"
+      ]
+    },
+    "multiagent/stigmergic_swarm.md": {
+      "source_sha256": "04e3f73dc1725c5baae8fce6328485116baa9c8c98572e2d388fbbf06eddc52f",
+      "inference_frameworks": [
+        "pymdp",
+        "rxinfer",
+        "activeinference_jl",
+        "jax",
+        "pytorch",
+        "numpyro",
+        "stan"
+      ],
+      "diagram_frameworks": [
+        "discopy"
+      ],
+      "unsupported_frameworks": [
+        "bnlearn",
+        "ngclearn",
+        "cpomdp",
+        "thrml"
+      ]
+    },
+    "pymdp_scaling_study/pymdp_scaling_N32_T100.md": {
+      "source_sha256": "c89191de0c07db67162dfb7974f11c45a823acc02a3bc360c837232cbc2ebb25",
+      "inference_frameworks": [
+        "pymdp",
+        "rxinfer",
+        "activeinference_jl",
+        "jax",
+        "pytorch",
+        "numpyro",
+        "stan",
+        "bnlearn"
+      ],
+      "diagram_frameworks": [
+        "discopy"
+      ],
+      "unsupported_frameworks": [
+        "ngclearn",
+        "cpomdp",
+        "thrml"
+      ]
+    },
+    "precision/precision_weighted.md": {
+      "source_sha256": "9a20447b412088498f72713177f90fa62475b47af8d8f8fff0cc2a82507a32c9",
+      "inference_frameworks": [
+        "pymdp",
+        "rxinfer",
+        "activeinference_jl",
+        "jax",
+        "pytorch",
+        "numpyro",
+        "stan",
+        "bnlearn"
+      ],
+      "diagram_frameworks": [
+        "discopy"
+      ],
+      "unsupported_frameworks": [
+        "ngclearn",
+        "cpomdp",
+        "thrml"
+      ]
+    },
+    "thrml/categorical_smoothing.md": {
+      "source_sha256": "49e378b68875ded5a8ef4add76aa5e692b3f589fae75f23715bbfdee0fa9ef46",
+      "inference_frameworks": [
+        "pymdp",
+        "rxinfer",
+        "activeinference_jl",
+        "jax",
+        "pytorch",
+        "numpyro",
+        "stan",
+        "bnlearn",
+        "thrml"
+      ],
+      "diagram_frameworks": [
+        "discopy"
+      ],
+      "unsupported_frameworks": [
+        "ngclearn",
+        "cpomdp"
+      ]
+    },
+    "pomdp_gridworld/pomdp_gridworld_3x3.md": {
+      "source_sha256": "a87cdc89163bcd1b612f902d21ad16f95e3d25c7ff59e3718fa0179b1bc4d302",
+      "inference_frameworks": [
+        "pymdp",
+        "rxinfer",
+        "activeinference_jl",
+        "jax",
+        "pytorch",
+        "numpyro",
+        "stan",
+        "bnlearn"
+      ],
+      "diagram_frameworks": [
+        "discopy"
+      ],
+      "unsupported_frameworks": [
+        "ngclearn",
+        "cpomdp",
+        "thrml"
+      ]
+    },
+    "continuous/stochastic_dynamics.md": {
+      "source_sha256": "459f23f79e521cd242d9b429d7444677d58a1c10728f0a53d467b3588f9bc049",
+      "inference_frameworks": [
+        "rxinfer",
+        "jax",
+        "pytorch",
+        "numpyro",
+        "stan",
+        "ngclearn",
+        "cpomdp"
+      ],
+      "diagram_frameworks": [],
+      "unsupported_frameworks": [
+        "pymdp",
+        "activeinference_jl",
+        "discopy",
+        "bnlearn",
+        "thrml"
+      ]
+    },
+    "structured/factorized_posterior.md": {
+      "source_sha256": "948a21928905b8dbeb3b398f1745482d0fdebd2ea6fd5fe1a37ccff977e7131a",
+      "inference_frameworks": [
+        "pymdp",
+        "rxinfer",
+        "activeinference_jl",
+        "jax",
+        "pytorch",
+        "numpyro",
+        "stan"
+      ],
+      "diagram_frameworks": [
+        "discopy"
+      ],
+      "unsupported_frameworks": [
+        "bnlearn",
+        "ngclearn",
+        "cpomdp",
+        "thrml"
+      ]
+    },
+    "continuous/independent_gaussian_agents.md": {
+      "source_sha256": "c1fa6481c412ef7c799e5d5eeaf9a7f773a0ba2e2dfaf7dafcb22df1ed5beb2c",
+      "inference_frameworks": [
+        "rxinfer",
+        "jax"
+      ],
+      "diagram_frameworks": [],
+      "unsupported_frameworks": [
+        "pymdp",
+        "activeinference_jl",
+        "discopy",
+        "pytorch",
+        "numpyro",
+        "stan",
+        "bnlearn",
+        "ngclearn",
+        "cpomdp",
+        "thrml"
+      ]
+    },
+    "hierarchical/hierarchical_pomdp.md": {
+      "source_sha256": "8711b01139096d3967c9afcfaf762fbb5c93b9f650c29898441836b8957e7628",
+      "inference_frameworks": [
+        "jax"
+      ],
+      "diagram_frameworks": [],
+      "unsupported_frameworks": [
+        "pymdp",
+        "rxinfer",
+        "activeinference_jl",
+        "discopy",
+        "pytorch",
+        "numpyro",
+        "stan",
+        "bnlearn",
+        "ngclearn",
+        "cpomdp",
+        "thrml"
+      ]
+    },
+    "continuous/multi_agent_lgssm.md": {
+      "source_sha256": "41037679740bdb35c5e1dad13799a88a803a941102ae29759d4ee00958ad4623",
+      "inference_frameworks": [],
+      "diagram_frameworks": [],
+      "unsupported_frameworks": [
+        "pymdp",
+        "rxinfer",
+        "activeinference_jl",
+        "jax",
+        "discopy",
+        "pytorch",
+        "numpyro",
+        "stan",
+        "bnlearn",
+        "ngclearn",
+        "cpomdp",
+        "thrml"
+      ]
+    },
+    "continuous/factored_continuous_lgssm.md": {
+      "source_sha256": "2931d389bfe88696599573fba0d24b1f463c4e7d0614b30687e847c026182ec5",
+      "inference_frameworks": [
+        "jax"
+      ],
+      "diagram_frameworks": [],
+      "unsupported_frameworks": [
+        "pymdp",
+        "rxinfer",
+        "activeinference_jl",
+        "discopy",
+        "pytorch",
+        "numpyro",
+        "stan",
+        "bnlearn",
+        "ngclearn",
+        "cpomdp",
+        "thrml"
+      ]
+    },
+    "continuous/continuous_navigation.md": {
+      "source_sha256": "5e8f3c807c358ac198cf052cb0cd9aca3d5ae1871e1fd02884c9b001529b7ee7",
+      "inference_frameworks": [
+        "rxinfer",
+        "jax",
+        "pytorch",
+        "numpyro",
+        "stan",
+        "ngclearn",
+        "cpomdp"
+      ],
+      "diagram_frameworks": [],
+      "unsupported_frameworks": [
+        "pymdp",
+        "activeinference_jl",
+        "discopy",
+        "bnlearn",
+        "thrml"
+      ]
+    },
+    "discrete/two_state_bistable.md": {
+      "source_sha256": "a184fed13b7a446e8193549c206ade9f485cd99034097c3e67277a03fc3cab3d",
+      "inference_frameworks": [
+        "pymdp",
+        "rxinfer",
+        "activeinference_jl",
+        "jax",
+        "pytorch",
+        "numpyro",
+        "stan",
+        "bnlearn",
+        "thrml"
+      ],
+      "diagram_frameworks": [
+        "discopy"
+      ],
+      "unsupported_frameworks": [
+        "ngclearn",
+        "cpomdp"
+      ]
+    },
+    "continuous/ngclearn_lgssm.md": {
+      "source_sha256": "8dd68432415e546c91952db3efd83ea76361e59e52d75bcefcc4c36e33f4496d",
+      "inference_frameworks": [
+        "rxinfer",
+        "jax",
+        "pytorch",
+        "numpyro",
+        "stan",
+        "ngclearn",
+        "cpomdp"
+      ],
+      "diagram_frameworks": [],
+      "unsupported_frameworks": [
+        "pymdp",
+        "activeinference_jl",
+        "discopy",
+        "bnlearn",
+        "thrml"
+      ]
+    },
+    "basics/dynamic_perception.md": {
+      "source_sha256": "eed7260e9cb8e04132a49212dab35fe67ee237d38ea8561316e1964e916e1009",
+      "inference_frameworks": [
+        "pymdp",
+        "rxinfer",
+        "activeinference_jl",
+        "jax",
+        "pytorch",
+        "numpyro",
+        "stan",
+        "bnlearn",
+        "thrml"
+      ],
+      "diagram_frameworks": [
+        "discopy"
+      ],
+      "unsupported_frameworks": [
+        "ngclearn",
+        "cpomdp"
+      ]
+    },
+    "precision/curiosity_driven_agent.md": {
+      "source_sha256": "e40fac659079e9fdb197a52662a0cf64b35b4271771dbc611d1ad29de31afb5f",
+      "inference_frameworks": [
+        "pymdp",
+        "rxinfer",
+        "activeinference_jl",
+        "jax",
+        "pytorch",
+        "numpyro",
+        "stan",
+        "bnlearn"
+      ],
+      "diagram_frameworks": [
+        "discopy"
+      ],
+      "unsupported_frameworks": [
+        "ngclearn",
+        "cpomdp",
+        "thrml"
+      ]
+    },
+    "continuous/damped_oscillator_bias.md": {
+      "source_sha256": "f72184cf8427e24e0f99f3a4537d34c3421c47b45b192e6fbfa34cd116c69518",
+      "inference_frameworks": [
+        "rxinfer",
+        "jax",
+        "pytorch",
+        "numpyro",
+        "stan",
+        "ngclearn",
+        "cpomdp"
+      ],
+      "diagram_frameworks": [],
+      "unsupported_frameworks": [
+        "pymdp",
+        "activeinference_jl",
+        "discopy",
+        "bnlearn",
+        "thrml"
+      ]
+    },
+    "pymdp_scaling_study/pymdp_scaling_N4_T100.md": {
+      "source_sha256": "c54742b89e0850124459c7a16e7e279ec1a2dece202e3c4434520a696886347e",
+      "inference_frameworks": [
+        "pymdp",
+        "rxinfer",
+        "activeinference_jl",
+        "jax",
+        "pytorch",
+        "numpyro",
+        "stan",
+        "bnlearn"
+      ],
+      "diagram_frameworks": [
+        "discopy"
+      ],
+      "unsupported_frameworks": [
+        "ngclearn",
+        "cpomdp",
+        "thrml"
+      ]
+    },
+    "discrete/markov_chain.md": {
+      "source_sha256": "0614662a15ff5ceb77b0d3002a10099b6b96e86b22757ea91c07edfb964ebcfb",
+      "inference_frameworks": [
+        "pymdp",
+        "rxinfer",
+        "activeinference_jl",
+        "jax",
+        "pytorch",
+        "numpyro",
+        "stan",
+        "bnlearn"
+      ],
+      "diagram_frameworks": [
+        "discopy"
+      ],
+      "unsupported_frameworks": [
+        "ngclearn",
+        "cpomdp",
+        "thrml"
+      ]
+    },
+    "discrete/tmaze_epistemic.md": {
+      "source_sha256": "78698084abe6018bd9a4a0cd5c878c15684c5c8abae3edddc50e56ae69ec9f7e",
+      "inference_frameworks": [
+        "jax"
+      ],
+      "diagram_frameworks": [],
+      "unsupported_frameworks": [
+        "pymdp",
+        "rxinfer",
+        "activeinference_jl",
+        "discopy",
+        "pytorch",
+        "numpyro",
+        "stan",
+        "bnlearn",
+        "ngclearn",
+        "cpomdp",
+        "thrml"
+      ]
+    },
+    "multiagent/multi_agent_coordination.md": {
+      "source_sha256": "38f914bb0a9c4337d2de6c425f76d879cf67af6646b3557d16508e91321c606c",
+      "inference_frameworks": [
+        "pymdp",
+        "rxinfer",
+        "activeinference_jl",
+        "jax",
+        "pytorch",
+        "numpyro",
+        "stan"
+      ],
+      "diagram_frameworks": [
+        "discopy"
+      ],
+      "unsupported_frameworks": [
+        "bnlearn",
+        "ngclearn",
+        "cpomdp",
+        "thrml"
+      ]
+    }
+  },
+  "installed_wheel": {
+    "sha256": "ee9a9145da334783acc2db0261c1b68fb5a1ed74ce79ef603b3092a735551d1c",
+    "successful_executions": 17,
+    "failed_executions": 0,
+    "skipped_executions": 0,
+    "scope": "Two representative tracked models, all 12 backends requested; ordinary installed local wheel outside checkout; distinct from the 38-model editable-source run."
+  },
+  "tests": {
+    "final-core-green.log": "1 failed, 8058 passed, 1083 deselected, 21 warnings, 10 subtests passed in 543.20s (0:09:03)",
+    "final-pipeline-regression.log": "337 passed, 424 deselected, 1 warning in 108.74s (0:01:48)",
+    "final-native311.log": "118 passed in 18.36s",
+    "final-native312.log": "24 passed in 27.79s",
+    "visualization-regression-final.log": "356 passed, 23 deselected, 10 warnings in 171.00s (0:02:51)",
+    "final-output-root-tests.log": "18 passed in 10.07s",
+    "publication-gates-final.log": "1 failed, 34 passed in 0.39s",
+    "final-projection-path-tests.log": "178 passed in 6.46s",
+    "final-typechecker-regression.log": "95 passed in 1.65s"
+  },
+  "numerical_witnesses": {
+    "rxinfer_scope": "19 flat fixed-parameter smoothing models, independent log-domain forward/backward comparison; excludes learning, factored, multiagent and continuous contracts.",
+    "bnlearn_scope": "Native asymmetric active/passive filtering and impossible-evidence tests; compare every posterior with independent forward filtering.",
+    "thrml_scope": "Released-wheel smoothing witnesses on Python 3.11/JAX 0.9.2 and Python 3.12/JAX 0.11.2; Monte Carlo acceptance is distinct from parameter fidelity and convergence."
+  },
+  "limitations": [
+    "The two non-runnable examples intentionally declare unsupported hybrid/shared continuous-agent compositions; numeric source parameters were not changed to force execution.",
+    "DisCoPy evidence is categorical diagram construction, not posterior inference. Other algorithms also retain their distinct filtering, smoothing, learning and control contracts.",
+    "Unsupported combinations, optional D2 and unprovisioned live Ollama/Lean/GUI/provider surfaces are not successful native executions.",
+    "Runtime metadata records selected distributions/tool digests, not an inventory of every installed library byte. Test selections overlap and are not summed.",
+    "The figure builder regenerated the HEAD token map and figures, but a full fresh PDF render needs unavailable XeLaTeX/template tooling. Generated candidates were saved separately, and the original committed publication bundle restored. The framework-registry figure freshness guard remains intentionally unaccepted; full manuscript/count regeneration and paired fep_lean/GEO custody closeout remain publication work."
+  ],
+  "local_evidence_archive_sha256": "c402f63774a388c209ecd5184e18e35ebfa3b6dc923971def1a87df08f169104"
+}

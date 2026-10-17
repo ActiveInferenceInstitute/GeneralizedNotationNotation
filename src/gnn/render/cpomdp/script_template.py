@@ -31,6 +31,7 @@ import math
 from collections.abc import Mapping
 from typing import Any
 
+from gnn.render.admission import validate_render_options
 from gnn.render.continuous_common import ContinuousSpec, literal_block
 
 from .admission import (
@@ -53,17 +54,17 @@ def resolve_render_options(options: Mapping[str, Any] | None) -> dict[str, Any]:
     """Apply defaults to the cpomdp render options and validate them.
 
     Args:
-        options: Caller options. Keys other than ``control_mode``,
-            ``action_scale``, ``horizon`` and ``goal_precision`` are ignored.
+        options: Typed public cpomdp options, including optional admission caps.
+            Unknown keys, null values and coercions are rejected.
 
     Returns:
-        The four options, typed and defaulted.
+        Scientific options and allocation limits, typed and defaulted.
 
     Raises:
         ValueError: If an option is outside its allowed range.
     """
-    resolved = {k: v for k, v in dict(options or {}).items() if v is not None}
-    control_mode = str(resolved.get("control_mode", "efe")).strip().lower()
+    resolved = validate_render_options("cpomdp", options)
+    control_mode = resolved.get("control_mode", "efe")
     if control_mode not in CONTROL_MODES:
         raise ValueError(
             f"cpomdp control_mode must be one of {CONTROL_MODES}, got {control_mode!r}"

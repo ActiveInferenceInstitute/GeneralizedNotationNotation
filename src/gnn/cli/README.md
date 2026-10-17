@@ -6,6 +6,11 @@ Unified command-line interface for the GNN pipeline. Provides subcommands for ru
 
 **Entry point**: `gnn = "gnn.cli:main"` (defined in `pyproject.toml`)
 
+Programmatic calls preserve caller-owned output streams. On Python 3.14, parser
+construction disables automatic color detection for a closed stdout, including
+subparsers, so the existing command error is reported without probing its file
+descriptor or replacing the stream.
+
 ## Subcommands
 
 | Command | Description |

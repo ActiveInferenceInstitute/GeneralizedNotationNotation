@@ -10,9 +10,26 @@ from ``cli.__init__``.
 from __future__ import annotations
 
 import argparse
+import sys
+from functools import partial
 from pathlib import Path
+from typing import Any
 
 from gnn.frameworks import RENDER_FRAMEWORKS
+
+
+class _ArgumentParser(argparse.ArgumentParser):
+    """Keep Python 3.14 color discovery from probing a caller's closed stream."""
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        if sys.version_info >= (3, 14) and getattr(sys.stdout, "closed", False):
+            kwargs.setdefault("color", False)
+            # Validation constructs a formatter before ArgumentParser applies
+            # its color setting, so that constructor needs the same protection.
+            kwargs.setdefault(
+                "formatter_class", partial(argparse.HelpFormatter, color=False)
+            )
+        super().__init__(*args, **kwargs)
 
 
 def _pipeline_step(value: str) -> int:
@@ -49,7 +66,7 @@ def build_parser() -> argparse.ArgumentParser:
     Pure construction — no parsing side effects — so programmatic callers
     can introspect flags and choices without dispatching.
     """
-    parser = argparse.ArgumentParser(
+    parser = _ArgumentParser(
         prog="gnn",
         description="GNN Processing Pipeline — Command-line interface",
     )

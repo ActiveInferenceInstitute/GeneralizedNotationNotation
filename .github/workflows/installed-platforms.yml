@@ -46,9 +46,9 @@ jobs:
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: ${{ matrix.python }}
-      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
         with:
-          version: "0.12"
+          version: "0.13.1"
           enable-cache: true
       - name: Build and export the frozen installed runtime
         run: |
@@ -129,7 +129,7 @@ jobs:
           PY
       - name: Installed acceptance evidence
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: installed-${{ matrix.os }}-${{ matrix.python }}
           path: |
@@ -139,3 +139,40 @@ jobs:
             ${{ runner.temp }}/gnn-installed-platform/data/*.log
           if-no-files-found: error
           retention-days: 14
+
+
+  container:
+    name: container (linux/amd64, 3.14)
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      CONTAINER_SOURCE_REVISION: ${{ github.event.pull_request.head.sha || github.sha }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Build the frozen Docker runtime and retain identities
+        run: |
+          CONTAINER_RECEIPTS="$RUNNER_TEMP/gnn-container-receipts"
+          echo "CONTAINER_RECEIPTS=$CONTAINER_RECEIPTS" >> "$GITHUB_ENV"
+          mkdir -p "$CONTAINER_RECEIPTS"
+          test "$(git rev-parse HEAD)" = "$CONTAINER_SOURCE_REVISION"
+          git rev-parse HEAD > "$CONTAINER_RECEIPTS/source-revision.txt"
+          sha256sum Dockerfile uv.lock uv.toml > "$CONTAINER_RECEIPTS/input-sha256.txt"
+          docker build --tag "gnn-ci:$CONTAINER_SOURCE_REVISION" . > "$CONTAINER_RECEIPTS/build.log" 2>&1
+          docker image inspect "gnn-ci:$CONTAINER_SOURCE_REVISION" > "$CONTAINER_RECEIPTS/image.json"
+      - name: Verify the non-root runtime and public CLI boundaries
+        run: |
+          image="gnn-ci:$CONTAINER_SOURCE_REVISION"
+          docker run --rm --entrypoint /usr/local/bin/uv "$image" --version > "$CONTAINER_RECEIPTS/uv-version.txt"
+          docker run --rm --entrypoint /opt/venv/bin/python "$image" -c "import os, sys; assert os.geteuid() != 0; assert sys.version_info[:2] == (3, 14)"
+          docker run --rm --entrypoint /opt/venv/bin/python "$image" -m pytest \
+            tests/cli/test_native_cli_unicode_streams_410.py \
+            tests/infrastructure/test_environment_python.py -q --no-cov \
+            > "$CONTAINER_RECEIPTS/cli-tests.log" 2>&1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: container-linux-amd64-python314
+          path: ${{ env.CONTAINER_RECEIPTS }}/
+          if-no-files-found: error

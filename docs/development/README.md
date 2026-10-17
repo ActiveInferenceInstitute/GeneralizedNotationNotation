@@ -7,6 +7,13 @@
 ## Overview
 This guide provides information for developers contributing to the GNN project, including code organization, development workflows, and architecture patterns.
 
+### Remaining roadmap contracts
+
+[Implementation boundaries and acceptance cases](remaining_roadmap_contracts.md)
+cover long-context processing, independent semantic witnesses, coupled continuous
+agents, THRML/cpomdp extensions and exact-version archival. They preserve the
+seven open workstreams in [TO-DO](../../TO-DO.md).
+
 ### Documentation audit tooling
 
 From the repository root:
@@ -490,3 +497,8 @@ uv run --extra dev mypy src --show-error-codes
 - Integration tests for new pipeline steps
 - Performance tests for computationally intensive features
 - Regression tests for bug fixes 
+
+The [2026-10-16 native corpus receipt](native_corpus_acceptance_20261016.json)
+records all 38 tracked examples and 12 requested frameworks at the reviewed
+source epoch. Local process, numerical, installed-wheel and publication claims
+retain their separate scopes.

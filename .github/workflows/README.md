@@ -1,5 +1,25 @@
 # GitHub workflows
 
+The local default and primary ordinary test matrix now include Python 3.14,
+with exact uv 0.13.1. The named h5py/HDF5 host exception and removal checks are
+in root README.md. General docs/local/MCP/security jobs select 3.14; coupled
+3.12 required statuses and native/paired/manuscript/GUI rosters remain explicit
+compatibility or evidence profiles. Existing acceptance receipts retain their
+original source, runtime and tool identities; this configuration change does
+not renew those receipts.
+
+GEO qualification controls reuse the installed Python 3.11 environment with
+`--frozen --no-sync`; they do not let the local default replace its H3-enabled
+runtime. Manuscript audit artifacts retain the full render output and the render
+step outcome even when strict comparison rejects the older committed chain.
+Those diagnostic artifacts require normal verification and an artifact commit
+before they become accepted publication evidence.
+
+The installed-platform workflow also builds the Dockerfile on Linux/amd64 with
+its frozen Python 3.14 environment. It checks the non-root uv executable and
+public CLI/stream boundaries. This container lane retains build/input/image
+identities; it does not qualify every optional backend or the full default CMD.
+
 YAML workflows for CI, MCP tool-count audit, weekly all-extras suite, documentation audit, workflow lint, dependency review, CodeQL, and scheduled supply-chain checks. Parent hub (Dependabot + full index): [../README.md](../README.md). Agent guide: [AGENTS.md](AGENTS.md).
 
 ## Workflow files
@@ -19,7 +39,7 @@ YAML workflows for CI, MCP tool-count audit, weekly all-extras suite, documentat
 | [dependency-review.yml](dependency-review.yml) | `pull_request` → `main`; `workflow_dispatch` | High severity + AGPL deny; PR comment summary on failure. Fork PRs may get limited review. |
 | [codeql.yml](codeql.yml) | `push` / `pull_request` (skips doc-only paths), weekly cron, `workflow_dispatch` | Init → `uv sync --frozen --extra dev` → analyze (Python). |
 | [supply-chain-audit.yml](supply-chain-audit.yml) | Weekly cron Monday 06:00 UTC, `workflow_dispatch` | Two `pip-audit` jobs (OSV); strict shell; job summary. |
-| [custody-re-render.yml](custody-re-render.yml) | Daily cron 07:14 UTC (`14 7 * * *`); `workflow_dispatch` | Report-only fresh manuscript render from the `docxology/template` checkout (symlinked at `projects/active/`): template `stage_03_render` → record render-custody manifest → strict token gate → `tests/test_manuscript_latex_log.py`; manifest + rendered evidence uploaded as artifact, nothing committed back. |
+| [custody-re-render.yml](custody-re-render.yml) | Daily cron 07:14 UTC (`14 7 * * *`); `workflow_dispatch` | Report-only fresh manuscript render from the `docxology/template` checkout (a real directory at `projects/active/`): template `stage_03_render` → record render-custody manifest → strict token gate → `tests/test_manuscript_latex_log.py`; manifest + rendered evidence uploaded as artifact, nothing committed back. |
 | [gridworld.yml](gridworld.yml) | Weekly Monday 03:43 UTC (`43 3 * * 1`); `workflow_dispatch` | Report-only fresh GridWorld pipeline and publication-contract check with explicitly provisioned Julia environments. Volatile outputs stay on the runner; the pipeline summary is retained as evidence. |
 | [pair-pin-freshness.yml](pair-pin-freshness.yml) | Nightly cron 05:23 UTC (`23 5 * * *`); `workflow_dispatch` | Validates both committed pair pins (`.github/fep-lean-pair.json`, `.github/gnn-pair.json`) and asserts each pinned revision is ancestor-or-equal of the companion default-branch HEAD via `scripts/check_pair_pin_freshness.py` (git-only; full-history checkouts, `fetch-depth: 0`). Exit 2 "re-pin required" names the stale pair file, pinned revision and companion tip; receipts uploaded as artifact. |
 
@@ -58,10 +78,14 @@ actionlint .github/workflows/*.yml
 
 Run from repo root (paths relative to root).
 
-CI sets `UV_PYTHON` to the test matrix version (and 3.12 for security and
+CI sets `UV_PYTHON` to the test matrix version (and 3.14 for security and
 documentation jobs), overriding the local `.python-version` pin. XML export
 validation uses `defusedxml` and rejects entity declarations.
 
 The installed-platform matrix explicitly checks out the candidate head for a
 PR and the event revision for main/manual runs. It verifies that revision before
 building the wheel and records the actual checkout, wheel and lock hashes.
+
+The FEP bridge job selects its companion-required uv 0.13.0 independently of
+GNN-owned uv 0.13.1 installs. Supply-chain requirement resolution uses core Python 3.14 and the declared
+all-extras Python 3.12 profile, rather than prospective Python 3.15.

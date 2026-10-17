@@ -37,6 +37,20 @@ need a separate declared capability. Optional `goal_mean` and `control_gain` mus
 both be present, dimensionally valid, and finite. Each factored or agent block
 uses the same validator.
 
+## Finite bnlearn filtering
+
+Complete stationary A/B/D models compile to native bnlearn CPT queries under
+fixed transition actions. The first observation updates D; subsequent queries
+use B before the likelihood update. Canonical normalization provenance and
+original source parameters remain separate. Native asymmetric witnesses compare
+every posterior against independent forward filtering, including passive models
+without preferences and rejection of impossible evidence. T-1 transition actions
+are recorded separately from timestep policy actions; analysis validates their
+length and integer indices. C/E policy optimization and causal discovery are
+outside this contract. Metadata-only compatibility demonstrations carry no
+source-fidelity or posterior-analysis credit. Unrepresented component matrices
+and unsupported families refuse instead of substituting synthetic CPTs.
+
 ## Independent continuous agents
 
 `continuous/independent_gaussian_agents.md` declares asymmetric one- and
@@ -128,7 +142,15 @@ mass `0.999`, outside the admitted rounding tolerance. The source comments recor
 this explicit uniform-intent correction; regression tests still reject the
 original distribution.
 
-The HMM baseline and T-maze source values remain unchanged pending scientific correction. HMM emissions have column mass 1.5; T-maze transitions have zero-mass previous-state columns. Their parser coverage remains enabled, and required rendering returns failure. They have explicit invalid-source regression cases and are marked illustrative in the corpus index. Static/dynamic perception likelihood intent is also unresolved; material mass errors are rejected rather than repaired.
+The HMM baseline, static/dynamic perception, both hierarchical and T-maze
+examples received explicit scientific corrections in the
+[2026-10-07 acceptance record](issue250_scientific_acceptance_2026_10_07.json).
+Use the [current exemplar index](../../input/gnn_files/INDEX.md) for their declared
+contracts and backend selections. Historical HMM emission mass of 1.5 and T-maze
+zero-mass transition columns remain invalid inputs; the validators still reject
+those values. Correcting an authored example does not authorize automatic repair
+of other sources. The hierarchical block-reset and contingent T-maze semantics
+require their explicit JAX execution contracts.
 
 
 ## THRML categorical sampling

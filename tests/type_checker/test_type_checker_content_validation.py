@@ -79,6 +79,19 @@ Minimal
 # --- sections.extract_markdown_section ---------------------------------------
 
 
+def test_validate_tracked_multiagent_categorical_types() -> None:
+    """The tracked native coordination example uses lowercase categorical."""
+    source = (
+        Path(__file__).resolve().parents[2]
+        / "input/gnn_files/multiagent/multi_agent_coordination_acceptance.md"
+    )
+    result = GNNTypeChecker().validate_content(
+        source.read_text(), source_name=str(source)
+    )
+    assert result["valid"], result["errors"]
+    assert {item["type"] for item in result["variables"]} == {"categorical"}
+
+
 def test_extract_markdown_section_ignores_prose_outside_block() -> None:
     content = "preamble s>s noise\n## Connections\na>b\n## Footer\na-b in prose"
     assert extract_markdown_section(content, "Connections") == "a>b"

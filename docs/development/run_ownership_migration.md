@@ -149,7 +149,9 @@ Installed `python -m gnn.main` and installed direct-file entrypoints retain the
 caller working directory. Place the configuration at `input/config.yaml` under
 that directory, or use the supported CLI/configuration surfaces; relative input
 and output paths resolve there. The pipeline freezes that resolved configuration
-in `run_context.json`. A direct repository `python src/gnn/main.py` still anchors
+in `run_context.json`. Step subprocesses retain the invoking interpreter and
+working directory in serial and matrix dispatch. An editable checkout's `.venv`
+and code directory cannot replace that runtime or redirect relative artifacts. A direct repository `python src/gnn/main.py` still anchors
 its defaults to the checkout containing `pyproject.toml`. Importing `gnn.main`
 does not change the working directory or import path.
 
@@ -216,6 +218,10 @@ a verified 0.35-or-later runtime and disables input truncation/context shifting.
 Sources larger than the configured context remain unfinished; the pipeline
 does not sample source content or replace the model.
 The configured model is preflighted; there is no silent provider/model fallback.
+Native replies require a `stop` finish reason to count as complete. Other stop
+reasons retain partial text and remain unfinished without cache/checkpoint credit.
+The `terminal_stop_v1` completion policy invalidates older checkpoint bindings;
+request-cache version 3 separately prevents reuse of older text-only completions.
 
 Durable sessions record selected units, progress and artifacts. Resume must
 verify current source and artifact identities before admitting prior work; a
@@ -265,3 +271,8 @@ and the direct executor use the same validator. Old or malformed results cannot
 satisfy a new run. `transition_actions` indexes the T-1 transitions; it must not
 be padded into a generic T-action trace. Empirical entropy describes retained
 samples; unverified convergence, calibration and EFE remain unavailable.
+
+Model-scoped execution views also project execution-summary pointers, counters
+and model identities. A derived-view marker binds the original summary digest;
+the producer receipt remains unchanged. This keeps pointer-following analyzers
+within the same selection as directory walkers.

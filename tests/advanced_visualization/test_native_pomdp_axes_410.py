@@ -75,3 +75,42 @@ def test_public_advanced_pomdp_without_b_or_policy_reports_explicit_absence(tmp_
         "No policy data found",
     }
     assert summary["output_files"] == [] and not list(output.glob("*.png"))
+
+
+def test_many_action_transition_plots_are_paginated_without_omission(tmp_path, figures):
+    _, parsed, inventory = saved_model(tmp_path, [("sensor", "belief")])
+    first = np.linspace(0.1, 0.9, 17)
+    transition = np.stack(
+        [np.stack([first, first[::-1]]), np.stack([1 - first, 1 - first[::-1]])]
+    )
+    model = json.loads(parsed.read_text())
+    model["parameters"] = [{"name": "B", "value": transition.tolist()}]
+    parsed.write_text(json.dumps(model))
+    result, _, summary = run_saved_model(tmp_path, parsed, inventory, "pomdp")
+    assert result is True
+    attempt = next(
+        a for a in summary["attempts"] if a["viz_type"] == "pomdp_transitions"
+    )
+    from pathlib import Path
+
+    manifest_path = next(
+        Path(p) for p in attempt["output_files"] if p.endswith("_pages.json")
+    )
+    manifest = json.loads(manifest_path.read_text())
+    assert manifest["matrix_shape"] == [2, 2, 17]
+    assert len(manifest["pages"]) == 3
+    assert [i for p in manifest["pages"] for i in p["action_indices"]] == list(
+        range(17)
+    )
+    for page in manifest["pages"]:
+        figure = figures[page["file"]]
+        assert max(figure.get_size_inches()) <= 20
+        panels = [
+            axis for axis in figure.axes if axis.get_title() and axis.get_visible()
+        ]
+        assert len(panels) == len(page["action_indices"])
+        native_png(manifest_path.parent / page["file"])
+        for panel, action in zip(panels, page["action_indices"]):
+            np.testing.assert_array_equal(
+                plot_values(panel).reshape(2, 2), transition[:, :, action]
+            )

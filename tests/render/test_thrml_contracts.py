@@ -680,3 +680,24 @@ def test_current_run_payload_keeps_artifact_stem_and_stable_model_identity(
         identity["source_sha256"]
         == hashlib.sha256(source_path.read_bytes()).hexdigest()
     )
+
+
+def test_passive_preferences_are_explicitly_derived_without_changing_source():
+    source = model()
+    raw = source["initialparameterization"]
+    raw["B"] = np.asarray(raw["B"])[:, :, 0].tolist()
+    del raw["C"], raw["E"]
+    source["model_parameters"]["num_actions"] = 1
+    original = deepcopy(source)
+    payload = build_thrml_payload(source)
+    _validate_payload(payload)
+    component = payload["components"][0]
+    assert component["source_parameters"] == original["initialparameterization"]
+    assert component["parameters"]["C"] == [0.0, 0.0]
+    assert component["matrix_provenance"]["C"]["source"] == "passive_model_adapter"
+    assert component["matrix_provenance"]["C"]["derived"] is True
+    assert source == original
+    source["initialparameterization"]["A"][0][0] = 0
+    source["initialparameterization"]["A"][1][0] = 1
+    with pytest.raises(UnsupportedTHRMLModel, match="structural-zero"):
+        build_thrml_payload(source)

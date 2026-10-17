@@ -11,6 +11,7 @@ does (``bn.make_DAG``, ``bn.parameter_learning.fit``, ``bn.inference.fit``).
 """
 
 import logging
+import re
 from pathlib import Path
 from typing import Any, Dict, Optional, Union
 
@@ -35,6 +36,42 @@ def generate_bnlearn_code(
 
     if _validate_or_return_empty(model_data, "generate_bnlearn_code") is None:
         return ""
+    initial = {
+        **((model_data.get("structured_pomdp") or {}).get("matrices") or {}),
+        **(
+            model_data.get("initialparameterization")
+            or model_data.get("initial_parameterization")
+            or {}
+        ),
+    }
+    if any(
+        re.match(r"^[ABCDE](?:_|$)", str(key))
+        or key in {"F", "H", "Q", "R", "prior_mean", "prior_cov"}
+        for key in initial
+    ):
+        from gnn.pipeline.run_context import current_run_context
+        from gnn.render.bnlearn.source_program import generate_source_program
+        from gnn.render.naming import atomic_write_text
+
+        identity: dict[str, Any] = {}
+        context = current_run_context()
+        if (
+            context
+            and output_path is not None
+            and Path(output_path).resolve().is_relative_to(Path(context.output_root))
+        ):
+            for model in context.selected_models(11):
+                if model.artifact_stem in Path(output_path).parts:
+                    identity.update(
+                        model_id=model.model_id,
+                        source_relative_path=model.relative_path,
+                        source_sha256=model.sha256,
+                    )
+                    break
+        code = generate_source_program(model_data, identity)
+        if output_path is not None:
+            atomic_write_text(Path(output_path), code)
+        return code
     try:
         model_name = str(model_data.get("model_name", "GNN Model"))
         gnn_file = str(model_data.get("source_file", "unknown.md"))
@@ -104,7 +141,9 @@ def generate_bnlearn_code(
             '            "metadata": {',
             '                "model_name": self.model_name,',
             '                "framework": "bnlearn",',
-            '                "gnn_source": self.gnn_source',
+            '                "gnn_source": self.gnn_source,',
+            '                "source_parameter_fidelity": False,',
+            '                "inference_contract": "synthetic_backend_smoke_v1"',
             "            },",
             '            "summary": self.performance_metrics,',
             '            "query_results": str(query.df)',

@@ -453,3 +453,7 @@ This module is part of the GeneralizedNotationNotation project. See the main rep
 - **[AGENTS](AGENTS.md)**: Agentic Workflows
 - **[SPEC](SPEC.md)**: Architectural Specification
 - **[SKILL](SKILL.md)**: Capability API
+
+Transition plots retain all actions on pages of at most eight panels and four
+columns. A page manifest records each action index and image. Dense matrices
+omit per-cell text above 25 cells to keep canvas and annotation work bounded.

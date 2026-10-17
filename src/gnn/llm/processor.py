@@ -521,7 +521,8 @@ async def _execute_prompt(
         return _prompt_fallback_text(label, custom)
     request_definition = json.dumps(
         {
-            "schema_version": 2,
+            "schema_version": 3,
+            "completion_policy": "terminal_stop_v1",
             "provider": provider_type.value if provider_type else "default",
             "model": model_name,
             "messages": [
@@ -599,6 +600,19 @@ async def _execute_prompt(
                 f"No response generated for {kind} {label}. This may indicate "
                 "that the LLM provider is not available or not responding."
             )
+        finish_reason = getattr(resp, "finish_reason", None)
+        if finish_reason not in (None, "stop") or (
+            isolated and finish_reason != "stop"
+        ):
+            if outcomes is not None:
+                outcomes[label] = {
+                    "status": "incomplete",
+                    "finish_reason": finish_reason,
+                    "reason": "Provider did not confirm a complete text response",
+                }
+            # Retain partial text for inspection without admitting it as cached
+            # or checkpointed completion. Resume must retry this prompt.
+            return content
         cache.put(cache_content, model_name, request_definition, content)
         check_deadline()
         if outcomes is not None:

@@ -32,6 +32,11 @@ def _invoke(
     environment = os.environ.copy()
     environment["PYTHONPATH"] = str(REPO / "src")
     environment["PYTHONIOENCODING"] = encoding + ":strict"
+    # Exercise argparse's real descriptor discovery, independent of host color
+    # suppression (which otherwise hides Python 3.14 closed-stream failures).
+    for key in ("NO_COLOR", "FORCE_COLOR", "PYTHON_COLORS"):
+        environment.pop(key, None)
+    environment["TERM"] = "xterm-256color"
     child = subprocess.run(  # nosec B603 — selected entrypoint and owned files
         command, cwd=tmp_path, env=environment, capture_output=True, timeout=45
     )

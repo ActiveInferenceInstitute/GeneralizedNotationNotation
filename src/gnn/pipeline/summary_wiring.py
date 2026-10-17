@@ -840,12 +840,11 @@ def execute_pipeline_step(
         # Get script path
         script_path = Path(__file__).parent.parent / script_name
 
-        # Get virtual environment Python path
-        project_root = Path(__file__).parent.parent.parent.parent
-        venv_python = project_root / ".venv" / "bin" / "python"
-
-        # Use virtual environment Python if available, otherwise fall back to system Python
-        python_executable = str(venv_python) if venv_python.exists() else sys.executable
+        # Workers inherit the invocation's data/configuration workspace and
+        # interpreter. The installed code location may be an editable checkout
+        # with a different .venv; it has no authority over either selection.
+        workspace = Path.cwd()
+        python_executable = sys.executable
 
         # Extract step number
         step_num = step_number_from_script_name(script_name)
@@ -998,7 +997,7 @@ def execute_pipeline_step(
 
                 result = execute_command_streaming(
                     cmd,
-                    cwd=project_root,
+                    cwd=workspace,
                     env=_env,
                     timeout=remaining,
                     print_stdout=args.verbose,
@@ -1066,7 +1065,7 @@ def execute_pipeline_step(
 
             result = execute_command_streaming(
                 cmd,
-                cwd=project_root,
+                cwd=workspace,
                 env=_env,
                 timeout=step_timeout_seconds,
                 print_stdout=True,

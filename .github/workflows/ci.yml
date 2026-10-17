@@ -27,7 +27,7 @@ jobs:
       contents: read
     strategy:
       matrix:
-        python-version: ["3.11", "3.13"]
+        python-version: ["3.14", "3.11", "3.13"]
       fail-fast: false
     env:
       PYTHONPATH: src
@@ -42,10 +42,10 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install uv
-        uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
         with:
-          # Pin uv to the Dockerfile bootstrap floor series (UV_VERSION=0.12.0).
-          version: "0.12"
+          # Match exact uv 0.13.1 in uv.toml and the Docker bootstrap.
+          version: "0.13.1"
           enable-cache: true
 
       - name: Install dependencies (dev)
@@ -68,7 +68,7 @@ jobs:
 
       - name: Pytest JUnit report
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: pytest-junit-${{ matrix.python-version }}
           path: junit/pytest-${{ matrix.python-version }}.xml
@@ -77,7 +77,7 @@ jobs:
 
       - name: Coverage report artifact
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: coverage-${{ matrix.python-version }}
           path: junit/coverage-${{ matrix.python-version }}.json
@@ -114,10 +114,10 @@ jobs:
           python-version: "3.12"
 
       - name: Install uv
-        uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
         with:
-          # Pin uv to the Dockerfile bootstrap floor series (UV_VERSION=0.12.0).
-          version: "0.12"
+          # Match exact uv 0.13.1 in uv.toml and the Docker bootstrap.
+          version: "0.13.1"
           enable-cache: true
 
       - name: Install dependencies (dev)
@@ -140,7 +140,7 @@ jobs:
 
       - name: Pytest JUnit report
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: pytest-junit-3.12
           path: junit/pytest-3.12.xml
@@ -149,7 +149,7 @@ jobs:
 
       - name: Coverage report artifact
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: coverage-3.12
           path: junit/coverage-3.12.json
@@ -186,10 +186,10 @@ jobs:
           python-version: "3.12"
 
       - name: Install uv
-        uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
         with:
-          # Pin uv to the Dockerfile bootstrap floor series (UV_VERSION=0.12.0).
-          version: "0.12"
+          # Match exact uv 0.13.1 in uv.toml and the Docker bootstrap.
+          version: "0.13.1"
           enable-cache: true
 
       - name: Install dependencies (dev)
@@ -246,7 +246,7 @@ jobs:
 
       - name: MCP and capability test evidence
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: mcp-capabilities
           path: junit/mcp-capabilities.xml
@@ -303,9 +303,9 @@ jobs:
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "3.12"
-      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
         with:
-          version: "0.12"
+          version: "0.13.1"
           enable-cache: true
       - name: Install deterministic contract environment
         run: uv sync --frozen --extra dev
@@ -319,7 +319,7 @@ jobs:
         run: uv run --frozen --no-sync python scripts/test_receipt.py junit/pipeline-contracts.xml
       - name: Pipeline contract evidence
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: pipeline-contracts
           path: junit/pipeline-contracts.*
@@ -348,10 +348,10 @@ jobs:
           python-version: "3.12"
 
       - name: Install uv
-        uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
         with:
-          # Pin uv to the Dockerfile bootstrap floor series (UV_VERSION=0.12.0).
-          version: "0.12"
+          # Match exact uv 0.13.1 in uv.toml and the Docker bootstrap.
+          version: "0.13.1"
           enable-cache: true
 
       - name: Install dependencies (dev + ml-ai + torch)
@@ -368,7 +368,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
-      UV_PYTHON: "3.12"
+      UV_PYTHON: "3.14"
     permissions:
       contents: read
       security-events: write
@@ -378,13 +378,13 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
-          python-version: "3.12"
+          python-version: "3.14"
 
       - name: Install uv
-        uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
         with:
-          # Pin uv to the Dockerfile bootstrap floor series (UV_VERSION=0.12.0).
-          version: "0.12"
+          # Match exact uv 0.13.1 in uv.toml and the Docker bootstrap.
+          version: "0.13.1"
           enable-cache: true
 
       - name: Install dependencies (dev)
@@ -402,14 +402,14 @@ jobs:
 
       - name: Upload Bandit SARIF to code scanning
         if: always() && hashFiles('bandit-results.sarif') != ''
-        uses: github/codeql-action/upload-sarif@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4.38.2
+        uses: github/codeql-action/upload-sarif@24c54180a607b1449ed407dd24f251e4e9147c8d # v4.38.3
         with:
           sarif_file: bandit-results.sarif
           category: bandit
 
       - name: Upload Bandit SARIF artifact
         if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: bandit-results
           path: bandit-results.sarif

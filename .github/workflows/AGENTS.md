@@ -1,5 +1,13 @@
 # Workflows Agent Guide
 
+The local default and primary ordinary test matrix now include Python 3.14,
+with exact uv 0.13.1. The named h5py/HDF5 host exception and removal checks are
+in root README.md. General docs/local/MCP/security jobs select 3.14; coupled
+3.12 required statuses and native/paired/manuscript/GUI rosters remain explicit
+compatibility or evidence profiles. Existing acceptance receipts retain their
+original source, runtime and tool identities; this configuration change does
+not renew those receipts.
+
 ## Purpose
 
 Defines behavior and guardrails for workflows in this directory. Human index of all `.github/` automation: [../README.md](../README.md).
@@ -19,7 +27,7 @@ Defines behavior and guardrails for workflows in this directory. Human index of 
 | `dependency-review.yml` | PR gate: high-severity failures; AGPL deny list; PR comment summary on failure. |
 | `codeql.yml` | Python CodeQL: `init` → `uv sync --frozen --extra dev` → `analyze`; skips doc-only paths on push/PR; weekly Monday 04:28 UTC cron + `workflow_dispatch`. |
 | `supply-chain-audit.yml` | Scheduled `pip-audit` on frozen exports (core + all extras, no dev); bash `set -euo pipefail`; job summary. |
-| `custody-re-render.yml` | Daily cron 07:14 UTC + `workflow_dispatch`; report-only (no commit back). Fresh manuscript render via the `docxology/template` checkout (symlinked at `projects/active/`): template `stage_03_render` → record render-custody manifest → strict token gate → `tests/test_manuscript_latex_log.py`; receipts + rendered evidence uploaded as artifact. |
+| `custody-re-render.yml` | Daily cron 07:14 UTC + `workflow_dispatch`; report-only (no commit back). Fresh manuscript render via the `docxology/template` checkout (a real directory at `projects/active/`): template `stage_03_render` → record render-custody manifest → strict token gate → `tests/test_manuscript_latex_log.py`; receipts + rendered evidence uploaded as artifact. |
 | `fep-lean-paired-revision.yml` | Paired-revision CI for the fep_lean bridge pair: validates `.github/fep-lean-pair.json`, checks out fep_lean at the pinned SHA, runs fep_lean's read-only bridge surface (status, emit `--check` finite/continuous) against this GNN checkout; blocking. Canonical custody ordering: [docs/development/fep_lean_paired_revision.md](../../docs/development/fep_lean_paired_revision.md). |
 | `geo-infer-interchange.yml` | Blocking pinned GEO/GNN interchange on Python 3.11/3.12, retaining both source revisions, schema contracts, replay and artifact digests. Coordinate companion changes through the same paired-revision procedure. |
 | `gridworld.yml` | Weekly/manual report-only GridWorld execution with provisioned Julia environments and a fresh publication-contract check. Volatile outputs are not committed; retain the pipeline summary. |
@@ -28,7 +36,7 @@ Defines behavior and guardrails for workflows in this directory. Human index of 
 ## Standards
 
 - Pin every third-party action to a full commit SHA with the version as a trailing comment (e.g. `uses: actions/checkout@<sha> # v7.0.1`) for supply-chain hardening; Dependabot reads the version comment. Resolve SHAs with `git ls-remote` — never guess.
-- Pin `astral-sh/setup-uv` steps with `version: "0.12"` (the Dockerfile `UV_VERSION` bootstrap floor minor series).
+- Pin `astral-sh/setup-uv` steps with `version: "0.13.1"` (the exact Dockerfile/uv.toml requirement).
 - Use explicit `timeout-minutes`.
 - Apply least-privilege `permissions` globally and per job.
 - Use deterministic dependency operations (`uv sync --frozen`, `uv export --frozen`).
@@ -40,9 +48,18 @@ pipeline receipts intact when changing scheduling. The `test (3.12)` aggregate
 runs with `always()` and rejects failed, cancelled, skipped or missing lane
 results; moving validation into parallel jobs must preserve this coupling.
 
-CI sets `UV_PYTHON` to the test matrix version (and 3.12 for security and
+CI sets `UV_PYTHON` to the test matrix version (and 3.14 for security and
 documentation jobs), overriding the local `.python-version` pin. XML export
 validation uses `defusedxml` and rejects entity declarations.
 
 Installed-platform acceptance builds the exact PR head or event revision,
 verifies it before building, and retains actual source/wheel/lock identities.
+
+The installed-platform workflow also retains a Linux/amd64 Docker build and
+non-root Python 3.14 CLI/runtime checks. Keep its narrower container scope
+separate from the five installed-wheel lanes and full native coverage.
+
+The FEP paired job uses uv 0.13.0 to honor its companion project
+requirement; it never installs GNN. GNN-owned installs use uv 0.13.1.
+Supply-chain resolution uses core Python 3.14 and the declared all-extras
+Python 3.12 profile.

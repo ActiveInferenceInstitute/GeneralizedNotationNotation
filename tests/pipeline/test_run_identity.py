@@ -293,3 +293,43 @@ def test_overlapping_top_level_calls_serialize_environment(
         assert first.result() == other.result() == 0
     assert len(set(ids)) == 2
     assert "GNN_RUN_ID" not in os.environ
+
+
+@pytest.mark.parametrize("matrix", [False, True])
+def test_step_worker_keeps_invoking_interpreter_and_workspace(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, matrix: bool
+) -> None:
+    from gnn.pipeline import summary_wiring
+
+    workspace = tmp_path / "workspace"
+    (workspace / "input" / "first").mkdir(parents=True)
+    (workspace / "input" / "first" / "model.md").write_text("model")
+    fake_checkout = tmp_path / "unrelated_checkout"
+    shadow_python = fake_checkout / ".venv" / "bin" / "python"
+    shadow_python.parent.mkdir(parents=True)
+    shadow_python.write_text("unrelated interpreter must never be selected")
+    fake_module = fake_checkout / "src" / "gnn" / "pipeline" / "summary_wiring.py"
+    monkeypatch.setattr(summary_wiring, "__file__", str(fake_module))
+    monkeypatch.chdir(workspace)
+    monkeypatch.setattr(
+        "gnn.utils.arguments.arg_parsing.build_step_command_args",
+        lambda _name, _args, python, _path: [
+            python,
+            "-c",
+            "import json,os,sys; print(json.dumps({'cwd': os.getcwd(), 'python': sys.executable}))",
+        ],
+    )
+    args = PipelineArguments(target_dir=Path("input"), output_dir=Path("results"))
+    result = orchestrator.execute_pipeline_step(
+        "3_gnn.py",
+        args,
+        logging.getLogger(__name__),
+        pipeline_config={
+            "testing_matrix": {"enabled": matrix, "folders": {"first": [3]}}
+        },
+    )
+    assert result["exit_code"] == 0, result
+    # Matrix output wraps the same worker stdout in folder headings.
+    line = next(line for line in result["stdout"].splitlines() if line.startswith("{"))
+    observed = json.loads(line)
+    assert observed == {"cwd": str(workspace), "python": sys.executable}

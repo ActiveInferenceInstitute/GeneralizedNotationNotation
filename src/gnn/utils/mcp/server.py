@@ -95,13 +95,27 @@ def get_system_info(mcp_instance_ref: Any) -> Dict[str, Any]:
             "available_gb": round(memory.available / (1024**3), 2),
         }
 
+        # CPU frequency is optional on several kernels (including Apple
+        # Silicon). A failed probe must not discard the other diagnostics.
+        frequency = None
+        frequency_error = None
+        try:
+            sampled_frequency = psutil.cpu_freq()
+            if sampled_frequency is not None:
+                frequency = sampled_frequency._asdict()
+        except (OSError, RuntimeError, SystemError, psutil.Error) as error:
+            frequency_error = str(error)
+
         # CPU information
         cpu_info: dict[str, Any] = {
             "count": psutil.cpu_count(),
             "count_logical": psutil.cpu_count(logical=True),
             "usage_percent": psutil.cpu_percent(interval=1),
-            "frequency": psutil.cpu_freq()._asdict() if psutil.cpu_freq() else None,
+            "frequency": frequency,
         }
+
+        if frequency_error is not None:
+            cpu_info["frequency_error"] = frequency_error
 
         # Disk information
         disk = psutil.disk_usage("/")

@@ -392,3 +392,19 @@ def test_native_uint16_category_indices_preserve_category_299(tmp_path: Path) ->
     assert result["native_sampling"]["categorical_index_dtype"] == "uint16"
     assert 299 in np.asarray(result["sample_states"])
     assert max(np.asarray(result["sample_states"]).ravel()) == 299
+
+
+def test_native_passive_hmm_without_preferences_matches_smoothing(tmp_path):
+    source = model()
+    raw = source["initialparameterization"]
+    raw["B"] = np.asarray(raw["B"])[:, :, 0].tolist()
+    del raw["C"], raw["E"]
+    source["model_parameters"]["num_actions"] = 1
+    opts = options()
+    opts["transition_actions"] = [0, 0]
+    result = execute_generated(tmp_path, source, opts, "passive")
+    canonical = build_thrml_payload(source, opts)["components"][0]["parameters"]
+    expected = logspace_smoothing(
+        canonical, opts["observations"], opts["transition_actions"]
+    )
+    verify_empirical(result, expected)

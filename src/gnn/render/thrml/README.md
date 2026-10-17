@@ -59,3 +59,8 @@ See [SPEC](SPEC.md) for schemas/admission and the
 CLI, API, MCP, configuration, and verification. The
 [upstream documentation](https://docs.thrml.ai/en/latest/) describes THRML's
 native API.
+
+Passive two-dimensional B models may omit C. The adapter records an unused
+neutral vector as derived provenance and includes it in admission accounting;
+authored source parameters remain separate. This does not relax structural-zero
+probability rejection.

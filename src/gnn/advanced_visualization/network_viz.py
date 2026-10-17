@@ -7,6 +7,7 @@ analysis, policy visualization, network metrics, and D2 diagram generation.
 Extracted from processor.py for maintainability.
 """
 
+import json
 import logging
 import time
 from pathlib import Path
@@ -403,70 +404,93 @@ def _generate_pomdp_transition_analysis(
             return attempt
 
         B_matrix = matrices["B"]
-
-        if B_matrix.ndim == 3:
-            num_actions = B_matrix.shape[2]
-            fig, axes = plt.subplots(1, num_actions, figsize=(5 * num_actions, 5))
-            if num_actions == 1:
-                axes = [axes]
-
-            for action_idx in range(num_actions):
-                transition_slice = B_matrix[:, :, action_idx]
-
-                sns = get_sns()
-                if SEABORN_AVAILABLE and sns:
-                    sns.heatmap(
-                        transition_slice,
-                        annot=True,
-                        fmt=".2f",
-                        cmap="Blues",
-                        ax=axes[action_idx],
-                        cbar=True,
+        if B_matrix.ndim not in (2, 3):
+            raise ValueError(
+                "POMDP transition visualization requires rank-two or rank-three B"
+            )
+        num_actions = B_matrix.shape[2] if B_matrix.ndim == 3 else 1
+        # Retain every action on bounded pages. Dense scaling models otherwise
+        # allocate enormous canvases and hundreds of thousands of text objects.
+        panels_per_page = 8
+        pages: List[Dict[str, Any]] = []
+        for first in range(0, num_actions, panels_per_page):
+            indices = list(range(first, min(first + panels_per_page, num_actions)))
+            columns = min(4, len(indices))
+            rows = (len(indices) + columns - 1) // columns
+            fig, axes = plt.subplots(
+                rows, columns, figsize=(5 * columns, 5 * rows), squeeze=False
+            )
+            try:
+                for axis, action_idx in zip(axes.flat, indices):
+                    transition_slice = (
+                        B_matrix[:, :, action_idx] if B_matrix.ndim == 3 else B_matrix
                     )
-                else:
-                    im = axes[action_idx].imshow(
-                        transition_slice, cmap="Blues", aspect="auto"
+                    sns = get_sns()
+                    if SEABORN_AVAILABLE and sns:
+                        sns.heatmap(
+                            transition_slice,
+                            annot=transition_slice.size <= 25,
+                            fmt=".2f",
+                            cmap="Blues",
+                            ax=axis,
+                        )
+                    else:
+                        image = axis.imshow(
+                            transition_slice, cmap="Blues", aspect="auto"
+                        )
+                        fig.colorbar(image, ax=axis)
+                    axis.set_title(
+                        f"Transition Matrix (Action {action_idx})"
+                        if B_matrix.ndim == 3
+                        else "Transition Matrix (B)"
                     )
-                    plt.colorbar(im, ax=axes[action_idx])
-                    for i in range(transition_slice.shape[0]):
-                        for j in range(transition_slice.shape[1]):
-                            axes[action_idx].text(
-                                j,
-                                i,
-                                f"{transition_slice[i, j]:.2f}",
-                                ha="center",
-                                va="center",
-                                color="white"
-                                if transition_slice[i, j] > 0.5
-                                else "black",
-                            )
-
-                axes[action_idx].set_title(f"Transition Matrix (Action {action_idx})")
-                axes[action_idx].set_xlabel("Previous State")
-                axes[action_idx].set_ylabel("Next State")
-        else:
-            fig, ax = plt.subplots(figsize=(8, 6))
-            sns = get_sns()
-            if SEABORN_AVAILABLE and sns:
-                sns.heatmap(B_matrix, annot=True, fmt=".2f", cmap="Blues", ax=ax)
-            else:
-                im = ax.imshow(B_matrix, cmap="Blues", aspect="auto")
-                plt.colorbar(im, ax=ax)
-            ax.set_title("Transition Matrix (B)")
-            ax.set_xlabel("Previous State")
-            ax.set_ylabel("Next State")
-
-        plt.suptitle(
-            f"POMDP Transition Analysis: {model_name}", fontsize=14, fontweight="bold"
-        )
-        plt.tight_layout()
-
-        output_file = output_dir / f"{model_name}_pomdp_transitions.png"
-        plt.savefig(output_file, dpi=300, bbox_inches="tight")
-        plt.close()
-
+                    axis.set_xlabel("Previous State")
+                    axis.set_ylabel("Next State")
+                for axis in list(axes.flat)[len(indices) :]:
+                    axis.set_visible(False)
+                page_number = len(pages) + 1
+                suffix = "" if page_number == 1 else f"_page_{page_number:03d}"
+                output_file = output_dir / f"{model_name}_pomdp_transitions{suffix}.png"
+                page_label = (
+                    f" (actions {indices[0]}–{indices[-1]} of {num_actions})"
+                    if num_actions > panels_per_page
+                    else ""
+                )
+                fig.suptitle(
+                    f"POMDP Transition Analysis: {model_name}{page_label}",
+                    fontsize=14,
+                    fontweight="bold",
+                )
+                fig.tight_layout()
+                fig.savefig(output_file, dpi=150, bbox_inches="tight")
+                attempt.output_files.append(str(output_file))
+                pages.append({"file": output_file.name, "action_indices": indices})
+            finally:
+                plt.close(fig)
+        if len(pages) > 1:
+            manifest = output_dir / f"{model_name}_pomdp_transitions_pages.json"
+            manifest.write_text(
+                json.dumps(
+                    {
+                        "schema_version": "gnn_transition_plot_pages_v1",
+                        "matrix_shape": list(B_matrix.shape),
+                        "canonical_axes": ["next_state", "previous_state", "action"],
+                        "num_actions": num_actions,
+                        "panels_per_page": panels_per_page,
+                        "pages": pages,
+                    },
+                    indent=2,
+                ),
+                encoding="utf-8",
+            )
+            attempt.output_files.append(str(manifest))
+            logger.info(
+                "Transition figures for %s retain all %d actions on %d pages",
+                model_name,
+                num_actions,
+                len(pages),
+            )
         attempt.status = "success"
-        attempt.output_files = [str(output_file)]
 
     except Exception as e:
         logger.error(

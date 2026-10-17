@@ -513,3 +513,64 @@ def test_known_hardware_cleanup_failure_invalidates_containment_and_preserves_re
     assert result["execution_cleanup_verified"] is True
     assert result["hardware_probe"]["execution_error_type"] == "TimeoutExpired"
     assert current_script_deadline() is None
+
+
+@pytest.mark.parametrize(
+    "options",
+    [
+        {"unknown_option": 1},
+        {"action_scale": "0.5"},
+        {"goal_precision": "1.0"},
+        {"control_mode": " EFE "},
+        {"horizon": None},
+        {"max_policies": None},
+        [("horizon", 1)],
+    ],
+)
+def test_direct_options_match_public_admission_and_preserve_destination(
+    tmp_path: Path, options: Any
+) -> None:
+    destination = tmp_path / "existing.py"
+    destination.write_text("# caller-owned artifact\n", encoding="utf-8")
+    success, message, artifacts = render_gnn_to_cpomdp(_spec(), destination, options)
+    assert not success and not artifacts, message
+    assert destination.read_text(encoding="utf-8") == "# caller-owned artifact\n"
+    assert list(tmp_path.iterdir()) == [destination]
+
+
+@pytest.mark.parametrize("controlled", [0, 1, "false", None])
+def test_search_admission_requires_explicit_boolean_control(controlled: Any) -> None:
+    with pytest.raises(ValueError, match="controlled must be a boolean"):
+        admit_search(2, 1, 2, 5, 1, controlled)
+
+
+def test_pipeline_dispatch_separates_orchestration_and_cpomdp_options(
+    tmp_path: Path,
+) -> None:
+    import shutil
+
+    from gnn.render import process_render
+
+    source = tmp_path / "input"
+    source.mkdir()
+    shutil.copy2(
+        Path(__file__).resolve().parents[2]
+        / "input/gnn_files/continuous/continuous_navigation.md",
+        source / "model.md",
+    )
+    output = tmp_path / "rendered"
+    assert process_render(
+        source,
+        output,
+        frameworks="cpomdp",
+        recursive=True,
+        timesteps=None,
+        simulation_params="{}",
+        backend_options={"cpomdp": {"horizon": 2, "action_scale": 0.75}},
+    )
+    summary = json.loads((output / "render_processing_summary.json").read_text())
+    result = next(iter(summary["file_results"].values()))["framework_results"]["cpomdp"]
+    assert result["success"], result
+    script = Path(result["output_files"][0]).read_text()
+    assert "HORIZON = 2" in script
+    assert "ACTION_SCALE = 0.75" in script

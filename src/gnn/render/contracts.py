@@ -15,8 +15,8 @@ committed corpus artifacts:
   ``dist.Categorical(...).sample`` or continuous ``numpyro.sample``).
 - activeinference_jl: self-contained runner programs with the agent logic in
   emitted functions (no ``Agent(`` constructor call in the artifact).
-- bnlearn: generator-backed ``bn.make_DAG`` + ``bn.parameter_learning.fit``
-  programs (executed by ``src/gnn/execute/bnlearn/``).
+- bnlearn: source CPT ``TabularCPD`` filtering with ``bn.inference.fit``,
+  or explicitly labelled metadata-only parameter-learning demonstrations (executed by ``src/gnn/execute/bnlearn/``).
 
 Validation surface: ``scripts/bench_render_backends.py`` (corpus x framework
 conformance benchmark) and ``tests/render/test_render_contracts.py`` (shape
@@ -132,7 +132,8 @@ CONTRACTS: Dict[str, Dict[str, Any]] = {
         "required_variables": [],
         "matrix_patterns": [
             r"bn\.make_DAG",
-            r"bn\.parameter_learning\.fit",
+            r"bn\.inference\.fit",
+            r"(?:TabularCPD\(|bn\.parameter_learning\.fit)",
         ],
         "optional_variables": [],
     },

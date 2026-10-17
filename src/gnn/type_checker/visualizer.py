@@ -462,7 +462,7 @@ def generate_model_cards(results: Dict[str, Any], output_dir: Path) -> List[Path
                 ha="center",
                 va="center",
                 color=text_color,
-                fontweight="black",
+                fontweight="bold",
                 fontsize=15,
                 family="sans-serif",
                 zorder=3,
@@ -498,7 +498,7 @@ def generate_model_cards(results: Dict[str, Any], output_dir: Path) -> List[Path
                 ha="center",
                 va="center",
                 color=border_color,
-                fontweight="black",
+                fontweight="bold",
                 fontsize=26,
                 zorder=3,
             )
