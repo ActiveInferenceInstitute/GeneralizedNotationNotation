@@ -61,4 +61,5 @@ separate from the five installed-wheel lanes and full native coverage.
 
 The FEP paired job uses uv 0.13.0 to honor its companion project
 requirement; it never installs GNN. GNN-owned installs use uv 0.13.1.
-Supply-chain audit resolution uses supported Python 3.14.
+Supply-chain resolution uses core Python 3.14 and the declared all-extras
+Python 3.12 profile.

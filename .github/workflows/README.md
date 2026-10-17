@@ -87,5 +87,5 @@ PR and the event revision for main/manual runs. It verifies that revision before
 building the wheel and records the actual checkout, wheel and lock hashes.
 
 The FEP bridge job selects its companion-required uv 0.13.0 independently of
-GNN-owned uv 0.13.1 installs. Supply-chain requirement resolution uses Python
-3.14, within the producer range, rather than the prospective 3.15 profile.
+GNN-owned uv 0.13.1 installs. Supply-chain requirement resolution uses core Python 3.14 and the declared
+all-extras Python 3.12 profile, rather than prospective Python 3.15.

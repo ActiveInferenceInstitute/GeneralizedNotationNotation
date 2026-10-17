@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import sys
+from functools import partial
 from pathlib import Path
 from typing import Any
 
@@ -23,6 +24,11 @@ class _ArgumentParser(argparse.ArgumentParser):
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         if sys.version_info >= (3, 14) and getattr(sys.stdout, "closed", False):
             kwargs.setdefault("color", False)
+            # Validation constructs a formatter before ArgumentParser applies
+            # its color setting, so that constructor needs the same protection.
+            kwargs.setdefault(
+                "formatter_class", partial(argparse.HelpFormatter, color=False)
+            )
         super().__init__(*args, **kwargs)
 
 
