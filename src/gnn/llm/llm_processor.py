@@ -49,6 +49,26 @@ def _error_result(exc: BaseException) -> Dict[str, Any]:
     return {"success": False, "error": str(exc), "error_type": type(exc).__name__}
 
 
+def _analysis_result(
+    response: LLMResponse, analysis_type: Union[AnalysisType, str]
+) -> Dict[str, Any]:
+    """Keep native text and metadata without promoting unfinished output."""
+    result = {
+        "success": True,
+        "analysis_type": analysis_type.value
+        if isinstance(analysis_type, AnalysisType)
+        else analysis_type,
+        "response": response.content,
+        "provider": response.provider if response.provider else "unknown",
+        "model": response.model_used,
+        "usage": response.usage,
+        "finish_reason": response.finish_reason,
+    }
+    if response.finish_reason != "stop" or not response.content.strip():
+        result.update(_error_result(RuntimeError("LLM response unfinished or empty")))
+    return result
+
+
 def load_api_keys_from_env() -> Dict[str, str]:
     """
     Load API keys from environment variables.
@@ -848,14 +868,7 @@ class GNNLLMProcessor:
 
             response = await self.base_processor.analyze_gnn(gnn_content, analysis_enum)
 
-            return {
-                "success": True,
-                "analysis_type": analysis_type,
-                "response": response.content,
-                "provider": response.provider if response.provider else "unknown",
-                "model": response.model_used,
-                "usage": response.usage,
-            }
+            return _analysis_result(response, analysis_type)
 
         except Exception as e:
             return _error_result(e)
@@ -923,14 +936,7 @@ class GNNLLMProcessor:
                 combined_content, AnalysisType.COMPARISON
             )
 
-            return {
-                "success": True,
-                "analysis_type": "comparison",
-                "response": response.content,
-                "provider": response.provider if response.provider else "unknown",
-                "model": response.model_used,
-                "usage": response.usage,
-            }
+            return _analysis_result(response, "comparison")
 
         except Exception as e:
             return _error_result(e)

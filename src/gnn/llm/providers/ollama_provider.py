@@ -511,7 +511,12 @@ class OllamaProvider(BaseLLMProvider):
 
         def _extract(result: Any) -> str:
             """Extract operation."""
-            return result.content if hasattr(result, "content") else str(result)
+            if (
+                getattr(result, "finish_reason", None) != "stop"
+                or not result.content.strip()
+            ):
+                raise RuntimeError("Ollama analysis response unfinished or empty")
+            return str(result.content)
 
         try:
             if running_loop:

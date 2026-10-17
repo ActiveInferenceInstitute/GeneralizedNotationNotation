@@ -146,6 +146,68 @@ def _provider(host: str, **kwargs: Any) -> OllamaProvider:
     return provider
 
 
+@pytest.mark.parametrize("method", ["analyze_gnn_model", "compare_models"])
+@pytest.mark.parametrize("finish_reason", ["stop", "length", None])
+def test_gnn_wrapper_preserves_text_but_requires_terminal_completion(
+    daemon: Callable[..., Any], method: str, finish_reason: str | None
+) -> None:
+    from gnn.llm.llm_processor import GNNLLMProcessor, LLMProcessor
+    from gnn.llm.providers.base_provider import ProviderType
+
+    host, received, _ = daemon(response=_response(done_reason=finish_reason))
+    base = LLMProcessor(
+        preferred_providers=[ProviderType.OLLAMA],
+        api_keys={"ollama": "local"},
+        provider_configs={
+            "ollama": {"base_url": host, "default_model": MODEL, "timeout": 1}
+        },
+    )
+
+    async def run() -> dict[str, Any]:
+        processor = GNNLLMProcessor(base)
+        try:
+            assert await processor.initialize()
+            if method == "compare_models":
+                return await processor.compare_models("first source", "second source")
+            return await processor.analyze_gnn_model("whole source")
+        finally:
+            await processor.close()
+
+    result = asyncio.run(run())
+    assert result["success"] is (finish_reason == "stop"), result
+    assert result["response"] == "complete answer"
+    assert result["finish_reason"] == finish_reason
+    assert result["provider"] == "ollama" and result["model"] == MODEL
+    assert isinstance(result["analysis_type"], str)
+    json.dumps(result)  # Enum-based default analysis must remain serializable.
+    if finish_reason != "stop":
+        assert "unfinished" in result["error"]
+    assert len(received) == 1
+
+
+@pytest.mark.parametrize("running_loop", [False, True])
+@pytest.mark.parametrize("finish_reason", ["stop", "length", None])
+def test_plain_analysis_requires_terminal_completion(
+    daemon: Callable[..., Any], running_loop: bool, finish_reason: str | None
+) -> None:
+    host, received, _ = daemon(response=_response(done_reason=finish_reason))
+    provider = _provider(host, default_model=MODEL)
+
+    async def in_loop() -> str:
+        return provider.analyze("whole source", "summary")
+
+    result = (
+        asyncio.run(in_loop())
+        if running_loop
+        else provider.analyze("whole source", "summary")
+    )
+    if finish_reason == "stop":
+        assert result == "complete answer"
+    else:
+        assert result.startswith("Analysis failed:") and "unfinished" in result
+    assert len(received) == 1
+
+
 def test_entire_large_conversation_and_options_are_http_body_without_sdk_or_cli(
     daemon: Callable[..., Any], monkeypatch: pytest.MonkeyPatch
 ) -> None:

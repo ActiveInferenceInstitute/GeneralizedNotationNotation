@@ -400,3 +400,70 @@ def test_native_convenience_and_mcp_inside_active_loop(monkeypatch: Any) -> None
         assert isinstance(result["llm_summary"], str)
 
     asyncio.run(run())
+
+
+@pytest.mark.needs_ollama
+@pytest.mark.timeout(900)
+@pytest.mark.parametrize("token_budget", [1, 2048])
+def test_native_gnn_and_plain_analysis_completion(
+    tmp_path: Path, token_budget: int
+) -> None:
+    import asyncio
+
+    from gnn.llm.defaults import DEFAULT_OLLAMA_MODEL
+    from gnn.llm.llm_processor import GNNLLMProcessor, LLMProcessor
+    from gnn.llm.providers.base_provider import ProviderType
+    from gnn.llm.providers.ollama_provider import OllamaProvider
+
+    model = (
+        os.getenv("OLLAMA_TEST_MODEL")
+        or os.getenv("OLLAMA_MODEL")
+        or DEFAULT_OLLAMA_MODEL
+    )
+    source = (
+        Path(__file__).resolve().parents[2]
+        / "input/gnn_files/discrete/actinf_pomdp_agent.md"
+    ).read_text()
+
+    async def run() -> dict[str, Any]:
+        base = LLMProcessor(
+            preferred_providers=[ProviderType.OLLAMA],
+            api_keys={"ollama": "local"},
+            provider_configs={
+                "ollama": {
+                    "default_model": model,
+                    "default_max_tokens": token_budget,
+                    "timeout": 240,
+                }
+            },
+        )
+        processor = GNNLLMProcessor(base)
+        try:
+            assert await processor.initialize()
+            provider = base.get_provider(ProviderType.OLLAMA)
+            assert isinstance(provider, OllamaProvider)
+            return {
+                "summary": await processor.analyze_gnn_model(source),
+                "comparison": await processor.compare_models(source, source),
+                "plain_analysis": provider.analyze(source, "brief summary"),
+                "token_budget": token_budget,
+            }
+        finally:
+            await processor.close()
+
+    results = asyncio.run(run())
+    (tmp_path / "native_convenience.json").write_text(json.dumps(results, indent=2))
+    for label in ["summary", "comparison"]:
+        result = results[label]
+        assert result["success"] is (token_budget > 1), results
+        if token_budget > 1:
+            assert result["provider"] == "ollama" and result["model"] == model
+            assert result["finish_reason"] == "stop" and result["response"].strip()
+        else:
+            assert "unfinished" in result["error"]
+    if token_budget > 1:
+        assert results["plain_analysis"].strip()
+        assert not results["plain_analysis"].startswith("Analysis failed:")
+    else:
+        assert results["plain_analysis"].startswith("Analysis failed:")
+        assert "unfinished" in results["plain_analysis"]

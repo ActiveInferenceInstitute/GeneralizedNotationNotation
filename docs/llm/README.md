@@ -63,6 +63,7 @@ export DEFAULT_PROVIDER=ollama
 export OLLAMA_MODEL=gemma3:12b
 export OLLAMA_NUM_CTX=131072
 export OLLAMA_SEED=42
+export OLLAMA_MAX_TOKENS=8192
 export GNN_LLM_MAX_TOKENS=8192
 export GNN_LLM_CHUNK_BYTES=65536
 export GNN_LLM_PROMPT_TIMEOUT=240
@@ -200,3 +201,9 @@ negative evidence. The revised fragment probe returned all eight answers below
 the boundary with terminal completion. Complete-corpus acceptance still requires
 every selected source and task. Changed schemas, limits or prompt definitions
 require a new matching checkpoint; earlier runs are not silently adopted.
+
+The GNN analysis/comparison convenience APIs retain the response and finish
+reason, and report unsuccessful completion for empty, token-limited or unknown
+finish reasons. Their analysis-type labels are JSON-serializable strings. The
+Ollama plain-text `analyze` helper returns an explicit failure label when a
+response is unfinished; it does not present partial text as a completed analysis.
