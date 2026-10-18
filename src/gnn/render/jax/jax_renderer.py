@@ -68,8 +68,12 @@ def render_gnn_to_jax(
     from gnn.render.execution_contracts import (
         execution_contract,
         generate_contract_script,
+        unsupported_contract,
     )
 
+    refusal = unsupported_contract(gnn_spec, "jax")
+    if refusal:
+        return False, refusal, []
     if execution_contract(gnn_spec) is not None:
         return _render_to_path(
             generate_contract_script,

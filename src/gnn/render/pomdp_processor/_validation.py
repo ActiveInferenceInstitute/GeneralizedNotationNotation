@@ -38,9 +38,12 @@ class _CompatibilityValidationMixin(_POMDPProcessorSupportMixin):
             unsupported_contract,
         )
 
-        semantic_spec = {"model_parameters": pomdp_space.model_parameters or {}}
-        if execution_contract(semantic_spec) is not None:
-            reason = unsupported_contract(semantic_spec, framework)
+        semantic_spec = {
+            "model_parameters": pomdp_space.model_parameters or {},
+            "initialparameterization": pomdp_space.initial_parameterization or {},
+        }
+        reason = unsupported_contract(semantic_spec, framework)
+        if execution_contract(semantic_spec) is not None or reason is not None:
             return {
                 "compatible": reason is None,
                 "unsupported": reason is not None,

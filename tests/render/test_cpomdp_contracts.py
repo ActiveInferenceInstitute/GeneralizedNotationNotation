@@ -66,7 +66,7 @@ def test_admission_matches_conservative_formula_and_rejects_before_write(
     assert not artifacts and not destination.exists()
     with pytest.raises(ValueError, match="max_step_evaluations"):
         admit_search(2, 1, 2, 5, 1, True, max_step_evaluations=8)
-    with pytest.raises(ValueError, match="estimated allocation"):
+    with pytest.raises(ValueError, match="max_total_step_evaluations"):
         admit_search(2, 1, 2, 1000000, 1, True)
     with pytest.raises(ValueError, match="ceiling"):
         admit_search(2, 1, 2, 5, 1, True, max_policies=4097)

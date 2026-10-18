@@ -23,10 +23,21 @@ def execution_contract(spec: object) -> str | None:
     return str(value) if value is not None else None
 
 
-def unsupported_contract(spec: dict[str, Any], framework: str) -> str | None:
+def unsupported_contract(spec: object, framework: str) -> str | None:
     """Fail closed for unknown versions and backends lacking full semantics."""
     from gnn.render.framework_registry import FRAMEWORK_REGISTRY
 
+    if not isinstance(spec, dict):
+        return None
+    declared_controls = any(
+        isinstance(initial, dict) and "cpomdp_control" in initial
+        for initial in (
+            spec.get("initialparameterization"),
+            spec.get("initial_parameterization"),
+        )
+    )
+    if declared_controls and framework != "cpomdp":
+        return f"unsupported-cpomdp-control: {framework} cannot execute source-declared finite controls"
     contract = execution_contract(spec)
     supported = FRAMEWORK_REGISTRY.get(framework, {}).get("execution_contracts", ())
     if contract is not None and (
