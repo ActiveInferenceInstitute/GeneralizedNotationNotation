@@ -23,7 +23,11 @@ import time
 from typing import Any, AsyncGenerator, List, Optional
 from urllib.parse import SplitResult, urlsplit
 
-from ..defaults import DEFAULT_OLLAMA_MODEL, ollama_generation_options
+from ..defaults import (
+    DEFAULT_OLLAMA_MODEL,
+    OLLAMA_RUNTIME_VALIDATION_POLICY,
+    ollama_generation_options,
+)
 from .base_provider import (
     BaseLLMProvider,
     LLMConfig,
@@ -35,6 +39,15 @@ from .base_provider import (
 logger = logging.getLogger(__name__)
 _MAX_RESPONSE_BYTES = 8 * 1024 * 1024
 _MAX_STREAM_LINE_BYTES = 1024 * 1024
+
+
+class RuntimeIdentityChanged(RuntimeError):
+    """A request cannot establish one unchanged runtime/model identity."""
+
+    def __init__(self, expected: dict[str, Any], observed: dict[str, Any]) -> None:
+        super().__init__("Ollama runtime/model identity changed during request")
+        self.expected = expected
+        self.observed = observed
 
 
 def _positive_timeout(value: Any) -> float:
@@ -224,6 +237,9 @@ class OllamaProvider(BaseLLMProvider):
             or "http://127.0.0.1:11434"
         )
         self.default_model_override = kwargs.get("default_model")
+        self.expected_runtime_identity: dict[str, Any] | None = kwargs.get(
+            "expected_runtime_identity"
+        )
         self.default_max_tokens = kwargs.get("default_max_tokens", 256)
         self.generation_options = ollama_generation_options(
             kwargs.get("generation_options"),
@@ -364,14 +380,19 @@ class OllamaProvider(BaseLLMProvider):
                     raise RuntimeError(
                         "Configured Ollama model is not installed on the configured HTTP host"
                     )
+                digest = entry.get("digest")
+                if not isinstance(digest, str) or not re.fullmatch(
+                    r"[0-9a-f]{64}", digest
+                ):
+                    raise RuntimeError("Configured Ollama model digest is unavailable")
                 transport.remaining()
                 return {
                     "model": model,
                     "server_version": transport.server_version,
                     "context_policy": "whole-context-v1",
                     "status": "ready",
-                    "model_digest": entry.get("digest"),
-                    "generation_options": self.generation_options,
+                    "model_digest": digest,
+                    "generation_options": dict(self.generation_options),
                 }
             finally:
                 transport.close()
@@ -383,11 +404,56 @@ class OllamaProvider(BaseLLMProvider):
         transport.remaining()
         return result
 
+    async def _prepare_generation(
+        self, messages: List[LLMMessage], config: LLMConfig, *, stream: bool
+    ) -> tuple[_ChatRequest, dict[str, Any], dict[str, Any]]:
+        """Validate before I/O and freeze identity within the original deadline."""
+        transport, payload = self._request(messages, config, stream=stream)
+        prepared = False
+        try:
+            identity = await self.preflight_model(
+                payload["model"], timeout=transport.remaining()
+            )
+            request_options = {
+                key: payload["options"][key]
+                for key in ("num_ctx", "seed")
+                if key in payload["options"]
+            }
+            if identity["generation_options"] != request_options:
+                raise RuntimeIdentityChanged(
+                    {**identity, "generation_options": request_options}, identity
+                )
+            if (
+                self.expected_runtime_identity is not None
+                and identity != self.expected_runtime_identity
+            ):
+                raise RuntimeIdentityChanged(self.expected_runtime_identity, identity)
+            transport.remaining()
+            prepared = True
+            return transport, payload, identity
+        finally:
+            if not prepared:
+                transport.close()
+
+    async def _verify_generation(
+        self, transport: _ChatRequest, model: str, identity: dict[str, Any]
+    ) -> dict[str, Any]:
+        """Refuse changes during generation without renewing its deadline."""
+        observed = await self.preflight_model(model, timeout=transport.remaining())
+        if transport.server_version != identity["server_version"]:
+            raise RuntimeIdentityChanged(
+                identity, {**observed, "server_version": transport.server_version}
+            )
+        if observed != identity:
+            raise RuntimeIdentityChanged(identity, observed)
+        transport.remaining()
+        return observed
+
     async def generate_response(
         self, messages: List[LLMMessage], config: Optional[LLMConfig] = None
     ) -> LLMResponse:
         """Generate from all messages without SDK/CLI retries or truncation."""
-        transport, payload = self._request(
+        transport, payload, identity = await self._prepare_generation(
             messages, config or LLMConfig(), stream=False
         )
 
@@ -404,6 +470,9 @@ class OllamaProvider(BaseLLMProvider):
 
         try:
             response = await asyncio.to_thread(call)
+            verified = await self._verify_generation(
+                transport, payload["model"], identity
+            )
         finally:
             transport.close()
         transport.remaining()
@@ -433,9 +502,12 @@ class OllamaProvider(BaseLLMProvider):
                 "transport": "ollama_http_chat",
                 "truncate": False,
                 "shift": False,
-                "server_version": transport.server_version,
+                "server_version": verified["server_version"],
                 "context_policy": "whole-context-v1",
-                "generation_options": self.generation_options,
+                "generation_options": verified["generation_options"],
+                "runtime_identity": identity,
+                "runtime_identity_after": verified,
+                "runtime_validation_policy": OLLAMA_RUNTIME_VALIDATION_POLICY,
             },
         )
 
@@ -443,7 +515,9 @@ class OllamaProvider(BaseLLMProvider):
         self, messages: List[LLMMessage], config: Optional[LLMConfig] = None
     ) -> AsyncGenerator[str, None]:
         """Stream role-preserving chat with one budget across every chunk."""
-        transport, payload = self._request(messages, config or LLMConfig(), stream=True)
+        transport, payload, identity = await self._prepare_generation(
+            messages, config or LLMConfig(), stream=True
+        )
         buffer = b""
         done = False
         try:
@@ -486,6 +560,7 @@ class OllamaProvider(BaseLLMProvider):
                     )
         finally:
             transport.close()
+        await self._verify_generation(transport, payload["model"], identity)
         transport.remaining()
 
     def analyze(self, content: str, task: str) -> str:

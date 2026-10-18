@@ -15,7 +15,7 @@ from typing import Any
 from gnn.pipeline._io import atomic_write_text
 from gnn.pipeline.run_context import current_run_context, selected_model_sources
 
-from .defaults import ollama_generation_options
+from .defaults import OLLAMA_RUNTIME_VALIDATION_POLICY, ollama_generation_options
 from .prompt_batch import batch_prompt, parse_answers, response_schema
 from .provider_identity import resolved_endpoint
 from .providers.base_provider import ProviderType
@@ -213,7 +213,7 @@ async def run_corpus(
     ):
         raise ValueError("Prompt labels must be unique safe file names")
     binding = {
-        "schema_version": 3,
+        "schema_version": 4,
         "effective_options": {
             "max_files": cap,
             "budget_seconds": budget,
@@ -230,6 +230,9 @@ async def run_corpus(
             "temperature": 0.2,
             "input_policy": "complete_context_v1",
             "completion_policy": "terminal_stop_v1",
+            "runtime_validation_policy": OLLAMA_RUNTIME_VALIDATION_POLICY
+            if provider == ProviderType.OLLAMA
+            else None,
         },
         "endpoint_sha256": endpoint_sha256,
         "models": identities,
@@ -480,6 +483,19 @@ async def run_corpus(
                             raise ValueError(
                                 "LLM checkpoint response digest is invalid"
                             )
+                        if isolated and provider == ProviderType.OLLAMA:
+                            prior_outcome = prior.get("outcome", {})
+                            if (
+                                prior_outcome.get("runtime_identity")
+                                != runtime_identity
+                                or prior_outcome.get("runtime_identity_after")
+                                != runtime_identity
+                                or prior_outcome.get("runtime_validation_policy")
+                                != OLLAMA_RUNTIME_VALIDATION_POLICY
+                            ):
+                                raise ValueError(
+                                    "LLM checkpoint lacks verified request runtime identity"
+                                )
                         outcome = {
                             **prior.get("outcome", {}),
                             "status": "success",
@@ -572,6 +588,25 @@ async def run_corpus(
                             remaining_budget=remaining,
                         )
                         outcome = analysis["part_outcomes"][part_key]
+                        if outcome.get("reason") == "runtime_changed":
+                            ready = False
+                            results["provider_matrix"][provider.value].update(
+                                available=False, reason="runtime_changed"
+                            )
+                            results["errors"].append(
+                                {
+                                    "stage": "runtime_identity",
+                                    "source_path": identity["source_path"],
+                                    "part": index + 1,
+                                    "error": "Ollama runtime/model identity changed; native dispatch stopped",
+                                    "expected_runtime_identity": outcome.get(
+                                        "expected_runtime_identity"
+                                    ),
+                                    "observed_runtime_identity": outcome.get(
+                                        "observed_runtime_identity"
+                                    ),
+                                }
+                            )
                         if output_fields:
                             batch_dir = (
                                 output_dir
@@ -697,6 +732,39 @@ async def run_corpus(
             for label in labels
         )
         required = len(paths) * len(labels)
+        if (
+            isolated
+            and provider == ProviderType.OLLAMA
+            and ready
+            and completed == required
+            and not results["errors"]
+            and remaining() > 0
+        ):
+            from .request_worker import isolated_request
+
+            try:
+                final_identity = await isolated_request(
+                    provider=provider.value,
+                    model=model,
+                    preflight=True,
+                    endpoint_url=endpoint_url,
+                    generation_options=generation_options,
+                    timeout=min(prompt_ceiling, remaining()),
+                )
+                results["final_runtime_identity"] = final_identity.metadata
+                if final_identity.metadata != runtime_identity:
+                    results["errors"].append(
+                        {
+                            "stage": "runtime_identity",
+                            "error": "Ollama runtime/model identity changed before finalization",
+                            "expected_runtime_identity": runtime_identity,
+                            "observed_runtime_identity": final_identity.metadata,
+                        }
+                    )
+            except (RuntimeError, TimeoutError, ValueError, OSError) as exc:
+                results["errors"].append(
+                    {"stage": "final_runtime_identity", "error": str(exc)}
+                )
         results["coverage"] = {
             "structural_completed": len(records),
             "structural_required": len(paths),

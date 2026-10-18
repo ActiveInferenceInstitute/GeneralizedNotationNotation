@@ -10,6 +10,7 @@ import os
 from typing import Any
 
 DEFAULT_OLLAMA_MODEL = "smollm2:135m-instruct-q4_K_S"
+OLLAMA_RUNTIME_VALIDATION_POLICY = "identity_before_after_v1"
 
 
 def ollama_generation_options(

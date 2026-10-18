@@ -218,6 +218,7 @@ async def test_isolated_auth_failure_is_typed_and_suppresses_retries(
             auth_errors=errors,
             provider_type=api.ProviderType.OLLAMA,
             isolated=True,
+            runtime_identity={"model": "configured:exact", "model_digest": "a" * 64},
         )
     assert len(calls) == 1 and failures == {"ollama"}
     assert errors == [
@@ -328,7 +329,7 @@ def test_checkpoint_binds_complete_context_policy(corpus: Any) -> None:
         root, output, llm_config={"model": "configured:exact"}, custom_prompts=[]
     )
     binding = json.loads((output / "llm_checkpoint.json").read_text())["binding"]
-    assert binding["schema_version"] == 3
+    assert binding["schema_version"] == 4
     assert binding["effective_options"]["input_policy"] == "complete_context_v1"
     assert binding["effective_options"]["max_tokens"] is None
     assert binding["effective_options"]["source_chunk_bytes"] is None
@@ -660,10 +661,21 @@ async def test_isolated_completion_requires_provider_stop_receipt(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, finish_reason: Any
 ) -> None:
     from gnn.llm import request_worker
+    from gnn.llm.defaults import OLLAMA_RUNTIME_VALIDATION_POLICY
+
+    identity = {"model": "configured:exact", "model_digest": "a" * 64}
 
     async def response(**_: Any) -> LLMResponse:
         return LLMResponse(
-            "text", "configured:exact", "ollama", finish_reason=finish_reason
+            "text",
+            "configured:exact",
+            "ollama",
+            finish_reason=finish_reason,
+            metadata={
+                "runtime_identity": identity,
+                "runtime_identity_after": identity,
+                "runtime_validation_policy": OLLAMA_RUNTIME_VALIDATION_POLICY,
+            },
         )
 
     monkeypatch.setattr(request_worker, "isolated_request", response)
@@ -684,6 +696,7 @@ async def test_isolated_completion_requires_provider_stop_receipt(
         outcomes=outcomes,
         provider_type=api.ProviderType.OLLAMA,
         isolated=True,
+        runtime_identity=identity,
     )
     assert outcomes["summary"]["status"] == (
         "success" if finish_reason == "stop" else "incomplete"

@@ -85,12 +85,18 @@ other finish reasons retain partial text and unfinished outcomes without caching
 or checkpoint admission. In-memory provider doubles may omit finish reasons for
 contract tests; they do not establish native acceptance.
 
-Cache request version 4 binds all messages, provider/model/endpoint, generation
+Cache request version 5 binds all messages, provider/model/endpoint, generation
 settings, native runtime/model digest and completion policy. Checkpoint version
-3 also binds source hashes, exact partitions, prompt definitions and budgets.
+4 also binds source hashes, exact partitions, prompt definitions and budgets.
 Only explicit resume reuses verified matching responses. Old records cannot
 satisfy the new fingerprint. Credentials stay in the environment and out of
 request payloads and receipts.
+
+Every native generation validates the exact model digest, server version and
+generation options before and after the response under one total request deadline.
+Identity drift refuses cache/checkpoint admission and stops further corpus native
+dispatch. Finalization validates the runtime again, including cache-only resume.
+Do not reuse records from the older startup-only validation policy.
 
 ## Outputs and failure handling
 
@@ -106,7 +112,8 @@ selection is `skipped`. Missing local inference retains structural outputs.
 Single-file MCP local summaries respect `OLLAMA_MODEL`; unavailable summaries
 are not reported as successful LLM analysis. Step 24 validates its complete
 report topology and terminal response, otherwise labels its report `rule_based`.
-Its cache binds endpoint/context/seed and full request policy.
+Its cache binds endpoint/context/seed, verified runtime/model identity and full
+request policy; identity drift also refuses cached reports.
 
 The asynchronous native class is `gnn.llm.UnifiedLLMProcessor`, aliased from
 `gnn.llm.llm_processor.LLMProcessor`. Package-level `gnn.llm.LLMProcessor` and

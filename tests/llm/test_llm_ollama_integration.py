@@ -278,6 +278,17 @@ class TestLLMProcessing:
         )
         assert process_llm(target, output, **options)
         result = json.loads((output / "llm_results.json").read_text())
+        from gnn.llm.defaults import OLLAMA_RUNTIME_VALIDATION_POLICY
+
+        assert result["final_runtime_identity"] == result["runtime_identity"]
+        assert len(result["runtime_identity"]["model_digest"]) == 64
+        assert all(
+            outcome["runtime_identity"] == result["runtime_identity"]
+            and outcome["runtime_identity_after"] == result["runtime_identity"]
+            and outcome["runtime_validation_policy"] == OLLAMA_RUNTIME_VALIDATION_POLICY
+            for row in result["analysis_results"]
+            for outcome in row["part_outcomes"].values()
+        )
         assert result["status"] == "success"
         assert result["selected_model"] == model
         assert (
@@ -294,6 +305,8 @@ class TestLLMProcessing:
         )
         assert process_llm(target, output, resume=True, **options)
         resumed = json.loads((output / "llm_results.json").read_text())
+        assert resumed["final_runtime_identity"] == result["runtime_identity"]
+        assert resumed["coverage"]["new_provider_requests_completed"] == 0
         assert all(
             o["resumed"]
             for row in resumed["analysis_results"]

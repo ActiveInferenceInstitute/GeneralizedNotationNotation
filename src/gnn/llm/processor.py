@@ -168,7 +168,8 @@ import asyncio
 
 from gnn.utils.logging_utils import log_step_error
 
-from .defaults import DEFAULT_OLLAMA_MODEL
+from .defaults import DEFAULT_OLLAMA_MODEL, OLLAMA_RUNTIME_VALIDATION_POLICY
+from .providers.ollama_provider import RuntimeIdentityChanged
 
 
 def _env_flag(name: str) -> bool:
@@ -517,6 +518,14 @@ async def _execute_prompt(
     import time
 
     prompt_deadline = time.monotonic() + max_prompt_timeout
+    native_local = isolated and provider_type in (None, ProviderType.OLLAMA)
+    if native_local and not runtime_identity:
+        if outcomes is not None:
+            outcomes[label] = {
+                "status": "failed",
+                "reason": "Native Ollama generation requires a verified runtime identity",
+            }
+        return "Native Ollama generation requires a verified runtime identity"
 
     def check_deadline() -> None:
         if time.monotonic() >= prompt_deadline or (
@@ -533,7 +542,10 @@ async def _execute_prompt(
     )
     request_definition = json.dumps(
         {
-            "schema_version": 4,
+            "schema_version": 5,
+            "runtime_validation_policy": OLLAMA_RUNTIME_VALIDATION_POLICY
+            if native_local
+            else None,
             "completion_policy": "terminal_stop_and_answer_margin_v2"
             if output_fields and answer_max_chars is not None
             else "terminal_stop_v1",
@@ -576,6 +588,14 @@ async def _execute_prompt(
                 "status": "success",
                 "cached": True,
                 "request_sha256": request_sha256,
+                "finish_reason": "stop",
+                "provider": provider_type.value if provider_type else "ollama",
+                "model": model_name,
+                "runtime_identity": runtime_identity,
+                "runtime_identity_after": runtime_identity,
+                "runtime_validation_policy": OLLAMA_RUNTIME_VALIDATION_POLICY
+                if native_local
+                else None,
             }
         return cached
 
@@ -610,6 +630,7 @@ async def _execute_prompt(
                 endpoint_url=endpoint_url,
                 generation_options=generation_options or {},
                 response_format=response_format,
+                runtime_identity=runtime_identity,
             )
         else:
             resp = await asyncio.wait_for(
@@ -627,6 +648,16 @@ async def _execute_prompt(
                 timeout=request_timeout,
             )
         check_deadline()
+        metadata = getattr(resp, "metadata", None) or {}
+        if native_local and (
+            metadata.get("runtime_identity") != runtime_identity
+            or metadata.get("runtime_identity_after") != runtime_identity
+            or metadata.get("runtime_validation_policy")
+            != OLLAMA_RUNTIME_VALIDATION_POLICY
+        ):
+            raise RuntimeIdentityChanged(
+                runtime_identity or {}, metadata.get("runtime_identity_after") or {}
+            )
         content = resp.content if hasattr(resp, "content") else str(resp)
         if not content or content.strip() == "":
             kind = "custom prompt" if custom else "prompt"
@@ -688,9 +719,22 @@ async def _execute_prompt(
                     }
                 },
                 "request_sha256": request_sha256,
+                "runtime_identity": metadata.get("runtime_identity"),
+                "runtime_identity_after": metadata.get("runtime_identity_after"),
+                "runtime_validation_policy": metadata.get("runtime_validation_policy"),
             }
         logger.debug("  ✅ Prompt completed successfully")
         return content
+    except RuntimeIdentityChanged as exc:
+        if outcomes is not None:
+            outcomes[label] = {
+                "status": "failed",
+                "reason": "runtime_changed",
+                "expected_runtime_identity": exc.expected,
+                "observed_runtime_identity": exc.observed,
+            }
+        logger.error("Ollama runtime/model identity changed; response not admitted")
+        return "Ollama runtime/model identity changed; response not admitted"
     except asyncio.TimeoutError:
         if outcomes is not None:
             outcomes[label] = {"status": "timed_out"}

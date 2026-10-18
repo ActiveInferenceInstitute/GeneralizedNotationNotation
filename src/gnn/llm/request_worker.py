@@ -57,10 +57,19 @@ async def isolated_request(**payload: Any) -> LLMResponse:
             raise RuntimeError(f"{payload['provider']}: 401 authentication failed")
         if category == "timeout":
             raise asyncio.TimeoutError
+        if category == "runtime_changed":
+            from .providers.ollama_provider import RuntimeIdentityChanged
+
+            expected = diagnostic.get("expected_runtime_identity")
+            observed = diagnostic.get("observed_runtime_identity")
+            if not isinstance(expected, dict) or not isinstance(observed, dict):
+                raise RuntimeError("Malformed runtime identity failure receipt")
+            raise RuntimeIdentityChanged(expected, observed)
         diagnoses = {
             "context_limit": "Configured LLM model context cannot admit the complete input",
             "runtime_unsupported": "Configured Ollama runtime cannot verify the whole-context policy",
             "model_unavailable": "Configured Ollama model is not installed",
+            "model_identity_unavailable": "Configured Ollama model digest is unavailable",
         }
         if category in diagnoses:
             raise RuntimeError(diagnoses[category])
@@ -109,6 +118,12 @@ async def _request(payload: dict[str, Any]) -> dict[str, Any]:
                     if payload.get("endpoint_url")
                     else {}
                 ),
+                **(
+                    {"expected_runtime_identity": payload["runtime_identity"]}
+                    if provider == ProviderType.OLLAMA
+                    and payload.get("runtime_identity")
+                    else {}
+                ),
             }
         },
     )
@@ -151,9 +166,12 @@ def main() -> None:
         response = asyncio.run(_request(payload))
     except Exception as exc:
         from .processor import _classify_auth_error
+        from .providers.ollama_provider import RuntimeIdentityChanged
 
         message = str(exc).lower()
-        if isinstance(exc, TimeoutError):
+        if isinstance(exc, RuntimeIdentityChanged):
+            category = "runtime_changed"
+        elif isinstance(exc, TimeoutError):
             category = "timeout"
         elif _classify_auth_error(str(exc)):
             category = "authentication"
@@ -161,17 +179,22 @@ def main() -> None:
             category = "runtime_unsupported"
         elif "configured ollama model is not installed" in message:
             category = "model_unavailable"
+        elif "configured ollama model digest is unavailable" in message:
+            category = "model_identity_unavailable"
         elif "context" in message and any(
             word in message for word in ("length", "window", "exceed")
         ):
             category = "context_limit"
         else:
             category = "provider_failure"
-        print(
-            json.dumps(
-                {"error_category": category, "provider": payload.get("provider")}
-            )
-        )
+        diagnostic: dict[str, Any] = {
+            "error_category": category,
+            "provider": payload.get("provider"),
+        }
+        if isinstance(exc, RuntimeIdentityChanged):
+            diagnostic["expected_runtime_identity"] = exc.expected
+            diagnostic["observed_runtime_identity"] = exc.observed
+        print(json.dumps(diagnostic))
         raise SystemExit(1) from None
     print(json.dumps(response))
 

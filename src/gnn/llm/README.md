@@ -81,11 +81,15 @@ filtered or tool responses retain partial text, remain unfinished, and do not
 enter completed checkpoints or response caches. Structural results and fallback
 messages never count as native inference. Required incomplete work returns False.
 
-Cache request version 4 binds source content, complete messages, provider/model,
+Cache request version 5 binds source content, complete messages, provider/model,
 endpoint, token/context/seed settings, runtime/model digest and completion policy.
-Checkpoint version 3 also binds partition byte/hash receipts, prompt definitions
+Checkpoint version 4 also binds partition byte/hash receipts, prompt definitions
 and budgets. Explicit resume verifies matching runtime/configuration/source and
 response digests; a changed tag digest cannot reuse old native responses.
+Every native request verifies the runtime/model identity before and after
+generation under one total deadline. Identity drift rejects the response and
+stops further corpus requests. A final live check also qualifies cache-only
+resume; older startup-only records cannot satisfy the current validation policy.
 
 ## Configuration
 

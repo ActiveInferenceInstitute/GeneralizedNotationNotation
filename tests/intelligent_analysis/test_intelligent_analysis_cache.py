@@ -76,6 +76,19 @@ class _FakeProcessor:
         self._finish_reason = finish_reason
         self._raise_if_called = raise_if_called
         self.calls = 0
+        self.digest = "a" * 64
+        self.preflights = 0
+        self.change_on_preflight: int | None = None
+        self.change_during_response = False
+
+    def get_provider(self, _provider: Any) -> Any:
+        return self
+
+    async def preflight_model(self, model: str) -> dict[str, Any]:
+        self.preflights += 1
+        if self.preflights == self.change_on_preflight:
+            self.digest = "b" * 64
+        return {"model": model, "model_digest": self.digest}
 
     async def get_response(
         self,
@@ -88,7 +101,23 @@ class _FakeProcessor:
         if self._raise_if_called:
             raise AssertionError("get_response called; expected a cache hit")
         self.calls += 1
-        return SimpleNamespace(content=self._content, finish_reason=self._finish_reason)
+        from gnn.llm.defaults import OLLAMA_RUNTIME_VALIDATION_POLICY
+
+        identity = {"model": model_name, "model_digest": self.digest}
+        observed = (
+            {**identity, "model_digest": "b" * 64}
+            if self.change_during_response
+            else identity
+        )
+        return SimpleNamespace(
+            content=self._content,
+            finish_reason=self._finish_reason,
+            metadata={
+                "runtime_identity": identity,
+                "runtime_identity_after": observed,
+                "runtime_validation_policy": OLLAMA_RUNTIME_VALIDATION_POLICY,
+            },
+        )
 
 
 def _install_fake_processor(
@@ -275,3 +304,61 @@ def test_valid_report_text_with_unfinished_native_response_is_not_cached(
     )
     assert source == "rule_based"
     assert _cache_json_entries(tmp_path) == []
+
+
+def test_step24_model_digest_change_invalidates_cache(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    processor = _FakeProcessor(VALID_REPORT)
+    _install_fake_processor(monkeypatch, processor)
+    log = logging.getLogger("test-step24-digest")
+    assert (
+        asyncio.run(_llm_call(log, "test-model", tmp_path, ANALYSIS_CONTEXT))[1]
+        == "llm"
+    )
+    processor.digest = "b" * 64
+    assert (
+        asyncio.run(_llm_call(log, "test-model", tmp_path, ANALYSIS_CONTEXT))[1]
+        == "llm"
+    )
+    assert processor.calls == 2
+    assert len(_cache_json_entries(tmp_path)) == 2
+
+
+def test_step24_identity_change_during_cache_lookup_refuses_hit(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    processor = _FakeProcessor(VALID_REPORT)
+    _install_fake_processor(monkeypatch, processor)
+    log = logging.getLogger("test-step24-cache-drift")
+    assert (
+        asyncio.run(_llm_call(log, "test-model", tmp_path, ANALYSIS_CONTEXT))[1]
+        == "llm"
+    )
+    processor.change_on_preflight = processor.preflights + 2
+    assert (
+        asyncio.run(_llm_call(log, "test-model", tmp_path, ANALYSIS_CONTEXT))[1]
+        == "rule_based"
+    )
+    assert processor.calls == 1
+
+
+def test_step24_identity_change_during_generation_is_not_cached(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    processor = _FakeProcessor(VALID_REPORT)
+    processor.change_during_response = True
+    _install_fake_processor(monkeypatch, processor)
+    assert (
+        asyncio.run(
+            _llm_call(
+                logging.getLogger("test-step24-drift"),
+                "test-model",
+                tmp_path,
+                ANALYSIS_CONTEXT,
+            )
+        )[1]
+        == "rule_based"
+    )
+    assert processor.calls == 1
+    assert not _cache_json_entries(tmp_path)

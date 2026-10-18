@@ -285,7 +285,11 @@ Please provide analysis in EXACTLY this format:
 """
 
     try:
-        from gnn.llm.defaults import DEFAULT_OLLAMA_MODEL, ollama_generation_options
+        from gnn.llm.defaults import (
+            DEFAULT_OLLAMA_MODEL,
+            OLLAMA_RUNTIME_VALIDATION_POLICY,
+            ollama_generation_options,
+        )
         from gnn.llm.provider_identity import resolved_endpoint
         from gnn.llm.providers.base_provider import ProviderType
 
@@ -297,12 +301,28 @@ Please provide analysis in EXACTLY this format:
                 raise RuntimeError("Configured analysis provider is unavailable")
             model_name = selected.default_model
         messages: list[LLMMessage] = [LLMMessage(role="user", content=prompt)]
+        runtime_identity = None
+        preflight = None
+        selected = processor.get_provider(selected_provider)
+        if selected is None:
+            raise RuntimeError("Configured analysis provider is unavailable")
+        if selected_provider == ProviderType.OLLAMA:
+            preflight = getattr(selected, "preflight_model", None)
+            if preflight is None:
+                raise RuntimeError(
+                    "Configured Ollama provider cannot verify runtime identity"
+                )
+            runtime_identity = await preflight(model_name)
         # Pin the configured provider; cloud credentials alone cannot redirect
         # a default local report. DEFAULT_PROVIDER can explicitly select cloud.
         _, endpoint_sha256 = resolved_endpoint(selected_provider)
         cache_request = json.dumps(
             {
-                "schema_version": 2,
+                "schema_version": 3,
+                "runtime_identity": runtime_identity,
+                "runtime_validation_policy": OLLAMA_RUNTIME_VALIDATION_POLICY
+                if runtime_identity is not None
+                else None,
                 "provider": selected_provider.value,
                 "endpoint_sha256": endpoint_sha256,
                 "prompt": prompt,
@@ -318,6 +338,14 @@ Please provide analysis in EXACTLY this format:
         if cache is not None:
             cached = cache.get(cache_content, model_name, cache_request)
             if cached is not None and _is_complete_llm_report(cached):
+                if (
+                    runtime_identity is not None
+                    and preflight is not None
+                    and (await preflight(model_name) != runtime_identity)
+                ):
+                    raise RuntimeError(
+                        "Ollama runtime/model identity changed during cache lookup"
+                    )
                 logger.info("⚡ Cache HIT for step-24 LLM analysis")
                 return cached, "llm"
 
@@ -327,6 +355,17 @@ Please provide analysis in EXACTLY this format:
             max_tokens=2500,
             provider_type=selected_provider,
         )
+        if runtime_identity is not None:
+            metadata = getattr(response, "metadata", None) or {}
+            if (
+                metadata.get("runtime_identity") != runtime_identity
+                or metadata.get("runtime_identity_after") != runtime_identity
+                or metadata.get("runtime_validation_policy")
+                != OLLAMA_RUNTIME_VALIDATION_POLICY
+            ):
+                raise RuntimeError(
+                    "Ollama runtime/model identity changed during report generation"
+                )
         content = response.content.strip()
 
         # Reject code and incomplete prose rather than publishing it as a

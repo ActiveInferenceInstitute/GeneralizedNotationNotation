@@ -119,11 +119,20 @@ runtime must still admit every intact part.
 `llm_results.json` records source identities, whole/multipart modes, structural,
 prompt, summary and source-part coverage, unfinished work, provider/model,
 runtime version/model digest and cache statistics. `llm_checkpoint.json` version
-3 binds source bytes, partitions, prompt definitions, endpoint, model, generation
+4 binds source bytes, partitions, prompt definitions, endpoint, model, generation
 options and budgets. Resume verifies response digests and the live runtime/model
-identity. Cache request version 4 binds full messages, response budgets, context,
+identity. Cache request version 5 binds full messages, response budgets, context,
 seed and runtime identity. A token-limit response remains inspectable but does
 not enter completed checkpoints or response caches.
+
+Native requests verify the server version, exact 64-digit model digest and
+generation options before and after generation within the same request deadline.
+A change stops corpus generation and rejects the affected response. Finalization
+checks the runtime again, including explicit cache-only resume. Step 24 also binds
+and checks runtime/model identity when admitting generated or cached reports.
+Older startup-only cache/checkpoint records cannot satisfy this policy. For long
+runs, use a fixed local runtime and model store; a desktop runtime update may
+interrupt an active request, which must remain unfinished until a fresh run.
 
 ## Other providers and optionality
 
