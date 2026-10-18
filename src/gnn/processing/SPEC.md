@@ -58,3 +58,19 @@ uv run --extra dev python -m pytest tests/gnn/test_gnn_processor_validation.py \
 - **[README](README.md)**: Module Overview
 - **[AGENTS](AGENTS.md)**: Agentic Workflows
 - **[SPEC](SPEC.md)**: Architectural Specification
+
+## Headless processing contract
+
+The package preserves its 16 public exports through lazy resolution. The
+lightweight API uses UTF-8, reuses parse metadata for structural checking and
+reports partial failure while preserving successful siblings. `files` records
+the selected inputs; `files_failed` counts selected file failures. A missing
+input or explicitly excluded single file fails; an empty directory succeeds.
+JSON output is published atomically and write failures remain explicit.
+
+`profiling.profile_directory` is an additive library API, outside the frozen
+facade export list. It measures a standard-library workload with bounded
+file/byte/repeat admission, raw unprofiled CPU/wall samples, independent tracing,
+result equality and input/source bookends. It refuses existing destinations
+and reports partial failure. See the [performance guide](../../../docs/performance/python315_backend.md)
+for limits and actual Python 3.15 sampling availability.

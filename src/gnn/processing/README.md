@@ -140,3 +140,13 @@ None of these symbols are CLI subcommands. The pipeline entry is
 - [Parsers module](../parsers/README.md) — formal parsing system
 - [Validation module](../validation/README.md) — semantic/quality validation
 - [Package root](../../../README.md)
+
+## Headless processing and performance
+
+The public facade resolves each export lazily. Lightweight parsing, validation
+and directory processing require only the standard library. Explicit heavy
+engine/serialization requests still load their actual owners and dependencies.
+`python -m gnn.processing` emits one JSON result and exits nonzero for selected
+file, structure or report-write failures. Directory and single model-file inputs
+are supported. See [Python 3.15 profiling](../../../docs/performance/python315_backend.md)
+for measured scope, optional sampling and exact CLI examples.

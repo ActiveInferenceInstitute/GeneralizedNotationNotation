@@ -303,3 +303,11 @@ steps-json:
             for s in STEPS]
     print(json.dumps(data, indent=2))
     PYEOF
+
+# Standard-library-only headless backend; independent of the inference environment.
+backend-json *ARGS:
+    PYTHONPATH=src uv run --no-project --isolated --python 3.15 python -m gnn.processing {{ ARGS }}
+
+# Python 3.15 unprofiled samples plus a separate deterministic trace; new output only.
+profile-backend *ARGS:
+    PYTHONPATH=src uv run --no-project --isolated --python 3.15 python scripts/run_backend_profile.py {{ ARGS }}

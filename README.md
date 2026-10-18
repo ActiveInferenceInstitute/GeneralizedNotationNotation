@@ -1099,6 +1099,11 @@ contracts. This bounded default-profile check does not establish all-extras,
 GUI, Docker, hosted, paired, or scientific publication acceptance.
 Explicit `UV_PYTHON` selects a named compatibility/profile runtime.
 
+For headless lightweight processing and source-bound Python 3.15 measurements,
+use `just backend-json` and `just profile-backend`. These isolated standard-library
+commands preserve the frozen scientific environment. See the
+[profiling guide](docs/performance/python315_backend.md) for exact scope and controls.
+
 ### 🎯 **Choose Your Journey**
 
 - **⚡ Quick Start**: Validate and run a maintained model → [Quick Start Guide](docs/quickstart.md#gnn-quick-start-guide)
