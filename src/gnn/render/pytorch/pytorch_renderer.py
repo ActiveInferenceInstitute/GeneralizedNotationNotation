@@ -251,10 +251,15 @@ def run_simulation():
         observation = torch.multinomial(obs_probs, 1).item()
 
         # 2. Belief update (Bayesian filtering)
+        # Predict with the action that produced this observation; at t=0
+        # the authored initial prior applies without a transition.
+        prior = beliefs if t == 0 else B[:, :, actions_history[-1]] @ beliefs
         likelihood = A[observation, :]
-        posterior = likelihood * beliefs
-        posterior = posterior / (posterior.sum() + 1e-16)
-        beliefs = posterior
+        posterior = likelihood * prior
+        evidence = posterior.sum()
+        if not np.isfinite(float(evidence)) or float(evidence) <= 0.0:
+            raise RuntimeError("Observation has zero or nonfinite predictive probability")
+        beliefs = posterior / evidence
 
         # 3. Compute Expected Free Energy (EFE) for each action
         efe = torch.zeros(num_actions, dtype=torch.float64)
@@ -341,6 +346,8 @@ def run_simulation():
     print(f"PyTorch POMDP simulation complete: {{T}} timesteps in {{elapsed:.3f}}s")
     print(f"Results saved to: {{output_file}}")
     print(f"Validation: {{validation}}")
+    if not validation["all_valid"]:
+        raise RuntimeError("Invalid simulation results; see the persisted validation receipt")
     return results
 
 
