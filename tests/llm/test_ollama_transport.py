@@ -55,7 +55,7 @@ def daemon() -> Iterator[
         header_delay: float = 0,
         header_drip: float = 0,
         version_response: Any = None,
-        version_delay: float = 0,
+        version_delay: float | Callable[[], float] = 0,
         tags_response: Any = None,
         tags_delay: float = 0,
         after_chat: Callable[[], None] | None = None,
@@ -83,7 +83,7 @@ def daemon() -> Iterator[
                         if version_response is None
                         else version_response
                     )
-                    wait = version_delay
+                    wait = version_delay() if callable(version_delay) else version_delay
                 body = json.dumps(value).encode()
                 if after_get is not None:
                     after_get(self.path)
@@ -539,17 +539,40 @@ def test_runtime_check_and_chat_share_the_original_deadline(
 
 
 def test_postflight_cannot_renew_generation_deadline(
-    daemon: Callable[..., Any],
+    daemon: Callable[..., Any], monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    host, received, _ = daemon(version_delay=0.06)
+    control = {"chat_received": False}
+
+    def after_chat() -> None:
+        control["chat_received"] = True
+
+    host, received, _ = daemon(
+        header_delay=0.4,
+        version_delay=lambda: 0.9 if control["chat_received"] else 0,
+        after_chat=after_chat,
+    )
+    provider = _provider(host)
+    original = provider.preflight_model
+    timeouts: list[float] = []
+
+    async def track(model: str, timeout: float | None = None) -> dict[str, Any]:
+        assert timeout is not None
+        timeouts.append(timeout)
+        return await original(model, timeout=timeout)
+
+    monkeypatch.setattr(provider, "preflight_model", track)
     with pytest.raises(TimeoutError):
         asyncio.run(
-            _provider(host).generate_response(
-                [LLMMessage("user", "source")], LLMConfig(model=MODEL, timeout=0.16)
+            provider.generate_response(
+                [LLMMessage("user", "source")], LLMConfig(model=MODEL, timeout=1)
             )
         )
     assert len(received) == 1
     assert received.get_paths.count("/api/version") == 3
+    assert len(timeouts) == 2
+    # Check the remaining allowance directly, with enough scheduling slack to
+    # reach the postflight phase under concurrent CI load.
+    assert timeouts[1] < 0.75 < timeouts[0] <= 1
 
 
 def test_real_header_byte_drip_is_interrupted_and_deadline_guard_is_reaped(
@@ -626,6 +649,119 @@ def test_http_preflight_has_no_sdk_cli_generation_or_model_replacement(
     }
     assert received.get_paths == ["/prefix/api/version", "/prefix/api/tags"]
     assert not received
+
+
+def test_step24_cache_binds_configured_provider_endpoint(
+    daemon: Callable[..., Any], tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import logging
+
+    from gnn.intelligent_analysis.processor import _run_llm_analysis
+    from gnn.llm.llm_processor import LLMProcessor
+    from gnn.llm.providers.base_provider import ProviderType
+    from tests.intelligent_analysis.test_intelligent_analysis_cache import (
+        ANALYSIS_CONTEXT,
+        VALID_REPORT,
+    )
+
+    other_report = VALID_REPORT.replace(
+        "perfect health score", "healthy second backend"
+    )
+    host_a, requests_a, _ = daemon(
+        response=_response(message={"content": VALID_REPORT})
+    )
+    host_b, requests_b, _ = daemon(
+        response=_response(message={"content": other_report})
+    )
+    # Explicit provider configurations may differ from the ambient default.
+    monkeypatch.setenv("OLLAMA_HOST", host_a)
+    selected: dict[str, Any] = {}
+
+    async def initialize() -> Any:
+        return selected["processor"]
+
+    monkeypatch.setattr("gnn.llm.llm_processor.initialize_global_processor", initialize)
+
+    async def run() -> None:
+        for host, expected in [(host_a, VALID_REPORT), (host_b, other_report)]:
+            processor = LLMProcessor(
+                preferred_providers=[ProviderType.OLLAMA],
+                api_keys={"ollama": "local"},
+                provider_configs={"ollama": {"base_url": host, "timeout": 2}},
+            )
+            try:
+                assert await processor.initialize()
+                selected["processor"] = processor
+                content, source = await _run_llm_analysis(
+                    ANALYSIS_CONTEXT,
+                    [],
+                    {},
+                    logging.getLogger("step24-endpoint"),
+                    analysis_model=MODEL,
+                    cache_dir=tmp_path,
+                )
+                assert source == "llm"
+                assert content == expected
+            finally:
+                await processor.close()
+
+    asyncio.run(run())
+    assert len(requests_a) == len(requests_b) == 1
+    assert len(list(tmp_path.glob("*.json"))) == 2
+
+
+def test_step24_cache_reuses_frozen_provider_when_ambient_config_changes(
+    daemon: Callable[..., Any], tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import logging
+
+    from gnn.intelligent_analysis.processor import _run_llm_analysis
+    from gnn.llm.llm_processor import LLMProcessor
+    from gnn.llm.providers.base_provider import ProviderType
+    from tests.intelligent_analysis.test_intelligent_analysis_cache import (
+        ANALYSIS_CONTEXT,
+        VALID_REPORT,
+    )
+
+    host, received, _ = daemon(response=_response(message={"content": VALID_REPORT}))
+    monkeypatch.setenv("OLLAMA_HOST", host)
+    monkeypatch.setenv("OLLAMA_NUM_CTX", "8192")
+    monkeypatch.setenv("OLLAMA_SEED", "42")
+    processor = LLMProcessor(
+        preferred_providers=[ProviderType.OLLAMA],
+        api_keys={"ollama": "local"},
+        provider_configs={"ollama": {"base_url": host, "timeout": 2}},
+    )
+
+    async def initialize() -> Any:
+        return processor
+
+    monkeypatch.setattr("gnn.llm.llm_processor.initialize_global_processor", initialize)
+
+    async def run() -> None:
+        try:
+            assert await processor.initialize()
+            for changed in (False, True):
+                if changed:
+                    monkeypatch.setenv("OLLAMA_HOST", "http://127.0.0.1:1")
+                    monkeypatch.setenv("OLLAMA_NUM_CTX", "16384")
+                    monkeypatch.setenv("OLLAMA_SEED", "17")
+                assert await _run_llm_analysis(
+                    ANALYSIS_CONTEXT,
+                    [],
+                    {},
+                    logging.getLogger("step24-frozen"),
+                    analysis_model=MODEL,
+                    cache_dir=tmp_path,
+                ) == (VALID_REPORT, "llm")
+        finally:
+            await processor.close()
+
+    asyncio.run(run())
+    assert len(received) == 1
+    assert received[0]["body"]["options"]["num_ctx"] == 8192
+    assert received[0]["body"]["options"]["seed"] == 42
+    assert len(list(tmp_path.glob("*.json"))) == 1
 
 
 @pytest.mark.parametrize(

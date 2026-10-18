@@ -10,7 +10,9 @@ from urllib.parse import urlsplit
 from .providers.base_provider import ProviderType
 
 
-def resolved_endpoint(provider: ProviderType) -> tuple[str, str]:
+def resolved_endpoint(
+    provider: ProviderType, *, configured_url: str | None = None
+) -> tuple[str, str]:
     """Return the actual endpoint and a canonical hash without credential data."""
     defaults = {
         ProviderType.OLLAMA: ("OLLAMA_HOST", "http://127.0.0.1:11434"),
@@ -20,6 +22,8 @@ def resolved_endpoint(provider: ProviderType) -> tuple[str, str]:
     }
     variable, default = defaults[provider]
     raw = (os.getenv(variable) if variable else None) or default
+    if configured_url is not None:
+        raw = configured_url
     endpoint = raw if "://" in raw else f"http://{raw}"
     parsed = urlsplit(endpoint)
     if (

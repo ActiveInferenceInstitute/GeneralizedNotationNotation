@@ -114,6 +114,9 @@ are not reported as successful LLM analysis. Step 24 validates its complete
 report topology and terminal response, otherwise labels its report `rule_based`.
 Its cache binds endpoint/context/seed, verified runtime/model identity and full
 request policy; identity drift also refuses cached reports.
+Step 24 cache request version 4 binds the selected provider's configured endpoint
+and generation options. Later environment changes cannot relabel an initialized
+provider or cause cross-endpoint report reuse.
 
 The asynchronous native class is `gnn.llm.UnifiedLLMProcessor`, aliased from
 `gnn.llm.llm_processor.LLMProcessor`. Package-level `gnn.llm.LLMProcessor` and

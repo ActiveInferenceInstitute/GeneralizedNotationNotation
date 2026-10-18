@@ -288,7 +288,6 @@ Please provide analysis in EXACTLY this format:
         from gnn.llm.defaults import (
             DEFAULT_OLLAMA_MODEL,
             OLLAMA_RUNTIME_VALIDATION_POLICY,
-            ollama_generation_options,
         )
         from gnn.llm.provider_identity import resolved_endpoint
         from gnn.llm.providers.base_provider import ProviderType
@@ -315,10 +314,16 @@ Please provide analysis in EXACTLY this format:
             runtime_identity = await preflight(model_name)
         # Pin the configured provider; cloud credentials alone cannot redirect
         # a default local report. DEFAULT_PROVIDER can explicitly select cloud.
-        _, endpoint_sha256 = resolved_endpoint(selected_provider)
+        _, endpoint_sha256 = resolved_endpoint(
+            selected_provider,
+            configured_url=getattr(selected, "base_url", None)
+            if selected_provider == ProviderType.OLLAMA
+            else None,
+        )
         cache_request = json.dumps(
             {
-                "schema_version": 3,
+                "schema_version": 4,
+                "endpoint_binding_policy": "configured_provider_v1",
                 "runtime_identity": runtime_identity,
                 "runtime_validation_policy": OLLAMA_RUNTIME_VALIDATION_POLICY
                 if runtime_identity is not None
@@ -327,8 +332,8 @@ Please provide analysis in EXACTLY this format:
                 "endpoint_sha256": endpoint_sha256,
                 "prompt": prompt,
                 "max_tokens": 2500,
-                "generation_options": ollama_generation_options()
-                if selected_provider == ProviderType.OLLAMA
+                "generation_options": runtime_identity.get("generation_options", {})
+                if runtime_identity is not None
                 else {},
                 "completion_policy": "terminal_stop_v1",
             },
