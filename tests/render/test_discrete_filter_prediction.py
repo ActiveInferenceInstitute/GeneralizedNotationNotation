@@ -6,6 +6,7 @@ import json
 import os
 import subprocess
 import sys
+from importlib import import_module
 from pathlib import Path
 
 import numpy as np
@@ -44,10 +45,10 @@ def _spec(asymmetric: bool) -> dict:
 
 def _render(backend: str, spec: dict, path: Path) -> None:
     if backend == "pytorch":
-        pytest.importorskip("torch")
+        import_module("torch")
         from gnn.render.pytorch import render_gnn_to_pytorch as render
     else:
-        pytest.importorskip("numpyro")
+        import_module("numpyro")
         from gnn.render.numpyro import render_gnn_to_numpyro as render
     okay, message, _ = render(spec, path)
     assert okay, message
