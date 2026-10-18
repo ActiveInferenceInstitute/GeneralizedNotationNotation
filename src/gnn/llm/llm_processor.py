@@ -49,6 +49,26 @@ def _error_result(exc: BaseException) -> Dict[str, Any]:
     return {"success": False, "error": str(exc), "error_type": type(exc).__name__}
 
 
+def _analysis_result(
+    response: LLMResponse, analysis_type: Union[AnalysisType, str]
+) -> Dict[str, Any]:
+    """Keep native text and metadata without promoting unfinished output."""
+    result = {
+        "success": True,
+        "analysis_type": analysis_type.value
+        if isinstance(analysis_type, AnalysisType)
+        else analysis_type,
+        "response": response.content,
+        "provider": response.provider if response.provider else "unknown",
+        "model": response.model_used,
+        "usage": response.usage,
+        "finish_reason": response.finish_reason,
+    }
+    if response.finish_reason != "stop" or not response.content.strip():
+        result.update(_error_result(RuntimeError("LLM response unfinished or empty")))
+    return result
+
+
 def load_api_keys_from_env() -> Dict[str, str]:
     """
     Load API keys from environment variables.
@@ -415,11 +435,15 @@ class LLMProcessor:
             """Return whether healthy."""
             return self._circuit_breakers.get(ptype, 0) < self.MAX_FAILURES
 
-        if (
-            provider_type
-            and provider_type in self.providers
-            and _is_healthy(provider_type)
-        ):
+        if provider_type is not None:
+            if provider_type not in self.providers:
+                raise RuntimeError(
+                    f"Requested provider {provider_type.value} is unavailable"
+                )
+            if not _is_healthy(provider_type):
+                raise RuntimeError(
+                    f"Requested provider {provider_type.value} circuit breaker is open"
+                )
             return self.providers[provider_type]
 
         if analysis_type is not None:
@@ -486,6 +510,8 @@ class LLMProcessor:
             self._circuit_breakers[provider.provider_type] = (
                 self._circuit_breakers.get(provider.provider_type, 0) + 1
             )
+            if provider_type is not None:
+                raise
             # Try recovery provider
             return await self._try_fallback_analysis(
                 gnn_content, analysis_type, provider.provider_type, config
@@ -574,7 +600,6 @@ class LLMProcessor:
         ]
 
         # Execute all analyses in parallel
-        import asyncio
 
         responses = await asyncio.gather(*coros, return_exceptions=True)
         for provider_name, response in zip(provider_names, responses):
@@ -675,7 +700,8 @@ class LLMProcessor:
             self._circuit_breakers[provider.provider_type] = (
                 self._circuit_breakers.get(provider.provider_type, 0) + 1
             )
-
+            if provider_type is not None:
+                raise
             # Try recovery providers
             for fallback_provider in self.providers.values():
                 if (
@@ -842,14 +868,7 @@ class GNNLLMProcessor:
 
             response = await self.base_processor.analyze_gnn(gnn_content, analysis_enum)
 
-            return {
-                "success": True,
-                "analysis_type": analysis_type,
-                "response": response.content,
-                "provider": response.provider if response.provider else "unknown",
-                "model": response.model_used,
-                "usage": response.usage,
-            }
+            return _analysis_result(response, analysis_type)
 
         except Exception as e:
             return _error_result(e)
@@ -917,14 +936,7 @@ class GNNLLMProcessor:
                 combined_content, AnalysisType.COMPARISON
             )
 
-            return {
-                "success": True,
-                "analysis_type": "comparison",
-                "response": response.content,
-                "provider": response.provider if response.provider else "unknown",
-                "model": response.model_used,
-                "usage": response.usage,
-            }
+            return _analysis_result(response, "comparison")
 
         except Exception as e:
             return _error_result(e)
@@ -1000,7 +1012,9 @@ def analyze_gnn_model(
             if isinstance(analysis_type, AnalysisType)
             else analysis_type
         )
-        return asyncio.run(analyze_gnn_with_llm(gnn_content, analysis_name))
+        from .sync_bridge import run_async
+
+        return run_async(analyze_gnn_with_llm(gnn_content, analysis_name))
     except Exception as e:
         return _error_result(e)
 

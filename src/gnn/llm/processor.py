@@ -3,6 +3,7 @@
 LLM processor module for GNN analysis.
 """
 
+import hashlib
 import json
 import logging
 import math
@@ -24,6 +25,8 @@ _logger = logging.getLogger(__name__)
 logger = logging.getLogger("llm")
 
 from gnn.pipeline.config import get_pipeline_config
+
+from .prompt_batch import AnswerLimitReached, parse_answers, response_schema
 
 
 def _get_llm_config() -> dict:
@@ -165,7 +168,8 @@ import asyncio
 
 from gnn.utils.logging_utils import log_step_error
 
-from .defaults import DEFAULT_OLLAMA_MODEL
+from .defaults import DEFAULT_OLLAMA_MODEL, OLLAMA_RUNTIME_VALIDATION_POLICY
+from .providers.ollama_provider import RuntimeIdentityChanged
 
 
 def _env_flag(name: str) -> bool:
@@ -485,6 +489,10 @@ async def _execute_prompt(
     isolated: bool = False,
     endpoint_url: str | None = None,
     remaining_budget: Callable[[], float] | None = None,
+    generation_options: dict[str, Any] | None = None,
+    runtime_identity: dict[str, Any] | None = None,
+    output_fields: list[str] | None = None,
+    answer_max_chars: int | None = None,
 ) -> str:
     """Run one LLM prompt with cache lookup, timeout, and auth fail-fast.
 
@@ -510,6 +518,14 @@ async def _execute_prompt(
     import time
 
     prompt_deadline = time.monotonic() + max_prompt_timeout
+    native_local = isolated and provider_type in (None, ProviderType.OLLAMA)
+    if native_local and not runtime_identity:
+        if outcomes is not None:
+            outcomes[label] = {
+                "status": "failed",
+                "reason": "Native Ollama generation requires a verified runtime identity",
+            }
+        return "Native Ollama generation requires a verified runtime identity"
 
     def check_deadline() -> None:
         if time.monotonic() >= prompt_deadline or (
@@ -519,10 +535,20 @@ async def _execute_prompt(
 
     if provider_type and provider_type.value in failed_auth_providers:
         return _prompt_fallback_text(label, custom)
+    response_format = (
+        response_schema(output_fields, max_chars=answer_max_chars)
+        if output_fields
+        else None
+    )
     request_definition = json.dumps(
         {
-            "schema_version": 3,
-            "completion_policy": "terminal_stop_v1",
+            "schema_version": 5,
+            "runtime_validation_policy": OLLAMA_RUNTIME_VALIDATION_POLICY
+            if native_local
+            else None,
+            "completion_policy": "terminal_stop_and_answer_margin_v2"
+            if output_fields and answer_max_chars is not None
+            else "terminal_stop_v1",
             "provider": provider_type.value if provider_type else "default",
             "model": model_name,
             "messages": [
@@ -532,10 +558,21 @@ async def _execute_prompt(
             "prompt_text": prompt_text,
             "max_tokens": max_tokens,
             "temperature": 0.2,
+            "generation_options": generation_options or {},
+            "runtime_identity": runtime_identity or {},
+            "output_fields": output_fields,
+            "response_format": response_format,
+            "source_sha256": hashlib.sha256(cache_content.encode("utf-8")).hexdigest(),
         },
         sort_keys=True,
     )
     cached = cache.get(cache_content, model_name, request_definition)
+    request_sha256 = hashlib.sha256(request_definition.encode("utf-8")).hexdigest()
+    if cached and output_fields:
+        try:
+            parse_answers(cached, output_fields, max_chars=answer_max_chars)
+        except (ValueError, TypeError):
+            cached = None
     if isinstance(cached, str) and cached.strip():
         if time.monotonic() >= prompt_deadline or (
             remaining_budget is not None and remaining_budget() <= 0
@@ -547,7 +584,19 @@ async def _execute_prompt(
             )
         logger.info(f"  ⚡ Cache HIT for {label}")
         if outcomes is not None:
-            outcomes[label] = {"status": "success", "cached": True}
+            outcomes[label] = {
+                "status": "success",
+                "cached": True,
+                "request_sha256": request_sha256,
+                "finish_reason": "stop",
+                "provider": provider_type.value if provider_type else "ollama",
+                "model": model_name,
+                "runtime_identity": runtime_identity,
+                "runtime_identity_after": runtime_identity,
+                "runtime_validation_policy": OLLAMA_RUNTIME_VALIDATION_POLICY
+                if native_local
+                else None,
+            }
         return cached
 
     # Fail fast when the provider that would serve this request already
@@ -579,6 +628,9 @@ async def _execute_prompt(
                 max_tokens=max_tokens,
                 timeout=request_timeout,
                 endpoint_url=endpoint_url,
+                generation_options=generation_options or {},
+                response_format=response_format,
+                runtime_identity=runtime_identity,
             )
         else:
             resp = await asyncio.wait_for(
@@ -588,11 +640,24 @@ async def _execute_prompt(
                     provider_type=provider_type,
                     max_tokens=max_tokens,
                     temperature=0.2,
-                    config=LLMConfig(timeout=request_timeout),
+                    config=LLMConfig(
+                        timeout=request_timeout,
+                        response_format=response_format,
+                    ),
                 ),
                 timeout=request_timeout,
             )
         check_deadline()
+        metadata = getattr(resp, "metadata", None) or {}
+        if native_local and (
+            metadata.get("runtime_identity") != runtime_identity
+            or metadata.get("runtime_identity_after") != runtime_identity
+            or metadata.get("runtime_validation_policy")
+            != OLLAMA_RUNTIME_VALIDATION_POLICY
+        ):
+            raise RuntimeIdentityChanged(
+                runtime_identity or {}, metadata.get("runtime_identity_after") or {}
+            )
         content = resp.content if hasattr(resp, "content") else str(resp)
         if not content or content.strip() == "":
             kind = "custom prompt" if custom else "prompt"
@@ -613,12 +678,63 @@ async def _execute_prompt(
             # Retain partial text for inspection without admitting it as cached
             # or checkpointed completion. Resume must retry this prompt.
             return content
+        if output_fields:
+            try:
+                parse_answers(content, output_fields, max_chars=answer_max_chars)
+            except (ValueError, TypeError) as exc:
+                if outcomes is not None:
+                    outcomes[label] = {
+                        "status": "incomplete"
+                        if isinstance(exc, AnswerLimitReached)
+                        else "failed",
+                        "reason": "Native batch reached an answer character boundary"
+                        if isinstance(exc, AnswerLimitReached)
+                        else "Native batch did not return all required answers",
+                        "finish_reason": finish_reason,
+                    }
+                return content
         cache.put(cache_content, model_name, request_definition, content)
         check_deadline()
         if outcomes is not None:
-            outcomes[label] = {"status": "success", "cached": False}
+            outcomes[label] = {
+                "status": "success",
+                "cached": False,
+                "finish_reason": finish_reason,
+                "provider": getattr(resp, "provider", None),
+                "model": getattr(resp, "model_used", None),
+                "usage": getattr(resp, "usage", None),
+                "elapsed_seconds": time.monotonic()
+                - (prompt_deadline - max_prompt_timeout),
+                "native_timing": {
+                    key: value
+                    for key, value in (getattr(resp, "metadata", None) or {})
+                    .get("raw", {})
+                    .items()
+                    if key
+                    in {
+                        "total_duration",
+                        "load_duration",
+                        "prompt_eval_duration",
+                        "eval_duration",
+                    }
+                },
+                "request_sha256": request_sha256,
+                "runtime_identity": metadata.get("runtime_identity"),
+                "runtime_identity_after": metadata.get("runtime_identity_after"),
+                "runtime_validation_policy": metadata.get("runtime_validation_policy"),
+            }
         logger.debug("  ✅ Prompt completed successfully")
         return content
+    except RuntimeIdentityChanged as exc:
+        if outcomes is not None:
+            outcomes[label] = {
+                "status": "failed",
+                "reason": "runtime_changed",
+                "expected_runtime_identity": exc.expected,
+                "observed_runtime_identity": exc.observed,
+            }
+        logger.error("Ollama runtime/model identity changed; response not admitted")
+        return "Ollama runtime/model identity changed; response not admitted"
     except asyncio.TimeoutError:
         if outcomes is not None:
             outcomes[label] = {"status": "timed_out"}
@@ -722,13 +838,11 @@ def process_llm(
     Returns:
         True if processing successful, False otherwise
     """
-    import asyncio
+    from .sync_bridge import run_async
 
     # Run the async implementation in a single event loop
     try:
-        return asyncio.run(
-            _process_llm_async(target_dir, output_dir, verbose, **kwargs)
-        )
+        return run_async(_process_llm_async(target_dir, output_dir, verbose, **kwargs))
     except Exception as e:
         logger = logging.getLogger("llm")
         log_step_error(logger, f"LLM processing failed: {e}")

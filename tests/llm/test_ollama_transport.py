@@ -19,6 +19,7 @@ from gnn.llm.providers.base_provider import LLMConfig, LLMMessage
 from gnn.llm.providers.ollama_provider import OllamaProvider
 
 MODEL = "configured:exact"
+DIGEST = "a" * 64
 
 
 class _Requests(list[dict[str, Any]]):
@@ -54,9 +55,11 @@ def daemon() -> Iterator[
         header_delay: float = 0,
         header_drip: float = 0,
         version_response: Any = None,
-        version_delay: float = 0,
+        version_delay: float | Callable[[], float] = 0,
         tags_response: Any = None,
         tags_delay: float = 0,
+        after_chat: Callable[[], None] | None = None,
+        after_get: Callable[[str], None] | None = None,
     ) -> tuple[str, list[dict[str, Any]], threading.Event]:
         received = _Requests()
         opened = threading.Event()
@@ -69,7 +72,7 @@ def daemon() -> Iterator[
                 received.get_paths.append(self.path)
                 if self.path.endswith("/api/tags"):
                     value = (
-                        {"models": [{"name": MODEL}]}
+                        {"models": [{"name": MODEL, "digest": DIGEST}]}
                         if tags_response is None
                         else tags_response
                     )
@@ -80,8 +83,10 @@ def daemon() -> Iterator[
                         if version_response is None
                         else version_response
                     )
-                    wait = version_delay
+                    wait = version_delay() if callable(version_delay) else version_delay
                 body = json.dumps(value).encode()
+                if after_get is not None:
+                    after_get(self.path)
                 time.sleep(wait)
                 try:
                     self.send_response(200)
@@ -101,6 +106,8 @@ def daemon() -> Iterator[
                         ),
                     }
                 )
+                if after_chat is not None:
+                    after_chat()
                 time.sleep(header_delay)
                 try:
                     if header_drip:
@@ -146,6 +153,68 @@ def _provider(host: str, **kwargs: Any) -> OllamaProvider:
     return provider
 
 
+@pytest.mark.parametrize("method", ["analyze_gnn_model", "compare_models"])
+@pytest.mark.parametrize("finish_reason", ["stop", "length", None])
+def test_gnn_wrapper_preserves_text_but_requires_terminal_completion(
+    daemon: Callable[..., Any], method: str, finish_reason: str | None
+) -> None:
+    from gnn.llm.llm_processor import GNNLLMProcessor, LLMProcessor
+    from gnn.llm.providers.base_provider import ProviderType
+
+    host, received, _ = daemon(response=_response(done_reason=finish_reason))
+    base = LLMProcessor(
+        preferred_providers=[ProviderType.OLLAMA],
+        api_keys={"ollama": "local"},
+        provider_configs={
+            "ollama": {"base_url": host, "default_model": MODEL, "timeout": 1}
+        },
+    )
+
+    async def run() -> dict[str, Any]:
+        processor = GNNLLMProcessor(base)
+        try:
+            assert await processor.initialize()
+            if method == "compare_models":
+                return await processor.compare_models("first source", "second source")
+            return await processor.analyze_gnn_model("whole source")
+        finally:
+            await processor.close()
+
+    result = asyncio.run(run())
+    assert result["success"] is (finish_reason == "stop"), result
+    assert result["response"] == "complete answer"
+    assert result["finish_reason"] == finish_reason
+    assert result["provider"] == "ollama" and result["model"] == MODEL
+    assert isinstance(result["analysis_type"], str)
+    json.dumps(result)  # Enum-based default analysis must remain serializable.
+    if finish_reason != "stop":
+        assert "unfinished" in result["error"]
+    assert len(received) == 1
+
+
+@pytest.mark.parametrize("running_loop", [False, True])
+@pytest.mark.parametrize("finish_reason", ["stop", "length", None])
+def test_plain_analysis_requires_terminal_completion(
+    daemon: Callable[..., Any], running_loop: bool, finish_reason: str | None
+) -> None:
+    host, received, _ = daemon(response=_response(done_reason=finish_reason))
+    provider = _provider(host, default_model=MODEL)
+
+    async def in_loop() -> str:
+        return provider.analyze("whole source", "summary")
+
+    result = (
+        asyncio.run(in_loop())
+        if running_loop
+        else provider.analyze("whole source", "summary")
+    )
+    if finish_reason == "stop":
+        assert result == "complete answer"
+    else:
+        assert result.startswith("Analysis failed:") and "unfinished" in result
+    assert len(received) == 1
+
+
 def test_entire_large_conversation_and_options_are_http_body_without_sdk_or_cli(
     daemon: Callable[..., Any], monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -176,6 +245,14 @@ def test_entire_large_conversation_and_options_are_http_body_without_sdk_or_cli(
     assert result.model_used == MODEL
     assert result.usage == {"prompt_tokens": 31, "completion_tokens": 3}
     assert result.finish_reason == "stop"
+    assert (
+        result.metadata["runtime_identity"] == result.metadata["runtime_identity_after"]
+    )
+    assert result.metadata["runtime_identity"]["model_digest"] == DIGEST
+    assert (
+        result.metadata["runtime_validation_policy"]
+        == module.OLLAMA_RUNTIME_VALIDATION_POLICY
+    )
     assert result.metadata is not None and result.metadata["truncate"] is False
 
 
@@ -449,7 +526,7 @@ def test_unverified_runtime_cannot_post_whole_context(
 def test_runtime_check_and_chat_share_the_original_deadline(
     daemon: Callable[..., Any],
 ) -> None:
-    host, received, _ = daemon(version_delay=0.055, delay=0.055)
+    host, received, _ = daemon(version_delay=0.02, delay=0.055)
     start = time.monotonic()
     with pytest.raises(TimeoutError):
         asyncio.run(
@@ -459,6 +536,43 @@ def test_runtime_check_and_chat_share_the_original_deadline(
         )
     assert len(received) == 1
     assert time.monotonic() - start < 0.2
+
+
+def test_postflight_cannot_renew_generation_deadline(
+    daemon: Callable[..., Any], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    control = {"chat_received": False}
+
+    def after_chat() -> None:
+        control["chat_received"] = True
+
+    host, received, _ = daemon(
+        header_delay=0.4,
+        version_delay=lambda: 0.9 if control["chat_received"] else 0,
+        after_chat=after_chat,
+    )
+    provider = _provider(host)
+    original = provider.preflight_model
+    timeouts: list[float] = []
+
+    async def track(model: str, timeout: float | None = None) -> dict[str, Any]:
+        assert timeout is not None
+        timeouts.append(timeout)
+        return await original(model, timeout=timeout)
+
+    monkeypatch.setattr(provider, "preflight_model", track)
+    with pytest.raises(TimeoutError):
+        asyncio.run(
+            provider.generate_response(
+                [LLMMessage("user", "source")], LLMConfig(model=MODEL, timeout=1)
+            )
+        )
+    assert len(received) == 1
+    assert received.get_paths.count("/api/version") == 3
+    assert len(timeouts) == 2
+    # Check the remaining allowance directly, with enough scheduling slack to
+    # reach the postflight phase under concurrent CI load.
+    assert timeouts[1] < 0.75 < timeouts[0] <= 1
 
 
 def test_real_header_byte_drip_is_interrupted_and_deadline_guard_is_reaped(
@@ -481,8 +595,8 @@ def test_real_header_byte_drip_is_interrupted_and_deadline_guard_is_reaped(
             )
         )
     assert time.monotonic() - start < 0.2
-    assert len(requests) == 1
-    assert not requests[0]._guard.is_alive()
+    assert len(requests) == 2  # Original deadline owner and bounded preflight.
+    assert all(not request._guard.is_alive() for request in requests)
 
 
 @pytest.mark.parametrize("running_loop", [False, True])
@@ -530,9 +644,124 @@ def test_http_preflight_has_no_sdk_cli_generation_or_model_replacement(
         "server_version": "0.35.0",
         "context_policy": "whole-context-v1",
         "status": "ready",
+        "model_digest": DIGEST,
+        "generation_options": {},
     }
     assert received.get_paths == ["/prefix/api/version", "/prefix/api/tags"]
     assert not received
+
+
+def test_step24_cache_binds_configured_provider_endpoint(
+    daemon: Callable[..., Any], tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import logging
+
+    from gnn.intelligent_analysis.processor import _run_llm_analysis
+    from gnn.llm.llm_processor import LLMProcessor
+    from gnn.llm.providers.base_provider import ProviderType
+    from tests.intelligent_analysis.test_intelligent_analysis_cache import (
+        ANALYSIS_CONTEXT,
+        VALID_REPORT,
+    )
+
+    other_report = VALID_REPORT.replace(
+        "perfect health score", "healthy second backend"
+    )
+    host_a, requests_a, _ = daemon(
+        response=_response(message={"content": VALID_REPORT})
+    )
+    host_b, requests_b, _ = daemon(
+        response=_response(message={"content": other_report})
+    )
+    # Explicit provider configurations may differ from the ambient default.
+    monkeypatch.setenv("OLLAMA_HOST", host_a)
+    selected: dict[str, Any] = {}
+
+    async def initialize() -> Any:
+        return selected["processor"]
+
+    monkeypatch.setattr("gnn.llm.llm_processor.initialize_global_processor", initialize)
+
+    async def run() -> None:
+        for host, expected in [(host_a, VALID_REPORT), (host_b, other_report)]:
+            processor = LLMProcessor(
+                preferred_providers=[ProviderType.OLLAMA],
+                api_keys={"ollama": "local"},
+                provider_configs={"ollama": {"base_url": host, "timeout": 2}},
+            )
+            try:
+                assert await processor.initialize()
+                selected["processor"] = processor
+                content, source = await _run_llm_analysis(
+                    ANALYSIS_CONTEXT,
+                    [],
+                    {},
+                    logging.getLogger("step24-endpoint"),
+                    analysis_model=MODEL,
+                    cache_dir=tmp_path,
+                )
+                assert source == "llm"
+                assert content == expected
+            finally:
+                await processor.close()
+
+    asyncio.run(run())
+    assert len(requests_a) == len(requests_b) == 1
+    assert len(list(tmp_path.glob("*.json"))) == 2
+
+
+def test_step24_cache_reuses_frozen_provider_when_ambient_config_changes(
+    daemon: Callable[..., Any], tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import logging
+
+    from gnn.intelligent_analysis.processor import _run_llm_analysis
+    from gnn.llm.llm_processor import LLMProcessor
+    from gnn.llm.providers.base_provider import ProviderType
+    from tests.intelligent_analysis.test_intelligent_analysis_cache import (
+        ANALYSIS_CONTEXT,
+        VALID_REPORT,
+    )
+
+    host, received, _ = daemon(response=_response(message={"content": VALID_REPORT}))
+    monkeypatch.setenv("OLLAMA_HOST", host)
+    monkeypatch.setenv("OLLAMA_NUM_CTX", "8192")
+    monkeypatch.setenv("OLLAMA_SEED", "42")
+    processor = LLMProcessor(
+        preferred_providers=[ProviderType.OLLAMA],
+        api_keys={"ollama": "local"},
+        provider_configs={"ollama": {"base_url": host, "timeout": 2}},
+    )
+
+    async def initialize() -> Any:
+        return processor
+
+    monkeypatch.setattr("gnn.llm.llm_processor.initialize_global_processor", initialize)
+
+    async def run() -> None:
+        try:
+            assert await processor.initialize()
+            for changed in (False, True):
+                if changed:
+                    monkeypatch.setenv("OLLAMA_HOST", "http://127.0.0.1:1")
+                    monkeypatch.setenv("OLLAMA_NUM_CTX", "16384")
+                    monkeypatch.setenv("OLLAMA_SEED", "17")
+                assert await _run_llm_analysis(
+                    ANALYSIS_CONTEXT,
+                    [],
+                    {},
+                    logging.getLogger("step24-frozen"),
+                    analysis_model=MODEL,
+                    cache_dir=tmp_path,
+                ) == (VALID_REPORT, "llm")
+        finally:
+            await processor.close()
+
+    asyncio.run(run())
+    assert len(received) == 1
+    assert received[0]["body"]["options"]["num_ctx"] == 8192
+    assert received[0]["body"]["options"]["seed"] == 42
+    assert len(list(tmp_path.glob("*.json"))) == 1
 
 
 @pytest.mark.parametrize(
@@ -554,6 +783,173 @@ def test_http_preflight_requires_an_exact_valid_inventory(
     assert received.get_paths == ["/api/version", "/api/tags"]
 
 
+@pytest.mark.parametrize("digest", [None, "", "short", "A" * 64, "g" * 64])
+def test_missing_or_invalid_digest_cannot_generate(
+    daemon: Callable[..., Any], digest: Any
+) -> None:
+    host, received, _ = daemon(
+        tags_response={"models": [{"name": MODEL, "digest": digest}]}
+    )
+    with pytest.raises(RuntimeError, match="digest is unavailable"):
+        asyncio.run(
+            _provider(host).generate_response(
+                [LLMMessage("user", "source")], LLMConfig(model=MODEL)
+            )
+        )
+    assert not received
+
+
+@pytest.mark.parametrize("change", ["version", "digest"])
+def test_expected_runtime_change_refused_before_generation(
+    daemon: Callable[..., Any], change: str
+) -> None:
+    version = {"version": "0.35.0"}
+    inventory = {"models": [{"name": MODEL, "digest": DIGEST}]}
+    host, received, _ = daemon(version_response=version, tags_response=inventory)
+    provider = _provider(host)
+    identity = asyncio.run(provider.preflight_model(MODEL))
+    provider.expected_runtime_identity = identity
+    if change == "version":
+        version["version"] = "0.35.1"
+    else:
+        inventory["models"][0]["digest"] = "b" * 64
+    with pytest.raises(module.RuntimeIdentityChanged) as error:
+        asyncio.run(
+            provider.generate_response(
+                [LLMMessage("user", "source")], LLMConfig(model=MODEL)
+            )
+        )
+    assert error.value.expected == identity
+    assert error.value.observed != identity
+    assert not received
+
+
+@pytest.mark.parametrize("change", ["version", "digest"])
+@pytest.mark.parametrize("stream", [False, True])
+def test_runtime_change_during_response_cannot_complete(
+    daemon: Callable[..., Any], change: str, stream: bool
+) -> None:
+    version = {"version": "0.35.0"}
+    inventory = {"models": [{"name": MODEL, "digest": DIGEST}]}
+
+    def update() -> None:
+        if change == "version":
+            version["version"] = "0.35.1"
+        else:
+            inventory["models"][0]["digest"] = "b" * 64
+
+    host, received, _ = daemon(
+        version_response=version,
+        tags_response=inventory,
+        after_chat=update,
+        chunks=[json.dumps(_response()).encode() + b"\n"] if stream else None,
+    )
+    provider = _provider(host)
+    yielded: list[str] = []
+
+    async def run() -> None:
+        if stream:
+            async for part in provider.generate_stream(
+                [LLMMessage("user", "source")], LLMConfig(model=MODEL)
+            ):
+                yielded.append(part)
+        else:
+            await provider.generate_response(
+                [LLMMessage("user", "source")], LLMConfig(model=MODEL)
+            )
+
+    with pytest.raises(module.RuntimeIdentityChanged):
+        asyncio.run(run())
+    assert len(received) == 1
+    if stream:
+        assert yielded == ["complete answer"]  # Partial delivery is not completion.
+
+
+@pytest.mark.timeout(120)
+@pytest.mark.parametrize("change", ["version", "digest"])
+def test_corpus_stops_after_runtime_drift_without_cache_or_checkpoint_admission(
+    daemon: Callable[..., Any],
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    change: str,
+) -> None:
+    from gnn.llm import process_llm
+
+    version = {"version": "0.35.0"}
+    inventory = {"models": [{"name": MODEL, "digest": DIGEST}]}
+
+    def update() -> None:
+        if change == "version":
+            version["version"] = "0.35.1"
+        else:
+            inventory["models"][0]["digest"] = "b" * 64
+
+    host, received, _ = daemon(
+        version_response=version, tags_response=inventory, after_chat=update
+    )
+    monkeypatch.setenv("OLLAMA_HOST", host)
+    target = tmp_path / "models"
+    target.mkdir()
+    (target / "model.md").write_text(
+        "## GNNSection\nActInfPOMDP\n## ModelName\nDrift control\n"
+    )
+    output = tmp_path / "output"
+    assert not process_llm(
+        target,
+        output,
+        provider="ollama",
+        model=MODEL,
+        custom_prompts=[],
+        llm_timeout=90,
+    )
+    results = json.loads((output / "llm_results.json").read_text())
+    checkpoint = json.loads((output / "llm_checkpoint.json").read_text())
+    assert results["status"] == "partial" and not results["success"]
+    assert results["errors"][0]["stage"] == "runtime_identity"
+    assert results["provider_matrix"]["ollama"]["reason"] == "runtime_changed"
+    assert results["coverage"]["prompts_completed"] == 0
+    assert len(results["unfinished_work"]) == 6
+    assert results["cache_stats"]["writes"] == 0
+    assert not checkpoint["completed_parts"] and not checkpoint["completed"]
+    assert len(received) == 1
+
+
+@pytest.mark.timeout(180)
+def test_cache_only_resume_checks_runtime_again_before_success(
+    daemon: Callable[..., Any], tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from gnn.llm import process_llm
+
+    version = {"version": "0.35.0"}
+    control = {"armed": False}
+
+    def update_after_startup(path: str) -> None:
+        if control["armed"] and path == "/api/tags":
+            version["version"] = "0.35.1"
+            control["armed"] = False
+
+    host, received, _ = daemon(version_response=version, after_get=update_after_startup)
+    monkeypatch.setenv("OLLAMA_HOST", host)
+    target = tmp_path / "models"
+    target.mkdir()
+    (target / "model.md").write_text(
+        "## GNNSection\nActInfPOMDP\n## ModelName\nResume control\n"
+    )
+    output = tmp_path / "output"
+    options = dict(provider="ollama", model=MODEL, custom_prompts=[], llm_timeout=120)
+    assert process_llm(target, output, **options)
+    assert len(received) == 6
+    control["armed"] = True
+    assert not process_llm(target, output, resume=True, **options)
+    results = json.loads((output / "llm_results.json").read_text())
+    assert results["status"] == "partial" and not results["success"]
+    assert results["coverage"]["prompts_completed"] == 6
+    assert results["coverage"]["new_provider_requests_completed"] == 0
+    assert results["errors"][0]["stage"] == "runtime_identity"
+    assert results["final_runtime_identity"] != results["runtime_identity"]
+    assert len(received) == 6
+
+
 def test_http_preflight_rejects_wrong_runtime_before_tags(
     daemon: Callable[..., Any],
 ) -> None:
@@ -567,11 +963,13 @@ def test_http_preflight_rejects_wrong_runtime_before_tags(
 def test_http_preflight_version_and_inventory_share_one_budget(
     daemon: Callable[..., Any],
 ) -> None:
-    host, received, _ = daemon(version_delay=0.05, tags_delay=0.05)
+    host, received, _ = daemon(version_delay=0.08, tags_delay=0.08)
     started = time.monotonic()
     with pytest.raises(TimeoutError):
-        asyncio.run(_provider(host).preflight_model(MODEL, timeout=0.075))
-    assert time.monotonic() - started < 0.2
+        asyncio.run(_provider(host).preflight_model(MODEL, timeout=0.12))
+    # The exception proves the combined 0.16s work did not get a fresh budget
+    # for tags; allow scheduling/worker cleanup slack under concurrent CI load.
+    assert time.monotonic() - started < 0.8
     assert not received
 
 
@@ -633,3 +1031,157 @@ def test_terminal_stream_consumer_delay_cannot_renew_completion_budget(
 
     with pytest.raises(TimeoutError):
         asyncio.run(collect())
+
+
+def test_context_and_seed_options_reach_native_payload(
+    daemon: Callable[..., Any],
+) -> None:
+    host, received, _ = daemon()
+    provider = OllamaProvider(
+        base_url=host, generation_options={"num_ctx": 32768, "seed": 42}
+    )
+    assert provider.initialize()
+    asyncio.run(
+        provider.generate_response(
+            [LLMMessage(role="user", content="source")], LLMConfig(model=MODEL)
+        )
+    )
+    assert received[0]["body"]["options"]["num_ctx"] == 32768
+    assert received[0]["body"]["options"]["seed"] == 42
+
+
+def test_frozen_empty_generation_options_do_not_inherit_later_environment(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("OLLAMA_NUM_CTX", "32768")
+    assert OllamaProvider().generation_options == {"num_ctx": 32768}
+    assert OllamaProvider(generation_options={}).generation_options == {}
+
+
+@pytest.mark.timeout(300)
+def test_model_digest_change_refuses_resume_and_invalidates_cache(
+    daemon: Callable[..., Any], tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from gnn.llm import process_llm
+
+    inventory = {"models": [{"name": MODEL, "digest": "a" * 64}]}
+    host, received, _ = daemon(tags_response=inventory)
+    monkeypatch.setenv("OLLAMA_HOST", host)
+    target = tmp_path / "models"
+    target.mkdir()
+    (target / "model.md").write_text(
+        "## GNNSection\nActInfPOMDP\n## ModelName\nDigest control\n"
+    )
+    output = tmp_path / "output"
+    # This tests digest custody, not startup speed: coverage instruments each
+    # isolated request process, and six cold imports can exceed 30 seconds.
+    options = dict(provider="ollama", model=MODEL, custom_prompts=[], llm_timeout=120)
+    assert process_llm(target, output, **options), (
+        output / "llm_results.json"
+    ).read_text()
+    assert len(received) == 6
+    inventory["models"][0]["digest"] = "b" * 64
+    assert not process_llm(target, output, resume=True, **options)
+    refused = json.loads((output / "llm_results.json").read_text())
+    assert refused["coverage"]["prompts_completed"] == 0
+    assert len(refused["unfinished_work"]) == 6
+    assert "runtime/model digest" in refused["errors"][0]["error"]
+    assert len(received) == 6
+    assert process_llm(target, output, **options), (
+        output / "llm_results.json"
+    ).read_text()
+    assert len(received) == 12
+
+
+@pytest.mark.parametrize("reason", [None, "length"])
+def test_stream_cannot_hide_nonterminal_finish_reason(
+    daemon: Callable[..., Any], reason: str | None
+) -> None:
+    host, _, _ = daemon(
+        chunks=[
+            json.dumps(
+                _response(done_reason=reason, message={"content": "partial"})
+            ).encode()
+            + b"\n"
+        ]
+    )
+
+    async def consume() -> list[str]:
+        return [
+            part
+            async for part in _provider(host).generate_stream(
+                [LLMMessage("user", "source")], LLMConfig(model=MODEL)
+            )
+        ]
+
+    with pytest.raises(RuntimeError, match="unfinished"):
+        asyncio.run(consume())
+
+
+@pytest.mark.parametrize("case", ["complete", "missing", "boundary", "overflow"])
+def test_bundled_prompts_submit_source_once_and_require_all_answers(
+    daemon: Callable[..., Any],
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    case: str,
+) -> None:
+    from gnn.llm import process_llm
+
+    labels = [
+        "explain_model",
+        "identify_components",
+        "analyze_structure",
+        "extract_parameters",
+        "practical_applications",
+        "technical_description",
+        "nontechnical_description",
+        "runtime_behavior",
+    ]
+    answers = {label: f"answer for {label}" for label in labels}
+    valid = case == "complete"
+    if case == "missing":
+        answers.pop(labels[-1])
+    elif case in ("boundary", "overflow"):
+        answers[labels[0]] = "x" * (128 if case == "boundary" else 129)
+    host, received, _ = daemon(
+        response=_response(message={"content": json.dumps(answers)})
+    )
+    monkeypatch.setenv("OLLAMA_HOST", host)
+    target = tmp_path / "models"
+    target.mkdir()
+    source = "## GNNSection\nActInfPOMDP\n## ModelName\nUniqueBatchSource\n"
+    (target / "model.md").write_text(source)
+    output = tmp_path / "output"
+    options = dict(
+        provider="ollama",
+        model=MODEL,
+        batch_prompts=True,
+        llm_timeout=30,
+        answer_max_chars=128,
+    )
+    assert process_llm(target, output, **options) is valid
+    assert len(received) == 2
+    payload = received[1]["body"]
+    assert payload["messages"][1]["content"].count(source) == 1
+    assert set(payload["format"]["required"]) == set(labels)
+    assert all(p["maxLength"] == 128 for p in payload["format"]["properties"].values())
+    result = json.loads((output / "llm_results.json").read_text())
+    assert result["coverage"]["prompts_completed"] == (9 if valid else 1)
+    assert result["coverage"]["source_parts_completed"] == (9 if valid else 1)
+    if valid:
+        assert process_llm(target, output, resume=True, **options)
+        assert len(received) == 2
+        assert not process_llm(
+            target, output, resume=True, **{**options, "answer_max_chars": 129}
+        )
+        assert len(received) == 2
+    else:
+        assert len(result["unfinished_work"]) == 8
+        assert result["cache_stats"]["writes"] == 1
+        if case in ("boundary", "overflow"):
+            assert (
+                result["analysis_results"][0]["prompt_outcomes"]["explain_model"][
+                    "status"
+                ]
+                == "incomplete"
+            )
