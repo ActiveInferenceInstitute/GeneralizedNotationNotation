@@ -56,7 +56,14 @@ def render_gnn_to_cpomdp(
 
     try:
         from gnn.render.cpomdp.finite_controls import finite_controls
+        from gnn.render.pomdp_contract import (
+            detect_model_kinds,
+            unsupported_composition_reason,
+        )
 
+        kinds = detect_model_kinds(gnn_spec)
+        if len(kinds) > 1:
+            return False, unsupported_composition_reason(kinds), []
         spec = extract_continuous_spec(gnn_spec)
         resolved = resolve_render_options(options)
         initial = gnn_spec.get("initialparameterization") or gnn_spec.get(

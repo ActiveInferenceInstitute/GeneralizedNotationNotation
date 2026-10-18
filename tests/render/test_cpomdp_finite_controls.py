@@ -293,3 +293,25 @@ def test_parameter_alias_cannot_hide_or_change_source_controls(
     assert not success and "declarations differ" in message and not artifacts
     success, message, _ = render_gnn_spec(spec, "jax", tmp_path / "jax")
     assert not success and "unsupported-cpomdp-control" in message
+
+
+@pytest.mark.parametrize("declaration", [True, False])
+@pytest.mark.parametrize("composition", ["multi_agent", "hybrid", "factored"])
+def test_direct_cpomdp_refuses_composed_models_before_replacing_artifact(
+    tmp_path, declaration, composition
+):
+    spec = _spec()
+    if not declaration:
+        del spec["initialparameterization"]["cpomdp_control"]
+    if composition == "multi_agent":
+        spec["model_parameters"]["nr_agents"] = 2
+    elif composition == "hybrid":
+        spec["initialparameterization"]["A"] = [[1.0]]
+    else:
+        spec["model_parameters"]["num_factors"] = 2
+        spec["initialparameterization"]["F_f0"] = spec["initialparameterization"]["F"]
+    path = tmp_path / "composed.py"
+    path.write_text("previous artifact")
+    success, message, artifacts = render_gnn_to_cpomdp(spec, path)
+    assert not success and "unsupported-composition:" in message and not artifacts
+    assert path.read_text() == "previous artifact"
