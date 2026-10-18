@@ -9,6 +9,19 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ### Fixed
 
+- Lightweight processing reuses parsed structure during validation, preserves
+  first-seen variable order, and resolves public exports lazily. Python 3.15
+  measurements on all 38 authored models reduced median warm parse/validation
+  time from 1.304s to 0.688s with original result fields unchanged. This is a
+  bounded local workload measurement, not whole-pipeline acceleration.
+- Failed files, invalid structure, missing inputs and output-write failures now
+  prevent successful headless status while retaining successful sibling results.
+  Single model-file inputs and atomic JSON report publication are supported.
+- `python -m gnn.processing` and `just backend-json` expose a JSON consumer path;
+  `just profile-backend` retains input/source/runtime bindings, raw unprofiled
+  wall/CPU samples and a separate Python 3.15 deterministic trace. Mac process
+  memory permissions prevented statistical sampling; no sampling success is claimed.
+
 - Python 3.14 CLI parser color discovery preserves closed caller streams and
   the existing error contract. Runtime checks follow the declared Python range.
 - GEO qualification controls retain the explicitly installed H3 environment;

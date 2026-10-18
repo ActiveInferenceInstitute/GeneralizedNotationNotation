@@ -34,8 +34,9 @@ test-mod MODULE:
 llm-local-setup:
     UV_PROJECT_ENVIRONMENT=.venv/local_llm uv sync --frozen --extra dev --python 3.14
 
+[positional-arguments]
 llm-local *ARGS:
-    UV_PROJECT_ENVIRONMENT=.venv/local_llm uv run --frozen --no-sync --python 3.14 python scripts/run_local_llm.py {{ ARGS }}
+    UV_PROJECT_ENVIRONMENT=.venv/local_llm uv run --frozen --no-sync --python 3.14 python scripts/run_local_llm.py "$@"
 
 # Live provider/pipeline tests. Set OLLAMA_TEST_MODEL to an installed tag.
 test-llm-local:
@@ -303,3 +304,13 @@ steps-json:
             for s in STEPS]
     print(json.dumps(data, indent=2))
     PYEOF
+
+# Standard-library-only headless backend; independent of the inference environment.
+[positional-arguments]
+backend-json *ARGS:
+    PYTHONPATH=src uv run --no-project --isolated --python 3.15 python -m gnn.processing "$@"
+
+# Python 3.15 unprofiled samples plus a separate deterministic trace; new output only.
+[positional-arguments]
+profile-backend *ARGS:
+    PYTHONPATH=src uv run --no-project --isolated --python 3.15 python scripts/run_backend_profile.py "$@"

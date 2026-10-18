@@ -4,8 +4,9 @@ GNN processor module for GNN pipeline.
 """
 
 import json
-import logging
+import os
 import re
+import tempfile
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 from pathlib import Path
@@ -18,9 +19,22 @@ def _process_single_gnn_file(file_path: Path) -> Dict[str, Any]:
     """Process single gnn file."""
     try:
         content = file_path.read_text(encoding="utf-8")
+        parsed = parse_gnn_file(file_path, content=content)
+        if not parsed["success"]:
+            return {
+                "parsed_result": None,
+                "validation_result": None,
+                "error": {
+                    "file": str(file_path),
+                    "error": parsed["error"],
+                    "error_type": "ParseError",
+                },
+            }
         return {
-            "parsed_result": parse_gnn_file(file_path, content=content),
-            "validation_result": check_gnn_file_structure(file_path, content=content),
+            "parsed_result": parsed,
+            "validation_result": _check_content_structure(
+                file_path, content, parsed["sections"], parsed["variables"]
+            ),
             "error": None,
         }
     except Exception as e:
@@ -54,14 +68,24 @@ def process_gnn_directory_lightweight(
         Dictionary with processing results
     """
     try:
+        target_dir = Path(target_dir)
+        if not target_dir.exists():
+            raise FileNotFoundError(f"Input path does not exist: {target_dir}")
+        if not target_dir.is_dir() and not target_dir.is_file():
+            raise ValueError(f"Input must be a directory or model file: {target_dir}")
         # Discover GNN files
         gnn_files = discover_gnn_files(target_dir, recursive)
+
+        if target_dir.is_file() and not gnn_files:
+            raise ValueError(f"Not a supported GNN model source: {target_dir}")
 
         results: dict[str, Any] = {
             "timestamp": datetime.now().isoformat(),
             "target_directory": str(target_dir),
             "files_found": len(gnn_files),
             "files_processed": 0,
+            "files_failed": 0,
+            "files": [str(path) for path in gnn_files],
             "success": True,
             "errors": [],
             "parsed_files": [],
@@ -72,6 +96,8 @@ def process_gnn_directory_lightweight(
             """Provide record file result behavior."""
             error_info = file_result.get("error")
             if error_info:
+                results["success"] = False
+                results["files_failed"] += 1
                 results["errors"].append(error_info)
                 return
 
@@ -83,6 +109,16 @@ def process_gnn_directory_lightweight(
             validation_result = file_result.get("validation_result")
             if validation_result:
                 results["validation_results"].append(validation_result)
+                if not validation_result["valid"]:
+                    results["success"] = False
+                    results["files_failed"] += 1
+                    results["errors"].append(
+                        {
+                            "file": validation_result["file_path"],
+                            "error": "; ".join(validation_result["errors"]),
+                            "error_type": "ValidationError",
+                        }
+                    )
 
         if parallel and len(gnn_files) > 1:
             with ThreadPoolExecutor() as executor:
@@ -92,14 +128,20 @@ def process_gnn_directory_lightweight(
             for file_path in gnn_files:
                 record_file_result(_process_single_gnn_file(file_path))
 
-        # Save results if output directory provided
         if output_dir:
-            output_dir = Path(output_dir)
-            output_dir.mkdir(parents=True, exist_ok=True)
-
-            results_file = output_dir / "gnn_processing_results.json"
-            with open(results_file, "w") as f:
-                json.dump(results, f, indent=2)
+            try:
+                _atomic_write_json(
+                    Path(output_dir) / "gnn_processing_results.json", results
+                )
+            except OSError as exc:
+                results["success"] = False
+                results["errors"].append(
+                    {
+                        "file": str(output_dir),
+                        "error": str(exc),
+                        "error_type": type(exc).__name__,
+                    }
+                )
 
         return results
 
@@ -109,6 +151,8 @@ def process_gnn_directory_lightweight(
             "target_directory": str(target_dir),
             "files_found": 0,
             "files_processed": 0,
+            "files_failed": 0,
+            "files": [],
             "success": False,
             "errors": [{"error": str(e), "error_type": type(e).__name__}],
             "parsed_files": [],
@@ -159,6 +203,7 @@ def _extract_variables_lightweight(content: str) -> List[str]:
         List of unique variable names found in the content.
     """
     variables: list[Any] = []
+    seen: set[str] = set()
 
     # Look for variable definitions
     var_patterns: list[Any] = [
@@ -171,7 +216,8 @@ def _extract_variables_lightweight(content: str) -> List[str]:
         matches = re.finditer(pattern, content)
         for match in matches:
             var_name = match.group(1)
-            if var_name not in variables:
+            if var_name not in seen:
+                seen.add(var_name)
                 variables.append(var_name)
 
     return variables
@@ -198,6 +244,14 @@ def discover_gnn_files(
 
     if not directory.exists():
         return gnn_files
+
+    if directory.is_file():
+        return (
+            [directory]
+            if directory.suffix.lower() in {".md", ".gnn", ".txt"}
+            and is_model_source_path(directory)
+            else []
+        )
 
     # Define GNN file patterns
     gnn_patterns: list[Any] = ["*.md", "*.gnn", "*.txt"]
@@ -228,7 +282,7 @@ def parse_gnn_file(
 
     try:
         if content is None:
-            with open(file_path, "r") as f:
+            with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
 
         # Extract basic information
@@ -290,42 +344,15 @@ def check_gnn_file_structure(
 
     try:
         if content is None:
-            with open(file_path, "r") as f:
+            with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
 
-        validation_result: dict[str, Any] = {
-            "file_path": str(file_path),
-            "file_name": file_path.name,
-            "valid": True,
-            "errors": [],
-            "warnings": [],
-            "validation_timestamp": datetime.now().isoformat(),
-        }
-
-        # Basic validation checks
-        if len(content.strip()) == 0:
-            validation_result["valid"] = False
-            validation_result["errors"].append("File is empty")
-
-        # Check for minimum content
-        if len(content) < 10:
-            validation_result["warnings"].append("File content is very short")
-
-        # Check for basic GNN structure
-        sections = _extract_sections_lightweight(content)
-        variables = _extract_variables_lightweight(content)
-
-        if len(sections) == 0 and len(variables) == 0:
-            validation_result["warnings"].append("No clear GNN structure detected")
-
-        # Check for common issues
-        if content.count("{") != content.count("}"):
-            validation_result["warnings"].append("Unmatched braces detected")
-
-        if content.count("[") != content.count("]"):
-            validation_result["warnings"].append("Unmatched brackets detected")
-
-        return validation_result
+        return _check_content_structure(
+            file_path,
+            content,
+            _extract_sections_lightweight(content),
+            _extract_variables_lightweight(content),
+        )
 
     except Exception as e:
         return {
@@ -336,6 +363,42 @@ def check_gnn_file_structure(
             "warnings": [],
             "validation_timestamp": datetime.now().isoformat(),
         }
+
+
+def _check_content_structure(
+    file_path: Path, content: str, sections: List[str], variables: List[str]
+) -> Dict[str, Any]:
+    """Validate one content read, reusing its existing parse metadata."""
+    validation_result: dict[str, Any] = {
+        "file_path": str(file_path),
+        "file_name": file_path.name,
+        "valid": True,
+        "errors": [],
+        "warnings": [],
+        "validation_timestamp": datetime.now().isoformat(),
+    }
+
+    # Basic validation checks
+    if len(content.strip()) == 0:
+        validation_result["valid"] = False
+        validation_result["errors"].append("File is empty")
+
+    # Check for minimum content
+    if len(content) < 10:
+        validation_result["warnings"].append("File content is very short")
+
+    # Check for basic GNN structure
+    if len(sections) == 0 and len(variables) == 0:
+        validation_result["warnings"].append("No clear GNN structure detected")
+
+    # Check for common issues
+    if content.count("{") != content.count("}"):
+        validation_result["warnings"].append("Unmatched braces detected")
+
+    if content.count("[") != content.count("]"):
+        validation_result["warnings"].append("Unmatched brackets detected")
+
+    return validation_result
 
 
 def process_gnn_directory(
@@ -394,31 +457,27 @@ def process_gnn_directory(
     )
     # Extract actual file paths from parsed file results
     parsed_files = lightweight_result.get("parsed_files", [])
-    file_paths = [
-        pf.get("file_path", "") for pf in parsed_files if isinstance(pf, dict)
+    file_paths = lightweight_result.get("files", [])
+    failed_files = {error.get("file") for error in lightweight_result.get("errors", [])}
+    processed_paths = [
+        pf["file_path"]
+        for pf in parsed_files
+        if pf.get("success") and pf["file_path"] not in failed_files
     ]
     result: Dict[str, Any] = {
         "status": "SUCCESS" if lightweight_result.get("success", False) else "FAILED",
         "files": file_paths,
-        "processed_files": [fp for fp in file_paths if fp],
+        "processed_files": processed_paths,
     }
+    if lightweight_result.get("errors"):
+        result["errors"] = lightweight_result["errors"]
+        result["error"] = "; ".join(error["error"] for error in result["errors"])
     if output_dir is not None:
-        import os
-        import tempfile
-
-        output_path = Path(output_dir)
         try:
-            output_path.mkdir(parents=True, exist_ok=True)
-            result_file = output_path / "gnn_processing_results.json"
-            with tempfile.NamedTemporaryFile(
-                mode="w", encoding="utf-8", dir=result_file.parent, delete=False
-            ) as tmp_f:
-                tmp_f.write(json.dumps(result, indent=2))
-            os.replace(tmp_f.name, str(result_file))
-        except Exception as e:
-            logging.getLogger(__name__).debug(
-                f"Error writing GNN processing results: {e}"
-            )
+            _atomic_write_json(Path(output_dir) / "gnn_processing_results.json", result)
+        except OSError as exc:
+            result.update(status="ERROR", error=str(exc), error_type=type(exc).__name__)
+
     return result
 
 
@@ -513,3 +572,20 @@ def get_module_info() -> Dict[str, Any]:
             "report_generation": True,
         },
     }
+
+
+def _atomic_write_json(path: Path, value: Any) -> None:
+    """Publish one complete JSON result; remove only our unfinished temporary."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            mode="w", encoding="utf-8", dir=path.parent, delete=False
+        ) as stream:
+            temporary = Path(stream.name)
+            json.dump(value, stream, indent=2)
+            stream.write("\n")
+        os.replace(temporary, path)
+    finally:
+        if temporary is not None:
+            temporary.unlink(missing_ok=True)

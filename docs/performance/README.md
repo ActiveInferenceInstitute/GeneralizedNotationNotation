@@ -96,3 +96,7 @@ constant.
 - [Setup](../SETUP.md)
 - [Pipeline](../pipeline/README.md)
 - [Troubleshooting](../troubleshooting/README.md)
+
+## Python 3.15 processing
+
+See [backend profiling and headless processing](python315_backend.md) for isolated commands, measured scope and sampling availability.

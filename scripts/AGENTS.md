@@ -79,3 +79,9 @@ The [`lib/`](lib/) subdirectory provides shared utility functions for multiple a
 - Orchestrators must implement explicit safety guardrails for resource-intensive operations.
 - Automated manifest generation is required for all batch processing studies.
 - All scripts follow the **thin orchestrator pattern**: parse args -> delegate to `src/` module -> return exit code (0/1/2). No domain logic lives in scripts.
+## Lightweight backend profiling
+
+`run_backend_profile.py` delegates its complete workload and evidence ownership
+to `gnn.processing.profiling.profile_directory`. It emits JSON, leaves the
+scientific environment unchanged and uses Python 3.15 through the explicit
+`just profile-backend` recipe. See the [guide](../docs/performance/python315_backend.md).
