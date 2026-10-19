@@ -101,6 +101,17 @@ change EFE sign, omit cross covariance, substitute a source digest and change
 precision. Each must fail or refuse with a quantity-specific diagnosis. Add a
 new witness version before extending its scientific meaning.
 
+### E4-P1: authored planning admission
+
+The shared `render/planning_admission.py` guard refuses unsupported source
+horizons and policy identities on the six ordinary one-step planning adapters,
+including direct and Step 11 entry points. It checks all supported parameter
+containers before canonicalization can hide conflicts. This closes silent
+one-step fallback for these explicit declarations only. The tracked five-step,
+64-policy example retains its original source and remains unsupported for
+planning until it supplies an executable policy-set/pruning contract. Broader
+policy search and independent numerical qualification remain open.
+
 ### E4-BN1: finite bnlearn source filtering
 
 The new `render/bnlearn/source_program.py` installs declared finite A/B/D CPTs
