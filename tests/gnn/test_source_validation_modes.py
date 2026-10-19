@@ -24,6 +24,7 @@ def test_all_tracked_models_preserve_file_and_content_verdicts(path):
     before = path.read_bytes()
     content = before.decode("utf-8")
     file_result = validate_gnn_source(path)
+    assert file_result["is_valid"], file_result["errors"]
     assert file_result == validate_gnn_source(content, is_content=True)
     valid, errors = validate_gnn_syntax(content, is_content=True)
     assert file_result == {"is_valid": valid, "errors": errors}
