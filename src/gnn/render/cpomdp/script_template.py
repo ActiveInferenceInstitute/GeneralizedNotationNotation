@@ -13,8 +13,8 @@ The emitted script keeps the GNN continuous contract::
     x_t = F x_{t-1} + u_{t-1} + N(0, Q)
     y_t = H x_t + N(0, R)
 
-The control input adds straight to the state, so cpomdp's ``control``
-is the identity. The prior is over ``x_1``, so the first reading is folded in
+The compass-rose control input adds straight to the state. Source-declared finite
+controls instead supply an explicit state-by-control matrix. The prior is over ``x_1``, so the first reading is folded in
 without a predict step. With a declared ``goal_mean``/``control_gain`` there
 are two control modes. ``efe`` applies the first action of the policy with the
 lowest expected free energy. ``parity`` applies GNN's
@@ -38,6 +38,7 @@ from .admission import (
     MAX_ESTIMATED_BYTES,
     MAX_POLICIES,
     MAX_STEP_EVALUATIONS,
+    MAX_TOTAL_STEP_EVALUATIONS,
     _positive_int,
     admit_search,
 )
@@ -163,6 +164,13 @@ def is_psd(cov):
 
 _MODEL = '''
 
+def selected_policy_ids(index):
+    """Decode the library's Cartesian-product policy order without deduplication."""
+    ids = FINITE_CONTROLS["action_ids"]
+    count = len(ids)
+    return [ids[(index // (count ** (HORIZON - 1 - k))) % count] for k in range(HORIZON)]
+
+
 def compass_rose(control_dim, scale):
     """Build the declared, versioned action set the policy search enumerates.
 
@@ -202,7 +210,7 @@ def build_model(controlled):
         dynamics_noise=arr(Q_RAW),  # Q
         sensor_noise=arr(R_RAW),  # R
         prior=Belief(arr(PRIOR_MEAN_RAW), arr(PRIOR_COV_RAW)),
-        control=jnp.eye(n_states) if controlled else None,
+        control=arr(CONTROL_MATRIX_RAW) if controlled else None,
     )
 
 
@@ -232,7 +240,8 @@ def build_planner(model, goal):
     The scorer returns each policy's G and its pragmatic and epistemic parts, so
     the chosen policy is never rolled out a second time.
     """
-    action_set = compass_rose(model.n_controls, ACTION_SCALE)
+    action_set = (FiniteActionSet(FINITE_CONTROLS["actions"], version=ACTION_SET_VERSION)
+                  if FINITE_CONTROLS else compass_rose(model.n_controls, ACTION_SCALE))
     search = EnumeratedEfeSearch(model, action_set, horizon=HORIZON)
     preference = Preference(
         model.sensor_model @ goal,
@@ -255,14 +264,16 @@ def run_simulation():
     """Simulate the GNN process, filter it with cpomdp and write the results."""
     start = time.time()
     passive = GOAL_MEAN_RAW is None or CONTROL_GAIN is None
-    admission = admit_search(len(F_RAW), len(H_RAW), len(F_RAW), NUM_TIMESTEPS, HORIZON, not passive, MAX_POLICIES, MAX_STEP_EVALUATIONS, MAX_ESTIMATED_BYTES)
+    admission = admit_search(len(F_RAW), len(H_RAW), CONTROL_DIM, NUM_TIMESTEPS, HORIZON, not passive, MAX_POLICIES, MAX_STEP_EVALUATIONS, MAX_ESTIMATED_BYTES, len(FINITE_CONTROLS["actions"]) if FINITE_CONTROLS else None)
     model = build_model(controlled=not passive)
     backend = KalmanBackend(model)
     n_states, n_steps = model.n_states, NUM_TIMESTEPS
-    no_action = jnp.zeros(n_states)
+    no_action = jnp.zeros(CONTROL_DIM)
+    control_matrix = arr(CONTROL_MATRIX_RAW)
 
     true_states, observations, beliefs, covs, controls = [], [], [], [], []
     efe_history, epistemic, pragmatic, selected = [], [], [], []
+    control_inputs, all_epistemic, all_pragmatic = [], [], []
 
     if GOAL_MEAN_RAW is None or CONTROL_GAIN is None:
         control_mode = "passive"
@@ -281,7 +292,7 @@ def run_simulation():
             "n_policies": search.n_policies,
             "cost_per_cycle": search.cost_per_cycle,
             "search_certificate": {"expected": search.certificate.expected, "visited": search.certificate.visited, "claim": "exhaustive enumeration of the declared finite action sequences"},
-            "action_set": to_list(compass_rose(model.n_controls, ACTION_SCALE).actions),
+            "action_set": (FINITE_CONTROLS["actions"] if FINITE_CONTROLS else to_list(compass_rose(model.n_controls, ACTION_SCALE).actions)),
         }
 
         def choose(belief):
@@ -291,6 +302,8 @@ def run_simulation():
                 raise ValueError("All enumerated cpomdp policy scores are invalid")
             best = int(jnp.argmin(jnp.where(jnp.isfinite(g), g, jnp.inf)))
             efe_history.append(to_list(g))
+            all_epistemic.append(to_list(parts["epistemic"]))
+            all_pragmatic.append(to_list(parts["pragmatic"]))
             selected.append(best)
             epistemic.append(float(parts["epistemic"][best]))
             pragmatic.append(float(parts["pragmatic"][best]))
@@ -304,7 +317,8 @@ def run_simulation():
             (observations, reading),
             (beliefs, belief.mean),
             (covs, belief.cov),
-            (controls, action),
+            (controls, control_matrix @ action),
+            (control_inputs, action),
         ):
             buf.append(to_list(val))
 
@@ -315,8 +329,8 @@ def run_simulation():
     record(state, reading, belief, action)
 
     for _step in range(1, n_steps):
-        process_noise = mvn_sample(no_action, model.dynamics_noise)
-        state = model.dynamics @ state + action + process_noise
+        process_noise = mvn_sample(jnp.zeros(n_states), model.dynamics_noise)
+        state = model.dynamics @ state + control_matrix @ action + process_noise
         reading = sample_observation(model, state)
         belief = backend.infer_states(reading, belief, None if passive else action)
         action = choose(belief)
@@ -344,6 +358,12 @@ def run_simulation():
         "true_states_continuous": true_states,
         "observations_continuous": observations,
         "controls": controls,
+        "control_inputs": control_inputs,
+        "control_matrix": CONTROL_MATRIX_RAW,
+        "finite_control_contract": FINITE_CONTROLS,
+        "action_set_version": ACTION_SET_VERSION,
+        "policy_action_ids": [selected_policy_ids(i) for i in selected] if FINITE_CONTROLS else [],
+        "policy_score_components": {"pragmatic": all_pragmatic, "epistemic": all_epistemic},
         "control_mode": control_mode,
         "rmse_vs_true": rmse,
         # Discrete-schema slots stay empty: nothing categorical is defined here.
@@ -361,7 +381,7 @@ def run_simulation():
         "measured_resources": measured_resources(start),
         "selected_policy": [to_list(search.policies[i]) for i in selected] if not passive else [],
         "horizon": HORIZON,
-        "action_scale": ACTION_SCALE,
+        "action_scale": None if FINITE_CONTROLS else ACTION_SCALE,
         **search_stats,
         **FRAMEWORK_VERSION,
     }
@@ -397,6 +417,13 @@ def generate_cpomdp_script(spec: ContinuousSpec, opts: Mapping[str, Any]) -> str
         The script source, already in ruff's format.
     """
     lits = literal_block(spec)
+    finite = opts.get("finite_controls")
+    matrix = (
+        finite["control_matrix"]
+        if finite
+        else [[float(i == j) for j in range(spec.n)] for i in range(spec.n)]
+    )
+    p = len(matrix[0])
     if not spec.has_control:
         control_desc = "passive tracker (no goal_mean/control_gain)"
     elif opts["control_mode"] == "parity":
@@ -408,7 +435,7 @@ def generate_cpomdp_script(spec: ContinuousSpec, opts: Mapping[str, Any]) -> str
 
 Generated by the GNN pipeline's cpomdp renderer. GNN continuous contract:
     x_1 ~ N(prior_mean, prior_cov)
-    x_t = F x_(t-1) + u_(t-1) + N(0, Q)      ({spec.n}-dim latent state)
+    x_t = F x_(t-1) + M a_(t-1) + N(0, Q)      ({spec.n}-dim latent state)
     y_t = H x_t + N(0, R)                    ({spec.m}-dim observation)
 Control: {control_desc}.
 Filter: cpomdp KalmanBackend. Policies: every sequence of a declared action set.
@@ -431,10 +458,14 @@ CONTROL_MODE = {json.dumps(opts["control_mode"])}
 ACTION_SCALE = {opts["action_scale"]!r}
 HORIZON = {opts["horizon"]}
 GOAL_PRECISION = {opts["goal_precision"]!r}
-ACTION_SET_VERSION = {json.dumps(ACTION_SET_VERSION)}
+ACTION_SET_VERSION = {json.dumps(finite["version"] if finite else ACTION_SET_VERSION)}
+FINITE_CONTROLS = {finite!r}
+CONTROL_MATRIX_RAW = {matrix!r}
+CONTROL_DIM = {p}
 SOURCE_IDENTITY = {opts.get("source_identity", {})!r}
 MAX_POLICIES = {opts["max_policies"]}
 MAX_STEP_EVALUATIONS = {opts["max_step_evaluations"]}
+MAX_TOTAL_STEP_EVALUATIONS = {MAX_TOTAL_STEP_EVALUATIONS}
 MAX_ESTIMATED_BYTES = {opts["max_estimated_bytes"]}
 
 F_RAW = {lits["F"]}
@@ -449,13 +480,14 @@ CONTROL_GAIN = {lits["control_gain"]}
     admit_search(
         spec.n,
         spec.m,
-        spec.n,
+        p,
         spec.num_timesteps,
         opts["horizon"],
         spec.has_control,
         opts["max_policies"],
         opts["max_step_evaluations"],
         opts["max_estimated_bytes"],
+        len(finite["actions"]) if finite else None,
     )
     admission_source = (
         inspect.getsource(_positive_int) + "\n" + inspect.getsource(admit_search)

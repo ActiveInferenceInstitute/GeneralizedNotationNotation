@@ -7,6 +7,31 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ## [Unreleased]
 
+### Discrete filtering correctness (2026-10-18)
+
+- PyTorch and NumPyro discrete simulations now predict the next observation's
+  prior through the previous action's transition matrix. The initial observation
+  uses the authored prior without an extra prediction. This prevents zero-mass
+  posterior traces in deterministic-observation models such as `simple_mdp` and
+  `markov_chain`.
+- Generated programs reject zero/nonfinite predictive evidence and fail execution
+  if the persisted result validation is invalid. Native NumPy reference witnesses
+  cover asymmetric transitions, every posterior and per-action EFE, the initial
+  prediction boundary, and failure controls. Input models remain unchanged.
+
+### E3-FA1 — explicit finite controls (2026-10-18)
+
+- The optional cpomdp renderer admits versioned source-declared finite actions,
+  ordered IDs, units and asymmetric state-by-control maps. Invalid declarations,
+  incompatible modes and unsupported backends refuse explicitly.
+- Results distinguish control coordinates from state increments and retain every
+  policy's pragmatic/epistemic scores and selected action identities. Duplicate
+  vectors retain their distinct IDs and source tie order.
+- Admission bounds total policy-step evaluations across timesteps before
+  enumeration. Released-wheel NumPy Kalman/EFE witnesses cover asymmetric axes,
+  correlated covariances, policy scores and negative controls. This bounded
+  extension leaves the broader E3 and E4 roadmap contracts open.
+
 ### Fixed
 
 - Lightweight processing reuses parsed structure during validation, preserves

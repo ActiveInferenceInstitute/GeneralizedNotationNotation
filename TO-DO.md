@@ -1,6 +1,6 @@
 # TO-DO — GNN next steps
 
-Updated 2026-10-16.
+Updated 2026-10-18.
 Current software version is **4.1.0**. Its [GitHub release](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.1.0) records exact tag, source, checks and artifacts; version metadata alone does not establish acceptance.
 Every checkbox below is remaining work. Remove accepted bounded work while
 retaining its evidence in [CHANGELOG.md](CHANGELOG.md), release receipts and Git
@@ -100,7 +100,10 @@ required.
   evidence. Depends on S3 where structural zeros are required, plus M2/M3/E4.
 
 - [ ] **E3 — extend cpomdp control/search capabilities safely (P2).**
-  Scope: specify new control/search behavior through the
+  Progress: E3-FA1 adds source-declared ordered finite actions, explicit control
+  matrices and units, complete policy/component receipts and a total evaluation
+  cap; its independent numerical witnesses retain a separate bounded scope.
+  Remaining scope: specify further control/search behavior through the
   [cpomdp adapter](docs/gnn/implementations/cpomdp.md), preserving passive
   no-search behavior, explicit EFE defaults and complete policy/source identity.
   Accept: released constructor compatibility, finite/nonboolean options,

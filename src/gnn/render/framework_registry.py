@@ -227,7 +227,11 @@ FRAMEWORK_REGISTRY: Mapping[str, Dict[str, Any]] = MappingProxyType(
             "description": "Experimental released continuous active-inference backend",
             "language": "Python",
             "file_extension": ".py",
-            "supported_features": ["Kalman Filtering", "Finite Policy EFE Search"],
+            "supported_features": [
+                "Kalman Filtering",
+                "Finite Policy EFE Search",
+                "Source-Declared Finite Controls",
+            ],
             "function": "render_gnn_to_cpomdp",
             "output_format": "python",
             "pomdp_compatible": True,

@@ -245,10 +245,15 @@ def run_simulation(seed: int = 42):
         observation = int(dist.Categorical(probs=obs_probs).sample(subkey))
 
         # 2. Bayesian belief update
+        # Predict with the action that produced this observation; at t=0
+        # the authored initial prior applies without a transition.
+        prior = beliefs if t == 0 else B[:, :, actions_history[-1]] @ beliefs
         likelihood = A[observation, :]
-        posterior = likelihood * beliefs
-        posterior = posterior / (jnp.sum(posterior) + 1e-16)
-        beliefs = posterior
+        posterior = likelihood * prior
+        evidence = jnp.sum(posterior)
+        if not np.isfinite(float(evidence)) or float(evidence) <= 0.0:
+            raise RuntimeError("Observation has zero or nonfinite predictive probability")
+        beliefs = posterior / evidence
 
         # 3. Expected Free Energy for each action
         efe = jnp.zeros(num_actions)
@@ -324,6 +329,8 @@ def run_simulation(seed: int = 42):
     print(f"NumPyro POMDP simulation complete: {{T}} timesteps in {{elapsed:.3f}}s")
     print(f"Results saved to: {{output_file}}")
     print(f"Validation: {{validation}}")
+    if not validation["all_valid"]:
+        raise RuntimeError("Invalid simulation results; see the persisted validation receipt")
     return results
 
 

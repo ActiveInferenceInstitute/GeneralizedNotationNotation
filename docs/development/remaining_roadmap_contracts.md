@@ -167,7 +167,7 @@ The maintained compass-rose action set and exhaustive search remain unchanged.
 Direct options now share typed public admission; invalid options refuse without
 replacing a caller's existing artifact.
 
-A next extension may admit a source-declared finite action set with an explicit
+E3-FA1 now admits a source-declared finite action set with an explicit
 version, ordered action IDs, units and a control matrix mapping each action into
 state space. Validate finite, nonboolean components and exact asymmetric control
 dimensions. Preserve the authored action order for ties and policy identity.
@@ -204,3 +204,13 @@ A local package build or an unverified archive URL does not satisfy E5. Preserve
 failed provider checks and leave the item open when public resolution or artifact
 hash parity cannot be established. Archive publication and package-index delivery
 remain distinct operations with their own destination and ownership contracts.
+
+### E3-FA1 boundary
+
+The source-declared finite-control implementation is specified in the
+[cpomdp guide](../gnn/implementations/cpomdp.md#source-declared-finite-controls-e3-fa1).
+It preserves authored action order, distinct IDs for equal vectors, units,
+asymmetric control maps and complete per-policy EFE components. Admission also
+bounds total evaluations across timesteps. This does not close E3's broader
+control/search workstream, admit continuous action spaces, or establish E4's
+independent source extraction or universal proof obligations.

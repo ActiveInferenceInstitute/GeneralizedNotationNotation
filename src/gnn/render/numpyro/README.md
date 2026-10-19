@@ -24,3 +24,13 @@ The rendered artifact is a single `.py` file. When executed, it writes `simulati
 - render-time: `numpy`
 - generated script run-time: `jax`, `jaxlib`, `numpyro`, `numpy`
 
+
+## Discrete filtering contract
+
+The first observation conditions the authored initial prior. Each later prior
+is the previous posterior propagated by the previous selected action's transition
+matrix, before conditioning on the new observation. The recorded beliefs are
+posteriors. Zero or nonfinite predictive evidence raises an error; invalid result
+validation is persisted and then raises an error, so an invalid trace cannot
+complete successfully. This is categorical filtering and action scoring, not a
+claim of equivalence to other backends' policy objectives.

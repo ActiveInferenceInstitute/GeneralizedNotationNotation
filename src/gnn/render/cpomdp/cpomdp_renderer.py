@@ -55,12 +55,56 @@ def render_gnn_to_cpomdp(
         return False, UNSUPPORTED_MESSAGE, []
 
     try:
+        from gnn.render.cpomdp.finite_controls import finite_controls
+        from gnn.render.pomdp_contract import (
+            detect_model_kinds,
+            unsupported_composition_reason,
+        )
+
+        kinds = detect_model_kinds(gnn_spec)
+        if len(kinds) > 1:
+            return False, unsupported_composition_reason(kinds), []
         spec = extract_continuous_spec(gnn_spec)
         resolved = resolve_render_options(options)
+        initial = gnn_spec.get("initialparameterization") or gnn_spec.get(
+            "initial_parameterization"
+        )
+        declarations = [
+            mapping["cpomdp_control"]
+            for mapping in (
+                gnn_spec.get("initialparameterization"),
+                gnn_spec.get("initial_parameterization"),
+            )
+            if isinstance(mapping, dict) and "cpomdp_control" in mapping
+        ]
+        if declarations:
+            if not isinstance(initial, dict) or "cpomdp_control" not in initial:
+                raise ValueError(
+                    "cpomdp_control declarations differ between parameter mappings"
+                )
+            control = finite_controls(initial["cpomdp_control"], spec.n)
+            if any(
+                finite_controls(declared, spec.n) != control
+                for declared in declarations
+            ):
+                raise ValueError(
+                    "cpomdp_control declarations differ between parameter mappings"
+                )
+            if not spec.has_control:
+                raise ValueError("cpomdp_control requires goal_mean and control_gain")
+            if resolved["control_mode"] != "efe" or (
+                options and "action_scale" in options
+            ):
+                raise ValueError(
+                    "cpomdp_control requires efe mode and no action_scale override"
+                )
+            resolved["finite_controls"] = control
         contract = {
             key: value.tolist() if hasattr(value, "tolist") else value
             for key, value in vars(spec).items()
         }
+        if "finite_controls" in resolved:
+            contract["cpomdp_control"] = resolved["finite_controls"]
         resolved["source_identity"] = {
             "model_contract_sha256": hashlib.sha256(
                 json.dumps(contract, sort_keys=True).encode()

@@ -36,3 +36,8 @@ Direct Python rendering uses the same typed option admission as the shared CLI,
 REST and MCP surfaces. Unknown keys, explicit nulls, numeric strings and
 noncanonical control modes refuse before replacing the destination. Search
 admission also requires an actual Boolean control flag.
+
+Source-authored finite actions and asymmetric control matrices are available
+through [E3-FA1](../../../../docs/gnn/implementations/cpomdp.md#source-declared-finite-controls-e3-fa1).
+The declaration includes ordered IDs, units and a version. It requires EFE mode
+and retains complete policy identity and per-policy pragmatic/epistemic scores.

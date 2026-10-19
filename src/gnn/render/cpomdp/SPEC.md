@@ -7,7 +7,7 @@
 ## Inputs
 
 - `gnn_spec` is the continuous spec (`model_kind == "continuous"`). It carries `F`, `H`, `Q`, `R`, `prior_mean` and `prior_cov`, optionally `goal_mean` with `control_gain`, and `model_parameters` with `num_timesteps` and `random_seed`.
-- `options` are listed in [README.md](README.md). An invalid value fails the render with a message naming the option. Booleans, fractional horizons and nonfinite values are rejected. Admission ceilings can be lowered using `max_policies`, `max_step_evaluations` and `max_estimated_bytes`; they cannot be raised above the maintained limits. Unknown keys are ignored.
+- `options` are listed in [README.md](README.md). An invalid value fails the render with a message naming the option. Booleans, fractional horizons and nonfinite values are rejected. Admission ceilings can be lowered using `max_policies`, `max_step_evaluations` and `max_estimated_bytes`; they cannot be raised above the maintained limits. Unknown keys are rejected.
 
 ## Outputs
 
@@ -25,3 +25,14 @@ cpomdp adds `efe_history` (one row of `|A|^H` values per step, empty when passiv
 The versioned action set has nine actions for two control dimensions, otherwise `2p+1`. Passive models perform no search. Requested searches are never silently reduced. The exact conservative estimate is recorded under `admission`, together with policy and step counts. `measured_resources` records peak process RSS and elapsed time.
 
 `source_identity` binds the validated numeric contract; pipeline runs additionally bind the original relative path, source SHA and model ID. `generated_script_sha256`, `cpomdp_version`, `jax_version`, `action_set` and `selected_policy` retain execution identity and decisions. These hashes establish identity, not extraction correctness or universal equivalence.
+
+## Source controls
+
+The optional `initialparameterization.cpomdp_control` mapping follows the
+[E3-FA1 contract](../../../../docs/gnn/implementations/cpomdp.md#source-declared-finite-controls-e3-fa1).
+It admits only flat continuous EFE models, preserves ordered action identities
+and explicit asymmetric control maps, and adds complete per-policy component
+receipts. `controls` retain state increments while `control_inputs` retain
+authored control coordinates. Other backends refuse this declaration.
+The total evaluation ceiling is 262,144 across all timesteps; passive models
+retain zero search cost. The numeric model digest includes all control metadata.

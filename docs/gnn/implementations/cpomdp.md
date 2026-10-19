@@ -83,3 +83,53 @@ Execution needs no cpomdp-specific module. The execute step runs the rendered sc
 
 - [NumPyro](numpyro.md), which renders the same continuous models with a Kalman filter and NUTS
 - [GNN implementations index](README.md)
+
+## Source-declared finite controls (E3-FA1)
+
+A flat continuous source can add this single-line Python-literal mapping to
+`InitialParameterization` (or the same mapping to the parsed Python spec).
+`goal_mean` and `control_gain` remain required; the gain is not used by EFE mode.
+
+```text
+cpomdp_control = {"contract": "gnn-cpomdp-finite-actions-v1", "version": "thruster-v1", "action_ids": ["forward", "reverse", "coast"], "control_units": ["newton"], "state_units": ["m/s", "m/s", "m/s"], "actions": [[0.3], [-0.15], [0.0]], "control_matrix": [[0.2], [-0.4], [0.7]]}
+```
+
+For `n` states and `p` controls, `control_matrix` is exactly `n × p` and every
+action has `p` components. The transition is
+`x_t = F x_(t-1) + control_matrix @ a_(t-1) + noise`. Units label each authored
+control and state axis; the matrix maps control units into state increments.
+These labels do not certify dimensional analysis. The prior is still over the
+first observed state, with no initial predict step.
+
+All seven keys are mandatory. The contract version is fixed above; `version`
+identifies the author's action set. IDs must be unique nonempty strings and
+retain source order. Equal vectors with different IDs remain distinct choices;
+ties select the first authored policy in Cartesian-product order. At least two
+actions are required by released cpomdp 0.4.4. Values must be finite nonboolean
+numbers, with no string conversion, normalization or deduplication. Invalid
+declarations refuse before replacing an existing artifact. Unknown keys and
+versions refuse. These controls require `efe`; `parity` and explicit
+`action_scale` overrides refuse. Without this declaration, the existing compass
+rose and passive behavior apply. Other backends refuse the declaration.
+
+Results retain the complete `finite_control_contract`, `action_set_version`,
+`control_matrix`, `control_inputs` (in control coordinates), and
+`policy_action_ids` for each selected policy. Existing `controls` remain state
+increments for downstream continuous comparisons. `policy_score_components`
+contains pragmatic and epistemic values for **every** enumerated policy and
+timestep; existing selected-component fields remain available. The validated
+model digest includes the complete control declaration, including labels.
+
+Search admission allows at most 4,096 policies, 32,768 policy-step evaluations
+per cycle, 262,144 across all timesteps, and 128 MiB estimated allocation. Limits
+are checked before enumeration, without computing an unbounded power. The
+estimate includes declared arrays and retained score histories; interpreter/JIT
+overhead is separate, and the process watchdog remains authoritative. Passive
+models allocate no planner.
+
+Independent NumPy witnesses use source-authored asymmetric state, observation
+and control dimensions, nonidentity sensors, nonzero means and correlated
+covariances. They compare every posterior and every policy's EFE components
+against the released native backend, and check duplicate-vector tie identity.
+Changed control maps and an extra initial prediction must disagree. This is a
+bounded numerical witness, not a universal extraction or equivalence proof.

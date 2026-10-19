@@ -4,6 +4,7 @@ from __future__ import annotations
 
 MAX_POLICIES = 4096
 MAX_STEP_EVALUATIONS = 32768
+MAX_TOTAL_STEP_EVALUATIONS = 262144
 MAX_ESTIMATED_BYTES = 128 * 1024 * 1024
 
 
@@ -23,6 +24,7 @@ def admit_search(
     max_policies: int = MAX_POLICIES,
     max_step_evaluations: int = MAX_STEP_EVALUATIONS,
     max_estimated_bytes: int = MAX_ESTIMATED_BYTES,
+    action_count: int | None = None,
 ) -> dict:
     """Validate and estimate search allocation without computing an unbounded power.
 
@@ -49,7 +51,13 @@ def admit_search(
             raise ValueError(
                 f"{name} exceeds the maintained admission ceiling {ceiling}"
             )
-    action_count = 9 if p == 2 else 2 * p + 1
+    declared_actions = action_count is not None
+    if action_count is None:
+        action_count = 9 if p == 2 else 2 * p + 1
+    else:
+        _positive_int(action_count, "action_count")
+        if action_count < 2:
+            raise ValueError("action_count must be at least two")
     policies = 0
     if controlled:
         policies = 1
@@ -60,20 +68,27 @@ def admit_search(
     step_evaluations = policies * horizon
     if step_evaluations > max_step_evaluations:
         raise ValueError("cpomdp search exceeds max_step_evaluations")
+    total_step_evaluations = step_evaluations * timesteps
+    if total_step_evaluations > MAX_TOTAL_STEP_EVALUATIONS:
+        raise ValueError("cpomdp search exceeds max_total_step_evaluations")
     estimate = 64 * policies * (
         horizon * (p + 1) + n * n + m * m + 4 * (n + m) + 16
     ) + 64 * timesteps * (policies + n * n + 3 * n + m + 8)
+    if declared_actions:
+        estimate += 64 * (action_count * p + n * p)
     if estimate > max_estimated_bytes:
         raise ValueError("cpomdp estimated allocation exceeds max_estimated_bytes")
     return {
         "policy_count": policies,
         "step_evaluations_per_cycle": step_evaluations,
+        "total_step_evaluations": total_step_evaluations,
         "action_count": action_count if controlled else 0,
         "estimated_bytes": estimate,
         "estimate_kind": "conservative algorithm allocation estimate; excludes runtime/JIT overhead",
         "limits": {
             "policies": max_policies,
             "step_evaluations": max_step_evaluations,
+            "total_step_evaluations": MAX_TOTAL_STEP_EVALUATIONS,
             "estimated_bytes": max_estimated_bytes,
         },
     }
