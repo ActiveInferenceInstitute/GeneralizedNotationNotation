@@ -130,15 +130,9 @@ def validate_gnn_source(source: Any, *, is_content: bool = False) -> Any:
     Returns:
         Dict with keys ``is_valid`` (bool) and ``errors`` (list[str]).
     """
-    from pathlib import Path as _Path
-
-    if not is_content and isinstance(source, (str, _Path)) and _Path(source).exists():
-        content = _Path(source).read_text(encoding="utf-8")
-    else:
-        content = str(source)
     from .parsers.basic import validate_gnn_syntax as _validate_gnn_syntax
 
-    is_valid, errors = _validate_gnn_syntax(content)
+    is_valid, errors = _validate_gnn_syntax(source, is_content=is_content)
     return {"is_valid": is_valid, "errors": errors}
 
 

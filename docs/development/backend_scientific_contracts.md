@@ -201,3 +201,19 @@ THRML fixed-action smoothing and DisCoPy diagrams do not gain planning semantics
 from this admission rule. Independent source-to-numerics witnesses and broader
 planning contracts remain E4 work; successful backend execution alone is not a
 proof of the model's complete prose semantics.
+
+
+## Source text and path identity
+
+`gnn.validate_gnn_source(source, is_content=True)` and
+`gnn.validate_gnn_syntax(source, is_content=True)` preserve literal source text,
+including text that happens to name a real file. The public dictionary facade
+delegates mode selection once to the formal validator; it does not probe a path,
+read a document, then classify the document's contents as another filename.
+Default mode retains the existing-file heuristic. Long Unicode text, embedded
+NULs and empty text reach the validator without an unguarded path probe.
+
+Both modes use the same private, lossless markdown staging and normative schema
+validation. Required-section failures remain failures; source-mode selection is
+separate from backend capability or numerical fidelity. Explicit content mode
+also treats a `Path` object as its literal string rather than reading that path.

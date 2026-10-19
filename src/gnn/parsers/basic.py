@@ -272,6 +272,8 @@ def get_parse_tree_visualization(content: str) -> str:
 def validate_gnn_syntax(
     file_path_or_content: Union[str, Path],
     validation_level: Union[ValidationLevel, str, None] = ValidationLevel.STANDARD,
+    *,
+    is_content: bool = False,
     **kwargs: Any,
 ) -> Tuple[bool, List[str]]:
     """
@@ -307,8 +309,11 @@ def validate_gnn_syntax(
             or ``None`` to use the validator's default level (STANDARD).
             Unknown level strings raise ``ValueError`` instead of silently
             skipping validation.
-        **kwargs: Accepted for backward compatibility; no options are
-            defined and they are ignored.
+        is_content: Treat the input as literal text, including Path objects
+            and strings that happen to name an existing file. No source path
+            classification is performed in this mode.
+        **kwargs: Other options are accepted for backward compatibility and
+            ignored.
 
     Returns:
         Tuple of (is_valid, formal_validator_errors). The second element is
@@ -332,7 +337,8 @@ def validate_gnn_syntax(
 
     source_path: Optional[Path] = None
     if (
-        isinstance(file_path_or_content, (str, Path))
+        not is_content
+        and isinstance(file_path_or_content, (str, Path))
         and str(file_path_or_content)  # "" resolves to the CWD; always content
     ):
         try:
