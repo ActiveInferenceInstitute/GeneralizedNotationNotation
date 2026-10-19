@@ -6,8 +6,8 @@ Tests the full Render → Execute → Analysis flow for every model in
 ``input/gnn_files/discrete/``, ensuring that:
 
 1. POMDP extraction succeeds for each file
-2. PyMDP rendering produces a valid script
-3. Execution via ``run_pymdp_simulation`` produces:
+2. PyMDP rendering produces a valid script or a named unsupported receipt
+3. Admitted-source execution via ``run_pymdp_simulation`` produces:
    - Valid beliefs (all values in [0, 1])
    - Beliefs summing to 1
    - Actions within the valid range
@@ -29,7 +29,8 @@ import pytest
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DISCRETE_DIR = REPO_ROOT / "input" / "gnn_files" / "discrete"
 
-# PyMDP-supported sources; the episodic T-maze is tested as unsupported below.
+# Selected sources; the authored deep planner is refused at render admission.
+# The separately contracted episodic T-maze is tested as unsupported below.
 DISCRETE_MODELS: list[Any] = [
     "actinf_pomdp_agent.md",
     "bnlearn_causal_model.md",
@@ -261,7 +262,7 @@ def test_time_varying_b_tensor_passes_through_nonstationary() -> None:
 
 @pytest.mark.parametrize("model_file", DISCRETE_MODELS)
 def test_pymdp_render(model_file: str, tmp_path: Path) -> None:
-    """Every discrete model should successfully render a PyMDP script."""
+    """Every source gets an executable script or its exact planning refusal."""
     from gnn.extract.pomdp_extractor import extract_pomdp_from_file
     from gnn.render.pomdp_processor import POMDPRenderProcessor
 
@@ -276,6 +277,13 @@ def test_pymdp_render(model_file: str, tmp_path: Path) -> None:
     result = proc.process_pomdp_for_all_frameworks(pomdp, path, frameworks=["pymdp"])
 
     fr = result.get("framework_results", {}).get("pymdp", {})
+    if model_file == "deep_planning_horizon.md":
+        assert fr.get("status") == "unsupported" and fr.get("unsupported") is True
+        assert fr.get("success") is False and not fr.get("output_files")
+        assert fr["message"].startswith("unsupported-planning:")
+        assert "planning_horizon=5" in fr["message"]
+        assert not list(tmp_path.rglob("*.py"))
+        return
     assert fr.get("success"), (
         f"Render failed for {model_file}: {fr.get('message', 'unknown error')}"
     )
@@ -298,7 +306,7 @@ def test_pymdp_render(model_file: str, tmp_path: Path) -> None:
 @pytest.mark.integration
 @pytest.mark.parametrize("model_file", DISCRETE_MODELS)
 def test_pymdp_execute(model_file: str, tmp_path: Path) -> None:
-    """Every discrete model should execute and produce valid simulation results."""
+    """Only admitted sources reach the low-level numerical executor."""
     if not _pymdp_importable():
         raise AssertionError("PyMDP (inferactively-pymdp) not installed")
 
@@ -309,6 +317,14 @@ def test_pymdp_execute(model_file: str, tmp_path: Path) -> None:
     from gnn.execute.pymdp.simulation import run_pymdp_simulation
 
     gnn_spec = _extract_and_build_spec(model_file, timesteps=12)
+    if model_file == "deep_planning_horizon.md":
+        from gnn.render.execution_contracts import unsupported_contract
+
+        reason = unsupported_contract(gnn_spec, "pymdp")
+        assert reason and reason.startswith("unsupported-planning:")
+        assert "planning_horizon=5" in reason
+        assert not list(tmp_path.rglob("*simulation_results.json"))
+        return
 
     np.random.seed(42)
     ok, results = run_pymdp_simulation(
@@ -346,7 +362,7 @@ def test_pymdp_execute(model_file: str, tmp_path: Path) -> None:
 @pytest.mark.integration
 @pytest.mark.parametrize("model_file", DISCRETE_MODELS)
 def test_pymdp_analysis_extractor(model_file: str, tmp_path: Path) -> None:
-    """Analysis extractor should consume simulation results from each model."""
+    """Only admitted sources supply native results to the analysis extractor."""
     if not _pymdp_importable():
         raise AssertionError("PyMDP (inferactively-pymdp) not installed")
 
@@ -358,6 +374,14 @@ def test_pymdp_analysis_extractor(model_file: str, tmp_path: Path) -> None:
     from gnn.execute.pymdp.simulation import run_pymdp_simulation
 
     gnn_spec = _extract_and_build_spec(model_file, timesteps=12)
+    if model_file == "deep_planning_horizon.md":
+        from gnn.render.execution_contracts import unsupported_contract
+
+        reason = unsupported_contract(gnn_spec, "pymdp")
+        assert reason and reason.startswith("unsupported-planning:")
+        assert "planning_horizon=5" in reason
+        assert not list(tmp_path.rglob("*simulation_results.json"))
+        return
 
     np.random.seed(42)
     ok, results = run_pymdp_simulation(gnn_spec, tmp_path / "run")
@@ -437,9 +461,22 @@ def test_all_discrete_models_e2e(tmp_path: Path) -> None:
     )
     assert render_ok, "process_render should succeed for all discrete models"
 
+    summary = json.loads((render_out / "render_processing_summary.json").read_text())
+    assert summary["total_files"] == len(DISCRETE_MODELS)
+    assert summary["failed_framework_renderings"] == []
+    refusals = summary["unsupported_framework_renderings"]
+    assert len(refusals) == 1 and refusals[0]["framework"] == "pymdp"
+    assert Path(refusals[0]["file"]).name == "deep_planning_horizon.md"
+    assert refusals[0]["message"].startswith("unsupported-planning:")
+    expected_sources = set(DISCRETE_MODELS) - {"deep_planning_horizon.md"}
+    assert {
+        Path(source).name
+        for source, record in summary["file_results"].items()
+        if record["framework_results"]["pymdp"]["success"]
+    } == expected_sources
     pymdp_scripts = list(render_out.rglob("*pymdp.py"))
-    assert len(pymdp_scripts) == len(DISCRETE_MODELS), (
-        f"Expected {len(DISCRETE_MODELS)} pymdp scripts, got {len(pymdp_scripts)}: "
+    assert len(pymdp_scripts) == len(expected_sources), (
+        f"Expected {len(expected_sources)} pymdp scripts, got {len(pymdp_scripts)}: "
         f"{[s.name for s in pymdp_scripts]}"
     )
 
@@ -458,11 +495,12 @@ def test_all_discrete_models_e2e(tmp_path: Path) -> None:
     sim_results = list(
         exec_out.glob("**/pymdp/simulation_data/*simulation_results.json")
     )
-    assert len(sim_results) == len(DISCRETE_MODELS), (
-        f"Expected {len(DISCRETE_MODELS)} simulation results under {exec_out}, "
+    assert len(sim_results) == len(expected_sources), (
+        f"Expected {len(expected_sources)} simulation results under {exec_out}, "
         f"found {len(sim_results)}"
     )
 
+    assert not any("deep_planning" in str(path).lower() for path in sim_results)
     for result_file in sim_results:
         payload = json.loads(result_file.read_text(encoding="utf-8"))
         assert payload.get("framework") == "PyMDP", (

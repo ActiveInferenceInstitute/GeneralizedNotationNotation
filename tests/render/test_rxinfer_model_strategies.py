@@ -174,6 +174,7 @@ class TestExemplarKindTaxonomy:
             rel = str(gnn_file.relative_to(GNN_FILES))
             spec = pomdp_to_gnn_spec(pomdp, native_agents=True)
             receipted = {
+                "discrete/deep_planning_horizon.md": "unsupported-planning",
                 "hierarchical/hierarchical_pomdp.md": "unsupported-execution-contract",
                 "hierarchical/temporal_hierarchy.md": "unsupported-execution-contract",
                 "discrete/tmaze_epistemic.md": "unsupported-execution-contract",
@@ -197,8 +198,8 @@ class TestExemplarKindTaxonomy:
                 assert script.exists() and script.stat().st_size > 0
                 outcomes["rendered"].add(rel)
         assert not failures, "render failures:\n" + "\n".join(failures)
-        assert len(outcomes["rendered"]) == 30
-        assert len(outcomes["unsupported"]) == 8
+        assert len(outcomes["rendered"]) == 29
+        assert len(outcomes["unsupported"]) == 9
         assert set.union(*outcomes.values()) == {
             str(path.relative_to(GNN_FILES)) for path in _exemplar_files()
         }
