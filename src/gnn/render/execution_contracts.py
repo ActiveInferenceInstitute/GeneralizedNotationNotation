@@ -44,6 +44,10 @@ def unsupported_contract(spec: object, framework: str) -> str | None:
         contract not in CONTRACTS or contract not in supported
     ):
         return f"unsupported-execution-contract: {framework} cannot execute {contract}"
+    if contract is None:
+        from gnn.render.planning_admission import unsupported_planning
+
+        return unsupported_planning(spec, framework)
     return None
 
 

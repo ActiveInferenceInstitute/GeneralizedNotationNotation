@@ -171,3 +171,49 @@ estimates tensor allocation before composition and sampling; process RSS include
 JAX runtime/compilation and is recorded separately. Estimated allocation is not
 measured peak RSS. Unsupported model families or structural-zero mappings are
 reported explicitly, without clipping or silently normalizing their values.
+
+
+## Authored planning horizons
+
+The PyMDP, ordinary JAX, RxInfer, ActiveInference.jl, PyTorch and NumPyro
+planning adapters admit one-step scoring. Source-authored
+`planning_horizon`, `policy_len` and `policy_horizon` declarations must agree
+and equal one. A declared `num_policies` must equal an unambiguous declared
+`num_actions`. Positive integer values are required; Boolean, string and
+fractional values are refused. Explicit `policies`/`policy_sequences` are
+refused because these adapters do not consume their authored identity/order.
+The alternative JAX POMDP solver and combined demonstration refuse all explicit
+planning declarations because they use their own solver/demo defaults.
+Declarations in the model-parameter, initial-parameter and parser parameter-list
+surfaces are checked without hiding conflicts through precedence.
+
+Unsupported declarations produce `unsupported-planning:` before script writing
+through the direct renderer, single-spec interface and Step 11 compatibility
+gate. These checks do not alter sources, choose a pruned subset, reduce a horizon
+or claim that one-step action scores implement cumulative multi-step EFE.
+`discrete/deep_planning_horizon.md` therefore remains an authored research model
+whose five-step/64-policy planning question is unsupported by those adapters.
+Its source does not specify the retained 64 sequences or a pruning algorithm.
+
+Separately named JAX execution contracts and the finite continuous cpomdp
+contract retain their own horizon rules. Stan and bnlearn filtering/smoothing,
+THRML fixed-action smoothing and DisCoPy diagrams do not gain planning semantics
+from this admission rule. Independent source-to-numerics witnesses and broader
+planning contracts remain E4 work; successful backend execution alone is not a
+proof of the model's complete prose semantics.
+
+
+## Source text and path identity
+
+`gnn.validate_gnn_source(source, is_content=True)` and
+`gnn.validate_gnn_syntax(source, is_content=True)` preserve literal source text,
+including text that happens to name a real file. The public dictionary facade
+delegates mode selection once to the formal validator; it does not probe a path,
+read a document, then classify the document's contents as another filename.
+Default mode retains the existing-file heuristic. Long Unicode text, embedded
+NULs and empty text reach the validator without an unguarded path probe.
+
+Both modes use the same private, lossless markdown staging and normative schema
+validation. Required-section failures remain failures; source-mode selection is
+separate from backend capability or numerical fidelity. Explicit content mode
+also treats a `Path` object as its literal string rather than reading that path.

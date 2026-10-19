@@ -43,3 +43,6 @@ Dynamic
 s=HiddenState
 o=Observation
 u=Action
+
+## Footer
+Multi-Agent Coordination Acceptance Fixture

@@ -168,6 +168,11 @@ def render_gnn_to_jax_factorized(
 
     if execution_contract(gnn_spec) is not None:
         return render_gnn_to_jax(gnn_spec, output_path, options)
+    from gnn.render.planning_admission import unsupported_planning
+
+    refusal = unsupported_planning(gnn_spec, "jax")
+    if refusal:
+        return False, refusal, []
     return _render_to_path(
         _generate_jax_factorized_code,
         "JAX Kronecker-factorized",
@@ -192,6 +197,11 @@ def render_gnn_to_jax_pomdp(
 
     if execution_contract(gnn_spec) is not None:
         return render_gnn_to_jax(gnn_spec, output_path, options)
+    from gnn.render.planning_admission import unsupported_planning
+
+    refusal = unsupported_planning(gnn_spec, "jax_pomdp")
+    if refusal:
+        return False, refusal, []
     return _render_to_path(
         _generate_jax_pomdp_code, "JAX POMDP", gnn_spec, output_path, options
     )
@@ -211,6 +221,11 @@ def render_gnn_to_jax_combined(
 
     if execution_contract(gnn_spec) is not None:
         return render_gnn_to_jax(gnn_spec, output_path, options)
+    from gnn.render.planning_admission import unsupported_planning
+
+    refusal = unsupported_planning(gnn_spec, "jax_combined")
+    if refusal:
+        return False, refusal, []
     return _render_to_path(
         _generate_jax_combined_code, "JAX combined", gnn_spec, output_path, options
     )
