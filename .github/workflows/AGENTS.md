@@ -93,3 +93,7 @@ The all-extras lane uses pytest-xdist work stealing over the unchanged full
 test selection, with the same coverage and JUnit outputs. Its Python 3.12
 selection is explicit; installation happens once before `--frozen --no-sync`
 commands. Selected test failures still fail the job.
+
+Python setup checks the latest patch within each declared compatibility series.
+Gridworld explicitly provisions that interpreter before uv sync, avoiding an
+older preinstalled system Python satisfying only the minor-version selector.

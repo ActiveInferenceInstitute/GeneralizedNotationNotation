@@ -45,6 +45,12 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Select latest Python 3.12 patch
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+          check-latest: true
+
       - name: Select fresh run output
         run: echo "GRIDWORLD_OUTPUT=$RUNNER_TEMP/gridworld-output" >> "$GITHUB_ENV"
 
