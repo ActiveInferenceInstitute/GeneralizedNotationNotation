@@ -1095,7 +1095,23 @@ resolves 6.1.0 on Julia 1.13.2. The separate FEP companion still requires its
 own exact uv 0.13.0. These explicit compatibility profiles take precedence over
 unqualified upgrades.
 
-To remove the exception, provision/review native HDF5 and remaining build
+Pillow **13.0.0** is the minimum image decoder: 12.3.0 has nine October 2026
+advisories. Gradio **6.30.0**, its latest release, still declares Pillow `<13`.
+The supported `uv sync --frozen --extra gui` / `--all-extras` profiles use an
+explicit Pillow override in both uv configurations; native GUI, PNG and GIF
+checks qualify GNN's actual consumers. Upstream Gradio metadata remains
+inconsistent with this override, so generic dependency-consistency tools will
+report its upper bound. Plain `pip install .` retains the secure Pillow floor;
+plain `pip install '.[gui]'` / `'.[all]'` cannot resolve the upstream cap and
+are unsupported. Use the committed uv profiles for those extras. Remove the
+override once a released Gradio admits Pillow 13, regenerate the lock, and rerun
+the native GUI/image and selected-profile security gates. The security audit
+checks pinned exports without re-resolving Gradio's cap and honors the selected
+interpreter/platform markers (Linux 3.14 core and 3.12 all extras in CI); it does
+not claim other marker splits or suppress advisories. Historical benchmark metadata keeps the Pillow
+version actually measured.
+
+To remove the Python exception, provision/review native HDF5 and remaining build
 prerequisites, qualify the exact default dependency profile on 3.15, and
 review any producer-range change through the documented paired re-pin ritual.
 Then run the selected source/native gates before changing the default pin.

@@ -34,6 +34,7 @@ dependencies = [
     # Core scientific computing (lightweight)
     "numpy>=2.0",
     "matplotlib>=3.9.0",  # 3.9.x is the first series compatible with numpy>=2.0
+    "pillow>=13.0.0",  # Nine October 2026 image-decoder advisories; also protects pip core installs
     "networkx>=3.6.1",
     "pyyaml>=6.0",
     # scipy and scikit-learn moved to ml-ai optional group (all uses are deferred imports)
@@ -323,6 +324,9 @@ gnn = "gnn.cli:main"
 
 [tool.uv]
 default-groups = ["dev"]
+# Gradio 6.30.0 still caps Pillow <13. Qualify its GNN GUI consumers with
+# the patched decoder instead; see README runtime exceptions/removal checks.
+override-dependencies = ["pillow>=13.0.0"]
 # Security floors for transitive packages resolved through optional extras.
 # Keep these as resolver constraints so the packages do not become core runtime
 # dependencies merely because Dependabot tracks them in uv.lock.
@@ -333,7 +337,7 @@ constraint-dependencies = [
     "jupyterlab>=4.6.4",
     "mistune>=3.3.0",
     "multidict>=6.9.1",  # GHSA-54p9-h82j-f925
-    "pillow>=12.3.0",
+    "pillow>=13.0.0",
     "python-multipart>=0.0.27",
     "ray>=2.56.0",
     "setuptools>=83.0.0",
