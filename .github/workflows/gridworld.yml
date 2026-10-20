@@ -39,7 +39,7 @@ jobs:
       JULIA_PKG_PRECOMPILE_AUTO: "0"
       JULIA_NUM_PRECOMPILE_TASKS: "2"
       GKSwstype: "100"
-      OLLAMA_MODEL: "smollm2:135m-instruct-q4_K_S"
+      OLLAMA_MODEL: "gemma3:1b"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -72,7 +72,7 @@ jobs:
           cache-name: gnn-julia-1.13.2
           key-prefix: ${{ hashFiles('src/gnn/execute/**/Manifest.toml', 'src/gnn/execute/rxinfer/src/*.jl', 'docs/rxinfer/multiagent_trajectory_planning/Manifest.toml') }}
           delete-old-caches: 'false'
-          save-always: 'false'
+          save-always: 'true'
 
       - name: Instantiate and warm both required Julia environments
         run: |

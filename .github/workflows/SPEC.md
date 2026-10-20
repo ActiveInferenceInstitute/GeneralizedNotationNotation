@@ -56,8 +56,13 @@ visualization suites. Quality does not rerun these three files: `test (3.12)`
 already requires their complete ordinary-suite execution alongside quality.
 
 Gridworld warms actual Julia imports before the bounded readiness probes. Its
-explicit LLM profile uses the default model, 8,192 context tokens, seed 42,
+explicit LLM profile uses `gemma3:1b`, 8,192 context tokens, seed 42,
 4,096 output tokens, 180-second requests and a 600-second total budget. The
 40-word bundled task style and 1,000-character JSON boundary still require
 nonempty terminal answers for all nine tasks; truncation/boundary hits fail.
 The generated profile, full run log and execution/analysis artifacts are retained.
+
+The CI model is an explicit profile because the default 135M model returned
+incomplete summaries in the full Gridworld run. Terminal coverage is runtime
+acceptance, not a claim about scientific answer quality. Versioned Julia inputs
+may be saved after a later stage fails; cached test outcomes are never accepted.

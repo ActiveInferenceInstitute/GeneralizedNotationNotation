@@ -41,7 +41,7 @@ YAML workflows for CI, MCP tool-count audit, weekly all-extras suite, documentat
 | [supply-chain-audit.yml](supply-chain-audit.yml) | Weekly cron Monday 06:00 UTC, `workflow_dispatch` | Two `pip-audit` jobs (OSV); strict shell; job summary. |
 | [custody-re-render.yml](custody-re-render.yml) | Daily cron 07:14 UTC (`14 7 * * *`); `workflow_dispatch` | Report-only fresh manuscript render from the `docxology/template` checkout (a real directory at `projects/active/`): template `stage_03_render` → record render-custody manifest → strict token gate → `tests/test_manuscript_latex_log.py`; manifest + rendered evidence uploaded as artifact, nothing committed back. |
 | [rxinfer.yml](rxinfer.yml) | Relevant source/example/workflow changes on push/PR; `workflow_dispatch` | Native RxInfer 6.1.0/ReactiveMP 7 on Julia 1.13.2; exact smoothing/conditioning witnesses, structured model families and custom Halfspace rules. Retains logs and rejects environment drift. |
-| [gridworld.yml](gridworld.yml) | Weekly Monday 03:43 UTC (`43 3 * * 1`); `workflow_dispatch` | Report-only fresh GridWorld pipeline and publication-contract check with Julia 1.13.2, both frozen Julia environments and Ollama 0.40.6 plus the default local model. All 25 steps remain required. Fresh summaries, test output and LLM records stay on the runner and are retained. |
+| [gridworld.yml](gridworld.yml) | Weekly Monday 03:43 UTC (`43 3 * * 1`); `workflow_dispatch` | Report-only fresh GridWorld pipeline and publication-contract check with Julia 1.13.2, both frozen Julia environments and Ollama 0.40.6 plus the explicit Gemma 3 1B CI model. All 25 steps remain required. Fresh summaries, test output and LLM records stay on the runner and are retained. |
 | [pair-pin-freshness.yml](pair-pin-freshness.yml) | Nightly cron 05:23 UTC (`23 5 * * *`); `workflow_dispatch` | Validates both committed pair pins (`.github/fep-lean-pair.json`, `.github/gnn-pair.json`) and asserts each pinned revision is ancestor-or-equal of the companion default-branch HEAD via `scripts/check_pair_pin_freshness.py` (git-only; full-history checkouts, `fetch-depth: 0`). Exit 2 "re-pin required" names the stale pair file, pinned revision and companion tip; receipts uploaded as artifact. |
 
 ## Local validation
@@ -104,8 +104,13 @@ visualization suites. Quality does not rerun these three files: `test (3.12)`
 already requires their complete ordinary-suite execution alongside quality.
 
 Gridworld warms actual Julia imports before the bounded readiness probes. Its
-explicit LLM profile uses the default model, 8,192 context tokens, seed 42,
+explicit LLM profile uses `gemma3:1b`, 8,192 context tokens, seed 42,
 4,096 output tokens, 180-second requests and a 600-second total budget. The
 40-word bundled task style and 1,000-character JSON boundary still require
 nonempty terminal answers for all nine tasks; truncation/boundary hits fail.
 The generated profile, full run log and execution/analysis artifacts are retained.
+
+The CI model is an explicit profile because the default 135M model returned
+incomplete summaries in the full Gridworld run. Terminal coverage is runtime
+acceptance, not a claim about scientific answer quality. Versioned Julia inputs
+may be saved after a later stage fails; cached test outcomes are never accepted.

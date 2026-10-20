@@ -27,8 +27,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   workflow owner, preserving test selections, thresholds and required-status
   aggregation. Remove the duplicate focused PyMDP/POMDP run already covered
   by the complete ordinary matrix. Cache Julia inputs while rerunning tests.
-- Provision both Julia environments and Ollama 0.40.6 with the default local
-  model for the full 25-step GridWorld check. Retain fresh summaries, pytest
+- Provision both Julia environments and Ollama 0.40.6 with the explicit Gemma 3 1B
+  profile for the full 25-step GridWorld check. Retain fresh summaries, pytest
   output, LLM observations and daemon logs for failures. Warm native imports
   before bounded probes and use a source-bound concise JSON LLM profile that
   still requires all nine terminal answers. Isolate Step 2 pytest from the

@@ -31,7 +31,7 @@ Defines behavior and guardrails for workflows in this directory. Human index of 
 | `fep-lean-paired-revision.yml` | Paired-revision CI for the fep_lean bridge pair: validates `.github/fep-lean-pair.json`, checks out fep_lean at the pinned SHA, runs fep_lean's read-only bridge surface (status, emit `--check` finite/continuous) against this GNN checkout; blocking. Canonical custody ordering: [docs/development/fep_lean_paired_revision.md](../../docs/development/fep_lean_paired_revision.md). |
 | `geo-infer-interchange.yml` | Blocking pinned GEO/GNN interchange on Python 3.11/3.12, retaining both source revisions, schema contracts, replay and artifact digests. Coordinate companion changes through the same paired-revision procedure. |
 | `rxinfer.yml` | Path-scoped native RxInfer 6.1.0/ReactiveMP 7 checks on Julia 1.13.2: exact categorical/Gaussian numerical witnesses, structured model inference, and migrated custom Halfspace rules. Frozen environment drift fails; logs are retained. |
-| `gridworld.yml` | Weekly/manual report-only GridWorld execution with both Julia environments, Ollama and the default local model; all 25 steps and the fresh publication contract remain required. Retain summaries, test/LLM observations and daemon logs. |
+| `gridworld.yml` | Weekly/manual report-only GridWorld execution with both Julia environments, Ollama and Gemma 3 1B; all 25 steps and the fresh publication contract remain required. Retain summaries, test/LLM observations and daemon logs. |
 | `pair-pin-freshness.yml` | Nightly pair-pin freshness gate (BC-12, scope-comp-consumers §5.3): validates both committed pair pins and asserts each pinned companion revision is ancestor-or-equal of the companion default-branch HEAD (`scripts/check_pair_pin_freshness.py`); nightly cron + `workflow_dispatch`. Exit 2 "re-pin required" names the stale pair file; a red run means the pair pin needs a bump. |
 
 ## Standards
@@ -78,8 +78,13 @@ visualization suites. Quality does not rerun these three files: `test (3.12)`
 already requires their complete ordinary-suite execution alongside quality.
 
 Gridworld warms actual Julia imports before the bounded readiness probes. Its
-explicit LLM profile uses the default model, 8,192 context tokens, seed 42,
+explicit LLM profile uses `gemma3:1b`, 8,192 context tokens, seed 42,
 4,096 output tokens, 180-second requests and a 600-second total budget. The
 40-word bundled task style and 1,000-character JSON boundary still require
 nonempty terminal answers for all nine tasks; truncation/boundary hits fail.
 The generated profile, full run log and execution/analysis artifacts are retained.
+
+The CI model is an explicit profile because the default 135M model returned
+incomplete summaries in the full Gridworld run. Terminal coverage is runtime
+acceptance, not a claim about scientific answer quality. Versioned Julia inputs
+may be saved after a later stage fails; cached test outcomes are never accepted.
