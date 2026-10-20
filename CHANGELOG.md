@@ -45,7 +45,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   chains, each with 500 warmup and 1,000 retained draws; record actual sampler
   settings with the results.
 - Use bnlearn 1.1's supported call signatures and Gradio's default design-studio
-  theme. Native Ray fixtures disable automatic uv environment deployment and
+  theme. Restore cached GUI test-stub bindings and verify native module identity. Native Ray fixtures disable automatic uv environment deployment and
   verify the installed interpreter, keeping the bounded collection test local.
 - Check streaming deadline reuse directly over real HTTP, with controlled
   provider time, instead of a runner-sensitive subsecond wall-clock assertion.
