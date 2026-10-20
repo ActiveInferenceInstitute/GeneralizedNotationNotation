@@ -113,7 +113,7 @@ class OpenRouterProvider(BaseLLMProvider):
             logger.error(
                 f"Cannot initialize OpenRouter provider: aiohttp is not available ({AIOHTTP_IMPORT_ERROR})"
             )
-            logger.error("Install aiohttp with: uv pip install aiohttp>=3.9.0")
+            logger.error("Install aiohttp with: uv pip install 'aiohttp>=3.14.4'")
             return False
 
         if not self.api_key:

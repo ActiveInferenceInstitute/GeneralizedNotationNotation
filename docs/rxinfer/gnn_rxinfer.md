@@ -300,7 +300,7 @@ RxInfer.jl is a powerful Julia package for Bayesian inference on factor graphs u
 > models dispatch to a separate native `continuous_pomdp_model` script (see
 > [Continuous linear-Gaussian models](#continuous-linear-gaussian-models)).
 > Execution uses a committed Julia environment (`Project.toml` +
-> `Manifest.toml` pinning RxInfer 5.5.0 under `src/gnn/execute/rxinfer/`), invoked via
+> `Manifest.toml` pinning RxInfer 6.0.2 under `src/gnn/execute/rxinfer/`), invoked via
 > `julia --startup-file=no --project=src/gnn/execute/rxinfer <script>`.
 > `setup_environment.jl` uses `Pkg.activate()` + `Pkg.instantiate()` — there is no
 > runtime `Pkg.add`. All 30 exemplar GNN files (27 discrete + 3 continuous,
@@ -359,7 +359,7 @@ continuous_pomdp_model`, precompiled in the `GnnRxInferModels` package under
 **Execution status.** RxInfer is fully executable (`supports_execution: True`
 in `src/gnn/render/framework_registry.py`): `src/gnn/execute/rxinfer/` runs the
 rendered `.jl` scripts with the committed Julia environment (`Project.toml` +
-`Manifest.toml` pinning RxInfer 5.5.0), as described in the pipeline note at
+`Manifest.toml` pinning RxInfer 6.0.2), as described in the pipeline note at
 the top of this guide.
 
 ## Security considerations

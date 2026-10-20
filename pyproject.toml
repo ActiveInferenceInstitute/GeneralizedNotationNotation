@@ -41,7 +41,7 @@ dependencies = [
     "psutil>=5.8.0",
     # HTTP and async communication
     "httpx>=0.27.0",
-    "aiohttp>=3.14.3",  # OpenRouter / Perplexity LLM providers; 3.14.3 patches PYSEC-2026-3545/46/47
+    "aiohttp>=3.14.4",  # Patches GHSA-5wr8-gcqf-gqf3 / GHSA-494j-54xm-rwp3 / GHSA-2g87-pp6c-29x5
     # Pygments: official fix for CVE-2026-4539 (AdlLexer ReDoS) — replaced git fork override
     "pygments>=2.20.0",
     # LLM stack (Step 13+); local Ollama + cloud APIs — defaults in ``llm/defaults.py`` / config

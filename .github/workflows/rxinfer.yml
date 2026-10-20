@@ -1,0 +1,69 @@
+name: RxInfer native compatibility
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "src/gnn/execute/rxinfer/**"
+      - "src/gnn/render/rxinfer/**"
+      - "docs/rxinfer/multiagent_trajectory_planning/**"
+      - ".github/workflows/rxinfer.yml"
+  push:
+    branches: [main]
+    paths:
+      - "src/gnn/execute/rxinfer/**"
+      - "src/gnn/render/rxinfer/**"
+      - "docs/rxinfer/multiagent_trajectory_planning/**"
+      - ".github/workflows/rxinfer.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: rxinfer-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  native-models:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GKSwstype: "100"
+      JULIA_PKG_PRECOMPILE_AUTO: "0"
+      JULIA_NUM_PRECOMPILE_TASKS: "2"
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32 # v3.0.2
+        with:
+          version: "1.12.7"
+      - name: Instantiate the committed environment
+        run: |
+          set -euo pipefail
+          julia --startup-file=no --project=src/gnn/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'
+          git diff --exit-code -- src/gnn/execute/rxinfer/Project.toml src/gnn/execute/rxinfer/Manifest.toml
+      - name: Native model and custom rule compatibility
+        run: |
+          set -euo pipefail
+          julia --startup-file=no --project=src/gnn/execute/rxinfer \
+            src/gnn/execute/rxinfer/test_models.jl 2>&1 | tee rxinfer-native.log
+      - name: Standalone trajectory model compatibility
+        run: |
+          set -euo pipefail
+          julia --startup-file=no --project=docs/rxinfer/multiagent_trajectory_planning -e 'using Pkg; Pkg.instantiate()'
+          git diff --exit-code -- docs/rxinfer/multiagent_trajectory_planning/Project.toml docs/rxinfer/multiagent_trajectory_planning/Manifest.toml
+          julia --startup-file=no --project=docs/rxinfer/multiagent_trajectory_planning \
+            docs/rxinfer/multiagent_trajectory_planning/test_model.jl 2>&1 | tee -a rxinfer-native.log
+      - name: Retain native evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: rxinfer-native
+          path: rxinfer-native.log
+          if-no-files-found: warn
+          retention-days: 14

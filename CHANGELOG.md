@@ -7,6 +7,17 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ## [Unreleased]
 
+### RxInfer 6 compatibility and dependency security (2026-10-20)
+
+- Production Julia metadata and lock now target RxInfer 6.0.2 / ReactiveMP 7;
+  the standalone trajectory example migrates its custom node/rule and algorithm
+  declarations. Runtime TOML execution no longer installs missing packages.
+- Require aiohttp >=3.14.4 in metadata, readiness validation and repair messages;
+  the targeted lock resolves 3.14.5, addressing the three open aiohttp advisories.
+- Add path-scoped native Julia compatibility checks with independent categorical
+  and Gaussian numerical witnesses, structured-family inference and custom rules.
+  Documentation/local gates reuse their installed frozen environment.
+
 ### Discrete filtering correctness (2026-10-18)
 
 - PyTorch and NumPyro discrete simulations now predict the next observation's

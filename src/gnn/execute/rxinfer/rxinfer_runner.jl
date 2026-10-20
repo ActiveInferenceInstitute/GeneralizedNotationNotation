@@ -1,5 +1,5 @@
 #!/usr/bin/env julia
-"""
+#=
 RxInfer.jl runner script for executing TOML configuration files.
 
 This script loads a TOML configuration file and executes a RxInfer.jl simulation
@@ -7,30 +7,20 @@ based on the specified parameters.
 
 Usage:
     julia rxinfer_runner.jl <config_file.toml>
-"""
+=#
 
 using TOML
 using Pkg
 
-# Function to safely require packages, installing them if needed
+# Load only from the committed environment; setup is an explicit operation.
 function safe_require(package_name::String)
     try
-        # First try to use the package
         @eval using $(Symbol(package_name))
-        println("Successfully loaded package: $package_name")
         return true
     catch e
-        # If it fails, try to add the package
-        println("Package $package_name not found, attempting to install...")
-        try
-            Pkg.add(package_name)
-            @eval using $(Symbol(package_name))
-            println("Successfully installed and loaded package: $package_name")
-            return true
-        catch install_err
-            println("Failed to install package $package_name: $install_err")
-            return false
-        end
+        println(stderr, "Cannot load $package_name from the committed RxInfer project: $e")
+        println(stderr, "Run setup_environment.jl with --project=src/gnn/execute/rxinfer first.")
+        return false
     end
 end
 

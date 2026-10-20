@@ -286,7 +286,7 @@ function path_planning(; environment, agents, nr_iterations = 350, nr_steps = 40
     # `Linearization` is a simple and fast approximation method, but it is not
     # the most accurate one. For more details about the approximation methods,
     # please refer to the RxInfer documentation
-    door_meta = @meta begin 
+    door_algorithm = @algorithm begin
         h() -> Linearization()
         g() -> Linearization()
     end
@@ -363,7 +363,7 @@ function path_planning(; environment, agents, nr_iterations = 350, nr_steps = 40
         data  			= (goals = goals, ),
         initialization  = init,
         constraints 	= path_planning_constraints(),
-        meta 			= door_meta,
+        algorithm 		= door_algorithm,
         iterations 		= nr_iterations,
         returnvars 		= KeepLast(), 
         options         = (limit_stack_depth = 300, warn = false),

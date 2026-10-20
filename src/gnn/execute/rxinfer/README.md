@@ -17,7 +17,7 @@ src/gnn/execute/rxinfer/
 ├── rxinfer_results.py         # Result parsing / reporting helpers
 ├── rxinfer_runner.jl          # Julia runner for TOML configs
 ├── setup_environment.jl       # Pkg.activate() + Pkg.instantiate() (no runtime Pkg.add)
-├── Project.toml               # Committed deps (RxInfer 5.5.0)
+├── Project.toml               # Committed deps (RxInfer 6.0.2)
 ├── Manifest.toml              # Committed lockfile
 └── src/GnnRxInferModels.jl    # Julia package holding the shared @model definitions
 ```
@@ -72,7 +72,7 @@ unsupported-format diagnosis when their schema marker is absent.
 ## Features
 
 - RxInfer.jl integration
-- Julia environment management (committed `Project.toml` + `Manifest.toml` pinning RxInfer 5.5.0)
+- Julia environment management (committed `Project.toml` + `Manifest.toml` pinning RxInfer 6.0.2)
 - Genuine `@model` + `infer()` variational message-passing execution
 - Error handling and recovery
 - Performance monitoring
@@ -99,13 +99,13 @@ Execution produces:
 ## Dependencies
 
 - `julia` - Julia runtime (required)
-- `RxInfer.jl` - Julia package (5.5.0, pinned by committed `Project.toml` + `Manifest.toml` in this directory)
+- `RxInfer.jl` - Julia package (6.0.2, pinned by committed `Project.toml` + `Manifest.toml` in this directory)
 - Plots/JSON/Distributions/StatsBase etc. — all pinned in the committed Manifest
 
 ## Environment Setup
 
 Julia environment is reproducible and committed:
-- `Project.toml` + `Manifest.toml` pin RxInfer 5.5.0 and all dependencies
+- `Project.toml` + `Manifest.toml` pin RxInfer 6.0.2 and all dependencies
 - `setup_environment.jl` runs `Pkg.activate()` + `Pkg.instantiate()` — **no runtime `Pkg.add`**
 - The runner invokes `julia --startup-file=no --project=src/gnn/execute/rxinfer <script>`
 - Each run records `Random.seed!(seed)` and the script SHA256 in `runtime_metadata` for byte-identical, reproducible execution
@@ -138,3 +138,23 @@ refusal. These consumer tests do not execute Julia or establish native inference
 **Status**: ✅ Production Ready
 
 
+
+## RxInfer 6 migration and native verification
+
+The committed manifest resolves RxInfer **6.0.2** and ReactiveMP **7** on
+Julia **1.12.7**. Project compatibility starts at RxInfer 6.0.2 and Julia 1.10;
+the frozen native CI lane uses the manifest's Julia version. The upstream
+[v5-to-v6 migration guide](https://docs.rxinfer.com/stable/manuals/migration/v5-to-v6/)
+explains custom node/rule macros, `algorithm` replacing `meta`, and optional node
+packages. GNN's built-in Categorical, DiscreteTransition and Gaussian nodes are
+re-exported by RxInfer; they need no extra rule-package imports.
+
+```bash
+julia --startup-file=no --project=src/gnn/execute/rxinfer src/gnn/execute/rxinfer/test_models.jl
+```
+
+This fails on a version mismatch, compares categorical smoothing against full
+joint enumeration, checks Gaussian conditioning against an independent
+information-form calculation, runs hierarchical/factored/learning inference and
+calls the trajectory example's custom rules. It does not establish every
+standalone planner, optional node package or Julia-version combination.

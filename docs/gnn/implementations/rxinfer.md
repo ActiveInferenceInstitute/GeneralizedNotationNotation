@@ -29,7 +29,7 @@ never free-text scanning of the source.
 | `ModelKind` | Strategy | Generated model |
 |---|---|---|
 | `FLAT` | `FlatStrategy` | `pomdp_model` — batch smoothing by default, or per-timestep filtering in [online mode](#online-mode) |
-| `HIERARCHICAL` | `HierarchicalStrategy` | `hierarchical_pomdp_model` — native two-level; the context latent enters the fast-state prior through the column-normalized `A_level2` (the model's `A_ctx` argument). Mean-field constraints *and* marginal initialization are both required on RxInfer 5.5. Three or more declared levels render as the documented joint composition |
+| `HIERARCHICAL` | `HierarchicalStrategy` | `hierarchical_pomdp_model` — native two-level; the context latent enters the fast-state prior through the column-normalized `A_level2` (the model's `A_ctx` argument). Mean-field constraints *and* marginal initialization are both required on RxInfer 6.0.2. Three or more declared levels render as the documented joint composition |
 | `FACTORED` | `FactoredStrategy` | `factored_pomdp_model` — native mean-field two-factor model with a multi-parent likelihood, `DiscreteTransition(s1, A_m0, s2)` |
 | `CONTINUOUS` | `ContinuousStrategy` | `continuous_pomdp_model` — native linear-Gaussian state space from `F`/`H`/`Q`/`R` plus `prior_mean`/`prior_cov`. Beliefs are posterior *means* alongside `posterior_cov`, and VFE validation is sign-agnostic because a Gaussian Bethe free energy is routinely negative |
 | `LEARNING` | `LearningStrategy` | `learning_pomdp_model` — `A` is learned jointly with the states as `DirichletCollection(dirichlet_A)`; `a_learning_improved` is a hard validation gate |
@@ -44,6 +44,15 @@ This document details the full data flow from GNN specification through Julia fa
 graph construction, genuine variational message-passing inference, real variational free
 energy (VFE) capture, explicit Expected Free Energy (EFE) computation, and JSON telemetry
 serialization.
+
+The strategy templates do not admit every specification with the same model kind.
+Current semantic hierarchical/planning contracts, nonstationary transitions,
+unsupported coupled/hybrid continuous compositions and incomplete native agent
+blocks return explicit unsupported outcomes. The hierarchical native template is
+exercised with nonsemantic synthetic fixtures; it does not establish execution of
+the authored temporal-hierarchy exemplars. See the maintained
+[scientific contracts](../../development/backend_scientific_contracts.md) and current render receipts.
+
 
 ## Architecture
 
@@ -350,7 +359,7 @@ A few conventions worth knowing before consuming this payload:
 ## The Julia environment
 
 `src/gnn/execute/rxinfer/` is a committed Julia environment, not something resolved at run
-time. Its `Project.toml` + `Manifest.toml` pin **RxInfer 5.5** (Julia 1.10+) and declare
+time. Its `Project.toml` + `Manifest.toml` pin **RxInfer 6.0.2** (Julia 1.10+) and declare
 the `GnnRxInferModels` package that holds the `@model` blocks, which precompiles the
 pomdp, continuous, hierarchical, factored, and learning models loudly — a precompilation
 failure surfaces instead of being swallowed. `setup_environment.jl` activates and
@@ -362,7 +371,7 @@ packages without an ambient environment. An explicitly set `JULIA_PROJECT` still
 
 | Package            | Purpose                                            |
 | ------------------ | -------------------------------------------------- |
-| `RxInfer` (5.5)    | Genuine `@model` + `infer()` variational inference |
+| `RxInfer` (6.0.2)    | Genuine `@model` + `infer()` variational inference |
 | `Distributions`    | `Categorical` distribution sampling                |
 | `LinearAlgebra`    | Matrix operations                                   |
 | `Random`           | PRNG seeding                                        |

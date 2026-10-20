@@ -259,17 +259,24 @@ end
 # Define the probabilistic model for obstacles using halfspace constraints
 struct Halfspace end
 
-@node Halfspace Stochastic [out, a, σ2, γ]
+@define_factor_node(node = Halfspace, type = Stochastic, interfaces = [:out, :a, :σ2, :γ])
 
 # rule specification
-@rule Halfspace(:out, Marginalisation) (q_a::Any, q_σ2::Any, q_γ::Any) = begin
-    return NormalMeanVariance(mean(q_a) + mean(q_γ) * mean(q_σ2), mean(q_σ2))
-end
+@define_message_update_rule(
+    node = Halfspace, target = :out,
+    args = (q[:a]::Any, q[:σ2]::Any, q[:γ]::Any),
+    body = (args) -> NormalMeanVariance(
+        mean(args.q[:a]) + mean(args.q[:γ]) * mean(args.q[:σ2]), mean(args.q[:σ2])
+    ),
+)
 
-@rule Halfspace(:σ2, Marginalisation) (q_out::Any, q_a::Any, q_γ::Any, ) = begin
-    # `BayesBase.TerminalProdArgument` is used to ensure that the result of the posterior computation is equal to this value
-    return BayesBase.TerminalProdArgument(PointMass( 1 / mean(q_γ) * sqrt(abs2(mean(q_out) - mean(q_a)) + var(q_out))))
-end
+@define_message_update_rule(
+    node = Halfspace, target = :σ2,
+    args = (q[:out]::Any, q[:a]::Any, q[:γ]::Any),
+    body = (args) -> BayesBase.TerminalProdArgument(PointMass(
+        sqrt(abs2(mean(args.q[:out]) - mean(args.q[:a])) + var(args.q[:out])) / mean(args.q[:γ])
+    )),
+)
 
 softmin(x; l=10) = -logsumexp(-l .* x) / l
 
@@ -415,7 +422,7 @@ function path_planning(; environment, agents, nr_iterations = 350, nr_steps = 40
     # `Linearization` is a simple and fast approximation method, but it is not
     # the most accurate one. For more details about the approximation methods,
     # please refer to the RxInfer documentation
-    door_meta = @meta begin 
+    door_algorithm = @algorithm begin
         h() -> Linearization()
         g() -> Linearization()
     end
@@ -455,7 +462,7 @@ function path_planning(; environment, agents, nr_iterations = 350, nr_steps = 40
         data  			= (goals = goals, ),
         initialization  = init,
         constraints 	= path_planning_constraints(),
-        meta 			= door_meta,
+        algorithm 		= door_algorithm,
         iterations 		= nr_iterations,
         callbacks       = (inference = callback, ),
         returnvars 		= KeepLast(), 

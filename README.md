@@ -538,7 +538,7 @@ the experimental v4 backends. Its Python backends were provisioned via
 (torch ≥ 2.13.0, NumPyro, DisCoPy, pymdp, bnlearn + pgmpy for the
 categorical exports), Julia 1.12+ via juliaup/brew with the two pinned project
 environments instantiated from `src/gnn/execute/rxinfer/Project.toml`
-(RxInfer 5.5.0) and `src/gnn/execute/activeinference_jl/`, and CmdStan 2.39 via
+(RxInfer 6.0.2) and `src/gnn/execute/activeinference_jl/`, and CmdStan 2.39 via
 the release tarball (`~/.cmdstan`) with `cmdstanpy` from the dev extra.
 bnlearn renders for every categorical exemplar and its generated artifacts run
 against the installed package (Step 12 executor: `src/gnn/execute/bnlearn/`).

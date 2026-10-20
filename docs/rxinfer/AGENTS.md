@@ -11,7 +11,7 @@ This document provides agent scaffolding for the RxInfer.jl Framework documentat
 
 ## Purpose
 
-Documentation for the RxInfer.jl (Bayesian inference) framework integration with GNN. The integration is a genuine `@model` + `infer()` variational message-passing pipeline: `src/gnn/render/rxinfer/rxinfer_renderer.py` emits Julia scripts defining `@model pomdp_model(y, A, B, D, u, T)` with `Categorical` / `DiscreteTransition` nodes, and `src/gnn/execute/rxinfer/` executes them under a committed `Project.toml` + `Manifest.toml` env (RxInfer 5.5.0) via `julia --startup-file=no --project=src/gnn/execute/rxinfer <script>`.
+Documentation for the RxInfer.jl (Bayesian inference) framework integration with GNN. The integration is a genuine `@model` + `infer()` variational message-passing pipeline: `src/gnn/render/rxinfer/rxinfer_renderer.py` emits Julia scripts defining `@model pomdp_model(y, A, B, D, u, T)` with `Categorical` / `DiscreteTransition` nodes, and `src/gnn/execute/rxinfer/` executes them under a committed `Project.toml` + `Manifest.toml` env (RxInfer 6.0.2) via `julia --startup-file=no --project=src/gnn/execute/rxinfer <script>`.
 
 ## Documentation Organization
 

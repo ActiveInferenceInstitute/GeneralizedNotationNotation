@@ -60,17 +60,17 @@ jobs:
         run: uv sync --frozen --extra dev
 
       - name: Documentation audit (strict)
-        run: uv run --extra dev python docs/development/docs_audit.py --strict --check-anchors --no-write
+        run: uv run --frozen --no-sync python docs/development/docs_audit.py --strict --check-anchors --no-write
 
       - name: Repository terminology audit
-        run: uv run --extra dev python scripts/check_repo_terminology.py --strict
+        run: uv run --frozen --no-sync python scripts/check_repo_terminology.py --strict
 
       - name: Maintained documentation terminology audit
-        run: uv run --extra dev python scripts/check_maintained_doc_terms.py --strict
+        run: uv run --frozen --no-sync python scripts/check_maintained_doc_terms.py --strict
 
       - name: GNN documentation pattern audit
-        run: uv run --extra dev python scripts/check_gnn_doc_patterns.py --strict
+        run: uv run --frozen --no-sync python scripts/check_gnn_doc_patterns.py --strict
 
       - name: External link audit (weekly job)
         if: github.event_name == 'schedule'
-        run: uv run --extra dev python scripts/check_external_links.py --strict --allow-hosts doi.org zenodo.org
+        run: uv run --frozen --no-sync python scripts/check_external_links.py --strict --allow-hosts doi.org zenodo.org

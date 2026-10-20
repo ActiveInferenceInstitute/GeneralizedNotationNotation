@@ -63,38 +63,38 @@ jobs:
         run: uv sync --frozen --extra dev
 
       - name: Manuscript token audit
-        run: uv run --extra dev python scripts/check_manuscript_tokens.py --strict
+        run: uv run --frozen --no-sync python scripts/check_manuscript_tokens.py --strict
 
       # SC-22 PR-time drift guard: the committed hydrated prose must be what
       # the committed token map hydrates to. A PR that regenerated the map
       # without the full ritual (figures -> template stage_03_render ->
       # record) fails here instead of in custody-re-render.yml after merge.
       - name: Hydrated prose matches token map
-        run: uv run --extra dev python scripts/check_hydrated_prose.py
+        run: uv run --frozen --no-sync python scripts/check_hydrated_prose.py
 
       - name: Manuscript figure freshness
-        run: uv run --extra dev python -m pytest tests/test_manuscript_figure_freshness.py -q -p no:cacheprovider
+        run: uv run --frozen --no-sync python -m pytest tests/test_manuscript_figure_freshness.py -q -p no:cacheprovider
 
       - name: MCP + skills resolvability health gate
-        run: uv run --extra dev python scripts/check_mcp_skills_health.py --strict
+        run: uv run --frozen --no-sync python scripts/check_mcp_skills_health.py --strict
 
       - name: Import-linter boundaries
-        run: uv run --extra dev lint-imports
+        run: uv run --frozen --no-sync lint-imports
 
       - name: Thin orchestrator line cap
-        run: uv run --extra dev python scripts/check_thin_orchestrators.py
+        run: uv run --frozen --no-sync python scripts/check_thin_orchestrators.py
 
       - name: CLI flag parity
-        run: uv run --extra dev python scripts/check_flag_parity.py
+        run: uv run --frozen --no-sync python scripts/check_flag_parity.py
 
       - name: Dependency hygiene
-        run: uv run --extra dev python scripts/check_dep_hygiene.py
+        run: uv run --frozen --no-sync python scripts/check_dep_hygiene.py
 
       - name: Validate surface audit
-        run: uv run --extra dev python scripts/audit_validate_surface.py
+        run: uv run --frozen --no-sync python scripts/audit_validate_surface.py
 
       - name: Doc path reference gate
-        run: uv run --extra dev python scripts/check_doc_path_references.py
+        run: uv run --frozen --no-sync python scripts/check_doc_path_references.py
 
       - name: Doc pattern ratchet
-        run: uv run --extra dev python scripts/check_gnn_doc_patterns.py --strict
+        run: uv run --frozen --no-sync python scripts/check_gnn_doc_patterns.py --strict
