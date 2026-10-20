@@ -114,3 +114,8 @@ The CI model is an explicit profile because the default 135M model returned
 incomplete summaries in the full Gridworld run. Terminal coverage is runtime
 acceptance, not a claim about scientific answer quality. Versioned Julia inputs
 may be saved after a later stage fails; cached test outcomes are never accepted.
+
+The all-extras lane uses pytest-xdist work stealing over the unchanged full
+test selection, with the same coverage and JUnit outputs. Its Python 3.12
+selection is explicit; installation happens once before `--frozen --no-sync`
+commands. Selected test failures still fail the job.

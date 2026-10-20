@@ -153,7 +153,7 @@ jobs:
 
       - name: Run full test suite (all-extras)
         run: |
-          uv run --frozen --no-sync python -m pytest tests/ -q --tb=short \
+          uv run --frozen --no-sync python -m pytest tests/ -q --tb=short -n auto --dist worksteal \
             --cov=gnn --cov-report=json:junit/coverage-full-extras.json \
             --junitxml=junit/full-extras-${{ matrix.python-version }}.xml
 
