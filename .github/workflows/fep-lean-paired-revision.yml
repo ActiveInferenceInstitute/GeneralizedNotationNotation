@@ -18,7 +18,8 @@ name: Paired fep_formal revision
 #
 # What this proves and does NOT prove (evidence-plane discipline): the workflow
 # verifies that the pinned fep_formal checkout and this GNN checkout still agree
-# on the bridge's source binding and emit digests (drift detection). It does
+# on the bridge's source binding and emit digests, plus current Q7 render
+# provenance/scaffold freshness on CPython 3.14 (drift detection). It does
 # NOT verify any Lean theorem or promote any Lean proof claim — notation
 # mapping states symbol correspondence only.
 
@@ -98,7 +99,7 @@ jobs:
           uv sync --project fep-lean --frozen --python "$UV_PYTHON"
       # Read-only bridge surface only: `status` and `emit --check` inspect
       # source bytes and emitted-document digests and never write to either
-      # checkout (verified against src/fep_formal/bridge/cli.py at the pin).
+      # checkout (verified against src/fep_lean/bridge/cli.py at the pin).
       - name: Bound runtime status and finite/continuous bridge checks
         run: |
           set -euo pipefail
