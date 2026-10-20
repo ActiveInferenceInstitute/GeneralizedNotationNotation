@@ -759,3 +759,8 @@ This test infrastructure provides a solid foundation for comprehensive testing o
 - **[AGENTS](AGENTS.md)**: Agentic Workflows
 - **[SPEC](SPEC.md)**: Architectural Specification
 - **[SKILL](SKILL.md)**: Capability API
+
+Step 2 gives its pytest child an isolated output root and removes the parent
+`GNN_RUN_CONTEXT_FILE`. Tests establish their own run contexts; they cannot read
+the executing pipeline snapshot as their fixture results. The parent context
+and its normal artifact ownership checks remain active in pipeline steps.

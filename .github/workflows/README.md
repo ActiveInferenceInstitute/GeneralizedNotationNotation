@@ -102,3 +102,10 @@ that a URL is valid. `--strict` remains available to fail on every finding.
 The ordinary test matrix owns the PyMDP contract, discrete-model and matrix
 visualization suites. Quality does not rerun these three files: `test (3.12)`
 already requires their complete ordinary-suite execution alongside quality.
+
+Gridworld warms actual Julia imports before the bounded readiness probes. Its
+explicit LLM profile uses the default model, 8,192 context tokens, seed 42,
+4,096 output tokens, 180-second requests and a 600-second total budget. The
+40-word bundled task style and 1,000-character JSON boundary still require
+nonempty terminal answers for all nine tasks; truncation/boundary hits fail.
+The generated profile, full run log and execution/analysis artifacts are retained.

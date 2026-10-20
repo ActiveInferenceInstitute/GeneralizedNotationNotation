@@ -29,7 +29,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   by the complete ordinary matrix. Cache Julia inputs while rerunning tests.
 - Provision both Julia environments and Ollama 0.40.6 with the default local
   model for the full 25-step GridWorld check. Retain fresh summaries, pytest
-  output, LLM observations and daemon logs for failures.
+  output, LLM observations and daemon logs for failures. Warm native imports
+  before bounded probes and use a source-bound concise JSON LLM profile that
+  still requires all nine terminal answers. Isolate Step 2 pytest from the
+  parent pipeline run context.
 - Correct maintained external URLs. Weekly/opt-in link audits fail on 404/410
   and retain all inconclusive network/bot/rate-limit observations; the existing
   all-findings `--strict` policy remains available.

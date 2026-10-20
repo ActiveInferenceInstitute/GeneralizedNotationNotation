@@ -74,10 +74,10 @@ jobs:
           delete-old-caches: 'false'
           save-always: 'false'
 
-      - name: Instantiate both required Julia environments
+      - name: Instantiate and warm both required Julia environments
         run: |
-          julia --startup-file=no --project=src/gnn/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'
-          julia --startup-file=no --project=src/gnn/execute/activeinference_jl -e 'using Pkg; Pkg.instantiate()'
+          julia --startup-file=no --project=src/gnn/execute/rxinfer -e 'using Pkg; Pkg.instantiate(); using GnnRxInferModels'
+          julia --startup-file=no --project=src/gnn/execute/activeinference_jl -e 'using Pkg; Pkg.instantiate(); using ActiveInference, Distributions, JSON, StatsBase'
           git diff --exit-code -- src/gnn/execute/rxinfer/Project.toml src/gnn/execute/rxinfer/Manifest.toml src/gnn/execute/activeinference_jl/Project.toml src/gnn/execute/activeinference_jl/Manifest.toml
 
       - name: Install and provision the required local LLM
@@ -101,10 +101,33 @@ jobs:
           ollama pull "$OLLAMA_MODEL"
           ollama --version
 
+      - name: Select the explicit local LLM acceptance profile
+        run: |
+          uv run --frozen --no-sync python - <<'PYPROFILE'
+          import os
+          from pathlib import Path
+          import yaml
+          config = yaml.safe_load(Path("input/config.yaml").read_text())
+          config["llm"].update(
+              batch_prompts=True,
+              response_words=40,
+              answer_max_chars=1000,
+              prompt_timeout=180,
+              timeout_seconds=600,
+              max_tokens=4096,
+              source_chunk_bytes=65536,
+              ollama_options={"num_ctx": 8192, "seed": 42},
+          )
+          (Path(os.environ["RUNNER_TEMP"]) / "gridworld-config.yaml").write_text(
+              yaml.safe_dump(config, sort_keys=False)
+          )
+          PYPROFILE
+
       - name: Run the POMDP GridWorld pipeline
         run: |
+          set -euo pipefail
           status=0
-          uv run --frozen --no-sync python src/gnn/main.py --target-dir input/gnn_files/pomdp_gridworld --output-dir "$GRIDWORLD_OUTPUT" --frameworks all --verbose || status=$?
+          uv run --frozen --no-sync python src/gnn/main.py --config-file "$RUNNER_TEMP/gridworld-config.yaml" --target-dir input/gnn_files/pomdp_gridworld --output-dir "$GRIDWORLD_OUTPUT" --frameworks all --verbose 2>&1 | tee "$RUNNER_TEMP/gridworld.log" || status=$?
           # Thin-orchestrator exit contract (see the `just gridworld` recipe):
           # 0 = success, 2 = success with warnings.
           if [ "$status" -ne 0 ] && [ "$status" -ne 2 ]; then
@@ -121,7 +144,11 @@ jobs:
           path: |
             ${{ env.GRIDWORLD_OUTPUT }}/00_pipeline_summary/
             ${{ env.GRIDWORLD_OUTPUT }}/2_tests_output/
+            ${{ env.GRIDWORLD_OUTPUT }}/12_execute_output/
             ${{ env.GRIDWORLD_OUTPUT }}/13_llm_output/
+            ${{ env.GRIDWORLD_OUTPUT }}/16_analysis_output/
+            ${{ runner.temp }}/gridworld.log
+            ${{ runner.temp }}/gridworld-config.yaml
             ${{ runner.temp }}/ollama.log
           if-no-files-found: warn
           retention-days: 7
