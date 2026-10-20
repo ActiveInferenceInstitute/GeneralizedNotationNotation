@@ -46,4 +46,5 @@ gui_3/
 
 The design studio uses Gradio’s default theme, avoiding the constructor’s
 `theme` parameter in Gradio 6. Wrapper tests restore cached Gradio bindings
-after using stubs; native builder tests verify the installed module identity.
+after using temporary test modules; native builder tests verify the installed
+module identity.
