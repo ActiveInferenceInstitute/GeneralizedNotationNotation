@@ -234,14 +234,6 @@ jobs:
           uv run --frozen --no-sync python -m pytest --collect-only tests/ -q --tb=no \
             -m "not ollama"
 
-      - name: Focused PyMDP/POMDP tests
-        run: |
-          uv run --frozen --no-sync python -m pytest \
-            tests/execute/test_pymdp_contracts.py \
-            tests/execute/test_discrete_models_pymdp.py \
-            tests/visualization/test_visualization_matrices.py \
-            -q --tb=short
-
       - name: v3 orchestration acceptance gate
         run: |
           PYTHONPATH=src uv run --frozen --no-sync python scripts/run_v3_orchestration_acceptance.py --strict

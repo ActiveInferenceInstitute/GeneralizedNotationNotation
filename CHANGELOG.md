@@ -25,7 +25,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   the Python/HDF5, PyMDP/Flax and ActiveInference.jl/Distributions exceptions.
 - Give deterministic documentation/terminology and repository checks one
   workflow owner, preserving test selections, thresholds and required-status
-  aggregation. Cache versioned Julia package inputs while rerunning all tests.
+  aggregation. Remove the duplicate focused PyMDP/POMDP run already covered
+  by the complete ordinary matrix. Cache Julia inputs while rerunning tests.
 - Provision both Julia environments and Ollama 0.40.6 with the default local
   model for the full 25-step GridWorld check. Retain fresh summaries, pytest
   output, LLM observations and daemon logs for failures.

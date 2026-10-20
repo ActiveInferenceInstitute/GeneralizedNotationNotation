@@ -27,7 +27,7 @@ YAML workflows for CI, MCP tool-count audit, weekly all-extras suite, documentat
 | File | Triggers | Jobs / behavior |
 |------|----------|-----------------|
 | [comprehensive-native-coverage.yml](comprehensive-native-coverage.yml) | `push` / `pull_request` → `main`; `workflow_dispatch` | Separate Python 3.11/3.12/3.13 reports from the exact source revision. The five frozen core, MCP, pipeline, THRML and Gradio native selections retain process/source identities, unchanged statement/exclusion scope, actual raw line-set unions, JUnit and hook-restoration receipts. The original core 60% gate remains; comprehensive acceptance enforces an 80% floor and the strict integer >80% comparison separately in each environment. |
-| [ci.yml](ci.yml) | `push` / `pull_request` → `main` (no path filter); `workflow_dispatch` | Full Python 3.11/3.12/3.13/3.14 unit/integration selections with JUnit and coverage. Independent 3.12 quality checks run in parallel; `test (3.12)` accepts only successful `pytest (3.12)` and `quality (3.12)` lanes. Quality retains Ruff, types, documentation/contracts, collection, focused PyMDP/POMDP and MCP tests, and v3 orchestration acceptance. Pipeline contracts and extras retain separate mandatory lanes. Security retains Bandit SARIF, artifacts and failure on findings. |
+| [ci.yml](ci.yml) | `push` / `pull_request` → `main` (no path filter); `workflow_dispatch` | Full Python 3.11/3.12/3.13/3.14 unit/integration selections with JUnit and coverage. Independent 3.12 quality checks run in parallel; `test (3.12)` accepts only successful `pytest (3.12)` and `quality (3.12)` lanes. Quality retains Ruff, types, documentation/contracts, collection and MCP tests, and v3 orchestration acceptance. Pipeline contracts and extras retain separate mandatory lanes. Security retains Bandit SARIF, artifacts and failure on findings. |
 | [installed-platforms.yml](installed-platforms.yml) | `push` / `pull_request` → `main`; `workflow_dispatch` | Five native installed-wheel lanes: Linux/Python 3.11, 3.12, 3.14; macOS/3.14; Windows/3.14. Frozen hashed binary runtime installation outside the checkout, native JAX/THRML, CLI/templates, API scratch concurrency, owned worker cancellation/RSS and platform boundary tests. Selected skips prevent acceptance; receipts retain exact source, wheel, lock and platform identities. |
 | [local-gates.yml](local-gates.yml) | `push` / `pull_request` → `main`; `workflow_dispatch` | Repository gates for manuscript tokens, hydrated prose, figure freshness, MCP/skills, import boundaries, numbered orchestrators, flags, dependency consumers, validation surfaces and documentation paths/patterns. |
 | [fep-lean-paired-revision.yml](fep-lean-paired-revision.yml) | `push` / `pull_request` → `main`; `workflow_dispatch` | Python 3.11/3.12 read-only bridge status and finite/continuous emission checks against the exact pinned companion. Retained revisions and digests prove paired source custody; they do not prove a theorem. |
@@ -94,7 +94,11 @@ all-extras Python 3.12 profile, rather than prospective Python 3.15.
 Deterministic checks have one hosted owner: docs/anchors and terminology in
 `docs-audit.yml`; import boundaries, thin orchestrators, flag/dependency/validation
 and documentation path/pattern gates in `local-gates.yml`; Ruff, mypy, public
-contracts and focused scientific/MCP tests in `ci.yml` quality. Julia caches
+contracts and functional MCP tests in `ci.yml` quality. Julia caches
 contain versioned package inputs and compiled code; each native test still runs.
 External 403/429, network and timeout observations are inconclusive, never proof
 that a URL is valid. `--strict` remains available to fail on every finding.
+
+The ordinary test matrix owns the PyMDP contract, discrete-model and matrix
+visualization suites. Quality does not rerun these three files: `test (3.12)`
+already requires their complete ordinary-suite execution alongside quality.

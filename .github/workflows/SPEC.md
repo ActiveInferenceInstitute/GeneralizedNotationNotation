@@ -46,7 +46,11 @@ The module defines strict automation routines via YAML configuration:
 Deterministic checks have one hosted owner: docs/anchors and terminology in
 `docs-audit.yml`; import boundaries, thin orchestrators, flag/dependency/validation
 and documentation path/pattern gates in `local-gates.yml`; Ruff, mypy, public
-contracts and focused scientific/MCP tests in `ci.yml` quality. Julia caches
+contracts and functional MCP tests in `ci.yml` quality. Julia caches
 contain versioned package inputs and compiled code; each native test still runs.
 External 403/429, network and timeout observations are inconclusive, never proof
 that a URL is valid. `--strict` remains available to fail on every finding.
+
+The ordinary test matrix owns the PyMDP contract, discrete-model and matrix
+visualization suites. Quality does not rerun these three files: `test (3.12)`
+already requires their complete ordinary-suite execution alongside quality.
