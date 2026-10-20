@@ -168,7 +168,7 @@ def run_simulation(observations=None, transition_actions=None):
         if step == 0:
             cpds = [TabularCPD("S", n, prior[:, None]),
                     TabularCPD("O", m, A, evidence=["S"], evidence_card=[n])]
-            network = bn.make_DAG([("S", "O")], CPD=cpds, verbose=0)
+            network = bn.make_DAG([("S", "O")], CPD=cpds)
             evidence = {"O": reading}
         else:
             # pgmpy orders the last evidence axis fastest: (previous, action).
@@ -177,9 +177,9 @@ def run_simulation(observations=None, transition_actions=None):
                     TabularCPD("S", n, B.reshape(n, n * actions),
                                evidence=["S_prev", "Action"], evidence_card=[n, actions]),
                     TabularCPD("O", m, A, evidence=["S"], evidence_card=[n])]
-            network = bn.make_DAG([("S_prev", "S"), ("Action", "S"), ("S", "O")], CPD=cpds, verbose=0)
+            network = bn.make_DAG([("S_prev", "S"), ("Action", "S"), ("S", "O")], CPD=cpds)
             evidence = {"Action": transition_actions[step - 1], "O": reading}
-        query = bn.inference.fit(network, variables=["S"], evidence=evidence, verbose=0)
+        query = bn.inference.fit(network, variables=["S"], evidence=evidence)
         posterior = np.asarray(query.values, dtype=float).reshape(-1)
         if posterior.shape != (n,) or not np.isfinite(posterior).all() or np.any(posterior < 0) or not np.isclose(posterior.sum(), 1):
             raise ValueError("native bnlearn returned an invalid posterior (possibly impossible evidence)")

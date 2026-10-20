@@ -146,7 +146,7 @@ def lgssm_model(y, u, F, H, Q, R, prior_mean, prior_cov):
 
 def run_mcmc(y, u, F, H, Q, R, prior_mean, prior_cov, T, n):
     kernel = NUTS(lgssm_model)
-    mcmc = MCMC(kernel, num_warmup=200, num_samples=200, num_chains=1, progress_bar=False)
+    mcmc = MCMC(kernel, num_warmup=500, num_samples=1000, num_chains=2, chain_method="sequential", progress_bar=False)
     mcmc.run(jax.random.PRNGKey(RANDOM_SEED + 1), y, u, F, H, Q, R, prior_mean, prior_cov)
     samples = mcmc.get_samples()
     means = [np.asarray(samples[f"x_{t}"], dtype=float).mean(axis=0).tolist() for t in range(T)]
@@ -154,7 +154,7 @@ def run_mcmc(y, u, F, H, Q, R, prior_mean, prior_cov, T, n):
 
     stats = _summary(mcmc.get_samples(group_by_chain=True))
     r_hats = [float(np.max(np.asarray(v["r_hat"]))) for v in stats.values()]
-    return means, (max(r_hats) if r_hats else float("nan"))
+    return means, (max(r_hats) if r_hats else float("nan")), {key: getattr(mcmc, key) for key in ("num_warmup", "num_samples", "num_chains", "chain_method")}
 '''
 
 _BODY_HEAD = '''
@@ -235,11 +235,11 @@ def run_simulation():
 
 _NUMPYRO_RESULTS = """
     if FRAMEWORK == "numpyro":
-        mcmc_means, r_hat_max = run_mcmc(
+        mcmc_means, r_hat_max, sampling = run_mcmc(
             arr(observations), arr(controls), F, H, Q, R, prior_mean, prior_cov, T, n
         )
         results["mcmc_posterior_means"] = mcmc_means
-        results["mcmc_r_hat_max"] = r_hat_max
+        results.update(mcmc_r_hat_max=r_hat_max, mcmc_sampling=sampling)
         results["mcmc_rmse_vs_kalman"] = float(
             np.sqrt(np.mean((np.asarray(mcmc_means) - beliefs_np) ** 2))
         )

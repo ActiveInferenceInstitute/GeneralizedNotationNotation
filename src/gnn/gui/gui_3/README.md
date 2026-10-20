@@ -43,3 +43,6 @@ gui_3/
 
 - [AGENTS.md](AGENTS.md) — Agent documentation
 - [Parent GUI Module](../AGENTS.md) — GUI module overview
+
+The design studio uses Gradio’s default theme. It does not depend on the removed
+`gradio.themes` top-level export in current Gradio releases.

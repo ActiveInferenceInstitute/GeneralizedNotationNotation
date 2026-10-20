@@ -1087,7 +1087,7 @@ qualification before widening, not a general claim that Python 3.15 is unusable.
 
 The scientific stack now admits JAX 0.12 and retains its Python-specific
 PyMDP/Flax compatibility split in `pyproject.toml`. Python 3.11 resolves JAX
-0.10.2, PyMDP 1.0.4 and Flax 0.12.6; newer supported Python profiles resolve
+0.10.2, PyMDP 1.0.4 and Flax 0.12.8; newer supported Python profiles resolve
 JAX 0.12.0, PyMDP 1.0.3 and Flax 0.12.10. ActiveInference.jl retains its
 Distributions ceiling because DistributionsAD's extension fails with the newer
 `@check_args` API; its committed Project documents that exception. RxInfer

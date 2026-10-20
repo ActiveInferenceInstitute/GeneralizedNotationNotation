@@ -75,11 +75,10 @@ dependencies = [
     # bound) on the python>=3.12 splits that carry ngclearn.
     "jax[cpu]>=0.7.0,<0.13",
     "jaxlib>=0.7.0,<0.13",
-    # flax 0.12.6 calls jax.core.get_opaque_trace_state (removed in jax 0.11.0),
-    # so the py>=3.12 splits (now jax 0.12.0) need
-    # flax>=0.12.9 (first release compatible with jax 0.11.x); py3.11 splits
-    # keep jax 0.10.2 and stay on flax <0.12.7.
-    "flax>=0.7.0,<0.12.7; python_full_version < '3.12'",
+    # Flax 0.12.8 uses the supported jax.extend.core tracing API with
+    # Python 3.11/JAX 0.10.2. Flax >=0.12.9 requires Python
+    # >=3.12 and JAX >=0.11.1, so retain the explicit runtime split.
+    "flax>=0.12.8; python_full_version < '3.12'",
     "flax>=0.12.9; python_full_version >= '3.12'",
     "optax>=0.1.0",
     "msgpack>=1.2.1",

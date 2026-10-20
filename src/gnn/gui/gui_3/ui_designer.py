@@ -52,7 +52,7 @@ def build_design_studio(
     parameters = design_data.get("parameters", {})
 
     demo: gr.Blocks = gr.Blocks(
-        title="State Space Design Studio", theme=gr.themes.Base()
+        title="State Space Design Studio",
     )
     with demo:
         gr.Markdown("# 🎨 State Space Design Studio")

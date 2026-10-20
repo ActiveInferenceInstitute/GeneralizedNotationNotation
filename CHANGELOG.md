@@ -40,6 +40,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 - Support pytest 9.1 class fixture rules and Julia manifest format 2.1; update
   typing for current mypy and keep Ruff's established Python source scope.
 - Integrate all three CodeQL action updates together at v4.39.0.
+- Upgrade the Python 3.11 Flax profile to 0.12.8, using the supported JAX tracing
+  API. Keep convergence thresholds unchanged and generate two sequential NumPyro
+  chains, each with 500 warmup and 1,000 retained draws; record actual sampler
+  settings with the results.
+- Use bnlearn 1.1's supported call signatures and Gradio's default design-studio
+  theme. Native Ray fixtures disable automatic uv environment deployment and
+  verify the installed interpreter, keeping the bounded collection test local.
 - Check streaming deadline reuse directly over real HTTP, with controlled
   provider time, instead of a runner-sensitive subsecond wall-clock assertion.
   Expired streams still fail; an injected deadline-renewal control is rejected.
