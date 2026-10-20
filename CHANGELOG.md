@@ -47,6 +47,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 - Use bnlearn 1.1's supported call signatures and Gradio's default design-studio
   theme. Restore cached GUI test-stub bindings and verify native module identity. Native Ray fixtures disable automatic uv environment deployment and
   verify the installed interpreter, keeping the bounded collection test local.
+- Gate current Q7 render provenance and generated-scaffold freshness in the
+  paired Python 3.14 row, using the existing runtime/source custody checks.
+  Source re-pins include authentic Q7 refresh and fresh native validation;
+  historical native receipts retain their original bytes and scope.
 - Check streaming deadline reuse directly over real HTTP, with controlled
   provider time, instead of a runner-sensitive subsecond wall-clock assertion.
   Expired streams still fail; an injected deadline-renewal control is rejected.

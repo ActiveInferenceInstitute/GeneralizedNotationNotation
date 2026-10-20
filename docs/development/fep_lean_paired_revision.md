@@ -26,7 +26,7 @@ In the mirror direction, GEO_INFER pins GNN from its own checkout via its
 2. Checks out fep_lean at exactly the pinned SHA.
 3. Records both checkout revisions plus the pin file as receipts, retained as
    workflow artifacts (`if: always()`, mirroring GEO's receipt semantics).
-4. Installs each Python 3.11/3.12 row once with `uv sync --frozen`, explicit
+4. Installs each Python 3.11/3.12/3.14 row once with `uv sync --frozen`, explicit
    `UV_PYTHON` and `UV_PROJECT_ENVIRONMENT`. Every subsequent invocation uses
    the workflow's frozen, no-sync uv command and explicit matrix Python.
    Unqualified `uv run` can select the companion's local `.python-version`
@@ -59,8 +59,20 @@ their fixture paths. They reject wrong interpreters/environments, replacement
 or modified environments, source revision/byte drift, changes during execution,
 nonzero CLI exits, missing/wrong receipts and changed output bytes. The fixture
 CLI checks the custody mechanism; the subsequent hosted stages execute the
-actual pinned bridge. Run the controls with Python 3.11 or 3.12 and place
+actual pinned bridge. Run the controls with Python 3.11, 3.12 or 3.14 and place
 `TMPDIR` on the storage volume being qualified.
+
+The Python 3.14 row then runs the pinned Q7 verifier's read-only
+`source_snapshot` against the same GNN checkout. It requires all five prior
+runtime receipts, checks current render provenance, input/fixture equality,
+owner maps, scaffold and generated-manifest freshness, and preserves the same
+installed-environment and tracked-source baseline before and after execution.
+The source snapshot and failure diagnostics are retained with the pair receipts.
+This closes the gap where a source-pin/emission refresh could leave Q7's current
+render metadata stale while ordinary bridge status and emission checks passed.
+The Q7 parser accepts CPython 3.14; the 3.11/3.12 bridge compatibility rows remain.
+This additional gate performs no Lean compilation or generated-runner execution
+and keeps `native_claim_ready: false`.
 
 Strictness mirrors GEO: the job is blocking. A red run is the drift signal —
 the pair must be re-pinned together, not the check suppressed.
@@ -118,8 +130,15 @@ this exact order:
    Its workflow must fetch an exact commit; an unpublished local SHA cannot
    establish hosted pairing. Keep main publication pending and make no further
    owner-file edits after this source/artifact freeze.
-3. **fep_lean bridge re-pin**: bridge pin → emit `--refresh-digests` → emit
-   `--check` (finite + continuous) → PR → merge on the fep_lean side.
+3. **fep_lean bridge and current-Q7 re-pin**: bridge pin → emit
+   `--refresh-digests` → emit `--check` (finite + continuous) → canonical Q7
+   `refresh_render.py` against that exact GNN checkout → Q7 probe generation
+   and `--check` → fresh current Q7 native compilation and retained-check validation at a new
+   receipt path → PR → merge on the fep_lean side. Include the current fixture,
+   render provenance and generated manifest; ordinary bridge checks alone do
+   not validate these derived inputs. Preserve historical native receipts and
+   the reviewed runner/scaffold constraints. Do not hand-edit their hashes or
+   promote an earlier native receipt to the new source pair.
 4. **GNN pin bump as the FINAL commit**: bump `.github/fep-lean-pair.json` to
    the new reviewed fep_lean revision in the final commit, then push that final
    revision. The earlier draft-branch publication only supplies the fetchable

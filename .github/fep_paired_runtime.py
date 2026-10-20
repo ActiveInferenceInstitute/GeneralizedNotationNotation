@@ -11,12 +11,15 @@ import contextlib
 import hashlib
 import json
 import os
+import runpy
 import subprocess
 import sys
 from pathlib import Path
 from typing import Any
 
 STAGES = ("installed", "status", "finite", "continuous", "final")
+Q7_STAGE = "q7-source"
+Q7_CONTRACT = "specs/gnn-bridge-q7-continuous-ou-proof/verify_native.py"
 
 
 def digest(path: Path) -> str:
@@ -154,6 +157,20 @@ def accepted(path: Path, stage: str, baseline: dict[str, Any]) -> dict[str, Any]
             payload.get("model") != stage or payload.get("read_only") is not True
         ):
             raise ValueError("incorrect emit-check output")
+    if stage == Q7_STAGE:
+        output = path.parent / "q7-current-source.json"
+        payload = read(output)
+        if (
+            result.get("exit_code") != 0
+            or result.get("verifier_source")
+            != str(Path(baseline["fep"]["root"]) / Q7_CONTRACT)
+            or result.get("command") != ["source_snapshot", baseline["gnn"]["root"]]
+            or digest(output) != result.get("output_sha256")
+            or payload.get("status") != "ok"
+            or payload.get("native_claim_ready") is not False
+            or not isinstance(payload.get("source_snapshot"), dict)
+        ):
+            raise ValueError("missing or incompatible current Q7 source evidence")
     return result
 
 
@@ -165,6 +182,8 @@ def execute(args: argparse.Namespace) -> None:
     }
     path = args.receipts / f"runtime-{args.stage}.json"
     try:
+        if args.stage == Q7_STAGE and args.expected_python != "3.14":
+            raise ValueError("current Q7 source checks require CPython 3.14")
         before = custody(args)
         receipt["before"] = before
         if args.stage == "installed":
@@ -177,7 +196,10 @@ def execute(args: argparse.Namespace) -> None:
                 raise ValueError(
                     "installed interpreter, environment or source identity changed"
                 )
-            for stage in STAGES[: STAGES.index(args.stage)]:
+            prior = (
+                STAGES if args.stage == Q7_STAGE else STAGES[: STAGES.index(args.stage)]
+            )
+            for stage in prior:
                 accepted(args.receipts / f"runtime-{stage}.json", stage, baseline)
             if args.stage != "final":
                 from fep_lean import cli
@@ -185,23 +207,43 @@ def execute(args: argparse.Namespace) -> None:
                 module = Path(cli.__file__).resolve()
                 if not module.is_relative_to(args.fep_root / "src/fep_lean"):
                     raise ValueError(f"installed CLI source mismatch: {module}")
-                command = bridge_command(
-                    str(args.fep_root), str(args.gnn_root), args.stage
-                )
-                output = args.receipts / f"bridge-{args.stage}.json"
-                with (
-                    output.open("x", encoding="utf-8") as stream,
-                    contextlib.redirect_stdout(stream),
-                ):
-                    code = cli.main(command)
-                receipt.update(
-                    cli_source=str(module),
-                    command=command,
-                    exit_code=code,
-                    output_sha256=digest(output),
-                )
-                if code != 0:
-                    raise ValueError(f"bridge {args.stage} exited {code}")
+                if args.stage == Q7_STAGE:
+                    verifier = args.fep_root / Q7_CONTRACT
+                    contract = runpy.run_path(str(verifier), run_name="fep_current_q7")
+                    snapshot = contract["VERIFICATION"].source_snapshot(args.gnn_root)
+                    output = args.receipts / "q7-current-source.json"
+                    write(
+                        output,
+                        {
+                            "status": "ok",
+                            "native_claim_ready": False,
+                            "source_snapshot": snapshot,
+                        },
+                    )
+                    receipt.update(
+                        verifier_source=str(verifier),
+                        command=["source_snapshot", str(args.gnn_root)],
+                        exit_code=0,
+                        output_sha256=digest(output),
+                    )
+                else:
+                    command = bridge_command(
+                        str(args.fep_root), str(args.gnn_root), args.stage
+                    )
+                    output = args.receipts / f"bridge-{args.stage}.json"
+                    with (
+                        output.open("x", encoding="utf-8") as stream,
+                        contextlib.redirect_stdout(stream),
+                    ):
+                        code = cli.main(command)
+                    receipt.update(
+                        cli_source=str(module),
+                        command=command,
+                        exit_code=code,
+                        output_sha256=digest(output),
+                    )
+                    if code != 0:
+                        raise ValueError(f"bridge {args.stage} exited {code}")
         receipt["after"] = custody(args)
         if receipt["after"] != before:
             raise ValueError("runtime or source changed during bridge execution")
@@ -217,8 +259,10 @@ def execute(args: argparse.Namespace) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("stage", choices=STAGES)
-    parser.add_argument("--expected-python", choices=("3.11", "3.12"), required=True)
+    parser.add_argument("stage", choices=(*STAGES, Q7_STAGE))
+    parser.add_argument(
+        "--expected-python", choices=("3.11", "3.12", "3.14"), required=True
+    )
     for flag in ("environment", "gnn-root", "fep-root", "receipts"):
         parser.add_argument(f"--{flag}", type=Path, required=True)
     parser.add_argument("--gnn-revision", required=True)

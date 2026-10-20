@@ -124,6 +124,15 @@ class RuntimeCustodyTests(unittest.TestCase):
         self.assertEqual(receipt["before"]["runtime"]["actual_python"], self.version)
         self.assertEqual(receipt["before"]["runtime"]["prefix"], str(self.environment))
         self.assertFalse(receipt["native_claim_ready"])
+        # Successful bridge commands alone cannot establish current Q7 freshness.
+        self.run_stage("q7-source", success=False)
+        rejected = json.loads(
+            (self.receipts / "runtime-q7-source-failed.json").read_text()
+        )
+        self.assertIn(
+            "verify_native.py" if self.version == "3.14" else "CPython 3.14",
+            rejected["error"],
+        )
 
     def test_wrong_requested_interpreter_rejected(self):
         self.run_stage(

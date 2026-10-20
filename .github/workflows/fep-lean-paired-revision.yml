@@ -43,7 +43,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python: ["3.11", "3.12"]
+        python: ["3.11", "3.12", "3.14"]
     env:
       UV_PYTHON: ${{ matrix.python }}
       UV_PROJECT_ENVIRONMENT: ${{ github.workspace }}/fep-lean/.venv
@@ -113,6 +113,18 @@ jobs:
               --fep-revision "${{ steps.pair.outputs.revision }}" \
               --receipts "$GITHUB_WORKSPACE/receipts"
           done
+      - name: Current Q7 provenance and scaffold freshness
+        if: matrix.python == '3.14'
+        run: |
+          uv run --project fep-lean --frozen --no-sync --python "$UV_PYTHON" \
+            python gnn/.github/fep_paired_runtime.py q7-source \
+            --expected-python "$UV_PYTHON" \
+            --environment "$UV_PROJECT_ENVIRONMENT" \
+            --gnn-root "$GITHUB_WORKSPACE/gnn" \
+            --gnn-revision "${{ github.event.pull_request.head.sha || github.sha }}" \
+            --fep-root "$GITHUB_WORKSPACE/fep-lean" \
+            --fep-revision "${{ steps.pair.outputs.revision }}" \
+            --receipts "$GITHUB_WORKSPACE/receipts"
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
