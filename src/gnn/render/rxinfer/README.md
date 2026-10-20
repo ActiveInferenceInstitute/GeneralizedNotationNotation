@@ -33,6 +33,15 @@ Generated scripts import RxInfer.jl and write `simulation_results.json` with sch
 The retired TOML emitter (`toml_generator.py`) was deleted; the topology
 parsing helpers live on in `model_contracts.py`, pinned by contract tests.
 
+
+The strategy templates do not admit every specification with the same model kind.
+Current semantic hierarchical/planning contracts, nonstationary transitions,
+unsupported coupled/hybrid continuous compositions and incomplete native agent
+blocks return explicit unsupported outcomes. The hierarchical native template is
+exercised with nonsemantic synthetic fixtures; it does not establish execution of
+the authored temporal-hierarchy exemplars. See the maintained
+[scientific contracts](../../../../docs/development/backend_scientific_contracts.md) and current render receipts.
+
 ## Generated-script outputs
 
 Each rendered `<model>_rxinfer.jl` script emits a required result file and up to
