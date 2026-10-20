@@ -40,6 +40,14 @@ jobs:
       JULIA_NUM_PRECOMPILE_TASKS: "2"
       GKSwstype: "100"
       OLLAMA_MODEL: "gemma3:1b"
+      OLLAMA_NUM_CTX: "8192"
+      OLLAMA_SEED: "42"
+      GNN_LLM_BATCH_PROMPTS: "1"
+      GNN_LLM_RESPONSE_WORDS: "40"
+      GNN_LLM_ANSWER_MAX_CHARS: "1000"
+      GNN_LLM_PROMPT_TIMEOUT: "180"
+      GNN_LLM_MAX_TOKENS: "4096"
+      GNN_LLM_CHUNK_BYTES: "65536"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -107,25 +115,20 @@ jobs:
           ollama pull "$OLLAMA_MODEL"
           ollama --version
 
-      - name: Select the explicit local LLM acceptance profile
+      - name: Record the explicit local LLM acceptance profile
         run: |
           uv run --frozen --no-sync python - <<'PYPROFILE'
+          import json
           import os
           from pathlib import Path
-          import yaml
-          config = yaml.safe_load(Path("input/config.yaml").read_text())
-          config["llm"].update(
-              batch_prompts=True,
-              response_words=40,
-              answer_max_chars=1000,
-              prompt_timeout=180,
-              timeout_seconds=600,
-              max_tokens=4096,
-              source_chunk_bytes=65536,
-              ollama_options={"num_ctx": 8192, "seed": 42},
-          )
-          (Path(os.environ["RUNNER_TEMP"]) / "gridworld-config.yaml").write_text(
-              yaml.safe_dump(config, sort_keys=False)
+          keys = ["OLLAMA_MODEL", "OLLAMA_NUM_CTX", "OLLAMA_SEED",
+                  "GNN_LLM_BATCH_PROMPTS", "GNN_LLM_RESPONSE_WORDS",
+                  "GNN_LLM_ANSWER_MAX_CHARS", "GNN_LLM_PROMPT_TIMEOUT",
+                  "GNN_LLM_MAX_TOKENS", "GNN_LLM_CHUNK_BYTES"]
+          profile = {"environment": {key: os.environ[key] for key in keys},
+                     "llm_timeout_seconds": 600}
+          (Path(os.environ["RUNNER_TEMP"]) / "gridworld-profile.json").write_text(
+              json.dumps(profile, indent=2) + "\n"
           )
           PYPROFILE
 
@@ -133,15 +136,19 @@ jobs:
         run: |
           set -euo pipefail
           status=0
-          uv run --frozen --no-sync python src/gnn/main.py --config-file "$RUNNER_TEMP/gridworld-config.yaml" --target-dir input/gnn_files/pomdp_gridworld --output-dir "$GRIDWORLD_OUTPUT" --frameworks all --verbose 2>&1 | tee "$RUNNER_TEMP/gridworld.log" || status=$?
+          uv run --frozen --no-sync python src/gnn/main.py --target-dir input/gnn_files/pomdp_gridworld --output-dir "$GRIDWORLD_OUTPUT" --frameworks all --llm-timeout 600 --verbose 2>&1 | tee "$RUNNER_TEMP/gridworld.log" || status=$?
           # Thin-orchestrator exit contract (see the `just gridworld` recipe):
           # 0 = success, 2 = success with warnings.
           if [ "$status" -ne 0 ] && [ "$status" -ne 2 ]; then
             exit "$status"
           fi
+          test -s "$GRIDWORLD_OUTPUT/00_pipeline_summary/pipeline_execution_summary.json"
 
       - name: Gate on the POMDP GridWorld output contract
         run: uv run --frozen --no-sync python scripts/check_pomdp_gridworld_outputs.py "$GRIDWORLD_OUTPUT"
+
+      - name: Verify frozen dependency inputs
+        run: git diff --exit-code -- pyproject.toml uv.lock uv.toml src/gnn/execute/rxinfer/Project.toml src/gnn/execute/rxinfer/Manifest.toml src/gnn/execute/activeinference_jl/Project.toml src/gnn/execute/activeinference_jl/Manifest.toml
 
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
@@ -154,7 +161,7 @@ jobs:
             ${{ env.GRIDWORLD_OUTPUT }}/13_llm_output/
             ${{ env.GRIDWORLD_OUTPUT }}/16_analysis_output/
             ${{ runner.temp }}/gridworld.log
-            ${{ runner.temp }}/gridworld-config.yaml
+            ${{ runner.temp }}/gridworld-profile.json
             ${{ runner.temp }}/ollama.log
           if-no-files-found: warn
           retention-days: 7
