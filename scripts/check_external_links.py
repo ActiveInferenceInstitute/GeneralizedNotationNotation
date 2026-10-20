@@ -261,7 +261,7 @@ def _failure_codes(
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "--strict", action="store_true", help="Exit 1 when dead links are found."
+        "--strict", action="store_true", help="Fail on every unexempted failed request."
     )
     parser.add_argument(
         "--fail-on-dead",
@@ -328,7 +328,9 @@ def main() -> int:
         if c.startswith("ERR") or (c.isdigit() and int(c) >= args.min_status)
     }
     interesting -= BOT_BLOCKED
-    if args.strict or args.fail_on_dead:
+    if args.fail_on_dead:
+        interesting |= set(by_code) & BOT_BLOCKED
+    elif args.strict:
         interesting |= bot_blocked
     dead = 0
     for code in sorted(

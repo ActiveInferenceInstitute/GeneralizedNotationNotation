@@ -98,7 +98,9 @@ class TestBotBlockedCodes:
         by_code = {"403": ["https://doi.org/x", "https://evil.example.com/y"]}
         assert checker._bot_blocked_codes(by_code, ["doi.org"]) == {"403"}
 
-    def test_non_bot_codes_never_exempted(self, checker: Any) -> None:
+    def test_non_bot_codes_never_exempted(
+        self, checker: Any, monkeypatch: pytest.MonkeyPatch, capsys: Any
+    ) -> None:
         by_code = {"404": ["https://gone.example.com/x"]}
         assert checker._bot_blocked_codes(by_code, ["gone.example.com"]) == set()
         # 404 is genuinely dead — outside BOT_BLOCKED, unaffected by allow-hosts
@@ -120,6 +122,22 @@ class TestBotBlockedCodes:
         assert checker._failure_codes(
             responses, True, True, ["blocked.example.org"]
         ) == set(responses) - {"200", "403"}
+
+        # Access exemptions must not erase inconclusive observations in dead-only mode.
+        import sys
+
+        url = "https://doi.org/blocked"
+        monkeypatch.setattr(checker, "collect", lambda: {url: ["guide.md"]})
+        monkeypatch.setattr(checker, "check", lambda url, timeout: ("403", url))
+        monkeypatch.setattr(
+            sys,
+            "argv",
+            ["check_external_links.py", "--fail-on-dead", "--allow-hosts", "doi.org"],
+        )
+        assert checker.main() == 0
+        output = capsys.readouterr().out
+        assert f"403 {url}" in output
+        assert "inconclusive" in output
 
 
 class TestShouldSkipUrl:
