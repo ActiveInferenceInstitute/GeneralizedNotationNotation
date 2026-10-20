@@ -1,6 +1,6 @@
 # GeneralizedNotationNotation (GNN)
 
-**Last Updated**: 2026-10-08
+**Last Updated**: 2026-10-20
 
 <div align="center">
 

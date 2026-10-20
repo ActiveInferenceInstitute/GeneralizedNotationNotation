@@ -133,7 +133,7 @@ refusal. These consumer tests do not execute Julia or establish native inference
 
 ---
 
-**Last Updated**: 2026-10-08
+**Last Updated**: 2026-10-20
 
 **Status**: ✅ Production Ready
 

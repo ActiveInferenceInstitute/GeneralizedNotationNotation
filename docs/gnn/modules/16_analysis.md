@@ -44,7 +44,7 @@ The RxInfer analyzer (`src/gnn/analysis/rxinfer/`) is the deepest of these and i
 
 **Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
-**Last Updated**: 2026-10-02
+**Last Updated**: 2026-10-20
 
 ---
 
@@ -443,7 +443,7 @@ See [pyproject.toml](../../../pyproject.toml).
 
 ---
 
-**Last Updated**: 2026-10-02
+**Last Updated**: 2026-10-20
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
 **Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)

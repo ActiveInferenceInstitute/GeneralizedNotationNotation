@@ -704,7 +704,7 @@ uv run --extra dev python scripts/run_v3_orchestration_acceptance.py
 
 ---
 
-**Last Updated**: 2026-10-02
+**Last Updated**: 2026-10-20
 **Pipeline Version**: [pyproject.toml](pyproject.toml) (canonical)
 **Total Steps**: 25 (0-24)
 **Status**: Maintained

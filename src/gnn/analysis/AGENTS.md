@@ -12,7 +12,7 @@
 
 **Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
-**Last Updated**: 2026-10-05
+**Last Updated**: 2026-10-20
 
 ---
 
@@ -603,7 +603,7 @@ framework names normalize via `viz_schema._normalize_framework_name`
 
 ---
 
-**Last Updated**: 2026-10-05
+**Last Updated**: 2026-10-20
 **Maintainer**: GNN Pipeline Team
 **Status**: Production Ready
 **Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
