@@ -19,15 +19,20 @@ python src/gnn/1_setup.py --target-dir input/gnn_files --output-dir output --ver
 python src/gnn/main.py --only-steps 1 --verbose
 
 # Using uv (recommended)
-uv sync                    # Core dependencies (includes Step 12 Python backends: jax, numpyro, discopy)
-uv sync --extra dev        # Development tools
-uv sync --all-extras       # Everything
-uv pip install torch       # Optional PyTorch backend while no patched torch release exists
+uv sync                    # Core dependencies plus the default dev tooling group
+uv sync --no-dev           # Runtime dependencies without development tooling
+uv sync --extra dev        # Development profile plus the CmdStanPy dev extra
+uv sync --extra torch      # Supported optional PyTorch backend
+uv sync --extra bnlearn    # Supported optional Bayesian-network backend
+uv sync --all-extras       # Every declared optional extra
 ```
 
 ## Optional Dependency Groups
 
-These groups match `[project.optional-dependencies]` in `pyproject.toml`:
+The default PEP 735 `dev` dependency group supplies test/lint/docs tools.
+The separate `dev` extra adds CmdStanPy. Optional extras are discovered from
+installed `Provides-Extra` metadata, with a source-manifest fallback;
+`pyproject.toml` is the authoritative registry. Main profiles include:
 
 | Group | Key Packages | Purpose |
 | ----- | ------------ | ------- |
@@ -35,18 +40,27 @@ These groups match `[project.optional-dependencies]` in `pyproject.toml`:
 | `audio` | librosa, soundfile, pedalboard | Audio generation |
 | `gui` | gradio | GUI interface |
 | `ml-ai` | transformers, scipy, scikit-learn | Machine learning extensions |
-| Manual install | torch, bnlearn | Optional backends excluded from the lock while Torch has no patched advisory release |
+| `torch`, `bnlearn` | torch, bnlearn | Optional backends in the universal lock |
+| `api` | fastapi, uvicorn | HTTP API |
+| `stan` | cmdstanpy | Stan driver; native CmdStan is separate |
+| `cpomdp`, `thrml`, `ngclearn` | cpomdp, thrml, ngclearn | Explicit experimental backends; ngclearn needs Python >=3.12 |
+| `geo-infer` | h3 | Geospatial indexing |
 | `graphs` | graphviz | Graphviz bindings |
-| `dev` | pytest-*, mypy, ruff | Development tools |
+| Default `dev` group | pytest-*, mypy, ruff | Development tools |
+| `dev` extra | cmdstanpy | Development profile Stan driver |
 | `research` | jupyterlab, sympy, numba, cython | Research tools |
 | `scaling` | dask, distributed, ray | Parallel processing |
 | `all` | Named optional groups above | Full optional installation |
 
 ## Environment Requirements
 
-- **Python**: 3.11+ (recommended 3.12.x or 3.13.x)
-- **Package manager**: uv (required)
-- **Core deps**: numpy, networkx, pyyaml, jsonschema
+- **Python**: `>=3.11,<3.15`; default 3.14.8, with named compatibility profiles in the root README
+- **Package manager**: uv 0.13.4 (required by `uv.toml`)
+- **Core deps**: the scientific/backend/client requirements in `pyproject.toml`; the frozen lock selects their versions
+
+The GUI/all-extras profiles use the documented Gradio/Pillow 13 uv override.
+See [runtime exceptions](../../../README.md#runtime-defaults-and-required-profiles);
+plain pip cannot resolve those extras while upstream Gradio caps Pillow below 13.
 
 ## Troubleshooting
 
@@ -55,7 +69,7 @@ These groups match `[project.optional-dependencies]` in `pyproject.toml`:
 | `uv: command not found` | `curl -LsSf https://astral.sh/uv/install.sh \| sh` |
 | PyMDP import fails | `uv sync` |
 | matplotlib missing | `uv sync` |
-| CUDA not detected | Install PyTorch manually, then check `torch.cuda.is_available()` |
+| CUDA not detected | Install the `torch` extra, inspect `torch.cuda.is_available()`, and qualify any separately selected CUDA build |
 
 
 ## MCP Tools

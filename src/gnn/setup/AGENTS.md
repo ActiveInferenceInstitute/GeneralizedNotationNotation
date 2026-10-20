@@ -61,8 +61,8 @@ Default path: `uv sync` for core deps. Step 12 core backends (JAX, NumPyro,
 DisCoPy), interactive visualization (pandas, plotly, seaborn, h5py), and LLM
 clients are in `[project.dependencies]` and therefore installed without any
 `--extra`. PyTorch and bnlearn are still supported by render/execute code paths,
-but remain manual installs while the current Torch advisory has no patched
-release. `SETUP_DEFAULT_PIPELINE_EXTRAS` is empty by default because core
+through the declared `torch` and `bnlearn` extras. Patched Torch is resolved
+in the frozen lock. `SETUP_DEFAULT_PIPELINE_EXTRAS` is empty by default because core
 dependencies already cover the default pipeline runtime.
 Step 22 (GUI) additionally needs `uv sync --extra gui` to pull Gradio.
 
@@ -168,13 +168,17 @@ SETUP_DEFAULT_PIPELINE_EXTRAS: tuple[str, ...] = ()  # No extras needed by defau
 
 ### Optional Groups
 
-`OPTIONAL_GROUPS` (also in `constants.py`) names the installable extra groups: `dev`, `api`, `ml-ai`, `audio`, `gui`, `graphs`, `research`, `scaling`, and `all`.
+`OPTIONAL_GROUPS` in `constants.py` derives installable extras from installed
+`Provides-Extra` metadata, with a source-manifest fallback. Consult
+`pyproject.toml` for the complete registry, including `torch`, `bnlearn`,
+`stan`, `cpomdp`, `thrml`, `ngclearn` and `geo-infer`. The default PEP 735
+`dev` tooling group and the CmdStanPy `dev` extra are separate surfaces.
 
 ---
 
 ## Usage Examples
 
-All setup helpers are exported from the package root. Prefer `from setup import …`.
+All setup helpers are exported from the package root. Prefer `from gnn.setup import …`.
 
 ```python
 from gnn.setup import (
