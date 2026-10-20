@@ -40,6 +40,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 - Support pytest 9.1 class fixture rules and Julia manifest format 2.1; update
   typing for current mypy and keep Ruff's established Python source scope.
 - Integrate all three CodeQL action updates together at v4.39.0.
+- Check streaming deadline reuse directly over real HTTP, with controlled
+  provider time, instead of a runner-sensitive subsecond wall-clock assertion.
+  Expired streams still fail; an injected deadline-renewal control is rejected.
 
 ### Discrete filtering correctness (2026-10-18)
 
