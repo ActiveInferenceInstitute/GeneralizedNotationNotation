@@ -14,7 +14,7 @@ This project demonstrates multi-agent trajectory planning using probabilistic in
 
 ## RxInfer 6 compatibility boundary
 
-The local project now resolves RxInfer **6.0.2**. Both Halfspace definitions use
+The local project now resolves RxInfer **6.1.0**. Both Halfspace definitions use
 `@define_factor_node` / `@define_message_update_rule`, and nonlinear
 approximations use `@algorithm`. The production environment's
 [native checks](../../../src/gnn/execute/rxinfer/test_models.jl) verify the custom
@@ -60,8 +60,8 @@ acceptance must be established independently. Run production GNN via the
 
 ### Prerequisites
 
-- Julia 1.10 or newer (the committed manifest is resolved with Julia 1.12.7)
-- RxInfer 6.0.2 / ReactiveMP 7, Plots, LinearAlgebra, LogExpFunctions, StableRNGs; dependencies are in the local Project/Manifest.
+- Julia 1.10 or newer (the committed manifest is resolved with Julia 1.13.2)
+- RxInfer 6.1.0 / ReactiveMP 7, Plots, LinearAlgebra, LogExpFunctions, StableRNGs; dependencies are in the local Project/Manifest.
 
 ### Quick Start
 

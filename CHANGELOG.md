@@ -9,14 +9,32 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ### RxInfer 6 compatibility and dependency security (2026-10-20)
 
-- Production Julia metadata and lock now target RxInfer 6.0.2 / ReactiveMP 7;
+- Production Julia metadata and lock now target RxInfer 6.1.0 / ReactiveMP 7;
   the standalone trajectory example migrates its custom node/rule and algorithm
   declarations. Runtime TOML execution no longer installs missing packages.
 - Require aiohttp >=3.14.4 in metadata, readiness validation and repair messages;
-  the targeted lock resolves 3.14.5, addressing the three open aiohttp advisories.
+  the refreshed lock resolves 3.14.5, addressing the three open aiohttp advisories.
 - Add path-scoped native Julia compatibility checks with independent categorical
   and Gaussian numerical witnesses, structured-family inference and custom rules.
   Documentation/local gates reuse their installed frozen environment.
+
+### CI and current compatible runtimes (2026-10-20)
+
+- Refresh compatible Python dependencies with uv 0.13.4 and all three Julia
+  manifests with Julia 1.13.2. Admit JAX 0.12.0 after native probes; preserve
+  the Python/HDF5, PyMDP/Flax and ActiveInference.jl/Distributions exceptions.
+- Give deterministic documentation/terminology and repository checks one
+  workflow owner, preserving test selections, thresholds and required-status
+  aggregation. Cache versioned Julia package inputs while rerunning all tests.
+- Provision both Julia environments and Ollama 0.40.6 with the default local
+  model for the full 25-step GridWorld check. Retain fresh summaries, pytest
+  output, LLM observations and daemon logs for failures.
+- Correct maintained external URLs. Weekly/opt-in link audits fail on 404/410
+  and retain all inconclusive network/bot/rate-limit observations; the existing
+  all-findings `--strict` policy remains available.
+- Support pytest 9.1 class fixture rules and Julia manifest format 2.1; update
+  typing for current mypy and keep Ruff's established Python source scope.
+- Integrate all three CodeQL action updates together at v4.39.0.
 
 ### Discrete filtering correctness (2026-10-18)
 
@@ -652,7 +670,7 @@ silently normalize source values or treat metadata as execution evidence.
   the artifact exists.
 - **Julia environment hygiene.** Both committed Julia projects carry real
   generated package UUIDs with matching package source files, one shared
-  `julia = "1.10"` compat floor, and manifests regenerated with Julia 1.12.7;
+  `julia = "1.10"` compat floor, and manifests regenerated with Julia 1.13.2;
   the ActiveInference `Distributions` pin is re-checked and kept (archived
   DistributionsAD.jl has shipped no ReverseDiff-extension fix).
 - **Manifest triage.** The continuous model family in
@@ -1868,7 +1886,7 @@ harness measurement).
 > executor; Step 12 summaries merge across input folders; the Julia pre-exec
 > gate no longer blocks scripts on a toolchain-less launcher.
 >
-> Verified end to end on macOS with Julia 1.12.7 (RxInfer 5.5.0,
+> Verified end to end on macOS with Julia 1.13.2 (RxInfer 5.5.0,
 > ActiveInference.jl 0.1.2), CmdStan 2.39 and an ephemeral torch: 29 files,
 > 249 renders OK / 0 failed / 12 unsupported; 194 executions OK / 0 failed /
 > 55 dependency skips (torch, bnlearn); PyTorch 29/29 via

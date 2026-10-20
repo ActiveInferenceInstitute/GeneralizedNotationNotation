@@ -23,6 +23,9 @@ Design notes:
   templates, ``server:port``) are skipped by design — they are configuration
   examples, not links.
 - Findings are grouped by status code; 4xx/000 are the interesting ones.
+- ``--fail-on-dead`` fails on HTTP 404/410 while retaining blocked, transient
+  and timed-out requests as inconclusive diagnostics. It never certifies those
+  inconclusive URLs. ``--strict`` retains its stronger all-findings contract.
 """
 
 from __future__ import annotations
@@ -238,10 +241,32 @@ def _bot_blocked_codes(
     }
 
 
+def _failure_codes(
+    by_code: dict[str, list[str]],
+    strict: bool,
+    fail_on_dead: bool,
+    allow_hosts: list[str],
+) -> set[str]:
+    """Keep observed dead links separate from inconclusive access failures."""
+    if strict:
+        failures = {
+            code
+            for code in by_code
+            if code.startswith("ERR") or (code.isdigit() and int(code) >= 400)
+        }
+        return (failures - BOT_BLOCKED) | _bot_blocked_codes(by_code, allow_hosts)
+    return set(by_code) & {"404", "410"} if fail_on_dead else set()
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--strict", action="store_true", help="Exit 1 when dead links are found."
+    )
+    parser.add_argument(
+        "--fail-on-dead",
+        action="store_true",
+        help="Fail on HTTP 404/410; report other failures as inconclusive.",
     )
     parser.add_argument(
         "--concurrency", type=int, default=16, help="Parallel checks (default: 16)."
@@ -303,7 +328,7 @@ def main() -> int:
         if c.startswith("ERR") or (c.isdigit() and int(c) >= args.min_status)
     }
     interesting -= BOT_BLOCKED
-    if args.strict:
+    if args.strict or args.fail_on_dead:
         interesting |= bot_blocked
     dead = 0
     for code in sorted(
@@ -320,9 +345,15 @@ def main() -> int:
     if not dead:
         print("no findings above the configured threshold")
 
-    if args.strict and dead:
-        print(f"\ncheck_external_links: {dead} finding(s); exiting 1 (--strict).")
+    failures = _failure_codes(by_code, args.strict, args.fail_on_dead, args.allow_hosts)
+    failed = sum(len(by_code[code]) for code in failures)
+    if failed:
+        print(f"\ncheck_external_links: {failed} failing finding(s); exiting 1.")
         return 1
+    if args.fail_on_dead:
+        print("\nNo HTTP 404/410 responses. Other failed requests remain inconclusive;")
+        print("this result does not establish that every external URL is accessible.")
+        return 0
     print(
         "\n(non-strict: exit 0; use --strict to fail — triage bot-blocked hosts first)"
     )

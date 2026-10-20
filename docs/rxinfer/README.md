@@ -92,7 +92,7 @@ This directory contains documentation, scripts, and resources for integrating GN
 - **Variational Message Passing**: Optimized inference algorithms over factor graphs
 - **Factor Graph Models**: Natural representation of Active Inference models
 - **Reproducible Execution**: A committed Julia environment
-  (`Project.toml` + `Manifest.toml` pinning RxInfer 6.0.2 under
+  (`Project.toml` + `Manifest.toml` pinning RxInfer 6.1.0 under
   `src/gnn/execute/rxinfer/`) with `--project=<env>` execution
 - **Multi-agent Support**: Declared native per-agent models and independent Gaussian agents; shared post-hoc signals do not establish coupled latent inference.
 
@@ -105,7 +105,7 @@ The GNN pipeline translates GNN models to RxInfer.jl through:
 3. **Code Generation**: Julia code generation with RxInfer.jl `@model` + `infer()` API
    (emitted by `src/gnn/render/rxinfer/rxinfer_renderer.py`)
 4. **Environment Setup**: Committed `Project.toml` + `Manifest.toml` under
-   `src/gnn/execute/rxinfer/` pins RxInfer 6.0.2; `setup_environment.jl` uses
+   `src/gnn/execute/rxinfer/` pins RxInfer 6.1.0; `setup_environment.jl` uses
    `Pkg.activate()` + `Pkg.instantiate()` (no runtime `Pkg.add`)
 5. **Validation**: Automated validation of generated code and inference results
 

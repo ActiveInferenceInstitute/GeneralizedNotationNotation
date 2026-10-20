@@ -1,7 +1,7 @@
 # Specification: Workflows
 
 The local default and primary ordinary test matrix now include Python 3.14,
-with exact uv 0.13.1. The named h5py/HDF5 host exception and removal checks are
+with exact uv 0.13.4. The named h5py/HDF5 host exception and removal checks are
 in root README.md. General docs/local/MCP/security jobs select 3.14; coupled
 3.12 required statuses and native/paired/manuscript/GUI rosters remain explicit
 compatibility or evidence profiles. Existing acceptance receipts retain their
@@ -20,7 +20,7 @@ The workflow system must:
 ## Components
 The module defines strict automation routines via YAML configuration:
 
-1. **`ci.yml`**: The primary test matrix (Python 3.11, 3.12, 3.13) that executes the Pytest suite, Ruff linting, MCP tool count assertions, and Bandit security scans, halting on critical code health violations.
+1. **`ci.yml`**: The primary test matrix (Python 3.11, 3.12, 3.13, 3.14) that executes the Pytest suite, Ruff linting, MCP tool count assertions, and Bandit security scans, halting on critical code health violations.
 2. **`actionlint.yml`**: Safeguards workflow logic by running static analysis on the YAML files themselves before integration.
 3. **`codeql.yml`**: Triggers GitHub's advanced CodeQL semantic scanning engine for deep security auditing.
 4. **`dependency-review.yml`**: A supply chain guardrail enforcing license compliance (denying AGPL) and halting high-severity CVE introductions on Pull Requests.
@@ -42,3 +42,11 @@ The module defines strict automation routines via YAML configuration:
 - **Resilience**: Every workflow must declare explicit `timeout-minutes` and granular `permissions`.
 - **Parallelism**: Implement appropriate `concurrency` groups to aggressively cancel redundant pipeline executions and conserve CI runner time.
 - **Determinism**: Dependency installation must strictly use `uv sync --frozen` or equivalent zero-drift package resolution commands to guarantee reproducible CI environments.
+
+Deterministic checks have one hosted owner: docs/anchors and terminology in
+`docs-audit.yml`; import boundaries, thin orchestrators, flag/dependency/validation
+and documentation path/pattern gates in `local-gates.yml`; Ruff, mypy, public
+contracts and focused scientific/MCP tests in `ci.yml` quality. Julia caches
+contain versioned package inputs and compiled code; each native test still runs.
+External 403/429, network and timeout observations are inconclusive, never proof
+that a URL is valid. `--strict` remains available to fail on every finding.

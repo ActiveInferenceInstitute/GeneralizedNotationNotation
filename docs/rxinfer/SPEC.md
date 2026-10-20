@@ -15,7 +15,7 @@ message-passing integration:
 - `variational_free_energy` is populated with genuine values (previously
   `Float64[]`); EFE and policy selection remain custom logic.
 - Execution uses a committed `Project.toml` + `Manifest.toml` pinning
-  RxInfer 6.0.2 under `src/gnn/execute/rxinfer/`, invoked via
+  RxInfer 6.1.0 under `src/gnn/execute/rxinfer/`, invoked via
   `julia --startup-file=no --project=src/gnn/execute/rxinfer <script>`.
   `setup_environment.jl` uses `Pkg.activate()` + `Pkg.instantiate()` — no
   runtime `Pkg.add`.

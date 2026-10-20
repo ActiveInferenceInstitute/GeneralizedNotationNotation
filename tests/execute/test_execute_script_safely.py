@@ -325,7 +325,7 @@ def test_julia_execution_command_pins_committed_project(framework: str) -> None:
     ]
 
 
-def test_rxinfer_manifest_pins_6_0_2() -> None:
+def test_rxinfer_manifest_pins_6_1_0() -> None:
     manifest = (
         Path(__file__).resolve().parents[2]
         / "src"
@@ -338,7 +338,7 @@ def test_rxinfer_manifest_pins_6_0_2() -> None:
     rxinfer_section = manifest.split("[[deps.RxInfer]]", maxsplit=1)[1].split(
         "[[deps.", maxsplit=1
     )[0]
-    assert 'version = "6.0.2"' in rxinfer_section
+    assert 'version = "6.1.0"' in rxinfer_section
 
 
 def test_dask_dispatch_without_distributed_applies_configured_retries(

@@ -126,7 +126,7 @@ SPM's comprehensive functionality, robust statistical foundations, and extensive
 [33] https://www.fieldtriptoolbox.org/getting_started/othersoftware/spm/
 [34] https://www.fil.ion.ucl.ac.uk/spm/docs/tutorials/vbm/VBM-getting-started/
 [35] https://arxiv.org/abs/2501.12081
-[36] https://www.fil.ion.ucl.ac.uk/spm/docs/spm12_manual.pdf
+[36] https://www.fil.ion.ucl.ac.uk/spm/doc/spm12_manual.pdf
 [37] https://www.numberanalytics.com/blog/spm-neuroimaging-analysis-techniques-applications
 [38] https://pmc.ncbi.nlm.nih.gov/articles/PMC1994117/
 [39] https://andysbrainbook.readthedocs.io/en/latest/CAT12/CAT12_Overview.html

@@ -1,7 +1,7 @@
 # Workflows Agent Guide
 
 The local default and primary ordinary test matrix now include Python 3.14,
-with exact uv 0.13.1. The named h5py/HDF5 host exception and removal checks are
+with exact uv 0.13.4. The named h5py/HDF5 host exception and removal checks are
 in root README.md. General docs/local/MCP/security jobs select 3.14; coupled
 3.12 required statuses and native/paired/manuscript/GUI rosters remain explicit
 compatibility or evidence profiles. Existing acceptance receipts retain their
@@ -22,7 +22,7 @@ Defines behavior and guardrails for workflows in this directory. Human index of 
 | `local-gates.yml` | Repository gates bind manuscript tokens, hydrated prose and figures, then check MCP/skills, imports, thin orchestrators, flags, dependencies, public validation and maintained documentation. PR inherited-drift qualification is limited to byte-identical base evidence; main/manual checks remain strict. |
 | `mcp-audit.yml` | MCP tool count ≥ `MCP_TOOL_FLOOR` audit on push/PR to `main`. |
 | `full-extras.yml` | Weekly all-extras suite: `uv sync --frozen --all-extras`, optional-import validation, full pytest (Python 3.12). |
-| `docs-audit.yml` | Strict Markdown audit when docs or `docs_audit.py` change. |
+| `docs-audit.yml` | Strict Markdown/anchor and repository/maintained-doc terminology audits on every push/PR; scheduled or explicitly requested manual external-link observations. |
 | `actionlint.yml` | Lint workflow YAML when `.github/workflows/**` changes. |
 | `dependency-review.yml` | PR gate: high-severity failures; AGPL deny list; PR comment summary on failure. |
 | `codeql.yml` | Python CodeQL: `init` → `uv sync --frozen --extra dev` → `analyze`; skips doc-only paths on push/PR; weekly Monday 04:28 UTC cron + `workflow_dispatch`. |
@@ -30,14 +30,14 @@ Defines behavior and guardrails for workflows in this directory. Human index of 
 | `custody-re-render.yml` | Daily cron 07:14 UTC + `workflow_dispatch`; report-only (no commit back). Fresh manuscript render via the `docxology/template` checkout (a real directory at `projects/active/`): template `stage_03_render` → record render-custody manifest → strict token gate → `tests/test_manuscript_latex_log.py`; receipts + rendered evidence uploaded as artifact. |
 | `fep-lean-paired-revision.yml` | Paired-revision CI for the fep_lean bridge pair: validates `.github/fep-lean-pair.json`, checks out fep_lean at the pinned SHA, runs fep_lean's read-only bridge surface (status, emit `--check` finite/continuous) against this GNN checkout; blocking. Canonical custody ordering: [docs/development/fep_lean_paired_revision.md](../../docs/development/fep_lean_paired_revision.md). |
 | `geo-infer-interchange.yml` | Blocking pinned GEO/GNN interchange on Python 3.11/3.12, retaining both source revisions, schema contracts, replay and artifact digests. Coordinate companion changes through the same paired-revision procedure. |
-| `rxinfer.yml` | Path-scoped native RxInfer 6.0.2/ReactiveMP 7 checks on Julia 1.12.7: exact categorical/Gaussian numerical witnesses, structured model inference, and migrated custom Halfspace rules. Frozen environment drift fails; logs are retained. |
-| `gridworld.yml` | Weekly/manual report-only GridWorld execution with provisioned Julia environments and a fresh publication-contract check. Volatile outputs are not committed; retain the pipeline summary. |
+| `rxinfer.yml` | Path-scoped native RxInfer 6.1.0/ReactiveMP 7 checks on Julia 1.13.2: exact categorical/Gaussian numerical witnesses, structured model inference, and migrated custom Halfspace rules. Frozen environment drift fails; logs are retained. |
+| `gridworld.yml` | Weekly/manual report-only GridWorld execution with both Julia environments, Ollama and the default local model; all 25 steps and the fresh publication contract remain required. Retain summaries, test/LLM observations and daemon logs. |
 | `pair-pin-freshness.yml` | Nightly pair-pin freshness gate (BC-12, scope-comp-consumers §5.3): validates both committed pair pins and asserts each pinned companion revision is ancestor-or-equal of the companion default-branch HEAD (`scripts/check_pair_pin_freshness.py`); nightly cron + `workflow_dispatch`. Exit 2 "re-pin required" names the stale pair file; a red run means the pair pin needs a bump. |
 
 ## Standards
 
 - Pin every third-party action to a full commit SHA with the version as a trailing comment (e.g. `uses: actions/checkout@<sha> # v7.0.1`) for supply-chain hardening; Dependabot reads the version comment. Resolve SHAs with `git ls-remote` — never guess.
-- Pin `astral-sh/setup-uv` steps with `version: "0.13.1"` (the exact Dockerfile/uv.toml requirement).
+- Pin `astral-sh/setup-uv` steps with `version: "0.13.4"` (the exact Dockerfile/uv.toml requirement).
 - Use explicit `timeout-minutes`.
 - Apply least-privilege `permissions` globally and per job.
 - Use deterministic dependency operations (`uv sync --frozen`, `uv export --frozen`).
@@ -61,6 +61,14 @@ non-root Python 3.14 CLI/runtime checks. Keep its narrower container scope
 separate from the five installed-wheel lanes and full native coverage.
 
 The FEP paired job uses uv 0.13.0 to honor its companion project
-requirement; it never installs GNN. GNN-owned installs use uv 0.13.1.
+requirement; it never installs GNN. GNN-owned installs use uv 0.13.4.
 Supply-chain resolution uses core Python 3.14 and the declared all-extras
 Python 3.12 profile.
+
+Deterministic checks have one hosted owner: docs/anchors and terminology in
+`docs-audit.yml`; import boundaries, thin orchestrators, flag/dependency/validation
+and documentation path/pattern gates in `local-gates.yml`; Ruff, mypy, public
+contracts and focused scientific/MCP tests in `ci.yml` quality. Julia caches
+contain versioned package inputs and compiled code; each native test still runs.
+External 403/429, network and timeout observations are inconclusive, never proof
+that a URL is valid. `--strict` remains available to fail on every finding.

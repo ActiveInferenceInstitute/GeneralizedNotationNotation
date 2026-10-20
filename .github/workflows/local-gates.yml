@@ -15,9 +15,8 @@ name: Local gates
 # Deliberately NOT wired here: `just gridworld` — since 2026-09-19 the recipe
 # runs the full GridWorld pipeline end-to-end (local Julia toolchains) and
 # then validates `scripts/check_pomdp_gridworld_outputs.py output`. The
-# run-tree it validates is volatile by design
-# (docs/development/output_tracking.md): CI has no committed artifacts to
-# check, so this remains a local gate.
+# run-tree is volatile (docs/development/output_tracking.md); the separate
+# weekly/manual gridworld.yml provisions its toolchains and checks fresh output.
 
 on:
   push:
@@ -55,8 +54,8 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
         with:
-          # Match exact uv 0.13.1 in uv.toml and the Docker bootstrap.
-          version: "0.13.1"
+          # Match exact uv 0.13.4 in uv.toml and the Docker bootstrap.
+          version: "0.13.4"
           enable-cache: true
 
       - name: Install dependencies (dev)

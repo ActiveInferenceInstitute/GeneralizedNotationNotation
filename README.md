@@ -538,7 +538,7 @@ the experimental v4 backends. Its Python backends were provisioned via
 (torch ≥ 2.13.0, NumPyro, DisCoPy, pymdp, bnlearn + pgmpy for the
 categorical exports), Julia 1.12+ via juliaup/brew with the two pinned project
 environments instantiated from `src/gnn/execute/rxinfer/Project.toml`
-(RxInfer 6.0.2) and `src/gnn/execute/activeinference_jl/`, and CmdStan 2.39 via
+(RxInfer 5.5.0) and `src/gnn/execute/activeinference_jl/`, and CmdStan 2.39 via
 the release tarball (`~/.cmdstan`) with `cmdstanpy` from the dev extra.
 bnlearn renders for every categorical exemplar and its generated artifacts run
 against the installed package (Step 12 executor: `src/gnn/execute/bnlearn/`).
@@ -1073,20 +1073,27 @@ If you use [uv](https://github.com/astral-sh/uv) (`uv sync` / `uv run`), prefer 
 
 ### Runtime defaults and required profiles
 
-The profile observations below come from earlier uv 0.13.0 development notes.
-They have not been revalidated for uv 0.13.1 and do not qualify this draft.
-Fresh locked installs and the declared gates are required before acceptance.
+GNN-owned environments use exact uv **0.13.4**. The frozen lock was refreshed
+with all compatible dependency updates on 2026-10-20; source and hosted gates
+qualify the candidate revision. Earlier acceptance receipts keep their original
+runtime/source identities and are not renewed by editing metadata.
 
-Use the latest stable CPython by default (currently 3.15) and exact uv 0.13.1.
-This checkout selects the latest 3.14 patch for its frozen core plus default
-`dev` group: an isolated 3.14 install and focused parser/PyMDP tests passed.
-The same frozen dependency export on 3.15 reached h5py 3.16.0's source build
-and failed because native HDF5 (`libhdf5.dylib`) was unavailable on this macOS
-host. JAXlib 0.11.2 itself installed on 3.15; it is not the reason for this
-exception. The protected producer range `>=3.11,<3.15` and lock stay unchanged.
-`uv.toml` copies the existing configurable security constraints before adding
-the exact uv requirement. The project-only default `dev` group remains read
-from the unchanged producer metadata.
+The latest stable CPython is 3.15. This checkout selects the latest 3.14 patch
+for its frozen scientific core and default `dev` group. The 3.15 probe reached
+h5py 3.16.0's source build and failed because native HDF5 (`libhdf5.dylib`) was
+unavailable on this macOS host; JAXlib itself installed on 3.15. The producer
+range remains `>=3.11,<3.15`. This is a named build/runtime exception requiring
+qualification before widening, not a general claim that Python 3.15 is unusable.
+
+The scientific stack now admits JAX 0.12 and retains its Python-specific
+PyMDP/Flax compatibility split in `pyproject.toml`. Python 3.11 resolves JAX
+0.10.2, PyMDP 1.0.4 and Flax 0.12.6; newer supported Python profiles resolve
+JAX 0.12.0, PyMDP 1.0.3 and Flax 0.12.10. ActiveInference.jl retains its
+Distributions ceiling because DistributionsAD's extension fails with the newer
+`@check_args` API; its committed Project documents that exception. RxInfer
+resolves 6.1.0 on Julia 1.13.2. The separate FEP companion still requires its
+own exact uv 0.13.0. These explicit compatibility profiles take precedence over
+unqualified upgrades.
 
 To remove the exception, provision/review native HDF5 and remaining build
 prerequisites, qualify the exact default dependency profile on 3.15, and

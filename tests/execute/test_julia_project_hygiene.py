@@ -56,9 +56,9 @@ def test_project_tomls_have_real_headers_and_one_julia_floor() -> None:
 def test_committed_manifests_parse_with_project_hash() -> None:
     for manifest_path in (RXINFER_MANIFEST, ACTIVEINFERENCE_MANIFEST):
         manifest = tomllib.loads(manifest_path.read_text(encoding="utf-8"))
-        assert manifest["manifest_format"] == "2.0"
+        assert manifest["manifest_format"] == "2.1"
         assert manifest.get("project_hash")
-        assert manifest["julia_version"].startswith("1.12.")
+        assert manifest["julia_version"].startswith("1.13.")
 
 
 def test_continuous_family_lists_ngclearn_and_lgssm_exemplar() -> None:

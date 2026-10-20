@@ -10,7 +10,7 @@
 [![Downloads](https://pepy.tech/badge/bnlearn/month)](https://pepy.tech/project/bnlearn/)
 [![DOI](https://zenodo.org/badge/231263493.svg)](https://zenodo.org/badge/latestdoi/231263493)
 [![Docs](https://img.shields.io/badge/Sphinx-Docs-Green)](https://erdogant.github.io/bnlearn/)
-[![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://erdogant.github.io/bnlearn/pages/html/Documentation.html#colab-notebook)
+[![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://erdogant.github.io/bnlearn/notebook.html)
 
 <div>
 <a href="https://erdogant.github.io/bnlearn/"><img src="https://github.com/erdogant/bnlearn/raw/master/docs/figs/logo.png" width="175" align="left" style="margin-right: 15px;" /></a>
@@ -27,14 +27,14 @@ Navigate to the [API documentation](https://erdogant.github.io/bnlearn/) for mor
 
 | Feature | Description | Medium Blog |
 |--------|-------------|---|
-| [**Causal Discovery & Starters Guide**](https://erdogant.github.io/bnlearn/pages/html/Structure%20learning.html) | Learn the basics of causal modelling. | [Read Here](https://medium.com/data-science-collective/the-starters-guide-to-causal-structure-learning-with-bayesian-methods-in-python-e3b90f49c99c) |
-| [**Structure Learning**](https://erdogant.github.io/bnlearn/pages/html/Structure%20learning.html) | Learn model structures from data or via expert knowledge. | [Read Here](https://medium.com/data-science-collective/the-complete-starter-guide-for-causal-discovery-using-bayesian-modeling-8853eb860d02) |
-| [**Causal Predictions**](https://erdogant.github.io/bnlearn/pages/html/Structure%20learning.html) | Learn to make causal predictions. | [Read Here](https://medium.com/data-science-collective/why-prediction-isnt-enough-using-bayesian-models-to-change-the-outcome-5c9cf9f65a75) |
-| [**Parameter Learning**](https://erdogant.github.io/bnlearn/pages/html/Parameter%20learning.html) | Estimate CPDs (Conditional Probability Distributions) from observed data. | [Read Here](https://medium.com/data-science-collective/human-machine-collaboration-with-bayesian-modeling-learn-to-combine-knowledge-with-data-1ee9bcd67745) |
+| [**Causal Discovery & Starters Guide**](https://erdogant.github.io/bnlearn/Structure%20learning.html) | Learn the basics of causal modelling. | [Read Here](https://medium.com/data-science-collective/the-starters-guide-to-causal-structure-learning-with-bayesian-methods-in-python-e3b90f49c99c) |
+| [**Structure Learning**](https://erdogant.github.io/bnlearn/Structure%20learning.html) | Learn model structures from data or via expert knowledge. | [Read Here](https://medium.com/data-science-collective/the-complete-starter-guide-for-causal-discovery-using-bayesian-modeling-8853eb860d02) |
+| [**Causal Predictions**](https://erdogant.github.io/bnlearn/Structure%20learning.html) | Learn to make causal predictions. | [Read Here](https://medium.com/data-science-collective/why-prediction-isnt-enough-using-bayesian-models-to-change-the-outcome-5c9cf9f65a75) |
+| [**Parameter Learning**](https://erdogant.github.io/bnlearn/Parameter%20learning.html) | Estimate CPDs (Conditional Probability Distributions) from observed data. | [Read Here](https://medium.com/data-science-collective/human-machine-collaboration-with-bayesian-modeling-learn-to-combine-knowledge-with-data-1ee9bcd67745) |
 | [**Causal Inference**](https://pgmpy.org/) | Compute interventional and counterfactual distributions via do-calculus. | [Read Here](https://medium.com/data-science-collective/chat-with-your-dataset-using-bayesian-inferences-1afdbfd4bada) |
-| [**Generate Synthetic Data**](https://erdogant.github.io/bnlearn/pages/html/Sampling.html) | Generate synthetic samples using probabilistic models. | [Read Here](https://medium.com/data-science-collective/synthetic-data-the-essentials-of-data-generation-using-bayesian-sampling-6d072e97e09d) |
-| [**Discretize Data**](https://erdogant.github.io/bnlearn/pages/html/Discretizing.html) | Categorize and discretize continuous datasets. | — |
-| [**Causal Library Comparison**](https://erdogant.github.io/bnlearn/pages/html/Discretizing.html) | Benchmarks and comparisons with other causal libraries. | [Read Here](https://medium.com/data-science-collective/six-causal-libraries-compared-which-bayesian-approach-finds-hidden-causes-in-your-data-9fa66fd02825) |
+| [**Generate Synthetic Data**](https://erdogant.github.io/bnlearn/Sampling.html) | Generate synthetic samples using probabilistic models. | [Read Here](https://medium.com/data-science-collective/synthetic-data-the-essentials-of-data-generation-using-bayesian-sampling-6d072e97e09d) |
+| [**Discretize Data**](https://erdogant.github.io/bnlearn/Discretizing.html) | Categorize and discretize continuous datasets. | — |
+| [**Causal Library Comparison**](https://erdogant.github.io/bnlearn/Discretizing.html) | Benchmarks and comparisons with other causal libraries. | [Read Here](https://medium.com/data-science-collective/six-causal-libraries-compared-which-bayesian-approach-finds-hidden-causes-in-your-data-9fa66fd02825) |
 
 ---
 
@@ -159,7 +159,7 @@ print("Dataframe Record:\n", query_2.df)
 
 ## Resources & Integrations
 
-- **Example Notebooks:** [Google Colab Library](https://erdogant.github.io/bnlearn/pages/html/Documentation.html#google-colab-notebooks)
+- **Example Notebooks:** [Google Colab Library](https://erdogant.github.io/bnlearn/notebook.html)
 - **Documentation Hub:** [Official Site](https://erdogant.github.io/bnlearn)
 - **Bug Reporting & Features:** [GitHub Tracker](https://github.com/erdogant/bnlearn/issues)
 

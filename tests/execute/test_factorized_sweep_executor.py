@@ -54,8 +54,9 @@ class TestFactorizedSweepExecutor:
     """The factorized sweep produces executor artifacts Step 16 can consume."""
 
     @pytest.fixture(scope="class")
+    @classmethod
     def sweep_manifest(
-        self, tmp_path_factory: pytest.TempPathFactory
+        cls, tmp_path_factory: pytest.TempPathFactory
     ) -> dict[str, Any]:
         """Run the sweep once (factors 2,2,2,2 / T=10) and return the manifest."""
         scaling = _load_module("pymdp_scaling_sweep_executor", SCALING_SCRIPT)

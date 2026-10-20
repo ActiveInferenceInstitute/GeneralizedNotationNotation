@@ -438,7 +438,7 @@ See [pyproject.toml](../../../pyproject.toml).
 
 ### External Resources
 - [NetworkX Documentation](https://networkx.org/)
-- [NumPy Documentation](https://numpy.org/docs/)
+- [NumPy Documentation](https://numpy.org/doc/)
 - [SciPy Documentation](https://scipy.org/)
 
 ---

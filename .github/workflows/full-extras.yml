@@ -31,6 +31,7 @@ jobs:
       fail-fast: false
     env:
       PYTHONPATH: src
+      UV_PYTHON: ${{ matrix.python-version }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -42,8 +43,8 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
         with:
-          # Match exact uv 0.13.1 in uv.toml and the Docker bootstrap.
-          version: "0.13.1"
+          # Match exact uv 0.13.4 in uv.toml and the Docker bootstrap.
+          version: "0.13.4"
           enable-cache: true
 
       - name: Install all dependencies (all-extras)
@@ -51,11 +52,11 @@ jobs:
 
       - name: Validate JAX + PyMDP stack
         run: |
-          uv run --all-extras python -c "from gnn.utils.runtime_safety.jax_stack_validation import verify_jax_pymdp_stack; verify_jax_pymdp_stack(); print('jax_stack_ok')"
+          uv run --frozen --no-sync python -c "from gnn.utils.runtime_safety.jax_stack_validation import verify_jax_pymdp_stack; verify_jax_pymdp_stack(); print('jax_stack_ok')"
 
       - name: Validate optional imports (audio)
         run: |
-          uv run --all-extras python -c "
+          uv run --frozen --no-sync python -c "
           for mod in ['librosa', 'soundfile', 'pedalboard']:
               __import__(mod)
               print(f'  {mod}: OK')
@@ -68,7 +69,7 @@ jobs:
       # with a durable summary record instead of a swallowed 'skipped' line.
       - name: Validate optional imports (gui)
         run: |
-          uv run --all-extras python - <<'PY'
+          uv run --frozen --no-sync python - <<'PY'
           import importlib.metadata
           import os
           import sys
@@ -110,7 +111,7 @@ jobs:
 
       - name: Validate optional imports (research / scaling)
         run: |
-          uv run --all-extras python - <<'PY'
+          uv run --frozen --no-sync python - <<'PY'
           import importlib.metadata
           import os
           import sys
@@ -152,7 +153,7 @@ jobs:
 
       - name: Run full test suite (all-extras)
         run: |
-          uv run --all-extras python -m pytest tests/ -q --tb=short \
+          uv run --frozen --no-sync python -m pytest tests/ -q --tb=short \
             --cov=gnn --cov-report=json:junit/coverage-full-extras.json \
             --junitxml=junit/full-extras-${{ matrix.python-version }}.xml
 

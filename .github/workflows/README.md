@@ -1,7 +1,7 @@
 # GitHub workflows
 
 The local default and primary ordinary test matrix now include Python 3.14,
-with exact uv 0.13.1. The named h5py/HDF5 host exception and removal checks are
+with exact uv 0.13.4. The named h5py/HDF5 host exception and removal checks are
 in root README.md. General docs/local/MCP/security jobs select 3.14; coupled
 3.12 required statuses and native/paired/manuscript/GUI rosters remain explicit
 compatibility or evidence profiles. Existing acceptance receipts retain their
@@ -34,21 +34,21 @@ YAML workflows for CI, MCP tool-count audit, weekly all-extras suite, documentat
 | [geo-infer-interchange.yml](geo-infer-interchange.yml) | `push` / `pull_request` → `main`; `workflow_dispatch` | Python 3.11/3.12 categorical, Gaussian and factored interchange with the pinned GEO companion, deterministic replay and artifact digests. H3 state labels alone do not establish geographic or inference claims. |
 | [mcp-audit.yml](mcp-audit.yml) | `push` / `pull_request` → `main`; `workflow_dispatch` | MCP tool count ≥ 140 via `tests.mcp.test_mcp_audit.count_mcp_tools`. |
 | [full-extras.yml](full-extras.yml) | Weekly cron Sunday 06:00 UTC (`0 6 * * 0`); `workflow_dispatch` | `uv sync --frozen --all-extras`, optional-import checks (audio, GUI, research/scaling), full pytest suite under all extras (Python 3.12). |
-| [docs-audit.yml](docs-audit.yml) | `push` / `pull_request` when `*.md`, `docs/**`, root `AGENTS.md`/`CLAUDE.md`/`README.md`/`SKILL.md`, or `docs/development/docs_audit.py` change; `workflow_dispatch` | Strict docs audit with anchors plus repository/doc terminology and GNN doc-pattern audits. |
+| [docs-audit.yml](docs-audit.yml) | `push` / `pull_request` → `main`; weekly Monday 06:00 UTC; `workflow_dispatch` | Strict docs/anchor and repository/maintained-doc terminology audits on every change. Weekly or opt-in manual external observations fail on HTTP 404/410; other failures remain inconclusive and are retained. |
 | [actionlint.yml](actionlint.yml) | Changes under `.github/workflows/**`; `workflow_dispatch` | `rhysd/actionlint@v1.7.12` |
 | [dependency-review.yml](dependency-review.yml) | `pull_request` → `main`; `workflow_dispatch` | High severity + AGPL deny; PR comment summary on failure. Fork PRs may get limited review. |
 | [codeql.yml](codeql.yml) | `push` / `pull_request` (skips doc-only paths), weekly cron, `workflow_dispatch` | Init → `uv sync --frozen --extra dev` → analyze (Python). |
 | [supply-chain-audit.yml](supply-chain-audit.yml) | Weekly cron Monday 06:00 UTC, `workflow_dispatch` | Two `pip-audit` jobs (OSV); strict shell; job summary. |
 | [custody-re-render.yml](custody-re-render.yml) | Daily cron 07:14 UTC (`14 7 * * *`); `workflow_dispatch` | Report-only fresh manuscript render from the `docxology/template` checkout (a real directory at `projects/active/`): template `stage_03_render` → record render-custody manifest → strict token gate → `tests/test_manuscript_latex_log.py`; manifest + rendered evidence uploaded as artifact, nothing committed back. |
-| [rxinfer.yml](rxinfer.yml) | Relevant source/example/workflow changes on push/PR; `workflow_dispatch` | Native RxInfer 6.0.2/ReactiveMP 7 on Julia 1.12.7; exact smoothing/conditioning witnesses, structured model families and custom Halfspace rules. Retains logs and rejects environment drift. |
-| [gridworld.yml](gridworld.yml) | Weekly Monday 03:43 UTC (`43 3 * * 1`); `workflow_dispatch` | Report-only fresh GridWorld pipeline and publication-contract check with explicitly provisioned Julia environments. Volatile outputs stay on the runner; the pipeline summary is retained as evidence. |
+| [rxinfer.yml](rxinfer.yml) | Relevant source/example/workflow changes on push/PR; `workflow_dispatch` | Native RxInfer 6.1.0/ReactiveMP 7 on Julia 1.13.2; exact smoothing/conditioning witnesses, structured model families and custom Halfspace rules. Retains logs and rejects environment drift. |
+| [gridworld.yml](gridworld.yml) | Weekly Monday 03:43 UTC (`43 3 * * 1`); `workflow_dispatch` | Report-only fresh GridWorld pipeline and publication-contract check with Julia 1.13.2, both frozen Julia environments and Ollama 0.40.6 plus the default local model. All 25 steps remain required. Fresh summaries, test output and LLM records stay on the runner and are retained. |
 | [pair-pin-freshness.yml](pair-pin-freshness.yml) | Nightly cron 05:23 UTC (`23 5 * * *`); `workflow_dispatch` | Validates both committed pair pins (`.github/fep-lean-pair.json`, `.github/gnn-pair.json`) and asserts each pinned revision is ancestor-or-equal of the companion default-branch HEAD via `scripts/check_pair_pin_freshness.py` (git-only; full-history checkouts, `fetch-depth: 0`). Exit 2 "re-pin required" names the stale pair file, pinned revision and companion tip; receipts uploaded as artifact. |
 
 ## Local validation
 
 ### Scheduling and evidence
 
-The three Python test environments keep the same marker selection, coverage
+The four Python test environments keep the same marker selection, coverage
 reports and `pytest-junit-<version>` artifacts. The quality lane emits the
 existing `mcp-capabilities` artifact; the pipeline lane emits its JUnit and
 source-bound count receipt. The required statuses `test (3.11)`, `test (3.12)`
@@ -88,5 +88,13 @@ PR and the event revision for main/manual runs. It verifies that revision before
 building the wheel and records the actual checkout, wheel and lock hashes.
 
 The FEP bridge job selects its companion-required uv 0.13.0 independently of
-GNN-owned uv 0.13.1 installs. Supply-chain requirement resolution uses core Python 3.14 and the declared
+GNN-owned uv 0.13.4 installs. Supply-chain requirement resolution uses core Python 3.14 and the declared
 all-extras Python 3.12 profile, rather than prospective Python 3.15.
+
+Deterministic checks have one hosted owner: docs/anchors and terminology in
+`docs-audit.yml`; import boundaries, thin orchestrators, flag/dependency/validation
+and documentation path/pattern gates in `local-gates.yml`; Ruff, mypy, public
+contracts and focused scientific/MCP tests in `ci.yml` quality. Julia caches
+contain versioned package inputs and compiled code; each native test still runs.
+External 403/429, network and timeout observations are inconclusive, never proof
+that a URL is valid. `--strict` remains available to fail on every finding.

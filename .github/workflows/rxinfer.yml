@@ -41,7 +41,14 @@ jobs:
           persist-credentials: false
       - uses: julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32 # v3.0.2
         with:
-          version: "1.12.7"
+          version: "1.13.2"
+      - name: Cache Julia package inputs
+        uses: julia-actions/cache@9353db09a0f2bbbdec6f41791918c75d37391b36 # v3.5.0
+        with:
+          cache-name: gnn-julia-1.13.2
+          key-prefix: ${{ hashFiles('src/gnn/execute/**/Manifest.toml', 'src/gnn/execute/rxinfer/src/*.jl', 'docs/rxinfer/multiagent_trajectory_planning/Manifest.toml') }}
+          delete-old-caches: 'false'
+          save-always: 'false'
       - name: Instantiate the committed environment
         run: |
           set -euo pipefail

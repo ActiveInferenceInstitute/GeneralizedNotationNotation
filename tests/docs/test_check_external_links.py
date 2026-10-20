@@ -103,6 +103,23 @@ class TestBotBlockedCodes:
         assert checker._bot_blocked_codes(by_code, ["gone.example.com"]) == set()
         # 404 is genuinely dead — outside BOT_BLOCKED, unaffected by allow-hosts
         assert "404" not in checker.BOT_BLOCKED
+        responses = {
+            "200": ["https://ok.example.org"],
+            "403": ["https://blocked.example.org"],
+            "404": ["https://gone.example.org"],
+            "410": ["https://removed.example.org"],
+            "503": ["https://temporary.example.org"],
+            "ERR:TimeoutError": ["https://slow.example.org"],
+        }
+        assert checker._failure_codes(responses, False, False, []) == set()
+        assert checker._failure_codes(responses, False, True, []) == {"404", "410"}
+        assert checker._failure_codes(responses, True, False, []) == set(responses) - {
+            "200"
+        }
+        # Strict mode remains stronger even when both flags are supplied.
+        assert checker._failure_codes(
+            responses, True, True, ["blocked.example.org"]
+        ) == set(responses) - {"200", "403"}
 
 
 class TestShouldSkipUrl:

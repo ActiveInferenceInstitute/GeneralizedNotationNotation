@@ -7,7 +7,7 @@ using LinearAlgebra
 const Models = GnnRxInferModels
 
 @testset "Locked RxInfer release" begin
-    @test pkgversion(RxInfer) == v"6.0.2"
+    @test pkgversion(RxInfer) == v"6.1.0"
     @test pkgversion(ReactiveMP).major == 7
 end
 

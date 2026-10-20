@@ -36,16 +36,23 @@ jobs:
     timeout-minutes: 45
     env:
       UV_PYTHON: "3.12"
+      JULIA_PKG_PRECOMPILE_AUTO: "0"
+      JULIA_NUM_PRECOMPILE_TASKS: "2"
+      GKSwstype: "100"
+      OLLAMA_MODEL: "smollm2:135m-instruct-q4_K_S"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
+      - name: Select fresh run output
+        run: echo "GRIDWORLD_OUTPUT=$RUNNER_TEMP/gridworld-output" >> "$GITHUB_ENV"
+
       - name: Install uv
         uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
         with:
-          # Match exact uv 0.13.1 in uv.toml and the Docker bootstrap.
-          version: "0.13.1"
+          # Match exact uv 0.13.4 in uv.toml and the Docker bootstrap.
+          version: "0.13.4"
           enable-cache: true
 
       - name: Install dependencies (dev)
@@ -57,32 +64,47 @@ jobs:
       - name: Install Julia
         uses: julia-actions/setup-julia@fa02766e078afaaf09b14210362cee14137e6a32 # v3.0.2
         with:
-          version: "1.12"
+          version: "1.13.2"
 
-      # Headless GR/Plots for the Julia scripts: without GKSwstype the GR
-      # backend may spawn a Qt window (gksqt) and block the run
-      # (same invariant as the `just gridworld` recipe).
-      - name: Run Julia headless
-        run: echo "GKSwstype=100" >> "$GITHUB_ENV"
+      - name: Cache Julia package inputs
+        uses: julia-actions/cache@9353db09a0f2bbbdec6f41791918c75d37391b36 # v3.5.0
+        with:
+          cache-name: gnn-julia-1.13.2
+          key-prefix: ${{ hashFiles('src/gnn/execute/**/Manifest.toml', 'src/gnn/execute/rxinfer/src/*.jl', 'docs/rxinfer/multiagent_trajectory_planning/Manifest.toml') }}
+          delete-old-caches: 'false'
+          save-always: 'false'
 
-      # Instantiate the two committed Julia envs ONCE. Instantiation
-      # failures must not hard-fail the run: the render pre-exec gate
-      # degrades gracefully (executions are skipped and reported), so a
-      # loud warning + the hard contract gate below is the correct
-      # severity for a failed env setup.
-      - name: Instantiate the committed RxInfer env
+      - name: Instantiate both required Julia environments
         run: |
-          if ! julia --project=src/gnn/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'; then
-            echo "::warning::julia --project=src/gnn/execute/rxinfer Pkg.instantiate() FAILED — the RxInfer execution step will degrade gracefully, the contract gate will judge the fresh tree."
-          fi
-          if ! julia --project=src/gnn/execute/activeinference_jl -e 'using Pkg; Pkg.instantiate()'; then
-            echo "::warning::julia --project=src/gnn/execute/activeinference_jl Pkg.instantiate() FAILED — the ActiveInference.jl execution step will degrade gracefully, the contract gate will judge the fresh tree."
-          fi
+          julia --startup-file=no --project=src/gnn/execute/rxinfer -e 'using Pkg; Pkg.instantiate()'
+          julia --startup-file=no --project=src/gnn/execute/activeinference_jl -e 'using Pkg; Pkg.instantiate()'
+          git diff --exit-code -- src/gnn/execute/rxinfer/Project.toml src/gnn/execute/rxinfer/Manifest.toml src/gnn/execute/activeinference_jl/Project.toml src/gnn/execute/activeinference_jl/Manifest.toml
+
+      - name: Install and provision the required local LLM
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 \
+            https://github.com/ollama/ollama/releases/download/v0.40.6/ollama-linux-amd64.tar.zst \
+            --output "$RUNNER_TEMP/ollama.tar.zst"
+          echo "c164ab8b1b28e2a247c29719b8e404c423c5b83ae64c3ab4e59d50c7ff7fc5e0  $RUNNER_TEMP/ollama.tar.zst" | sha256sum --check
+          sudo tar --zstd -xf "$RUNNER_TEMP/ollama.tar.zst" -C /usr
+          ollama serve > "$RUNNER_TEMP/ollama.log" 2>&1 &
+          ready=0
+          for _ in $(seq 1 60); do
+            if curl --fail --silent http://localhost:11434/api/version; then
+              ready=1
+              break
+            fi
+            sleep 1
+          done
+          test "$ready" = 1
+          ollama pull "$OLLAMA_MODEL"
+          ollama --version
 
       - name: Run the POMDP GridWorld pipeline
         run: |
           status=0
-          uv run python src/gnn/main.py --target-dir input/gnn_files/pomdp_gridworld --frameworks all --verbose || status=$?
+          uv run --frozen --no-sync python src/gnn/main.py --target-dir input/gnn_files/pomdp_gridworld --output-dir "$GRIDWORLD_OUTPUT" --frameworks all --verbose || status=$?
           # Thin-orchestrator exit contract (see the `just gridworld` recipe):
           # 0 = success, 2 = success with warnings.
           if [ "$status" -ne 0 ] && [ "$status" -ne 2 ]; then
@@ -90,12 +112,16 @@ jobs:
           fi
 
       - name: Gate on the POMDP GridWorld output contract
-        run: uv run python scripts/check_pomdp_gridworld_outputs.py output
+        run: uv run --frozen --no-sync python scripts/check_pomdp_gridworld_outputs.py "$GRIDWORLD_OUTPUT"
 
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: gridworld-pipeline-summary
-          path: output/00_pipeline_summary/pipeline_execution_summary.json
+          path: |
+            ${{ env.GRIDWORLD_OUTPUT }}/00_pipeline_summary/
+            ${{ env.GRIDWORLD_OUTPUT }}/2_tests_output/
+            ${{ env.GRIDWORLD_OUTPUT }}/13_llm_output/
+            ${{ runner.temp }}/ollama.log
           if-no-files-found: warn
           retention-days: 7
