@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/gnn/9_advanced_viz.py` (51 lines)
+**Orchestrator**: `src/gnn/9_advanced_viz.py` (56 lines)
 **Implementation Layer**: `src/gnn/advanced_visualization/`
 
 ## Module Description

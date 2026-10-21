@@ -324,4 +324,4 @@ release-preflight:
     uv run --frozen --no-sync python scripts/check_flag_parity.py
     uv run --frozen --no-sync python scripts/check_thin_orchestrators.py
     uv run --frozen --no-sync python -m unittest discover -s .github -p test_release_gate.py -v
-    uv run --frozen --no-sync python -m pytest tests/pipeline/test_direct_entrypoint_imports.py -q --no-cov
+    uv run --frozen --no-sync python -m pytest tests/pipeline/test_direct_entrypoint_imports.py tests/docs/test_doc_accuracy_contracts.py -q --no-cov

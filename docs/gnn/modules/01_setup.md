@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/gnn/1_setup.py` (116 lines)
+**Orchestrator**: `src/gnn/1_setup.py` (121 lines)
 **Implementation Layer**: `src/gnn/setup/`
 
 ## Module Description

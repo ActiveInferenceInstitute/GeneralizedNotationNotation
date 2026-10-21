@@ -190,7 +190,8 @@ Keep original producer commits reachable. Never renew receipts by editing hashes
 
 After provisioning the exact uv version from README, run `just release-preflight`
 before publishing a candidate. It installs the frozen dev profile once, then
-checks source types, documentation, actual flags, thin scripts, release scheduling controls
+checks source types, documentation and module inventories, actual flags, thin
+scripts, release scheduling controls
 and every direct entrypoint. It catches deterministic mistakes before starting
 expensive hosted lanes; full/native/manuscript/companion qualification remains
 required. Existing `just quality` retains its broader local gate roster.

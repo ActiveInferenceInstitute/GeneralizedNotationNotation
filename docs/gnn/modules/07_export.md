@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/gnn/7_export.py` (128 lines)
+**Orchestrator**: `src/gnn/7_export.py` (113 lines)
 **Implementation Layer**: `src/gnn/export/`
 
 ## Module Description
