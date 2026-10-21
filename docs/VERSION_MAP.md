@@ -1,8 +1,8 @@
 # GNN Version Map
 
 One-stop map of release changes and authoritative records. Current
-software version is **4.2.0** (release candidate until the tagged release is published).
-The latest published 4.1.0 release retains its original receipt. Its [changelog](../CHANGELOG.md#410---2026-10-08)
+software version is **4.2.0**.
+The [4.2.0 release](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.2.0) owns publication and exact source-bound assets. Historical 4.1.0 retains its original receipt. Its [changelog](../CHANGELOG.md#410---2026-10-08)
 describes the bounded minor/medium campaign. Its [GitHub release](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.1.0)
 records exact tag/source/check/artifact identities; version metadata alone does
 not establish acceptance. Native coverage, ordinary installation and manuscript/

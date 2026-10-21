@@ -11,7 +11,17 @@ This directory contains documentation for release management, version control, a
 **Status**: ✅ Production Ready  
 **Version**: 1.0
 
-## Current software 4.1.0 release record
+## Software 4.2.0 release record
+
+The [v4.2.0 release](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.2.0)
+owns its exact tag, accepted source, hosted checks and downloaded asset receipts.
+Version metadata alone does not establish publication. It includes RxInfer 6.1,
+current compatible dependencies, aiohttp/Pillow repairs and the repeatable
+qualification procedure below. Python, Gradio/Pillow and scientific backend
+exceptions retain the scopes documented in README and CHANGELOG. PyPI and
+separate distribution archival require independent publication evidence.
+
+## Historical software 4.1.0 release record
 
 The [v4.1.0 release](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.1.0) is the authoritative record of its
 tag/source/checks and ordinary wheel, sdist, manuscript, verification records
