@@ -123,3 +123,16 @@ commands. Selected test failures still fail the job.
 Python setup checks the latest patch within each declared compatibility series.
 Gridworld explicitly provisions that interpreter before uv sync, avoiding an
 older preinstalled system Python satisfying only the minor-version selector.
+
+## Release qualification
+
+Version tags (`v[0-9]*`) run all sixteen release workflows, including the
+otherwise scheduled/manual extras, security, GridWorld, pair freshness and
+manuscript reproduction profiles. Ordinary PR/main triggers and test selections
+remain unchanged. Draft PRs already execute the full checks, so marking them
+ready does not retrigger those same expensive workflows.
+
+The [release procedure](../../docs/releases/README.md#repeatable-release-qualification)
+uses the [status collector](../release_gate.py) to collect exact commit/attempt/job
+identities and dispatch only missing work. It never retries failed work or
+replaces independent native, archive, companion or manuscript acceptance.

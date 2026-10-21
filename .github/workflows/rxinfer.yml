@@ -9,6 +9,7 @@ on:
       - "docs/rxinfer/multiagent_trajectory_planning/**"
       - ".github/workflows/rxinfer.yml"
   push:
+    tags: ["v[0-9]*"]
     branches: [main]
     paths:
       - "src/gnn/execute/rxinfer/**"

@@ -2,6 +2,8 @@
 name: Supply chain audit
 
 on:
+  push:
+    tags: ["v[0-9]*"]
   schedule:
     - cron: "0 6 * * 1"
   workflow_dispatch:

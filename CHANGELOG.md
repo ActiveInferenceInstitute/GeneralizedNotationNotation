@@ -7,6 +7,23 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ## [Unreleased]
 
+## [4.2.0] - 2026-10-21
+
+### Release qualification
+
+- Re-resolve current compatible dependencies at the release freeze: FastAPI
+  0.156.4, Orbax Checkpoint 0.12.8, python-utils 4.1.4, setuptools 84.2.1,
+  Sphinx 9.2.0, sphinxcontrib-jsmath 2.0.0 and virtualenv 21.14.12.
+  Older interpreter splits retain their documented compatible versions.
+
+- Add a bounded, paginated workflow-status collector that dispatches only missing
+  workflows, retains exact revision/attempt/job identities and refuses pending,
+  failed, skipped or missing jobs. Independent artifact and manuscript review
+  remain separate gates. Release tags trigger all sixteen release workflows.
+- Remove redundant ready-for-review retriggers where draft PRs already run the
+  same checks. Test selections, native matrices, coverage floors and deadlines
+  remain unchanged. See [release procedure](docs/releases/README.md).
+
 ### RxInfer 6 compatibility and dependency security (2026-10-20)
 
 - Production Julia metadata and lock now target RxInfer 6.1.0 / ReactiveMP 7;

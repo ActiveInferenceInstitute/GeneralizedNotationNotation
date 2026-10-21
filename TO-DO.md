@@ -1,7 +1,7 @@
 # TO-DO — GNN next steps
 
-Updated 2026-10-18.
-Current software version is **4.1.0**. Its [GitHub release](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.1.0) records exact tag, source, checks and artifacts; version metadata alone does not establish acceptance.
+Updated 2026-10-21.
+Current software version is **4.2.0** (candidate until publication). The latest published **4.1.0** [GitHub release](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.1.0) records exact tag, source, checks and artifacts; version metadata alone does not establish acceptance.
 Every checkbox below is remaining work. Remove accepted bounded work while
 retaining its evidence in [CHANGELOG.md](CHANGELOG.md), release receipts and Git
 history. Historical failures retain their original source epochs.
