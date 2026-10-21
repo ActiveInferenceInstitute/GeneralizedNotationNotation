@@ -1,12 +1,20 @@
 # Specification: .github
 
 ## Design Requirements
-The `.github` directory is structurally dedicated to repository automation, compliance, security orchestration, and issue tracking configurations within the GNN ecosystem. It serves as the primary declarative interface between the GNN repository's source code and the GitHub orchestration platform. 
+The `.github` directory owns repository presentation, automation, compliance,
+security orchestration and issue tracking configuration. It connects the GNN
+repository to GitHub's landing page and orchestration platform.
 
 Its core design requirement is to facilitate real-implementation test coverage through automated, reliable, and secure Continuous Integration workflows. It natively scaffolds standard GitHub integrations such as `Dependabot` version bumping, Action Linting, Pytest Runner orchestration, Docs Audits, and Python CodeQL scanning with small explicit Python helpers for paired-runtime checks and release-status collection.
 
 ## Components
 The integration footprint includes YAML configuration, documentation and standard-library Python helpers. `release_gate.py` collects exact-source workflow/job status; `fep_paired_runtime.py` validates paired runtime inputs. Their adjacent tests cover their contracts.
+
+[README.md](README.md) is the GitHub repository landing page. Its generated
+[overview artwork](gnn-overview-2026-10-21.png) and
+[generation prompt](gnn-overview-2026-10-21.prompt.txt) live beside it. This
+conceptual illustration is separate from source-bound scientific figures and
+published release assets.
 
 Core configuration components include:
 1. **`dependabot.yml`**: Supply chain updates routing, responsible for maintaining dependency freshness for pip and GitHub Actions ecosystems with strict scheduled cadences.

@@ -1,0 +1,20 @@
+Use case: scientific-educational GitHub README hero.
+Create a polished, exceptionally legible wide landscape editorial infographic for Generalized Notation Notation, an open source Active Inference model notation and scientific workflow. Target aspect ratio approximately 2:1, generous margins, visually refined flat/vector-like illustration with subtle depth, crisp typography, opaque warm white background and deep navy text with restrained teal, blue and violet accents. No photorealism.
+
+Composition: large title "GNN" with the exact subtitle "Generalized Notation Notation". Under it, a concise statement exactly "From model specification to inspectable evidence". Across the middle, an elegant left-to-right connected journey of FIVE clearly separated cards, numbered 1 through 5, with these exact large labels:
+1 "Specify"
+2 "Validate"
+3 "Render"
+4 "Execute"
+5 "Inspect"
+Use tasteful scientific icons: a Markdown document containing symbolic variable lines; a dimension grid and check; a branching code motif; a supervised execution/play motif; a report with small illustrative graph and document. The cards connect with thin directional arrows. All text must remain readable at a 900px GitHub content width.
+
+Under the first card only, two concise pill labels exactly "Categorical" and "Continuous", illustrated by a tiny state-node graph and smooth Gaussian curve respectively. Under cards 2 through 5, use only these exact concise captions, one per card:
+"Types and model contracts"
+"Framework-specific code"
+"Admitted native models"
+"Results and run receipts"
+
+Along the bottom, a clean unobtrusive band reading exactly "Source identity • Configuration • Traceable artifacts". Leave breathing room above and below it.
+
+Scientific accuracy: this is a conceptual overview, not a literal dependency graph. Illustrative graphs are purely conceptual and must have no numerical axes, invented measurements or benchmark claims. Backend admission varies by model; do not suggest that every model runs in every framework. Do not add package logos, release versions, backend names, software counts, equations, extra slogans, watermarks or extra text. Render all specified text verbatim with professional consistent sans-serif typography. Make it welcoming, rigorous, calm and easy to understand at a glance.

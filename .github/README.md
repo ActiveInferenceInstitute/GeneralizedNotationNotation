@@ -8,22 +8,25 @@ render framework-specific code, execute admitted models and inspect the evidence
 [![CI Python: 3.11–3.14](https://img.shields.io/badge/CI%20Python-3.11%E2%80%933.14-3776ab.svg)](workflows/ci.yml)
 [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-lightgrey.svg)](../LICENSE.md)
 
-![GNN 4.2.0 overview: one text specification passes through parsing, validation, code generation, supervised execution, analysis and pinned cross-repository interchange.](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/download/v4.2.0/GNN-4.2.0-release-overview.png)
+GNN is a human-readable, machine-parsable **Markdown notation** for
+[Active Inference](https://activeinference.org/) generative models. Use it to
+describe model assumptions in text, check their structure and run supported
+models through framework-specific implementations.
 
-*GNN 4.2.0 release overview. Exact-source qualification and acceptance limits
-are recorded with the release assets.*
+[![GNN: categorical and continuous model specifications move through Specify, Validate, Render, Execute and Inspect, with source identity, configuration and traceable artifacts connecting the workflow.](gnn-overview-2026-10-21.png)](#from-model-source-to-evidence)
+
+*Conceptual workflow. Backend admission depends on the model contract;
+the diagram illustrates stages rather than numerical results or step dependencies.*
 
 [Quick start](#quick-start) · [Examples](#choose-a-model) ·
 [Backends](#render-and-execute-backends) · [Documentation](#documentation-map) ·
 [Release & paper](#release-artifacts-and-citation) · [Roadmap](#next-steps) ·
 [Contribute](#contributing-and-support)
 
-GNN is a human-readable, machine-parsable **Markdown notation** for
-[Active Inference](https://activeinference.org/) generative models. This
-repository provides the notation, curated model sources and a **25-step
+This repository provides the notation, curated model sources and a **25-step
 scientific workflow** spanning parsing, validation, visualization, simulation,
-analysis and publication. Researchers can inspect model assumptions in text;
-developers can use the installed `gnn` Python package, CLI and service interfaces.
+analysis and publication. Start with the CLI below, or explore the
+[Python and service interfaces](#interfaces).
 
 **Current software version:** [GNN 4.2.0](../CHANGELOG.md#420---2026-10-21). Its [GitHub release](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.2.0) records exact tag/source/check/artifact identities; version metadata alone does not establish acceptance. Historical releases retain their own checks and assets in [CHANGELOG.md](../CHANGELOG.md).
 **Page updated:** 2026-10-21. Package metadata is canonical in
@@ -31,27 +34,22 @@ developers can use the installed `gnn` Python package, CLI and service interface
 
 ## What GNN 4 delivers
 
-- **Readable model specifications.** Declare state spaces, connections,
-  parameters, equations, time and ontology annotations. Maintain categorical
-  POMDP and linear-Gaussian models with explicit model-kind admission.
-- **Validation before simulation.** Check shapes, probabilities, covariance
-  assumptions and declared scientific contracts; retain actionable failure and
-  unsupported outcomes.
-- **Framework-specific rendering and execution.** Step 11 generates code;
-  Step 12 supervises native scripts. Optional packages and toolchains are
-  installed for the selected backend and model contract.
-- **Evidence tied to one invocation.** Frozen selection, path-derived model
-  identities, source hashes, resolved configuration, artifact indexes, output
-  leases and a shared deadline bind the current run. Required unfinished work
-  prevents success. Read the [v4 migration guide](../docs/development/run_ownership_migration.md).
-- **Scientific analysis and communication.** Produce graphs, matrix views,
-  statistics, reports and static websites. Numerical comparisons require
-  compatible source identities, inference semantics, inputs and precision;
-  Gaussian uncertainty is derived from covariance.
-- **Interfaces for people and tools.** Use CLI, REST, MCP, editor/LSP and GUI
-  surfaces, with optional LLM analysis, audio and ML integrations. Durable run
-  manifests, resumable acceptance sessions and auditable container plans support
-  longer workflows.
+- **Model assumptions you can read.** Declare state spaces, connections,
+  parameters, equations, time and ontology annotations for categorical POMDP
+  and linear-Gaussian models.
+- **Checks before simulation.** Validate dimensions, probabilities, covariance
+  assumptions and scientific contracts, with explicit unsupported outcomes.
+- **Native backend workflows.** Render code in Step 11 and supervise native
+  scripts in Step 12 using the selected backend's packages and toolchain.
+- **Evidence tied to its source.** Bind model identities, source hashes,
+  configuration and artifact indexes to the current run. Required unfinished
+  work prevents success. See the [v4 run-ownership guide](../docs/development/run_ownership_migration.md).
+- **Inspectable outputs.** Produce graphs, matrix views, statistics, reports
+  and static websites. Numerical comparisons require compatible model sources,
+  inference semantics, inputs and precision.
+- **Several ways to work.** Use CLI, Python, REST, MCP, editor/LSP or GUI;
+  optional LLM, audio and ML integrations extend selected workflows.
+  [Durable runs](../docs/development/durable-runs.md) support longer sessions.
 
 The **4.2.0 release** updates RxInfer to 6.1.0 / ReactiveMP 7, refreshes
 compatible dependencies and security fixes, and adds a fast local release preflight
@@ -89,6 +87,10 @@ git checkout v4.2.0
 uv sync --frozen --python 3.14
 ```
 
+These commands select the released source. Contributors can use `git switch main`
+before installing the [development profile](../CONTRIBUTING.md); the release tag
+continues to identify the published artifacts.
+
 ### Inspect one model
 
 ```bash
@@ -115,6 +117,10 @@ models. `--target-dir` takes a **directory**; `validate` and `extract` take a
 **file**. Pipeline prerequisites are resolved by the orchestrator. Each new run
 gets its own identity; inspect its summary and artifacts under the selected
 output directory.
+
+**What to inspect:** validation diagnostics, exported model data and graph/matrix
+views. This selected workflow does not run native inference. To simulate a model,
+install its backend and follow that backend's admitted model examples below.
 
 For simulation, use the [full quick-start guide](../docs/quickstart.md) and
 [backend setup](../SETUP_GUIDE.md). The full workflow can include native
@@ -147,7 +153,7 @@ A={
 }
 ```
 
-The diagram is a conceptual workflow; the
+The overview image and the diagram below are conceptual workflows; the
 [architecture guide](../ARCHITECTURE.md) and [module registry](../AGENTS.md)
 document the actual artifact dependencies and step prerequisites.
 
@@ -309,14 +315,11 @@ under [CC BY-NC-SA 4.0](../LICENSE.md).
 
 ## Next steps
 
-The [forward-only roadmap](../TO-DO.md) defines scope, priority, acceptance evidence
-and dependencies for each remaining workstream. Effort size and release version
-are separate decisions.
-
-| Effort | Upcoming scope |
-| --- | --- |
-| [Minor](../TO-DO.md#minor-work) | Released THRML structural-zero support and exact-version archival |
-| [Major](../TO-DO.md#major-work) | Full-source long-context LLM processing, coupled continuous agents, THRML/cpomdp extensions and formal-to-numerical semantics |
+The [forward-only roadmap](../TO-DO.md) owns scope, priority, acceptance evidence
+and dependencies for remaining work. Browse [minor work](../TO-DO.md#minor-work)
+and [major work](../TO-DO.md#major-work), or choose a scoped
+[open issue](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/issues).
+Effort size and release version are separate decisions.
 
 ## Contributing and support
 
@@ -355,6 +358,15 @@ workflow commands, with [workflow AGENTS](workflows/AGENTS.md) and
 [SPEC](workflows/SPEC.md) for maintainers. Dependabot configuration is in
 [dependabot.yml](dependabot.yml); CodeQL configuration is in
 [codeql/codeql-config.yml](codeql/codeql-config.yml).
+
+### Landing-page artwork
+
+The [overview PNG](gnn-overview-2026-10-21.png) was generated with the built-in
+imagegen tool on 2026-10-21; its [exact prompt](gnn-overview-2026-10-21.prompt.txt)
+is retained alongside it. The illustration explains the workflow and contains
+no measured results. Its numbered cards are presentation stages, not pipeline
+step numbers. The separately published [4.2.0 release overview](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/download/v4.2.0/GNN-4.2.0-release-overview.png)
+retains its original release identity.
 
 ### Workflow index
 
