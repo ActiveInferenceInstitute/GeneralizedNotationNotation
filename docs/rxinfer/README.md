@@ -8,7 +8,6 @@
 
 This directory contains documentation, scripts, and resources for integrating GNN (Generalized Notation Notation) models with **RxInfer.jl**, a Julia-based Bayesian inference framework. RxInfer.jl provides genuine ``@model`` + ``infer()`` variational message-passing inference for probabilistic models, making it ideal for Active Inference simulations.
 
-**Status**: ✅ Production Ready  
 **Version**: 1.0
 
 ## Quick Navigation
@@ -36,7 +35,7 @@ This directory contains documentation, scripts, and resources for integrating GN
 
 ## Contents
 
-**Files**: 12+ | **Subdirectories**: 1
+Browse the [current directory](./) for files and subdirectories; use the task links below for navigation.
 
 ### Core Files
 
@@ -279,6 +278,4 @@ All documentation in this module adheres to professional standards:
 
 ---
 
-**Status**: ✅ Production Ready  
-**Compliance**: Professional documentation standards  
 **Maintenance**: Regular updates with new RxInfer.jl features and integration capabilities

@@ -56,7 +56,7 @@ short audience map, use [START_HERE.md](START_HERE.md). For curricula, use
 - [MCP](mcp/README.md)
 - [LLM](llm/README.md)
 - [Audio](audio/README.md)
-- [fep_lean (Lean 4)](other/fep_lean/README.md) — Lean ↔ GNN bridge program (contract v0.6); canonical contract in the sibling checkout at `../fep_lean/docs/design/gnn-bridge/`
+- [fep_lean (Lean 4)](other/fep_lean/README.md) — Lean ↔ GNN bridge program (contract v0.6); [reviewed companion and custody rules](development/fep_lean_paired_revision.md)
 - [GEO_INFER (spatial active inference)](other/geo_infer/README.md) — JSON artifact interchange (categorical, Gaussian, factored); consumer boundary in GEO-INFER-ACT, validation harness in GEO-INFER-TEST
 
 ## Theory and applications
@@ -75,3 +75,38 @@ short audience map, use [START_HERE.md](START_HERE.md). For curricula, use
 - [Style guide](style_guide.md)
 - [Expected top-level directories](expected_dirs.txt)
 - [Changelog](CHANGELOG.md)
+
+## Additional topic hubs
+
+These directories document specialized tools and maintained conventions. Their
+examples retain declared runtime and scientific scope; a link is not native
+acceptance.
+
+- [Advanced Visualization Documentation](advanced_visualization/README.md)
+- [bnlearn: Causal Discovery and Bayesian Networks](bnlearn/README.md)
+- [D2 Diagramming Integration for GNN](d2/README.md)
+- [docs/decisions/ — Architecture Decision Records](decisions/README.md)
+- [dependencies](dependencies/README.md)
+- [GNN Deployment Guide](deployment/README.md)
+- [docs/dev](dev/README.md)
+- [execution](execution/README.md)
+- [Export Documentation](export/README.md)
+- [GUI Oxdraw Integration for GNN](gui_oxdraw/README.md)
+- [Pedalboard Integration for GNN](pedalboard/README.md)
+- [GNN Performance Guide](performance/README.md)
+- [Petri Net Modeling for GNN](petri_nets/README.md)
+- [Pkl Integration for GNN](pkl/README.md)
+- [GNN release management](releases/README.md)
+- [SAPF Integration for GNN](sapf/README.md)
+- [SPM Integration for GNN](spm/README.md)
+- [docs/standards/](standards/README.md)
+- [SymPy Integration for GNN](sympy/README.md)
+- [GNN Tutorials](tutorials/README.md)
+- [Type Inference Zoo Integration](type-inference-zoo/README.md)
+
+### GNN topic indexes
+
+- [Advanced patterns](gnn/advanced/README.md)
+- [Integration](gnn/integration/README.md)
+- [Operations](gnn/operations/README.md)
+- [References](gnn/reference/README.md)

@@ -37,7 +37,6 @@ graph TD
 
 **Category**: Code Generation / Simulation Framework Integration
 
-**Status**: ✅ Production Ready
 
 **Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 

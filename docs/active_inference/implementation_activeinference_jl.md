@@ -10,7 +10,6 @@
 
 ActiveInference.jl is **discrete-only** (`supports_continuous=False` in `src/gnn/render/framework_registry.py` — no continuous linear-Gaussian support) and **executable**: rendered Julia scripts run at pipeline Step 12 via [`src/gnn/execute/activeinference_jl/`](../../src/gnn/execute/activeinference_jl/) (`activeinference_runner.jl`).
 
-**Status**: ✅ Production Ready  
 **Version**: 1.0
 
 ---
@@ -104,5 +103,4 @@ graph LR
 
 ---
 
-**Status**: ✅ Production Ready  
 **Compliance**: GNN documentation standards

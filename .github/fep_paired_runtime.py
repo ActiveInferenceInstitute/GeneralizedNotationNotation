@@ -11,9 +11,11 @@ import contextlib
 import hashlib
 import json
 import os
+import re
 import runpy
 import subprocess
 import sys
+import tomllib
 from pathlib import Path
 from typing import Any
 
@@ -103,14 +105,93 @@ def source(root: Path, expected_revision: str) -> dict[str, Any]:
     }
 
 
+def release_binding(args: argparse.Namespace) -> dict[str, Any]:
+    """Admit only a reviewed version/lock delta from the fixed scientific pair."""
+    release = args.gnn_release_root
+    policy = read(release / ".github/fep-release-baseline.json")
+    required = {
+        "schema_version",
+        "mode",
+        "fep_revision",
+        "gnn_revision",
+        "release_version",
+        "approved_lock_sha256",
+        "resynchronize",
+    }
+    if (
+        set(policy) != required
+        or policy["schema_version"] != 1
+        or policy["mode"] != "fixed-release-baseline"
+        or policy["resynchronize"] != "next-major-release"
+        or policy["gnn_revision"] != args.gnn_revision
+        or policy["fep_revision"] != args.fep_revision
+    ):
+        raise ValueError("invalid fixed release baseline")
+    from fep_lean.bridge.operations import owner_roster
+
+    pin = read(args.fep_root / "specs/gnn-bridge-w2-source-custody/source-pin.json")
+    owners = pin["gnn"]["owners"]
+    if pin["gnn"]["commit"] != args.gnn_revision:
+        raise ValueError("baseline does not match the companion source pin")
+    if owner_roster(release, "gnn") != sorted(owners):
+        raise ValueError("release scientific owner roster changed")
+    exceptions = {"pyproject.toml", "src/gnn/__init__.py", "uv.lock"}
+    changed = {}
+    for name, expected in owners.items():
+        if digest(args.gnn_root / name) != expected:
+            raise ValueError(f"fixed baseline owner changed: {name}")
+        actual = digest(release / name)
+        if actual != expected:
+            if name not in exceptions:
+                raise ValueError(f"release scientific owner changed: {name}")
+            changed[name] = {"baseline_sha256": expected, "release_sha256": actual}
+    old = tomllib.loads((args.gnn_root / "pyproject.toml").read_text())
+    new = tomllib.loads((release / "pyproject.toml").read_text())
+    if new["project"]["version"] != policy["release_version"]:
+        raise ValueError("release version does not match baseline policy")
+    old["project"]["version"] = new["project"]["version"]
+    if old != new:
+        raise ValueError("project metadata changed beyond the release version")
+
+    def without_version(root: Path) -> str:
+        text = (root / "src/gnn/__init__.py").read_text()
+        version = tomllib.loads((root / "pyproject.toml").read_text())["project"][
+            "version"
+        ]
+        pattern = r'^__version__ = "' + re.escape(version) + r'"$'
+        normalized, count = re.subn(
+            pattern, '__version__ = "RELEASE"', text, flags=re.M
+        )
+        if count != 1:
+            raise ValueError("package version is not canonical")
+        return normalized
+
+    if without_version(args.gnn_root) != without_version(release):
+        raise ValueError("package initializer changed beyond the release version")
+    if digest(release / "uv.lock") != policy["approved_lock_sha256"]:
+        raise ValueError("release dependency lock is not the reviewed frozen lock")
+    return {
+        "mode": policy["mode"],
+        "policy_sha256": digest(release / ".github/fep-release-baseline.json"),
+        "current_release": source(release, args.gnn_release_revision),
+        "changed_owners": changed,
+        "current_pair_synchronized": False,
+        "native_claim_ready": False,
+        "resynchronize": policy["resynchronize"],
+    }
+
+
 def custody(args: argparse.Namespace) -> dict[str, Any]:
-    pin = read(args.gnn_root / ".github/fep-lean-pair.json")
+    pin_root = args.gnn_release_root or args.gnn_root
+    pin = read(pin_root / ".github/fep-lean-pair.json")
     if pin != {
         "repository": "ActiveInferenceInstitute/fep_formal",
         "revision": args.fep_revision,
     }:
         raise ValueError("companion pin does not match requested source")
+    binding = release_binding(args) if args.gnn_release_root else None
     return {
+        "release_binding": binding,
         "runtime": runtime(args.expected_python, args.environment),
         "gnn": source(args.gnn_root, args.gnn_revision),
         "fep": source(args.fep_root, args.fep_revision),
@@ -265,11 +346,17 @@ def main() -> int:
     )
     for flag in ("environment", "gnn-root", "fep-root", "receipts"):
         parser.add_argument(f"--{flag}", type=Path, required=True)
+    parser.add_argument("--gnn-release-root", type=Path)
+    parser.add_argument("--gnn-release-revision")
     parser.add_argument("--gnn-revision", required=True)
     parser.add_argument("--fep-revision", required=True)
     args = parser.parse_args()
     for name in ("environment", "gnn_root", "fep_root", "receipts"):
         setattr(args, name, getattr(args, name).resolve())
+    if bool(args.gnn_release_root) != bool(args.gnn_release_revision):
+        parser.error("release root and revision must be supplied together")
+    if args.gnn_release_root:
+        args.gnn_release_root = args.gnn_release_root.resolve()
     try:
         execute(args)
     except (

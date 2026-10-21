@@ -1,49 +1,34 @@
-# development
+# Development documentation — agent guide
 
 ## Overview
 
-This directory contains documentation and resources for the development subsystem.
-
-**Version**: 1.0
-
----
+Maintainer workflows, repository audit tools and source-bound release evidence live
+here. [README.md](README.md) routes human contributors; [SPEC.md](SPEC.md) defines
+this directory's documentation contract. This is not a pipeline runtime module.
 
 ## Purpose
 
-Development workflows, contribution guidelines, and coding standards
-
-This subsystem is part of the broader GNN (Generalized Notation Notation) documentation ecosystem, integrated with the 25-step processing pipeline.
+Keep commands tied to executable owners and scientific acceptance tied to named
+source revisions. Use [TO-DO.md](../../TO-DO.md) for current and future scope;
+historical receipts and fleet logs retain their original epochs.
 
 ## Contents
 
-**Files**: `README.md`, `AGENTS.md`, `agents_readme_review.md`, `agents_readme_triple_review.md`, `thin_orchestrator_pattern.md`, `docs_audit.py`, `rewrite_gnn_doc_links.py`, `docs_audit_report.md` (generated) | **Subdirectories**: none
+Use the [developer guide](README.md) for task routes, [documentation review](documentation_review.md)
+for prose and signposting, and [paired custody](fep_lean_paired_revision.md) for
+manuscript/companion updates. The tree also contains retained JSON receipts and
+`fleet-logs/`; a hand-maintained file count is not authoritative.
 
 ## Quick Navigation
 
-- **Docs audit**: `uv run --extra dev python docs/development/docs_audit.py` from repo root (`--strict` for CI; failures print per-issue lines on stderr by default, `-q` for summary only); report includes `docs/**/AGENTS.md` orientation checks. See [README.md](README.md#documentation-audit-tooling), [agents_readme_review.md](agents_readme_review.md), [agents_readme_triple_review.md](agents_readme_triple_review.md)
-- **README.md**: [Directory overview](README.md)
-- **GNN Documentation**: [gnn/AGENTS.md](../gnn/AGENTS.md)
-- **Main Documentation**: [docs/README.md](../README.md)
-- **Pipeline Reference**: [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)
+- [Documentation audit tooling](README.md#documentation-audit-tooling)
+- [Contributor handoff](contributor_handoff.md)
+- [Roadmap implementation contracts](remaining_roadmap_contracts.md)
+- [Testing](../testing/README.md), [release management](../releases/README.md)
+- [Main documentation](../README.md), [pipeline owners](../../src/gnn/README.md)
 
-## Integration with Pipeline
+## Verification
 
-This documentation is integrated with the 25-step GNN processing pipeline:
-
-1. **Core Processing** (Steps 0-9): GNN parsing, validation, export
-2. **Simulation** (Steps 10-16): Model execution and analysis  
-3. **Integration** (Steps 17-24): System coordination and output
-
-See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documentation.
-
-## Related Resources
-
-**Main GNN Documentation**: [gnn/](../gnn/)
-- [GNN Overview](../gnn/gnn_overview.md)
-- [GNN Quickstart](../gnn/tutorials/quickstart_tutorial.md)
-- [GNN Examples](../gnn/tutorials/gnn_examples_doc.md)
-
-**Pipeline Architecture**: [src/](../../src/)
-- [Pipeline AGENTS](../../src/gnn/AGENTS.md)
-- [Pipeline README](../../src/gnn/README.md)
-
+Run the frozen checks in [README.md](README.md#documentation-audit-tooling), the
+relevant consumer tests, and every applicable source/native/custody gate. Never
+refresh a receipt by changing its recorded producer identity.

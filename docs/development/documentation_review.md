@@ -28,6 +28,12 @@ uv run --frozen --no-sync python scripts/check_doc_contracts.py --strict
 uv run --frozen --no-sync python scripts/check_maintained_doc_terms.py --strict
 ```
 
+The anchor check covers same-page links, cross-file headings, duplicate heading
+suffixes, Setext headings and explicit HTML targets. Fenced examples do not create
+real headings. Relative reference definitions, URL-encoded paths and destinations
+that escape the repository are checked too. A clean audit is a static navigation
+result, not a claim that every linked example executed or every web URL resolved.
+
 The [audit implementation](docs_audit.py) defines maintained paths, generated-data
 exclusions, pairing and anchor checks. Follow the
 [complete verification rules](../../TO-DO.md#verification-and-execution-rules)

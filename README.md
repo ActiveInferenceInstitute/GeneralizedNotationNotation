@@ -3,7 +3,7 @@
 **Describe an Active Inference generative model in Markdown, validate it, render
 framework-specific code, and inspect the evidence from its execution.**
 
-[![Version: 4.2.0](https://img.shields.io/badge/version-4.2.0-00a6b8.svg)](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.2.0)
+[![Version: 4.2.1](https://img.shields.io/badge/version-4.2.1-00a6b8.svg)](pyproject.toml)
 [![CI](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/actions/workflows/ci.yml)
 [![Python 3.11–3.14](https://img.shields.io/badge/python-3.11%E2%80%933.14-blue.svg)](pyproject.toml)
 [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](LICENSE.md)
@@ -13,7 +13,11 @@ framework-specific code, and inspect the evidence from its execution.**
 [Documentation](#documentation) · [Examples](#examples) ·
 [Contributing](#contributing)
 
-**Current release:** [4.2.0](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.2.0).
+**Software:** 4.2.1. [Published release records](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases) own accepted tags and assets.
+
+FEP_Formal compatibility targets the fixed companion revision accepted with
+GNN 4.2.0. Full synchronization is planned for the next major release of both
+projects; see the [baseline policy](docs/development/fep_lean_paired_revision.md#fixed-baseline-for-gnn-421).
 **Page updated:** 2026-10-21. [Package metadata](pyproject.toml) owns the version
 and dependency requirements; [CHANGELOG.md](CHANGELOG.md) owns release history.
 
@@ -225,7 +229,7 @@ Commands below run from the repository root and reuse the frozen environment.
 ```bash
 git clone https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation.git
 cd Generalized_Notation_Notation
-git checkout v4.2.0
+git checkout v4.2.1
 uv sync --frozen --python 3.14
 uv run --frozen --no-sync gnn --help
 ```
@@ -272,7 +276,7 @@ qualification before widening, not a general claim that Python 3.15 is unusable.
 The scientific stack now admits JAX 0.12 and retains its Python-specific
 PyMDP/Flax compatibility split in `pyproject.toml`. Python 3.11 resolves JAX
 0.10.2, PyMDP 1.0.4 and Flax 0.12.8; newer supported Python profiles resolve
-JAX 0.12.0, PyMDP 1.0.3 and Flax 0.12.10. ActiveInference.jl retains its
+JAX 0.12.0.1, PyMDP 1.0.3 and Flax 0.12.10. ActiveInference.jl retains its
 Distributions ceiling because DistributionsAD's extension fails with the newer
 `@check_args` API; its committed Project documents that exception. RxInfer
 resolves 6.1.0 on Julia 1.13.2. The separate FEP companion still requires its
@@ -380,6 +384,12 @@ their documented producer and re-pin procedures.
 - [Code of conduct](CODE_OF_CONDUCT.md): participation standards.
 
 ## Release artifacts and citation
+
+[Release records](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases)
+provide accepted version tags and downloadable source-bound artifacts. The
+[4.2.1 changelog](CHANGELOG.md#421---2026-10-21) describes documentation and
+signposting repairs; [4.3–4.9 scope](TO-DO.md#versioned-delivery-plan-430-through-490)
+remains planned work.
 
 [GNN 4.2.0](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.2.0)
 provides the ordinary wheel/sdist, manuscript PDF, overview image, source binding,

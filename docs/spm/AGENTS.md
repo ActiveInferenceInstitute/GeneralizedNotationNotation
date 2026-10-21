@@ -25,7 +25,7 @@ SPM integration enables:
 
 ## Contents
 
-**Files**:        3 | **Subdirectories**:        1
+Browse the [current directory](./) for files and subdirectories; use the task links below for navigation.
 
 ## Quick Navigation
 
@@ -129,5 +129,4 @@ All documentation in this module adheres to professional standards:
 ---
 
 **Status**: Documentation module — research/integration notes (no SPM implementation in `src/gnn/`)  
-**Compliance**: Professional documentation standards  
 **Maintenance**: Regular updates with new SPM features and integration capabilities

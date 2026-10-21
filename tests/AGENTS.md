@@ -10,7 +10,7 @@
 
 **Status**: Maintained; current acceptance is source-bound and selection-specific
 
-**Version**: [pyproject.toml](../pyproject.toml) (canonical; current software 4.2.0)
+**Version**: [pyproject.toml](../pyproject.toml) (canonical)
 
 **Last Updated**: 2026-09-04 (historical module documentation)
 

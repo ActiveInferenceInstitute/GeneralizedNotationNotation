@@ -8,7 +8,6 @@
 
 This directory contains comprehensive documentation for audio processing, sonification, and audio generation capabilities within the GNN (Generalized Notation Notation) ecosystem. Audio processing enables auditory representation of Active Inference models, real-time sonification, and multi-backend audio generation.
 
-**Status**: ✅ Production Ready  
 **Version**: 1.0
 
 ## Quick Navigation
@@ -33,7 +32,7 @@ This directory contains comprehensive documentation for audio processing, sonifi
 
 ## Contents
 
-**Files**: 3 (README.md, AGENTS.md, SPEC.md) | **Subdirectories**: 0
+Browse the [current directory](./) for files and subdirectories; use the task links below for navigation.
 
 ### Core Documentation
 
@@ -120,8 +119,6 @@ All documentation in this module adheres to professional standards:
 
 ---
 
-**Status**: ✅ Production Ready  
-**Compliance**: Professional documentation standards  
 **Maintenance**: Regular updates with new audio processing features and integration capabilities
 
 

@@ -8,7 +8,6 @@
 
 This document describes how GNN (Generalized Notation Notation) integrates with Active Inference implementations, providing signposting to all relevant documentation and source code.
 
-**Status**: ✅ Production Ready  
 **Version**: 1.0
 
 ---
@@ -156,5 +155,4 @@ D[5] = [1.0, 0.0, 0.0, 0.0, 0.0]  // Start center
 
 ---
 
-**Status**: ✅ Production Ready  
 **Compliance**: GNN documentation standards

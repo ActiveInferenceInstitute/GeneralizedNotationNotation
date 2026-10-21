@@ -29,7 +29,7 @@ Naming convention: `test_{module}_{detail}.py`
 
 ## Test Categories
 
-The live routing table is `categories.py` (`MODULAR_TEST_CATEGORIES`) — 38
+The live routing table is `categories.py` (`MODULAR_TEST_CATEGORIES`) —
 categories whose `files` entries resolve relative to `tests/` (module
 subdirectory paths). The curated lists are grown to cover the whole tree at
 import (`_grow_routing_from_tree`), so the table routes every test file
@@ -44,11 +44,11 @@ uv run --extra dev python -c "from tests.categories import get_all_test_files; p
 ## Running Tests
 
 ```bash
-# Fast tests (~2 min)
-python src/2_tests.py --fast-only --verbose
+# Fast selection
+uv run --frozen --no-sync python src/gnn/2_tests.py --fast-only --verbose
 
-# Comprehensive tests (~15 min)
-python src/2_tests.py --comprehensive --verbose
+# Comprehensive selection
+uv run --frozen --no-sync python src/gnn/2_tests.py --comprehensive --verbose
 
 # Specific category
 uv run --extra dev python -m pytest tests/gnn -v

@@ -7,6 +7,40 @@ the mechanism GEO_INFER already runs for this repository: its
 `.github/gnn-pair.json`. The GEO_INFER direction (GEO_INFER pinning GNN) is
 covered in the mirror-image section below.
 
+## Fixed baseline for GNN 4.2.1
+
+GNN 4.2.1 targets the FEP_Formal revision already accepted with GNN 4.2.0,
+recorded in `.github/fep-lean-pair.json`. It does not wait for, modify or claim
+acceptance of newer FEP_Formal work. Full synchronization of both repositories
+is deferred to their next major release.
+
+The explicit policy in
+[`.github/fep-release-baseline.json`](../../.github/fep-release-baseline.json)
+binds that FEP revision, its exact GNN scientific baseline, the current package
+version and the reviewed dependency-lock hash. CI checks out **both** GNN
+revisions. The existing strict bridge status, finite/continuous emission and
+Q7 source checks run on the accepted scientific baseline. Separate current-release
+bookends verify every covered owner and reject additions, deletions or scientific
+code changes. Only the canonical package-version replacement in `pyproject.toml`
+and `src/gnn/__init__.py`, plus the explicitly reviewed frozen lock, may differ.
+The current GNN dependency/runtime matrix is qualified independently by ordinary,
+comprehensive-native, all-extras and installed-wheel workflows.
+
+Receipts retain both GNN revisions, the exact companion, all source/lock hashes,
+the approved delta and `current_pair_synchronized: false`. A green fixed-baseline
+run means **current release compatibility with the accepted scientific baseline**.
+It does not mean a fresh formal proof, current-release Q7 native compilation or
+full synchronization. Historical native receipts keep their original source pair.
+The controls reject scientific changes, added owners, metadata changes beyond the
+version, initializer code changes and an unreviewed lock, in addition to the
+existing interpreter/source/receipt mutation controls.
+
+This release policy supersedes the simultaneous re-pin requirement below only
+for the declared fixed-baseline delta. A scientific owner change requires a fresh
+paired synchronization; it cannot be admitted by adding an exception to the gate.
+At the next major release, remove the temporary baseline mode after normal paired
+source/native qualification succeeds. Preserve its historical release receipts.
+
 ## What is pinned
 
 `.github/fep-lean-pair.json` records the reviewed companion revision — the
@@ -95,7 +129,7 @@ revisions — never a floating main.
 
 ## What the workflow proves and does NOT prove
 
-The workflow is a **drift-detection** surface. It proves that the pinned
+In synchronized mode (the procedure below), the workflow is a **drift-detection** surface. It proves that the pinned
 fep_lean checkout and this GNN checkout still agree on the bridge's source
 binding (owner rosters and content digests), finite/continuous freshness, the
 syntax surface, the contract mirror, and the formal projection with no drift.
@@ -108,8 +142,8 @@ in the state fep_lean reviewed", nothing about the truth of formal claims.
 
 ## Closeout ordering (canonical)
 
-Any change touching files the bridge's source binding covers must close out in
-this exact order:
+Except for the explicitly declared [4.2.1 fixed baseline](#fixed-baseline-for-gnn-421),
+changes touching files the bridge's source binding covers close out in this order:
 
 1. **All content edits land first** — never after the ritual. Any later
    owner-file edit re-drifts the pair.

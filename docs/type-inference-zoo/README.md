@@ -10,7 +10,6 @@ This directory contains documentation and resources for integrating the **Type I
 
 **Role**: The Type Inference Zoo is **type-system reference material**, not a render or execution framework. It is not an entry in `src/gnn/render/framework_registry.py`, generates no simulation code, and has no Step 12 executor. In the live tree, the related sources are the Haskell and Scala type-system files under `src/gnn/type_systems/` (e.g. `haskell.hs`, `scala.scala`, `categorical.scala`); the Step 5 type checker (`src/gnn/type_checker/`) is the separate GNN-native implementation.
 
-**Status**: ✅ Production Ready  
 **Version**: 1.0
 
 ## Quick Navigation
@@ -36,7 +35,7 @@ This directory contains documentation and resources for integrating the **Type I
 
 ## Contents
 
-**Files**: 2 | **Subdirectories**: 1
+Browse the [current directory](./) for files and subdirectories; use the task links below for navigation.
 
 ### Core Files
 
@@ -120,6 +119,4 @@ All documentation in this module adheres to professional standards:
 
 ---
 
-**Status**: ✅ Production Ready  
-**Compliance**: Professional documentation standards  
 **Maintenance**: Regular updates with new type inference algorithms and integration capabilities

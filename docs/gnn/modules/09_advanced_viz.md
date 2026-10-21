@@ -32,7 +32,6 @@ src/gnn/advanced_visualization/
 
 **Category**: Advanced Visualization / Interactive Analysis
 
-**Status**: ✅ Production Ready
 
 **Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
@@ -547,7 +546,6 @@ uv run python src/gnn/9_advanced_viz.py --target-dir input/ --verbose
 
 **Last Updated**: 2026-01-21
 **Maintainer**: GNN Pipeline Team
-**Status**: ✅ Production Ready
 **Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 

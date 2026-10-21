@@ -8,7 +8,6 @@
 
 This directory contains comprehensive documentation on **Active Inference** and the **Free Energy Principle (FEP)** as implemented within the GNN (Generalized Notation Notation) framework. It serves as a central hub for theoretical foundations, computational methods, and implementation references.
 
-**Status**: ✅ Production Ready  
 **Version**: 1.0  
 **Last Updated**: February 2026
 
@@ -236,6 +235,5 @@ docs/active_inference/
 
 ---
 
-**Status**: ✅ Production Ready  
 **Compliance**: GNN documentation standards  
 **Maintenance**: Regular updates with new research and implementations

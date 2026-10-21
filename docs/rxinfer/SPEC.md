@@ -1,9 +1,5 @@
 # Specification: Rxinfer
 
-## Design Requirements
-This module (`rxinfer`) maps structural logic to the overall execution graph.
-It ensures that `Rxinfer` tasks resolve without runtime dependency loops.
-
 ## Real RxInfer.jl Integration
 The RxInfer.jl surface is a genuine `@model` + `infer()` variational
 message-passing integration:
@@ -19,9 +15,15 @@ message-passing integration:
   `julia --startup-file=no --project=src/gnn/execute/rxinfer <script>`.
   `setup_environment.jl` uses `Pkg.activate()` + `Pkg.instantiate()` — no
   runtime `Pkg.add`.
-- All 30 exemplar GNN files (27 discrete + 3 continuous, census:
-  `input/gnn_files/INDEX.md`) render and execute successfully. Step 6 validation
-  includes `inference_converged` and `vfe_present`.
+- Model-kind and inference admission are explicit in the
+  [renderer registry](../../src/gnn/render/framework_registry.py) and
+  [RxInfer guide](README.md). Current exemplar selection is owned by the
+  [input index](../../input/gnn_files/INDEX.md); render success is separate
+  from exact-source native numerical acceptance.
 
-## Components
-Expected available types: No specific classes exported.
+## Documentation contract
+
+[README.md](README.md) owns the topic entrypoints; [AGENTS.md](AGENTS.md) guides
+maintenance. Follow the [documentation rules](../../.agent_rules/documentation.md) for links, executable
+examples and source-bound claims. Research scripts and quoted upstream code have
+their own prerequisites; their presence does not register a pipeline backend.

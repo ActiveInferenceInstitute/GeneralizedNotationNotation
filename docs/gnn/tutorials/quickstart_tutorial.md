@@ -1,14 +1,17 @@
 # GNN Quick Start Tutorial
 
-**Version**: v3.6.0 Engine (Bundle v2.0.0)
-**Last Updated**: 2026-09-23
+**Software version**: [package metadata](../../../pyproject.toml)
+**Last reviewed**: 2026-10-21
 **Status**: Maintained
 
-**Goal**: Create and run your first GNN model in 15 minutes, no prior Active Inference knowledge required.
+**Goal**: Author, validate and run a small categorical GNN model. Run all commands
+from the repository root; setup and native compilation times depend on the host.
 
 ## 🎯 What You'll Build
 
-A simple navigation agent that learns to find a goal location in a 2x2 grid world.
+A navigation model with fixed likelihood/transition matrices and preferences
+over positions in a 2×2 grid. Belief updates and action selection do not train
+those matrices or guarantee an optimal trajectory.
 
 ```
 [Start] [    ]
@@ -18,12 +21,12 @@ A simple navigation agent that learns to find a goal location in a 2x2 grid worl
 ## ⚡ Prerequisites
 
 - Basic programming knowledge (any language)
-- Python 3.11+ installed
-- 15 minutes of focused time
+- A supported Python/uv environment from the [setup guide](../../SETUP.md)
+- The PyMDP runtime and a writable output directory
 
 > 💡 **No Active Inference background needed!** This tutorial explains concepts as we go.
 
-## 📥 Step 1: Setup (2 minutes)
+## 📥 Step 1: Setup
 
 ### Install the GNN toolkit
 
@@ -32,25 +35,22 @@ A simple navigation agent that learns to find a goal location in a 2x2 grid worl
 git clone https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation.git
 cd Generalized_Notation_Notation
 
-# Install UV package manager (if not already installed)
-curl -LsSf https://astral.sh/uv/install.sh | sh
-
-# Install dependencies using UV (recommended)
-uv sync
+# Provision the uv version specified in the setup guide first.
+uv sync --frozen --extra dev --python 3.14
 
 # Test the installation
-uv run python src/gnn/main.py --help
+uv run --frozen --no-sync python src/gnn/main.py --help
 ```
 
 ### Create your workspace
 
 ```bash
 # Create a folder for your first model
-mkdir my_first_gnn_model
-cd my_first_gnn_model
+mkdir -p input/gnn_files/my_first_gnn_model
+# Stay in the repository root for the commands below.
 ```
 
-## 🧱 Step 2: Understanding the Basics (3 minutes)
+## 🧱 Step 2: Understanding the Basics
 
 ### What is Active Inference?
 
@@ -74,7 +74,7 @@ cd my_first_gnn_model
 - **Actions**: 4 movements (Up, Down, Left, Right)
 - **Preference**: Be at the goal (Bottom-Right)
 
-## 📝 Step 3: Write Your First GNN Model (5 minutes)
+## 📝 Step 3: Write Your First GNN Model
 
 Create a file called `grid_agent.md`:
 
@@ -89,27 +89,27 @@ GNN v1
 Simple Grid Navigation Agent v1.0
 
 ## ModelAnnotation
-A 2x2 grid navigation agent that learns to reach a goal.
+A 2x2 grid navigation model with fixed parameters and goal preferences.
 The agent can observe its current position and can move in 4 directions.
 Goal is to reach the bottom-right corner.
 
 ## StateSpaceBlock
 # Hidden State Factor: Agent's position
-s_f0[4,1,type=int]        # Position (0:TopLeft, 1:TopRight, 2:BottomLeft, 3:BottomRight/Goal)
-s_f0_next[4,1,type=int]   # Next position — every variable used in Connections must be declared here
+s[4,1,type=int]        # Position (0:TopLeft, 1:TopRight, 2:BottomLeft, 3:BottomRight/Goal)
+s_prime[4,1,type=int]   # Next position — every variable used in Connections must be declared here
 
 # Observation: What the agent sees (its current position)
-o_m0[4,1,type=int]   # Observed position (same as true position)
+o[4,1,type=int]   # Observed position (same as true position)
 
 # Control: Agent's actions
-pi_c0[4,type=float]  # Policy over movement actions  
-u_c0[1,type=int]     # Chosen action (0:Up, 1:Down, 2:Left, 3:Right)
+π[4,type=float]  # Policy over movement actions
+u[1,type=int]     # Chosen action (0:Up, 1:Down, 2:Left, 3:Right)
 
 # Model matrices
-A_m0[4,4,type=float] # Likelihood: P(observation | position)
-B_f0[4,4,4,type=float] # Transition: P(next_position | current_position, action)
-C_m0[4,type=float]   # Preferences over observations
-D_f0[4,type=float]   # Prior beliefs about starting position
+A[4,4,type=float] # Likelihood: P(observation | position)
+B[4,4,4,type=float] # Transition: P(next_position | current_position, action)
+C[4,type=float]   # Preferences over observations
+D[4,type=float]   # Prior beliefs about starting position
 
 # Expected Free Energy and time
 G[1,type=float]      # Expected Free Energy for action selection
@@ -121,45 +121,44 @@ t[1,type=int]        # Time step
 # docs/gnn/reference/gnn_syntax.md for the full rule.
 
 # Prior influences initial state
-D_f0>s_f0
+D>s
 
 # Position determines what agent observes
-s_f0>A_m0
-A_m0>o_m0
+s>A
+A>o
 
 # Position and action determine next position
-s_f0>B_f0
-u_c0>B_f0
-B_f0>s_f0_next
+s>B
+u>B
+B>s_prime
 
 # Preferences and expected outcomes influence action selection
-C_m0>G
-A_m0>G
-B_f0>G
-s_f0>G
-G>pi_c0
-pi_c0>u_c0
+C>G
+A>G
+B>G
+s>G
+G>π
+π>u
 
 ## InitialParameterization
 
-# Keep comments on their own lines. A "#" inside a matrix literal breaks the
-# parser, which then silently mis-reads the matrix dimensions.
+# Keep matrix comments on separate lines and validate dimensions before execution.
 
-# A_m0: the agent observes its position perfectly (identity matrix)
+# A: the agent observes its position perfectly (identity matrix)
 
-A_m0={
+A={
   (1.0, 0.0, 0.0, 0.0),
   (0.0, 1.0, 0.0, 0.0),
   (0.0, 0.0, 1.0, 0.0),
   (0.0, 0.0, 0.0, 1.0)
 }
 
-# B_f0: movement transitions, indexed [next_position, current_position, action].
+# B: movement transitions, indexed [next_position, current_position, action].
 # Actions are 0:Up, 1:Down, 2:Left, 3:Right. Each block below fixes
 # next_position; within a block, rows are current_position and columns are
 # action. Moving into a wall leaves the agent where it is.
 
-B_f0={
+B={
   ( (1.0, 0.0, 1.0, 0.0),
     (0.0, 0.0, 1.0, 0.0),
     (1.0, 0.0, 0.0, 0.0),
@@ -181,13 +180,21 @@ B_f0={
     (0.0, 1.0, 0.0, 1.0) )
 }
 
-# C_m0: preferences over observations — strongly prefer the goal (BottomRight)
+# C: preferences over observations — strongly prefer the goal (BottomRight)
 
-C_m0={(-1.0, -1.0, -1.0, 2.0)}
+C={(-1.0, -1.0, -1.0, 2.0)}
 
-# D_f0: start at TopLeft with certainty
+# D: start at TopLeft with certainty
 
-D_f0={(1.0, 0.0, 0.0, 0.0)}
+D={(1.0, 0.0, 0.0, 0.0)}
+
+## ModelParameters
+
+b_tensor_order: next_state_previous_state_action
+num_hidden_states: 4
+num_obs: 4
+num_actions: 4
+num_timesteps: 5
 
 ## Equations
 # Standard Active Inference equations for policy selection:
@@ -200,14 +207,14 @@ DiscreteTime=t
 ModelTimeHorizon=5
 
 ## ActInfOntologyAnnotation
-s_f0=HiddenStatePosition
-o_m0=ObservationPosition  
-pi_c0=PolicyMovement
-u_c0=ActionMovement
-A_m0=LikelihoodMatrixPosition
-B_f0=TransitionMatrixMovement
-C_m0=PreferenceVector
-D_f0=PriorBelief
+s=HiddenStatePosition
+o=ObservationPosition
+π=PolicyMovement
+u=ActionMovement
+A=LikelihoodMatrixPosition
+B=TransitionMatrixMovement
+C=PreferenceVector
+D=PriorBelief
 G=ExpectedFreeEnergy
 t=TimeStep
 
@@ -220,48 +227,52 @@ Date: 2024
 Status: Tutorial Example
 ```
 
-Save this as `grid_agent.md` in your `my_first_gnn_model` folder.
+Save this as `input/gnn_files/my_first_gnn_model/grid_agent.md`.
 
 > Any registered GNN spec extension (`.md`, `.gnn`, and the other non-binary
 > extensions in the parser registry) works: Step 5's discovery
 > (`src/gnn/type_checker/checking/core.py`) walks every registered non-binary
 > extension, not just `*.md`.
 
-## ✅ Step 4: Validate Your Model (2 minutes)
+## ✅ Step 4: Validate Your Model
 
 Check if your model is correct:
 
 ```bash
-# Run the GNN type checker (Step 5)
-uv run python src/gnn/5_type_checker.py --target-dir my_first_gnn_model/ --verbose
+# Validate the authored file, then run the directory type checker (Step 5).
+uv run --frozen --no-sync gnn validate input/gnn_files/my_first_gnn_model/grid_agent.md --strict
+uv run --frozen --no-sync python src/gnn/5_type_checker.py --target-dir input/gnn_files/my_first_gnn_model/ --verbose
 
-# If successful, you should see:
-# ✅ grid_agent.md: Valid GNN model
-# 📊 Resource estimation: [details]
+# Inspect the actual type-checker report; diagnostics depend on the input.
 ```
 
 **If you see errors**: Check the [Common Errors Guide](../../troubleshooting/error_taxonomy.md) or compare with the template above.
 
 For more information on the type checker, see **[src/gnn/type_checker/AGENTS.md](../../../src/gnn/type_checker/AGENTS.md)**.
 
-## 🚀 Step 5: Generate Runnable Code (3 minutes)
+## 🚀 Step 5: Generate Runnable Code
 
 Convert your GNN model to executable Python code:
 
 ```bash
 # Generate PyMDP code (Steps 3, 11, 12)
-uv run python src/gnn/main.py --only-steps "3,11,12" --target-dir my_first_gnn_model/ --output-dir output/my_first_model/ --frameworks pymdp --verbose
+uv run --frozen --no-sync python src/gnn/main.py --only-steps "3,5,11,12" --target-dir input/gnn_files/my_first_gnn_model/ --output-dir output/my_first_model/ --frameworks pymdp --verbose
 
 # Every step writes under the --output-dir you passed, so with
 # --output-dir output/my_first_model/ this run creates:
-# - output/my_first_model/3_gnn_output/       (parsed model)
+# - output/my_first_model/03_gnn_output/       (parsed model)
 # - output/my_first_model/11_render_output/   (executable code per framework)
 # - output/my_first_model/12_execute_output/  (simulation results)
 #
 # Visualization and export are steps 8 and 7 — add them to --only-steps
-# to also get output/my_first_model/8_visualization_output/ and
-# output/my_first_model/7_export_output/.
+# to also get output/my_first_model/08_visualization_output/ and
+# output/my_first_model/07_export_output/.
 ```
+
+Inspect the run summary and per-model execution results. Exit 0 is success, exit
+2 is completed work with warnings, and exit 1 is failure. A platform without an
+active execution sandbox records that boundary as a warning; successful inference
+does not establish process containment or optimal behavior.
 
 For more details on code generation, see:
 
@@ -290,7 +301,7 @@ So locate the script rather than assuming a flat filename:
 find output/my_first_model/11_render_output -name "*_pymdp.py"
 
 # Run it
-uv run python output/my_first_model/11_render_output/grid_agent/pymdp/*_pymdp.py
+uv run --frozen --no-sync python output/my_first_model/11_render_output/grid_agent/pymdp/*_pymdp.py
 ```
 
 The script prints per-timestep observations, beliefs, and selected actions, then writes
@@ -298,7 +309,7 @@ its results as JSON next to itself. Step 12 does the same thing for every render
 backend at once, which is usually what you want:
 
 ```bash
-uv run python src/gnn/12_execute.py --target-dir my_first_gnn_model/ \
+uv run --frozen --no-sync python src/gnn/12_execute.py --target-dir input/gnn_files/my_first_gnn_model/ \
   --output-dir output/my_first_model/ --frameworks pymdp --verbose
 ```
 
@@ -319,14 +330,14 @@ Your agent:
 2. **Observed** its true position  
 3. **Planned** actions to reach the goal (BottomRight)
 4. **Selected** actions based on expected free energy minimization
-5. **Learned** to navigate optimally
+5. **Updated beliefs and selected actions** under fixed authored model parameters
 
 ## 🎯 Next Steps
 
 ### Immediate Experiments (5 minutes each)
 
-1. **Change the goal**: Modify `C_m0` to prefer TopRight instead
-2. **Add uncertainty**: Make observations noisy by modifying `A_m0`
+1. **Change the goal**: Modify `C` to prefer TopRight instead
+2. **Add uncertainty**: Make observations noisy by modifying `A`
 3. **Bigger world**: Extend to a 3x3 grid (requires updating all matrices)
 
 ### Deeper Learning
@@ -334,7 +345,7 @@ Your agent:
 1. **Understand the math**: Read [Active Inference basics](../about_gnn.md)
 2. **Try examples**: Explore [more complex models](gnn_examples_doc.md)
 3. **Different domains**: Navigation → Perception → Decision making
-4. **Advanced features**: Multi-agent, learning, hierarchical models
+4. **Research extensions**: Check [admission limits](../../execution/FRAMEWORK_AVAILABILITY.md) before trying multi-agent or hierarchical sketches
 
 5. **Pipeline architecture**: See **[src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md)** for complete module documentation
 6. **Pipeline safety**: Read **[src/gnn/README.md](../../../src/gnn/README.md)** for architecture patterns
@@ -363,36 +374,36 @@ backends (PyMDP, ActiveInference.jl, DisCoPy, bnlearn) report them
 
 | Concept | What It Does | In Our Example |
 |---------|--------------|----------------|
-| **Hidden States** (`s_f0`) | What the agent tracks internally | 4 grid positions |
-| **Observations** (`o_m0`) | What the agent can perceive | Current position |
-| **Actions** (`u_c0`) | What the agent can do | 4 movement directions |
-| **Likelihood** (`A_m0`) | How states relate to observations | Perfect position sensing |
-| **Transitions** (`B_f0`) | How actions change states | Movement rules |
-| **Preferences** (`C_m0`) | What the agent wants | Reach bottom-right |
-| **Expected Free Energy** (`G`) | How the agent chooses actions | Minimize surprise, maximize reward |
+| **Hidden States** (`s`) | What the agent tracks internally | 4 grid positions |
+| **Observations** (`o`) | What the agent can perceive | Current position |
+| **Actions** (`u`) | What the agent can do | 4 movement directions |
+| **Likelihood** (`A`) | How states relate to observations | Perfect position sensing |
+| **Transitions** (`B`) | How actions change states | Movement rules |
+| **Preferences** (`C`) | What the agent wants | Reach bottom-right |
+| **Expected Free Energy** (`G`) | How the agent chooses actions | Score outcomes using the backend's declared EFE contract |
 
 ## 🛠️ Common Issues and Quick Fixes
 
 ### "Parser Error: Invalid syntax"
 
 - Check section headers: Use `## StateSpaceBlock` not `## StateSpace`
-- Check variable names: Use `s_f0` not `s f0` (underscores, not spaces)
+- Check variable names: Use `s` not `s f0` (underscores, not spaces)
 
 ### "Dimension mismatch"
 
 - Ensure matrix sizes match variable definitions
-- `A_m0[4,4]` means 4 observations × 4 states
+- `A[4,4]` means 4 observations × 4 states
 
 ### "Probabilities don't sum to 1"
 
-- Each column in B_f0 must sum to 1.0
-- Each column in A_m0 must sum to 1.0
+- Each column in B must sum to 1.0
+- Each column in A must sum to 1.0
 
 ### "My agent doesn't reach the goal"
 
-- Check `C_m0`: Higher values should be at preferred states
-- Check `B_f0`: Ensure movement logic is correct
-- Try `ModelTimeHorizon=10` for longer planning
+- Check `C`: Higher values should be at preferred states
+- Check `B`: Ensure movement logic is correct
+- Check the backend's admitted planning horizon; the model time horizon is not a universal policy-search setting
 
 ### "unsupported framework" for a continuous model
 
@@ -414,9 +425,5 @@ bnlearn do not execute that kind — rerun with `--frameworks jax`, `numpyro`,
   - [Support](../../SUPPORT.md)
 - **Community**: [GitHub Discussions](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/discussions)
 
----
 
-**🎓 You're now a GNN practitioner!** Ready to model complex cognitive agents and contribute to Active Inference research.
-
-**Time taken**: ~15 minutes  
-**Achievement unlocked**: First working GNN model ✨
+Return to the [documentation hub](../../README.md) or [next release scopes](../../../TO-DO.md).

@@ -33,7 +33,6 @@ src/gnn/llm/
 
 **Category**: AI Enhancement / Analysis
 
-**Status**: ✅ Production Ready
 
 **Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
@@ -690,7 +689,6 @@ input/gnn_files (re-parsed by 13_llm.py)
 
 **Last Updated**: 2026-04-10
 **Maintainer**: GNN Pipeline Team
-**Status**: ✅ Production Ready
 **Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 

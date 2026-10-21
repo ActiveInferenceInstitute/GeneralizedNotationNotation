@@ -8,7 +8,6 @@
 
 **Variational Inference** is the computational engine behind Active Inference. This document covers the mathematical details of Variational Free Energy (VFE) and the algorithms used to minimize it.
 
-**Status**: ✅ Production Ready  
 **Version**: 1.0
 
 ---
@@ -301,6 +300,5 @@ Maximizing ELBO = Minimizing Free Energy.
 
 ---
 
-**Status**: ✅ Production Ready  
 **Compliance**: GNN documentation standards  
 **Maintenance**: Regular updates with new inference algorithms

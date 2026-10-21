@@ -333,7 +333,7 @@ explicit profiles. LLM defaults and provisioning live in the [LLM guide](docs/ll
 
 ### Published releases
 
-The current [4.2.0 release](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.2.0)
+The historical [4.2.0 release](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.2.0)
 records exact-source checks and assets. [CHANGELOG.md](CHANGELOG.md) owns release history.
 
 The historical [patch publication receipt](docs/development/gnn_4_0_1_post_publication.json)
@@ -487,7 +487,10 @@ producer metadata/locks and existing compatibility/native/paired rosters.
 
 ## Cross-repo custody (fep_lean, GEO-INFER)
 
-This repository shares custody pairs with two sibling repositories: fep_lean (bridge contract) and GEO-INFER (interchange contracts); each side pins the other via committed pin files plus paired CI. The one-line rule: **any edit to `src/gnn/**/*.py` (or `pyproject.toml`, `uv.lock`, `src/gnn/main.py`, `docs/gnn/gnn_syntax.md`, `src/gnn/pipeline/step_registry.py`) re-drifts the fep_lean custody pair** and must be closed out by the paired re-pin ritual. Canonical ordering and workflow details: [docs/development/fep_lean_paired_revision.md](docs/development/fep_lean_paired_revision.md).
+This repository shares custody pairs with two sibling repositories: fep_lean (bridge contract) and GEO-INFER (interchange contracts); each side pins the other via committed pin files plus paired CI. For GNN 4.2.1, the explicit fixed-baseline compatibility policy in the canonical
+guide below permits only the reviewed version/lock delta and defers full pairing
+to the next major release, as requested by the user. Scientific changes still
+require synchronization. Outside that bounded policy, **any edit to `src/gnn/**/*.py` (or `pyproject.toml`, `uv.lock`, `src/gnn/main.py`, `docs/gnn/gnn_syntax.md`, `src/gnn/pipeline/step_registry.py`) re-drifts the fep_lean custody pair** and must be closed out by the paired re-pin ritual. Canonical ordering and workflow details: [docs/development/fep_lean_paired_revision.md](docs/development/fep_lean_paired_revision.md).
 
 ## Manuscript custody (SC-22): count-changing PRs run the full ritual
 

@@ -548,8 +548,8 @@ arguments. Registrations live in `src/gnn/gui/mcp.py`.
 
 ### Related Documentation
 - [Pipeline Overview](../../../README.md)
-- [Architecture Guide](../../../../ARCHITECTURE.md)
-- [GUI Guide](../../../../docs/gui_oxdraw/)
+- [Architecture Guide](../../../ARCHITECTURE.md)
+- [GUI Guide](../../../docs/gui_oxdraw/)
 
 ### External Resources
 - [Gradio Documentation](https://gradio.app/)

@@ -8,7 +8,6 @@
 
 **Active Inference** is a process theory derived from the Free Energy Principle that explains how agents perceive, learn, and act in the world. This document covers the core theoretical concepts underlying all Active Inference implementations in GNN.
 
-**Status**: ✅ Production Ready  
 **Version**: 1.0
 
 ---
@@ -345,6 +344,5 @@ graph TB
 
 ---
 
-**Status**: ✅ Production Ready  
 **Compliance**: GNN documentation standards  
 **Maintenance**: Regular updates with new developments

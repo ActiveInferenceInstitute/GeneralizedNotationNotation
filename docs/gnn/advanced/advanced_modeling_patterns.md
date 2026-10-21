@@ -1,7 +1,7 @@
 # Advanced GNN Modeling Patterns
 
-**Version**: v3.6.0 Engine (Bundle v2.0.0)
-**Last Updated**: 2026-09-23
+**Software version**: [package metadata](../../../pyproject.toml)
+**Last reviewed**: 2026-10-21
 **Status**: Maintained
 **Scope**: Advanced GNN modeling patterns. See [framework implementations](../implementations/README.md) for current backend coverage.
 
@@ -13,12 +13,12 @@ Advanced GNN models benefit from the full pipeline processing capabilities:
 
 ### Parsing & Validation (Steps 3, 5, 6)
 
-- Complex hierarchical and multi-agent models are validated for consistency
+- Parsing and validation check declared syntax and supported structural constraints; they do not establish a coupled inference contract.
 - See: **[src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md)**, **[src/gnn/type_checker/AGENTS.md](../../../src/gnn/type_checker/AGENTS.md)**
 
 ### Code Generation & Execution (Steps 11, 12)
 
-- Advanced patterns rendered to framework-specific implementations  
+- Admitted models can render to framework-specific implementations; conceptual patterns below do not imply backend support.
 - See: **[src/gnn/render/AGENTS.md](../../../src/gnn/render/AGENTS.md)**, **[src/gnn/execute/AGENTS.md](../../../src/gnn/execute/AGENTS.md)**
 
 ### Analysis & Reporting (Steps 13, 16, 23)
@@ -59,12 +59,14 @@ This guide covers advanced patterns for modeling complex cognitive and behaviora
 > parse. Translate each grouped arrow into individual `>` / `-` edges first, and see
 > [`docs/gnn/reference/gnn_syntax.md`](../reference/gnn_syntax.md) for the authoritative
 > grammar plus [`input/gnn_files/`](../../../input/gnn_files/) for models that do parse.
-> Everything else here — `StateSpaceBlock` dimensions, `InitialParameterization`, `Time`,
-> and the ontology annotations — is literal GNN.
+> The remaining blocks are partial design sketches too. They are not complete,
+> validated input files. Start runnable work from the committed exemplar index and
+> the backend admission contracts; coupled-agent and general hierarchy support remain
+> [scoped roadmap work](../../../TO-DO.md#major-work).
 
 ## 📚 Table of Contents
 
-1. [Hierarchical Modeling](#hierarchical-modeling)
+1. [Hierarchical Modeling](#1-hierarchical-modeling)
 
    ### Hierarchical Active Inference
 
@@ -112,13 +114,13 @@ class TransitionModule:
 
 **Planned — not yet implemented.** There is no dedicated policy-tree-optimization pattern or module in `src/` today. The closest existing capability is the `policy_tree` output type in `src/gnn/advanced_visualization` (`src/gnn/advanced_visualization/mcp.py`), which visualizes the action-sequence tree of a planning agent but does not perform optimization over it.
 
-2. [Multi-Agent Systems](#multi-agent-systems)
-3. [Learning and Adaptation](#learning-and-adaptation)
-4. [Temporal Dynamics](#temporal-dynamics)
-5. [Uncertainty and Robustness](#uncertainty-and-robustness)
-6. [Compositional Modeling](#compositional-modeling)
+2. [Multi-Agent Systems](#2-multi-agent-systems)
+3. [Learning and Adaptation](#3-learning-and-adaptation)
+4. [Temporal Dynamics](#4-temporal-dynamics)
+5. [Uncertainty and Robustness](#5-uncertainty-and-robustness)
+6. [Compositional Modeling](#6-compositional-modeling)
 7. [Graceful Degradation in the Pipeline](#7-graceful-degradation-in-the-pipeline)
-8. [Domain-Specific Patterns](#domain-specific-patterns)
+8. [Domain-Specific Patterns](#8-domain-specific-patterns)
 
 ---
 

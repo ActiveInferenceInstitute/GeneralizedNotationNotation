@@ -46,7 +46,7 @@ Petri net modeling enables:
 
 ## Contents
 
-**Files**: 4 | **Subdirectories**: 0
+Browse the [current directory](./) for files and subdirectories; use the task links below for navigation.
 
 ### Core Files
 
@@ -196,5 +196,4 @@ All documentation in this module adheres to professional standards:
 ---
 
 **Status**: Documentation module — PNML samples and modeling notes (PNML is parse-only in `src/gnn/parsers/`; no export, render, or execution support)  
-**Compliance**: Professional documentation standards  
 **Maintenance**: Regular updates with new Petri net features and verification capabilities

@@ -1,184 +1,22 @@
-# Release Management Documentation
+# GNN release management
 
-> **📋 Document Metadata**  
-> **Type**: Process Guide | **Audience**: Maintainers, Developers | **Complexity**: Intermediate  
-> **Cross-References**: [AGENTS.md](AGENTS.md) | [Development Guide](../development/README.md) | [Main Documentation](../README.md)
-
-## Overview
-
-This directory contains documentation for release management, version control, and deployment processes for the GNN (Generalized Notation Notation) project. It covers semantic versioning, release cycles, quality assurance, and security release procedures.
-
-**Status**: ✅ Production Ready  
-**Version**: 1.0
-
-## Software 4.2.0 release record
-
-The [v4.2.0 release](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.2.0)
-owns its exact tag, accepted source, hosted checks and downloaded asset receipts.
-Version metadata alone does not establish publication. It includes RxInfer 6.1,
-current compatible dependencies, direct-script startup without stdlib module
-shadowing, aiohttp/Pillow repairs and the repeatable
-qualification procedure below. Python, Gradio/Pillow and scientific backend
-exceptions retain the scopes documented in README and CHANGELOG. PyPI and
-separate distribution archival require independent publication evidence.
-
-## Historical software 4.1.0 release record
-
-The [v4.1.0 release](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.1.0) is the authoritative record of its
-tag/source/checks and ordinary wheel, sdist, manuscript, verification records
-and [checksums](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/download/v4.1.0/SHA256SUMS).
-Acceptance requires actual terminal gates and directly downloaded asset parity;
-version metadata alone does not establish publication.
-The manuscript authored epoch and historical release artifacts retain their
-original identities. Exact-version archival follows the
-[archive procedure](exact_version_archival.md) and its own public DOI/hash evidence.
-
-## GNN 4.0.1 publication (historical)
-
-[v4.0.1](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.0.1) was published on 2026-10-07 from
-`17c72cf0f98d7d3bbf0159d1b1cce8c77c4e4daf`. Its
-[publication receipt](../development/gnn_4_0_1_post_publication.json) records
-normal companion integration, the annotated tag, exact hosted checks, zero open
-issues and enabled Dependabot/CodeQL alerts, and ten directly verified assets.
-The immutable release PDF retains its authored date; current main publication
-metadata is renewed separately. No PyPI upload was performed. The subsequent
-[exact 4.0.1 source archive](https://doi.org/10.5281/zenodo.23222085) has
-[verified source/manuscript parity](../development/zenodo_4_0_1_exact_source_archive.json);
-separately attached distribution-asset archival remains pending under the
-[exact-version procedure](exact_version_archival.md).
-
-## GNN 4.0.0 publication (historical)
-
-[v4.0.0](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.0.0)
-was published on 2026-10-07 from `1bc3a76eccccb2cc5ce8601770714075b3ec48db`.
-The [publication receipt](../development/gnn_4_0_0_post_publication.json) records
-normal companion merges, the annotated tag, exact checks and downloaded asset
-hashes. The manuscript keeps its 2026-10-02 authored date; no PyPI upload or
-version-specific archival DOI is claimed.
-
-![GNN 4.0.0 overview of model notation, numerical execution and the 25-step workflow](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/download/v4.0.0/GNN-4.0.0-release-overview.png)
-
-## Quick Navigation
-
-### This Directory
-- **[README.md](README.md)**: Directory overview (this file)
-- **[AGENTS.md](AGENTS.md)**: Technical documentation and agent scaffolding
-
-### Main Documentation
-- **[docs/README.md](../README.md)**: Main documentation hub
-- **[CROSS_REFERENCE_INDEX.md](../CROSS_REFERENCE_INDEX.md)**: Complete cross-reference index
-- **[learning_paths.md](../learning_paths.md)**: Learning pathways
-
-### Related Directories
-- **[Development Guide](../development/README.md)**: Development workflows
-- **[Deployment Guide](../deployment/README.md)**: Deployment strategies
-- **[Security Guide](../security/README.md)**: Security considerations
-- **[Testing Guide](../testing/README.md)**: Quality assurance
-
-### Pipeline Integration
-- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
-- **[src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)**: Implementation details
-
-## Contents
-
-**Files**: 3 | **Subdirectories**: 0
-
-### Core Files
-
-- **`AGENTS.md`**: Technical documentation and agent scaffolding
-  - Complete documentation structure
-  - Integration with pipeline
-  - Cross-references and navigation
-
-- **`README.md`**: Directory overview (this file)
+Use this page for publication, [TO-DO.md](../../TO-DO.md) for future scope, and
+[VERSION_MAP.md](../VERSION_MAP.md) for the compact release history.
 
 ## Release Management
 
-### Version Control Strategy
+Package versions follow semantic versioning: patch releases repair compatible
+behavior and documentation, minor releases add compatible capabilities, and major
+releases carry breaking changes. A roadmap target does not establish publication.
+The accepted Git tag and directly verified public assets define each release.
 
-The GNN project follows semantic versioning:
+## Quick Navigation
 
-- **Major Versions** (X.0.0): Breaking changes, major feature additions
-- **Minor Versions** (0.X.0): New features and documented migrations
-- **Patch Versions** (0.0.X): Bug fixes, minor improvements
-
-### Release Cycles
-
-- **Regular Releases**: Scheduled releases with feature additions and improvements
-- **Security Releases**: Critical vulnerability response with immediate releases
-- **Emergency Releases**: Urgent fixes for critical issues
-
-### Quality Assurance
-
-Release process includes:
-
-- **Testing**: Comprehensive test suite execution
-- **Validation**: Pipeline validation and verification
-- **Documentation**: Documentation updates and review
-- **Security Review**: Security scanning and validation
-
-### Release Process
-
-1. **Planning**: Feature planning and milestone definition
-2. **Development**: Feature development and testing
-3. **Quality Assurance**: Testing, validation, and review
-4. **Release Preparation**: Documentation, changelog, version tagging
-5. **Deployment**: Release deployment and announcement
-6. **Post-Release**: Monitoring, support, and feedback collection
-
-## Integration with Pipeline
-
-This documentation is integrated with the 25-step GNN processing pipeline:
-
-1. **Core Processing** (Steps 0-9): GNN parsing, validation, export
-   - Release validation includes pipeline execution verification
-
-2. **Simulation** (Steps 10-16): Model execution and analysis
-   - Release testing includes framework execution validation
-
-3. **Integration** (Steps 17-24): System coordination and output
-   - Release artifacts include comprehensive outputs and documentation
-
-See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documentation.
-
-## Related Resources
-
-### Main GNN Documentation
-- **[GNN Overview](../gnn/gnn_overview.md)**: Core GNN concepts
-- **[GNN Quickstart](../gnn/tutorials/quickstart_tutorial.md)**: Getting started guide
-- **[Development Guide](../development/README.md)**: Development workflows
-
-### Process Documentation
-- **[Deployment Guide](../deployment/README.md)**: Deployment strategies
-- **[Security Guide](../security/README.md)**: Security considerations
-- **[Testing Guide](../testing/README.md)**: Quality assurance procedures
-
-### Pipeline Architecture
-- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
-- **[Pipeline AGENTS](../../src/gnn/AGENTS.md)**: Implementation details
-- **[Pipeline README](../../src/gnn/README.md)**: Pipeline overview
-
-## Standards and Guidelines
-
-All documentation in this module adheres to professional standards:
-
-- **Clarity**: Concrete, technical writing with process details
-- **Functionality**: Describes actual release management capabilities
-- **Completeness**: Comprehensive coverage of release processes
-- **Consistency**: Uniform structure and style with GNN documentation ecosystem
-
-## See Also
-
-- **[Release Management Cross-Reference](../CROSS_REFERENCE_INDEX.md#release-management)**: Cross-reference index entry
-- **[Development Guide](../development/README.md)**: Development workflows
-- **[Deployment Guide](../deployment/README.md)**: Deployment strategies
-- **[Main Index](../README.md)**: Return to main documentation
-
----
-
-**Status**: ✅ Production Ready  
-**Compliance**: Professional documentation standards  
-**Maintenance**: Regular updates with new release processes and version management strategies
+- [Repeatable release qualification](#repeatable-release-qualification)
+- [Canonical manuscript and companion order](../development/fep_lean_paired_revision.md#closeout-ordering-canonical)
+- [Current workflow roster](../../.github/workflows/README.md)
+- [Exact-version archive and DOI procedure](exact_version_archival.md)
+- [Testing](../testing/README.md), [security](../security/README.md), [agent guide](AGENTS.md)
 
 ## Repeatable release qualification
 
@@ -186,7 +24,10 @@ The package version is owned by `pyproject.toml` and mirrored by
 `gnn.__version__`, the frozen lock and citation metadata. Prepare a minor release
 on an isolated branch; finish content first, then perform the
 [manuscript and companion ritual](../development/fep_lean_paired_revision.md#closeout-ordering-canonical).
-Keep original producer commits reachable. Never renew receipts by editing hashes.
+GNN 4.2.1 uses the explicitly bounded
+[fixed FEP baseline](../development/fep_lean_paired_revision.md#fixed-baseline-for-gnn-421)
+instead of a simultaneous companion release; full pairing is planned for the next
+major release of both repositories. Keep original producer commits reachable. Never renew receipts by editing hashes.
 
 After provisioning the exact uv version from README, run `just release-preflight`
 before publishing a candidate. It installs the frozen dev profile once, then
@@ -245,3 +86,50 @@ no publication to those services is implied by a GitHub release.
 
 This scheduling change removes manual roster coordination and redundant ready
 transitions. It does not claim faster inference or a measured CI speedup.
+
+## Software 4.2.0 release record
+
+The [v4.2.0 release](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.2.0)
+owns its exact tag, accepted source, hosted checks and downloaded asset receipts.
+Version metadata alone does not establish publication. It includes RxInfer 6.1,
+current compatible dependencies, direct-script startup without stdlib module
+shadowing, aiohttp/Pillow repairs and the repeatable
+qualification procedure below. Python, Gradio/Pillow and scientific backend
+exceptions retain the scopes documented in README and CHANGELOG. PyPI and
+separate distribution archival require independent publication evidence.
+
+## Historical software 4.1.0 release record
+
+The [v4.1.0 release](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.1.0) is the authoritative record of its
+tag/source/checks and ordinary wheel, sdist, manuscript, verification records
+and [checksums](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/download/v4.1.0/SHA256SUMS).
+Acceptance requires actual terminal gates and directly downloaded asset parity;
+version metadata alone does not establish publication.
+The manuscript authored epoch and historical release artifacts retain their
+original identities. Exact-version archival follows the
+[archive procedure](exact_version_archival.md) and its own public DOI/hash evidence.
+
+## GNN 4.0.1 publication (historical)
+
+[v4.0.1](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.0.1) was published on 2026-10-07 from
+`17c72cf0f98d7d3bbf0159d1b1cce8c77c4e4daf`. Its
+[publication receipt](../development/gnn_4_0_1_post_publication.json) records
+normal companion integration, the annotated tag, exact hosted checks, zero open
+issues and enabled Dependabot/CodeQL alerts, and ten directly verified assets.
+The immutable release PDF retains its authored date; current main publication
+metadata is renewed separately. No PyPI upload was performed. The subsequent
+[exact 4.0.1 source archive](https://doi.org/10.5281/zenodo.23222085) has
+[verified source/manuscript parity](../development/zenodo_4_0_1_exact_source_archive.json);
+separately attached distribution-asset archival remains pending under the
+[exact-version procedure](exact_version_archival.md).
+
+## GNN 4.0.0 publication (historical)
+
+[v4.0.0](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.0.0)
+was published on 2026-10-07 from `1bc3a76eccccb2cc5ce8601770714075b3ec48db`.
+The [publication receipt](../development/gnn_4_0_0_post_publication.json) records
+normal companion merges, the annotated tag, exact checks and downloaded asset
+hashes. The manuscript keeps its 2026-10-02 authored date; no PyPI upload or
+version-specific archival DOI is claimed.
+
+![GNN 4.0.0 overview of model notation, numerical execution and the 25-step workflow](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/download/v4.0.0/GNN-4.0.0-release-overview.png)

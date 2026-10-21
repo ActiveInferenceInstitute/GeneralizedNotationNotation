@@ -34,7 +34,6 @@ src/gnn/visualization/
 
 **Category**: Visualization / Graph Analysis
 
-**Status**: ✅ Production Ready
 
 **Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
@@ -493,7 +492,6 @@ uv run python src/gnn/8_visualization.py --verbose --target-dir input/gnn_files
 
 **Last Updated**: 2026-04-15
 **Maintainer**: GNN Pipeline Team
-**Status**: ✅ Production Ready
 **Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 

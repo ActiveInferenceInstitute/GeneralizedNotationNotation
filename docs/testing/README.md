@@ -12,9 +12,9 @@ Run the documentation and parser contracts first when changing documentation or 
 syntax:
 
 ```bash
-uv run --extra dev python -m pytest \
-  tests/test_doc_contracts.py \
-  tests/test_docs_audit.py \
+uv run --frozen --no-sync python -m pytest \
+  tests/docs/test_doc_contracts.py \
+  tests/docs/test_docs_audit.py \
   tests/gnn/ \
   -q
 ```
@@ -22,56 +22,51 @@ uv run --extra dev python -m pytest \
 The documentation checks themselves are:
 
 ```bash
-uv run --extra dev python docs/development/docs_audit.py \
+uv run --frozen --no-sync python docs/development/docs_audit.py \
   --strict --check-anchors --no-write
-uv run --extra dev python scripts/check_doc_contracts.py --strict
-uv run --extra dev python scripts/check_gnn_doc_patterns.py --strict
-uv run --extra dev python scripts/check_maintained_doc_terms.py --strict
-uv run --extra dev python scripts/check_repo_terminology.py --strict
+uv run --frozen --no-sync python scripts/check_doc_contracts.py --strict
+uv run --frozen --no-sync python scripts/check_gnn_doc_patterns.py --strict
+uv run --frozen --no-sync python scripts/check_maintained_doc_terms.py --strict
+uv run --frozen --no-sync python scripts/check_repo_terminology.py --strict
 ```
 
 ## Standard test suite
 
-Use the repository's command of record. The two Ollama tests are explicitly ignored
-unless a local Ollama daemon and the configured test model are available:
+The ordinary source profile uses an explicit marker selection:
 
 ```bash
-uv sync --extra dev
-uv run --extra dev python -m pytest tests/ -q --tb=short \
-  --ignore=tests/llm/test_llm_ollama.py \
-  --ignore=tests/llm/test_llm_ollama_integration.py
+uv sync --frozen --extra dev --python 3.14
+uv run --frozen --no-sync python -m pytest tests/ -q --tb=short -rsx \
+  -m 'not ollama and not pipeline and not mcp and not env_heavy and not toolchain'
 ```
 
-The suite includes environment-sensitive Julia, GUI, renderer, and pipeline tests.
-Run the full command in CI-like environments; use a focused path when iterating on a
-single module.
+Pipeline, MCP, native tools, GUI and all-extras tests retain separate workflow
+profiles. Use the [workflow roster](../../.github/workflows/README.md) for their
+exact selections and runtimes. A raw full-suite invocation requires those
+prerequisites; skipping them locally does not qualify a release.
 
 Useful focused commands:
 
 ```bash
 # Parser and schema behavior.
-uv run --extra dev python -m pytest tests/gnn/ -q
+uv run --frozen --no-sync python -m pytest tests/gnn/ -q
 
 # Renderer and executor contracts.
-uv run --extra dev python -m pytest tests/render/ tests/execute/ -q
+uv run --frozen --no-sync python -m pytest tests/render/ tests/execute/ -q
 
 # Pipeline integration.
-uv run --extra dev python -m pytest tests/pipeline/ -q
+uv run --frozen --no-sync python -m pytest tests/pipeline/ -q
 
 # Collect without running.
-uv run --extra dev python -m pytest tests/ --collect-only -q
+uv run --frozen --no-sync python -m pytest tests/ --collect-only -q
 ```
 
 ## Markers and optional tests
 
-The project declares `slow`, `integration`, `unit`, `uv`, `xfail`, `pipeline`, and
-`mcp` markers in `pyproject.toml`. Use marker expressions only with markers declared
-there, for example:
-
-```bash
-uv run --extra dev python -m pytest tests/ -m "not slow" -q
-uv run --extra dev python -m pytest tests/ -m "not pipeline and not mcp" -q
-```
+[pyproject.toml](../../pyproject.toml) owns declared markers, including ordinary,
+pipeline, MCP, Ollama, environment-heavy and native toolchain classifications.
+Use marker expressions from the matching workflow; unregistered markers fail
+collection under strict marker checking.
 
 When testing LLM behavior, set the provider environment variables in a local ignored
 `.env` file and never commit credentials. Ollama-specific tests remain opt-in because
@@ -79,19 +74,13 @@ they require a running local service.
 
 ## Coverage and quality
 
-```bash
-uv run --extra dev python -m pytest tests/ \
-  --cov=src --cov-report=term-missing \
-  --ignore=tests/llm/test_llm_ollama.py \
-  --ignore=tests/llm/test_llm_ollama_integration.py
-uv run ruff check src scripts
-uv run ruff format --check src scripts
-uv run mypy src --show-error-codes
-```
-
-The project coverage floor is configured in `pyproject.toml`. Do not infer a coverage
-or pass guarantee from a partial local run; report the command and environment with
-any measured result.
+Use `just test-cov`, `just lint`, `just format-check` and `just typecheck`
+for the current local recipes. The ordinary core floor is configured in
+[pyproject.toml](../../pyproject.toml). Comprehensive native coverage requires
+[strict independent reports](../development/native_comprehensive_coverage.md)
+per configured interpreter. [Installed-platform qualification](../development/installed_platform_acceptance.md)
+uses ordinary wheel installations outside the checkout. Partial local tests,
+imports and cross-environment unions cannot substitute for these requirements.
 
 ## Documentation and example policy
 

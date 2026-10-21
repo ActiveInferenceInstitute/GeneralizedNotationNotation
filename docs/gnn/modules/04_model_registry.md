@@ -32,7 +32,6 @@ src/gnn/model_registry/
 
 **Category**: Core Management
 
-**Status**: ✅ Production Ready
 
 **Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 

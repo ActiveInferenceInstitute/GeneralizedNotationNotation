@@ -16,7 +16,7 @@ This subsystem is part of the broader GNN (Generalized Notation Notation) docume
 
 ## Contents
 
-**Files**: `README.md`, `AGENTS.md`, `SPEC.md`, `interactive_tutorial_system.md` | **Subdirectories**: none
+Browse the [current directory](./) for files and subdirectories; use the task links below for navigation.
 
 ## Quick Navigation
 

@@ -34,7 +34,6 @@ Main function for processing security-related tasks.
 
 **Category**: Security / Access Control
 
-**Status**: ✅ Production Ready
 
 **Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
@@ -413,7 +412,6 @@ File Input → Security Validation → Threat Detection → Access Control → S
 
 **Last Updated**: 2026-01-21
 **Maintainer**: GNN Pipeline Team
-**Status**: ✅ Production Ready
 **Package version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 

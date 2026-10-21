@@ -8,7 +8,6 @@
 
 This document describes the **generative model** structure used in discrete Active Inference, focusing on the A, B, C, D, and E matrices. These matrices define how an agent believes the world works and what it prefers.
 
-**Status**: ✅ Production Ready  
 **Version**: 1.0
 
 ---
@@ -372,6 +371,5 @@ D = np.array([1.0, 0.0, 0.0, 0.0, 0.0])  # Certain start in center
 
 ---
 
-**Status**: ✅ Production Ready  
 **Compliance**: GNN documentation standards  
 **Maintenance**: Regular updates with new model patterns

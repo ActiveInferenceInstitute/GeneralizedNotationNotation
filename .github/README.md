@@ -3,7 +3,7 @@
 **Describe an Active Inference generative model once. Validate its structure,
 render framework-specific code, execute admitted models and inspect the evidence.**
 
-[![Version: 4.2.0](https://img.shields.io/badge/version-4.2.0-00a6b8.svg)](../CHANGELOG.md#420---2026-10-21)
+[![Version: 4.2.1](https://img.shields.io/badge/version-4.2.1-00a6b8.svg)](../CHANGELOG.md#421---2026-10-21)
 [![CI](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/actions/workflows/ci.yml)
 [![CI Python: 3.11–3.14](https://img.shields.io/badge/CI%20Python-3.11%E2%80%933.14-3776ab.svg)](workflows/ci.yml)
 [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-lightgrey.svg)](../LICENSE.md)
@@ -28,7 +28,11 @@ scientific workflow** spanning parsing, validation, visualization, simulation,
 analysis and publication. Start with the CLI below, or explore the
 [Python and service interfaces](#interfaces).
 
-**Current release:** [4.2.0](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.2.0).
+**Software:** 4.2.1. [Published release records](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases) own accepted tags and assets.
+
+FEP_Formal compatibility targets the fixed companion revision accepted with
+GNN 4.2.0. Full synchronization is planned for the next major release of both
+projects; see the [baseline policy](../docs/development/fep_lean_paired_revision.md#fixed-baseline-for-gnn-421).
 [Release notes](../CHANGELOG.md#420---2026-10-21) describe the changes;
 [package metadata](../pyproject.toml) owns version and dependency requirements.
 **Page updated:** 2026-10-21.
@@ -57,7 +61,7 @@ supported uv-only Gradio/Pillow override. Native GUI callbacks use Python 3.11�
 ```bash
 git clone https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation.git
 cd Generalized_Notation_Notation
-git checkout v4.2.0
+git checkout v4.2.1
 uv sync --frozen --python 3.14
 ```
 
@@ -122,6 +126,10 @@ source/prompt requests actually executed.
 - **Several ways to work.** Use CLI, Python, REST, MCP, editor/LSP or GUI;
   optional LLM, audio and ML integrations extend selected workflows.
   [Durable runs](../docs/development/durable-runs.md) support longer sessions.
+
+The **4.2.1** documentation update strengthens same-page/reference navigation
+checks, replaces unsupported configuration examples and scopes the next minor
+releases. See the [patch changelog](../CHANGELOG.md#421---2026-10-21).
 
 The **4.2.0 release** updates RxInfer to 6.1.0 / ReactiveMP 7, refreshes
 compatible dependencies and security fixes, and adds a fast local release preflight
@@ -290,7 +298,7 @@ workflow. The [module documentation index](../docs/gnn/modules/README.md) and
 
 ## Release artifacts and citation
 
-Current software **4.2.0** uses its [version release](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.2.0)
+The published **4.2.0** record uses its [version release](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.2.0)
 for ordinary wheel/sdist, manuscript, source-bound verification records and
 [checksums](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/download/v4.2.0/SHA256SUMS).
 Actual tag/source/check identities and directly downloaded asset hashes establish
@@ -315,6 +323,9 @@ The repository is maintained by the
 under [CC BY-NC-SA 4.0](../LICENSE.md).
 
 ## Next steps
+
+The [4.3.0–4.9.0 delivery plan](../TO-DO.md#versioned-delivery-plan-430-through-490)
+sets bounded scope, dependencies, review ownership and acceptance for each target.
 
 The [forward-only roadmap](../TO-DO.md) owns scope, priority, acceptance evidence
 and dependencies for remaining work. Browse [minor work](../TO-DO.md#minor-work)

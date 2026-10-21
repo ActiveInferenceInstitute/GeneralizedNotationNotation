@@ -1,8 +1,7 @@
 # GNN Advanced Documentation
 
-**Version**: v3.6.0 Engine (Bundle v2.0.0)
+**Software version**: [package metadata](../../../pyproject.toml)
 **Last Updated**: 2026-09-23
-**Status**: ✅ Production Ready
 **Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: registry-defined backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)
 
 This directory contains documentation and references for the Advanced domain of Generalized Notation Notation (GNN).

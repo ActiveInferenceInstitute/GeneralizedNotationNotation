@@ -8,7 +8,6 @@
 
 **Partially Observable Markov Decision Processes (POMDPs)** provide the mathematical framework for discrete Active Inference. This document covers POMDP fundamentals and their relationship to Active Inference.
 
-**Status**: ✅ Production Ready  
 **Version**: 1.0
 
 ---
@@ -291,6 +290,5 @@ Even with full observability, Active Inference maintains:
 
 ---
 
-**Status**: ✅ Production Ready  
 **Compliance**: GNN documentation standards  
 **Maintenance**: Regular updates with new POMDP methods

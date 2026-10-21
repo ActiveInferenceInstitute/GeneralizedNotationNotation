@@ -25,7 +25,7 @@ Pedalboard integration enables:
 
 ## Contents
 
-**Files**:        5 | **Subdirectories**:        0
+Browse the [current directory](./) for files and subdirectories; use the task links below for navigation.
 
 ## Quick Navigation
 
@@ -123,5 +123,4 @@ All documentation in this module adheres to professional standards:
 ---
 
 **Status**: 🛠️ Scaffold / Planned  
-**Compliance**: Professional documentation standards  
 **Maintenance**: Regular updates with new Pedalboard features and integration capabilities

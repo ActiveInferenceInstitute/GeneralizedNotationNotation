@@ -1,8 +1,8 @@
 # Specification: Advanced Visualization
 
-## Design Requirements
-This module (`advanced_visualization`) maps structural logic to the overall execution graph.
-It ensures that `Advanced Visualization` tasks resolve without runtime dependency loops.
+## Documentation contract
 
-## Components
-Expected available types: No specific classes exported.
+[README.md](README.md) owns the topic entrypoints; [AGENTS.md](AGENTS.md) guides
+maintenance. Follow the [documentation rules](../../.agent_rules/documentation.md) for links, executable
+examples and source-bound claims. Research scripts and quoted upstream code have
+their own prerequisites; their presence does not register a pipeline backend.

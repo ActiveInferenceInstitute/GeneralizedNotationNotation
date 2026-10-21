@@ -32,7 +32,7 @@ This directory documents Step 9 advanced visualization within the GNN (Generaliz
 
 ## Contents
 
-**Files**: 1 | **Subdirectories**: 0
+Browse the [current directory](./) for files and subdirectories; use the task links below for navigation.
 
 ### Core Documentation
 
@@ -124,6 +124,5 @@ All documentation in this module adheres to professional standards:
 ---
 
 **Status**: Maintained
-**Compliance**: Professional documentation standards  
 **Maintenance**: Keep claims tied to implemented Step 9 outputs and dependency fallbacks
 **Last Updated**: 2026-09-22

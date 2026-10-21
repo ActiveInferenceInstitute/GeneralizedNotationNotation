@@ -7,6 +7,11 @@ not complete the seven items in [TO-DO](../../TO-DO.md), certify a release, or
 replace [scientific admission](backend_scientific_contracts.md) and
 [run ownership](run_ownership_migration.md).
 
+Target-version sequencing for **4.3.0–4.9.0** is owned by
+[TO-DO.md](../../TO-DO.md#versioned-delivery-plan-430-through-490).
+These contracts define acceptance boundaries and do not certify those targets
+as implemented. Historical numerical/archive observations keep their dated scope.
+
 ## Ownership and delivery
 
 | Item | Implementation owners | Next independently reviewable unit |

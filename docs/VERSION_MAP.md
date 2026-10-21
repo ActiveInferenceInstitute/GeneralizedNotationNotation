@@ -1,7 +1,9 @@
 # GNN Version Map
 
 One-stop map of release changes and authoritative records. Current
-software version is **4.2.0**.
+software version is **4.2.1**. Publication is established by the
+[release records](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases),
+not this version label.
 The [4.2.0 release](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.2.0) owns publication and exact source-bound assets. Historical 4.1.0 retains its original receipt. Its [changelog](../CHANGELOG.md#410---2026-10-08)
 describes the bounded minor/medium campaign. Its [GitHub release](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.1.0)
 records exact tag/source/check/artifact identities; version metadata alone does
@@ -14,6 +16,7 @@ original source identity and limits. The manuscript authored epoch remains
 
 | Version | Date | Theme | Primary record |
 | --- | --- | --- | --- |
+| 4.2.1 | 2026-10-21 | Documentation navigation, supported examples and 4.3–4.9 delivery scope | [CHANGELOG §4.2.1](../CHANGELOG.md#421---2026-10-21) |
 | 4.2.0 | 2026-10-21 | RxInfer 6, dependency security, current compatible runtimes and unified release qualification | [CHANGELOG §4.2.0](../CHANGELOG.md) |
 | 4.1.0 | 2026-10-08 | Public contracts, native boundaries, scientific presentation and measured encoder tradeoffs | [CHANGELOG §4.1.0](../CHANGELOG.md), [exact version record](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.1.0) |
 | 4.0.1 | 2026-10-07 | GUI and dependency security fixes, truthful LLM summaries and complete-input subprocess delivery; scientific/dispatch issue closeout | [CHANGELOG §4.0.1](../CHANGELOG.md) |

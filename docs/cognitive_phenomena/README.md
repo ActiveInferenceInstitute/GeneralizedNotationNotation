@@ -12,15 +12,32 @@ This directory contains documentation and examples for modeling various cognitiv
 
 > **🧠 Research Focus**: Bridging computational and cognitive neuroscience through Active Inference modeling  
 > **🎯 Applications**: Clinical research, educational technology, artificial intelligence  
-> **📊 Coverage**: 40+ cognitive phenomena with validated implementations
+> **Scope**: conceptual modeling notes; numerical and empirical validation require separate evidence.
+
+The blocks below are partial research sketches, not runnable or empirically validated
+models. Use the [complete exemplar index](../../input/gnn_files/INDEX.md) and
+[backend admission guide](../execution/FRAMEWORK_AVAILABILITY.md) for execution.
+
+## Research topic navigation
+
+- [Attention](attention/README.md), [perception](perception/README.md), [memory](memory/README.md)
+- [Learning and adaptation](learning_adaptation/README.md), [executive control](executive_control/README.md)
+- [Effort](effort/README.md), [emotion and affect](emotion_affect/README.md)
+- [Language processing](language_processing/README.md), [consciousness](consciousness/README.md)
+- [Meta-awareness study](meta-awareness/README.md), [standalone Meta-Aware-2 implementation](meta-aware-2/README.md)
+
+The study subtrees contain independent research scripts and retained results.
+Their historical claims and local prerequisites do not establish current pipeline
+backend support or reproduce a paper by themselves. Use the complete exemplars
+and accepted release receipts for current package behavior.
 
 ## Table of Contents
 
 1. [Introduction to Cognitive Modeling](#introduction)
-2. [Basic Cognitive Phenomena](#basic-phenomena)
-3. [Advanced Cognitive Models](#advanced-models)
+2. [Basic Cognitive Phenomena](#basic-cognitive-phenomena)
+3. [Advanced Cognitive Models](#advanced-cognitive-models)
 4. [Implementation Patterns](#implementation-patterns)
-5. [Validation and Testing](#validation)
+5. [Validation and Testing](#validation-and-testing)
 6. [Research Applications](#research-applications)
 
 ## Introduction

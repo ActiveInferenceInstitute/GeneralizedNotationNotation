@@ -61,6 +61,4 @@ See [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md) for complete pipeline documenta
 
 ---
 
-**Status**: ✅ Production Ready  
-**Compliance**: Professional documentation standards  
 **Maintenance**: Regular updates with new features

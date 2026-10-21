@@ -8,7 +8,6 @@
 
 This directory contains documentation, resources, and implementation guides for integrating **DisCoPy** (Distributional Compositional Python) with GNN (Generalized Notation Notation). DisCoPy provides a framework for working with string diagrams in category theory, offering formal mathematical foundations for representing, analyzing, and manipulating GNN models.
 
-**Status**: ✅ Production Ready  
 **Version**: 1.0
 
 ## Quick Navigation
@@ -35,7 +34,7 @@ This directory contains documentation, resources, and implementation guides for 
 
 ## Contents
 
-**Files**: 2 | **Subdirectories**: 0
+Browse the [current directory](./) for files and subdirectories; use the task links below for navigation.
 
 ### Core Files
 
@@ -135,6 +134,4 @@ All documentation in this module adheres to professional standards:
 
 ---
 
-**Status**: ✅ Production Ready  
-**Compliance**: Professional documentation standards  
 **Maintenance**: Regular updates with new DisCoPy features and integration capabilities

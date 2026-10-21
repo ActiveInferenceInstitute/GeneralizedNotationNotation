@@ -2,7 +2,6 @@
 
 **Version**: v3.2.0 Engine (Bundle v2.0.0)  
 **Last Updated**: 2026-04-15  
-**Status**: ✅ Production Ready  
 **Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: registry-defined backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)
 
 This document provides comprehensive guidance on visualization capabilities for Generalized Notation Notation (GNN) models, including graph visualization, matrix visualization, and interactive plotting techniques.
@@ -319,6 +318,5 @@ Visualization results are integrated throughout the pipeline:
 
 ---
 
-**Status**: ✅ Production Ready  
 **Last Updated**: 2026-04-15  
 **Version**: v3.2.0 Engine (Bundle v2.0.0)

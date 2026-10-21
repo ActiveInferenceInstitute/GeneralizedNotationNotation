@@ -15,23 +15,23 @@ profile loader, or generic `--config` override for the main pipeline.
 
 ```bash
 # Use the checked-in configuration and run a focused path.
-uv run python src/gnn/main.py \
+uv run --frozen --no-sync python src/gnn/main.py \
   --target-dir input/gnn_files \
   --output-dir output \
   --only-steps "3,5,11,12" \
   --verbose
 
 # Skip selected steps.
-uv run python src/gnn/main.py --skip-steps "2,13" --verbose
+uv run --frozen --no-sync python src/gnn/main.py --skip-steps "2,13" --verbose
 
 # Skip the LLM step without editing the YAML file.
-uv run python src/gnn/main.py --skip-llm --verbose
+uv run --frozen --no-sync python src/gnn/main.py --skip-llm --verbose
 ```
 
 For a single-file validation envelope, use the unified CLI:
 
 ```bash
-uv run gnn validate input/gnn_files/discrete/actinf_pomdp_agent.md --strict --json
+uv run --frozen --no-sync gnn validate input/gnn_files/discrete/actinf_pomdp_agent.md --strict --json
 ```
 
 ## `input/config.yaml`
@@ -51,14 +51,14 @@ pipeline:
   # comprehensive: false # enable the full Step 2 suite when needed
 
 setup:
-  dev: true             # applies uv sync --extra dev when Step 1 runs
+  dev: true             # applies uv sync --frozen --extra dev --python 3.14 when Step 1 runs
   recreate_venv: false  # maps to --recreate-uv-env
   # install_all_extras: false
 
 llm:
   model: "smollm2:135m-instruct-q4_K_S"
-  timeout_seconds: 600
-  max_files: 8
+  timeout_seconds: null
+  max_files: null
   prompt_timeout: 45
 ```
 
@@ -88,7 +88,7 @@ by `pipeline.skip_steps` or the `--skip-llm` flag.
 
 ## Supported main-pipeline options
 
-Run `uv run python src/gnn/main.py --help` for the complete list. The most common
+Run `uv run --frozen --no-sync python src/gnn/main.py --help` for the complete list. The most common
 options are:
 
 | Option | Purpose |
@@ -116,25 +116,25 @@ example `"3,5,11,12"`.
 
 ```bash
 # Setup and optional dependencies.
-uv run python src/gnn/1_setup.py --dev --verbose
-uv run python src/gnn/1_setup.py --install-optional --optional-groups "audio,gui"
-uv run python src/gnn/1_setup.py --install-all-extras
-uv run python src/gnn/1_setup.py --recreate-uv-env --dev
+uv run --frozen --no-sync python src/gnn/1_setup.py --dev --verbose
+uv run --frozen --no-sync python src/gnn/1_setup.py --install-optional --optional-groups "audio,gui"
+uv run --frozen --no-sync python src/gnn/1_setup.py --install-all-extras
+uv run --frozen --no-sync python src/gnn/1_setup.py --recreate-uv-env --dev
 
 # Type checking.
-uv run python src/gnn/5_type_checker.py \
+uv run --frozen --no-sync python src/gnn/5_type_checker.py \
   --target-dir input/gnn_files \
   --strict --estimate-resources --verbose
 
 # Render selected backends.
-uv run python src/gnn/11_render.py \
+uv run --frozen --no-sync python src/gnn/11_render.py \
   --target-dir input/gnn_files \
   --output-dir output \
   --frameworks "pymdp,jax" \
   --strict-framework-success
 
 # Execute rendered scripts. Use --render-output-dir to avoid stale artifacts.
-uv run python src/gnn/12_execute.py \
+uv run --frozen --no-sync python src/gnn/12_execute.py \
   --target-dir input/gnn_files \
   --output-dir output \
   --render-output-dir output/11_render_output \
@@ -146,7 +146,7 @@ The Step 12 executor does not provide a dry-run flag. To inspect availability be
 execution, use:
 
 ```bash
-uv run gnn health
+uv run --frozen --no-sync gnn health
 ```
 
 ## Environment variables
@@ -169,7 +169,7 @@ dry-run command. To check YAML syntax and the top-level sections that the runtim
 consumes, load the checked-in file directly:
 
 ```bash
-uv run python - <<'PY'
+uv run --frozen --no-sync python - <<'PY'
 import yaml
 
 config = yaml.safe_load(open("input/config.yaml"))
@@ -186,12 +186,14 @@ that matches your layout.
 For a non-mutating environment check, use:
 
 ```bash
-uv run gnn preflight
-uv run gnn health
+uv run --frozen --no-sync gnn preflight
+uv run --frozen --no-sync gnn health
 ```
 
 When documentation or code changes the configuration contract, update this page,
 `input/config.yaml`, and the relevant tests in the same change.
+
+See [supported configuration examples](examples.md) for complete task-oriented commands.
 
 ## Related references
 
