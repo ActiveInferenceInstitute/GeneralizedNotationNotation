@@ -55,7 +55,7 @@ work to [TO-DO](../TO-DO.md). Candidates and guide dates do not establish public
 ## Locked setup and verification
 
 ```bash
-uv sync --frozen --extra dev --python 3.12
+uv sync --frozen --extra dev --python 3.14
 uv run --frozen --no-sync gnn --help
 uv run --frozen --no-sync python docs/development/docs_audit.py --strict --check-anchors --no-write
 ```

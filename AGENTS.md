@@ -293,18 +293,21 @@ deliberately broader than this artifact graph.
 - **Screen Reader Support**: Accessible output with emoji-free alternatives for assistive technologies
 - **Performance Monitoring**: Built-in timing and resource consumption tracking with visual displays
 
-### Historical Validation (September 2026)
+### Current verification
 
-- **uv 0.12.0 compatibility**: Verified. `uv lock --check` passes and `uv sync --frozen` succeeds. `uv run --extra dev` executes all tests. The `uv` toolchain constraint `uv>=0.7.8` in Dockerfile is the minimum bootstrap floor.
-- **Docs audit**: `uv run --extra dev python docs/development/docs_audit.py --strict --check-anchors --no-write` reports no broken links, anchor gaps, or AGENTS/README coverage gaps.
-- **GNN doc patterns**: `uv run --extra dev python scripts/check_gnn_doc_patterns.py --strict` reports no banned GNN documentation patterns.
-- **Repository terminology**: `uv run --extra dev python scripts/check_repo_terminology.py --strict` and `scripts/check_maintained_doc_terms.py --strict` report no violations.
-- **Mypy**: `uv run --extra dev mypy src --config-file pyproject.toml` passes (0 errors).
-- **Tests**: command of record is `uv run --extra dev python -m pytest tests/ -q --tb=no -rsx -m "not ollama"`; the release receipt for the current version (collected/passed/skipped totals on the curated exemplar corpus) is recorded in `CHANGELOG.md` §3.3.0 (2026-09-07); re-run the command for live totals rather than trusting numbers in prose. Julia RxInfer execution uses the committed `Project.toml` under `src/gnn/execute/rxinfer/` (RxInfer 5.5.0 in that historical validation); ActiveInference.jl uses the committed minimal env under `src/gnn/execute/activeinference_jl/`. With a local Ollama daemon and `smollm2:135m-instruct-q4_K_S` pulled, the two Ollama files are re-enabled.
-- **LLM Default Model**: `smollm2:135m-instruct-q4_K_S` via Ollama (`llm.defaults.DEFAULT_OLLAMA_MODEL`; override with `OLLAMA_MODEL` / `input/config.yaml`).
-- **Renderer inventory**: derive maintained paths and model-family support from `src/gnn/render/framework_registry.py`. Implemented bnlearn and ngc-learn execution is declared in the executor registry. Experimental cpomdp and THRML require explicit framework selection; their adapter-specific evidence is separate from the historical public GridWorld output.
-- **Default dev suite**: FastAPI, websocket bridge, and LSP tests run under the `dev` extra; browser, public-network, live GUI, audio-DSP, and Ollama integrations remain explicit opt-in surfaces rather than hidden default-suite skips.
-- **Visual Accessibility**: All pipeline steps now include enhanced visual indicators and progress tracking.
+Use exact uv 0.13.4 and the frozen development environment. The
+[README runtime profiles](README.md#runtime-defaults-and-required-profiles) own
+Python defaults and compatibility exceptions. Start with `just release-preflight`;
+[workflow guidance](.github/workflows/README.md) owns hosted selections and
+[TO-DO.md](TO-DO.md#verification-and-execution-rules) owns verification obligations.
+Use current runs for test totals, readiness and performance; historical receipts
+retain the versions and source revisions actually measured.
+
+Julia execution uses the committed environments under `src/gnn/execute/rxinfer/`
+and `src/gnn/execute/activeinference_jl/`. Renderer/executor inventories come from
+the live registries. Experimental cpomdp/THRML require explicit selection.
+Browser, public-network, native GUI, audio-DSP and Ollama integrations retain their
+explicit profiles. LLM defaults and provisioning live in the [LLM guide](docs/llm/README.md).
 
 ### v3.2.0 "Exemplar Gold Standard" (2026-09-02)
 
@@ -328,9 +331,12 @@ deliberately broader than this artifact graph.
   B orientation with `canonicalize_pomdp()`, factor/dimension provenance, and
   the `torch` optional extra are documented in `CHANGELOG.md` §3.3.0.
 
-### Published GNN 4.0.1 (2026-10-07)
+### Published releases
 
-The [patch publication receipt](docs/development/gnn_4_0_1_post_publication.json)
+The current [4.2.0 release](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.2.0)
+records exact-source checks and assets. [CHANGELOG.md](CHANGELOG.md) owns release history.
+
+The historical [patch publication receipt](docs/development/gnn_4_0_1_post_publication.json)
 records source/tag identities, exact GNN/FEP/GEO gates, issue acceptance and
 provider alert closure. Preserve historical receipts and their source epochs.
 The published **4.1.0** [GitHub release](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.1.0) records exact tag, source, checks and artifacts; version metadata alone does not establish acceptance.
@@ -441,7 +447,8 @@ python src/gnn/3_gnn.py --target-dir input/gnn_files --output-dir output --verbo
 - Follow thin orchestrator pattern
 - Use type hints for all public functions
 - Document all classes and methods
-- Maintain >80% test coverage
+- Preserve the core coverage floor and strict >80% comprehensive native profiles
+  declared in the workflows
 - Include explicit error handling, status reporting, and dependency diagnostics
 
 ---
@@ -457,13 +464,13 @@ python src/gnn/2_tests.py --comprehensive
 ### Run Module-Specific Tests
 
 ```bash
-uv run --extra dev python -m pytest tests/test_[module]*.py -v
+uv run --frozen --no-sync python -m pytest tests/render/ -v
 ```
 
 ### Check Coverage
 
 ```bash
-pytest --cov=src --cov-report=term-missing
+uv run --frozen --no-sync python -m pytest tests/ --cov=gnn --cov-report=term-missing
 ```
 
 ---
@@ -704,7 +711,7 @@ uv run --extra dev python scripts/run_v3_orchestration_acceptance.py
 
 ---
 
-**Last Updated**: 2026-10-20
+**Last Updated**: 2026-10-21
 **Pipeline Version**: [pyproject.toml](pyproject.toml) (canonical)
 **Total Steps**: 25 (0-24)
 **Status**: Maintained

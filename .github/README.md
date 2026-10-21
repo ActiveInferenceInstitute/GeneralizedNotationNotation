@@ -3,15 +3,15 @@
 **Describe an Active Inference generative model once. Validate its structure,
 render framework-specific code, execute admitted models and inspect the evidence.**
 
-[![Version: 4.1.0](https://img.shields.io/badge/version-4.1.0-00a6b8.svg)](../CHANGELOG.md#410---2026-10-08)
+[![Version: 4.2.0](https://img.shields.io/badge/version-4.2.0-00a6b8.svg)](../CHANGELOG.md#420---2026-10-21)
 [![CI](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/actions/workflows/ci.yml)
-[![CI Python: 3.11–3.13](https://img.shields.io/badge/CI%20Python-3.11%E2%80%933.13-3776ab.svg)](workflows/ci.yml)
+[![CI Python: 3.11–3.14](https://img.shields.io/badge/CI%20Python-3.11%E2%80%933.14-3776ab.svg)](workflows/ci.yml)
 [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-lightgrey.svg)](../LICENSE.md)
 
-![GNN 4 architecture: categorical and Gaussian model specifications feed a generative model, the 25-step validation/render/execution/reporting workflow, and source-bound artifacts with frozen selections, bounded execution and FEP/GEO interchange.](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/download/v4.0.0/GNN-4.0.0-release-overview.png)
+![GNN 4 architecture: categorical and Gaussian model specifications feed a generative model, the 25-step validation/render/execution/reporting workflow, and source-bound artifacts with frozen selections, bounded execution and FEP/GEO interchange.](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/download/v4.2.0/GNN-4.2.0-release-overview.png)
 
-*The GNN 4.0.0 release artwork illustrates the current-run contracts carried
-forward in the **4.1.0** release line.*
+*GNN 4.2.0 release overview. Exact-source qualification and acceptance limits
+are recorded with the release assets.*
 
 [Quick start](#quick-start) · [Examples](#choose-a-model) ·
 [Backends](#render-and-execute-backends) · [Documentation](#documentation-map) ·
@@ -25,8 +25,8 @@ scientific workflow** spanning parsing, validation, visualization, simulation,
 analysis and publication. Researchers can inspect model assumptions in text;
 developers can use the installed `gnn` Python package, CLI and service interfaces.
 
-**Current software version:** [GNN 4.1.0](../CHANGELOG.md#410---2026-10-08). Its [GitHub release](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.1.0) records exact tag/source/check/artifact identities; version metadata alone does not establish acceptance. The previous published [4.0.1 release](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.0.1) retains its own checks and assets.
-**Page updated:** 2026-10-08. Package metadata is canonical in
+**Current software version:** [GNN 4.2.0](../CHANGELOG.md#420---2026-10-21). Its [GitHub release](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.2.0) records exact tag/source/check/artifact identities; version metadata alone does not establish acceptance. Historical releases retain their own checks and assets in [CHANGELOG.md](../CHANGELOG.md).
+**Page updated:** 2026-10-21. Package metadata is canonical in
 [pyproject.toml](../pyproject.toml); release history is in [CHANGELOG.md](../CHANGELOG.md).
 
 ## What GNN 4 delivers
@@ -53,12 +53,13 @@ developers can use the installed `gnn` Python package, CLI and service interface
   manifests, resumable acceptance sessions and auditable container plans support
   longer workflows.
 
-The **4.1.0 release line** aligns Python/CLI/REST/MCP admission and current-run
-receipts, strengthens descriptor-relative filesystem operations and owned
-cleanup, clarifies scientific labels and native uncertainty, and measures PNG
-encoding tradeoffs. Read the [changes and acceptance limits](../CHANGELOG.md#410---2026-10-08),
+The **4.2.0 release** updates RxInfer to 6.1.0 / ReactiveMP 7, refreshes
+compatible dependencies and security fixes, and adds a fast local release preflight
+and exact-source workflow collection. Independent Python tests and quality checks
+run concurrently; native, manuscript and paired acceptance retain their full scope.
+Read the [release notes](../CHANGELOG.md#420---2026-10-21),
 [migration guide](../docs/development/run_ownership_migration.md) and
-[filesystem guarantees](../docs/security/filesystem_boundaries.md).
+[workflow guide](workflows/README.md).
 
 ## Start here
 
@@ -73,23 +74,26 @@ encoding tradeoffs. Read the [changes and acceptance limits](../CHANGELOG.md#410
 
 ## Quick start
 
-Install [uv](https://docs.astral.sh/uv/getting-started/installation/) and use
-Python **3.12** for this example. CI also runs Python 3.11 and 3.13; additional
-platform/runtime acceptance is tracked in [TO-DO.md](../TO-DO.md).
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/) **0.13.4** and use
+Python **3.14** for the frozen default. Ordinary CI also tests Python 3.11–3.13.
+See the [runtime exceptions and required profiles](../README.md#runtime-defaults-and-required-profiles)
+for the Python 3.15 HDF5 constraint, Python-specific scientific stack and the
+supported uv-only Gradio/Pillow override. Native GUI callbacks use Python 3.11–3.13.
 
 ### Install the released source
 
 ```bash
-git clone --branch v4.1.0 --depth 1 https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation.git
+git clone https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation.git
 cd Generalized_Notation_Notation
-uv sync --frozen --python 3.12
+git checkout v4.2.0
+uv sync --frozen --python 3.14
 ```
 
 ### Inspect one model
 
 ```bash
-uv run --frozen gnn validate input/gnn_files/discrete/two_state_bistable.md --strict
-uv run --frozen gnn extract input/gnn_files/discrete/two_state_bistable.md --compact
+uv run --frozen --no-sync gnn validate input/gnn_files/discrete/two_state_bistable.md --strict
+uv run --frozen --no-sync gnn extract input/gnn_files/discrete/two_state_bistable.md --compact
 ```
 
 Validation reports **12 variables and 11 connections** for this committed
@@ -99,7 +103,7 @@ source-declared parameters as structured JSON.
 ### Run a small local workflow
 
 ```bash
-uv run --frozen gnn run \
+uv run --frozen --no-sync gnn run \
   --target-dir input/gnn_files/basics \
   --output-dir output/quickstart \
   --only-steps 3 5 6 7 8 \
@@ -279,30 +283,25 @@ workflow. The [module documentation index](../docs/gnn/modules/README.md) and
 
 ## Release artifacts and citation
 
-Current software **4.1.0** uses its [version release](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.1.0)
+Current software **4.2.0** uses its [version release](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.2.0)
 for ordinary wheel/sdist, manuscript, source-bound verification records and
-[checksums](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/download/v4.1.0/SHA256SUMS).
+[checksums](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/download/v4.2.0/SHA256SUMS).
 Actual tag/source/check identities and directly downloaded asset hashes establish
 acceptance.
 
-Historical release evidence follows. The [4.0.1 release](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.0.1)
-contains the wheel, source distribution, manuscript, source-binding and
-verification receipts, plus [SHA256SUMS](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/download/v4.0.1/SHA256SUMS).
-Read the [published manuscript PDF](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/download/v4.0.1/GNN-4.0.1-manuscript.pdf)
-and [publication receipt](../docs/development/gnn_4_0_1_post_publication.json)
-for the accepted release epoch. Main may contain subsequent documentation work;
-release artifacts retain their original source and tag identities.
+Read the [4.2.0 manuscript PDF](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/download/v4.2.0/GNN-4.2.0-manuscript.pdf)
+and [release overview](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/download/v4.2.0/GNN-4.2.0-release-overview.png).
+Main may contain later documentation changes; release artifacts retain their
+original source and tag identities. Historical releases and receipts remain
+linked from [CHANGELOG.md](../CHANGELOG.md).
 
 For academic use, follow [CITATION.cff](../CITATION.cff). The initial publication
 is **Smékal, J., & Friedman, D. A. (2023), _Generalized Notation Notation for
 Active Inference Models_, Active Inference Journal**. The
-[project concept DOI](https://doi.org/10.5281/zenodo.7803313) and
-[historical archive](https://zenodo.org/records/7803328) are distinct from the
-[exact 4.0.1 source archive](https://doi.org/10.5281/zenodo.23222085).
-Its [downloaded source and manuscript](../docs/development/zenodo_4_0_1_exact_source_archive.json)
-match the released tag. Archiving the separately attached distribution assets
-remains under E5 in [TO-DO.md](../TO-DO.md#minor-work); see the
-[exact-version procedure](../docs/releases/exact_version_archival.md).
+[project concept DOI](https://doi.org/10.5281/zenodo.7803313) identifies the project.
+Exact-version source and distribution archival require separate acceptance;
+see the [archive procedure](../docs/releases/exact_version_archival.md) and
+[remaining archival work](../TO-DO.md#minor-work).
 
 The repository is maintained by the
 [Active Inference Institute](https://activeinference.org/) community and licensed
@@ -316,7 +315,7 @@ are separate decisions.
 
 | Effort | Upcoming scope |
 | --- | --- |
-| [Minor](../TO-DO.md#minor-work) | Released THRML structural-zero verification and exact-version archival |
+| [Minor](../TO-DO.md#minor-work) | Released THRML structural-zero support and exact-version archival |
 | [Major](../TO-DO.md#major-work) | Full-source long-context LLM processing, coupled continuous agents, THRML/cpomdp extensions and formal-to-numerical semantics |
 
 ## Contributing and support
@@ -362,7 +361,7 @@ workflow commands, with [workflow AGENTS](workflows/AGENTS.md) and
 | Workflow or configuration | Purpose |
 | --- | --- |
 | [comprehensive-native-coverage.yml](workflows/comprehensive-native-coverage.yml) | Separate exact-source Python 3.11/3.12/3.13 native coverage reports with original scope and floor, process provenance and exact line unions; [procedure and limits](../docs/development/native_comprehensive_coverage.md) |
-| [ci.yml](workflows/ci.yml) | Python 3.11/3.12/3.13 tests; 3.12 lint/types/docs/capability checks; pipeline contracts; optional-dependency and Bandit lanes |
+| [ci.yml](workflows/ci.yml) | Python 3.11/3.12/3.13/3.14 tests; 3.12 lint/types/docs/capability checks; pipeline contracts; optional-dependency and Bandit lanes |
 | [installed-platforms.yml](workflows/installed-platforms.yml) | Ordinary installed-wheel native acceptance outside the checkout: Linux 3.11/3.12/3.14, macOS 3.14 and Windows 3.14; [acceptance scope and limits](../docs/development/installed_platform_acceptance.md) |
 | [local-gates.yml](workflows/local-gates.yml) | Repository, manuscript-token and hydration gates |
 | [docs-audit.yml](workflows/docs-audit.yml) | Focused strict documentation and terminology audits |
@@ -371,6 +370,7 @@ workflow commands, with [workflow AGENTS](workflows/AGENTS.md) and
 | [dependency-review.yml](workflows/dependency-review.yml) | PR dependency/license review; [fork limitations](https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/about-dependency-review#dependency-review-for-forked-repositories) |
 | [supply-chain-audit.yml](workflows/supply-chain-audit.yml) | Scheduled vulnerability checks on locked exports |
 | [full-extras.yml](workflows/full-extras.yml) | Scheduled/manual all-extras installation and acceptance |
+| [rxinfer.yml](workflows/rxinfer.yml) | Native RxInfer 6.1 / ReactiveMP 7 tests on Julia 1.13.2, with environment-drift checks |
 | [gridworld.yml](workflows/gridworld.yml) | GridWorld publication checks |
 | [actionlint.yml](workflows/actionlint.yml) | Workflow YAML validation |
 | [fep-lean-paired-revision.yml](workflows/fep-lean-paired-revision.yml), [fep-lean-pair.json](fep-lean-pair.json) | Pinned FEP bridge custody checks |
@@ -385,10 +385,11 @@ requirements, schedules and permission scopes live in the workflow files.
 ### Local validation
 
 From a development checkout on `main`, install the locked development tools,
-then run the documentation checks appropriate to this page:
+then run the documentation checks appropriate to this page. `just release-preflight`
+provides the shared fast preflight before hosted release qualification:
 
 ```bash
-uv sync --frozen --extra dev --python 3.12
+uv sync --frozen --extra dev --python 3.14
 uv run --frozen --no-sync python docs/development/docs_audit.py --strict --check-anchors --no-write
 uv run --frozen --no-sync python scripts/check_doc_contracts.py --strict
 uv run --frozen --no-sync python scripts/check_repo_terminology.py --strict

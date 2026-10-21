@@ -7,7 +7,7 @@ the project environment.
 ## 1. Install the environment
 
 ```bash
-uv sync --extra dev
+uv sync --frozen --extra dev --python 3.14
 ```
 
 For optional framework, audio, GUI, graph, research, or scaling dependencies, see the
@@ -16,8 +16,8 @@ For optional framework, audio, GUI, graph, research, or scaling dependencies, se
 ## 2. Check the local runtime
 
 ```bash
-uv run gnn preflight
-uv run gnn health
+uv run --frozen --no-sync gnn preflight
+uv run --frozen --no-sync gnn health
 ```
 
 `preflight` checks the repository configuration and available tools. `health` reports
@@ -29,7 +29,7 @@ as a successful execution.
 Use a checked-in model first so the command exercises the repository's real parser:
 
 ```bash
-uv run gnn validate \
+uv run --frozen --no-sync gnn validate \
   input/gnn_files/discrete/actinf_pomdp_agent.md \
   --strict
 ```
@@ -50,7 +50,7 @@ not require all of them. Use the [syntax reference](gnn/reference/gnn_syntax.md)
 To validate a directory with the numbered type-checker step:
 
 ```bash
-uv run python src/gnn/5_type_checker.py \
+uv run --frozen --no-sync python src/gnn/5_type_checker.py \
   --target-dir input/gnn_files \
   --strict \
   --verbose
@@ -62,7 +62,7 @@ Start with parsing, type checking, rendering, and execution. Keep outputs isolat
 one run cannot be confused with an earlier run:
 
 ```bash
-uv run python src/gnn/main.py \
+uv run --frozen --no-sync python src/gnn/main.py \
   --target-dir input/gnn_files \
   --output-dir output/quickstart \
   --only-steps "3,5,11,12" \
@@ -79,15 +79,17 @@ If an optional runtime is unavailable, inspect the execution summary rather than
 counting generated files:
 
 ```bash
-uv run python -m json.tool \
+uv run --frozen --no-sync python -m json.tool \
   output/quickstart/00_pipeline_summary/pipeline_execution_summary.json
 ```
 
-Step 11 has nine render targets; Step 12 has ten executor families (all render
-targets plus Lean). PyTorch and bnlearn are not installed by
-the default lock; Stan needs `uv sync --extra stan` plus a CmdStan toolchain, and
-bnlearn needs `uv sync --extra bnlearn`.
-See [framework availability](execution/FRAMEWORK_AVAILABILITY.md).
+Step 11's [renderer registry](../src/gnn/render/framework_registry.py) declares
+backend and model-kind support. Step 12's direct runners and pipeline discovery
+have separate inventories; see [pipeline boundaries](pipeline/README.md#step-boundaries).
+Experimental cpomdp and THRML require explicit selection. PyTorch, bnlearn and
+Stan need their declared extras; Stan also needs CmdStan. Julia backends use their
+committed project environments. See [framework availability](execution/FRAMEWORK_AVAILABILITY.md)
+and the [runtime exceptions](../README.md#runtime-defaults-and-required-profiles).
 
 Model kind matters for execution: the PyMDP preset above runs **discrete
 categorical** models. A **continuous linear-Gaussian** model (F/H/Q/R with
@@ -118,9 +120,9 @@ local safety boundary.
 Copy a maintained template or start from the tutorial's complete example:
 
 ```bash
-uv run gnn templates list
-uv run gnn templates show actinf-pomdp-2state
-uv run gnn pull actinf-pomdp-2state --output-dir input/gnn_files/my_models
+uv run --frozen --no-sync gnn templates list
+uv run --frozen --no-sync gnn templates show actinf-pomdp-2state
+uv run --frozen --no-sync gnn pull actinf-pomdp-2state --output-dir input/gnn_files/my_models
 ```
 
 Then validate the copied file with `gnn validate FILE --strict`. Keep model files under

@@ -6,10 +6,12 @@ thin orchestrators; the authoritative order and metadata live in
 
 ## Run a focused pipeline
 
+After [frozen development setup](../../README.md#quick-start), run from the repository root:
+
 ```bash
-uv run python src/gnn/main.py \
+uv run --frozen --no-sync python src/gnn/main.py \
   --target-dir input/gnn_files \
-  --output-dir output \
+  --output-dir output/pipeline-example \
   --only-steps "3,5,11,12" \
   --verbose
 ```
@@ -21,20 +23,23 @@ The main pipeline loads `input/config.yaml` automatically. See the
 ## Step boundaries
 
 - Steps 0–10 discover, parse, validate, export, visualize, and annotate models.
-- Step 11 has 9 render targets: PyMDP, RxInfer.jl, ActiveInference.jl, JAX,
-  DisCoPy, PyTorch, NumPyro, Stan, and bnlearn.
-- Step 12 has 10 executor families: PyMDP, JAX, DisCoPy, RxInfer.jl,
-  ActiveInference.jl, PyTorch, NumPyro, Lean, Stan, and bnlearn
-  (`src/gnn/execute/bnlearn/`). bnlearn programs skip with an install hint
-  until their runtime is present (`uv sync --extra bnlearn`, or Rscript plus
-  the R `bnlearn` package for `.R` scripts). Stan runs the
-  rendered cmdstanpy driver (`src/gnn/execute/stan/`); it needs
-  `uv sync --extra stan` plus a CmdStan toolchain, otherwise it is reported
-  skipped. Continuous (linear-Gaussian) exemplars execute on jax, numpyro,
-  pytorch, stan and rxinfer; the categorical backends report `unsupported` for
-  them and are not executed. Lean verifies emitted documents against the
-  fep_lean `FEP.GnnDocument` typed surface (requires the sibling fep_lean
-  checkout; see `docs/other/fep_lean/README.md`).
+- Step 11's [renderer registry](../../src/gnn/render/framework_registry.py)
+  declares targets, model-kind support and default/experimental selection.
+- Step 12's [executor specifications](../../src/gnn/execute/executor_specs.py)
+  own direct framework runners; [pipeline discovery](../../src/gnn/execute/detection.py)
+  owns script detection and presets, including cpomdp and the Lean document route.
+  These are distinct inventories; generator registration alone does not establish
+  native execution or scientific acceptance.
+- bnlearn execution (`src/gnn/execute/bnlearn/`) needs the `bnlearn` extra or
+  Rscript and the R package for `.R` scripts. Stan executes its cmdstanpy driver
+  with the `stan` extra and CmdStan. Julia backends use their committed project
+  environments. Missing runtimes retain skipped/unavailable outcomes.
+- Continuous linear-Gaussian admission is backend-specific. JAX, NumPyro,
+  PyTorch, Stan and RxInfer have native paths; ngc-learn is continuous-only.
+  Experimental cpomdp and THRML require explicit selection. See the
+  [availability guide](../execution/FRAMEWORK_AVAILABILITY.md) for scope and setup.
+- Lean checks emitted documents against the companion's `FEP.GnnDocument`
+  typed surface; see [FEP bridge guidance](../other/fep_lean/README.md).
 - Steps 13–24 provide LLM, ML, audio, analysis, integration, security, research,
   website, MCP, GUI, reporting, and intelligent-analysis surfaces.
 
@@ -45,17 +50,17 @@ summary. It is not equivalent to a successful execution.
 
 ```bash
 # Render only selected targets.
-uv run python src/gnn/11_render.py \
+uv run --frozen --no-sync python src/gnn/11_render.py \
   --target-dir input/gnn_files \
-  --output-dir output \
+  --output-dir output/pipeline-example \
   --frameworks "pymdp,jax" \
   --strict-framework-success
 
 # Execute only the selected framework scripts from a known render directory.
-uv run python src/gnn/12_execute.py \
+uv run --frozen --no-sync python src/gnn/12_execute.py \
   --target-dir input/gnn_files \
-  --output-dir output \
-  --render-output-dir output/11_render_output \
+  --output-dir output/pipeline-example \
+  --render-output-dir output/pipeline-example/11_render_output \
   --frameworks "pymdp,jax" \
   --timeout 600
 ```
@@ -68,11 +73,11 @@ coverage from the renderer registry.
 
 ```bash
 # Documentation contracts and link/anchor audit.
-uv run --extra dev python docs/development/docs_audit.py --strict --check-anchors --no-write
-uv run --extra dev python scripts/check_doc_contracts.py --strict
+uv run --frozen --no-sync python docs/development/docs_audit.py --strict --check-anchors --no-write
+uv run --frozen --no-sync python scripts/check_doc_contracts.py --strict
 
 # Pipeline orchestration acceptance.
-PYTHONPATH=src uv run --extra dev python scripts/run_v3_orchestration_acceptance.py --strict
+PYTHONPATH=src uv run --frozen --no-sync python scripts/run_v3_orchestration_acceptance.py --strict
 ```
 
 ## Related references

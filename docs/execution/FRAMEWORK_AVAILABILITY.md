@@ -1,19 +1,25 @@
 # Framework Availability Guide
 
-GNN has two related framework inventories:
+Backend inventories have separate owners:
 
-- **Render registry** (`src/gnn/render/framework_registry.py`): 9 targets, including Stan.
-- **Step 12 executor** (`src/gnn/execute/processor.py` + the per-framework runner
-  packages): 10 executable framework families — every render target (bnlearn via
-  `src/gnn/execute/bnlearn/`). Stan executes via the cmdstanpy driver
-  (`src/gnn/execute/stan/`) and is reported `skipped` when cmdstanpy/CmdStan is absent;
-  bnlearn programs are reported `skipped` with an install hint until their runtime is
-  present (`uv sync --extra bnlearn`, or Rscript plus the R `bnlearn` package for
-  `.R` scripts).
+- The [renderer registry](../../src/gnn/render/framework_registry.py) declares
+  code generators, model-kind support and default/experimental selection.
+- [Executor specifications](../../src/gnn/execute/executor_specs.py) declare direct
+  runner wiring. [Pipeline discovery](../../src/gnn/execute/detection.py) detects
+  generated scripts, including cpomdp, and resolves execution presets.
+- Lean is a document-checking route against the pinned companion; it is separate
+  from numerical simulation. See [FEP bridge guidance](../other/fep_lean/README.md).
 
-PyTorch and bnlearn are supported render/execute paths; both are intentionally absent
-from the default lock (heavy optional runtimes). Julia targets require
-their committed project environments.
+`--frameworks all` selects the default preset. Experimental cpomdp and THRML
+require explicit selection and their documented admission/resource contracts.
+
+PyTorch, bnlearn and other optional backends need their declared extras. Stan uses
+its cmdstanpy driver plus CmdStan; bnlearn uses the Python package or Rscript plus
+R's bnlearn package for `.R` files. Missing runtimes produce skipped/unavailable
+outcomes. Julia targets require their committed project environments. See the
+[setup guide](../../SETUP_GUIDE.md) for installation and
+[runtime exceptions](../../README.md#runtime-defaults-and-required-profiles)
+for the locked Python/Gradio/Pillow compatibility profiles.
 
 ## Model kinds and execution paths
 
@@ -28,29 +34,30 @@ apply:
   driver (`src/gnn/execute/stan/`).
 - **Continuous linear-Gaussian** models render to native LGSSM programs via
   `src/gnn/render/continuous_script.py` and execute on JAX, NumPyro, PyTorch,
-  Stan (LGSSM), and RxInfer.jl 5.5. Categorical backends that cannot express
+  Stan (LGSSM), and RxInfer.jl. Categorical backends that cannot express
   them (PyMDP, ActiveInference.jl, DisCoPy, bnlearn) report an explicit
-  `unsupported` render status rather than failing silently.
+  `unsupported` render status. ngc-learn has a continuous-only contract;
+  explicitly selected cpomdp has bounded continuous filtering/control admission.
 
-Step 12 executes whatever rendered scripts exist for the requested
-frameworks; it does not filter by model kind. When a framework produced only
-`unsupported` statuses for a continuous model, the per-framework execution
-summary simply has nothing to run — check the render summary before
-interpreting an empty result as an executor failure.
+Step 12 admits rendered scripts through the current-run selection and artifact
+indexes. An `unsupported` render is never executed for that model. Inspect both
+render and execution summaries for admission, missing-runtime and failure reasons;
+an empty directory cannot establish either success or failure. See the
+[current-run migration guide](../development/run_ownership_migration.md).
 
 ## Check availability
 
 Use the unified CLI before a run:
 
 ```bash
-uv run gnn health
-uv run gnn preflight
+uv run --frozen --no-sync gnn health
+uv run --frozen --no-sync gnn preflight
 ```
 
 For a direct Python status report:
 
 ```bash
-PYTHONPATH=src uv run python - <<'PY'
+PYTHONPATH=src uv run --frozen --no-sync python - <<'PY'
 from gnn.execute import collect_doctor_report
 
 report = collect_doctor_report()
@@ -66,8 +73,8 @@ PY
 ### Core Python targets
 
 ```bash
-uv run python -c "from pymdp import Agent; print('PyMDP available')"
-uv run python -c "import jax, numpyro, discopy; print('JAX, NumPyro, and DisCoPy available')"
+uv run --frozen --no-sync python -c "from pymdp import Agent; print('PyMDP available')"
+uv run --frozen --no-sync python -c "import jax, numpyro, discopy; print('JAX, NumPyro, and DisCoPy available')"
 ```
 
 ### Julia targets
@@ -82,8 +89,8 @@ julia --startup-file=no --project=src/gnn/execute/activeinference_jl \
 ### Optional Python targets
 
 ```bash
-uv run python -c "import torch; print('PyTorch available')"
-uv run python -c "import bnlearn; print('bnlearn available')"  # or: uv sync --extra bnlearn
+uv run --frozen --no-sync python -c "import torch; print('PyTorch available')"
+uv run --frozen --no-sync python -c "import bnlearn; print('bnlearn available')"  # or: uv sync --extra bnlearn
 ```
 
 For `.R` bnlearn scripts, the R lane needs `Rscript` plus the R `bnlearn`
@@ -97,17 +104,17 @@ environments when launching rendered scripts.
 
 ```bash
 # Python-only quick preset.
-uv run python src/gnn/12_execute.py \
+uv run --frozen --no-sync python src/gnn/12_execute.py \
   --target-dir input/gnn_files \
-  --output-dir output \
+  --output-dir output/execution-example \
   --frameworks lite \
   --verbose
 
 # Explicit requested frameworks. Missing requested frameworks are reported clearly.
-uv run python src/gnn/12_execute.py \
+uv run --frozen --no-sync python src/gnn/12_execute.py \
   --target-dir input/gnn_files \
-  --output-dir output \
-  --render-output-dir output/11_render_output \
+  --output-dir output/execution-example \
+  --render-output-dir output/execution-example/11_render_output \
   --frameworks "pymdp,jax" \
   --verbose
 ```
@@ -117,7 +124,7 @@ non-execution checks.
 
 ## Interpret the result
 
-Inspect `output/12_execute_output/` and the pipeline summary. Distinguish:
+Inspect the selected run’s `12_execute_output/` and pipeline summary. Distinguish:
 
 - **Succeeded**: a rendered script ran and returned a successful result.
 - **Skipped/unavailable**: a dependency or runtime was not present.
