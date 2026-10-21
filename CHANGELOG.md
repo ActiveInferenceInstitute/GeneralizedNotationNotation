@@ -23,6 +23,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
   Sphinx 9.2.0, sphinxcontrib-jsmath 2.0.0 and virtualenv 21.14.12.
   Older interpreter splits retain their documented compatible versions.
 
+- Add `just release-preflight` to catch documentation, flag, thin-script,
+  scheduling and direct-entrypoint failures before expensive hosted lanes.
 - Add a bounded, paginated workflow-status collector that dispatches only missing
   workflows, retains exact revision/attempt/job identities and refuses pending,
   failed, skipped or missing jobs. Independent artifact and manuscript review

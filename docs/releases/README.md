@@ -188,6 +188,13 @@ on an isolated branch; finish content first, then perform the
 [manuscript and companion ritual](../development/fep_lean_paired_revision.md#closeout-ordering-canonical).
 Keep original producer commits reachable. Never renew receipts by editing hashes.
 
+After provisioning the exact uv version from README, run `just release-preflight`
+before publishing a candidate. It installs the frozen dev profile once, then
+checks documentation, actual flags, thin scripts, release scheduling controls
+and every direct entrypoint. It catches deterministic mistakes before starting
+expensive hosted lanes; full/native/manuscript/companion qualification remains
+required. Existing `just quality` retains its broader local gate roster.
+
 Use the stdlib GitHub CLI collector from the repository root:
 
 ```bash

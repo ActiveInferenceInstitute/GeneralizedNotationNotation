@@ -314,3 +314,13 @@ backend-json *ARGS:
 [positional-arguments]
 profile-backend *ARGS:
     PYTHONPATH=src uv run --no-project --isolated --python 3.15 python scripts/run_backend_profile.py "$@"
+
+# Catch deterministic release mistakes before expensive hosted/native qualification.
+# Install once; every subsequent command reuses that exact frozen environment.
+release-preflight:
+    uv sync --frozen --extra dev
+    uv run --frozen --no-sync python docs/development/docs_audit.py --strict --check-anchors --no-write
+    uv run --frozen --no-sync python scripts/check_flag_parity.py
+    uv run --frozen --no-sync python scripts/check_thin_orchestrators.py
+    uv run --frozen --no-sync python -m unittest discover -s .github -p test_release_gate.py -v
+    uv run --frozen --no-sync python -m pytest tests/pipeline/test_direct_entrypoint_imports.py -q --no-cov
