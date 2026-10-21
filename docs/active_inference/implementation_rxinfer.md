@@ -93,7 +93,7 @@ and continuous control retain explicit admission limits; see the
 Custom factors and rules must use the RxInfer 6 / ReactiveMP 7 APIs. The
 [Halfspace node](../rxinfer/multiagent_trajectory_planning/HalfspaceNode.jl) and
 [native compatibility checks](../../src/gnn/execute/rxinfer/test_models.jl) provide
-working examples. Placeholder node/rule sketches cannot establish compatibility.
+working examples. Use their complete definitions and tests when extending a backend.
 
 ## Related Resources
 
