@@ -480,6 +480,12 @@ def test_real_dask_mixed_results_preserve_siblings_and_order(
     real_wait = dask.distributed.wait
 
     def record_wait(*args: Any, **kwargs: Any) -> Any:
+        # Cancel after the collector's status snapshot, at the real wait boundary.
+        # A timer may fire before that snapshot on a busy host, bypassing the
+        # typed wait exception even though cancellation is handled correctly.
+        if futures[2] in args[0]:
+            client.cancel([futures[2]])
+            assert futures[2].status == "cancelled"
         try:
             return real_wait(*args, **kwargs)
         except FuturesCancelledError:
@@ -502,7 +508,6 @@ def test_real_dask_mixed_results_preserve_siblings_and_order(
         client.submit(work, name, pure=False)
         for name in ("fast", "bad", "cancel", "slow")
     ]
-    client.loop.call_later(0.05, client.cancel, [futures[2]], asynchronous=True)
     start = time.monotonic()
     result = dispatcher._dask_gather_bounded(futures)
     assert time.monotonic() - start < 1.2
