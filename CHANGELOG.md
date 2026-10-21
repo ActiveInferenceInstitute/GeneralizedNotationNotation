@@ -11,6 +11,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ### Release qualification
 
+- Correct the deployment-documentation Git-ignore exception so ordinary source
+  distributions include its README, agent guide and specification. Historical
+  experiment logs remain excluded from distributions and retained in tagged Git.
+
 - Keep the numbered-script directory off Python's import path before standard
   library imports. Direct entrypoints and supervised children no longer let
   `gnn/types` shadow stdlib `types` when current setuptools stops preloading it.

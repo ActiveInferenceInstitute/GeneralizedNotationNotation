@@ -369,7 +369,7 @@ docker-compose.override.yml
 # Deployment artifacts
 deploy/
 deployment/
-!doc/deployment/
+!docs/deployment/
 dist/
 build/
 
