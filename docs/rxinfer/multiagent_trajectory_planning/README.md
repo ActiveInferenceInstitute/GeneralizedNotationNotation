@@ -12,6 +12,21 @@ This project demonstrates multi-agent trajectory planning using probabilistic in
 >(`julia --startup-file=no --project=src/gnn/execute/rxinfer <script>`,
 > no runtime `Pkg.add`). This directory is retained as a standalone example.
 
+## RxInfer 6 compatibility boundary
+
+The local project now resolves RxInfer **6.1.0**. Both Halfspace definitions use
+`@define_factor_node` / `@define_message_update_rule`, and nonlinear
+approximations use `@algorithm`. The production environment's
+[native checks](../../../src/gnn/execute/rxinfer/test_models.jl) verify the custom
+rules directly. `test_model.jl` also checks finite native posteriors for four
+agents and three timesteps without plotting. Run it from this directory with
+`julia --startup-file=no --project=. test_model.jl`. This bounded check does not
+qualify every experiment, visualization or modular entry point.
+This standalone research example and its modular scripts
+are separate from production GNN model execution; full trajectory/visualization
+acceptance must be established independently. Run production GNN via the
+[maintained integration guide](../README.md).
+
 ## Project Structure
 
 ### Core Files
@@ -45,21 +60,22 @@ This project demonstrates multi-agent trajectory planning using probabilistic in
 
 ### Prerequisites
 
-- Julia 1.8 or newer
-- Required packages: RxInfer, Plots, LinearAlgebra, LogExpFunctions, StableRNGs
+- Julia 1.10 or newer (the committed manifest is resolved with Julia 1.13.2)
+- RxInfer 6.1.0 / ReactiveMP 7, Plots, LinearAlgebra, LogExpFunctions, StableRNGs; dependencies are in the local Project/Manifest.
 
 ### Quick Start
 
 1. Navigate to the project directory, and run the main script from there:
 
    ```bash
-   cd docs/rxinfer/RxInferExamples.jl/scripts/Advanced\ Examples/Multi-agent\ Trajectory\ Planning/
+   cd docs/rxinfer/multiagent_trajectory_planning
+   julia --startup-file=no --project=. -e 'using Pkg; Pkg.instantiate()'
    ```
 
 2. Run a single experiment with default parameters:
 
    ```bash
-   julia run_experiment.jl
+   julia --startup-file=no --project=. run_experiment.jl
    ```
 
 ### Command-line Parameters for run_experiment.jl
@@ -67,7 +83,7 @@ This project demonstrates multi-agent trajectory planning using probabilistic in
 The `run_experiment.jl` script accepts several command-line arguments:
 
 ```bash
-julia run_experiment.jl [--env=TYPE] [--seed=VALUE] [--output=PATH] [--no-intermediates]
+julia --startup-file=no --project=. run_experiment.jl [--env=TYPE] [--seed=VALUE] [--output=PATH] [--no-intermediates]
 ```
 
 Parameters:
@@ -81,13 +97,13 @@ Examples:
 
 ```bash
 # Run with door environment and seed 123
-julia run_experiment.jl --env=door --seed=123
+julia --startup-file=no --project=. run_experiment.jl --env=door --seed=123
 
 # Run with wall environment and custom output directory
-julia run_experiment.jl --env=wall --output=my_results
+julia --startup-file=no --project=. run_experiment.jl --env=wall --output=my_results
 
 # Run with combined environment without saving intermediates
-julia run_experiment.jl --env=combined --no-intermediates
+julia --startup-file=no --project=. run_experiment.jl --env=combined --no-intermediates
 ```
 
 ## Output Files

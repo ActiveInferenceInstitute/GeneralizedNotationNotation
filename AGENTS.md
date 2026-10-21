@@ -300,7 +300,7 @@ deliberately broader than this artifact graph.
 - **GNN doc patterns**: `uv run --extra dev python scripts/check_gnn_doc_patterns.py --strict` reports no banned GNN documentation patterns.
 - **Repository terminology**: `uv run --extra dev python scripts/check_repo_terminology.py --strict` and `scripts/check_maintained_doc_terms.py --strict` report no violations.
 - **Mypy**: `uv run --extra dev mypy src --config-file pyproject.toml` passes (0 errors).
-- **Tests**: command of record is `uv run --extra dev python -m pytest tests/ -q --tb=no -rsx -m "not ollama"`; the release receipt for the current version (collected/passed/skipped totals on the curated exemplar corpus) is recorded in `CHANGELOG.md` §3.3.0 (2026-09-07); re-run the command for live totals rather than trusting numbers in prose. Julia RxInfer execution uses the committed `Project.toml` under `src/gnn/execute/rxinfer/` (RxInfer 5.5.0 pinned); ActiveInference.jl uses the committed minimal env under `src/gnn/execute/activeinference_jl/`. With a local Ollama daemon and `smollm2:135m-instruct-q4_K_S` pulled, the two Ollama files are re-enabled.
+- **Tests**: command of record is `uv run --extra dev python -m pytest tests/ -q --tb=no -rsx -m "not ollama"`; the release receipt for the current version (collected/passed/skipped totals on the curated exemplar corpus) is recorded in `CHANGELOG.md` §3.3.0 (2026-09-07); re-run the command for live totals rather than trusting numbers in prose. Julia RxInfer execution uses the committed `Project.toml` under `src/gnn/execute/rxinfer/` (RxInfer 5.5.0 in that historical validation); ActiveInference.jl uses the committed minimal env under `src/gnn/execute/activeinference_jl/`. With a local Ollama daemon and `smollm2:135m-instruct-q4_K_S` pulled, the two Ollama files are re-enabled.
 - **LLM Default Model**: `smollm2:135m-instruct-q4_K_S` via Ollama (`llm.defaults.DEFAULT_OLLAMA_MODEL`; override with `OLLAMA_MODEL` / `input/config.yaml`).
 - **Renderer inventory**: derive maintained paths and model-family support from `src/gnn/render/framework_registry.py`. Implemented bnlearn and ngc-learn execution is declared in the executor registry. Experimental cpomdp and THRML require explicit framework selection; their adapter-specific evidence is separate from the historical public GridWorld output.
 - **Default dev suite**: FastAPI, websocket bridge, and LSP tests run under the `dev` extra; browser, public-network, live GUI, audio-DSP, and Ollama integrations remain explicit opt-in surfaces rather than hidden default-suite skips.
@@ -472,7 +472,7 @@ pytest --cov=src --cov-report=term-missing
 
 Select the latest stable CPython unless a named dependency or evidence profile
 requires an older runtime. The current frozen default uses Python 3.14 with
-exact uv 0.13.1; the h5py/HDF5 host requirement and removal checks are documented
+exact uv 0.13.4; the h5py/HDF5 host requirement and removal checks are documented
 in README.md under Runtime defaults and required profiles. Preserve protected
 producer metadata/locks and existing compatibility/native/paired rosters.
 `uv.toml` mirrors all configurable uv settings from the protected pyproject.
@@ -704,7 +704,7 @@ uv run --extra dev python scripts/run_v3_orchestration_acceptance.py
 
 ---
 
-**Last Updated**: 2026-10-02
+**Last Updated**: 2026-10-20
 **Pipeline Version**: [pyproject.toml](pyproject.toml) (canonical)
 **Total Steps**: 25 (0-24)
 **Status**: Maintained

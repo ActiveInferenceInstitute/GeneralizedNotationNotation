@@ -34,6 +34,7 @@ dependencies = [
     # Core scientific computing (lightweight)
     "numpy>=2.0",
     "matplotlib>=3.9.0",  # 3.9.x is the first series compatible with numpy>=2.0
+    "pillow>=13.0.0",  # Nine October 2026 image-decoder advisories; also protects pip core installs
     "networkx>=3.6.1",
     "pyyaml>=6.0",
     # scipy and scikit-learn moved to ml-ai optional group (all uses are deferred imports)
@@ -41,7 +42,7 @@ dependencies = [
     "psutil>=5.8.0",
     # HTTP and async communication
     "httpx>=0.27.0",
-    "aiohttp>=3.14.3",  # OpenRouter / Perplexity LLM providers; 3.14.3 patches PYSEC-2026-3545/46/47
+    "aiohttp>=3.14.4",  # Patches GHSA-5wr8-gcqf-gqf3 / GHSA-494j-54xm-rwp3 / GHSA-2g87-pp6c-29x5
     # Pygments: official fix for CVE-2026-4539 (AdlLexer ReDoS) — replaced git fork override
     "pygments>=2.20.0",
     # LLM stack (Step 13+); local Ollama + cloud APIs — defaults in ``llm/defaults.py`` / config
@@ -55,7 +56,7 @@ dependencies = [
     # Agent API: list[jax.Array] models, infer_states(empirical_prior=...),
     # infer_policies(qs), sample_action(q_pi, rng_key=...).
     # 1.0.4 is the supported release. It caps jax<0.11.1 pending a numpyro
-    # fix, so it resolves on the py3.11 splits (jax 0.9.2); the py>=3.12
+    # fix, so it resolves on the py3.11 splits (jax 0.10.2); the py>=3.12
     # splits need jax>=0.11.1 for flax>=0.12.9 and ngclearn and stay on 1.0.3
     # until pymdp lifts that cap.
     "inferactively-pymdp>=1.0.4; python_full_version < '3.12'",
@@ -67,19 +68,18 @@ dependencies = [
     # GHSA-rrmf-rvhw-rf47, lifting the previous lock exclusion. The bnlearn
     # package remains omitted from the default lock because its pgmpy
     # dependency pulls torch transitively.
-    # Ceiling raised 0.11 -> 0.12 (2026-09-21) so the ngclearn extra can
-    # resolve: ngclearn>=3.2.2 requires jax>=0.11.1. Probe receipts:
-    # numpyro 0.22.0 + flax 0.12.x + equinox 0.13.x import on jax 0.11.2
+    # JAX 0.12 admitted 2026-10-20 after PyMDP/factorized/continuous checks.
+    # ngclearn>=3.2.2 requires jax>=0.11.1; the current lock also resolves
+    # numpyro 0.22.0 + flax 0.12.x + equinox 0.13.x on jax 0.12.0
     # (py3.12) and jax 0.10.2 (py3.11). pymdp 1.0.4 pins jax<0.11.1, so the
     # pymdp requirement above takes 1.0.4 on py3.11 and 1.0.3 (no jax upper
     # bound) on the python>=3.12 splits that carry ngclearn.
-    "jax[cpu]>=0.7.0,<0.12",
-    "jaxlib>=0.7.0,<0.12",
-    # flax 0.12.6 calls jax.core.get_opaque_trace_state (removed in jax 0.11.0),
-    # so the py>=3.12 splits (which resolve jax 0.11.2 for ngclearn) need
-    # flax>=0.12.9 (first release compatible with jax 0.11.x); py3.11 splits
-    # keep jax 0.9.2 and stay on flax <0.12.7.
-    "flax>=0.7.0,<0.12.7; python_full_version < '3.12'",
+    "jax[cpu]>=0.7.0,<0.13",
+    "jaxlib>=0.7.0,<0.13",
+    # Flax 0.12.8 uses the supported jax.extend.core tracing API with
+    # Python 3.11/JAX 0.10.2. Flax >=0.12.9 requires Python
+    # >=3.12 and JAX >=0.11.1, so retain the explicit runtime split.
+    "flax>=0.12.8; python_full_version < '3.12'",
     "flax>=0.12.9; python_full_version >= '3.12'",
     "optax>=0.1.0",
     "msgpack>=1.2.1",
@@ -324,6 +324,9 @@ gnn = "gnn.cli:main"
 
 [tool.uv]
 default-groups = ["dev"]
+# Gradio 6.30.0 still caps Pillow <13. Qualify its GNN GUI consumers with
+# the patched decoder instead; see README runtime exceptions/removal checks.
+override-dependencies = ["pillow>=13.0.0"]
 # Security floors for transitive packages resolved through optional extras.
 # Keep these as resolver constraints so the packages do not become core runtime
 # dependencies merely because Dependabot tracks them in uv.lock.
@@ -334,7 +337,7 @@ constraint-dependencies = [
     "jupyterlab>=4.6.4",
     "mistune>=3.3.0",
     "multidict>=6.9.1",  # GHSA-54p9-h82j-f925
-    "pillow>=12.3.0",
+    "pillow>=13.0.0",
     "python-multipart>=0.0.27",
     "ray>=2.56.0",
     "setuptools>=83.0.0",
@@ -442,6 +445,8 @@ exclude_dirs = ["tests"]
 skips = ["B101"]
 
 [tool.ruff]
+# Keep Python lint/format scope stable when Ruff adds Markdown formatting.
+include = ["*.py", "*.pyi", "*.ipynb", "**/pyproject.toml"]
 target-version = "py311"
 line-length = 88
 extend-exclude = ["output", "cache", "temp", "tmp"]

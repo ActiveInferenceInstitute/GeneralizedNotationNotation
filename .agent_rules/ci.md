@@ -24,6 +24,14 @@ source-bound receipts, security gates and deadlines. Cache versioned immutable
 inputs rather than unverified old-source results. Parallelize independent checks;
 serialize shared evidence promotion and publication.
 
+Documentation/anchor and terminology checks run once in `docs-audit.yml` on
+all changes. Structural repository checks run in `local-gates.yml`; quality
+owns Ruff, mypy and public contracts. Keep these owners synchronized with YAML.
+Julia caches retain package inputs, not prior test success. GridWorld provisions
+both Julia projects and the explicit Gemma 3 1B Ollama profile before running all 25 steps.
+Weekly/manual external-link audits retain all observations and fail on 404/410;
+403/429, timeouts and transport failures remain inconclusive.
+
 ## Evidence and retries
 
 Retain raw step/job times and terminal outcomes plus artifact names/sizes/hashes.

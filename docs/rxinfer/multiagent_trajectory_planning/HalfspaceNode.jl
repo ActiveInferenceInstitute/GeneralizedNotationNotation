@@ -47,9 +47,9 @@ This adaptive behavior is key to effective trajectory planning, as it allows:
 """
 struct Halfspace end
 
-@node Halfspace Stochastic [out, a, σ2, γ]
+@define_factor_node(node = Halfspace, type = Stochastic, interfaces = [:out, :a, :σ2, :γ])
 
-"""
+#=
     Halfspace(:out, Marginalisation) (q_a, q_σ2, q_γ)
 
 Rule for computing the outgoing message for the output variable.
@@ -61,12 +61,16 @@ This rule creates a Normal distribution with:
 This effectively pushes the output distribution away from the constraint boundary
 (represented by `a`) by an amount proportional to the constraint strength (`γ`) 
 and softness (`σ2`).
-"""
-@rule Halfspace(:out, Marginalisation) (q_a::Any, q_σ2::Any, q_γ::Any) = begin
-    return NormalMeanVariance(mean(q_a) + mean(q_γ) * mean(q_σ2), mean(q_σ2))
-end
+=#
+@define_message_update_rule(
+    node = Halfspace, target = :out,
+    args = (q[:a]::Any, q[:σ2]::Any, q[:γ]::Any),
+    body = (args) -> NormalMeanVariance(
+        mean(args.q[:a]) + mean(args.q[:γ]) * mean(args.q[:σ2]), mean(args.q[:σ2])
+    ),
+)
 
-"""
+#=
     Halfspace(:σ2, Marginalisation) (q_out, q_a, q_γ)
 
 Rule for computing the variance parameter of the constraint.
@@ -81,10 +85,13 @@ The variance increases with:
 
 This adaptive behavior allows constraints to be enforced more strongly when
 they are close to being violated.
-"""
-@rule Halfspace(:σ2, Marginalisation) (q_out::Any, q_a::Any, q_γ::Any, ) = begin
-    # `BayesBase.TerminalProdArgument` is used to ensure that the result of the posterior computation is equal to this value
-    return BayesBase.TerminalProdArgument(PointMass( 1 / mean(q_γ) * sqrt(abs2(mean(q_out) - mean(q_a)) + var(q_out))))
-end
+=#
+@define_message_update_rule(
+    node = Halfspace, target = :σ2,
+    args = (q[:out]::Any, q[:a]::Any, q[:γ]::Any),
+    body = (args) -> BayesBase.TerminalProdArgument(PointMass(
+        sqrt(abs2(mean(args.q[:out]) - mean(args.q[:a])) + var(args.q[:out])) / mean(args.q[:γ])
+    )),
+)
 
 end # module 

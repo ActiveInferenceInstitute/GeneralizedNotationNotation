@@ -34,3 +34,8 @@ posteriors. Zero or nonfinite predictive evidence raises an error; invalid resul
 validation is persisted and then raises an error, so an invalid trace cannot
 complete successfully. This is categorical filtering and action scoring, not a
 claim of equivalence to other backends' policy objectives.
+
+Continuous LGSSM programs run two independent sequential NUTS chains with 500
+warmup iterations and 1,000 retained draws per chain. `mcmc_sampling` records
+the sampler’s actual settings alongside R-hat and posterior means. Convergence
+acceptance thresholds remain unchanged; finite output alone is insufficient.

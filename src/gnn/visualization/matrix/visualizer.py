@@ -610,11 +610,11 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
                 return False
 
         try:
+            # The list/dict guard narrows records for the typed extractor.
+            # No cast or conversion is needed; preserve the original values.
             # Extract matrix data from parameters
             matrices = (
-                self.extract_matrix_data_from_parameters(
-                    cast(list[dict[Any, Any]], parameters)
-                )
+                self.extract_matrix_data_from_parameters(parameters)
                 if isinstance(parameters, list)
                 and parameters
                 and isinstance(parameters[0], dict)

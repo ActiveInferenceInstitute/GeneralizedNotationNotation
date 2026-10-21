@@ -120,7 +120,7 @@ ModuleNotFoundError: No module named 'flax'
 
 **Used in**: Step 12 (Execute) - RxInfer execution
 
-**Installation**: RxInfer 5.5.0 and all Julia dependencies are pinned by the
+**Installation**: RxInfer 6.1.0 and all Julia dependencies are pinned by the
 committed environment under `src/gnn/execute/rxinfer/` (`Project.toml` +
 `Manifest.toml`). Install by activating + instantiating that environment — there
 is no runtime `Pkg.add`:

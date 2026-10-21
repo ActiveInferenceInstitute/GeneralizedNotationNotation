@@ -25,6 +25,7 @@ def test_fast_pipeline_tests_pass_isolated_output_env(
 ) -> None:
     """Step 2's fast pytest subprocess should inherit an isolated output root."""
     monkeypatch.delenv("GNN_PIPELINE_TEST_OUTPUT_DIR", raising=False)
+    monkeypatch.setenv("GNN_RUN_CONTEXT_FILE", str(tmp_path / "parent-context.json"))
     captured: dict[str, Any] = {}
 
     def fake_run(*args: Any, **kwargs: Any) -> Any:
@@ -39,6 +40,7 @@ def test_fast_pipeline_tests_pass_isolated_output_env(
 
     expected = str(tmp_path / "isolated_pipeline_outputs")
     assert captured["env"]["GNN_PIPELINE_TEST_OUTPUT_DIR"] == expected
+    assert "GNN_RUN_CONTEXT_FILE" not in captured["env"]
     # The fast-test subprocess must run from the project root (the directory
     # containing ``src/`` and ``pyproject.toml``). Assert against the real root
     # rather than a hard-coded checkout basename so the contract holds for any

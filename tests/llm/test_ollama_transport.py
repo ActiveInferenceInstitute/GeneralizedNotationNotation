@@ -423,21 +423,41 @@ def test_stream_preserves_roles_options_and_does_not_mutate_config(
 
 
 def test_stream_budget_is_not_renewed_between_chunks(
-    daemon: Callable[..., Any],
+    daemon: Callable[..., Any], monkeypatch: pytest.MonkeyPatch
 ) -> None:
+    from types import SimpleNamespace
+
     line = json.dumps(_response(done=False)).encode() + b"\n"
-    host, _, _ = daemon(chunks=[line] * 20, delay=0.025)
+    host, _, _ = daemon(chunks=[line] * 20)
+    offset = [0.0]
+    # Advance only the provider clock; asyncio and the real HTTP server retain
+    # their real clocks. Runner scheduling cannot stand in for deadline renewal.
+    monkeypatch.setattr(
+        module, "time", SimpleNamespace(monotonic=lambda: time.monotonic() + offset[0])
+    )
+    requests: list[tuple[Any, float]] = []
+    original_open = module._ChatRequest.open
+
+    def record_open(request: Any, payload: Any) -> None:
+        original_open(request, payload)
+        requests.append((request, request.deadline))
+
+    monkeypatch.setattr(module._ChatRequest, "open", record_open)
+    delivered: list[str] = []
 
     async def collect() -> None:
-        async for _ in _provider(host).generate_stream(
-            [LLMMessage("user", "hello")], LLMConfig(model=MODEL, timeout=0.1)
+        async for chunk in _provider(host).generate_stream(
+            [LLMMessage("user", "hello")], LLMConfig(model=MODEL, timeout=30)
         ):
-            pass
+            request, original_deadline = requests[0]
+            assert request.deadline == original_deadline
+            delivered.append(chunk)
+            if len(delivered) == 2:
+                offset[0] = original_deadline - time.monotonic() + 1
 
-    started = time.monotonic()
     with pytest.raises((TimeoutError, socket.timeout)):
         asyncio.run(collect())
-    assert time.monotonic() - started < 0.25
+    assert len(delivered) == 2
 
 
 def test_stream_without_terminal_record_fails(daemon: Callable[..., Any]) -> None:

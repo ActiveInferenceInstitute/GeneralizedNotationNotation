@@ -1017,8 +1017,8 @@ def execute_pipeline_step(
                         "folder": str(folder),
                         "status": result.get("status"),
                         "exit_code": exit_code,
-                        **{
-                            key: result[key]
+                        **dict[str, Any](
+                            (key, result[key])
                             for key in (
                                 "containment",
                                 "cleanup_verified",
@@ -1026,7 +1026,7 @@ def execute_pipeline_step(
                                 "force_killed",
                             )
                             if key in result
-                        },
+                        ),
                     }
                 )
                 if exit_code != 0:

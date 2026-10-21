@@ -44,3 +44,6 @@ posteriors with independent forward-filter calculations. These finite-model
 witnesses support this translation contract; source-specific causal discovery,
 component composition and Active Inference control remain outside its scope.
 See [roadmap contracts](../../../../docs/development/remaining_roadmap_contracts.md).
+
+Native calls use the common bnlearn API without the removed `verbose` keyword,
+including `make_DAG` and `inference.fit`, for the locked bnlearn 1.1 runtime.

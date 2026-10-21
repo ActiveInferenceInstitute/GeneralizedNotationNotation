@@ -1,6 +1,6 @@
 #!/usr/bin/env julia
 
-"""
+#=
 RxInfer.jl Environment Setup Script
 
 This script sets up the Julia environment for RxInfer.jl simulations using
@@ -13,7 +13,7 @@ once) is machine-local and NOT portable across machines or Julia versions.
 It must be rebuilt on each machine after setup.
 
 Usage: julia setup_environment.jl [--verbose] [--validate-only]
-"""
+=#
 
 using Pkg
 using Printf

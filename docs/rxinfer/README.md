@@ -46,10 +46,9 @@ This directory contains documentation, scripts, and resources for integrating GN
   - Code generation patterns
   - Example models and usage
 
-- **`Multiagent_GNN_RxInfer.jl`**: Validation script
-  - Validates GNN to RxInfer.jl translation
-  - Two-stage validation process
-  - Configuration file generation testing
+- **`Multiagent_GNN_RxInfer.jl`**: Historical TOML comparison script
+  - Retained for provenance; not the maintained render/execute acceptance path
+  - Requires external example and retired generated configuration assets
 
 - **`engineering_rxinfer_gnn.md`**: Engineering guide
   - Technical implementation details
@@ -65,7 +64,7 @@ This directory contains documentation, scripts, and resources for integrating GN
 ### Subdirectories
 
 - **`multiagent_trajectory_planning/`**: Multi-agent trajectory planning examples
-  - Complete RxInfer.jl implementations
+  - Standalone research code; custom rules migrate to RxInfer 6, with full planner acceptance separate
   - Configuration examples
   - Results and analysis
 
@@ -93,9 +92,9 @@ This directory contains documentation, scripts, and resources for integrating GN
 - **Variational Message Passing**: Optimized inference algorithms over factor graphs
 - **Factor Graph Models**: Natural representation of Active Inference models
 - **Reproducible Execution**: A committed Julia environment
-  (`Project.toml` + `Manifest.toml` pinning RxInfer 5.5.0 under
+  (`Project.toml` + `Manifest.toml` pinning RxInfer 6.1.0 under
   `src/gnn/execute/rxinfer/`) with `--project=<env>` execution
-- **Multi-agent Support**: Coordinated multi-agent systems
+- **Multi-agent Support**: Declared native per-agent models and independent Gaussian agents; shared post-hoc signals do not establish coupled latent inference.
 
 ### GNN to RxInfer.jl Translation
 
@@ -106,26 +105,29 @@ The GNN pipeline translates GNN models to RxInfer.jl through:
 3. **Code Generation**: Julia code generation with RxInfer.jl `@model` + `infer()` API
    (emitted by `src/gnn/render/rxinfer/rxinfer_renderer.py`)
 4. **Environment Setup**: Committed `Project.toml` + `Manifest.toml` under
-   `src/gnn/execute/rxinfer/` pins RxInfer 5.5.0; `setup_environment.jl` uses
+   `src/gnn/execute/rxinfer/` pins RxInfer 6.1.0; `setup_environment.jl` uses
    `Pkg.activate()` + `Pkg.instantiate()` (no runtime `Pkg.add`)
 5. **Validation**: Automated validation of generated code and inference results
 
 ### Validation Process
 
-The pipeline validates end-to-end render and execution for every exemplar GNN
-model:
+The pipeline gives each selected source an explicit render outcome. Unsupported
+compositions are refused before execution; native tests establish only the model
+families and numerical contracts they exercise:
 
 #### Render (Step 11)
-- Discovers all 30 exemplar GNN files under `input/gnn_files/**` (27 discrete +
-  3 continuous, census: `input/gnn_files/INDEX.md`) and emits an executable
-  `*_rxinfer.jl` script per model via `rxinfer_renderer.py`
+- Recursively discovers model sources under `input/gnn_files/**` (see
+  `input/gnn_files/INDEX.md`) and emits `*_rxinfer.jl` only for admitted
+  specifications via `rxinfer_renderer.py`. Semantic hierarchy/planning,
+  nonstationary and unsupported hybrid/coupled compositions retain explicit
+  refusal reasons rather than receiving an approximate flat substitute.
 
 #### Execute (Step 12)
 - Runs each rendered `.jl` with
   `julia --startup-file=no --project=src/gnn/execute/rxinfer <script>`
 - `setup_environment.jl` activates and instantiates the committed environment
   (`Pkg.activate()` + `Pkg.instantiate()`, no runtime `Pkg.add`)
-- Records `random.seed!(seed)` and the script SHA256 in `runtime_metadata`
+- Records `Random.seed!(seed)` and the script SHA256 in `runtime_metadata`
   for byte-identical, reproducible runs
 
 ### Validation Success Criteria

@@ -1,33 +1,23 @@
 name: Docs audit
 
-# Main CI skips markdown paths; this workflow keeps link + AGENTS/README parity checks on doc changes.
+# Single owner of deterministic documentation and terminology checks on every change.
 
+# Documentation contracts depend on source and metadata as well as Markdown.
 on:
   push:
     branches: [main]
-    paths:
-      - "**/*.md"
-      - "docs/**"
-      - "AGENTS.md"
-      - "CLAUDE.md"
-      - "README.md"
-      - "SKILL.md"
-      - "docs/development/docs_audit.py"
   pull_request:
     branches: [main]
-    paths:
-      - "**/*.md"
-      - "docs/**"
-      - "AGENTS.md"
-      - "CLAUDE.md"
-      - "README.md"
-      - "SKILL.md"
-      - "docs/development/docs_audit.py"
   schedule:
     # Scheduled so external-link rot is caught without per-PR network flakiness.
     - cron: "0 6 * * 1"
 
   workflow_dispatch:
+    inputs:
+      external_links:
+        description: Run the external-link audit and retain all observations
+        type: boolean
+        default: false
 concurrency:
   group: docs-audit-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -48,29 +38,38 @@ jobs:
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "3.14"
+          check-latest: true
 
       - name: Install uv
         uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
         with:
-          # Match exact uv 0.13.1 in uv.toml and the Docker bootstrap.
-          version: "0.13.1"
+          # Match exact uv 0.13.4 in uv.toml and the Docker bootstrap.
+          version: "0.13.4"
           enable-cache: true
 
       - name: Install dependencies (dev)
         run: uv sync --frozen --extra dev
 
       - name: Documentation audit (strict)
-        run: uv run --extra dev python docs/development/docs_audit.py --strict --check-anchors --no-write
+        run: uv run --frozen --no-sync python docs/development/docs_audit.py --strict --check-anchors --no-write
 
       - name: Repository terminology audit
-        run: uv run --extra dev python scripts/check_repo_terminology.py --strict
+        run: uv run --frozen --no-sync python scripts/check_repo_terminology.py --strict
 
       - name: Maintained documentation terminology audit
-        run: uv run --extra dev python scripts/check_maintained_doc_terms.py --strict
-
-      - name: GNN documentation pattern audit
-        run: uv run --extra dev python scripts/check_gnn_doc_patterns.py --strict
+        run: uv run --frozen --no-sync python scripts/check_maintained_doc_terms.py --strict
 
       - name: External link audit (weekly job)
-        if: github.event_name == 'schedule'
-        run: uv run --extra dev python scripts/check_external_links.py --strict --allow-hosts doi.org zenodo.org
+        if: github.event_name == 'schedule' || inputs.external_links
+        run: |
+          set -euo pipefail
+          uv run --frozen --no-sync python scripts/check_external_links.py --fail-on-dead \
+            --allow-hosts doi.org zenodo.org | tee external-links.txt
+      - name: Retain external-link observations
+        if: always() && (github.event_name == 'schedule' || inputs.external_links)
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: external-link-observations
+          path: external-links.txt
+          if-no-files-found: error
+          retention-days: 14

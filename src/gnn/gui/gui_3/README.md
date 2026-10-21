@@ -43,3 +43,8 @@ gui_3/
 
 - [AGENTS.md](AGENTS.md) — Agent documentation
 - [Parent GUI Module](../AGENTS.md) — GUI module overview
+
+The design studio uses Gradio’s default theme, avoiding the constructor’s
+`theme` parameter in Gradio 6. Wrapper tests restore cached Gradio bindings
+after using temporary test modules; native builder tests verify the installed
+module identity.

@@ -161,7 +161,7 @@ def adapt_result(payload: dict[str, Any]) -> dict[str, Any]:
             raise ValueError(
                 "THRML components require declared independent composition without a fabricated joint posterior"
             )
-        inherited = {
+        inherited: dict[str, Any] = {
             key: payload[key]
             for key in (
                 "schema_version",

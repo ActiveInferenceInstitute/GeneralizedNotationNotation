@@ -15,9 +15,8 @@ name: Local gates
 # Deliberately NOT wired here: `just gridworld` — since 2026-09-19 the recipe
 # runs the full GridWorld pipeline end-to-end (local Julia toolchains) and
 # then validates `scripts/check_pomdp_gridworld_outputs.py output`. The
-# run-tree it validates is volatile by design
-# (docs/development/output_tracking.md): CI has no committed artifacts to
-# check, so this remains a local gate.
+# run-tree is volatile (docs/development/output_tracking.md); the separate
+# weekly/manual gridworld.yml provisions its toolchains and checks fresh output.
 
 on:
   push:
@@ -51,50 +50,51 @@ jobs:
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "3.14"
+          check-latest: true
 
       - name: Install uv
         uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
         with:
-          # Match exact uv 0.13.1 in uv.toml and the Docker bootstrap.
-          version: "0.13.1"
+          # Match exact uv 0.13.4 in uv.toml and the Docker bootstrap.
+          version: "0.13.4"
           enable-cache: true
 
       - name: Install dependencies (dev)
         run: uv sync --frozen --extra dev
 
       - name: Manuscript token audit
-        run: uv run --extra dev python scripts/check_manuscript_tokens.py --strict
+        run: uv run --frozen --no-sync python scripts/check_manuscript_tokens.py --strict
 
       # SC-22 PR-time drift guard: the committed hydrated prose must be what
       # the committed token map hydrates to. A PR that regenerated the map
       # without the full ritual (figures -> template stage_03_render ->
       # record) fails here instead of in custody-re-render.yml after merge.
       - name: Hydrated prose matches token map
-        run: uv run --extra dev python scripts/check_hydrated_prose.py
+        run: uv run --frozen --no-sync python scripts/check_hydrated_prose.py
 
       - name: Manuscript figure freshness
-        run: uv run --extra dev python -m pytest tests/test_manuscript_figure_freshness.py -q -p no:cacheprovider
+        run: uv run --frozen --no-sync python -m pytest tests/test_manuscript_figure_freshness.py -q -p no:cacheprovider
 
       - name: MCP + skills resolvability health gate
-        run: uv run --extra dev python scripts/check_mcp_skills_health.py --strict
+        run: uv run --frozen --no-sync python scripts/check_mcp_skills_health.py --strict
 
       - name: Import-linter boundaries
-        run: uv run --extra dev lint-imports
+        run: uv run --frozen --no-sync lint-imports
 
       - name: Thin orchestrator line cap
-        run: uv run --extra dev python scripts/check_thin_orchestrators.py
+        run: uv run --frozen --no-sync python scripts/check_thin_orchestrators.py
 
       - name: CLI flag parity
-        run: uv run --extra dev python scripts/check_flag_parity.py
+        run: uv run --frozen --no-sync python scripts/check_flag_parity.py
 
       - name: Dependency hygiene
-        run: uv run --extra dev python scripts/check_dep_hygiene.py
+        run: uv run --frozen --no-sync python scripts/check_dep_hygiene.py
 
       - name: Validate surface audit
-        run: uv run --extra dev python scripts/audit_validate_surface.py
+        run: uv run --frozen --no-sync python scripts/audit_validate_surface.py
 
       - name: Doc path reference gate
-        run: uv run --extra dev python scripts/check_doc_path_references.py
+        run: uv run --frozen --no-sync python scripts/check_doc_path_references.py
 
       - name: Doc pattern ratchet
-        run: uv run --extra dev python scripts/check_gnn_doc_patterns.py --strict
+        run: uv run --frozen --no-sync python scripts/check_gnn_doc_patterns.py --strict

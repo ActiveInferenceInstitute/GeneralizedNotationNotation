@@ -1,9 +1,12 @@
 # GNN Implementation Guide
 
-**Version**: v3.2.0 Engine (Bundle v2.0.0)  
-**Last Updated**: 2026-04-14  
-**Status**: ✅ Production Ready  
-**Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: registry-defined backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)
+**Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
+
+**Last Updated**: 2026-10-20
+
+**Scope**: Implementation guidance for the 25-step pipeline. Derive backend
+support from the [framework registry](../../../src/gnn/render/framework_registry.py)
+and current tests from the [repository guide](../../../README.md).
 
 This document provides guidance on how to implement GNN models in computational environments, with practical code examples and workflows.
 
@@ -994,4 +997,4 @@ Compose multiple agents or factors in GNN structure and validate before render; 
 2. Smékal, J., & Friedman, D. A. (2023). Generalized Notation Notation for Active Inference Models. Active Inference Institute. <https://doi.org/10.5281/zenodo.7803328>
 3. Hesp, C., Tschantz, A., Millidge, B., Ramstead, M., Friston, K., & Smith, R. (2021). Sophisticated Inference. Neural Computation, 33(3), 713-762.
 4. PyTorch Documentation: <https://pytorch.org/docs/stable/index.html>
-5. NumPy Documentation: <https://numpy.org/docs/stable/>
+5. NumPy Documentation: <https://numpy.org/doc/stable/>

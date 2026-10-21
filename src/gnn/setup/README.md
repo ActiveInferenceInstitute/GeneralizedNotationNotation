@@ -51,7 +51,7 @@ flowchart LR
 ## Public API
 
 The sections below list what is exported via `src/gnn/setup/__init__.py`. Every signature below
-matches the implementation. Prefer importing from the package root (`from setup import …`)
+matches the implementation. Prefer importing from the package root (`from gnn.setup import …`)
 rather than submodules.
 
 ### Environment setup
@@ -92,14 +92,16 @@ create_project_structure(project_root: Path, verbose: bool = False) -> bool
 install_jax_and_test(verbose: bool = False) -> bool
 ```
 
-Valid group names are defined in `OPTIONAL_GROUPS` (`constants.py`):
-`dev`, `api`, `ml-ai`, `audio`, `gui`, `graphs`, `research`, `scaling`, `all`.
+Valid group names in `OPTIONAL_GROUPS` (`constants.py`) derive from installed
+`Provides-Extra` metadata, with a source-manifest fallback. See
+`pyproject.toml` for the complete current optional-extra registry.
 
 Step 12 core backends (JAX, NumPyro, DisCoPy), LLM clients, and interactive
 visualization packages are already in `[project.dependencies]`, so `uv sync`
-installs them without any extra. PyTorch and bnlearn remain supported by the
-renderer/executor code paths, but are manual installs while the current Torch
-advisory has no patched release.
+installs them without any extra. The default PEP 735 `dev` group supplies
+test/lint/docs tools; the separate `dev` extra adds CmdStanPy. PyTorch and
+bnlearn are supported optional installs through `uv sync --extra torch` and
+`uv sync --extra bnlearn`. Patched Torch releases are present in the frozen lock.
 
 ### Validators (`validator`)
 
@@ -170,11 +172,19 @@ install_optional_package_group("gui", verbose=True)
 ### `uv` directly
 
 ```bash
-uv sync                     # Core (JAX, NumPyro, DisCoPy, pymdp, …; PyTorch is a manual install)
-uv sync --extra dev         # Add dev tools
+uv sync                     # Core plus default dev tooling
+uv sync --no-dev            # Runtime only
+uv sync --extra dev         # Development profile plus CmdStanPy
+uv sync --extra torch       # Optional PyTorch backend
+uv sync --extra bnlearn     # Optional Bayesian-network backend
 uv sync --extra gui
 uv sync --all-extras        # Everything
 ```
+
+GUI/all-extras installs require the committed uv Pillow 13 override while
+Gradio 6.30.0 still caps Pillow below 13. See the root
+[runtime exceptions](../../../README.md#runtime-defaults-and-required-profiles)
+for the qualification scope and removal check.
 
 ## Output
 

@@ -480,6 +480,12 @@ def test_real_dask_mixed_results_preserve_siblings_and_order(
     real_wait = dask.distributed.wait
 
     def record_wait(*args: Any, **kwargs: Any) -> Any:
+        # Cancel after the collector's status snapshot, at the real wait boundary.
+        # A timer may fire before that snapshot on a busy host, bypassing the
+        # typed wait exception even though cancellation is handled correctly.
+        if futures[2] in args[0]:
+            client.cancel([futures[2]])
+            assert futures[2].status == "cancelled"
         try:
             return real_wait(*args, **kwargs)
         except FuturesCancelledError:
@@ -502,7 +508,6 @@ def test_real_dask_mixed_results_preserve_siblings_and_order(
         client.submit(work, name, pure=False)
         for name in ("fast", "bad", "cancel", "slow")
     ]
-    client.loop.call_later(0.05, client.cancel, [futures[2]], asynchronous=True)
     start = time.monotonic()
     result = dispatcher._dask_gather_bounded(futures)
     assert time.monotonic() - start < 1.2
@@ -775,10 +780,13 @@ def _isolated_cluster(
 def test_real_ray_mixed_results_and_bounded_cancellation(tmp_path: Path) -> None:
     receipt = _isolated_cluster(
         """
-import json, sys, time, ray
+import json, os, sys, time
+os.environ["RAY_ENABLE_UV_RUN_RUNTIME_ENV"] = "0"
+import ray
 from gnn.execute.distributed import Dispatcher
-ray.init(num_cpus=2, include_dashboard=False, log_to_driver=False, _temp_dir=sys.argv[1])
+ray.init(num_cpus=2, include_dashboard=False, log_to_driver=False, _temp_dir=sys.argv[1], runtime_env={"py_executable": sys.executable})
 try:
+    assert ray.get_runtime_context().runtime_env == {"py_executable": sys.executable}
     expired = Dispatcher("ray", deadline_monotonic=time.monotonic() - 1)
     rejected = expired.run_scripts_parallel([{"id": 1}], lambda info: info)
     rejected += expired.parameter_sweep(lambda id: id, [{"id": 2}])

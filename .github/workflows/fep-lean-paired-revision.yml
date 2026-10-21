@@ -18,7 +18,8 @@ name: Paired fep_formal revision
 #
 # What this proves and does NOT prove (evidence-plane discipline): the workflow
 # verifies that the pinned fep_formal checkout and this GNN checkout still agree
-# on the bridge's source binding and emit digests (drift detection). It does
+# on the bridge's source binding and emit digests, plus current Q7 render
+# provenance/scaffold freshness on CPython 3.14 (drift detection). It does
 # NOT verify any Lean theorem or promote any Lean proof claim — notation
 # mapping states symbol correspondence only.
 
@@ -43,7 +44,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python: ["3.11", "3.12"]
+        python: ["3.11", "3.12", "3.14"]
     env:
       UV_PYTHON: ${{ matrix.python }}
       UV_PROJECT_ENVIRONMENT: ${{ github.workspace }}/fep-lean/.venv
@@ -76,6 +77,7 @@ jobs:
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: ${{ matrix.python }}
+          check-latest: true
       - name: Install uv
         uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
         with:
@@ -97,7 +99,7 @@ jobs:
           uv sync --project fep-lean --frozen --python "$UV_PYTHON"
       # Read-only bridge surface only: `status` and `emit --check` inspect
       # source bytes and emitted-document digests and never write to either
-      # checkout (verified against src/fep_formal/bridge/cli.py at the pin).
+      # checkout (verified against src/fep_lean/bridge/cli.py at the pin).
       - name: Bound runtime status and finite/continuous bridge checks
         run: |
           set -euo pipefail
@@ -112,6 +114,18 @@ jobs:
               --fep-revision "${{ steps.pair.outputs.revision }}" \
               --receipts "$GITHUB_WORKSPACE/receipts"
           done
+      - name: Current Q7 provenance and scaffold freshness
+        if: matrix.python == '3.14'
+        run: |
+          uv run --project fep-lean --frozen --no-sync --python "$UV_PYTHON" \
+            python gnn/.github/fep_paired_runtime.py q7-source \
+            --expected-python "$UV_PYTHON" \
+            --environment "$UV_PROJECT_ENVIRONMENT" \
+            --gnn-root "$GITHUB_WORKSPACE/gnn" \
+            --gnn-revision "${{ github.event.pull_request.head.sha || github.sha }}" \
+            --fep-root "$GITHUB_WORKSPACE/fep-lean" \
+            --fep-revision "${{ steps.pair.outputs.revision }}" \
+            --receipts "$GITHUB_WORKSPACE/receipts"
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:

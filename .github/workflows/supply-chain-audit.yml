@@ -28,20 +28,22 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
         with:
-          # Match exact uv 0.13.1 in uv.toml and the Docker bootstrap.
-          version: "0.13.1"
+          # Match exact uv 0.13.4 in uv.toml and the Docker bootstrap.
+          version: "0.13.4"
           enable-cache: true
 
-      - name: Export requirements (no project line, no hashes)
+      - name: Export requirements (hashed, no project line)
         run: |
           set -euo pipefail
-          uv export --frozen --no-dev --no-hashes --no-emit-project -o /tmp/requirements-audit.txt
+          uv export --frozen --no-dev --no-emit-project -o /tmp/requirements-audit.txt
 
+      # Audit the frozen export for this interpreter/platform (markers apply).
+      # Preserve uv overrides (Gradio/Pillow); no advisories are ignored.
       - name: Run pip-audit
         id: audit
         run: |
           set -euo pipefail
-          uv tool run --python 3.14 pip-audit -r /tmp/requirements-audit.txt --vulnerability-service osv --desc on
+          uv tool run --python 3.14 pip-audit -r /tmp/requirements-audit.txt --no-deps --disable-pip --require-hashes --vulnerability-service osv --desc on
 
       - name: Summary
         if: always()
@@ -63,20 +65,22 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
         with:
-          # Match exact uv 0.13.1 in uv.toml and the Docker bootstrap.
-          version: "0.13.1"
+          # Match exact uv 0.13.4 in uv.toml and the Docker bootstrap.
+          version: "0.13.4"
           enable-cache: true
 
       - name: Export requirements
         run: |
           set -euo pipefail
-          uv export --frozen --all-extras --no-dev --no-hashes --no-emit-project -o /tmp/requirements-all-extras.txt
+          uv export --frozen --all-extras --no-dev --no-emit-project -o /tmp/requirements-all-extras.txt
 
+      # Audit the frozen export for this interpreter/platform (markers apply).
+      # Preserve uv overrides (Gradio/Pillow); no advisories are ignored.
       - name: Run pip-audit
         id: audit
         run: |
           set -euo pipefail
-          uv tool run --python 3.12 pip-audit -r /tmp/requirements-all-extras.txt --vulnerability-service osv --desc on
+          uv tool run --python 3.12 pip-audit -r /tmp/requirements-all-extras.txt --no-deps --disable-pip --require-hashes --vulnerability-service osv --desc on
 
       - name: Summary
         if: always()

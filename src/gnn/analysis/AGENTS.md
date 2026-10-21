@@ -12,7 +12,7 @@
 
 **Version**: [pyproject.toml](../../../pyproject.toml) (canonical)
 
-**Last Updated**: 2026-10-05
+**Last Updated**: 2026-10-20
 
 ---
 
@@ -598,12 +598,12 @@ framework names normalize via `viz_schema._normalize_framework_name`
 
 ### External Resources
 - [NetworkX Documentation](https://networkx.org/)
-- [NumPy Documentation](https://numpy.org/docs/)
+- [NumPy Documentation](https://numpy.org/doc/)
 - [SciPy Documentation](https://scipy.org/)
 
 ---
 
-**Last Updated**: 2026-10-05
+**Last Updated**: 2026-10-20
 **Maintainer**: GNN Pipeline Team
 **Status**: Production Ready
 **Version**: [pyproject.toml](../../../pyproject.toml) (canonical)

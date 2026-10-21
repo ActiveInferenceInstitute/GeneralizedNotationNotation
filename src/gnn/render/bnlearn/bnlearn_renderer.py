@@ -131,7 +131,7 @@ def generate_bnlearn_code(
             "        model_mle = bn.parameter_learning.fit(DAG, df, methodtype='maximumlikelihood')",
             '        print("✅ Parameter Learning (MLE) successful.")',
             '        print("📊 Testing Exact Inference (Junction Tree): Querying P(S=1 | O=1)")',
-            "        query = bn.inference.fit(model_mle, variables=['S'], evidence={'O': 1}, verbose=0)",
+            "        query = bn.inference.fit(model_mle, variables=['S'], evidence={'O': 1})",
             "        self.performance_metrics = {",
             '            "edges_learned": len(edges),',
             '            "samples_processed": n_samples,',

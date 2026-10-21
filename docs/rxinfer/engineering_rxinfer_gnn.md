@@ -34,7 +34,7 @@ The pipeline has three main components:
     emitted through the likelihood matrix `A`. This is genuine RxInfer.jl
     variational message-passing — not a hand-rolled step simulator.
 3.  **The Runner / Environment**: `src/gnn/execute/rxinfer/` executes the script
-    under a committed `Project.toml` + `Manifest.toml` pinning RxInfer 5.5.0.
+    under a committed `Project.toml` + `Manifest.toml` pinning RxInfer 6.1.0.
 
 ### Inference
 
@@ -55,7 +55,7 @@ domain.
 
 ### Environment & Reproducibility
 
-- `Project.toml` + `Manifest.toml` under `src/gnn/execute/rxinfer/` pin RxInfer 5.5.0
+- `Project.toml` + `Manifest.toml` under `src/gnn/execute/rxinfer/` pin RxInfer 6.1.0
   and all dependencies.
 - The runner invokes `julia --startup-file=no --project=src/gnn/execute/rxinfer <script>`.
 - `setup_environment.jl` uses `Pkg.activate()` + `Pkg.instantiate()` — there is

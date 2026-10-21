@@ -96,7 +96,9 @@ async def native_editor(kind, export, source=MODEL):
     from fastapi import FastAPI
 
     module, builder = BUILDERS[kind]
-    demo = getattr(importlib.import_module(module), builder)(
+    implementation = importlib.import_module(module)
+    assert implementation.gr is gr, "native builders must use the installed Gradio"
+    demo = getattr(implementation, builder)(
         source, export, logging.getLogger("native-gradio-consumer")
     )
     app = gr.mount_gradio_app(

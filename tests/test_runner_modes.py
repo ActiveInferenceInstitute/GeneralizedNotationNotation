@@ -120,6 +120,7 @@ def run_fast_pipeline_tests(
     try:
         overall_timeout = int(os.getenv("FAST_TESTS_TIMEOUT", "600")) + 30
         env = os.environ.copy()
+        env.pop("GNN_RUN_CONTEXT_FILE", None)  # Tests own independent run contexts.
         env.setdefault("GNN_PIPELINE_TEST_OUTPUT_DIR", str(isolated_output_root))
 
         result = subprocess.run(  # nosec B603

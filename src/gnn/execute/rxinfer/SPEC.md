@@ -44,4 +44,4 @@ Gaussian covariance matrices without relabelling them as saved fields.
 
 ## Dependencies
 
-- `julia >= 1.10` (`Project.toml` compat); RxInfer 5.5.0 and all deps pinned by the committed `Project.toml` + `Manifest.toml` in this directory
+- `julia >= 1.10` (`Project.toml` compat); RxInfer 6.1.0 and all deps pinned by the committed `Project.toml` + `Manifest.toml` in this directory

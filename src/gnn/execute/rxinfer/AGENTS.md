@@ -19,7 +19,7 @@
    extractor and Step 16 canonical analysis reader
 
 ### Key Capabilities
-- Genuine ``@model`` + ``infer()`` variational message-passing inference execution (RxInfer.jl v5.5)
+- Genuine ``@model`` + ``infer()`` variational message-passing inference execution (RxInfer.jl v6.1.0)
 - **Offline batch inference (Bayesian smoothing)** — the pipeline runs ``infer()``
   on a pre-collected observation sequence, NOT online active inference. If
   ``infer()`` fails, the script crashes (no fallback).
@@ -118,7 +118,7 @@ contract or promote saved helpers into the pipeline.
 
 ### Required Dependencies
 - `julia` (`Project.toml` compat `julia = "1.10"`)
-- `RxInfer.jl` 5.5.0 plus `ReactiveMP.jl`, `GraphPPL.jl`, `JSON`, `Distributions`, `StatsBase` — all pinned by the committed `Project.toml` + `Manifest.toml` in this directory
+- `RxInfer.jl` 6.1.0 plus `ReactiveMP.jl`, `GraphPPL.jl`, `JSON`, `Distributions`, `StatsBase` — all pinned by the committed `Project.toml` + `Manifest.toml` in this directory
 
 ### Internal Dependencies
 - `execute.julia_setup` - Shared Julia availability check
@@ -295,6 +295,6 @@ This submodule registers no MCP tools of its own. The parent module
 
 ---
 
-**Last Updated**: 2026-10-08
+**Last Updated**: 2026-10-20
 **Maintainer**: Execute Module Team
 **Status**: ✅ Production Ready

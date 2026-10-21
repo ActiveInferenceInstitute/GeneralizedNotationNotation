@@ -81,7 +81,7 @@ bn.plot(model, interactive=True)
 *   **Synthetic Data Generation**: `bn.sampling()` leverages learned models to perform Forward or Gibbs sampling, enabling rich synthetic data generation that preserves conditional dependencies.
 *   **Imputation**: `bn.knn_imputer()` to resolve missing fields securely prior to structural learning.
 
-For complete API routes, see the official [BNLearn’s Documentation](https://erdogant.github.io/bnlearn/pages/html/index.html).
+For complete API routes, see the official [BNLearn’s Documentation](https://erdogant.github.io/bnlearn/index.html).
 
 ## 6. GNN Pipeline Integration
 

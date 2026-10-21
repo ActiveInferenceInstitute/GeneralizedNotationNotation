@@ -73,8 +73,8 @@ class DependencyValidator:
                 # HTTP and async communication
                 DependencySpec(
                     name="aiohttp",
-                    version_min="3.9.0",
-                    install_command="uv pip install aiohttp>=3.9.0",
+                    version_min="3.14.4",
+                    install_command="uv pip install 'aiohttp>=3.14.4'",
                     description="Async HTTP client/server for LLM providers",
                 ),
                 DependencySpec(

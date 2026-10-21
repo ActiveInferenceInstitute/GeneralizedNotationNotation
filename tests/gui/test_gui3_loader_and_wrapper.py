@@ -97,6 +97,11 @@ def interactive_gradio() -> Iterator[None]:
             sys.modules.pop("gradio", None)
         else:
             sys.modules["gradio"] = original_gradio
+        # The wrapper lazily imports this module while the stub is installed.
+        # Restore its cached Gradio binding before later native builder tests.
+        designer = sys.modules.get("gnn.gui.gui_3.ui_designer")
+        if designer is not None:
+            importlib.reload(designer)
         importlib.reload(gui3_processor)
 
 
