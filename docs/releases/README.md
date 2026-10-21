@@ -221,8 +221,9 @@ publication stays blocked until both have terminal successful checks and their
 actual artifacts are independently accepted. Never move the tag or count a
 main run as tag evidence. All sixteen release workflows run automatically on
 version tags. Collect each ref separately with
-`--event push --ref main` and `--event push --ref vVERSION`; the collector
-filters the actual run ref and event, even when both point to one commit. Retain failed
+`--ref main` for main's automatic and explicitly dispatched profiles, and
+`--event push --ref vVERSION` for the automatic tag roster. The collector filters
+the actual run ref and requested event, even when both point to one commit. Retain failed
 attempts; repair functional failures and only retry classified infrastructure
 failures with evidence. Do not lower test selections, coverage or warning policy.
 External links run at tag qualification with dead links blocking and transient
