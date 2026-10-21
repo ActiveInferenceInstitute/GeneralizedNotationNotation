@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/gnn/5_type_checker.py` (thin script, 70 lines)
+**Orchestrator**: `src/gnn/5_type_checker.py` (73 lines)
 **Implementation Layer**: `src/gnn/type_checker/`
 **Canonical Entry Point**: `type_checker.processor.GNNTypeChecker`
 

@@ -333,7 +333,7 @@ deliberately broader than this artifact graph.
 The [patch publication receipt](docs/development/gnn_4_0_1_post_publication.json)
 records source/tag identities, exact GNN/FEP/GEO gates, issue acceptance and
 provider alert closure. Preserve historical receipts and their source epochs.
-Current software version is **4.1.0**. Its [GitHub release](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.1.0) records exact tag, source, checks and artifacts; version metadata alone does not establish acceptance.
+The published **4.1.0** [GitHub release](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.1.0) records exact tag, source, checks and artifacts; version metadata alone does not establish acceptance.
 Historical 4.0.1 retains its original source, checks and artifacts. Remaining
 capability limits are in [TO-DO.md](TO-DO.md).
 

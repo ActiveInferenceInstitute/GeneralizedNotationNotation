@@ -53,11 +53,15 @@ For complete usage information, see:
 - src/gnn/README.md: Module and pipeline safety documentation
 """
 
+import sys
+
+if globals().get("__package__") is None and not sys.flags.safe_path:
+    sys.path.pop(0)  # Keep adjacent gnn/types from shadowing stdlib types.
+
 import argparse
 import json
 import logging
 import os
-import sys
 import time
 import uuid
 from datetime import datetime

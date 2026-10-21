@@ -286,6 +286,7 @@ def registered_flags() -> set[str]:
         ("scripts/check_hydrated_prose.py", None),
         ("scripts/run_comprehensive_native_coverage.py", None),
         ("scripts/run_local_llm.py", None),
+        (".github/release_gate.py", None),
         ("src/gnn/render/thrml/runtime.py", None),
         ("src/gnn/analysis/performance_benchmark.py", None),
         ("src/gnn/render/bnlearn/source_program.py", "_PROGRAM"),

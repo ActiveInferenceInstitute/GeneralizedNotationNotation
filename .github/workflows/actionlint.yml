@@ -2,12 +2,15 @@ name: Workflow Lint
 
 on:
   push:
+    tags: ["v[0-9]*"]
     branches: [main]
     paths:
       - ".github/workflows/**"
+      - ".github/*release*"
   pull_request:
     paths:
       - ".github/workflows/**"
+      - ".github/*release*"
   workflow_dispatch:
 
 concurrency:
@@ -28,3 +31,6 @@ jobs:
 
       - name: Run actionlint
         uses: rhysd/actionlint@914e7df21a07ef503a81201c76d2b11c789d3fca # v1.7.12
+
+      - name: Release scheduling controls
+        run: python3 -m unittest discover -s .github -p test_release_gate.py -v

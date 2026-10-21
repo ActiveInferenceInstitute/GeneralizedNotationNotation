@@ -2,9 +2,10 @@ name: CI
 
 on:
   push:
+    tags: ["v[0-9]*"]
     branches: [main]
   pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
+    types: [opened, synchronize, reopened]
     branches: [main]
   workflow_dispatch:
 
@@ -230,7 +231,7 @@ jobs:
           retention-days: 14
 
       - name: Mypy type check
-        run: uv run --frozen --no-sync mypy src/gnn --show-error-codes
+        run: uv run --frozen --no-sync mypy src/gnn .github/release_gate.py --show-error-codes
 
       - name: Pytest collect-only
         run: |

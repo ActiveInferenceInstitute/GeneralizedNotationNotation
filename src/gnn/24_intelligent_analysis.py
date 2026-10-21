@@ -9,6 +9,11 @@ analyzes failures or performance bottlenecks, and generates an executive report.
 This script uses the intelligent_analysis module for all processing logic.
 """
 
+import sys
+
+if globals().get("__package__") is None and not sys.flags.safe_path:
+    sys.path.pop(0)  # Keep adjacent gnn/types from shadowing stdlib types.
+
 from typing import cast
 
 from gnn.intelligent_analysis import process_intelligent_analysis

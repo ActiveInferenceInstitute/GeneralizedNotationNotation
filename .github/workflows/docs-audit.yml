@@ -5,6 +5,7 @@ name: Docs audit
 # Documentation contracts depend on source and metadata as well as Markdown.
 on:
   push:
+    tags: ["v[0-9]*"]
     branches: [main]
   pull_request:
     branches: [main]
@@ -60,13 +61,13 @@ jobs:
         run: uv run --frozen --no-sync python scripts/check_maintained_doc_terms.py --strict
 
       - name: External link audit (weekly job)
-        if: github.event_name == 'schedule' || inputs.external_links
+        if: github.event_name == 'schedule' || startsWith(github.ref, 'refs/tags/v') || inputs.external_links
         run: |
           set -euo pipefail
           uv run --frozen --no-sync python scripts/check_external_links.py --fail-on-dead \
             --allow-hosts doi.org zenodo.org | tee external-links.txt
       - name: Retain external-link observations
-        if: always() && (github.event_name == 'schedule' || inputs.external_links)
+        if: always() && (github.event_name == 'schedule' || startsWith(github.ref, 'refs/tags/v') || inputs.external_links)
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: external-link-observations

@@ -2,33 +2,18 @@
 """
 Step 7: Multi-format Export Generation (Thin Orchestrator)
 
-This step generates exports in multiple formats (JSON, XML, GraphML, GEXF, Pickle).
+Delegates export processing to gnn.export and explicit GEO options to its CLI
+adapter. Run through the installed environment:
 
-Architectural Role:
-    This is a "thin orchestrator" - a minimal script that delegates core functionality
-    to the corresponding module (src/gnn/export/). It handles argument parsing, logging
-    setup, and calls the actual processing functions from the export module.
+    uv run python src/gnn/7_export.py --target-dir input/gnn_files --output-dir output
 
-Pipeline Flow:
-    main.py → 7_export.py (this script) → export/ (modular implementation)
-
-How to run:
-  uv run python src/gnn/7_export.py --target-dir input/gnn_files --output-dir output --verbose
-  uv run python src/gnn/main.py  # (runs as part of the pipeline)
-
-Expected outputs:
-  - Multi-format exports in the specified output directory
-  - JSON, XML, GraphML, GEXF, and Pickle format files
-  - Comprehensive export reports and summaries
-  - Actionable error messages if dependencies or paths are missing
-  - Clear logging of all resolved arguments and paths
-
-If you encounter errors:
-  - Check that export dependencies are installed
-  - Check that src/gnn/export/ contains export modules
-  - Check that the output directory is writable
-  - Verify export configuration and format requirements
+The export module owns format admission, metadata validation and artifact reports.
 """
+
+import sys
+
+if globals().get("__package__") is None and not sys.flags.safe_path:
+    sys.path.pop(0)  # Keep adjacent gnn/types from shadowing stdlib types.
 
 from typing import Any, cast
 

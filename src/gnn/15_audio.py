@@ -29,6 +29,11 @@ If you encounter errors:
   - Verify audio configuration and requirements
 """
 
+import sys
+
+if globals().get("__package__") is None and not sys.flags.safe_path:
+    sys.path.pop(0)  # Keep adjacent gnn/types from shadowing stdlib types.
+
 import argparse
 from typing import cast
 

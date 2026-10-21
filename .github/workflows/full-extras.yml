@@ -6,6 +6,8 @@ name: Full Extras (Weekly)
 # should be caught within a week.
 
 on:
+  push:
+    tags: ["v[0-9]*"]
   schedule:
     - cron: "0 6 * * 0"  # Sunday 06:00 UTC
   workflow_dispatch:

@@ -6,6 +6,11 @@ Delegates discovery, parsing, and multi-format serialization to
 `gnn/multi_format_processor.py` using the standardized pipeline wrapper.
 """
 
+import sys
+
+if globals().get("__package__") is None and not sys.flags.safe_path:
+    sys.path.pop(0)  # Keep adjacent gnn/types from shadowing stdlib types.
+
 from typing import cast
 
 from gnn.processing.multi_format_processor import process_gnn_multi_format

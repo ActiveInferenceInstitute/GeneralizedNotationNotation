@@ -31,6 +31,11 @@ If you encounter errors:
   - Verify model registry configuration and requirements
 """
 
+import sys
+
+if globals().get("__package__") is None and not sys.flags.safe_path:
+    sys.path.pop(0)  # Keep adjacent gnn/types from shadowing stdlib types.
+
 from typing import cast
 
 from gnn.model_registry import process_model_registry

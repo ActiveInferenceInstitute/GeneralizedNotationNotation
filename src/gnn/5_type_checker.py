@@ -29,6 +29,11 @@ If you encounter errors:
   - Verify type checker configuration and requirements
 """
 
+import sys
+
+if globals().get("__package__") is None and not sys.flags.safe_path:
+    sys.path.pop(0)  # Keep adjacent gnn/types from shadowing stdlib types.
+
 import logging
 from pathlib import Path
 from typing import Any, cast

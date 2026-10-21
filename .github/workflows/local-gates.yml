@@ -20,6 +20,7 @@ name: Local gates
 
 on:
   push:
+    tags: ["v[0-9]*"]
     branches: [main]
   pull_request:
     branches: [main]

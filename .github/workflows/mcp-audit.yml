@@ -1,6 +1,7 @@
 name: MCP audit
 on:
   push:
+    tags: ["v[0-9]*"]
     branches: [main]
   pull_request:
     branches: [main]
@@ -35,4 +36,4 @@ jobs:
       # S2-23) ran the same assertion inline without artifact/receipt handling.
       - name: MCP tool count audit
         run: |
-          uv run --extra dev python -c "from tests.mcp.test_mcp_audit import count_mcp_tools, MCP_TOOL_FLOOR; count = count_mcp_tools(); print(f'MCP tool count: {count}'); assert count >= MCP_TOOL_FLOOR, f'MCP tool count {count} is below the floor {MCP_TOOL_FLOOR}'; print('OK')"
+          uv run --frozen --no-sync python -c "from tests.mcp.test_mcp_audit import count_mcp_tools, MCP_TOOL_FLOOR; count = count_mcp_tools(); print(f'MCP tool count: {count}'); assert count >= MCP_TOOL_FLOOR, f'MCP tool count {count} is below the floor {MCP_TOOL_FLOOR}'; print('OK')"

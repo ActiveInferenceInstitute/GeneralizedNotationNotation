@@ -29,6 +29,7 @@ name: Paired GEO_INFER interchange
 
 on:
   push:
+    tags: ["v[0-9]*"]
     branches: ["main"]
   pull_request:
     branches: [main]

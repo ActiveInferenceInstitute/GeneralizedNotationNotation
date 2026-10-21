@@ -17,6 +17,8 @@
 name: Gridworld boundary check
 
 on:
+  push:
+    tags: ["v[0-9]*"]
   workflow_dispatch:
   schedule:
     # Weekly Monday 03:43 UTC — does not collide with the

@@ -35,6 +35,8 @@ name: Pair pin freshness
 # summary and receipts, but ancestor-or-equal is the contract.
 
 on:
+  push:
+    tags: ["v[0-9]*"]
   schedule:
     # Nightly, offset from the other scheduled jobs (custody-re-render
     # runs daily at 07:14 UTC).

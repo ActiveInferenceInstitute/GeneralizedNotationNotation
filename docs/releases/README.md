@@ -11,7 +11,18 @@ This directory contains documentation for release management, version control, a
 **Status**: ✅ Production Ready  
 **Version**: 1.0
 
-## Current software 4.1.0 release record
+## Software 4.2.0 release record
+
+The [v4.2.0 release](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.2.0)
+owns its exact tag, accepted source, hosted checks and downloaded asset receipts.
+Version metadata alone does not establish publication. It includes RxInfer 6.1,
+current compatible dependencies, direct-script startup without stdlib module
+shadowing, aiohttp/Pillow repairs and the repeatable
+qualification procedure below. Python, Gradio/Pillow and scientific backend
+exceptions retain the scopes documented in README and CHANGELOG. PyPI and
+separate distribution archival require independent publication evidence.
+
+## Historical software 4.1.0 release record
 
 The [v4.1.0 release](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.1.0) is the authoritative record of its
 tag/source/checks and ordinary wheel, sdist, manuscript, verification records
@@ -168,3 +179,69 @@ All documentation in this module adheres to professional standards:
 **Status**: ✅ Production Ready  
 **Compliance**: Professional documentation standards  
 **Maintenance**: Regular updates with new release processes and version management strategies
+
+## Repeatable release qualification
+
+The package version is owned by `pyproject.toml` and mirrored by
+`gnn.__version__`, the frozen lock and citation metadata. Prepare a minor release
+on an isolated branch; finish content first, then perform the
+[manuscript and companion ritual](../development/fep_lean_paired_revision.md#closeout-ordering-canonical).
+Keep original producer commits reachable. Never renew receipts by editing hashes.
+
+After provisioning the exact uv version from README, run `just release-preflight`
+before publishing a candidate. It installs the frozen dev profile once, then
+checks source types, documentation and module inventories, actual flags, thin
+scripts, release scheduling controls
+and every direct entrypoint. It catches deterministic mistakes before starting
+expensive hosted lanes; full/native/manuscript/companion qualification remains
+required. Existing `just quality` retains its broader local gate roster.
+
+Use the stdlib GitHub CLI collector from the repository root:
+
+```bash
+python .github/release_gate.py --revision FULL_COMMIT --ref RELEASE_BRANCH \
+  --dispatch-missing --output /absolute/task/work/candidate-observation-1.json
+python .github/release_gate.py --revision FULL_COMMIT --ref RELEASE_BRANCH \
+  --output /absolute/task/work/candidate-observation-2.json
+```
+
+The first command launches only workflows absent from the visible Actions
+history for that exact SHA; existing pending or failed work is reported without
+redispatch. Use a single dispatch owner and retain its receipt while the provider
+registers the runs. Subsequent observations use new output files and omit
+`--dispatch-missing`. Exit 1 means incomplete qualification; API/access errors
+remain errors. Every latest run/attempt and all its paginated jobs must succeed.
+The collector does not equate PR synthetic-merge tests with native artifact
+source identity. Inspect each source-bound artifact independently.
+
+After the accepted PR is merged normally, verify main has exactly the qualified
+Git tree and preserve its producer ancestry. Create the annotated candidate tag
+at that exact main commit. Main and tag qualification may run concurrently;
+publication stays blocked until both have terminal successful checks and their
+actual artifacts are independently accepted. Never move the tag or count a
+main run as tag evidence. All sixteen release workflows run automatically on
+version tags. Collect each ref separately with
+`--ref main` for main's automatic and explicitly dispatched profiles, and
+`--event push --ref vVERSION` for the automatic tag roster. The collector filters
+the actual run ref and requested event, even when both point to one commit. Retain failed
+attempts; repair functional failures and only retry classified infrastructure
+failures with evidence. Do not lower test selections, coverage or warning policy.
+External links run at tag qualification with dead links blocking and transient
+or blocked responses remaining inconclusive.
+
+A companion's actual main qualification may similarly overlap GNN's final
+candidate checks after the companion merges and GNN pins its exact merge.
+Both must finish and pass independent acceptance before merging GNN.
+
+Build ordinary wheel and sdist from a clean accepted checkout using the pinned
+uv tool. Verify metadata/version, all source/archive members and wheel RECORD;
+install outside the checkout and exercise the public CLI, imports and resources.
+Publish a GitHub draft containing the wheel, sdist, manuscript, source binding,
+verification receipt and SHA256SUMS; verify tag CI and the uploaded bytes before
+publishing. Download every public asset afterwards and record parity. GitHub
+release publication is the existing distribution channel. PyPI and exact-version
+archival require their own destination/owner credentials and verified receipts;
+no publication to those services is implied by a GitHub release.
+
+This scheduling change removes manual roster coordination and redundant ready
+transitions. It does not claim faster inference or a measured CI speedup.

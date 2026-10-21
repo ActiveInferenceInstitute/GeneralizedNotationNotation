@@ -10,11 +10,11 @@
 
 **Status**: Maintained; current acceptance is source-bound and selection-specific
 
-**Version**: [pyproject.toml](../pyproject.toml) (canonical; current software 4.1.0)
+**Version**: [pyproject.toml](../pyproject.toml) (canonical; current software 4.2.0)
 
 **Last Updated**: 2026-09-04 (historical module documentation)
 
-Current 4.1.0 acceptance belongs to its [GitHub release](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.1.0)
+Historical 4.1.0 acceptance belongs to its [GitHub release](https://github.com/ActiveInferenceInstitute/Generalized_Notation_Notation/releases/tag/v4.1.0)
 and exact-source records. The [coverage guide](../docs/development/native_comprehensive_coverage.md)
 requires three independent strict integer reports; the
 [installed guide](../docs/development/installed_platform_acceptance.md) requires

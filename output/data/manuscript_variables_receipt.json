@@ -1,12 +1,10 @@
 {
-  "counts_describe_commit": "48db291",
-  "dirty_path_count": 10,
+  "counts_describe_commit": "09acfd086",
+  "dirty_path_count": 8,
   "dirty_paths": [
     "output/.pipeline/",
     "output/data/manuscript_variables.json",
     "output/data/manuscript_variables_receipt.json",
-    "output/figures/figure_registry.json",
-    "output/figures/gnn_repo_metrics.png",
     "output/manuscript/00_abstract.md",
     "output/manuscript/02_system_context.md",
     "output/manuscript/03_methods.md",

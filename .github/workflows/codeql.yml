@@ -2,6 +2,7 @@ name: CodeQL
 
 on:
   push:
+    tags: ["v[0-9]*"]
     branches: [main]
     paths-ignore:
       - "**/*.md"

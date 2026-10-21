@@ -23,6 +23,8 @@ name: Custody re-render
 # developer's sibling checkout; this run is what detects template drift.
 
 on:
+  push:
+    tags: ["v[0-9]*"]
   workflow_dispatch:
   schedule:
     # Daily 07:14 UTC — does not collide with the 04:28/06:00 crons.
