@@ -9,7 +9,7 @@ details in `src/setup/README.md` so this numbered step stays orchestration-only.
 
 import sys
 
-if __package__ is None and not sys.flags.safe_path:
+if globals().get("__package__") is None and not sys.flags.safe_path:
     sys.path.pop(0)  # Keep adjacent gnn/types from shadowing stdlib types.
 
 import logging

@@ -319,6 +319,7 @@ profile-backend *ARGS:
 # Install once; every subsequent command reuses that exact frozen environment.
 release-preflight:
     uv sync --frozen --extra dev
+    uv run --frozen --no-sync mypy src --config-file pyproject.toml
     uv run --frozen --no-sync python docs/development/docs_audit.py --strict --check-anchors --no-write
     uv run --frozen --no-sync python scripts/check_flag_parity.py
     uv run --frozen --no-sync python scripts/check_thin_orchestrators.py

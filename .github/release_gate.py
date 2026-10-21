@@ -17,16 +17,29 @@ from urllib.parse import quote
 
 REPOSITORY = "ActiveInferenceInstitute/Generalized_Notation_Notation"
 WORKFLOWS = (
-    "ci.yml", "comprehensive-native-coverage.yml", "installed-platforms.yml",
-    "local-gates.yml", "mcp-audit.yml", "docs-audit.yml", "actionlint.yml",
-    "codeql.yml", "fep-lean-paired-revision.yml", "geo-infer-interchange.yml",
-    "rxinfer.yml", "full-extras.yml", "gridworld.yml", "supply-chain-audit.yml",
-    "pair-pin-freshness.yml", "custody-re-render.yml",
+    "ci.yml",
+    "comprehensive-native-coverage.yml",
+    "installed-platforms.yml",
+    "local-gates.yml",
+    "mcp-audit.yml",
+    "docs-audit.yml",
+    "actionlint.yml",
+    "codeql.yml",
+    "fep-lean-paired-revision.yml",
+    "geo-infer-interchange.yml",
+    "rxinfer.yml",
+    "full-extras.yml",
+    "gridworld.yml",
+    "supply-chain-audit.yml",
+    "pair-pin-freshness.yml",
+    "custody-re-render.yml",
 )
 
 
 def gh(*arguments: str) -> object:
-    return json.loads(subprocess.check_output(["gh", *arguments], text=True, timeout=120))
+    return json.loads(
+        subprocess.check_output(["gh", *arguments], text=True, timeout=120)
+    )
 
 
 def pages(endpoint: str, key: str) -> list[dict]:
@@ -50,9 +63,15 @@ def evaluate(runs: list[dict], jobs: list[dict], revision: str) -> dict:
     timings = []
     for job in jobs:
         if job.get("started_at") and job.get("completed_at"):
-            start = datetime.datetime.fromisoformat(job["started_at"].replace("Z", "+00:00"))
-            end = datetime.datetime.fromisoformat(job["completed_at"].replace("Z", "+00:00"))
-            timings.append({"name": job["name"], "seconds": (end - start).total_seconds()})
+            start = datetime.datetime.fromisoformat(
+                job["started_at"].replace("Z", "+00:00")
+            )
+            end = datetime.datetime.fromisoformat(
+                job["completed_at"].replace("Z", "+00:00")
+            )
+            timings.append(
+                {"name": job["name"], "seconds": (end - start).total_seconds()}
+            )
     result = {"run": run, "jobs": jobs, "job_timings": timings}
     if run["head_sha"] != revision:
         result["state"] = "wrong_source"
@@ -60,7 +79,9 @@ def evaluate(runs: list[dict], jobs: list[dict], revision: str) -> dict:
         result["state"] = "pending"
     elif run["conclusion"] != "success":
         result["state"] = "failed"
-    elif not jobs or any(job["status"] != "completed" or job["conclusion"] != "success" for job in jobs):
+    elif not jobs or any(
+        job["status"] != "completed" or job["conclusion"] != "success" for job in jobs
+    ):
         result["state"] = "incomplete_jobs"
     else:
         result["state"] = "success"
@@ -68,7 +89,9 @@ def evaluate(runs: list[dict], jobs: list[dict], revision: str) -> dict:
 
 
 def inspect(workflow: str, revision: str, event: str | None) -> tuple[str, dict]:
-    endpoint = f"repos/{REPOSITORY}/actions/workflows/{workflow}/runs?head_sha={revision}"
+    endpoint = (
+        f"repos/{REPOSITORY}/actions/workflows/{workflow}/runs?head_sha={revision}"
+    )
     if event:
         endpoint += f"&event={event}"
     runs = pages(endpoint, "workflow_runs")
@@ -76,31 +99,55 @@ def inspect(workflow: str, revision: str, event: str | None) -> tuple[str, dict]
         return workflow, evaluate([], [], revision)
     latest = max(runs, key=lambda item: (item["run_number"], item["run_attempt"]))
     # Attempt-specific jobs: a successful earlier attempt cannot fill missing jobs.
-    jobs = pages(f"repos/{REPOSITORY}/actions/runs/{latest['id']}/attempts/{latest['run_attempt']}/jobs", "jobs")
+    jobs = pages(
+        f"repos/{REPOSITORY}/actions/runs/{latest['id']}/attempts/{latest['run_attempt']}/jobs",
+        "jobs",
+    )
     return workflow, evaluate(runs, jobs, revision)
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--revision", required=True, help="Full immutable Git commit")
-    parser.add_argument("--ref", required=True, help="Remote branch or tag resolving to that commit")
-    parser.add_argument("--event", choices=("push", "pull_request", "workflow_dispatch"))
+    parser.add_argument(
+        "--ref", required=True, help="Remote branch or tag resolving to that commit"
+    )
+    parser.add_argument(
+        "--event", choices=("push", "pull_request", "workflow_dispatch")
+    )
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--dispatch-missing", action="store_true", help="Dispatch only workflows with no run; never retry failures")
+    parser.add_argument(
+        "--dispatch-missing",
+        action="store_true",
+        help="Dispatch only workflows with no run; never retry failures",
+    )
     args = parser.parse_args()
     if not re.fullmatch("[0-9a-f]{40}", args.revision):
         parser.error("--revision must be a full commit SHA")
     if args.dispatch_missing and args.event:
-        parser.error("dispatch requires unfiltered events so existing automatic runs are retained")
+        parser.error(
+            "dispatch requires unfiltered events so existing automatic runs are retained"
+        )
     endpoint = f"repos/{REPOSITORY}/commits/{quote(args.ref, safe='')}"
     if gh("api", endpoint)["sha"] != args.revision:
         parser.error("remote ref no longer resolves to requested revision")
     with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
-        observations = dict(executor.map(lambda name: inspect(name, args.revision, args.event), WORKFLOWS))
+        observations = dict(
+            executor.map(
+                lambda name: inspect(name, args.revision, args.event), WORKFLOWS
+            )
+        )
     dispatches = []
-    receipt = {"repository": REPOSITORY, "revision": args.revision, "ref": args.ref,
-               "event": args.event, "ready": False, "workflows": observations,
-               "dispatched": dispatches, "state": "dispatching" if args.dispatch_missing else "observing"}
+    receipt = {
+        "repository": REPOSITORY,
+        "revision": args.revision,
+        "ref": args.ref,
+        "event": args.event,
+        "ready": False,
+        "workflows": observations,
+        "dispatched": dispatches,
+        "state": "dispatching" if args.dispatch_missing else "observing",
+    }
     # Reserve before any dispatch; reuse refuses without launching more work.
     with args.output.open("x") as stream:
         json.dump(receipt, stream, indent=2)
@@ -109,17 +156,38 @@ def main() -> int:
             if result["state"] == "missing":
                 if gh("api", endpoint)["sha"] != args.revision:
                     raise RuntimeError("remote ref moved before dispatch")
-                subprocess.run(["gh", "workflow", "run", name, "--repo", REPOSITORY, "--ref", args.ref], check=True, timeout=90)
+                subprocess.run(
+                    [
+                        "gh",
+                        "workflow",
+                        "run",
+                        name,
+                        "--repo",
+                        REPOSITORY,
+                        "--ref",
+                        args.ref,
+                    ],
+                    check=True,
+                    timeout=90,
+                )
                 dispatches.append(name)
                 args.output.write_text(json.dumps(receipt, indent=2) + "\n")
     if gh("api", endpoint)["sha"] != args.revision:
-        raise RuntimeError("remote ref moved during collection; observation cannot qualify the ref")
+        raise RuntimeError(
+            "remote ref moved during collection; observation cannot qualify the ref"
+        )
     ready = all(result["state"] == "success" for result in observations.values())
-    receipt = {"repository": REPOSITORY, "revision": args.revision, "ref": args.ref,
-               "observed_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
-               "event": args.event, "ready": ready, "workflows": observations,
-               "dispatched": dispatches,
-               "scope": "Workflow status only; artifact/source/native/manuscript verification remains required."}
+    receipt = {
+        "repository": REPOSITORY,
+        "revision": args.revision,
+        "ref": args.ref,
+        "observed_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        "event": args.event,
+        "ready": ready,
+        "workflows": observations,
+        "dispatched": dispatches,
+        "scope": "Workflow status only; artifact/source/native/manuscript verification remains required.",
+    }
     # Unique output files preserve failed and pending observations for review.
     args.output.write_text(json.dumps(receipt, indent=2) + "\n")
     for name, result in observations.items():

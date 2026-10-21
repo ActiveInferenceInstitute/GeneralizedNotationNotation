@@ -1,4 +1,5 @@
 """Fail-closed release scheduling controls (stdlib only)."""
+
 import copy
 import unittest
 
@@ -8,13 +9,21 @@ from release_gate import evaluate
 class ReleaseGateControls(unittest.TestCase):
     def setUp(self):
         self.sha = "a" * 40
-        self.run = dict(run_number=8, run_attempt=1, head_sha=self.sha,
-                        status="completed", conclusion="success")
+        self.run = dict(
+            run_number=8,
+            run_attempt=1,
+            head_sha=self.sha,
+            status="completed",
+            conclusion="success",
+        )
         self.jobs = [dict(status="completed", conclusion="success")]
 
     def state(self, runs=None, jobs=None):
-        return evaluate([self.run] if runs is None else runs,
-                        self.jobs if jobs is None else jobs, self.sha)["state"]
+        return evaluate(
+            [self.run] if runs is None else runs,
+            self.jobs if jobs is None else jobs,
+            self.sha,
+        )["state"]
 
     def test_complete(self):
         self.assertEqual(self.state(), "success")
